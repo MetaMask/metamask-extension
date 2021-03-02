@@ -408,6 +408,9 @@
   "contractDeployment": {
     "message": "Contract Deployment"
   },
+  "contractErrorMessage": {
+    "message": "You are sending tokens to the token's contract address. This may result in the loss of these tokens."
+  },
   "contractInteraction": {
     "message": "Contract Interaction"
   },

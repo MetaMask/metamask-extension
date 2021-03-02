@@ -19,6 +19,7 @@ export default class SendContent extends Component {
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
     warning: PropTypes.string,
+    isContractAddress: PropTypes.bool,
   };
 
   updateGas = (updateData) => this.props.updateGas(updateData);
@@ -66,11 +67,19 @@ export default class SendContent extends Component {
 
   renderWarning() {
     const { t } = this.context;
-    const { warning } = this.props;
+    const { isContractAddress, warning } = this.props;
+
+    let errorKey = warning;
+    let errorClass = 'warning';
+
+    if (isContractAddress && warning === 'knownAddressRecipient') {
+      errorKey = 'contractErrorMessage';
+      errorClass = 'error';
+    }
 
     return (
-      <Dialog type="warning" className="send__error-dialog">
-        {t(warning)}
+      <Dialog type={errorClass} className="send__error-dialog">
+        {t(errorKey)}
       </Dialog>
     );
   }

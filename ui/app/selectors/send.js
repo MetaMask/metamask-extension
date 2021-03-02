@@ -164,3 +164,14 @@ export function getTitleKey(state) {
 export function isSendFormInError(state) {
   return Object.values(getSendErrors(state)).some((n) => n);
 }
+
+export function getIsContractAddress (state) {
+  const sendTo = getSendTo(state)
+  const sendTokenAddress = getSendTokenAddress(state)
+
+  if (!sendTokenAddress) {
+    return false
+  }
+
+  return sendTo.toLowerCase() === sendTokenAddress.toLowerCase()
+}

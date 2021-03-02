@@ -3,6 +3,7 @@ import {
   getSendTo,
   accountsWithSendEtherInfoSelector,
   getAddressBookEntry,
+  getIsContractAddress,
 } from '../../../selectors';
 
 import * as actions from '../../../store/actions';
@@ -19,6 +20,7 @@ function mapStateToProps(state) {
     ),
     contact: getAddressBookEntry(state, to),
     to,
+    isContractAddress: getIsContractAddress(state),
   };
 }
 
