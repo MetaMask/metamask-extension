@@ -442,6 +442,8 @@ export function unlockHardwareWalletAccounts(indexes, deviceName, hdPath) {
       } catch (e) {
         log.error(e);
         dispatch(displayWarning(e.message));
+        dispatch(hideLoadingIndication());
+        return Promise.reject(e);
       }
     }
 
