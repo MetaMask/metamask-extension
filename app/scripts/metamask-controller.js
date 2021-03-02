@@ -218,7 +218,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.cachedBalancesController = new CachedBalancesController({
       accountTracker: this.accountTracker,
-      getNetwork: this.networkController.getNetworkState.bind(
+      getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
       ),
       initState: initState.CachedBalancesController,
