@@ -1483,7 +1483,7 @@ export function clearPendingTokens() {
   };
 }
 
-export function createCancelTransaction(txId, customGasPrice) {
+export function createCancelTransaction(txId, customGasPrice, customGasLimit) {
   log.debug('background.cancelTransaction');
   let newTxId;
 
@@ -1492,6 +1492,7 @@ export function createCancelTransaction(txId, customGasPrice) {
       background.createCancelTransaction(
         txId,
         customGasPrice,
+        customGasLimit,
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
