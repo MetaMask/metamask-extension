@@ -119,7 +119,8 @@ export default class EnsInput extends Component {
     event.clipboardData.items[0].getAsString(text => {
       if (
         isValidAddress(text, 'account') ||
-        isValidBase32Address(text, network, 'user')
+        isValidBase32Address(text, network, 'user') ||
+        isValidBase32Address(text, network, 'null')
       ) {
         this.props.onPaste(text)
       } else if (
@@ -149,6 +150,7 @@ export default class EnsInput extends Component {
     if (
       onValidAddressTyped &&
       (isValidBase32Address(input, network, 'user') ||
+        isValidBase32Address(input, network, 'null') ||
         isValidAddress(input, 'account'))
     ) {
       onValidAddressTyped(input)
