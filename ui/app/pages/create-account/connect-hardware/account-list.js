@@ -6,10 +6,6 @@ import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
 
 class AccountList extends Component {
-  state = {
-    selectedAccountIndexes: [],
-  };
-
   getHdPaths() {
     const ledgerLiveKey = `m/44'/60'/0'/0/0`;
     const mewKey = `m/44'/60'/0'`;
@@ -56,7 +52,6 @@ class AccountList extends Component {
             selectedOption={selectedPath}
             onChange={(value) => {
               onPathChange(value);
-              this.setState({ selectedAccountIndexes: [] });
             }}
           />
         </div>
@@ -97,7 +92,7 @@ class AccountList extends Component {
           );
           const value = account.index;
           const checked =
-            this.state.selectedAccountIndexes.includes(account.index) ||
+            this.props.selectedAccounts.includes(account.index) ||
             accountAlreadyConnected;
 
           return (
@@ -117,24 +112,7 @@ class AccountList extends Component {
                   disabled={accountAlreadyConnected}
                   value={value}
                   onClick={() => {
-                    const { selectedAccountIndexes } = this.state;
-
-                    let newSelectedAccountIndexes;
-                    if (selectedAccountIndexes.includes(value)) {
-                      newSelectedAccountIndexes = selectedAccountIndexes.filter(
-                        (index) => index !== value,
-                      );
-                    } else {
-                      newSelectedAccountIndexes = [
-                        ...selectedAccountIndexes,
-                        value,
-                      ];
-                    }
-
-                    this.setState({
-                      selectedAccountIndexes: newSelectedAccountIndexes,
-                    });
-                    this.props.onAccountChange(newSelectedAccountIndexes);
+                    this.props.onAccountChange(value);
                   }}
                 />
                 <label
@@ -186,7 +164,7 @@ class AccountList extends Component {
   }
 
   renderButtons() {
-    const disabled = this.props.selectedAccount === null;
+    const disabled = this.props.selectedAccounts.length === 0;
     const buttonProps = {};
     if (disabled) {
       buttonProps.disabled = true;
@@ -248,7 +226,7 @@ AccountList.propTypes = {
   onForgetDevice: PropTypes.func.isRequired,
   getPage: PropTypes.func.isRequired,
   network: PropTypes.string,
-  selectedAccount: PropTypes.string,
+  selectedAccounts: PropTypes.array.isRequired,
   onUnlockAccounts: PropTypes.func,
   onCancel: PropTypes.func,
   onAccountRestriction: PropTypes.func,

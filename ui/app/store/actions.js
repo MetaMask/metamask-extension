@@ -448,6 +448,7 @@ export function unlockHardwareWalletAccounts(indexes, deviceName, hdPath) {
     }
 
     dispatch(hideLoadingIndication());
+    return undefined;
   };
 }
 

@@ -68,11 +68,17 @@ class ConnectHardwareForm extends Component {
       device: this.state.device,
       path,
     });
+    this.setState({ selectedAccounts: [] });
     this.getPage(this.state.device, 0, path);
   };
 
-  onAccountChange = (accounts) => {
-    const selectedAccounts = accounts.map((account) => account.toString());
+  onAccountChange = (account) => {
+    let { selectedAccounts } = this.state;
+    if (selectedAccounts.includes(account)) {
+      selectedAccounts = selectedAccounts.filter((acc) => account !== acc);
+    } else {
+      selectedAccounts.push(account);
+    }
     this.setState({ selectedAccounts, error: null });
   };
 
@@ -99,37 +105,23 @@ class ConnectHardwareForm extends Component {
             this.showTemporaryAlert();
           }
 
-          const newState = { unlocked: true, device, error: null };
-          // Default to the first account
-          if (this.state.selectedAccounts.length === 0) {
-            accounts.forEach((a) => {
-              if (a.address.toLowerCase() === this.props.address) {
-                newState.selectedAccount = a.index.toString();
-              }
-            });
-            // If the page doesn't contain the selected account, let's deselect it
-          } else if (
-            !accounts.filter((a) =>
-              this.state.selectedAccounts.includes(a.index.toString()),
-            ).length
-          ) {
-            newState.selectedAccounts = [];
-          }
-
           // Map accounts with balances
-          newState.accounts = accounts.map((account) => {
+          const newAccounts = accounts.map((account) => {
             const normalizedAddress = account.address.toLowerCase();
             const balanceValue =
-              (this.props.accounts[normalizedAddress] &&
-                this.props.accounts[normalizedAddress].balance) ||
-              null;
+              this.props.accounts[normalizedAddress]?.balance || null;
             account.balance = balanceValue
               ? formatBalance(balanceValue, 6)
               : '...';
             return account;
           });
 
-          this.setState(newState);
+          this.setState({
+            accounts: newAccounts,
+            unlocked: true,
+            device,
+            error: null,
+          });
         }
       })
       .catch((e) => {
@@ -280,14 +272,13 @@ ConnectHardwareForm.propTypes = {
   network: PropTypes.string,
   accounts: PropTypes.object,
   connectedAccounts: PropTypes.array.isRequired,
-  address: PropTypes.string,
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => {
   const {
-    metamask: { network, selectedAddress },
+    metamask: { network },
   } = state;
   const accounts = getMetaMaskAccounts(state);
   const connectedAccounts = getMetaMaskAccountsConnected(state);
@@ -299,7 +290,6 @@ const mapStateToProps = (state) => {
     network,
     accounts,
     connectedAccounts,
-    address: selectedAddress,
     defaultHdPaths,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
   };
