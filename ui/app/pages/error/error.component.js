@@ -36,9 +36,7 @@ class ErrorPage extends PureComponent {
         rel="noopener noreferrer"
         href="https://metamask.zendesk.com/hc/en-us/requests/new"
       >
-        <span className="error-page__link-text">
-          {this.context.t('here')}
-        </span>
+        <span className="error-page__link-text">{this.context.t('here')}</span>
       </a>
     );
   }
