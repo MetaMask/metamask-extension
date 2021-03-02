@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import getAccountLink from '../../../../lib/account-link';
 import Button from '../../../components/ui/button';
+import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
 
 class AccountList extends Component {
@@ -94,10 +95,10 @@ class AccountList extends Component {
           const accountAlreadyConnected = connectedAccounts.includes(
             account.address.toLowerCase(),
           );
+          const value = account.index;
           const checked =
-            this.state.selectedAccountIndexes.includes(
-              account.index.toString(),
-            ) || accountAlreadyConnected;
+            this.state.selectedAccountIndexes.includes(account.index) ||
+            accountAlreadyConnected;
 
           return (
             <div
@@ -109,15 +110,13 @@ class AccountList extends Component {
                   : ''
               }
             >
-              <div className="hw-account-list__item__radio">
-                <input
-                  type="checkbox"
-                  name="selectedAccount"
-                  disabled={accountAlreadyConnected}
+              <div className="hw-account-list__item__checkbox">
+                <Checkbox
                   id={`address-${idx}`}
-                  value={account.index}
-                  onChange={(e) => {
-                    const { value } = e.target;
+                  checked={checked}
+                  disabled={accountAlreadyConnected}
+                  value={value}
+                  onClick={() => {
                     const { selectedAccountIndexes } = this.state;
 
                     let newSelectedAccountIndexes;
@@ -137,7 +136,6 @@ class AccountList extends Component {
                     });
                     this.props.onAccountChange(newSelectedAccountIndexes);
                   }}
-                  checked={checked}
                 />
                 <label
                   className="hw-account-list__item__label"
