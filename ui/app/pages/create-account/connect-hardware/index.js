@@ -279,7 +279,7 @@ ConnectHardwareForm.propTypes = {
   history: PropTypes.object,
   network: PropTypes.string,
   accounts: PropTypes.object,
-  connectedAccounts: PropTypes.object,
+  connectedAccounts: PropTypes.array.isRequired,
   address: PropTypes.string,
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
