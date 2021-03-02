@@ -6,6 +6,7 @@ const {
   getCustomGasPrice,
   getRenderableBasicEstimateData,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
+  isCustomPriceSafe,
 } = proxyquire('../custom-gas', {});
 
 describe('custom-gas selectors', function () {
@@ -13,6 +14,44 @@ describe('custom-gas selectors', function () {
     it('should return gas.customData.price', function () {
       const mockState = { gas: { customData: { price: 'mockPrice' } } };
       assert.strictEqual(getCustomGasPrice(mockState), 'mockPrice');
+    });
+  });
+  describe('isCustomGasPriceSafe()', function () {
+    it('should return true for gas.customData.price 0x77359400', function () {
+      const mockState = {
+        gas: {
+          customData: { price: '0x77359400' },
+          basicEstimates: { safeLow: 1 },
+        },
+      };
+      assert.strictEqual(isCustomPriceSafe(mockState), true);
+    });
+    it('should return true for gas.customData.price null', function () {
+      const mockState = {
+        gas: {
+          customData: { price: null },
+          basicEstimates: { safeLow: 1 },
+        },
+      };
+      assert.strictEqual(isCustomPriceSafe(mockState), true);
+    });
+    it('should return true gas.customData.price undefined', function () {
+      const mockState = {
+        gas: {
+          customData: { price: undefined },
+          basicEstimates: { safeLow: 1 },
+        },
+      };
+      assert.strictEqual(isCustomPriceSafe(mockState), true);
+    });
+    it('should return false gas.basicEstimates.safeLow undefined', function () {
+      const mockState = {
+        gas: {
+          customData: { price: '0x77359400' },
+          basicEstimates: { safeLow: undefined },
+        },
+      };
+      assert.strictEqual(isCustomPriceSafe(mockState), false);
     });
   });
 
