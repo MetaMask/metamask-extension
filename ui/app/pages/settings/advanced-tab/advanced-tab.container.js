@@ -11,7 +11,6 @@ import {
   turnThreeBoxSyncingOnAndInitialize,
   setUseNonceField,
   setIpfsGateway,
-  setLedgerLivePreference,
 } from '../../../store/actions';
 import { getPreferences } from '../../../selectors';
 import AdvancedTab from './advanced-tab.component';
@@ -70,9 +69,6 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setIpfsGateway: (value) => {
       return dispatch(setIpfsGateway(value));
-    },
-    setLedgerLivePreference: (value) => {
-      return dispatch(setLedgerLivePreference(value));
     },
   };
 };

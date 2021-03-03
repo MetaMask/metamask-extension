@@ -6,6 +6,7 @@ import ToggleButton from '../../../components/ui/toggle-button';
 import TextField from '../../../components/ui/text-field';
 import Button from '../../../components/ui/button';
 import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
+import { setLedgerLivePreference } from '../../../store/actions';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -34,7 +35,6 @@ export default class AdvancedTab extends PureComponent {
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
     useLedgerLive: PropTypes.bool.isRequired,
-    setLedgerLivePreference: PropTypes.func.isRequired,
   };
 
   state = {
@@ -388,7 +388,7 @@ export default class AdvancedTab extends PureComponent {
 
   renderLedgerLiveControl() {
     const { t } = this.context;
-    const { useLedgerLive, setLedgerLivePreference } = this.props;
+    const { useLedgerLive } = this.props;
 
     return (
       <div className="settings-page__content-row">
