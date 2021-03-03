@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 9.1.1 Wed Mar 03 2021
+
 ## 9.1.0 Mon Mar 01 2021
 - [#10265](https://github.com/MetaMask/metamask-extension/pull/10265): Update Japanese translations.
 - [#9388](https://github.com/MetaMask/metamask-extension/pull/9388): Update Chinese(Simplified) translations.
