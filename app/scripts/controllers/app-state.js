@@ -113,15 +113,6 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Record that the user has seen the swap screen welcome message
-   */
-  setSwapsWelcomeMessageHasBeenShown() {
-    this.store.updateState({
-      swapsWelcomeMessageHasBeenShown: true,
-    });
-  }
-
-  /**
    * Sets the last active time to the current time
    * @returns {void}
    */

@@ -2568,16 +2568,6 @@ export function setConnectedStatusPopoverHasBeenShown() {
   };
 }
 
-export function setSwapsWelcomeMessageHasBeenShown() {
-  return () => {
-    background.setSwapsWelcomeMessageHasBeenShown((err) => {
-      if (err) {
-        throw new Error(err.message);
-      }
-    });
-  };
-}
-
 export async function setAlertEnabledness(alertId, enabledness) {
   await promisifiedBackground.setAlertEnabledness(alertId, enabledness);
 }
@@ -2874,4 +2864,10 @@ export function trackMetaMetricsEvent(payload, options) {
  */
 export function trackMetaMetricsPage(payload, options) {
   return promisifiedBackground.trackMetaMetricsPage(payload, options);
+}
+
+export function updateViewedNotifications(notificationIdViewedStatusMap) {
+  return promisifiedBackground.updateViewedNotifications(
+    notificationIdViewedStatusMap,
+  );
 }

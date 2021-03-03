@@ -475,3 +475,7 @@ export function getIsSwapsChain(state) {
   const chainId = getCurrentChainId(state);
   return ALLOWED_SWAPS_CHAIN_IDS[chainId];
 }
+
+export function getShowWhatsNewPopup(state) {
+  return state.appState.showWhatsNewPopup;
+}
