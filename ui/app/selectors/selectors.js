@@ -494,3 +494,7 @@ export function getNativeCurrencyImage(state) {
 export function getNextSuggestedNonce(state) {
   return Number(state.metamask.nextNonce);
 }
+
+export function getShowWhatsNewPopup(state) {
+  return state.appState.showWhatsNewPopup;
+}

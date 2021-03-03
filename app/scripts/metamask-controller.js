@@ -22,9 +22,12 @@ import {
   ApprovalController,
   CurrencyRateController,
   PhishingController,
+  NotificationController,
 } from '@metamask/controllers';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
+import { UI_NOTIFICATIONS } from '../../shared/notifications';
+
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -159,6 +162,11 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.phishingController = new PhishingController();
+
+    this.notificationController = new NotificationController(
+      { allNotifications: UI_NOTIFICATIONS },
+      initState.NotificationController,
+    );
 
     // now we can initialize the RPC provider, which other controllers require
     this.initializeProvider();
@@ -426,6 +434,7 @@ export default class MetamaskController extends EventEmitter {
       PermissionsController: this.permissionsController.permissions,
       PermissionsMetadata: this.permissionsController.store,
       ThreeBoxController: this.threeBoxController.store,
+      NotificationController: this.notificationController,
     });
 
     this.memStore = new ComposableObservableStore(null, {
@@ -454,6 +463,7 @@ export default class MetamaskController extends EventEmitter {
       SwapsController: this.swapsController.store,
       EnsController: this.ensController.store,
       ApprovalController: this.approvalController,
+      NotificationController: this.notificationController,
     });
     this.memStore.subscribe(this.sendUpdate.bind(this));
 
@@ -736,10 +746,6 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController.setConnectedStatusPopoverHasBeenShown,
         this.appStateController,
       ),
-      setSwapsWelcomeMessageHasBeenShown: nodeify(
-        this.appStateController.setSwapsWelcomeMessageHasBeenShown,
-        this.appStateController,
-      ),
 
       // EnsController
       tryReverseResolveAddress: nodeify(
@@ -945,6 +951,12 @@ export default class MetamaskController extends EventEmitter {
       rejectPendingApproval: nodeify(
         approvalController.reject,
         approvalController,
+      ),
+
+      // Notifications
+      updateViewedNotifications: nodeify(
+        this.notificationController.updateViewed,
+        this.notificationController,
       ),
     };
   }

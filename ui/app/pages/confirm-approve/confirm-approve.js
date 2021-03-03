@@ -124,6 +124,7 @@ export default function ConfirmApprove() {
       toAddress={toAddress}
       identiconAddress={tokenAddress}
       showAccountInHeader
+      useNonceField
       title={tokensText}
       contentComponent={
         <ConfirmApproveContent
