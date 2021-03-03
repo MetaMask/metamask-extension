@@ -15,7 +15,6 @@ import {
   getCurrentChainId,
 } from '../../selectors/selectors';
 import {
-  getFromToken,
   getQuotes,
   clearSwapsState,
   getTradeTxId,
@@ -44,7 +43,6 @@ import {
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
-  ETH_SWAPS_TOKEN_OBJECT,
   SWAP_FAILED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
 } from '../../helpers/constants/swaps';
@@ -62,7 +60,6 @@ import {
   getRpcPrefsForCurrentProvider,
 } from '../../selectors';
 import { useNewMetricEvent } from '../../hooks/useMetricEvent';
-import { getValueFromWeiHex } from '../../helpers/utils/conversions.util';
 
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
@@ -88,8 +85,7 @@ export default function Swap() {
   const isLoadingQuotesRoute = pathname === LOADING_QUOTES_ROUTE;
 
   const fetchParams = useSelector(getFetchParams);
-  const { sourceTokenInfo = {}, destinationTokenInfo = {} } =
-    fetchParams?.metaData || {};
+  const { destinationTokenInfo = {} } = fetchParams?.metaData || {};
 
   const [inputValue, setInputValue] = useState(fetchParams?.value || '');
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 2);
@@ -111,20 +107,7 @@ export default function Swap() {
     balance: ethBalance,
     address: selectedAccountAddress,
   } = selectedAccount;
-  const fetchParamsFromToken =
-    sourceTokenInfo?.symbol === 'ETH'
-      ? {
-          ...ETH_SWAPS_TOKEN_OBJECT,
-          string: getValueFromWeiHex({
-            value: ethBalance,
-            numberOfDecimals: 4,
-            toDenomination: 'ETH',
-          }),
-          balance: ethBalance,
-        }
-      : sourceTokenInfo;
-  const selectedFromToken =
-    useSelector(getFromToken) || fetchParamsFromToken || {};
+
   const { destinationTokenAddedForSwap } = fetchParams || {};
 
   const approveTxData =
@@ -299,7 +282,6 @@ export default function Swap() {
                 return (
                   <BuildQuote
                     inputValue={inputValue}
-                    selectedFromToken={selectedFromToken}
                     onInputChange={onInputChange}
                     ethBalance={ethBalance}
                     setMaxSlippage={setMaxSlippage}
