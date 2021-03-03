@@ -7,6 +7,7 @@ import {
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_ERROR,
   CONFUSING_ENS_ERROR,
+  CONTRACT_ADDRESS_ERROR,
 } from '../../../send.constants';
 
 const stubs = {
@@ -38,6 +39,18 @@ describe('add-recipient utils', function () {
 
     it('should return null if "to" is truthy and valid', function () {
       assert.deepStrictEqual(getToErrorObject('0xabc123'), {
+        to: null,
+      });
+    });
+
+    it('should return a contract address error if the recipient is the same as the tokens contract address', function () {
+      assert.deepStrictEqual(getToErrorObject('0xabc123', '0xabc123'), {
+        to: CONTRACT_ADDRESS_ERROR,
+      });
+    });
+
+    it('should return null if the recipient address is not the token contract address', function () {
+      assert.deepStrictEqual(getToErrorObject('0xabc123', '0xabc456'), {
         to: null,
       });
     });

@@ -19,15 +19,17 @@ export default class SendContent extends Component {
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
     warning: PropTypes.string,
+    error: PropTypes.string,
   };
 
   updateGas = (updateData) => this.props.updateGas(updateData);
 
   render() {
-    const { warning } = this.props;
+    const { warning, error } = this.props;
     return (
       <PageContainerContent>
         <div className="send-v2__form">
+          {error && this.renderError()}
           {warning && this.renderWarning()}
           {this.maybeRenderAddContact()}
           <SendAssetRow />
@@ -71,6 +73,17 @@ export default class SendContent extends Component {
     return (
       <Dialog type="warning" className="send__error-dialog">
         {t(warning)}
+      </Dialog>
+    );
+  }
+
+  renderError() {
+    const { t } = this.context;
+    const { error } = this.props;
+
+    return (
+      <Dialog type="error" className="send__error-dialog">
+        {t(error)}
       </Dialog>
     );
   }
