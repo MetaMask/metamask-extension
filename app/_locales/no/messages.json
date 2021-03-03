@@ -347,9 +347,6 @@
   "endOfFlowMessage6": {
     "message": "Hvis du trenger å sikkerhetskopiere seed-frasen din igjen kan du finne den i Innstillinger -> Sikkerhet."
   },
-  "endOfFlowMessage7": {
-    "message": "Hvis du noen gang har spørsmål eller ser noe mistenksomt, send e-post til support@metamask.io"
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask klarer ikke å gjenopprette den mnemoniske gjenopprettingsfrasen din. Finn ut mer. "
   },
@@ -761,15 +758,6 @@
   },
   "privateNetwork": {
     "message": "Privat nettverk "
-  },
-  "protectYourKeys": {
-    "message": "Beskytt nøklene dine! "
-  },
-  "protectYourKeysMessage1": {
-    "message": "Vær forsiktig med den mnemoniske gjenopprettingsfrasen din - det rapporteres om nettsteder som prøver å etterligne MetaMask. MetaMask vil aldri be om den mnemoniske gjenopprettingsfrasen din!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Oppbevar setningen din trygt. Hvis du ser noe mistenksomt, eller du er usikker på et nettsted, kan du sende en e-post til support@metamask.io"
   },
   "queue": {
     "message": "Kø"

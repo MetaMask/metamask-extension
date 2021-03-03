@@ -553,9 +553,6 @@
   "endOfFlowMessage6": {
     "message": "시드 구문을 다시 백업해야 한다면 설정 -> 보안에서 시드 구문을 찾을 수 있습니다."
   },
-  "endOfFlowMessage7": {
-    "message": "질문이 있거나 피싱으로 의심되는 행위를 목격했다면 support@metamask.io로 이메일을 보내세요."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask에서는 시드 구문을 복구할 수 없습니다."
   },
@@ -599,14 +596,6 @@
   "errorName": {
     "message": "코드: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "페이지를 새로고침하여 다시 시도하거나 support@metamask.io에 요청하여 도움을 받으세요.",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI"
-  },
-  "errorPagePopupMessage": {
-    "message": "팝업을 닫은 후 다시 열어 다시 시도하거나 support@metamask.io에 요청하여 도움을 받으세요.",
-    "description": "Message displayed on generic error page in the popup UI"
   },
   "errorPageTitle": {
     "message": "MetaMask에서 오류 발생",
@@ -1212,15 +1201,6 @@
   },
   "proposedApprovalLimit": {
     "message": "제안된 승인 한도"
-  },
-  "protectYourKeys": {
-    "message": "키를 보호하세요!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "시드 구문을 조심하세요. MetaMask를 흉내 내는 웹사이트가 보고되고 있습니다. MetaMask에서는 시드 구문을 절대로 물어보지 않습니다!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "시드 구문을 안전하게 보관하세요. 피싱으로 의심되는 행위를 목격했거나 웹사이트가 수상하다면 support@metamask.io로 이메일을 보내세요."
   },
   "provide": {
     "message": "제공"

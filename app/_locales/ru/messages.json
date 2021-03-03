@@ -553,9 +553,6 @@
   "endOfFlowMessage6": {
     "message": "Если вам нужно снова создать резервную копию исходной фразы, вы можете найти ее в Настройки -> Безопасность."
   },
-  "endOfFlowMessage7": {
-    "message": "Если у вас возникнут вопросы или вы увидите что-то подозрительное, напишите на support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "Просто помните, что MetaMask не может восстановить исходную фразу."
   },
@@ -599,14 +596,6 @@
   "errorName": {
     "message": "Код: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Повторите попытку, перезагрузив страницу, или обратитесь в службу поддержки по адресу support@metamask.io",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI"
-  },
-  "errorPagePopupMessage": {
-    "message": "Повторите попытку, закрыв и вновь открыв всплывающее окно, или обратитесь в службу поддержки по адресу support@metamask.io",
-    "description": "Message displayed on generic error page in the popup UI"
   },
   "errorPageTitle": {
     "message": "MetaMask обнаружил ошибку",
@@ -1212,15 +1201,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Предлагаемый предел утверждения"
-  },
-  "protectYourKeys": {
-    "message": "Защитите свои ключи!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Будьте осторожны с исходной фразой — были сообщения о веб-сайтах, которые пытались имитировать MetaMask. MetaMask никогда не запросит вашу исходную фразу!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Храните свою исходную фразу в безопасности. Если вы увидите что-то подозрительное или вы не уверены в сайте, напишите на support@metamask.io"
   },
   "provide": {
     "message": "Предоставить"

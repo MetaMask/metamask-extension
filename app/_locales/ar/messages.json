@@ -350,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "إذا كنت بحاجة إلى عمل نسخة احتياطية من عبارة الأمان الخاصة بك مرة أخرى، يمكنك العثور عليها في الإعدادات -> الأمان."
   },
-  "endOfFlowMessage7": {
-    "message": "إذا كانت لديك أسئلة أو ترى شيئاً ما مريباً، فأرسل بريداً إلكترونياً إلى support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "لا يمكن لـ MetaMask استعادة جملتك البذرية. تعلم المزيد."
   },
@@ -767,15 +764,6 @@
   },
   "privateNetwork": {
     "message": "شبكة خاصة"
-  },
-  "protectYourKeys": {
-    "message": "احمِ مفاتيحك!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "كن حذراً بشأن عبارة الأمان الخاصة بك - فهناك بلاغات عن مواقع ويب تحاول تقليد MetaMask. لن تسأل MetaMask عن عبارة الأمان الخاصة بك أبداً!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "أبقِ عبارة الأمان الخاصة بك بأمان. إذا رأيت شيئاً مريباً، أو كنت غير متأكد من موقع ويب ما، أرسل بريداً إلكترونياً إلى support@metamask.io"
   },
   "queue": {
     "message": "اللائحة"

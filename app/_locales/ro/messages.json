@@ -350,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "Dacă trebuie să vă salvați din nou fraza seed, puteți să o găsiți în Setări -> Securitate."
   },
-  "endOfFlowMessage7": {
-    "message": "Dacă aveți întrebări sau vedeți ceva suspect, trimiteți un e-mail la support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask nu vă poate recupera expresia sursă. Aflați mai multe."
   },
@@ -761,15 +758,6 @@
   },
   "privateNetwork": {
     "message": "Rețea privată"
-  },
-  "protectYourKeys": {
-    "message": "Protejați-vă cheile!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Aveți grijă cu expresia dvs. sursă – au existat raportări despre site-uri web care încearcă să imite MetaMask. MetaMask nu vă va cere niciodată expresia sursă!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Aveți grijă de fraza dvs. Dacă vedeți ceva care este în neregulă sau aveți dubii cu privire la un site, trimiteți un mesaj la support@metamask.io"
   },
   "queue": {
     "message": "Coadă"

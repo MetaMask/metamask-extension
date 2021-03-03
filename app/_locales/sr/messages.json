@@ -347,9 +347,6 @@
   "endOfFlowMessage6": {
     "message": "Ako treba ponovo da izradite rezervnu kopiju svoje početne fraze, možete je pronaći u Postavke -> Bezbednost."
   },
-  "endOfFlowMessage7": {
-    "message": "Ako imate bilo kakvih pitanja ili primetite nešto sumnjivo, pošaljite e-poruku na support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask ne može da oporavi vašu početnu frazu. Saznajte više."
   },
@@ -765,15 +762,6 @@
   },
   "privateNetwork": {
     "message": "Privatna mreža"
-  },
-  "protectYourKeys": {
-    "message": "Zaštitite svoje ključeve!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Budite pažljivi sa vašom seed frazom - bilo je izveštaja o veb lokacijama koje pokušavaju da imitiraju MetaMask. MetaMask nikada neće tražiti vašu seed frazu!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Čuvajte svoju frazu. Ako primetite nešto sumnjivo, ili niste sigurni u vezi veb lokacije, pošaljite e-poruku na upport@metamask.io"
   },
   "queue": {
     "message": "Ред"

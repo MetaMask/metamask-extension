@@ -347,9 +347,6 @@
   "endOfFlowMessage6": {
     "message": "Si necessites fer una còpia de seguretat de la teva frase de recuperació una altra vegada, la pots trobar a Configuració-> Seguretat."
   },
-  "endOfFlowMessage7": {
-    "message": "Si mai tens preguntes o veus alguna cosa sospitosa, envia un correu a support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask no pot recuperar la teva seedphrase. Descobreix per què."
   },
@@ -755,15 +752,6 @@
   },
   "privateNetwork": {
     "message": "Xarxa privada"
-  },
-  "protectYourKeys": {
-    "message": "Protegeix les Teves Claus!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Vigila amb la teva frase de recuperació  —s'han documentat casos de llocs web que intenten imitar MetaMask. MetaMask mai no et demanarà la frase de recuperació!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Mantingues segura la teva frase. Si veus alguna cosa sospitosa, o no estàs segur d'un lloc web, envia un correu a support@metamask.io"
   },
   "queue": {
     "message": "Cua"
