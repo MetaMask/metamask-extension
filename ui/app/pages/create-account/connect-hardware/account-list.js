@@ -110,7 +110,6 @@ class AccountList extends Component {
                   id={`address-${idx}`}
                   checked={checked}
                   disabled={accountAlreadyConnected}
-                  value={value}
                   onClick={() => {
                     this.props.onAccountChange(value);
                   }}
