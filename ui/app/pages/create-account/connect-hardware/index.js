@@ -21,15 +21,14 @@ class ConnectHardwareForm extends Component {
     browserSupported: true,
     unlocked: false,
     device: null,
+    path: null,
   };
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { accounts } = nextProps;
     const newAccounts = this.state.accounts.map((a) => {
       const normalizedAddress = a.address.toLowerCase();
-      const balanceValue =
-        (accounts[normalizedAddress] && accounts[normalizedAddress].balance) ||
-        null;
+      const balanceValue = accounts[normalizedAddress]?.balance || null;
       a.balance = balanceValue ? formatBalance(balanceValue, 6) : '...';
       return a;
     });
@@ -42,13 +41,11 @@ class ConnectHardwareForm extends Component {
 
   async checkIfUnlocked() {
     for (const device of ['trezor', 'ledger']) {
-      const unlocked = await this.props.checkHardwareStatus(
-        device,
-        this.props.defaultHdPaths[device],
-      );
+      const path = this.props.defaultHdPaths[device];
+      const unlocked = await this.props.checkHardwareStatus(device, path);
       if (unlocked) {
-        this.setState({ unlocked: true });
-        this.getPage(device, 0, this.props.defaultHdPaths[device]);
+        this.setState({ unlocked: true, path });
+        this.getPage(device, 0, path);
       }
     }
   }
@@ -68,7 +65,10 @@ class ConnectHardwareForm extends Component {
       device: this.state.device,
       path,
     });
-    this.setState({ selectedAccounts: [] });
+    this.setState({
+      selectedAccounts: [],
+      path,
+    });
     this.getPage(this.state.device, 0, path);
   };
 
@@ -148,6 +148,7 @@ class ConnectHardwareForm extends Component {
           selectedAccounts: [],
           accounts: [],
           unlocked: false,
+          path: null,
         });
       })
       .catch((e) => {
@@ -164,7 +165,11 @@ class ConnectHardwareForm extends Component {
     if (this.state.selectedAccounts.length === 0) {
       this.setState({ error: this.context.t('accountSelectionRequired') });
     }
-    return unlockHardwareWalletAccounts(this.state.selectedAccounts, device)
+    return unlockHardwareWalletAccounts(
+      this.state.selectedAccounts,
+      device,
+      this.state.path || null,
+    )
       .then((_) => {
         this.context.metricsEvent({
           eventOpts: {
