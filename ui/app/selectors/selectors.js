@@ -415,6 +415,7 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
  * extends that object with `balance` and `balance` values of the same type as
  * in regular ERC-20 token objects, per the above description.
  *
+ * @param {object} state - the redux state object
  * @returns {SwapsEthToken} The token object representation of the currently
  * selected account's ETH balance, as expected by the Swaps API.
  */
