@@ -2228,6 +2228,10 @@
   "welcomeBack": {
     "message": "Welcome Back!"
   },
+  "whatsNew": {
+    "message": "What's new",
+    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
+  },
   "whatsThis": {
     "message": "What's this?"
   },

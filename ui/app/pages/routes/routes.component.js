@@ -102,13 +102,13 @@ export default class Routes extends Component {
       currentCurrency,
       pageChanged,
       setCurrentCurrencyToUSD,
+      history,
     } = this.props;
-
     if (!currentCurrency) {
       setCurrentCurrencyToUSD();
     }
 
-    this.props.history.listen((locationObj, action) => {
+    history.listen((locationObj, action) => {
       if (action === 'PUSH') {
         pageChanged(locationObj.pathname);
       }
