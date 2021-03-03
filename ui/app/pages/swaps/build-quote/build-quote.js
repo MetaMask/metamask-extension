@@ -7,7 +7,6 @@ import { useHistory } from 'react-router-dom';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import { useTokensToSearch } from '../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
-import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken';
 import { I18nContext } from '../../../contexts/i18n';
 import DropdownInputPair from '../dropdown-input-pair';
 import DropdownSearchList from '../dropdown-search-list';
@@ -26,6 +25,7 @@ import {
   getTopAssets,
   getFetchParams,
 } from '../../../ducks/swaps/swaps';
+import { getSwapsEthToken } from '../../../selectors';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -76,7 +76,7 @@ export default function BuildQuote({
   const topAssets = useSelector(getTopAssets);
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken) || destinationTokenInfo;
-  const swapsEthToken = useSwapsEthToken();
+  const swapsEthToken = useSelector(getSwapsEthToken);
   const fetchParamsFromToken =
     sourceTokenInfo?.symbol === 'ETH' ? swapsEthToken : sourceTokenInfo;
 

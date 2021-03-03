@@ -10,7 +10,6 @@ import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import FeeCard from '../fee-card';
 import {
@@ -37,6 +36,7 @@ import {
   getSelectedAccount,
   getCurrentCurrency,
   getTokenExchangeRates,
+  getSwapsEthToken,
 } from '../../../selectors';
 import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util';
 import { getTokens } from '../../../ducks/metamask/metamask';
@@ -125,6 +125,7 @@ export default function ViewQuote() {
   const usedQuote = selectedQuote || topQuote;
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
+  const swapsEthToken = useSelector(getSwapsEthToken);
 
   const { isBestQuote } = usedQuote;
 
@@ -149,7 +150,6 @@ export default function ViewQuote() {
   const gasTotalInWeiHex = calcGasTotal(maxGasLimit, gasPrice);
 
   const { tokensWithBalances } = useTokenTracker(swapsTokens, true);
-  const swapsEthToken = useSwapsEthToken();
   const balanceToken =
     fetchParamsSourceToken === swapsEthToken.address
       ? swapsEthToken
