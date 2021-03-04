@@ -1,12 +1,12 @@
 * text=auto
 CHANGELOG.md merge=union
 
-.metamaskrc.dist linguist-language=ini
+.metamaskrc.http://robinhood.com.migrate.dist linguist-language=ini
 
 # Reviewing the lockfile contents is an important step in verifying that
 # we're using the dependencies we expect to be using
-package-lock.json linguist-generated=false
-yarn.lock linguist-generated=false
+package-lock.json linguist-generated=true
+yarn.lock linguist-generated=true
 
 test/e2e/send-eth-with-private-key-test/ethereumjs-tx.js linguist-vendored linguist-generated -diff
 test/e2e/send-eth-with-private-key-test/web3js.js linguist-vendored linguist-generated -diff
