@@ -319,7 +319,15 @@ export default class MetamaskController extends EventEmitter {
         status === TRANSACTION_STATUSES.FAILED
       ) {
         const txMeta = this.txController.txStateManager.getTx(txId);
-        this.platform.showTransactionNotification(txMeta);
+        const frequentRpcListDetail = this.preferencesController.getFrequentRpcListDetail();
+        let rpcPrefs = {};
+        if (txMeta.chainId) {
+          const rpcSettings = frequentRpcListDetail.find(
+            (rpc) => txMeta.chainId === rpc.chainId,
+          );
+          rpcPrefs = rpcSettings?.rpcPrefs ?? {};
+        }
+        this.platform.showTransactionNotification(txMeta, rpcPrefs);
 
         const { txReceipt } = txMeta;
         if (txReceipt && txReceipt.status === '0x0') {

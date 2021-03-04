@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
-import { getBlockExplorerUrlForTx } from '../../../helpers/utils/transactions.util';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { FLAT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import TransactionActivityLog from '../transaction-activity-log';
@@ -10,6 +9,7 @@ import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import Copy from '../../ui/icon/copy-icon.component';
 import Popover from '../../ui/popover';
+import { getBlockExplorerUrlForTx } from '../../../../../shared/modules/transaction.utils';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -51,7 +51,6 @@ export default class TransactionListItemDetails extends PureComponent {
       transactionGroup: { primaryTransaction },
       rpcPrefs,
     } = this.props;
-    const { hash, metamaskNetworkId } = primaryTransaction;
 
     this.context.metricsEvent({
       eventOpts: {
@@ -62,7 +61,7 @@ export default class TransactionListItemDetails extends PureComponent {
     });
 
     global.platform.openTab({
-      url: getBlockExplorerUrlForTx(metamaskNetworkId, hash, rpcPrefs),
+      url: getBlockExplorerUrlForTx(primaryTransaction, rpcPrefs),
     });
   };
 
