@@ -10,12 +10,14 @@ export const ROPSTEN_NETWORK_ID = '3';
 export const RINKEBY_NETWORK_ID = '4';
 export const GOERLI_NETWORK_ID = '5';
 export const KOVAN_NETWORK_ID = '42';
+export const LOCALHOST_NETWORK_ID = '1337';
 
 export const MAINNET_CHAIN_ID = '0x1';
 export const ROPSTEN_CHAIN_ID = '0x3';
 export const RINKEBY_CHAIN_ID = '0x4';
 export const GOERLI_CHAIN_ID = '0x5';
 export const KOVAN_CHAIN_ID = '0x2a';
+export const LOCALHOST_CHAIN_ID = '0x539';
 
 /**
  * The largest possible chain ID we can handle.

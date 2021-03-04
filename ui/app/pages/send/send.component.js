@@ -36,7 +36,7 @@ export default class SendTransactionScreen extends Component {
     gasPrice: PropTypes.string,
     gasTotal: PropTypes.string,
     history: PropTypes.object,
-    network: PropTypes.string,
+    chainId: PropTypes.string,
     primaryCurrency: PropTypes.string,
     resetSendState: PropTypes.func.isRequired,
     selectedAddress: PropTypes.string,
@@ -84,7 +84,7 @@ export default class SendTransactionScreen extends Component {
       conversionRate,
       from: { address, balance },
       gasTotal,
-      network,
+      chainId,
       primaryCurrency,
       sendToken,
       tokenBalance,
@@ -106,7 +106,7 @@ export default class SendTransactionScreen extends Component {
       from: { balance: prevBalance },
       gasTotal: prevGasTotal,
       tokenBalance: prevTokenBalance,
-      network: prevNetwork,
+      chainId: prevChainId,
       sendToken: prevSendToken,
       to: prevTo,
     } = prevProps;
@@ -146,7 +146,7 @@ export default class SendTransactionScreen extends Component {
     }
 
     if (!uninitialized) {
-      if (network !== prevNetwork && network !== 'loading') {
+      if (chainId !== prevChainId && chainId !== undefined) {
         updateSendTokenBalance({
           sendToken,
           tokenContract,
@@ -259,7 +259,7 @@ export default class SendTransactionScreen extends Component {
   }
 
   validate(query) {
-    const { tokens, sendToken, network, sendTokenAddress } = this.props;
+    const { tokens, sendToken, chainId, sendTokenAddress } = this.props;
 
     const { internalSearch } = this.state;
 
@@ -268,7 +268,7 @@ export default class SendTransactionScreen extends Component {
       return;
     }
 
-    const toErrorObject = getToErrorObject(query, sendTokenAddress, network);
+    const toErrorObject = getToErrorObject(query, sendTokenAddress, chainId);
     const toWarningObject = getToWarningObject(query, tokens, sendToken);
 
     this.setState({

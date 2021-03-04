@@ -8,7 +8,6 @@ import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 import {
   getBlockGasLimit,
   getConversionRate,
-  getCurrentNetwork,
   getNativeCurrency,
   getGasLimit,
   getGasPrice,
@@ -113,12 +112,6 @@ describe('send selectors', function () {
   describe('getNativeCurrency()', function () {
     it('should return the ticker symbol of the selected network', function () {
       assert.strictEqual(getNativeCurrency(mockState), 'ETH');
-    });
-  });
-
-  describe('getCurrentNetwork()', function () {
-    it('should return the id of the currently selected network', function () {
-      assert.strictEqual(getCurrentNetwork(mockState), '3');
     });
   });
 

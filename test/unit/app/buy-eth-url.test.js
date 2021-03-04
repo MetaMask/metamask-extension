@@ -1,20 +1,26 @@
 import assert from 'assert';
 import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url';
+import {
+  KOVAN_CHAIN_ID,
+  MAINNET_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
+  ROPSTEN_CHAIN_ID,
+} from '../../../shared/constants/network';
 
 describe('buy-eth-url', function () {
   const mainnet = {
-    network: '1',
+    chainId: MAINNET_CHAIN_ID,
     amount: 5,
     address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
   };
   const ropsten = {
-    network: '3',
+    chainId: ROPSTEN_CHAIN_ID,
   };
   const rinkeby = {
-    network: '4',
+    chainId: RINKEBY_CHAIN_ID,
   };
   const kovan = {
-    network: '42',
+    chainId: KOVAN_CHAIN_ID,
   };
 
   it('returns wyre url with address for network 1', function () {

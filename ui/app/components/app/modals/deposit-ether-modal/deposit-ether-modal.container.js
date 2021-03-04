@@ -5,15 +5,20 @@ import {
   showModal,
   hideWarning,
 } from '../../../../store/actions';
-import { getIsTestnet, getIsMainnet } from '../../../../selectors/selectors';
+import {
+  getIsTestnet,
+  getIsMainnet,
+  getCurrentChainId,
+  getSelectedAddress,
+} from '../../../../selectors/selectors';
 import DepositEtherModal from './deposit-ether-modal.component';
 
 function mapStateToProps(state) {
   return {
-    network: state.metamask.network,
+    chainId: getCurrentChainId(state),
     isTestnet: getIsTestnet(state),
     isMainnet: getIsMainnet(state),
-    address: state.metamask.selectedAddress,
+    address: getSelectedAddress(state),
   };
 }
 
@@ -31,7 +36,7 @@ function mapDispatchToProps(dispatch) {
     showAccountDetailModal: () => {
       dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
     },
-    toFaucet: (network) => dispatch(buyEth({ network })),
+    toFaucet: (chainId) => dispatch(buyEth({ chainId })),
   };
 }
 

@@ -20,10 +20,6 @@ export function getNativeCurrency(state) {
   return state.metamask.nativeCurrency;
 }
 
-export function getCurrentNetwork(state) {
-  return state.metamask.network;
-}
-
 export function getGasLimit(state) {
   return state.metamask.send.gasLimit || '0';
 }
