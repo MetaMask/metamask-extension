@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { I18nContext } from '../../../contexts/i18n';
 import { BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
-import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken';
+import { getSwapsEthToken } from '../../../selectors';
 import Button from '../../../components/ui/button';
 import Popover from '../../../components/ui/popover';
 
@@ -31,7 +31,7 @@ export default function IntroPopup({ onClose }) {
     event: 'Product Overview Dismissed',
     category: 'swaps',
   });
-  const swapsEthToken = useSwapsEthToken();
+  const swapsEthToken = useSelector(getSwapsEthToken);
 
   return (
     <div className="intro-popup">

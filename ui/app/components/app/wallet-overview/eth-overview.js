@@ -14,7 +14,6 @@ import {
   useMetricEvent,
   useNewMetricEvent,
 } from '../../../hooks/useMetricEvent';
-import { useSwapsEthToken } from '../../../hooks/useSwapsEthToken';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
@@ -26,6 +25,7 @@ import {
   getIsMainnet,
   getIsTestnet,
   getCurrentKeyring,
+  getSwapsEthToken,
 } from '../../../selectors/selectors';
 import SwapIcon from '../../ui/icon/swap-icon.component';
 import BuyIcon from '../../ui/icon/overview-buy-icon.component';
@@ -69,7 +69,7 @@ const EthOverview = ({ className }) => {
     category: 'swaps',
   });
   const swapsEnabled = useSelector(getSwapsFeatureLiveness);
-  const swapsEthToken = useSwapsEthToken();
+  const swapsEthToken = useSelector(getSwapsEthToken);
 
   return (
     <WalletOverview

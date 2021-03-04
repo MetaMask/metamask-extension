@@ -9,9 +9,9 @@ import {
   getTokenExchangeRates,
   getConversionRate,
   getCurrentCurrency,
+  getSwapsEthToken,
 } from '../selectors';
 import { getSwapsTokens } from '../ducks/swaps/swaps';
-import { useSwapsEthToken } from './useSwapsEthToken';
 import { useEqualityCheck } from './useEqualityCheck';
 
 const tokenList = shuffle(
@@ -79,11 +79,11 @@ export function useTokensToSearch({
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
+  const swapsEthToken = useSelector(getSwapsEthToken);
 
   const memoizedTopTokens = useEqualityCheck(topTokens);
   const memoizedUsersToken = useEqualityCheck(usersTokens);
 
-  const swapsEthToken = useSwapsEthToken();
   const ethToken = getRenderableTokenData(
     swapsEthToken,
     tokenConversionRates,
