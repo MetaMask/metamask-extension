@@ -1631,9 +1631,6 @@
   "swapEstimatedNetworkFeesInfo": {
     "message": "Questa è una stima della tassa di rete che verrà pagata per completare lo scambio. L'importo reale può cambiare a seconda della condizione della rete."
   },
-  "swapFailedErrorDescription": {
-    "message": "I tuoi fondi sono sicuri e disponibili nel tuo portafoglio."
-  },
   "swapFailedErrorTitle": {
     "message": "Scambio fallito"
   },
