@@ -26,6 +26,7 @@ import {
 } from '@metamask/controllers';
 import { getBackgroundMetaMetricState } from '../../ui/app/selectors';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
+import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -1074,10 +1075,10 @@ export default class MetamaskController extends EventEmitter {
     Object.keys(accountTokens).forEach((address) => {
       const checksummedAddress = ethUtil.toChecksumAddress(address);
       filteredAccountTokens[checksummedAddress] = {};
-      Object.keys(accountTokens[address]).forEach((networkType) => {
-        filteredAccountTokens[checksummedAddress][networkType] =
-          networkType === 'mainnet'
-            ? accountTokens[address][networkType].filter(
+      Object.keys(accountTokens[address]).forEach((chainId) => {
+        filteredAccountTokens[checksummedAddress][chainId] =
+          chainId === MAINNET_CHAIN_ID
+            ? accountTokens[address][chainId].filter(
                 ({ address: tokenAddress }) => {
                   const checksumAddress = ethUtil.toChecksumAddress(
                     tokenAddress,
@@ -1087,7 +1088,7 @@ export default class MetamaskController extends EventEmitter {
                     : true;
                 },
               )
-            : accountTokens[address][networkType];
+            : accountTokens[address][chainId];
       });
     });
 
