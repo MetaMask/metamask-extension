@@ -5,7 +5,8 @@
   "scripts": {
     "setup": "yarn install && yarn patch-package && yarn allow-scripts",
     "setup-ci": "yarn install --frozen-lockfile --har && yarn patch-package && yarn allow-scripts",
-    "start": "yarn build dev",
+    "start": "node development/build/index.js dev",
+    "start:lavamoat": "yarn build dev",
     "dist": "yarn build prod",
     "build": "lavamoat development/build/index.js",
     "start:test": "yarn build testDev",
@@ -70,7 +71,8 @@
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/elliptic": "^6.5.3",
     "3box/**/libp2p-crypto/node-forge": "^0.10.0",
     "3box/**/libp2p-keychain/node-forge": "^0.10.0",
-    "analytics-node/axios": "^0.21.1"
+    "analytics-node/axios": "^0.21.1",
+    "pull-ws": "^3.3.2"
   },
   "dependencies": {
     "3box": "^1.10.2",

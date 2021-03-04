@@ -89,7 +89,19 @@ export default class EndOfFlowScreen extends PureComponent {
           {`• ${t('endOfFlowMessage6')}`}
         </div>
         <div className="end-of-flow__text-3">
-          {`• ${t('endOfFlowMessage7')}`}
+          •{' '}
+          {t('endOfFlowMessage7', [
+            <a
+              target="_blank"
+              key="metamaskSupportLink"
+              rel="noopener noreferrer"
+              href="https://metamask.zendesk.com/hc/en-us/requests/new"
+            >
+              <span className="first-time-flow__link-text">
+                {this.context.t('here')}
+              </span>
+            </a>,
+          ])}
         </div>
         <div className="first-time-flow__text-block end-of-flow__text-4">
           {`*${t('endOfFlowMessage8')}`}&nbsp;

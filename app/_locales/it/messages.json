@@ -537,9 +537,6 @@
   "endOfFlowMessage6": {
     "message": "Se vorrai fare nuovamente un backup della frase, la puoi trovare in Impostazioni -> Sicurezza & Privacy."
   },
-  "endOfFlowMessage7": {
-    "message": "Se hai delle domande o vedi delle attività sospette, manda una mail a support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask non può recuperare la tua frase seed. Impara di più."
   },
@@ -579,14 +576,6 @@
   "errorName": {
     "message": "Codice: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Prova di nuovo ricaricando la pagina, o contatta il supporto a support@metamask.io (inglese)",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI"
-  },
-  "errorPagePopupMessage": {
-    "message": "Prova a chiudere e riaprire il popup, o contatta il supporto a support@metamask.io (inglese)",
-    "description": "Message displayed on generic error page in the popup UI"
   },
   "errorPageTitle": {
     "message": "MetaMask ha riscontrato un errore",
@@ -1106,15 +1095,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Limite di Approvazione Proposto"
-  },
-  "protectYourKeys": {
-    "message": "Proteggi le tue chiavi!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Stai attento con la tua frase seed - ci sono stati report di siti web che hanno tentato di imitare MetaMask. MetaMask non ti chiederà mai la tua frase seed!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Tieni la tua frase al sicuro. Se vedi qualcosa di sospetto, o non sei sicuro di un sito web, manda una mail a support@metamask.io"
   },
   "provide": {
     "message": "Fornisci"

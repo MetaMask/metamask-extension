@@ -11,10 +11,9 @@ import { renderWithProvider } from '../../../../../../../test/lib/render-helpers
 
 import * as actions from '../../../../../store/actions';
 import UnconnectedAccountAlert from '..';
+import { KOVAN_CHAIN_ID } from '../../../../../../../shared/constants/network';
 
 describe('Unconnected Account Alert', function () {
-  const network = '123';
-
   const selectedAddress = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
 
   const identities = {
@@ -40,7 +39,7 @@ describe('Unconnected Account Alert', function () {
   };
 
   const cachedBalances = {
-    123: {
+    [KOVAN_CHAIN_ID]: {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x0',
       '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': '0x0',
     },
@@ -58,12 +57,14 @@ describe('Unconnected Account Alert', function () {
 
   const mockState = {
     metamask: {
-      network,
       selectedAddress,
       identities,
       accounts,
       cachedBalances,
       keyrings,
+      provider: {
+        chainId: KOVAN_CHAIN_ID,
+      },
       permissionsHistory: {
         'https://test.dapp': {
           eth_accounts: {

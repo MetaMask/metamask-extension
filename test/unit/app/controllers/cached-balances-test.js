@@ -1,12 +1,13 @@
 import assert from 'assert';
 import sinon from 'sinon';
 import CachedBalancesController from '../../../../app/scripts/controllers/cached-balances';
+import { KOVAN_CHAIN_ID } from '../../../../shared/constants/network';
 
 describe('CachedBalancesController', function () {
   describe('updateCachedBalances', function () {
     it('should update the cached balances', async function () {
       const controller = new CachedBalancesController({
-        getNetwork: () => Promise.resolve(17),
+        getCurrentChainId: () => KOVAN_CHAIN_ID,
         accountTracker: {
           store: {
             subscribe: () => undefined,
@@ -26,7 +27,7 @@ describe('CachedBalancesController', function () {
       assert.equal(controller._generateBalancesToCache.callCount, 1);
       assert.deepEqual(controller._generateBalancesToCache.args[0], [
         'mockAccounts',
-        17,
+        KOVAN_CHAIN_ID,
       ]);
       assert.equal(
         controller.store.getState().cachedBalances,
@@ -45,7 +46,7 @@ describe('CachedBalancesController', function () {
         },
         initState: {
           cachedBalances: {
-            17: {
+            [KOVAN_CHAIN_ID]: {
               a: '0x1',
               b: '0x2',
               c: '0x3',
@@ -65,11 +66,11 @@ describe('CachedBalancesController', function () {
           b: { balance: null },
           c: { balance: '0x5' },
         },
-        17,
+        KOVAN_CHAIN_ID,
       );
 
       assert.deepEqual(result, {
-        17: {
+        [KOVAN_CHAIN_ID]: {
           a: '0x4',
           b: '0x2',
           c: '0x5',
@@ -91,7 +92,7 @@ describe('CachedBalancesController', function () {
         },
         initState: {
           cachedBalances: {
-            17: {
+            [KOVAN_CHAIN_ID]: {
               a: '0x1',
               b: '0x2',
               c: '0x3',
@@ -110,7 +111,7 @@ describe('CachedBalancesController', function () {
       );
 
       assert.deepEqual(result, {
-        17: {
+        [KOVAN_CHAIN_ID]: {
           a: '0x1',
           b: '0x2',
           c: '0x3',
@@ -127,7 +128,7 @@ describe('CachedBalancesController', function () {
     it('should subscribe to the account tracker with the updateCachedBalances method', async function () {
       const subscribeSpy = sinon.spy();
       const controller = new CachedBalancesController({
-        getNetwork: () => Promise.resolve(17),
+        getCurrentChainId: () => KOVAN_CHAIN_ID,
         accountTracker: {
           store: {
             subscribe: subscribeSpy,

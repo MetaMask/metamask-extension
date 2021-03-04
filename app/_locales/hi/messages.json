@@ -553,9 +553,6 @@
   "endOfFlowMessage6": {
     "message": "यदि आपको अपने सीड फ्रेज़ को फिर से बैकअप लेने की आवश्यकता है, तो आप इसे सेटिंग्स -> सुरक्षा में पा सकते हैं।"
   },
-  "endOfFlowMessage7": {
-    "message": "यदि आपको कभी कुछ पूछना हो या कुछ गड़बड़ लगे, तो support@metamask.io पर ईमेल करें।"
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask आपके सीडफ्रेज़ को पुनर्प्राप्त नहीं कर सकता है।"
   },
@@ -599,14 +596,6 @@
   "errorName": {
     "message": "कोड: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "पृष्ठ को पुनः लोड करके पुनः प्रयास करें या support@metamask.io पर सहायता से संपर्क करें",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI"
-  },
-  "errorPagePopupMessage": {
-    "message": "पॉपअप को बंद करके और फिर से खोलने की कोशिश करें या support@metamask.io पर सहायता से संपर्क करें",
-    "description": "Message displayed on generic error page in the popup UI"
   },
   "errorPageTitle": {
     "message": "MetaMask में कोई त्रुटि हुई",
@@ -1212,15 +1201,6 @@
   },
   "proposedApprovalLimit": {
     "message": "प्रस्तावित अनुमोदन सीमा"
-  },
-  "protectYourKeys": {
-    "message": "अपनी कुंजियों को सुरक्षित रखें!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "अपने सीडफ्रेज़ को लेकर सावधान रहें — ऐसी वेबसाइटों की रिपोर्टें आई हैं, जो MetaMask की नकल करने का प्रयास करती हैं। MetaMask कभी भी आपके सीड फ्रेज़ के बारे में नहीं पूछेगा!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "अपने वाक्यांश को सुरक्षित रखें। यदि आपको कुछ गड़बड़ लगे या आप किसी वेबसाइट के बारे में अनिश्चित हैं, तो support@metamask.io पर ईमेल करें"
   },
   "provide": {
     "message": "प्रदान करें"
