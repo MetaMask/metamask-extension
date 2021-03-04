@@ -763,6 +763,12 @@
   "gasPrice": {
     "message": "Gas Price (GWEI)"
   },
+  "gasPriceExcessive": {
+    "message": "Your gas fee is set unnecessarily high. Consider lowering the amount."
+  },
+  "gasPriceExcessiveInput": {
+    "message": "Gas Price Is Excessive"
+  },
   "gasPriceExtremelyLow": {
     "message": "Gas Price Extremely Low"
   },

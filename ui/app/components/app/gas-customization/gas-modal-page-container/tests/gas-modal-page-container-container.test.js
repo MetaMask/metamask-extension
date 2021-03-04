@@ -126,6 +126,7 @@ describe('gas-modal-page-container container', function () {
         conversionRate: 50,
         customModalGasLimitInHex: 'aaaaaaaa',
         customModalGasPriceInHex: 'ffffffff',
+        customPriceIsExcessive: false,
         customGasTotal: 'aaaaaaa955555556',
         customPriceIsSafe: true,
         gasPriceButtonGroupProps: {
