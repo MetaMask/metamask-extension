@@ -2,8 +2,9 @@ import { MethodRegistry } from 'eth-method-registry';
 import abi from 'human-standard-token-abi';
 import { ethers } from 'ethers';
 import log from 'loglevel';
+import { createExplorerLink } from '@metamask/etherscan-link';
+
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
-import { getEtherscanNetworkPrefix } from '../../../lib/etherscan-prefix-for-network';
 import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_GROUP_STATUSES,
@@ -202,8 +203,7 @@ export function getBlockExplorerUrlForTx(networkId, hash, rpcPrefs = {}) {
   if (rpcPrefs.blockExplorerUrl) {
     return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/u, '')}/tx/${hash}`;
   }
-  const prefix = getEtherscanNetworkPrefix(networkId);
-  return `https://${prefix}etherscan.io/tx/${hash}`;
+  return createExplorerLink(hash, networkId);
 }
 
 /**
