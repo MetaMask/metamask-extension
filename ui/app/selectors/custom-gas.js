@@ -64,7 +64,7 @@ export function isCustomPriceSafe(state) {
     return true;
   }
 
-  if (safeLow === null) {
+  if (!safeLow) {
     return false;
   }
 

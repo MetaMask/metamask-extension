@@ -2,6 +2,10 @@
 
 ## Current Develop Branch
 
+## 9.1.1 Wed Mar 03 2021
+- [#10560](https://github.com/MetaMask/metamask-extension/pull/10560): Fix ENS resolution related crashes when switching networks on send screen
+- [#10561](https://github.com/MetaMask/metamask-extension/pull/10561): Fix crash when speeding up an attempt to cancel a transaction on custom networks
+
 ## 9.1.0 Mon Mar 01 2021
 - [#10265](https://github.com/MetaMask/metamask-extension/pull/10265): Update Japanese translations.
 - [#9388](https://github.com/MetaMask/metamask-extension/pull/9388): Update Chinese(Simplified) translations.
