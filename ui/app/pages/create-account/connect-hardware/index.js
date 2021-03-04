@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as actions from '../../../store/actions';
 import {
+  getCurrentChainId,
   getMetaMaskAccounts,
+  getRpcPrefsForCurrentProvider,
   getMetaMaskAccountsConnected,
 } from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
@@ -257,7 +259,8 @@ class ConnectHardwareForm extends Component {
         connectedAccounts={this.props.connectedAccounts}
         selectedAccounts={this.state.selectedAccounts}
         onAccountChange={this.onAccountChange}
-        network={this.props.network}
+        chainId={this.props.chainId}
+        rpcPrefs={this.props.rpcPrefs}
         getPage={this.getPage}
         onUnlockAccounts={this.onUnlockAccounts}
         onForgetDevice={this.onForgetDevice}
@@ -287,31 +290,22 @@ ConnectHardwareForm.propTypes = {
   unlockHardwareWalletAccounts: PropTypes.func,
   setHardwareWalletDefaultHdPath: PropTypes.func,
   history: PropTypes.object,
-  network: PropTypes.string,
+  chainId: PropTypes.string,
+  rpcPrefs: PropTypes.object,
   accounts: PropTypes.object,
   connectedAccounts: PropTypes.array.isRequired,
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  const {
-    metamask: { network },
-  } = state;
-  const accounts = getMetaMaskAccounts(state);
-  const connectedAccounts = getMetaMaskAccountsConnected(state);
-  const {
-    appState: { defaultHdPaths },
-  } = state;
-
-  return {
-    network,
-    accounts,
-    connectedAccounts,
-    defaultHdPaths,
-    mostRecentOverviewPage: getMostRecentOverviewPage(state),
-  };
-};
+const mapStateToProps = (state) => ({
+  chainId: getCurrentChainId(state),
+  rpcPrefs: getRpcPrefsForCurrentProvider(state),
+  accounts: getMetaMaskAccounts(state),
+  connectedAccounts: getMetaMaskAccountsConnected(state),
+  defaultHdPaths: state.appState.defaultHdPaths,
+  mostRecentOverviewPage: getMostRecentOverviewPage(state),
+});
 
 const mapDispatchToProps = (dispatch) => {
   return {
