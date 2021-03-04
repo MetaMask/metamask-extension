@@ -2,7 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import ConfirmTransactionBase from '../confirm-transaction-base';
-import { showModal } from '../../store/actions';
+import {
+  showModal,
+  updateCustomNonce,
+  getNextNonce,
+} from '../../store/actions';
 import { getTokenData } from '../../helpers/utils/transactions.util';
 import {
   calcTokenAmount,
@@ -17,6 +21,9 @@ import {
   getCurrentCurrency,
   getDomainMetadata,
   getNativeCurrency,
+  getUseNonceField,
+  getCustomNonceValue,
+  getNextSuggestedNonce,
 } from '../../selectors';
 import { currentNetworkTxListSelector } from '../../selectors/transactions';
 import Loading from '../../components/ui/loading-screen';
@@ -36,6 +43,9 @@ export default function ConfirmApprove() {
   const currentNetworkTxList = useSelector(currentNetworkTxListSelector);
   const domainMetadata = useSelector(getDomainMetadata);
   const tokens = useSelector(getTokens);
+  const useNonceField = useSelector(getUseNonceField);
+  const nextNonce = useSelector(getNextSuggestedNonce);
+  const customNonceValue = useSelector(getCustomNonceValue);
 
   const transaction =
     currentNetworkTxList.find(
@@ -139,6 +149,13 @@ export default function ConfirmApprove() {
           nativeCurrency={nativeCurrency}
           ethTransactionTotal={ethTransactionTotal}
           fiatTransactionTotal={fiatTransactionTotal}
+          useNonceField={useNonceField}
+          nextNonce={nextNonce}
+          customNonceValue={customNonceValue}
+          updateCustomNonce={(value) => {
+            dispatch(updateCustomNonce(value));
+          }}
+          getNextNonce={() => dispatch(getNextNonce())}
         />
       }
       hideSenderToRecipient

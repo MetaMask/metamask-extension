@@ -292,6 +292,35 @@
       margin-left: 16px;
     }
   }
+
+  &__custom-nonce {
+    width: 100%;
+
+    &__content {
+      margin-bottom: 2px;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    &__label {
+      @include H7;
+
+      font-weight: 500;
+      color: $scorpion;
+      text-transform: uppercase;
+    }
+
+    .custom-nonce-input {
+      input {
+        @include Paragraph;
+
+        width: 90px;
+      }
+    }
+  }
 }
 
 .confirm-approve-content--full {

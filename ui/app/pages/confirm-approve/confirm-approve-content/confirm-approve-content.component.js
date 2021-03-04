@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import Identicon from '../../../components/ui/identicon';
 import { addressSummary } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import TextField from '../../../components/ui/text-field';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -27,6 +28,11 @@ export default class ConfirmApproveContent extends Component {
     nativeCurrency: PropTypes.string,
     fiatTransactionTotal: PropTypes.string,
     ethTransactionTotal: PropTypes.string,
+    useNonceField: PropTypes.bool,
+    customNonceValue: PropTypes.string,
+    updateCustomNonce: PropTypes.func,
+    getNextNonce: PropTypes.func,
+    nextNonce: PropTypes.number,
   };
 
   state = {
@@ -34,6 +40,7 @@ export default class ConfirmApproveContent extends Component {
   };
 
   renderApproveContentCard({
+    showHeader,
     symbol,
     title,
     showEdit,
@@ -49,22 +56,24 @@ export default class ConfirmApproveContent extends Component {
           'confirm-approve-content__card--no-border': noBorder,
         })}
       >
-        <div className="confirm-approve-content__card-header">
-          <div className="confirm-approve-content__card-header__symbol">
-            {symbol}
-          </div>
-          <div className="confirm-approve-content__card-header__title">
-            {title}
-          </div>
-          {showEdit && (
-            <div
-              className="confirm-approve-content__small-blue-text cursor-pointer"
-              onClick={() => onEditClick()}
-            >
-              Edit
+        {showHeader && (
+          <div className="confirm-approve-content__card-header">
+            <div className="confirm-approve-content__card-header__symbol">
+              {symbol}
             </div>
-          )}
-        </div>
+            <div className="confirm-approve-content__card-header__title">
+              {title}
+            </div>
+            {showEdit && (
+              <div
+                className="confirm-approve-content__small-blue-text cursor-pointer"
+                onClick={() => onEditClick()}
+              >
+                Edit
+              </div>
+            )}
+          </div>
+        )}
         <div className="confirm-approve-content__card-content">{content}</div>
         {footer}
       </div>
@@ -147,6 +156,48 @@ export default class ConfirmApproveContent extends Component {
     );
   }
 
+  renderCustomNonceContent() {
+    const { t } = this.context;
+    const {
+      useNonceField,
+      customNonceValue,
+      updateCustomNonce,
+      getNextNonce,
+      nextNonce,
+    } = this.props;
+    return (
+      <>
+        {useNonceField && (
+          <div className="confirm-approve-content__custom-nonce__content">
+            <div className="confirm-approve-content__custom-nonce__label">
+              {t('nonceFieldHeading')}
+            </div>
+            <div className="custom-nonce-input">
+              <TextField
+                type="number"
+                min="0"
+                placeholder={
+                  typeof nextNonce === 'number' ? nextNonce.toString() : null
+                }
+                onChange={({ target: { value } }) => {
+                  if (!value.length || Number(value) < 0) {
+                    updateCustomNonce('');
+                  } else {
+                    updateCustomNonce(String(Math.floor(value)));
+                  }
+                  getNextNonce();
+                }}
+                fullWidth
+                margin="dense"
+                value={customNonceValue || ''}
+              />
+            </div>
+          </div>
+        )}
+      </>
+    );
+  }
+
   render() {
     const { t } = this.context;
     const {
@@ -160,6 +211,7 @@ export default class ConfirmApproveContent extends Component {
       showEditApprovalPermissionModal,
       setCustomAmount,
       tokenBalance,
+      useNonceField,
     } = this.props;
     const { showFullTxDetails } = this.state;
 
@@ -203,6 +255,7 @@ export default class ConfirmApproveContent extends Component {
         </div>
         <div className="confirm-approve-content__card-wrapper">
           {this.renderApproveContentCard({
+            showHeader: true,
             symbol: <i className="fa fa-tag" />,
             title: 'Transaction Fee',
             showEdit: true,
@@ -238,6 +291,7 @@ export default class ConfirmApproveContent extends Component {
           <div className="confirm-approve-content__full-tx-content">
             <div className="confirm-approve-content__permission">
               {this.renderApproveContentCard({
+                showHeader: true,
                 symbol: <img src="/images/user-check.svg" alt="" />,
                 title: 'Permission',
                 content: this.renderPermissionContent(),
@@ -256,9 +310,17 @@ export default class ConfirmApproveContent extends Component {
             </div>
             <div className="confirm-approve-content__data">
               {this.renderApproveContentCard({
+                showHeader: true,
                 symbol: <i className="fa fa-file" />,
                 title: 'Data',
                 content: this.renderDataContent(),
+                noBorder: !useNonceField,
+              })}
+            </div>
+            <div className="confirm-approve-content__custom-nonce">
+              {this.renderApproveContentCard({
+                showHeader: false,
+                content: this.renderCustomNonceContent(),
                 noBorder: true,
               })}
             </div>
