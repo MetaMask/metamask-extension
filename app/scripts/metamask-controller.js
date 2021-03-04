@@ -1293,7 +1293,12 @@ export default class MetamaskController extends EventEmitter {
    *
    * @returns {} keyState
    */
-  async unlockHardwareWalletAccount(index, deviceName, hdPath) {
+  async unlockHardwareWalletAccount(
+    index,
+    deviceName,
+    hdPath,
+    hdPathDescription,
+  ) {
     const keyring = await this.getKeyringForDevice(deviceName, hdPath);
 
     keyring.setAccountToUnlock(index);
@@ -1303,10 +1308,9 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController.setAddresses(newAccounts);
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
-        const pathDescription = hdPath === `m/44'/60'/0'` ? ' (legacy)' : '';
         const label = `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${
           parseInt(index, 10) + 1
-        }${pathDescription}`;
+        } ${hdPathDescription || ''}`.trim();
         // Set the account label to Trezor 1 /  Ledger 1, etc
         this.preferencesController.setAccountLabel(address, label);
         // Select the account

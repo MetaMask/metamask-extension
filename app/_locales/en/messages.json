@@ -817,6 +817,10 @@
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
+  "hardwareWalletLegacyDescription": {
+    "message": "(legacy)",
+    "description": "Text representing the MEW path"
+  },
   "hardwareWallets": {
     "message": "Connect a hardware wallet"
   },

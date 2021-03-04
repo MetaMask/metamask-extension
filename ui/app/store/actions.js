@@ -422,12 +422,18 @@ export function connectHardware(deviceName, page, hdPath) {
   };
 }
 
-export function unlockHardwareWalletAccounts(indexes, deviceName, hdPath) {
+export function unlockHardwareWalletAccounts(
+  indexes,
+  deviceName,
+  hdPath,
+  hdPathDescription,
+) {
   log.debug(
     `background.unlockHardwareWalletAccount`,
     indexes,
     deviceName,
     hdPath,
+    hdPathDescription,
   );
   return async (dispatch) => {
     dispatch(showLoadingIndication());
@@ -438,6 +444,7 @@ export function unlockHardwareWalletAccounts(indexes, deviceName, hdPath) {
           index,
           deviceName,
           hdPath,
+          hdPathDescription,
         );
       } catch (e) {
         log.error(e);

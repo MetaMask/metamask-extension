@@ -13,6 +13,13 @@ import AccountList from './account-list';
 
 const U2F_ERROR = 'U2F';
 
+const LEDGER_LIVE_PATH = `m/44'/60'/0'/0/0`;
+const MEW_PATH = `m/44'/60'/0'`;
+const HD_PATHS = [
+  { name: 'Ledger Live', value: LEDGER_LIVE_PATH },
+  { name: 'Legacy (MEW / MyCrypto)', value: MEW_PATH },
+];
+
 class ConnectHardwareForm extends Component {
   state = {
     error: null,
@@ -21,7 +28,6 @@ class ConnectHardwareForm extends Component {
     browserSupported: true,
     unlocked: false,
     device: null,
-    path: null,
   };
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -44,7 +50,7 @@ class ConnectHardwareForm extends Component {
       const path = this.props.defaultHdPaths[device];
       const unlocked = await this.props.checkHardwareStatus(device, path);
       if (unlocked) {
-        this.setState({ unlocked: true, path });
+        this.setState({ unlocked: true });
         this.getPage(device, 0, path);
       }
     }
@@ -67,7 +73,6 @@ class ConnectHardwareForm extends Component {
     });
     this.setState({
       selectedAccounts: [],
-      path,
     });
     this.getPage(this.state.device, 0, path);
   };
@@ -148,7 +153,6 @@ class ConnectHardwareForm extends Component {
           selectedAccounts: [],
           accounts: [],
           unlocked: false,
-          path: null,
         });
       })
       .catch((e) => {
@@ -156,19 +160,27 @@ class ConnectHardwareForm extends Component {
       });
   };
 
-  onUnlockAccounts = (device) => {
+  onUnlockAccounts = (device, path) => {
     const {
       history,
       mostRecentOverviewPage,
       unlockHardwareWalletAccounts,
     } = this.props;
-    if (this.state.selectedAccounts.length === 0) {
+    const { selectedAccounts } = this.state;
+
+    if (selectedAccounts.length === 0) {
       this.setState({ error: this.context.t('accountSelectionRequired') });
     }
+
+    const description =
+      MEW_PATH === path
+        ? this.context.t('hardwareWalletLegacyDescription')
+        : '';
     return unlockHardwareWalletAccounts(
-      this.state.selectedAccounts,
+      selectedAccounts,
       device,
-      this.state.path || null,
+      path || null,
+      description,
     )
       .then((_) => {
         this.context.metricsEvent({
@@ -251,6 +263,7 @@ class ConnectHardwareForm extends Component {
         onForgetDevice={this.onForgetDevice}
         onCancel={this.onCancel}
         onAccountRestriction={this.onAccountRestriction}
+        hdPaths={HD_PATHS}
       />
     );
   }
@@ -314,9 +327,19 @@ const mapDispatchToProps = (dispatch) => {
     forgetDevice: (deviceName) => {
       return dispatch(actions.forgetDevice(deviceName));
     },
-    unlockHardwareWalletAccounts: (indexes, deviceName, hdPath) => {
+    unlockHardwareWalletAccounts: (
+      indexes,
+      deviceName,
+      hdPath,
+      hdPathDescription,
+    ) => {
       return dispatch(
-        actions.unlockHardwareWalletAccounts(indexes, deviceName, hdPath),
+        actions.unlockHardwareWalletAccounts(
+          indexes,
+          deviceName,
+          hdPath,
+          hdPathDescription,
+        ),
       );
     },
     showAlert: (msg) => dispatch(actions.showAlert(msg)),

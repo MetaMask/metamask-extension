@@ -6,22 +6,6 @@ import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
 
 class AccountList extends Component {
-  getHdPaths() {
-    const ledgerLiveKey = `m/44'/60'/0'/0/0`;
-    const mewKey = `m/44'/60'/0'`;
-
-    return [
-      {
-        name: `Ledger Live`,
-        value: ledgerLiveKey,
-      },
-      {
-        name: `Legacy (MEW / MyCrypto)`,
-        value: mewKey,
-      },
-    ];
-  }
-
   goToNextPage = () => {
     // If we have < 5 accounts, it's restricted by BIP-44
     if (this.props.accounts.length === 5) {
@@ -36,8 +20,7 @@ class AccountList extends Component {
   };
 
   renderHdPathSelector() {
-    const { onPathChange, selectedPath } = this.props;
-    const options = this.getHdPaths();
+    const { onPathChange, selectedPath, hdPaths } = this.props;
 
     return (
       <div>
@@ -48,7 +31,7 @@ class AccountList extends Component {
         <div className="hw-connect__hdPath">
           <Dropdown
             className="hw-connect__hdPath__select"
-            options={options}
+            options={hdPaths}
             selectedOption={selectedPath}
             onChange={(value) => {
               onPathChange(value);
@@ -184,7 +167,11 @@ class AccountList extends Component {
           large
           className="new-external-account-form__button unlock"
           disabled={disabled}
-          onClick={this.props.onUnlockAccounts.bind(this, this.props.device)}
+          onClick={this.props.onUnlockAccounts.bind(
+            this,
+            this.props.device,
+            this.props.selectedPath,
+          )}
         >
           {this.context.t('unlock')}
         </Button>
@@ -229,6 +216,7 @@ AccountList.propTypes = {
   onUnlockAccounts: PropTypes.func,
   onCancel: PropTypes.func,
   onAccountRestriction: PropTypes.func,
+  hdPaths: PropTypes.array.isRequired,
 };
 
 AccountList.contextTypes = {
