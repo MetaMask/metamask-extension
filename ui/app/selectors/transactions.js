@@ -1,13 +1,21 @@
 import { createSelector } from 'reselect'
+import { sortBy } from 'lodash'
 import {
   SUBMITTED_STATUS,
   CONFIRMED_STATUS,
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
+  UNAPPROVED_STATUS,
+  INCOMING_TRANSACTION,
+  CANCELLED_STATUS,
+  FAILED_STATUS,
+  DROPPED_STATUS,
+  REJECTED_STATUS,
 } from '../helpers/constants/transactions'
 import {
   TRANSACTION_TYPE_CANCEL,
   TRANSACTION_TYPE_RETRY,
+  TRANSACTION_TYPE_STANDARD,
 } from '../../../app/scripts/controllers/transactions/enums'
 import { hexToDecimal } from '../helpers/utils/conversions.util'
 import txHelper from '../../lib/tx-helper'
@@ -194,81 +202,199 @@ const mergeNonNonceTransactionGroups = (orderedTransactionGroups, nonNonceTransa
 }
 
 /**
- * @name nonceSortedTransactionsSelector
- * @description Returns an array of transactionGroups sorted by nonce in ascending order.
- * @returns {transactionGroup[]}
+ * WIP
  */
-export const nonceSortedTransactionsSelector = createSelector(
+export const activitySelector = createSelector(
   transactionsSelector,
   (transactions = []) => {
-    const unapprovedTransactionGroups = []
-    const incomingTransactionGroups = []
-    const orderedNonces = []
-    const nonceToTransactionsMap = {}
-
+    console.log('activitySelector-> transactions', transactions)
+    // Use a Map to store groups by nonce in decimal format. This helps with ordering
+    const idMap = new Map()
+    // Rather than sorting the Map after we've grouped, keep an array of ordered nonces
+    // that we update as we iterate through transactions
     transactions.forEach((transaction) => {
-      const { txParams: { nonce } = {}, status, type, time: txTime, transactionCategory } = transaction
-
-      if (typeof nonce === 'undefined' || transactionCategory === 'incoming') {
-        const transactionGroup = {
-          transactions: [transaction],
-          initialTransaction: transaction,
-          primaryTransaction: transaction,
-          hasRetried: false,
-          hasCancelled: false,
-        }
-
-        if (transactionCategory === 'incoming') {
-          incomingTransactionGroups.push(transactionGroup)
-        } else {
-          insertTransactionGroupByTime(unapprovedTransactionGroups, transactionGroup)
-        }
-      } else if (nonce in nonceToTransactionsMap) {
-        const nonceProps = nonceToTransactionsMap[nonce]
-        insertTransactionByTime(nonceProps.transactions, transaction)
-
-        if (status in PRIORITY_STATUS_HASH) {
-          const { primaryTransaction: { time: primaryTxTime = 0 } = {} } = nonceProps
-
-          if (status === CONFIRMED_STATUS || txTime > primaryTxTime) {
-            nonceProps.primaryTransaction = transaction
-          }
-        }
-
-        const { initialTransaction: { time: initialTxTime = 0 } = {} } = nonceProps
-
-        // Used to display the transaction action, since we don't want to overwrite the action if
-        // it was replaced with a cancel attempt transaction.
-        if (txTime < initialTxTime) {
-          nonceProps.initialTransaction = transaction
-        }
-
-        if (type === TRANSACTION_TYPE_RETRY) {
-          nonceProps.hasRetried = true
-        }
-
-        if (type === TRANSACTION_TYPE_CANCEL) {
-          nonceProps.hasCancelled = true
-        }
-      } else {
-        nonceToTransactionsMap[nonce] = {
-          nonce,
-          transactions: [transaction],
-          initialTransaction: transaction,
-          primaryTransaction: transaction,
-          hasRetried: transaction.type === TRANSACTION_TYPE_RETRY,
-          hasCancelled: transaction.type === TRANSACTION_TYPE_CANCEL,
-        }
-
-        insertOrderedNonce(orderedNonces, nonce)
+      console.log(transaction)
+      const { intentId } = transaction
+      const hasExistingGroup = idMap.has(intentId)
+      const group = hasExistingGroup ? idMap.get(intentId) : {
+        intentId,
+        transactions: [],
+        hasRetried: false,
+        hasCancelled: false,
+        status: undefined,
+        category: undefined,
+        type: undefined,
+        oldestTransaction: undefined,
+        newestTransaction: undefined,
+        pendingTransactions: [],
+        confirmedTransactions: [],
+        failedTransactions: [],
       }
+
+      // Create a copy of the array to avoid mutating the original array
+      const transactionsClone = group.transactions.slice()
+
+      // First step is to figure out in which position the new transaction should be inserted into the array
+      let insertionIndex = 0
+
+      if (group.transactions.length > 0) {
+        // Find the first transaction in the array that occurred *after* our transaction
+        insertionIndex = group.transactions.findIndex((tx) => transaction.time < tx.time)
+        // If we don't find a matching index, we need to add to the end of the array
+        if (insertionIndex === -1) {
+          insertionIndex = group.transactions.length
+        }
+      }
+
+      transactionsClone.splice(insertionIndex, 0, transaction)
+
+      if (transaction.status in PENDING_STATUS_HASH) {
+        group.pendingTransactions.push(transaction)
+      } else if (transaction.status === CONFIRMED_STATUS) {
+        group.confirmedTransactions.push(transaction)
+      } else if (
+        transaction.status === FAILED_STATUS ||
+        transaction.status === DROPPED_STATUS ||
+        transaction.status === REJECTED_STATUS ||
+        transaction?.txReceipt?.status === '0x0'
+      ) {
+        group.failedTransactions.push(transaction)
+      }
+
+      // Cancel transactions are simply new transactions with higher gas and zero send amount.
+      // In our UI we likely do not want to show this transaction as an individual entry, we'd
+      // want to show the most relevant original transaction, but with a UI treatment to indicate
+      // the cancellation.
+      const nonCancelledTxs = transactionsClone.filter((tx) => tx.type !== TRANSACTION_TYPE_CANCEL)
+
+      // Newest transaction should point to the latest retry or standard type transaction.
+      const newestTransaction = nonCancelledTxs[nonCancelledTxs.length - 1] // Beneficial in the case of speed ups and retries
+
+      // Oldest transaction should point to the original standard type transaction
+      const oldestTransaction = transactionsClone.find((tx) => tx.type !== TRANSACTION_TYPE_CANCEL && tx.type !== TRANSACTION_TYPE_RETRY) // Should be the original user intention
+
+      let { hasRetried } = group
+      let { hasCancelled } = group
+
+      if (transaction.type === TRANSACTION_TYPE_RETRY) {
+        hasRetried = true
+      } else if (transaction.type === TRANSACTION_TYPE_CANCEL) {
+        hasCancelled = true
+      }
+
+      let status = SUBMITTED_STATUS
+
+      if (group.pendingTransactions.length === 0) {
+        if (group.confirmedTransactions.length > 0) {
+          if (group.confirmedTransactions.some((tx) => tx.type === TRANSACTION_TYPE_CANCEL)) {
+            status = CANCELLED_STATUS
+          } else {
+            status = CONFIRMED_STATUS
+          }
+        } else if (group.failedTransactions.length > 0) {
+          status = FAILED_STATUS
+        }
+      }
+
+      idMap.set(intentId, {
+        intentId,
+        newestTransaction,
+        oldestTransaction,
+        hasCancelled,
+        hasRetried,
+        transactions: transactionsClone,
+        type: oldestTransaction?.type ?? TRANSACTION_TYPE_STANDARD,
+        status,
+        pendingTransactions: group.pendingTransactions,
+        failedTransactions: group.failedTransactions,
+        confirmedTransactions: group.confirmedTransactions,
+        category: oldestTransaction?.transactionCategory ?? transaction.transactionCategory,
+      })
     })
 
-    const orderedTransactionGroups = orderedNonces.map((nonce) => nonceToTransactionsMap[nonce])
-    mergeNonNonceTransactionGroups(orderedTransactionGroups, incomingTransactionGroups)
-    return unapprovedTransactionGroups.concat(orderedTransactionGroups)
+    console.log(idMap.values())
+    const sorted = sortBy([...idMap.values()], (activity) => activity.oldestTransaction.time)
+    console.log('sorted', sorted)
+    return sorted.map((i) => ({ ...i, primaryTransaction: i.newestTransaction, initialTransaction: i.oldestTransaction }))
   },
 )
+
+// /**
+//  * @name nonceSortedTransactionsSelector
+//  * @description Returns an array of transactionGroups sorted by nonce in ascending order.
+//  * @returns {transactionGroup[]}
+//  */
+// export const nonceSortedTransactionsSelector = createSelector(
+//   transactionsSelector,
+//   (transactions = []) => {
+//     const unapprovedTransactionGroups = []
+//     const incomingTransactionGroups = []
+//     const orderedNonces = []
+//     const nonceToTransactionsMap = {}
+
+//     transactions.forEach((transaction) => {
+//       const { txParams: { nonce } = {}, status, type, time: txTime, transactionCategory } = transaction
+
+//       if (typeof nonce === 'undefined' || transactionCategory === 'incoming') {
+//         const transactionGroup = {
+//           transactions: [transaction],
+//           initialTransaction: transaction,
+//           primaryTransaction: transaction,
+//           hasRetried: false,
+//           hasCancelled: false,
+//         }
+
+//         if (transactionCategory === 'incoming') {
+//           incomingTransactionGroups.push(transactionGroup)
+//         } else {
+//           insertTransactionGroupByTime(unapprovedTransactionGroups, transactionGroup)
+//         }
+//       } else if (nonce in nonceToTransactionsMap) {
+//         const nonceProps = nonceToTransactionsMap[nonce]
+//         insertTransactionByTime(nonceProps.transactions, transaction)
+
+//         if (status in PRIORITY_STATUS_HASH) {
+//           const { primaryTransaction: { time: primaryTxTime = 0 } = {} } = nonceProps
+
+//           if (status === CONFIRMED_STATUS || txTime > primaryTxTime) {
+//             nonceProps.primaryTransaction = transaction
+//           }
+//         }
+
+//         const { initialTransaction: { time: initialTxTime = 0 } = {} } = nonceProps
+
+//         // Used to display the transaction action, since we don't want to overwrite the action if
+//         // it was replaced with a cancel attempt transaction.
+//         if (txTime < initialTxTime) {
+//           nonceProps.initialTransaction = transaction
+//         }
+
+//         if (type === TRANSACTION_TYPE_RETRY) {
+//           nonceProps.hasRetried = true
+//         }
+
+//         if (type === TRANSACTION_TYPE_CANCEL) {
+//           nonceProps.hasCancelled = true
+//         }
+//       } else {
+//         nonceToTransactionsMap[nonce] = {
+//           nonce,
+//           transactions: [transaction],
+//           initialTransaction: transaction,
+//           primaryTransaction: transaction,
+//           hasRetried: transaction.type === TRANSACTION_TYPE_RETRY,
+//           hasCancelled: transaction.type === TRANSACTION_TYPE_CANCEL,
+//         }
+
+//         insertOrderedNonce(orderedNonces, nonce)
+//       }
+//     })
+
+//     const orderedTransactionGroups = orderedNonces.map((nonce) => nonceToTransactionsMap[nonce])
+//     mergeNonNonceTransactionGroups(orderedTransactionGroups, incomingTransactionGroups)
+//     return unapprovedTransactionGroups.concat(orderedTransactionGroups)
+//   },
+// )
 
 /**
  * @name nonceSortedPendingTransactionsSelector
@@ -276,10 +402,10 @@ export const nonceSortedTransactionsSelector = createSelector(
  * nonce in descending order.
  * @returns {transactionGroup[]}
  */
-export const nonceSortedPendingTransactionsSelector = createSelector(
-  nonceSortedTransactionsSelector,
-  (transactions = []) => (
-    transactions.filter(({ primaryTransaction }) => primaryTransaction.status in PENDING_STATUS_HASH)
+export const pendingActivitySelector = createSelector(
+  activitySelector,
+  (activity = []) => (
+    activity.filter(({ status }) => status in PENDING_STATUS_HASH)
   ),
 )
 
@@ -289,11 +415,11 @@ export const nonceSortedPendingTransactionsSelector = createSelector(
  * nonce in descending order.
  * @returns {transactionGroup[]}
  */
-export const nonceSortedCompletedTransactionsSelector = createSelector(
-  nonceSortedTransactionsSelector,
-  (transactions = []) => (
-    transactions
-      .filter(({ primaryTransaction }) => !(primaryTransaction.status in PENDING_STATUS_HASH))
+export const completedActivitySelector = createSelector(
+  activitySelector,
+  (activity = []) => (
+    activity
+      .filter(({ status }) => !(status in PENDING_STATUS_HASH))
       .reverse()
   ),
 )

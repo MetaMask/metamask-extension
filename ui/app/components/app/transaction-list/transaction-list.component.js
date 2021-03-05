@@ -2,8 +2,7 @@ import React, { useMemo, useEffect, useRef, useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  nonceSortedCompletedTransactionsSelector,
-  nonceSortedPendingTransactionsSelector,
+  completedActivitySelector, pendingActivitySelector,
 } from '../../../selectors/transactions'
 import {
   getFeatureFlags,
@@ -27,10 +26,8 @@ const getTransactionGroupRecipientAddressFilter = (recipientAddress) => {
 }
 
 const tokenTransactionFilter = ({
-  initialTransaction: {
+  oldestTransaction: {
     transactionCategory,
-  },
-  primaryTransaction: {
     destinationTokenSymbol,
     sourceTokenSymbol,
   },
@@ -57,8 +54,9 @@ export default function TransactionList ({ hideTokenTransactions, tokenAddress }
   const t = useI18nContext()
 
   const dispatch = useDispatch()
-  const unfilteredPendingTransactions = useSelector(nonceSortedPendingTransactionsSelector)
-  const unfilteredCompletedTransactions = useSelector(nonceSortedCompletedTransactionsSelector)
+  const unfilteredPendingTransactions = useSelector(pendingActivitySelector)
+  console.log('TransactionList -> unfilteredPendingTransactions', unfilteredPendingTransactions)
+  const unfilteredCompletedTransactions = useSelector(completedActivitySelector)
   const { transactionTime: transactionTimeFeatureActive } = useSelector(getFeatureFlags)
 
   const pendingTransactions = useMemo(

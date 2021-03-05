@@ -2,8 +2,10 @@ import EventEmitter from 'safe-event-emitter'
 import ObservableStore from 'obs-store'
 import log from 'loglevel'
 import createId from '../../lib/random-id'
+import { generateMetaMaskTxId } from '../../../../shared/helpers/transaction'
 import { generateHistoryEntry, replayHistory, snapshotFromTxMeta } from './lib/tx-state-history-helpers'
 import { getFinalStates, normalizeTxParams } from './lib/util'
+import { TRANSACTION_TYPE_STANDARD } from './enums'
 
 /**
   TransactionStateManager is responsible for the state of a transaction and
@@ -47,8 +49,10 @@ export default class TransactionStateManager extends EventEmitter {
     if (netId === 'loading') {
       throw new Error('MetaMask is having trouble connecting to the network')
     }
+    const txId = createId()
     return {
-      id: createId(),
+      id: txId,
+      intentId: opts.intentId || generateMetaMaskTxId(opts.txParams, txId),
       time: (new Date()).getTime(),
       status: 'unapproved',
       metamaskNetworkId: netId,
@@ -234,6 +238,10 @@ export default class TransactionStateManager extends EventEmitter {
       txMeta.history.push(entry)
     }
 
+    if (txMeta.type === TRANSACTION_TYPE_STANDARD && entry.op === 'add' && entry.path === '/txParams/nonce') {
+      txMeta.intentId = generateMetaMaskTxId(txMeta.txParams, txMeta.id)
+    }
+
     // commit txMeta to state
     const txId = txMeta.id
     const txList = this.getFullTxList()
@@ -379,6 +387,7 @@ export default class TransactionStateManager extends EventEmitter {
     @param {number} txId - the txMeta Id
   */
   setTxStatusApproved (txId) {
+    console.log('setting approved', txId)
     this._setTxStatus(txId, 'approved')
   }
 

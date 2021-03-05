@@ -345,7 +345,7 @@ export default class TransactionController extends EventEmitter {
    */
   async createCancelTransaction (originalTxId, customGasPrice) {
     const originalTxMeta = this.txStateManager.getTx(originalTxId)
-    const { txParams } = originalTxMeta
+    const { txParams, intentId } = originalTxMeta
     const { gasPrice: lastGasPrice, from, nonce } = txParams
 
     const newGasPrice = customGasPrice || bnToHex(BnMultiplyByFraction(hexToBn(lastGasPrice), 11, 10))
@@ -362,6 +362,7 @@ export default class TransactionController extends EventEmitter {
       loadingDefaults: false,
       status: TRANSACTION_STATUS_APPROVED,
       type: TRANSACTION_TYPE_CANCEL,
+      intentId,
     })
 
     if (originalTxMeta.transactionCategory === SWAP) {
@@ -386,7 +387,7 @@ export default class TransactionController extends EventEmitter {
    */
   async createSpeedUpTransaction (originalTxId, customGasPrice, customGasLimit) {
     const originalTxMeta = this.txStateManager.getTx(originalTxId)
-    const { txParams } = originalTxMeta
+    const { txParams, intentId } = originalTxMeta
     const { gasPrice: lastGasPrice } = txParams
 
     const newGasPrice = customGasPrice || bnToHex(BnMultiplyByFraction(hexToBn(lastGasPrice), 11, 10))
@@ -400,6 +401,7 @@ export default class TransactionController extends EventEmitter {
       loadingDefaults: false,
       status: TRANSACTION_STATUS_APPROVED,
       type: TRANSACTION_TYPE_RETRY,
+      intentId,
     })
 
     if (customGasLimit) {

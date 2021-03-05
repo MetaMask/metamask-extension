@@ -44,7 +44,7 @@ describe('MetaMask', function () {
 
   after(async function () {
     await ganacheServer.quit()
-    await driver.quit()
+    // await driver.quit()
   })
 
   describe('Going through the first time flow', function () {

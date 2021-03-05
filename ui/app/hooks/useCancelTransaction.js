@@ -16,9 +16,9 @@ import { getConversionRate, getSelectedAccount } from '../selectors'
  * @return {[boolean, Function]}
  */
 export function useCancelTransaction (transactionGroup) {
-  const { primaryTransaction, initialTransaction } = transactionGroup
-  const gasPrice = primaryTransaction.txParams?.gasPrice
-  const { id } = initialTransaction
+  const { newestTransaction, oldestTransaction } = transactionGroup
+  const gasPrice = newestTransaction.txParams?.gasPrice
+  const { id } = oldestTransaction
   const dispatch = useDispatch()
   const selectedAccount = useSelector(getSelectedAccount)
   const conversionRate = useSelector(getConversionRate)
@@ -28,11 +28,11 @@ export function useCancelTransaction (transactionGroup) {
     return dispatch(showModal({ name: 'CANCEL_TRANSACTION', transactionId: id, originalGasPrice: gasPrice }))
   }, [dispatch, id, gasPrice])
 
-  const hasEnoughCancelGas = primaryTransaction.txParams && isBalanceSufficient({
+  const hasEnoughCancelGas = newestTransaction.txParams && isBalanceSufficient({
     amount: '0x0',
     gasTotal: getHexGasTotal({
       gasPrice: increaseLastGasPrice(gasPrice),
-      gasLimit: primaryTransaction.txParams.gas,
+      gasLimit: newestTransaction.txParams.gas,
     }),
     balance: selectedAccount.balance,
     conversionRate,

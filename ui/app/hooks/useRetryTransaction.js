@@ -17,9 +17,9 @@ import { useMetricEvent } from './useMetricEvent'
  * @return {Function}
  */
 export function useRetryTransaction (transactionGroup) {
-  const { primaryTransaction, initialTransaction } = transactionGroup
+  const { newestTransaction, oldestTransaction } = transactionGroup
   // Signature requests do not have a txParams, but this hook is called indiscriminately
-  const gasPrice = primaryTransaction.txParams?.gasPrice
+  const gasPrice = newestTransaction.txParams?.gasPrice
   const trackMetricsEvent = useMetricEvent(({
     eventOpts: {
       category: 'Navigation',
@@ -35,7 +35,7 @@ export function useRetryTransaction (transactionGroup) {
     trackMetricsEvent()
     const basicEstimates = await dispatch(fetchBasicGasAndTimeEstimates)
     await dispatch(fetchGasEstimates(basicEstimates.blockTime))
-    const transaction = initialTransaction
+    const transaction = oldestTransaction
     const increasedGasPrice = increaseLastGasPrice(gasPrice)
     dispatch(setCustomGasPriceForRetry(increasedGasPrice || transaction.txParams.gasPrice))
     dispatch(setCustomGasLimit(transaction.txParams.gas))
@@ -44,7 +44,7 @@ export function useRetryTransaction (transactionGroup) {
       type: 'customize-gas',
       props: { transaction },
     }))
-  }, [dispatch, trackMetricsEvent, initialTransaction, gasPrice])
+  }, [dispatch, trackMetricsEvent, oldestTransaction, gasPrice])
 
   return retryTransaction
 }

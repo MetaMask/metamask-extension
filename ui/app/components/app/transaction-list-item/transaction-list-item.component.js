@@ -32,7 +32,7 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
   const { hasCancelled } = transactionGroup
   const [showDetails, setShowDetails] = useState(false)
 
-  const { initialTransaction: { id }, primaryTransaction: { err, submittedTime, gasPrice } } = transactionGroup
+  const { oldestTransaction: { id }, newestTransaction: { err, gasPrice, status, submittedTime } } = transactionGroup
   const [cancelEnabled, cancelTransaction] = useCancelTransaction(transactionGroup)
   const retryTransaction = useRetryTransaction(transactionGroup)
   const shouldShowSpeedUp = useShouldShowSpeedUp(transactionGroup, isEarliestNonce)

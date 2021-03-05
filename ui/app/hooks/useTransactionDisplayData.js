@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux'
 import { getKnownMethodData } from '../selectors/selectors'
-import { getStatusKey } from '../helpers/utils/transactions.util'
 import { camelCaseToCapitalize } from '../helpers/utils/common.util'
 import { PRIMARY, SECONDARY } from '../helpers/constants/common'
 import { getTokenAddressParam } from '../helpers/utils/token-util'
@@ -63,21 +62,21 @@ export function useTransactionDisplayData (transactionGroup) {
   const currentAsset = useCurrentAsset()
   const knownTokens = useSelector(getTokens)
   const t = useI18nContext()
-  const { initialTransaction, primaryTransaction } = transactionGroup
-  // initialTransaction contains the data we need to derive the primary purpose of this transaction group
-  const { transactionCategory } = initialTransaction
+  const { oldestTransaction } = transactionGroup
+  // oldestTransaction contains the data we need to derive the primary purpose of this transaction group
+  const { transactionCategory } = oldestTransaction
 
-  const { from: senderAddress, to } = initialTransaction.txParams || {}
+  const { from: senderAddress, to } = oldestTransaction.txParams || {}
 
   // for smart contract interactions, methodData can be used to derive the name of the action being taken
-  const methodData = useSelector((state) => getKnownMethodData(state, initialTransaction?.txParams?.data)) || {}
+  const methodData = useSelector((state) => getKnownMethodData(state, oldestTransaction?.txParams?.data)) || {}
 
-  const status = getStatusKey(primaryTransaction)
-  const isPending = status in PENDING_STATUS_HASH
+  const displayedStatusKey = getStatusKey(primaryTransaction)
+  const isPending = displayedStatusKey in PENDING_STATUS_HASH
 
-  const primaryValue = primaryTransaction.txParams?.value
+  const primaryValue = oldestTransaction.txParams?.value
   let prefix = '-'
-  const date = formatDateWithYearContext(initialTransaction.time || 0)
+  const date = formatDateWithYearContext(oldestTransaction.time || 0)
   let subtitle
   let subtitleContainsOrigin = false
   let recipientAddress = to
@@ -93,11 +92,11 @@ export function useTransactionDisplayData (transactionGroup) {
   // false for non-token transactions. This additional argument forces the
   // hook to return null
   const token = isTokenCategory && knownTokens.find(({ address }) => address === recipientAddress)
-  const tokenData = useTokenData(initialTransaction?.txParams?.data, isTokenCategory)
-  const tokenDisplayValue = useTokenDisplayValue(initialTransaction?.txParams?.data, token, isTokenCategory)
+  const tokenData = useTokenData(oldestTransaction?.txParams?.data, isTokenCategory)
+  const tokenDisplayValue = useTokenDisplayValue(oldestTransaction?.txParams?.data, token, isTokenCategory)
   const tokenFiatAmount = useTokenFiatAmount(token?.address, tokenDisplayValue, token?.symbol)
 
-  const origin = stripHttpSchemes(initialTransaction.origin || initialTransaction.msgParams?.origin || '')
+  const origin = stripHttpSchemes(oldestTransaction.origin || oldestTransaction.msgParams?.origin || '')
 
   // used to append to the primary display value. initialized to either token.symbol or undefined
   // but can later be modified if dealing with a swap
@@ -133,24 +132,24 @@ export function useTransactionDisplayData (transactionGroup) {
   } else if (transactionCategory === SWAP) {
     category = TRANSACTION_CATEGORY_SWAP
     title = t('swapTokenToToken', [
-      primaryTransaction.sourceTokenSymbol,
-      primaryTransaction.destinationTokenSymbol,
+      oldestTransaction.sourceTokenSymbol,
+      oldestTransaction.destinationTokenSymbol,
     ])
     subtitle = origin
     subtitleContainsOrigin = true
     primarySuffix = isViewingReceivedTokenFromSwap
       ? currentAsset.symbol
-      : primaryTransaction.sourceTokenSymbol
+      : oldestTransaction.sourceTokenSymbol
     primaryDisplayValue = swapTokenValue
     secondaryDisplayValue = swapTokenFiatAmount
     prefix = isViewingReceivedTokenFromSwap ? '+' : '-'
 
   } else if (transactionCategory === SWAP_APPROVAL) {
     category = TRANSACTION_CATEGORY_APPROVAL
-    title = t('swapApproval', [primaryTransaction.sourceTokenSymbol])
+    title = t('swapApproval', [oldestTransaction.sourceTokenSymbol])
     subtitle = origin
     subtitleContainsOrigin = true
-    primarySuffix = primaryTransaction.sourceTokenSymbol
+    primarySuffix = oldestTransaction.sourceTokenSymbol
   } else if (transactionCategory === TOKEN_METHOD_APPROVE) {
     category = TRANSACTION_CATEGORY_APPROVAL
     title = t('approveSpendLimit', [token?.symbol || t('token')])

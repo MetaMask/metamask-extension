@@ -4,6 +4,7 @@ import BN from 'bn.js'
 import createId from '../lib/random-id'
 import { bnToHex } from '../lib/util'
 import fetchWithTimeout from '../lib/fetch-with-timeout'
+import { generateMetaMaskTxId } from '../../../shared/helpers/transaction'
 
 import {
   ROPSTEN,
@@ -237,20 +238,22 @@ export default class IncomingTransactionsController {
   _normalizeTxFromEtherscan (txMeta, currentNetworkID) {
     const time = parseInt(txMeta.timeStamp, 10) * 1000
     const status = txMeta.isError === '0' ? 'confirmed' : 'failed'
+    const txParams = {
+      from: txMeta.from,
+      gas: bnToHex(new BN(txMeta.gas)),
+      gasPrice: bnToHex(new BN(txMeta.gasPrice)),
+      nonce: bnToHex(new BN(txMeta.nonce)),
+      to: txMeta.to,
+      value: bnToHex(new BN(txMeta.value)),
+    }
     return {
       blockNumber: txMeta.blockNumber,
       id: createId(),
+      intentId: generateMetaMaskTxId(txParams),
       metamaskNetworkId: currentNetworkID,
       status,
       time,
-      txParams: {
-        from: txMeta.from,
-        gas: bnToHex(new BN(txMeta.gas)),
-        gasPrice: bnToHex(new BN(txMeta.gasPrice)),
-        nonce: bnToHex(new BN(txMeta.nonce)),
-        to: txMeta.to,
-        value: bnToHex(new BN(txMeta.value)),
-      },
+      txParams,
       hash: txMeta.hash,
       transactionCategory: 'incoming',
     }

@@ -48,8 +48,8 @@ export default class TransactionListItemDetails extends PureComponent {
   }
 
   handleEtherscanClick = () => {
-    const { transactionGroup: { primaryTransaction }, rpcPrefs } = this.props
-    const { hash, metamaskNetworkId } = primaryTransaction
+    const { transactionGroup: { newestTransaction }, rpcPrefs } = this.props
+    const { hash, metamaskNetworkId } = newestTransaction
 
     this.context.metricsEvent({
       eventOpts: {
@@ -76,7 +76,7 @@ export default class TransactionListItemDetails extends PureComponent {
 
   handleCopyTxId = () => {
     const { transactionGroup } = this.props
-    const { primaryTransaction: transaction } = transactionGroup
+    const { newestTransaction: transaction } = transactionGroup
     const { hash } = transaction
 
     this.context.metricsEvent({
@@ -155,7 +155,7 @@ export default class TransactionListItemDetails extends PureComponent {
       onClose,
       recipientNickname,
     } = this.props
-    const { primaryTransaction: transaction } = transactionGroup
+    const { newestTransaction: transaction } = transactionGroup
     const { hash } = transaction
 
     return (

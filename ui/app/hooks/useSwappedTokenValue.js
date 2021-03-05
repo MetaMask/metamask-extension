@@ -12,7 +12,7 @@ import { useTokenFiatAmount } from './useTokenFiatAmount'
  */
 
 /**
- * A SWAP transaction group's primaryTransaction contains details of the swap,
+ * A SWAP transaction group's newestTransaction contains details of the swap,
  * including the source (from) and destination (to) token type (ETH, DAI, etc..)
  * When viewing a non ETH asset page, we need to determine if that asset is the
  * token that was received (destination) from the swap. In that circumstance we
@@ -24,26 +24,26 @@ import { useTokenFiatAmount } from './useTokenFiatAmount'
  */
 export function useSwappedTokenValue (transactionGroup, currentAsset) {
   const { symbol, decimals, address } = currentAsset
-  const { primaryTransaction, initialTransaction } = transactionGroup
-  const { transactionCategory } = initialTransaction
-  const { from: senderAddress } = initialTransaction.txParams || {}
+  const { newestTransaction, oldestTransaction } = transactionGroup
+  const { transactionCategory } = oldestTransaction
+  const { from: senderAddress } = oldestTransaction.txParams || {}
 
   const isViewingReceivedTokenFromSwap = (
-    (currentAsset?.symbol === primaryTransaction.destinationTokenSymbol) || (
+    (currentAsset?.symbol === newestTransaction.destinationTokenSymbol) || (
       currentAsset.address === ETH_SWAPS_TOKEN_ADDRESS &&
-      primaryTransaction.destinationTokenSymbol === 'ETH'
+      newestTransaction.destinationTokenSymbol === 'ETH'
     )
   )
 
   const swapTokenValue = transactionCategory === SWAP && isViewingReceivedTokenFromSwap
     ? getSwapsTokensReceivedFromTxMeta(
-      primaryTransaction.destinationTokenSymbol,
-      initialTransaction,
+      newestTransaction.destinationTokenSymbol,
+      oldestTransaction,
       address,
       senderAddress,
       decimals,
     )
-    : transactionCategory === SWAP && primaryTransaction.swapTokenValue
+    : transactionCategory === SWAP && newestTransaction.swapTokenValue
   const _swapTokenFiatAmount = useTokenFiatAmount(
     address,
     swapTokenValue || '',
