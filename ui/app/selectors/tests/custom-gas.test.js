@@ -7,6 +7,7 @@ const {
   getRenderableBasicEstimateData,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   isCustomPriceSafe,
+  isCustomPriceExcessive,
 } = proxyquire('../custom-gas', {});
 
 describe('custom-gas selectors', function () {
@@ -52,6 +53,91 @@ describe('custom-gas selectors', function () {
         },
       };
       assert.strictEqual(isCustomPriceSafe(mockState), false);
+    });
+  });
+
+  describe('isCustomPriceExcessive()', function () {
+    it('should return false for gas.customData.price null', function () {
+      const mockState = {
+        gas: {
+          customData: { price: null },
+          basicEstimates: { fast: 150 },
+        },
+      };
+      assert.strictEqual(isCustomPriceExcessive(mockState), false);
+    });
+    it('should return false gas.basicEstimates.fast undefined', function () {
+      const mockState = {
+        gas: {
+          customData: { price: '0x77359400' },
+          basicEstimates: { fast: undefined },
+        },
+      };
+      assert.strictEqual(isCustomPriceExcessive(mockState), false);
+    });
+    it('should return false gas.basicEstimates.price 0x205d0bae00 (139)', function () {
+      const mockState = {
+        gas: {
+          customData: { price: '0x205d0bae00' },
+          basicEstimates: { fast: 139 },
+        },
+      };
+      assert.strictEqual(isCustomPriceExcessive(mockState), false);
+    });
+    it('should return false gas.basicEstimates.price 0x1bf08eb000 (120)', function () {
+      const mockState = {
+        gas: {
+          customData: { price: '0x1bf08eb000' },
+          basicEstimates: { fast: 139 },
+        },
+      };
+      assert.strictEqual(isCustomPriceExcessive(mockState), false);
+    });
+    it('should return false gas.basicEstimates.price 0x28bed01600 (175)', function () {
+      const mockState = {
+        gas: {
+          customData: { price: '0x28bed01600' },
+          basicEstimates: { fast: 139 },
+        },
+      };
+      assert.strictEqual(isCustomPriceExcessive(mockState), false);
+    });
+    it('should return true gas.basicEstimates.price 0x30e4f9b400 (210)', function () {
+      const mockState = {
+        gas: {
+          customData: { price: '0x30e4f9b400' },
+          basicEstimates: { fast: 139 },
+        },
+      };
+      assert.strictEqual(isCustomPriceExcessive(mockState), true);
+    });
+    it('should return false gas.basicEstimates.price 0x28bed01600 (175) (checkSend=true)', function () {
+      const mockState = {
+        metamask: {
+          send: {
+            gasPrice: '0x28bed0160',
+          },
+        },
+        gas: {
+          customData: { price: null },
+          basicEstimates: { fast: 139 },
+        },
+      };
+      assert.strictEqual(isCustomPriceExcessive(mockState, true), false);
+    });
+    it('should return true gas.basicEstimates.price 0x30e4f9b400 (210) (checkSend=true)', function () {
+      const mockState = {
+        metamask: {
+          send: {
+            gasPrice: '0x30e4f9b400',
+          },
+        },
+        gas: {
+          customData: { price: null },
+          basicEstimates: { fast: 139 },
+        },
+      };
+      assert.strictEqual(isCustomPriceExcessive(mockState, true), true);
     });
   });
 

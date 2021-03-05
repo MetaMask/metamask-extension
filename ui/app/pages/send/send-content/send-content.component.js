@@ -20,15 +20,17 @@ export default class SendContent extends Component {
     isOwnedAccount: PropTypes.bool,
     warning: PropTypes.string,
     error: PropTypes.string,
+    gasIsExcessive: PropTypes.bool.isRequired,
   };
 
   updateGas = (updateData) => this.props.updateGas(updateData);
 
   render() {
-    const { warning, error } = this.props;
+    const { warning, error, gasIsExcessive } = this.props;
     return (
       <PageContainerContent>
         <div className="send-v2__form">
+          {gasIsExcessive && this.renderError(true)}
           {error && this.renderError()}
           {warning && this.renderWarning()}
           {this.maybeRenderAddContact()}
@@ -77,13 +79,13 @@ export default class SendContent extends Component {
     );
   }
 
-  renderError() {
+  renderError(gasError = false) {
     const { t } = this.context;
     const { error } = this.props;
 
     return (
       <Dialog type="error" className="send__error-dialog">
-        {t(error)}
+        {gasError ? t('gasPriceExcessive') : t(error)}
       </Dialog>
     );
   }

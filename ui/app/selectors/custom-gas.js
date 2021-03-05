@@ -9,7 +9,12 @@ import { formatETHFee } from '../helpers/utils/formatters';
 import { calcGasTotal } from '../pages/send/send.utils';
 
 import { GAS_ESTIMATE_TYPES } from '../helpers/constants/common';
-import { getCurrentCurrency, getIsMainnet, getPreferences } from '.';
+import {
+  getCurrentCurrency,
+  getIsMainnet,
+  getPreferences,
+  getGasPrice,
+} from '.';
 
 const NUMBER_OF_DECIMALS_SM_BTNS = 5;
 
@@ -31,7 +36,7 @@ export function getAveragePriceEstimateInHexWEI(state) {
 }
 
 export function getFastPriceEstimateInHexWEI(state) {
-  const fastPriceEstimate = state.gas.basicEstimates.fast;
+  const fastPriceEstimate = getFastPriceEstimate(state);
   return getGasPriceInHexWei(fastPriceEstimate || '0x0');
 }
 
@@ -53,6 +58,16 @@ export function getSafeLowEstimate(state) {
   } = state;
 
   return safeLow;
+}
+
+export function getFastPriceEstimate(state) {
+  const {
+    gas: {
+      basicEstimates: { fast },
+    },
+  } = state;
+
+  return fast;
 }
 
 export function isCustomPriceSafe(state) {
@@ -79,6 +94,31 @@ export function isCustomPriceSafe(state) {
   );
 
   return customPriceSafe;
+}
+
+export function isCustomPriceExcessive(state, checkSend = false) {
+  const customPrice = checkSend ? getGasPrice(state) : getCustomGasPrice(state);
+  const fastPrice = getFastPriceEstimate(state);
+
+  if (!customPrice || !fastPrice) {
+    return false;
+  }
+
+  // Custom gas should be considered excessive when it is 1.5 times greater than the fastest estimate.
+  const customPriceExcessive = conversionGreaterThan(
+    {
+      value: customPrice,
+      fromNumericBase: 'hex',
+      fromDenomination: 'WEI',
+      toDenomination: 'GWEI',
+    },
+    {
+      fromNumericBase: 'dec',
+      value: Math.floor(fastPrice * 1.5),
+    },
+  );
+
+  return customPriceExcessive;
 }
 
 export function basicPriceEstimateToETHTotal(

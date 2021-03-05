@@ -58,6 +58,7 @@ export default class SendTransactionScreen extends Component {
     qrCodeDetected: PropTypes.func.isRequired,
     qrCodeData: PropTypes.object,
     sendTokenAddress: PropTypes.string,
+    gasIsExcessive: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {
@@ -382,7 +383,7 @@ export default class SendTransactionScreen extends Component {
   }
 
   renderSendContent() {
-    const { history, showHexData } = this.props;
+    const { history, showHexData, gasIsExcessive } = this.props;
     const { toWarning, toError } = this.state;
 
     return [
@@ -394,6 +395,7 @@ export default class SendTransactionScreen extends Component {
         showHexData={showHexData}
         warning={toWarning}
         error={toError}
+        gasIsExcessive={gasIsExcessive}
       />,
       <SendFooter key="send-footer" history={history} />,
     ];
