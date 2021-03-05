@@ -1,6 +1,5 @@
 import React, { useContext, useMemo, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { I18nContext } from '../../../contexts/i18n';
@@ -9,23 +8,53 @@ import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
 import { updateViewedNotifications } from '../../../store/actions';
+import { UI_NOTIFICATIONS } from '../../../../../shared/notifications';
 import {
-  UI_NOTIFICATIONS,
-  notifcationActionFunctions,
   getSortedNotificationsToShow,
-} from '../../../../../shared/notifications';
+  getSwapsEthToken,
+} from '../../../selectors';
+import { BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes';
+
+function notifcationActionFunctions(state, metricsEvent) {
+  const swapsEthToken = getSwapsEthToken(state);
+
+  const actionFunctions = {
+    1: () => {
+      metricsEvent({
+        event: 'Swaps Opened',
+        properties: { source: 'Main View', active_currency: 'ETH' },
+        category: 'swaps',
+      });
+      global.platform.openExtensionInBrowser(
+        BUILD_QUOTE_ROUTE,
+        `fromAddress=${swapsEthToken.address}`,
+      );
+    },
+    2: () => {
+      global.platform.openTab({
+        url: 'https://metamask.io/download.html',
+      });
+    },
+    3: () => {
+      global.platform.openTab({
+        url:
+          'https://survey.alchemer.com/s3/6173069/MetaMask-Extension-NPS-January-2021',
+      });
+    },
+  };
+
+  return (id) => {
+    return actionFunctions[id];
+  };
+}
 
 export default function WhatsNewPopup({ onClose }) {
-  const dispatch = useDispatch(useDispatch);
-  const history = useHistory();
   const metricsEvent = useContext(MetaMetricsContext);
   const t = useContext(I18nContext);
   const state = useSelector((_state) => _state);
 
   const getNotifcationActionFunctionsById = notifcationActionFunctions(
-    dispatch,
     state,
-    history,
     metricsEvent,
   );
 

@@ -1,7 +1,3 @@
-import { getSwapsFeatureLiveness } from '../../ui/app/ducks/swaps/swaps';
-import { getSwapsEthToken, getIsMainnet } from '../../ui/app/selectors';
-import { BUILD_QUOTE_ROUTE } from '../../ui/app/helpers/constants/routes';
-
 export const UI_NOTIFICATIONS = {
   1: {
     id: 1,
@@ -28,67 +24,3 @@ export const UI_NOTIFICATIONS = {
     actionText: 'Start survey',
   },
 };
-
-function getNotificationFilters(state) {
-  const currentNetworkIsMainnet = getIsMainnet(state);
-  const swapsIsEnabled = getSwapsFeatureLiveness(state);
-
-  return {
-    1: !currentNetworkIsMainnet || !swapsIsEnabled,
-  };
-}
-
-export function getSortedNotificationsToShow(state) {
-  const notifications = Object.values(state.metamask.notifications) || [];
-  const notificationFilters = getNotificationFilters(state);
-  const notificationsToShow = notifications.filter(
-    (notification) =>
-      !notification.isShown && !notificationFilters[notification.id],
-  );
-  const notificationsSortedByDate = notificationsToShow.sort(
-    (a, b) => new Date(b.date) - new Date(a.date),
-  );
-  return notificationsSortedByDate;
-}
-
-export function notifcationActionFunctions(
-  // eslint-disable-next-line no-unused-vars
-  dispatch,
-  // eslint-disable-next-line no-unused-vars
-  state,
-  // eslint-disable-next-line no-unused-vars
-  history,
-  // eslint-disable-next-line no-unused-vars
-  metricsEvent,
-) {
-  const swapsEthToken = getSwapsEthToken(state);
-
-  const actionFunctions = {
-    1: () => {
-      metricsEvent({
-        event: 'Swaps Opened',
-        properties: { source: 'Main View', active_currency: 'ETH' },
-        category: 'swaps',
-      });
-      global.platform.openExtensionInBrowser(
-        BUILD_QUOTE_ROUTE,
-        `fromAddress=${swapsEthToken.address}`,
-      );
-    },
-    2: () => {
-      global.platform.openTab({
-        url: 'https://metamask.io/download.html',
-      });
-    },
-    3: () => {
-      global.platform.openTab({
-        url:
-          'https://survey.alchemer.com/s3/6173069/MetaMask-Extension-NPS-January-2021',
-      });
-    },
-  };
-
-  return (id) => {
-    return actionFunctions[id];
-  };
-}
