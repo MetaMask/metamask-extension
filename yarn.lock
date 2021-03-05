@@ -1971,16 +1971,17 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
-"@lavamoat/allow-scripts@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@lavamoat/allow-scripts/-/allow-scripts-1.0.3.tgz#8fa54a3f250977fdc85484d0870ae65c4e50a0c8"
-  integrity sha512-bzRYwOqjx5UU2vQYIV/QZYQGDA1Nm4lXipTUCK4UNBwGSwYlK8A1SUrQdX+Rp0ASbr/mb8IH6rPIjz1LgsDbDA==
+"@lavamoat/allow-scripts@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@lavamoat/allow-scripts/-/allow-scripts-1.0.4.tgz#1804c552c40e522ad5210879181869030737321a"
+  integrity sha512-720ZQn/PGI1kOvO51I4bTknX3jhztbuytHSHh4i9D4fAqz4NHW14vLR6xbvyk8gh+QtbmsLloeulrA81+if1bw==
   dependencies:
     "@npmcli/run-script" "^1.8.1"
     "@yarnpkg/lockfile" "^1.1.0"
+    npm-logical-tree "^1.2.1"
+    resolve "^1.20.0"
     semver "^7.3.4"
     yargs "^16.2.0"
-    yarn-logical-tree "^1.0.2"
 
 "@lavamoat/preinstall-always-fail@^1.0.0":
   version "1.0.0"
@@ -13776,6 +13777,13 @@ is-core-module@^2.1.0:
   dependencies:
     has "^1.0.3"
 
+is-core-module@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/is-core-module/-/is-core-module-2.2.0.tgz#97037ef3d52224d85163f5597b2b63d9afed981a"
+  integrity sha512-XRAfAdyyY5F5cOXn7hYQDqh2Xmii+DEfIcQGxK/uNwMHhIkPWO0g8msXcbzLe+MpGoR951MlqM/2iIlU4vKDdQ==
+  dependencies:
+    has "^1.0.3"
+
 is-data-descriptor@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/is-data-descriptor/-/is-data-descriptor-0.1.4.tgz#0b5ee648388e2c860282e793f1856fec3f301b56"
@@ -21531,6 +21539,14 @@ resolve@^1.15.1:
     is-core-module "^2.1.0"
     path-parse "^1.0.6"
 
+resolve@^1.20.0:
+  version "1.20.0"
+  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.20.0.tgz#629a013fb3f70755d6f0b7935cc1c2c5378b1975"
+  integrity sha512-wENBPt4ySzg4ybFQW2TT1zMQucPK95HSh/nq2CFTZVOGut2+pQvSsgtda4d26YrYcr067wjbmzOG8byDPBX63A==
+  dependencies:
+    is-core-module "^2.2.0"
+    path-parse "^1.0.6"
+
 resolve@~1.11.1:
   version "1.11.1"
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.11.1.tgz#ea10d8110376982fef578df8fc30b9ac30a07a3e"
@@ -26058,14 +26074,6 @@ yargs@^7.1.0:
     which-module "^1.0.0"
     y18n "^3.2.1"
     yargs-parser "5.0.0-security.0"
-
-yarn-logical-tree@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/yarn-logical-tree/-/yarn-logical-tree-1.0.2.tgz#11130e00333b02174efcfd5599a5e68ca356fa14"
-  integrity sha512-ra0Bl8oB7sN4fkWSSC2+P3luaFiwFFJ/KcCLSjY6HHRvKcBMjOcIIF1z6IHU+plmEYyZOc546cWwi0f0QiOQtw==
-  dependencies:
-    npm-logical-tree "^1.2.1"
-    semver "^5.5.0"
 
 yauzl@2.10.0, yauzl@^2.10.0:
   version "2.10.0"
