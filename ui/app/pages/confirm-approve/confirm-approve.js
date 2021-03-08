@@ -19,6 +19,7 @@ import {
   getNativeCurrency,
 } from '../../selectors';
 import { currentNetworkTxListSelector } from '../../selectors/transactions';
+import Loading from '../../components/ui/loading-screen';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
@@ -87,7 +88,7 @@ export default function ConfirmApprove() {
     ? getCustomTxParamsData(data, { customPermissionAmount, decimals })
     : null;
 
-  return (
+  return tokenSymbol ? (
     <ConfirmTransactionBase
       toAddress={toAddress}
       identiconAddress={tokenAddress}
@@ -141,5 +142,7 @@ export default function ConfirmApprove() {
       hideSenderToRecipient
       customTxParamsData={customData}
     />
+  ) : (
+    <Loading />
   );
 }
