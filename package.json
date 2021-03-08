@@ -60,7 +60,7 @@
   },
   "resolutions": {
     "**/configstore/dot-prop": "^5.1.1",
-    "**/ethers/elliptic": "^6.5.3",
+    "**/ethers/elliptic": "^6.5.4",
     "**/knex/minimist": "^1.2.5",
     "**/optimist/minimist": "^1.2.5",
     "**/socketcluster/minimist": "^1.2.5",
@@ -68,7 +68,7 @@
     "**/redux-devtools-instrument/symbol-observable": "^2.0.3",
     "**/rxjs/symbol-observable": "^2.0.3",
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.19",
-    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/elliptic": "^6.5.3",
+    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/elliptic": "^6.5.4",
     "3box/**/libp2p-crypto/node-forge": "^0.10.0",
     "3box/**/libp2p-keychain/node-forge": "^0.10.0",
     "analytics-node/axios": "^0.21.1",
