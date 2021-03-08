@@ -17,7 +17,7 @@ export default function ListItem({
   const primaryClassName = classnames('list-item', className);
 
   return (
-    <div
+    <button
       className={primaryClassName}
       onClick={onClick}
       data-testid={dataTestId}
@@ -27,9 +27,7 @@ export default function ListItem({
         {React.isValidElement(title) ? (
           title
         ) : (
-          <button onClick={onClick}>
-            <h2 className="list-item__title">{title}</h2>
-          </button>
+          <h2 className="list-item__title">{title}</h2>
         )}
         {titleIcon && (
           <div className="list-item__heading-wrap">{titleIcon}</div>
@@ -41,7 +39,7 @@ export default function ListItem({
       {rightContent && (
         <div className="list-item__right-content">{rightContent}</div>
       )}
-    </div>
+    </button>
   );
 }
 
