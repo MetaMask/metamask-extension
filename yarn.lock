@@ -2271,10 +2271,10 @@
     human-standard-token-abi "^1.0.2"
     safe-event-emitter "^1.0.1"
 
-"@metamask/etherscan-link@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@metamask/etherscan-link/-/etherscan-link-1.4.1.tgz#44377c5c9be2c02ef26aff5da74bd839e50c09f9"
-  integrity sha512-hs8Qi62+6BZN9J7dknnoJR4DStEP6PzWEwRt+ScEVM4CuBVo08mqY0HXRny52A6FjBQrSnBgA5gvMbBOMqDavg==
+"@metamask/etherscan-link@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@metamask/etherscan-link/-/etherscan-link-1.5.0.tgz#c6940ea934b3a7dcf04e459d9ea3c630b69f6b5f"
+  integrity sha512-vPCkZJwZ5p933n20Zh+cC3umJv05un2CRZ8y+14KgMq3I4eOwllqmqxoYf9tn3BLGM8QXm/Nie+aBjmoe/T9ag==
 
 "@metamask/forwarder@^1.1.0":
   version "1.1.0"
