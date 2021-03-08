@@ -1125,7 +1125,7 @@
     "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
-    "message": "Un proveedor de red de Ethereum malintencionado puede mentir sobre el estado de la cadena de bloques y registrar la actividad de su red. Solo agregue redes personalizadas en las que confíe."
+    "message": "Un proveedor de red de malintencionado puede mentir sobre el estado de la cadena de bloques y registrar la actividad de su red. Solo agregue redes personalizadas en las que confíe."
   },
   "onlyAvailableOnMainnet": {
     "message": "Solo disponible en la red principal de Ethereum (Main Net)"

@@ -1127,9 +1127,6 @@
     "message": "“$1”会关闭此标签，直接回到 $2",
     "description": "Return the user to the site that initiated onboarding"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "恶意的 Ethereum 以太坊网络提供商可以伪造区块链状态，并记录您的网络活动。只添加您信任的自定义网络。"
-  },
   "onlyAvailableOnMainnet": {
     "message": "仅在主网（mainnet）上提供"
   },
