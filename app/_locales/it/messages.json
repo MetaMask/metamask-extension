@@ -1131,7 +1131,7 @@
     "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
-    "message": "Una rete Ethereum malevola può mentire sullo stato della blockchain e registrare le tue azioni. Aggiungi solo reti fidate."
+    "message": "Una rete malevola può mentire sullo stato della blockchain e registrare le tue azioni. Aggiungi solo reti fidate."
   },
   "onlyAvailableOnMainnet": {
     "message": "Disponibile solo nella rete principale"
