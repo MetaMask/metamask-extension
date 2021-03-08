@@ -317,7 +317,8 @@
       "gc-stats": false,
       "github:assemblyscript/assemblyscript": false,
       "tiny-secp256k1": false,
-      "@lavamoat/preinstall-always-fail": false
+      "@lavamoat/preinstall-always-fail": false,
+      "fsevents": false
     }
   }
 }
