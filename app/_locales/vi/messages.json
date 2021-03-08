@@ -1567,24 +1567,6 @@
   "swapHighSlippageWarning": {
     "message": "Số tiền trượt giá rất cao. Hãy chắc chắn rằng bạn hiểu những gì mình đang làm!"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "Bạn muốn tìm hiểu thêm?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "Tìm hiểu thêm về MetaMask Swaps"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "Các nguồn thanh khoản bao gồm:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "Giờ đây bạn có thể hoán đổi token ngay trong ví MetaMask của mình. MetaMask Swaps quy tụ nhiều trình tổng hợp sàn giao dịch phi tập trung, các nhà tạo lập thị trường chuyên nghiệp và các sàn giao dịch phi tập trung dành cho cá nhân nhằm đảm bảo người dùng MetaMask luôn nhận được mức giá tốt nhất với phí mạng thấp nhất."
-  },
-  "swapIntroPopupTitle": {
-    "message": "Tính năng hoán đổi token đã sẵn sàng!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "Xem xét quy trình kiểm tra hợp đồng chính thức của chúng tôi"
-  },
   "swapLowSlippageError": {
     "message": "Giao dịch có thể không thành công, mức trượt giá tối đa quá thấp."
   },
@@ -1686,9 +1668,6 @@
   },
   "swapSourceInfo": {
     "message": "Chúng tôi tìm kiếm nhiều nguồn thanh khoản (các sàn giao dịch, trình tổng hợp và nhà tạo lập thị trường) để tìm được mức tỷ lệ tốt nhất và phí mạng thấp nhất."
-  },
-  "swapStartSwapping": {
-    "message": "Bắt đầu hoán đổi"
   },
   "swapSwapFrom": {
     "message": "Hoán đổi từ"

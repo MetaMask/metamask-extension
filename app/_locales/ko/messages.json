@@ -1567,24 +1567,6 @@
   "swapHighSlippageWarning": {
     "message": "슬리패지 금액이 아주 큽니다. 현재 어떤 작업을 하고 있는지 확인하세요!"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "자세한 정보를 확인하고 싶으신가요?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "MetaMask Swaps에 대해 자세히 알아보기"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "다음을 포함한 유동성 소스:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "이제 MetaMask 지갑에서 토큰을 바로 스왑할 수 있습니다. MetaMask Swaps는 다양한 분산형 교환 애그리게이터, 투자전문기관, 개별 DEX를 결합하여 MetaMask 사용자가 언제든 최저 네트워크 요금으로 최상의 가격을 얻을 수 있게 합니다."
-  },
-  "swapIntroPopupTitle": {
-    "message": "토큰 스왑은 여기서 진행됩니다!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "당사의 공식 계약 감사 검토"
-  },
   "swapLowSlippageError": {
     "message": "거래가 실패할 수도 있습니다. 최대 슬리패지가 너무 낮습니다."
   },
@@ -1686,9 +1668,6 @@
   },
   "swapSourceInfo": {
     "message": "당사에서는 여러 유동성 소스(교환, 애그리게이터, 투자전문기관)를 검색하여 최상의 요율과 최저 네트워크 요금을 찾습니다."
-  },
-  "swapStartSwapping": {
-    "message": "스왑 시작"
   },
   "swapSwapFrom": {
     "message": "다음에서 스왑"

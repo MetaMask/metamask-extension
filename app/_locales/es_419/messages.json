@@ -1579,24 +1579,6 @@
   "swapHighSlippageWarning": {
     "message": "La cantidad de deslizamiento es muy alta. ¡Asegúrate de saber lo que estás haciendo!"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "¿Quiere aprender más?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "Más información sobre los Intercambios MetaMask"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "Las fuentes de liquidez incluyen:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "Ahora puede intercambiar tokens directamente en su billetera MetaMask. Intercambios MetaMask combina múltiples agregadores de intercambio descentralizados, creadores de mercado profesionales y DEX individuales para garantizar que los usuarios de MetaMask siempre obtengan el mejor precio con las tarifas de red más bajas."
-  },
-  "swapIntroPopupTitle": {
-    "message": "¡El intercambio de tokens está aquí!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "Revise nuestra auditoría de contratos oficiales"
-  },
   "swapLowSlippageError": {
     "message": "La transacción puede fallar, el deslizamiento máximo es demasiado bajo."
   },
@@ -1716,9 +1698,6 @@
   },
   "swapSourceInfo": {
     "message": "Buscamos múltiples fuentes de liquidez (exchanges, agregadores y creadores de mercado profesionales) para encontrar las mejores tarifas y las tarifas de red más bajas."
-  },
-  "swapStartSwapping": {
-    "message": "Comenzar intercambio"
   },
   "swapSwapFrom": {
     "message": "Intercambiar desde"

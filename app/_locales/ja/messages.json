@@ -1579,24 +1579,6 @@
   "swapHighSlippageWarning": {
     "message": "非常に大きいスリッページ額です。本当に実行するか確認してください。"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "詳細を表示しますか?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "MetaMask Swapsの詳細"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "流動性ソースには以下が含まれます。"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "トークンをMetaMaskで直接スワップできるようになりました。MetaMask Swapsは、多数の分散型取引所アグリゲーター、専門のマーケットメーカー、DEX取引所を統合し、ユーザーは常に最低のネットワーク手数料、最適な価格で取引できます。"
-  },
-  "swapIntroPopupTitle": {
-    "message": "トークンのスワップはこちら!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "MetaSwapのコントラクト監査のレビュー"
-  },
   "swapLowSlippageError": {
     "message": "トランザクションが失敗する可能性があります。最大スリッページが少なすぎます。"
   },
@@ -1716,9 +1698,6 @@
   },
   "swapSourceInfo": {
     "message": "最良のレートと最小のネットワーク手数料を探すため、複数の流動性ソース(取引所、アグリゲーター、専門のマーケットメーカー)を検索します。"
-  },
-  "swapStartSwapping": {
-    "message": "スワップの開始"
   },
   "swapSwapFrom": {
     "message": "スワップ元"

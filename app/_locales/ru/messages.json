@@ -1567,24 +1567,6 @@
   "swapHighSlippageWarning": {
     "message": "Величина проскальзывания очень велика. Убедитесь, что вы знаете, что делаете!"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "Хотите узнать больше?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "Подробнее о свопах MetaMask"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "Источники ликвидности включают:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "Теперь вы можете обменивать токены прямо в кошельке MetaMask. MetaMask Swaps объединяет несколько децентрализованных агрегаторов обменов, профессиональных торговцев и отдельные DEX, чтобы пользователи MetaMask всегда получали лучшую цену с минимальными комиссиями сети."
-  },
-  "swapIntroPopupTitle": {
-    "message": "Обмен токенов здесь!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "Ознакомьтесь с нашим официальным аудитом контрактов"
-  },
   "swapLowSlippageError": {
     "message": "Транзакции могут завершиться неудачей, максимальное проскальзывание слишком мало."
   },
@@ -1686,9 +1668,6 @@
   },
   "swapSourceInfo": {
     "message": "Мы ищем несколько источников ликвидности (биржи, агрегаторы и профессиональные продавцы), чтобы найти лучшие цены и самые низкие сетевые комиссии."
-  },
-  "swapStartSwapping": {
-    "message": "Начать обмен"
   },
   "swapSwapFrom": {
     "message": "Своп с"

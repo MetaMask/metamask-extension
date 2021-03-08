@@ -1579,24 +1579,6 @@
   "swapHighSlippageWarning": {
     "message": "滑点数量非常大。确保您知道您的操作！"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "想了解更多信息？"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "了解更多关于 MetaMask Swap（兑换）"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "流动资金来源包括："
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "现在您可以直接在 MetaMask 钱包中兑换代币。MetaMask Swaps（兑换）结合了多个去中心化交易所聚合商、专业做市商和个人 DEX，确保 MetaMask 用户始终以最低的网络费用获得最佳价格。"
-  },
-  "swapIntroPopupTitle": {
-    "message": "代币兑换来了！"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "查看我们的官方合约审计"
-  },
   "swapLowSlippageError": {
     "message": "交易可能失败，最大滑点过低。"
   },
@@ -1716,9 +1698,6 @@
   },
   "swapSourceInfo": {
     "message": "我们搜索多个流动性来源（交易所、聚合商和专业做市商），以找到最好的利率和最低的网络手续费。"
-  },
-  "swapStartSwapping": {
-    "message": "开始兑换"
   },
   "swapSwapFrom": {
     "message": "兑换自"
