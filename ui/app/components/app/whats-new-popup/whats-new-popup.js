@@ -120,13 +120,13 @@ export default function WhatsNewPopup({ onClose }) {
                   />
                 )}
                 <div className="whats-new-popup__notification-title">
-                  {notification.title}
+                  {t(notification.title)}
                 </div>
                 <div
                   className="whats-new-popup__notification-description"
                   ref={idRefMap[notification.id]}
                 >
-                  {notification.description}
+                  {t(notification.description)}
                 </div>
                 {isFirstNotification &&
                   UI_NOTIFICATIONS[notification.id].actionText && (
@@ -138,7 +138,7 @@ export default function WhatsNewPopup({ onClose }) {
                         getNotifcationActionFunctionsById(notification.id)()
                       }
                     >
-                      {UI_NOTIFICATIONS[notification.id].actionText}
+                      {t(UI_NOTIFICATIONS[notification.id].actionText)}
                     </Button>
                   )}
                 {!isFirstNotification &&
@@ -149,7 +149,7 @@ export default function WhatsNewPopup({ onClose }) {
                         getNotifcationActionFunctionsById(notification.id)()
                       }
                     >
-                      {UI_NOTIFICATIONS[notification.id].actionText}
+                      {t(UI_NOTIFICATIONS[notification.id].actionText)}
                     </div>
                   )}
               </div>
