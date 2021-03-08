@@ -1778,24 +1778,6 @@
   "swapHighSlippageWarning": {
     "message": "Slippage amount is very high. Make sure you know what you are doing!"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "Want to learn more?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "Learn more about MetaMask Swaps"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "Liquidity sources include:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "You can now swap tokens directly in your MetaMask wallet. MetaMask Swaps combines multiple decentralized exchange aggregators, professional market makers, and individual DEXs to ensure MetaMask users always get the best price with the lowest network fees."
-  },
-  "swapIntroPopupTitle": {
-    "message": "Token swapping is here!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "Review our official contracts audit"
-  },
   "swapLowSlippageError": {
     "message": "Transaction may fail, max slippage too low."
   },
@@ -1921,9 +1903,6 @@
   },
   "swapSourceInfo": {
     "message": "We search multiple liquidity sources (exchanges, aggregators and professional market makers) to find the best rates and lowest network fees."
-  },
-  "swapStartSwapping": {
-    "message": "Start swapping"
   },
   "swapSwapFrom": {
     "message": "Swap from"
