@@ -70,7 +70,7 @@ describe('migrations', function () {
       const fileNames = fs.readdirSync('./test/unit/migrations/');
       const testNumbers = fileNames
         .reduce((acc, filename) => {
-          const name = filename.split('-test.')[0];
+          const name = filename.split('.test.')[0];
           if (/^\d+$/u.test(name)) {
             acc.push(name);
           }
