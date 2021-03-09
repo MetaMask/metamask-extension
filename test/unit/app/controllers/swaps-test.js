@@ -9,7 +9,7 @@ import {
   ROPSTEN_NETWORK_ID,
   MAINNET_NETWORK_ID,
 } from '../../../../shared/constants/network';
-import { ETH_SWAPS_TOKEN_ADDRESS } from '../../../../ui/app/helpers/constants/swaps';
+import { ETH_SWAPS_TOKEN_OBJECT } from '../../../../ui/app/helpers/constants/swaps';
 import { createTestProviderTools } from '../../../stub/provider';
 import SwapsController, {
   utils,
@@ -471,7 +471,7 @@ describe('SwapsController', function () {
           getTopQuoteAndSavingsMockQuotes(),
           (quote) => ({
             ...quote,
-            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
           }),
@@ -480,42 +480,42 @@ describe('SwapsController', function () {
         const expectedResultQuotes = {
           [TEST_AGG_ID_1]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_1],
-            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
             overallValueOfQuote: '2.0195',
           },
           [TEST_AGG_ID_2]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_2],
-            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
             overallValueOfQuote: '1.9996',
           },
           [TEST_AGG_ID_3]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_3],
-            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
             overallValueOfQuote: '1.9698',
           },
           [TEST_AGG_ID_4]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_4],
-            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
             overallValueOfQuote: '1.94',
           },
           [TEST_AGG_ID_5]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_5],
-            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
             overallValueOfQuote: '1.9102',
           },
           [TEST_AGG_ID_6]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_6],
-            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
             overallValueOfQuote: '1.8705',
@@ -535,7 +535,7 @@ describe('SwapsController', function () {
           getTopQuoteAndSavingsMockQuotes(),
           (quote) => ({
             ...quote,
-            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
           }),
@@ -546,7 +546,7 @@ describe('SwapsController', function () {
         const expectedResultQuotes = {
           [TEST_AGG_ID_1]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_1],
-            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8b553ece48ec0000' },
             overallValueOfQuote: '1.9795',
@@ -554,7 +554,7 @@ describe('SwapsController', function () {
           },
           [TEST_AGG_ID_2]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_2],
-            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
             overallValueOfQuote: '1.9996',
@@ -569,28 +569,28 @@ describe('SwapsController', function () {
           },
           [TEST_AGG_ID_3]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_3],
-            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
             overallValueOfQuote: '1.9698',
           },
           [TEST_AGG_ID_4]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_4],
-            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
             overallValueOfQuote: '1.94',
           },
           [TEST_AGG_ID_5]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_5],
-            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
             overallValueOfQuote: '1.9102',
           },
           [TEST_AGG_ID_6]: {
             ...baseExpectedResultQuotes[TEST_AGG_ID_6],
-            sourceToken: ETH_SWAPS_TOKEN_ADDRESS,
+            sourceToken: ETH_SWAPS_TOKEN_OBJECT.address,
             destinationToken: '0x1111111111111111111111111111111111111111',
             trade: { value: '0x8ac7230489e80000' },
             overallValueOfQuote: '1.8705',
