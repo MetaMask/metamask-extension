@@ -17,10 +17,17 @@ export default function ListItem({
   const primaryClassName = classnames('list-item', className);
 
   return (
-    <button
+    <div
       className={primaryClassName}
       onClick={onClick}
       data-testid={dataTestId}
+      role="button"
+      tabIndex={0}
+      onKeyPress={(event) => {
+        if (event.key === 'Enter') {
+          onClick();
+        }
+      }}
     >
       {icon && <div className="list-item__icon">{icon}</div>}
       <div className="list-item__heading">
@@ -39,7 +46,7 @@ export default function ListItem({
       {rightContent && (
         <div className="list-item__right-content">{rightContent}</div>
       )}
-    </button>
+    </div>
   );
 }
 
