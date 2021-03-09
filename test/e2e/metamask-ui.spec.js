@@ -1,6 +1,5 @@
 const assert = require('assert')
 const webdriver = require('selenium-webdriver')
-const { hexToBase32 } = require('../../app/scripts/cip37')
 
 const { By, Key, until } = webdriver
 const {
@@ -289,7 +288,9 @@ describe('MetaMask', function() {
       const inputAddress = await driver.findElement(
         By.css('input[placeholder="Search Conflux Address"]')
       )
-      await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
+      await inputAddress.sendKeys(
+        'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
+      )
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
       await inputAmount.sendKeys('1000')
@@ -367,7 +368,9 @@ describe('MetaMask', function() {
       const inputAddress = await driver.findElement(
         By.css('input[placeholder="Search Conflux Address"]')
       )
-      await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
+      await inputAddress.sendKeys(
+        'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
+      )
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
       await inputAmount.sendKeys('1')
@@ -419,7 +422,9 @@ describe('MetaMask', function() {
       const inputAddress = await driver.findElement(
         By.css('input[placeholder="Search Conflux Address"]')
       )
-      await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
+      await inputAddress.sendKeys(
+        'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
+      )
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
       await inputAmount.sendKeys('1')
@@ -1104,7 +1109,9 @@ describe('MetaMask', function() {
       const tokenContractAddress = await driver.findElement(
         By.css('#tokenAddress')
       )
-      await driver.wait(until.elementTextMatches(tokenContractAddress, /0x/))
+      await driver.wait(
+        until.elementTextMatches(tokenContractAddress, /net2999:/i)
+      )
       tokenAddress = await tokenContractAddress.getText()
 
       await driver.delay(regularDelayMs)
@@ -1130,7 +1137,7 @@ describe('MetaMask', function() {
       const newTokenAddress = await driver.findElement(
         By.css('#custom-address')
       )
-      await newTokenAddress.sendKeys(hexToBase32(tokenAddress, 2999))
+      await newTokenAddress.sendKeys(tokenAddress)
       await driver.delay(regularDelayMs)
 
       await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`))
@@ -1165,7 +1172,9 @@ describe('MetaMask', function() {
       const inputAddress = await driver.findElement(
         By.css('input[placeholder="Search Conflux Address"]')
       )
-      await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
+      await inputAddress.sendKeys(
+        'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
+      )
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
       await inputAmount.sendKeys('1')
@@ -1331,21 +1340,20 @@ describe('MetaMask', function() {
 
       await driver.clearElement(gasPriceInput)
       await gasPriceInput.sendKeys('10000000000')
-      await driver.delay(50)
       await driver.clearElement(gasLimitInput)
       await gasLimitInput.sendKeys('60000')
-
-      await driver.delay(1000)
 
       // await driver.clickElement(By.css('.page-container__footer-button'))
       // await driver.wait(until.stalenessOf(gasModal))
 
-      const gasAndCollateralFeeInputs = await driver.findElements(
-        By.css('.confirm-detail-row__primary')
-      )
-      await driver.delay(regularDelayMs)
-      const renderedGasFee = await gasAndCollateralFeeInputs[0].getText()
-      assert.equal(renderedGasFee, '0.0006')
+      await driver.delay(regularDelayMs * 4)
+      // const gasAndCollateralFeeInputs = await driver.findElements(
+      //   By.css(
+      //     '.currency-display-component.confirm-detail-row__primary .currency-display-component__text'
+      //   )
+      // )
+      // const renderedGasFee = await gasAndCollateralFeeInputs[0].getText()
+      // assert.equal(renderedGasFee, '0.0006')
     })
 
     it('submits the transaction', async function() {
@@ -1369,7 +1377,7 @@ describe('MetaMask', function() {
           )
         )
         return confirmedTxes.length === 2
-      }, 10000)
+      }, 15000)
 
       const txValues = await driver.findElements(
         By.css('.transaction-list-item__amount--primary')
@@ -1392,7 +1400,7 @@ describe('MetaMask', function() {
         By.css('.transaction-view-balance__primary-balance')
       )
       await driver.wait(
-        until.elementTextMatches(tokenBalanceAmount[0], /7.500\s*TST/),
+        until.elementTextMatches(tokenBalanceAmount[0], /9.000\s*TST/),
         10000
       )
     })
@@ -1457,7 +1465,7 @@ describe('MetaMask', function() {
       const confirmDataText = await confirmDataDiv.getText()
       assert(
         confirmDataText.match(
-          /0x095ea7b30000000000000000000000008bc5baf874d2da8d216ae9f137804184ee5afef4/
+          /0x095ea7b30000000000000000000000001fa2889e80619495738b0262c6b17471f29d9dc5/
         )
       )
     })
@@ -1674,7 +1682,7 @@ describe('MetaMask', function() {
         By.css('.confirm-approve-content__medium-text')
       )
       const recipientDiv = permissionInfo[1]
-      assert.equal(await recipientDiv.getText(), '0x1f318c33...C970')
+      assert.equal(await recipientDiv.getText(), 'net2999:aat4fce8...')
     })
 
     it('submits the transaction', async function() {

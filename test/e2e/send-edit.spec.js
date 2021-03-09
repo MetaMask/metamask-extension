@@ -124,7 +124,9 @@ describe('Using MetaMask with an existing account', function() {
       const inputAddress = await driver.findElement(
         By.css('input[placeholder="Search Conflux Address"]')
       )
-      await inputAddress.sendKeys('0x1f318c334780961fb129d2a6c30d0763d9a5c970')
+      await inputAddress.sendKeys(
+        'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
+      )
 
       const inputAmount = await driver.findElement(By.css('.unit-input__input'))
       await inputAmount.sendKeys('1')

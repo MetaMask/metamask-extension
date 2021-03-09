@@ -86,3 +86,12 @@ fi
   #   'node test/e2e/mock-3box/server.js' \
   #   'yarn dapp' \
   #   'mocha test/e2e/threebox.spec'
+
+if [[ "$BUILDKITE_PARALLEL_JOB" = '8' ]]; then
+  concurrently --kill-others \
+               --names 'dapp,e2e' \
+               --prefix '[{time}][{name}]' \
+               --success first \
+               'yarn dapp' \
+               'mocha test/e2e/metamask-ui.spec' || exit 8
+fi

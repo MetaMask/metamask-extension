@@ -1489,7 +1489,7 @@ describe('Actions', function() {
 
       // just a random address
       store.dispatch(
-        actions.updateNetworkNonce('0x91e36D5f4ce79054e2e7811132860469d6E802d6')
+        actions.updateNetworkNonce('0x11e36D5f4ce79054e2e7811132860469d6E802d6')
       )
       assert(getTransactionCountSpy.calledOnce)
     })

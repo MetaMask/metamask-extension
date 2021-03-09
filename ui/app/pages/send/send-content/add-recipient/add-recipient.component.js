@@ -7,7 +7,7 @@ import Dialog from '../../../../components/ui/dialog'
 import ContactList from '../../../../components/app/contact-list'
 import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component'
 import { ellipsify } from '../../send.utils'
-import { encodeNetId } from 'conflux-address-js'
+import { encodeNetId } from '../../../../../../app/scripts/cip37.js'
 
 export default class AddRecipient extends Component {
   static propTypes = {

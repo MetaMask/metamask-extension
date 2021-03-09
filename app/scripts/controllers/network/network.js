@@ -22,8 +22,8 @@ import { TESTNET, MAINNET, LOCALHOST } from './enums'
 // TODO: add main net endpoint
 
 // const CONFLUX_MAINNET = 'http://localhost:12537/'
-const CONFLUX_MAINNET = 'http://wallet-main.confluxrpc.org'
-const CONFLUX_TEST_NET = 'http://wallet-test.confluxrpc.org'
+const CONFLUX_MAINNET = 'http://portal-main.confluxrpc.org'
+const CONFLUX_TEST_NET = 'http://portal-test.confluxrpc.org'
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
@@ -80,8 +80,16 @@ export default class NetworkController extends EventEmitter {
       chainId,
       ticker,
       nickname,
+      networkId,
     } = this.providerStore.getState()
-    this._configureProvider({ type, rpcTarget, chainId, ticker, nickname })
+    this._configureProvider({
+      type,
+      rpcTarget,
+      chainId,
+      ticker,
+      nickname,
+      networkId,
+    })
     this.lookupNetwork()
   }
 
@@ -127,8 +135,8 @@ export default class NetworkController extends EventEmitter {
     }
 
     if (Number.isSafeInteger(network)) {
- network = network.toString(10)
-}
+      network = network.toString(10)
+    }
 
     return this.networkStore.putState(network)
   }
@@ -154,11 +162,13 @@ export default class NetworkController extends EventEmitter {
           return this.setNetworkState('loading')
         }
         const chainId = parseInt(status.chainId, 16)
+        const networkId = parseInt(status.networkId, 16)
         log.info('web3.getStatus returned ' + chainId)
         if (this.getProviderConfig()) {
           this.providerConfig = {
             ...this.getProviderConfig(),
-            chainId: chainId.toString(),
+            networkId: parseInt(networkId.toString(10), 10),
+            chainId: chainId.toString(10),
           }
         }
         this.setNetworkState(chainId, type)
@@ -229,7 +239,7 @@ export default class NetworkController extends EventEmitter {
   }
 
   _configureProvider(opts) {
-    const { type, rpcTarget, chainId, ticker, nickname } = opts
+    const { type, rpcTarget, chainId, ticker, nickname, networkId } = opts
     // infura type-based endpoints
     // const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     // if (isInfura) {
@@ -238,6 +248,7 @@ export default class NetworkController extends EventEmitter {
     if (type === MAINNET) {
       this._configureStandardProvider({
         rpcUrl: CONFLUX_MAINNET,
+        networkId: 1029,
         chainId: 1029,
         ticker: 'CFX',
         nickname: 'mainnet',
@@ -246,6 +257,7 @@ export default class NetworkController extends EventEmitter {
     } else if (type === TESTNET) {
       this._configureStandardProvider({
         rpcUrl: CONFLUX_TEST_NET,
+        networkId: 1,
         chainId: 1,
         ticker: 'CFX',
         nickname: 'testnet',
@@ -257,6 +269,7 @@ export default class NetworkController extends EventEmitter {
     } else if (type === 'rpc') {
       this._configureStandardProvider({
         rpcUrl: rpcTarget,
+        networkId,
         chainId,
         ticker: ticker || 'CFX',
         nickname,
@@ -288,9 +301,16 @@ export default class NetworkController extends EventEmitter {
     this._setNetworkClient(networkClient)
   }
 
-  _configureStandardProvider({ rpcUrl, chainId, ticker, nickname, type }) {
+  _configureStandardProvider({
+    rpcUrl,
+    chainId,
+    ticker,
+    nickname,
+    type,
+    networkId,
+  }) {
     log.info('NetworkController - configureStandardProvider', rpcUrl)
-    const networkClient = createJsonRpcClient({ rpcUrl })
+    const networkClient = createJsonRpcClient({ rpcUrl, networkId })
     // hack to add a 'rpc' network with chainId
     networks.networkList[type || 'rpc'] = {
       chainId,
@@ -301,7 +321,7 @@ export default class NetworkController extends EventEmitter {
 
     // setup networkConfig
     let settings = {
-      network: chainId,
+      network: networkId,
     }
     settings = Object.assign(settings, networks.networkList['rpc'])
     this.networkConfig.putState(settings)
@@ -309,9 +329,10 @@ export default class NetworkController extends EventEmitter {
   }
 
   _setNetworkClient({ networkMiddleware, blockTracker, rpcUrl }) {
-    const metamaskMiddleware = createMetamaskMiddleware(
-      this._baseProviderParams
-    )
+    const metamaskMiddleware = createMetamaskMiddleware({
+      networkId: parseInt(this.providerStore.getState().networkId, 10),
+      ...this._baseProviderParams,
+    })
     const engine = new JsonRpcEngine()
     engine._rpcUrl = rpcUrl
     engine.push(metamaskMiddleware)

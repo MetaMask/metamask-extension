@@ -10,7 +10,7 @@ const stubs = {
 }
 
 const sendUtils = proxyquire('../send-footer.utils.js', {
-  'ethereumjs-abi': {
+  '@cfxjs/abi': {
     rawEncode: stubs.rawEncode,
   },
 })
@@ -21,9 +21,9 @@ const {
   addHexPrefixToObjectValues,
 } = sendUtils
 
-describe('send-footer utils', function () {
-  describe('addHexPrefixToObjectValues()', function () {
-    it('should return a new object with the same properties with a 0x prefix', function () {
+describe('send-footer utils', function() {
+  describe('addHexPrefixToObjectValues()', function() {
+    it('should return a new object with the same properties with a 0x prefix', function() {
       assert.deepEqual(
         addHexPrefixToObjectValues({
           prop1: '0x123',
@@ -39,8 +39,8 @@ describe('send-footer utils', function () {
     })
   })
 
-  describe('addressIsNew()', function () {
-    it('should return false if the address exists in toAccounts', function () {
+  describe('addressIsNew()', function() {
+    it('should return false if the address exists in toAccounts', function() {
       assert.equal(
         addressIsNew(
           [{ address: '0xabc' }, { address: '0xdef' }, { address: '0xghi' }],
@@ -50,7 +50,7 @@ describe('send-footer utils', function () {
       )
     })
 
-    it('should return true if the address does not exists in toAccounts', function () {
+    it('should return true if the address does not exists in toAccounts', function() {
       assert.equal(
         addressIsNew(
           [{ address: '0xabc' }, { address: '0xdef' }, { address: '0xghi' }],
@@ -61,8 +61,8 @@ describe('send-footer utils', function () {
     })
   })
 
-  describe('constructTxParams()', function () {
-    it('should return a new txParams object with data if there data is given', function () {
+  describe('constructTxParams()', function() {
+    it('should return a new txParams object with data if there data is given', function() {
       assert.deepEqual(
         constructTxParams({
           data: 'someData',
@@ -86,7 +86,7 @@ describe('send-footer utils', function () {
       )
     })
 
-    it('should return a new txParams object with value and to properties if there is no selectedToken', function () {
+    it('should return a new txParams object with value and to properties if there is no selectedToken', function() {
       assert.deepEqual(
         constructTxParams({
           selectedToken: false,
@@ -109,7 +109,7 @@ describe('send-footer utils', function () {
       )
     })
 
-    it('should return a new txParams object without a to property and a 0 value if there is a selectedToken', function () {
+    it('should return a new txParams object without a to property and a 0 value if there is a selectedToken', function() {
       assert.deepEqual(
         constructTxParams({
           selectedToken: true,
@@ -132,8 +132,8 @@ describe('send-footer utils', function () {
     })
   })
 
-  describe('constructUpdatedTx()', function () {
-    it('should return a new object with an updated txParams', function () {
+  describe('constructUpdatedTx()', function() {
+    it('should return a new object with an updated txParams', function() {
       const result = constructUpdatedTx({
         amount: 'mockAmount',
         editingTransactionId: '0x456',
@@ -167,7 +167,7 @@ describe('send-footer utils', function () {
       })
     })
 
-    it('should not have data property if there is non in the original tx', function () {
+    it('should not have data property if there is non in the original tx', function() {
       const result = constructUpdatedTx({
         amount: 'mockAmount',
         editingTransactionId: '0x456',
@@ -203,7 +203,7 @@ describe('send-footer utils', function () {
       })
     })
 
-    it('should have token property values if selectedToken is truthy', function () {
+    it('should have token property values if selectedToken is truthy', function() {
       const result = constructUpdatedTx({
         amount: 'mockAmount',
         editingTransactionId: '0x456',

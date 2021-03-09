@@ -162,17 +162,21 @@ class TxGasUtil {
     // use original specified amount
     if (txMeta.gasLimitSpecified) {
       txMeta.estimatedGas = txParams.gas
-      return
     }
-
-    const recommendedGasHex = bnToHex(hexToBn(txMeta.estimatedGas).muln(1.3))
-    txParams.gas = recommendedGasHex
-    txMeta.gasLimitSpecified = true
 
     if (!txMeta.storageLimitSpecified) {
       txParams.storageLimit = txMeta.estimatedStorage
       txMeta.storageLimitSpecified = true
     }
+
+    if (txMeta.gasLimitSpecified && txMeta.storageLimitSpecified) {
+ return
+}
+
+    const recommendedGasHex = bnToHex(hexToBn(txMeta.estimatedGas).muln(1.3))
+    txParams.gas = recommendedGasHex
+    txMeta.gasLimitSpecified = true
+
     return
   }
 

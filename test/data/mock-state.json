@@ -102,7 +102,7 @@
         "decimals": "0"
       },
       {
-        "address": "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5",
+        "address": "0x18f6a2ffb0fc5952d16c9768b71cfd35b6399aa5",
         "decimals": "8",
         "symbol": "TEST2"
       },
@@ -114,7 +114,7 @@
     ],
     "contractExchangeRates": {
       "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": 0.00039345803819379796,
-      "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": 0.00008189274407698049
+      "0x18f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": 0.00008189274407698049
     },
     "ticker": "CFX",
     "currentCurrency": "usd",

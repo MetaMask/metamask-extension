@@ -5,10 +5,12 @@ import {
   createPendingNonceMiddleware,
   createPendingTxMiddleware,
 } from './middleware/pending'
+import { createHexAddressMiddleware } from './createHexAddressMiddleware'
 
 export default createMetamaskMiddleware
 
 function createMetamaskMiddleware({
+  networkId,
   version,
   getAccounts,
   processTransaction,
@@ -23,6 +25,7 @@ function createMetamaskMiddleware({
   getPendingTransactionByHash,
 }) {
   const metamaskMiddleware = mergeMiddleware([
+    createHexAddressMiddleware(networkId),
     createScaffoldMiddleware({
       // staticSubprovider
       eth_syncing: false,

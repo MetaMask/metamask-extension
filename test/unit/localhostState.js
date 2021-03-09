@@ -13,6 +13,8 @@ const initialState = {
     provider: {
       type: 'rpc',
       rpcTarget: 'http://localhost:12537',
+      chainId: '2999',
+      networkId: 2999,
     },
   },
 }

@@ -4,8 +4,6 @@ import c from 'classnames'
 import {
   // isValidDomainName,
   isValidAddress,
-  base32AddressSlicer,
-  addressSlicer,
   // isValidAddressHead,
 } from '../../../../helpers/utils/util'
 import { isSmartContractAddress } from '../../../../helpers/utils/transactions.util'
@@ -121,7 +119,8 @@ export default class EnsInput extends Component {
     event.clipboardData.items[0].getAsString(text => {
       if (
         isValidAddress(text, 'account') ||
-        isValidBase32Address(text, network, 'user')
+        isValidBase32Address(text, network, 'user') ||
+        isValidBase32Address(text, network, 'null')
       ) {
         this.props.onPaste(text)
       } else if (
@@ -151,6 +150,7 @@ export default class EnsInput extends Component {
     if (
       onValidAddressTyped &&
       (isValidBase32Address(input, network, 'user') ||
+        isValidBase32Address(input, network, 'null') ||
         isValidAddress(input, 'account'))
     ) {
       onValidAddressTyped(input)
@@ -242,15 +242,11 @@ export default class EnsInput extends Component {
           >
             <div className="ens-input__selected-input__title">
               {name ||
-                (inputIsBase32
-                  ? base32AddressSlicer(selectedBase32Address)
-                  : addressSlicer(selectedAddress))}
+                (inputIsBase32 ? selectedBase32Address : selectedAddress)}
             </div>
             {name && (
               <div className="ens-input__selected-input__subtitle">
-                {inputIsBase32
-                  ? base32AddressSlicer(selectedBase32Address, 38)
-                  : selectedAddress}
+                {inputIsBase32 ? selectedBase32Address : selectedAddress}
               </div>
             )}
           </div>

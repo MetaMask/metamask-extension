@@ -6,7 +6,6 @@ const { regularDelayMs, largeDelayMs } = require('./helpers')
 const { buildWebDriver } = require('./webdriver')
 const Ganache = require('@cfxjs/fullnode')
 const enLocaleMessages = require('../../app/_locales/en/messages.json')
-const { base32ToHex } = require('../../app/scripts/cip37')
 
 const ganacheServer = new Ganache()
 
@@ -166,6 +165,12 @@ describe('MetaMask', function() {
       assert.equal(await networkDiv.getText(), '2999')
     })
 
+    it('sets the account div within the dapp', async function() {
+      await driver.switchToWindow(dapp)
+      const accountsDiv = await driver.findElement(By.css('#accounts'))
+      assert.equal(await accountsDiv.getText(), publicBase32Address)
+    })
+
     it('changes the network', async function() {
       await driver.switchToWindow(extension)
 
@@ -194,13 +199,10 @@ describe('MetaMask', function() {
       assert.equal(await networkDiv.getText(), '0x1')
     })
 
-    it('sets the account div within the dapp', async function() {
-      await driver.switchToWindow(dapp)
-      const accountsDiv = await driver.findElement(By.css('#accounts'))
-      assert.equal(
-        await accountsDiv.getText(),
-        base32ToHex(publicBase32Address)
-      )
-    })
+    // it('sets the account div within the dapp', async function() {
+    //   await driver.switchToWindow(dapp)
+    //   const accountsDiv = await driver.findElement(By.css('#accounts'))
+    //   assert.equal(await accountsDiv.getText(), publicBase32Address)
+    // })
   })
 })

@@ -6,12 +6,13 @@ import createAsyncMiddleware from 'json-rpc-engine/src/createAsyncMiddleware'
 import providerFromMiddleware from '@yqrashawn/cfx-json-rpc-middleware/providerFromMiddleware'
 import BlockTracker from './eth-block-tracker'
 import { createCfxRewriteRequestMiddleware } from './createCfxMiddleware'
+import { createBase32AddressMiddleware } from './createBase32AddressMiddleware'
 
 const inTest = process.env.IN_TEST === 'true'
 
 export default createLocalhostClient
 
-function createLocalhostClient () {
+function createLocalhostClient() {
   const fetchMiddleware = createFetchMiddleware({
     rpcUrl: 'http://localhost:12537',
     appendMethod: true,
@@ -27,16 +28,17 @@ function createLocalhostClient () {
     createBlockRefRewriteMiddleware({ blockTracker }),
     createBlockTrackerInspectorMiddleware({ blockTracker }),
     createCfxRewriteRequestMiddleware(),
+    createBase32AddressMiddleware(2999),
     fetchMiddleware,
   ])
   return { networkMiddleware, blockTracker, rpcUrl: 'http://localhost:12537' }
 }
 
-function delay (time) {
-  return new Promise((resolve) => setTimeout(resolve, time))
+function delay(time) {
+  return new Promise(resolve => setTimeout(resolve, time))
 }
 
-function createEstimateGasMiddleware () {
+function createEstimateGasMiddleware() {
   return createAsyncMiddleware(async (req, _, next) => {
     if (req.method === 'cfx_estimateGas' && inTest) {
       await delay(2000)

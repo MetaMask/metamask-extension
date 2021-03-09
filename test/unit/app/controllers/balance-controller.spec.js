@@ -37,6 +37,7 @@ describe('Balance Controller', function() {
     balanceController = new BalanceController({
       address: TEST_ADDRESS,
       accountTracker: new AccountTracker({
+        network: { getNetworkConfig: () => 2999 },
         provider,
         blockTracker: new PollingBlockTracker({ provider }),
       }),

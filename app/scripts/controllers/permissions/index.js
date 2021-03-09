@@ -23,6 +23,7 @@ import {
 export class PermissionsController {
   constructor(
     {
+      getCurrentNetwork,
       notifyDomain,
       notifyAllDomains,
       getKeyringAccounts,
@@ -31,6 +32,7 @@ export class PermissionsController {
     restoredPermissions = {},
     restoredState = {}
   ) {
+    this._getCurrentNetwork = getCurrentNetwork
     this.store = new ObservableStore({
       [METADATA_STORE_KEY]: restoredState[METADATA_STORE_KEY] || {},
       [LOG_STORE_KEY]: restoredState[LOG_STORE_KEY] || [],
@@ -65,6 +67,7 @@ export class PermissionsController {
 
     engine.push(
       createMethodMiddleware({
+        getCurrentNetwork: this._getCurrentNetwork,
         store: this.store,
         storeKey: METADATA_STORE_KEY,
         getAccounts: this.getAccounts.bind(this, origin),
@@ -206,9 +209,9 @@ export class PermissionsController {
     let error
     try {
       await new Promise((resolve, reject) => {
-        this.permissions.grantNewPermissions(origin, permissions, {}, err =>
-          (err ? resolve() : reject(err))
-        )
+        this.permissions.grantNewPermissions(origin, permissions, {}, err => {
+          return err ? resolve() : reject(err)
+        })
       })
     } catch (err) {
       error = err

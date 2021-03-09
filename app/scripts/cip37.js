@@ -1,14 +1,5 @@
-const { encode, decode } = require('conflux-address-js')
-const { stripHexPrefix, bufferToHex } = require('cfx-util')
-
-function hexStrToByte(hex) {
-  const bytes = new Uint8Array(hex.length / 2)
-  for (let c = 0; c < hex.length; c += 2) {
-    bytes[c / 2] = parseInt(hex.substr(c, 2), 16)
-  }
-
-  return bytes
-}
+const { decode } = require('conflux-address-js')
+const format = require('js-conflux-sdk/src/util/format')
 
 function isHexString(hex) {
   return typeof hex === 'string' && /^(-)?0x[0-9a-f]*$/i.test(hex)
@@ -31,13 +22,7 @@ function hexToBase32(hexAddr, netId) {
   if (!Number.isSafeInteger(netId)) {
     throw new Error(`invalid netId: ${netId}, must be a safe integer`)
   }
-  hexAddr = stripHexPrefix(hexAddr)
-  return encode(hexStrToByte(hexAddr.toLowerCase()), netId)
-}
-
-function base32ToHex(addr) {
-  const { hexAddress } = decode(addr)
-  return bufferToHex(hexAddress)
+  return format.address(hexAddr, netId)
 }
 
 function isLikeBase32Address(addr) {
@@ -67,10 +52,30 @@ function isValidBase32Address(addr, netId, type) {
   return valid
 }
 
+const NET_ID_LIMIT = 0xffffffff
+function encodeNetId(netId) {
+  if (!Number.isInteger(netId)) {
+    throw new Error('netId should be passed as an integer')
+  }
+  if (netId <= 0 || netId > NET_ID_LIMIT) {
+    throw new Error('netId should be passed as in range [1, 0xFFFFFFFF]')
+  }
+
+  switch (netId) {
+    case 1:
+      return 'cfxtest'
+    case 1029:
+      return 'cfx'
+    default:
+      return `net${netId}`
+  }
+}
+
 module.exports = {
   isValidBase32Address,
   hexToBase32,
-  base32ToHex,
+  base32ToHex: format.hexAddress,
+  encodeNetId,
   isLikeBase32Address,
   isValidHexAddress,
 }

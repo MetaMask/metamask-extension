@@ -166,7 +166,7 @@ describe('MetaMask', function() {
         await driver.delay(tinyDelayMs)
 
         await addAddressInputs[1].sendKeys(
-          '0x1f318c334780961fb129d2a6c30d0763d9a5c970'
+          'net2999:aatxddbxj8akph7vfhkmru2ra7v7xksksamx6rgwy2'
         )
 
         await driver.delay(largeDelayMs * 2)

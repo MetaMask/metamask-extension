@@ -6,6 +6,8 @@ import Message from './signature-request-message'
 import { ENVIRONMENT_TYPE_NOTIFICATION } from './signature-request.constants'
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util'
 import Identicon from '../../ui/identicon'
+import { hexToBase32 } from '../../../../../app/scripts/cip37'
+import { base32AddressSlicer } from '../../../helpers/utils/util'
 
 export default class SignatureRequest extends PureComponent {
   static propTypes = {
@@ -83,7 +85,7 @@ export default class SignatureRequest extends PureComponent {
           </div>
           <div className="signature-request-content__info">{origin}</div>
           <div className="signature-request-content__info">
-            {this.formatWallet(senderWallet)}
+            {base32AddressSlicer(hexToBase32(senderWallet, network))}
           </div>
         </div>
         <Message network={network} data={message} />

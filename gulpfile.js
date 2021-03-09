@@ -34,17 +34,17 @@ const dependencies = Object.keys(
   (packageJSON && packageJSON.dependencies) || {}
 )
 const materialUIDependencies = ['@material-ui/core']
-const reactDepenendencies = dependencies.filter((dep) => dep.match(/react/))
-const d3Dependencies = ['c3', 'd3']
+const reactDepenendencies = dependencies.filter(dep => dep.match(/react/))
+// const d3Dependencies = ['c3', 'd3']
 
 const externalDependenciesMap = {
   // background: ['3box'],
   background: [],
-  ui: [...materialUIDependencies, ...reactDepenendencies, ...d3Dependencies],
+  ui: [...materialUIDependencies, ...reactDepenendencies],
 }
 
-function gulpParallel (...args) {
-  return function spawnGulpChildProcess (cb) {
+function gulpParallel(...args) {
+  return function spawnGulpChildProcess(cb) {
     return gulpMultiProcess(args, cb, true)
   }
 }
@@ -57,7 +57,7 @@ const commonPlatforms = [
 
 // browser reload
 
-gulp.task('dev:reload', function () {
+gulp.task('dev:reload', function() {
   livereload.listen({
     port: 35729,
   })
@@ -70,40 +70,40 @@ const copyDevTaskNames = []
 
 createCopyTasks('locales', {
   source: './app/_locales/',
-  destinations: commonPlatforms.map((platform) => `./dist/${platform}/_locales`),
+  destinations: commonPlatforms.map(platform => `./dist/${platform}/_locales`),
 })
 createCopyTasks('images', {
   source: './app/images/',
-  destinations: commonPlatforms.map((platform) => `./dist/${platform}/images`),
+  destinations: commonPlatforms.map(platform => `./dist/${platform}/images`),
 })
 createCopyTasks('contractImages', {
   source: './node_modules/@yqrashawn/cfx-contract-metadata/images/',
   destinations: commonPlatforms.map(
-    (platform) => `./dist/${platform}/images/contract`
+    platform => `./dist/${platform}/images/contract`
   ),
 })
 createCopyTasks('fonts', {
   source: './app/fonts/',
-  destinations: commonPlatforms.map((platform) => `./dist/${platform}/fonts`),
+  destinations: commonPlatforms.map(platform => `./dist/${platform}/fonts`),
 })
 createCopyTasks('vendor', {
   source: './app/vendor/',
-  destinations: commonPlatforms.map((platform) => `./dist/${platform}/vendor`),
+  destinations: commonPlatforms.map(platform => `./dist/${platform}/vendor`),
 })
 createCopyTasks('css', {
   source: './ui/app/css/output/',
-  destinations: commonPlatforms.map((platform) => `./dist/${platform}`),
+  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
 })
 createCopyTasks('reload', {
   devOnly: true,
   source: './app/scripts/',
   pattern: '/chromereload.js',
-  destinations: commonPlatforms.map((platform) => `./dist/${platform}`),
+  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
 })
 createCopyTasks('html', {
   source: './app/',
   pattern: '/*.html',
-  destinations: commonPlatforms.map((platform) => `./dist/${platform}`),
+  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
 })
 
 // copy extension
@@ -111,10 +111,10 @@ createCopyTasks('html', {
 createCopyTasks('manifest', {
   source: './app/',
   pattern: '/*.json',
-  destinations: browserPlatforms.map((platform) => `./dist/${platform}`),
+  destinations: browserPlatforms.map(platform => `./dist/${platform}`),
 })
 
-function createCopyTasks (label, opts) {
+function createCopyTasks(label, opts) {
   if (!opts.devOnly) {
     const copyTaskName = `copy:${label}`
     copyTask(copyTaskName, opts)
@@ -125,16 +125,16 @@ function createCopyTasks (label, opts) {
   copyDevTaskNames.push(copyDevTaskName)
 }
 
-function copyTask (taskName, opts) {
+function copyTask(taskName, opts) {
   const source = opts.source
   const destination = opts.destination
   const destinations = opts.destinations || [destination]
   const pattern = opts.pattern || '/**/*'
   const devMode = opts.devMode
 
-  return gulp.task(taskName, function () {
+  return gulp.task(taskName, function() {
     if (devMode) {
-      watch(source + pattern, (event) => {
+      watch(source + pattern, event => {
         livereload.changed(event.path)
         performCopy()
       })
@@ -143,12 +143,12 @@ function copyTask (taskName, opts) {
     return performCopy()
   })
 
-  function performCopy () {
+  function performCopy() {
     // stream from source
     let stream = gulp.src(source + pattern, { base: source })
 
     // copy to destinations
-    destinations.forEach(function (destination) {
+    destinations.forEach(function(destination) {
       stream = stream.pipe(gulp.dest(destination))
     })
 
@@ -158,11 +158,11 @@ function copyTask (taskName, opts) {
 
 // manifest tinkering
 
-gulp.task('manifest:chrome', function () {
+gulp.task('manifest:chrome', function() {
   return gulp
     .src('./dist/chrome/manifest.json')
     .pipe(
-      jsoneditor(function (json) {
+      jsoneditor(function(json) {
         delete json.applications
         json.minimum_chrome_version = '58'
         return json
@@ -171,11 +171,11 @@ gulp.task('manifest:chrome', function () {
     .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
 })
 
-gulp.task('manifest:opera', function () {
+gulp.task('manifest:opera', function() {
   return gulp
     .src('./dist/opera/manifest.json')
     .pipe(
-      jsoneditor(function (json) {
+      jsoneditor(function(json) {
         json.permissions = [
           'storage',
           'tabs',
@@ -190,7 +190,7 @@ gulp.task('manifest:opera', function () {
     .pipe(gulp.dest('./dist/opera', { overwrite: true }))
 })
 
-gulp.task('manifest:production', function () {
+gulp.task('manifest:production', function() {
   return (
     gulp
       .src(
@@ -205,8 +205,8 @@ gulp.task('manifest:production', function () {
 
       // Exclude chromereload script in production:
       .pipe(
-        jsoneditor(function (json) {
-          json.background.scripts = json.background.scripts.filter((script) => {
+        jsoneditor(function(json) {
+          json.background.scripts = json.background.scripts.filter(script => {
             return !script.includes('chromereload')
           })
           return json
@@ -217,7 +217,7 @@ gulp.task('manifest:production', function () {
   )
 })
 
-gulp.task('manifest:testing', function () {
+gulp.task('manifest:testing', function() {
   return (
     gulp
       .src(['./dist/firefox/manifest.json', './dist/chrome/manifest.json'], {
@@ -226,7 +226,7 @@ gulp.task('manifest:testing', function () {
 
       // Exclude chromereload script in production:
       .pipe(
-        jsoneditor(function (json) {
+        jsoneditor(function(json) {
           json.permissions = [
             ...json.permissions,
             'webRequestBlocking',
@@ -244,18 +244,18 @@ const scriptsToExcludeFromBackgroundDevBuild = {
   'bg-libs.js': true,
 }
 
-gulp.task('manifest:testing-local', function () {
+gulp.task('manifest:testing-local', function() {
   return gulp
     .src(['./dist/firefox/manifest.json', './dist/chrome/manifest.json'], {
       base: './dist/',
     })
 
     .pipe(
-      jsoneditor(function (json) {
+      jsoneditor(function(json) {
         json.background = {
           ...json.background,
           scripts: json.background.scripts.filter(
-            (scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName]
+            scriptName => !scriptsToExcludeFromBackgroundDevBuild[scriptName]
           ),
         }
         json.permissions = [
@@ -270,18 +270,18 @@ gulp.task('manifest:testing-local', function () {
     .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
-gulp.task('manifest:dev', function () {
+gulp.task('manifest:dev', function() {
   return gulp
     .src(['./dist/firefox/manifest.json', './dist/chrome/manifest.json'], {
       base: './dist/',
     })
 
     .pipe(
-      jsoneditor(function (json) {
+      jsoneditor(function(json) {
         json.background = {
           ...json.background,
           scripts: json.background.scripts.filter(
-            (scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName]
+            scriptName => !scriptsToExcludeFromBackgroundDevBuild[scriptName]
           ),
         }
         json.permissions = [...json.permissions, 'webRequestBlocking']
@@ -292,7 +292,7 @@ gulp.task('manifest:dev', function () {
     .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
-gulp.task('optimize:images', function () {
+gulp.task('optimize:images', function() {
   return gulp
     .src('./dist/**/images/**', { base: './dist/' })
     .pipe(imagemin())
@@ -350,10 +350,10 @@ gulp.task(
   })
 )
 
-function createScssBuildTask ({ src, dest, devMode, pattern }) {
-  return function () {
+function createScssBuildTask({ src, dest, devMode, pattern }) {
+  return function() {
     if (devMode) {
-      watch(pattern, async (event) => {
+      watch(pattern, async event => {
         const stream = buildScss()
         await endOfStream(stream)
         livereload.changed(event.path)
@@ -363,7 +363,7 @@ function createScssBuildTask ({ src, dest, devMode, pattern }) {
     return buildScss()
   }
 
-  function buildScssWithSourceMaps () {
+  function buildScssWithSourceMaps() {
     return gulp
       .src(src)
       .pipe(sourcemaps.init())
@@ -377,7 +377,7 @@ function createScssBuildTask ({ src, dest, devMode, pattern }) {
       .pipe(gulp.dest(dest))
   }
 
-  function buildScss () {
+  function buildScss() {
     return gulp
       .src(src)
       .pipe(sass().on('error', sass.logError))
@@ -389,7 +389,7 @@ function createScssBuildTask ({ src, dest, devMode, pattern }) {
   }
 }
 
-gulp.task('lint-scss', function () {
+gulp.task('lint-scss', function() {
   return gulp.src('ui/app/css/itcss/**/*.scss').pipe(
     gulpStylelint({
       reporters: [{ formatter: 'string', console: true }],
@@ -432,8 +432,8 @@ createTasksForBuildJsExtension({
   testing: 'true',
 })
 
-function createTasksForBuildJsDeps ({ key, filename }) {
-  const destinations = browserPlatforms.map((platform) => `./dist/${platform}`)
+function createTasksForBuildJsDeps({ key, filename }) {
+  const destinations = browserPlatforms.map(platform => `./dist/${platform}`)
 
   const bundleTaskOpts = Object.assign({
     buildSourceMaps: true,
@@ -459,7 +459,7 @@ function createTasksForBuildJsDeps ({ key, filename }) {
   )
 }
 
-function createTasksForBuildJsExtension ({
+function createTasksForBuildJsExtension({
   buildJsFiles,
   taskPrefix,
   devMode,
@@ -468,10 +468,10 @@ function createTasksForBuildJsExtension ({
 }) {
   // inpage must be built before all other scripts:
   const rootDir = './app/scripts'
-  const nonInpageFiles = buildJsFiles.filter((file) => file !== 'portal-inpage')
+  const nonInpageFiles = buildJsFiles.filter(file => file !== 'portal-inpage')
   const buildPhase1 = ['portal-inpage']
   const buildPhase2 = nonInpageFiles
-  const destinations = browserPlatforms.map((platform) => `./dist/${platform}`)
+  const destinations = browserPlatforms.map(platform => `./dist/${platform}`)
   bundleTaskOpts = Object.assign(
     {
       buildSourceMaps: true,
@@ -494,7 +494,7 @@ function createTasksForBuildJsExtension ({
   })
 }
 
-function createTasksForBuildJs ({
+function createTasksForBuildJs({
   rootDir,
   taskPrefix,
   bundleTaskOpts,
@@ -504,7 +504,7 @@ function createTasksForBuildJs ({
 }) {
   // bundle task for each file
   const jsFiles = [].concat(buildPhase1, buildPhase2)
-  jsFiles.forEach((jsFile) => {
+  jsFiles.forEach(jsFile => {
     gulp.task(
       `${taskPrefix}:${jsFile}`,
       bundleTask(
@@ -525,10 +525,10 @@ function createTasksForBuildJs ({
   })
   // compose into larger task
   const subtasks = []
-  subtasks.push(gulp.parallel(buildPhase1.map((file) => `${taskPrefix}:${file}`)))
+  subtasks.push(gulp.parallel(buildPhase1.map(file => `${taskPrefix}:${file}`)))
   if (buildPhase2.length) {
     subtasks.push(
-      gulp.parallel(buildPhase2.map((file) => `${taskPrefix}:${file}`))
+      gulp.parallel(buildPhase2.map(file => `${taskPrefix}:${file}`))
     )
   }
 
@@ -537,7 +537,7 @@ function createTasksForBuildJs ({
 
 // clean dist
 
-gulp.task('clean', function clean () {
+gulp.task('clean', function clean() {
   return del(['./dist/*'])
 })
 
@@ -601,7 +601,7 @@ gulp.task('dist', gulp.series('build', 'zip'))
 
 // task generators
 
-function zipTask (target) {
+function zipTask(target) {
   return () => {
     return gulp
       .src(`dist/${target}/**`)
@@ -616,8 +616,9 @@ function zipTask (target) {
   }
 }
 
-function generateBundler (opts, performBundle) {
+function generateBundler(opts, performBundle) {
   const browserifyOpts = assign({}, watchify.args, {
+    browserField: 'browserify-browser',
     plugin: [],
     transform: [],
     debug: opts.buildSourceMaps,
@@ -716,7 +717,7 @@ function generateBundler (opts, performBundle) {
   if (opts.watch) {
     bundler = watchify(bundler)
     // on any file update, re-runs the bundler
-    bundler.on('update', async (ids) => {
+    bundler.on('update', async ids => {
       const stream = performBundle()
       await endOfStream(stream)
       livereload.changed(`${ids}`)
@@ -726,12 +727,12 @@ function generateBundler (opts, performBundle) {
   return bundler
 }
 
-function bundleTask (opts) {
+function bundleTask(opts) {
   let bundler
 
   return performBundle
 
-  function performBundle () {
+  function performBundle() {
     // initialize bundler if not available yet
     // dont create bundler until task is actually run
     if (!bundler) {
@@ -743,7 +744,7 @@ function bundleTask (opts) {
     let buildStream = bundler.bundle()
 
     // handle errors
-    buildStream.on('error', (err) => {
+    buildStream.on('error', err => {
       beep()
       if (opts.watch) {
         console.warn(err.stack)
@@ -789,7 +790,7 @@ function bundleTask (opts) {
     }
 
     // write completed bundles
-    opts.destinations.forEach((dest) => {
+    opts.destinations.forEach(dest => {
       buildStream = buildStream.pipe(gulp.dest(dest))
     })
 
@@ -797,7 +798,7 @@ function bundleTask (opts) {
   }
 }
 
-function configureBundleForSesify ({ browserifyOpts, bundleName }) {
+function configureBundleForSesify({ browserifyOpts, bundleName }) {
   // add in sesify args for better globalRef usage detection
   Object.assign(browserifyOpts, sesify.args)
 
@@ -835,6 +836,6 @@ function configureBundleForSesify ({ browserifyOpts, bundleName }) {
   browserifyOpts.transform.push([removeHtmlComment, { global: true }])
 }
 
-function beep () {
+function beep() {
   process.stdout.write('\x07')
 }

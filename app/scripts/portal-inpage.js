@@ -83,6 +83,14 @@ confluxJS.setProvider = function() {
 }
 log.debug('ConfluxPortal - injected conflux')
 
+inpageProvider.on('chainIdChanged', chainId => {
+  confluxJS.chainId = parseInt(chainId, 16)
+})
+
+inpageProvider.on('networkChanged', networkId => {
+  confluxJS.networkId = parseInt(networkId, 10)
+})
+
 proxiedInpageProvider._web3Ref = confluxJS
 
 // setup dapp auto reload AND proxy web3

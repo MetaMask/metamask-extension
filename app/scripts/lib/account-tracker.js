@@ -11,7 +11,7 @@ import EthQuery from '../eth-query'
 import ObservableStore from 'obs-store'
 import log from 'loglevel'
 import pify from 'pify'
-import { Conflux } from 'js-conflux-sdk/src/index'
+import Conflux from 'js-conflux-sdk/src/Conflux'
 import SINGLE_CALL_BALANCES_ABI from '../controllers/cfx-single-call-balance-checker-abi.js'
 
 import { bnToHex } from './util'
@@ -56,6 +56,7 @@ class AccountTracker {
     this.network = opts.network
 
     this.cfx = new Conflux({ url: this._provider._confluxWebProvider.url })
+    this.cfx.networkId = parseInt(this.network.getNetworkConfig().network, 10)
   }
 
   start() {
@@ -217,6 +218,7 @@ class AccountTracker {
   async _updateAccountsViaBalanceChecker(addresses, deployedContractAddress) {
     const accounts = this.store.getState().accounts
     this.cfx.provider.url = this._provider._confluxWebProvider.url
+    this.cfx.networkId = parseInt(this.network.getNetworkConfig().network, 10)
     const ethContract = this.cfx.Contract({
       abi: SINGLE_CALL_BALANCES_ABI,
       address: deployedContractAddress,

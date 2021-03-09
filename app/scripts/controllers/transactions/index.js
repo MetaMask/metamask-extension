@@ -2,7 +2,7 @@ import abiDecoder from 'abi-decoder'
 import * as ethUtil from 'cfx-util'
 import { ethErrors } from 'eth-json-rpc-errors'
 import abi from 'human-standard-token-abi'
-import { Transaction } from 'js-conflux-sdk/src/index.js'
+import Transaction from 'js-conflux-sdk/src/Transaction'
 import log from 'loglevel'
 import NonceTracker from 'nonce-tracker'
 import ObservableStore from 'obs-store'
@@ -562,7 +562,9 @@ class TransactionController extends EventEmitter {
     // sign tx
     const fromAddress = txParams.from
     const ethTx = new Transaction(txParams)
-    await this.signEthTx(ethTx, fromAddress)
+    await this.signEthTx(ethTx, fromAddress, {
+      networkId: parseInt(txMeta.metamaskNetworkId, 10),
+    })
 
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation
