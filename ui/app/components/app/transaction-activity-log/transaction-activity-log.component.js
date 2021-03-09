@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { createExplorerLink } from '@metamask/etherscan-link';
 
 import {
   getEthConversionFromWeiHex,
   getValueFromWeiHex,
 } from '../../../helpers/utils/conversions.util';
 import { formatDate } from '../../../helpers/utils/util';
+import { getBlockExplorerUrlForTx } from '../../../../../shared/modules/transaction.utils';
 import TransactionActivityLogIcon from './transaction-activity-log-icon';
 import { CONFIRMED_STATUS } from './transaction-activity-log.constants';
 
@@ -28,14 +28,14 @@ export default class TransactionActivityLog extends PureComponent {
     onRetry: PropTypes.func,
     primaryTransaction: PropTypes.object,
     isEarliestNonce: PropTypes.bool,
+    rpcPrefs: PropTypes.object,
   };
 
-  handleActivityClick = (hash) => {
-    const { primaryTransaction } = this.props;
-    const { metamaskNetworkId } = primaryTransaction;
-
-    const etherscanUrl = createExplorerLink(hash, metamaskNetworkId);
-
+  handleActivityClick = (activity) => {
+    const etherscanUrl = getBlockExplorerUrlForTx(
+      activity,
+      this.props.rpcPrefs,
+    );
     global.platform.openTab({ url: etherscanUrl });
   };
 
@@ -79,7 +79,7 @@ export default class TransactionActivityLog extends PureComponent {
 
   renderActivity(activity, index) {
     const { conversionRate, nativeCurrency } = this.props;
-    const { eventKey, value, timestamp, hash } = activity;
+    const { eventKey, value, timestamp } = activity;
     const ethValue =
       index === 0
         ? `${getValueFromWeiHex({
@@ -111,7 +111,7 @@ export default class TransactionActivityLog extends PureComponent {
           <div
             className="transaction-activity-log__activity-text"
             title={activityText}
-            onClick={() => this.handleActivityClick(hash)}
+            onClick={() => this.handleActivityClick(activity)}
           >
             {activityText}
           </div>
