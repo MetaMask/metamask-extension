@@ -450,7 +450,7 @@ export function unlockHardwareWalletAccounts(
         log.error(e);
         dispatch(displayWarning(e.message));
         dispatch(hideLoadingIndication());
-        return Promise.reject(e);
+        throw e;
       }
     }
 
