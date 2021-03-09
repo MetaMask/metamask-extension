@@ -843,6 +843,9 @@
     "message": "Hide $1",
     "description": "$1 is the symbol for a token (e.g. 'DAI')"
   },
+  "hideZeroBalanceTokens": {
+    "message": "Hide Tokens Without Balance"
+  },
   "history": {
     "message": "History"
   },
