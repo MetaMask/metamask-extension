@@ -437,6 +437,7 @@ describe('Transaction Controller', function () {
           gasPrice: originalValue,
         },
       };
+      // eslint-disable-next-line @babel/no-invalid-this
       this.timeout(15000);
       const wrongValue = '0x05';
 
