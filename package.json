@@ -82,7 +82,7 @@
   },
   "resolutions": {
     "**/configstore/dot-prop": "^5.1.1",
-    "**/*/elliptic": "^6.5.3",
+    "**/*/elliptic": "^6.5.4",
     "**/knex/minimist": "^1.2.5",
     "**/optimist/minimist": "^1.2.5",
     "**/socketcluster/minimist": "^1.2.5",
