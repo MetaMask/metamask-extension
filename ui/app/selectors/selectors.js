@@ -158,6 +158,12 @@ export const getMetaMaskAccountsOrdered = createSelector(
       .map((address) => ({ ...identities[address], ...accounts[address] })),
 );
 
+export const getMetaMaskAccountsConnected = createSelector(
+  getMetaMaskAccountsOrdered,
+  (connectedAccounts) =>
+    connectedAccounts.map(({ address }) => address.toLowerCase()),
+);
+
 export function isBalanceCached(state) {
   const selectedAccountBalance =
     state.metamask.accounts[getSelectedAddress(state)].balance;

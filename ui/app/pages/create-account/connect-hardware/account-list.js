@@ -2,25 +2,10 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import getAccountLink from '../../../../lib/account-link';
 import Button from '../../../components/ui/button';
+import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
 
 class AccountList extends Component {
-  getHdPaths() {
-    const ledgerLiveKey = `m/44'/60'/0'/0/0`;
-    const mewKey = `m/44'/60'/0'`;
-
-    return [
-      {
-        name: `Ledger Live`,
-        value: ledgerLiveKey,
-      },
-      {
-        name: `Legacy (MEW / MyCrypto)`,
-        value: mewKey,
-      },
-    ];
-  }
-
   goToNextPage = () => {
     // If we have < 5 accounts, it's restricted by BIP-44
     if (this.props.accounts.length === 5) {
@@ -35,8 +20,7 @@ class AccountList extends Component {
   };
 
   renderHdPathSelector() {
-    const { onPathChange, selectedPath } = this.props;
-    const options = this.getHdPaths();
+    const { onPathChange, selectedPath, hdPaths } = this.props;
 
     return (
       <div>
@@ -47,7 +31,7 @@ class AccountList extends Component {
         <div className="hw-connect__hdPath">
           <Dropdown
             className="hw-connect__hdPath__select"
-            options={options}
+            options={hdPaths}
             selectedOption={selectedPath}
             onChange={(value) => {
               onPathChange(value);
@@ -81,45 +65,63 @@ class AccountList extends Component {
   }
 
   renderAccounts() {
+    const { accounts, connectedAccounts } = this.props;
+
     return (
       <div className="hw-account-list">
-        {this.props.accounts.map((account, idx) => (
-          <div className="hw-account-list__item" key={account.address}>
-            <div className="hw-account-list__item__radio">
-              <input
-                type="radio"
-                name="selectedAccount"
-                id={`address-${idx}`}
-                value={account.index}
-                onClick={(e) => this.props.onAccountChange(e.target.value)}
-                checked={
-                  this.props.selectedAccount === account.index.toString()
-                }
-              />
-              <label
-                className="hw-account-list__item__label"
-                htmlFor={`address-${idx}`}
-              >
-                <span className="hw-account-list__item__index">
-                  {account.index + 1}
-                </span>
-                {`${account.address.slice(0, 4)}...${account.address.slice(
-                  -4,
-                )}`}
-                <span className="hw-account-list__item__balance">{`${account.balance}`}</span>
-              </label>
-            </div>
-            <a
-              className="hw-account-list__item__link"
-              href={getAccountLink(account.address, this.props.network)}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={this.context.t('etherscanView')}
+        {accounts.map((account, idx) => {
+          const accountAlreadyConnected = connectedAccounts.includes(
+            account.address.toLowerCase(),
+          );
+          const value = account.index;
+          const checked =
+            this.props.selectedAccounts.includes(account.index) ||
+            accountAlreadyConnected;
+
+          return (
+            <div
+              className="hw-account-list__item"
+              key={account.address}
+              title={
+                accountAlreadyConnected
+                  ? this.context.t('selectAnAccountAlreadyConnected')
+                  : ''
+              }
             >
-              <img src="images/popout.svg" alt="" />
-            </a>
-          </div>
-        ))}
+              <div className="hw-account-list__item__checkbox">
+                <Checkbox
+                  id={`address-${idx}`}
+                  checked={checked}
+                  disabled={accountAlreadyConnected}
+                  onClick={() => {
+                    this.props.onAccountChange(value);
+                  }}
+                />
+                <label
+                  className="hw-account-list__item__label"
+                  htmlFor={`address-${idx}`}
+                >
+                  <span className="hw-account-list__item__index">
+                    {account.index + 1}
+                  </span>
+                  {`${account.address.slice(0, 4)}...${account.address.slice(
+                    -4,
+                  )}`}
+                  <span className="hw-account-list__item__balance">{`${account.balance}`}</span>
+                </label>
+              </div>
+              <a
+                className="hw-account-list__item__link"
+                href={getAccountLink(account.address, this.props.network)}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={this.context.t('etherscanView')}
+              >
+                <img src="images/popout.svg" alt="" />
+              </a>
+            </div>
+          );
+        })}
       </div>
     );
   }
@@ -144,7 +146,7 @@ class AccountList extends Component {
   }
 
   renderButtons() {
-    const disabled = this.props.selectedAccount === null;
+    const disabled = this.props.selectedAccounts.length === 0;
     const buttonProps = {};
     if (disabled) {
       buttonProps.disabled = true;
@@ -165,7 +167,11 @@ class AccountList extends Component {
           large
           className="new-external-account-form__button unlock"
           disabled={disabled}
-          onClick={this.props.onUnlockAccount.bind(this, this.props.device)}
+          onClick={this.props.onUnlockAccounts.bind(
+            this,
+            this.props.device,
+            this.props.selectedPath,
+          )}
         >
           {this.context.t('unlock')}
         </Button>
@@ -201,14 +207,16 @@ AccountList.propTypes = {
   selectedPath: PropTypes.string.isRequired,
   device: PropTypes.string.isRequired,
   accounts: PropTypes.array.isRequired,
+  connectedAccounts: PropTypes.array.isRequired,
   onAccountChange: PropTypes.func.isRequired,
   onForgetDevice: PropTypes.func.isRequired,
   getPage: PropTypes.func.isRequired,
   network: PropTypes.string,
-  selectedAccount: PropTypes.string,
-  onUnlockAccount: PropTypes.func,
+  selectedAccounts: PropTypes.array.isRequired,
+  onUnlockAccounts: PropTypes.func,
   onCancel: PropTypes.func,
   onAccountRestriction: PropTypes.func,
+  hdPaths: PropTypes.array.isRequired,
 };
 
 AccountList.contextTypes = {

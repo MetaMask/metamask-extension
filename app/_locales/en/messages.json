@@ -817,6 +817,10 @@
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
+  "hardwareWalletLegacyDescription": {
+    "message": "(legacy)",
+    "description": "Text representing the MEW path"
+  },
   "hardwareWallets": {
     "message": "Connect a hardware wallet"
   },
@@ -1479,6 +1483,9 @@
   },
   "selectAnAccount": {
     "message": "Select an Account"
+  },
+  "selectAnAccountAlreadyConnected": {
+    "message": "This account has already been connected to MetaMask"
   },
   "selectAnAccountHelp": {
     "message": "Select the account to view in MetaMask"
