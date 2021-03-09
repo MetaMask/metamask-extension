@@ -15,9 +15,8 @@
         "gas": "0x5208",
         "gasPrice": "0x2540be400"
       },
-      "type": "standard",
       "origin": "metamask",
-      "transactionCategory": "sentEther",
+      "type": "sentEther",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 12,
@@ -76,9 +75,8 @@
         "gas": "0x5208",
         "gasPrice": "0x2540be400"
       },
-      "type": "standard",
       "origin": "metamask",
-      "transactionCategory": "sentEther",
+      "type": "sentEther",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 12,
@@ -142,9 +140,8 @@
         "gas": "0x5208",
         "gasPrice": "0x2540be400"
       },
-      "type": "standard",
       "origin": "metamask",
-      "transactionCategory": "sentEther",
+      "type": "sentEther",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 0,
@@ -203,9 +200,8 @@
         "gas": "0x5208",
         "gasPrice": "0x2540be400"
       },
-      "type": "standard",
       "origin": "metamask",
-      "transactionCategory": "sentEther",
+      "type": "sentEther",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 0,
@@ -269,9 +265,8 @@
         "gas": "0x5208",
         "gasPrice": "0x306dc4200"
       },
-      "type": "standard",
       "origin": "metamask",
-      "transactionCategory": "sentEther",
+      "type": "sentEther",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 0,
@@ -331,9 +326,8 @@
         "gas": "0x5208",
         "gasPrice": "0x306dc4200"
       },
-      "type": "standard",
       "origin": "metamask",
-      "transactionCategory": "sentEther",
+      "type": "sentEther",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 0,
@@ -398,7 +392,7 @@
         "value": "0x1043561a882930000"
       },
       "hash": "0x5ca26d1cdcabef1ac2ad5b2b38604c9ced65d143efc7525f848c46f28e0e4116",
-      "transactionCategory": "incoming"
+      "type": "incoming"
     },
     "primaryTransaction": {
       "blockNumber": "6477257",
@@ -415,7 +409,7 @@
         "value": "0x1043561a882930000"
       },
       "hash": "0x5ca26d1cdcabef1ac2ad5b2b38604c9ced65d143efc7525f848c46f28e0e4116",
-      "transactionCategory": "incoming"
+      "type": "incoming"
     },
     "hasRetried": false,
     "hasCancelled": false
@@ -436,7 +430,7 @@
         "value": "0x0"
       },
       "hash": "0xa42b2b433e5bd2616b52e30792aedb6a3c374a752a95d43d99e2a8b143937889",
-      "transactionCategory": "incoming"
+      "type": "incoming"
     },
     "primaryTransaction": {
       "blockNumber": "6454493",
@@ -453,7 +447,7 @@
         "value": "0x0"
       },
       "hash": "0xa42b2b433e5bd2616b52e30792aedb6a3c374a752a95d43d99e2a8b143937889",
-      "transactionCategory": "incoming"
+      "type": "incoming"
     },
     "hasRetried": false,
     "hasCancelled": false
@@ -474,7 +468,7 @@
         "value": "0xde0b6b3a7640000"
       },
       "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
-      "transactionCategory": "incoming"
+      "type": "incoming"
     },
     "primaryTransaction": {
       "blockNumber": "6195526",
@@ -491,7 +485,7 @@
         "value": "0xde0b6b3a7640000"
       },
       "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
-      "transactionCategory": "incoming"
+      "type": "incoming"
     },
     "hasRetried": false,
     "hasCancelled": false
@@ -514,7 +508,7 @@
       "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
       "destinationTokenSymbol": "ABC",
       "sourceTokenSymbol": "ETH",
-      "transactionCategory": "swap"
+      "type": "swap"
     },
     "primaryTransaction": {
       "blockNumber": "6195527",
@@ -531,7 +525,7 @@
         "value": "0xde0b6b3a7640000"
       },
       "hash": "0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a",
-      "transactionCategory": "swap",
+      "type": "swap",
       "destinationTokenSymbol": "ABC",
       "destinationTokenAddress": "0xabca64466f257793eaa52fcfff5066894b76a149",
       "sourceTokenSymbol": "ETH"

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { getKnownMethodData } from '../selectors/selectors';
 import {
   getStatusKey,
-  getTransactionCategoryTitle,
+  getTransactionTypeTitle,
 } from '../helpers/utils/transactions.util';
 import { camelCaseToCapitalize } from '../helpers/utils/common.util';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
@@ -18,7 +18,7 @@ import {
 } from '../helpers/constants/transactions';
 import { getTokens } from '../ducks/metamask/metamask';
 import {
-  TRANSACTION_CATEGORIES,
+  TRANSACTION_TYPES,
   TRANSACTION_GROUP_CATEGORIES,
   TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
@@ -62,7 +62,7 @@ export function useTransactionDisplayData(transactionGroup) {
   const t = useI18nContext();
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
-  const { transactionCategory } = initialTransaction;
+  const { type } = initialTransaction;
 
   const { from: senderAddress, to } = initialTransaction.txParams || {};
 
@@ -85,7 +85,7 @@ export function useTransactionDisplayData(transactionGroup) {
 
   // This value is used to determine whether we should look inside txParams.data
   // to pull out and render token related information
-  const isTokenCategory = TOKEN_CATEGORY_HASH[transactionCategory];
+  const isTokenCategory = TOKEN_CATEGORY_HASH[type];
 
   // these values are always instantiated because they are either
   // used by or returned from hooks. Hooks must be called at the top level,
@@ -145,12 +145,12 @@ export function useTransactionDisplayData(transactionGroup) {
   // 6. Swap
   // 7. Swap Approval
 
-  if (transactionCategory === null || transactionCategory === undefined) {
+  if (type === null || type === undefined) {
     category = TRANSACTION_GROUP_CATEGORIES.SIGNATURE_REQUEST;
     title = t('signatureRequest');
     subtitle = origin;
     subtitleContainsOrigin = true;
-  } else if (transactionCategory === TRANSACTION_CATEGORIES.SWAP) {
+  } else if (type === TRANSACTION_TYPES.SWAP) {
     category = TRANSACTION_GROUP_CATEGORIES.SWAP;
     title = t('swapTokenToToken', [
       initialTransaction.sourceTokenSymbol,
@@ -170,48 +170,43 @@ export function useTransactionDisplayData(transactionGroup) {
     } else {
       prefix = '-';
     }
-  } else if (transactionCategory === TRANSACTION_CATEGORIES.SWAP_APPROVAL) {
+  } else if (type === TRANSACTION_TYPES.SWAP_APPROVAL) {
     category = TRANSACTION_GROUP_CATEGORIES.APPROVAL;
     title = t('swapApproval', [primaryTransaction.sourceTokenSymbol]);
     subtitle = origin;
     subtitleContainsOrigin = true;
     primarySuffix = primaryTransaction.sourceTokenSymbol;
-  } else if (
-    transactionCategory === TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE
-  ) {
+  } else if (type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE) {
     category = TRANSACTION_GROUP_CATEGORIES.APPROVAL;
     prefix = '';
     title = t('approveSpendLimit', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (
-    transactionCategory === TRANSACTION_CATEGORIES.DEPLOY_CONTRACT ||
-    transactionCategory === TRANSACTION_CATEGORIES.CONTRACT_INTERACTION
+    type === TRANSACTION_TYPES.DEPLOY_CONTRACT ||
+    type === TRANSACTION_TYPES.CONTRACT_INTERACTION
   ) {
     category = TRANSACTION_GROUP_CATEGORIES.INTERACTION;
-    const transactionCategoryTitle = getTransactionCategoryTitle(
-      t,
-      transactionCategory,
-    );
+    const transactionTypeTitle = getTransactionTypeTitle(t, type);
     title =
       (methodData?.name && camelCaseToCapitalize(methodData.name)) ||
-      transactionCategoryTitle;
+      transactionTypeTitle;
     subtitle = origin;
     subtitleContainsOrigin = true;
-  } else if (transactionCategory === TRANSACTION_CATEGORIES.INCOMING) {
+  } else if (type === TRANSACTION_TYPES.INCOMING) {
     category = TRANSACTION_GROUP_CATEGORIES.RECEIVE;
     title = t('receive');
     prefix = '';
     subtitle = t('fromAddress', [shortenAddress(senderAddress)]);
   } else if (
-    transactionCategory === TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER_FROM ||
-    transactionCategory === TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER
+    type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM ||
+    type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER
   ) {
     category = TRANSACTION_GROUP_CATEGORIES.SEND;
     title = t('sendSpecifiedTokens', [token?.symbol || t('token')]);
     recipientAddress = getTokenAddressParam(tokenData);
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
-  } else if (transactionCategory === TRANSACTION_CATEGORIES.SENT_ETHER) {
+  } else if (type === TRANSACTION_TYPES.SENT_ETHER) {
     category = TRANSACTION_GROUP_CATEGORIES.SEND;
     title = t('sendETH');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
@@ -241,15 +236,12 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle,
     subtitleContainsOrigin,
     primaryCurrency:
-      transactionCategory === TRANSACTION_CATEGORIES.SWAP && isPending
-        ? ''
-        : primaryCurrency,
+      type === TRANSACTION_TYPES.SWAP && isPending ? '' : primaryCurrency,
     senderAddress,
     recipientAddress,
     secondaryCurrency:
       (isTokenCategory && !tokenFiatAmount) ||
-      (transactionCategory === TRANSACTION_CATEGORIES.SWAP &&
-        !swapTokenFiatAmount)
+      (type === TRANSACTION_TYPES.SWAP && !swapTokenFiatAmount)
         ? undefined
         : secondaryCurrency,
     displayedStatusKey,

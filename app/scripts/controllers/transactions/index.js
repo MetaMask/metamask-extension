@@ -19,7 +19,6 @@ import {
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/app/helpers/constants/error-keys';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/app/pages/swaps/swaps.util';
 import {
-  TRANSACTION_CATEGORIES,
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../../../shared/constants/transaction';
@@ -235,11 +234,10 @@ export default class TransactionController extends EventEmitter {
     `generateTxMeta` adds the default txMeta properties to the passed object.
     These include the tx's `id`. As we use the id for determining order of
     txes in the tx-state-manager, it is necessary to call the asynchronous
-    method `this._determineTransactionCategory` after `generateTxMeta`.
+    method `this._determineTransactionType` after `generateTxMeta`.
     */
     let txMeta = this.txStateManager.generateTxMeta({
       txParams: normalizedTxParams,
-      type: TRANSACTION_TYPES.STANDARD,
     });
 
     if (origin === 'metamask') {
@@ -265,11 +263,10 @@ export default class TransactionController extends EventEmitter {
 
     txMeta.origin = origin;
 
-    const {
-      transactionCategory,
-      getCodeResponse,
-    } = await this._determineTransactionCategory(txParams);
-    txMeta.transactionCategory = transactionCategory;
+    const { type, getCodeResponse } = await this._determineTransactionType(
+      txParams,
+    );
+    txMeta.type = type;
 
     // ensure value
     txMeta.txParams.value = txMeta.txParams.value
@@ -347,7 +344,7 @@ export default class TransactionController extends EventEmitter {
       return {};
     } else if (
       txMeta.txParams.to &&
-      txMeta.transactionCategory === TRANSACTION_CATEGORIES.SENT_ETHER
+      txMeta.type === TRANSACTION_TYPES.SENT_ETHER
     ) {
       // if there's data in the params, but there's no contract code, it's not a valid transaction
       if (txMeta.txParams.data) {
@@ -581,7 +578,7 @@ export default class TransactionController extends EventEmitter {
   async publishTransaction(txId, rawTx) {
     const txMeta = this.txStateManager.getTx(txId);
     txMeta.rawTx = rawTx;
-    if (txMeta.transactionCategory === TRANSACTION_CATEGORIES.SWAP) {
+    if (txMeta.type === TRANSACTION_TYPES.SWAP) {
       const preTxBalance = await this.query.getBalance(txMeta.txParams.from);
       txMeta.preTxBalance = preTxBalance.toString(16);
     }
@@ -637,7 +634,7 @@ export default class TransactionController extends EventEmitter {
         'transactions#confirmTransaction - add txReceipt',
       );
 
-      if (txMeta.transactionCategory === TRANSACTION_CATEGORIES.SWAP) {
+      if (txMeta.type === TRANSACTION_TYPES.SWAP) {
         const postTxBalance = await this.query.getBalance(txMeta.txParams.from);
         const latestTxMeta = this.txStateManager.getTx(txId);
 
@@ -812,10 +809,27 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-    Returns a "type" for a transaction out of the following list: simpleSend, tokenTransfer, tokenApprove,
-    contractDeployment, contractMethodCall
-  */
-  async _determineTransactionCategory(txParams) {
+   * @typedef { 'transfer' | 'approve' | 'transferfrom' | 'contractInteraction'| 'sentEther' } InferrableTransactionTypes
+   */
+
+  /**
+   * @typedef {Object} InferTransactionTypeResult
+   * @property {InferrableTransactionTypes} type - The type of transaction
+   * @property {string} getCodeResponse - The contract code, in hex format if
+   *  it exists. '0x0' or '0x' are also indicators of non-existent contract
+   *  code
+   */
+
+  /**
+   * Determines the type of the transaction by analyzing the txParams.
+   * This method will return one of the types defined in shared/constants/transactions
+   * It will never return TRANSACTION_TYPE_CANCEL or TRANSACTION_TYPE_RETRY as these
+   * represent specific events that we control from the extension and are added manually
+   * at transaction creation.
+   * @param {Object} txParams - Parameters for the transaction
+   * @returns {InferTransactionTypeResult}
+   */
+  async _determineTransactionType(txParams) {
     const { data, to } = txParams;
     let name;
     try {
@@ -825,16 +839,16 @@ export default class TransactionController extends EventEmitter {
     }
 
     const tokenMethodName = [
-      TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE,
-      TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER,
-      TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER_FROM,
+      TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+      TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+      TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
     ].find((methodName) => methodName === name && name.toLowerCase());
 
     let result;
     if (data && tokenMethodName) {
       result = tokenMethodName;
     } else if (data && !to) {
-      result = TRANSACTION_CATEGORIES.DEPLOY_CONTRACT;
+      result = TRANSACTION_TYPES.DEPLOY_CONTRACT;
     }
 
     let code;
@@ -849,11 +863,11 @@ export default class TransactionController extends EventEmitter {
       const codeIsEmpty = !code || code === '0x' || code === '0x0';
 
       result = codeIsEmpty
-        ? TRANSACTION_CATEGORIES.SENT_ETHER
-        : TRANSACTION_CATEGORIES.CONTRACT_INTERACTION;
+        ? TRANSACTION_TYPES.SENT_ETHER
+        : TRANSACTION_TYPES.CONTRACT_INTERACTION;
     }
 
-    return { transactionCategory: result, getCodeResponse: code };
+    return { type: result, getCodeResponse: code };
   }
 
   /**
