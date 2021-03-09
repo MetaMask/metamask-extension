@@ -33,7 +33,7 @@ cleanContextForImports()
 import log from 'loglevel'
 import LocalMessageDuplexStream from 'post-message-stream'
 import ConfluxPortalInpageProvider from '@yqrashawn/conflux-portal-inpage-provider'
-import * as ConfluxJSSDK from 'js-conflux-sdk/src/index'
+import * as ConfluxJSSDK from 'js-conflux-sdk'
 import setupDappAutoReload from './lib/auto-reload.js'
 
 const { Conflux: ConfluxJS } = ConfluxJSSDK
