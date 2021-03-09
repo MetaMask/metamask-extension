@@ -44,7 +44,7 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   SWAP_FAILED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
-} from '../../helpers/constants/swaps';
+} from '../../../../shared/constants/swaps';
 import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 
 import {

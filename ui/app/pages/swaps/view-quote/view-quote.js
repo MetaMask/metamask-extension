@@ -73,7 +73,7 @@ import {
   getRenderableNetworkFeesForQuote,
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
-import { QUOTES_EXPIRED_ERROR } from '../../../helpers/constants/swaps';
+import { QUOTES_EXPIRED_ERROR } from '../../../../../shared/constants/swaps';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import ViewQuotePriceDifference from './view-quote-price-difference';

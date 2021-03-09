@@ -56,7 +56,7 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
-} from '../../helpers/constants/swaps';
+} from '../../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 
 const GAS_PRICES_LOADING_STATES = {

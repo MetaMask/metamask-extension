@@ -1,5 +1,5 @@
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
-import { ETH_SWAPS_TOKEN_OBJECT } from '../helpers/constants/swaps';
+import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { getSwapsTokensReceivedFromTxMeta } from '../pages/swaps/swaps.util';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 
