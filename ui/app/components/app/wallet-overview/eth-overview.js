@@ -13,7 +13,7 @@ import Tooltip from '../../ui/tooltip'
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common'
 import { showModal } from '../../../store/actions'
-import { isBalanceCached, getSelectedAccount, getShouldShowFiat, getSelectedAddress } from '../../../selectors/selectors'
+import { isBalanceCached, getSelectedAccount, getShouldShowFiat } from '../../../selectors/selectors'
 import PaperAirplane from '../../ui/icon/paper-airplane-icon'
 import WalletOverview from './wallet-overview'
 
@@ -37,11 +37,7 @@ const EthOverview = ({ className }) => {
   const history = useHistory()
   const balanceIsCached = useSelector(isBalanceCached)
   const showFiat = useSelector(getShouldShowFiat)
-  const address = useSelector(getSelectedAddress)
-  let selectedAccount = useSelector(getSelectedAccount)
-  if (!selectedAccount) {
-    selectedAccount = { address, balance: '0x0' }
-  }
+  const selectedAccount = useSelector(getSelectedAccount)
   const { balance } = selectedAccount
 
   return (
