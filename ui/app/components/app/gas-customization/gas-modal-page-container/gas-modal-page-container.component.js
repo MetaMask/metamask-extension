@@ -35,6 +35,7 @@ export default class GasModalPageContainer extends Component {
     isSpeedUp: PropTypes.bool,
     isRetry: PropTypes.bool,
     disableSave: PropTypes.bool,
+    customPriceIsExcessive: PropTypes.bool.isRequired,
   };
 
   componentDidMount() {
@@ -57,6 +58,7 @@ export default class GasModalPageContainer extends Component {
       customPriceIsSafe,
       isSpeedUp,
       isRetry,
+      customPriceIsExcessive,
       infoRowProps: { transactionFee },
     } = this.props;
 
@@ -71,6 +73,7 @@ export default class GasModalPageContainer extends Component {
         customPriceIsSafe={customPriceIsSafe}
         isSpeedUp={isSpeedUp}
         isRetry={isRetry}
+        customPriceIsExcessive={customPriceIsExcessive}
       />
     );
   }

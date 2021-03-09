@@ -1,4 +1,5 @@
 import assert from 'assert';
+import { KOVAN_CHAIN_ID } from '../../../../shared/constants/network';
 import {
   getConnectedDomainsForSelectedAddress,
   getOrderedConnectedAccountsForActiveTab,
@@ -163,6 +164,9 @@ describe('selectors', function () {
         url: 'https://remix.ethereum.org/',
       },
       metamask: {
+        provider: {
+          chainId: KOVAN_CHAIN_ID,
+        },
         accounts: {
           0x7250739de134d33ec7ab1ee592711e15098c9d2d: {
             address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',

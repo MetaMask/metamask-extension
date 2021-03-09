@@ -72,10 +72,19 @@ export default class EnsInput extends Component {
     }
 
     if (prevProps.network !== network) {
-      const provider = global.ethereumProvider;
-      this.ens = new ENS({ provider, network });
-      if (!newProvidedValue) {
-        newValue = input;
+      if (getNetworkEnsSupport(network)) {
+        const provider = global.ethereumProvider;
+        this.ens = new ENS({ provider, network });
+        this.checkName = debounce(this.lookupEnsName, 200);
+        if (!newProvidedValue) {
+          newValue = input;
+        }
+      } else {
+        // ens is null on mount on a network that does not have ens support
+        // this is intended to prevent accidental lookup of domains across
+        // networks
+        this.ens = null;
+        this.checkName = null;
       }
     }
 

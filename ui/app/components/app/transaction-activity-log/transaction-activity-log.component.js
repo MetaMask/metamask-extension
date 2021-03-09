@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { createExplorerLink } from '@metamask/etherscan-link';
+
 import {
   getEthConversionFromWeiHex,
   getValueFromWeiHex,
 } from '../../../helpers/utils/conversions.util';
 import { formatDate } from '../../../helpers/utils/util';
-import { getEtherscanNetworkPrefix } from '../../../../lib/etherscan-prefix-for-network';
 import TransactionActivityLogIcon from './transaction-activity-log-icon';
 import { CONFIRMED_STATUS } from './transaction-activity-log.constants';
 
@@ -33,8 +34,7 @@ export default class TransactionActivityLog extends PureComponent {
     const { primaryTransaction } = this.props;
     const { metamaskNetworkId } = primaryTransaction;
 
-    const prefix = getEtherscanNetworkPrefix(metamaskNetworkId);
-    const etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`;
+    const etherscanUrl = createExplorerLink(hash, metamaskNetworkId);
 
     global.platform.openTab({ url: etherscanUrl });
   };

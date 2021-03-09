@@ -34,13 +34,24 @@ class ErrorPage extends PureComponent {
     const { t } = this.context;
 
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+    const supportLink = (
+      <a
+        target="_blank"
+        key="metamaskSupportLink"
+        rel="noopener noreferrer"
+        href="https://metamask.zendesk.com/hc/en-us/requests/new"
+      >
+        <span className="error-page__link-text">{this.context.t('here')}</span>
+      </a>
+    );
+    const message = isPopup
+      ? t('errorPagePopupMessage', [supportLink])
+      : t('errorPageMessage', [supportLink]);
 
     return (
       <section className="error-page">
         <h1 className="error-page__header">{t('errorPageTitle')}</h1>
-        <h2 className="error-page__subheader">
-          {isPopup ? t('errorPagePopupMessage') : t('errorPageMessage')}
-        </h2>
+        <h2 className="error-page__subheader">{message}</h2>
         <section className="error-page__details">
           <details>
             <summary>{t('errorDetails')}</summary>

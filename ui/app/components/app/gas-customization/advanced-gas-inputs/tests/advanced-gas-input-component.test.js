@@ -108,4 +108,15 @@ describe('Advanced Gas Inputs', function () {
 
     assert.strictEqual(renderWarning.text(), 'gasPriceExtremelyLow');
   });
+
+  it('errors when custom gas price is too excessive', function () {
+    wrapper.setProps({ customPriceIsExcessive: true });
+
+    const renderError = wrapper.find(
+      '.advanced-gas-inputs__gas-edit-row__error-text',
+    );
+
+    assert.strictEqual(renderError.length, 2);
+    assert.strictEqual(renderError.at(0).text(), 'gasPriceExcessiveInput');
+  });
 });

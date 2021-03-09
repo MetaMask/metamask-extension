@@ -210,20 +210,5 @@ describe('AddRecipient Component', function () {
 
       assert.strictEqual(dialog.length, 0);
     });
-
-    it('should not render error when query has results', function () {
-      wrapper.setProps({
-        addressBook: [
-          { address: '0x125', name: 'alice' },
-          { address: '0x126', name: 'alex' },
-          { address: '0x127', name: 'catherine' },
-        ],
-        toError: 'bad',
-      });
-
-      const dialog = wrapper.find(Dialog);
-
-      assert.strictEqual(dialog.length, 0);
-    });
   });
 });

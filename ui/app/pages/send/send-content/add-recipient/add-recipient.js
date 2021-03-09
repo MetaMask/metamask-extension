@@ -7,6 +7,7 @@ import {
   KNOWN_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   CONFUSING_ENS_ERROR,
+  CONTRACT_ADDRESS_ERROR,
 } from '../../send.constants';
 
 import {
@@ -14,18 +15,19 @@ import {
   isEthNetwork,
   checkExistingAddresses,
   isValidDomainName,
+  isOriginContractAddress,
 } from '../../../../helpers/utils/util';
 
-export function getToErrorObject(to, hasHexData = false, network) {
+export function getToErrorObject(to, sendTokenAddress, network) {
   let toError = null;
   if (!to) {
-    if (!hasHexData) {
-      toError = REQUIRED_ERROR;
-    }
-  } else if (!isValidAddress(to) && !toError) {
+    toError = REQUIRED_ERROR;
+  } else if (!isValidAddress(to)) {
     toError = isEthNetwork(network)
       ? INVALID_RECIPIENT_ADDRESS_ERROR
       : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;
+  } else if (isOriginContractAddress(to, sendTokenAddress)) {
+    toError = CONTRACT_ADDRESS_ERROR;
   }
 
   return { to: toError };

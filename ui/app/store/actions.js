@@ -930,6 +930,7 @@ export function completedTx(id) {
       unapprovedPersonalMsgs,
       unapprovedTypedMessages,
       network,
+      provider: { chainId },
     } = state.metamask;
     const unconfirmedActions = txHelper(
       unapprovedTxs,
@@ -937,6 +938,7 @@ export function completedTx(id) {
       unapprovedPersonalMsgs,
       unapprovedTypedMessages,
       network,
+      chainId,
     );
     const otherUnconfirmedActions = unconfirmedActions.filter(
       (tx) => tx.id !== id,

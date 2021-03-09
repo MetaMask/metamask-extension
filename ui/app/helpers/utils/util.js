@@ -108,6 +108,13 @@ export function isValidDomainName(address) {
   return match !== null;
 }
 
+export function isOriginContractAddress(to, sendTokenAddress) {
+  if (!to || !sendTokenAddress) {
+    return false;
+  }
+  return to.toLowerCase() === sendTokenAddress.toLowerCase();
+}
+
 export function isAllOneCase(address) {
   if (!address) {
     return true;

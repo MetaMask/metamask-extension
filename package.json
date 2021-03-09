@@ -5,7 +5,8 @@
   "scripts": {
     "setup": "yarn install && yarn patch-package && yarn allow-scripts",
     "setup-ci": "yarn install --frozen-lockfile --har && yarn patch-package && yarn allow-scripts",
-    "start": "yarn build dev",
+    "start": "node development/build/index.js dev",
+    "start:lavamoat": "yarn build dev",
     "dist": "yarn build prod",
     "build": "lavamoat development/build/index.js",
     "start:test": "yarn build testDev",
@@ -59,7 +60,7 @@
   },
   "resolutions": {
     "**/configstore/dot-prop": "^5.1.1",
-    "**/ethers/elliptic": "^6.5.3",
+    "**/ethers/elliptic": "^6.5.4",
     "**/knex/minimist": "^1.2.5",
     "**/optimist/minimist": "^1.2.5",
     "**/socketcluster/minimist": "^1.2.5",
@@ -67,10 +68,11 @@
     "**/redux-devtools-instrument/symbol-observable": "^2.0.3",
     "**/rxjs/symbol-observable": "^2.0.3",
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.19",
-    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/elliptic": "^6.5.3",
+    "3box/ipfs/ipld-zcash/zcash-bitcore-lib/elliptic": "^6.5.4",
     "3box/**/libp2p-crypto/node-forge": "^0.10.0",
     "3box/**/libp2p-keychain/node-forge": "^0.10.0",
-    "analytics-node/axios": "^0.21.1"
+    "analytics-node/axios": "^0.21.1",
+    "pull-ws": "^3.3.2"
   },
   "dependencies": {
     "3box": "^1.10.2",
@@ -84,7 +86,7 @@
     "@metamask/controllers": "^5.1.0",
     "@metamask/eth-ledger-bridge-keyring": "^0.2.6",
     "@metamask/eth-token-tracker": "^3.0.1",
-    "@metamask/etherscan-link": "^1.4.1",
+    "@metamask/etherscan-link": "^1.5.0",
     "@metamask/inpage-provider": "^8.0.4",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/logo": "^2.5.0",
@@ -195,7 +197,7 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.5.5",
-    "@lavamoat/allow-scripts": "^1.0.3",
+    "@lavamoat/allow-scripts": "^1.0.4",
     "@metamask/eslint-config": "^5.0.0",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/test-dapp": "^4.0.1",

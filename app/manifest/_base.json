@@ -78,7 +78,7 @@
     "notifications"
   ],
   "short_name": "__MSG_appName__",
-  "version": "9.0.5",
+  "version": "9.1.1",
   "web_accessible_resources": ["inpage.js", "phishing.html"],
   "content_security_policy": "script-src 'unsafe-eval' 'self'; object-src 'self'"
 }

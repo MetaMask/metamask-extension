@@ -152,6 +152,38 @@ describe('util', function () {
     });
   });
 
+  describe('isOriginContractAddress', function () {
+    it('should return true when the send address is the same as the selected tokens contract address', function () {
+      assert.equal(
+        util.isOriginContractAddress(
+          '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+          '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+        ),
+        true,
+      );
+    });
+
+    it('should return true when the send address is the same as the selected tokens contract address, capitalized input', function () {
+      assert.equal(
+        util.isOriginContractAddress(
+          '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+          '0X8D6B81208414189A58339873AB429B6C47AB92D3',
+        ),
+        true,
+      );
+    });
+
+    it('should return false when the recipient address differs', function () {
+      assert.equal(
+        util.isOriginContractAddress(
+          '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+          '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
+        ),
+        false,
+      );
+    });
+  });
+
   describe('#numericBalance', function () {
     it('should return a BN 0 if given nothing', function () {
       const result = util.numericBalance();

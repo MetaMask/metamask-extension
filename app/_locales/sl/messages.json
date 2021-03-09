@@ -350,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "Če morate ponovno varnostno kopirati vaše geslo seed phrase, ga najdete v Nastavitve -> Varnost."
   },
-  "endOfFlowMessage7": {
-    "message": "Če imate kakršna koli vprašanja ali opazite kaj sumljivega, nam pišite na support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask ne more obnoviti vašega gesla seed phrase. Več informacij."
   },
@@ -759,15 +756,6 @@
   },
   "privateNetwork": {
     "message": "Zasebno omrežje"
-  },
-  "protectYourKeys": {
-    "message": "Varujte svoje ključe!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Bodite previdni  in svoj seed phrase skrbno varujte - obstajajo poročila o spletnih mestih, ki poskušajo posnemati MetaMask. MetaMask nikoli ne bo zahteval vašega gesla seed phrase!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Hranite svoj seed phrase. Če opazite sumljivo delovanje ali niste prepričani ali je določeno spletno mesto varno, nam pišite na support@metamask.io"
   },
   "queue": {
     "message": "Čakalna vrsta"
