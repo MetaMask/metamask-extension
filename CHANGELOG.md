@@ -2,6 +2,36 @@
 
 ## Current Develop Branch
 
+- fix: token balance not showing automatically (#301)
+- fix: avoid duplicate autolock timer migration
+- fix: sponsor info error when dapp dev only specifies gaslimit
+- ci: use gh actions
+- test: upgrade chromewebdriver
+- ci: e2e with matrix
+- test: firefox e2e on gh action
+- test: more delay in e2e test
+- feat: support base32 in api level
+- fix: missing deps
+- test: e2e test
+- fix: show base32 address in sig req
+- test: more delay in e2e after custom gas
+- feat: new mainnet endpoint
+- chore: update caniuse lite
+- fix: reduce ui.js size
+- fix: PORTAL-429 can't get trusted token balance
+- test: e2e test on gas fee
+- fix: emit accountsChanged event when networkChanged PORTAL-495
+- feat: upgrade js conflux sdk
+- ci: upgrade chrome to 88
+- fix: ens-input line-height PORTAL-479
+- test: fix e2e test
+- fix: ens input address overflow PORTAL-459
+- test: simpler e2e test demo
+- feat: support send to null address PORTAL-510
+- test: unstable e2e test
+- fix: not compile js sdk with portal workflow
+- fix: ellipsis version
+
 ## 0.5.11 Tue Feb 02 2021
 
 - fix: token balance not showing automatically (#301)
