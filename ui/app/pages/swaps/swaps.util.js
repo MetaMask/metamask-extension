@@ -2,7 +2,10 @@ import log from 'loglevel';
 import BigNumber from 'bignumber.js';
 import abi from 'human-standard-token-abi';
 import { isValidAddress } from 'ethereumjs-util';
-import { ETH_SWAPS_TOKEN_OBJECT } from '../../helpers/constants/swaps';
+import {
+  ETH_SWAPS_TOKEN_OBJECT,
+  METASWAP_API_HOST,
+} from '../../helpers/constants/swaps';
 import {
   calcTokenValue,
   calcTokenAmount,
@@ -26,8 +29,6 @@ const TOKEN_TRANSFER_LOG_TOPIC_HASH =
   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
 
 const CACHE_REFRESH_ONE_HOUR = 3600000;
-
-const METASWAP_API_HOST = 'https://api.metaswap.codefi.network';
 
 const getBaseApi = function (type) {
   switch (type) {
