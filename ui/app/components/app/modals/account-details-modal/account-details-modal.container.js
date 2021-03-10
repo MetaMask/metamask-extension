@@ -3,12 +3,13 @@ import { showModal, setAccountLabel } from '../../../../store/actions';
 import {
   getSelectedIdentity,
   getRpcPrefsForCurrentProvider,
+  getCurrentChainId,
 } from '../../../../selectors';
 import AccountDetailsModal from './account-details-modal.component';
 
 const mapStateToProps = (state) => {
   return {
-    network: state.metamask.network,
+    chainId: getCurrentChainId(state),
     selectedIdentity: getSelectedIdentity(state),
     keyrings: state.metamask.keyrings,
     rpcPrefs: getRpcPrefsForCurrentProvider(state),

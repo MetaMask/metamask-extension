@@ -4,11 +4,14 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { mountWithRouter } from '../../../../../../test/lib/render-helpers';
 import MenuBar from '..';
+import { ROPSTEN_CHAIN_ID } from '../../../../../../shared/constants/network';
 
 const initState = {
   activeTab: {},
   metamask: {
-    network: '1',
+    provider: {
+      chainId: ROPSTEN_CHAIN_ID,
+    },
     selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     identities: {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {

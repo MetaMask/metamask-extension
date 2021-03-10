@@ -10,7 +10,8 @@ export default class ConfirmRemoveAccount extends Component {
     hideModal: PropTypes.func.isRequired,
     removeAccount: PropTypes.func.isRequired,
     identity: PropTypes.object.isRequired,
-    network: PropTypes.string.isRequired,
+    chainId: PropTypes.string.isRequired,
+    rpcPrefs: PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -49,7 +50,11 @@ export default class ConfirmRemoveAccount extends Component {
         <div className="confirm-remove-account__account__link">
           <a
             className=""
-            href={getAccountLink(identity.address, this.props.network)}
+            href={getAccountLink(
+              identity.address,
+              this.props.chainId,
+              this.props.rpcPrefs,
+            )}
             target="_blank"
             rel="noopener noreferrer"
             title={this.context.t('etherscanView')}
