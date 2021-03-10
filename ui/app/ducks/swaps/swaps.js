@@ -41,7 +41,6 @@ import {
   decimalToHex,
   getValueFromWeiHex,
   decGWEIToHexWEI,
-  hexToDecimal,
   hexWEIToDecGWEI,
 } from '../../helpers/utils/conversions.util';
 import { conversionLessThan } from '../../helpers/utils/conversion-util';
@@ -50,11 +49,11 @@ import {
   getSelectedAccount,
   getTokenExchangeRates,
   getUSDConversionRate,
+  getSwapsEthToken,
 } from '../../selectors';
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
-  ETH_SWAPS_TOKEN_OBJECT,
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../helpers/constants/swaps';
@@ -396,15 +395,7 @@ export const fetchQuotesAndSetQuoteState = (
     const balanceError = getBalanceError(state);
     const fetchParamsFromToken =
       fetchParams?.metaData?.sourceTokenInfo?.symbol === 'ETH'
-        ? {
-            ...ETH_SWAPS_TOKEN_OBJECT,
-            string: getValueFromWeiHex({
-              value: selectedAccount.balance,
-              numberOfDecimals: 4,
-              toDenomination: 'ETH',
-            }),
-            balance: hexToDecimal(selectedAccount.balance),
-          }
+        ? getSwapsEthToken(state)
         : fetchParams?.metaData?.sourceTokenInfo;
     const selectedFromToken = getFromToken(state) || fetchParamsFromToken || {};
     const selectedToToken =
