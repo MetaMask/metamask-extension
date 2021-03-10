@@ -6,7 +6,6 @@ import {
 import { hexToDecimal } from '../helpers/utils/conversions.util';
 import txHelper from '../../lib/tx-helper';
 import {
-  TRANSACTION_CATEGORIES,
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction';
@@ -229,13 +228,9 @@ export const nonceSortedTransactionsSelector = createSelector(
         status,
         type,
         time: txTime,
-        transactionCategory,
       } = transaction;
 
-      if (
-        typeof nonce === 'undefined' ||
-        transactionCategory === TRANSACTION_CATEGORIES.INCOMING
-      ) {
+      if (typeof nonce === 'undefined' || type === TRANSACTION_TYPES.INCOMING) {
         const transactionGroup = {
           transactions: [transaction],
           initialTransaction: transaction,
@@ -244,7 +239,7 @@ export const nonceSortedTransactionsSelector = createSelector(
           hasCancelled: false,
         };
 
-        if (transactionCategory === TRANSACTION_CATEGORIES.INCOMING) {
+        if (type === TRANSACTION_TYPES.INCOMING) {
           incomingTransactionGroups.push(transactionGroup);
         } else {
           insertTransactionGroupByTime(

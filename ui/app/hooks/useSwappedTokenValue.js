@@ -1,4 +1,4 @@
-import { TRANSACTION_CATEGORIES } from '../../../shared/constants/transaction';
+import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../helpers/constants/swaps';
 import { getSwapsTokensReceivedFromTxMeta } from '../pages/swaps/swaps.util';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
@@ -25,7 +25,7 @@ import { useTokenFiatAmount } from './useTokenFiatAmount';
 export function useSwappedTokenValue(transactionGroup, currentAsset) {
   const { symbol, decimals, address } = currentAsset;
   const { primaryTransaction, initialTransaction } = transactionGroup;
-  const { transactionCategory } = initialTransaction;
+  const { type } = initialTransaction;
   const { from: senderAddress } = initialTransaction.txParams || {};
 
   const isViewingReceivedTokenFromSwap =
@@ -34,8 +34,7 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
       primaryTransaction.destinationTokenSymbol === 'ETH');
 
   const swapTokenValue =
-    transactionCategory === TRANSACTION_CATEGORIES.SWAP &&
-    isViewingReceivedTokenFromSwap
+    type === TRANSACTION_TYPES.SWAP && isViewingReceivedTokenFromSwap
       ? getSwapsTokensReceivedFromTxMeta(
           primaryTransaction.destinationTokenSymbol,
           initialTransaction,
@@ -43,8 +42,7 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
           senderAddress,
           decimals,
         )
-      : transactionCategory === TRANSACTION_CATEGORIES.SWAP &&
-        primaryTransaction.swapTokenValue;
+      : type === TRANSACTION_TYPES.SWAP && primaryTransaction.swapTokenValue;
 
   const isNegative =
     typeof swapTokenValue === 'string'

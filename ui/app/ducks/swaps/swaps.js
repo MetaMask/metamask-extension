@@ -57,7 +57,7 @@ import {
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../helpers/constants/swaps';
-import { TRANSACTION_CATEGORIES } from '../../../../shared/constants/transaction';
+import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 
 const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -671,7 +671,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
         updateTransaction(
           {
             ...approveTxMeta,
-            transactionCategory: TRANSACTION_CATEGORIES.SWAP_APPROVAL,
+            type: TRANSACTION_TYPES.SWAP_APPROVAL,
             sourceTokenSymbol: sourceTokenInfo.symbol,
           },
           true,
@@ -712,7 +712,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
           ...tradeTxMeta,
           sourceTokenSymbol: sourceTokenInfo.symbol,
           destinationTokenSymbol: destinationTokenInfo.symbol,
-          transactionCategory: TRANSACTION_CATEGORIES.SWAP,
+          type: TRANSACTION_TYPES.SWAP,
           destinationTokenDecimals: destinationTokenInfo.decimals,
           destinationTokenAddress: destinationTokenInfo.address,
           swapMetaData,
