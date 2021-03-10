@@ -92,7 +92,7 @@ export function getAccountType(state) {
  * @deprecated - use getCurrentChainId instead
  * @param {Object} state - redux state object
  */
-export function getCurrentNetworkId(state) {
+export function deprecatedGetCurrentNetworkId(state) {
   return state.metamask.network;
 }
 
@@ -157,7 +157,7 @@ export function getMetaMaskCachedBalances(state) {
 
   // Fallback to fetching cached balances from network id
   // this can eventually be removed
-  const network = getCurrentNetworkId(state);
+  const network = deprecatedGetCurrentNetworkId(state);
 
   return (
     state.metamask.cachedBalances[chainId] ??
