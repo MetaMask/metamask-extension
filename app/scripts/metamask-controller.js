@@ -338,9 +338,8 @@ export default class MetamaskController extends EventEmitter {
               properties: {
                 action: 'Transactions',
                 errorMessage: txMeta.simulationFails?.reason,
-                numberOfTokens: metamaskState.tokens?.length ?? 0,
-                numberOfAccounts: Object.keys(metamaskState.accounts ?? {})
-                  .length,
+                numberOfTokens: metamaskState.tokens.length,
+                numberOfAccounts: Object.keys(metamaskState.accounts).length,
               },
             },
             {
@@ -588,7 +587,7 @@ export default class MetamaskController extends EventEmitter {
     const isInitialized = Boolean(vault);
 
     return {
-      ...{ isInitialized },
+      isInitialized,
       ...this.memStore.getFlatState(),
     };
   }
