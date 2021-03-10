@@ -15362,10 +15362,10 @@ latest-version@^5.0.0:
   dependencies:
     package-json "^6.3.0"
 
-lavamoat-browserify@^13.0.4:
-  version "13.0.4"
-  resolved "https://registry.yarnpkg.com/lavamoat-browserify/-/lavamoat-browserify-13.0.4.tgz#10b74188113a047242ca9515d2ce5fbe674696e8"
-  integrity sha512-8hu7J/OY76Gbi1dvJ+ESa+Gd1ny3veQyUpO0pk9uR3fIFWYUvdVRbCueqG/my3HZqe1kcOmbn93wgAH+bTp5zg==
+lavamoat-browserify@^13.0.6:
+  version "13.0.6"
+  resolved "https://registry.yarnpkg.com/lavamoat-browserify/-/lavamoat-browserify-13.0.6.tgz#1cfa9f9c768f03833adefdac85351501efd7666a"
+  integrity sha512-UCo+5RnG3/P3QZlS72KBsMAHVaMNzufHiYmwomi6/O2iqK6D6oh6WSQy7XhHRQg9c4l3SAd7F+B+ajLjeumjnQ==
   dependencies:
     JSONStream "^1.3.5"
     clone "^2.1.2"
@@ -15373,7 +15373,7 @@ lavamoat-browserify@^13.0.4:
     concat-stream "^2.0.0"
     duplexify "^4.1.1"
     json-stable-stringify "^1.0.1"
-    lavamoat-core "^9.1.0"
+    lavamoat-core "^9.1.2"
     merge-deep "^3.0.2"
     offset-sourcemap-lines "^1.0.1"
     pify "^4.0.1"
@@ -15382,67 +15382,48 @@ lavamoat-browserify@^13.0.4:
     through2 "^3.0.0"
     umd "^3.0.3"
 
-lavamoat-core@^9.0.1:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/lavamoat-core/-/lavamoat-core-9.0.1.tgz#a34a822b4bfabea38f73b7f9bc1a19f86baa9b1f"
-  integrity sha512-FqqasOjl3V6CX/ETniw59r20ukcydOtFhQxtwl6TIEuSc5CJJgY5y9Fi3adk5BTxml3JUMsR3dtygFOV3NuBBw==
+lavamoat-core@^9.1.2:
+  version "9.1.2"
+  resolved "https://registry.yarnpkg.com/lavamoat-core/-/lavamoat-core-9.1.2.tgz#f1ef6aabfa53d5a90aafb0e7ebe09e0ab67e3a03"
+  integrity sha512-3KkIzJPPtmhbuq1/GAQs6IlxO3Ymvj8dmSRqzz/njZk+nJ0pihQyAcpdCVYzBvw+U6NDHQoA7ljxH17+JedHWg==
   dependencies:
     fromentries "^1.2.0"
     json-stable-stringify "^1.0.1"
-    lavamoat-tofu "^5.1.1"
+    lavamoat-tofu "^5.1.3"
     merge-deep "^3.0.2"
     resolve "^1.15.1"
 
-lavamoat-core@^9.1.0:
-  version "9.1.0"
-  resolved "https://registry.yarnpkg.com/lavamoat-core/-/lavamoat-core-9.1.0.tgz#651d93ae57d7774b692c56679fbf0d8f8713cd2f"
-  integrity sha512-lVaw4EnxTaCNhi9ijmDcl+dPgmySSFmvvJyARubCuznTReY2g5Kdi0N4YsxqoW6qvpSawp0RU2eTlpEVac/IDw==
-  dependencies:
-    fromentries "^1.2.0"
-    json-stable-stringify "^1.0.1"
-    lavamoat-tofu "^5.1.2"
-    merge-deep "^3.0.2"
-    resolve "^1.15.1"
-
-lavamoat-tofu@^5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/lavamoat-tofu/-/lavamoat-tofu-5.1.1.tgz#67d3c5775b587dd439c426f1cd86650b10443760"
-  integrity sha512-LIZTifbbTATA5UClVGI7YGMTOjUXjrVCBOz0DaeUicldLonLlwG81/53/vTIfPM1xV/KA85MIzGPHz4pDdiVkA==
+lavamoat-tofu@^5.1.3:
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/lavamoat-tofu/-/lavamoat-tofu-5.1.3.tgz#8e89a7ac206f3b2dc9c8ea52ecfd4f92f90285ae"
+  integrity sha512-3pO0m3uiAOsEYiomIwwNzPdl9PPcquS3wCkfxb1Dtyezt6IWNkIsXQxz4+iEsNpF0eexFuc3IHPGOUaZ4QiwLg==
   dependencies:
     "@babel/parser" "^7.10.1"
     "@babel/traverse" "^7.10.1"
 
-lavamoat-tofu@^5.1.2:
-  version "5.1.2"
-  resolved "https://registry.yarnpkg.com/lavamoat-tofu/-/lavamoat-tofu-5.1.2.tgz#30aa086394e26ea4dc5ecdf39354e47e4f62f56b"
-  integrity sha512-R3RtOX7BrcuHQRPkZYI7CI4gJ/OqXXt9nhW7XEtjVTAIxlIyJBTH1+/63PRLikt7QkAVX1Y+NEeqSHhgTztCcg==
+lavamoat-viz@^6.0.6:
+  version "6.0.6"
+  resolved "https://registry.yarnpkg.com/lavamoat-viz/-/lavamoat-viz-6.0.6.tgz#5e8f20921a113e914b7f1e2fa51352c102a110fd"
+  integrity sha512-UsCX6wBvSxsI9I3BGYnyX/Q7KoHxx4LKNP1GnWwh1uXexpn+ni0+VD+zOVCZvpYTDg2VPKUtGv6lZ3C3/AzIWw==
   dependencies:
-    "@babel/parser" "^7.10.1"
-    "@babel/traverse" "^7.10.1"
-
-lavamoat-viz@^6.0.4:
-  version "6.0.4"
-  resolved "https://registry.yarnpkg.com/lavamoat-viz/-/lavamoat-viz-6.0.4.tgz#00b132cef06c24a6836044842548438e0c144059"
-  integrity sha512-LqSNLLTtodZUCxFihGCFrVVEBBICEs79hu2fSJGZFxe8I+R6FNcKmBMVAwpAuPj9dpKJmvckTi2sP8osZX8KCw==
-  dependencies:
-    lavamoat-core "^9.0.1"
+    lavamoat-core "^9.1.2"
     ncp "^2.0.0"
     open "^7.0.3"
     pify "^4.0.1"
     serve-handler "^6.1.3"
     yargs "^16.0.0"
 
-lavamoat@^5.1.5:
-  version "5.1.5"
-  resolved "https://registry.yarnpkg.com/lavamoat/-/lavamoat-5.1.5.tgz#f4d67924e0f3c405d8acaeb260434c71380a0a5c"
-  integrity sha512-WVT4C9uOCF+nnxJRum51OCwP7bEhHrtdg9IgQxSw0bqyVqhgohZVlnumv+6j35mYU/ds7JjsU1ebUFvaYzNkWQ==
+lavamoat@^5.1.8:
+  version "5.1.8"
+  resolved "https://registry.yarnpkg.com/lavamoat/-/lavamoat-5.1.8.tgz#e2190af9a7d5551602b12ea4a836f3d7435cff12"
+  integrity sha512-XY3vIR7WXGm/YVvIZf2bQlgD3YwnSd+yL6LZ3WBb6NiWkm3ApYC9Z3gDbgQOZTjZZk7QsfUW1h6yx50wR7s9ZA==
   dependencies:
     "@babel/code-frame" "^7.10.4"
     bindings "^1.5.0"
     htmlescape "^1.1.1"
     json-stable-stringify "^1.0.1"
-    lavamoat-core "^9.1.0"
-    lavamoat-tofu "^5.1.2"
+    lavamoat-core "^9.1.2"
+    lavamoat-tofu "^5.1.3"
     node-gyp-build "^4.2.3"
     object.fromentries "^2.0.2"
     resolve "^1.17.0"
