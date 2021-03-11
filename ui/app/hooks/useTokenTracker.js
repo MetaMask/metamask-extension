@@ -4,21 +4,30 @@ import { useSelector } from 'react-redux';
 import { getCurrentNetwork, getSelectedAddress } from '../selectors';
 import { useEqualityCheck } from './useEqualityCheck';
 
-export function useTokenTracker(tokens, includeFailedTokens = false) {
+export function useTokenTracker(
+  tokens,
+  includeFailedTokens = false,
+  hideZeroBalanceTokens = false,
+) {
   const network = useSelector(getCurrentNetwork);
   const userAddress = useSelector(getSelectedAddress);
-
   const [loading, setLoading] = useState(() => tokens?.length >= 0);
   const [tokensWithBalances, setTokensWithBalances] = useState([]);
   const [error, setError] = useState(null);
   const tokenTracker = useRef(null);
   const memoizedTokens = useEqualityCheck(tokens);
 
-  const updateBalances = useCallback((tokenWithBalances) => {
-    setTokensWithBalances(tokenWithBalances);
-    setLoading(false);
-    setError(null);
-  }, []);
+  const updateBalances = useCallback(
+    (tokenWithBalances) => {
+      const matchingTokens = hideZeroBalanceTokens
+        ? tokenWithBalances.filter((token) => Number(token.balance) > 0)
+        : tokenWithBalances;
+      setTokensWithBalances(matchingTokens);
+      setLoading(false);
+      setError(null);
+    },
+    [hideZeroBalanceTokens],
+  );
 
   const showError = useCallback((err) => {
     setError(err);
