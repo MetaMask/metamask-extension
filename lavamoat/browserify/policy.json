@@ -422,6 +422,17 @@
         "gl-vec3": true
       }
     },
+    "@popperjs/core": {
+      "globals": {
+        "Element": true,
+        "HTMLElement": true,
+        "ShadowRoot": true,
+        "console.error": true,
+        "console.warn": true,
+        "document": true,
+        "navigator.userAgent": true
+      }
+    },
     "@reduxjs/toolkit": {
       "globals": {
         "AbortController": true,
@@ -552,6 +563,15 @@
         "define": true
       }
     },
+    "asap": {
+      "globals": {
+        "clearInterval": true,
+        "clearTimeout": true,
+        "document.createTextNode": true,
+        "setInterval": true,
+        "setTimeout": true
+      }
+    },
     "assert": {
       "packages": {
         "object-assign": true,
@@ -560,7 +580,6 @@
     },
     "babel-runtime": {
       "packages": {
-        "@babel/runtime": true,
         "core-js": true,
         "regenerator-runtime": true
       }
@@ -588,11 +607,6 @@
       },
       "packages": {
         "browser-resolve": true
-      }
-    },
-    "browser-resolve": {
-      "packages": {
-        "core-js": true
       }
     },
     "buffer": {
@@ -713,6 +727,14 @@
     "define-properties": {
       "packages": {
         "object-keys": true
+      }
+    },
+    "dnd-core": {
+      "packages": {
+        "asap": true,
+        "invariant": true,
+        "lodash": true,
+        "redux": true
       }
     },
     "dnode": {
@@ -993,6 +1015,23 @@
         "minimalistic-assert": true
       }
     },
+    "history": {
+      "globals": {
+        "addEventListener": true,
+        "confirm": true,
+        "document": true,
+        "history": true,
+        "location": true,
+        "navigator.userAgent": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "resolve-pathname": true,
+        "tiny-invariant": true,
+        "tiny-warning": true,
+        "value-equal": true
+      }
+    },
     "hmac-drbg": {
       "packages": {
         "hash.js": true,
@@ -1011,6 +1050,15 @@
       },
       "packages": {
         "punycode": true
+      }
+    },
+    "is-dom": {
+      "globals": {
+        "Node": true
+      },
+      "packages": {
+        "is-object": true,
+        "is-window": true
       }
     },
     "is-in-browser": {
@@ -1149,6 +1197,15 @@
         "safe-buffer": true
       }
     },
+    "mini-create-react-context": {
+      "packages": {
+        "@babel/runtime": true,
+        "gud": true,
+        "prop-types": true,
+        "react": true,
+        "tiny-warning": true
+      }
+    },
     "number-to-bn": {
       "packages": {
         "bn.js": true,
@@ -1168,6 +1225,28 @@
     "once": {
       "packages": {
         "wrappy": true
+      }
+    },
+    "path-to-regexp": {
+      "packages": {
+        "isarray": true
+      }
+    },
+    "popper.js": {
+      "globals": {
+        "MSInputMethodContext": true,
+        "Node.DOCUMENT_POSITION_FOLLOWING": true,
+        "cancelAnimationFrame": true,
+        "console.warn": true,
+        "define": true,
+        "devicePixelRatio": true,
+        "document": true,
+        "getComputedStyle": true,
+        "innerHeight": true,
+        "innerWidth": true,
+        "navigator.userAgent": true,
+        "requestAnimationFrame": true,
+        "setTimeout": true
       }
     },
     "process": {
@@ -1238,6 +1317,15 @@
         "safe-buffer": true
       }
     },
+    "react": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "object-assign": true,
+        "prop-types": true
+      }
+    },
     "react-devtools": {
       "packages": {
         "react-devtools-core": true
@@ -1284,13 +1372,202 @@
         "setTimeout": true
       }
     },
+    "react-dnd": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "disposables": true,
+        "dnd-core": true,
+        "hoist-non-react-statics": true,
+        "invariant": true,
+        "lodash": true,
+        "prop-types": true,
+        "react": true,
+        "shallowequal": true
+      }
+    },
+    "react-dnd-html5-backend": {
+      "globals": {
+        "Image": true,
+        "console.warn": true,
+        "devicePixelRatio": true,
+        "document": true,
+        "navigator.userAgent": true,
+        "safari": true,
+        "setTimeout": true
+      }
+    },
+    "react-dom": {
+      "globals": {
+        "MSApp": true,
+        "__REACT_DEVTOOLS_GLOBAL_HOOK__": true,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "clipboardData": true,
+        "console": true,
+        "dispatchEvent": true,
+        "document": true,
+        "event": "write",
+        "jest": true,
+        "location.protocol": true,
+        "navigator.userAgent.indexOf": true,
+        "performance": true,
+        "removeEventListener": true,
+        "self": true,
+        "setTimeout": true,
+        "top": true,
+        "trustedTypes": true
+      },
+      "packages": {
+        "object-assign": true,
+        "prop-types": true,
+        "react": true,
+        "scheduler": true
+      }
+    },
+    "react-fast-compare": {
+      "globals": {
+        "Element": true,
+        "console.warn": true
+      }
+    },
+    "react-idle-timer": {
+      "globals": {
+        "clearTimeout": true,
+        "document": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "prop-types": true,
+        "react": true
+      }
+    },
+    "react-inspector": {
+      "globals": {
+        "Node.CDATA_SECTION_NODE": true,
+        "Node.COMMENT_NODE": true,
+        "Node.DOCUMENT_FRAGMENT_NODE": true,
+        "Node.DOCUMENT_NODE": true,
+        "Node.DOCUMENT_TYPE_NODE": true,
+        "Node.ELEMENT_NODE": true,
+        "Node.PROCESSING_INSTRUCTION_NODE": true,
+        "Node.TEXT_NODE": true
+      },
+      "packages": {
+        "babel-runtime": true,
+        "is-dom": true,
+        "prop-types": true,
+        "react": true
+      }
+    },
     "react-is": {
       "globals": {
         "console": true
       }
     },
+    "react-popper": {
+      "globals": {
+        "document": true
+      },
+      "packages": {
+        "@popperjs/core": true,
+        "react": true,
+        "react-fast-compare": true,
+        "warning": true
+      }
+    },
+    "react-redux": {
+      "globals": {
+        "console": true,
+        "document": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "hoist-non-react-statics": true,
+        "prop-types": true,
+        "react": true,
+        "react-dom": true,
+        "react-is": true,
+        "redux": true
+      }
+    },
+    "react-router": {
+      "packages": {
+        "history": true,
+        "hoist-non-react-statics": true,
+        "mini-create-react-context": true,
+        "path-to-regexp": true,
+        "prop-types": true,
+        "react": true,
+        "react-is": true,
+        "tiny-invariant": true,
+        "tiny-warning": true
+      }
+    },
+    "react-router-dom": {
+      "packages": {
+        "history": true,
+        "prop-types": true,
+        "react": true,
+        "react-router": true,
+        "tiny-invariant": true,
+        "tiny-warning": true
+      }
+    },
+    "react-simple-file-input": {
+      "globals": {
+        "File": true,
+        "FileReader": true,
+        "console.warn": true
+      },
+      "packages": {
+        "prop-types": true,
+        "react": true
+      }
+    },
+    "react-tippy": {
+      "globals": {
+        "Element": true,
+        "MSStream": true,
+        "MutationObserver": true,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "define": true,
+        "document": true,
+        "getComputedStyle": true,
+        "innerHeight": true,
+        "innerWidth": true,
+        "navigator.maxTouchPoints": true,
+        "navigator.msMaxTouchPoints": true,
+        "navigator.userAgent": true,
+        "performance": true,
+        "requestAnimationFrame": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "popper.js": true,
+        "react": true,
+        "react-dom": true
+      }
+    },
+    "react-toggle-button": {
+      "globals": {
+        "clearTimeout": true,
+        "console.warn": true,
+        "define": true,
+        "performance": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "react": true
+      }
+    },
     "react-transition-group": {
       "globals": {
+        "Element": true,
         "clearTimeout": true,
         "setTimeout": true
       },
@@ -1417,6 +1694,18 @@
     "sc-channel": {
       "packages": {
         "component-emitter": true
+      }
+    },
+    "scheduler": {
+      "globals": {
+        "MessageChannel": true,
+        "cancelAnimationFrame": true,
+        "clearTimeout": true,
+        "console": true,
+        "navigator": true,
+        "performance": true,
+        "requestAnimationFrame": true,
+        "setTimeout": true
       }
     },
     "scrypt-js": {
