@@ -10,10 +10,7 @@ import {
   getAssetImages,
   getShouldHideZeroBalanceTokens,
 } from '../../../selectors';
-import {
-  getTokens,
-  getTokensWithBalance,
-} from '../../../ducks/metamask/metamask';
+import { getTokens } from '../../../ducks/metamask/metamask';
 
 export default function TokenList({ onTokenClick }) {
   const t = useI18nContext();
@@ -25,13 +22,11 @@ export default function TokenList({ onTokenClick }) {
   // from the background so it has a new reference with each background update,
   // even if the tokens haven't changed
   const tokens = useSelector(getTokens, isEqual);
-  const tokensWithBalance = useSelector(getTokensWithBalance, isEqual);
-
   const { loading, tokensWithBalances } = useTokenTracker(
-    shouldHideZeroBalanceTokens ? tokensWithBalance : tokens,
+    tokens,
     true,
+    shouldHideZeroBalanceTokens,
   );
-
   if (loading) {
     return (
       <div
