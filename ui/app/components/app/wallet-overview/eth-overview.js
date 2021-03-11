@@ -133,14 +133,14 @@ const EthOverview = ({ className }) => {
               history.push(SEND_ROUTE);
             }}
           />
-          {swapsEnabled ? (
+          {true ? (
             <IconButton
               className="eth-overview__button"
               data-testid="eth-overview-swap"
               disabled={false}
               Icon={SwapIcon}
               onClick={() => {
-                if (isMainnetChain) {
+                if (true) {
                   enteredSwapsEvent();
                   dispatch(setSwapsFromToken(swapsEthToken));
                   if (usingHardwareWallet) {
@@ -155,7 +155,7 @@ const EthOverview = ({ className }) => {
                 <Tooltip
                   title={t('onlyAvailableOnMainnet')}
                   position="bottom"
-                  disabled={isMainnetChain}
+                  disabled={true}
                 >
                   {contents}
                 </Tooltip>

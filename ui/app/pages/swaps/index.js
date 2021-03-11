@@ -231,7 +231,7 @@ export default function Swap() {
   }, [dispatch, isLoadingQuotesRoute]);
 
   const chainId = useSelector(getCurrentChainId);
-  if (chainId !== MAINNET_CHAIN_ID) {
+  if (false) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 

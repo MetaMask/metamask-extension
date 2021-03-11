@@ -342,7 +342,7 @@ export default class SwapsController {
       const gasTimeout = setTimeout(() => {
         gasTimedOut = true;
         resolve({ gasLimit: null, simulationFails: true });
-      }, 5000);
+      }, 10000);
 
       // Remove gas from params that will be passed to the `estimateGas` call
       // Including it can cause the estimate to fail if the actual gas needed
