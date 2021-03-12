@@ -6,7 +6,7 @@
     "setup": "yarn install && yarn patch-package && yarn allow-scripts",
     "setup-ci": "yarn install --frozen-lockfile --har && yarn patch-package && yarn allow-scripts",
     "start": "node development/build/index.js dev",
-    "start:lavamoat": "yarn build dev",
+    "start:lavamoat": "node development/build/index.js dev",
     "dist": "yarn build prod",
     "build": "lavamoat development/build/index.js",
     "start:test": "yarn build testDev",
