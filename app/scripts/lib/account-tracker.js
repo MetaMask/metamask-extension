@@ -286,8 +286,7 @@ export default class AccountTracker {
         return;
       }
       addresses.forEach((address, index) => {
-        const balance =
-          result[index] === undefined ? '0x0' : bnToHex(result[index]);
+        const balance = result[index] ? bnToHex(result[index]) : '0x0';
         accounts[address] = { address, balance };
       });
       this.store.updateState({ accounts });
