@@ -1,4 +1,14 @@
 {
   "resources": {
+    "browser-resolve": {
+      "packages": {
+        "core-js": true
+      }
+    },
+    "babel-runtime": {
+      "packages": {
+        "@babel/runtime": true
+      }
+    }
   }
 }
