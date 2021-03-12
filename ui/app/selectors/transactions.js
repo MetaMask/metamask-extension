@@ -10,7 +10,7 @@ import {
   TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction';
 import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
-import { getCurrentChainId, getCurrentNetworkId } from './selectors';
+import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
 import { getSelectedAddress } from '.';
 
 export const incomingTxListSelector = (state) => {
@@ -58,7 +58,7 @@ export const unapprovedMessagesSelector = createSelector(
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-  getCurrentNetworkId,
+  deprecatedGetCurrentNetworkId,
   getCurrentChainId,
   (
     unapprovedMsgs = {},

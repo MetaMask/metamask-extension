@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { getNetworkDisplayName } from '../../../../../../app/scripts/controllers/network/util';
+import { NETWORK_TO_NAME_MAP } from '../../../../../../shared/constants/network';
 import Button from '../../../ui/button';
 
 export default class DepositEtherModal extends Component {
@@ -10,7 +10,7 @@ export default class DepositEtherModal extends Component {
   };
 
   static propTypes = {
-    network: PropTypes.string.isRequired,
+    chainId: PropTypes.string.isRequired,
     isTestnet: PropTypes.bool.isRequired,
     isMainnet: PropTypes.bool.isRequired,
     toWyre: PropTypes.func.isRequired,
@@ -19,10 +19,6 @@ export default class DepositEtherModal extends Component {
     hideWarning: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
     showAccountDetailModal: PropTypes.func.isRequired,
-  };
-
-  faucetRowText = (networkName) => {
-    return this.context.t('getEtherFromFaucet', [networkName]);
   };
 
   goToAccountDetailsModal = () => {
@@ -89,14 +85,14 @@ export default class DepositEtherModal extends Component {
 
   render() {
     const {
-      network,
+      chainId,
       toWyre,
       address,
       toFaucet,
       isTestnet,
       isMainnet,
     } = this.props;
-    const networkName = getNetworkDisplayName(network);
+    const networkName = NETWORK_TO_NAME_MAP[chainId];
 
     return (
       <div className="page-container page-container--full-width page-container--full-height">
@@ -162,9 +158,9 @@ export default class DepositEtherModal extends Component {
             {this.renderRow({
               logo: <i className="fa fa-tint fa-2x" />,
               title: this.context.t('testFaucet'),
-              text: this.faucetRowText(networkName),
+              text: this.context.t('getEtherFromFaucet', [networkName]),
               buttonLabel: this.context.t('getEther'),
-              onButtonClick: () => toFaucet(network),
+              onButtonClick: () => toFaucet(chainId),
               hide: !isTestnet,
             })}
           </div>
