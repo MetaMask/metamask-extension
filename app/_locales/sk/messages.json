@@ -140,12 +140,6 @@
   "builtInCalifornia": {
     "message": "MetaMask je navržen a vytvořen v Kalifornii."
   },
-  "buyCoinSwitch": {
-    "message": "Kúpiť na CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch je jedno miesto, kde si môžete vymieňať viac ako 300 kryptomien za najlepšiu cenu."
-  },
   "buyWithWyre": {
     "message": "Kúpte ETH s Wyre"
   },
@@ -158,9 +152,6 @@
   "cancel": {
     "message": "Zrušit"
   },
-  "cancelAttempt": {
-    "message": "Zrušiť pokus"
-  },
   "cancellationGasFee": {
     "message": "Storno poplatok za GAS"
   },
@@ -169,9 +160,6 @@
   },
   "chainId": {
     "message": "ID reťazca"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Graf je k dispozícii iba v sieťach Ethereum."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Ak sa chcete pripojiť k svojej hardvérovej peňaženke, musíte v Google Chrome použiť MetaMask."
@@ -212,9 +200,6 @@
   "connectingToKovan": {
     "message": "Připojuji se k Kovan Test Network"
   },
-  "connectingToLocalhost": {
-    "message": "Pripája sa k Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Připojuji se k Ethereum Mainnet"
   },
@@ -223,9 +208,6 @@
   },
   "connectingToRopsten": {
     "message": "Připojuji se k Ropsten Test Network"
-  },
-  "continueToCoinSwitch": {
-    "message": "Pokračovať na CoinSwitch"
   },
   "continueToWyre": {
     "message": "Pokračovať na Wyre"
@@ -305,9 +287,6 @@
   "deleteNetworkDescription": {
     "message": "Naozaj chcete túto sieť odstrániť?"
   },
-  "deposit": {
-    "message": "Vklad"
-  },
   "depositEther": {
     "message": "Vložit Ether"
   },
@@ -365,9 +344,6 @@
   "endOfFlowMessage6": {
     "message": "Ak potrebujete backup frázu znova zálohovať, nájdete ju v časti Nastavenia -> Zabezpečenie."
   },
-  "endOfFlowMessage7": {
-    "message": "Ak budete mať nejaké otázky alebo niečo zaujímavé, pošlite email na support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask nemôže obnoviť vašu seed frázu. Zistiť viac."
   },
@@ -409,9 +385,6 @@
   },
   "fast": {
     "message": "Rýchle"
-  },
-  "faster": {
-    "message": "Rýchlejšie"
   },
   "fiat": {
     "message": "FIAT",
@@ -553,9 +526,6 @@
   "invalidBlockExplorerURL": {
     "message": "Neplatné Block Explorer URI"
   },
-  "invalidInput": {
-    "message": "Neplatný vstup."
-  },
   "invalidRPC": {
     "message": "Neplatné RPC URI"
   },
@@ -583,9 +553,6 @@
   },
   "links": {
     "message": "Odkazy"
-  },
-  "liveGasPricePredictions": {
-    "message": "Predpoveď cien GAS naživo"
   },
   "loadMore": {
     "message": "Načítať viac"
@@ -715,10 +682,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokovať URL Explorera (voliteľné)"
   },
-  "optionalChainId": {
-    "message": "ChainID (voliteľné)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbol (voliteľné)"
   },
   "orderOneHere": {
@@ -776,15 +740,6 @@
   },
   "privateNetwork": {
     "message": "Soukromá síť"
-  },
-  "protectYourKeys": {
-    "message": "Chráňte si svoje kľúče!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Pri seed fráze buďte opatrní – vyskytli sa správy o webových stránkach, ktoré sa snažia napodobniť MetaMask. MetaMask nikdy nebude žiadať vašu seed frázu!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Držte svoju frázu v bezpečí. Ak zbadáte niečo podozrivé alebo si nie ste istí webom, pošlite email na adresu support@metamask.io"
   },
   "queue": {
     "message": "Poradie"
@@ -927,17 +882,11 @@
   "selectAnAccountHelp": {
     "message": "Vyberte účet, ktorý chcete zobraziť v MetaMask"
   },
-  "selectCurrency": {
-    "message": "Vybrat měnu"
-  },
   "selectEachPhrase": {
     "message": "Vyberte každú frázu, aby ste sa uistili, že je správna."
   },
   "selectHdPath": {
     "message": "Vyberte cestu HD"
-  },
-  "selectLocale": {
-    "message": "Vybrať miestne nastavenia"
   },
   "selectPathHelp": {
     "message": "Ak nevidíte svoje existujúce účty v Hlavnej knihe dole, skúste prepnúť cesty na „Odkaz (MEW/MyCrypto)“"
@@ -959,9 +908,6 @@
   },
   "sentEther": {
     "message": "poslaný ether"
-  },
-  "sentTokens": {
-    "message": "poslané tokeny"
   },
   "separateEachWord": {
     "message": "Každé slovo oddeľte jednou medzerou"
@@ -1007,9 +953,6 @@
   },
   "slow": {
     "message": "Pomalé"
-  },
-  "slower": {
-    "message": "Pomalší"
   },
   "somethingWentWrong": {
     "message": "Och! Niečo zlyhalo."
@@ -1149,9 +1092,6 @@
   "transactionSubmitted": {
     "message": "Transakcia bola odoslaná s poplatkom za GAS z  $1 na $2."
   },
-  "transactionTime": {
-    "message": "Čas transakcie"
-  },
   "transactionUpdated": {
     "message": "Transakcia bola aktualizovaná na $2."
   },
@@ -1254,9 +1194,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Vaša súkromná seed fráza"
-  },
-  "yourSigRequested": {
-    "message": "Je vyžadován váš podpis"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Nulová cena za GAS pri zrýchlení"

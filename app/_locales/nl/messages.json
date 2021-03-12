@@ -43,12 +43,6 @@
   "builtInCalifornia": {
     "message": "MetaMask is ontworpen en gebouwd in Californië."
   },
-  "buyCoinSwitch": {
-    "message": "Koop op CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch is de one-stop-bestemming om meer dan 300 cryptocurrencies tegen de beste prijs in te wisselen."
-  },
   "cancel": {
     "message": "Annuleer"
   },
@@ -58,14 +52,11 @@
   "confirmPassword": {
     "message": "bevestig wachtwoord"
   },
-  "continueToCoinSwitch": {
-    "message": "Ga verder naar CoinSwitch"
-  },
   "contractDeployment": {
     "message": "Contractimplementatie"
   },
   "copiedExclamation": {
-    "message": "Gekopieerde!"
+    "message": "Gekopieerd!"
   },
   "copyPrivateKey": {
     "message": "Dit is uw privésleutel (klik om te kopiëren)"
@@ -93,9 +84,6 @@
   },
   "defaultNetwork": {
     "message": "Het standaardnetwerk voor Ether-transacties is Main Net."
-  },
-  "deposit": {
-    "message": "Storting"
   },
   "depositEther": {
     "message": "Stort Ether"
@@ -175,7 +163,7 @@
     "message": " Geïmporteerde accounts worden niet gekoppeld aan de seedphrase van uw oorspronkelijk gemaakte MetaMask-account. Meer informatie over geïmporteerde accounts"
   },
   "imported": {
-    "message": "geïmporteerde",
+    "message": "geïmporteerd",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
   "infoHelp": {
@@ -195,9 +183,6 @@
   },
   "invalidBlockExplorerURL": {
     "message": "Ongeldige Block Explorer URI"
-  },
-  "invalidInput": {
-    "message": "Ongeldige invoer."
   },
   "invalidRPC": {
     "message": "Ongeldige RPC-URI"
@@ -332,9 +317,6 @@
   "seedPhraseReq": {
     "message": "Back-up woorden zijn 12 woorden lang"
   },
-  "selectCurrency": {
-    "message": "selecteer valuta"
-  },
   "selectType": {
     "message": "Selecteer type"
   },
@@ -425,8 +407,5 @@
   },
   "youSign": {
     "message": "U ondertekent"
-  },
-  "yourSigRequested": {
-    "message": "Uw handtekening wordt aangevraagd"
   }
 }

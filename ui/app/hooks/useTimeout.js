@@ -1,46 +1,46 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 /**
  * useTimeout
  *
- * @param {Function}  cb   - callback function inside setTimeout
- * @param {number}  delay   - delay in ms
- * @param {boolean}  [immediate]   - determines whether the timeout is invoked immediately
+ * @param {Function} cb - callback function inside setTimeout
+ * @param {number} delay - delay in ms
+ * @param {boolean} [immediate] - determines whether the timeout is invoked immediately
  *
  * @return {Function|undefined}
  */
-export function useTimeout (cb, delay, immediate = true) {
-  const saveCb = useRef()
-  const [timeoutId, setTimeoutId] = useState(null)
+export function useTimeout(cb, delay, immediate = true) {
+  const saveCb = useRef();
+  const [timeoutId, setTimeoutId] = useState(null);
 
   useEffect(() => {
-    saveCb.current = cb
-  }, [cb])
+    saveCb.current = cb;
+  }, [cb]);
 
   useEffect(() => {
     if (timeoutId !== 'start') {
-      return undefined
+      return undefined;
     }
 
     const id = setTimeout(() => {
-      saveCb.current()
-    }, delay)
+      saveCb.current();
+    }, delay);
 
-    setTimeoutId(id)
+    setTimeoutId(id);
 
     return () => {
-      clearTimeout(timeoutId)
-    }
-  }, [delay, timeoutId])
+      clearTimeout(timeoutId);
+    };
+  }, [delay, timeoutId]);
 
   const startTimeout = useCallback(() => {
-    clearTimeout(timeoutId)
-    setTimeoutId('start')
-  }, [timeoutId])
+    clearTimeout(timeoutId);
+    setTimeoutId('start');
+  }, [timeoutId]);
 
   if (immediate) {
-    startTimeout()
+    startTimeout();
   }
 
-  return startTimeout
+  return startTimeout;
 }

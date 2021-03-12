@@ -1,1 +1,1 @@
-require('react-devtools')
+require('react-devtools');

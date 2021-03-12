@@ -1,20 +1,20 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
   createNewVaultAndRestore,
   unMarkPasswordForgotten,
   initializeThreeBox,
-} from '../../store/actions'
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes'
-import TextField from '../../components/ui/text-field'
-import Button from '../../components/ui/button'
+} from '../../store/actions';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import TextField from '../../components/ui/text-field';
+import Button from '../../components/ui/button';
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     createNewVaultAndRestore: PropTypes.func.isRequired,
@@ -22,7 +22,7 @@ class RestoreVaultPage extends Component {
     history: PropTypes.object,
     isLoading: PropTypes.bool,
     initializeThreeBox: PropTypes.func,
-  }
+  };
 
   state = {
     seedPhrase: '',
@@ -32,50 +32,54 @@ class RestoreVaultPage extends Component {
     seedPhraseError: null,
     passwordError: null,
     confirmPasswordError: null,
-  }
+  };
 
-  parseSeedPhrase = (seedPhrase) => (seedPhrase || '').trim().toLowerCase().match(/\w+/gu)?.join(' ') || ''
+  parseSeedPhrase = (seedPhrase) =>
+    (seedPhrase || '').trim().toLowerCase().match(/\w+/gu)?.join(' ') || '';
 
-  handleSeedPhraseChange (seedPhrase) {
-    let seedPhraseError = null
+  handleSeedPhraseChange(seedPhrase) {
+    let seedPhraseError = null;
 
-    const wordCount = this.parseSeedPhrase(seedPhrase).split(/\s/u).length
-    if (seedPhrase && (wordCount % 3 !== 0 || wordCount < 12 || wordCount > 24)) {
-      seedPhraseError = this.context.t('seedPhraseReq')
+    const wordCount = this.parseSeedPhrase(seedPhrase).split(/\s/u).length;
+    if (
+      seedPhrase &&
+      (wordCount % 3 !== 0 || wordCount < 12 || wordCount > 24)
+    ) {
+      seedPhraseError = this.context.t('seedPhraseReq');
     }
 
-    this.setState({ seedPhrase, seedPhraseError })
+    this.setState({ seedPhrase, seedPhraseError });
   }
 
-  handlePasswordChange (password) {
-    const { confirmPassword } = this.state
-    let confirmPasswordError = null
-    let passwordError = null
+  handlePasswordChange(password) {
+    const { confirmPassword } = this.state;
+    let confirmPasswordError = null;
+    let passwordError = null;
 
     if (password && password.length < 8) {
-      passwordError = this.context.t('passwordNotLongEnough')
+      passwordError = this.context.t('passwordNotLongEnough');
     }
 
     if (confirmPassword && password !== confirmPassword) {
-      confirmPasswordError = this.context.t('passwordsDontMatch')
+      confirmPasswordError = this.context.t('passwordsDontMatch');
     }
 
-    this.setState({ password, passwordError, confirmPasswordError })
+    this.setState({ password, passwordError, confirmPasswordError });
   }
 
-  handleConfirmPasswordChange (confirmPassword) {
-    const { password } = this.state
-    let confirmPasswordError = null
+  handleConfirmPasswordChange(confirmPassword) {
+    const { password } = this.state;
+    let confirmPasswordError = null;
 
     if (password !== confirmPassword) {
-      confirmPasswordError = this.context.t('passwordsDontMatch')
+      confirmPasswordError = this.context.t('passwordsDontMatch');
     }
 
-    this.setState({ confirmPassword, confirmPasswordError })
+    this.setState({ confirmPassword, confirmPasswordError });
   }
 
   onClick = () => {
-    const { password, seedPhrase } = this.state
+    const { password, seedPhrase } = this.state;
     const {
       // eslint-disable-next-line no-shadow
       createNewVaultAndRestore,
@@ -83,35 +87,36 @@ class RestoreVaultPage extends Component {
       history,
       // eslint-disable-next-line no-shadow
       initializeThreeBox,
-    } = this.props
+    } = this.props;
 
-    leaveImportSeedScreenState()
-    createNewVaultAndRestore(password, this.parseSeedPhrase(seedPhrase))
-      .then(() => {
+    leaveImportSeedScreenState();
+    createNewVaultAndRestore(password, this.parseSeedPhrase(seedPhrase)).then(
+      () => {
         this.context.metricsEvent({
           eventOpts: {
             category: 'Retention',
             action: 'userEntersSeedPhrase',
             name: 'onboardingRestoredVault',
           },
-        })
-        initializeThreeBox()
-        history.push(DEFAULT_ROUTE)
-      })
-  }
+        });
+        initializeThreeBox();
+        history.push(DEFAULT_ROUTE);
+      },
+    );
+  };
 
-  hasError () {
-    const { passwordError, confirmPasswordError, seedPhraseError } = this.state
-    return passwordError || confirmPasswordError || seedPhraseError
+  hasError() {
+    const { passwordError, confirmPasswordError, seedPhraseError } = this.state;
+    return passwordError || confirmPasswordError || seedPhraseError;
   }
 
   toggleShowSeedPhrase = () => {
     this.setState(({ showSeedPhrase }) => ({
       showSeedPhrase: !showSeedPhrase,
-    }))
-  }
+    }));
+  };
 
-  render () {
+  render() {
     const {
       seedPhrase,
       showSeedPhrase,
@@ -120,10 +125,15 @@ class RestoreVaultPage extends Component {
       seedPhraseError,
       passwordError,
       confirmPasswordError,
-    } = this.state
-    const { t } = this.context
-    const { isLoading } = this.props
-    const disabled = !seedPhrase || !password || !confirmPassword || isLoading || this.hasError()
+    } = this.state;
+    const { t } = this.context;
+    const { isLoading } = this.props;
+    const disabled =
+      !seedPhrase ||
+      !password ||
+      !confirmPassword ||
+      isLoading ||
+      this.hasError();
 
     return (
       <div className="first-view-main-wrapper">
@@ -132,19 +142,19 @@ class RestoreVaultPage extends Component {
             <a
               className="import-account__back-button"
               onClick={(e) => {
-                e.preventDefault()
-                this.props.leaveImportSeedScreenState()
-                this.props.history.goBack()
+                e.preventDefault();
+                this.props.leaveImportSeedScreenState();
+                this.props.history.goBack();
               }}
               href="#"
             >
               {`< Back`}
             </a>
             <div className="import-account__title">
-              { this.context.t('restoreAccountWithSeed') }
+              {this.context.t('restoreAccountWithSeed')}
             </div>
             <div className="import-account__selector-label">
-              { this.context.t('secretPhrase') }
+              {this.context.t('secretPhrase')}
             </div>
             <div className="import-account__input-wrapper">
               <label className="import-account__input-label">Wallet Seed</label>
@@ -153,6 +163,7 @@ class RestoreVaultPage extends Component {
                   className="import-account__secret-phrase"
                   onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
                   value={seedPhrase}
+                  autoFocus
                   placeholder={this.context.t('separateEachWord')}
                 />
               ) : (
@@ -161,16 +172,19 @@ class RestoreVaultPage extends Component {
                   type="password"
                   onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
                   value={seedPhrase}
+                  autoFocus
                   placeholder={t('seedPhrasePlaceholderPaste')}
                 />
               )}
-              <span className="error">
-                { seedPhraseError }
-              </span>
-              <div className="import-account__checkbox-container" onClick={this.toggleShowSeedPhrase}>
+              <span className="error">{seedPhraseError}</span>
+              <div
+                className="import-account__checkbox-container"
+                onClick={this.toggleShowSeedPhrase}
+              >
                 <div
                   className="import-account__checkbox"
                   tabIndex="0"
+                  id="seed-checkbox"
                   role="checkbox"
                   onKeyPress={this.toggleShowSeedPhrase}
                   aria-checked={showSeedPhrase}
@@ -178,9 +192,13 @@ class RestoreVaultPage extends Component {
                 >
                   {showSeedPhrase ? <i className="fa fa-check fa-2x" /> : null}
                 </div>
-                <span id="ftf-chk1-label" className="import-account__checkbox-label">
-                  { t('showSeedPhrase') }
-                </span>
+                <label
+                  htmlFor="seed-checkbox"
+                  id="ftf-chk1-label"
+                  className="import-account__checkbox-label"
+                >
+                  {t('showSeedPhrase')}
+                </label>
               </div>
             </div>
             <TextField
@@ -189,7 +207,9 @@ class RestoreVaultPage extends Component {
               type="password"
               className="first-time-flow__input"
               value={this.state.password}
-              onChange={(event) => this.handlePasswordChange(event.target.value)}
+              onChange={(event) =>
+                this.handlePasswordChange(event.target.value)
+              }
               error={passwordError}
               autoComplete="new-password"
               margin="normal"
@@ -201,7 +221,9 @@ class RestoreVaultPage extends Component {
               type="password"
               className="first-time-flow__input"
               value={this.state.confirmPassword}
-              onChange={(event) => this.handleConfirmPasswordChange(event.target.value)}
+              onChange={(event) =>
+                this.handleConfirmPasswordChange(event.target.value)
+              }
               error={confirmPasswordError}
               autoComplete="confirm-password"
               margin="normal"
@@ -218,7 +240,7 @@ class RestoreVaultPage extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
@@ -226,9 +248,10 @@ export default connect(
   ({ appState: { isLoading } }) => ({ isLoading }),
   (dispatch) => ({
     leaveImportSeedScreenState: () => {
-      dispatch(unMarkPasswordForgotten())
+      dispatch(unMarkPasswordForgotten());
     },
-    createNewVaultAndRestore: (pw, seed) => dispatch(createNewVaultAndRestore(pw, seed)),
+    createNewVaultAndRestore: (pw, seed) =>
+      dispatch(createNewVaultAndRestore(pw, seed)),
     initializeThreeBox: () => dispatch(initializeThreeBox()),
   }),
-)(RestoreVaultPage)
+)(RestoreVaultPage);

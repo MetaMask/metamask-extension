@@ -1,17 +1,17 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { exportAsFile } from '../../../helpers/utils/util'
-import ToggleButton from '../../../components/ui/toggle-button'
-import TextField from '../../../components/ui/text-field'
-import Button from '../../../components/ui/button'
-import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { exportAsFile } from '../../../helpers/utils/util';
+import ToggleButton from '../../../components/ui/toggle-button';
+import TextField from '../../../components/ui/text-field';
+import Button from '../../../components/ui/button';
+import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     setUseNonceField: PropTypes.func,
@@ -24,8 +24,6 @@ export default class AdvancedTab extends PureComponent {
     sendHexData: PropTypes.bool,
     setAdvancedInlineGasFeatureFlag: PropTypes.func,
     advancedInlineGas: PropTypes.bool,
-    setTransactionTimeFeatureFlag: PropTypes.func,
-    transactionTime: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
     setAutoLockTimeLimit: PropTypes.func.isRequired,
@@ -35,23 +33,26 @@ export default class AdvancedTab extends PureComponent {
     threeBoxDisabled: PropTypes.bool.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
-  }
+  };
 
   state = {
     autoLockTimeLimit: this.props.autoLockTimeLimit,
     lockTimeError: '',
     ipfsGateway: this.props.ipfsGateway,
     ipfsGatewayError: '',
-  }
+  };
 
-  renderMobileSync () {
-    const { t } = this.context
-    const { history } = this.props
+  renderMobileSync() {
+    const { t } = this.context;
+    const { history } = this.props;
 
     return (
-      <div className="settings-page__content-row" data-testid="advanced-setting-mobile-sync">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-mobile-sync"
+      >
         <div className="settings-page__content-item">
-          <span>{ t('syncWithMobile') }</span>
+          <span>{t('syncWithMobile')}</span>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
@@ -59,28 +60,31 @@ export default class AdvancedTab extends PureComponent {
               type="secondary"
               large
               onClick={(event) => {
-                event.preventDefault()
-                history.push(MOBILE_SYNC_ROUTE)
+                event.preventDefault();
+                history.push(MOBILE_SYNC_ROUTE);
               }}
             >
-              { t('syncWithMobile') }
+              {t('syncWithMobile')}
             </Button>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  renderStateLogs () {
-    const { t } = this.context
-    const { displayWarning } = this.props
+  renderStateLogs() {
+    const { t } = this.context;
+    const { displayWarning } = this.props;
 
     return (
-      <div className="settings-page__content-row" data-testid="advanced-setting-state-logs">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-state-logs"
+      >
         <div className="settings-page__content-item">
-          <span>{ t('stateLogs') }</span>
+          <span>{t('stateLogs')}</span>
           <span className="settings-page__content-description">
-            { t('stateLogsDescription') }
+            {t('stateLogsDescription')}
           </span>
         </div>
         <div className="settings-page__content-item">
@@ -91,31 +95,34 @@ export default class AdvancedTab extends PureComponent {
               onClick={() => {
                 window.logStateString((err, result) => {
                   if (err) {
-                    displayWarning(t('stateLogError'))
+                    displayWarning(t('stateLogError'));
                   } else {
-                    exportAsFile(`${t('stateLogFileName')}.json`, result)
+                    exportAsFile(`${t('stateLogFileName')}.json`, result);
                   }
-                })
+                });
               }}
             >
-              { t('downloadStateLogs') }
+              {t('downloadStateLogs')}
             </Button>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  renderResetAccount () {
-    const { t } = this.context
-    const { showResetAccountConfirmationModal } = this.props
+  renderResetAccount() {
+    const { t } = this.context;
+    const { showResetAccountConfirmationModal } = this.props;
 
     return (
-      <div className="settings-page__content-row" data-testid="advanced-setting-reset-account">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-reset-account"
+      >
         <div className="settings-page__content-item">
-          <span>{ t('resetAccount') }</span>
+          <span>{t('resetAccount')}</span>
           <span className="settings-page__content-description">
-            { t('resetAccountDescription') }
+            {t('resetAccountDescription')}
           </span>
         </div>
         <div className="settings-page__content-item">
@@ -125,35 +132,38 @@ export default class AdvancedTab extends PureComponent {
               large
               className="settings-tab__button--red"
               onClick={(event) => {
-                event.preventDefault()
+                event.preventDefault();
                 this.context.metricsEvent({
                   eventOpts: {
                     category: 'Settings',
                     action: 'Reset Account',
                     name: 'Reset Account',
                   },
-                })
-                showResetAccountConfirmationModal()
+                });
+                showResetAccountConfirmationModal();
               }}
             >
-              { t('resetAccount') }
+              {t('resetAccount')}
             </Button>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  renderHexDataOptIn () {
-    const { t } = this.context
-    const { sendHexData, setHexDataFeatureFlag } = this.props
+  renderHexDataOptIn() {
+    const { t } = this.context;
+    const { sendHexData, setHexDataFeatureFlag } = this.props;
 
     return (
-      <div className="settings-page__content-row" data-testid="advanced-setting-hex-data">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-hex-data"
+      >
         <div className="settings-page__content-item">
-          <span>{ t('showHexData') }</span>
+          <span>{t('showHexData')}</span>
           <div className="settings-page__content-description">
-            { t('showHexDataDescription') }
+            {t('showHexDataDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -167,19 +177,22 @@ export default class AdvancedTab extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  renderAdvancedGasInputInline () {
-    const { t } = this.context
-    const { advancedInlineGas, setAdvancedInlineGasFeatureFlag } = this.props
+  renderAdvancedGasInputInline() {
+    const { t } = this.context;
+    const { advancedInlineGas, setAdvancedInlineGasFeatureFlag } = this.props;
 
     return (
-      <div className="settings-page__content-row" data-testid="advanced-setting-advanced-gas-inline">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-advanced-gas-inline"
+      >
         <div className="settings-page__content-item">
-          <span>{ t('showAdvancedGasInline') }</span>
+          <span>{t('showAdvancedGasInline')}</span>
           <div className="settings-page__content-description">
-            { t('showAdvancedGasInlineDescription') }
+            {t('showAdvancedGasInlineDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -193,74 +206,56 @@ export default class AdvancedTab extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  renderTransactionTimeEstimates () {
-    const { t } = this.context
-    const { transactionTime, setTransactionTimeFeatureFlag } = this.props
-
-    return (
-      <div className="settings-page__content-row" data-testid="advanced-setting-transaction-time-inline">
-        <div className="settings-page__content-item">
-          <span>{ t('transactionTime') }</span>
-          <div className="settings-page__content-description">
-            { t('showTransactionTimeDescription') }
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={transactionTime}
-              onToggle={(value) => setTransactionTimeFeatureFlag(!value)}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  renderShowConversionInTestnets () {
-    const { t } = this.context
+  renderShowConversionInTestnets() {
+    const { t } = this.context;
     const {
       showFiatInTestnets,
       setShowFiatConversionOnTestnetsPreference,
-    } = this.props
+    } = this.props;
 
     return (
-      <div className="settings-page__content-row" data-testid="advanced-setting-show-testnet-conversion">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-show-testnet-conversion"
+      >
         <div className="settings-page__content-item">
-          <span>{ t('showFiatConversionInTestnets') }</span>
+          <span>{t('showFiatConversionInTestnets')}</span>
           <div className="settings-page__content-description">
-            { t('showFiatConversionInTestnetsDescription') }
+            {t('showFiatConversionInTestnetsDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={showFiatInTestnets}
-              onToggle={(value) => setShowFiatConversionOnTestnetsPreference(!value)}
+              onToggle={(value) =>
+                setShowFiatConversionOnTestnetsPreference(!value)
+              }
               offLabel={t('off')}
               onLabel={t('on')}
             />
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  renderUseNonceOptIn () {
-    const { t } = this.context
-    const { useNonceField, setUseNonceField } = this.props
+  renderUseNonceOptIn() {
+    const { t } = this.context;
+    const { useNonceField, setUseNonceField } = this.props;
 
     return (
-      <div className="settings-page__content-row" data-testid="advanced-setting-custom-nonce">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-custom-nonce"
+      >
         <div className="settings-page__content-item">
-          <span>{ this.context.t('nonceField') }</span>
+          <span>{this.context.t('nonceField')}</span>
           <div className="settings-page__content-description">
-            { t('nonceFieldDescription') }
+            {t('nonceFieldDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -274,41 +269,41 @@ export default class AdvancedTab extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  handleLockChange (time) {
-    const { t } = this.context
-    const autoLockTimeLimit = Math.max(Number(time), 0)
+  handleLockChange(time) {
+    const { t } = this.context;
+    const autoLockTimeLimit = Math.max(Number(time), 0);
 
     this.setState(() => {
-      let lockTimeError = ''
+      let lockTimeError = '';
 
       if (autoLockTimeLimit > 10080) {
-        lockTimeError = t('lockTimeTooGreat')
+        lockTimeError = t('lockTimeTooGreat');
       }
 
       return {
         autoLockTimeLimit,
         lockTimeError,
-      }
-    })
+      };
+    });
   }
 
-  renderAutoLockTimeLimit () {
-    const { t } = this.context
-    const { lockTimeError } = this.state
-    const {
-      autoLockTimeLimit,
-      setAutoLockTimeLimit,
-    } = this.props
+  renderAutoLockTimeLimit() {
+    const { t } = this.context;
+    const { lockTimeError } = this.state;
+    const { autoLockTimeLimit, setAutoLockTimeLimit } = this.props;
 
     return (
-      <div className="settings-page__content-row" data-testid="advanced-setting-auto-lock">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-auto-lock"
+      >
         <div className="settings-page__content-item">
-          <span>{ t('autoLockTimeLimit') }</span>
+          <span>{t('autoLockTimeLimit')}</span>
           <div className="settings-page__content-description">
-            { t('autoLockTimeLimitDescription') }
+            {t('autoLockTimeLimitDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -330,38 +325,41 @@ export default class AdvancedTab extends PureComponent {
               className="settings-tab__rpc-save-button"
               disabled={lockTimeError !== ''}
               onClick={() => {
-                setAutoLockTimeLimit(this.state.autoLockTimeLimit)
+                setAutoLockTimeLimit(this.state.autoLockTimeLimit);
               }}
             >
-              { t('save') }
+              {t('save')}
             </Button>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  renderThreeBoxControl () {
-    const { t } = this.context
+  renderThreeBoxControl() {
+    const { t } = this.context;
     const {
       threeBoxSyncingAllowed,
       setThreeBoxSyncingPermission,
       threeBoxDisabled,
-    } = this.props
+    } = this.props;
 
-    let allowed = threeBoxSyncingAllowed
-    let description = t('syncWithThreeBoxDescription')
+    let allowed = threeBoxSyncingAllowed;
+    let description = t('syncWithThreeBoxDescription');
 
     if (threeBoxDisabled) {
-      allowed = false
-      description = t('syncWithThreeBoxDisabled')
+      allowed = false;
+      description = t('syncWithThreeBoxDisabled');
     }
     return (
-      <div className="settings-page__content-row" data-testid="advanced-setting-3box">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-3box"
+      >
         <div className="settings-page__content-item">
-          <span>{ t('syncWithThreeBox') }</span>
+          <span>{t('syncWithThreeBox')}</span>
           <div className="settings-page__content-description">
-            { description }
+            {description}
           </div>
         </div>
         <div
@@ -374,7 +372,7 @@ export default class AdvancedTab extends PureComponent {
               value={allowed}
               onToggle={(value) => {
                 if (!threeBoxDisabled) {
-                  setThreeBoxSyncingPermission(!value)
+                  setThreeBoxSyncingPermission(!value);
                 }
               }}
               offLabel={t('off')}
@@ -383,60 +381,59 @@ export default class AdvancedTab extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  handleIpfsGatewayChange (url) {
-    const { t } = this.context
+  handleIpfsGatewayChange(url) {
+    const { t } = this.context;
 
     this.setState(() => {
-      let ipfsGatewayError = ''
+      let ipfsGatewayError = '';
 
       try {
-
-        const urlObj = new URL(addUrlProtocolPrefix(url))
+        const urlObj = new URL(addUrlProtocolPrefix(url));
         if (!urlObj.host) {
-          throw new Error()
+          throw new Error();
         }
 
         // don't allow the use of this gateway
         if (urlObj.host === 'gateway.ipfs.io') {
-          throw new Error('Forbidden gateway')
+          throw new Error('Forbidden gateway');
         }
-
       } catch (error) {
-        ipfsGatewayError = (
+        ipfsGatewayError =
           error.message === 'Forbidden gateway'
             ? t('forbiddenIpfsGateway')
-            : t('invalidIpfsGateway')
-        )
+            : t('invalidIpfsGateway');
       }
 
       return {
         ipfsGateway: url,
         ipfsGatewayError,
-      }
-    })
+      };
+    });
   }
 
-  handleIpfsGatewaySave () {
+  handleIpfsGatewaySave() {
+    const url = new URL(addUrlProtocolPrefix(this.state.ipfsGateway));
+    const { host } = url;
 
-    const url = new URL(addUrlProtocolPrefix(this.state.ipfsGateway))
-    const { host } = url
-
-    this.props.setIpfsGateway(host)
+    this.props.setIpfsGateway(host);
   }
 
-  renderIpfsGatewayControl () {
-    const { t } = this.context
-    const { ipfsGatewayError } = this.state
+  renderIpfsGatewayControl() {
+    const { t } = this.context;
+    const { ipfsGatewayError } = this.state;
 
     return (
-      <div className="settings-page__content-row" data-testid="advanced-setting-ipfs-gateway">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-ipfs-gateway"
+      >
         <div className="settings-page__content-item">
-          <span>{ t('ipfsGateway') }</span>
+          <span>{t('ipfsGateway')}</span>
           <div className="settings-page__content-description">
-            { t('ipfsGatewayDescription') }
+            {t('ipfsGatewayDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -454,44 +451,41 @@ export default class AdvancedTab extends PureComponent {
               className="settings-tab__rpc-save-button"
               disabled={Boolean(ipfsGatewayError)}
               onClick={() => {
-                this.handleIpfsGatewaySave()
+                this.handleIpfsGatewaySave();
               }}
             >
-              { t('save') }
+              {t('save')}
             </Button>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  render () {
-    const { warning } = this.props
+  render() {
+    const { warning } = this.props;
 
     return (
       <div className="settings-page__body">
-        { warning && <div className="settings-tab__error">{ warning }</div> }
-        { this.renderStateLogs() }
-        { this.renderMobileSync() }
-        { this.renderResetAccount() }
-        { this.renderAdvancedGasInputInline() }
-        { this.renderTransactionTimeEstimates() }
-        { this.renderHexDataOptIn() }
-        { this.renderShowConversionInTestnets() }
-        { this.renderUseNonceOptIn() }
-        { this.renderAutoLockTimeLimit() }
-        { this.renderThreeBoxControl() }
-        { this.renderIpfsGatewayControl() }
+        {warning && <div className="settings-tab__error">{warning}</div>}
+        {this.renderStateLogs()}
+        {this.renderMobileSync()}
+        {this.renderResetAccount()}
+        {this.renderAdvancedGasInputInline()}
+        {this.renderHexDataOptIn()}
+        {this.renderShowConversionInTestnets()}
+        {this.renderUseNonceOptIn()}
+        {this.renderAutoLockTimeLimit()}
+        {this.renderThreeBoxControl()}
+        {this.renderIpfsGatewayControl()}
       </div>
-    )
+    );
   }
 }
 
-function addUrlProtocolPrefix (urlString) {
-  if (!urlString.match(
-    /(^http:\/\/)|(^https:\/\/)/u,
-  )) {
-    return `https://${urlString}`
+function addUrlProtocolPrefix(urlString) {
+  if (!urlString.match(/(^http:\/\/)|(^https:\/\/)/u)) {
+    return `https://${urlString}`;
   }
-  return urlString
+  return urlString;
 }

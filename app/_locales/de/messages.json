@@ -143,12 +143,6 @@
   "builtInCalifornia": {
     "message": "MetaMask wurde in Kalifornien entwickelt und gebaut."
   },
-  "buyCoinSwitch": {
-    "message": "Auf CoinSwitch kaufen"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch ist die One-Stop-Destination, um mehr als 300 Kryptowährungen zum besten Preis zu tauschen."
-  },
   "buyWithWyre": {
     "message": "ETH mit Wyre kaufen"
   },
@@ -158,17 +152,11 @@
   "cancel": {
     "message": "Abbrechen"
   },
-  "cancelAttempt": {
-    "message": "Versuch abbrechen"
-  },
   "cancellationGasFee": {
     "message": "Stornierungs-Gasgebühr"
   },
   "cancelled": {
     "message": "Abgebrochen"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Die Grafik ist nur in Ethereum-Netzwerken verfügbar."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Sie müssen MetaMask unter Google Chrome nutzen, um sich mit Ihrem Hardware-Wallet zu verbinden."
@@ -209,9 +197,6 @@
   "connectingToKovan": {
     "message": " Verbinde zum Kovan Testnetzwerk"
   },
-  "connectingToLocalhost": {
-    "message": "Verbindung mit Localhost 8545 herstellen"
-  },
   "connectingToMainnet": {
     "message": "Verbinde zum Ethereum Main Net"
   },
@@ -220,9 +205,6 @@
   },
   "connectingToRopsten": {
     "message": " Verbinde zum Ropsten Testnetzwerk"
-  },
-  "continueToCoinSwitch": {
-    "message": "Zu CoinSwitch fortfahren"
   },
   "continueToWyre": {
     "message": "Weiter zu Wyre"
@@ -302,9 +284,6 @@
   "deleteNetworkDescription": {
     "message": "Sind Sie sicher, dass Sie dieses Netzwerk löschen möchten?"
   },
-  "deposit": {
-    "message": "Einzahlen"
-  },
   "depositEther": {
     "message": "Ether einzahlen"
   },
@@ -359,9 +338,6 @@
   "endOfFlowMessage6": {
     "message": "Wenn Sie Ihre mnemonische Phrase erneut sicherstellen müssen, finden Sie sie unter Einstellungen -> Sicherheit."
   },
-  "endOfFlowMessage7": {
-    "message": "Wenn Sie Fragen haben sollten oder etwas Suspektes bemerken, schreiben Sie eine E-Mail an support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask kann Ihren Seedschlüssel nicht wiederherstellen. Erfahren Sie mehr."
   },
@@ -403,9 +379,6 @@
   },
   "fast": {
     "message": "Schnell"
-  },
-  "faster": {
-    "message": "Schneller"
   },
   "fiat": {
     "message": "FIAT",
@@ -554,9 +527,6 @@
   "invalidBlockExplorerURL": {
     "message": "Ungültige Block Explorer URI"
   },
-  "invalidInput": {
-    "message": "Ungültige Eingabe."
-  },
   "invalidRPC": {
     "message": "Ungültige RPC URI"
   },
@@ -584,9 +554,6 @@
   },
   "likeToAddTokens": {
     "message": "Möchtest du diese Token hinzufügen?"
-  },
-  "liveGasPricePredictions": {
-    "message": "Live-Gaspreisprognosen"
   },
   "loadMore": {
     "message": "Mehr laden"
@@ -774,15 +741,6 @@
   "privateNetwork": {
     "message": "Privates Netzwerk"
   },
-  "protectYourKeys": {
-    "message": "Schützen Sie Ihre Schlüssel!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Seien Sie mit Ihrer mnemonischen Phrase vorsichtig - es gab Berichte über Websites, die MetaMask zu imitieren versuchen. MetaMask fragt nie nach Ihrer mnemonischen Phrase!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Bewahren Sie Ihren Schlüssel sicher auf. Wenn etwas faul zu sein scheint oder Sie Zweifel wegen einer Website haben, schicken Sie eine E-Mail an support@metamask.io"
-  },
   "queue": {
     "message": "Warteschlange"
   },
@@ -930,17 +888,11 @@
   "selectAnAccountHelp": {
     "message": "Wählen Sie das Konto aus, das in MetaMask angezeigt werden soll."
   },
-  "selectCurrency": {
-    "message": "Währung auswählen"
-  },
   "selectEachPhrase": {
     "message": "Bitte wählen Sie jede Phrase aus, um sicherzustellen, dass sie korrekt ist."
   },
   "selectHdPath": {
     "message": "HD-Pfad auswählen"
-  },
-  "selectLocale": {
-    "message": "Gebietsschema auswählen"
   },
   "selectPathHelp": {
     "message": "Wenn Sie Ihre bestehenden Ledger-Konten nachfolgend nicht sehen, versuchen Sie, die Pfade zu \"Legacy (MEW / MyCrypto)\" zu ändern"
@@ -962,9 +914,6 @@
   },
   "sentEther": {
     "message": "Ether senden"
-  },
-  "sentTokens": {
-    "message": "gesendete Token"
   },
   "separateEachWord": {
     "message": "Trennen Sie die Wörter mit einem einzelnen Leerzeichen voneinander"
@@ -1010,9 +959,6 @@
   },
   "slow": {
     "message": "Langsam"
-  },
-  "slower": {
-    "message": "Langsamer"
   },
   "somethingWentWrong": {
     "message": "Hoppla! Da hat etwas nicht geklappt."
@@ -1152,9 +1098,6 @@
   "transactionSubmitted": {
     "message": "Transaktion mit einer Gasgebühr von $1 bei $2 übermittelt."
   },
-  "transactionTime": {
-    "message": "Transaktionszeit"
-  },
   "transactionUpdated": {
     "message": "Transaktion für $2 aktualisiert."
   },
@@ -1251,9 +1194,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Ihr privater Seed-Schlüssel"
-  },
-  "yourSigRequested": {
-    "message": "Deine Unterschrift wird angefordert"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Keine Gaskosten bei Beschleunigung"

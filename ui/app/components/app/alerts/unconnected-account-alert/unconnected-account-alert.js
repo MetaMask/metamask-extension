@@ -1,60 +1,55 @@
-import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { ALERT_STATE } from '../../../../ducks/alerts';
 import {
-  ALERT_STATE,
   connectAccount,
   dismissAlert,
   dismissAndDisableAlert,
   getAlertState,
   switchToAccount,
-} from '../../../../ducks/alerts/unconnected-account'
+} from '../../../../ducks/alerts/unconnected-account';
 import {
   getOriginOfCurrentTab,
   getOrderedConnectedAccountsForActiveTab,
   getSelectedAddress,
   getSelectedIdentity,
-} from '../../../../selectors'
-import { isExtensionUrl } from '../../../../helpers/utils/util'
-import Popover from '../../../ui/popover'
-import Button from '../../../ui/button'
-import Checkbox from '../../../ui/check-box'
-import Tooltip from '../../../ui/tooltip'
-import ConnectedAccountsList from '../../connected-accounts-list'
-import { useI18nContext } from '../../../../hooks/useI18nContext'
+} from '../../../../selectors';
+import { isExtensionUrl } from '../../../../helpers/utils/util';
+import Popover from '../../../ui/popover';
+import Button from '../../../ui/button';
+import Checkbox from '../../../ui/check-box';
+import Tooltip from '../../../ui/tooltip';
+import ConnectedAccountsList from '../../connected-accounts-list';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-const {
-  ERROR,
-  LOADING,
-} = ALERT_STATE
+const { ERROR, LOADING } = ALERT_STATE;
 
 const UnconnectedAccountAlert = () => {
-  const t = useI18nContext()
-  const dispatch = useDispatch()
-  const alertState = useSelector(getAlertState)
-  const connectedAccounts = useSelector(getOrderedConnectedAccountsForActiveTab)
-  const origin = useSelector(getOriginOfCurrentTab)
-  const selectedIdentity = useSelector(getSelectedIdentity)
-  const selectedAddress = useSelector(getSelectedAddress)
-  const [dontShowThisAgain, setDontShowThisAgain] = useState(false)
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+  const alertState = useSelector(getAlertState);
+  const connectedAccounts = useSelector(
+    getOrderedConnectedAccountsForActiveTab,
+  );
+  const origin = useSelector(getOriginOfCurrentTab);
+  const selectedIdentity = useSelector(getSelectedIdentity);
+  const selectedAddress = useSelector(getSelectedAddress);
+  const [dontShowThisAgain, setDontShowThisAgain] = useState(false);
 
   const onClose = async () => {
     return dontShowThisAgain
       ? await dispatch(dismissAndDisableAlert())
-      : dispatch(dismissAlert())
-  }
+      : dispatch(dismissAlert());
+  };
 
   const footer = (
     <>
-      {
-        alertState === ERROR
-          ? (
-            <div className="unconnected-account-alert__error">
-              { t('failureMessage') }
-            </div>
-          )
-          : null
-      }
+      {alertState === ERROR ? (
+        <div className="unconnected-account-alert__error">
+          {t('failureMessage')}
+        </div>
+      ) : null}
       <div className="unconnected-account-alert__footer-row">
         <div className="unconnected-account-alert__checkbox-wrapper">
           <Checkbox
@@ -67,7 +62,7 @@ const UnconnectedAccountAlert = () => {
             className="unconnected-account-alert__checkbox-label"
             htmlFor="unconnectedAccount_dontShowThisAgain"
           >
-            { t('dontShowThisAgain') }
+            {t('dontShowThisAgain')}
             <Tooltip
               position="top"
               title={t('alertDisableTooltip')}
@@ -84,15 +79,17 @@ const UnconnectedAccountAlert = () => {
           rounded
           className="unconnected-account-alert__dismiss-button"
         >
-          { t('dismiss') }
+          {t('dismiss')}
         </Button>
       </div>
     </>
-  )
+  );
 
   return (
     <Popover
-      title={isExtensionUrl(origin) ? t('currentExtension') : new URL(origin).host}
+      title={
+        isExtensionUrl(origin) ? t('currentExtension') : new URL(origin).host
+      }
       subtitle={t('currentAccountNotConnected')}
       onClose={onClose}
       className="unconnected-account-alert"
@@ -109,7 +106,7 @@ const UnconnectedAccountAlert = () => {
         shouldRenderListOptions={false}
       />
     </Popover>
-  )
-}
+  );
+};
 
-export default UnconnectedAccountAlert
+export default UnconnectedAccountAlert;

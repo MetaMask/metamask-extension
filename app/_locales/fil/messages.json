@@ -131,12 +131,6 @@
   "builtInCalifornia": {
     "message": "Ang MetaMask ay dinisenyo at binuo sa California."
   },
-  "buyCoinSwitch": {
-    "message": "Bilhin sa CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "Ang CoinSwitch ay ang one-stop na destinasyon para magpapalit ng mahigit sa 300 cryptocurrency sa pinakamababang halaga."
-  },
   "buyWithWyre": {
     "message": "Bumili ng ETH gamit ang Wyre"
   },
@@ -146,17 +140,11 @@
   "cancel": {
     "message": "Kanselahin"
   },
-  "cancelAttempt": {
-    "message": "Kanselahin ang Pagtangka"
-  },
   "cancellationGasFee": {
     "message": "Gas Fee sa Pagkansela"
   },
   "cancelled": {
     "message": "Nakansela"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Available lang ang chart sa mga Ethereum network."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Kailangan mong gamitin ang MetaMask sa Google Chrome upang makakonekta sa iyong Hardware Wallet."
@@ -197,9 +185,6 @@
   "connectingToKovan": {
     "message": "Kumokonekta sa Kovan Test Network"
   },
-  "connectingToLocalhost": {
-    "message": "Kumokonekta sa Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
   },
@@ -208,9 +193,6 @@
   },
   "connectingToRopsten": {
     "message": "Kumokonekta sa Ropsten Test Network"
-  },
-  "continueToCoinSwitch": {
-    "message": "Magpatuloy sa CoinSwitch"
   },
   "continueToWyre": {
     "message": "Magpatuloy sa Wyre"
@@ -287,9 +269,6 @@
   "deleteNetworkDescription": {
     "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
   },
-  "deposit": {
-    "message": "Deposito"
-  },
   "depositEther": {
     "message": "Magdeposito ng Ether"
   },
@@ -347,9 +326,6 @@
   "endOfFlowMessage6": {
     "message": "Kung kailangan mong i-back up ulit ang iyong seed phrase, makikita mo ito sa Mga Setting -> Seguridad."
   },
-  "endOfFlowMessage7": {
-    "message": "Kung may mga tanong ka o nakakita ka ng kahina-hinalang bagay, i-email ang support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "Hindi ma-recover ng MetaMask ang iyong seedphrase. Alamin pa."
   },
@@ -388,9 +364,6 @@
   },
   "fast": {
     "message": "Mabilis"
-  },
-  "faster": {
-    "message": "Mas Mabilis"
   },
   "fileImportFail": {
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
@@ -523,9 +496,6 @@
   "invalidBlockExplorerURL": {
     "message": "Hindi valid ang Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Hindi valid ang input."
-  },
   "invalidRPC": {
     "message": "Hindi valid ang RPC URL"
   },
@@ -549,9 +519,6 @@
   },
   "links": {
     "message": "Mga Link"
-  },
-  "liveGasPricePredictions": {
-    "message": "Mga Live na Prediksyon sa Presyo ng Gas"
   },
   "loadMore": {
     "message": "Mag-load Pa"
@@ -677,10 +644,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Block Explorer URL (opsyonal)"
   },
-  "optionalChainId": {
-    "message": "ChainID (opsyonal)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbolo (opsyonal)"
   },
   "orderOneHere": {
@@ -731,15 +695,6 @@
   },
   "privateNetwork": {
     "message": "Pribadong Network"
-  },
-  "protectYourKeys": {
-    "message": "Protektahan Ang Iyong Mga Key!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Mag-ingat sa iyong seed phrase — may mga ulat na may mga website na nagpapanggap bilang MetaMask. Hindi kailanman hihilingin ng MetaMask ang iyong seed phrase!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Panatilihing ligtas ang iyong parirala. Kung may makikita kang kahina-hinala, o hindi ka sigurado tungkol sa isang website, mag-email sa support@metamask.io"
   },
   "queue": {
     "message": "I-queue"
@@ -876,17 +831,11 @@
   "selectAnAccountHelp": {
     "message": "Piliin ang account na titingnan sa MetaMask"
   },
-  "selectCurrency": {
-    "message": "Pumili ng Currency"
-  },
   "selectEachPhrase": {
     "message": "Pakipili ang bawat parirala para tiyaking tama ito."
   },
   "selectHdPath": {
     "message": "Piliin ang HD Path"
-  },
-  "selectLocale": {
-    "message": "Pumili ng Locale"
   },
   "selectPathHelp": {
     "message": "Kung hindi mo makita ang kasalukuyan mong mga Ledger account sa ibaba, subukang ilipat ang mga path sa \"Legacy (MEW / MyCrypto)\""
@@ -908,9 +857,6 @@
   },
   "sentEther": {
     "message": "nagpadala ng ether"
-  },
-  "sentTokens": {
-    "message": "mga ipinadalang token"
   },
   "separateEachWord": {
     "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"
@@ -950,9 +896,6 @@
   },
   "slow": {
     "message": "Mabagal"
-  },
-  "slower": {
-    "message": "Mas Mabagal"
   },
   "somethingWentWrong": {
     "message": "Oops! Nagkaroon ng problema."
@@ -1089,9 +1032,6 @@
   "transactionSubmitted": {
     "message": "Nasumite ang transaksyon nang may gas fee na $1 sa $2."
   },
-  "transactionTime": {
-    "message": "Oras ng Transaksyon"
-  },
   "transactionUpdated": {
     "message": "Na-update ang transaksyon sa $2."
   },
@@ -1188,9 +1128,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Ang iyong pribadong seed phrase"
-  },
-  "yourSigRequested": {
-    "message": "Hinihiling ang iyong signature"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero ang presyo ng gas sa speed up"

@@ -1,6 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import ReactToggleButton from 'react-toggle-button'
+import React from 'react';
+import PropTypes from 'prop-types';
+import ReactToggleButton from 'react-toggle-button';
 
 const trackStyle = {
   width: '40px',
@@ -11,12 +11,12 @@ const trackStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-}
+};
 
 const offTrackStyle = {
   ...trackStyle,
   border: '2px solid #8E8E8E',
-}
+};
 
 const thumbStyle = {
   width: '18px',
@@ -26,7 +26,7 @@ const thumbStyle = {
   alignSelf: 'center',
   borderRadius: '50%',
   position: 'relative',
-}
+};
 
 const colors = {
   activeThumb: {
@@ -43,12 +43,12 @@ const colors = {
     base: '#DADADA',
     hover: '#DADADA',
   },
-}
+};
 
 const ToggleButton = (props) => {
-  const { value, onToggle, offLabel, onLabel } = props
+  const { value, onToggle, offLabel, onLabel } = props;
 
-  const modifier = value ? 'on' : 'off'
+  const modifier = value ? 'on' : 'off';
 
   return (
     <div className={`toggle-button toggle-button--${modifier}`}>
@@ -67,14 +67,14 @@ const ToggleButton = (props) => {
         <span className="toggle-button__label-on">{onLabel}</span>
       </div>
     </div>
-  )
-}
+  );
+};
 
 ToggleButton.propTypes = {
   value: PropTypes.bool,
   onToggle: PropTypes.func,
   offLabel: PropTypes.string,
   onLabel: PropTypes.string,
-}
+};
 
-export default ToggleButton
+export default ToggleButton;

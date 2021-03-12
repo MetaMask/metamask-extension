@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "A MetaMaskot Kaliforniában tervezték és hozták létre."
   },
-  "buyCoinSwitch": {
-    "message": "Vegye meg a CoinSwitchen"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "A CoinSwitch a legjobb hely több mint 300 cryptovaluta legjobb árfolyamon történő átváltására."
-  },
   "buyWithWyre": {
     "message": "Vásároljon ETH-t a Wyre-rel"
   },
@@ -164,9 +158,6 @@
   "cancel": {
     "message": "Mégse"
   },
-  "cancelAttempt": {
-    "message": "Kísérlet megszakítása"
-  },
   "cancellationGasFee": {
     "message": "A törlés gázára"
   },
@@ -175,9 +166,6 @@
   },
   "chainId": {
     "message": "Lánc azonosítója"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "A diagram csak Ethereum hálózatokon érhető el"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "A MetaMask-ot Google Chrome-mal kell használnia a Hardveres pénztárcához való csatlakozáshoz."
@@ -218,9 +206,6 @@
   "connectingToKovan": {
     "message": "Csatlakozás a Kovan teszthálózathoz"
   },
-  "connectingToLocalhost": {
-    "message": "Csatlakozás a Localhost 8645-höz"
-  },
   "connectingToMainnet": {
     "message": "Csatlakozás a fő Ethereum hálózathoz"
   },
@@ -229,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Csatlakozás a Ropsten teszthálózathoz"
-  },
-  "continueToCoinSwitch": {
-    "message": "Tovább a CoinSwitch-re"
   },
   "continueToWyre": {
     "message": "Tovább a Wyre-re"
@@ -311,9 +293,6 @@
   "deleteNetworkDescription": {
     "message": "Biztosan törli ezt a hálózatot?"
   },
-  "deposit": {
-    "message": "Befizetés"
-  },
   "depositEther": {
     "message": "Ether befizetése"
   },
@@ -371,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "Ha ismét biztonsági másolatot kell készítenie a seed mondatról, megtalálja azt a Beállítások -> Biztonság menüben."
   },
-  "endOfFlowMessage7": {
-    "message": "Ha bármilyen kérdése van, vagy valami gyanús dolgot tapasztal, írjon a support@metamask.io címre."
-  },
   "endOfFlowMessage8": {
     "message": "A MetaMask nem tudta helyreállítani a seed mondatot. Tudjon meg többet."
   },
@@ -415,9 +391,6 @@
   },
   "fast": {
     "message": "Gyors"
-  },
-  "faster": {
-    "message": "Gyorsabban"
   },
   "fileImportFail": {
     "message": "Nem működik a fájl importálása? Kattintson ide!",
@@ -562,9 +535,6 @@
   "invalidBlockExplorerURL": {
     "message": "Helytelen Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Érvénytelen bevitel."
-  },
   "invalidRPC": {
     "message": "Helytelen RPC URL"
   },
@@ -595,9 +565,6 @@
   },
   "links": {
     "message": "Linkek"
-  },
-  "liveGasPricePredictions": {
-    "message": "Élő előrejelzések gázárak alakulására"
   },
   "loadMore": {
     "message": "Továbbiak betöltése"
@@ -739,10 +706,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Explorer URL letiltása (nem kötelező)"
   },
-  "optionalChainId": {
-    "message": "ChainID (nem kötelező)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Szimbólum (opcionális)"
   },
   "orderOneHere": {
@@ -800,15 +764,6 @@
   },
   "privateNetwork": {
     "message": "Magánhálózat"
-  },
-  "protectYourKeys": {
-    "message": "Védje kulcsait!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Vigyázzod a gyarapítási fázissal - olyan oldalakat jelentettek, amelyek a MetaMask-ot utánozzák. A MetaMask soha nem kéri el a gyarapítási fázisát."
-  },
-  "protectYourKeysMessage2": {
-    "message": "Őrizze biztonságos helyen a mondatot. Ha bármilyen gyanús dolgot tapasztal, vagy bizonytalan egy weboldalt illetően, írjon a support@metamask.io címre."
   },
   "queue": {
     "message": "Nyomtatólista"
@@ -957,17 +912,11 @@
   "selectAnAccountHelp": {
     "message": "Válássza ki a MetaMask-ban megtekinteni kívánt fiókot"
   },
-  "selectCurrency": {
-    "message": "Válasszon valutát"
-  },
   "selectEachPhrase": {
     "message": "Kérjük, válassza ki az egyes mondatokat, hogy meggyőződjön azok helyességéről. "
   },
   "selectHdPath": {
     "message": "Válassz HD elérési útvonalat"
-  },
-  "selectLocale": {
-    "message": "Válaszd ki a területi beállítást"
   },
   "selectPathHelp": {
     "message": "Ha nem láthatók alább Ledger számláid, próbáld kicserélni az elérési útvonalat: „Legacy (MEW / MyCypto)”"
@@ -989,9 +938,6 @@
   },
   "sentEther": {
     "message": "elküldött ether"
-  },
-  "sentTokens": {
-    "message": "elküldött érmék"
   },
   "separateEachWord": {
     "message": "Minden egyes szavat szóközzel válasszon el"
@@ -1037,9 +983,6 @@
   },
   "slow": {
     "message": "Lassú"
-  },
-  "slower": {
-    "message": "Lassabban"
   },
   "somethingWentWrong": {
     "message": "Hoppá! Valami hiba történt..."
@@ -1182,9 +1125,6 @@
   "transactionSubmitted": {
     "message": "Tranzakció jóváhagyva $1 üzemanyag költséggel $2-kor."
   },
-  "transactionTime": {
-    "message": "Tranzakció ideje"
-  },
   "transactionUpdated": {
     "message": "Tranzakció frissítve $2-nál"
   },
@@ -1287,9 +1227,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Az ön privát seed mondata"
-  },
-  "yourSigRequested": {
-    "message": "Szükség van az aláírására"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Nulla gázár a gyorsuláshoz"

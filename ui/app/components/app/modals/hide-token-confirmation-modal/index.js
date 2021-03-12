@@ -1,1 +1,1 @@
-export { default } from './hide-token-confirmation-modal'
+export { default } from './hide-token-confirmation-modal';

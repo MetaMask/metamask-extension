@@ -1,72 +1,47 @@
-import assert from 'assert'
-import proxyquire from 'proxyquire'
-import sinon from 'sinon'
-import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../../send.constants'
+import assert from 'assert';
+import proxyquire from 'proxyquire';
+import sinon from 'sinon';
+import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../../send.constants';
 
 const stubs = {
   rawEncode: sinon.stub().callsFake((arr1, arr2) => {
-    return [...arr1, ...arr2]
+    return [...arr1, ...arr2];
   }),
-}
+};
 
 const sendUtils = proxyquire('../send-footer.utils.js', {
   'ethereumjs-abi': {
     rawEncode: stubs.rawEncode,
   },
-})
-const {
-  addressIsNew,
-  constructTxParams,
-  constructUpdatedTx,
-  addHexPrefixToObjectValues,
-} = sendUtils
+});
+const { addressIsNew, constructTxParams, constructUpdatedTx } = sendUtils;
 
 describe('send-footer utils', function () {
-
-  describe('addHexPrefixToObjectValues()', function () {
-    it('should return a new object with the same properties with a 0x prefix', function () {
-      assert.deepEqual(
-        addHexPrefixToObjectValues({
-          prop1: '0x123',
-          prop2: '456',
-          prop3: 'x',
-        }),
-        {
-          prop1: '0x123',
-          prop2: '0x456',
-          prop3: '0xx',
-        },
-      )
-    })
-  })
-
   describe('addressIsNew()', function () {
     it('should return false if the address exists in toAccounts', function () {
-      assert.equal(
-        addressIsNew([
-          { address: '0xabc' },
-          { address: '0xdef' },
-          { address: '0xghi' },
-        ], '0xdef'),
+      assert.strictEqual(
+        addressIsNew(
+          [{ address: '0xabc' }, { address: '0xdef' }, { address: '0xghi' }],
+          '0xdef',
+        ),
         false,
-      )
-    })
+      );
+    });
 
     it('should return true if the address does not exists in toAccounts', function () {
-      assert.equal(
-        addressIsNew([
-          { address: '0xabc' },
-          { address: '0xdef' },
-          { address: '0xghi' },
-        ], '0xxyz'),
+      assert.strictEqual(
+        addressIsNew(
+          [{ address: '0xabc' }, { address: '0xdef' }, { address: '0xghi' }],
+          '0xxyz',
+        ),
         true,
-      )
-    })
-  })
+      );
+    });
+  });
 
   describe('constructTxParams()', function () {
     it('should return a new txParams object with data if there data is given', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         constructTxParams({
           data: 'someData',
           sendToken: undefined,
@@ -84,11 +59,11 @@ describe('send-footer utils', function () {
           gas: '0xmockGas',
           gasPrice: '0xmockGasPrice',
         },
-      )
-    })
+      );
+    });
 
     it('should return a new txParams object with value and to properties if there is no sendToken', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         constructTxParams({
           sendToken: undefined,
           to: 'mockTo',
@@ -105,11 +80,11 @@ describe('send-footer utils', function () {
           gas: '0xmockGas',
           gasPrice: '0xmockGasPrice',
         },
-      )
-    })
+      );
+    });
 
     it('should return a new txParams object without a to property and a 0 value if there is a sendToken', function () {
-      assert.deepEqual(
+      assert.deepStrictEqual(
         constructTxParams({
           sendToken: { address: '0x0' },
           to: 'mockTo',
@@ -125,9 +100,9 @@ describe('send-footer utils', function () {
           gas: '0xmockGas',
           gasPrice: '0xmockGasPrice',
         },
-      )
-    })
-  })
+      );
+    });
+  });
 
   describe('constructUpdatedTx()', function () {
     it('should return a new object with an updated txParams', function () {
@@ -148,8 +123,8 @@ describe('send-footer utils', function () {
             },
           },
         },
-      })
-      assert.deepEqual(result, {
+      });
+      assert.deepStrictEqual(result, {
         unapprovedTxParam: 'someOtherParam',
         txParams: {
           from: '0xmockFrom',
@@ -159,8 +134,8 @@ describe('send-footer utils', function () {
           to: '0xmockTo',
           data: '0xsomeData',
         },
-      })
-    })
+      });
+    });
 
     it('should not have data property if there is non in the original tx', function () {
       const result = constructUpdatedTx({
@@ -182,9 +157,9 @@ describe('send-footer utils', function () {
             },
           },
         },
-      })
+      });
 
-      assert.deepEqual(result, {
+      assert.deepStrictEqual(result, {
         unapprovedTxParam: 'someOtherParam',
         txParams: {
           from: '0xmockFrom',
@@ -193,8 +168,8 @@ describe('send-footer utils', function () {
           value: '0xmockAmount',
           to: '0xmockTo',
         },
-      })
-    })
+      });
+    });
 
     it('should have token property values if sendToken is truthy', function () {
       const result = constructUpdatedTx({
@@ -214,9 +189,9 @@ describe('send-footer utils', function () {
             txParams: {},
           },
         },
-      })
+      });
 
-      assert.deepEqual(result, {
+      assert.deepStrictEqual(result, {
         unapprovedTxParam: 'someOtherParam',
         txParams: {
           from: '0xmockFrom',
@@ -226,8 +201,7 @@ describe('send-footer utils', function () {
           to: '0xmockTokenAddress',
           data: `${TOKEN_TRANSFER_FUNCTION_SIGNATURE}ss56Tont`,
         },
-      })
-    })
-  })
-
-})
+      });
+    });
+  });
+});

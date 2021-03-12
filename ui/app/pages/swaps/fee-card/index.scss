@@ -1,0 +1,210 @@
+.fee-card {
+  width: 100%;
+
+  @include H7;
+
+  &__savings-and-quotes-header {
+    display: flex;
+    position: relative;
+    align-items: center;
+  }
+
+  &__savings-and-quotes-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    left: 58px;
+    height: 39px;
+    background: $Blue-000;
+    border: 1px solid $Blue-500;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+    border-bottom: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  &__savings-text {
+    @include H6;
+
+    font-weight: bold;
+    color: $Blue-500;
+  }
+
+  &__quote-link-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &__quote-link-text {
+    @include H7;
+
+    color: $Blue-500;
+  }
+
+  &__caret-right {
+    color: $Blue-500;
+    width: 6px;
+    height: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 6px;
+
+    i {
+      transform: rotate(90deg);
+    }
+  }
+
+  &__main {
+    border: 1px solid $Blue-500;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    width: 100%;
+    max-width: 311px;
+    padding: 16px 16px 12px 16px;
+  }
+
+  &__row-header {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    justify-content: space-between;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+
+    div {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  &__row-header-text,
+  &__row-header-text--bold {
+    margin-right: 4px;
+    cursor: pointer;
+  }
+
+  &__row-header-text--bold {
+    color: $Black-100;
+  }
+
+  &__row,
+  &__top-bordered-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  &__top-bordered-row {
+    border-top: 1px solid #bbc0c5;
+    padding-top: 10px;
+  }
+
+  &__row-label {
+    display: flex;
+    align-items: center;
+
+    img {
+      height: 10px;
+      width: 10px;
+      cursor: pointer;
+    }
+  }
+
+  &__info-tooltip-container {
+    height: 10px;
+    width: 10px;
+    justify-content: center;
+
+    div {
+      // Needed to override the style property added by the react-tippy library
+      display: flex !important;
+      height: 10px;
+    }
+  }
+
+  &__info-tooltip-paragraph {
+    margin-bottom: 8px;
+  }
+
+  &__info-tooltip-paragraph:last-of-type {
+    margin-bottom: 0;
+  }
+
+  &__row-fee {
+    margin-right: 4px;
+  }
+
+  &__link {
+    color: $Blue-500;
+    cursor: pointer;
+  }
+
+  &__total-box {
+    border-top: 1px solid $Grey-100;
+    padding: 12px 16px 16px 16px;
+  }
+
+  &__total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+  }
+
+  &__total-secondary {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    font-weight: bold;
+    color: $Grey-500;
+    margin-top: 4px;
+  }
+
+  &__row-header-secondary,
+  &__row-header-secondary--bold {
+    color: $Grey-500;
+  }
+
+  &__row-header-secondary,
+  &__row-header-secondary--bold {
+    margin-right: 12px;
+  }
+
+  &__row-header-primary {
+    color: $Grey-500;
+  }
+
+  &__row-header-primary--bold {
+    color: $Black-100;
+  }
+
+  &__row-header-text--bold,
+  &__row-header-secondary--bold,
+  &__row-header-primary--bold {
+    font-weight: bold;
+  }
+
+  &__bold {
+    font-weight: bold;
+  }
+
+  &__tilde {
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    margin-right: -3.5px;
+  }
+}
+
+.info-tooltip {
+  > div {
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+  }
+}

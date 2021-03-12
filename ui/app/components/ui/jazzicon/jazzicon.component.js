@@ -1,9 +1,9 @@
-import React, { createRef, PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import jazzicon from '@metamask/jazzicon'
-import iconFactoryGenerator from '../../../../lib/icon-factory'
+import React, { createRef, PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import jazzicon from '@metamask/jazzicon';
+import iconFactoryGenerator from '../../../../lib/icon-factory';
 
-const iconFactory = iconFactoryGenerator(jazzicon)
+const iconFactory = iconFactoryGenerator(jazzicon);
 
 /**
  * Wrapper around the jazzicon library to return a React component, as the library returns an
@@ -15,51 +15,45 @@ export default class Jazzicon extends PureComponent {
     className: PropTypes.string,
     diameter: PropTypes.number,
     style: PropTypes.object,
-  }
+  };
 
   static defaultProps = {
     diameter: 46,
+  };
+
+  container = createRef();
+
+  componentDidMount() {
+    this.appendJazzicon();
   }
 
-  container = createRef()
-
-  componentDidMount () {
-    this.appendJazzicon()
-  }
-
-  componentDidUpdate (prevProps) {
-    const { address: prevAddress, diameter: prevDiameter } = prevProps
-    const { address, diameter } = this.props
+  componentDidUpdate(prevProps) {
+    const { address: prevAddress, diameter: prevDiameter } = prevProps;
+    const { address, diameter } = this.props;
 
     if (address !== prevAddress || diameter !== prevDiameter) {
-      this.removeExistingChildren()
-      this.appendJazzicon()
+      this.removeExistingChildren();
+      this.appendJazzicon();
     }
   }
 
-  removeExistingChildren () {
-    const { children } = this.container.current
+  removeExistingChildren() {
+    const { children } = this.container.current;
 
     for (let i = 0; i < children.length; i++) {
-      this.container.current.removeChild(children[i])
+      this.container.current.removeChild(children[i]);
     }
   }
 
-  appendJazzicon () {
-    const { address, diameter } = this.props
-    const image = iconFactory.iconForAddress(address, diameter)
-    this.container.current.appendChild(image)
+  appendJazzicon() {
+    const { address, diameter } = this.props;
+    const image = iconFactory.iconForAddress(address, diameter);
+    this.container.current.appendChild(image);
   }
 
-  render () {
-    const { className, style } = this.props
+  render() {
+    const { className, style } = this.props;
 
-    return (
-      <div
-        className={className}
-        ref={this.container}
-        style={style}
-      />
-    )
+    return <div className={className} ref={this.container} style={style} />;
   }
 }

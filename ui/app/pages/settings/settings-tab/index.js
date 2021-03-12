@@ -1,1 +1,1 @@
-export { default } from './settings-tab.container'
+export { default } from './settings-tab.container';

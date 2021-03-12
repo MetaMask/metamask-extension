@@ -70,29 +70,30 @@
 
 .import-account {
   &__title {
+    @include H1;
+
     color: #1b344d;
-    font-size: 40px;
-    line-height: 51px;
     margin-bottom: 10px;
   }
 
   &__back-button {
+    @include Paragraph;
+
     margin-bottom: 18px;
     color: #22232c;
-    font-size: 16px;
-    line-height: 21px;
     position: absolute;
     top: -25px;
   }
 
   &__secret-phrase {
+    @include Paragraph;
+
     height: 190px;
     width: 495px;
     border: 1px solid #cdcdcd;
     border-radius: 6px;
     background-color: #fff;
     padding: 17px;
-    font-size: 16px;
   }
 
   &__secret-phrase::placeholder {
@@ -100,58 +101,16 @@
     font-weight: 200;
   }
 
-  &__faq-link {
-    font-size: 18px;
-    line-height: 23px;
-  }
-
   &__selector-label {
+    @include Paragraph;
+
     color: #1b344d;
-    font-size: 16px;
-  }
-
-  &__dropdown {
-    width: 325px;
-    border: 1px solid #cdcdcd;
-    border-radius: 4px;
-    background-color: #fff;
-    margin-top: 14px;
-    color: #5b5d67;
-    font-size: 18px;
-    line-height: 23px;
-    padding: 14px 21px;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    cursor: pointer;
-  }
-
-  &__description-text {
-    color: #757575;
-    font-size: 18px;
-    line-height: 23px;
-    margin-top: 21px;
   }
 
   &__input-wrapper {
     display: flex;
     flex-flow: column nowrap;
     margin-top: 30px;
-  }
-
-  &__input-error-message {
-    margin-top: 10px;
-    width: 422px;
-    color: #ff001f;
-    font-size: 16px;
-    line-height: 21px;
-  }
-
-  &__input-label {
-    margin-bottom: 9px;
-    color: #1b344d;
-    font-size: 18px;
-    line-height: 23px;
   }
 
   &__input {
@@ -185,10 +144,8 @@
   }
 
   &__checkbox-label {
-    font-style: normal;
-    font-weight: normal;
-    line-height: normal;
-    font-size: 18px;
+    @include H4;
+
     color: #939090;
     margin-left: 18px;
   }
@@ -197,31 +154,10 @@
     display: none;
   }
 
-  &__file-input-label {
-    height: 53px;
-    width: 148px;
-    border: 1px solid #1b344d;
-    border-radius: 4px;
-    color: #1b344d;
-    font-size: 18px;
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-
   &__file-picker-wrapper {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-  }
-
-  &__file-name {
-    color: #000;
-    font-size: 18px;
-    line-height: 23px;
-    margin-left: 22px;
   }
 }
 
@@ -237,8 +173,9 @@
   }
 
   &__error {
+    @include H6;
+
     color: $crimson;
-    font-size: 14px;
     padding-top: 5px;
   }
 }

@@ -1,19 +1,19 @@
 .signature-request-header {
+  @include H7;
+
   display: flex;
   padding: 1rem;
   border-bottom: 1px solid $geyser;
   justify-content: space-between;
-  font-size: 0.75rem;
 
   &--account,
   &--network {
     flex: 1;
+    display: flex;
+    align-items: center;
   }
 
   &--account {
-    display: flex;
-    align-items: center;
-
     .account-list-item {
       &__top-row {
         display: flex;
@@ -21,7 +21,8 @@
       }
 
       &__account-name {
-        font-size: 12px;
+        @include H7;
+
         font-weight: 500;
       }
 

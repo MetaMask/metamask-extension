@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask är skapat och utformat i Kalifornien."
   },
-  "buyCoinSwitch": {
-    "message": "Köp på CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch är allt-i-ett-platsen för att växla mer än 300 kryptovalutor till bästa kurs."
-  },
   "buyWithWyre": {
     "message": "Köp ETH med Wyre"
   },
@@ -161,17 +155,11 @@
   "cancel": {
     "message": "Avbryt"
   },
-  "cancelAttempt": {
-    "message": "Avbryt försök"
-  },
   "cancellationGasFee": {
     "message": "Gasavgift för avbrytning"
   },
   "cancelled": {
     "message": "Avbruten"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Tabellen är endast tillgänglig på Ethereum-nätverk."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Du måste använda MetaMask på Google Chrome för att ansluta till din hårdvaruplånbok."
@@ -212,9 +200,6 @@
   "connectingToKovan": {
     "message": "Ansluter till Kovans testnätverk"
   },
-  "connectingToLocalhost": {
-    "message": "Ansluter till Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Koppla till Ethereums huvudnätverk"
   },
@@ -223,9 +208,6 @@
   },
   "connectingToRopsten": {
     "message": "Ansluter till Ropsten Test Network"
-  },
-  "continueToCoinSwitch": {
-    "message": "Fortsätt till CoinSwitch"
   },
   "continueToWyre": {
     "message": "Fortsätt till Wyre"
@@ -305,9 +287,6 @@
   "deleteNetworkDescription": {
     "message": "Är du säker på att du vill ta bort detta nätverk?"
   },
-  "deposit": {
-    "message": "Deposition"
-  },
   "depositEther": {
     "message": "Sätt in Ether"
   },
@@ -365,9 +344,6 @@
   "endOfFlowMessage6": {
     "message": "Om du behöver säkerhetskopiera din nyckelfras igen, kan du hitta den i Inställningar -> Säkerhet"
   },
-  "endOfFlowMessage7": {
-    "message": "Om du har frågor eller ser något misstänksamt, skicka ett e-postmeddelande till support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask kan inte återställa din seedphrase. Läs mer."
   },
@@ -409,9 +385,6 @@
   },
   "fast": {
     "message": "Snabb"
-  },
-  "faster": {
-    "message": "Snabbare"
   },
   "fileImportFail": {
     "message": "Fungerar inte filimporten? Klicka här!",
@@ -556,9 +529,6 @@
   "invalidBlockExplorerURL": {
     "message": "Ogiltig Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Ogiltigt input."
-  },
   "invalidRPC": {
     "message": "Ogiltig RPC-URL"
   },
@@ -589,9 +559,6 @@
   },
   "links": {
     "message": "Länkar"
-  },
-  "liveGasPricePredictions": {
-    "message": "Liveuppdaterad gaspris-förutsägelser"
   },
   "loadMore": {
     "message": "Ladda mer"
@@ -730,10 +697,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Block Explorer URL (valfritt)"
   },
-  "optionalChainId": {
-    "message": "ChainID (frivilligt)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbol (frivillig)"
   },
   "orderOneHere": {
@@ -791,15 +755,6 @@
   },
   "privateNetwork": {
     "message": "Privat nätverk"
-  },
-  "protectYourKeys": {
-    "message": "Skydda dina nycklar!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Var försiktig med din seedfras — det har rapporterats om hemsidor som försöker imitera MetaMask. MetaMask kommer aldrig fråga efter din seedfras!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Håll din fras i säkert förvar. Om du ser något misstänksamt eller om du är osäker på en hemsida, skicka ett e-postmeddelande till support@metamask.io."
   },
   "queue": {
     "message": "Utskriftskö"
@@ -948,17 +903,11 @@
   "selectAnAccountHelp": {
     "message": "Välj konto att visa i MetaMask"
   },
-  "selectCurrency": {
-    "message": "Välj valuta"
-  },
   "selectEachPhrase": {
     "message": "Välj varje fras för att säkerställa att den är korrekt."
   },
   "selectHdPath": {
     "message": "Välj HD-sökväg"
-  },
-  "selectLocale": {
-    "message": "Välj plats"
   },
   "selectPathHelp": {
     "message": "Om du inte ser dina befintliga Ledger-konton nedan, prova att byta sökväg till \"Legacy (MEW / MyCrypto)\""
@@ -980,9 +929,6 @@
   },
   "sentEther": {
     "message": "skickat ether"
-  },
-  "sentTokens": {
-    "message": "skickade tokens"
   },
   "separateEachWord": {
     "message": "Lägg in ett mellanslag mellan varje ord"
@@ -1028,9 +974,6 @@
   },
   "slow": {
     "message": "Långsamt"
-  },
-  "slower": {
-    "message": "Långsammare"
   },
   "somethingWentWrong": {
     "message": "Hoppsan! Något gick fel."
@@ -1167,9 +1110,6 @@
   "transactionSubmitted": {
     "message": "Överföring angedd med gasavgift på $1 vid $2."
   },
-  "transactionTime": {
-    "message": "Transaktionstid"
-  },
   "transactionUpdated": {
     "message": "Transaktionen uppdaterades $2."
   },
@@ -1272,9 +1212,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Din privata seedphrase"
-  },
-  "yourSigRequested": {
-    "message": "En begäran om din signatur har skickats"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Inget gaspris vid uppsnabbning"

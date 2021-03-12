@@ -1,13 +1,17 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import SenderToRecipient from '../../ui/sender-to-recipient'
-import { PageContainerFooter } from '../../ui/page-container'
-import { ConfirmPageContainerHeader, ConfirmPageContainerContent, ConfirmPageContainerNavigation } from '.'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import SenderToRecipient from '../../ui/sender-to-recipient';
+import { PageContainerFooter } from '../../ui/page-container';
+import {
+  ConfirmPageContainerHeader,
+  ConfirmPageContainerContent,
+  ConfirmPageContainerNavigation,
+} from '.';
 
 export default class ConfirmPageContainer extends Component {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     // Header
@@ -15,7 +19,6 @@ export default class ConfirmPageContainer extends Component {
     hideSubtitle: PropTypes.bool,
     onEdit: PropTypes.func,
     showEdit: PropTypes.bool,
-    subtitle: PropTypes.string,
     subtitleComponent: PropTypes.node,
     title: PropTypes.string,
     titleComponent: PropTypes.node,
@@ -37,9 +40,9 @@ export default class ConfirmPageContainer extends Component {
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
     assetImage: PropTypes.string,
-    summaryComponent: PropTypes.node,
     warning: PropTypes.string,
     unapprovedTxCount: PropTypes.number,
+    origin: PropTypes.string.isRequired,
     // Navigation
     totalTx: PropTypes.number,
     positionOfCurrentTx: PropTypes.number,
@@ -56,9 +59,9 @@ export default class ConfirmPageContainer extends Component {
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
     disabled: PropTypes.bool,
-  }
+  };
 
-  render () {
+  render() {
     const {
       showEdit,
       onEdit,
@@ -75,10 +78,8 @@ export default class ConfirmPageContainer extends Component {
       action,
       title,
       titleComponent,
-      subtitle,
       subtitleComponent,
       hideSubtitle,
-      summaryComponent,
       detailsComponent,
       dataComponent,
       onCancelAll,
@@ -101,8 +102,10 @@ export default class ConfirmPageContainer extends Component {
       requestsWaitingText,
       hideSenderToRecipient,
       showAccountInHeader,
-    } = this.props
-    const renderAssetImage = contentComponent || (!contentComponent && !identiconAddress)
+      origin,
+    } = this.props;
+    const renderAssetImage =
+      contentComponent || (!contentComponent && !identiconAddress);
 
     return (
       <div className="page-container">
@@ -124,69 +127,61 @@ export default class ConfirmPageContainer extends Component {
           showAccountInHeader={showAccountInHeader}
           accountAddress={fromAddress}
         >
-          { hideSenderToRecipient
-            ? null
-            : (
-              <SenderToRecipient
-                senderName={fromName}
-                senderAddress={fromAddress}
-                recipientName={toName}
-                recipientAddress={toAddress}
-                recipientEns={toEns}
-                recipientNickname={toNickname}
-                assetImage={renderAssetImage ? assetImage : undefined}
-              />
-            )
-          }
-        </ConfirmPageContainerHeader>
-        {
-          contentComponent || (
-            <ConfirmPageContainerContent
-              action={action}
-              title={title}
-              titleComponent={titleComponent}
-              subtitle={subtitle}
-              subtitleComponent={subtitleComponent}
-              hideSubtitle={hideSubtitle}
-              summaryComponent={summaryComponent}
-              detailsComponent={detailsComponent}
-              dataComponent={dataComponent}
-              errorMessage={errorMessage}
-              errorKey={errorKey}
-              identiconAddress={identiconAddress}
-              nonce={nonce}
-              assetImage={assetImage}
-              warning={warning}
-              onCancelAll={onCancelAll}
-              onCancel={onCancel}
-              cancelText={this.context.t('reject')}
-              onSubmit={onSubmit}
-              submitText={this.context.t('confirm')}
-              disabled={disabled}
-              unapprovedTxCount={unapprovedTxCount}
-              rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
+          {hideSenderToRecipient ? null : (
+            <SenderToRecipient
+              senderName={fromName}
+              senderAddress={fromAddress}
+              recipientName={toName}
+              recipientAddress={toAddress}
+              recipientEns={toEns}
+              recipientNickname={toNickname}
+              assetImage={renderAssetImage ? assetImage : undefined}
             />
-          )
-        }
-        {
-          contentComponent && (
-            <PageContainerFooter
-              onCancel={onCancel}
-              cancelText={this.context.t('reject')}
-              onSubmit={onSubmit}
-              submitText={this.context.t('confirm')}
-              submitButtonType="confirm"
-              disabled={disabled}
-            >
-              {unapprovedTxCount > 1 && (
-                <a onClick={onCancelAll}>
-                  {this.context.t('rejectTxsN', [unapprovedTxCount])}
-                </a>
-              )}
-            </PageContainerFooter>
-          )
-        }
+          )}
+        </ConfirmPageContainerHeader>
+        {contentComponent || (
+          <ConfirmPageContainerContent
+            action={action}
+            title={title}
+            titleComponent={titleComponent}
+            subtitleComponent={subtitleComponent}
+            hideSubtitle={hideSubtitle}
+            detailsComponent={detailsComponent}
+            dataComponent={dataComponent}
+            errorMessage={errorMessage}
+            errorKey={errorKey}
+            identiconAddress={identiconAddress}
+            nonce={nonce}
+            assetImage={assetImage}
+            warning={warning}
+            onCancelAll={onCancelAll}
+            onCancel={onCancel}
+            cancelText={this.context.t('reject')}
+            onSubmit={onSubmit}
+            submitText={this.context.t('confirm')}
+            disabled={disabled}
+            unapprovedTxCount={unapprovedTxCount}
+            rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
+            origin={origin}
+          />
+        )}
+        {contentComponent && (
+          <PageContainerFooter
+            onCancel={onCancel}
+            cancelText={this.context.t('reject')}
+            onSubmit={onSubmit}
+            submitText={this.context.t('confirm')}
+            submitButtonType="confirm"
+            disabled={disabled}
+          >
+            {unapprovedTxCount > 1 && (
+              <a onClick={onCancelAll}>
+                {this.context.t('rejectTxsN', [unapprovedTxCount])}
+              </a>
+            )}
+          </PageContainerFooter>
+        )}
       </div>
-    )
+    );
   }
 }

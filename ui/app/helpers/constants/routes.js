@@ -1,58 +1,70 @@
-const DEFAULT_ROUTE = '/'
-const UNLOCK_ROUTE = '/unlock'
-const LOCK_ROUTE = '/lock'
-const ASSET_ROUTE = '/asset'
-const SETTINGS_ROUTE = '/settings'
-const GENERAL_ROUTE = '/settings/general'
-const ADVANCED_ROUTE = '/settings/advanced'
-const SECURITY_ROUTE = '/settings/security'
-const ABOUT_US_ROUTE = '/settings/about-us'
-const ALERTS_ROUTE = '/settings/alerts'
-const NETWORKS_ROUTE = '/settings/networks'
-const CONTACT_LIST_ROUTE = '/settings/contact-list'
-const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact'
-const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact'
-const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact'
-const CONTACT_MY_ACCOUNTS_ROUTE = '/settings/contact-list/my-accounts'
-const CONTACT_MY_ACCOUNTS_VIEW_ROUTE = '/settings/contact-list/my-accounts/view'
-const CONTACT_MY_ACCOUNTS_EDIT_ROUTE = '/settings/contact-list/my-accounts/edit'
-const REVEAL_SEED_ROUTE = '/seed'
-const MOBILE_SYNC_ROUTE = '/mobile-sync'
-const RESTORE_VAULT_ROUTE = '/restore-vault'
-const ADD_TOKEN_ROUTE = '/add-token'
-const CONFIRM_ADD_TOKEN_ROUTE = '/confirm-add-token'
-const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token'
-const NEW_ACCOUNT_ROUTE = '/new-account'
-const IMPORT_ACCOUNT_ROUTE = '/new-account/import'
-const CONNECT_HARDWARE_ROUTE = '/new-account/connect'
-const SEND_ROUTE = '/send'
-const CONNECT_ROUTE = '/connect'
-const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions'
-const CONNECTED_ROUTE = '/connected'
-const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts'
+const DEFAULT_ROUTE = '/';
+const UNLOCK_ROUTE = '/unlock';
+const LOCK_ROUTE = '/lock';
+const ASSET_ROUTE = '/asset';
+const SETTINGS_ROUTE = '/settings';
+const GENERAL_ROUTE = '/settings/general';
+const ADVANCED_ROUTE = '/settings/advanced';
+const SECURITY_ROUTE = '/settings/security';
+const ABOUT_US_ROUTE = '/settings/about-us';
+const ALERTS_ROUTE = '/settings/alerts';
+const NETWORKS_ROUTE = '/settings/networks';
+const NETWORKS_FORM_ROUTE = '/settings/networks/form';
+const CONTACT_LIST_ROUTE = '/settings/contact-list';
+const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
+const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
+const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
+const CONTACT_MY_ACCOUNTS_ROUTE = '/settings/contact-list/my-accounts';
+const CONTACT_MY_ACCOUNTS_VIEW_ROUTE =
+  '/settings/contact-list/my-accounts/view';
+const CONTACT_MY_ACCOUNTS_EDIT_ROUTE =
+  '/settings/contact-list/my-accounts/edit';
+const REVEAL_SEED_ROUTE = '/seed';
+const MOBILE_SYNC_ROUTE = '/mobile-sync';
+const RESTORE_VAULT_ROUTE = '/restore-vault';
+const ADD_TOKEN_ROUTE = '/add-token';
+const CONFIRM_ADD_TOKEN_ROUTE = '/confirm-add-token';
+const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
+const NEW_ACCOUNT_ROUTE = '/new-account';
+const IMPORT_ACCOUNT_ROUTE = '/new-account/import';
+const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
+const SEND_ROUTE = '/send';
+const CONNECT_ROUTE = '/connect';
+const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
+const CONNECTED_ROUTE = '/connected';
+const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
+const SWAPS_ROUTE = '/swaps';
+const BUILD_QUOTE_ROUTE = '/swaps/build-quote';
+const VIEW_QUOTE_ROUTE = '/swaps/view-quote';
+const LOADING_QUOTES_ROUTE = '/swaps/loading-quotes';
+const AWAITING_SWAP_ROUTE = '/swaps/awaiting-swap';
+const SWAPS_ERROR_ROUTE = '/swaps/swaps-error';
+const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
 
-const INITIALIZE_ROUTE = '/initialize'
-const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome'
-const INITIALIZE_UNLOCK_ROUTE = '/initialize/unlock'
-const INITIALIZE_CREATE_PASSWORD_ROUTE = '/initialize/create-password'
-const INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE = '/initialize/create-password/import-with-seed-phrase'
-const INITIALIZE_SELECT_ACTION_ROUTE = '/initialize/select-action'
-const INITIALIZE_SEED_PHRASE_ROUTE = '/initialize/seed-phrase'
-const INITIALIZE_BACKUP_SEED_PHRASE_ROUTE = '/initialize/backup-seed-phrase'
-const INITIALIZE_END_OF_FLOW_ROUTE = '/initialize/end-of-flow'
-const INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE = '/initialize/seed-phrase/confirm'
-const INITIALIZE_METAMETRICS_OPT_IN_ROUTE = '/initialize/metametrics-opt-in'
+const INITIALIZE_ROUTE = '/initialize';
+const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome';
+const INITIALIZE_UNLOCK_ROUTE = '/initialize/unlock';
+const INITIALIZE_CREATE_PASSWORD_ROUTE = '/initialize/create-password';
+const INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE =
+  '/initialize/create-password/import-with-seed-phrase';
+const INITIALIZE_SELECT_ACTION_ROUTE = '/initialize/select-action';
+const INITIALIZE_SEED_PHRASE_ROUTE = '/initialize/seed-phrase';
+const INITIALIZE_BACKUP_SEED_PHRASE_ROUTE = '/initialize/backup-seed-phrase';
+const INITIALIZE_END_OF_FLOW_ROUTE = '/initialize/end-of-flow';
+const INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE = '/initialize/seed-phrase/confirm';
+const INITIALIZE_METAMETRICS_OPT_IN_ROUTE = '/initialize/metametrics-opt-in';
 
-const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction'
-const CONFIRM_SEND_ETHER_PATH = '/send-ether'
-const CONFIRM_SEND_TOKEN_PATH = '/send-token'
-const CONFIRM_DEPLOY_CONTRACT_PATH = '/deploy-contract'
-const CONFIRM_APPROVE_PATH = '/approve'
-const CONFIRM_TRANSFER_FROM_PATH = '/transfer-from'
-const CONFIRM_TOKEN_METHOD_PATH = '/token-method'
-const SIGNATURE_REQUEST_PATH = '/signature-request'
-const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request'
-const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH = '/encryption-public-key-request'
+const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
+const CONFIRM_SEND_ETHER_PATH = '/send-ether';
+const CONFIRM_SEND_TOKEN_PATH = '/send-token';
+const CONFIRM_DEPLOY_CONTRACT_PATH = '/deploy-contract';
+const CONFIRM_APPROVE_PATH = '/approve';
+const CONFIRM_TRANSFER_FROM_PATH = '/transfer-from';
+const CONFIRM_TOKEN_METHOD_PATH = '/token-method';
+const SIGNATURE_REQUEST_PATH = '/signature-request';
+const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request';
+const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH = '/encryption-public-key-request';
+const CONFIRMATION_V_NEXT_ROUTE = '/confirmation';
 
 // Used to pull a convenient name for analytics tracking events. The key must
 // be react-router ready path, and can include params such as :id for popup windows
@@ -68,6 +80,7 @@ const PATH_NAME_MAP = {
   [ABOUT_US_ROUTE]: 'About Us Page',
   [ALERTS_ROUTE]: 'Alerts Settings Page',
   [NETWORKS_ROUTE]: 'Network Settings Page',
+  [NETWORKS_FORM_ROUTE]: 'Network Settings Page Form',
   [CONTACT_LIST_ROUTE]: 'Contact List Settings Page',
   [`${CONTACT_EDIT_ROUTE}/:address`]: 'Edit Contact Settings Page',
   [CONTACT_ADD_ROUTE]: 'Add Contact Settings Page',
@@ -89,6 +102,8 @@ const PATH_NAME_MAP = {
   [`${CONNECT_ROUTE}/:id${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`]: 'Grant Connected Site Permissions Confirmation Page',
   [CONNECTED_ROUTE]: 'Sites Connected To This Account Page',
   [CONNECTED_ACCOUNTS_ROUTE]: 'Accounts Connected To This Site Page',
+  [`${CONFIRM_TRANSACTION_ROUTE}/:id`]: 'Confirmation Root Page',
+  [CONFIRM_TRANSACTION_ROUTE]: 'Confirmation Root Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TOKEN_METHOD_PATH}`]: 'Confirm Token Method Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_ETHER_PATH}`]: 'Confirm Send Ether Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_TOKEN_PATH}`]: 'Confirm Send Token Transaction Page',
@@ -102,14 +117,23 @@ const PATH_NAME_MAP = {
   [INITIALIZE_WELCOME_ROUTE]: 'Install Welcome Page',
   [INITIALIZE_UNLOCK_ROUTE]: 'Initialization Unlock page',
   [INITIALIZE_CREATE_PASSWORD_ROUTE]: 'Initialization Create Password Page',
-  [INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE]: 'Initialization Import Account With Seed Phrase Page',
-  [INITIALIZE_SELECT_ACTION_ROUTE]: 'Initialization Choose Restore or New Account Page',
+  [INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE]:
+    'Initialization Import Account With Seed Phrase Page',
+  [INITIALIZE_SELECT_ACTION_ROUTE]:
+    'Initialization Choose Restore or New Account Page',
   [INITIALIZE_SEED_PHRASE_ROUTE]: 'Initialization Seed Phrase Page',
-  [INITIALIZE_BACKUP_SEED_PHRASE_ROUTE]: 'Initialization Backup Seed Phrase Page',
+  [INITIALIZE_BACKUP_SEED_PHRASE_ROUTE]:
+    'Initialization Backup Seed Phrase Page',
   [INITIALIZE_END_OF_FLOW_ROUTE]: 'End of Initialization Page',
-  [INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE]: 'Initialization Confirm Seed Phrase Page',
+  [INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE]:
+    'Initialization Confirm Seed Phrase Page',
   [INITIALIZE_METAMETRICS_OPT_IN_ROUTE]: 'MetaMetrics Opt In Page',
-}
+  [BUILD_QUOTE_ROUTE]: 'Swaps Build Quote Page',
+  [VIEW_QUOTE_ROUTE]: 'Swaps View Quotes Page',
+  [LOADING_QUOTES_ROUTE]: 'Swaps Loading Quotes Page',
+  [AWAITING_SWAP_ROUTE]: 'Swaps Awaiting Swaps Page',
+  [SWAPS_ERROR_ROUTE]: 'Swaps Error Page',
+};
 
 export {
   DEFAULT_ROUTE,
@@ -147,6 +171,7 @@ export {
   SIGNATURE_REQUEST_PATH,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
+  CONFIRMATION_V_NEXT_ROUTE,
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
   ADVANCED_ROUTE,
   SECURITY_ROUTE,
@@ -160,10 +185,18 @@ export {
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
   NETWORKS_ROUTE,
+  NETWORKS_FORM_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   PATH_NAME_MAP,
-}
+  SWAPS_ROUTE,
+  BUILD_QUOTE_ROUTE,
+  VIEW_QUOTE_ROUTE,
+  LOADING_QUOTES_ROUTE,
+  AWAITING_SWAP_ROUTE,
+  SWAPS_ERROR_ROUTE,
+  SWAPS_MAINTENANCE_ROUTE,
+};

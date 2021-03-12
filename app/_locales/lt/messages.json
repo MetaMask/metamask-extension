@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "„MetaMask“ suprojektuota ir įdiegta Kalifornijoje."
   },
-  "buyCoinSwitch": {
-    "message": "Pirkti „CoinSwitch“"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "„CoinSwitch“ – tai lengvai pasiekiama vieta keisti per 300 kriptovaliutų geriausiu santykiu."
-  },
   "buyWithWyre": {
     "message": "Pirkti ETH su „Wyre“"
   },
@@ -164,9 +158,6 @@
   "cancel": {
     "message": "Atšaukti"
   },
-  "cancelAttempt": {
-    "message": "Atšaukti mėginimą"
-  },
   "cancellationGasFee": {
     "message": "Dujų mokesčio atšaukimas"
   },
@@ -175,9 +166,6 @@
   },
   "chainId": {
     "message": "Grandinės ID"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Diagramos yra tik „Ethereum“ tinkluose."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Norėdami prisijungti prie aparatinės įrangos slaptažodinės, „MetaMask“ naudokitės „Google Chrome“ naršyklėje."
@@ -218,9 +206,6 @@
   "connectingToKovan": {
     "message": "Jungiamasi prie „Kovan“ bandomojo tinklo"
   },
-  "connectingToLocalhost": {
-    "message": "Jungiamasi prie vietinio serverio 8545"
-  },
   "connectingToMainnet": {
     "message": "Jungiamasi prie pagrindinio „Ethereum“ tinklo"
   },
@@ -229,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Jungiamasi prie „Ropsten“ bandomojo tinklo"
-  },
-  "continueToCoinSwitch": {
-    "message": "Tęsti su „CoinSwitch“"
   },
   "continueToWyre": {
     "message": "Tęsti su „Wyre“"
@@ -311,9 +293,6 @@
   "deleteNetworkDescription": {
     "message": "Ar tikrai norite panaikinti šį tinklą?"
   },
-  "deposit": {
-    "message": "Indėlis"
-  },
   "depositEther": {
     "message": "Įnešti eterių"
   },
@@ -371,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "Jeigu reikia dar kartą padaryti jūsų atkūrimo frazės kopiją, ją galite rasti pasirinkę Nuostatos -> Sauga."
   },
-  "endOfFlowMessage7": {
-    "message": "Jeigu turite klausimų arba pastebite ką nors įtartino, rašykite el. paštu support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "„MetaMask“ negali atkurti jūsų atkūrimo frazės. Sužinokite daugiau."
   },
@@ -415,9 +391,6 @@
   },
   "fast": {
     "message": "Greitas"
-  },
-  "faster": {
-    "message": "Greičiau"
   },
   "fiat": {
     "message": "Standartinė valiuta",
@@ -566,9 +539,6 @@
   "invalidBlockExplorerURL": {
     "message": "Netinkamas Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Netinkama įvestis."
-  },
   "invalidRPC": {
     "message": "Netinkamas RPC URL"
   },
@@ -599,9 +569,6 @@
   },
   "links": {
     "message": "Nuorodos"
-  },
-  "liveGasPricePredictions": {
-    "message": "Tiesioginiai dujų kainos spėjimai"
   },
   "loadMore": {
     "message": "Įkelti daugiau"
@@ -746,10 +713,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokuoti naršyklės URL (pasirinktinai)"
   },
-  "optionalChainId": {
-    "message": "Grandinės ID (nebūtinas)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbolis (nebūtinas)"
   },
   "orderOneHere": {
@@ -807,15 +771,6 @@
   },
   "privateNetwork": {
     "message": "Privatus tinklas"
-  },
-  "protectYourKeys": {
-    "message": "Apsaugokite savo raktus!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Saugokite savo atkūrimo frazę – gavome pranešimų apie interneto svetaines, kuriomis bandoma imituoti „MetaMask“. „MetaMask“ niekada neprašys jūsų pateikti savo atkūrimo frazę!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Saugokite savo frazę. Jei pastebėjote kažką įtartino arba nesate tikri dėl svetainės, rašykite mums adresu support@metamask.io"
   },
   "queue": {
     "message": "Eilė"
@@ -964,17 +919,11 @@
   "selectAnAccountHelp": {
     "message": "Pasirinkite paskyrą peržiūrėti „MetaMask“"
   },
-  "selectCurrency": {
-    "message": "Pasirinkite valiutą"
-  },
   "selectEachPhrase": {
     "message": "Pasirinkite kiekvieną frazę, kad patikrintumėte, ar ji tinkama"
   },
   "selectHdPath": {
     "message": "Pasirinkite HD kelią"
-  },
-  "selectLocale": {
-    "message": "Pasirinkite lokalę"
   },
   "selectPathHelp": {
     "message": "Jeigu toliau nematote savo esamų operacijų sąskaitų, mėginkite pakeisti kelius į „Legacy (MEW / MyCrypto)“"
@@ -996,9 +945,6 @@
   },
   "sentEther": {
     "message": "siųsti eterių"
-  },
-  "sentTokens": {
-    "message": "išsiųsti žetonai"
   },
   "separateEachWord": {
     "message": "Kiekvieną žodį atskirkite viengubu tarpu"
@@ -1044,9 +990,6 @@
   },
   "slow": {
     "message": "Lėtas"
-  },
-  "slower": {
-    "message": "Lėčiau"
   },
   "somethingWentWrong": {
     "message": "Vaje! Kažkas negerai."
@@ -1192,9 +1135,6 @@
   "transactionSubmitted": {
     "message": "Operacija pateikta $2 su $1 dujų mokesčiu."
   },
-  "transactionTime": {
-    "message": "Operacijos laikas"
-  },
   "transactionUpdated": {
     "message": "Operacija atnaujinta$2."
   },
@@ -1297,9 +1237,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Jūsų asmeninė atkūrimo frazė"
-  },
-  "yourSigRequested": {
-    "message": "Prašoma jūsų parašo"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Nustatykite nulinę dujų kainą greitėjant"

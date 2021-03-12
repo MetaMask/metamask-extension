@@ -1,11 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
-const Interaction = ({
-  className,
-  size,
-  color,
-}) => (
+const Interaction = ({ className, size, color }) => (
   <svg
     className={className}
     width={size}
@@ -25,16 +21,16 @@ const Interaction = ({
       fill={color}
     />
   </svg>
-)
+);
 
 Interaction.defaultProps = {
   className: undefined,
-}
+};
 
 Interaction.propTypes = {
   className: PropTypes.string,
   size: PropTypes.number.isRequired,
   color: PropTypes.string.isRequired,
-}
+};
 
-export default Interaction
+export default Interaction;

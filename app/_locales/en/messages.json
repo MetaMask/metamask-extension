@@ -43,11 +43,31 @@
   "activityLog": {
     "message": "activity log"
   },
+  "addAccount": {
+    "message": "Add an account"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
   "addAlias": {
     "message": "Add alias"
+  },
+  "addEthereumChainConfirmationDescription": {
+    "message": "This will allow this network to be used within MetaMask."
+  },
+  "addEthereumChainConfirmationRisks": {
+    "message": "MetaMask does not verify custom networks."
+  },
+  "addEthereumChainConfirmationRisksLearnMore": {
+    "message": "Learn about $1.",
+    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
+  },
+  "addEthereumChainConfirmationRisksLearnMoreLink": {
+    "message": "scams and network security risks",
+    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
+  },
+  "addEthereumChainConfirmationTitle": {
+    "message": "Allow this site to add a network?"
   },
   "addNetwork": {
     "message": "Add Network"
@@ -82,6 +102,9 @@
   "affirmAgree": {
     "message": "I Agree"
   },
+  "aggregatorFeeCost": {
+    "message": "Aggregator network fee"
+  },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
@@ -89,7 +112,13 @@
     "message": "Browsing a website with an unconnected account selected"
   },
   "alertSettingsUnconnectedAccountDescription": {
-    "message": "This alert is shown in the popup when you are browsing a connected Web3 site, but the currently selected account is not connected."
+    "message": "This alert is shown in the popup when you are browsing a connected web3 site, but the currently selected account is not connected."
+  },
+  "alertSettingsWeb3ShimUsage": {
+    "message": "When a website tries to use the removed window.web3 API"
+  },
+  "alertSettingsWeb3ShimUsageDescription": {
+    "message": "This alert is shown in the popup when you are browsing a site that tries to use the removed window.web3 API, and may be broken as a result."
   },
   "alerts": {
     "message": "Alerts"
@@ -114,6 +143,10 @@
   "amount": {
     "message": "Amount"
   },
+  "amountInEth": {
+    "message": "$1 ETH",
+    "description": "Displays an eth amount to the user. $1 is a decimal number"
+  },
   "amountWithColon": {
     "message": "Amount:"
   },
@@ -125,8 +158,17 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "approvalAndAggregatorTxFeeCost": {
+    "message": "Approval and aggregator network fee"
+  },
+  "approvalTxGasCost": {
+    "message": "Approval Tx Gas Cost"
+  },
   "approve": {
     "message": "Approve spend limit"
+  },
+  "approveButtonText": {
+    "message": "Approve"
   },
   "approveSpendLimit": {
     "message": "Approve $1 spend limit",
@@ -190,7 +232,10 @@
     "message": "Basic"
   },
   "blockExplorerUrl": {
-    "message": "Block Explorer"
+    "message": "Block Explorer URL"
+  },
+  "blockExplorerUrlDefinition": {
+    "message": "The URL used as the block explorer for this network."
   },
   "blockExplorerView": {
     "message": "View account at $1",
@@ -208,12 +253,6 @@
   "buy": {
     "message": "Buy"
   },
-  "buyCoinSwitch": {
-    "message": "Buy on CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch is the one-stop destination to exchange more than 300 cryptocurrencies at the best rate."
-  },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
   },
@@ -223,11 +262,11 @@
   "bytes": {
     "message": "Bytes"
   },
+  "canToggleInSettings": {
+    "message": "You can re-enable this notification in Settings -> Alerts."
+  },
   "cancel": {
     "message": "Cancel"
-  },
-  "cancelAttempt": {
-    "message": "Cancel Attempt"
   },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
@@ -238,8 +277,8 @@
   "chainId": {
     "message": "Chain ID"
   },
-  "chartOnlyAvailableEth": {
-    "message": "Chart only available on Ethereum networks."
+  "chainIdDefinition": {
+    "message": "The chain ID used to sign transactions for this network."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
@@ -261,6 +300,15 @@
   },
   "confirmed": {
     "message": "Confirmed"
+  },
+  "confusableUnicode": {
+    "message": "'$1' is similar to '$2'."
+  },
+  "confusableZeroWidthUnicode": {
+    "message": "Zero-width character found."
+  },
+  "confusingEnsDomain": {
+    "message": "We have detected a confusable character in the ENS name. Check the ENS name to avoid a potential scam."
   },
   "congratulations": {
     "message": "Congratulations"
@@ -333,9 +381,6 @@
   "connectingToKovan": {
     "message": "Connecting to Kovan Test Network"
   },
-  "connectingToLocalhost": {
-    "message": "Connecting to Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Connecting to Ethereum Mainnet"
   },
@@ -354,11 +399,14 @@
   "contactsSettingsDescription": {
     "message": "Add, edit, remove, and manage your contacts"
   },
-  "continueToCoinSwitch": {
-    "message": "Continue to CoinSwitch"
+  "continue": {
+    "message": "Continue"
   },
   "continueToWyre": {
     "message": "Continue to Wyre"
+  },
+  "contractAddressError": {
+    "message": "You are sending tokens to the token's contract address. This may result in the loss of these tokens."
   },
   "contractDeployment": {
     "message": "Contract Deployment"
@@ -398,6 +446,12 @@
   },
   "currencyConversion": {
     "message": "Currency Conversion"
+  },
+  "currencySymbol": {
+    "message": "Currency Symbol"
+  },
+  "currencySymbolDefinition": {
+    "message": "The ticker symbol displayed for this network’s currency."
   },
   "currentAccountNotConnected": {
     "message": "Your current account is not connected"
@@ -466,9 +520,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Are you sure you want to delete this network?"
-  },
-  "deposit": {
-    "message": "Deposit"
   },
   "depositEther": {
     "message": "Deposit Ether"
@@ -559,13 +610,18 @@
     "message": "If you need to back up your seed phrase again, you can find it in Settings -> Security."
   },
   "endOfFlowMessage7": {
-    "message": "If you ever have questions or see something fishy, email support@metamask.io."
+    "message": "If you ever have questions or see something fishy, contact our support $1.",
+    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask cannot recover your seedphrase."
   },
   "endOfFlowMessage9": {
     "message": "Learn more."
+  },
+  "endpointReturnedDifferentChainId": {
+    "message": "The endpoint returned a different chain ID: $1",
+    "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "ENS name not found on the current network. Try switching to Ethereum Mainnet."
@@ -602,12 +658,12 @@
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
   "errorPageMessage": {
-    "message": "Try again by reloading the page, or contact support at support@metamask.io",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI"
+    "message": "Try again by reloading the page, or contact support $1.",
+    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPagePopupMessage": {
-    "message": "Try again by closing and reopening the popup, or contact support at support@metamask.io",
-    "description": "Message displayed on generic error page in the popup UI"
+    "message": "Try again by closing and reopening the popup, or contact support $1.",
+    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask encountered an error",
@@ -627,6 +683,9 @@
   "ethereumPublicAddress": {
     "message": "Ethereum Public Address"
   },
+  "etherscan": {
+    "message": "Etherscan"
+  },
   "etherscanView": {
     "message": "View account on Etherscan"
   },
@@ -639,8 +698,15 @@
   "externalExtension": {
     "message": "External Extension"
   },
+  "extraApprovalGas": {
+    "message": "+$1 approval gas",
+    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
+  },
   "failed": {
     "message": "Failed"
+  },
+  "failedToFetchChainId": {
+    "message": "Could not fetch chain ID. Is your RPC URL correct?"
   },
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
@@ -648,8 +714,8 @@
   "fast": {
     "message": "Fast"
   },
-  "faster": {
-    "message": "Faster"
+  "fastest": {
+    "message": "Fastest"
   },
   "feeAssociatedRequest": {
     "message": "A fee is associated with this request."
@@ -690,8 +756,18 @@
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
   },
+  "gasLimitTooLowWithDynamicFee": {
+    "message": "Gas limit must be at least $1",
+    "description": "$1 is the custom gas limit, in decimal."
+  },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
+  },
+  "gasPriceExcessive": {
+    "message": "Your gas fee is set unnecessarily high. Consider lowering the amount."
+  },
+  "gasPriceExcessiveInput": {
+    "message": "Gas Price Is Excessive"
   },
   "gasPriceExtremelyLow": {
     "message": "Gas Price Extremely Low"
@@ -741,6 +817,10 @@
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
+  "hardwareWalletLegacyDescription": {
+    "message": "(legacy)",
+    "description": "Text representing the MEW path"
+  },
   "hardwareWallets": {
     "message": "Connect a hardware wallet"
   },
@@ -766,6 +846,9 @@
   "hideTokenSymbol": {
     "message": "Hide $1",
     "description": "$1 is the symbol for a token (e.g. 'DAI')"
+  },
+  "hideZeroBalanceTokens": {
+    "message": "Hide Tokens Without Balance"
   },
   "history": {
     "message": "History"
@@ -823,11 +906,37 @@
   "invalidBlockExplorerURL": {
     "message": "Invalid Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Invalid input."
+  "invalidChainIdTooBig": {
+    "message": "Invalid chain ID. The chain ID is too big."
+  },
+  "invalidCustomNetworkAlertContent1": {
+    "message": "The chain ID for custom network '$1' has to be re-entered.",
+    "description": "$1 is the name/identifier of the network."
+  },
+  "invalidCustomNetworkAlertContent2": {
+    "message": "To protect you from malicious or faulty network providers, chain IDs are now required for all custom networks."
+  },
+  "invalidCustomNetworkAlertContent3": {
+    "message": "Go to Settings > Network and enter the chain ID. You can find the chain IDs of most popular networks on $1.",
+    "description": "$1 is a link to https://chainid.network"
+  },
+  "invalidCustomNetworkAlertTitle": {
+    "message": "Invalid Custom Network"
+  },
+  "invalidHexNumber": {
+    "message": "Invalid hexadecimal number."
+  },
+  "invalidHexNumberLeadingZeros": {
+    "message": "Invalid hexadecimal number. Remove any leading zeros."
   },
   "invalidIpfsGateway": {
     "message": "Invalid IPFS Gateway: The value must be a valid URL"
+  },
+  "invalidNumber": {
+    "message": "Invalid number. Enter a decimal or '0x'-prefixed hexadecimal number."
+  },
+  "invalidNumberLeadingZeros": {
+    "message": "Invalid number. Remove any leading zeros."
   },
   "invalidRPC": {
     "message": "Invalid RPC URL"
@@ -871,9 +980,6 @@
   },
   "links": {
     "message": "Links"
-  },
-  "liveGasPricePredictions": {
-    "message": "Live Gas Price Predictions"
   },
   "loadMore": {
     "message": "Load More"
@@ -920,8 +1026,50 @@
   "metamaskDescription": {
     "message": "Connecting you to Ethereum and the Decentralized Web."
   },
+  "metamaskSwapsOfflineDescription": {
+    "message": "MetaMask Swaps is undergoing maintenance. Please check back later."
+  },
   "metamaskVersion": {
     "message": "MetaMask Version"
+  },
+  "metametricsCommitmentsAllowOptOut": {
+    "message": "Always allow you to opt-out via Settings"
+  },
+  "metametricsCommitmentsBoldNever": {
+    "message": "Never",
+    "description": "This string is localized separately from some of the commitments so that we can bold it"
+  },
+  "metametricsCommitmentsIntro": {
+    "message": "MetaMask will.."
+  },
+  "metametricsCommitmentsNeverCollectIP": {
+    "message": "$1 collect your full IP address",
+    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
+  },
+  "metametricsCommitmentsNeverCollectKeysEtc": {
+    "message": "$1 collect keys, addresses, transactions, balances, hashes, or any personal information",
+    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
+  },
+  "metametricsCommitmentsNeverSellDataForProfit": {
+    "message": "$1 sell data for profit. Ever!",
+    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
+  },
+  "metametricsCommitmentsSendAnonymizedEvents": {
+    "message": "Send anonymized click & pageview events"
+  },
+  "metametricsHelpImproveMetaMask": {
+    "message": "Help Us Improve MetaMask"
+  },
+  "metametricsOptInDescription": {
+    "message": "MetaMask would like to gather usage data to better understand how our users interact with the extension. This data will be used to continually improve the usability and user experience of our product and the Ethereum ecosystem."
+  },
+  "mismatchedChain": {
+    "message": "This network details for this Chain ID do not match our records. We recommend that you $1 before proceeding.",
+    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
+  },
+  "mismatchedChainLinkText": {
+    "message": "verify the network details",
+    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
   "mobileSyncText": {
     "message": "Please enter your password to confirm it's you!"
@@ -948,11 +1096,26 @@
   "negativeETH": {
     "message": "Can not send negative amounts of ETH."
   },
+  "networkDetails": {
+    "message": "Network Details"
+  },
   "networkName": {
     "message": "Network Name"
   },
+  "networkNameDefinition": {
+    "message": "The name associated with this network."
+  },
+  "networkSettingsChainIdDescription": {
+    "message": "The chain ID is used for signing transactions. It must match the chain ID returned by the network. You can enter a decimal or '0x'-prefixed hexadecimal number, but we will display the number in decimal."
+  },
   "networkSettingsDescription": {
     "message": "Add and edit custom RPC networks"
+  },
+  "networkURL": {
+    "message": "Network URL"
+  },
+  "networkURLDefinition": {
+    "message": "The URL used to access this network."
   },
   "networks": {
     "message": "Networks"
@@ -1043,6 +1206,9 @@
   "off": {
     "message": "Off"
   },
+  "offlineForMaintenance": {
+    "message": "Offline for maintenance"
+  },
   "ok": {
     "message": "Ok"
   },
@@ -1054,7 +1220,10 @@
     "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
-    "message": "A malicious Ethereum network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
+    "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
+  },
+  "onlyAvailableOnMainnet": {
+    "message": "Only available on mainnet"
   },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
@@ -1062,11 +1231,8 @@
   "optionalBlockExplorerUrl": {
     "message": "Block Explorer URL (optional)"
   },
-  "optionalChainId": {
-    "message": "ChainID (optional)"
-  },
-  "optionalSymbol": {
-    "message": "Symbol (optional)"
+  "optionalCurrencySymbol": {
+    "message": "Currency Symbol (optional)"
   },
   "orderOneHere": {
     "message": "Order a Trezor or Ledger and keep your funds in cold storage"
@@ -1139,15 +1305,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Proposed Approval Limit"
-  },
-  "protectYourKeys": {
-    "message": "Protect Your Keys!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Be careful with your seed phrase — there have been reports of websites that attempt to imitate MetaMask. MetaMask will never ask for your seed phrase!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Keep your phrase safe. If you see something fishy, or you’re uncertain about a website, email support@metamask.io"
   },
   "provide": {
     "message": "Provide"
@@ -1273,6 +1430,9 @@
   "scanQrCode": {
     "message": "Scan QR Code"
   },
+  "scrollDown": {
+    "message": "Scroll down"
+  },
   "search": {
     "message": "Search"
   },
@@ -1324,20 +1484,17 @@
   "selectAnAccount": {
     "message": "Select an Account"
   },
+  "selectAnAccountAlreadyConnected": {
+    "message": "This account has already been connected to MetaMask"
+  },
   "selectAnAccountHelp": {
     "message": "Select the account to view in MetaMask"
-  },
-  "selectCurrency": {
-    "message": "Select Currency"
   },
   "selectEachPhrase": {
     "message": "Please select each phrase in order to make sure it is correct."
   },
   "selectHdPath": {
     "message": "Select HD Path"
-  },
-  "selectLocale": {
-    "message": "Select Locale"
   },
   "selectPathHelp": {
     "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
@@ -1366,9 +1523,6 @@
   },
   "sentEther": {
     "message": "sent ether"
-  },
-  "sentTokens": {
-    "message": "sent tokens"
   },
   "separateEachWord": {
     "message": "Separate each word with a single space"
@@ -1409,9 +1563,6 @@
   "showSeedPhrase": {
     "message": "Show seed phrase"
   },
-  "showTransactionTimeDescription": {
-    "message": "Select this to display pending transaction time estimates in the activity tab while on the Ethereum Mainnet. Note: estimates are approximations based on network conditions."
-  },
   "sigRequest": {
     "message": "Signature Request"
   },
@@ -1433,9 +1584,6 @@
   "slow": {
     "message": "Slow"
   },
-  "slower": {
-    "message": "Slower"
-  },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
   },
@@ -1447,6 +1595,12 @@
   },
   "speedUpTransaction": {
     "message": "Speed up this transaction"
+  },
+  "spendLimitAmount": {
+    "message": "Spend limit amount"
+  },
+  "spendLimitInsufficient": {
+    "message": "Spend limit insufficient"
   },
   "spendLimitInvalid": {
     "message": "Spend limit invalid; must be a positive number"
@@ -1509,11 +1663,328 @@
   "supportCenter": {
     "message": "Visit our Support Center"
   },
+  "swap": {
+    "message": "Swap"
+  },
+  "swapAdvancedSlippageInfo": {
+    "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “max slippage” setting."
+  },
+  "swapAggregator": {
+    "message": "Aggregator"
+  },
+  "swapAmountReceived": {
+    "message": "Guaranteed amount"
+  },
+  "swapAmountReceivedInfo": {
+    "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
+  },
+  "swapApproval": {
+    "message": "Approve $1 for swaps",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
+  },
+  "swapApproveNeedMoreTokens": {
+    "message": "You need $1 more $2 to complete this swap",
+    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
+  },
+  "swapBetterQuoteAvailable": {
+    "message": "A better quote is available"
+  },
+  "swapBuildQuotePlaceHolderText": {
+    "message": "No tokens available matching $1",
+    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
+  },
+  "swapCheckingQuote": {
+    "message": "Checking $1",
+    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
+  },
+  "swapCustom": {
+    "message": "custom"
+  },
+  "swapDecentralizedExchange": {
+    "message": "Decentralized exchange"
+  },
+  "swapEditLimit": {
+    "message": "Edit limit"
+  },
+  "swapEnableDescription": {
+    "message": "This is required and gives MetaMask permission to swap your $1.",
+    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
+  },
+  "swapEstimatedNetworkFee": {
+    "message": "Estimated network fee"
+  },
+  "swapEstimatedNetworkFeeSummary": {
+    "message": "The “$1” is what we expect the actual fee to be. The exact amount depends on network conditions.",
+    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
+  },
+  "swapEstimatedNetworkFees": {
+    "message": "Estimated network fees"
+  },
+  "swapEstimatedNetworkFeesInfo": {
+    "message": "This is an estimate of the network fee that will be used to complete your swap. The actual amount may change according to network conditions."
+  },
+  "swapFailedErrorDescriptionWithSupportLink": {
+    "message": "Transaction failures happen and we are here to help. If this issue persists, you can reach our customer support at $1 for further assistance.",
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "swapFailedErrorTitle": {
+    "message": "Swap failed"
+  },
+  "swapFetchingQuotesErrorDescription": {
+    "message": "Hmmm... something went wrong. Try again, or if errors persist, contact customer support."
+  },
+  "swapFetchingQuotesErrorTitle": {
+    "message": "Error fetching quotes"
+  },
+  "swapFetchingTokens": {
+    "message": "Fetching tokens..."
+  },
+  "swapFinalizing": {
+    "message": "Finalizing..."
+  },
+  "swapHighSlippageWarning": {
+    "message": "Slippage amount is very high. Make sure you know what you are doing!"
+  },
+  "swapIntroLearnMoreHeader": {
+    "message": "Want to learn more?"
+  },
+  "swapIntroLearnMoreLink": {
+    "message": "Learn more about MetaMask Swaps"
+  },
+  "swapIntroLiquiditySourcesLabel": {
+    "message": "Liquidity sources include:"
+  },
+  "swapIntroPopupSubTitle": {
+    "message": "You can now swap tokens directly in your MetaMask wallet. MetaMask Swaps combines multiple decentralized exchange aggregators, professional market makers, and individual DEXs to ensure MetaMask users always get the best price with the lowest network fees."
+  },
+  "swapIntroPopupTitle": {
+    "message": "Token swapping is here!"
+  },
+  "swapLearnMoreContractsAuditReview": {
+    "message": "Review our official contracts audit"
+  },
+  "swapLowSlippageError": {
+    "message": "Transaction may fail, max slippage too low."
+  },
+  "swapMaxNetworkFeeInfo": {
+    "message": "“$1” is the most you’ll spend. When the network is volatile this can be a large amount.",
+    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
+  },
+  "swapMaxNetworkFees": {
+    "message": "Max network fee"
+  },
+  "swapMaxSlippage": {
+    "message": "Max slippage"
+  },
+  "swapMetaMaskFee": {
+    "message": "MetaMask fee"
+  },
+  "swapMetaMaskFeeDescription": {
+    "message": "We find the best price from the top liquidity sources, every time. A fee of $1% is automatically factored into this quote.",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+  },
+  "swapNQuotes": {
+    "message": "$1 quotes",
+    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
+  },
+  "swapNetworkFeeSummary": {
+    "message": "The network fee covers the cost of processing your swap and storing it on the Ethereum network. MetaMask does not profit from this fee."
+  },
+  "swapNewQuoteIn": {
+    "message": "New quotes in $1",
+    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
+  },
+  "swapOnceTransactionHasProcess": {
+    "message": "Your $1 will be added to your account once this transaction has processed.",
+    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
+  },
+  "swapPriceDifference": {
+    "message": "You are about to swap $1 $2 (~$3) for $4 $5 (~$6).",
+    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
+  },
+  "swapPriceDifferenceAcknowledgement": {
+    "message": "I'm aware"
+  },
+  "swapPriceDifferenceTitle": {
+    "message": "Price difference of ~$1%",
+    "description": "$1 is a number (ex: 1.23) that represents the price difference."
+  },
+  "swapPriceDifferenceTooltip": {
+    "message": "The difference in market prices can be affected by fees taken by intermediaries, size of market, size of trade, or market inefficiencies."
+  },
+  "swapPriceDifferenceUnavailable": {
+    "message": "Market price is unavailable.  Make sure you feel comfortable with the returned amount before proceeding."
+  },
+  "swapProcessing": {
+    "message": "Processing"
+  },
+  "swapQuoteDetails": {
+    "message": "Quote details"
+  },
+  "swapQuoteDetailsSlippageInfo": {
+    "message": "If the price changes between the time your order is placed and confirmed it’s called \"slippage\". Your Swap will automatically cancel if slippage exceeds your \"slippage tolerance\" setting."
+  },
+  "swapQuoteIncludesRate": {
+    "message": "Quote includes a $1% MetaMask fee",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+  },
+  "swapQuoteNofN": {
+    "message": "Quote $1 of $2",
+    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
+  },
+  "swapQuoteSource": {
+    "message": "Quote source"
+  },
+  "swapQuotesAreRefreshed": {
+    "message": "Quotes are refreshed often to reflect current market conditions."
+  },
+  "swapQuotesExpiredErrorDescription": {
+    "message": "Please request new quotes to get the latest rates."
+  },
+  "swapQuotesExpiredErrorTitle": {
+    "message": "Quotes timeout"
+  },
+  "swapQuotesNotAvailableErrorDescription": {
+    "message": "Try adjusting the amount or slippage settings and try again."
+  },
+  "swapQuotesNotAvailableErrorTitle": {
+    "message": "No quotes available"
+  },
+  "swapRate": {
+    "message": "Rate"
+  },
+  "swapReceiving": {
+    "message": "Receiving"
+  },
+  "swapReceivingInfoTooltip": {
+    "message": "This is an estimate. The exact amount depends on slippage."
+  },
+  "swapRequestForQuotation": {
+    "message": "Request for quotation"
+  },
+  "swapReviewSwap": {
+    "message": "Review Swap"
+  },
+  "swapSearchForAToken": {
+    "message": "Search for a token"
+  },
+  "swapSelect": {
+    "message": "Select"
+  },
+  "swapSelectAQuote": {
+    "message": "Select a quote"
+  },
+  "swapSelectAToken": {
+    "message": "Select a token"
+  },
+  "swapSelectQuotePopoverDescription": {
+    "message": "Below are all the quotes gathered from multiple liquidity sources."
+  },
+  "swapSlippageTooLow": {
+    "message": "Slippage must be greater than zero"
+  },
+  "swapSource": {
+    "message": "Liquidity source"
+  },
+  "swapSourceInfo": {
+    "message": "We search multiple liquidity sources (exchanges, aggregators and professional market makers) to find the best rates and lowest network fees."
+  },
+  "swapStartSwapping": {
+    "message": "Start swapping"
+  },
+  "swapSwapFrom": {
+    "message": "Swap from"
+  },
+  "swapSwapSwitch": {
+    "message": "Switch from and to tokens"
+  },
+  "swapSwapTo": {
+    "message": "Swap to"
+  },
+  "swapThisWillAllowApprove": {
+    "message": "This will allow $1 to be swapped."
+  },
+  "swapTokenAvailable": {
+    "message": "Your $1 has been added to your account.",
+    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
+  },
+  "swapTokenBalanceUnavailable": {
+    "message": "We were unable to retrieve your $1 balance",
+    "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
+  },
+  "swapTokenToToken": {
+    "message": "Swap $1 to $2",
+    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
+  },
+  "swapTokenVerificationMessage": {
+    "message": "Always confirm the token address on $1.",
+    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
+  },
+  "swapTokenVerificationNoSource": {
+    "message": "This token has not been verified."
+  },
+  "swapTokenVerificationOnlyOneSource": {
+    "message": "Only verified on 1 source."
+  },
+  "swapTokenVerificationSources": {
+    "message": "Verified on $1 sources.",
+    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
+  },
+  "swapTransactionComplete": {
+    "message": "Transaction complete"
+  },
+  "swapUnknown": {
+    "message": "Unknown"
+  },
+  "swapUsingBestQuote": {
+    "message": "Using the best quote"
+  },
+  "swapVerifyTokenExplanation": {
+    "message": "Multiple tokens can use the same name and symbol. Check Etherscan to verify this is the token you're looking for."
+  },
+  "swapViewToken": {
+    "message": "View $1"
+  },
+  "swapYourTokenBalance": {
+    "message": "$1 $2 available to swap",
+    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
+  },
+  "swapZeroSlippage": {
+    "message": "0% Slippage"
+  },
+  "swapsAdvancedOptions": {
+    "message": "Advanced Options"
+  },
+  "swapsExcessiveSlippageWarning": {
+    "message": "Slippage amount is too high and will result in a bad rate. Please reduce your slippage tolerance to a value below 15%."
+  },
+  "swapsMaxSlippage": {
+    "message": "Slippage Tolerance"
+  },
+  "swapsNotEnoughForTx": {
+    "message": "Not enough $1 to complete this transaction",
+    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
+  },
+  "swapsViewInActivity": {
+    "message": "View in activity"
+  },
+  "switchEthereumChainConfirmationDescription": {
+    "message": "This will switch the selected network within MetaMask to a previously added network:"
+  },
+  "switchEthereumChainConfirmationTitle": {
+    "message": "Allow this site to switch the network?"
+  },
+  "switchNetwork": {
+    "message": "Switch network"
+  },
   "switchNetworks": {
     "message": "Switch Networks"
   },
   "switchToThisAccount": {
     "message": "Switch to this account"
+  },
+  "switchingNetworksCancelsPendingConfirmations": {
+    "message": "Switching networks will cancel all pending confirmations"
   },
   "symbol": {
     "message": "Symbol"
@@ -1553,6 +2024,9 @@
   },
   "terms": {
     "message": "Terms of Use"
+  },
+  "termsOfService": {
+    "message": "Terms of Service"
   },
   "testFaucet": {
     "message": "Test Faucet"
@@ -1627,9 +2101,6 @@
   "transactionSubmitted": {
     "message": "Transaction submitted with gas fee of $1 at $2."
   },
-  "transactionTime": {
-    "message": "Transaction Time"
-  },
   "transactionUpdated": {
     "message": "Transaction updated at $2."
   },
@@ -1690,6 +2161,14 @@
   "unlockMessage": {
     "message": "The decentralized web awaits"
   },
+  "unrecognizedChain": {
+    "message": "This custom network is not recognized. We recommend that you $1 before proceeding",
+    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
+  },
+  "unrecognizedChainLinkText": {
+    "message": "verify the network details",
+    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
+  },
   "updatedWithDate": {
     "message": "Updated $1"
   },
@@ -1711,8 +2190,15 @@
   "userName": {
     "message": "Username"
   },
+  "verifyThisTokenOn": {
+    "message": "Verify this token on $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
   "viewAccount": {
     "message": "View Account"
+  },
+  "viewAllDetails": {
+    "message": "View all details"
   },
   "viewContact": {
     "message": "View Contact"
@@ -1735,6 +2221,10 @@
   "walletSeed": {
     "message": "Seed phrase"
   },
+  "web3ShimUsageNotification": {
+    "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",
+    "description": "$1 is a clickable link."
+  },
   "welcome": {
     "message": "Welcome to MetaMask"
   },
@@ -1751,6 +2241,10 @@
     "message": "$1 of $2",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
+  "xOfYPending": {
+    "message": "$1 of $2 pending",
+    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
+  },
   "yesLetsTry": {
     "message": "Yes, let's try"
   },
@@ -1762,9 +2256,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Your private seed phrase"
-  },
-  "yourSigRequested": {
-    "message": "Your signature is being requested"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"

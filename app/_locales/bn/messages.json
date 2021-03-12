@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ক্যালিফোর্নিয়াতে ডিজাইন করা এবং নির্মিত।"
   },
-  "buyCoinSwitch": {
-    "message": "CoinSwitch এ ক্রয় করুন"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch হল 300রও বেশি ক্রিপ্টোকারেন্সি সর্বোত্তম হারে বিনময় করার সবথেকে ভালো স্থান।"
-  },
   "buyWithWyre": {
     "message": "Wyre দিয়ে ETH ক্রয় করুন"
   },
@@ -164,9 +158,6 @@
   "cancel": {
     "message": "বাতিল করুন"
   },
-  "cancelAttempt": {
-    "message": "প্রচেষ্টা বাতিল করুন"
-  },
   "cancellationGasFee": {
     "message": "বাতিল করার গ্যাস ফী"
   },
@@ -175,9 +166,6 @@
   },
   "chainId": {
     "message": "চেন আইডি"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "শুধুমাত্র Ethereum নেটওয়ার্কগুলিতে চার্ট উপলভ্য। "
   },
   "chromeRequiredForHardwareWallets": {
     "message": "আপনার হার্ডওয়্যার ওয়ালেটের সাথে সংযোগ করতে আপনাকে Google Chrome এ MetaMask ব্যবহার করতে হবে।  "
@@ -218,9 +206,6 @@
   "connectingToKovan": {
     "message": "কোভান টেস্ট নেটওয়ার্কের সাথে সংযোগ করছে"
   },
-  "connectingToLocalhost": {
-    "message": "লোকালহোস্ট 8545 এর সাথে সংযোগ করছে"
-  },
   "connectingToMainnet": {
     "message": "মুখ্য Ethereum নেটওয়ার্কের সাথে সংযোগ করছে"
   },
@@ -229,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "রপস্টেন টেস্ট নেটওয়ার্কের সাথে সংযোগ করছে"
-  },
-  "continueToCoinSwitch": {
-    "message": "CoinSwitch এ অবিরত থাকুন"
   },
   "continueToWyre": {
     "message": "Wyre এ অবিরত রাখুন"
@@ -311,9 +293,6 @@
   "deleteNetworkDescription": {
     "message": "আপনি কি এই নেটওয়ার্কটি মোছার বিষয়ে নিশ্চিত?"
   },
-  "deposit": {
-    "message": "জমা "
-  },
   "depositEther": {
     "message": "ইথার জমা করুন"
   },
@@ -371,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "আপনাকে আপনার সীড আবার ব্যাকআপ করতে হলে, আপনি সেটি সেটিংস -> নিরাপত্তায় পাবেন।"
   },
-  "endOfFlowMessage7": {
-    "message": "আপনার কখনও কোনো প্রশ্ন থাকলে বা সন্দেহজনক কিছু দেখলে, support@metamask.io ঠিকানায় ইমেল করুন।"
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask আপনার সীডফ্রেজ পুনরুদ্ধার করতে পারবে না। আরও জানুন।"
   },
@@ -415,9 +391,6 @@
   },
   "fast": {
     "message": "দ্রুত"
-  },
-  "faster": {
-    "message": "দ্রুততর"
   },
   "fiat": {
     "message": "ফিয়াট",
@@ -566,9 +539,6 @@
   "invalidBlockExplorerURL": {
     "message": "অবৈধ Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "অবৈধ ইনপুট"
-  },
   "invalidRPC": {
     "message": "অবৈধ RPC URL"
   },
@@ -599,9 +569,6 @@
   },
   "links": {
     "message": "লিঙ্কসমূহ"
-  },
-  "liveGasPricePredictions": {
-    "message": "সরাসরি গ্যাসের মূল্যের অনুমান"
   },
   "loadMore": {
     "message": "আরও লোড করুন"
@@ -746,10 +713,7 @@
   "optionalBlockExplorerUrl": {
     "message": "এক্সপ্লোরার URL ব্লক করুন (ঐচ্ছিক)"
   },
-  "optionalChainId": {
-    "message": "ChainID (ঐচ্ছিক)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "প্রতীক (ঐচ্ছিক)"
   },
   "orderOneHere": {
@@ -807,15 +771,6 @@
   },
   "privateNetwork": {
     "message": "ব্যক্তিগত নেটওয়ার্ক"
-  },
-  "protectYourKeys": {
-    "message": "আপনার কীগুলি সুরক্ষিত করুন!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "আপনার সীড ফ্রেজ বিষয়ে সাবধান থাকুন — এমন ওয়েবসাইটগুলির রিপোর্ট পাওয়া গেছে যেগুলি MetaMask কে অনুকরণ করার চেষ্টা করে। MetaMask কখনও আপনার সীড ফ্রেজ জিজ্ঞাসা করবে না।"
-  },
-  "protectYourKeysMessage2": {
-    "message": "আপনার ফ্রেজটিকে নিরাপদে রাখুন।সন্দেহজনক কিছু দেখলে, বা একটি ওয়েবসাইট সম্পর্কে নিশ্চিত না হলে, support@metamask.io এ ইমেল করুন"
   },
   "queue": {
     "message": "অপেক্ষমাণ"
@@ -964,17 +919,11 @@
   "selectAnAccountHelp": {
     "message": "MetaMask এ দেখতে অ্যাকাউন্টটি নির্বাচন করুন"
   },
-  "selectCurrency": {
-    "message": "কারেন্সি নির্বাচন করুন"
-  },
   "selectEachPhrase": {
     "message": "ফ্রেজগুলি সঠিক তা নিশ্চিত করতে অনুগ্রহ করে প্রতিটি ফ্রেজ নির্বাচন করুন।"
   },
   "selectHdPath": {
     "message": "HD পাথ নির্বাচন করুন"
-  },
-  "selectLocale": {
-    "message": "স্থানীয় নির্বাচন করুন"
   },
   "selectPathHelp": {
     "message": "আপনি নিচে আপনার বিদ্যমান লেজার ব্যালেন্স না দেখলে, \"Legacy (MEW / MyCrypto)\" পাথগুলিতে সুইচ করার চেষ্টা করুন "
@@ -996,9 +945,6 @@
   },
   "sentEther": {
     "message": "পাঠানো ইথার "
-  },
-  "sentTokens": {
-    "message": "টোকেনগুলি পাঠান"
   },
   "separateEachWord": {
     "message": "প্রতিটি শব্দকে একটি স্পেস দিয়ে আলাদা করুন"
@@ -1044,9 +990,6 @@
   },
   "slow": {
     "message": "মন্থর"
-  },
-  "slower": {
-    "message": "ধীর গতির"
   },
   "somethingWentWrong": {
     "message": "ওহো! কিছু সমস্যা হয়েছে।"
@@ -1192,9 +1135,6 @@
   "transactionSubmitted": {
     "message": "$2 এ $1 এর গ্যাস ফী সহ লেনদেন জমা করা হয়েছে।"
   },
-  "transactionTime": {
-    "message": "লেনদেনের সময়"
-  },
   "transactionUpdated": {
     "message": "লেনদেন $2 এ আপডেট করা হয়েছে।"
   },
@@ -1297,9 +1237,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "আপনার ব্যক্তিগত সীড ফ্রেজ"
-  },
-  "yourSigRequested": {
-    "message": "আপনার স্বাক্ষরের অনুরোধ জানানো হয়েছে"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "স্পীড আপ এ শূণ্য গ্যাসের মূল্য"

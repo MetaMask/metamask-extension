@@ -1,1 +1,1 @@
-export { default } from './add-recipient.container'
+export { default } from './add-recipient.container';

@@ -52,12 +52,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ออกแบบและพัฒนาที่แคลิฟอร์เนีย"
   },
-  "buyCoinSwitch": {
-    "message": "ซื้อด้วย CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch เป็นจุดหมายปลายทางแบบครบวงจรในการแลกเปลี่ยนสกุลเงินมากกว่า 300 ครั้งในอัตราที่ดีที่สุด"
-  },
   "cancel": {
     "message": "ยกเลิก"
   },
@@ -87,9 +81,6 @@
   },
   "connectingToRopsten": {
     "message": "เชื่อมต่อกับเครือข่ายทดสอบ Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "ไปที่ CoinSwitch"
   },
   "continueToWyre": {
     "message": "ไปที่ Wyre"
@@ -141,9 +132,6 @@
   },
   "deleteNetwork": {
     "message": "ลบเครือข่าย?"
-  },
-  "deposit": {
-    "message": "ฝาก"
   },
   "depositEther": {
     "message": "การฝากอีเธอร์"
@@ -201,9 +189,6 @@
   },
   "fast": {
     "message": "เร็ว"
-  },
-  "faster": {
-    "message": "เร็วขึ้น"
   },
   "fiat": {
     "message": "เงินตรา",
@@ -279,9 +264,6 @@
   },
   "invalidBlockExplorerURL": {
     "message": "Block Explorer URI ไม่ถูกต้อง"
-  },
-  "invalidInput": {
-    "message": "อินพุทไม่ถูกต้อง"
   },
   "invalidRPC": {
     "message": "RPC URI ไม่ถูกต้อง"
@@ -447,9 +429,6 @@
   "selectAnAccount": {
     "message": "เลือกบัญชี"
   },
-  "selectCurrency": {
-    "message": "เลือกสกุลเงิน"
-  },
   "selectHdPath": {
     "message": "เลือกเส้นทาง HD"
   },
@@ -491,9 +470,6 @@
   },
   "signed": {
     "message": "ลงชื่อแล้ว"
-  },
-  "slower": {
-    "message": "ช้าลง"
   },
   "stateLogs": {
     "message": "บันทึกของสถานะ"
@@ -594,8 +570,5 @@
   },
   "youSign": {
     "message": "คุณกำลังเซ็นชื่อ"
-  },
-  "yourSigRequested": {
-    "message": "ลายเซ็นของคุณกำลังได้รับการร้องขอ"
   }
 }

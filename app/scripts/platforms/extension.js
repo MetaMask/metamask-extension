@@ -1,232 +1,234 @@
-import extension from 'extensionizer'
-import { createExplorerLink as explorerLink } from '@metamask/etherscan-link'
-import { getEnvironmentType, checkForError } from '../lib/util'
-import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
+import extension from 'extensionizer';
+import { getEnvironmentType, checkForError } from '../lib/util';
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { getBlockExplorerUrlForTx } from '../../../shared/modules/transaction.utils';
 
 export default class ExtensionPlatform {
-
   //
   // Public
   //
-  reload () {
-    extension.runtime.reload()
+  reload() {
+    extension.runtime.reload();
   }
 
-  openTab (options) {
+  openTab(options) {
     return new Promise((resolve, reject) => {
       extension.tabs.create(options, (newTab) => {
-        const error = checkForError()
+        const error = checkForError();
         if (error) {
-          return reject(error)
+          return reject(error);
         }
-        return resolve(newTab)
-      })
-    })
+        return resolve(newTab);
+      });
+    });
   }
 
-  openWindow (options) {
+  openWindow(options) {
     return new Promise((resolve, reject) => {
       extension.windows.create(options, (newWindow) => {
-        const error = checkForError()
+        const error = checkForError();
         if (error) {
-          return reject(error)
+          return reject(error);
         }
-        return resolve(newWindow)
-      })
-    })
+        return resolve(newWindow);
+      });
+    });
   }
 
-  focusWindow (windowId) {
+  focusWindow(windowId) {
     return new Promise((resolve, reject) => {
       extension.windows.update(windowId, { focused: true }, () => {
-        const error = checkForError()
+        const error = checkForError();
         if (error) {
-          return reject(error)
+          return reject(error);
         }
-        return resolve()
-      })
-    })
+        return resolve();
+      });
+    });
   }
 
-  updateWindowPosition (windowId, left, top) {
+  updateWindowPosition(windowId, left, top) {
     return new Promise((resolve, reject) => {
       extension.windows.update(windowId, { left, top }, () => {
-        const error = checkForError()
+        const error = checkForError();
         if (error) {
-          return reject(error)
+          return reject(error);
         }
-        return resolve()
-      })
-    })
+        return resolve();
+      });
+    });
   }
 
-  getLastFocusedWindow () {
+  getLastFocusedWindow() {
     return new Promise((resolve, reject) => {
       extension.windows.getLastFocused((windowObject) => {
-        const error = checkForError()
+        const error = checkForError();
         if (error) {
-          return reject(error)
+          return reject(error);
         }
-        return resolve(windowObject)
-      })
-    })
+        return resolve(windowObject);
+      });
+    });
   }
 
-  closeCurrentWindow () {
+  closeCurrentWindow() {
     return extension.windows.getCurrent((windowDetails) => {
-      return extension.windows.remove(windowDetails.id)
-    })
+      return extension.windows.remove(windowDetails.id);
+    });
   }
 
-  getVersion () {
-    return extension.runtime.getManifest().version
+  getVersion() {
+    return extension.runtime.getManifest().version;
   }
 
-  openExtensionInBrowser (route = null, queryString = null) {
-    let extensionURL = extension.runtime.getURL('home.html')
+  openExtensionInBrowser(route = null, queryString = null) {
+    let extensionURL = extension.runtime.getURL('home.html');
 
     if (queryString) {
-      extensionURL += `?${queryString}`
+      extensionURL += `?${queryString}`;
     }
 
     if (route) {
-      extensionURL += `#${route}`
+      extensionURL += `#${route}`;
     }
-    this.openTab({ url: extensionURL })
+    this.openTab({ url: extensionURL });
     if (getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND) {
-      window.close()
+      window.close();
     }
   }
 
-  getPlatformInfo (cb) {
+  getPlatformInfo(cb) {
     try {
       extension.runtime.getPlatformInfo((platform) => {
-        cb(null, platform)
-      })
+        cb(null, platform);
+      });
     } catch (e) {
-      cb(e)
+      cb(e);
       // eslint-disable-next-line no-useless-return
-      return
+      return;
     }
   }
 
-  showTransactionNotification (txMeta) {
-    const { status, txReceipt: { status: receiptStatus } = {} } = txMeta
+  showTransactionNotification(txMeta, rpcPrefs) {
+    const { status, txReceipt: { status: receiptStatus } = {} } = txMeta;
 
-    if (status === 'confirmed') {
+    if (status === TRANSACTION_STATUSES.CONFIRMED) {
       // There was an on-chain failure
       receiptStatus === '0x0'
-        ? this._showFailedTransaction(txMeta, 'Transaction encountered an error.')
-        : this._showConfirmedTransaction(txMeta)
-    } else if (status === 'failed') {
-      this._showFailedTransaction(txMeta)
+        ? this._showFailedTransaction(
+            txMeta,
+            'Transaction encountered an error.',
+          )
+        : this._showConfirmedTransaction(txMeta, rpcPrefs);
+    } else if (status === TRANSACTION_STATUSES.FAILED) {
+      this._showFailedTransaction(txMeta);
     }
   }
 
-  getAllWindows () {
+  getAllWindows() {
     return new Promise((resolve, reject) => {
       extension.windows.getAll((windows) => {
-        const error = checkForError()
+        const error = checkForError();
         if (error) {
-          return reject(error)
+          return reject(error);
         }
-        return resolve(windows)
-      })
-    })
+        return resolve(windows);
+      });
+    });
   }
 
-  getActiveTabs () {
+  getActiveTabs() {
     return new Promise((resolve, reject) => {
       extension.tabs.query({ active: true }, (tabs) => {
-        const error = checkForError()
+        const error = checkForError();
         if (error) {
-          return reject(error)
+          return reject(error);
         }
-        return resolve(tabs)
-      })
-    })
+        return resolve(tabs);
+      });
+    });
   }
 
-  currentTab () {
+  currentTab() {
     return new Promise((resolve, reject) => {
       extension.tabs.getCurrent((tab) => {
-        const err = checkForError()
+        const err = checkForError();
         if (err) {
-          reject(err)
+          reject(err);
         } else {
-          resolve(tab)
+          resolve(tab);
         }
-      })
-    })
+      });
+    });
   }
 
-  switchToTab (tabId) {
+  switchToTab(tabId) {
     return new Promise((resolve, reject) => {
       extension.tabs.update(tabId, { highlighted: true }, (tab) => {
-        const err = checkForError()
+        const err = checkForError();
         if (err) {
-          reject(err)
+          reject(err);
         } else {
-          resolve(tab)
+          resolve(tab);
         }
-      })
-    })
+      });
+    });
   }
 
-  closeTab (tabId) {
+  closeTab(tabId) {
     return new Promise((resolve, reject) => {
       extension.tabs.remove(tabId, () => {
-        const err = checkForError()
+        const err = checkForError();
         if (err) {
-          reject(err)
+          reject(err);
         } else {
-          resolve()
+          resolve();
         }
-      })
-    })
+      });
+    });
   }
 
-  _showConfirmedTransaction (txMeta) {
+  _showConfirmedTransaction(txMeta, rpcPrefs) {
+    this._subscribeToNotificationClicked();
 
-    this._subscribeToNotificationClicked()
+    const url = getBlockExplorerUrlForTx(txMeta, rpcPrefs);
+    const nonce = parseInt(txMeta.txParams.nonce, 16);
 
-    const url = explorerLink(txMeta.hash, txMeta.metamaskNetworkId)
-    const nonce = parseInt(txMeta.txParams.nonce, 16)
-
-    const title = 'Confirmed transaction'
-    const message = `Transaction ${nonce} confirmed! View on Etherscan`
-    this._showNotification(title, message, url)
+    const title = 'Confirmed transaction';
+    const message = `Transaction ${nonce} confirmed! ${
+      url.length ? 'View on Etherscan' : ''
+    }`;
+    this._showNotification(title, message, url);
   }
 
-  _showFailedTransaction (txMeta, errorMessage) {
-
-    const nonce = parseInt(txMeta.txParams.nonce, 16)
-    const title = 'Failed transaction'
-    const message = `Transaction ${nonce} failed! ${errorMessage || txMeta.err.message}`
-    this._showNotification(title, message)
+  _showFailedTransaction(txMeta, errorMessage) {
+    const nonce = parseInt(txMeta.txParams.nonce, 16);
+    const title = 'Failed transaction';
+    const message = `Transaction ${nonce} failed! ${
+      errorMessage || txMeta.err.message
+    }`;
+    this._showNotification(title, message);
   }
 
-  _showNotification (title, message, url) {
-    extension.notifications.create(
-      url,
-      {
-        'type': 'basic',
-        title,
-        'iconUrl': extension.extension.getURL('../../images/icon-64.png'),
-        message,
-      },
-    )
+  _showNotification(title, message, url) {
+    extension.notifications.create(url, {
+      type: 'basic',
+      title,
+      iconUrl: extension.extension.getURL('../../images/icon-64.png'),
+      message,
+    });
   }
 
-  _subscribeToNotificationClicked () {
+  _subscribeToNotificationClicked() {
     if (!extension.notifications.onClicked.hasListener(this._viewOnEtherscan)) {
-      extension.notifications.onClicked.addListener(this._viewOnEtherscan)
+      extension.notifications.onClicked.addListener(this._viewOnEtherscan);
     }
   }
 
-  _viewOnEtherscan (txId) {
+  _viewOnEtherscan(txId) {
     if (txId.startsWith('https://')) {
-      extension.tabs.create({ url: txId })
+      extension.tabs.create({ url: txId });
     }
   }
 }

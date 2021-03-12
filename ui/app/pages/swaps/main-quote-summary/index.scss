@@ -1,0 +1,122 @@
+.main-quote-summary {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  max-height: 196px;
+  min-height: 196px;
+  width: 100%;
+  color: $Black-100;
+
+  &__source-row,
+  &__destination-row {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    @include H6;
+
+    color: $Grey-500;
+  }
+
+  &__source-row {
+    align-items: center;
+  }
+
+  &__source-row-value,
+  &__source-row-symbol {
+    // Each of these spans can be half their container width minus the space
+    // needed for the token icon and the span margins
+    max-width: calc(50% - 13px);
+  }
+
+
+  &__source-row-value {
+    margin-right: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__source-row-symbol {
+    margin-left: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__destination-row {
+    margin-top: 6px;
+  }
+
+  &__destination-row-symbol {
+    margin-left: 5px;
+    color: $Black-100;
+  }
+
+  &__icon,
+  &__icon-fallback {
+    height: 16px;
+    width: 16px;
+  }
+
+  &__icon-fallback {
+    padding-top: 0;
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  &__down-arrow {
+    margin-top: 5px;
+  }
+
+  &__details {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 310px;
+    position: relative;
+  }
+
+  &__quote-details-top {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__quote-large {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 8px;
+    height: 50px;
+  }
+
+  &__quote-large-number {
+    font-size: 60px;
+    line-height: 48px;
+  }
+
+  &__quote-large-white {
+    font-size: 40px;
+    text-overflow: ellipsis;
+    width: 295px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  &__exchange-rate-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 287px;
+    margin-top: 14px;
+  }
+
+  &__exchange-rate-display {
+    color: $Grey-500;
+  }
+}

@@ -1,24 +1,31 @@
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import {
   setCurrentCurrency,
   setUseBlockie,
   updateCurrentLocale,
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
+  setHideZeroBalanceTokens,
   setParticipateInMetaMetrics,
-} from '../../../store/actions'
-import { getPreferences } from '../../../selectors'
-import SettingsTab from './settings-tab.component'
+} from '../../../store/actions';
+import { getPreferences } from '../../../selectors';
+import SettingsTab from './settings-tab.component';
 
 const mapStateToProps = (state) => {
-  const { appState: { warning }, metamask } = state
+  const {
+    appState: { warning },
+    metamask,
+  } = state;
   const {
     currentCurrency,
     conversionDate,
     nativeCurrency,
     useBlockie,
     currentLocale,
-  } = metamask
-  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state)
+  } = metamask;
+  const {
+    useNativeCurrencyAsPrimaryCurrency,
+    hideZeroBalanceTokens,
+  } = getPreferences(state);
 
   return {
     warning,
@@ -28,8 +35,9 @@ const mapStateToProps = (state) => {
     nativeCurrency,
     useBlockie,
     useNativeCurrencyAsPrimaryCurrency,
-  }
-}
+    hideZeroBalanceTokens,
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -37,10 +45,13 @@ const mapDispatchToProps = (dispatch) => {
     setUseBlockie: (value) => dispatch(setUseBlockie(value)),
     updateCurrentLocale: (key) => dispatch(updateCurrentLocale(key)),
     setUseNativeCurrencyAsPrimaryCurrencyPreference: (value) => {
-      return dispatch(setUseNativeCurrencyAsPrimaryCurrencyPreference(value))
+      return dispatch(setUseNativeCurrencyAsPrimaryCurrencyPreference(value));
     },
-    setParticipateInMetaMetrics: (val) => dispatch(setParticipateInMetaMetrics(val)),
-  }
-}
+    setParticipateInMetaMetrics: (val) =>
+      dispatch(setParticipateInMetaMetrics(val)),
+    setHideZeroBalanceTokens: (value) =>
+      dispatch(setHideZeroBalanceTokens(value)),
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(SettingsTab)
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsTab);

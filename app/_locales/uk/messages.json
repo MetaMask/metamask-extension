@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask розроблено й створено в Каліфорнії."
   },
-  "buyCoinSwitch": {
-    "message": "Купувати на CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch це точка призначення з однією зупинкою для обміну більш ніж 300 криптовалют за найкращими курсами. "
-  },
   "buyWithWyre": {
     "message": "Купити ETH через Wyre"
   },
@@ -164,9 +158,6 @@
   "cancel": {
     "message": "Скасувати"
   },
-  "cancelAttempt": {
-    "message": "Відмінити спробу"
-  },
   "cancellationGasFee": {
     "message": "Вартість пального за скасування"
   },
@@ -175,9 +166,6 @@
   },
   "chainId": {
     "message": "ID мережі"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Таблиця доступна тільки в мережах Ethereum."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Щоб підключитися до апаратного гаманця, розширення MetaMask потрібно використовувати в Google Chrome."
@@ -218,9 +206,6 @@
   "connectingToKovan": {
     "message": "Підключення до тестової мережі Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Під'єднуємось до локального хосту 8545"
-  },
   "connectingToMainnet": {
     "message": "З'єднуємось з Головною мережею Ethereum"
   },
@@ -229,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Під'єднуємось до Тестової мережі Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Продовжити в CoinSwitch"
   },
   "continueToWyre": {
     "message": "Продовжити у Wyre"
@@ -311,9 +293,6 @@
   "deleteNetworkDescription": {
     "message": "Ви впевнені, що хочете видалити цю мережу?"
   },
-  "deposit": {
-    "message": "Депозит"
-  },
   "depositEther": {
     "message": "Депонувати Ether"
   },
@@ -371,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "Якщо вам потрібно знову зробити резервну копію вашої початкової фрази, ви можете знайти її у Налаштування -> Безпека."
   },
-  "endOfFlowMessage7": {
-    "message": "Якщо у вас коли-небудь виникатимуть питання або ви побачите щось фішингове, пишіть на support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask не вдалося відновити вашу мнемонічну фразу. Докладніше."
   },
@@ -415,9 +391,6 @@
   },
   "fast": {
     "message": "Швидка"
-  },
-  "faster": {
-    "message": "Швидше"
   },
   "fiat": {
     "message": "Вказівка",
@@ -566,9 +539,6 @@
   "invalidBlockExplorerURL": {
     "message": "Недійсний Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Неприпустимий ввід."
-  },
   "invalidRPC": {
     "message": "Недійсний RPC URL"
   },
@@ -599,9 +569,6 @@
   },
   "links": {
     "message": "Посилання"
-  },
-  "liveGasPricePredictions": {
-    "message": "Прогнози ціни на пальне наживо"
   },
   "loadMore": {
     "message": "Завантажити більше"
@@ -746,10 +713,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Блокувати Explorer URL (не обов'язково)"
   },
-  "optionalChainId": {
-    "message": "ChainID (необов’язково)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Символ (не обов'язково)"
   },
   "orderOneHere": {
@@ -807,15 +771,6 @@
   },
   "privateNetwork": {
     "message": "Приватна мережа"
-  },
-  "protectYourKeys": {
-    "message": "Захистіть свої ключі!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Будьте обережними з вашою початковою фразою - надходила інформація про сайти, які намагались імітувати MetaMask. MetaMask ніколи не запитує вашої початкової фрази!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Тримайте свою фразу у безпеці. Якщо ви бачите щось фішингове або ви не впевнені щодо сайту, напишіть нам на support@metamask.io"
   },
   "queue": {
     "message": "Черга"
@@ -964,17 +919,11 @@
   "selectAnAccountHelp": {
     "message": "Оберіть обліковий запис для перегляду в MetaMask"
   },
-  "selectCurrency": {
-    "message": "Виберіть валюту"
-  },
   "selectEachPhrase": {
     "message": "Виберіть кожну фразу, щоб переконатися, що вона правильна."
   },
   "selectHdPath": {
     "message": "Виберіть шлях до HD-гаманця"
-  },
-  "selectLocale": {
-    "message": "Оберіть локаль"
   },
   "selectPathHelp": {
     "message": "Якщо ви не бачите ваш обліковий запис Ledger, який існує, спробуйте переключити шляхи на \"Legacy (MEW / MyCrypto)\""
@@ -996,9 +945,6 @@
   },
   "sentEther": {
     "message": "надісланий ефір"
-  },
-  "sentTokens": {
-    "message": "надіслані токени"
   },
   "separateEachWord": {
     "message": "Відділіть кожне слово одним пробілом"
@@ -1044,9 +990,6 @@
   },
   "slow": {
     "message": "Повільна"
-  },
-  "slower": {
-    "message": "Повільніше"
   },
   "somethingWentWrong": {
     "message": "Ой! Щось пішло не так."
@@ -1192,9 +1135,6 @@
   "transactionSubmitted": {
     "message": "Транзакція надіслана з оплатою за газ $1 о $2."
   },
-  "transactionTime": {
-    "message": "Час транзакції"
-  },
   "transactionUpdated": {
     "message": "Час оновлення транзакції: $2."
   },
@@ -1297,9 +1237,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Ваша секретна seed-фраза"
-  },
-  "yourSigRequested": {
-    "message": "Надійшов запит вашого підпису"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Ціна пального на прискорення - нуль"

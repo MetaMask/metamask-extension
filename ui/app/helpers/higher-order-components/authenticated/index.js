@@ -1,1 +1,1 @@
-export { default } from './authenticated.container'
+export { default } from './authenticated.container';

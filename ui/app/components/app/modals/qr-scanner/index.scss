@@ -7,7 +7,8 @@
   border-radius: 8px;
 
   &__title {
-    font-size: 1.5rem;
+    @include H3;
+
     font-weight: 500;
     padding: 16px 0;
     text-align: center;
@@ -34,21 +35,24 @@
   }
 
   &__status {
+    @include H6;
+
     text-align: center;
-    font-size: 14px;
     padding: 15px;
   }
 
   &__image {
-    font-size: 1.5rem;
+    @include H3;
+
     font-weight: 500;
     padding: 16px 0 0;
     text-align: center;
   }
 
   &__error {
+    @include Paragraph;
+
     text-align: center;
-    font-size: 16px;
     padding: 15px;
   }
 

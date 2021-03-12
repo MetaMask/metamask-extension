@@ -1,12 +1,11 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { isEqual } from 'lodash'
-import { PageContainerFooter } from '../../ui/page-container'
-import PermissionsConnectFooter from '../permissions-connect-footer'
-import { PermissionPageContainerContent } from '.'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { isEqual } from 'lodash';
+import { PageContainerFooter } from '../../ui/page-container';
+import PermissionsConnectFooter from '../permissions-connect-footer';
+import { PermissionPageContainerContent } from '.';
 
 export default class PermissionPageContainer extends Component {
-
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
@@ -21,49 +20,46 @@ export default class PermissionPageContainer extends Component {
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
     }),
-  }
+  };
 
   static defaultProps = {
     request: {},
     requestMetadata: {},
     selectedIdentities: [],
     allIdentitiesSelected: false,
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  }
+  };
 
   state = {
     selectedPermissions: this.getRequestedMethodState(
       this.getRequestedMethodNames(this.props),
     ),
-  }
+  };
 
-  componentDidUpdate () {
-    const newMethodNames = this.getRequestedMethodNames(this.props)
+  componentDidUpdate() {
+    const newMethodNames = this.getRequestedMethodNames(this.props);
 
     if (!isEqual(Object.keys(this.state.selectedPermissions), newMethodNames)) {
       // this should be a new request, so just overwrite
       this.setState({
         selectedPermissions: this.getRequestedMethodState(newMethodNames),
-      })
+      });
     }
   }
 
-  getRequestedMethodState (methodNames) {
-    return methodNames.reduce(
-      (acc, methodName) => {
-        acc[methodName] = true
-        return acc
-      },
-      {},
-    )
+  getRequestedMethodState(methodNames) {
+    return methodNames.reduce((acc, methodName) => {
+      acc[methodName] = true;
+      return acc;
+    }, {});
   }
 
-  getRequestedMethodNames (props) {
-    return Object.keys(props.request.permissions || {})
+  getRequestedMethodNames(props) {
+    return Object.keys(props.request.permissions || {});
   }
 
   onPermissionToggle = (methodName) => {
@@ -72,54 +68,60 @@ export default class PermissionPageContainer extends Component {
         ...this.state.selectedPermissions,
         [methodName]: !this.state.selectedPermissions[methodName],
       },
-    })
-  }
+    });
+  };
 
-  componentDidMount () {
+  componentDidMount() {
     this.context.metricsEvent({
       eventOpts: {
         category: 'Auth',
         action: 'Connect',
         name: 'Tab Opened',
       },
-    })
+    });
   }
 
   onCancel = () => {
-    const { request, rejectPermissionsRequest } = this.props
-    rejectPermissionsRequest(request.metadata.id)
-  }
+    const { request, rejectPermissionsRequest } = this.props;
+    rejectPermissionsRequest(request.metadata.id);
+  };
 
   onSubmit = () => {
     const {
-      request: _request, approvePermissionsRequest, rejectPermissionsRequest, selectedIdentities,
-    } = this.props
+      request: _request,
+      approvePermissionsRequest,
+      rejectPermissionsRequest,
+      selectedIdentities,
+    } = this.props;
 
     const request = {
       ..._request,
       permissions: { ..._request.permissions },
-    }
+    };
 
     Object.keys(this.state.selectedPermissions).forEach((key) => {
       if (!this.state.selectedPermissions[key]) {
-        delete request.permissions[key]
+        delete request.permissions[key];
       }
-    })
+    });
 
     if (Object.keys(request.permissions).length > 0) {
-      approvePermissionsRequest(request, selectedIdentities.map((selectedIdentity) => selectedIdentity.address))
+      approvePermissionsRequest(
+        request,
+        selectedIdentities.map((selectedIdentity) => selectedIdentity.address),
+      );
     } else {
-      rejectPermissionsRequest(request.metadata.id)
+      rejectPermissionsRequest(request.metadata.id);
     }
-  }
+  };
 
-  render () {
+  render() {
     const {
       requestMetadata,
       targetDomainMetadata,
       selectedIdentities,
       allIdentitiesSelected,
-    } = this.props
+    } = this.props;
 
     return (
       <div className="page-container permission-approval-container">
@@ -144,6 +146,6 @@ export default class PermissionPageContainer extends Component {
           />
         </div>
       </div>
-    )
+    );
   }
 }

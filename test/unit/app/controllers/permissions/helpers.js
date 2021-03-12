@@ -1,6 +1,7 @@
-import { strict as assert } from 'assert'
+import { strict as assert } from 'assert';
+import stringify from 'fast-safe-stringify';
 
-import { noop } from './mocks'
+import { noop } from './mocks';
 
 /**
  * Grants the given permissions to the given origin, using the given permissions
@@ -12,10 +13,8 @@ import { noop } from './mocks'
  * @param {string} origin - The origin to grant permissions to.
  * @param {Object} permissions - The permissions to grant.
  */
-export function grantPermissions (permController, origin, permissions) {
-  permController.permissions.grantNewPermissions(
-    origin, permissions, {}, noop,
-  )
+export function grantPermissions(permController, origin, permissions) {
+  permController.permissions.grantNewPermissions(origin, permissions, {}, noop);
 }
 
 /**
@@ -25,8 +24,7 @@ export function grantPermissions (permController, origin, permissions) {
  * @param {PermissionsController} permController - The permissions controller.
  * @return {Function} A convenient wrapper for the requestUserApproval function.
  */
-export function getRequestUserApprovalHelper (permController) {
-
+export function getRequestUserApprovalHelper(permController) {
   /**
    * Returns a request object that can be passed to requestUserApproval.
    *
@@ -35,8 +33,10 @@ export function getRequestUserApprovalHelper (permController) {
    * @returns {Object} The corresponding request object.
    */
   return (id, origin = 'defaultOrigin') => {
-    return permController.permissions.requestUserApproval({ metadata: { id, origin } })
-  }
+    return permController.permissions.requestUserApproval({
+      metadata: { id, origin },
+    });
+  };
 }
 
 /**
@@ -46,20 +46,20 @@ export function getRequestUserApprovalHelper (permController) {
  *
  * This function must be called on the permissions controller for each request.
  *
- * @param {PermissionsController} - A permissions controller.
+ * @param {PermissionsController} permController - A permissions controller.
  * @returns {Promise<void>} A Promise that resolves once a pending approval
  * has been set.
  */
-export function getUserApprovalPromise (permController) {
-  const originalFunction = permController.permissions.requestUserApproval
+export function getUserApprovalPromise(permController) {
+  const originalFunction = permController.permissions.requestUserApproval;
   return new Promise((resolveHelperPromise) => {
     permController.permissions.requestUserApproval = (req) => {
-      const userApprovalPromise = originalFunction(req)
-      permController.permissions.requestUserApproval = originalFunction
-      resolveHelperPromise()
-      return userApprovalPromise
-    }
-  })
+      const userApprovalPromise = originalFunction(req);
+      permController.permissions.requestUserApproval = originalFunction;
+      resolveHelperPromise();
+      return userApprovalPromise;
+    };
+  });
 }
 
 /**
@@ -72,66 +72,52 @@ export function getUserApprovalPromise (permController) {
  * @param {'restricted'|'internal'} methodType - The method log controller method type of the request.
  * @param {boolean} success - Whether the request succeeded or not.
  */
-export function validateActivityEntry (
-  entry, req, res, methodType, success,
-) {
-  assert.doesNotThrow(
-    () => {
-      _validateActivityEntry(
-        entry, req, res, methodType, success,
-      )
-    },
-    'should have expected activity entry',
-  )
+export function validateActivityEntry(entry, req, res, methodType, success) {
+  assert.doesNotThrow(() => {
+    _validateActivityEntry(entry, req, res, methodType, success);
+  }, 'should have expected activity entry');
 }
 
-function _validateActivityEntry (
-  entry, req, res, methodType, success,
-) {
+function _validateActivityEntry(entry, req, res, methodType, success) {
+  assert.ok(entry, 'entry should exist');
 
-  assert.ok(entry, 'entry should exist')
-
-  assert.equal(entry.id, req.id)
-  assert.equal(entry.method, req.method)
-  assert.equal(entry.origin, req.origin)
-  assert.equal(entry.methodType, methodType)
-  assert.deepEqual(
-    entry.request, req,
+  assert.equal(entry.id, req.id);
+  assert.equal(entry.method, req.method);
+  assert.equal(entry.origin, req.origin);
+  assert.equal(entry.methodType, methodType);
+  assert.equal(
+    entry.request,
+    stringify(req, null, 2),
     'entry.request should equal the request',
-  )
+  );
 
   if (res) {
-
     assert.ok(
-      (
-        Number.isInteger(entry.requestTime) &&
-        Number.isInteger(entry.responseTime)
-      ),
+      Number.isInteger(entry.requestTime) &&
+        Number.isInteger(entry.responseTime),
       'request and response times should be numbers',
-    )
+    );
     assert.ok(
-      (entry.requestTime <= entry.responseTime),
+      entry.requestTime <= entry.responseTime,
       'request time should be less than response time',
-    )
+    );
 
-    assert.equal(entry.success, success)
+    assert.equal(entry.success, success);
     assert.deepEqual(
-      entry.response, res,
+      entry.response,
+      stringify(res, null, 2),
       'entry.response should equal the response',
-    )
+    );
   } else {
-
     assert.ok(
       Number.isInteger(entry.requestTime) && entry.requestTime > 0,
       'entry should have non-zero request time',
-    )
+    );
     assert.ok(
-      (
-        entry.success === null &&
+      entry.success === null &&
         entry.responseTime === null &&
-        entry.response === null
-      ),
+        entry.response === null,
       'entry response values should be null',
-    )
+    );
   }
 }

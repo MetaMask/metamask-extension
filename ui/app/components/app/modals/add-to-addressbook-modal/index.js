@@ -1,1 +1,1 @@
-export { default } from './add-to-addressbook-modal.container'
+export { default } from './add-to-addressbook-modal.container';

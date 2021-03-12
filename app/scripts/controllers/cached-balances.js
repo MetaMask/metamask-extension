@@ -1,9 +1,9 @@
-import ObservableStore from 'obs-store'
+import { ObservableStore } from '@metamask/obs-store';
 
 /**
  * @typedef {Object} CachedBalancesOptions
  * @property {Object} accountTracker An {@code AccountTracker} reference
- * @property {Function} getNetwork A function to get the current network
+ * @property {Function} getCurrentChainId A function to get the current chain id
  * @property {Object} initState The initial controller state
  */
 
@@ -12,64 +12,66 @@ import ObservableStore from 'obs-store'
  * a cache of account balances in local storage
  */
 export default class CachedBalancesController {
-
   /**
    * Creates a new controller instance
    *
-   * @param {CachedBalancesOptions} [opts] Controller configuration parameters
+   * @param {CachedBalancesOptions} [opts] - Controller configuration parameters
    */
-  constructor (opts = {}) {
-    const { accountTracker, getNetwork } = opts
+  constructor(opts = {}) {
+    const { accountTracker, getCurrentChainId } = opts;
 
-    this.accountTracker = accountTracker
-    this.getNetwork = getNetwork
+    this.accountTracker = accountTracker;
+    this.getCurrentChainId = getCurrentChainId;
 
-    const initState = { cachedBalances: {}, ...opts.initState }
-    this.store = new ObservableStore(initState)
+    const initState = { cachedBalances: {}, ...opts.initState };
+    this.store = new ObservableStore(initState);
 
-    this._registerUpdates()
+    this._registerUpdates();
   }
 
   /**
-   * Updates the cachedBalances property for the current network. Cached balances will be updated to those in the passed accounts
+   * Updates the cachedBalances property for the current chain. Cached balances will be updated to those in the passed accounts
    * if balances in the passed accounts are truthy.
    *
-   * @param {Object} obj - The the recently updated accounts object for the current network
+   * @param {Object} obj - The the recently updated accounts object for the current chain
    * @returns {Promise<void>}
    */
-  async updateCachedBalances ({ accounts }) {
-    const network = await this.getNetwork()
-    const balancesToCache = await this._generateBalancesToCache(accounts, network)
+  async updateCachedBalances({ accounts }) {
+    const chainId = this.getCurrentChainId();
+    const balancesToCache = await this._generateBalancesToCache(
+      accounts,
+      chainId,
+    );
     this.store.updateState({
       cachedBalances: balancesToCache,
-    })
+    });
   }
 
-  _generateBalancesToCache (newAccounts, currentNetwork) {
-    const { cachedBalances } = this.store.getState()
-    const currentNetworkBalancesToCache = { ...cachedBalances[currentNetwork] }
+  _generateBalancesToCache(newAccounts, chainId) {
+    const { cachedBalances } = this.store.getState();
+    const currentChainBalancesToCache = { ...cachedBalances[chainId] };
 
     Object.keys(newAccounts).forEach((accountID) => {
-      const account = newAccounts[accountID]
+      const account = newAccounts[accountID];
 
       if (account.balance) {
-        currentNetworkBalancesToCache[accountID] = account.balance
+        currentChainBalancesToCache[accountID] = account.balance;
       }
-    })
+    });
     const balancesToCache = {
       ...cachedBalances,
-      [currentNetwork]: currentNetworkBalancesToCache,
-    }
+      [chainId]: currentChainBalancesToCache,
+    };
 
-    return balancesToCache
+    return balancesToCache;
   }
 
   /**
    * Removes cachedBalances
    */
 
-  clearCachedBalances () {
-    this.store.updateState({ cachedBalances: {} })
+  clearCachedBalances() {
+    this.store.updateState({ cachedBalances: {} });
   }
 
   /**
@@ -80,8 +82,8 @@ export default class CachedBalancesController {
    * @private
    *
    */
-  _registerUpdates () {
-    const update = this.updateCachedBalances.bind(this)
-    this.accountTracker.store.subscribe(update)
+  _registerUpdates() {
+    const update = this.updateCachedBalances.bind(this);
+    this.accountTracker.store.subscribe(update);
   }
 }

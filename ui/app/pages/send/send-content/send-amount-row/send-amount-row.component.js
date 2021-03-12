@@ -1,13 +1,12 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { debounce } from 'lodash'
-import SendRowWrapper from '../send-row-wrapper'
-import UserPreferencedCurrencyInput from '../../../../components/app/user-preferenced-currency-input'
-import UserPreferencedTokenInput from '../../../../components/app/user-preferenced-token-input'
-import AmountMaxButton from './amount-max-button'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { debounce } from 'lodash';
+import SendRowWrapper from '../send-row-wrapper';
+import UserPreferencedCurrencyInput from '../../../../components/app/user-preferenced-currency-input';
+import UserPreferencedTokenInput from '../../../../components/app/user-preferenced-token-input';
+import AmountMaxButton from './amount-max-button';
 
 export default class SendAmountRow extends Component {
-
   static propTypes = {
     amount: PropTypes.string,
     balance: PropTypes.string,
@@ -23,28 +22,28 @@ export default class SendAmountRow extends Component {
     updateSendAmountError: PropTypes.func,
     updateGas: PropTypes.func,
     maxModeOn: PropTypes.bool,
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
-  componentDidUpdate (prevProps) {
-    const { maxModeOn: prevMaxModeOn, gasTotal: prevGasTotal } = prevProps
-    const { maxModeOn, amount, gasTotal, sendToken } = this.props
+  componentDidUpdate(prevProps) {
+    const { maxModeOn: prevMaxModeOn, gasTotal: prevGasTotal } = prevProps;
+    const { maxModeOn, amount, gasTotal, sendToken } = this.props;
 
     if (maxModeOn && sendToken && !prevMaxModeOn) {
-      this.updateGas(amount)
+      this.updateGas(amount);
     }
 
     if (prevGasTotal !== gasTotal) {
-      this.validateAmount(amount)
+      this.validateAmount(amount);
     }
   }
 
-  updateGas = debounce(this.updateGas.bind(this), 500)
+  updateGas = debounce(this.updateGas.bind(this), 500);
 
-  validateAmount (amount) {
+  validateAmount(amount) {
     const {
       balance,
       conversionRate,
@@ -54,7 +53,7 @@ export default class SendAmountRow extends Component {
       tokenBalance,
       updateGasFeeError,
       updateSendAmountError,
-    } = this.props
+    } = this.props;
 
     updateSendAmountError({
       amount,
@@ -64,7 +63,7 @@ export default class SendAmountRow extends Component {
       primaryCurrency,
       sendToken,
       tokenBalance,
-    })
+    });
 
     if (sendToken) {
       updateGasFeeError({
@@ -74,54 +73,52 @@ export default class SendAmountRow extends Component {
         primaryCurrency,
         sendToken,
         tokenBalance,
-      })
+      });
     }
   }
 
-  updateAmount (amount) {
-    const { updateSendAmount, setMaxModeTo } = this.props
+  updateAmount(amount) {
+    const { updateSendAmount, setMaxModeTo } = this.props;
 
-    setMaxModeTo(false)
-    updateSendAmount(amount)
+    setMaxModeTo(false);
+    updateSendAmount(amount);
   }
 
-  updateGas (amount) {
-    const { sendToken, updateGas } = this.props
+  updateGas(amount) {
+    const { sendToken, updateGas } = this.props;
 
     if (sendToken) {
-      updateGas({ amount })
+      updateGas({ amount });
     }
   }
 
   handleChange = (newAmount) => {
-    this.validateAmount(newAmount)
-    this.updateGas(newAmount)
-    this.updateAmount(newAmount)
+    this.validateAmount(newAmount);
+    this.updateGas(newAmount);
+    this.updateAmount(newAmount);
+  };
+
+  renderInput() {
+    const { amount, inError, sendToken } = this.props;
+
+    return sendToken ? (
+      <UserPreferencedTokenInput
+        error={inError}
+        onChange={this.handleChange}
+        token={sendToken}
+        value={amount}
+      />
+    ) : (
+      <UserPreferencedCurrencyInput
+        error={inError}
+        onChange={this.handleChange}
+        value={amount}
+      />
+    );
   }
 
-  renderInput () {
-    const { amount, inError, sendToken } = this.props
-
-    return sendToken ?
-      (
-        <UserPreferencedTokenInput
-          error={inError}
-          onChange={this.handleChange}
-          token={sendToken}
-          value={amount}
-        />
-      )
-      : (
-        <UserPreferencedCurrencyInput
-          error={inError}
-          onChange={this.handleChange}
-          value={amount}
-        />
-      )
-  }
-
-  render () {
-    const { gasTotal, inError } = this.props
+  render() {
+    const { gasTotal, inError } = this.props;
 
     return (
       <SendRowWrapper
@@ -130,9 +127,8 @@ export default class SendAmountRow extends Component {
         errorType="amount"
       >
         {gasTotal && <AmountMaxButton inError={inError} />}
-        { this.renderInput() }
+        {this.renderInput()}
       </SendRowWrapper>
-    )
+    );
   }
-
 }

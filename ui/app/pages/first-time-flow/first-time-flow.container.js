@@ -1,19 +1,26 @@
-import { connect } from 'react-redux'
-import { getFirstTimeFlowTypeRoute } from '../../selectors'
+import { connect } from 'react-redux';
+import { getFirstTimeFlowTypeRoute } from '../../selectors';
 import {
   createNewVaultAndGetSeedPhrase,
   createNewVaultAndRestore,
   unlockAndGetSeedPhrase,
   verifySeedPhrase,
-} from '../../store/actions'
-import {
-  INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
-} from '../../helpers/constants/routes'
-import FirstTimeFlow from './first-time-flow.component'
+} from '../../store/actions';
+import { INITIALIZE_BACKUP_SEED_PHRASE_ROUTE } from '../../helpers/constants/routes';
+import FirstTimeFlow from './first-time-flow.component';
 
 const mapStateToProps = (state, ownProps) => {
-  const { metamask: { completedOnboarding, isInitialized, isUnlocked, seedPhraseBackedUp } } = state
-  const showingSeedPhraseBackupAfterOnboarding = Boolean(ownProps.location.pathname.match(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE))
+  const {
+    metamask: {
+      completedOnboarding,
+      isInitialized,
+      isUnlocked,
+      seedPhraseBackedUp,
+    },
+  } = state;
+  const showingSeedPhraseBackupAfterOnboarding = Boolean(
+    ownProps.location.pathname.match(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE),
+  );
 
   return {
     completedOnboarding,
@@ -22,18 +29,19 @@ const mapStateToProps = (state, ownProps) => {
     nextRoute: getFirstTimeFlowTypeRoute(state),
     showingSeedPhraseBackupAfterOnboarding,
     seedPhraseBackedUp,
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    createNewAccount: (password) => dispatch(createNewVaultAndGetSeedPhrase(password)),
+    createNewAccount: (password) =>
+      dispatch(createNewVaultAndGetSeedPhrase(password)),
     createNewAccountFromSeed: (password, seedPhrase) => {
-      return dispatch(createNewVaultAndRestore(password, seedPhrase))
+      return dispatch(createNewVaultAndRestore(password, seedPhrase));
     },
     unlockAccount: (password) => dispatch(unlockAndGetSeedPhrase(password)),
     verifySeedPhrase: () => verifySeedPhrase(),
-  }
-}
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(FirstTimeFlow)
+export default connect(mapStateToProps, mapDispatchToProps)(FirstTimeFlow);

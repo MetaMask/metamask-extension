@@ -1,28 +1,34 @@
-import ethUtil from 'ethereumjs-util'
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
-import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import ConfirmPageContainer, { ConfirmDetailRow } from '../../components/app/confirm-page-container'
-import { isBalanceSufficient } from '../send/send.utils'
-import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes'
+import ethUtil from 'ethereumjs-util';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import ConfirmPageContainer, {
+  ConfirmDetailRow,
+} from '../../components/app/confirm-page-container';
+import { isBalanceSufficient } from '../send/send.utils';
+import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
-} from '../../helpers/constants/error-keys'
-import { CONFIRMED_STATUS, DROPPED_STATUS } from '../../helpers/constants/transactions'
-import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display'
-import { PRIMARY, SECONDARY } from '../../helpers/constants/common'
-import { hexToDecimal } from '../../helpers/utils/conversions.util'
-import AdvancedGasInputs from '../../components/app/gas-customization/advanced-gas-inputs'
-import TextField from '../../components/ui/text-field'
+} from '../../helpers/constants/error-keys';
+import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
+import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
+import { hexToDecimal } from '../../helpers/utils/conversions.util';
+import AdvancedGasInputs from '../../components/app/gas-customization/advanced-gas-inputs';
+import TextField from '../../components/ui/text-field';
+import {
+  TRANSACTION_TYPES,
+  TRANSACTION_STATUSES,
+} from '../../../../shared/constants/transaction';
+import { getTransactionTypeTitle } from '../../helpers/utils/transactions.util';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     // react-router props
@@ -65,32 +71,23 @@ export default class ConfirmTransactionBase extends Component {
     actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
     dataComponent: PropTypes.node,
-    detailsComponent: PropTypes.node,
-    errorKey: PropTypes.string,
-    errorMessage: PropTypes.string,
-    primaryTotalTextOverride: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+    primaryTotalTextOverride: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.node,
+    ]),
     secondaryTotalTextOverride: PropTypes.string,
     hideData: PropTypes.bool,
-    hideDetails: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
     identiconAddress: PropTypes.string,
-    onCancel: PropTypes.func,
     onEdit: PropTypes.func,
-    onEditGas: PropTypes.func,
-    onSubmit: PropTypes.func,
     setMetaMetricsSendCount: PropTypes.func,
     metaMetricsSendCount: PropTypes.number,
-    subtitle: PropTypes.string,
     subtitleComponent: PropTypes.node,
-    summaryComponent: PropTypes.node,
     title: PropTypes.string,
-    titleComponent: PropTypes.node,
-    valid: PropTypes.bool,
-    warning: PropTypes.string,
     advancedInlineGasShown: PropTypes.bool,
     insufficientBalance: PropTypes.bool,
     hideFiatConversion: PropTypes.bool,
-    transactionCategory: PropTypes.string,
+    type: PropTypes.string,
     getNextNonce: PropTypes.func,
     nextNonce: PropTypes.number,
     tryReverseResolveAddress: PropTypes.func.isRequired,
@@ -98,15 +95,15 @@ export default class ConfirmTransactionBase extends Component {
     showAccountInHeader: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     isMainnet: PropTypes.bool,
-  }
+  };
 
   state = {
     submitting: false,
     submitError: null,
     submitWarning: '',
-  }
+  };
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const {
       transactionStatus,
       showTransactionConfirmedModal,
@@ -117,87 +114,98 @@ export default class ConfirmTransactionBase extends Component {
       customNonceValue,
       toAddress,
       tryReverseResolveAddress,
-    } = this.props
+    } = this.props;
     const {
       customNonceValue: prevCustomNonceValue,
       nextNonce: prevNextNonce,
       toAddress: prevToAddress,
       transactionStatus: prevTxStatus,
-    } = prevProps
-    const statusUpdated = transactionStatus !== prevTxStatus
-    const txDroppedOrConfirmed = transactionStatus === DROPPED_STATUS || transactionStatus === CONFIRMED_STATUS
+    } = prevProps;
+    const statusUpdated = transactionStatus !== prevTxStatus;
+    const txDroppedOrConfirmed =
+      transactionStatus === TRANSACTION_STATUSES.DROPPED ||
+      transactionStatus === TRANSACTION_STATUSES.CONFIRMED;
 
-    if (nextNonce !== prevNextNonce || customNonceValue !== prevCustomNonceValue) {
-      if (customNonceValue > nextNonce) {
-        this.setState({ submitWarning: this.context.t('nextNonceWarning', [nextNonce]) })
+    if (
+      nextNonce !== prevNextNonce ||
+      customNonceValue !== prevCustomNonceValue
+    ) {
+      if (nextNonce !== null && customNonceValue > nextNonce) {
+        this.setState({
+          submitWarning: this.context.t('nextNonceWarning', [nextNonce]),
+        });
       } else {
-        this.setState({ submitWarning: '' })
+        this.setState({ submitWarning: '' });
       }
     }
 
     if (statusUpdated && txDroppedOrConfirmed) {
       showTransactionConfirmedModal({
         onSubmit: () => {
-          clearConfirmTransaction()
-          history.push(mostRecentOverviewPage)
+          clearConfirmTransaction();
+          history.push(mostRecentOverviewPage);
         },
-      })
+      });
     }
 
     if (toAddress && toAddress !== prevToAddress) {
-      tryReverseResolveAddress(toAddress)
+      tryReverseResolveAddress(toAddress);
     }
   }
 
-  getErrorKey () {
+  getErrorKey() {
     const {
       balance,
       conversionRate,
       hexTransactionFee,
-      txData: {
-        simulationFails,
-        txParams: {
-          value: amount,
-        } = {},
-      } = {},
+      txData: { simulationFails, txParams: { value: amount } = {} } = {},
       customGas,
-    } = this.props
+    } = this.props;
 
-    const insufficientBalance = balance && !isBalanceSufficient({
-      amount,
-      gasTotal: hexTransactionFee || '0x0',
-      balance,
-      conversionRate,
-    })
+    const insufficientBalance =
+      balance &&
+      !isBalanceSufficient({
+        amount,
+        gasTotal: hexTransactionFee || '0x0',
+        balance,
+        conversionRate,
+      });
 
     if (insufficientBalance) {
       return {
         valid: false,
         errorKey: INSUFFICIENT_FUNDS_ERROR_KEY,
-      }
+      };
     }
 
     if (hexToDecimal(customGas.gasLimit) < 21000) {
       return {
         valid: false,
         errorKey: GAS_LIMIT_TOO_LOW_ERROR_KEY,
-      }
+      };
     }
 
     if (simulationFails) {
       return {
         valid: true,
-        errorKey: simulationFails.errorKey ? simulationFails.errorKey : TRANSACTION_ERROR_KEY,
-      }
+        errorKey: simulationFails.errorKey
+          ? simulationFails.errorKey
+          : TRANSACTION_ERROR_KEY,
+      };
     }
 
     return {
       valid: true,
-    }
+    };
   }
 
-  handleEditGas () {
-    const { onEditGas, showCustomizeGasModal, actionKey, txData: { origin }, methodData = {} } = this.props
+  handleEditGas() {
+    const {
+      showCustomizeGasModal,
+      actionKey,
+      txData: { origin },
+      methodData = {},
+    } = this.props;
 
     this.context.metricsEvent({
       eventOpts: {
@@ -207,26 +215,23 @@ export default class ConfirmTransactionBase extends Component {
       },
       customVariables: {
         recipientKnown: null,
-        functionType: actionKey || getMethodName(methodData.name) || 'contractInteraction',
+        functionType:
+          actionKey ||
+          getMethodName(methodData.name) ||
+          TRANSACTION_TYPES.CONTRACT_INTERACTION,
         origin,
       },
-    })
+    });
 
-    if (onEditGas) {
-      onEditGas()
-    } else {
-      showCustomizeGasModal()
-    }
+    showCustomizeGasModal();
   }
 
-  renderDetails () {
+  renderDetails() {
     const {
-      detailsComponent,
       primaryTotalTextOverride,
       secondaryTotalTextOverride,
       hexTransactionFee,
       hexTransactionTotal,
-      hideDetails,
       useNonceField,
       customNonceValue,
       updateCustomNonce,
@@ -238,135 +243,146 @@ export default class ConfirmTransactionBase extends Component {
       nextNonce,
       getNextNonce,
       isMainnet,
-    } = this.props
+    } = this.props;
 
-    if (hideDetails) {
-      return null
-    }
-
-    const notMainnetOrTest = !(isMainnet || process.env.IN_TEST)
+    const notMainnetOrTest = !(isMainnet || process.env.IN_TEST);
 
     return (
-      detailsComponent || (
-        <div className="confirm-page-container-content__details">
-          <div className="confirm-page-container-content__gas-fee">
-            <ConfirmDetailRow
-              label="Gas Fee"
-              value={hexTransactionFee}
-              headerText={notMainnetOrTest ? '' : 'Edit'}
-              headerTextClassName={notMainnetOrTest ? '' : 'confirm-detail-row__header-text--edit'}
-              onHeaderClick={notMainnetOrTest ? null : () => this.handleEditGas()}
-              secondaryText={hideFiatConversion ? this.context.t('noConversionRateAvailable') : ''}
-            />
-            {advancedInlineGasShown || notMainnetOrTest
-              ? (
-                <AdvancedGasInputs
-                  updateCustomGasPrice={(newGasPrice) => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
-                  updateCustomGasLimit={(newGasLimit) => updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })}
-                  customGasPrice={customGas.gasPrice}
-                  customGasLimit={customGas.gasLimit}
-                  insufficientBalance={insufficientBalance}
-                  customPriceIsSafe
-                  isSpeedUp={false}
-                />
-              )
-              : null
+      <div className="confirm-page-container-content__details">
+        <div className="confirm-page-container-content__gas-fee">
+          <ConfirmDetailRow
+            label="Gas Fee"
+            value={hexTransactionFee}
+            headerText={notMainnetOrTest ? '' : 'Edit'}
+            headerTextClassName={
+              notMainnetOrTest ? '' : 'confirm-detail-row__header-text--edit'
             }
-          </div>
-          <div className={useNonceField ? 'confirm-page-container-content__gas-fee' : null}>
-            <ConfirmDetailRow
-              label="Total"
-              value={hexTransactionTotal}
-              primaryText={primaryTotalTextOverride}
-              secondaryText={hideFiatConversion ? this.context.t('noConversionRateAvailable') : secondaryTotalTextOverride}
-              headerText="Amount + Gas Fee"
-              headerTextClassName="confirm-detail-row__header-text--total"
-              primaryValueTextColor="#2f9ae0"
+            onHeaderClick={notMainnetOrTest ? null : () => this.handleEditGas()}
+            secondaryText={
+              hideFiatConversion
+                ? this.context.t('noConversionRateAvailable')
+                : ''
+            }
+          />
+          {advancedInlineGasShown || notMainnetOrTest ? (
+            <AdvancedGasInputs
+              updateCustomGasPrice={(newGasPrice) =>
+                updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })
+              }
+              updateCustomGasLimit={(newGasLimit) =>
+                updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })
+              }
+              customGasPrice={customGas.gasPrice}
+              customGasLimit={customGas.gasLimit}
+              insufficientBalance={insufficientBalance}
+              customPriceIsSafe
+              isSpeedUp={false}
             />
-          </div>
-          {useNonceField ? (
-            <div>
-              <div className="confirm-detail-row">
-                <div className="confirm-detail-row__label">
-                  { this.context.t('nonceFieldHeading') }
-                </div>
-                <div className="custom-nonce-input">
-                  <TextField
-                    type="number"
-                    min="0"
-                    placeholder={ typeof nextNonce === 'number' ? nextNonce.toString() : null }
-                    onChange={({ target: { value } }) => {
-                      if (!value.length || Number(value) < 0) {
-                        updateCustomNonce('')
-                      } else {
-                        updateCustomNonce(String(Math.floor(value)))
-                      }
-                      getNextNonce()
-                    }}
-                    fullWidth
-                    margin="dense"
-                    value={ customNonceValue || '' }
-                  />
-                </div>
-              </div>
-            </div>
           ) : null}
         </div>
-      )
-    )
-  }
-
-  renderData (functionType) {
-    const { t } = this.context
-    const {
-      txData: {
-        txParams: {
-          data,
-        } = {},
-      } = {},
-      methodData: {
-        params,
-      } = {},
-      hideData,
-      dataComponent,
-    } = this.props
-
-    if (hideData) {
-      return null
-    }
-
-    return dataComponent || (
-      <div className="confirm-page-container-content__data">
-        <div className="confirm-page-container-content__data-box-label">
-          {`${t('functionType')}:`}
-          <span className="confirm-page-container-content__function-type">
-            { functionType }
-          </span>
+        <div
+          className={
+            useNonceField ? 'confirm-page-container-content__gas-fee' : null
+          }
+        >
+          <ConfirmDetailRow
+            label="Total"
+            value={hexTransactionTotal}
+            primaryText={primaryTotalTextOverride}
+            secondaryText={
+              hideFiatConversion
+                ? this.context.t('noConversionRateAvailable')
+                : secondaryTotalTextOverride
+            }
+            headerText="Amount + Gas Fee"
+            headerTextClassName="confirm-detail-row__header-text--total"
+            primaryValueTextColor="#2f9ae0"
+          />
         </div>
-        {
-          params && (
-            <div className="confirm-page-container-content__data-box">
-              <div className="confirm-page-container-content__data-field-label">
-                { `${t('parameters')}:` }
+        {useNonceField ? (
+          <div>
+            <div className="confirm-detail-row">
+              <div className="confirm-detail-row__label">
+                {this.context.t('nonceFieldHeading')}
               </div>
-              <div>
-                <pre>{ JSON.stringify(params, null, 2) }</pre>
+              <div className="custom-nonce-input">
+                <TextField
+                  type="number"
+                  min="0"
+                  placeholder={
+                    typeof nextNonce === 'number' ? nextNonce.toString() : null
+                  }
+                  onChange={({ target: { value } }) => {
+                    if (!value.length || Number(value) < 0) {
+                      updateCustomNonce('');
+                    } else {
+                      updateCustomNonce(String(Math.floor(value)));
+                    }
+                    getNextNonce();
+                  }}
+                  fullWidth
+                  margin="dense"
+                  value={customNonceValue || ''}
+                />
               </div>
             </div>
-          )
-        }
-        <div className="confirm-page-container-content__data-box-label">
-          {`${t('hexData')}: ${ethUtil.toBuffer(data).length} bytes`}
-        </div>
-        <div className="confirm-page-container-content__data-box">
-          { data }
-        </div>
+          </div>
+        ) : null}
       </div>
-    )
+    );
   }
 
-  handleEdit () {
-    const { txData, tokenData, tokenProps, onEdit, actionKey, txData: { origin }, methodData = {} } = this.props
+  renderData(functionType) {
+    const { t } = this.context;
+    const {
+      txData: { txParams: { data } = {} } = {},
+      methodData: { params } = {},
+      hideData,
+      dataComponent,
+    } = this.props;
+
+    if (hideData) {
+      return null;
+    }
+
+    return (
+      dataComponent || (
+        <div className="confirm-page-container-content__data">
+          <div className="confirm-page-container-content__data-box-label">
+            {`${t('functionType')}:`}
+            <span className="confirm-page-container-content__function-type">
+              {functionType}
+            </span>
+          </div>
+          {params && (
+            <div className="confirm-page-container-content__data-box">
+              <div className="confirm-page-container-content__data-field-label">
+                {`${t('parameters')}:`}
+              </div>
+              <div>
+                <pre>{JSON.stringify(params, null, 2)}</pre>
+              </div>
+            </div>
+          )}
+          <div className="confirm-page-container-content__data-box-label">
+            {`${t('hexData')}: ${ethUtil.toBuffer(data).length} bytes`}
+          </div>
+          <div className="confirm-page-container-content__data-box">{data}</div>
+        </div>
+      )
+    );
+  }
+
+  handleEdit() {
+    const {
+      txData,
+      tokenData,
+      tokenProps,
+      onEdit,
+      actionKey,
+      txData: { origin },
+      methodData = {},
+    } = this.props;
 
     this.context.metricsEvent({
       eventOpts: {
@@ -376,15 +392,18 @@ export default class ConfirmTransactionBase extends Component {
       },
       customVariables: {
         recipientKnown: null,
-        functionType: actionKey || getMethodName(methodData.name) || 'contractInteraction',
+        functionType:
+          actionKey ||
+          getMethodName(methodData.name) ||
+          TRANSACTION_TYPES.CONTRACT_INTERACTION,
         origin,
       },
-    })
+    });
 
-    onEdit({ txData, tokenData, tokenProps })
+    onEdit({ txData, tokenData, tokenProps });
   }
 
-  handleCancelAll () {
+  handleCancelAll() {
     const {
       cancelAllTransactions,
       clearConfirmTransaction,
@@ -392,23 +411,22 @@ export default class ConfirmTransactionBase extends Component {
       mostRecentOverviewPage,
       showRejectTransactionsConfirmationModal,
       unapprovedTxCount,
-    } = this.props
+    } = this.props;
 
     showRejectTransactionsConfirmationModal({
       unapprovedTxCount,
       onSubmit: async () => {
-        this._removeBeforeUnload()
-        await cancelAllTransactions()
-        clearConfirmTransaction()
-        history.push(mostRecentOverviewPage)
+        this._removeBeforeUnload();
+        await cancelAllTransactions();
+        clearConfirmTransaction();
+        history.push(mostRecentOverviewPage);
       },
-    })
+    });
   }
 
-  handleCancel () {
-    const { metricsEvent } = this.context
+  handleCancel() {
+    const { metricsEvent } = this.context;
     const {
-      onCancel,
       txData,
       cancelTransaction,
       history,
@@ -418,9 +436,9 @@ export default class ConfirmTransactionBase extends Component {
       txData: { origin },
       methodData = {},
       updateCustomNonce,
-    } = this.props
+    } = this.props;
 
-    this._removeBeforeUnload()
+    this._removeBeforeUnload();
     metricsEvent({
       eventOpts: {
         category: 'Transactions',
@@ -429,104 +447,99 @@ export default class ConfirmTransactionBase extends Component {
       },
       customVariables: {
         recipientKnown: null,
-        functionType: actionKey || getMethodName(methodData.name) || 'contractInteraction',
+        functionType:
+          actionKey ||
+          getMethodName(methodData.name) ||
+          TRANSACTION_TYPES.CONTRACT_INTERACTION,
         origin,
       },
-    })
-    updateCustomNonce('')
-    if (onCancel) {
-      onCancel(txData)
-    } else {
-      cancelTransaction(txData)
-        .then(() => {
-          clearConfirmTransaction()
-          history.push(mostRecentOverviewPage)
-        })
-    }
+    });
+    updateCustomNonce('');
+    cancelTransaction(txData).then(() => {
+      clearConfirmTransaction();
+      history.push(mostRecentOverviewPage);
+    });
   }
 
-  handleSubmit () {
-    const { metricsEvent } = this.context
+  handleSubmit() {
+    const { metricsEvent } = this.context;
     const {
       txData: { origin },
       sendTransaction,
       clearConfirmTransaction,
       txData,
       history,
-      onSubmit,
       actionKey,
       mostRecentOverviewPage,
       metaMetricsSendCount = 0,
       setMetaMetricsSendCount,
       methodData = {},
       updateCustomNonce,
-    } = this.props
-    const { submitting } = this.state
+    } = this.props;
+    const { submitting } = this.state;
 
     if (submitting) {
-      return
+      return;
     }
 
-    this.setState({
-      submitting: true,
-      submitError: null,
-    }, () => {
-      this._removeBeforeUnload()
-      metricsEvent({
-        eventOpts: {
-          category: 'Transactions',
-          action: 'Confirm Screen',
-          name: 'Transaction Completed',
-        },
-        customVariables: {
-          recipientKnown: null,
-          functionType: actionKey || getMethodName(methodData.name) || 'contractInteraction',
-          origin,
-        },
-      })
+    this.setState(
+      {
+        submitting: true,
+        submitError: null,
+      },
+      () => {
+        this._removeBeforeUnload();
+        metricsEvent({
+          eventOpts: {
+            category: 'Transactions',
+            action: 'Confirm Screen',
+            name: 'Transaction Completed',
+          },
+          customVariables: {
+            recipientKnown: null,
+            functionType:
+              actionKey ||
+              getMethodName(methodData.name) ||
+              TRANSACTION_TYPES.CONTRACT_INTERACTION,
+            origin,
+          },
+        });
 
-      setMetaMetricsSendCount(metaMetricsSendCount + 1)
-        .then(() => {
-          if (onSubmit) {
-            Promise.resolve(onSubmit(txData))
-              .then(() => {
-                this.setState({
+        setMetaMetricsSendCount(metaMetricsSendCount + 1).then(() => {
+          sendTransaction(txData)
+            .then(() => {
+              clearConfirmTransaction();
+              this.setState(
+                {
                   submitting: false,
-                })
-                updateCustomNonce('')
-              })
-          } else {
-            sendTransaction(txData)
-              .then(() => {
-                clearConfirmTransaction()
-                this.setState({
-                  submitting: false,
-                }, () => {
-                  history.push(mostRecentOverviewPage)
-                  updateCustomNonce('')
-                })
-              })
-              .catch((error) => {
-                this.setState({
-                  submitting: false,
-                  submitError: error.message,
-                })
-                updateCustomNonce('')
-              })
-          }
-        })
-    })
+                },
+                () => {
+                  history.push(mostRecentOverviewPage);
+                  updateCustomNonce('');
+                },
+              );
+            })
+            .catch((error) => {
+              this.setState({
+                submitting: false,
+                submitError: error.message,
+              });
+              updateCustomNonce('');
+            });
+        });
+      },
+    );
   }
 
-  renderTitleComponent () {
-    const { title, titleComponent, hexTransactionAmount } = this.props
+  renderTitleComponent() {
+    const { title, hexTransactionAmount } = this.props;
 
     // Title string passed in by props takes priority
     if (title) {
-      return null
+      return null;
     }
 
-    return titleComponent || (
+    return (
       <UserPreferencedCurrencyDisplay
         value={hexTransactionAmount}
         type={PRIMARY}
@@ -534,40 +547,37 @@ export default class ConfirmTransactionBase extends Component {
         ethLogoHeight="26"
         hideLabel
       />
-    )
+    );
   }
 
-  renderSubtitleComponent () {
-    const { subtitle, subtitleComponent, hexTransactionAmount } = this.props
+  renderSubtitleComponent() {
+    const { subtitleComponent, hexTransactionAmount } = this.props;
 
-    // Subtitle string passed in by props takes priority
-    if (subtitle) {
-      return null
-    }
-
-    return subtitleComponent || (
-      <UserPreferencedCurrencyDisplay
-        value={hexTransactionAmount}
-        type={SECONDARY}
-        showEthLogo
-        hideLabel
-      />
-    )
+    return (
+      subtitleComponent || (
+        <UserPreferencedCurrencyDisplay
+          value={hexTransactionAmount}
+          type={SECONDARY}
+          showEthLogo
+          hideLabel
+        />
+      )
+    );
   }
 
-  handleNextTx (txId) {
-    const { history, clearConfirmTransaction } = this.props
+  handleNextTx(txId) {
+    const { history, clearConfirmTransaction } = this.props;
 
     if (txId) {
-      clearConfirmTransaction()
-      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${txId}`)
+      clearConfirmTransaction();
+      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${txId}`);
     }
   }
 
-  getNavigateTxData () {
-    const { currentNetworkUnapprovedTxs, txData: { id } = {} } = this.props
-    const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs)
-    const currentPosition = enumUnapprovedTxs.indexOf(id ? id.toString() : '')
+  getNavigateTxData() {
+    const { currentNetworkUnapprovedTxs, txData: { id } = {} } = this.props;
+    const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs);
+    const currentPosition = enumUnapprovedTxs.indexOf(id ? id.toString() : '');
 
     return {
       totalTx: enumUnapprovedTxs.length,
@@ -579,12 +589,12 @@ export default class ConfirmTransactionBase extends Component {
       lastTx: enumUnapprovedTxs[enumUnapprovedTxs.length - 1],
       ofText: this.context.t('ofTextNofM'),
       requestsWaitingText: this.context.t('requestsAwaitingAcknowledgement'),
-    }
+    };
   }
 
   _beforeUnload = () => {
-    const { txData: { origin, id } = {}, cancelTransaction } = this.props
-    const { metricsEvent } = this.context
+    const { txData: { origin, id } = {}, cancelTransaction } = this.props;
+    const { metricsEvent } = this.context;
     metricsEvent({
       eventOpts: {
         category: 'Transactions',
@@ -594,19 +604,24 @@ export default class ConfirmTransactionBase extends Component {
       customVariables: {
         origin,
       },
-    })
-    cancelTransaction({ id })
-  }
+    });
+    cancelTransaction({ id });
+  };
 
   _removeBeforeUnload = () => {
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.removeEventListener('beforeunload', this._beforeUnload)
+      window.removeEventListener('beforeunload', this._beforeUnload);
     }
-  }
+  };
 
-  componentDidMount () {
-    const { toAddress, txData: { origin } = {}, getNextNonce, tryReverseResolveAddress } = this.props
-    const { metricsEvent } = this.context
+  componentDidMount() {
+    const {
+      toAddress,
+      txData: { origin } = {},
+      getNextNonce,
+      tryReverseResolveAddress,
+    } = this.props;
+    const { metricsEvent } = this.context;
     metricsEvent({
       eventOpts: {
         category: 'Transactions',
@@ -616,24 +631,24 @@ export default class ConfirmTransactionBase extends Component {
       customVariables: {
         origin,
       },
-    })
+    });
 
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', this._beforeUnload)
+      window.addEventListener('beforeunload', this._beforeUnload);
     }
 
-    getNextNonce()
+    getNextNonce();
     if (toAddress) {
-      tryReverseResolveAddress(toAddress)
+      tryReverseResolveAddress(toAddress);
     }
   }
 
-  componentWillUnmount () {
-    this._removeBeforeUnload()
+  componentWillUnmount() {
+    this._removeBeforeUnload();
   }
 
-  render () {
-    const { t } = this.context
+  render() {
+    const { t } = this.context;
     const {
       isTxReprice,
       fromName,
@@ -643,37 +658,42 @@ export default class ConfirmTransactionBase extends Component {
       toEns,
       toNickname,
       methodData,
-      valid: propsValid = true,
-      errorMessage,
-      errorKey: propsErrorKey,
       title,
-      subtitle,
       hideSubtitle,
       identiconAddress,
-      summaryComponent,
       contentComponent,
       onEdit,
       nonce,
       customNonceValue,
       assetImage,
-      warning,
       unapprovedTxCount,
-      transactionCategory,
+      type,
       hideSenderToRecipient,
       showAccountInHeader,
-    } = this.props
-    const { submitting, submitError, submitWarning } = this.state
+      txData,
+    } = this.props;
+    const { submitting, submitError, submitWarning } = this.state;
 
-    const { name } = methodData
-    const { valid, errorKey } = this.getErrorKey()
-    const { totalTx, positionOfCurrentTx, nextTxId, prevTxId, showNavigation, firstTx, lastTx, ofText, requestsWaitingText } = this.getNavigateTxData()
+    const { name } = methodData;
+    const { valid, errorKey } = this.getErrorKey();
+    const {
+      totalTx,
+      positionOfCurrentTx,
+      nextTxId,
+      prevTxId,
+      showNavigation,
+      firstTx,
+      lastTx,
+      ofText,
+      requestsWaitingText,
+    } = this.getNavigateTxData();
 
-    let functionType = getMethodName(name)
+    let functionType = getMethodName(name);
     if (!functionType) {
-      if (transactionCategory) {
-        functionType = t(transactionCategory) || transactionCategory
+      if (type) {
+        functionType = getTransactionTypeTitle(t, type);
       } else {
-        functionType = t('contractInteraction')
+        functionType = t('contractInteraction');
       }
     }
 
@@ -690,10 +710,8 @@ export default class ConfirmTransactionBase extends Component {
         action={functionType}
         title={title}
         titleComponent={this.renderTitleComponent()}
-        subtitle={subtitle}
         subtitleComponent={this.renderSubtitleComponent()}
         hideSubtitle={hideSubtitle}
-        summaryComponent={summaryComponent}
         detailsComponent={this.renderDetails()}
         dataComponent={this.renderData(functionType)}
         contentComponent={contentComponent}
@@ -701,9 +719,9 @@ export default class ConfirmTransactionBase extends Component {
         unapprovedTxCount={unapprovedTxCount}
         assetImage={assetImage}
         identiconAddress={identiconAddress}
-        errorMessage={errorMessage || submitError}
-        errorKey={propsErrorKey || errorKey}
-        warning={warning || submitWarning}
+        errorMessage={submitError}
+        errorKey={errorKey}
+        warning={submitWarning}
         totalTx={totalTx}
         positionOfCurrentTx={positionOfCurrentTx}
         nextTxId={nextTxId}
@@ -714,24 +732,25 @@ export default class ConfirmTransactionBase extends Component {
         lastTx={lastTx}
         ofText={ofText}
         requestsWaitingText={requestsWaitingText}
-        disabled={!propsValid || !valid || submitting}
+        disabled={!valid || submitting}
         onEdit={() => this.handleEdit()}
         onCancelAll={() => this.handleCancelAll()}
         onCancel={() => this.handleCancel()}
         onSubmit={() => this.handleSubmit()}
         hideSenderToRecipient={hideSenderToRecipient}
+        origin={txData.origin}
       />
-    )
+    );
   }
 }
 
-export function getMethodName (camelCase) {
+export function getMethodName(camelCase) {
   if (!camelCase || typeof camelCase !== 'string') {
-    return ''
+    return '';
   }
 
   return camelCase
-    .replace(/([a-z])([A-Z])/ug, '$1 $2')
-    .replace(/([A-Z])([a-z])/ug, ' $1$2')
-    .replace(/ +/ug, ' ')
+    .replace(/([a-z])([A-Z])/gu, '$1 $2')
+    .replace(/([A-Z])([a-z])/gu, ' $1$2')
+    .replace(/ +/gu, ' ');
 }

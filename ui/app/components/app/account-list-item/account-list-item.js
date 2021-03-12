@@ -1,24 +1,23 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { checksumAddress } from '../../../helpers/utils/util'
-import Identicon from '../../ui/identicon'
-import AccountMismatchWarning from '../../ui/account-mismatch-warning/account-mismatch-warning.component'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { checksumAddress } from '../../../helpers/utils/util';
+import Identicon from '../../ui/identicon';
+import AccountMismatchWarning from '../../ui/account-mismatch-warning/account-mismatch-warning.component';
 
-export default function AccountListItem ({
+export default function AccountListItem({
   account,
   className,
   displayAddress = false,
   handleClick,
   icon = null,
 }) {
-  const { name, address, balance } = account || {}
+  const { name, address, balance } = account || {};
 
   return (
     <div
       className={`account-list-item ${className}`}
-      onClick={() => handleClick && handleClick({ name, address, balance })}
+      onClick={() => handleClick?.({ name, address, balance })}
     >
-
       <div className="account-list-item__top-row">
         <Identicon
           address={address}
@@ -26,20 +25,20 @@ export default function AccountListItem ({
           diameter={18}
         />
 
-        <div className="account-list-item__account-name">{ name || address }</div>
+        <div className="account-list-item__account-name">{name || address}</div>
 
-        {icon && <div className="account-list-item__icon">{ icon }</div>}
+        {icon && <div className="account-list-item__icon">{icon}</div>}
 
         <AccountMismatchWarning address={address} />
       </div>
 
       {displayAddress && name && (
         <div className="account-list-item__account-address">
-          { checksumAddress(address) }
+          {checksumAddress(address)}
         </div>
       )}
     </div>
-  )
+  );
 }
 
 AccountListItem.propTypes = {
@@ -48,4 +47,4 @@ AccountListItem.propTypes = {
   displayAddress: PropTypes.bool,
   handleClick: PropTypes.func,
   icon: PropTypes.node,
-}
+};

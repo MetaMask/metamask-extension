@@ -1,14 +1,14 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import { Switch, Route } from 'react-router-dom'
-import MetaFoxLogo from '../../../components/ui/metafox-logo'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import { Switch, Route } from 'react-router-dom';
+import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
-} from '../../../helpers/constants/routes'
-import NewAccount from './new-account'
-import ImportWithSeedPhrase from './import-with-seed-phrase'
+} from '../../../helpers/constants/routes';
+import NewAccount from './new-account';
+import ImportWithSeedPhrase from './import-with-seed-phrase';
 
 export default class CreatePassword extends PureComponent {
   static propTypes = {
@@ -16,18 +16,18 @@ export default class CreatePassword extends PureComponent {
     isInitialized: PropTypes.bool,
     onCreateNewAccount: PropTypes.func,
     onCreateNewAccountFromSeed: PropTypes.func,
-  }
+  };
 
-  componentDidMount () {
-    const { isInitialized, history } = this.props
+  componentDidMount() {
+    const { isInitialized, history } = this.props;
 
     if (isInitialized) {
-      history.push(INITIALIZE_SEED_PHRASE_ROUTE)
+      history.push(INITIALIZE_SEED_PHRASE_ROUTE);
     }
   }
 
-  render () {
-    const { onCreateNewAccount, onCreateNewAccountFromSeed } = this.props
+  render() {
+    const { onCreateNewAccount, onCreateNewAccountFromSeed } = this.props;
 
     return (
       <div className="first-time-flow__wrapper">
@@ -38,7 +38,7 @@ export default class CreatePassword extends PureComponent {
             path={INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE}
             render={(routeProps) => (
               <ImportWithSeedPhrase
-                { ...routeProps }
+                {...routeProps}
                 onSubmit={onCreateNewAccountFromSeed}
               />
             )}
@@ -47,14 +47,11 @@ export default class CreatePassword extends PureComponent {
             exact
             path={INITIALIZE_CREATE_PASSWORD_ROUTE}
             render={(routeProps) => (
-              <NewAccount
-                { ...routeProps }
-                onSubmit={onCreateNewAccount}
-              />
+              <NewAccount {...routeProps} onSubmit={onCreateNewAccount} />
             )}
           />
         </Switch>
       </div>
-    )
+    );
   }
 }

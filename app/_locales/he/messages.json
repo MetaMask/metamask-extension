@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask תוכנן ונבנה בקליפורניה."
   },
-  "buyCoinSwitch": {
-    "message": "רכישה ב-CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch הוא היעד עם כלל האפשרויות להחלפת יותר מ-300 מטבעות קריפטו בשער הטוב ביותר."
-  },
   "buyWithWyre": {
     "message": "רכישת את'ר עם Wyre"
   },
@@ -164,9 +158,6 @@
   "cancel": {
     "message": "ביטול"
   },
-  "cancelAttempt": {
-    "message": "בטל ניסיון"
-  },
   "cancellationGasFee": {
     "message": "עמלת דלק עבור ביטול"
   },
@@ -175,9 +166,6 @@
   },
   "chainId": {
     "message": "מזהה שרשרת"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "טבלה זמינה רק ברשתות אתריום."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "עליך להשתמש ב-MetaMask בגוגל כרום כדי להתחבר לארנק החומרה שלך."
@@ -218,9 +206,6 @@
   "connectingToKovan": {
     "message": "מתחבר ל-Kovan Test Network"
   },
-  "connectingToLocalhost": {
-    "message": "מתחבר אל Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "מתחבר לרשת אתריום הראשית"
   },
@@ -229,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "מתחבר אל רשת בדיקה Ropsten "
-  },
-  "continueToCoinSwitch": {
-    "message": "המשך אל CoinSwitch"
   },
   "continueToWyre": {
     "message": "המשך ל-Wyre"
@@ -311,9 +293,6 @@
   "deleteNetworkDescription": {
     "message": "הנך בטוח/ה שברצונך למחוק רשת זו?"
   },
-  "deposit": {
-    "message": "הפקדה"
-  },
   "depositEther": {
     "message": "הפקדת את'ר"
   },
@@ -371,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "אם עליך לגבות את צירוף הגרעין שלך שוב, תוכל/י למצוא זאת בהגדרות -> אבטחה."
   },
-  "endOfFlowMessage7": {
-    "message": "אם יש לך שאלות או שנתקלת במשהו חשוד, שלח/י מייל ל- support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask לא הצליח לשחזר את ה-seedphrase שלך. למד/י עוד."
   },
@@ -415,9 +391,6 @@
   },
   "fast": {
     "message": "מהיר"
-  },
-  "faster": {
-    "message": "מהר יותר"
   },
   "fiat": {
     "message": "פיאט",
@@ -566,9 +539,6 @@
   "invalidBlockExplorerURL": {
     "message": "כתובת URL לא חוקית של Block Explorer"
   },
-  "invalidInput": {
-    "message": "קלט לא תקין."
-  },
   "invalidRPC": {
     "message": "כתובת URL לא חוקית של RPC"
   },
@@ -599,9 +569,6 @@
   },
   "links": {
     "message": "קישורים"
-  },
-  "liveGasPricePredictions": {
-    "message": "תחזיות מחירי גז בשידור חי"
   },
   "loadMore": {
     "message": "טען עוד"
@@ -743,10 +710,7 @@
   "optionalBlockExplorerUrl": {
     "message": "חסום כתובת URL של אקספלורר (אופציונלי)"
   },
-  "optionalChainId": {
-    "message": "ChainID (אופציונלי)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "סמל (אופציונלי)"
   },
   "orderOneHere": {
@@ -804,15 +768,6 @@
   },
   "privateNetwork": {
     "message": "רשת פרטית"
-  },
-  "protectYourKeys": {
-    "message": "הגנ/י על המפתחות שלך!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "יש לנקוט זהירות בנוגע לצירוף הגרעין שלך - היו דיווחים על אתרים שמנסים להתחזות ל-MetaMask .MetaMask לעולם לא תבקש את צירוף הגרעין שלך!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "יש לשמור את ה-seedphrase שלך במקום בטוח. אם את/ה רואה משהו חשוד, או שאינך בטוח/ה בנוע לאתר, שלח/י אימייל לכתובת support@metamask.io"
   },
   "queue": {
     "message": "תור"
@@ -958,17 +913,11 @@
   "selectAnAccountHelp": {
     "message": "בחר את החשבון לצפייה ב- MetaMask"
   },
-  "selectCurrency": {
-    "message": "בחר מטבע"
-  },
   "selectEachPhrase": {
     "message": "נא לבחור כל צירוף מילים כדי להבטיח שהוא נכון."
   },
   "selectHdPath": {
     "message": "בחר/י נתיב HD"
-  },
-  "selectLocale": {
-    "message": "בחר/י מיקום"
   },
   "selectPathHelp": {
     "message": "אם אינך רואה את חשבונות ה-Ledger הקיימים שלך בהמשך, נסה/י להחליף נתיב ל-Legacy (MEW / MyCrypto)"
@@ -990,9 +939,6 @@
   },
   "sentEther": {
     "message": "את'ר שנשלח"
-  },
-  "sentTokens": {
-    "message": "טוקנים שנשלחו"
   },
   "separateEachWord": {
     "message": "יש להפריד כל מילה עם רווח יחיד"
@@ -1038,9 +984,6 @@
   },
   "slow": {
     "message": "אטי"
-  },
-  "slower": {
-    "message": "לאט יותר"
   },
   "somethingWentWrong": {
     "message": "אופס! משהו השתבש."
@@ -1186,9 +1129,6 @@
   "transactionSubmitted": {
     "message": "עסקה הוגשה עם עמלת דלק של $1 ב-$2."
   },
-  "transactionTime": {
-    "message": "זמן העסקה"
-  },
   "transactionUpdated": {
     "message": "העסקה עודכנה ב- $2."
   },
@@ -1291,9 +1231,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "ה-seed phrase הפרטי שלך"
-  },
-  "yourSigRequested": {
-    "message": "נדרשת חתימתך"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "מחיר גז אפס על האצה"

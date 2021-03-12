@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask direka dan dibina di California."
   },
-  "buyCoinSwitch": {
-    "message": "Beli di CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch ialah tempat sehentian untuk menukar lebih daripada 300 mata wang kripto dengan kadar terbaik."
-  },
   "buyWithWyre": {
     "message": "Beli ETH dengan Wyre"
   },
@@ -164,9 +158,6 @@
   "cancel": {
     "message": "Batal"
   },
-  "cancelAttempt": {
-    "message": "Batalkan Percubaan"
-  },
   "cancellationGasFee": {
     "message": "Fi Gas Pembatalan"
   },
@@ -175,9 +166,6 @@
   },
   "chainId": {
     "message": "ID Rantaian"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Carta hanya tersedia di rangkaian Ethereum."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Anda perlu menggunakan MetaMask di Google Chrome untuk menyambung kepada Dompet Perkakasan anda."
@@ -218,9 +206,6 @@
   "connectingToKovan": {
     "message": "Menyambungkan kepada Rangkaian Ujian Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Menyambung kepada Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Menyambung kepada Rangkaian Ethereum Utama"
   },
@@ -229,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Menyambungkan kepada Rangkaian Ujian Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Teruskan ke CoinSwitch"
   },
   "continueToWyre": {
     "message": "Teruskan ke Wyre"
@@ -362,9 +344,6 @@
   "endOfFlowMessage6": {
     "message": "Jika anda perlu membuat sandaran ungkapan benih anda sekali lagi, anda boleh lakukannya melalui Tetapan -> Keselamatan."
   },
-  "endOfFlowMessage7": {
-    "message": "JIka anda mempunyai soalan atau melihat sesuatu yang mencurigakan, hantarkan e-mel ke support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask tidak dapat memulihkan ungkapan benih anda. Ketahui lebih lanjut."
   },
@@ -406,9 +385,6 @@
   },
   "fast": {
     "message": "Cepat"
-  },
-  "faster": {
-    "message": "Lebih cepat"
   },
   "fileImportFail": {
     "message": "Pengimportan fail tidak berfungsi? Klik di sini!",
@@ -549,9 +525,6 @@
   "invalidBlockExplorerURL": {
     "message": "URL Block Explorer tidak sah"
   },
-  "invalidInput": {
-    "message": "Input tidak sah."
-  },
   "invalidRPC": {
     "message": "URL RPC tidak sah"
   },
@@ -582,9 +555,6 @@
   },
   "links": {
     "message": "Pautan"
-  },
-  "liveGasPricePredictions": {
-    "message": "Ramalan Harga Gas Langsung"
   },
   "loadMore": {
     "message": "Muat Lagi"
@@ -720,10 +690,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Sekat URL Explorer (pilihan)"
   },
-  "optionalChainId": {
-    "message": "ChainID (pilihan)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbol (pilihan)"
   },
   "orderOneHere": {
@@ -781,15 +748,6 @@
   },
   "privateNetwork": {
     "message": "Rangkaian Persendirian"
-  },
-  "protectYourKeys": {
-    "message": "Lindungi Kunci Anda!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Berhati-hati dengan ungkapan benih anda — terdapat laporan ada tapak web yang cuba meniru MetaMask. MetaMask tidak sekali-kali akan meminta ungkapan benih anda!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Pastikan ungkapan anda selamat. Jika anda melihterlihat at sesuatu yang mencurigakan, atau anda tidak pasti mengenai tapak web tertentu, e-mel kepada support@metamask.io"
   },
   "queue": {
     "message": "Baris Gilir"
@@ -938,17 +896,11 @@
   "selectAnAccountHelp": {
     "message": "Pilih akaun untuk dilihat dalam MetaMask"
   },
-  "selectCurrency": {
-    "message": "Pilih Mata Wang"
-  },
   "selectEachPhrase": {
     "message": "Sila pilih setiap ungkapan untuk memastikan ia betul."
   },
   "selectHdPath": {
     "message": "Pilih Laluan HD"
-  },
-  "selectLocale": {
-    "message": "Pilih Penempatan"
   },
   "selectPathHelp": {
     "message": "Jika anda tidak melihat akaun Ledger sedia ada anda di bawah, cuba tukar laluan kepada \"Legacy (MEW / MyCrypto)\""
@@ -970,9 +922,6 @@
   },
   "sentEther": {
     "message": "menghantar ether"
-  },
-  "sentTokens": {
-    "message": "token dihantar"
   },
   "separateEachWord": {
     "message": "Pisahkan setiap perkataan dengan ruang tunggal"
@@ -1018,9 +967,6 @@
   },
   "slow": {
     "message": "Perlahan"
-  },
-  "slower": {
-    "message": "Lebih Perlahan"
   },
   "somethingWentWrong": {
     "message": "Alamak! Ada yang tak kena."
@@ -1163,9 +1109,6 @@
   "transactionSubmitted": {
     "message": "Transaksi dihantar dengan fi gas sebanyak $1 pada $2."
   },
-  "transactionTime": {
-    "message": "Masa Transaksi"
-  },
   "transactionUpdated": {
     "message": "Transaksi dikemaskini pada $2."
   },
@@ -1268,9 +1211,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Ungkapan benih peribadi anda"
-  },
-  "yourSigRequested": {
-    "message": "Tandatangan anda sedang diminta"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Sifar harga gas untuk pencepatan"

@@ -1,5 +1,5 @@
-import ObservableStore from 'obs-store'
-import log from 'loglevel'
+import { ObservableStore } from '@metamask/obs-store';
+import log from 'loglevel';
 
 /**
  * @typedef {Object} InitState
@@ -17,39 +17,38 @@ import log from 'loglevel'
  * state related to onboarding
  */
 export default class OnboardingController {
-
   /**
    * Creates a new controller instance
    *
    * @param {OnboardingOptions} [opts] Controller configuration parameters
    */
-  constructor (opts = {}) {
+  constructor(opts = {}) {
     const initialTransientState = {
       onboardingTabs: {},
-    }
+    };
     const initState = {
-      seedPhraseBackedUp: true,
+      seedPhraseBackedUp: null,
       ...opts.initState,
       ...initialTransientState,
-    }
-    this.store = new ObservableStore(initState)
-    this.preferencesController = opts.preferencesController
-    this.completedOnboarding = this.preferencesController.store.getState().completedOnboarding
+    };
+    this.store = new ObservableStore(initState);
+    this.preferencesController = opts.preferencesController;
+    this.completedOnboarding = this.preferencesController.store.getState().completedOnboarding;
 
     this.preferencesController.store.subscribe(({ completedOnboarding }) => {
       if (completedOnboarding !== this.completedOnboarding) {
-        this.completedOnboarding = completedOnboarding
+        this.completedOnboarding = completedOnboarding;
         if (completedOnboarding) {
-          this.store.updateState(initialTransientState)
+          this.store.updateState(initialTransientState);
         }
       }
-    })
+    });
   }
 
-  setSeedPhraseBackedUp (newSeedPhraseBackUpState) {
+  setSeedPhraseBackedUp(newSeedPhraseBackUpState) {
     this.store.updateState({
       seedPhraseBackedUp: newSeedPhraseBackUpState,
-    })
+    });
   }
 
   /**
@@ -60,14 +59,16 @@ export default class OnboardingController {
    */
   registerOnboarding = async (location, tabId) => {
     if (this.completedOnboarding) {
-      log.debug('Ignoring registerOnboarding; user already onboarded')
-      return
+      log.debug('Ignoring registerOnboarding; user already onboarded');
+      return;
     }
-    const onboardingTabs = { ...this.store.getState().onboardingTabs }
+    const onboardingTabs = { ...this.store.getState().onboardingTabs };
     if (!onboardingTabs[location] || onboardingTabs[location] !== tabId) {
-      log.debug(`Registering onboarding tab at location '${location}' with tabId '${tabId}'`)
-      onboardingTabs[location] = tabId
-      this.store.updateState({ onboardingTabs })
+      log.debug(
+        `Registering onboarding tab at location '${location}' with tabId '${tabId}'`,
+      );
+      onboardingTabs[location] = tabId;
+      this.store.updateState({ onboardingTabs });
     }
-  }
+  };
 }

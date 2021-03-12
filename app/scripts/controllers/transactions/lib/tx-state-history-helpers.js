@@ -1,22 +1,22 @@
-import jsonDiffer from 'fast-json-patch'
-import { cloneDeep } from 'lodash'
+import jsonDiffer from 'fast-json-patch';
+import { cloneDeep } from 'lodash';
 
 /**
   converts non-initial history entries into diffs
-  @param {array} longHistory
-  @returns {array}
+  @param {Array} longHistory
+  @returns {Array}
 */
-export function migrateFromSnapshotsToDiffs (longHistory) {
+export function migrateFromSnapshotsToDiffs(longHistory) {
   return (
     longHistory
-    // convert non-initial history entries into diffs
+      // convert non-initial history entries into diffs
       .map((entry, index) => {
         if (index === 0) {
-          return entry
+          return entry;
         }
-        return generateHistoryEntry(longHistory[index - 1], entry)
+        return generateHistoryEntry(longHistory[index - 1], entry);
       })
-  )
+  );
 }
 
 /**
@@ -29,28 +29,30 @@ export function migrateFromSnapshotsToDiffs (longHistory) {
   @param {Object} previousState - the previous state of the object
   @param {Object} newState - the update object
   @param {string} [note] - a optional note for the state change
-  @returns {array}
+  @returns {Array}
 */
-export function generateHistoryEntry (previousState, newState, note) {
-  const entry = jsonDiffer.compare(previousState, newState)
+export function generateHistoryEntry(previousState, newState, note) {
+  const entry = jsonDiffer.compare(previousState, newState);
   // Add a note to the first op, since it breaks if we append it to the entry
   if (entry[0]) {
     if (note) {
-      entry[0].note = note
+      entry[0].note = note;
     }
 
-    entry[0].timestamp = Date.now()
+    entry[0].timestamp = Date.now();
   }
-  return entry
+  return entry;
 }
 
 /**
   Recovers previous txMeta state obj
   @returns {Object}
 */
-export function replayHistory (_shortHistory) {
-  const shortHistory = cloneDeep(_shortHistory)
-  return shortHistory.reduce((val, entry) => jsonDiffer.applyPatch(val, entry).newDocument)
+export function replayHistory(_shortHistory) {
+  const shortHistory = cloneDeep(_shortHistory);
+  return shortHistory.reduce(
+    (val, entry) => jsonDiffer.applyPatch(val, entry).newDocument,
+  );
 }
 
 /**
@@ -58,8 +60,8 @@ export function replayHistory (_shortHistory) {
  * @param {Object} txMeta - the tx metadata object
  * @returns {Object} a deep clone without history
  */
-export function snapshotFromTxMeta (txMeta) {
-  const shallow = { ...txMeta }
-  delete shallow.history
-  return cloneDeep(shallow)
+export function snapshotFromTxMeta(txMeta) {
+  const shallow = { ...txMeta };
+  delete shallow.history;
+  return cloneDeep(shallow);
 }

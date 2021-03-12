@@ -1,65 +1,70 @@
-import EventEmitter from 'events'
+import EventEmitter from 'events';
 
 /**
- * @typedef {object} Migration
+ * @typedef {Object} Migration
  * @property {number} version - The migration version
  * @property {Function} migrate - Returns a promise of the migrated data
  */
 
 /**
- * @typedef {object} MigratorOptions
+ * @typedef {Object} MigratorOptions
  * @property {Array<Migration>} [migrations] - The list of migrations to apply
  * @property {number} [defaultVersion] - The version to use in the initial state
  */
 
 export default class Migrator extends EventEmitter {
-
   /**
    * @constructor
    * @param {MigratorOptions} opts
    */
-  constructor (opts = {}) {
-    super()
-    const migrations = opts.migrations || []
+  constructor(opts = {}) {
+    super();
+    const migrations = opts.migrations || [];
     // sort migrations by version
-    this.migrations = migrations.sort((a, b) => a.version - b.version)
+    this.migrations = migrations.sort((a, b) => a.version - b.version);
     // grab migration with highest version
-    const lastMigration = this.migrations.slice(-1)[0]
+    const lastMigration = this.migrations.slice(-1)[0];
     // use specified defaultVersion or highest migration version
-    this.defaultVersion = opts.defaultVersion || (lastMigration && lastMigration.version) || 0
+    this.defaultVersion =
+      opts.defaultVersion || (lastMigration && lastMigration.version) || 0;
   }
 
   // run all pending migrations on meta in place
-  async migrateData (versionedData = this.generateInitialState()) {
+  async migrateData(versionedData = this.generateInitialState()) {
     // get all migrations that have not yet been run
-    const pendingMigrations = this.migrations.filter(migrationIsPending)
+    const pendingMigrations = this.migrations.filter(migrationIsPending);
 
     // perform each migration
     for (const migration of pendingMigrations) {
       try {
         // attempt migration and validate
-        const migratedData = await migration.migrate(versionedData)
+        const migratedData = await migration.migrate(versionedData);
         if (!migratedData.data) {
-          throw new Error('Migrator - migration returned empty data')
+          throw new Error('Migrator - migration returned empty data');
         }
-        if (migratedData.version !== undefined && migratedData.meta.version !== migration.version) {
-          throw new Error('Migrator - Migration did not update version number correctly')
+        if (
+          migratedData.version !== undefined &&
+          migratedData.meta.version !== migration.version
+        ) {
+          throw new Error(
+            'Migrator - Migration did not update version number correctly',
+          );
         }
         // accept the migration as good
         // eslint-disable-next-line no-param-reassign
-        versionedData = migratedData
+        versionedData = migratedData;
       } catch (err) {
         // rewrite error message to add context without clobbering stack
-        const originalErrorMessage = err.message
-        err.message = `MetaMask Migration Error #${migration.version}: ${originalErrorMessage}`
+        const originalErrorMessage = err.message;
+        err.message = `MetaMask Migration Error #${migration.version}: ${originalErrorMessage}`;
         // emit error instead of throw so as to not break the run (gracefully fail)
-        this.emit('error', err)
+        this.emit('error', err);
         // stop migrating and use state as is
-        return versionedData
+        return versionedData;
       }
     }
 
-    return versionedData
+    return versionedData;
 
     /**
      * Returns whether or not the migration is pending
@@ -69,8 +74,8 @@ export default class Migrator extends EventEmitter {
      * @param {Migration} migration
      * @returns {boolean}
      */
-    function migrationIsPending (migration) {
-      return migration.version > versionedData.meta.version
+    function migrationIsPending(migration) {
+      return migration.version > versionedData.meta.version;
     }
   }
 
@@ -79,13 +84,12 @@ export default class Migrator extends EventEmitter {
    * @param {Object} [data] - The data for the initial state
    * @returns {{meta: {version: number}, data: any}}
    */
-  generateInitialState (data) {
+  generateInitialState(data) {
     return {
       meta: {
         version: this.defaultVersion,
       },
       data,
-    }
+    };
   }
-
 }

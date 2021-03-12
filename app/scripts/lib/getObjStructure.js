@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash';
 
 // This will create an object that represents the structure of the given object
 // it replaces all values with the result of their type
@@ -17,15 +17,15 @@ import { cloneDeep } from 'lodash'
  * type.
  *
  * @param {Object} obj - The object for which a 'structure' will be returned. Usually a plain object and not a class.
- * @returns {Object} - The "mapped" version of a deep clone of the passed object, with each non-object property value
+ * @returns {Object} The "mapped" version of a deep clone of the passed object, with each non-object property value
  * replaced with the javascript type of that value.
  *
  */
-export default function getObjStructure (obj) {
-  const structure = cloneDeep(obj)
+export default function getObjStructure(obj) {
+  const structure = cloneDeep(obj);
   return deepMap(structure, (value) => {
-    return value === null ? 'null' : typeof value
-  })
+    return value === null ? 'null' : typeof value;
+  });
 }
 
 /**
@@ -34,15 +34,15 @@ export default function getObjStructure (obj) {
  *
  * @param {Object} target - The object to modify
  * @param {Function} visit - The modifier to apply to each non-object property value
- * @returns {Object} - The modified object
+ * @returns {Object} The modified object
  */
-function deepMap (target = {}, visit) {
+function deepMap(target = {}, visit) {
   Object.entries(target).forEach(([key, value]) => {
     if (typeof value === 'object' && value !== null) {
-      target[key] = deepMap(value, visit)
+      target[key] = deepMap(value, visit);
     } else {
-      target[key] = visit(value)
+      target[key] = visit(value);
     }
-  })
-  return target
+  });
+  return target;
 }

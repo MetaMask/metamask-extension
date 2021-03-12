@@ -12,8 +12,9 @@
   }
 
   &__input {
+    @include H6;
+
     width: 250px;
-    font-size: 14px;
     text-align: center;
     border: 1px solid $alto;
 
@@ -22,10 +23,11 @@
     }
   }
 
-  &__icon-wrapper {
+  &__icon-button {
     position: absolute;
     margin-left: 10px;
     left: 100%;
+    background: unset;
   }
 
   &__icon {

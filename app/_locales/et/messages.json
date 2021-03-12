@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask on projekteeritud ja loodud Californias."
   },
-  "buyCoinSwitch": {
-    "message": "Osta CoinSwitchil"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch on ühe akna sihtpunkt enama kui 300 krüptoraha vahetamiseks parima hinnaga."
-  },
   "buyWithWyre": {
     "message": "Ostke ETH-d Wyre'iga"
   },
@@ -164,9 +158,6 @@
   "cancel": {
     "message": "Tühista"
   },
-  "cancelAttempt": {
-    "message": "Tühista katse"
-  },
   "cancellationGasFee": {
     "message": "Tühistamise gaasitasu"
   },
@@ -175,9 +166,6 @@
   },
   "chainId": {
     "message": "Ahela ID"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Tabel on saadaval vaid Ethereumi võrkudes."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Riistvararahakoti ühendamiseks peate kasutama MetaMaski Google Chrome'is."
@@ -218,9 +206,6 @@
   "connectingToKovan": {
     "message": "Ühendamine Kovani testvõrguga"
   },
-  "connectingToLocalhost": {
-    "message": "Ühenduse loomine Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Ühenduse loomine peamise Etherumi võrguga"
   },
@@ -229,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Ühendamine Ropsteni testvõrguga"
-  },
-  "continueToCoinSwitch": {
-    "message": "Avage ConSwitch"
   },
   "continueToWyre": {
     "message": "Ava Wyre"
@@ -311,9 +293,6 @@
   "deleteNetworkDescription": {
     "message": "Olete kindel, et soovite selle võrgu kustutada?"
   },
-  "deposit": {
-    "message": "Sissemakse"
-  },
   "depositEther": {
     "message": "Eetri sissemakse"
   },
@@ -371,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "Kui peate oma seemnefraasi uuesti varundama, leiate selle valikust Settings (Seaded) -> Security (Turvalisus)."
   },
-  "endOfFlowMessage7": {
-    "message": "Kui teil on küsimusi või näete midagi kahtlast, kirjutage meile support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask ei saa teie seemnefraasi taastada. Lisateave."
   },
@@ -415,9 +391,6 @@
   },
   "fast": {
     "message": "Kiire"
-  },
-  "faster": {
-    "message": "Kiiremini"
   },
   "fileImportFail": {
     "message": "Faili importimine ei toimi? Klõpsake siia!",
@@ -562,9 +535,6 @@
   "invalidBlockExplorerURL": {
     "message": "Vale Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Vigane sisend."
-  },
   "invalidRPC": {
     "message": "Vale RPC URL"
   },
@@ -595,9 +565,6 @@
   },
   "links": {
     "message": "Lingid"
-  },
-  "liveGasPricePredictions": {
-    "message": "Gaasihinna prognoosid reaalajas"
   },
   "loadMore": {
     "message": "Laadi rohkem"
@@ -736,10 +703,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokeeri Exploreri URL (valikuline)"
   },
-  "optionalChainId": {
-    "message": "ChainID (valikuline)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Sümbol (valikuline)"
   },
   "orderOneHere": {
@@ -797,15 +761,6 @@
   },
   "privateNetwork": {
     "message": "Privaatvõrk"
-  },
-  "protectYourKeys": {
-    "message": "Kaitske oma võtmeid!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Kaitske oma seemnefraasi. Meid on teavitatud veebilehtedest, mis püüavad MetaMaski jäljendada. MetaMask ei küsi teilt kunagi teie seemnefraasi!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Kaitske oma seemnefraasi. Kui näete midagi kahtlast või pole veebilehe ehtsuses kindel, saatke e-kiri aadressile support@metamask.io"
   },
   "queue": {
     "message": "Järjekord"
@@ -954,17 +909,11 @@
   "selectAnAccountHelp": {
     "message": "Valige konto, mida MetaMaskis vaadata"
   },
-  "selectCurrency": {
-    "message": "Valitud valuuta"
-  },
   "selectEachPhrase": {
     "message": "Valige iga fraas, veendumaks, et see on õige."
   },
   "selectHdPath": {
     "message": "Valige HD-teekond"
-  },
-  "selectLocale": {
-    "message": "Valige Lokaat"
   },
   "selectPathHelp": {
     "message": "Kui te ei näe allpool oma olemasolevaid pearaamatu kontosid, vahetage tee kohta \"Legacy (MEW/MyCrypto)\""
@@ -986,9 +935,6 @@
   },
   "sentEther": {
     "message": "saadetud eeter"
-  },
-  "sentTokens": {
-    "message": "saadetud load"
   },
   "separateEachWord": {
     "message": "Eraldage iga sõna ühe tühikuga"
@@ -1034,9 +980,6 @@
   },
   "slow": {
     "message": "Aeglane"
-  },
-  "slower": {
-    "message": "Aeglasem"
   },
   "somethingWentWrong": {
     "message": "Oih! Midagi läks valesti."
@@ -1182,9 +1125,6 @@
   "transactionSubmitted": {
     "message": "Tehing edastatud gaasihinnaga $1 asukohas $2."
   },
-  "transactionTime": {
-    "message": "Tehingu aeg"
-  },
   "transactionUpdated": {
     "message": "Tehing on uuendatud $2."
   },
@@ -1287,9 +1227,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Teie privaatne seemnefraas"
-  },
-  "yourSigRequested": {
-    "message": "Taotletakse teie allkirja"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Null gaasihind kiirendamisel"

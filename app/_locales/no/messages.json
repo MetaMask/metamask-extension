@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ble bygget og designet i California."
   },
-  "buyCoinSwitch": {
-    "message": "Kjøp på CoinSwitch "
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch er destinasjonen som utveksler mer enn 300 typer kryptovaluta med den beste kursen."
-  },
   "buyWithWyre": {
     "message": "Kjøp ETH med Wyre"
   },
@@ -161,9 +155,6 @@
   "cancel": {
     "message": "Avbryt"
   },
-  "cancelAttempt": {
-    "message": "Avbryt forsøk"
-  },
   "cancellationGasFee": {
     "message": "Kansellering gassavgift"
   },
@@ -172,9 +163,6 @@
   },
   "chainId": {
     "message": "Blokkjede "
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Diagram kun tilgjengelig på Ethereum-nettverk."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Du må bruke MetaMask på Google Chrome for å koble deg til maskinvare-lommeboken."
@@ -215,9 +203,6 @@
   "connectingToKovan": {
     "message": "Kobler til Kovan testnettverk"
   },
-  "connectingToLocalhost": {
-    "message": "Kobler til lokalvert 8545"
-  },
   "connectingToMainnet": {
     "message": "Forbinder med hoved-Ethereumnettverk "
   },
@@ -226,9 +211,6 @@
   },
   "connectingToRopsten": {
     "message": "Kobler til Ropsten testnettverk"
-  },
-  "continueToCoinSwitch": {
-    "message": "Fortsett med CoinSwitch "
   },
   "continueToWyre": {
     "message": "Fortsett til Wyre "
@@ -308,9 +290,6 @@
   "deleteNetworkDescription": {
     "message": "Er du sikker på at du vil slette dette nettverket?"
   },
-  "deposit": {
-    "message": "Innskudd"
-  },
   "depositEther": {
     "message": "Sett inn Ether "
   },
@@ -368,9 +347,6 @@
   "endOfFlowMessage6": {
     "message": "Hvis du trenger å sikkerhetskopiere seed-frasen din igjen kan du finne den i Innstillinger -> Sikkerhet."
   },
-  "endOfFlowMessage7": {
-    "message": "Hvis du noen gang har spørsmål eller ser noe mistenksomt, send e-post til support@metamask.io"
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask klarer ikke å gjenopprette den mnemoniske gjenopprettingsfrasen din. Finn ut mer. "
   },
@@ -412,9 +388,6 @@
   },
   "fast": {
     "message": "Høy"
-  },
-  "faster": {
-    "message": "Raskere "
   },
   "fileImportFail": {
     "message": "Virker ikke filimporteringen? Trykk her!",
@@ -553,9 +526,6 @@
   "invalidBlockExplorerURL": {
     "message": "Ugyldig Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Ugyldig inndata "
-  },
   "invalidRPC": {
     "message": "Ugyldig RPC URL"
   },
@@ -586,9 +556,6 @@
   },
   "links": {
     "message": "Lenker "
-  },
-  "liveGasPricePredictions": {
-    "message": "Prisforutsigelse av datakraft i sanntid"
   },
   "loadMore": {
     "message": "Last mer "
@@ -733,10 +700,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokker Explorer URL (valgfritt)"
   },
-  "optionalChainId": {
-    "message": "Blokkjede (vagfritt)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Symbol (valgfritt)"
   },
   "orderOneHere": {
@@ -794,15 +758,6 @@
   },
   "privateNetwork": {
     "message": "Privat nettverk "
-  },
-  "protectYourKeys": {
-    "message": "Beskytt nøklene dine! "
-  },
-  "protectYourKeysMessage1": {
-    "message": "Vær forsiktig med den mnemoniske gjenopprettingsfrasen din - det rapporteres om nettsteder som prøver å etterligne MetaMask. MetaMask vil aldri be om den mnemoniske gjenopprettingsfrasen din!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Oppbevar setningen din trygt. Hvis du ser noe mistenksomt, eller du er usikker på et nettsted, kan du sende en e-post til support@metamask.io"
   },
   "queue": {
     "message": "Kø"
@@ -948,17 +903,11 @@
   "selectAnAccountHelp": {
     "message": "Velg konto for å vise i MetaMask"
   },
-  "selectCurrency": {
-    "message": "Velg valuta"
-  },
   "selectEachPhrase": {
     "message": "Velg hver frase for å kontrollere at den er riktig."
   },
   "selectHdPath": {
     "message": "Velg HD-bane"
-  },
-  "selectLocale": {
-    "message": "Velg plassering"
   },
   "selectPathHelp": {
     "message": "Hvis du ikke ser de eksisterende Ledger-kontoene nedenfor, kan du prøve å bytte baner til «Legacy (MEW/MyCrypto)»"
@@ -974,9 +923,6 @@
   },
   "sentEther": {
     "message": "sendt ether"
-  },
-  "sentTokens": {
-    "message": "sendte tokener "
   },
   "separateEachWord": {
     "message": "Del hvert ord med et enkelt mellomrom "
@@ -1022,9 +968,6 @@
   },
   "slow": {
     "message": "Lav"
-  },
-  "slower": {
-    "message": "Saktere"
   },
   "somethingWentWrong": {
     "message": "Oisann! Noe gikk galt. "
@@ -1164,9 +1107,6 @@
   "transactionSubmitted": {
     "message": "Transaksjon sendt med datakraftavgift på $1 til $2."
   },
-  "transactionTime": {
-    "message": "Transaksjonstid"
-  },
   "transactionUpdated": {
     "message": "Transaksjonen oppdatert på $2."
   },
@@ -1269,9 +1209,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Din private frøfrase"
-  },
-  "yourSigRequested": {
-    "message": "Det bes om signaturen din "
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Null bensinpris for fremskynding"

@@ -1,1 +1,1 @@
-export { default } from './confirm-delete-network.container'
+export { default } from './confirm-delete-network.container';

@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ha estat dissenyat i desenvolupat a Califòrnia."
   },
-  "buyCoinSwitch": {
-    "message": "Comprar a CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch és la destinació número 1 per a canviar més de 300 criptomonedes al millor preu."
-  },
   "buyWithWyre": {
     "message": "Compra ETH amb Wyre"
   },
@@ -161,9 +155,6 @@
   "cancel": {
     "message": "Cancel·la"
   },
-  "cancelAttempt": {
-    "message": "Cancel·la l'intent"
-  },
   "cancellationGasFee": {
     "message": "Preu de cancel·lació del gas"
   },
@@ -172,9 +163,6 @@
   },
   "chainId": {
     "message": "Cadena ID"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Mostra només els disponibles a les xarxes Ethereum."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Necessites fer servir MetaMask amb Google Chrome per a connectar-te al teu Moneder Hardware."
@@ -215,9 +203,6 @@
   "connectingToKovan": {
     "message": "Conectant a la xarxa de Kovan Test"
   },
-  "connectingToLocalhost": {
-    "message": "Connectant al host local 8545"
-  },
   "connectingToMainnet": {
     "message": "Connectant a Xarxa Principal Ethereum"
   },
@@ -226,9 +211,6 @@
   },
   "connectingToRopsten": {
     "message": "Connectant a la xarxa de test Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Continua a CoinSwitch"
   },
   "continueToWyre": {
     "message": "Continua a Wyre"
@@ -308,9 +290,6 @@
   "deleteNetworkDescription": {
     "message": "Estàs segur que vols eliminar aquesta xarxa?"
   },
-  "deposit": {
-    "message": "Depòsit"
-  },
   "depositEther": {
     "message": "Diposita Ether"
   },
@@ -368,9 +347,6 @@
   "endOfFlowMessage6": {
     "message": "Si necessites fer una còpia de seguretat de la teva frase de recuperació una altra vegada, la pots trobar a Configuració-> Seguretat."
   },
-  "endOfFlowMessage7": {
-    "message": "Si mai tens preguntes o veus alguna cosa sospitosa, envia un correu a support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask no pot recuperar la teva seedphrase. Descobreix per què."
   },
@@ -412,9 +388,6 @@
   },
   "fast": {
     "message": "Ràpid"
-  },
-  "faster": {
-    "message": "Més ràpid"
   },
   "fileImportFail": {
     "message": "La importació no funciona? Fes clic aquí!",
@@ -553,9 +526,6 @@
   "invalidBlockExplorerURL": {
     "message": "URL de Block Explorer"
   },
-  "invalidInput": {
-    "message": "Entrada no vàlida."
-  },
   "invalidRPC": {
     "message": "URL de RPC"
   },
@@ -586,9 +556,6 @@
   },
   "links": {
     "message": "Enllaços"
-  },
-  "liveGasPricePredictions": {
-    "message": "Prediccions del preu del gas en directe"
   },
   "loadMore": {
     "message": "Carregar Més"
@@ -730,10 +697,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Bloqueja l'URL d'Explorer (opcional)"
   },
-  "optionalChainId": {
-    "message": "Cadena ID (opcional)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Símbol (opcional)"
   },
   "orderOneHere": {
@@ -788,15 +752,6 @@
   },
   "privateNetwork": {
     "message": "Xarxa privada"
-  },
-  "protectYourKeys": {
-    "message": "Protegeix les Teves Claus!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Vigila amb la teva frase de recuperació  —s'han documentat casos de llocs web que intenten imitar MetaMask. MetaMask mai no et demanarà la frase de recuperació!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Mantingues segura la teva frase. Si veus alguna cosa sospitosa, o no estàs segur d'un lloc web, envia un correu a support@metamask.io"
   },
   "queue": {
     "message": "Cua"
@@ -942,17 +897,11 @@
   "selectAnAccountHelp": {
     "message": "Selecciona el compte que vols veure a MetaMask"
   },
-  "selectCurrency": {
-    "message": "Selecciona divisa"
-  },
   "selectEachPhrase": {
     "message": "Si us plau selecciona cada frase per a assegurar-te que és correcta."
   },
   "selectHdPath": {
     "message": "Selecciona Ruta HD"
-  },
-  "selectLocale": {
-    "message": "Selecciona Configuració Regional"
   },
   "selectPathHelp": {
     "message": "Si no veus els teus comptes Ledger a sota, prova canviant la ruta a \"Legacy (MEW / MyCrypto)\""
@@ -974,9 +923,6 @@
   },
   "sentEther": {
     "message": "envia ether"
-  },
-  "sentTokens": {
-    "message": "fitxes enviades"
   },
   "separateEachWord": {
     "message": "Separa cada paraula amb un sol espai"
@@ -1022,9 +968,6 @@
   },
   "slow": {
     "message": "Lent"
-  },
-  "slower": {
-    "message": "Més lent"
   },
   "somethingWentWrong": {
     "message": "Ui! Alguna cosa ha fallat."
@@ -1161,9 +1104,6 @@
   "transactionSubmitted": {
     "message": "Transacció enviada amb un preu del gas de $1 a $2."
   },
-  "transactionTime": {
-    "message": "Temps de transacció"
-  },
   "transactionUpdated": {
     "message": "Transacció actualitzada a $2."
   },
@@ -1266,9 +1206,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "La teva frase privada de seeds"
-  },
-  "yourSigRequested": {
-    "message": "Es necessita la teva firma"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Gas a cost zero accelerant-se"

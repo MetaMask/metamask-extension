@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "Το MetaMask έχει σχεδιαστεί και αναπτυχθεί στην Καλιφόρνια."
   },
-  "buyCoinSwitch": {
-    "message": "Αγοράστε στο  CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "Το CoinSwitch είναι ο προορισμός μιας στάσης για ανταλλαγή σε περισσότερα από 300 κρυπτονομίσματα στην καλύτερη ισοτιμία."
-  },
   "buyWithWyre": {
     "message": "Αγοράστε ETH με το Wyre"
   },
@@ -161,9 +155,6 @@
   "cancel": {
     "message": "Ακύρωση"
   },
-  "cancelAttempt": {
-    "message": "Ακύρωση Προσπάθειας"
-  },
   "cancellationGasFee": {
     "message": "Ακύρωση Χρέωσης Αερίου"
   },
@@ -172,9 +163,6 @@
   },
   "chainId": {
     "message": "Αναγνωριστικό Αλυσίδας"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Το διάγραμμα είναι διαθέσιμο μόνο σε δίκτυα Ethereum."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Θα πρέπει να χρησιμοποιήσετε το MetaMask στο Google Chrome για να συνδεθείτε στο Πορτοφόλι Υλικού."
@@ -215,9 +203,6 @@
   "connectingToKovan": {
     "message": "Σύνδεση στο Δοκιμαστικό Δίκτυο Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Σύνδεση στον Τοπικό Υπολογιστή 8545"
-  },
   "connectingToMainnet": {
     "message": "Σύνδεση στο Κύριο Δίκτυο Ethereum"
   },
@@ -226,9 +211,6 @@
   },
   "connectingToRopsten": {
     "message": "Σύνδεση με το Δίκτυο Δοκιμών Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Συνέχεια με CoinSwitch"
   },
   "continueToWyre": {
     "message": "Συνεχίστε στο Wyre"
@@ -308,9 +290,6 @@
   "deleteNetworkDescription": {
     "message": "Θέλετε σίγουρα να διαγράψετε αυτό το δίκτυο;"
   },
-  "deposit": {
-    "message": "Κατάθεση"
-  },
   "depositEther": {
     "message": "Κατάθεση Ether"
   },
@@ -368,9 +347,6 @@
   "endOfFlowMessage6": {
     "message": "Αν χρειάζεται να δημιουργήσετε ξανά αντίγραφο της φράσης επαναφοράς σας, μπορείτε να την βρείτε στη Ρυθμίσεις -> Ασφάλεια."
   },
-  "endOfFlowMessage7": {
-    "message": "Εάν έχετε οποιαδήποτε ερώτηση ή αντιληφθείτε κάτι ύποπτο στείλτε μας email στο support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "Το MetaMask δεν μπορεί να ανακτήσει τη φράση φύτρου σας. Μάθετε περισσότερα."
   },
@@ -412,9 +388,6 @@
   },
   "fast": {
     "message": "Γρήγορα"
-  },
-  "faster": {
-    "message": "Πιο γρήγορα"
   },
   "fiat": {
     "message": "Εντολή",
@@ -563,9 +536,6 @@
   "invalidBlockExplorerURL": {
     "message": "Μη έγκυρο Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Μη έγκυρη είσοδος."
-  },
   "invalidRPC": {
     "message": "Μη έγκυρο RPC URL"
   },
@@ -596,9 +566,6 @@
   },
   "links": {
     "message": "Σύνδεσμοι"
-  },
-  "liveGasPricePredictions": {
-    "message": "Ζωντανές Προβλέψεις Τιμής Καυσίμου"
   },
   "loadMore": {
     "message": "Φόρτωση Περισσότερων"
@@ -743,10 +710,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Διεύθυνση URL Εξερευνητή Μπλοκ (προαιρετικό)"
   },
-  "optionalChainId": {
-    "message": "Ταυτότητα Αλυσίδας (προαιρετικό)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Σύμβολο (προαιρετικό)"
   },
   "orderOneHere": {
@@ -804,15 +768,6 @@
   },
   "privateNetwork": {
     "message": "Ιδιωτικό Δίκτυο"
-  },
-  "protectYourKeys": {
-    "message": "Προστατεύστε τα Κλειδιά Σας!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Να προσέχετε με τη φάση σπόρου. Υπάρχουν αναφορές για ιστότοπους που προσπαθούν να προσποιηθούν ότι είναι το MetaTask. Το MetaTask δεν θα σας ρωτήσει ποτέ για τη φάση σπόρου!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Κρατήστε τη φράση σας ασφαλή. Αν δείτε κάτι ύποπτο ή δεν είστε βέβαιοι για έναν ιστότοπο, στείλτε ένα email στο support@metamask.io"
   },
   "queue": {
     "message": "Ουρά"
@@ -961,17 +916,11 @@
   "selectAnAccountHelp": {
     "message": "Επιλέξτε τον λογαριασμό για προβολή στο MetaMask"
   },
-  "selectCurrency": {
-    "message": "Επιλέξτε Νόμισμα"
-  },
   "selectEachPhrase": {
     "message": "Παρακαλούμε επιλέξτε κάθε φράση, για να βεβαιωθείτε ότι είναι σωστή."
   },
   "selectHdPath": {
     "message": "Επιλέξτε Διαδρομή HD"
-  },
-  "selectLocale": {
-    "message": "Επιλέξτε Τοπικές Ρυθμίσεις"
   },
   "selectPathHelp": {
     "message": "Εάν δεν βλέπετε τους υπάρχοντες λογαριασμούς σας Καθολικού παρακάτω, προσπαθήστε να αλλάξετε τις διαδρομές σε \"Legacy (MEW / MyCrypto)\""
@@ -993,9 +942,6 @@
   },
   "sentEther": {
     "message": "απεσταλμένα ether"
-  },
-  "sentTokens": {
-    "message": "αποστολή token"
   },
   "separateEachWord": {
     "message": "Διαχωρίστε κάθε λέξη με ένα μόνο κενό"
@@ -1041,9 +987,6 @@
   },
   "slow": {
     "message": "Αργά"
-  },
-  "slower": {
-    "message": "Πιο αργά"
   },
   "somethingWentWrong": {
     "message": "Ουπς! Κάτι πήγε στραβά."
@@ -1186,9 +1129,6 @@
   "transactionSubmitted": {
     "message": "Η συναλλαγή στάλθηκε με τέλος gas του $1 σε $2."
   },
-  "transactionTime": {
-    "message": "Χρόνος Συναλλαγής"
-  },
   "transactionUpdated": {
     "message": "Η συναλλαγή ενημερώθηκε σε $2."
   },
@@ -1291,9 +1231,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Η προσωπική σας φράση φύτρου"
-  },
-  "yourSigRequested": {
-    "message": "Ζητείται η υπογραφή σας"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Μηδενική τιμή καυσίμου κατά την επιτάχυνση"

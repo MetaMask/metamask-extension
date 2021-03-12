@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask е проектиран и създаден в Калифорния."
   },
-  "buyCoinSwitch": {
-    "message": "Купете на CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch е дестинацията за еднократна размяна, с цел да обменя повече от 300 криптовалути с най-добър курс."
-  },
   "buyWithWyre": {
     "message": "Купете ETH с Wyre"
   },
@@ -164,9 +158,6 @@
   "cancel": {
     "message": "Отказ"
   },
-  "cancelAttempt": {
-    "message": "Отмяна на опита"
-  },
   "cancellationGasFee": {
     "message": "Такса в газ за анулиране "
   },
@@ -175,9 +166,6 @@
   },
   "chainId": {
     "message": "Идентификатор на веригата"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Диаграмата е достъпна само в мрежи на Ethereum."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "За да се свържете с хардуерния си портфейл, трябва да използвате MetaMask в Google Chrome."
@@ -218,9 +206,6 @@
   "connectingToKovan": {
     "message": "Свързване с тестовата мрежа на Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Свързване с Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Свързване с главната мрежа Ethereum"
   },
@@ -229,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Свързване с тестова мрежа Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Продължете към CoinSwitch"
   },
   "continueToWyre": {
     "message": "Продължете към Wyre"
@@ -311,9 +293,6 @@
   "deleteNetworkDescription": {
     "message": "Наистина ли искате да изтриете тази мрежа?"
   },
-  "deposit": {
-    "message": "Депозит"
-  },
   "depositEther": {
     "message": "Депозирайте етер"
   },
@@ -371,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "Ако отново трябва да архивирате основната си фраза, можете да я намерите в Настройки -> Защита."
   },
-  "endOfFlowMessage7": {
-    "message": "Ако имате въпроси или забележите нещо съмнително, изпратете имейл на support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask не може да възстанови ключовата Ви фраза. Научете повече."
   },
@@ -415,9 +391,6 @@
   },
   "fast": {
     "message": "Бързо"
-  },
-  "faster": {
-    "message": "По-бързо"
   },
   "fileImportFail": {
     "message": "Импортирането на файл не работи? Натиснете тук!",
@@ -562,9 +535,6 @@
   "invalidBlockExplorerURL": {
     "message": "Невалиден Block Explorer URL адрес"
   },
-  "invalidInput": {
-    "message": "Невалидно въвеждане."
-  },
   "invalidRPC": {
     "message": "Невалиден RPC URL адрес"
   },
@@ -595,9 +565,6 @@
   },
   "links": {
     "message": "Връзки"
-  },
-  "liveGasPricePredictions": {
-    "message": "Прогнози на живо за цената на газа"
   },
   "loadMore": {
     "message": "Зареди повече"
@@ -742,10 +709,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Блокиране на Explorer URL (по избор)"
   },
-  "optionalChainId": {
-    "message": "ChainID (по избор)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Символ (по избор)"
   },
   "orderOneHere": {
@@ -803,15 +767,6 @@
   },
   "privateNetwork": {
     "message": "Частна мрежа"
-  },
-  "protectYourKeys": {
-    "message": "Защитете ключовете си!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Внимавайте с вашата фраза - има съобщения за уебсайтове, които се опитват да имитират MetaMask. MetaMask никога няма да поиска вашата фраза-зародиш!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Пазете фразата си. Ако забележите нещо съмнително или не сте сигурни за даден уебсайт, изпратете имейл на support@metamask.io"
   },
   "queue": {
     "message": "Опашка"
@@ -960,17 +915,11 @@
   "selectAnAccountHelp": {
     "message": "Изберете акаунта за преглед в MetaMask"
   },
-  "selectCurrency": {
-    "message": "Изберете валута"
-  },
   "selectEachPhrase": {
     "message": "Моля, изберете всяка фраза, за да се уверите, че е правилна."
   },
   "selectHdPath": {
     "message": "Изберете HD Path"
-  },
-  "selectLocale": {
-    "message": "Изберете местоположение"
   },
   "selectPathHelp": {
     "message": "Ако не виждате съществуващите си акаунти в Ledger по-долу, опитайте да превключите пътеки към „Legacy (MEW / MyCrypto)“"
@@ -992,9 +941,6 @@
   },
   "sentEther": {
     "message": "изпратен етер"
-  },
-  "sentTokens": {
-    "message": "изпратени жетони"
   },
   "separateEachWord": {
     "message": "Отделете всяка дума с интервал"
@@ -1040,9 +986,6 @@
   },
   "slow": {
     "message": "Бавно"
-  },
-  "slower": {
-    "message": "По-бавно"
   },
   "somethingWentWrong": {
     "message": "Упс! Нещо се обърка."
@@ -1188,9 +1131,6 @@
   "transactionSubmitted": {
     "message": "Транзакция, изпратена с такса за газ от $1 при $2."
   },
-  "transactionTime": {
-    "message": "Време на транзакция"
-  },
   "transactionUpdated": {
     "message": "Транзакцията е актуализирана на $2."
   },
@@ -1293,9 +1233,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Вашата лична фраза зародиш"
-  },
-  "yourSigRequested": {
-    "message": "Изисква се вашият подпис"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Нулева цена на газ при ускоряване"

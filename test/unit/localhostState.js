@@ -1,3 +1,4 @@
+import { NETWORK_TYPE_RPC } from '../../shared/constants/network';
 
 /**
  * @typedef {Object} FirstTimeState
@@ -12,10 +13,11 @@ const initialState = {
   config: {},
   NetworkController: {
     provider: {
-      type: 'rpc',
-      rpcTarget: 'http://localhost:8545',
+      type: NETWORK_TYPE_RPC,
+      rpcUrl: 'http://localhost:8545',
+      chainId: '0x539',
     },
   },
-}
+};
 
-export default initialState
+export default initialState;

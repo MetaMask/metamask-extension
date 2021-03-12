@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask je zasnovan in ustvarjen v Kaliforniji."
   },
-  "buyCoinSwitch": {
-    "message": "Kupi na CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch je destinacija na enem mestu za izmenjavo več kot 300 kriptokotovitev po najboljši hitrosti."
-  },
   "buyWithWyre": {
     "message": "Kupi ETH z Wyre"
   },
@@ -164,9 +158,6 @@
   "cancel": {
     "message": "Prekliči"
   },
-  "cancelAttempt": {
-    "message": "Prekliči poskus"
-  },
   "cancellationGasFee": {
     "message": "Preklicani znesek gas"
   },
@@ -175,9 +166,6 @@
   },
   "chainId": {
     "message": "ID verige"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Grafikon na voljo le v glavnih omrežjih."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Za uporabo strojne denarnice potrebujete Google Chrome."
@@ -218,9 +206,6 @@
   "connectingToKovan": {
     "message": "Povezovanje na testno omrežje Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Povezovanje na lokalnega gostitelja 8545 "
-  },
   "connectingToMainnet": {
     "message": "Povezovanje na glavno omrežje"
   },
@@ -229,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Povezovanje na testno omrežje Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Nadaljuj na CoinSwitch"
   },
   "continueToWyre": {
     "message": "Nadaljuj na Wyre"
@@ -311,9 +293,6 @@
   "deleteNetworkDescription": {
     "message": "Ali ste prepričani, da želite izbrisati to omrežje?"
   },
-  "deposit": {
-    "message": "Vplačaj"
-  },
   "depositEther": {
     "message": "Vplačilo ethra"
   },
@@ -371,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "Če morate ponovno varnostno kopirati vaše geslo seed phrase, ga najdete v Nastavitve -> Varnost."
   },
-  "endOfFlowMessage7": {
-    "message": "Če imate kakršna koli vprašanja ali opazite kaj sumljivega, nam pišite na support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask ne more obnoviti vašega gesla seed phrase. Več informacij."
   },
@@ -415,9 +391,6 @@
   },
   "fast": {
     "message": "Hiter"
-  },
-  "faster": {
-    "message": "Hitrejši"
   },
   "fiat": {
     "message": "Klasične",
@@ -557,9 +530,6 @@
   "invalidBlockExplorerURL": {
     "message": "Neveljaven Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "Neveljaven vnos."
-  },
   "invalidRPC": {
     "message": "Neveljaven RPC URL"
   },
@@ -590,9 +560,6 @@
   },
   "links": {
     "message": "Povezave"
-  },
-  "liveGasPricePredictions": {
-    "message": "Napovedi o gas price"
   },
   "loadMore": {
     "message": "Naloži več"
@@ -731,10 +698,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokiraj URL Explorerja (poljubno)"
   },
-  "optionalChainId": {
-    "message": "ChainID (nezahtevano)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbol (nezahtevano)"
   },
   "orderOneHere": {
@@ -792,15 +756,6 @@
   },
   "privateNetwork": {
     "message": "Zasebno omrežje"
-  },
-  "protectYourKeys": {
-    "message": "Varujte svoje ključe!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Bodite previdni  in svoj seed phrase skrbno varujte - obstajajo poročila o spletnih mestih, ki poskušajo posnemati MetaMask. MetaMask nikoli ne bo zahteval vašega gesla seed phrase!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Hranite svoj seed phrase. Če opazite sumljivo delovanje ali niste prepričani ali je določeno spletno mesto varno, nam pišite na support@metamask.io"
   },
   "queue": {
     "message": "Čakalna vrsta"
@@ -946,17 +901,11 @@
   "selectAnAccountHelp": {
     "message": "Izberi račun za prikaz v MetaMask"
   },
-  "selectCurrency": {
-    "message": "Izberi valuto"
-  },
   "selectEachPhrase": {
     "message": "Izberite vsako geslo ter se prepričajte, da je pravilno."
   },
   "selectHdPath": {
     "message": "Izberi HD Path"
-  },
-  "selectLocale": {
-    "message": "Izberi jezik"
   },
   "selectPathHelp": {
     "message": "Če obstoječih Ledger ne vidite, poskusite izbrati \"Legacy (MEW / MyCrypto)\""
@@ -978,9 +927,6 @@
   },
   "sentEther": {
     "message": "poslani ether"
-  },
-  "sentTokens": {
-    "message": "poslani žetoni"
   },
   "separateEachWord": {
     "message": "Vsako besedo ločite z enim presledkom"
@@ -1026,9 +972,6 @@
   },
   "slow": {
     "message": "Počasen"
-  },
-  "slower": {
-    "message": "Počasnejši"
   },
   "somethingWentWrong": {
     "message": "Oops! Nekaj je šlo narobe."
@@ -1174,9 +1117,6 @@
   "transactionSubmitted": {
     "message": "Transakcija z gas fee $1 oddana na $2."
   },
-  "transactionTime": {
-    "message": "Transakcijski čas"
-  },
   "transactionUpdated": {
     "message": "Transakcija na $2 spremenjena."
   },
@@ -1276,9 +1216,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Vaš zasebni seed phrase"
-  },
-  "yourSigRequested": {
-    "message": "Zahtevan je bil vaš podpis"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Ničelni gas price na pospešitvi"

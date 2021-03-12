@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react'
-import PropTypes from 'prop-types'
-import { PRIMARY, SECONDARY, ETH } from '../../../helpers/constants/common'
-import CurrencyDisplay from '../../ui/currency-display'
-import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency'
+import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
+import { PRIMARY, SECONDARY, ETH } from '../../../helpers/constants/common';
+import CurrencyDisplay from '../../ui/currency-display';
+import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 
-export default function UserPreferencedCurrencyDisplay ({
+export default function UserPreferencedCurrencyDisplay({
   'data-testid': dataTestId,
   ethLogoHeight = 12,
   ethNumberOfDecimals,
@@ -14,16 +14,17 @@ export default function UserPreferencedCurrencyDisplay ({
   type,
   ...restProps
 }) {
-  const { currency, numberOfDecimals } = useUserPreferencedCurrency(type, { ethNumberOfDecimals, fiatNumberOfDecimals, numberOfDecimals: propsNumberOfDecimals })
-
+  const { currency, numberOfDecimals } = useUserPreferencedCurrency(type, {
+    ethNumberOfDecimals,
+    fiatNumberOfDecimals,
+    numberOfDecimals: propsNumberOfDecimals,
+  });
   const prefixComponent = useMemo(() => {
-    return currency === ETH && showEthLogo && (
-      <img
-        src="/images/eth.svg"
-        height={ethLogoHeight}
-      />
-    )
-  }, [currency, showEthLogo, ethLogoHeight])
+    return (
+      currency === ETH &&
+      showEthLogo && <img src="/images/eth.svg" height={ethLogoHeight} alt="" />
+    );
+  }, [currency, showEthLogo, ethLogoHeight]);
 
   return (
     <CurrencyDisplay
@@ -33,7 +34,7 @@ export default function UserPreferencedCurrencyDisplay ({
       numberOfDecimals={numberOfDecimals}
       prefixComponent={prefixComponent}
     />
-  )
+  );
 }
 
 UserPreferencedCurrencyDisplay.propTypes = {
@@ -48,6 +49,12 @@ UserPreferencedCurrencyDisplay.propTypes = {
   showEthLogo: PropTypes.bool,
   ethLogoHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   type: PropTypes.oneOf([PRIMARY, SECONDARY]),
-  ethNumberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  fiatNumberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-}
+  ethNumberOfDecimals: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  fiatNumberOfDecimals: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+};

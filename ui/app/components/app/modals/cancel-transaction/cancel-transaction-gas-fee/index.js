@@ -1,1 +1,1 @@
-export { default } from './cancel-transaction-gas-fee.component'
+export { default } from './cancel-transaction-gas-fee.component';

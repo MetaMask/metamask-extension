@@ -1,3 +1,3 @@
-import ConfirmTransactionSwitch from './confirm-transaction-switch.container'
+import ConfirmTransactionSwitch from './confirm-transaction-switch.container';
 
-export default ConfirmTransactionSwitch
+export default ConfirmTransactionSwitch;

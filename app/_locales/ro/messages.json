@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask este concepută și creată în California."
   },
-  "buyCoinSwitch": {
-    "message": "Cumpărați pe CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch este destinația unică pentru a schimba peste 300 de cripto monede la cele mai bune cursuri."
-  },
   "buyWithWyre": {
     "message": "Cumpărați ETH cu Wyre"
   },
@@ -164,9 +158,6 @@
   "cancel": {
     "message": "Anulare"
   },
-  "cancelAttempt": {
-    "message": "Anulare încercare"
-  },
   "cancellationGasFee": {
     "message": "Taxă de anulare în gaz"
   },
@@ -175,9 +166,6 @@
   },
   "chainId": {
     "message": "ID lanț"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Grafic disponibil numai pe rețelele Ethereum."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Trebuie să folosiți MetaMask în Google Chrome pentru a vă conecta la portofelul hardware."
@@ -218,9 +206,6 @@
   "connectingToKovan": {
     "message": "Se conectează la rețeaua de test Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Se conectează la localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Se conectează la rețeaua Ethereum principală"
   },
@@ -229,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Se conectează la rețeaua de test Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Continuare către CoinSwitch"
   },
   "continueToWyre": {
     "message": "Continuați la Wyre"
@@ -311,9 +293,6 @@
   "deleteNetworkDescription": {
     "message": "Sigur vreți să ștergeți această rețea?"
   },
-  "deposit": {
-    "message": "Depunere"
-  },
   "depositEther": {
     "message": "Depuneți Ether"
   },
@@ -371,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "Dacă trebuie să vă salvați din nou fraza seed, puteți să o găsiți în Setări -> Securitate."
   },
-  "endOfFlowMessage7": {
-    "message": "Dacă aveți întrebări sau vedeți ceva suspect, trimiteți un e-mail la support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask nu vă poate recupera expresia sursă. Aflați mai multe."
   },
@@ -415,9 +391,6 @@
   },
   "fast": {
     "message": "Rapid"
-  },
-  "faster": {
-    "message": "Mai repede"
   },
   "fileImportFail": {
     "message": "Importarea fișierului nu funcționează? Dați clic aici!",
@@ -556,9 +529,6 @@
   "invalidBlockExplorerURL": {
     "message": "URL Block Explorer nevalid"
   },
-  "invalidInput": {
-    "message": "Intrare nevalidă."
-  },
   "invalidRPC": {
     "message": "URL RPC nevalid"
   },
@@ -589,9 +559,6 @@
   },
   "links": {
     "message": "Link-uri"
-  },
-  "liveGasPricePredictions": {
-    "message": "Predicții live de preț în gas"
   },
   "loadMore": {
     "message": "Încărcați mai multe"
@@ -733,10 +700,7 @@
   "optionalBlockExplorerUrl": {
     "message": "URL explorator bloc (opțional)"
   },
-  "optionalChainId": {
-    "message": "ChainID (opțional)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbol (opțional)"
   },
   "orderOneHere": {
@@ -794,15 +758,6 @@
   },
   "privateNetwork": {
     "message": "Rețea privată"
-  },
-  "protectYourKeys": {
-    "message": "Protejați-vă cheile!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Aveți grijă cu expresia dvs. sursă – au existat raportări despre site-uri web care încearcă să imite MetaMask. MetaMask nu vă va cere niciodată expresia sursă!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Aveți grijă de fraza dvs. Dacă vedeți ceva care este în neregulă sau aveți dubii cu privire la un site, trimiteți un mesaj la support@metamask.io"
   },
   "queue": {
     "message": "Coadă"
@@ -951,17 +906,11 @@
   "selectAnAccountHelp": {
     "message": "Selectați contul de vizualizat în MetaMask"
   },
-  "selectCurrency": {
-    "message": "Selectați moneda"
-  },
   "selectEachPhrase": {
     "message": "Vă rugăm să selectați fiecare expresie pentru a vă asigura că este corectă."
   },
   "selectHdPath": {
     "message": "Selectare cale HD"
-  },
-  "selectLocale": {
-    "message": "Alegeți setările regionale"
   },
   "selectPathHelp": {
     "message": "Dacă nu vedeți mai jos conturile dvs. Ledger existente, încercați să comutați calea la „Legacy (MEW / MyCrypto)”"
@@ -983,9 +932,6 @@
   },
   "sentEther": {
     "message": "trimiteți ether"
-  },
-  "sentTokens": {
-    "message": "tokenuri trimise"
   },
   "separateEachWord": {
     "message": "Despărțiți fiecare cuvânt cu un spațiu"
@@ -1031,9 +977,6 @@
   },
   "slow": {
     "message": "Lent"
-  },
-  "slower": {
-    "message": "Mai încet"
   },
   "somethingWentWrong": {
     "message": "Hopa! A apărut o eroare."
@@ -1176,9 +1119,6 @@
   "transactionSubmitted": {
     "message": "Tranzacția a fost trimisă, cu o taxă gas de $1 la $2."
   },
-  "transactionTime": {
-    "message": "Ora tranzacției"
-  },
   "transactionUpdated": {
     "message": "Tranzacție actualizată la $2."
   },
@@ -1278,9 +1218,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Expresia dvs. seed privată"
-  },
-  "yourSigRequested": {
-    "message": "Semnătura dvs. este solicitată"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Preț gas zero la accelerare"

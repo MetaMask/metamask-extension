@@ -27,8 +27,9 @@
       visibility: visible;
 
       &:hover {
+        @include H4;
+
         color: #b0d7f2;
-        font-size: 1.1rem;
       }
     }
   }

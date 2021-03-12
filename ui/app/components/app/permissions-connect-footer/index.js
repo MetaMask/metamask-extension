@@ -1,1 +1,1 @@
-export { default } from './permissions-connect-footer.component'
+export { default } from './permissions-connect-footer.component';

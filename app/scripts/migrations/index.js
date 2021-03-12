@@ -1,9 +1,3 @@
-/* The migrator has two methods the user should be concerned with:
- *
- * getData(), which returns the app-consumable data object
- * saveData(), which persists the app-consumable data object.
- */
-
 // Migrations must start at version 1 or later.
 // They are objects with a `version` number
 // and a `migrate` function.
@@ -58,6 +52,12 @@ const migrations = [
   require('./045').default,
   require('./046').default,
   require('./047').default,
-]
+  require('./048').default,
+  require('./049').default,
+  require('./050').default,
+  require('./051').default,
+  require('./052').default,
+  require('./053').default,
+];
 
-export default migrations
+export default migrations;

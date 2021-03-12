@@ -1,17 +1,17 @@
-import assert from 'assert'
-import proxyquire from 'proxyquire'
+import assert from 'assert';
+import proxyquire from 'proxyquire';
 
-let mapStateToProps, mergeProps
+let mapStateToProps, mergeProps;
 
 proxyquire('../currency-input.container.js', {
   'react-redux': {
     connect: (ms, _, mp) => {
-      mapStateToProps = ms
-      mergeProps = mp
-      return () => ({})
+      mapStateToProps = ms;
+      mergeProps = mp;
+      return () => ({});
     },
   },
-})
+});
 
 describe('CurrencyInput container', function () {
   describe('mapStateToProps()', function () {
@@ -29,9 +29,7 @@ describe('CurrencyInput container', function () {
             },
             provider: {
               type: 'mainnet',
-            },
-            send: {
-              maxModeOn: false,
+              chainId: '0x1',
             },
           },
         },
@@ -40,12 +38,12 @@ describe('CurrencyInput container', function () {
           currentCurrency: 'usd',
           nativeCurrency: 'ETH',
           hideFiat: false,
-          maxModeOn: false,
         },
       },
       // Test # 2
       {
-        comment: 'should return correct props when not in mainnet and showFiatInTestnets is false',
+        comment:
+          'should return correct props when not in mainnet and showFiatInTestnets is false',
         mockState: {
           metamask: {
             conversionRate: 280.45,
@@ -57,9 +55,6 @@ describe('CurrencyInput container', function () {
             provider: {
               type: 'rinkeby',
             },
-            send: {
-              maxModeOn: false,
-            },
           },
         },
         expected: {
@@ -67,12 +62,12 @@ describe('CurrencyInput container', function () {
           currentCurrency: 'usd',
           nativeCurrency: 'ETH',
           hideFiat: true,
-          maxModeOn: false,
         },
       },
       // Test # 3
       {
-        comment: 'should return correct props when not in mainnet and showFiatInTestnets is true',
+        comment:
+          'should return correct props when not in mainnet and showFiatInTestnets is true',
         mockState: {
           metamask: {
             conversionRate: 280.45,
@@ -84,9 +79,6 @@ describe('CurrencyInput container', function () {
             provider: {
               type: 'rinkeby',
             },
-            send: {
-              maxModeOn: false,
-            },
           },
         },
         expected: {
@@ -94,12 +86,12 @@ describe('CurrencyInput container', function () {
           currentCurrency: 'usd',
           nativeCurrency: 'ETH',
           hideFiat: false,
-          maxModeOn: false,
         },
       },
       // Test # 4
       {
-        comment: 'should return correct props when in mainnet and showFiatInTestnets is true',
+        comment:
+          'should return correct props when in mainnet and showFiatInTestnets is true',
         mockState: {
           metamask: {
             conversionRate: 280.45,
@@ -111,9 +103,6 @@ describe('CurrencyInput container', function () {
             provider: {
               type: 'mainnet',
             },
-            send: {
-              maxModeOn: false,
-            },
           },
         },
         expected: {
@@ -121,17 +110,16 @@ describe('CurrencyInput container', function () {
           currentCurrency: 'usd',
           nativeCurrency: 'ETH',
           hideFiat: false,
-          maxModeOn: false,
         },
       },
-    ]
+    ];
 
     tests.forEach(({ mockState, expected, comment }) => {
       it(comment, function () {
-        return assert.deepEqual(mapStateToProps(mockState), expected)
-      })
-    })
-  })
+        return assert.deepStrictEqual(mapStateToProps(mockState), expected);
+      });
+    });
+  });
 
   describe('mergeProps()', function () {
     const tests = [
@@ -177,12 +165,21 @@ describe('CurrencyInput container', function () {
           fiatSuffix: 'USD',
         },
       },
-    ]
+    ];
 
-    tests.forEach(({ mock: { stateProps, dispatchProps, ownProps }, expected, comment }) => {
-      it(comment, function () {
-        assert.deepEqual(mergeProps(stateProps, dispatchProps, ownProps), expected)
-      })
-    })
-  })
-})
+    tests.forEach(
+      ({
+        mock: { stateProps, dispatchProps, ownProps },
+        expected,
+        comment,
+      }) => {
+        it(comment, function () {
+          assert.deepStrictEqual(
+            mergeProps(stateProps, dispatchProps, ownProps),
+            expected,
+          );
+        });
+      },
+    );
+  });
+});

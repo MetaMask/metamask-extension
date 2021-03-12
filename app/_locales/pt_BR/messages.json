@@ -143,12 +143,6 @@
   "builtInCalifornia": {
     "message": "O MetaMask foi projetado e desenvolvido na Califórnia."
   },
-  "buyCoinSwitch": {
-    "message": "Compre no CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "O CoinSwitch é o destino único para trocar mais de 300 criptomoedas com a melhor taxa."
-  },
   "buyWithWyre": {
     "message": "Comprar ETH com Wyre"
   },
@@ -158,9 +152,6 @@
   "cancel": {
     "message": "Cancelar"
   },
-  "cancelAttempt": {
-    "message": "Tentativa de cancelamento"
-  },
   "cancellationGasFee": {
     "message": "Tarifa de Gas de cancelamento"
   },
@@ -169,9 +160,6 @@
   },
   "chainId": {
     "message": "ID da Cadeia"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Tabela disponível apenas em redes de Ethereum."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Você precisa usar o MetaMask no Google Chrome para se conectar à sua Carteira de Hardware."
@@ -212,9 +200,6 @@
   "connectingToKovan": {
     "message": "Conectando-se à Rede de Testes Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Conectando ao Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Conectando à rede principal Etherum"
   },
@@ -223,9 +208,6 @@
   },
   "connectingToRopsten": {
     "message": "Conectando à Rede de Testes Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Continuar para CoinSwitch"
   },
   "continueToWyre": {
     "message": "Continuar para Wyre"
@@ -305,9 +287,6 @@
   "deleteNetworkDescription": {
     "message": "Tem certeza de que deseja excluir esta rede?"
   },
-  "deposit": {
-    "message": "Depósito"
-  },
   "depositEther": {
     "message": "Depositar Ether"
   },
@@ -365,9 +344,6 @@
   "endOfFlowMessage6": {
     "message": "Se precisar fazer backup de sua frase-semente de novo, acesse Configurações -> Segurança."
   },
-  "endOfFlowMessage7": {
-    "message": "Caso você tenha alguma dúvida ou veja algo suspeito, envie um e-mail para support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "O MetaMask não pode recuperar sua frase semente. Saiba mais."
   },
@@ -409,9 +385,6 @@
   },
   "fast": {
     "message": "Rápido"
-  },
-  "faster": {
-    "message": "Mais rápido"
   },
   "fiat": {
     "message": "Ordem",
@@ -560,9 +533,6 @@
   "invalidBlockExplorerURL": {
     "message": "URL de Block Explorer inválida"
   },
-  "invalidInput": {
-    "message": "Entrada inválida."
-  },
   "invalidRPC": {
     "message": "URL de RPC inválida"
   },
@@ -590,9 +560,6 @@
   },
   "likeToAddTokens": {
     "message": "Deseja adicionar esses tokens?"
-  },
-  "liveGasPricePredictions": {
-    "message": "Previsões de Preços de Gás Ao Vivo"
   },
   "loadMore": {
     "message": "Carregar Mais"
@@ -734,10 +701,7 @@
   "optionalBlockExplorerUrl": {
     "message": "URL exploradora de blocos (opcional)"
   },
-  "optionalChainId": {
-    "message": "ChainID (opcional)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Símbolo (opcional)"
   },
   "orderOneHere": {
@@ -795,15 +759,6 @@
   },
   "privateNetwork": {
     "message": "Rede Particular"
-  },
-  "protectYourKeys": {
-    "message": "Proteja as suas chaves!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Tome cuidado com sua frase semente — houve relatos de sites que tentam imitar o MetaMask. O MetaMask nunca pedirá sua frase semente!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Mantenha a sua frase segura. Se você vir algo esquisito ou está inseguro quanto a um site, envie um e-mail para support@metamask.io"
   },
   "queue": {
     "message": "Fila"
@@ -952,17 +907,11 @@
   "selectAnAccountHelp": {
     "message": "Selecione a conta para ver no MetaMask"
   },
-  "selectCurrency": {
-    "message": "Selecione a Moeda"
-  },
   "selectEachPhrase": {
     "message": "Selecione cada frase para se certificar de que esteja correta."
   },
   "selectHdPath": {
     "message": "Selecione o caminho no HD"
-  },
-  "selectLocale": {
-    "message": "Selecionar Local"
   },
   "selectPathHelp": {
     "message": "Se não conseguir ver as contas da Ledger existentes abaixo, experimente alternar os caminhos para \"Legacy (MEW / MyCrypto)\""
@@ -984,9 +933,6 @@
   },
   "sentEther": {
     "message": "ether enviado"
-  },
-  "sentTokens": {
-    "message": "tokens enviados"
   },
   "separateEachWord": {
     "message": "Separe cada palavra com um único espaço"
@@ -1032,9 +978,6 @@
   },
   "slow": {
     "message": "Lento"
-  },
-  "slower": {
-    "message": "Mais lento"
   },
   "somethingWentWrong": {
     "message": "Opa! Algo deu errado."
@@ -1174,9 +1117,6 @@
   "transactionSubmitted": {
     "message": "Transação enviada com taxa de gás de $1 a $2."
   },
-  "transactionTime": {
-    "message": "Hora da Transação"
-  },
   "transactionUpdated": {
     "message": "Transação atualizada às $2."
   },
@@ -1279,9 +1219,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Sua frase-semente particular"
-  },
-  "yourSigRequested": {
-    "message": "Sua assinatura está sendo solicitada"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Preço de Gas zero na agilização"

@@ -3,10 +3,8 @@
   $self: &;
 
   &__status {
-    font-style: normal;
-    font-weight: normal;
-    font-size: 16px;
-    line-height: 23px;
+    @include Paragraph;
+
     display: flex;
     align-items: center;
     text-transform: uppercase;

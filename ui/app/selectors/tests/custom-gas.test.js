@@ -1,84 +1,152 @@
-import assert from 'assert'
-import proxyquire from 'proxyquire'
+import assert from 'assert';
+import proxyquire from 'proxyquire';
 
 const {
-  getCustomGasErrors,
   getCustomGasLimit,
   getCustomGasPrice,
-  getCustomGasTotal,
-  getEstimatedGasPrices,
-  getEstimatedGasTimes,
-  getPriceAndTimeEstimates,
   getRenderableBasicEstimateData,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
-} = proxyquire('../custom-gas', {})
+  isCustomPriceSafe,
+  isCustomPriceExcessive,
+} = proxyquire('../custom-gas', {});
 
 describe('custom-gas selectors', function () {
-
   describe('getCustomGasPrice()', function () {
     it('should return gas.customData.price', function () {
-      const mockState = { gas: { customData: { price: 'mockPrice' } } }
-      assert.equal(getCustomGasPrice(mockState), 'mockPrice')
-    })
-  })
+      const mockState = { gas: { customData: { price: 'mockPrice' } } };
+      assert.strictEqual(getCustomGasPrice(mockState), 'mockPrice');
+    });
+  });
+  describe('isCustomGasPriceSafe()', function () {
+    it('should return true for gas.customData.price 0x77359400', function () {
+      const mockState = {
+        gas: {
+          customData: { price: '0x77359400' },
+          basicEstimates: { safeLow: 1 },
+        },
+      };
+      assert.strictEqual(isCustomPriceSafe(mockState), true);
+    });
+    it('should return true for gas.customData.price null', function () {
+      const mockState = {
+        gas: {
+          customData: { price: null },
+          basicEstimates: { safeLow: 1 },
+        },
+      };
+      assert.strictEqual(isCustomPriceSafe(mockState), true);
+    });
+    it('should return true gas.customData.price undefined', function () {
+      const mockState = {
+        gas: {
+          customData: { price: undefined },
+          basicEstimates: { safeLow: 1 },
+        },
+      };
+      assert.strictEqual(isCustomPriceSafe(mockState), true);
+    });
+    it('should return false gas.basicEstimates.safeLow undefined', function () {
+      const mockState = {
+        gas: {
+          customData: { price: '0x77359400' },
+          basicEstimates: { safeLow: undefined },
+        },
+      };
+      assert.strictEqual(isCustomPriceSafe(mockState), false);
+    });
+  });
+
+  describe('isCustomPriceExcessive()', function () {
+    it('should return false for gas.customData.price null', function () {
+      const mockState = {
+        gas: {
+          customData: { price: null },
+          basicEstimates: { fast: 150 },
+        },
+      };
+      assert.strictEqual(isCustomPriceExcessive(mockState), false);
+    });
+    it('should return false gas.basicEstimates.fast undefined', function () {
+      const mockState = {
+        gas: {
+          customData: { price: '0x77359400' },
+          basicEstimates: { fast: undefined },
+        },
+      };
+      assert.strictEqual(isCustomPriceExcessive(mockState), false);
+    });
+    it('should return false gas.basicEstimates.price 0x205d0bae00 (139)', function () {
+      const mockState = {
+        gas: {
+          customData: { price: '0x205d0bae00' },
+          basicEstimates: { fast: 139 },
+        },
+      };
+      assert.strictEqual(isCustomPriceExcessive(mockState), false);
+    });
+    it('should return false gas.basicEstimates.price 0x1bf08eb000 (120)', function () {
+      const mockState = {
+        gas: {
+          customData: { price: '0x1bf08eb000' },
+          basicEstimates: { fast: 139 },
+        },
+      };
+      assert.strictEqual(isCustomPriceExcessive(mockState), false);
+    });
+    it('should return false gas.basicEstimates.price 0x28bed01600 (175)', function () {
+      const mockState = {
+        gas: {
+          customData: { price: '0x28bed01600' },
+          basicEstimates: { fast: 139 },
+        },
+      };
+      assert.strictEqual(isCustomPriceExcessive(mockState), false);
+    });
+    it('should return true gas.basicEstimates.price 0x30e4f9b400 (210)', function () {
+      const mockState = {
+        gas: {
+          customData: { price: '0x30e4f9b400' },
+          basicEstimates: { fast: 139 },
+        },
+      };
+      assert.strictEqual(isCustomPriceExcessive(mockState), true);
+    });
+    it('should return false gas.basicEstimates.price 0x28bed01600 (175) (checkSend=true)', function () {
+      const mockState = {
+        metamask: {
+          send: {
+            gasPrice: '0x28bed0160',
+          },
+        },
+        gas: {
+          customData: { price: null },
+          basicEstimates: { fast: 139 },
+        },
+      };
+      assert.strictEqual(isCustomPriceExcessive(mockState, true), false);
+    });
+    it('should return true gas.basicEstimates.price 0x30e4f9b400 (210) (checkSend=true)', function () {
+      const mockState = {
+        metamask: {
+          send: {
+            gasPrice: '0x30e4f9b400',
+          },
+        },
+        gas: {
+          customData: { price: null },
+          basicEstimates: { fast: 139 },
+        },
+      };
+      assert.strictEqual(isCustomPriceExcessive(mockState, true), true);
+    });
+  });
 
   describe('getCustomGasLimit()', function () {
     it('should return gas.customData.limit', function () {
-      const mockState = { gas: { customData: { limit: 'mockLimit' } } }
-      assert.equal(getCustomGasLimit(mockState), 'mockLimit')
-    })
-  })
-
-  describe('getCustomGasTotal()', function () {
-    it('should return gas.customData.total', function () {
-      const mockState = { gas: { customData: { total: 'mockTotal' } } }
-      assert.equal(getCustomGasTotal(mockState), 'mockTotal')
-    })
-  })
-
-  describe('getCustomGasErrors()', function () {
-    it('should return gas.errors', function () {
-      const mockState = { gas: { errors: 'mockErrors' } }
-      assert.equal(getCustomGasErrors(mockState), 'mockErrors')
-    })
-  })
-
-  describe('getPriceAndTimeEstimates', function () {
-    it('should return price and time estimates', function () {
-      const mockState = { gas: { priceAndTimeEstimates: 'mockPriceAndTimeEstimates' } }
-      assert.equal(getPriceAndTimeEstimates(mockState), 'mockPriceAndTimeEstimates')
-    })
-  })
-
-  describe('getEstimatedGasPrices', function () {
-    it('should return price and time estimates', function () {
-      const mockState = {
-        gas: {
-          priceAndTimeEstimates: [
-            { gasprice: 12, somethingElse: 20 },
-            { gasprice: 22, expectedTime: 30 },
-            { gasprice: 32, somethingElse: 40 },
-          ],
-        },
-      }
-      assert.deepEqual(getEstimatedGasPrices(mockState), [12, 22, 32])
-    })
-  })
-
-  describe('getEstimatedGasTimes', function () {
-    it('should return price and time estimates', function () {
-      const mockState = {
-        gas: {
-          priceAndTimeEstimates: [
-            { somethingElse: 12, expectedTime: 20 },
-            { gasPrice: 22, expectedTime: 30 },
-            { somethingElse: 32, expectedTime: 40 },
-          ],
-        },
-      }
-      assert.deepEqual(getEstimatedGasTimes(mockState), [20, 30, 40])
-    })
-  })
+      const mockState = { gas: { customData: { limit: 'mockLimit' } } };
+      assert.strictEqual(getCustomGasLimit(mockState), 'mockLimit');
+    });
+  });
 
   describe('getRenderableBasicEstimateData()', function () {
     const tests = [
@@ -88,7 +156,6 @@ describe('custom-gas selectors', function () {
             gasEstimateType: 'SLOW',
             feeInSecondaryCurrency: '$0.01',
             feeInPrimaryCurrency: '0.0000525 ETH',
-            timeEstimate: '~6 min 36 sec',
             priceInHexWei: '0x9502f900',
           },
           {
@@ -96,13 +163,11 @@ describe('custom-gas selectors', function () {
             feeInPrimaryCurrency: '0.000084 ETH',
             feeInSecondaryCurrency: '$0.02',
             priceInHexWei: '0xee6b2800',
-            timeEstimate: '~5 min 18 sec',
           },
           {
             gasEstimateType: 'FAST',
             feeInSecondaryCurrency: '$0.03',
             feeInPrimaryCurrency: '0.000105 ETH',
-            timeEstimate: '~3 min 18 sec',
             priceInHexWei: '0x12a05f200',
           },
         ],
@@ -115,6 +180,7 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'mainnet',
+              chainId: '0x1',
             },
           },
           gas: {
@@ -138,7 +204,6 @@ describe('custom-gas selectors', function () {
             gasEstimateType: 'SLOW',
             feeInSecondaryCurrency: '$0.27',
             feeInPrimaryCurrency: '0.000105 ETH',
-            timeEstimate: '~13 min 12 sec',
             priceInHexWei: '0x12a05f200',
           },
           {
@@ -146,13 +211,11 @@ describe('custom-gas selectors', function () {
             feeInSecondaryCurrency: '$0.38',
             gasEstimateType: 'AVERAGE',
             priceInHexWei: '0x1a13b8600',
-            timeEstimate: '~10 min 6 sec',
           },
           {
             gasEstimateType: 'FAST',
             feeInSecondaryCurrency: '$0.54',
             feeInPrimaryCurrency: '0.00021 ETH',
-            timeEstimate: '~6 min 36 sec',
             priceInHexWei: '0x2540be400',
           },
         ],
@@ -168,6 +231,7 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'mainnet',
+              chainId: '0x1',
             },
           },
           gas: {
@@ -191,21 +255,18 @@ describe('custom-gas selectors', function () {
             gasEstimateType: 'SLOW',
             feeInSecondaryCurrency: '',
             feeInPrimaryCurrency: '0.000105 ETH',
-            timeEstimate: '~13 min 12 sec',
             priceInHexWei: '0x12a05f200',
           },
           {
             gasEstimateType: 'AVERAGE',
             feeInPrimaryCurrency: '0.000147 ETH',
             feeInSecondaryCurrency: '',
-            timeEstimate: '~10 min 6 sec',
             priceInHexWei: '0x1a13b8600',
           },
           {
             gasEstimateType: 'FAST',
             feeInSecondaryCurrency: '',
             feeInPrimaryCurrency: '0.00021 ETH',
-            timeEstimate: '~6 min 36 sec',
             priceInHexWei: '0x2540be400',
           },
         ],
@@ -221,6 +282,7 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'rinkeby',
+              chainId: '0x4',
             },
           },
           gas: {
@@ -244,7 +306,6 @@ describe('custom-gas selectors', function () {
             gasEstimateType: 'SLOW',
             feeInSecondaryCurrency: '$0.27',
             feeInPrimaryCurrency: '0.000105 ETH',
-            timeEstimate: '~13 min 12 sec',
             priceInHexWei: '0x12a05f200',
           },
           {
@@ -252,13 +313,11 @@ describe('custom-gas selectors', function () {
             feeInPrimaryCurrency: '0.000147 ETH',
             feeInSecondaryCurrency: '$0.38',
             priceInHexWei: '0x1a13b8600',
-            timeEstimate: '~10 min 6 sec',
           },
           {
             gasEstimateType: 'FAST',
             feeInSecondaryCurrency: '$0.54',
             feeInPrimaryCurrency: '0.00021 ETH',
-            timeEstimate: '~6 min 36 sec',
             priceInHexWei: '0x2540be400',
           },
         ],
@@ -274,19 +333,14 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'rinkeby',
+              chainId: '0x4',
             },
           },
           gas: {
             basicEstimates: {
-              blockTime: 14.16326530612245,
               safeLow: 5,
-              safeLowWait: 13.2,
               average: 7,
-              avgWait: 10.1,
               fast: 10,
-              fastWait: 6.6,
-              fastest: 20,
-              fastestWait: 1.0,
             },
           },
         },
@@ -297,7 +351,6 @@ describe('custom-gas selectors', function () {
             gasEstimateType: 'SLOW',
             feeInSecondaryCurrency: '$0.27',
             feeInPrimaryCurrency: '0.000105 ETH',
-            timeEstimate: '~13 min 12 sec',
             priceInHexWei: '0x12a05f200',
           },
           {
@@ -305,13 +358,11 @@ describe('custom-gas selectors', function () {
             feeInPrimaryCurrency: '0.000147 ETH',
             feeInSecondaryCurrency: '$0.38',
             priceInHexWei: '0x1a13b8600',
-            timeEstimate: '~10 min 6 sec',
           },
           {
             gasEstimateType: 'FAST',
             feeInSecondaryCurrency: '$0.54',
             feeInPrimaryCurrency: '0.00021 ETH',
-            timeEstimate: '~6 min 36 sec',
             priceInHexWei: '0x2540be400',
           },
         ],
@@ -327,34 +378,32 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'mainnet',
+              chainId: '0x1',
             },
           },
           gas: {
             basicEstimates: {
-              blockTime: 14.16326530612245,
               safeLow: 5,
-              safeLowWait: 13.2,
               average: 7,
-              avgWait: 10.1,
               fast: 10,
-              fastWait: 6.6,
-              fastest: 20,
-              fastestWait: 1.0,
             },
           },
         },
       },
-    ]
+    ];
     it('should return renderable data about basic estimates', function () {
       tests.forEach((test) => {
-        assert.deepEqual(
-          getRenderableBasicEstimateData(test.mockState, '0x5208'),
+        assert.deepStrictEqual(
+          getRenderableBasicEstimateData(
+            test.mockState,
+            '0x5208',
+            test.useFastestButtons,
+          ),
           test.expectedResult,
-        )
-      })
-    })
-
-  })
+        );
+      });
+    });
+  });
 
   describe('getRenderableEstimateDataForSmallButtonsFromGWEI()', function () {
     const tests = [
@@ -391,19 +440,14 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'mainnet',
+              chainId: '0x1',
             },
           },
           gas: {
             basicEstimates: {
-              blockTime: 14.16326530612245,
               safeLow: 25,
-              safeLowWait: 6.6,
               average: 30,
-              avgWait: 5.5,
               fast: 50,
-              fastWait: 3.3,
-              fastest: 100,
-              fastestWait: 0.5,
             },
           },
         },
@@ -441,6 +485,7 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'mainnet',
+              chainId: '0x1',
             },
           },
           gas: {
@@ -491,6 +536,7 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'rinkeby',
+              chainId: '0x4',
             },
           },
           gas: {
@@ -541,19 +587,14 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'rinkeby',
+              chainId: '0x4',
             },
           },
           gas: {
             basicEstimates: {
-              blockTime: 14.16326530612245,
               safeLow: 50,
-              safeLowWait: 13.2,
               average: 75,
-              avgWait: 9.6,
               fast: 100,
-              fastWait: 6.6,
-              fastest: 200,
-              fastestWait: 1.0,
             },
           },
         },
@@ -591,33 +632,26 @@ describe('custom-gas selectors', function () {
             },
             provider: {
               type: 'mainnet',
+              chainId: '0x1',
             },
           },
           gas: {
             basicEstimates: {
-              blockTime: 14.16326530612245,
               safeLow: 50,
-              safeLowWait: 13.2,
               average: 75,
-              avgWait: 9.6,
               fast: 100,
-              fastWait: 6.6,
-              fastest: 200,
-              fastestWait: 1.0,
             },
           },
         },
       },
-    ]
+    ];
     it('should return renderable data about basic estimates appropriate for buttons with less info', function () {
       tests.forEach((test) => {
-        assert.deepEqual(
+        assert.deepStrictEqual(
           getRenderableEstimateDataForSmallButtonsFromGWEI(test.mockState),
           test.expectedResult,
-        )
-      })
-    })
-
-  })
-
-})
+        );
+      });
+    });
+  });
+});

@@ -1,0 +1,63 @@
+@use "utilities";
+@use "design-system";
+
+$sizes: (
+  'xl': 8,
+  'lg': 6,
+  'md': 5,
+  'sm': 4,
+  'xs': 2.5,
+);
+
+.color-indicator {
+  $self: &;
+
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__inner-circle {
+    background-color: transparent;
+  }
+
+  @each $variant, $size in $sizes {
+    &--size-#{$variant} {
+      height: #{2 * $size}px;
+      width: #{2 * $size}px;
+      border-radius: #{$size}px;
+
+      #{$self}__inner-circle {
+        border-radius: #{$size}px;
+        height: #{$size}px;
+        width: #{$size}px;
+      }
+
+      #{$self}__icon {
+        font-size: #{1.25 * $size}px;
+      }
+    }
+  }
+
+  @each $variant, $color in design-system.$color-map {
+    &--color-#{$variant} {
+      border-color: $color;
+      &#{$self}--partial-filled #{$self}__inner-circle {
+        background-color: $color;
+      }
+      &#{$self}--filled {
+        background-color: $color;
+      }
+      & #{$self}__icon {
+        color: #{utilities.choose-contrast-color($color)};
+      }
+    }
+  }
+
+  // separate iterator to ensure borderColor takes precedence
+  @each $variant, $color in design-system.$color-map {
+    &--border-color-#{$variant} {
+      border-color: $color;
+    }
+  }
+}

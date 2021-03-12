@@ -1,23 +1,19 @@
-import ethUtil from 'ethereumjs-util'
-import MethodRegistry from 'eth-method-registry'
-import abi from 'human-standard-token-abi'
-import { ethers } from 'ethers'
-import log from 'loglevel'
-import {
-  TRANSACTION_TYPE_CANCEL,
-  TRANSACTION_STATUS_CONFIRMED,
-} from '../../../../app/scripts/controllers/transactions/enums'
-import { getEtherscanNetworkPrefix } from '../../../lib/etherscan-prefix-for-network'
-import {
-  TOKEN_METHOD_TRANSFER,
-  TOKEN_METHOD_APPROVE,
-  TOKEN_METHOD_TRANSFER_FROM,
-} from '../constants/transactions'
-import fetchWithCache from './fetch-with-cache'
+import { MethodRegistry } from 'eth-method-registry';
+import abi from 'human-standard-token-abi';
+import { ethers } from 'ethers';
+import log from 'loglevel';
 
-import { addCurrencies } from './conversion-util'
+import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import {
+  TRANSACTION_TYPES,
+  TRANSACTION_GROUP_STATUSES,
+  TRANSACTION_STATUSES,
+} from '../../../../shared/constants/transaction';
+import fetchWithCache from './fetch-with-cache';
 
-const hstInterface = new ethers.utils.Interface(abi)
+import { addCurrencies } from './conversion-util';
+
+const hstInterface = new ethers.utils.Interface(abi);
 
 /**
  * @typedef EthersContractCall
@@ -35,65 +31,68 @@ const hstInterface = new ethers.utils.Interface(abi)
 /**
  * @returns {EthersContractCall | undefined}
  */
-export function getTokenData (data) {
+export function getTokenData(data) {
   try {
-    return hstInterface.parseTransaction({ data })
+    return hstInterface.parseTransaction({ data });
   } catch (error) {
-    log.debug('Failed to parse transaction data.', error, data)
-    return undefined
+    log.debug('Failed to parse transaction data.', error, data);
+    return undefined;
   }
 }
 
-async function getMethodFrom4Byte (fourBytePrefix) {
-  const fourByteResponse = (await fetchWithCache(`https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`, {
-    referrerPolicy: 'no-referrer-when-downgrade',
-    body: null,
-    method: 'GET',
-    mode: 'cors',
-  }))
+async function getMethodFrom4Byte(fourBytePrefix) {
+  const fourByteResponse = await fetchWithCache(
+    `https://www.4byte.directory/api/v1/signatures/?hex_signature=${fourBytePrefix}`,
+    {
+      referrerPolicy: 'no-referrer-when-downgrade',
+      body: null,
+      method: 'GET',
+      mode: 'cors',
+    },
+  );
 
   if (fourByteResponse.count === 1) {
-    return fourByteResponse.results[0].text_signature
+    return fourByteResponse.results[0].text_signature;
   }
-  return null
+  return null;
 }
-let registry
+let registry;
 
 /**
  * Attempts to return the method data from the MethodRegistry library, the message registry library and the token abi, in that order of preference
  * @param {string} fourBytePrefix - The prefix from the method code associated with the data
  * @returns {Object}
  */
-export async function getMethodDataAsync (fourBytePrefix) {
+export async function getMethodDataAsync(fourBytePrefix) {
   try {
     const fourByteSig = getMethodFrom4Byte(fourBytePrefix).catch((e) => {
-      log.error(e)
-      return null
-    })
+      log.error(e);
+      return null;
+    });
 
     if (!registry) {
-      registry = new MethodRegistry({ provider: global.ethereumProvider })
+      registry = new MethodRegistry({ provider: global.ethereumProvider });
     }
 
-    let sig = await registry.lookup(fourBytePrefix)
+    let sig = await registry.lookup(fourBytePrefix);
 
     if (!sig) {
-      sig = await fourByteSig
+      sig = await fourByteSig;
     }
 
     if (!sig) {
-      return {}
+      return {};
     }
 
-    const parsedResult = registry.parse(sig)
+    const parsedResult = registry.parse(sig);
 
     return {
       name: parsedResult.name,
       params: parsedResult.args,
-    }
+    };
   } catch (error) {
-    log.error(error)
-    return {}
+    log.error(error);
+    return {};
   }
 }
 
@@ -101,61 +100,66 @@ export async function getMethodDataAsync (fourBytePrefix) {
  * Returns four-byte method signature from data
  *
  * @param {string} data - The hex data (@code txParams.data) of a transaction
- * @returns {string} - The four-byte method signature
+ * @returns {string} The four-byte method signature
  */
-export function getFourBytePrefix (data = '') {
-  const prefixedData = ethUtil.addHexPrefix(data)
-  const fourBytePrefix = prefixedData.slice(0, 10)
-  return fourBytePrefix
+export function getFourBytePrefix(data = '') {
+  const prefixedData = addHexPrefix(data);
+  const fourBytePrefix = prefixedData.slice(0, 10);
+  return fourBytePrefix;
 }
 
 /**
-  * Given an transaction category, returns a boolean which indicates whether the transaction is calling an erc20 token method
-  *
-  * @param {string} transactionCategory - The category of transaction being evaluated
-  * @returns {boolean} - whether the transaction is calling an erc20 token method
-  */
-export function isTokenMethodAction (transactionCategory) {
+ * Given an transaction category, returns a boolean which indicates whether the transaction is calling an erc20 token method
+ *
+ * @param {TRANSACTION_TYPES[keyof TRANSACTION_TYPES]} type - The type of transaction being evaluated
+ * @returns {boolean} whether the transaction is calling an erc20 token method
+ */
+export function isTokenMethodAction(type) {
   return [
-    TOKEN_METHOD_TRANSFER,
-    TOKEN_METHOD_APPROVE,
-    TOKEN_METHOD_TRANSFER_FROM,
-  ].includes(transactionCategory)
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+    TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+  ].includes(type);
 }
 
-export function getLatestSubmittedTxWithNonce (transactions = [], nonce = '0x0') {
+export function getLatestSubmittedTxWithNonce(
+  transactions = [],
+  nonce = '0x0',
+) {
   if (!transactions.length) {
-    return {}
+    return {};
   }
 
   return transactions.reduce((acc, current) => {
-    const { submittedTime, txParams: { nonce: currentNonce } = {} } = current
+    const { submittedTime, txParams: { nonce: currentNonce } = {} } = current;
 
     if (currentNonce === nonce) {
       if (!acc.submittedTime) {
-        return current
+        return current;
       }
-      return submittedTime > acc.submittedTime ? current : acc
+      return submittedTime > acc.submittedTime ? current : acc;
     }
-    return acc
-  }, {})
+    return acc;
+  }, {});
 }
 
-export async function isSmartContractAddress (address) {
-  const code = await global.eth.getCode(address)
+export async function isSmartContractAddress(address) {
+  const code = await global.eth.getCode(address);
   // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
-  const codeIsEmpty = !code || code === '0x' || code === '0x0'
-  return !codeIsEmpty
+  const codeIsEmpty = !code || code === '0x' || code === '0x0';
+  return !codeIsEmpty;
 }
 
-export function sumHexes (...args) {
-  const total = args.reduce((acc, base) => {
-    return addCurrencies(acc, base, {
+export function sumHexes(...args) {
+  const total = args.reduce((acc, hexAmount) => {
+    return addCurrencies(acc, hexAmount, {
       toNumericBase: 'hex',
-    })
-  })
+      aBase: 16,
+      bBase: 16,
+    });
+  });
 
-  return ethUtil.addHexPrefix(total)
+  return addHexPrefix(total);
 }
 
 /**
@@ -165,31 +169,64 @@ export function sumHexes (...args) {
  * @param {Object} transaction.txReceipt - The transaction receipt.
  * @returns {string}
  */
-export function getStatusKey (transaction) {
-  const { txReceipt: { status: receiptStatus } = {}, type, status } = transaction
+export function getStatusKey(transaction) {
+  const {
+    txReceipt: { status: receiptStatus } = {},
+    type,
+    status,
+  } = transaction;
 
   // There was an on-chain failure
   if (receiptStatus === '0x0') {
-    return 'failed'
+    return TRANSACTION_STATUSES.FAILED;
   }
 
-  if (status === TRANSACTION_STATUS_CONFIRMED && type === TRANSACTION_TYPE_CANCEL) {
-    return 'cancelled'
+  if (
+    status === TRANSACTION_STATUSES.CONFIRMED &&
+    type === TRANSACTION_TYPES.CANCEL
+  ) {
+    return TRANSACTION_GROUP_STATUSES.CANCELLED;
   }
 
-  return transaction.status
+  return transaction.status;
 }
 
 /**
- * Returns an external block explorer URL at which a transaction can be viewed.
- * @param {number} networkId
- * @param {string} hash
- * @param {Object} rpcPrefs
+ * Returns a title for the given transaction category.
+ *
+ * This will throw an error if the transaction category is unrecognized and no default is provided.
+ * @param {function} t - The translation function
+ * @param {TRANSACTION_TYPES[keyof TRANSACTION_TYPES]} type - The transaction type constant
+ * @returns {string} The transaction category title
  */
-export function getBlockExplorerUrlForTx (networkId, hash, rpcPrefs = {}) {
-  if (rpcPrefs.blockExplorerUrl) {
-    return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/u, '')}/tx/${hash}`
+export function getTransactionTypeTitle(t, type) {
+  switch (type) {
+    case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER: {
+      return t('transfer');
+    }
+    case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM: {
+      return t('transferFrom');
+    }
+    case TRANSACTION_TYPES.TOKEN_METHOD_APPROVE: {
+      return t('approve');
+    }
+    case TRANSACTION_TYPES.SENT_ETHER: {
+      return t('sentEther');
+    }
+    case TRANSACTION_TYPES.CONTRACT_INTERACTION: {
+      return t('contractInteraction');
+    }
+    case TRANSACTION_TYPES.DEPLOY_CONTRACT: {
+      return t('contractDeployment');
+    }
+    case TRANSACTION_TYPES.SWAP: {
+      return t('swap');
+    }
+    case TRANSACTION_TYPES.SWAP_APPROVAL: {
+      return t('swapApproval');
+    }
+    default: {
+      throw new Error(`Unrecognized transaction type: ${type}`);
+    }
   }
-  const prefix = getEtherscanNetworkPrefix(networkId)
-  return `https://${prefix}etherscan.io/tx/${hash}`
 }

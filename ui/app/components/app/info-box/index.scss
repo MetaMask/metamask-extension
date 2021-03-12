@@ -19,6 +19,6 @@
   }
 
   &__description {
-    font-size: 0.75rem;
+    @include H7;
   }
 }

@@ -1,40 +1,40 @@
-import { connect } from 'react-redux'
-import * as actions from '../../../store/actions'
-import { getNetworkIdentifier } from '../../../selectors'
-import LoadingNetworkScreen from './loading-network-screen.component'
+import { connect } from 'react-redux';
+import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network';
+import * as actions from '../../../store/actions';
+import { getNetworkIdentifier } from '../../../selectors';
+import LoadingNetworkScreen from './loading-network-screen.component';
 
 const mapStateToProps = (state) => {
-  const {
-    loadingMessage,
-    lastSelectedProvider,
-  } = state.appState
-  const {
-    provider,
-    network,
-  } = state.metamask
-  const { rpcTarget, chainId, ticker, nickname, type } = provider
+  const { loadingMessage } = state.appState;
+  const { provider, network } = state.metamask;
+  const { rpcUrl, chainId, ticker, nickname, type } = provider;
 
-  const setProviderArgs = type === 'rpc'
-    ? [rpcTarget, chainId, ticker, nickname]
-    : [provider.type]
+  const setProviderArgs =
+    type === NETWORK_TYPE_RPC
+      ? [rpcUrl, chainId, ticker, nickname]
+      : [provider.type];
 
   return {
     isLoadingNetwork: network === 'loading',
     loadingMessage,
-    lastSelectedProvider,
     setProviderArgs,
     provider,
     providerId: getNetworkIdentifier(state),
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setProviderType: (type) => {
-      dispatch(actions.setProviderType(type))
+      dispatch(actions.setProviderType(type));
     },
+    rollbackToPreviousProvider: () =>
+      dispatch(actions.rollbackToPreviousProvider()),
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
-  }
-}
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoadingNetworkScreen)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(LoadingNetworkScreen);

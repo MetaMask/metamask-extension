@@ -143,12 +143,6 @@
   "builtInCalifornia": {
     "message": "MetaMask imeundwa na kutengenezwa California."
   },
-  "buyCoinSwitch": {
-    "message": "Nunua kwenye CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch ni kituo cha kubadilisha fedha za kidijitali zaidi ya 300 kwa bei nzuri kabisa."
-  },
   "buyWithWyre": {
     "message": "Nunua ETH kwa kutumia Wyre"
   },
@@ -158,9 +152,6 @@
   "cancel": {
     "message": "Ghairi"
   },
-  "cancelAttempt": {
-    "message": "Jaribio la Kubatilisha"
-  },
   "cancellationGasFee": {
     "message": "Ada ya Kubatilisha Gesi"
   },
@@ -169,9 +160,6 @@
   },
   "chainId": {
     "message": "Utambulisho wa Mnyororo"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Zogoa inapatikana kwenye mitandao ya Ethereum pekee."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Unapaswa kutumia MetaMask kwenye Google Chrome ili kuungnisha kwenye Waleti yako ya Programu Maunzi."
@@ -212,9 +200,6 @@
   "connectingToKovan": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Inaunganisha kwenye Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Inaunganisha kwenye Mtandao Mkuu wa Ethereum"
   },
@@ -223,9 +208,6 @@
   },
   "connectingToRopsten": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Endelea kwenye CoinSwitch"
   },
   "continueToWyre": {
     "message": "Endelea kwenye Wyre"
@@ -305,9 +287,6 @@
   "deleteNetworkDescription": {
     "message": "Una uhakika unataka kufuta mtandao huu?"
   },
-  "deposit": {
-    "message": "Fedha zilizopo kwenye akaunti"
-  },
   "depositEther": {
     "message": "Weka Ether"
   },
@@ -365,9 +344,6 @@
   "endOfFlowMessage6": {
     "message": "Ikiwa unataka kuhifadhi tena kwa njia mbadla kirai chako kianzio, unaweza kukipata kwenye Mipangilio -> Usalama."
   },
-  "endOfFlowMessage7": {
-    "message": "Ikiwa una maswali au umeona kitu ambacho ni cha ulaghai, tuma barua pepe support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask haiwezi kurejesha kirai chako kianzio. Pata maelezo ziadi."
   },
@@ -409,9 +385,6 @@
   },
   "fast": {
     "message": "Haraka"
-  },
-  "faster": {
-    "message": "Ingiza"
   },
   "fileImportFail": {
     "message": "Kuhamisha faili hakufanyi kazi? Bofya hapa!",
@@ -553,9 +526,6 @@
   "invalidBlockExplorerURL": {
     "message": "Block Explorer URL batili"
   },
-  "invalidInput": {
-    "message": "Maandii si sahihi."
-  },
   "invalidRPC": {
     "message": "RPC URL batili"
   },
@@ -586,9 +556,6 @@
   },
   "links": {
     "message": "Viungo"
-  },
-  "liveGasPricePredictions": {
-    "message": "Utabiri wa moja kwa moja wa Bei ya Gesi"
   },
   "loadMore": {
     "message": "Pak zAIDI"
@@ -724,10 +691,7 @@
   "optionalBlockExplorerUrl": {
     "message": "URL ya Block Explorer URL (hiari)"
   },
-  "optionalChainId": {
-    "message": "Utambulisho wa Mnyororo (hiari)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Ishara (hiari)"
   },
   "orderOneHere": {
@@ -785,15 +749,6 @@
   },
   "privateNetwork": {
     "message": "Mtandao Binafsi"
-  },
-  "protectYourKeys": {
-    "message": "Linda Funguo Zako!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Kuwa mwangalifu na kirai kianzio chako - kumekuwa na taarifa za tovuti ambazo zinajaribu kuiga MetaMask. MetaMask kamwe haitakuomba kirai kianzio chako!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Weka salama kirai kianzio chako. Ikiwa unaona kitu cha kilaghai, au huna uhakika na tovuti fulani, tuma barua pepe kwenda support@metamask.io"
   },
   "queue": {
     "message": "Foleni"
@@ -942,17 +897,11 @@
   "selectAnAccountHelp": {
     "message": "Chagua akaunti kuangalia kwenye MetaMask"
   },
-  "selectCurrency": {
-    "message": "Chagua Sarafu"
-  },
   "selectEachPhrase": {
     "message": "Tafadhali chagua kila kirai ili kuhakikisha kuwa hii ni sahihi."
   },
   "selectHdPath": {
     "message": "Chagua Njia ya HD"
-  },
-  "selectLocale": {
-    "message": "Chagua Lugha"
   },
   "selectPathHelp": {
     "message": "Ikiwa huoni akaunti zako za Leja za sasa hapa chini, charibu kubadilisha njia kwenda \"Legacy (MEW / MyCrypto)\"  "
@@ -974,9 +923,6 @@
   },
   "sentEther": {
     "message": "ether iliyotumwa"
-  },
-  "sentTokens": {
-    "message": "vianzio vilivyotumwa"
   },
   "separateEachWord": {
     "message": "Tenganisha kila neno kwa nafasi moja"
@@ -1022,9 +968,6 @@
   },
   "slow": {
     "message": "Polepole"
-  },
-  "slower": {
-    "message": "Taratibu"
   },
   "somethingWentWrong": {
     "message": "Ayaa! Hitilafu fulani imetokea."
@@ -1170,9 +1113,6 @@
   "transactionSubmitted": {
     "message": "Muamala umewasilishwa ukiwa na ada ya gesi ya$1 mnamo $2."
   },
-  "transactionTime": {
-    "message": "Muda wa Muamala"
-  },
   "transactionUpdated": {
     "message": "Muamala umesasishwa mnamo $2."
   },
@@ -1275,9 +1215,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Kirai chako kianzio cha binafsi"
-  },
-  "yourSigRequested": {
-    "message": "Saini yako inaombwa"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Bei ya gesi sifuri kwenye kuongeza kasi"

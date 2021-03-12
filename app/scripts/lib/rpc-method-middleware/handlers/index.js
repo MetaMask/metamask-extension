@@ -1,6 +1,12 @@
-import logWeb3Usage from './log-web3-usage'
+import addEthereumChain from './add-ethereum-chain';
+import getProviderState from './get-provider-state';
+import logWeb3ShimUsage from './log-web3-shim-usage';
+import watchAsset from './watch-asset';
 
 const handlers = [
-  logWeb3Usage,
-]
-export default handlers
+  addEthereumChain,
+  getProviderState,
+  logWeb3ShimUsage,
+  watchAsset,
+];
+export default handlers;

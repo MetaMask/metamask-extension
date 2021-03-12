@@ -1,41 +1,45 @@
-import React, { useMemo, useState, useCallback } from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
-import { useHistory } from 'react-router-dom'
-import ListItem from '../../ui/list-item'
-import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData'
-import Preloader from '../../ui/icon/preloader'
-import { useI18nContext } from '../../../hooks/useI18nContext'
-import { useCancelTransaction } from '../../../hooks/useCancelTransaction'
-import { useRetryTransaction } from '../../../hooks/useRetryTransaction'
-import Button from '../../ui/button'
-import Tooltip from '../../ui/tooltip'
-import TransactionListItemDetails from '../transaction-list-item-details'
-import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes'
+import React, { useMemo, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { useHistory } from 'react-router-dom';
+import ListItem from '../../ui/list-item';
+import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useCancelTransaction } from '../../../hooks/useCancelTransaction';
+import { useRetryTransaction } from '../../../hooks/useRetryTransaction';
+import Button from '../../ui/button';
+import Tooltip from '../../ui/tooltip';
+import TransactionListItemDetails from '../transaction-list-item-details';
+import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
+import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
+import TransactionStatus from '../transaction-status/transaction-status.component';
+import TransactionIcon from '../transaction-icon';
 import {
-  TRANSACTION_CATEGORY_SIGNATURE_REQUEST,
-  UNAPPROVED_STATUS,
-  TRANSACTION_CATEGORY_APPROVAL,
-  FAILED_STATUS,
-  DROPPED_STATUS,
-  REJECTED_STATUS,
-} from '../../../helpers/constants/transactions'
-import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp'
-import TransactionStatus from '../transaction-status/transaction-status.component'
-import TransactionIcon from '../transaction-icon'
-import { useTransactionTimeRemaining } from '../../../hooks/useTransactionTimeRemaining'
-import IconWithLabel from '../../ui/icon-with-label'
+  TRANSACTION_GROUP_CATEGORIES,
+  TRANSACTION_STATUSES,
+} from '../../../../../shared/constants/transaction';
 
-export default function TransactionListItem ({ transactionGroup, isEarliestNonce = false }) {
-  const t = useI18nContext()
-  const history = useHistory()
-  const { hasCancelled } = transactionGroup
-  const [showDetails, setShowDetails] = useState(false)
+export default function TransactionListItem({
+  transactionGroup,
+  isEarliestNonce = false,
+}) {
+  const t = useI18nContext();
+  const history = useHistory();
+  const { hasCancelled } = transactionGroup;
+  const [showDetails, setShowDetails] = useState(false);
 
-  const { initialTransaction: { id }, primaryTransaction: { err, submittedTime, gasPrice } } = transactionGroup
-  const [cancelEnabled, cancelTransaction] = useCancelTransaction(transactionGroup)
-  const retryTransaction = useRetryTransaction(transactionGroup)
-  const shouldShowSpeedUp = useShouldShowSpeedUp(transactionGroup, isEarliestNonce)
+  const {
+    initialTransaction: { id },
+    primaryTransaction: { err, status },
+  } = transactionGroup;
+  const [cancelEnabled, cancelTransaction] = useCancelTransaction(
+    transactionGroup,
+  );
+  const retryTransaction = useRetryTransaction(transactionGroup);
+  const shouldShowSpeedUp = useShouldShowSpeedUp(
+    transactionGroup,
+    isEarliestNonce,
+  );
 
   const {
     title,
@@ -46,28 +50,34 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
     primaryCurrency,
     recipientAddress,
     secondaryCurrency,
-    status,
+    displayedStatusKey,
     isPending,
     senderAddress,
-  } = useTransactionDisplayData(transactionGroup)
+  } = useTransactionDisplayData(transactionGroup);
 
-  const timeRemaining = useTransactionTimeRemaining(isPending, isEarliestNonce, submittedTime, gasPrice)
-
-  const isSignatureReq = category === TRANSACTION_CATEGORY_SIGNATURE_REQUEST
-  const isApproval = category === TRANSACTION_CATEGORY_APPROVAL
-  const isUnapproved = status === UNAPPROVED_STATUS
+  const isSignatureReq =
+    category === TRANSACTION_GROUP_CATEGORIES.SIGNATURE_REQUEST;
+  const isApproval = category === TRANSACTION_GROUP_CATEGORIES.APPROVAL;
+  const isUnapproved = status === TRANSACTION_STATUSES.UNAPPROVED;
+  const isSwap = category === TRANSACTION_GROUP_CATEGORIES.SWAP;
 
   const className = classnames('transaction-list-item', {
-    'transaction-list-item--unconfirmed': isPending || [FAILED_STATUS, DROPPED_STATUS, REJECTED_STATUS].includes(status),
-  })
+    'transaction-list-item--unconfirmed':
+      isPending ||
+      [
+        TRANSACTION_STATUSES.FAILED,
+        TRANSACTION_STATUSES.DROPPED,
+        TRANSACTION_STATUSES.REJECTED,
+      ].includes(displayedStatusKey),
+  });
 
   const toggleShowDetails = useCallback(() => {
     if (isUnapproved) {
-      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`)
-      return
+      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`);
+      return;
     }
-    setShowDetails((prev) => !prev)
-  }, [isUnapproved, history, id])
+    setShowDetails((prev) => !prev);
+  }, [isUnapproved, history, id]);
 
   const cancelButton = useMemo(() => {
     const btn = (
@@ -77,28 +87,32 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
         className="transaction-list-item__header-button"
         disabled={!cancelEnabled}
       >
-        { t('cancel') }
+        {t('cancel')}
       </Button>
-    )
+    );
     if (hasCancelled || !isPending || isUnapproved) {
-      return null
+      return null;
     }
 
-    return cancelEnabled
-      ? btn
-      : (
-        <Tooltip title={t('notEnoughGas')} position="bottom">
-          <div>
-            {btn}
-          </div>
-        </Tooltip>
-      )
-
-  }, [isPending, t, isUnapproved, cancelEnabled, cancelTransaction, hasCancelled])
+    return cancelEnabled ? (
+      btn
+    ) : (
+      <Tooltip title={t('notEnoughGas')} position="bottom">
+        <div>{btn}</div>
+      </Tooltip>
+    );
+  }, [
+    isPending,
+    t,
+    isUnapproved,
+    cancelEnabled,
+    cancelTransaction,
+    hasCancelled,
+  ]);
 
   const speedUpButton = useMemo(() => {
     if (!shouldShowSpeedUp || !isPending || isUnapproved) {
-      return null
+      return null;
     }
     return (
       <Button
@@ -107,10 +121,10 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
         onClick={retryTransaction}
         className="transaction-list-item-details__header-button"
       >
-        { t('speedUp') }
+        {t('speedUp')}
       </Button>
-    )
-  }, [shouldShowSpeedUp, isUnapproved, t, isPending, retryTransaction])
+    );
+  }, [shouldShowSpeedUp, isUnapproved, t, isPending, retryTransaction]);
 
   return (
     <>
@@ -118,33 +132,46 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
         onClick={toggleShowDetails}
         className={className}
         title={title}
-        titleIcon={!isUnapproved && isPending && isEarliestNonce && (
-          <IconWithLabel
-            icon={<Preloader size={16} color="#D73A49" />}
-            label={timeRemaining}
-          />
-        )}
-        icon={<TransactionIcon category={category} status={status} />}
-        subtitle={(
+        icon={
+          <TransactionIcon category={category} status={displayedStatusKey} />
+        }
+        subtitle={
           <h3>
             <TransactionStatus
               isPending={isPending}
               isEarliestNonce={isEarliestNonce}
               error={err}
               date={date}
-              status={status}
+              status={displayedStatusKey}
             />
-            <span className={subtitleContainsOrigin ? 'transaction-list-item__origin' : 'transaction-list-item__address'} title={subtitle}>
+            <span
+              className={
+                subtitleContainsOrigin
+                  ? 'transaction-list-item__origin'
+                  : 'transaction-list-item__address'
+              }
+              title={subtitle}
+            >
               {subtitle}
             </span>
           </h3>
-        )}
-        rightContent={!isSignatureReq && !isApproval && (
-          <>
-            <h2 className="transaction-list-item__primary-currency">{primaryCurrency}</h2>
-            <h3 className="transaction-list-item__secondary-currency">{secondaryCurrency}</h3>
-          </>
-        )}
+        }
+        rightContent={
+          !isSignatureReq &&
+          !isApproval && (
+            <>
+              <h2
+                title={primaryCurrency}
+                className="transaction-list-item__primary-currency"
+              >
+                {primaryCurrency}
+              </h2>
+              <h3 className="transaction-list-item__secondary-currency">
+                {secondaryCurrency}
+              </h3>
+            </>
+          )
+        }
       >
         <div className="transaction-list-item__pending-actions">
           {speedUpButton}
@@ -156,10 +183,11 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
           title={title}
           onClose={toggleShowDetails}
           transactionGroup={transactionGroup}
+          primaryCurrency={primaryCurrency}
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
-          showRetry={status === FAILED_STATUS}
+          showRetry={status === TRANSACTION_STATUSES.FAILED && !isSwap}
           showSpeedUp={shouldShowSpeedUp}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
@@ -168,10 +196,10 @@ export default function TransactionListItem ({ transactionGroup, isEarliestNonce
         />
       )}
     </>
-  )
+  );
 }
 
 TransactionListItem.propTypes = {
   transactionGroup: PropTypes.object.isRequired,
   isEarliestNonce: PropTypes.bool,
-}
+};

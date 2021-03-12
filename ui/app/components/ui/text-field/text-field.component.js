@@ -1,14 +1,14 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
-import MaterialTextField from '@material-ui/core/TextField'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import MaterialTextField from '@material-ui/core/TextField';
 
 const inputLabelBase = {
   transform: 'none',
   transition: 'none',
   position: 'initial',
   color: '#5b5b5b',
-}
+};
 
 const styles = {
   materialLabel: {
@@ -61,7 +61,7 @@ const styles = {
     'label + &': {
       marginTop: '9px',
     },
-    border: '2px solid #BBC0C5',
+    border: '1px solid #BBC0C5',
     height: '48px',
     borderRadius: '6px',
     padding: '0 16px',
@@ -82,7 +82,7 @@ const styles = {
   inputMultiline: {
     lineHeight: 'initial !important',
   },
-}
+};
 
 const getMaterialThemeInputProps = ({
   dir,
@@ -105,11 +105,16 @@ const getMaterialThemeInputProps = ({
       dir,
     },
   },
-})
+});
 
 const getMaterialWhitePaddedThemeInputProps = ({
   dir,
-  classes: { materialWhitePaddedRoot, materialWhitePaddedFocused, materialWhitePaddedInput, materialWhitePaddedUnderline },
+  classes: {
+    materialWhitePaddedRoot,
+    materialWhitePaddedFocused,
+    materialWhitePaddedInput,
+    materialWhitePaddedUnderline,
+  },
   startAdornment,
 }) => ({
   InputProps: {
@@ -124,11 +129,20 @@ const getMaterialWhitePaddedThemeInputProps = ({
       dir,
     },
   },
-})
+});
 
 const getBorderedThemeInputProps = ({
   dir,
-  classes: { formLabel, formLabelFocused, materialError, largeInputLabel, inputLabel, inputRoot, input, inputFocused },
+  classes: {
+    formLabel,
+    formLabelFocused,
+    materialError,
+    largeInputLabel,
+    inputLabel,
+    inputRoot,
+    input,
+    inputFocused,
+  },
   largeLabel,
   startAdornment,
 }) => ({
@@ -153,13 +167,13 @@ const getBorderedThemeInputProps = ({
       dir,
     },
   },
-})
+});
 
 const themeToInputProps = {
-  'material': getMaterialThemeInputProps,
-  'bordered': getBorderedThemeInputProps,
+  material: getMaterialThemeInputProps,
+  bordered: getBorderedThemeInputProps,
   'material-white-padded': getMaterialWhitePaddedThemeInputProps,
-}
+};
 
 const TextField = ({
   error,
@@ -170,7 +184,12 @@ const TextField = ({
   dir,
   ...textFieldProps
 }) => {
-  const inputProps = themeToInputProps[theme]({ classes, startAdornment, largeLabel, dir })
+  const inputProps = themeToInputProps[theme]({
+    classes,
+    startAdornment,
+    largeLabel,
+    dir,
+  });
 
   return (
     <MaterialTextField
@@ -179,14 +198,14 @@ const TextField = ({
       {...inputProps}
       {...textFieldProps}
     />
-  )
-}
+  );
+};
 
 TextField.defaultProps = {
   error: null,
   dir: 'auto',
   theme: 'bordered',
-}
+};
 
 TextField.propTypes = {
   error: PropTypes.string,
@@ -195,6 +214,6 @@ TextField.propTypes = {
   theme: PropTypes.oneOf(['bordered', 'material', 'material-white-padded']),
   startAdornment: PropTypes.element,
   largeLabel: PropTypes.bool,
-}
+};
 
-export default withStyles(styles)(TextField)
+export default withStyles(styles)(TextField);

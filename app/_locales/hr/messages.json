@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask je osmišljen i izrađen u Kaliforniji."
   },
-  "buyCoinSwitch": {
-    "message": "Kupujte na usluzi CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "Usluga CoinSwitch predstavlja mjesto stalne razmjene više od 300 kriptovaluta po najboljim tečajevima."
-  },
   "buyWithWyre": {
     "message": "Kupi ETH Wyerom"
   },
@@ -164,9 +158,6 @@
   "cancel": {
     "message": "Odustani"
   },
-  "cancelAttempt": {
-    "message": "Otkaži pokušaj"
-  },
   "cancellationGasFee": {
     "message": "Otkazivanje naknade za gorivo"
   },
@@ -175,9 +166,6 @@
   },
   "chainId": {
     "message": "Identifikacijska oznaka bloka"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Grafikon je dostupan samo na mrežama Ethereum."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Trebate upotrebljavati MetaMask u pregledniku Google Chrome kako biste ga povezali s vašim hardverskim novčanikom."
@@ -218,9 +206,6 @@
   "connectingToKovan": {
     "message": "Povezivanje na testnu mrežu Kovan"
   },
-  "connectingToLocalhost": {
-    "message": "Povezivanje na Localhost 8545"
-  },
   "connectingToMainnet": {
     "message": "Povezivanje na glavnu mrežu Ethereum"
   },
@@ -229,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Povezivanje na testnu mrežu Ropsten"
-  },
-  "continueToCoinSwitch": {
-    "message": "Nastavi na uslugu CoinSwitch"
   },
   "continueToWyre": {
     "message": "Nastavi na uslugu Wyre"
@@ -311,9 +293,6 @@
   "deleteNetworkDescription": {
     "message": "Sigurno želite izbrisati ovu mrežu?"
   },
-  "deposit": {
-    "message": "Polog"
-  },
   "depositEther": {
     "message": "Položi Ether"
   },
@@ -371,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "Ako trebate ponovno sigurnosno kopirati svoju početnu rečenicu, možete je pronaći unutar stavke Postavke --> Sigurnost."
   },
-  "endOfFlowMessage7": {
-    "message": "Ako imate bilo kakvo pitanje ili vidite nešto što vam se čini sumnjivim, pošaljite nam elektroničku poruku na support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "Osoblje MetaMask ne može obnoviti vašu početnu rečenicu. Saznajte više."
   },
@@ -415,9 +391,6 @@
   },
   "fast": {
     "message": "Brzo"
-  },
-  "faster": {
-    "message": "Brže"
   },
   "fileImportFail": {
     "message": "Uvoženje datoteke ne radi? Kliknite ovdje.",
@@ -562,9 +535,6 @@
   "invalidBlockExplorerURL": {
     "message": "Nevaljani URL Block Explorer-a"
   },
-  "invalidInput": {
-    "message": "Nevaljani upis."
-  },
   "invalidRPC": {
     "message": "Nevaljani URL RPC-a"
   },
@@ -595,9 +565,6 @@
   },
   "links": {
     "message": "Poveznice"
-  },
-  "liveGasPricePredictions": {
-    "message": "Predviđanja uživo za cijenu goriva"
   },
   "loadMore": {
     "message": "Učitaj više"
@@ -739,10 +706,7 @@
   "optionalBlockExplorerUrl": {
     "message": "Blokiraj Explorerov URL (neobavezno)"
   },
-  "optionalChainId": {
-    "message": "Identifikacijska oznaka bloka (neobavezno)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "Simbol (neobavezno)"
   },
   "orderOneHere": {
@@ -800,15 +764,6 @@
   },
   "privateNetwork": {
     "message": "Privatna mreža"
-  },
-  "protectYourKeys": {
-    "message": "Zaštitite svoje ključeve!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Pazite na svoju početnu rečenicu jer smo zaprimili prijave o postojanju mrežnih mjesta koja oponašaju mrežno mjesto usluge MetaMask. Na mrežnom se mjestu MetaMask nikada ne traži vaša početna rečenica!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Zaštite svoju rečenicu. Ako vam se nešto čini sumnjivim ili nemate povjerenja u mrežno mjesto, pošaljite nam elektroničku poruku na support@metamask.io"
   },
   "queue": {
     "message": "Red čekanja"
@@ -957,17 +912,11 @@
   "selectAnAccountHelp": {
     "message": "Odaberi račun za prikaz u usluzi MetaMask"
   },
-  "selectCurrency": {
-    "message": "Odaberite valutu"
-  },
   "selectEachPhrase": {
     "message": "Odaberite svaku rečenicu kako biste provjerili je li točna."
   },
   "selectHdPath": {
     "message": "Odaberi put HD-a"
-  },
-  "selectLocale": {
-    "message": "Odaberi lokalnu postavku"
   },
   "selectPathHelp": {
     "message": "Ako ne vidite u nastavku postojeće račune Ledger, pokušajte promijeniti puteve na „Nasljeđe (MEW / MyCrypto)”"
@@ -989,9 +938,6 @@
   },
   "sentEther": {
     "message": "pošalji ether"
-  },
-  "sentTokens": {
-    "message": "pošalji tokene"
   },
   "separateEachWord": {
     "message": "Odvojite pojedinačne riječi jednim razmakom"
@@ -1037,9 +983,6 @@
   },
   "slow": {
     "message": "Sporo"
-  },
-  "slower": {
-    "message": "Sporije"
   },
   "somethingWentWrong": {
     "message": "Ups! Nešto je pošlo po zlu."
@@ -1182,9 +1125,6 @@
   "transactionSubmitted": {
     "message": "Transakcija je poslana s naknadom za gorivo od $1 u $2."
   },
-  "transactionTime": {
-    "message": "Vrijeme transkacije"
-  },
   "transactionUpdated": {
     "message": "Transakcija je ažurirana u $2."
   },
@@ -1287,9 +1227,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Vaša privatna početna rečenica"
-  },
-  "yourSigRequested": {
-    "message": "Vaš se potpis zahtijeva"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Nulta cijena goriva kod ubrzavanja"

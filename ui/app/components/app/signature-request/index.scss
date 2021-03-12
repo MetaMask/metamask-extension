@@ -16,15 +16,10 @@
 .signature-request-header {
   flex: 1;
 
-  .network-display__container {
+  .network-display {
     padding: 0;
     justify-content: flex-end;
-  }
-
-  .network-display__name {
-    font-size: 12px;
-    white-space: nowrap;
-    font-weight: 500;
+    margin-left: auto;
   }
 }
 
@@ -38,9 +33,9 @@
   min-height: min-content;
 
   &__title {
-    font-style: normal;
+    @include H5;
+
     font-weight: 500;
-    font-size: 18px;
   }
 
   &__identicon-container {
@@ -73,17 +68,19 @@
   }
 
   &__info {
-    font-size: 12px;
+    @include H7;
   }
 
   &__info--bolded {
-    font-size: 16px;
+    @include Paragraph;
+
     font-weight: 500;
   }
 
   p {
+    @include H6;
+
     color: #999;
-    font-size: 0.8rem;
   }
 
   .identicon {}

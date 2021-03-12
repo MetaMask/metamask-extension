@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ಅನ್ನು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ ಮತ್ತು ಕ್ಯಾಲಿಫೋರ್ನಿಯಾದಲ್ಲಿ ನಿರ್ಮಿಸಲಾಗಿದೆ."
   },
-  "buyCoinSwitch": {
-    "message": "ಕಾಯಿನ್‌ಸ್ವೀಚ್‌ನಲ್ಲಿ ಖರೀದಿಸಿ"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "300 ಕ್ಕೂ ಹೆಚ್ಚು ಕ್ರಿಪ್ಟೋಕರೆನ್ಸಿಗಳನ್ನು ಉತ್ತಮ ದರದಲ್ಲಿ ವಿನಿಮಯ ಮಾಡಿಕೊಳ್ಳುವ ಒಂದು ತಾಣವೆಂದರೆ ಕಾಯಿನ್‌ಸ್ವಿಚ್ ಆಗಿದೆ."
-  },
   "buyWithWyre": {
     "message": "Wyre ನೊಂದಿಗೆ ETH ಖರೀದಿಸಿ"
   },
@@ -164,9 +158,6 @@
   "cancel": {
     "message": "ರದ್ದುಮಾಡಿ"
   },
-  "cancelAttempt": {
-    "message": "ಪ್ರಯತ್ನವನ್ನು ರದ್ದುಪಡಿಸಿ"
-  },
   "cancellationGasFee": {
     "message": "ರದ್ದುಗೊಳಿಸುವ ಗ್ಯಾಸ್ ಶುಲ್ಕ"
   },
@@ -175,9 +166,6 @@
   },
   "chainId": {
     "message": "ಚೈನ್ ID"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗಳಲ್ಲಿ ಮಾತ್ರವೇ ಚಾರ್ಟ್‌ಗಳು ಲಭ್ಯವಿರುತ್ತವೆ."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "ನಿಮ್ಮ ಹಾರ್ಡ್‌ವೇರ್ ವ್ಯಾಲೆಟ್‌ಗೆ ಸಂಪರ್ಕಪಡಿಸುವ ಸಲುವಾಗಿ Google Chrome ನಲ್ಲಿ ನಿಮಗೆ MetaMask ಅನ್ನು ಬಳಸುವ ಅಗತ್ಯವಿದೆ."
@@ -218,9 +206,6 @@
   "connectingToKovan": {
     "message": "Kovan ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ "
   },
-  "connectingToLocalhost": {
-    "message": "ಲೋಕಲ್‌ಹೋಸ್ಟ್ 8545 ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
-  },
   "connectingToMainnet": {
     "message": "ಮುಖ್ಯ ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
@@ -229,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "Ropsten ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
-  },
-  "continueToCoinSwitch": {
-    "message": "CoinSwitch ಗೆ ಮುಂದುವರಿಸಿ"
   },
   "continueToWyre": {
     "message": "Wyre ಗೆ ಮುಂದುವರಿಸಿ"
@@ -311,9 +293,6 @@
   "deleteNetworkDescription": {
     "message": "ನೀವು ಈ ನೆಟ್‌ವರ್ಕ್ ಅನ್ನು ಖಚಿತವಾಗಿ ಅಳಿಸಲು ಬಯಸುತ್ತೀರಾ?"
   },
-  "deposit": {
-    "message": "ಠೇವಣಿ"
-  },
   "depositEther": {
     "message": "ಎಥರ್ ಠೇವಣಿ ಮಾಡಿ"
   },
@@ -371,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "ನಿಮ್ಮ ಸೀಡ್ ಫ್ರೇಸ್‌ನಿಂದ ಮತ್ತೊಮ್ಮೆ ನೀವು ಮತ್ತೆ ಬ್ಯಾಕಪ್ ಮಾಡಬೇಕಾದರೆ, ನೀವು ಅದನ್ನು ಸೆಟ್ಟಿಂಗ್‌ಗಳು -> ಭದ್ರತೆಯಲ್ಲಿ ಕಾಣಬಹುದು."
   },
-  "endOfFlowMessage7": {
-    "message": "ನೀವು ಎಂದಾದರೂ ಪ್ರಶ್ನೆಗಳನ್ನು ಹೊಂದಿದ್ದರೆ ಅಥವಾ ನೀವು ಯಾವಗಲಾದರೂ ಗೊಂದಲಮಯವಾಗಿದ್ದರೆ support@metamask.io ಗೆ ಇಮೇಲ್ ಮಾಡಿ."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask ಗೆ ನಿಮ್ಮ ಸೀಡ್‌ಫ್ರೇಸ್ ಮರಳಿಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ. ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ."
   },
@@ -415,9 +391,6 @@
   },
   "fast": {
     "message": "ವೇಗ"
-  },
-  "faster": {
-    "message": "ವೇಗವಾಗಿ"
   },
   "fiat": {
     "message": "ಫಿಯೆಟ್",
@@ -566,9 +539,6 @@
   "invalidBlockExplorerURL": {
     "message": "ಅಮಾನ್ಯವಾದ Block Explorer URL"
   },
-  "invalidInput": {
-    "message": "ಅಮಾನ್ಯವಾದ ಇನ್‌ಪುಟ್."
-  },
   "invalidRPC": {
     "message": "ಅಮಾನ್ಯವಾದ RPC URL"
   },
@@ -599,9 +569,6 @@
   },
   "links": {
     "message": "ಲಿಂಕ್‌ಗಳು"
-  },
-  "liveGasPricePredictions": {
-    "message": "ಲೈವ್ ಗ್ಯಾಸ್ ಬೆಲೆಯ ಭವಿಷ್ಯಗಳು"
   },
   "loadMore": {
     "message": "ಇನ್ನಷ್ಟು ಲೋಡ್ ಮಾಡಿ"
@@ -746,10 +713,7 @@
   "optionalBlockExplorerUrl": {
     "message": "ಅನ್ವೇಷಕ URL ಅನ್ನು ನಿರ್ಬಂಧಿಸಿ (ಐಚ್ಛಿಕ)"
   },
-  "optionalChainId": {
-    "message": "ಚೈನ್‌ಐಡಿ (ಐಚ್ಛಿಕ)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "ಚಿಹ್ನೆ (ಐಚ್ಛಿಕ)"
   },
   "orderOneHere": {
@@ -807,15 +771,6 @@
   },
   "privateNetwork": {
     "message": "ಖಾಸಗಿ ನೆಟ್‌ವರ್ಕ್"
-  },
-  "protectYourKeys": {
-    "message": "ನಿಮ್ಮ ಕೀಗಳನ್ನು ರಕ್ಷಿಸಿ!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "ನಿಮ್ಮ ಸೀಡ್ ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ಜಾಗರೂಕರಾಗಿರಿ — MetaMask ಅನ್ನು ಅನುಕರಿಸಲು ಪ್ರಯತ್ನಿಸುತ್ತಿರುವ ವೆಬ್‌ಸೈಟ್‌ಗಳ ವರದಿಗಳಿವೆ. MetaMask ನಿಮ್ಮ ಸೀಡ್ ಫ್ರೇಸ್ ಅನ್ನು ಎಂದಿಗೂ ಕೇಳುವುದಿಲ್ಲ!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "ನಿಮ್ಮ ಫ್ರೇಸ್ ಅನ್ನು ಸುರಕ್ಷಿತವಾಗಿರಿಸಿ. ಏನಾದರೂ ಅನುಮಾನಾಸ್ಪದವಾಗಿರುವುದನ್ನು ಅಥವಾ ವೆಬ್‌ಸೈಟ್ ಕುರಿತು ನಿಮಗೆ ಅನಿಶ್ಚಿತತೆಯಿದ್ದರೆ, support@metamask.io ಗೆ ಇಮೇಲ್ ಮಾಡಿ"
   },
   "queue": {
     "message": "ಸರತಿ"
@@ -964,17 +919,11 @@
   "selectAnAccountHelp": {
     "message": "MetaMask ನಲ್ಲಿ ವೀಕ್ಷಿಸಲು ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
-  "selectCurrency": {
-    "message": "ಕರೆನ್ಸಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-  },
   "selectEachPhrase": {
     "message": "ಅದು ಸರಿಯಾಗಿದೆಯೆ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಲು ದಯವಿಟ್ಟು ಪ್ರತಿ ಫ್ರೇಸ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ."
   },
   "selectHdPath": {
     "message": "HD ಪಾತ್ ಆಯ್ಕೆಮಾಡಿ"
-  },
-  "selectLocale": {
-    "message": "ಪ್ರದೇಶವನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
   "selectPathHelp": {
     "message": "ನಿಮ್ಮ ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಲೆಡ್ಜರ್ ಖಾತೆಗಳನ್ನು ನೀವು ಕೆಳಗೆ ನೋಡದಿದ್ದರೆ, ಪಾತ್‌ಗಳನ್ನು \"ಲೆಗಸಿ (MEW / MyCrypto)\" ಗೆ ಬದಲಾಯಿಸಲು ಪ್ರಯತ್ನಿಸಿ"
@@ -996,9 +945,6 @@
   },
   "sentEther": {
     "message": "ಕಳುಹಿಸಲಾದ ಎಥರ್"
-  },
-  "sentTokens": {
-    "message": "ಕಳುಹಿಸಲಾದ ಟೋಕನ್‌ಗಳು"
   },
   "separateEachWord": {
     "message": "ಒಂದು ಸ್ಪೇಸ್ ಮೂಲಕ ಪ್ರತಿ ಪದವನ್ನು ಬೇರ್ಪಡಿಸಿ"
@@ -1043,9 +989,6 @@
     "message": "ಸಹಿ ಮಾಡಲಾಗಿದೆ"
   },
   "slow": {
-    "message": "ನಿಧಾನ"
-  },
-  "slower": {
     "message": "ನಿಧಾನ"
   },
   "somethingWentWrong": {
@@ -1192,9 +1135,6 @@
   "transactionSubmitted": {
     "message": "ವಹಿವಾಟನ್ನು $2 ನಲ್ಲಿ $1 ಗ್ಯಾಸ್ ಶುಲ್ಕದೊಂದಿಗೆ ರಚಿಸಲಾಗಿದೆ."
   },
-  "transactionTime": {
-    "message": "ವಹಿವಾಟು ಸಮಯ"
-  },
   "transactionUpdated": {
     "message": "$2 ನಲ್ಲಿ ವಹಿವಾಟನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ."
   },
@@ -1297,9 +1237,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "ನಿಮ್ಮ ಖಾಸಗಿ ಸೀಡ್ ಫ್ರೇಸ್"
-  },
-  "yourSigRequested": {
-    "message": "ನಿಮ್ಮ ಸಹಿಯನ್ನು ವಿನಂತಿಸಲಾಗಿದೆ"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "ವೇಗ ಹೆಚ್ಚಿಸುವುದಕ್ಕೆ ಶೂನ್ಯ ಗ್ಯಾಸ್ ಬೆಲೆ"

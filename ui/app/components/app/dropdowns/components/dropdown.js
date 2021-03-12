@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import MenuDroppo from '../../menu-droppo'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import MenuDroppo from '../../menu-droppo';
 
 export class Dropdown extends Component {
-  render () {
+  render() {
     const {
       containerClassName,
       isOpen,
@@ -12,14 +12,15 @@ export class Dropdown extends Component {
       innerStyle,
       children,
       useCssTransition,
-    } = this.props
+    } = this.props;
 
     const innerStyleDefaults = {
       borderRadius: '4px',
       padding: '8px 16px',
       background: 'rgba(0, 0, 0, 0.8)',
-      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px', ...innerStyle,
-    }
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      ...innerStyle,
+    };
 
     return (
       <MenuDroppo
@@ -41,15 +42,15 @@ export class Dropdown extends Component {
             li.dropdown-menu-item { color: rgb(185, 185, 185); }
           `}
         </style>
-        { children }
+        {children}
       </MenuDroppo>
-    )
+    );
   }
 }
 
 Dropdown.defaultProps = {
   useCssTransition: false,
-}
+};
 
 Dropdown.propTypes = {
   isOpen: PropTypes.bool.isRequired,
@@ -59,20 +60,26 @@ Dropdown.propTypes = {
   innerStyle: PropTypes.object,
   useCssTransition: PropTypes.bool,
   containerClassName: PropTypes.string,
-}
+};
 
 export class DropdownMenuItem extends Component {
-  render () {
-    const { onClick, closeMenu, children, style } = this.props
+  render() {
+    const { onClick, closeMenu, children, style } = this.props;
 
     return (
       <li
         className="dropdown-menu-item"
         onClick={() => {
-          onClick()
-          closeMenu()
+          onClick();
+          closeMenu();
         }}
-        style={({
+        onKeyPress={(event) => {
+          if (event.key === 'Enter') {
+            onClick();
+            closeMenu();
+          }
+        }}
+        style={{
           listStyle: 'none',
           padding: '8px 0px',
           fontSize: '18px',
@@ -81,12 +88,14 @@ export class DropdownMenuItem extends Component {
           display: 'flex',
           justifyContent: 'flex-start',
           alignItems: 'center',
-          color: 'white', ...style,
-        })}
+          color: 'white',
+          ...style,
+        }}
+        tabIndex="0"
       >
         {children}
       </li>
-    )
+    );
   }
 }
 
@@ -95,4 +104,4 @@ DropdownMenuItem.propTypes = {
   onClick: PropTypes.func.isRequired,
   children: PropTypes.node,
   style: PropTypes.object,
-}
+};

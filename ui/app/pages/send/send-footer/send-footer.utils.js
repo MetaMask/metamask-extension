@@ -1,31 +1,34 @@
-import ethAbi from 'ethereumjs-abi'
-import ethUtil from 'ethereumjs-util'
-import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../send.constants'
+import ethAbi from 'ethereumjs-abi';
+import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from '../send.constants';
+import { addHexPrefix } from '../../../../../app/scripts/lib/util';
+import { addHexPrefixToObjectValues } from '../../../helpers/utils/util';
 
-export function addHexPrefixToObjectValues (obj) {
-  return Object.keys(obj).reduce((newObj, key) => {
-    return { ...newObj, [key]: ethUtil.addHexPrefix(obj[key]) }
-  }, {})
-}
-
-export function constructTxParams ({ sendToken, data, to, amount, from, gas, gasPrice }) {
+export function constructTxParams({
+  sendToken,
+  data,
+  to,
+  amount,
+  from,
+  gas,
+  gasPrice,
+}) {
   const txParams = {
     data,
     from,
     value: '0',
     gas,
     gasPrice,
-  }
+  };
 
   if (!sendToken) {
-    txParams.value = amount
-    txParams.to = to
+    txParams.value = amount;
+    txParams.to = to;
   }
 
-  return addHexPrefixToObjectValues(txParams)
+  return addHexPrefixToObjectValues(txParams);
 }
 
-export function constructUpdatedTx ({
+export function constructUpdatedTx({
   amount,
   data,
   editingTransactionId,
@@ -36,8 +39,10 @@ export function constructUpdatedTx ({
   to,
   unapprovedTxs,
 }) {
-  const unapprovedTx = unapprovedTxs[editingTransactionId]
-  const txParamsData = unapprovedTx.txParams.data ? unapprovedTx.txParams.data : data
+  const unapprovedTx = unapprovedTxs[editingTransactionId];
+  const txParamsData = unapprovedTx.txParams.data
+    ? unapprovedTx.txParams.data
+    : data;
 
   const editingTx = {
     ...unapprovedTx,
@@ -52,30 +57,40 @@ export function constructUpdatedTx ({
         value: amount,
       }),
     ),
-  }
+  };
 
   if (sendToken) {
-    Object.assign(editingTx.txParams, addHexPrefixToObjectValues({
-      value: '0',
-      to: sendToken.address,
-      data: (
-        TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
-          ethAbi.rawEncode(['address', 'uint256'], [to, ethUtil.addHexPrefix(amount)]),
-          (x) => (`00${x.toString(16)}`).slice(-2),
-        ).join('')
-      ),
-    }))
+    Object.assign(
+      editingTx.txParams,
+      addHexPrefixToObjectValues({
+        value: '0',
+        to: sendToken.address,
+        data:
+          TOKEN_TRANSFER_FUNCTION_SIGNATURE +
+          Array.prototype.map
+            .call(
+              ethAbi.rawEncode(
+                ['address', 'uint256'],
+                [to, addHexPrefix(amount)],
+              ),
+              (x) => `00${x.toString(16)}`.slice(-2),
+            )
+            .join(''),
+      }),
+    );
   }
 
   if (typeof editingTx.txParams.data === 'undefined') {
-    delete editingTx.txParams.data
+    delete editingTx.txParams.data;
   }
 
-  return editingTx
+  return editingTx;
 }
 
-export function addressIsNew (toAccounts, newAddress) {
-  const newAddressNormalized = newAddress.toLowerCase()
-  const foundMatching = toAccounts.some(({ address }) => address.toLowerCase() === newAddressNormalized)
-  return !foundMatching
+export function addressIsNew(toAccounts, newAddress) {
+  const newAddressNormalized = newAddress.toLowerCase();
+  const foundMatching = toAccounts.some(
+    ({ address }) => address.toLowerCase() === newAddressNormalized,
+  );
+  return !foundMatching;
 }

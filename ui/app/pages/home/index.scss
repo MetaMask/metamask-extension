@@ -27,16 +27,19 @@
   }
 
   &__main-view &__tab {
+    @include H6;
+
     flex-grow: 1;
     color: $Grey-500;
-    padding: 16px 8px;
-    font-size: 14px;
     font-weight: 500;
-    line-height: 130%;
   }
 
   &__main-view &__tab--active {
     color: $Blue-500;
+  }
+
+  &__main-view &__tab button {
+    padding: 16px 8px;
   }
 
   &__connect-status-text {
@@ -80,11 +83,12 @@
     }
 
     .popover-footer {
+      @include H6;
+
       border-top: 0;
       justify-content: space-between;
       align-items: center;
       padding-top: 20px;
-      font-size: 14px;
 
       & :only-child {
         margin: 0;

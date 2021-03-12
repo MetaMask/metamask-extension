@@ -1,12 +1,11 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import SendRowWrapper from '../send-row-wrapper'
-import GasPriceButtonGroup from '../../../../components/app/gas-customization/gas-price-button-group'
-import AdvancedGasInputs from '../../../../components/app/gas-customization/advanced-gas-inputs'
-import GasFeeDisplay from './gas-fee-display/gas-fee-display.component'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import SendRowWrapper from '../send-row-wrapper';
+import GasPriceButtonGroup from '../../../../components/app/gas-customization/gas-price-button-group';
+import AdvancedGasInputs from '../../../../components/app/gas-customization/advanced-gas-inputs';
+import GasFeeDisplay from './gas-fee-display/gas-fee-display.component';
 
 export default class SendGasRow extends Component {
-
   static propTypes = {
     balance: PropTypes.string,
     gasFeeError: PropTypes.bool,
@@ -27,19 +26,19 @@ export default class SendGasRow extends Component {
     gasLimit: PropTypes.string,
     insufficientBalance: PropTypes.bool,
     isMainnet: PropTypes.bool,
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  }
+  };
 
-  renderAdvancedOptionsButton () {
-    const { metricsEvent } = this.context
-    const { showCustomizeGasModal, isMainnet } = this.props
+  renderAdvancedOptionsButton() {
+    const { metricsEvent } = this.context;
+    const { showCustomizeGasModal, isMainnet } = this.props;
     // Tests should behave in same way as mainnet, but are using Localhost
     if (!isMainnet && !process.env.IN_TEST) {
-      return null
+      return null;
     }
     return (
       <div
@@ -51,33 +50,33 @@ export default class SendGasRow extends Component {
               action: 'Edit Screen',
               name: 'Clicked "Advanced Options"',
             },
-          })
-          showCustomizeGasModal()
+          });
+          showCustomizeGasModal();
         }}
       >
-        { this.context.t('advancedOptions') }
+        {this.context.t('advancedOptions')}
       </div>
-    )
+    );
   }
 
-  setMaxAmount () {
+  setMaxAmount() {
     const {
       balance,
       gasTotal,
       sendToken,
       setAmountToMax,
       tokenBalance,
-    } = this.props
+    } = this.props;
 
     setAmountToMax({
       balance,
       gasTotal,
       sendToken,
       tokenBalance,
-    })
+    });
   }
 
-  renderContent () {
+  renderContent() {
     const {
       gasLoadingError,
       gasTotal,
@@ -93,8 +92,8 @@ export default class SendGasRow extends Component {
       gasLimit,
       insufficientBalance,
       isMainnet,
-    } = this.props
-    const { metricsEvent } = this.context
+    } = this.props;
+    const { metricsEvent } = this.context;
 
     const gasPriceButtonGroup = (
       <div>
@@ -102,71 +101,81 @@ export default class SendGasRow extends Component {
           className="gas-price-button-group--small"
           showCheck={false}
           {...gasPriceButtonGroupProps}
-          handleGasPriceSelection={async (...args) => {
+          handleGasPriceSelection={async (opts) => {
             metricsEvent({
               eventOpts: {
                 category: 'Transactions',
                 action: 'Edit Screen',
                 name: 'Changed Gas Button',
               },
-            })
-            await gasPriceButtonGroupProps.handleGasPriceSelection(...args)
+            });
+            await gasPriceButtonGroupProps.handleGasPriceSelection(opts);
             if (maxModeOn) {
-              this.setMaxAmount()
+              this.setMaxAmount();
             }
           }}
         />
-        { this.renderAdvancedOptionsButton() }
       </div>
-    )
+    );
     const gasFeeDisplay = (
       <GasFeeDisplay
         gasLoadingError={gasLoadingError}
         gasTotal={gasTotal}
         onReset={() => {
-          resetGasButtons()
+          resetGasButtons();
           if (maxModeOn) {
-            this.setMaxAmount()
+            this.setMaxAmount();
           }
         }}
         onClick={() => showCustomizeGasModal()}
       />
-    )
+    );
     const advancedGasInputs = (
       <div>
         <AdvancedGasInputs
-          updateCustomGasPrice={(newGasPrice) => setGasPrice(newGasPrice, gasLimit)}
-          updateCustomGasLimit={(newGasLimit) => setGasLimit(newGasLimit, gasPrice)}
+          updateCustomGasPrice={(newGasPrice) =>
+            setGasPrice({ gasPrice: newGasPrice, gasLimit })
+          }
+          updateCustomGasLimit={(newGasLimit) =>
+            setGasLimit(newGasLimit, gasPrice)
+          }
           customGasPrice={gasPrice}
           customGasLimit={gasLimit}
           insufficientBalance={insufficientBalance}
           customPriceIsSafe
           isSpeedUp={false}
         />
-        { this.renderAdvancedOptionsButton() }
       </div>
-    )
+    );
     // Tests should behave in same way as mainnet, but are using Localhost
     if (advancedInlineGasShown || (!isMainnet && !process.env.IN_TEST)) {
-      return advancedGasInputs
+      return advancedGasInputs;
     } else if (gasButtonGroupShown) {
-      return gasPriceButtonGroup
+      return gasPriceButtonGroup;
     }
-    return gasFeeDisplay
+    return gasFeeDisplay;
   }
 
-  render () {
-    const { gasFeeError } = this.props
+  render() {
+    const {
+      gasFeeError,
+      gasButtonGroupShown,
+      advancedInlineGasShown,
+    } = this.props;
 
     return (
-      <SendRowWrapper
-        label={`${this.context.t('transactionFee')}:`}
-        showError={gasFeeError}
-        errorType="gasFee"
-      >
-        { this.renderContent() }
-      </SendRowWrapper>
-    )
+      <>
+        <SendRowWrapper
+          label={`${this.context.t('transactionFee')}:`}
+          showError={gasFeeError}
+          errorType="gasFee"
+        >
+          {this.renderContent()}
+        </SendRowWrapper>
+        {gasButtonGroupShown || advancedInlineGasShown ? (
+          <SendRowWrapper>{this.renderAdvancedOptionsButton()}</SendRowWrapper>
+        ) : null}
+      </>
+    );
   }
-
 }

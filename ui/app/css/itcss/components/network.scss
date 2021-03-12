@@ -7,7 +7,7 @@
 }
 
 .network-component.pointer {
-  border: 2px solid $Grey-200;
+  border: 1px solid $Grey-200;
   border-radius: 82px;
   padding: 6px 3px;
   flex: 0 0 auto;
@@ -41,41 +41,6 @@
   }
 }
 
-.network-indicator {
-  display: flex;
-  align-items: center;
-  font-size: 0.6em;
-
-  &__down-arrow {
-    height: 8px;
-    width: 12px;
-    display: block;
-    background-image: url(/images/icons/caret-down.svg);
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    margin: 0 8px;
-  }
-
-  .fa-question-circle {
-    margin: 0 4px 0 6px;
-    font-size: 1rem;
-    flex: 0 0 auto;
-  }
-}
-
-.network-name {
-  padding: 0 4px;
-  font-size: 12px;
-  line-height: 14px;
-  flex: 1 1 auto;
-  color: $tundora;
-  font-weight: 500;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
 .dropdown-menu-item .fa.delete {
   margin-right: 10px;
   display: none;
@@ -87,6 +52,10 @@
 
 .network-droppo {
   right: 2px;
+
+  .color-indicator {
+    margin: 0 14px;
+  }
 
   @media screen and (min-width: 576px) {
     right: calc(((100% - 85vw) / 2) + 2px);
@@ -163,20 +132,20 @@
 }
 
 .network-dropdown-title {
+  @include H4;
+
   height: 25px;
   width: 120px;
   color: $white;
-  font-size: 18px;
-  line-height: 25px;
   text-align: center;
 }
 
 .network-dropdown-content {
+  @include H6;
+
   min-height: 36px;
   width: 265px;
   color: $dusty-gray;
-  font-size: 14px;
-  line-height: 18px;
 }
 
 .network-caret {

@@ -146,12 +146,6 @@
   "builtInCalifornia": {
     "message": "MetaMask ካሊፎርኒያ ውስጥ ተዘጋጅቶ የተገነባ ነው።"
   },
-  "buyCoinSwitch": {
-    "message": "በ CoinSwitch ላይ ይግዙ"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "CoinSwitch ከ300 በላይ ክሪፕቶ ከረንሲዎችን በጥሩ ዋጋ ለመመንዘር ባለ አንድ ማቆሚያ መዳረሻ ነው።"
-  },
   "buyWithWyre": {
     "message": "ETH በ Wyre ይግዙ"
   },
@@ -164,9 +158,6 @@
   "cancel": {
     "message": "ሰርዝ"
   },
-  "cancelAttempt": {
-    "message": "ሙከራን ሰርዝ"
-  },
   "cancellationGasFee": {
     "message": "የስረዛ ነዳጅ ወጪ"
   },
@@ -175,9 +166,6 @@
   },
   "chainId": {
     "message": "የሰንሰለት መታወቂያ"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "ቻርት የሚገኘው በ Ethereum አውታረ መረቦች ላይ ብቻ ነው።"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "ከሃርድዌርዎ ቋት ጋር ለመገናኘት MetaMask በ Google Chrome ላይ መጠቀም አለብዎት።"
@@ -218,9 +206,6 @@
   "connectingToKovan": {
     "message": "ከ Kovan የሙከራ አውታረ መረብ መገናኘት"
   },
-  "connectingToLocalhost": {
-    "message": "ከ Localhost 8545 ጋር መገናኘት"
-  },
   "connectingToMainnet": {
     "message": "ከዋናው የ Ethereum አውታረ መረብ ጋር መገናኘት"
   },
@@ -229,9 +214,6 @@
   },
   "connectingToRopsten": {
     "message": "ከ Ropsten የሙከራ አውታረ መረብ ጋር በመገናኘት ላይ"
-  },
-  "continueToCoinSwitch": {
-    "message": "ወደ CoinSwitch ይቀጥሉ"
   },
   "continueToWyre": {
     "message": "ወደ Wyre ይቀጥሉ"
@@ -311,9 +293,6 @@
   "deleteNetworkDescription": {
     "message": "ይህን አውታረ መረብ ለመሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?"
   },
-  "deposit": {
-    "message": "ማጠራቀም"
-  },
   "depositEther": {
     "message": "Ether አስቀምጥ"
   },
@@ -371,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "የዘር ሐረግዎን በድጋሚ መጠባበቂያ ለመያዝ ከፈለጉ፣ በቅንብሮች -> ግላዊነት ውስጥ ሊያገኙት ይችላሉ።"
   },
-  "endOfFlowMessage7": {
-    "message": "ጥያቄዎች ካሉዎት ወይም የሆነ አጠራጣሪ ነገር ካዩ፣ እባክዎ ለ support@metamask.io ኢሜይል ይላኩ።"
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask የዘር ሐረግዎን መልሶ ማግኘት አልቻለም። ተጨማሪ መረጃ ያግኙ።"
   },
@@ -415,9 +391,6 @@
   },
   "fast": {
     "message": "ፈጣን"
-  },
-  "faster": {
-    "message": "በፍጥነት"
   },
   "fiat": {
     "message": "ፊያት",
@@ -566,9 +539,6 @@
   "invalidBlockExplorerURL": {
     "message": "ልክ ያልሆነ Block Explorer ዩአርኤል"
   },
-  "invalidInput": {
-    "message": "ልክ ያልሆነ ግቤት።"
-  },
   "invalidRPC": {
     "message": "ልክ ያልሆነ RPC ዩአርኤል"
   },
@@ -599,9 +569,6 @@
   },
   "links": {
     "message": "ማስፈንጠሪያዎች"
-  },
-  "liveGasPricePredictions": {
-    "message": "ቀጥታ የነዳጅ ዋጋ ትንበያዎች"
   },
   "loadMore": {
     "message": "ተጨማሪ ጫን"
@@ -743,10 +710,7 @@
   "optionalBlockExplorerUrl": {
     "message": "ኤክስፕሎረር URL አግድ (አማራጭ)"
   },
-  "optionalChainId": {
-    "message": "የሰንሰለት መለያ ቁጥር (አማራጭ)"
-  },
-  "optionalSymbol": {
+  "optionalCurrencySymbol": {
     "message": "ምልክት (አማራጭ)"
   },
   "orderOneHere": {
@@ -804,15 +768,6 @@
   },
   "privateNetwork": {
     "message": "የግል አውታረ መረብ"
-  },
-  "protectYourKeys": {
-    "message": "ቁልፎችዎን ይጠብቁ!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "ስለ ዘር ሐረግዎ ይጠንቀቁ - ራሳቸውን ከ MetaMask ጋር ለማመሳሰል የሚሞከሩ ድረ ገጾች እናሉ ሰምተናል። MetaMask በጭራሽ የዘር ሐረግዎን አይጠይቅዎትም!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "የሐረግዎን ደህንነት ይጠብቁ። ይም የሆነ አጠራጣሪ ነገር ካዩ ወይም ስለ አንድ ድረ ገጽ እርግጠኛ ካልሆኑ፣ እባክዎ ለ support@metamask.io ኢሜይል ይላኩ"
   },
   "queue": {
     "message": "ወረፋ"
@@ -961,17 +916,11 @@
   "selectAnAccountHelp": {
     "message": "መለያውን በ MetaMask ለማየት ይምረጡ"
   },
-  "selectCurrency": {
-    "message": "የገንዘብ ዓይነት ይምረጡ"
-  },
   "selectEachPhrase": {
     "message": "እባክዎ እያንዳንዱን ሐረግ በመምረጥ ትክክለኛነቱን ያረጋግጡ።"
   },
   "selectHdPath": {
     "message": "የ HD ዱካ ይምረጡ"
-  },
-  "selectLocale": {
-    "message": "አካባቢ ይምረጡ"
   },
   "selectPathHelp": {
     "message": "ነባር የሌጄር መለያዎችን ከታች ካላዩ፣ ዱካዎችን ወደ \"Legacy (MEW / MyCrypto)\" ለመቀየር ይሞክሩ"
@@ -993,9 +942,6 @@
   },
   "sentEther": {
     "message": "የተላከ ether"
-  },
-  "sentTokens": {
-    "message": "የተላኩ ተለዋጭ ስሞች"
   },
   "separateEachWord": {
     "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"
@@ -1041,9 +987,6 @@
   },
   "slow": {
     "message": "ቀስ"
-  },
-  "slower": {
-    "message": "ዘገምተኛ"
   },
   "somethingWentWrong": {
     "message": "ኤጭ! የሆነ ችግር ተፈጥሯል።"
@@ -1189,9 +1132,6 @@
   "transactionSubmitted": {
     "message": "ግብይቱ የቀረበው በነዳጅ ዋጋ $1በ$2ነው።"
   },
-  "transactionTime": {
-    "message": "የግብይት ጊዜ"
-  },
   "transactionUpdated": {
     "message": "ግብይት የዘመነው በ $2ነው።"
   },
@@ -1294,9 +1234,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "የግል ዘር ሐረግዎ"
-  },
-  "yourSigRequested": {
-    "message": "ፊርማዎ እየተጠየቀ ነው"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "በስፒድ አፕ ላይ ዜሮ የነዳጅ ዋጋ"

@@ -1,64 +1,51 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import ethUtil from 'ethereumjs-util'
-import ConfirmTransactionBase from '../confirm-transaction-base'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import ethUtil from 'ethereumjs-util';
+import ConfirmTransactionBase from '../confirm-transaction-base';
 
 export default class ConfirmDeployContract extends Component {
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     txData: PropTypes.object,
-  }
+  };
 
-  renderData () {
-    const { t } = this.context
-    const {
-      txData: {
-        origin,
-        txParams: {
-          data,
-        } = {},
-      } = {},
-    } = this.props
+  renderData() {
+    const { t } = this.context;
+    const { txData: { origin, txParams: { data } = {} } = {} } = this.props;
 
     return (
       <div className="confirm-page-container-content__data">
         <div className="confirm-page-container-content__data-box">
           <div className="confirm-page-container-content__data-field">
             <div className="confirm-page-container-content__data-field-label">
-              { `${t('origin')}:` }
+              {`${t('origin')}:`}
             </div>
-            <div>
-              { origin }
-            </div>
+            <div>{origin}</div>
           </div>
           <div className="confirm-page-container-content__data-field">
             <div className="confirm-page-container-content__data-field-label">
-              { `${t('bytes')}:` }
+              {`${t('bytes')}:`}
             </div>
-            <div>
-              { ethUtil.toBuffer(data).length }
-            </div>
+            <div>{ethUtil.toBuffer(data).length}</div>
           </div>
         </div>
         <div className="confirm-page-container-content__data-box-label">
-          { `${t('hexData')}:` }
+          {`${t('hexData')}:`}
         </div>
-        <div className="confirm-page-container-content__data-box">
-          { data }
-        </div>
+        <div className="confirm-page-container-content__data-box">{data}</div>
       </div>
-    )
+    );
   }
 
-  render () {
+  render() {
     return (
       <ConfirmTransactionBase
         actionKey="contractDeployment"
         dataComponent={this.renderData()}
       />
-    )
+    );
   }
 }

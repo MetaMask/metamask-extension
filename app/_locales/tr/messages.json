@@ -49,12 +49,6 @@
   "builtInCalifornia": {
     "message": "MetaMask California'da tasarlandı ve yaratıldı"
   },
-  "buyCoinSwitch": {
-    "message": "CoinSwitch'de satın al"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "Cairnswich, 300'den fazla kriptona en iyi oranda eşlik eden tek durak noktasıdır."
-  },
   "cancel": {
     "message": "Vazgeç"
   },
@@ -78,9 +72,6 @@
   },
   "connectingToRopsten": {
     "message": "Ropsten Test Ağına bağlanıyor"
-  },
-  "continueToCoinSwitch": {
-    "message": "CoinSwitch'e devam et"
   },
   "contractDeployment": {
     "message": "Sözleşme kurulumu"
@@ -117,9 +108,6 @@
   },
   "defaultNetwork": {
     "message": "Ether işlemleri için varsayılan ağ Main Net."
-  },
-  "deposit": {
-    "message": "Yatır"
   },
   "depositEther": {
     "message": "Ether yatır"
@@ -225,9 +213,6 @@
   },
   "invalidBlockExplorerURL": {
     "message": "Geçersiz Block Explorer URI"
-  },
-  "invalidInput": {
-    "message": "Geçersiz giriş."
   },
   "invalidRPC": {
     "message": "Geçersiz RPC URI"
@@ -387,9 +372,6 @@
   "seedPhraseReq": {
     "message": "Kaynak ifadeleri 12 kelimedir."
   },
-  "selectCurrency": {
-    "message": "Döviz Seç"
-  },
   "selectType": {
     "message": "Tip Seç"
   },
@@ -501,8 +483,5 @@
   },
   "youSign": {
     "message": "İmzalıyorsunuz"
-  },
-  "yourSigRequested": {
-    "message": "İmzanız isteniyor"
   }
 }

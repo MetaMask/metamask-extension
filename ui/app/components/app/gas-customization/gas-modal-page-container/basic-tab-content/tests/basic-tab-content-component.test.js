@@ -1,10 +1,10 @@
-import assert from 'assert'
-import React from 'react'
-import shallow from '../../../../../../../lib/shallow-with-context'
-import BasicTabContent from '../basic-tab-content.component'
-import GasPriceButtonGroup from '../../../gas-price-button-group'
-import Loading from '../../../../../ui/loading-screen'
-import { GAS_ESTIMATE_TYPES } from '../../../../../../helpers/constants/common'
+import assert from 'assert';
+import React from 'react';
+import shallow from '../../../../../../../lib/shallow-with-context';
+import BasicTabContent from '../basic-tab-content.component';
+import GasPriceButtonGroup from '../../../gas-price-button-group';
+import Loading from '../../../../../ui/loading-screen';
+import { GAS_ESTIMATE_TYPES } from '../../../../../../helpers/constants/common';
 
 const mockGasPriceButtonGroupProps = {
   buttonDataLoading: false,
@@ -32,30 +32,36 @@ const mockGasPriceButtonGroupProps = {
       gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
     },
   ],
-  handleGasPriceSelection: (newPrice) => console.log('NewPrice: ', newPrice),
+  handleGasPriceSelection: ({ gasPrice }) =>
+    console.log('NewPrice: ', gasPrice),
   noButtonActiveByDefault: true,
   showCheck: true,
-}
+};
 
 describe('BasicTabContent Component', function () {
   describe('render', function () {
-    let wrapper
+    let wrapper;
 
     beforeEach(function () {
-      wrapper = shallow((
+      wrapper = shallow(
         <BasicTabContent
           gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
-        />
-      ))
-    })
+        />,
+      );
+    });
 
     it('should have a title', function () {
-      assert(wrapper.find('.basic-tab-content').childAt(0).hasClass('basic-tab-content__title'))
-    })
+      assert(
+        wrapper
+          .find('.basic-tab-content')
+          .childAt(0)
+          .hasClass('basic-tab-content__title'),
+      );
+    });
 
     it('should render a GasPriceButtonGroup compenent', function () {
-      assert.equal(wrapper.find(GasPriceButtonGroup).length, 1)
-    })
+      assert.strictEqual(wrapper.find(GasPriceButtonGroup).length, 1);
+    });
 
     it('should pass correct props to GasPriceButtonGroup', function () {
       const {
@@ -65,23 +71,38 @@ describe('BasicTabContent Component', function () {
         handleGasPriceSelection,
         noButtonActiveByDefault,
         showCheck,
-      } = wrapper.find(GasPriceButtonGroup).props()
-      assert.equal(wrapper.find(GasPriceButtonGroup).length, 1)
-      assert.equal(buttonDataLoading, mockGasPriceButtonGroupProps.buttonDataLoading)
-      assert.equal(className, mockGasPriceButtonGroupProps.className)
-      assert.equal(noButtonActiveByDefault, mockGasPriceButtonGroupProps.noButtonActiveByDefault)
-      assert.equal(showCheck, mockGasPriceButtonGroupProps.showCheck)
-      assert.deepEqual(gasButtonInfo, mockGasPriceButtonGroupProps.gasButtonInfo)
-      assert.equal(JSON.stringify(handleGasPriceSelection), JSON.stringify(mockGasPriceButtonGroupProps.handleGasPriceSelection))
-    })
+      } = wrapper.find(GasPriceButtonGroup).props();
+      assert.strictEqual(wrapper.find(GasPriceButtonGroup).length, 1);
+      assert.strictEqual(
+        buttonDataLoading,
+        mockGasPriceButtonGroupProps.buttonDataLoading,
+      );
+      assert.strictEqual(className, mockGasPriceButtonGroupProps.className);
+      assert.strictEqual(
+        noButtonActiveByDefault,
+        mockGasPriceButtonGroupProps.noButtonActiveByDefault,
+      );
+      assert.strictEqual(showCheck, mockGasPriceButtonGroupProps.showCheck);
+      assert.deepStrictEqual(
+        gasButtonInfo,
+        mockGasPriceButtonGroupProps.gasButtonInfo,
+      );
+      assert.strictEqual(
+        JSON.stringify(handleGasPriceSelection),
+        JSON.stringify(mockGasPriceButtonGroupProps.handleGasPriceSelection),
+      );
+    });
 
     it('should render a loading component instead of the GasPriceButtonGroup if gasPriceButtonGroupProps.loading is true', function () {
       wrapper.setProps({
-        gasPriceButtonGroupProps: { ...mockGasPriceButtonGroupProps, loading: true },
-      })
+        gasPriceButtonGroupProps: {
+          ...mockGasPriceButtonGroupProps,
+          loading: true,
+        },
+      });
 
-      assert.equal(wrapper.find(GasPriceButtonGroup).length, 0)
-      assert.equal(wrapper.find(Loading).length, 1)
-    })
-  })
-})
+      assert.strictEqual(wrapper.find(GasPriceButtonGroup).length, 0);
+      assert.strictEqual(wrapper.find(Loading).length, 1);
+    });
+  });
+});

@@ -1,444 +1,489 @@
-import abi from 'human-standard-token-abi'
-import pify from 'pify'
-import ethUtil from 'ethereumjs-util'
-import log from 'loglevel'
-import { capitalize } from 'lodash'
-import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url'
-import { checksumAddress } from '../helpers/utils/util'
-import { calcTokenBalance, estimateGas } from '../pages/send/send.utils'
-import { fetchLocale, loadRelativeTimeFormatLocaleData } from '../helpers/utils/i18n-helper'
-import { getMethodDataAsync } from '../helpers/utils/transactions.util'
-import { fetchSymbolAndDecimals } from '../helpers/utils/token-util'
-import switchDirection from '../helpers/utils/switch-direction'
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../app/scripts/lib/enums'
-import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util'
-import { setCustomGasLimit } from '../ducks/gas/gas.duck'
-import txHelper from '../../lib/tx-helper'
-import { getEnvironmentType } from '../../../app/scripts/lib/util'
+import abi from 'human-standard-token-abi';
+import pify from 'pify';
+import log from 'loglevel';
+import { capitalize } from 'lodash';
+import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url';
+import { checksumAddress } from '../helpers/utils/util';
+import { calcTokenBalance, estimateGasForSend } from '../pages/send/send.utils';
+import {
+  fetchLocale,
+  loadRelativeTimeFormatLocaleData,
+} from '../helpers/utils/i18n-helper';
+import { getMethodDataAsync } from '../helpers/utils/transactions.util';
+import { fetchSymbolAndDecimals } from '../helpers/utils/token-util';
+import switchDirection from '../helpers/utils/switch-direction';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
+import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
+import { setCustomGasLimit } from '../ducks/gas/gas.duck';
+import txHelper from '../../lib/tx-helper';
+import {
+  getEnvironmentType,
+  addHexPrefix,
+} from '../../../app/scripts/lib/util';
 import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
-} from '../selectors'
-import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account'
-import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask'
-import * as actionConstants from './actionConstants'
+} from '../selectors';
+import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
+import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
+import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens';
+import * as actionConstants from './actionConstants';
 
-let background = null
-let promisifiedBackground = null
-export function _setBackgroundConnection (backgroundConnection) {
-  background = backgroundConnection
-  promisifiedBackground = pify(background)
+let background = null;
+let promisifiedBackground = null;
+export function _setBackgroundConnection(backgroundConnection) {
+  background = backgroundConnection;
+  promisifiedBackground = pify(background);
 }
 
-export function goHome () {
+export function goHome() {
   return {
     type: actionConstants.GO_HOME,
-  }
+  };
 }
 
 // async actions
 
-export function tryUnlockMetamask (password) {
+export function tryUnlockMetamask(password) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
-    dispatch(unlockInProgress())
-    log.debug(`background.submitPassword`)
+    dispatch(showLoadingIndication());
+    dispatch(unlockInProgress());
+    log.debug(`background.submitPassword`);
 
     return new Promise((resolve, reject) => {
       background.submitPassword(password, (error) => {
         if (error) {
-          reject(error)
-          return
+          reject(error);
+          return;
         }
 
-        resolve()
-      })
+        resolve();
+      });
     })
       .then(() => {
-        dispatch(unlockSucceeded())
-        return forceUpdateMetamaskState(dispatch)
+        dispatch(unlockSucceeded());
+        return forceUpdateMetamaskState(dispatch);
       })
       .then(() => {
         return new Promise((resolve, reject) => {
           background.verifySeedPhrase((err) => {
             if (err) {
-              dispatch(displayWarning(err.message))
-              reject(err)
-              return
+              dispatch(displayWarning(err.message));
+              reject(err);
+              return;
             }
 
-            resolve()
-          })
-        })
+            resolve();
+          });
+        });
       })
       .then(() => {
-        dispatch(hideLoadingIndication())
+        dispatch(hideLoadingIndication());
       })
       .catch((err) => {
-        dispatch(unlockFailed(err.message))
-        dispatch(hideLoadingIndication())
-        return Promise.reject(err)
-      })
-  }
+        dispatch(unlockFailed(err.message));
+        dispatch(hideLoadingIndication());
+        return Promise.reject(err);
+      });
+  };
 }
 
-export function createNewVaultAndRestore (password, seed) {
+export function createNewVaultAndRestore(password, seed) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
-    log.debug(`background.createNewVaultAndRestore`)
-    let vault
+    dispatch(showLoadingIndication());
+    log.debug(`background.createNewVaultAndRestore`);
+    let vault;
     return new Promise((resolve, reject) => {
       background.createNewVaultAndRestore(password, seed, (err, _vault) => {
         if (err) {
-          reject(err)
-          return
+          reject(err);
+          return;
         }
-        vault = _vault
-        resolve()
-      })
+        vault = _vault;
+        resolve();
+      });
     })
       .then(() => dispatch(unMarkPasswordForgotten()))
       .then(() => {
-        dispatch(showAccountsPage())
-        dispatch(hideLoadingIndication())
-        return vault
+        dispatch(showAccountsPage());
+        dispatch(hideLoadingIndication());
+        return vault;
       })
       .catch((err) => {
-        dispatch(displayWarning(err.message))
-        dispatch(hideLoadingIndication())
-        return Promise.reject(err)
-      })
-  }
+        dispatch(displayWarning(err.message));
+        dispatch(hideLoadingIndication());
+        return Promise.reject(err);
+      });
+  };
 }
 
-export function createNewVaultAndGetSeedPhrase (password) {
+export function createNewVaultAndGetSeedPhrase(password) {
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
 
     try {
-      await createNewVault(password)
-      const seedWords = await verifySeedPhrase()
-      dispatch(hideLoadingIndication())
-      return seedWords
+      await createNewVault(password);
+      const seedWords = await verifySeedPhrase();
+      return seedWords;
     } catch (error) {
-      dispatch(hideLoadingIndication())
-      dispatch(displayWarning(error.message))
-      throw new Error(error.message)
+      dispatch(displayWarning(error.message));
+      throw new Error(error.message);
+    } finally {
+      dispatch(hideLoadingIndication());
     }
-  }
+  };
 }
 
-export function unlockAndGetSeedPhrase (password) {
+export function unlockAndGetSeedPhrase(password) {
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
 
     try {
-      await submitPassword(password)
-      const seedWords = await verifySeedPhrase()
-      await forceUpdateMetamaskState(dispatch)
-      dispatch(hideLoadingIndication())
-      return seedWords
+      await submitPassword(password);
+      const seedWords = await verifySeedPhrase();
+      await forceUpdateMetamaskState(dispatch);
+      return seedWords;
     } catch (error) {
-      dispatch(hideLoadingIndication())
-      dispatch(displayWarning(error.message))
-      throw new Error(error.message)
+      dispatch(displayWarning(error.message));
+      throw new Error(error.message);
+    } finally {
+      dispatch(hideLoadingIndication());
     }
-  }
+  };
 }
 
-export function submitPassword (password) {
+export function submitPassword(password) {
   return new Promise((resolve, reject) => {
     background.submitPassword(password, (error) => {
       if (error) {
-        reject(error)
-        return
+        reject(error);
+        return;
       }
 
-      resolve()
-    })
-  })
+      resolve();
+    });
+  });
 }
 
-export function createNewVault (password) {
+export function createNewVault(password) {
   return new Promise((resolve, reject) => {
     background.createNewVaultAndKeychain(password, (error) => {
       if (error) {
-        reject(error)
-        return
+        reject(error);
+        return;
       }
 
-      resolve(true)
-    })
-  })
+      resolve(true);
+    });
+  });
 }
 
-export function verifyPassword (password) {
+export function verifyPassword(password) {
   return new Promise((resolve, reject) => {
     background.verifyPassword(password, (error) => {
       if (error) {
-        reject(error)
-        return
+        reject(error);
+        return;
       }
 
-      resolve(true)
-    })
-  })
+      resolve(true);
+    });
+  });
 }
 
-export function verifySeedPhrase () {
+export function verifySeedPhrase() {
   return new Promise((resolve, reject) => {
     background.verifySeedPhrase((error, seedWords) => {
       if (error) {
-        reject(error)
-        return
+        reject(error);
+        return;
       }
 
-      resolve(seedWords)
-    })
-  })
+      resolve(seedWords);
+    });
+  });
 }
 
-export function requestRevealSeedWords (password) {
+export function requestRevealSeedWords(password) {
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
-    log.debug(`background.verifyPassword`)
+    dispatch(showLoadingIndication());
+    log.debug(`background.verifyPassword`);
 
     try {
-      await verifyPassword(password)
-      const seedWords = await verifySeedPhrase()
-      dispatch(hideLoadingIndication())
-      return seedWords
+      await verifyPassword(password);
+      const seedWords = await verifySeedPhrase();
+      return seedWords;
     } catch (error) {
-      dispatch(hideLoadingIndication())
-      dispatch(displayWarning(error.message))
-      throw new Error(error.message)
+      dispatch(displayWarning(error.message));
+      throw new Error(error.message);
+    } finally {
+      dispatch(hideLoadingIndication());
     }
-  }
+  };
 }
 
-export function tryReverseResolveAddress (address) {
+export function tryReverseResolveAddress(address) {
   return () => {
     return new Promise((resolve) => {
       background.tryReverseResolveAddress(address, (err) => {
         if (err) {
-          log.error(err)
+          log.error(err);
         }
-        resolve()
-      })
-    })
-  }
+        resolve();
+      });
+    });
+  };
 }
 
-export function fetchInfoToSync () {
+export function fetchInfoToSync() {
   return (dispatch) => {
-    log.debug(`background.fetchInfoToSync`)
+    log.debug(`background.fetchInfoToSync`);
     return new Promise((resolve, reject) => {
       background.fetchInfoToSync((err, result) => {
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
-        resolve(result)
-      })
-    })
-  }
+        resolve(result);
+      });
+    });
+  };
 }
 
-export function resetAccount () {
+export function resetAccount() {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
 
     return new Promise((resolve, reject) => {
       background.resetAccount((err, account) => {
-        dispatch(hideLoadingIndication())
+        dispatch(hideLoadingIndication());
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
 
-        log.info(`Transaction history reset for ${account}`)
-        dispatch(showAccountsPage())
-        resolve(account)
-      })
-    })
-  }
+        log.info(`Transaction history reset for ${account}`);
+        dispatch(showAccountsPage());
+        resolve(account);
+      });
+    });
+  };
 }
 
-export function removeAccount (address) {
+export function removeAccount(address) {
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
 
     try {
       await new Promise((resolve, reject) => {
         background.removeAccount(address, (error, account) => {
           if (error) {
-            reject(error)
-            return
+            reject(error);
+            return;
           }
-          resolve(account)
-        })
-      })
-      await forceUpdateMetamaskState(dispatch)
+          resolve(account);
+        });
+      });
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
-      dispatch(displayWarning(error.message))
-      throw error
+      dispatch(displayWarning(error.message));
+      throw error;
     } finally {
-      dispatch(hideLoadingIndication())
+      dispatch(hideLoadingIndication());
     }
 
-    log.info(`Account removed: ${address}`)
-    dispatch(showAccountsPage())
-  }
+    log.info(`Account removed: ${address}`);
+    dispatch(showAccountsPage());
+  };
 }
 
-export function importNewAccount (strategy, args) {
+export function importNewAccount(strategy, args) {
   return async (dispatch) => {
-    let newState
-    dispatch(showLoadingIndication('This may take a while, please be patient.'))
+    let newState;
+    dispatch(
+      showLoadingIndication('This may take a while, please be patient.'),
+    );
     try {
-      log.debug(`background.importAccountWithStrategy`)
-      await promisifiedBackground.importAccountWithStrategy(strategy, args)
-      log.debug(`background.getState`)
-      newState = await promisifiedBackground.getState()
+      log.debug(`background.importAccountWithStrategy`);
+      await promisifiedBackground.importAccountWithStrategy(strategy, args);
+      log.debug(`background.getState`);
+      newState = await promisifiedBackground.getState();
     } catch (err) {
-      dispatch(hideLoadingIndication())
-      dispatch(displayWarning(err.message))
-      throw err
+      dispatch(displayWarning(err.message));
+      throw err;
+    } finally {
+      dispatch(hideLoadingIndication());
     }
-    dispatch(hideLoadingIndication())
-    dispatch(updateMetamaskState(newState))
+
+    dispatch(updateMetamaskState(newState));
     if (newState.selectedAddress) {
       dispatch({
         type: actionConstants.SHOW_ACCOUNT_DETAIL,
         value: newState.selectedAddress,
-      })
+      });
     }
-    return newState
-  }
+    return newState;
+  };
 }
 
-export function addNewAccount () {
-  log.debug(`background.addNewAccount`)
+export function addNewAccount() {
+  log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
-    const oldIdentities = getState().metamask.identities
-    dispatch(showLoadingIndication())
+    const oldIdentities = getState().metamask.identities;
+    dispatch(showLoadingIndication());
 
-    let newIdentities
+    let newIdentities;
     try {
-      const { identities } = await promisifiedBackground.addNewAccount()
-      newIdentities = identities
+      const { identities } = await promisifiedBackground.addNewAccount();
+      newIdentities = identities;
     } catch (error) {
-      dispatch(displayWarning(error.message))
-      throw error
+      dispatch(displayWarning(error.message));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
     }
-    const newAccountAddress = Object.keys(newIdentities).find((address) => !oldIdentities[address])
-    dispatch(hideLoadingIndication())
-    await forceUpdateMetamaskState(dispatch)
-    return newAccountAddress
-  }
+
+    const newAccountAddress = Object.keys(newIdentities).find(
+      (address) => !oldIdentities[address],
+    );
+    await forceUpdateMetamaskState(dispatch);
+    return newAccountAddress;
+  };
 }
 
-export function checkHardwareStatus (deviceName, hdPath) {
-  log.debug(`background.checkHardwareStatus`, deviceName, hdPath)
+export function checkHardwareStatus(deviceName, hdPath) {
+  log.debug(`background.checkHardwareStatus`, deviceName, hdPath);
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
 
-    let unlocked
+    let unlocked;
     try {
-      unlocked = await promisifiedBackground.checkHardwareStatus(deviceName, hdPath)
+      unlocked = await promisifiedBackground.checkHardwareStatus(
+        deviceName,
+        hdPath,
+      );
     } catch (error) {
-      log.error(error)
-      dispatch(displayWarning(error.message))
-      throw error
+      log.error(error);
+      dispatch(displayWarning(error.message));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
     }
 
-    dispatch(hideLoadingIndication())
-    await forceUpdateMetamaskState(dispatch)
-    return unlocked
-  }
+    await forceUpdateMetamaskState(dispatch);
+    return unlocked;
+  };
 }
 
-export function forgetDevice (deviceName) {
-  log.debug(`background.forgetDevice`, deviceName)
+export function forgetDevice(deviceName) {
+  log.debug(`background.forgetDevice`, deviceName);
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
     try {
-      await promisifiedBackground.forgetDevice(deviceName)
+      await promisifiedBackground.forgetDevice(deviceName);
     } catch (error) {
-      log.error(error)
-      dispatch(displayWarning(error.message))
-      throw error
+      log.error(error);
+      dispatch(displayWarning(error.message));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
     }
 
-    dispatch(hideLoadingIndication())
-    await forceUpdateMetamaskState(dispatch)
-  }
+    await forceUpdateMetamaskState(dispatch);
+  };
 }
 
-export function connectHardware (deviceName, page, hdPath) {
-  log.debug(`background.connectHardware`, deviceName, page, hdPath)
+export function connectHardware(deviceName, page, hdPath) {
+  log.debug(`background.connectHardware`, deviceName, page, hdPath);
   return async (dispatch) => {
-    dispatch(showLoadingIndication(`Looking for your ${capitalize(deviceName)}...`))
+    dispatch(
+      showLoadingIndication(`Looking for your ${capitalize(deviceName)}...`),
+    );
 
-    let accounts
+    let accounts;
     try {
-      accounts = await promisifiedBackground.connectHardware(deviceName, page, hdPath)
+      accounts = await promisifiedBackground.connectHardware(
+        deviceName,
+        page,
+        hdPath,
+      );
     } catch (error) {
-      log.error(error)
-      dispatch(displayWarning(error.message))
-      throw error
+      log.error(error);
+      dispatch(displayWarning(error.message));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
     }
-    dispatch(hideLoadingIndication())
-    await forceUpdateMetamaskState(dispatch)
 
-    return accounts
-  }
+    await forceUpdateMetamaskState(dispatch);
+    return accounts;
+  };
 }
 
-export function unlockHardwareWalletAccount (index, deviceName, hdPath) {
-  log.debug(`background.unlockHardwareWalletAccount`, index, deviceName, hdPath)
+export function unlockHardwareWalletAccounts(
+  indexes,
+  deviceName,
+  hdPath,
+  hdPathDescription,
+) {
+  log.debug(
+    `background.unlockHardwareWalletAccount`,
+    indexes,
+    deviceName,
+    hdPath,
+    hdPathDescription,
+  );
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+
+    for (const index of indexes) {
+      try {
+        await promisifiedBackground.unlockHardwareWalletAccount(
+          index,
+          deviceName,
+          hdPath,
+          hdPathDescription,
+        );
+      } catch (e) {
+        log.error(e);
+        dispatch(displayWarning(e.message));
+        dispatch(hideLoadingIndication());
+        throw e;
+      }
+    }
+
+    dispatch(hideLoadingIndication());
+    return undefined;
+  };
+}
+
+export function showQrScanner() {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.unlockHardwareWalletAccount(index, deviceName, hdPath, (err) => {
-        if (err) {
-          log.error(err)
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
-        }
-
-        dispatch(hideLoadingIndication())
-        resolve()
-      })
-    })
-  }
+    dispatch(
+      showModal({
+        name: 'QR_SCANNER',
+      }),
+    );
+  };
 }
 
-export function showQrScanner () {
-  return (dispatch) => {
-    dispatch(showModal({
-      name: 'QR_SCANNER',
-    }))
-  }
-}
-
-export function setCurrentCurrency (currencyCode) {
+export function setCurrentCurrency(currencyCode) {
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
-    log.debug(`background.setCurrentCurrency`)
-    let data
+    dispatch(showLoadingIndication());
+    log.debug(`background.setCurrentCurrency`);
+    let data;
     try {
-      data = await promisifiedBackground.setCurrentCurrency(currencyCode)
+      data = await promisifiedBackground.setCurrentCurrency(currencyCode);
     } catch (error) {
-      dispatch(hideLoadingIndication())
-      log.error(error.stack)
-      dispatch(displayWarning(error.message))
-      return
+      log.error(error.stack);
+      dispatch(displayWarning(error.message));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
     }
-    dispatch(hideLoadingIndication())
+
     dispatch({
       type: actionConstants.SET_CURRENT_FIAT,
       value: {
@@ -446,176 +491,183 @@ export function setCurrentCurrency (currencyCode) {
         conversionRate: data.conversionRate,
         conversionDate: data.conversionDate,
       },
-    })
-  }
+    });
+  };
 }
 
-export function signMsg (msgData) {
-  log.debug('action - signMsg')
+export function signMsg(msgData) {
+  log.debug('action - signMsg');
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
-    log.debug(`actions calling background.signMessage`)
-    let newState
+    dispatch(showLoadingIndication());
+    log.debug(`actions calling background.signMessage`);
+    let newState;
     try {
-      newState = await promisifiedBackground.signMessage(msgData)
+      newState = await promisifiedBackground.signMessage(msgData);
     } catch (error) {
-      dispatch(hideLoadingIndication())
-      log.error(error)
-      dispatch(displayWarning(error.message))
-      throw error
-    }
-    dispatch(hideLoadingIndication())
-    dispatch(updateMetamaskState(newState))
-    dispatch(completedTx(msgData.metamaskId))
-    dispatch(closeCurrentNotificationWindow())
-    return msgData
-  }
-}
-
-export function signPersonalMsg (msgData) {
-  log.debug('action - signPersonalMsg')
-  return async (dispatch) => {
-    dispatch(showLoadingIndication())
-    log.debug(`actions calling background.signPersonalMessage`)
-
-    let newState
-    try {
-      newState = await promisifiedBackground.signPersonalMessage(msgData)
-    } catch (error) {
-      dispatch(hideLoadingIndication())
-      log.error(error)
-      dispatch(displayWarning(error.message))
-      throw error
-    }
-    dispatch(hideLoadingIndication())
-    dispatch(updateMetamaskState(newState))
-    dispatch(completedTx(msgData.metamaskId))
-    dispatch(closeCurrentNotificationWindow())
-    return msgData
-  }
-}
-
-export function decryptMsgInline (decryptedMsgData) {
-  log.debug('action - decryptMsgInline')
-  return async (dispatch) => {
-    log.debug(`actions calling background.decryptMessageInline`)
-
-    let newState
-    try {
-      newState = await promisifiedBackground.decryptMessageInline(decryptedMsgData)
-    } catch (error) {
-      log.error(error)
-      dispatch(displayWarning(error.message))
-      throw error
+      log.error(error);
+      dispatch(displayWarning(error.message));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
     }
 
-    dispatch(updateMetamaskState(newState))
-    return newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId]
-  }
+    dispatch(updateMetamaskState(newState));
+    dispatch(completedTx(msgData.metamaskId));
+    dispatch(closeCurrentNotificationWindow());
+    return msgData;
+  };
 }
 
-export function decryptMsg (decryptedMsgData) {
-  log.debug('action - decryptMsg')
+export function signPersonalMsg(msgData) {
+  log.debug('action - signPersonalMsg');
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
-    log.debug(`actions calling background.decryptMessage`)
+    dispatch(showLoadingIndication());
+    log.debug(`actions calling background.signPersonalMessage`);
 
-    let newState
+    let newState;
     try {
-      newState = await promisifiedBackground.decryptMessage(decryptedMsgData)
+      newState = await promisifiedBackground.signPersonalMessage(msgData);
     } catch (error) {
-      dispatch(hideLoadingIndication())
-      log.error(error)
-      dispatch(displayWarning(error.message))
-      throw error
+      log.error(error);
+      dispatch(displayWarning(error.message));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
     }
-    dispatch(hideLoadingIndication())
-    dispatch(updateMetamaskState(newState))
-    dispatch(completedTx(decryptedMsgData.metamaskId))
-    dispatch(closeCurrentNotificationWindow())
-    return decryptedMsgData
-  }
+
+    dispatch(updateMetamaskState(newState));
+    dispatch(completedTx(msgData.metamaskId));
+    dispatch(closeCurrentNotificationWindow());
+    return msgData;
+  };
 }
 
-export function encryptionPublicKeyMsg (msgData) {
-  log.debug('action - encryptionPublicKeyMsg')
+export function decryptMsgInline(decryptedMsgData) {
+  log.debug('action - decryptMsgInline');
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
-    log.debug(`actions calling background.encryptionPublicKey`)
+    log.debug(`actions calling background.decryptMessageInline`);
 
-    let newState
+    let newState;
     try {
-      newState = await promisifiedBackground.encryptionPublicKey(msgData)
+      newState = await promisifiedBackground.decryptMessageInline(
+        decryptedMsgData,
+      );
     } catch (error) {
-      dispatch(hideLoadingIndication())
-      log.error(error)
-      dispatch(displayWarning(error.message))
-      throw error
+      log.error(error);
+      dispatch(displayWarning(error.message));
+      throw error;
     }
-    dispatch(hideLoadingIndication())
-    dispatch(updateMetamaskState(newState))
-    dispatch(completedTx(msgData.metamaskId))
-    dispatch(closeCurrentNotificationWindow())
-    return msgData
-  }
+
+    dispatch(updateMetamaskState(newState));
+    return newState.unapprovedDecryptMsgs[decryptedMsgData.metamaskId];
+  };
 }
 
-export function signTypedMsg (msgData) {
-  log.debug('action - signTypedMsg')
+export function decryptMsg(decryptedMsgData) {
+  log.debug('action - decryptMsg');
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
-    log.debug(`actions calling background.signTypedMessage`)
+    dispatch(showLoadingIndication());
+    log.debug(`actions calling background.decryptMessage`);
 
-    let newState
+    let newState;
     try {
-      newState = await promisifiedBackground.signTypedMessage(msgData)
+      newState = await promisifiedBackground.decryptMessage(decryptedMsgData);
     } catch (error) {
-      dispatch(hideLoadingIndication())
-      log.error(error)
-      dispatch(displayWarning(error.message))
-      throw error
+      log.error(error);
+      dispatch(displayWarning(error.message));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
     }
-    dispatch(hideLoadingIndication())
-    dispatch(updateMetamaskState(newState))
-    dispatch(completedTx(msgData.metamaskId))
-    dispatch(closeCurrentNotificationWindow())
-    return msgData
-  }
+
+    dispatch(updateMetamaskState(newState));
+    dispatch(completedTx(decryptedMsgData.metamaskId));
+    dispatch(closeCurrentNotificationWindow());
+    return decryptedMsgData;
+  };
 }
 
-export function signTx (txData) {
+export function encryptionPublicKeyMsg(msgData) {
+  log.debug('action - encryptionPublicKeyMsg');
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`actions calling background.encryptionPublicKey`);
+
+    let newState;
+    try {
+      newState = await promisifiedBackground.encryptionPublicKey(msgData);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+
+    dispatch(updateMetamaskState(newState));
+    dispatch(completedTx(msgData.metamaskId));
+    dispatch(closeCurrentNotificationWindow());
+    return msgData;
+  };
+}
+
+export function signTypedMsg(msgData) {
+  log.debug('action - signTypedMsg');
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`actions calling background.signTypedMessage`);
+
+    let newState;
+    try {
+      newState = await promisifiedBackground.signTypedMessage(msgData);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+
+    dispatch(updateMetamaskState(newState));
+    dispatch(completedTx(msgData.metamaskId));
+    dispatch(closeCurrentNotificationWindow());
+    return msgData;
+  };
+}
+
+export function signTx(txData) {
   return (dispatch) => {
     global.ethQuery.sendTransaction(txData, (err) => {
       if (err) {
-        dispatch(displayWarning(err.message))
+        dispatch(displayWarning(err.message));
       }
-    })
-    dispatch(showConfTxPage())
-  }
+    });
+    dispatch(showConfTxPage());
+  };
 }
 
-export function setGasLimit (gasLimit) {
+export function setGasLimit(gasLimit) {
   return {
     type: actionConstants.UPDATE_GAS_LIMIT,
     value: gasLimit,
-  }
+  };
 }
 
-export function setGasPrice (gasPrice) {
+export function setGasPrice(gasPrice) {
   return {
     type: actionConstants.UPDATE_GAS_PRICE,
     value: gasPrice,
-  }
+  };
 }
 
-export function setGasTotal (gasTotal) {
+export function setGasTotal(gasTotal) {
   return {
     type: actionConstants.UPDATE_GAS_TOTAL,
     value: gasTotal,
-  }
+  };
 }
 
-export function updateGasData ({
+export function updateGasData({
   gasPrice,
   blockGasLimit,
   selectedAddress,
@@ -625,8 +677,8 @@ export function updateGasData ({
   data,
 }) {
   return (dispatch) => {
-    dispatch(gasLoadingStarted())
-    return estimateGas({
+    dispatch(gasLoadingStarted());
+    return estimateGasForSend({
       estimateGasMethod: promisifiedBackground.estimateGas,
       blockGasLimit,
       selectedAddress,
@@ -637,376 +689,412 @@ export function updateGasData ({
       data,
     })
       .then((gas) => {
-        dispatch(setGasLimit(gas))
-        dispatch(setCustomGasLimit(gas))
-        dispatch(updateSendErrors({ gasLoadingError: null }))
-        dispatch(gasLoadingFinished())
+        dispatch(setGasLimit(gas));
+        dispatch(setCustomGasLimit(gas));
+        dispatch(updateSendErrors({ gasLoadingError: null }));
+        dispatch(gasLoadingFinished());
       })
       .catch((err) => {
-        log.error(err)
-        dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }))
-        dispatch(gasLoadingFinished())
-      })
-  }
+        log.error(err);
+        dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }));
+        dispatch(gasLoadingFinished());
+      });
+  };
 }
 
-export function gasLoadingStarted () {
+export function gasLoadingStarted() {
   return {
     type: actionConstants.GAS_LOADING_STARTED,
-  }
+  };
 }
 
-export function gasLoadingFinished () {
+export function gasLoadingFinished() {
   return {
     type: actionConstants.GAS_LOADING_FINISHED,
-  }
+  };
 }
 
-export function updateSendTokenBalance ({
-  sendToken,
-  tokenContract,
-  address,
-}) {
+export function updateSendTokenBalance({ sendToken, tokenContract, address }) {
   return (dispatch) => {
     const tokenBalancePromise = tokenContract
       ? tokenContract.balanceOf(address)
-      : Promise.resolve()
+      : Promise.resolve();
     return tokenBalancePromise
       .then((usersToken) => {
         if (usersToken) {
-          const newTokenBalance = calcTokenBalance({ sendToken, usersToken })
-          dispatch(setSendTokenBalance(newTokenBalance))
+          const newTokenBalance = calcTokenBalance({ sendToken, usersToken });
+          dispatch(setSendTokenBalance(newTokenBalance));
         }
       })
       .catch((err) => {
-        log.error(err)
-        updateSendErrors({ tokenBalance: 'tokenBalanceError' })
-      })
-  }
+        log.error(err);
+        updateSendErrors({ tokenBalance: 'tokenBalanceError' });
+      });
+  };
 }
 
-export function updateSendErrors (errorObject) {
+export function updateSendErrors(errorObject) {
   return {
     type: actionConstants.UPDATE_SEND_ERRORS,
     value: errorObject,
-  }
+  };
 }
 
-export function setSendTokenBalance (tokenBalance) {
+export function setSendTokenBalance(tokenBalance) {
   return {
     type: actionConstants.UPDATE_SEND_TOKEN_BALANCE,
     value: tokenBalance,
-  }
+  };
 }
 
-export function updateSendHexData (value) {
+export function updateSendHexData(value) {
   return {
     type: actionConstants.UPDATE_SEND_HEX_DATA,
     value,
-  }
+  };
 }
 
-export function updateSendTo (to, nickname = '') {
+export function updateSendTo(to, nickname = '') {
   return {
     type: actionConstants.UPDATE_SEND_TO,
     value: { to, nickname },
-  }
+  };
 }
 
-export function updateSendAmount (amount) {
+export function updateSendAmount(amount) {
   return {
     type: actionConstants.UPDATE_SEND_AMOUNT,
     value: amount,
-  }
+  };
 }
 
-export function updateCustomNonce (value) {
+export function updateCustomNonce(value) {
   return {
     type: actionConstants.UPDATE_CUSTOM_NONCE,
     value,
-  }
+  };
 }
 
-export function setMaxModeTo (bool) {
+export function setMaxModeTo(bool) {
   return {
     type: actionConstants.UPDATE_MAX_MODE,
     value: bool,
-  }
+  };
 }
 
-export function updateSend (newSend) {
+export function updateSend(newSend) {
   return {
     type: actionConstants.UPDATE_SEND,
     value: newSend,
-  }
+  };
 }
 
-export function updateSendToken (token) {
+export function updateSendToken(token) {
   return {
     type: actionConstants.UPDATE_SEND_TOKEN,
     value: token,
-  }
+  };
 }
 
-export function clearSend () {
+export function clearSend() {
   return {
     type: actionConstants.CLEAR_SEND,
-  }
+  };
 }
 
-export function updateSendEnsResolution (ensResolution) {
+export function updateSendEnsResolution(ensResolution) {
   return {
     type: actionConstants.UPDATE_SEND_ENS_RESOLUTION,
     payload: ensResolution,
-  }
+  };
 }
 
-export function updateSendEnsResolutionError (errorMessage) {
+export function updateSendEnsResolutionError(errorMessage) {
   return {
     type: actionConstants.UPDATE_SEND_ENS_RESOLUTION_ERROR,
     payload: errorMessage,
-  }
+  };
 }
 
-export function signTokenTx (tokenAddress, toAddress, amount, txData) {
-  return (dispatch) => {
-    dispatch(showLoadingIndication())
-    const token = global.eth.contract(abi).at(tokenAddress)
-    token.transfer(toAddress, ethUtil.addHexPrefix(amount), txData)
-      .catch((err) => {
-        dispatch(hideLoadingIndication())
-        dispatch(displayWarning(err.message))
-      })
-    dispatch(showConfTxPage())
-  }
+export function signTokenTx(tokenAddress, toAddress, amount, txData) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      const token = global.eth.contract(abi).at(tokenAddress);
+      const txPromise = token.transfer(toAddress, addHexPrefix(amount), txData);
+      dispatch(showConfTxPage());
+      dispatch(hideLoadingIndication());
+      await txPromise;
+    } catch (error) {
+      dispatch(hideLoadingIndication());
+      dispatch(displayWarning(error.message));
+    }
+  };
 }
 
 const updateMetamaskStateFromBackground = () => {
-  log.debug(`background.getState`)
+  log.debug(`background.getState`);
 
   return new Promise((resolve, reject) => {
     background.getState((error, newState) => {
       if (error) {
-        reject(error)
-        return
+        reject(error);
+        return;
       }
 
-      resolve(newState)
-    })
-  })
+      resolve(newState);
+    });
+  });
+};
+
+export function updateTransaction(txData, dontShowLoadingIndicator) {
+  return async (dispatch) => {
+    !dontShowLoadingIndicator && dispatch(showLoadingIndication());
+
+    try {
+      await promisifiedBackground.updateTransaction(txData);
+    } catch (error) {
+      dispatch(updateTransactionParams(txData.id, txData.txParams));
+      dispatch(hideLoadingIndication());
+      dispatch(txError(error));
+      dispatch(goHome());
+      log.error(error.message);
+      throw error;
+    }
+
+    try {
+      dispatch(updateTransactionParams(txData.id, txData.txParams));
+      const newState = await updateMetamaskStateFromBackground();
+      dispatch(updateMetamaskState(newState));
+      dispatch(showConfTxPage({ id: txData.id }));
+      return txData;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
 }
 
-export function updateTransaction (txData) {
-  return (dispatch) => {
-    dispatch(showLoadingIndication())
+export function addUnapprovedTransaction(txParams, origin) {
+  log.debug('background.addUnapprovedTransaction');
 
+  return () => {
     return new Promise((resolve, reject) => {
-      background.updateTransaction(txData, (err) => {
-        dispatch(updateTransactionParams(txData.id, txData.txParams))
+      background.addUnapprovedTransaction(txParams, origin, (err, txMeta) => {
         if (err) {
-          dispatch(txError(err))
-          dispatch(goHome())
-          log.error(err.message)
-          reject(err)
-          return
+          reject(err);
+          return;
         }
-
-        resolve(txData)
-      })
-    })
-      .then(() => updateMetamaskStateFromBackground())
-      .then((newState) => dispatch(updateMetamaskState(newState)))
-      .then(() => {
-        dispatch(showConfTxPage({ id: txData.id }))
-        dispatch(hideLoadingIndication())
-        return txData
-      })
-  }
+        resolve(txMeta);
+      });
+    });
+  };
 }
 
-export function updateAndApproveTx (txData) {
+export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    !dontShowLoadingIndicator && dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
       background.updateAndApproveTransaction(txData, (err) => {
-        dispatch(updateTransactionParams(txData.id, txData.txParams))
-        dispatch(clearSend())
+        dispatch(updateTransactionParams(txData.id, txData.txParams));
+        dispatch(clearSend());
 
         if (err) {
-          dispatch(txError(err))
-          dispatch(goHome())
-          log.error(err.message)
-          reject(err)
-          return
+          dispatch(txError(err));
+          dispatch(goHome());
+          log.error(err.message);
+          reject(err);
+          return;
         }
 
-        resolve(txData)
-      })
+        resolve(txData);
+      });
     })
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(clearSend())
-        dispatch(completedTx(txData.id))
-        dispatch(hideLoadingIndication())
-        dispatch(updateCustomNonce(''))
-        dispatch(closeCurrentNotificationWindow())
+        dispatch(clearSend());
+        dispatch(completedTx(txData.id));
+        dispatch(hideLoadingIndication());
+        dispatch(updateCustomNonce(''));
+        dispatch(closeCurrentNotificationWindow());
 
-        return txData
+        return txData;
       })
       .catch((err) => {
-        dispatch(hideLoadingIndication())
-        return Promise.reject(err)
-      })
-  }
+        dispatch(hideLoadingIndication());
+        return Promise.reject(err);
+      });
+  };
 }
 
-export function completedTx (id) {
+export function completedTx(id) {
   return (dispatch, getState) => {
-    const state = getState()
+    const state = getState();
     const {
       unapprovedTxs,
       unapprovedMsgs,
       unapprovedPersonalMsgs,
       unapprovedTypedMessages,
       network,
-    } = state.metamask
-    const unconfirmedActions = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, network)
-    const otherUnconfirmedActions = unconfirmedActions.filter((tx) => tx.id !== id)
+      provider: { chainId },
+    } = state.metamask;
+    const unconfirmedActions = txHelper(
+      unapprovedTxs,
+      unapprovedMsgs,
+      unapprovedPersonalMsgs,
+      unapprovedTypedMessages,
+      network,
+      chainId,
+    );
+    const otherUnconfirmedActions = unconfirmedActions.filter(
+      (tx) => tx.id !== id,
+    );
     dispatch({
       type: actionConstants.COMPLETED_TX,
       value: {
         id,
         unconfirmedActionsCount: otherUnconfirmedActions.length,
       },
-    })
-  }
+    });
+  };
 }
 
-export function updateTransactionParams (id, txParams) {
+export function updateTransactionParams(id, txParams) {
   return {
     type: actionConstants.UPDATE_TRANSACTION_PARAMS,
     id,
     value: txParams,
-  }
+  };
 }
 
-export function txError (err) {
+export function txError(err) {
   return {
     type: actionConstants.TRANSACTION_ERROR,
     message: err.message,
-  }
+  };
 }
 
-export function cancelMsg (msgData) {
+export function cancelMsg(msgData) {
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
 
-    let newState
+    let newState;
     try {
-      newState = await promisifiedBackground.cancelMessage(msgData.id)
+      newState = await promisifiedBackground.cancelMessage(msgData.id);
     } finally {
-      dispatch(hideLoadingIndication())
+      dispatch(hideLoadingIndication());
     }
-    dispatch(updateMetamaskState(newState))
-    dispatch(completedTx(msgData.id))
-    dispatch(closeCurrentNotificationWindow())
-    return msgData
-  }
+
+    dispatch(updateMetamaskState(newState));
+    dispatch(completedTx(msgData.id));
+    dispatch(closeCurrentNotificationWindow());
+    return msgData;
+  };
 }
 
-export function cancelPersonalMsg (msgData) {
+export function cancelPersonalMsg(msgData) {
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
 
-    let newState
+    let newState;
     try {
-      newState = await promisifiedBackground.cancelPersonalMessage(msgData.id)
+      newState = await promisifiedBackground.cancelPersonalMessage(msgData.id);
     } finally {
-      dispatch(hideLoadingIndication())
+      dispatch(hideLoadingIndication());
     }
-    dispatch(updateMetamaskState(newState))
-    dispatch(completedTx(msgData.id))
-    dispatch(closeCurrentNotificationWindow())
-    return msgData
-  }
+
+    dispatch(updateMetamaskState(newState));
+    dispatch(completedTx(msgData.id));
+    dispatch(closeCurrentNotificationWindow());
+    return msgData;
+  };
 }
 
-export function cancelDecryptMsg (msgData) {
+export function cancelDecryptMsg(msgData) {
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
 
-    let newState
+    let newState;
     try {
-      newState = await promisifiedBackground.cancelDecryptMessage(msgData.id)
+      newState = await promisifiedBackground.cancelDecryptMessage(msgData.id);
     } finally {
-      dispatch(hideLoadingIndication())
+      dispatch(hideLoadingIndication());
     }
-    dispatch(updateMetamaskState(newState))
-    dispatch(completedTx(msgData.id))
-    dispatch(closeCurrentNotificationWindow())
-    return msgData
-  }
+
+    dispatch(updateMetamaskState(newState));
+    dispatch(completedTx(msgData.id));
+    dispatch(closeCurrentNotificationWindow());
+    return msgData;
+  };
 }
 
-export function cancelEncryptionPublicKeyMsg (msgData) {
+export function cancelEncryptionPublicKeyMsg(msgData) {
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
 
-    let newState
+    let newState;
     try {
-      newState = await promisifiedBackground.cancelEncryptionPublicKey(msgData.id)
+      newState = await promisifiedBackground.cancelEncryptionPublicKey(
+        msgData.id,
+      );
     } finally {
-      dispatch(hideLoadingIndication())
+      dispatch(hideLoadingIndication());
     }
-    dispatch(updateMetamaskState(newState))
-    dispatch(completedTx(msgData.id))
-    dispatch(closeCurrentNotificationWindow())
-    return msgData
-  }
+
+    dispatch(updateMetamaskState(newState));
+    dispatch(completedTx(msgData.id));
+    dispatch(closeCurrentNotificationWindow());
+    return msgData;
+  };
 }
 
-export function cancelTypedMsg (msgData) {
+export function cancelTypedMsg(msgData) {
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
 
-    let newState
+    let newState;
     try {
-      newState = await promisifiedBackground.cancelTypedMessage(msgData.id)
+      newState = await promisifiedBackground.cancelTypedMessage(msgData.id);
     } finally {
-      dispatch(hideLoadingIndication())
+      dispatch(hideLoadingIndication());
     }
-    dispatch(updateMetamaskState(newState))
-    dispatch(completedTx(msgData.id))
-    dispatch(closeCurrentNotificationWindow())
-    return msgData
-  }
+
+    dispatch(updateMetamaskState(newState));
+    dispatch(completedTx(msgData.id));
+    dispatch(closeCurrentNotificationWindow());
+    return msgData;
+  };
 }
 
-export function cancelTx (txData) {
+export function cancelTx(txData, _showLoadingIndication = true) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    _showLoadingIndication && dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
-      background.cancelTransaction(txData.id, (err) => {
-        if (err) {
-          reject(err)
-          return
+      background.cancelTransaction(txData.id, (error) => {
+        if (error) {
+          reject(error);
+          return;
         }
 
-        resolve()
-      })
+        resolve();
+      });
     })
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(clearSend())
-        dispatch(completedTx(txData.id))
-        dispatch(hideLoadingIndication())
-        dispatch(closeCurrentNotificationWindow())
+        dispatch(clearSend());
+        dispatch(completedTx(txData.id));
+        dispatch(hideLoadingIndication());
+        dispatch(closeCurrentNotificationWindow());
 
-        return txData
+        return txData;
       })
-  }
+      .catch((error) => {
+        dispatch(hideLoadingIndication());
+        throw error;
+      });
+  };
 }
 
 /**
@@ -1014,622 +1102,696 @@ export function cancelTx (txData) {
  * @param {Array<object>} txDataList - a list of tx data objects
  * @returns {function(*): Promise<void>}
  */
-export function cancelTxs (txDataList) {
+export function cancelTxs(txDataList) {
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
-    const txIds = txDataList.map(({ id }) => id)
-    const cancellations = txIds.map((id) => new Promise((resolve, reject) => {
-      background.cancelTransaction(id, (err) => {
-        if (err) {
-          reject(err)
-          return
-        }
+    dispatch(showLoadingIndication());
 
-        resolve()
-      })
-    }))
+    try {
+      const txIds = txDataList.map(({ id }) => id);
+      const cancellations = txIds.map(
+        (id) =>
+          new Promise((resolve, reject) => {
+            background.cancelTransaction(id, (err) => {
+              if (err) {
+                reject(err);
+                return;
+              }
 
-    await Promise.all(cancellations)
-    const newState = await updateMetamaskStateFromBackground()
-    dispatch(updateMetamaskState(newState))
-    dispatch(clearSend())
+              resolve();
+            });
+          }),
+      );
 
-    txIds.forEach((id) => {
-      dispatch(completedTx(id))
-    })
+      await Promise.all(cancellations);
 
-    dispatch(hideLoadingIndication())
+      const newState = await updateMetamaskStateFromBackground();
+      dispatch(updateMetamaskState(newState));
+      dispatch(clearSend());
 
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      global.platform.closeCurrentWindow()
-
+      txIds.forEach((id) => {
+        dispatch(completedTx(id));
+      });
+    } finally {
+      if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
+        global.platform.closeCurrentWindow();
+      } else {
+        dispatch(hideLoadingIndication());
+      }
     }
-  }
+  };
 }
 
-export function markPasswordForgotten () {
+export function markPasswordForgotten() {
   return async (dispatch) => {
     try {
       await new Promise((resolve, reject) => {
         return background.markPasswordForgotten((error) => {
           if (error) {
-            reject(error)
-            return
+            reject(error);
+            return;
           }
-          resolve()
-
-        })
-      })
+          resolve();
+        });
+      });
     } finally {
       // TODO: handle errors
-      dispatch(hideLoadingIndication())
-      dispatch(forgotPassword())
-      await forceUpdateMetamaskState(dispatch)
+      dispatch(hideLoadingIndication());
+      dispatch(forgotPassword());
+      await forceUpdateMetamaskState(dispatch);
     }
-  }
+  };
 }
 
-export function unMarkPasswordForgotten () {
+export function unMarkPasswordForgotten() {
   return (dispatch) => {
     return new Promise((resolve) => {
       background.unMarkPasswordForgotten(() => {
-        dispatch(forgotPassword(false))
-        resolve()
-      })
-    })
-      .then(() => forceUpdateMetamaskState(dispatch))
-  }
+        dispatch(forgotPassword(false));
+        resolve();
+      });
+    }).then(() => forceUpdateMetamaskState(dispatch));
+  };
 }
 
-export function forgotPassword (forgotPasswordState = true) {
+export function forgotPassword(forgotPasswordState = true) {
   return {
     type: actionConstants.FORGOT_PASSWORD,
     value: forgotPasswordState,
-  }
+  };
 }
 
-export function closeWelcomeScreen () {
+export function closeWelcomeScreen() {
   return {
     type: actionConstants.CLOSE_WELCOME_SCREEN,
-  }
+  };
 }
 
 //
 // unlock screen
 //
 
-export function unlockInProgress () {
+export function unlockInProgress() {
   return {
     type: actionConstants.UNLOCK_IN_PROGRESS,
-  }
+  };
 }
 
-export function unlockFailed (message) {
+export function unlockFailed(message) {
   return {
     type: actionConstants.UNLOCK_FAILED,
     value: message,
-  }
+  };
 }
 
-export function unlockSucceeded (message) {
+export function unlockSucceeded(message) {
   return {
     type: actionConstants.UNLOCK_SUCCEEDED,
     value: message,
-  }
+  };
 }
 
-export function updateMetamaskState (newState) {
+export function updateMetamaskState(newState) {
   return (dispatch, getState) => {
-    const { metamask: currentState } = getState()
+    const { metamask: currentState } = getState();
 
-    const {
-      currentLocale,
-      selectedAddress,
-    } = currentState
+    const { currentLocale, selectedAddress } = currentState;
     const {
       currentLocale: newLocale,
       selectedAddress: newSelectedAddress,
-    } = newState
+    } = newState;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
-      dispatch(updateCurrentLocale(newLocale))
+      dispatch(updateCurrentLocale(newLocale));
     }
     if (selectedAddress !== newSelectedAddress) {
-      dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED })
+      dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
     }
 
     dispatch({
       type: actionConstants.UPDATE_METAMASK_STATE,
       value: newState,
-    })
-  }
+    });
+  };
 }
 
 const backgroundSetLocked = () => {
   return new Promise((resolve, reject) => {
     background.setLocked((error) => {
       if (error) {
-        reject(error)
-        return
+        reject(error);
+        return;
       }
-      resolve()
-    })
-  })
-}
+      resolve();
+    });
+  });
+};
 
-export function lockMetamask () {
-  log.debug(`background.setLocked`)
+export function lockMetamask() {
+  log.debug(`background.setLocked`);
 
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
 
     return backgroundSetLocked()
       .then(() => updateMetamaskStateFromBackground())
       .catch((error) => {
-        dispatch(displayWarning(error.message))
-        return Promise.reject(error)
+        dispatch(displayWarning(error.message));
+        return Promise.reject(error);
       })
       .then((newState) => {
-        dispatch(updateMetamaskState(newState))
-        dispatch(hideLoadingIndication())
-        dispatch({ type: actionConstants.LOCK_METAMASK })
+        dispatch(updateMetamaskState(newState));
+        dispatch(hideLoadingIndication());
+        dispatch({ type: actionConstants.LOCK_METAMASK });
       })
       .catch(() => {
-        dispatch(hideLoadingIndication())
-        dispatch({ type: actionConstants.LOCK_METAMASK })
-      })
-  }
+        dispatch(hideLoadingIndication());
+        dispatch({ type: actionConstants.LOCK_METAMASK });
+      });
+  };
 }
 
-async function _setSelectedAddress (dispatch, address) {
-  log.debug(`background.setSelectedAddress`)
-  const tokens = await promisifiedBackground.setSelectedAddress(address)
-  dispatch(updateTokens(tokens))
+async function _setSelectedAddress(dispatch, address) {
+  log.debug(`background.setSelectedAddress`);
+  const tokens = await promisifiedBackground.setSelectedAddress(address);
+  dispatch(updateTokens(tokens));
 }
 
-export function setSelectedAddress (address) {
+export function setSelectedAddress(address) {
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
-    log.debug(`background.setSelectedAddress`)
+    dispatch(showLoadingIndication());
+    log.debug(`background.setSelectedAddress`);
     try {
-      await _setSelectedAddress(dispatch, address)
+      await _setSelectedAddress(dispatch, address);
     } catch (error) {
-      dispatch(hideLoadingIndication())
-      dispatch(displayWarning(error.message))
-      return
+      dispatch(displayWarning(error.message));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
     }
-    dispatch(hideLoadingIndication())
-  }
+  };
 }
 
-export function showAccountDetail (address) {
+export function showAccountDetail(address) {
   return async (dispatch, getState) => {
-    dispatch(showLoadingIndication())
-    log.debug(`background.setSelectedAddress`)
+    dispatch(showLoadingIndication());
+    log.debug(`background.setSelectedAddress`);
 
-    const state = getState()
-    const unconnectedAccountAccountAlertIsEnabled = getUnconnectedAccountAlertEnabledness(state)
-    const activeTabOrigin = state.activeTab.origin
-    const selectedAddress = getSelectedAddress(state)
-    const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(state)
-    const currentTabIsConnectedToPreviousAddress = Boolean(activeTabOrigin) && permittedAccountsForCurrentTab.includes(selectedAddress)
-    const currentTabIsConnectedToNextAddress = Boolean(activeTabOrigin) && permittedAccountsForCurrentTab.includes(address)
-    const switchingToUnconnectedAddress = currentTabIsConnectedToPreviousAddress && !currentTabIsConnectedToNextAddress
+    const state = getState();
+    const unconnectedAccountAccountAlertIsEnabled = getUnconnectedAccountAlertEnabledness(
+      state,
+    );
+    const activeTabOrigin = state.activeTab.origin;
+    const selectedAddress = getSelectedAddress(state);
+    const permittedAccountsForCurrentTab = getPermittedAccountsForCurrentTab(
+      state,
+    );
+    const currentTabIsConnectedToPreviousAddress =
+      Boolean(activeTabOrigin) &&
+      permittedAccountsForCurrentTab.includes(selectedAddress);
+    const currentTabIsConnectedToNextAddress =
+      Boolean(activeTabOrigin) &&
+      permittedAccountsForCurrentTab.includes(address);
+    const switchingToUnconnectedAddress =
+      currentTabIsConnectedToPreviousAddress &&
+      !currentTabIsConnectedToNextAddress;
 
     try {
-      await _setSelectedAddress(dispatch, address)
+      await _setSelectedAddress(dispatch, address);
     } catch (error) {
-      dispatch(hideLoadingIndication())
-      dispatch(displayWarning(error.message))
-      return
+      dispatch(displayWarning(error.message));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
     }
-    dispatch(hideLoadingIndication())
+
     dispatch({
       type: actionConstants.SHOW_ACCOUNT_DETAIL,
       value: address,
-    })
-    if (unconnectedAccountAccountAlertIsEnabled && switchingToUnconnectedAddress) {
-      dispatch(switchedToUnconnectedAccount())
-      await setUnconnectedAccountAlertShown(activeTabOrigin)
+    });
+    if (
+      unconnectedAccountAccountAlertIsEnabled &&
+      switchingToUnconnectedAddress
+    ) {
+      dispatch(switchedToUnconnectedAccount());
+      await setUnconnectedAccountAlertShown(activeTabOrigin);
     }
-  }
+  };
 }
 
-export function addPermittedAccount (origin, address) {
+export function addPermittedAccount(origin, address) {
   return async (dispatch) => {
     await new Promise((resolve, reject) => {
       background.addPermittedAccount(origin, address, (error) => {
         if (error) {
-          reject(error)
-          return
+          reject(error);
+          return;
         }
-        resolve()
-      })
-    })
-    await forceUpdateMetamaskState(dispatch)
-  }
+        resolve();
+      });
+    });
+    await forceUpdateMetamaskState(dispatch);
+  };
 }
 
-export function removePermittedAccount (origin, address) {
+export function removePermittedAccount(origin, address) {
   return async (dispatch) => {
     await new Promise((resolve, reject) => {
       background.removePermittedAccount(origin, address, (error) => {
         if (error) {
-          reject(error)
-          return
+          reject(error);
+          return;
         }
-        resolve()
-      })
-    })
-    await forceUpdateMetamaskState(dispatch)
-  }
+        resolve();
+      });
+    });
+    await forceUpdateMetamaskState(dispatch);
+  };
 }
 
-export function showAccountsPage () {
+export function showAccountsPage() {
   return {
     type: actionConstants.SHOW_ACCOUNTS_PAGE,
-  }
+  };
 }
 
-export function showConfTxPage ({ id } = {}) {
+export function showConfTxPage({ id } = {}) {
   return {
     type: actionConstants.SHOW_CONF_TX_PAGE,
     id,
-  }
+  };
 }
 
-export function addToken (address, symbol, decimals, image) {
+export function addToken(
+  address,
+  symbol,
+  decimals,
+  image,
+  dontShowLoadingIndicator,
+) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    !dontShowLoadingIndicator && dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
       background.addToken(address, symbol, decimals, image, (err, tokens) => {
-        dispatch(hideLoadingIndication())
+        dispatch(hideLoadingIndication());
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
-        dispatch(updateTokens(tokens))
-        resolve(tokens)
-      })
-    })
-  }
+        dispatch(updateTokens(tokens));
+        resolve(tokens);
+      });
+    });
+  };
 }
 
-export function removeToken (address) {
+export function removeToken(address) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
       background.removeToken(address, (err, tokens) => {
-        dispatch(hideLoadingIndication())
+        dispatch(hideLoadingIndication());
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
-        dispatch(updateTokens(tokens))
-        resolve(tokens)
-      })
-    })
-  }
+        dispatch(updateTokens(tokens));
+        resolve(tokens);
+      });
+    });
+  };
 }
 
-export function addTokens (tokens) {
+export function addTokens(tokens) {
   return (dispatch) => {
     if (Array.isArray(tokens)) {
-      return Promise.all(tokens.map(({ address, symbol, decimals }) => (
-        dispatch(addToken(address, symbol, decimals))
-      )))
+      return Promise.all(
+        tokens.map(({ address, symbol, decimals }) =>
+          dispatch(addToken(address, symbol, decimals)),
+        ),
+      );
     }
     return Promise.all(
-      Object
-        .entries(tokens)
-        .map(([_, { address, symbol, decimals }]) => (
-          dispatch(addToken(address, symbol, decimals))
-        )),
-    )
-
-  }
+      Object.entries(tokens).map(([_, { address, symbol, decimals }]) =>
+        dispatch(addToken(address, symbol, decimals)),
+      ),
+    );
+  };
 }
 
-export function removeSuggestedTokens () {
+export function removeSuggestedTokens() {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
     return new Promise((resolve) => {
       background.removeSuggestedTokens((err, suggestedTokens) => {
-        dispatch(hideLoadingIndication())
+        dispatch(hideLoadingIndication());
         if (err) {
-          dispatch(displayWarning(err.message))
+          dispatch(displayWarning(err.message));
         }
-        dispatch(clearPendingTokens())
+        dispatch(clearPendingTokens());
         if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-          global.platform.closeCurrentWindow()
-          return
+          global.platform.closeCurrentWindow();
+          return;
         }
-        resolve(suggestedTokens)
-      })
+        resolve(suggestedTokens);
+      });
     })
       .then(() => updateMetamaskStateFromBackground())
-      .then((suggestedTokens) => dispatch(updateMetamaskState({ ...suggestedTokens })))
-  }
+      .then((suggestedTokens) =>
+        dispatch(updateMetamaskState({ ...suggestedTokens })),
+      );
+  };
 }
 
-export function addKnownMethodData (fourBytePrefix, methodData) {
+export function addKnownMethodData(fourBytePrefix, methodData) {
   return () => {
-    background.addKnownMethodData(fourBytePrefix, methodData)
-  }
+    background.addKnownMethodData(fourBytePrefix, methodData);
+  };
 }
 
-export function updateTokens (newTokens) {
+export function updateTokens(newTokens) {
   return {
     type: actionConstants.UPDATE_TOKENS,
     newTokens,
-  }
+  };
 }
 
-export function clearPendingTokens () {
+export function clearPendingTokens() {
   return {
     type: actionConstants.CLEAR_PENDING_TOKENS,
-  }
+  };
 }
 
-export function createCancelTransaction (txId, customGasPrice) {
-  log.debug('background.cancelTransaction')
-  let newTxId
+export function createCancelTransaction(txId, customGasPrice) {
+  log.debug('background.cancelTransaction');
+  let newTxId;
 
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.createCancelTransaction(txId, customGasPrice, (err, newState) => {
-        if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
-        }
+      background.createCancelTransaction(
+        txId,
+        customGasPrice,
+        (err, newState) => {
+          if (err) {
+            dispatch(displayWarning(err.message));
+            reject(err);
+            return;
+          }
 
-        const { currentNetworkTxList } = newState
-        const { id } = currentNetworkTxList[currentNetworkTxList.length - 1]
-        newTxId = id
-        resolve(newState)
-      })
+          const { currentNetworkTxList } = newState;
+          const { id } = currentNetworkTxList[currentNetworkTxList.length - 1];
+          newTxId = id;
+          resolve(newState);
+        },
+      );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
-      .then(() => newTxId)
-  }
+      .then(() => newTxId);
+  };
 }
 
-export function createSpeedUpTransaction (txId, customGasPrice, customGasLimit) {
-  log.debug('background.createSpeedUpTransaction')
-  let newTx
+export function createSpeedUpTransaction(txId, customGasPrice, customGasLimit) {
+  log.debug('background.createSpeedUpTransaction');
+  let newTx;
 
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.createSpeedUpTransaction(txId, customGasPrice, customGasLimit, (err, newState) => {
-        if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
-        }
+      background.createSpeedUpTransaction(
+        txId,
+        customGasPrice,
+        customGasLimit,
+        (err, newState) => {
+          if (err) {
+            dispatch(displayWarning(err.message));
+            reject(err);
+            return;
+          }
 
-        const { currentNetworkTxList } = newState
-        newTx = currentNetworkTxList[currentNetworkTxList.length - 1]
-        resolve(newState)
-      })
+          const { currentNetworkTxList } = newState;
+          newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
+          resolve(newState);
+        },
+      );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
-      .then(() => newTx)
-  }
+      .then(() => newTx);
+  };
 }
 
-export function createRetryTransaction (txId, customGasPrice, customGasLimit) {
-  log.debug('background.createRetryTransaction')
-  let newTx
+export function createRetryTransaction(txId, customGasPrice, customGasLimit) {
+  log.debug('background.createRetryTransaction');
+  let newTx;
 
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.createSpeedUpTransaction(txId, customGasPrice, customGasLimit, (err, newState) => {
-        if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
-        }
+      background.createSpeedUpTransaction(
+        txId,
+        customGasPrice,
+        customGasLimit,
+        (err, newState) => {
+          if (err) {
+            dispatch(displayWarning(err.message));
+            reject(err);
+            return;
+          }
 
-        const { currentNetworkTxList } = newState
-        newTx = currentNetworkTxList[currentNetworkTxList.length - 1]
-        resolve(newState)
-      })
+          const { currentNetworkTxList } = newState;
+          newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
+          resolve(newState);
+        },
+      );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
-      .then(() => newTx)
-  }
+      .then(() => newTx);
+  };
 }
 
 //
 // config
 //
 
-export function setProviderType (type) {
-  return async (dispatch, getState) => {
-    const { type: currentProviderType } = getState().metamask.provider
-    log.debug(`background.setProviderType`, type)
+export function setProviderType(type) {
+  return async (dispatch) => {
+    log.debug(`background.setProviderType`, type);
 
     try {
-      await promisifiedBackground.setProviderType(type)
+      await promisifiedBackground.setProviderType(type);
     } catch (error) {
-      log.error(error)
-      dispatch(displayWarning('Had a problem changing networks!'))
-      return
+      log.error(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+      return;
     }
-    dispatch(setPreviousProvider(currentProviderType))
-    dispatch(updateProviderType(type))
-  }
+    dispatch(updateProviderType(type));
+  };
 }
 
-export function updateProviderType (type) {
+export function updateProviderType(type) {
   return {
     type: actionConstants.SET_PROVIDER_TYPE,
     value: type,
-  }
+  };
 }
 
-export function setPreviousProvider (type) {
-  return {
-    type: actionConstants.SET_PREVIOUS_PROVIDER,
-    value: type,
-  }
-}
-
-export function updateAndSetCustomRpc (newRpc, chainId, ticker = 'ETH', nickname, rpcPrefs) {
+export function updateAndSetCustomRpc(
+  newRpc,
+  chainId,
+  ticker = 'ETH',
+  nickname,
+  rpcPrefs,
+) {
   return async (dispatch) => {
-    log.debug(`background.updateAndSetCustomRpc: ${newRpc} ${chainId} ${ticker} ${nickname}`)
+    log.debug(
+      `background.updateAndSetCustomRpc: ${newRpc} ${chainId} ${ticker} ${nickname}`,
+    );
 
     try {
-      await promisifiedBackground.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs)
+      await promisifiedBackground.updateAndSetCustomRpc(
+        newRpc,
+        chainId,
+        ticker,
+        nickname || newRpc,
+        rpcPrefs,
+      );
     } catch (error) {
-      log.error(error)
-      dispatch(displayWarning('Had a problem changing networks!'))
-      return
+      log.error(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+      return;
     }
 
     dispatch({
       type: actionConstants.SET_RPC_TARGET,
       value: newRpc,
-    })
-  }
+    });
+  };
 }
 
-export function editRpc (oldRpc, newRpc, chainId, ticker = 'ETH', nickname, rpcPrefs) {
+export function editRpc(
+  oldRpc,
+  newRpc,
+  chainId,
+  ticker = 'ETH',
+  nickname,
+  rpcPrefs,
+) {
   return async (dispatch) => {
-    log.debug(`background.delRpcTarget: ${oldRpc}`)
+    log.debug(`background.delRpcTarget: ${oldRpc}`);
     try {
-      promisifiedBackground.delCustomRpc(oldRpc)
+      promisifiedBackground.delCustomRpc(oldRpc);
     } catch (error) {
-      log.error(error)
-      dispatch(displayWarning('Had a problem removing network!'))
-      return
+      log.error(error);
+      dispatch(displayWarning('Had a problem removing network!'));
+      return;
     }
 
     try {
-      await promisifiedBackground.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, rpcPrefs)
+      await promisifiedBackground.updateAndSetCustomRpc(
+        newRpc,
+        chainId,
+        ticker,
+        nickname || newRpc,
+        rpcPrefs,
+      );
     } catch (error) {
-      log.error(error)
-      dispatch(displayWarning('Had a problem changing networks!'))
-      return
+      log.error(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+      return;
     }
 
     dispatch({
       type: actionConstants.SET_RPC_TARGET,
       value: newRpc,
-    })
-  }
+    });
+  };
 }
 
-export function setRpcTarget (newRpc, chainId, ticker = 'ETH', nickname) {
+export function setRpcTarget(newRpc, chainId, ticker = 'ETH', nickname) {
   return async (dispatch) => {
-    log.debug(`background.setRpcTarget: ${newRpc} ${chainId} ${ticker} ${nickname}`)
+    log.debug(
+      `background.setRpcTarget: ${newRpc} ${chainId} ${ticker} ${nickname}`,
+    );
 
     try {
-      await promisifiedBackground.setCustomRpc(newRpc, chainId, ticker, nickname || newRpc)
+      await promisifiedBackground.setCustomRpc(
+        newRpc,
+        chainId,
+        ticker,
+        nickname || newRpc,
+      );
     } catch (error) {
-      log.error(error)
-      dispatch(displayWarning('Had a problem changing networks!'))
+      log.error(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
     }
-  }
+  };
 }
 
-export function delRpcTarget (oldRpc) {
+export function rollbackToPreviousProvider() {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.rollbackToPreviousProvider();
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+    }
+  };
+}
+
+export function delRpcTarget(oldRpc) {
   return (dispatch) => {
-    log.debug(`background.delRpcTarget: ${oldRpc}`)
+    log.debug(`background.delRpcTarget: ${oldRpc}`);
     return new Promise((resolve, reject) => {
       background.delCustomRpc(oldRpc, (err) => {
         if (err) {
-          log.error(err)
-          dispatch(displayWarning('Had a problem removing network!'))
-          reject(err)
-          return
+          log.error(err);
+          dispatch(displayWarning('Had a problem removing network!'));
+          reject(err);
+          return;
         }
-        resolve()
-      })
-    })
-  }
+        resolve();
+      });
+    });
+  };
 }
 
 // Calls the addressBookController to add a new address.
-export function addToAddressBook (recipient, nickname = '', memo = '') {
-  log.debug(`background.addToAddressBook`)
+export function addToAddressBook(recipient, nickname = '', memo = '') {
+  log.debug(`background.addToAddressBook`);
 
   return async (dispatch, getState) => {
-    const chainId = getState().metamask.network
+    const { chainId } = getState().metamask.provider;
 
-    let set
+    let set;
     try {
-      set = await promisifiedBackground.setAddressBook(checksumAddress(recipient), nickname, chainId, memo)
+      set = await promisifiedBackground.setAddressBook(
+        checksumAddress(recipient),
+        nickname,
+        chainId,
+        memo,
+      );
     } catch (error) {
-      log.error(error)
-      dispatch(displayWarning('Address book failed to update'))
-      throw error
+      log.error(error);
+      dispatch(displayWarning('Address book failed to update'));
+      throw error;
     }
     if (!set) {
-      dispatch(displayWarning('Address book failed to update'))
+      dispatch(displayWarning('Address book failed to update'));
     }
-  }
+  };
 }
 
 /**
  * @description Calls the addressBookController to remove an existing address.
  * @param {string} addressToRemove - Address of the entry to remove from the address book
  */
-export function removeFromAddressBook (chainId, addressToRemove) {
-  log.debug(`background.removeFromAddressBook`)
+export function removeFromAddressBook(chainId, addressToRemove) {
+  log.debug(`background.removeFromAddressBook`);
 
   return async () => {
-    await promisifiedBackground.removeFromAddressBook(chainId, checksumAddress(addressToRemove))
-  }
+    await promisifiedBackground.removeFromAddressBook(
+      chainId,
+      checksumAddress(addressToRemove),
+    );
+  };
 }
 
-export function showNetworkDropdown () {
+export function showNetworkDropdown() {
   return {
     type: actionConstants.NETWORK_DROPDOWN_OPEN,
-  }
+  };
 }
 
-export function hideNetworkDropdown () {
+export function hideNetworkDropdown() {
   return {
     type: actionConstants.NETWORK_DROPDOWN_CLOSE,
-  }
+  };
 }
 
-export function showModal (payload) {
+export function showModal(payload) {
   return {
     type: actionConstants.MODAL_OPEN,
     payload,
-  }
+  };
 }
 
-export function hideModal (payload) {
+export function hideModal(payload) {
   return {
     type: actionConstants.MODAL_CLOSE,
     payload,
-  }
+  };
 }
 
-export function closeCurrentNotificationWindow () {
-  return (dispatch, getState) => {
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
-      !hasUnconfirmedTransactions(getState())) {
-      global.platform.closeCurrentWindow()
-
-      dispatch(closeNotificationWindow())
+export function closeCurrentNotificationWindow() {
+  return (_, getState) => {
+    if (
+      getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
+      !hasUnconfirmedTransactions(getState())
+    ) {
+      global.platform.closeCurrentWindow();
     }
-  }
+  };
 }
 
-export function closeNotificationWindow () {
-  return {
-    type: actionConstants.CLOSE_NOTIFICATION_WINDOW,
-  }
-}
-
-export function showSidebar ({ transitionName, type, props }) {
+export function showSidebar({ transitionName, type, props }) {
   return {
     type: actionConstants.SIDEBAR_OPEN,
     value: {
@@ -1637,26 +1799,26 @@ export function showSidebar ({ transitionName, type, props }) {
       type,
       props,
     },
-  }
+  };
 }
 
-export function hideSidebar () {
+export function hideSidebar() {
   return {
     type: actionConstants.SIDEBAR_CLOSE,
-  }
+  };
 }
 
-export function showAlert (msg) {
+export function showAlert(msg) {
   return {
     type: actionConstants.ALERT_OPEN,
     value: msg,
-  }
+  };
 }
 
-export function hideAlert () {
+export function hideAlert() {
   return {
     type: actionConstants.ALERT_CLOSE,
-  }
+  };
 }
 
 /**
@@ -1664,443 +1826,598 @@ export function hideAlert () {
  * an object with the following structure {type, values}
  * or null (used to clear the previous value)
  */
-export function qrCodeDetected (qrCodeData) {
+export function qrCodeDetected(qrCodeData) {
   return {
     type: actionConstants.QR_CODE_DETECTED,
     value: qrCodeData,
-  }
+  };
 }
 
-export function showLoadingIndication (message) {
+export function showLoadingIndication(message) {
   return {
     type: actionConstants.SHOW_LOADING,
     value: message,
-  }
+  };
 }
 
-export function setHardwareWalletDefaultHdPath ({ device, path }) {
+export function setHardwareWalletDefaultHdPath({ device, path }) {
   return {
     type: actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
     value: { device, path },
-  }
+  };
 }
 
-export function hideLoadingIndication () {
+export function hideLoadingIndication() {
   return {
     type: actionConstants.HIDE_LOADING,
-  }
+  };
 }
 
-export function displayWarning (text) {
+export function displayWarning(text) {
   return {
     type: actionConstants.DISPLAY_WARNING,
     value: text,
-  }
+  };
 }
 
-export function hideWarning () {
+export function hideWarning() {
   return {
     type: actionConstants.HIDE_WARNING,
-  }
+  };
 }
 
-export function exportAccount (password, address) {
+export function exportAccount(password, address) {
   return function (dispatch) {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
 
-    log.debug(`background.verifyPassword`)
+    log.debug(`background.verifyPassword`);
     return new Promise((resolve, reject) => {
       background.verifyPassword(password, function (err) {
         if (err) {
-          log.error('Error in verifying password.')
-          dispatch(hideLoadingIndication())
-          dispatch(displayWarning('Incorrect Password.'))
-          reject(err)
-          return
+          log.error('Error in verifying password.');
+          dispatch(hideLoadingIndication());
+          dispatch(displayWarning('Incorrect Password.'));
+          reject(err);
+          return;
         }
-        log.debug(`background.exportAccount`)
+        log.debug(`background.exportAccount`);
         background.exportAccount(address, function (err2, result) {
-          dispatch(hideLoadingIndication())
+          dispatch(hideLoadingIndication());
 
           if (err2) {
-            log.error(err2)
-            dispatch(displayWarning('Had a problem exporting the account.'))
-            reject(err2)
-            return
+            log.error(err2);
+            dispatch(displayWarning('Had a problem exporting the account.'));
+            reject(err2);
+            return;
           }
 
-          dispatch(showPrivateKey(result))
-          resolve(result)
-        })
-      })
-    })
-  }
+          dispatch(showPrivateKey(result));
+          resolve(result);
+        });
+      });
+    });
+  };
 }
 
-export function exportAccounts (password, addresses) {
+export function exportAccounts(password, addresses) {
   return function (dispatch) {
-    log.debug(`background.submitPassword`)
+    log.debug(`background.submitPassword`);
     return new Promise((resolve, reject) => {
       background.submitPassword(password, function (err) {
         if (err) {
-          log.error('Error in submitting password.')
-          reject(err)
-          return
+          log.error('Error in submitting password.');
+          reject(err);
+          return;
         }
-        log.debug(`background.exportAccounts`)
-        const accountPromises = addresses.map((address) => new Promise(
-          (resolve2, reject2) => background.exportAccount(address, function (err2, result) {
-            if (err2) {
-              log.error(err2)
-              dispatch(displayWarning('Had a problem exporting the account.'))
-              reject2(err2)
-              return
-            }
-            resolve2(result)
-          }),
-        ))
-        resolve(Promise.all(accountPromises))
-      })
-    })
-  }
+        log.debug(`background.exportAccounts`);
+        const accountPromises = addresses.map(
+          (address) =>
+            new Promise((resolve2, reject2) =>
+              background.exportAccount(address, function (err2, result) {
+                if (err2) {
+                  log.error(err2);
+                  dispatch(
+                    displayWarning('Had a problem exporting the account.'),
+                  );
+                  reject2(err2);
+                  return;
+                }
+                resolve2(result);
+              }),
+            ),
+        );
+        resolve(Promise.all(accountPromises));
+      });
+    });
+  };
 }
 
-export function showPrivateKey (key) {
+export function showPrivateKey(key) {
   return {
     type: actionConstants.SHOW_PRIVATE_KEY,
     value: key,
-  }
+  };
 }
 
-export function setAccountLabel (account, label) {
+export function setAccountLabel(account, label) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
-    log.debug(`background.setAccountLabel`)
+    dispatch(showLoadingIndication());
+    log.debug(`background.setAccountLabel`);
 
     return new Promise((resolve, reject) => {
       background.setAccountLabel(account, label, (err) => {
-        dispatch(hideLoadingIndication())
+        dispatch(hideLoadingIndication());
 
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
 
         dispatch({
           type: actionConstants.SET_ACCOUNT_LABEL,
           value: { account, label },
-        })
-        resolve(account)
-      })
-    })
-  }
+        });
+        resolve(account);
+      });
+    });
+  };
 }
 
-export function clearAccountDetails () {
+export function clearAccountDetails() {
   return {
     type: actionConstants.CLEAR_ACCOUNT_DETAILS,
-  }
+  };
 }
 
-export function showSendTokenPage () {
+export function showSendTokenPage() {
   return {
     type: actionConstants.SHOW_SEND_TOKEN_PAGE,
-  }
+  };
 }
 
-export function buyEth (opts) {
+export function buyEth(opts) {
   return (dispatch) => {
-    const url = getBuyEthUrl(opts)
-    global.platform.openTab({ url })
+    const url = getBuyEthUrl(opts);
+    global.platform.openTab({ url });
     dispatch({
       type: actionConstants.BUY_ETH,
-    })
-  }
+    });
+  };
 }
 
-export function setFeatureFlag (feature, activated, notificationType) {
+export function setFeatureFlag(feature, activated, notificationType) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
-      background.setFeatureFlag(feature, activated, (err, updatedFeatureFlags) => {
-        dispatch(hideLoadingIndication())
-        if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
-        }
-        dispatch(updateFeatureFlags(updatedFeatureFlags))
-        notificationType && dispatch(showModal({ name: notificationType }))
-        resolve(updatedFeatureFlags)
-      })
-    })
-  }
+      background.setFeatureFlag(
+        feature,
+        activated,
+        (err, updatedFeatureFlags) => {
+          dispatch(hideLoadingIndication());
+          if (err) {
+            dispatch(displayWarning(err.message));
+            reject(err);
+            return;
+          }
+          dispatch(updateFeatureFlags(updatedFeatureFlags));
+          notificationType && dispatch(showModal({ name: notificationType }));
+          resolve(updatedFeatureFlags);
+        },
+      );
+    });
+  };
 }
 
-export function updateFeatureFlags (updatedFeatureFlags) {
+export function updateFeatureFlags(updatedFeatureFlags) {
   return {
     type: actionConstants.UPDATE_FEATURE_FLAGS,
     value: updatedFeatureFlags,
-  }
+  };
 }
 
-export function setPreference (preference, value) {
+export function setPreference(preference, value) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
       background.setPreference(preference, value, (err, updatedPreferences) => {
-        dispatch(hideLoadingIndication())
+        dispatch(hideLoadingIndication());
 
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
 
-        dispatch(updatePreferences(updatedPreferences))
-        resolve(updatedPreferences)
-      })
-    })
-  }
+        dispatch(updatePreferences(updatedPreferences));
+        resolve(updatedPreferences);
+      });
+    });
+  };
 }
 
-export function updatePreferences (value) {
+export function updatePreferences(value) {
   return {
     type: actionConstants.UPDATE_PREFERENCES,
     value,
-  }
+  };
 }
 
-export function setDefaultHomeActiveTabName (value) {
+export function setDefaultHomeActiveTabName(value) {
   return async () => {
-    await promisifiedBackground.setDefaultHomeActiveTabName(value)
-  }
+    await promisifiedBackground.setDefaultHomeActiveTabName(value);
+  };
 }
 
-export function setUseNativeCurrencyAsPrimaryCurrencyPreference (value) {
-  return setPreference('useNativeCurrencyAsPrimaryCurrency', value)
+export function setUseNativeCurrencyAsPrimaryCurrencyPreference(value) {
+  return setPreference('useNativeCurrencyAsPrimaryCurrency', value);
 }
 
-export function setShowFiatConversionOnTestnetsPreference (value) {
-  return setPreference('showFiatInTestnets', value)
+export function setHideZeroBalanceTokens(value) {
+  return setPreference('hideZeroBalanceTokens', value);
 }
 
-export function setAutoLockTimeLimit (value) {
-  return setPreference('autoLockTimeLimit', value)
+export function setShowFiatConversionOnTestnetsPreference(value) {
+  return setPreference('showFiatInTestnets', value);
 }
 
-export function setCompletedOnboarding () {
+export function setAutoLockTimeLimit(value) {
+  return setPreference('autoLockTimeLimit', value);
+}
+
+export function setCompletedOnboarding() {
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
+    dispatch(showLoadingIndication());
 
     try {
-      await promisifiedBackground.completeOnboarding()
+      await promisifiedBackground.completeOnboarding();
+      dispatch(completeOnboarding());
     } catch (err) {
-      dispatch(displayWarning(err.message))
-      throw err
+      dispatch(displayWarning(err.message));
+      throw err;
+    } finally {
+      dispatch(hideLoadingIndication());
     }
-
-    dispatch(completeOnboarding())
-    dispatch(hideLoadingIndication())
-  }
+  };
 }
 
-export function completeOnboarding () {
+export function completeOnboarding() {
   return {
     type: actionConstants.COMPLETE_ONBOARDING,
-  }
+  };
 }
 
-export function setMouseUserState (isMouseUser) {
+export function setMouseUserState(isMouseUser) {
   return {
     type: actionConstants.SET_MOUSE_USER_STATE,
     value: isMouseUser,
-  }
+  };
 }
 
-export async function forceUpdateMetamaskState (dispatch) {
-  log.debug(`background.getState`)
+export async function forceUpdateMetamaskState(dispatch) {
+  log.debug(`background.getState`);
 
-  let newState
+  let newState;
   try {
-    newState = await promisifiedBackground.getState()
+    newState = await promisifiedBackground.getState();
   } catch (error) {
-    dispatch(displayWarning(error.message))
-    throw error
+    dispatch(displayWarning(error.message));
+    throw error;
   }
 
-  dispatch(updateMetamaskState(newState))
-  return newState
+  dispatch(updateMetamaskState(newState));
+  return newState;
 }
 
-export function toggleAccountMenu () {
+export function toggleAccountMenu() {
   return {
     type: actionConstants.TOGGLE_ACCOUNT_MENU,
-  }
+  };
 }
 
-export function setParticipateInMetaMetrics (val) {
+export function setParticipateInMetaMetrics(val) {
   return (dispatch) => {
-    log.debug(`background.setParticipateInMetaMetrics`)
+    log.debug(`background.setParticipateInMetaMetrics`);
     return new Promise((resolve, reject) => {
       background.setParticipateInMetaMetrics(val, (err, metaMetricsId) => {
-        log.debug(err)
+        log.debug(err);
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
 
         dispatch({
           type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
           value: val,
-        })
-        resolve([val, metaMetricsId])
-      })
-    })
-  }
+        });
+        resolve([val, metaMetricsId]);
+      });
+    });
+  };
 }
 
-export function setMetaMetricsSendCount (val) {
+export function setMetaMetricsSendCount(val) {
   return (dispatch) => {
-    log.debug(`background.setMetaMetricsSendCount`)
+    log.debug(`background.setMetaMetricsSendCount`);
     return new Promise((resolve, reject) => {
       background.setMetaMetricsSendCount(val, (err) => {
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
 
         dispatch({
           type: actionConstants.SET_METAMETRICS_SEND_COUNT,
           value: val,
-        })
-        resolve(val)
-      })
-    })
-  }
+        });
+        resolve(val);
+      });
+    });
+  };
 }
 
-export function setUseBlockie (val) {
+export function setUseBlockie(val) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
-    log.debug(`background.setUseBlockie`)
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseBlockie`);
     background.setUseBlockie(val, (err) => {
-      dispatch(hideLoadingIndication())
+      dispatch(hideLoadingIndication());
       if (err) {
-        dispatch(displayWarning(err.message))
+        dispatch(displayWarning(err.message));
       }
-    })
+    });
     dispatch({
       type: actionConstants.SET_USE_BLOCKIE,
       value: val,
-    })
-  }
+    });
+  };
 }
 
-export function setUseNonceField (val) {
+export function setUseNonceField(val) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
-    log.debug(`background.setUseNonceField`)
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseNonceField`);
     background.setUseNonceField(val, (err) => {
-      dispatch(hideLoadingIndication())
+      dispatch(hideLoadingIndication());
       if (err) {
-        dispatch(displayWarning(err.message))
+        dispatch(displayWarning(err.message));
       }
-    })
+    });
     dispatch({
       type: actionConstants.SET_USE_NONCEFIELD,
       value: val,
-    })
-  }
+    });
+  };
 }
 
-export function setUsePhishDetect (val) {
+export function setUsePhishDetect(val) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
-    log.debug(`background.setUsePhishDetect`)
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUsePhishDetect`);
     background.setUsePhishDetect(val, (err) => {
-      dispatch(hideLoadingIndication())
+      dispatch(hideLoadingIndication());
       if (err) {
-        dispatch(displayWarning(err.message))
+        dispatch(displayWarning(err.message));
       }
-    })
-  }
+    });
+  };
 }
 
-export function setIpfsGateway (val) {
+export function setIpfsGateway(val) {
   return (dispatch) => {
-    dispatch(showLoadingIndication())
-    log.debug(`background.setIpfsGateway`)
+    dispatch(showLoadingIndication());
+    log.debug(`background.setIpfsGateway`);
     background.setIpfsGateway(val, (err) => {
-      dispatch(hideLoadingIndication())
+      dispatch(hideLoadingIndication());
       if (err) {
-        dispatch(displayWarning(err.message))
-
+        dispatch(displayWarning(err.message));
       } else {
         dispatch({
           type: actionConstants.SET_IPFS_GATEWAY,
           value: val,
-        })
+        });
       }
-    })
-  }
+    });
+  };
 }
 
-export function updateCurrentLocale (key) {
+export function updateCurrentLocale(key) {
   return async (dispatch) => {
-    dispatch(showLoadingIndication())
-    await loadRelativeTimeFormatLocaleData(key)
-    return fetchLocale(key)
-      .then((localeMessages) => {
-        log.debug(`background.setCurrentLocale`)
-        background.setCurrentLocale(key, (err, textDirection) => {
-          if (err) {
-            dispatch(hideLoadingIndication())
-            dispatch(displayWarning(err.message))
-            return
-          }
-          switchDirection(textDirection)
-          dispatch(setCurrentLocale(key, localeMessages))
-          dispatch(hideLoadingIndication())
-        })
-      })
-  }
+    dispatch(showLoadingIndication());
+
+    try {
+      await loadRelativeTimeFormatLocaleData(key);
+      const localeMessages = await fetchLocale(key);
+      const textDirection = await promisifiedBackground.setCurrentLocale(key);
+      await switchDirection(textDirection);
+      dispatch(setCurrentLocale(key, localeMessages));
+    } catch (error) {
+      dispatch(displayWarning(error.message));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
 }
 
-export function setCurrentLocale (locale, messages) {
+export function setCurrentLocale(locale, messages) {
   return {
     type: actionConstants.SET_CURRENT_LOCALE,
     value: {
       locale,
       messages,
     },
-  }
+  };
 }
 
-export function setPendingTokens (pendingTokens) {
-  const { customToken = {}, selectedTokens = {} } = pendingTokens
-  const { address, symbol, decimals } = customToken
-  const tokens = address && symbol && decimals
-    ? { ...selectedTokens, [address]: { ...customToken, isCustom: true } }
-    : selectedTokens
+export function setPendingTokens(pendingTokens) {
+  const { customToken = {}, selectedTokens = {} } = pendingTokens;
+  const { address, symbol, decimals } = customToken;
+  const tokens =
+    address && symbol && decimals
+      ? {
+          ...selectedTokens,
+          [address]: {
+            ...customToken,
+            isCustom: true,
+          },
+        }
+      : selectedTokens;
+
+  Object.keys(tokens).forEach((tokenAddress) => {
+    tokens[tokenAddress].unlisted = !LISTED_CONTRACT_ADDRESSES.includes(
+      tokenAddress.toLowerCase(),
+    );
+  });
 
   return {
     type: actionConstants.SET_PENDING_TOKENS,
     payload: tokens,
-  }
+  };
+}
+
+// Swaps
+
+export function setSwapsLiveness(swapsFeatureIsLive) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsLiveness(swapsFeatureIsLive);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function fetchAndSetQuotes(fetchParams, fetchParamsMetaData) {
+  return async (dispatch) => {
+    const [
+      quotes,
+      selectedAggId,
+    ] = await promisifiedBackground.fetchAndSetQuotes(
+      fetchParams,
+      fetchParamsMetaData,
+    );
+    await forceUpdateMetamaskState(dispatch);
+    return [quotes, selectedAggId];
+  };
+}
+
+export function setSelectedQuoteAggId(aggId) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSelectedQuoteAggId(aggId);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setSwapsTokens(tokens) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsTokens(tokens);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function resetBackgroundSwapsState() {
+  return async (dispatch) => {
+    const id = await promisifiedBackground.resetSwapsState();
+    await forceUpdateMetamaskState(dispatch);
+    return id;
+  };
+}
+
+export function setCustomApproveTxData(data) {
+  return async (dispatch) => {
+    await promisifiedBackground.setCustomApproveTxData(data);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setSwapsTxGasPrice(gasPrice) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsTxGasPrice(gasPrice);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setSwapsTxGasLimit(gasLimit) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsTxGasLimit(gasLimit, true);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function customSwapsGasParamsUpdated(gasLimit, gasPrice) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsTxGasPrice(gasPrice);
+    await promisifiedBackground.setSwapsTxGasLimit(gasLimit, true);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setTradeTxId(tradeTxId) {
+  return async (dispatch) => {
+    await promisifiedBackground.setTradeTxId(tradeTxId);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setApproveTxId(approveTxId) {
+  return async (dispatch) => {
+    await promisifiedBackground.setApproveTxId(approveTxId);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function safeRefetchQuotes() {
+  return async (dispatch) => {
+    await promisifiedBackground.safeRefetchQuotes();
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function stopPollingForQuotes() {
+  return async (dispatch) => {
+    await promisifiedBackground.stopPollingForQuotes();
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setBackgroundSwapRouteState(routeState) {
+  return async (dispatch) => {
+    await promisifiedBackground.setBackgroundSwapRouteState(routeState);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function resetSwapsPostFetchState() {
+  return async (dispatch) => {
+    await promisifiedBackground.resetPostFetchState();
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setSwapsErrorKey(errorKey) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsErrorKey(errorKey);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setInitialGasEstimate(initialAggId) {
+  return async (dispatch) => {
+    await promisifiedBackground.setInitialGasEstimate(initialAggId);
+    await forceUpdateMetamaskState(dispatch);
+  };
 }
 
 // Permissions
 
-export function requestAccountsPermissionWithId (origin) {
+export function requestAccountsPermissionWithId(origin) {
   return async (dispatch) => {
-    const id = await promisifiedBackground.requestAccountsPermissionWithId(origin)
-    await forceUpdateMetamaskState(dispatch)
-    return id
-  }
+    const id = await promisifiedBackground.requestAccountsPermissionWithId(
+      origin,
+    );
+    await forceUpdateMetamaskState(dispatch);
+    return id;
+  };
 }
 
 /**
@@ -2108,359 +2425,436 @@ export function requestAccountsPermissionWithId (origin) {
  * @param {Object} request - The permissions request to approve
  * @param {string[]} accounts - The accounts to expose, if any.
  */
-export function approvePermissionsRequest (request, accounts) {
+export function approvePermissionsRequest(request, accounts) {
   return () => {
-    background.approvePermissionsRequest(request, accounts)
-  }
+    background.approvePermissionsRequest(request, accounts);
+  };
 }
 
 /**
  * Rejects the permissions request with the given ID.
  * @param {string} requestId - The id of the request to be rejected
  */
-export function rejectPermissionsRequest (requestId) {
+export function rejectPermissionsRequest(requestId) {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.rejectPermissionsRequest(requestId, (err) => {
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
-        forceUpdateMetamaskState(dispatch)
-          .then(resolve)
-          .catch(reject)
-      })
-    })
-  }
+        forceUpdateMetamaskState(dispatch).then(resolve).catch(reject);
+      });
+    });
+  };
 }
 
 /**
  * Clears the given permissions for the given origin.
  */
-export function removePermissionsFor (domains) {
+export function removePermissionsFor(domains) {
   return () => {
-    background.removePermissionsFor(domains)
-  }
+    background.removePermissionsFor(domains);
+  };
 }
 
 /**
  * Clears all permissions for all domains.
  */
-export function clearPermissions () {
+export function clearPermissions() {
   return () => {
-    background.clearPermissions()
-  }
+    background.clearPermissions();
+  };
 }
 
-export function setFirstTimeFlowType (type) {
+// Pending Approvals
+
+/**
+ * Resolves a pending approval and closes the current notification window if no
+ * further approvals are pending after the background state updates.
+ * @param {string} id - The pending approval id
+ * @param {any} [value] - The value required to confirm a pending approval
+ */
+export function resolvePendingApproval(id, value) {
+  return async (dispatch) => {
+    await promisifiedBackground.resolvePendingApproval(id, value);
+    // Before closing the current window, check if any additional confirmations
+    // are added as a result of this confirmation being accepted
+    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
+    if (Object.values(pendingApprovals).length === 0) {
+      dispatch(closeCurrentNotificationWindow());
+    }
+  };
+}
+
+/**
+ * Rejects a pending approval and closes the current notification window if no
+ * further approvals are pending after the background state updates.
+ * @param {string} id - The pending approval id
+ * @param {Error} [error] - The error to throw when rejecting the approval
+ */
+export function rejectPendingApproval(id, error) {
+  return async (dispatch) => {
+    await promisifiedBackground.rejectPendingApproval(id, error);
+    // Before closing the current window, check if any additional confirmations
+    // are added as a result of this confirmation being rejected
+    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
+    if (Object.values(pendingApprovals).length === 0) {
+      dispatch(closeCurrentNotificationWindow());
+    }
+  };
+}
+
+export function setFirstTimeFlowType(type) {
   return (dispatch) => {
-    log.debug(`background.setFirstTimeFlowType`)
+    log.debug(`background.setFirstTimeFlowType`);
     background.setFirstTimeFlowType(type, (err) => {
       if (err) {
-        dispatch(displayWarning(err.message))
-
+        dispatch(displayWarning(err.message));
       }
-    })
+    });
     dispatch({
       type: actionConstants.SET_FIRST_TIME_FLOW_TYPE,
       value: type,
-    })
-  }
+    });
+  };
 }
 
-export function setSelectedSettingsRpcUrl (newRpcUrl) {
+export function setSelectedSettingsRpcUrl(newRpcUrl) {
   return {
     type: actionConstants.SET_SELECTED_SETTINGS_RPC_URL,
     value: newRpcUrl,
-  }
+  };
 }
 
-export function setNetworksTabAddMode (isInAddMode) {
+export function setNetworksTabAddMode(isInAddMode) {
   return {
     type: actionConstants.SET_NETWORKS_TAB_ADD_MODE,
     value: isInAddMode,
-  }
+  };
 }
 
-export function setLastActiveTime () {
+export function setLastActiveTime() {
   return (dispatch) => {
     background.setLastActiveTime((err) => {
       if (err) {
-        dispatch(displayWarning(err.message))
-
+        dispatch(displayWarning(err.message));
       }
-    })
-  }
+    });
+  };
 }
 
-export function setConnectedStatusPopoverHasBeenShown () {
+export function setConnectedStatusPopoverHasBeenShown() {
   return () => {
     background.setConnectedStatusPopoverHasBeenShown((err) => {
       if (err) {
-        throw new Error(err.message)
+        throw new Error(err.message);
       }
-    })
-  }
+    });
+  };
 }
 
-export function setAlertEnabledness (alertId, enabledness) {
-  return async () => {
-    await promisifiedBackground.setAlertEnabledness(alertId, enabledness)
-  }
+export function setSwapsWelcomeMessageHasBeenShown() {
+  return () => {
+    background.setSwapsWelcomeMessageHasBeenShown((err) => {
+      if (err) {
+        throw new Error(err.message);
+      }
+    });
+  };
 }
 
-export async function setUnconnectedAccountAlertShown (origin) {
-  await promisifiedBackground.setUnconnectedAccountAlertShown(origin)
+export async function setAlertEnabledness(alertId, enabledness) {
+  await promisifiedBackground.setAlertEnabledness(alertId, enabledness);
 }
 
-export function loadingMethodDataStarted () {
+export async function setUnconnectedAccountAlertShown(origin) {
+  await promisifiedBackground.setUnconnectedAccountAlertShown(origin);
+}
+
+export async function setWeb3ShimUsageAlertDismissed(origin) {
+  await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
+}
+
+export function loadingMethodDataStarted() {
   return {
     type: actionConstants.LOADING_METHOD_DATA_STARTED,
-  }
+  };
 }
 
-export function loadingMethodDataFinished () {
+export function loadingMethodDataFinished() {
   return {
     type: actionConstants.LOADING_METHOD_DATA_FINISHED,
-  }
+  };
 }
 
-export function getContractMethodData (data = '') {
+export function getContractMethodData(data = '') {
   return (dispatch, getState) => {
-    const prefixedData = ethUtil.addHexPrefix(data)
-    const fourBytePrefix = prefixedData.slice(0, 10)
-    const { knownMethodData } = getState().metamask
+    const prefixedData = addHexPrefix(data);
+    const fourBytePrefix = prefixedData.slice(0, 10);
+    const { knownMethodData } = getState().metamask;
 
-    if ((knownMethodData && knownMethodData[fourBytePrefix] && Object.keys(knownMethodData[fourBytePrefix]).length !== 0) || fourBytePrefix === '0x') {
-      return Promise.resolve(knownMethodData[fourBytePrefix])
+    if (
+      (knownMethodData &&
+        knownMethodData[fourBytePrefix] &&
+        Object.keys(knownMethodData[fourBytePrefix]).length !== 0) ||
+      fourBytePrefix === '0x'
+    ) {
+      return Promise.resolve(knownMethodData[fourBytePrefix]);
     }
 
-    dispatch(loadingMethodDataStarted())
-    log.debug(`loadingMethodData`)
+    dispatch(loadingMethodDataStarted());
+    log.debug(`loadingMethodData`);
 
-    return getMethodDataAsync(fourBytePrefix)
-      .then(({ name, params }) => {
-        dispatch(loadingMethodDataFinished())
-        background.addKnownMethodData(fourBytePrefix, { name, params })
-        return { name, params }
-      })
-  }
+    return getMethodDataAsync(fourBytePrefix).then(({ name, params }) => {
+      dispatch(loadingMethodDataFinished());
+      background.addKnownMethodData(fourBytePrefix, { name, params });
+      return { name, params };
+    });
+  };
 }
 
-export function loadingTokenParamsStarted () {
+export function loadingTokenParamsStarted() {
   return {
     type: actionConstants.LOADING_TOKEN_PARAMS_STARTED,
-  }
+  };
 }
 
-export function loadingTokenParamsFinished () {
+export function loadingTokenParamsFinished() {
   return {
     type: actionConstants.LOADING_TOKEN_PARAMS_FINISHED,
-  }
+  };
 }
 
-export function getTokenParams (tokenAddress) {
+export function getTokenParams(tokenAddress) {
   return (dispatch, getState) => {
-    const existingTokens = getState().metamask.tokens
-    const existingToken = existingTokens.find(({ address }) => tokenAddress === address)
+    const existingTokens = getState().metamask.tokens;
+    const existingToken = existingTokens.find(
+      ({ address }) => tokenAddress === address,
+    );
 
     if (existingToken) {
       return Promise.resolve({
         symbol: existingToken.symbol,
         decimals: existingToken.decimals,
-      })
+      });
     }
 
-    dispatch(loadingTokenParamsStarted())
-    log.debug(`loadingTokenParams`)
+    dispatch(loadingTokenParamsStarted());
+    log.debug(`loadingTokenParams`);
 
-    return fetchSymbolAndDecimals(tokenAddress, existingTokens)
-      .then(({ symbol, decimals }) => {
-        dispatch(addToken(tokenAddress, symbol, Number(decimals)))
-        dispatch(loadingTokenParamsFinished())
-      })
-  }
+    return fetchSymbolAndDecimals(tokenAddress, existingTokens).then(
+      ({ symbol, decimals }) => {
+        dispatch(addToken(tokenAddress, symbol, Number(decimals)));
+        dispatch(loadingTokenParamsFinished());
+      },
+    );
+  };
 }
 
-export function setSeedPhraseBackedUp (seedPhraseBackupState) {
+export function setSeedPhraseBackedUp(seedPhraseBackupState) {
   return (dispatch) => {
-    log.debug(`background.setSeedPhraseBackedUp`)
+    log.debug(`background.setSeedPhraseBackedUp`);
     return new Promise((resolve, reject) => {
       background.setSeedPhraseBackedUp(seedPhraseBackupState, (err) => {
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
-        forceUpdateMetamaskState(dispatch)
-          .then(resolve)
-          .catch(reject)
-      })
-    })
-  }
+        forceUpdateMetamaskState(dispatch).then(resolve).catch(reject);
+      });
+    });
+  };
 }
 
-export function initializeThreeBox () {
+export function initializeThreeBox() {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.initializeThreeBox((err) => {
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
-        resolve()
-      })
-    })
-  }
+        resolve();
+      });
+    });
+  };
 }
 
-export function setShowRestorePromptToFalse () {
+export function setShowRestorePromptToFalse() {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.setShowRestorePromptToFalse((err) => {
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
-        resolve()
-      })
-    })
-  }
+        resolve();
+      });
+    });
+  };
 }
 
-export function turnThreeBoxSyncingOn () {
+export function turnThreeBoxSyncingOn() {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.turnThreeBoxSyncingOn((err) => {
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
-        resolve()
-      })
-    })
-  }
+        resolve();
+      });
+    });
+  };
 }
 
-export function restoreFromThreeBox (accountAddress) {
+export function restoreFromThreeBox(accountAddress) {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.restoreFromThreeBox(accountAddress, (err) => {
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
-        resolve()
-      })
-    })
-  }
+        resolve();
+      });
+    });
+  };
 }
 
-export function getThreeBoxLastUpdated () {
+export function getThreeBoxLastUpdated() {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.getThreeBoxLastUpdated((err, lastUpdated) => {
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
-        resolve(lastUpdated)
-      })
-    })
-  }
+        resolve(lastUpdated);
+      });
+    });
+  };
 }
 
-export function setThreeBoxSyncingPermission (threeBoxSyncingAllowed) {
+export function setThreeBoxSyncingPermission(threeBoxSyncingAllowed) {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.setThreeBoxSyncingPermission(threeBoxSyncingAllowed, (err) => {
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
-        resolve()
-      })
-    })
-  }
+        resolve();
+      });
+    });
+  };
 }
 
-export function turnThreeBoxSyncingOnAndInitialize () {
+export function turnThreeBoxSyncingOnAndInitialize() {
   return async (dispatch) => {
-    await dispatch(setThreeBoxSyncingPermission(true))
-    await dispatch(turnThreeBoxSyncingOn())
-    await dispatch(initializeThreeBox(true))
-  }
+    await dispatch(setThreeBoxSyncingPermission(true));
+    await dispatch(turnThreeBoxSyncingOn());
+    await dispatch(initializeThreeBox(true));
+  };
 }
 
-export function setNextNonce (nextNonce) {
+export function setNextNonce(nextNonce) {
   return {
     type: actionConstants.SET_NEXT_NONCE,
     value: nextNonce,
-  }
+  };
 }
 
-export function getNextNonce () {
+export function getNextNonce() {
   return (dispatch, getState) => {
-    const address = getState().metamask.selectedAddress
+    const address = getState().metamask.selectedAddress;
     return new Promise((resolve, reject) => {
       background.getNextNonce(address, (err, nextNonce) => {
         if (err) {
-          dispatch(displayWarning(err.message))
-          reject(err)
-          return
+          dispatch(displayWarning(err.message));
+          reject(err);
+          return;
         }
-        dispatch(setNextNonce(nextNonce))
-        resolve(nextNonce)
-      })
-    })
-  }
+        dispatch(setNextNonce(nextNonce));
+        resolve(nextNonce);
+      });
+    });
+  };
 }
 
-export function setRequestAccountTabIds (requestAccountTabIds) {
+export function setRequestAccountTabIds(requestAccountTabIds) {
   return {
     type: actionConstants.SET_REQUEST_ACCOUNT_TABS,
     value: requestAccountTabIds,
-  }
+  };
 }
 
-export function getRequestAccountTabIds () {
+export function getRequestAccountTabIds() {
   return async (dispatch) => {
-    const requestAccountTabIds = await promisifiedBackground.getRequestAccountTabIds()
-    dispatch(setRequestAccountTabIds(requestAccountTabIds))
-  }
+    const requestAccountTabIds = await promisifiedBackground.getRequestAccountTabIds();
+    dispatch(setRequestAccountTabIds(requestAccountTabIds));
+  };
 }
 
-export function setOpenMetamaskTabsIDs (openMetaMaskTabIDs) {
+export function setOpenMetamaskTabsIDs(openMetaMaskTabIDs) {
   return {
     type: actionConstants.SET_OPEN_METAMASK_TAB_IDS,
     value: openMetaMaskTabIDs,
-  }
+  };
 }
 
-export function getOpenMetamaskTabsIds () {
+export function getOpenMetamaskTabsIds() {
   return async (dispatch) => {
-    const openMetaMaskTabIDs = await promisifiedBackground.getOpenMetamaskTabsIds()
-    dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs))
-  }
+    const openMetaMaskTabIDs = await promisifiedBackground.getOpenMetamaskTabsIds();
+    dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs));
+  };
 }
 
-export function setCurrentWindowTab (currentWindowTab) {
+export function setCurrentWindowTab(currentWindowTab) {
   return {
     type: actionConstants.SET_CURRENT_WINDOW_TAB,
     value: currentWindowTab,
-  }
+  };
 }
 
-export function getCurrentWindowTab () {
+export function getCurrentWindowTab() {
   return async (dispatch) => {
-    const currentWindowTab = await global.platform.currentTab()
-    dispatch(setCurrentWindowTab(currentWindowTab))
-  }
+    const currentWindowTab = await global.platform.currentTab();
+    dispatch(setCurrentWindowTab(currentWindowTab));
+  };
+}
+
+// MetaMetrics
+/**
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPagePayload} MetaMetricsPagePayload
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPageOptions} MetaMetricsPageOptions
+ */
+
+/**
+ * @param {MetaMetricsEventPayload} payload - details of the event to track
+ * @param {MetaMetricsEventOptions} options - options for routing/handling of event
+ * @returns {Promise<void>}
+ */
+export function trackMetaMetricsEvent(payload, options) {
+  return promisifiedBackground.trackMetaMetricsEvent(payload, options);
+}
+
+/**
+ * @param {MetaMetricsPagePayload} payload - details of the page viewed
+ * @param {MetaMetricsPageOptions} options - options for handling the page view
+ * @returns {void}
+ */
+export function trackMetaMetricsPage(payload, options) {
+  return promisifiedBackground.trackMetaMetricsPage(payload, options);
 }
