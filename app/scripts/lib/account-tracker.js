@@ -134,7 +134,7 @@ export default class AccountTracker {
     // add initial state for addresses
     addresses.forEach((address) => {
       accounts[address] = { address, balance: '0x0' };
-    })
+    });
     // save accounts state
     this.store.updateState({ accounts });
     // fetch balances for the accounts if there is block number ready
