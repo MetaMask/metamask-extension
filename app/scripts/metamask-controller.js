@@ -868,7 +868,7 @@ export default class MetamaskController extends EventEmitter {
     // and make sure addresses are not repeated
     const oldAccounts = await this.keyringController.getAccounts()
     const accountsToTrack = [...new Set(oldAccounts.concat(accounts.map((a) => a.address.toLowerCase())))]
-    this.preferencesController.syncAddresses(accountsToTrack);
+    this.preferencesController.syncAddresses(accountsToTrack)
     this.accountTracker.syncWithAddresses(accountsToTrack)
     return accounts
   }
