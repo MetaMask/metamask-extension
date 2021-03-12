@@ -385,7 +385,7 @@ export default class TransactionController extends EventEmitter {
    * @param {string} [customGasPrice] - the hex value to use for the cancel transaction
    * @returns {txMeta}
    */
-  async createCancelTransaction(originalTxId, customGasPrice) {
+  async createCancelTransaction(originalTxId, customGasPrice, customGasLimit) {
     const originalTxMeta = this.txStateManager.getTx(originalTxId);
     const { txParams } = originalTxMeta;
     const { gasPrice: lastGasPrice, from, nonce } = txParams;
@@ -398,7 +398,7 @@ export default class TransactionController extends EventEmitter {
         from,
         to: from,
         nonce,
-        gas: '0x5208',
+        gas: customGasLimit || '0x5208',
         value: '0x0',
         gasPrice: newGasPrice,
       },

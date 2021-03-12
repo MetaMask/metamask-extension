@@ -1858,10 +1858,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} [customGasPrice] - the hex value to use for the cancel transaction
    * @returns {Object} MetaMask state
    */
-  async createCancelTransaction(originalTxId, customGasPrice) {
+  async createCancelTransaction(originalTxId, customGasPrice, customGasLimit) {
     await this.txController.createCancelTransaction(
       originalTxId,
       customGasPrice,
+      customGasLimit,
     );
     const state = await this.getState();
     return state;
