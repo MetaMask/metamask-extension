@@ -4,7 +4,6 @@ import ContactList from '../../../components/app/contact-list';
 import {
   CONTACT_ADD_ROUTE,
   CONTACT_VIEW_ROUTE,
-  CONTACT_MY_ACCOUNTS_ROUTE,
 } from '../../../helpers/constants/routes';
 import EditContact from './edit-contact';
 import AddContact from './add-contact';
@@ -100,11 +99,7 @@ export default class ContactListTab extends Component {
     const { hideAddressBook, showingMyAccounts } = this.props;
 
     if (!hideAddressBook && !showingMyAccounts) {
-      return (
-        <div className="address-book">
-          {this.renderAddresses()}
-        </div>
-      );
+      return <div className="address-book">{this.renderAddresses()}</div>;
     } else if (!hideAddressBook && showingMyAccounts) {
       return <MyAccounts />;
     }
