@@ -988,12 +988,6 @@
   "myAccounts": {
     "message": "Akun Saya"
   },
-  "myWalletAccounts": {
-    "message": "Akun Dompet Saya"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Semua akun Anda yang dibuat MetaMask akan secara otomatis ditambahkan ke bagian ini."
-  },
   "needEtherInWallet": {
     "message": "Untuk berinteraksi dengan aplikasi yang terdesentralisasi menggunakan MetaMask, Anda memerlukan Ether di dompet Anda."
   },

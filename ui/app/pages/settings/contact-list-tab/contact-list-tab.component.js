@@ -66,29 +66,6 @@ export default class ContactListTab extends Component {
     );
   }
 
-  renderMyAccountsButton() {
-    const { history } = this.props;
-    const { t } = this.context;
-    return (
-      <div
-        className="address-book__my-accounts-button"
-        onClick={() => {
-          history.push(CONTACT_MY_ACCOUNTS_ROUTE);
-        }}
-      >
-        <div className="address-book__my-accounts-button__header">
-          {t('myWalletAccounts')}
-        </div>
-        <div className="address-book__my-accounts-button__content">
-          <div className="address-book__my-accounts-button__text">
-            {t('myWalletAccountsDescription')}
-          </div>
-          <div className="address-book__my-accounts-button__caret" />
-        </div>
-      </div>
-    );
-  }
-
   renderContactContent() {
     const {
       viewingContact,
@@ -125,7 +102,6 @@ export default class ContactListTab extends Component {
     if (!hideAddressBook && !showingMyAccounts) {
       return (
         <div className="address-book">
-          {this.renderMyAccountsButton()}
           {this.renderAddresses()}
         </div>
       );

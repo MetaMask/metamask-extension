@@ -997,12 +997,6 @@
   "myAccounts": {
     "message": "Mis cuentas"
   },
-  "myWalletAccounts": {
-    "message": "Mis cuentas de monedero"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Todas tus cuentas creadas con MetaMask serán automáticamente agregadas a esta sección."
-  },
   "needEtherInWallet": {
     "message": "Para interactuar con una aplicación descentralizada usando MetaMask, necesitas tener Ether en tu monedero"
   },

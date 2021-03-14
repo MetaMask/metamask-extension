@@ -1080,12 +1080,6 @@
   "myAccounts": {
     "message": "My Accounts"
   },
-  "myWalletAccounts": {
-    "message": "My Wallet Accounts"
-  },
-  "myWalletAccountsDescription": {
-    "message": "All of your MetaMask created accounts will automatically be added to this section."
-  },
   "needEtherInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
   },
