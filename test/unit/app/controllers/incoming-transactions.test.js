@@ -16,7 +16,7 @@ import {
   ROPSTEN_NETWORK_ID,
 } from '../../../../shared/constants/network';
 import {
-  TRANSACTION_CATEGORIES,
+  TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction';
 import { NETWORK_EVENTS } from '../../../../app/scripts/controllers/network';
@@ -276,7 +276,7 @@ describe('IncomingTransactionsController', function () {
               chainId: ROPSTEN_CHAIN_ID,
               status: TRANSACTION_STATUSES.CONFIRMED,
               time: 16000000000000000,
-              transactionCategory: TRANSACTION_CATEGORIES.INCOMING,
+              type: TRANSACTION_TYPES.INCOMING,
               txParams: {
                 from: '0xfake',
                 gas: '0x0',
@@ -620,7 +620,7 @@ describe('IncomingTransactionsController', function () {
               chainId: ROPSTEN_CHAIN_ID,
               status: TRANSACTION_STATUSES.CONFIRMED,
               time: 16000000000000000,
-              transactionCategory: TRANSACTION_CATEGORIES.INCOMING,
+              type: TRANSACTION_TYPES.INCOMING,
               txParams: {
                 from: '0xfake',
                 gas: '0x0',
@@ -775,7 +775,7 @@ describe('IncomingTransactionsController', function () {
               chainId: ROPSTEN_CHAIN_ID,
               status: TRANSACTION_STATUSES.CONFIRMED,
               time: 16000000000000000,
-              transactionCategory: TRANSACTION_CATEGORIES.INCOMING,
+              type: TRANSACTION_TYPES.INCOMING,
               txParams: {
                 from: '0xfake',
                 gas: '0x0',
@@ -1362,7 +1362,7 @@ describe('IncomingTransactionsController', function () {
           value: '0xf',
         },
         hash: '0xg',
-        transactionCategory: TRANSACTION_CATEGORIES.INCOMING,
+        type: TRANSACTION_TYPES.INCOMING,
       });
     });
 
@@ -1408,7 +1408,7 @@ describe('IncomingTransactionsController', function () {
           value: '0xf',
         },
         hash: '0xg',
-        transactionCategory: TRANSACTION_CATEGORIES.INCOMING,
+        type: TRANSACTION_TYPES.INCOMING,
       });
     });
   });

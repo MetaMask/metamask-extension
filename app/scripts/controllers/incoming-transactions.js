@@ -6,7 +6,7 @@ import { bnToHex } from '../lib/util';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
 import {
-  TRANSACTION_CATEGORIES,
+  TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
 import {
@@ -296,7 +296,7 @@ export default class IncomingTransactionsController {
         value: bnToHex(new BN(txMeta.value)),
       },
       hash: txMeta.hash,
-      transactionCategory: TRANSACTION_CATEGORIES.INCOMING,
+      type: TRANSACTION_TYPES.INCOMING,
     };
   }
 }

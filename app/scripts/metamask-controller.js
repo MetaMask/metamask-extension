@@ -24,7 +24,6 @@ import {
   CurrencyRateController,
   PhishingController,
 } from '@metamask/controllers';
-import { getBackgroundMetaMetricState } from '../../ui/app/selectors';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import ComposableObservableStore from './lib/ComposableObservableStore';
@@ -330,12 +329,23 @@ export default class MetamaskController extends EventEmitter {
         this.platform.showTransactionNotification(txMeta, rpcPrefs);
 
         const { txReceipt } = txMeta;
+        const metamaskState = await this.getState();
+
         if (txReceipt && txReceipt.status === '0x0') {
-          this.sendBackgroundMetaMetrics({
-            action: 'Transactions',
-            name: 'On Chain Failure',
-            customVariables: { errorMessage: txMeta.simulationFails?.reason },
-          });
+          this.metaMetricsController.trackEvent(
+            {
+              category: 'Background',
+              properties: {
+                action: 'Transactions',
+                errorMessage: txMeta.simulationFails?.reason,
+                numberOfTokens: metamaskState.tokens.length,
+                numberOfAccounts: Object.keys(metamaskState.accounts).length,
+              },
+            },
+            {
+              matomoEvent: true,
+            },
+          );
         }
       }
     });
@@ -577,7 +587,7 @@ export default class MetamaskController extends EventEmitter {
     const isInitialized = Boolean(vault);
 
     return {
-      ...{ isInitialized },
+      isInitialized,
       ...this.memStore.getFlatState(),
     };
   }
@@ -1057,10 +1067,6 @@ export default class MetamaskController extends EventEmitter {
       }
     });
   }
-
-  getCurrentNetwork = () => {
-    return this.networkController.store.getState().network;
-  };
 
   /**
    * Collects all the information that we want to share
@@ -1858,10 +1864,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} [customGasPrice] - the hex value to use for the cancel transaction
    * @returns {Object} MetaMask state
    */
-  async createCancelTransaction(originalTxId, customGasPrice) {
+  async createCancelTransaction(originalTxId, customGasPrice, customGasLimit) {
     await this.txController.createCancelTransaction(
       originalTxId,
       customGasPrice,
+      customGasLimit,
     );
     const state = await this.getState();
     return state;
@@ -2411,32 +2418,6 @@ export default class MetamaskController extends EventEmitter {
     );
     nonceLock.releaseLock();
     return nonceLock.nextNonce;
-  }
-
-  async sendBackgroundMetaMetrics({ action, name, customVariables } = {}) {
-    if (!action || !name) {
-      throw new Error('Must provide action and name.');
-    }
-
-    const metamaskState = await this.getState();
-    const additionalProperties = getBackgroundMetaMetricState({
-      metamask: metamaskState,
-    });
-
-    this.metaMetricsController.trackEvent(
-      {
-        event: name,
-        category: 'Background',
-        properties: {
-          action,
-          ...additionalProperties,
-          ...customVariables,
-        },
-      },
-      {
-        matomoEvent: true,
-      },
-    );
   }
 
   /**

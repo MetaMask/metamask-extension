@@ -2,14 +2,14 @@ import assert from 'assert';
 import { ethers } from 'ethers';
 import { renderHook } from '@testing-library/react-hooks';
 import { useTokenData } from '../useTokenData';
-import { TRANSACTION_CATEGORIES } from '../../../../shared/constants/transaction';
+import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 
 const tests = [
   {
     data:
       '0xa9059cbb000000000000000000000000ffe5bc4e8f1f969934d773fa67da095d2e491a970000000000000000000000000000000000000000000000000000000000003a98',
     tokenData: {
-      name: TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER,
+      name: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
       args: [
         '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
         ethers.BigNumber.from(15000),
@@ -20,7 +20,7 @@ const tests = [
     data:
       '0xa9059cbb000000000000000000000000ffe5bc4e8f1f969934d773fa67da095d2e491a9700000000000000000000000000000000000000000000000000000000000061a8',
     tokenData: {
-      name: TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER,
+      name: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
       args: [
         '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
         ethers.BigNumber.from(25000),
@@ -31,7 +31,7 @@ const tests = [
     data:
       '0xa9059cbb000000000000000000000000ffe5bc4e8f1f969934d773fa67da095d2e491a970000000000000000000000000000000000000000000000000000000000002710',
     tokenData: {
-      name: TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER,
+      name: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
       args: [
         '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
         ethers.BigNumber.from(10000),

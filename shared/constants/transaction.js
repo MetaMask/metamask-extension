@@ -1,8 +1,26 @@
 /**
  * Transaction Type is a MetaMask construct used internally
  * @typedef {Object} TransactionTypes
- * @property {'standard'} STANDARD - A standard transaction, usually the first with
- *  a given nonce
+ * @property {'transfer'} TOKEN_METHOD_TRANSFER - A token transaction where the user
+ *  is sending tokens that they own to another address
+ * @property {'transferfrom'} TOKEN_METHOD_TRANSFER_FROM - A token transaction
+ *  transferring tokens from an account that the sender has an allowance of.
+ *  For more information on allowances, see the approve type.
+ * @property {'approve'} TOKEN_METHOD_APPROVE - A token transaction requesting an
+ *  allowance of the token to spend on behalf of the user
+ * @property {'incoming'} INCOMING - An incoming (deposit) transaction
+ * @property {'sentEther'} SENT_ETHER - A transaction sending ether to a recipient
+ * @property {'contractInteraction'} CONTRACT_INTERACTION - A transaction that is
+ *  interacting with a smart contract's methods that we have not treated as a special
+ *  case, such as approve, transfer, and transferfrom
+ * @property {'contractDeployment'} DEPLOY_CONTRACT - A transaction that deployed
+ *  a smart contract
+ * @property {'swap'} SWAP - A transaction swapping one token for another through
+ *  MetaMask Swaps
+ * @property {'swapApproval'} SWAP_APPROVAL - Similar to the approve type, a swap
+ *  approval is a special case of ERC20 approve method that requests an allowance of
+ *  the token to spend on behalf of the user for the MetaMask Swaps contract. The first
+ *  swap for any token will have an accompanying swapApproval transaction.
  * @property {'cancel'} CANCEL - A transaction submitted with the same nonce as a
  *  previous transaction, a higher gas price and a zeroed out send amount. Useful
  *  for users who accidentally send to erroneous addresses or if they send too much.
@@ -16,9 +34,17 @@
  * @type {TransactionTypes}
  */
 export const TRANSACTION_TYPES = {
-  STANDARD: 'standard',
   CANCEL: 'cancel',
   RETRY: 'retry',
+  TOKEN_METHOD_TRANSFER: 'transfer',
+  TOKEN_METHOD_TRANSFER_FROM: 'transferfrom',
+  TOKEN_METHOD_APPROVE: 'approve',
+  INCOMING: 'incoming',
+  SENT_ETHER: 'sentEther',
+  CONTRACT_INTERACTION: 'contractInteraction',
+  DEPLOY_CONTRACT: 'contractDeployment',
+  SWAP: 'swap',
+  SWAP_APPROVAL: 'swapApproval',
 };
 
 /**
@@ -51,45 +77,6 @@ export const TRANSACTION_STATUSES = {
   FAILED: 'failed',
   DROPPED: 'dropped',
   CONFIRMED: 'confirmed',
-};
-
-/**
- * @typedef {Object} TransactionCategories
- * @property {'transfer'} TOKEN_METHOD_TRANSFER - A token transaction where the user
- *  is sending tokens that they own to another address
- * @property {'transferfrom'} TOKEN_METHOD_TRANSFER_FROM - A token transaction
- *  transferring tokens from an account that the sender has an allowance of.
- *  For more information on allowances, see the approve category.
- * @property {'approve'} TOKEN_METHOD_APPROVE - A token transaction requesting an
- *  allowance of the token to spend on behalf of the user
- * @property {'incoming'} INCOMING - An incoming (deposit) transaction
- * @property {'sentEther'} SENT_ETHER - A transaction sending ether to a recipient
- * @property {'contractInteraction'} CONTRACT_INTERACTION - A transaction that is
- *  interacting with a smart contract's methods that we have not treated as a special
- *  case, such as approve, transfer, and transferfrom
- * @property {'contractDeployment'} DEPLOY_CONTRACT - A transaction that deployed
- *  a smart contract
- * @property {'swap'} SWAP - A transaction swapping one token for another through
- *  MetaMask Swaps
- * @property {'swapApproval'} SWAP_APPROVAL - Similar to the approve category, a swap
- *  approval is a special case of ERC20 approve method that requests an allowance of
- *  the token to spend on behalf of the user for the MetaMask Swaps contract. The first
- *  swap for any token will have an accompanying swapApproval transaction.
- */
-
-/**
- * @type {TransactionCategories}
- */
-export const TRANSACTION_CATEGORIES = {
-  TOKEN_METHOD_TRANSFER: 'transfer',
-  TOKEN_METHOD_TRANSFER_FROM: 'transferfrom',
-  TOKEN_METHOD_APPROVE: 'approve',
-  INCOMING: 'incoming',
-  SENT_ETHER: 'sentEther',
-  CONTRACT_INTERACTION: 'contractInteraction',
-  DEPLOY_CONTRACT: 'contractDeployment',
-  SWAP: 'swap',
-  SWAP_APPROVAL: 'swapApproval',
 };
 
 /**

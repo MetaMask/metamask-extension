@@ -15,7 +15,19 @@ import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../helpers/utils/conversions.util';
-import { ETH_SWAPS_TOKEN_OBJECT } from '../helpers/constants/swaps';
+import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
+
+/**
+ * One of the only remaining valid uses of selecting the network subkey of the
+ * metamask state tree is to determine if the network is currently 'loading'.
+ *
+ * This will be used for all cases where this state key is accessed only for that
+ * purpose.
+ * @param {Object} state - redux state object
+ */
+export function isNetworkLoading(state) {
+  return state.metamask.network === 'loading';
+}
 
 export function getNetworkIdentifier(state) {
   const {
@@ -71,7 +83,16 @@ export function getAccountType(state) {
   }
 }
 
-export function getCurrentNetworkId(state) {
+/**
+ * get the currently selected networkId which will be 'loading' when the
+ * network changes. The network id should not be used in most cases,
+ * instead use chainId in most situations. There are a limited number of
+ * use cases to use this method still, such as when comparing transaction
+ * metadata that predates the switch to using chainId.
+ * @deprecated - use getCurrentChainId instead
+ * @param {Object} state - redux state object
+ */
+export function deprecatedGetCurrentNetworkId(state) {
   return state.metamask.network;
 }
 
@@ -136,7 +157,7 @@ export function getMetaMaskCachedBalances(state) {
 
   // Fallback to fetching cached balances from network id
   // this can eventually be removed
-  const network = getCurrentNetworkId(state);
+  const network = deprecatedGetCurrentNetworkId(state);
 
   return (
     state.metamask.cachedBalances[chainId] ??
@@ -346,17 +367,6 @@ export function getCustomNonceValue(state) {
 export function getDomainMetadata(state) {
   return state.metamask.domainMetadata;
 }
-
-export const getBackgroundMetaMetricState = (state) => {
-  return {
-    network: getCurrentNetworkId(state),
-    accountType: getAccountType(state),
-    metaMetricsId: state.metamask.metaMetricsId,
-    numberOfTokens: getNumberOfTokens(state),
-    numberOfAccounts: getNumberOfAccounts(state),
-    participateInMetaMetrics: state.metamask.participateInMetaMetrics,
-  };
-};
 
 export function getRpcPrefsForCurrentProvider(state) {
   const { frequentRpcListDetail, provider } = state.metamask;

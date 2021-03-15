@@ -13,7 +13,7 @@ import {
   QUOTES_EXPIRED_ERROR,
   QUOTES_NOT_AVAILABLE_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
-} from '../../../ui/app/helpers/constants/swaps';
+} from '../../../shared/constants/swaps';
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
   fetchSwapsFeatureLiveness as defaultFetchSwapsFeatureLiveness,

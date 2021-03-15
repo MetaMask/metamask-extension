@@ -1,5 +1,4 @@
 import {
-  TRANSACTION_CATEGORIES,
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../../../../shared/constants/transaction';
@@ -14,7 +13,7 @@ export const txMetaStub = {
       metamaskNetworkId: '4',
       status: TRANSACTION_STATUSES.UNAPPROVED,
       time: 1572395156620,
-      transactionCategory: TRANSACTION_CATEGORIES.SENT_ETHER,
+      type: TRANSACTION_TYPES.SENT_ETHER,
       txParams: {
         from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
         gas: '0x5208',
@@ -22,7 +21,6 @@ export const txMetaStub = {
         to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
         value: '0x0',
       },
-      type: TRANSACTION_TYPES.STANDARD,
     },
     [
       {
@@ -196,7 +194,7 @@ export const txMetaStub = {
   status: TRANSACTION_STATUSES.SUBMITTED,
   submittedTime: 1572395158570,
   time: 1572395156620,
-  transactionCategory: TRANSACTION_CATEGORIES.SENT_ETHER,
+  type: TRANSACTION_TYPES.SENT_ETHER,
   txParams: {
     from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
     gas: '0x5208',
@@ -205,6 +203,5 @@ export const txMetaStub = {
     to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
     value: '0x0',
   },
-  type: TRANSACTION_TYPES.STANDARD,
   v: '0x2c',
 };

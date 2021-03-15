@@ -36,7 +36,7 @@ import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 
-import { ETH_SWAPS_TOKEN_OBJECT } from '../../../helpers/constants/swaps';
+import { ETH_SWAPS_TOKEN_OBJECT } from '../../../../../shared/constants/swaps';
 
 import { resetSwapsPostFetchState, removeToken } from '../../../store/actions';
 import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util';

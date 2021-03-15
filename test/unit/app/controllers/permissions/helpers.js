@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import stringify from 'fast-safe-stringify';
 
 import { noop } from './mocks';
 
@@ -84,9 +85,9 @@ function _validateActivityEntry(entry, req, res, methodType, success) {
   assert.equal(entry.method, req.method);
   assert.equal(entry.origin, req.origin);
   assert.equal(entry.methodType, methodType);
-  assert.deepEqual(
+  assert.equal(
     entry.request,
-    req,
+    stringify(req, null, 2),
     'entry.request should equal the request',
   );
 
@@ -104,7 +105,7 @@ function _validateActivityEntry(entry, req, res, methodType, success) {
     assert.equal(entry.success, success);
     assert.deepEqual(
       entry.response,
-      res,
+      stringify(res, null, 2),
       'entry.response should equal the response',
     );
   } else {

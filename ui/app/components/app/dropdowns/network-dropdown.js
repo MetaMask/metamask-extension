@@ -25,6 +25,7 @@ const notToggleElementClassnames = [
   'network-indicator',
   'network-caret',
   'network-component',
+  'modal-container__footer-button',
 ];
 
 const DROP_DOWN_MENU_ITEM_STYLE = {

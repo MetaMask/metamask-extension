@@ -5,10 +5,9 @@ import log from 'loglevel';
 
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import {
-  TRANSACTION_CATEGORIES,
+  TRANSACTION_TYPES,
   TRANSACTION_GROUP_STATUSES,
   TRANSACTION_STATUSES,
-  TRANSACTION_TYPES,
 } from '../../../../shared/constants/transaction';
 import fetchWithCache from './fetch-with-cache';
 
@@ -112,15 +111,15 @@ export function getFourBytePrefix(data = '') {
 /**
  * Given an transaction category, returns a boolean which indicates whether the transaction is calling an erc20 token method
  *
- * @param {string} transactionCategory - The category of transaction being evaluated
+ * @param {TRANSACTION_TYPES[keyof TRANSACTION_TYPES]} type - The type of transaction being evaluated
  * @returns {boolean} whether the transaction is calling an erc20 token method
  */
-export function isTokenMethodAction(transactionCategory) {
+export function isTokenMethodAction(type) {
   return [
-    TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER,
-    TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE,
-    TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER_FROM,
-  ].includes(transactionCategory);
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+    TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+  ].includes(type);
 }
 
 export function getLatestSubmittedTxWithNonce(
@@ -197,39 +196,37 @@ export function getStatusKey(transaction) {
  *
  * This will throw an error if the transaction category is unrecognized and no default is provided.
  * @param {function} t - The translation function
- * @param {TRANSACTION_CATEGORIES[keyof TRANSACTION_CATEGORIES]} transactionCategory - The transaction category constant
+ * @param {TRANSACTION_TYPES[keyof TRANSACTION_TYPES]} type - The transaction type constant
  * @returns {string} The transaction category title
  */
-export function getTransactionCategoryTitle(t, transactionCategory) {
-  switch (transactionCategory) {
-    case TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER: {
+export function getTransactionTypeTitle(t, type) {
+  switch (type) {
+    case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER: {
       return t('transfer');
     }
-    case TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER_FROM: {
+    case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM: {
       return t('transferFrom');
     }
-    case TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE: {
+    case TRANSACTION_TYPES.TOKEN_METHOD_APPROVE: {
       return t('approve');
     }
-    case TRANSACTION_CATEGORIES.SENT_ETHER: {
+    case TRANSACTION_TYPES.SENT_ETHER: {
       return t('sentEther');
     }
-    case TRANSACTION_CATEGORIES.CONTRACT_INTERACTION: {
+    case TRANSACTION_TYPES.CONTRACT_INTERACTION: {
       return t('contractInteraction');
     }
-    case TRANSACTION_CATEGORIES.DEPLOY_CONTRACT: {
+    case TRANSACTION_TYPES.DEPLOY_CONTRACT: {
       return t('contractDeployment');
     }
-    case TRANSACTION_CATEGORIES.SWAP: {
+    case TRANSACTION_TYPES.SWAP: {
       return t('swap');
     }
-    case TRANSACTION_CATEGORIES.SWAP_APPROVAL: {
+    case TRANSACTION_TYPES.SWAP_APPROVAL: {
       return t('swapApproval');
     }
     default: {
-      throw new Error(
-        `Unrecognized transaction category: ${transactionCategory}`,
-      );
+      throw new Error(`Unrecognized transaction type: ${type}`);
     }
   }
 }

@@ -41,7 +41,6 @@ import {
   decimalToHex,
   getValueFromWeiHex,
   decGWEIToHexWEI,
-  hexToDecimal,
   hexWEIToDecGWEI,
 } from '../../helpers/utils/conversions.util';
 import { conversionLessThan } from '../../helpers/utils/conversion-util';
@@ -50,15 +49,15 @@ import {
   getSelectedAccount,
   getTokenExchangeRates,
   getUSDConversionRate,
+  getSwapsEthToken,
 } from '../../selectors';
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
-  ETH_SWAPS_TOKEN_OBJECT,
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
-} from '../../helpers/constants/swaps';
-import { TRANSACTION_CATEGORIES } from '../../../../shared/constants/transaction';
+} from '../../../../shared/constants/swaps';
+import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 
 const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -396,15 +395,7 @@ export const fetchQuotesAndSetQuoteState = (
     const balanceError = getBalanceError(state);
     const fetchParamsFromToken =
       fetchParams?.metaData?.sourceTokenInfo?.symbol === 'ETH'
-        ? {
-            ...ETH_SWAPS_TOKEN_OBJECT,
-            string: getValueFromWeiHex({
-              value: selectedAccount.balance,
-              numberOfDecimals: 4,
-              toDenomination: 'ETH',
-            }),
-            balance: hexToDecimal(selectedAccount.balance),
-          }
+        ? getSwapsEthToken(state)
         : fetchParams?.metaData?.sourceTokenInfo;
     const selectedFromToken = getFromToken(state) || fetchParamsFromToken || {};
     const selectedToToken =
@@ -680,7 +671,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
         updateTransaction(
           {
             ...approveTxMeta,
-            transactionCategory: TRANSACTION_CATEGORIES.SWAP_APPROVAL,
+            type: TRANSACTION_TYPES.SWAP_APPROVAL,
             sourceTokenSymbol: sourceTokenInfo.symbol,
           },
           true,
@@ -721,7 +712,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
           ...tradeTxMeta,
           sourceTokenSymbol: sourceTokenInfo.symbol,
           destinationTokenSymbol: destinationTokenInfo.symbol,
-          transactionCategory: TRANSACTION_CATEGORIES.SWAP,
+          type: TRANSACTION_TYPES.SWAP,
           destinationTokenDecimals: destinationTokenInfo.decimals,
           destinationTokenAddress: destinationTokenInfo.address,
           swapMetaData,

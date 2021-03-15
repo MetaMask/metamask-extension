@@ -4,7 +4,7 @@ import {
   KOVAN_NETWORK_ID,
   MAINNET_CHAIN_ID,
 } from '../../../../shared/constants/network';
-import { TRANSACTION_CATEGORIES } from '../../../../shared/constants/transaction';
+import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import {
   unconfirmedTransactionsCountSelector,
   sendTokenTokenAmountAndToAddressSelector,
@@ -52,7 +52,7 @@ describe('Confirm Transaction Selector', function () {
     const state = {
       confirmTransaction: {
         tokenData: {
-          name: TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER,
+          name: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
           args: getEthersArrayLikeFromObj({
             _to: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             _value: { toString: () => '1' },

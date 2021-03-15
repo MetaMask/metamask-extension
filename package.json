@@ -134,6 +134,7 @@
     "extension-port-stream": "^2.0.0",
     "extensionizer": "^1.0.1",
     "fast-json-patch": "^2.0.4",
+    "fast-safe-stringify": "^2.0.7",
     "fuse.js": "^3.2.0",
     "globalthis": "^1.0.1",
     "human-standard-token-abi": "^2.0.0",
@@ -175,7 +176,6 @@
     "reselect": "^3.0.1",
     "rpc-cap": "^3.2.1",
     "safe-event-emitter": "^1.0.1",
-    "safe-json-stringify": "^1.2.0",
     "single-call-balance-checker-abi": "^1.0.0",
     "swappable-obj-proxy": "^1.1.0",
     "textarea-caret": "^3.0.1",
@@ -317,7 +317,8 @@
       "gc-stats": false,
       "github:assemblyscript/assemblyscript": false,
       "tiny-secp256k1": false,
-      "@lavamoat/preinstall-always-fail": false
+      "@lavamoat/preinstall-always-fail": false,
+      "fsevents": false
     }
   }
 }

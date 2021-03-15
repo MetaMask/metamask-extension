@@ -19,7 +19,7 @@ import { getMessage } from '../../helpers/utils/i18n-helper';
 import messages from '../../../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
-  TRANSACTION_CATEGORIES,
+  TRANSACTION_TYPES,
   TRANSACTION_GROUP_CATEGORIES,
   TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction';
@@ -106,7 +106,7 @@ const expectedResults = [
   },
   {
     title: 'Swap ETH to ABC',
-    category: TRANSACTION_CATEGORIES.SWAP,
+    category: TRANSACTION_TYPES.SWAP,
     subtitle: '',
     subtitleContainsOrigin: false,
     date: 'May 12, 2020',
