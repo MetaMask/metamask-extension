@@ -1512,7 +1512,7 @@
     "message": "Send Amount"
   },
   "sendETH": {
-    "message": "Send ETH"
+    "message": "Send"
   },
   "sendSpecifiedTokens": {
     "message": "Send $1",
