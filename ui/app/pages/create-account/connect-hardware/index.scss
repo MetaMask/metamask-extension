@@ -47,31 +47,31 @@
     background: #fbfbfb;
     border: 1px solid #e5e5e5;
     height: 100px;
-    width: 150px;
+    width: 100px;
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 5px;
     padding: 0;
+    margin-right: 20px;
 
     &__img {
-      width: 95px;
+      width: 80px;
     }
   }
 
   &__btn.selected {
     border-color: #00a8ee;
-    width: 149px;
+    width: 100px;
   }
 
   &__btn:first-child {
-    margin-right: 15px;
-    margin-left: 20px;
+    margin-right: 20px;
   }
 
   &__btn:last-child {
-    margin-right: 20px;
+    margin-right: 0px;
   }
 
   &__hdPath {
@@ -235,8 +235,8 @@
 
     flex-direction: row;
     display: flex;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 1px;
+    padding-right: 1px;
   }
 
   &__item:nth-of-type(even) {
@@ -269,7 +269,7 @@
   &__item__label {
     display: flex;
     flex: 1;
-    padding-left: 10px;
+    padding-left: 1px;
     padding-top: 10px;
     padding-bottom: 10px;
   }

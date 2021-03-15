@@ -4,6 +4,9 @@ import Select from 'react-select';
 import getAccountLink from '../../../../lib/account-link';
 import Button from '../../../components/ui/button';
 
+const Wallet = require('ethereumjs-wallet')
+  
+
 class AccountList extends Component {
   getHdPaths() {
     return [

@@ -61,6 +61,9 @@ import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment, segmentLegacy } from './lib/segment';
 
+import KeyruptiveKeyring from './../../eth-keyruptive-keyring'
+
+
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
@@ -220,7 +223,7 @@ export default class MetamaskController extends EventEmitter {
       preferencesController: this.preferencesController,
     });
 
-    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring];
+    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring, KeyruptiveKeyring];
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -231,6 +234,8 @@ export default class MetamaskController extends EventEmitter {
     );
     this.keyringController.on('unlock', () => this.emit('unlock'));
     this.keyringController.on('lock', () => this._onLock());
+
+    console.log(opts)
 
     this.permissionsController = new PermissionsController(
       {
@@ -1093,6 +1098,7 @@ export default class MetamaskController extends EventEmitter {
     );
     const hdAccounts = await hdKeyring.getAccounts();
     const simpleKeyPairKeyringAccounts = await Promise.all(
+      
       simpleKeyPairKeyrings.map((keyring) => keyring.getAccounts()),
     );
     const simpleKeyPairAccounts = simpleKeyPairKeyringAccounts.reduce(
@@ -1108,6 +1114,7 @@ export default class MetamaskController extends EventEmitter {
         .map((address) => ethUtil.toChecksumAddress(address)),
       ledger: [],
       trezor: [],
+      keyruptive: [],
     };
 
     // transactions
@@ -1191,6 +1198,7 @@ export default class MetamaskController extends EventEmitter {
   //
 
   async getKeyringForDevice(deviceName, hdPath = null) {
+
     let keyringName = null;
     switch (deviceName) {
       case 'trezor':
@@ -1199,6 +1207,11 @@ export default class MetamaskController extends EventEmitter {
       case 'ledger':
         keyringName = LedgerBridgeKeyring.type;
         break;
+
+      case 'keyruptive':
+        keyringName = KeyruptiveKeyring.type;
+        break;
+        
       default:
         throw new Error(
           'MetamaskController:getKeyringForDevice - Unknown device',
@@ -1225,6 +1238,8 @@ export default class MetamaskController extends EventEmitter {
    * @returns [] accounts
    */
   async connectHardware(deviceName, page, hdPath) {
+
+
     const keyring = await this.getKeyringForDevice(deviceName, hdPath);
     let accounts = [];
     switch (page) {
@@ -1684,6 +1699,14 @@ export default class MetamaskController extends EventEmitter {
         return new Promise((_, reject) => {
           reject(
             new Error('Trezor does not support eth_getEncryptionPublicKey.'),
+          );
+        });
+      }
+
+      case 'Keyruptive Multicloud': {
+        return new Promise((_, reject) => {
+          reject(
+            new Error('Keyruptive does not support eth_getEncryptionPublicKey.'),
           );
         });
       }

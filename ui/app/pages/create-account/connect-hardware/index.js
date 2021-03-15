@@ -8,6 +8,7 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
 
+
 const U2F_ERROR = 'U2F';
 
 class ConnectHardwareForm extends Component {
@@ -20,7 +21,11 @@ class ConnectHardwareForm extends Component {
     device: null,
   };
 
+
+  
+
   UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log(this.state.accounts)
     const { accounts } = nextProps;
     const newAccounts = this.state.accounts.map((a) => {
       const normalizedAddress = a.address.toLowerCase();
@@ -38,7 +43,9 @@ class ConnectHardwareForm extends Component {
   }
 
   async checkIfUnlocked() {
-    for (const device of ['trezor', 'ledger']) {
+
+
+    for (const device of ['trezor', 'ledger', 'keyruptive']) {
       const unlocked = await this.props.checkHardwareStatus(
         device,
         this.props.defaultHdPaths[device],
@@ -48,6 +55,7 @@ class ConnectHardwareForm extends Component {
         this.getPage(device, 0, this.props.defaultHdPaths[device]);
       }
     }
+
   }
 
   connectToHardwareWallet = (device) => {
@@ -85,6 +93,7 @@ class ConnectHardwareForm extends Component {
   }
 
   getPage = (device, page, hdPath) => {
+
     this.props
       .connectHardware(device, page, hdPath)
       .then((accounts) => {
@@ -100,8 +109,10 @@ class ConnectHardwareForm extends Component {
           if (this.state.selectedAccount === null) {
             accounts.forEach((a) => {
               if (a.address.toLowerCase() === this.props.address) {
+                
                 newState.selectedAccount = a.index.toString();
               }
+              
             });
             // If the page doesn't contain the selected account, let's deselect it
           } else if (

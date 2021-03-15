@@ -7,7 +7,6 @@ const switchToPopupTab = (event) => {
   window.removeEventListener('beforeunload', switchToPopupTab);
 
   if (!event) {
-      console.log("switch")
       // triggered from 'usb-permissions-close' message
       // switch tab to previous index and close current
       chrome.tabs.query({
@@ -30,7 +29,7 @@ const switchToPopupTab = (event) => {
   // triggered from 'beforeunload' event
   // find tab by popup pattern and switch to it
   chrome.tabs.query({
-      url: "*://connect.trezor.io/*/popup.html"
+      url: "http://localhost:8080/example.html"
   }, (tabs) => {
       if (tabs.length < 0) return;
       chrome.tabs.update(tabs[0].id, { active: true });
@@ -38,7 +37,6 @@ const switchToPopupTab = (event) => {
 }
 
 window.addEventListener('message', event => {
-    console.log("usn")
   if (event.data === 'usb-permissions-init') {
       const iframe = document.getElementById('trezor-usb-permissions');
       iframe.contentWindow.postMessage({

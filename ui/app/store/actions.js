@@ -396,6 +396,7 @@ export function forgetDevice(deviceName) {
 }
 
 export function connectHardware(deviceName, page, hdPath) {
+  console.log(deviceName)
   log.debug(`background.connectHardware`, deviceName, page, hdPath);
   return async (dispatch) => {
     dispatch(
@@ -418,6 +419,7 @@ export function connectHardware(deviceName, page, hdPath) {
     }
 
     await forceUpdateMetamaskState(dispatch);
+    console.log(accounts)
     return accounts;
   };
 }
@@ -631,6 +633,7 @@ export function signTypedMsg(msgData) {
 export function signTx(txData) {
   return (dispatch) => {
     global.ethQuery.sendTransaction(txData, (err) => {
+
       if (err) {
         dispatch(displayWarning(err.message));
       }

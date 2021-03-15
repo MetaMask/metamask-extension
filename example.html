@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<head>
+<title>child</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<script>
+window.addEventListener("message", function(ev) {
+    if (ev.data.message === "requestResult") {
+        // ev.source is the opener
+        ev.source.postMessage({ message: "deliverResult", result: true }, "*");
+    }   
+});
+</script>
+</head>
+<body>
+<a href="chrome-extension://gklgjnnelanijfmfnkpalmeekjnlcmfm/home.html#new-account/connect">Go to example.com</a>
+Then click the browser Back button when ready.
+</body>

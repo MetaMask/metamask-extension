@@ -41,6 +41,23 @@ export default class SelectHardware extends Component {
     );
   }
 
+  renderConnectToKeyruptiveButton() {
+    return (
+      <button
+        className={classnames('hw-connect__btn', {
+          selected: this.state.selectedDevice === 'keyruptive',
+        })}
+        onClick={(_) => this.setState({ selectedDevice: 'keyruptive' })}
+      >
+        <img
+          className="hw-connect__btn__img"
+          src="images/keyruptive-logo.png"
+          alt="Keyruptive"
+        />
+      </button>
+    );
+  }
+
   renderConnectToLedgerButton() {
     return (
       <button
@@ -64,6 +81,7 @@ export default class SelectHardware extends Component {
         <div className="hw-connect__btn-wrapper">
           {this.renderConnectToLedgerButton()}
           {this.renderConnectToTrezorButton()}
+          {this.renderConnectToKeyruptiveButton()}
         </div>
         <Button
           type="primary"
@@ -119,14 +137,18 @@ export default class SelectHardware extends Component {
 
   getAffiliateLinks() {
     const links = {
+      keyruptive: `<a class='hw-connect__get-hw__link' href='https://keyruptive.com' target='_blank'>Keyruptive</a>`,
       trezor: `<a class='hw-connect__get-hw__link' href='https://shop.trezor.io/?a=metamask' target='_blank'>Trezor</a>`,
       ledger: `<a class='hw-connect__get-hw__link' href='https://www.ledger.com/products/ledger-nano-s?r=17c4991a03fa&tracker=MY_TRACKER' target='_blank'>Ledger</a>`,
+      
     };
 
     const text = this.context.t('orderOneHere');
     const response = text
+      .replace('Keyruptive',links.keyruptive)
       .replace('Trezor', links.trezor)
       .replace('Ledger', links.ledger);
+      
 
     return (
       <div
