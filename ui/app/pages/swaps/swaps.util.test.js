@@ -6,6 +6,7 @@ import {
   AGGREGATOR_METADATA_BASE_PROD_URL,
   TOP_ASSET_BASE_PROD_URL,
   TOKENS,
+  EXPECTED_TOKENS_RESULT,
   MOCK_TRADE_RESPONSE_2,
   AGGREGATOR_METADATA,
   TOP_ASSETS,
@@ -107,12 +108,12 @@ describe('Swaps Util', function () {
   describe('fetchTokens', function () {
     it('should fetch tokens', async function () {
       const result = await fetchTokens(true);
-      assert.deepStrictEqual(result, TOKENS);
+      assert.deepStrictEqual(result, EXPECTED_TOKENS_RESULT);
     });
 
     it('should fetch tokens on prod', async function () {
       const result = await fetchTokens(false);
-      assert.deepStrictEqual(result, TOKENS);
+      assert.deepStrictEqual(result, EXPECTED_TOKENS_RESULT);
     });
   });
 
