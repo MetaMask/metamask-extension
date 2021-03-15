@@ -9,7 +9,7 @@ import {
   ROPSTEN_NETWORK_ID,
   MAINNET_NETWORK_ID,
 } from '../../../../shared/constants/network';
-import { ETH_SWAPS_TOKEN_OBJECT } from '../../../../ui/app/helpers/constants/swaps';
+import { ETH_SWAPS_TOKEN_OBJECT } from '../../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../stub/provider';
 import SwapsController, {
   utils,

@@ -5,7 +5,7 @@ import { isValidAddress } from 'ethereumjs-util';
 import {
   ETH_SWAPS_TOKEN_OBJECT,
   METASWAP_API_HOST,
-} from '../../helpers/constants/swaps';
+} from '../../../../shared/constants/swaps';
 import {
   calcTokenValue,
   calcTokenAmount,

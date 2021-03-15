@@ -15,7 +15,7 @@ import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../helpers/utils/conversions.util';
-import { ETH_SWAPS_TOKEN_OBJECT } from '../helpers/constants/swaps';
+import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 
 /**

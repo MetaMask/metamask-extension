@@ -1,4 +1,4 @@
-import { ETH_SWAPS_TOKEN_OBJECT } from '../../helpers/constants/swaps';
+import { ETH_SWAPS_TOKEN_OBJECT } from '../../../../shared/constants/swaps';
 
 export const TRADES_BASE_PROD_URL =
   'https://api.metaswap.codefi.network/trades?';
