@@ -279,13 +279,18 @@ export async function fetchTokens() {
     { method: 'GET' },
     { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR },
   );
-  const filteredTokens = tokens.filter((token) => {
-    return (
-      validateData(TOKEN_VALIDATORS, token, tokenUrl) &&
-      token.address !== ETH_SWAPS_TOKEN_OBJECT.address
-    );
-  });
-  filteredTokens.push(ETH_SWAPS_TOKEN_OBJECT);
+  const filteredTokens = [
+    ETH_SWAPS_TOKEN_OBJECT,
+    ...tokens.filter((token) => {
+      return (
+        validateData(TOKEN_VALIDATORS, token, tokenUrl) &&
+        !(
+          token.symbol === ETH_SWAPS_TOKEN_OBJECT.symbol ||
+          token.address === ETH_SWAPS_TOKEN_OBJECT.address
+        )
+      );
+    }),
+  ];
   return filteredTokens;
 }
 

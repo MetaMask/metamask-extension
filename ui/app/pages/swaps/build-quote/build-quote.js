@@ -2,10 +2,13 @@ import React, { useContext, useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { uniqBy } from 'lodash';
+import { uniqBy, isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
-import { useTokensToSearch } from '../../../hooks/useTokensToSearch';
+import {
+  useTokensToSearch,
+  getRenderableTokenData,
+} from '../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { I18nContext } from '../../../contexts/i18n';
 import DropdownInputPair from '../dropdown-input-pair';
@@ -25,7 +28,12 @@ import {
   getTopAssets,
   getFetchParams,
 } from '../../../ducks/swaps/swaps';
-import { getSwapsEthToken } from '../../../selectors';
+import {
+  getSwapsEthToken,
+  getTokenExchangeRates,
+  getConversionRate,
+  getCurrentCurrency,
+} from '../../../selectors';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -80,6 +88,10 @@ export default function BuildQuote({
   const fetchParamsFromToken =
     sourceTokenInfo?.symbol === 'ETH' ? swapsEthToken : sourceTokenInfo;
 
+  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
+  const conversionRate = useSelector(getConversionRate);
+  const currentCurrency = useSelector(getCurrentCurrency);
+
   const { loading, tokensWithBalances } = useTokenTracker(tokens);
 
   // If the fromToken was set in a call to `onFromSelect` (see below), and that from token has a balance
@@ -93,15 +105,12 @@ export default function BuildQuote({
   );
   const memoizedUsersTokens = useEqualityCheck(usersTokens);
 
-  const selectedFromToken = useTokensToSearch({
-    providedTokens:
-      fromToken || fetchParamsFromToken
-        ? [fromToken || fetchParamsFromToken]
-        : [],
-    usersTokens: memoizedUsersTokens,
-    onlyEth: (fromToken || fetchParamsFromToken)?.symbol === 'ETH',
-    singleToken: true,
-  })[0];
+  const selectedFromToken = getRenderableTokenData(
+    fromToken || fetchParamsFromToken,
+    tokenConversionRates,
+    conversionRate,
+    currentCurrency,
+  );
 
   const tokensToSearch = useTokensToSearch({
     usersTokens: memoizedUsersTokens,
