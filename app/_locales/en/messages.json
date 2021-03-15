@@ -405,6 +405,9 @@
   "continueToWyre": {
     "message": "Continue to Wyre"
   },
+  "contractAddressError": {
+    "message": "You are sending tokens to the token's contract address. This may result in the loss of these tokens."
+  },
   "contractDeployment": {
     "message": "Contract Deployment"
   },
@@ -607,7 +610,8 @@
     "message": "If you need to back up your seed phrase again, you can find it in Settings -> Security."
   },
   "endOfFlowMessage7": {
-    "message": "If you ever have questions or see something fishy, email support@metamask.io."
+    "message": "If you ever have questions or see something fishy, contact our support $1.",
+    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask cannot recover your seedphrase."
@@ -654,12 +658,12 @@
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
   "errorPageMessage": {
-    "message": "Try again by reloading the page, or contact support at support@metamask.io",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI"
+    "message": "Try again by reloading the page, or contact support $1.",
+    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPagePopupMessage": {
-    "message": "Try again by closing and reopening the popup, or contact support at support@metamask.io",
-    "description": "Message displayed on generic error page in the popup UI"
+    "message": "Try again by closing and reopening the popup, or contact support $1.",
+    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
     "message": "MetaMask encountered an error",
@@ -759,6 +763,12 @@
   "gasPrice": {
     "message": "Gas Price (GWEI)"
   },
+  "gasPriceExcessive": {
+    "message": "Your gas fee is set unnecessarily high. Consider lowering the amount."
+  },
+  "gasPriceExcessiveInput": {
+    "message": "Gas Price Is Excessive"
+  },
   "gasPriceExtremelyLow": {
     "message": "Gas Price Extremely Low"
   },
@@ -807,6 +817,10 @@
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
+  "hardwareWalletLegacyDescription": {
+    "message": "(legacy)",
+    "description": "Text representing the MEW path"
+  },
   "hardwareWallets": {
     "message": "Connect a hardware wallet"
   },
@@ -832,6 +846,9 @@
   "hideTokenSymbol": {
     "message": "Hide $1",
     "description": "$1 is the symbol for a token (e.g. 'DAI')"
+  },
+  "hideZeroBalanceTokens": {
+    "message": "Hide Tokens Without Balance"
   },
   "history": {
     "message": "History"
@@ -1203,7 +1220,7 @@
     "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
-    "message": "A malicious Ethereum network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
+    "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
   },
   "onlyAvailableOnMainnet": {
     "message": "Only available on mainnet"
@@ -1288,15 +1305,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Proposed Approval Limit"
-  },
-  "protectYourKeys": {
-    "message": "Protect Your Keys!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Be careful with your seed phrase — there have been reports of websites that attempt to imitate MetaMask. MetaMask will never ask for your seed phrase!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Keep your phrase safe. If you see something fishy, or you’re uncertain about a website, email support@metamask.io"
   },
   "provide": {
     "message": "Provide"
@@ -1475,6 +1483,9 @@
   },
   "selectAnAccount": {
     "message": "Select an Account"
+  },
+  "selectAnAccountAlreadyConnected": {
+    "message": "This account has already been connected to MetaMask"
   },
   "selectAnAccountHelp": {
     "message": "Select the account to view in MetaMask"

@@ -26,6 +26,7 @@ import {
 } from '@metamask/controllers';
 import { getBackgroundMetaMetricState } from '../../ui/app/selectors';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
+import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -218,7 +219,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.cachedBalancesController = new CachedBalancesController({
       accountTracker: this.accountTracker,
-      getNetwork: this.networkController.getNetworkState.bind(
+      getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
       ),
       initState: initState.CachedBalancesController,
@@ -318,7 +319,15 @@ export default class MetamaskController extends EventEmitter {
         status === TRANSACTION_STATUSES.FAILED
       ) {
         const txMeta = this.txController.txStateManager.getTx(txId);
-        this.platform.showTransactionNotification(txMeta);
+        const frequentRpcListDetail = this.preferencesController.getFrequentRpcListDetail();
+        let rpcPrefs = {};
+        if (txMeta.chainId) {
+          const rpcSettings = frequentRpcListDetail.find(
+            (rpc) => txMeta.chainId === rpc.chainId,
+          );
+          rpcPrefs = rpcSettings?.rpcPrefs ?? {};
+        }
+        this.platform.showTransactionNotification(txMeta, rpcPrefs);
 
         const { txReceipt } = txMeta;
         if (txReceipt && txReceipt.status === '0x0') {
@@ -1074,10 +1083,10 @@ export default class MetamaskController extends EventEmitter {
     Object.keys(accountTokens).forEach((address) => {
       const checksummedAddress = ethUtil.toChecksumAddress(address);
       filteredAccountTokens[checksummedAddress] = {};
-      Object.keys(accountTokens[address]).forEach((networkType) => {
-        filteredAccountTokens[checksummedAddress][networkType] =
-          networkType === 'mainnet'
-            ? accountTokens[address][networkType].filter(
+      Object.keys(accountTokens[address]).forEach((chainId) => {
+        filteredAccountTokens[checksummedAddress][chainId] =
+          chainId === MAINNET_CHAIN_ID
+            ? accountTokens[address][chainId].filter(
                 ({ address: tokenAddress }) => {
                   const checksumAddress = ethUtil.toChecksumAddress(
                     tokenAddress,
@@ -1087,7 +1096,7 @@ export default class MetamaskController extends EventEmitter {
                     : true;
                 },
               )
-            : accountTokens[address][networkType];
+            : accountTokens[address][chainId];
       });
     });
 
@@ -1288,11 +1297,16 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Imports an account from a trezor device.
+   * Imports an account from a Trezor or Ledger device.
    *
    * @returns {} keyState
    */
-  async unlockHardwareWalletAccount(index, deviceName, hdPath) {
+  async unlockHardwareWalletAccount(
+    index,
+    deviceName,
+    hdPath,
+    hdPathDescription,
+  ) {
     const keyring = await this.getKeyringForDevice(deviceName, hdPath);
 
     keyring.setAccountToUnlock(index);
@@ -1302,13 +1316,11 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController.setAddresses(newAccounts);
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
+        const label = `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${
+          parseInt(index, 10) + 1
+        } ${hdPathDescription || ''}`.trim();
         // Set the account label to Trezor 1 /  Ledger 1, etc
-        this.preferencesController.setAccountLabel(
-          address,
-          `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${
-            parseInt(index, 10) + 1
-          }`,
-        );
+        this.preferencesController.setAccountLabel(address, label);
         // Select the account
         this.preferencesController.setSelectedAddress(address);
       }

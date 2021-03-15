@@ -562,9 +562,6 @@
   "endOfFlowMessage6": {
     "message": "シードフレーズを再度バックアップする場合は、[設定] -> [セキュリティとプライバシー] で見つけることができます。"
   },
-  "endOfFlowMessage7": {
-    "message": "問題や不審な点がある場合は、support@metamask.io 宛に電子メールをお送りください。"
-  },
   "endOfFlowMessage8": {
     "message": "MetaMaskはシードフレーズを復元できません。"
   },
@@ -608,14 +605,6 @@
   "errorName": {
     "message": "エラー名:$1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "ページをリロードして再試行するか、サポート(support@metamask.io)までお問い合わせください",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI"
-  },
-  "errorPagePopupMessage": {
-    "message": "ポップアップを閉じてから再び開いてもう一度実行するか、サポート(support@metamask.io)までお問い合わせください",
-    "description": "Message displayed on generic error page in the popup UI"
   },
   "errorPageTitle": {
     "message": "MetaMaskにエラーが発生しました",
@@ -1138,9 +1127,6 @@
     "message": "\"$1\" はこのタブを閉じます。 $2 に戻ってください。",
     "description": "Return the user to the site that initiated onboarding"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "悪意のあるEthereumネットワークプロバイダは、不正なブロックチェーンによりネットワーク行動を記録することがあります。信頼できるカスタムネットワークのみを追加してください。"
-  },
   "onlyAvailableOnMainnet": {
     "message": "メインネットのみ使用可能です"
   },
@@ -1224,15 +1210,6 @@
   },
   "proposedApprovalLimit": {
     "message": "承認限度額の提案"
-  },
-  "protectYourKeys": {
-    "message": "キーを保護してください!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "シードフレーズは厳重に取り扱ってください。MetaMaskの偽物がWebサイトで報告されています。MetaMaskがシードフレーズを要求することは絶対にありえません!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "シードフレーズを厳重に保管してください。不審な点がやWebサイトについて不明確な場合は、support@metamask.io まで電子メールでお問い合わせください"
   },
   "provide": {
     "message": "提供する"

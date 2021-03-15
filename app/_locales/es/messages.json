@@ -562,9 +562,6 @@
   "endOfFlowMessage6": {
     "message": "Si necesita hacer una copia de seguridad de su frase semilla nuevamente, puede encontrarla en Configuración -> Seguridad."
   },
-  "endOfFlowMessage7": {
-    "message": "Si alguna vez tiene preguntas o ve algo sospechoso, envíe un correo electrónico a support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask no puede recuperar tu frase semilla. Saber más."
   },
@@ -608,14 +605,6 @@
   "errorName": {
     "message": "Código: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Vuelva a intentarlo recargando la página o póngase en contacto con el soporte en support@metamask.io",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI"
-  },
-  "errorPagePopupMessage": {
-    "message": "Vuelva a intentarlo cerrando y volviendo a abrir la ventana emergente, o comuníquese con el soporte en support@metamask.io",
-    "description": "Message displayed on generic error page in the popup UI"
   },
   "errorPageTitle": {
     "message": "MetaMask encontró un error",
@@ -1136,7 +1125,7 @@
     "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
-    "message": "Un proveedor de red de Ethereum malintencionado puede mentir sobre el estado de la cadena de bloques y registrar la actividad de su red. Solo agregue redes personalizadas en las que confíe."
+    "message": "Un proveedor de red de malintencionado puede mentir sobre el estado de la cadena de bloques y registrar la actividad de su red. Solo agregue redes personalizadas en las que confíe."
   },
   "onlyAvailableOnMainnet": {
     "message": "Solo disponible en la red principal de Ethereum (Main Net)"
@@ -1221,15 +1210,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Límite de aprobación propuesto"
-  },
-  "protectYourKeys": {
-    "message": "¡Proteja sus llaves!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Tenga cuidado con su frase semilla — ha habido informes de sitios web que intentan imitar MetaMask. ¡MetaMask nunca le pedirá su frase semilla!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Mantenga su frase a salvo. Si ve algo sospechoso o no está seguro acerca de un sitio web, envíe un correo electrónico a support@metamask.io"
   },
   "provide": {
     "message": "Proveer"

@@ -553,9 +553,6 @@
   "endOfFlowMessage6": {
     "message": "Jika Anda perlu mencadangkan frasa pemulihan lagi, Anda dapat menemukannya di Pengaturan -> Keamanan."
   },
-  "endOfFlowMessage7": {
-    "message": "Jika Anda memiliki pertanyaan atau melihat sesuatu yang mencurigakan hubungi lewat email ke support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask tidak dapat memulihkan frasa pemulihan Anda."
   },
@@ -599,14 +596,6 @@
   "errorName": {
     "message": "Kode: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Coba lagi dengan memuat kembali halaman, atau hubungi dukungan di support@metamask.io",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI"
-  },
-  "errorPagePopupMessage": {
-    "message": "Coba lagi dengan menutup dan membuka kembali popup, atau hubungi dukungan di support@metamask.io",
-    "description": "Message displayed on generic error page in the popup UI"
   },
   "errorPageTitle": {
     "message": "MetaMask menemukan kesalahan",
@@ -1127,7 +1116,7 @@
     "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
-    "message": "Penyedia jaringan Ethereum jahat dapat berbohong tentang status blockchain dan merekam aktivitas jaringan Anda. Hanya tambahkan jaringan kustom yang Anda percayai."
+    "message": "Penyedia jaringan jahat dapat berbohong tentang status blockchain dan merekam aktivitas jaringan Anda. Hanya tambahkan jaringan kustom yang Anda percayai."
   },
   "onlyAvailableOnMainnet": {
     "message": "Hanya tersedia di mainnet"
@@ -1212,15 +1201,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Batas Persetujuan yang Diajukan"
-  },
-  "protectYourKeys": {
-    "message": "Lindungi Kunci Anda!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Berhati-hatilah dengan frasa pemulihan Anda — ada laporan dari beberapa situs web yang mencoba membuat MetaMask imitasi. MetaMask tidak pernah meminta frasa pemulihan Anda!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Jaga frasa Anda tetap aman. Jika Anda melihat sesuatu yang mencurigakan, atau tidak yakin dengan satu situs web, hubungi lewat email di support@metamask.io"
   },
   "provide": {
     "message": "Berikan"

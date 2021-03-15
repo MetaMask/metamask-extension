@@ -11,11 +11,9 @@ import BigNumber from 'bignumber.js';
 import { I18nContext } from '../../contexts/i18n';
 import {
   getSelectedAccount,
-  getCurrentNetworkId,
   getCurrentChainId,
 } from '../../selectors/selectors';
 import {
-  getFromToken,
   getQuotes,
   clearSwapsState,
   getTradeTxId,
@@ -44,7 +42,6 @@ import {
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
-  ETH_SWAPS_TOKEN_OBJECT,
   SWAP_FAILED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
 } from '../../helpers/constants/swaps';
@@ -57,12 +54,8 @@ import {
   setBackgroundSwapRouteState,
   setSwapsErrorKey,
 } from '../../store/actions';
-import {
-  currentNetworkTxListSelector,
-  getRpcPrefsForCurrentProvider,
-} from '../../selectors';
+import { currentNetworkTxListSelector } from '../../selectors';
 import { useNewMetricEvent } from '../../hooks/useMetricEvent';
-import { getValueFromWeiHex } from '../../helpers/utils/conversions.util';
 
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
@@ -88,8 +81,7 @@ export default function Swap() {
   const isLoadingQuotesRoute = pathname === LOADING_QUOTES_ROUTE;
 
   const fetchParams = useSelector(getFetchParams);
-  const { sourceTokenInfo = {}, destinationTokenInfo = {} } =
-    fetchParams?.metaData || {};
+  const { destinationTokenInfo = {} } = fetchParams?.metaData || {};
 
   const [inputValue, setInputValue] = useState(fetchParams?.value || '');
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 2);
@@ -101,8 +93,6 @@ export default function Swap() {
   const tradeTxId = useSelector(getTradeTxId);
   const approveTxId = useSelector(getApproveTxId);
   const aggregatorMetadata = useSelector(getAggregatorMetadata);
-  const networkId = useSelector(getCurrentNetworkId);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const fetchingQuotes = useSelector(getFetchingQuotes);
   let swapsErrorKey = useSelector(getSwapsErrorKey);
   const swapsEnabled = useSelector(getSwapsFeatureLiveness);
@@ -111,20 +101,7 @@ export default function Swap() {
     balance: ethBalance,
     address: selectedAccountAddress,
   } = selectedAccount;
-  const fetchParamsFromToken =
-    sourceTokenInfo?.symbol === 'ETH'
-      ? {
-          ...ETH_SWAPS_TOKEN_OBJECT,
-          string: getValueFromWeiHex({
-            value: ethBalance,
-            numberOfDecimals: 4,
-            toDenomination: 'ETH',
-          }),
-          balance: ethBalance,
-        }
-      : sourceTokenInfo;
-  const selectedFromToken =
-    useSelector(getFromToken) || fetchParamsFromToken || {};
+
   const { destinationTokenAddedForSwap } = fetchParams || {};
 
   const approveTxData =
@@ -299,7 +276,6 @@ export default function Swap() {
                 return (
                   <BuildQuote
                     inputValue={inputValue}
-                    selectedFromToken={selectedFromToken}
                     onInputChange={onInputChange}
                     ethBalance={ethBalance}
                     setMaxSlippage={setMaxSlippage}
@@ -335,8 +311,6 @@ export default function Swap() {
                       swapComplete={false}
                       errorKey={swapsErrorKey}
                       txHash={tradeTxData?.hash}
-                      networkId={networkId}
-                      rpcPrefs={rpcPrefs}
                       inputValue={inputValue}
                       maxSlippage={maxSlippage}
                       submittedTime={tradeTxData?.submittedTime}
@@ -382,11 +356,7 @@ export default function Swap() {
               exact
               render={() => {
                 return swapsEnabled === false ? (
-                  <AwaitingSwap
-                    errorKey={OFFLINE_FOR_MAINTENANCE}
-                    networkId={networkId}
-                    rpcPrefs={rpcPrefs}
-                  />
+                  <AwaitingSwap errorKey={OFFLINE_FOR_MAINTENANCE} />
                 ) : (
                   <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />
                 );
@@ -399,13 +369,11 @@ export default function Swap() {
                 return routeState === 'awaiting' || tradeTxData ? (
                   <AwaitingSwap
                     swapComplete={tradeConfirmed}
-                    networkId={networkId}
                     txHash={tradeTxData?.hash}
                     tokensReceived={tokensReceived}
                     submittingSwap={
                       routeState === 'awaiting' && !(approveTxId || tradeTxId)
                     }
-                    rpcPrefs={rpcPrefs}
                     inputValue={inputValue}
                     maxSlippage={maxSlippage}
                   />

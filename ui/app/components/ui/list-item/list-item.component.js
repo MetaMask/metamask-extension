@@ -21,15 +21,20 @@ export default function ListItem({
       className={primaryClassName}
       onClick={onClick}
       data-testid={dataTestId}
+      role="button"
+      tabIndex={0}
+      onKeyPress={(event) => {
+        if (event.key === 'Enter') {
+          onClick();
+        }
+      }}
     >
       {icon && <div className="list-item__icon">{icon}</div>}
       <div className="list-item__heading">
         {React.isValidElement(title) ? (
           title
         ) : (
-          <button onClick={onClick}>
-            <h2 className="list-item__title">{title}</h2>
-          </button>
+          <h2 className="list-item__title">{title}</h2>
         )}
         {titleIcon && (
           <div className="list-item__heading-wrap">{titleIcon}</div>

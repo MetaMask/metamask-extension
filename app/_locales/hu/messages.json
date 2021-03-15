@@ -350,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "Ha ismét biztonsági másolatot kell készítenie a seed mondatról, megtalálja azt a Beállítások -> Biztonság menüben."
   },
-  "endOfFlowMessage7": {
-    "message": "Ha bármilyen kérdése van, vagy valami gyanús dolgot tapasztal, írjon a support@metamask.io címre."
-  },
   "endOfFlowMessage8": {
     "message": "A MetaMask nem tudta helyreállítani a seed mondatot. Tudjon meg többet."
   },
@@ -767,15 +764,6 @@
   },
   "privateNetwork": {
     "message": "Magánhálózat"
-  },
-  "protectYourKeys": {
-    "message": "Védje kulcsait!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Vigyázzod a gyarapítási fázissal - olyan oldalakat jelentettek, amelyek a MetaMask-ot utánozzák. A MetaMask soha nem kéri el a gyarapítási fázisát."
-  },
-  "protectYourKeysMessage2": {
-    "message": "Őrizze biztonságos helyen a mondatot. Ha bármilyen gyanús dolgot tapasztal, vagy bizonytalan egy weboldalt illetően, írjon a support@metamask.io címre."
   },
   "queue": {
     "message": "Nyomtatólista"

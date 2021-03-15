@@ -1,5 +1,5 @@
 import { TRANSACTION_CATEGORIES } from '../../../shared/constants/transaction';
-import { ETH_SWAPS_TOKEN_ADDRESS } from '../helpers/constants/swaps';
+import { ETH_SWAPS_TOKEN_OBJECT } from '../helpers/constants/swaps';
 import { getSwapsTokensReceivedFromTxMeta } from '../pages/swaps/swaps.util';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 
@@ -30,7 +30,7 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
 
   const isViewingReceivedTokenFromSwap =
     currentAsset?.symbol === primaryTransaction.destinationTokenSymbol ||
-    (currentAsset.address === ETH_SWAPS_TOKEN_ADDRESS &&
+    (currentAsset.address === ETH_SWAPS_TOKEN_OBJECT.address &&
       primaryTransaction.destinationTokenSymbol === 'ETH');
 
   const swapTokenValue =

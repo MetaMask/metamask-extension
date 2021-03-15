@@ -588,13 +588,18 @@ describe('Actions', function () {
     it('calls unlockHardwareWalletAccount in background', async function () {
       const store = mockStore();
       const unlockHardwareWalletAccount = background.unlockHardwareWalletAccount.callsFake(
-        (_, __, ___, cb) => cb(),
+        (_, __, ___, ____, cb) => cb(),
       );
 
       actions._setBackgroundConnection(background);
 
       await store.dispatch(
-        actions.unlockHardwareWalletAccount('ledger', 0, `m/44'/60'/0'/0`),
+        actions.unlockHardwareWalletAccounts(
+          [0],
+          'ledger',
+          `m/44'/60'/0'/0`,
+          '',
+        ),
       );
       assert(unlockHardwareWalletAccount.calledOnce);
     });
@@ -602,7 +607,7 @@ describe('Actions', function () {
     it('shows loading indicator and displays error', async function () {
       const store = mockStore();
 
-      background.unlockHardwareWalletAccount.callsFake((_, __, ___, cb) =>
+      background.unlockHardwareWalletAccount.callsFake((_, __, ___, ____, cb) =>
         cb(new Error('error')),
       );
 
@@ -610,12 +615,12 @@ describe('Actions', function () {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
       ];
 
       try {
-        await store.dispatch(actions.unlockHardwareWalletAccount());
+        await store.dispatch(actions.unlockHardwareWalletAccounts([null]));
         assert.fail('Should have thrown error');
       } catch (error) {
         assert.deepStrictEqual(store.getActions(), expectedActions);

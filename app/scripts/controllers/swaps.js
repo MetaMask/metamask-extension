@@ -8,7 +8,7 @@ import { calcTokenAmount } from '../../../ui/app/helpers/utils/token-util';
 import { calcGasTotal } from '../../../ui/app/pages/send/send.utils';
 import { conversionUtil } from '../../../ui/app/helpers/utils/conversion-util';
 import {
-  ETH_SWAPS_TOKEN_ADDRESS,
+  ETH_SWAPS_TOKEN_OBJECT,
   DEFAULT_ERC20_APPROVE_GAS,
   QUOTES_EXPIRED_ERROR,
   QUOTES_NOT_AVAILABLE_ERROR,
@@ -191,7 +191,7 @@ export default class SwapsController {
 
     let approvalRequired = false;
     if (
-      fetchParams.sourceToken !== ETH_SWAPS_TOKEN_ADDRESS &&
+      fetchParams.sourceToken !== ETH_SWAPS_TOKEN_OBJECT.address &&
       Object.values(newQuotes).length
     ) {
       const allowance = await this._getERC20Allowance(
@@ -552,7 +552,7 @@ export default class SwapsController {
       // If the swap is from ETH, subtract the sourceAmount from the total cost.
       // Otherwise, the total fee is simply trade.value plus gas fees.
       const ethFee =
-        sourceToken === ETH_SWAPS_TOKEN_ADDRESS
+        sourceToken === ETH_SWAPS_TOKEN_OBJECT.address
           ? conversionUtil(
               totalWeiCost.minus(sourceAmount, 10), // sourceAmount is in wei
               {
@@ -589,7 +589,9 @@ export default class SwapsController {
       );
 
       const conversionRateForCalculations =
-        destinationToken === ETH_SWAPS_TOKEN_ADDRESS ? 1 : tokenConversionRate;
+        destinationToken === ETH_SWAPS_TOKEN_OBJECT.address
+          ? 1
+          : tokenConversionRate;
 
       const overallValueOfQuoteForSorting =
         conversionRateForCalculations === undefined
@@ -616,7 +618,7 @@ export default class SwapsController {
     });
 
     const isBest =
-      newQuotes[topAggId].destinationToken === ETH_SWAPS_TOKEN_ADDRESS ||
+      newQuotes[topAggId].destinationToken === ETH_SWAPS_TOKEN_OBJECT.address ||
       Boolean(tokenConversionRates[newQuotes[topAggId]?.destinationToken]);
 
     let savings = null;

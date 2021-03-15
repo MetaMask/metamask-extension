@@ -1,5 +1,9 @@
 import assert from 'assert';
 import {
+  ROPSTEN_CHAIN_ID,
+  ROPSTEN_NETWORK_ID,
+} from '../../../../../../shared/constants/network';
+import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../../../../../shared/constants/transaction';
@@ -24,7 +28,8 @@ describe('TransactionActivityLog utils', function () {
               id: 6400627574331058,
               time: 1543958845581,
               status: TRANSACTION_STATUSES.UNAPPROVED,
-              metamaskNetworkId: '3',
+              metamaskNetworkId: ROPSTEN_NETWORK_ID,
+              chainId: ROPSTEN_CHAIN_ID,
               loadingDefaults: true,
               txParams: {
                 from: '0x50a9d56c2b8ba9a5c7f2c08c3d26e0499f23a706',
@@ -71,7 +76,8 @@ describe('TransactionActivityLog utils', function () {
           ],
           id: 6400627574331058,
           loadingDefaults: false,
-          metamaskNetworkId: '3',
+          metamaskNetworkId: ROPSTEN_NETWORK_ID,
+          chainId: ROPSTEN_CHAIN_ID,
           status: TRANSACTION_STATUSES.DROPPED,
           submittedTime: 1543958848135,
           time: 1543958845581,
@@ -93,7 +99,8 @@ describe('TransactionActivityLog utils', function () {
               id: 6400627574331060,
               time: 1543958857697,
               status: TRANSACTION_STATUSES.UNAPPROVED,
-              metamaskNetworkId: '3',
+              metamaskNetworkId: ROPSTEN_NETWORK_ID,
+              chainId: ROPSTEN_CHAIN_ID,
               loadingDefaults: false,
               txParams: {
                 from: '0x50a9d56c2b8ba9a5c7f2c08c3d26e0499f23a706',
@@ -163,7 +170,8 @@ describe('TransactionActivityLog utils', function () {
           id: 6400627574331060,
           lastGasPrice: '0x4190ab00',
           loadingDefaults: false,
-          metamaskNetworkId: '3',
+          metamaskNetworkId: ROPSTEN_NETWORK_ID,
+          chainId: ROPSTEN_CHAIN_ID,
           status: TRANSACTION_STATUSES.CONFIRMED,
           submittedTime: 1543958860054,
           time: 1543958857697,
@@ -185,6 +193,8 @@ describe('TransactionActivityLog utils', function () {
       const expected = [
         {
           id: 6400627574331058,
+          metamaskNetworkId: ROPSTEN_NETWORK_ID,
+          chainId: ROPSTEN_CHAIN_ID,
           hash:
             '0xa14f13d36b3901e352ce3a7acb9b47b001e5a3370f06232a0953c6fc6fad91b3',
           eventKey: 'transactionCreated',
@@ -193,6 +203,8 @@ describe('TransactionActivityLog utils', function () {
         },
         {
           id: 6400627574331058,
+          metamaskNetworkId: ROPSTEN_NETWORK_ID,
+          chainId: ROPSTEN_CHAIN_ID,
           hash:
             '0xa14f13d36b3901e352ce3a7acb9b47b001e5a3370f06232a0953c6fc6fad91b3',
           eventKey: 'transactionSubmitted',
@@ -201,6 +213,8 @@ describe('TransactionActivityLog utils', function () {
         },
         {
           id: 6400627574331060,
+          metamaskNetworkId: ROPSTEN_NETWORK_ID,
+          chainId: ROPSTEN_CHAIN_ID,
           hash:
             '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
           eventKey: 'transactionResubmitted',
@@ -209,6 +223,8 @@ describe('TransactionActivityLog utils', function () {
         },
         {
           id: 6400627574331060,
+          metamaskNetworkId: ROPSTEN_NETWORK_ID,
+          chainId: ROPSTEN_CHAIN_ID,
           hash:
             '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
           eventKey: 'transactionConfirmed',
@@ -249,7 +265,8 @@ describe('TransactionActivityLog utils', function () {
           {
             id: 5559712943815343,
             loadingDefaults: true,
-            metamaskNetworkId: '3',
+            metamaskNetworkId: ROPSTEN_NETWORK_ID,
+            chainId: ROPSTEN_CHAIN_ID,
             status: TRANSACTION_STATUSES.UNAPPROVED,
             time: 1535507561452,
             txParams: {
@@ -389,6 +406,8 @@ describe('TransactionActivityLog utils', function () {
           value: '0x2386f26fc10000',
         },
         hash: '0xabc',
+        chainId: ROPSTEN_CHAIN_ID,
+        metamaskNetworkId: ROPSTEN_NETWORK_ID,
       };
 
       const expectedResult = [
@@ -398,6 +417,8 @@ describe('TransactionActivityLog utils', function () {
           value: '0x2386f26fc10000',
           id: 1,
           hash: '0xabc',
+          chainId: ROPSTEN_CHAIN_ID,
+          metamaskNetworkId: ROPSTEN_NETWORK_ID,
         },
         {
           eventKey: 'transactionSubmitted',
@@ -405,6 +426,8 @@ describe('TransactionActivityLog utils', function () {
           value: '0x2632e314a000',
           id: 1,
           hash: '0xabc',
+          chainId: ROPSTEN_CHAIN_ID,
+          metamaskNetworkId: ROPSTEN_NETWORK_ID,
         },
         {
           eventKey: 'transactionConfirmed',
@@ -412,6 +435,8 @@ describe('TransactionActivityLog utils', function () {
           value: '0x2632e314a000',
           id: 1,
           hash: '0xabc',
+          chainId: ROPSTEN_CHAIN_ID,
+          metamaskNetworkId: ROPSTEN_NETWORK_ID,
         },
       ];
 

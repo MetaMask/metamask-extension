@@ -344,9 +344,6 @@
   "endOfFlowMessage6": {
     "message": "Ikiwa unataka kuhifadhi tena kwa njia mbadla kirai chako kianzio, unaweza kukipata kwenye Mipangilio -> Usalama."
   },
-  "endOfFlowMessage7": {
-    "message": "Ikiwa una maswali au umeona kitu ambacho ni cha ulaghai, tuma barua pepe support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask haiwezi kurejesha kirai chako kianzio. Pata maelezo ziadi."
   },
@@ -752,15 +749,6 @@
   },
   "privateNetwork": {
     "message": "Mtandao Binafsi"
-  },
-  "protectYourKeys": {
-    "message": "Linda Funguo Zako!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Kuwa mwangalifu na kirai kianzio chako - kumekuwa na taarifa za tovuti ambazo zinajaribu kuiga MetaMask. MetaMask kamwe haitakuomba kirai kianzio chako!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Weka salama kirai kianzio chako. Ikiwa unaona kitu cha kilaghai, au huna uhakika na tovuti fulani, tuma barua pepe kwenda support@metamask.io"
   },
   "queue": {
     "message": "Foleni"

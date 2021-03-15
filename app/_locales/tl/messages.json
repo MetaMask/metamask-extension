@@ -553,9 +553,6 @@
   "endOfFlowMessage6": {
     "message": "Kung kailangan mong i-back up ulit ang iyong seed phrase, makikita mo ito sa Mga Setting -> Seguridad."
   },
-  "endOfFlowMessage7": {
-    "message": "Sakaling mayroon kang mga tanong o may nakita kang kahina-hinalang bagay, mag-email sa support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "Hindi mababawi ng MetaMask ang iyong seedphrase."
   },
@@ -599,14 +596,6 @@
   "errorName": {
     "message": "Code: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "Subukan ulit sa pamamagitan ng pag-reload ng page, o makipag-ugnayan sa suporta sa support@metamask.io",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI"
-  },
-  "errorPagePopupMessage": {
-    "message": "Subukan ulit sa pamamagitan ng pagsara at muling pagbukas ng popup, o makipag-ugnayan sa suporta sa support@metamask.io",
-    "description": "Message displayed on generic error page in the popup UI"
   },
   "errorPageTitle": {
     "message": "Nagkaroon ng error sa MetaMask",
@@ -1126,9 +1115,6 @@
     "message": "Isasara ng \"$1\" ang tab na ito at ididirekta ka pabalik sa $2",
     "description": "Return the user to the site that initiated onboarding"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "Maaaring magsinungaling ang nakakahamak na Ethereum network providertungkol sa estado ng blockchain at i-record ang aktibidad ng iyong network. Magdagdag lang ng mga custom na network na pinagkakatiwalaan mo."
-  },
   "onlyAvailableOnMainnet": {
     "message": "Available lang sa mainnet"
   },
@@ -1212,15 +1198,6 @@
   },
   "proposedApprovalLimit": {
     "message": "Iminumungkahing Limitasyon sa Pag-apruba"
-  },
-  "protectYourKeys": {
-    "message": "Protektahan ang Iyong Mga Key!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Ingatan ang iyong seed phrase — may mga naiulat na website na sinusubukang gayahin ang MetaMask. Hindi kailanman hihingin ng MetaMask ang iyong seed phrase!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Ingatan ang iyong phrase. Kung may makikita kang kahina-hinalang bagay, o hindi ka sigurado sa isang website, mag-email sa support@metamask.io"
   },
   "provide": {
     "message": "Ibigay"

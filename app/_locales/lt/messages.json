@@ -350,9 +350,6 @@
   "endOfFlowMessage6": {
     "message": "Jeigu reikia dar kartą padaryti jūsų atkūrimo frazės kopiją, ją galite rasti pasirinkę Nuostatos -> Sauga."
   },
-  "endOfFlowMessage7": {
-    "message": "Jeigu turite klausimų arba pastebite ką nors įtartino, rašykite el. paštu support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "„MetaMask“ negali atkurti jūsų atkūrimo frazės. Sužinokite daugiau."
   },
@@ -774,15 +771,6 @@
   },
   "privateNetwork": {
     "message": "Privatus tinklas"
-  },
-  "protectYourKeys": {
-    "message": "Apsaugokite savo raktus!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Saugokite savo atkūrimo frazę – gavome pranešimų apie interneto svetaines, kuriomis bandoma imituoti „MetaMask“. „MetaMask“ niekada neprašys jūsų pateikti savo atkūrimo frazę!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Saugokite savo frazę. Jei pastebėjote kažką įtartino arba nesate tikri dėl svetainės, rašykite mums adresu support@metamask.io"
   },
   "queue": {
     "message": "Eilė"

@@ -6,18 +6,27 @@ import { useSelector } from 'react-redux';
 import TokenCell from '../token-cell';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
-import { getAssetImages } from '../../../selectors';
+import {
+  getAssetImages,
+  getShouldHideZeroBalanceTokens,
+} from '../../../selectors';
 import { getTokens } from '../../../ducks/metamask/metamask';
 
 export default function TokenList({ onTokenClick }) {
   const t = useI18nContext();
   const assetImages = useSelector(getAssetImages);
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
   // use `isEqual` comparison function because the token array is serialized
   // from the background so it has a new reference with each background update,
   // even if the tokens haven't changed
   const tokens = useSelector(getTokens, isEqual);
-  const { loading, tokensWithBalances } = useTokenTracker(tokens, true);
-
+  const { loading, tokensWithBalances } = useTokenTracker(
+    tokens,
+    true,
+    shouldHideZeroBalanceTokens,
+  );
   if (loading) {
     return (
       <div

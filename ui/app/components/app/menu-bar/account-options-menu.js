@@ -8,8 +8,8 @@ import { CONNECTED_ROUTE } from '../../../helpers/constants/routes';
 import { Menu, MenuItem } from '../../ui/menu';
 import getAccountLink from '../../../../lib/account-link';
 import {
+  getCurrentChainId,
   getCurrentKeyring,
-  getCurrentNetwork,
   getRpcPrefsForCurrentProvider,
   getSelectedIdentity,
 } from '../../../selectors';
@@ -52,7 +52,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   });
 
   const keyring = useSelector(getCurrentKeyring);
-  const network = useSelector(getCurrentNetwork);
+  const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const selectedIdentity = useSelector(getSelectedIdentity);
 
@@ -92,7 +92,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         onClick={() => {
           viewOnEtherscanEvent();
           global.platform.openTab({
-            url: getAccountLink(address, network, rpcPrefs),
+            url: getAccountLink(address, chainId, rpcPrefs),
           });
           onClose();
         }}

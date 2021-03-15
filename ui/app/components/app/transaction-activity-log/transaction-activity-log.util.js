@@ -49,6 +49,8 @@ const statusHash = {
 export function getActivities(transaction, isFirstTransaction = false) {
   const {
     id,
+    chainId,
+    metamaskNetworkId,
     hash,
     history = [],
     txParams: { gas: paramsGasLimit, gasPrice: paramsGasPrice },
@@ -76,6 +78,8 @@ export function getActivities(transaction, isFirstTransaction = false) {
         return acc.concat({
           id,
           hash,
+          chainId,
+          metamaskNetworkId,
           eventKey: TRANSACTION_CREATED_EVENT,
           timestamp,
           value,
@@ -127,6 +131,8 @@ export function getActivities(transaction, isFirstTransaction = false) {
                   hash,
                   eventKey,
                   timestamp,
+                  chainId,
+                  metamaskNetworkId,
                   value: gasFee,
                 });
               }
@@ -165,6 +171,8 @@ export function getActivities(transaction, isFirstTransaction = false) {
               events.push({
                 id,
                 hash,
+                chainId,
+                metamaskNetworkId,
                 eventKey: TRANSACTION_UPDATED_EVENT,
                 timestamp,
               });
@@ -185,6 +193,8 @@ export function getActivities(transaction, isFirstTransaction = false) {
     ? historyActivities.concat({
         id,
         hash,
+        chainId,
+        metamaskNetworkId,
         eventKey: TRANSACTION_ERRORED_EVENT,
       })
     : historyActivities;

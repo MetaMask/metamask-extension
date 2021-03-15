@@ -3,7 +3,7 @@ import { ObservableStore } from '@metamask/obs-store';
 /**
  * @typedef {Object} CachedBalancesOptions
  * @property {Object} accountTracker An {@code AccountTracker} reference
- * @property {Function} getNetwork A function to get the current network
+ * @property {Function} getCurrentChainId A function to get the current chain id
  * @property {Object} initState The initial controller state
  */
 
@@ -18,10 +18,10 @@ export default class CachedBalancesController {
    * @param {CachedBalancesOptions} [opts] - Controller configuration parameters
    */
   constructor(opts = {}) {
-    const { accountTracker, getNetwork } = opts;
+    const { accountTracker, getCurrentChainId } = opts;
 
     this.accountTracker = accountTracker;
-    this.getNetwork = getNetwork;
+    this.getCurrentChainId = getCurrentChainId;
 
     const initState = { cachedBalances: {}, ...opts.initState };
     this.store = new ObservableStore(initState);
@@ -30,37 +30,37 @@ export default class CachedBalancesController {
   }
 
   /**
-   * Updates the cachedBalances property for the current network. Cached balances will be updated to those in the passed accounts
+   * Updates the cachedBalances property for the current chain. Cached balances will be updated to those in the passed accounts
    * if balances in the passed accounts are truthy.
    *
-   * @param {Object} obj - The the recently updated accounts object for the current network
+   * @param {Object} obj - The the recently updated accounts object for the current chain
    * @returns {Promise<void>}
    */
   async updateCachedBalances({ accounts }) {
-    const network = await this.getNetwork();
+    const chainId = this.getCurrentChainId();
     const balancesToCache = await this._generateBalancesToCache(
       accounts,
-      network,
+      chainId,
     );
     this.store.updateState({
       cachedBalances: balancesToCache,
     });
   }
 
-  _generateBalancesToCache(newAccounts, currentNetwork) {
+  _generateBalancesToCache(newAccounts, chainId) {
     const { cachedBalances } = this.store.getState();
-    const currentNetworkBalancesToCache = { ...cachedBalances[currentNetwork] };
+    const currentChainBalancesToCache = { ...cachedBalances[chainId] };
 
     Object.keys(newAccounts).forEach((accountID) => {
       const account = newAccounts[accountID];
 
       if (account.balance) {
-        currentNetworkBalancesToCache[accountID] = account.balance;
+        currentChainBalancesToCache[accountID] = account.balance;
       }
     });
     const balancesToCache = {
       ...cachedBalances,
-      [currentNetwork]: currentNetworkBalancesToCache,
+      [chainId]: currentChainBalancesToCache,
     };
 
     return balancesToCache;

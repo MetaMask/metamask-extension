@@ -344,9 +344,6 @@
   "endOfFlowMessage6": {
     "message": "Se precisar fazer backup de sua frase-semente de novo, acesse Configurações -> Segurança."
   },
-  "endOfFlowMessage7": {
-    "message": "Caso você tenha alguma dúvida ou veja algo suspeito, envie um e-mail para support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "O MetaMask não pode recuperar sua frase semente. Saiba mais."
   },
@@ -762,15 +759,6 @@
   },
   "privateNetwork": {
     "message": "Rede Particular"
-  },
-  "protectYourKeys": {
-    "message": "Proteja as suas chaves!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Tome cuidado com sua frase semente — houve relatos de sites que tentam imitar o MetaMask. O MetaMask nunca pedirá sua frase semente!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Mantenha a sua frase segura. Se você vir algo esquisito ou está inseguro quanto a um site, envie um e-mail para support@metamask.io"
   },
   "queue": {
     "message": "Fila"

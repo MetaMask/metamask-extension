@@ -11,6 +11,11 @@ import {
   checksumAddress,
   getAccountByAddress,
 } from '../helpers/utils/util';
+import {
+  getValueFromWeiHex,
+  hexToDecimal,
+} from '../helpers/utils/conversions.util';
+import { ETH_SWAPS_TOKEN_OBJECT } from '../helpers/constants/swaps';
 
 export function getNetworkIdentifier(state) {
   const {
@@ -127,9 +132,16 @@ export function getMetaMaskAccountsRaw(state) {
 }
 
 export function getMetaMaskCachedBalances(state) {
+  const chainId = getCurrentChainId(state);
+
+  // Fallback to fetching cached balances from network id
+  // this can eventually be removed
   const network = getCurrentNetworkId(state);
 
-  return state.metamask.cachedBalances[network];
+  return (
+    state.metamask.cachedBalances[chainId] ??
+    state.metamask.cachedBalances[network]
+  );
 }
 
 /**
@@ -146,6 +158,12 @@ export const getMetaMaskAccountsOrdered = createSelector(
       .map((address) => ({ ...identities[address], ...accounts[address] })),
 );
 
+export const getMetaMaskAccountsConnected = createSelector(
+  getMetaMaskAccountsOrdered,
+  (connectedAccounts) =>
+    connectedAccounts.map(({ address }) => address.toLowerCase()),
+);
+
 export function isBalanceCached(state) {
   const selectedAccountBalance =
     state.metamask.accounts[getSelectedAddress(state)].balance;
@@ -155,7 +173,7 @@ export function isBalanceCached(state) {
 }
 
 export function getSelectedAccountCachedBalance(state) {
-  const cachedBalances = state.metamask.cachedBalances[state.metamask.network];
+  const cachedBalances = getMetaMaskCachedBalances(state);
   const selectedAddress = getSelectedAddress(state);
 
   return cachedBalances && cachedBalances[selectedAddress];
@@ -308,6 +326,11 @@ export function getShouldShowFiat(state) {
   return Boolean(isMainNet || showFiatInTestnets);
 }
 
+export function getShouldHideZeroBalanceTokens(state) {
+  const { hideZeroBalanceTokens } = getPreferences(state);
+  return hideZeroBalanceTokens;
+}
+
 export function getAdvancedInlineGasShown(state) {
   return Boolean(state.metamask.featureFlags.advancedInlineGas);
 }
@@ -373,4 +396,52 @@ export function getUSDConversionRate(state) {
 
 export function getWeb3ShimUsageStateForOrigin(state, origin) {
   return state.metamask.web3ShimUsageOrigins[origin];
+}
+
+/**
+ * @typedef {Object} SwapsEthToken
+ * @property {string} symbol - The symbol for ETH, namely "ETH"
+ * @property {string} name - The name of the ETH currency, "Ether"
+ * @property {string} address - A substitute address for the metaswap-api to
+ * recognize the ETH token
+ * @property {string} decimals - The number of ETH decimals, i.e. 18
+ * @property {string} balance - The user's ETH balance in decimal wei, with a
+ * precision of 4 decimal places
+ * @property {string} string - The user's ETH balance in decimal ETH
+ */
+
+/**
+ * Swaps related code uses token objects for various purposes. These objects
+ * always have the following properties: `symbol`, `name`, `address`, and
+ * `decimals`.
+ *
+ * When available for the current account, the objects can have `balance` and
+ * `string` properties.
+ * `balance` is the users token balance in decimal values, denominated in the
+ * minimal token units (according to its decimals).
+ * `string` is the token balance in a readable format, ready for rendering.
+ *
+ * Swaps treats ETH as a token, and we use the ETH_SWAPS_TOKEN_OBJECT constant
+ * to set the standard properties for the token. The getSwapsEthToken selector
+ * extends that object with `balance` and `balance` values of the same type as
+ * in regular ERC-20 token objects, per the above description.
+ *
+ * @param {object} state - the redux state object
+ * @returns {SwapsEthToken} The token object representation of the currently
+ * selected account's ETH balance, as expected by the Swaps API.
+ */
+
+export function getSwapsEthToken(state) {
+  const selectedAccount = getSelectedAccount(state);
+  const { balance } = selectedAccount;
+
+  return {
+    ...ETH_SWAPS_TOKEN_OBJECT,
+    balance: hexToDecimal(balance),
+    string: getValueFromWeiHex({
+      value: balance,
+      numberOfDecimals: 4,
+      toDenomination: 'ETH',
+    }),
+  };
 }

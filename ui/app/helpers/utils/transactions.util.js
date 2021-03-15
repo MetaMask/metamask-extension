@@ -2,8 +2,8 @@ import { MethodRegistry } from 'eth-method-registry';
 import abi from 'human-standard-token-abi';
 import { ethers } from 'ethers';
 import log from 'loglevel';
+
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
-import { getEtherscanNetworkPrefix } from '../../../lib/etherscan-prefix-for-network';
 import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_GROUP_STATUSES,
@@ -190,20 +190,6 @@ export function getStatusKey(transaction) {
   }
 
   return transaction.status;
-}
-
-/**
- * Returns an external block explorer URL at which a transaction can be viewed.
- * @param {number} networkId
- * @param {string} hash
- * @param {Object} rpcPrefs
- */
-export function getBlockExplorerUrlForTx(networkId, hash, rpcPrefs = {}) {
-  if (rpcPrefs.blockExplorerUrl) {
-    return `${rpcPrefs.blockExplorerUrl.replace(/\/+$/u, '')}/tx/${hash}`;
-  }
-  const prefix = getEtherscanNetworkPrefix(networkId);
-  return `https://${prefix}etherscan.io/tx/${hash}`;
 }
 
 /**

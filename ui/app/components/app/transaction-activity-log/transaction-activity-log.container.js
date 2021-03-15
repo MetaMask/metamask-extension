@@ -1,6 +1,10 @@
 import { connect } from 'react-redux';
 import { findLastIndex } from 'lodash';
-import { conversionRateSelector, getNativeCurrency } from '../../../selectors';
+import {
+  conversionRateSelector,
+  getNativeCurrency,
+  getRpcPrefsForCurrentProvider,
+} from '../../../selectors';
 import TransactionActivityLog from './transaction-activity-log.component';
 import { combineTransactionHistories } from './transaction-activity-log.util';
 import {
@@ -15,6 +19,7 @@ const mapStateToProps = (state) => {
   return {
     conversionRate: conversionRateSelector(state),
     nativeCurrency: getNativeCurrency(state),
+    rpcPrefs: getRpcPrefsForCurrentProvider(state),
   };
 };
 

@@ -6,7 +6,12 @@ import { useHistory } from 'react-router-dom';
 import { I18nContext } from '../../../contexts/i18n';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
-import { getCurrentCurrency, getUSDConversionRate } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getCurrentCurrency,
+  getRpcPrefsForCurrentProvider,
+  getUSDConversionRate,
+} from '../../../selectors';
 import {
   getUsedQuote,
   getFetchParams,
@@ -19,7 +24,6 @@ import {
 } from '../../../ducks/swaps/swaps';
 import Mascot from '../../../components/ui/mascot';
 import PulseLoader from '../../../components/ui/pulse-loader';
-import { getBlockExplorerUrlForTx } from '../../../helpers/utils/transactions.util';
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
@@ -31,6 +35,7 @@ import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
+import { getBlockExplorerUrlForTx } from '../../../../../shared/modules/transaction.utils';
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
 import QuotesTimeoutIcon from './quotes-timeout-icon';
@@ -40,9 +45,7 @@ export default function AwaitingSwap({
   swapComplete,
   errorKey,
   txHash,
-  networkId,
   tokensReceived,
-  rpcPrefs,
   submittingSwap,
   inputValue,
   maxSlippage,
@@ -60,6 +63,8 @@ export default function AwaitingSwap({
   const swapsGasPrice = useSelector(getUsedSwapsGasPrice);
   const currentCurrency = useSelector(getCurrentCurrency);
   const usdConversionRate = useSelector(getUSDConversionRate);
+  const chainId = useSelector(getCurrentChainId);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 
   const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] = useState(
     false,
@@ -96,7 +101,7 @@ export default function AwaitingSwap({
   });
 
   const blockExplorerUrl =
-    txHash && getBlockExplorerUrlForTx(networkId, txHash, rpcPrefs);
+    txHash && getBlockExplorerUrlForTx({ chainId, hash: txHash }, rpcPrefs);
 
   let headerText;
   let statusImage;
@@ -240,10 +245,8 @@ export default function AwaitingSwap({
 
 AwaitingSwap.propTypes = {
   swapComplete: PropTypes.bool,
-  networkId: PropTypes.string.isRequired,
   txHash: PropTypes.string,
   tokensReceived: PropTypes.string,
-  rpcPrefs: PropTypes.object.isRequired,
   errorKey: PropTypes.oneOf([
     QUOTES_EXPIRED_ERROR,
     SWAP_FAILED_ERROR,

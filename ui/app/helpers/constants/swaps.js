@@ -1,6 +1,5 @@
 // An address that the metaswap-api recognizes as ETH, in place of the token address that ERC-20 tokens have
-export const ETH_SWAPS_TOKEN_ADDRESS =
-  '0x0000000000000000000000000000000000000000';
+const ETH_SWAPS_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const ETH_SWAPS_TOKEN_OBJECT = {
   symbol: 'ETH',
@@ -22,3 +21,5 @@ export const DEFAULT_ERC20_APPROVE_GAS = '0x1d4c0';
 
 export const SWAPS_CONTRACT_ADDRESS =
   '0x881d40237659c251811cec9c364ef91dc08d300c';
+
+export const METASWAP_API_HOST = 'https://api.metaswap.codefi.network';

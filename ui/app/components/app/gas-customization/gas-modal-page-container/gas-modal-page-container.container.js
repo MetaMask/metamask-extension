@@ -37,6 +37,7 @@ import {
   getTokenBalance,
   getSendMaxModeState,
   getAveragePriceEstimateInHexWEI,
+  isCustomPriceExcessive,
 } from '../../../../selectors';
 
 import {
@@ -141,6 +142,7 @@ const mapStateToProps = (state, ownProps) => {
     customGasTotal,
     newTotalFiat,
     customPriceIsSafe: isCustomPriceSafe(state),
+    customPriceIsExcessive: isCustomPriceExcessive(state),
     maxModeOn,
     gasPriceButtonGroupProps: {
       buttonDataLoading,

@@ -562,9 +562,6 @@
   "endOfFlowMessage6": {
     "message": "如果您需要再次备份账户助记词，请通过设置 -> 安全选项完成该操作。"
   },
-  "endOfFlowMessage7": {
-    "message": "如果您仍存有疑问或发现任何可疑的地方，请发送电子邮件至 support@metamask.io 进行咨询。"
-  },
   "endOfFlowMessage8": {
     "message": "MetaMask 无法恢复您的账户助记词。"
   },
@@ -608,14 +605,6 @@
   "errorName": {
     "message": "代码：$1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
-  },
-  "errorPageMessage": {
-    "message": "请重新加载页面重试，或通过 support@metamask.io 联系支持。",
-    "description": "Message displayed on generic error page in the fullscreen or notification UI"
-  },
-  "errorPagePopupMessage": {
-    "message": "请关闭并重新打开弹窗再试一次，或通过 support@metamask.io 联系支持。",
-    "description": "Message displayed on generic error page in the popup UI"
   },
   "errorPageTitle": {
     "message": "MetaMask 遇到了一个错误",
@@ -1138,9 +1127,6 @@
     "message": "“$1”会关闭此标签，直接回到 $2",
     "description": "Return the user to the site that initiated onboarding"
   },
-  "onlyAddTrustedNetworks": {
-    "message": "恶意的 Ethereum 以太坊网络提供商可以伪造区块链状态，并记录您的网络活动。只添加您信任的自定义网络。"
-  },
   "onlyAvailableOnMainnet": {
     "message": "仅在主网（mainnet）上提供"
   },
@@ -1224,15 +1210,6 @@
   },
   "proposedApprovalLimit": {
     "message": "拟议的审批上限"
-  },
-  "protectYourKeys": {
-    "message": "妥善保管您的密钥！"
-  },
-  "protectYourKeysMessage1": {
-    "message": "请注意个人账户助记词的安全。报告显示有多个网站企图伪造 MetaMask。MetaMask 绝不会要求您提供个人账户助记词！"
-  },
-  "protectYourKeysMessage2": {
-    "message": "请妥善保管您的账户助记词。如果您发现任何可疑的地方，或无法确认网络安全性，请发送电子邮件至 support@metamask.io 进行咨询"
   },
   "provide": {
     "message": "提供"

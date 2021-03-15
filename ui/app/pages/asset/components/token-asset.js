@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { createTokenTrackerLink } from '@metamask/etherscan-link';
+import { createTokenTrackerLinkForChain } from '@metamask/etherscan-link';
 
 import TransactionList from '../../../components/app/transaction-list';
 import { TokenOverview } from '../../../components/app/wallet-overview';
 import {
-  getCurrentNetworkId,
+  getCurrentChainId,
   getSelectedIdentity,
 } from '../../../selectors/selectors';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
@@ -18,7 +18,7 @@ import TokenOptions from './token-options';
 
 export default function TokenAsset({ token }) {
   const dispatch = useDispatch();
-  const network = useSelector(getCurrentNetworkId);
+  const chainId = useSelector(getCurrentChainId);
   const selectedIdentity = useSelector(getSelectedIdentity);
   const selectedAccountName = selectedIdentity.name;
   const selectedAddress = selectedIdentity.address;
@@ -36,9 +36,9 @@ export default function TokenAsset({ token }) {
               dispatch(showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token }))
             }
             onViewEtherscan={() => {
-              const url = createTokenTrackerLink(
+              const url = createTokenTrackerLinkForChain(
                 token.address,
-                network,
+                chainId,
                 selectedAddress,
               );
               global.platform.openTab({ url });

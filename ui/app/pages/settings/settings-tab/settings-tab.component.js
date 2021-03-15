@@ -41,6 +41,8 @@ export default class SettingsTab extends PureComponent {
     nativeCurrency: PropTypes.string,
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
     setUseNativeCurrencyAsPrimaryCurrencyPreference: PropTypes.func,
+    hideZeroBalanceTokens: PropTypes.bool,
+    setHideZeroBalanceTokens: PropTypes.func,
   };
 
   renderCurrentConversion() {
@@ -101,12 +103,35 @@ export default class SettingsTab extends PureComponent {
     );
   }
 
+  renderHideZeroBalanceTokensOptIn() {
+    const { t } = this.context;
+    const { hideZeroBalanceTokens, setHideZeroBalanceTokens } = this.props;
+
+    return (
+      <div className="settings-page__content-row" id="toggle-zero-balance">
+        <div className="settings-page__content-item">
+          <span>{t('hideZeroBalanceTokens')}</span>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={hideZeroBalanceTokens}
+              onToggle={(value) => setHideZeroBalanceTokens(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   renderBlockieOptIn() {
     const { t } = this.context;
     const { useBlockie, setUseBlockie } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row" id="blockie-optin">
         <div className="settings-page__content-item">
           <span>{this.context.t('blockiesIdenticon')}</span>
         </div>
@@ -192,6 +217,7 @@ export default class SettingsTab extends PureComponent {
         {this.renderUsePrimaryCurrencyOptions()}
         {this.renderCurrentLocale()}
         {this.renderBlockieOptIn()}
+        {this.renderHideZeroBalanceTokensOptIn()}
       </div>
     );
   }
