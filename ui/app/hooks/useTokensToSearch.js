@@ -69,13 +69,7 @@ export function getRenderableTokenData(
   };
 }
 
-export function useTokensToSearch({
-  providedTokens,
-  usersTokens = [],
-  topTokens = {},
-  onlyEth,
-  singleToken,
-}) {
+export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
@@ -93,18 +87,16 @@ export function useTokensToSearch({
   const memoizedEthToken = useEqualityCheck(ethToken);
 
   const swapsTokens = useSelector(getSwapsTokens) || [];
-  let tokensToSearch;
-  if (onlyEth) {
-    tokensToSearch = [memoizedEthToken];
-  } else if (singleToken) {
-    tokensToSearch = providedTokens;
-  } else if (providedTokens) {
-    tokensToSearch = [memoizedEthToken, ...providedTokens];
-  } else if (swapsTokens.length) {
-    tokensToSearch = [memoizedEthToken, ...swapsTokens];
-  } else {
-    tokensToSearch = [memoizedEthToken, ...tokenList];
-  }
+
+  const tokensToSearch = swapsTokens.length
+    ? swapsTokens
+    : [
+        memoizedEthToken,
+        ...tokenList.filter(
+          (token) => token.symbol !== memoizedEthToken.symbol,
+        ),
+      ];
+
   const memoizedTokensToSearch = useEqualityCheck(tokensToSearch);
   return useMemo(() => {
     const usersTokensAddressMap = memoizedUsersToken.reduce(
@@ -113,7 +105,7 @@ export function useTokensToSearch({
     );
 
     const tokensToSearchBuckets = {
-      owned: singleToken ? [] : [memoizedEthToken],
+      owned: [],
       top: [],
       others: [],
     };
@@ -126,8 +118,8 @@ export function useTokensToSearch({
         currentCurrency,
       );
       if (
-        usersTokensAddressMap[token.address] &&
-        (renderableDataToken.symbol === 'ETH' ||
+        renderableDataToken.symbol === 'ETH' ||
+        (usersTokensAddressMap[token.address] &&
           Number(renderableDataToken.balance ?? 0) !== 0)
       ) {
         tokensToSearchBuckets.owned.push(renderableDataToken);
@@ -158,7 +150,5 @@ export function useTokensToSearch({
     conversionRate,
     currentCurrency,
     memoizedTopTokens,
-    memoizedEthToken,
-    singleToken,
   ]);
 }

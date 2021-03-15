@@ -9,7 +9,7 @@ export const AGGREGATOR_METADATA_BASE_PROD_URL =
 export const TOP_ASSET_BASE_PROD_URL =
   'https://api.metaswap.codefi.network/topAssets';
 
-export const TOKENS = [
+const BASE_TOKENS = [
   {
     erc20: true,
     symbol: 'META',
@@ -82,8 +82,11 @@ export const TOKENS = [
     decimals: 8,
     address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
   },
-  ETH_SWAPS_TOKEN_OBJECT,
 ];
+
+export const TOKENS = [...BASE_TOKENS, ETH_SWAPS_TOKEN_OBJECT];
+
+export const EXPECTED_TOKENS_RESULT = [ETH_SWAPS_TOKEN_OBJECT, ...BASE_TOKENS];
 
 export const MOCK_TRADE_RESPONSE_1 = [
   {
