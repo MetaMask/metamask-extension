@@ -9,7 +9,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
 import Button from '../../ui/button';
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
-import { SWAPS_CONTRACT_ADDRESS } from '../../../helpers/constants/swaps';
+import { SWAPS_CONTRACT_ADDRESS } from '../../../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
 
 const PAGE_INCREMENT = 10;

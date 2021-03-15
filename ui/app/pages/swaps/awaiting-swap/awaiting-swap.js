@@ -30,7 +30,7 @@ import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   OFFLINE_FOR_MAINTENANCE,
-} from '../../../helpers/constants/swaps';
+} from '../../../../../shared/constants/swaps';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
