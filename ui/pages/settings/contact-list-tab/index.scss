@@ -252,18 +252,8 @@
     position: absolute;
     top: 80px;
     right: 16px;
-    height: 56px;
-    width: 56px;
-    border-radius: 18px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    border-width: 1px;
-    background: $primary-blue;
-    margin-right: 5px;
+    width: inherit;
     cursor: pointer;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
 
     @media screen and (max-width: 576px) {
       top: 10px;

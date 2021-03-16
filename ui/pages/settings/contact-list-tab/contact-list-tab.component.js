@@ -29,6 +29,38 @@ export default class ContactListTab extends Component {
     const { addressBook, history, selectedAddress } = this.props;
     const contacts = addressBook.filter(({ name }) => Boolean(name));
     const nonContacts = addressBook.filter(({ name }) => !name);
+
+    return (
+      <div>
+        <ContactList
+          searchForContacts={() => contacts}
+          searchForRecents={() => nonContacts}
+          selectRecipient={(address) => {
+            history.push(`${CONTACT_VIEW_ROUTE}/${address}`);
+          }}
+          selectedAddress={selectedAddress}
+        />
+      </div>
+    );
+  }
+
+  renderAddButton() {
+    const { history } = this.props;
+
+    return (
+      <div
+        className="address-book-add-button__button button btn-secondary btn--rounded"
+        onClick={() => {
+          history.push(CONTACT_ADD_ROUTE);
+        }}
+      >
+        <p>{this.context.t('addAccount')}</p>
+      </div>
+    );
+  }
+
+  renderMyAccountsButton() {
+    const { history } = this.props;
     const { t } = this.context;
 
     if (addressBook.length) {
