@@ -4,8 +4,6 @@
     "scripts": [
       "globalthis.js",
       "initSentry.js",
-      "lockdown.js",
-      "runLockdown.js",
       "bg-libs.js",
       "background.js"
     ],
