@@ -13,6 +13,9 @@ import TokenSearch from './token-search';
 
 const emptyAddr = '0x0000000000000000000000000000000000000000';
 
+const MIN_DECIMAL_VALUE = 0;
+const MAX_DECIMAL_VALUE = 36;
+
 class AddToken extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -211,8 +214,8 @@ class AddToken extends Component {
     const validDecimals =
       customDecimals !== null &&
       customDecimals !== '' &&
-      customDecimals >= 0 &&
-      customDecimals <= 36;
+      customDecimals >= MIN_DECIMAL_VALUE &&
+      customDecimals <= MAX_DECIMAL_VALUE;
     let customDecimalsError = null;
 
     if (!validDecimals) {
@@ -282,6 +285,8 @@ class AddToken extends Component {
           fullWidth
           margin="normal"
           disabled={autoFilled}
+          min={MIN_DECIMAL_VALUE}
+          max={MAX_DECIMAL_VALUE}
         />
       </div>
     );
