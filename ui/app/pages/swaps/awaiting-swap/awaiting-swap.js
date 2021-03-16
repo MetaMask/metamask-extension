@@ -26,13 +26,13 @@ import {
 } from '../../../ducks/swaps/swaps';
 import Mascot from '../../../components/ui/mascot';
 import {
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   OFFLINE_FOR_MAINTENANCE,
 } from '../../../../../shared/constants/swaps';
+import { isSwapsDefaultTokenSymbol } from '../../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
@@ -234,8 +234,7 @@ export default function AwaitingSwap({
           } else if (errorKey) {
             await dispatch(navigateBackToBuildQuote(history));
           } else if (
-            destinationTokenInfo?.symbol ===
-            SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol
+            isSwapsDefaultTokenSymbol(destinationTokenInfo?.symbol, chainId)
           ) {
             history.push(DEFAULT_ROUTE);
           } else {

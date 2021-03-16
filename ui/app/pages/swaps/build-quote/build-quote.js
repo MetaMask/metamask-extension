@@ -46,6 +46,7 @@ import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../../shared/constants/swaps';
+import { isSwapsDefaultTokenAddress } from '../../../../../shared/modules/swaps.utils';
 
 import { resetSwapsPostFetchState, removeToken } from '../../../store/actions';
 import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util';
@@ -128,10 +129,9 @@ export default function BuildQuote({
   const selectedToToken =
     tokensToSearch.find(({ address }) => address === toToken?.address) ||
     toToken;
-  const toTokenIsNotEth =
+  const toTokenIsNotDefault =
     selectedToToken?.address &&
-    selectedToToken?.address !==
-      SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address;
+    !isSwapsDefaultTokenAddress(selectedToToken?.address, chainId);
   const occurances = Number(selectedToToken?.occurances || 0);
   const {
     address: fromTokenAddress,
@@ -239,16 +239,17 @@ export default function BuildQuote({
   );
 
   useEffect(() => {
-    const notEth =
-      tokensWithBalancesFromToken?.address !==
-      SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address;
+    const notDefault = !isSwapsDefaultTokenAddress(
+      tokensWithBalancesFromToken?.address,
+      chainId,
+    );
     const addressesAreTheSame =
       tokensWithBalancesFromToken?.address ===
       previousTokensWithBalancesFromToken?.address;
     const balanceHasChanged =
       tokensWithBalancesFromToken?.balance !==
       previousTokensWithBalancesFromToken?.balance;
-    if (notEth && addressesAreTheSame && balanceHasChanged) {
+    if (notDefault && addressesAreTheSame && balanceHasChanged) {
       dispatch(
         setSwapsFromToken({
           ...fromToken,
@@ -268,7 +269,7 @@ export default function BuildQuote({
   // If the eth balance changes while on build quote, we update the selected from token
   useEffect(() => {
     if (
-      fromToken?.address === SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address &&
+      isSwapsDefaultTokenAddress(fromToken?.address, chainId) &&
       fromToken?.balance !== hexToDecimal(ethBalance)
     ) {
       dispatch(
@@ -398,7 +399,7 @@ export default function BuildQuote({
             defaultToAll
           />
         </div>
-        {toTokenIsNotEth &&
+        {toTokenIsNotDefault &&
           (occurances < 2 ? (
             <ActionableMessage
               message={
@@ -488,7 +489,7 @@ export default function BuildQuote({
           !selectedToToken?.address ||
           Number(maxSlippage) === 0 ||
           Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
-          (toTokenIsNotEth && occurances < 2 && !verificationClicked)
+          (toTokenIsNotDefault && occurances < 2 && !verificationClicked)
         }
         hideCancel
         showTermsOfService

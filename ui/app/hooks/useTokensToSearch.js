@@ -13,7 +13,7 @@ import {
   getCurrentChainId,
 } from '../selectors';
 import { getSwapsTokens } from '../ducks/swaps/swaps';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
+import { isSwapsDefaultTokenSymbol } from '../../../shared/modules/swaps.utils';
 import { useEqualityCheck } from './useEqualityCheck';
 
 const tokenList = shuffle(
@@ -36,7 +36,7 @@ export function getRenderableTokenData(
 
   const formattedFiat =
     getTokenFiatAmount(
-      symbol === SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]
+      isSwapsDefaultTokenSymbol(symbol, chainId)
         ? 1
         : contractExchangeRates[address],
       conversionRate,
@@ -47,7 +47,7 @@ export function getRenderableTokenData(
     ) || '';
   const rawFiat =
     getTokenFiatAmount(
-      symbol === SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol
+      isSwapsDefaultTokenSymbol(symbol, chainId)
         ? 1
         : contractExchangeRates[address],
       conversionRate,
@@ -128,8 +128,7 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
         chainId,
       );
       if (
-        renderableDataToken.symbol ===
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol ||
+        isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
         (usersTokensAddressMap[token.address] &&
           Number(renderableDataToken.balance ?? 0) !== 0)
       ) {

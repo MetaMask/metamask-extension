@@ -8,12 +8,13 @@ import { calcTokenAmount } from '../../../ui/app/helpers/utils/token-util';
 import { calcGasTotal } from '../../../ui/app/pages/send/send.utils';
 import { conversionUtil } from '../../../ui/app/helpers/utils/conversion-util';
 import {
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   DEFAULT_ERC20_APPROVE_GAS,
   QUOTES_EXPIRED_ERROR,
   QUOTES_NOT_AVAILABLE_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../shared/constants/swaps';
+import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils';
+
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
   fetchSwapsFeatureLiveness as defaultFetchSwapsFeatureLiveness,
@@ -196,8 +197,7 @@ export default class SwapsController {
 
     let approvalRequired = false;
     if (
-      fetchParams.sourceToken !==
-        SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address &&
+      !isSwapsDefaultTokenAddress(fetchParams.sourceToken, chainId) &&
       Object.values(newQuotes).length
     ) {
       const allowance = await this._getERC20Allowance(
@@ -559,19 +559,18 @@ export default class SwapsController {
       // If the swap is from the selected chain's default token, subtract
       // the sourceAmount from the total cost. Otherwise, the total fee
       // is simply trade.value plus gas fees.
-      const ethFee =
-        sourceToken === SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address
-          ? conversionUtil(
-              totalWeiCost.minus(sourceAmount, 10), // sourceAmount is in wei
-              {
-                fromCurrency: 'ETH',
-                fromDenomination: 'WEI',
-                toDenomination: 'ETH',
-                fromNumericBase: 'BN',
-                numberOfDecimals: 6,
-              },
-            )
-          : totalEthCost;
+      const ethFee = isSwapsDefaultTokenAddress(sourceToken, chainId)
+        ? conversionUtil(
+            totalWeiCost.minus(sourceAmount, 10), // sourceAmount is in wei
+            {
+              fromCurrency: 'ETH',
+              fromDenomination: 'WEI',
+              toDenomination: 'ETH',
+              fromNumericBase: 'BN',
+              numberOfDecimals: 6,
+            },
+          )
+        : totalEthCost;
 
       const decimalAdjustedDestinationAmount = calcTokenAmount(
         destinationAmount,
@@ -596,10 +595,12 @@ export default class SwapsController {
         10,
       );
 
-      const conversionRateForCalculations =
-        destinationToken === SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address
-          ? 1
-          : tokenConversionRate;
+      const conversionRateForCalculations = isSwapsDefaultTokenAddress(
+        destinationToken,
+        chainId,
+      )
+        ? 1
+        : tokenConversionRate;
 
       const overallValueOfQuoteForSorting =
         conversionRateForCalculations === undefined
@@ -626,9 +627,10 @@ export default class SwapsController {
     });
 
     const isBest =
-      newQuotes[topAggId].destinationToken ===
-        SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address ||
-      Boolean(tokenConversionRates[newQuotes[topAggId]?.destinationToken]);
+      isSwapsDefaultTokenAddress(
+        newQuotes[topAggId].destinationToken,
+        chainId,
+      ) || Boolean(tokenConversionRates[newQuotes[topAggId]?.destinationToken]);
 
     let savings = null;
 

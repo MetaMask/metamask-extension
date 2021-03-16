@@ -1,6 +1,9 @@
 import { useSelector } from 'react-redux';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
+import {
+  isSwapsDefaultTokenAddress,
+  isSwapsDefaultTokenSymbol,
+} from '../../../shared/modules/swaps.utils';
 import { getSwapsTokensReceivedFromTxMeta } from '../pages/swaps/swaps.util';
 import { getCurrentChainId } from '../selectors';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
@@ -34,10 +37,11 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
 
   const isViewingReceivedTokenFromSwap =
     currentAsset?.symbol === primaryTransaction.destinationTokenSymbol ||
-    (currentAsset.address ===
-      SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address &&
-      primaryTransaction.destinationTokenSymbol ===
-        SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol);
+    (isSwapsDefaultTokenAddress(currentAsset.address, chainId) &&
+      isSwapsDefaultTokenSymbol(
+        primaryTransaction.destinationTokenSymbol,
+        chainId,
+      ));
 
   const swapTokenValue =
     type === TRANSACTION_TYPES.SWAP && isViewingReceivedTokenFromSwap

@@ -6,6 +6,11 @@ import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   METASWAP_CHAINID_API_HOST_MAP,
 } from '../../../../shared/constants/swaps';
+import {
+  isSwapsDefaultTokenAddress,
+  isSwapsDefaultTokenSymbol,
+} from '../../../../shared/modules/swaps.utils';
+
 import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 import {
   calcTokenValue,
@@ -289,8 +294,8 @@ export async function fetchTokens(chainId) {
       return (
         validateData(TOKEN_VALIDATORS, token, tokenUrl) &&
         !(
-          token.symbol === SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol ||
-          token.address === SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address
+          isSwapsDefaultTokenSymbol(token.symbol, chainId) ||
+          isSwapsDefaultTokenAddress(token.address, chainId)
         )
       );
     }),
@@ -430,9 +435,7 @@ export function getRenderableNetworkFeesForQuote({
 
   const nonGasFee = new BigNumber(tradeValue, 16)
     .minus(
-      sourceSymbol === SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol
-        ? sourceAmount
-        : 0,
+      isSwapsDefaultTokenSymbol(sourceSymbol, chainId) ? sourceAmount : 0,
       10,
     )
     .toString(16);
@@ -518,19 +521,20 @@ export function quotesToRenderableData(
 
     const tokenConversionRate =
       tokenConversionRates[destinationTokenInfo.address];
-    const ethValueOfTrade =
-      destinationTokenInfo.symbol ===
-      SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol
-        ? calcTokenAmount(
-            destinationAmount,
-            destinationTokenInfo.decimals,
-          ).minus(rawEthFee, 10)
-        : new BigNumber(tokenConversionRate || 0, 10)
-            .times(
-              calcTokenAmount(destinationAmount, destinationTokenInfo.decimals),
-              10,
-            )
-            .minus(rawEthFee, 10);
+    const ethValueOfTrade = isSwapsDefaultTokenSymbol(
+      destinationTokenInfo.symbol,
+      chainId,
+    )
+      ? calcTokenAmount(destinationAmount, destinationTokenInfo.decimals).minus(
+          rawEthFee,
+          10,
+        )
+      : new BigNumber(tokenConversionRate || 0, 10)
+          .times(
+            calcTokenAmount(destinationAmount, destinationTokenInfo.decimals),
+            10,
+          )
+          .minus(rawEthFee, 10);
 
     let liquiditySourceKey;
     let renderedSlippage = slippage;
@@ -582,7 +586,7 @@ export function getSwapsTokensReceivedFromTxMeta(
   chainId,
 ) {
   const txReceipt = txMeta?.txReceipt;
-  if (tokenSymbol === SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol) {
+  if (isSwapsDefaultTokenSymbol(tokenSymbol, chainId)) {
     if (
       !txReceipt ||
       !txMeta ||
