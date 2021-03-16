@@ -8,7 +8,7 @@ import { calcTokenAmount } from '../../../ui/app/helpers/utils/token-util';
 import { calcGasTotal } from '../../../ui/app/pages/send/send.utils';
 import { conversionUtil } from '../../../ui/app/helpers/utils/conversion-util';
 import {
-  ETH_SWAPS_TOKEN_OBJECT,
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   DEFAULT_ERC20_APPROVE_GAS,
   QUOTES_EXPIRED_ERROR,
   QUOTES_NOT_AVAILABLE_ERROR,
@@ -85,6 +85,7 @@ export default class SwapsController {
     fetchTradesInfo = defaultFetchTradesInfo,
     fetchSwapsFeatureLiveness = defaultFetchSwapsFeatureLiveness,
     fetchSwapsQuoteRefreshTime = defaultFetchSwapsQuoteRefreshTime,
+    getCurrentChainId,
   }) {
     this.store = new ObservableStore({
       swapsState: { ...initialState.swapsState },
@@ -93,6 +94,7 @@ export default class SwapsController {
     this._fetchTradesInfo = fetchTradesInfo;
     this._fetchSwapsFeatureLiveness = fetchSwapsFeatureLiveness;
     this._fetchSwapsQuoteRefreshTime = fetchSwapsQuoteRefreshTime;
+    this._getCurrentChainId = getCurrentChainId;
 
     this.getBufferedGasLimit = getBufferedGasLimit;
     this.tokenRatesStore = tokenRatesStore;
@@ -116,10 +118,11 @@ export default class SwapsController {
 
   // Sets the refresh rate for quote updates from the MetaSwap API
   async _setSwapsQuoteRefreshTime() {
+    const chainId = this._getCurrentChainId();
     // Default to fallback time unless API returns valid response
     let swapsQuoteRefreshTime = FALLBACK_QUOTE_REFRESH_TIME;
     try {
-      swapsQuoteRefreshTime = await this._fetchSwapsQuoteRefreshTime();
+      swapsQuoteRefreshTime = await this._fetchSwapsQuoteRefreshTime(chainId);
     } catch (e) {
       console.error('Request for swaps quote refresh time failed: ', e);
     }
@@ -158,6 +161,8 @@ export default class SwapsController {
     fetchParamsMetaData = {},
     isPolledRequest,
   ) {
+    const { chainId } = fetchParamsMetaData;
+
     if (!fetchParams) {
       return null;
     }
@@ -177,7 +182,7 @@ export default class SwapsController {
     this.indexOfNewestCallInFlight = indexOfCurrentCall;
 
     let [newQuotes] = await Promise.all([
-      this._fetchTradesInfo(fetchParams),
+      this._fetchTradesInfo(fetchParams, fetchParamsMetaData),
       this._setSwapsQuoteRefreshTime(),
     ]);
 
@@ -191,7 +196,8 @@ export default class SwapsController {
 
     let approvalRequired = false;
     if (
-      fetchParams.sourceToken !== ETH_SWAPS_TOKEN_OBJECT.address &&
+      fetchParams.sourceToken !==
+        SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address &&
       Object.values(newQuotes).length
     ) {
       const allowance = await this._getERC20Allowance(
@@ -490,6 +496,7 @@ export default class SwapsController {
     const {
       swapsState: { customGasPrice },
     } = this.store.getState();
+    const chainId = this._getCurrentChainId();
 
     const numQuotes = Object.keys(quotes).length;
     if (!numQuotes) {
@@ -533,8 +540,8 @@ export default class SwapsController {
 
       // trade.value is a sum of different values depending on the transaction.
       // It always includes any external fees charged by the quote source. In
-      // addition, if the source asset is ETH, trade.value includes the amount
-      // of swapped ETH.
+      // addition, if the source asset is the selected chain's default token, trade.value
+      // includes the amount of that token.
       const totalWeiCost = new BigNumber(gasTotalInWeiHex, 16).plus(
         trade.value,
         16,
@@ -549,10 +556,11 @@ export default class SwapsController {
       });
 
       // The total fee is aggregator/exchange fees plus gas fees.
-      // If the swap is from ETH, subtract the sourceAmount from the total cost.
-      // Otherwise, the total fee is simply trade.value plus gas fees.
+      // If the swap is from the selected chain's default token, subtract
+      // the sourceAmount from the total cost. Otherwise, the total fee
+      // is simply trade.value plus gas fees.
       const ethFee =
-        sourceToken === ETH_SWAPS_TOKEN_OBJECT.address
+        sourceToken === SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address
           ? conversionUtil(
               totalWeiCost.minus(sourceAmount, 10), // sourceAmount is in wei
               {
@@ -589,7 +597,7 @@ export default class SwapsController {
       );
 
       const conversionRateForCalculations =
-        destinationToken === ETH_SWAPS_TOKEN_OBJECT.address
+        destinationToken === SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address
           ? 1
           : tokenConversionRate;
 
@@ -618,7 +626,8 @@ export default class SwapsController {
     });
 
     const isBest =
-      newQuotes[topAggId].destinationToken === ETH_SWAPS_TOKEN_OBJECT.address ||
+      newQuotes[topAggId].destinationToken ===
+        SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address ||
       Boolean(tokenConversionRates[newQuotes[topAggId]?.destinationToken]);
 
     let savings = null;
@@ -726,13 +735,17 @@ export default class SwapsController {
   async _fetchAndSetSwapsLiveness() {
     const { swapsState } = this.store.getState();
     const { swapsFeatureIsLive: oldSwapsFeatureIsLive } = swapsState;
+    const chainId = this._getCurrentChainId();
+
     let swapsFeatureIsLive = false;
     let successfullyFetched = false;
     let numAttempts = 0;
 
     const fetchAndIncrementNumAttempts = async () => {
       try {
-        swapsFeatureIsLive = Boolean(await this._fetchSwapsFeatureLiveness());
+        swapsFeatureIsLive = Boolean(
+          await this._fetchSwapsFeatureLiveness(chainId),
+        );
         successfullyFetched = true;
       } catch (err) {
         log.error(err);
