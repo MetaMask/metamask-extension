@@ -276,7 +276,7 @@
     "sass-loader": "^10.1.1",
     "selenium-webdriver": "4.0.0-alpha.7",
     "serve-handler": "^6.1.2",
-    "ses": "0.11.0",
+    "ses": "0.12.3",
     "sinon": "^9.0.0",
     "source-map": "^0.7.2",
     "source-map-explorer": "^2.4.2",

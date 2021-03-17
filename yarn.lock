@@ -52,10 +52,10 @@
   resolved "https://registry.yarnpkg.com/@agoric/babel-standalone/-/babel-standalone-7.9.5.tgz#1ca0c17844924199d31e49d6b67e8b2a629b8599"
   integrity sha512-1Aa23oPuRi4kywUyZODo8zey9Gq2NpD2xUnNvgJLoT8orMQRlVOtvbG3JeHq5sjJERlF/q6csg4/P8t8/5IABA==
 
-"@agoric/make-hardener@^0.1.0":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@agoric/make-hardener/-/make-hardener-0.1.1.tgz#9b887da47aeec6637d9db4f0a92a4e740b8262bb"
-  integrity sha512-3emNc+yWJoFK5JMLoEFPs6rCzkntWQKxpR4gt3jaZYLKoUG4LrTmID3XNe8y40B6SJ3k/wLPodKa0ToQGlhrwQ==
+"@agoric/make-hardener@^0.1.2":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@agoric/make-hardener/-/make-hardener-0.1.3.tgz#807b0072bef95d935c3370d406d9dfeb719f69ee"
+  integrity sha512-rc9M2ErE/Zu822OLCnAltr957ZVTsBvVZ7KA2unqDpjo3q7PqZF2hWFB1xXD2Qkfwt5exQ3BjFbkj+NUaTg4gA==
 
 "@agoric/transform-module@^0.4.1":
   version "0.4.1"
@@ -22525,13 +22525,13 @@ servify@^0.1.12:
     request "^2.79.0"
     xhr "^2.3.3"
 
-ses@0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/ses/-/ses-0.11.0.tgz#1e470112ed320d169f0b850525858129c0be0881"
-  integrity sha512-3HH+23C4bijk9VegfiP+cBMqkGim/TMsj/DK5nh/pJFiNrCMfi5euvVluIV66ry202+uckg7nXKrgrEcBwU8SA==
+ses@0.12.3:
+  version "0.12.3"
+  resolved "https://registry.yarnpkg.com/ses/-/ses-0.12.3.tgz#9092a1f54374d08571a62837954e3fa24fe31d0f"
+  integrity sha512-uDAUbVECNcgbl90ZwKCsmp5II/rgS1hiiB6KQMBU+GDvsUA+NFXdH76o3bTIk3ftPHqc4Vyk7vAU75pd+3Jy2Q==
   dependencies:
     "@agoric/babel-standalone" "^7.9.5"
-    "@agoric/make-hardener" "^0.1.0"
+    "@agoric/make-hardener" "^0.1.2"
     "@agoric/transform-module" "^0.4.1"
 
 set-blocking@^2.0.0, set-blocking@~2.0.0:
