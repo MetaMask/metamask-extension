@@ -18,8 +18,12 @@
     margin-bottom: 16px;
   }
 
-  &__notification-description {
+  &__description-and-date {
     margin-bottom: 16px;
+  }
+
+  &__notification-date {
+    color: $Grey-500;
   }
 
   &__button {
