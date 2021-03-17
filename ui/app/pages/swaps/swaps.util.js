@@ -576,7 +576,7 @@ export function quotesToRenderableData(
   });
 }
 
-export function getSwapsTokensReceivedFromTxMeta(
+export function getSwapsTokensReceivedFromTxMeta({
   tokenSymbol,
   txMeta,
   tokenAddress,
@@ -584,7 +584,7 @@ export function getSwapsTokensReceivedFromTxMeta(
   tokenDecimals,
   approvalTxMeta,
   chainId,
-) {
+}) {
   const txReceipt = txMeta?.txReceipt;
   if (isSwapsDefaultTokenSymbol(tokenSymbol, chainId)) {
     if (

@@ -951,15 +951,15 @@ export default class TransactionController extends EventEmitter {
           category: 'swaps',
         });
       } else {
-        const tokensReceived = getSwapsTokensReceivedFromTxMeta(
-          txMeta.destinationTokenSymbol,
+        const tokensReceived = getSwapsTokensReceivedFromTxMeta({
+          tokenSymbol: txMeta.destinationTokenSymbol,
           txMeta,
-          txMeta.destinationTokenAddress,
-          txMeta.txParams.from,
-          txMeta.destinationTokenDecimals,
+          tokenAddress: txMeta.destinationTokenAddress,
+          accountAddress: txMeta.txParams.from,
+          tokenDecimals: txMeta.destinationTokenDecimals,
           approvalTxMeta,
-          txMeta.chainId,
-        );
+          chainId: txMeta.chainId,
+        });
 
         const quoteVsExecutionRatio = `${new BigNumber(tokensReceived, 10)
           .div(txMeta.swapMetaData.token_to_amount, 10)
