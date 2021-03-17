@@ -45,8 +45,10 @@ import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 
-import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../../shared/constants/swaps';
-import { isSwapsDefaultTokenAddress } from '../../../../../shared/modules/swaps.utils';
+import {
+  isSwapsDefaultTokenAddress,
+  isSwapsDefaultTokenSymbol,
+} from '../../../../../shared/modules/swaps.utils';
 
 import { resetSwapsPostFetchState, removeToken } from '../../../store/actions';
 import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util';
@@ -93,11 +95,12 @@ export default function BuildQuote({
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
 
-  const defaultTokenSymbol = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
-  const fetchParamsFromToken =
-    sourceTokenInfo?.symbol === defaultTokenSymbol
-      ? defaultSwapsToken
-      : sourceTokenInfo;
+  const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
+    sourceTokenInfo?.symbol,
+    chainId,
+  )
+    ? defaultSwapsToken
+    : sourceTokenInfo;
 
   const { loading, tokensWithBalances } = useTokenTracker(tokens);
 
@@ -105,7 +108,7 @@ export default function BuildQuote({
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
   // the balance of the token can appear in the from token selection dropdown
   const fromTokenArray =
-    fromToken?.symbol !== defaultTokenSymbol && fromToken?.balance
+    !isSwapsDefaultTokenSymbol(fromToken?.symbol, chainId) && fromToken?.balance
       ? [fromToken]
       : [];
   const usersTokens = uniqBy(
@@ -161,10 +164,9 @@ export default function BuildQuote({
     { showFiat: true },
     true,
   );
-  const swapFromFiatValue =
-    fromTokenSymbol === defaultTokenSymbol
-      ? swapFromEthFiatValue
-      : swapFromTokenFiatValue;
+  const swapFromFiatValue = isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId)
+    ? swapFromEthFiatValue
+    : swapFromTokenFiatValue;
 
   const onFromSelect = (token) => {
     if (
@@ -301,7 +303,7 @@ export default function BuildQuote({
       <div className="build-quote__content">
         <div className="build-quote__dropdown-input-pair-header">
           <div className="build-quote__input-label">{t('swapSwapFrom')}</div>
-          {fromTokenSymbol !== defaultTokenSymbol && (
+          {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
             <div
               className="build-quote__max-button"
               onClick={() =>
