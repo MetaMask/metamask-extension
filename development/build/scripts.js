@@ -291,6 +291,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     const lavamoatOpts = {
       policy: path.resolve(__dirname, '../../lavamoat/browserify/policy.json'),
       policyOverride: path.resolve(__dirname, '../../lavamoat/browserify/policy-override.json'),
+      writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
     }
 
     if (!opts.buildLib) {
@@ -309,7 +310,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       .transform(brfs);
 
     // apply lavamoat protections to UI
-    if (opts.label === 'ui') bundler.plugin(lavamoat, lavamoatOpts)
+    if (opts.label === 'background') bundler.plugin(lavamoat, lavamoatOpts)
 
     if (opts.buildLib) {
       bundler = bundler.require(opts.dependenciesToBundle);
@@ -363,7 +364,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     );
 
     // Live reload - minimal rebundle on change
-    if (opts.devMode) {
+    if (opts.devMode && !process.env.WRITE_AUTO_POLICY) {
       bundler = watchify(bundler);
       // on any file update, re-runs the bundler
       bundler.on('update', () => {
