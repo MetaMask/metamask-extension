@@ -372,7 +372,7 @@ export function setThreeBoxLastUpdated(lastUpdated) {
   };
 }
 
-export function hideShowWhatsNewPopup() {
+export function hideWhatsNewPopup() {
   return {
     type: actionConstants.HIDE_SHOW_WHATS_NEW_POPUP,
   };

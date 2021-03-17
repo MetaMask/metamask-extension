@@ -86,6 +86,9 @@ Popover.propTypes = {
   className: PropTypes.string,
   showArrow: PropTypes.bool,
   mediumHeight: PropTypes.bool,
+  contentRef: PropTypes.shape({
+    current: PropTypes.instanceOf(window.Element),
+  }),
 };
 
 export default class PopoverPortal extends PureComponent {
