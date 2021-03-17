@@ -943,8 +943,6 @@ export default class TransactionController extends EventEmitter {
   }
 
   _trackSwapsMetrics(txMeta, approvalTxMeta) {
-    const chainId = this.getChainId();
-
     if (this._getParticipateInMetrics() && txMeta.swapMetaData) {
       if (txMeta.txReceipt.status === '0x0') {
         this._trackMetaMetricsEvent({
@@ -960,7 +958,7 @@ export default class TransactionController extends EventEmitter {
           txMeta.txParams.from,
           txMeta.destinationTokenDecimals,
           approvalTxMeta,
-          chainId,
+          txMeta.chainId,
         );
 
         const quoteVsExecutionRatio = `${new BigNumber(tokensReceived, 10)
