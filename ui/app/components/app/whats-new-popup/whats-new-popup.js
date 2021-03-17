@@ -8,53 +8,17 @@ import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
 import { updateViewedNotifications } from '../../../store/actions';
-import { UI_NOTIFICATIONS } from '../../../../../shared/notifications';
 import {
-  getSortedNotificationsToShow,
-  getSwapsEthToken,
-} from '../../../selectors';
-import { BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes';
-
-function notifcationActionFunctions(state, metricsEvent) {
-  const swapsEthToken = getSwapsEthToken(state);
-
-  const actionFunctions = {
-    1: () => {
-      metricsEvent({
-        event: 'Swaps Opened',
-        properties: { source: 'Main View', active_currency: 'ETH' },
-        category: 'swaps',
-      });
-      global.platform.openExtensionInBrowser(
-        BUILD_QUOTE_ROUTE,
-        `fromAddress=${swapsEthToken.address}`,
-      );
-    },
-    2: () => {
-      global.platform.openTab({
-        url: 'https://metamask.io/download.html',
-      });
-    },
-    3: () => {
-      global.platform.openTab({
-        url:
-          'https://survey.alchemer.com/s3/6173069/MetaMask-Extension-NPS-January-2021',
-      });
-    },
-  };
-
-  return (id) => {
-    return actionFunctions[id];
-  };
-}
+  UI_NOTIFICATIONS,
+  notifcationActionFunctions,
+} from '../../../../../shared/notifications';
+import { getSortedNotificationsToShow } from '../../../selectors';
 
 export default function WhatsNewPopup({ onClose }) {
   const metricsEvent = useContext(MetaMetricsContext);
   const t = useContext(I18nContext);
-  const state = useSelector((_state) => _state);
 
   const getNotifcationActionFunctionsById = notifcationActionFunctions(
-    state,
     metricsEvent,
   );
 
