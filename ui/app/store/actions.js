@@ -1389,7 +1389,12 @@ export function addToken(
   dontShowLoadingIndicator,
 ) {
   return (dispatch) => {
-    !dontShowLoadingIndicator && dispatch(showLoadingIndication());
+    if (!address) {
+      throw new Error('MetaMask - Cannot add token without address');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
     return new Promise((resolve, reject) => {
       background.addToken(address, symbol, decimals, image, (err, tokens) => {
         dispatch(hideLoadingIndication());

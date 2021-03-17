@@ -425,6 +425,7 @@ export const fetchQuotesAndSetQuoteState = (
 
     let destinationTokenAddedForSwap = false;
     if (
+      toTokenAddress &&
       toTokenSymbol !== swapsDefaultToken.symbol &&
       !contractExchangeRates[toTokenAddress]
     ) {
@@ -440,6 +441,7 @@ export const fetchQuotesAndSetQuoteState = (
       );
     }
     if (
+      fromTokenAddress &&
       fromTokenSymbol !== swapsDefaultToken.symbol &&
       !contractExchangeRates[fromTokenAddress] &&
       fromTokenBalance &&
