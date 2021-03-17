@@ -370,6 +370,23 @@ export const fetchAndSetSwapsGasPriceInfo = () => {
   };
 };
 
+export const fetchFeatureLivenessForChain = () => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const chainId = getCurrentChainId(state);
+
+    let swapsFeatureIsLive = false;
+    try {
+      swapsFeatureIsLive = await dispatch(fetchSwapsFeatureLiveness(chainId));
+    } catch (error) {
+      log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
+    }
+    await dispatch(setSwapsLiveness(swapsFeatureIsLive));
+
+    return swapsFeatureIsLive;
+  };
+};
+
 export const fetchQuotesAndSetQuoteState = (
   history,
   inputValue,
@@ -379,13 +396,7 @@ export const fetchQuotesAndSetQuoteState = (
   return async (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
-    let swapsFeatureIsLive = false;
-    try {
-      swapsFeatureIsLive = await fetchSwapsFeatureLiveness(chainId);
-    } catch (error) {
-      log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
-    }
-    await dispatch(setSwapsLiveness(swapsFeatureIsLive));
+    const swapsFeatureIsLive = await dispatch(fetchFeatureLivenessForChain());
 
     if (!swapsFeatureIsLive) {
       await history.push(SWAPS_MAINTENANCE_ROUTE);
@@ -572,15 +583,13 @@ export const fetchQuotesAndSetQuoteState = (
 export const signAndSendTransactions = (history, metaMetricsEvent) => {
   return async (dispatch, getState) => {
     const state = getState();
-    const chainId = getCurrentChainId(state);
 
-    let swapsFeatureIsLive = false;
-    try {
-      swapsFeatureIsLive = await fetchSwapsFeatureLiveness(chainId);
-    } catch (error) {
-      log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
+    const swapsFeatureIsLive = await dispatch(fetchFeatureLivenessForChain());
+
+    if (!swapsFeatureIsLive) {
+      await history.push(SWAPS_MAINTENANCE_ROUTE);
+      return;
     }
-    await dispatch(setSwapsLiveness(swapsFeatureIsLive));
 
     if (!swapsFeatureIsLive) {
       await history.push(SWAPS_MAINTENANCE_ROUTE);
