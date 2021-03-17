@@ -1,25 +1,25 @@
 export const UI_NOTIFICATIONS = {
   1: {
     id: 1,
-    title: 'notifications#1Title',
-    description: 'notifications#1Description',
-    date: '02/22/2020',
+    title: 'notificationsTitle1',
+    description: 'notificationsDescription1',
+    date: '2020-03-17',
     image: 'images/swaps-logos-small.svg',
-    actionText: 'notifications#1ActionText',
+    actionText: 'notificationsActionText1',
   },
   2: {
     id: 2,
-    title: 'notifications#2Title',
-    description: 'notifications#2Description',
-    date: '02/22/2020',
-    actionText: 'notifications#2ActionText',
+    title: 'notificationsTitle2',
+    description: 'notificationsDescription2',
+    date: '2020-03-17',
+    actionText: 'notificationsActionText2',
   },
   3: {
     id: 3,
-    title: 'notifications#3Title',
-    description: 'notifications#3Description',
-    date: '02/22/2020',
-    actionText: 'notifications#3ActionText',
+    title: 'notificationsTitle3',
+    description: 'notificationsDescription3',
+    date: '2020-03-17',
+    actionText: 'notificationsActionText3',
   },
 };
 
