@@ -68,7 +68,8 @@ export default function WhatsNewPopup({ onClose }) {
         mediumHeight
       >
         <div className="whats-new-popup__notifications">
-          {notifications.map((notification, index) => {
+          {notifications.map(({ id, date }, index) => {
+            const notification = UI_NOTIFICATIONS[id];
             const isFirstNotification = index === 0;
             return (
               <div
@@ -87,35 +88,36 @@ export default function WhatsNewPopup({ onClose }) {
                   {t(notification.title)}
                 </div>
                 <div
-                  className="whats-new-popup__notification-description"
-                  ref={idRefMap[notification.id]}
+                  className="whats-new-popup__description-and-date"
+                  ref={idRefMap[id]}
                 >
-                  {t(notification.description)}
+                  <div className="whats-new-popup__notification-description">
+                    {t(notification.description)}
+                  </div>
+                  <div className="whats-new-popup__notification-date">
+                    {date}
+                  </div>
                 </div>
-                {isFirstNotification &&
-                  UI_NOTIFICATIONS[notification.id].actionText && (
-                    <Button
-                      type="secondary"
-                      className="whats-new-popup__button"
-                      rounded
-                      onClick={() =>
-                        getNotifcationActionFunctionsById(notification.id)()
-                      }
-                    >
-                      {t(UI_NOTIFICATIONS[notification.id].actionText)}
-                    </Button>
-                  )}
-                {!isFirstNotification &&
-                  UI_NOTIFICATIONS[notification.id].actionText && (
-                    <div
-                      className="whats-new-popup__link"
-                      onClick={() =>
-                        getNotifcationActionFunctionsById(notification.id)()
-                      }
-                    >
-                      {t(UI_NOTIFICATIONS[notification.id].actionText)}
-                    </div>
-                  )}
+                {isFirstNotification && notification.actionText && (
+                  <Button
+                    type="secondary"
+                    className="whats-new-popup__button"
+                    rounded
+                    onClick={() =>
+                      getNotifcationActionFunctionsById(notification.id)()
+                    }
+                  >
+                    {t(notification.actionText)}
+                  </Button>
+                )}
+                {!isFirstNotification && UI_NOTIFICATIONS[id].actionText && (
+                  <div
+                    className="whats-new-popup__link"
+                    onClick={getNotifcationActionFunctionsById(notification.id)}
+                  >
+                    {t(notification.actionText)}
+                  </div>
+                )}
               </div>
             );
           })}
