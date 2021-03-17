@@ -6,10 +6,10 @@
     "setup": "yarn install && yarn patch-package && yarn allow-scripts",
     "setup-ci": "yarn install --frozen-lockfile --har && yarn patch-package && yarn allow-scripts",
     "start": "node development/build/index.js dev",
+    "start:test": "yarn build testDev",
     "start:lavamoat": "node development/build/index.js dev",
     "dist": "yarn build prod",
     "build": "lavamoat development/build/index.js",
-    "start:test": "yarn build testDev",
     "benchmark:chrome": "SELENIUM_BROWSER=chrome node test/e2e/benchmark.js",
     "benchmark:firefox": "SELENIUM_BROWSER=firefox node test/e2e/benchmark.js",
     "build:test": "yarn build test",
@@ -55,8 +55,9 @@
     "storybook:deploy": "storybook-to-ghpages --existing-output-dir storybook-build --remote storybook --branch master",
     "update-changelog": "./development/auto-changelog.sh",
     "generate:migration": "./development/generate-migration.sh",
-    "lavamoat:auto": "lavamoat ./development/build/index.js --writeAutoPolicy",
-    "lavamoat:debug": "lavamoat ./development/build/index.js --writeAutoPolicyDebug"
+    "lavamoat:build:auto": "lavamoat ./development/build/index.js --writeAutoPolicy",
+    "lavamoat:build:debug": "lavamoat ./development/build/index.js --writeAutoPolicyDebug",
+    "lavamoat:ui:auto": "WRITE_AUTO_POLICY=1 yarn start:lavamoat"
   },
   "resolutions": {
     "**/configstore/dot-prop": "^5.1.1",
