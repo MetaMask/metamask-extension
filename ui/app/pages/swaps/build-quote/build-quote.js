@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { uniqBy, isEqual } from 'lodash';
-import { useHistory } from 'react-router-dom';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import {
   useTokensToSearch,

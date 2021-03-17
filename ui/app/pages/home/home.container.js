@@ -12,6 +12,7 @@ import {
   getWeb3ShimUsageStateForOrigin,
   unconfirmedTransactionsCountSelector,
   getShowWhatsNewPopup,
+  getSortedNotificationsToShow,
 } from '../../selectors';
 
 import {
@@ -24,10 +25,7 @@ import {
   setWeb3ShimUsageAlertDismissed,
   setAlertEnabledness,
 } from '../../store/actions';
-import {
-  setThreeBoxLastUpdated,
-  hideShowWhatsNewPopup,
-} from '../../ducks/app/app';
+import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureLiveness } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -39,7 +37,6 @@ import {
   ALERT_TYPES,
   WEB3_SHIM_USAGE_ALERT_STATES,
 } from '../../../../shared/constants/alerts';
-import { getSortedNotificationsToShow } from '../../../../shared/notifications';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -130,7 +127,7 @@ const mapDispatchToProps = (dispatch) => ({
     setWeb3ShimUsageAlertDismissed(origin),
   disableWeb3ShimUsageAlert: () =>
     setAlertEnabledness(ALERT_TYPES.web3ShimUsage, false),
-  hideShowWhatsNewPopup: () => dispatch(hideShowWhatsNewPopup()),
+  hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
 });
 
 export default compose(

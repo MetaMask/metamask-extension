@@ -71,7 +71,7 @@ export default class Home extends PureComponent {
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
     showWhatsNewPopup: PropTypes.bool.isRequired,
-    hideShowWhatsNewPopup: PropTypes.func.isRequired,
+    hideWhatsNewPopup: PropTypes.func.isRequired,
     notificationsToShow: PropTypes.bool.isRequired,
   };
 
@@ -297,7 +297,7 @@ export default class Home extends PureComponent {
       isPopup,
       notificationsToShow,
       showWhatsNewPopup,
-      hideShowWhatsNewPopup,
+      hideWhatsNewPopup,
     } = this.props;
 
     if (forgottenPassword) {
@@ -316,7 +316,7 @@ export default class Home extends PureComponent {
         />
         <div className="home__container">
           {notificationsToShow && showWhatsNewPopup ? (
-            <WhatsNewPopup onClose={hideShowWhatsNewPopup} />
+            <WhatsNewPopup onClose={hideWhatsNewPopup} />
           ) : null}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
