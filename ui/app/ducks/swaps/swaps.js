@@ -32,10 +32,7 @@ import {
   SWAPS_ERROR_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  fetchSwapsFeatureLiveness,
-  fetchSwapsGasPrices,
-} from '../../pages/swaps/swaps.util';
+import { fetchSwapsGasPrices } from '../../pages/swaps/swaps.util';
 import { calcGasTotal } from '../../pages/send/send.utils';
 import {
   decimalToHex,
@@ -58,6 +55,7 @@ import {
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../../shared/constants/swaps';
+import { fetchSwapsFeatureLiveness } from '../../../../shared/modules/swaps.utils';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 
 const GAS_PRICES_LOADING_STATES = {

@@ -12,14 +12,8 @@ import {
 } from '../../../../shared/modules/swaps.utils';
 
 import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
-import {
-  calcTokenValue,
-  calcTokenAmount,
-} from '../../helpers/utils/token-util';
-import {
-  constructTxParams,
-  toPrecisionWithoutTrailingZeros,
-} from '../../helpers/utils/util';
+import { calcTokenAmount } from '../../helpers/utils/token-util';
+import { toPrecisionWithoutTrailingZeros } from '../../helpers/utils/util';
 import {
   decimalToHex,
   getValueFromWeiHex,
@@ -36,7 +30,7 @@ const TOKEN_TRANSFER_LOG_TOPIC_HASH =
 
 const CACHE_REFRESH_ONE_HOUR = 3600000;
 
-const getBaseApi = function (type, chainId = MAINNET_CHAIN_ID) {
+export function getBaseApi(type, chainId = MAINNET_CHAIN_ID) {
   switch (type) {
     case 'trade':
       return `${METASWAP_CHAINID_API_HOST_MAP[chainId]}/trades?`;
@@ -55,14 +49,14 @@ const getBaseApi = function (type, chainId = MAINNET_CHAIN_ID) {
     default:
       throw new Error('getBaseApi requires an api call type');
   }
-};
+}
 
 const validHex = (string) => Boolean(string?.match(/^0x[a-f0-9]+$/u));
 const truthyString = (string) => Boolean(string?.length);
 const truthyDigitString = (string) =>
   truthyString(string) && Boolean(string.match(/^\d+$/u));
 
-const QUOTE_VALIDATORS = [
+export const QUOTE_VALIDATORS = [
   {
     property: 'trade',
     type: 'object',
@@ -192,7 +186,7 @@ const SWAP_GAS_PRICE_VALIDATOR = [
   },
 ];
 
-function validateData(validators, object, urlUsed) {
+export function validateData(validators, object, urlUsed) {
   return validators.every(({ property, type, validator }) => {
     const types = type.split('|');
 
@@ -209,76 +203,6 @@ function validateData(validators, object, urlUsed) {
     }
     return valid;
   });
-}
-
-export async function fetchTradesInfo(
-  {
-    slippage,
-    sourceToken,
-    sourceDecimals,
-    destinationToken,
-    value,
-    fromAddress,
-    exchangeList,
-  },
-  { chainId },
-) {
-  const urlParams = {
-    destinationToken,
-    sourceToken,
-    sourceAmount: calcTokenValue(value, sourceDecimals).toString(10),
-    slippage,
-    timeout: 10000,
-    walletAddress: fromAddress,
-  };
-
-  if (exchangeList) {
-    urlParams.exchangeList = exchangeList;
-  }
-
-  const queryString = new URLSearchParams(urlParams).toString();
-  const tradeURL = `${getBaseApi('trade', chainId)}${queryString}`;
-  const tradesResponse = await fetchWithCache(
-    tradeURL,
-    { method: 'GET' },
-    { cacheRefreshTime: 0, timeout: 15000 },
-  );
-  const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
-    if (
-      quote.trade &&
-      !quote.error &&
-      validateData(QUOTE_VALIDATORS, quote, tradeURL)
-    ) {
-      const constructedTrade = constructTxParams({
-        to: quote.trade.to,
-        from: quote.trade.from,
-        data: quote.trade.data,
-        amount: decimalToHex(quote.trade.value),
-        gas: decimalToHex(quote.maxGas),
-      });
-
-      let { approvalNeeded } = quote;
-
-      if (approvalNeeded) {
-        approvalNeeded = constructTxParams({
-          ...approvalNeeded,
-        });
-      }
-
-      return {
-        ...aggIdTradeMap,
-        [quote.aggregator]: {
-          ...quote,
-          slippage,
-          trade: constructedTrade,
-          approvalNeeded,
-        },
-      };
-    }
-    return aggIdTradeMap;
-  }, {});
-
-  return newQuotes;
 }
 
 export async function fetchTokens(chainId) {
@@ -339,32 +263,6 @@ export async function fetchTopAssets(chainId) {
     return _topAssetsMap;
   }, {});
   return topAssetsMap;
-}
-
-export async function fetchSwapsFeatureLiveness(chainId) {
-  const status = await fetchWithCache(
-    getBaseApi('featureFlag', chainId),
-    { method: 'GET' },
-    { cacheRefreshTime: 600000 },
-  );
-  return status?.active;
-}
-
-export async function fetchSwapsQuoteRefreshTime(chainId) {
-  const response = await fetchWithCache(
-    getBaseApi('refreshTime', chainId),
-    { method: 'GET' },
-    { cacheRefreshTime: 600000 },
-  );
-
-  // We presently use milliseconds in the UI
-  if (typeof response?.seconds === 'number' && response.seconds > 0) {
-    return response.seconds * 1000;
-  }
-
-  throw new Error(
-    `MetaMask - refreshTime provided invalid response: ${response}`,
-  );
 }
 
 export async function fetchTokenPrice(address) {

@@ -13,13 +13,13 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../shared/constants/swaps';
-import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils';
-
 import {
+  isSwapsDefaultTokenAddress,
   fetchTradesInfo as defaultFetchTradesInfo,
   fetchSwapsFeatureLiveness as defaultFetchSwapsFeatureLiveness,
   fetchSwapsQuoteRefreshTime as defaultFetchSwapsQuoteRefreshTime,
-} from '../../../ui/app/pages/swaps/swaps.util';
+} from '../../../shared/modules/swaps.utils';
+
 import { NETWORK_EVENTS } from './network';
 
 const METASWAP_ADDRESS = '0x881d40237659c251811cec9c364ef91dc08d300c';
