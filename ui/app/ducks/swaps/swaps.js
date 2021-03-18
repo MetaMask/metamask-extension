@@ -49,7 +49,8 @@ import {
   getSelectedAccount,
   getTokenExchangeRates,
   getUSDConversionRate,
-  getSwapsEthToken,
+  getSwapsDefaultToken,
+  getCurrentChainId,
 } from '../../selectors';
 import {
   ERROR_FETCHING_QUOTES,
@@ -376,9 +377,11 @@ export const fetchQuotesAndSetQuoteState = (
   metaMetricsEvent,
 ) => {
   return async (dispatch, getState) => {
+    const state = getState();
+    const chainId = getCurrentChainId(state);
     let swapsFeatureIsLive = false;
     try {
-      swapsFeatureIsLive = await fetchSwapsFeatureLiveness();
+      swapsFeatureIsLive = await fetchSwapsFeatureLiveness(chainId);
     } catch (error) {
       log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
     }
@@ -389,13 +392,14 @@ export const fetchQuotesAndSetQuoteState = (
       return;
     }
 
-    const state = getState();
     const fetchParams = getFetchParams(state);
     const selectedAccount = getSelectedAccount(state);
     const balanceError = getBalanceError(state);
+    const swapsDefaultToken = getSwapsDefaultToken(state);
     const fetchParamsFromToken =
-      fetchParams?.metaData?.sourceTokenInfo?.symbol === 'ETH'
-        ? getSwapsEthToken(state)
+      fetchParams?.metaData?.sourceTokenInfo?.symbol ===
+      swapsDefaultToken.symbol
+        ? swapsDefaultToken
         : fetchParams?.metaData?.sourceTokenInfo;
     const selectedFromToken = getFromToken(state) || fetchParamsFromToken || {};
     const selectedToToken =
@@ -420,7 +424,10 @@ export const fetchQuotesAndSetQuoteState = (
     const contractExchangeRates = getTokenExchangeRates(state);
 
     let destinationTokenAddedForSwap = false;
-    if (toTokenSymbol !== 'ETH' && !contractExchangeRates[toTokenAddress]) {
+    if (
+      toTokenSymbol !== swapsDefaultToken.symbol &&
+      !contractExchangeRates[toTokenAddress]
+    ) {
       destinationTokenAddedForSwap = true;
       await dispatch(
         addToken(
@@ -433,7 +440,7 @@ export const fetchQuotesAndSetQuoteState = (
       );
     }
     if (
-      fromTokenSymbol !== 'ETH' &&
+      fromTokenSymbol !== swapsDefaultToken.symbol &&
       !contractExchangeRates[fromTokenAddress] &&
       fromTokenBalance &&
       new BigNumber(fromTokenBalance, 16).gt(0)
@@ -494,6 +501,7 @@ export const fetchQuotesAndSetQuoteState = (
             sourceTokenInfo,
             destinationTokenInfo,
             accountBalance: selectedAccount.balance,
+            chainId,
           },
         ),
       );
@@ -563,9 +571,12 @@ export const fetchQuotesAndSetQuoteState = (
 
 export const signAndSendTransactions = (history, metaMetricsEvent) => {
   return async (dispatch, getState) => {
+    const state = getState();
+    const chainId = getCurrentChainId(state);
+
     let swapsFeatureIsLive = false;
     try {
-      swapsFeatureIsLive = await fetchSwapsFeatureLiveness();
+      swapsFeatureIsLive = await fetchSwapsFeatureLiveness(chainId);
     } catch (error) {
       log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
     }
@@ -576,7 +587,6 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       return;
     }
 
-    const state = getState();
     const customSwapsGas = getCustomSwapsGas(state);
     const fetchParams = getFetchParams(state);
     const { metaData, value: swapTokenValue, slippage } = fetchParams;
