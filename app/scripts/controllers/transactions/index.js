@@ -150,8 +150,8 @@ export default class TransactionController extends EventEmitter {
   Adds a tx to the txlist
   @emits ${txMeta.id}:unapproved
   */
-  addTx(txMeta) {
-    this.txStateManager.addTx(txMeta);
+  addTransaction(txMeta) {
+    this.txStateManager.addTransaction(txMeta);
     this.emit(`${txMeta.id}:unapproved`, txMeta);
   }
 
@@ -273,22 +273,28 @@ export default class TransactionController extends EventEmitter {
       ? addHexPrefix(txMeta.txParams.value)
       : '0x0';
 
-    this.addTx(txMeta);
+    this.addTransaction(txMeta);
     this.emit('newUnapprovedTx', txMeta);
 
     try {
       txMeta = await this.addTxGasDefaults(txMeta, getCodeResponse);
     } catch (error) {
       log.warn(error);
-      txMeta = this.txStateManager.getTx(txMeta.id);
+      txMeta = this.txStateManager.getTransaction(txMeta.id);
       txMeta.loadingDefaults = false;
-      this.txStateManager.updateTx(txMeta, 'Failed to calculate gas defaults.');
+      this.txStateManager.updateTransaction(
+        txMeta,
+        'Failed to calculate gas defaults.',
+      );
       throw error;
     }
 
     txMeta.loadingDefaults = false;
     // save txMeta
-    this.txStateManager.updateTx(txMeta, 'Added new unapproved transaction.');
+    this.txStateManager.updateTransaction(
+      txMeta,
+      'Added new unapproved transaction.',
+    );
 
     return txMeta;
   }
@@ -306,7 +312,7 @@ export default class TransactionController extends EventEmitter {
     } = await this._getDefaultGasLimit(txMeta, getCodeResponse);
 
     // eslint-disable-next-line no-param-reassign
-    txMeta = this.txStateManager.getTx(txMeta.id);
+    txMeta = this.txStateManager.getTransaction(txMeta.id);
     if (simulationFails) {
       txMeta.simulationFails = simulationFails;
     }
@@ -386,7 +392,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {txMeta}
    */
   async createCancelTransaction(originalTxId, customGasPrice, customGasLimit) {
-    const originalTxMeta = this.txStateManager.getTx(originalTxId);
+    const originalTxMeta = this.txStateManager.getTransaction(originalTxId);
     const { txParams } = originalTxMeta;
     const { gasPrice: lastGasPrice, from, nonce } = txParams;
 
@@ -408,7 +414,7 @@ export default class TransactionController extends EventEmitter {
       type: TRANSACTION_TYPES.CANCEL,
     });
 
-    this.addTx(newTxMeta);
+    this.addTransaction(newTxMeta);
     await this.approveTransaction(newTxMeta.id);
     return newTxMeta;
   }
@@ -424,7 +430,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {txMeta}
    */
   async createSpeedUpTransaction(originalTxId, customGasPrice, customGasLimit) {
-    const originalTxMeta = this.txStateManager.getTx(originalTxId);
+    const originalTxMeta = this.txStateManager.getTransaction(originalTxId);
     const { txParams } = originalTxMeta;
     const { gasPrice: lastGasPrice } = txParams;
 
@@ -447,7 +453,7 @@ export default class TransactionController extends EventEmitter {
       newTxMeta.txParams.gas = customGasLimit;
     }
 
-    this.addTx(newTxMeta);
+    this.addTransaction(newTxMeta);
     await this.approveTransaction(newTxMeta.id);
     return newTxMeta;
   }
@@ -457,7 +463,10 @@ export default class TransactionController extends EventEmitter {
   @param {Object} txMeta - the updated txMeta
   */
   async updateTransaction(txMeta) {
-    this.txStateManager.updateTx(txMeta, 'confTx: user updated transaction');
+    this.txStateManager.updateTransaction(
+      txMeta,
+      'confTx: user updated transaction',
+    );
   }
 
   /**
@@ -465,7 +474,10 @@ export default class TransactionController extends EventEmitter {
   @param {Object} txMeta
   */
   async updateAndApproveTransaction(txMeta) {
-    this.txStateManager.updateTx(txMeta, 'confTx: user approved transaction');
+    this.txStateManager.updateTransaction(
+      txMeta,
+      'confTx: user approved transaction',
+    );
     await this.approveTransaction(txMeta.id);
   }
 
@@ -492,7 +504,7 @@ export default class TransactionController extends EventEmitter {
       // approve
       this.txStateManager.setTxStatusApproved(txId);
       // get next nonce
-      const txMeta = this.txStateManager.getTx(txId);
+      const txMeta = this.txStateManager.getTransaction(txId);
       const fromAddress = txMeta.txParams.from;
       // wait for a nonce
       let { customNonceValue } = txMeta;
@@ -513,7 +525,10 @@ export default class TransactionController extends EventEmitter {
       if (customNonceValue) {
         txMeta.nonceDetails.customNonceValue = customNonceValue;
       }
-      this.txStateManager.updateTx(txMeta, 'transactions#approveTransaction');
+      this.txStateManager.updateTransaction(
+        txMeta,
+        'transactions#approveTransaction',
+      );
       // sign transaction
       const rawTx = await this.signTransaction(txId);
       await this.publishTransaction(txId, rawTx);
@@ -543,7 +558,7 @@ export default class TransactionController extends EventEmitter {
     @returns {string} rawTx
   */
   async signTransaction(txId) {
-    const txMeta = this.txStateManager.getTx(txId);
+    const txMeta = this.txStateManager.getTransaction(txId);
     // add network/chain id
     const chainId = this.getChainId();
     const txParams = { ...txMeta.txParams, chainId };
@@ -558,7 +573,7 @@ export default class TransactionController extends EventEmitter {
     txMeta.s = ethUtil.bufferToHex(ethTx.s);
     txMeta.v = ethUtil.bufferToHex(ethTx.v);
 
-    this.txStateManager.updateTx(
+    this.txStateManager.updateTransaction(
       txMeta,
       'transactions#signTransaction: add r, s, v values',
     );
@@ -576,13 +591,16 @@ export default class TransactionController extends EventEmitter {
     @returns {Promise<void>}
   */
   async publishTransaction(txId, rawTx) {
-    const txMeta = this.txStateManager.getTx(txId);
+    const txMeta = this.txStateManager.getTransaction(txId);
     txMeta.rawTx = rawTx;
     if (txMeta.type === TRANSACTION_TYPES.SWAP) {
       const preTxBalance = await this.query.getBalance(txMeta.txParams.from);
       txMeta.preTxBalance = preTxBalance.toString(16);
     }
-    this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction');
+    this.txStateManager.updateTransaction(
+      txMeta,
+      'transactions#publishTransaction',
+    );
     let txHash;
     try {
       txHash = await this.query.sendRawTransaction(rawTx);
@@ -608,7 +626,7 @@ export default class TransactionController extends EventEmitter {
   async confirmTransaction(txId, txReceipt) {
     // get the txReceipt before marking the transaction confirmed
     // to ensure the receipt is gotten before the ui revives the tx
-    const txMeta = this.txStateManager.getTx(txId);
+    const txMeta = this.txStateManager.getTransaction(txId);
 
     if (!txMeta) {
       return;
@@ -629,22 +647,22 @@ export default class TransactionController extends EventEmitter {
       this.txStateManager.setTxStatusConfirmed(txId);
       this._markNonceDuplicatesDropped(txId);
 
-      this.txStateManager.updateTx(
+      this.txStateManager.updateTransaction(
         txMeta,
         'transactions#confirmTransaction - add txReceipt',
       );
 
       if (txMeta.type === TRANSACTION_TYPES.SWAP) {
         const postTxBalance = await this.query.getBalance(txMeta.txParams.from);
-        const latestTxMeta = this.txStateManager.getTx(txId);
+        const latestTxMeta = this.txStateManager.getTransaction(txId);
 
         const approvalTxMeta = latestTxMeta.approvalTxId
-          ? this.txStateManager.getTx(latestTxMeta.approvalTxId)
+          ? this.txStateManager.getTransaction(latestTxMeta.approvalTxId)
           : null;
 
         latestTxMeta.postTxBalance = postTxBalance.toString(16);
 
-        this.txStateManager.updateTx(
+        this.txStateManager.updateTransaction(
           latestTxMeta,
           'transactions#confirmTransaction - add postTxBalance',
         );
@@ -672,9 +690,9 @@ export default class TransactionController extends EventEmitter {
   */
   setTxHash(txId, txHash) {
     // Add the tx hash to the persisted meta-tx object
-    const txMeta = this.txStateManager.getTx(txId);
+    const txMeta = this.txStateManager.getTransaction(txId);
     txMeta.hash = txHash;
-    this.txStateManager.updateTx(txMeta, 'transactions#setTxHash');
+    this.txStateManager.updateTransaction(txMeta, 'transactions#setTxHash');
   }
 
   //
@@ -704,8 +722,7 @@ export default class TransactionController extends EventEmitter {
       this.txStateManager.getPendingTransactions(account).length;
 
     /** see txStateManager */
-    this.getFilteredTxList = (opts) =>
-      this.txStateManager.getFilteredTxList(opts);
+    this.getTransactions = (opts) => this.txStateManager.getTransactions(opts);
   }
 
   // called once on startup
@@ -724,23 +741,25 @@ export default class TransactionController extends EventEmitter {
 
   _onBootCleanUp() {
     this.txStateManager
-      .getFilteredTxList({
-        status: TRANSACTION_STATUSES.UNAPPROVED,
-        loadingDefaults: true,
+      .getTransactions({
+        searchCriteria: {
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          loadingDefaults: true,
+        },
       })
       .forEach((tx) => {
         this.addTxGasDefaults(tx)
           .then((txMeta) => {
             txMeta.loadingDefaults = false;
-            this.txStateManager.updateTx(
+            this.txStateManager.updateTransaction(
               txMeta,
               'transactions: gas estimation for tx on boot',
             );
           })
           .catch((error) => {
-            const txMeta = this.txStateManager.getTx(tx.id);
+            const txMeta = this.txStateManager.getTransaction(tx.id);
             txMeta.loadingDefaults = false;
-            this.txStateManager.updateTx(
+            this.txStateManager.updateTransaction(
               txMeta,
               'failed to estimate gas during boot cleanup.',
             );
@@ -749,8 +768,10 @@ export default class TransactionController extends EventEmitter {
       });
 
     this.txStateManager
-      .getFilteredTxList({
-        status: TRANSACTION_STATUSES.APPROVED,
+      .getTransactions({
+        searchCriteria: {
+          status: TRANSACTION_STATUSES.APPROVED,
+        },
       })
       .forEach((txMeta) => {
         const txSignError = new Error(
@@ -771,7 +792,7 @@ export default class TransactionController extends EventEmitter {
     );
     this._setupBlockTrackerListener();
     this.pendingTxTracker.on('tx:warning', (txMeta) => {
-      this.txStateManager.updateTx(
+      this.txStateManager.updateTransaction(
         txMeta,
         'transactions/pending-tx-tracker#event: tx:warning',
       );
@@ -790,7 +811,7 @@ export default class TransactionController extends EventEmitter {
     this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
       if (!txMeta.firstRetryBlockNumber) {
         txMeta.firstRetryBlockNumber = latestBlockNumber;
-        this.txStateManager.updateTx(
+        this.txStateManager.updateTransaction(
           txMeta,
           'transactions/pending-tx-tracker#event: tx:block-update',
         );
@@ -801,7 +822,7 @@ export default class TransactionController extends EventEmitter {
         txMeta.retryCount = 0;
       }
       txMeta.retryCount += 1;
-      this.txStateManager.updateTx(
+      this.txStateManager.updateTransaction(
         txMeta,
         'transactions/pending-tx-tracker#event: tx:retry',
       );
@@ -878,9 +899,11 @@ export default class TransactionController extends EventEmitter {
   */
   _markNonceDuplicatesDropped(txId) {
     // get the confirmed transactions nonce and from address
-    const txMeta = this.txStateManager.getTx(txId);
+    const txMeta = this.txStateManager.getTransaction(txId);
     const { nonce, from } = txMeta.txParams;
-    const sameNonceTxs = this.txStateManager.getFilteredTxList({ nonce, from });
+    const sameNonceTxs = this.txStateManager.getTransactions({
+      searchCriteria: { nonce, from },
+    });
     if (!sameNonceTxs.length) {
       return;
     }
@@ -890,7 +913,7 @@ export default class TransactionController extends EventEmitter {
         return;
       }
       otherTxMeta.replacedBy = txMeta.hash;
-      this.txStateManager.updateTx(
+      this.txStateManager.updateTransaction(
         txMeta,
         'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce',
       );
@@ -936,9 +959,9 @@ export default class TransactionController extends EventEmitter {
   */
   _updateMemstore() {
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList();
-    const currentNetworkTxList = this.txStateManager.getTxList(
-      MAX_MEMSTORE_TX_LIST_SIZE,
-    );
+    const currentNetworkTxList = this.txStateManager.getTransactions({
+      limit: MAX_MEMSTORE_TX_LIST_SIZE,
+    });
     this.memStore.updateState({ unapprovedTxs, currentNetworkTxList });
   }
 

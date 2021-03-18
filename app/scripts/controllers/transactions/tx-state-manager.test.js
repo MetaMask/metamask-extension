@@ -8,8 +8,8 @@ import {
 import TxStateManager from './tx-state-manager';
 import { snapshotFromTxMeta } from './lib/tx-state-history-helpers';
 
-const noop = () => true;
-
+const VALID_ADDRESS = '0x0000000000000000000000000000000000000000';
+const VALID_ADDRESS_TWO = '0x0000000000000000000000000000000000000001';
 describe('TransactionStateManager', function () {
   let txStateManager;
   const currentNetworkId = KOVAN_NETWORK_ID;
@@ -19,7 +19,7 @@ describe('TransactionStateManager', function () {
   beforeEach(function () {
     txStateManager = new TxStateManager({
       initState: {
-        transactions: [],
+        transactions: {},
       },
       txHistoryLimit: 10,
       getNetwork: () => currentNetworkId,
@@ -33,11 +33,14 @@ describe('TransactionStateManager', function () {
         id: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
         metamaskNetworkId: currentNetworkId,
-        txParams: {},
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
       };
-      txStateManager.addTx(tx, noop);
+      txStateManager.addTransaction(tx);
       txStateManager.setTxStatusSigned(1);
-      const result = txStateManager.getTxList();
+      const result = txStateManager.getTransactions();
       assert.ok(Array.isArray(result));
       assert.equal(result.length, 1);
       assert.equal(result[0].status, TRANSACTION_STATUSES.SIGNED);
@@ -48,12 +51,15 @@ describe('TransactionStateManager', function () {
         id: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
         metamaskNetworkId: currentNetworkId,
-        txParams: {},
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
       };
       const clock = sinon.useFakeTimers();
       const onSigned = sinon.spy();
 
-      txStateManager.addTx(tx);
+      txStateManager.addTransaction(tx);
       txStateManager.on('1:signed', onSigned);
       txStateManager.setTxStatusSigned(1);
       clock.runAll();
@@ -69,11 +75,14 @@ describe('TransactionStateManager', function () {
         id: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
         metamaskNetworkId: currentNetworkId,
-        txParams: {},
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
       };
-      txStateManager.addTx(tx);
+      txStateManager.addTransaction(tx);
       txStateManager.setTxStatusRejected(1);
-      const result = txStateManager.getTxList();
+      const result = txStateManager.getTransactions();
       assert.ok(Array.isArray(result));
       assert.equal(result.length, 0);
     });
@@ -83,12 +92,15 @@ describe('TransactionStateManager', function () {
         id: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
         metamaskNetworkId: currentNetworkId,
-        txParams: {},
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
       };
       const clock = sinon.useFakeTimers();
       const onSigned = sinon.spy();
 
-      txStateManager.addTx(tx);
+      txStateManager.addTransaction(tx);
       txStateManager.on('1:rejected', onSigned);
       txStateManager.setTxStatusRejected(1);
       clock.runAll();
@@ -98,17 +110,9 @@ describe('TransactionStateManager', function () {
     });
   });
 
-  describe('#getFullTxList', function () {
+  describe('#getTransactions', function () {
     it('when new should return empty array', function () {
-      const result = txStateManager.getTxList();
-      assert.ok(Array.isArray(result));
-      assert.equal(result.length, 0);
-    });
-  });
-
-  describe('#getTxList', function () {
-    it('when new should return empty array', function () {
-      const result = txStateManager.getTxList();
+      const result = txStateManager.getTransactions();
       assert.ok(Array.isArray(result));
       assert.equal(result.length, 0);
     });
@@ -140,13 +144,16 @@ describe('TransactionStateManager', function () {
 
       const txm = new TxStateManager({
         initState: {
-          transactions: [submittedTx, confirmedTx],
+          transactions: {
+            [submittedTx.id]: submittedTx,
+            [confirmedTx.id]: confirmedTx,
+          },
         },
         getNetwork: () => currentNetworkId,
         getCurrentChainId: () => currentChainId,
       });
 
-      assert.deepEqual(txm.getTxList(), [submittedTx, confirmedTx]);
+      assert.deepEqual(txm.getTransactions(), [submittedTx, confirmedTx]);
     });
 
     it('should return a list of transactions, limited by N unique nonces when there are NO duplicates', function () {
@@ -200,48 +207,49 @@ describe('TransactionStateManager', function () {
 
       const txm = new TxStateManager({
         initState: {
-          transactions: [
-            submittedTx0,
-            unapprovedTx1,
-            approvedTx2,
-            confirmedTx3,
-          ],
+          transactions: {
+            [submittedTx0.id]: submittedTx0,
+            [unapprovedTx1.id]: unapprovedTx1,
+            [approvedTx2.id]: approvedTx2,
+            [confirmedTx3.id]: confirmedTx3,
+          },
         },
         getNetwork: () => currentNetworkId,
         getCurrentChainId: () => currentChainId,
       });
 
-      assert.deepEqual(txm.getTxList(2), [approvedTx2, confirmedTx3]);
+      assert.deepEqual(txm.getTransactions({ limit: 2 }), [
+        approvedTx2,
+        confirmedTx3,
+      ]);
     });
 
     it('should return a list of transactions, limited by N unique nonces when there ARE duplicates', function () {
-      const submittedTx0s = [
-        {
-          id: 0,
-          metamaskNetworkId: currentNetworkId,
-          time: 0,
-          txParams: {
-            from: '0xAddress',
-            to: '0xRecipient',
-            nonce: '0x0',
-          },
-          status: TRANSACTION_STATUSES.SUBMITTED,
+      const submittedTx0 = {
+        id: 0,
+        metamaskNetworkId: currentNetworkId,
+        time: 0,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x0',
         },
-        {
-          id: 0,
-          metamaskNetworkId: currentNetworkId,
-          time: 0,
-          txParams: {
-            from: '0xAddress',
-            to: '0xRecipient',
-            nonce: '0x0',
-          },
-          status: TRANSACTION_STATUSES.SUBMITTED,
+        status: TRANSACTION_STATUSES.SUBMITTED,
+      };
+      const submittedTx0Dupe = {
+        id: 1,
+        metamaskNetworkId: currentNetworkId,
+        time: 0,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x0',
         },
-      ];
+        status: TRANSACTION_STATUSES.SUBMITTED,
+      };
 
       const unapprovedTx1 = {
-        id: 1,
+        id: 2,
         metamaskNetworkId: currentNetworkId,
         chainId: currentChainId,
         time: 1,
@@ -253,85 +261,215 @@ describe('TransactionStateManager', function () {
         status: TRANSACTION_STATUSES.UNAPPROVED,
       };
 
-      const approvedTx2s = [
-        {
-          id: 2,
-          metamaskNetworkId: currentNetworkId,
-          time: 2,
-          txParams: {
-            from: '0xAddress',
-            to: '0xRecipient',
-            nonce: '0x2',
-          },
-          status: TRANSACTION_STATUSES.APPROVED,
+      const approvedTx2 = {
+        id: 3,
+        metamaskNetworkId: currentNetworkId,
+        time: 2,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x2',
         },
-        {
-          id: 2,
-          metamaskNetworkId: currentNetworkId,
-          chainId: currentChainId,
-          time: 2,
-          txParams: {
-            from: '0xAddress',
-            to: '0xRecipient',
-            nonce: '0x2',
-          },
-          status: TRANSACTION_STATUSES.APPROVED,
+        status: TRANSACTION_STATUSES.APPROVED,
+      };
+      const approvedTx2Dupe = {
+        id: 4,
+        metamaskNetworkId: currentNetworkId,
+        chainId: currentChainId,
+        time: 2,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x2',
         },
-      ];
+        status: TRANSACTION_STATUSES.APPROVED,
+      };
 
-      const failedTx3s = [
-        {
-          id: 3,
-          metamaskNetworkId: currentNetworkId,
-          time: 3,
-          txParams: {
-            from: '0xAddress',
-            to: '0xRecipient',
-            nonce: '0x3',
-          },
-          status: TRANSACTION_STATUSES.FAILED,
+      const failedTx3 = {
+        id: 5,
+        metamaskNetworkId: currentNetworkId,
+        time: 3,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x3',
         },
-        {
-          id: 3,
-          metamaskNetworkId: currentNetworkId,
-          chainId: currentChainId,
-          time: 3,
-          txParams: {
-            from: '0xAddress',
-            to: '0xRecipient',
-            nonce: '0x3',
-          },
-          status: TRANSACTION_STATUSES.FAILED,
+        status: TRANSACTION_STATUSES.FAILED,
+      };
+      const failedTx3Dupe = {
+        id: 6,
+        metamaskNetworkId: currentNetworkId,
+        chainId: currentChainId,
+        time: 3,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x3',
         },
-      ];
+        status: TRANSACTION_STATUSES.FAILED,
+      };
 
       const txm = new TxStateManager({
         initState: {
-          transactions: [
-            ...submittedTx0s,
-            unapprovedTx1,
-            ...approvedTx2s,
-            ...failedTx3s,
-          ],
+          transactions: {
+            [submittedTx0.id]: submittedTx0,
+            [submittedTx0Dupe.id]: submittedTx0Dupe,
+
+            [unapprovedTx1.id]: unapprovedTx1,
+            [approvedTx2.id]: approvedTx2,
+            [approvedTx2Dupe.id]: approvedTx2Dupe,
+
+            [failedTx3.id]: failedTx3,
+            [failedTx3Dupe.id]: failedTx3Dupe,
+          },
         },
         getNetwork: () => currentNetworkId,
         getCurrentChainId: () => currentChainId,
       });
 
-      assert.deepEqual(txm.getTxList(2), [...approvedTx2s, ...failedTx3s]);
+      assert.deepEqual(txm.getTransactions({ limit: 2 }), [
+        approvedTx2,
+        approvedTx2Dupe,
+        failedTx3,
+        failedTx3Dupe,
+      ]);
+    });
+
+    it('returns a tx with the requested data', function () {
+      const txMetas = [
+        {
+          id: 0,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
+          metamaskNetworkId: currentNetworkId,
+        },
+        {
+          id: 1,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
+          metamaskNetworkId: currentNetworkId,
+        },
+        {
+          id: 2,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
+          metamaskNetworkId: currentNetworkId,
+        },
+        {
+          id: 3,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          txParams: { from: VALID_ADDRESS_TWO, to: VALID_ADDRESS },
+          metamaskNetworkId: currentNetworkId,
+        },
+        {
+          id: 4,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          txParams: { from: VALID_ADDRESS_TWO, to: VALID_ADDRESS },
+          metamaskNetworkId: currentNetworkId,
+        },
+        {
+          id: 5,
+          status: TRANSACTION_STATUSES.CONFIRMED,
+          txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
+          metamaskNetworkId: currentNetworkId,
+        },
+        {
+          id: 6,
+          status: TRANSACTION_STATUSES.CONFIRMED,
+          txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
+          metamaskNetworkId: currentNetworkId,
+        },
+        {
+          id: 7,
+          status: TRANSACTION_STATUSES.CONFIRMED,
+          txParams: { from: VALID_ADDRESS_TWO, to: VALID_ADDRESS },
+          metamaskNetworkId: currentNetworkId,
+        },
+        {
+          id: 8,
+          status: TRANSACTION_STATUSES.CONFIRMED,
+          txParams: { from: VALID_ADDRESS_TWO, to: VALID_ADDRESS },
+          metamaskNetworkId: currentNetworkId,
+        },
+        {
+          id: 9,
+          status: TRANSACTION_STATUSES.CONFIRMED,
+          txParams: { from: VALID_ADDRESS_TWO, to: VALID_ADDRESS },
+          metamaskNetworkId: currentNetworkId,
+        },
+      ];
+      txMetas.forEach((txMeta) => txStateManager.addTransaction(txMeta));
+      let searchCriteria;
+
+      searchCriteria = {
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        from: VALID_ADDRESS,
+      };
+      assert.equal(
+        txStateManager.getTransactions({ searchCriteria }).length,
+        3,
+        `getTransactions - ${JSON.stringify(searchCriteria)}`,
+      );
+      searchCriteria = {
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        to: VALID_ADDRESS,
+      };
+      assert.equal(
+        txStateManager.getTransactions({ searchCriteria }).length,
+        2,
+        `getTransactions - ${JSON.stringify(searchCriteria)}`,
+      );
+      searchCriteria = {
+        status: TRANSACTION_STATUSES.CONFIRMED,
+        from: VALID_ADDRESS_TWO,
+      };
+      assert.equal(
+        txStateManager.getTransactions({ searchCriteria }).length,
+        3,
+        `getTransactions - ${JSON.stringify(searchCriteria)}`,
+      );
+      searchCriteria = { status: TRANSACTION_STATUSES.CONFIRMED };
+      assert.equal(
+        txStateManager.getTransactions({ searchCriteria }).length,
+        5,
+        `getTransactions - ${JSON.stringify(searchCriteria)}`,
+      );
+      searchCriteria = { from: VALID_ADDRESS };
+      assert.equal(
+        txStateManager.getTransactions({ searchCriteria }).length,
+        5,
+        `getTransactions - ${JSON.stringify(searchCriteria)}`,
+      );
+      searchCriteria = { to: VALID_ADDRESS };
+      assert.equal(
+        txStateManager.getTransactions({ searchCriteria }).length,
+        5,
+        `getTransactions - ${JSON.stringify(searchCriteria)}`,
+      );
+      searchCriteria = {
+        status: (status) => status !== TRANSACTION_STATUSES.CONFIRMED,
+      };
+      assert.equal(
+        txStateManager.getTransactions({ searchCriteria }).length,
+        5,
+        `getTransactions - ${JSON.stringify(searchCriteria)}`,
+      );
     });
   });
 
-  describe('#addTx', function () {
-    it('adds a tx returned in getTxList', function () {
+  describe('#addTransaction', function () {
+    it('adds a tx returned in getTransactions', function () {
       const tx = {
         id: 1,
         status: TRANSACTION_STATUSES.CONFIRMED,
         metamaskNetworkId: currentNetworkId,
-        txParams: {},
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
       };
-      txStateManager.addTx(tx, noop);
-      const result = txStateManager.getTxList();
+      txStateManager.addTransaction(tx);
+      const result = txStateManager.getTransactions();
       assert.ok(Array.isArray(result));
       assert.equal(result.length, 1);
       assert.equal(result[0].id, 1);
@@ -361,10 +499,10 @@ describe('TransactionStateManager', function () {
             },
           };
           assert.throws(
-            txStateManager.addTx.bind(txStateManager, tx),
-            'addTx should throw error',
+            txStateManager.addTransaction.bind(txStateManager, tx),
+            'addTransaction should throw error',
           );
-          const result = txStateManager.getTxList();
+          const result = txStateManager.getTransactions();
           assert.ok(Array.isArray(result), 'txList should be an array');
           assert.equal(result.length, 0, 'txList should be empty');
         }
@@ -376,18 +514,26 @@ describe('TransactionStateManager', function () {
         id: 1,
         status: TRANSACTION_STATUSES.CONFIRMED,
         metamaskNetworkId: currentNetworkId,
-        txParams: {},
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
       };
       const tx2 = {
         id: 2,
         status: TRANSACTION_STATUSES.CONFIRMED,
         metamaskNetworkId: otherNetworkId,
-        txParams: {},
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
       };
-      txStateManager.addTx(tx, noop);
-      txStateManager.addTx(tx2, noop);
-      const result = txStateManager.getFullTxList();
-      const result2 = txStateManager.getTxList();
+      txStateManager.addTransaction(tx);
+      txStateManager.addTransaction(tx2);
+      const result = txStateManager.getTransactions({
+        filterToCurrentNetwork: false,
+      });
+      const result2 = txStateManager.getTransactions();
       assert.equal(result.length, 2, 'txs were deleted');
       assert.equal(result2.length, 1, 'incorrect number of txs on network.');
     });
@@ -400,11 +546,14 @@ describe('TransactionStateManager', function () {
           time: new Date(),
           status: TRANSACTION_STATUSES.CONFIRMED,
           metamaskNetworkId: currentNetworkId,
-          txParams: {},
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS,
+          },
         };
-        txStateManager.addTx(tx, noop);
+        txStateManager.addTransaction(tx);
       }
-      const result = txStateManager.getTxList();
+      const result = txStateManager.getTransactions();
       assert.equal(result.length, limit, `limit of ${limit} txs enforced`);
       assert.equal(result[0].id, 1, 'early txs truncated');
     });
@@ -417,11 +566,14 @@ describe('TransactionStateManager', function () {
           time: new Date(),
           status: TRANSACTION_STATUSES.REJECTED,
           metamaskNetworkId: currentNetworkId,
-          txParams: {},
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS,
+          },
         };
-        txStateManager.addTx(tx, noop);
+        txStateManager.addTransaction(tx);
       }
-      const result = txStateManager.getTxList();
+      const result = txStateManager.getTransactions();
       assert.equal(result.length, limit, `limit of ${limit} txs enforced`);
       assert.equal(result[0].id, 1, 'early txs truncated');
     });
@@ -432,9 +584,12 @@ describe('TransactionStateManager', function () {
         time: new Date(),
         status: TRANSACTION_STATUSES.UNAPPROVED,
         metamaskNetworkId: currentNetworkId,
-        txParams: {},
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
       };
-      txStateManager.addTx(unconfirmedTx, noop);
+      txStateManager.addTransaction(unconfirmedTx);
       const limit = txStateManager.txHistoryLimit;
       for (let i = 1; i < limit + 1; i++) {
         const tx = {
@@ -442,11 +597,14 @@ describe('TransactionStateManager', function () {
           time: new Date(),
           status: TRANSACTION_STATUSES.CONFIRMED,
           metamaskNetworkId: currentNetworkId,
-          txParams: {},
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS,
+          },
         };
-        txStateManager.addTx(tx, noop);
+        txStateManager.addTransaction(tx);
       }
-      const result = txStateManager.getTxList();
+      const result = txStateManager.getTransactions();
       assert.equal(result.length, limit, `limit of ${limit} txs enforced`);
       assert.equal(result[0].id, 0, 'first tx should still be there');
       assert.equal(
@@ -458,30 +616,30 @@ describe('TransactionStateManager', function () {
     });
   });
 
-  describe('#updateTx', function () {
+  describe('#updateTransaction', function () {
     it('replaces the tx with the same id', function () {
-      txStateManager.addTx(
-        {
-          id: '1',
-          status: TRANSACTION_STATUSES.UNAPPROVED,
-          metamaskNetworkId: currentNetworkId,
-          txParams: {},
+      txStateManager.addTransaction({
+        id: '1',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
         },
-        noop,
-      );
-      txStateManager.addTx(
-        {
-          id: '2',
-          status: TRANSACTION_STATUSES.CONFIRMED,
-          metamaskNetworkId: currentNetworkId,
-          txParams: {},
+      });
+      txStateManager.addTransaction({
+        id: '2',
+        status: TRANSACTION_STATUSES.CONFIRMED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
         },
-        noop,
-      );
-      const txMeta = txStateManager.getTx('1');
+      });
+      const txMeta = txStateManager.getTransaction('1');
       txMeta.hash = 'foo';
-      txStateManager.updateTx(txMeta);
-      const result = txStateManager.getTx('1');
+      txStateManager.updateTransaction(txMeta);
+      const result = txStateManager.getTransaction('1');
       assert.equal(result.hash, 'foo');
     });
 
@@ -497,7 +655,7 @@ describe('TransactionStateManager', function () {
       };
       const invalidValues = [1, true, {}, Symbol('1')];
 
-      txStateManager.addTx({
+      txStateManager.addTransaction({
         id: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
         metamaskNetworkId: currentNetworkId,
@@ -506,7 +664,7 @@ describe('TransactionStateManager', function () {
 
       Object.keys(validTxParams).forEach((key) => {
         for (const value of invalidValues) {
-          const originalTx = txStateManager.getTx(1);
+          const originalTx = txStateManager.getTransaction(1);
           const newTx = {
             ...originalTx,
             txParams: {
@@ -515,10 +673,10 @@ describe('TransactionStateManager', function () {
             },
           };
           assert.throws(
-            txStateManager.updateTx.bind(txStateManager, newTx),
-            'updateTx should throw an error',
+            txStateManager.updateTransaction.bind(txStateManager, newTx),
+            'updateTransaction should throw an error',
           );
-          const result = txStateManager.getTx(1);
+          const result = txStateManager.getTransaction(1);
           assert.deepEqual(result, originalTx, 'tx should not be updated');
         }
       });
@@ -533,12 +691,14 @@ describe('TransactionStateManager', function () {
         status: TRANSACTION_STATUSES.UNAPPROVED,
         metamaskNetworkId: currentNetworkId,
         txParams: {
+          from: VALID_ADDRESS_TWO,
+          to: VALID_ADDRESS,
           gasPrice: originalGasPrice,
         },
       };
 
-      txStateManager.addTx(txMeta);
-      const updatedTx = txStateManager.getTx('1');
+      txStateManager.addTransaction(txMeta);
+      const updatedTx = txStateManager.getTransaction('1');
       // verify tx was initialized correctly
       assert.equal(updatedTx.history.length, 1, 'one history item (initial)');
       assert.equal(
@@ -551,13 +711,13 @@ describe('TransactionStateManager', function () {
         snapshotFromTxMeta(updatedTx),
         'first history item is initial state',
       );
-      // modify value and updateTx
+      // modify value and updateTransaction
       updatedTx.txParams.gasPrice = desiredGasPrice;
       const before = new Date().getTime();
-      txStateManager.updateTx(updatedTx);
+      txStateManager.updateTransaction(updatedTx);
       const after = new Date().getTime();
       // check updated value
-      const result = txStateManager.getTx('1');
+      const result = txStateManager.getTransaction('1');
       assert.equal(
         result.txParams.gasPrice,
         desiredGasPrice,
@@ -607,38 +767,40 @@ describe('TransactionStateManager', function () {
         status: TRANSACTION_STATUSES.UNAPPROVED,
         metamaskNetworkId: currentNetworkId,
         txParams: {
+          from: VALID_ADDRESS_TWO,
+          to: VALID_ADDRESS,
           gasPrice: '0x01',
         },
       };
 
-      txStateManager.addTx(txMeta);
-      txStateManager.updateTx(txMeta);
+      txStateManager.addTransaction(txMeta);
+      txStateManager.updateTransaction(txMeta);
 
-      const { history } = txStateManager.getTx('1');
+      const { history } = txStateManager.getTransaction('1');
       assert.equal(history.length, 1, 'two history items (initial + diff)');
     });
   });
 
   describe('#getUnapprovedTxList', function () {
     it('returns unapproved txs in a hash', function () {
-      txStateManager.addTx(
-        {
-          id: '1',
-          status: TRANSACTION_STATUSES.UNAPPROVED,
-          metamaskNetworkId: currentNetworkId,
-          txParams: {},
+      txStateManager.addTransaction({
+        id: '1',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
         },
-        noop,
-      );
-      txStateManager.addTx(
-        {
-          id: '2',
-          status: TRANSACTION_STATUSES.CONFIRMED,
-          metamaskNetworkId: currentNetworkId,
-          txParams: {},
+      });
+      txStateManager.addTransaction({
+        id: '2',
+        status: TRANSACTION_STATUSES.CONFIRMED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
         },
-        noop,
-      );
+      });
       const result = txStateManager.getUnapprovedTxList();
       assert.equal(typeof result, 'object');
       assert.equal(result['1'].status, TRANSACTION_STATUSES.UNAPPROVED);
@@ -646,154 +808,40 @@ describe('TransactionStateManager', function () {
     });
   });
 
-  describe('#getTx', function () {
+  describe('#getTransaction', function () {
     it('returns a tx with the requested id', function () {
-      txStateManager.addTx(
-        {
-          id: '1',
-          status: TRANSACTION_STATUSES.UNAPPROVED,
-          metamaskNetworkId: currentNetworkId,
-          txParams: {},
+      txStateManager.addTransaction({
+        id: '1',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
         },
-        noop,
-      );
-      txStateManager.addTx(
-        {
-          id: '2',
-          status: TRANSACTION_STATUSES.CONFIRMED,
-          metamaskNetworkId: currentNetworkId,
-          txParams: {},
+      });
+      txStateManager.addTransaction({
+        id: '2',
+        status: TRANSACTION_STATUSES.CONFIRMED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
         },
-        noop,
-      );
+      });
       assert.equal(
-        txStateManager.getTx('1').status,
+        txStateManager.getTransaction('1').status,
         TRANSACTION_STATUSES.UNAPPROVED,
       );
       assert.equal(
-        txStateManager.getTx('2').status,
+        txStateManager.getTransaction('2').status,
         TRANSACTION_STATUSES.CONFIRMED,
       );
     });
   });
 
-  describe('#getFilteredTxList', function () {
-    it('returns a tx with the requested data', function () {
-      const txMetas = [
-        {
-          id: 0,
-          status: TRANSACTION_STATUSES.UNAPPROVED,
-          txParams: { from: '0xaa', to: '0xbb' },
-          metamaskNetworkId: currentNetworkId,
-        },
-        {
-          id: 1,
-          status: TRANSACTION_STATUSES.UNAPPROVED,
-          txParams: { from: '0xaa', to: '0xbb' },
-          metamaskNetworkId: currentNetworkId,
-        },
-        {
-          id: 2,
-          status: TRANSACTION_STATUSES.UNAPPROVED,
-          txParams: { from: '0xaa', to: '0xbb' },
-          metamaskNetworkId: currentNetworkId,
-        },
-        {
-          id: 3,
-          status: TRANSACTION_STATUSES.UNAPPROVED,
-          txParams: { from: '0xbb', to: '0xaa' },
-          metamaskNetworkId: currentNetworkId,
-        },
-        {
-          id: 4,
-          status: TRANSACTION_STATUSES.UNAPPROVED,
-          txParams: { from: '0xbb', to: '0xaa' },
-          metamaskNetworkId: currentNetworkId,
-        },
-        {
-          id: 5,
-          status: TRANSACTION_STATUSES.CONFIRMED,
-          txParams: { from: '0xaa', to: '0xbb' },
-          metamaskNetworkId: currentNetworkId,
-        },
-        {
-          id: 6,
-          status: TRANSACTION_STATUSES.CONFIRMED,
-          txParams: { from: '0xaa', to: '0xbb' },
-          metamaskNetworkId: currentNetworkId,
-        },
-        {
-          id: 7,
-          status: TRANSACTION_STATUSES.CONFIRMED,
-          txParams: { from: '0xbb', to: '0xaa' },
-          metamaskNetworkId: currentNetworkId,
-        },
-        {
-          id: 8,
-          status: TRANSACTION_STATUSES.CONFIRMED,
-          txParams: { from: '0xbb', to: '0xaa' },
-          metamaskNetworkId: currentNetworkId,
-        },
-        {
-          id: 9,
-          status: TRANSACTION_STATUSES.CONFIRMED,
-          txParams: { from: '0xbb', to: '0xaa' },
-          metamaskNetworkId: currentNetworkId,
-        },
-      ];
-      txMetas.forEach((txMeta) => txStateManager.addTx(txMeta, noop));
-      let filterParams;
-
-      filterParams = { status: TRANSACTION_STATUSES.UNAPPROVED, from: '0xaa' };
-      assert.equal(
-        txStateManager.getFilteredTxList(filterParams).length,
-        3,
-        `getFilteredTxList - ${JSON.stringify(filterParams)}`,
-      );
-      filterParams = { status: TRANSACTION_STATUSES.UNAPPROVED, to: '0xaa' };
-      assert.equal(
-        txStateManager.getFilteredTxList(filterParams).length,
-        2,
-        `getFilteredTxList - ${JSON.stringify(filterParams)}`,
-      );
-      filterParams = { status: TRANSACTION_STATUSES.CONFIRMED, from: '0xbb' };
-      assert.equal(
-        txStateManager.getFilteredTxList(filterParams).length,
-        3,
-        `getFilteredTxList - ${JSON.stringify(filterParams)}`,
-      );
-      filterParams = { status: TRANSACTION_STATUSES.CONFIRMED };
-      assert.equal(
-        txStateManager.getFilteredTxList(filterParams).length,
-        5,
-        `getFilteredTxList - ${JSON.stringify(filterParams)}`,
-      );
-      filterParams = { from: '0xaa' };
-      assert.equal(
-        txStateManager.getFilteredTxList(filterParams).length,
-        5,
-        `getFilteredTxList - ${JSON.stringify(filterParams)}`,
-      );
-      filterParams = { to: '0xaa' };
-      assert.equal(
-        txStateManager.getFilteredTxList(filterParams).length,
-        5,
-        `getFilteredTxList - ${JSON.stringify(filterParams)}`,
-      );
-      filterParams = {
-        status: (status) => status !== TRANSACTION_STATUSES.CONFIRMED,
-      };
-      assert.equal(
-        txStateManager.getFilteredTxList(filterParams).length,
-        5,
-        `getFilteredTxList - ${JSON.stringify(filterParams)}`,
-      );
-    });
-  });
-
   describe('#wipeTransactions', function () {
-    const specificAddress = '0xaa';
-    const otherAddress = '0xbb';
+    const specificAddress = VALID_ADDRESS;
+    const otherAddress = VALID_ADDRESS_TWO;
 
     it('should remove only the transactions from a specific address', function () {
       const txMetas = [
@@ -816,15 +864,15 @@ describe('TransactionStateManager', function () {
           metamaskNetworkId: currentNetworkId,
         },
       ];
-      txMetas.forEach((txMeta) => txStateManager.addTx(txMeta, noop));
+      txMetas.forEach((txMeta) => txStateManager.addTransaction(txMeta));
 
       txStateManager.wipeTransactions(specificAddress);
 
       const transactionsFromCurrentAddress = txStateManager
-        .getTxList()
+        .getTransactions()
         .filter((txMeta) => txMeta.txParams.from === specificAddress);
       const transactionsFromOtherAddresses = txStateManager
-        .getTxList()
+        .getTransactions()
         .filter((txMeta) => txMeta.txParams.from !== specificAddress);
 
       assert.equal(transactionsFromCurrentAddress.length, 0);
@@ -853,15 +901,15 @@ describe('TransactionStateManager', function () {
         },
       ];
 
-      txMetas.forEach((txMeta) => txStateManager.addTx(txMeta, noop));
+      txMetas.forEach((txMeta) => txStateManager.addTransaction(txMeta));
 
       txStateManager.wipeTransactions(specificAddress);
 
       const txsFromCurrentNetworkAndAddress = txStateManager
-        .getTxList()
+        .getTransactions()
         .filter((txMeta) => txMeta.txParams.from === specificAddress);
       const txFromOtherNetworks = txStateManager
-        .getFullTxList()
+        .getTransactions({ filterToCurrentNetwork: false })
         .filter((txMeta) => txMeta.metamaskNetworkId === otherNetworkId);
 
       assert.equal(txsFromCurrentNetworkAndAddress.length, 0);
@@ -869,21 +917,26 @@ describe('TransactionStateManager', function () {
     });
   });
 
-  describe('#_removeTx', function () {
+  describe('#_deleteTransaction', function () {
     it('should remove the transaction from the storage', function () {
-      txStateManager._saveTxList([{ id: 1 }]);
-      txStateManager._removeTx(1);
+      txStateManager.addTransaction({ id: 1 });
+      txStateManager._deleteTransaction(1);
       assert.ok(
-        !txStateManager.getFullTxList().length,
+        !txStateManager.getTransactions({ filterToCurrentNetwork: false })
+          .length,
         'txList should be empty',
       );
     });
 
     it('should only remove the transaction with ID 1 from the storage', function () {
-      txStateManager._saveTxList([{ id: 1 }, { id: 2 }]);
-      txStateManager._removeTx(1);
+      txStateManager.store.updateState({
+        transactions: { 1: { id: 1 }, 2: { id: 2 } },
+      });
+      txStateManager._deleteTransaction(1);
       assert.equal(
-        txStateManager.getFullTxList()[0].id,
+        txStateManager.getTransactions({
+          filterToCurrentNetwork: false,
+        })[0].id,
         2,
         'txList should have a id of 2',
       );
@@ -896,35 +949,35 @@ describe('TransactionStateManager', function () {
         {
           id: 0,
           status: TRANSACTION_STATUSES.UNAPPROVED,
-          txParams: { from: '0xaa', to: '0xbb' },
+          txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
           metamaskNetworkId: currentNetworkId,
         },
         {
           id: 1,
           status: TRANSACTION_STATUSES.UNAPPROVED,
-          txParams: { from: '0xaa', to: '0xbb' },
+          txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
           metamaskNetworkId: currentNetworkId,
         },
         {
           id: 2,
           status: TRANSACTION_STATUSES.CONFIRMED,
-          txParams: { from: '0xaa', to: '0xbb' },
+          txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
           metamaskNetworkId: otherNetworkId,
         },
         {
           id: 3,
           status: TRANSACTION_STATUSES.CONFIRMED,
-          txParams: { from: '0xaa', to: '0xbb' },
+          txParams: { from: VALID_ADDRESS, to: VALID_ADDRESS_TWO },
           metamaskNetworkId: otherNetworkId,
         },
       ];
 
-      txMetas.forEach((txMeta) => txStateManager.addTx(txMeta, noop));
+      txMetas.forEach((txMeta) => txStateManager.addTransaction(txMeta));
 
       txStateManager.clearUnapprovedTxs();
 
       const unapprovedTxList = txStateManager
-        .getFullTxList()
+        .getTransactions({ filterToCurrentNetwork: false })
         .filter((tx) => tx.status === TRANSACTION_STATUSES.UNAPPROVED);
 
       assert.equal(unapprovedTxList.length, 0);
