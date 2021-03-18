@@ -6,7 +6,7 @@ import { isEqual } from 'lodash';
 import classnames from 'classnames';
 import { I18nContext } from '../../../contexts/i18n';
 import SelectQuotePopover from '../select-quote-popover';
-import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
+import { useEthFiatAmount: useChainCurrencyFiatAmount } from '../../../hooks/useChainCurrencyFiatAmount';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { usePrevious } from '../../../hooks/usePrevious';
@@ -114,7 +114,7 @@ export default function ViewQuote() {
   const customMaxGas = useSelector(getCustomSwapsGas);
   const tokenConversionRates = useSelector(getTokenExchangeRates);
   const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates);
-  const { balance: ethBalance } = useSelector(getSelectedAccount);
+  const { balance: chainCurrencyBalance } = useSelector(getSelectedAccount);
   const conversionRate = useSelector(conversionRateSelector);
   const currentCurrency = useSelector(getCurrentCurrency);
   const swapsTokens = useSelector(getTokens);
@@ -213,7 +213,7 @@ export default function ViewQuote() {
     sourceTokenIconUrl,
   } = renderableDataForUsedQuote;
 
-  const { feeInFiat, feeInEth } = getRenderableNetworkFeesForQuote({
+  const { feeInFiat, feeInChainCurrency } = getRenderableNetworkFeesForQuote({
     tradeGas: usedGasLimit,
     approveGas,
     gasPrice,
@@ -227,7 +227,7 @@ export default function ViewQuote() {
 
   const {
     feeInFiat: maxFeeInFiat,
-    feeInEth: maxFeeInEth,
+    feeInChainCurrency: maxFeeInChainCurrency,
     nonGasFee,
   } = getRenderableNetworkFeesForQuote({
     tradeGas: maxGasLimit,
@@ -242,7 +242,7 @@ export default function ViewQuote() {
   });
 
   const tokenCost = new BigNumber(usedQuote.sourceAmount);
-  const ethCost = new BigNumber(usedQuote.trade.value || 0, 10).plus(
+  const chainCurrencyCost = new BigNumber(usedQuote.trade.value || 0, 10).plus(
     new BigNumber(gasTotalInWeiHex, 16),
   );
 
@@ -250,7 +250,7 @@ export default function ViewQuote() {
     (tokensWithBalances?.length || balanceError) &&
     tokenCost.gt(new BigNumber(selectedFromToken.balance || '0x0'));
 
-  const insufficientEth = ethCost.gt(new BigNumber(ethBalance || '0x0'));
+  const insufficientChainCurrency = chainCurrencyCost.gt(new BigNumber(chainCurrencyBalance || '0x0'));
 
   const tokenBalanceNeeded = insufficientTokens
     ? toPrecisionWithoutTrailingZeros(
@@ -261,10 +261,10 @@ export default function ViewQuote() {
       )
     : null;
 
-  const ethBalanceNeeded = insufficientEth
+  const chainCurrencyBalanceNeeded = insufficientChainCurrency
     ? toPrecisionWithoutTrailingZeros(
-        ethCost
-          .minus(ethBalance, 16)
+        chainCurrencyCost
+          .minus(chainCurrencyBalance, 16)
           .div('1000000000000000000', 10)
           .toString(10),
         6,
@@ -274,12 +274,12 @@ export default function ViewQuote() {
   const destinationToken = useSelector(getDestinationTokenInfo);
 
   useEffect(() => {
-    if (insufficientTokens || insufficientEth) {
+    if (insufficientTokens || insufficientChainCurrency) {
       dispatch(setBalanceError(true));
-    } else if (balanceError && !insufficientTokens && !insufficientEth) {
+    } else if (balanceError && !insufficientTokens && !insufficientChainCurrency) {
       dispatch(setBalanceError(false));
     }
-  }, [insufficientTokens, insufficientEth, balanceError, dispatch]);
+  }, [insufficientTokens, insufficientChainCurrency, balanceError, dispatch]);
 
   useEffect(() => {
     const currentTime = Date.now();
@@ -309,7 +309,7 @@ export default function ViewQuote() {
   }, [originalApproveAmount, approveAmount]);
 
   const showInsufficientWarning =
-    (balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden;
+    (balanceError || tokenBalanceNeeded || chainCurrencyBalanceNeeded) && !warningHidden;
 
   const numberOfQuotes = Object.values(quotes).length;
   const bestQuoteReviewedEventSent = useRef();
@@ -439,7 +439,7 @@ export default function ViewQuote() {
   const extraNetworkFeeTotalInHexWEI = new BigNumber(nonGasFee, 16)
     .plus(approveGasTotal, 16)
     .toString(16);
-  const extraNetworkFeeTotalInEth = getValueFromWeiHex({
+  const extraNetworkFeeTotalInChainCurrency = getValueFromWeiHex({
     value: extraNetworkFeeTotalInHexWEI,
     toDenomination: 'ETH',
     numberOfDecimals: 4,
@@ -466,7 +466,7 @@ export default function ViewQuote() {
         extraInfoRow: extraInfoRowLabel
           ? {
               label: extraInfoRowLabel,
-              value: t('amountInEth', [extraNetworkFeeTotalInEth]),
+              value: t('amountInEth', [extraNetworkFeeTotalInChainCurrency]),
             }
           : null,
         initialGasPrice: gasPrice,
@@ -485,7 +485,7 @@ export default function ViewQuote() {
     ? t('swapTokenBalanceUnavailable', [sourceTokenSymbol])
     : t('swapApproveNeedMoreTokens', [
         <span key="swapApproveNeedMoreTokens-1" className="view-quote__bold">
-          {tokenBalanceNeeded || ethBalanceNeeded}
+          {tokenBalanceNeeded || chainCurrencyBalanceNeeded}
         </span>,
         tokenBalanceNeeded && !(sourceTokenSymbol === defaultSwapsToken.symbol)
           ? sourceTokenSymbol
@@ -512,10 +512,10 @@ export default function ViewQuote() {
   ]);
 
   let viewQuotePriceDifferenceComponent = null;
-  const priceSlippageFromSource = useEthFiatAmount(
+  const priceSlippageFromSource = useChainCurrencyFiatAmount(
     usedQuote?.priceSlippage?.sourceAmountInETH || 0,
   );
-  const priceSlippageFromDestination = useEthFiatAmount(
+  const priceSlippageFromDestination = useChainCurrencyFiatAmount(
     usedQuote?.priceSlippage?.destinationAmountInETH || 0,
   );
 
@@ -627,8 +627,8 @@ export default function ViewQuote() {
         >
           <FeeCard
             primaryFee={{
-              fee: feeInEth,
-              maxFee: maxFeeInEth,
+              fee: feeInChainCurrency,
+              maxFee: maxFeeInChainCurrency,
             }}
             secondaryFee={{
               fee: feeInFiat,

@@ -21,7 +21,7 @@ export default class GasModalPageContainer extends Component {
       originalTotalFiat: PropTypes.string,
       originalTotalEth: PropTypes.string,
       newTotalFiat: PropTypes.string,
-      newTotalEth: PropTypes.string,
+      newTotalChainCurrency: PropTypes.string,
       sendAmount: PropTypes.string,
       transactionFee: PropTypes.string,
       extraInfoRow: PropTypes.shape({
@@ -121,7 +121,7 @@ export default class GasModalPageContainer extends Component {
 
   renderInfoRows(
     newTotalFiat,
-    newTotalEth,
+    newTotalChainCurrency,
     sendAmount,
     transactionFee,
     extraInfoRow,
@@ -160,7 +160,7 @@ export default class GasModalPageContainer extends Component {
               {this.context.t('newTotal')}
             </span>
             <span className="gas-modal-content__info-row__total-info__value">
-              {newTotalEth}
+              {newTotalChainCurrency}
             </span>
           </div>
           <div className="gas-modal-content__info-row__fiat-total-info">
@@ -178,7 +178,7 @@ export default class GasModalPageContainer extends Component {
       gasPriceButtonGroupProps,
       infoRowProps: {
         newTotalFiat,
-        newTotalEth,
+        newTotalChainCurrency,
         sendAmount,
         transactionFee,
         extraInfoRow,
@@ -210,7 +210,7 @@ export default class GasModalPageContainer extends Component {
               {content}
               {this.renderInfoRows(
                 newTotalFiat,
-                newTotalEth,
+                newTotalChainCurrency,
                 sendAmount,
                 transactionFee,
                 extraInfoRow,

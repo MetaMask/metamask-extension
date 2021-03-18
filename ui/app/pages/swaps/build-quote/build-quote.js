@@ -159,13 +159,13 @@ export default function BuildQuote({
     },
     true,
   );
-  const swapFromEthFiatValue = useEthFiatAmount(
+  const swapFromChainCurrencyFiatValue = useEthFiatAmount(
     inputValue || 0,
     { showFiat: true },
     true,
   );
   const swapFromFiatValue = isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId)
-    ? swapFromEthFiatValue
+    ? swapFromChainCurrencyFiatValue
     : swapFromTokenFiatValue;
 
   const onFromSelect = (token) => {

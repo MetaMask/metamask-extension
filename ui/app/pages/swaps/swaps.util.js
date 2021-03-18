@@ -444,7 +444,7 @@ export function getRenderableNetworkFeesForQuote({
     .plus(nonGasFee, 16)
     .toString(16);
 
-  const ethFee = getValueFromWeiHex({
+  const chainCurrencyFee = getValueFromWeiHex({
     value: totalWeiCost,
     toDenomination: 'ETH',
     numberOfDecimals: 5,
@@ -458,9 +458,9 @@ export function getRenderableNetworkFeesForQuote({
   const formattedNetworkFee = formatCurrency(rawNetworkFees, currentCurrency);
   return {
     rawNetworkFees,
-    rawEthFee: ethFee,
+    rawChainCurrencyFee: chainCurrencyFee,
     feeInFiat: formattedNetworkFee,
-    feeInEth: `${ethFee} ${SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol}`,
+    feeInChainCurrency: `${chainCurrencyFee} ${SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol}`,
     nonGasFee,
   };
 }
@@ -500,8 +500,8 @@ export function quotesToRenderableData(
     const {
       feeInFiat,
       rawNetworkFees,
-      rawEthFee,
-      feeInEth,
+      rawChainCurrencyFee,
+      feeInChainCurrency,
     } = getRenderableNetworkFeesForQuote({
       tradeGas: gasEstimateWithRefund || decimalToHex(averageGas || 800000),
       approveGas,
@@ -521,12 +521,12 @@ export function quotesToRenderableData(
 
     const tokenConversionRate =
       tokenConversionRates[destinationTokenInfo.address];
-    const ethValueOfTrade = isSwapsDefaultTokenSymbol(
+    const chainCurrencyValueOfTrade = isSwapsDefaultTokenSymbol(
       destinationTokenInfo.symbol,
       chainId,
     )
       ? calcTokenAmount(destinationAmount, destinationTokenInfo.decimals).minus(
-          rawEthFee,
+          rawChainCurrencyFee,
           10,
         )
       : new BigNumber(tokenConversionRate || 0, 10)
@@ -534,7 +534,7 @@ export function quotesToRenderableData(
             calcTokenAmount(destinationAmount, destinationTokenInfo.decimals),
             10,
           )
-          .minus(rawEthFee, 10);
+          .minus(rawChainCurrencyFee, 10);
 
     let liquiditySourceKey;
     let renderedSlippage = slippage;
@@ -559,8 +559,8 @@ export function quotesToRenderableData(
       destinationIconUrl: destinationTokenInfo.iconUrl,
       isBestQuote: quote.isBestQuote,
       liquiditySourceKey,
-      feeInEth,
-      detailedNetworkFees: `${feeInEth} (${feeInFiat})`,
+      feeInChainCurrency,
+      detailedNetworkFees: `${feeInChainCurrency} (${feeInFiat})`,
       networkFees: feeInFiat,
       quoteSource: aggType,
       rawNetworkFees,
@@ -569,7 +569,7 @@ export function quotesToRenderableData(
       sourceTokenSymbol: sourceTokenInfo.symbol,
       sourceTokenValue: sourceValue,
       sourceTokenIconUrl: sourceTokenInfo.iconUrl,
-      ethValueOfTrade,
+      chainCurrencyValueOfTrade,
       minimumAmountReceived,
       metaMaskFee: fee,
     };
@@ -619,7 +619,7 @@ export function getSwapsTokensReceivedFromTxMeta(
       },
     );
 
-    const ethReceived = subtractCurrencies(
+    const chainCurrencyReceived = subtractCurrencies(
       txMeta.postTxBalance,
       preTxBalanceLessGasCost,
       {
@@ -631,7 +631,7 @@ export function getSwapsTokensReceivedFromTxMeta(
         numberOfDecimals: 6,
       },
     );
-    return ethReceived;
+    return chainCurrencyReceived;
   }
   const txReceiptLogs = txReceipt?.logs;
   if (txReceiptLogs && txReceipt?.status !== '0x0') {

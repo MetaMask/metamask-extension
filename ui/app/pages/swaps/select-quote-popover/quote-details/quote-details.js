@@ -12,7 +12,7 @@ const QuoteDetails = ({
   destinationTokenSymbol,
   liquiditySourceKey,
   minimumAmountReceived,
-  feeInEth,
+  feeInChainCurrency,
   networkFees,
   metaMaskFee,
 }) => {
@@ -64,7 +64,7 @@ const QuoteDetails = ({
           />
         </div>
         <div className="quote-details__detail-content">
-          <span>{feeInEth}</span>
+          <span>{feeInChainCurrency}</span>
           <span className="quote-details__light-grey">{` (${networkFees})`}</span>
         </div>
       </div>
@@ -102,7 +102,7 @@ QuoteDetails.propTypes = {
   destinationTokenSymbol: PropTypes.string.isRequired,
   liquiditySourceKey: PropTypes.string.isRequired,
   minimumAmountReceived: PropTypes.string.isRequired,
-  feeInEth: PropTypes.string.isRequired,
+  feeInChainCurrency: PropTypes.string.isRequired,
   networkFees: PropTypes.string.isRequired,
   metaMaskFee: PropTypes.number.isRequired,
 };

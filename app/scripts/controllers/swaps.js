@@ -547,7 +547,7 @@ export default class SwapsController {
         16,
       );
 
-      const totalEthCost = conversionUtil(totalWeiCost, {
+      const totalChainCurrencyCost = conversionUtil(totalWeiCost, {
         fromCurrency: 'ETH',
         fromDenomination: 'WEI',
         toDenomination: 'ETH',
@@ -559,7 +559,7 @@ export default class SwapsController {
       // If the swap is from the selected chain's default token, subtract
       // the sourceAmount from the total cost. Otherwise, the total fee
       // is simply trade.value plus gas fees.
-      const ethFee = isSwapsDefaultTokenAddress(sourceToken, chainId)
+      const baseCurrencyFee = isSwapsDefaultTokenAddress(sourceToken, chainId)
         ? conversionUtil(
             totalWeiCost.minus(sourceAmount, 10), // sourceAmount is in wei
             {
@@ -570,7 +570,7 @@ export default class SwapsController {
               numberOfDecimals: 6,
             },
           )
-        : totalEthCost;
+        : totalChainCurrencyCost;
 
       const decimalAdjustedDestinationAmount = calcTokenAmount(
         destinationAmount,
@@ -590,7 +590,7 @@ export default class SwapsController {
       const tokenConversionRate = tokenConversionRates[destinationToken];
       const conversionRateForSorting = tokenConversionRate || 1;
 
-      const ethValueOfTokens = decimalAdjustedDestinationAmount.times(
+      const chainCurrencyValueOfTokens = decimalAdjustedDestinationAmount.times(
         conversionRateForSorting,
         10,
       );
@@ -604,15 +604,15 @@ export default class SwapsController {
 
       const overallValueOfQuoteForSorting =
         conversionRateForCalculations === undefined
-          ? ethValueOfTokens
-          : ethValueOfTokens.minus(ethFee, 10);
+          ? chainCurrencyValueOfTokens
+          : chainCurrencyValueOfTokens.minus(baseCurrencyFee, 10);
 
-      quote.ethFee = ethFee.toString(10);
+      quote.baseCurrencyFee = baseCurrencyFee.toString(10);
 
       if (conversionRateForCalculations !== undefined) {
-        quote.ethValueOfTokens = ethValueOfTokens.toString(10);
+        quote.chainCurrencyValueOfTokens = chainCurrencyValueOfTokens.toString(10);
         quote.overallValueOfQuote = overallValueOfQuoteForSorting.toString(10);
-        quote.metaMaskFeeInEth = metaMaskFeeInTokens
+        quote.metaMaskFeeInChainCurrency = metaMaskFeeInTokens
           .times(conversionRateForCalculations)
           .toString(10);
       }
@@ -640,23 +640,23 @@ export default class SwapsController {
       savings = {};
 
       const {
-        ethFee: medianEthFee,
-        metaMaskFeeInEth: medianMetaMaskFee,
-        ethValueOfTokens: medianEthValueOfTokens,
-      } = getMedianEthValueQuote(Object.values(newQuotes));
+        chainCurrencyFee: medianChainCurrencyFee,
+        metaMaskFeeInChainCurrency: medianMetaMaskFee,
+        chainCurrencyValueOfTokens: medianChainCurrencyValueOfTokens,
+      } = getMedianChainCurrencyValueQuote(Object.values(newQuotes));
 
       // Performance savings are calculated as:
-      //   (ethValueOfTokens for the best trade) - (ethValueOfTokens for the media trade)
-      savings.performance = new BigNumber(bestQuote.ethValueOfTokens, 10).minus(
-        medianEthValueOfTokens,
+      //   (chainCurrencyValueOfTokens for the best trade) - (chainCurrencyValueOfTokens for the media trade)
+      savings.performance = new BigNumber(bestQuote.chainCurrencyValueOfTokens, 10).minus(
+        medianChainCurrencyValueOfTokens,
         10,
       );
 
       // Fee savings are calculated as:
       //   (fee for the median trade) - (fee for the best trade)
-      savings.fee = new BigNumber(medianEthFee).minus(bestQuote.ethFee, 10);
+      savings.fee = new BigNumber(medianChainCurrencyFee).minus(bestQuote.chainCurrencyFee, 10);
 
-      savings.metaMaskFee = bestQuote.metaMaskFeeInEth;
+      savings.metaMaskFee = bestQuote.metaMaskFeeInChainCurrency;
 
       // Total savings are calculated as:
       //   performance savings + fee savings - metamask fee
@@ -781,10 +781,10 @@ export default class SwapsController {
 /**
  * Calculates the median overallValueOfQuote of a sample of quotes.
  *
- * @param {Array} quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth, and ethValueOfTokens properties
- * @returns {Object} An object with the ethValueOfTokens, ethFee, and metaMaskFeeInEth of the quote with the median overallValueOfQuote
+ * @param {Array} quotes - A sample of quote objects with overallValueOfQuote, chainCurrencyFee, metaMaskFeeInChainCurrency, and chainCurrencyValueOfTokens properties
+ * @returns {Object} An object with the chainCurrencyValueOfTokens, chainCurrencyFee, and metaMaskFeeInChainCurrency of the quote with the median overallValueOfQuote
  */
-function getMedianEthValueQuote(_quotes) {
+function getMedianChainCurrencyValueQuote(_quotes) {
   if (!Array.isArray(_quotes) || _quotes.length === 0) {
     throw new Error('Expected non-empty array param.');
   }
@@ -832,70 +832,70 @@ function getMedianEthValueQuote(_quotes) {
   );
 
   return {
-    ethFee: new BigNumber(feesAndValueAtUpperIndex.ethFee, 10)
-      .plus(feesAndValueAtLowerIndex.ethFee, 10)
+    chainCurrencyFee: new BigNumber(feesAndValueAtUpperIndex.chainCurrencyFee, 10)
+      .plus(feesAndValueAtLowerIndex.chainCurrencyFee, 10)
       .dividedBy(2)
       .toString(10),
-    metaMaskFeeInEth: new BigNumber(
-      feesAndValueAtUpperIndex.metaMaskFeeInEth,
+    metaMaskFeeInChainCurrency: new BigNumber(
+      feesAndValueAtUpperIndex.metaMaskFeeInChainCurrency,
       10,
     )
-      .plus(feesAndValueAtLowerIndex.metaMaskFeeInEth, 10)
+      .plus(feesAndValueAtLowerIndex.metaMaskFeeInChainCurrency, 10)
       .dividedBy(2)
       .toString(10),
-    ethValueOfTokens: new BigNumber(
-      feesAndValueAtUpperIndex.ethValueOfTokens,
+    chainCurrencyValueOfTokens: new BigNumber(
+      feesAndValueAtUpperIndex.chainCurrencyValueOfTokens,
       10,
     )
-      .plus(feesAndValueAtLowerIndex.ethValueOfTokens, 10)
+      .plus(feesAndValueAtLowerIndex.chainCurrencyValueOfTokens, 10)
       .dividedBy(2)
       .toString(10),
   };
 }
 
 /**
- * Calculates the arithmetic mean for each of three properties - ethFee, metaMaskFeeInEth and ethValueOfTokens - across
+ * Calculates the arithmetic mean for each of three properties - chainCurrencyFee, metaMaskFeeInChainCurrency and chainCurrencyValueOfTokens - across
  * an array of objects containing those properties.
  *
- * @param {Array} quotes - A sample of quote objects with overallValueOfQuote, ethFee, metaMaskFeeInEth and
- * ethValueOfTokens properties
- * @returns {Object} An object with the arithmetic mean each of the ethFee, metaMaskFeeInEth and ethValueOfTokens of
+ * @param {Array} quotes - A sample of quote objects with overallValueOfQuote, chainCurrencyFee, metaMaskFeeInChainCurrency and
+ * chainCurrencyValueOfTokens properties
+ * @returns {Object} An object with the arithmetic mean each of the chainCurrencyFee, metaMaskFeeInChainCurrency and chainCurrencyValueOfTokens of
  * the passed quote objects
  */
 function meansOfQuotesFeesAndValue(quotes) {
   const feeAndValueSumsAsBigNumbers = quotes.reduce(
     (feeAndValueSums, quote) => ({
-      ethFee: feeAndValueSums.ethFee.plus(quote.ethFee, 10),
-      metaMaskFeeInEth: feeAndValueSums.metaMaskFeeInEth.plus(
-        quote.metaMaskFeeInEth,
+      chainCurrencyFee: feeAndValueSums.chainCurrencyFee.plus(quote.chainCurrencyFee, 10),
+      metaMaskFeeInChainCurrency: feeAndValueSums.metaMaskFeeInChainCurrency.plus(
+        quote.metaMaskFeeInChainCurrency,
         10,
       ),
-      ethValueOfTokens: feeAndValueSums.ethValueOfTokens.plus(
-        quote.ethValueOfTokens,
+      chainCurrencyValueOfTokens: feeAndValueSums.chainCurrencyValueOfTokens.plus(
+        quote.chainCurrencyValueOfTokens,
         10,
       ),
     }),
     {
-      ethFee: new BigNumber(0, 10),
-      metaMaskFeeInEth: new BigNumber(0, 10),
-      ethValueOfTokens: new BigNumber(0, 10),
+      chainCurrencyFee: new BigNumber(0, 10),
+      metaMaskFeeInChainCurrency: new BigNumber(0, 10),
+      chainCurrencyValueOfTokens: new BigNumber(0, 10),
     },
   );
 
   return {
-    ethFee: feeAndValueSumsAsBigNumbers.ethFee
+    chainCurrencyFee: feeAndValueSumsAsBigNumbers.chainCurrencyFee
       .div(quotes.length, 10)
       .toString(10),
-    metaMaskFeeInEth: feeAndValueSumsAsBigNumbers.metaMaskFeeInEth
+    metaMaskFeeInChainCurrency: feeAndValueSumsAsBigNumbers.metaMaskFeeInChainCurrency
       .div(quotes.length, 10)
       .toString(10),
-    ethValueOfTokens: feeAndValueSumsAsBigNumbers.ethValueOfTokens
+    chainCurrencyValueOfTokens: feeAndValueSumsAsBigNumbers.chainCurrencyValueOfTokens
       .div(quotes.length, 10)
       .toString(10),
   };
 }
 
 export const utils = {
-  getMedianEthValueQuote,
+  getMedianChainCurrencyValueQuote,
   meansOfQuotesFeesAndValue,
 };
