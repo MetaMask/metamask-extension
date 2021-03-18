@@ -12,6 +12,7 @@ import { I18nContext } from '../../contexts/i18n';
 import {
   getSelectedAccount,
   getCurrentChainId,
+  getIsSwapsChain,
 } from '../../selectors/selectors';
 import {
   getQuotes,
@@ -45,7 +46,6 @@ import {
   SWAP_FAILED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
 } from '../../../../shared/constants/swaps';
-import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 
 import {
   resetBackgroundSwapsState,
@@ -96,6 +96,8 @@ export default function Swap() {
   const fetchingQuotes = useSelector(getFetchingQuotes);
   let swapsErrorKey = useSelector(getSwapsErrorKey);
   const swapsEnabled = useSelector(getSwapsFeatureLiveness);
+  const chainId = useSelector(getCurrentChainId);
+  const isSwapsChain = useSelector(getIsSwapsChain);
 
   const {
     balance: ethBalance,
@@ -116,6 +118,7 @@ export default function Swap() {
       selectedAccountAddress,
       destinationTokenInfo?.decimals,
       approveTxData,
+      chainId,
     );
   const tradeConfirmed = tradeTxData?.status === TRANSACTION_STATUSES.CONFIRMED;
   const approveError =
@@ -155,26 +158,26 @@ export default function Swap() {
   }, []);
 
   useEffect(() => {
-    fetchTokens()
+    fetchTokens(chainId)
       .then((tokens) => {
         dispatch(setSwapsTokens(tokens));
       })
       .catch((error) => console.error(error));
 
-    fetchTopAssets().then((topAssets) => {
+    fetchTopAssets(chainId).then((topAssets) => {
       dispatch(setTopAssets(topAssets));
     });
 
-    fetchAggregatorMetadata().then((newAggregatorMetadata) => {
+    fetchAggregatorMetadata(chainId).then((newAggregatorMetadata) => {
       dispatch(setAggregatorMetadata(newAggregatorMetadata));
     });
 
-    dispatch(fetchAndSetSwapsGasPriceInfo());
+    dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
 
     return () => {
       dispatch(prepareToLeaveSwaps());
     };
-  }, [dispatch]);
+  }, [dispatch, chainId]);
 
   const exitedSwapsEvent = useNewMetricEvent({
     event: 'Exited Swaps',
@@ -224,8 +227,7 @@ export default function Swap() {
     return () => window.removeEventListener('beforeunload', fn);
   }, [dispatch, isLoadingQuotesRoute]);
 
-  const chainId = useSelector(getCurrentChainId);
-  if (chainId !== MAINNET_CHAIN_ID) {
+  if (!isSwapsChain) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 

@@ -9,9 +9,11 @@ import {
   getTokenExchangeRates,
   getConversionRate,
   getCurrentCurrency,
-  getSwapsEthToken,
+  getSwapsDefaultToken,
+  getCurrentChainId,
 } from '../selectors';
 import { getSwapsTokens } from '../ducks/swaps/swaps';
+import { isSwapsDefaultTokenSymbol } from '../../../shared/modules/swaps.utils';
 import { useEqualityCheck } from './useEqualityCheck';
 
 const tokenList = shuffle(
@@ -28,12 +30,15 @@ export function getRenderableTokenData(
   contractExchangeRates,
   conversionRate,
   currentCurrency,
+  chainId,
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
 
   const formattedFiat =
     getTokenFiatAmount(
-      symbol === 'ETH' ? 1 : contractExchangeRates[address],
+      isSwapsDefaultTokenSymbol(symbol, chainId)
+        ? 1
+        : contractExchangeRates[address],
       conversionRate,
       currentCurrency,
       string,
@@ -42,7 +47,9 @@ export function getRenderableTokenData(
     ) || '';
   const rawFiat =
     getTokenFiatAmount(
-      symbol === 'ETH' ? 1 : contractExchangeRates[address],
+      isSwapsDefaultTokenSymbol(symbol, chainId)
+        ? 1
+        : contractExchangeRates[address],
       conversionRate,
       currentCurrency,
       string,
@@ -70,30 +77,32 @@ export function getRenderableTokenData(
 }
 
 export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
+  const chainId = useSelector(getCurrentChainId);
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const swapsEthToken = useSelector(getSwapsEthToken);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
   const memoizedTopTokens = useEqualityCheck(topTokens);
   const memoizedUsersToken = useEqualityCheck(usersTokens);
 
-  const ethToken = getRenderableTokenData(
-    swapsEthToken,
+  const defaultToken = getRenderableTokenData(
+    defaultSwapsToken,
     tokenConversionRates,
     conversionRate,
     currentCurrency,
+    chainId,
   );
-  const memoizedEthToken = useEqualityCheck(ethToken);
+  const memoizedDefaultToken = useEqualityCheck(defaultToken);
 
   const swapsTokens = useSelector(getSwapsTokens) || [];
 
   const tokensToSearch = swapsTokens.length
     ? swapsTokens
     : [
-        memoizedEthToken,
+        memoizedDefaultToken,
         ...tokenList.filter(
-          (token) => token.symbol !== memoizedEthToken.symbol,
+          (token) => token.symbol !== memoizedDefaultToken.symbol,
         ),
       ];
 
@@ -116,9 +125,10 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
         tokenConversionRates,
         conversionRate,
         currentCurrency,
+        chainId,
       );
       if (
-        renderableDataToken.symbol === 'ETH' ||
+        isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
         (usersTokensAddressMap[token.address] &&
           Number(renderableDataToken.balance ?? 0) !== 0)
       ) {
@@ -150,5 +160,6 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
     conversionRate,
     currentCurrency,
     memoizedTopTokens,
+    chainId,
   ]);
 }

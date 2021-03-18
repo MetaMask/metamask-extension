@@ -383,6 +383,9 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       tokenRatesStore: this.tokenRatesController.store,
+      getCurrentChainId: this.networkController.getCurrentChainId.bind(
+        this.networkController,
+      ),
     });
 
     // ensure accountTracker updates balances after network change

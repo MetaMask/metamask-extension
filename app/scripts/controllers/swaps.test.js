@@ -8,6 +8,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import {
   ROPSTEN_NETWORK_ID,
   MAINNET_NETWORK_ID,
+  MAINNET_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
@@ -75,6 +76,7 @@ const MOCK_FETCH_METADATA = {
     symbol: 'FOO',
     decimals: 18,
   },
+  chainId: MAINNET_CHAIN_ID,
 };
 
 const MOCK_TOKEN_RATES_STORE = new ObservableStore({
@@ -131,6 +133,8 @@ const sandbox = sinon.createSandbox();
 const fetchTradesInfoStub = sandbox.stub();
 const fetchSwapsFeatureLivenessStub = sandbox.stub();
 const fetchSwapsQuoteRefreshTimeStub = sandbox.stub();
+const getCurrentChainIdStub = sandbox.stub();
+getCurrentChainIdStub.returns(MAINNET_CHAIN_ID);
 
 describe('SwapsController', function () {
   let provider;
@@ -145,6 +149,7 @@ describe('SwapsController', function () {
       fetchTradesInfo: fetchTradesInfoStub,
       fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
       fetchSwapsQuoteRefreshTime: fetchSwapsQuoteRefreshTimeStub,
+      getCurrentChainId: getCurrentChainIdStub,
     });
   };
 
@@ -194,6 +199,7 @@ describe('SwapsController', function () {
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
         fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
+        getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
       const onNetworkDidChange = networkController.on.getCall(0).args[1];
@@ -218,6 +224,7 @@ describe('SwapsController', function () {
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
         fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
+        getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
       const onNetworkDidChange = networkController.on.getCall(0).args[1];
@@ -242,6 +249,7 @@ describe('SwapsController', function () {
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
         fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
+        getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
       const onNetworkDidChange = networkController.on.getCall(0).args[1];
@@ -686,7 +694,10 @@ describe('SwapsController', function () {
         });
 
         assert.strictEqual(
-          fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS),
+          fetchTradesInfoStub.calledOnceWithExactly(
+            MOCK_FETCH_PARAMS,
+            MOCK_FETCH_METADATA,
+          ),
           true,
         );
       });

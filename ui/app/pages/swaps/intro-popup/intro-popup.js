@@ -6,7 +6,7 @@ import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { I18nContext } from '../../../contexts/i18n';
 import { BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
-import { getSwapsEthToken } from '../../../selectors';
+import { getSwapsDefaultToken } from '../../../selectors';
 import Button from '../../../components/ui/button';
 import Popover from '../../../components/ui/popover';
 
@@ -14,9 +14,14 @@ export default function IntroPopup({ onClose }) {
   const dispatch = useDispatch(useDispatch);
   const history = useHistory();
   const t = useContext(I18nContext);
+
+  const swapsDefaultToken = useSelector(getSwapsDefaultToken);
   const enteredSwapsEvent = useNewMetricEvent({
     event: 'Swaps Opened',
-    properties: { source: 'Intro popup', active_currency: 'ETH' },
+    properties: {
+      source: 'Intro popup',
+      active_currency: swapsDefaultToken.symbol,
+    },
     category: 'swaps',
   });
   const blogPostVisitedEvent = useNewMetricEvent({
@@ -31,7 +36,6 @@ export default function IntroPopup({ onClose }) {
     event: 'Product Overview Dismissed',
     category: 'swaps',
   });
-  const swapsEthToken = useSelector(getSwapsEthToken);
 
   return (
     <div className="intro-popup">
@@ -51,7 +55,7 @@ export default function IntroPopup({ onClose }) {
             onClick={() => {
               onClose();
               enteredSwapsEvent();
-              dispatch(setSwapsFromToken(swapsEthToken));
+              dispatch(setSwapsFromToken(swapsDefaultToken));
               history.push(BUILD_QUOTE_ROUTE);
             }}
           >
