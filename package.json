@@ -107,7 +107,6 @@
     "currency-formatter": "^1.4.2",
     "debounce-stream": "^2.0.0",
     "deep-freeze-strict": "1.1.1",
-    "dnode": "^1.2.2",
     "end-of-stream": "^1.4.4",
     "eth-block-tracker": "^4.4.2",
     "eth-ens-namehash": "^2.0.8",

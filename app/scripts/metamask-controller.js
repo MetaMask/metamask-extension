@@ -1,6 +1,5 @@
 import EventEmitter from 'events';
 import pump from 'pump';
-import Dnode from 'dnode';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
@@ -60,6 +59,7 @@ import accountImporter from './account-import-strategies';
 import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment, segmentLegacy } from './lib/segment';
+import createMetaRPCHandler from './lib/createMetaRPCHandler';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -598,7 +598,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Returns an Object containing API Callback Functions.
    * These functions are the interface for the UI.
-   * The API object can be transmitted over a stream with dnode.
+   * The API object can be transmitted over a stream via JSON-RPC.
    *
    * @returns {Object} Object containing API functions.
    */
@@ -1996,36 +1996,34 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * A method for providing our API over a stream using Dnode.
+   * A method for providing our API over a stream using JSON-RPC.
    * @param {*} outStream - The stream to provide our API over.
    */
   setupControllerConnection(outStream) {
     const api = this.getApi();
-    // the "weak: false" option is for nodejs only (eg unit tests)
-    // it is a workaround for node v12 support
-    const dnode = Dnode(api, { weak: false });
+
     // report new active controller connection
     this.activeControllerConnections += 1;
     this.emit('controllerConnectionChanged', this.activeControllerConnections);
-    // connect dnode api to remote connection
-    pump(outStream, dnode, outStream, (err) => {
-      // report new active controller connection
+
+    // set up postStream transport
+    outStream.on('data', createMetaRPCHandler(api, outStream));
+    const handleUpdate = (update) => {
+      // send notification to client-side
+      outStream.write({
+        jsonrpc: '2.0',
+        method: 'sendUpdate',
+        params: [update],
+      });
+    };
+    this.on('update', handleUpdate);
+    outStream.on('end', () => {
       this.activeControllerConnections -= 1;
       this.emit(
         'controllerConnectionChanged',
         this.activeControllerConnections,
       );
-      // report any error
-      if (err) {
-        log.error(err);
-      }
-    });
-    dnode.on('remote', (remote) => {
-      // push updates to popup
-      const sendUpdate = (update) => remote.sendUpdate(update);
-      this.on('update', sendUpdate);
-      // remove update listener once the connection ends
-      dnode.on('end', () => this.removeListener('update', sendUpdate));
+      this.removeListener('update', handleUpdate);
     });
   }
 

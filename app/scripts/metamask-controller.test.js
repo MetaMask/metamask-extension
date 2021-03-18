@@ -1116,7 +1116,7 @@ describe('MetaMaskController', function () {
   });
 
   describe('#setupTrustedCommunication', function () {
-    it('sets up controller dnode api for trusted communication', async function () {
+    it('sets up controller JSON-RPC api for trusted communication', async function () {
       const messageSender = {
         url: 'http://mycrypto.com',
         tab: {},

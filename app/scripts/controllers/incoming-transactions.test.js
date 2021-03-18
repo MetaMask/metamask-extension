@@ -22,7 +22,7 @@ import {
 import { NETWORK_EVENTS } from './network';
 
 const IncomingTransactionsController = proxyquire('./incoming-transactions', {
-  '../lib/random-id': { default: () => 54321 },
+  '../../../shared/modules/random-id': { default: () => 54321 },
 }).default;
 
 const FAKE_CHAIN_ID = '0x1338';
