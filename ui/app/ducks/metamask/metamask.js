@@ -45,6 +45,7 @@ export default function reduceMetamask(state = {}, action) {
     completedOnboarding: false,
     knownMethodData: {},
     participateInMetaMetrics: null,
+    metaMetricsParticipationSet: false,
     metaMetricsSendCount: 0,
     nextNonce: null,
     ...state,

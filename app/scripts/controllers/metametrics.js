@@ -93,6 +93,7 @@ export default class MetaMetricsController {
       participateInMetaMetrics: null,
       metaMetricsId: null,
       metaMetricsSendCount: 0,
+      metaMetricsParticipationSet: false,
       ...initState,
     });
 
@@ -132,7 +133,11 @@ export default class MetaMetricsController {
     } else if (participateInMetaMetrics === false) {
       metaMetricsId = null;
     }
-    this.store.updateState({ participateInMetaMetrics, metaMetricsId });
+    this.store.updateState({
+      participateInMetaMetrics,
+      metaMetricsId,
+      metaMetricsParticipationSet: true,
+    });
     return metaMetricsId;
   }
 

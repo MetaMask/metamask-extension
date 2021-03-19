@@ -6,7 +6,10 @@ import { getFirstTimeFlowTypeRoute } from '../../../selectors';
 import Welcome from './select-action.component';
 
 const mapStateToProps = (state) => {
+  const { metaMetricsParticipationSet } = state.metamask;
+
   return {
+    metaMetricsParticipationSet,
     nextRoute: getFirstTimeFlowTypeRoute(state),
   };
 };
