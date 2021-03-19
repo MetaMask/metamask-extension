@@ -1419,9 +1419,6 @@
   "sendAmount": {
     "message": "Invia Importo"
   },
-  "sendETH": {
-    "message": "Invia ETH"
-  },
   "sendSpecifiedTokens": {
     "message": "Invia $1",
     "description": "Symbol of the specified token"

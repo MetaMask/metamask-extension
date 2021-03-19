@@ -930,9 +930,6 @@
   "sendAmount": {
     "message": "Összeg küldése"
   },
-  "sendETH": {
-    "message": "ETH küldése"
-  },
   "sendTokens": {
     "message": "Token küldése"
   },

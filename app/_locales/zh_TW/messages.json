@@ -925,9 +925,6 @@
   "sendAmount": {
     "message": "發送數量"
   },
-  "sendETH": {
-    "message": "發送以太幣"
-  },
   "sendTokens": {
     "message": "發送代幣"
   },

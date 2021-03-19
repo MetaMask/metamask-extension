@@ -1413,9 +1413,6 @@
   "sendAmount": {
     "message": "送金額"
   },
-  "sendETH": {
-    "message": "ETHの送金"
-  },
   "sendSpecifiedTokens": {
     "message": "$1 を送る",
     "description": "Symbol of the specified token"

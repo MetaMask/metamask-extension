@@ -915,9 +915,6 @@
   "sendAmount": {
     "message": "Enviar Quantitat"
   },
-  "sendETH": {
-    "message": "Envia ETH"
-  },
   "sendTokens": {
     "message": "Enviar Fitxes"
   },

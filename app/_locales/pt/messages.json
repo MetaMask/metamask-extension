@@ -333,9 +333,6 @@
   "send": {
     "message": "Enviar"
   },
-  "sendETH": {
-    "message": "Enviar ETH"
-  },
   "sendTokens": {
     "message": "Enviar Tokens"
   },

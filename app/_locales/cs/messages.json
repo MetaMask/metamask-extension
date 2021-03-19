@@ -356,9 +356,6 @@
   "send": {
     "message": "Odeslat"
   },
-  "sendETH": {
-    "message": "Odeslat ETH"
-  },
   "sendTokens": {
     "message": "Odeslat tokeny"
   },

@@ -930,9 +930,6 @@
   "sendAmount": {
     "message": "إرسال المبلغ"
   },
-  "sendETH": {
-    "message": "إرسال عملة إيثيريوم"
-  },
   "sendTokens": {
     "message": "إرسال عملات رمزية"
   },

@@ -934,9 +934,6 @@
   "sendAmount": {
     "message": "Αποστολή Ποσού"
   },
-  "sendETH": {
-    "message": "Στείλτε ETH"
-  },
   "sendTokens": {
     "message": "Στείλτε Tokens"
   },

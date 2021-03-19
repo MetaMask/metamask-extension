@@ -925,9 +925,6 @@
   "sendAmount": {
     "message": "Enviar Quantia"
   },
-  "sendETH": {
-    "message": "Enviar ETH"
-  },
   "sendTokens": {
     "message": "Enviar Tokens"
   },

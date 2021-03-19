@@ -931,9 +931,6 @@
   "sendAmount": {
     "message": "שלח סכום"
   },
-  "sendETH": {
-    "message": "שלח/י ETH"
-  },
   "sendTokens": {
     "message": "שלח טוקנים"
   },

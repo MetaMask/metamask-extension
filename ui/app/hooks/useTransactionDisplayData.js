@@ -208,7 +208,7 @@ export function useTransactionDisplayData(transactionGroup) {
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TRANSACTION_TYPES.SENT_ETHER) {
     category = TRANSACTION_GROUP_CATEGORIES.SEND;
-    title = t('sendETH');
+    title = t('send');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   }
 

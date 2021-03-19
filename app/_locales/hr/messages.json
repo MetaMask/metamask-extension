@@ -930,9 +930,6 @@
   "sendAmount": {
     "message": "Odaberi iznos"
   },
-  "sendETH": {
-    "message": "Pošalji ETH"
-  },
   "sendTokens": {
     "message": "Pošalji tokene"
   },
