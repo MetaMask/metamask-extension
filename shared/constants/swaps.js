@@ -36,7 +36,7 @@ const TESTNET_CONTRACT_ADDRESS = '0x881d40237659c251811cec9c364ef91dc08d300c';
 const METASWAP_ETH_API_HOST = 'https://api.metaswap.codefi.network';
 
 const SWAPS_TESTNET_CHAIN_ID = '0x539';
-const SWAPS_TESTNET_HOST = 'https://metaswap-api.airswap-dev.codefi.network';
+const SWAPS_TESTNET_HOST = 'https://api.metaswap.codefi.network';
 
 export const ALLOWED_SWAPS_CHAIN_IDS = {
   [MAINNET_CHAIN_ID]: true,

@@ -139,6 +139,7 @@ const EthOverview = ({ className }) => {
             <IconButton
               className="eth-overview__button"
               disabled={!isSwapsChain}
+              data-testid="eth-overview-swap"
               Icon={SwapIcon}
               onClick={() => {
                 if (isSwapsChain) {
