@@ -490,6 +490,25 @@ function getNotificationToExclude(state) {
   };
 }
 
+/**
+ * @typedef {Object} Notification
+ * @property {number} id - A unique identifier for the notification
+ * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
+ */
+
+/**
+ * Notifications are managed by the notification controller and referenced by
+ * `state.metamask.notifications`. This function returns a list of notifications
+ * the can be shown to the user. This list includes all notifications that do not
+ * have a truthy `isShown` property, and also which are not filtered out due to
+ * conditions encoded in the `getNotificationToExclude` function.
+ *
+ * The returned notifcations are sorted by date.
+ *
+ * @param {object} state - the redux state object
+ * @returns {Notification[]} An array of notifications that can be shown to the user
+ */
+
 export function getSortedNotificationsToShow(state) {
   const notifications = Object.values(state.metamask.notifications) || [];
   const notificationToExclude = getNotificationToExclude(state);
