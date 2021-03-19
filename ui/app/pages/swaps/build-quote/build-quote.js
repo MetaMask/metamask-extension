@@ -123,8 +123,8 @@ export default function BuildQuote({
 
   const queryFromToken =
     queryFromAddress &&
-    (queryFromAddress === swapsEthToken.address
-      ? swapsEthToken
+    (isSwapsDefaultTokenAddress(queryFromAddress, chainId)
+      ? defaultSwapsToken
       : memoizedUsersTokens.find(
           (token) => token.address === queryFromAddress,
         ));
