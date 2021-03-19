@@ -3,9 +3,15 @@ import BigNumber from 'bignumber.js';
 import abi from 'human-standard-token-abi';
 import { isValidAddress } from 'ethereumjs-util';
 import {
-  ETH_SWAPS_TOKEN_OBJECT,
-  METASWAP_API_HOST,
-} from '../../helpers/constants/swaps';
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  METASWAP_CHAINID_API_HOST_MAP,
+} from '../../../../shared/constants/swaps';
+import {
+  isSwapsDefaultTokenAddress,
+  isSwapsDefaultTokenSymbol,
+} from '../../../../shared/modules/swaps.utils';
+
+import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 import {
   calcTokenValue,
   calcTokenAmount,
@@ -30,22 +36,22 @@ const TOKEN_TRANSFER_LOG_TOPIC_HASH =
 
 const CACHE_REFRESH_ONE_HOUR = 3600000;
 
-const getBaseApi = function (type) {
+const getBaseApi = function (type, chainId = MAINNET_CHAIN_ID) {
   switch (type) {
     case 'trade':
-      return `${METASWAP_API_HOST}/trades?`;
+      return `${METASWAP_CHAINID_API_HOST_MAP[chainId]}/trades?`;
     case 'tokens':
-      return `${METASWAP_API_HOST}/tokens`;
+      return `${METASWAP_CHAINID_API_HOST_MAP[chainId]}/tokens`;
     case 'topAssets':
-      return `${METASWAP_API_HOST}/topAssets`;
+      return `${METASWAP_CHAINID_API_HOST_MAP[chainId]}/topAssets`;
     case 'featureFlag':
-      return `${METASWAP_API_HOST}/featureFlag`;
+      return `${METASWAP_CHAINID_API_HOST_MAP[chainId]}/featureFlag`;
     case 'aggregatorMetadata':
-      return `${METASWAP_API_HOST}/aggregatorMetadata`;
+      return `${METASWAP_CHAINID_API_HOST_MAP[chainId]}/aggregatorMetadata`;
     case 'gasPrices':
-      return `${METASWAP_API_HOST}/gasPrices`;
+      return `${METASWAP_CHAINID_API_HOST_MAP[chainId]}/gasPrices`;
     case 'refreshTime':
-      return `${METASWAP_API_HOST}/quoteRefreshRate`;
+      return `${METASWAP_CHAINID_API_HOST_MAP[chainId]}/quoteRefreshRate`;
     default:
       throw new Error('getBaseApi requires an api call type');
   }
@@ -205,15 +211,18 @@ function validateData(validators, object, urlUsed) {
   });
 }
 
-export async function fetchTradesInfo({
-  slippage,
-  sourceToken,
-  sourceDecimals,
-  destinationToken,
-  value,
-  fromAddress,
-  exchangeList,
-}) {
+export async function fetchTradesInfo(
+  {
+    slippage,
+    sourceToken,
+    sourceDecimals,
+    destinationToken,
+    value,
+    fromAddress,
+    exchangeList,
+  },
+  { chainId },
+) {
   const urlParams = {
     destinationToken,
     sourceToken,
@@ -228,7 +237,7 @@ export async function fetchTradesInfo({
   }
 
   const queryString = new URLSearchParams(urlParams).toString();
-  const tradeURL = `${getBaseApi('trade')}${queryString}`;
+  const tradeURL = `${getBaseApi('trade', chainId)}${queryString}`;
   const tradesResponse = await fetchWithCache(
     tradeURL,
     { method: 'GET' },
@@ -272,25 +281,30 @@ export async function fetchTradesInfo({
   return newQuotes;
 }
 
-export async function fetchTokens() {
-  const tokenUrl = getBaseApi('tokens');
+export async function fetchTokens(chainId) {
+  const tokenUrl = getBaseApi('tokens', chainId);
   const tokens = await fetchWithCache(
     tokenUrl,
     { method: 'GET' },
     { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR },
   );
-  const filteredTokens = tokens.filter((token) => {
-    return (
-      validateData(TOKEN_VALIDATORS, token, tokenUrl) &&
-      token.address !== ETH_SWAPS_TOKEN_OBJECT.address
-    );
-  });
-  filteredTokens.push(ETH_SWAPS_TOKEN_OBJECT);
+  const filteredTokens = [
+    SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId],
+    ...tokens.filter((token) => {
+      return (
+        validateData(TOKEN_VALIDATORS, token, tokenUrl) &&
+        !(
+          isSwapsDefaultTokenSymbol(token.symbol, chainId) ||
+          isSwapsDefaultTokenAddress(token.address, chainId)
+        )
+      );
+    }),
+  ];
   return filteredTokens;
 }
 
-export async function fetchAggregatorMetadata() {
-  const aggregatorMetadataUrl = getBaseApi('aggregatorMetadata');
+export async function fetchAggregatorMetadata(chainId) {
+  const aggregatorMetadataUrl = getBaseApi('aggregatorMetadata', chainId);
   const aggregators = await fetchWithCache(
     aggregatorMetadataUrl,
     { method: 'GET' },
@@ -311,8 +325,8 @@ export async function fetchAggregatorMetadata() {
   return filteredAggregators;
 }
 
-export async function fetchTopAssets() {
-  const topAssetsUrl = getBaseApi('topAssets');
+export async function fetchTopAssets(chainId) {
+  const topAssetsUrl = getBaseApi('topAssets', chainId);
   const response = await fetchWithCache(
     topAssetsUrl,
     { method: 'GET' },
@@ -327,18 +341,18 @@ export async function fetchTopAssets() {
   return topAssetsMap;
 }
 
-export async function fetchSwapsFeatureLiveness() {
+export async function fetchSwapsFeatureLiveness(chainId) {
   const status = await fetchWithCache(
-    getBaseApi('featureFlag'),
+    getBaseApi('featureFlag', chainId),
     { method: 'GET' },
     { cacheRefreshTime: 600000 },
   );
   return status?.active;
 }
 
-export async function fetchSwapsQuoteRefreshTime() {
+export async function fetchSwapsQuoteRefreshTime(chainId) {
   const response = await fetchWithCache(
-    getBaseApi('refreshTime'),
+    getBaseApi('refreshTime', chainId),
     { method: 'GET' },
     { cacheRefreshTime: 600000 },
   );
@@ -373,8 +387,8 @@ export async function fetchTokenBalance(address, userAddress) {
   return usersToken;
 }
 
-export async function fetchSwapsGasPrices() {
-  const gasPricesUrl = getBaseApi('gasPrices');
+export async function fetchSwapsGasPrices(chainId) {
+  const gasPricesUrl = getBaseApi('gasPrices', chainId);
   const response = await fetchWithCache(
     gasPricesUrl,
     { method: 'GET' },
@@ -403,7 +417,7 @@ export async function fetchSwapsGasPrices() {
   };
 }
 
-export function getRenderableNetworkFeesForQuote(
+export function getRenderableNetworkFeesForQuote({
   tradeGas,
   approveGas,
   gasPrice,
@@ -412,14 +426,18 @@ export function getRenderableNetworkFeesForQuote(
   tradeValue,
   sourceSymbol,
   sourceAmount,
-) {
+  chainId,
+}) {
   const totalGasLimitForCalculation = new BigNumber(tradeGas || '0x0', 16)
     .plus(approveGas || '0x0', 16)
     .toString(16);
   const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, gasPrice);
 
   const nonGasFee = new BigNumber(tradeValue, 16)
-    .minus(sourceSymbol === 'ETH' ? sourceAmount : 0, 10)
+    .minus(
+      isSwapsDefaultTokenSymbol(sourceSymbol, chainId) ? sourceAmount : 0,
+      10,
+    )
     .toString(16);
 
   const totalWeiCost = new BigNumber(gasTotalInWeiHex, 16)
@@ -442,7 +460,7 @@ export function getRenderableNetworkFeesForQuote(
     rawNetworkFees,
     rawEthFee: ethFee,
     feeInFiat: formattedNetworkFee,
-    feeInEth: `${ethFee} ETH`,
+    feeInEth: `${ethFee} ${SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol}`,
     nonGasFee,
   };
 }
@@ -454,6 +472,7 @@ export function quotesToRenderableData(
   currentCurrency,
   approveGas,
   tokenConversionRates,
+  chainId,
 ) {
   return Object.values(quotes).map((quote) => {
     const {
@@ -483,16 +502,17 @@ export function quotesToRenderableData(
       rawNetworkFees,
       rawEthFee,
       feeInEth,
-    } = getRenderableNetworkFeesForQuote(
-      gasEstimateWithRefund || decimalToHex(averageGas || 800000),
+    } = getRenderableNetworkFeesForQuote({
+      tradeGas: gasEstimateWithRefund || decimalToHex(averageGas || 800000),
       approveGas,
       gasPrice,
       currentCurrency,
       conversionRate,
-      trade.value,
-      sourceTokenInfo.symbol,
+      tradeValue: trade.value,
+      sourceSymbol: sourceTokenInfo.symbol,
       sourceAmount,
-    );
+      chainId,
+    });
 
     const slippageMultiplier = new BigNumber(100 - slippage).div(100);
     const minimumAmountReceived = new BigNumber(destinationValue)
@@ -501,18 +521,20 @@ export function quotesToRenderableData(
 
     const tokenConversionRate =
       tokenConversionRates[destinationTokenInfo.address];
-    const ethValueOfTrade =
-      destinationTokenInfo.symbol === 'ETH'
-        ? calcTokenAmount(
-            destinationAmount,
-            destinationTokenInfo.decimals,
-          ).minus(rawEthFee, 10)
-        : new BigNumber(tokenConversionRate || 0, 10)
-            .times(
-              calcTokenAmount(destinationAmount, destinationTokenInfo.decimals),
-              10,
-            )
-            .minus(rawEthFee, 10);
+    const ethValueOfTrade = isSwapsDefaultTokenSymbol(
+      destinationTokenInfo.symbol,
+      chainId,
+    )
+      ? calcTokenAmount(destinationAmount, destinationTokenInfo.decimals).minus(
+          rawEthFee,
+          10,
+        )
+      : new BigNumber(tokenConversionRate || 0, 10)
+          .times(
+            calcTokenAmount(destinationAmount, destinationTokenInfo.decimals),
+            10,
+          )
+          .minus(rawEthFee, 10);
 
     let liquiditySourceKey;
     let renderedSlippage = slippage;
@@ -561,9 +583,10 @@ export function getSwapsTokensReceivedFromTxMeta(
   accountAddress,
   tokenDecimals,
   approvalTxMeta,
+  chainId,
 ) {
   const txReceipt = txMeta?.txReceipt;
-  if (tokenSymbol === 'ETH') {
+  if (isSwapsDefaultTokenSymbol(tokenSymbol, chainId)) {
     if (
       !txReceipt ||
       !txMeta ||

@@ -36,7 +36,8 @@ import {
   getSelectedAccount,
   getCurrentCurrency,
   getTokenExchangeRates,
-  getSwapsEthToken,
+  getSwapsDefaultToken,
+  getCurrentChainId,
 } from '../../../selectors';
 import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util';
 import { getTokens } from '../../../ducks/metamask/metamask';
@@ -73,7 +74,7 @@ import {
   getRenderableNetworkFeesForQuote,
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
-import { QUOTES_EXPIRED_ERROR } from '../../../helpers/constants/swaps';
+import { QUOTES_EXPIRED_ERROR } from '../../../../../shared/constants/swaps';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import ViewQuotePriceDifference from './view-quote-price-difference';
@@ -125,7 +126,8 @@ export default function ViewQuote() {
   const usedQuote = selectedQuote || topQuote;
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
-  const swapsEthToken = useSelector(getSwapsEthToken);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  const chainId = useSelector(getCurrentChainId);
 
   const { isBestQuote } = usedQuote;
 
@@ -151,8 +153,8 @@ export default function ViewQuote() {
 
   const { tokensWithBalances } = useTokenTracker(swapsTokens, true);
   const balanceToken =
-    fetchParamsSourceToken === swapsEthToken.address
-      ? swapsEthToken
+    fetchParamsSourceToken === defaultSwapsToken.address
+      ? defaultSwapsToken
       : tokensWithBalances.find(
           ({ address }) => address === fetchParamsSourceToken,
         );
@@ -183,6 +185,7 @@ export default function ViewQuote() {
       currentCurrency,
       approveGas,
       memoizedTokenConversionRates,
+      chainId,
     );
   }, [
     quotes,
@@ -191,6 +194,7 @@ export default function ViewQuote() {
     currentCurrency,
     approveGas,
     memoizedTokenConversionRates,
+    chainId,
   ]);
 
   const renderableDataForUsedQuote = renderablePopoverData.find(
@@ -209,31 +213,33 @@ export default function ViewQuote() {
     sourceTokenIconUrl,
   } = renderableDataForUsedQuote;
 
-  const { feeInFiat, feeInEth } = getRenderableNetworkFeesForQuote(
-    usedGasLimit,
+  const { feeInFiat, feeInEth } = getRenderableNetworkFeesForQuote({
+    tradeGas: usedGasLimit,
     approveGas,
     gasPrice,
     currentCurrency,
     conversionRate,
     tradeValue,
-    sourceTokenSymbol,
-    usedQuote.sourceAmount,
-  );
+    sourceSymbol: sourceTokenSymbol,
+    sourceAmount: usedQuote.sourceAmount,
+    chainId,
+  });
 
   const {
     feeInFiat: maxFeeInFiat,
     feeInEth: maxFeeInEth,
     nonGasFee,
-  } = getRenderableNetworkFeesForQuote(
-    maxGasLimit,
+  } = getRenderableNetworkFeesForQuote({
+    tradeGas: maxGasLimit,
     approveGas,
     gasPrice,
     currentCurrency,
     conversionRate,
     tradeValue,
-    sourceTokenSymbol,
-    usedQuote.sourceAmount,
-  );
+    sourceSymbol: sourceTokenSymbol,
+    sourceAmount: usedQuote.sourceAmount,
+    chainId,
+  });
 
   const tokenCost = new BigNumber(usedQuote.sourceAmount);
   const ethCost = new BigNumber(usedQuote.trade.value || 0, 10).plus(
@@ -481,9 +487,9 @@ export default function ViewQuote() {
         <span key="swapApproveNeedMoreTokens-1" className="view-quote__bold">
           {tokenBalanceNeeded || ethBalanceNeeded}
         </span>,
-        tokenBalanceNeeded && !(sourceTokenSymbol === 'ETH')
+        tokenBalanceNeeded && !(sourceTokenSymbol === defaultSwapsToken.symbol)
           ? sourceTokenSymbol
-          : 'ETH',
+          : defaultSwapsToken.symbol,
       ]);
 
   // Price difference warning
@@ -643,7 +649,7 @@ export default function ViewQuote() {
               setSelectQuotePopoverShown(true);
             }}
             tokenConversionRate={
-              destinationTokenSymbol === 'ETH'
+              destinationTokenSymbol === defaultSwapsToken.symbol
                 ? 1
                 : memoizedTokenConversionRates[destinationToken.address]
             }
@@ -655,7 +661,7 @@ export default function ViewQuote() {
           setSubmitClicked(true);
           if (!balanceError) {
             dispatch(signAndSendTransactions(history, metaMetricsEvent));
-          } else if (destinationToken.symbol === 'ETH') {
+          } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
             history.push(DEFAULT_ROUTE);
           } else {
             history.push(`${ASSET_ROUTE}/${destinationToken.address}`);

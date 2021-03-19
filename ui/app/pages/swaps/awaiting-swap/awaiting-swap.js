@@ -6,12 +6,14 @@ import { useHistory } from 'react-router-dom';
 import { I18nContext } from '../../../contexts/i18n';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+
 import {
   getCurrentChainId,
   getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
   getUSDConversionRate,
 } from '../../../selectors';
+
 import {
   getUsedQuote,
   getFetchParams,
@@ -23,14 +25,16 @@ import {
   prepareToLeaveSwaps,
 } from '../../../ducks/swaps/swaps';
 import Mascot from '../../../components/ui/mascot';
-import PulseLoader from '../../../components/ui/pulse-loader';
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   OFFLINE_FOR_MAINTENANCE,
-} from '../../../helpers/constants/swaps';
+} from '../../../../../shared/constants/swaps';
+import { isSwapsDefaultTokenSymbol } from '../../../../../shared/modules/swaps.utils';
+import PulseLoader from '../../../components/ui/pulse-loader';
+
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
@@ -73,16 +77,17 @@ export default function AwaitingSwap({
   let feeinUnformattedFiat;
 
   if (usedQuote && swapsGasPrice) {
-    const renderableNetworkFees = getRenderableNetworkFeesForQuote(
-      usedQuote.gasEstimateWithRefund || usedQuote.averageGas,
-      approveTxParams?.gas || '0x0',
-      swapsGasPrice,
+    const renderableNetworkFees = getRenderableNetworkFeesForQuote({
+      tradeGas: usedQuote.gasEstimateWithRefund || usedQuote.averageGas,
+      approveGas: approveTxParams?.gas || '0x0',
+      gasPrice: swapsGasPrice,
       currentCurrency,
-      usdConversionRate,
-      usedQuote?.trade?.value,
-      sourceTokenInfo?.symbol,
-      usedQuote.sourceAmount,
-    );
+      conversionRate: usdConversionRate,
+      tradeValue: usedQuote?.trade?.value,
+      sourceSymbol: sourceTokenInfo?.symbol,
+      sourceAmount: usedQuote.sourceAmount,
+      chainId,
+    });
     feeinUnformattedFiat = renderableNetworkFees.rawNetworkFees;
   }
 
@@ -228,7 +233,9 @@ export default function AwaitingSwap({
             );
           } else if (errorKey) {
             await dispatch(navigateBackToBuildQuote(history));
-          } else if (destinationTokenInfo?.symbol === 'ETH') {
+          } else if (
+            isSwapsDefaultTokenSymbol(destinationTokenInfo?.symbol, chainId)
+          ) {
             history.push(DEFAULT_ROUTE);
           } else {
             history.push(`${ASSET_ROUTE}/${destinationTokenInfo?.address}`);
