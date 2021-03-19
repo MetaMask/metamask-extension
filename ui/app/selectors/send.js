@@ -154,7 +154,7 @@ export function getTitleKey(state) {
   } else if (isToken) {
     return 'sendTokens';
   }
-  return 'sendETH';
+  return 'send';
 }
 
 export function isSendFormInError(state) {

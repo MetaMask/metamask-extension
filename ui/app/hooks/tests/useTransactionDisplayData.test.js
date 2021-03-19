@@ -26,7 +26,7 @@ import {
 
 const expectedResults = [
   {
-    title: 'Send ETH',
+    title: 'Send',
     category: TRANSACTION_GROUP_CATEGORIES.SEND,
     subtitle: 'To: 0xffe5...1a97',
     subtitleContainsOrigin: false,
@@ -40,7 +40,7 @@ const expectedResults = [
     isSubmitted: false,
   },
   {
-    title: 'Send ETH',
+    title: 'Send',
     category: TRANSACTION_GROUP_CATEGORIES.SEND,
     subtitle: 'To: 0x0ccc...8848',
     subtitleContainsOrigin: false,
@@ -53,7 +53,7 @@ const expectedResults = [
     displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
   },
   {
-    title: 'Send ETH',
+    title: 'Send',
     category: TRANSACTION_GROUP_CATEGORIES.SEND,
     subtitle: 'To: 0xffe5...1a97',
     subtitleContainsOrigin: false,

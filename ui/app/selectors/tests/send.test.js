@@ -491,7 +491,7 @@ describe('send selectors', function () {
               token: null,
             }),
           ),
-          'sendETH',
+          'send',
         );
       });
     });
