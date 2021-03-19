@@ -189,7 +189,13 @@ export default class MetamaskController extends EventEmitter {
 
     this.incomingTransactionsController = new IncomingTransactionsController({
       blockTracker: this.blockTracker,
-      networkController: this.networkController,
+      onNetworkDidChange: this.networkController.on.bind(
+        this.networkController,
+        NETWORK_EVENTS.NETWORK_DID_CHANGE,
+      ),
+      getCurrentChainId: this.networkController.getCurrentChainId.bind(
+        this.networkController,
+      ),
       preferencesController: this.preferencesController,
       initState: initState.IncomingTransactionsController,
     });

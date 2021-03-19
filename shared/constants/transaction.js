@@ -31,6 +31,12 @@
  */
 
 /**
+ * This type will work anywhere you expect a string that can be one of the
+ * above transaction types.
+ * @typedef {TransactionTypes[keyof TransactionTypes]} TransactionTypeString
+ */
+
+/**
  * @type {TransactionTypes}
  */
 export const TRANSACTION_TYPES = {
@@ -63,6 +69,12 @@ export const TRANSACTION_TYPES = {
  * @property {'dropped'} DROPPED - The transaction was dropped due to a tx with same
  *  nonce being accepted
  * @property {'confirmed'} CONFIRMED - The transaction was confirmed by the network
+ */
+
+/**
+ * This type will work anywhere you expect a string that can be one of the
+ * above transaction statuses.
+ * @typedef {TransactionStatuses[keyof TransactionStatuses]} TransactionStatusString
  */
 
 /**
@@ -132,3 +144,45 @@ export const TRANSACTION_GROUP_CATEGORIES = {
   SIGNATURE_REQUEST: 'signature-request',
   SWAP: 'swap',
 };
+
+/**
+ * @typedef {Object} TxParams
+ * @property {string} from - The address the transaction is sent from
+ * @property {string} to - The address the transaction is sent to
+ * @property {string} value - The amount of wei, in hexadecimal, to send
+ * @property {number} nonce - The transaction count for the current account/network
+ * @property {string} gasPrice - The amount of gwei, in hexadecimal, per unit of gas
+ * @property {string} gas - The max amount of gwei, in hexadecimal, the user is willing to pay
+ * @property {string} [data] - Hexadecimal encoded string representing calls to the EVM's ABI
+ */
+/**
+ * An object representing a transaction, in whatever state it is in.
+ * @typedef {Object} TransactionMeta
+ *
+ * @property {string} [blockNumber] - The block number this transaction was
+ *  included in. Currently only present on incoming transactions!
+ * @property {number} id - An internally unique tx identifier.
+ * @property {number} time - Time the transaction was first suggested, in unix
+ *  epoch time (ms).
+ * @property {TransactionTypeString} type - The type of transaction this txMeta
+ *  represents.
+ * @property {TransactionStatusString} status - The current status of the
+ *  transaction.
+ * @property {string} metamaskNetworkId - The transaction's network ID, used
+ *  for EIP-155 compliance.
+ * @property {boolean} loadingDefaults - TODO: Document
+ * @property {TxParams} txParams - The transaction params as passed to the
+ *  network provider.
+ * @property {Object[]} history - A history of mutations to this
+ *  TransactionMeta object.
+ * @property {string} origin - A string representing the interface that
+ *  suggested the transaction.
+ * @property {Object} nonceDetails - A metadata object containing information
+ *  used to derive the suggested nonce, useful for debugging nonce issues.
+ * @property {string} rawTx - A hex string of the final signed transaction,
+ *  ready to submit to the network.
+ * @property {string} hash - A hex string of the transaction hash, used to
+ *  identify the transaction on the network.
+ * @property {number} submittedTime - The time the transaction was submitted to
+ *  the network, in Unix epoch time (ms).
+ */
