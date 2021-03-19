@@ -155,14 +155,15 @@ export default class DepositEtherModal extends Component {
               buttonLabel: this.context.t('viewAccount'),
               onButtonClick: () => this.goToAccountDetailsModal(),
             })}
-            {this.renderRow({
-              logo: <i className="fa fa-tint fa-2x" />,
-              title: this.context.t('testFaucet'),
-              text: this.context.t('getEtherFromFaucet', [networkName]),
-              buttonLabel: this.context.t('getEther'),
-              onButtonClick: () => toFaucet(chainId),
-              hide: !isTestnet,
-            })}
+            {networkName &&
+              this.renderRow({
+                logo: <i className="fa fa-tint fa-2x" />,
+                title: this.context.t('testFaucet'),
+                text: this.context.t('getEtherFromFaucet', [networkName]),
+                buttonLabel: this.context.t('getEther'),
+                onButtonClick: () => toFaucet(chainId),
+                hide: !isTestnet,
+              })}
           </div>
         </div>
       </div>
