@@ -9,8 +9,8 @@ import PortStream from 'extension-port-stream'
 const fs = require('fs')
 const path = require('path')
 
-const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'), 'utf8')
-const inpageSuffix = '//# sourceURL=' + extension.runtime.getURL('inpage.js') + '\n'
+const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'celo-inpage.js'), 'utf8')
+const inpageSuffix = '//# sourceURL=' + extension.runtime.getURL('celo-inpage.js') + '\n'
 const inpageBundle = inpageContent + inpageSuffix
 
 // Eventually this streaming injection could be replaced with:
@@ -60,10 +60,10 @@ async function start () {
 async function setupStreams () {
   // the transport-specific streams for communication between inpage and background
   const pageStream = new LocalMessageDuplexStream({
-    name: 'contentscript',
-    target: 'inpage',
+    name: 'celo-contentscript',
+    target: 'celo-inpage',
   })
-  const extensionPort = extension.runtime.connect({ name: 'contentscript' })
+  const extensionPort = extension.runtime.connect({ name: 'celo-contentscript' })
   const extensionStream = new PortStream(extensionPort)
 
   // create and connect channel muxers

@@ -99,7 +99,7 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
     })
     // inpage must be built before contentscript
     // because inpage bundle result is included inside contentscript
-    const contentscriptSubtask = createTask(`${taskPrefix}:contentscript`,
+    const contentscriptSubtask = createTask(`${taskPrefix}:celo-contentscript`,
       createTaskForBuildJsExtensionContentscript({ devMode, testing }),
     )
 
@@ -138,8 +138,8 @@ function createScriptTasks ({ browserPlatforms, livereload }) {
   }
 
   function createTaskForBuildJsExtensionContentscript ({ devMode, testing }) {
-    const inpage = 'inpage'
-    const contentscript = 'contentscript'
+    const inpage = 'celo-inpage'
+    const contentscript = 'celo-contentscript'
     return composeSeries(
       bundleTask({
         label: inpage,

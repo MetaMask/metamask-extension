@@ -24,7 +24,8 @@ async function start () {
     `background.js`,
     // `bg-libs`, skipped because source maps are invalid due to browserify bug: https://github.com/browserify/browserify/issues/1971
     // `contentscript.js`, skipped because the validator is erroneously sampling the inlined `inpage.js` script
-    `inpage.js`,
+    //`inpage.js`,
+    `celo-inpage.js`,
     'phishing-detect.js',
     `ui.js`,
     // `ui-libs.js`, skipped because source maps are invalid due to browserify bug: https://github.com/browserify/browserify/issues/1971

@@ -53,7 +53,7 @@
         "https://*/*"
       ],
       "js": [
-        "contentscript.js"
+        "celo-contentscript.js"
       ],
       "run_at": "document_start",
       "all_frames": true
@@ -80,7 +80,7 @@
     "notifications"
   ],
   "web_accessible_resources": [
-    "inpage.js",
+    "celo-inpage.js",
     "phishing.html"
   ],
   "externally_connectable": {
