@@ -937,9 +937,6 @@
   "sendAmount": {
     "message": "ಮೊತ್ತವನ್ನು ಕಳುಹಿಸಿ"
   },
-  "sendETH": {
-    "message": "ETH ಕಳುಹಿಸಿ"
-  },
   "sendTokens": {
     "message": "ಟೋಕನ್‌ಗಳನ್ನು ಕಳುಹಿಸಿ"
   },

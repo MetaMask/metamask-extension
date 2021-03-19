@@ -1404,9 +1404,6 @@
   "sendAmount": {
     "message": "Kirim Jumlah"
   },
-  "sendETH": {
-    "message": "Kirim ETH"
-  },
   "sendSpecifiedTokens": {
     "message": "Kirim $1",
     "description": "Symbol of the specified token"

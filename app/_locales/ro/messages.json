@@ -924,9 +924,6 @@
   "sendAmount": {
     "message": "Suma trimisă"
   },
-  "sendETH": {
-    "message": "Trimitere ETH"
-  },
   "sendTokens": {
     "message": "Trimiteți indicative"
   },

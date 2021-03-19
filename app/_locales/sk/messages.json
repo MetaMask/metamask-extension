@@ -900,9 +900,6 @@
   "sendAmount": {
     "message": "Poslať sumu"
   },
-  "sendETH": {
-    "message": "Odeslat ETH"
-  },
   "sendTokens": {
     "message": "Odeslat tokeny"
   },

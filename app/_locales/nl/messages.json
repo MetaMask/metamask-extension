@@ -323,9 +323,6 @@
   "send": {
     "message": "Sturen"
   },
-  "sendETH": {
-    "message": "Verzend ETH"
-  },
   "sendTokens": {
     "message": "Stuur tokens"
   },

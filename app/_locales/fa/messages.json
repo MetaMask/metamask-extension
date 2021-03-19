@@ -937,9 +937,6 @@
   "sendAmount": {
     "message": "ارسال مبلغ"
   },
-  "sendETH": {
-    "message": "ارسال ETH"
-  },
   "sendTokens": {
     "message": "رمزیاب ها را ارسال کنید"
   },

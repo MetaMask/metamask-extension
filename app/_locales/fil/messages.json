@@ -849,9 +849,6 @@
   "sendAmount": {
     "message": "Magpadala ng Halaga"
   },
-  "sendETH": {
-    "message": "Magpadala ng ETH"
-  },
   "sendTokens": {
     "message": "Magpadala ng Mga Token"
   },

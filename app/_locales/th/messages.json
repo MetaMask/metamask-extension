@@ -441,9 +441,6 @@
   "sendAmount": {
     "message": "ส่งจำนวนเงินนี้"
   },
-  "sendETH": {
-    "message": "ส่งอีเธอร์"
-  },
   "sendTokens": {
     "message": "ส่งโทเค็น"
   },

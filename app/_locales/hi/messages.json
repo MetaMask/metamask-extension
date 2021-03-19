@@ -1404,9 +1404,6 @@
   "sendAmount": {
     "message": "राशि भेजें"
   },
-  "sendETH": {
-    "message": "ETH भेजें"
-  },
   "sendSpecifiedTokens": {
     "message": "$1 भेजें",
     "description": "Symbol of the specified token"

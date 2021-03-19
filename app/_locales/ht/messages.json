@@ -585,9 +585,6 @@
   "send": {
     "message": "Voye"
   },
-  "sendETH": {
-    "message": "Voye ETH"
-  },
   "sendTokens": {
     "message": "Voye Tokens"
   },

@@ -921,9 +921,6 @@
   "sendAmount": {
     "message": "Skicka belopp"
   },
-  "sendETH": {
-    "message": "Skicka ETH"
-  },
   "sendTokens": {
     "message": "Skicka tokens"
   },

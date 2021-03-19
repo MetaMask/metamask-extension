@@ -378,9 +378,6 @@
   "send": {
     "message": "Gönder"
   },
-  "sendETH": {
-    "message": "ETH Gönder"
-  },
   "sendTokens": {
     "message": "Jeton Gönder"
   },
