@@ -481,7 +481,7 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
-function getNotificationFilters(state) {
+function getNotificationToExclude(state) {
   const currentNetworkIsMainnet = getIsMainnet(state);
   const swapsIsEnabled = getSwapsFeatureLiveness(state);
 
@@ -492,10 +492,10 @@ function getNotificationFilters(state) {
 
 export function getSortedNotificationsToShow(state) {
   const notifications = Object.values(state.metamask.notifications) || [];
-  const notificationFilters = getNotificationFilters(state);
+  const notificationToExclude = getNotificationToExclude(state);
   const notificationsToShow = notifications.filter(
     (notification) =>
-      !notification.isShown && !notificationFilters[notification.id],
+      !notification.isShown && !notificationToExclude[notification.id],
   );
   const notificationsSortedByDate = notificationsToShow.sort(
     (a, b) => new Date(b.date) - new Date(a.date),
