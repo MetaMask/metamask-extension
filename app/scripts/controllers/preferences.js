@@ -378,7 +378,7 @@ export default class PreferencesController {
    */
   async addToken(rawAddress, symbol, decimals, image) {
     const address = normalizeAddress(rawAddress);
-    const newEntry = { address, symbol, decimals };
+    const newEntry = { address, symbol, decimals: Number(decimals) };
     const { tokens, hiddenTokens } = this.store.getState();
     const assetImages = this.getAssetImages();
     const updatedHiddenTokens = hiddenTokens.filter(
