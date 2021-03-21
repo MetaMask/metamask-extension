@@ -31,6 +31,7 @@ export default class AddContact extends PureComponent {
     ensAddress: '',
     error: '',
     ensError: '',
+    memo: '',
   };
 
   constructor(props) {
@@ -126,6 +127,21 @@ export default class AddContact extends PureComponent {
               </div>
             )}
           </div>
+
+          <div className="address-book__view-contact__group">
+            <div className="address-book__view-contact__group__label">
+              {t('memo')}
+            </div>
+            <TextField
+              type="multiline"
+              id="memoInput"
+              placeholder="Add memo"
+              value={this.state.memo}
+              onChange={(e) => this.setState({ memo: e.target.value })}
+              fullWidth
+              margin="dense"
+            />
+          </div>
         </div>
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
@@ -134,6 +150,7 @@ export default class AddContact extends PureComponent {
             await addToAddressBook(
               this.state.ensAddress || this.state.ethAddress,
               this.state.newName,
+              this.state.memo,
             );
             history.push(CONTACT_LIST_ROUTE);
           }}
