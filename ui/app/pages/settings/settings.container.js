@@ -15,7 +15,6 @@ import {
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
-  CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
   CONTACT_VIEW_ROUTE,
   GENERAL_ROUTE,
   NETWORKS_FORM_ROUTE,
@@ -59,8 +58,6 @@ const mapStateToProps = (state, ownProps) => {
   let backRoute = SETTINGS_ROUTE;
   if (isEditContactPage) {
     backRoute = `${CONTACT_VIEW_ROUTE}/${pathNameTail}`;
-  } else if (isEditMyAccountsContactPage) {
-    backRoute = `${CONTACT_MY_ACCOUNTS_VIEW_ROUTE}/${pathNameTail}`;
   } else if (isAddressEntryPage || isMyAccountsPage || isAddContactPage) {
     backRoute = CONTACT_LIST_ROUTE;
   } else if (isNetworksFormPage) {
