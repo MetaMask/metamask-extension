@@ -590,12 +590,6 @@
   "myAccounts": {
     "message": "حساباتي"
   },
-  "myWalletAccounts": {
-    "message": "حسابات محفظتي"
-  },
-  "myWalletAccountsDescription": {
-    "message": "ستتم إضافة جميع حسابات MetaMask الخاصة بك والتي تم إنشاؤها تلقائياً إلى هذا القسم."
-  },
   "needEtherInWallet": {
     "message": "للتفاعل مع التطبيقات اللامركزية باستخدام MetaMask، ستحتاج إلى الإيثير في محفظتك."
   },

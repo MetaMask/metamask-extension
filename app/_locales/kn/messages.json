@@ -597,12 +597,6 @@
   "myAccounts": {
     "message": "ನನ್ನ ಖಾತೆಗಳು"
   },
-  "myWalletAccounts": {
-    "message": "ನನ್ನ ವ್ಯಾಲೆಟ್ ಖಾತೆಗಳು"
-  },
-  "myWalletAccountsDescription": {
-    "message": "ನಿಮ್ಮ MetaMask ರಚಿಸಿದ ಎಲ್ಲಾ ಖಾತೆಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಈ ವಿಭಾಗಕ್ಕೆ ಸೇರಿಸಲಾಗುತ್ತದೆ."
-  },
   "needEtherInWallet": {
     "message": "MetaMask ಬಳಸಿಕೊಂಡು ವಿಕೇಂದ್ರೀಕೃತ ಖಾತೆಗಳೊಂದಿಗೆ ಸಂವಹನ ನಡೆಸಲು, ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ನಲ್ಲಿ ನಿಮಗೆ ಎಥರ್ ಅಗತ್ಯವಿದೆ."
   },

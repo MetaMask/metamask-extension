@@ -593,12 +593,6 @@
   "myAccounts": {
     "message": "Mani konti"
   },
-  "myWalletAccounts": {
-    "message": "Mana maka konti"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Visi jūsu izveidotie MetaMask konti tiks automātiski pievienoti šajā sadaļā."
-  },
   "needEtherInWallet": {
     "message": "Lai izmantotu decentralizētas lietotnes ar MetaMask, jūsu makā jābūt Ether."
   },

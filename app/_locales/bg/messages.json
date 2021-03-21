@@ -593,12 +593,6 @@
   "myAccounts": {
     "message": "Моите акаунти"
   },
-  "myWalletAccounts": {
-    "message": "Моите акаунти в портфейла"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Всичките ви създадени от MetaMask акаунти ще бъдат автоматично добавени в този раздел."
-  },
   "needEtherInWallet": {
     "message": "За да взаимодействате с децентрализираните приложения, използвайки MetaMask, ще ви е необходим етер в портфейла ви."
   },

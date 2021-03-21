@@ -594,12 +594,6 @@
   "myAccounts": {
     "message": "Moje konta"
   },
-  "myWalletAccounts": {
-    "message": "Moja konta portfeli"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Wszystkie Twoje konta utworzone w MetaMask zostaną automatycznie dodane do tej sekcji."
-  },
   "needEtherInWallet": {
     "message": "Żeby skorzystać ze zdecentraliowanych aplikacji (dApps) przy pomocy MetaMask, potrzebujesz Eteru w swoim portfelu."
   },

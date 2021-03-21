@@ -594,12 +594,6 @@
   "myAccounts": {
     "message": "החשבונות שלי"
   },
-  "myWalletAccounts": {
-    "message": "חשבונות הארנק שלי"
-  },
-  "myWalletAccountsDescription": {
-    "message": "כל חשבונותיך שנוצרו ב-MetaMask יתווספו אוטומטית לחלק זה."
-  },
   "needEtherInWallet": {
     "message": "כדי לתקשר עם אפליקציות מבוזרות באמצעות MetaMask, צריך להיות לך את'ר בארנק."
   },

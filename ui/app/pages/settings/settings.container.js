@@ -72,11 +72,9 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   let initialBreadCrumbRoute;
-  let breadCrumbTextKey;
   let initialBreadCrumbKey;
   if (isMyAccountsPage) {
     initialBreadCrumbRoute = CONTACT_LIST_ROUTE;
-    breadCrumbTextKey = 'myWalletAccounts';
     initialBreadCrumbKey = ROUTES_TO_I18N_KEYS[initialBreadCrumbRoute];
   }
 
@@ -94,7 +92,6 @@ const mapStateToProps = (state, ownProps) => {
     pathnameI18nKey,
     addressName,
     initialBreadCrumbRoute,
-    breadCrumbTextKey,
     initialBreadCrumbKey,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
   };

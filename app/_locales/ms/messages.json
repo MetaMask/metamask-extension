@@ -577,12 +577,6 @@
   "myAccounts": {
     "message": "Akaun Saya"
   },
-  "myWalletAccounts": {
-    "message": "Akaun Dompet Saya"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Semua akaun ciptaan MetaMask anda akan ditambahkan secara automatik kepada bahagian ini."
-  },
   "needEtherInWallet": {
     "message": "Untuk berinteraksi dengan aplikasi ternyahpusat menggunakan MetaMask, anda memerlukan Ether di dalam dompet anda."
   },
