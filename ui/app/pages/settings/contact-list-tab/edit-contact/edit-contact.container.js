@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import { getAddressBookEntry } from '../../../../selectors';
 import {
   CONTACT_VIEW_ROUTE,
-  CONTACT_MY_ACCOUNTS_ROUTE,
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
   CONTACT_LIST_ROUTE,
@@ -43,9 +42,7 @@ const mapStateToProps = (state, ownProps) => {
     viewRoute: showingMyAccounts
       ? CONTACT_MY_ACCOUNTS_VIEW_ROUTE
       : CONTACT_VIEW_ROUTE,
-    listRoute: showingMyAccounts
-      ? CONTACT_MY_ACCOUNTS_ROUTE
-      : CONTACT_LIST_ROUTE,
+    listRoute: CONTACT_LIST_ROUTE,
     showingMyAccounts,
   };
 };

@@ -14,7 +14,6 @@ import {
   CONTACT_LIST_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
-  CONTACT_MY_ACCOUNTS_ROUTE,
   CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
   CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
   CONTACT_VIEW_ROUTE,
@@ -34,7 +33,6 @@ const ROUTES_TO_I18N_KEYS = {
   [CONTACT_ADD_ROUTE]: 'newContact',
   [CONTACT_EDIT_ROUTE]: 'editContact',
   [CONTACT_LIST_ROUTE]: 'contacts',
-  [CONTACT_MY_ACCOUNTS_ROUTE]: 'myAccounts',
   [CONTACT_VIEW_ROUTE]: 'viewContact',
   [NETWORKS_ROUTE]: 'networks',
   [NETWORKS_FORM_ROUTE]: 'networks',
@@ -59,9 +57,7 @@ const mapStateToProps = (state, ownProps) => {
   const pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname];
 
   let backRoute = SETTINGS_ROUTE;
-  if (isMyAccountsPage && isAddressEntryPage) {
-    backRoute = CONTACT_MY_ACCOUNTS_ROUTE;
-  } else if (isEditContactPage) {
+  if (isEditContactPage) {
     backRoute = `${CONTACT_VIEW_ROUTE}/${pathNameTail}`;
   } else if (isEditMyAccountsContactPage) {
     backRoute = `${CONTACT_MY_ACCOUNTS_VIEW_ROUTE}/${pathNameTail}`;
