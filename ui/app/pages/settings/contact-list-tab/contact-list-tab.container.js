@@ -31,7 +31,6 @@ const mapStateToProps = (state, ownProps) => {
     viewingContact,
     editingContact,
     addingContact,
-    showingMyAccounts,
     addressBook: getAddressBook(state),
     selectedAddress: pathNameTailIsAddress ? pathNameTail : '',
     hideAddressBook,

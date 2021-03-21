@@ -35,7 +35,6 @@ const mapStateToProps = (state, ownProps) => {
     memo,
     viewRoute: CONTACT_VIEW_ROUTE,
     listRoute: CONTACT_LIST_ROUTE,
-    showingMyAccounts,
   };
 };
 

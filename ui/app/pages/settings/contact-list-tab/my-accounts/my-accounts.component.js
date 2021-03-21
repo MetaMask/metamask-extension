@@ -9,17 +9,14 @@ export default class ViewContact extends PureComponent {
 
   static propTypes = {
     myAccounts: PropTypes.array,
-    history: PropTypes.object,
   };
 
   renderMyAccounts() {
-    const { myAccounts, history } = this.props;
+    const { myAccounts } = this.props;
 
     return (
       <div>
-        <ContactList
-          searchForMyAccounts={() => myAccounts}
-        />
+        <ContactList searchForMyAccounts={() => myAccounts} />
       </div>
     );
   }
