@@ -133,13 +133,13 @@ export default class AddContact extends PureComponent {
               {t('memo')}
             </div>
             <TextField
-              type="multiline"
               id="memoInput"
               placeholder="Add memo"
+              multiline
+              rows={4}
               value={this.state.memo}
               onChange={(e) => this.setState({ memo: e.target.value })}
               fullWidth
-              margin="dense"
             />
           </div>
         </div>
