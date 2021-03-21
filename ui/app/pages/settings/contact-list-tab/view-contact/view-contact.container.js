@@ -6,7 +6,6 @@ import { checksumAddress } from '../../../../helpers/utils/util';
 import {
   CONTACT_EDIT_ROUTE,
   CONTACT_LIST_ROUTE,
-  CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
 } from '../../../../helpers/constants/routes';
 import ViewContact from './view-contact.component';
 

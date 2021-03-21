@@ -14,7 +14,6 @@ import {
   CONTACT_LIST_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
-  CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
   GENERAL_ROUTE,
   NETWORKS_FORM_ROUTE,
@@ -47,9 +46,6 @@ const mapStateToProps = (state, ownProps) => {
   const isMyAccountsPage = pathname.match('my-accounts');
   const isAddContactPage = Boolean(pathname.match(CONTACT_ADD_ROUTE));
   const isEditContactPage = Boolean(pathname.match(CONTACT_EDIT_ROUTE));
-  const isEditMyAccountsContactPage = Boolean(
-    pathname.match(CONTACT_MY_ACCOUNTS_EDIT_ROUTE),
-  );
   const isNetworksFormPage = Boolean(pathname.match(NETWORKS_FORM_ROUTE));
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
