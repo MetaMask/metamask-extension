@@ -60,6 +60,7 @@
     "lavamoat:ui:auto": "WRITE_AUTO_POLICY=1 yarn start:lavamoat"
   },
   "resolutions": {
+    "**/regenerator-runtime": "^0.13.7",
     "**/configstore/dot-prop": "^5.1.1",
     "**/ethers/elliptic": "^6.5.4",
     "**/knex/minimist": "^1.2.5",
