@@ -1411,7 +1411,6 @@
     "concat-stream": {
       "globals": {
         "Buffer.concat": true,
-        "Buffer.from": true,
         "Buffer.isBuffer": true
       },
       "packages": {
@@ -2799,7 +2798,8 @@
       },
       "globals": {
         "__dirname": true,
-        "console.warn": true
+        "console.warn": true,
+        "define": true
       },
       "packages": {
         "fromentries": true,
@@ -4286,6 +4286,7 @@
         "process.nextTick": true
       },
       "packages": {
+        "inherits": true,
         "readable-stream": true,
         "xtend": true
       }

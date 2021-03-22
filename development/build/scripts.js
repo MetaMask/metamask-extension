@@ -270,7 +270,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         try {
           await pump(buildPipeline);
         } catch (err) {
-          gracefulError(err);
+          throw err
         }
       } else {
         await pump(buildPipeline);
@@ -307,7 +307,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     let bundler = browserify(browserifyOpts)
       .transform(babelify)
       .transform(brfs);
-
+    
     // apply lavamoat protections to UI
     if (opts.label === 'ui') bundler.plugin(lavamoat, lavamoatOpts)
 
