@@ -506,7 +506,7 @@ describe('MetaMaskController', function () {
       );
       assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
-        ['Trezor Hardware', {}],
+        ['Trezor Hardware'],
       );
       assert.equal(keyrings.length, 1);
     });
@@ -519,7 +519,7 @@ describe('MetaMaskController', function () {
       );
       assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
-        ['Ledger Hardware', { useLedgerLive: false }],
+        ['Ledger Hardware'],
       );
       assert.equal(keyrings.length, 1);
     });
