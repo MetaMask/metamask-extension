@@ -1,0 +1,37 @@
+diff --git a/node_modules/regenerator-runtime/runtime.js b/node_modules/regenerator-runtime/runtime.js
+index 547b8c6..529c6a1 100644
+--- a/node_modules/regenerator-runtime/runtime.js
++++ b/node_modules/regenerator-runtime/runtime.js
+@@ -5,7 +5,7 @@
+  * LICENSE file in the root directory of this source tree.
+  */
+ 
+-var runtime = (function (exports) {
++ var runtime = (function (exports) {
+   "use strict";
+ 
+   var Op = Object.prototype;
+@@ -102,8 +102,9 @@ var runtime = (function (exports) {
+ 
+   var Gp = GeneratorFunctionPrototype.prototype =
+     Generator.prototype = Object.create(IteratorPrototype);
+-  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
+-  GeneratorFunctionPrototype.constructor = GeneratorFunction;
++  GeneratorFunction.prototype = GeneratorFunctionPrototype;
++  define(Gp, "constructor", GeneratorFunctionPrototype);
++  define(GeneratorFunctionPrototype, "constructor", GeneratorFunction);
+   GeneratorFunction.displayName = define(
+     GeneratorFunctionPrototype,
+     toStringTagSymbol,
+@@ -416,9 +417,9 @@ var runtime = (function (exports) {
+     return this;
+   };
+ 
+-  Gp.toString = function() {
++  define(Gp, 'toString', function() {
+     return "[object Generator]";
+-  };
++  });
+ 
+   function pushTryEntry(locs) {
+     var entry = { tryLoc: locs[0] };
