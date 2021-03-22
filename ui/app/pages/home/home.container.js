@@ -38,6 +38,7 @@ import {
   ALERT_TYPES,
   WEB3_SHIM_USAGE_ALERT_STATES,
 } from '../../../../shared/constants/alerts';
+import { SUPPORTED_MESSAGE_TYPES } from '../confirmation/templates';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -102,7 +103,9 @@ const mapStateToProps = (state) => {
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
-    pendingApprovals: Object.values(pendingApprovals),
+    pendingApprovals: Object.values(pendingApprovals).filter((approval) =>
+      SUPPORTED_MESSAGE_TYPES.includes(approval.type),
+    ),
   };
 };
 

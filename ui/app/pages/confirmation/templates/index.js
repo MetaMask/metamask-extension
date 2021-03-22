@@ -12,6 +12,8 @@ const APPROVAL_TEMPLATES = {
   [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: switchEthereumChain,
 };
 
+export const SUPPORTED_MESSAGE_TYPES = Object.keys(APPROVAL_TEMPLATES);
+
 const ALLOWED_TEMPLATE_KEYS = [
   'content',
   'approvalText',
