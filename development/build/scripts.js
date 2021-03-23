@@ -286,7 +286,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       fullPaths: opts.devMode,
     });
 
-    if (opts.label === 'ui') assign(browserifyOpts, lavamoat.opts)
+    if (opts.label === 'ui') assign(browserifyOpts, lavamoat.args)
 
     const lavamoatOpts = {
       policy: path.resolve(__dirname, '../../lavamoat/browserify/policy.json'),
