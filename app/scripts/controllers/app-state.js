@@ -22,7 +22,6 @@ export default class AppStateController extends EventEmitter {
     this.store = new ObservableStore({
       timeoutMinutes: 0,
       connectedStatusPopoverHasBeenShown: true,
-      swapsWelcomeMessageHasBeenShown: false,
       defaultHomeActiveTabName: null,
       ...initState,
     });
