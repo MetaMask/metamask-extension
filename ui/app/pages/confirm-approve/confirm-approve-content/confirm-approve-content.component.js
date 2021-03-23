@@ -50,7 +50,6 @@ export default class ConfirmApproveContent extends Component {
     content,
     footer,
     noBorder,
-    useNonceField,
   }) {
     return (
       <div
@@ -77,9 +76,7 @@ export default class ConfirmApproveContent extends Component {
             )}
           </div>
         )}
-        <div className="confirm-approve-content__card-content">
-          {content}
-        </div>
+        <div className="confirm-approve-content__card-content">{content}</div>
         {footer}
       </div>
     );
