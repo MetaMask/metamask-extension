@@ -77,12 +77,7 @@ export default class ConfirmApproveContent extends Component {
             )}
           </div>
         )}
-        <div
-          className={classnames({
-            'confirm-approve-content__card-content': !useNonceField,
-            'confirm-approve-content__custom-nonce__warning-content': useNonceField,
-          })}
-        >
+        <div className="confirm-approve-content__card-content">
           {content}
         </div>
         {footer}
