@@ -60,6 +60,11 @@ describe('Metamask Import UI', function () {
           tag: 'button',
         });
 
+        // close the what's new popup
+        const popover = await driver.findElement('.popover-container');
+        await driver.clickElement('[data-testid="popover-close"]');
+        await popover.waitForElementState('hidden');
+
         // Show account information
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',

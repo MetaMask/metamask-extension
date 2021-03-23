@@ -137,6 +137,24 @@ describe('MetaMask', function () {
     });
   });
 
+  describe("Close the what's new popup", function () {
+    it("should show the what's new popover", async function () {
+      const popoverTitle = await driver.findElement(
+        '.popover-header__title h2',
+      );
+
+      assert.equal(await popoverTitle.getText(), "What's new");
+    });
+
+    it("should close the what's new popup", async function () {
+      const popover = await driver.findElement('.popover-container');
+
+      await driver.clickElement('[data-testid="popover-close"]');
+
+      await popover.waitForElementState('hidden');
+    });
+  });
+
   describe('Show account information', function () {
     it('shows the QR code for the account', async function () {
       await driver.clickElement('[data-testid="account-options-menu-button"]');
