@@ -1,22 +1,22 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
-import Identicon from '../../../../components/ui/identicon';
-import TextField from '../../../../components/ui/text-field';
-import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes';
+import Identicon from '../../../ui/identicon';
+import TextField from '../../../ui/text-field';
 import {
   isValidAddress,
   isValidDomainName,
 } from '../../../../helpers/utils/util';
-import EnsInput from '../../../send/send-content/add-recipient/ens-input';
-import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
+import EnsInput from '../../../../pages/send/send-content/add-recipient/ens-input';
+import PageContainerFooter from '../../../ui/page-container/page-container-footer';
 
-export default class AddContact extends PureComponent {
+export default class AddNewContactModal extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
   };
 
   static propTypes = {
+    hideModal: PropTypes.func.isRequired,
     addToAddressBook: PropTypes.func,
     history: PropTypes.object,
     scanQrCode: PropTypes.func,
@@ -152,10 +152,10 @@ export default class AddContact extends PureComponent {
               this.state.newName,
               this.state.memo,
             );
-            history.push(CONTACT_LIST_ROUTE);
+            this.props.hideModal();
           }}
           onCancel={() => {
-            history.push(CONTACT_LIST_ROUTE);
+            this.props.hideModal();
           }}
           submitText={this.context.t('save')}
           submitButtonType="confirm"

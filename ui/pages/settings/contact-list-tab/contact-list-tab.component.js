@@ -19,10 +19,10 @@ function AddressBookAddButton(props) {
     <div
       className="address-book-add-button__button button btn-secondary btn--rounded"
       onClick={() => {
-        dispatch(showModal({ name: 'DEPOSIT_ETHER' }));
+        dispatch(showModal({ name: 'ADD_NEW_CONTACT' }));
       }}
     >
-      <p>{label}</p>
+      <div>{label}</div>
     </div>
   );
 }
@@ -72,7 +72,7 @@ export default class ContactListTab extends Component {
           history.push(CONTACT_ADD_ROUTE);
         }}
       >
-        <p>Test button</p>
+        <div>Test button</div>
       </div>
     );
   }
@@ -163,7 +163,7 @@ export default class ContactListTab extends Component {
         {!addingContact && (
           <div className="address-book-add-button">
             <AddressBookAddButton label={this.context.t('addAccount')} />
-            <p>{this.renderAddButton()}</p>
+            <div>{this.renderAddButton()}</div>
           </div>
         )}
       </div>
