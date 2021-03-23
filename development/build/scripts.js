@@ -254,7 +254,9 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         // note: sourcemaps call arity is important
         buildPipeline.push(sourcemaps.write());
       } else {
-        buildPipeline.push(sourcemaps.write('../sourcemaps'));
+        buildPipeline.push(
+          sourcemaps.write('../sourcemaps', { addComment: false }),
+        );
       }
 
       // write completed bundles
