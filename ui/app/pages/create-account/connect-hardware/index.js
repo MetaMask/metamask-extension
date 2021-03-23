@@ -21,7 +21,7 @@ const BIP44_PATH = `m/44'/60'/0'/0`;
 const HD_PATHS = [
   { name: 'Ledger Live', value: LEDGER_LIVE_PATH },
   { name: 'Legacy (MEW / MyCrypto)', value: MEW_PATH },
-  { name: `BIP44 Standard (e.g. Trezor)`, value: BIP44_PATH },
+  { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: BIP44_PATH },
 ];
 
 class ConnectHardwareForm extends Component {
