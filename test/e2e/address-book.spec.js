@@ -151,6 +151,24 @@ describe('MetaMask', function () {
     });
   });
 
+  describe("Close the what's new popup", function () {
+    it("should show the what's new popover", async function () {
+      const popoverTitle = await driver.findElement(
+        By.css('.popover-header__title h2'),
+      );
+
+      assert.equal(await popoverTitle.getText(), "What's new");
+    });
+
+    it("should close the what's new popup", async function () {
+      const popover = await driver.findElement(By.css('.popover-container'));
+
+      await driver.clickElement(By.css('[data-testid="popover-close"]'));
+
+      await driver.wait(until.stalenessOf(popover));
+    });
+  });
+
   describe('Import seed phrase', function () {
     it('logs out of the vault', async function () {
       await driver.clickElement(By.css('.account-menu__icon'));
