@@ -1,0 +1,13 @@
+diff --git a/node_modules/web3/dist/web3.js b/node_modules/web3/dist/web3.js
+index 6eb151c..6aa4516 100644
+--- a/node_modules/web3/dist/web3.js
++++ b/node_modules/web3/dist/web3.js
+@@ -5072,7 +5072,7 @@ Method.prototype.toPayload = function (args) {
+ 
+ Method.prototype.attachToObject = function (obj) {
+     var func = this.buildCall();
+-    func.call = this.call; // TODO!!! that's ugly. filter.js uses it
++    Reflect.defineProperty(func, 'call', { value: this.call })
+     var name = this.name.split('.');
+     if (name.length > 1) {
+         obj[name[0]] = obj[name[0]] || {};
