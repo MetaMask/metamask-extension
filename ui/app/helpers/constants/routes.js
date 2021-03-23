@@ -104,6 +104,8 @@ const PATH_NAME_MAP = {
   [CONNECTED_ACCOUNTS_ROUTE]: 'Accounts Connected To This Site Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id`]: 'Confirmation Root Page',
   [CONFIRM_TRANSACTION_ROUTE]: 'Confirmation Root Page',
+  // TODO: rename when this is the only confirmation page
+  [CONFIRMATION_V_NEXT_ROUTE]: 'New Confirmation Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TOKEN_METHOD_PATH}`]: 'Confirm Token Method Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_ETHER_PATH}`]: 'Confirm Send Ether Transaction Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_TOKEN_PATH}`]: 'Confirm Send Token Transaction Page',

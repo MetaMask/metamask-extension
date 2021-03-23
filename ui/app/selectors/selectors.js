@@ -16,6 +16,19 @@ import {
   hexToDecimal,
 } from '../helpers/utils/conversions.util';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../helpers/constants/swaps';
+import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
+
+/**
+ * One of the only remaining valid uses of selecting the network subkey of the
+ * metamask state tree is to determine if the network is currently 'loading'.
+ *
+ * This will be used for all cases where this state key is accessed only for that
+ * purpose.
+ * @param {Object} state - redux state object
+ */
+export function isNetworkLoading(state) {
+  return state.metamask.network === 'loading';
+}
 
 export function getNetworkIdentifier(state) {
   const {
@@ -299,6 +312,13 @@ function getUnapprovedTxCount(state) {
 export function getUnapprovedConfirmations(state) {
   const { pendingApprovals } = state.metamask;
   return Object.values(pendingApprovals);
+}
+
+export function getUnapprovedTemplatedConfirmations(state) {
+  const unapprovedConfirmations = getUnapprovedConfirmations(state);
+  return unapprovedConfirmations.filter((approval) =>
+    TEMPLATED_CONFIRMATION_MESSAGE_TYPES.includes(approval.type),
+  );
 }
 
 function getSuggestedTokenCount(state) {
