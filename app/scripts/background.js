@@ -1,12 +1,6 @@
 /**
  * @file The entry point for the web extension singleton process.
  */
-// these need to run before anything else
-/* eslint-disable import/first,import/order */
-import setupFetchDebugging from './lib/setupFetchDebugging';
-/* eslint-enable import/order */
-
-setupFetchDebugging();
 
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
