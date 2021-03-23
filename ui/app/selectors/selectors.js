@@ -19,6 +19,7 @@ import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   ALLOWED_SWAPS_CHAIN_IDS,
 } from '../../../shared/constants/swaps';
+import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -323,6 +324,13 @@ function getUnapprovedTxCount(state) {
 export function getUnapprovedConfirmations(state) {
   const { pendingApprovals } = state.metamask;
   return Object.values(pendingApprovals);
+}
+
+export function getUnapprovedTemplatedConfirmations(state) {
+  const unapprovedConfirmations = getUnapprovedConfirmations(state);
+  return unapprovedConfirmations.filter((approval) =>
+    TEMPLATED_CONFIRMATION_MESSAGE_TYPES.includes(approval.type),
+  );
 }
 
 function getSuggestedTokenCount(state) {
