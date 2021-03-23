@@ -8,19 +8,45 @@ import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
 import { updateViewedNotifications } from '../../../store/actions';
-import {
-  UI_NOTIFICATIONS,
-  notifcationActionFunctions,
-} from '../../../../../shared/notifications';
+import { UI_NOTIFICATIONS } from '../../../../../shared/notifications';
+import { ETH_SWAPS_TOKEN_OBJECT } from '../../../../../shared/constants/swaps';
+import { BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes';
 import { getSortedNotificationsToShow } from '../../../selectors';
+
+function getActionFunctions(metricsEvent) {
+  const actionFunctions = {
+    1: () => {
+      metricsEvent({
+        event: 'Swaps Opened',
+        properties: { source: 'Main View', active_currency: 'ETH' },
+        category: 'swaps',
+      });
+      global.platform.openExtensionInBrowser(
+        BUILD_QUOTE_ROUTE,
+        `fromAddress=${ETH_SWAPS_TOKEN_OBJECT.address}`,
+      );
+    },
+    2: () => {
+      global.platform.openTab({
+        url: 'https://metamask.io/download.html',
+      });
+    },
+    3: () => {
+      global.platform.openTab({
+        url:
+          'https://survey.alchemer.com/s3/6173069/MetaMask-Extension-NPS-January-2021',
+      });
+    },
+  };
+
+  return actionFunctions;
+}
 
 export default function WhatsNewPopup({ onClose }) {
   const metricsEvent = useContext(MetaMetricsContext);
   const t = useContext(I18nContext);
 
-  const getNotifcationActionFunctionsById = notifcationActionFunctions(
-    metricsEvent,
-  );
+  const actionFunctions = getActionFunctions(metricsEvent);
 
   const notifications = useSelector(getSortedNotificationsToShow);
 
@@ -103,9 +129,7 @@ export default function WhatsNewPopup({ onClose }) {
                     type="secondary"
                     className="whats-new-popup__button"
                     rounded
-                    onClick={() =>
-                      getNotifcationActionFunctionsById(notification.id)()
-                    }
+                    onClick={actionFunctions[notification.id]}
                   >
                     {t(notification.actionText)}
                   </Button>
@@ -113,7 +137,7 @@ export default function WhatsNewPopup({ onClose }) {
                 {!isFirstNotification && UI_NOTIFICATIONS[id].actionText && (
                   <div
                     className="whats-new-popup__link"
-                    onClick={getNotifcationActionFunctionsById(notification.id)}
+                    onClick={actionFunctions[notification.id]}
                   >
                     {t(notification.actionText)}
                   </div>
