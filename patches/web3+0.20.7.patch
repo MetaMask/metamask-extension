@@ -11,3 +11,16 @@ index 6eb151c..6aa4516 100644
      var name = this.name.split('.');
      if (name.length > 1) {
          obj[name[0]] = obj[name[0]] || {};
+diff --git a/node_modules/web3/lib/web3/method.js b/node_modules/web3/lib/web3/method.js
+index 2e3c796..be0b663 100644
+--- a/node_modules/web3/lib/web3/method.js
++++ b/node_modules/web3/lib/web3/method.js
+@@ -123,7 +123,7 @@ Method.prototype.toPayload = function (args) {
+ 
+ Method.prototype.attachToObject = function (obj) {
+     var func = this.buildCall();
+-    func.call = this.call; // TODO!!! that's ugly. filter.js uses it
++    Reflect.defineProperty(func, 'call', { value: this.call })
+     var name = this.name.split('.');
+     if (name.length > 1) {
+         obj[name[0]] = obj[name[0]] || {};
