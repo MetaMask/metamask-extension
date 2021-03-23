@@ -1,6 +1,6 @@
 {
   "name": "celodesktopwallet-crx",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "postinstall": "rm -rf node_mudules/web3-core/ node_mudules/web3-core-helpers/ node_mudules/web3-eth-contract/; cp -r node_modules/web3/packages/web3-core node_modules/; cp -r node_modules/web3/packages/web3-core-helpers node_modules/; cp -r node_modules/web3/packages/web3-eth-contract node_modules/; ",

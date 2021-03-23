@@ -14156,7 +14156,7 @@ ipfs-http-client@^32.0.0:
     bs58 "^4.0.1"
     buffer "^5.2.1"
     cids "~0.7.1"
-    concat-stream "github:hugomrdias/concat-stream#feat/smaller"
+    concat-stream "github:dsrvlabs/concat-stream#feat/smaller"
     debug "^4.1.0"
     detect-node "^2.0.4"
     end-of-stream "^1.4.1"
@@ -14180,7 +14180,7 @@ ipfs-http-client@^32.0.0:
     multibase "~0.6.0"
     multicodec "~0.5.1"
     multihashes "~0.4.14"
-    ndjson "github:hugomrdias/ndjson#feat/readable-stream3"
+    ndjson "github:dsrvlabs/ndjson#feat/readable-stream3"
     once "^1.4.0"
     peer-id "~0.12.2"
     peer-info "~0.15.1"
@@ -16987,7 +16987,7 @@ libp2p-websockets@^0.12.2, libp2p-websockets@~0.12.2:
     interface-connection "~0.3.2"
     mafmt "^6.0.4"
     multiaddr-to-uri "^4.0.1"
-    pull-ws hugomrdias/pull-ws#fix/bundle-size
+    pull-ws dsrvlabs/pull-ws#fix/bundle-size
 
 libp2p@~0.25.3:
   version "0.25.5"
