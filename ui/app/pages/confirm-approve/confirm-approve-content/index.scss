@@ -296,29 +296,58 @@
   &__custom-nonce {
     width: 100%;
 
+    &__warning-wrapper {
+      width: 100%;
+      height: 35px;
+    }
+
+    &__warning-content {
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+
     &__content {
-      margin-bottom: 2px;
-      margin-top: 8px;
+      position: relative;
       display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
+      flex-flow: row;
+      height: 49px;
+      margin-top: 5px;
+      margin-bottom: 6px;
+      padding: 15px 12px 14px 12px;
+      border: 1px solid #bbc0c5;
+      box-sizing: border-box;
+      border-radius: 6px;
+      align-items: baseline;
     }
 
-    &__label {
-      @include H7;
-
-      font-weight: 500;
-      color: $scorpion;
-      text-transform: uppercase;
+    &__small-text,
+    &__small-bold-text,
+    &__small-blue-text {
+      font-style: normal;
+      font-family: 'Euclid';
     }
 
-    .custom-nonce-input {
-      input {
-        @include Paragraph;
+    &__small-text,
+    &__small-bold-text {
+      font-size: 14px;
+      color: #000;
+    }
 
-        width: 90px;
-      }
+    &__small-text,
+    &__small-blue-text {
+      font-weight: 400;
+    }
+
+    &__small-blue-text {
+      font-size: 12px;
+      color: $primary-blue;
+      padding-left: 6px;
+    }
+
+    &__small-bold-text {
+      font-weight: 700;
+      position: absolute;
+      right: 10px;
     }
   }
 }

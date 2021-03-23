@@ -574,6 +574,12 @@
   "editContact": {
     "message": "Edit Contact"
   },
+  "editNonceField": {
+    "message": "Edit Nonce"
+  },
+  "editNonceMessage": {
+    "message": "Use this advanced feature to cancel or speed up older transactions.  "
+  },
   "editPermission": {
     "message": "Edit Permission"
   },
@@ -1184,6 +1190,9 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webcam not found"
+  },
+  "nonce": {
+    "message": "Nonce"
   },
   "nonceField": {
     "message": "Customize transaction nonce"

@@ -1,0 +1,91 @@
+.customize-nonce-modal {
+  padding-left: 24px;
+  padding-right: 18px;
+  display: flex;
+  flex-flow: column nowrap;
+
+  &__main-header {
+    display: flex;
+    flex-flow: row;
+    justify-content: left;
+    align-items: left;
+    position: relative;
+    padding-top: 24px;
+
+    &__close {
+      @include H4;
+
+      color: #24292e;
+      background: none;
+      position: absolute;
+      right: 10px;
+      width: 0.75rem;
+      height: 0.75rem;
+      cursor: pointer;
+    }
+  }
+
+  &__title {
+    @include H4;
+
+    font-family: 'Euclid';
+    font-weight: bold;
+  }
+
+  &__description {
+    @include H6;
+
+    font-family: 'Euclid';
+    font-weight: normal;
+    padding-top: 8px;
+
+    &__link {
+      color: $primary-blue;
+      cursor: pointer;
+    }
+  }
+
+  &__content {
+    padding-top: 32px;
+
+    &__header {
+      display: flex;
+      flex-flow: row;
+
+      &__label {
+        @include H6;
+
+        font-family: 'Euclid';
+        font-weight: bold;
+        color: black;
+      }
+
+      &__reset {
+        @include H7;
+
+        padding-left: 160px;
+        font-family: 'Euclid';
+        font-weight: normal;
+        color: $primary-blue;
+        cursor: pointer;
+      }
+    }
+
+    &__input {
+      input {
+        @include Paragraph;
+
+        width: 100%;
+      }
+    }
+  }
+}
+
+.customize-nonce-modal-content {
+  padding: 0;
+}
+
+.customize-nonce-modal-container {
+  height: 304px;
+  width: 100%;
+}

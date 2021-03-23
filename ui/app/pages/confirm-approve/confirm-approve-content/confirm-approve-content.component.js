@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import Identicon from '../../../components/ui/identicon';
 import { addressSummary } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import TextField from '../../../components/ui/text-field';
+import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -33,6 +33,8 @@ export default class ConfirmApproveContent extends Component {
     updateCustomNonce: PropTypes.func,
     getNextNonce: PropTypes.func,
     nextNonce: PropTypes.number,
+    showCustomizeNonceModal: PropTypes.func,
+    warning: PropTypes.string,
   };
 
   state = {
@@ -48,6 +50,7 @@ export default class ConfirmApproveContent extends Component {
     content,
     footer,
     noBorder,
+    useNonceField,
   }) {
     return (
       <div
@@ -74,7 +77,14 @@ export default class ConfirmApproveContent extends Component {
             )}
           </div>
         )}
-        <div className="confirm-approve-content__card-content">{content}</div>
+        <div
+          className={classnames({
+            'confirm-approve-content__card-content': !useNonceField,
+            'confirm-approve-content__custom-nonce__warning-content': useNonceField,
+          })}
+        >
+          {content}
+        </div>
         {footer}
       </div>
     );
@@ -164,33 +174,30 @@ export default class ConfirmApproveContent extends Component {
       updateCustomNonce,
       getNextNonce,
       nextNonce,
+      showCustomizeNonceModal,
     } = this.props;
     return (
       <>
         {useNonceField && (
           <div className="confirm-approve-content__custom-nonce__content">
-            <div className="confirm-approve-content__custom-nonce__label">
-              {t('nonceFieldHeading')}
+            <div className="confirm-approve-content__custom-nonce__small-text">
+              {t('nonce')}
             </div>
-            <div className="custom-nonce-input">
-              <TextField
-                type="number"
-                min="0"
-                placeholder={
-                  typeof nextNonce === 'number' ? nextNonce.toString() : null
-                }
-                onChange={({ target: { value } }) => {
-                  if (!value.length || Number(value) < 0) {
-                    updateCustomNonce('');
-                  } else {
-                    updateCustomNonce(String(Math.floor(value)));
-                  }
-                  getNextNonce();
-                }}
-                fullWidth
-                margin="dense"
-                value={customNonceValue || ''}
-              />
+            <div
+              className="confirm-approve-content__custom-nonce__small-blue-text cursor-pointer"
+              onClick={() =>
+                showCustomizeNonceModal({
+                  nextNonce,
+                  customNonceValue,
+                  updateCustomNonce,
+                  getNextNonce,
+                })
+              }
+            >
+              Edit
+            </div>
+            <div className="confirm-approve-content__custom-nonce__small-bold-text">
+              {customNonceValue || nextNonce}
             </div>
           </div>
         )}
@@ -212,6 +219,7 @@ export default class ConfirmApproveContent extends Component {
       setCustomAmount,
       tokenBalance,
       useNonceField,
+      warning,
     } = this.props;
     const { showFullTxDetails } = this.state;
 
@@ -221,6 +229,11 @@ export default class ConfirmApproveContent extends Component {
           'confirm-approve-content--full': showFullTxDetails,
         })}
       >
+        {warning && (
+          <div className="confirm-approve-content__custom-nonce__warning-wrapper">
+            <ConfirmPageContainerWarning warning={warning} />
+          </div>
+        )}
         <div className="confirm-approve-content__identicon-wrapper">
           <Identicon
             className="confirm-approve-content__identicon"
@@ -261,8 +274,8 @@ export default class ConfirmApproveContent extends Component {
             showEdit: true,
             onEditClick: showCustomizeGasModal,
             content: this.renderTransactionDetailsContent(),
-            noBorder: !showFullTxDetails,
-            footer: (
+            noBorder: useNonceField || !showFullTxDetails,
+            footer: !useNonceField && (
               <div
                 className="confirm-approve-content__view-full-tx-button-wrapper"
                 onClick={() =>
@@ -285,6 +298,35 @@ export default class ConfirmApproveContent extends Component {
               </div>
             ),
           })}
+          {useNonceField &&
+            this.renderApproveContentCard({
+              showHeader: false,
+              content: this.renderCustomNonceContent(),
+              useNonceField,
+              noBorder: !showFullTxDetails,
+              footer: (
+                <div
+                  className="confirm-approve-content__view-full-tx-button-wrapper"
+                  onClick={() =>
+                    this.setState({
+                      showFullTxDetails: !this.state.showFullTxDetails,
+                    })
+                  }
+                >
+                  <div className="confirm-approve-content__view-full-tx-button cursor-pointer">
+                    <div className="confirm-approve-content__small-blue-text">
+                      View full transaction details
+                    </div>
+                    <i
+                      className={classnames({
+                        'fa fa-caret-up': showFullTxDetails,
+                        'fa fa-caret-down': !showFullTxDetails,
+                      })}
+                    />
+                  </div>
+                </div>
+              ),
+            })}
         </div>
 
         {showFullTxDetails ? (
@@ -314,13 +356,6 @@ export default class ConfirmApproveContent extends Component {
                 symbol: <i className="fa fa-file" />,
                 title: 'Data',
                 content: this.renderDataContent(),
-                noBorder: !useNonceField,
-              })}
-            </div>
-            <div className="confirm-approve-content__custom-nonce">
-              {this.renderApproveContentCard({
-                showHeader: false,
-                content: this.renderCustomNonceContent(),
                 noBorder: true,
               })}
             </div>
