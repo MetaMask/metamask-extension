@@ -19,6 +19,11 @@
       "globals": {
         "setTimeout": true
       }
+    },
+    "@ethersproject/random": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
     }
   }
 }
