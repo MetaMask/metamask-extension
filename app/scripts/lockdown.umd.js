@@ -2518,36 +2518,31 @@
    *     leads to another record explaining which properties {@code
    *     Function.prototype} need to be repaired.
    */
+
+  /**
+   * Minimal enablements when all the code is modern and known not to
+   * step into the override mistake, except for the following pervasive
+   * cases.
+   */
+  const minEnablements = {
+    '%ObjectPrototype%': {
+      toString: true,
+    },
+
+    '%FunctionPrototype%': {
+      toString: true, // set by "rollup"
+    },
+
+    '%ErrorPrototype%': {
+      name: true, // set by "precond", "ava", "node-fetch"
+    },
+  };
+
+  /**
+   * Moderate enablements are usually good enough for legacy compat.
+   */
   const moderateEnablements = {
     '%ObjectPrototype%': {
-      // Acorn 7 does override `constructor` by assignment, but
-      // this is fixed as of acorn 8. Including the commented out
-      // line below in this list confuses the Node console.
-      // See https://github.com/Agoric/agoric-sdk/issues/2324
-      //
-      // So please update all
-      // acorn dependencies to at least 8 instead. We are unable to do
-      // so at this time due to a dependency via rollup. Instead we
-      // do a post-install patch of acorn.
-      // See https://github.com/Agoric/SES-shim/pull/588
-      // If you are similarly stuck, do likewise. Or uncomment out
-      // the following line and let us know why. The only known
-      // cost is the ugly display from the Node console.
-      //
-      // constructor: true, // set by acorn 7, d3-color
-
-      // As explained at
-      // https://github.com/vega/vega/issues/3075
-      // vega overrides `Object.prototype.hasOwnProperty` by
-      // assignment. Those running into this should consider applying
-      // the patch
-      // https://github.com/Agoric/agoric-sdk/blob/master/patches/vega-util%2B1.16.0.patch
-      // as we do, or
-      // https://github.com/vega/vega/pull/3109/commits/50741c7e9035c407205ae45983470b8cb27c2da7
-      // The owner of vega is aware of the concern, so this
-      // may eventually be fixed at the source.
-      // hasOwnProperty: true, // set by "vega-util".
-
       toString: true,
       valueOf: true,
     },
@@ -2617,18 +2612,52 @@
     },
   };
 
-  const minEnablements = {
-    '%ObjectPrototype%': {
-      toString: true,
-    },
+  /**
+   * The 'severe' enablement are needed because of issues tracked at
+   * https://github.com/endojs/endo/issues/576
+   *
+   * They are like the `moderate` enablements except for the entries below.
+   */
+  const severeEnablements = {
+    ...moderateEnablements,
 
-    '%FunctionPrototype%': {
-      toString: true, // set by "rollup"
-    },
+    /**
+     * Rollup(as used at least by vega) and webpack
+     * (as used at least by regenerator) both turn exports into assignments
+     * to a big `exports` object that inherits directly from
+     * `Object.prototype`.Some of the exported names we've seen include
+     * `hasOwnProperty`, `constructor`, and `toString`. But the strategy used
+     * by rollup and webpack means potentionally turns any exported name
+     * into an assignment rejected by the override mistake.That's why
+     * we take the extreme step of enabling everything on`Object.prototype`.
+     *
+     * In addition, code doing inheritance manually will often override
+     * the `constructor` property on the new prototype by assignment. We've
+     * see this several times.
+     *
+     * The cost of enabling all these is that they create a miserable debugging
+     * experience. https://github.com/Agoric/agoric-sdk/issues/2324 explains
+     * how it confused the Node console.
+     *
+     * The vscode debugger's object inspector shows the own data properties of
+     * an object, which is typically what you want, but also shows both getter
+     * and setter for every accessor property whether inherited or own.
+     * With the `'*'` setting here, all the properties inherited from
+     * `Object.prototype` are accessors, creating an unusable display as seen
+     * at As explained at
+     * https://github.com/endojs/endo/blob/master/packages/ses/lockdown-options.md#overridetaming-options
+     * Open the triangles at the bottom of that section.
+     */
+    '%ObjectPrototype%': '*',
 
-    '%ErrorPrototype%': {
-      name: true, // set by "precond", "ava", "node-fetch"
-    },
+    /**
+     * The widely used Buffer defined at https://github.com/feross/buffer
+     * on initialization, manually creates the equivalent of a subclass of
+     * `TypedArray`, which it then initializes by assignment. These assignments
+     * include enough of the `TypeArray` methods that here, we just enable
+     * them all.
+     */
+    '%TypedArrayPrototype%': '*',
   };
 
   // Adapted from SES/Caja
@@ -2690,7 +2719,7 @@
    * property with that value.
    *
    * @param {Record<string, any>} intrinsics
-   * @param {'min' | 'moderate'} overrideTaming
+   * @param {'min' | 'moderate' | 'severe'} overrideTaming
    */
   function enablePropertyOverrides(intrinsics, overrideTaming) {
     function enable(path, obj, prop, desc) {
@@ -2791,6 +2820,10 @@
       }
       case 'moderate': {
         plan = moderateEnablements;
+        break;
+      }
+      case 'severe': {
+        plan = severeEnablements;
         break;
       }
       default: {
@@ -5058,7 +5091,7 @@
    *   regExpTaming?: 'safe' | 'unsafe',
    *   localeTaming?: 'safe' | 'unsafe',
    *   consoleTaming?: 'safe' | 'unsafe',
-   *   overrideTaming?: 'min' | 'moderate',
+   *   overrideTaming?: 'min' | 'moderate' | 'severe',
    *   stackFiltering?: 'concise' | 'verbose',
    * }} LockdownOptions
    */
