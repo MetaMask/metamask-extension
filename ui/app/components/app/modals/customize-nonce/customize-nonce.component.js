@@ -37,12 +37,6 @@ export default class CustomizeNonce extends PureComponent {
     this.props.hideModal();
   };
 
-  onKeyPress = (e) => {
-    if (e.key === 'Enter' && this.state.customNonceValue) {
-      this.onSubmit();
-    }
-  };
-
   onReset = () => {
     const { nextNonce } = this.props;
     this.setState({
