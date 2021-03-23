@@ -9,6 +9,11 @@
       "packages": {
         "@babel/runtime": true
       }
+    },
+    "node-fetch": {
+      "globals": {
+        "fetch": true
+      }
     }
   }
 }

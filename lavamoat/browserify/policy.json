@@ -997,16 +997,6 @@
         "process": true
       }
     },
-    "deep-equal": {
-      "packages": {
-        "is-arguments": true,
-        "is-date-object": true,
-        "is-regex": true,
-        "object-is": true,
-        "object-keys": true,
-        "regexp.prototype.flags": true
-      }
-    },
     "deep-extend": {
       "packages": {
         "buffer": true
@@ -1016,11 +1006,6 @@
       "packages": {
         "abstract-leveldown": true,
         "inherits": true
-      }
-    },
-    "define-properties": {
-      "packages": {
-        "object-keys": true
       }
     },
     "des.js": {
@@ -1152,12 +1137,6 @@
     "errno": {
       "packages": {
         "prr": true
-      }
-    },
-    "es-abstract": {
-      "packages": {
-        "function-bind": true,
-        "has-symbols": true
       }
     },
     "eth-block-tracker": {
@@ -1523,13 +1502,11 @@
       "globals": {
         "addEventListener": true,
         "clearTimeout": true,
-        "document.documentElement.attachEvent": true,
-        "document.documentElement.detachEvent": true,
         "removeEventListener": true,
         "setTimeout": true
       },
       "packages": {
-        "deep-equal": true
+        "fast-deep-equal": true
       }
     },
     "fast-levenshtein": {
@@ -2047,11 +2024,6 @@
         "multiaddr": true,
         "multibase": true,
         "multihashes": true
-      }
-    },
-    "is-regex": {
-      "packages": {
-        "has-symbols": true
       }
     },
     "iso-random-stream": {
@@ -3222,12 +3194,6 @@
     "regenerator-runtime": {
       "globals": {
         "regeneratorRuntime": "write"
-      }
-    },
-    "regexp.prototype.flags": {
-      "packages": {
-        "define-properties": true,
-        "es-abstract": true
       }
     },
     "relative-url": {
