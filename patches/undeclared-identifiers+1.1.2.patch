@@ -1,0 +1,13 @@
+diff --git a/node_modules/undeclared-identifiers/index.js b/node_modules/undeclared-identifiers/index.js
+index c331176..23e48c3 100644
+--- a/node_modules/undeclared-identifiers/index.js
++++ b/node_modules/undeclared-identifiers/index.js
+@@ -50,7 +50,7 @@ var bindingVisitor = {
+         }
+       }
+       
+-      state.undeclared[node.name] = true
++      Object.defineProperty(state.undeclared, node.name, {value: true})
+     }
+ 
+     if (state.wildcard &&

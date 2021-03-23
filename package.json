@@ -10,6 +10,7 @@
     "start:lavamoat": "node development/build/index.js dev",
     "dist": "yarn build prod",
     "build": "lavamoat development/build/index.js",
+    "build:dev": "node development/build/index.js",
     "benchmark:chrome": "SELENIUM_BROWSER=chrome node test/e2e/benchmark.js",
     "benchmark:firefox": "SELENIUM_BROWSER=firefox node test/e2e/benchmark.js",
     "build:test": "yarn build test",

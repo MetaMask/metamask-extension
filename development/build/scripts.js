@@ -270,7 +270,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         try {
           await pump(buildPipeline);
         } catch (err) {
-          gracefulError(err);
+          throw err
         }
       } else {
         await pump(buildPipeline);
@@ -286,7 +286,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       fullPaths: opts.devMode,
     });
 
-    const lavamoatTargets = ['background']
+    const lavamoatTargets = ['background', 'ui']
 
     if (lavamoatTargets.includes(opts.label)) assign(browserifyOpts, lavamoat.args)
 
@@ -310,7 +310,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     let bundler = browserify(browserifyOpts)
       .transform(babelify)
       .transform(brfs);
-
+    
     // apply lavamoat protections to UI
     if (lavamoatTargets.includes(opts.label)) bundler.plugin(lavamoat, lavamoatOpts)
 
