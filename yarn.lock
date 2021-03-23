@@ -2209,12 +2209,12 @@
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.22.0.tgz#55cc84756c703c433176b484b1d34f0e03d16d1e"
   integrity sha512-t4ijbU+4OH9UAlrPkfLPFo6KmkRTRZJHB+Vly4ajF8oZMnota5YjVVl/SmltsoRC9xvJtRn9DUVf3YMHMIdofw==
 
-"@metamask/contract-metadata@^1.22.0":
+"@metamask/contract-metadata@^1.22.0", "@metamask/contract-metadata@^1.23.0":
   version "1.23.0"
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.23.0.tgz#c70be7f3eaeeb791651ce793b7cdc230e9780b18"
   integrity sha512-oTUqL9dtXtbng60DZMRsBmZ5HiOUUfEsZjuswOJ0yHO24YsW0ktCcgCJVYPv1HcOsF0SVrRtG4rtrvOl4nY+HA==
 
-"@metamask/controllers@^5.0.0", "@metamask/controllers@^5.1.0":
+"@metamask/controllers@^5.0.0":
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-5.1.0.tgz#02c1957295bcb6db1655a716d165665d170e7f34"
   integrity sha512-4piqkIrpphe+9nEy68WH+yBw9wsXZyCMVeBZeRtliVHAJFXUdz+KZDUi/R1Y+568JBzqAvsOtOzbUIU4btD3Fw==
@@ -2239,6 +2239,38 @@
     nanoid "^3.1.12"
     single-call-balance-checker-abi "^1.0.0"
     uuid "^3.3.2"
+    web3 "^0.20.7"
+    web3-provider-engine "^16.0.1"
+
+"@metamask/controllers@^6.2.1":
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-6.2.1.tgz#b7ca32011c814a3f629911cf455f02c609336dbf"
+  integrity sha512-ASysK0IJ/bBvI/C9htaupKYapN+Me7AkbR7xS9WTmoWNyf0mhMLvCtwVcYo34xPmzcnuTNA8huyfVHanEa1rXw==
+  dependencies:
+    "@metamask/contract-metadata" "^1.23.0"
+    "@types/uuid" "^8.3.0"
+    async-mutex "^0.2.6"
+    babel-runtime "^6.26.0"
+    eth-ens-namehash "^2.0.8"
+    eth-json-rpc-infura "^5.1.0"
+    eth-keyring-controller "^6.1.0"
+    eth-method-registry "1.1.0"
+    eth-phishing-detect "^1.1.13"
+    eth-query "^2.1.2"
+    eth-rpc-errors "^4.0.0"
+    eth-sig-util "^3.0.0"
+    ethereumjs-tx "^1.3.7"
+    ethereumjs-util "^6.1.0"
+    ethereumjs-wallet "^1.0.1"
+    ethjs-util "^0.1.6"
+    human-standard-collectible-abi "^1.0.2"
+    human-standard-token-abi "^2.0.0"
+    immer "^8.0.1"
+    isomorphic-fetch "^3.0.0"
+    jsonschema "^1.2.4"
+    nanoid "^3.1.12"
+    single-call-balance-checker-abi "^1.0.0"
+    uuid "^8.3.2"
     web3 "^0.20.7"
     web3-provider-engine "^16.0.1"
 
@@ -3387,6 +3419,11 @@
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@types/unist/-/unist-2.0.3.tgz#9c088679876f374eb5983f150d4787aa6fb32d7e"
   integrity sha512-FvUupuM3rlRsRtCN+fDudtmytGO6iHJuuRKS1Ss0pG5z8oX0diNEw94UEL7hgDbpN94rgaK5R7sWm6RrSkZuAQ==
+
+"@types/uuid@^8.3.0":
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.0.tgz#215c231dff736d5ba92410e6d602050cce7e273f"
+  integrity sha512-eQ9qFW/fhfGJF8WKHGEHZEyVWfZxrT+6CLIJGBcZPfxUh/+BnEj+UCGYMlr9qZuX/2AltsvwrGqp0LhEW8D0zQ==
 
 "@types/webpack-env@^1.15.3":
   version "1.16.0"
@@ -4589,6 +4626,13 @@ async-limiter@^1.0.0, async-limiter@~1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.1.tgz#dd379e94f0db8310b08291f9d64c3209766617fd"
   integrity sha512-csOlWGAcRFJaI6m+F2WKdnMKr4HhdhFVBk0H/QbJFMCr+uO2kwohwXQPxw/9OCxp05r5ghVBFSyioixx3gfkNQ==
+
+async-mutex@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/async-mutex/-/async-mutex-0.2.6.tgz#0d7a3deb978bc2b984d5908a2038e1ae2e54ff40"
+  integrity sha512-Hs4R+4SPgamu6rSGW8C7cV9gaWUKEHykfzCCvIRuaVv636Ju10ZdeUbvb4TBEW0INuq2DHZqXbK4Nd3yG4RaRw==
+  dependencies:
+    tslib "^2.0.0"
 
 async-settle@^1.0.0:
   version "1.0.0"
@@ -9953,7 +9997,7 @@ ethereumjs-common@^1.1.0, ethereumjs-common@^1.3.2, ethereumjs-common@^1.5.0:
   resolved "https://registry.yarnpkg.com/ethereumjs-common/-/ethereumjs-common-1.5.1.tgz#4e75042473a64daec0ed9fe84323dd9576aa5dba"
   integrity sha512-aVUPRLgmXORGXXEVkFYgPhr9TGtpBY2tGhZ9Uh0A3lIUzUDr1x6kQx33SbjPUkLkX3eniPQnIL/2psjkjrOfcQ==
 
-ethereumjs-tx@1.3.7, ethereumjs-tx@^1.1.1, ethereumjs-tx@^1.2.0, ethereumjs-tx@^1.2.2, ethereumjs-tx@^1.3.3, ethereumjs-tx@^1.3.4:
+ethereumjs-tx@1.3.7, ethereumjs-tx@^1.1.1, ethereumjs-tx@^1.2.0, ethereumjs-tx@^1.2.2, ethereumjs-tx@^1.3.3, ethereumjs-tx@^1.3.4, ethereumjs-tx@^1.3.7:
   version "1.3.7"
   resolved "https://registry.yarnpkg.com/ethereumjs-tx/-/ethereumjs-tx-1.3.7.tgz#88323a2d875b10549b8347e09f4862b546f3d89a"
   integrity sha512-wvLMxzt1RPhAQ9Yi3/HKZTn0FZYpnsmQdbKYfUUpi4j1SEIcbkd9tndVjcPrufY3V7j2IebOpC00Zp2P/Ay2kA==
@@ -10081,6 +10125,20 @@ ethereumjs-wallet@0.6.5, ethereumjs-wallet@^0.6.0, ethereumjs-wallet@^0.6.4:
     randombytes "^2.0.6"
     safe-buffer "^5.1.2"
     scryptsy "^1.2.1"
+    utf8 "^3.0.0"
+    uuid "^3.3.2"
+
+ethereumjs-wallet@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/ethereumjs-wallet/-/ethereumjs-wallet-1.0.1.tgz#664a4bcacfc1291ca2703de066df1178938dba1c"
+  integrity sha512-3Z5g1hG1das0JWU6cQ9HWWTY2nt9nXCcwj7eXVNAHKbo00XAZO8+NHlwdgXDWrL0SXVQMvTWN8Q/82DRH/JhPw==
+  dependencies:
+    aes-js "^3.1.1"
+    bs58check "^2.1.2"
+    ethereum-cryptography "^0.1.3"
+    ethereumjs-util "^7.0.2"
+    randombytes "^2.0.6"
+    scrypt-js "^3.0.1"
     utf8 "^3.0.0"
     uuid "^3.3.2"
 
@@ -10300,7 +10358,7 @@ ethjs-util@0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethjs-util@0.1.6, ethjs-util@^0.1.3:
+ethjs-util@0.1.6, ethjs-util@^0.1.3, ethjs-util@^0.1.6:
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/ethjs-util/-/ethjs-util-0.1.6.tgz#f308b62f185f9fe6237132fb2a9818866a5cd536"
   integrity sha512-CUnVOQq7gSpDHZVVrQW8ExxUETWrnrvXYvYz55wOU8Uj4VCgw56XC2B/fVqQN+f7gmrnRHSLVnFAwsCuNwji8w==
@@ -24645,6 +24703,11 @@ uuid@^8.0.0:
   version "8.3.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.1.tgz#2ba2e6ca000da60fce5a196954ab241131e05a31"
   integrity sha512-FOmRr+FmWEIG8uhZv6C2bTgEVXsHk08kE7mPlrBbEe+c3r9pjceVPgupIfNIhc4yx55H69OXANrUaSuu9eInKg==
+
+uuid@^8.3.2:
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
+  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 v8-compile-cache@^2.0.3, v8-compile-cache@^2.1.1:
   version "2.1.1"
