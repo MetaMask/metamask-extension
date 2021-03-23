@@ -24,6 +24,16 @@
       "globals": {
         "crypto.getRandomValues": true
       }
+    },
+    "browser-passworder": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "randombytes": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
     }
   }
 }
