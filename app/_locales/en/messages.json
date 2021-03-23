@@ -785,7 +785,7 @@
     "message": "Import wallet"
   },
   "importYourExisting": {
-    "message": "Import your existing wallet using a 12 word seed phrase"
+    "message": "Import your existing wallet using a 24 word seed phrase"
   },
   "imported": {
     "message": "Imported",

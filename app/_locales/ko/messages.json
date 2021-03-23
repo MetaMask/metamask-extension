@@ -533,7 +533,7 @@
     "message": "지갑 가져오기"
   },
   "importYourExisting": {
-    "message": "12개 단어로 구성된 시드 구문으로 이미 만들어진 지갑을 가져오기"
+    "message": "24개 단어로 구성된 시드 구문으로 이미 만들어진 지갑을 가져오기"
   },
   "imported": {
     "message": "가져온 계정",
