@@ -288,7 +288,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
 
     const lavamoatTargets = ['background']
 
-    if (lavamoatTargets.includes(opts.label)) assign(browserifyOpts, lavamoat.opts)
+    if (lavamoatTargets.includes(opts.label)) assign(browserifyOpts, lavamoat.args)
 
     const lavamoatOpts = {
       policy: path.resolve(__dirname, '../../lavamoat/browserify/policy.json'),
