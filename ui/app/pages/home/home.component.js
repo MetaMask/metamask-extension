@@ -73,7 +73,7 @@ export default class Home extends PureComponent {
     setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
-    pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
+    pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
   };
 
   state = {
@@ -91,7 +91,7 @@ export default class Home extends PureComponent {
       haveSwapsQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
-      pendingApprovals,
+      pendingConfirmations,
     } = this.props;
 
     this.setState({ mounted: true });
@@ -109,7 +109,7 @@ export default class Home extends PureComponent {
       history.push(CONFIRM_TRANSACTION_ROUTE);
     } else if (Object.keys(suggestedTokens).length > 0) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
-    } else if (pendingApprovals.length > 0) {
+    } else if (pendingConfirmations.length > 0) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
   }

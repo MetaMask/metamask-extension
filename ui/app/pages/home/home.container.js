@@ -58,7 +58,7 @@ const mapStateToProps = (state) => {
   const { forgottenPassword, threeBoxLastUpdated } = appState;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureLiveness(state);
-  const pendingApprovals = getUnapprovedTemplatedConfirmations(state);
+  const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
@@ -103,7 +103,7 @@ const mapStateToProps = (state) => {
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
-    pendingApprovals,
+    pendingConfirmations,
   };
 };
 
