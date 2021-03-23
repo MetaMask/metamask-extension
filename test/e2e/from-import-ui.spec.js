@@ -117,6 +117,16 @@ describe('Using MetaMask with an existing account', function () {
     });
   });
 
+  describe("Close the what's new popup", function () {
+    it("should close the what's new popup", async function () {
+      const popover = await driver.findElement(By.css('.popover-container'));
+
+      await driver.clickElement(By.css('[data-testid="popover-close"]'));
+
+      await driver.wait(until.stalenessOf(popover));
+    });
+  });
+
   describe('Show account information', function () {
     it('shows the correct account address', async function () {
       await driver.clickElement(

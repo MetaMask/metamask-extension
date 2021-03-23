@@ -99,15 +99,25 @@ describe('MetaMask', function () {
       );
       await driver.delay(regularDelayMs);
 
+      await driver.findElement(By.css('.popover-container'));
+    });
+
+    it("should close the what's new popup", async function () {
+      const popover = await driver.findElement(By.css('.popover-container'));
+
+      await driver.clickElement(By.css('[data-testid="popover-close"]'));
+
+      await driver.wait(until.stalenessOf(popover));
+    });
+
+    it('gets the current accounts address', async function () {
       await driver.clickElement(
         By.css('[data-testid="account-options-menu-button"]'),
       );
       await driver.clickElement(
         By.css('[data-testid="account-options-menu__account-details"]'),
       );
-    });
 
-    it('gets the current accounts address', async function () {
       const addressInput = await driver.findElement(
         By.css('.readonly-input__input'),
       );

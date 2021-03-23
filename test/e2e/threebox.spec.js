@@ -113,6 +113,14 @@ describe('MetaMask', function () {
         await driver.delay(regularDelayMs);
       });
 
+      it("should close the what's new popup", async function () {
+        const popover = await driver.findElement(By.css('.popover-container'));
+
+        await driver.clickElement(By.css('[data-testid="popover-close"]'));
+
+        await driver.wait(until.stalenessOf(popover));
+      });
+
       it('balance renders', async function () {
         const balance = await driver.findElement(
           By.css('[data-testid="wallet-balance"] .list-item__heading'),
@@ -252,6 +260,14 @@ describe('MetaMask', function () {
           ),
         );
         await driver2.delay(regularDelayMs);
+      });
+
+      it("should close the what's new popup", async function () {
+        const popover = await driver.findElement(By.css('.popover-container'));
+
+        await driver.clickElement(By.css('[data-testid="popover-close"]'));
+
+        await driver.wait(until.stalenessOf(popover));
       });
 
       it('balance renders', async function () {

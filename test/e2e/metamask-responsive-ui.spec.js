@@ -145,6 +145,24 @@ describe('MetaMask', function () {
     });
   });
 
+  describe("Close the what's new popup", function () {
+    it("should show the what's new popover", async function () {
+      const popoverTitle = await driver.findElement(
+        By.css('.popover-header__title h2'),
+      );
+
+      assert.equal(await popoverTitle.getText(), "What's new");
+    });
+
+    it("should close the what's new popup", async function () {
+      const popover = await driver.findElement(By.css('.popover-container'));
+
+      await driver.clickElement(By.css('[data-testid="popover-close"]'));
+
+      await driver.wait(until.stalenessOf(popover));
+    });
+  });
+
   describe('Show account information', function () {
     it('show account details dropdown menu', async function () {
       await driver.clickElement(
