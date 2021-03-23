@@ -22,8 +22,8 @@ import { TESTNET, MAINNET, LOCALHOST } from './enums'
 // TODO: add main net endpoint
 
 // const CONFLUX_MAINNET = 'http://localhost:12537/'
-const CONFLUX_MAINNET = 'http://portal-main.confluxrpc.org'
-const CONFLUX_TEST_NET = 'http://portal-test.confluxrpc.org'
+const CONFLUX_MAINNET = 'https://portal-main.confluxrpc.org'
+const CONFLUX_TEST_NET = 'https://portal-test.confluxrpc.org'
 
 const env = process.env.METAMASK_ENV
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG

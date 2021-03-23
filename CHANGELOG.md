@@ -2,6 +2,13 @@
 
 ## Current Develop Branch
 
+## 0.6.1 Tue Mar 23 2021
+
+- docs: update changelog
+- fix: use https rpc endpoint resolve #304 (#313)
+
+## 0.6.0 Tue Mar 09 2021
+
 - fix: token balance not showing automatically (#301)
 - fix: avoid duplicate autolock timer migration
 - fix: sponsor info error when dapp dev only specifies gaslimit
