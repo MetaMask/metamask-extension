@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 0.6.1 Tue Mar 23 2021
+
 - docs: update changelog
 - fix: use https rpc endpoint resolve #304 (#313)
 
