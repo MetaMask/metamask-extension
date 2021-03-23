@@ -8,6 +8,7 @@ import {
   getIsMainnet,
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
+  getUnapprovedTemplatedConfirmations,
   getWeb3ShimUsageStateForOrigin,
   unconfirmedTransactionsCountSelector,
 } from '../../selectors';
@@ -38,7 +39,6 @@ import {
   ALERT_TYPES,
   WEB3_SHIM_USAGE_ALERT_STATES,
 } from '../../../../shared/constants/alerts';
-import { SUPPORTED_MESSAGE_TYPES } from '../confirmation/templates';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -53,12 +53,12 @@ const mapStateToProps = (state) => {
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
-    pendingApprovals = {},
   } = metamask;
   const accountBalance = getCurrentEthBalance(state);
   const { forgottenPassword, threeBoxLastUpdated } = appState;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureLiveness(state);
+  const pendingApprovals = getUnapprovedTemplatedConfirmations(state);
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
@@ -103,9 +103,7 @@ const mapStateToProps = (state) => {
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
-    pendingApprovals: Object.values(pendingApprovals).filter((approval) =>
-      SUPPORTED_MESSAGE_TYPES.includes(approval.type),
-    ),
+    pendingApprovals,
   };
 };
 
