@@ -16,19 +16,27 @@ describe('Localization', function () {
     await withFixtures(
       { fixtures: 'localization', ganacheOptions, title: this.test.title },
       async ({ driver }) => {
+        console.log(111);
         await driver.navigate();
         const passwordField = await driver.findElement(By.css('#password'));
+        console.log(222);
         await passwordField.sendKeys('correct horse battery staple');
         await passwordField.sendKeys(Key.ENTER);
+        console.log(333);
         const secondaryBalance = await driver.findElement(
           By.css('[data-testid="eth-overview__secondary-currency"]'),
         );
+        console.log(444);
         const secondaryBalanceText = await secondaryBalance.getText();
         const [fiatAmount, fiatUnit] = secondaryBalanceText
           .trim()
           .split(/\s+/u);
+        console.log(555);
+        console.log('fiatAmount', fiatAmount.startsWith('₱'));
+        console.log('fiatUnit', fiatUnit === 'PHP');
         assert.ok(fiatAmount.startsWith('₱'));
         assert.equal(fiatUnit, 'PHP');
+        console.log(666);
       },
     );
   });
