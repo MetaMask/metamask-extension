@@ -286,7 +286,9 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       fullPaths: opts.devMode,
     });
 
-    if (opts.label === 'ui') assign(browserifyOpts, lavamoat.opts)
+    const lavamoatTargets = ['background']
+
+    if (lavamoatTargets.includes(opts.label)) assign(browserifyOpts, lavamoat.opts)
 
     const lavamoatOpts = {
       policy: path.resolve(__dirname, '../../lavamoat/browserify/policy.json'),
@@ -310,7 +312,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       .transform(brfs);
 
     // apply lavamoat protections to UI
-    if (opts.label === 'background') bundler.plugin(lavamoat, lavamoatOpts)
+    if (lavamoatTargets.includes(opts.label)) bundler.plugin(lavamoat, lavamoatOpts)
 
     if (opts.buildLib) {
       bundler = bundler.require(opts.dependenciesToBundle);
