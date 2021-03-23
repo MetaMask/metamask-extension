@@ -947,7 +947,7 @@
     "message": "경고: 백업 구문을 절대 공개하지 마세요. 이 구문을 가진 누군가 당신의 셀로를 영원히 가지고 갈 수 있습니다."
   },
   "secretPhrase": {
-    "message": "12개 단어로 구성된 비밀 구문을 입력하여 저장소를 복구하세요."
+    "message": "24개 단어로 구성된 비밀 구문을 입력하여 저장소를 복구하세요."
   },
   "securityAndPrivacy": {
     "message": "보안 및 개인 정보 보호"
@@ -959,7 +959,7 @@
     "message": "각 단어를 스페이스로 구분해주세요"
   },
   "seedPhraseReq": {
-    "message": "시드 구문은 12개의 단어입니다"
+    "message": "시드 구문은 24개의 단어입니다"
   },
   "selectCurrency": {
     "message": "통화 선택"
