@@ -32,7 +32,7 @@ module.exports = {
     'test/e2e/send-eth-with-private-key-test/**',
     'nyc_output/**',
     '.vscode/**',
-    'lavamoat/*/policy.json'
+    'lavamoat/*/policy*.json',
   ],
 
   extends: [

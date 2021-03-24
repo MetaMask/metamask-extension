@@ -1,3 +1,4 @@
+const path = require('path');
 const gulp = require('gulp');
 const watch = require('gulp-watch');
 const pify = require('pify');
@@ -13,8 +14,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const terser = require('gulp-terser-js');
 const babelify = require('babelify');
 const brfs = require('brfs');
-const lavamoat = require('lavamoat-browserify')
-const path = require('path')
+const lavamoat = require('lavamoat-browserify');
 
 const conf = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
@@ -270,7 +270,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         try {
           await pump(buildPipeline);
         } catch (err) {
-          throw err
+          gracefulError(err);
         }
       } else {
         await pump(buildPipeline);
@@ -279,22 +279,27 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   }
 
   function generateBundler(opts, performBundle) {
-    let browserifyOpts = assign({}, watchify.args, {
+    const browserifyOpts = assign({}, watchify.args, {
       plugin: [],
       transform: [],
       debug: true,
       fullPaths: opts.devMode,
     });
 
-    const lavamoatTargets = ['background', 'ui']
+    const lavamoatTargets = ['background', 'ui'];
 
-    if (lavamoatTargets.includes(opts.label)) assign(browserifyOpts, lavamoat.args)
+    if (lavamoatTargets.includes(opts.label)) {
+      assign(browserifyOpts, lavamoat.args);
+    }
 
     const lavamoatOpts = {
       policy: path.resolve(__dirname, '../../lavamoat/browserify/policy.json'),
-      policyOverride: path.resolve(__dirname, '../../lavamoat/browserify/policy-override.json'),
+      policyOverride: path.resolve(
+        __dirname,
+        '../../lavamoat/browserify/policy-override.json',
+      ),
       writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
-    }
+    };
 
     if (!opts.buildLib) {
       if (opts.devMode && opts.filename === 'ui.js') {
@@ -310,9 +315,11 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     let bundler = browserify(browserifyOpts)
       .transform(babelify)
       .transform(brfs);
-    
+
     // apply lavamoat protections to UI
-    if (lavamoatTargets.includes(opts.label)) bundler.plugin(lavamoat, lavamoatOpts)
+    if (lavamoatTargets.includes(opts.label)) {
+      bundler.plugin(lavamoat, lavamoatOpts);
+    }
 
     if (opts.buildLib) {
       bundler = bundler.require(opts.dependenciesToBundle);
