@@ -505,9 +505,6 @@
   "importWallet": {
     "message": "وارد سازی کیف"
   },
-  "importYourExisting": {
-    "message": "کیف موجود تان را با استفاده از عبارت رمزیاب 12 کلمه یی وارد کنید"
-  },
   "imported": {
     "message": "وارد شده",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -894,9 +891,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "هشدار: هرگز عبارت پشتیبان تان را به کسی فاش نسازید. هرکسیکه این عبارت را داشته باشد ایتر شما را برای همیشه خواهد گرفت."
-  },
-  "secretPhrase": {
-    "message": "جهت بازیابی خزانه تان عبارت دوازده کلمه یی تان را اینجا وارد کنید."
   },
   "securityAndPrivacy": {
     "message": "امنیت و حریم خصوصی"

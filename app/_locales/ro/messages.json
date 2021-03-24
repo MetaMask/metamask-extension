@@ -495,9 +495,6 @@
   "importWallet": {
     "message": "Importați portofel"
   },
-  "importYourExisting": {
-    "message": "Importați portofelul existent folosind o frază seed de 12 cuvinte"
-  },
   "imported": {
     "message": "Importate",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -881,9 +878,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "ATENȚIE: Nu dezvăluiți niciodată expresia dvs. de rezervă. Oricine are această expresie vă poate lua Ether-ul pentru totdeauna."
-  },
-  "secretPhrase": {
-    "message": "Introduceți aici expresia dvs. secretă din 12 cuvinte pentru a restabili seiful."
   },
   "securityAndPrivacy": {
     "message": "Securitate și confidențialitate"

@@ -791,9 +791,6 @@
   "importWallet": {
     "message": "지갑 가져오기"
   },
-  "importYourExisting": {
-    "message": "12단어 시드 구문을 사용하여 지갑 가져오기"
-  },
   "imported": {
     "message": "가져옴",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -1346,9 +1343,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "경고: 백업 구문은 절대로 공개하지 마세요. 이 구문이 있는 사람은 귀하의 Ether를 영원히 소유할 수 있습니다."
-  },
-  "secretPhrase": {
-    "message": "금고를 복구하려면 비밀 12단어 구문을 여기에 입력하세요."
   },
   "securityAndPrivacy": {
     "message": "보안 및 개인정보 보호"

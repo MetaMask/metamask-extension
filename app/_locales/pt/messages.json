@@ -321,9 +321,6 @@
   "search": {
     "message": "Procurar"
   },
-  "secretPhrase": {
-    "message": "Introduza a sua frase secreta de 12 palavras para recuperar o seu ."
-  },
   "seedPhraseReq": {
     "message": "seed phrases are 12 words long"
   },

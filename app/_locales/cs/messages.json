@@ -344,9 +344,6 @@
   "searchTokens": {
     "message": "Hledat tokeny"
   },
-  "secretPhrase": {
-    "message": "Zadejte svých 12 slov tajné fráze k obnovení trezoru."
-  },
   "seedPhraseReq": {
     "message": "klíčové fráze mají 12 slov"
   },

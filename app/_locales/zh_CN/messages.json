@@ -800,9 +800,6 @@
   "importWallet": {
     "message": "导入钱包"
   },
-  "importYourExisting": {
-    "message": "使用 12 个单词的账户助记词导入您现有的钱包账户。"
-  },
   "imported": {
     "message": "已导入",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -1358,9 +1355,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "警告：切勿向他人透露您的账户助记词。任何人一旦持有该账户助记词，即可控制您的 Ether。"
-  },
-  "secretPhrase": {
-    "message": "输入 12 个单词组成的账户助记词恢复您的账户。"
   },
   "securityAndPrivacy": {
     "message": "安全与隐私"

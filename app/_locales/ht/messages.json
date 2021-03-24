@@ -561,9 +561,6 @@
   "searchTokens": {
     "message": "Rechèch Tokens"
   },
-  "secretPhrase": {
-    "message": "Antre fraz sekrè douz mo ou a pou w restore kòf ou a."
-  },
   "seedPhraseReq": {
     "message": "Seed fraz yo se 12 long mo"
   },

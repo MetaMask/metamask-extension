@@ -498,9 +498,6 @@
   "importWallet": {
     "message": "Importér pung"
   },
-  "importYourExisting": {
-    "message": "Importér din eksisterende pung med en 12-ords seedfrase"
-  },
   "imported": {
     "message": "Importeret",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -875,9 +872,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "ADVARSEL: Afslør aldrig din backup-frase. Enhver med denne frase kan tage din Ether for altid."
-  },
-  "secretPhrase": {
-    "message": "Indtast din hemmelige tolv ord lange sætning for at gendanne din vault."
   },
   "securityAndPrivacy": {
     "message": "Sikkerhed & Privatliv"

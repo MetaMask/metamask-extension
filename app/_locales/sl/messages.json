@@ -496,9 +496,6 @@
   "importWallet": {
     "message": "Uvozi denarnico"
   },
-  "importYourExisting": {
-    "message": "Uvozite svojo obstoječo denarnico s pomočjo 12-besednega gesla seed phrase"
-  },
   "imported": {
     "message": "Uvoženo",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -876,9 +873,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "OPOZORILO: Nikoli nikomur ne razkrijte varnostne kopije. Kdorkoli lahko tem geslom vedno prevzame vaš Ether."
-  },
-  "secretPhrase": {
-    "message": "Vnesite vaših dvanajst besed za obnovitev vaših računov."
   },
   "securityAndPrivacy": {
     "message": "Varnost in zasebnost"

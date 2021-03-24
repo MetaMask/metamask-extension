@@ -492,9 +492,6 @@
   "importWallet": {
     "message": "Importovať Peňaženku"
   },
-  "importYourExisting": {
-    "message": "Importujte svoju existujúcu peňaženku pomocou 12-slovnej seed frázy"
-  },
   "imported": {
     "message": "Importováno",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -857,9 +854,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "UPOZORNENIE: Nikdy nezverejňujte svoju backup frázu. Každý, kto má túto frázu, môže navždy vziať váš Ether."
-  },
-  "secretPhrase": {
-    "message": "Zadejte svých 12 slov tajné fráze k obnovení trezoru."
   },
   "securityAndPrivacy": {
     "message": "Bezpečnosť a súkromie"
