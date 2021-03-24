@@ -505,9 +505,6 @@
   "importWallet": {
     "message": "ವ್ಯಾಲೆಟ್ ಅನ್ನು ಆಮದು ಮಾಡಿ"
   },
-  "importYourExisting": {
-    "message": "12 ಪದದ ಸೀಡ್ ಫ್ರೇಸ್ ಅನ್ನು ಬಳಸಿಕೊಂಡು ನಿಮ್ಮ ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ವ್ಯಾಲೆಟ್ ಅನ್ನು ಆಮದು ಮಾಡಿ"
-  },
   "imported": {
     "message": "ಆಮದುಮಾಡಲಾಗಿದೆ",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -894,9 +891,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "ಎಚ್ಚರಿಕೆ: ನಿಮ್ಮ ಬ್ಯಾಕಪ್ ಫ್ರೇಸ್ ಅನ್ನು ಎಂದಿಗೂ ಬಹಿರಗಪಡಿಸಬೇಡಿ. ಈ ಫ್ರೇಸ್ ಅನ್ನು ಹೊಂದಿರುವ ಯಾರಾದರೂ ನಿಮ್ಮ ಎಥರ್ ಅನ್ನು ಶಾಶ್ವತವಾಗಿ ತೆಗೆದುಕೊಳ್ಳಬಹುದು."
-  },
-  "secretPhrase": {
-    "message": "ನಿಮ್ಮ ವಾಲ್ಟ್ ಅನ್ನು ಮರುಸ್ಥಾಪಿಸಲು ನಿಮ್ಮ ರಹಸ್ಯ ಹನ್ನೆರಡು ಪದದ ಫ್ರೇಸ್ ಅನ್ನು ಇಲ್ಲಿ ನಮೂದಿಸಿ."
   },
   "securityAndPrivacy": {
     "message": "ಭದ್ರತೆ ಮತ್ತು ಗೌಪ್ಯತೆ"

@@ -496,9 +496,6 @@
   "importWallet": {
     "message": "Importer le portefeuille"
   },
-  "importYourExisting": {
-    "message": "Importez votre portefeuille existant à l'aide d'une phrase mnémotechnique de 12 mots"
-  },
   "imported": {
     "message": "Importé",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -876,9 +873,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "AVERTISSEMENT : ne révélez jamais votre phrase de sauvegarde. N'importe qui avec cette phrase peut voler votre Ether pour toujours."
-  },
-  "secretPhrase": {
-    "message": "Entrez vos 12 mots secrets de votre phrase Seed pour restaurer votre coffre."
   },
   "securityAndPrivacy": {
     "message": "Sécurité et confidentialité"

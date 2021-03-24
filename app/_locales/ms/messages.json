@@ -491,9 +491,6 @@
   "importWallet": {
     "message": "Import Dompet"
   },
-  "importYourExisting": {
-    "message": "Import dompet sedia ada anda menggunakan frasa benih 12 perkataan"
-  },
   "imported": {
     "message": "Diimport",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -871,9 +868,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "AMARAN: Jangan sesekali dedahkan frasa sandaran anda. Sesiapa yang memperoleh frasa ini boleh mengambil Ether anda selama-lamanya."
-  },
-  "secretPhrase": {
-    "message": "Masukkan ungkapan rahsia dua belas perkataan di sini untuk memulihkan kekubah anda."
   },
   "securityAndPrivacy": {
     "message": "Keselamatan & Privasi"

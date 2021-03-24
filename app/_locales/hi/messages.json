@@ -791,9 +791,6 @@
   "importWallet": {
     "message": "वॉलेट आयात करें"
   },
-  "importYourExisting": {
-    "message": "12 शब्द के सीडफ्रेज़ का उपयोग करके अपने मौजूदा वॉलेट को आयात करें"
-  },
   "imported": {
     "message": "आयातित",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -1349,9 +1346,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "चेतावनी: कभी भी अपने बैकअप वाक्यांश का खुलासा न करें। इस वाक्यांश के साथ कोई भी आपके Ether को हमेशा के लिए ले सकता है।"
-  },
-  "secretPhrase": {
-    "message": "अपनी तिजोरी को पुनर्स्थापित करने के लिए अपने गुप्त बारह शब्द वाक्यांश को यहाँ दर्ज करें।"
   },
   "securityAndPrivacy": {
     "message": "सुरक्षा और गोपनीयता"

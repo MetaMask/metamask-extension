@@ -505,9 +505,6 @@
   "importWallet": {
     "message": "Tuo kukkaro"
   },
-  "importYourExisting": {
-    "message": "Tuo nykyinen lompakkosi käyttäen 12 sanan \n siemenlausetta"
-  },
   "imported": {
     "message": "Tuotu",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -891,9 +888,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "VAROITUS: älä koskaan kerro varmuuskopiolausettasi kenellekään. Kuka tahansa tämän lauseen omaava voi napata Etherisi pysyvästi."
-  },
-  "secretPhrase": {
-    "message": "Palauta holvisi syöttämällä tähän salainen kahdentoista sanan tekstisi."
   },
   "securityAndPrivacy": {
     "message": "Turva & yksityisyys"

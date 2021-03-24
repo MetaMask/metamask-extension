@@ -800,9 +800,6 @@
   "importWallet": {
     "message": "ウォレットのインポート"
   },
-  "importYourExisting": {
-    "message": "12単語のシードフレーズを使用して既存のウォレットをインポートします"
-  },
   "imported": {
     "message": "インポート済",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -1358,9 +1355,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "警告:シードフレーズは絶対に公開しないでください。シードフレーズを使うと、誰でもアカウントからETHを盗み出せます。"
-  },
-  "secretPhrase": {
-    "message": "アカウント情報を復元するには、12単語で構成されたシードフレーズを入力してください。"
   },
   "securityAndPrivacy": {
     "message": "セキュリティとプライバシー"

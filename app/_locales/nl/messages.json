@@ -311,9 +311,6 @@
   "search": {
     "message": "Zoeken"
   },
-  "secretPhrase": {
-    "message": "Voer hier je geheime twaalfwoordfrase in om je kluis te herstellen."
-  },
   "seedPhraseReq": {
     "message": "Back-up woorden zijn 12 woorden lang"
   },

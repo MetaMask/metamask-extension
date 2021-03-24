@@ -514,9 +514,6 @@
   "importWallet": {
     "message": "匯入錢包"
   },
-  "importYourExisting": {
-    "message": "使用 12 字的助記詞來匯入你現有的錢包"
-  },
   "imported": {
     "message": "已匯入私鑰",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -888,9 +885,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "警告: 絕對不要洩漏您的助憶詞。任何人只要得知助憶詞代表他可以竊取您所有的以太幣和代幣。"
-  },
-  "secretPhrase": {
-    "message": "輸入您的12個助憶詞以回復金庫"
   },
   "securityAndPrivacy": {
     "message": "安全＆隱私"

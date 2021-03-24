@@ -501,9 +501,6 @@
   "importWallet": {
     "message": "Pénztárca importálása"
   },
-  "importYourExisting": {
-    "message": "Importálja meglévő pénztárcáját a 12 szóból álló seed mondat segítségével"
-  },
   "imported": {
     "message": "Importált",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -887,9 +884,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "FIGYELEM: Senkise se adja meg a biztonsági szakaszát. Ennek tulajdonosa örökre elviheti Ether-jeit."
-  },
-  "secretPhrase": {
-    "message": "Tárolód helyreállításához írd be titkos tizenkét szavas szókapcsolatodat ide."
   },
   "securityAndPrivacy": {
     "message": "Biztonság és adatvédelem"

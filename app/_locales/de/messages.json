@@ -493,9 +493,6 @@
   "importWallet": {
     "message": "Wallet importieren"
   },
-  "importYourExisting": {
-    "message": "Importieren Sie Ihre bestehende Wallet mit einem 12-Wort-Seed-Schlüssel"
-  },
   "imported": {
     "message": "Importiert",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -863,9 +860,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "WARNUNG: Legen Sie niemals Ihre Sicherungsphrase offen. Mit dieser Phrase kann sich jeder Ihr Ether für immer aneignen."
-  },
-  "secretPhrase": {
-    "message": "Gib die 12 Wörter deiner geheimem Wörterfolge ein um deinen Vault wiederherzustellen."
   },
   "securityAndPrivacy": {
     "message": "Sicherheit & Datenschutz"
