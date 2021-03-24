@@ -2,6 +2,19 @@
 
 ## Current Develop Branch
 
+## 9.2.0 Tue Mar 09 2021
+- [#10546](https://github.com/MetaMask/metamask-extension/pull/10546): Add a warning when sending a token to its own contract address
+- [#10563](https://github.com/MetaMask/metamask-extension/pull/10563): Update references to MetaMask support
+- [#10126](https://github.com/MetaMask/metamask-extension/pull/10126): Update Italian translation
+- [#10591](https://github.com/MetaMask/metamask-extension/pull/10591): Fix mobile sync of ERC20 tokens
+- [#10582](https://github.com/MetaMask/metamask-extension/pull/10582): Adding warnings for excessive custom gas input
+- [#10601](https://github.com/MetaMask/metamask-extension/pull/10601): Fix activity title text truncation
+- [#10598](https://github.com/MetaMask/metamask-extension/pull/10598): Remove 'Ethereum' from custom RPC endpoint warning
+- [#10606](https://github.com/MetaMask/metamask-extension/pull/10606): Show loading screen while fetching token data for approve screen
+- [#10486](https://github.com/MetaMask/metamask-extension/pull/10486): Add setting to hide zero balance tokens
+- [#10505](https://github.com/MetaMask/metamask-extension/pull/10505): Add support for multiple Ledger & Trezor hardware accounts
+- [#10587](https://github.com/MetaMask/metamask-extension/pull/10587): Show correct block explorer for custom RPC endpoints for built-in networks
+
 ## 9.1.1 Wed Mar 03 2021
 - [#10560](https://github.com/MetaMask/metamask-extension/pull/10560): Fix ENS resolution related crashes when switching networks on send screen
 - [#10561](https://github.com/MetaMask/metamask-extension/pull/10561): Fix crash when speeding up an attempt to cancel a transaction on custom networks

@@ -937,9 +937,6 @@
   "sendAmount": {
     "message": "পাঠানো অর্থরাশি"
   },
-  "sendETH": {
-    "message": "ETH পাঠান"
-  },
   "sendTokens": {
     "message": "টোকেনগুলি পাঠান"
   },

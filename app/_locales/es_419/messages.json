@@ -1413,9 +1413,6 @@
   "sendAmount": {
     "message": "Enviar monto"
   },
-  "sendETH": {
-    "message": "Enviar ETH"
-  },
   "sendSpecifiedTokens": {
     "message": "Enviar $1",
     "description": "Symbol of the specified token"

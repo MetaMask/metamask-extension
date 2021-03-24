@@ -914,9 +914,6 @@
   "sendAmount": {
     "message": "Hantar Amaun"
   },
-  "sendETH": {
-    "message": "Hantar ETH"
-  },
   "sendTokens": {
     "message": "Hantar Token"
   },

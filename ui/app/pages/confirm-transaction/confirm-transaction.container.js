@@ -27,7 +27,7 @@ const mapStateToProps = (state, ownProps) => {
   const transaction = totalUnconfirmed
     ? unapprovedTxs[id] || unconfirmedTransactions[0]
     : {};
-  const { id: transactionId, transactionCategory } = transaction;
+  const { id: transactionId, type } = transaction;
 
   return {
     totalUnapprovedCount: totalUnconfirmed,
@@ -38,7 +38,7 @@ const mapStateToProps = (state, ownProps) => {
     paramsTransactionId: id && String(id),
     transactionId: transactionId && String(transactionId),
     transaction,
-    isTokenMethodAction: isTokenMethodAction(transactionCategory),
+    isTokenMethodAction: isTokenMethodAction(type),
   };
 };
 

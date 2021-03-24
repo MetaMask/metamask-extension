@@ -256,12 +256,11 @@
     width: 24px;
   }
 
-  &__item__radio {
+  &__item__checkbox {
     display: flex;
     flex: 1;
 
     input {
-      padding: 10px;
       margin-top: 13px;
     }
   }

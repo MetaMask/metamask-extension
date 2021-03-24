@@ -933,9 +933,6 @@
   "sendAmount": {
     "message": "Изпратете сумата"
   },
-  "sendETH": {
-    "message": "Изпрати ETH"
-  },
   "sendTokens": {
     "message": "Изпращане на жетони"
   },

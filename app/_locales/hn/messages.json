@@ -336,9 +336,6 @@
   "send": {
     "message": "भेजें"
   },
-  "sendETH": {
-    "message": "भेजें ETH"
-  },
   "sendTokens": {
     "message": "भेजें टोकन"
   },

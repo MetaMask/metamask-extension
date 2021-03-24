@@ -422,33 +422,40 @@ export function connectHardware(deviceName, page, hdPath) {
   };
 }
 
-export function unlockHardwareWalletAccount(index, deviceName, hdPath) {
+export function unlockHardwareWalletAccounts(
+  indexes,
+  deviceName,
+  hdPath,
+  hdPathDescription,
+) {
   log.debug(
     `background.unlockHardwareWalletAccount`,
-    index,
+    indexes,
     deviceName,
     hdPath,
+    hdPathDescription,
   );
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
-    return new Promise((resolve, reject) => {
-      background.unlockHardwareWalletAccount(
-        index,
-        deviceName,
-        hdPath,
-        (err) => {
-          dispatch(hideLoadingIndication());
-          if (err) {
-            log.error(err);
-            dispatch(displayWarning(err.message));
-            reject(err);
-            return;
-          }
 
-          resolve();
-        },
-      );
-    });
+    for (const index of indexes) {
+      try {
+        await promisifiedBackground.unlockHardwareWalletAccount(
+          index,
+          deviceName,
+          hdPath,
+          hdPathDescription,
+        );
+      } catch (e) {
+        log.error(e);
+        dispatch(displayWarning(e.message));
+        dispatch(hideLoadingIndication());
+        throw e;
+      }
+    }
+
+    dispatch(hideLoadingIndication());
+    return undefined;
   };
 }
 
@@ -1476,7 +1483,7 @@ export function clearPendingTokens() {
   };
 }
 
-export function createCancelTransaction(txId, customGasPrice) {
+export function createCancelTransaction(txId, customGasPrice, customGasLimit) {
   log.debug('background.cancelTransaction');
   let newTxId;
 
@@ -1485,6 +1492,7 @@ export function createCancelTransaction(txId, customGasPrice) {
       background.createCancelTransaction(
         txId,
         customGasPrice,
+        customGasLimit,
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -2046,6 +2054,10 @@ export function setUseNativeCurrencyAsPrimaryCurrencyPreference(value) {
   return setPreference('useNativeCurrencyAsPrimaryCurrency', value);
 }
 
+export function setHideZeroBalanceTokens(value) {
+  return setPreference('hideZeroBalanceTokens', value);
+}
+
 export function setShowFiatConversionOnTestnetsPreference(value) {
   return setPreference('showFiatInTestnets', value);
 }
@@ -2415,8 +2427,12 @@ export function requestAccountsPermissionWithId(origin) {
  * @param {string[]} accounts - The accounts to expose, if any.
  */
 export function approvePermissionsRequest(request, accounts) {
-  return () => {
-    background.approvePermissionsRequest(request, accounts);
+  return (dispatch) => {
+    background.approvePermissionsRequest(request, accounts, (err) => {
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
   };
 }
 
@@ -2443,8 +2459,12 @@ export function rejectPermissionsRequest(requestId) {
  * Clears the given permissions for the given origin.
  */
 export function removePermissionsFor(domains) {
-  return () => {
-    background.removePermissionsFor(domains);
+  return (dispatch) => {
+    background.removePermissionsFor(domains, (err) => {
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
   };
 }
 
@@ -2452,8 +2472,12 @@ export function removePermissionsFor(domains) {
  * Clears all permissions for all domains.
  */
 export function clearPermissions() {
-  return () => {
-    background.clearPermissions();
+  return (dispatch) => {
+    background.clearPermissions((err) => {
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
   };
 }
 
@@ -2598,7 +2622,11 @@ export function getContractMethodData(data = '') {
 
     return getMethodDataAsync(fourBytePrefix).then(({ name, params }) => {
       dispatch(loadingMethodDataFinished());
-      background.addKnownMethodData(fourBytePrefix, { name, params });
+      background.addKnownMethodData(fourBytePrefix, { name, params }, (err) => {
+        if (err) {
+          dispatch(displayWarning(err.message));
+        }
+      });
       return { name, params };
     });
   };

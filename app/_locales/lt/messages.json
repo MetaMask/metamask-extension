@@ -937,9 +937,6 @@
   "sendAmount": {
     "message": "Siųsti sumą"
   },
-  "sendETH": {
-    "message": "Siųsti ETH"
-  },
   "sendTokens": {
     "message": "Siųsti žetonus"
   },

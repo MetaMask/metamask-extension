@@ -915,9 +915,6 @@
   "sendAmount": {
     "message": "Tuma Kiasi"
   },
-  "sendETH": {
-    "message": "Tuma ETH"
-  },
   "sendTokens": {
     "message": "Tuma Vianzio"
   },

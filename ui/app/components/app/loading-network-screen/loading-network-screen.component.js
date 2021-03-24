@@ -21,7 +21,7 @@ export default class LoadingNetworkScreen extends PureComponent {
     setProviderArgs: PropTypes.array,
     setProviderType: PropTypes.func,
     rollbackToPreviousProvider: PropTypes.func,
-    isLoadingNetwork: PropTypes.bool,
+    isNetworkLoading: PropTypes.bool,
   };
 
   componentDidMount = () => {
@@ -99,9 +99,9 @@ export default class LoadingNetworkScreen extends PureComponent {
   };
 
   cancelCall = () => {
-    const { isLoadingNetwork } = this.props;
+    const { isNetworkLoading } = this.props;
 
-    if (isLoadingNetwork) {
+    if (isNetworkLoading) {
       this.setState({ showErrorScreen: true });
     }
   };

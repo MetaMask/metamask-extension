@@ -1401,9 +1401,6 @@
   "sendAmount": {
     "message": "Halaga ng Ipapadala"
   },
-  "sendETH": {
-    "message": "Magpadala ng ETH"
-  },
   "sendSpecifiedTokens": {
     "message": "Magpadala ng $1",
     "description": "Symbol of the specified token"

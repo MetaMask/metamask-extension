@@ -931,9 +931,6 @@
   "sendAmount": {
     "message": "Wyślij kwotę"
   },
-  "sendETH": {
-    "message": "Wyślij ETH"
-  },
   "sendTokens": {
     "message": "Wyślij tokeny"
   },

@@ -919,9 +919,6 @@
   "sendAmount": {
     "message": "Pošlji znesek"
   },
-  "sendETH": {
-    "message": "Pošlji ETH"
-  },
   "sendTokens": {
     "message": "Pošlji žetone"
   },

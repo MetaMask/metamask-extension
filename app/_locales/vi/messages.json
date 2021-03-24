@@ -1404,9 +1404,6 @@
   "sendAmount": {
     "message": "Gửi khoản tiền"
   },
-  "sendETH": {
-    "message": "Gửi ETH"
-  },
   "sendSpecifiedTokens": {
     "message": "Gửi $1",
     "description": "Symbol of the specified token"

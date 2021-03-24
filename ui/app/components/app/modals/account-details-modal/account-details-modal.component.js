@@ -9,7 +9,7 @@ import Button from '../../../ui/button';
 export default class AccountDetailsModal extends Component {
   static propTypes = {
     selectedIdentity: PropTypes.object,
-    network: PropTypes.string,
+    chainId: PropTypes.string,
     showExportPrivateKeyModal: PropTypes.func,
     setAccountLabel: PropTypes.func,
     keyrings: PropTypes.array,
@@ -23,7 +23,7 @@ export default class AccountDetailsModal extends Component {
   render() {
     const {
       selectedIdentity,
-      network,
+      chainId,
       showExportPrivateKeyModal,
       setAccountLabel,
       keyrings,
@@ -62,7 +62,7 @@ export default class AccountDetailsModal extends Component {
           className="account-details-modal__button"
           onClick={() => {
             global.platform.openTab({
-              url: getAccountLink(address, network, rpcPrefs),
+              url: getAccountLink(address, chainId, rpcPrefs),
             });
           }}
         >

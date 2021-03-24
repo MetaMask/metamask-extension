@@ -1413,9 +1413,6 @@
   "sendAmount": {
     "message": "发送数额"
   },
-  "sendETH": {
-    "message": "发送 ETH"
-  },
   "sendSpecifiedTokens": {
     "message": "发送 $1",
     "description": "Symbol of the specified token"

@@ -1401,9 +1401,6 @@
   "sendAmount": {
     "message": "금액 보내기"
   },
-  "sendETH": {
-    "message": "ETH 보내기"
-  },
   "sendSpecifiedTokens": {
     "message": "$1 보내기",
     "description": "Symbol of the specified token"

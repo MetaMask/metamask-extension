@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
-import { getBlockExplorerUrlForTx } from '../../../helpers/utils/transactions.util';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { FLAT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import TransactionActivityLog from '../transaction-activity-log';
@@ -10,6 +9,8 @@ import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import Copy from '../../ui/icon/copy-icon.component';
 import Popover from '../../ui/popover';
+import { getBlockExplorerUrlForTx } from '../../../../../shared/modules/transaction.utils';
+import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -51,7 +52,6 @@ export default class TransactionListItemDetails extends PureComponent {
       transactionGroup: { primaryTransaction },
       rpcPrefs,
     } = this.props;
-    const { hash, metamaskNetworkId } = primaryTransaction;
 
     this.context.metricsEvent({
       eventOpts: {
@@ -62,7 +62,7 @@ export default class TransactionListItemDetails extends PureComponent {
     });
 
     global.platform.openTab({
-      url: getBlockExplorerUrlForTx(metamaskNetworkId, hash, rpcPrefs),
+      url: getBlockExplorerUrlForTx(primaryTransaction, rpcPrefs),
     });
   };
 
@@ -157,7 +157,7 @@ export default class TransactionListItemDetails extends PureComponent {
     } = this.props;
     const {
       primaryTransaction: transaction,
-      initialTransaction: { transactionCategory },
+      initialTransaction: { type },
     } = transactionGroup;
     const { hash } = transaction;
 
@@ -256,7 +256,7 @@ export default class TransactionListItemDetails extends PureComponent {
             <div className="transaction-list-item-details__cards-container">
               <TransactionBreakdown
                 nonce={transactionGroup.initialTransaction.txParams.nonce}
-                transactionCategory={transactionCategory}
+                isTokenApprove={type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE}
                 transaction={transaction}
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"

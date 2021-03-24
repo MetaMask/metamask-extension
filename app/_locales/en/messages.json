@@ -817,6 +817,10 @@
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
+  "hardwareWalletLegacyDescription": {
+    "message": "(legacy)",
+    "description": "Text representing the MEW path"
+  },
   "hardwareWallets": {
     "message": "Connect a hardware wallet"
   },
@@ -842,6 +846,9 @@
   "hideTokenSymbol": {
     "message": "Hide $1",
     "description": "$1 is the symbol for a token (e.g. 'DAI')"
+  },
+  "hideZeroBalanceTokens": {
+    "message": "Hide Tokens Without Balance"
   },
   "history": {
     "message": "History"
@@ -1477,6 +1484,9 @@
   "selectAnAccount": {
     "message": "Select an Account"
   },
+  "selectAnAccountAlreadyConnected": {
+    "message": "This account has already been connected to MetaMask"
+  },
   "selectAnAccountHelp": {
     "message": "Select the account to view in MetaMask"
   },
@@ -1500,9 +1510,6 @@
   },
   "sendAmount": {
     "message": "Send Amount"
-  },
-  "sendETH": {
-    "message": "Send ETH"
   },
   "sendSpecifiedTokens": {
     "message": "Send $1",

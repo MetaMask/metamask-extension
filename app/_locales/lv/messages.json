@@ -933,9 +933,6 @@
   "sendAmount": {
     "message": "Nosūtītā summa"
   },
-  "sendETH": {
-    "message": "Sūtīt ETH"
-  },
   "sendTokens": {
     "message": "Nosūtīt marķierus"
   },
