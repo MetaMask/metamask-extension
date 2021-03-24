@@ -7,7 +7,6 @@ export default function reduceMetamask(state = {}, action) {
     isInitialized: false,
     isUnlocked: false,
     isAccountMenuOpen: false,
-    rpcUrl: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unapprovedTxs: {},
     frequentRpcList: [],
