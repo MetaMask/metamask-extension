@@ -217,7 +217,7 @@
     "addons-linter": "1.14.0",
     "babelify": "^10.0.0",
     "brfs": "^2.0.2",
-    "browserify": "^16.5.1",
+    "browserify": "^17.0.0",
     "chalk": "^3.0.0",
     "chromedriver": "^79.0.0",
     "concurrently": "^5.2.0",
@@ -289,7 +289,7 @@
     "ttest": "^2.1.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
-    "watchify": "^3.11.1",
+    "watchify": "^4.0.0",
     "webpack": "^4.41.6"
   },
   "engines": {
