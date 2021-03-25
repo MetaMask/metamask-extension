@@ -3,6 +3,8 @@
 ## Current Develop Branch
 
 ## 9.2.1 Thu Mar 25 2021
+- [#10692](https://github.com/MetaMask/metamask-extension/pull/10692): Prevent users from hitting the missing template error
+- [#10712](https://github.com/MetaMask/metamask-extension/pull/10712): Fix infinite spinner when attempting an approve transaction for some token contracts
 
 ## 9.2.0 Tue Mar 09 2021
 - [#10546](https://github.com/MetaMask/metamask-extension/pull/10546): Add a warning when sending a token to its own contract address
