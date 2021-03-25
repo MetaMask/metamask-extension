@@ -1064,7 +1064,7 @@
     "message": "MetaMask would like to gather usage data to better understand how our users interact with the extension. This data will be used to continually improve the usability and user experience of our product and the Ethereum ecosystem."
   },
   "mismatchedChain": {
-    "message": "This network details for this Chain ID do not match our records. We recommend that you $1 before proceeding.",
+    "message": "The network details for this chain ID do not match our records. We recommend that you $1 before proceeding.",
     "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
   },
   "mismatchedChainLinkText": {
