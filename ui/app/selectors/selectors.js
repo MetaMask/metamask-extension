@@ -4,7 +4,6 @@ import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
   MAINNET_CHAIN_ID,
   TEST_CHAINS,
-  LOCALHOST_CHAIN_ID,
   NETWORK_TYPE_RPC,
 } from '../../../shared/constants/network';
 import {
@@ -339,14 +338,6 @@ export function getIsMainnet(state) {
 export function getIsTestnet(state) {
   const chainId = getCurrentChainId(state);
   return TEST_CHAINS.includes(chainId);
-}
-
-export function getIsMainOrTestNet(state) {
-  return (
-    getIsMainnet(state) ||
-    getIsTestnet(state) ||
-    getCurrentChainId(state) === LOCALHOST_CHAIN_ID
-  );
 }
 
 export function getPreferences({ metamask }) {
