@@ -14,6 +14,47 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
   align-items: center;
 }
 
+// Fix for UI lag on external monitor: https://github.com/MetaMask/metamask-extension/issues/10173
+.app::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  background-color: $Grey-000;
+  -webkit-animation-name: emptySpinningDiv;
+  animation-name: emptySpinningDiv;
+  -webkit-animation-duration: 2s;
+  animation-duration: 2s;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+}
+
+@-webkit-keyframes emptySpinningDiv {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(1turn);
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes emptySpinningDiv {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(1turn);
+    transform: rotate(1turn);
+  }
+}
+
 // Main container
 .main-container {
   z-index: $main-container-z-index;
