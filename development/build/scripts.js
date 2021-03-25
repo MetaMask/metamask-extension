@@ -90,7 +90,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       createNormalBundle({
         label,
         filename: `${label}.js`,
-        dependenciesToBundle: externalDependenciesMap[key],
+        modulesToExpose: externalDependenciesMap[key],
         devMode: false,
         browserPlatforms,
       }),
@@ -106,9 +106,9 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     ];
 
     const standardSubtasks = standardBundles.map((label) => {
-      let dependenciesToBundle;
+      let extraEntries;
       if (devMode && label === 'ui') {
-        dependenciesToBundle = ['./development/require-react-devtools.js'];
+        extraEntries = ['./development/require-react-devtools.js'];
       }
       return createTask(
         `${taskPrefix}:${label}`,
@@ -116,7 +116,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
           label,
           devMode,
           testing,
-          dependenciesToBundle,
+          extraEntries,
         }),
       );
     });
@@ -165,11 +165,13 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     label,
     devMode,
     testing,
+    extraEntries,
   }) {
     return createNormalBundle({
       label,
       filename: `${label}.js`,
       filepath: `./app/scripts/${label}.js`,
+      extraEntries,
       externalDependencies: devMode
         ? undefined
         : externalDependenciesMap[label],
@@ -223,7 +225,8 @@ function createScriptTasks({ browserPlatforms, livereload }) {
 function createNormalBundle({
   filename,
   filepath,
-  dependenciesToBundle,
+  extraEntries = [],
+  modulesToExpose,
   externalDependencies,
   devMode,
   testing,
@@ -244,14 +247,18 @@ function createNormalBundle({
     const { bundlerOpts, events } = buildConfiguration;
 
     // set bundle entry file
-    bundlerOpts.entries = [filepath];
+    bundlerOpts.entries = [...extraEntries, filepath];
 
-    if (dependenciesToBundle) {
-      bundlerOpts.require = bundlerOpts.require.concat(dependenciesToBundle);
+    if (modulesToExpose) {
+      bundlerOpts.require = bundlerOpts.require.concat(modulesToExpose);
     }
 
     if (externalDependencies) {
-      bundlerOpts.external = bundlerOpts.external.concat(externalDependencies);
+      // there doesnt seem to be a standard bify option for this
+      // so we'll put it here but manually call it after bundle
+      bundlerOpts.manualExternal = bundlerOpts.manualExternal.concat(
+        externalDependencies,
+      );
     }
 
     // instrument pipeline
@@ -280,7 +287,8 @@ function createBuildConfiguration() {
     transform: [],
     plugin: [],
     require: [],
-    external: [],
+    // not a standard bify option
+    manualExternal: [],
   };
   return { bundlerOpts, events };
 }
@@ -345,6 +353,8 @@ function setupBundlerDefaults(
 async function bundleIt(buildConfiguration) {
   const { bundlerOpts, events } = buildConfiguration;
   const bundler = browserify(bundlerOpts);
+  // manually apply non-standard option
+  bundler.external(bundlerOpts.manualExternal);
   // output build logs to terminal
   bundler.on('log', log);
   // forward update event (used by watchify)
