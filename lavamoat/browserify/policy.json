@@ -520,10 +520,10 @@
         "clearTimeout": true,
         "console.error": true,
         "document": true,
-        "process": true,
         "setTimeout": true
       },
       "packages": {
+        "process": true,
         "tslib": true
       }
     },
@@ -647,8 +647,8 @@
       }
     },
     "clone": {
-      "globals": {
-        "Buffer": true
+      "packages": {
+        "buffer": true
       }
     },
     "color": {
@@ -772,11 +772,9 @@
       }
     },
     "end-of-stream": {
-      "globals": {
-        "process.nextTick": true
-      },
       "packages": {
-        "once": true
+        "once": true,
+        "process": true
       }
     },
     "es-abstract": {
@@ -798,10 +796,10 @@
     },
     "eth-ens-namehash": {
       "globals": {
-        "Buffer": true,
         "name": "write"
       },
       "packages": {
+        "buffer": true,
         "idna-uts46": true,
         "js-sha3": true
       }
@@ -823,31 +821,25 @@
       }
     },
     "ethereum-cryptography": {
-      "globals": {
-        "Buffer.from": true
-      },
       "packages": {
+        "buffer": true,
         "keccak": true,
         "randombytes": true,
         "secp256k1": true
       }
     },
     "ethereumjs-abi": {
-      "globals": {
-        "Buffer": true
-      },
       "packages": {
         "bn.js": true,
+        "buffer": true,
         "ethereumjs-util": true
       }
     },
     "ethereumjs-util": {
-      "globals": {
-        "Buffer": true
-      },
       "packages": {
         "assert": true,
         "bn.js": true,
+        "buffer": true,
         "create-hash": true,
         "elliptic": true,
         "ethereum-cryptography": true,
@@ -890,12 +882,12 @@
     },
     "ethjs": {
       "globals": {
-        "Buffer": true,
         "clearInterval": true,
         "setInterval": true
       },
       "packages": {
         "bn.js": true,
+        "buffer": true,
         "ethjs-abi": true,
         "ethjs-contract": true,
         "ethjs-filter": true,
@@ -908,11 +900,9 @@
       }
     },
     "ethjs-abi": {
-      "globals": {
-        "Buffer": true
-      },
       "packages": {
         "bn.js": true,
+        "buffer": true,
         "js-sha3": true,
         "number-to-bn": true
       }
@@ -977,10 +967,8 @@
       }
     },
     "ethjs-util": {
-      "globals": {
-        "Buffer": true
-      },
       "packages": {
+        "buffer": true,
         "is-hex-prefixed": true,
         "strip-hex-prefix": true
       }
@@ -991,11 +979,8 @@
       }
     },
     "extension-port-stream": {
-      "globals": {
-        "Buffer.from": true,
-        "Buffer.isBuffer": true
-      },
       "packages": {
+        "buffer": true,
         "stream-browserify": true
       }
     },
@@ -1118,7 +1103,7 @@
       }
     },
     "js-sha3": {
-      "globals": {
+      "packages": {
         "process": true
       }
     },
@@ -1177,12 +1162,8 @@
       }
     },
     "keccak": {
-      "globals": {
-        "Buffer.alloc": true,
-        "Buffer.from": true,
-        "Buffer.isBuffer": true
-      },
       "packages": {
+        "buffer": true,
         "inherits": true,
         "safe-buffer": true,
         "stream-browserify": true
@@ -1305,8 +1286,14 @@
         "setTimeout": true
       }
     },
-    "process-nextick-args": {
+    "process": {
       "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      }
+    },
+    "process-nextick-args": {
+      "packages": {
         "process": true
       }
     },
@@ -1344,13 +1331,11 @@
       }
     },
     "pump": {
-      "globals": {
-        "process.version": true
-      },
       "packages": {
         "browser-resolve": true,
         "end-of-stream": true,
-        "once": true
+        "once": true,
+        "process": true
       }
     },
     "punycode": {
@@ -1366,10 +1351,10 @@
     "randombytes": {
       "globals": {
         "crypto": true,
-        "msCrypto": true,
-        "process.nextTick": true
+        "msCrypto": true
       },
       "packages": {
+        "process": true,
         "safe-buffer": true
       }
     },
@@ -1637,14 +1622,6 @@
       }
     },
     "readable-stream": {
-      "globals": {
-        "process.browser": true,
-        "process.nextTick": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.version.slice": true,
-        "setImmediate": true
-      },
       "packages": {
         "browser-resolve": true,
         "buffer": true,
@@ -1652,9 +1629,11 @@
         "events": true,
         "inherits": true,
         "isarray": true,
+        "process": true,
         "process-nextick-args": true,
         "safe-buffer": true,
         "string_decoder": true,
+        "timers-browserify": true,
         "util-deprecate": true
       }
     },
@@ -1691,6 +1670,7 @@
       },
       "packages": {
         "lodash": true,
+        "process": true,
         "symbol-observable": true
       }
     },
@@ -1728,13 +1708,9 @@
       }
     },
     "rlp": {
-      "globals": {
-        "Buffer.concat": true,
-        "Buffer.from": true,
-        "Buffer.isBuffer": true
-      },
       "packages": {
-        "bn.js": true
+        "bn.js": true,
+        "buffer": true
       }
     },
     "rn-host-detect": {
@@ -1783,8 +1759,10 @@
     "scrypt-js": {
       "globals": {
         "define": true,
-        "setImmediate": true,
         "setTimeout": true
+      },
+      "packages": {
+        "timers-browserify": true
       }
     },
     "secp256k1": {
@@ -1799,8 +1777,10 @@
     },
     "set-immediate-shim": {
       "globals": {
-        "setImmediate": true,
         "setTimeout.apply": true
+      },
+      "packages": {
+        "timers-browserify": true
       }
     },
     "sha.js": {
@@ -1860,6 +1840,17 @@
         "mozInnerScreenX": true
       }
     },
+    "timers-browserify": {
+      "globals": {
+        "clearInterval": true,
+        "clearTimeout": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "process": true
+      }
+    },
     "tiny-warning": {
       "globals": {
         "console": true
@@ -1888,6 +1879,7 @@
         "is-arguments": true,
         "is-generator-function": true,
         "is-typed-array": true,
+        "process": true,
         "which-typed-array": true
       }
     },
