@@ -247,7 +247,7 @@ function createNormalBundle({
     bundlerOpts.entries = [filepath];
 
     if (dependenciesToBundle) {
-      bundlerOpts.entries = bundlerOpts.entries.concat(dependenciesToBundle);
+      bundlerOpts.require = bundlerOpts.require.concat(dependenciesToBundle);
     }
 
     if (externalDependencies) {
@@ -279,6 +279,7 @@ function createBuildConfiguration() {
     entries: [],
     transform: [],
     plugin: [],
+    require: [],
     external: [],
   };
   return { bundlerOpts, events };
