@@ -314,14 +314,15 @@ function setupBundlerDefaults(
     setupMinification(buildConfiguration);
   }
 
+  // setup source maps
+  setupSourcemaps(buildConfiguration, { devMode });
+
   // instrument pipeline
   events.on('configurePipeline', ({ pipeline }) => {
     // convert bundle stream to gulp vinyl stream
     // and ensure file contents are buffered
     pipeline.get('vinyl').push(source(filename));
     pipeline.get('vinyl').push(buffer());
-    // setup source maps
-    setupSourcemaps(buildConfiguration, { devMode });
     // setup bundle destination
     browserPlatforms.forEach((platform) => {
       const dest = `./dist/${platform}/`;
