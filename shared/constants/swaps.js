@@ -7,15 +7,13 @@ export const QUOTES_NOT_AVAILABLE_ERROR = 'quotes-not-avilable';
 export const OFFLINE_FOR_MAINTENANCE = 'offline-for-maintenance';
 export const SWAPS_FETCH_ORDER_CONFLICT = 'swaps-fetch-order-conflict';
 
-// An address that the metaswap-api recognizes as ETH, in place of the token address that ERC-20 tokens have
-const ETH_SWAPS_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
-
-const BNB_SWAPS_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
+// An address that the metaswap-api recognizes as the default token for the current network, in place of the token address that ERC-20 tokens have
+const DEFAULT_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const ETH_SWAPS_TOKEN_OBJECT = {
   symbol: 'ETH',
   name: 'Ether',
-  address: ETH_SWAPS_TOKEN_ADDRESS,
+  address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
   iconUrl: 'images/black-eth-logo.svg',
 };
@@ -23,7 +21,7 @@ export const ETH_SWAPS_TOKEN_OBJECT = {
 const BNB_SWAPS_TOKEN_OBJECT = {
   symbol: 'BNB',
   name: 'Binance Coin',
-  address: BNB_SWAPS_TOKEN_ADDRESS,
+  address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
   iconUrl: 'images/bnb.png',
 };
@@ -31,7 +29,7 @@ const BNB_SWAPS_TOKEN_OBJECT = {
 const TEST_ETH_SWAPS_TOKEN_OBJECT = {
   symbol: 'TESTETH',
   name: 'Test Ether',
-  address: ETH_SWAPS_TOKEN_ADDRESS,
+  address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
   iconUrl: 'images/black-eth-logo.svg',
 };
