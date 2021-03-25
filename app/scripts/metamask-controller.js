@@ -1198,9 +1198,8 @@ export default class MetamaskController extends EventEmitter {
 
     // This must be set as soon as possible to communicate to the
     // keyring's iframe and have the setting initialized properly
-    log.debug('[MetaMaskController][submitPassword] Communicating ledger live preference')
     await this.setLedgerLivePreference(
-      this.preferencesController.getLedgerLivePreference()
+      this.preferencesController.getLedgerLivePreference(),
     );
 
     return this.keyringController.fullUpdate();
@@ -1254,9 +1253,7 @@ export default class MetamaskController extends EventEmitter {
       keyringName,
     )[0];
     if (!keyring) {
-      keyring = await this.keyringController.addNewKeyring(
-        keyringName,
-      );
+      keyring = await this.keyringController.addNewKeyring(keyringName);
     }
     if (hdPath && keyring.setHdPath) {
       keyring.setHdPath(hdPath);
@@ -2688,7 +2685,7 @@ export default class MetamaskController extends EventEmitter {
   async setLedgerLivePreference(bool) {
     this.preferencesController.setLedgerLivePreference(bool);
     const keyring = await this.getKeyringForDevice('ledger');
-    if (keyring) {
+    if (keyring?.updateTransportMethod) {
       keyring.updateTransportMethod(bool);
     }
   }

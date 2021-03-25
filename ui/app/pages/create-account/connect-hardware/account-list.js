@@ -122,8 +122,8 @@ class AccountList extends Component {
                     {account.index + 1}
                   </span>
                   {`${account.address.slice(0, 5)}...${account.address.slice(
-                  -5,
-                )}`}
+                    -5,
+                  )}`}
                   <span className="hw-account-list__item__balance">{`${account.balance}`}</span>
                 </label>
               </div>
