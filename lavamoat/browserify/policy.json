@@ -581,6 +581,11 @@
         "util": true
       }
     },
+    "available-typed-arrays": {
+      "packages": {
+        "array-filter": true
+      }
+    },
     "babel-runtime": {
       "packages": {
         "core-js": true,
@@ -772,6 +777,11 @@
       },
       "packages": {
         "once": true
+      }
+    },
+    "es-abstract": {
+      "packages": {
+        "get-intrinsic": true
       }
     },
     "eth-block-tracker": {
@@ -1095,6 +1105,15 @@
     "is-regex": {
       "packages": {
         "call-bind": true,
+        "has-symbols": true
+      }
+    },
+    "is-typed-array": {
+      "packages": {
+        "available-typed-arrays": true,
+        "call-bind": true,
+        "es-abstract": true,
+        "foreach": true,
         "has-symbols": true
       }
     },
@@ -1620,6 +1639,7 @@
     "readable-stream": {
       "globals": {
         "process.browser": true,
+        "process.nextTick": true,
         "process.stderr": true,
         "process.stdout": true,
         "process.version.slice": true,
@@ -1627,6 +1647,7 @@
       },
       "packages": {
         "browser-resolve": true,
+        "buffer": true,
         "core-util-is": true,
         "events": true,
         "inherits": true,
@@ -1863,7 +1884,11 @@
         "process": true
       },
       "packages": {
-        "inherits": true
+        "inherits": true,
+        "is-arguments": true,
+        "is-generator-function": true,
+        "is-typed-array": true,
+        "which-typed-array": true
       }
     },
     "util-deprecate": {
@@ -1892,6 +1917,16 @@
         "readable-stream": true,
         "util": true,
         "uuid": true
+      }
+    },
+    "which-typed-array": {
+      "packages": {
+        "available-typed-arrays": true,
+        "call-bind": true,
+        "es-abstract": true,
+        "foreach": true,
+        "has-symbols": true,
+        "is-typed-array": true
       }
     },
     "xhr2": {
