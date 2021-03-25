@@ -14,6 +14,7 @@ const brfs = require('brfs');
 const pify = require('pify');
 const endOfStream = pify(require('end-of-stream'));
 const labeledStreamSplicer = require('labeled-stream-splicer').obj;
+const bifyPackageFactor = require('bify-package-factor');
 
 const metamaskrc = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
@@ -235,14 +236,12 @@ function createNormalBundle({
   return async function () {
     // create bundler setup and apply defaults
     const buildConfiguration = createBuildConfiguration();
-    const { bundlerOpts } = buildConfiguration;
+    const { bundlerOpts, events } = buildConfiguration;
 
     const envVars = getEnvironmentVariables({ devMode, testing });
     setupBundlerDefaults(buildConfiguration, {
-      filename,
       devMode,
       envVars,
-      browserPlatforms,
     });
 
     // set bundle entry file
@@ -260,7 +259,61 @@ function createNormalBundle({
       );
     }
 
+    // instrument pipeline
+    events.on('configurePipeline', ({ pipeline }) => {
+      // convert bundle stream to gulp vinyl stream
+      // and ensure file contents are buffered
+      pipeline.get('vinyl').push(source(filename));
+      pipeline.get('vinyl').push(buffer());
+      // setup bundle destination
+      browserPlatforms.forEach((platform) => {
+        const dest = `./dist/${platform}/`;
+        pipeline.get('dest').push(gulp.dest(dest));
+      });
+    });
+
     await bundleIt(buildConfiguration);
+  };
+}
+
+function createFactorBundles({ devMode, testing, browserPlatforms } = {}) {
+  return async function buildFactor() {
+    // create bundler setup and apply defaults
+    const buildConfiguration = createBuildConfiguration();
+    const { bundlerOpts, events } = buildConfiguration;
+
+    const envVars = getEnvironmentVariables({ devMode, testing });
+    setupBundlerDefaults(buildConfiguration, {
+      devMode,
+      envVars,
+    });
+
+    // add factor-bundle specific options
+    Object.assign(bundlerOpts, {
+      // ui + background, bify-package-factor will split into separate bundles
+      entries: ['app/scripts/ui.js', 'app/scripts/background.js'],
+      // dedupe breaks under bundle factoring
+      dedupe: false,
+      plugin: [
+        ...bundlerOpts.plugin,
+        // factor code into multiple bundles and emit as vinyl file objects
+        bifyPackageFactor,
+      ],
+    });
+
+    // instrument build pipeline
+    events.on('pipeline', (pipeline) => {
+      // make sure our bundles coming off the pipeline
+      // are buffered
+      pipeline.get('vinyl').push(buffer());
+      // setup bundle destination
+      browserPlatforms.forEach((platform) => {
+        const dest = `./dist/${platform}`;
+        pipeline.get('dest').push(gulp.dest(dest));
+      });
+    });
+
+    await bundleIt({ bundlerOpts, events });
   };
 }
 
@@ -279,7 +332,7 @@ function createBuildConfiguration() {
 
 function setupBundlerDefaults(
   buildConfiguration,
-  { filename, devMode, envVars, browserPlatforms },
+  { devMode, envVars, browserPlatforms },
 ) {
   const { bundlerOpts, events } = buildConfiguration;
   // devMode options
@@ -319,10 +372,6 @@ function setupBundlerDefaults(
 
   // instrument pipeline
   events.on('configurePipeline', ({ pipeline }) => {
-    // convert bundle stream to gulp vinyl stream
-    // and ensure file contents are buffered
-    pipeline.get('vinyl').push(source(filename));
-    pipeline.get('vinyl').push(buffer());
     // setup bundle destination
     browserPlatforms.forEach((platform) => {
       const dest = `./dist/${platform}/`;

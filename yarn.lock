@@ -5620,6 +5620,25 @@ better-opn@^2.0.0:
   dependencies:
     open "^7.0.3"
 
+bify-package-factor@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/bify-package-factor/-/bify-package-factor-1.0.7.tgz#b4b9dc4e429466d7d26cd6ac8e6bd336bcad958b"
+  integrity sha512-7oChIbceiYFVr9CeTgCRXqqTymXbNfyo1L3du1e5fJKAy0DVtXhRUQGn5A5Fmr1232lHn2MpiY+B2qXoeiWOfQ==
+  dependencies:
+    bify-packagedata-stream "1.0.0"
+    pump "^3.0.0"
+    through2 "^3.0.1"
+    vinyl-source-stream "^2.0.0"
+
+bify-packagedata-stream@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/bify-packagedata-stream/-/bify-packagedata-stream-1.0.0.tgz#a6dbdcba64f9bf1c87bdc02ba9586fff7b94ccb3"
+  integrity sha512-ckOCceDpAOySFrt89saOShpVbP/iQbmZeWlYSxZV2e3HPTPhcd3JSudMJZhpsihQTyZut39efDo4+8aOb4vo2w==
+  dependencies:
+    module-name-from-path "git+https://git@github.com/kumavis/module-name-from-path.git"
+    resolve-package-path "^1.2.7"
+    through2 "^3.0.0"
+
 big-integer@1.6.36:
   version "1.6.36"
   resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.36.tgz#78631076265d4ae3555c04f85e7d9d2f3a071a36"
@@ -17033,6 +17052,10 @@ module-deps@^6.0.0:
     through2 "^2.0.0"
     xtend "^4.0.0"
 
+"module-name-from-path@git+https://git@github.com/kumavis/module-name-from-path.git":
+  version "1.0.4"
+  resolved "git+https://git@github.com/kumavis/module-name-from-path.git#fd9c592663a1af6cc48b1be7b8045ea547fca79a"
+
 module-not-found-error@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/module-not-found-error/-/module-not-found-error-1.0.1.tgz#cf8b4ff4f29640674d6cdd02b0e3bc523c2bbdc0"
@@ -21373,6 +21396,14 @@ resolve-options@^1.1.0:
   integrity sha1-MrueOcBtZzONyTeMDW1gdFZq0TE=
   dependencies:
     value-or-function "^3.0.0"
+
+resolve-package-path@^1.2.7:
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/resolve-package-path/-/resolve-package-path-1.2.7.tgz#2a7bc37ad96865e239330e3102c31322847e652e"
+  integrity sha512-fVEKHGeK85bGbVFuwO9o1aU0n3vqQGrezPc51JGu9UTXpFQfWq5qCeKxyaRUSvephs+06c5j5rPq/dzHGEo8+Q==
+  dependencies:
+    path-root "^0.1.1"
+    resolve "^1.10.0"
 
 resolve-pathname@^3.0.0:
   version "3.0.0"
