@@ -23,10 +23,7 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
   width: 1px;
   height: 1px;
   background-color: $Grey-000;
-  animation-name: emptySpinningDiv;
-  animation-duration: 2s;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
+  animation: emptySpinningDiv 1s infinite linear;
 }
 
 @keyframes emptySpinningDiv {
