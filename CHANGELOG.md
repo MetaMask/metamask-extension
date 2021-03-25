@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 9.2.1 Thu Mar 25 2021
+
 ## 9.2.0 Tue Mar 09 2021
 - [#10546](https://github.com/MetaMask/metamask-extension/pull/10546): Add a warning when sending a token to its own contract address
 - [#10563](https://github.com/MetaMask/metamask-extension/pull/10563): Update references to MetaMask support
