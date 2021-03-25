@@ -23,34 +23,17 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
   width: 1px;
   height: 1px;
   background-color: $Grey-000;
-  -webkit-animation-name: emptySpinningDiv;
   animation-name: emptySpinningDiv;
-  -webkit-animation-duration: 2s;
   animation-duration: 2s;
-  -webkit-animation-iteration-count: infinite;
   animation-iteration-count: infinite;
-  -webkit-animation-timing-function: linear;
   animation-timing-function: linear;
-}
-
-@-webkit-keyframes emptySpinningDiv {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(1turn);
-    transform: rotate(1turn);
-  }
 }
 
 @keyframes emptySpinningDiv {
   0% {
-    -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
   to {
-    -webkit-transform: rotate(1turn);
     transform: rotate(1turn);
   }
 }
