@@ -75,7 +75,6 @@ function runInChildProcess(task) {
         env: process.env,
       });
     } else {
-      console.log('regular build')
       childProcess = spawn('yarn', ['build', taskName, '--skip-stats'], {
         env: process.env,
       });
