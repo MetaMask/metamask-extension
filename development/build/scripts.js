@@ -233,18 +233,17 @@ function createNormalBundle({
   browserPlatforms,
 }) {
   return async function () {
-    // devMode options
-    const reloadOnChange = Boolean(devMode);
-
     // create bundler setup and apply defaults
     const buildConfiguration = createBuildConfiguration();
+    const { bundlerOpts } = buildConfiguration;
+
     const envVars = getEnvironmentVariables({ devMode, testing });
     setupBundlerDefaults(buildConfiguration, {
+      filename,
       devMode,
       envVars,
-      reloadOnChange,
+      browserPlatforms,
     });
-    const { bundlerOpts, events } = buildConfiguration;
 
     // set bundle entry file
     bundlerOpts.entries = [...extraEntries, filepath];
@@ -260,21 +259,6 @@ function createNormalBundle({
         externalDependencies,
       );
     }
-
-    // instrument pipeline
-    events.on('configurePipeline', ({ pipeline }) => {
-      // convert bundle stream to gulp vinyl stream
-      // and ensure file contents are buffered
-      pipeline.get('vinyl').push(source(filename));
-      pipeline.get('vinyl').push(buffer());
-      // initialize source maps
-      pipeline.get('sourcemaps:init').push(sourcemaps.init({ loadMaps: true }));
-      // setup bundle destination
-      browserPlatforms.forEach((platform) => {
-        const dest = `./dist/${platform}/`;
-        pipeline.get('dest').push(gulp.dest(dest));
-      });
-    });
 
     await bundleIt(buildConfiguration);
   };
@@ -294,9 +278,14 @@ function createBuildConfiguration() {
 }
 
 function setupBundlerDefaults(
-  { bundlerOpts, events },
-  { devMode, envVars, reloadOnChange },
+  buildConfiguration,
+  { filename, devMode, envVars, browserPlatforms },
 ) {
+  const { bundlerOpts, events } = buildConfiguration;
+  // devMode options
+  const reloadOnChange = Boolean(devMode);
+  const minify = Boolean(devMode);
+
   Object.assign(bundlerOpts, {
     // source transforms
     transform: [
@@ -318,35 +307,76 @@ function setupBundlerDefaults(
 
   // setup reload on change
   if (reloadOnChange) {
-    setupReloadOnChange({ bundlerOpts, events });
+    setupReloadOnChange(buildConfiguration);
+  }
+
+  if (minify) {
+    setupMinification(buildConfiguration);
   }
 
   // instrument pipeline
   events.on('configurePipeline', ({ pipeline }) => {
-    // setup minify
-    if (!devMode) {
-      pipeline.get('minify').push(
-        terser({
-          mangle: {
-            reserved: ['MetamaskInpageProvider'],
-          },
-          sourceMap: {
-            content: true,
-          },
-        }),
-      );
-    }
+    // convert bundle stream to gulp vinyl stream
+    // and ensure file contents are buffered
+    pipeline.get('vinyl').push(source(filename));
+    pipeline.get('vinyl').push(buffer());
+    // setup source maps
+    setupSourcemaps(buildConfiguration, { devMode });
+    // setup bundle destination
+    browserPlatforms.forEach((platform) => {
+      const dest = `./dist/${platform}/`;
+      pipeline.get('dest').push(gulp.dest(dest));
+    });
+  });
+}
 
-    // write sourcemaps
-    if (devMode) {
+function setupReloadOnChange({ bundlerOpts, events }) {
+  // add plugin to options
+  Object.assign(bundlerOpts, {
+    plugin: [...bundlerOpts.plugin, watchify],
+    // required by watchify
+    cache: {},
+    packageCache: {},
+  });
+  // instrument pipeline
+  events.on('configurePipeline', ({ bundleStream }) => {
+    // handle build error to avoid breaking build process
+    // (eg on syntax error)
+    bundleStream.on('error', (err) => {
+      gracefulError(err);
+    });
+  });
+}
+
+function setupMinification(buildConfiguration) {
+  const { events } = buildConfiguration;
+  events.on('configurePipeline', ({ pipeline }) => {
+    pipeline.get('minify').push(
+      terser({
+        mangle: {
+          reserved: ['MetamaskInpageProvider'],
+        },
+        sourceMap: {
+          content: true,
+        },
+      }),
+    );
+  });
+}
+
+function setupSourcemaps(buildConfiguration, { devMode }) {
+  const { events } = buildConfiguration;
+  events.on('configurePipeline', ({ pipeline }) => {
+    pipeline.get('sourcemaps:init').push(sourcemaps.init({ loadMaps: true }));
+    pipeline
+      .get('sourcemaps:write')
       // Use inline source maps for development due to Chrome DevTools bug
       // https://bugs.chromium.org/p/chromium/issues/detail?id=931675
-      pipeline.get('sourcemaps:write').push(sourcemaps.write());
-    } else {
-      pipeline
-        .get('sourcemaps:write')
-        .push(sourcemaps.write('../sourcemaps', { addComment: false }));
-    }
+      .push(
+        devMode
+          ? sourcemaps.write()
+          : sourcemaps.write('../sourcemaps', { addComment: false }),
+      );
   });
 }
 
@@ -387,24 +417,6 @@ async function bundleIt(buildConfiguration) {
     pipeline.resume();
     await endOfStream(pipeline);
   }
-}
-
-function setupReloadOnChange({ bundlerOpts, events }) {
-  // add plugin to options
-  Object.assign(bundlerOpts, {
-    plugin: [...bundlerOpts.plugin, watchify],
-    // required by watchify
-    cache: {},
-    packageCache: {},
-  });
-  // instrument pipeline
-  events.on('configurePipeline', ({ bundleStream }) => {
-    // handle build error to avoid breaking build process
-    // (eg on syntax error)
-    bundleStream.on('error', (err) => {
-      gracefulError(err);
-    });
-  });
 }
 
 function getEnvironmentVariables({ devMode, testing }) {
