@@ -21,32 +21,6 @@ export default {
       );
     }
 
-    if (Array.isArray(PreferencesController.hiddenTokens)) {
-      PreferencesController.hiddenTokens = PreferencesController.hiddenTokens.filter(
-        Boolean,
-      );
-    }
-
-    if (
-      PreferencesController.accountHiddenTokens &&
-      typeof PreferencesController.accountHiddenTokens === 'object'
-    ) {
-      Object.keys(PreferencesController.accountHiddenTokens).forEach(
-        (address) => {
-          const chains = Object.keys(
-            PreferencesController.accountHiddenTokens[address],
-          );
-          chains.forEach((chain) => {
-            PreferencesController.accountHiddenTokens[address][
-              chain
-            ] = PreferencesController.accountHiddenTokens[address][
-              chain
-            ].filter(Boolean);
-          });
-        },
-      );
-    }
-
     if (
       PreferencesController.accountTokens &&
       typeof PreferencesController.accountTokens === 'object'
