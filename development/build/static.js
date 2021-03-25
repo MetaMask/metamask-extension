@@ -49,7 +49,7 @@ const copyTargets = [
     dest: `globalthis.js`,
   },
   {
-    src: `./app/scripts/lockdown.umd.js`,
+    src: `./node_modules/ses/dist/lockdown.cjs`,
     dest: `lockdown.js`,
   },
   {
