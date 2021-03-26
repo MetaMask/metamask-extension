@@ -89,7 +89,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       `scripts:deps:${key}`,
       createNormalBundle({
         label,
-        filename: `${label}.js`,
+        destFilepath: `${label}.js`,
         modulesToExpose: externalDependenciesMap[key],
         devMode: false,
         browserPlatforms,
@@ -169,8 +169,8 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   }) {
     return createNormalBundle({
       label,
-      filename: `${label}.js`,
-      filepath: `./app/scripts/${label}.js`,
+      entryFilepath: `./app/scripts/${label}.js`,
+      destFilepath: `${label}.js`,
       extraEntries,
       externalDependencies: devMode
         ? undefined
@@ -185,8 +185,8 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     const label = 'disable-console';
     return createNormalBundle({
       label,
-      filename: `${label}.js`,
-      filepath: `./app/scripts/${label}.js`,
+      entryFilepath: `./app/scripts/${label}.js`,
+      destFilepath: `${label}.js`,
       devMode,
       browserPlatforms,
     });
@@ -198,8 +198,8 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     return composeSeries(
       createNormalBundle({
         label: inpage,
-        filename: `${inpage}.js`,
-        filepath: `./app/scripts/${inpage}.js`,
+        entryFilepath: `./app/scripts/${inpage}.js`,
+        destFilepath: `${inpage}.js`,
         externalDependencies: devMode
           ? undefined
           : externalDependenciesMap[inpage],
@@ -209,8 +209,8 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       }),
       createNormalBundle({
         label: contentscript,
-        filename: `${contentscript}.js`,
-        filepath: `./app/scripts/${contentscript}.js`,
+        entryFilepath: `./app/scripts/${contentscript}.js`,
+        destFilepath: `${contentscript}.js`,
         externalDependencies: devMode
           ? undefined
           : externalDependenciesMap[contentscript],
@@ -223,8 +223,8 @@ function createScriptTasks({ browserPlatforms, livereload }) {
 }
 
 function createNormalBundle({
-  filename,
-  filepath,
+  destFilepath,
+  entryFilepath,
   extraEntries = [],
   modulesToExpose,
   externalDependencies,
@@ -245,8 +245,8 @@ function createNormalBundle({
 
     // set bundle entries
     bundlerOpts.entries = [...extraEntries];
-    if (filepath) {
-      bundlerOpts.push(filepath)
+    if (entryFilepath) {
+      bundlerOpts.push(entryFilepath);
     }
 
     if (modulesToExpose) {
@@ -265,7 +265,7 @@ function createNormalBundle({
     events.on('configurePipeline', ({ pipeline }) => {
       // convert bundle stream to gulp vinyl stream
       // and ensure file contents are buffered
-      pipeline.get('vinyl').push(source(filename));
+      pipeline.get('vinyl').push(source(destFilepath));
       pipeline.get('vinyl').push(buffer());
       // setup bundle destination
       browserPlatforms.forEach((platform) => {
@@ -305,7 +305,7 @@ function setupBundlerDefaults(buildConfiguration, { devMode, envVars }) {
       // inline `fs.readFileSync` files
       brfs,
     ],
-    // use filepath for moduleIds, easier to determine origin file
+    // use entryFilepath for moduleIds, easier to determine origin file
     fullPaths: devMode,
     // for sourcemaps
     debug: true,
