@@ -288,7 +288,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       fullPaths: opts.devMode,
     });
 
-    const lavamoatTargets = ['background', 'ui'];
+    const lavamoatTargets = ['ui'];
 
     if (lavamoatTargets.includes(opts.label)) {
       assign(browserifyOpts, lavamoat.args);
