@@ -243,8 +243,11 @@ function createNormalBundle({
       envVars,
     });
 
-    // set bundle entry file
-    bundlerOpts.entries = [...extraEntries, filepath];
+    // set bundle entries
+    bundlerOpts.entries = [...extraEntries];
+    if (filepath) {
+      bundlerOpts.push(filepath)
+    }
 
     if (modulesToExpose) {
       bundlerOpts.require = bundlerOpts.require.concat(modulesToExpose);
