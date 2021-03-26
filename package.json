@@ -75,7 +75,8 @@
     "3box/**/libp2p-crypto/node-forge": "^0.10.0",
     "3box/**/libp2p-keychain/node-forge": "^0.10.0",
     "analytics-node/axios": "^0.21.1",
-    "pull-ws": "^3.3.2"
+    "pull-ws": "^3.3.2",
+    "ganache-core/patch-package": "^6.4.7"
   },
   "dependencies": {
     "3box": "^1.10.2",
