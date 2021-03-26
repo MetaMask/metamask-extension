@@ -34,6 +34,7 @@ import {
   getConversionRate,
   getCurrentCurrency,
   getCurrentChainId,
+  getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
 import {
   getValueFromWeiHex,
@@ -90,6 +91,7 @@ export default function BuildQuote({
   const toToken = useSelector(getToToken) || destinationTokenInfo;
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -416,11 +418,13 @@ export default function BuildQuote({
                       <a
                         className="build-quote__token-etherscan-link build-quote__underline"
                         key="build-quote-etherscan-link"
-                        href={`https://etherscan.io/token/${selectedToToken.address}`}
+                        href={`${rpcPrefs.blockExplorerUrl}/token/${selectedToToken.address}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {t('etherscan')}
+                        {rpcPrefs.blockExplorerUrl
+                          ? rpcPrefs.blockExplorerUrl
+                          : t('etherscan')}
                       </a>,
                     ])}
                   </div>
@@ -450,11 +454,13 @@ export default function BuildQuote({
                 <a
                   className="build-quote__token-etherscan-link"
                   key="build-quote-etherscan-link"
-                  href={`https://etherscan.io/token/${selectedToToken.address}`}
+                  href={`${rpcPrefs.blockExplorerUrl}/token/${selectedToToken.address}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {t('etherscan')}
+                  {rpcPrefs.blockExplorerUrl
+                    ? rpcPrefs.blockExplorerUrl
+                    : t('etherscan')}
                 </a>,
               ])}
               <InfoTooltip
