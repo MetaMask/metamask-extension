@@ -1,10 +1,13 @@
 import { createScaffoldMiddleware, mergeMiddleware } from 'json-rpc-engine';
-import createBlockRefMiddleware from 'eth-json-rpc-middleware/block-ref';
-import createRetryOnEmptyMiddleware from 'eth-json-rpc-middleware/retryOnEmpty';
-import createBlockCacheMiddleware from 'eth-json-rpc-middleware/block-cache';
-import createInflightCacheMiddleware from 'eth-json-rpc-middleware/inflight-cache';
-import createBlockTrackerInspectorMiddleware from 'eth-json-rpc-middleware/block-tracker-inspector';
-import providerFromMiddleware from 'eth-json-rpc-middleware/providerFromMiddleware';
+import {
+  createBlockRefMiddleware,
+  createRetryOnEmptyMiddleware,
+  createBlockCacheMiddleware,
+  createInflightCacheMiddleware,
+  createBlockTrackerInspectorMiddleware,
+  providerFromMiddleware,
+} from 'eth-json-rpc-middleware';
+
 import createInfuraMiddleware from 'eth-json-rpc-infura';
 import { PollingBlockTracker } from 'eth-block-tracker';
 
