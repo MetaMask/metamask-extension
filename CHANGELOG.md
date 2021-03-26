@@ -5,7 +5,7 @@
 ## 9.3.0 Fri Mar 26 2021
 - [#10721](https://github.com/MetaMask/metamask-extension/pull/10721): Swaps support for the Binance network
 - [#10658](https://github.com/MetaMask/metamask-extension/pull/10658): Swaps support for forked Mainnet on localhost
-- [#10650](https://github.com/MetaMask/metamask-extension/pull/10650): Fix: ETH 'token' now only appears once in the swaps to and from dropdowns.
+- [#10650](https://github.com/MetaMask/metamask-extension/pull/10650): Fix: ETH now only appears once in the swaps "to" and "from" dropdowns.
 
 ## 9.2.1 Thu Mar 25 2021
 - [#10692](https://github.com/MetaMask/metamask-extension/pull/10692): Prevent UI crash when a 'wallet_requestPermissions" confirmation is queued behind a "wallet_addEthereumChain" confirmation
