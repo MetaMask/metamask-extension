@@ -12,18 +12,18 @@ import {
 
 import {
   isValidAddress,
-  isEthNetwork,
   checkExistingAddresses,
   isValidDomainName,
   isOriginContractAddress,
+  isDefaultMetaMaskChain,
 } from '../../../../helpers/utils/util';
 
-export function getToErrorObject(to, sendTokenAddress, network) {
+export function getToErrorObject(to, sendTokenAddress, chainId) {
   let toError = null;
   if (!to) {
     toError = REQUIRED_ERROR;
   } else if (!isValidAddress(to)) {
-    toError = isEthNetwork(network)
+    toError = isDefaultMetaMaskChain(chainId)
       ? INVALID_RECIPIENT_ADDRESS_ERROR
       : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;
   } else if (isOriginContractAddress(to, sendTokenAddress)) {

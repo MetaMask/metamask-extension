@@ -800,9 +800,6 @@
   "importWallet": {
     "message": "Importar Monedero"
   },
-  "importYourExisting": {
-    "message": "Importa tu monedero existente usando la frase semilla de 12 palabras"
-  },
   "imported": {
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -1359,9 +1356,6 @@
   "secretBackupPhraseWarning": {
     "message": "ADVERTENCIA: Nunca revele su frase de respaldo. Cualquiera con esta frase puede tomar su Ether para siempre."
   },
-  "secretPhrase": {
-    "message": "Ingresa tu frase de doce (12) palabras para restaurar tu bóveda."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad y Privacidad"
   },
@@ -1412,9 +1406,6 @@
   },
   "sendAmount": {
     "message": "Enviar cantidad"
-  },
-  "sendETH": {
-    "message": "Enviar ETH"
   },
   "sendSpecifiedTokens": {
     "message": "Enviar $1",

@@ -25,7 +25,8 @@ import {
   getIsMainnet,
   getIsTestnet,
   getCurrentKeyring,
-  getSwapsEthToken,
+  getSwapsDefaultToken,
+  getIsSwapsChain,
 } from '../../../selectors/selectors';
 import SwapIcon from '../../ui/icon/swap-icon.component';
 import BuyIcon from '../../ui/icon/overview-buy-icon.component';
@@ -63,13 +64,14 @@ const EthOverview = ({ className }) => {
   const { balance } = selectedAccount;
   const isMainnetChain = useSelector(getIsMainnet);
   const isTestnetChain = useSelector(getIsTestnet);
+  const isSwapsChain = useSelector(getIsSwapsChain);
   const enteredSwapsEvent = useNewMetricEvent({
     event: 'Swaps Opened',
     properties: { source: 'Main View', active_currency: 'ETH' },
     category: 'swaps',
   });
   const swapsEnabled = useSelector(getSwapsFeatureLiveness);
-  const swapsEthToken = useSelector(getSwapsEthToken);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
   return (
     <WalletOverview
@@ -136,12 +138,12 @@ const EthOverview = ({ className }) => {
           {swapsEnabled ? (
             <IconButton
               className="eth-overview__button"
-              disabled={!isMainnetChain}
+              disabled={!isSwapsChain}
               Icon={SwapIcon}
               onClick={() => {
-                if (isMainnetChain) {
+                if (isSwapsChain) {
                   enteredSwapsEvent();
-                  dispatch(setSwapsFromToken(swapsEthToken));
+                  dispatch(setSwapsFromToken(defaultSwapsToken));
                   if (usingHardwareWallet) {
                     global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
                   } else {
@@ -154,7 +156,7 @@ const EthOverview = ({ className }) => {
                 <Tooltip
                   title={t('onlyAvailableOnMainnet')}
                   position="bottom"
-                  disabled={isMainnetChain}
+                  disabled={isSwapsChain}
                 >
                   {contents}
                 </Tooltip>

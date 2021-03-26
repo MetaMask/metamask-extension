@@ -791,9 +791,6 @@
   "importWallet": {
     "message": "Nhập ví"
   },
-  "importYourExisting": {
-    "message": "Nhập ví hiện có của bạn bằng cụm mật khẩu gốc gồm 12 từ"
-  },
   "imported": {
     "message": "Đã nhập",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -1350,9 +1347,6 @@
   "secretBackupPhraseWarning": {
     "message": "CẢNH BÁO: Tuyệt đối không để lộ cụm mật khẩu sao lưu của bạn. Bất kỳ ai có cụm mật khẩu này cũng có thể lấy Ether của bạn vĩnh viễn."
   },
-  "secretPhrase": {
-    "message": "Nhập cụm mật khẩu bí mật gồm 12 từ vào đây để khôi phục két của bạn."
-  },
   "securityAndPrivacy": {
     "message": "Bảo mật và quyền riêng tư"
   },
@@ -1403,9 +1397,6 @@
   },
   "sendAmount": {
     "message": "Gửi khoản tiền"
-  },
-  "sendETH": {
-    "message": "Gửi ETH"
   },
   "sendSpecifiedTokens": {
     "message": "Gửi $1",

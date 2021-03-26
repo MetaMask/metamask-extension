@@ -19,10 +19,10 @@ import { hexToDecimal } from '../../helpers/utils/conversions.util';
 import AdvancedGasInputs from '../../components/app/gas-customization/advanced-gas-inputs';
 import TextField from '../../components/ui/text-field';
 import {
-  TRANSACTION_CATEGORIES,
+  TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction';
-import { getTransactionCategoryTitle } from '../../helpers/utils/transactions.util';
+import { getTransactionTypeTitle } from '../../helpers/utils/transactions.util';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -87,7 +87,7 @@ export default class ConfirmTransactionBase extends Component {
     advancedInlineGasShown: PropTypes.bool,
     insufficientBalance: PropTypes.bool,
     hideFiatConversion: PropTypes.bool,
-    transactionCategory: PropTypes.string,
+    type: PropTypes.string,
     getNextNonce: PropTypes.func,
     nextNonce: PropTypes.number,
     tryReverseResolveAddress: PropTypes.func.isRequired,
@@ -218,7 +218,7 @@ export default class ConfirmTransactionBase extends Component {
         functionType:
           actionKey ||
           getMethodName(methodData.name) ||
-          TRANSACTION_CATEGORIES.CONTRACT_INTERACTION,
+          TRANSACTION_TYPES.CONTRACT_INTERACTION,
         origin,
       },
     });
@@ -395,7 +395,7 @@ export default class ConfirmTransactionBase extends Component {
         functionType:
           actionKey ||
           getMethodName(methodData.name) ||
-          TRANSACTION_CATEGORIES.CONTRACT_INTERACTION,
+          TRANSACTION_TYPES.CONTRACT_INTERACTION,
         origin,
       },
     });
@@ -450,7 +450,7 @@ export default class ConfirmTransactionBase extends Component {
         functionType:
           actionKey ||
           getMethodName(methodData.name) ||
-          TRANSACTION_CATEGORIES.CONTRACT_INTERACTION,
+          TRANSACTION_TYPES.CONTRACT_INTERACTION,
         origin,
       },
     });
@@ -500,7 +500,7 @@ export default class ConfirmTransactionBase extends Component {
             functionType:
               actionKey ||
               getMethodName(methodData.name) ||
-              TRANSACTION_CATEGORIES.CONTRACT_INTERACTION,
+              TRANSACTION_TYPES.CONTRACT_INTERACTION,
             origin,
           },
         });
@@ -667,7 +667,7 @@ export default class ConfirmTransactionBase extends Component {
       customNonceValue,
       assetImage,
       unapprovedTxCount,
-      transactionCategory,
+      type,
       hideSenderToRecipient,
       showAccountInHeader,
       txData,
@@ -690,8 +690,8 @@ export default class ConfirmTransactionBase extends Component {
 
     let functionType = getMethodName(name);
     if (!functionType) {
-      if (transactionCategory) {
-        functionType = getTransactionCategoryTitle(t, transactionCategory);
+      if (type) {
+        functionType = getTransactionTypeTitle(t, type);
       } else {
         functionType = t('contractInteraction');
       }

@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
 import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network';
 import * as actions from '../../../store/actions';
-import { getNetworkIdentifier } from '../../../selectors';
+import { getNetworkIdentifier, isNetworkLoading } from '../../../selectors';
 import LoadingNetworkScreen from './loading-network-screen.component';
 
 const mapStateToProps = (state) => {
   const { loadingMessage } = state.appState;
-  const { provider, network } = state.metamask;
+  const { provider } = state.metamask;
   const { rpcUrl, chainId, ticker, nickname, type } = provider;
 
   const setProviderArgs =
@@ -15,7 +15,7 @@ const mapStateToProps = (state) => {
       : [provider.type];
 
   return {
-    isLoadingNetwork: network === 'loading',
+    isNetworkLoading: isNetworkLoading(state),
     loadingMessage,
     setProviderArgs,
     provider,

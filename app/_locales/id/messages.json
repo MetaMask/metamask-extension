@@ -791,9 +791,6 @@
   "importWallet": {
     "message": "Impor dompet"
   },
-  "importYourExisting": {
-    "message": "Impor dompet Anda yang ada menggunakan frasa pemulihan 12 kata"
-  },
   "imported": {
     "message": "Diimpor",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -1350,9 +1347,6 @@
   "secretBackupPhraseWarning": {
     "message": "PERINGATAN: Jangan pernah ungkapkan frasa cadangan Anda. Siapa pun yang memiliki frasa ini dapat mengambil Ether Anda selamanya."
   },
-  "secretPhrase": {
-    "message": "Masukkan frasa kata dua belas rahasia Anda di sini untuk memulihkan vault Anda."
-  },
   "securityAndPrivacy": {
     "message": "Keamanan & Privasi"
   },
@@ -1403,9 +1397,6 @@
   },
   "sendAmount": {
     "message": "Kirim Jumlah"
-  },
-  "sendETH": {
-    "message": "Kirim ETH"
   },
   "sendSpecifiedTokens": {
     "message": "Kirim $1",

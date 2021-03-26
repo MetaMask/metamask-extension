@@ -118,13 +118,21 @@ export default function TransactionListItem({
       <Button
         type="secondary"
         rounded
-        onClick={retryTransaction}
-        className="transaction-list-item-details__header-button"
+        onClick={hasCancelled ? cancelTransaction : retryTransaction}
+        style={hasCancelled ? { width: 'auto' } : null}
       >
-        {t('speedUp')}
+        {hasCancelled ? t('speedUpCancellation') : t('speedUp')}
       </Button>
     );
-  }, [shouldShowSpeedUp, isUnapproved, t, isPending, retryTransaction]);
+  }, [
+    shouldShowSpeedUp,
+    isUnapproved,
+    t,
+    isPending,
+    retryTransaction,
+    hasCancelled,
+    cancelTransaction,
+  ]);
 
   return (
     <>

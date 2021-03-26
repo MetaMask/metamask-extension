@@ -15,7 +15,10 @@ import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../helpers/utils/conversions.util';
-import { ETH_SWAPS_TOKEN_OBJECT } from '../helpers/constants/swaps';
+import {
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  ALLOWED_SWAPS_CHAIN_IDS,
+} from '../../../shared/constants/swaps';
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 
 /**
@@ -84,7 +87,16 @@ export function getAccountType(state) {
   }
 }
 
-export function getCurrentNetworkId(state) {
+/**
+ * get the currently selected networkId which will be 'loading' when the
+ * network changes. The network id should not be used in most cases,
+ * instead use chainId in most situations. There are a limited number of
+ * use cases to use this method still, such as when comparing transaction
+ * metadata that predates the switch to using chainId.
+ * @deprecated - use getCurrentChainId instead
+ * @param {Object} state - redux state object
+ */
+export function deprecatedGetCurrentNetworkId(state) {
   return state.metamask.network;
 }
 
@@ -149,7 +161,7 @@ export function getMetaMaskCachedBalances(state) {
 
   // Fallback to fetching cached balances from network id
   // this can eventually be removed
-  const network = getCurrentNetworkId(state);
+  const network = deprecatedGetCurrentNetworkId(state);
 
   return (
     state.metamask.cachedBalances[chainId] ??
@@ -367,17 +379,6 @@ export function getDomainMetadata(state) {
   return state.metamask.domainMetadata;
 }
 
-export const getBackgroundMetaMetricState = (state) => {
-  return {
-    network: getCurrentNetworkId(state),
-    accountType: getAccountType(state),
-    metaMetricsId: state.metamask.metaMetricsId,
-    numberOfTokens: getNumberOfTokens(state),
-    numberOfAccounts: getNumberOfAccounts(state),
-    participateInMetaMetrics: state.metamask.participateInMetaMetrics,
-  };
-};
-
 export function getRpcPrefsForCurrentProvider(state) {
   const { frequentRpcListDetail, provider } = state.metamask;
   const selectRpcInfo = frequentRpcListDetail.find(
@@ -441,22 +442,26 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
  * minimal token units (according to its decimals).
  * `string` is the token balance in a readable format, ready for rendering.
  *
- * Swaps treats ETH as a token, and we use the ETH_SWAPS_TOKEN_OBJECT constant
- * to set the standard properties for the token. The getSwapsEthToken selector
- * extends that object with `balance` and `balance` values of the same type as
- * in regular ERC-20 token objects, per the above description.
+ * Swaps treats the selected chain's currency as a token, and we use the token constants
+ * in the SWAPS_CHAINID_DEFAULT_TOKEN_MAP to set the standard properties for
+ * the token. The getSwapsDefaultToken selector extends that object with
+ * `balance` and `string` values of the same type as in regular ERC-20 token
+ * objects, per the above description.
  *
  * @param {object} state - the redux state object
  * @returns {SwapsEthToken} The token object representation of the currently
  * selected account's ETH balance, as expected by the Swaps API.
  */
 
-export function getSwapsEthToken(state) {
+export function getSwapsDefaultToken(state) {
   const selectedAccount = getSelectedAccount(state);
   const { balance } = selectedAccount;
+  const chainId = getCurrentChainId(state);
+
+  const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
 
   return {
-    ...ETH_SWAPS_TOKEN_OBJECT,
+    ...defaultTokenObject,
     balance: hexToDecimal(balance),
     string: getValueFromWeiHex({
       value: balance,
@@ -464,4 +469,9 @@ export function getSwapsEthToken(state) {
       toDenomination: 'ETH',
     }),
   };
+}
+
+export function getIsSwapsChain(state) {
+  const chainId = getCurrentChainId(state);
+  return ALLOWED_SWAPS_CHAIN_IDS[chainId];
 }

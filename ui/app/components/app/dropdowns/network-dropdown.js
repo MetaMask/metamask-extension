@@ -16,7 +16,7 @@ import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 
 import ColorIndicator from '../../ui/color-indicator';
 import { COLORS, SIZES } from '../../../helpers/constants/design-system';
-import { Dropdown, DropdownMenuItem } from './components/dropdown';
+import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [
@@ -25,6 +25,7 @@ const notToggleElementClassnames = [
   'network-indicator',
   'network-caret',
   'network-component',
+  'modal-container__footer-button',
 ];
 
 const DROP_DOWN_MENU_ITEM_STYLE = {
