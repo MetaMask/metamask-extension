@@ -235,14 +235,12 @@ function createNormalBundle({
   return async function () {
     // create bundler setup and apply defaults
     const buildConfiguration = createBuildConfiguration();
-    const { bundlerOpts } = buildConfiguration;
+    const { bundlerOpts, events } = buildConfiguration;
 
     const envVars = getEnvironmentVariables({ devMode, testing });
     setupBundlerDefaults(buildConfiguration, {
-      filename,
       devMode,
       envVars,
-      browserPlatforms,
     });
 
     // set bundle entry file
@@ -259,6 +257,19 @@ function createNormalBundle({
         externalDependencies,
       );
     }
+
+    // instrument pipeline
+    events.on('configurePipeline', ({ pipeline }) => {
+      // convert bundle stream to gulp vinyl stream
+      // and ensure file contents are buffered
+      pipeline.get('vinyl').push(source(filename));
+      pipeline.get('vinyl').push(buffer());
+      // setup bundle destination
+      browserPlatforms.forEach((platform) => {
+        const dest = `./dist/${platform}/`;
+        pipeline.get('dest').push(gulp.dest(dest));
+      });
+    });
 
     await bundleIt(buildConfiguration);
   };
@@ -277,11 +288,8 @@ function createBuildConfiguration() {
   return { bundlerOpts, events };
 }
 
-function setupBundlerDefaults(
-  buildConfiguration,
-  { filename, devMode, envVars, browserPlatforms },
-) {
-  const { bundlerOpts, events } = buildConfiguration;
+function setupBundlerDefaults(buildConfiguration, { devMode, envVars }) {
+  const { bundlerOpts } = buildConfiguration;
   // devMode options
   const reloadOnChange = Boolean(devMode);
   const minify = Boolean(devMode) === false;
@@ -316,19 +324,6 @@ function setupBundlerDefaults(
 
   // setup source maps
   setupSourcemaps(buildConfiguration, { devMode });
-
-  // instrument pipeline
-  events.on('configurePipeline', ({ pipeline }) => {
-    // convert bundle stream to gulp vinyl stream
-    // and ensure file contents are buffered
-    pipeline.get('vinyl').push(source(filename));
-    pipeline.get('vinyl').push(buffer());
-    // setup bundle destination
-    browserPlatforms.forEach((platform) => {
-      const dest = `./dist/${platform}/`;
-      pipeline.get('dest').push(gulp.dest(dest));
-    });
-  });
 }
 
 function setupReloadOnChange({ bundlerOpts, events }) {
