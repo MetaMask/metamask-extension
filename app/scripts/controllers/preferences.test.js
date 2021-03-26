@@ -539,6 +539,14 @@ describe('preferences controller', function () {
           decimals: 0,
         }),
       );
+      assert.doesNotThrow(() =>
+        validate({
+          address: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
+          symbol: 'ABCDEFGHIJK',
+          decimals: 0,
+        }),
+      );
+
       assert.throws(
         () => validate({ symbol: 'ABC', decimals: 0 }),
         'missing address should fail',
@@ -563,10 +571,19 @@ describe('preferences controller', function () {
         () =>
           validate({
             address: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
-            symbol: 'ABCDEFGHI',
+            symbol: 'ABCDEFGHIJKLM',
             decimals: 0,
           }),
-        'invalid symbol should fail',
+        'long symbol should fail',
+      );
+      assert.throws(
+        () =>
+          validate({
+            address: '0xd26114cd6EE289AccF82350c8d8487fedB8A0C07',
+            symbol: '',
+            decimals: 0,
+          }),
+        'empty symbol should fail',
       );
       assert.throws(
         () =>
