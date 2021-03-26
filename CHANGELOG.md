@@ -2,6 +2,8 @@
 
 ## Current Develop Branch
 
+## 9.3.0 Fri Mar 26 2021
+
 ## 9.2.1 Thu Mar 25 2021
 - [#10692](https://github.com/MetaMask/metamask-extension/pull/10692): Prevent UI crash when a 'wallet_requestPermissions" confirmation is queued behind a "wallet_addEthereumChain" confirmation
 - [#10712](https://github.com/MetaMask/metamask-extension/pull/10712): Fix infinite spinner when request for token symbol fails while attempting an approve transaction
