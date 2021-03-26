@@ -391,8 +391,6 @@ async function bundleIt(buildConfiguration) {
     // this pipeline is created for every bundle
     // the labels are all the steps you can hook into
     const pipeline = labeledStreamSplicer([
-      'bundler',
-      [],
       'vinyl',
       [],
       'sourcemaps:init',
