@@ -145,6 +145,10 @@ jobs:
           paths:
             - node_modules/
             - build-artifacts/yarn-install-har/
+      - run:
+          name: Postinstall
+          command: |
+            yarn setup:postinstall
       - persist_to_workspace:
           root: .
           paths:
