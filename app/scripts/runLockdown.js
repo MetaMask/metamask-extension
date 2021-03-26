@@ -5,8 +5,7 @@ try {
     consoleTaming: 'unsafe',
     errorTaming: 'unsafe',
     mathTaming: 'unsafe',
-    dateTaming: 'unsafe',
-    overrideTaming: 'severe',
+    dateTaming: 'unsafe'
   });
 } catch (error) {
   // If the `lockdown` call throws an exception, it interferes with the
