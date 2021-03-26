@@ -59,6 +59,7 @@
     "lavamoat:debug": "lavamoat ./development/build/index.js --writeAutoPolicyDebug"
   },
   "resolutions": {
+    "**/regenerator-runtime": "^0.13.7",
     "**/configstore/dot-prop": "^5.1.1",
     "**/ethers/elliptic": "^6.5.4",
     "**/knex/minimist": "^1.2.5",
@@ -176,6 +177,7 @@
     "reselect": "^3.0.1",
     "rpc-cap": "^3.2.1",
     "safe-event-emitter": "^1.0.1",
+    "ses": "^0.12.4",
     "single-call-balance-checker-abi": "^1.0.0",
     "swappable-obj-proxy": "^1.1.0",
     "textarea-caret": "^3.0.1",
@@ -259,7 +261,7 @@
     "nock": "^9.0.14",
     "node-fetch": "^2.6.1",
     "nyc": "^15.0.0",
-    "patch-package": "^6.2.2",
+    "patch-package": "^6.4.7",
     "polyfill-crypto.getrandomvalues": "^1.0.0",
     "prettier": "^2.1.1",
     "prettier-plugin-sort-json": "^0.0.1",
@@ -275,7 +277,6 @@
     "sass-loader": "^10.1.1",
     "selenium-webdriver": "4.0.0-alpha.7",
     "serve-handler": "^6.1.2",
-    "ses": "0.11.0",
     "sinon": "^9.0.0",
     "source-map": "^0.7.2",
     "source-map-explorer": "^2.4.2",
