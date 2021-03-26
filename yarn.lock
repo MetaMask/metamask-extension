@@ -9617,6 +9617,15 @@ eth-block-tracker@^4.4.2:
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
+eth-block-tracker@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/eth-block-tracker/-/eth-block-tracker-5.0.1.tgz#c5ad39902bd0454223b601ec0874f9fcc9f30eed"
+  integrity sha512-NVs+JDSux0FdmOrl3A2YDcQFkkYf9/qW9irvPmtC7bhMoPAe6oBlaqqe/m9Ixh5rkKqAox4mEyWGpsFmf/IsNw==
+  dependencies:
+    "@metamask/safe-event-emitter" "^2.0.0"
+    json-rpc-random-id "^1.0.1"
+    pify "^3.0.0"
+
 eth-ens-namehash@2.0.8, eth-ens-namehash@^2.0.8:
   version "2.0.8"
   resolved "https://registry.yarnpkg.com/eth-ens-namehash/-/eth-ens-namehash-2.0.8.tgz#229ac46eca86d52e0c991e7cb2aef83ff0f68bcf"

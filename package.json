@@ -109,7 +109,7 @@
     "debounce-stream": "^2.0.0",
     "deep-freeze-strict": "1.1.1",
     "end-of-stream": "^1.4.4",
-    "eth-block-tracker": "^4.4.2",
+    "eth-block-tracker": "^5.0.1",
     "eth-ens-namehash": "^2.0.8",
     "eth-json-rpc-filters": "^4.2.1",
     "eth-json-rpc-infura": "^5.1.0",
