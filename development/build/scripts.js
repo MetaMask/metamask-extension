@@ -246,7 +246,7 @@ function createNormalBundle({
     // set bundle entries
     bundlerOpts.entries = [...extraEntries];
     if (entryFilepath) {
-      bundlerOpts.push(entryFilepath);
+      bundlerOpts.entries.push(entryFilepath);
     }
 
     if (modulesToExpose) {
