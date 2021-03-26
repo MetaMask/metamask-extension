@@ -5,6 +5,7 @@ import {
   addToAddressBook,
   showQrScanner,
   qrCodeDetected,
+  hideModal,
 } from '../../../../store/actions';
 import { getQrCodeData } from '../../../../selectors';
 import AddNewContactModal from './add-new-contact-modal.component';
@@ -17,7 +18,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    hideModal: () => dispatch(actions.hideModal()),
+    hideModal: () => dispatch(hideModal()),
     addToAddressBook: (recipient, nickname, memo) =>
       dispatch(addToAddressBook(recipient, nickname, memo)),
     scanQrCode: () => dispatch(showQrScanner()),

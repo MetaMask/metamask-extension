@@ -16,14 +16,15 @@ function AddressBookAddButton(props) {
   const dispatch = useDispatch();
 
   return (
-    <div
+    <button
       className="address-book-add-button__button button btn-secondary btn--rounded"
-      onClick={() => {
+      onClick={(e) => {
+        e.preventDefault();
         dispatch(showModal({ name: 'ADD_NEW_CONTACT' }));
       }}
     >
-      <div>{label}</div>
-    </div>
+      {label}
+    </button>
   );
 }
 
@@ -62,20 +63,19 @@ export default class ContactListTab extends Component {
     );
   }
 
-  renderAddButton() {
-    const { history } = this.props;
+  // renderAddButton() {
+  //   const { history } = this.props;
 
-    return (
-      <div
-        className="address-book-add-button__button button btn-secondary btn--rounded"
-        onClick={() => {
-          history.push(CONTACT_ADD_ROUTE);
-        }}
-      >
-        <div>Test button</div>
-      </div>
-    );
-  }
+  //   return (
+  //     <div
+  //       className="address-book-add-button__button button btn-secondary btn--rounded"
+  //       onClick={() => {
+  //         history.push(CONTACT_ADD_ROUTE);
+  //       }}
+  //     >
+  //     </div>
+  //   );
+  // }
 
   renderMyAccountsButton() {
     const { history } = this.props;
@@ -163,7 +163,7 @@ export default class ContactListTab extends Component {
         {!addingContact && (
           <div className="address-book-add-button">
             <AddressBookAddButton label={this.context.t('addAccount')} />
-            <div>{this.renderAddButton()}</div>
+            {/* <div>{this.renderAddButton()}</div> */}
           </div>
         )}
       </div>
