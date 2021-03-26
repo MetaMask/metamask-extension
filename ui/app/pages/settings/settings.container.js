@@ -43,7 +43,6 @@ const mapStateToProps = (state, ownProps) => {
   const pathNameTail = pathname.match(/[^/]+$/u)[0];
 
   const isAddressEntryPage = pathNameTail.includes('0x');
-  const isMyAccountsPage = pathname.match('my-accounts');
   const isAddContactPage = Boolean(pathname.match(CONTACT_ADD_ROUTE));
   const isEditContactPage = Boolean(pathname.match(CONTACT_EDIT_ROUTE));
   const isNetworksFormPage = Boolean(pathname.match(NETWORKS_FORM_ROUTE));
@@ -54,7 +53,7 @@ const mapStateToProps = (state, ownProps) => {
   let backRoute = SETTINGS_ROUTE;
   if (isEditContactPage) {
     backRoute = `${CONTACT_VIEW_ROUTE}/${pathNameTail}`;
-  } else if (isAddressEntryPage || isMyAccountsPage || isAddContactPage) {
+  } else if (isAddressEntryPage || isAddContactPage) {
     backRoute = CONTACT_LIST_ROUTE;
   } else if (isNetworksFormPage) {
     backRoute = NETWORKS_ROUTE;
@@ -62,10 +61,6 @@ const mapStateToProps = (state, ownProps) => {
 
   let initialBreadCrumbRoute;
   let initialBreadCrumbKey;
-  if (isMyAccountsPage) {
-    initialBreadCrumbRoute = CONTACT_LIST_ROUTE;
-    initialBreadCrumbKey = ROUTES_TO_I18N_KEYS[initialBreadCrumbRoute];
-  }
 
   const addressName = getAddressBookEntryName(
     state,
@@ -74,7 +69,6 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     isAddressEntryPage,
-    isMyAccountsPage,
     backRoute,
     currentPath: pathname,
     isPopup,
