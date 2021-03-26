@@ -17,7 +17,8 @@
     },
     "lodash": {
       "globals": {
-        "setTimeout": true
+        "setTimeout": true,
+        "clearTimeout": true
       }
     },
     "@ethersproject/random": {
