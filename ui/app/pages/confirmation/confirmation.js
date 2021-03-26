@@ -17,7 +17,7 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { stripHttpsScheme } from '../../helpers/utils/util';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
-import { getUnapprovedConfirmations } from '../../selectors';
+import { getUnapprovedTemplatedConfirmations } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import { COLORS, SIZES } from '../../helpers/constants/design-system';
 import Callout from '../../components/ui/callout';
@@ -115,7 +115,10 @@ export default function ConfirmationPage() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
-  const pendingConfirmations = useSelector(getUnapprovedConfirmations, isEqual);
+  const pendingConfirmations = useSelector(
+    getUnapprovedTemplatedConfirmations,
+    isEqual,
+  );
   const [currentPendingConfirmation, setCurrentPendingConfirmation] = useState(
     0,
   );
