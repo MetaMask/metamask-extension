@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "setup": "yarn install && yarn patch-package && yarn allow-scripts",
-    "setup-ci": "yarn install --frozen-lockfile --har && yarn patch-package && yarn allow-scripts",
+    "setup": "yarn install && yarn setup:postinstall",
+    "setup:postinstall": "yarn patch-package && yarn allow-scripts",
     "start": "node development/build/index.js dev",
     "start:lavamoat": "yarn build dev",
     "dist": "yarn build prod",
