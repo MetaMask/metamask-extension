@@ -96,12 +96,10 @@ export default class ContactListTab extends Component {
   }
 
   renderAddressBookContent() {
-    const { hideAddressBook, showingMyAccounts } = this.props;
+    const { hideAddressBook } = this.props;
 
-    if (!hideAddressBook && !showingMyAccounts) {
+    if (!hideAddressBook) {
       return <div className="address-book">{this.renderAddresses()}</div>;
-    } else if (!hideAddressBook && showingMyAccounts) {
-      return <MyAccounts />;
     }
     return null;
   }
