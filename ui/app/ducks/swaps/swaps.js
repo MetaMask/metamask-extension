@@ -747,6 +747,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
 export function fetchMetaSwapsGasPriceEstimates() {
   return async (dispatch, getState) => {
     const state = getState();
+    const chainId = getCurrentChainId(state);
     const priceEstimatesLastRetrieved = getSwapsPriceEstimatesLastRetrieved(
       state,
     );
@@ -760,12 +761,13 @@ export function fetchMetaSwapsGasPriceEstimates() {
     let priceEstimates;
     try {
       if (Date.now() - timeLastRetrieved > 30000) {
-        priceEstimates = await fetchSwapsGasPrices();
+        priceEstimates = await fetchSwapsGasPrices(chainId);
       } else {
         const cachedPriceEstimates = await getStorageItem(
           'METASWAP_GAS_PRICE_ESTIMATES',
         );
-        priceEstimates = cachedPriceEstimates || (await fetchSwapsGasPrices());
+        priceEstimates =
+          cachedPriceEstimates || (await fetchSwapsGasPrices(chainId));
       }
     } catch (e) {
       log.warn('Fetching swaps gas prices failed:', e);
