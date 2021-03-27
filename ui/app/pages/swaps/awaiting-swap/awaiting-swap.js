@@ -138,7 +138,6 @@ export default function AwaitingSwap({
       <ViewOnEtherScanLink
         txHash={txHash}
         blockExplorerUrl={blockExplorerUrl}
-        blockExplorerBaseUrl={rpcPrefs.blockExplorerUrl}
         isCustomBlockExplorerUrl={Boolean(rpcPrefs.blockExplorerUrl)}
       />
     );
@@ -178,7 +177,6 @@ export default function AwaitingSwap({
       <ViewOnEtherScanLink
         txHash={txHash}
         blockExplorerUrl={blockExplorerUrl}
-        blockExplorerBaseUrl={rpcPrefs.blockExplorerUrl}
         isCustomBlockExplorerUrl={Boolean(rpcPrefs.blockExplorerUrl)}
       />
     );
@@ -198,7 +196,6 @@ export default function AwaitingSwap({
       <ViewOnEtherScanLink
         txHash={txHash}
         blockExplorerUrl={blockExplorerUrl}
-        blockExplorerBaseUrl={rpcPrefs.blockExplorerUrl}
         isCustomBlockExplorerUrl={Boolean(rpcPrefs.blockExplorerUrl)}
       />
     );

@@ -6,7 +6,6 @@ import { I18nContext } from '../../../../contexts/i18n';
 export default function ViewOnEtherScanLink({
   txHash,
   blockExplorerUrl,
-  blockExplorerBaseUrl,
   isCustomBlockExplorerUrl,
 }) {
   const t = useContext(I18nContext);
@@ -19,7 +18,7 @@ export default function ViewOnEtherScanLink({
       onClick={() => global.platform.openTab({ url: blockExplorerUrl })}
     >
       {isCustomBlockExplorerUrl
-        ? t('viewOnCustomBlockExplorer', [blockExplorerBaseUrl])
+        ? t('viewOnCustomBlockExplorer', [new URL(blockExplorerUrl).hostname])
         : t('viewOnEtherscan')}
     </div>
   );
@@ -29,5 +28,4 @@ ViewOnEtherScanLink.propTypes = {
   txHash: PropTypes.string,
   blockExplorerUrl: PropTypes.string,
   isCustomBlockExplorerUrl: PropTypes.bool,
-  blockExplorerBaseUrl: PropTypes.string,
 };
