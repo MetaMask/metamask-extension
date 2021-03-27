@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { uniqBy, isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
+import { createTokenTrackerLinkForChain } from '@metamask/etherscan-link';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import {
   useTokensToSearch,
@@ -217,6 +218,11 @@ export default function BuildQuote({
     );
   };
 
+  const tokenLinkForChain = createTokenTrackerLinkForChain(
+    selectedToToken.address,
+    chainId,
+  );
+
   const { destinationTokenAddedForSwap } = fetchParams || {};
   const { address: toAddress } = toToken || {};
   const onToSelect = useCallback(
@@ -418,12 +424,12 @@ export default function BuildQuote({
                       <a
                         className="build-quote__token-etherscan-link build-quote__underline"
                         key="build-quote-etherscan-link"
-                        href={`${rpcPrefs.blockExplorerUrl}/token/${selectedToToken.address}`}
+                        href={tokenLinkForChain}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         {rpcPrefs.blockExplorerUrl
-                          ? rpcPrefs.blockExplorerUrl
+                          ? new URL(rpcPrefs.blockExplorerUrl).hostname
                           : t('etherscan')}
                       </a>,
                     ])}
@@ -454,12 +460,12 @@ export default function BuildQuote({
                 <a
                   className="build-quote__token-etherscan-link"
                   key="build-quote-etherscan-link"
-                  href={`${rpcPrefs.blockExplorerUrl}/token/${selectedToToken.address}`}
+                  href={tokenLinkForChain}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   {rpcPrefs.blockExplorerUrl
-                    ? rpcPrefs.blockExplorerUrl
+                    ? new URL(rpcPrefs.blockExplorerUrl).hostname
                     : t('etherscan')}
                 </a>,
               ])}
