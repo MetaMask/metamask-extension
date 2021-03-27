@@ -2,8 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
 import log from 'loglevel';
 
-import { getStorageItem, setStorageItem } from '../../../lib/storage-helpers';
-
 import {
   addToken,
   addUnapprovedTransaction,
@@ -83,7 +81,6 @@ const initialState = {
     limit: null,
     loading: GAS_PRICES_LOADING_STATES.INITIAL,
     priceEstimates: {},
-    priceEstimatesLastRetrieved: 0,
     fallBackPrice: null,
   },
 };
@@ -145,8 +142,6 @@ const slice = createSlice({
     swapGasPriceEstimatesFetchCompleted: (state, action) => {
       state.customGas.priceEstimates = action.payload.priceEstimates;
       state.customGas.loading = GAS_PRICES_LOADING_STATES.COMPLETED;
-      state.customGas.priceEstimatesLastRetrieved =
-        action.payload.priceEstimatesLastRetrieved;
     },
     retrievedFallbackSwapsGasPrice: (state, action) => {
       state.customGas.fallBackPrice = action.payload;
@@ -189,9 +184,6 @@ export const swapGasEstimateLoadingHasFailed = (state) =>
 
 export const getSwapGasPriceEstimateData = (state) =>
   state.swaps.customGas.priceEstimates;
-
-export const getSwapsPriceEstimatesLastRetrieved = (state) =>
-  state.swaps.customGas.priceEstimatesLastRetrieved;
 
 export const getSwapsFallbackGasPrice = (state) =>
   state.swaps.customGas.fallBackPrice;
@@ -748,27 +740,12 @@ export function fetchMetaSwapsGasPriceEstimates() {
   return async (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
-    const priceEstimatesLastRetrieved = getSwapsPriceEstimatesLastRetrieved(
-      state,
-    );
-    const timeLastRetrieved =
-      priceEstimatesLastRetrieved ||
-      (await getStorageItem('METASWAP_GAS_PRICE_ESTIMATES_LAST_RETRIEVED')) ||
-      0;
 
     dispatch(swapGasPriceEstimatesFetchStarted());
 
     let priceEstimates;
     try {
-      if (Date.now() - timeLastRetrieved > 30000) {
-        priceEstimates = await fetchSwapsGasPrices(chainId);
-      } else {
-        const cachedPriceEstimates = await getStorageItem(
-          'METASWAP_GAS_PRICE_ESTIMATES',
-        );
-        priceEstimates =
-          cachedPriceEstimates || (await fetchSwapsGasPrices(chainId));
-      }
+      priceEstimates = await fetchSwapsGasPrices(chainId);
     } catch (e) {
       log.warn('Fetching swaps gas prices failed:', e);
 
@@ -793,20 +770,9 @@ export function fetchMetaSwapsGasPriceEstimates() {
       }
     }
 
-    const timeRetrieved = Date.now();
-
-    await Promise.all([
-      setStorageItem('METASWAP_GAS_PRICE_ESTIMATES', priceEstimates),
-      setStorageItem(
-        'METASWAP_GAS_PRICE_ESTIMATES_LAST_RETRIEVED',
-        timeRetrieved,
-      ),
-    ]);
-
     dispatch(
       swapGasPriceEstimatesFetchCompleted({
         priceEstimates,
-        priceEstimatesLastRetrieved: timeRetrieved,
       }),
     );
     return priceEstimates;

@@ -392,7 +392,7 @@ export async function fetchSwapsGasPrices(chainId) {
   const response = await fetchWithCache(
     gasPricesUrl,
     { method: 'GET' },
-    { cacheRefreshTime: 15000 },
+    { cacheRefreshTime: 30000 },
   );
   const responseIsValid = validateData(
     SWAP_GAS_PRICE_VALIDATOR,
