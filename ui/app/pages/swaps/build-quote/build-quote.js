@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { uniqBy, isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
-import { createTokenTrackerLinkForChain } from '@metamask/etherscan-link';
+import { createCustomTokenTrackerLink } from '@metamask/etherscan-link';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import {
   useTokensToSearch,
@@ -218,7 +218,7 @@ export default function BuildQuote({
     );
   };
 
-  const tokenLinkForChain = createTokenTrackerLinkForChain(
+  const tokenLinkForChain = createCustomTokenTrackerLink(
     selectedToToken.address,
     chainId,
   );
