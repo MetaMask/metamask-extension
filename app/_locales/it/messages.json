@@ -1828,7 +1828,8 @@
     "message": "Quotazione migliore"
   },
   "swapVerifyTokenExplanation": {
-    "message": "Più token possono usare lo stesso nome e simbolo. Verifica su Etherscan che questo sia il token che stai cercando."
+    "message": "Più token possono usare lo stesso nome e simbolo. Verifica su Etherscan che questo sia il token che stai cercando.",
+    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. This is the message that appears when we want to direct the user to etherscan."
   },
   "swapViewToken": {
     "message": "Vedi $1"

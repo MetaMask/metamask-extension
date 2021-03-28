@@ -1772,7 +1772,8 @@
     "message": "Không xác định"
   },
   "swapVerifyTokenExplanation": {
-    "message": "Nhiều token có thể dùng cùng một tên và ký hiệu. Hãy kiểm tra trên Etherscan để xác minh xem đây có phải là token bạn đang tìm kiếm không."
+    "message": "Nhiều token có thể dùng cùng một tên và ký hiệu. Hãy kiểm tra trên Etherscan để xác minh xem đây có phải là token bạn đang tìm kiếm không.",
+    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. This is the message that appears when we want to direct the user to etherscan."
   },
   "swapViewToken": {
     "message": "Xem $1"

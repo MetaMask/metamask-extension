@@ -38,7 +38,6 @@ import {
   getConversionRate,
   getCurrentCurrency,
   getCurrentChainId,
-  getIsMainnet,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
 import {
@@ -55,6 +54,7 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../../../shared/modules/swaps.utils';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/swaps';
 
 import { resetSwapsPostFetchState, removeToken } from '../../../store/actions';
 import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util';
@@ -97,7 +97,6 @@ export default function BuildQuote({
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const isMainnet = useSelector(getIsMainnet);
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -223,12 +222,39 @@ export default function BuildQuote({
     );
   };
 
-  const tokenLinkForChain = isMainnet
-    ? createTokenTrackerLinkForChain(selectedToToken.address, chainId)
-    : createCustomTokenTrackerLink(
-        selectedToToken.address,
-        rpcPrefs.blockExplorerUrl,
-      );
+  let blockExplorerTokenLink;
+  let blockExplorerLabel;
+  let blockExplorerTokenTooltipText;
+  if (rpcPrefs.blockExplorerUrl) {
+    blockExplorerTokenLink = createCustomTokenTrackerLink(
+      selectedToToken.address,
+      rpcPrefs.blockExplorerUrl,
+    );
+    blockExplorerLabel = new URL(rpcPrefs.blockExplorerUrl).hostname;
+    blockExplorerTokenTooltipText = t(
+      'swapVerifyTokenOnBlockExplorerExplanation',
+      [blockExplorerLabel],
+    );
+  } else if (SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId]) {
+    blockExplorerTokenLink = createCustomTokenTrackerLink(
+      selectedToToken.address,
+      SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId],
+    );
+    blockExplorerLabel = new URL(
+      SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId],
+    ).hostname;
+    blockExplorerTokenTooltipText = t(
+      'swapVerifyTokenOnBlockExplorerExplanation',
+      [blockExplorerLabel],
+    );
+  } else {
+    blockExplorerTokenLink = createTokenTrackerLinkForChain(
+      selectedToToken.address,
+      chainId,
+    );
+    blockExplorerLabel = t('etherscan');
+    blockExplorerTokenTooltipText = t('swapVerifyTokenExplanation');
+  }
 
   const { destinationTokenAddedForSwap } = fetchParams || {};
   const { address: toAddress } = toToken || {};
@@ -427,19 +453,18 @@ export default function BuildQuote({
                       : t('swapTokenVerificationNoSource')}
                   </div>
                   <div>
-                    {t('verifyThisTokenOn', [
-                      <a
-                        className="build-quote__token-etherscan-link build-quote__underline"
-                        key="build-quote-etherscan-link"
-                        href={tokenLinkForChain}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {rpcPrefs.blockExplorerUrl
-                          ? new URL(rpcPrefs.blockExplorerUrl).hostname
-                          : t('etherscan')}
-                      </a>,
-                    ])}
+                    {blockExplorerTokenLink &&
+                      t('verifyThisTokenOn', [
+                        <a
+                          className="build-quote__token-etherscan-link build-quote__underline"
+                          key="build-quote-etherscan-link"
+                          href={blockExplorerTokenLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {blockExplorerLabel}
+                        </a>,
+                      ])}
                   </div>
                 </div>
               }
@@ -453,7 +478,9 @@ export default function BuildQuote({
               }
               type="warning"
               withRightButton
-              infoTooltipText={t('swapVerifyTokenExplanation')}
+              infoTooltipText={
+                blockExplorerTokenLink && blockExplorerTokenTooltipText
+              }
             />
           ) : (
             <div className="build-quote__token-message">
@@ -463,25 +490,27 @@ export default function BuildQuote({
               >
                 {t('swapTokenVerificationSources', [occurances])}
               </span>
-              {t('swapTokenVerificationMessage', [
-                <a
-                  className="build-quote__token-etherscan-link"
-                  key="build-quote-etherscan-link"
-                  href={tokenLinkForChain}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {rpcPrefs.blockExplorerUrl
-                    ? new URL(rpcPrefs.blockExplorerUrl).hostname
-                    : t('etherscan')}
-                </a>,
-              ])}
-              <InfoTooltip
-                position="top"
-                contentText={t('swapVerifyTokenExplanation')}
-                containerClassName="build-quote__token-tooltip-container"
-                key="token-verification-info-tooltip"
-              />
+              {blockExplorerTokenLink && (
+                <>
+                  {t('swapTokenVerificationMessage', [
+                    <a
+                      className="build-quote__token-etherscan-link"
+                      key="build-quote-etherscan-link"
+                      href={blockExplorerTokenLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {blockExplorerLabel}
+                    </a>,
+                  ])}
+                  <InfoTooltip
+                    position="top"
+                    contentText={blockExplorerTokenTooltipText}
+                    containerClassName="build-quote__token-tooltip-container"
+                    key="token-verification-info-tooltip"
+                  />
+                </>
+              )}
             </div>
           ))}
         <div className="build-quote__slippage-buttons-container">
