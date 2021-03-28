@@ -4,7 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { uniqBy, isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
-import { createCustomTokenTrackerLink } from '@metamask/etherscan-link';
+import {
+  createCustomTokenTrackerLink,
+  createTokenTrackerLinkForChain,
+} from '@metamask/etherscan-link';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import {
   useTokensToSearch,
@@ -35,6 +38,7 @@ import {
   getConversionRate,
   getCurrentCurrency,
   getCurrentChainId,
+  getIsMainnet,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
 import {
@@ -93,6 +97,7 @@ export default function BuildQuote({
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const isMainnet = useSelector(getIsMainnet);
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -218,10 +223,12 @@ export default function BuildQuote({
     );
   };
 
-  const tokenLinkForChain = createCustomTokenTrackerLink(
-    selectedToToken.address,
-    chainId,
-  );
+  const tokenLinkForChain = isMainnet
+    ? createTokenTrackerLinkForChain(selectedToToken.address, chainId)
+    : createCustomTokenTrackerLink(
+        selectedToToken.address,
+        rpcPrefs.blockExplorerUrl,
+      );
 
   const { destinationTokenAddedForSwap } = fetchParams || {};
   const { address: toAddress } = toToken || {};
