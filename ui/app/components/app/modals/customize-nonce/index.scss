@@ -11,72 +11,46 @@
     align-items: left;
     position: relative;
     padding-top: 24px;
-
-    &__close {
-      @include H4;
-
-      color: #24292e;
-      background: none;
-      position: absolute;
-      right: 10px;
-      width: 0.75rem;
-      height: 0.75rem;
-      cursor: pointer;
-    }
   }
 
-  &__title {
+  &__close {
     @include H4;
 
-    font-family: 'Euclid';
-    font-weight: bold;
+    color: #24292e;
+    background: none;
+    position: absolute;
+    right: 10px;
+    width: 0.75rem;
+    height: 0.75rem;
+    cursor: pointer;
   }
 
   &__description {
-    @include H6;
-
-    font-family: 'Euclid';
-    font-weight: normal;
     padding-top: 8px;
-
-    &__link {
-      color: $primary-blue;
-      cursor: pointer;
-    }
   }
 
   &__content {
     padding-top: 32px;
+  }
 
-    &__header {
-      display: flex;
-      flex-flow: row;
+  &__header {
+    display: flex;
+    flex-flow: row;
+  }
 
-      &__label {
-        @include H6;
+  &__reset {
+    @include H7;
 
-        font-family: 'Euclid';
-        font-weight: bold;
-        color: black;
-      }
+    color: $primary-1;
+    cursor: pointer;
+    padding-left: 157px;
+  }
 
-      &__reset {
-        @include H7;
+  &__input {
+    input {
+      @include Paragraph;
 
-        padding-left: 160px;
-        font-family: 'Euclid';
-        font-weight: normal;
-        color: $primary-blue;
-        cursor: pointer;
-      }
-    }
-
-    &__input {
-      input {
-        @include Paragraph;
-
-        width: 100%;
-      }
+      width: 100%;
     }
   }
 }
@@ -86,6 +60,6 @@
 }
 
 .customize-nonce-modal-container {
-  height: 304px;
+  height: 324px;
   width: 100%;
 }

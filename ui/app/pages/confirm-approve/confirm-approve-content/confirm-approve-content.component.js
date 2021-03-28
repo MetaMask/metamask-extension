@@ -5,6 +5,11 @@ import Identicon from '../../../components/ui/identicon';
 import { addressSummary } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
+import Typography from '../../../components/ui/typography';
+import {
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+} from '../../../helpers/constants/design-system';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -171,12 +176,12 @@ export default class ConfirmApproveContent extends Component {
     return (
       <>
         {useNonceField && (
-          <div className="confirm-approve-content__custom-nonce__content">
-            <div className="confirm-approve-content__custom-nonce__small-text">
+          <div className="confirm-approve-content__custom-nonce-content">
+            <Typography variant={TYPOGRAPHY.H6} fontWeight={FONT_WEIGHT.NORMAL}>
               {t('nonce')}
-            </div>
+            </Typography>
             <div
-              className="confirm-approve-content__custom-nonce__small-blue-text cursor-pointer"
+              className="confirm-approve-content__custom-nonce-edit"
               onClick={() =>
                 showCustomizeNonceModal({
                   nextNonce,
@@ -188,9 +193,13 @@ export default class ConfirmApproveContent extends Component {
             >
               Edit
             </div>
-            <div className="confirm-approve-content__custom-nonce__small-bold-text">
+            <Typography
+              className="confirm-approve-content__custom-nonce-value"
+              variant={TYPOGRAPHY.H6}
+              fontWeight={FONT_WEIGHT.BOLD}
+            >
               {customNonceValue || nextNonce}
-            </div>
+            </Typography>
           </div>
         )}
       </>
@@ -222,7 +231,7 @@ export default class ConfirmApproveContent extends Component {
         })}
       >
         {warning && (
-          <div className="confirm-approve-content__custom-nonce__warning-wrapper">
+          <div className="confirm-approve-content__custom-nonce-warning">
             <ConfirmPageContainerWarning warning={warning} />
           </div>
         )}
