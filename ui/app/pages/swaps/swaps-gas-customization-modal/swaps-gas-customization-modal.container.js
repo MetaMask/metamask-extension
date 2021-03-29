@@ -8,6 +8,8 @@ import {
   getDefaultActiveButtonIndex,
   getRenderableGasButtonData,
   getUSDConversionRate,
+  getNativeCurrency,
+  getSwapsDefaultToken,
 } from '../../../selectors';
 
 import {
@@ -21,7 +23,6 @@ import {
   shouldShowCustomPriceTooLowWarning,
   swapCustomGasModalClosed,
 } from '../../../ducks/swaps/swaps';
-
 import {
   addHexes,
   getValueFromWeiHex,
@@ -34,6 +35,9 @@ import SwapsGasCustomizationModalComponent from './swaps-gas-customization-modal
 const mapStateToProps = (state) => {
   const currentCurrency = getCurrentCurrency(state);
   const conversionRate = getConversionRate(state);
+  const nativeCurrencySymbol = getNativeCurrency(state);
+  const { symbol: swapsDefaultCurrencySymbol } = getSwapsDefaultToken(state);
+  const usedCurrencySymbol = nativeCurrencySymbol || swapsDefaultCurrencySymbol;
 
   const { modalState: { props: modalProps } = {} } = state.appState.modal || {};
   const {
@@ -63,6 +67,7 @@ const mapStateToProps = (state) => {
     true,
     conversionRate,
     currentCurrency,
+    usedCurrencySymbol,
   );
   const gasButtonInfo = [averageEstimateData, fastEstimateData];
 
@@ -74,13 +79,15 @@ const mapStateToProps = (state) => {
 
   const balance = getCurrentEthBalance(state);
 
-  const newTotalEth = sumHexWEIsToRenderableEth([
-    value,
-    customGasTotal,
-    customTotalSupplement,
-  ]);
+  const newTotalEth = sumHexWEIsToRenderableEth(
+    [value, customGasTotal, customTotalSupplement],
+    usedCurrencySymbol,
+  );
 
-  const sendAmount = sumHexWEIsToRenderableEth([value, '0x0']);
+  const sendAmount = sumHexWEIsToRenderableEth(
+    [value, '0x0'],
+    usedCurrencySymbol,
+  );
 
   const insufficientBalance = !isBalanceSufficient({
     amount: value,
@@ -112,14 +119,16 @@ const mapStateToProps = (state) => {
         currentCurrency,
         conversionRate,
       ),
-      originalTotalEth: sumHexWEIsToRenderableEth([
-        value,
-        customGasTotal,
-        customTotalSupplement,
-      ]),
+      originalTotalEth: sumHexWEIsToRenderableEth(
+        [value, customGasTotal, customTotalSupplement],
+        usedCurrencySymbol,
+      ),
       newTotalFiat,
       newTotalEth,
-      transactionFee: sumHexWEIsToRenderableEth(['0x0', customGasTotal]),
+      transactionFee: sumHexWEIsToRenderableEth(
+        ['0x0', customGasTotal],
+        usedCurrencySymbol,
+      ),
       sendAmount,
       extraInfoRow,
     },
@@ -158,13 +167,15 @@ export default connect(
   mapDispatchToProps,
 )(SwapsGasCustomizationModalComponent);
 
-function sumHexWEIsToRenderableEth(hexWEIs) {
+function sumHexWEIsToRenderableEth(hexWEIs, currencySymbol = 'ETH') {
   const hexWEIsSum = hexWEIs.filter(Boolean).reduce(addHexes);
   return formatETHFee(
     getValueFromWeiHex({
       value: hexWEIsSum,
-      toCurrency: 'ETH',
+      fromCurrency: currencySymbol,
+      toCurrency: currencySymbol,
       numberOfDecimals: 6,
     }),
+    currencySymbol,
   );
 }

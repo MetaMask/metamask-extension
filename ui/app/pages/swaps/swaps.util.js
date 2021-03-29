@@ -427,6 +427,7 @@ export function getRenderableNetworkFeesForQuote({
   sourceSymbol,
   sourceAmount,
   chainId,
+  nativeCurrencySymbol,
 }) {
   const totalGasLimitForCalculation = new BigNumber(tradeGas || '0x0', 16)
     .plus(approveGas || '0x0', 16)
@@ -456,11 +457,15 @@ export function getRenderableNetworkFeesForQuote({
     numberOfDecimals: 2,
   });
   const formattedNetworkFee = formatCurrency(rawNetworkFees, currentCurrency);
+
+  const chainCurrencySymbolToUse =
+    nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
+
   return {
     rawNetworkFees,
     rawEthFee: ethFee,
     feeInFiat: formattedNetworkFee,
-    feeInEth: `${ethFee} ${SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol}`,
+    feeInEth: `${ethFee} ${chainCurrencySymbolToUse}`,
     nonGasFee,
   };
 }
