@@ -1,4 +1,6 @@
 .customize-nonce-modal {
+  $self: &;
+
   padding-left: 24px;
   padding-right: 18px;
   display: flex;
@@ -38,12 +40,8 @@
     flex-flow: row;
   }
 
-  &__reset {
+  #{$self} &__reset {
     @include H7;
-
-    color: $primary-1;
-    cursor: pointer;
-    padding-left: 157px;
   }
 
   &__input {
