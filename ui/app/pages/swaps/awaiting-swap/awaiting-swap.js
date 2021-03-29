@@ -34,6 +34,7 @@ import {
   OFFLINE_FOR_MAINTENANCE,
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
 } from '../../../../../shared/constants/swaps';
+import { CHAIN_ID_TO_TYPE_MAP as VALID_INFURA_CHAIN_IDS } from '../../../../../shared/constants/network';
 import { isSwapsDefaultTokenSymbol } from '../../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 
@@ -116,7 +117,7 @@ export default function AwaitingSwap({
       txHash,
       SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId],
     );
-  } else if (txHash) {
+  } else if (txHash && VALID_INFURA_CHAIN_IDS[chainId]) {
     blockExplorerUrl = getBlockExplorerUrlForTx({ chainId, hash: txHash });
   }
 
