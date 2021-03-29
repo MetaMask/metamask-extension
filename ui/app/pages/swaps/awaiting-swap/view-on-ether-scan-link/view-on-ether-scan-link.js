@@ -18,7 +18,7 @@ export default function ViewOnEtherScanLink({
       onClick={() => global.platform.openTab({ url: blockExplorerUrl })}
     >
       {isCustomBlockExplorerUrl
-        ? t('viewOnCustomBlockExplorer', [blockExplorerUrl])
+        ? t('viewOnCustomBlockExplorer', [new URL(blockExplorerUrl).hostname])
         : t('viewOnEtherscan')}
     </div>
   );
