@@ -224,17 +224,12 @@ export default function BuildQuote({
 
   let blockExplorerTokenLink;
   let blockExplorerLabel;
-  let blockExplorerTokenTooltipText;
   if (rpcPrefs.blockExplorerUrl) {
     blockExplorerTokenLink = createCustomTokenTrackerLink(
       selectedToToken.address,
       rpcPrefs.blockExplorerUrl,
     );
     blockExplorerLabel = new URL(rpcPrefs.blockExplorerUrl).hostname;
-    blockExplorerTokenTooltipText = t(
-      'swapVerifyTokenOnBlockExplorerExplanation',
-      [blockExplorerLabel],
-    );
   } else if (SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId]) {
     blockExplorerTokenLink = createCustomTokenTrackerLink(
       selectedToToken.address,
@@ -243,17 +238,12 @@ export default function BuildQuote({
     blockExplorerLabel = new URL(
       SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId],
     ).hostname;
-    blockExplorerTokenTooltipText = t(
-      'swapVerifyTokenOnBlockExplorerExplanation',
-      [blockExplorerLabel],
-    );
   } else {
     blockExplorerTokenLink = createTokenTrackerLinkForChain(
       selectedToToken.address,
       chainId,
     );
     blockExplorerLabel = t('etherscan');
-    blockExplorerTokenTooltipText = t('swapVerifyTokenExplanation');
   }
 
   const { destinationTokenAddedForSwap } = fetchParams || {};
@@ -479,7 +469,8 @@ export default function BuildQuote({
               type="warning"
               withRightButton
               infoTooltipText={
-                blockExplorerTokenLink && blockExplorerTokenTooltipText
+                blockExplorerTokenLink &&
+                t('swapVerifyTokenExplanation', [blockExplorerLabel])
               }
             />
           ) : (
@@ -505,7 +496,9 @@ export default function BuildQuote({
                   ])}
                   <InfoTooltip
                     position="top"
-                    contentText={blockExplorerTokenTooltipText}
+                    contentText={t('swapVerifyTokenExplanation', [
+                      blockExplorerLabel,
+                    ])}
                     containerClassName="build-quote__token-tooltip-container"
                     key="token-verification-info-tooltip"
                   />
