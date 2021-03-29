@@ -1,6 +1,4 @@
 .customize-nonce-modal {
-  $self: &;
-
   padding-left: 24px;
   padding-right: 18px;
   display: flex;
@@ -32,7 +30,7 @@
   }
 
   &__content {
-    padding-top: 32px;
+    padding-top: 20px;
   }
 
   &__header {
@@ -40,7 +38,7 @@
     flex-flow: row;
   }
 
-  #{$self} &__reset {
+  & &__reset {
     @include H7;
   }
 

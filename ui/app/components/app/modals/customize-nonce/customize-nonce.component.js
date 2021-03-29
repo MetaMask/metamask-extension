@@ -10,7 +10,6 @@ import {
   FONT_WEIGHT,
   ALIGN_ITEMS,
   BLOCK_SIZES,
-  JUSTIFY_CONTENT,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
 
@@ -103,14 +102,11 @@ export default class CustomizeNonce extends PureComponent {
             <Typography
               variant={TYPOGRAPHY.H6}
               fontWeight={FONT_WEIGHT.BOLD}
-              boxProps={{ width: BLOCK_SIZES.THREE_FOURTHS }}
+              boxProps={{ width: BLOCK_SIZES.FIVE_SIXTHS }}
             >
               {t('editNonceField')}
             </Typography>
-            <Box
-              width={BLOCK_SIZES.ONE_FOURTH}
-              justifyContent={JUSTIFY_CONTENT.FLEX_END}
-            >
+            <Box width={BLOCK_SIZES.ONE_SIXTH}>
               <Button
                 type="link"
                 className="customize-nonce-modal__reset"
@@ -119,13 +115,6 @@ export default class CustomizeNonce extends PureComponent {
                 {t('reset')}
               </Button>
             </Box>
-
-            {/* <span
-              className="customize-nonce-modal__reset"
-              onClick={this.onReset}
-            >
-              {t('reset')}
-            </span> */}
           </Box>
           <div className="customize-nonce-modal__input">
             <TextField
