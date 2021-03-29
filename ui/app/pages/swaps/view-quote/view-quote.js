@@ -38,6 +38,7 @@ import {
   getTokenExchangeRates,
   getSwapsDefaultToken,
   getCurrentChainId,
+  getNativeCurrency,
 } from '../../../selectors';
 import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util';
 import { getTokens } from '../../../ducks/metamask/metamask';
@@ -128,6 +129,7 @@ export default function ViewQuote() {
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
+  const nativeCurrencySymbol = useSelector(getNativeCurrency);
 
   const { isBestQuote } = usedQuote;
 
@@ -223,6 +225,7 @@ export default function ViewQuote() {
     sourceSymbol: sourceTokenSymbol,
     sourceAmount: usedQuote.sourceAmount,
     chainId,
+    nativeCurrencySymbol,
   });
 
   const {
@@ -239,6 +242,7 @@ export default function ViewQuote() {
     sourceSymbol: sourceTokenSymbol,
     sourceAmount: usedQuote.sourceAmount,
     chainId,
+    nativeCurrencySymbol,
   });
 
   const tokenCost = new BigNumber(usedQuote.sourceAmount);
