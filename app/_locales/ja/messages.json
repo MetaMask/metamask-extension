@@ -1805,7 +1805,8 @@
     "message": "最適な見積を使用する"
   },
   "swapVerifyTokenExplanation": {
-    "message": "複数のトークンが同じ名前とシンボルであることがあります。Etherscanで実際のトークンでを確認してください。"
+    "message": "複数のトークンが同じ名前とシンボルであることがあります。$1で実際のトークンでを確認してください。",
+    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
   "swapViewToken": {
     "message": "$1 を表示"

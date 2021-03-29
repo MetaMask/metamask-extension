@@ -4,6 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { uniqBy, isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
+import {
+  createCustomTokenTrackerLink,
+  createTokenTrackerLinkForChain,
+} from '@metamask/etherscan-link';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import {
   useTokensToSearch,
@@ -34,6 +38,7 @@ import {
   getConversionRate,
   getCurrentCurrency,
   getCurrentChainId,
+  getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
 import {
   getValueFromWeiHex,
@@ -49,6 +54,7 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../../../shared/modules/swaps.utils';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/swaps';
 
 import { resetSwapsPostFetchState, removeToken } from '../../../store/actions';
 import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util';
@@ -90,6 +96,7 @@ export default function BuildQuote({
   const toToken = useSelector(getToToken) || destinationTokenInfo;
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -214,6 +221,30 @@ export default function BuildQuote({
       token.decimals,
     );
   };
+
+  let blockExplorerTokenLink;
+  let blockExplorerLabel;
+  if (rpcPrefs.blockExplorerUrl) {
+    blockExplorerTokenLink = createCustomTokenTrackerLink(
+      selectedToToken.address,
+      rpcPrefs.blockExplorerUrl,
+    );
+    blockExplorerLabel = new URL(rpcPrefs.blockExplorerUrl).hostname;
+  } else if (SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId]) {
+    blockExplorerTokenLink = createCustomTokenTrackerLink(
+      selectedToToken.address,
+      SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId],
+    );
+    blockExplorerLabel = new URL(
+      SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId],
+    ).hostname;
+  } else {
+    blockExplorerTokenLink = createTokenTrackerLinkForChain(
+      selectedToToken.address,
+      chainId,
+    );
+    blockExplorerLabel = t('etherscan');
+  }
 
   const { destinationTokenAddedForSwap } = fetchParams || {};
   const { address: toAddress } = toToken || {};
@@ -412,17 +443,18 @@ export default function BuildQuote({
                       : t('swapTokenVerificationNoSource')}
                   </div>
                   <div>
-                    {t('verifyThisTokenOn', [
-                      <a
-                        className="build-quote__token-etherscan-link build-quote__underline"
-                        key="build-quote-etherscan-link"
-                        href={`https://etherscan.io/token/${selectedToToken.address}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {t('etherscan')}
-                      </a>,
-                    ])}
+                    {blockExplorerTokenLink &&
+                      t('verifyThisTokenOn', [
+                        <a
+                          className="build-quote__token-etherscan-link build-quote__underline"
+                          key="build-quote-etherscan-link"
+                          href={blockExplorerTokenLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {blockExplorerLabel}
+                        </a>,
+                      ])}
                   </div>
                 </div>
               }
@@ -436,7 +468,10 @@ export default function BuildQuote({
               }
               type="warning"
               withRightButton
-              infoTooltipText={t('swapVerifyTokenExplanation')}
+              infoTooltipText={
+                blockExplorerTokenLink &&
+                t('swapVerifyTokenExplanation', [blockExplorerLabel])
+              }
             />
           ) : (
             <div className="build-quote__token-message">
@@ -446,23 +481,29 @@ export default function BuildQuote({
               >
                 {t('swapTokenVerificationSources', [occurances])}
               </span>
-              {t('swapTokenVerificationMessage', [
-                <a
-                  className="build-quote__token-etherscan-link"
-                  key="build-quote-etherscan-link"
-                  href={`https://etherscan.io/token/${selectedToToken.address}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t('etherscan')}
-                </a>,
-              ])}
-              <InfoTooltip
-                position="top"
-                contentText={t('swapVerifyTokenExplanation')}
-                containerClassName="build-quote__token-tooltip-container"
-                key="token-verification-info-tooltip"
-              />
+              {blockExplorerTokenLink && (
+                <>
+                  {t('swapTokenVerificationMessage', [
+                    <a
+                      className="build-quote__token-etherscan-link"
+                      key="build-quote-etherscan-link"
+                      href={blockExplorerTokenLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {blockExplorerLabel}
+                    </a>,
+                  ])}
+                  <InfoTooltip
+                    position="top"
+                    contentText={t('swapVerifyTokenExplanation', [
+                      blockExplorerLabel,
+                    ])}
+                    containerClassName="build-quote__token-tooltip-container"
+                    key="token-verification-info-tooltip"
+                  />
+                </>
+              )}
             </div>
           ))}
         <div className="build-quote__slippage-buttons-container">
