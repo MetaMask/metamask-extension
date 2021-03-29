@@ -20,6 +20,10 @@
     "name": "Indian Rupee"
   },
   {
+    "code": "nzd",
+    "name": "New Zealand Dollar"
+  },
+  {
     "code": "php",
     "name": "Philippine Peso"
   },
