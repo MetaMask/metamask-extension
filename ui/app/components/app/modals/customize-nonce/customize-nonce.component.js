@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../../modal';
 import TextField from '../../../ui/text-field';
+import Button from '../../../ui/button';
 import Typography from '../../../ui/typography';
 import {
   COLORS,
@@ -95,12 +96,19 @@ export default class CustomizeNonce extends PureComponent {
             <Typography variant={TYPOGRAPHY.H6} fontWeight={FONT_WEIGHT.BOLD}>
               {t('editNonceField')}
             </Typography>
-            <span
+            <Button
+              type="link"
               className="customize-nonce-modal__reset"
               onClick={this.onReset}
             >
               {t('reset')}
-            </span>
+            </Button>
+            {/* <span
+              className="customize-nonce-modal__reset"
+              onClick={this.onReset}
+            >
+              {t('reset')}
+            </span> */}
           </div>
           <div className="customize-nonce-modal__input">
             <TextField
