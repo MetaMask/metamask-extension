@@ -20,6 +20,7 @@ const metamaskrc = require('rc')('metamask', {
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
   SEGMENT_LEGACY_WRITE_KEY: process.env.SEGMENT_LEGACY_WRITE_KEY,
+  HCAPTCHA_SITE_KEY: process.env.HCAPTCHA_SITE_KEY,
 });
 
 const { version } = require('../../package.json');
@@ -448,6 +449,9 @@ function getEnvironmentVariables({ devMode, testing }) {
       environment === 'production'
         ? process.env.SEGMENT_PROD_LEGACY_WRITE_KEY
         : metamaskrc.SEGMENT_LEGACY_WRITE_KEY,
+    // In case of undefined, HCAPCTCHA_SITE_KEY used as a default one
+    HCAPTCHA_SITE_KEY:
+      metamaskrc.HCAPTCHA_SITE_KEY || '10000000-ffff-ffff-ffff-000000000001',
   };
 }
 
