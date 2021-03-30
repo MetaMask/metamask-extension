@@ -1369,6 +1369,26 @@ export function showConfTxPage({ id } = {}) {
   };
 }
 
+export function sendCaptchaToken(token) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+
+    return new Promise((resolve, reject) => {
+      background.sendCaptchaToken(token, (err) => {
+        dispatch(hideLoadingIndication());
+        if (err) {
+          dispatch(displayWarning(err.message));
+
+          reject(err);
+          return;
+        }
+
+        resolve();
+      });
+    });
+  };
+}
+
 export function addToken(
   address,
   symbol,

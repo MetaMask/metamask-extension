@@ -10,6 +10,7 @@ const ABOUT_US_ROUTE = '/settings/about-us';
 const ALERTS_ROUTE = '/settings/alerts';
 const NETWORKS_ROUTE = '/settings/networks';
 const NETWORKS_FORM_ROUTE = '/settings/networks/form';
+const CAPTCHA_ROUTE = '/captcha';
 const CONTACT_LIST_ROUTE = '/settings/contact-list';
 const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
 const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
@@ -78,6 +79,7 @@ const PATH_NAME_MAP = {
   [ALERTS_ROUTE]: 'Alerts Settings Page',
   [NETWORKS_ROUTE]: 'Network Settings Page',
   [NETWORKS_FORM_ROUTE]: 'Network Settings Page Form',
+  [CAPTCHA_ROUTE]: 'Captcha Page Form',
   [CONTACT_LIST_ROUTE]: 'Contact List Settings Page',
   [`${CONTACT_EDIT_ROUTE}/:address`]: 'Edit Contact Settings Page',
   [CONTACT_ADD_ROUTE]: 'Add Contact Settings Page',
@@ -159,6 +161,7 @@ export {
   INITIALIZE_SEED_PHRASE_ROUTE,
   INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,
+  CAPTCHA_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_SEND_ETHER_PATH,
   CONFIRM_SEND_TOKEN_PATH,

@@ -20,6 +20,7 @@ import RevealSeedConfirmation from '../keychains/reveal-seed';
 import MobileSyncPage from '../mobile-sync';
 import AddTokenPage from '../add-token';
 import ConfirmAddTokenPage from '../confirm-add-token';
+import CaptchaPage from '../captcha';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
 import CreateAccountPage from '../create-account';
 import Loading from '../../components/ui/loading-screen';
@@ -36,6 +37,7 @@ import Asset from '../asset';
 import {
   ADD_TOKEN_ROUTE,
   ASSET_ROUTE,
+  CAPTCHA_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_TOKEN_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
@@ -123,6 +125,7 @@ export default class Routes extends Component {
       <Switch>
         <Route path={LOCK_ROUTE} component={Lock} exact />
         <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
+        <Route path={CAPTCHA_ROUTE} component={CaptchaPage} />
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
         <Initialized
           path={RESTORE_VAULT_ROUTE}

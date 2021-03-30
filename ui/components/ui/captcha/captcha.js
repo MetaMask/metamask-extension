@@ -112,14 +112,7 @@ export default class HCaptcha extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const keys = [
-      'sitekey',
-      'size',
-      'theme',
-      'tabindex',
-      'lang',
-      'endpoint',
-    ];
+    const keys = ['sitekey', 'size', 'theme', 'tabindex', 'lang', 'endpoint'];
     const match = keys.every((key) => prevProps[key] === this.props[key]);
 
     if (!match) {

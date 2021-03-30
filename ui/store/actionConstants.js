@@ -115,3 +115,5 @@ export const SET_OPEN_METAMASK_TAB_IDS = 'SET_OPEN_METAMASK_TAB_IDS';
 
 // Home Screen
 export const HIDE_WHATS_NEW_POPUP = 'HIDE_WHATS_NEW_POPUP';
+// Captcha
+export const SEND_CAPTCHA_TOKEN = 'SEND_CAPTCHA_TOKEN';
