@@ -38,6 +38,7 @@ import NetworkController, { NETWORK_EVENTS } from './controllers/network';
 import PreferencesController from './controllers/preferences';
 import AppStateController from './controllers/app-state';
 import CachedBalancesController from './controllers/cached-balances';
+import CaptchaTokenController from './controllers/captcha';
 import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
 import ThreeBoxController from './controllers/threebox';
@@ -227,6 +228,12 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       initState: initState.CachedBalancesController,
+    });
+
+    this.captchaTokenController = new CaptchaTokenController({
+      initState: initState.CaptchaTokenController,
+      showUiCaptchaDialog: opts.showUserConfirmation.bind(null, 'captcha'),
+      notifyDomain: this.notifyConnections.bind(this),
     });
 
     this.onboardingController = new OnboardingController({
@@ -421,6 +428,7 @@ export default class MetamaskController extends EventEmitter {
       CurrencyController: this.currencyRateController,
       NetworkController: this.networkController.store,
       CachedBalancesController: this.cachedBalancesController.store,
+      CaptchaTokenController: this.captchaTokenController.store,
       AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
@@ -435,6 +443,7 @@ export default class MetamaskController extends EventEmitter {
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
       CachedBalancesController: this.cachedBalancesController.store,
+      CaptchaTokenController: this.captchaTokenController.store,
       TokenRatesController: this.tokenRatesController.store,
       MessageManager: this.messageManager.memStore,
       PersonalMessageManager: this.personalMessageManager.memStore,
@@ -566,6 +575,13 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
+  requestCaptcha(origin) {
+    return {
+      captchaTokenController: this.captchaTokenController,
+      origin,
+    };
+  }
+
   /**
    * Gets network state relevant for external providers.
    *
@@ -634,6 +650,7 @@ export default class MetamaskController extends EventEmitter {
       setMetaMetricsSendCount: this.setMetaMetricsSendCount.bind(this),
       setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
+      sendCaptchaToken: this.sendCaptchaToken.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       safelistPhishingDomain: this.safelistPhishingDomain.bind(this),
@@ -2132,6 +2149,7 @@ export default class MetamaskController extends EventEmitter {
         handleWatchAssetRequest: this.preferencesController.requestWatchAsset.bind(
           this.preferencesController,
         ),
+        requestCaptcha: this.requestCaptcha.bind(this),
         getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
           this.alertController,
         ),
@@ -2729,6 +2747,26 @@ export default class MetamaskController extends EventEmitter {
     try {
       const direction = this.preferencesController.setCurrentLocale(key);
       cb(null, direction);
+      return;
+    } catch (err) {
+      cb(err);
+      // eslint-disable-next-line no-useless-return
+      return;
+    }
+  }
+
+  /**
+   * A method for sending captcha token back to the DAPP
+   * @param {string} token - Token got from the captcha widget
+   * @param {Function} cb - A callback function called when complete.
+   */
+  sendCaptchaToken(token, cb) {
+    try {
+      this.captchaTokenController.fulfillToken(token);
+
+      cb(null, token);
+
+      // eslint-disable-next-line no-useless-return
       return;
     } catch (err) {
       cb(err);
