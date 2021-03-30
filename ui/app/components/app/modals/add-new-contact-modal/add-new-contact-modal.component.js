@@ -87,7 +87,7 @@ export default class AddNewContactModal extends PureComponent {
 
   render() {
     const { t } = this.context;
-    const { history, addToAddressBook } = this.props;
+    const { addToAddressBook } = this.props;
 
     const errorToRender = this.state.ensError || this.state.error;
 
@@ -102,6 +102,8 @@ export default class AddNewContactModal extends PureComponent {
           </div>
         )}
         <div className="address-book__add-contact__content">
+          <h2 className="address-book__header__name">{t('newContact')}</h2>
+          
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">
               {t('userName')}
@@ -110,6 +112,7 @@ export default class AddNewContactModal extends PureComponent {
               type="text"
               id="nickname"
               value={this.state.newName}
+              placeholder={t('addAlias')}
               onChange={(e) => this.setState({ newName: e.target.value })}
               fullWidth
               margin="dense"
@@ -128,7 +131,7 @@ export default class AddNewContactModal extends PureComponent {
             )}
           </div>                    
 
-          <div className="address-book__view-contact__group">
+          <div className="add-to-address-book-modal__content">
             <div className="address-book__view-contact__group__label--capitalized">
               {t('memo')}
             </div>
