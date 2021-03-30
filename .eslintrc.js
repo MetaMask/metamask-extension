@@ -26,7 +26,7 @@ module.exports = {
     'test-*/**',
     'docs/**',
     'coverage/',
-    'app/scripts/chromereload.js',
+    'development/chromereload.js',
     'app/vendor/**',
     'test/e2e/send-eth-with-private-key-test/**',
     'nyc_output/**',
