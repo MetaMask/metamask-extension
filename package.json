@@ -53,7 +53,7 @@
     "storybook": "start-storybook -p 6006 -c .storybook --static-dir ./app ./storybook/images",
     "storybook:build": "build-storybook -c .storybook -o storybook-build --static-dir ./app ./storybook/images",
     "storybook:deploy": "storybook-to-ghpages --existing-output-dir storybook-build --remote storybook --branch master",
-    "update-changelog": "./development/auto-changelog.sh",
+    "update-changelog": "node ./development/auto-changelog.js",
     "generate:migration": "./development/generate-migration.sh",
     "lavamoat:auto": "lavamoat ./development/build/index.js --writeAutoPolicy",
     "lavamoat:debug": "lavamoat ./development/build/index.js --writeAutoPolicyDebug"
