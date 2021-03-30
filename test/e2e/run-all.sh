@@ -66,13 +66,6 @@ retry concurrently --kill-others \
   --prefix '[{time}][{name}]' \
   --success first \
   'yarn dapp' \
-  'mocha test/e2e/ethereum-on.spec'
-
-retry concurrently --kill-others \
-  --names 'dapp,e2e' \
-  --prefix '[{time}][{name}]' \
-  --success first \
-  'yarn dapp' \
   'mocha test/e2e/permissions.spec'
 
 retry concurrently --kill-others \
