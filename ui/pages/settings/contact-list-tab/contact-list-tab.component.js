@@ -63,20 +63,6 @@ export default class ContactListTab extends Component {
     );
   }
 
-  // renderAddButton() {
-  //   const { history } = this.props;
-
-  //   return (
-  //     <div
-  //       className="address-book-add-button__button button btn-secondary btn--rounded"
-  //       onClick={() => {
-  //         history.push(CONTACT_ADD_ROUTE);
-  //       }}
-  //     >
-  //     </div>
-  //   );
-  // }
-
   renderMyAccountsButton() {
     const { history } = this.props;
     const { t } = this.context;
@@ -163,7 +149,6 @@ export default class ContactListTab extends Component {
         {!addingContact && (
           <div className="address-book-add-button">
             <AddressBookAddButton label={this.context.t('addAccount')} />
-            {/* <div>{this.renderAddButton()}</div> */}
           </div>
         )}
       </div>

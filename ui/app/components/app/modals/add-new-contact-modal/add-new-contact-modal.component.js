@@ -129,7 +129,7 @@ export default class AddNewContactModal extends PureComponent {
           </div>                    
 
           <div className="address-book__view-contact__group">
-            <div className="address-book__view-contact__group__label">
+            <div className="address-book__view-contact__group__label--capitalized">
               {t('memo')}
             </div>
             <TextField
