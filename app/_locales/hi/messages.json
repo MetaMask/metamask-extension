@@ -120,10 +120,6 @@
   "amount": {
     "message": "राशि"
   },
-  "amountInEth": {
-    "message": "$1 ETH",
-    "description": "Displays an eth amount to the user. $1 is a decimal number"
-  },
   "amountWithColon": {
     "message": "राशि:"
   },
