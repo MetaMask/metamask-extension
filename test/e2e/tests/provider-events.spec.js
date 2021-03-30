@@ -16,7 +16,7 @@ describe('MetaMask', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'personal-sign',
+        fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,
       },
