@@ -13,6 +13,7 @@ import {
   getCurrentAccountWithSendEtherInfo,
   getNativeCurrency,
   getShouldShowFiat,
+  getPrimaryTokenImage,
 } from '../../../selectors';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 
@@ -63,6 +64,8 @@ const AssetList = ({ onClickAsset }) => {
     },
   );
 
+  const primaryTokenImage = useSelector(getPrimaryTokenImage);
+
   return (
     <>
       <AssetListItem
@@ -71,6 +74,7 @@ const AssetList = ({ onClickAsset }) => {
         primary={primaryCurrencyProperties.value}
         tokenSymbol={primaryCurrencyProperties.suffix}
         secondary={showFiat ? secondaryCurrencyDisplay : undefined}
+        tokenImage={primaryTokenImage}
       />
       <TokenList
         onTokenClick={(tokenAddress) => {

@@ -6,6 +6,15 @@ import {
   TEST_CHAINS,
   NETWORK_TYPE_RPC,
 } from '../../../shared/constants/network';
+
+import {
+  BNB_CHAIN_ID,
+  BNB_SWAPS_TOKEN_OBJECT,
+  ETH_SWAPS_TOKEN_OBJECT,
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  ALLOWED_SWAPS_CHAIN_IDS,
+} from '../../../shared/constants/swaps';
+
 import {
   shortenAddress,
   checksumAddress,
@@ -15,10 +24,7 @@ import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../helpers/utils/conversions.util';
-import {
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  ALLOWED_SWAPS_CHAIN_IDS,
-} from '../../../shared/constants/swaps';
+
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 
 /**
@@ -474,4 +480,12 @@ export function getSwapsDefaultToken(state) {
 export function getIsSwapsChain(state) {
   const chainId = getCurrentChainId(state);
   return ALLOWED_SWAPS_CHAIN_IDS[chainId];
+}
+
+export function getPrimaryTokenImage(state) {
+  const chainId = getCurrentChainId(state);
+
+  return chainId === BNB_CHAIN_ID
+    ? BNB_SWAPS_TOKEN_OBJECT.iconUrl
+    : ETH_SWAPS_TOKEN_OBJECT.iconUrl;
 }

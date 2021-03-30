@@ -18,7 +18,7 @@ export const ETH_SWAPS_TOKEN_OBJECT = {
   iconUrl: 'images/black-eth-logo.svg',
 };
 
-const BNB_SWAPS_TOKEN_OBJECT = {
+export const BNB_SWAPS_TOKEN_OBJECT = {
   symbol: 'BNB',
   name: 'Binance Coin',
   address: DEFAULT_TOKEN_ADDRESS,
@@ -46,7 +46,7 @@ const BSC_CONTRACT_ADDRESS = '0x1a1ec25dc08e98e5e93f1104b5e5cdd298707d31';
 const METASWAP_ETH_API_HOST = 'https://api.metaswap.codefi.network';
 
 const METASWAP_BNB_API_HOST = 'https://bsc-api.metaswap.codefi.network';
-const BNB_CHAIN_ID = '0x38';
+export const BNB_CHAIN_ID = '0x38';
 
 const SWAPS_TESTNET_CHAIN_ID = '0x539';
 const SWAPS_TESTNET_HOST = 'https://metaswap-api.airswap-dev.codefi.network';
