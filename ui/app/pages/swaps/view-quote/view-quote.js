@@ -470,7 +470,7 @@ export default function ViewQuote() {
         extraInfoRow: extraInfoRowLabel
           ? {
               label: extraInfoRowLabel,
-              value: t('amountInEth', [extraNetworkFeeTotalInEth]),
+              value: `${extraNetworkFeeTotalInEth} ${nativeCurrencySymbol}`,
             }
           : null,
         initialGasPrice: gasPrice,
