@@ -26,6 +26,8 @@ export default class SendGasRow extends Component {
     gasLimit: PropTypes.string,
     insufficientBalance: PropTypes.bool,
     isMainnet: PropTypes.bool,
+    isEthGasPriceFetched: PropTypes.bool,
+    noGasPriceFetched: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -92,6 +94,8 @@ export default class SendGasRow extends Component {
       gasLimit,
       insufficientBalance,
       isMainnet,
+      isEthGasPriceFetched,
+      noGasPriceFetched,
     } = this.props;
     const { metricsEvent } = this.context;
 
@@ -148,7 +152,12 @@ export default class SendGasRow extends Component {
       </div>
     );
     // Tests should behave in same way as mainnet, but are using Localhost
-    if (advancedInlineGasShown || (!isMainnet && !process.env.IN_TEST)) {
+    if (
+      advancedInlineGasShown ||
+      (!isMainnet && !process.env.IN_TEST) ||
+      isEthGasPriceFetched ||
+      noGasPriceFetched
+    ) {
       return advancedGasInputs;
     } else if (gasButtonGroupShown) {
       return gasPriceButtonGroup;

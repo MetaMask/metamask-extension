@@ -50,6 +50,7 @@ describe('Gas Duck', () => {
       safeLow: null,
     },
     basicEstimateIsLoading: true,
+    isEthGasPriceFetched: false,
   };
 
   const providerState = {

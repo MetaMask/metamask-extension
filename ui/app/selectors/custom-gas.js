@@ -31,8 +31,10 @@ export function getBasicGasEstimateLoadingStatus(state) {
 }
 
 export function getAveragePriceEstimateInHexWEI(state) {
-  const averagePriceEstimate = state.gas.basicEstimates.average;
-  return getGasPriceInHexWei(averagePriceEstimate || '0x0');
+  const averagePriceEstimate = state.gas.basicEstimates
+    ? state.gas.basicEstimates.average
+    : '0x0';
+  return getGasPriceInHexWei(averagePriceEstimate);
 }
 
 export function getFastPriceEstimateInHexWEI(state) {
@@ -51,6 +53,10 @@ export function getDefaultActiveButtonIndex(
 }
 
 export function getSafeLowEstimate(state) {
+  if (getNoGasPriceFetched(state)) {
+    return false;
+  }
+
   const {
     gas: {
       basicEstimates: { safeLow },
@@ -61,6 +67,9 @@ export function getSafeLowEstimate(state) {
 }
 
 export function getFastPriceEstimate(state) {
+  if (getNoGasPriceFetched(state)) {
+    return false;
+  }
   const {
     gas: {
       basicEstimates: { fast },
@@ -287,6 +296,9 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
   if (getBasicGasEstimateLoadingStatus(state)) {
     return [];
   }
+  if (getNoGasPriceFetched(state)) {
+    return [];
+  }
 
   const { showFiatInTestnets } = getPreferences(state);
   const isMainnet = getIsMainnet(state);
@@ -354,4 +366,12 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
       priceInHexWei: getGasPriceInHexWei(fast, true),
     },
   ];
+}
+
+export function getIsEthGasPriceFetched(state) {
+  return state.gas.isEthGasPriceFetched;
+}
+
+export function getNoGasPriceFetched(state) {
+  return !state.gas.basicEstimates;
 }

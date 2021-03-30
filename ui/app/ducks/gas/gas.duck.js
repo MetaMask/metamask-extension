@@ -17,6 +17,8 @@ const RESET_CUSTOM_DATA = 'metamask/gas/RESET_CUSTOM_DATA';
 const SET_BASIC_GAS_ESTIMATE_DATA = 'metamask/gas/SET_BASIC_GAS_ESTIMATE_DATA';
 const SET_CUSTOM_GAS_LIMIT = 'metamask/gas/SET_CUSTOM_GAS_LIMIT';
 const SET_CUSTOM_GAS_PRICE = 'metamask/gas/SET_CUSTOM_GAS_PRICE';
+const SET_IS_ETH_GAS_PRICE_FETCHED =
+  'metamask/gas/SET_IS_ETH_GAS_PRICE_FETCHED';
 
 const initState = {
   customData: {
@@ -29,6 +31,7 @@ const initState = {
     fast: null,
   },
   basicEstimateIsLoading: true,
+  isEthGasPriceFetched: false,
 };
 
 // Reducer
@@ -70,6 +73,11 @@ export default function reducer(state = initState, action) {
         ...state,
         customData: cloneDeep(initState.customData),
       };
+    case SET_IS_ETH_GAS_PRICE_FETCHED:
+      return {
+        ...state,
+        isEthGasPriceFetched: action.value,
+      };
     default:
       return state;
   }
@@ -108,13 +116,22 @@ export function fetchBasicGasEstimates() {
 
     dispatch(basicGasEstimatesLoadingStarted());
 
-    let basicEstimates;
-    if (isMainnet || process.env.IN_TEST) {
-      basicEstimates = await fetchExternalBasicGasEstimates();
-    } else {
-      basicEstimates = await fetchEthGasPriceEstimates(getState());
+    let basicEstimates = null;
+    try {
+      dispatch(setIsEthGasPriceFetched(false));
+      if (isMainnet || process.env.IN_TEST) {
+        try {
+          basicEstimates = await fetchExternalBasicGasEstimates();
+        } catch (error) {
+          basicEstimates = await fetchEthGasPriceEstimates(getState());
+          dispatch(setIsEthGasPriceFetched(true));
+        }
+      } else {
+        basicEstimates = await fetchEthGasPriceEstimates(getState());
+      }
+    } catch (error) {
+      dispatch(setIsEthGasPriceFetched(false));
     }
-
     dispatch(setBasicGasEstimateData(basicEstimates));
     dispatch(basicGasEstimatesLoadingFinished());
 
@@ -210,4 +227,11 @@ export function setCustomGasLimit(newLimit) {
 
 export function resetCustomData() {
   return { type: RESET_CUSTOM_DATA };
+}
+
+export function setIsEthGasPriceFetched(isEthGasPrice) {
+  return {
+    type: SET_IS_ETH_GAS_PRICE_FETCHED,
+    value: isEthGasPrice,
+  };
 }
