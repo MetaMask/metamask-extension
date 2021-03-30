@@ -18,9 +18,10 @@ export default class NotificationManager {
   /**
    * Either brings an existing MetaMask notification window into focus, or creates a new notification window. New
    * notification windows are given a 'popup' type.
+   * @param {string} path - Page to be opened directly when calling the extension
    *
    */
-  async showPopup() {
+  async showPopup(path = '') {
     const popup = await this._getPopup();
 
     // Bring focus to chrome popup
@@ -44,9 +45,11 @@ export default class NotificationManager {
         left = Math.max(screenX + (outerWidth - NOTIFICATION_WIDTH), 0);
       }
 
+      const url = `notification.html${path ? `#${path}` : ''}`;
+
       // create new notification popup
       const popupWindow = await this.platform.openWindow({
-        url: 'notification.html',
+        url,
         type: 'popup',
         width: NOTIFICATION_WIDTH,
         height: NOTIFICATION_HEIGHT,
