@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { nanoid, getScriptNode } from './utils';
+import { getWidgetLang } from './locale.utils';
 
 const noop = () => undefined;
 let onLoadListeners = [];
 let captchaScriptCreated = false;
 
-const CaptchaScript = (hl) => {
+const CaptchaScript = (lang) => {
   window.hcaptchaOnLoad = () => {
     onLoadListeners = onLoadListeners.filter((listener) => {
       listener();
@@ -14,7 +15,8 @@ const CaptchaScript = (hl) => {
     });
   };
 
-  const hCaptchaScriptNode = getScriptNode(hl);
+  const widgetLang = getWidgetLang(lang);
+  const hCaptchaScriptNode = getScriptNode(widgetLang);
 
   document.head.appendChild(hCaptchaScriptNode);
 };
@@ -26,7 +28,7 @@ export default class HCaptcha extends Component {
     onVerify: PropTypes.func,
     onExpire: PropTypes.func,
     onError: PropTypes.func,
-    languageOverride: PropTypes.string,
+    lang: PropTypes.string,
     sitekey: PropTypes.string.isRequired,
   };
 
@@ -35,7 +37,7 @@ export default class HCaptcha extends Component {
     onVerify: noop,
     onExpire: noop,
     onError: noop,
-    languageOverride: 'en',
+    lang: 'en',
   };
 
   constructor(props) {
@@ -69,7 +71,7 @@ export default class HCaptcha extends Component {
   }
 
   componentDidMount() {
-    const { languageOverride } = this.props;
+    const { lang } = this.props;
     const { isApiReady } = this.state;
 
     if (isApiReady) {
@@ -79,7 +81,7 @@ export default class HCaptcha extends Component {
       if (!captchaScriptCreated) {
         // Only create the script tag once, use a global variable to track
         captchaScriptCreated = true;
-        CaptchaScript(languageOverride);
+        CaptchaScript(lang);
       }
 
       // Add onload callback to global onload listeners
@@ -115,7 +117,7 @@ export default class HCaptcha extends Component {
       'size',
       'theme',
       'tabindex',
-      'languageOverride',
+      'lang',
       'endpoint',
     ];
     const match = keys.every((key) => prevProps[key] === this.props[key]);
