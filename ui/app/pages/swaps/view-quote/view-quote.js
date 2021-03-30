@@ -518,9 +518,11 @@ export default function ViewQuote() {
   let viewQuotePriceDifferenceComponent = null;
   const priceSlippageFromSource = useEthFiatAmount(
     usedQuote?.priceSlippage?.sourceAmountInETH || 0,
+    { showFiat: true },
   );
   const priceSlippageFromDestination = useEthFiatAmount(
     usedQuote?.priceSlippage?.destinationAmountInETH || 0,
+    { showFiat: true },
   );
 
   // We cannot present fiat value if there is a calculation error or no slippage
