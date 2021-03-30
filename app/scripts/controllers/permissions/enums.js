@@ -19,6 +19,7 @@ export const NOTIFICATION_NAMES = {
   accountsChanged: 'metamask_accountsChanged',
   unlockStateChanged: 'metamask_unlockStateChanged',
   chainChanged: 'metamask_chainChanged',
+  captchaTokenReceived: 'metamask_captchaTokenReceived',
 };
 
 export const LOG_IGNORE_METHODS = [
@@ -82,6 +83,7 @@ export const SAFE_METHODS = [
   'eth_uninstallFilter',
   'metamask_getProviderState',
   'metamask_watchAsset',
+  'metamask_requestCaptcha',
   'net_listening',
   'net_peerCount',
   'net_version',

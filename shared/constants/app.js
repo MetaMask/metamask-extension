@@ -27,6 +27,7 @@ export const MESSAGE_TYPE = {
   PERSONAL_SIGN: 'personal_sign',
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
+  REQUEST_CAPTCHA: 'metamask_requestCaptcha',
   ADD_ETHEREUM_CHAIN: 'wallet_addEthereumChain',
   SWITCH_ETHEREUM_CHAIN: 'wallet_switchEthereumChain',
 };
