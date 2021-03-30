@@ -721,6 +721,7 @@ describe('SwapsController', function () {
           allowanceStub.calledOnceWithExactly(
             MOCK_FETCH_PARAMS.sourceToken,
             MOCK_FETCH_PARAMS.fromAddress,
+            MAINNET_CHAIN_ID,
           ),
           true,
         );

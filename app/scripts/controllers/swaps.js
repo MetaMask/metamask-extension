@@ -12,6 +12,7 @@ import {
   QUOTES_EXPIRED_ERROR,
   QUOTES_NOT_AVAILABLE_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
+  SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../shared/constants/swaps';
 import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils';
 
@@ -21,8 +22,6 @@ import {
   fetchSwapsQuoteRefreshTime as defaultFetchSwapsQuoteRefreshTime,
 } from '../../../ui/app/pages/swaps/swaps.util';
 import { NETWORK_EVENTS } from './network';
-
-const METASWAP_ADDRESS = '0x881d40237659c251811cec9c364ef91dc08d300c';
 
 // The MAX_GAS_LIMIT is a number that is higher than the maximum gas costs we have observed on any aggregator
 const MAX_GAS_LIMIT = 2500000;
@@ -203,6 +202,7 @@ export default class SwapsController {
       const allowance = await this._getERC20Allowance(
         fetchParams.sourceToken,
         fetchParams.fromAddress,
+        chainId,
       );
 
       // For a user to be able to swap a token, they need to have approved the MetaSwap contract to withdraw that token.
@@ -675,13 +675,16 @@ export default class SwapsController {
     return [topAggId, newQuotes];
   }
 
-  async _getERC20Allowance(contractAddress, walletAddress) {
+  async _getERC20Allowance(contractAddress, walletAddress, chainId) {
     const contract = new ethers.Contract(
       contractAddress,
       abi,
       this.ethersProvider,
     );
-    return await contract.allowance(walletAddress, METASWAP_ADDRESS);
+    return await contract.allowance(
+      walletAddress,
+      SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],
+    );
   }
 
   /**
