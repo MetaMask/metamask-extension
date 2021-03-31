@@ -75,7 +75,7 @@ export default class Identicon extends PureComponent {
   }
 
   render() {
-    const { address, image, useBlockie, addBorder } = this.props;
+    const { address, image, useBlockie, addBorder, diameter } = this.props;
 
     if (image) {
       return this.renderImage();
@@ -97,6 +97,6 @@ export default class Identicon extends PureComponent {
       );
     }
 
-    return null;
+    return <div style={getStyles(diameter)}></div>;
   }
 }
