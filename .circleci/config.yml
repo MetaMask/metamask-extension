@@ -470,9 +470,6 @@ jobs:
           name: Create GitHub release
           command: |
             .circleci/scripts/release-create-gh-release.sh
-      - run:
-          name: Create GitHub Pull Request to sync master with develop
-          command: .circleci/scripts/release-create-master-pr.sh
 
   job-publish-storybook:
     executor: node-browsers
