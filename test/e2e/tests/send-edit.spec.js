@@ -73,7 +73,6 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement(
           By.xpath(`//button[contains(text(), 'Next')]`),
         );
-        // await driver.delay(regularDelayMs);
         const editedTransactionAmounts = await driver.findElements(
           By.css('.currency-display-component__text'),
         );
