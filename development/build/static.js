@@ -82,13 +82,11 @@ const copyTargetsDev = [
   },
   // empty files to suppress missing file errors
   {
-    src: './development/',
-    pattern: '/empty.js',
+    src: './development/empty.js',
     dest: `bg-libs.js`,
   },
   {
-    src: './development/',
-    pattern: '/empty.js',
+    src: './development/empty.js',
     dest: `ui-libs.js`,
   },
 ];
@@ -97,8 +95,7 @@ const copyTargetsProd = [
   ...copyTargets,
   // empty files to suppress missing file errors
   {
-    src: './development/',
-    pattern: '/empty.js',
+    src: './development/empty.js',
     dest: `chromereload.js`,
   },
 ];
