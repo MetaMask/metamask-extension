@@ -1,14 +1,7 @@
 {
   "author": "https://metamask.io",
   "background": {
-    "scripts": [
-      "globalthis.js",
-      "initSentry.js",
-      "lockdown.js",
-      "runLockdown.js",
-      "bg-libs.js",
-      "background.js"
-    ],
+    "page": "background.html",
     "persistent": true
   },
   "browser_action": {
