@@ -37,13 +37,10 @@ module.exports = {
   extends: [
     '@metamask/eslint-config',
     '@metamask/eslint-config/config/nodejs',
-    '@metamask/eslint-config/config/mocha',
-    'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
     'prettier',
   ],
 
-  plugins: ['@babel', 'react', 'import', 'prettier'],
+  plugins: ['@babel', 'import', 'prettier'],
 
   globals: {
     document: 'readonly',
@@ -56,16 +53,6 @@ module.exports = {
     'prettier/prettier': 'error',
     'import/no-unassigned-import': 'off',
     'prefer-object-spread': 'error',
-    'react/no-unused-prop-types': 'error',
-    'react/no-unused-state': 'error',
-    'react/jsx-boolean-value': 'error',
-    'react/jsx-curly-brace-presence': [
-      'error',
-      { props: 'never', children: 'never' },
-    ],
-    'react/no-deprecated': 'error',
-    'react/default-props-match-prop-types': 'error',
-    'react/jsx-no-duplicate-props': 'error',
     'default-param-last': 'off',
     'require-atomic-updates': 'off',
 
@@ -76,7 +63,6 @@ module.exports = {
     semi: 'off',
     '@babel/semi': 'off',
 
-    'mocha/no-setup-in-describe': 'off',
     'node/no-process-env': 'off',
 
     // TODO: re-enable these rules
@@ -86,9 +72,28 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['test/e2e/**/*.js'],
+      files: ['ui/**/*.js', 'test/lib/render-helpers.js'],
+      plugins: ['react'],
+      extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended'],
+      rules: {
+        'react/no-unused-prop-types': 'error',
+        'react/no-unused-state': 'error',
+        'react/jsx-boolean-value': 'error',
+        'react/jsx-curly-brace-presence': [
+          'error',
+          { props: 'never', children: 'never' },
+        ],
+        'react/no-deprecated': 'error',
+        'react/default-props-match-prop-types': 'error',
+        'react/jsx-no-duplicate-props': 'error',
+      },
+    },
+    {
+      files: ['test/e2e/**/*.spec.js'],
+      extends: ['@metamask/eslint-config/config/mocha'],
       rules: {
         'mocha/no-hooks-for-single-case': 'off',
+        'mocha/no-setup-in-describe': 'off',
       },
     },
     {
@@ -104,30 +109,10 @@ module.exports = {
       },
     },
     {
-      files: ['test/**/*-test.js', 'test/**/*.spec.js'],
+      files: ['**/*.test.js'],
+      extends: ['@metamask/eslint-config/config/mocha'],
       rules: {
-        // Mocha will re-assign `this` in a test context
-        '@babel/no-invalid-this': 'off',
-      },
-    },
-    {
-      files: ['**/!(*.test).js'],
-      rules: {
-        'mocha/max-top-level-suites': 'off',
-        'mocha/no-identical-tests': 'off',
-        'mocha/no-nested-tests': 'off',
-        'mocha/no-identical-title': 'off',
-        'mocha/no-skipped-tests': 'off',
-        'mocha/no-exclusive-tests': 'off',
-        'mocha/no-hooks-for-single-case': 'off',
-        'mocha/no-async-describe': 'off',
-        'mocha/no-sibling-hooks': 'off',
-        'mocha/no-global-tests': 'off',
-        'mocha/no-pending-tests': 'off',
-        'mocha/no-mocha-arrows': 'off',
-        'mocha/no-top-level-hooks': 'off',
-        'mocha/handle-done-callback': 'off',
-        'mocha/no-return-and-callback': 'off',
+        'mocha/no-setup-in-describe': 'off',
       },
     },
     {
