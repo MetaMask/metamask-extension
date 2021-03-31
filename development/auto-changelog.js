@@ -27,7 +27,7 @@ async function main() {
     `${mostRecentTag}..HEAD`,
   ]);
 
-  const changelogEntries = [];
+  const commitEntries = [];
   for (const commit of commitsSinceLastRelease) {
     const [subject] = await runCommand('git', [
       'show',
@@ -36,20 +36,20 @@ async function main() {
       commit,
     ]);
 
-    let prefix;
+    let prNumber;
     let description = subject;
 
     // Squash & Merge: the commit subject is parsed as `<description> (#<PR ID>)`
     if (subject.match(/\(#\d+\)/u)) {
-      const [, prNumber] = subject.match(/\(#(\d+)\)/u);
-      prefix = `[#${prNumber}](${URL}/pull/${prNumber})`;
+      const matchResults = subject.match(/\(#(\d+)\)/u);
+      prNumber = matchResults[1];
       description = subject.match(/^(.+)\s\(#\d+\)/u)[1];
       // Merge: the PR ID is parsed from the git subject (which is of the form `Merge pull request
       // #<PR ID> from <branch>`, and the description is assumed to be the first line of the body.
       // If no body is found, the description is set to the commit subject
     } else if (subject.match(/#\d+\sfrom/u)) {
-      const [, prNumber] = subject.match(/#(\d+)\sfrom/u);
-      prefix = `[#${prNumber}](${URL}/pull/${prNumber})`;
+      const matchResults = subject.match(/#(\d+)\sfrom/u);
+      prNumber = matchResults[1];
       const [firstLineOfBody] = await runCommand('git', [
         'show',
         '-s',
@@ -61,10 +61,7 @@ async function main() {
     // Otherwise:
     // Normal commits: The commit subject is the description, and the PR ID is omitted.
 
-    const changelogEntry = prefix
-      ? `- ${prefix}: ${description}`
-      : `- ${description}`;
-    changelogEntries.push(changelogEntry);
+    commitEntries.push({ prNumber, description });
   }
 
   const changelogFilename = path.resolve(__dirname, '..', 'CHANGELOG.md');
@@ -93,6 +90,33 @@ async function main() {
       }'`,
     );
   }
+
+  const prNumbersWithChangelogEntries = [];
+  for (const line of changelogLines) {
+    const matchResults = line.match(/- \[#(\d+)\]/u);
+    if (matchResults === null) {
+      continue;
+    }
+    const prNumber = matchResults[1];
+    prNumbersWithChangelogEntries.push(prNumber);
+  }
+
+  const changelogEntries = [];
+  for (const { prNumber, description } of commitEntries) {
+    if (prNumbersWithChangelogEntries.includes(prNumber)) {
+      continue;
+    }
+
+    let changelogEntry;
+    if (prNumber) {
+      const prefix = `[#${prNumber}](${URL}/pull/${prNumber})`;
+      changelogEntry = `- ${prefix}: ${description}`;
+    } else {
+      changelogEntry = `- ${description}`;
+    }
+    changelogEntries.push(changelogEntry);
+  }
+
   changelogLines.splice(releaseHeaderIndex + 1, 0, ...changelogEntries);
   const updatedChangelog = changelogLines.join('\n');
   await fs.writeFile(changelogFilename, updatedChangelog);
