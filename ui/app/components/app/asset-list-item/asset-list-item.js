@@ -131,27 +131,27 @@ const AssetListItem = ({
 };
 
 AssetListItem.propTypes = {
-  className: PropTypes.string,
+  'className': PropTypes.string,
   'data-testid': PropTypes.string,
-  iconClassName: PropTypes.string,
-  onClick: PropTypes.func.isRequired,
-  tokenAddress: PropTypes.string,
-  tokenSymbol: PropTypes.string,
-  tokenDecimals: PropTypes.number,
-  tokenImage: PropTypes.string,
-  warning: PropTypes.node,
-  primary: PropTypes.string,
-  secondary: PropTypes.string,
-  identiconBorder: PropTypes.bool,
+  'iconClassName': PropTypes.string,
+  'onClick': PropTypes.func.isRequired,
+  'tokenAddress': PropTypes.string,
+  'tokenSymbol': PropTypes.string,
+  'tokenDecimals': PropTypes.number,
+  'tokenImage': PropTypes.string,
+  'warning': PropTypes.node,
+  'primary': PropTypes.string,
+  'secondary': PropTypes.string,
+  'identiconBorder': PropTypes.bool,
 };
 
 AssetListItem.defaultProps = {
-  className: undefined,
+  'className': undefined,
   'data-testid': undefined,
-  iconClassName: undefined,
-  tokenAddress: undefined,
-  tokenImage: undefined,
-  warning: undefined,
+  'iconClassName': undefined,
+  'tokenAddress': undefined,
+  'tokenImage': undefined,
+  'warning': undefined,
 };
 
 export default AssetListItem;

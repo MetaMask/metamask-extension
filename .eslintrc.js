@@ -36,7 +36,7 @@ module.exports = {
 
   extends: [
     '@metamask/eslint-config',
-    '@metamask/eslint-config/config/nodejs',
+    '@metamask/eslint-config-nodejs',
     'prettier',
   ],
 
@@ -48,9 +48,6 @@ module.exports = {
   },
 
   rules: {
-    // Prettier changes and reasoning
-
-    'prettier/prettier': 'error',
     'import/no-unassigned-import': 'off',
     'prefer-object-spread': 'error',
     'default-param-last': 'off',
@@ -60,7 +57,7 @@ module.exports = {
     '@babel/no-invalid-this': 'error',
 
     // prettier handles these
-    semi: 'off',
+    'semi': 'off',
     '@babel/semi': 'off',
 
     'node/no-process-env': 'off',
@@ -90,7 +87,7 @@ module.exports = {
     },
     {
       files: ['test/e2e/**/*.spec.js'],
-      extends: ['@metamask/eslint-config/config/mocha'],
+      extends: ['@metamask/eslint-config-mocha'],
       rules: {
         'mocha/no-hooks-for-single-case': 'off',
         'mocha/no-setup-in-describe': 'off',
@@ -110,7 +107,7 @@ module.exports = {
     },
     {
       files: ['**/*.test.js'],
-      extends: ['@metamask/eslint-config/config/mocha'],
+      extends: ['@metamask/eslint-config-mocha'],
       rules: {
         'mocha/no-setup-in-describe': 'off',
       },

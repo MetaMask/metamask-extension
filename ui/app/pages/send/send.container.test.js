@@ -22,7 +22,7 @@ proxyquire('./send.container.js', {
     },
   },
   'react-router-dom': { withRouter: () => undefined },
-  redux: { compose: (_, arg2) => () => arg2() },
+  'redux': { compose: (_, arg2) => () => arg2() },
   '../../store/actions': actionSpies,
   '../../ducks/send/send.duck': duckActionSpies,
   './send.utils.js': {

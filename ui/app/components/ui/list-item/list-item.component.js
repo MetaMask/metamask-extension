@@ -51,14 +51,14 @@ export default function ListItem({
 }
 
 ListItem.propTypes = {
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  titleIcon: PropTypes.node,
-  subtitle: PropTypes.node,
-  children: PropTypes.node,
-  icon: PropTypes.node,
-  rightContent: PropTypes.node,
-  midContent: PropTypes.node,
-  className: PropTypes.string,
-  onClick: PropTypes.func,
+  'title': PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  'titleIcon': PropTypes.node,
+  'subtitle': PropTypes.node,
+  'children': PropTypes.node,
+  'icon': PropTypes.node,
+  'rightContent': PropTypes.node,
+  'midContent': PropTypes.node,
+  'className': PropTypes.string,
+  'onClick': PropTypes.func,
   'data-testid': PropTypes.string,
 };
