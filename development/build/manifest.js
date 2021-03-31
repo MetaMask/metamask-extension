@@ -31,7 +31,7 @@ function createManifestTasks({ browserPlatforms }) {
     );
   };
 
-  // dev: remove bg-libs, add chromereload, add perms
+  // dev: add perms
   const envDev = createTaskForModifyManifestForEnvironment((manifest) => {
     manifest.permissions = [...manifest.permissions, 'webRequestBlocking'];
   });
