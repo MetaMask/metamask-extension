@@ -1,9 +1,9 @@
 const { strict: assert } = require('assert');
-const { By, Key, until } = require('selenium-webdriver');
-const { withFixtures, regularDelayMs, largeDelayMs } = require('../helpers');
+const { By, Key } = require('selenium-webdriver');
+const { withFixtures, regularDelayMs } = require('../helpers');
 
 describe('MetaMask', function () {
-  it('provider listening for events', async function () {
+  it('provider should inform dapp when switching networks', async function () {
     const ganacheOptions = {
       accounts: [
         {
@@ -25,54 +25,34 @@ describe('MetaMask', function () {
         const passwordField = await driver.findElement(By.css('#password'));
         await passwordField.sendKeys('correct horse battery staple');
         await passwordField.sendKeys(Key.ENTER);
-        await driver.clickElement(
-          By.css('[data-testid="account-options-menu-button"]'),
-        );
-        await driver.clickElement(
-          By.css('[data-testid="account-options-menu__account-details"]'),
-        );
-        const addressInput = await driver.findElement(
-          By.css('.readonly-input__input'),
-        );
-        const publicAddress = await addressInput.getAttribute('value');
-
-        const accountModal = await driver.findElement(By.css('span .modal'));
-        await driver.clickElement(By.css('.account-modal__close'));
-
-        await driver.wait(until.stalenessOf(accountModal));
-        await driver.delay(regularDelayMs);
 
         await driver.openNewPage('http://127.0.0.1:8080/');
-
-        const windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
-        const dapp = await driver.switchToWindowWithTitle(
-          'E2E Test Dapp',
-          windowHandles,
-        );
-
         const networkDiv = await driver.findElement(By.css('#network'));
+        const chainIdDiv = await driver.findElement(By.css('#chainId'));
         await driver.delay(regularDelayMs);
         assert.equal(await networkDiv.getText(), '1337');
+        assert.equal(await chainIdDiv.getText(), '0x539');
 
-        await driver.switchToWindow(extension);
+        const windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindow(windowHandles[0]);
 
         await driver.clickElement(By.css('.network-display'));
-        await driver.delay(regularDelayMs);
-
         await driver.clickElement(
           By.xpath(`//span[contains(text(), 'Ropsten')]`),
         );
-        await driver.delay(largeDelayMs);
+        await driver.delay(regularDelayMs);
 
-        await driver.switchToWindow(dapp);
+        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
         const switchedNetworkDiv = await driver.findElement(By.css('#network'));
-        const chainIdDiv = await driver.findElement(By.css('#chainId'));
+        const switchedChainIdDiv = await driver.findElement(By.css('#chainId'));
         const accountsDiv = await driver.findElement(By.css('#accounts'));
 
         assert.equal(await switchedNetworkDiv.getText(), '3');
-        assert.equal(await chainIdDiv.getText(), '0x3');
-        assert.equal(await accountsDiv.getText(), publicAddress.toLowerCase());
+        assert.equal(await switchedChainIdDiv.getText(), '0x3');
+        assert.equal(
+          await accountsDiv.getText(),
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        );
       },
     );
   });
