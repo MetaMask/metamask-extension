@@ -84,7 +84,7 @@ async function main() {
     : currentDevelopBranchHeader;
 
   const releaseHeaderIndex = changelogLines.findIndex((line) =>
-    line.match(new RegExp(currentReleaseHeaderPattern, 'um')),
+    line.match(new RegExp(currentReleaseHeaderPattern, 'u')),
   );
   if (releaseHeaderIndex === -1) {
     throw new Error(
