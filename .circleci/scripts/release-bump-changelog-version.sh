@@ -21,13 +21,12 @@ version="${CIRCLE_BRANCH/Version-v/}"
 if ! grep --quiet --fixed-strings "$version" CHANGELOG.md
 then
     printf '%s\n' 'Adding this release to CHANGELOG.md'
-    date_str="$(date '+%a %b %d %Y')"
     cp CHANGELOG.md{,.bak}
 
 update_headers=$(cat <<END
 /## Current Develop Branch/ {
     print "## Current Develop Branch\n";
-    print "## ${version} ${date_str}";
+    print "## ${version}";
     next;
 }
 {
