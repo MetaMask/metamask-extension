@@ -13,7 +13,7 @@ import {
   getCurrentAccountWithSendEtherInfo,
   getNativeCurrency,
   getShouldShowFiat,
-  getPrimaryTokenImage,
+  getNativeCurrencyImage,
 } from '../../../selectors';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 
@@ -64,7 +64,7 @@ const AssetList = ({ onClickAsset }) => {
     },
   );
 
-  const primaryTokenImage = useSelector(getPrimaryTokenImage);
+  const primaryTokenImage = useSelector(getNativeCurrencyImage);
 
   return (
     <>

@@ -75,15 +75,7 @@ export default class Identicon extends PureComponent {
   }
 
   render() {
-    const {
-      className,
-      address,
-      image,
-      diameter,
-      useBlockie,
-      addBorder,
-      alt,
-    } = this.props;
+    const { address, image, useBlockie, addBorder } = this.props;
 
     if (image) {
       return this.renderImage();
@@ -105,13 +97,6 @@ export default class Identicon extends PureComponent {
       );
     }
 
-    return (
-      <img
-        className={classnames('identicon__eth-logo', className)}
-        src="./images/eth_logo.svg"
-        style={getStyles(diameter)}
-        alt={alt}
-      />
-    );
+    return null;
   }
 }

@@ -4,7 +4,7 @@ import SendRowWrapper from '../send-row-wrapper';
 import Identicon from '../../../../components/ui/identicon/identicon.component';
 import TokenBalance from '../../../../components/ui/token-balance';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
-import { ERC20, ETH, PRIMARY } from '../../../../helpers/constants/common';
+import { ERC20, PRIMARY } from '../../../../helpers/constants/common';
 
 export default class SendAssetRow extends Component {
   static propTypes = {
@@ -20,6 +20,7 @@ export default class SendAssetRow extends Component {
     sendTokenAddress: PropTypes.string,
     setSendToken: PropTypes.func.isRequired,
     nativeCurrency: PropTypes.string,
+    nativeCurrencyImage: PropTypes.string,
   };
 
   static contextTypes = {
@@ -103,7 +104,12 @@ export default class SendAssetRow extends Component {
 
   renderNativeCurrency(insideDropdown = false) {
     const { t } = this.context;
-    const { accounts, selectedAddress, nativeCurrency } = this.props;
+    const {
+      accounts,
+      selectedAddress,
+      nativeCurrency,
+      nativeCurrencyImage,
+    } = this.props;
 
     const balanceValue = accounts[selectedAddress]
       ? accounts[selectedAddress].balance
@@ -121,7 +127,8 @@ export default class SendAssetRow extends Component {
         <div className="send-v2__asset-dropdown__asset-icon">
           <Identicon
             diameter={36}
-            address={nativeCurrency === ETH ? undefined : nativeCurrency}
+            image={nativeCurrencyImage}
+            address={nativeCurrency}
           />
         </div>
         <div className="send-v2__asset-dropdown__asset-data">

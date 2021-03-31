@@ -482,10 +482,14 @@ export function getIsSwapsChain(state) {
   return ALLOWED_SWAPS_CHAIN_IDS[chainId];
 }
 
-export function getPrimaryTokenImage(state) {
-  const chainId = getCurrentChainId(state);
+export function getNativeCurrencyImage(state) {
+  if (getIsMainnet(state)) {
+    return './images/eth_logo.svg';
+  } else if (getIsTestnet(state)) {
+    return ETH_SWAPS_TOKEN_OBJECT.iconUrl;
+  } else if (getCurrentChainId(state) === BNB_CHAIN_ID) {
+    return BNB_SWAPS_TOKEN_OBJECT.iconUrl;
+  }
 
-  return chainId === BNB_CHAIN_ID
-    ? BNB_SWAPS_TOKEN_OBJECT.iconUrl
-    : ETH_SWAPS_TOKEN_OBJECT.iconUrl;
+  return undefined;
 }
