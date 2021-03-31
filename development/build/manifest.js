@@ -36,7 +36,7 @@ function createManifestTasks({ browserPlatforms }) {
     manifest.permissions = [...manifest.permissions, 'webRequestBlocking'];
   });
 
-  // testDev: remove bg-libs, add perms
+  // testDev: add perms
   const envTestDev = createTaskForModifyManifestForEnvironment((manifest) => {
     manifest.permissions = [
       ...manifest.permissions,
