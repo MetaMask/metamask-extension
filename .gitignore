@@ -8,6 +8,7 @@ audit.json
 app/bower_components
 test/bower_components
 package
+.eslintcache
 
 # IDEs
 .idea
