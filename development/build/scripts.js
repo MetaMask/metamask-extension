@@ -516,7 +516,7 @@ async function bundleIt(buildConfiguration) {
 
 function getEnvironmentVariables({ devMode, testing }) {
   const environment = getEnvironment({ devMode, testing });
-  if (environment === 'production' && !process.env.SENTRY_DSN) {
+  if (environment.includes('production') && !process.env.SENTRY_DSN) {
     throw new Error('Missing SENTRY_DSN environment variable');
   }
   return {
@@ -555,7 +555,7 @@ function getEnvironment({ devMode, testing }) {
   } else if (testing) {
     return 'testing';
   } else if (process.env.CIRCLE_BRANCH === 'master') {
-    return 'production';
+    return 'filecoin-production';
   } else if (
     /^Version-v(\d+)[.](\d+)[.](\d+)/u.test(process.env.CIRCLE_BRANCH)
   ) {
