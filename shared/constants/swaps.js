@@ -3,7 +3,6 @@ import {
   ETH_SYMBOL,
   TEST_ETH_SYMBOL,
   BNB_SYMBOL,
-  ETH_TOKEN_IMAGE_URL,
   TEST_ETH_TOKEN_IMAGE_URL,
   BNB_TOKEN_IMAGE_URL,
 } from './network';
@@ -23,7 +22,7 @@ export const ETH_SWAPS_TOKEN_OBJECT = {
   name: 'Ether',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  iconUrl: ETH_TOKEN_IMAGE_URL,
+  iconUrl: './images/black-eth-logo.svg',
 };
 
 export const BNB_SWAPS_TOKEN_OBJECT = {
