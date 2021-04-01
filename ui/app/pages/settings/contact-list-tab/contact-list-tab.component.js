@@ -23,7 +23,6 @@ export default class ContactListTab extends Component {
     addingContact: PropTypes.bool,
     showContactContent: PropTypes.bool,
     hideAddressBook: PropTypes.bool,
-    showingMyAccounts: PropTypes.bool,
   };
 
   renderAddresses() {
