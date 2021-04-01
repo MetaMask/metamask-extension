@@ -80,15 +80,22 @@ async function main() {
       `${versionHeader}$|${versionHeader}\\s`
     : currentDevelopBranchHeader;
 
-  const releaseHeaderIndex = changelogLines.findIndex((line) =>
+  let releaseHeaderIndex = changelogLines.findIndex((line) =>
     line.match(new RegExp(currentReleaseHeaderPattern, 'u')),
   );
   if (releaseHeaderIndex === -1) {
-    throw new Error(
-      `Failed to find release header '${
-        isReleaseCandidate ? versionHeader : currentDevelopBranchHeader
-      }'`,
+    if (!isReleaseCandidate) {
+      throw new Error(
+        `Failed to find release header '${currentDevelopBranchHeader}'`,
+      );
+    }
+
+    // Add release header if not found
+    const firstReleaseHeaderIndex = changelogLines.findIndex((line) =>
+      line.match(/## \d+\.\d+\.\d+/u),
     );
+    changelogLines.splice(firstReleaseHeaderIndex, 0, versionHeader, '');
+    releaseHeaderIndex = firstReleaseHeaderIndex;
   }
 
   const prNumbersWithChangelogEntries = [];
