@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import ContactList from '../../../components/app/contact-list';
 import { showModal } from '../../../store/actions';
 import {
-  CONTACT_ADD_ROUTE,
   CONTACT_VIEW_ROUTE,
 } from '../../../helpers/constants/routes';
 import EditContact from './edit-contact';

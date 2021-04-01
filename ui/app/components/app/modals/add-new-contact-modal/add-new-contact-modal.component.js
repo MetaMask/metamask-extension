@@ -138,7 +138,7 @@ export default class AddNewContactModal extends PureComponent {
             <TextField
               type="Multiline"
               id="memoInput"
-              placeholder="Add memo"
+              placeholder={t('addMemo')}
               rows={4}
               value={this.state.memo}
               onChange={(e) => this.setState({ memo: e.target.value })}
