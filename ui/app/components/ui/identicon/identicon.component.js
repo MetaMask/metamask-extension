@@ -22,6 +22,7 @@ export default class Identicon extends PureComponent {
     image: PropTypes.string,
     useBlockie: PropTypes.bool,
     alt: PropTypes.string,
+    imageBorder: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -35,11 +36,13 @@ export default class Identicon extends PureComponent {
   };
 
   renderImage() {
-    const { className, diameter, image, alt } = this.props;
+    const { className, diameter, image, alt, imageBorder } = this.props;
 
     return (
       <img
-        className={classnames('identicon', className)}
+        className={classnames('identicon', className, {
+          'identicon__image-border': imageBorder,
+        })}
         src={image}
         style={getStyles(diameter)}
         alt={alt}
