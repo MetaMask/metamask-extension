@@ -5,12 +5,10 @@ import {
   MAINNET_CHAIN_ID,
   TEST_CHAINS,
   NETWORK_TYPE_RPC,
+  NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
 } from '../../../shared/constants/network';
 
 import {
-  BNB_CHAIN_ID,
-  BNB_SWAPS_TOKEN_OBJECT,
-  ETH_SWAPS_TOKEN_OBJECT,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   ALLOWED_SWAPS_CHAIN_IDS,
 } from '../../../shared/constants/swaps';
@@ -483,13 +481,6 @@ export function getIsSwapsChain(state) {
 }
 
 export function getNativeCurrencyImage(state) {
-  if (getIsMainnet(state)) {
-    return './images/eth_logo.svg';
-  } else if (getIsTestnet(state)) {
-    return ETH_SWAPS_TOKEN_OBJECT.iconUrl;
-  } else if (getCurrentChainId(state) === BNB_CHAIN_ID) {
-    return BNB_SWAPS_TOKEN_OBJECT.iconUrl;
-  }
-
-  return undefined;
+  const chainId = getCurrentChainId(state);
+  return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[chainId];
 }

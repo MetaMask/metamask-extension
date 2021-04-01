@@ -15,7 +15,7 @@ export const ETH_SWAPS_TOKEN_OBJECT = {
   name: 'Ether',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  iconUrl: 'images/black-eth-logo.svg',
+  iconUrl: './images/eth_logo.svg',
 };
 
 export const BNB_SWAPS_TOKEN_OBJECT = {
@@ -23,15 +23,15 @@ export const BNB_SWAPS_TOKEN_OBJECT = {
   name: 'Binance Coin',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  iconUrl: 'images/bnb.png',
+  iconUrl: './images/bnb.png',
 };
 
-const TEST_ETH_SWAPS_TOKEN_OBJECT = {
+export const TEST_ETH_SWAPS_TOKEN_OBJECT = {
   symbol: 'TESTETH',
   name: 'Test Ether',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  iconUrl: 'images/black-eth-logo.svg',
+  iconUrl: './images/black-eth-logo.svg',
 };
 
 // A gas value for ERC20 approve calls that should be sufficient for all ERC20 approve implementations

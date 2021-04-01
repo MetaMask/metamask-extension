@@ -1,3 +1,10 @@
+import {
+  BNB_CHAIN_ID,
+  BNB_SWAPS_TOKEN_OBJECT,
+  TEST_ETH_SWAPS_TOKEN_OBJECT,
+  ETH_SWAPS_TOKEN_OBJECT,
+} from './swaps';
+
 export const ROPSTEN = 'ropsten';
 export const RINKEBY = 'rinkeby';
 export const KOVAN = 'kovan';
@@ -81,3 +88,13 @@ export const CHAIN_ID_TO_NETWORK_ID_MAP = Object.values(
   chainIdToNetworkIdMap[chainId] = networkId;
   return chainIdToNetworkIdMap;
 }, {});
+
+export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
+  [MAINNET_CHAIN_ID]: ETH_SWAPS_TOKEN_OBJECT.iconUrl,
+  [ROPSTEN_CHAIN_ID]: TEST_ETH_SWAPS_TOKEN_OBJECT.iconUrl,
+  [RINKEBY_CHAIN_ID]: TEST_ETH_SWAPS_TOKEN_OBJECT.iconUrl,
+  [GOERLI_CHAIN_ID]: TEST_ETH_SWAPS_TOKEN_OBJECT.iconUrl,
+  [KOVAN_CHAIN_ID]: TEST_ETH_SWAPS_TOKEN_OBJECT.iconUrl,
+  [LOCALHOST_CHAIN_ID]: TEST_ETH_SWAPS_TOKEN_OBJECT.iconUrl,
+  [BNB_CHAIN_ID]: BNB_SWAPS_TOKEN_OBJECT.iconUrl,
+};
