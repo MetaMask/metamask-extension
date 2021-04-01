@@ -1,7 +1,8 @@
 const assert = require('assert');
-const { By, until } = require('selenium-webdriver');
-
+const { until } = require('selenium-webdriver');
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
+const By = require('./webdriver/by');
+
 const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
@@ -57,16 +58,14 @@ describe('MetaMask', function () {
     it('clicks the continue button on the welcome screen', async function () {
       await driver.findElement(By.css('.welcome-page__header'));
       await driver.clickElement(
-        By.xpath(
-          `//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`,
-        ),
+        By.tag('button').text(enLocaleMessages.getStarted.message).toSelector(),
       );
       await driver.delay(largeDelayMs);
     });
 
     it('clicks the "Create New Wallet" option', async function () {
       await driver.clickElement(
-        By.xpath(`//button[contains(text(), 'Create a Wallet')]`),
+        By.tag('button').text('Create a Wallet').toSelector(),
       );
       await driver.delay(largeDelayMs);
     });
@@ -109,9 +108,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
 
       await driver.clickElement(
-        By.xpath(
-          `//button[contains(text(), '${enLocaleMessages.next.message}')]`,
-        ),
+        By.tag('button').text(enLocaleMessages.next.message).toSelector(),
       );
       await driver.delay(regularDelayMs);
     });
@@ -132,20 +129,18 @@ describe('MetaMask', function () {
         await clickWordAndWait(word);
       }
 
-      await driver.clickElement(
-        By.xpath(`//button[contains(text(), 'Confirm')]`),
-      );
+      await driver.clickElement(By.tag('button').text('Confirm').toSelector());
       await driver.delay(regularDelayMs);
     });
 
     it('clicks through the success screen', async function () {
       await driver.findElement(
-        By.xpath(`//div[contains(text(), 'Congratulations')]`),
+        By.tag('div').text('Congratulations').toSelector(),
       );
       await driver.clickElement(
-        By.xpath(
-          `//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`,
-        ),
+        By.tag('button')
+          .text(enLocaleMessages.endOfFlowMessage10.message)
+          .toSelector(),
       );
       await driver.delay(regularDelayMs);
     });
@@ -187,9 +182,7 @@ describe('MetaMask', function () {
       await passwordInputs[0].sendKeys('correct horse battery staple');
       await passwordInputs[1].sendKeys('correct horse battery staple');
       await driver.clickElement(
-        By.xpath(
-          `//button[contains(text(), '${enLocaleMessages.restore.message}')]`,
-        ),
+        By.tag('button').text(enLocaleMessages.restore.message).toSelector(),
       );
       await driver.delay(regularDelayMs);
     });
@@ -241,14 +234,12 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
 
       // Continue to next screen
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`));
+      await driver.clickElement(By.tag('button').text('Next').toSelector());
       await driver.delay(regularDelayMs);
     });
 
     it('confirms the transaction', async function () {
-      await driver.clickElement(
-        By.xpath(`//button[contains(text(), 'Confirm')]`),
-      );
+      await driver.clickElement(By.tag('button').text('Confirm').toSelector());
       await driver.delay(largeDelayMs * 2);
     });
 
@@ -293,14 +284,12 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
 
       // Continue to next screen
-      await driver.clickElement(By.xpath(`//button[contains(text(), 'Next')]`));
+      await driver.clickElement(By.tag('button').text('Next').toSelector());
       await driver.delay(regularDelayMs);
     });
 
     it('confirms the transaction', async function () {
-      await driver.clickElement(
-        By.xpath(`//button[contains(text(), 'Confirm')]`),
-      );
+      await driver.clickElement(By.tag('button').text('Confirm').toSelector());
       await driver.delay(largeDelayMs * 2);
     });
 
