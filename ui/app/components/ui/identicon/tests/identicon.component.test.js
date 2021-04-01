@@ -16,13 +16,10 @@ describe('Identicon', function () {
   const mockStore = configureMockStore(middlewares);
   const store = mockStore(state);
 
-  it('renders default eth_logo identicon with no props', function () {
+  it('renders empty identicon with no props', function () {
     const wrapper = mount(<Identicon store={store} />);
 
-    assert.strictEqual(
-      wrapper.find('img.identicon__eth-logo').prop('src'),
-      './images/eth_logo.svg',
-    );
+    assert.ok(wrapper.find('div'), 'Empty identicon found');
   });
 
   it('renders custom image and add className props', function () {

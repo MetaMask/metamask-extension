@@ -1,4 +1,11 @@
-import { MAINNET_CHAIN_ID } from './network';
+import {
+  MAINNET_CHAIN_ID,
+  ETH_SYMBOL,
+  TEST_ETH_SYMBOL,
+  BNB_SYMBOL,
+  TEST_ETH_TOKEN_IMAGE_URL,
+  BNB_TOKEN_IMAGE_URL,
+} from './network';
 
 export const QUOTES_EXPIRED_ERROR = 'quotes-expired';
 export const SWAP_FAILED_ERROR = 'swap-failed-error';
@@ -11,27 +18,27 @@ export const SWAPS_FETCH_ORDER_CONFLICT = 'swaps-fetch-order-conflict';
 const DEFAULT_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const ETH_SWAPS_TOKEN_OBJECT = {
-  symbol: 'ETH',
+  symbol: ETH_SYMBOL,
   name: 'Ether',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  iconUrl: 'images/black-eth-logo.svg',
+  iconUrl: './images/black-eth-logo.svg',
 };
 
-const BNB_SWAPS_TOKEN_OBJECT = {
-  symbol: 'BNB',
+export const BNB_SWAPS_TOKEN_OBJECT = {
+  symbol: BNB_SYMBOL,
   name: 'Binance Coin',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  iconUrl: 'images/bnb.png',
+  iconUrl: BNB_TOKEN_IMAGE_URL,
 };
 
-const TEST_ETH_SWAPS_TOKEN_OBJECT = {
-  symbol: 'TESTETH',
+export const TEST_ETH_SWAPS_TOKEN_OBJECT = {
+  symbol: TEST_ETH_SYMBOL,
   name: 'Test Ether',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  iconUrl: 'images/black-eth-logo.svg',
+  iconUrl: TEST_ETH_TOKEN_IMAGE_URL,
 };
 
 // A gas value for ERC20 approve calls that should be sufficient for all ERC20 approve implementations
@@ -46,7 +53,7 @@ const BSC_CONTRACT_ADDRESS = '0x1a1ec25dc08e98e5e93f1104b5e5cdd298707d31';
 const METASWAP_ETH_API_HOST = 'https://api.metaswap.codefi.network';
 
 const METASWAP_BNB_API_HOST = 'https://bsc-api.metaswap.codefi.network';
-const BNB_CHAIN_ID = '0x38';
+export const BNB_CHAIN_ID = '0x38';
 
 const SWAPS_TESTNET_CHAIN_ID = '0x539';
 const SWAPS_TESTNET_HOST = 'https://metaswap-api.airswap-dev.codefi.network';

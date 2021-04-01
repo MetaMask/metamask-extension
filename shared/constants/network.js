@@ -29,6 +29,14 @@ export const KOVAN_DISPLAY_NAME = 'Kovan';
 export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet';
 export const GOERLI_DISPLAY_NAME = 'Goerli';
 
+export const ETH_SYMBOL = 'ETH';
+export const TEST_ETH_SYMBOL = 'TESTETH';
+export const BNB_SYMBOL = 'BNB';
+
+export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
+export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
+export const BNB_TOKEN_IMAGE_URL = './images/bnb.png';
+
 export const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI];
 
 export const TEST_CHAINS = [
@@ -79,3 +87,9 @@ export const CHAIN_ID_TO_NETWORK_ID_MAP = Object.values(
   chainIdToNetworkIdMap[chainId] = networkId;
   return chainIdToNetworkIdMap;
 }, {});
+
+export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
+  [ETH_SYMBOL]: ETH_TOKEN_IMAGE_URL,
+  [TEST_ETH_SYMBOL]: TEST_ETH_TOKEN_IMAGE_URL,
+  [BNB_SYMBOL]: BNB_TOKEN_IMAGE_URL,
+};
