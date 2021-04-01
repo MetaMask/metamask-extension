@@ -25,6 +25,8 @@ import {
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 
+import { getNativeCurrency } from './send';
+
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
  * metamask state tree is to determine if the network is currently 'loading'.
@@ -481,6 +483,6 @@ export function getIsSwapsChain(state) {
 }
 
 export function getNativeCurrencyImage(state) {
-  const chainId = getCurrentChainId(state);
-  return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[chainId];
+  const nativeCurrency = getNativeCurrency(state).toUpperCase();
+  return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
 }
