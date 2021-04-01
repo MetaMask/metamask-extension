@@ -11,7 +11,7 @@ import { getQrCodeData } from '../../../../selectors';
 import AddNewContactModal from './add-new-contact-modal.component';
 
 const mapStateToProps = (state) => {
-  return {  
+  return {
     qrCodeData: getQrCodeData(state),
   };
 };

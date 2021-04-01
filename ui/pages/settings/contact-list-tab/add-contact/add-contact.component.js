@@ -126,7 +126,7 @@ export default class AddContact extends PureComponent {
                 {errorToRender}
               </div>
             )}
-          </div>                    
+          </div>
 
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">

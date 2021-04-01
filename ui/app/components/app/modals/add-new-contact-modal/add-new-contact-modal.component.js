@@ -18,7 +18,6 @@ export default class AddNewContactModal extends PureComponent {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     addToAddressBook: PropTypes.func,
-    history: PropTypes.object,
     scanQrCode: PropTypes.func,
     qrCodeData:
       PropTypes.object /* eslint-disable-line react/no-unused-prop-types */,
@@ -103,7 +102,6 @@ export default class AddNewContactModal extends PureComponent {
         )}
         <div className="address-book__add-contact__content">
           <h2 className="address-book__header__name">{t('newContact')}</h2>
-          
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">
               {t('userName')}
@@ -129,7 +127,7 @@ export default class AddNewContactModal extends PureComponent {
                 {errorToRender}
               </div>
             )}
-          </div>                    
+          </div>
 
           <div className="add-to-address-book-modal__content">
             <div className="address-book__view-contact__group__label--capitalized">
