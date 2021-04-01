@@ -1,4 +1,12 @@
-import { MAINNET_CHAIN_ID } from './network';
+import {
+  MAINNET_CHAIN_ID,
+  ETH_SYMBOL,
+  TEST_ETH_SYMBOL,
+  BNB_SYMBOL,
+  ETH_TOKEN_IMAGE_URL,
+  TEST_ETH_TOKEN_IMAGE_URL,
+  BNB_TOKEN_IMAGE_URL,
+} from './network';
 
 export const QUOTES_EXPIRED_ERROR = 'quotes-expired';
 export const SWAP_FAILED_ERROR = 'swap-failed-error';
@@ -11,27 +19,27 @@ export const SWAPS_FETCH_ORDER_CONFLICT = 'swaps-fetch-order-conflict';
 const DEFAULT_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const ETH_SWAPS_TOKEN_OBJECT = {
-  symbol: 'ETH',
+  symbol: ETH_SYMBOL,
   name: 'Ether',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  iconUrl: './images/eth_logo.svg',
+  iconUrl: ETH_TOKEN_IMAGE_URL,
 };
 
 export const BNB_SWAPS_TOKEN_OBJECT = {
-  symbol: 'BNB',
+  symbol: BNB_SYMBOL,
   name: 'Binance Coin',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  iconUrl: './images/bnb.png',
+  iconUrl: BNB_TOKEN_IMAGE_URL,
 };
 
 export const TEST_ETH_SWAPS_TOKEN_OBJECT = {
-  symbol: 'TESTETH',
+  symbol: TEST_ETH_SYMBOL,
   name: 'Test Ether',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
-  iconUrl: './images/black-eth-logo.svg',
+  iconUrl: TEST_ETH_TOKEN_IMAGE_URL,
 };
 
 // A gas value for ERC20 approve calls that should be sufficient for all ERC20 approve implementations
