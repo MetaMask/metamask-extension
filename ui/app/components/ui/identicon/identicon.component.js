@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import contractMap from '@metamask/contract-metadata';
 
 import { checksumAddress } from '../../../helpers/utils/util';
+import { ETH_TOKEN_IMAGE_URL } from '../../../../../shared/constants/network';
 import Jazzicon from '../jazzicon';
 import BlockieIdenticon from './blockieIdenticon';
 
@@ -39,7 +40,9 @@ export default class Identicon extends PureComponent {
 
     return (
       <img
-        className={classnames('identicon', className)}
+        className={classnames('identicon', className, {
+          'identicon__eth-logo': image === ETH_TOKEN_IMAGE_URL,
+        })}
         src={image}
         style={getStyles(diameter)}
         alt={alt}
