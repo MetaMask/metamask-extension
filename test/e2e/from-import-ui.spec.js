@@ -61,58 +61,56 @@ describe('Using MetaMask with an existing account', function () {
 
   describe('First time flow starting from an existing seed phrase', function () {
     it('clicks the continue button on the welcome screen', async function () {
-      await driver.findElement(By.css('.welcome-page__header'));
-      await driver.clickElement(
-        By.xpath(
-          `//button[contains(text(), '${enLocaleMessages.getStarted.message}')]`,
-        ),
-      );
+      await driver.findElement('.welcome-page__header');
+      await driver.clickElement({
+        tag: 'button',
+        text: enLocaleMessages.getStarted.message,
+      });
       await driver.delay(largeDelayMs);
     });
 
     it('clicks the "Import Wallet" option', async function () {
-      await driver.clickElement(
-        By.xpath(`//button[contains(text(), 'Import wallet')]`),
-      );
+      await driver.clickElement({
+        tag: 'button',
+        text: 'Import wallet',
+      });
       await driver.delay(largeDelayMs);
     });
 
     it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
-      await driver.clickElement(By.css('.btn-default'));
+      await driver.clickElement('.btn-default');
       await driver.delay(largeDelayMs);
     });
 
     it('imports a seed phrase', async function () {
       const [seedTextArea] = await driver.findElements(
-        By.css('input[placeholder="Paste seed phrase from clipboard"]'),
+        'input[placeholder="Paste seed phrase from clipboard"]',
       );
       await seedTextArea.sendKeys(testSeedPhrase);
       await driver.delay(regularDelayMs);
 
-      const [password] = await driver.findElements(By.id('password'));
+      const [password] = await driver.findElements('#password');
       await password.sendKeys('correct horse battery staple');
-      const [confirmPassword] = await driver.findElements(
-        By.id('confirm-password'),
-      );
+      const [confirmPassword] = await driver.findElements('#confirm-password');
       confirmPassword.sendKeys('correct horse battery staple');
 
-      await driver.clickElement(By.css('.first-time-flow__terms'));
-
-      await driver.clickElement(
-        By.xpath(`//button[contains(text(), 'Import')]`),
-      );
+      await driver.clickElement('.first-time-flow__terms');
+      await driver.clickElement({
+        tag: 'button',
+        text: 'Import',
+      });
       await driver.delay(regularDelayMs);
     });
 
     it('clicks through the success screen', async function () {
-      await driver.findElement(
-        By.xpath(`//div[contains(text(), 'Congratulations')]`),
-      );
-      await driver.clickElement(
-        By.xpath(
-          `//button[contains(text(), '${enLocaleMessages.endOfFlowMessage10.message}')]`,
-        ),
-      );
+      await driver.clickElement({
+        tag: 'div',
+        text: 'Congratulations',
+      });
+      await driver.clickElement({
+        tag: 'button',
+        text: enLocaleMessages.endOfFlowMessage10.message,
+      });
       await driver.delay(regularDelayMs);
     });
   });

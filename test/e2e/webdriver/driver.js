@@ -1,6 +1,6 @@
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
-const { until, error: webdriverError } = require('selenium-webdriver');
+const { until, error: webdriverError, By } = require('selenium-webdriver');
 
 class Driver {
   /**
@@ -13,6 +13,20 @@ class Driver {
     this.browser = browser;
     this.extensionUrl = extensionUrl;
     this.timeout = timeout;
+  }
+
+  buildLocator(locator) {
+    if (typeof locator === 'string') {
+      return By.css(locator);
+    } else if (locator.value) {
+      return locator;
+    } else if (locator.xpath) {
+      return By.xpath(locator.xpath);
+    } else if (locator.text) {
+      return By.xpath(
+        `//${locator.tag ?? '*'}[contains(text(), '${locator.text}')]`,
+      );
+    }
   }
 
   async delay(time) {
@@ -29,17 +43,20 @@ class Driver {
 
   // Element interactions
 
-  async findElement(locator) {
+  async findElement(rawLocator) {
+    const locator = this.buildLocator(rawLocator);
     return await this.driver.wait(until.elementLocated(locator), this.timeout);
   }
 
-  async findVisibleElement(locator) {
+  async findVisibleElement(rawLocator) {
+    const locator = this.buildLocator(rawLocator);
     const element = await this.findElement(locator);
     await this.driver.wait(until.elementIsVisible(element), this.timeout);
     return element;
   }
 
-  async findClickableElement(locator) {
+  async findClickableElement(rawLocator) {
+    const locator = this.buildLocator(rawLocator);
     const element = await this.findElement(locator);
     await Promise.all([
       this.driver.wait(until.elementIsVisible(element), this.timeout),
@@ -48,11 +65,13 @@ class Driver {
     return element;
   }
 
-  async findElements(locator) {
+  async findElements(rawLocator) {
+    const locator = this.buildLocator(rawLocator);
     return await this.driver.wait(until.elementsLocated(locator), this.timeout);
   }
 
-  async findClickableElements(locator) {
+  async findClickableElements(rawLocator) {
+    const locator = this.buildLocator(rawLocator);
     const elements = await this.findElements(locator);
     await Promise.all(
       elements.reduce((acc, element) => {
@@ -66,12 +85,14 @@ class Driver {
     return elements;
   }
 
-  async clickElement(locator) {
+  async clickElement(rawLocator) {
+    const locator = this.buildLocator(rawLocator);
     const element = await this.findClickableElement(locator);
     await element.click();
   }
 
-  async clickPoint(locator, x, y) {
+  async clickPoint(rawLocator, x, y) {
+    const locator = this.buildLocator(rawLocator);
     const element = await this.findElement(locator);
     await this.driver
       .actions()
@@ -87,7 +108,8 @@ class Driver {
     );
   }
 
-  async assertElementNotPresent(locator) {
+  async assertElementNotPresent(rawLocator) {
+    const locator = this.buildLocator(rawLocator);
     let dataTab;
     try {
       dataTab = await this.findElement(locator);
