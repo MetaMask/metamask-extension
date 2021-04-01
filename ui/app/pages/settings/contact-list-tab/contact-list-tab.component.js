@@ -8,7 +8,6 @@ import {
 import EditContact from './edit-contact';
 import AddContact from './add-contact';
 import ViewContact from './view-contact';
-import MyAccounts from './my-accounts';
 
 export default class ContactListTab extends Component {
   static contextTypes = {
