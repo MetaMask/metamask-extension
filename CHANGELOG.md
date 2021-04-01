@@ -3,6 +3,7 @@
 ## Current Develop Branch
 
 ## 9.3.0 Fri Mar 26 2021
+- [#10777](https://github.com/MetaMask/metamask-extension/pull/10777): Display BNB token image for default currency on BSC network home screen
 - [#10721](https://github.com/MetaMask/metamask-extension/pull/10721): Swaps support for the Binance network
 - [#10658](https://github.com/MetaMask/metamask-extension/pull/10658): Swaps support for forked Mainnet on localhost
 - [#10650](https://github.com/MetaMask/metamask-extension/pull/10650): Fix: ETH now only appears once in the swaps "to" and "from" dropdowns.
