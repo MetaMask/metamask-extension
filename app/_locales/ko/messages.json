@@ -120,10 +120,6 @@
   "amount": {
     "message": "금액"
   },
-  "amountInEth": {
-    "message": "$1 ETH",
-    "description": "Displays an eth amount to the user. $1 is a decimal number"
-  },
   "amountWithColon": {
     "message": "금액:"
   },
@@ -1778,7 +1774,8 @@
     "message": "알 수 없음"
   },
   "swapVerifyTokenExplanation": {
-    "message": "여러 토큰이 같은 이름과 기호를 사용할 수 있습니다. Etherscan을 확인하여 이것이 원하는 토큰인지 확인하세요."
+    "message": "여러 토큰이 같은 이름과 기호를 사용할 수 있습니다. $1을 확인하여 이것이 원하는 토큰인지 확인하세요.",
+    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
   "swapViewToken": {
     "message": "$1 보기"

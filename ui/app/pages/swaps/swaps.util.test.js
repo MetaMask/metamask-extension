@@ -1,11 +1,13 @@
 import { strict as assert } from 'assert';
 import proxyquire from 'proxyquire';
+import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 import {
   TRADES_BASE_PROD_URL,
   TOKENS_BASE_PROD_URL,
   AGGREGATOR_METADATA_BASE_PROD_URL,
   TOP_ASSET_BASE_PROD_URL,
   TOKENS,
+  EXPECTED_TOKENS_RESULT,
   MOCK_TRADE_RESPONSE_2,
   AGGREGATOR_METADATA,
   TOP_ASSETS,
@@ -88,42 +90,45 @@ describe('Swaps Util', function () {
       },
     };
     it('should fetch trade info on prod', async function () {
-      const result = await fetchTradesInfo({
-        TOKENS,
-        slippage: '3',
-        sourceToken: TOKENS[0].address,
-        destinationToken: TOKENS[1].address,
-        value: '2000000000000000000',
-        fromAddress: '0xmockAddress',
-        sourceSymbol: TOKENS[0].symbol,
-        sourceDecimals: TOKENS[0].decimals,
-        sourceTokenInfo: { ...TOKENS[0] },
-        destinationTokenInfo: { ...TOKENS[1] },
-      });
+      const result = await fetchTradesInfo(
+        {
+          TOKENS,
+          slippage: '3',
+          sourceToken: TOKENS[0].address,
+          destinationToken: TOKENS[1].address,
+          value: '2000000000000000000',
+          fromAddress: '0xmockAddress',
+          sourceSymbol: TOKENS[0].symbol,
+          sourceDecimals: TOKENS[0].decimals,
+          sourceTokenInfo: { ...TOKENS[0] },
+          destinationTokenInfo: { ...TOKENS[1] },
+        },
+        { chainId: MAINNET_CHAIN_ID },
+      );
       assert.deepStrictEqual(result, expectedResult2);
     });
   });
 
   describe('fetchTokens', function () {
     it('should fetch tokens', async function () {
-      const result = await fetchTokens(true);
-      assert.deepStrictEqual(result, TOKENS);
+      const result = await fetchTokens(MAINNET_CHAIN_ID);
+      assert.deepStrictEqual(result, EXPECTED_TOKENS_RESULT);
     });
 
     it('should fetch tokens on prod', async function () {
-      const result = await fetchTokens(false);
-      assert.deepStrictEqual(result, TOKENS);
+      const result = await fetchTokens(MAINNET_CHAIN_ID);
+      assert.deepStrictEqual(result, EXPECTED_TOKENS_RESULT);
     });
   });
 
   describe('fetchAggregatorMetadata', function () {
     it('should fetch aggregator metadata', async function () {
-      const result = await fetchAggregatorMetadata(true);
+      const result = await fetchAggregatorMetadata(MAINNET_CHAIN_ID);
       assert.deepStrictEqual(result, AGGREGATOR_METADATA);
     });
 
     it('should fetch aggregator metadata on prod', async function () {
-      const result = await fetchAggregatorMetadata(false);
+      const result = await fetchAggregatorMetadata(MAINNET_CHAIN_ID);
       assert.deepStrictEqual(result, AGGREGATOR_METADATA);
     });
   });
@@ -147,12 +152,12 @@ describe('Swaps Util', function () {
       },
     };
     it('should fetch top assets', async function () {
-      const result = await fetchTopAssets(true);
+      const result = await fetchTopAssets(MAINNET_CHAIN_ID);
       assert.deepStrictEqual(result, expectedResult);
     });
 
     it('should fetch top assets on prod', async function () {
-      const result = await fetchTopAssets(false);
+      const result = await fetchTopAssets(MAINNET_CHAIN_ID);
       assert.deepStrictEqual(result, expectedResult);
     });
   });

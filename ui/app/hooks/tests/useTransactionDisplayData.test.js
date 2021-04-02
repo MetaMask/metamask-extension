@@ -12,12 +12,14 @@ import {
   getShouldShowFiat,
   getNativeCurrency,
   getCurrentCurrency,
+  getCurrentChainId,
 } from '../../selectors';
 import { getTokens } from '../../ducks/metamask/metamask';
 import * as i18nhooks from '../useI18nContext';
 import { getMessage } from '../../helpers/utils/i18n-helper';
 import messages from '../../../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_GROUP_CATEGORIES,
@@ -164,6 +166,8 @@ describe('useTransactionDisplayData', function () {
         return 'ETH';
       } else if (selector === getCurrentCurrency) {
         return 'ETH';
+      } else if (selector === getCurrentChainId) {
+        return MAINNET_CHAIN_ID;
       }
       return null;
     });

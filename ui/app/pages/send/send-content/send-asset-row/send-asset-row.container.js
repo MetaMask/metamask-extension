@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import {
   getMetaMaskAccounts,
   getNativeCurrency,
+  getNativeCurrencyImage,
   getSendTokenAddress,
 } from '../../../../selectors';
 import { updateSendToken } from '../../../../store/actions';
@@ -14,6 +15,7 @@ function mapStateToProps(state) {
     sendTokenAddress: getSendTokenAddress(state),
     accounts: getMetaMaskAccounts(state),
     nativeCurrency: getNativeCurrency(state),
+    nativeCurrencyImage: getNativeCurrencyImage(state),
   };
 }
 

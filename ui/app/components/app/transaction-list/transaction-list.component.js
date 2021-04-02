@@ -5,20 +5,31 @@ import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
 } from '../../../selectors/transactions';
+import { getCurrentChainId } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
 import Button from '../../ui/button';
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
-import { SWAPS_CONTRACT_ADDRESS } from '../../../helpers/constants/swaps';
+import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../../shared/constants/swaps';
 import { TRANSACTION_CATEGORIES } from '../../../../../shared/constants/transaction';
 
 const PAGE_INCREMENT = 10;
 
-const getTransactionGroupRecipientAddressFilter = (recipientAddress) => {
+// When we are on a token page, we only want to show transactions that involve that token.
+// In the case of token transfers or approvals, these will be transactions sent to the
+// token contract. In the case of swaps, these will be transactions sent to the swaps contract
+// and which have the token address in the transaction data.
+//
+// getTransactionGroupRecipientAddressFilter is used to determine whether a transaction matches
+// either of those criteria
+const getTransactionGroupRecipientAddressFilter = (
+  recipientAddress,
+  chainId,
+) => {
   return ({ initialTransaction: { txParams } }) => {
     return (
       txParams?.to === recipientAddress ||
-      (txParams?.to === SWAPS_CONTRACT_ADDRESS &&
+      (txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId] &&
         txParams.data.match(recipientAddress.slice(2)))
     );
   };
@@ -43,12 +54,13 @@ const getFilteredTransactionGroups = (
   transactionGroups,
   hideTokenTransactions,
   tokenAddress,
+  chainId,
 ) => {
   if (hideTokenTransactions) {
     return transactionGroups.filter(tokenTransactionFilter);
   } else if (tokenAddress) {
     return transactionGroups.filter(
-      getTransactionGroupRecipientAddressFilter(tokenAddress),
+      getTransactionGroupRecipientAddressFilter(tokenAddress, chainId),
     );
   }
   return transactionGroups;
@@ -67,6 +79,7 @@ export default function TransactionList({
   const unfilteredCompletedTransactions = useSelector(
     nonceSortedCompletedTransactionsSelector,
   );
+  const chainId = useSelector(getCurrentChainId);
 
   const pendingTransactions = useMemo(
     () =>
@@ -74,8 +87,14 @@ export default function TransactionList({
         unfilteredPendingTransactions,
         hideTokenTransactions,
         tokenAddress,
+        chainId,
       ),
-    [hideTokenTransactions, tokenAddress, unfilteredPendingTransactions],
+    [
+      hideTokenTransactions,
+      tokenAddress,
+      unfilteredPendingTransactions,
+      chainId,
+    ],
   );
   const completedTransactions = useMemo(
     () =>
@@ -83,8 +102,14 @@ export default function TransactionList({
         unfilteredCompletedTransactions,
         hideTokenTransactions,
         tokenAddress,
+        chainId,
       ),
-    [hideTokenTransactions, tokenAddress, unfilteredCompletedTransactions],
+    [
+      hideTokenTransactions,
+      tokenAddress,
+      unfilteredCompletedTransactions,
+      chainId,
+    ],
   );
 
   const viewMore = useCallback(

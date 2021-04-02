@@ -944,6 +944,7 @@ export default class TransactionController extends EventEmitter {
           txMeta.txParams.from,
           txMeta.destinationTokenDecimals,
           approvalTxMeta,
+          txMeta.chainId,
         );
 
         const quoteVsExecutionRatio = `${new BigNumber(tokensReceived, 10)

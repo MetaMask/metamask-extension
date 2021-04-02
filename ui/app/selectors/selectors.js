@@ -5,7 +5,14 @@ import {
   MAINNET_CHAIN_ID,
   TEST_CHAINS,
   NETWORK_TYPE_RPC,
+  NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
 } from '../../../shared/constants/network';
+
+import {
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  ALLOWED_SWAPS_CHAIN_IDS,
+} from '../../../shared/constants/swaps';
+
 import {
   shortenAddress,
   checksumAddress,
@@ -15,8 +22,10 @@ import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../helpers/utils/conversions.util';
-import { ETH_SWAPS_TOKEN_OBJECT } from '../helpers/constants/swaps';
+
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
+
+import { getNativeCurrency } from './send';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -441,22 +450,26 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
  * minimal token units (according to its decimals).
  * `string` is the token balance in a readable format, ready for rendering.
  *
- * Swaps treats ETH as a token, and we use the ETH_SWAPS_TOKEN_OBJECT constant
- * to set the standard properties for the token. The getSwapsEthToken selector
- * extends that object with `balance` and `balance` values of the same type as
- * in regular ERC-20 token objects, per the above description.
+ * Swaps treats the selected chain's currency as a token, and we use the token constants
+ * in the SWAPS_CHAINID_DEFAULT_TOKEN_MAP to set the standard properties for
+ * the token. The getSwapsDefaultToken selector extends that object with
+ * `balance` and `string` values of the same type as in regular ERC-20 token
+ * objects, per the above description.
  *
  * @param {object} state - the redux state object
  * @returns {SwapsEthToken} The token object representation of the currently
  * selected account's ETH balance, as expected by the Swaps API.
  */
 
-export function getSwapsEthToken(state) {
+export function getSwapsDefaultToken(state) {
   const selectedAccount = getSelectedAccount(state);
   const { balance } = selectedAccount;
+  const chainId = getCurrentChainId(state);
+
+  const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
 
   return {
-    ...ETH_SWAPS_TOKEN_OBJECT,
+    ...defaultTokenObject,
     balance: hexToDecimal(balance),
     string: getValueFromWeiHex({
       value: balance,
@@ -464,4 +477,14 @@ export function getSwapsEthToken(state) {
       toDenomination: 'ETH',
     }),
   };
+}
+
+export function getIsSwapsChain(state) {
+  const chainId = getCurrentChainId(state);
+  return ALLOWED_SWAPS_CHAIN_IDS[chainId];
+}
+
+export function getNativeCurrencyImage(state) {
+  const nativeCurrency = getNativeCurrency(state).toUpperCase();
+  return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
 }

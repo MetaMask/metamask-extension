@@ -126,10 +126,6 @@
   "amount": {
     "message": "Monto"
   },
-  "amountInEth": {
-    "message": "$1 ETH",
-    "description": "Displays an eth amount to the user. $1 is a decimal number"
-  },
   "amountWithColon": {
     "message": "Monto:"
   },
@@ -1814,7 +1810,8 @@
     "message": "Utilizando la mejor cotización"
   },
   "swapVerifyTokenExplanation": {
-    "message": "Varios tokens pueden usar el mismo nombre y símbolo. Verifique Etherscan para verificar que este es el token que está buscando."
+    "message": "Varios tokens pueden usar el mismo nombre y símbolo. Verifique $1 para verificar que este es el token que está buscando.",
+    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
   "swapViewToken": {
     "message": "Ver $1"

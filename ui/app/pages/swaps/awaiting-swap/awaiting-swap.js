@@ -3,15 +3,18 @@ import React, { useContext, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
+import { createCustomExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+
 import {
   getCurrentChainId,
   getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
   getUSDConversionRate,
 } from '../../../selectors';
+
 import {
   getUsedQuote,
   getFetchParams,
@@ -23,19 +26,24 @@ import {
   prepareToLeaveSwaps,
 } from '../../../ducks/swaps/swaps';
 import Mascot from '../../../components/ui/mascot';
-import PulseLoader from '../../../components/ui/pulse-loader';
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   OFFLINE_FOR_MAINTENANCE,
-} from '../../../helpers/constants/swaps';
+  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
+} from '../../../../../shared/constants/swaps';
+import { CHAIN_ID_TO_TYPE_MAP as VALID_INFURA_CHAIN_IDS } from '../../../../../shared/constants/network';
+import { isSwapsDefaultTokenSymbol } from '../../../../../shared/modules/swaps.utils';
+import PulseLoader from '../../../components/ui/pulse-loader';
+
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 import { getBlockExplorerUrlForTx } from '../../../../../shared/modules/transaction.utils';
+
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
 import QuotesTimeoutIcon from './quotes-timeout-icon';
@@ -73,16 +81,17 @@ export default function AwaitingSwap({
   let feeinUnformattedFiat;
 
   if (usedQuote && swapsGasPrice) {
-    const renderableNetworkFees = getRenderableNetworkFeesForQuote(
-      usedQuote.gasEstimateWithRefund || usedQuote.averageGas,
-      approveTxParams?.gas || '0x0',
-      swapsGasPrice,
+    const renderableNetworkFees = getRenderableNetworkFeesForQuote({
+      tradeGas: usedQuote.gasEstimateWithRefund || usedQuote.averageGas,
+      approveGas: approveTxParams?.gas || '0x0',
+      gasPrice: swapsGasPrice,
       currentCurrency,
-      usdConversionRate,
-      usedQuote?.trade?.value,
-      sourceTokenInfo?.symbol,
-      usedQuote.sourceAmount,
-    );
+      conversionRate: usdConversionRate,
+      tradeValue: usedQuote?.trade?.value,
+      sourceSymbol: sourceTokenInfo?.symbol,
+      sourceAmount: usedQuote.sourceAmount,
+      chainId,
+    });
     feeinUnformattedFiat = renderableNetworkFees.rawNetworkFees;
   }
 
@@ -100,8 +109,21 @@ export default function AwaitingSwap({
     category: 'swaps',
   });
 
-  const blockExplorerUrl =
-    txHash && getBlockExplorerUrlForTx({ chainId, hash: txHash }, rpcPrefs);
+  let blockExplorerUrl;
+  if (txHash && rpcPrefs.blockExplorerUrl) {
+    blockExplorerUrl = getBlockExplorerUrlForTx({ hash: txHash }, rpcPrefs);
+  } else if (txHash && SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId]) {
+    blockExplorerUrl = createCustomExplorerLink(
+      txHash,
+      SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId],
+    );
+  } else if (txHash && VALID_INFURA_CHAIN_IDS[chainId]) {
+    blockExplorerUrl = getBlockExplorerUrlForTx({ chainId, hash: txHash });
+  }
+
+  const isCustomBlockExplorerUrl =
+    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ||
+    rpcPrefs.blockExplorerUrl;
 
   let headerText;
   let statusImage;
@@ -133,7 +155,7 @@ export default function AwaitingSwap({
       <ViewOnEtherScanLink
         txHash={txHash}
         blockExplorerUrl={blockExplorerUrl}
-        isCustomBlockExplorerUrl={Boolean(rpcPrefs.blockExplorerUrl)}
+        isCustomBlockExplorerUrl={isCustomBlockExplorerUrl}
       />
     );
   } else if (errorKey === QUOTES_EXPIRED_ERROR) {
@@ -172,7 +194,7 @@ export default function AwaitingSwap({
       <ViewOnEtherScanLink
         txHash={txHash}
         blockExplorerUrl={blockExplorerUrl}
-        isCustomBlockExplorerUrl={Boolean(rpcPrefs.blockExplorerUrl)}
+        isCustomBlockExplorerUrl={isCustomBlockExplorerUrl}
       />
     );
   } else if (!errorKey && swapComplete) {
@@ -191,7 +213,7 @@ export default function AwaitingSwap({
       <ViewOnEtherScanLink
         txHash={txHash}
         blockExplorerUrl={blockExplorerUrl}
-        isCustomBlockExplorerUrl={Boolean(rpcPrefs.blockExplorerUrl)}
+        isCustomBlockExplorerUrl={isCustomBlockExplorerUrl}
       />
     );
   }
@@ -228,7 +250,9 @@ export default function AwaitingSwap({
             );
           } else if (errorKey) {
             await dispatch(navigateBackToBuildQuote(history));
-          } else if (destinationTokenInfo?.symbol === 'ETH') {
+          } else if (
+            isSwapsDefaultTokenSymbol(destinationTokenInfo?.symbol, chainId)
+          ) {
             history.push(DEFAULT_ROUTE);
           } else {
             history.push(`${ASSET_ROUTE}/${destinationTokenInfo?.address}`);
