@@ -2,6 +2,7 @@
 const fs = require('fs').promises;
 const assert = require('assert').strict;
 const path = require('path');
+const { escapeRegExp } = require('lodash');
 const { version } = require('../app/manifest/_base.json');
 const runCommand = require('./lib/runCommand');
 
@@ -72,12 +73,13 @@ async function main() {
   const mostRecentVersion = mostRecentTag.slice(1);
 
   const isReleaseCandidate = mostRecentVersion !== version;
-  const versionHeader = `## ${version}`;
+  const versionHeader = `## [${version}]`;
+  const escapedVersionHeader = escapeRegExp(versionHeader);
   const currentDevelopBranchHeader = '## Current Develop Branch';
   const currentReleaseHeaderPattern = isReleaseCandidate
     ? // This ensures this doesn't match on a version with a suffix
       // e.g. v9.0.0 should not match on the header v9.0.0-beta.0
-      `${versionHeader}$|${versionHeader}\\s`
+      `${escapedVersionHeader}$|${escapedVersionHeader}\\s`
     : currentDevelopBranchHeader;
 
   let releaseHeaderIndex = changelogLines.findIndex((line) =>
@@ -92,7 +94,7 @@ async function main() {
 
     // Add release header if not found
     const firstReleaseHeaderIndex = changelogLines.findIndex((line) =>
-      line.match(/## \d+\.\d+\.\d+/u),
+      line.match(/## \[\d+\.\d+\.\d+\]/u),
     );
     changelogLines.splice(firstReleaseHeaderIndex, 0, versionHeader, '');
     releaseHeaderIndex = firstReleaseHeaderIndex;
