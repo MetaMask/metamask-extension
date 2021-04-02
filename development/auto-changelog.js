@@ -75,12 +75,12 @@ async function main() {
   const isReleaseCandidate = mostRecentVersion !== version;
   const versionHeader = `## [${version}]`;
   const escapedVersionHeader = escapeRegExp(versionHeader);
-  const currentDevelopBranchHeader = '## Current Develop Branch';
+  const currentDevelopBranchHeader = '## [Unreleased]';
   const currentReleaseHeaderPattern = isReleaseCandidate
     ? // This ensures this doesn't match on a version with a suffix
       // e.g. v9.0.0 should not match on the header v9.0.0-beta.0
       `${escapedVersionHeader}$|${escapedVersionHeader}\\s`
-    : currentDevelopBranchHeader;
+    : escapeRegExp(currentDevelopBranchHeader);
 
   let releaseHeaderIndex = changelogLines.findIndex((line) =>
     line.match(new RegExp(currentReleaseHeaderPattern, 'u')),
@@ -96,8 +96,22 @@ async function main() {
     const firstReleaseHeaderIndex = changelogLines.findIndex((line) =>
       line.match(/## \[\d+\.\d+\.\d+\]/u),
     );
+    const [, previousVersion] = changelogLines[firstReleaseHeaderIndex].match(
+      /## \[(\d+\.\d+\.\d+)\]/u,
+    );
     changelogLines.splice(firstReleaseHeaderIndex, 0, versionHeader, '');
     releaseHeaderIndex = firstReleaseHeaderIndex;
+
+    // Update release links
+    const unreleasedLinkIndex = changelogLines.findIndex((line) =>
+      line.match(/\[Unreleased\]:/u),
+    );
+    changelogLines.splice(
+      unreleasedLinkIndex,
+      1,
+      `[Unreleased]: ${URL}/compare/v${version}...HEAD`,
+      `[${version}]: ${URL}/compare/v${previousVersion}...v${version}`,
+    );
   }
 
   const prNumbersWithChangelogEntries = [];
