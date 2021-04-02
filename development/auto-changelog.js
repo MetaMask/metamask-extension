@@ -94,7 +94,7 @@ async function main() {
 
     // Add release header if not found
     const firstReleaseHeaderIndex = changelogLines.findIndex((line) =>
-      line.match(/## \d+\.\d+\.\d+/u),
+      line.match(/## \[\d+\.\d+\.\d+\]/u),
     );
     changelogLines.splice(firstReleaseHeaderIndex, 0, versionHeader, '');
     releaseHeaderIndex = firstReleaseHeaderIndex;
