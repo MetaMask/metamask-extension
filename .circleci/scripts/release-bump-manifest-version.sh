@@ -26,14 +26,4 @@ yarn prettier --write app/manifest/_base.json
 if [[ -z $(git status --porcelain) ]]
 then
     printf '%s\n' 'App manifest version already set'
-    exit 0
 fi
-
-git \
-    -c user.name='MetaMask Bot' \
-    -c user.email='metamaskbot@users.noreply.github.com' \
-    commit --message "${CIRCLE_BRANCH/-/ }" \
-        CHANGELOG.md app/manifest/_base.json
-
-repo_slug="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
-git push "https://$GITHUB_TOKEN_USER:$GITHUB_TOKEN@github.com/$repo_slug" "$CIRCLE_BRANCH"

@@ -124,11 +124,17 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Bump manifest version
+          command: .circleci/scripts/release-bump-manifest-version.sh
+      - run:
+          name: Update changelog
+          command: yarn update-changelog
+      - run:
+          name: Commit changes
+          command: .circleci/scripts/release-commit-version-bump.sh
+      - run:
           name: Create GitHub Pull Request for version
-          command: |
-            .circleci/scripts/release-bump-changelog-version.sh
-            .circleci/scripts/release-bump-manifest-version.sh
-            .circleci/scripts/release-create-release-pr.sh
+          command: .circleci/scripts/release-create-release-pr.sh
 
   prep-deps:
     executor: node-browsers
