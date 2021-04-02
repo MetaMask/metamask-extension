@@ -18,7 +18,7 @@ fi
 
 printf '%s\n' 'Commit the manifest version and changelog if the manifest has changed'
 
-if ! git diff --quiet CHANGELOG.md app/manifest/_base.json;
+if git diff --quiet app/manifest/_base.json;
 then
     printf '%s\n' 'No manifest changes to commit'
     exit 0
