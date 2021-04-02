@@ -2,6 +2,89 @@
 
 ## Current Develop Branch
 
+## 9.3.1
+- Fix check for manifest changes
+- Make the new script executable
+- Fix typo in script filename
+- Update the changelog when creating an RC
+- [#10802](https://github.com/MetaMask/metamask-extension/pull/10802): Add support for locators into driver abstraction
+- [#10797](https://github.com/MetaMask/metamask-extension/pull/10797): remove node-sass dependency
+- [#10794](https://github.com/MetaMask/metamask-extension/pull/10794): Add release header when updating changelog
+- [#10777](https://github.com/MetaMask/metamask-extension/pull/10777): Ensure correct primary currency image is displayed on home screen and token list
+- [#10789](https://github.com/MetaMask/metamask-extension/pull/10789): upgrade eslint deps
+- [#10788](https://github.com/MetaMask/metamask-extension/pull/10788): only applies rules to the appropriate files
+- [#10800](https://github.com/MetaMask/metamask-extension/pull/10800): Set the BSC_CONTRACT_ADDRESS to lowercase
+- [#10786](https://github.com/MetaMask/metamask-extension/pull/10786): Prevent duplicate changelog entries
+- [#10784](https://github.com/MetaMask/metamask-extension/pull/10784): Add changelog entries under release candidate header
+- [#10791](https://github.com/MetaMask/metamask-extension/pull/10791): Remove script for creating master sync PR
+- [#10790](https://github.com/MetaMask/metamask-extension/pull/10790): Remove date from changelog release header
+- [#10787](https://github.com/MetaMask/metamask-extension/pull/10787): Remove useless negation
+- [#10778](https://github.com/MetaMask/metamask-extension/pull/10778): Refactoring ethereum-on.spec.js to use fixtures
+- [#10782](https://github.com/MetaMask/metamask-extension/pull/10782): Rewrite changelog script from Bash to JavaScript
+- [#10776](https://github.com/MetaMask/metamask-extension/pull/10776): Improve detection of task process exit
+- [#10775](https://github.com/MetaMask/metamask-extension/pull/10775): eslint perf improvement
+- [#10773](https://github.com/MetaMask/metamask-extension/pull/10773): cache lint results for faster repeat execution
+- [#10780](https://github.com/MetaMask/metamask-extension/pull/10780): build - fix use of empty file to replace unused js files
+- [#10769](https://github.com/MetaMask/metamask-extension/pull/10769): Build - refactor background process to use html
+- [#10774](https://github.com/MetaMask/metamask-extension/pull/10774): Use network specific swaps contract address when checking swap contract token approval
+- [#10762](https://github.com/MetaMask/metamask-extension/pull/10762): Ensure that priceSlippage fiat amounts are always shown in view-quote.js
+- [#10763](https://github.com/MetaMask/metamask-extension/pull/10763): Ensure that the approval fee in the swaps custom gas modal is in network specific currency
+- [#10672](https://github.com/MetaMask/metamask-extension/pull/10672): Refactor Tx State Manager
+- [#10765](https://github.com/MetaMask/metamask-extension/pull/10765): Updating y18n and netmask to resolve dependency issues
+- [#10593](https://github.com/MetaMask/metamask-extension/pull/10593): Fix 10517 - Prevent tokens without addresses from being added to token list
+- [#10753](https://github.com/MetaMask/metamask-extension/pull/10753): Ensure that the correct default currency symbols are used for fees on the view quote screen
+- [#10746](https://github.com/MetaMask/metamask-extension/pull/10746): Add New Zealand Dollar to currency options
+- [#10743](https://github.com/MetaMask/metamask-extension/pull/10743): Use correct block explorer name and link in swaps when on custom network
+- [#10747](https://github.com/MetaMask/metamask-extension/pull/10747): update @metamask/etherscan-link to v2.0.0
+- [#10744](https://github.com/MetaMask/metamask-extension/pull/10744): Ensure swaps gas prices are fetched from the correct chain specific endpoint
+- [#10742](https://github.com/MetaMask/metamask-extension/pull/10742): Sync `master` with `develop`
+- Merge remote-tracking branch 'origin/develop' into sync-master
+- [#10737](https://github.com/MetaMask/metamask-extension/pull/10737): eth-block-tracker@5.0.1
+- [#10670](https://github.com/MetaMask/metamask-extension/pull/10670): Allow 11 characters in symbol for RPC
+- [#10663](https://github.com/MetaMask/metamask-extension/pull/10663): security - update SES lockdown
+- [#10718](https://github.com/MetaMask/metamask-extension/pull/10718): build - refactor build system for easier configuration
+- [#10735](https://github.com/MetaMask/metamask-extension/pull/10735): ci - cache deps before patch-package
+- [#10721](https://github.com/MetaMask/metamask-extension/pull/10721): Additional swaps network support
+- [#10701](https://github.com/MetaMask/metamask-extension/pull/10701): Update @metamask/controllers to v6.2.1
+- [#10702](https://github.com/MetaMask/metamask-extension/pull/10702): Fix 10562 - Hide the suggested token pane when not on Mainnet or test network
+- [#10723](https://github.com/MetaMask/metamask-extension/pull/10723): Fix mismatchedChain typo in custom network approval screen
+- [#10700](https://github.com/MetaMask/metamask-extension/pull/10700): Fix 10706 - Prevent autocomplete from add token input
+- [#10714](https://github.com/MetaMask/metamask-extension/pull/10714): fix: remove unused `metamask.rpcUrl` from redux state + fix tests to reflect that
+- [#10704](https://github.com/MetaMask/metamask-extension/pull/10704): Removing hard references to 12 word seed phrases in copy
+- [#10703](https://github.com/MetaMask/metamask-extension/pull/10703): Add MetaMask to list of BIP44 HD path examples
+- [#10636](https://github.com/MetaMask/metamask-extension/pull/10636): Delete setupFetchDebugging.js
+- [#10695](https://github.com/MetaMask/metamask-extension/pull/10695): Excluding sourcemaps comment in production builds
+- [#10687](https://github.com/MetaMask/metamask-extension/pull/10687): deps - remove "remotedev-server"
+- [#10682](https://github.com/MetaMask/metamask-extension/pull/10682): Adding default properties to NetworkForm
+- [#10689](https://github.com/MetaMask/metamask-extension/pull/10689): make migration more safe
+- [#10639](https://github.com/MetaMask/metamask-extension/pull/10639): refactor incoming tx controller
+- [#10666](https://github.com/MetaMask/metamask-extension/pull/10666): Fixing incorrectly typed token decimal attribute
+- [#10651](https://github.com/MetaMask/metamask-extension/pull/10651): Change 'Send ETH' title to 'Send'
+- [#10674](https://github.com/MetaMask/metamask-extension/pull/10674): Don't render faucet row in deposit modal for custom chains
+- [#10627](https://github.com/MetaMask/metamask-extension/pull/10627): fix: replace dnode background with JSON-RPC
+- [#10658](https://github.com/MetaMask/metamask-extension/pull/10658): Swaps support for local testnet
+- [#10661](https://github.com/MetaMask/metamask-extension/pull/10661): Improve specificity of `test:unit:lax` npm script
+- [#10664](https://github.com/MetaMask/metamask-extension/pull/10664): Fixing migration script generation paths
+- [#10655](https://github.com/MetaMask/metamask-extension/pull/10655): colocate tests in flat structure
+- [#10656](https://github.com/MetaMask/metamask-extension/pull/10656): Allow TextField to receive min and max attributes
+- [#10643](https://github.com/MetaMask/metamask-extension/pull/10643): Prevent network menu highlighting
+- [#10650](https://github.com/MetaMask/metamask-extension/pull/10650): Fix: ETH 'token' now only appears once in the swaps to and from dropdowns.
+- [#10644](https://github.com/MetaMask/metamask-extension/pull/10644): Ensure swaps detail height doesn't create jump in vertical height
+- [#10652](https://github.com/MetaMask/metamask-extension/pull/10652): Sync `master` with `develop`
+- Merge remote-tracking branch 'origin/develop' into sync-master
+- [#10642](https://github.com/MetaMask/metamask-extension/pull/10642): Position the 3dot menu in the same spot on asset screen and home screen
+- [#10614](https://github.com/MetaMask/metamask-extension/pull/10614): Move swaps constants to the shared constants directory
+- [#10594](https://github.com/MetaMask/metamask-extension/pull/10594): prefer chainId over networkId in most cases
+- [#10640](https://github.com/MetaMask/metamask-extension/pull/10640): no more node:console
+- [#10579](https://github.com/MetaMask/metamask-extension/pull/10579): fix: speedup cancellation
+- [#10634](https://github.com/MetaMask/metamask-extension/pull/10634): Setting balance to 0x0 when the original value is undefined
+- [#10630](https://github.com/MetaMask/metamask-extension/pull/10630): Hide zero balance tokens at useTokenTracker layer
+- [#10628](https://github.com/MetaMask/metamask-extension/pull/10628): Removing double click bug from delete custom network modal
+- [#10615](https://github.com/MetaMask/metamask-extension/pull/10615): remove transactionCategory in favor of more types
+- [#10524](https://github.com/MetaMask/metamask-extension/pull/10524): Ensure permission log will only store JSON-able data
+- [#10624](https://github.com/MetaMask/metamask-extension/pull/10624): Replace logic for eth swap token in fetchQuotesAndSetQuoteState with getSwapsEthToken call
+- [#10616](https://github.com/MetaMask/metamask-extension/pull/10616): add trezor HD path for ledger wallets
+
 ## 9.2.1 Thu Mar 25 2021
 - [#10692](https://github.com/MetaMask/metamask-extension/pull/10692): Prevent UI crash when a 'wallet_requestPermissions" confirmation is queued behind a "wallet_addEthereumChain" confirmation
 - [#10712](https://github.com/MetaMask/metamask-extension/pull/10712): Fix infinite spinner when request for token symbol fails while attempting an approve transaction
