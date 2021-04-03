@@ -73,6 +73,8 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement(
           By.xpath(`//button[contains(text(), 'Next')]`),
         );
+
+        // has correct updated value on the confirm screen the transaction
         const editedTransactionAmounts = await driver.findElements(
           By.css('.currency-display-component__text'),
         );
@@ -82,6 +84,7 @@ describe('Editing Confirm Transaction', function () {
         const editedTransactionFee = editedTransactionAmounts[1];
         assert.equal(await editedTransactionFee.getText(), '0.0008');
 
+        // confirms the transaction
         await driver.clickElement(
           By.xpath(`//button[contains(text(), 'Confirm')]`),
         );
