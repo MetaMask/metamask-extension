@@ -1,0 +1,136 @@
+{
+  "data": {
+    "AddressBookController": {
+      "addressBook": {
+        "0x539": {
+          "0x2f318C334780961FB129D2a6c30D0763d9a5C970": {
+            "address": "0x2f318C334780961FB129D2a6c30D0763d9a5C970",
+            "chainId": "0x539",
+            "isEns": false,
+            "memo": "",
+            "name": "Test Name 1"
+          }
+        }
+      }
+    },
+    "AppStateController": {
+      "mkrMigrationReminderTimestamp": null,
+      "swapsWelcomeMessageHasBeenShown": true
+    },
+    "CachedBalancesController": {
+      "cachedBalances": {
+        "4": {}
+      }
+    },
+    "CurrencyController": {
+      "conversionDate": 1575697244.188,
+      "conversionRate": 149.61,
+      "currentCurrency": "usd",
+      "nativeCurrency": "ETH"
+    },
+    "IncomingTransactionsController": {
+      "incomingTransactions": {},
+      "incomingTxLastFetchedBlocksByNetwork": {
+        "goerli": null,
+        "kovan": null,
+        "mainnet": null,
+        "rinkeby": 5570536
+      }
+    },
+    "KeyringController": {
+      "vault": "{\"data\":\"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT\",\"iv\":\"FbeHDAW5afeWNORfNJBR0Q==\",\"salt\":\"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8=\"}"
+    },
+    "NetworkController": {
+      "network": "1337",
+      "provider": {
+        "nickname": "Localhost 8545",
+        "rpcUrl": "http://localhost:8545",
+        "chainId": "0x539",
+        "ticker": "ETH",
+        "type": "rpc"
+      }
+    },
+    "OnboardingController": {
+      "onboardingTabs": {},
+      "seedPhraseBackedUp": false
+    },
+    "PermissionsMetadata": {
+      "domainMetadata": {
+        "metamask.github.io": {
+          "icon": null,
+          "name": "M E T A M A S K M E S H T E S T"
+        }
+      },
+      "permissionsHistory": {},
+      "permissionsLog": [
+        {
+          "id": 746677923,
+          "method": "eth_accounts",
+          "methodType": "restricted",
+          "origin": "metamask.github.io",
+          "request": {
+            "id": 746677923,
+            "jsonrpc": "2.0",
+            "method": "eth_accounts",
+            "origin": "metamask.github.io",
+            "params": []
+          },
+          "requestTime": 1575697241368,
+          "response": {
+            "id": 746677923,
+            "jsonrpc": "2.0",
+            "result": []
+          },
+          "responseTime": 1575697241370,
+          "success": true
+        }
+      ]
+    },
+    "PreferencesController": {
+      "accountTokens": {
+        "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
+          "rinkeby": [],
+          "ropsten": []
+        }
+      },
+      "assetImages": {},
+      "completedOnboarding": true,
+      "currentLocale": "en",
+      "featureFlags": {
+        "showIncomingTransactions": true,
+        "transactionTime": false
+      },
+      "firstTimeFlowType": "create",
+      "forgottenPassword": false,
+      "frequentRpcListDetail": [],
+      "identities": {
+        "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
+          "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+          "name": "Account 1"
+        }
+      },
+      "knownMethodData": {},
+      "lostIdentities": {},
+      "metaMetricsId": null,
+      "metaMetricsSendCount": 0,
+      "participateInMetaMetrics": false,
+      "preferences": {
+        "useNativeCurrencyAsPrimaryCurrency": true
+      },
+      "selectedAddress": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+      "suggestedTokens": {},
+      "tokens": [],
+      "useBlockie": false,
+      "useNonceField": false,
+      "usePhishDetect": true
+    },
+    "config": {},
+    "firstTimeInfo": {
+      "date": 1575697234195,
+      "version": "7.7.0"
+    }
+  },
+  "meta": {
+    "version": 40
+  }
+}
