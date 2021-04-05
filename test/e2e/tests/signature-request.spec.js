@@ -32,6 +32,7 @@ describe('Signature Request', function () {
         // creates a sign typed data signature request
         await driver.clickElement(By.id('signTypedDataV4'), 10000);
 
+        await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
