@@ -7,6 +7,9 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+      time: "06:00"
     allow:
       - dependency-name: "@metamask/*"
-    versioning-strategy: "lockfile-only"
+    target-branch: "develop"
+    versioning-strategy: "increase-if-necessary"
+    open-pull-requests-limit: 10
