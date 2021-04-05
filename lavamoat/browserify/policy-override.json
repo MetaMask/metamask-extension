@@ -35,6 +35,11 @@
       "globals": {
         "crypto.getRandomValues": true
       }
+    },
+    "extensionizer": {
+      "globals": {
+        "console": true
+      }
     }
   }
 }
