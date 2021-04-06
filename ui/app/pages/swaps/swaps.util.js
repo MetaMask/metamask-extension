@@ -131,6 +131,10 @@ const QUOTE_VALIDATORS = [
     type: 'number|undefined',
     validator: (gasEstimate) => gasEstimate === undefined || gasEstimate > 0,
   },
+  {
+    property: 'fee',
+    type: 'number',
+  },
 ];
 
 const TOKEN_VALIDATORS = [
