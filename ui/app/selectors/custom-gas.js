@@ -134,13 +134,18 @@ export function basicPriceEstimateToETHTotal(
   });
 }
 
-export function getRenderableEthFee(estimate, gasLimit, numberOfDecimals = 9) {
+export function getRenderableEthFee(
+  estimate,
+  gasLimit,
+  numberOfDecimals = 9,
+  nativeCurrency = 'ETH',
+) {
   const value = conversionUtil(estimate, {
     fromNumericBase: 'dec',
     toNumericBase: 'hex',
   });
   const fee = basicPriceEstimateToETHTotal(value, gasLimit, numberOfDecimals);
-  return formatETHFee(fee);
+  return formatETHFee(fee, nativeCurrency);
 }
 
 export function getRenderableConvertedCurrencyFee(
@@ -186,12 +191,18 @@ export function getRenderableGasButtonData(
   showFiat,
   conversionRate,
   currentCurrency,
+  nativeCurrency,
 ) {
   const { safeLow, average, fast } = estimates;
 
   const slowEstimateData = {
     gasEstimateType: GAS_ESTIMATE_TYPES.SLOW,
-    feeInPrimaryCurrency: getRenderableEthFee(safeLow, gasLimit),
+    feeInPrimaryCurrency: getRenderableEthFee(
+      safeLow,
+      gasLimit,
+      9,
+      nativeCurrency,
+    ),
     feeInSecondaryCurrency: showFiat
       ? getRenderableConvertedCurrencyFee(
           safeLow,
@@ -204,7 +215,12 @@ export function getRenderableGasButtonData(
   };
   const averageEstimateData = {
     gasEstimateType: GAS_ESTIMATE_TYPES.AVERAGE,
-    feeInPrimaryCurrency: getRenderableEthFee(average, gasLimit),
+    feeInPrimaryCurrency: getRenderableEthFee(
+      average,
+      gasLimit,
+      9,
+      nativeCurrency,
+    ),
     feeInSecondaryCurrency: showFiat
       ? getRenderableConvertedCurrencyFee(
           average,
@@ -217,7 +233,12 @@ export function getRenderableGasButtonData(
   };
   const fastEstimateData = {
     gasEstimateType: GAS_ESTIMATE_TYPES.FAST,
-    feeInPrimaryCurrency: getRenderableEthFee(fast, gasLimit),
+    feeInPrimaryCurrency: getRenderableEthFee(
+      fast,
+      gasLimit,
+      9,
+      nativeCurrency,
+    ),
     feeInSecondaryCurrency: showFiat
       ? getRenderableConvertedCurrencyFee(
           fast,
@@ -295,7 +316,6 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
         safeLow,
         gasLimit,
         NUMBER_OF_DECIMALS_SM_BTNS,
-        true,
       ),
       priceInHexWei: getGasPriceInHexWei(safeLow, true),
     },
@@ -313,7 +333,6 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
         average,
         gasLimit,
         NUMBER_OF_DECIMALS_SM_BTNS,
-        true,
       ),
       priceInHexWei: getGasPriceInHexWei(average, true),
     },
@@ -331,7 +350,6 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
         fast,
         gasLimit,
         NUMBER_OF_DECIMALS_SM_BTNS,
-        true,
       ),
       priceInHexWei: getGasPriceInHexWei(fast, true),
     },

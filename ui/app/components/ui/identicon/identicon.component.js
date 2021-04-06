@@ -22,6 +22,7 @@ export default class Identicon extends PureComponent {
     image: PropTypes.string,
     useBlockie: PropTypes.bool,
     alt: PropTypes.string,
+    imageBorder: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -35,11 +36,13 @@ export default class Identicon extends PureComponent {
   };
 
   renderImage() {
-    const { className, diameter, image, alt } = this.props;
+    const { className, diameter, image, alt, imageBorder } = this.props;
 
     return (
       <img
-        className={classnames('identicon', className)}
+        className={classnames('identicon', className, {
+          'identicon__image-border': imageBorder,
+        })}
         src={image}
         style={getStyles(diameter)}
         alt={alt}
@@ -75,15 +78,7 @@ export default class Identicon extends PureComponent {
   }
 
   render() {
-    const {
-      className,
-      address,
-      image,
-      diameter,
-      useBlockie,
-      addBorder,
-      alt,
-    } = this.props;
+    const { address, image, useBlockie, addBorder, diameter } = this.props;
 
     if (image) {
       return this.renderImage();
@@ -106,12 +101,10 @@ export default class Identicon extends PureComponent {
     }
 
     return (
-      <img
-        className={classnames('identicon__eth-logo', className)}
-        src="./images/eth_logo.svg"
+      <div
         style={getStyles(diameter)}
-        alt={alt}
-      />
+        className="identicon__image-border"
+      ></div>
     );
   }
 }

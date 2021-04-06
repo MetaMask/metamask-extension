@@ -56,19 +56,6 @@ retry concurrently --kill-others \
   'mocha test/e2e/from-import-ui.spec'
 
 retry concurrently --kill-others \
-  --names 'e2e' \
-  --prefix '[{time}][{name}]' \
-  --success first \
-  'mocha test/e2e/send-edit.spec'
-
-retry concurrently --kill-others \
-  --names 'dapp,e2e' \
-  --prefix '[{time}][{name}]' \
-  --success first \
-  'yarn dapp' \
-  'mocha test/e2e/ethereum-on.spec'
-
-retry concurrently --kill-others \
   --names 'dapp,e2e' \
   --prefix '[{time}][{name}]' \
   --success first \
@@ -81,13 +68,6 @@ retry concurrently --kill-others \
   --success first \
   'yarn sendwithprivatedapp' \
   'mocha test/e2e/incremental-security.spec'
-
-retry concurrently --kill-others \
-  --names 'dapp,e2e' \
-  --prefix '[{time}][{name}]' \
-  --success first \
-  'yarn dapp' \
-  'mocha test/e2e/address-book.spec'
 
 retry concurrently --kill-others \
   --names '3box,dapp,e2e' \

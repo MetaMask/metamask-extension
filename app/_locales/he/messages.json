@@ -505,9 +505,6 @@
   "importWallet": {
     "message": "ייבא ארנק"
   },
-  "importYourExisting": {
-    "message": "יבא/י את הארנק הקיים שלך באמצעות seed phrase בן 12 מילים"
-  },
   "imported": {
     "message": "מיובאות",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -888,9 +885,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "אזהרה: לעולם אין לחשוף את צירוף הגיבוי שלך. כל מי שברשותו צירוף זה יכול לקחת את האת'ר שלך לצמיתות."
-  },
-  "secretPhrase": {
-    "message": "הזנ/י את הצירוף הסודי שלך של שתים-עשרה המילים כאן כדי לשחזר את הכספת שלך."
   },
   "securityAndPrivacy": {
     "message": "אבטחה ופרטיות"

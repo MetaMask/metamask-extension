@@ -120,10 +120,6 @@
   "amount": {
     "message": "Halaga"
   },
-  "amountInEth": {
-    "message": "$1 ETH",
-    "description": "Displays an eth amount to the user. $1 is a decimal number"
-  },
   "amountWithColon": {
     "message": "Halaga:"
   },
@@ -791,9 +787,6 @@
   "importWallet": {
     "message": "I-import ang wallet"
   },
-  "importYourExisting": {
-    "message": "I-import ang iyong kasalukuyang wallet gamit ang 12 salita na seed phrase"
-  },
   "imported": {
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -1347,9 +1340,6 @@
   "secretBackupPhraseWarning": {
     "message": "BABALA: Huwag kailanman ipaalam ang iyong phrase sa pag-back up. Ang sinumang may phrase na ito ay maaaring angkinin ang iyong Ether."
   },
-  "secretPhrase": {
-    "message": "Ilagay ang iyong labindalawang lihim na phrase dito para ma-restore ang iyong vault."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Pagkapribado"
   },
@@ -1775,7 +1765,8 @@
     "message": "Hindi Alam"
   },
   "swapVerifyTokenExplanation": {
-    "message": "Maaaring gamitin ng maraming token ang iisang pangalan at simbolo. Suriin ang Etherscan para ma-verify na ito ang token na hinahanap mo."
+    "message": "Maaaring gamitin ng maraming token ang iisang pangalan at simbolo. Suriin ang $1 para ma-verify na ito ang token na hinahanap mo.",
+    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
   "swapViewToken": {
     "message": "Tingnan ang $1"

@@ -90,6 +90,7 @@ const getMaterialThemeInputProps = ({
   startAdornment,
   min,
   max,
+  autoComplete,
 }) => ({
   InputLabelProps: {
     classes: {
@@ -107,6 +108,7 @@ const getMaterialThemeInputProps = ({
       dir,
       min,
       max,
+      autoComplete,
     },
   },
 });
@@ -122,6 +124,7 @@ const getMaterialWhitePaddedThemeInputProps = ({
   startAdornment,
   min,
   max,
+  autoComplete,
 }) => ({
   InputProps: {
     startAdornment,
@@ -135,6 +138,7 @@ const getMaterialWhitePaddedThemeInputProps = ({
       dir,
       min,
       max,
+      autoComplete,
     },
   },
 });
@@ -155,6 +159,7 @@ const getBorderedThemeInputProps = ({
   startAdornment,
   min,
   max,
+  autoComplete,
 }) => ({
   InputLabelProps: {
     shrink: true,
@@ -177,6 +182,7 @@ const getBorderedThemeInputProps = ({
       dir,
       min,
       max,
+      autoComplete,
     },
   },
 });
@@ -196,6 +202,7 @@ const TextField = ({
   dir,
   min,
   max,
+  autoComplete,
   ...textFieldProps
 }) => {
   const inputProps = themeToInputProps[theme]({
@@ -205,6 +212,7 @@ const TextField = ({
     dir,
     min,
     max,
+    autoComplete,
   });
 
   return (
@@ -232,6 +240,7 @@ TextField.propTypes = {
   largeLabel: PropTypes.bool,
   min: PropTypes.number,
   max: PropTypes.number,
+  autoComplete: PropTypes.string,
 };
 
 export default withStyles(styles)(TextField);

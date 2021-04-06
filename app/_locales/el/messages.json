@@ -502,9 +502,6 @@
   "importWallet": {
     "message": "Εισαγωγή Πορτοφολιού"
   },
-  "importYourExisting": {
-    "message": "Εισαγάγετε το υπάρχον πορτοφόλι σας χρησιμοποιώντας μια φράση φύτρου 12 λέξεων"
-  },
   "imported": {
     "message": "Έγινε εισαγωγή",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -891,9 +888,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Ποτέ μην αποκαλύπτετε την εφεδρική φράση. Όποιος έχει αυτή τη φράση μπορεί να πάρει τα Ether σας για πάντα."
-  },
-  "secretPhrase": {
-    "message": "Εισαγάγετε εδώ τη μυστική φράση δώδεκα λέξεων για να επαναφέρετε το χρηματοκιβώτιό σας."
   },
   "securityAndPrivacy": {
     "message": "Ασφάλεια και Απόρρητο"

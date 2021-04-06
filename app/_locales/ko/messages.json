@@ -120,10 +120,6 @@
   "amount": {
     "message": "금액"
   },
-  "amountInEth": {
-    "message": "$1 ETH",
-    "description": "Displays an eth amount to the user. $1 is a decimal number"
-  },
   "amountWithColon": {
     "message": "금액:"
   },
@@ -791,9 +787,6 @@
   "importWallet": {
     "message": "지갑 가져오기"
   },
-  "importYourExisting": {
-    "message": "12단어 시드 구문을 사용하여 지갑 가져오기"
-  },
   "imported": {
     "message": "가져옴",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -1347,9 +1340,6 @@
   "secretBackupPhraseWarning": {
     "message": "경고: 백업 구문은 절대로 공개하지 마세요. 이 구문이 있는 사람은 귀하의 Ether를 영원히 소유할 수 있습니다."
   },
-  "secretPhrase": {
-    "message": "금고를 복구하려면 비밀 12단어 구문을 여기에 입력하세요."
-  },
   "securityAndPrivacy": {
     "message": "보안 및 개인정보 보호"
   },
@@ -1775,7 +1765,8 @@
     "message": "알 수 없음"
   },
   "swapVerifyTokenExplanation": {
-    "message": "여러 토큰이 같은 이름과 기호를 사용할 수 있습니다. Etherscan을 확인하여 이것이 원하는 토큰인지 확인하세요."
+    "message": "여러 토큰이 같은 이름과 기호를 사용할 수 있습니다. $1을 확인하여 이것이 원하는 토큰인지 확인하세요.",
+    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
   "swapViewToken": {
     "message": "$1 보기"

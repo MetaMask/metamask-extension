@@ -120,10 +120,6 @@
   "amount": {
     "message": "Сумма"
   },
-  "amountInEth": {
-    "message": "$1 ETH",
-    "description": "Displays an eth amount to the user. $1 is a decimal number"
-  },
   "amountWithColon": {
     "message": "Сумма:"
   },
@@ -791,9 +787,6 @@
   "importWallet": {
     "message": "Импортировать кошелек"
   },
-  "importYourExisting": {
-    "message": "Импортируйте существующий кошелек, используя начальную фразу из 12 слов"
-  },
   "imported": {
     "message": "Импортированный",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -1350,9 +1343,6 @@
   "secretBackupPhraseWarning": {
     "message": "ПРЕДУПРЕЖДЕНИЕ: Никогда не разглашайте резервную фразу. Любой, у кого есть эта фраза, может забрать ваш Ether навсегда."
   },
-  "secretPhrase": {
-    "message": "Введите здесь свою секретную фразу из двенадцати слов, чтобы восстановить свой сейф."
-  },
   "securityAndPrivacy": {
     "message": "Безопасность и конфиденциальность"
   },
@@ -1778,7 +1768,8 @@
     "message": "Неизвестный"
   },
   "swapVerifyTokenExplanation": {
-    "message": "Несколько токенов могут использовать одно и то же имя и символ. Проверьте Etherscan, чтобы убедиться, что это именно тот токен, который вы ищете."
+    "message": "Несколько токенов могут использовать одно и то же имя и символ. Проверьте $1, чтобы убедиться, что это именно тот токен, который вы ищете.",
+    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
   "swapViewToken": {
     "message": "Просмотреть $1"

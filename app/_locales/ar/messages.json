@@ -501,9 +501,6 @@
   "importWallet": {
     "message": "استيراد المحفظة"
   },
-  "importYourExisting": {
-    "message": "قم باستيراد محفظتك الحالية باستخدام جملة بذرية مكونة من 12 كلمة"
-  },
   "imported": {
     "message": "المستوردة",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -887,9 +884,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "تحذير: لا تكشف مطلقاً عن عبارة الدعم الخاصة بك. يمكن لأي شخص بهذه العبارة أن يستحوذ على الأثير الخاص بك إلى الأبد."
-  },
-  "secretPhrase": {
-    "message": "أدخل جملتك السرية المكونة من اثني عشر كلمة هنا لاستعادة خزنتك."
   },
   "securityAndPrivacy": {
     "message": "الأمن والخصوصية"

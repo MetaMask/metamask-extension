@@ -505,9 +505,6 @@
   "importWallet": {
     "message": "ቋት አስመጣ"
   },
-  "importYourExisting": {
-    "message": "ባለ 12 ቃል የዘር ሐረግን በመጠቀም ነባር ቋትዎን ያስመጡ"
-  },
   "imported": {
     "message": "ከውጭ የመጣ",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -891,9 +888,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "ማስጠንቀቂያ፡ የመጠባበቂያ ምዕራፍዎን በጭራሽ አይግለጹ። ይህን ሐረገ የያዘ ማንኛውም ሰው የእርስዎን Ether እስከወዲያኛው ሊወስደው ይችላል።"
-  },
-  "secretPhrase": {
-    "message": "ካዝናዎን ወደነበረበት ለመመለስ ሚስጥራዊ ባለ አስራ ሁለት ቃል ሐረግዎን ያስገቡ።"
   },
   "securityAndPrivacy": {
     "message": "ደህንነት እና ግላዊነት"

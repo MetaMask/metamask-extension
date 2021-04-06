@@ -26,6 +26,7 @@ describe('Add Token', function () {
     tokens: [],
     identities: {},
     mostRecentOverviewPage: '/',
+    showSearchTab: true,
   };
 
   describe('Add Token', function () {

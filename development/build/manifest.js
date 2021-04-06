@@ -8,10 +8,6 @@ const { createTask, composeSeries } = require('./task');
 
 module.exports = createManifestTasks;
 
-const scriptsToExcludeFromBackgroundDevBuild = {
-  'bg-libs.js': true,
-};
-
 function createManifestTasks({ browserPlatforms }) {
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {
@@ -35,29 +31,13 @@ function createManifestTasks({ browserPlatforms }) {
     );
   };
 
-  // dev: remove bg-libs, add chromereload, add perms
+  // dev: add perms
   const envDev = createTaskForModifyManifestForEnvironment((manifest) => {
-    const scripts = manifest.background.scripts.filter(
-      (scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName],
-    );
-    scripts.push('chromereload.js');
-    manifest.background = {
-      ...manifest.background,
-      scripts,
-    };
     manifest.permissions = [...manifest.permissions, 'webRequestBlocking'];
   });
 
-  // testDev: remove bg-libs, add perms
+  // testDev: add perms
   const envTestDev = createTaskForModifyManifestForEnvironment((manifest) => {
-    const scripts = manifest.background.scripts.filter(
-      (scriptName) => !scriptsToExcludeFromBackgroundDevBuild[scriptName],
-    );
-    scripts.push('chromereload.js');
-    manifest.background = {
-      ...manifest.background,
-      scripts,
-    };
     manifest.permissions = [
       ...manifest.permissions,
       'webRequestBlocking',

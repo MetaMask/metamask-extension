@@ -104,8 +104,7 @@ export default class ConfirmPageContainer extends Component {
       showAccountInHeader,
       origin,
     } = this.props;
-    const renderAssetImage =
-      contentComponent || (!contentComponent && !identiconAddress);
+    const renderAssetImage = contentComponent || !identiconAddress;
 
     return (
       <div className="page-container">

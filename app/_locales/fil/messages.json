@@ -462,9 +462,6 @@
   "importWallet": {
     "message": "Mag-import ng Wallet"
   },
-  "importYourExisting": {
-    "message": "I-import ang kasalukuyan mong wallet gamit ang isang seed phrase na may 12 salita"
-  },
   "imported": {
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -806,9 +803,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "BABALA: Huwag ibunyag ang iyong backup phrase. Mananakaw ng kahit sinong may ganitong parirala ang iyong Ether at hindi na ito maibabalik."
-  },
-  "secretPhrase": {
-    "message": "Ilagay ang iyong lihim na pariralang may labindalawang salita para ma-restore ang iyong vault."
   },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"

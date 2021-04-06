@@ -28,6 +28,7 @@ class AddToken extends Component {
     clearPendingTokens: PropTypes.func,
     tokens: PropTypes.array,
     identities: PropTypes.object,
+    showSearchTab: PropTypes.bool.isRequired,
     mostRecentOverviewPage: PropTypes.string.isRequired,
   };
 
@@ -315,14 +316,23 @@ class AddToken extends Component {
   }
 
   renderTabs() {
-    return (
-      <Tabs>
-        <Tab name={this.context.t('search')}>{this.renderSearchToken()}</Tab>
-        <Tab name={this.context.t('customToken')}>
-          {this.renderCustomTokenForm()}
-        </Tab>
-      </Tabs>
+    const { showSearchTab } = this.props;
+    const tabs = [];
+
+    if (showSearchTab) {
+      tabs.push(
+        <Tab name={this.context.t('search')} key="search-tab">
+          {this.renderSearchToken()}
+        </Tab>,
+      );
+    }
+    tabs.push(
+      <Tab name={this.context.t('customToken')} key="custom-tab">
+        {this.renderCustomTokenForm()}
+      </Tab>,
     );
+
+    return <Tabs>{tabs}</Tabs>;
   }
 
   render() {

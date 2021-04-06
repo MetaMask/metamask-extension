@@ -492,9 +492,6 @@
   "importWallet": {
     "message": "Importar Moneder"
   },
-  "importYourExisting": {
-    "message": "Importa el teu moneder utilitzant la frase de recuperació de 12 paraules"
-  },
   "imported": {
     "message": "Importats",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -872,9 +869,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "ATENCIÓ: No divulguis mai la teva frase de recuperació. Qualsevol amb aquesta frase pot utilitzar el teu Ether per sempre."
-  },
-  "secretPhrase": {
-    "message": "Introdueix aquí la teva frase secreta de dotze paraules per a recuperar la teva caixa forta."
   },
   "securityAndPrivacy": {
     "message": "Seguretat i privacitat"

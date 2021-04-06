@@ -143,10 +143,6 @@
   "amount": {
     "message": "Amount"
   },
-  "amountInEth": {
-    "message": "$1 ETH",
-    "description": "Displays an eth amount to the user. $1 is a decimal number"
-  },
   "amountWithColon": {
     "message": "Amount:"
   },
@@ -873,7 +869,7 @@
     "message": "Import wallet"
   },
   "importYourExisting": {
-    "message": "Import your existing wallet using a 12 word seed phrase"
+    "message": "Import your existing wallet using a seed phrase"
   },
   "imported": {
     "message": "Imported",
@@ -1064,7 +1060,7 @@
     "message": "MetaMask would like to gather usage data to better understand how our users interact with the extension. This data will be used to continually improve the usability and user experience of our product and the Ethereum ecosystem."
   },
   "mismatchedChain": {
-    "message": "This network details for this Chain ID do not match our records. We recommend that you $1 before proceeding.",
+    "message": "The network details for this chain ID do not match our records. We recommend that you $1 before proceeding.",
     "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
   },
   "mismatchedChainLinkText": {
@@ -1455,7 +1451,7 @@
     "message": "WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Ether forever."
   },
   "secretPhrase": {
-    "message": "Enter your secret twelve word phrase here to restore your vault."
+    "message": "Enter your secret phrase here to restore your vault."
   },
   "securityAndPrivacy": {
     "message": "Security & Privacy"
@@ -1937,7 +1933,8 @@
     "message": "Using the best quote"
   },
   "swapVerifyTokenExplanation": {
-    "message": "Multiple tokens can use the same name and symbol. Check Etherscan to verify this is the token you're looking for."
+    "message": "Multiple tokens can use the same name and symbol. Check $1 to verify this is the token you're looking for.",
+    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
   "swapViewToken": {
     "message": "View $1"
@@ -2217,6 +2214,9 @@
   },
   "walletSeed": {
     "message": "Seed phrase"
+  },
+  "walletSeedRestore": {
+    "message": "Wallet Seed"
   },
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",

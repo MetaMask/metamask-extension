@@ -113,7 +113,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.approvalController = new ApprovalController({
       showApprovalRequest: opts.showUserConfirmation,
-      defaultApprovalType: 'NO_TYPE',
     });
 
     this.networkController = new NetworkController(initState.NetworkController);
@@ -323,7 +322,7 @@ export default class MetamaskController extends EventEmitter {
         status === TRANSACTION_STATUSES.CONFIRMED ||
         status === TRANSACTION_STATUSES.FAILED
       ) {
-        const txMeta = this.txController.txStateManager.getTx(txId);
+        const txMeta = this.txController.txStateManager.getTransaction(txId);
         const frequentRpcListDetail = this.preferencesController.getFrequentRpcListDetail();
         let rpcPrefs = {};
         if (txMeta.chainId) {
@@ -505,9 +504,11 @@ export default class MetamaskController extends EventEmitter {
       processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
       getPendingTransactionByHash: (hash) =>
-        this.txController.getFilteredTxList({
-          hash,
-          status: TRANSACTION_STATUSES.SUBMITTED,
+        this.txController.getTransactions({
+          searchCriteria: {
+            hash,
+            status: TRANSACTION_STATUSES.SUBMITTED,
+          },
         })[0],
     };
     const providerProxy = this.networkController.initializeProvider(
@@ -764,7 +765,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       createCancelTransaction: nodeify(this.createCancelTransaction, this),
       createSpeedUpTransaction: nodeify(this.createSpeedUpTransaction, this),
-      getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
       isNonceTaken: nodeify(txController.isNonceTaken, txController),
       estimateGas: nodeify(this.estimateGas, this),
       getPendingNonce: nodeify(this.getPendingNonce, this),

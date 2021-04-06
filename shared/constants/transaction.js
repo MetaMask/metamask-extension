@@ -155,6 +155,14 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  * @property {string} gas - The max amount of gwei, in hexadecimal, the user is willing to pay
  * @property {string} [data] - Hexadecimal encoded string representing calls to the EVM's ABI
  */
+
+/**
+ * @typedef {Object} TxError
+ * @property {string} message - The message from the encountered error.
+ * @property {any} rpc - The "value" of the error.
+ * @property {string} [stack] - the stack trace from the error, if available.
+ */
+
 /**
  * An object representing a transaction, in whatever state it is in.
  * @typedef {Object} TransactionMeta
@@ -183,6 +191,7 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  *  ready to submit to the network.
  * @property {string} hash - A hex string of the transaction hash, used to
  *  identify the transaction on the network.
- * @property {number} submittedTime - The time the transaction was submitted to
+ * @property {number} [submittedTime] - The time the transaction was submitted to
  *  the network, in Unix epoch time (ms).
+ * @property {TxError} [err] - The error encountered during the transaction
  */

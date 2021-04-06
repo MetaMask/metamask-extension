@@ -126,10 +126,6 @@
   "amount": {
     "message": "Importo"
   },
-  "amountInEth": {
-    "message": "$1 ETH",
-    "description": "Displays an eth amount to the user. $1 is a decimal number"
-  },
   "amountWithColon": {
     "message": "Importo:"
   },
@@ -803,9 +799,6 @@
   "importWallet": {
     "message": "Importa Portafoglio"
   },
-  "importYourExisting": {
-    "message": "Importa il tuo portafoglio esistente usando la tua frase seed a 12 parole"
-  },
   "imported": {
     "message": "Importato",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -1365,9 +1358,6 @@
   "secretBackupPhraseWarning": {
     "message": "ATTENZIONE: Non dire mai a nessuno questa frase di backup. Chiunque con questa frase può rubare i tuoi Ether per sempre."
   },
-  "secretPhrase": {
-    "message": "Inserisci la tua frase segreta di dodici parole per ripristinare la cassaforte."
-  },
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
   },
@@ -1834,7 +1824,8 @@
     "message": "Quotazione migliore"
   },
   "swapVerifyTokenExplanation": {
-    "message": "Più token possono usare lo stesso nome e simbolo. Verifica su Etherscan che questo sia il token che stai cercando."
+    "message": "Più token possono usare lo stesso nome e simbolo. Verifica su $1 che questo sia il token che stai cercando.",
+    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
   "swapViewToken": {
     "message": "Vedi $1"

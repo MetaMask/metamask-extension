@@ -501,9 +501,6 @@
   "importWallet": {
     "message": "Importige rahakott"
   },
-  "importYourExisting": {
-    "message": "Importige 12-sõnalise seemnefraasi abil olemasolev rahakott"
-  },
   "imported": {
     "message": "Imporditud",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -884,9 +881,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "HOIATUS! Ärge avaldage kunagi oma varundusfraasi. Selle fraasiga on võimalik teie eeter igaveseks ära võtta."
-  },
-  "secretPhrase": {
-    "message": "Sisestage hoidla taastamiseks oma salajane 12-sõnaline fraas."
   },
   "securityAndPrivacy": {
     "message": "Turvalisus ja privaatsus"

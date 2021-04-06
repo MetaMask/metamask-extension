@@ -743,7 +743,7 @@ describe('MetaMaskController', function () {
       selectedAddressStub.returns('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
       getNetworkstub.returns(42);
 
-      metamaskController.txController.txStateManager._saveTxList([
+      metamaskController.txController.txStateManager._addTransactionsToState([
         createTxMeta({
           id: 1,
           status: TRANSACTION_STATUSES.UNAPPROVED,
@@ -771,7 +771,7 @@ describe('MetaMaskController', function () {
 
       await metamaskController.resetAccount();
       assert.equal(
-        metamaskController.txController.txStateManager.getTx(1),
+        metamaskController.txController.txStateManager.getTransaction(1),
         undefined,
       );
     });

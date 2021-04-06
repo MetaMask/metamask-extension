@@ -502,9 +502,6 @@
   "importWallet": {
     "message": "Uvezite novčanik"
   },
-  "importYourExisting": {
-    "message": "Uvezite vaš postojeći novčanik koristeći seed frazu sa 12 reči"
-  },
   "imported": {
     "message": "Увезени",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -885,9 +882,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "UPOZORENJE: Nikada ne otkrivajte svoju rezervnu frazu. Svako sa ovom frazom može zauvek da Vam uzme Vaš Ether."
-  },
-  "secretPhrase": {
-    "message": "Unesite ovde svoj tajni izraz od dvanaest reči kako biste povratili svoj trezor."
   },
   "securityAndPrivacy": {
     "message": "Bezbednost i privatnost"

@@ -505,9 +505,6 @@
   "importWallet": {
     "message": "ওয়ালেট আমদানি করুন"
   },
-  "importYourExisting": {
-    "message": "একটি 12 শব্দের সীড ফ্রেজ ব্যবহার করে আপনার বিদ্যমান ওয়ালেট আমদানি করুন"
-  },
   "imported": {
     "message": "আমদানিকৃত",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -894,9 +891,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "সতর্কতা: কখনও আপনার ব্যাকআপ ফ্রেজ প্রকাশ করবেন না। এই ফ্রেজ পেয়ে গেলে যে কেউ আপনার ইথার চিরকালের জন্য নিয়ে নিতে পারবেন।"
-  },
-  "secretPhrase": {
-    "message": "আপনার ভল্ট রিস্টোর করতে এখানে আপনার গোপন বারো শব্দের ফ্রেজ লিখুন।"
   },
   "securityAndPrivacy": {
     "message": "নিরাপত্তা এবং গোপনীয়তা"

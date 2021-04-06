@@ -501,9 +501,6 @@
   "importWallet": {
     "message": "Importēt maku"
   },
-  "importYourExisting": {
-    "message": "Importējiet esošo maku, izmantojot 12 vārdu atkopšanas frāzi"
-  },
   "imported": {
     "message": "Importēts",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -890,9 +887,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "BRĪDINĀJUMS! Nekādā gadījumā neizpaudiet savu rezerves frāzi. Ikviens, kam pieejama šī frāze, var uz visiem laikiem pārņemt jūsu Ether."
-  },
-  "secretPhrase": {
-    "message": "Ievadiet šeit slepeno divpadsmit vārdu frāzi, lai atjaunotu savu seifu."
   },
   "securityAndPrivacy": {
     "message": "Drošība un konfidencialitāte"

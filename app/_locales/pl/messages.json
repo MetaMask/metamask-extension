@@ -505,9 +505,6 @@
   "importWallet": {
     "message": "Importuj portfel"
   },
-  "importYourExisting": {
-    "message": "Zaimportuj istniejący portfel, wprowadzając 12 słów frazy seed"
-  },
   "imported": {
     "message": "Zaimportowane",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -888,9 +885,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "OSTRZEŻENIE: Nigdy nie ujawniaj swojej frazy zapasowej. Każdy, kto pozna tę frazę, może bezpowrotnie odebrać Ci kryptowalutę Ether."
-  },
-  "secretPhrase": {
-    "message": "Żeby otworzyć schowek, wpisz tutaj swoją frazę dwunastu słów."
   },
   "securityAndPrivacy": {
     "message": "Bezpieczeństwo i prywatność"

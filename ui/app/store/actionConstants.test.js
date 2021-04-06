@@ -8,8 +8,10 @@ describe('Redux actionConstants', function () {
   describe('SET_RPC_TARGET', function () {
     const initialState = {
       metamask: {
-        rpcUrl: 'foo',
         frequentRpcList: [],
+        provider: {
+          rpcUrl: 'bar',
+        },
       },
       appState: {
         currentView: {

@@ -501,9 +501,6 @@
   "importWallet": {
     "message": "Uvezi novčanik"
   },
-  "importYourExisting": {
-    "message": "Uvezite svoj postojeći novčanik početnom rečenicom od 12 riječi"
-  },
   "imported": {
     "message": "Uvezeno",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -887,9 +884,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "UPOZORENJE: nikada ne otkrivajte svoju alternativnu rečenicu. Bilo tko ovom rečenicom može zauvijek preuzeti vaš Ether."
-  },
-  "secretPhrase": {
-    "message": "Ovdje upišite svoju tajnu rečenicu od 12 riječi kako biste obnovili svoj sef."
   },
   "securityAndPrivacy": {
     "message": "Sigurnost i privatnost"

@@ -505,9 +505,6 @@
   "importWallet": {
     "message": "Importuoti slaptažodinę"
   },
-  "importYourExisting": {
-    "message": "Importuoti turimą piniginę naudojant 12 žodžių atkūrimo frazę"
-  },
   "imported": {
     "message": "Importuota",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -894,9 +891,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "ĮSPĖJIMAS. Niekada neatskleiskite savo atsarginės frazės. Bet kas, žinantis šią frazę, gali visiems laikams pasiimti jūsų eterius."
-  },
-  "secretPhrase": {
-    "message": "Savo saugyklai atkurti įveskite slaptą dvylikos žodžių frazę."
   },
   "securityAndPrivacy": {
     "message": "Sauga ir privatumas"

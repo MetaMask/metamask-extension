@@ -793,9 +793,14 @@ export default class PreferencesController {
     if (typeof symbol !== 'string') {
       throw ethErrors.rpc.invalidParams(`Invalid symbol: not a string.`);
     }
-    if (!(symbol.length < 7)) {
+    if (!(symbol.length > 0)) {
       throw ethErrors.rpc.invalidParams(
-        `Invalid symbol "${symbol}": longer than 6 characters.`,
+        `Invalid symbol "${symbol}": shorter than a character.`,
+      );
+    }
+    if (!(symbol.length < 12)) {
+      throw ethErrors.rpc.invalidParams(
+        `Invalid symbol "${symbol}": longer than 11 characters.`,
       );
     }
     const numDecimals = parseInt(decimals, 10);

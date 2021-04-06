@@ -495,9 +495,6 @@
   "importWallet": {
     "message": "Importera plånbok"
   },
-  "importYourExisting": {
-    "message": "Importera din existerande plånbok med hjälp av en 12 ord lång seedfras"
-  },
   "imported": {
     "message": "Importerade",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -878,9 +875,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "VARNING: avslöja aldrig din backup-fras. Någon som känner till denna fras kan ta dina Ether för alltid."
-  },
-  "secretPhrase": {
-    "message": "Ange din tolv ord långa hemliga fras här för att återställa ditt valv."
   },
   "securityAndPrivacy": {
     "message": "Säkerhet och integritet"

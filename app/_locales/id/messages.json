@@ -120,10 +120,6 @@
   "amount": {
     "message": "Jumlah"
   },
-  "amountInEth": {
-    "message": "$1 ETH",
-    "description": "Displays an eth amount to the user. $1 is a decimal number"
-  },
   "amountWithColon": {
     "message": "Jumlah:"
   },
@@ -791,9 +787,6 @@
   "importWallet": {
     "message": "Impor dompet"
   },
-  "importYourExisting": {
-    "message": "Impor dompet Anda yang ada menggunakan frasa pemulihan 12 kata"
-  },
   "imported": {
     "message": "Diimpor",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -1350,9 +1343,6 @@
   "secretBackupPhraseWarning": {
     "message": "PERINGATAN: Jangan pernah ungkapkan frasa cadangan Anda. Siapa pun yang memiliki frasa ini dapat mengambil Ether Anda selamanya."
   },
-  "secretPhrase": {
-    "message": "Masukkan frasa kata dua belas rahasia Anda di sini untuk memulihkan vault Anda."
-  },
   "securityAndPrivacy": {
     "message": "Keamanan & Privasi"
   },
@@ -1778,7 +1768,8 @@
     "message": "Tidak diketahui"
   },
   "swapVerifyTokenExplanation": {
-    "message": "Beberapa token dapat menggunakan simbol dan nama yang sama. Periksa Etherscan untuk memverifikasi inilah token yang Anda cari."
+    "message": "Beberapa token dapat menggunakan simbol dan nama yang sama. Periksa $1 untuk memverifikasi inilah token yang Anda cari.",
+    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
   "swapViewToken": {
     "message": "Lihat $1"

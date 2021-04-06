@@ -366,9 +366,6 @@
   "searchTokens": {
     "message": "Jeton ara"
   },
-  "secretPhrase": {
-    "message": "Kasanızı geri getirmek için gizli 12 kelimelik ifadenizi giriniz."
-  },
   "seedPhraseReq": {
     "message": "Kaynak ifadeleri 12 kelimedir."
   },

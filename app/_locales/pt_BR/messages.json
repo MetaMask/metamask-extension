@@ -499,9 +499,6 @@
   "importWallet": {
     "message": "Importar Carteira"
   },
-  "importYourExisting": {
-    "message": "Importe sua carteira existente usando uma frase-semente de 12 palavras"
-  },
   "imported": {
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -882,9 +879,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "ATENÇÃO: Nunca revele sua frase de backup a ninguém. Qualquer pessoa com essa frase pode obter seu Ether para sempre."
-  },
-  "secretPhrase": {
-    "message": "Digite sua frase secreta de doze palavras aqui para restaurar seu cofre."
   },
   "securityAndPrivacy": {
     "message": "Segurança & Privacidade"

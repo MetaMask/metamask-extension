@@ -80,13 +80,31 @@ const copyTargetsDev = [
     pattern: '/chromereload.js',
     dest: ``,
   },
+  // empty files to suppress missing file errors
+  {
+    src: './development/empty.js',
+    dest: `bg-libs.js`,
+  },
+  {
+    src: './development/empty.js',
+    dest: `ui-libs.js`,
+  },
+];
+
+const copyTargetsProd = [
+  ...copyTargets,
+  // empty files to suppress missing file errors
+  {
+    src: './development/empty.js',
+    dest: `chromereload.js`,
+  },
 ];
 
 function createStaticAssetTasks({ livereload, browserPlatforms }) {
   const prod = createTask(
     'static:prod',
     composeSeries(
-      ...copyTargets.map((target) => {
+      ...copyTargetsProd.map((target) => {
         return async function copyStaticAssets() {
           await performCopy(target);
         };

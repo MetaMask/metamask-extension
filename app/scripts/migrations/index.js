@@ -60,6 +60,8 @@ const migrations = [
   require('./053').default,
   require('./054').default,
   require('./055').default,
+  require('./056').default,
+  require('./057').default,
 ];
 
 export default migrations;

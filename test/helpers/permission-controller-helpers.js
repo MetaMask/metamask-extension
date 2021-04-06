@@ -34,7 +34,7 @@ export function getRequestUserApprovalHelper(permController) {
    */
   return (id, origin = 'defaultOrigin') => {
     return permController.permissions.requestUserApproval({
-      metadata: { id, origin },
+      metadata: { id, origin, type: 'NO_TYPE' },
     });
   };
 }

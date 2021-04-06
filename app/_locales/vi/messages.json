@@ -120,10 +120,6 @@
   "amount": {
     "message": "Số tiền"
   },
-  "amountInEth": {
-    "message": "$1 ETH",
-    "description": "Displays an eth amount to the user. $1 is a decimal number"
-  },
   "amountWithColon": {
     "message": "Số tiền:"
   },
@@ -791,9 +787,6 @@
   "importWallet": {
     "message": "Nhập ví"
   },
-  "importYourExisting": {
-    "message": "Nhập ví hiện có của bạn bằng cụm mật khẩu gốc gồm 12 từ"
-  },
   "imported": {
     "message": "Đã nhập",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -1350,9 +1343,6 @@
   "secretBackupPhraseWarning": {
     "message": "CẢNH BÁO: Tuyệt đối không để lộ cụm mật khẩu sao lưu của bạn. Bất kỳ ai có cụm mật khẩu này cũng có thể lấy Ether của bạn vĩnh viễn."
   },
-  "secretPhrase": {
-    "message": "Nhập cụm mật khẩu bí mật gồm 12 từ vào đây để khôi phục két của bạn."
-  },
   "securityAndPrivacy": {
     "message": "Bảo mật và quyền riêng tư"
   },
@@ -1778,7 +1768,8 @@
     "message": "Không xác định"
   },
   "swapVerifyTokenExplanation": {
-    "message": "Nhiều token có thể dùng cùng một tên và ký hiệu. Hãy kiểm tra trên Etherscan để xác minh xem đây có phải là token bạn đang tìm kiếm không."
+    "message": "Nhiều token có thể dùng cùng một tên và ký hiệu. Hãy kiểm tra trên $1 để xác minh xem đây có phải là token bạn đang tìm kiếm không.",
+    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
   "swapViewToken": {
     "message": "Xem $1"

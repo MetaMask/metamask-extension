@@ -1177,7 +1177,13 @@ describe('Actions', function () {
 
       actions._setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.addToken());
+      await store.dispatch(
+        actions.addToken({
+          address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+          symbol: 'LINK',
+          decimals: 18,
+        }),
+      );
       assert(addTokenStub.calledOnce);
     });
 
@@ -1209,7 +1215,13 @@ describe('Actions', function () {
         },
       ];
 
-      await store.dispatch(actions.addToken());
+      await store.dispatch(
+        actions.addToken({
+          address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+          symbol: 'LINK',
+          decimals: 18,
+        }),
+      );
 
       assert.deepStrictEqual(store.getActions(), expectedActions);
     });
@@ -1234,7 +1246,13 @@ describe('Actions', function () {
       ];
 
       try {
-        await store.dispatch(actions.addToken());
+        await store.dispatch(
+          actions.addToken({
+            address: '_',
+            symbol: '',
+            decimals: 0,
+          }),
+        );
         assert.fail('Should have thrown error');
       } catch (_) {
         assert.deepEqual(store.getActions(), expectedActions);
