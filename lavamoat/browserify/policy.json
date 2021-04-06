@@ -366,6 +366,7 @@
       },
       "packages": {
         "@metamask/contract-metadata": true,
+        "async-mutex": true,
         "await-semaphore": true,
         "buffer": true,
         "eth-ens-namehash": true,
@@ -380,6 +381,7 @@
         "ethereumjs-util": true,
         "ethereumjs-wallet": true,
         "ethjs-query": true,
+        "ethjs-util": true,
         "events": true,
         "human-standard-collectible-abi": true,
         "human-standard-token-abi": true,
@@ -407,6 +409,11 @@
         "ethereumjs-util": true,
         "events": true,
         "hdkey": true
+      }
+    },
+    "@metamask/etherscan-link": {
+      "globals": {
+        "URL": true
       }
     },
     "@metamask/obs-store": {
@@ -616,6 +623,14 @@
       "packages": {
         "process": true,
         "readable-stream": true
+      }
+    },
+    "async-mutex": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "tslib": true
       }
     },
     "available-typed-arrays": {
@@ -1175,7 +1190,9 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/safe-event-emitter": true,
         "eth-query": true,
+        "json-rpc-random-id": true,
         "pify": true,
         "safe-event-emitter": true
       }
@@ -1348,6 +1365,7 @@
         "elliptic": true,
         "ethereum-cryptography": true,
         "ethjs-util": true,
+        "is-buffer": true,
         "keccak": true,
         "rlp": true,
         "safe-buffer": true,
@@ -1358,11 +1376,13 @@
       "packages": {
         "aes-js": true,
         "bs58check": true,
+        "buffer": true,
         "crypto-browserify": true,
         "ethereum-cryptography": true,
         "ethereumjs-util": true,
         "randombytes": true,
         "safe-buffer": true,
+        "scrypt-js": true,
         "scryptsy": true,
         "utf8": true,
         "uuid": true

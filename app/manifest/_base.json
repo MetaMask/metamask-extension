@@ -1,12 +1,6 @@
 {
   "author": "https://metamask.io",
   "background": {
-    "scripts": [
-      "globalthis.js",
-      "initSentry.js",
-      "bg-libs.js",
-      "background.js"
-    ],
     "page": "background.html",
     "persistent": true
   },
