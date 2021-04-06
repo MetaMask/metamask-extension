@@ -47,7 +47,6 @@ describe('Permissions', function () {
           By.xpath(`//button[contains(text(), 'Connect')]`),
         );
 
-        // await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
 
         // shows connected sites
