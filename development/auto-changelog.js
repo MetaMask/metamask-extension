@@ -102,7 +102,10 @@ async function main() {
     changelogLines.splice(firstReleaseHeaderIndex, 0, versionHeader, '');
     releaseHeaderIndex = firstReleaseHeaderIndex;
 
-    // Update release links
+    // Update release link reference definitions
+    // A link reference definition is added for the new release, and the
+    // "Unreleased" header is updated to point at the range of commits merged
+    // after the most recent release.
     const unreleasedLinkIndex = changelogLines.findIndex((line) =>
       line.match(/\[Unreleased\]:/u),
     );
