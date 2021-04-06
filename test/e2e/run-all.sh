@@ -56,13 +56,6 @@ retry concurrently --kill-others \
   'mocha test/e2e/from-import-ui.spec'
 
 retry concurrently --kill-others \
-  --names 'dapp,e2e' \
-  --prefix '[{time}][{name}]' \
-  --success first \
-  'yarn dapp' \
-  'mocha test/e2e/permissions.spec'
-
-retry concurrently --kill-others \
   --names 'sendwithprivatedapp,e2e' \
   --prefix '[{time}][{name}]' \
   --success first \
