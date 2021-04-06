@@ -60,7 +60,7 @@ describe('Signature Request', function () {
           )}`,
         );
 
-        // signs the transaction
+        // Approve signing typed data
         await driver.clickElement(
           By.xpath(`//button[contains(text(), 'Sign')]`),
           10000,
