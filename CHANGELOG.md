@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [9.3.0] - 2021-04-02
+- [#10777](https://github.com/MetaMask/metamask-extension/pull/10777): Display BNB token image for default currency on BSC network home screen
+- [#10721](https://github.com/MetaMask/metamask-extension/pull/10721): Swaps support for the Binance network
+- [#10658](https://github.com/MetaMask/metamask-extension/pull/10658): Swaps support for forked Mainnet on localhost
+- [#10650](https://github.com/MetaMask/metamask-extension/pull/10650): Fix: ETH now only appears once in the swaps "to" and "from" dropdowns.
+
 ## [9.2.1] - 2021-03-26
 - [#10692](https://github.com/MetaMask/metamask-extension/pull/10692): Prevent UI crash when a 'wallet_requestPermissions" confirmation is queued behind a "wallet_addEthereumChain" confirmation
 - [#10712](https://github.com/MetaMask/metamask-extension/pull/10712): Fix infinite spinner when request for token symbol fails while attempting an approve transaction
@@ -2156,7 +2162,8 @@ Made seed word restoring BIP44 compatible.
 
 Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.2.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.3.0...HEAD
+[9.3.0]: https://github.com/MetaMask/metamask-extension/compare/v9.2.1...v9.3.0
 [9.2.1]: https://github.com/MetaMask/metamask-extension/compare/v9.2.0...v9.2.1
 [9.2.0]: https://github.com/MetaMask/metamask-extension/compare/v9.1.1...v9.2.0
 [9.1.1]: https://github.com/MetaMask/metamask-extension/compare/v9.1.0...v9.1.1
