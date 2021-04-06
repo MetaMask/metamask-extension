@@ -20,7 +20,6 @@ describe('Editing Confirm Transaction', function () {
     };
     await withFixtures(
       {
-        dapp: true,
         fixtures: 'send-edit',
         ganacheOptions,
         title: this.test.title,
