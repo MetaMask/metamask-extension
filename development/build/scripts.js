@@ -262,7 +262,7 @@ function createNormalBundle({
     };
 
     // apply lavamoat protections to UI
-    if (lavamoatTargets.includes(opts.label)) {
+    if (lavamoatTargets.includes(label)) {
       bundlerOpts.plugin.push([lavamoat, lavamoatOpts]);
     }
 
