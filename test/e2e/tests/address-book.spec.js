@@ -91,7 +91,6 @@ describe('Address Book', function () {
   it('Sends to an address book entry', async function () {
     await withFixtures(
       {
-        dapp: true,
         fixtures: 'address-entry',
         ganacheOptions,
         title: this.test.title,
