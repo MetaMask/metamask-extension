@@ -492,9 +492,6 @@
   "importWallet": {
     "message": "Hamisha Waleti"
   },
-  "importYourExisting": {
-    "message": "Hamisha waleti iliyopo kwa kutumia kirai kianzio cha maneno 12"
-  },
   "imported": {
     "message": "Zilizoingizwa",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -873,9 +870,6 @@
   "secretBackupPhraseWarning": {
     "message": "ONYO: Kamwe usiweke wazi kirai chako cha hifadhi mbadala. Mtu yeyote mwenye kirai hiki anaweza kuchukua Ether yako daima."
   },
-  "secretPhrase": {
-    "message": "Ingiza hapa kirai chako cha siri cha maneno kumi na mawili ili urejeshe vault yako."
-  },
   "securityAndPrivacy": {
     "message": "Ulinzi na Faragha"
   },
@@ -914,9 +908,6 @@
   },
   "sendAmount": {
     "message": "Tuma Kiasi"
-  },
-  "sendETH": {
-    "message": "Tuma ETH"
   },
   "sendTokens": {
     "message": "Tuma Vianzio"

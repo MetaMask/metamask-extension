@@ -101,7 +101,10 @@ export default class Identicon extends PureComponent {
     }
 
     return (
-      <div style={getStyles(diameter)} className="identicon__image-border" />
+      <div
+        style={getStyles(diameter)}
+        className="identicon__image-border"
+      ></div>
     );
   }
 }

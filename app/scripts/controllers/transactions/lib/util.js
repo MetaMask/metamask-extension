@@ -14,6 +14,12 @@ const normalizers = {
   gasPrice: (gasPrice) => addHexPrefix(gasPrice),
 };
 
+export function normalizeAndValidateTxParams(txParams, lowerCase = true) {
+  const normalizedTxParams = normalizeTxParams(txParams, lowerCase);
+  validateTxParams(normalizedTxParams);
+  return normalizedTxParams;
+}
+
 /**
  * Normalizes the given txParams
  * @param {Object} txParams - The transaction params
@@ -49,22 +55,48 @@ export function validateTxParams(txParams) {
     );
   }
 
-  validateFrom(txParams);
-  validateRecipient(txParams);
-  if ('value' in txParams) {
-    const value = txParams.value.toString();
-    if (value.includes('-')) {
-      throw ethErrors.rpc.invalidParams(
-        `Invalid transaction value "${txParams.value}": not a positive number.`,
-      );
-    }
+  Object.entries(txParams).forEach(([key, value]) => {
+    // validate types
+    switch (key) {
+      case 'from':
+        validateFrom(txParams);
+        break;
+      case 'to':
+        validateRecipient(txParams);
+        break;
+      case 'value':
+        if (typeof value !== 'string') {
+          throw ethErrors.rpc.invalidParams(
+            `Invalid transaction params: ${key} is not a string. got: (${value})`,
+          );
+        }
+        if (value.toString().includes('-')) {
+          throw ethErrors.rpc.invalidParams(
+            `Invalid transaction value "${value}": not a positive number.`,
+          );
+        }
 
-    if (value.includes('.')) {
-      throw ethErrors.rpc.invalidParams(
-        `Invalid transaction value of "${txParams.value}": number must be in wei.`,
-      );
+        if (value.toString().includes('.')) {
+          throw ethErrors.rpc.invalidParams(
+            `Invalid transaction value of "${value}": number must be in wei.`,
+          );
+        }
+        break;
+      case 'chainId':
+        if (typeof value !== 'number' && typeof value !== 'string') {
+          throw ethErrors.rpc.invalidParams(
+            `Invalid transaction params: ${key} is not a Number or hex string. got: (${value})`,
+          );
+        }
+        break;
+      default:
+        if (typeof value !== 'string') {
+          throw ethErrors.rpc.invalidParams(
+            `Invalid transaction params: ${key} is not a string. got: (${value})`,
+          );
+        }
     }
-  }
+  });
 }
 
 /**

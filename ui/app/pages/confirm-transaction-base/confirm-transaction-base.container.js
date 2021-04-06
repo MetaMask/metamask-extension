@@ -81,12 +81,7 @@ const mapStateToProps = (state, ownProps) => {
     provider: { chainId },
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
-  const {
-    txParams = {},
-    lastGasPrice,
-    id: transactionId,
-    transactionCategory,
-  } = txData;
+  const { txParams = {}, lastGasPrice, id: transactionId, type } = txData;
   const transaction =
     Object.values(unapprovedTxs).find(
       ({ id }) => id === (transactionId || Number(paramsTransactionId)),
@@ -189,7 +184,7 @@ const mapStateToProps = (state, ownProps) => {
     hideSubtitle: !isMainnet && !showFiatInTestnets,
     hideFiatConversion: !isMainnet && !showFiatInTestnets,
     metaMetricsSendCount,
-    transactionCategory,
+    type,
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     isMainnet,

@@ -492,9 +492,6 @@
   "importWallet": {
     "message": "Importér lommebok "
   },
-  "importYourExisting": {
-    "message": "Importer din eksisterende lommebok ved å bruk en tolvords seed-frase."
-  },
   "imported": {
     "message": "Importert",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -878,9 +875,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "ADVARSEL: Du må aldri avsløre gjenopprettingsfrasen din. Alle som har denne frasen kan ta fra deg Etheren din for alltid."
-  },
-  "secretPhrase": {
-    "message": "Skriv inn den tolv ord lange frasen her for å gjenopprette hvelvet ditt. "
   },
   "securityAndPrivacy": {
     "message": "Sikkerhet og personvern"

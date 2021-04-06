@@ -4,7 +4,7 @@ import ethUtil from 'ethereumjs-util';
 import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
-import createId from './random-id';
+import createId from '../../../shared/modules/random-id';
 
 /**
  * Represents, and contains data about, an 'eth_sign' type signature request. These are created when a signature for

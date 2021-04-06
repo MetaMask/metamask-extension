@@ -799,9 +799,6 @@
   "importWallet": {
     "message": "Importa Portafoglio"
   },
-  "importYourExisting": {
-    "message": "Importa il tuo portafoglio esistente usando la tua frase seed a 12 parole"
-  },
   "imported": {
     "message": "Importato",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -1361,9 +1358,6 @@
   "secretBackupPhraseWarning": {
     "message": "ATTENZIONE: Non dire mai a nessuno questa frase di backup. Chiunque con questa frase può rubare i tuoi Ether per sempre."
   },
-  "secretPhrase": {
-    "message": "Inserisci la tua frase segreta di dodici parole per ripristinare la cassaforte."
-  },
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
   },
@@ -1414,9 +1408,6 @@
   },
   "sendAmount": {
     "message": "Invia Importo"
-  },
-  "sendETH": {
-    "message": "Invia ETH"
   },
   "sendSpecifiedTokens": {
     "message": "Invia $1",

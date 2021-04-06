@@ -1,12 +1,6 @@
 /**
  * @file The entry point for the web extension singleton process.
  */
-// these need to run before anything else
-/* eslint-disable import/first,import/order */
-import setupFetchDebugging from './lib/setupFetchDebugging';
-/* eslint-enable import/order */
-
-setupFetchDebugging();
 
 // polyfills
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
@@ -70,21 +64,7 @@ if (inTest || process.env.METAMASK_DEBUG) {
 initialize().catch(log.error);
 
 /**
- * An object representing a transaction, in whatever state it is in.
- * @typedef TransactionMeta
- *
- * @property {number} id - An internally unique tx identifier.
- * @property {number} time - Time the tx was first suggested, in unix epoch time (ms).
- * @property {string} status - The current transaction status (unapproved, signed, submitted, dropped, failed, rejected), as defined in `tx-state-manager.js`.
- * @property {string} metamaskNetworkId - The transaction's network ID, used for EIP-155 compliance.
- * @property {boolean} loadingDefaults - TODO: Document
- * @property {Object} txParams - The tx params as passed to the network provider.
- * @property {Object[]} history - A history of mutations to this TransactionMeta object.
- * @property {string} origin - A string representing the interface that suggested the transaction.
- * @property {Object} nonceDetails - A metadata object containing information used to derive the suggested nonce, useful for debugging nonce issues.
- * @property {string} rawTx - A hex string of the final signed transaction, ready to submit to the network.
- * @property {string} hash - A hex string of the transaction hash, used to identify the transaction on the network.
- * @property {number} submittedTime - The time the transaction was submitted to the network, in Unix epoch time (ms).
+ * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
  */
 
 /**

@@ -1,6 +1,6 @@
 import assert from 'assert';
 import {
-  TRANSACTION_CATEGORIES,
+  TRANSACTION_TYPES,
   TRANSACTION_GROUP_STATUSES,
   TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction';
@@ -14,7 +14,7 @@ describe('Transactions utils', function () {
       );
       assert.ok(tokenData);
       const { name, args } = tokenData;
-      assert.strictEqual(name, TRANSACTION_CATEGORIES.TOKEN_METHOD_TRANSFER);
+      assert.strictEqual(name, TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER);
       const to = args._to;
       const value = args._value.toString();
       assert.strictEqual(to, '0x50A9D56C2B8BA9A5c7f2C08C3d26E0499F23a706');

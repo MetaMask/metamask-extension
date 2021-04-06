@@ -46,7 +46,7 @@ export default function ListItemSearch({
     }
   }, [fuseSearchKeys, listToSearch]);
 
-  const previousListToSearch = usePrevious(listToSearch) || [];
+  const previousListToSearch = usePrevious(listToSearch ?? []);
   useEffect(() => {
     if (
       fuseRef.current &&

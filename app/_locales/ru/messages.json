@@ -787,9 +787,6 @@
   "importWallet": {
     "message": "Импортировать кошелек"
   },
-  "importYourExisting": {
-    "message": "Импортируйте существующий кошелек, используя начальную фразу из 12 слов"
-  },
   "imported": {
     "message": "Импортированный",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -1346,9 +1343,6 @@
   "secretBackupPhraseWarning": {
     "message": "ПРЕДУПРЕЖДЕНИЕ: Никогда не разглашайте резервную фразу. Любой, у кого есть эта фраза, может забрать ваш Ether навсегда."
   },
-  "secretPhrase": {
-    "message": "Введите здесь свою секретную фразу из двенадцати слов, чтобы восстановить свой сейф."
-  },
   "securityAndPrivacy": {
     "message": "Безопасность и конфиденциальность"
   },
@@ -1399,9 +1393,6 @@
   },
   "sendAmount": {
     "message": "Отправить сумму"
-  },
-  "sendETH": {
-    "message": "Отправить ETH"
   },
   "sendSpecifiedTokens": {
     "message": "Отправить $1",

@@ -5,8 +5,8 @@ import { ethErrors } from 'eth-rpc-errors';
 import log from 'loglevel';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
+import createId from '../../../shared/modules/random-id';
 import { addHexPrefix } from './util';
-import createId from './random-id';
 
 const hexRe = /^[0-9A-Fa-f]+$/gu;
 

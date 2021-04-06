@@ -1,6 +1,5 @@
 import EventEmitter from 'events';
 import pump from 'pump';
-import Dnode from 'dnode';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
@@ -24,7 +23,6 @@ import {
   CurrencyRateController,
   PhishingController,
 } from '@metamask/controllers';
-import { getBackgroundMetaMetricState } from '../../ui/app/selectors';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import ComposableObservableStore from './lib/ComposableObservableStore';
@@ -61,6 +59,7 @@ import accountImporter from './account-import-strategies';
 import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment, segmentLegacy } from './lib/segment';
+import createMetaRPCHandler from './lib/createMetaRPCHandler';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -114,7 +113,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.approvalController = new ApprovalController({
       showApprovalRequest: opts.showUserConfirmation,
-      defaultApprovalType: 'NO_TYPE',
     });
 
     this.networkController = new NetworkController(initState.NetworkController);
@@ -190,7 +188,13 @@ export default class MetamaskController extends EventEmitter {
 
     this.incomingTransactionsController = new IncomingTransactionsController({
       blockTracker: this.blockTracker,
-      networkController: this.networkController,
+      onNetworkDidChange: this.networkController.on.bind(
+        this.networkController,
+        NETWORK_EVENTS.NETWORK_DID_CHANGE,
+      ),
+      getCurrentChainId: this.networkController.getCurrentChainId.bind(
+        this.networkController,
+      ),
       preferencesController: this.preferencesController,
       initState: initState.IncomingTransactionsController,
     });
@@ -318,7 +322,7 @@ export default class MetamaskController extends EventEmitter {
         status === TRANSACTION_STATUSES.CONFIRMED ||
         status === TRANSACTION_STATUSES.FAILED
       ) {
-        const txMeta = this.txController.txStateManager.getTx(txId);
+        const txMeta = this.txController.txStateManager.getTransaction(txId);
         const frequentRpcListDetail = this.preferencesController.getFrequentRpcListDetail();
         let rpcPrefs = {};
         if (txMeta.chainId) {
@@ -330,12 +334,23 @@ export default class MetamaskController extends EventEmitter {
         this.platform.showTransactionNotification(txMeta, rpcPrefs);
 
         const { txReceipt } = txMeta;
+        const metamaskState = await this.getState();
+
         if (txReceipt && txReceipt.status === '0x0') {
-          this.sendBackgroundMetaMetrics({
-            action: 'Transactions',
-            name: 'On Chain Failure',
-            customVariables: { errorMessage: txMeta.simulationFails?.reason },
-          });
+          this.metaMetricsController.trackEvent(
+            {
+              category: 'Background',
+              properties: {
+                action: 'Transactions',
+                errorMessage: txMeta.simulationFails?.reason,
+                numberOfTokens: metamaskState.tokens.length,
+                numberOfAccounts: Object.keys(metamaskState.accounts).length,
+              },
+            },
+            {
+              matomoEvent: true,
+            },
+          );
         }
       }
     });
@@ -489,9 +504,11 @@ export default class MetamaskController extends EventEmitter {
       processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
       getPendingTransactionByHash: (hash) =>
-        this.txController.getFilteredTxList({
-          hash,
-          status: TRANSACTION_STATUSES.SUBMITTED,
+        this.txController.getTransactions({
+          searchCriteria: {
+            hash,
+            status: TRANSACTION_STATUSES.SUBMITTED,
+          },
         })[0],
     };
     const providerProxy = this.networkController.initializeProvider(
@@ -580,7 +597,7 @@ export default class MetamaskController extends EventEmitter {
     const isInitialized = Boolean(vault);
 
     return {
-      ...{ isInitialized },
+      isInitialized,
       ...this.memStore.getFlatState(),
     };
   }
@@ -588,7 +605,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Returns an Object containing API Callback Functions.
    * These functions are the interface for the UI.
-   * The API object can be transmitted over a stream with dnode.
+   * The API object can be transmitted over a stream via JSON-RPC.
    *
    * @returns {Object} Object containing API functions.
    */
@@ -748,7 +765,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       createCancelTransaction: nodeify(this.createCancelTransaction, this),
       createSpeedUpTransaction: nodeify(this.createSpeedUpTransaction, this),
-      getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
       isNonceTaken: nodeify(txController.isNonceTaken, txController),
       estimateGas: nodeify(this.estimateGas, this),
       getPendingNonce: nodeify(this.getPendingNonce, this),
@@ -1060,10 +1076,6 @@ export default class MetamaskController extends EventEmitter {
       }
     });
   }
-
-  getCurrentNetwork = () => {
-    return this.networkController.store.getState().network;
-  };
 
   /**
    * Collects all the information that we want to share
@@ -1861,10 +1873,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} [customGasPrice] - the hex value to use for the cancel transaction
    * @returns {Object} MetaMask state
    */
-  async createCancelTransaction(originalTxId, customGasPrice) {
+  async createCancelTransaction(originalTxId, customGasPrice, customGasLimit) {
     await this.txController.createCancelTransaction(
       originalTxId,
       customGasPrice,
+      customGasLimit,
     );
     const state = await this.getState();
     return state;
@@ -1989,36 +2002,34 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * A method for providing our API over a stream using Dnode.
+   * A method for providing our API over a stream using JSON-RPC.
    * @param {*} outStream - The stream to provide our API over.
    */
   setupControllerConnection(outStream) {
     const api = this.getApi();
-    // the "weak: false" option is for nodejs only (eg unit tests)
-    // it is a workaround for node v12 support
-    const dnode = Dnode(api, { weak: false });
+
     // report new active controller connection
     this.activeControllerConnections += 1;
     this.emit('controllerConnectionChanged', this.activeControllerConnections);
-    // connect dnode api to remote connection
-    pump(outStream, dnode, outStream, (err) => {
-      // report new active controller connection
+
+    // set up postStream transport
+    outStream.on('data', createMetaRPCHandler(api, outStream));
+    const handleUpdate = (update) => {
+      // send notification to client-side
+      outStream.write({
+        jsonrpc: '2.0',
+        method: 'sendUpdate',
+        params: [update],
+      });
+    };
+    this.on('update', handleUpdate);
+    outStream.on('end', () => {
       this.activeControllerConnections -= 1;
       this.emit(
         'controllerConnectionChanged',
         this.activeControllerConnections,
       );
-      // report any error
-      if (err) {
-        log.error(err);
-      }
-    });
-    dnode.on('remote', (remote) => {
-      // push updates to popup
-      const sendUpdate = (update) => remote.sendUpdate(update);
-      this.on('update', sendUpdate);
-      // remove update listener once the connection ends
-      dnode.on('end', () => this.removeListener('update', sendUpdate));
+      this.removeListener('update', handleUpdate);
     });
   }
 
@@ -2414,32 +2425,6 @@ export default class MetamaskController extends EventEmitter {
     );
     nonceLock.releaseLock();
     return nonceLock.nextNonce;
-  }
-
-  async sendBackgroundMetaMetrics({ action, name, customVariables } = {}) {
-    if (!action || !name) {
-      throw new Error('Must provide action and name.');
-    }
-
-    const metamaskState = await this.getState();
-    const additionalProperties = getBackgroundMetaMetricState({
-      metamask: metamaskState,
-    });
-
-    this.metaMetricsController.trackEvent(
-      {
-        event: name,
-        category: 'Background',
-        properties: {
-          action,
-          ...additionalProperties,
-          ...customVariables,
-        },
-      },
-      {
-        matomoEvent: true,
-      },
-    );
   }
 
   /**

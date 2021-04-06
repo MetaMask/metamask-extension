@@ -505,9 +505,6 @@
   "importWallet": {
     "message": "Імпортувати гаманець"
   },
-  "importYourExisting": {
-    "message": "Імпортуйте ваш гаманець, що існує, використовуючи початкову фразу з 12 слів"
-  },
   "imported": {
     "message": "Імпортовано",
     "description": "status showing that an account has been fully loaded into the keyring"
@@ -895,9 +892,6 @@
   "secretBackupPhraseWarning": {
     "message": "ЗАСТЕРЕЖЕННЯ: Ніколи не розголошуйте вашу резервну фразу. Будь-хто з цією фразою зможе забрати ваш Ether назавжди."
   },
-  "secretPhrase": {
-    "message": "Введіть секретну фразу з дванадцяти слів, щоб відновити своє сховище."
-  },
   "securityAndPrivacy": {
     "message": "Безпека й конфіденційність"
   },
@@ -936,9 +930,6 @@
   },
   "sendAmount": {
     "message": "Надіслати суму"
-  },
-  "sendETH": {
-    "message": "Надіслати ETH"
   },
   "sendTokens": {
     "message": "Надіслати токени"

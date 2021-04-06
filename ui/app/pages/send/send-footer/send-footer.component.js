@@ -54,7 +54,6 @@ export default class SendFooter extends Component {
       sign,
       to,
       unapprovedTxs,
-      // updateTx,
       update,
       toAccounts,
       history,

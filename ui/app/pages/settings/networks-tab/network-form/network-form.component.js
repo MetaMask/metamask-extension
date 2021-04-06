@@ -43,6 +43,14 @@ export default class NetworkForm extends PureComponent {
     isFullScreen: PropTypes.bool,
   };
 
+  static defaultProps = {
+    rpcUrl: '',
+    chainId: '',
+    ticker: '',
+    networkName: '',
+    blockExplorerUrl: '',
+  };
+
   state = {
     rpcUrl: this.props.rpcUrl,
     chainId: this.getDisplayChainId(this.props.chainId),

@@ -4,6 +4,14 @@ import BigNumber from 'bignumber.js';
 import ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import {
+  GOERLI_CHAIN_ID,
+  KOVAN_CHAIN_ID,
+  LOCALHOST_CHAIN_ID,
+  MAINNET_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
+  ROPSTEN_CHAIN_ID,
+} from '../../../../shared/constants/network';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -40,14 +48,19 @@ Object.keys(valueTable).forEach((currency) => {
   bnTable[currency] = new ethUtil.BN(valueTable[currency], 10);
 });
 
-export function isEthNetwork(netId) {
+/**
+ * Determines if the provided chainId is a default MetaMask chain
+ * @param {string} chainId - chainId to check
+ */
+export function isDefaultMetaMaskChain(chainId) {
   if (
-    !netId ||
-    netId === '1' ||
-    netId === '3' ||
-    netId === '4' ||
-    netId === '42' ||
-    netId === '1337'
+    !chainId ||
+    chainId === MAINNET_CHAIN_ID ||
+    chainId === ROPSTEN_CHAIN_ID ||
+    chainId === RINKEBY_CHAIN_ID ||
+    chainId === KOVAN_CHAIN_ID ||
+    chainId === GOERLI_CHAIN_ID ||
+    chainId === LOCALHOST_CHAIN_ID
   ) {
     return true;
   }

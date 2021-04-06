@@ -13,6 +13,9 @@ import TokenSearch from './token-search';
 
 const emptyAddr = '0x0000000000000000000000000000000000000000';
 
+const MIN_DECIMAL_VALUE = 0;
+const MAX_DECIMAL_VALUE = 36;
+
 class AddToken extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -25,6 +28,7 @@ class AddToken extends Component {
     clearPendingTokens: PropTypes.func,
     tokens: PropTypes.array,
     identities: PropTypes.object,
+    showSearchTab: PropTypes.bool.isRequired,
     mostRecentOverviewPage: PropTypes.string.isRequired,
   };
 
@@ -211,8 +215,8 @@ class AddToken extends Component {
     const validDecimals =
       customDecimals !== null &&
       customDecimals !== '' &&
-      customDecimals >= 0 &&
-      customDecimals <= 36;
+      customDecimals >= MIN_DECIMAL_VALUE &&
+      customDecimals <= MAX_DECIMAL_VALUE;
     let customDecimalsError = null;
 
     if (!validDecimals) {
@@ -282,6 +286,8 @@ class AddToken extends Component {
           fullWidth
           margin="normal"
           disabled={autoFilled}
+          min={MIN_DECIMAL_VALUE}
+          max={MAX_DECIMAL_VALUE}
         />
       </div>
     );
@@ -310,14 +316,23 @@ class AddToken extends Component {
   }
 
   renderTabs() {
-    return (
-      <Tabs>
-        <Tab name={this.context.t('search')}>{this.renderSearchToken()}</Tab>
-        <Tab name={this.context.t('customToken')}>
-          {this.renderCustomTokenForm()}
-        </Tab>
-      </Tabs>
+    const { showSearchTab } = this.props;
+    const tabs = [];
+
+    if (showSearchTab) {
+      tabs.push(
+        <Tab name={this.context.t('search')} key="search-tab">
+          {this.renderSearchToken()}
+        </Tab>,
+      );
+    }
+    tabs.push(
+      <Tab name={this.context.t('customToken')} key="custom-tab">
+        {this.renderCustomTokenForm()}
+      </Tab>,
     );
+
+    return <Tabs>{tabs}</Tabs>;
   }
 
   render() {

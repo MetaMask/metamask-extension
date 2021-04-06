@@ -8,8 +8,8 @@ g-migration() {
   touch app/scripts/migrations/"$vnum".js
   cp app/scripts/migrations/template.js app/scripts/migrations/"$vnum".js
 
-  touch test/unit/migrations/"$vnum".js
-  cp test/unit/migrations/template-test.js test/unit/migrations/"$vnum"-test.js
+  touch app/scripts/migrations/"$vnum".test.js
+  cp app/scripts/migrations/template.test.js app/scripts/migrations/"$vnum".test.js
 }
 
 g-migration "$1"
