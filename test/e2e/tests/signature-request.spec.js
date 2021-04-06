@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { By, Key, until } = require('selenium-webdriver');
+const { By, Key } = require('selenium-webdriver');
 const { withFixtures } = require('../helpers');
 
 describe('Signature Request', function () {
@@ -66,27 +66,13 @@ describe('Signature Request', function () {
           10000,
         );
 
-        const extension = windowHandles[0];
-        await driver.switchToWindow(extension);
-
-        // gets the current accounts address
-        await driver.clickElement(
-          By.css('[data-testid="account-options-menu-button"]'),
+        // switch to the Dapp and verify the signed addressed
+        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+        await driver.clickElement(By.id('signTypedDataV4Verify'), 10000);
+        const recoveredAddress = await driver.findElement(
+          By.id('signTypedDataV4VerifyResult'),
         );
-        await driver.clickElement(
-          By.css('[data-testid="account-options-menu__account-details"]'),
-        );
-
-        const addressInput = await driver.findElement(
-          By.css('.readonly-input__input'),
-        );
-        const newPublicAddress = await addressInput.getAttribute('value');
-        const accountModal = await driver.findElement(By.css('span .modal'));
-
-        await driver.clickElement(By.css('.account-modal__close'));
-
-        await driver.wait(until.stalenessOf(accountModal));
-        assert.equal(newPublicAddress.toLowerCase(), publicAddress);
+        assert.equal(await recoveredAddress.getText(), publicAddress);
       },
     );
   });
