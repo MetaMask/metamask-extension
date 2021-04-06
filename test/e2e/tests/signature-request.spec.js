@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { By, Key } = require('selenium-webdriver');
+const { Key } = require('selenium-webdriver');
 const { withFixtures } = require('../helpers');
 
 describe('Signature Request', function () {
@@ -23,14 +23,14 @@ describe('Signature Request', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        const passwordField = await driver.findElement(By.css('#password'));
+        const passwordField = await driver.findElement('#password');
         await passwordField.sendKeys('correct horse battery staple');
         await passwordField.sendKeys(Key.ENTER);
 
         await driver.openNewPage('http://127.0.0.1:8080/');
 
         // creates a sign typed data signature request
-        await driver.clickElement(By.id('signTypedDataV4'), 10000);
+        await driver.clickElement('#signTypedDataV4', 10000);
 
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
@@ -40,13 +40,13 @@ describe('Signature Request', function () {
         );
 
         const title = await driver.findElement(
-          By.css('.signature-request-content__title'),
+          '.signature-request-content__title',
         );
         const name = await driver.findElement(
-          By.css('.signature-request-content__info--bolded'),
+          '.signature-request-content__info--bolded',
         );
         const content = await driver.findElements(
-          By.css('.signature-request-content__info'),
+          '.signature-request-content__info',
         );
         const origin = content[0];
         const address = content[1];
@@ -61,16 +61,13 @@ describe('Signature Request', function () {
         );
 
         // Approve signing typed data
-        await driver.clickElement(
-          By.xpath(`//button[contains(text(), 'Sign')]`),
-          10000,
-        );
+        await driver.clickElement({ text: 'Sign', tag: 'button' }, 10000);
 
         // switch to the Dapp and verify the signed addressed
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-        await driver.clickElement(By.id('signTypedDataV4Verify'), 10000);
+        await driver.clickElement('#signTypedDataV4Verify', 10000);
         const recoveredAddress = await driver.findElement(
-          By.id('signTypedDataV4VerifyResult'),
+          '#signTypedDataV4VerifyResult',
         );
         assert.equal(await recoveredAddress.getText(), publicAddress);
       },
