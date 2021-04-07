@@ -8,6 +8,22 @@ const runCommand = require('./lib/runCommand');
 
 const URL = 'https://github.com/MetaMask/metamask-extension';
 
+const command = 'yarn update-changelog';
+
+const helpText = `Usage: ${command} [--rc] [-h|--help]
+Update CHANGELOG.md with any changes made since the most recent release.
+Options:
+      --rc    Add new changes to the current release header, rather than to the
+                'Unreleased' section.
+  -h, --help  Display this help and exit.
+
+New commits will be added to the "Unreleased" section (or to the section for the
+current release if the '--rc' flag is used) in reverse chronological order. Any
+commits for PRs that are represented already in the changelog will be ignored.
+If the '--rc' flag is used and the section for the current release does not yet
+exist, it will be created.
+`;
+
 async function main() {
   const args = process.argv.slice(2);
   let isReleaseCandidate = false;
@@ -15,8 +31,14 @@ async function main() {
   for (const arg of args) {
     if (arg === '--rc') {
       isReleaseCandidate = true;
+    } else if (['--help', '-h'].includes(arg)) {
+      console.log(helpText);
+      process.exit(0);
     } else {
-      throw new Error(`Unrecognized argument: ${arg}`);
+      console.error(
+        `Unrecognized argument: ${arg}\nTry '${command} --help' for more information.\n`,
+      );
+      process.exit(1);
     }
   }
 
