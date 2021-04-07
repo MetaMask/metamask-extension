@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { By, Key } = require('selenium-webdriver');
+const { Key } = require('selenium-webdriver');
 const { withFixtures } = require('../helpers');
 
 describe('Permissions', function () {
@@ -23,14 +23,15 @@ describe('Permissions', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        const passwordField = await driver.findElement(By.css('#password'));
+        const passwordField = await driver.findElement('#password');
         await passwordField.sendKeys('correct horse battery staple');
         await passwordField.sendKeys(Key.ENTER);
 
         await driver.openNewPage('http://127.0.0.1:8080/');
-        await driver.clickElement(
-          By.xpath(`//button[contains(text(), 'Connect')]`),
-        );
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
 
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
@@ -39,42 +40,45 @@ describe('Permissions', function () {
           'MetaMask Notification',
           windowHandles,
         );
-
-        await driver.clickElement(
-          By.xpath(`//button[contains(text(), 'Next')]`),
-        );
-        await driver.clickElement(
-          By.xpath(`//button[contains(text(), 'Connect')]`),
-        );
+        await driver.clickElement({
+          text: 'Next',
+          tag: 'button',
+        });
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
 
         await driver.switchToWindow(extension);
 
         // shows connected sites
         await driver.clickElement(
-          By.css('[data-testid="account-options-menu-button"]'),
+          '[data-testid="account-options-menu-button"]',
         );
         await driver.clickElement(
-          By.css('[data-testid="account-options-menu__connected-sites"]'),
+          '[data-testid="account-options-menu__connected-sites"]',
         );
 
-        await driver.findElement(
-          By.xpath(`//h2[contains(text(), 'Connected sites')]`),
-        );
+        await driver.findElement({
+          text: 'Connected sites',
+          tag: 'h2',
+        });
 
         const domains = await driver.findClickableElements(
-          By.css('.connected-sites-list__domain-name'),
+          '.connected-sites-list__domain-name',
         );
         assert.equal(domains.length, 1);
 
         // can get accounts within the dapp
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
 
-        await driver.clickElement(
-          By.xpath(`//button[contains(text(), 'eth_accounts')]`),
-        );
+        await driver.clickElement({
+          text: 'eth_accounts',
+          tag: 'button',
+        });
 
         const getAccountsResult = await driver.findElement(
-          By.css('#getAccountsResult'),
+          '#getAccountsResult',
         );
         assert.equal(
           (await getAccountsResult.getText()).toLowerCase(),

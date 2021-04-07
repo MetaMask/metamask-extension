@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { By, Key } = require('selenium-webdriver');
+const { Key } = require('selenium-webdriver');
 const { withFixtures, regularDelayMs } = require('../helpers');
 
 describe('MetaMask', function () {
@@ -22,13 +22,13 @@ describe('MetaMask', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        const passwordField = await driver.findElement(By.css('#password'));
+        const passwordField = await driver.findElement('#password');
         await passwordField.sendKeys('correct horse battery staple');
         await passwordField.sendKeys(Key.ENTER);
 
         await driver.openNewPage('http://127.0.0.1:8080/');
-        const networkDiv = await driver.findElement(By.css('#network'));
-        const chainIdDiv = await driver.findElement(By.css('#chainId'));
+        const networkDiv = await driver.findElement('#network');
+        const chainIdDiv = await driver.findElement('#chainId');
         await driver.delay(regularDelayMs);
         assert.equal(await networkDiv.getText(), '1337');
         assert.equal(await chainIdDiv.getText(), '0x539');
@@ -36,16 +36,14 @@ describe('MetaMask', function () {
         const windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindow(windowHandles[0]);
 
-        await driver.clickElement(By.css('.network-display'));
-        await driver.clickElement(
-          By.xpath(`//span[contains(text(), 'Ropsten')]`),
-        );
+        await driver.clickElement('.network-display');
+        await driver.clickElement({ text: 'Ropsten', tag: 'span' });
         await driver.delay(regularDelayMs);
 
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-        const switchedNetworkDiv = await driver.findElement(By.css('#network'));
-        const switchedChainIdDiv = await driver.findElement(By.css('#chainId'));
-        const accountsDiv = await driver.findElement(By.css('#accounts'));
+        const switchedNetworkDiv = await driver.findElement('#network');
+        const switchedChainIdDiv = await driver.findElement('#chainId');
+        const accountsDiv = await driver.findElement('#accounts');
 
         assert.equal(await switchedNetworkDiv.getText(), '3');
         assert.equal(await switchedChainIdDiv.getText(), '0x3');

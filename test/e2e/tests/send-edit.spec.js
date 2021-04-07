@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { By, Key, until } = require('selenium-webdriver');
+const { Key, until } = require('selenium-webdriver');
 const {
   withFixtures,
   tinyDelayMs,
@@ -26,12 +26,12 @@ describe('Editing Confirm Transaction', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        const passwordField = await driver.findElement(By.css('#password'));
+        const passwordField = await driver.findElement('#password');
         await passwordField.sendKeys('correct horse battery staple');
         await passwordField.sendKeys(Key.ENTER);
 
         const transactionAmounts = await driver.findElements(
-          By.css('.currency-display-component__text'),
+          '.currency-display-component__text',
         );
         const transactionAmount = transactionAmounts[0];
         assert.equal(await transactionAmount.getText(), '1');
@@ -40,21 +40,19 @@ describe('Editing Confirm Transaction', function () {
         assert.equal(await transactionFee.getText(), '0.00025');
 
         await driver.clickElement(
-          By.css('.confirm-page-container-header__back-button'),
+          '.confirm-page-container-header__back-button',
         );
-        const inputAmount = await driver.findElement(
-          By.css('.unit-input__input'),
-        );
+        const inputAmount = await driver.findElement('.unit-input__input');
         await inputAmount.clear();
         await inputAmount.sendKeys('2.2');
 
-        await driver.clickElement(By.css('.advanced-gas-options-btn'));
+        await driver.clickElement('.advanced-gas-options-btn');
         await driver.delay(regularDelayMs);
 
-        const gasModal = await driver.findElement(By.css('span .modal'));
+        const gasModal = await driver.findElement('span .modal');
 
         const [gasPriceInput, gasLimitInput] = await driver.findElements(
-          By.css('.advanced-gas-inputs__gas-edit-row__input'),
+          '.advanced-gas-inputs__gas-edit-row__input',
         );
 
         await gasPriceInput.clear();
@@ -65,17 +63,13 @@ describe('Editing Confirm Transaction', function () {
         await gasLimitInput.sendKeys('100000');
         await driver.delay(largeDelayMs);
 
-        await driver.clickElement(
-          By.xpath(`//button[contains(text(), 'Save')]`),
-        );
+        await driver.clickElement({ text: 'Save', tag: 'button' });
         await driver.wait(until.stalenessOf(gasModal));
-        await driver.clickElement(
-          By.xpath(`//button[contains(text(), 'Next')]`),
-        );
+        await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // has correct updated value on the confirm screen the transaction
         const editedTransactionAmounts = await driver.findElements(
-          By.css('.currency-display-component__text'),
+          '.currency-display-component__text',
         );
         const editedTransactionAmount = editedTransactionAmounts[0];
         assert.equal(await editedTransactionAmount.getText(), '2.2');
@@ -84,23 +78,19 @@ describe('Editing Confirm Transaction', function () {
         assert.equal(await editedTransactionFee.getText(), '0.0008');
 
         // confirms the transaction
-        await driver.clickElement(
-          By.xpath(`//button[contains(text(), 'Confirm')]`),
-        );
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.delay(regularDelayMs);
 
-        await driver.clickElement(By.css('[data-testid="home__activity-tab"]'));
+        await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            By.css(
-              '.transaction-list__completed-transactions .transaction-list-item',
-            ),
+            '.transaction-list__completed-transactions .transaction-list-item',
           );
           return confirmedTxes.length === 1;
         }, 10000);
 
         const txValues = await driver.findElements(
-          By.css('.transaction-list-item__primary-currency'),
+          '.transaction-list-item__primary-currency',
         );
         assert.equal(txValues.length, 1);
         assert.ok(/-2.2\s*ETH/u.test(await txValues[0].getText()));
