@@ -6,7 +6,11 @@ import ButtonGroup from '../../../components/ui/button-group';
 import Button from '../../../components/ui/button';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 
-export default function SlippageButtons({ onSelect, maxAllowedSlippage, currentSlippage }) {
+export default function SlippageButtons({
+  onSelect,
+  maxAllowedSlippage,
+  currentSlippage,
+}) {
   const t = useContext(I18nContext);
   const [customValue, setCustomValue] = useState('');
   const [enteringCustomValue, setEnteringCustomValue] = useState(false);
@@ -18,9 +22,8 @@ export default function SlippageButtons({ onSelect, maxAllowedSlippage, currentS
     } else if (currentSlippage) {
       setCustomValue(currentSlippage);
       return 2;
-    } else {
-      return 1;
     }
+    return 1; // Choose activeButtonIndex = 1 for 3% slippage by default.
   });
   const [inputRef, setInputRef] = useState(null);
 
@@ -157,4 +160,5 @@ export default function SlippageButtons({ onSelect, maxAllowedSlippage, currentS
 SlippageButtons.propTypes = {
   onSelect: PropTypes.func.isRequired,
   maxAllowedSlippage: PropTypes.number.isRequired,
+  currentSlippage: PropTypes.number,
 };
