@@ -1442,8 +1442,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix bug that would sometimes display transactions as failed that could be successfully mined.
 
 ## [3.10.2] - 2017-09-19
-
-rollback to 3.10.0 due to bug
+### Uncategorized
+- rollback to 3.10.0 due to bug
 
 ## [3.10.1] - 2017-09-18
 ### Uncategorized
@@ -1737,7 +1737,6 @@ rollback to 3.10.0 due to bug
 ## [3.2.2] - 2017-02-09
 ### Uncategorized
 - Revert eth.sign behavior to the previous one with a big warning. We will be gradually implementing the new behavior over the coming time. https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sign
-
 - Improve test coverage of eth.sign behavior, including a code example of verifying a signature.
 
 ## [3.2.1] - 2017-02-09
@@ -1876,14 +1875,12 @@ rollback to 3.10.0 due to bug
 ## [2.13.0] - 2016-09-18
 ### Uncategorized
 - Add Parity compatibility, fixing Geth dependency issues.
-- Add a link to the transaction in history that goes to https://metamask.github.io/eth-tx-viz
-  too help visualize transactions and to where they are going.
+- Add a link to the transaction in history that goes to https://metamask.github.io/eth-tx-viz to help visualize transactions and to where they are going.
 - Show "Buy Ether" button and warning on tx confirmation when sender balance is insufficient
 
 ## [2.12.1] - 2016-09-14
 ### Uncategorized
-- Fixed bug where if you send a transaction from within MetaMask extension the
-  popup notification opens up.
+- Fixed bug where if you send a transaction from within MetaMask extension the popup notification opens up.
 - Fixed bug where some tx errors would block subsequent txs until the plugin was refreshed.
 
 ## [2.12.0] - 2016-09-14
@@ -2173,12 +2170,12 @@ rollback to 3.10.0 due to bug
 - Fixed some styling issues.
 
 ## [1.0.0] - 2016-03-25
-
-Made seed word restoring BIP44 compatible.
+### Uncategorized
+- Made seed word restoring BIP44 compatible.
 
 ## [0.14.0] - 2016-03-16
-
-Added the ability to restore accounts from seed words.
+### Uncategorized
+- Added the ability to restore accounts from seed words.
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.3.0...HEAD
 [9.3.0]: https://github.com/MetaMask/metamask-extension/compare/v9.2.1...v9.3.0
