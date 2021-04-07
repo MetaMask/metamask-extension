@@ -64,6 +64,7 @@ describe('Swaps Util', function () {
         sourceAmount: '10000000000000000',
         destinationAmount: '2248687',
         error: null,
+        fee: 0.875,
         sourceToken: TOKENS[0].address,
         destinationToken: TOKENS[1].address,
         fetchTime: 553,
