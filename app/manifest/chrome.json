@@ -1,7 +1,4 @@
 {
-  "background": {
-    "scripts": ["chromereload.js"]
-  },
   "externally_connectable": {
     "matches": ["https://metamask.io/*"],
     "ids": ["*"]
