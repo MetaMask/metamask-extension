@@ -3,5 +3,10 @@
     "matches": ["https://metamask.io/*"],
     "ids": ["*"]
   },
+  "background": {
+    "scripts": [
+      "chromereload.js"
+    ]
+  },
   "minimum_chrome_version": "63"
 }
