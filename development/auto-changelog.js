@@ -9,6 +9,17 @@ const runCommand = require('./lib/runCommand');
 const URL = 'https://github.com/MetaMask/metamask-extension';
 
 async function main() {
+  const args = process.argv.slice(2);
+  let isReleaseCandidate = false;
+
+  for (const arg of args) {
+    if (arg === '--rc') {
+      isReleaseCandidate = true;
+    } else {
+      throw new Error(`Unrecognized argument: ${arg}`);
+    }
+  }
+
   await runCommand('git', ['fetch', '--tags']);
 
   const [mostRecentTagCommitHash] = await runCommand('git', [
@@ -100,10 +111,6 @@ async function main() {
     return;
   }
 
-  // remove the "v" prefix
-  const mostRecentVersion = mostRecentTag.slice(1);
-
-  const isReleaseCandidate = mostRecentVersion !== version;
   const versionHeader = `## [${version}]`;
   const escapedVersionHeader = escapeRegExp(versionHeader);
   const currentDevelopBranchHeader = '## [Unreleased]';
