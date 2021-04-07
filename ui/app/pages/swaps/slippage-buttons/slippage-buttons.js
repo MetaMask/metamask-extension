@@ -8,7 +8,7 @@ import InfoTooltip from '../../../components/ui/info-tooltip';
 
 export default function SlippageButtons({ onSelect, maxAllowedSlippage }) {
   const t = useContext(I18nContext);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [customValue, setCustomValue] = useState('');
   const [enteringCustomValue, setEnteringCustomValue] = useState(false);
   const [activeButtonIndex, setActiveButtonIndex] = useState(1);
@@ -87,20 +87,20 @@ export default function SlippageButtons({ onSelect, maxAllowedSlippage }) {
                   setCustomValue('');
                   setEnteringCustomValue(false);
                   setActiveButtonIndex(0);
-                  onSelect(1);
+                  onSelect(2);
                 }}
               >
-                1%
+                2%
               </Button>
               <Button
                 onClick={() => {
                   setCustomValue('');
                   setEnteringCustomValue(false);
                   setActiveButtonIndex(1);
-                  onSelect(2);
+                  onSelect(3);
                 }}
               >
-                2%
+                3%
               </Button>
               <Button
                 className={classnames(
