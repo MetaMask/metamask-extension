@@ -246,25 +246,26 @@ function createNormalBundle({
       envVars,
     });
 
-    const lavamoatTargets = ['background'];
+    // const lavamoatTargets = ['background'];
 
-    if (lavamoatTargets.includes(label)) {
-      Object.assign(bundlerOpts, lavamoat.args);
-    }
+    // if (lavamoatTargets.includes(label)) {
+    //   console.log(label)
+    //   Object.assign(bundlerOpts, lavamoat.args);
+    // }
 
-    const lavamoatOpts = {
-      policy: path.resolve(__dirname, '../../lavamoat/browserify/policy.json'),
-      policyOverride: path.resolve(
-        __dirname,
-        '../../lavamoat/browserify/policy-override.json',
-      ),
-      writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
-    };
+    // const lavamoatOpts = {
+    //   policy: path.resolve(__dirname, '../../lavamoat/browserify/policy.json'),
+    //   policyOverride: path.resolve(
+    //     __dirname,
+    //     '../../lavamoat/browserify/policy-override.json',
+    //   ),
+    //   writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
+    // };
 
-    // apply lavamoat protections to UI
-    if (lavamoatTargets.includes(label)) {
-      bundlerOpts.plugin.push([lavamoat, lavamoatOpts]);
-    }
+    // // apply lavamoat protections to UI
+    // if (lavamoatTargets.includes(label)) {
+    //   bundlerOpts.plugin.push([lavamoat, lavamoatOpts]);
+    // }
 
     // set bundle entries
     bundlerOpts.entries = [...extraEntries];
