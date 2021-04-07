@@ -69,6 +69,37 @@ async function main() {
   const changelog = await fs.readFile(changelogFilename, { encoding: 'utf8' });
   const changelogLines = changelog.split('\n');
 
+  const prNumbersWithChangelogEntries = [];
+  for (const line of changelogLines) {
+    const matchResults = line.match(/- \[#(\d+)\]/u);
+    if (matchResults === null) {
+      continue;
+    }
+    const prNumber = matchResults[1];
+    prNumbersWithChangelogEntries.push(prNumber);
+  }
+
+  const changelogEntries = [];
+  for (const { prNumber, description } of commitEntries) {
+    if (prNumbersWithChangelogEntries.includes(prNumber)) {
+      continue;
+    }
+
+    let changelogEntry;
+    if (prNumber) {
+      const prefix = `[#${prNumber}](${URL}/pull/${prNumber})`;
+      changelogEntry = `- ${prefix}: ${description}`;
+    } else {
+      changelogEntry = `- ${description}`;
+    }
+    changelogEntries.push(changelogEntry);
+  }
+
+  if (changelogEntries.length === 0) {
+    console.log('CHANGELOG required no updates');
+    return;
+  }
+
   // remove the "v" prefix
   const mostRecentVersion = mostRecentTag.slice(1);
 
@@ -117,33 +148,21 @@ async function main() {
     );
   }
 
-  const prNumbersWithChangelogEntries = [];
-  for (const line of changelogLines) {
-    const matchResults = line.match(/- \[#(\d+)\]/u);
-    if (matchResults === null) {
-      continue;
-    }
-    const prNumber = matchResults[1];
-    prNumbersWithChangelogEntries.push(prNumber);
+  // Ensure "Uncategorized" header is present
+  const uncategorizedHeaderIndex = releaseHeaderIndex + 1;
+  const uncategorizedHeader = '### Uncategorized';
+  if (changelogLines[uncategorizedHeaderIndex] !== '### Uncategorized') {
+    const hasEmptyLine = changelogLines[uncategorizedHeaderIndex] === '';
+    changelogLines.splice(
+      uncategorizedHeaderIndex,
+      0,
+      uncategorizedHeader,
+      // Ensure an empty line follows the new header
+      ...(hasEmptyLine ? [] : ['']),
+    );
   }
 
-  const changelogEntries = [];
-  for (const { prNumber, description } of commitEntries) {
-    if (prNumbersWithChangelogEntries.includes(prNumber)) {
-      continue;
-    }
-
-    let changelogEntry;
-    if (prNumber) {
-      const prefix = `[#${prNumber}](${URL}/pull/${prNumber})`;
-      changelogEntry = `- ${prefix}: ${description}`;
-    } else {
-      changelogEntry = `- ${description}`;
-    }
-    changelogEntries.push(changelogEntry);
-  }
-
-  changelogLines.splice(releaseHeaderIndex + 1, 0, ...changelogEntries);
+  changelogLines.splice(uncategorizedHeaderIndex + 1, 0, ...changelogEntries);
   const updatedChangelog = changelogLines.join('\n');
   await fs.writeFile(changelogFilename, updatedChangelog);
 
