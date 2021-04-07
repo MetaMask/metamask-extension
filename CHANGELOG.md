@@ -19,13 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - [#10692](https://github.com/MetaMask/metamask-extension/pull/10692): Prevent UI crash when a 'wallet_requestPermissions" confirmation is queued behind a "wallet_addEthereumChain" confirmation
 - [#10712](https://github.com/MetaMask/metamask-extension/pull/10712): Fix infinite spinner when request for token symbol fails while attempting an approve transaction
-- [#10486](https://github.com/MetaMask/metamask-extension/pull/10486): Add setting to hide zero balance tokens
 
 ## [9.2.0] - 2021-03-15
 ### Added
 - [#10546](https://github.com/MetaMask/metamask-extension/pull/10546): Add a warning when sending a token to its own contract address
 - [#10582](https://github.com/MetaMask/metamask-extension/pull/10582): Adding warnings for excessive custom gas input
 - [#10505](https://github.com/MetaMask/metamask-extension/pull/10505): Add support for multiple Ledger & Trezor hardware accounts
+- [#10486](https://github.com/MetaMask/metamask-extension/pull/10486): Add setting to hide zero balance tokens
 
 ### Changed
 - [#10563](https://github.com/MetaMask/metamask-extension/pull/10563): Update references to MetaMask support
