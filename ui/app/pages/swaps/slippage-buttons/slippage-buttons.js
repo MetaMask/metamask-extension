@@ -6,11 +6,22 @@ import ButtonGroup from '../../../components/ui/button-group';
 import Button from '../../../components/ui/button';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 
-export default function SlippageButtons({ onSelect, maxAllowedSlippage }) {
+export default function SlippageButtons({ onSelect, maxAllowedSlippage, currentSlippage }) {
   const t = useContext(I18nContext);
   const [customValue, setCustomValue] = useState('');
   const [enteringCustomValue, setEnteringCustomValue] = useState(false);
-  const [activeButtonIndex, setActiveButtonIndex] = useState(1);
+  const [activeButtonIndex, setActiveButtonIndex] = useState(() => {
+    if (currentSlippage === 3) {
+      return 1;
+    } else if (currentSlippage === 2) {
+      return 0;
+    } else if (currentSlippage) {
+      setCustomValue(currentSlippage);
+      return 2;
+    } else {
+      return 1;
+    }
+  });
   const [inputRef, setInputRef] = useState(null);
 
   let errorText = '';

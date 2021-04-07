@@ -512,6 +512,7 @@ export default function BuildQuote({
               setMaxSlippage(newSlippage);
             }}
             maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
+            currentSlippage={maxSlippage}
           />
         </div>
       </div>
