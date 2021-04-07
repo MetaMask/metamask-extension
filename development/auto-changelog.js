@@ -13,7 +13,7 @@ async function main() {
   let isReleaseCandidate = false;
 
   for (const arg of args) {
-    if (arg === '---rc') {
+    if (arg === '--rc') {
       isReleaseCandidate = true;
     } else {
       throw new Error(`Unrecognized argument: ${arg}`);
