@@ -128,7 +128,7 @@ jobs:
           command: .circleci/scripts/release-bump-manifest-version.sh
       - run:
           name: Update changelog
-          command: yarn update-changelog
+          command: yarn update-changelog --rc
       - run:
           name: Commit changes
           command: .circleci/scripts/release-commit-version-bump.sh
