@@ -43,13 +43,6 @@ retry concurrently --kill-others \
   'mocha test/e2e/metamask-responsive-ui.spec'
 
 retry concurrently --kill-others \
-  --names 'dapp,e2e' \
-  --prefix '[{time}][{name}]' \
-  --success first \
-  'yarn dapp' \
-  'mocha test/e2e/signature-request.spec'
-
-retry concurrently --kill-others \
   --names 'e2e' \
   --prefix '[{time}][{name}]' \
   --success first \
