@@ -7,23 +7,18 @@
   &__header {
     display: flex;
     align-items: center;
-    color: $Blue-500;
     margin-bottom: 0;
     margin-left: auto;
     margin-right: auto;
     cursor: pointer;
     background: unset;
-
-    &--open {
-      margin-bottom: 8px;
-    }
+    margin-bottom: 8px;
   }
 
   &__header-text {
     @include H6;
 
     margin-right: 6px;
-    color: $Blue-500;
     font-weight: 900;
   }
 
