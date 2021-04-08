@@ -204,6 +204,7 @@
     "@babel/register": "^7.5.5",
     "@lavamoat/allow-scripts": "^1.0.4",
     "@metamask/eslint-config": "^6.0.0",
+    "@metamask/eslint-config-jest": "^6.0.0",
     "@metamask/eslint-config-mocha": "^6.0.0",
     "@metamask/eslint-config-nodejs": "^6.0.0",
     "@metamask/forwarder": "^1.1.0",

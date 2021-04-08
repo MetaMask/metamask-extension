@@ -2689,6 +2689,11 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.1"
 
+"@metamask/eslint-config-jest@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eslint-config-jest/-/eslint-config-jest-6.0.0.tgz#9e10cfbca31236afd7be2058be70365084e540d6"
+  integrity sha512-C0sXmyp5Hnp5IHVYXaW2TJAo/E9UiS192CwyUcw2qU1Ck7lj4z/wHdgROaH5F6rInqBO3afkDaqnArqvoxvO5Q==
+
 "@metamask/eslint-config-mocha@^6.0.0":
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/eslint-config-mocha/-/eslint-config-mocha-6.0.0.tgz#407fc07d4bdfbc79b64989fa9a56a5a671aa4721"
