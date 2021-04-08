@@ -48,16 +48,16 @@ module.exports = {
   },
 
   rules: {
-    'import/no-unassigned-import': 'off',
-    'prefer-object-spread': 'error',
     'default-param-last': 'off',
+    'prefer-object-spread': 'error',
     'require-atomic-updates': 'off',
+
+    'import/no-unassigned-import': 'off',
 
     'no-invalid-this': 'off',
     '@babel/no-invalid-this': 'error',
 
-    // prettier handles these
-    'semi': 'off',
+    // Prettier handles this
     '@babel/semi': 'off',
 
     'node/no-process-env': 'off',
