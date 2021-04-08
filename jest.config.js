@@ -1,6 +1,5 @@
-/* eslint-disable import/unambiguous */
 module.exports = {
-  clearMocks: true,
+  restoreMocks: true,
   setupFiles: ['./test/setup.js', './test/env.js'],
   testMatch: ['**/ui/app/pages/swaps/?(*.)+(test).js'],
 };
