@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { Key, until } = require('selenium-webdriver');
+const { until } = require('selenium-webdriver');
 const {
   withFixtures,
   tinyDelayMs,
@@ -28,7 +28,7 @@ describe('Editing Confirm Transaction', function () {
         await driver.navigate();
         const passwordField = await driver.findElement('#password');
         await passwordField.sendKeys('correct horse battery staple');
-        await passwordField.sendKeys(Key.ENTER);
+        await passwordField.sendKeys(driver.Key.ENTER);
 
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',

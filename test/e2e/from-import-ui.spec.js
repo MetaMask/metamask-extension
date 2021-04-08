@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { Key, until } = require('selenium-webdriver');
+const { until } = require('selenium-webdriver');
 
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const { regularDelayMs, largeDelayMs } = require('./helpers');
@@ -153,7 +153,7 @@ describe('Using MetaMask with an existing account', function () {
     it('accepts the account password after lock', async function () {
       const passwordField = await driver.findElement('#password');
       await passwordField.sendKeys('correct horse battery staple');
-      await passwordField.sendKeys(Key.ENTER);
+      await passwordField.sendKeys(driver.key.ENTER);
       await driver.delay(largeDelayMs);
     });
   });

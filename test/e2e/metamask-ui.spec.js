@@ -1,5 +1,4 @@
 const assert = require('assert');
-const { Key } = require('selenium-webdriver');
 
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers');
@@ -169,7 +168,7 @@ describe('MetaMask', function () {
     it('accepts the account password after lock', async function () {
       const passwordField = await driver.findElement('#password');
       await passwordField.sendKeys('correct horse battery staple');
-      await passwordField.sendKeys(Key.ENTER);
+      await passwordField.sendKeys(driver.Key.ENTER);
       await driver.delay(largeDelayMs * 4);
     });
   });
@@ -272,11 +271,11 @@ describe('MetaMask', function () {
         'send screen should render an insufficient fund error message',
       );
 
-      await inputAmount.sendKeys(Key.BACK_SPACE);
+      await inputAmount.sendKeys(driver.Key.BACK_SPACE);
       await driver.delay(50);
-      await inputAmount.sendKeys(Key.BACK_SPACE);
+      await inputAmount.sendKeys(driver.Key.BACK_SPACE);
       await driver.delay(50);
-      await inputAmount.sendKeys(Key.BACK_SPACE);
+      await inputAmount.sendKeys(driver.Key.BACK_SPACE);
       await driver.delay(tinyDelayMs);
 
       await driver.assertElementNotPresent('.send-v2__error-amount');

@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { Key } = require('selenium-webdriver');
 const { withFixtures, regularDelayMs } = require('../helpers');
 
 describe('MetaMask', function () {
@@ -24,7 +23,7 @@ describe('MetaMask', function () {
         await driver.navigate();
         const passwordField = await driver.findElement('#password');
         await passwordField.sendKeys('correct horse battery staple');
-        await passwordField.sendKeys(Key.ENTER);
+        await passwordField.sendKeys(driver.Key.ENTER);
 
         await driver.openNewPage('http://127.0.0.1:8080/');
         const networkDiv = await driver.findElement('#network');

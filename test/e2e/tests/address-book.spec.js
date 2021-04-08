@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { Key, until } = require('selenium-webdriver');
+const { until } = require('selenium-webdriver');
 const { withFixtures } = require('../helpers');
 
 describe('Address Book', function () {
@@ -24,7 +24,7 @@ describe('Address Book', function () {
         await driver.navigate();
         const passwordField = await driver.findElement('#password');
         await passwordField.sendKeys('correct horse battery staple');
-        await passwordField.sendKeys(Key.ENTER);
+        await passwordField.sendKeys(driver.Key.ENTER);
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
@@ -87,7 +87,7 @@ describe('Address Book', function () {
         await driver.navigate();
         const passwordField = await driver.findElement('#password');
         await passwordField.sendKeys('correct horse battery staple');
-        await passwordField.sendKeys(Key.ENTER);
+        await passwordField.sendKeys(driver.Key.ENTER);
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
         const recipientRowTitle = await driver.findElement(

@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { Key } = require('selenium-webdriver');
 const { withFixtures } = require('../helpers');
 
 describe('Signature Request', function () {
@@ -25,7 +24,7 @@ describe('Signature Request', function () {
         await driver.navigate();
         const passwordField = await driver.findElement('#password');
         await passwordField.sendKeys('correct horse battery staple');
-        await passwordField.sendKeys(Key.ENTER);
+        await passwordField.sendKeys(driver.Key.ENTER);
 
         await driver.openNewPage('http://127.0.0.1:8080/');
 

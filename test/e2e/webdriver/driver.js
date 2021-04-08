@@ -14,6 +14,13 @@ class Driver {
     this.browser = browser;
     this.extensionUrl = extensionUrl;
     this.timeout = timeout;
+    // The following values are found in
+    // https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/lib/input.js#L50-L110
+    // These should be replaced with string constants 'Enter' etc for playwright.
+    this.Key = {
+      BACK_SPACE: '\uE003',
+      ENTER: '\uE007',
+    };
   }
 
   buildLocator(locator) {
