@@ -127,7 +127,11 @@ async function updateChangelog({
     ({ prNumber }) => !loggedPrNumbers.includes(prNumber),
   );
 
-  if (newCommits.length === 0) {
+  const hasUnreleasedChanges = changelog.getUnreleasedChanges().length !== 0;
+  if (
+    newCommits.length === 0 &&
+    (!isReleaseCandidate || hasUnreleasedChanges)
+  ) {
     return undefined;
   }
 
@@ -139,6 +143,10 @@ async function updateChangelog({
       .find((release) => release.version === currentVersion)
   ) {
     changelog.addRelease({ currentVersion });
+  }
+
+  if (isReleaseCandidate && hasUnreleasedChanges) {
+    changelog.migrateUnreleasedChangesToRelease(currentVersion);
   }
 
   const newChangeEntries = newCommits.map(({ prNumber, description }) => {
