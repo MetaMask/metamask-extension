@@ -140,6 +140,7 @@ module.exports = {
         'test/lib/wait-until-called.js',
         'test/env.js',
         'test/setup.js',
+        'jest.config.js',
       ],
       parserOptions: {
         sourceType: 'script',
