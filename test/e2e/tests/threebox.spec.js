@@ -1,3 +1,4 @@
+const { strict: assert } = require('assert');
 const { By, Key } = require('selenium-webdriver');
 const { withFixtures, largeDelayMs } = require('../helpers');
 const ThreeboxMockServer = require('../mock-3box/threebox-mock-server');
@@ -15,11 +16,9 @@ describe('Threebox', function () {
   let threeboxServer;
   before(async function () {
     threeboxServer = new ThreeboxMockServer();
-    console.log('in before: ', threeboxServer.database);
     await threeboxServer.start();
   });
   after(async function () {
-    console.log('in after', threeboxServer.database);
     await threeboxServer.stop();
   });
   it('Set up data to be restored by 3box', async function () {
@@ -36,48 +35,65 @@ describe('Threebox', function () {
         await passwordField.sendKeys(Key.ENTER);
 
         // turns on threebox syncing
-        await driver.clickElement(By.css('.account-menu__icon'));
-        await driver.clickElement(
-          By.xpath(`//div[contains(text(), 'Settings')]`),
-        );
+        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
 
         // turns on threebox syncing
+        await driver.clickElement({ text: 'Advanced', tag: 'div' });
         await driver.clickElement(
-          By.xpath(`//div[contains(text(), 'Advanced')]`),
-        );
-        await driver.clickElement(
-          By.css('[data-testid="advanced-setting-3box"] .toggle-button div'),
+          '[data-testid="advanced-setting-3box"] .toggle-button div',
         );
 
         // updates settings and address book
-        await driver.clickElement(
-          By.xpath(`//div[contains(text(), 'General')]`),
-        );
+        // navigates to General settings
+        await driver.clickElement({ text: 'General', tag: 'div' });
 
         // turns on use of blockies
-        await driver.clickElement(By.css('.toggle-button > div'));
+        await driver.clickElement('.toggle-button > div');
 
         // adds an address to the contact list
-        await driver.clickElement(
-          By.xpath(`//div[contains(text(), 'Contacts')]`),
-        );
+        await driver.clickElement({ text: 'Contacts', tag: 'div' });
 
-        await driver.clickElement(By.css('.address-book-add-button__button'));
-        const addAddressInputs = await driver.findElements(By.css('input'));
+        await driver.clickElement('.address-book-add-button__button');
+        const addAddressInputs = await driver.findElements('input');
         await addAddressInputs[0].sendKeys('Test User Name 11');
         await addAddressInputs[1].sendKeys(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
         await driver.delay(largeDelayMs * 2);
+        await driver.clickElement({ text: 'Save', tag: 'button' });
+        await driver.findElement({ text: 'Test User Name 11', tag: 'div' });
+      },
+    );
+  });
+  it('Restore from 3box', async function () {
+    await withFixtures(
+      {
+        fixtures: 'threebox-enabled',
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        const passwordField = await driver.findElement(By.css('#password'));
+        await passwordField.sendKeys('correct horse battery staple');
+        await passwordField.sendKeys(Key.ENTER);
 
-        await driver.clickElement(
-          By.xpath(`//button[contains(text(), 'Save')]`),
-        );
+        // confirms the 3box restore notification
+        await driver.clickElement('.home-notification__accept-button');
 
-        await driver.findElement(
-          By.xpath(`//div[contains(text(), 'Test User Name 11')]`),
-        );
-        await driver.delay(largeDelayMs);
+        // goes to the settings screen
+        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+
+        // finds the blockies toggle turned on
+        const toggleLabel = await driver.findElement('.toggle-button__status');
+        const toggleLabelText = await toggleLabel.getText();
+        assert.equal(toggleLabelText, 'ON');
+
+        // finds the restored address in the contact list
+        await driver.clickElement({ text: 'Contacts', tag: 'div' });
+        await driver.findElement({ text: 'Test User Name 11', tag: 'div' });
       },
     );
   });
