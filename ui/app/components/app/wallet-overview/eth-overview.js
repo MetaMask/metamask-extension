@@ -33,7 +33,6 @@ import SwapIcon from '../../ui/icon/swap-icon.component';
 import BuyIcon from '../../ui/icon/overview-buy-icon.component';
 import SendIcon from '../../ui/icon/overview-send-icon.component';
 import {
-  getSwapsFeatureLiveness,
   setSwapsFromToken,
 } from '../../../ducks/swaps/swaps';
 import IconButton from '../../ui/icon-button';
@@ -73,7 +72,6 @@ const EthOverview = ({ className }) => {
     properties: { source: 'Main View', active_currency: 'ETH' },
     category: 'swaps',
   });
-  const swapsEnabled = useSelector(getSwapsFeatureLiveness);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
   return (
@@ -138,34 +136,32 @@ const EthOverview = ({ className }) => {
               history.push(SEND_ROUTE);
             }}
           />
-          {swapsEnabled ? (
-            <IconButton
-              className="eth-overview__button"
-              disabled={!isSwapsChain}
-              Icon={SwapIcon}
-              onClick={() => {
-                if (isSwapsChain) {
-                  enteredSwapsEvent();
-                  dispatch(setSwapsFromToken(defaultSwapsToken));
-                  if (usingHardwareWallet) {
-                    global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
-                  } else {
-                    history.push(BUILD_QUOTE_ROUTE);
-                  }
+          <IconButton
+            className="eth-overview__button"
+            disabled={!isSwapsChain}
+            Icon={SwapIcon}
+            onClick={() => {
+              if (isSwapsChain) {
+                enteredSwapsEvent();
+                dispatch(setSwapsFromToken(defaultSwapsToken));
+                if (usingHardwareWallet) {
+                  global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
+                } else {
+                  history.push(BUILD_QUOTE_ROUTE);
                 }
-              }}
-              label={t('swap')}
-              tooltipRender={(contents) => (
-                <Tooltip
-                  title={t('onlyAvailableOnMainnet')}
-                  position="bottom"
-                  disabled={isSwapsChain}
-                >
-                  {contents}
-                </Tooltip>
-              )}
-            />
-          ) : null}
+              }
+            }}
+            label={t('swap')}
+            tooltipRender={(contents) => (
+              <Tooltip
+                title={t('onlyAvailableOnMainnet')}
+                position="bottom"
+                disabled={isSwapsChain}
+              >
+                {contents}
+              </Tooltip>
+            )}
+          />
         </>
       }
       className={className}
