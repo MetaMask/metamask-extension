@@ -3,6 +3,22 @@ const { strict: assert } = require('assert');
 const { until, error: webdriverError, By } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 
+/**
+ * Temporary workaround to patch selenium's element handle API with methods
+ * that match the playwright API for Elements
+ * @param {Object} element - Selenium Element
+ * @returns {Object} modified Selenium Element
+ */
+function wrapElementWithAPI(element) {
+  element.press = (key) => element.sendKeys(key);
+  element.fill = async (input) => {
+    // The 'fill' method in playwright replaces existing input
+    await element.clear();
+    await element.sendKeys(input);
+  };
+  return element;
+}
+
 class Driver {
   /**
    * @param {!ThenableWebDriver} driver - A {@code WebDriver} instance
@@ -70,6 +86,18 @@ class Driver {
     );
   }
 
+  async fill(rawLocator, input) {
+    const element = await this.findElement(rawLocator);
+    await element.fill(input);
+    return element;
+  }
+
+  async press(rawLocator, keys) {
+    const element = await this.findElement(rawLocator);
+    await element.press(keys);
+    return element;
+  }
+
   async delay(time) {
     await new Promise((resolve) => setTimeout(resolve, time));
   }
@@ -87,15 +115,19 @@ class Driver {
     // bucket that can include the state attribute to wait for elements that
     // match the selector to be removed from the DOM.
     const selector = this.buildLocator(rawLocator);
+    let element;
+    if (!['visible', 'detached'].includes(state)) {
+      throw new Error(`Provided state selector ${state} is not supported`);
+    }
     if (state === 'visible') {
-      return await this.driver.wait(until.elementLocated(selector), timeout);
+      element = await this.driver.wait(until.elementLocated(selector), timeout);
     } else if (state === 'detached') {
-      return await this.driver.wait(
+      element = await this.driver.wait(
         until.stalenessOf(await this.findElement(selector)),
         timeout,
       );
     }
-    throw new Error(`Provided state selector ${state} is not supported`);
+    return wrapElementWithAPI(element);
   }
 
   async quit() {
@@ -106,14 +138,18 @@ class Driver {
 
   async findElement(rawLocator) {
     const locator = this.buildLocator(rawLocator);
-    return await this.driver.wait(until.elementLocated(locator), this.timeout);
+    const element = await this.driver.wait(
+      until.elementLocated(locator),
+      this.timeout,
+    );
+    return wrapElementWithAPI(element);
   }
 
   async findVisibleElement(rawLocator) {
     const locator = this.buildLocator(rawLocator);
     const element = await this.findElement(locator);
     await this.driver.wait(until.elementIsVisible(element), this.timeout);
-    return element;
+    return wrapElementWithAPI(element);
   }
 
   async findClickableElement(rawLocator) {
@@ -123,12 +159,16 @@ class Driver {
       this.driver.wait(until.elementIsVisible(element), this.timeout),
       this.driver.wait(until.elementIsEnabled(element), this.timeout),
     ]);
-    return element;
+    return wrapElementWithAPI(element);
   }
 
   async findElements(rawLocator) {
     const locator = this.buildLocator(rawLocator);
-    return await this.driver.wait(until.elementsLocated(locator), this.timeout);
+    const elements = await this.driver.wait(
+      until.elementsLocated(locator),
+      this.timeout,
+    );
+    return elements.map(wrapElementWithAPI);
   }
 
   async findClickableElements(rawLocator) {
@@ -143,7 +183,7 @@ class Driver {
         return acc;
       }, []),
     );
-    return elements;
+    return elements.map(wrapElementWithAPI);
   }
 
   async clickElement(rawLocator) {
