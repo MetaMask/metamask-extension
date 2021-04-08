@@ -22,7 +22,7 @@
     "sendwithprivatedapp": "node development/static-server.js test/e2e/send-eth-with-private-key-test --port 8080",
     "test:unit": "mocha --exit --require test/env.js --require test/setup.js --recursive './{ui,app,shared}/**/!(swaps)/*.test.js'",
     "test:unit:global": "mocha --exit --require test/env.js --require test/setup.js --recursive test/unit-global/*.test.js",
-    "test:unit:lax": "mocha --exit --require test/env.js --require test/setup.js --ignore './app/scripts/controllers/permissions/*.test.js' --recursive './{ui,app,shared}/**/*.test.js'",
+    "test:unit:lax": "mocha --exit --require test/env.js --require test/setup.js --ignore './app/scripts/controllers/permissions/*.test.js' --recursive './{ui,app,shared}/**/!(swaps)/*.test.js'",
     "test:unit:strict": "mocha --exit --require test/env.js --require test/setup.js --recursive './app/scripts/controllers/permissions/*.test.js'",
     "test:unit:jest": "jest",
     "test:unit:path": "mocha --exit --require test/env.js --require test/setup.js --recursive",
