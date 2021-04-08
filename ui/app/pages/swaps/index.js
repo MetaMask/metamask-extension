@@ -84,7 +84,7 @@ export default function Swap() {
   const { destinationTokenInfo = {} } = fetchParams?.metaData || {};
 
   const [inputValue, setInputValue] = useState(fetchParams?.value || '');
-  const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 2);
+  const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 3);
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const selectedAccount = useSelector(getSelectedAccount);
