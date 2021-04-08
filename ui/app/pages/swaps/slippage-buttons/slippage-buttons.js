@@ -12,7 +12,12 @@ export default function SlippageButtons({
   currentSlippage,
 }) {
   const t = useContext(I18nContext);
-  const [customValue, setCustomValue] = useState('');
+  const [customValue, setCustomValue] = useState(() => {
+    if (currentSlippage && currentSlippage !== 2 && currentSlippage !== 3) {
+      return currentSlippage;
+    }
+    return '';
+  });
   const [enteringCustomValue, setEnteringCustomValue] = useState(false);
   const [activeButtonIndex, setActiveButtonIndex] = useState(() => {
     if (currentSlippage === 3) {
@@ -20,7 +25,6 @@ export default function SlippageButtons({
     } else if (currentSlippage === 2) {
       return 0;
     } else if (currentSlippage) {
-      setCustomValue(currentSlippage);
       return 2;
     }
     return 1; // Choose activeButtonIndex = 1 for 3% slippage by default.
