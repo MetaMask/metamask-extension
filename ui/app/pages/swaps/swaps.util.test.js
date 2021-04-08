@@ -1,11 +1,6 @@
-import { strict as assert } from 'assert';
-import proxyquire from 'proxyquire';
+import nock from 'nock';
 import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 import {
-  TRADES_BASE_PROD_URL,
-  TOKENS_BASE_PROD_URL,
-  AGGREGATOR_METADATA_BASE_PROD_URL,
-  TOP_ASSET_BASE_PROD_URL,
   TOKENS,
   EXPECTED_TOKENS_RESULT,
   MOCK_TRADE_RESPONSE_2,
@@ -13,42 +8,24 @@ import {
   TOP_ASSETS,
 } from './swaps-util-test-constants';
 
-const swapsUtils = proxyquire('./swaps.util.js', {
-  '../../helpers/utils/fetch-with-cache': {
-    default: (url, fetchObject) => {
-      assert.strictEqual(fetchObject.method, 'GET');
-      if (url.match(TRADES_BASE_PROD_URL)) {
-        assert.strictEqual(
-          url,
-          'https://api.metaswap.codefi.network/trades?destinationToken=0xE41d2489571d322189246DaFA5ebDe1F4699F498&sourceToken=0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4&sourceAmount=2000000000000000000000000000000000000&slippage=3&timeout=10000&walletAddress=0xmockAddress',
-        );
-        return Promise.resolve(MOCK_TRADE_RESPONSE_2);
-      }
-      if (url.match(TOKENS_BASE_PROD_URL)) {
-        assert.strictEqual(url, TOKENS_BASE_PROD_URL);
-        return Promise.resolve(TOKENS);
-      }
-      if (url.match(AGGREGATOR_METADATA_BASE_PROD_URL)) {
-        assert.strictEqual(url, AGGREGATOR_METADATA_BASE_PROD_URL);
-        return Promise.resolve(AGGREGATOR_METADATA);
-      }
-      if (url.match(TOP_ASSET_BASE_PROD_URL)) {
-        assert.strictEqual(url, TOP_ASSET_BASE_PROD_URL);
-        return Promise.resolve(TOP_ASSETS);
-      }
-      return Promise.resolve();
-    },
-  },
-});
-const {
+import {
   fetchTradesInfo,
   fetchTokens,
   fetchAggregatorMetadata,
   fetchTopAssets,
-} = swapsUtils;
+} from './swaps.util';
 
-describe('Swaps Util', function () {
-  describe('fetchTradesInfo', function () {
+jest.mock('../../../lib/storage-helpers.js', () => ({
+  getStorageItem: jest.fn(),
+  setStorageItem: jest.fn(),
+}));
+
+describe('Swaps Util', () => {
+  afterAll(() => {
+    nock.cleanAll();
+  });
+
+  describe('fetchTradesInfo', () => {
     const expectedResult1 = {
       zeroEx: {
         trade: {
@@ -90,7 +67,12 @@ describe('Swaps Util', function () {
         sourceAmount: '20000000000000000',
       },
     };
-    it('should fetch trade info on prod', async function () {
+    it('should fetch trade info on prod', async () => {
+      nock('https://api.metaswap.codefi.network')
+        .get('/trades')
+        .query(true)
+        .reply(200, MOCK_TRADE_RESPONSE_2);
+
       const result = await fetchTradesInfo(
         {
           TOKENS,
@@ -106,35 +88,56 @@ describe('Swaps Util', function () {
         },
         { chainId: MAINNET_CHAIN_ID },
       );
-      assert.deepStrictEqual(result, expectedResult2);
+      expect(result).toStrictEqual(expectedResult2);
     });
   });
 
-  describe('fetchTokens', function () {
-    it('should fetch tokens', async function () {
+  describe('fetchTokens', () => {
+    beforeAll(() => {
+      nock('https://api.metaswap.codefi.network')
+        .persist()
+        .get('/tokens')
+        .reply(200, TOKENS);
+    });
+
+    it('should fetch tokens', async () => {
       const result = await fetchTokens(MAINNET_CHAIN_ID);
-      assert.deepStrictEqual(result, EXPECTED_TOKENS_RESULT);
+      expect(result).toStrictEqual(EXPECTED_TOKENS_RESULT);
     });
 
-    it('should fetch tokens on prod', async function () {
+    it('should fetch tokens on prod', async () => {
       const result = await fetchTokens(MAINNET_CHAIN_ID);
-      assert.deepStrictEqual(result, EXPECTED_TOKENS_RESULT);
+      expect(result).toStrictEqual(EXPECTED_TOKENS_RESULT);
     });
   });
 
-  describe('fetchAggregatorMetadata', function () {
-    it('should fetch aggregator metadata', async function () {
-      const result = await fetchAggregatorMetadata(MAINNET_CHAIN_ID);
-      assert.deepStrictEqual(result, AGGREGATOR_METADATA);
+  describe('fetchAggregatorMetadata', () => {
+    beforeAll(() => {
+      nock('https://api.metaswap.codefi.network')
+        .persist()
+        .get('/aggregatorMetadata')
+        .reply(200, AGGREGATOR_METADATA);
     });
 
-    it('should fetch aggregator metadata on prod', async function () {
+    it('should fetch aggregator metadata', async () => {
       const result = await fetchAggregatorMetadata(MAINNET_CHAIN_ID);
-      assert.deepStrictEqual(result, AGGREGATOR_METADATA);
+      expect(result).toStrictEqual(AGGREGATOR_METADATA);
+    });
+
+    it('should fetch aggregator metadata on prod', async () => {
+      const result = await fetchAggregatorMetadata(MAINNET_CHAIN_ID);
+      expect(result).toStrictEqual(AGGREGATOR_METADATA);
     });
   });
 
-  describe('fetchTopAssets', function () {
+  describe('fetchTopAssets', () => {
+    beforeAll(() => {
+      nock('https://api.metaswap.codefi.network')
+        .persist()
+        .get('/topAssets')
+        .reply(200, TOP_ASSETS);
+    });
+
     const expectedResult = {
       '0x514910771af9ca656af840dff83e8264ecf986ca': {
         index: '0',
@@ -152,14 +155,14 @@ describe('Swaps Util', function () {
         index: '4',
       },
     };
-    it('should fetch top assets', async function () {
+    it('should fetch top assets', async () => {
       const result = await fetchTopAssets(MAINNET_CHAIN_ID);
-      assert.deepStrictEqual(result, expectedResult);
+      expect(result).toStrictEqual(expectedResult);
     });
 
-    it('should fetch top assets on prod', async function () {
+    it('should fetch top assets on prod', async () => {
       const result = await fetchTopAssets(MAINNET_CHAIN_ID);
-      assert.deepStrictEqual(result, expectedResult);
+      expect(result).toStrictEqual(expectedResult);
     });
   });
 });
