@@ -254,6 +254,7 @@
     "gulp-terser-js": "^5.2.2",
     "gulp-watch": "^5.0.1",
     "gulp-zip": "^4.0.0",
+    "jest": "^26.6.3",
     "jsdom": "^11.2.0",
     "koa": "^2.7.0",
     "lavamoat": "^5.1.4",
