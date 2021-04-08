@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { Key, until } = require('selenium-webdriver');
+const { Key } = require('selenium-webdriver');
 
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers');
@@ -143,10 +143,12 @@ describe('MetaMask', function () {
       await driver.findVisibleElement('.qr-code__wrapper');
       await driver.delay(regularDelayMs);
 
-      const accountModal = await driver.findElement('span .modal');
+      // wait for permission modal to be visible.
+      await driver.waitForSelector('span .modal');
       await driver.clickElement('.account-modal__close');
 
-      await driver.wait(until.stalenessOf(accountModal));
+      // wait for account modal to be removed from DOM.
+      await driver.waitForSelector('span .modal', { state: 'detached' });
       await driver.delay(regularDelayMs);
     });
   });
@@ -242,10 +244,10 @@ describe('MetaMask', function () {
     });
 
     it('balance renders', async function () {
-      const balance = await driver.findElement(
-        '[data-testid="wallet-balance"] .list-item__heading',
-      );
-      await driver.wait(until.elementTextMatches(balance, /100\s*ETH/u));
+      await driver.waitForSelector({
+        css: '[data-testid="wallet-balance"] .list-item__heading',
+        text: '100 ETH',
+      });
       await driver.delay(regularDelayMs);
     });
   });
@@ -317,10 +319,10 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 1;
       }, 10000);
 
-      const txValues = await driver.findElement(
-        '.transaction-list-item__primary-currency',
-      );
-      await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/u), 10000);
+      await driver.waitForSelector({
+        css: '.transaction-list-item__primary-currency',
+        text: '-1 ETH',
+      });
     });
   });
 
@@ -355,17 +357,13 @@ describe('MetaMask', function () {
     });
 
     it('finds the transaction in the transactions list', async function () {
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 2;
-      }, 10000);
-
-      const txValues = await driver.findElement(
-        '.transaction-list-item__primary-currency',
+      await driver.waitForSelector(
+        '.transaction-list__completed-transactions .transaction-list-item:nth-child(2)',
       );
-      await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/u), 10000);
+      await driver.waitForSelector({
+        css: '.transaction-list-item__primary-currency',
+        text: '-1 ETH',
+      });
     });
   });
 
@@ -389,9 +387,12 @@ describe('MetaMask', function () {
       await driver.clickElement('.advanced-gas-options-btn');
       await driver.delay(regularDelayMs);
 
-      const gasModal = await driver.findElement('span .modal');
       await driver.clickElement({ text: 'Save', tag: 'button' });
-      await driver.wait(until.stalenessOf(gasModal));
+
+      // Wait for gas modal to be removed from DOM
+      await driver.waitForSelector('span .modal', {
+        state: 'detached',
+      });
       await driver.delay(regularDelayMs);
 
       // Continue to next screen
@@ -418,10 +419,13 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 3;
       }, 10000);
 
-      const txValues = await driver.findElement(
-        '.transaction-list-item__primary-currency',
+      await driver.waitForSelector(
+        {
+          css: '.transaction-list-item__primary-currency',
+          text: '-1 ETH',
+        },
+        { timeout: 10000 },
       );
-      await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/u), 10000);
     });
   });
 
@@ -542,10 +546,10 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 4;
       }, 10000);
 
-      const txValue = await driver.findClickableElement(
-        '.transaction-list-item__primary-currency',
-      );
-      await driver.wait(until.elementTextMatches(txValue, /-3\s*ETH/u), 10000);
+      await driver.waitForSelector({
+        css: '.transaction-list-item__primary-currency',
+        text: '-3 ETH',
+      });
     });
 
     it('the transaction has the expected gas price', async function () {
@@ -556,10 +560,10 @@ describe('MetaMask', function () {
       const popoverCloseButton = await driver.findClickableElement(
         '.popover-header__button',
       );
-      const txGasPrice = await driver.findElement(
-        '[data-testid="transaction-breakdown__gas-price"]',
-      );
-      await driver.wait(until.elementTextMatches(txGasPrice, /^10$/u), 10000);
+      await driver.waitForSelector({
+        css: '[data-testid="transaction-breakdown__gas-price"]',
+        text: '10',
+      });
       await popoverCloseButton.click();
     });
   });
@@ -804,17 +808,16 @@ describe('MetaMask', function () {
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
       await driver.delay(largeDelayMs);
 
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 6;
-      }, 10000);
+      await driver.waitForSelector(
+        '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(6)',
+      );
 
-      const txAction = await driver.findElements('.list-item__heading');
-      await driver.wait(
-        until.elementTextMatches(txAction[0], /Contract\sDeployment/u),
-        10000,
+      await driver.waitForSelector(
+        {
+          css: '.list-item__title',
+          text: 'Contract Deployment',
+        },
+        { timeout: 10000 },
       );
       await driver.delay(regularDelayMs);
     });
@@ -823,19 +826,23 @@ describe('MetaMask', function () {
       await driver.switchToWindow(dapp);
       await driver.delay(regularDelayMs);
 
-      let contractStatus = await driver.findElement('#contractStatus');
-      await driver.wait(
-        until.elementTextMatches(contractStatus, /Deployed/u),
-        15000,
+      await driver.waitForSelector(
+        {
+          css: '#contractStatus',
+          text: 'Deployed',
+        },
+        { timeout: 15000 },
       );
 
       await driver.clickElement('#depositButton');
       await driver.delay(largeDelayMs);
 
-      contractStatus = await driver.findElement('#contractStatus');
-      await driver.wait(
-        until.elementTextMatches(contractStatus, /Deposit\sinitiated/u),
-        10000,
+      await driver.waitForSelector(
+        {
+          css: '#contractStatus',
+          text: 'Deposit initiated',
+        },
+        { timeout: 10000 },
       );
 
       await driver.switchToWindow(extension);
@@ -845,19 +852,20 @@ describe('MetaMask', function () {
       const txListValue = await driver.findClickableElement(
         '.transaction-list-item__primary-currency',
       );
-      await driver.wait(
-        until.elementTextMatches(txListValue, /-4\s*ETH/u),
-        10000,
+      await driver.waitForSelector(
+        {
+          css: '.transaction-list-item__primary-currency',
+          text: '-4 ETH',
+        },
+        { timeout: 10000 },
       );
       await txListValue.click();
       await driver.delay(regularDelayMs);
 
       // Set the gas limit
       await driver.clickElement('.confirm-detail-row__header-text--edit');
-      await driver.delay(regularDelayMs);
-
-      const gasModal = await driver.findElement('span .modal');
-      await driver.delay(regularDelayMs);
+      // wait for gas modal to be detached from DOM
+      await driver.waitForSelector('span .modal');
       await driver.clickElement('.page-container__tab:nth-of-type(2)');
       await driver.delay(regularDelayMs);
 
@@ -879,26 +887,24 @@ describe('MetaMask', function () {
       await driver.delay(1000);
 
       await driver.clickElement({ text: 'Save', tag: 'button' });
-      await driver.delay(regularDelayMs);
 
-      await driver.wait(until.stalenessOf(gasModal));
+      // wait for gas modal to be detached from DOM
+      await driver.waitForSelector('span .modal', { state: 'detached' });
 
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
       await driver.delay(regularDelayMs);
 
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 7;
-      }, 10000);
-
-      const txValues = await driver.findElements(
-        '.transaction-list-item__primary-currency',
+      await driver.waitForSelector(
+        '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(7)',
+        { timeout: 10000 },
       );
-      await driver.wait(
-        until.elementTextMatches(txValues[0], /-4\s*ETH/u),
-        10000,
+      await driver.waitForSelector(
+        {
+          css:
+            '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
+          text: '-4 ETH',
+        },
+        { timeout: 10000 },
       );
     });
 
@@ -927,23 +933,25 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 8;
       }, 10000);
 
-      const txValues = await driver.findElement(
-        '.transaction-list-item__primary-currency',
+      await driver.waitForSelector(
+        {
+          css: '.transaction-list-item__primary-currency',
+          text: '-0 ETH',
+        },
+        { timeout: 10000 },
       );
-      await driver.wait(until.elementTextMatches(txValues, /-0\s*ETH/u), 10000);
 
       await driver.closeAllWindowHandlesExcept([extension, dapp]);
       await driver.switchToWindow(extension);
     });
 
     it('renders the correct ETH balance', async function () {
-      const balance = await driver.findElement(
-        '[data-testid="eth-overview__primary-currency"]',
-      );
-      await driver.delay(regularDelayMs);
-      await driver.wait(
-        until.elementTextMatches(balance, /^87.*\s*ETH.*$/u),
-        10000,
+      const balance = await driver.waitForSelector(
+        {
+          css: '[data-testid="eth-overview__primary-currency"]',
+          text: '87.',
+        },
+        { timeout: 10000 },
       );
       const tokenAmount = await balance.getText();
       assert.ok(/^87.*\s*ETH.*$/u.test(tokenAmount));
@@ -989,8 +997,10 @@ describe('MetaMask', function () {
       await driver.switchToWindow(dapp);
       await driver.delay(tinyDelayMs);
 
-      const tokenContractAddress = await driver.findElement('#tokenAddress');
-      await driver.wait(until.elementTextMatches(tokenContractAddress, /0x/u));
+      const tokenContractAddress = await driver.waitForSelector({
+        css: '#tokenAddress',
+        text: '0x',
+      });
       tokenAddress = await tokenContractAddress.getText();
 
       await driver.delay(regularDelayMs);
@@ -1025,18 +1035,15 @@ describe('MetaMask', function () {
     });
 
     it('renders the balance for the new token', async function () {
-      const balance = await driver.findElement(
-        '.wallet-overview .token-overview__primary-balance',
-      );
-      await driver.wait(until.elementTextMatches(balance, /^10\s*TST\s*$/u));
-      const tokenAmount = await balance.getText();
-      assert.ok(/^10\s*TST\s*$/u.test(tokenAmount));
+      await driver.waitForSelector({
+        css: '.wallet-overview .token-overview__primary-balance',
+        text: '10 TST',
+      });
       await driver.delay(regularDelayMs);
     });
   });
 
   describe('Send token from inside MetaMask', function () {
-    let gasModal;
     it('starts to send a transaction', async function () {
       await driver.clickElement('[data-testid="eth-overview-send"]');
       await driver.delay(regularDelayMs);
@@ -1048,24 +1055,20 @@ describe('MetaMask', function () {
 
       const inputAmount = await driver.findElement('.unit-input__input');
       await inputAmount.sendKeys('1');
-
-      // Set the gas limit
-      await driver.clickElement('.advanced-gas-options-btn');
-      await driver.delay(regularDelayMs);
-
-      gasModal = await driver.findElement('span .modal');
-      await driver.delay(regularDelayMs);
     });
 
-    it('opens customize gas modal', async function () {
+    it('opens customize gas modal and saves options to continue', async function () {
+      await driver.clickElement('.advanced-gas-options-btn');
+
+      // Wait for gas modal to be visible
+      await driver.waitForSelector('span .modal');
       await driver.findElement('.page-container__title');
       await driver.clickElement({ text: 'Save', tag: 'button' });
-      await driver.delay(regularDelayMs);
+      // wait for gas modal to be removed from DOM.
+      await driver.waitForSelector('span .modal', { state: 'detached' });
     });
 
     it('transitions to the confirm screen', async function () {
-      await driver.wait(until.stalenessOf(gasModal));
-
       // Continue to next screen
       await driver.clickElement({ text: 'Next', tag: 'button' });
       await driver.delay(regularDelayMs);
@@ -1116,25 +1119,22 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 1;
       }, 10000);
 
-      const txValues = await driver.findElements(
-        '.transaction-list-item__primary-currency',
-      );
-      assert.equal(txValues.length, 1);
-      await driver.wait(
-        until.elementTextMatches(txValues[0], /-1\s*TST/u),
-        10000,
+      await driver.waitForSelector(
+        {
+          css: '.transaction-list-item__primary-currency',
+          text: '-1 TST',
+        },
+        { timeout: 10000 },
       );
 
-      const txStatuses = await driver.findElements('.list-item__heading');
-      await driver.wait(
-        until.elementTextMatches(txStatuses[0], /Send\sTST/u),
-        10000,
-      );
+      await driver.waitForSelector({
+        css: '.list-item__heading',
+        text: 'Send TST',
+      });
     });
   });
 
   describe('Send a custom token from dapp', function () {
-    let gasModal;
     it('sends an already created token', async function () {
       const windowHandles = await driver.getAllWindowHandles();
       const extension = windowHandles[0];
@@ -1153,14 +1153,14 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs);
 
       await driver.findElements('.transaction-list__pending-transactions');
-      const txListValue = await driver.findClickableElement(
-        '.transaction-list-item__primary-currency',
+      await driver.waitForSelector(
+        {
+          css: '.transaction-list-item__primary-currency',
+          text: '-1.5 TST',
+        },
+        { timeout: 10000 },
       );
-      await driver.wait(
-        until.elementTextMatches(txListValue, /-1.5\s*TST/u),
-        10000,
-      );
-      await txListValue.click();
+      await driver.clickElement('.transaction-list-item__primary-currency');
       await driver.delay(regularDelayMs);
 
       const transactionAmounts = await driver.findElements(
@@ -1173,7 +1173,8 @@ describe('MetaMask', function () {
       await driver.clickElement('.confirm-detail-row__header-text--edit');
       await driver.delay(regularDelayMs);
 
-      gasModal = await driver.findElement('span .modal');
+      // wait for gas modal to be visible
+      await driver.waitForSelector('span .modal');
     });
 
     it('customizes gas', async function () {
@@ -1196,7 +1197,11 @@ describe('MetaMask', function () {
       await driver.delay(1000);
 
       await driver.clickElement('.page-container__footer-button');
-      await driver.wait(until.stalenessOf(gasModal));
+
+      // Wait for gas modal to be removed from DOM.
+      await driver.waitForSelector('span .modal', {
+        state: 'detached',
+      });
 
       const gasFeeInputs = await driver.findElements(
         '.confirm-detail-row__primary',
@@ -1224,28 +1229,24 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 2;
       }, 10000);
 
-      const txValues = await driver.findElements(
-        '.transaction-list-item__primary-currency',
-      );
-      await driver.wait(until.elementTextMatches(txValues[0], /-1.5\s*TST/u));
-      const txStatuses = await driver.findElements('.list-item__heading');
-      await driver.wait(
-        until.elementTextMatches(txStatuses[0], /Send\sTST/u),
-        10000,
-      );
+      await driver.waitForSelector({
+        css: '.transaction-list-item__primary-currency',
+        text: '-1.5 TST',
+      });
 
-      const tokenBalanceAmount = await driver.findElements(
-        '.token-overview__primary-balance',
-      );
-      await driver.wait(
-        until.elementTextMatches(tokenBalanceAmount[0], /7.5\s*TST/u),
-        10000,
-      );
+      await driver.waitForSelector({
+        css: '.list-item__heading',
+        text: 'Send TST',
+      });
+
+      await driver.waitForSelector({
+        css: '.token-overview__primary-balance',
+        text: '7.5 TST',
+      });
     });
   });
 
   describe('Approves a custom token from dapp', function () {
-    let gasModal;
     it('approves an already created token', async function () {
       const windowHandles = await driver.getAllWindowHandles();
       const extension = windowHandles[0];
@@ -1271,12 +1272,13 @@ describe('MetaMask', function () {
         return pendingTxes.length === 1;
       }, 10000);
 
-      const [txtListHeading] = await driver.findElements(
-        '.transaction-list-item .list-item__heading',
-      );
-      await driver.wait(
-        until.elementTextMatches(txtListHeading, /Approve TST spend limit/u),
-      );
+      await driver.waitForSelector({
+        // Selects only the very first transaction list item immediately following the 'Pending' header
+        css:
+          '.transaction-list__pending-transactions .transaction-list__header + .transaction-list-item .list-item__heading',
+        text: 'Approve TST spend limit',
+      });
+
       await driver.clickElement('.transaction-list-item');
       await driver.delay(regularDelayMs);
     });
@@ -1310,7 +1312,8 @@ describe('MetaMask', function () {
       );
       await driver.delay(regularDelayMs);
 
-      gasModal = await driver.findElement('span .modal');
+      // Wait for the gas modal to be visible
+      await driver.waitForSelector('span .modal');
     });
 
     it('customizes gas', async function () {
@@ -1333,7 +1336,11 @@ describe('MetaMask', function () {
       await driver.delay(1000);
 
       await driver.clickElement('.page-container__footer-button');
-      await driver.wait(until.stalenessOf(gasModal));
+
+      // wait for the gas modal to be removed from DOM.
+      await driver.waitForSelector('span .modal', {
+        state: 'detached',
+      });
 
       const gasFeeInEth = await driver.findElement(
         '.confirm-approve-content__transaction-details-content__secondary-fee',
@@ -1346,10 +1353,9 @@ describe('MetaMask', function () {
         '.confirm-approve-content__small-blue-text.cursor-pointer',
       );
       await editButtons[1].click();
-      await driver.delay(regularDelayMs);
 
-      const permissionModal = await driver.findElement('span .modal');
-
+      // wait for permission modal to be visible
+      await driver.waitForSelector('span .modal');
       const radioButtons = await driver.findClickableElements(
         '.edit-approval-permission__edit-section__radio-button',
       );
@@ -1361,9 +1367,9 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
 
       await driver.clickElement({ text: 'Save', tag: 'button' });
-      await driver.delay(regularDelayMs);
 
-      await driver.wait(until.stalenessOf(permissionModal));
+      // wait for permission modal to be removed from DOM.
+      await driver.waitForSelector('span .modal', { state: 'detached' });
 
       const permissionInfo = await driver.findElements(
         '.confirm-approve-content__medium-text',
@@ -1385,10 +1391,12 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 3;
       }, 10000);
 
-      const txStatuses = await driver.findElements('.list-item__heading');
-      await driver.wait(
-        until.elementTextMatches(txStatuses[0], /Approve TST spend limit/u),
-      );
+      await driver.waitForSelector({
+        // Select only the heading of the first entry in the transaction list.
+        css:
+          '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+        text: 'Approve TST spend limit',
+      });
     });
   });
 
@@ -1420,10 +1428,10 @@ describe('MetaMask', function () {
         return pendingTxes.length === 1;
       }, 10000);
 
-      const [txListValue] = await driver.findElements(
-        '.transaction-list-item__primary-currency',
-      );
-      await driver.wait(until.elementTextMatches(txListValue, /-1.5\s*TST/u));
+      await driver.waitForSelector({
+        css: '.transaction-list-item__primary-currency',
+        text: '-1.5 TST',
+      });
       await driver.clickElement('.transaction-list-item');
       await driver.delay(regularDelayMs);
     });
@@ -1442,12 +1450,18 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 4;
       }, 10000);
 
-      const txValues = await driver.findElements(
-        '.transaction-list-item__primary-currency',
-      );
-      await driver.wait(until.elementTextMatches(txValues[0], /-1.5\s*TST/u));
-      const txStatuses = await driver.findElements('.list-item__heading');
-      await driver.wait(until.elementTextMatches(txStatuses[0], /Send TST/u));
+      await driver.waitForSelector({
+        // Select the heading of the first transaction list item in the
+        // completed transaction list with text matching Send TST
+        css:
+          '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+        text: 'Send TST',
+      });
+
+      await driver.waitForSelector({
+        css: '.transaction-list-item__primary-currency',
+        text: '-1.5 TST',
+      });
     });
   });
 
@@ -1480,12 +1494,13 @@ describe('MetaMask', function () {
         return pendingTxes.length === 1;
       }, 10000);
 
-      const [txtListHeading] = await driver.findElements(
-        '.transaction-list-item .list-item__heading',
-      );
-      await driver.wait(
-        until.elementTextMatches(txtListHeading, /Approve TST spend limit/u),
-      );
+      await driver.waitForSelector({
+        // Selects only the very first transaction list item immediately following the 'Pending' header
+        css:
+          '.transaction-list__pending-transactions .transaction-list__header + .transaction-list-item .list-item__heading',
+        text: 'Approve TST spend limit',
+      });
+
       await driver.clickElement('.transaction-list-item');
       await driver.delay(regularDelayMs);
     });
@@ -1517,10 +1532,11 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 5;
       }, 10000);
 
-      const txStatuses = await driver.findElements('.list-item__heading');
-      await driver.wait(
-        until.elementTextMatches(txStatuses[0], /Approve TST spend limit/u),
-      );
+      await driver.waitForSelector({
+        css:
+          '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+        text: 'Approve TST spend limit',
+      });
     });
   });
 
@@ -1530,13 +1546,15 @@ describe('MetaMask', function () {
 
       await driver.clickElement('[data-testid="token-options__hide"]');
 
-      const confirmHideModal = await driver.findElement('span .modal');
+      // wait for confirm hide modal to be visible
+      await driver.waitForSelector('span .modal');
 
       await driver.clickElement(
         '[data-testid="hide-token-confirmation__hide"]',
       );
 
-      await driver.wait(until.stalenessOf(confirmHideModal));
+      // wait for confirm hide modal to be removed from DOM.
+      await driver.waitForSelector('span .modal', { state: 'detached' });
     });
   });
 
@@ -1562,10 +1580,10 @@ describe('MetaMask', function () {
     });
 
     it('renders the balance for the chosen token', async function () {
-      const balance = await driver.findElement(
-        '.token-overview__primary-balance',
-      );
-      await driver.wait(until.elementTextMatches(balance, /0\s*BAT/u));
+      await driver.waitForSelector({
+        css: '.token-overview__primary-balance',
+        text: '0 BAT',
+      });
       await driver.delay(regularDelayMs);
     });
   });
@@ -1658,13 +1676,15 @@ describe('MetaMask', function () {
       await driver.clickElement('.btn-danger');
       await driver.delay(regularDelayMs);
 
-      const confirmDeleteNetworkModal = await driver.findElement('span .modal');
+      // wait for confirm delete modal to be visible.
+      await driver.waitForSelector('span .modal');
 
       await driver.clickElement(
         '.button.btn-danger.modal-container__footer-button',
       );
 
-      await driver.wait(until.stalenessOf(confirmDeleteNetworkModal));
+      // wait for confirm delete modal to be removed from DOM.
+      await driver.waitForSelector('span .modal', { state: 'detached' });
 
       const newNetworkListItems = await driver.findElements(
         '.networks-tab__networks-list-name',
