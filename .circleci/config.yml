@@ -501,6 +501,9 @@ jobs:
       - run:
           name: test:coverage
           command: yarn test:coverage
+      - run:
+          name: test:coverage:jest
+          command: yarn test:coverage:jest
       - persist_to_workspace:
           root: .
           paths:
