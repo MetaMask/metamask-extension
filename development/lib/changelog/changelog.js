@@ -234,6 +234,36 @@ class Changelog {
   }
 
   /**
+   * Migrate all unreleased changes to a release section.
+   *
+   * Changes are migrated in their existing categories, and placed above any
+   * pre-existing changes in that category.
+   *
+   * @param {Version} version - The release version to migrate unreleased
+   *   changes to.
+   */
+  migrateUnreleasedChangesToRelease(version) {
+    const releaseChanges = this._changes[version];
+    if (!releaseChanges) {
+      throw new Error(`Specified release version does not exist: '${version}'`);
+    }
+
+    const unreleasedChanges = this._changes[unreleased];
+
+    for (const category of Object.keys(unreleasedChanges)) {
+      if (releaseChanges[category]) {
+        releaseChanges[category] = [
+          ...unreleasedChanges[category],
+          ...releaseChanges[category],
+        ];
+      } else {
+        releaseChanges[category] = unreleasedChanges[category];
+      }
+    }
+    this._changes[unreleased] = {};
+  }
+
+  /**
    * Gets the metadata for all releases.
    * @returns {Array<ReleaseMetadata>} The metadata for each release.
    */
