@@ -113,6 +113,10 @@ module.exports = {
       },
     },
     {
+      files: ['**/pages/swaps/*.test.js'],
+      extends: ['@metamask/eslint-config/config/jest'],
+    },
+    {
       files: [
         'development/**/*.js',
         'test/e2e/benchmark.js',
