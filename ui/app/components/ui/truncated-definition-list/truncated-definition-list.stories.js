@@ -20,13 +20,13 @@ const basic = {
 const advanced = {
   'Network Name': 'Ethereum Mainnet',
   'Chain ID': '1',
-  Ticker: 'ETH',
+  'Ticker': 'ETH',
 };
 
 const tooltips = {
   'Network Name': 'The name that is associated with this network',
   'Chain ID': 'The numeric value representing the ID of this network',
-  Ticker: 'The currency symbol of the primary currency for this network',
+  'Ticker': 'The currency symbol of the primary currency for this network',
 };
 
 export const truncatedDefinitionList = () => (

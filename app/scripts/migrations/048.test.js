@@ -352,13 +352,13 @@ describe('migration #48', function () {
       data: {
         AddressBookController: {
           addressBook: {
-            1: {
+            '1': {
               address1: {
                 chainId: '1',
                 foo: 'bar',
               },
             },
-            100: {
+            '100': {
               address1: {
                 chainId: '100',
                 foo: 'bar',
@@ -417,7 +417,7 @@ describe('migration #48', function () {
       data: {
         AddressBookController: {
           addressBook: {
-            2: {
+            '2': {
               address1: {
                 chainId: '2',
                 key2: 'kaplar',
@@ -490,7 +490,7 @@ describe('migration #48', function () {
         AddressBookController: {
           addressBook: {
             '0x1': { foo: { bar: 'baz' } },
-            kaplar: { foo: { bar: 'baz' } },
+            'kaplar': { foo: { bar: 'baz' } },
           },
           bar: {
             baz: 'buzz',
@@ -506,7 +506,7 @@ describe('migration #48', function () {
       AddressBookController: {
         addressBook: {
           '0x1': { foo: { bar: 'baz' } },
-          kaplar: { foo: { bar: 'baz' } },
+          'kaplar': { foo: { bar: 'baz' } },
         },
         bar: {
           baz: 'buzz',

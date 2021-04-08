@@ -199,7 +199,7 @@ async function start() {
     body: JSON_PAYLOAD,
     headers: {
       'User-Agent': 'metamaskbot',
-      Authorization: `token ${GITHUB_COMMENT_TOKEN}`,
+      'Authorization': `token ${GITHUB_COMMENT_TOKEN}`,
     },
   });
   if (!response.ok) {

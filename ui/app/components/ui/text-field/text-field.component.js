@@ -18,8 +18,8 @@ const styles = {
     '&$materialError': {
       color: '#aeaeae',
     },
-    fontWeight: '400',
-    color: '#aeaeae',
+    'fontWeight': '400',
+    'color': '#aeaeae',
   },
   materialFocused: {},
   materialUnderline: {
@@ -32,7 +32,7 @@ const styles = {
     color: '#aeaeae',
   },
   materialWhitePaddedInput: {
-    padding: '8px',
+    'padding': '8px',
 
     '&::placeholder': {
       color: '#aeaeae',
@@ -61,12 +61,12 @@ const styles = {
     'label + &': {
       marginTop: '9px',
     },
-    border: '1px solid #BBC0C5',
-    height: '48px',
-    borderRadius: '6px',
-    padding: '0 16px',
-    display: 'flex',
-    alignItems: 'center',
+    'border': '1px solid #BBC0C5',
+    'height': '48px',
+    'borderRadius': '6px',
+    'padding': '0 16px',
+    'display': 'flex',
+    'alignItems': 'center',
     '&$inputFocused': {
       border: '1px solid #2f9ae0',
     },
@@ -188,8 +188,8 @@ const getBorderedThemeInputProps = ({
 });
 
 const themeToInputProps = {
-  material: getMaterialThemeInputProps,
-  bordered: getBorderedThemeInputProps,
+  'material': getMaterialThemeInputProps,
+  'bordered': getBorderedThemeInputProps,
   'material-white-padded': getMaterialWhitePaddedThemeInputProps,
 };
 

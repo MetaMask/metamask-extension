@@ -36,11 +36,11 @@ export default function IconButton({
 }
 
 IconButton.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  Icon: PropTypes.func.isRequired,
-  disabled: PropTypes.bool,
-  label: PropTypes.string.isRequired,
-  tooltipRender: PropTypes.func,
-  className: PropTypes.string,
+  'onClick': PropTypes.func.isRequired,
+  'Icon': PropTypes.func.isRequired,
+  'disabled': PropTypes.bool,
+  'label': PropTypes.string.isRequired,
+  'tooltipRender': PropTypes.func,
+  'className': PropTypes.string,
   'data-testid': PropTypes.string,
 };

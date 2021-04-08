@@ -5,16 +5,16 @@ import DropdownSearchList from '../dropdown-search-list';
 import TextField from '../../../components/ui/text-field';
 
 const characterWidthMap = {
-  1: 5.86,
-  2: 10.05,
-  3: 10.45,
-  4: 11.1,
-  5: 10,
-  6: 10.06,
-  7: 9.17,
-  8: 10.28,
-  9: 10.06,
-  0: 11.22,
+  '1': 5.86,
+  '2': 10.05,
+  '3': 10.45,
+  '4': 11.1,
+  '5': 10,
+  '6': 10.06,
+  '7': 9.17,
+  '8': 10.28,
+  '9': 10.06,
+  '0': 11.22,
   '.': 4.55,
 };
 

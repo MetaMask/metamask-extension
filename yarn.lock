@@ -2689,10 +2689,20 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.1"
 
-"@metamask/eslint-config@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-5.0.0.tgz#70c1ca854ce9b3b1cabd89cb736e8bb36127d164"
-  integrity sha512-eZt17NofPMmtoNjmBGOhUdAmyL0C+2/smtqAkVhpzZsU2ZGv+4Kekn8p8gcNONOYN8EotpWUxGkN1CTdVLdWZw==
+"@metamask/eslint-config-mocha@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eslint-config-mocha/-/eslint-config-mocha-6.0.0.tgz#407fc07d4bdfbc79b64989fa9a56a5a671aa4721"
+  integrity sha512-Hf1JYLWsW9JQWWwlLHltK1l0wqLOjCF0z5V2Dwt0oGUjFdAoVm8fOa2TisrgHNHYuAtyd+ZaIEm/xQce1L2ovg==
+
+"@metamask/eslint-config-nodejs@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eslint-config-nodejs/-/eslint-config-nodejs-6.0.0.tgz#df77bb35b91556030f1b23ad4ff51c1caf033339"
+  integrity sha512-nx7VhJRpJKQrcdDvy2bLCSWqBmWftgqxyG+BUw06XcWQzbmZTn94EXdLlH6zTQxmR4C+m+AOy5ung0NSUwmY3g==
+
+"@metamask/eslint-config@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-6.0.0.tgz#ec53e8ab278073e882411ed89705bc7d06b78c81"
+  integrity sha512-LyakGYGwM8UQOGhwWa+5erAI1hXuiTgf/y7USzOomX6H9KiuY09IAUYnPh7ToPG2sedD2F48UF1bUm8yvCoZOw==
 
 "@metamask/eth-ledger-bridge-keyring@^0.3.0":
   version "0.3.0"

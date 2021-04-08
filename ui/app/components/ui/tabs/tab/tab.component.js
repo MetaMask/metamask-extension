@@ -31,13 +31,13 @@ const Tab = (props) => {
 };
 
 Tab.propTypes = {
-  activeClassName: PropTypes.string,
-  className: PropTypes.string,
+  'activeClassName': PropTypes.string,
+  'className': PropTypes.string,
   'data-testid': PropTypes.string,
-  isActive: PropTypes.bool, // required, but added using React.cloneElement
-  name: PropTypes.string.isRequired,
-  onClick: PropTypes.func,
-  tabIndex: PropTypes.number, // required, but added using React.cloneElement
+  'isActive': PropTypes.bool, // required, but added using React.cloneElement
+  'name': PropTypes.string.isRequired,
+  'onClick': PropTypes.func,
+  'tabIndex': PropTypes.number, // required, but added using React.cloneElement
 };
 
 Tab.defaultProps = {
