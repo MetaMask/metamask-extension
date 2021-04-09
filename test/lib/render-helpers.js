@@ -43,11 +43,16 @@ export function mountWithRouter(component, store = {}, pathname = '/') {
 }
 
 export function renderWithProvider(component, store) {
-  const Wrapper = () => (
-    <Provider store={store}>
+  const Wrapper = () =>
+    store ? (
+      <Provider store={store}>
+        <MemoryRouter initialEntries={['/']} initialIndex={0}>
+          <LegacyI18nProvider>{component}</LegacyI18nProvider>
+        </MemoryRouter>
+      </Provider>
+    ) : (
       <LegacyI18nProvider>{component}</LegacyI18nProvider>
-    </Provider>
-  );
+    );
 
   return render(<Wrapper />);
 }
