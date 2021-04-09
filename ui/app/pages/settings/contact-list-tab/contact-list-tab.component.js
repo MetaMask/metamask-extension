@@ -48,9 +48,9 @@ export default class ContactListTab extends Component {
         <div className="address-book__container">
           <div>
             <img src="/images/address-book.svg" alt=""/>
-            <h1>Build you contact list</h1>
-            <p>Add friends and addresses you trust</p>
-            <a 
+            <h4 className="address-book__title">Build you contact list</h4>
+            <p className="address-book__sub-title">Add friends and addresses you trust</p>
+            <a className="address-book__link" 
               onClick={() => {
                 history.push(CONTACT_ADD_ROUTE);
             }}>

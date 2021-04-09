@@ -64,6 +64,19 @@
     text-align: center;
   }
 
+  &__title {
+    @include H4;
+    font-weight: 600
+  }
+
+  &__sub-title {
+    font-size: small;
+  }
+
+  &__link {
+    color: #037DD6;
+  }
+
   &__input {
     @include H4;
 
