@@ -35,6 +35,7 @@ const TOKEN_TRANSFER_LOG_TOPIC_HASH =
   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
 
 const CACHE_REFRESH_ONE_HOUR = 3600000;
+const CACHE_REFRESH_FIVE_MINUTES = 300000;
 
 const getBaseApi = function (type, chainId = MAINNET_CHAIN_ID) {
   switch (type) {
@@ -290,7 +291,7 @@ export async function fetchTokens(chainId) {
   const tokens = await fetchWithCache(
     tokenUrl,
     { method: 'GET' },
-    { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR },
+    { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
   );
   const filteredTokens = [
     SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId],
