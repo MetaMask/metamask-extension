@@ -445,6 +445,9 @@ jobs:
           path: coverage
           destination: coverage
       - store_artifacts:
+          path: jest-coverage
+          destination: jest-coverage
+      - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       # important: generate lavamoat viz AFTER uploading builds as artifacts
@@ -509,6 +512,7 @@ jobs:
           paths:
             - .nyc_output
             - coverage
+            - jest-coverage
   test-unit-global:
     executor: node-browsers
     steps:
