@@ -29,6 +29,7 @@ app/.DS_Store
 
 storybook-build/
 coverage/
+jest-coverage/
 dist
 builds/
 builds.zip

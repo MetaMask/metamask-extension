@@ -26,6 +26,7 @@ module.exports = {
     'test-*/**',
     'docs/**',
     'coverage/',
+    'jest-coverage/',
     'development/chromereload.js',
     'app/vendor/**',
     'test/e2e/send-eth-with-private-key-test/**',
@@ -107,10 +108,15 @@ module.exports = {
     },
     {
       files: ['**/*.test.js'],
+      excludedFiles: ['ui/app/pages/swaps/**/*.test.js'],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
         'mocha/no-setup-in-describe': 'off',
       },
+    },
+    {
+      files: ['ui/app/pages/swaps/**/*.test.js'],
+      extends: ['@metamask/eslint-config-jest'],
     },
     {
       files: [
@@ -135,6 +141,7 @@ module.exports = {
         'test/lib/wait-until-called.js',
         'test/env.js',
         'test/setup.js',
+        'jest.config.js',
       ],
       parserOptions: {
         sourceType: 'script',

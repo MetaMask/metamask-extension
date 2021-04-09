@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Provider } from 'react-redux';
@@ -6,7 +5,7 @@ import configureMockStore from 'redux-mock-store';
 import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
-describe('View Price Quote Difference', function () {
+describe('View Price Quote Difference', () => {
   const t = (key) => `translate ${key}`;
 
   const state = {
@@ -98,21 +97,21 @@ describe('View Price Quote Difference', function () {
     );
   }
 
-  afterEach(function () {
+  afterEach(() => {
     component.unmount();
   });
 
-  it('does not render when there is no quote', function () {
+  it('does not render when there is no quote', () => {
     const props = { ...DEFAULT_PROPS, usedQuote: null };
     renderComponent(props);
 
     const wrappingDiv = component.find(
       '.view-quote__price-difference-warning-wrapper',
     );
-    assert.strictEqual(wrappingDiv.length, 0);
+    expect(wrappingDiv).toHaveLength(0);
   });
 
-  it('does not render when the item is in the low bucket', function () {
+  it('does not render when the item is in the low bucket', () => {
     const props = { ...DEFAULT_PROPS };
     props.usedQuote.priceSlippage.bucket = 'low';
 
@@ -120,31 +119,31 @@ describe('View Price Quote Difference', function () {
     const wrappingDiv = component.find(
       '.view-quote__price-difference-warning-wrapper',
     );
-    assert.strictEqual(wrappingDiv.length, 0);
+    expect(wrappingDiv).toHaveLength(0);
   });
 
-  it('displays an error when in medium bucket', function () {
+  it('displays an error when in medium bucket', () => {
     const props = { ...DEFAULT_PROPS };
     props.usedQuote.priceSlippage.bucket = 'medium';
 
     renderComponent(props);
-    assert.strictEqual(component.html().includes('medium'), true);
+    expect(component.html()).toContain('medium');
   });
 
-  it('displays an error when in high bucket', function () {
+  it('displays an error when in high bucket', () => {
     const props = { ...DEFAULT_PROPS };
     props.usedQuote.priceSlippage.bucket = 'high';
 
     renderComponent(props);
-    assert.strictEqual(component.html().includes('high'), true);
+    expect(component.html()).toContain('high');
   });
 
-  it('displays a fiat error when calculationError is present', function () {
+  it('displays a fiat error when calculationError is present', () => {
     const props = { ...DEFAULT_PROPS, priceSlippageUnknownFiatValue: true };
     props.usedQuote.priceSlippage.calculationError =
       'Could not determine price.';
 
     renderComponent(props);
-    assert.strictEqual(component.html().includes('fiat-error'), true);
+    expect(component.html()).toContain('fiat-error');
   });
 });
