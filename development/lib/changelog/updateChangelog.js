@@ -142,7 +142,7 @@ async function updateChangelog({
       .getReleases()
       .find((release) => release.version === currentVersion)
   ) {
-    changelog.addRelease({ currentVersion });
+    changelog.addRelease({ version: currentVersion });
   }
 
   if (isReleaseCandidate && hasUnreleasedChanges) {
