@@ -84,7 +84,9 @@ describe('Metamask Responsive UI', function () {
 
         // Show account information
         // show account details dropdown menu
-        await driver.clickElement('[data-testid="account-options-menu-button"]');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         const options = await driver.findElements(
           '.account-options-menu .menu-item',
         );
