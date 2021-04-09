@@ -31,7 +31,6 @@ import {
   prepareToLeaveSwaps,
   fetchAndSetSwapsGasPriceInfo,
   fetchSwapsLiveness,
-  getIsFeatureFlagLoaded,
 } from '../../ducks/swaps/swaps';
 import {
   AWAITING_SWAP_ROUTE,
@@ -88,6 +87,7 @@ export default function Swap() {
 
   const [inputValue, setInputValue] = useState(fetchParams?.value || '');
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 3);
+  const [isFeatureFlagLoaded, setIsFeatureFlagLoaded] = useState(false);
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -101,7 +101,6 @@ export default function Swap() {
   const swapsEnabled = useSelector(getSwapsFeatureLiveness);
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
-  const isFeatureFlagLoaded = useSelector(getIsFeatureFlagLoaded);
 
   const {
     balance: ethBalance,
@@ -204,11 +203,15 @@ export default function Swap() {
   });
 
   useEffect(() => {
-    dispatch(fetchSwapsLiveness());
+    const fetchSwapsLivenessWrapper = async () => {
+      await dispatch(fetchSwapsLiveness());
+      setIsFeatureFlagLoaded(true);
+    };
+    fetchSwapsLivenessWrapper();
     return () => {
       exitEventRef.current();
     };
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (swapsErrorKey && !isSwapsErrorRoute) {

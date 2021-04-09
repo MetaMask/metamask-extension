@@ -18,9 +18,7 @@ import {
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { updateSendToken } from '../../../store/actions';
-import {
-  setSwapsFromToken,
-} from '../../../ducks/swaps/swaps';
+import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import {
   getAssetImages,
   getCurrentKeyring,

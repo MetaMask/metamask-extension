@@ -71,7 +71,6 @@ const initialState = {
     topAggId: null,
     routeState: '',
     swapsFeatureIsLive: false,
-    isFeatureFlagLoaded: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
   },
 };
@@ -451,7 +450,7 @@ export default class SwapsController {
   setSwapsLiveness(swapsFeatureIsLive) {
     const { swapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: { ...swapsState, swapsFeatureIsLive, isFeatureFlagLoaded: true },
+      swapsState: { ...swapsState, swapsFeatureIsLive },
     });
   }
 
@@ -464,7 +463,6 @@ export default class SwapsController {
         tokens: swapsState.tokens,
         fetchParams: swapsState.fetchParams,
         swapsFeatureIsLive: swapsState.swapsFeatureIsLive,
-        isFeatureFlagLoaded: swapsState.isFeatureFlagLoaded,
         swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
       },
     });

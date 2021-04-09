@@ -32,9 +32,7 @@ import {
 import SwapIcon from '../../ui/icon/swap-icon.component';
 import BuyIcon from '../../ui/icon/overview-buy-icon.component';
 import SendIcon from '../../ui/icon/overview-send-icon.component';
-import {
-  setSwapsFromToken,
-} from '../../../ducks/swaps/swaps';
+import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import IconButton from '../../ui/icon-button';
 import WalletOverview from './wallet-overview';
 
