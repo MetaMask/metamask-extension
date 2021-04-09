@@ -2,7 +2,7 @@ module.exports = {
   restoreMocks: true,
   coverageDirectory: 'jest-coverage/',
   coverageThreshold: {
-    'global': {
+    global: {
       branches: 6.3,
       functions: 9.43,
       lines: 8.66,
