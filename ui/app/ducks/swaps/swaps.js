@@ -217,6 +217,9 @@ const getSwapsState = (state) => state.metamask.swapsState;
 export const getSwapsFeatureLiveness = (state) =>
   state.metamask.swapsState.swapsFeatureIsLive;
 
+export const getIsFeatureFlagLoaded = (state) =>
+  state.metamask.swapsState.isFeatureFlagLoaded;
+
 export const getSwapsQuoteRefreshTime = (state) =>
   state.metamask.swapsState.swapsQuoteRefreshTime;
 
@@ -361,6 +364,18 @@ export const fetchAndSetSwapsGasPriceInfo = () => {
     }
   };
 };
+
+export const fetchSwapsLiveness = () => {
+  return async (dispatch, getState) => {
+    let swapsFeatureIsLive = false;
+    try {
+      swapsFeatureIsLive = await fetchSwapsFeatureLiveness(getCurrentChainId(getState()));
+    } catch (error) {
+      log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
+    }
+    await dispatch(setSwapsLiveness(swapsFeatureIsLive));
+  }
+}
 
 export const fetchQuotesAndSetQuoteState = (
   history,

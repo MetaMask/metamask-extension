@@ -30,6 +30,8 @@ import {
   getSwapsFeatureLiveness,
   prepareToLeaveSwaps,
   fetchAndSetSwapsGasPriceInfo,
+  fetchSwapsLiveness,
+  getIsFeatureFlagLoaded,
 } from '../../ducks/swaps/swaps';
 import {
   AWAITING_SWAP_ROUTE,
@@ -58,6 +60,7 @@ import { currentNetworkTxListSelector } from '../../selectors';
 import { useNewMetricEvent } from '../../hooks/useMetricEvent';
 
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
+import LoadingScreen from '../../components/ui/loading-screen';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 import {
   fetchTokens,
@@ -98,6 +101,7 @@ export default function Swap() {
   const swapsEnabled = useSelector(getSwapsFeatureLiveness);
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
+  const isFeatureFlagLoaded = useSelector(getIsFeatureFlagLoaded);
 
   const {
     balance: ethBalance,
@@ -229,6 +233,14 @@ export default function Swap() {
 
   if (!isSwapsChain) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+  }
+
+  useEffect(() => {
+    dispatch(fetchSwapsLiveness());
+  }, []);
+
+  if (!isFeatureFlagLoaded) {
+    return <LoadingScreen />;
   }
 
   return (
