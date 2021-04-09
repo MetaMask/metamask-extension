@@ -107,7 +107,7 @@ module.exports = {
     },
     {
       files: ['**/*.test.js'],
-      excludedFiles: ['**/swaps/**/*.test.js'],
+      excludedFiles: ['ui/pages/swaps/**/*.test.js'],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
         'mocha/no-setup-in-describe': 'off',
