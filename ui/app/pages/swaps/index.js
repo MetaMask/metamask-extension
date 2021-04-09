@@ -204,6 +204,7 @@ export default function Swap() {
   });
 
   useEffect(() => {
+    dispatch(fetchSwapsLiveness());
     return () => {
       exitEventRef.current();
     };
@@ -234,10 +235,6 @@ export default function Swap() {
   if (!isSwapsChain) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
-
-  useEffect(() => {
-    dispatch(fetchSwapsLiveness());
-  }, []);
 
   if (!isFeatureFlagLoaded) {
     return <LoadingScreen />;
