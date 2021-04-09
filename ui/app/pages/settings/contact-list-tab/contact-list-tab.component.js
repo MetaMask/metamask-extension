@@ -30,18 +30,36 @@ export default class ContactListTab extends Component {
     const contacts = addressBook.filter(({ name }) => Boolean(name));
     const nonContacts = addressBook.filter(({ name }) => !name);
 
-    return (
-      <div>
-        <ContactList
-          searchForContacts={() => contacts}
-          searchForRecents={() => nonContacts}
-          selectRecipient={(address) => {
-            history.push(`${CONTACT_VIEW_ROUTE}/${address}`);
-          }}
-          selectedAddress={selectedAddress}
-        />
-      </div>
-    );
+    if(addressBook.length) {
+      return (
+        <div>
+          <ContactList
+            searchForContacts={() => contacts}
+            searchForRecents={() => nonContacts}
+            selectRecipient={(address) => {
+              history.push(`${CONTACT_VIEW_ROUTE}/${address}`);
+            }}
+            selectedAddress={selectedAddress}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div className="address-book__container">
+          <div>
+            <img src="/images/address-book.svg" alt=""/>
+            <h1>Build you contact list</h1>
+            <p>Add friends and addresses you trust</p>
+            <a 
+              onClick={() => {
+                history.push(CONTACT_ADD_ROUTE);
+            }}>
+              + Add contact
+            </a>
+          </div>
+        </div>
+      )
+    }
   }
 
   renderAddButton() {

@@ -11,6 +11,10 @@
   @media screen and (max-width: 576px) {
     flex: 1;
     max-width: 100%;
+
+    &__container {
+      min-height: 100%;
+    }
   }
 
   &__entry {
@@ -49,6 +53,15 @@
       justify-content: flex-end;
       color: $accent-red;
     }
+  }
+
+  &__container {
+    margin: 0 auto;
+    min-height: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   }
 
   &__input {
