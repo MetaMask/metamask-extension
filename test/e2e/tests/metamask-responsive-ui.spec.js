@@ -1,13 +1,11 @@
 const { strict: assert } = require('assert');
-const { until } = require('selenium-webdriver');
+const { Key, until } = require('selenium-webdriver');
 const { withFixtures, tinyDelayMs } = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
 
 describe('Metamask Responsive UI', function () {
-  it('Onboarding and send flow with responsive UI', async function () {
+  it('Creating a new wallet', async function () {
     const driverOptions = { responsive: true };
-    const testSeedPhrase =
-      'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
     await withFixtures(
       { fixtures: 'onboarding', driverOptions, title: this.test.title },
@@ -35,19 +33,15 @@ describe('Metamask Responsive UI', function () {
         const passwordBoxConfirm = await driver.findElement(
           '.first-time-flow__form #confirm-password',
         );
-
         await passwordBox.sendKeys('correct horse battery staple');
         await passwordBoxConfirm.sendKeys('correct horse battery staple');
-
         await driver.clickElement('.first-time-flow__checkbox');
-
         await driver.clickElement('.first-time-flow__form button');
 
         // reveals the seed phrase
         await driver.clickElement(
           '.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button',
         );
-
         const revealedSeedPhrase = await driver.findElement(
           '.reveal-seed-phrase__secret-words',
         );
@@ -68,11 +62,9 @@ describe('Metamask Responsive UI', function () {
 
         // can retype the seed phrase
         const words = seedPhrase.split(' ');
-
         for (const word of words) {
           await clickWordAndWait(word);
         }
-
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // clicks through the success screen
@@ -103,7 +95,19 @@ describe('Metamask Responsive UI', function () {
         );
         assert.equal(await lockButton.getText(), 'Lock');
         await lockButton.click();
-        await driver.delay(tinyDelayMs);
+      },
+    );
+  });
+
+  it('Importing existing wallet from login page', async function () {
+    const driverOptions = { responsive: true };
+    const testSeedPhrase =
+      'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
+
+    await withFixtures(
+      { fixtures: 'imported-account', driverOptions, title: this.test.title },
+      async ({ driver }) => {
+        await driver.navigate();
 
         // Import seed phrase
         const restoreSeedLink = await driver.findClickableElement(
@@ -133,13 +137,48 @@ describe('Metamask Responsive UI', function () {
         await driver.clickElement({
           xpath: `//span[contains(@class, 'network-name-item') and contains(text(), 'Localhost 8545')]`,
         });
-        // await driver.delay(largeDelayMs * 2);
 
         // balance renders
         const balance = await driver.findElement(
           '[data-testid="eth-overview__primary-currency"]',
         );
         await driver.wait(until.elementTextMatches(balance, /100\s*ETH/u));
+
+        // logs out of the vault
+        await driver.clickElement('.account-menu__icon');
+
+        const lockButton = await driver.findClickableElement(
+          '.account-menu__lock-button',
+        );
+        assert.equal(await lockButton.getText(), 'Lock');
+        await lockButton.click();
+      },
+    );
+  });
+
+  it('Send Transaction from responsive window', async function () {
+    const driverOptions = { responsive: true };
+    const ganacheOptions = {
+      accounts: [
+        {
+          secretKey:
+            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+          balance: 25000000000000000000,
+        },
+      ],
+    };
+    await withFixtures(
+      {
+        fixtures: 'imported-account',
+        driverOptions,
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        const passwordField = await driver.findElement('#password');
+        await passwordField.sendKeys('correct horse battery staple');
+        await passwordField.sendKeys(Key.ENTER);
 
         // Send ETH from inside MetaMask
         // starts to send a transaction

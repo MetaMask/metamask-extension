@@ -24,13 +24,6 @@
         "chainId": "0x539",
         "nickname": "Localhost 8545"
       },
-      "previousProviderStore": {
-        "ticker": "ETH",
-        "type": "rpc",
-        "rpcUrl": "http://localhost:8545",
-        "chainId": "0x539",
-        "nickname": "Localhost 8545"
-      },
       "network": "1337"
     },
     "CurrencyController": {
