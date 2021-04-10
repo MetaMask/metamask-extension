@@ -30,7 +30,7 @@ export default class ContactListTab extends Component {
     const contacts = addressBook.filter(({ name }) => Boolean(name));
     const nonContacts = addressBook.filter(({ name }) => !name);
 
-    if(addressBook.length) {
+    if (addressBook.length) {
       return (
         <div>
           <ContactList
@@ -43,40 +43,24 @@ export default class ContactListTab extends Component {
           />
         </div>
       );
-    } else {
-      return (
-        <div className="address-book__container">
-          <div>
-            <img src="/images/address-book.svg" alt=""/>
-            <h4 className="address-book__title">Build you contact list</h4>
-            <p className="address-book__sub-title">Add friends and addresses you trust</p>
-            <a className="address-book__link" 
-              onClick={() => {
-                history.push(CONTACT_ADD_ROUTE);
-            }}>
-              + Add contact
-            </a>
-          </div>
-        </div>
-      )
     }
-  }
-
-  renderAddButton() {
-    const { history } = this.props;
-
     return (
-      <div
-        className="address-book-add-button__button"
-        onClick={() => {
-          history.push(CONTACT_ADD_ROUTE);
-        }}
-      >
-        <img
-          className="account-menu__item-icon"
-          src="images/plus-btn-white.svg"
-          alt={this.context.t('addAccount')}
-        />
+      <div className="address-book__container">
+        <div>
+          <img src="/images/address-book.svg" alt="Address book icon" />
+          <h4 className="address-book__title">Build your contact list</h4>
+          <p className="address-book__sub-title">
+            Add friends and addresses you trust
+          </p>
+          <button
+            className="address-book__link"
+            onClick={() => {
+              history.push(CONTACT_ADD_ROUTE);
+            }}
+          >
+            + Add contact
+          </button>
+        </div>
       </div>
     );
   }
@@ -121,17 +105,10 @@ export default class ContactListTab extends Component {
   }
 
   render() {
-    const { addingContact } = this.props;
-
     return (
       <div className="address-book-wrapper">
         {this.renderAddressBookContent()}
         {this.renderContactContent()}
-        {!addingContact && (
-          <div className="address-book-add-button">
-            {this.renderAddButton()}
-          </div>
-        )}
       </div>
     );
   }

@@ -66,15 +66,19 @@
 
   &__title {
     @include H4;
-    font-weight: 600
+
+    font-weight: 600;
+    margin-bottom: 0.5em;
   }
 
   &__sub-title {
     font-size: small;
+    margin-bottom: 0.5em;
   }
 
   &__link {
-    color: #037DD6;
+    background-color: #fff;
+    color: #037dd6;
   }
 
   &__input {
