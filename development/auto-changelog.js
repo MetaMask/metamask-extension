@@ -1,12 +1,10 @@
 #!/usr/bin/env node
+/* eslint-disable node/no-process-exit */
+
 const fs = require('fs').promises;
 
-const path = require('path');
-const { version } = require('../app/manifest/_base.json');
-const { updateChangelog } = require('./lib/changelog/updateChangelog');
-const { unreleased } = require('./lib/changelog/constants');
-
-const REPO_URL = 'https://github.com/MetaMask/metamask-extension';
+const { updateChangelog } = require('./updateChangelog');
+const { unreleased } = require('./constants');
 
 const command = 'yarn update-changelog';
 
@@ -26,7 +24,22 @@ If the '--rc' flag is used and the section for the current release does not yet
 exist, it will be created.
 `;
 
+// eslint-disable-next-line node/no-process-env
+const npmPackageVersion = process.env.npm_package_version;
+// eslint-disable-next-line node/no-process-env
+const npmPackageRepositoryUrl = process.env.npm_package_repository_url;
+
 async function main() {
+  if (!npmPackageVersion) {
+    console.error(
+      `npm package version not found. Please run this as an npm script from a project with the 'version' field set.`,
+    );
+  } else if (!npmPackageRepositoryUrl) {
+    console.error(
+      `npm package repository URL not found. Please run this as an npm script from a project with the 'repository' field set.`,
+    );
+  }
+
   const args = process.argv.slice(2);
   let isReleaseCandidate = false;
 
@@ -44,15 +57,15 @@ async function main() {
     }
   }
 
-  const changelogFilename = path.resolve(__dirname, '..', 'CHANGELOG.md');
+  const changelogFilename = 'CHANGELOG.md';
   const changelogContent = await fs.readFile(changelogFilename, {
     encoding: 'utf8',
   });
 
   const newChangelogContent = await updateChangelog({
     changelogContent,
-    currentVersion: version,
-    repoUrl: REPO_URL,
+    currentVersion: npmPackageVersion,
+    repoUrl: npmPackageRepositoryUrl,
     isReleaseCandidate,
   });
 
