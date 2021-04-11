@@ -133,9 +133,9 @@ export default class AddNewContactModal extends PureComponent {
             <div className="address-book__view-contact__group__label--capitalized">
               {t('memo')}
             </div>
-            <TextField  
+            <TextField
               type="text"
-              multiline={true}
+              multiline
               id="memoInput"
               placeholder={t('addMemo')}
               rows={4}

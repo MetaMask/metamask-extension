@@ -10,6 +10,10 @@ import EditContact from './edit-contact';
 import AddContact from './add-contact';
 import ViewContact from './view-contact';
 
+AddressBookAddButton.propTypes = {
+  label: PropTypes.string,
+};
+
 function AddressBookAddButton(props) {
   const { label } = props;
   const dispatch = useDispatch();
