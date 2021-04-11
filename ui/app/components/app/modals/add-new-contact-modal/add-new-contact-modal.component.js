@@ -129,19 +129,16 @@ export default class AddNewContactModal extends PureComponent {
             )}
           </div>
 
-          <div className="add-to-address-book-modal__content">
+          <div className="add-to-address-book-modal__content add-new-contact-modal__textarea-wrapper">
             <div className="address-book__view-contact__group__label--capitalized">
               {t('memo')}
             </div>
-            <TextField
-              type="text"
-              multiline
+            <textarea
+              className="add-new-contact-modal__textarea"
               id="memoInput"
               placeholder={t('addMemo')}
-              rows={4}
               value={this.state.memo}
               onChange={(e) => this.setState({ memo: e.target.value })}
-              fullWidth
             />
           </div>
         </div>

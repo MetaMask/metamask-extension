@@ -1,0 +1,24 @@
+.add-new-contact-modal {
+  display: none;
+  &__textarea-wrapper {
+    margin-bottom: 8px;
+    display: inline-flex;
+    padding: 0;
+    position: relative;
+    min-width: 0;
+    flex-direction: column;
+    max-width: 350px;
+  }
+
+  &__textarea {
+    @include Paragraph;
+
+    /*rtl:ignore*/
+    direction: ltr;
+    border: 1px solid #cdcdcd;
+    border-radius: 6px;
+    background-color: #fff;
+    padding: 16px;
+    margin-top: 8px;
+  }
+}
