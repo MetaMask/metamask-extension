@@ -25,7 +25,7 @@
     "test:unit:jest": "jest",
     "test:unit:jest:watch": "jest --watch",
     "test:unit:jest:ci": "jest --maxWorkers=2",
-    "test:unit:lax": "mocha --exit --require test/env.js --require test/setup.js --ignore './app/scripts/controllers/permissions/*.test.js' --ignore './ui/app/pages/swaps/**/*.test.js' --recursive './{ui,app,shared}/**/*.test.js'",
+    "test:unit:lax": "mocha --exit --require test/env.js --require test/setup.js --ignore './app/scripts/controllers/permissions/*.test.js' --ignore './ui/app/**/swaps/**/*.test.js' --recursive './{ui,app,shared}/**/*.test.js'",
     "test:unit:strict": "mocha --exit --require test/env.js --require test/setup.js --recursive './app/scripts/controllers/permissions/*.test.js'",
     "test:unit:path": "mocha --exit --require test/env.js --require test/setup.js --recursive",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome test/e2e/run-all.sh",
