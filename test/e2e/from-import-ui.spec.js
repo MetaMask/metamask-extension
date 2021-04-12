@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { Key, until } = require('selenium-webdriver');
+const { until } = require('selenium-webdriver');
 
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const { regularDelayMs, largeDelayMs } = require('./helpers');
@@ -79,16 +79,14 @@ describe('Using MetaMask with an existing account', function () {
     });
 
     it('imports a seed phrase', async function () {
-      const [seedTextArea] = await driver.findElements(
+      await driver.fill(
         'input[placeholder="Paste seed phrase from clipboard"]',
+        testSeedPhrase,
       );
-      await seedTextArea.sendKeys(testSeedPhrase);
       await driver.delay(regularDelayMs);
 
-      const [password] = await driver.findElements('#password');
-      await password.sendKeys('correct horse battery staple');
-      const [confirmPassword] = await driver.findElements('#confirm-password');
-      confirmPassword.sendKeys('correct horse battery staple');
+      await driver.fill('#password', 'correct horse battery staple');
+      await driver.fill('#confirm-password', 'correct horse battery staple');
 
       await driver.clickElement('.first-time-flow__terms');
 
@@ -151,9 +149,8 @@ describe('Using MetaMask with an existing account', function () {
     });
 
     it('accepts the account password after lock', async function () {
-      const passwordField = await driver.findElement('#password');
-      await passwordField.sendKeys('correct horse battery staple');
-      await passwordField.sendKeys(Key.ENTER);
+      await driver.fill('#password', 'correct horse battery staple');
+      await driver.press('#password', driver.Key.ENTER);
       await driver.delay(largeDelayMs);
     });
   });
@@ -176,10 +173,7 @@ describe('Using MetaMask with an existing account', function () {
     });
 
     it('set account name', async function () {
-      const [accountName] = await driver.findElements(
-        '.new-account-create-form input',
-      );
-      await accountName.sendKeys('2nd account');
+      await driver.fill('.new-account-create-form input', '2nd account');
       await driver.delay(regularDelayMs);
 
       await driver.clickElement({ text: 'Create', tag: 'button' });
@@ -208,13 +202,12 @@ describe('Using MetaMask with an existing account', function () {
       await driver.clickElement('[data-testid="eth-overview-send"]');
       await driver.delay(regularDelayMs);
 
-      const inputAddress = await driver.findElement(
+      await driver.fill(
         'input[placeholder="Search, public address (0x), or ENS"]',
+        '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
       );
-      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
 
-      const inputAmount = await driver.findElement('.unit-input__input');
-      await inputAmount.sendKeys('1');
+      await driver.fill('.unit-input__input', '1');
 
       // Set the gas limit
       await driver.clickElement('.advanced-gas-options-btn');
@@ -262,8 +255,7 @@ describe('Using MetaMask with an existing account', function () {
     });
 
     it('enter private key', async function () {
-      const privateKeyInput = await driver.findElement('#private-key-box');
-      await privateKeyInput.sendKeys(testPrivateKey2);
+      await driver.fill('#private-key-box', testPrivateKey2);
       await driver.delay(regularDelayMs);
       await driver.clickElement({ text: 'Import', tag: 'button' });
       await driver.delay(regularDelayMs);
@@ -299,8 +291,7 @@ describe('Using MetaMask with an existing account', function () {
     });
 
     it('enter private key', async function () {
-      const privateKeyInput = await driver.findElement('#private-key-box');
-      await privateKeyInput.sendKeys(testPrivateKey3);
+      await driver.fill('#private-key-box', testPrivateKey3);
       await driver.delay(regularDelayMs);
       await driver.clickElement({ text: 'Import', tag: 'button' });
       await driver.delay(regularDelayMs);

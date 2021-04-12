@@ -77,15 +77,14 @@ describe('MetaMask', function () {
     });
 
     it('accepts a secure password', async function () {
-      const passwordBox = await driver.findElement(
+      await driver.fill(
         '.first-time-flow__form #create-password',
+        'correct horse battery staple',
       );
-      const passwordBoxConfirm = await driver.findElement(
+      await driver.fill(
         '.first-time-flow__form #confirm-password',
+        'correct horse battery staple',
       );
-
-      await passwordBox.sendKeys('correct horse battery staple');
-      await passwordBoxConfirm.sendKeys('correct horse battery staple');
 
       await driver.clickElement('.first-time-flow__checkbox');
 
@@ -131,10 +130,8 @@ describe('MetaMask', function () {
     });
 
     it('sends eth to the current account', async function () {
-      const addressInput = await driver.findElement('#address');
-      await addressInput.sendKeys(publicAddress);
+      await driver.fill('#address', publicAddress);
       await driver.delay(regularDelayMs);
-
       await driver.clickElement('#send');
 
       const txStatus = await driver.findElement('#success');

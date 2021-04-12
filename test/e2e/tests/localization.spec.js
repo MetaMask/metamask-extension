@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { Key } = require('selenium-webdriver');
 const { withFixtures } = require('../helpers');
 
 describe('Localization', function () {
@@ -17,9 +16,8 @@ describe('Localization', function () {
       { fixtures: 'localization', ganacheOptions, title: this.test.title },
       async ({ driver }) => {
         await driver.navigate();
-        const passwordField = await driver.findElement('#password');
-        await passwordField.sendKeys('correct horse battery staple');
-        await passwordField.sendKeys(Key.ENTER);
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
         const secondaryBalance = await driver.findElement(
           '[data-testid="eth-overview__secondary-currency"]',
         );

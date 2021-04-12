@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { By, Key } = require('selenium-webdriver');
 const { withFixtures, largeDelayMs } = require('../helpers');
 const ThreeboxMockServer = require('../mock-3box/threebox-mock-server');
 
@@ -30,9 +29,8 @@ describe('Threebox', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        const passwordField = await driver.findElement(By.css('#password'));
-        await passwordField.sendKeys('correct horse battery staple');
-        await passwordField.sendKeys(Key.ENTER);
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
 
         // turns on threebox syncing
         await driver.clickElement('.account-menu__icon');
@@ -55,9 +53,9 @@ describe('Threebox', function () {
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
 
         await driver.clickElement('.address-book-add-button__button');
-        const addAddressInputs = await driver.findElements('input');
-        await addAddressInputs[0].sendKeys('Test User Name 11');
-        await addAddressInputs[1].sendKeys(
+        await driver.fill('#nickname', 'Test User Name 11');
+        await driver.fill(
+          'input[placeholder="Search, public address (0x), or ENS"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
         await driver.delay(largeDelayMs * 2);
@@ -75,9 +73,8 @@ describe('Threebox', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        const passwordField = await driver.findElement(By.css('#password'));
-        await passwordField.sendKeys('correct horse battery staple');
-        await passwordField.sendKeys(Key.ENTER);
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
 
         // confirms the 3box restore notification
         await driver.clickElement('.home-notification__accept-button');

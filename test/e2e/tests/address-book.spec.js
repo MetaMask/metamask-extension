@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { Key, until } = require('selenium-webdriver');
+const { until } = require('selenium-webdriver');
 const { withFixtures } = require('../helpers');
 
 describe('Address Book', function () {
@@ -22,16 +22,13 @@ describe('Address Book', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        const passwordField = await driver.findElement('#password');
-        await passwordField.sendKeys('correct horse battery staple');
-        await passwordField.sendKeys(Key.ENTER);
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
-        const inputAddress = await driver.findElement(
+        await driver.fill(
           'input[placeholder="Search, public address (0x), or ENS"]',
-        );
-        await inputAddress.sendKeys(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 
@@ -39,17 +36,14 @@ describe('Address Book', function () {
 
         const addressBookAddModal = await driver.findElement('span .modal');
         await driver.findElement('.add-to-address-book-modal');
-        const addressBookInput = await driver.findElement(
-          '.add-to-address-book-modal__input',
-        );
-        await addressBookInput.sendKeys('Test Name 1');
+        await driver.fill('.add-to-address-book-modal__input', 'Test Name 1');
         await driver.clickElement(
           '.add-to-address-book-modal__footer .btn-primary',
         );
         await driver.wait(until.stalenessOf(addressBookAddModal));
 
         const inputAmount = await driver.findElement('.unit-input__input');
-        await inputAmount.sendKeys('1');
+        await inputAmount.fill('1');
 
         const inputValue = await inputAmount.getAttribute('value');
         assert.equal(inputValue, '1');
@@ -85,9 +79,8 @@ describe('Address Book', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        const passwordField = await driver.findElement('#password');
-        await passwordField.sendKeys('correct horse battery staple');
-        await passwordField.sendKeys(Key.ENTER);
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
         const recipientRowTitle = await driver.findElement(
@@ -99,8 +92,7 @@ describe('Address Book', function () {
           '.send__select-recipient-wrapper__group-item',
         );
 
-        const inputAmount = await driver.findElement('.unit-input__input');
-        await inputAmount.sendKeys('2');
+        await driver.fill('.unit-input__input', '2');
 
         await driver.clickElement({ text: 'Next', tag: 'button' });
 

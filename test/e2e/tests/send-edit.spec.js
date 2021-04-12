@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { Key, until } = require('selenium-webdriver');
+const { until } = require('selenium-webdriver');
 const {
   withFixtures,
   tinyDelayMs,
@@ -26,9 +26,8 @@ describe('Editing Confirm Transaction', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        const passwordField = await driver.findElement('#password');
-        await passwordField.sendKeys('correct horse battery staple');
-        await passwordField.sendKeys(Key.ENTER);
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
 
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
@@ -42,9 +41,7 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement(
           '.confirm-page-container-header__back-button',
         );
-        const inputAmount = await driver.findElement('.unit-input__input');
-        await inputAmount.clear();
-        await inputAmount.sendKeys('2.2');
+        await driver.fill('.unit-input__input', '2.2');
 
         await driver.clickElement('.advanced-gas-options-btn');
         await driver.delay(regularDelayMs);
@@ -55,12 +52,10 @@ describe('Editing Confirm Transaction', function () {
           '.advanced-gas-inputs__gas-edit-row__input',
         );
 
-        await gasPriceInput.clear();
-        await gasPriceInput.sendKeys('8');
+        await gasPriceInput.fill('8');
         await driver.delay(tinyDelayMs);
 
-        await gasLimitInput.clear();
-        await gasLimitInput.sendKeys('100000');
+        await gasLimitInput.fill('100000');
         await driver.delay(largeDelayMs);
 
         await driver.clickElement({ text: 'Save', tag: 'button' });

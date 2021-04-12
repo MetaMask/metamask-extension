@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { Key } = require('selenium-webdriver');
 const waitUntilCalled = require('../lib/wait-until-called');
 const { withFixtures } = require('./helpers');
 
@@ -33,9 +32,8 @@ describe('Segment metrics', function () {
         });
         await driver.navigate();
 
-        const passwordField = await driver.findElement('#password');
-        await passwordField.sendKeys('correct horse battery staple');
-        await passwordField.sendKeys(Key.ENTER);
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
 
         await threeSegmentEventsReceived();
 

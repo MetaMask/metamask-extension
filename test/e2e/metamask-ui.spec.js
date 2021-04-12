@@ -1,5 +1,4 @@
 const assert = require('assert');
-const { Key } = require('selenium-webdriver');
 
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers');
@@ -67,15 +66,14 @@ describe('MetaMask', function () {
     });
 
     it('accepts a secure password', async function () {
-      const passwordBox = await driver.findElement(
+      await driver.fill(
         '.first-time-flow__form #create-password',
+        'correct horse battery staple',
       );
-      const passwordBoxConfirm = await driver.findElement(
+      await driver.fill(
         '.first-time-flow__form #confirm-password',
+        'correct horse battery staple',
       );
-
-      await passwordBox.sendKeys('correct horse battery staple');
-      await passwordBoxConfirm.sendKeys('correct horse battery staple');
 
       await driver.clickElement('.first-time-flow__checkbox');
 
@@ -167,9 +165,8 @@ describe('MetaMask', function () {
     });
 
     it('accepts the account password after lock', async function () {
-      const passwordField = await driver.findElement('#password');
-      await passwordField.sendKeys('correct horse battery staple');
-      await passwordField.sendKeys(Key.ENTER);
+      await driver.fill('#password', 'correct horse battery staple');
+      await driver.press('#password', driver.Key.ENTER);
       await driver.delay(largeDelayMs * 4);
     });
   });
@@ -184,10 +181,7 @@ describe('MetaMask', function () {
     });
 
     it('set account name', async function () {
-      const accountName = await driver.findElement(
-        '.new-account-create-form input',
-      );
-      await accountName.sendKeys('2nd account');
+      await driver.fill('.new-account-create-form input', '2nd account');
       await driver.delay(regularDelayMs);
 
       await driver.clickElement({ text: 'Create', tag: 'button' });
@@ -227,15 +221,11 @@ describe('MetaMask', function () {
 
       await driver.clickElement('.import-account__checkbox-container');
 
-      const seedTextArea = await driver.findElement('textarea');
-      await seedTextArea.sendKeys(testSeedPhrase);
+      await driver.fill('.import-account__secret-phrase', testSeedPhrase);
       await driver.delay(regularDelayMs);
 
-      const passwordInputs = await driver.findElements('input');
-      await driver.delay(regularDelayMs);
-
-      await passwordInputs[0].sendKeys('correct horse battery staple');
-      await passwordInputs[1].sendKeys('correct horse battery staple');
+      await driver.fill('#password', 'correct horse battery staple');
+      await driver.fill('#confirm-password', 'correct horse battery staple');
       await driver.clickElement({
         text: enLocaleMessages.restore.message,
         tag: 'button',
@@ -257,13 +247,13 @@ describe('MetaMask', function () {
       await driver.clickElement('[data-testid="eth-overview-send"]');
       await driver.delay(regularDelayMs);
 
-      const inputAddress = await driver.findElement(
+      await driver.fill(
         'input[placeholder="Search, public address (0x), or ENS"]',
+        '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
       );
-      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
 
       const inputAmount = await driver.findElement('.unit-input__input');
-      await inputAmount.sendKeys('1000');
+      await inputAmount.fill('1000');
 
       const errorAmount = await driver.findElement('.send-v2__error-amount');
       assert.equal(
@@ -272,11 +262,11 @@ describe('MetaMask', function () {
         'send screen should render an insufficient fund error message',
       );
 
-      await inputAmount.sendKeys(Key.BACK_SPACE);
+      await inputAmount.press(driver.Key.BACK_SPACE);
       await driver.delay(50);
-      await inputAmount.sendKeys(Key.BACK_SPACE);
+      await inputAmount.press(driver.Key.BACK_SPACE);
       await driver.delay(50);
-      await inputAmount.sendKeys(Key.BACK_SPACE);
+      await inputAmount.press(driver.Key.BACK_SPACE);
       await driver.delay(tinyDelayMs);
 
       await driver.assertElementNotPresent('.send-v2__error-amount');
@@ -294,7 +284,7 @@ describe('MetaMask', function () {
 
       assert.equal(await inputAmount.isEnabled(), true);
 
-      await inputAmount.sendKeys('1');
+      await inputAmount.fill('1');
 
       inputValue = await inputAmount.getAttribute('value');
       assert.equal(inputValue, '1');
@@ -331,13 +321,13 @@ describe('MetaMask', function () {
       await driver.clickElement('[data-testid="eth-overview-send"]');
       await driver.delay(regularDelayMs);
 
-      const inputAddress = await driver.findElement(
+      await driver.fill(
         'input[placeholder="Search, public address (0x), or ENS"]',
+        '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
       );
-      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
 
       const inputAmount = await driver.findElement('.unit-input__input');
-      await inputAmount.sendKeys('1');
+      await inputAmount.fill('1');
 
       const inputValue = await inputAmount.getAttribute('value');
       assert.equal(inputValue, '1');
@@ -372,13 +362,13 @@ describe('MetaMask', function () {
       await driver.clickElement('[data-testid="eth-overview-send"]');
       await driver.delay(regularDelayMs);
 
-      const inputAddress = await driver.findElement(
+      await driver.fill(
         'input[placeholder="Search, public address (0x), or ENS"]',
+        '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
       );
-      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
 
       const inputAmount = await driver.findElement('.unit-input__input');
-      await inputAmount.sendKeys('1');
+      await inputAmount.fill('1');
 
       const inputValue = await inputAmount.getAttribute('value');
       assert.equal(inputValue, '1');
@@ -519,14 +509,14 @@ describe('MetaMask', function () {
 
       await gasPriceInput.clear();
       await driver.delay(50);
-      await gasPriceInput.sendKeys('10');
+      await gasPriceInput.fill('10');
       await driver.delay(50);
       await driver.delay(tinyDelayMs);
       await driver.delay(50);
 
-      await gasLimitInput.clear();
+      await gasLimitInput.fill('');
       await driver.delay(50);
-      await gasLimitInput.sendKeys('25000');
+      await gasLimitInput.fill('25000');
 
       await driver.delay(1000);
 
@@ -875,14 +865,10 @@ describe('MetaMask', function () {
       const gasLimitValue = await gasLimitInput.getAttribute('value');
       assert(Number(gasLimitValue) < 100000, 'Gas Limit too high');
 
-      await gasPriceInput.clear();
-      await driver.delay(50);
-      await gasPriceInput.sendKeys('10');
+      await gasPriceInput.fill('10');
       await driver.delay(50);
 
-      await gasLimitInput.clear();
-      await driver.delay(50);
-      await gasLimitInput.sendKeys('60001');
+      await gasLimitInput.fill('60001');
 
       await driver.delay(1000);
 
@@ -1023,8 +1009,7 @@ describe('MetaMask', function () {
       });
       await driver.delay(regularDelayMs);
 
-      const newTokenAddress = await driver.findElement('#custom-address');
-      await newTokenAddress.sendKeys(tokenAddress);
+      await driver.fill('#custom-address', tokenAddress);
       await driver.delay(regularDelayMs);
 
       await driver.clickElement({ text: 'Next', tag: 'button' });
@@ -1048,13 +1033,12 @@ describe('MetaMask', function () {
       await driver.clickElement('[data-testid="eth-overview-send"]');
       await driver.delay(regularDelayMs);
 
-      const inputAddress = await driver.findElement(
+      await driver.fill(
         'input[placeholder="Search, public address (0x), or ENS"]',
+        '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
       );
-      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
 
-      const inputAmount = await driver.findElement('.unit-input__input');
-      await inputAmount.sendKeys('1');
+      driver.fill('.unit-input__input', '1');
     });
 
     it('opens customize gas modal and saves options to continue', async function () {
@@ -1185,14 +1169,10 @@ describe('MetaMask', function () {
         '.advanced-gas-inputs__gas-edit-row__input',
       );
 
-      await gasPriceInput.clear();
-      await driver.delay(50);
-      await gasPriceInput.sendKeys('10');
+      await gasPriceInput.fill('10');
       await driver.delay(50);
 
-      await gasLimitInput.clear();
-      await driver.delay(50);
-      await gasLimitInput.sendKeys('60000');
+      await gasLimitInput.fill('60000');
 
       await driver.delay(1000);
 
@@ -1324,14 +1304,10 @@ describe('MetaMask', function () {
         '.advanced-gas-inputs__gas-edit-row__input',
       );
 
-      await gasPriceInput.clear();
-      await driver.delay(50);
-      await gasPriceInput.sendKeys('10');
+      await gasPriceInput.fill('10');
       await driver.delay(50);
 
-      await gasLimitInput.clear();
-      await driver.delay(50);
-      await gasLimitInput.sendKeys('60001');
+      await gasLimitInput.fill('60001');
 
       await driver.delay(1000);
 
@@ -1361,9 +1337,7 @@ describe('MetaMask', function () {
       );
       await radioButtons[1].click();
 
-      const customInput = await driver.findElement('input');
-      await driver.delay(50);
-      await customInput.sendKeys('5');
+      await driver.fill('input', '5');
       await driver.delay(regularDelayMs);
 
       await driver.clickElement({ text: 'Save', tag: 'button' });
@@ -1565,8 +1539,7 @@ describe('MetaMask', function () {
     });
 
     it('can pick a token from the existing options', async function () {
-      const tokenSearch = await driver.findElement('#search-tokens');
-      await tokenSearch.sendKeys('BAT');
+      await driver.fill('#search-tokens', 'BAT');
       await driver.delay(regularDelayMs);
 
       await driver.clickElement({ text: 'BAT', tag: 'span' });

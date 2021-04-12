@@ -66,15 +66,14 @@ describe('MetaMask', function () {
     });
 
     it('accepts a secure password', async function () {
-      const passwordBox = await driver.findElement(
+      await driver.fill(
         '.first-time-flow__form #create-password',
+        'correct horse battery staple',
       );
-      const passwordBoxConfirm = await driver.findElement(
+      await driver.fill(
         '.first-time-flow__form #confirm-password',
+        'correct horse battery staple',
       );
-
-      await passwordBox.sendKeys('correct horse battery staple');
-      await passwordBoxConfirm.sendKeys('correct horse battery staple');
 
       await driver.clickElement('.first-time-flow__checkbox');
 
@@ -172,15 +171,11 @@ describe('MetaMask', function () {
 
       await driver.clickElement('.import-account__checkbox-container');
 
-      const seedTextArea = await driver.findElement('textarea');
-      await seedTextArea.sendKeys(testSeedPhrase);
+      await driver.fill('.import-account__secret-phrase', testSeedPhrase);
       await driver.delay(regularDelayMs);
 
-      const passwordInputs = await driver.findElements('input');
-      await driver.delay(regularDelayMs);
-
-      await passwordInputs[0].sendKeys('correct horse battery staple');
-      await passwordInputs[1].sendKeys('correct horse battery staple');
+      await driver.fill('#password', 'correct horse battery staple');
+      await driver.fill('#confirm-password', 'correct horse battery staple');
       await driver.clickElement({
         text: enLocaleMessages.restore.message,
         tag: 'button',
@@ -212,13 +207,12 @@ describe('MetaMask', function () {
       await driver.clickElement('[data-testid="eth-overview-send"]');
       await driver.delay(regularDelayMs);
 
-      const inputAddress = await driver.findElement(
+      await driver.fill(
         'input[placeholder="Search, public address (0x), or ENS"]',
+        '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
       );
-      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
 
-      const inputAmount = await driver.findElement('.unit-input__input');
-      await inputAmount.sendKeys('1');
+      const inputAmount = await driver.fill('.unit-input__input', '1');
 
       const inputValue = await inputAmount.getAttribute('value');
       assert.equal(inputValue, '1');
