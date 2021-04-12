@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { until } = require('selenium-webdriver');
 const { withFixtures } = require('../helpers');
 
 describe('Address Book', function () {
@@ -34,13 +33,16 @@ describe('Address Book', function () {
 
         await driver.clickElement('.dialog.send__dialog.dialog--message');
 
-        const addressBookAddModal = await driver.findElement('span .modal');
+        // wait for address book modal to be visible
+        const addressModal = await driver.findElement('span .modal');
+
         await driver.findElement('.add-to-address-book-modal');
         await driver.fill('.add-to-address-book-modal__input', 'Test Name 1');
         await driver.clickElement(
           '.add-to-address-book-modal__footer .btn-primary',
         );
-        await driver.wait(until.stalenessOf(addressBookAddModal));
+        // wait for address book modal to be removed from DOM
+        await addressModal.waitForElementState('hidden');
 
         const inputAmount = await driver.findElement('.unit-input__input');
         await inputAmount.fill('1');
@@ -60,12 +62,12 @@ describe('Address Book', function () {
           return confirmedTxes.length === 1;
         }, 10000);
 
-        const txValues = await driver.findElement(
-          '.transaction-list-item__primary-currency',
-        );
-        await driver.wait(
-          until.elementTextMatches(txValues, /-1\s*ETH/u),
-          10000,
+        await driver.waitForSelector(
+          {
+            css: '.transaction-list-item__primary-currency',
+            text: '-1 ETH',
+          },
+          { timeout: 10000 },
         );
       },
     );
@@ -106,12 +108,12 @@ describe('Address Book', function () {
           return confirmedTxes.length === 1;
         }, 10000);
 
-        const txValues = await driver.findElement(
-          '.transaction-list-item__primary-currency',
-        );
-        await driver.wait(
-          until.elementTextMatches(txValues, /-2\s*ETH/u),
-          10000,
+        await driver.waitForSelector(
+          {
+            css: '.transaction-list-item__primary-currency',
+            text: '-2 ETH',
+          },
+          { timeout: 10000 },
         );
       },
     );
