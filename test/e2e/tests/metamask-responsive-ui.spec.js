@@ -8,7 +8,12 @@ describe('Metamask Responsive UI', function () {
     const driverOptions = { responsive: true };
 
     await withFixtures(
-      { fixtures: 'onboarding', driverOptions, title: this.test.title },
+      {
+        fixtures: 'onboarding',
+        driverOptions,
+        title: this.test.title,
+        failOnConsoleError: false,
+      },
       async ({ driver }) => {
         await driver.navigate();
 
@@ -105,7 +110,12 @@ describe('Metamask Responsive UI', function () {
       'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
     await withFixtures(
-      { fixtures: 'imported-account', driverOptions, title: this.test.title },
+      {
+        fixtures: 'imported-account',
+        driverOptions,
+        title: this.test.title,
+        failOnConsoleError: false,
+      },
       async ({ driver }) => {
         await driver.navigate();
 
