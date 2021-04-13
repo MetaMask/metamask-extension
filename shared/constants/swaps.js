@@ -6,6 +6,7 @@ import {
   TEST_ETH_TOKEN_IMAGE_URL,
   BNB_TOKEN_IMAGE_URL,
   BSC_CHAIN_ID,
+  LOCALHOST_CHAIN_ID,
 } from './network';
 
 export const QUOTES_EXPIRED_ERROR = 'quotes-expired';
@@ -40,6 +41,12 @@ export const TEST_ETH_SWAPS_TOKEN_OBJECT = {
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
   iconUrl: TEST_ETH_TOKEN_IMAGE_URL,
+};
+
+export const SWAPS_CHAIN_ID_TO_NETWORK_NAME_MAP = {
+  [MAINNET_CHAIN_ID]: 'Ethereum',
+  [BSC_CHAIN_ID]: 'BSC',
+  [LOCALHOST_CHAIN_ID]: 'Test',
 };
 
 // A gas value for ERC20 approve calls that should be sufficient for all ERC20 approve implementations

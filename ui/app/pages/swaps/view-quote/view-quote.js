@@ -659,6 +659,7 @@ export default function ViewQuote() {
                 ? 1
                 : memoizedTokenConversionRates[destinationToken.address]
             }
+            chainId={chainId}
           />
         </div>
       </div>
