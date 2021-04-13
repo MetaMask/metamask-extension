@@ -86,6 +86,7 @@ export default function Swap() {
 
   const [inputValue, setInputValue] = useState(fetchParams?.value || '');
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 3);
+  const [isFeatureFlagLoaded, setIsFeatureFlagLoaded] = useState(false);
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -201,7 +202,11 @@ export default function Swap() {
   });
 
   useEffect(() => {
-    dispatch(fetchSwapsLiveness());
+    const fetchSwapsLivenessWrapper = async () => {
+      await dispatch(fetchSwapsLiveness());
+      setIsFeatureFlagLoaded(true);
+    };
+    fetchSwapsLivenessWrapper();
     return () => {
       exitEventRef.current();
     };
@@ -285,6 +290,7 @@ export default function Swap() {
                     setMaxSlippage={setMaxSlippage}
                     selectedAccountAddress={selectedAccountAddress}
                     maxSlippage={maxSlippage}
+                    isFeatureFlagLoaded={isFeatureFlagLoaded}
                   />
                 );
               }}
