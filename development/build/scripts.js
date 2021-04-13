@@ -187,7 +187,8 @@ function createFlatBuild({ entryFiles, devMode, testing, browserPlatforms }) {
 
     // devMode options
     const reloadOnChange = Boolean(devMode);
-    const minify = !devMode;
+    // const minify = !devMode;
+    const minify = false;
 
     const envVars = getEnvironmentVariables({ devMode, testing });
     setupBundlerDefaults(buildConfiguration, {
