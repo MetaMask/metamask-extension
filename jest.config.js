@@ -3,10 +3,10 @@ module.exports = {
   coverageDirectory: 'jest-coverage/',
   coverageThreshold: {
     global: {
-      branches: 6.4,
-      functions: 9.77,
-      lines: 8.87,
-      statements: 0.09,
+      branches: 5.83,
+      functions: 8.31,
+      lines:  11.21,
+      statements: 11.24,
     },
   },
   setupFiles: ['./test/setup.js', './test/env.js'],
