@@ -5,7 +5,7 @@ import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
-  INITIALIZE_SEED_PHRASE_ROUTE,
+  INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
 } from '../../../helpers/constants/routes';
 import NewAccount from './new-account';
 import ImportWithSeedPhrase from './import-with-seed-phrase';
@@ -22,7 +22,7 @@ export default class CreatePassword extends PureComponent {
     const { isInitialized, history } = this.props;
 
     if (isInitialized) {
-      history.push(INITIALIZE_SEED_PHRASE_ROUTE);
+      history.push(INITIALIZE_SEED_PHRASE_INTRO_ROUTE);
     }
   }
 

@@ -91,6 +91,11 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
     });
 
+    it('renders the seed phrase intro screen', async function () {
+      await driver.clickElement('.seed-phrase-intro__left button');
+      await driver.delay(regularDelayMs);
+    });
+
     it('skips the seed phrase challenge', async function () {
       await driver.clickElement({
         text: enLocaleMessages.remindMeLater.message,
