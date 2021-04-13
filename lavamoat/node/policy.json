@@ -1081,6 +1081,22 @@
         "pascalcase": true
       }
     },
+    "bify-vinyl-gator": {
+      "builtin": {
+        "fs.readFileSync": true,
+        "path.join": true,
+        "path.relative": true
+      },
+      "globals": {
+        "Buffer.from": true,
+        "__dirname": true,
+        "process.cwd": true
+      },
+      "packages": {
+        "through2": true,
+        "vinyl": true
+      }
+    },
     "bl": {
       "builtin": {
         "util.inherits": true
@@ -1356,6 +1372,7 @@
       "packages": {
         "inherits": true,
         "process-nextick-args": true,
+        "readable-stream": true,
         "through2": true
       }
     },
@@ -3489,7 +3506,8 @@
         "path.basename": true,
         "path.dirname": true,
         "path.extname": true,
-        "path.join": true
+        "path.join": true,
+        "path.sep": true
       }
     },
     "resolve": {

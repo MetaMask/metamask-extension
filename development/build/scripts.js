@@ -1,3 +1,5 @@
+const path = require('path');
+const { promises: fs, writeFileSync } = require('fs');
 const EventEmitter = require('events');
 const gulp = require('gulp');
 const watch = require('gulp-watch');
@@ -14,6 +16,7 @@ const brfs = require('brfs');
 const pify = require('pify');
 const endOfStream = pify(require('end-of-stream'));
 const labeledStreamSplicer = require('labeled-stream-splicer').obj;
+const bifyVinylGatorPlugin = require('bify-vinyl-gator');
 
 const metamaskrc = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
@@ -66,60 +69,35 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     // production
     prod: createTasksForBuildJsExtension({ taskPrefix: 'scripts:core:prod' }),
   };
-  const deps = {
-    background: createTasksForBuildJsDeps({
-      label: 'bg-libs',
-      key: 'background',
-    }),
-    ui: createTasksForBuildJsDeps({ label: 'ui-libs', key: 'ui' }),
-  };
 
   // high level tasks
 
-  const prod = composeParallel(deps.background, deps.ui, core.prod);
-
-  const { dev, testDev } = core;
-
-  const test = composeParallel(deps.background, deps.ui, core.test);
-
+  const { prod, test, dev, testDev } = core;
   return { prod, dev, testDev, test };
 
-  function createTasksForBuildJsDeps({ key, label }) {
-    return createTask(
-      `scripts:deps:${key}`,
-      createNormalBundle({
-        label,
-        destFilepath: `${label}.js`,
-        modulesToExpose: externalDependenciesMap[key],
-        devMode: false,
-        browserPlatforms,
-      }),
-    );
-  }
-
   function createTasksForBuildJsExtension({ taskPrefix, devMode, testing }) {
-    const standardBundles = [
+    const standardEntryPoints = [
       'background',
       'ui',
       'phishing-detect',
       'initSentry',
     ];
 
-    const standardSubtasks = standardBundles.map((label) => {
-      let extraEntries;
-      if (devMode && label === 'ui') {
-        extraEntries = ['./development/require-react-devtools.js'];
-      }
-      return createTask(
-        `${taskPrefix}:${label}`,
-        createBundleTaskForBuildJsExtensionNormal({
-          label,
-          devMode,
-          testing,
-          extraEntries,
-        }),
-      );
-    });
+    // let extraEntries;
+    // if (devMode && label === 'ui') {
+    //   extraEntries = ['./development/require-react-devtools.js'];
+    // }
+    const standardSubtask = createTask(
+      `${taskPrefix}:standardEntryPoints`,
+      createFlatBuild({
+        entryFiles: standardEntryPoints.map(
+          (label) => `./app/scripts/${label}.js`,
+        ),
+        devMode,
+        testing,
+        browserPlatforms,
+      }),
+    );
 
     // inpage must be built before contentscript
     // because inpage bundle result is included inside contentscript
@@ -152,33 +130,12 @@ function createScriptTasks({ browserPlatforms, livereload }) {
 
     // make each bundle run in a separate process
     const allSubtasks = [
-      ...standardSubtasks,
+      standardSubtask,
       contentscriptSubtask,
       disableConsoleSubtask,
     ].map((subtask) => runInChildProcess(subtask));
-    // const allSubtasks = [...standardSubtasks, contentscriptSubtask].map(subtask => (subtask))
     // make a parent task that runs each task in a child thread
     return composeParallel(initiateLiveReload, ...allSubtasks);
-  }
-
-  function createBundleTaskForBuildJsExtensionNormal({
-    label,
-    devMode,
-    testing,
-    extraEntries,
-  }) {
-    return createNormalBundle({
-      label,
-      entryFilepath: `./app/scripts/${label}.js`,
-      destFilepath: `${label}.js`,
-      extraEntries,
-      externalDependencies: devMode
-        ? undefined
-        : externalDependenciesMap[label],
-      devMode,
-      testing,
-      browserPlatforms,
-    });
   }
 
   function createTaskForBuildJsExtensionDisableConsole({ devMode }) {
@@ -222,6 +179,81 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   }
 }
 
+function createFlatBuild({ entryFiles, devMode, testing, browserPlatforms }) {
+  return async function () {
+    // create bundler setup and apply defaults
+    const buildConfiguration = createBuildConfiguration();
+    const { bundlerOpts, events } = buildConfiguration;
+
+    // devMode options
+    const reloadOnChange = Boolean(devMode);
+    const minify = !devMode;
+
+    const envVars = getEnvironmentVariables({ devMode, testing });
+    setupBundlerDefaults(buildConfiguration, {
+      devMode,
+      envVars,
+      reloadOnChange,
+      minify,
+    });
+
+    // set bundle entries
+    bundlerOpts.entries = [...entryFiles];
+
+    // setup bify-vinyl-gator plugin
+    Object.assign(bundlerOpts, bifyVinylGatorPlugin.args);
+    bundlerOpts.plugin = [
+      ...bundlerOpts.plugin,
+      [
+        bifyVinylGatorPlugin,
+        {
+          includeHtml: false,
+          includeStart: false,
+          onDone: ({ manifests }) => {
+            for (const [entry, manifest] of manifests) {
+              const { name: label } = path.parse(entry);
+              const filename = `./dist/manifest-${label}.txt`;
+              const content = Array.from(manifest).join('\n');
+              writeFileSync(filename, content);
+              console.log('wrote manifest', filename);
+            }
+          },
+        },
+      ],
+    ];
+
+    // instrument pipeline
+    events.on('configurePipeline', ({ pipeline }) => {
+      // bify-vinyl-gator stream output is already buffered vinyl streams
+      // setup bundle destination
+      browserPlatforms.forEach((platform) => {
+        const dest = `./dist/${platform}/`;
+        pipeline.get('dest').push(gulp.dest(dest));
+      });
+    });
+
+    // create entry points for each file
+    const startTemplate = await fs.readFile(
+      './development/entry-start.js.tmpl',
+      'utf8',
+    );
+    await Promise.all(
+      entryFiles.map(async (filepath) => {
+        const filename = path.parse(filepath).base;
+        const dest = `./dist/chrome/start-${filename}`;
+        // this is just removing the initial './'
+        const relativeFilePath = path.relative('.', filepath);
+        const contentForEntry = startTemplate
+          .split('{{entryFile}}')
+          .join(relativeFilePath);
+        await fs.writeFile(dest, contentForEntry);
+      }),
+    );
+
+    await bundleIt(buildConfiguration);
+  };
+}
+
 function createNormalBundle({
   destFilepath,
   entryFilepath,
@@ -237,10 +269,16 @@ function createNormalBundle({
     const buildConfiguration = createBuildConfiguration();
     const { bundlerOpts, events } = buildConfiguration;
 
+    // devMode options
+    const reloadOnChange = Boolean(devMode);
+    const minify = Boolean(devMode) === false;
+
     const envVars = getEnvironmentVariables({ devMode, testing });
     setupBundlerDefaults(buildConfiguration, {
       devMode,
       envVars,
+      reloadOnChange,
+      minify,
     });
 
     // set bundle entries
@@ -291,11 +329,11 @@ function createBuildConfiguration() {
   return { bundlerOpts, events };
 }
 
-function setupBundlerDefaults(buildConfiguration, { devMode, envVars }) {
+function setupBundlerDefaults(
+  buildConfiguration,
+  { devMode, envVars, reloadOnChange, minify },
+) {
   const { bundlerOpts } = buildConfiguration;
-  // devMode options
-  const reloadOnChange = Boolean(devMode);
-  const minify = Boolean(devMode) === false;
 
   Object.assign(bundlerOpts, {
     // source transforms
