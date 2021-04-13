@@ -522,7 +522,7 @@ function getNotificationToExclude(state) {
  * have a truthy `isShown` property, and also which are not filtered out due to
  * conditions encoded in the `getNotificationToExclude` function.
  *
- * The returned notifcations are sorted by date.
+ * The returned notifications are sorted by date.
  *
  * @param {object} state - the redux state object
  * @returns {Notification[]} An array of notifications that can be shown to the user

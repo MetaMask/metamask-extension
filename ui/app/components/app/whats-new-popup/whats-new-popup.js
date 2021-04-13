@@ -129,15 +129,15 @@ export default function WhatsNewPopup({ onClose }) {
                     type="secondary"
                     className="whats-new-popup__button"
                     rounded
-                    onClick={actionFunctions[notification.id]}
+                    onClick={actionFunctions[id]}
                   >
                     {t(notification.actionText)}
                   </Button>
                 )}
-                {!isFirstNotification && UI_NOTIFICATIONS[id].actionText && (
+                {!isFirstNotification && notification.actionText && (
                   <div
                     className="whats-new-popup__link"
-                    onClick={actionFunctions[notification.id]}
+                    onClick={actionFunctions[id]}
                   >
                     {t(notification.actionText)}
                   </div>
