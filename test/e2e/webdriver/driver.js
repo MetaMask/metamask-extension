@@ -23,7 +23,7 @@ function wrapElementWithAPI(element, driver) {
       case 'visible':
         return await driver.wait(until.elementIsVisible(element), timeout);
       default:
-        return null;
+        throw new Error(`Provided state: '${state}' is not supported`);
     }
   };
   return element;

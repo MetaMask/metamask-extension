@@ -146,10 +146,13 @@ describe('MetaMask', function () {
     });
 
     it('should have the correct amount of eth', async function () {
-      await driver.waitForSelector({
+      const currencyDisplay = await driver.waitForSelector({
         css: '.currency-display-component__text',
         text: '1',
       });
+      const balance = await currencyDisplay.getText();
+
+      assert.strictEqual(balance, '1');
     });
   });
 
@@ -213,10 +216,13 @@ describe('MetaMask', function () {
     });
 
     it('should have the correct amount of eth', async function () {
-      await driver.waitForSelector({
+      const currencyDisplay = await driver.waitForSelector({
         css: '.currency-display-component__text',
         text: '1',
       });
+      const balance = await currencyDisplay.getText();
+
+      assert.strictEqual(balance, '1');
     });
 
     it('should not show a backup reminder', async function () {
