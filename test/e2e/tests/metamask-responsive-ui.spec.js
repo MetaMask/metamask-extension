@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { Key, until } = require('selenium-webdriver');
+const { until } = require('selenium-webdriver');
 const { withFixtures, tinyDelayMs } = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
 
@@ -32,14 +32,14 @@ describe('Metamask Responsive UI', function () {
         await driver.clickElement('.btn-primary');
 
         // accepts a secure password
-        const passwordBox = await driver.findElement(
+        await driver.fill(
           '.first-time-flow__form #create-password',
+          'correct horse battery staple',
         );
-        const passwordBoxConfirm = await driver.findElement(
+        await driver.fill(
           '.first-time-flow__form #confirm-password',
+          'correct horse battery staple',
         );
-        await passwordBox.sendKeys('correct horse battery staple');
-        await passwordBoxConfirm.sendKeys('correct horse battery staple');
         await driver.clickElement('.first-time-flow__checkbox');
         await driver.clickElement('.first-time-flow__form button');
 
@@ -131,12 +131,10 @@ describe('Metamask Responsive UI', function () {
 
         await driver.clickElement('.import-account__checkbox-container');
 
-        const seedTextArea = await driver.findElement('textarea');
-        await seedTextArea.sendKeys(testSeedPhrase);
+        await driver.fill('.import-account__secret-phrase', testSeedPhrase);
 
-        const passwordInputs = await driver.findElements('input');
-        await passwordInputs[0].sendKeys('correct horse battery staple');
-        await passwordInputs[1].sendKeys('correct horse battery staple');
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.fill('#confirm-password', 'correct horse battery staple');
         await driver.clickElement({
           text: enLocaleMessages.restore.message,
           tag: 'button',
@@ -186,23 +184,19 @@ describe('Metamask Responsive UI', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        const passwordField = await driver.findElement('#password');
-        await passwordField.sendKeys('correct horse battery staple');
-        await passwordField.sendKeys(Key.ENTER);
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
 
         // Send ETH from inside MetaMask
         // starts to send a transaction
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
-        const inputAddress = await driver.findElement(
+        await driver.fill(
           'input[placeholder="Search, public address (0x), or ENS"]',
-        );
-        await inputAddress.sendKeys(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 
-        const inputAmount = await driver.findElement('.unit-input__input');
-        await inputAmount.sendKeys('1');
+        const inputAmount = await driver.fill('.unit-input__input', '1');
 
         const inputValue = await inputAmount.getAttribute('value');
         assert.equal(inputValue, '1');
