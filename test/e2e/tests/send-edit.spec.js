@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { until } = require('selenium-webdriver');
 const {
   withFixtures,
   tinyDelayMs,
@@ -46,7 +45,8 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement('.advanced-gas-options-btn');
         await driver.delay(regularDelayMs);
 
-        const gasModal = await driver.findElement('span .modal');
+        // wait for gas modal to be visible
+        const gasModal = await driver.findVisibleElement('span .modal');
 
         const [gasPriceInput, gasLimitInput] = await driver.findElements(
           '.advanced-gas-inputs__gas-edit-row__input',
@@ -59,7 +59,8 @@ describe('Editing Confirm Transaction', function () {
         await driver.delay(largeDelayMs);
 
         await driver.clickElement({ text: 'Save', tag: 'button' });
-        await driver.wait(until.stalenessOf(gasModal));
+        // Wait for gas modal to be removed from DOM
+        await gasModal.waitForElementState('hidden');
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // has correct updated value on the confirm screen the transaction

@@ -1,5 +1,4 @@
 const assert = require('assert');
-const { until } = require('selenium-webdriver');
 
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers');
@@ -194,10 +193,10 @@ describe('MetaMask', function () {
     });
 
     it('balance renders', async function () {
-      const balance = await driver.findElement(
-        '[data-testid="eth-overview__primary-currency"]',
-      );
-      await driver.wait(until.elementTextMatches(balance, /100\s*ETH/u));
+      await driver.waitForSelector({
+        css: '[data-testid="eth-overview__primary-currency"]',
+        text: '100 ETH',
+      });
       await driver.delay(regularDelayMs);
     });
   });
@@ -224,10 +223,11 @@ describe('MetaMask', function () {
       await driver.clickElement('.advanced-gas-options-btn');
       await driver.delay(regularDelayMs);
 
-      const gasModal = await driver.findElement('span .modal');
-
+      // wait for gas modal to be visible
+      const gasModal = await driver.findVisibleElement('span .modal');
       await driver.clickElement('.page-container__header-close-text');
-      await driver.wait(until.stalenessOf(gasModal), 10000);
+      // wait for gas modal to be removed from dom
+      await gasModal.waitForElementState('hidden');
       await driver.delay(regularDelayMs);
     });
 
@@ -250,10 +250,13 @@ describe('MetaMask', function () {
         return confirmedTxes.length === 1;
       }, 10000);
 
-      const txValues = await driver.findElement(
-        '.transaction-list-item__primary-currency',
+      await driver.waitForSelector(
+        {
+          css: '.transaction-list-item__primary-currency',
+          text: '-1 ETH',
+        },
+        { timeout: 10000 },
       );
-      await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/u), 10000);
     });
   });
 });

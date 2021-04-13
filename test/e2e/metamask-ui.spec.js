@@ -142,11 +142,11 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
 
       // wait for permission modal to be visible.
-      await driver.waitForSelector('span .modal');
+      const permissionModal = await driver.findVisibleElement('span .modal');
       await driver.clickElement('.account-modal__close');
 
-      // wait for account modal to be removed from DOM.
-      await driver.waitForSelector('span .modal', { state: 'detached' });
+      // wait for permission modal to be removed from DOM.
+      await permissionModal.waitForElementState('hidden');
       await driver.delay(regularDelayMs);
     });
   });
@@ -377,12 +377,13 @@ describe('MetaMask', function () {
       await driver.clickElement('.advanced-gas-options-btn');
       await driver.delay(regularDelayMs);
 
+      // wait for gas modal to be visible
+      const gasModal = await driver.findVisibleElement('span .modal');
+
       await driver.clickElement({ text: 'Save', tag: 'button' });
 
       // Wait for gas modal to be removed from DOM
-      await driver.waitForSelector('span .modal', {
-        state: 'detached',
-      });
+      await gasModal.waitForElementState('hidden');
       await driver.delay(regularDelayMs);
 
       // Continue to next screen
@@ -854,8 +855,8 @@ describe('MetaMask', function () {
 
       // Set the gas limit
       await driver.clickElement('.confirm-detail-row__header-text--edit');
-      // wait for gas modal to be detached from DOM
-      await driver.waitForSelector('span .modal');
+      // wait for gas modal to be visible.
+      const gasModal = await driver.findVisibleElement('span .modal');
       await driver.clickElement('.page-container__tab:nth-of-type(2)');
       await driver.delay(regularDelayMs);
 
@@ -875,7 +876,7 @@ describe('MetaMask', function () {
       await driver.clickElement({ text: 'Save', tag: 'button' });
 
       // wait for gas modal to be detached from DOM
-      await driver.waitForSelector('span .modal', { state: 'detached' });
+      await gasModal.waitForElementState('hidden');
 
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
       await driver.delay(regularDelayMs);
@@ -1044,12 +1045,12 @@ describe('MetaMask', function () {
     it('opens customize gas modal and saves options to continue', async function () {
       await driver.clickElement('.advanced-gas-options-btn');
 
-      // Wait for gas modal to be visible
-      await driver.waitForSelector('span .modal');
+      // wait for gas modal to be visible
+      const gasModal = await driver.findVisibleElement('span .modal');
       await driver.findElement('.page-container__title');
       await driver.clickElement({ text: 'Save', tag: 'button' });
       // wait for gas modal to be removed from DOM.
-      await driver.waitForSelector('span .modal', { state: 'detached' });
+      await gasModal.waitForElementState('hidden');
     });
 
     it('transitions to the confirm screen', async function () {
@@ -1152,16 +1153,14 @@ describe('MetaMask', function () {
       );
       const transactionAmount = transactionAmounts[0];
       assert(await transactionAmount.getText(), '1.5 TST');
-
-      // Set the gas limit
-      await driver.clickElement('.confirm-detail-row__header-text--edit');
-      await driver.delay(regularDelayMs);
-
-      // wait for gas modal to be visible
-      await driver.waitForSelector('span .modal');
     });
 
     it('customizes gas', async function () {
+      // Set the gas limit
+      await driver.clickElement('.confirm-detail-row__header-text--edit');
+      await driver.delay(regularDelayMs);
+      // wait for gas modal to be visible
+      const gasModal = await driver.findVisibleElement('span .modal');
       await driver.clickElement('.page-container__tab:nth-of-type(2)');
       await driver.delay(regularDelayMs);
 
@@ -1178,10 +1177,8 @@ describe('MetaMask', function () {
 
       await driver.clickElement('.page-container__footer-button');
 
-      // Wait for gas modal to be removed from DOM.
-      await driver.waitForSelector('span .modal', {
-        state: 'detached',
-      });
+      // wait for gas modal to be removed from DOM.
+      await gasModal.waitForElementState('hidden');
 
       const gasFeeInputs = await driver.findElements(
         '.confirm-detail-row__primary',
@@ -1286,17 +1283,14 @@ describe('MetaMask', function () {
       );
     });
 
-    it('opens the gas edit modal', async function () {
+    it('customizes gas', async function () {
       await driver.clickElement(
         '.confirm-approve-content__small-blue-text.cursor-pointer',
       );
       await driver.delay(regularDelayMs);
 
-      // Wait for the gas modal to be visible
-      await driver.waitForSelector('span .modal');
-    });
-
-    it('customizes gas', async function () {
+      // wait for gas modal to be visible
+      const gasModal = await driver.findVisibleElement('span .modal');
       await driver.clickElement('.page-container__tab:nth-of-type(2)');
       await driver.delay(regularDelayMs);
 
@@ -1313,10 +1307,8 @@ describe('MetaMask', function () {
 
       await driver.clickElement('.page-container__footer-button');
 
-      // wait for the gas modal to be removed from DOM.
-      await driver.waitForSelector('span .modal', {
-        state: 'detached',
-      });
+      // wait for gas modal to be removed from DOM.
+      await gasModal.waitForElementState('hidden');
 
       const gasFeeInEth = await driver.findElement(
         '.confirm-approve-content__transaction-details-content__secondary-fee',
@@ -1331,7 +1323,7 @@ describe('MetaMask', function () {
       await editButtons[1].click();
 
       // wait for permission modal to be visible
-      await driver.waitForSelector('span .modal');
+      const permissionModal = await driver.findVisibleElement('span .modal');
       const radioButtons = await driver.findClickableElements(
         '.edit-approval-permission__edit-section__radio-button',
       );
@@ -1343,7 +1335,7 @@ describe('MetaMask', function () {
       await driver.clickElement({ text: 'Save', tag: 'button' });
 
       // wait for permission modal to be removed from DOM.
-      await driver.waitForSelector('span .modal', { state: 'detached' });
+      await permissionModal.waitForElementState('hidden');
 
       const permissionInfo = await driver.findElements(
         '.confirm-approve-content__medium-text',
@@ -1521,14 +1513,14 @@ describe('MetaMask', function () {
       await driver.clickElement('[data-testid="token-options__hide"]');
 
       // wait for confirm hide modal to be visible
-      await driver.waitForSelector('span .modal');
+      const confirmHideModal = await driver.findVisibleElement('span .modal');
 
       await driver.clickElement(
         '[data-testid="hide-token-confirmation__hide"]',
       );
 
       // wait for confirm hide modal to be removed from DOM.
-      await driver.waitForSelector('span .modal', { state: 'detached' });
+      await confirmHideModal.waitForElementState('hidden');
     });
   });
 
@@ -1649,15 +1641,15 @@ describe('MetaMask', function () {
       await driver.clickElement('.btn-danger');
       await driver.delay(regularDelayMs);
 
-      // wait for confirm delete modal to be visible.
-      await driver.waitForSelector('span .modal');
+      // wait for confirm delete modal to be visible
+      const confirmDeleteModal = await driver.findVisibleElement('span .modal');
 
       await driver.clickElement(
         '.button.btn-danger.modal-container__footer-button',
       );
 
       // wait for confirm delete modal to be removed from DOM.
-      await driver.waitForSelector('span .modal', { state: 'detached' });
+      await confirmDeleteModal.waitForElementState('hidden');
 
       const newNetworkListItems = await driver.findElements(
         '.networks-tab__networks-list-name',

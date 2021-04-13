@@ -9,12 +9,22 @@ const cssToXPath = require('css-to-xpath');
  * @param {Object} element - Selenium Element
  * @returns {Object} modified Selenium Element
  */
-function wrapElementWithAPI(element) {
+function wrapElementWithAPI(element, driver) {
   element.press = (key) => element.sendKeys(key);
   element.fill = async (input) => {
     // The 'fill' method in playwright replaces existing input
     await element.clear();
     await element.sendKeys(input);
+  };
+  element.waitForElementState = async (state, timeout) => {
+    switch (state) {
+      case 'hidden':
+        return await driver.wait(until.stalenessOf(element), timeout);
+      case 'visible':
+        return await driver.wait(until.elementIsVisible(element), timeout);
+      default:
+        throw new Error(`Provided state: '${state}' is not supported`);
+    }
   };
   return element;
 }
@@ -127,7 +137,7 @@ class Driver {
         timeout,
       );
     }
-    return wrapElementWithAPI(element);
+    return wrapElementWithAPI(element, this);
   }
 
   async quit() {
@@ -142,14 +152,14 @@ class Driver {
       until.elementLocated(locator),
       this.timeout,
     );
-    return wrapElementWithAPI(element);
+    return wrapElementWithAPI(element, this);
   }
 
   async findVisibleElement(rawLocator) {
     const locator = this.buildLocator(rawLocator);
     const element = await this.findElement(locator);
     await this.driver.wait(until.elementIsVisible(element), this.timeout);
-    return wrapElementWithAPI(element);
+    return wrapElementWithAPI(element, this);
   }
 
   async findClickableElement(rawLocator) {
@@ -159,7 +169,7 @@ class Driver {
       this.driver.wait(until.elementIsVisible(element), this.timeout),
       this.driver.wait(until.elementIsEnabled(element), this.timeout),
     ]);
-    return wrapElementWithAPI(element);
+    return wrapElementWithAPI(element, this);
   }
 
   async findElements(rawLocator) {
@@ -168,7 +178,7 @@ class Driver {
       until.elementsLocated(locator),
       this.timeout,
     );
-    return elements.map(wrapElementWithAPI);
+    return elements.map((element) => wrapElementWithAPI(element, this));
   }
 
   async findClickableElements(rawLocator) {
@@ -183,7 +193,7 @@ class Driver {
         return acc;
       }, []),
     );
-    return elements.map(wrapElementWithAPI);
+    return elements.map((element) => wrapElementWithAPI(element, this));
   }
 
   async clickElement(rawLocator) {

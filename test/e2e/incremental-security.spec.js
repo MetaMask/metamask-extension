@@ -1,5 +1,4 @@
 const assert = require('assert');
-const { until } = require('selenium-webdriver');
 
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers');
@@ -109,11 +108,13 @@ describe('MetaMask', function () {
       const addressInput = await driver.findElement('.readonly-input__input');
       publicAddress = await addressInput.getAttribute('value');
 
-      const accountModal = await driver.findElement('span .modal');
+      // wait for account modal to be visible
+      const accountModal = await driver.findVisibleElement('span .modal');
 
       await driver.clickElement('.account-modal__close');
 
-      await driver.wait(until.stalenessOf(accountModal));
+      // wait for account modal to be removed from DOM
+      await accountModal.waitForElementState('hidden');
       await driver.delay(regularDelayMs);
     });
   });
@@ -134,8 +135,10 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
       await driver.clickElement('#send');
 
-      const txStatus = await driver.findElement('#success');
-      await driver.wait(until.elementTextMatches(txStatus, /Success/u), 15000);
+      await driver.waitForSelector(
+        { css: '#success', text: 'Success' },
+        { timeout: 15000 },
+      );
     });
 
     it('switches back to MetaMask', async function () {
@@ -143,13 +146,13 @@ describe('MetaMask', function () {
     });
 
     it('should have the correct amount of eth', async function () {
-      const balances = await driver.findElements(
-        '.currency-display-component__text',
-      );
-      await driver.wait(until.elementTextMatches(balances[0], /1/u), 15000);
-      const balance = await balances[0].getText();
+      const currencyDisplay = await driver.waitForSelector({
+        css: '.currency-display-component__text',
+        text: '1',
+      });
+      const balance = await currencyDisplay.getText();
 
-      assert.equal(balance, '1');
+      assert.strictEqual(balance, '1');
     });
   });
 
@@ -213,13 +216,13 @@ describe('MetaMask', function () {
     });
 
     it('should have the correct amount of eth', async function () {
-      const balances = await driver.findElements(
-        '.currency-display-component__text',
-      );
-      await driver.wait(until.elementTextMatches(balances[0], /1/u), 15000);
-      const balance = await balances[0].getText();
+      const currencyDisplay = await driver.waitForSelector({
+        css: '.currency-display-component__text',
+        text: '1',
+      });
+      const balance = await currencyDisplay.getText();
 
-      assert.equal(balance, '1');
+      assert.strictEqual(balance, '1');
     });
 
     it('should not show a backup reminder', async function () {

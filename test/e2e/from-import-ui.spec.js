@@ -1,6 +1,4 @@
 const assert = require('assert');
-const { until } = require('selenium-webdriver');
-
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const { regularDelayMs, largeDelayMs } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
@@ -126,11 +124,13 @@ describe('Using MetaMask with an existing account', function () {
         '[data-testid="account-options-menu__account-details"]',
       );
       await driver.findVisibleElement('.qr-code__wrapper');
-      const detailModal = await driver.findElement('span .modal');
+      // wait for details modal to be visible
+      const detailsModal = await driver.findVisibleElement('span .modal');
       await driver.delay(regularDelayMs);
 
       await driver.clickElement('.account-modal__close');
-      await driver.wait(until.stalenessOf(detailModal));
+      // wait for details modal to be removed from DOM
+      await detailsModal.waitForElementState('hidden');
       await driver.delay(regularDelayMs);
     });
   });
@@ -213,10 +213,11 @@ describe('Using MetaMask with an existing account', function () {
       await driver.clickElement('.advanced-gas-options-btn');
       await driver.delay(regularDelayMs);
 
-      const gasModal = await driver.findElement('span .modal');
+      // wait for gas modal to be visible
+      const gasModal = await driver.findVisibleElement('span .modal');
       await driver.clickElement({ text: 'Save', tag: 'button' });
-      await driver.wait(until.stalenessOf(gasModal));
-      await driver.delay(regularDelayMs);
+      // wait for gas modal to be removed from DOM
+      await gasModal.waitForElementState('hidden');
 
       // Continue to next screen
       await driver.clickElement({ text: 'Next', tag: 'button' });
