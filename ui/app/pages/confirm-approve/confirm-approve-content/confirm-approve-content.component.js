@@ -191,7 +191,7 @@ export default class ConfirmApproveContent extends Component {
                 })
               }
             >
-              Edit
+              {t('edit')}
             </div>
             <Typography
               className="confirm-approve-content__custom-nonce-value"

@@ -27,6 +27,7 @@ export default class Modal extends PureComponent {
   static defaultProps = {
     submitType: 'secondary',
     cancelType: 'default',
+    rounded: false,
   };
 
   render() {
@@ -63,7 +64,7 @@ export default class Modal extends PureComponent {
             {onCancel && (
               <Button
                 type={cancelType}
-                rounded={rounded || false}
+                rounded={rounded}
                 onClick={onCancel}
                 className="modal-container__footer-button"
               >

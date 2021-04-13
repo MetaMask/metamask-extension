@@ -578,7 +578,7 @@
     "message": "Edit Nonce"
   },
   "editNonceMessage": {
-    "message": "This is an advanced feature, use cautiously. "
+    "message": "This is an advanced feature, use cautiously."
   },
   "editPermission": {
     "message": "Edit Permission"

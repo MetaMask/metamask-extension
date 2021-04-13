@@ -1,1 +1,1 @@
-export { default } from './customize-nonce.container';
+export { default } from './customize-nonce.component';
