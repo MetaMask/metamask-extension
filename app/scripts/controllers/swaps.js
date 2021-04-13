@@ -70,7 +70,7 @@ const initialState = {
     errorKey: '',
     topAggId: null,
     routeState: '',
-    swapsFeatureIsLive: false,
+    swapsFeatureIsLive: true,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
   },
 };
@@ -476,7 +476,6 @@ export default class SwapsController {
       swapsState: {
         ...initialState.swapsState,
         tokens: swapsState.tokens,
-        swapsFeatureIsLive: swapsState.swapsFeatureIsLive,
         swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
       },
     });

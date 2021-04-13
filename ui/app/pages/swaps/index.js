@@ -59,7 +59,6 @@ import { currentNetworkTxListSelector } from '../../selectors';
 import { useNewMetricEvent } from '../../hooks/useMetricEvent';
 
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
-import LoadingScreen from '../../components/ui/loading-screen';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 import {
   fetchTokens,
@@ -87,7 +86,6 @@ export default function Swap() {
 
   const [inputValue, setInputValue] = useState(fetchParams?.value || '');
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 3);
-  const [isFeatureFlagLoaded, setIsFeatureFlagLoaded] = useState(false);
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -203,11 +201,7 @@ export default function Swap() {
   });
 
   useEffect(() => {
-    const fetchSwapsLivenessWrapper = async () => {
-      await dispatch(fetchSwapsLiveness());
-      setIsFeatureFlagLoaded(true);
-    };
-    fetchSwapsLivenessWrapper();
+    dispatch(fetchSwapsLiveness());
     return () => {
       exitEventRef.current();
     };
@@ -237,10 +231,6 @@ export default function Swap() {
 
   if (!isSwapsChain) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
-  }
-
-  if (!isFeatureFlagLoaded) {
-    return <LoadingScreen />;
   }
 
   return (
