@@ -17,6 +17,7 @@ import {
   NETWORK_TYPE_TO_ID_MAP,
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
+  INFURA_BLOCKED_MESSAGE,
 } from '../../../../shared/constants/network';
 import {
   isPrefixedFormattedHexString,
@@ -52,6 +53,10 @@ export const NETWORK_EVENTS = {
   NETWORK_DID_CHANGE: 'networkDidChange',
   // Fired when the actively selected network *will* change
   NETWORK_WILL_CHANGE: 'networkWillChange',
+  // Fired when Infura returns an error indicating no support
+  INFURA_IS_BLOCKED: 'infuraIsBlocked',
+  // Fired when Infura returns no error, indicating support
+  INFURA_IS_UNBLOCKED: 'infuraIsUnblocked',
 };
 
 export default class NetworkController extends EventEmitter {
@@ -153,6 +158,17 @@ export default class NetworkController extends EventEmitter {
     const ethQuery = new EthQuery(this._provider);
     const initialNetwork = this.getNetworkState();
     ethQuery.sendAsync({ method: 'net_version' }, (err, networkVersion) => {
+      const { type } = this.getProviderConfig();
+      const isInfura = INFURA_PROVIDER_TYPES.includes(type);
+
+      if (isInfura) {
+        if (err && err.message === INFURA_BLOCKED_MESSAGE) {
+          this.emit(NETWORK_EVENTS.INFURA_IS_BLOCKED);
+        } else if (!err) {
+          this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
+        }
+      }
+
       const currentNetwork = this.getNetworkState();
       if (initialNetwork === currentNetwork) {
         if (err) {

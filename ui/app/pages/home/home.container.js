@@ -11,6 +11,7 @@ import {
   getUnapprovedTemplatedConfirmations,
   getWeb3ShimUsageStateForOrigin,
   unconfirmedTransactionsCountSelector,
+  getInfuraBlocked,
 } from '../../selectors';
 
 import {
@@ -104,6 +105,7 @@ const mapStateToProps = (state) => {
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
     pendingConfirmations,
+    infuraBlocked: getInfuraBlocked(state),
   };
 };
 

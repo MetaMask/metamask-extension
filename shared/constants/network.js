@@ -96,3 +96,6 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [TEST_ETH_SYMBOL]: TEST_ETH_TOKEN_IMAGE_URL,
   [BNB_SYMBOL]: BNB_TOKEN_IMAGE_URL,
 };
+
+export const INFURA_BLOCKED_MESSAGE =
+  'EthQuery - RPC Error - This service is not available in your country';
