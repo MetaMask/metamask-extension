@@ -4,9 +4,9 @@ module.exports = {
   coverageThreshold: {
     global: {
       branches: 5.83,
-      functions: 8.31,
-      lines: 11.21,
-      statements: 11.24,
+      functions: 8.28,
+      lines: 11.18,
+      statements: 11.21,
     },
   },
   setupFiles: ['./test/setup.js', './test/env.js'],
