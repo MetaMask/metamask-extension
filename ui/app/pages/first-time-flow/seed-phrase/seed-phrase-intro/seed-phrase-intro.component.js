@@ -10,6 +10,8 @@ import {
   COLORS,
   TYPOGRAPHY,
   FONT_WEIGHT,
+  SIZES,
+  BORDER_STYLE,
 } from '../../../../helpers/constants/design-system';
 // Routes
 import { INITIALIZE_SEED_PHRASE_ROUTE } from '../../../../helpers/constants/routes';
@@ -63,7 +65,13 @@ export default function SeedPhraseIntro() {
           </Box>
         </div>
         <div className="seed-phrase-intro__right">
-          <div className="seed-phrase-intro__sidebar">
+          <Box
+            padding={4}
+            borderWidth={1}
+            borderRadius={SIZES.MD}
+            borderColor={COLORS.UI2}
+            borderStyle={BORDER_STYLE.SOLID}
+          >
             <Box marginBottom={4}>
               <Typography
                 tag="span"
@@ -105,7 +113,7 @@ export default function SeedPhraseIntro() {
             <Box marginBottom={4}>
               <span>{t('seedPhraseIntroSidebarCopyThree')}</span>
             </Box>
-          </div>
+          </Box>
         </div>
       </div>
     </div>
