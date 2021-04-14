@@ -1,4 +1,4 @@
-import ethUtil from 'ethereumjs-util';
+import { BN, toChecksumAddress } from 'ethereumjs-util';
 import * as util from './util';
 
 describe('util', () => {
@@ -87,7 +87,7 @@ describe('util', () => {
     it('should recognize this sample hashed address', () => {
       const address = '0x5Fda30Bb72B8Dfe20e48A00dFc108d0915BE9Bb0';
       const result = util.isValidAddress(address);
-      const hashed = ethUtil.toChecksumAddress(address.toLowerCase());
+      const hashed = toChecksumAddress(address.toLowerCase());
       expect(hashed).toStrictEqual(address);
       expect(result).toStrictEqual(true);
     });
@@ -204,15 +204,13 @@ describe('util', () => {
     });
 
     it('should return 1.0000 ETH', () => {
-      const input = new ethUtil.BN(ethInWei, 10).toJSON();
+      const input = new BN(ethInWei, 10).toJSON();
       const result = util.formatBalance(input, 4);
       expect(result).toStrictEqual('1.0000 ETH');
     });
 
-    it('should return 0.500 ETH', () => {
-      const input = new ethUtil.BN(ethInWei, 10)
-        .div(new ethUtil.BN('2', 10))
-        .toJSON();
+    it('should return 0.500 ETH', function () {
+      const input = new BN(ethInWei, 10).div(new BN('2', 10)).toJSON();
       const result = util.formatBalance(input, 3);
       expect(result).toStrictEqual('0.500 ETH');
     });
@@ -240,85 +238,9 @@ describe('util', () => {
     });
   });
 
-  describe('normalizing values', () => {
-    describe('#normalizeToWei', () => {
-      it('should convert an eth to the appropriate equivalent values', () => {
-        const valueTable = {
-          wei: '1000000000000000000',
-          kwei: '1000000000000000',
-          mwei: '1000000000000',
-          gwei: '1000000000',
-          szabo: '1000000',
-          finney: '1000',
-          ether: '1',
-          // kether:'0.001',
-          // mether:'0.000001',
-          // AUDIT: We're getting BN numbers on these ones.
-          // I think they're big enough to ignore for now.
-          // gether:'0.000000001',
-          // tether:'0.000000000001',
-        };
-        const oneEthBn = new ethUtil.BN(ethInWei, 10);
-
-        Object.keys(valueTable).forEach((currency) => {
-          const value = new ethUtil.BN(valueTable[currency], 10);
-          const output = util.normalizeToWei(value, currency);
-          expect(output.toString(10)).toStrictEqual(
-            valueTable.wei,
-            `value of ${output.toString(
-              10,
-            )} ${currency} should convert to ${oneEthBn}`,
-          );
-        });
-      });
-    });
-
-    describe('#normalizeEthStringToWei', () => {
-      it('should convert decimal eth to pure wei BN', () => {
-        const input = '1.23456789';
-        const output = util.normalizeEthStringToWei(input);
-        expect(output.toString(10)).toStrictEqual('1234567890000000000');
-      });
-
-      it('should convert 1 to expected wei', () => {
-        const input = '1';
-        const output = util.normalizeEthStringToWei(input);
-        expect(output.toString(10)).toStrictEqual(ethInWei);
-      });
-
-      it('should account for overflow numbers gracefully by dropping extra precision.', () => {
-        const input = '1.11111111111111111111';
-        const output = util.normalizeEthStringToWei(input);
-        expect(output.toString(10)).toStrictEqual('1111111111111111111');
-      });
-
-      it('should not truncate very exact wei values that do not have extra precision.', () => {
-        const input = '1.100000000000000001';
-        const output = util.normalizeEthStringToWei(input);
-        expect(output.toString(10)).toStrictEqual('1100000000000000001');
-      });
-    });
-
-    describe('#normalizeNumberToWei', () => {
-      it('should handle a simple use case', () => {
-        const input = 0.0002;
-        const output = util.normalizeNumberToWei(input, 'ether');
-        const str = output.toString(10);
-        expect(str).toStrictEqual('200000000000000');
-      });
-
-      it('should convert a kwei number to the appropriate equivalent wei', () => {
-        const result = util.normalizeNumberToWei(1.111, 'kwei');
-        expect(result.toString(10)).toStrictEqual('1111', 'accepts decimals');
-      });
-
-      it('should convert a ether number to the appropriate equivalent wei', () => {
-        const result = util.normalizeNumberToWei(1.111, 'ether');
-        expect(result.toString(10)).toStrictEqual('1111000000000000000');
-      });
-    });
-    describe('#isHex', () => {
-      it('should return true when given a hex string', () => {
+  describe('normalizing values', function () {
+    describe('#isHex', function () {
+      it('should return true when given a hex string', function () {
         const result = util.isHex(
           'c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2',
         );

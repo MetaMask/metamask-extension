@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
-import ethUtil from 'ethereumjs-util';
+import { bufferToHex } from 'ethereumjs-util';
 import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
@@ -298,5 +298,5 @@ function normalizeMsgData(data) {
     return data;
   }
   // data is unicode, convert to hex
-  return ethUtil.bufferToHex(Buffer.from(data, 'utf8'));
+  return bufferToHex(Buffer.from(data, 'utf8'));
 }

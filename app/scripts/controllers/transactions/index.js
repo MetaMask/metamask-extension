@@ -1,6 +1,6 @@
 import EventEmitter from 'safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
-import ethUtil from 'ethereumjs-util';
+import { bufferToHex, keccak, toBuffer } from 'ethereumjs-util';
 import Transaction from 'ethereumjs-tx';
 import EthQuery from 'ethjs-query';
 import { ethErrors } from 'eth-rpc-errors';
@@ -569,9 +569,9 @@ export default class TransactionController extends EventEmitter {
 
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation
-    txMeta.r = ethUtil.bufferToHex(ethTx.r);
-    txMeta.s = ethUtil.bufferToHex(ethTx.s);
-    txMeta.v = ethUtil.bufferToHex(ethTx.v);
+    txMeta.r = bufferToHex(ethTx.r);
+    txMeta.s = bufferToHex(ethTx.s);
+    txMeta.v = bufferToHex(ethTx.v);
 
     this.txStateManager.updateTransaction(
       txMeta,
@@ -580,7 +580,7 @@ export default class TransactionController extends EventEmitter {
 
     // set state to signed
     this.txStateManager.setTxStatusSigned(txMeta.id);
-    const rawTx = ethUtil.bufferToHex(ethTx.serialize());
+    const rawTx = bufferToHex(ethTx.serialize());
     return rawTx;
   }
 
@@ -606,7 +606,7 @@ export default class TransactionController extends EventEmitter {
       txHash = await this.query.sendRawTransaction(rawTx);
     } catch (error) {
       if (error.message.toLowerCase().includes('known transaction')) {
-        txHash = ethUtil.sha3(addHexPrefix(rawTx)).toString('hex');
+        txHash = keccak(toBuffer(addHexPrefix(rawTx), 'hex')).toString('hex');
         txHash = addHexPrefix(txHash);
       } else {
         throw error;

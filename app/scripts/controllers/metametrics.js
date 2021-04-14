@@ -1,6 +1,6 @@
 import { merge, omit } from 'lodash';
 import { ObservableStore } from '@metamask/obs-store';
-import { bufferToHex, sha3 } from 'ethereumjs-util';
+import { bufferToHex, keccak } from 'ethereumjs-util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -110,9 +110,11 @@ export default class MetaMetricsController {
 
   generateMetaMetricsId() {
     return bufferToHex(
-      sha3(
-        String(Date.now()) +
-          String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)),
+      keccak(
+        Buffer.from(
+          String(Date.now()) +
+            String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)),
+        ),
       ),
     );
   }

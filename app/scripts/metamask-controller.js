@@ -10,7 +10,7 @@ import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager'
 import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware';
 import KeyringController from 'eth-keyring-controller';
 import { Mutex } from 'await-semaphore';
-import ethUtil from 'ethereumjs-util';
+import { toChecksumAddress, stripHexPrefix } from 'ethereumjs-util';
 import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
@@ -1096,16 +1096,14 @@ export default class MetamaskController extends EventEmitter {
     // Filter ERC20 tokens
     const filteredAccountTokens = {};
     Object.keys(accountTokens).forEach((address) => {
-      const checksummedAddress = ethUtil.toChecksumAddress(address);
+      const checksummedAddress = toChecksumAddress(address);
       filteredAccountTokens[checksummedAddress] = {};
       Object.keys(accountTokens[address]).forEach((chainId) => {
         filteredAccountTokens[checksummedAddress][chainId] =
           chainId === MAINNET_CHAIN_ID
             ? accountTokens[address][chainId].filter(
                 ({ address: tokenAddress }) => {
-                  const checksumAddress = ethUtil.toChecksumAddress(
-                    tokenAddress,
-                  );
+                  const checksumAddress = toChecksumAddress(tokenAddress);
                   return contractMap[checksumAddress]
                     ? contractMap[checksumAddress].erc20
                     : true;
@@ -1142,10 +1140,10 @@ export default class MetamaskController extends EventEmitter {
     const accounts = {
       hd: hdAccounts
         .filter((item, pos) => hdAccounts.indexOf(item) === pos)
-        .map((address) => ethUtil.toChecksumAddress(address)),
+        .map((address) => toChecksumAddress(address)),
       simpleKeyPair: simpleKeyPairAccounts
         .filter((item, pos) => simpleKeyPairAccounts.indexOf(item) === pos)
-        .map((address) => ethUtil.toChecksumAddress(address)),
+        .map((address) => toChecksumAddress(address)),
       ledger: [],
       trezor: [],
     };
@@ -1155,7 +1153,7 @@ export default class MetamaskController extends EventEmitter {
     let { transactions } = this.txController.store.getState();
     // delete tx for other accounts that we're not importing
     transactions = transactions.filter((tx) => {
-      const checksummedTxFrom = ethUtil.toChecksumAddress(tx.txParams.from);
+      const checksummedTxFrom = toChecksumAddress(tx.txParams.from);
       return accounts.hd.includes(checksummedTxFrom);
     });
 
@@ -1640,7 +1638,7 @@ export default class MetamaskController extends EventEmitter {
     const msgId = msgParams.metamaskId;
     const msg = this.decryptMessageManager.getMsg(msgId);
     try {
-      const stripped = ethUtil.stripHexPrefix(msgParams.data);
+      const stripped = stripHexPrefix(msgParams.data);
       const buff = Buffer.from(stripped, 'hex');
       msgParams.data = JSON.parse(buff.toString('utf8'));
 
@@ -1670,7 +1668,7 @@ export default class MetamaskController extends EventEmitter {
         msgParams,
       );
 
-      const stripped = ethUtil.stripHexPrefix(cleanMsgParams.data);
+      const stripped = stripHexPrefix(cleanMsgParams.data);
       const buff = Buffer.from(stripped, 'hex');
       cleanMsgParams.data = JSON.parse(buff.toString('utf8'));
 

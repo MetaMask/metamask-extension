@@ -1,6 +1,6 @@
 import assert from 'assert';
 import extension from 'extensionizer';
-import ethUtil from 'ethereumjs-util';
+import { stripHexPrefix } from 'ethereumjs-util';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
 
@@ -111,7 +111,7 @@ function sufficientBalance(txParams, hexBalance) {
  *
  */
 function hexToBn(inputHex) {
-  return new BN(ethUtil.stripHexPrefix(inputHex), 16);
+  return new BN(stripHexPrefix(inputHex), 16);
 }
 
 /**
