@@ -1654,7 +1654,7 @@
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNetworkFeeSummary": {
-    "message": "네트워크 요금에는 스왑을 처리하고 이더리움 네트워크에 보관하는 비용이 적용됩니다. MetaMask는 이 요금을 이용해 이득을 얻지 않습니다."
+    "message": "네트워크 요금에는 스왑을 처리하고 $1 네트워크에 보관하는 비용이 적용됩니다. MetaMask는 이 요금을 이용해 이득을 얻지 않습니다."
   },
   "swapNewQuoteIn": {
     "message": "$1 후에 새 견적",
