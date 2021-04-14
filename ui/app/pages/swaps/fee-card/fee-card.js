@@ -31,7 +31,7 @@ export default function FeeCard({
   const getTranslatedNetworkName = () => {
     const networkNameKey =
       SWAPS_CHAIN_ID_TO_NETWORK_NAME_KEY_MAP[chainId] || 'networkNameEthereum';
-    return t(networkNameKey) || 'Ethereum'; // If there are no translated network names, it defaults to 'Ethereum'
+    return t(networkNameKey);
   };
 
   return (
