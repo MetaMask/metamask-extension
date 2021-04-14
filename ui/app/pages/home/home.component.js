@@ -81,6 +81,7 @@ export default class Home extends PureComponent {
 
   state = {
     mounted: false,
+    canShowBlockageNotification: true,
   };
 
   componentDidMount() {
@@ -245,7 +246,7 @@ export default class Home extends PureComponent {
             key="home-privacyModeDefault"
           />
         ) : null}
-        {infuraBlocked ? (
+        {infuraBlocked && this.state.canShowBlockageNotification ? (
           <HomeNotification
             descriptionText={t('infuraBlockedNotification', [
               <span
@@ -258,6 +259,12 @@ export default class Home extends PureComponent {
                 {t('here')}
               </span>,
             ])}
+            ignoreText={t('dismiss')}
+            onIgnore={() => {
+              this.setState({
+                canShowBlockageNotification: false,
+              });
+            }}
             key="home-infuraBlockedNotification"
           />
         ) : null}
