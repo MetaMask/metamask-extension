@@ -1673,7 +1673,7 @@
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapNetworkFeeSummary": {
-    "message": "网络手续费包括处理您的兑换和在以太坊（Ethereum）网络上存储的成本。MetaMask 不从这笔费用中获利。"
+    "message": "网络手续费包括处理您的兑换和在以太坊（$1）网络上存储的成本。MetaMask 不从这笔费用中获利。"
   },
   "swapNewQuoteIn": {
     "message": "$1 后更新报价",

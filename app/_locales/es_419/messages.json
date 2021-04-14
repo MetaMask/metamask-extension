@@ -1673,7 +1673,7 @@
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapNetworkFeeSummary": {
-    "message": "La tarifa de la red cubre el costo de procesar su intercambio y almacenarlo en la red Ethereum. MetaMask no se beneficia de esta tarifa."
+    "message": "La tarifa de la red cubre el costo de procesar su intercambio y almacenarlo en la red $1. MetaMask no se beneficia de esta tarifa."
   },
   "swapNewQuoteIn": {
     "message": "Nuevas cotizaciones en $1",

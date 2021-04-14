@@ -1657,7 +1657,7 @@
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNetworkFeeSummary": {
-    "message": "Phí mạng dùng để chi trả chi phí xử lý giao dịch hoán đổi của bạn và lưu trữ giao dịch đó trên mạng Ethereum. MetaMask không thu lợi từ khoản phí này."
+    "message": "Phí mạng dùng để chi trả chi phí xử lý giao dịch hoán đổi của bạn và lưu trữ giao dịch đó trên mạng $1. MetaMask không thu lợi từ khoản phí này."
   },
   "swapNewQuoteIn": {
     "message": "Báo giá mới sẽ có sau $1",
