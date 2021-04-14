@@ -80,31 +80,16 @@ describe('Metamask Responsive UI', function () {
         });
 
         // Show account information
-        // show account details dropdown menu
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
+        // balance renders
+        const balance = await driver.findElement(
+          '[data-testid="eth-overview__primary-currency"]',
         );
-        const options = await driver.findElements(
-          '.account-options-menu .menu-item',
-        );
-        assert.equal(options.length, 3); // HD Wallet type does not have to show the Remove Account option
-        // click outside of menu to dismiss
-        // account menu button chosen because the menu never covers it.
-        await driver.clickPoint('.account-menu__icon', 0, 0);
-
-        // logs out of the vault
-        await driver.clickElement('.account-menu__icon');
-
-        const lockButton = await driver.findClickableElement(
-          '.account-menu__lock-button',
-        );
-        assert.equal(await lockButton.getText(), 'Lock');
-        await lockButton.click();
+        await driver.wait(until.elementTextMatches(balance, /0\s*ETH/u));
       },
     );
   });
 
-  it('Importing existing wallet from login page', async function () {
+  it('Importing existing wallet from lock page', async function () {
     const driverOptions = { responsive: true };
     const testSeedPhrase =
       'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
@@ -140,26 +125,12 @@ describe('Metamask Responsive UI', function () {
           tag: 'button',
         });
 
-        // switches to localhost
-        await driver.clickElement('.network-display');
-        await driver.clickElement({
-          xpath: `//span[contains(@class, 'network-name-item') and contains(text(), 'Localhost 8545')]`,
-        });
-
         // balance renders
         const balance = await driver.findElement(
           '[data-testid="eth-overview__primary-currency"]',
         );
         await driver.wait(until.elementTextMatches(balance, /100\s*ETH/u));
 
-        // logs out of the vault
-        await driver.clickElement('.account-menu__icon');
-
-        const lockButton = await driver.findClickableElement(
-          '.account-menu__lock-button',
-        );
-        assert.equal(await lockButton.getText(), 'Lock');
-        await lockButton.click();
       },
     );
   });
