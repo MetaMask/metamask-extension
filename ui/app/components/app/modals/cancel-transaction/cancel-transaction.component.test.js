@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
@@ -6,32 +5,28 @@ import Modal from '../../modal';
 import CancelTransaction from './cancel-transaction.component';
 import CancelTransactionGasFee from './cancel-transaction-gas-fee';
 
-describe('CancelTransaction Component', function () {
+describe('CancelTransaction Component', () => {
   const t = (key) => key;
 
-  it('should render a CancelTransaction modal', function () {
+  it('should render a CancelTransaction modal', () => {
     const wrapper = shallow(<CancelTransaction newGasFee="0x1319718a5000" />, {
       context: { t },
     });
 
-    assert.ok(wrapper);
-    assert.strictEqual(wrapper.find(Modal).length, 1);
-    assert.strictEqual(wrapper.find(CancelTransactionGasFee).length, 1);
-    assert.strictEqual(
-      wrapper.find(CancelTransactionGasFee).props().value,
+    expect(wrapper.find(Modal)).toHaveLength(1);
+    expect(wrapper.find(CancelTransactionGasFee)).toHaveLength(1);
+    expect(wrapper.find(CancelTransactionGasFee).props().value).toStrictEqual(
       '0x1319718a5000',
     );
-    assert.strictEqual(
-      wrapper.find('.cancel-transaction__title').text(),
+    expect(wrapper.find('.cancel-transaction__title').text()).toStrictEqual(
       'cancellationGasFee',
     );
-    assert.strictEqual(
+    expect(
       wrapper.find('.cancel-transaction__description').text(),
-      'attemptToCancelDescription',
-    );
+    ).toStrictEqual('attemptToCancelDescription');
   });
 
-  it('should pass the correct props to the Modal component', async function () {
+  it('should pass the correct props to the Modal component', async () => {
     const createCancelTransactionSpy = sinon
       .stub()
       .callsFake(() => Promise.resolve());
@@ -47,19 +42,19 @@ describe('CancelTransaction Component', function () {
       { context: { t } },
     );
 
-    assert.strictEqual(wrapper.find(Modal).length, 1);
+    expect(wrapper.find(Modal)).toHaveLength(1);
     const modalProps = wrapper.find(Modal).props();
 
-    assert.strictEqual(modalProps.headerText, 'attemptToCancel');
-    assert.strictEqual(modalProps.submitText, 'yesLetsTry');
-    assert.strictEqual(modalProps.cancelText, 'nevermind');
+    expect(modalProps.headerText).toStrictEqual('attemptToCancel');
+    expect(modalProps.submitText).toStrictEqual('yesLetsTry');
+    expect(modalProps.cancelText).toStrictEqual('nevermind');
 
-    assert.strictEqual(createCancelTransactionSpy.callCount, 0);
-    assert.strictEqual(hideModalSpy.callCount, 0);
+    expect(createCancelTransactionSpy.callCount).toStrictEqual(0);
+    expect(hideModalSpy.callCount).toStrictEqual(0);
     await modalProps.onSubmit();
-    assert.strictEqual(createCancelTransactionSpy.callCount, 1);
-    assert.strictEqual(hideModalSpy.callCount, 1);
+    expect(createCancelTransactionSpy.callCount).toStrictEqual(1);
+    expect(hideModalSpy.callCount).toStrictEqual(1);
     modalProps.onCancel();
-    assert.strictEqual(hideModalSpy.callCount, 2);
+    expect(hideModalSpy.callCount).toStrictEqual(2);
   });
 });

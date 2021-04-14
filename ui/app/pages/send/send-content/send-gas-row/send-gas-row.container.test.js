@@ -1,134 +1,126 @@
-import assert from 'assert';
-import proxyquire from 'proxyquire';
 import sinon from 'sinon';
+
+import {
+  showModal,
+  setGasPrice,
+  setGasTotal,
+  setGasLimit,
+} from '../../../../store/actions';
+
+import {
+  resetCustomData,
+  setCustomGasPrice,
+  setCustomGasLimit,
+} from '../../../../ducks/gas/gas.duck';
+
+import { showGasButtonGroup } from '../../../../ducks/send/send.duck';
 
 let mapDispatchToProps;
 let mergeProps;
 
-const actionSpies = {
-  showModal: sinon.spy(),
-  setGasPrice: sinon.spy(),
-  setGasTotal: sinon.spy(),
-  setGasLimit: sinon.spy(),
-};
-
-const sendDuckSpies = {
-  showGasButtonGroup: sinon.spy(),
-};
-
-const gasDuckSpies = {
-  resetCustomData: sinon.spy(),
-  setCustomGasPrice: sinon.spy(),
-  setCustomGasLimit: sinon.spy(),
-};
-
-proxyquire('./send-gas-row.container.js', {
-  'react-redux': {
-    connect: (_, md, mp) => {
-      mapDispatchToProps = md;
-      mergeProps = mp;
-      return () => ({});
-    },
+jest.mock('react-redux', () => ({
+  connect: (_, md, mp) => {
+    mapDispatchToProps = md;
+    mergeProps = mp;
+    return () => ({});
   },
-  '../../../../selectors': {
-    getSendMaxModeState: (s) => `mockMaxModeOn:${s}`,
-  },
-  '../../send.utils.js': {
-    isBalanceSufficient: ({ amount, gasTotal, balance, conversionRate }) =>
-      `${amount}:${gasTotal}:${balance}:${conversionRate}`,
-    calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
-  },
-  '../../../../store/actions': actionSpies,
-  '../../../../ducks/send/send.duck': sendDuckSpies,
-  '../../../../ducks/gas/gas.duck': gasDuckSpies,
-});
+}));
 
-describe('send-gas-row container', function () {
-  describe('mapDispatchToProps()', function () {
+jest.mock('../../../../../app/selectors', () => ({
+  getSendMaxModeState: (s) => `mockMaxModeOn:${s}`,
+}));
+
+jest.mock('../../send.utils.js', () => ({
+  isBalanceSufficient: ({ amount, gasTotal, balance, conversionRate }) =>
+    `${amount}:${gasTotal}:${balance}:${conversionRate}`,
+
+  calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
+}));
+
+jest.mock('../../../../../app/store/actions', () => ({
+  showModal: jest.fn(),
+  setGasPrice: jest.fn(),
+  setGasTotal: jest.fn(),
+  setGasLimit: jest.fn(),
+}));
+
+jest.mock('../../../../../app/ducks/send/send.duck', () => ({
+  showGasButtonGroup: jest.fn(),
+}));
+
+jest.mock('../../../../../app/ducks/gas/gas.duck', () => ({
+  resetCustomData: jest.fn(),
+  setCustomGasPrice: jest.fn(),
+  setCustomGasLimit: jest.fn(),
+}));
+
+require('./send-gas-row.container.js');
+
+describe('send-gas-row container', () => {
+  describe('mapDispatchToProps()', () => {
     let dispatchSpy;
     let mapDispatchToPropsObject;
 
-    beforeEach(function () {
+    beforeEach(() => {
       dispatchSpy = sinon.spy();
       mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy);
-      actionSpies.setGasTotal.resetHistory();
     });
 
-    describe('showCustomizeGasModal()', function () {
-      it('should dispatch an action', function () {
+    describe('showCustomizeGasModal()', () => {
+      it('should dispatch an action', () => {
         mapDispatchToPropsObject.showCustomizeGasModal();
-        assert(dispatchSpy.calledOnce);
-        assert.deepStrictEqual(actionSpies.showModal.getCall(0).args[0], {
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(showModal).toHaveBeenCalledWith({
           name: 'CUSTOMIZE_GAS',
           hideBasic: true,
         });
       });
     });
 
-    describe('setGasPrice()', function () {
-      it('should dispatch an action', function () {
+    describe('setGasPrice()', () => {
+      it('should dispatch an action', () => {
         mapDispatchToPropsObject.setGasPrice({
           gasPrice: 'mockNewPrice',
           gasLimit: 'mockLimit',
         });
-        assert(dispatchSpy.calledThrice);
-        assert(actionSpies.setGasPrice.calledOnce);
-        assert.strictEqual(
-          actionSpies.setGasPrice.getCall(0).args[0],
-          'mockNewPrice',
-        );
-        assert.strictEqual(
-          gasDuckSpies.setCustomGasPrice.getCall(0).args[0],
-          'mockNewPrice',
-        );
-        assert(actionSpies.setGasTotal.calledOnce);
-        assert.strictEqual(
-          actionSpies.setGasTotal.getCall(0).args[0],
-          'mockLimitmockNewPrice',
-        );
+        expect(dispatchSpy.calledThrice).toStrictEqual(true);
+        expect(setGasPrice).toHaveBeenCalled();
+        expect(setCustomGasPrice).toHaveBeenCalledWith('mockNewPrice');
+        expect(setGasTotal).toHaveBeenCalled();
+        expect(setGasTotal).toHaveBeenCalledWith('mockLimitmockNewPrice');
       });
     });
 
-    describe('setGasLimit()', function () {
-      it('should dispatch an action', function () {
+    describe('setGasLimit()', () => {
+      it('should dispatch an action', () => {
         mapDispatchToPropsObject.setGasLimit('mockNewLimit', 'mockPrice');
-        assert(dispatchSpy.calledThrice);
-        assert(actionSpies.setGasLimit.calledOnce);
-        assert.strictEqual(
-          actionSpies.setGasLimit.getCall(0).args[0],
-          'mockNewLimit',
-        );
-        assert.strictEqual(
-          gasDuckSpies.setCustomGasLimit.getCall(0).args[0],
-          'mockNewLimit',
-        );
-        assert(actionSpies.setGasTotal.calledOnce);
-        assert.strictEqual(
-          actionSpies.setGasTotal.getCall(0).args[0],
-          'mockNewLimitmockPrice',
-        );
+        expect(dispatchSpy.calledThrice).toStrictEqual(true);
+        expect(setGasLimit).toHaveBeenCalled();
+        expect(setCustomGasLimit).toHaveBeenCalledWith('mockNewLimit');
+        expect(setGasTotal).toHaveBeenCalled();
+        expect(setGasTotal).toHaveBeenCalledWith('mockNewLimitmockPrice');
       });
     });
 
-    describe('showGasButtonGroup()', function () {
-      it('should dispatch an action', function () {
+    describe('showGasButtonGroup()', () => {
+      it('should dispatch an action', () => {
         mapDispatchToPropsObject.showGasButtonGroup();
-        assert(dispatchSpy.calledOnce);
-        assert(sendDuckSpies.showGasButtonGroup.calledOnce);
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(showGasButtonGroup).toHaveBeenCalled();
       });
     });
 
-    describe('resetCustomData()', function () {
-      it('should dispatch an action', function () {
+    describe('resetCustomData()', () => {
+      it('should dispatch an action', () => {
         mapDispatchToPropsObject.resetCustomData();
-        assert(dispatchSpy.calledOnce);
-        assert(gasDuckSpies.resetCustomData.calledOnce);
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(resetCustomData).toHaveBeenCalled();
       });
     });
   });
 
-  describe('mergeProps', function () {
-    it('should return the expected props when isConfirm is true', function () {
+  describe('mergeProps', () => {
+    it('should return the expected props when isConfirm is true', () => {
       const stateProps = {
         gasPriceButtonGroupProps: {
           someGasPriceButtonGroupProp: 'foo',
@@ -143,24 +135,22 @@ describe('send-gas-row container', function () {
       const ownProps = { someOwnProp: 123 };
       const result = mergeProps(stateProps, dispatchProps, ownProps);
 
-      assert.strictEqual(result.someOtherStateProp, 'baz');
-      assert.strictEqual(
+      expect(result.someOtherStateProp).toStrictEqual('baz');
+      expect(
         result.gasPriceButtonGroupProps.someGasPriceButtonGroupProp,
-        'foo',
-      );
-      assert.strictEqual(
+      ).toStrictEqual('foo');
+      expect(
         result.gasPriceButtonGroupProps.anotherGasPriceButtonGroupProp,
-        'bar',
-      );
-      assert.strictEqual(result.someOwnProp, 123);
+      ).toStrictEqual('bar');
+      expect(result.someOwnProp).toStrictEqual(123);
 
-      assert.strictEqual(dispatchProps.setGasPrice.callCount, 0);
+      expect(dispatchProps.setGasPrice.callCount).toStrictEqual(0);
       result.gasPriceButtonGroupProps.handleGasPriceSelection();
-      assert.strictEqual(dispatchProps.setGasPrice.callCount, 1);
+      expect(dispatchProps.setGasPrice.callCount).toStrictEqual(1);
 
-      assert.strictEqual(dispatchProps.someOtherDispatchProp.callCount, 0);
+      expect(dispatchProps.someOtherDispatchProp.callCount).toStrictEqual(0);
       result.someOtherDispatchProp();
-      assert.strictEqual(dispatchProps.someOtherDispatchProp.callCount, 1);
+      expect(dispatchProps.someOtherDispatchProp.callCount).toStrictEqual(1);
     });
   });
 });

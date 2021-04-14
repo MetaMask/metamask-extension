@@ -1,28 +1,28 @@
-import assert from 'assert';
-import proxyquire from 'proxyquire';
-
+/* eslint-disable import/unambiguous */
 let mapStateToProps;
 
-proxyquire('./send-row-error-message.container.js', {
-  'react-redux': {
-    connect: (ms) => {
-      mapStateToProps = ms;
-      return () => ({});
-    },
+jest.mock('react-redux', () => ({
+  connect: (ms) => {
+    mapStateToProps = ms;
+    return () => ({});
   },
-  '../../../../../selectors': { getSendErrors: (s) => `mockErrors:${s}` },
-});
+}));
 
-describe('send-row-error-message container', function () {
-  describe('mapStateToProps()', function () {
-    it('should map the correct properties to props', function () {
-      assert.deepStrictEqual(
+jest.mock('../../../../../selectors', () => ({
+  getSendErrors: (s) => `mockErrors:${s}`,
+}));
+
+require('./send-row-error-message.container.js');
+
+describe('send-row-error-message container', () => {
+  describe('mapStateToProps()', () => {
+    it('should map the correct properties to props', () => {
+      expect(
         mapStateToProps('mockState', { errorType: 'someType' }),
-        {
-          errors: 'mockErrors:mockState',
-          errorType: 'someType',
-        },
-      );
+      ).toStrictEqual({
+        errors: 'mockErrors:mockState',
+        errorType: 'someType',
+      });
     });
   });
 });

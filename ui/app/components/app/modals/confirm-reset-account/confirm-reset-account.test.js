@@ -1,10 +1,9 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import { mount } from 'enzyme';
 import ConfirmResetAccount from './confirm-reset-account.container';
 
-describe('Confirm Reset Account', function () {
+describe('Confirm Reset Account', () => {
   let wrapper;
 
   const props = {
@@ -12,7 +11,7 @@ describe('Confirm Reset Account', function () {
     resetAccount: sinon.stub().resolves(),
   };
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = mount(<ConfirmResetAccount.WrappedComponent {...props} />, {
       context: {
         t: (str) => str,
@@ -20,27 +19,24 @@ describe('Confirm Reset Account', function () {
     });
   });
 
-  afterEach(function () {
+  afterEach(() => {
     props.hideModal.resetHistory();
   });
 
-  it('hides modal when nevermind button is clicked', function () {
+  it('hides modal when nevermind button is clicked', () => {
     const nevermind = wrapper.find(
       '.btn-default.modal-container__footer-button',
     );
     nevermind.simulate('click');
 
-    assert(props.hideModal.calledOnce);
+    expect(props.hideModal.calledOnce).toStrictEqual(true);
   });
 
-  it('resets account and hides modal when reset button is clicked', function (done) {
+  it('resets account and hides modal when reset button is clicked', async () => {
     const reset = wrapper.find('.btn-danger.modal-container__footer-button');
     reset.simulate('click');
 
-    setImmediate(() => {
-      assert(props.resetAccount.calledOnce);
-      assert(props.hideModal.calledOnce);
-      done();
-    });
+    expect(await props.resetAccount.calledOnce).toStrictEqual(true);
+    expect(props.hideModal.calledOnce).toStrictEqual(true);
   });
 });

@@ -1,10 +1,9 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import AccountDetailsModal from './account-details-modal.container';
 
-describe('Account Details Modal', function () {
+describe('Account Details Modal', () => {
   let wrapper;
 
   global.platform = { openTab: sinon.spy() };
@@ -33,7 +32,7 @@ describe('Account Details Modal', function () {
     },
   };
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = shallow(<AccountDetailsModal.WrappedComponent {...props} />, {
       context: {
         t: (str) => str,
@@ -41,37 +40,37 @@ describe('Account Details Modal', function () {
     });
   });
 
-  it('sets account label when changing default account label', function () {
+  it('sets account label when changing default account label', () => {
     const accountLabel = wrapper.find('.account-details-modal__name').first();
     accountLabel.simulate('submit', 'New Label');
 
-    assert(props.setAccountLabel.calledOnce);
-    assert.strictEqual(props.setAccountLabel.getCall(0).args[1], 'New Label');
+    expect(props.setAccountLabel.calledOnce).toStrictEqual(true);
+    expect(props.setAccountLabel.getCall(0).args[1]).toStrictEqual('New Label');
   });
 
-  it('opens new tab when view block explorer is clicked', function () {
+  it('opens new tab when view block explorer is clicked', () => {
     const modalButton = wrapper.find('.account-details-modal__button');
     const etherscanLink = modalButton.first();
 
     etherscanLink.simulate('click');
-    assert(global.platform.openTab.calledOnce);
+    expect(global.platform.openTab.calledOnce).toStrictEqual(true);
   });
 
-  it('shows export private key modal when clicked', function () {
+  it('shows export private key modal when clicked', () => {
     const modalButton = wrapper.find('.account-details-modal__button');
     const etherscanLink = modalButton.last();
 
     etherscanLink.simulate('click');
-    assert(props.showExportPrivateKeyModal.calledOnce);
+    expect(props.showExportPrivateKeyModal.calledOnce).toStrictEqual(true);
   });
 
-  it('sets blockexplorerview text when block explorer url in rpcPrefs exists', function () {
+  it('sets blockexplorerview text when block explorer url in rpcPrefs exists', () => {
     const blockExplorerUrl = 'https://block.explorer';
     wrapper.setProps({ rpcPrefs: { blockExplorerUrl } });
 
     const modalButton = wrapper.find('.account-details-modal__button');
     const blockExplorerLink = modalButton.first().shallow();
 
-    assert.strictEqual(blockExplorerLink.text(), 'blockExplorerView');
+    expect(blockExplorerLink.text()).toStrictEqual('blockExplorerView');
   });
 });

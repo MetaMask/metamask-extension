@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import {
   KOVAN_CHAIN_ID,
   MAINNET_CHAIN_ID,
@@ -13,9 +12,9 @@ import {
   submittedPendingTransactionsSelector,
 } from './transactions';
 
-describe('Transaction Selectors', function () {
-  describe('unapprovedMessagesSelector', function () {
-    it('returns eth sign msg from unapprovedMsgs', function () {
+describe('Transaction Selectors', () => {
+  describe('unapprovedMessagesSelector', () => {
+    it('returns eth sign msg from unapprovedMsgs', () => {
       const msg = {
         id: 1,
         msgParams: {
@@ -41,11 +40,11 @@ describe('Transaction Selectors', function () {
 
       const msgSelector = unapprovedMessagesSelector(state);
 
-      assert(Array.isArray(msgSelector));
-      assert.deepStrictEqual(msgSelector, [msg]);
+      expect(Array.isArray(msgSelector)).toStrictEqual(true);
+      expect(msgSelector).toStrictEqual([msg]);
     });
 
-    it('returns personal sign from unapprovedPersonalMsgsSelector', function () {
+    it('returns personal sign from unapprovedPersonalMsgsSelector', () => {
       const msg = {
         id: 1,
         msgParams: {
@@ -71,11 +70,11 @@ describe('Transaction Selectors', function () {
 
       const msgSelector = unapprovedMessagesSelector(state);
 
-      assert(Array.isArray(msgSelector));
-      assert.deepStrictEqual(msgSelector, [msg]);
+      expect(Array.isArray(msgSelector)).toStrictEqual(true);
+      expect(msgSelector).toStrictEqual([msg]);
     });
 
-    it('returns typed message from unapprovedTypedMessagesSelector', function () {
+    it('returns typed message from unapprovedTypedMessagesSelector', () => {
       const msg = {
         id: 1,
         msgParams: {
@@ -102,13 +101,13 @@ describe('Transaction Selectors', function () {
 
       const msgSelector = unapprovedMessagesSelector(state);
 
-      assert(Array.isArray(msgSelector));
-      assert.deepStrictEqual(msgSelector, [msg]);
+      expect(Array.isArray(msgSelector)).toStrictEqual(true);
+      expect(msgSelector).toStrictEqual([msg]);
     });
   });
 
-  describe('transactionsSelector', function () {
-    it('selects the currentNetworkTxList', function () {
+  describe('transactionsSelector', () => {
+    it('selects the currentNetworkTxList', () => {
       const state = {
         metamask: {
           provider: {
@@ -146,13 +145,13 @@ describe('Transaction Selectors', function () {
 
       const selectedTx = transactionsSelector(state);
 
-      assert(Array.isArray(selectedTx));
-      assert.deepStrictEqual(selectedTx, orderedTxList);
+      expect(Array.isArray(selectedTx)).toStrictEqual(true);
+      expect(selectedTx).toStrictEqual(orderedTxList);
     });
   });
 
-  describe('nonceSortedTransactionsSelector', function () {
-    it('returns transaction group nonce sorted tx from from selectedTxList wit', function () {
+  describe('nonceSortedTransactionsSelector', () => {
+    it('returns transaction group nonce sorted tx from from selectedTxList wit', () => {
       const tx1 = {
         id: 0,
         time: 0,
@@ -206,14 +205,13 @@ describe('Transaction Selectors', function () {
         },
       ];
 
-      assert.deepStrictEqual(
-        nonceSortedTransactionsSelector(state),
+      expect(nonceSortedTransactionsSelector(state)).toStrictEqual(
         expectedResult,
       );
     });
   });
 
-  describe('Sorting Transactions Selectors', function () {
+  describe('Sorting Transactions Selectors', () => {
     const submittedTx = {
       id: 0,
       time: 0,
@@ -277,7 +275,7 @@ describe('Transaction Selectors', function () {
       },
     };
 
-    it('nonceSortedPendingTransactionsSelector', function () {
+    it('nonceSortedPendingTransactionsSelector', () => {
       const expectedResult = [
         {
           nonce: submittedTx.txParams.nonce,
@@ -305,13 +303,12 @@ describe('Transaction Selectors', function () {
         },
       ];
 
-      assert.deepStrictEqual(
-        nonceSortedPendingTransactionsSelector(state),
+      expect(nonceSortedPendingTransactionsSelector(state)).toStrictEqual(
         expectedResult,
       );
     });
 
-    it('nonceSortedCompletedTransactionsSelector', function () {
+    it('nonceSortedCompletedTransactionsSelector', () => {
       const expectedResult = [
         {
           nonce: confirmedTx.txParams.nonce,
@@ -323,16 +320,14 @@ describe('Transaction Selectors', function () {
         },
       ];
 
-      assert.deepStrictEqual(
-        nonceSortedCompletedTransactionsSelector(state),
+      expect(nonceSortedCompletedTransactionsSelector(state)).toStrictEqual(
         expectedResult,
       );
     });
 
-    it('submittedPendingTransactionsSelector', function () {
+    it('submittedPendingTransactionsSelector', () => {
       const expectedResult = [submittedTx];
-      assert.deepStrictEqual(
-        submittedPendingTransactionsSelector(state),
+      expect(submittedPendingTransactionsSelector(state)).toStrictEqual(
         expectedResult,
       );
     });

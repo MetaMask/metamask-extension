@@ -1,14 +1,13 @@
-import assert from 'assert';
 import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask from './metamask';
 
-describe('MetaMask Reducers', function () {
-  it('init state', function () {
+describe('MetaMask Reducers', () => {
+  it('init state', () => {
     const initState = reduceMetamask(undefined, {});
-    assert(initState);
+    expect.anything(initState);
   });
 
-  it('locks MetaMask', function () {
+  it('locks MetaMask', () => {
     const unlockMetaMaskState = {
       isUnlocked: true,
       selectedAddress: 'test address',
@@ -17,10 +16,10 @@ describe('MetaMask Reducers', function () {
       type: actionConstants.LOCK_METAMASK,
     });
 
-    assert.equal(lockMetaMask.isUnlocked, false);
+    expect(lockMetaMask.isUnlocked).toStrictEqual(false);
   });
 
-  it('sets rpc target', function () {
+  it('sets rpc target', () => {
     const state = reduceMetamask(
       {},
       {
@@ -29,10 +28,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.provider.rpcUrl, 'https://custom.rpc');
+    expect(state.provider.rpcUrl).toStrictEqual('https://custom.rpc');
   });
 
-  it('sets provider type', function () {
+  it('sets provider type', () => {
     const state = reduceMetamask(
       {},
       {
@@ -41,10 +40,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.provider.type, 'provider type');
+    expect(state.provider.type).toStrictEqual('provider type');
   });
 
-  it('shows account detail', function () {
+  it('shows account detail', () => {
     const state = reduceMetamask(
       {},
       {
@@ -53,12 +52,12 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.isUnlocked, true);
-    assert.equal(state.isInitialized, true);
-    assert.equal(state.selectedAddress, 'test address');
+    expect(state.isUnlocked).toStrictEqual(true);
+    expect(state.isInitialized).toStrictEqual(true);
+    expect(state.selectedAddress).toStrictEqual('test address');
   });
 
-  it('sets account label', function () {
+  it('sets account label', () => {
     const state = reduceMetamask(
       {},
       {
@@ -70,12 +69,12 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.deepEqual(state.identities, {
+    expect(state.identities).toStrictEqual({
       'test account': { name: 'test label' },
     });
   });
 
-  it('sets current fiat', function () {
+  it('sets current fiat', () => {
     const value = {
       currentCurrency: 'yen',
       conversionRate: 3.14,
@@ -90,12 +89,12 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.currentCurrency, value.currentCurrency);
-    assert.equal(state.conversionRate, value.conversionRate);
-    assert.equal(state.conversionDate, value.conversionDate);
+    expect(state.currentCurrency).toStrictEqual(value.currentCurrency);
+    expect(state.conversionRate).toStrictEqual(value.conversionRate);
+    expect(state.conversionDate).toStrictEqual(value.conversionDate);
   });
 
-  it('updates tokens', function () {
+  it('updates tokens', () => {
     const newTokens = {
       address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
       decimals: 18,
@@ -110,10 +109,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.deepEqual(state.tokens, newTokens);
+    expect(state.tokens).toStrictEqual(newTokens);
   });
 
-  it('updates send gas limit', function () {
+  it('updates send gas limit', () => {
     const state = reduceMetamask(
       {},
       {
@@ -122,10 +121,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.send.gasLimit, '0xGasLimit');
+    expect(state.send.gasLimit).toStrictEqual('0xGasLimit');
   });
 
-  it('updates send gas price', function () {
+  it('updates send gas price', () => {
     const state = reduceMetamask(
       {},
       {
@@ -134,10 +133,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.send.gasPrice, '0xGasPrice');
+    expect(state.send.gasPrice).toStrictEqual('0xGasPrice');
   });
 
-  it('toggles account menu ', function () {
+  it('toggles account menu', () => {
     const state = reduceMetamask(
       {},
       {
@@ -145,10 +144,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.isAccountMenuOpen, true);
+    expect(state.isAccountMenuOpen).toStrictEqual(true);
   });
 
-  it('updates gas total', function () {
+  it('updates gas total', () => {
     const state = reduceMetamask(
       {},
       {
@@ -157,10 +156,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.send.gasTotal, '0xGasTotal');
+    expect(state.send.gasTotal).toStrictEqual('0xGasTotal');
   });
 
-  it('updates send token balance', function () {
+  it('updates send token balance', () => {
     const state = reduceMetamask(
       {},
       {
@@ -169,10 +168,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.send.tokenBalance, '0xTokenBalance');
+    expect(state.send.tokenBalance).toStrictEqual('0xTokenBalance');
   });
 
-  it('updates data', function () {
+  it('updates data', () => {
     const state = reduceMetamask(
       {},
       {
@@ -181,10 +180,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.send.data, '0xData');
+    expect(state.send.data).toStrictEqual('0xData');
   });
 
-  it('updates send to', function () {
+  it('updates send to', () => {
     const state = reduceMetamask(
       {},
       {
@@ -196,11 +195,11 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.send.to, '0xAddress');
-    assert.equal(state.send.toNickname, 'nickname');
+    expect(state.send.to).toStrictEqual('0xAddress');
+    expect(state.send.toNickname).toStrictEqual('nickname');
   });
 
-  it('update send amount', function () {
+  it('update send amount', () => {
     const state = reduceMetamask(
       {},
       {
@@ -209,10 +208,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.send.amount, '0xAmount');
+    expect(state.send.amount).toStrictEqual('0xAmount');
   });
 
-  it('updates max mode', function () {
+  it('updates max mode', () => {
     const state = reduceMetamask(
       {},
       {
@@ -221,10 +220,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.send.maxModeOn, true);
+    expect(state.send.maxModeOn).toStrictEqual(true);
   });
 
-  it('update send', function () {
+  it('update send', () => {
     const value = {
       gasLimit: '0xGasLimit',
       gasPrice: '0xGasPrice',
@@ -250,10 +249,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.deepEqual(sendState.send, value);
+    expect(sendState.send).toStrictEqual(value);
   });
 
-  it('clears send', function () {
+  it('clears send', () => {
     const initStateSend = {
       send: {
         gasLimit: null,
@@ -292,10 +291,10 @@ describe('MetaMask Reducers', function () {
       type: actionConstants.CLEAR_SEND,
     });
 
-    assert.deepEqual(state.send, initStateSend.send);
+    expect(state.send).toStrictEqual(initStateSend.send);
   });
 
-  it('updates value of tx by id', function () {
+  it('updates value of tx by id', () => {
     const oldState = {
       currentNetworkTxList: [
         {
@@ -311,10 +310,10 @@ describe('MetaMask Reducers', function () {
       value: 'bar',
     });
 
-    assert.equal(state.currentNetworkTxList[0].txParams, 'bar');
+    expect(state.currentNetworkTxList[0].txParams).toStrictEqual('bar');
   });
 
-  it('sets blockies', function () {
+  it('sets blockies', () => {
     const state = reduceMetamask(
       {},
       {
@@ -323,10 +322,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.useBlockie, true);
+    expect(state.useBlockie).toStrictEqual(true);
   });
 
-  it('updates an arbitrary feature flag', function () {
+  it('updates an arbitrary feature flag', () => {
     const state = reduceMetamask(
       {},
       {
@@ -337,10 +336,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.featureFlags.foo, true);
+    expect(state.featureFlags.foo).toStrictEqual(true);
   });
 
-  it('close welcome screen', function () {
+  it('close welcome screen', () => {
     const state = reduceMetamask(
       {},
       {
@@ -348,10 +347,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.welcomeScreenSeen, true);
+    expect(state.welcomeScreenSeen).toStrictEqual(true);
   });
 
-  it('sets current locale', function () {
+  it('sets current locale', () => {
     const state = reduceMetamask(
       {},
       {
@@ -360,10 +359,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.equal(state.currentLocale, 'ge');
+    expect(state.currentLocale).toStrictEqual('ge');
   });
 
-  it('sets pending tokens ', function () {
+  it('sets pending tokens', () => {
     const payload = {
       address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
       decimals: 18,
@@ -378,10 +377,10 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.deepEqual(pendingTokensState.pendingTokens, payload);
+    expect(pendingTokensState.pendingTokens).toStrictEqual(payload);
   });
 
-  it('clears pending tokens', function () {
+  it('clears pending tokens', () => {
     const payload = {
       address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
       decimals: 18,
@@ -396,10 +395,10 @@ describe('MetaMask Reducers', function () {
       type: actionConstants.CLEAR_PENDING_TOKENS,
     });
 
-    assert.deepEqual(state.pendingTokens, {});
+    expect(state.pendingTokens).toStrictEqual({});
   });
 
-  it('update ensResolution', function () {
+  it('update ensResolution', () => {
     const state = reduceMetamask(
       {},
       {
@@ -408,11 +407,11 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.deepEqual(state.send.ensResolution, '0x1337');
-    assert.deepEqual(state.send.ensResolutionError, '');
+    expect(state.send.ensResolution).toStrictEqual('0x1337');
+    expect(state.send.ensResolutionError).toStrictEqual('');
   });
 
-  it('update ensResolutionError', function () {
+  it('update ensResolutionError', () => {
     const state = reduceMetamask(
       {},
       {
@@ -421,7 +420,7 @@ describe('MetaMask Reducers', function () {
       },
     );
 
-    assert.deepEqual(state.send.ensResolutionError, 'ens name not found');
-    assert.deepEqual(state.send.ensResolution, null);
+    expect(state.send.ensResolutionError).toStrictEqual('ens name not found');
+    expect(state.send.ensResolution).toBeNull();
   });
 });

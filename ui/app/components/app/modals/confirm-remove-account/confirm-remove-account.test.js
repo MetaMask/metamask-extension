@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
@@ -7,7 +6,7 @@ import configureStore from 'redux-mock-store';
 import { mount } from 'enzyme';
 import ConfirmRemoveAccount from './confirm-remove-account.container';
 
-describe('Confirm Remove Account', function () {
+describe('Confirm Remove Account', () => {
   let wrapper;
 
   const state = {
@@ -27,7 +26,7 @@ describe('Confirm Remove Account', function () {
   const mockStore = configureStore();
   const store = mockStore(state);
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = mount(
       <Provider store={store}>
         <ConfirmRemoveAccount.WrappedComponent {...props} />
@@ -45,37 +44,33 @@ describe('Confirm Remove Account', function () {
     );
   });
 
-  afterEach(function () {
+  afterEach(() => {
     props.hideModal.resetHistory();
   });
 
-  it('nevermind', function () {
+  it('nevermind', () => {
     const nevermind = wrapper.find({ type: 'default' });
     nevermind.simulate('click');
 
-    assert(props.hideModal.calledOnce);
+    expect(props.hideModal.calledOnce).toStrictEqual(true);
   });
 
-  it('remove', function (done) {
+  it('remove', async () => {
     const remove = wrapper.find({ type: 'secondary' });
     remove.simulate('click');
 
-    assert(props.removeAccount.calledOnce);
-    assert.strictEqual(
-      props.removeAccount.getCall(0).args[0],
+    expect(await props.removeAccount.calledOnce).toStrictEqual(true);
+    expect(props.removeAccount.getCall(0).args[0]).toStrictEqual(
       props.identity.address,
     );
 
-    setImmediate(() => {
-      assert(props.hideModal.calledOnce);
-      done();
-    });
+    expect(props.hideModal.calledOnce).toStrictEqual(true);
   });
 
-  it('closes', function () {
+  it('closes', () => {
     const close = wrapper.find('.modal-container__header-close');
     close.simulate('click');
 
-    assert(props.hideModal.calledOnce);
+    expect(props.hideModal.calledOnce).toStrictEqual(true);
   });
 });

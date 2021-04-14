@@ -1,4 +1,3 @@
-import assert from 'assert';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import sinon from 'sinon';
@@ -37,8 +36,8 @@ const UPDATE_NONCE = 'metamask/confirm-transaction/UPDATE_NONCE';
 const CLEAR_CONFIRM_TRANSACTION =
   'metamask/confirm-transaction/CLEAR_CONFIRM_TRANSACTION';
 
-describe('Confirm Transaction Duck', function () {
-  describe('State changes', function () {
+describe('Confirm Transaction Duck', () => {
+  describe('State changes', () => {
     const mockState = {
       txData: {
         id: 1,
@@ -58,61 +57,57 @@ describe('Confirm Transaction Duck', function () {
       nonce: '0x0',
     };
 
-    it('should initialize state', function () {
-      assert.deepStrictEqual(
-        ConfirmTransactionReducer(undefined, {}),
+    it('should initialize state', () => {
+      expect(ConfirmTransactionReducer(undefined, {})).toStrictEqual(
         initialState,
       );
     });
 
-    it('should return state unchanged if it does not match a dispatched actions type', function () {
-      assert.deepStrictEqual(
+    it('should return state unchanged if it does not match a dispatched actions type', () => {
+      expect(
         ConfirmTransactionReducer(mockState, {
           type: 'someOtherAction',
           value: 'someValue',
         }),
-        { ...mockState },
-      );
+      ).toStrictEqual({ ...mockState });
     });
 
-    it('should set txData when receiving a UPDATE_TX_DATA action', function () {
-      assert.deepStrictEqual(
+    it('should set txData when receiving a UPDATE_TX_DATA action', () => {
+      expect(
         ConfirmTransactionReducer(mockState, {
           type: UPDATE_TX_DATA,
           payload: {
             id: 2,
           },
         }),
-        {
-          ...mockState,
-          txData: {
-            ...mockState.txData,
-            id: 2,
-          },
+      ).toStrictEqual({
+        ...mockState,
+        txData: {
+          ...mockState.txData,
+          id: 2,
         },
-      );
+      });
     });
 
-    it('should set tokenData when receiving a UPDATE_TOKEN_DATA action', function () {
-      assert.deepStrictEqual(
+    it('should set tokenData when receiving a UPDATE_TOKEN_DATA action', () => {
+      expect(
         ConfirmTransactionReducer(mockState, {
           type: UPDATE_TOKEN_DATA,
           payload: {
             name: 'defToken',
           },
         }),
-        {
-          ...mockState,
-          tokenData: {
-            ...mockState.tokenData,
-            name: 'defToken',
-          },
+      ).toStrictEqual({
+        ...mockState,
+        tokenData: {
+          ...mockState.tokenData,
+          name: 'defToken',
         },
-      );
+      });
     });
 
-    it('should update transaction amounts when receiving an UPDATE_TRANSACTION_AMOUNTS action', function () {
-      assert.deepStrictEqual(
+    it('should update transaction amounts when receiving an UPDATE_TRANSACTION_AMOUNTS action', () => {
+      expect(
         ConfirmTransactionReducer(mockState, {
           type: UPDATE_TRANSACTION_AMOUNTS,
           payload: {
@@ -121,17 +116,16 @@ describe('Confirm Transaction Duck', function () {
             hexTransactionAmount: '0x1',
           },
         }),
-        {
-          ...mockState,
-          fiatTransactionAmount: '123.45',
-          ethTransactionAmount: '.5',
-          hexTransactionAmount: '0x1',
-        },
-      );
+      ).toStrictEqual({
+        ...mockState,
+        fiatTransactionAmount: '123.45',
+        ethTransactionAmount: '.5',
+        hexTransactionAmount: '0x1',
+      });
     });
 
-    it('should update transaction fees when receiving an UPDATE_TRANSACTION_FEES action', function () {
-      assert.deepStrictEqual(
+    it('should update transaction fees when receiving an UPDATE_TRANSACTION_FEES action', () => {
+      expect(
         ConfirmTransactionReducer(mockState, {
           type: UPDATE_TRANSACTION_FEES,
           payload: {
@@ -140,17 +134,16 @@ describe('Confirm Transaction Duck', function () {
             hexTransactionFee: '0x1',
           },
         }),
-        {
-          ...mockState,
-          fiatTransactionFee: '123.45',
-          ethTransactionFee: '.5',
-          hexTransactionFee: '0x1',
-        },
-      );
+      ).toStrictEqual({
+        ...mockState,
+        fiatTransactionFee: '123.45',
+        ethTransactionFee: '.5',
+        hexTransactionFee: '0x1',
+      });
     });
 
-    it('should update transaction totals when receiving an UPDATE_TRANSACTION_TOTALS action', function () {
-      assert.deepStrictEqual(
+    it('should update transaction totals when receiving an UPDATE_TRANSACTION_TOTALS action', () => {
+      expect(
         ConfirmTransactionReducer(mockState, {
           type: UPDATE_TRANSACTION_TOTALS,
           payload: {
@@ -159,35 +152,32 @@ describe('Confirm Transaction Duck', function () {
             hexTransactionTotal: '0x1',
           },
         }),
-        {
-          ...mockState,
-          fiatTransactionTotal: '123.45',
-          ethTransactionTotal: '.5',
-          hexTransactionTotal: '0x1',
-        },
-      );
+      ).toStrictEqual({
+        ...mockState,
+        fiatTransactionTotal: '123.45',
+        ethTransactionTotal: '.5',
+        hexTransactionTotal: '0x1',
+      });
     });
 
-    it('should update nonce when receiving an UPDATE_NONCE action', function () {
-      assert.deepStrictEqual(
+    it('should update nonce when receiving an UPDATE_NONCE action', () => {
+      expect(
         ConfirmTransactionReducer(mockState, {
           type: UPDATE_NONCE,
           payload: '0x1',
         }),
-        {
-          ...mockState,
-          nonce: '0x1',
-        },
-      );
+      ).toStrictEqual({
+        ...mockState,
+        nonce: '0x1',
+      });
     });
 
-    it('should clear confirmTransaction when receiving a FETCH_DATA_END action', function () {
-      assert.deepStrictEqual(
+    it('should clear confirmTransaction when receiving a FETCH_DATA_END action', () => {
+      expect(
         ConfirmTransactionReducer(mockState, {
           type: CLEAR_CONFIRM_TRANSACTION,
         }),
-        initialState,
-      );
+      ).toStrictEqual(initialState);
     });
   });
 
@@ -199,7 +189,7 @@ describe('Confirm Transaction Duck', function () {
         payload: txData,
       };
 
-      assert.deepStrictEqual(actions.updateTxData(txData), expectedAction);
+      expect(actions.updateTxData(txData)).toStrictEqual(expectedAction);
     });
 
     it('should create an action to update tokenData', function () {
@@ -209,10 +199,7 @@ describe('Confirm Transaction Duck', function () {
         payload: tokenData,
       };
 
-      assert.deepStrictEqual(
-        actions.updateTokenData(tokenData),
-        expectedAction,
-      );
+      expect(actions.updateTokenData(tokenData)).toStrictEqual(expectedAction);
     });
 
     it('should create an action to update transaction amounts', function () {
@@ -222,10 +209,9 @@ describe('Confirm Transaction Duck', function () {
         payload: transactionAmounts,
       };
 
-      assert.deepStrictEqual(
+      expect(
         actions.updateTransactionAmounts(transactionAmounts),
-        expectedAction,
-      );
+      ).toStrictEqual(expectedAction);
     });
 
     it('should create an action to update transaction fees', function () {
@@ -235,8 +221,7 @@ describe('Confirm Transaction Duck', function () {
         payload: transactionFees,
       };
 
-      assert.deepStrictEqual(
-        actions.updateTransactionFees(transactionFees),
+      expect(actions.updateTransactionFees(transactionFees)).toStrictEqual(
         expectedAction,
       );
     });
@@ -248,8 +233,7 @@ describe('Confirm Transaction Duck', function () {
         payload: transactionTotals,
       };
 
-      assert.deepStrictEqual(
-        actions.updateTransactionTotals(transactionTotals),
+      expect(actions.updateTransactionTotals(transactionTotals)).toStrictEqual(
         expectedAction,
       );
     });
@@ -261,20 +245,20 @@ describe('Confirm Transaction Duck', function () {
         payload: nonce,
       };
 
-      assert.deepStrictEqual(actions.updateNonce(nonce), expectedAction);
+      expect(actions.updateNonce(nonce)).toStrictEqual(expectedAction);
     });
 
-    it('should create an action to clear confirmTransaction', function () {
+    it('should create an action to clear confirmTransaction', () => {
       const expectedAction = {
         type: CLEAR_CONFIRM_TRANSACTION,
       };
 
-      assert.deepStrictEqual(actions.clearConfirmTransaction(), expectedAction);
+      expect(actions.clearConfirmTransaction()).toStrictEqual(expectedAction);
     });
   });
 
-  describe('Thunk actions', function () {
-    beforeEach(function () {
+  describe('Thunk actions', () => {
+    beforeEach(() => {
       global.eth = {
         getCode: sinon
           .stub()
@@ -288,7 +272,7 @@ describe('Confirm Transaction Duck', function () {
       global.eth.getCode.resetHistory();
     });
 
-    it('updates txData and updates gas values in confirmTransaction', function () {
+    it('updates txData and updates gas values in confirmTransaction', () => {
       const txData = {
         history: [],
         id: 2603411941761054,
@@ -348,13 +332,13 @@ describe('Confirm Transaction Duck', function () {
       store.dispatch(actions.updateTxDataAndCalculate(txData));
 
       const storeActions = store.getActions();
-      assert.strictEqual(storeActions.length, expectedActions.length);
+      expect(storeActions).toHaveLength(expectedActions.length);
       storeActions.forEach((action, index) =>
-        assert.strictEqual(action.type, expectedActions[index]),
+        expect(action.type).toStrictEqual(expectedActions[index]),
       );
     });
 
-    it('updates confirmTransaction transaction', function () {
+    it('updates confirmTransaction transaction', () => {
       const mockState = {
         metamask: {
           conversionRate: 468.58,
@@ -397,10 +381,10 @@ describe('Confirm Transaction Duck', function () {
 
       store.dispatch(actions.setTransactionToConfirm(2603411941761054));
       const storeActions = store.getActions();
-      assert.strictEqual(storeActions.length, expectedActions.length);
+      expect(storeActions).toHaveLength(expectedActions.length);
 
       storeActions.forEach((action, index) =>
-        assert.strictEqual(action.type, expectedActions[index]),
+        expect(action.type).toStrictEqual(expectedActions[index]),
       );
     });
   });

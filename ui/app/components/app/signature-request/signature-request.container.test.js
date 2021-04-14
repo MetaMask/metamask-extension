@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import { Provider } from 'react-redux';
 import sinon from 'sinon';
@@ -6,13 +5,13 @@ import configureMockStore from 'redux-mock-store';
 import { mountWithRouter } from '../../../../../test/lib/render-helpers';
 import SignatureRequest from './signature-request.container';
 
-describe('Signature Request', function () {
+describe('Signature Request', () => {
   let wrapper;
 
   const mockStore = {
     metamask: {
       provider: {
-        type: 'test',
+        type: 'transparent',
       },
       accounts: {
         '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': {
@@ -51,7 +50,7 @@ describe('Signature Request', function () {
     },
   };
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = mountWithRouter(
       <Provider store={store}>
         <SignatureRequest.WrappedComponent {...props} />
@@ -60,21 +59,21 @@ describe('Signature Request', function () {
     );
   });
 
-  afterEach(function () {
+  afterEach(() => {
     props.clearConfirmTransaction.resetHistory();
   });
 
-  it('cancel', function () {
+  it('cancel', () => {
     const cancelButton = wrapper.find('button.btn-default');
     cancelButton.simulate('click');
 
-    assert(props.cancel.calledOnce);
+    expect(props.cancel.calledOnce).toStrictEqual(true);
   });
 
-  it('sign', function () {
+  it('sign', () => {
     const signButton = wrapper.find('button.btn-primary');
     signButton.simulate('click');
 
-    assert(props.sign.calledOnce);
+    expect(props.sign.calledOnce).toStrictEqual(true);
   });
 });

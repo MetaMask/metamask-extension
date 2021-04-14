@@ -1,12 +1,11 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import { mountWithRouter } from '../../../../../test/lib/render-helpers';
 import MetaMetricsOptIn from './metametrics-opt-in.container';
 
-describe('MetaMetricsOptIn', function () {
-  it('opt out of MetaMetrics', function () {
+describe('MetaMetricsOptIn', () => {
+  it('opt out of MetaMetrics', () => {
     const props = {
       history: {
         push: sinon.spy(),
@@ -26,7 +25,9 @@ describe('MetaMetricsOptIn', function () {
     );
     noThanksButton.simulate('click');
 
-    assert.ok(props.setParticipateInMetaMetrics.calledOnceWithExactly(false));
+    expect(
+      props.setParticipateInMetaMetrics.calledOnceWithExactly(false),
+    ).toStrictEqual(true);
     props.setParticipateInMetaMetrics.resetHistory();
   });
 });

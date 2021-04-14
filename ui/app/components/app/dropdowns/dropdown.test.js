@@ -1,15 +1,14 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import { DropdownMenuItem } from './dropdown';
 
-describe('Dropdown', function () {
+describe('Dropdown', () => {
   let wrapper;
   const onClickSpy = sinon.spy();
   const closeMenuSpy = sinon.spy();
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = shallow(
       <DropdownMenuItem
         onClick={onClickSpy}
@@ -19,17 +18,17 @@ describe('Dropdown', function () {
     );
   });
 
-  it('renders li with dropdown-menu-item class', function () {
-    assert.strictEqual(wrapper.find('li.dropdown-menu-item').length, 1);
+  it('renders li with dropdown-menu-item class', () => {
+    expect(wrapper.find('li.dropdown-menu-item')).toHaveLength(1);
   });
 
-  it('adds style based on props passed', function () {
-    assert.strictEqual(wrapper.prop('style').test, 'style');
+  it('adds style based on props passed', () => {
+    expect(wrapper.prop('style').test).toStrictEqual('style');
   });
 
-  it('simulates click event and calls onClick and closeMenu', function () {
+  it('simulates click event and calls onClick and closeMenu', () => {
     wrapper.prop('onClick')();
-    assert.strictEqual(onClickSpy.callCount, 1);
-    assert.strictEqual(closeMenuSpy.callCount, 1);
+    expect(onClickSpy.callCount).toStrictEqual(1);
+    expect(closeMenuSpy.callCount).toStrictEqual(1);
   });
 });

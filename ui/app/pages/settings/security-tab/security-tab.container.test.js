@@ -1,10 +1,9 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import { mount } from 'enzyme';
 import SecurityTab from './security-tab.container';
 
-describe('Security Tab', function () {
+describe('Security Tab', () => {
   let wrapper;
 
   const props = {
@@ -12,6 +11,7 @@ describe('Security Tab', function () {
     showClearApprovalModal: sinon.spy(),
     setParticipateInMetaMetrics: sinon.spy(),
     displayWarning: sinon.spy(),
+    showIncomingTransactions: false,
     setShowIncomingTransactionsFeatureFlag: sinon.spy(),
     history: {
       push: sinon.spy(),
@@ -23,7 +23,7 @@ describe('Security Tab', function () {
     usePhishDetect: true,
   };
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = mount(<SecurityTab.WrappedComponent {...props} />, {
       context: {
         t: (str) => str,
@@ -32,30 +32,32 @@ describe('Security Tab', function () {
     });
   });
 
-  it('navigates to reveal seed words page', function () {
+  it('navigates to reveal seed words page', () => {
     const seedWords = wrapper.find('.button.btn-danger.btn--large');
 
     seedWords.simulate('click');
-    assert(props.history.push.calledOnce);
-    assert.strictEqual(props.history.push.getCall(0).args[0], '/seed');
+    expect(props.history.push.calledOnce).toStrictEqual(true);
+    expect(props.history.push.getCall(0).args[0]).toStrictEqual('/seed');
   });
 
-  it('toggles incoming txs', function () {
+  it('toggles incoming txs', () => {
     const incomingTxs = wrapper.find({ type: 'checkbox' }).at(0);
     incomingTxs.simulate('click');
-    assert(props.setShowIncomingTransactionsFeatureFlag.calledOnce);
+    expect(
+      props.setShowIncomingTransactionsFeatureFlag.calledOnce,
+    ).toStrictEqual(true);
   });
 
-  it('toggles phishing detection', function () {
+  it('toggles phishing detection', () => {
     const phishDetect = wrapper.find({ type: 'checkbox' }).at(1);
     phishDetect.simulate('click');
-    assert(props.setUsePhishDetect.calledOnce);
+    expect(props.setUsePhishDetect.calledOnce).toStrictEqual(true);
   });
 
-  it('toggles metaMetrics', function () {
+  it('toggles metaMetrics', () => {
     const metaMetrics = wrapper.find({ type: 'checkbox' }).at(2);
 
     metaMetrics.simulate('click');
-    assert(props.setParticipateInMetaMetrics.calledOnce);
+    expect(props.setParticipateInMetaMetrics.calledOnce).toStrictEqual(true);
   });
 });

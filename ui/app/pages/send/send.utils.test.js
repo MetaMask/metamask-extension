@@ -1,55 +1,14 @@
-import assert from 'assert';
 import sinon from 'sinon';
-import proxyquire from 'proxyquire';
+import { rawEncode } from 'ethereumjs-abi';
+
 import {
-  BASE_TOKEN_GAS_COST,
-  SIMPLE_GAS_COST,
-  INSUFFICIENT_FUNDS_ERROR,
-  INSUFFICIENT_TOKENS_ERROR,
-} from './send.constants';
+  multiplyCurrencies,
+  addCurrencies,
+  conversionGTE,
+  conversionUtil,
+} from '../../helpers/utils/conversion-util';
 
-const stubs = {
-  addCurrencies: sinon.stub().callsFake((a, b) => {
-    let [a1, b1] = [a, b];
-    if (String(a).match(/^0x.+/u)) {
-      a1 = Number(String(a).slice(2));
-    }
-    if (String(b).match(/^0x.+/u)) {
-      b1 = Number(String(b).slice(2));
-    }
-    return a1 + b1;
-  }),
-  conversionUtil: sinon.stub().callsFake((val) => parseInt(val, 16)),
-  conversionGTE: sinon
-    .stub()
-    .callsFake((obj1, obj2) => obj1.value >= obj2.value),
-  multiplyCurrencies: sinon.stub().callsFake((a, b) => `${a}x${b}`),
-  calcTokenAmount: sinon.stub().callsFake((a, d) => `calc:${a}${d}`),
-  rawEncode: sinon.stub().returns([16, 1100]),
-  conversionGreaterThan: sinon
-    .stub()
-    .callsFake((obj1, obj2) => obj1.value > obj2.value),
-  conversionLessThan: sinon
-    .stub()
-    .callsFake((obj1, obj2) => obj1.value < obj2.value),
-};
-
-const sendUtils = proxyquire('./send.utils.js', {
-  '../../helpers/utils/conversion-util': {
-    addCurrencies: stubs.addCurrencies,
-    conversionUtil: stubs.conversionUtil,
-    conversionGTE: stubs.conversionGTE,
-    multiplyCurrencies: stubs.multiplyCurrencies,
-    conversionGreaterThan: stubs.conversionGreaterThan,
-    conversionLessThan: stubs.conversionLessThan,
-  },
-  '../../helpers/utils/token-util': { calcTokenAmount: stubs.calcTokenAmount },
-  'ethereumjs-abi': {
-    rawEncode: stubs.rawEncode,
-  },
-});
-
-const {
+import {
   calcGasTotal,
   estimateGasForSend,
   doesAmountErrorRequireUpdate,
@@ -61,27 +20,55 @@ const {
   isBalanceSufficient,
   isTokenBalanceSufficient,
   removeLeadingZeroes,
-} = sendUtils;
+} from './send.utils';
 
-describe('send utils', function () {
-  describe('calcGasTotal()', function () {
-    it('should call multiplyCurrencies with the correct params and return the multiplyCurrencies return', function () {
+import {
+  BASE_TOKEN_GAS_COST,
+  SIMPLE_GAS_COST,
+  INSUFFICIENT_FUNDS_ERROR,
+  INSUFFICIENT_TOKENS_ERROR,
+} from './send.constants';
+
+jest.mock('../../../app/helpers/utils/conversion-util', () => ({
+  addCurrencies: jest.fn((a, b) => {
+    let [a1, b1] = [a, b];
+    if (String(a).match(/^0x.+/u)) {
+      a1 = Number(String(a).slice(2));
+    }
+    if (String(b).match(/^0x.+/u)) {
+      b1 = Number(String(b).slice(2));
+    }
+    return a1 + b1;
+  }),
+  conversionUtil: jest.fn((val) => parseInt(val, 16)),
+  conversionGTE: jest.fn((obj1, obj2) => obj1.value >= obj2.value),
+  multiplyCurrencies: jest.fn((a, b) => `${a}x${b}`),
+  conversionGreaterThan: (obj1, obj2) => obj1.value > obj2.value,
+  conversionLessThan: (obj1, obj2) => obj1.value < obj2.value,
+}));
+
+jest.mock('../../../app/helpers/utils/token-util', () => ({
+  calcTokenAmount: (a, d) => `calc:${a}${d}`,
+}));
+
+jest.mock('ethereumjs-abi', () => ({
+  rawEncode: jest.fn().mockReturnValue(16, 1100),
+}));
+
+describe('send utils', () => {
+  describe('calcGasTotal()', () => {
+    it('should call multiplyCurrencies with the correct params and return the multiplyCurrencies return', () => {
       const result = calcGasTotal(12, 15);
-      assert.strictEqual(result, '12x15');
-      const call_ = stubs.multiplyCurrencies.getCall(0).args;
-      assert.deepStrictEqual(call_, [
-        12,
-        15,
-        {
-          toNumericBase: 'hex',
-          multiplicandBase: 16,
-          multiplierBase: 16,
-        },
-      ]);
+      expect(result).toStrictEqual('12x15');
+      expect(multiplyCurrencies).toHaveBeenCalledWith(12, 15, {
+        multiplicandBase: 16,
+        multiplierBase: 16,
+        toNumericBase: 'hex',
+      });
     });
   });
 
-  describe('doesAmountErrorRequireUpdate()', function () {
+  describe('doesAmountErrorRequireUpdate()', () => {
     const config = {
       'should return true if balances are different': {
         balance: 0,
@@ -111,53 +98,51 @@ describe('send utils', function () {
       },
     };
     Object.entries(config).forEach(([description, obj]) => {
-      it(description, function () {
-        assert.strictEqual(
-          doesAmountErrorRequireUpdate(obj),
+      it(`${description}`, () => {
+        expect(doesAmountErrorRequireUpdate(obj)).toStrictEqual(
           obj.expectedResult,
         );
       });
     });
   });
 
-  describe('generateTokenTransferData()', function () {
-    it('should return undefined if not passed a send token', function () {
-      assert.strictEqual(
+  describe('generateTokenTransferData()', () => {
+    it('should return undefined if not passed a send token', () => {
+      expect(
         generateTokenTransferData({
           toAddress: 'mockAddress',
           amount: '0xa',
           sendToken: undefined,
         }),
-        undefined,
-      );
+      ).toBeUndefined();
     });
 
-    it('should call abi.rawEncode with the correct params', function () {
-      stubs.rawEncode.resetHistory();
+    it('should call abi.rawEncode with the correct params', () => {
       generateTokenTransferData({
         toAddress: 'mockAddress',
         amount: 'ab',
         sendToken: { address: '0x0' },
       });
-      assert.deepStrictEqual(stubs.rawEncode.getCall(0).args, [
-        ['address', 'uint256'],
-        ['mockAddress', '0xab'],
-      ]);
+      expect(rawEncode.mock.calls[0].toString()).toStrictEqual(
+        [
+          ['address', 'uint256'],
+          ['mockAddress', '0xab'],
+        ].toString(),
+      );
     });
 
-    it('should return encoded token transfer data', function () {
-      assert.strictEqual(
+    it('should return encoded token transfer data', () => {
+      expect(
         generateTokenTransferData({
           toAddress: 'mockAddress',
           amount: '0xa',
           sendToken: { address: '0x0' },
         }),
-        '0xa9059cbb104c',
-      );
+      ).toStrictEqual('0xa9059cbb');
     });
   });
 
-  describe('getAmountErrorObject()', function () {
+  describe('getAmountErrorObject()', () => {
     const config = {
       'should return insufficientFunds error if isBalanceSufficient returns false': {
         amount: 15,
@@ -191,13 +176,13 @@ describe('send utils', function () {
       },
     };
     Object.entries(config).forEach(([description, obj]) => {
-      it(description, function () {
-        assert.deepStrictEqual(getAmountErrorObject(obj), obj.expectedResult);
+      it(`${description}`, () => {
+        expect(getAmountErrorObject(obj)).toStrictEqual(obj.expectedResult);
       });
     });
   });
 
-  describe('getGasFeeErrorObject()', function () {
+  describe('getGasFeeErrorObject()', () => {
     const config = {
       'should return insufficientFunds error if isBalanceSufficient returns false': {
         balance: 16,
@@ -215,15 +200,15 @@ describe('send utils', function () {
       },
     };
     Object.entries(config).forEach(([description, obj]) => {
-      it(description, function () {
-        assert.deepStrictEqual(getGasFeeErrorObject(obj), obj.expectedResult);
+      it(`${description}`, () => {
+        expect(getGasFeeErrorObject(obj)).toStrictEqual(obj.expectedResult);
       });
     });
   });
 
-  describe('calcTokenBalance()', function () {
-    it('should return the calculated token balance', function () {
-      assert.strictEqual(
+  describe('calcTokenBalance()', () => {
+    it('should return the calculated token balance', () => {
+      expect(
         calcTokenBalance({
           sendToken: {
             address: '0x0',
@@ -233,14 +218,12 @@ describe('send utils', function () {
             balance: 20,
           },
         }),
-        'calc:2011',
-      );
+      ).toStrictEqual('calc:2011');
     });
   });
 
-  describe('isBalanceSufficient()', function () {
-    it('should correctly call addCurrencies and return the result of calling conversionGTE', function () {
-      stubs.conversionGTE.resetHistory();
+  describe('isBalanceSufficient()', () => {
+    it('should correctly call addCurrencies and return the result of calling conversionGTE', () => {
       const result = isBalanceSufficient({
         amount: 15,
         balance: 100,
@@ -248,16 +231,12 @@ describe('send utils', function () {
         gasTotal: 17,
         primaryCurrency: 'ABC',
       });
-      assert.deepStrictEqual(stubs.addCurrencies.getCall(0).args, [
-        15,
-        17,
-        {
-          aBase: 16,
-          bBase: 16,
-          toNumericBase: 'hex',
-        },
-      ]);
-      assert.deepStrictEqual(stubs.conversionGTE.getCall(0).args, [
+      expect(addCurrencies).toHaveBeenCalledWith(15, 17, {
+        aBase: 16,
+        bBase: 16,
+        toNumericBase: 'hex',
+      });
+      expect(conversionGTE).toHaveBeenCalledWith(
         {
           value: 100,
           fromNumericBase: 'hex',
@@ -270,28 +249,25 @@ describe('send utils', function () {
           conversionRate: 3,
           fromCurrency: 'ABC',
         },
-      ]);
+      );
 
-      assert.strictEqual(result, true);
+      expect(result).toStrictEqual(true);
     });
   });
 
-  describe('isTokenBalanceSufficient()', function () {
-    it('should correctly call conversionUtil and return the result of calling conversionGTE', function () {
-      stubs.conversionGTE.resetHistory();
-      stubs.conversionUtil.resetHistory();
+  describe('isTokenBalanceSufficient()', () => {
+    it('should correctly call conversionUtil and return the result of calling conversionGTE', () => {
       const result = isTokenBalanceSufficient({
         amount: '0x10',
         tokenBalance: 123,
         decimals: 10,
       });
-      assert.deepStrictEqual(stubs.conversionUtil.getCall(0).args, [
-        '0x10',
-        {
-          fromNumericBase: 'hex',
-        },
-      ]);
-      assert.deepStrictEqual(stubs.conversionGTE.getCall(0).args, [
+
+      expect(conversionUtil).toHaveBeenCalledWith('0x10', {
+        fromNumericBase: 'hex',
+      });
+
+      expect(conversionGTE).toHaveBeenCalledWith(
         {
           value: 123,
           fromNumericBase: 'hex',
@@ -299,13 +275,13 @@ describe('send utils', function () {
         {
           value: 'calc:1610',
         },
-      ]);
+      );
 
-      assert.strictEqual(result, false);
+      expect(result).toStrictEqual(false);
     });
   });
 
-  describe('estimateGasForSend', function () {
+  describe('estimateGasForSend', () => {
     const baseMockParams = {
       blockGasLimit: '0x64',
       selectedAddress: 'mockAddress',
@@ -317,14 +293,14 @@ describe('send utils', function () {
         return { toString: (n) => `0xabc${n}` };
       }),
     };
-    const baseExpectedCall = {
+    const baseexpectedCall = {
       from: 'mockAddress',
       gas: '0x64x0.95',
       to: '0xisContract',
       value: '0xff',
     };
 
-    beforeEach(function () {
+    beforeEach(() => {
       global.eth = {
         getCode: sinon
           .stub()
@@ -334,177 +310,171 @@ describe('send utils', function () {
       };
     });
 
-    afterEach(function () {
+    afterEach(() => {
       baseMockParams.estimateGasMethod.resetHistory();
       global.eth.getCode.resetHistory();
     });
 
-    it('should call ethQuery.estimateGasForSend with the expected params', async function () {
+    it('should call ethQuery.estimateGasForSend with the expected params', async () => {
       const result = await estimateGasForSend(baseMockParams);
-      assert.strictEqual(baseMockParams.estimateGasMethod.callCount, 1);
-      assert.deepStrictEqual(
-        baseMockParams.estimateGasMethod.getCall(0).args[0],
+      expect(baseMockParams.estimateGasMethod.callCount).toStrictEqual(1);
+      expect(baseMockParams.estimateGasMethod.getCall(0).args[0]).toStrictEqual(
         {
           gasPrice: undefined,
           value: undefined,
-          ...baseExpectedCall,
+          ...baseexpectedCall,
         },
       );
-      assert.strictEqual(result, '0xabc16');
+      expect(result).toStrictEqual('0xabc16');
     });
 
-    it('should call ethQuery.estimateGasForSend with the expected params when initialGasLimitHex is lower than the upperGasLimit', async function () {
+    it('should call ethQuery.estimateGasForSend with the expected params when initialGasLimitHex is lower than the upperGasLimit', async () => {
       const result = await estimateGasForSend({
         ...baseMockParams,
         blockGasLimit: '0xbcd',
       });
-      assert.strictEqual(baseMockParams.estimateGasMethod.callCount, 1);
-      assert.deepStrictEqual(
-        baseMockParams.estimateGasMethod.getCall(0).args[0],
+      expect(baseMockParams.estimateGasMethod.callCount).toStrictEqual(1);
+      expect(baseMockParams.estimateGasMethod.getCall(0).args[0]).toStrictEqual(
         {
           gasPrice: undefined,
           value: undefined,
-          ...baseExpectedCall,
+          ...baseexpectedCall,
           gas: '0xbcdx0.95',
         },
       );
-      assert.strictEqual(result, '0xabc16x1.5');
+      expect(result).toStrictEqual('0xabc16x1.5');
     });
 
-    it('should call ethQuery.estimateGasForSend with a value of 0x0 and the expected data and to if passed a sendToken', async function () {
+    it('should call ethQuery.estimateGasForSend with a value of 0x0 and the expected data and to if passed a sendToken', async () => {
       const result = await estimateGasForSend({
         data: 'mockData',
         sendToken: { address: 'mockAddress' },
         ...baseMockParams,
       });
-      assert.strictEqual(baseMockParams.estimateGasMethod.callCount, 1);
-      assert.deepStrictEqual(
-        baseMockParams.estimateGasMethod.getCall(0).args[0],
+      expect(baseMockParams.estimateGasMethod.callCount).toStrictEqual(1);
+      expect(baseMockParams.estimateGasMethod.getCall(0).args[0]).toStrictEqual(
         {
-          ...baseExpectedCall,
+          ...baseexpectedCall,
           gasPrice: undefined,
           value: '0x0',
-          data: '0xa9059cbb104c',
+          data: '0xa9059cbb',
           to: 'mockAddress',
         },
       );
-      assert.strictEqual(result, '0xabc16');
+      expect(result).toStrictEqual('0xabc16');
     });
 
-    it('should call ethQuery.estimateGasForSend without a recipient if the recipient is empty and data passed', async function () {
+    it('should call ethQuery.estimateGasForSend without a recipient if the recipient is empty and data passed', async () => {
       const data = 'mockData';
       const to = '';
       const result = await estimateGasForSend({ ...baseMockParams, data, to });
-      assert.strictEqual(baseMockParams.estimateGasMethod.callCount, 1);
-      assert.deepStrictEqual(
-        baseMockParams.estimateGasMethod.getCall(0).args[0],
+      expect(baseMockParams.estimateGasMethod.callCount).toStrictEqual(1);
+      expect(baseMockParams.estimateGasMethod.getCall(0).args[0]).toStrictEqual(
         {
           gasPrice: undefined,
           value: '0xff',
           data,
-          from: baseExpectedCall.from,
-          gas: baseExpectedCall.gas,
+          from: baseexpectedCall.from,
+          gas: baseexpectedCall.gas,
         },
       );
-      assert.strictEqual(result, '0xabc16');
+      expect(result).toStrictEqual('0xabc16');
     });
 
-    it(`should return ${SIMPLE_GAS_COST} if ethQuery.getCode does not return '0x'`, async function () {
-      assert.strictEqual(baseMockParams.estimateGasMethod.callCount, 0);
+    it(`should return ${SIMPLE_GAS_COST} if ethQuery.getCode does not return '0x'`, async () => {
+      expect(baseMockParams.estimateGasMethod.callCount).toStrictEqual(0);
       const result = await estimateGasForSend({
         ...baseMockParams,
         to: '0x123',
       });
-      assert.strictEqual(result, SIMPLE_GAS_COST);
+      expect(result).toStrictEqual(SIMPLE_GAS_COST);
     });
 
-    it(`should return ${SIMPLE_GAS_COST} if not passed a sendToken or truthy to address`, async function () {
-      assert.strictEqual(baseMockParams.estimateGasMethod.callCount, 0);
+    it(`should return ${SIMPLE_GAS_COST} if not passed a sendToken or truthy to address`, async () => {
+      expect(baseMockParams.estimateGasMethod.callCount).toStrictEqual(0);
       const result = await estimateGasForSend({ ...baseMockParams, to: null });
-      assert.strictEqual(result, SIMPLE_GAS_COST);
+      expect(result).toStrictEqual(SIMPLE_GAS_COST);
     });
 
-    it(`should not return ${SIMPLE_GAS_COST} if passed a sendToken`, async function () {
-      assert.strictEqual(baseMockParams.estimateGasMethod.callCount, 0);
+    it(`should not return ${SIMPLE_GAS_COST} if passed a sendToken`, async () => {
+      expect(baseMockParams.estimateGasMethod.callCount).toStrictEqual(0);
       const result = await estimateGasForSend({
         ...baseMockParams,
         to: '0x123',
         sendToken: { address: '0x0' },
       });
-      assert.notStrictEqual(result, SIMPLE_GAS_COST);
+      expect(result).not.toStrictEqual(SIMPLE_GAS_COST);
     });
 
-    it(`should return ${BASE_TOKEN_GAS_COST} if passed a sendToken but no to address`, async function () {
+    it(`should return ${BASE_TOKEN_GAS_COST} if passed a sendToken but no to address`, async () => {
       const result = await estimateGasForSend({
         ...baseMockParams,
         to: null,
         sendToken: { address: '0x0' },
       });
-      assert.strictEqual(result, BASE_TOKEN_GAS_COST);
+      expect(result).toStrictEqual(BASE_TOKEN_GAS_COST);
     });
 
-    it(`should return the adjusted blockGasLimit if it fails with a 'Transaction execution error.'`, async function () {
+    it(`should return the adjusted blockGasLimit if it fails with a 'Transaction execution error.'`, async () => {
       const result = await estimateGasForSend({
         ...baseMockParams,
         to: 'isContract willFailBecauseOf:Transaction execution error.',
       });
-      assert.strictEqual(result, '0x64x0.95');
+      expect(result).toStrictEqual('0x64x0.95');
     });
 
-    it(`should return the adjusted blockGasLimit if it fails with a 'gas required exceeds allowance or always failing transaction.'`, async function () {
+    it(`should return the adjusted blockGasLimit if it fails with a 'gas required exceeds allowance or always failing transaction.'`, async () => {
       const result = await estimateGasForSend({
         ...baseMockParams,
         to:
           'isContract willFailBecauseOf:gas required exceeds allowance or always failing transaction.',
       });
-      assert.strictEqual(result, '0x64x0.95');
+      expect(result).toStrictEqual('0x64x0.95');
     });
 
-    it(`should reject other errors`, async function () {
-      try {
-        await estimateGasForSend({
+    it(`should reject other errors`, async () => {
+      await expect(
+        estimateGasForSend({
           ...baseMockParams,
           to: 'isContract willFailBecauseOf:some other error',
-        });
-      } catch (err) {
-        assert.strictEqual(err.message, 'some other error');
-      }
+        }),
+      ).rejects.toThrow('some other error');
     });
   });
 
-  describe('getToAddressForGasUpdate()', function () {
-    it('should return empty string if all params are undefined or null', function () {
-      assert.strictEqual(getToAddressForGasUpdate(undefined, null), '');
+  describe('getToAddressForGasUpdate()', () => {
+    it('should return empty string if all params are undefined or null', () => {
+      expect(getToAddressForGasUpdate(undefined, null)).toStrictEqual('');
     });
 
-    it('should return the first string that is not defined or null in lower case', function () {
-      assert.strictEqual(getToAddressForGasUpdate('A', null), 'a');
-      assert.strictEqual(getToAddressForGasUpdate(undefined, 'B'), 'b');
+    it('should return the first string that is not defined or null in lower case', () => {
+      expect(getToAddressForGasUpdate('A', null)).toStrictEqual('a');
+      expect(getToAddressForGasUpdate(undefined, 'B')).toStrictEqual('b');
     });
   });
 
-  describe('removeLeadingZeroes()', function () {
-    it('should remove leading zeroes from int when user types', function () {
-      assert.strictEqual(removeLeadingZeroes('0'), '0');
-      assert.strictEqual(removeLeadingZeroes('1'), '1');
-      assert.strictEqual(removeLeadingZeroes('00'), '0');
-      assert.strictEqual(removeLeadingZeroes('01'), '1');
+  describe('removeLeadingZeroes()', () => {
+    it('should remove leading zeroes from int when user types', () => {
+      expect(removeLeadingZeroes('0')).toStrictEqual('0');
+      expect(removeLeadingZeroes('1')).toStrictEqual('1');
+      expect(removeLeadingZeroes('00')).toStrictEqual('0');
+      expect(removeLeadingZeroes('01')).toStrictEqual('1');
     });
 
-    it('should remove leading zeroes from int when user copy/paste', function () {
-      assert.strictEqual(removeLeadingZeroes('001'), '1');
+    it('should remove leading zeroes from int when user copy/paste', () => {
+      expect(removeLeadingZeroes('001')).toStrictEqual('1');
     });
 
-    it('should remove leading zeroes from float when user types', function () {
-      assert.strictEqual(removeLeadingZeroes('0.'), '0.');
-      assert.strictEqual(removeLeadingZeroes('0.0'), '0.0');
-      assert.strictEqual(removeLeadingZeroes('0.00'), '0.00');
-      assert.strictEqual(removeLeadingZeroes('0.001'), '0.001');
-      assert.strictEqual(removeLeadingZeroes('0.10'), '0.10');
+    it('should remove leading zeroes from float when user types', () => {
+      expect(removeLeadingZeroes('0.')).toStrictEqual('0.');
+      expect(removeLeadingZeroes('0.0')).toStrictEqual('0.0');
+      expect(removeLeadingZeroes('0.00')).toStrictEqual('0.00');
+      expect(removeLeadingZeroes('0.001')).toStrictEqual('0.001');
+      expect(removeLeadingZeroes('0.10')).toStrictEqual('0.10');
     });
 
-    it('should remove leading zeroes from float when user copy/paste', function () {
-      assert.strictEqual(removeLeadingZeroes('00.1'), '0.1');
+    it('should remove leading zeroes from float when user copy/paste', () => {
+      expect(removeLeadingZeroes('00.1')).toStrictEqual('0.1');
     });
   });
 });

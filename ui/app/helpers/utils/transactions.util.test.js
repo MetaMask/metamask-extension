@@ -1,4 +1,3 @@
-import assert from 'assert';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_GROUP_STATUSES,
@@ -6,28 +5,28 @@ import {
 } from '../../../../shared/constants/transaction';
 import * as utils from './transactions.util';
 
-describe('Transactions utils', function () {
-  describe('getTokenData', function () {
-    it('should return token data', function () {
+describe('Transactions utils', () => {
+  describe('getTokenData', () => {
+    it('should return token data', () => {
       const tokenData = utils.getTokenData(
         '0xa9059cbb00000000000000000000000050a9d56c2b8ba9a5c7f2c08c3d26e0499f23a7060000000000000000000000000000000000000000000000000000000000004e20',
       );
-      assert.ok(tokenData);
+      expect(tokenData).toStrictEqual(expect.anything());
       const { name, args } = tokenData;
-      assert.strictEqual(name, TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER);
+      expect(name).toStrictEqual(TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER);
       const to = args._to;
       const value = args._value.toString();
-      assert.strictEqual(to, '0x50A9D56C2B8BA9A5c7f2C08C3d26E0499F23a706');
-      assert.strictEqual(value, '20000');
+      expect(to).toStrictEqual('0x50A9D56C2B8BA9A5c7f2C08C3d26E0499F23a706');
+      expect(value).toStrictEqual('20000');
     });
 
-    it('should not throw errors when called without arguments', function () {
-      assert.doesNotThrow(() => utils.getTokenData());
+    it('should not throw errors when called without arguments', () => {
+      expect(() => utils.getTokenData()).not.toThrow();
     });
   });
 
-  describe('getStatusKey', function () {
-    it('should return the correct status', function () {
+  describe('getStatusKey', () => {
+    it('should return the correct status', () => {
       const tests = [
         {
           transaction: {
@@ -56,7 +55,7 @@ describe('Transactions utils', function () {
       ];
 
       tests.forEach(({ transaction, expected }) => {
-        assert.strictEqual(utils.getStatusKey(transaction), expected);
+        expect(utils.getStatusKey(transaction)).toStrictEqual(expected);
       });
     });
   });

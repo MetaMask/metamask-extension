@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 
 import sinon from 'sinon';
@@ -7,13 +6,14 @@ import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 
+import { tick } from '../../../../../../test/lib/tick';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 
 import * as actions from '../../../../store/actions';
 import { KOVAN_CHAIN_ID } from '../../../../../../shared/constants/network';
 import UnconnectedAccountAlert from '.';
 
-describe('Unconnected Account Alert', function () {
+describe('Unconnected Account Alert', () => {
   const selectedAddress = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
 
   const identities = {
@@ -105,11 +105,11 @@ describe('Unconnected Account Alert', function () {
     },
   };
 
-  afterEach(function () {
+  afterEach(() => {
     sinon.restore();
   });
 
-  it('checks that checkbox is checked', function () {
+  it('checks that checkbox is checked', () => {
     const store = configureMockStore()(mockState);
 
     const { getByRole } = renderWithProvider(
@@ -119,12 +119,12 @@ describe('Unconnected Account Alert', function () {
 
     const dontShowCheckbox = getByRole('checkbox');
 
-    assert.strictEqual(dontShowCheckbox.checked, false);
+    expect(dontShowCheckbox.checked).toStrictEqual(false);
     fireEvent.click(dontShowCheckbox);
-    assert.strictEqual(dontShowCheckbox.checked, true);
+    expect(dontShowCheckbox.checked).toStrictEqual(true);
   });
 
-  it('clicks dismiss button and calls dismissAlert action', function () {
+  it('clicks dismiss button and calls dismissAlert action', () => {
     const store = configureMockStore()(mockState);
 
     const { getByText } = renderWithProvider(
@@ -135,13 +135,12 @@ describe('Unconnected Account Alert', function () {
     const dismissButton = getByText(/dismiss/u);
     fireEvent.click(dismissButton);
 
-    assert.strictEqual(
-      store.getActions()[0].type,
+    expect(store.getActions()[0].type).toStrictEqual(
       'unconnectedAccount/dismissAlert',
     );
   });
 
-  it('clicks Dont Show checkbox and dismiss to call disable alert request action', async function () {
+  it('clicks Dont Show checkbox and dismiss to call disable alert request action', async () => {
     sinon.stub(actions, 'setAlertEnabledness').returns(() => Promise.resolve());
 
     const store = configureMockStore([thunk])(mockState);
@@ -157,15 +156,13 @@ describe('Unconnected Account Alert', function () {
     fireEvent.click(dontShowCheckbox);
     fireEvent.click(dismissButton);
 
-    setImmediate(() => {
-      assert.strictEqual(
-        store.getActions()[0].type,
-        'unconnectedAccount/disableAlertRequested',
-      );
-      assert.strictEqual(
-        store.getActions()[1].type,
-        'unconnectedAccount/disableAlertSucceeded',
-      );
-    });
+    await tick();
+
+    expect(store.getActions()[0].type).toStrictEqual(
+      'unconnectedAccount/disableAlertRequested',
+    );
+    expect(store.getActions()[1].type).toStrictEqual(
+      'unconnectedAccount/disableAlertSucceeded',
+    );
   });
 });

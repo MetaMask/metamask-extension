@@ -1,11 +1,10 @@
-import assert from 'assert';
 import freeze from 'deep-freeze-strict';
 import reducers from '../ducks';
 import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
 import * as actionConstants from './actionConstants';
 
-describe('Redux actionConstants', function () {
-  describe('SET_RPC_TARGET', function () {
+describe('Redux actionConstants', () => {
+  describe('SET_RPC_TARGET', () => {
     const initialState = {
       metamask: {
         frequentRpcList: [],
@@ -20,20 +19,20 @@ describe('Redux actionConstants', function () {
       },
     };
     freeze(initialState);
-    it('sets the state.metamask.rpcUrl property of the state to the action.value', function () {
+    it('sets the state.metamask.rpcUrl property of the state to the action.value', () => {
       const action = {
         type: actionConstants.SET_RPC_TARGET,
         value: 'foo',
       };
 
       const result = reducers(initialState, action);
-      assert.equal(result.metamask.provider.type, NETWORK_TYPE_RPC);
-      assert.equal(result.metamask.provider.rpcUrl, 'foo');
+      expect(result.metamask.provider.type).toStrictEqual(NETWORK_TYPE_RPC);
+      expect(result.metamask.provider.rpcUrl).toStrictEqual('foo');
     });
   });
 
-  describe('SET_ACCOUNT_LABEL', function () {
-    it('updates the state.metamask.identities[:i].name property of the state to the action.value.label', function () {
+  describe('SET_ACCOUNT_LABEL', () => {
+    it('updates the state.metamask.identities[:i].name property of the state to the action.value.label', () => {
       const initialState = {
         metamask: {
           identities: {
@@ -55,15 +54,14 @@ describe('Redux actionConstants', function () {
       freeze(action);
 
       const resultingState = reducers(initialState, action);
-      assert.equal(
-        resultingState.metamask.identities.foo.name,
+      expect(resultingState.metamask.identities.foo.name).toStrictEqual(
         action.value.label,
       );
     });
   });
 
-  describe('SHOW_ACCOUNT_DETAIL', function () {
-    it('updates metamask state', function () {
+  describe('SHOW_ACCOUNT_DETAIL', () => {
+    it('updates metamask state', () => {
       const initialState = {
         metamask: {
           selectedAddress: 'foo',
@@ -78,7 +76,9 @@ describe('Redux actionConstants', function () {
       freeze(action);
 
       const resultingState = reducers(initialState, action);
-      assert.equal(resultingState.metamask.selectedAddress, action.value);
+      expect(resultingState.metamask.selectedAddress).toStrictEqual(
+        action.value,
+      );
     });
   });
 });

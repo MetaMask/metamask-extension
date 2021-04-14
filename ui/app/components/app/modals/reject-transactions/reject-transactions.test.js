@@ -1,10 +1,9 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import { mount } from 'enzyme';
 import RejectTransactionsModal from './reject-transactions.container';
 
-describe('Reject Transactions Model', function () {
+describe('Reject Transactions Model', () => {
   let wrapper;
 
   const props = {
@@ -13,7 +12,7 @@ describe('Reject Transactions Model', function () {
     unapprovedTxCount: 2,
   };
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = mount(<RejectTransactionsModal.WrappedComponent {...props} />, {
       context: {
         t: (str) => str,
@@ -21,29 +20,26 @@ describe('Reject Transactions Model', function () {
     });
   });
 
-  afterEach(function () {
+  afterEach(() => {
     props.hideModal.resetHistory();
   });
 
-  it('hides modal when cancel button is clicked', function () {
+  it('hides modal when cancel button is clicked', () => {
     const cancelButton = wrapper.find(
       '.btn-default.modal-container__footer-button',
     );
     cancelButton.simulate('click');
 
-    assert(props.hideModal.calledOnce);
+    expect(props.hideModal.calledOnce).toStrictEqual(true);
   });
 
-  it('onSubmit is called and hides modal when reject all clicked', function (done) {
+  it('onSubmit is called and hides modal when reject all clicked', async () => {
     const rejectAllButton = wrapper.find(
       '.btn-secondary.modal-container__footer-button',
     );
     rejectAllButton.simulate('click');
 
-    setImmediate(() => {
-      assert(props.onSubmit.calledOnce);
-      assert(props.hideModal.calledOnce);
-      done();
-    });
+    expect(await props.onSubmit.calledOnce).toStrictEqual(true);
+    expect(props.hideModal.calledOnce).toStrictEqual(true);
   });
 });

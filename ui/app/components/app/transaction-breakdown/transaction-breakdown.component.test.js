@@ -1,11 +1,10 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction';
 import TransactionBreakdown from './transaction-breakdown.component';
 
-describe('TransactionBreakdown Component', function () {
-  it('should render properly', function () {
+describe('TransactionBreakdown Component', () => {
+  it('should render properly', () => {
     const transaction = {
       history: [],
       id: 1,
@@ -25,7 +24,7 @@ describe('TransactionBreakdown Component', function () {
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
 
-    assert.ok(wrapper.hasClass('transaction-breakdown'));
-    assert.ok(wrapper.hasClass('test-class'));
+    expect(wrapper.hasClass('transaction-breakdown')).toStrictEqual(true);
+    expect(wrapper.hasClass('test-class')).toStrictEqual(true);
   });
 });

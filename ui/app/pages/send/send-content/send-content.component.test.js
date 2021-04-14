@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import PageContainerContent from '../../../components/ui/page-container/page-container-content.component';
@@ -10,79 +9,72 @@ import SendGasRow from './send-gas-row/send-gas-row.container';
 import SendHexDataRow from './send-hex-data-row/send-hex-data-row.container';
 import SendAssetRow from './send-asset-row/send-asset-row.container';
 
-describe('SendContent Component', function () {
+describe('SendContent Component', () => {
   let wrapper;
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = shallow(<SendContent showHexData />, {
       context: { t: (str) => `${str}_t` },
     });
   });
 
-  describe('render', function () {
-    it('should render a PageContainerContent component', function () {
-      assert.strictEqual(wrapper.find(PageContainerContent).length, 1);
+  describe('render', () => {
+    it('should render a PageContainerContent component', () => {
+      expect(wrapper.find(PageContainerContent)).toHaveLength(1);
     });
 
-    it('should render a div with a .send-v2__form class as a child of PageContainerContent', function () {
+    it('should render a div with a .send-v2__form class as a child of PageContainerContent', () => {
       const PageContainerContentChild = wrapper
         .find(PageContainerContent)
         .children();
-      PageContainerContentChild.is('div');
-      PageContainerContentChild.is('.send-v2__form');
-    });
-
-    it('should render the correct row components as grandchildren of the PageContainerContent component', function () {
-      const PageContainerContentChild = wrapper
-        .find(PageContainerContent)
-        .children();
-      assert(
-        PageContainerContentChild.childAt(0).is(Dialog),
-        'row[0] should be Dialog',
+      expect(PageContainerContentChild.is('div')).toStrictEqual(true);
+      expect(PageContainerContentChild.is('.send-v2__form')).toStrictEqual(
+        true,
       );
-      assert(
+    });
+
+    it('should render the correct row components as grandchildren of the PageContainerContent component', () => {
+      const PageContainerContentChild = wrapper
+        .find(PageContainerContent)
+        .children();
+      expect(PageContainerContentChild.childAt(0).is(Dialog)).toStrictEqual(
+        true,
+      );
+      expect(
         PageContainerContentChild.childAt(1).is(SendAssetRow),
-        'row[1] should be SendAssetRow',
-      );
-      assert(
+      ).toStrictEqual(true);
+      expect(
         PageContainerContentChild.childAt(2).is(SendAmountRow),
-        'row[2] should be SendAmountRow',
+      ).toStrictEqual(true);
+      expect(PageContainerContentChild.childAt(3).is(SendGasRow)).toStrictEqual(
+        true,
       );
-      assert(
-        PageContainerContentChild.childAt(3).is(SendGasRow),
-        'row[3] should be SendGasRow',
-      );
-      assert(
+      expect(
         PageContainerContentChild.childAt(4).is(SendHexDataRow),
-        'row[4] should be SendHexDataRow',
-      );
+      ).toStrictEqual(true);
     });
 
-    it('should not render the SendHexDataRow if props.showHexData is false', function () {
+    it('should not render the SendHexDataRow if props.showHexData is false', () => {
       wrapper.setProps({ showHexData: false });
       const PageContainerContentChild = wrapper
         .find(PageContainerContent)
         .children();
-      assert(
-        PageContainerContentChild.childAt(0).is(Dialog),
-        'row[0] should be Dialog',
+      expect(PageContainerContentChild.childAt(0).is(Dialog)).toStrictEqual(
+        true,
       );
-      assert(
+      expect(
         PageContainerContentChild.childAt(1).is(SendAssetRow),
-        'row[1] should be SendAssetRow',
-      );
-      assert(
+      ).toStrictEqual(true);
+      expect(
         PageContainerContentChild.childAt(2).is(SendAmountRow),
-        'row[2] should be SendAmountRow',
+      ).toStrictEqual(true);
+      expect(PageContainerContentChild.childAt(3).is(SendGasRow)).toStrictEqual(
+        true,
       );
-      assert(
-        PageContainerContentChild.childAt(3).is(SendGasRow),
-        'row[3] should be SendGasRow',
-      );
-      assert.strictEqual(PageContainerContentChild.childAt(4).exists(), false);
+      expect(wrapper.find(SendHexDataRow)).toHaveLength(0);
     });
 
-    it('should not render the Dialog if contact has a name', function () {
+    it('should not render the Dialog if contact has a name', () => {
       wrapper.setProps({
         showHexData: false,
         contact: { name: 'testName' },
@@ -90,22 +82,19 @@ describe('SendContent Component', function () {
       const PageContainerContentChild = wrapper
         .find(PageContainerContent)
         .children();
-      assert(
+      expect(
         PageContainerContentChild.childAt(0).is(SendAssetRow),
-        'row[1] should be SendAssetRow',
-      );
-      assert(
+      ).toStrictEqual(true);
+      expect(
         PageContainerContentChild.childAt(1).is(SendAmountRow),
-        'row[2] should be SendAmountRow',
+      ).toStrictEqual(true);
+      expect(PageContainerContentChild.childAt(2).is(SendGasRow)).toStrictEqual(
+        true,
       );
-      assert(
-        PageContainerContentChild.childAt(2).is(SendGasRow),
-        'row[3] should be SendGasRow',
-      );
-      assert.strictEqual(PageContainerContentChild.childAt(3).exists(), false);
+      expect(wrapper.find(Dialog)).toHaveLength(0);
     });
 
-    it('should not render the Dialog if it is an ownedAccount', function () {
+    it('should not render the Dialog if it is an ownedAccount', () => {
       wrapper.setProps({
         showHexData: false,
         isOwnedAccount: true,
@@ -113,45 +102,43 @@ describe('SendContent Component', function () {
       const PageContainerContentChild = wrapper
         .find(PageContainerContent)
         .children();
-      assert(
+      expect(
         PageContainerContentChild.childAt(0).is(SendAssetRow),
-        'row[1] should be SendAssetRow',
-      );
-      assert(
+      ).toStrictEqual(true);
+      expect(
         PageContainerContentChild.childAt(1).is(SendAmountRow),
-        'row[2] should be SendAmountRow',
+      ).toStrictEqual(true);
+      expect(PageContainerContentChild.childAt(2).is(SendGasRow)).toStrictEqual(
+        true,
       );
-      assert(
-        PageContainerContentChild.childAt(2).is(SendGasRow),
-        'row[3] should be SendGasRow',
-      );
-      assert.strictEqual(PageContainerContentChild.childAt(3).exists(), false);
+      expect(wrapper.find(Dialog)).toHaveLength(0);
     });
   });
 
-  it('should not render the asset dropdown if token length is 0 ', function () {
+  it('should not render the asset dropdown if token length is 0', () => {
     wrapper.setProps({ tokens: [] });
     const PageContainerContentChild = wrapper
       .find(PageContainerContent)
       .children();
-    assert(PageContainerContentChild.childAt(1).is(SendAssetRow));
-    assert(
+    expect(PageContainerContentChild.childAt(1).is(SendAssetRow)).toStrictEqual(
+      true,
+    );
+    expect(
       PageContainerContentChild.childAt(1).find(
         'send-v2__asset-dropdown__single-asset',
       ),
-      true,
-    );
+    ).toHaveLength(0);
   });
 
-  it('should render warning', function () {
+  it('should render warning', () => {
     wrapper.setProps({
       warning: 'watchout',
     });
 
     const dialog = wrapper.find(Dialog).at(0);
 
-    assert.strictEqual(dialog.props().type, 'warning');
-    assert.strictEqual(dialog.props().children, 'watchout_t');
-    assert.strictEqual(dialog.length, 1);
+    expect(dialog.props().type).toStrictEqual('warning');
+    expect(dialog.props().children).toStrictEqual('watchout_t');
+    expect(dialog).toHaveLength(1);
   });
 });

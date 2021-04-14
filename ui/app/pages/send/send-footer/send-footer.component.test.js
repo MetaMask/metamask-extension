@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
@@ -6,7 +5,7 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer';
 import SendFooter from './send-footer.component';
 
-describe('SendFooter Component', function () {
+describe('SendFooter Component', () => {
   let wrapper;
 
   const propsMethodSpies = {
@@ -14,18 +13,19 @@ describe('SendFooter Component', function () {
     clearSend: sinon.spy(),
     sign: sinon.spy(),
     update: sinon.spy(),
+    mostRecentOverviewPage: '/',
   };
   const historySpies = {
     push: sinon.spy(),
   };
   const MOCK_EVENT = { preventDefault: () => undefined };
 
-  before(function () {
+  beforeAll(() => {
     sinon.spy(SendFooter.prototype, 'onCancel');
     sinon.spy(SendFooter.prototype, 'onSubmit');
   });
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = shallow(
       <SendFooter
         addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
@@ -54,7 +54,7 @@ describe('SendFooter Component', function () {
     );
   });
 
-  afterEach(function () {
+  afterEach(() => {
     propsMethodSpies.clearSend.resetHistory();
     propsMethodSpies.addToAddressBookIfNew.resetHistory();
     propsMethodSpies.clearSend.resetHistory();
@@ -65,29 +65,28 @@ describe('SendFooter Component', function () {
     SendFooter.prototype.onSubmit.resetHistory();
   });
 
-  after(function () {
+  afterAll(() => {
     sinon.restore();
   });
 
-  describe('onCancel', function () {
-    it('should call clearSend', function () {
-      assert.strictEqual(propsMethodSpies.clearSend.callCount, 0);
+  describe('onCancel', () => {
+    it('should call clearSend', () => {
+      expect(propsMethodSpies.clearSend.callCount).toStrictEqual(0);
       wrapper.instance().onCancel();
-      assert.strictEqual(propsMethodSpies.clearSend.callCount, 1);
+      expect(propsMethodSpies.clearSend.callCount).toStrictEqual(1);
     });
 
-    it('should call history.push', function () {
-      assert.strictEqual(historySpies.push.callCount, 0);
+    it('should call history.push', () => {
+      expect(historySpies.push.callCount).toStrictEqual(0);
       wrapper.instance().onCancel();
-      assert.strictEqual(historySpies.push.callCount, 1);
-      assert.strictEqual(
-        historySpies.push.getCall(0).args[0],
+      expect(historySpies.push.callCount).toStrictEqual(1);
+      expect(historySpies.push.getCall(0).args[0]).toStrictEqual(
         'mostRecentOverviewPage',
       );
     });
   });
 
-  describe('formShouldBeDisabled()', function () {
+  describe('formShouldBeDisabled()', () => {
     const config = {
       'should return true if inError is truthy': {
         inError: true,
@@ -131,30 +130,30 @@ describe('SendFooter Component', function () {
       },
     };
     Object.entries(config).forEach(([description, obj]) => {
-      it(description, function () {
+      it(`${description}`, () => {
         wrapper.setProps(obj);
-        assert.strictEqual(
-          wrapper.instance().formShouldBeDisabled(),
+        expect(wrapper.instance().formShouldBeDisabled()).toStrictEqual(
           obj.expectedResult,
         );
       });
     });
   });
 
-  describe('onSubmit', function () {
-    it('should call addToAddressBookIfNew with the correct params', function () {
+  describe('onSubmit', () => {
+    it('should call addToAddressBookIfNew with the correct params', () => {
       wrapper.instance().onSubmit(MOCK_EVENT);
-      assert(propsMethodSpies.addToAddressBookIfNew.calledOnce);
-      assert.deepStrictEqual(
-        propsMethodSpies.addToAddressBookIfNew.getCall(0).args,
-        ['mockTo', ['mockAccount']],
+      expect(propsMethodSpies.addToAddressBookIfNew.calledOnce).toStrictEqual(
+        true,
       );
+      expect(
+        propsMethodSpies.addToAddressBookIfNew.getCall(0).args,
+      ).toStrictEqual(['mockTo', ['mockAccount']]);
     });
 
-    it('should call props.update if editingTransactionId is truthy', async function () {
+    it('should call props.update if editingTransactionId is truthy', async () => {
       await wrapper.instance().onSubmit(MOCK_EVENT);
-      assert(propsMethodSpies.update.calledOnce);
-      assert.deepStrictEqual(propsMethodSpies.update.getCall(0).args[0], {
+      expect(propsMethodSpies.update.calledOnce).toStrictEqual(true);
+      expect(propsMethodSpies.update.getCall(0).args[0]).toStrictEqual({
         data: undefined,
         amount: 'mockAmount',
         editingTransactionId: 'mockEditingTransactionId',
@@ -167,15 +166,15 @@ describe('SendFooter Component', function () {
       });
     });
 
-    it('should not call props.sign if editingTransactionId is truthy', function () {
-      assert.strictEqual(propsMethodSpies.sign.callCount, 0);
+    it('should not call props.sign if editingTransactionId is truthy', () => {
+      expect(propsMethodSpies.sign.callCount).toStrictEqual(0);
     });
 
-    it('should call props.sign if editingTransactionId is falsy', async function () {
+    it('should call props.sign if editingTransactionId is falsy', async () => {
       wrapper.setProps({ editingTransactionId: null });
       await wrapper.instance().onSubmit(MOCK_EVENT);
-      assert(propsMethodSpies.sign.calledOnce);
-      assert.deepStrictEqual(propsMethodSpies.sign.getCall(0).args[0], {
+      expect(propsMethodSpies.sign.calledOnce).toStrictEqual(true);
+      expect(propsMethodSpies.sign.getCall(0).args[0]).toStrictEqual({
         data: undefined,
         amount: 'mockAmount',
         from: 'mockAddress',
@@ -186,22 +185,21 @@ describe('SendFooter Component', function () {
       });
     });
 
-    it('should not call props.update if editingTransactionId is falsy', function () {
-      assert.strictEqual(propsMethodSpies.update.callCount, 0);
+    it('should not call props.update if editingTransactionId is falsy', () => {
+      expect(propsMethodSpies.update.callCount).toStrictEqual(0);
     });
 
-    it('should call history.push', async function () {
+    it('should call history.push', async () => {
       await wrapper.instance().onSubmit(MOCK_EVENT);
-      assert.strictEqual(historySpies.push.callCount, 1);
-      assert.strictEqual(
-        historySpies.push.getCall(0).args[0],
+      expect(historySpies.push.callCount).toStrictEqual(1);
+      expect(historySpies.push.getCall(0).args[0]).toStrictEqual(
         CONFIRM_TRANSACTION_ROUTE,
       );
     });
   });
 
-  describe('render', function () {
-    beforeEach(function () {
+  describe('render', () => {
+    beforeEach(() => {
       sinon.stub(SendFooter.prototype, 'formShouldBeDisabled').returns(true);
       wrapper = shallow(
         <SendFooter
@@ -224,32 +222,33 @@ describe('SendFooter Component', function () {
           tokenBalance="mockTokenBalance"
           unapprovedTxs={{}}
           update={propsMethodSpies.update}
+          mostRecentOverviewPage="mostRecentOverviewPage"
         />,
         { context: { t: (str) => str, metricsEvent: () => ({}) } },
       );
     });
 
-    afterEach(function () {
+    afterEach(() => {
       SendFooter.prototype.formShouldBeDisabled.restore();
     });
 
-    it('should render a PageContainerFooter component', function () {
-      assert.strictEqual(wrapper.find(PageContainerFooter).length, 1);
+    it('should render a PageContainerFooter component', () => {
+      expect(wrapper.find(PageContainerFooter)).toHaveLength(1);
     });
 
-    it('should pass the correct props to PageContainerFooter', function () {
+    it('should pass the correct props to PageContainerFooter', () => {
       const { onCancel, onSubmit, disabled } = wrapper
         .find(PageContainerFooter)
         .props();
-      assert.strictEqual(disabled, true);
+      expect(disabled).toStrictEqual(true);
 
-      assert.strictEqual(SendFooter.prototype.onSubmit.callCount, 0);
+      expect(SendFooter.prototype.onSubmit.callCount).toStrictEqual(0);
       onSubmit(MOCK_EVENT);
-      assert.strictEqual(SendFooter.prototype.onSubmit.callCount, 1);
+      expect(SendFooter.prototype.onSubmit.callCount).toStrictEqual(1);
 
-      assert.strictEqual(SendFooter.prototype.onCancel.callCount, 0);
+      expect(SendFooter.prototype.onCancel.callCount).toStrictEqual(0);
       onCancel();
-      assert.strictEqual(SendFooter.prototype.onCancel.callCount, 1);
+      expect(SendFooter.prototype.onCancel.callCount).toStrictEqual(1);
     });
   });
 });

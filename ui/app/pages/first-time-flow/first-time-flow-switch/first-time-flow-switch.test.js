@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import { mountWithRouter } from '../../../../../test/lib/render-helpers';
 import {
@@ -10,8 +9,8 @@ import {
 } from '../../../helpers/constants/routes';
 import FirstTimeFlowSwitch from './first-time-flow-switch.container';
 
-describe('FirstTimeFlowSwitch', function () {
-  it('redirects to /welcome route with null props', function () {
+describe('FirstTimeFlowSwitch', () => {
+  it('redirects to /welcome route with null props', () => {
     const props = {
       completedOnboarding: null,
       isInitialized: null,
@@ -21,15 +20,14 @@ describe('FirstTimeFlowSwitch', function () {
     const wrapper = mountWithRouter(
       <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     );
-    assert.strictEqual(
+    expect(
       wrapper
         .find('Lifecycle')
-        .find({ to: { pathname: INITIALIZE_WELCOME_ROUTE } }).length,
-      1,
-    );
+        .find({ to: { pathname: INITIALIZE_WELCOME_ROUTE } }),
+    ).toHaveLength(1);
   });
 
-  it('redirects to / route when completedOnboarding is true', function () {
+  it('redirects to / route when completedOnboarding is true', () => {
     const props = {
       completedOnboarding: true,
     };
@@ -37,14 +35,12 @@ describe('FirstTimeFlowSwitch', function () {
       <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     );
 
-    assert.strictEqual(
-      wrapper.find('Lifecycle').find({ to: { pathname: DEFAULT_ROUTE } })
-        .length,
-      1,
-    );
+    expect(
+      wrapper.find('Lifecycle').find({ to: { pathname: DEFAULT_ROUTE } }),
+    ).toHaveLength(1);
   });
 
-  it('redirects to end of flow route when seedPhraseBackedUp is true', function () {
+  it('redirects to end of flow route when seedPhraseBackedUp is true', () => {
     const props = {
       completedOnboarding: false,
       seedPhraseBackedUp: true,
@@ -53,15 +49,14 @@ describe('FirstTimeFlowSwitch', function () {
       <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     );
 
-    assert.strictEqual(
+    expect(
       wrapper
         .find('Lifecycle')
-        .find({ to: { pathname: INITIALIZE_END_OF_FLOW_ROUTE } }).length,
-      1,
-    );
+        .find({ to: { pathname: INITIALIZE_END_OF_FLOW_ROUTE } }),
+    ).toHaveLength(1);
   });
 
-  it('redirects to end of flow route when seedPhraseBackedUp is false', function () {
+  it('redirects to end of flow route when seedPhraseBackedUp is false', () => {
     const props = {
       completedOnboarding: false,
       seedPhraseBackedUp: false,
@@ -70,15 +65,14 @@ describe('FirstTimeFlowSwitch', function () {
       <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     );
 
-    assert.strictEqual(
+    expect(
       wrapper
         .find('Lifecycle')
-        .find({ to: { pathname: INITIALIZE_END_OF_FLOW_ROUTE } }).length,
-      1,
-    );
+        .find({ to: { pathname: INITIALIZE_END_OF_FLOW_ROUTE } }),
+    ).toHaveLength(1);
   });
 
-  it('redirects to /lock route when isUnlocked is true ', function () {
+  it('redirects to /lock route when isUnlocked is true', () => {
     const props = {
       completedOnboarding: false,
       isUnlocked: true,
@@ -89,13 +83,12 @@ describe('FirstTimeFlowSwitch', function () {
       <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     );
 
-    assert.strictEqual(
-      wrapper.find('Lifecycle').find({ to: { pathname: LOCK_ROUTE } }).length,
-      1,
-    );
+    expect(
+      wrapper.find('Lifecycle').find({ to: { pathname: LOCK_ROUTE } }),
+    ).toHaveLength(1);
   });
 
-  it('redirects to /welcome route when isInitialized is false', function () {
+  it('redirects to /welcome route when isInitialized is false', () => {
     const props = {
       completedOnboarding: false,
       isUnlocked: false,
@@ -107,15 +100,14 @@ describe('FirstTimeFlowSwitch', function () {
       <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     );
 
-    assert.strictEqual(
+    expect(
       wrapper
         .find('Lifecycle')
-        .find({ to: { pathname: INITIALIZE_WELCOME_ROUTE } }).length,
-      1,
-    );
+        .find({ to: { pathname: INITIALIZE_WELCOME_ROUTE } }),
+    ).toHaveLength(1);
   });
 
-  it('redirects to /unlock route when isInitialized is true', function () {
+  it('redirects to /unlock route when isInitialized is true', () => {
     const props = {
       completedOnboarding: false,
       isUnlocked: false,
@@ -127,11 +119,10 @@ describe('FirstTimeFlowSwitch', function () {
       <FirstTimeFlowSwitch.WrappedComponent {...props} />,
     );
 
-    assert.strictEqual(
+    expect(
       wrapper
         .find('Lifecycle')
-        .find({ to: { pathname: INITIALIZE_UNLOCK_ROUTE } }).length,
-      1,
-    );
+        .find({ to: { pathname: INITIALIZE_UNLOCK_ROUTE } }),
+    ).toHaveLength(1);
   });
 });

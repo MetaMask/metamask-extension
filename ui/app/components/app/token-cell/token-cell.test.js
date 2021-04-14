@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
@@ -10,7 +9,7 @@ import { MemoryRouter } from 'react-router-dom';
 import Identicon from '../../ui/identicon';
 import TokenCell from '.';
 
-describe('Token Cell', function () {
+describe('Token Cell', () => {
   let wrapper;
 
   const state = {
@@ -41,7 +40,7 @@ describe('Token Cell', function () {
 
   let onClick;
 
-  beforeEach(function () {
+  beforeEach(() => {
     onClick = sinon.stub();
     wrapper = mount(
       <Provider store={store}>
@@ -59,42 +58,38 @@ describe('Token Cell', function () {
     );
   });
 
-  afterEach(function () {
+  afterEach(() => {
     sinon.restore();
   });
 
-  it('renders Identicon with props from token cell', function () {
-    assert.strictEqual(
-      wrapper.find(Identicon).prop('address'),
+  it('renders Identicon with props from token cell', () => {
+    expect(wrapper.find(Identicon).prop('address')).toStrictEqual(
       '0xAnotherToken',
     );
-    assert.strictEqual(wrapper.find(Identicon).prop('image'), './test-image');
+    expect(wrapper.find(Identicon).prop('image')).toStrictEqual('./test-image');
   });
 
-  it('renders token balance', function () {
-    assert.strictEqual(
-      wrapper.find('.asset-list-item__token-value').text(),
+  it('renders token balance', () => {
+    expect(wrapper.find('.asset-list-item__token-value').text()).toStrictEqual(
       '5.000',
     );
   });
 
-  it('renders token symbol', function () {
-    assert.strictEqual(
-      wrapper.find('.asset-list-item__token-symbol').text(),
+  it('renders token symbol', () => {
+    expect(wrapper.find('.asset-list-item__token-symbol').text()).toStrictEqual(
       'TEST',
     );
   });
 
-  it('renders converted fiat amount', function () {
-    assert.strictEqual(
-      wrapper.find('.list-item__subheading').text(),
+  it('renders converted fiat amount', () => {
+    expect(wrapper.find('.list-item__subheading').text()).toStrictEqual(
       '$0.52 USD',
     );
   });
 
-  it('calls onClick when clicked', function () {
-    assert.ok(!onClick.called);
+  it('calls onClick when clicked', () => {
+    expect(!onClick.called).toStrictEqual(true);
     wrapper.simulate('click');
-    assert.ok(onClick.called);
+    expect(onClick.called).toStrictEqual(true);
   });
 });

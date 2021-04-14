@@ -1,11 +1,10 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import { mount } from 'enzyme';
 import TransactionConfirmed from './transaction-confirmed.container';
 
-describe('Transaction Confirmed', function () {
-  it('clicks ok to submit and hide modal', function () {
+describe('Transaction Confirmed', () => {
+  it('clicks ok to submit and hide modal', () => {
     const props = {
       onSubmit: sinon.spy(),
       hideModal: sinon.spy(),
@@ -23,7 +22,7 @@ describe('Transaction Confirmed', function () {
     );
     submit.simulate('click');
 
-    assert(props.onSubmit.calledOnce);
-    assert(props.hideModal.calledOnce);
+    expect(props.onSubmit.calledOnce).toStrictEqual(true);
+    expect(props.hideModal.calledOnce).toStrictEqual(true);
   });
 });

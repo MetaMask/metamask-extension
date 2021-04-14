@@ -1,10 +1,9 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import AmountMaxButton from './amount-max-button.component';
 
-describe('AmountMaxButton Component', function () {
+describe('AmountMaxButton Component', () => {
   let wrapper;
   let instance;
 
@@ -15,11 +14,11 @@ describe('AmountMaxButton Component', function () {
 
   const MOCK_EVENT = { preventDefault: () => undefined };
 
-  before(function () {
+  beforeAll(() => {
     sinon.spy(AmountMaxButton.prototype, 'setMaxAmount');
   });
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = shallow(
       <AmountMaxButton
         balance="mockBalance"
@@ -40,22 +39,22 @@ describe('AmountMaxButton Component', function () {
     instance = wrapper.instance();
   });
 
-  afterEach(function () {
+  afterEach(() => {
     propsMethodSpies.setAmountToMax.resetHistory();
     propsMethodSpies.setMaxModeTo.resetHistory();
     AmountMaxButton.prototype.setMaxAmount.resetHistory();
   });
 
-  after(function () {
+  afterAll(() => {
     sinon.restore();
   });
 
-  describe('setMaxAmount', function () {
-    it('should call setAmountToMax with the correct params', function () {
-      assert.strictEqual(propsMethodSpies.setAmountToMax.callCount, 0);
+  describe('setMaxAmount', () => {
+    it('should call setAmountToMax with the correct params', () => {
+      expect(propsMethodSpies.setAmountToMax.callCount).toStrictEqual(0);
       instance.setMaxAmount();
-      assert.strictEqual(propsMethodSpies.setAmountToMax.callCount, 1);
-      assert.deepStrictEqual(propsMethodSpies.setAmountToMax.getCall(0).args, [
+      expect(propsMethodSpies.setAmountToMax.callCount).toStrictEqual(1);
+      expect(propsMethodSpies.setAmountToMax.getCall(0).args).toStrictEqual([
         {
           balance: 'mockBalance',
           gasTotal: 'mockGasTotal',
@@ -66,27 +65,29 @@ describe('AmountMaxButton Component', function () {
     });
   });
 
-  describe('render', function () {
-    it('should render an element with a send-v2__amount-max class', function () {
-      assert(wrapper.exists('.send-v2__amount-max'));
+  describe('render', () => {
+    it('should render an element with a send-v2__amount-max class', () => {
+      expect(wrapper.find('.send-v2__amount-max')).toHaveLength(1);
     });
 
-    it('should call setMaxModeTo and setMaxAmount when the checkbox is checked', function () {
+    it('should call setMaxModeTo and setMaxAmount when the checkbox is checked', () => {
       const { onClick } = wrapper.find('.send-v2__amount-max').props();
 
-      assert.strictEqual(AmountMaxButton.prototype.setMaxAmount.callCount, 0);
-      assert.strictEqual(propsMethodSpies.setMaxModeTo.callCount, 0);
+      expect(AmountMaxButton.prototype.setMaxAmount.callCount).toStrictEqual(0);
+      expect(propsMethodSpies.setMaxModeTo.callCount).toStrictEqual(0);
       onClick(MOCK_EVENT);
-      assert.strictEqual(AmountMaxButton.prototype.setMaxAmount.callCount, 1);
-      assert.strictEqual(propsMethodSpies.setMaxModeTo.callCount, 1);
-      assert.deepStrictEqual(propsMethodSpies.setMaxModeTo.getCall(0).args, [
+      expect(AmountMaxButton.prototype.setMaxAmount.callCount).toStrictEqual(1);
+      expect(propsMethodSpies.setMaxModeTo.callCount).toStrictEqual(1);
+      expect(propsMethodSpies.setMaxModeTo.getCall(0).args).toStrictEqual([
         true,
       ]);
     });
 
-    it('should render the expected text when maxModeOn is false', function () {
+    it('should render the expected text when maxModeOn is false', () => {
       wrapper.setProps({ maxModeOn: false });
-      assert.strictEqual(wrapper.find('.send-v2__amount-max').text(), 'max_t');
+      expect(wrapper.find('.send-v2__amount-max').text()).toStrictEqual(
+        'max_t',
+      );
     });
   });
 });

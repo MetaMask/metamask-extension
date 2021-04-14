@@ -1,20 +1,18 @@
-import assert from 'assert';
-import proxyquire from 'proxyquire';
-
+/* eslint-disable import/unambiguous */
 let mapStateToProps;
 
-proxyquire('./transaction-activity-log.container.js', {
-  'react-redux': {
-    connect: (ms) => {
-      mapStateToProps = ms;
-      return () => ({});
-    },
+jest.mock('react-redux', () => ({
+  connect: (ms) => {
+    mapStateToProps = ms;
+    return () => ({});
   },
-});
+}));
 
-describe('TransactionActivityLog container', function () {
-  describe('mapStateToProps()', function () {
-    it('should return the correct props', function () {
+require('./transaction-activity-log.container.js');
+
+describe('TransactionActivityLog container', () => {
+  describe('mapStateToProps()', () => {
+    it('should return the correct props', () => {
       const mockState = {
         metamask: {
           conversionRate: 280.45,
@@ -23,14 +21,14 @@ describe('TransactionActivityLog container', function () {
         },
       };
 
-      assert.deepStrictEqual(mapStateToProps(mockState), {
+      expect(mapStateToProps(mockState)).toStrictEqual({
         conversionRate: 280.45,
         nativeCurrency: 'ETH',
         rpcPrefs: {},
       });
     });
 
-    it('should return the correct props when on a custom network', function () {
+    it('should return the correct props when on a custom network', () => {
       const mockState = {
         metamask: {
           conversionRate: 280.45,
@@ -49,7 +47,7 @@ describe('TransactionActivityLog container', function () {
         },
       };
 
-      assert.deepStrictEqual(mapStateToProps(mockState), {
+      expect(mapStateToProps(mockState)).toStrictEqual({
         conversionRate: 280.45,
         nativeCurrency: 'ETH',
         rpcPrefs: {

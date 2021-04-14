@@ -1,20 +1,18 @@
-import assert from 'assert';
-import proxyquire from 'proxyquire';
-
+// eslint-disable-next-line import/unambiguous
 let mapStateToProps;
 
-proxyquire('./user-preferenced-token-input.container.js', {
-  'react-redux': {
-    connect: (ms) => {
-      mapStateToProps = ms;
-      return () => ({});
-    },
+jest.mock('react-redux', () => ({
+  connect: (ms) => {
+    mapStateToProps = ms;
+    return () => ({});
   },
-});
+}));
 
-describe('UserPreferencedTokenInput container', function () {
-  describe('mapStateToProps()', function () {
-    it('should return the correct props', function () {
+require('./user-preferenced-token-input.container.js');
+
+describe('UserPreferencedTokenInput container', () => {
+  describe('mapStateToProps()', () => {
+    it('should return the correct props', () => {
       const mockState = {
         metamask: {
           preferences: {
@@ -23,7 +21,7 @@ describe('UserPreferencedTokenInput container', function () {
         },
       };
 
-      assert.deepStrictEqual(mapStateToProps(mockState), {
+      expect(mapStateToProps(mockState)).toStrictEqual({
         useNativeCurrencyAsPrimaryCurrency: true,
       });
     });

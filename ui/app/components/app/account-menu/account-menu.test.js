@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
@@ -6,7 +5,7 @@ import { Provider } from 'react-redux';
 import { mountWithRouter } from '../../../../../test/lib/render-helpers';
 import AccountMenu from '.';
 
-describe('Account Menu', function () {
+describe('Account Menu', () => {
   let wrapper;
 
   const mockStore = {
@@ -57,7 +56,7 @@ describe('Account Menu', function () {
     },
   };
 
-  before(function () {
+  beforeAll(() => {
     wrapper = mountWithRouter(
       <Provider store={store}>
         <AccountMenu.WrappedComponent {...props} />
@@ -66,136 +65,137 @@ describe('Account Menu', function () {
     );
   });
 
-  afterEach(function () {
+  afterEach(() => {
     props.toggleAccountMenu.resetHistory();
     props.history.push.resetHistory();
   });
 
-  describe('Render Content', function () {
-    it('returns account name from identities', function () {
+  describe('Render Content', () => {
+    it('returns account name from identities', () => {
       const accountName = wrapper.find('.account-menu__name');
-      assert.strictEqual(accountName.length, 2);
+      expect(accountName).toHaveLength(2);
     });
 
-    it('renders user preference currency display balance from account balance', function () {
+    it('renders user preference currency display balance from account balance', () => {
       const accountBalance = wrapper.find(
         '.currency-display-component.account-menu__balance',
       );
-      assert.strictEqual(accountBalance.length, 2);
+      expect(accountBalance).toHaveLength(2);
     });
 
-    it('simulate click', function () {
+    it('simulate click', () => {
       const click = wrapper.find(
         '.account-menu__account.account-menu__item--clickable',
       );
       click.first().simulate('click');
 
-      assert(props.showAccountDetail.calledOnce);
-      assert.strictEqual(
-        props.showAccountDetail.getCall(0).args[0],
+      expect(props.showAccountDetail.calledOnce).toStrictEqual(true);
+      expect(props.showAccountDetail.getCall(0).args[0]).toStrictEqual(
         '0xAddress',
       );
     });
 
-    it('render imported account label', function () {
+    it('render imported account label', () => {
       const importedAccount = wrapper.find('.keyring-label.allcaps');
-      assert.strictEqual(importedAccount.text(), 'imported');
+      expect(importedAccount.text()).toStrictEqual('imported');
     });
   });
 
-  describe('Log Out', function () {
+  describe('Log Out', () => {
     let logout;
 
-    it('logout', function () {
+    it('logout', () => {
       logout = wrapper.find('.account-menu__lock-button');
-      assert.strictEqual(logout.length, 1);
+      expect(logout).toHaveLength(1);
     });
 
-    it('simulate click', function () {
+    it('simulate click', () => {
       logout.simulate('click');
-      assert(props.lockMetamask.calledOnce);
-      assert.strictEqual(props.history.push.getCall(0).args[0], '/');
+      expect(props.lockMetamask.calledOnce).toStrictEqual(true);
+      expect(props.history.push.getCall(0).args[0]).toStrictEqual('/');
     });
   });
 
-  describe('Create Account', function () {
+  describe('Create Account', () => {
     let createAccount;
 
-    it('renders create account item', function () {
+    it('renders create account item', () => {
       createAccount = wrapper.find({ text: 'createAccount' });
-      assert.strictEqual(createAccount.length, 1);
+      expect(createAccount).toHaveLength(1);
     });
 
-    it('calls toggle menu and push new-account route to history', function () {
+    it('calls toggle menu and push new-account route to history', () => {
       createAccount.simulate('click');
-      assert(props.toggleAccountMenu.calledOnce);
-      assert.strictEqual(props.history.push.getCall(0).args[0], '/new-account');
+      expect(props.toggleAccountMenu.calledOnce).toStrictEqual(true);
+      expect(props.history.push.getCall(0).args[0]).toStrictEqual(
+        '/new-account',
+      );
     });
   });
 
-  describe('Import Account', function () {
+  describe('Import Account', () => {
     let importAccount;
 
-    it('renders import account item', function () {
+    it('renders import account item', () => {
       importAccount = wrapper.find({ text: 'importAccount' });
-      assert.strictEqual(importAccount.length, 1);
+      expect(importAccount).toHaveLength(1);
     });
 
-    it('calls toggle menu and push /new-account/import route to history', function () {
+    it('calls toggle menu and push /new-account/import route to history', () => {
       importAccount.simulate('click');
-      assert(props.toggleAccountMenu.calledOnce);
-      assert(props.history.push.getCall(0).args[0], '/new-account/import');
+      expect(props.toggleAccountMenu.calledOnce).toStrictEqual(true);
+      expect(props.history.push.getCall(0).args[0]).toStrictEqual(
+        '/new-account/import',
+      );
     });
   });
 
-  describe('Connect Hardware Wallet', function () {
+  describe('Connect Hardware Wallet', () => {
     let connectHardwareWallet;
 
-    it('renders import account item', function () {
+    it('renders import account item', () => {
       connectHardwareWallet = wrapper.find({ text: 'connectHardwareWallet' });
-      assert.strictEqual(connectHardwareWallet.length, 1);
+      expect(connectHardwareWallet).toHaveLength(1);
     });
 
-    it('calls toggle menu and push /new-account/connect route to history', function () {
+    it('calls toggle menu and push /new-account/connect route to history', () => {
       connectHardwareWallet.simulate('click');
-      assert(props.toggleAccountMenu.calledOnce);
-      assert.strictEqual(
-        props.history.push.getCall(0).args[0],
+      expect(props.toggleAccountMenu.calledOnce).toStrictEqual(true);
+      expect(props.history.push.getCall(0).args[0]).toStrictEqual(
         '/new-account/connect',
       );
     });
   });
 
-  describe('Info & Help', function () {
+  describe('Info & Help', () => {
     let infoHelp;
 
-    it('renders import account item', function () {
+    it('renders import account item', () => {
       infoHelp = wrapper.find({ text: 'infoHelp' });
-      assert.strictEqual(infoHelp.length, 1);
+      expect(infoHelp).toHaveLength(1);
     });
 
-    it('calls toggle menu and push /new-account/connect route to history', function () {
+    it('calls toggle menu and push /new-account/connect route to history', () => {
       infoHelp.simulate('click');
-      assert(props.toggleAccountMenu.calledOnce);
-      assert.strictEqual(
-        props.history.push.getCall(0).args[0],
+      expect(props.toggleAccountMenu.calledOnce).toStrictEqual(true);
+      expect(props.history.push.getCall(0).args[0]).toStrictEqual(
         '/settings/about-us',
       );
     });
   });
 
-  describe('Settings', function () {
+  describe('Settings', () => {
     let settings;
 
-    it('renders import account item', function () {
+    it('renders import account item', () => {
       settings = wrapper.find({ text: 'settings' });
-      assert.strictEqual(settings.length, 1);
+      expect(settings).toHaveLength(1);
     });
 
-    it('calls toggle menu and push /new-account/connect route to history', function () {
+    it('calls toggle menu and push /new-account/connect route to history', () => {
       settings.simulate('click');
-      assert(props.toggleAccountMenu.calledOnce);
-      assert.strictEqual(props.history.push.getCall(0).args[0], '/settings');
+      expect(props.toggleAccountMenu.calledOnce).toStrictEqual(true);
+      expect(props.history.push.getCall(0).args[0]).toStrictEqual('/settings');
     });
   });
 });

@@ -1,29 +1,26 @@
-import assert from 'assert';
 import { calcMaxAmount } from './amount-max-button.utils';
 
-describe('amount-max-button utils', function () {
-  describe('calcMaxAmount()', function () {
-    it('should calculate the correct amount when no sendToken defined', function () {
-      assert.deepStrictEqual(
+describe('amount-max-button utils', () => {
+  describe('calcMaxAmount()', () => {
+    it('should calculate the correct amount when no sendToken defined', () => {
+      expect(
         calcMaxAmount({
           balance: 'ffffff',
           gasTotal: 'ff',
           sendToken: false,
         }),
-        'ffff00',
-      );
+      ).toStrictEqual('ffff00');
     });
 
-    it('should calculate the correct amount when a sendToken is defined', function () {
-      assert.deepStrictEqual(
+    it('should calculate the correct amount when a sendToken is defined', () => {
+      expect(
         calcMaxAmount({
           sendToken: {
             decimals: 10,
           },
           tokenBalance: '64',
         }),
-        'e8d4a51000',
-      );
+      ).toStrictEqual('e8d4a51000');
     });
   });
 });

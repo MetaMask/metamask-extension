@@ -1,39 +1,39 @@
-import assert from 'assert';
-import proxyquire from 'proxyquire';
 import sinon from 'sinon';
+
+import { updateSendTo } from '../../../../store/actions';
 
 let mapStateToProps;
 let mapDispatchToProps;
 
-const actionSpies = {
-  updateSendTo: sinon.spy(),
-};
-
-proxyquire('./add-recipient.container.js', {
-  'react-redux': {
-    connect: (ms, md) => {
-      mapStateToProps = ms;
-      mapDispatchToProps = md;
-      return () => ({});
-    },
+jest.mock('react-redux', () => ({
+  connect: (ms, md) => {
+    mapStateToProps = ms;
+    mapDispatchToProps = md;
+    return () => ({});
   },
-  '../../../../selectors': {
-    getSendEnsResolution: (s) => `mockSendEnsResolution:${s}`,
-    getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
-    getAddressBook: (s) => [{ name: `mockAddressBook:${s}` }],
-    getAddressBookEntry: (s) => `mockAddressBookEntry:${s}`,
-    accountsWithSendEtherInfoSelector: (s) => [
-      { name: `account2:${s}` },
-      { name: `account1:${s}` },
-    ],
-  },
-  '../../../../store/actions': actionSpies,
-});
+}));
 
-describe('add-recipient container', function () {
-  describe('mapStateToProps()', function () {
-    it('should map the correct properties to props', function () {
-      assert.deepStrictEqual(mapStateToProps('mockState'), {
+jest.mock('../../../../../app/selectors', () => ({
+  getSendEnsResolution: (s) => `mockSendEnsResolution:${s}`,
+  getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
+  getAddressBook: (s) => [{ name: `mockAddressBook:${s}` }],
+  getAddressBookEntry: (s) => `mockAddressBookEntry:${s}`,
+  accountsWithSendEtherInfoSelector: () => [
+    { name: `account1:mockState` },
+    { name: `account2:mockState` },
+  ],
+}));
+
+jest.mock('../../../../../app/store/actions', () => ({
+  updateSendTo: jest.fn(),
+}));
+
+require('./add-recipient.container.js');
+
+describe('add-recipient container', () => {
+  describe('mapStateToProps()', () => {
+    it('should map the correct properties to props', () => {
+      expect(mapStateToProps('mockState')).toStrictEqual({
         addressBook: [{ name: 'mockAddressBook:mockState' }],
         contacts: [{ name: 'mockAddressBook:mockState' }],
         ensResolution: 'mockSendEnsResolution:mockState',
@@ -48,19 +48,16 @@ describe('add-recipient container', function () {
     });
   });
 
-  describe('mapDispatchToProps()', function () {
-    describe('updateSendTo()', function () {
+  describe('mapDispatchToProps()', () => {
+    describe('updateSendTo()', () => {
       const dispatchSpy = sinon.spy();
       const mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy);
 
-      it('should dispatch an action', function () {
+      it('should dispatch an action', () => {
         mapDispatchToPropsObject.updateSendTo('mockTo', 'mockNickname');
-        assert(dispatchSpy.calledOnce);
-        assert(actionSpies.updateSendTo.calledOnce);
-        assert.deepStrictEqual(actionSpies.updateSendTo.getCall(0).args, [
-          'mockTo',
-          'mockNickname',
-        ]);
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(updateSendTo).toHaveBeenCalled();
+        expect(updateSendTo).toHaveBeenCalledWith('mockTo', 'mockNickname');
       });
     });
   });

@@ -1,27 +1,24 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display';
 import CancelTransactionGasFee from './cancel-transaction-gas-fee.component';
 
-describe('CancelTransactionGasFee Component', function () {
-  it('should render', function () {
+describe('CancelTransactionGasFee Component', () => {
+  it('should render', () => {
     const wrapper = shallow(<CancelTransactionGasFee value="0x3b9aca00" />);
 
-    assert.ok(wrapper);
-    assert.strictEqual(wrapper.find(UserPreferencedCurrencyDisplay).length, 2);
+    expect(wrapper.find('.cancel-transaction-gas-fee')).toHaveLength(1);
+    expect(wrapper.find(UserPreferencedCurrencyDisplay)).toHaveLength(2);
     const ethDisplay = wrapper.find(UserPreferencedCurrencyDisplay).at(0);
     const fiatDisplay = wrapper.find(UserPreferencedCurrencyDisplay).at(1);
 
-    assert.strictEqual(ethDisplay.props().value, '0x3b9aca00');
-    assert.strictEqual(
-      ethDisplay.props().className,
+    expect(ethDisplay.props().value).toStrictEqual('0x3b9aca00');
+    expect(ethDisplay.props().className).toStrictEqual(
       'cancel-transaction-gas-fee__eth',
     );
 
-    assert.strictEqual(fiatDisplay.props().value, '0x3b9aca00');
-    assert.strictEqual(
-      fiatDisplay.props().className,
+    expect(fiatDisplay.props().value).toStrictEqual('0x3b9aca00');
+    expect(fiatDisplay.props().className).toStrictEqual(
       'cancel-transaction-gas-fee__fiat',
     );
   });

@@ -1,11 +1,10 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import PageContainerHeader from '../../../components/ui/page-container/page-container-header';
 import SendHeader from './send-header.component';
 
-describe('SendHeader Component', function () {
+describe('SendHeader Component', () => {
   let wrapper;
 
   const propsMethodSpies = {
@@ -15,11 +14,11 @@ describe('SendHeader Component', function () {
     push: sinon.spy(),
   };
 
-  before(function () {
+  beforeAll(() => {
     sinon.spy(SendHeader.prototype, 'onClose');
   });
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = shallow(
       <SendHeader
         clearSend={propsMethodSpies.clearSend}
@@ -31,45 +30,44 @@ describe('SendHeader Component', function () {
     );
   });
 
-  afterEach(function () {
+  afterEach(() => {
     propsMethodSpies.clearSend.resetHistory();
     historySpies.push.resetHistory();
     SendHeader.prototype.onClose.resetHistory();
   });
 
-  after(function () {
+  afterAll(() => {
     sinon.restore();
   });
 
-  describe('onClose', function () {
-    it('should call clearSend', function () {
-      assert.strictEqual(propsMethodSpies.clearSend.callCount, 0);
+  describe('onClose', () => {
+    it('should call clearSend', () => {
+      expect(propsMethodSpies.clearSend.callCount).toStrictEqual(0);
       wrapper.instance().onClose();
-      assert.strictEqual(propsMethodSpies.clearSend.callCount, 1);
+      expect(propsMethodSpies.clearSend.callCount).toStrictEqual(1);
     });
 
-    it('should call history.push', function () {
-      assert.strictEqual(historySpies.push.callCount, 0);
+    it('should call history.push', () => {
+      expect(historySpies.push.callCount).toStrictEqual(0);
       wrapper.instance().onClose();
-      assert.strictEqual(historySpies.push.callCount, 1);
-      assert.strictEqual(
-        historySpies.push.getCall(0).args[0],
+      expect(historySpies.push.callCount).toStrictEqual(1);
+      expect(historySpies.push.getCall(0).args[0]).toStrictEqual(
         'mostRecentOverviewPage',
       );
     });
   });
 
-  describe('render', function () {
-    it('should render a PageContainerHeader component', function () {
-      assert.strictEqual(wrapper.find(PageContainerHeader).length, 1);
+  describe('render', () => {
+    it('should render a PageContainerHeader component', () => {
+      expect(wrapper.find(PageContainerHeader)).toHaveLength(1);
     });
 
-    it('should pass the correct props to PageContainerHeader', function () {
+    it('should pass the correct props to PageContainerHeader', () => {
       const { onClose, title } = wrapper.find(PageContainerHeader).props();
-      assert.strictEqual(title, 'mockTitleKey');
-      assert.strictEqual(SendHeader.prototype.onClose.callCount, 0);
+      expect(title).toStrictEqual('mockTitleKey');
+      expect(SendHeader.prototype.onClose.callCount).toStrictEqual(0);
       onClose();
-      assert.strictEqual(SendHeader.prototype.onClose.callCount, 1);
+      expect(SendHeader.prototype.onClose.callCount).toStrictEqual(1);
     });
   });
 });

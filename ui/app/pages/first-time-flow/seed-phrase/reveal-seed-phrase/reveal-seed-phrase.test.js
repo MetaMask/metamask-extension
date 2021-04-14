@@ -1,10 +1,9 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import { mount } from 'enzyme';
 import RevealSeedPhrase from './reveal-seed-phrase.container';
 
-describe('Reveal Seed Phrase', function () {
+describe('Reveal Seed Phrase', () => {
   let wrapper;
 
   const TEST_SEED =
@@ -19,7 +18,7 @@ describe('Reveal Seed Phrase', function () {
     setCompletedOnboarding: sinon.spy(),
   };
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = mount(<RevealSeedPhrase.WrappedComponent {...props} />, {
       context: {
         t: (str) => str,
@@ -28,22 +27,22 @@ describe('Reveal Seed Phrase', function () {
     });
   });
 
-  it('seed phrase', function () {
+  it('seed phrase', () => {
     const seedPhrase = wrapper.find(
       '.reveal-seed-phrase__secret-words--hidden',
     );
-    assert.strictEqual(seedPhrase.length, 1);
-    assert.strictEqual(seedPhrase.text(), TEST_SEED);
+    expect(seedPhrase).toHaveLength(1);
+    expect(seedPhrase.text()).toStrictEqual(TEST_SEED);
   });
 
-  it('clicks to reveal', function () {
+  it('clicks to reveal', () => {
     const reveal = wrapper.find('.reveal-seed-phrase__secret-blocker');
 
-    assert.strictEqual(wrapper.state().isShowingSeedPhrase, false);
+    expect(wrapper.state().isShowingSeedPhrase).toStrictEqual(false);
     reveal.simulate('click');
-    assert.strictEqual(wrapper.state().isShowingSeedPhrase, true);
+    expect(wrapper.state().isShowingSeedPhrase).toStrictEqual(true);
 
     const showSeed = wrapper.find('.reveal-seed-phrase__secret-words');
-    assert.strictEqual(showSeed.length, 1);
+    expect(showSeed).toHaveLength(1);
   });
 });

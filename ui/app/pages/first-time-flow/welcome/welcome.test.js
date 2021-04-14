@@ -1,22 +1,21 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import { mountWithRouter } from '../../../../../test/lib/render-helpers';
 import Welcome from './welcome.container';
 
-describe('Welcome', function () {
+describe('Welcome', () => {
   const mockStore = {
     metamask: {},
   };
 
   const store = configureMockStore()(mockStore);
 
-  after(function () {
+  afterAll(() => {
     sinon.restore();
   });
 
-  it('routes to select action when participateInMetaMetrics is not initialized', function () {
+  it('routes to select action when participateInMetaMetrics is not initialized', () => {
     const props = {
       history: {
         push: sinon.spy(),
@@ -32,13 +31,12 @@ describe('Welcome', function () {
       '.btn-primary.first-time-flow__button',
     );
     getStartedButton.simulate('click');
-    assert.strictEqual(
-      props.history.push.getCall(0).args[0],
+    expect(props.history.push.getCall(0).args[0]).toStrictEqual(
       '/initialize/select-action',
     );
   });
 
-  it('routes to correct password when participateInMetaMetrics is initialized', function () {
+  it('routes to correct password when participateInMetaMetrics is initialized', () => {
     const props = {
       welcomeScreenSeen: true,
       participateInMetaMetrics: false,
@@ -56,8 +54,7 @@ describe('Welcome', function () {
       '.btn-primary.first-time-flow__button',
     );
     getStartedButton.simulate('click');
-    assert.strictEqual(
-      props.history.push.getCall(0).args[0],
+    expect(props.history.push.getCall(0).args[0]).toStrictEqual(
       '/initialize/create-password',
     );
   });

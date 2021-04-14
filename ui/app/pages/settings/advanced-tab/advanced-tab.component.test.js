@@ -1,12 +1,11 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import TextField from '../../../components/ui/text-field';
 import AdvancedTab from './advanced-tab.component';
 
-describe('AdvancedTab Component', function () {
-  it('should render correctly when threeBoxFeatureFlag', function () {
+describe('AdvancedTab Component', () => {
+  it('should render correctly when threeBoxFeatureFlag', () => {
     const root = shallow(
       <AdvancedTab
         ipfsGateway=""
@@ -24,10 +23,10 @@ describe('AdvancedTab Component', function () {
       },
     );
 
-    assert.strictEqual(root.find('.settings-page__content-row').length, 10);
+    expect(root.find('.settings-page__content-row')).toHaveLength(10);
   });
 
-  it('should update autoLockTimeLimit', function () {
+  it('should update autoLockTimeLimit', () => {
     const setAutoLockTimeLimitSpy = sinon.spy();
     const root = shallow(
       <AdvancedTab
@@ -50,9 +49,9 @@ describe('AdvancedTab Component', function () {
     const textField = autoTimeout.find(TextField);
 
     textField.props().onChange({ target: { value: 1440 } });
-    assert.strictEqual(root.state().autoLockTimeLimit, 1440);
+    expect(root.state().autoLockTimeLimit).toStrictEqual(1440);
 
     autoTimeout.find('.settings-tab__rpc-save-button').simulate('click');
-    assert.strictEqual(setAutoLockTimeLimitSpy.args[0][0], 1440);
+    expect(setAutoLockTimeLimitSpy.args[0][0]).toStrictEqual(1440);
   });
 });
