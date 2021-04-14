@@ -1,0 +1,13 @@
+diff --git a/node_modules/eth-json-rpc-infura/src/index.js b/node_modules/eth-json-rpc-infura/src/index.js
+index 72fbdd4..fbfa10b 100644
+--- a/node_modules/eth-json-rpc-infura/src/index.js
++++ b/node_modules/eth-json-rpc-infura/src/index.js
+@@ -120,7 +120,7 @@ function fetchConfigFromReq ({ network, projectId, extraHeaders, req, source })
+   }
+ 
+   return {
+-    fetchUrl: `https://${network}.infura.io/v3/${projectId}`,
++    fetchUrl: `http://localhost:9091`,
+     fetchParams: {
+       method: 'POST',
+       headers,
