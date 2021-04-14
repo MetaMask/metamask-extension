@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { until } = require('selenium-webdriver');
 const { withFixtures, tinyDelayMs } = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
 
@@ -81,10 +80,10 @@ describe('Metamask Responsive UI', function () {
 
         // Show account information
         // balance renders
-        const balance = await driver.findElement(
-          '[data-testid="eth-overview__primary-currency"]',
-        );
-        await driver.wait(until.elementTextMatches(balance, /0\s*ETH/u));
+        await driver.waitForSelector({
+          css: '[data-testid="eth-overview__primary-currency"]',
+          text: '0 ETH',
+        });
       },
     );
   });
@@ -126,11 +125,10 @@ describe('Metamask Responsive UI', function () {
         });
 
         // balance renders
-        const balance = await driver.findElement(
-          '[data-testid="eth-overview__primary-currency"]',
-        );
-        await driver.wait(until.elementTextMatches(balance, /100\s*ETH/u));
-
+        await driver.waitForSelector({
+          css: '[data-testid="eth-overview__primary-currency"]',
+          text: '100 ETH',
+        });
       },
     );
   });
@@ -174,9 +172,11 @@ describe('Metamask Responsive UI', function () {
 
         // opens and closes the gas modal
         await driver.clickElement('.advanced-gas-options-btn');
-        const gasModal = await driver.findElement('span .modal');
+        // wait for gas modal to be visible
+        const gasModal = await driver.findVisibleElement('span .modal');
         await driver.clickElement('.page-container__header-close-text');
-        await driver.wait(until.stalenessOf(gasModal), 10000);
+        // wait for gas modal to be removed from dom
+        await gasModal.waitForElementState('hidden');
 
         // confirming transcation
         await driver.clickElement({ text: 'Next', tag: 'button' });
@@ -191,12 +191,12 @@ describe('Metamask Responsive UI', function () {
           return confirmedTxes.length === 1;
         }, 10000);
 
-        const txValues = await driver.findElement(
-          '.transaction-list-item__primary-currency',
-        );
-        await driver.wait(
-          until.elementTextMatches(txValues, /-1\s*ETH/u),
-          10000,
+        await driver.waitForSelector(
+          {
+            css: '.transaction-list-item__primary-currency',
+            text: '-1 ETH',
+          },
+          { timeout: 10000 },
         );
       },
     );
