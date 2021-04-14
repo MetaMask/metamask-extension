@@ -73,7 +73,7 @@ class AccountList extends Component {
               onClick={() => this.setState({ showPopover: true })}
               key="account-help"
             >
-              Click here
+              {this.context.t('hardwareWalletSupportLinkConversion')}
             </span>,
           ])}
         </p>

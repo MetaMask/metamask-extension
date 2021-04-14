@@ -2679,14 +2679,20 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Sets the Ledger Live preference to use for hardware wallet support
+   * Sets the Ledger Live preference to use for Ledger hardware wallet support
    * @param {bool} bool - the value representing if the users wants to use Ledger Live
    */
   async setLedgerLivePreference(bool) {
+    const currentValue = this.preferencesController.getLedgerLivePreference();
     this.preferencesController.setLedgerLivePreference(bool);
+
     const keyring = await this.getKeyringForDevice('ledger');
     if (keyring?.updateTransportMethod) {
-      keyring.updateTransportMethod(bool);
+      keyring.updateTransportMethod(bool).catch((_) => {
+        // If there was an error updating the transport, we should
+        // fall back to the original value
+        this.preferencesController.setLedgerLivePreference(currentValue);
+      });
     }
   }
 
