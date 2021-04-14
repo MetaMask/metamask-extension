@@ -66,7 +66,7 @@ export default class PreferencesController {
       completedOnboarding: false,
       // ENS decentralized website resolution
       ipfsGateway: 'dweb.link',
-      infuraBlocked: false,
+      infuraBlocked: null,
       ...opts.initState,
     };
 
@@ -691,13 +691,19 @@ export default class PreferencesController {
   }
 
   /**
+   *
    * A setter for the `infuraBlocked` property
    * @param {boolean} isBlocked - Bool indicating whether Infura is blocked
-   * @returns {Promise<boolean>} A promise of the updated blockage status
+   *
    */
   _setInfuraBlocked(isBlocked) {
+    const { infuraBlocked } = this.store.getState();
+
+    if (infuraBlocked === isBlocked) {
+      return;
+    }
+
     this.store.updateState({ infuraBlocked: isBlocked });
-    return Promise.resolve(isBlocked);
   }
 
   /**

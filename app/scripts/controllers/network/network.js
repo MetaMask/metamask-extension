@@ -55,7 +55,7 @@ export const NETWORK_EVENTS = {
   NETWORK_WILL_CHANGE: 'networkWillChange',
   // Fired when Infura returns an error indicating no support
   INFURA_IS_BLOCKED: 'infuraIsBlocked',
-  // Fired when Infura returns no error, indicating support
+  // Fired when not using an Infura network or when Infura returns no error, indicating support
   INFURA_IS_UNBLOCKED: 'infuraIsUnblocked',
 };
 
