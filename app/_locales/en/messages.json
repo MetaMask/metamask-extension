@@ -2296,5 +2296,14 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
+  },
+  "networkNameEthereum": {
+    "message": "Ethereum"
+  },
+  "networkNameBSC": {
+    "message": "BSC"
+  },
+  "networkNameTestnet": {
+    "message": "Testnet"
   }
 }

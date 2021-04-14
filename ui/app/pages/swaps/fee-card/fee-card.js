@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import { SWAPS_CHAIN_ID_TO_NETWORK_NAME_MAP } from '../../../../../shared/constants/swaps';
+import { SWAPS_CHAIN_ID_TO_NETWORK_NAME_KEY_MAP } from '../../../../../shared/constants/swaps';
 
 export default function FeeCard({
   primaryFee,
@@ -28,7 +28,11 @@ export default function FeeCard({
     bestQuoteText = t('swapBetterQuoteAvailable');
   }
 
-  const networkName = SWAPS_CHAIN_ID_TO_NETWORK_NAME_MAP[chainId] || 'Ethereum';
+  const getTranslatedNetworkName = () => {
+    const networkNameKey =
+      SWAPS_CHAIN_ID_TO_NETWORK_NAME_KEY_MAP[chainId] || 'networkNameEthereum';
+    return t(networkNameKey) || 'Ethereum'; // If there are no translated network names, it defaults to 'Ethereum'
+  };
 
   return (
     <div className="fee-card">
@@ -61,7 +65,7 @@ export default function FeeCard({
               contentText={
                 <>
                   <p className="fee-card__info-tooltip-paragraph">
-                    {t('swapNetworkFeeSummary', [networkName])}
+                    {t('swapNetworkFeeSummary', [getTranslatedNetworkName()])}
                   </p>
                   <p className="fee-card__info-tooltip-paragraph">
                     {t('swapEstimatedNetworkFeeSummary', [

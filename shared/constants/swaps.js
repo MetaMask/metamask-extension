@@ -43,10 +43,10 @@ export const TEST_ETH_SWAPS_TOKEN_OBJECT = {
   iconUrl: TEST_ETH_TOKEN_IMAGE_URL,
 };
 
-export const SWAPS_CHAIN_ID_TO_NETWORK_NAME_MAP = {
-  [MAINNET_CHAIN_ID]: 'Ethereum',
-  [BSC_CHAIN_ID]: 'BSC',
-  [LOCALHOST_CHAIN_ID]: 'Testnet',
+export const SWAPS_CHAIN_ID_TO_NETWORK_NAME_KEY_MAP = {
+  [MAINNET_CHAIN_ID]: 'networkNameEthereum',
+  [BSC_CHAIN_ID]: 'networkNameBSC',
+  [LOCALHOST_CHAIN_ID]: 'networkNameTestnet',
 };
 
 // A gas value for ERC20 approve calls that should be sufficient for all ERC20 approve implementations
