@@ -3,12 +3,12 @@ module.exports = {
   coverageDirectory: 'jest-coverage/',
   coverageThreshold: {
     global: {
-      branches: 6.3,
-      functions: 9.43,
-      lines: 8.66,
-      statements: 8.88,
+      branches: 5.83,
+      functions: 8.28,
+      lines: 11.18,
+      statements: 11.21,
     },
   },
   setupFiles: ['./test/setup.js', './test/env.js'],
-  testMatch: ['**/ui/app/pages/swaps/**/?(*.)+(test).js'],
+  testMatch: ['<rootDir>/ui/app/**/swaps/**/*.test.js'],
 };

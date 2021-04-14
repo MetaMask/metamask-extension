@@ -362,6 +362,21 @@ export const fetchAndSetSwapsGasPriceInfo = () => {
   };
 };
 
+export const fetchSwapsLiveness = () => {
+  return async (dispatch, getState) => {
+    let swapsFeatureIsLive = false;
+    try {
+      swapsFeatureIsLive = await fetchSwapsFeatureLiveness(
+        getCurrentChainId(getState()),
+      );
+    } catch (error) {
+      log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
+    }
+    await dispatch(setSwapsLiveness(swapsFeatureIsLive));
+    return swapsFeatureIsLive;
+  };
+};
+
 export const fetchQuotesAndSetQuoteState = (
   history,
   inputValue,
