@@ -878,6 +878,10 @@
   "infoHelp": {
     "message": "Info & Help"
   },
+  "infuraBlockedNotification": {
+    "message": "MetaMask is unable to reach our hosted blockchain connection. Review possible reasons $1.",
+    "description": "$1 is a clickable link."
+  },
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },

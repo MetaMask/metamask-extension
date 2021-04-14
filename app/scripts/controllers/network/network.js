@@ -167,6 +167,8 @@ export default class NetworkController extends EventEmitter {
         } else if (!err) {
           this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
         }
+      } else {
+        this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
       }
 
       const currentNetwork = this.getNetworkState();
