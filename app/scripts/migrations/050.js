@@ -24,7 +24,7 @@ export default {
     versionedData.meta.version = version;
 
     LEGACY_LOCAL_STORAGE_KEYS.forEach((key) =>
-      window.localStorage.removeItem(key),
+      window.localStorage?.removeItem(key),
     );
 
     return versionedData;
