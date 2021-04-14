@@ -1657,7 +1657,7 @@
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNetworkFeeSummary": {
-    "message": "नेटवर्क शुल्क आपके स्वैप को संसाधित करने के शुल्क और उसे Ethereum नेटवर्क पर संग्रह करने को कवर करता है। MetaMask इस शुल्क से लाभ नहीं कमाता है।"
+    "message": "नेटवर्क शुल्क आपके स्वैप को संसाधित करने के शुल्क और उसे $1 नेटवर्क पर संग्रह करने को कवर करता है। MetaMask इस शुल्क से लाभ नहीं कमाता है।"
   },
   "swapNewQuoteIn": {
     "message": "$1 में नए उद्धरण",

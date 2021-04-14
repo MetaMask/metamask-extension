@@ -1673,7 +1673,7 @@
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapNetworkFeeSummary": {
-    "message": "ネットワーク手数料には、スワップの結果をEthereumネットワークに保管する費用も含まれています。MetaMaskは手数料から利益を得ません。"
+    "message": "ネットワーク手数料には、スワップの結果を$1ネットワークに保管する費用も含まれています。MetaMaskは手数料から利益を得ません。"
   },
   "swapNewQuoteIn": {
     "message": "見積の有効期限 $1",

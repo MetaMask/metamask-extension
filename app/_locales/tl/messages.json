@@ -1654,7 +1654,7 @@
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNetworkFeeSummary": {
-    "message": "Kasama sa bayarin sa network ang gastusin sa pagproseso ng iyong pag-swap at pag-store nito sa Ethereum network. Hindi kumikita ang MetaMask mula sa bayaring ito."
+    "message": "Kasama sa bayarin sa network ang gastusin sa pagproseso ng iyong pag-swap at pag-store nito sa $1 network. Hindi kumikita ang MetaMask mula sa bayaring ito."
   },
   "swapNewQuoteIn": {
     "message": "Mga bagong quote sa $1",
