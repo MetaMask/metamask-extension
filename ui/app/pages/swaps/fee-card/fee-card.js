@@ -29,8 +29,10 @@ export default function FeeCard({
   }
 
   const getTranslatedNetworkName = () => {
-    const networkNameKey =
-      SWAPS_CHAIN_ID_TO_NETWORK_NAME_KEY_MAP[chainId] || 'networkNameEthereum';
+    const networkNameKey = SWAPS_CHAIN_ID_TO_NETWORK_NAME_KEY_MAP[chainId];
+    if (!networkNameKey) {
+      throw new Error('This network is not supported for token swaps');
+    }
     return t(networkNameKey);
   };
 
