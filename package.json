@@ -56,7 +56,8 @@
     "update-changelog": "./development/auto-changelog.sh",
     "generate:migration": "./development/generate-migration.sh",
     "lavamoat:auto": "lavamoat ./development/build/index.js --writeAutoPolicy",
-    "lavamoat:debug": "lavamoat ./development/build/index.js --writeAutoPolicyDebug"
+    "lavamoat:debug": "lavamoat ./development/build/index.js --writeAutoPolicyDebug",
+    "infura-blockage:test": "node ./development/mock-infura.js"
   },
   "resolutions": {
     "**/configstore/dot-prop": "^5.1.1",
