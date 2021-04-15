@@ -417,6 +417,10 @@ export function getIpfsGateway(state) {
   return state.metamask.ipfsGateway;
 }
 
+export function getInfuraBlocked(state) {
+  return Boolean(state.metamask.infuraBlocked);
+}
+
 export function getUSDConversionRate(state) {
   return state.metamask.usdConversionRate;
 }
