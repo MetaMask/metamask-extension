@@ -2,7 +2,11 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import { SWAPS_CHAIN_ID_TO_NETWORK_NAME_KEY_MAP } from '../../../../../shared/constants/swaps';
+import {
+  MAINNET_CHAIN_ID,
+  BSC_CHAIN_ID,
+  LOCALHOST_CHAIN_ID,
+} from '../../../../../shared/constants/network';
 
 export default function FeeCard({
   primaryFee,
@@ -29,11 +33,16 @@ export default function FeeCard({
   }
 
   const getTranslatedNetworkName = () => {
-    const networkNameKey = SWAPS_CHAIN_ID_TO_NETWORK_NAME_KEY_MAP[chainId];
-    if (!networkNameKey) {
-      throw new Error('This network is not supported for token swaps');
+    switch (chainId) {
+      case MAINNET_CHAIN_ID:
+        return t('networkNameEthereum');
+      case BSC_CHAIN_ID:
+        return t('networkNameBSC');
+      case LOCALHOST_CHAIN_ID:
+        return t('networkNameTestnet');
+      default:
+        throw new Error('This network is not supported for token swaps');
     }
-    return t(networkNameKey);
   };
 
   return (
