@@ -66,6 +66,7 @@ export default class PreferencesController {
       completedOnboarding: false,
       // ENS decentralized website resolution
       ipfsGateway: 'dweb.link',
+      infuraBlocked: null,
       ...opts.initState,
     };
 
@@ -75,6 +76,7 @@ export default class PreferencesController {
     this.openPopup = opts.openPopup;
     this.migrateAddressBookState = opts.migrateAddressBookState;
     this._subscribeToNetworkDidChange();
+    this._subscribeToInfuraAvailability();
 
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
@@ -677,6 +679,31 @@ export default class PreferencesController {
       const { tokens, hiddenTokens } = this._getTokenRelatedStates();
       this._updateAccountTokens(tokens, this.getAssetImages(), hiddenTokens);
     });
+  }
+
+  _subscribeToInfuraAvailability() {
+    this.network.on(NETWORK_EVENTS.INFURA_IS_BLOCKED, () => {
+      this._setInfuraBlocked(true);
+    });
+    this.network.on(NETWORK_EVENTS.INFURA_IS_UNBLOCKED, () => {
+      this._setInfuraBlocked(false);
+    });
+  }
+
+  /**
+   *
+   * A setter for the `infuraBlocked` property
+   * @param {boolean} isBlocked - Bool indicating whether Infura is blocked
+   *
+   */
+  _setInfuraBlocked(isBlocked) {
+    const { infuraBlocked } = this.store.getState();
+
+    if (infuraBlocked === isBlocked) {
+      return;
+    }
+
+    this.store.updateState({ infuraBlocked: isBlocked });
   }
 
   /**

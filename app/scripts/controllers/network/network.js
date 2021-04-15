@@ -17,16 +17,19 @@ import {
   NETWORK_TYPE_TO_ID_MAP,
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
+  INFURA_BLOCKED_KEY,
 } from '../../../../shared/constants/network';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../shared/modules/network.utils';
+import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import createMetamaskMiddleware from './createMetamaskMiddleware';
 import createInfuraClient from './createInfuraClient';
 import createJsonRpcClient from './createJsonRpcClient';
 
 const env = process.env.METAMASK_ENV;
+const fetchWithTimeout = getFetchWithTimeout(30000);
 
 let defaultProviderConfigOpts;
 if (process.env.IN_TEST === 'true') {
@@ -52,6 +55,10 @@ export const NETWORK_EVENTS = {
   NETWORK_DID_CHANGE: 'networkDidChange',
   // Fired when the actively selected network *will* change
   NETWORK_WILL_CHANGE: 'networkWillChange',
+  // Fired when Infura returns an error indicating no support
+  INFURA_IS_BLOCKED: 'infuraIsBlocked',
+  // Fired when not using an Infura network or when Infura returns no error, indicating support
+  INFURA_IS_UNBLOCKED: 'infuraIsUnblocked',
 };
 
 export default class NetworkController extends EventEmitter {
@@ -152,6 +159,15 @@ export default class NetworkController extends EventEmitter {
     // Ping the RPC endpoint so we can confirm that it works
     const ethQuery = new EthQuery(this._provider);
     const initialNetwork = this.getNetworkState();
+    const { type } = this.getProviderConfig();
+    const isInfura = INFURA_PROVIDER_TYPES.includes(type);
+
+    if (isInfura) {
+      this._checkInfuraAvailability(type);
+    } else {
+      this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
+    }
+
     ethQuery.sendAsync({ method: 'net_version' }, (err, networkVersion) => {
       const currentNetwork = this.getNetworkState();
       if (initialNetwork === currentNetwork) {
@@ -234,6 +250,45 @@ export default class NetworkController extends EventEmitter {
   //
   // Private
   //
+
+  async _checkInfuraAvailability(network) {
+    const rpcUrl = `https://${network}.infura.io/v3/${this._infuraProjectId}`;
+
+    let networkChanged = false;
+    this.once(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
+      networkChanged = true;
+    });
+
+    try {
+      const response = await fetchWithTimeout(rpcUrl, {
+        method: 'POST',
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'eth_blockNumber',
+          params: [],
+          id: 1,
+        }),
+      });
+
+      if (networkChanged) {
+        return;
+      }
+
+      if (response.ok) {
+        this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
+      } else {
+        const responseMessage = await response.json();
+        if (networkChanged) {
+          return;
+        }
+        if (responseMessage.error === INFURA_BLOCKED_KEY) {
+          this.emit(NETWORK_EVENTS.INFURA_IS_BLOCKED);
+        }
+      }
+    } catch (err) {
+      log.warn(`MetaMask - Infura availability check failed`, err);
+    }
+  }
 
   _switchNetwork(opts) {
     this.emit(NETWORK_EVENTS.NETWORK_WILL_CHANGE);
