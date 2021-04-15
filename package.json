@@ -24,6 +24,7 @@
     "test:unit:global": "mocha --exit --require test/env.js --require test/setup.js --recursive test/unit-global/*.test.js",
     "test:unit:jest": "jest",
     "test:unit:jest:watch": "jest --watch",
+    "test:unit:jest:watch:silent": "jest --watch --silent",
     "test:unit:jest:ci": "jest --maxWorkers=2",
     "test:unit:lax": "mocha --exit --require test/env.js --require test/setup.js --ignore './app/scripts/controllers/permissions/*.test.js' --recursive './{app,shared}/**/*.test.js'",
     "test:unit:strict": "mocha --exit --require test/env.js --require test/setup.js --recursive './app/scripts/controllers/permissions/*.test.js'",
