@@ -47,7 +47,7 @@ export default class ConfirmApproveContent extends Component {
   };
 
   renderApproveContentCard({
-    showHeader,
+    showHeader = true,
     symbol,
     title,
     showEdit,
@@ -269,7 +269,6 @@ export default class ConfirmApproveContent extends Component {
         </div>
         <div className="confirm-approve-content__card-wrapper">
           {this.renderApproveContentCard({
-            showHeader: true,
             symbol: <i className="fa fa-tag" />,
             title: 'Transaction Fee',
             showEdit: true,
@@ -334,7 +333,6 @@ export default class ConfirmApproveContent extends Component {
           <div className="confirm-approve-content__full-tx-content">
             <div className="confirm-approve-content__permission">
               {this.renderApproveContentCard({
-                showHeader: true,
                 symbol: <img src="/images/user-check.svg" alt="" />,
                 title: 'Permission',
                 content: this.renderPermissionContent(),
@@ -353,7 +351,6 @@ export default class ConfirmApproveContent extends Component {
             </div>
             <div className="confirm-approve-content__data">
               {this.renderApproveContentCard({
-                showHeader: true,
                 symbol: <i className="fa fa-file" />,
                 title: 'Data',
                 content: this.renderDataContent(),

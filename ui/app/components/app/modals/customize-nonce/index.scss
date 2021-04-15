@@ -6,36 +6,21 @@
 
   &__main-header {
     display: flex;
-    flex-flow: row;
-    justify-content: left;
-    align-items: left;
-    position: relative;
+    align-items: center;
     padding-top: 24px;
+  }
+
+  &__main-title {
+    flex: 1;
   }
 
   &__close {
     @include H4;
 
-    color: #24292e;
+    color: $ui-black;
     background: none;
-    position: absolute;
-    right: 10px;
-    width: 0.75rem;
-    height: 0.75rem;
-    cursor: pointer;
-  }
-
-  &__description {
-    padding-top: 8px;
-  }
-
-  &__content {
-    padding-top: 20px;
-  }
-
-  &__header {
-    display: flex;
-    flex-flow: row;
+    flex: 0;
+    align-self: flex-start;
   }
 
   & &__reset {

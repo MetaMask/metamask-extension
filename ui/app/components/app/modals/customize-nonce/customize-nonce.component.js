@@ -10,6 +10,7 @@ import {
   FONT_WEIGHT,
   ALIGN_ITEMS,
   BLOCK_SIZES,
+  DISPLAY,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
@@ -25,86 +26,6 @@ const CustomizeNonce = ({
   const [customNonce, setCustomNonce] = useState('');
   const t = useI18nContext();
 
-  const renderModalContent = (
-    <div className="customize-nonce-modal">
-      <div className="customize-nonce-modal__main-header">
-        <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
-          {t('editNonceField')}
-        </Typography>
-        <button
-          className="fas fa-times customize-nonce-modal__close"
-          title={t('close')}
-          onClick={hideModal}
-        />
-      </div>
-      <div className="customize-nonce-modal__description">
-        <Typography
-          variant={TYPOGRAPHY.H6}
-          fontWeight={FONT_WEIGHT.NORMAL}
-          tag="span"
-        >
-          {t('editNonceMessage')}
-        </Typography>
-        <Typography
-          className="cursor-pointer"
-          variant={TYPOGRAPHY.H6}
-          fontWeight={FONT_WEIGHT.NORMAL}
-          color={COLORS.PRIMARY1}
-          tag="span"
-        >
-          <a
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://metamask.zendesk.com/hc/en-us/articles/360015489251"
-          >
-            {t('learnMore')}
-          </a>
-        </Typography>
-      </div>
-      <div className="customize-nonce-modal__content">
-        <Box
-          alignItems={ALIGN_ITEMS.CENTER}
-          className="customize-nonce-modal__header"
-        >
-          <Typography
-            variant={TYPOGRAPHY.H6}
-            fontWeight={FONT_WEIGHT.BOLD}
-            boxProps={{ width: BLOCK_SIZES.FIVE_SIXTHS }}
-          >
-            {t('editNonceField')}
-          </Typography>
-          <Box width={BLOCK_SIZES.ONE_SIXTH}>
-            <Button
-              type="link"
-              className="customize-nonce-modal__reset"
-              onClick={() => {
-                setCustomNonce(nextNonce);
-              }}
-            >
-              {t('reset')}
-            </Button>
-          </Box>
-        </Box>
-        <div className="customize-nonce-modal__input">
-          <TextField
-            type="number"
-            min="0"
-            placeholder={
-              customNonceValue ||
-              (typeof nextNonce === 'number' && nextNonce.toString())
-            }
-            onChange={(e) => {
-              setCustomNonce(e.target.value);
-            }}
-            fullWidth
-            margin="dense"
-            value={customNonce}
-            id="custom-nonce-id"
-          />
-        </div>
-      </div>
-    </div>
-  );
   return (
     <Modal
       onSubmit={() => {
@@ -125,7 +46,85 @@ const CustomizeNonce = ({
       contentClass="customize-nonce-modal-content"
       containerClass="customize-nonce-modal-container"
     >
-      {renderModalContent}
+      <div className="customize-nonce-modal">
+        <div className="customize-nonce-modal__main-header">
+          <Typography
+            className="customize-nonce-modal__main-title"
+            variant={TYPOGRAPHY.H4}
+            fontWeight={FONT_WEIGHT.BOLD}
+          >
+            {t('editNonceField')}
+          </Typography>
+          <button
+            className="fas fa-times customize-nonce-modal__close"
+            title={t('close')}
+            onClick={hideModal}
+          />
+        </div>
+        <Box marginTop={2}>
+          <Typography
+            variant={TYPOGRAPHY.H6}
+            fontWeight={FONT_WEIGHT.NORMAL}
+            tag="span"
+          >
+            {t('editNonceMessage')}
+          </Typography>{' '}
+          <Typography
+            className="cursor-pointer"
+            variant={TYPOGRAPHY.H6}
+            fontWeight={FONT_WEIGHT.NORMAL}
+            color={COLORS.PRIMARY1}
+            tag="span"
+          >
+            <a
+              rel="noopener noreferrer"
+              target="_blank"
+              href="https://metamask.zendesk.com/hc/en-us/articles/360015489251"
+            >
+              {t('learnMore')}
+            </a>
+          </Typography>
+        </Box>
+        <Box marginTop={5}>
+          <Box alignItems={ALIGN_ITEMS.CENTER} display={DISPLAY.FLEX}>
+            <Typography
+              variant={TYPOGRAPHY.H6}
+              fontWeight={FONT_WEIGHT.BOLD}
+              boxProps={{ width: BLOCK_SIZES.FIVE_SIXTHS }}
+            >
+              {t('editNonceField')}
+            </Typography>
+            <Box width={BLOCK_SIZES.ONE_SIXTH}>
+              <Button
+                type="link"
+                className="customize-nonce-modal__reset"
+                onClick={() => {
+                  setCustomNonce(nextNonce);
+                }}
+              >
+                {t('reset')}
+              </Button>
+            </Box>
+          </Box>
+          <div className="customize-nonce-modal__input">
+            <TextField
+              type="number"
+              min="0"
+              placeholder={
+                customNonceValue ||
+                (typeof nextNonce === 'number' && nextNonce.toString())
+              }
+              onChange={(e) => {
+                setCustomNonce(e.target.value);
+              }}
+              fullWidth
+              margin="dense"
+              value={customNonce}
+              id="custom-nonce-id"
+            />
+          </div>
+        </Box>
+      </div>
     </Modal>
   );
 };
