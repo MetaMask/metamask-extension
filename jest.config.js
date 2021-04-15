@@ -10,5 +10,6 @@ module.exports = {
     },
   },
   setupFiles: ['./test/setup.js', './test/env.js'],
+  setupFilesAfterEnv: ['./test/jest-setup.js'],
   testMatch: ['**/ui/**/?(*.)+(test).js'],
 };
