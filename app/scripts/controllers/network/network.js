@@ -253,6 +253,12 @@ export default class NetworkController extends EventEmitter {
 
   async _checkInfuraAvailability(network) {
     const rpcUrl = `https://${network}.infura.io/v3/${this._infuraProjectId}`;
+
+    let networkChanged = false;
+    this.once(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
+      networkChanged = true;
+    });
+
     try {
       const response = await fetchWithTimeout(rpcUrl, {
         method: 'POST',
@@ -263,10 +269,18 @@ export default class NetworkController extends EventEmitter {
           id: 1,
         }),
       });
+
+      if (networkChanged) {
+        return;
+      }
+
       if (response.ok) {
         this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
       } else {
         const responseMessage = await response.json();
+        if (networkChanged) {
+          return;
+        }
         if (responseMessage.error === INFURA_BLOCKED_KEY) {
           this.emit(NETWORK_EVENTS.INFURA_IS_BLOCKED);
         }
