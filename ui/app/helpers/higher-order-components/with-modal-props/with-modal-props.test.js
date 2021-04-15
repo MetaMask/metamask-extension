@@ -1,4 +1,3 @@
-import assert from 'assert';
 import configureMockStore from 'redux-mock-store';
 import { mount } from 'enzyme';
 import React from 'react';
@@ -18,21 +17,21 @@ const mockState = {
   },
 };
 
-describe('withModalProps', function () {
-  it('should return a component wrapped with modal state props', function () {
+describe('withModalProps', () => {
+  it('should return a component wrapped with modal state props', () => {
     const TestComponent = () => <div className="test">Testing</div>;
     const WrappedComponent = withModalProps(TestComponent);
     const store = configureMockStore()(mockState);
     const wrapper = mount(<WrappedComponent store={store} />);
 
-    assert.ok(wrapper);
+    expect(wrapper).toHaveLength(1);
     const testComponent = wrapper.find(TestComponent).at(0);
-    assert.strictEqual(testComponent.length, 1);
-    assert.strictEqual(testComponent.find('.test').text(), 'Testing');
+    expect(testComponent).toHaveLength(1);
+    expect(testComponent.find('.test').text()).toStrictEqual('Testing');
     const testComponentProps = testComponent.props();
-    assert.strictEqual(testComponentProps.prop1, 'prop1');
-    assert.strictEqual(testComponentProps.prop2, 2);
-    assert.strictEqual(testComponentProps.prop3, true);
-    assert.strictEqual(typeof testComponentProps.hideModal, 'function');
+    expect(testComponentProps.prop1).toStrictEqual('prop1');
+    expect(testComponentProps.prop2).toStrictEqual(2);
+    expect(testComponentProps.prop3).toStrictEqual(true);
+    expect(typeof testComponentProps.hideModal).toStrictEqual('function');
   });
 });

@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
@@ -14,88 +13,87 @@ function shallowRender(props = {}, context = {}) {
   });
 }
 
-describe('ImportWithSeedPhrase Component', function () {
-  it('should render without error', function () {
+describe('ImportWithSeedPhrase Component', () => {
+  it('should render without error', () => {
     const root = shallowRender({
       onSubmit: sinon.spy(),
     });
     const textareaCount = root.find('.first-time-flow__textarea').length;
-    assert.strictEqual(textareaCount, 1, 'should render 12 seed phrases');
+    expect(textareaCount).toStrictEqual(1);
   });
 
-  describe('parseSeedPhrase', function () {
-    it('should handle a regular seed phrase', function () {
+  describe('parseSeedPhrase', () => {
+    it('should handle a regular seed phrase', () => {
       const root = shallowRender({
         onSubmit: sinon.spy(),
       });
 
       const { parseSeedPhrase } = root.instance();
 
-      assert.deepStrictEqual(parseSeedPhrase('foo bar baz'), 'foo bar baz');
+      expect(parseSeedPhrase('foo bar baz')).toStrictEqual('foo bar baz');
     });
 
-    it('should handle a mixed-case seed phrase', function () {
+    it('should handle a mixed-case seed phrase', () => {
       const root = shallowRender({
         onSubmit: sinon.spy(),
       });
 
       const { parseSeedPhrase } = root.instance();
 
-      assert.deepStrictEqual(parseSeedPhrase('FOO bAr baZ'), 'foo bar baz');
+      expect(parseSeedPhrase('FOO bAr baZ')).toStrictEqual('foo bar baz');
     });
 
-    it('should handle an upper-case seed phrase', function () {
+    it('should handle an upper-case seed phrase', () => {
       const root = shallowRender({
         onSubmit: sinon.spy(),
       });
 
       const { parseSeedPhrase } = root.instance();
 
-      assert.deepStrictEqual(parseSeedPhrase('FOO BAR BAZ'), 'foo bar baz');
+      expect(parseSeedPhrase('FOO BAR BAZ')).toStrictEqual('foo bar baz');
     });
 
-    it('should trim extraneous whitespace from the given seed phrase', function () {
+    it('should trim extraneous whitespace from the given seed phrase', () => {
       const root = shallowRender({
         onSubmit: sinon.spy(),
       });
 
       const { parseSeedPhrase } = root.instance();
 
-      assert.deepStrictEqual(
-        parseSeedPhrase('  foo   bar   baz  '),
+      expect(parseSeedPhrase('  foo   bar   baz  ')).toStrictEqual(
         'foo bar baz',
       );
     });
 
-    it('should return an empty string when given a whitespace-only string', function () {
+    it('should return an empty string when given a whitespace-only string', () => {
       const root = shallowRender({
         onSubmit: sinon.spy(),
       });
 
       const { parseSeedPhrase } = root.instance();
 
-      assert.deepStrictEqual(parseSeedPhrase('   '), '');
+      expect(parseSeedPhrase('   ')).toStrictEqual('');
     });
 
-    it('should return an empty string when given a string with only symbols', function () {
+    it('should return an empty string when given a string with only symbols', () => {
       const root = shallowRender({
         onSubmit: sinon.spy(),
       });
 
       const { parseSeedPhrase } = root.instance();
 
-      assert.deepStrictEqual(parseSeedPhrase('$'), '');
+      expect(parseSeedPhrase('$')).toStrictEqual('');
     });
 
-    it('should return an empty string for both null and undefined', function () {
+    it('should return an empty string for both null and undefined', () => {
       const root = shallowRender({
         onSubmit: sinon.spy(),
       });
 
       const { parseSeedPhrase } = root.instance();
 
-      assert.deepStrictEqual(parseSeedPhrase(undefined), '');
-      assert.deepStrictEqual(parseSeedPhrase(null), '');
+      expect(parseSeedPhrase(undefined)).toStrictEqual('');
+      expect(parseSeedPhrase(null)).toStrictEqual('');
     });
   });
 });

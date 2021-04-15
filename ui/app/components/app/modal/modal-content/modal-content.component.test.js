@@ -1,44 +1,39 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import ModalContent from './modal-content.component';
 
-describe('ModalContent Component', function () {
-  it('should render a title', function () {
+describe('ModalContent Component', () => {
+  it('should render a title', () => {
     const wrapper = shallow(<ModalContent title="Modal Title" />);
 
-    assert.strictEqual(wrapper.find('.modal-content__title').length, 1);
-    assert.strictEqual(
-      wrapper.find('.modal-content__title').text(),
+    expect(wrapper.find('.modal-content__title')).toHaveLength(1);
+    expect(wrapper.find('.modal-content__title').text()).toStrictEqual(
       'Modal Title',
     );
-    assert.strictEqual(wrapper.find('.modal-content__description').length, 0);
+    expect(wrapper.find('.modal-content__description')).toHaveLength(0);
   });
 
-  it('should render a description', function () {
+  it('should render a description', () => {
     const wrapper = shallow(<ModalContent description="Modal Description" />);
 
-    assert.strictEqual(wrapper.find('.modal-content__title').length, 0);
-    assert.strictEqual(wrapper.find('.modal-content__description').length, 1);
-    assert.strictEqual(
-      wrapper.find('.modal-content__description').text(),
+    expect(wrapper.find('.modal-content__title')).toHaveLength(0);
+    expect(wrapper.find('.modal-content__description')).toHaveLength(1);
+    expect(wrapper.find('.modal-content__description').text()).toStrictEqual(
       'Modal Description',
     );
   });
 
-  it('should render both a title and a description', function () {
+  it('should render both a title and a description', () => {
     const wrapper = shallow(
       <ModalContent title="Modal Title" description="Modal Description" />,
     );
 
-    assert.strictEqual(wrapper.find('.modal-content__title').length, 1);
-    assert.strictEqual(
-      wrapper.find('.modal-content__title').text(),
+    expect(wrapper.find('.modal-content__title')).toHaveLength(1);
+    expect(wrapper.find('.modal-content__title').text()).toStrictEqual(
       'Modal Title',
     );
-    assert.strictEqual(wrapper.find('.modal-content__description').length, 1);
-    assert.strictEqual(
-      wrapper.find('.modal-content__description').text(),
+    expect(wrapper.find('.modal-content__description')).toHaveLength(1);
+    expect(wrapper.find('.modal-content__description').text()).toStrictEqual(
       'Modal Description',
     );
   });

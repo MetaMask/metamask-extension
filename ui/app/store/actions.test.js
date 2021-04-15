@@ -1,16 +1,12 @@
-import assert from 'assert';
 import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import EthQuery from 'eth-query';
-import Eth from 'ethjs';
-import { createTestProviderTools } from '../../../test/stub/provider';
 import enLocale from '../../../app/_locales/en/messages.json';
 import MetaMaskController from '../../../app/scripts/metamask-controller';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import * as actions from './actions';
 
-const { provider } = createTestProviderTools({ scaffold: {} });
 const middleware = [thunk];
 const defaultState = {
   metamask: {
@@ -21,12 +17,12 @@ const defaultState = {
 };
 const mockStore = (state = defaultState) => configureStore(middleware)(state);
 
-describe('Actions', function () {
+describe('Actions', () => {
   let background;
 
   const currentNetworkId = '42';
 
-  beforeEach(async function () {
+  beforeEach(async () => {
     background = sinon.createStubInstance(MetaMaskController, {
       getState: sinon.stub().callsFake((cb) =>
         cb(null, {
@@ -35,16 +31,14 @@ describe('Actions', function () {
         }),
       ),
     });
-
-    global.ethQuery = new EthQuery(provider);
   });
 
-  describe('#tryUnlockMetamask', function () {
-    afterEach(function () {
+  describe('#tryUnlockMetamask', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls submitPassword and verifySeedPhrase', async function () {
+    it('calls submitPassword and verifySeedPhrase', async () => {
       const store = mockStore();
 
       const submitPassword = background.submitPassword.callsFake((_, cb) =>
@@ -73,13 +67,13 @@ describe('Actions', function () {
 
       await store.dispatch(actions.tryUnlockMetamask());
 
-      assert(submitPassword.calledOnce);
-      assert(verifySeedPhrase.calledOnce);
+      expect(submitPassword.callCount).toStrictEqual(1);
+      expect(verifySeedPhrase.callCount).toStrictEqual(1);
 
-      assert.deepStrictEqual(store.getActions(), expectedActions);
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('errors on submitPassword will fail', async function () {
+    it('errors on submitPassword will fail', async () => {
       const store = mockStore();
 
       background.submitPassword.callsFake((_, cb) => cb(new Error('error')));
@@ -93,15 +87,14 @@ describe('Actions', function () {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      try {
-        await store.dispatch(actions.tryUnlockMetamask('test'));
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(
+        store.dispatch(actions.tryUnlockMetamask('test')),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('displays warning error and unlock failed when verifySeed fails', async function () {
+    it('displays warning error and unlock failed when verifySeed fails', async () => {
       const store = mockStore();
 
       background.submitPassword.callsFake((_, cb) => cb());
@@ -111,32 +104,33 @@ describe('Actions', function () {
 
       actions._setBackgroundConnection(background);
 
-      const displayWarningError = [{ type: 'DISPLAY_WARNING', value: 'error' }];
-      const unlockFailedError = [{ type: 'UNLOCK_FAILED', value: 'error' }];
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'UNLOCK_IN_PROGRESS' },
+        { type: 'UNLOCK_SUCCEEDED', value: undefined },
+        {
+          type: 'UPDATE_METAMASK_STATE',
+          value: { currentLocale: 'test', selectedAddress: '0xFirstAddress' },
+        },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'UNLOCK_FAILED', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
 
-      try {
-        await store.dispatch(actions.tryUnlockMetamask('test'));
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        const actions1 = store.getActions();
-        const warning = actions1.filter(
-          (action) => action.type === 'DISPLAY_WARNING',
-        );
-        const unlockFailed = actions1.filter(
-          (action) => action.type === 'UNLOCK_FAILED',
-        );
-        assert.deepStrictEqual(warning, displayWarningError);
-        assert.deepStrictEqual(unlockFailed, unlockFailedError);
-      }
+      await expect(
+        store.dispatch(actions.tryUnlockMetamask('test')),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#createNewVaultAndRestore', function () {
-    afterEach(function () {
+  describe('#createNewVaultAndRestore', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls createNewVaultAndRestore', async function () {
+    it('calls createNewVaultAndRestore', async () => {
       const store = mockStore();
 
       const createNewVaultAndRestore = background.createNewVaultAndRestore.callsFake(
@@ -148,10 +142,10 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background);
 
       await store.dispatch(actions.createNewVaultAndRestore());
-      assert(createNewVaultAndRestore.calledOnce);
+      expect(createNewVaultAndRestore.callCount).toStrictEqual(1);
     });
 
-    it('calls the expected actions', async function () {
+    it('calls the expected actions', async () => {
       const store = mockStore();
 
       background.createNewVaultAndRestore.callsFake((_, __, cb) => cb());
@@ -175,10 +169,10 @@ describe('Actions', function () {
 
       await store.dispatch(actions.createNewVaultAndRestore());
 
-      assert.deepStrictEqual(store.getActions(), expectedActions);
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('errors when callback in createNewVaultAndRestore throws', async function () {
+    it('errors when callback in createNewVaultAndRestore throws', async () => {
       const store = mockStore();
 
       background.createNewVaultAndRestore.callsFake((_, __, cb) =>
@@ -193,21 +187,20 @@ describe('Actions', function () {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      try {
-        await store.dispatch(actions.createNewVaultAndRestore());
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(
+        store.dispatch(actions.createNewVaultAndRestore()),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#requestRevealSeedWords', function () {
-    afterEach(function () {
+  describe('#requestRevealSeedWords', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls verifyPassword in background', async function () {
+    it('calls verifyPassword in background', async () => {
       const store = mockStore();
 
       const verifyPassword = background.verifyPassword.callsFake((_, cb) =>
@@ -220,11 +213,11 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background);
 
       await store.dispatch(actions.requestRevealSeedWords());
-      assert(verifyPassword.calledOnce);
-      assert(verifySeedPhrase.calledOnce);
+      expect(verifyPassword.callCount).toStrictEqual(1);
+      expect(verifySeedPhrase.callCount).toStrictEqual(1);
     });
 
-    it('displays warning error message then callback in background errors', async function () {
+    it('displays warning error message then callback in background errors', async () => {
       const store = mockStore();
 
       background.verifyPassword.callsFake((_, cb) => cb());
@@ -240,21 +233,20 @@ describe('Actions', function () {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      try {
-        await store.dispatch(actions.requestRevealSeedWords());
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(
+        store.dispatch(actions.requestRevealSeedWords()),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#removeAccount', function () {
-    afterEach(function () {
+  describe('#removeAccount', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls removeAccount in background and expect actions to show account', async function () {
+    it('calls removeAccount in background and expect actions to show account', async () => {
       const store = mockStore();
 
       background.getState.callsFake((cb) =>
@@ -279,12 +271,12 @@ describe('Actions', function () {
       await store.dispatch(
         actions.removeAccount('0xe18035bf8712672935fdb4e5e431b1a0183d2dfc'),
       );
-      assert(removeAccount.calledOnce);
+      expect(removeAccount.callCount).toStrictEqual(1);
       const actionTypes = store.getActions().map((action) => action.type);
-      assert.deepStrictEqual(actionTypes, expectedActions);
+      expect(actionTypes).toStrictEqual(expectedActions);
     });
 
-    it('displays warning error message when removeAccount callback errors', async function () {
+    it('displays warning error message when removeAccount callback errors', async () => {
       const store = mockStore();
 
       background.removeAccount.callsFake((_, cb) => {
@@ -294,29 +286,27 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background);
 
       const expectedActions = [
-        'SHOW_LOADING_INDICATION',
-        'DISPLAY_WARNING',
-        'HIDE_LOADING_INDICATION',
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      try {
-        await store.dispatch(
+      await expect(
+        store.dispatch(
           actions.removeAccount('0xe18035bf8712672935fdb4e5e431b1a0183d2dfc'),
-        );
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        const actionTypes = store.getActions().map((action) => action.type);
-        assert.deepStrictEqual(actionTypes, expectedActions);
-      }
+        ),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#resetAccount', function () {
-    afterEach(function () {
+  describe('#resetAccount', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('resets account', async function () {
+    it('resets account', async () => {
       const store = mockStore();
 
       const resetAccount = background.resetAccount.callsFake((cb) => cb());
@@ -330,11 +320,11 @@ describe('Actions', function () {
       ];
 
       await store.dispatch(actions.resetAccount());
-      assert(resetAccount.calledOnce);
-      assert.deepStrictEqual(store.getActions(), expectedActions);
+      expect(resetAccount.callCount).toStrictEqual(1);
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('throws if resetAccount throws', async function () {
+    it('throws if resetAccount throws', async () => {
       const store = mockStore();
 
       background.resetAccount.callsFake((cb) => {
@@ -349,21 +339,20 @@ describe('Actions', function () {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ];
 
-      try {
-        await store.dispatch(actions.resetAccount());
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(store.dispatch(actions.resetAccount())).rejects.toThrow(
+        'error',
+      );
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#importNewAccount', function () {
-    afterEach(function () {
+  describe('#importNewAccount', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls importAccountWithStrategies in background', async function () {
+    it('calls importAccountWithStrategies in background', async () => {
       const store = mockStore();
 
       const importAccountWithStrategy = background.importAccountWithStrategy.callsFake(
@@ -379,10 +368,10 @@ describe('Actions', function () {
           'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3',
         ]),
       );
-      assert(importAccountWithStrategy.calledOnce);
+      expect(importAccountWithStrategy.callCount).toStrictEqual(1);
     });
 
-    it('displays warning error message when importAccount in background callback errors', async function () {
+    it('displays warning error message when importAccount in background callback errors', async () => {
       const store = mockStore();
 
       background.importAccountWithStrategy.callsFake((_, __, cb) =>
@@ -400,17 +389,16 @@ describe('Actions', function () {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      try {
-        await store.dispatch(actions.importNewAccount());
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(store.dispatch(actions.importNewAccount())).rejects.toThrow(
+        'error',
+      );
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#addNewAccount', function () {
-    it('Adds a new account', async function () {
+  describe('#addNewAccount', () => {
+    it('adds a new account', async () => {
       const store = mockStore({ metamask: { identities: {} } });
 
       const addNewAccount = background.addNewAccount.callsFake((cb) =>
@@ -422,10 +410,10 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background);
 
       await store.dispatch(actions.addNewAccount());
-      assert(addNewAccount.calledOnce);
+      expect(addNewAccount.callCount).toStrictEqual(1);
     });
 
-    it('displays warning error message when addNewAccount in background callback errors', async function () {
+    it('displays warning error message when addNewAccount in background callback errors', async () => {
       const store = mockStore();
 
       background.addNewAccount.callsFake((cb) => {
@@ -440,21 +428,20 @@ describe('Actions', function () {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      try {
-        await store.dispatch(actions.addNewAccount());
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(store.dispatch(actions.addNewAccount())).rejects.toThrow(
+        'error',
+      );
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#checkHardwareStatus', function () {
-    afterEach(function () {
+  describe('#checkHardwareStatus', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls checkHardwareStatus in background', async function () {
+    it('calls checkHardwareStatus in background', async () => {
       const store = mockStore();
 
       const checkHardwareStatus = background.checkHardwareStatus.callsFake(
@@ -468,10 +455,10 @@ describe('Actions', function () {
       await store.dispatch(
         actions.checkHardwareStatus('ledger', `m/44'/60'/0'/0`),
       );
-      assert.strictEqual(checkHardwareStatus.calledOnce, true);
+      expect(checkHardwareStatus.callCount).toStrictEqual(1);
     });
 
-    it('shows loading indicator and displays error', async function () {
+    it('shows loading indicator and displays error', async () => {
       const store = mockStore();
 
       background.checkHardwareStatus.callsFake((_, __, cb) =>
@@ -486,21 +473,20 @@ describe('Actions', function () {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      try {
-        await store.dispatch(actions.checkHardwareStatus());
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(
+        store.dispatch(actions.checkHardwareStatus()),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#forgetDevice', function () {
-    afterEach(function () {
+  describe('#forgetDevice', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls forgetDevice in background', async function () {
+    it('calls forgetDevice in background', async () => {
       const store = mockStore();
 
       const forgetDevice = background.forgetDevice.callsFake((_, cb) => cb());
@@ -508,10 +494,10 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background);
 
       await store.dispatch(actions.forgetDevice('ledger'));
-      assert(forgetDevice.calledOnce);
+      expect(forgetDevice.callCount).toStrictEqual(1);
     });
 
-    it('shows loading indicator and displays error', async function () {
+    it('shows loading indicator and displays error', async () => {
       const store = mockStore();
 
       background.forgetDevice.callsFake((_, cb) => cb(new Error('error')));
@@ -524,21 +510,20 @@ describe('Actions', function () {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      try {
-        await store.dispatch(actions.forgetDevice());
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(store.dispatch(actions.forgetDevice())).rejects.toThrow(
+        'error',
+      );
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#connectHardware', function () {
-    afterEach(function () {
+  describe('#connectHardware', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls connectHardware in background', async function () {
+    it('calls connectHardware in background', async () => {
       const store = mockStore();
 
       const connectHardware = background.connectHardware.callsFake(
@@ -550,10 +535,10 @@ describe('Actions', function () {
       await store.dispatch(
         actions.connectHardware('ledger', 0, `m/44'/60'/0'/0`),
       );
-      assert(connectHardware.calledOnce);
+      expect(connectHardware.callCount).toStrictEqual(1);
     });
 
-    it('shows loading indicator and displays error', async function () {
+    it('shows loading indicator and displays error', async () => {
       const store = mockStore();
 
       background.connectHardware.callsFake((_, __, ___, cb) =>
@@ -571,21 +556,20 @@ describe('Actions', function () {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      try {
-        await store.dispatch(actions.connectHardware('ledger'));
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(
+        store.dispatch(actions.connectHardware('ledger')),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#unlockHardwareWalletAccount', function () {
-    afterEach(function () {
+  describe('#unlockHardwareWalletAccount', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls unlockHardwareWalletAccount in background', async function () {
+    it('calls unlockHardwareWalletAccount in background', async () => {
       const store = mockStore();
       const unlockHardwareWalletAccount = background.unlockHardwareWalletAccount.callsFake(
         (_, __, ___, ____, cb) => cb(),
@@ -601,10 +585,10 @@ describe('Actions', function () {
           '',
         ),
       );
-      assert(unlockHardwareWalletAccount.calledOnce);
+      expect(unlockHardwareWalletAccount.callCount).toStrictEqual(1);
     });
 
-    it('shows loading indicator and displays error', async function () {
+    it('shows loading indicator and displays error', async () => {
       const store = mockStore();
 
       background.unlockHardwareWalletAccount.callsFake((_, __, ___, ____, cb) =>
@@ -619,21 +603,20 @@ describe('Actions', function () {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      try {
-        await store.dispatch(actions.unlockHardwareWalletAccounts([null]));
-        assert.fail('Should have thrown error');
-      } catch (error) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(
+        store.dispatch(actions.unlockHardwareWalletAccounts([null])),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#setCurrentCurrency', function () {
-    afterEach(function () {
+  describe('#setCurrentCurrency', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls setCurrentCurrency', async function () {
+    it('calls setCurrentCurrency', async () => {
       const store = mockStore();
       const setCurrentCurrency = background.setCurrentCurrency.callsFake(
         (_, cb) =>
@@ -647,10 +630,10 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background);
 
       await store.dispatch(actions.setCurrentCurrency('jpy'));
-      assert(setCurrentCurrency.calledOnce);
+      expect(setCurrentCurrency.callCount).toStrictEqual(1);
     });
 
-    it('throws if setCurrentCurrency throws', async function () {
+    it('throws if setCurrentCurrency throws', async () => {
       const store = mockStore();
 
       background.setCurrentCurrency.callsFake((_, cb) =>
@@ -666,11 +649,11 @@ describe('Actions', function () {
       ];
 
       await store.dispatch(actions.setCurrentCurrency());
-      assert.deepStrictEqual(store.getActions(), expectedActions);
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#signMsg', function () {
+  describe('#signMsg', () => {
     const msgParams = {
       metamaskId: 123,
       from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -678,11 +661,11 @@ describe('Actions', function () {
         '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0',
     };
 
-    afterEach(function () {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls signMsg in background', async function () {
+    it('calls signMsg in background', async () => {
       const store = mockStore();
 
       const signMessage = background.signMessage.callsFake((_, cb) =>
@@ -692,10 +675,10 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background);
 
       await store.dispatch(actions.signMsg(msgParams));
-      assert(signMessage.calledOnce);
+      expect(signMessage.callCount).toStrictEqual(1);
     });
 
-    it('errors when signMessage in background throws', async function () {
+    it('errors when signMessage in background throws', async () => {
       const store = mockStore();
 
       background.signMessage.callsFake((_, cb) => cb(new Error('error')));
@@ -708,27 +691,26 @@ describe('Actions', function () {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      try {
-        await store.dispatch(actions.signMsg(msgParams));
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(store.dispatch(actions.signMsg(msgParams))).rejects.toThrow(
+        'error',
+      );
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#signPersonalMsg', function () {
+  describe('#signPersonalMsg', () => {
     const msgParams = {
       from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       data:
         '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0',
     };
 
-    afterEach(function () {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls signPersonalMessage', async function () {
+    it('calls signPersonalMessage', async () => {
       const store = mockStore();
 
       const signPersonalMessage = background.signPersonalMessage.callsFake(
@@ -738,10 +720,10 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background);
 
       await store.dispatch(actions.signPersonalMsg(msgParams));
-      assert(signPersonalMessage.calledOnce);
+      expect(signPersonalMessage.callCount).toStrictEqual(1);
     });
 
-    it('throws if signPersonalMessage throws', async function () {
+    it('throws if signPersonalMessage throws', async () => {
       const store = mockStore();
 
       background.signPersonalMessage.callsFake((_, cb) => {
@@ -756,16 +738,15 @@ describe('Actions', function () {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      try {
-        await store.dispatch(actions.signPersonalMsg(msgParams));
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepEqual(store.getActions(), expectedActions);
-      }
+      await expect(
+        store.dispatch(actions.signPersonalMsg(msgParams)),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#signTypedMsg', function () {
+  describe('#signTypedMsg', () => {
     const msgParamsV3 = {
       from: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
       data: JSON.stringify({
@@ -806,11 +787,11 @@ describe('Actions', function () {
       }),
     };
 
-    afterEach(function () {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls signTypedMsg in background with no error', async function () {
+    it('calls signTypedMsg in background with no error', async () => {
       const store = mockStore();
 
       const signTypedMsg = background.signTypedMessage.callsFake((_, cb) =>
@@ -820,10 +801,10 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background);
 
       await store.dispatch(actions.signTypedMsg(msgParamsV3));
-      assert(signTypedMsg.calledOnce);
+      expect(signTypedMsg.callCount).toStrictEqual(1);
     });
 
-    it('returns expected actions with error', async function () {
+    it('returns expected actions with error', async () => {
       const store = mockStore();
 
       background.signTypedMessage.callsFake((_, cb) => cb(new Error('error')));
@@ -836,51 +817,62 @@ describe('Actions', function () {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      try {
-        await store.dispatch(actions.signTypedMsg());
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(store.dispatch(actions.signTypedMsg())).rejects.toThrow(
+        'error',
+      );
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#signTx', function () {
-    let sendTransaction;
-
-    beforeEach(function () {
-      sendTransaction = sinon.stub(global.ethQuery, 'sendTransaction');
+  describe('#signTx', () => {
+    beforeEach(() => {
+      global.ethQuery = sinon.createStubInstance(EthQuery);
     });
 
-    afterEach(function () {
-      sendTransaction.restore();
+    afterEach(() => {
+      sinon.restore();
     });
 
-    it('calls sendTransaction in global ethQuery', function () {
+    it('calls sendTransaction in global ethQuery', async () => {
       const store = mockStore();
 
-      store.dispatch(actions.signTx());
-      assert(sendTransaction.calledOnce);
+      actions._setBackgroundConnection(background);
+
+      await store.dispatch(actions.signTx());
+
+      expect(global.ethQuery.sendTransaction.callCount).toStrictEqual(1);
     });
 
-    it('errors in when sendTransaction throws', function () {
+    it('errors in when sendTransaction throws', async () => {
       const store = mockStore();
       const expectedActions = [
         { type: 'DISPLAY_WARNING', value: 'error' },
         { type: 'SHOW_CONF_TX_PAGE', id: undefined },
       ];
-      sendTransaction.callsFake((_, callback) => {
+
+      global.ethQuery.sendTransaction.callsFake((_, callback) => {
         callback(new Error('error'));
       });
 
-      store.dispatch(actions.signTx());
-      assert.deepStrictEqual(store.getActions(), expectedActions);
+      actions._setBackgroundConnection(background);
+
+      await store.dispatch(actions.signTx());
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#updatedGasData', function () {
-    it('errors when get code does not return', async function () {
+  describe('#updatedGasData', () => {
+    it('errors when get code does not return', async () => {
       const store = mockStore();
+
+      background.estimateGas = sinon.stub().rejects();
+
+      actions._setBackgroundConnection(background);
+
+      global.eth = {
+        getCode: sinon.stub().rejects(),
+      };
 
       const expectedActions = [
         { type: 'GAS_LOADING_STARTED' },
@@ -899,15 +891,12 @@ describe('Actions', function () {
         value: '0xde0b6b3a7640000', // 1000000000000000000
       };
 
-      try {
-        await store.dispatch(actions.updateGasData(mockData));
-        assert.fail('Should have thrown error');
-      } catch (error) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await store.dispatch(actions.updateGasData(mockData));
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('returns default gas limit for basic eth transaction', async function () {
+    it('returns default gas limit for basic eth transaction', async () => {
       const mockData = {
         gasPrice: '0x3b9aca00',
         blockGasLimit: '0x6ad79a', // 7002010
@@ -930,23 +919,24 @@ describe('Actions', function () {
       ];
 
       await store.dispatch(actions.updateGasData(mockData));
-      assert.deepStrictEqual(store.getActions(), expectedActions);
-      global.eth.getCode.reset();
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#signTokenTx', function () {
-    it('calls eth.contract', function () {
-      global.eth = new Eth(provider);
-      const tokenSpy = sinon.spy(global.eth, 'contract');
+  describe('#signTokenTx', () => {
+    it('calls eth.contract', async () => {
+      global.eth = {
+        contract: sinon.stub(),
+      };
+
       const store = mockStore();
-      store.dispatch(actions.signTokenTx());
-      assert(tokenSpy.calledOnce);
-      tokenSpy.restore();
+
+      await store.dispatch(actions.signTokenTx());
+      expect(global.eth.contract.callCount).toStrictEqual(1);
     });
   });
 
-  describe('#updateTransaction', function () {
+  describe('#updateTransaction', () => {
     const txParams = {
       from: '0x1',
       gas: '0x5208',
@@ -962,11 +952,11 @@ describe('Actions', function () {
       txParams,
     };
 
-    afterEach(function () {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('updates transaction', async function () {
+    it('updates transaction', async () => {
       const store = mockStore();
 
       const updateTransactionStub = sinon.stub().callsFake((_, cb) => cb());
@@ -986,15 +976,15 @@ describe('Actions', function () {
       await store.dispatch(actions.updateTransaction(txData));
 
       const resultantActions = store.getActions();
-      assert(updateTransactionStub.calledOnce);
-      assert.deepStrictEqual(resultantActions[1], {
+      expect(updateTransactionStub.callCount).toStrictEqual(1);
+      expect(resultantActions[1]).toStrictEqual({
         type: 'UPDATE_TRANSACTION_PARAMS',
         id: txData.id,
         value: txParams,
       });
     });
 
-    it('rejects with error message', async function () {
+    it('rejects with error message', async () => {
       const store = mockStore();
 
       background.getApi.returns({
@@ -1011,21 +1001,38 @@ describe('Actions', function () {
 
       actions._setBackgroundConnection(background.getApi());
 
-      try {
-        await store.dispatch(actions.updateTransaction(txData));
-        assert.fail('Should have thrown error');
-      } catch (error) {
-        assert.strictEqual(error.message, 'error');
-      }
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        {
+          type: 'UPDATE_TRANSACTION_PARAMS',
+          id: '1',
+          value: {
+            from: '0x1',
+            gas: '0x5208',
+            gasPrice: '0x3b9aca00',
+            to: '0x2',
+            value: '0x0',
+          },
+        },
+        { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'TRANSACTION_ERROR', message: 'error' },
+        { type: 'GO_HOME' },
+      ];
+
+      await expect(
+        store.dispatch(actions.updateTransaction(txData)),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#lockMetamask', function () {
-    afterEach(function () {
+  describe('#lockMetamask', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls setLocked', async function () {
+    it('calls setLocked', async () => {
       const store = mockStore();
 
       const backgroundSetLocked = background.setLocked.callsFake((cb) => cb());
@@ -1033,10 +1040,10 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background);
 
       await store.dispatch(actions.lockMetamask());
-      assert(backgroundSetLocked.calledOnce);
+      expect(backgroundSetLocked.callCount).toStrictEqual(1);
     });
 
-    it('returns display warning error with value when setLocked in background callback errors', async function () {
+    it('returns display warning error with value when setLocked in background callback errors', async () => {
       const store = mockStore();
 
       background.setLocked.callsFake((cb) => {
@@ -1052,21 +1059,18 @@ describe('Actions', function () {
         { type: 'LOCK_METAMASK' },
       ];
 
-      try {
-        await store.dispatch(actions.lockMetamask());
-        assert.fail('Should have thrown error');
-      } catch (error) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await store.dispatch(actions.lockMetamask());
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#setSelectedAddress', function () {
-    afterEach(function () {
+  describe('#setSelectedAddress', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls setSelectedAddress in background', async function () {
+    it('calls setSelectedAddress in background', async () => {
       const store = mockStore();
 
       const setSelectedAddressSpy = sinon.stub().callsFake((_, cb) => cb());
@@ -1082,10 +1086,10 @@ describe('Actions', function () {
           '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         ),
       );
-      assert(setSelectedAddressSpy.calledOnce);
+      expect(setSelectedAddressSpy.callCount).toStrictEqual(1);
     });
 
-    it('errors when setSelectedAddress throws', async function () {
+    it('errors when setSelectedAddress throws', async () => {
       const store = mockStore();
 
       const setSelectedAddressSpy = sinon
@@ -1105,16 +1109,16 @@ describe('Actions', function () {
       ];
 
       await store.dispatch(actions.setSelectedAddress());
-      assert.deepStrictEqual(store.getActions(), expectedActions);
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#showAccountDetail', function () {
-    afterEach(function () {
+  describe('#showAccountDetail', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('#showAccountDetail', async function () {
+    it('#showAccountDetail', async () => {
       const store = mockStore({
         activeTab: {},
         metamask: { alertEnabledness: {}, selectedAddress: '0x123' },
@@ -1129,10 +1133,10 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.showAccountDetail());
-      assert(setSelectedAddressSpy.calledOnce);
+      expect(setSelectedAddressSpy.callCount).toStrictEqual(1);
     });
 
-    it('displays warning if setSelectedAddress throws', async function () {
+    it('displays warning if setSelectedAddress throws', async () => {
       const store = mockStore({
         activeTab: {},
         metamask: { alertEnabledness: {}, selectedAddress: '0x123' },
@@ -1155,16 +1159,16 @@ describe('Actions', function () {
       ];
 
       await store.dispatch(actions.showAccountDetail());
-      assert.deepStrictEqual(store.getActions(), expectedActions);
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#addToken', function () {
-    afterEach(function () {
+  describe('#addToken', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls addToken in background', async function () {
+    it('calls addToken in background', async () => {
       const store = mockStore();
 
       const addTokenStub = sinon
@@ -1184,10 +1188,10 @@ describe('Actions', function () {
           decimals: 18,
         }),
       );
-      assert(addTokenStub.calledOnce);
+      expect(addTokenStub.callCount).toStrictEqual(1);
     });
 
-    it('expected actions', async function () {
+    it('expected actions', async () => {
       const store = mockStore();
 
       const tokenDetails = {
@@ -1223,10 +1227,10 @@ describe('Actions', function () {
         }),
       );
 
-      assert.deepStrictEqual(store.getActions(), expectedActions);
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('errors when addToken in background throws', async function () {
+    it('errors when addToken in background throws', async () => {
       const store = mockStore();
 
       const addTokenStub = sinon
@@ -1245,27 +1249,26 @@ describe('Actions', function () {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ];
 
-      try {
-        await store.dispatch(
+      await expect(
+        store.dispatch(
           actions.addToken({
             address: '_',
             symbol: '',
             decimals: 0,
           }),
-        );
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepEqual(store.getActions(), expectedActions);
-      }
+        ),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#removeToken', function () {
-    afterEach(function () {
+  describe('#removeToken', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls removeToken in background', async function () {
+    it('calls removeToken in background', async () => {
       const store = mockStore();
 
       const removeTokenStub = sinon.stub().callsFake((_, cb) => cb());
@@ -1277,10 +1280,10 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.removeToken());
-      assert(removeTokenStub.calledOnce);
+      expect(removeTokenStub.callCount).toStrictEqual(1);
     });
 
-    it('errors when removeToken in background fails', async function () {
+    it('errors when removeToken in background fails', async () => {
       const store = mockStore();
 
       background.getApi.returns({
@@ -1295,21 +1298,20 @@ describe('Actions', function () {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ];
 
-      try {
-        await store.dispatch(actions.removeToken());
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(store.dispatch(actions.removeToken())).rejects.toThrow(
+        'error',
+      );
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#setProviderType', function () {
-    afterEach(function () {
+  describe('#setProviderType', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls setProviderType', async function () {
+    it('calls setProviderType', async () => {
       const store = mockStore();
 
       const setProviderTypeStub = sinon.stub().callsFake((_, cb) => cb());
@@ -1321,10 +1323,10 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.setProviderType());
-      assert(setProviderTypeStub.calledOnce);
+      expect(setProviderTypeStub.callCount).toStrictEqual(1);
     });
 
-    it('displays warning when setProviderType throws', async function () {
+    it('displays warning when setProviderType throws', async () => {
       const store = mockStore();
 
       background.getApi.returns({
@@ -1340,16 +1342,16 @@ describe('Actions', function () {
       ];
 
       await store.dispatch(actions.setProviderType());
-      assert.deepStrictEqual(store.getActions(), expectedActions);
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#setRpcTarget', function () {
-    afterEach(function () {
+  describe('#setRpcTarget', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls setRpcTarget', async function () {
+    it('calls setRpcTarget', async () => {
       const store = mockStore();
 
       background.setCustomRpc.callsFake((_, __, ___, ____, cb) => cb());
@@ -1357,10 +1359,10 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background);
 
       await store.dispatch(actions.setRpcTarget('http://localhost:8545'));
-      assert(background.setCustomRpc.calledOnce);
+      expect(background.setCustomRpc.callCount).toStrictEqual(1);
     });
 
-    it('displays warning when setRpcTarget throws', async function () {
+    it('displays warning when setRpcTarget throws', async () => {
       const store = mockStore();
 
       background.setCustomRpc.callsFake((_, __, ___, ____, cb) =>
@@ -1374,12 +1376,12 @@ describe('Actions', function () {
       ];
 
       await store.dispatch(actions.setRpcTarget());
-      assert.deepStrictEqual(store.getActions(), expectedActions);
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#addToAddressBook', function () {
-    it('calls setAddressBook', async function () {
+  describe('#addToAddressBook', () => {
+    it('calls setAddressBook', async () => {
       const store = mockStore();
 
       const setAddressBookStub = sinon
@@ -1393,17 +1395,17 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.addToAddressBook('test'));
-      assert(setAddressBookStub.calledOnce);
+      expect(setAddressBookStub.callCount).toStrictEqual(1);
       sinon.restore();
     });
   });
 
-  describe('#exportAccount', function () {
-    afterEach(function () {
+  describe('#exportAccount', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('returns expected actions for successful action', async function () {
+    it('returns expected actions for successful action', async () => {
       const store = mockStore();
 
       const testPrivKey = 'a-test-priv-key';
@@ -1433,12 +1435,12 @@ describe('Actions', function () {
       await store.dispatch(
         actions.exportAccount('a-test-password', '0xAddress'),
       );
-      assert(verifyPasswordStub.calledOnce);
-      assert(exportAccountStub.calledOnce);
-      assert.deepStrictEqual(store.getActions(), expectedActions);
+      expect(verifyPasswordStub.callCount).toStrictEqual(1);
+      expect(exportAccountStub.callCount).toStrictEqual(1);
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('returns action errors when first func callback errors', async function () {
+    it('returns action errors when first func callback errors', async () => {
       const store = mockStore();
 
       const verifyPasswordStub = sinon
@@ -1457,17 +1459,14 @@ describe('Actions', function () {
         { type: 'DISPLAY_WARNING', value: 'Incorrect Password.' },
       ];
 
-      try {
-        await store.dispatch(
-          actions.exportAccount('a-test-password', '0xAddress'),
-        );
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(
+        store.dispatch(actions.exportAccount('a-test-password', '0xAddress')),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('returns action errors when second func callback errors', async function () {
+    it('returns action errors when second func callback errors', async () => {
       const store = mockStore();
 
       const verifyPasswordStub = sinon.stub().callsFake((_, cb) => cb());
@@ -1492,23 +1491,20 @@ describe('Actions', function () {
         },
       ];
 
-      try {
-        await store.dispatch(
-          actions.exportAccount('a-test-password', '0xAddress'),
-        );
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(
+        store.dispatch(actions.exportAccount('a-test-password', '0xAddress')),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#setAccountLabel', function () {
-    afterEach(function () {
+  describe('#setAccountLabel', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls setAccountLabel', async function () {
+    it('calls setAccountLabel', async () => {
       const store = mockStore();
 
       const setAccountLabelStub = sinon.stub().callsFake((_, __, cb) => cb());
@@ -1525,10 +1521,10 @@ describe('Actions', function () {
           'test',
         ),
       );
-      assert(setAccountLabelStub.calledOnce);
+      expect(setAccountLabelStub.callCount).toStrictEqual(1);
     });
 
-    it('returns action errors when func callback errors', async function () {
+    it('returns action errors when func callback errors', async () => {
       const store = mockStore();
 
       background.getApi.returns({
@@ -1545,26 +1541,25 @@ describe('Actions', function () {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ];
 
-      try {
-        await store.dispatch(
+      await expect(
+        store.dispatch(
           actions.setAccountLabel(
             '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             'test',
           ),
-        );
-        assert.fail('Should have thrown error');
-      } catch (error) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+        ),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#setFeatureFlag', function () {
-    afterEach(function () {
+  describe('#setFeatureFlag', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls setFeatureFlag in the background', async function () {
+    it('calls setFeatureFlag in the background', async () => {
       const store = mockStore();
 
       const setFeatureFlagStub = sinon.stub().callsFake((_, __, cb) => cb());
@@ -1576,10 +1571,10 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.setFeatureFlag());
-      assert(setFeatureFlagStub.calledOnce);
+      expect(setFeatureFlagStub.callCount).toStrictEqual(1);
     });
 
-    it('errors when setFeatureFlag in background throws', async function () {
+    it('errors when setFeatureFlag in background throws', async () => {
       const store = mockStore();
 
       background.getApi.returns({
@@ -1596,21 +1591,20 @@ describe('Actions', function () {
         { type: 'DISPLAY_WARNING', value: 'error' },
       ];
 
-      try {
-        await store.dispatch(actions.setFeatureFlag());
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(store.dispatch(actions.setFeatureFlag())).rejects.toThrow(
+        'error',
+      );
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#setCompletedOnboarding', function () {
-    afterEach(function () {
+  describe('#setCompletedOnboarding', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('completes onboarding', async function () {
+    it('completes onboarding', async () => {
       const store = mockStore();
       const completeOnboardingStub = sinon.stub().callsFake((cb) => cb());
 
@@ -1621,10 +1615,10 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.setCompletedOnboarding());
-      assert(completeOnboardingStub.calledOnce);
+      expect(completeOnboardingStub.callCount).toStrictEqual(1);
     });
 
-    it('errors when setCompletedOnboarding in background throws', async function () {
+    it('errors when setCompletedOnboarding in background throws', async () => {
       const store = mockStore();
 
       background.getApi.returns({
@@ -1641,21 +1635,20 @@ describe('Actions', function () {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      try {
-        await store.dispatch(actions.setCompletedOnboarding());
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(
+        store.dispatch(actions.setCompletedOnboarding()),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#setUseBlockie', function () {
-    afterEach(function () {
+  describe('#setUseBlockie', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls setUseBlockie in background', async function () {
+    it('calls setUseBlockie in background', async () => {
       const store = mockStore();
 
       const setUseBlockStub = background.setUseBlockie.callsFake((_, cb) =>
@@ -1665,10 +1658,10 @@ describe('Actions', function () {
       actions._setBackgroundConnection(background);
 
       await store.dispatch(actions.setUseBlockie());
-      assert(setUseBlockStub.calledOnce);
+      expect(setUseBlockStub.callCount).toStrictEqual(1);
     });
 
-    it('errors when setUseBlockie in background throws', async function () {
+    it('errors when setUseBlockie in background throws', async () => {
       const store = mockStore();
 
       background.setUseBlockie.callsFake((_, cb) => cb(new Error('error')));
@@ -1683,22 +1676,22 @@ describe('Actions', function () {
       ];
 
       await store.dispatch(actions.setUseBlockie());
-      assert.deepStrictEqual(store.getActions(), expectedActions);
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#updateCurrentLocale', function () {
-    beforeEach(function () {
+  describe('#updateCurrentLocale', () => {
+    beforeEach(() => {
       sinon.stub(window, 'fetch').resolves({
         json: async () => enLocale,
       });
     });
 
-    afterEach(function () {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls expected actions', async function () {
+    it('calls expected actions', async () => {
       const store = mockStore();
 
       background.setCurrentLocale.callsFake((_, cb) => cb());
@@ -1715,11 +1708,11 @@ describe('Actions', function () {
       ];
 
       await store.dispatch(actions.updateCurrentLocale('test'));
-      assert(background.setCurrentLocale.calledOnce);
-      assert.deepStrictEqual(store.getActions(), expectedActions);
+      expect(background.setCurrentLocale.callCount).toStrictEqual(1);
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('errors when setCurrentLocale throws', async function () {
+    it('errors when setCurrentLocale throws', async () => {
       const store = mockStore();
 
       background.setCurrentLocale.callsFake((_, cb) => cb(new Error('error')));
@@ -1732,21 +1725,18 @@ describe('Actions', function () {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      try {
-        await store.dispatch(actions.updateCurrentLocale('test'));
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await store.dispatch(actions.updateCurrentLocale('test'));
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#markPasswordForgotten', function () {
-    afterEach(function () {
+  describe('#markPasswordForgotten', () => {
+    afterEach(() => {
       sinon.restore();
     });
 
-    it('calls markPasswordForgotten', async function () {
+    it('calls markPasswordForgotten', async () => {
       const store = mockStore();
 
       background.markPasswordForgotten.callsFake((cb) => cb());
@@ -1756,14 +1746,14 @@ describe('Actions', function () {
       await store.dispatch(actions.markPasswordForgotten());
 
       const resultantActions = store.getActions();
-      assert.deepStrictEqual(resultantActions[1], {
+      expect(resultantActions[1]).toStrictEqual({
         type: 'FORGOT_PASSWORD',
         value: true,
       });
-      assert(background.markPasswordForgotten.calledOnce);
+      expect(background.markPasswordForgotten.callCount).toStrictEqual(1);
     });
 
-    it('errors when markPasswordForgotten throws', async function () {
+    it('errors when markPasswordForgotten throws', async () => {
       const store = mockStore();
 
       background.markPasswordForgotten.callsFake((cb) =>
@@ -1784,53 +1774,52 @@ describe('Actions', function () {
         },
       ];
 
-      try {
-        await store.dispatch(actions.markPasswordForgotten('test'));
-        assert.fail('Should have thrown error');
-      } catch (_) {
-        assert.deepStrictEqual(store.getActions(), expectedActions);
-      }
+      await expect(
+        store.dispatch(actions.markPasswordForgotten('test')),
+      ).rejects.toThrow('error');
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
-  describe('#unMarkPasswordForgotten', function () {
-    it('calls unMarkPasswordForgotten', async function () {
+  describe('#unMarkPasswordForgotten', () => {
+    it('calls unMarkPasswordForgotten', async () => {
       const store = mockStore();
 
       background.unMarkPasswordForgotten.callsFake((cb) => cb());
 
       actions._setBackgroundConnection(background);
 
-      await store.dispatch(actions.unMarkPasswordForgotten());
+      store.dispatch(actions.unMarkPasswordForgotten());
 
       const resultantActions = store.getActions();
-      assert.deepStrictEqual(resultantActions[0], {
+      expect(resultantActions[0]).toStrictEqual({
         type: 'FORGOT_PASSWORD',
         value: false,
       });
-      assert(background.unMarkPasswordForgotten.calledOnce);
+      expect(background.unMarkPasswordForgotten.callCount).toStrictEqual(1);
     });
   });
 
-  describe('#displayWarning', function () {
-    it('sets appState.warning to provided value', async function () {
+  describe('#displayWarning', () => {
+    it('sets appState.warning to provided value', async () => {
       const store = mockStore();
 
       const warningText = 'This is a sample warning message';
 
-      await store.dispatch(actions.displayWarning(warningText));
+      store.dispatch(actions.displayWarning(warningText));
 
       const resultantActions = store.getActions();
 
-      assert.deepStrictEqual(resultantActions[0], {
+      expect(resultantActions[0]).toStrictEqual({
         type: 'DISPLAY_WARNING',
         value: warningText,
       });
     });
   });
 
-  describe('#cancelTx', function () {
-    it('creates COMPLETED_TX with the cancelled transaction ID', async function () {
+  describe('#cancelTx', () => {
+    it('creates COMPLETED_TX with the cancelled transaction ID', async () => {
       const store = mockStore();
 
       background.getApi.returns({
@@ -1854,9 +1843,8 @@ describe('Actions', function () {
       const expectedAction = resultantActions.find(
         (action) => action.type === 'COMPLETED_TX',
       );
-      assert.ok(expectedAction, 'expected action not found');
 
-      assert.strictEqual(expectedAction.value.id, txId);
+      expect(expectedAction.value.id).toStrictEqual(txId);
     });
   });
 });

@@ -1,10 +1,9 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import { mount } from 'enzyme';
 import UnlockPage from './unlock-page.container';
 
-describe('Unlock Page', function () {
+describe('Unlock Page', () => {
   let wrapper;
 
   const props = {
@@ -19,7 +18,7 @@ describe('Unlock Page', function () {
     showOptInModal: sinon.spy(),
   };
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = mount(<UnlockPage.WrappedComponent {...props} />, {
       context: {
         t: (str) => str,
@@ -27,37 +26,37 @@ describe('Unlock Page', function () {
     });
   });
 
-  after(function () {
+  afterAll(() => {
     sinon.restore();
   });
 
-  it('renders', function () {
-    assert.strictEqual(wrapper.length, 1);
+  it('renders', () => {
+    expect(wrapper).toHaveLength(1);
   });
 
-  it('changes password and submits', function () {
+  it('changes password and submits', () => {
     const passwordField = wrapper.find({ type: 'password', id: 'password' });
     const loginButton = wrapper.find({ type: 'submit' }).last();
 
     const event = { target: { value: 'password' } };
-    assert.strictEqual(wrapper.instance().state.password, '');
+    expect(wrapper.instance().state.password).toStrictEqual('');
     passwordField.last().simulate('change', event);
-    assert.strictEqual(wrapper.instance().state.password, 'password');
+    expect(wrapper.instance().state.password).toStrictEqual('password');
 
     loginButton.simulate('click');
-    assert(props.onSubmit.calledOnce);
+    expect(props.onSubmit.calledOnce).toStrictEqual(true);
   });
 
-  it('clicks imports seed button', function () {
+  it('clicks imports seed button', () => {
     const importSeedButton = wrapper.find('.unlock-page__link--import');
 
     importSeedButton.simulate('click');
-    assert(props.onImport.calledOnce);
+    expect(props.onImport.calledOnce).toStrictEqual(true);
   });
 
-  it('clicks restore', function () {
+  it('clicks restore', () => {
     const restoreFromSeedButton = wrapper.find('.unlock-page__link').at(0);
     restoreFromSeedButton.simulate('click');
-    assert(props.onRestore.calledOnce);
+    expect(props.onRestore.calledOnce).toStrictEqual(true);
   });
 });

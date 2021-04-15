@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import { mount } from 'enzyme';
 import sinon from 'sinon';
@@ -6,21 +5,25 @@ import * as i18nHook from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip';
 import TransactionStatus from './transaction-status.component';
 
-describe('TransactionStatus Component', function () {
-  before(function () {
+describe('TransactionStatus Component', () => {
+  beforeAll(() => {
     sinon.stub(i18nHook, 'useI18nContext').returns((str) => str.toUpperCase());
   });
 
-  it('should render CONFIRMED properly', function () {
+  afterAll(() => {
+    sinon.restore();
+  });
+
+  it('should render CONFIRMED properly', () => {
     const wrapper = mount(
       <TransactionStatus status="confirmed" date="June 1" />,
     );
 
-    assert.ok(wrapper);
-    assert.strictEqual(wrapper.text(), 'June 1');
+    expect(wrapper.find(TransactionStatus)).toHaveLength(1);
+    expect(wrapper.text()).toStrictEqual('June 1');
   });
 
-  it('should render PENDING properly when status is APPROVED', function () {
+  it('should render PENDING properly when status is APPROVED', () => {
     const wrapper = mount(
       <TransactionStatus
         status="approved"
@@ -29,43 +32,32 @@ describe('TransactionStatus Component', function () {
       />,
     );
 
-    assert.ok(wrapper);
-    assert.strictEqual(wrapper.text(), 'PENDING');
-    assert.strictEqual(wrapper.find(Tooltip).props().title, 'test-title');
+    expect(wrapper.text()).toStrictEqual('PENDING');
+    expect(wrapper.find(Tooltip).props().title).toStrictEqual('test-title');
   });
 
-  it('should render PENDING properly', function () {
+  it('should render PENDING properly', () => {
     const wrapper = mount(
       <TransactionStatus date="June 1" status="submitted" isEarliestNonce />,
     );
 
-    assert.ok(wrapper);
-    assert.strictEqual(wrapper.text(), 'PENDING');
+    expect(wrapper.find(TransactionStatus)).toHaveLength(1);
+    expect(wrapper.text()).toStrictEqual('PENDING');
   });
 
-  it('should render QUEUED properly', function () {
+  it('should render QUEUED properly', () => {
     const wrapper = mount(<TransactionStatus status="queued" />);
 
-    assert.ok(wrapper);
-    assert.ok(
-      wrapper.find('.transaction-status--queued').length,
-      'queued className not found',
-    );
-    assert.strictEqual(wrapper.text(), 'QUEUED');
+    expect(wrapper.find(TransactionStatus)).toHaveLength(1);
+    expect(wrapper.find('.transaction-status--queued')).toHaveLength(1);
+    expect(wrapper.text()).toStrictEqual('QUEUED');
   });
 
-  it('should render UNAPPROVED properly', function () {
+  it('should render UNAPPROVED properly', () => {
     const wrapper = mount(<TransactionStatus status="unapproved" />);
 
-    assert.ok(wrapper);
-    assert.ok(
-      wrapper.find('.transaction-status--unapproved').length,
-      'unapproved className not found',
-    );
-    assert.strictEqual(wrapper.text(), 'UNAPPROVED');
-  });
-
-  after(function () {
-    sinon.restore();
+    expect(wrapper.find(TransactionStatus)).toHaveLength(1);
+    expect(wrapper.find('.transaction-status--unapproved')).toHaveLength(1);
+    expect(wrapper.text()).toStrictEqual('UNAPPROVED');
   });
 });

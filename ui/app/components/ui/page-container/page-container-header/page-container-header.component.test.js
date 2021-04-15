@@ -1,13 +1,12 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import PageContainerHeader from './page-container-header.component';
 
-describe('Page Container Header', function () {
+describe('Page Container Header', () => {
   let wrapper, style, onBackButtonClick, onClose;
 
-  beforeEach(function () {
+  beforeEach(() => {
     style = { test: 'style' };
     onBackButtonClick = sinon.spy();
     onClose = sinon.spy();
@@ -25,35 +24,30 @@ describe('Page Container Header', function () {
     );
   });
 
-  describe('Render Header Row', function () {
-    it('renders back button', function () {
-      assert.strictEqual(
-        wrapper.find('.page-container__back-button').length,
-        1,
-      );
-      assert.strictEqual(
-        wrapper.find('.page-container__back-button').text(),
+  describe('Render Header Row', () => {
+    it('renders back button', () => {
+      expect(wrapper.find('.page-container__back-button')).toHaveLength(1);
+      expect(wrapper.find('.page-container__back-button').text()).toStrictEqual(
         'Back',
       );
     });
 
-    it('ensures style prop', function () {
-      assert.strictEqual(
+    it('ensures style prop', () => {
+      expect(
         wrapper.find('.page-container__back-button').props().style,
-        style,
-      );
+      ).toStrictEqual(style);
     });
 
-    it('should call back button when click is simulated', function () {
+    it('should call back button when click is simulated', () => {
       wrapper.find('.page-container__back-button').prop('onClick')();
-      assert.strictEqual(onBackButtonClick.callCount, 1);
+      expect(onBackButtonClick.callCount).toStrictEqual(1);
     });
   });
 
-  describe('Render', function () {
+  describe('Render', () => {
     let header, headerRow, pageTitle, pageSubtitle, pageClose, pageTab;
 
-    beforeEach(function () {
+    beforeEach(() => {
       header = wrapper.find('.page-container__header--no-padding-bottom');
       headerRow = wrapper.find('.page-container__header-row');
       pageTitle = wrapper.find('.page-container__title');
@@ -62,30 +56,30 @@ describe('Page Container Header', function () {
       pageTab = wrapper.find('.page-container__tabs');
     });
 
-    it('renders page container', function () {
-      assert.strictEqual(header.length, 1);
-      assert.strictEqual(headerRow.length, 1);
-      assert.strictEqual(pageTitle.length, 1);
-      assert.strictEqual(pageSubtitle.length, 1);
-      assert.strictEqual(pageClose.length, 1);
-      assert.strictEqual(pageTab.length, 1);
+    it('renders page container', () => {
+      expect(header).toHaveLength(1);
+      expect(headerRow).toHaveLength(1);
+      expect(pageTitle).toHaveLength(1);
+      expect(pageSubtitle).toHaveLength(1);
+      expect(pageClose).toHaveLength(1);
+      expect(pageTab).toHaveLength(1);
     });
 
-    it('renders title', function () {
-      assert.strictEqual(pageTitle.text(), 'Test Title');
+    it('renders title', () => {
+      expect(pageTitle.text()).toStrictEqual('Test Title');
     });
 
-    it('renders subtitle', function () {
-      assert.strictEqual(pageSubtitle.text(), 'Test Subtitle');
+    it('renders subtitle', () => {
+      expect(pageSubtitle.text()).toStrictEqual('Test Subtitle');
     });
 
-    it('renders tabs', function () {
-      assert.strictEqual(pageTab.text(), 'Test Tab');
+    it('renders tabs', () => {
+      expect(pageTab.text()).toStrictEqual('Test Tab');
     });
 
-    it('should call close when click is simulated', function () {
+    it('should call close when click is simulated', () => {
       pageClose.prop('onClick')();
-      assert.strictEqual(onClose.callCount, 1);
+      expect(onClose.callCount).toStrictEqual(1);
     });
   });
 });

@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import Button from '../../ui/button';
@@ -8,8 +7,8 @@ import TransactionActivityLog from '../transaction-activity-log';
 import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction';
 import TransactionListItemDetails from './transaction-list-item-details.component';
 
-describe('TransactionListItemDetails Component', function () {
-  it('should render properly', function () {
+describe('TransactionListItemDetails Component', () => {
+  it('should render properly', () => {
     const transaction = {
       history: [],
       id: 1,
@@ -32,6 +31,7 @@ describe('TransactionListItemDetails Component', function () {
 
     const wrapper = shallow(
       <TransactionListItemDetails
+        onClose={() => undefined}
         title="Test Transaction Details"
         recipientAddress="0x1"
         senderAddress="0x2"
@@ -43,14 +43,14 @@ describe('TransactionListItemDetails Component', function () {
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
     const child = wrapper.childAt(0);
-    assert.ok(child.hasClass('transaction-list-item-details'));
-    assert.strictEqual(child.find(Button).length, 2);
-    assert.strictEqual(child.find(SenderToRecipient).length, 1);
-    assert.strictEqual(child.find(TransactionBreakdown).length, 1);
-    assert.strictEqual(child.find(TransactionActivityLog).length, 1);
+    expect(child.hasClass('transaction-list-item-details')).toStrictEqual(true);
+    expect(child.find(Button)).toHaveLength(2);
+    expect(child.find(SenderToRecipient)).toHaveLength(1);
+    expect(child.find(TransactionBreakdown)).toHaveLength(1);
+    expect(child.find(TransactionActivityLog)).toHaveLength(1);
   });
 
-  it('should render a retry button', function () {
+  it('should render a retry button', () => {
     const transaction = {
       history: [],
       id: 1,
@@ -76,6 +76,8 @@ describe('TransactionListItemDetails Component', function () {
 
     const wrapper = shallow(
       <TransactionListItemDetails
+        onClose={() => undefined}
+        title="Test Transaction Details"
         recipientAddress="0x1"
         senderAddress="0x2"
         tryReverseResolveAddress={() => undefined}
@@ -89,15 +91,15 @@ describe('TransactionListItemDetails Component', function () {
 
     const child = wrapper.childAt(0);
 
-    assert.ok(child.hasClass('transaction-list-item-details'));
-    assert.strictEqual(child.find(Button).length, 3);
+    expect(child.hasClass('transaction-list-item-details')).toStrictEqual(true);
+    expect(child.find(Button)).toHaveLength(3);
   });
 
-  it('should disable the Copy Tx ID and View In Etherscan buttons when tx hash is missing', function () {
+  it('should disable the Copy Tx ID and View In Etherscan buttons when tx hash is missing', () => {
     const transaction = {
       history: [],
       id: 1,
-      status: TRANSACTION_STATUSES.CONFIRMED,
+      status: 'confirmed',
       txParams: {
         from: '0x1',
         gas: '0x5208',
@@ -116,6 +118,8 @@ describe('TransactionListItemDetails Component', function () {
 
     const wrapper = shallow(
       <TransactionListItemDetails
+        onClose={() => undefined}
+        title="Test Transaction Details"
         recipientAddress="0x1"
         senderAddress="0x2"
         tryReverseResolveAddress={() => undefined}
@@ -128,17 +132,17 @@ describe('TransactionListItemDetails Component', function () {
 
     const child = wrapper.childAt(0);
 
-    assert.ok(child.hasClass('transaction-list-item-details'));
+    expect(child.hasClass('transaction-list-item-details')).toStrictEqual(true);
     const buttons = child.find(Button);
-    assert.strictEqual(buttons.at(0).prop('disabled'), true);
-    assert.strictEqual(buttons.at(1).prop('disabled'), true);
+    expect(buttons.at(0).prop('disabled')).toStrictEqual(true);
+    expect(buttons.at(1).prop('disabled')).toStrictEqual(true);
   });
 
-  it('should render functional Copy Tx ID and View In Etherscan buttons when tx hash exists', function () {
+  it('should render functional Copy Tx ID and View In Etherscan buttons when tx hash exists', () => {
     const transaction = {
       history: [],
       id: 1,
-      status: TRANSACTION_STATUSES.CONFIRMED,
+      status: 'confirmed',
       hash: '0xaa',
       txParams: {
         from: '0x1',
@@ -158,6 +162,8 @@ describe('TransactionListItemDetails Component', function () {
 
     const wrapper = shallow(
       <TransactionListItemDetails
+        onClose={() => undefined}
+        title="Test Transaction Details"
         recipientAddress="0x1"
         senderAddress="0x2"
         tryReverseResolveAddress={() => undefined}
@@ -170,9 +176,9 @@ describe('TransactionListItemDetails Component', function () {
 
     const child = wrapper.childAt(0);
 
-    assert.ok(child.hasClass('transaction-list-item-details'));
+    expect(child.hasClass('transaction-list-item-details')).toStrictEqual(true);
     const buttons = child.find(Button);
-    assert.strictEqual(buttons.at(0).prop('disabled'), false);
-    assert.strictEqual(buttons.at(1).prop('disabled'), false);
+    expect(buttons.at(0).prop('disabled')).toStrictEqual(false);
+    expect(buttons.at(1).prop('disabled')).toStrictEqual(false);
   });
 });

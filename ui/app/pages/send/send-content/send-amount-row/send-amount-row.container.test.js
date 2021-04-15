@@ -1,101 +1,93 @@
-import assert from 'assert';
-import proxyquire from 'proxyquire';
 import sinon from 'sinon';
+
+import { setMaxModeTo, updateSendAmount } from '../../../../store/actions';
+
+import { updateSendErrors } from '../../../../ducks/send/send.duck';
 
 let mapDispatchToProps;
 
-const actionSpies = {
-  setMaxModeTo: sinon.spy(),
-  updateSendAmount: sinon.spy(),
-};
-const duckActionSpies = {
-  updateSendErrors: sinon.spy(),
-};
-
-proxyquire('./send-amount-row.container.js', {
-  'react-redux': {
-    connect: (_, md) => {
-      mapDispatchToProps = md;
-      return () => ({});
-    },
+jest.mock('react-redux', () => ({
+  connect: (_, md) => {
+    mapDispatchToProps = md;
+    return () => ({});
   },
-  '../../../../selectors': { sendAmountIsInError: (s) => `mockInError:${s}` },
-  '../../send.utils': {
-    getAmountErrorObject: (mockDataObject) => ({
-      ...mockDataObject,
-      mockChange: true,
-    }),
-    getGasFeeErrorObject: (mockDataObject) => ({
-      ...mockDataObject,
-      mockGasFeeErrorChange: true,
-    }),
-  },
-  '../../../../store/actions': actionSpies,
-  '../../../../ducks/send/send.duck': duckActionSpies,
-});
+}));
 
-describe('send-amount-row container', function () {
-  describe('mapDispatchToProps()', function () {
+jest.mock('../../../../selectors/send.js', () => ({
+  sendAmountIsInError: (s) => `mockInError:${s}`,
+}));
+
+jest.mock('../../send.utils', () => ({
+  getAmountErrorObject: (mockDataObject) => ({
+    ...mockDataObject,
+    mockChange: true,
+  }),
+  getGasFeeErrorObject: (mockDataObject) => ({
+    ...mockDataObject,
+    mockGasFeeErrorChange: true,
+  }),
+}));
+
+jest.mock('../../../../../app/store/actions', () => ({
+  setMaxModeTo: jest.fn(),
+  updateSendAmount: jest.fn(),
+}));
+
+jest.mock('../../../../../app/ducks/send/send.duck', () => ({
+  updateSendErrors: jest.fn(),
+}));
+
+require('./send-amount-row.container.js');
+
+describe('send-amount-row container', () => {
+  describe('mapDispatchToProps()', () => {
     let dispatchSpy;
     let mapDispatchToPropsObject;
 
-    beforeEach(function () {
+    beforeEach(() => {
       dispatchSpy = sinon.spy();
       mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy);
-      duckActionSpies.updateSendErrors.resetHistory();
     });
 
-    describe('setMaxModeTo()', function () {
-      it('should dispatch an action', function () {
+    describe('setMaxModeTo()', () => {
+      it('should dispatch an action', () => {
         mapDispatchToPropsObject.setMaxModeTo('mockBool');
-        assert(dispatchSpy.calledOnce);
-        assert(actionSpies.setMaxModeTo.calledOnce);
-        assert.strictEqual(
-          actionSpies.setMaxModeTo.getCall(0).args[0],
-          'mockBool',
-        );
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(setMaxModeTo).toHaveBeenCalled();
+        expect(setMaxModeTo).toHaveBeenCalledWith('mockBool');
       });
     });
 
-    describe('updateSendAmount()', function () {
-      it('should dispatch an action', function () {
+    describe('updateSendAmount()', () => {
+      it('should dispatch an action', () => {
         mapDispatchToPropsObject.updateSendAmount('mockAmount');
-        assert(dispatchSpy.calledOnce);
-        assert(actionSpies.updateSendAmount.calledOnce);
-        assert.strictEqual(
-          actionSpies.updateSendAmount.getCall(0).args[0],
-          'mockAmount',
-        );
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(updateSendAmount).toHaveBeenCalled();
+        expect(updateSendAmount).toHaveBeenCalledWith('mockAmount');
       });
     });
 
-    describe('updateGasFeeError()', function () {
-      it('should dispatch an action', function () {
+    describe('updateGasFeeError()', () => {
+      it('should dispatch an action', () => {
         mapDispatchToPropsObject.updateGasFeeError({ some: 'data' });
-        assert(dispatchSpy.calledOnce);
-        assert(duckActionSpies.updateSendErrors.calledOnce);
-        assert.deepStrictEqual(
-          duckActionSpies.updateSendErrors.getCall(0).args[0],
-          {
-            some: 'data',
-            mockGasFeeErrorChange: true,
-          },
-        );
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(updateSendErrors).toHaveBeenCalled();
+        expect(updateSendErrors).toHaveBeenCalledWith({
+          some: 'data',
+          mockGasFeeErrorChange: true,
+        });
       });
     });
 
-    describe('updateSendAmountError()', function () {
-      it('should dispatch an action', function () {
+    describe('updateSendAmountError()', () => {
+      it('should dispatch an action', () => {
         mapDispatchToPropsObject.updateSendAmountError({ some: 'data' });
-        assert(dispatchSpy.calledOnce);
-        assert(duckActionSpies.updateSendErrors.calledOnce);
-        assert.deepStrictEqual(
-          duckActionSpies.updateSendErrors.getCall(0).args[0],
-          {
-            some: 'data',
-            mockChange: true,
-          },
-        );
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(updateSendErrors).toHaveBeenCalled();
+        expect(updateSendErrors).toHaveBeenCalledWith({
+          some: 'data',
+          mockChange: true,
+        });
       });
     });
   });

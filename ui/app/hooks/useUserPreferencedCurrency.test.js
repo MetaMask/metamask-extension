@@ -1,4 +1,3 @@
-import assert from 'assert';
 import { renderHook } from '@testing-library/react-hooks';
 import * as reactRedux from 'react-redux';
 import sinon from 'sinon';
@@ -122,9 +121,9 @@ function getFakeUseSelector(state) {
   };
 }
 
-describe('useUserPreferencedCurrency', function () {
+describe('useUserPreferencedCurrency', () => {
   tests.forEach(({ params: { type, ...otherParams }, state, result }) => {
-    describe(`when showFiat is ${state.showFiat}, useNativeCurrencyAsPrimary is ${state.useNativeCurrencyAsPrimaryCurrency} and type is ${type}`, function () {
+    describe(`when showFiat is ${state.showFiat}, useNativeCurrencyAsPrimary is ${state.useNativeCurrencyAsPrimaryCurrency} and type is ${type}`, () => {
       const stub = sinon.stub(reactRedux, 'useSelector');
       stub.callsFake(getFakeUseSelector(state));
 
@@ -134,14 +133,13 @@ describe('useUserPreferencedCurrency', function () {
       stub.restore();
       it(`should return currency as ${
         result.currency || 'not modified by user preferences'
-      }`, function () {
-        assert.strictEqual(hookResult.current.currency, result.currency);
+      }`, () => {
+        expect(hookResult.current.currency).toStrictEqual(result.currency);
       });
       it(`should return decimals as ${
         result.numberOfDecimals || 'not modified by user preferences'
-      }`, function () {
-        assert.strictEqual(
-          hookResult.current.numberOfDecimals,
+      }`, () => {
+        expect(hookResult.current.numberOfDecimals).toStrictEqual(
           result.numberOfDecimals,
         );
       });

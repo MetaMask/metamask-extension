@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
@@ -13,11 +12,11 @@ const propsMethodSpies = {
   resetGasButtons: sinon.spy(),
 };
 
-describe('SendGasRow Component', function () {
+describe('SendGasRow Component', () => {
   let wrapper;
 
-  describe('render', function () {
-    beforeEach(function () {
+  describe('render', () => {
+    beforeEach(() => {
       wrapper = shallow(
         <SendGasRow
           conversionRate={20}
@@ -38,73 +37,75 @@ describe('SendGasRow Component', function () {
       wrapper.setProps({ isMainnet: true });
     });
 
-    afterEach(function () {
+    afterEach(() => {
       propsMethodSpies.resetGasButtons.resetHistory();
     });
 
-    it('should render a SendRowWrapper component', function () {
-      assert.strictEqual(wrapper.name(), 'Fragment');
-      assert.strictEqual(wrapper.at(0).find(SendRowWrapper).length, 1);
+    it('should render a SendRowWrapper component', () => {
+      expect(wrapper.name()).toStrictEqual('Fragment');
+      expect(wrapper.at(0).find(SendRowWrapper)).toHaveLength(1);
     });
 
-    it('should pass the correct props to SendRowWrapper', function () {
+    it('should pass the correct props to SendRowWrapper', () => {
       const { label, showError, errorType } = wrapper
         .find(SendRowWrapper)
         .first()
         .props();
 
-      assert.strictEqual(label, 'transactionFee_t:');
-      assert.strictEqual(showError, true);
-      assert.strictEqual(errorType, 'gasFee');
+      expect(label).toStrictEqual('transactionFee_t:');
+      expect(showError).toStrictEqual(true);
+      expect(errorType).toStrictEqual('gasFee');
     });
 
-    it('should render a GasFeeDisplay as a child of the SendRowWrapper', function () {
-      assert(wrapper.find(SendRowWrapper).first().childAt(0).is(GasFeeDisplay));
+    it('should render a GasFeeDisplay as a child of the SendRowWrapper', () => {
+      expect(
+        wrapper.find(SendRowWrapper).first().childAt(0).is(GasFeeDisplay),
+      ).toStrictEqual(true);
     });
 
-    it('should render the GasFeeDisplay', function () {
+    it('should render the GasFeeDisplay', () => {
       const { gasLoadingError, gasTotal, onReset } = wrapper
         .find(SendRowWrapper)
         .first()
         .childAt(0)
         .props();
-      assert.strictEqual(gasLoadingError, false);
-      assert.strictEqual(gasTotal, 'mockGasTotal');
-      assert.strictEqual(propsMethodSpies.resetGasButtons.callCount, 0);
+      expect(gasLoadingError).toStrictEqual(false);
+      expect(gasTotal).toStrictEqual('mockGasTotal');
+      expect(propsMethodSpies.resetGasButtons.callCount).toStrictEqual(0);
       onReset();
-      assert.strictEqual(propsMethodSpies.resetGasButtons.callCount, 1);
+      expect(propsMethodSpies.resetGasButtons.callCount).toStrictEqual(1);
     });
 
-    it('should render the GasPriceButtonGroup if gasButtonGroupShown is true', function () {
+    it('should render the GasPriceButtonGroup if gasButtonGroupShown is true', () => {
       wrapper.setProps({ gasButtonGroupShown: true });
       const rendered = wrapper.find(SendRowWrapper).first().childAt(0);
-      assert.strictEqual(wrapper.children().length, 2);
+      expect(wrapper.children()).toHaveLength(2);
 
       const gasPriceButtonGroup = rendered.childAt(0);
-      assert(gasPriceButtonGroup.is(GasPriceButtonGroup));
-      assert(gasPriceButtonGroup.hasClass('gas-price-button-group--small'));
-      assert.strictEqual(gasPriceButtonGroup.props().showCheck, false);
-      assert.strictEqual(
+      expect(gasPriceButtonGroup.is(GasPriceButtonGroup)).toStrictEqual(true);
+      expect(
+        gasPriceButtonGroup.hasClass('gas-price-button-group--small'),
+      ).toStrictEqual(true);
+      expect(gasPriceButtonGroup.props().showCheck).toStrictEqual(false);
+      expect(
         gasPriceButtonGroup.props().someGasPriceButtonGroupProp,
-        'foo',
-      );
-      assert.strictEqual(
+      ).toStrictEqual('foo');
+      expect(
         gasPriceButtonGroup.props().anotherGasPriceButtonGroupProp,
-        'bar',
-      );
+      ).toStrictEqual('bar');
     });
 
-    it('should render an advanced options button if gasButtonGroupShown is true', function () {
+    it('should render an advanced options button if gasButtonGroupShown is true', () => {
       wrapper.setProps({ gasButtonGroupShown: true });
       const rendered = wrapper.find(SendRowWrapper).last();
-      assert.strictEqual(wrapper.children().length, 2);
+      expect(wrapper.children()).toHaveLength(2);
 
       const advancedOptionsButton = rendered.childAt(0);
-      assert.strictEqual(advancedOptionsButton.text(), 'advancedOptions_t');
+      expect(advancedOptionsButton.text()).toStrictEqual('advancedOptions_t');
 
-      assert.strictEqual(propsMethodSpies.showCustomizeGasModal.callCount, 0);
+      expect(propsMethodSpies.showCustomizeGasModal.callCount).toStrictEqual(0);
       advancedOptionsButton.props().onClick();
-      assert.strictEqual(propsMethodSpies.showCustomizeGasModal.callCount, 1);
+      expect(propsMethodSpies.showCustomizeGasModal.callCount).toStrictEqual(1);
     });
   });
 });

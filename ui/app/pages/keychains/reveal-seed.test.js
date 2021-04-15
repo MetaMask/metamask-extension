@@ -1,16 +1,16 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import { mount } from 'enzyme';
 import RevealSeedPage from './reveal-seed';
 
-describe('Reveal Seed Page', function () {
-  it('form submit', function () {
+describe('Reveal Seed Page', () => {
+  it('form submit', () => {
     const props = {
       history: {
         push: sinon.spy(),
       },
       requestRevealSeedWords: sinon.stub().resolves(),
+      mostRecentOverviewPage: '/',
     };
     const wrapper = mount(<RevealSeedPage.WrappedComponent {...props} />, {
       context: {
@@ -19,6 +19,6 @@ describe('Reveal Seed Page', function () {
     });
 
     wrapper.find('form').simulate('submit');
-    assert(props.requestRevealSeedWords.calledOnce);
+    expect(props.requestRevealSeedWords.calledOnce).toStrictEqual(true);
   });
 });

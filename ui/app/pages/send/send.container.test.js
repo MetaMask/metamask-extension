@@ -1,46 +1,57 @@
-import assert from 'assert';
-import proxyquire from 'proxyquire';
 import sinon from 'sinon';
+
+import {
+  updateSendTokenBalance,
+  updateGasData,
+  setGasTotal,
+} from '../../store/actions';
+
+import { updateSendErrors, resetSendState } from '../../ducks/send/send.duck';
 
 let mapDispatchToProps;
 
-const actionSpies = {
-  updateSendTokenBalance: sinon.spy(),
-  updateGasData: sinon.spy(),
-  setGasTotal: sinon.spy(),
-};
-const duckActionSpies = {
-  updateSendErrors: sinon.spy(),
-  resetSendState: sinon.spy(),
-};
-
-proxyquire('./send.container.js', {
-  'react-redux': {
-    connect: (_, md) => {
-      mapDispatchToProps = md;
-      return () => ({});
-    },
+jest.mock('react-redux', () => ({
+  connect: (_, md) => {
+    mapDispatchToProps = md;
+    return () => ({});
   },
-  'react-router-dom': { withRouter: () => undefined },
-  'redux': { compose: (_, arg2) => () => arg2() },
-  '../../store/actions': actionSpies,
-  '../../ducks/send/send.duck': duckActionSpies,
-  './send.utils.js': {
-    calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
-  },
-});
+}));
 
-describe('send container', function () {
-  describe('mapDispatchToProps()', function () {
+jest.mock('react-router-dom', () => ({
+  withRouter: () => undefined,
+}));
+
+jest.mock('redux', () => ({
+  compose: (_, arg2) => () => arg2(),
+}));
+
+jest.mock('../../../app/store/actions', () => ({
+  updateSendTokenBalance: jest.fn(),
+  updateGasData: jest.fn(),
+  setGasTotal: jest.fn(),
+}));
+jest.mock('../../../app/ducks/send/send.duck', () => ({
+  updateSendErrors: jest.fn(),
+  resetSendState: jest.fn(),
+}));
+
+jest.mock('./send.utils.js', () => ({
+  calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
+}));
+
+require('./send.container.js');
+
+describe('send container', () => {
+  describe('mapDispatchToProps()', () => {
     let dispatchSpy;
     let mapDispatchToPropsObject;
 
-    beforeEach(function () {
+    beforeEach(() => {
       dispatchSpy = sinon.spy();
       mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy);
     });
 
-    describe('updateAndSetGasLimit()', function () {
+    describe('updateAndSetGasLimit()', () => {
       const mockProps = {
         blockGasLimit: 'mockBlockGasLimit',
         editingTransactionId: '0x2',
@@ -53,16 +64,13 @@ describe('send container', function () {
         data: undefined,
       };
 
-      it('should dispatch a setGasTotal action when editingTransactionId is truthy', function () {
+      it('should dispatch a setGasTotal action when editingTransactionId is truthy', () => {
         mapDispatchToPropsObject.updateAndSetGasLimit(mockProps);
-        assert(dispatchSpy.calledOnce);
-        assert.strictEqual(
-          actionSpies.setGasTotal.getCall(0).args[0],
-          '0x30x4',
-        );
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(setGasTotal).toHaveBeenCalledWith('0x30x4');
       });
 
-      it('should dispatch an updateGasData action when editingTransactionId is falsy', function () {
+      it('should dispatch an updateGasData action when editingTransactionId is falsy', () => {
         const {
           gasPrice,
           selectedAddress,
@@ -76,8 +84,8 @@ describe('send container', function () {
           ...mockProps,
           editingTransactionId: false,
         });
-        assert(dispatchSpy.calledOnce);
-        assert.deepStrictEqual(actionSpies.updateGasData.getCall(0).args[0], {
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(updateGasData).toHaveBeenCalledWith({
           gasPrice,
           selectedAddress,
           sendToken,
@@ -89,42 +97,33 @@ describe('send container', function () {
       });
     });
 
-    describe('updateSendTokenBalance()', function () {
+    describe('updateSendTokenBalance()', () => {
       const mockProps = {
         address: '0x10',
         tokenContract: '0x00a',
         sendToken: { address: '0x1' },
       };
 
-      it('should dispatch an action', function () {
+      it('should dispatch an action', () => {
         mapDispatchToPropsObject.updateSendTokenBalance({ ...mockProps });
-        assert(dispatchSpy.calledOnce);
-        assert.deepStrictEqual(
-          actionSpies.updateSendTokenBalance.getCall(0).args[0],
-          mockProps,
-        );
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(updateSendTokenBalance).toHaveBeenCalledWith(mockProps);
       });
     });
 
-    describe('updateSendErrors()', function () {
-      it('should dispatch an action', function () {
+    describe('updateSendErrors()', () => {
+      it('should dispatch an action', () => {
         mapDispatchToPropsObject.updateSendErrors('mockError');
-        assert(dispatchSpy.calledOnce);
-        assert.strictEqual(
-          duckActionSpies.updateSendErrors.getCall(0).args[0],
-          'mockError',
-        );
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(updateSendErrors).toHaveBeenCalledWith('mockError');
       });
     });
 
-    describe('resetSendState()', function () {
-      it('should dispatch an action', function () {
+    describe('resetSendState()', () => {
+      it('should dispatch an action', () => {
         mapDispatchToPropsObject.resetSendState();
-        assert(dispatchSpy.calledOnce);
-        assert.strictEqual(
-          duckActionSpies.resetSendState.getCall(0).args.length,
-          0,
-        );
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(resetSendState).toHaveBeenCalled();
       });
     });
   });

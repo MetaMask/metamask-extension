@@ -1,26 +1,25 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import Confusable from './confusable.component';
 
-describe('Confusable component', function () {
-  it('should detect zero-width unicode', function () {
+describe('Confusable component', () => {
+  it('should detect zero-width unicode', () => {
     const wrapper = shallow(<Confusable input="vita‍lik.eth" />);
-    assert.ok(wrapper.find('.confusable__point').length === 1);
+    expect(wrapper.find('.confusable__point')).toHaveLength(1);
   });
 
-  it('should detect homoglyphic unicode points', function () {
+  it('should detect homoglyphic unicode points', () => {
     const wrapper = shallow(<Confusable input="faceboоk.eth" />);
-    assert.ok(wrapper.find('.confusable__point').length === 1);
+    expect(wrapper.find('.confusable__point')).toHaveLength(1);
   });
 
-  it('should detect multiple homoglyphic unicode points', function () {
+  it('should detect multiple homoglyphic unicode points', () => {
     const wrapper = shallow(<Confusable input="ѕсоре.eth" />);
-    assert.ok(wrapper.find('.confusable__point').length === 5);
+    expect(wrapper.find('.confusable__point')).toHaveLength(5);
   });
 
-  it('should not detect emoji', function () {
+  it('should not detect emoji', () => {
     const wrapper = shallow(<Confusable input="👻.eth" />);
-    assert.ok(wrapper.find('.confusable__point').length === 0);
+    expect(wrapper.find('.confusable__point')).toHaveLength(0);
   });
 });

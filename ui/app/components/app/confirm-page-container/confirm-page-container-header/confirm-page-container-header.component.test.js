@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
@@ -9,9 +8,9 @@ import ConfirmPageContainerHeader from './confirm-page-container-header.componen
 
 const util = require('../../../../../../app/scripts/lib/util');
 
-describe('Confirm Detail Row Component', function () {
-  describe('render', function () {
-    it('should render a div with a confirm-page-container-header class', function () {
+describe('Confirm Detail Row Component', () => {
+  describe('render', () => {
+    it('should render a div with a confirm-page-container-header class', () => {
       const stub = sinon
         .stub(util, 'getEnvironmentType')
         .callsFake(() => 'popup');
@@ -27,14 +26,11 @@ describe('Confirm Detail Row Component', function () {
           />
         </Provider>,
       );
-      assert.strictEqual(
-        wrapper.html().includes('confirm-page-container-header'),
-        true,
-      );
+      expect(wrapper.html()).toContain('confirm-page-container-header');
       stub.restore();
     });
 
-    it('should only render children when fullscreen and showEdit is false', function () {
+    it('should only render children when fullscreen and showEdit is false', () => {
       const stub = sinon
         .stub(util, 'getEnvironmentType')
         .callsFake(() => 'fullscreen');
@@ -52,11 +48,8 @@ describe('Confirm Detail Row Component', function () {
           </ConfirmPageContainerHeader>
         </Provider>,
       );
-      assert.strictEqual(wrapper.html().includes('nested-test-class'), true);
-      assert.strictEqual(
-        wrapper.html().includes('confirm-page-container-header'),
-        false,
-      );
+      expect(wrapper.html()).toContain('nested-test-class');
+      expect(wrapper.html()).not.toContain('confirm-page-container-header');
       stub.restore();
     });
   });

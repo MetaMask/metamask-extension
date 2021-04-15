@@ -1,4 +1,3 @@
-import assert from 'assert';
 import { renderHook } from '@testing-library/react-hooks';
 import * as reactRedux from 'react-redux';
 import sinon from 'sinon';
@@ -99,9 +98,9 @@ const tests = [
   },
 ];
 
-describe('useCurrencyDisplay', function () {
+describe('useCurrencyDisplay', () => {
   tests.forEach(({ input: { value, ...restProps }, result }) => {
-    describe(`when input is { value: ${value}, decimals: ${restProps.numberOfDecimals}, denomation: ${restProps.denomination} }`, function () {
+    describe(`when input is { value: ${value}, decimals: ${restProps.numberOfDecimals}, denomation: ${restProps.denomination} }`, () => {
       const stub = sinon.stub(reactRedux, 'useSelector');
       stub.callsFake((selector) => {
         if (selector === getCurrentCurrency) {
@@ -116,14 +115,14 @@ describe('useCurrencyDisplay', function () {
       const hookReturn = renderHook(() => useCurrencyDisplay(value, restProps));
       const [displayValue, parts] = hookReturn.result.current;
       stub.restore();
-      it(`should return ${result.displayValue} as displayValue`, function () {
-        assert.strictEqual(displayValue, result.displayValue);
+      it(`should return ${result.displayValue} as displayValue`, () => {
+        expect(displayValue).toStrictEqual(result.displayValue);
       });
-      it(`should return ${result.value} as value`, function () {
-        assert.strictEqual(parts.value, result.value);
+      it(`should return ${result.value} as value`, () => {
+        expect(parts.value).toStrictEqual(result.value);
       });
-      it(`should return ${result.suffix} as suffix`, function () {
-        assert.strictEqual(parts.suffix, result.suffix);
+      it(`should return ${result.suffix} as suffix`, () => {
+        expect(parts.suffix).toStrictEqual(result.suffix);
       });
     });
   });

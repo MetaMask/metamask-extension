@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
@@ -8,19 +7,19 @@ import SendAmountRow from './send-amount-row.component';
 
 import AmountMaxButton from './amount-max-button/amount-max-button.container';
 
-describe('SendAmountRow Component', function () {
-  describe('validateAmount', function () {
-    it('should call updateSendAmountError with the correct params', function () {
+describe('SendAmountRow Component', () => {
+  describe('validateAmount', () => {
+    it('should call updateSendAmountError with the correct params', () => {
       const {
         instance,
         propsMethodSpies: { updateSendAmountError },
       } = shallowRenderSendAmountRow();
 
-      assert.strictEqual(updateSendAmountError.callCount, 0);
+      expect(updateSendAmountError.callCount).toStrictEqual(0);
 
       instance.validateAmount('someAmount');
 
-      assert.ok(
+      expect(
         updateSendAmountError.calledOnceWithExactly({
           amount: 'someAmount',
           balance: 'mockBalance',
@@ -30,20 +29,20 @@ describe('SendAmountRow Component', function () {
           sendToken: { address: 'mockTokenAddress' },
           tokenBalance: 'mockTokenBalance',
         }),
-      );
+      ).toStrictEqual(true);
     });
 
-    it('should call updateGasFeeError if sendToken is truthy', function () {
+    it('should call updateGasFeeError if sendToken is truthy', () => {
       const {
         instance,
         propsMethodSpies: { updateGasFeeError },
       } = shallowRenderSendAmountRow();
 
-      assert.strictEqual(updateGasFeeError.callCount, 0);
+      expect(updateGasFeeError.callCount).toStrictEqual(0);
 
       instance.validateAmount('someAmount');
 
-      assert.ok(
+      expect(
         updateGasFeeError.calledOnceWithExactly({
           balance: 'mockBalance',
           conversionRate: 7,
@@ -52,10 +51,10 @@ describe('SendAmountRow Component', function () {
           sendToken: { address: 'mockTokenAddress' },
           tokenBalance: 'mockTokenBalance',
         }),
-      );
+      ).toStrictEqual(true);
     });
 
-    it('should call not updateGasFeeError if sendToken is falsey', function () {
+    it('should call not updateGasFeeError if sendToken is falsey', () => {
       const {
         wrapper,
         instance,
@@ -64,75 +63,79 @@ describe('SendAmountRow Component', function () {
 
       wrapper.setProps({ sendToken: null });
 
-      assert.strictEqual(updateGasFeeError.callCount, 0);
+      expect(updateGasFeeError.callCount).toStrictEqual(0);
 
       instance.validateAmount('someAmount');
 
-      assert.strictEqual(updateGasFeeError.callCount, 0);
+      expect(updateGasFeeError.callCount).toStrictEqual(0);
     });
   });
 
-  describe('updateAmount', function () {
-    it('should call setMaxModeTo', function () {
+  describe('updateAmount', () => {
+    it('should call setMaxModeTo', () => {
       const {
         instance,
         propsMethodSpies: { setMaxModeTo },
       } = shallowRenderSendAmountRow();
 
-      assert.strictEqual(setMaxModeTo.callCount, 0);
+      expect(setMaxModeTo.callCount).toStrictEqual(0);
 
       instance.updateAmount('someAmount');
 
-      assert.ok(setMaxModeTo.calledOnceWithExactly(false));
+      expect(setMaxModeTo.calledOnceWithExactly(false)).toStrictEqual(true);
     });
 
-    it('should call updateSendAmount', function () {
+    it('should call updateSendAmount', () => {
       const {
         instance,
         propsMethodSpies: { updateSendAmount },
       } = shallowRenderSendAmountRow();
 
-      assert.strictEqual(updateSendAmount.callCount, 0);
+      expect(updateSendAmount.callCount).toStrictEqual(0);
 
       instance.updateAmount('someAmount');
 
-      assert.ok(updateSendAmount.calledOnceWithExactly('someAmount'));
+      expect(
+        updateSendAmount.calledOnceWithExactly('someAmount'),
+      ).toStrictEqual(true);
     });
   });
 
-  describe('render', function () {
-    it('should render a SendRowWrapper component', function () {
+  describe('render', () => {
+    it('should render a SendRowWrapper component', () => {
       const { wrapper } = shallowRenderSendAmountRow();
 
-      assert.strictEqual(wrapper.find(SendRowWrapper).length, 1);
+      expect(wrapper.find(SendRowWrapper)).toHaveLength(1);
     });
 
-    it('should pass the correct props to SendRowWrapper', function () {
+    it('should pass the correct props to SendRowWrapper', () => {
       const { wrapper } = shallowRenderSendAmountRow();
       const { errorType, label, showError } = wrapper
         .find(SendRowWrapper)
         .props();
 
-      assert.strictEqual(errorType, 'amount');
-      assert.strictEqual(label, 'amount_t:');
-      assert.strictEqual(showError, false);
+      expect(errorType).toStrictEqual('amount');
+      expect(label).toStrictEqual('amount_t:');
+      expect(showError).toStrictEqual(false);
     });
 
-    it('should render an AmountMaxButton as the first child of the SendRowWrapper', function () {
+    it('should render an AmountMaxButton as the first child of the SendRowWrapper', () => {
       const { wrapper } = shallowRenderSendAmountRow();
 
-      assert(wrapper.find(SendRowWrapper).childAt(0).is(AmountMaxButton));
+      expect(
+        wrapper.find(SendRowWrapper).childAt(0).is(AmountMaxButton),
+      ).toStrictEqual(true);
     });
 
-    it('should render a UserPreferencedTokenInput as the second child of the SendRowWrapper', function () {
+    it('should render a UserPreferencedTokenInput as the second child of the SendRowWrapper', () => {
       const { wrapper } = shallowRenderSendAmountRow();
 
-      assert(
+      expect(
         wrapper.find(SendRowWrapper).childAt(1).is(UserPreferencedTokenInput),
-      );
+      ).toStrictEqual(true);
     });
 
-    it('should render the UserPreferencedTokenInput with the correct props', function () {
+    it('should render the UserPreferencedTokenInput with the correct props', () => {
       const {
         wrapper,
         instanceSpies: { updateGas, updateAmount, validateAmount },
@@ -142,17 +145,23 @@ describe('SendAmountRow Component', function () {
         .childAt(1)
         .props();
 
-      assert.strictEqual(error, false);
-      assert.strictEqual(value, 'mockAmount');
-      assert.strictEqual(updateGas.callCount, 0);
-      assert.strictEqual(updateAmount.callCount, 0);
-      assert.strictEqual(validateAmount.callCount, 0);
+      expect(error).toStrictEqual(false);
+      expect(value).toStrictEqual('mockAmount');
+      expect(updateGas.callCount).toStrictEqual(0);
+      expect(updateAmount.callCount).toStrictEqual(0);
+      expect(validateAmount.callCount).toStrictEqual(0);
 
       onChange('mockNewAmount');
 
-      assert.ok(updateGas.calledOnceWithExactly('mockNewAmount'));
-      assert.ok(updateAmount.calledOnceWithExactly('mockNewAmount'));
-      assert.ok(validateAmount.calledOnceWithExactly('mockNewAmount'));
+      expect(updateGas.calledOnceWithExactly('mockNewAmount')).toStrictEqual(
+        true,
+      );
+      expect(updateAmount.calledOnceWithExactly('mockNewAmount')).toStrictEqual(
+        true,
+      );
+      expect(
+        validateAmount.calledOnceWithExactly('mockNewAmount'),
+      ).toStrictEqual(true);
     });
   });
 });

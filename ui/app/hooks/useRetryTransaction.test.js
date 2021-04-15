@@ -1,4 +1,3 @@
-import assert from 'assert';
 import * as reactRedux from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
@@ -8,8 +7,8 @@ import * as methodDataHook from './useMethodData';
 import * as metricEventHook from './useMetricEvent';
 import { useRetryTransaction } from './useRetryTransaction';
 
-describe('useRetryTransaction', function () {
-  describe('when transaction meets retry enabled criteria', function () {
+describe('useRetryTransaction', () => {
+  describe('when transaction meets retry enabled criteria', () => {
     const dispatch = sinon.spy(() => Promise.resolve({ blockTime: 0 }));
     const trackEvent = sinon.spy();
     const event = {
@@ -17,16 +16,21 @@ describe('useRetryTransaction', function () {
       stopPropagation: () => undefined,
     };
 
-    before(function () {
+    beforeAll(() => {
       sinon.stub(reactRedux, 'useDispatch').returns(dispatch);
       sinon.stub(methodDataHook, 'useMethodData').returns({});
       sinon.stub(metricEventHook, 'useMetricEvent').returns(trackEvent);
     });
 
-    afterEach(function () {
+    afterEach(() => {
       dispatch.resetHistory();
       trackEvent.resetHistory();
     });
+
+    afterAll(() => {
+      sinon.restore();
+    });
+
     const retryEnabledTransaction = {
       ...transactions[0],
       transactions: [
@@ -37,22 +41,22 @@ describe('useRetryTransaction', function () {
       hasRetried: false,
     };
 
-    it('retryTransaction function should track metrics', function () {
+    it('retryTransaction function should track metrics', () => {
       const { result } = renderHook(() =>
         useRetryTransaction(retryEnabledTransaction, true),
       );
       const retry = result.current;
       retry(event);
-      assert.strictEqual(trackEvent.calledOnce, true);
+      expect(trackEvent.calledOnce).toStrictEqual(true);
     });
 
-    it('retryTransaction function should show retry sidebar', async function () {
+    it('retryTransaction function should show retry sidebar', async () => {
       const { result } = renderHook(() =>
         useRetryTransaction(retryEnabledTransaction, true),
       );
       const retry = result.current;
       await retry(event);
-      assert.strictEqual(
+      expect(
         dispatch.calledWith(
           showSidebar({
             transitionName: 'sidebar-left',
@@ -60,11 +64,10 @@ describe('useRetryTransaction', function () {
             props: { transaction: retryEnabledTransaction.initialTransaction },
           }),
         ),
-        true,
-      );
+      ).toStrictEqual(true);
     });
 
-    it('should handle cancelled or multiple speedup transactions', async function () {
+    it('should handle cancelled or multiple speedup transactions', async () => {
       const cancelledTransaction = {
         initialTransaction: {
           ...transactions[0].initialTransaction,
@@ -96,7 +99,7 @@ describe('useRetryTransaction', function () {
       );
       const retry = result.current;
       await retry(event);
-      assert.strictEqual(
+      expect(
         dispatch.calledWith(
           showSidebar({
             transitionName: 'sidebar-left',
@@ -104,12 +107,7 @@ describe('useRetryTransaction', function () {
             props: { transaction: cancelledTransaction.primaryTransaction },
           }),
         ),
-        true,
-      );
-    });
-
-    after(function () {
-      sinon.restore();
+      ).toStrictEqual(true);
     });
   });
 });

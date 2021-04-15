@@ -1,41 +1,40 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import Alert from '.';
 
-describe('Alert', function () {
+describe('Alert', () => {
   let wrapper;
 
-  beforeEach(function () {
-    wrapper = shallow(<Alert />);
+  beforeEach(() => {
+    wrapper = shallow(<Alert visible={false} />);
   });
 
-  it('renders nothing with no visible boolean in state', function () {
+  it('renders nothing with no visible boolean in state', () => {
     const alert = wrapper.find('.global-alert');
-    assert.strictEqual(alert.length, 0);
+    expect(alert).toHaveLength(0);
   });
 
-  it('renders when visible in state is true, and message', function () {
+  it('renders when visible in state is true, and message', () => {
     const errorMessage = 'Error Message';
 
     wrapper.setState({ visible: true, msg: errorMessage });
 
     const alert = wrapper.find('.global-alert');
-    assert.strictEqual(alert.length, 1);
+    expect(alert).toHaveLength(1);
 
     const errorText = wrapper.find('.msg');
-    assert.strictEqual(errorText.text(), errorMessage);
+    expect(errorText.text()).toStrictEqual(errorMessage);
   });
 
-  it('calls component method when componentWillReceiveProps is called', function () {
+  it('calls component method when componentWillReceiveProps is called', () => {
     const animateInSpy = sinon.stub(wrapper.instance(), 'animateIn');
     const animateOutSpy = sinon.stub(wrapper.instance(), 'animateOut');
 
     wrapper.setProps({ visible: true });
-    assert(animateInSpy.calledOnce);
+    expect(animateInSpy.calledOnce).toStrictEqual(true);
 
     wrapper.setProps({ visible: false });
-    assert(animateOutSpy.calledOnce);
+    expect(animateOutSpy.calledOnce).toStrictEqual(true);
   });
 });

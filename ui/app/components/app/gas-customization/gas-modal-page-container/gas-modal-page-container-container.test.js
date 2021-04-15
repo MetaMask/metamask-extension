@@ -1,145 +1,155 @@
-import assert from 'assert';
-import proxyquire from 'proxyquire';
 import sinon from 'sinon';
+
+import { hideModal, setGasLimit, setGasPrice } from '../../../../store/actions';
+
+import {
+  setCustomGasPrice,
+  setCustomGasLimit,
+  resetCustomData,
+} from '../../../../ducks/gas/gas.duck';
+
+import { hideGasButtonGroup } from '../../../../ducks/send/send.duck';
 
 let mapDispatchToProps;
 let mergeProps;
 
-const actionSpies = {
-  hideModal: sinon.spy(),
-  setGasLimit: sinon.spy(),
-  setGasPrice: sinon.spy(),
-};
-
-const gasActionSpies = {
-  setCustomGasPrice: sinon.spy(),
-  setCustomGasLimit: sinon.spy(),
-  resetCustomData: sinon.spy(),
-};
-
-const sendActionSpies = {
-  hideGasButtonGroup: sinon.spy(),
-};
-
-proxyquire('./gas-modal-page-container.container.js', {
-  'react-redux': {
-    connect: (_, md, mp) => {
-      mapDispatchToProps = md;
-      mergeProps = mp;
-      return () => ({});
-    },
+jest.mock('react-redux', () => ({
+  connect: (_, md, mp) => {
+    mapDispatchToProps = md;
+    mergeProps = mp;
+    return () => ({});
   },
-  '../../../../selectors': {
-    getBasicGasEstimateLoadingStatus: (s) =>
-      `mockBasicGasEstimateLoadingStatus:${Object.keys(s).length}`,
-    getRenderableBasicEstimateData: (s) =>
-      `mockRenderableBasicEstimateData:${Object.keys(s).length}`,
-    getDefaultActiveButtonIndex: (a, b) => a + b,
-    getCurrentEthBalance: (state) => state.metamask.balance || '0x0',
-    getSendToken: () => null,
-    getTokenBalance: (state) => state.metamask.send.tokenBalance || '0x0',
-  },
-  '../../../../store/actions': actionSpies,
-  '../../../../ducks/gas/gas.duck': gasActionSpies,
-  '../../../../ducks/send/send.duck': sendActionSpies,
-});
+}));
 
-describe('gas-modal-page-container container', function () {
-  describe('mapDispatchToProps()', function () {
+jest.mock('../../../../../app/selectors', () => ({
+  getBasicGasEstimateLoadingStatus: (s) =>
+    `mockBasicGasEstimateLoadingStatus:${Object.keys(s).length}`,
+  getRenderableBasicEstimateData: (s) =>
+    `mockRenderableBasicEstimateData:${Object.keys(s).length}`,
+  getDefaultActiveButtonIndex: (a, b) => a + b,
+  getCurrentEthBalance: (state) => state.metamask.balance || '0x0',
+  getSendToken: () => null,
+  getTokenBalance: (state) => state.metamask.send.tokenBalance || '0x0',
+  getCustomGasPrice: (state) => state.gas.customData.price || '0x0',
+  getCustomGasLimit: (state) => state.gas.customData.limit || '0x0',
+  getCurrentCurrency: jest.fn().mockReturnValue('usd'),
+  conversionRateSelector: jest.fn().mockReturnValue(50),
+  getSendMaxModeState: jest.fn().mockReturnValue(false),
+  getPreferences: jest.fn(() => ({
+    showFiatInTestnets: false,
+  })),
+  getIsMainnet: jest.fn().mockReturnValue(false),
+  isCustomPriceSafe: jest.fn().mockReturnValue(true),
+}));
+
+jest.mock('../../../../../app/store/actions', () => ({
+  hideModal: jest.fn(),
+  setGasLimit: jest.fn(),
+  setGasPrice: jest.fn(),
+  updateTransaction: jest.fn(),
+}));
+
+jest.mock('../../../../../app/ducks/gas/gas.duck', () => ({
+  setCustomGasPrice: jest.fn(),
+  setCustomGasLimit: jest.fn(),
+  resetCustomData: jest.fn(),
+}));
+
+jest.mock('../../../../../app/ducks/send/send.duck', () => ({
+  hideGasButtonGroup: jest.fn(),
+}));
+
+require('./gas-modal-page-container.container');
+
+describe('gas-modal-page-container container', () => {
+  describe('mapDispatchToProps()', () => {
     let dispatchSpy;
     let mapDispatchToPropsObject;
 
-    beforeEach(function () {
+    beforeEach(() => {
       dispatchSpy = sinon.spy();
       mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy);
     });
 
-    afterEach(function () {
-      actionSpies.hideModal.resetHistory();
-      gasActionSpies.setCustomGasPrice.resetHistory();
-      gasActionSpies.setCustomGasLimit.resetHistory();
+    afterEach(() => {
+      dispatchSpy.resetHistory();
     });
 
-    describe('hideGasButtonGroup()', function () {
-      it('should dispatch a hideGasButtonGroup action', function () {
+    describe('hideGasButtonGroup()', () => {
+      it('should dispatch a hideGasButtonGroup action', () => {
         mapDispatchToPropsObject.hideGasButtonGroup();
-        assert(dispatchSpy.calledOnce);
-        assert(sendActionSpies.hideGasButtonGroup.calledOnce);
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(hideGasButtonGroup).toHaveBeenCalled();
       });
     });
 
-    describe('cancelAndClose()', function () {
-      it('should dispatch a hideModal action', function () {
+    describe('cancelAndClose()', () => {
+      it('should dispatch a hideModal action', () => {
         mapDispatchToPropsObject.cancelAndClose();
-        assert(dispatchSpy.calledTwice);
-        assert(actionSpies.hideModal.calledOnce);
-        assert(gasActionSpies.resetCustomData.calledOnce);
+        expect(dispatchSpy.calledTwice).toStrictEqual(true);
+        expect(hideModal).toHaveBeenCalled();
+        expect(resetCustomData).toHaveBeenCalled();
       });
     });
 
-    describe('updateCustomGasPrice()', function () {
-      it('should dispatch a setCustomGasPrice action with the arg passed to updateCustomGasPrice hex prefixed', function () {
+    describe('updateCustomGasPrice()', () => {
+      it('should dispatch a setCustomGasPrice action with the arg passed to updateCustomGasPrice hex prefixed', () => {
         mapDispatchToPropsObject.updateCustomGasPrice('ffff');
-        assert(dispatchSpy.calledOnce);
-        assert(gasActionSpies.setCustomGasPrice.calledOnce);
-        assert.strictEqual(
-          gasActionSpies.setCustomGasPrice.getCall(0).args[0],
-          '0xffff',
-        );
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(setCustomGasPrice).toHaveBeenCalled();
+        expect(setCustomGasPrice).toHaveBeenCalledWith('0xffff');
+        // expect(
+        //   setCustomGasPrice.getCall(0).args[0],
+        //   '0xffff',
+        // );
       });
 
-      it('should dispatch a setCustomGasPrice action', function () {
+      it('should dispatch a setCustomGasPrice action', () => {
         mapDispatchToPropsObject.updateCustomGasPrice('0xffff');
-        assert(dispatchSpy.calledOnce);
-        assert(gasActionSpies.setCustomGasPrice.calledOnce);
-        assert.strictEqual(
-          gasActionSpies.setCustomGasPrice.getCall(0).args[0],
-          '0xffff',
-        );
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(setCustomGasPrice).toHaveBeenCalled();
+        expect(setCustomGasPrice).toHaveBeenCalledWith('0xffff');
       });
     });
 
-    describe('updateCustomGasLimit()', function () {
-      it('should dispatch a setCustomGasLimit action', function () {
+    describe('updateCustomGasLimit()', () => {
+      it('should dispatch a setCustomGasLimit action', () => {
         mapDispatchToPropsObject.updateCustomGasLimit('0x10');
-        assert(dispatchSpy.calledOnce);
-        assert(gasActionSpies.setCustomGasLimit.calledOnce);
-        assert.strictEqual(
-          gasActionSpies.setCustomGasLimit.getCall(0).args[0],
-          '0x10',
-        );
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(setCustomGasLimit).toHaveBeenCalled();
+        expect(setCustomGasLimit).toHaveBeenCalledWith('0x10');
       });
     });
 
-    describe('setGasData()', function () {
-      it('should dispatch a setGasPrice and setGasLimit action with the correct props', function () {
+    describe('setGasData()', () => {
+      it('should dispatch a setGasPrice and setGasLimit action with the correct props', () => {
         mapDispatchToPropsObject.setGasData('ffff', 'aaaa');
-        assert(dispatchSpy.calledTwice);
-        assert(actionSpies.setGasPrice.calledOnce);
-        assert(actionSpies.setGasLimit.calledOnce);
-        assert.strictEqual(actionSpies.setGasLimit.getCall(0).args[0], 'ffff');
-        assert.strictEqual(actionSpies.setGasPrice.getCall(0).args[0], 'aaaa');
+        expect(dispatchSpy.calledTwice).toStrictEqual(true);
+        expect(setGasPrice).toHaveBeenCalled();
+        expect(setGasLimit).toHaveBeenCalled();
+        expect(setGasLimit).toHaveBeenCalledWith('ffff');
+        expect(setGasPrice).toHaveBeenCalledWith('aaaa');
       });
     });
 
-    describe('updateConfirmTxGasAndCalculate()', function () {
-      it('should dispatch a updateGasAndCalculate action with the correct props', function () {
+    describe('updateConfirmTxGasAndCalculate()', () => {
+      it('should dispatch a updateGasAndCalculate action with the correct props', () => {
         mapDispatchToPropsObject.updateConfirmTxGasAndCalculate('ffff', 'aaaa');
-        assert.strictEqual(dispatchSpy.callCount, 3);
-        assert(actionSpies.setGasPrice.calledOnce);
-        assert(actionSpies.setGasLimit.calledOnce);
-        assert.strictEqual(actionSpies.setGasLimit.getCall(0).args[0], 'ffff');
-        assert.strictEqual(actionSpies.setGasPrice.getCall(0).args[0], 'aaaa');
+        expect(dispatchSpy.callCount).toStrictEqual(3);
+        expect(setCustomGasPrice).toHaveBeenCalled();
+        expect(setCustomGasLimit).toHaveBeenCalled();
+        expect(setCustomGasLimit).toHaveBeenCalledWith('0xffff');
+        expect(setCustomGasPrice).toHaveBeenCalledWith('0xaaaa');
       });
     });
   });
 
-  describe('mergeProps', function () {
+  describe('mergeProps', () => {
     let stateProps;
     let dispatchProps;
     let ownProps;
 
-    beforeEach(function () {
+    beforeEach(() => {
       stateProps = {
         gasPriceButtonGroupProps: {
           someGasPriceButtonGroupProp: 'foo',
@@ -163,113 +173,95 @@ describe('gas-modal-page-container container', function () {
       ownProps = { someOwnProp: 123 };
     });
 
-    afterEach(function () {
-      dispatchProps.updateCustomGasPrice.resetHistory();
-      dispatchProps.hideGasButtonGroup.resetHistory();
-      dispatchProps.setGasData.resetHistory();
-      dispatchProps.updateConfirmTxGasAndCalculate.resetHistory();
-      dispatchProps.someOtherDispatchProp.resetHistory();
-      dispatchProps.createSpeedUpTransaction.resetHistory();
-      dispatchProps.hideSidebar.resetHistory();
-      dispatchProps.hideModal.resetHistory();
-    });
-    it('should return the expected props when isConfirm is true', function () {
+    it('should return the expected props when isConfirm is true', () => {
       const result = mergeProps(stateProps, dispatchProps, ownProps);
 
-      assert.strictEqual(result.isConfirm, true);
-      assert.strictEqual(result.someOtherStateProp, 'baz');
-      assert.strictEqual(
+      expect(result.isConfirm).toStrictEqual(true);
+      expect(result.someOtherStateProp).toStrictEqual('baz');
+      expect(
         result.gasPriceButtonGroupProps.someGasPriceButtonGroupProp,
-        'foo',
-      );
-      assert.strictEqual(
+      ).toStrictEqual('foo');
+      expect(
         result.gasPriceButtonGroupProps.anotherGasPriceButtonGroupProp,
-        'bar',
-      );
-      assert.strictEqual(result.someOwnProp, 123);
+      ).toStrictEqual('bar');
+      expect(result.someOwnProp).toStrictEqual(123);
 
-      assert.strictEqual(
+      expect(
         dispatchProps.updateConfirmTxGasAndCalculate.callCount,
-        0,
-      );
-      assert.strictEqual(dispatchProps.setGasData.callCount, 0);
-      assert.strictEqual(dispatchProps.hideGasButtonGroup.callCount, 0);
-      assert.strictEqual(dispatchProps.hideModal.callCount, 0);
+      ).toStrictEqual(0);
+      expect(dispatchProps.setGasData.callCount).toStrictEqual(0);
+      expect(dispatchProps.hideGasButtonGroup.callCount).toStrictEqual(0);
+      expect(dispatchProps.hideModal.callCount).toStrictEqual(0);
 
       result.onSubmit();
 
-      assert.strictEqual(
+      expect(
         dispatchProps.updateConfirmTxGasAndCalculate.callCount,
-        1,
-      );
-      assert.strictEqual(dispatchProps.setGasData.callCount, 0);
-      assert.strictEqual(dispatchProps.hideGasButtonGroup.callCount, 0);
-      assert.strictEqual(dispatchProps.hideModal.callCount, 1);
+      ).toStrictEqual(1);
+      expect(dispatchProps.setGasData.callCount).toStrictEqual(0);
+      expect(dispatchProps.hideGasButtonGroup.callCount).toStrictEqual(0);
+      expect(dispatchProps.hideModal.callCount).toStrictEqual(1);
 
-      assert.strictEqual(dispatchProps.updateCustomGasPrice.callCount, 0);
+      expect(dispatchProps.updateCustomGasPrice.callCount).toStrictEqual(0);
       result.gasPriceButtonGroupProps.handleGasPriceSelection({
         gasPrice: '0x0',
       });
-      assert.strictEqual(dispatchProps.updateCustomGasPrice.callCount, 1);
+      expect(dispatchProps.updateCustomGasPrice.callCount).toStrictEqual(1);
 
-      assert.strictEqual(dispatchProps.someOtherDispatchProp.callCount, 0);
+      expect(dispatchProps.someOtherDispatchProp.callCount).toStrictEqual(0);
       result.someOtherDispatchProp();
-      assert.strictEqual(dispatchProps.someOtherDispatchProp.callCount, 1);
+      expect(dispatchProps.someOtherDispatchProp.callCount).toStrictEqual(1);
     });
 
-    it('should return the expected props when isConfirm is false', function () {
+    it('should return the expected props when isConfirm is false', () => {
       const result = mergeProps(
         { ...stateProps, isConfirm: false },
         dispatchProps,
         ownProps,
       );
 
-      assert.strictEqual(result.isConfirm, false);
-      assert.strictEqual(result.someOtherStateProp, 'baz');
-      assert.strictEqual(
+      expect(result.isConfirm).toStrictEqual(false);
+      expect(result.someOtherStateProp).toStrictEqual('baz');
+      expect(
         result.gasPriceButtonGroupProps.someGasPriceButtonGroupProp,
-        'foo',
-      );
-      assert.strictEqual(
+      ).toStrictEqual('foo');
+      expect(
         result.gasPriceButtonGroupProps.anotherGasPriceButtonGroupProp,
-        'bar',
-      );
-      assert.strictEqual(result.someOwnProp, 123);
+      ).toStrictEqual('bar');
+      expect(result.someOwnProp).toStrictEqual(123);
 
-      assert.strictEqual(
+      expect(
         dispatchProps.updateConfirmTxGasAndCalculate.callCount,
-        0,
-      );
-      assert.strictEqual(dispatchProps.setGasData.callCount, 0);
-      assert.strictEqual(dispatchProps.hideGasButtonGroup.callCount, 0);
-      assert.strictEqual(dispatchProps.cancelAndClose.callCount, 0);
+      ).toStrictEqual(0);
+      expect(dispatchProps.setGasData.callCount).toStrictEqual(0);
+      expect(dispatchProps.hideGasButtonGroup.callCount).toStrictEqual(0);
+      expect(dispatchProps.cancelAndClose.callCount).toStrictEqual(0);
 
       result.onSubmit('mockNewLimit', 'mockNewPrice');
 
-      assert.strictEqual(
+      expect(
         dispatchProps.updateConfirmTxGasAndCalculate.callCount,
-        0,
-      );
-      assert.strictEqual(dispatchProps.setGasData.callCount, 1);
-      assert.deepStrictEqual(dispatchProps.setGasData.getCall(0).args, [
+      ).toStrictEqual(0);
+      expect(dispatchProps.setGasData.callCount).toStrictEqual(1);
+      expect(dispatchProps.setGasData.getCall(0).args).toStrictEqual([
         'mockNewLimit',
         'mockNewPrice',
       ]);
-      assert.strictEqual(dispatchProps.hideGasButtonGroup.callCount, 1);
-      assert.strictEqual(dispatchProps.cancelAndClose.callCount, 1);
+      expect(dispatchProps.hideGasButtonGroup.callCount).toStrictEqual(1);
+      expect(dispatchProps.cancelAndClose.callCount).toStrictEqual(1);
 
-      assert.strictEqual(dispatchProps.updateCustomGasPrice.callCount, 0);
+      expect(dispatchProps.updateCustomGasPrice.callCount).toStrictEqual(0);
       result.gasPriceButtonGroupProps.handleGasPriceSelection({
         gasPrice: '0x0',
       });
-      assert.strictEqual(dispatchProps.updateCustomGasPrice.callCount, 1);
+      expect(dispatchProps.updateCustomGasPrice.callCount).toStrictEqual(1);
 
-      assert.strictEqual(dispatchProps.someOtherDispatchProp.callCount, 0);
+      expect(dispatchProps.someOtherDispatchProp.callCount).toStrictEqual(0);
       result.someOtherDispatchProp();
-      assert.strictEqual(dispatchProps.someOtherDispatchProp.callCount, 1);
+      expect(dispatchProps.someOtherDispatchProp.callCount).toStrictEqual(1);
     });
 
-    it('should dispatch the expected actions from obSubmit when isConfirm is false and isSpeedUp is true', function () {
+    it('should dispatch the expected actions from obSubmit when isConfirm is false and isSpeedUp is true', () => {
       const result = mergeProps(
         { ...stateProps, isSpeedUp: true, isConfirm: false },
         dispatchProps,
@@ -278,16 +270,15 @@ describe('gas-modal-page-container container', function () {
 
       result.onSubmit();
 
-      assert.strictEqual(
+      expect(
         dispatchProps.updateConfirmTxGasAndCalculate.callCount,
-        0,
-      );
-      assert.strictEqual(dispatchProps.setGasData.callCount, 0);
-      assert.strictEqual(dispatchProps.hideGasButtonGroup.callCount, 0);
-      assert.strictEqual(dispatchProps.cancelAndClose.callCount, 1);
+      ).toStrictEqual(0);
+      expect(dispatchProps.setGasData.callCount).toStrictEqual(0);
+      expect(dispatchProps.hideGasButtonGroup.callCount).toStrictEqual(0);
+      expect(dispatchProps.cancelAndClose.callCount).toStrictEqual(1);
 
-      assert.strictEqual(dispatchProps.createSpeedUpTransaction.callCount, 1);
-      assert.strictEqual(dispatchProps.hideSidebar.callCount, 1);
+      expect(dispatchProps.createSpeedUpTransaction.callCount).toStrictEqual(1);
+      expect(dispatchProps.hideSidebar.callCount).toStrictEqual(1);
     });
   });
 });

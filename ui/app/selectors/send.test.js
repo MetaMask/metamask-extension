@@ -1,4 +1,3 @@
-import assert from 'assert';
 import sinon from 'sinon';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import {
@@ -36,9 +35,9 @@ import {
   getCurrentAccountWithSendEtherInfo,
 } from '.';
 
-describe('send selectors', function () {
+describe('send selectors', () => {
   const tempGlobalEth = { ...global.eth };
-  beforeEach(function () {
+  beforeEach(() => {
     global.eth = {
       contract: sinon.stub().returns({
         at: (address) => `mockAt:${address}`,
@@ -46,13 +45,13 @@ describe('send selectors', function () {
     };
   });
 
-  afterEach(function () {
+  afterEach(() => {
     global.eth = tempGlobalEth;
   });
 
-  describe('accountsWithSendEtherInfoSelector()', function () {
-    it('should return an array of account objects with name info from identities', function () {
-      assert.deepStrictEqual(accountsWithSendEtherInfoSelector(mockState), [
+  describe('accountsWithSendEtherInfoSelector()', () => {
+    it('should return an array of account objects with name info from identities', () => {
+      expect(accountsWithSendEtherInfoSelector(mockState)).toStrictEqual([
         {
           code: '0x',
           balance: '0x47c9d71831c76efe',
@@ -85,21 +84,21 @@ describe('send selectors', function () {
     });
   });
 
-  describe('getBlockGasLimit', function () {
-    it('should return the current block gas limit', function () {
-      assert.deepStrictEqual(getBlockGasLimit(mockState), '0x4c1878');
+  describe('getBlockGasLimit', () => {
+    it('should return the current block gas limit', () => {
+      expect(getBlockGasLimit(mockState)).toStrictEqual('0x4c1878');
     });
   });
 
-  describe('getConversionRate()', function () {
-    it('should return the eth conversion rate', function () {
-      assert.deepStrictEqual(getConversionRate(mockState), 1200.88200327);
+  describe('getConversionRate()', () => {
+    it('should return the eth conversion rate', () => {
+      expect(getConversionRate(mockState)).toStrictEqual(1200.88200327);
     });
   });
 
-  describe('getCurrentAccountWithSendEtherInfo()', function () {
-    it('should return the currently selected account with identity info', function () {
-      assert.deepStrictEqual(getCurrentAccountWithSendEtherInfo(mockState), {
+  describe('getCurrentAccountWithSendEtherInfo()', () => {
+    it('should return the currently selected account with identity info', () => {
+      expect(getCurrentAccountWithSendEtherInfo(mockState)).toStrictEqual({
         code: '0x',
         balance: '0x0',
         nonce: '0x0',
@@ -109,44 +108,43 @@ describe('send selectors', function () {
     });
   });
 
-  describe('getNativeCurrency()', function () {
-    it('should return the ticker symbol of the selected network', function () {
-      assert.strictEqual(getNativeCurrency(mockState), 'ETH');
+  describe('getNativeCurrency()', () => {
+    it('should return the ticker symbol of the selected network', () => {
+      expect(getNativeCurrency(mockState)).toStrictEqual('ETH');
     });
   });
 
-  describe('getGasLimit()', function () {
-    it('should return the send.gasLimit', function () {
-      assert.strictEqual(getGasLimit(mockState), '0xFFFF');
+  describe('getGasLimit()', () => {
+    it('should return the send.gasLimit', () => {
+      expect(getGasLimit(mockState)).toStrictEqual('0xFFFF');
     });
   });
 
-  describe('getGasPrice()', function () {
-    it('should return the send.gasPrice', function () {
-      assert.strictEqual(getGasPrice(mockState), '0xaa');
+  describe('getGasPrice()', () => {
+    it('should return the send.gasPrice', () => {
+      expect(getGasPrice(mockState)).toStrictEqual('0xaa');
     });
   });
 
-  describe('getGasTotal()', function () {
-    it('should return the send.gasTotal', function () {
-      assert.strictEqual(getGasTotal(mockState), 'a9ff56');
+  describe('getGasTotal()', () => {
+    it('should return the send.gasTotal', () => {
+      expect(getGasTotal(mockState)).toStrictEqual('a9ff56');
     });
   });
 
-  describe('getPrimaryCurrency()', function () {
-    it('should return the symbol of the send token', function () {
-      assert.strictEqual(
+  describe('getPrimaryCurrency()', () => {
+    it('should return the symbol of the send token', () => {
+      expect(
         getPrimaryCurrency({
           metamask: { send: { token: { symbol: 'DEF' } } },
         }),
-        'DEF',
-      );
+      ).toStrictEqual('DEF');
     });
   });
 
-  describe('getSendToken()', function () {
-    it('should return the current send token if set', function () {
-      assert.deepStrictEqual(
+  describe('getSendToken()', () => {
+    it('should return the current send token if set', () => {
+      expect(
         getSendToken({
           metamask: {
             send: {
@@ -158,18 +156,17 @@ describe('send selectors', function () {
             },
           },
         }),
-        {
-          address: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-          decimals: 4,
-          symbol: 'DEF',
-        },
-      );
+      ).toStrictEqual({
+        address: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+        decimals: 4,
+        symbol: 'DEF',
+      });
     });
   });
 
-  describe('getSendTokenContract()', function () {
-    it('should return the contract at the send token address', function () {
-      assert.strictEqual(
+  describe('getSendTokenContract()', () => {
+    it('should return the contract at the send token address', () => {
+      expect(
         getSendTokenContract({
           metamask: {
             send: {
@@ -181,58 +178,55 @@ describe('send selectors', function () {
             },
           },
         }),
-        'mockAt:0x8d6b81208414189a58339873ab429b6c47ab92d3',
-      );
+      ).toStrictEqual('mockAt:0x8d6b81208414189a58339873ab429b6c47ab92d3');
     });
 
-    it('should return null if send token is not set', function () {
+    it('should return null if send token is not set', () => {
       const modifiedMetamaskState = { ...mockState.metamask, send: {} };
-      assert.strictEqual(
+      expect(
         getSendTokenContract({ ...mockState, metamask: modifiedMetamaskState }),
-        null,
-      );
+      ).toBeNull();
     });
   });
 
-  describe('getSendAmount()', function () {
-    it('should return the send.amount', function () {
-      assert.strictEqual(getSendAmount(mockState), '0x080');
+  describe('getSendAmount()', () => {
+    it('should return the send.amount', () => {
+      expect(getSendAmount(mockState)).toStrictEqual('0x080');
     });
   });
 
-  describe('getSendEditingTransactionId()', function () {
-    it('should return the send.editingTransactionId', function () {
-      assert.strictEqual(getSendEditingTransactionId(mockState), 97531);
+  describe('getSendEditingTransactionId()', () => {
+    it('should return the send.editingTransactionId', () => {
+      expect(getSendEditingTransactionId(mockState)).toStrictEqual(97531);
     });
   });
 
-  describe('getSendErrors()', function () {
-    it('should return the send.errors', function () {
-      assert.deepStrictEqual(getSendErrors(mockState), { someError: null });
+  describe('getSendErrors()', () => {
+    it('should return the send.errors', () => {
+      expect(getSendErrors(mockState)).toStrictEqual({ someError: null });
     });
   });
 
-  describe('getSendHexDataFeatureFlagState()', function () {
-    it('should return the sendHexData feature flag state', function () {
-      assert.deepStrictEqual(getSendHexDataFeatureFlagState(mockState), true);
+  describe('getSendHexDataFeatureFlagState()', () => {
+    it('should return the sendHexData feature flag state', () => {
+      expect(getSendHexDataFeatureFlagState(mockState)).toStrictEqual(true);
     });
   });
 
-  describe('getSendFrom()', function () {
-    it('should return the send.from', function () {
-      assert.deepStrictEqual(
-        getSendFrom(mockState),
+  describe('getSendFrom()', () => {
+    it('should return the send.from', () => {
+      expect(getSendFrom(mockState)).toStrictEqual(
         '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
       );
     });
   });
 
-  describe('getSendFromBalance()', function () {
-    it('should get the send.from balance if it exists', function () {
-      assert.strictEqual(getSendFromBalance(mockState), '0x37452b1315889f80');
+  describe('getSendFromBalance()', () => {
+    it('should get the send.from balance if it exists', () => {
+      expect(getSendFromBalance(mockState)).toStrictEqual('0x37452b1315889f80');
     });
 
-    it('should get the selected account balance if the send.from does not exist', function () {
+    it('should get the selected account balance if the send.from does not exist', () => {
       const editedMockState = {
         metamask: {
           ...mockState.metamask,
@@ -241,13 +235,13 @@ describe('send selectors', function () {
           },
         },
       };
-      assert.strictEqual(getSendFromBalance(editedMockState), '0x0');
+      expect(getSendFromBalance(editedMockState)).toStrictEqual('0x0');
     });
   });
 
-  describe('getSendFromObject()', function () {
-    it('should return send.from if it exists', function () {
-      assert.deepStrictEqual(getSendFromObject(mockState), {
+  describe('getSendFromObject()', () => {
+    it('should return send.from if it exists', () => {
+      expect(getSendFromObject(mockState)).toStrictEqual({
         address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
         balance: '0x37452b1315889f80',
         code: '0x',
@@ -255,7 +249,7 @@ describe('send selectors', function () {
       });
     });
 
-    it('should return the current account if send.from does not exist', function () {
+    it('should return the current account if send.from does not exist', () => {
       const editedMockState = {
         metamask: {
           ...mockState.metamask,
@@ -264,7 +258,7 @@ describe('send selectors', function () {
           },
         },
       };
-      assert.deepStrictEqual(getSendFromObject(editedMockState), {
+      expect(getSendFromObject(editedMockState)).toStrictEqual({
         code: '0x',
         balance: '0x0',
         nonce: '0x0',
@@ -273,21 +267,21 @@ describe('send selectors', function () {
     });
   });
 
-  describe('getSendMaxModeState()', function () {
-    it('should return send.maxModeOn', function () {
-      assert.strictEqual(getSendMaxModeState(mockState), false);
+  describe('getSendMaxModeState()', () => {
+    it('should return send.maxModeOn', () => {
+      expect(getSendMaxModeState(mockState)).toStrictEqual(false);
     });
   });
 
-  describe('getSendTo()', function () {
-    it('should return send.to', function () {
-      assert.strictEqual(getSendTo(mockState), '0x987fedabc');
+  describe('getSendTo()', () => {
+    it('should return send.to', () => {
+      expect(getSendTo(mockState)).toStrictEqual('0x987fedabc');
     });
   });
 
-  describe('getSendToAccounts()', function () {
-    it('should return an array including all the users accounts and the address book', function () {
-      assert.deepStrictEqual(getSendToAccounts(mockState), [
+  describe('getSendToAccounts()', () => {
+    it('should return an array including all the users accounts and the address book', () => {
+      expect(getSendToAccounts(mockState)).toStrictEqual([
         {
           code: '0x',
           balance: '0x47c9d71831c76efe',
@@ -325,15 +319,15 @@ describe('send selectors', function () {
     });
   });
 
-  describe('getTokenBalance()', function () {
-    it('should', function () {
-      assert.strictEqual(getTokenBalance(mockState), 3434);
+  describe('getTokenBalance()', () => {
+    it('should', () => {
+      expect(getTokenBalance(mockState)).toStrictEqual(3434);
     });
   });
 
-  describe('getUnapprovedTxs()', function () {
-    it('should return the unapproved txs', function () {
-      assert.deepStrictEqual(getUnapprovedTxs(mockState), {
+  describe('getUnapprovedTxs()', () => {
+    it('should return the unapproved txs', () => {
+      expect(getUnapprovedTxs(mockState)).toStrictEqual({
         4768706228115573: {
           id: 4768706228115573,
           time: 1487363153561,
@@ -357,9 +351,9 @@ describe('send selectors', function () {
     });
   });
 
-  describe('send-amount-row selectors', function () {
-    describe('sendAmountIsInError()', function () {
-      it('should return true if send.errors.amount is truthy', function () {
+  describe('send-amount-row selectors', () => {
+    describe('sendAmountIsInError()', () => {
+      it('should return true if send.errors.amount is truthy', () => {
         const state = {
           send: {
             errors: {
@@ -368,10 +362,10 @@ describe('send selectors', function () {
           },
         };
 
-        assert.strictEqual(sendAmountIsInError(state), true);
+        expect(sendAmountIsInError(state)).toStrictEqual(true);
       });
 
-      it('should return false if send.errors.amount is falsy', function () {
+      it('should return false if send.errors.amount is falsy', () => {
         const state = {
           send: {
             errors: {
@@ -380,14 +374,14 @@ describe('send selectors', function () {
           },
         };
 
-        assert.strictEqual(sendAmountIsInError(state), false);
+        expect(sendAmountIsInError(state)).toStrictEqual(false);
       });
     });
   });
 
-  describe('send-gas-row selectors', function () {
-    describe('getGasLoadingError()', function () {
-      it('should return send.errors.gasLoading', function () {
+  describe('send-gas-row selectors', () => {
+    describe('getGasLoadingError()', () => {
+      it('should return send.errors.gasLoading', () => {
         const state = {
           send: {
             errors: {
@@ -396,12 +390,12 @@ describe('send selectors', function () {
           },
         };
 
-        assert.strictEqual(getGasLoadingError(state), 'abc');
+        expect(getGasLoadingError(state)).toStrictEqual('abc');
       });
     });
 
-    describe('gasFeeIsInError()', function () {
-      it('should return true if send.errors.gasFee is truthy', function () {
+    describe('gasFeeIsInError()', () => {
+      it('should return true if send.errors.gasFee is truthy', () => {
         const state = {
           send: {
             errors: {
@@ -410,10 +404,10 @@ describe('send selectors', function () {
           },
         };
 
-        assert.strictEqual(gasFeeIsInError(state), true);
+        expect(gasFeeIsInError(state)).toStrictEqual(true);
       });
 
-      it('should return false send.errors.gasFee is falsely', function () {
+      it('should return false send.errors.gasFee is falsely', () => {
         const state = {
           send: {
             errors: {
@@ -422,24 +416,24 @@ describe('send selectors', function () {
           },
         };
 
-        assert.strictEqual(gasFeeIsInError(state), false);
+        expect(gasFeeIsInError(state)).toStrictEqual(false);
       });
     });
 
-    describe('getGasButtonGroupShown()', function () {
-      it('should return send.gasButtonGroupShown', function () {
+    describe('getGasButtonGroupShown()', () => {
+      it('should return send.gasButtonGroupShown', () => {
         const state = {
           send: {
             gasButtonGroupShown: 'foobar',
           },
         };
 
-        assert.strictEqual(getGasButtonGroupShown(state), 'foobar');
+        expect(getGasButtonGroupShown(state)).toStrictEqual('foobar');
       });
     });
   });
 
-  describe('send-header selectors', function () {
+  describe('send-header selectors', () => {
     const getMetamaskSendMockState = (send) => {
       return {
         metamask: {
@@ -448,16 +442,15 @@ describe('send selectors', function () {
       };
     };
 
-    describe('getTitleKey()', function () {
-      it('should return the correct key when "to" is empty', function () {
-        assert.strictEqual(
-          getTitleKey(getMetamaskSendMockState({})),
+    describe('getTitleKey()', () => {
+      it('should return the correct key when "to" is empty', () => {
+        expect(getTitleKey(getMetamaskSendMockState({}))).toStrictEqual(
           'addRecipient',
         );
       });
 
-      it('should return the correct key when getSendEditingTransactionId is truthy', function () {
-        assert.strictEqual(
+      it('should return the correct key when getSendEditingTransactionId is truthy', () => {
+        expect(
           getTitleKey(
             getMetamaskSendMockState({
               to: true,
@@ -465,12 +458,11 @@ describe('send selectors', function () {
               token: {},
             }),
           ),
-          'edit',
-        );
+        ).toStrictEqual('edit');
       });
 
-      it('should return the correct key when getSendEditingTransactionId is falsy and getSendToken is truthy', function () {
-        assert.strictEqual(
+      it('should return the correct key when getSendEditingTransactionId is falsy and getSendToken is truthy', () => {
+        expect(
           getTitleKey(
             getMetamaskSendMockState({
               to: true,
@@ -478,12 +470,11 @@ describe('send selectors', function () {
               token: {},
             }),
           ),
-          'sendTokens',
-        );
+        ).toStrictEqual('sendTokens');
       });
 
-      it('should return the correct key when getSendEditingTransactionId is falsy and getSendToken is falsy', function () {
-        assert.strictEqual(
+      it('should return the correct key when getSendEditingTransactionId is falsy and getSendToken is falsy', () => {
+        expect(
           getTitleKey(
             getMetamaskSendMockState({
               to: true,
@@ -491,48 +482,44 @@ describe('send selectors', function () {
               token: null,
             }),
           ),
-          'send',
-        );
+        ).toStrictEqual('send');
       });
     });
   });
 
-  describe('send-footer selectors', function () {
+  describe('send-footer selectors', () => {
     const getSendMockState = (send) => {
       return {
         send: { ...send },
       };
     };
 
-    describe('isSendFormInError()', function () {
-      it('should return true if any of the values of the object returned by getSendErrors are truthy', function () {
-        assert.strictEqual(
+    describe('isSendFormInError()', () => {
+      it('should return true if any of the values of the object returned by getSendErrors are truthy', () => {
+        expect(
           isSendFormInError(
             getSendMockState({
               errors: [true],
             }),
           ),
-          true,
-        );
+        ).toStrictEqual(true);
       });
 
-      it('should return false if all of the values of the object returned by getSendErrors are falsy', function () {
-        assert.strictEqual(
+      it('should return false if all of the values of the object returned by getSendErrors are falsy', () => {
+        expect(
           isSendFormInError(
             getSendMockState({
               errors: [],
             }),
           ),
-          false,
-        );
-        assert.strictEqual(
+        ).toStrictEqual(false);
+        expect(
           isSendFormInError(
             getSendMockState({
               errors: [false],
             }),
           ),
-          false,
-        );
+        ).toStrictEqual(false);
       });
     });
   });

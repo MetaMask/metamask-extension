@@ -1,10 +1,9 @@
-import assert from 'assert';
 import React from 'react';
 import { render } from 'enzyme';
 import SelectedAccount from './selected-account.component';
 
-describe('SelectedAccount Component', function () {
-  it('should render checksummed address', function () {
+describe('SelectedAccount Component', () => {
+  it('should render checksummed address', () => {
     const wrapper = render(
       <SelectedAccount
         selectedIdentity={{
@@ -15,12 +14,10 @@ describe('SelectedAccount Component', function () {
       { context: { t: () => undefined } },
     );
     // Checksummed version of address is displayed
-    assert.strictEqual(
-      wrapper.find('.selected-account__address').text(),
+    expect(wrapper.find('.selected-account__address').text()).toStrictEqual(
       '0x1B82...5C9D',
     );
-    assert.strictEqual(
-      wrapper.find('.selected-account__name').text(),
+    expect(wrapper.find('.selected-account__name').text()).toStrictEqual(
       'testName',
     );
   });

@@ -1,13 +1,12 @@
-import assert from 'assert';
 import {
   MAINNET_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
 } from '../../shared/constants/network';
 import getAccountLink from './account-link';
 
-describe('Account link', function () {
-  describe('getAccountLink', function () {
-    it('should return the correct block explorer url for an account', function () {
+describe('Account link', () => {
+  describe('getAccountLink', () => {
+    it('should return the correct block explorer url for an account', () => {
       const tests = [
         {
           expected: 'https://etherscan.io/address/0xabcd',
@@ -41,7 +40,9 @@ describe('Account link', function () {
       ];
 
       tests.forEach(({ expected, address, chainId, rpcPrefs }) => {
-        assert.equal(getAccountLink(address, chainId, rpcPrefs), expected);
+        expect(getAccountLink(address, chainId, rpcPrefs)).toStrictEqual(
+          expected,
+        );
       });
     });
   });

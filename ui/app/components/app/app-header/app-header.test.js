@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
@@ -6,7 +5,7 @@ import MetaFoxLogo from '../../ui/metafox-logo';
 import NetworkDisplay from '../network-display';
 import AppHeader from './app-header.container';
 
-describe('App Header', function () {
+describe('App Header', () => {
   let wrapper;
 
   const props = {
@@ -26,7 +25,7 @@ describe('App Header', function () {
     isUnlocked: true,
   };
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = shallow(<AppHeader.WrappedComponent {...props} />, {
       context: {
         t: (str) => str,
@@ -35,32 +34,31 @@ describe('App Header', function () {
     });
   });
 
-  afterEach(function () {
+  afterEach(() => {
     props.toggleAccountMenu.resetHistory();
   });
 
-  describe('App Header Logo', function () {
-    it('routes to default route when logo is clicked', function () {
+  describe('App Header Logo', () => {
+    it('routes to default route when logo is clicked', () => {
       const appLogo = wrapper.find(MetaFoxLogo);
       appLogo.simulate('click');
-      assert(props.history.push.calledOnce);
-      assert.strictEqual(props.history.push.getCall(0).args[0], '/');
+      expect(props.history.push.calledOnce).toStrictEqual(true);
+      expect(props.history.push.getCall(0).args[0]).toStrictEqual('/');
     });
   });
 
-  describe('Network', function () {
-    it('shows network dropdown when networkDropdownOpen is false', function () {
+  describe('Network', () => {
+    it('shows network dropdown when networkDropdownOpen is false', () => {
       const network = wrapper.find(NetworkDisplay);
-
       network.simulate('click', {
         preventDefault: () => undefined,
         stopPropagation: () => undefined,
       });
 
-      assert(props.showNetworkDropdown.calledOnce);
+      expect(props.showNetworkDropdown.calledOnce).toStrictEqual(true);
     });
 
-    it('hides network dropdown when networkDropdownOpen is true', function () {
+    it('hides network dropdown when networkDropdownOpen is true', () => {
       wrapper.setProps({ networkDropdownOpen: true });
       const network = wrapper.find(NetworkDisplay);
 
@@ -69,28 +67,28 @@ describe('App Header', function () {
         stopPropagation: () => undefined,
       });
 
-      assert(props.hideNetworkDropdown.calledOnce);
+      expect(props.hideNetworkDropdown.calledOnce).toStrictEqual(true);
     });
 
-    it('hides network indicator', function () {
+    it('hides network indicator', () => {
       wrapper.setProps({ hideNetworkIndicator: true });
-      const network = wrapper.find({ network: 'test' });
-      assert.strictEqual(network.length, 0);
+      const network = wrapper.find(NetworkDisplay);
+      expect(network).toHaveLength(0);
     });
   });
 
-  describe('Account Menu', function () {
-    it('toggles account menu', function () {
+  describe('Account Menu', () => {
+    it('toggles account menu', () => {
       const accountMenu = wrapper.find('.account-menu__icon');
       accountMenu.simulate('click');
-      assert(props.toggleAccountMenu.calledOnce);
+      expect(props.toggleAccountMenu.calledOnce).toStrictEqual(true);
     });
 
-    it('does not toggle account menu when disabled', function () {
+    it('does not toggle account menu when disabled', () => {
       wrapper.setProps({ disabled: true });
       const accountMenu = wrapper.find('.account-menu__icon');
       accountMenu.simulate('click');
-      assert(props.toggleAccountMenu.notCalled);
+      expect(props.toggleAccountMenu.notCalled).toStrictEqual(true);
     });
   });
 });

@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import * as reactRedux from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
@@ -133,8 +132,8 @@ const renderHookWithRouter = (cb, tokenAddress) => {
   return renderHook(cb, { wrapper });
 };
 
-describe('useTransactionDisplayData', function () {
-  before(function () {
+describe('useTransactionDisplayData', () => {
+  beforeAll(() => {
     useSelector = sinon.stub(reactRedux, 'useSelector');
     useTokenFiatAmount = sinon.stub(
       useTokenFiatAmountHooks,
@@ -172,92 +171,88 @@ describe('useTransactionDisplayData', function () {
       return null;
     });
   });
+
+  afterAll(() => {
+    sinon.restore();
+  });
+
   transactions.forEach((transactionGroup, idx) => {
-    describe(`when called with group containing primaryTransaction id ${transactionGroup.primaryTransaction.id}`, function () {
+    describe(`when called with group containing primaryTransaction id ${transactionGroup.primaryTransaction.id}`, () => {
       const expected = expectedResults[idx];
       const tokenAddress =
         transactionGroup.primaryTransaction?.destinationTokenAddress;
-      it(`should return a title of ${expected.title}`, function () {
+      it(`should return a title of ${expected.title}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
         );
-        assert.strictEqual(result.current.title, expected.title);
+        expect(result.current.title).toStrictEqual(expected.title);
       });
-      it(`should return a subtitle of ${expected.subtitle}`, function () {
+      it(`should return a subtitle of ${expected.subtitle}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
         );
-        assert.strictEqual(result.current.subtitle, expected.subtitle);
+        expect(result.current.subtitle).toStrictEqual(expected.subtitle);
       });
-      it(`should return a category of ${expected.category}`, function () {
+      it(`should return a category of ${expected.category}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
         );
-        assert.strictEqual(result.current.category, expected.category);
+        expect(result.current.category).toStrictEqual(expected.category);
       });
-      it(`should return a primaryCurrency of ${expected.primaryCurrency}`, function () {
+      it(`should return a primaryCurrency of ${expected.primaryCurrency}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
         );
-        assert.strictEqual(
-          result.current.primaryCurrency,
+        expect(result.current.primaryCurrency).toStrictEqual(
           expected.primaryCurrency,
         );
       });
-      it(`should return a secondaryCurrency of ${expected.secondaryCurrency}`, function () {
+      it(`should return a secondaryCurrency of ${expected.secondaryCurrency}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
         );
-        assert.strictEqual(
-          result.current.secondaryCurrency,
+        expect(result.current.secondaryCurrency).toStrictEqual(
           expected.secondaryCurrency,
         );
       });
-      it(`should return a displayedStatusKey of ${expected.displayedStatusKey}`, function () {
+      it(`should return a displayedStatusKey of ${expected.displayedStatusKey}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
         );
-        assert.strictEqual(
-          result.current.displayedStatusKey,
+        expect(result.current.displayedStatusKey).toStrictEqual(
           expected.displayedStatusKey,
         );
       });
-      it(`should return a recipientAddress of ${expected.recipientAddress}`, function () {
+      it(`should return a recipientAddress of ${expected.recipientAddress}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
         );
-        assert.strictEqual(
-          result.current.recipientAddress,
+        expect(result.current.recipientAddress).toStrictEqual(
           expected.recipientAddress,
         );
       });
-      it(`should return a senderAddress of ${expected.senderAddress}`, function () {
+      it(`should return a senderAddress of ${expected.senderAddress}`, () => {
         const { result } = renderHookWithRouter(
           () => useTransactionDisplayData(transactionGroup),
           tokenAddress,
         );
-        assert.strictEqual(
-          result.current.senderAddress,
+        expect(result.current.senderAddress).toStrictEqual(
           expected.senderAddress,
         );
       });
     });
   });
-  it('should return an appropriate object', function () {
+  it('should return an appropriate object', () => {
     const { result } = renderHookWithRouter(() =>
       useTransactionDisplayData(transactions[0]),
     );
-    assert.deepStrictEqual(result.current, expectedResults[0]);
-  });
-  after(function () {
-    useSelector.restore();
-    useI18nContext.restore();
+    expect(result.current).toStrictEqual(expectedResults[0]);
   });
 });

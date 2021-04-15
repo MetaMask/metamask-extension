@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
@@ -13,20 +12,18 @@ function shallowRender(props = {}, context = {}) {
   });
 }
 
-describe('ConfirmSeedPhrase Component', function () {
-  it('should render correctly', function () {
+describe('ConfirmSeedPhrase Component', () => {
+  it('should render correctly', () => {
     const root = shallowRender({
       seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
     });
 
-    assert.strictEqual(
-      root.find('.confirm-seed-phrase__seed-word--sorted').length,
+    expect(root.find('.confirm-seed-phrase__seed-word--sorted')).toHaveLength(
       12,
-      'should render 12 seed phrases',
     );
   });
 
-  it('should add/remove selected on click', function () {
+  it('should add/remove selected on click', () => {
     const metricsEventSpy = sinon.spy();
     const pushSpy = sinon.spy();
     const root = shallowRender(
@@ -46,11 +43,7 @@ describe('ConfirmSeedPhrase Component', function () {
     seeds.at(1).simulate('click');
     seeds.at(2).simulate('click');
 
-    assert.deepStrictEqual(
-      root.state().selectedSeedIndices,
-      [0, 1, 2],
-      'should add seed phrase to selected on click',
-    );
+    expect(root.state().selectedSeedIndices).toStrictEqual([0, 1, 2]);
 
     // Click on a selected seed to remove
     root.state();
@@ -60,14 +53,10 @@ describe('ConfirmSeedPhrase Component', function () {
       .find('.confirm-seed-phrase__seed-word--sorted')
       .at(1)
       .simulate('click');
-    assert.deepStrictEqual(
-      root.state().selectedSeedIndices,
-      [0, 2],
-      'should remove seed phrase from selected when click again',
-    );
+    expect(root.state().selectedSeedIndices).toStrictEqual([0, 2]);
   });
 
-  it('should render correctly on hover', function () {
+  it('should render correctly on hover', () => {
     const metricsEventSpy = sinon.spy();
     const pushSpy = sinon.spy();
     const root = shallowRender(
@@ -97,12 +86,12 @@ describe('ConfirmSeedPhrase Component', function () {
       '.confirm-seed-phrase__selected-seed-words__pending-seed',
     );
 
-    assert.strictEqual(pendingSeeds.at(0).props().seedIndex, 2);
-    assert.strictEqual(pendingSeeds.at(1).props().seedIndex, 0);
-    assert.strictEqual(pendingSeeds.at(2).props().seedIndex, 1);
+    expect(pendingSeeds.at(0).props().seedIndex).toStrictEqual(2);
+    expect(pendingSeeds.at(1).props().seedIndex).toStrictEqual(0);
+    expect(pendingSeeds.at(2).props().seedIndex).toStrictEqual(1);
   });
 
-  it('should insert seed in place on drop', function () {
+  it('should insert seed in place on drop', () => {
     const metricsEventSpy = sinon.spy();
     const pushSpy = sinon.spy();
     const root = shallowRender(
@@ -129,11 +118,11 @@ describe('ConfirmSeedPhrase Component', function () {
 
     root.update();
 
-    assert.deepStrictEqual(root.state().selectedSeedIndices, [2, 0, 1]);
-    assert.deepStrictEqual(root.state().pendingSeedIndices, [2, 0, 1]);
+    expect(root.state().selectedSeedIndices).toStrictEqual([2, 0, 1]);
+    expect(root.state().pendingSeedIndices).toStrictEqual([2, 0, 1]);
   });
 
-  it('should submit correctly', async function () {
+  it('should submit correctly', async () => {
     const originalSeed = [
       '鼠',
       '牛',
@@ -177,14 +166,14 @@ describe('ConfirmSeedPhrase Component', function () {
 
     await new Promise((resolve) => setTimeout(resolve, 100));
 
-    assert.deepStrictEqual(metricsEventSpy.args[0][0], {
+    expect(metricsEventSpy.args[0][0]).toStrictEqual({
       eventOpts: {
         category: 'Onboarding',
         action: 'Seed Phrase Setup',
         name: 'Verify Complete',
       },
     });
-    assert(initialize3BoxSpy.calledOnce);
-    assert.strictEqual(pushSpy.args[0][0], '/initialize/end-of-flow');
+    expect(initialize3BoxSpy.calledOnce).toStrictEqual(true);
+    expect(pushSpy.args[0][0]).toStrictEqual('/initialize/end-of-flow');
   });
 });

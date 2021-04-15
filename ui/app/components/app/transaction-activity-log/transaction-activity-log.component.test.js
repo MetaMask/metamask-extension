@@ -1,10 +1,9 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import TransactionActivityLog from './transaction-activity-log.component';
 
-describe('TransactionActivityLog Component', function () {
-  it('should render properly', function () {
+describe('TransactionActivityLog Component', () => {
+  it('should render properly', () => {
     const activities = [
       {
         eventKey: 'transactionCreated',
@@ -54,11 +53,11 @@ describe('TransactionActivityLog Component', function () {
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
 
-    assert.ok(wrapper.hasClass('transaction-activity-log'));
-    assert.ok(wrapper.hasClass('test-class'));
+    expect(wrapper.hasClass('transaction-activity-log')).toStrictEqual(true);
+    expect(wrapper.hasClass('test-class')).toStrictEqual(true);
   });
 
-  it('should render inline retry and cancel buttons for earliest pending transaction', function () {
+  it('should render inline retry and cancel buttons for earliest pending transaction', () => {
     const activities = [
       {
         eventKey: 'transactionCreated',
@@ -107,15 +106,14 @@ describe('TransactionActivityLog Component', function () {
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
 
-    assert.ok(wrapper.hasClass('transaction-activity-log'));
-    assert.ok(wrapper.hasClass('test-class'));
-    assert.strictEqual(
-      wrapper.find('.transaction-activity-log__action-link').length,
+    expect(wrapper.hasClass('transaction-activity-log')).toStrictEqual(true);
+    expect(wrapper.hasClass('test-class')).toStrictEqual(true);
+    expect(wrapper.find('.transaction-activity-log__action-link')).toHaveLength(
       2,
     );
   });
 
-  it('should not render inline retry and cancel buttons for newer pending transactions', function () {
+  it('should not render inline retry and cancel buttons for newer pending transactions', () => {
     const activities = [
       {
         eventKey: 'transactionCreated',
@@ -164,10 +162,9 @@ describe('TransactionActivityLog Component', function () {
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
 
-    assert.ok(wrapper.hasClass('transaction-activity-log'));
-    assert.ok(wrapper.hasClass('test-class'));
-    assert.strictEqual(
-      wrapper.find('.transaction-activity-log__action-link').length,
+    expect(wrapper.hasClass('transaction-activity-log')).toStrictEqual(true);
+    expect(wrapper.hasClass('test-class')).toStrictEqual(true);
+    expect(wrapper.find('.transaction-activity-log__action-link')).toHaveLength(
       0,
     );
   });

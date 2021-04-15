@@ -1,37 +1,38 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
+import { tick } from '../../../../../test/lib/tick';
 import { mountWithRouter } from '../../../../../test/lib/render-helpers';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import EndOfFlowScreen from './end-of-flow.container';
 
-describe('End of Flow Screen', function () {
+describe('End of Flow Screen', () => {
   let wrapper;
 
   const props = {
     history: {
-      push: sinon.spy(),
+      push: sinon.stub(),
     },
-    setCompletedOnboarding: sinon.spy(),
+    setCompletedOnboarding: sinon.stub().resolves(),
   };
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = mountWithRouter(<EndOfFlowScreen.WrappedComponent {...props} />);
   });
 
-  it('renders', function () {
-    assert.strictEqual(wrapper.length, 1);
+  it('renders', () => {
+    expect(wrapper).toHaveLength(1);
   });
 
-  it('should navigate to the default route on click', function (done) {
+  it('should navigate to the default route on click', async () => {
     const endOfFlowButton = wrapper.find(
       '.btn-primary.first-time-flow__button',
     );
     endOfFlowButton.simulate('click');
 
-    setImmediate(() => {
-      assert(props.history.push.calledOnceWithExactly(DEFAULT_ROUTE));
-      done();
-    });
+    await tick();
+
+    expect(
+      props.history.push.calledOnceWithExactly(DEFAULT_ROUTE),
+    ).toStrictEqual(true);
   });
 });

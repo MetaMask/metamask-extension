@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
@@ -14,11 +13,11 @@ const propsMethodSpies = {
   updateSendToWarning: sinon.spy(),
 };
 
-describe('AddRecipient Component', function () {
+describe('AddRecipient Component', () => {
   let wrapper;
   let instance;
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = shallow(
       <AddRecipient
         closeToDropdown={propsMethodSpies.closeToDropdown}
@@ -57,7 +56,7 @@ describe('AddRecipient Component', function () {
     instance = wrapper.instance();
   });
 
-  afterEach(function () {
+  afterEach(() => {
     propsMethodSpies.closeToDropdown.resetHistory();
     propsMethodSpies.openToDropdown.resetHistory();
     propsMethodSpies.updateSendTo.resetHistory();
@@ -66,49 +65,44 @@ describe('AddRecipient Component', function () {
     propsMethodSpies.updateGas.resetHistory();
   });
 
-  describe('selectRecipient', function () {
-    it('should call updateSendTo', function () {
-      assert.strictEqual(propsMethodSpies.updateSendTo.callCount, 0);
+  describe('selectRecipient', () => {
+    it('should call updateSendTo', () => {
+      expect(propsMethodSpies.updateSendTo.callCount).toStrictEqual(0);
       instance.selectRecipient('mockTo2', 'mockNickname');
-      assert.strictEqual(propsMethodSpies.updateSendTo.callCount, 1);
-      assert.deepStrictEqual(propsMethodSpies.updateSendTo.getCall(0).args, [
+      expect(propsMethodSpies.updateSendTo.callCount).toStrictEqual(1);
+      expect(propsMethodSpies.updateSendTo.getCall(0).args).toStrictEqual([
         'mockTo2',
         'mockNickname',
       ]);
     });
 
-    it('should call updateGas if there is no to error', function () {
-      assert.strictEqual(propsMethodSpies.updateGas.callCount, 0);
+    it('should call updateGas if there is no to error', () => {
+      expect(propsMethodSpies.updateGas.callCount).toStrictEqual(0);
       instance.selectRecipient(false);
-      assert.strictEqual(propsMethodSpies.updateGas.callCount, 1);
+      expect(propsMethodSpies.updateGas.callCount).toStrictEqual(1);
     });
   });
 
-  describe('render', function () {
-    it('should render a component', function () {
-      assert.strictEqual(
-        wrapper.find('.send__select-recipient-wrapper').length,
-        1,
-      );
+  describe('render', () => {
+    it('should render a component', () => {
+      expect(wrapper.find('.send__select-recipient-wrapper')).toHaveLength(1);
     });
 
-    it('should render no content if there are no recents, transfers, and contacts', function () {
+    it('should render no content if there are no recents, transfers, and contacts', () => {
       wrapper.setProps({
         ownedAccounts: [],
         addressBook: [],
       });
 
-      assert.strictEqual(
-        wrapper.find('.send__select-recipient-wrapper__list__link').length,
-        0,
-      );
-      assert.strictEqual(
-        wrapper.find('.send__select-recipient-wrapper__group').length,
-        0,
-      );
+      expect(
+        wrapper.find('.send__select-recipient-wrapper__list__link'),
+      ).toHaveLength(0);
+      expect(
+        wrapper.find('.send__select-recipient-wrapper__group'),
+      ).toHaveLength(0);
     });
 
-    it('should render transfer', function () {
+    it('should render transfer', () => {
       wrapper.setProps({
         ownedAccounts: [
           { address: '0x123', name: '123' },
@@ -121,16 +115,15 @@ describe('AddRecipient Component', function () {
       const xferLink = wrapper.find(
         '.send__select-recipient-wrapper__list__link',
       );
-      assert.strictEqual(xferLink.length, 1);
+      expect(xferLink).toHaveLength(1);
 
       const groups = wrapper.find('RecipientGroup');
-      assert.strictEqual(
-        groups.shallow().find('.send__select-recipient-wrapper__group').length,
-        1,
-      );
+      expect(
+        groups.shallow().find('.send__select-recipient-wrapper__group'),
+      ).toHaveLength(1);
     });
 
-    it('should render ContactList', function () {
+    it('should render ContactList', () => {
       wrapper.setProps({
         ownedAccounts: [
           { address: '0x123', name: '123' },
@@ -141,10 +134,10 @@ describe('AddRecipient Component', function () {
 
       const contactList = wrapper.find('ContactList');
 
-      assert.strictEqual(contactList.length, 1);
+      expect(contactList).toHaveLength(1);
     });
 
-    it('should render contacts', function () {
+    it('should render contacts', () => {
       wrapper.setProps({
         addressBook: [
           { address: '0x125', name: 'alice' },
@@ -157,18 +150,17 @@ describe('AddRecipient Component', function () {
       const xferLink = wrapper.find(
         '.send__select-recipient-wrapper__list__link',
       );
-      assert.strictEqual(xferLink.length, 0);
+      expect(xferLink).toHaveLength(0);
 
       const groups = wrapper.find('ContactList');
-      assert.strictEqual(groups.length, 1);
+      expect(groups).toHaveLength(1);
 
-      assert.strictEqual(
-        groups.find('.send__select-recipient-wrapper__group-item').length,
-        0,
-      );
+      expect(
+        groups.find('.send__select-recipient-wrapper__group-item'),
+      ).toHaveLength(0);
     });
 
-    it('should render error when query has no results', function () {
+    it('should render error when query has no results', () => {
       wrapper.setProps({
         addressBook: [],
         toError: 'bad',
@@ -178,12 +170,12 @@ describe('AddRecipient Component', function () {
 
       const dialog = wrapper.find(Dialog);
 
-      assert.strictEqual(dialog.props().type, 'error');
-      assert.strictEqual(dialog.props().children, 'bad_t');
-      assert.strictEqual(dialog.length, 1);
+      expect(dialog.props().type).toStrictEqual('error');
+      expect(dialog.props().children).toStrictEqual('bad_t');
+      expect(dialog).toHaveLength(1);
     });
 
-    it('should render error when query has ens does not resolve', function () {
+    it('should render error when query has ens does not resolve', () => {
       wrapper.setProps({
         addressBook: [],
         toError: 'bad',
@@ -194,12 +186,12 @@ describe('AddRecipient Component', function () {
 
       const dialog = wrapper.find(Dialog);
 
-      assert.strictEqual(dialog.props().type, 'error');
-      assert.strictEqual(dialog.props().children, 'very bad');
-      assert.strictEqual(dialog.length, 1);
+      expect(dialog.props().type).toStrictEqual('error');
+      expect(dialog.props().children).toStrictEqual('very bad');
+      expect(dialog).toHaveLength(1);
     });
 
-    it('should not render error when ens resolved', function () {
+    it('should not render error when ens resolved', () => {
       wrapper.setProps({
         addressBook: [],
         toError: 'bad',
@@ -208,7 +200,7 @@ describe('AddRecipient Component', function () {
 
       const dialog = wrapper.find(Dialog);
 
-      assert.strictEqual(dialog.length, 0);
+      expect(dialog).toHaveLength(0);
     });
   });
 });

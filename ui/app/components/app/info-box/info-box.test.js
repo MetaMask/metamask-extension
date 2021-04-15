@@ -1,11 +1,10 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
 import InfoBox from './info-box.component';
 
-describe('InfoBox', function () {
+describe('InfoBox', () => {
   let wrapper;
 
   const props = {
@@ -14,23 +13,23 @@ describe('InfoBox', function () {
     onClose: sinon.spy(),
   };
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = shallow(<InfoBox {...props} />);
   });
 
-  it('renders title from props', function () {
+  it('renders title from props', () => {
     const title = wrapper.find('.info-box__title');
-    assert.strictEqual(title.text(), props.title);
+    expect(title.text()).toStrictEqual(props.title);
   });
 
-  it('renders description from props', function () {
+  it('renders description from props', () => {
     const description = wrapper.find('.info-box__description');
-    assert.strictEqual(description.text(), props.description);
+    expect(description.text()).toStrictEqual(props.description);
   });
 
-  it('closes info box', function () {
+  it('closes info box', () => {
     const close = wrapper.find('.info-box__close');
     close.simulate('click');
-    assert(props.onClose.calledOnce);
+    expect(props.onClose.calledOnce).toStrictEqual(true);
   });
 });

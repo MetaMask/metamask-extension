@@ -1,4 +1,3 @@
-import assert from 'assert';
 import {
   KOVAN_CHAIN_ID,
   KOVAN_NETWORK_ID,
@@ -21,8 +20,8 @@ const getEthersArrayLikeFromObj = (obj) => {
   return arr;
 };
 
-describe('Confirm Transaction Selector', function () {
-  describe('unconfirmedTransactionsCountSelector', function () {
+describe('Confirm Transaction Selector', () => {
+  describe('unconfirmedTransactionsCountSelector', () => {
     const state = {
       metamask: {
         unapprovedTxs: {
@@ -43,12 +42,12 @@ describe('Confirm Transaction Selector', function () {
       },
     };
 
-    it('returns number of txs in unapprovedTxs state with the same network plus unapproved signing method counts', function () {
-      assert.strictEqual(unconfirmedTransactionsCountSelector(state), 4);
+    it('returns number of txs in unapprovedTxs state with the same network plus unapproved signing method counts', () => {
+      expect(unconfirmedTransactionsCountSelector(state)).toStrictEqual(4);
     });
   });
 
-  describe('sendTokenTokenAmountAndToAddressSelector', function () {
+  describe('sendTokenTokenAmountAndToAddressSelector', () => {
     const state = {
       confirmTransaction: {
         tokenData: {
@@ -65,15 +64,15 @@ describe('Confirm Transaction Selector', function () {
       },
     };
 
-    it('returns token address and calculated token amount', function () {
-      assert.deepStrictEqual(sendTokenTokenAmountAndToAddressSelector(state), {
+    it('returns token address and calculated token amount', () => {
+      expect(sendTokenTokenAmountAndToAddressSelector(state)).toStrictEqual({
         toAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         tokenAmount: '0.01',
       });
     });
   });
 
-  describe('contractExchangeRateSelector', function () {
+  describe('contractExchangeRateSelector', () => {
     const state = {
       metamask: {
         contractExchangeRates: {
@@ -89,17 +88,17 @@ describe('Confirm Transaction Selector', function () {
       },
     };
 
-    it('returns contract exchange rate in metamask state based on confirm transaction txParams token recipient', function () {
-      assert.strictEqual(contractExchangeRateSelector(state), '10');
+    it('returns contract exchange rate in metamask state based on confirm transaction txParams token recipient', () => {
+      expect(contractExchangeRateSelector(state)).toStrictEqual('10');
     });
   });
 
-  describe('conversionRateSelector', function () {
-    it('returns conversionRate from state', function () {
+  describe('conversionRateSelector', () => {
+    it('returns conversionRate from state', () => {
       const state = {
         metamask: { conversionRate: 556.12 },
       };
-      assert.strictEqual(conversionRateSelector(state), 556.12);
+      expect(conversionRateSelector(state)).toStrictEqual(556.12);
     });
   });
 });

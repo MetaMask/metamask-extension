@@ -1,11 +1,10 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import { mountWithRouter } from '../../../../test/lib/render-helpers';
 import Lock from './lock.container';
 
-describe('Lock', function () {
-  it('replaces history with default route when isUnlocked false', function () {
+describe('Lock', () => {
+  it('replaces history with default route when isUnlocked false', () => {
     const props = {
       isUnlocked: false,
       history: {
@@ -15,10 +14,10 @@ describe('Lock', function () {
 
     mountWithRouter(<Lock.WrappedComponent {...props} />);
 
-    assert.strictEqual(props.history.replace.getCall(0).args[0], '/');
+    expect(props.history.replace.getCall(0).args[0]).toStrictEqual('/');
   });
 
-  it('locks and pushes history with default route when isUnlocked true', function (done) {
+  it('locks and pushes history with default route when isUnlocked true', async () => {
     const props = {
       isUnlocked: true,
       lockMetamask: sinon.stub(),
@@ -31,10 +30,7 @@ describe('Lock', function () {
 
     mountWithRouter(<Lock.WrappedComponent {...props} />);
 
-    assert(props.lockMetamask.calledOnce);
-    setImmediate(() => {
-      assert.strictEqual(props.history.push.getCall(0).args[0], '/');
-      done();
-    });
+    expect(await props.lockMetamask.calledOnce).toStrictEqual(true);
+    expect(props.history.push.getCall(0).args[0]).toStrictEqual('/');
   });
 });

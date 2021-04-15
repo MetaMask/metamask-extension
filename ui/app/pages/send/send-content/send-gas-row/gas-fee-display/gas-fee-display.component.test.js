@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
@@ -10,11 +9,11 @@ const propsMethodSpies = {
   onReset: sinon.spy(),
 };
 
-describe('GasFeeDisplay Component', function () {
+describe('GasFeeDisplay Component', () => {
   let wrapper;
 
-  describe('render', function () {
-    beforeEach(function () {
+  describe('render', () => {
+    beforeEach(() => {
       wrapper = shallow(
         <GasFeeDisplay
           conversionRate={20}
@@ -28,36 +27,33 @@ describe('GasFeeDisplay Component', function () {
       );
     });
 
-    afterEach(function () {
+    afterEach(() => {
       propsMethodSpies.showCustomizeGasModal.resetHistory();
     });
 
-    it('should render a CurrencyDisplay component', function () {
-      assert.strictEqual(
-        wrapper.find(UserPreferencedCurrencyDisplay).length,
-        2,
-      );
+    it('should render a CurrencyDisplay component', () => {
+      expect(wrapper.find(UserPreferencedCurrencyDisplay)).toHaveLength(2);
     });
 
-    it('should render the CurrencyDisplay with the correct props', function () {
+    it('should render the CurrencyDisplay with the correct props', () => {
       const { type, value } = wrapper
         .find(UserPreferencedCurrencyDisplay)
         .at(0)
         .props();
-      assert.strictEqual(type, 'PRIMARY');
-      assert.strictEqual(value, 'mockGasTotal');
+      expect(type).toStrictEqual('PRIMARY');
+      expect(value).toStrictEqual('mockGasTotal');
     });
 
-    it('should render the reset button with the correct props', function () {
+    it('should render the reset button with the correct props', () => {
       const { onClick, className } = wrapper.find('button').props();
-      assert.strictEqual(className, 'gas-fee-reset');
-      assert.strictEqual(propsMethodSpies.onReset.callCount, 0);
+      expect(className).toStrictEqual('gas-fee-reset');
+      expect(propsMethodSpies.onReset.callCount).toStrictEqual(0);
       onClick();
-      assert.strictEqual(propsMethodSpies.onReset.callCount, 1);
+      expect(propsMethodSpies.onReset.callCount).toStrictEqual(1);
     });
 
-    it('should render the reset button with the correct text', function () {
-      assert.strictEqual(wrapper.find('button').text(), 'reset_t');
+    it('should render the reset button with the correct text', () => {
+      expect(wrapper.find('button').text()).toStrictEqual('reset_t');
     });
   });
 });

@@ -1,15 +1,14 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import SendRowWrapper from './send-row-wrapper.component';
 
 import SendRowErrorMessage from './send-row-error-message/send-row-error-message.container';
 
-describe('SendContent Component', function () {
+describe('SendContent Component', () => {
   let wrapper;
 
-  describe('render', function () {
-    beforeEach(function () {
+  describe('render', () => {
+    beforeEach(() => {
       wrapper = shallow(
         <SendRowWrapper
           errorType="mockErrorType"
@@ -21,59 +20,57 @@ describe('SendContent Component', function () {
       );
     });
 
-    it('should render a div with a send-v2__form-row class', function () {
-      assert.strictEqual(wrapper.find('div.send-v2__form-row').length, 1);
+    it('should render a div with a send-v2__form-row class', () => {
+      expect(wrapper.find('div.send-v2__form-row')).toHaveLength(1);
     });
 
-    it('should render two children of the root div, with send-v2_form label and field classes', function () {
-      assert.strictEqual(
-        wrapper.find('.send-v2__form-row > .send-v2__form-label').length,
-        1,
-      );
-      assert.strictEqual(
-        wrapper.find('.send-v2__form-row > .send-v2__form-field').length,
-        1,
-      );
+    it('should render two children of the root div, with send-v2_form label and field classes', () => {
+      expect(
+        wrapper.find('.send-v2__form-row > .send-v2__form-label'),
+      ).toHaveLength(1);
+      expect(
+        wrapper.find('.send-v2__form-row > .send-v2__form-field'),
+      ).toHaveLength(1);
     });
 
-    it('should render the label as a child of the send-v2__form-label', function () {
-      assert.strictEqual(
+    it('should render the label as a child of the send-v2__form-label', () => {
+      expect(
         wrapper
           .find('.send-v2__form-row > .send-v2__form-label')
           .childAt(0)
           .text(),
-        'mockLabel',
-      );
+      ).toStrictEqual('mockLabel');
     });
 
-    it('should render its first child as a child of the send-v2__form-field', function () {
-      assert.strictEqual(
+    it('should render its first child as a child of the send-v2__form-field', () => {
+      expect(
         wrapper
           .find('.send-v2__form-row > .send-v2__form-field')
           .childAt(0)
           .text(),
-        'Mock Form Field',
-      );
+      ).toStrictEqual('Mock Form Field');
     });
 
-    it('should not render a SendRowErrorMessage if showError is false', function () {
-      assert.strictEqual(wrapper.find(SendRowErrorMessage).length, 0);
+    it('should not render a SendRowErrorMessage if showError is false', () => {
+      expect(wrapper.find(SendRowErrorMessage)).toHaveLength(0);
     });
 
-    it('should render a SendRowErrorMessage with and errorType props if showError is true', function () {
+    it('should render a SendRowErrorMessage with and errorType props if showError is true', () => {
       wrapper.setProps({ showError: true });
-      assert.strictEqual(wrapper.find(SendRowErrorMessage).length, 1);
+      expect(wrapper.find(SendRowErrorMessage)).toHaveLength(1);
 
       const expectedSendRowErrorMessage = wrapper
         .find('.send-v2__form-row > .send-v2__form-label')
         .childAt(1);
-      assert(expectedSendRowErrorMessage.is(SendRowErrorMessage));
-      assert.deepStrictEqual(expectedSendRowErrorMessage.props(), {
+      expect(expectedSendRowErrorMessage.is(SendRowErrorMessage)).toStrictEqual(
+        true,
+      );
+      expect(expectedSendRowErrorMessage.props()).toStrictEqual({
         errorType: 'mockErrorType',
       });
     });
 
-    it('should render its second child as a child of the send-v2__form-field, if it has two children', function () {
+    it('should render its second child as a child of the send-v2__form-field, if it has two children', () => {
       wrapper = shallow(
         <SendRowWrapper
           errorType="mockErrorType"
@@ -84,16 +81,15 @@ describe('SendContent Component', function () {
           <span>Mock Form Field</span>
         </SendRowWrapper>,
       );
-      assert.strictEqual(
+      expect(
         wrapper
           .find('.send-v2__form-row > .send-v2__form-field')
           .childAt(0)
           .text(),
-        'Mock Form Field',
-      );
+      ).toStrictEqual('Mock Form Field');
     });
 
-    it('should render its first child as the last child of the send-v2__form-label, if it has two children', function () {
+    it('should render its first child as the last child of the send-v2__form-label, if it has two children', () => {
       wrapper = shallow(
         <SendRowWrapper
           errorType="mockErrorType"
@@ -104,13 +100,12 @@ describe('SendContent Component', function () {
           <span>Mock Form Field</span>
         </SendRowWrapper>,
       );
-      assert.strictEqual(
+      expect(
         wrapper
           .find('.send-v2__form-row > .send-v2__form-label')
           .childAt(1)
           .text(),
-        'Mock Custom Label Content',
-      );
+      ).toStrictEqual('Mock Custom Label Content');
     });
   });
 });

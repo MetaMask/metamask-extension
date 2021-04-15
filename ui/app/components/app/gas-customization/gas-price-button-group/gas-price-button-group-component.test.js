@@ -1,4 +1,3 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import shallow from '../../../../../lib/shallow-with-context';
@@ -7,12 +6,12 @@ import { GAS_ESTIMATE_TYPES } from '../../../../helpers/constants/common';
 import ButtonGroup from '../../../ui/button-group';
 import GasPriceButtonGroup from './gas-price-button-group.component';
 
-describe('GasPriceButtonGroup Component', function () {
+describe('GasPriceButtonGroup Component', () => {
   let mockButtonPropsAndFlags;
   let mockGasPriceButtonGroupProps;
   let wrapper;
 
-  beforeEach(function () {
+  beforeEach(() => {
     mockGasPriceButtonGroupProps = {
       buttonDataLoading: false,
       className: 'gas-price-button-group',
@@ -60,59 +59,59 @@ describe('GasPriceButtonGroup Component', function () {
     );
   });
 
-  afterEach(function () {
+  afterEach(() => {
     sinon.restore();
   });
 
-  describe('render', function () {
-    it('should render a ButtonGroup', function () {
-      assert(wrapper.is(ButtonGroup));
+  describe('render', () => {
+    it('should render a ButtonGroup', () => {
+      expect(wrapper.is(ButtonGroup)).toStrictEqual(true);
     });
 
-    it('should render the correct props on the ButtonGroup', function () {
+    it('should render the correct props on the ButtonGroup', () => {
       const {
         className,
         defaultActiveButtonIndex,
         noButtonActiveByDefault,
       } = wrapper.props();
-      assert.strictEqual(className, 'gas-price-button-group');
-      assert.strictEqual(defaultActiveButtonIndex, 2);
-      assert.strictEqual(noButtonActiveByDefault, true);
+      expect(className).toStrictEqual('gas-price-button-group');
+      expect(defaultActiveButtonIndex).toStrictEqual(2);
+      expect(noButtonActiveByDefault).toStrictEqual(true);
     });
 
     function renderButtonArgsTest(i, mockPropsAndFlags) {
-      assert.deepStrictEqual(
+      expect(
         GasPriceButtonGroup.prototype.renderButton.getCall(i).args,
-        [
-          { ...mockGasPriceButtonGroupProps.gasButtonInfo[i] },
-          mockPropsAndFlags,
-          i,
-        ],
-      );
+      ).toStrictEqual([
+        { ...mockGasPriceButtonGroupProps.gasButtonInfo[i] },
+        mockPropsAndFlags,
+        i,
+      ]);
     }
 
-    it('should call this.renderButton 3 times, with the correct args', function () {
-      assert.strictEqual(
+    it('should call this.renderButton 3 times, with the correct args', () => {
+      expect(
         GasPriceButtonGroup.prototype.renderButton.callCount,
-        3,
-      );
+      ).toStrictEqual(3);
       renderButtonArgsTest(0, mockButtonPropsAndFlags);
       renderButtonArgsTest(1, mockButtonPropsAndFlags);
       renderButtonArgsTest(2, mockButtonPropsAndFlags);
     });
 
-    it('should show loading if buttonDataLoading', function () {
+    it('should show loading if buttonDataLoading', () => {
       wrapper.setProps({ buttonDataLoading: true });
-      assert(wrapper.is('div'));
-      assert(wrapper.hasClass('gas-price-button-group__loading-container'));
-      assert.strictEqual(wrapper.text(), 'loading');
+      expect(wrapper.is('div')).toStrictEqual(true);
+      expect(
+        wrapper.hasClass('gas-price-button-group__loading-container'),
+      ).toStrictEqual(true);
+      expect(wrapper.text()).toStrictEqual('loading');
     });
   });
 
-  describe('renderButton', function () {
+  describe('renderButton', () => {
     let wrappedRenderButtonResult;
 
-    beforeEach(function () {
+    beforeEach(() => {
       GasPriceButtonGroup.prototype.renderButtonContent.resetHistory();
       const renderButtonResult = wrapper
         .instance()
@@ -123,38 +122,33 @@ describe('GasPriceButtonGroup Component', function () {
       wrappedRenderButtonResult = shallow(renderButtonResult);
     });
 
-    it('should render a button', function () {
-      assert.strictEqual(wrappedRenderButtonResult.type(), 'button');
+    it('should render a button', () => {
+      expect(wrappedRenderButtonResult.type()).toStrictEqual('button');
     });
 
-    it('should call the correct method when clicked', function () {
-      assert.strictEqual(
+    it('should call the correct method when clicked', () => {
+      expect(
         mockGasPriceButtonGroupProps.handleGasPriceSelection.callCount,
-        0,
-      );
+      ).toStrictEqual(0);
       wrappedRenderButtonResult.props().onClick();
-      assert.strictEqual(
+      expect(
         mockGasPriceButtonGroupProps.handleGasPriceSelection.callCount,
-        1,
-      );
-      assert.deepStrictEqual(
+      ).toStrictEqual(1);
+      expect(
         mockGasPriceButtonGroupProps.handleGasPriceSelection.getCall(0).args,
-        [
-          {
-            gasPrice:
-              mockGasPriceButtonGroupProps.gasButtonInfo[0].priceInHexWei,
-            gasEstimateType:
-              mockGasPriceButtonGroupProps.gasButtonInfo[0].gasEstimateType,
-          },
-        ],
-      );
+      ).toStrictEqual([
+        {
+          gasPrice: mockGasPriceButtonGroupProps.gasButtonInfo[0].priceInHexWei,
+          gasEstimateType:
+            mockGasPriceButtonGroupProps.gasButtonInfo[0].gasEstimateType,
+        },
+      ]);
     });
 
-    it('should call this.renderButtonContent with the correct args', function () {
-      assert.strictEqual(
+    it('should call this.renderButtonContent with the correct args', () => {
+      expect(
         GasPriceButtonGroup.prototype.renderButtonContent.callCount,
-        1,
-      );
+      ).toStrictEqual(1);
       const {
         feeInPrimaryCurrency,
         feeInSecondaryCurrency,
@@ -162,26 +156,25 @@ describe('GasPriceButtonGroup Component', function () {
         gasEstimateType,
       } = mockGasPriceButtonGroupProps.gasButtonInfo[0];
       const { showCheck, className } = mockGasPriceButtonGroupProps;
-      assert.deepStrictEqual(
+      expect(
         GasPriceButtonGroup.prototype.renderButtonContent.getCall(0).args,
-        [
-          {
-            gasEstimateType,
-            feeInPrimaryCurrency,
-            feeInSecondaryCurrency,
-            timeEstimate,
-          },
-          {
-            showCheck,
-            className,
-          },
-        ],
-      );
+      ).toStrictEqual([
+        {
+          gasEstimateType,
+          feeInPrimaryCurrency,
+          feeInSecondaryCurrency,
+          timeEstimate,
+        },
+        {
+          showCheck,
+          className,
+        },
+      ]);
     });
   });
 
-  describe('renderButtonContent', function () {
-    it('should render a label if passed a gasEstimateType', function () {
+  describe('renderButtonContent', () => {
+    it('should render a label if passed a gasEstimateType', () => {
       const renderButtonContentResult = wrapper.instance().renderButtonContent(
         {
           gasEstimateType: 'SLOW',
@@ -193,17 +186,15 @@ describe('GasPriceButtonGroup Component', function () {
       const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       );
-      assert.strictEqual(
-        wrappedRenderButtonContentResult.childAt(0).children().length,
-        1,
-      );
-      assert.strictEqual(
+      expect(
+        wrappedRenderButtonContentResult.childAt(0).children(),
+      ).toHaveLength(1);
+      expect(
         wrappedRenderButtonContentResult.find('.someClass__label').text(),
-        'slow',
-      );
+      ).toStrictEqual('slow');
     });
 
-    it('should render a feeInPrimaryCurrency if passed a feeInPrimaryCurrency', function () {
+    it('should render a feeInPrimaryCurrency if passed a feeInPrimaryCurrency', () => {
       const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent(
         {
           feeInPrimaryCurrency: 'mockFeeInPrimaryCurrency',
@@ -215,19 +206,17 @@ describe('GasPriceButtonGroup Component', function () {
       const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       );
-      assert.strictEqual(
-        wrappedRenderButtonContentResult.childAt(0).children().length,
-        1,
-      );
-      assert.strictEqual(
+      expect(
+        wrappedRenderButtonContentResult.childAt(0).children(),
+      ).toHaveLength(1);
+      expect(
         wrappedRenderButtonContentResult
           .find('.someClass__primary-currency')
           .text(),
-        'mockFeeInPrimaryCurrency',
-      );
+      ).toStrictEqual('mockFeeInPrimaryCurrency');
     });
 
-    it('should render a feeInSecondaryCurrency if passed a feeInSecondaryCurrency', function () {
+    it('should render a feeInSecondaryCurrency if passed a feeInSecondaryCurrency', () => {
       const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent(
         {
           feeInSecondaryCurrency: 'mockFeeInSecondaryCurrency',
@@ -239,19 +228,17 @@ describe('GasPriceButtonGroup Component', function () {
       const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       );
-      assert.strictEqual(
-        wrappedRenderButtonContentResult.childAt(0).children().length,
-        1,
-      );
-      assert.strictEqual(
+      expect(
+        wrappedRenderButtonContentResult.childAt(0).children(),
+      ).toHaveLength(1);
+      expect(
         wrappedRenderButtonContentResult
           .find('.someClass__secondary-currency')
           .text(),
-        'mockFeeInSecondaryCurrency',
-      );
+      ).toStrictEqual('mockFeeInSecondaryCurrency');
     });
 
-    it('should render a timeEstimate if passed a timeEstimate', function () {
+    it('should render a timeEstimate if passed a timeEstimate', () => {
       const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent(
         {
           timeEstimate: 'mockTimeEstimate',
@@ -263,19 +250,17 @@ describe('GasPriceButtonGroup Component', function () {
       const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       );
-      assert.strictEqual(
-        wrappedRenderButtonContentResult.childAt(0).children().length,
-        1,
-      );
-      assert.strictEqual(
+      expect(
+        wrappedRenderButtonContentResult.childAt(0).children(),
+      ).toHaveLength(1);
+      expect(
         wrappedRenderButtonContentResult
           .find('.someClass__time-estimate')
           .text(),
-        'mockTimeEstimate',
-      );
+      ).toStrictEqual('mockTimeEstimate');
     });
 
-    it('should render a check if showCheck is true', function () {
+    it('should render a check if showCheck is true', () => {
       const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent(
         {},
         {
@@ -286,13 +271,12 @@ describe('GasPriceButtonGroup Component', function () {
       const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       );
-      assert.strictEqual(
-        wrappedRenderButtonContentResult.find('.fa-check').length,
+      expect(wrappedRenderButtonContentResult.find('.fa-check')).toHaveLength(
         1,
       );
     });
 
-    it('should render all elements if all args passed', function () {
+    it('should render all elements if all args passed', () => {
       const renderButtonContentResult = wrapper.instance().renderButtonContent(
         {
           gasEstimateType: 'SLOW',
@@ -308,10 +292,10 @@ describe('GasPriceButtonGroup Component', function () {
       const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       );
-      assert.strictEqual(wrappedRenderButtonContentResult.children().length, 5);
+      expect(wrappedRenderButtonContentResult.children()).toHaveLength(5);
     });
 
-    it('should render no elements if all args passed', function () {
+    it('should render no elements if all args passed', () => {
       const renderButtonContentResult = GasPriceButtonGroup.prototype.renderButtonContent(
         {},
         {},
@@ -319,7 +303,7 @@ describe('GasPriceButtonGroup Component', function () {
       const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       );
-      assert.strictEqual(wrappedRenderButtonContentResult.children().length, 0);
+      expect(wrappedRenderButtonContentResult.children()).toHaveLength(0);
     });
   });
 });

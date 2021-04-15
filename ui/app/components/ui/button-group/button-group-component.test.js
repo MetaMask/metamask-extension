@@ -1,10 +1,9 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import ButtonGroup from './button-group.component';
 
-describe('ButtonGroup Component', function () {
+describe('ButtonGroup Component', () => {
   let wrapper;
 
   const childButtonSpies = {
@@ -19,12 +18,12 @@ describe('ButtonGroup Component', function () {
     <button onClick={childButtonSpies.onClick} key="c"></button>,
   ];
 
-  before(function () {
+  beforeAll(() => {
     sinon.spy(ButtonGroup.prototype, 'handleButtonClick');
     sinon.spy(ButtonGroup.prototype, 'renderButtons');
   });
 
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = shallow(
       <ButtonGroup
         defaultActiveButtonIndex={1}
@@ -37,92 +36,95 @@ describe('ButtonGroup Component', function () {
     );
   });
 
-  afterEach(function () {
+  afterEach(() => {
     childButtonSpies.onClick.resetHistory();
     ButtonGroup.prototype.handleButtonClick.resetHistory();
     ButtonGroup.prototype.renderButtons.resetHistory();
   });
 
-  after(function () {
+  afterAll(() => {
     sinon.restore();
   });
 
-  describe('componentDidUpdate', function () {
-    it('should set the activeButtonIndex to the updated newActiveButtonIndex', function () {
-      assert.strictEqual(wrapper.state('activeButtonIndex'), 1);
+  describe('componentDidUpdate', () => {
+    it('should set the activeButtonIndex to the updated newActiveButtonIndex', () => {
+      expect(wrapper.state('activeButtonIndex')).toStrictEqual(1);
       wrapper.setProps({ newActiveButtonIndex: 2 });
-      assert.strictEqual(wrapper.state('activeButtonIndex'), 2);
+      expect(wrapper.state('activeButtonIndex')).toStrictEqual(2);
     });
 
-    it('should not set the activeButtonIndex to an updated newActiveButtonIndex that is not a number', function () {
-      assert.strictEqual(wrapper.state('activeButtonIndex'), 1);
+    it('should not set the activeButtonIndex to an updated newActiveButtonIndex that is not a number', () => {
+      expect(wrapper.state('activeButtonIndex')).toStrictEqual(1);
       wrapper.setProps({ newActiveButtonIndex: null });
-      assert.strictEqual(wrapper.state('activeButtonIndex'), 1);
+      expect(wrapper.state('activeButtonIndex')).toStrictEqual(1);
     });
   });
 
-  describe('handleButtonClick', function () {
-    it('should set the activeButtonIndex', function () {
-      assert.strictEqual(wrapper.state('activeButtonIndex'), 1);
+  describe('handleButtonClick', () => {
+    it('should set the activeButtonIndex', () => {
+      expect(wrapper.state('activeButtonIndex')).toStrictEqual(1);
       wrapper.instance().handleButtonClick(2);
-      assert.strictEqual(wrapper.state('activeButtonIndex'), 2);
+      expect(wrapper.state('activeButtonIndex')).toStrictEqual(2);
     });
   });
 
-  describe('renderButtons', function () {
-    it('should render a button for each child', function () {
+  describe('renderButtons', () => {
+    it('should render a button for each child', () => {
       const childButtons = wrapper.find('.button-group__button');
-      assert.strictEqual(childButtons.length, 3);
+      expect(childButtons).toHaveLength(3);
     });
 
-    it('should render the correct button with an active state', function () {
+    it('should render the correct button with an active state', () => {
       const childButtons = wrapper.find('.button-group__button');
       const activeChildButton = wrapper.find('.button-group__button--active');
-      assert.deepStrictEqual(childButtons.get(1), activeChildButton.get(0));
+      expect(childButtons.get(1)).toStrictEqual(activeChildButton.get(0));
     });
 
-    it("should call handleButtonClick and the respective button's onClick method when a button is clicked", function () {
-      assert.strictEqual(ButtonGroup.prototype.handleButtonClick.callCount, 0);
-      assert.strictEqual(childButtonSpies.onClick.callCount, 0);
+    it("should call handleButtonClick and the respective button's onClick method when a button is clicked", () => {
+      expect(ButtonGroup.prototype.handleButtonClick.callCount).toStrictEqual(
+        0,
+      );
+      expect(childButtonSpies.onClick.callCount).toStrictEqual(0);
       const childButtons = wrapper.find('.button-group__button');
       childButtons.at(0).props().onClick();
       childButtons.at(1).props().onClick();
       childButtons.at(2).props().onClick();
-      assert.strictEqual(ButtonGroup.prototype.handleButtonClick.callCount, 3);
-      assert.strictEqual(childButtonSpies.onClick.callCount, 3);
+      expect(ButtonGroup.prototype.handleButtonClick.callCount).toStrictEqual(
+        3,
+      );
+      expect(childButtonSpies.onClick.callCount).toStrictEqual(3);
     });
 
-    it('should render all child buttons as disabled if props.disabled is true', function () {
+    it('should render all child buttons as disabled if props.disabled is true', () => {
       const childButtons = wrapper.find('.button-group__button');
       childButtons.forEach((button) => {
-        assert.strictEqual(button.props().disabled, undefined);
+        expect(button.props().disabled).toBeUndefined();
       });
       wrapper.setProps({ disabled: true });
       const disabledChildButtons = wrapper.find('[disabled=true]');
-      assert.strictEqual(disabledChildButtons.length, 3);
+      expect(disabledChildButtons).toHaveLength(3);
     });
 
-    it('should render the children of the button', function () {
+    it('should render the children of the button', () => {
       const mockClass = wrapper.find('.mockClass');
-      assert.strictEqual(mockClass.length, 1);
+      expect(mockClass).toHaveLength(1);
     });
   });
 
-  describe('render', function () {
-    it('should render a div with the expected class and style', function () {
-      assert.strictEqual(
-        wrapper.find('div').at(0).props().className,
+  describe('render', () => {
+    it('should render a div with the expected class and style', () => {
+      expect(wrapper.find('div').at(0).props().className).toStrictEqual(
         'someClassName',
       );
-      assert.deepStrictEqual(wrapper.find('div').at(0).props().style, {
+      expect(wrapper.find('div').at(0).props().style).toStrictEqual({
         color: 'red',
       });
     });
 
-    it('should call renderButtons when rendering', function () {
-      assert.strictEqual(ButtonGroup.prototype.renderButtons.callCount, 1);
+    it('should call renderButtons when rendering', () => {
+      expect(ButtonGroup.prototype.renderButtons.callCount).toStrictEqual(1);
       wrapper.instance().render();
-      assert.strictEqual(ButtonGroup.prototype.renderButtons.callCount, 2);
+      expect(ButtonGroup.prototype.renderButtons.callCount).toStrictEqual(2);
     });
   });
 });

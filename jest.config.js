@@ -10,5 +10,5 @@ module.exports = {
     },
   },
   setupFiles: ['./test/setup.js', './test/env.js'],
-  testMatch: ['<rootDir>/ui/app/**/swaps/**/*.test.js'],
+  testMatch: ['**/ui/**/?(*.)+(test).js'],
 };

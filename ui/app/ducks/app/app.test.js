@@ -1,10 +1,9 @@
-import assert from 'assert';
 import * as actionConstants from '../../store/actionConstants';
 import reduceApp from './app';
 
 const actions = actionConstants;
 
-describe('App State', function () {
+describe('App State', () => {
   const metamaskState = {
     selectedAddress: '0xAddress',
     identities: {
@@ -15,31 +14,31 @@ describe('App State', function () {
     },
   };
 
-  it('App init state', function () {
+  it('app init state', () => {
     const initState = reduceApp(metamaskState, {});
 
-    assert(initState);
+    expect.anything(initState);
   });
 
-  it('sets networkDropdownOpen dropdown to true', function () {
+  it('sets networkDropdownOpen dropdown to true', () => {
     const state = reduceApp(metamaskState, {
       type: actions.NETWORK_DROPDOWN_OPEN,
     });
 
-    assert.equal(state.networkDropdownOpen, true);
+    expect(state.networkDropdownOpen).toStrictEqual(true);
   });
 
-  it('sets networkDropdownOpen dropdown to false', function () {
+  it('sets networkDropdownOpen dropdown to false', () => {
     const dropdown = { networkDropdowopen: true };
     const state = { ...metamaskState, ...dropdown };
     const newState = reduceApp(state, {
       type: actions.NETWORK_DROPDOWN_CLOSE,
     });
 
-    assert.equal(newState.networkDropdownOpen, false);
+    expect(newState.networkDropdownOpen).toStrictEqual(false);
   });
 
-  it('opens sidebar', function () {
+  it('opens sidebar', () => {
     const value = {
       transitionName: 'sidebar-right',
       type: 'wallet-view',
@@ -50,10 +49,10 @@ describe('App State', function () {
       value,
     });
 
-    assert.deepEqual(state.sidebar, value);
+    expect(state.sidebar).toStrictEqual(value);
   });
 
-  it('closes sidebar', function () {
+  it('closes sidebar', () => {
     const openSidebar = { sidebar: { isOpen: true } };
     const state = { ...metamaskState, ...openSidebar };
 
@@ -61,40 +60,40 @@ describe('App State', function () {
       type: actions.SIDEBAR_CLOSE,
     });
 
-    assert.equal(newState.sidebar.isOpen, false);
+    expect(newState.sidebar.isOpen).toStrictEqual(false);
   });
 
-  it('opens alert', function () {
+  it('opens alert', () => {
     const state = reduceApp(metamaskState, {
       type: actions.ALERT_OPEN,
       value: 'test message',
     });
 
-    assert.equal(state.alertOpen, true);
-    assert.equal(state.alertMessage, 'test message');
+    expect(state.alertOpen).toStrictEqual(true);
+    expect(state.alertMessage).toStrictEqual('test message');
   });
 
-  it('closes alert', function () {
+  it('closes alert', () => {
     const alert = { alertOpen: true, alertMessage: 'test message' };
     const state = { ...metamaskState, ...alert };
     const newState = reduceApp(state, {
       type: actions.ALERT_CLOSE,
     });
 
-    assert.equal(newState.alertOpen, false);
-    assert.equal(newState.alertMessage, null);
+    expect(newState.alertOpen).toStrictEqual(false);
+    expect(newState.alertMessage).toBeNull();
   });
 
-  it('detects qr code data', function () {
+  it('detects qr code data', () => {
     const state = reduceApp(metamaskState, {
       type: actions.QR_CODE_DETECTED,
       value: 'qr data',
     });
 
-    assert.equal(state.qrCodeData, 'qr data');
+    expect(state.qrCodeData).toStrictEqual('qr data');
   });
 
-  it('opens modal', function () {
+  it('opens modal', () => {
     const state = reduceApp(metamaskState, {
       type: actions.MODAL_OPEN,
       payload: {
@@ -102,11 +101,11 @@ describe('App State', function () {
       },
     });
 
-    assert.equal(state.modal.open, true);
-    assert.equal(state.modal.modalState.name, 'test');
+    expect(state.modal.open).toStrictEqual(true);
+    expect(state.modal.modalState.name).toStrictEqual('test');
   });
 
-  it('closes modal, but moves open modal state to previous modal state', function () {
+  it('closes modal, but moves open modal state to previous modal state', () => {
     const opensModal = {
       modal: {
         open: true,
@@ -121,49 +120,49 @@ describe('App State', function () {
       type: actions.MODAL_CLOSE,
     });
 
-    assert.equal(newState.modal.open, false);
-    assert.equal(newState.modal.modalState.name, null);
+    expect(newState.modal.open).toStrictEqual(false);
+    expect(newState.modal.modalState.name).toBeNull();
   });
 
-  it('shows send token page', function () {
+  it('shows send token page', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_SEND_TOKEN_PAGE,
     });
 
-    assert.equal(state.warning, null);
+    expect(state.warning).toBeNull();
   });
 
-  it('locks Metamask', function () {
+  it('locks Metamask', () => {
     const state = reduceApp(metamaskState, {
       type: actions.LOCK_METAMASK,
     });
 
-    assert.equal(state.warning, null);
+    expect(state.warning).toBeNull();
   });
 
-  it('goes home', function () {
+  it('goes home', () => {
     const state = reduceApp(metamaskState, {
       type: actions.GO_HOME,
     });
 
-    assert.equal(state.accountDetail.subview, 'transactions');
-    assert.equal(state.accountDetail.accountExport, 'none');
-    assert.equal(state.accountDetail.privateKey, '');
-    assert.equal(state.warning, null);
+    expect(state.accountDetail.subview).toStrictEqual('transactions');
+    expect(state.accountDetail.accountExport).toStrictEqual('none');
+    expect(state.accountDetail.privateKey).toStrictEqual('');
+    expect(state.warning).toBeNull();
   });
 
-  it('shows account detail', function () {
+  it('shows account detail', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_ACCOUNT_DETAIL,
       value: 'context address',
     });
-    assert.equal(state.forgottenPassword, null); // default
-    assert.equal(state.accountDetail.subview, 'transactions'); // default
-    assert.equal(state.accountDetail.accountExport, 'none'); // default
-    assert.equal(state.accountDetail.privateKey, ''); // default
+    expect(state.forgottenPassword).toBeNull(); // default
+    expect(state.accountDetail.subview).toStrictEqual('transactions'); // default
+    expect(state.accountDetail.accountExport).toStrictEqual('none'); // default
+    expect(state.accountDetail.privateKey).toStrictEqual(''); // default
   });
 
-  it('clears account details', function () {
+  it('clears account details', () => {
     const exportPrivKeyModal = {
       accountDetail: {
         subview: 'export',
@@ -177,21 +176,21 @@ describe('App State', function () {
       type: actions.CLEAR_ACCOUNT_DETAILS,
     });
 
-    assert.deepStrictEqual(newState.accountDetail, {});
+    expect(newState.accountDetail).toStrictEqual({});
   });
 
-  it('shoes account page', function () {
+  it('shoes account page', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_ACCOUNTS_PAGE,
     });
 
-    assert.equal(state.isLoading, false);
-    assert.equal(state.warning, null);
-    assert.equal(state.scrollToBottom, false);
-    assert.equal(state.forgottenPassword, false);
+    expect(state.isLoading).toStrictEqual(false);
+    expect(state.warning).toBeNull();
+    expect(state.scrollToBottom).toStrictEqual(false);
+    expect(state.forgottenPassword).toStrictEqual(false);
   });
 
-  it('shows confirm tx page', function () {
+  it('shows confirm tx page', () => {
     const txs = {
       unapprovedTxs: {
         1: {
@@ -208,12 +207,12 @@ describe('App State', function () {
       id: 2,
     });
 
-    assert.equal(state.txId, 2);
-    assert.equal(state.warning, null);
-    assert.equal(state.isLoading, false);
+    expect(state.txId).toStrictEqual(2);
+    expect(state.warning).toBeNull();
+    expect(state.isLoading).toStrictEqual(false);
   });
 
-  it('completes tx continues to show pending txs current view context', function () {
+  it('completes tx continues to show pending txs current view context', () => {
     const txs = {
       unapprovedTxs: {
         1: {
@@ -234,11 +233,11 @@ describe('App State', function () {
       },
     });
 
-    assert.equal(state.txId, null);
-    assert.equal(state.warning, null);
+    expect(state.txId).toBeNull();
+    expect(state.warning).toBeNull();
   });
 
-  it('returns to account detail page when no unconf actions completed tx', function () {
+  it('returns to account detail page when no unconf actions completed tx', () => {
     const state = reduceApp(metamaskState, {
       type: actions.COMPLETED_TX,
       value: {
@@ -246,38 +245,38 @@ describe('App State', function () {
       },
     });
 
-    assert.equal(state.warning, null);
-    assert.equal(state.accountDetail.subview, 'transactions');
+    expect(state.warning).toBeNull();
+    expect(state.accountDetail.subview).toStrictEqual('transactions');
   });
 
-  it('sets default warning when unlock fails', function () {
+  it('sets default warning when unlock fails', () => {
     const state = reduceApp(metamaskState, {
       type: actions.UNLOCK_FAILED,
     });
 
-    assert.equal(state.warning, 'Incorrect password. Try again.');
+    expect(state.warning).toStrictEqual('Incorrect password. Try again.');
   });
 
-  it('sets errors when unlock fails', function () {
+  it('sets errors when unlock fails', () => {
     const state = reduceApp(metamaskState, {
       type: actions.UNLOCK_FAILED,
       value: 'errors',
     });
 
-    assert.equal(state.warning, 'errors');
+    expect(state.warning).toStrictEqual('errors');
   });
 
-  it('sets warning to empty string when unlock succeeds', function () {
+  it('sets warning to empty string when unlock succeeds', () => {
     const errorState = { warning: 'errors' };
     const oldState = { ...metamaskState, ...errorState };
     const state = reduceApp(oldState, {
       type: actions.UNLOCK_SUCCEEDED,
     });
 
-    assert.equal(state.warning, '');
+    expect(state.warning).toStrictEqual('');
   });
 
-  it('sets hardware wallet default hd path', function () {
+  it('sets hardware wallet default hd path', () => {
     const hdPaths = {
       trezor: "m/44'/60'/0'/0",
       ledger: "m/44'/60'/0'",
@@ -290,20 +289,20 @@ describe('App State', function () {
       },
     });
 
-    assert.deepEqual(state.defaultHdPaths, hdPaths);
+    expect(state.defaultHdPaths).toStrictEqual(hdPaths);
   });
 
-  it('shows loading message', function () {
+  it('shows loading message', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_LOADING,
       value: 'loading',
     });
 
-    assert.equal(state.isLoading, true);
-    assert.equal(state.loadingMessage, 'loading');
+    expect(state.isLoading).toStrictEqual(true);
+    expect(state.loadingMessage).toStrictEqual('loading');
   });
 
-  it('hides loading message', function () {
+  it('hides loading message', () => {
     const loadingState = { isLoading: true };
     const oldState = { ...metamaskState, ...loadingState };
 
@@ -311,64 +310,64 @@ describe('App State', function () {
       type: actions.HIDE_LOADING,
     });
 
-    assert.equal(state.isLoading, false);
+    expect(state.isLoading).toStrictEqual(false);
   });
 
-  it('displays warning', function () {
+  it('displays warning', () => {
     const state = reduceApp(metamaskState, {
       type: actions.DISPLAY_WARNING,
       value: 'warning',
     });
 
-    assert.equal(state.isLoading, false);
-    assert.equal(state.warning, 'warning');
+    expect(state.isLoading).toStrictEqual(false);
+    expect(state.warning).toStrictEqual('warning');
   });
 
-  it('hides warning', function () {
+  it('hides warning', () => {
     const displayWarningState = { warning: 'warning' };
     const oldState = { ...metamaskState, ...displayWarningState };
     const state = reduceApp(oldState, {
       type: actions.HIDE_WARNING,
     });
 
-    assert.equal(state.warning, undefined);
+    expect(state.warning).toBeUndefined();
   });
 
-  it('shows private key', function () {
+  it('shows private key', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_PRIVATE_KEY,
       value: 'private key',
     });
 
-    assert.equal(state.accountDetail.subview, 'export');
-    assert.equal(state.accountDetail.accountExport, 'completed');
-    assert.equal(state.accountDetail.privateKey, 'private key');
+    expect(state.accountDetail.subview).toStrictEqual('export');
+    expect(state.accountDetail.accountExport).toStrictEqual('completed');
+    expect(state.accountDetail.privateKey).toStrictEqual('private key');
   });
 
-  it('set mouse user state', function () {
+  it('set mouse user state', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SET_MOUSE_USER_STATE,
       value: true,
     });
 
-    assert.equal(state.isMouseUser, true);
+    expect(state.isMouseUser).toStrictEqual(true);
   });
 
-  it('sets gas loading', function () {
+  it('sets gas loading', () => {
     const state = reduceApp(metamaskState, {
       type: actions.GAS_LOADING_STARTED,
     });
 
-    assert.equal(state.gasIsLoading, true);
+    expect(state.gasIsLoading).toStrictEqual(true);
   });
 
-  it('unsets gas loading', function () {
+  it('unsets gas loading', () => {
     const gasLoadingState = { gasIsLoading: true };
     const oldState = { ...metamaskState, ...gasLoadingState };
     const state = reduceApp(oldState, {
       type: actions.GAS_LOADING_FINISHED,
     });
 
-    assert.equal(state.gasIsLoading, false);
+    expect(state.gasIsLoading).toStrictEqual(false);
   });
 });

@@ -1,76 +1,89 @@
-import assert from 'assert';
-import proxyquire from 'proxyquire';
 import sinon from 'sinon';
+
+import {
+  clearSend,
+  signTx,
+  signTokenTx,
+  addToAddressBook,
+} from '../../../store/actions';
+import {
+  addressIsNew,
+  constructTxParams,
+  constructUpdatedTx,
+} from './send-footer.utils';
 
 let mapDispatchToProps;
 
-const actionSpies = {
-  addToAddressBook: sinon.spy(),
-  clearSend: sinon.spy(),
-  signTokenTx: sinon.spy(),
-  signTx: sinon.spy(),
-  updateTransaction: sinon.spy(),
-};
-const utilsStubs = {
-  addressIsNew: sinon.stub().returns(true),
-  constructTxParams: sinon.stub().returns({
-    value: 'mockAmount',
-  }),
-  constructUpdatedTx: sinon.stub().returns('mockConstructedUpdatedTxParams'),
-};
-
-proxyquire('./send-footer.container.js', {
-  'react-redux': {
-    connect: (_, md) => {
-      mapDispatchToProps = md;
-      return () => ({});
-    },
+jest.mock('react-redux', () => ({
+  connect: (_, md) => {
+    mapDispatchToProps = md;
+    return () => ({});
   },
-  '../../../store/actions': actionSpies,
-  '../../../selectors': {
-    getGasLimit: (s) => `mockGasLimit:${s}`,
-    getGasPrice: (s) => `mockGasPrice:${s}`,
-    getGasTotal: (s) => `mockGasTotal:${s}`,
-    getSendToken: (s) => `mockSendToken:${s}`,
-    getSendAmount: (s) => `mockAmount:${s}`,
-    getSendEditingTransactionId: (s) => `mockEditingTransactionId:${s}`,
-    getSendFromObject: (s) => `mockFromObject:${s}`,
-    getSendTo: (s) => `mockTo:${s}`,
-    getSendToNickname: (s) => `mockToNickname:${s}`,
-    getSendToAccounts: (s) => `mockToAccounts:${s}`,
-    getTokenBalance: (s) => `mockTokenBalance:${s}`,
-    getSendHexData: (s) => `mockHexData:${s}`,
-    getUnapprovedTxs: (s) => `mockUnapprovedTxs:${s}`,
-    getSendErrors: (s) => `mockSendErrors:${s}`,
-    isSendFormInError: (s) => `mockInError:${s}`,
-    getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => [
-      { gasEstimateType: `mockGasEstimateType:${s}` },
-    ],
-    getDefaultActiveButtonIndex: () => 0,
-  },
-  './send-footer.utils': utilsStubs,
-});
+}));
 
-describe('send-footer container', function () {
-  describe('mapDispatchToProps()', function () {
+jest.mock('../../../../app/store/actions.js', () => ({
+  addToAddressBook: jest.fn(),
+  clearSend: jest.fn(),
+  signTokenTx: jest.fn(),
+  signTx: jest.fn(),
+  updateTransaction: jest.fn(),
+}));
+
+jest.mock('../../../../app/selectors/send.js', () => ({
+  getGasLimit: (s) => `mockGasLimit:${s}`,
+  getGasPrice: (s) => `mockGasPrice:${s}`,
+  getGasTotal: (s) => `mockGasTotal:${s}`,
+  getSendToken: (s) => `mockSendToken:${s}`,
+  getSendAmount: (s) => `mockAmount:${s}`,
+  getSendEditingTransactionId: (s) => `mockEditingTransactionId:${s}`,
+  getSendFromObject: (s) => `mockFromObject:${s}`,
+  getSendTo: (s) => `mockTo:${s}`,
+  getSendToNickname: (s) => `mockToNickname:${s}`,
+  getSendToAccounts: (s) => `mockToAccounts:${s}`,
+  getTokenBalance: (s) => `mockTokenBalance:${s}`,
+  getSendHexData: (s) => `mockHexData:${s}`,
+  getUnapprovedTxs: (s) => `mockUnapprovedTxs:${s}`,
+  getSendErrors: (s) => `mockSendErrors:${s}`,
+  isSendFormInError: (s) => `mockInError:${s}`,
+  getDefaultActiveButtonIndex: () => 0,
+}));
+
+jest.mock('../../../../app/selectors/custom-gas.js', () => ({
+  getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => [
+    { gasEstimateType: `mockGasEstimateType:${s}` },
+  ],
+}));
+
+jest.mock('./send-footer.utils', () => ({
+  addressIsNew: jest.fn().mockReturnValue(true),
+  constructTxParams: jest.fn().mockReturnValue({ value: 'mockAmount' }),
+  constructUpdatedTx: jest
+    .fn()
+    .mockReturnValue('mockConstructedUpdatedTxParams'),
+}));
+
+require('./send-footer.container.js');
+
+describe('send-footer container', () => {
+  describe('mapDispatchToProps()', () => {
     let dispatchSpy;
     let mapDispatchToPropsObject;
 
-    beforeEach(function () {
+    beforeEach(() => {
       dispatchSpy = sinon.spy();
       mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy);
     });
 
-    describe('clearSend()', function () {
-      it('should dispatch an action', function () {
+    describe('clearSend()', () => {
+      it('should dispatch an action', () => {
         mapDispatchToPropsObject.clearSend();
-        assert(dispatchSpy.calledOnce);
-        assert(actionSpies.clearSend.calledOnce);
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(clearSend).toHaveBeenCalled();
       });
     });
 
-    describe('sign()', function () {
-      it('should dispatch a signTokenTx action if sendToken is defined', function () {
+    describe('sign()', () => {
+      it('should dispatch a signTokenTx action if sendToken is defined', () => {
         mapDispatchToPropsObject.sign({
           sendToken: {
             address: '0xabc',
@@ -81,31 +94,27 @@ describe('send-footer container', function () {
           gas: 'mockGas',
           gasPrice: 'mockGasPrice',
         });
-        assert(dispatchSpy.calledOnce);
-        assert.deepStrictEqual(
-          utilsStubs.constructTxParams.getCall(0).args[0],
-          {
-            data: undefined,
-            sendToken: {
-              address: '0xabc',
-            },
-            to: 'mockTo',
-            amount: 'mockAmount',
-            from: 'mockFrom',
-            gas: 'mockGas',
-            gasPrice: 'mockGasPrice',
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(constructTxParams).toHaveBeenCalledWith({
+          data: undefined,
+          sendToken: {
+            address: '0xabc',
           },
-        );
-        assert.deepStrictEqual(actionSpies.signTokenTx.getCall(0).args, [
+          to: 'mockTo',
+          amount: 'mockAmount',
+          from: 'mockFrom',
+          gas: 'mockGas',
+          gasPrice: 'mockGasPrice',
+        });
+        expect(signTokenTx).toHaveBeenCalledWith(
           '0xabc',
           'mockTo',
           'mockAmount',
           { value: 'mockAmount' },
-        ]);
+        );
       });
 
-      it('should dispatch a sign action if sendToken is not defined', function () {
-        utilsStubs.constructTxParams.resetHistory();
+      it('should dispatch a sign action if sendToken is not defined', () => {
         mapDispatchToPropsObject.sign({
           to: 'mockTo',
           amount: 'mockAmount',
@@ -113,27 +122,24 @@ describe('send-footer container', function () {
           gas: 'mockGas',
           gasPrice: 'mockGasPrice',
         });
-        assert(dispatchSpy.calledOnce);
-        assert.deepStrictEqual(
-          utilsStubs.constructTxParams.getCall(0).args[0],
-          {
-            data: undefined,
-            sendToken: undefined,
-            to: 'mockTo',
-            amount: 'mockAmount',
-            from: 'mockFrom',
-            gas: 'mockGas',
-            gasPrice: 'mockGasPrice',
-          },
-        );
-        assert.deepStrictEqual(actionSpies.signTx.getCall(0).args, [
-          { value: 'mockAmount' },
-        ]);
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(constructTxParams).toHaveBeenCalledWith({
+          data: undefined,
+          sendToken: undefined,
+          to: 'mockTo',
+          amount: 'mockAmount',
+          from: 'mockFrom',
+          gas: 'mockGas',
+          gasPrice: 'mockGasPrice',
+        });
+        expect(signTx).toHaveBeenCalledWith({
+          value: 'mockAmount',
+        });
       });
     });
 
-    describe('update()', function () {
-      it('should dispatch an updateTransaction action', function () {
+    describe('update()', () => {
+      it('should dispatch an updateTransaction action', () => {
         mapDispatchToPropsObject.update({
           to: 'mockTo',
           amount: 'mockAmount',
@@ -144,44 +150,37 @@ describe('send-footer container', function () {
           sendToken: { address: 'mockAddress' },
           unapprovedTxs: 'mockUnapprovedTxs',
         });
-        assert(dispatchSpy.calledOnce);
-        assert.deepStrictEqual(
-          utilsStubs.constructUpdatedTx.getCall(0).args[0],
-          {
-            data: undefined,
-            to: 'mockTo',
-            amount: 'mockAmount',
-            from: 'mockFrom',
-            gas: 'mockGas',
-            gasPrice: 'mockGasPrice',
-            editingTransactionId: 'mockEditingTransactionId',
-            sendToken: { address: 'mockAddress' },
-            unapprovedTxs: 'mockUnapprovedTxs',
-          },
-        );
-        assert.strictEqual(
-          actionSpies.updateTransaction.getCall(0).args[0],
-          'mockConstructedUpdatedTxParams',
-        );
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(constructUpdatedTx).toHaveBeenCalledWith({
+          data: undefined,
+          to: 'mockTo',
+          amount: 'mockAmount',
+          from: 'mockFrom',
+          gas: 'mockGas',
+          gasPrice: 'mockGasPrice',
+          editingTransactionId: 'mockEditingTransactionId',
+          sendToken: { address: 'mockAddress' },
+          unapprovedTxs: 'mockUnapprovedTxs',
+        });
       });
     });
 
-    describe('addToAddressBookIfNew()', function () {
-      it('should dispatch an action', function () {
+    describe('addToAddressBookIfNew()', () => {
+      it('should dispatch an action', () => {
         mapDispatchToPropsObject.addToAddressBookIfNew(
           'mockNewAddress',
           'mockToAccounts',
           'mockNickname',
         );
-        assert(dispatchSpy.calledOnce);
-        assert.strictEqual(
-          utilsStubs.addressIsNew.getCall(0).args[0],
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(addressIsNew).toHaveBeenCalledWith(
           'mockToAccounts',
+          '0xmockNewAddress',
         );
-        assert.deepStrictEqual(actionSpies.addToAddressBook.getCall(0).args, [
+        expect(addToAddressBook).toHaveBeenCalledWith(
           '0xmockNewAddress',
           'mockNickname',
-        ]);
+        );
       });
     });
   });

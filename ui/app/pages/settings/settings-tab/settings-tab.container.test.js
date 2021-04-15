@@ -1,10 +1,9 @@
-import assert from 'assert';
 import React from 'react';
 import sinon from 'sinon';
 import { mount } from 'enzyme';
 import SettingsTab from './settings-tab.container';
 
-describe('Settings Tab', function () {
+describe('Settings Tab', () => {
   let wrapper;
 
   const props = {
@@ -22,7 +21,7 @@ describe('Settings Tab', function () {
     nativeCurrency: 'eth',
     useNativeCurrencyAsPrimaryCurrency: true,
   };
-  beforeEach(function () {
+  beforeEach(() => {
     wrapper = mount(<SettingsTab.WrappedComponent {...props} />, {
       context: {
         t: (str) => str,
@@ -30,38 +29,40 @@ describe('Settings Tab', function () {
     });
   });
 
-  it('selects currency', async function () {
+  it('selects currency', async () => {
     const selectCurrency = wrapper.find('#select-currency');
 
     selectCurrency.props().onChange('eur');
-    assert(props.setCurrentCurrency.calledOnce);
+    expect(props.setCurrentCurrency.calledOnce).toStrictEqual(true);
   });
 
-  it('selects locale', async function () {
+  it('selects locale', async () => {
     const selectLocale = wrapper.find('#select-locale');
 
     await selectLocale.props().onChange('ja');
-    assert(props.updateCurrentLocale.calledOnce);
+    expect(props.updateCurrentLocale.calledOnce).toStrictEqual(true);
   });
 
-  it('sets fiat primary currency', function () {
+  it('sets fiat primary currency', () => {
     const selectFiat = wrapper.find('#fiat-primary-currency');
 
     selectFiat.simulate('change');
-    assert(props.setUseNativeCurrencyAsPrimaryCurrencyPreference.calledOnce);
+    expect(
+      props.setUseNativeCurrencyAsPrimaryCurrencyPreference.calledOnce,
+    ).toStrictEqual(true);
   });
 
-  it('toggles blockies', function () {
+  it('toggles blockies', () => {
     const toggleBlockies = wrapper.find('#blockie-optin input');
 
     toggleBlockies.simulate('click');
-    assert(props.setUseBlockie.calledOnce);
+    expect(props.setUseBlockie.calledOnce).toStrictEqual(true);
   });
 
-  it('toggles hiding zero balance', function () {
+  it('toggles hiding zero balance', () => {
     const toggleBlockies = wrapper.find('#toggle-zero-balance input');
 
     toggleBlockies.simulate('click');
-    assert(props.setHideZeroBalanceTokens.calledOnce);
+    expect(props.setHideZeroBalanceTokens.calledOnce).toStrictEqual(true);
   });
 });

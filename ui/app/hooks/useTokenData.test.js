@@ -1,4 +1,4 @@
-import assert from 'assert';
+/* eslint-disable jest/no-conditional-expect */
 import { ethers } from 'ethers';
 import { renderHook } from '@testing-library/react-hooks';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
@@ -44,23 +44,23 @@ const tests = [
   },
 ];
 
-describe('useTokenData', function () {
+describe('useTokenData', () => {
   tests.forEach((test) => {
     const testTitle =
-      test.tokenData === null
-        ? `should return null when no data provided`
-        : `should return properly decoded data with _value ${test.tokenData.args[1].value}`;
-    it(testTitle, function () {
+      // eslint-disable-next-line no-negated-condition
+      test.tokenData !== null
+        ? `should return properly decoded data with _value ${test.tokenData.args[1]}`
+        : `should return null when no data provided`;
+    it(`${testTitle}`, () => {
       const { result } = renderHook(() => useTokenData(test.data));
       if (test.tokenData) {
-        assert.strictEqual(result.current.name, test.tokenData.name);
-        assert.strictEqual(
-          result.current.args[0].toLowerCase(),
+        expect(result.current.name).toStrictEqual(test.tokenData.name);
+        expect(result.current.args[0].toLowerCase()).toStrictEqual(
           test.tokenData.args[0],
         );
-        assert.ok(test.tokenData.args[1].eq(result.current.args[1]));
+        expect(test.tokenData.args[1]).toStrictEqual(result.current.args[1]);
       } else {
-        assert.strictEqual(result.current, test.tokenData);
+        expect(result.current).toStrictEqual(test.tokenData);
       }
     });
   });

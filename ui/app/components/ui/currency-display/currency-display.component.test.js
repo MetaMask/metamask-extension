@@ -1,12 +1,11 @@
-import assert from 'assert';
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import * as reactRedux from 'react-redux';
 import CurrencyDisplay from './currency-display.component';
 
-describe('CurrencyDisplay Component', function () {
-  beforeEach(function () {
+describe('CurrencyDisplay Component', () => {
+  beforeEach(() => {
     const stub = sinon.stub(reactRedux, 'useSelector');
     stub.callsFake(() => ({
       currentCurrency: 'usd',
@@ -14,7 +13,10 @@ describe('CurrencyDisplay Component', function () {
       conversionRate: 280.45,
     }));
   });
-  it('should render text with a className', function () {
+  afterEach(() => {
+    sinon.restore();
+  });
+  it('should render text with a className', () => {
     const wrapper = shallow(
       <CurrencyDisplay
         displayValue="$123.45"
@@ -23,11 +25,11 @@ describe('CurrencyDisplay Component', function () {
       />,
     );
 
-    assert.ok(wrapper.hasClass('currency-display'));
-    assert.strictEqual(wrapper.text(), '$123.45');
+    expect(wrapper.hasClass('currency-display')).toStrictEqual(true);
+    expect(wrapper.text()).toStrictEqual('$123.45');
   });
 
-  it('should render text with a prefix', function () {
+  it('should render text with a prefix', () => {
     const wrapper = shallow(
       <CurrencyDisplay
         displayValue="$123.45"
@@ -37,10 +39,7 @@ describe('CurrencyDisplay Component', function () {
       />,
     );
 
-    assert.ok(wrapper.hasClass('currency-display'));
-    assert.strictEqual(wrapper.text(), '-$123.45');
-  });
-  afterEach(function () {
-    sinon.restore();
+    expect(wrapper.hasClass('currency-display')).toStrictEqual(true);
+    expect(wrapper.text()).toStrictEqual('-$123.45');
   });
 });

@@ -1,117 +1,114 @@
-import assert from 'assert';
-import proxyquire from 'proxyquire';
-
-const {
+import {
   getCustomGasLimit,
   getCustomGasPrice,
   getRenderableBasicEstimateData,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   isCustomPriceSafe,
   isCustomPriceExcessive,
-} = proxyquire('./custom-gas', {});
+} from './custom-gas';
 
-describe('custom-gas selectors', function () {
-  describe('getCustomGasPrice()', function () {
-    it('should return gas.customData.price', function () {
+describe('custom-gas selectors', () => {
+  describe('getCustomGasPrice()', () => {
+    it('should return gas.customData.price', () => {
       const mockState = { gas: { customData: { price: 'mockPrice' } } };
-      assert.strictEqual(getCustomGasPrice(mockState), 'mockPrice');
+      expect(getCustomGasPrice(mockState)).toStrictEqual('mockPrice');
     });
   });
-  describe('isCustomGasPriceSafe()', function () {
-    it('should return true for gas.customData.price 0x77359400', function () {
+  describe('isCustomGasPriceSafe()', () => {
+    it('should return true for gas.customData.price 0x77359400', () => {
       const mockState = {
         gas: {
           customData: { price: '0x77359400' },
           basicEstimates: { safeLow: 1 },
         },
       };
-      assert.strictEqual(isCustomPriceSafe(mockState), true);
+      expect(isCustomPriceSafe(mockState)).toStrictEqual(true);
     });
-    it('should return true for gas.customData.price null', function () {
+    it('should return true for gas.customData.price null', () => {
       const mockState = {
         gas: {
           customData: { price: null },
           basicEstimates: { safeLow: 1 },
         },
       };
-      assert.strictEqual(isCustomPriceSafe(mockState), true);
+      expect(isCustomPriceSafe(mockState)).toStrictEqual(true);
     });
-    it('should return true gas.customData.price undefined', function () {
+    it('should return true gas.customData.price undefined', () => {
       const mockState = {
         gas: {
           customData: { price: undefined },
           basicEstimates: { safeLow: 1 },
         },
       };
-      assert.strictEqual(isCustomPriceSafe(mockState), true);
+      expect(isCustomPriceSafe(mockState)).toStrictEqual(true);
     });
-    it('should return false gas.basicEstimates.safeLow undefined', function () {
+    it('should return false gas.basicEstimates.safeLow undefined', () => {
       const mockState = {
         gas: {
           customData: { price: '0x77359400' },
           basicEstimates: { safeLow: undefined },
         },
       };
-      assert.strictEqual(isCustomPriceSafe(mockState), false);
+      expect(isCustomPriceSafe(mockState)).toStrictEqual(false);
     });
   });
 
-  describe('isCustomPriceExcessive()', function () {
-    it('should return false for gas.customData.price null', function () {
+  describe('isCustomPriceExcessive()', () => {
+    it('should return false for gas.customData.price null', () => {
       const mockState = {
         gas: {
           customData: { price: null },
           basicEstimates: { fast: 150 },
         },
       };
-      assert.strictEqual(isCustomPriceExcessive(mockState), false);
+      expect(isCustomPriceExcessive(mockState)).toStrictEqual(false);
     });
-    it('should return false gas.basicEstimates.fast undefined', function () {
+    it('should return false gas.basicEstimates.fast undefined', () => {
       const mockState = {
         gas: {
           customData: { price: '0x77359400' },
           basicEstimates: { fast: undefined },
         },
       };
-      assert.strictEqual(isCustomPriceExcessive(mockState), false);
+      expect(isCustomPriceExcessive(mockState)).toStrictEqual(false);
     });
-    it('should return false gas.basicEstimates.price 0x205d0bae00 (139)', function () {
+    it('should return false gas.basicEstimates.price 0x205d0bae00 (139)', () => {
       const mockState = {
         gas: {
           customData: { price: '0x205d0bae00' },
           basicEstimates: { fast: 139 },
         },
       };
-      assert.strictEqual(isCustomPriceExcessive(mockState), false);
+      expect(isCustomPriceExcessive(mockState)).toStrictEqual(false);
     });
-    it('should return false gas.basicEstimates.price 0x1bf08eb000 (120)', function () {
+    it('should return false gas.basicEstimates.price 0x1bf08eb000 (120)', () => {
       const mockState = {
         gas: {
           customData: { price: '0x1bf08eb000' },
           basicEstimates: { fast: 139 },
         },
       };
-      assert.strictEqual(isCustomPriceExcessive(mockState), false);
+      expect(isCustomPriceExcessive(mockState)).toStrictEqual(false);
     });
-    it('should return false gas.basicEstimates.price 0x28bed01600 (175)', function () {
+    it('should return false gas.basicEstimates.price 0x28bed01600 (175)', () => {
       const mockState = {
         gas: {
           customData: { price: '0x28bed01600' },
           basicEstimates: { fast: 139 },
         },
       };
-      assert.strictEqual(isCustomPriceExcessive(mockState), false);
+      expect(isCustomPriceExcessive(mockState)).toStrictEqual(false);
     });
-    it('should return true gas.basicEstimates.price 0x30e4f9b400 (210)', function () {
+    it('should return true gas.basicEstimates.price 0x30e4f9b400 (210)', () => {
       const mockState = {
         gas: {
           customData: { price: '0x30e4f9b400' },
           basicEstimates: { fast: 139 },
         },
       };
-      assert.strictEqual(isCustomPriceExcessive(mockState), true);
+      expect(isCustomPriceExcessive(mockState)).toStrictEqual(true);
     });
-    it('should return false gas.basicEstimates.price 0x28bed01600 (175) (checkSend=true)', function () {
+    it('should return false gas.basicEstimates.price 0x28bed01600 (175) (checkSend=true)', () => {
       const mockState = {
         metamask: {
           send: {
@@ -123,9 +120,9 @@ describe('custom-gas selectors', function () {
           basicEstimates: { fast: 139 },
         },
       };
-      assert.strictEqual(isCustomPriceExcessive(mockState, true), false);
+      expect(isCustomPriceExcessive(mockState, true)).toStrictEqual(false);
     });
-    it('should return true gas.basicEstimates.price 0x30e4f9b400 (210) (checkSend=true)', function () {
+    it('should return true gas.basicEstimates.price 0x30e4f9b400 (210) (checkSend=true)', () => {
       const mockState = {
         metamask: {
           send: {
@@ -137,18 +134,18 @@ describe('custom-gas selectors', function () {
           basicEstimates: { fast: 139 },
         },
       };
-      assert.strictEqual(isCustomPriceExcessive(mockState, true), true);
+      expect(isCustomPriceExcessive(mockState, true)).toStrictEqual(true);
     });
   });
 
-  describe('getCustomGasLimit()', function () {
-    it('should return gas.customData.limit', function () {
+  describe('getCustomGasLimit()', () => {
+    it('should return gas.customData.limit', () => {
       const mockState = { gas: { customData: { limit: 'mockLimit' } } };
-      assert.strictEqual(getCustomGasLimit(mockState), 'mockLimit');
+      expect(getCustomGasLimit(mockState)).toStrictEqual('mockLimit');
     });
   });
 
-  describe('getRenderableBasicEstimateData()', function () {
+  describe('getRenderableBasicEstimateData()', () => {
     const tests = [
       {
         expectedResult: [
@@ -391,21 +388,20 @@ describe('custom-gas selectors', function () {
         },
       },
     ];
-    it('should return renderable data about basic estimates', function () {
+    it('should return renderable data about basic estimates', () => {
       tests.forEach((test) => {
-        assert.deepStrictEqual(
+        expect(
           getRenderableBasicEstimateData(
             test.mockState,
             '0x5208',
             test.useFastestButtons,
           ),
-          test.expectedResult,
-        );
+        ).toStrictEqual(test.expectedResult);
       });
     });
   });
 
-  describe('getRenderableEstimateDataForSmallButtonsFromGWEI()', function () {
+  describe('getRenderableEstimateDataForSmallButtonsFromGWEI()', () => {
     const tests = [
       {
         expectedResult: [
@@ -645,12 +641,11 @@ describe('custom-gas selectors', function () {
         },
       },
     ];
-    it('should return renderable data about basic estimates appropriate for buttons with less info', function () {
+    it('should return renderable data about basic estimates appropriate for buttons with less info', () => {
       tests.forEach((test) => {
-        assert.deepStrictEqual(
+        expect(
           getRenderableEstimateDataForSmallButtonsFromGWEI(test.mockState),
-          test.expectedResult,
-        );
+        ).toStrictEqual(test.expectedResult);
       });
     });
   });

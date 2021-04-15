@@ -1,60 +1,57 @@
-import assert from 'assert';
 import * as utils from './confirm-tx.util';
 
-describe('Confirm Transaction utils', function () {
-  describe('increaseLastGasPrice', function () {
-    it('should increase the gasPrice by 10%', function () {
+describe('Confirm Transaction utils', () => {
+  describe('increaseLastGasPrice', () => {
+    it('should increase the gasPrice by 10%', () => {
       const increasedGasPrice = utils.increaseLastGasPrice('0xa');
-      assert.strictEqual(increasedGasPrice, '0xb');
+      expect(increasedGasPrice).toStrictEqual('0xb');
     });
 
-    it('should prefix the result with 0x', function () {
+    it('should prefix the result with 0x', () => {
       const increasedGasPrice = utils.increaseLastGasPrice('a');
-      assert.strictEqual(increasedGasPrice, '0xb');
+      expect(increasedGasPrice).toStrictEqual('0xb');
     });
   });
 
-  describe('hexGreaterThan', function () {
-    it('should return true if the first value is greater than the second value', function () {
-      assert.strictEqual(utils.hexGreaterThan('0xb', '0xa'), true);
+  describe('hexGreaterThan', () => {
+    it('should return true if the first value is greater than the second value', () => {
+      expect(utils.hexGreaterThan('0xb', '0xa')).toStrictEqual(true);
     });
 
-    it('should return false if the first value is less than the second value', function () {
-      assert.strictEqual(utils.hexGreaterThan('0xa', '0xb'), false);
+    it('should return false if the first value is less than the second value', () => {
+      expect(utils.hexGreaterThan('0xa', '0xb')).toStrictEqual(false);
     });
 
-    it('should return false if the first value is equal to the second value', function () {
-      assert.strictEqual(utils.hexGreaterThan('0xa', '0xa'), false);
+    it('should return false if the first value is equal to the second value', () => {
+      expect(utils.hexGreaterThan('0xa', '0xa')).toStrictEqual(false);
     });
 
-    it('should correctly compare prefixed and non-prefixed hex values', function () {
-      assert.strictEqual(utils.hexGreaterThan('0xb', 'a'), true);
+    it('should correctly compare prefixed and non-prefixed hex values', () => {
+      expect(utils.hexGreaterThan('0xb', 'a')).toStrictEqual(true);
     });
   });
 
-  describe('getHexGasTotal', function () {
-    it('should multiply the hex gasLimit and hex gasPrice values together', function () {
-      assert.strictEqual(
+  describe('getHexGasTotal', () => {
+    it('should multiply the hex gasLimit and hex gasPrice values together', () => {
+      expect(
         utils.getHexGasTotal({ gasLimit: '0x5208', gasPrice: '0x3b9aca00' }),
-        '0x1319718a5000',
-      );
+      ).toStrictEqual('0x1319718a5000');
     });
 
-    it('should prefix the result with 0x', function () {
-      assert.strictEqual(
+    it('should prefix the result with 0x', () => {
+      expect(
         utils.getHexGasTotal({ gasLimit: '5208', gasPrice: '3b9aca00' }),
-        '0x1319718a5000',
-      );
+      ).toStrictEqual('0x1319718a5000');
     });
   });
 
-  describe('addEth', function () {
-    it('should add two values together rounding to 6 decimal places', function () {
-      assert.strictEqual(utils.addEth('0.12345678', '0'), '0.123457');
+  describe('addEth', () => {
+    it('should add two values together rounding to 6 decimal places', () => {
+      expect(utils.addEth('0.12345678', '0')).toStrictEqual('0.123457');
     });
 
-    it('should add any number of values together rounding to 6 decimal places', function () {
-      assert.strictEqual(
+    it('should add any number of values together rounding to 6 decimal places', () => {
+      expect(
         utils.addEth(
           '0.1',
           '0.02',
@@ -64,18 +61,17 @@ describe('Confirm Transaction utils', function () {
           '0.000006',
           '0.0000007',
         ),
-        '0.123457',
-      );
+      ).toStrictEqual('0.123457');
     });
   });
 
-  describe('addFiat', function () {
-    it('should add two values together rounding to 2 decimal places', function () {
-      assert.strictEqual(utils.addFiat('0.12345678', '0'), '0.12');
+  describe('addFiat', () => {
+    it('should add two values together rounding to 2 decimal places', () => {
+      expect(utils.addFiat('0.12345678', '0')).toStrictEqual('0.12');
     });
 
-    it('should add any number of values together rounding to 2 decimal places', function () {
-      assert.strictEqual(
+    it('should add any number of values together rounding to 2 decimal places', () => {
+      expect(
         utils.addFiat(
           '0.1',
           '0.02',
@@ -85,13 +81,12 @@ describe('Confirm Transaction utils', function () {
           '0.000006',
           '0.0000007',
         ),
-        '0.12',
-      );
+      ).toStrictEqual('0.12');
     });
   });
 
-  describe('getValueFromWeiHex', function () {
-    it('should get the transaction amount in ETH', function () {
+  describe('getValueFromWeiHex', () => {
+    it('should get the transaction amount in ETH', () => {
       const ethTransactionAmount = utils.getValueFromWeiHex({
         value: '0xde0b6b3a7640000',
         toCurrency: 'ETH',
@@ -99,10 +94,10 @@ describe('Confirm Transaction utils', function () {
         numberOfDecimals: 6,
       });
 
-      assert.strictEqual(ethTransactionAmount, '1');
+      expect(ethTransactionAmount).toStrictEqual('1');
     });
 
-    it('should get the transaction amount in fiat', function () {
+    it('should get the transaction amount in fiat', () => {
       const fiatTransactionAmount = utils.getValueFromWeiHex({
         value: '0xde0b6b3a7640000',
         toCurrency: 'usd',
@@ -110,12 +105,12 @@ describe('Confirm Transaction utils', function () {
         numberOfDecimals: 2,
       });
 
-      assert.strictEqual(fiatTransactionAmount, '468.58');
+      expect(fiatTransactionAmount).toStrictEqual('468.58');
     });
   });
 
-  describe('getTransactionFee', function () {
-    it('should get the transaction fee in ETH', function () {
+  describe('getTransactionFee', () => {
+    it('should get the transaction fee in ETH', () => {
       const ethTransactionFee = utils.getTransactionFee({
         value: '0x1319718a5000',
         toCurrency: 'ETH',
@@ -123,10 +118,10 @@ describe('Confirm Transaction utils', function () {
         numberOfDecimals: 6,
       });
 
-      assert.strictEqual(ethTransactionFee, '0.000021');
+      expect(ethTransactionFee).toStrictEqual('0.000021');
     });
 
-    it('should get the transaction fee in fiat', function () {
+    it('should get the transaction fee in fiat', () => {
       const fiatTransactionFee = utils.getTransactionFee({
         value: '0x1319718a5000',
         toCurrency: 'usd',
@@ -134,14 +129,14 @@ describe('Confirm Transaction utils', function () {
         numberOfDecimals: 2,
       });
 
-      assert.strictEqual(fiatTransactionFee, '0.01');
+      expect(fiatTransactionFee).toStrictEqual('0.01');
     });
   });
 
-  describe('formatCurrency', function () {
-    it('should format USD values', function () {
+  describe('formatCurrency', () => {
+    it('should format USD values', () => {
       const value = utils.formatCurrency('123.45', 'usd');
-      assert.strictEqual(value, '$123.45');
+      expect(value).toStrictEqual('$123.45');
     });
   });
 });
