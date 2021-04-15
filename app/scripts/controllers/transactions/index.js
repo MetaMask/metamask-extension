@@ -1,7 +1,8 @@
 import EventEmitter from 'safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak, toBuffer } from 'ethereumjs-util';
-import Transaction from 'ethereumjs-tx';
+import Common from '@ethereumjs/common';
+import { TransactionFactory } from '@ethereumjs/tx';
 import EthQuery from 'ethjs-query';
 import { ethErrors } from 'eth-rpc-errors';
 import abi from 'human-standard-token-abi';
@@ -558,20 +559,34 @@ export default class TransactionController extends EventEmitter {
     @returns {string} rawTx
   */
   async signTransaction(txId) {
+    const common = new Common({ chain: 'rinkeby', hardfork: 'berlin' });
+    console.log('signing');
     const txMeta = this.txStateManager.getTransaction(txId);
     // add network/chain id
     const chainId = this.getChainId();
-    const txParams = { ...txMeta.txParams, chainId };
+    const txParams = {
+      ...txMeta.txParams,
+      gasLimit: txMeta.txParams.gas,
+      chainId,
+    };
+    console.log('txParams', txParams);
     // sign tx
     const fromAddress = txParams.from;
-    const ethTx = new Transaction(txParams);
-    await this.signEthTx(ethTx, fromAddress);
+    const unsignedEthTx = TransactionFactory.fromTxData(txParams, {
+      common,
+      freeze: false,
+    });
+    console.log(unsignedEthTx);
+    const signedEthTx = await this.signEthTx(unsignedEthTx, fromAddress);
+    console.log(signedEthTx.toJSON());
+
+    console.log('signedethTx', signedEthTx);
 
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation
-    txMeta.r = bufferToHex(ethTx.r);
-    txMeta.s = bufferToHex(ethTx.s);
-    txMeta.v = bufferToHex(ethTx.v);
+    txMeta.r = signedEthTx.r.toString(16);
+    txMeta.s = signedEthTx.s.toString(16);
+    txMeta.v = signedEthTx.v.toString(16);
 
     this.txStateManager.updateTransaction(
       txMeta,
@@ -580,7 +595,8 @@ export default class TransactionController extends EventEmitter {
 
     // set state to signed
     this.txStateManager.setTxStatusSigned(txMeta.id);
-    const rawTx = bufferToHex(ethTx.serialize());
+    const rawTx = bufferToHex(signedEthTx.serialize());
+    console.log(rawTx);
     return rawTx;
   }
 
@@ -605,6 +621,7 @@ export default class TransactionController extends EventEmitter {
     try {
       txHash = await this.query.sendRawTransaction(rawTx);
     } catch (error) {
+      console.log('err', 'here is the error', error.message);
       if (error.message.toLowerCase().includes('known transaction')) {
         txHash = keccak(toBuffer(addHexPrefix(rawTx), 'hex')).toString('hex');
         txHash = addHexPrefix(txHash);
