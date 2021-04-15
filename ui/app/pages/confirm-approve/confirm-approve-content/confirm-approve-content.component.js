@@ -9,7 +9,10 @@ import Typography from '../../../components/ui/typography';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
+  BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
+import Box from '../../../components/ui/box';
+import Button from '../../../components/ui/button';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -56,6 +59,7 @@ export default class ConfirmApproveContent extends Component {
     footer,
     noBorder,
   }) {
+    const { t } = this.context;
     return (
       <div
         className={classnames({
@@ -72,12 +76,15 @@ export default class ConfirmApproveContent extends Component {
               {title}
             </div>
             {showEdit && (
-              <div
-                className="confirm-approve-content__small-blue-text cursor-pointer"
-                onClick={() => onEditClick()}
-              >
-                Edit
-              </div>
+              <Box width={BLOCK_SIZES.ONE_SIXTH}>
+                <Button
+                  type="link"
+                  className="confirm-approve-content__small-blue-text"
+                  onClick={() => onEditClick()}
+                >
+                  {t('edit')}
+                </Button>
+              </Box>
             )}
           </div>
         )}
