@@ -1,0 +1,958 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AwaitingSwap renders the component with initial props 1`] = `
+<div>
+  <div
+    class="awaiting-swap"
+  >
+    <div
+      class="awaiting-swap__content"
+    >
+      <div
+        style="z-index: 0;"
+      >
+        <svg
+          height="90px"
+          width="90px"
+        >
+          <polygon
+            fill="rgb(22,22,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(22,22,22)"
+          />
+          <polygon
+            fill="rgb(22,22,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(22,22,22)"
+          />
+          <polygon
+            fill="rgb(22,22,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(22,22,22)"
+          />
+          <polygon
+            fill="rgb(22,22,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(22,22,22)"
+          />
+          <polygon
+            fill="rgb(22,22,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(22,22,22)"
+          />
+          <polygon
+            fill="rgb(22,22,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(22,22,22)"
+          />
+          <polygon
+            fill="rgb(22,22,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(22,22,22)"
+          />
+          <polygon
+            fill="rgb(22,22,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(22,22,22)"
+          />
+          <polygon
+            fill="rgb(22,22,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(22,22,22)"
+          />
+          <polygon
+            fill="rgb(22,22,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(22,22,22)"
+          />
+          <polygon
+            fill="rgb(22,22,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(22,22,22)"
+          />
+          <polygon
+            fill="rgb(22,22,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(22,22,22)"
+          />
+          <polygon
+            fill="rgb(22,22,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(22,22,22)"
+          />
+          <polygon
+            fill="rgb(22,22,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(22,22,22)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(228,117,31)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(228,117,31)"
+          />
+          <polygon
+            fill="rgb(228,117,31)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(228,117,31)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(228,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(228,118,27)"
+          />
+          <polygon
+            fill="rgb(228,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(228,118,27)"
+          />
+          <polygon
+            fill="rgb(215,193,179)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(215,193,179)"
+          />
+          <polygon
+            fill="rgb(215,193,179)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(215,193,179)"
+          />
+          <polygon
+            fill="rgb(215,193,179)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(215,193,179)"
+          />
+          <polygon
+            fill="rgb(215,193,179)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(215,193,179)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(228,117,31)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(228,117,31)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(205,97,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(205,97,22)"
+          />
+          <polygon
+            fill="rgb(205,97,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(205,97,22)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(35,52,71)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(35,52,71)"
+          />
+          <polygon
+            fill="rgb(35,52,71)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(35,52,71)"
+          />
+          <polygon
+            fill="rgb(205,97,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(205,97,22)"
+          />
+          <polygon
+            fill="rgb(205,97,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(205,97,22)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(228,117,31)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(228,117,31)"
+          />
+          <polygon
+            fill="rgb(228,117,31)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(228,117,31)"
+          />
+          <polygon
+            fill="rgb(205,97,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(205,97,22)"
+          />
+          <polygon
+            fill="rgb(205,97,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(205,97,22)"
+          />
+          <polygon
+            fill="rgb(205,97,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(205,97,22)"
+          />
+          <polygon
+            fill="rgb(205,97,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(205,97,22)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(228,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(228,118,27)"
+          />
+          <polygon
+            fill="rgb(228,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(228,118,27)"
+          />
+          <polygon
+            fill="rgb(228,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(228,118,27)"
+          />
+          <polygon
+            fill="rgb(228,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(228,118,27)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(228,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(228,118,27)"
+          />
+          <polygon
+            fill="rgb(228,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(228,118,27)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(228,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(228,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(228,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(228,118,27)"
+          />
+          <polygon
+            fill="rgb(228,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(228,118,27)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(246,133,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(246,133,27)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(118,61,22)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(118,61,22)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(192,173,158)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(192,173,158)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+          <polygon
+            fill="rgb(226,118,27)"
+            points="0,0, 10,0, 0,10"
+            stroke="rgb(226,118,27)"
+          />
+        </svg>
+      </div>
+      <div
+        class="awaiting-swap__status-image"
+      >
+        <div
+          class="pulse-loader"
+        >
+          <div
+            class="pulse-loader__loading-dot-one"
+          />
+          <div
+            class="pulse-loader__loading-dot-two"
+          />
+          <div
+            class="pulse-loader__loading-dot-three"
+          />
+        </div>
+      </div>
+      <div
+        class="awaiting-swap__header"
+      >
+        [swapProcessing]
+      </div>
+      <div
+        class="awaiting-swap__main-descrption"
+      >
+        [swapOnceTransactionHasProcess]
+      </div>
+      <div
+        class="awaiting-swap__view-on-etherscan awaiting-swap__view-on-etherscan--visible"
+      >
+        [viewOnEtherscan]
+      </div>
+    </div>
+    <div
+      class="swaps-footer"
+    >
+      <div
+        class="swaps-footer__buttons"
+      >
+        <div
+          class="page-container__footer swaps-footer__custom-page-container-footer-class"
+        >
+          <footer>
+            <button
+              class="button btn-primary page-container__footer-button swaps-footer__custom-page-container-footer-button-class swaps-footer__custom-page-container-footer-button-class--single"
+              data-testid="page-container-footer-next"
+              disabled=""
+              role="button"
+              tabindex="0"
+            >
+              [swapsViewInActivity]
+            </button>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

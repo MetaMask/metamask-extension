@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DropdownInputPair renders the component with initial props 1`] = `
+<div>
+  <div
+    class="dropdown-input-pair"
+  >
+    <div
+      class="dropdown-search-list"
+      tabindex="0"
+    >
+      <div
+        class="dropdown-search-list__selector-closed-container dropdown-input-pair__selector--closed"
+      >
+        <div
+          class="dropdown-search-list__selector-closed"
+        >
+          <div
+            class="dropdown-search-list__default-dropdown-icon"
+          />
+          <div
+            class="dropdown-search-list__labels"
+          >
+            <div
+              class="dropdown-search-list__item-labels"
+            >
+              <span
+                class="dropdown-search-list__closed-primary-label dropdown-search-list__select-default"
+              />
+            </div>
+          </div>
+        </div>
+        <i
+          class="fa fa-caret-down fa-lg dropdown-search-list__caret"
+        />
+      </div>
+    </div>
+    <div
+      class="MuiFormControl-root MuiTextField-root dropdown-input-pair__input MuiFormControl-marginDense MuiFormControl-fullWidth"
+    >
+      <div
+        class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl MuiInputBase-marginDense MuiInput-marginDense"
+      >
+        <input
+          aria-invalid="false"
+          class="MuiInputBase-input MuiInput-input MuiInputBase-inputMarginDense MuiInput-inputMarginDense"
+          dir="auto"
+          placeholder="0"
+          type="text"
+          value=""
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DropdownSearchList renders the component with initial props 1`] = `
+<div>
+  <div
+    class="dropdown-search-list"
+    tabindex="0"
+  >
+    <div
+      class="dropdown-search-list__selector-closed-container"
+    >
+      <div
+        class="dropdown-search-list__selector-closed"
+      >
+        <img
+          alt=""
+          class="url-icon dropdown-search-list__selector-closed-icon"
+          src="iconUrl"
+        />
+        <div
+          class="dropdown-search-list__labels"
+        >
+          <div
+            class="dropdown-search-list__item-labels"
+          >
+            <span
+              class="dropdown-search-list__closed-primary-label"
+            >
+              symbol
+            </span>
+          </div>
+        </div>
+      </div>
+      <i
+        class="fa fa-caret-down fa-lg dropdown-search-list__caret"
+      />
+    </div>
+  </div>
+</div>
+`;

@@ -1,8 +1,8 @@
 import React from 'react';
-import { render } from '@testing-library/react';
 
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { MAINNET_CHAIN_ID } from '../../../../../shared/constants/network';
-import FeeCard from './fee-card';
+import FeeCard from './index';
 
 describe('FeeCard', () => {
   const createProps = (customProps = {}) => {
@@ -25,7 +25,8 @@ describe('FeeCard', () => {
   };
 
   it('renders the component with initial props', () => {
-    const { container } = render(<FeeCard {...createProps()} />);
+    const { container, getByText } = renderWithProvider(<FeeCard {...createProps()} />);
+    expect(getByText('[swapQuoteIncludesRate]')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });

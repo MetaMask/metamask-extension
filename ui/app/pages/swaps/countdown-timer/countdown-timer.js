@@ -94,6 +94,7 @@ export default function CountdownTimer({
   return (
     <div className="countdown-timer">
       <div
+        data-testid="countdown-timer__timer-container"
         className={classnames('countdown-timer__timer-container', {
           'countdown-timer__timer-container--warning':
             warningTime && timeBelowWarningTime(timer, warningTime),
