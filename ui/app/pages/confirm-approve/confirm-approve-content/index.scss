@@ -299,9 +299,7 @@
   }
 
   &__custom-nonce-content {
-    position: relative;
     display: flex;
-    flex-flow: row;
     height: 49px;
     margin-top: 5px;
     margin-bottom: 6px;
@@ -309,20 +307,22 @@
     border: 1px solid #bbc0c5;
     box-sizing: border-box;
     border-radius: 6px;
-    align-items: baseline;
+    align-items: center;
+  }
+
+  &__custom-nonce-header {
+    flex: 1;
+    align-items: center;
   }
 
   &__custom-nonce-value {
-    position: absolute;
-    right: 12px;
+    flex: 0;
   }
 
-  &__custom-nonce-edit {
+  & &__custom-nonce-edit {
     @include H7;
 
-    color: $primary-1;
-    padding-left: 6px;
-    cursor: pointer;
+    width: auto;
   }
 }
 

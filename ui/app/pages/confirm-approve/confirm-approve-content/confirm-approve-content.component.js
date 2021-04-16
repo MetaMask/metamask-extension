@@ -10,6 +10,7 @@ import {
   TYPOGRAPHY,
   FONT_WEIGHT,
   BLOCK_SIZES,
+  JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
@@ -184,22 +185,31 @@ export default class ConfirmApproveContent extends Component {
       <>
         {useNonceField && (
           <div className="confirm-approve-content__custom-nonce-content">
-            <Typography variant={TYPOGRAPHY.H6} fontWeight={FONT_WEIGHT.NORMAL}>
-              {t('nonce')}
-            </Typography>
-            <div
-              className="confirm-approve-content__custom-nonce-edit"
-              onClick={() =>
-                showCustomizeNonceModal({
-                  nextNonce,
-                  customNonceValue,
-                  updateCustomNonce,
-                  getNextNonce,
-                })
-              }
+            <Box
+              className="confirm-approve-content__custom-nonce-header"
+              justifyContent={JUSTIFY_CONTENT.FLEX_START}
             >
-              {t('edit')}
-            </div>
+              <Typography
+                variant={TYPOGRAPHY.H6}
+                fontWeight={FONT_WEIGHT.NORMAL}
+              >
+                {t('nonce')}
+              </Typography>
+              <Button
+                type="link"
+                className="confirm-approve-content__custom-nonce-edit"
+                onClick={() =>
+                  showCustomizeNonceModal({
+                    nextNonce,
+                    customNonceValue,
+                    updateCustomNonce,
+                    getNextNonce,
+                  })
+                }
+              >
+                {t('edit')}
+              </Button>
+            </Box>
             <Typography
               className="confirm-approve-content__custom-nonce-value"
               variant={TYPOGRAPHY.H6}
