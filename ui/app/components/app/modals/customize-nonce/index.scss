@@ -23,6 +23,13 @@
     align-self: flex-start;
   }
 
+  & &__link {
+    @include H6;
+
+    display: inline;
+    padding-left: 5px;
+  }
+
   & &__reset {
     @include H7;
   }

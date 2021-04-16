@@ -5,7 +5,6 @@ import TextField from '../../../ui/text-field';
 import Button from '../../../ui/button';
 import Typography from '../../../ui/typography';
 import {
-  COLORS,
   TYPOGRAPHY,
   FONT_WEIGHT,
   ALIGN_ITEMS,
@@ -61,31 +60,25 @@ const CustomizeNonce = ({
             onClick={hideModal}
           />
         </div>
-        <Box marginTop={2}>
-          <Typography
-            variant={TYPOGRAPHY.H6}
-            fontWeight={FONT_WEIGHT.NORMAL}
-            tag="span"
-          >
+        <Box
+          marginTop={2}
+          display={DISPLAY.INLINE_FLEX}
+          alignItems={ALIGN_ITEMS.CENTER}
+        >
+          <Typography variant={TYPOGRAPHY.H6} fontWeight={FONT_WEIGHT.NORMAL}>
             {t('editNonceMessage')}
-          </Typography>{' '}
-          <Typography
-            className="cursor-pointer"
-            variant={TYPOGRAPHY.H6}
-            fontWeight={FONT_WEIGHT.NORMAL}
-            color={COLORS.PRIMARY1}
-            tag="span"
-          >
-            <a
+            <Button
+              type="link"
+              className="customize-nonce-modal__link"
               rel="noopener noreferrer"
               target="_blank"
               href="https://metamask.zendesk.com/hc/en-us/articles/360015489251"
             >
               {t('learnMore')}
-            </a>
+            </Button>
           </Typography>
         </Box>
-        <Box marginTop={5}>
+        <Box marginTop={3}>
           <Box alignItems={ALIGN_ITEMS.CENTER} display={DISPLAY.FLEX}>
             <Typography
               variant={TYPOGRAPHY.H6}
