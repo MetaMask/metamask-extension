@@ -11,7 +11,6 @@ describe('Unlock Page', () => {
       push: sinon.spy(),
     },
     isUnlocked: false,
-    onImport: sinon.spy(),
     onRestore: sinon.spy(),
     onSubmit: sinon.spy(),
     forceUpdateMetamaskState: sinon.spy(),
@@ -51,12 +50,6 @@ describe('Unlock Page', () => {
     const importSeedButton = wrapper.find('.unlock-page__link--import');
 
     importSeedButton.simulate('click');
-    expect(props.onImport.calledOnce).toStrictEqual(true);
-  });
-
-  it('clicks restore', () => {
-    const restoreFromSeedButton = wrapper.find('.unlock-page__link').at(0);
-    restoreFromSeedButton.simulate('click');
     expect(props.onRestore.calledOnce).toStrictEqual(true);
   });
 });

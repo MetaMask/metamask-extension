@@ -856,11 +856,18 @@
   "importAccount": {
     "message": "Import Account"
   },
+  "importAccountLinkText": {
+    "message": "import using account seed phrase"
+  },
   "importAccountMsg": {
     "message": " Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
   },
   "importAccountSeedPhrase": {
     "message": "Import an account with seed phrase"
+  },
+  "importAccountText": {
+    "message": "or $1",
+    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importUsingSeed": {
     "message": "Import using account seed phrase"
@@ -1088,6 +1095,13 @@
   },
   "needEtherInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
+  },
+  "needHelp": {
+    "message": "Need help? Contact $1",
+    "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
+  },
+  "needHelpLinkText": {
+    "message": "MetaMask Support"
   },
   "needImportFile": {
     "message": "You must select a file to import.",
