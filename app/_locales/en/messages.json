@@ -1102,8 +1102,17 @@
   "networkName": {
     "message": "Network Name"
   },
+  "networkNameBSC": {
+    "message": "BSC"
+  },
   "networkNameDefinition": {
     "message": "The name associated with this network."
+  },
+  "networkNameEthereum": {
+    "message": "Ethereum"
+  },
+  "networkNameTestnet": {
+    "message": "Testnet"
   },
   "networkSettingsChainIdDescription": {
     "message": "The chain ID is used for signing transactions. It must match the chain ID returned by the network. You can enter a decimal or '0x'-prefixed hexadecimal number, but we will display the number in decimal."
@@ -1821,7 +1830,7 @@
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapNetworkFeeSummary": {
-    "message": "The network fee covers the cost of processing your swap and storing it on the Ethereum network. MetaMask does not profit from this fee."
+    "message": "The network fee covers the cost of processing your swap and storing it on the $1 network. MetaMask does not profit from this fee."
   },
   "swapNewQuoteIn": {
     "message": "New quotes in $1",

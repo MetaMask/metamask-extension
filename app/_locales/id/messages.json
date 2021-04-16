@@ -1657,7 +1657,7 @@
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNetworkFeeSummary": {
-    "message": "Biaya jaringan mencakup biaya pemrosesan penukaran Anda dan menyimpannya di jaringan Ethereum. MetaMask tidak mendapatkan keuntungan dari biaya ini."
+    "message": "Biaya jaringan mencakup biaya pemrosesan penukaran Anda dan menyimpannya di jaringan $1. MetaMask tidak mendapatkan keuntungan dari biaya ini."
   },
   "swapNewQuoteIn": {
     "message": "Kuota baru di $1",

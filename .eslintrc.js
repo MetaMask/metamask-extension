@@ -117,6 +117,9 @@ module.exports = {
     {
       files: ['ui/**/*.test.js'],
       extends: ['@metamask/eslint-config-jest'],
+      rules: {
+        'jest/no-restricted-matchers': 'off',
+      },
     },
     {
       files: [

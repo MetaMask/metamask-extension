@@ -2,6 +2,11 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import InfoTooltip from '../../../components/ui/info-tooltip';
+import {
+  MAINNET_CHAIN_ID,
+  BSC_CHAIN_ID,
+  LOCALHOST_CHAIN_ID,
+} from '../../../../../shared/constants/network';
 
 export default function FeeCard({
   primaryFee,
@@ -16,6 +21,7 @@ export default function FeeCard({
   numberOfQuotes,
   onQuotesClick,
   tokenConversionRate,
+  chainId,
 }) {
   const t = useContext(I18nContext);
 
@@ -25,6 +31,19 @@ export default function FeeCard({
   } else if (tokenConversionRate) {
     bestQuoteText = t('swapBetterQuoteAvailable');
   }
+
+  const getTranslatedNetworkName = () => {
+    switch (chainId) {
+      case MAINNET_CHAIN_ID:
+        return t('networkNameEthereum');
+      case BSC_CHAIN_ID:
+        return t('networkNameBSC');
+      case LOCALHOST_CHAIN_ID:
+        return t('networkNameTestnet');
+      default:
+        throw new Error('This network is not supported for token swaps');
+    }
+  };
 
   return (
     <div className="fee-card">
@@ -57,7 +76,7 @@ export default function FeeCard({
               contentText={
                 <>
                   <p className="fee-card__info-tooltip-paragraph">
-                    {t('swapNetworkFeeSummary')}
+                    {t('swapNetworkFeeSummary', [getTranslatedNetworkName()])}
                   </p>
                   <p className="fee-card__info-tooltip-paragraph">
                     {t('swapEstimatedNetworkFeeSummary', [
@@ -170,4 +189,5 @@ FeeCard.propTypes = {
   onQuotesClick: PropTypes.func.isRequired,
   numberOfQuotes: PropTypes.number.isRequired,
   tokenConversionRate: PropTypes.number,
+  chainId: PropTypes.string.isRequired,
 };

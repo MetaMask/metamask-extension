@@ -1679,7 +1679,7 @@
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapNetworkFeeSummary": {
-    "message": "La tassa di rete copre il costo di processamento dello scambio e della memorizzazione nella rete Ethereum. MetaMask non trae profitto da questa tassa."
+    "message": "La tassa di rete copre il costo di processamento dello scambio e della memorizzazione nella rete $1. MetaMask non trae profitto da questa tassa."
   },
   "swapNewQuoteIn": {
     "message": "Nuove quotazioni in $1",

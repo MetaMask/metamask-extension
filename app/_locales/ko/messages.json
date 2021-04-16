@@ -1000,6 +1000,9 @@
   "networkName": {
     "message": "네트워크 이름"
   },
+  "networkNameEthereum": {
+    "message": "이더리움"
+  },
   "networkSettingsChainIdDescription": {
     "message": "체인 ID는 거래 서명에 사용합니다. 네트워크에서 반환하는 체인 ID와 일치해야 합니다. 십진수나 '0x'로 시작하는 16진수를 입력할 수 있지만, 표시될 때는 십진수로 표시됩니다."
   },
@@ -1654,7 +1657,7 @@
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNetworkFeeSummary": {
-    "message": "네트워크 요금에는 스왑을 처리하고 이더리움 네트워크에 보관하는 비용이 적용됩니다. MetaMask는 이 요금을 이용해 이득을 얻지 않습니다."
+    "message": "네트워크 요금에는 스왑을 처리하고 $1 네트워크에 보관하는 비용이 적용됩니다. MetaMask는 이 요금을 이용해 이득을 얻지 않습니다."
   },
   "swapNewQuoteIn": {
     "message": "$1 후에 새 견적",

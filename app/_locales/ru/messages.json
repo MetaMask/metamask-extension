@@ -1657,7 +1657,7 @@
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNetworkFeeSummary": {
-    "message": "Сетевая комиссия покрывает стоимость обработки вашего свопа и его хранения в сети Ethereum. MetaMask не получает прибыли от этой комиссии."
+    "message": "Сетевая комиссия покрывает стоимость обработки вашего свопа и его хранения в сети $1. MetaMask не получает прибыли от этой комиссии."
   },
   "swapNewQuoteIn": {
     "message": "Новые котировки в $1",
