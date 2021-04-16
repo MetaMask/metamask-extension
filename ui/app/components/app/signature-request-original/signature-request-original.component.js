@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ethUtil from 'ethereumjs-util';
+import { stripHexPrefix } from 'ethereumjs-util';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
 
@@ -179,7 +179,7 @@ export default class SignatureRequestOriginal extends Component {
 
   msgHexToText = (hex) => {
     try {
-      const stripped = ethUtil.stripHexPrefix(hex);
+      const stripped = stripHexPrefix(hex);
       const buff = Buffer.from(stripped, 'hex');
       return buff.length === 32 ? hex : buff.toString('utf8');
     } catch (e) {

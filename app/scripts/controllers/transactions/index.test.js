@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import EventEmitter from 'events';
-import ethUtil from 'ethereumjs-util';
+import { toBuffer } from 'ethereumjs-util';
 import EthTx from 'ethereumjs-tx';
 import { ObservableStore } from '@metamask/obs-store';
 import sinon from 'sinon';
@@ -518,7 +518,7 @@ describe('Transaction Controller', function () {
         noop,
       );
       const rawTx = await txController.signTransaction('1');
-      const ethTx = new EthTx(ethUtil.toBuffer(rawTx));
+      const ethTx = new EthTx(toBuffer(rawTx));
       assert.equal(ethTx.getChainId(), 42);
     });
   });

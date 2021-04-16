@@ -1,4 +1,4 @@
-import ethUtil from 'ethereumjs-util';
+import { toBuffer } from 'ethereumjs-util';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
@@ -365,7 +365,7 @@ export default class ConfirmTransactionBase extends Component {
             </div>
           )}
           <div className="confirm-page-container-content__data-box-label">
-            {`${t('hexData')}: ${ethUtil.toBuffer(data).length} bytes`}
+            {`${t('hexData')}: ${toBuffer(data).length} bytes`}
           </div>
           <div className="confirm-page-container-content__data-box">{data}</div>
         </div>

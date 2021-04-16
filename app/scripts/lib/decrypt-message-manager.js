@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
-import ethUtil from 'ethereumjs-util';
+import { bufferToHex, stripHexPrefix } from 'ethereumjs-util';
 import { ethErrors } from 'eth-rpc-errors';
 import log from 'loglevel';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
@@ -337,7 +337,7 @@ export default class DecryptMessageManager extends EventEmitter {
    */
   normalizeMsgData(data) {
     try {
-      const stripped = ethUtil.stripHexPrefix(data);
+      const stripped = stripHexPrefix(data);
       if (stripped.match(hexRe)) {
         return addHexPrefix(stripped);
       }
@@ -345,6 +345,6 @@ export default class DecryptMessageManager extends EventEmitter {
       log.debug(`Message was not hex encoded, interpreting as utf8.`);
     }
 
-    return ethUtil.bufferToHex(Buffer.from(data, 'utf8'));
+    return bufferToHex(Buffer.from(data, 'utf8'));
   }
 }

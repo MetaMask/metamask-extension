@@ -79,7 +79,7 @@ describe('EnsController', function () {
       const ens = new EnsController({
         ens: {
           reverse: sinon.stub().withArgs(address).returns('peaksignal.eth'),
-          lookup: sinon.stub().withArgs('peaksignal.eth').returns('0xfoo'),
+          lookup: sinon.stub().withArgs('peaksignal.eth').returns('0x00'),
         },
         onNetworkDidChange,
         getCurrentChainId,

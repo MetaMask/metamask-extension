@@ -18,7 +18,7 @@ describe('Confirm Remove Account', () => {
     removeAccount: sinon.stub().resolves(),
     network: '101',
     identity: {
-      address: '0xAddress',
+      address: '0x0',
       name: 'Account 1',
     },
   };

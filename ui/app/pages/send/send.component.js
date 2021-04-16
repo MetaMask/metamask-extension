@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ethUtil from 'ethereumjs-util';
+import { isValidAddress } from 'ethereumjs-util';
 import { debounce } from 'lodash';
 import {
   getAmountErrorObject,
@@ -171,7 +171,7 @@ export default class SendTransactionScreen extends Component {
     if (qrCodeData) {
       if (qrCodeData.type === 'address') {
         scannedAddress = qrCodeData.values.address.toLowerCase();
-        if (ethUtil.isValidAddress(scannedAddress)) {
+        if (isValidAddress(scannedAddress)) {
           const currentAddress = prevTo?.toLowerCase();
           if (currentAddress !== scannedAddress) {
             updateSendTo(scannedAddress);

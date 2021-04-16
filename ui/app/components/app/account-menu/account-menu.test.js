@@ -26,12 +26,12 @@ describe('Account Menu', () => {
     addressConnectedDomainMap: {},
     accounts: [
       {
-        address: '0xAddress',
+        address: '0x00',
         name: 'Account 1',
         balance: '0x0',
       },
       {
-        address: '0xImportedAddress',
+        address: '0x1',
         name: 'Imported Account 1',
         balance: '0x0',
       },
@@ -43,7 +43,7 @@ describe('Account Menu', () => {
       },
       {
         type: 'Simple Key Pair',
-        accounts: ['0xImportedAddress'],
+        accounts: ['0x1'],
       },
     ],
     prevIsAccountMenuOpen: false,
@@ -90,9 +90,7 @@ describe('Account Menu', () => {
       click.first().simulate('click');
 
       expect(props.showAccountDetail.calledOnce).toStrictEqual(true);
-      expect(props.showAccountDetail.getCall(0).args[0]).toStrictEqual(
-        '0xAddress',
-      );
+      expect(props.showAccountDetail.getCall(0).args[0]).toStrictEqual('0x00');
     });
 
     it('render imported account label', () => {

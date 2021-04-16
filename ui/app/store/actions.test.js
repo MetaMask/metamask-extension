@@ -1394,7 +1394,7 @@ describe('Actions', () => {
 
       actions._setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.addToAddressBook('test'));
+      await store.dispatch(actions.addToAddressBook('0x0000'));
       expect(setAddressBookStub.callCount).toStrictEqual(1);
       sinon.restore();
     });
