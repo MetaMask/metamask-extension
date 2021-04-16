@@ -1289,9 +1289,7 @@ describe('MetaMask', function () {
     });
 
     it('customizes gas', async function () {
-      await driver.clickElement(
-        '.confirm-approve-content__small-blue-text.cursor-pointer',
-      );
+      await driver.clickElement('.confirm-approve-content__small-blue-text');
       await driver.delay(regularDelayMs);
 
       // wait for gas modal to be visible
@@ -1323,9 +1321,9 @@ describe('MetaMask', function () {
 
     it('edits the permission', async function () {
       const editButtons = await driver.findClickableElements(
-        '.confirm-approve-content__small-blue-text.cursor-pointer',
+        '.confirm-approve-content__small-blue-text',
       );
-      await editButtons[1].click();
+      await editButtons[2].click();
 
       // wait for permission modal to be visible
       const permissionModal = await driver.findVisibleElement('span .modal');
