@@ -790,9 +790,6 @@
   "importAccountSeedPhrase": {
     "message": "Importar una cuenta con la frase semilla"
   },
-  "importUsingSeed": {
-    "message": "Importar usando la frase semilla de la cuenta"
-  },
   "importWallet": {
     "message": "Importar Monedero"
   },
@@ -1278,9 +1275,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restaurar tu Cuenta con la Frase Semilla"
-  },
-  "restoreFromSeed": {
-    "message": "¿Restaurar cuenta?"
   },
   "restoreWalletPreferences": {
     "message": "Se ha encontrado una copia de seguridad de sus datos de $1. ¿Le gustaría restaurar sus preferencias de monedero?",

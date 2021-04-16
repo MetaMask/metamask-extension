@@ -486,9 +486,6 @@
   "importAccountSeedPhrase": {
     "message": "Importovať účet so seed frázou"
   },
-  "importUsingSeed": {
-    "message": "Importovať pomocou seed frázy účtu"
-  },
   "importWallet": {
     "message": "Importovať Peňaženku"
   },
@@ -803,9 +800,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Obnoviť účet pomocou seed frázy"
-  },
-  "restoreFromSeed": {
-    "message": "Obnovit z seed fráze"
   },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"

@@ -499,9 +499,6 @@
   "importAccountSeedPhrase": {
     "message": "Zaimportuj konto za pomocą frazy seed"
   },
-  "importUsingSeed": {
-    "message": "Importuj przy pomocy frazy seed konta"
-  },
   "importWallet": {
     "message": "Importuj portfel"
   },
@@ -828,9 +825,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Przywróć konto frazą seed"
-  },
-  "restoreFromSeed": {
-    "message": "Przywrócić konto?"
   },
   "revealSeedWords": {
     "message": "Pokaż słowa seed"

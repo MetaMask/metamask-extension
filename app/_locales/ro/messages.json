@@ -489,9 +489,6 @@
   "importAccountSeedPhrase": {
     "message": "Importați un cont cu fraza seed"
   },
-  "importUsingSeed": {
-    "message": "Importare folosind fraza inițială a contului"
-  },
   "importWallet": {
     "message": "Importați portofel"
   },
@@ -821,9 +818,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restaurați-vă contul folosind fraza inițială"
-  },
-  "restoreFromSeed": {
-    "message": "Restabiliți contul?"
   },
   "revealSeedWords": {
     "message": "Arată cuvintele din seed"

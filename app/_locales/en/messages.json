@@ -869,9 +869,6 @@
     "message": "or $1",
     "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
-  "importUsingSeed": {
-    "message": "Import using account seed phrase"
-  },
   "importWallet": {
     "message": "Import wallet"
   },
@@ -1394,9 +1391,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restore your Account with Seed Phrase"
-  },
-  "restoreFromSeed": {
-    "message": "Restore account?"
   },
   "restoreWalletPreferences": {
     "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",

@@ -486,9 +486,6 @@
   "importAccountSeedPhrase": {
     "message": "Importa un Compte amb Phrase de Recuperació"
   },
-  "importUsingSeed": {
-    "message": "Importa utilitzant la frase de seeds del compte"
-  },
   "importWallet": {
     "message": "Importar Moneder"
   },
@@ -812,9 +809,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restaura el teu compte amb Frase de Recuperació"
-  },
-  "restoreFromSeed": {
-    "message": "Restaurar compte?"
   },
   "revealSeedWords": {
     "message": "Revelar Paraules de Recuperació"

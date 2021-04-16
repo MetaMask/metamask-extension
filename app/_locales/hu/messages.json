@@ -495,9 +495,6 @@
   "importAccountSeedPhrase": {
     "message": "Fiók importálása seed mondat segítségével"
   },
-  "importUsingSeed": {
-    "message": "Importálás a fiók seed mondatának használatával"
-  },
   "importWallet": {
     "message": "Pénztárca importálása"
   },
@@ -827,9 +824,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Fiók helyreállítása a seed mondat segítségével"
-  },
-  "restoreFromSeed": {
-    "message": "Visszaállítja a fiókot? "
   },
   "revealSeedWords": {
     "message": "Seed szavak megjelenítése"

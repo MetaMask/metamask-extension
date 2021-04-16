@@ -495,9 +495,6 @@
   "importAccountSeedPhrase": {
     "message": "Impordi seemnefraasiga konto"
   },
-  "importUsingSeed": {
-    "message": "Impordi konto seemnefraasi abil"
-  },
   "importWallet": {
     "message": "Importige rahakott"
   },
@@ -824,9 +821,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Taastage konto seemnefraasi abil"
-  },
-  "restoreFromSeed": {
-    "message": "Taastada konto?"
   },
   "revealSeedWords": {
     "message": "Kuva seemnesõnu"

@@ -342,9 +342,6 @@
   "resetAccount": {
     "message": "Hesabı sıfıla"
   },
-  "restoreFromSeed": {
-    "message": "Kaynak ifadeden geri getir. Restore from seed phrase"
-  },
   "revealSeedWords": {
     "message": "Kaynak kelimelerini göster"
   },

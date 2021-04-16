@@ -499,9 +499,6 @@
   "importAccountSeedPhrase": {
     "message": "Імпортувати обліковий запис з початковою фразою"
   },
-  "importUsingSeed": {
-    "message": "Імпортувати, використовуючи початкову фразу облікового запису"
-  },
   "importWallet": {
     "message": "Імпортувати гаманець"
   },
@@ -834,9 +831,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Відновіть ваш обліковий запис за допомогою seed-фрази"
-  },
-  "restoreFromSeed": {
-    "message": "Відновити обліковий запис?"
   },
   "revealSeedWords": {
     "message": "Показати мнемонічні слова"

@@ -499,9 +499,6 @@
   "importAccountSeedPhrase": {
     "message": "Tuo tili siemenlauseella"
   },
-  "importUsingSeed": {
-    "message": "Tuo käyttäen tilin siemenlausetta"
-  },
   "importWallet": {
     "message": "Tuo kukkaro"
   },
@@ -831,9 +828,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Palauta tilisi käyttäen salaustekstiä (seed phrase)"
-  },
-  "restoreFromSeed": {
-    "message": "Palautetaanko tili?"
   },
   "revealSeedWords": {
     "message": "Paljasta salaussanat"

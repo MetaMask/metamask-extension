@@ -495,9 +495,6 @@
   "importAccountSeedPhrase": {
     "message": "استيراد حساب باستخدام عبارة الأمان"
   },
-  "importUsingSeed": {
-    "message": "استيراد باستخدام عبارة أمان الحساب"
-  },
   "importWallet": {
     "message": "استيراد المحفظة"
   },
@@ -827,9 +824,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "قم باستعادة حسابك بواسطة عبارة الأمان"
-  },
-  "restoreFromSeed": {
-    "message": "هل تريد استعادة الحساب؟"
   },
   "revealSeedWords": {
     "message": "كشف كلمات عبارات الأمان"

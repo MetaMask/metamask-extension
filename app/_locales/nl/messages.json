@@ -290,9 +290,6 @@
   "resetAccount": {
     "message": "Account opnieuw instellen"
   },
-  "restoreFromSeed": {
-    "message": "Herstel vanuit back-up woorden"
-  },
   "revealSeedWords": {
     "message": "Onthul back-up woorden"
   },

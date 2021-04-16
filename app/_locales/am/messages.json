@@ -499,9 +499,6 @@
   "importAccountSeedPhrase": {
     "message": "መለያን በዘር ሐረግ አስመጣ"
   },
-  "importUsingSeed": {
-    "message": "የመለያ የዘር ሐረግ በመጠቀም ያስመጡ"
-  },
   "importWallet": {
     "message": "ቋት አስመጣ"
   },
@@ -831,9 +828,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "መለያዎን በዘር ሐረግ ወደነበረበት ይመልሱ"
-  },
-  "restoreFromSeed": {
-    "message": "መለያው ወደነበረበት ይመለስ?"
   },
   "revealSeedWords": {
     "message": "የዘር ቃላትን ይግለጹ"

@@ -499,9 +499,6 @@
   "importAccountSeedPhrase": {
     "message": "יבא חשבון באמצעות Seed Phrase"
   },
-  "importUsingSeed": {
-    "message": "ייבא באמצעות צירוף הגרעין של החשבון"
-  },
   "importWallet": {
     "message": "ייבא ארנק"
   },
@@ -831,9 +828,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "שחזר את חשבונך באמצעות צירוף הגרעין"
-  },
-  "restoreFromSeed": {
-    "message": "לשחזר את החשבון?"
   },
   "revealSeedWords": {
     "message": "גלה מילות Seed"

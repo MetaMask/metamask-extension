@@ -781,9 +781,6 @@
   "importAccountSeedPhrase": {
     "message": "Импортировать счет с исходной фразой"
   },
-  "importUsingSeed": {
-    "message": "Импортировать с использованием исходной фразы счета"
-  },
   "importWallet": {
     "message": "Импортировать кошелек"
   },
@@ -1269,9 +1266,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Восстановите свой счет с помощью исходной фразы"
-  },
-  "restoreFromSeed": {
-    "message": "Восстановить счет?"
   },
   "restoreWalletPreferences": {
     "message": "Найдена резервная копия ваших данных из $1. Хотите восстановить настройки кошелька?",

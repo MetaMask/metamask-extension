@@ -499,9 +499,6 @@
   "importAccountSeedPhrase": {
     "message": "یک حساب با عبارت بازیاب را وارد کنید"
   },
-  "importUsingSeed": {
-    "message": "وارد کردن با استفاده از عبارت بازیاب حساب"
-  },
   "importWallet": {
     "message": "وارد سازی کیف"
   },
@@ -834,9 +831,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "حساب تان را با عبارت بازیاب، بازیابی کنید"
-  },
-  "restoreFromSeed": {
-    "message": "بازگرداندن حساب؟"
   },
   "revealSeedWords": {
     "message": "کلمات بازیاب را آشکار کنید"

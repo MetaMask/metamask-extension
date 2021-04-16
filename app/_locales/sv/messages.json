@@ -489,9 +489,6 @@
   "importAccountSeedPhrase": {
     "message": "Importera konto med"
   },
-  "importUsingSeed": {
-    "message": "Importera med kontots seedfras"
-  },
   "importWallet": {
     "message": "Importera plånbok"
   },
@@ -818,9 +815,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Återställ ditt konto med seedphrase"
-  },
-  "restoreFromSeed": {
-    "message": "Återställ konto?"
   },
   "revealSeedWords": {
     "message": "Visa seed-ord"

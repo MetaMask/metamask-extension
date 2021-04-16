@@ -490,9 +490,6 @@
   "importAccountSeedPhrase": {
     "message": "Importez un compte avec une phrase mnémotechnique"
   },
-  "importUsingSeed": {
-    "message": "Importer à partir de la phrase Seed du compte"
-  },
   "importWallet": {
     "message": "Importer le portefeuille"
   },
@@ -816,9 +813,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restaurer votre compte avec une phrase Seed."
-  },
-  "restoreFromSeed": {
-    "message": "Restaurer le compte ?"
   },
   "revealSeedWords": {
     "message": "Révéler les mots Seed"

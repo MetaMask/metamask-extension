@@ -781,9 +781,6 @@
   "importAccountSeedPhrase": {
     "message": "시드 구문으로 계정 가져오기"
   },
-  "importUsingSeed": {
-    "message": "계정 시드 구문으로 가져오기"
-  },
   "importWallet": {
     "message": "지갑 가져오기"
   },
@@ -1266,9 +1263,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "시드 구문으로 계정 복구"
-  },
-  "restoreFromSeed": {
-    "message": "계정을 복구하시겠습니까?"
   },
   "restoreWalletPreferences": {
     "message": "$1의 데이터 백업이 발견되었습니다. 지갑 환경설정을 복구하시겠습니까?",

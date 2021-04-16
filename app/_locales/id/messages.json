@@ -781,9 +781,6 @@
   "importAccountSeedPhrase": {
     "message": "Impor akun dengan frasa pemulihan"
   },
-  "importUsingSeed": {
-    "message": "Impor menggunakan frasa pemulihan akun"
-  },
   "importWallet": {
     "message": "Impor dompet"
   },
@@ -1269,9 +1266,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Memulihkan Akun dengan Frasa Pemulihan"
-  },
-  "restoreFromSeed": {
-    "message": "Pulihkan akun?"
   },
   "restoreWalletPreferences": {
     "message": "Cadangan data Anda dari $1 telah ditemukan. Apakah Anda ingin memulihkan preferensi dompet Anda?",

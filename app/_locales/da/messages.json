@@ -492,9 +492,6 @@
   "importAccountSeedPhrase": {
     "message": "Importér en Konto med Seedfrase"
   },
-  "importUsingSeed": {
-    "message": "Importér ved brug af kontoens seed-sætning"
-  },
   "importWallet": {
     "message": "Importér pung"
   },
@@ -815,9 +812,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Gendan din konto med Seed-sætning"
-  },
-  "restoreFromSeed": {
-    "message": "Genopret konto?"
   },
   "revealSeedWords": {
     "message": "Vis Seedord"

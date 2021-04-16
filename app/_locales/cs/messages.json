@@ -326,9 +326,6 @@
   "resetAccount": {
     "message": "Resetovat účet"
   },
-  "restoreFromSeed": {
-    "message": "Obnovit z seed fráze"
-  },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
   },

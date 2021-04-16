@@ -499,9 +499,6 @@
   "importAccountSeedPhrase": {
     "message": "সীড ফ্রেজ দিয়ে একটি অ্যাকাউন্ট আমদানি করুন"
   },
-  "importUsingSeed": {
-    "message": "অ্যাকাউন্ট সীড ফ্রেজ ব্যবহার করে আমদানি করুন"
-  },
   "importWallet": {
     "message": "ওয়ালেট আমদানি করুন"
   },
@@ -834,9 +831,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "সীড ফ্রেজ দিয়ে আপনার অ্যাকাউন্ট রিস্টোর করুন"
-  },
-  "restoreFromSeed": {
-    "message": "অ্যাকাউন্ট রিস্টোর করবেন?"
   },
   "revealSeedWords": {
     "message": "সীড শব্দগুলি প্রকাশ করুন"

@@ -495,9 +495,6 @@
   "importAccountSeedPhrase": {
     "message": "Импортирайте акаунт с фраза зародиш"
   },
-  "importUsingSeed": {
-    "message": "Импортиране с помощта на фразата зародиш на профила"
-  },
   "importWallet": {
     "message": "Импортиране на портфейла"
   },
@@ -830,9 +827,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Възстановете акаунта си с фраза зародиш"
-  },
-  "restoreFromSeed": {
-    "message": "Да се възстанови ли акаунта?"
   },
   "revealSeedWords": {
     "message": "Разкрий думите зародиш"

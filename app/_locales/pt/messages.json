@@ -300,9 +300,6 @@
   "resetAccount": {
     "message": "Reinicializar Conta"
   },
-  "restoreFromSeed": {
-    "message": "Restaurar a partir da frase seed"
-  },
   "revealSeedWords": {
     "message": "Revelar Palavras Seed"
   },

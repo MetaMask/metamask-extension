@@ -486,9 +486,6 @@
   "importAccountSeedPhrase": {
     "message": "Hamisha Akaunti kwa kutumia Kirai Kianzio"
   },
-  "importUsingSeed": {
-    "message": "Hamisha kwa kutumia kirai kianzio cha akaunti"
-  },
   "importWallet": {
     "message": "Hamisha Waleti"
   },
@@ -812,9 +809,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Rejesha Akaunti yako kwa kutumia Kirai Kianzio."
-  },
-  "restoreFromSeed": {
-    "message": "Rejesha akaunti?"
   },
   "revealSeedWords": {
     "message": "Onyesha Maneno ya Kianzio"

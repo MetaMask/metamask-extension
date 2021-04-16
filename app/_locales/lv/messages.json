@@ -495,9 +495,6 @@
   "importAccountSeedPhrase": {
     "message": "Importēt kontu ar atkopšanas frāzi"
   },
-  "importUsingSeed": {
-    "message": "Importēt, izmantojot konta atkopšanas frāzi"
-  },
   "importWallet": {
     "message": "Importēt maku"
   },
@@ -830,9 +827,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Atjaunojiet savu kontu ar atkopšanas frāzi"
-  },
-  "restoreFromSeed": {
-    "message": "Atjaunot kontu?"
   },
   "revealSeedWords": {
     "message": "Parādīt atkopšanas vārdus"

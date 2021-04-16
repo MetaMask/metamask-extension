@@ -790,9 +790,6 @@
   "importAccountSeedPhrase": {
     "message": "シードフレーズを使用してアカウントをインポート"
   },
-  "importUsingSeed": {
-    "message": "アカウントのシードフレーズから復元する"
-  },
   "importWallet": {
     "message": "ウォレットのインポート"
   },
@@ -1278,9 +1275,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "シードフレーズでアカウントを復元"
-  },
-  "restoreFromSeed": {
-    "message": "アカウントを復元しますか?"
   },
   "restoreWalletPreferences": {
     "message": "$1 のデータバックアップが見つかりました。ウォレットの基本設定を復元しますか?",

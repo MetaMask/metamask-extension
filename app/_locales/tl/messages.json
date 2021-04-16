@@ -781,9 +781,6 @@
   "importAccountSeedPhrase": {
     "message": "Mag-import ng account gamit ang seed phrase"
   },
-  "importUsingSeed": {
-    "message": "I-import gamit ang seed phrase ng account"
-  },
   "importWallet": {
     "message": "I-import ang wallet"
   },
@@ -1266,9 +1263,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "I-restore ang iyong Account gamit ang Seed Phrase"
-  },
-  "restoreFromSeed": {
-    "message": "I-restore ang account?"
   },
   "restoreWalletPreferences": {
     "message": "Nakita ang backup ng iyong data mula sa $1. Gusto mo bang i-restore ang mga kagustuhan mo sa wallet?",

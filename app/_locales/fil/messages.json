@@ -456,9 +456,6 @@
   "importAccountSeedPhrase": {
     "message": "Mag-import ng Account gamit ang Seed Phrase"
   },
-  "importUsingSeed": {
-    "message": "Mag-import gamit ang seed phrase ng account"
-  },
   "importWallet": {
     "message": "Mag-import ng Wallet"
   },
@@ -758,9 +755,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "I-restore ang iyong Account gamit ang Seed Phrase"
-  },
-  "restoreFromSeed": {
-    "message": "I-restore ang account?"
   },
   "revealSeedWords": {
     "message": "Ipakita ang Seed Words"

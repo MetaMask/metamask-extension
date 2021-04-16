@@ -487,9 +487,6 @@
   "importAccountSeedPhrase": {
     "message": "Ein Konto mit einem Seed-Schlüssel importieren"
   },
-  "importUsingSeed": {
-    "message": "Mittels mnemonischer Phrase des Kontos importieren"
-  },
   "importWallet": {
     "message": "Wallet importieren"
   },
@@ -803,9 +800,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Ihr Konto mit mnemonischer Phrase wiederherstellen"
-  },
-  "restoreFromSeed": {
-    "message": "Mit Hilfe der Seed-Wörterfolge wiederherstellen."
   },
   "revealSeedWords": {
     "message": "Seed-Wörterfolge anzeigen"

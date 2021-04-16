@@ -499,9 +499,6 @@
   "importAccountSeedPhrase": {
     "message": "ಸೀಡ್‌ ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ಖಾತೆಯನ್ನು ಆಮದು ಮಾಡಿ"
   },
-  "importUsingSeed": {
-    "message": "ಸೀಡ್‌ ಫ್ರೇಸ್‌ ಖಾತೆಯನ್ನು ಬಳಸಿಕೊಂಡು ಆಮದು ಮಾಡಿ"
-  },
   "importWallet": {
     "message": "ವ್ಯಾಲೆಟ್ ಅನ್ನು ಆಮದು ಮಾಡಿ"
   },
@@ -834,9 +831,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "ಸೀಡ್ ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಮರುಸ್ಥಾಪಿಸಿ"
-  },
-  "restoreFromSeed": {
-    "message": "ಖಾತೆಯನ್ನು ಮರುಸ್ಥಾಪಿಸುವುದೇ?"
   },
   "revealSeedWords": {
     "message": "ಸೀಡ್ ವರ್ಡ್ಸ್ ಬಹಿರಂಗಪಡಿಸಿ"

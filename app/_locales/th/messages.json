@@ -399,9 +399,6 @@
   "resetAccount": {
     "message": "รีเซ็ตบัญชี"
   },
-  "restoreFromSeed": {
-    "message": "กู้คืนจากกลุ่มคำชีด"
-  },
   "revealSeedWords": {
     "message": "เปิดเผยกลุ่มคำชีด"
   },

@@ -781,9 +781,6 @@
   "importAccountSeedPhrase": {
     "message": "सीडफ्रेज़ के साथ कोई खाता आयात करें"
   },
-  "importUsingSeed": {
-    "message": "खाता सीडफ्रेज़ का उपयोग करके आयात करें"
-  },
   "importWallet": {
     "message": "वॉलेट आयात करें"
   },
@@ -1269,9 +1266,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "सीड फ्रेज़ के साथ अपने खाते को पुनर्स्थापित करें"
-  },
-  "restoreFromSeed": {
-    "message": "खाता पुनर्स्थापित करें?"
   },
   "restoreWalletPreferences": {
     "message": "$1 से आपके डेटा का बैकअप मिला है। क्या आप अपनी वॉलेट वरीयताओं को पुनर्स्थापित करना चाहते हैं?",

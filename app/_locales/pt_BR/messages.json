@@ -493,9 +493,6 @@
   "importAccountSeedPhrase": {
     "message": "Importar uma Conta com Frase-semente"
   },
-  "importUsingSeed": {
-    "message": "Importe usando a seed phrase da conta"
-  },
   "importWallet": {
     "message": "Importar Carteira"
   },
@@ -822,9 +819,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restaurar sua conta com a frase semente"
-  },
-  "restoreFromSeed": {
-    "message": "Restaurar conta?"
   },
   "revealSeedWords": {
     "message": "Revelar Palavras-semente"

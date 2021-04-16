@@ -495,9 +495,6 @@
   "importAccountSeedPhrase": {
     "message": "Uvezi račun početnom rečenicom"
   },
-  "importUsingSeed": {
-    "message": "Uvezi početnom rečenicom za račun"
-  },
   "importWallet": {
     "message": "Uvezi novčanik"
   },
@@ -827,9 +824,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Obnovite svoj račun početnom rečenicom"
-  },
-  "restoreFromSeed": {
-    "message": "Obnoviti račun?"
   },
   "revealSeedWords": {
     "message": "Otkrij početne riječi"

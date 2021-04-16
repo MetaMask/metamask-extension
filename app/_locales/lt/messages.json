@@ -499,9 +499,6 @@
   "importAccountSeedPhrase": {
     "message": "Importuoti paskyrą su atkūrimo fraze"
   },
-  "importUsingSeed": {
-    "message": "Importuoti naudojant paskyros atkūrimo frazę"
-  },
   "importWallet": {
     "message": "Importuoti slaptažodinę"
   },
@@ -834,9 +831,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Atkurti paskyrą naudojant atkūrimo frazę"
-  },
-  "restoreFromSeed": {
-    "message": "Atkurti paskyrą?"
   },
   "revealSeedWords": {
     "message": "Atskleisti atkūrimo žodžius"

@@ -303,9 +303,6 @@
   "resetAccount": {
     "message": "खाता रीसेट करें"
   },
-  "restoreFromSeed": {
-    "message": "बीज वाक्यांश से पुनर्स्थापित करें"
-  },
   "revealSeedWords": {
     "message": "बीज शब्द प्रकट करें"
   },
