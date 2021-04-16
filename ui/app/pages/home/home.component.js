@@ -34,6 +34,8 @@ const LEARN_MORE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension';
 const LEGACY_WEB3_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360053147012';
+const INFURA_BLOCKAGE_URL =
+  'https://metamask.zendesk.com/hc/en-us/articles/360059386712';
 
 export default class Home extends PureComponent {
   static contextTypes = {
@@ -74,10 +76,12 @@ export default class Home extends PureComponent {
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
+    infuraBlocked: PropTypes.bool.isRequired,
   };
 
   state = {
     mounted: false,
+    canShowBlockageNotification: true,
   };
 
   componentDidMount() {
@@ -176,6 +180,7 @@ export default class Home extends PureComponent {
       setWeb3ShimUsageAlertDismissed,
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
+      infuraBlocked,
     } = this.props;
 
     return (
@@ -239,6 +244,28 @@ export default class Home extends PureComponent {
               setShowRestorePromptToFalse();
             }}
             key="home-privacyModeDefault"
+          />
+        ) : null}
+        {infuraBlocked && this.state.canShowBlockageNotification ? (
+          <HomeNotification
+            descriptionText={t('infuraBlockedNotification', [
+              <span
+                key="infuraBlockedNotificationLink"
+                className="home-notification__text-link"
+                onClick={() =>
+                  global.platform.openTab({ url: INFURA_BLOCKAGE_URL })
+                }
+              >
+                {t('here')}
+              </span>,
+            ])}
+            ignoreText={t('dismiss')}
+            onIgnore={() => {
+              this.setState({
+                canShowBlockageNotification: false,
+              });
+            }}
+            key="home-infuraBlockedNotification"
           />
         ) : null}
       </MultipleNotifications>

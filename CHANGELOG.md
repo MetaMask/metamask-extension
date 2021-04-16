@@ -2,6 +2,9 @@
 
 ## Current Develop Branch
 
+## 9.4.0 Thu Apr 15 2021
+- [#10883](https://github.com/MetaMask/metamask-extension/pull/10883): Notify users when MetaMask is unable to connect to the blockchain host
+
 ## 9.3.0 Fri Mar 26 2021
 - [#10777](https://github.com/MetaMask/metamask-extension/pull/10777): Display BNB token image for default currency on BSC network home screen
 - [#10721](https://github.com/MetaMask/metamask-extension/pull/10721): Swaps support for the Binance network
