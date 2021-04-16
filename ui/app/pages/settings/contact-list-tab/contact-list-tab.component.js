@@ -29,6 +29,7 @@ export default class ContactListTab extends Component {
     const { addressBook, history, selectedAddress } = this.props;
     const contacts = addressBook.filter(({ name }) => Boolean(name));
     const nonContacts = addressBook.filter(({ name }) => !name);
+    const { t } = this.context;
 
     if (addressBook.length) {
       return (
@@ -48,9 +49,9 @@ export default class ContactListTab extends Component {
       <div className="address-book__container">
         <div>
           <img src="/images/address-book.svg" alt="Address book icon" />
-          <h4 className="address-book__title">Build your contact list</h4>
+          <h4 className="address-book__title">{t('builContactList')}</h4>
           <p className="address-book__sub-title">
-            Add friends and addresses you trust
+            {t('addFriendsAndAddresses')}
           </p>
           <button
             className="address-book__link"
@@ -58,7 +59,7 @@ export default class ContactListTab extends Component {
               history.push(CONTACT_ADD_ROUTE);
             }}
           >
-            + Add contact
+            + {t('addContact')}
           </button>
         </div>
       </div>

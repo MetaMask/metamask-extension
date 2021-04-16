@@ -52,6 +52,9 @@
   "addAlias": {
     "message": "Add alias"
   },
+  "addContact": {
+    "message": "Add contact"
+  },
   "addEthereumChainConfirmationDescription": {
     "message": "This will allow this network to be used within MetaMask."
   },
@@ -68,6 +71,9 @@
   },
   "addEthereumChainConfirmationTitle": {
     "message": "Allow this site to add a network?"
+  },
+  "addFriendsAndAddresses": {
+    "message": "Add friends and addresses you trust"
   },
   "addNetwork": {
     "message": "Add Network"
@@ -242,6 +248,9 @@
   },
   "browserNotSupported": {
     "message": "Your Browser is not supported..."
+  },
+  "builContactList": {
+    "message": "Build your contact list"
   },
   "builtInCalifornia": {
     "message": "MetaMask is designed and built in California."
