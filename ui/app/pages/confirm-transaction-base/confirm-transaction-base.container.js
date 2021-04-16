@@ -149,6 +149,7 @@ const mapStateToProps = (state, ownProps) => {
       },
     };
   }
+  customNonceValue = getCustomNonceValue(state);
 
   return {
     balance,
@@ -179,7 +180,7 @@ const mapStateToProps = (state, ownProps) => {
     },
     advancedInlineGasShown: getAdvancedInlineGasShown(state),
     useNonceField: getUseNonceField(state),
-    customNonceValue: getCustomNonceValue(state),
+    customNonceValue,
     insufficientBalance,
     hideSubtitle: !isMainnet && !showFiatInTestnets,
     hideFiatConversion: !isMainnet && !showFiatInTestnets,
