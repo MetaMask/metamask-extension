@@ -1,1 +1,1 @@
-export { default } from './metametrics-opt-in.container'
+export { default } from './metametrics-opt-in.container';

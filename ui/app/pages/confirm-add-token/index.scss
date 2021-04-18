@@ -2,7 +2,8 @@
   padding: 16px;
 
   &__header {
-    font-size: 0.75rem;
+    @include H7;
+
     display: flex;
   }
 
@@ -26,17 +27,16 @@
       align-items: flex-start;
 
       &__amount {
+        @include H1;
+
         color: $scorpion;
-        font-size: 43px;
-        line-height: 43px;
         margin-right: 8px;
       }
 
       &__symbol {
+        @include H5;
+
         color: $scorpion;
-        font-size: 16px;
-        font-weight: 400;
-        line-height: 24px;
       }
     }
   }

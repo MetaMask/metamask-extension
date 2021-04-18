@@ -12,7 +12,8 @@
   }
 
   &__warning {
-    font-size: 0.75rem;
+    @include H7;
+
     color: #5f5922;
   }
 }

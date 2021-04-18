@@ -1,1 +1,1 @@
-export { default } from './advanced-tab.container'
+export { default } from './advanced-tab.container';

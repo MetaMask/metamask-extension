@@ -1,1 +1,1 @@
-export { default } from './identicon.container'
+export { default } from './identicon.container';

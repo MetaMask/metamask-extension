@@ -1,1 +1,1 @@
-export { default } from './recipient-group.component'
+export { default } from './recipient-group.component';

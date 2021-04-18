@@ -1,14 +1,14 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import ToggleButton from '../../../components/ui/toggle-button'
-import { REVEAL_SEED_ROUTE } from '../../../helpers/constants/routes'
-import Button from '../../../components/ui/button'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import ToggleButton from '../../../components/ui/toggle-button';
+import { REVEAL_SEED_ROUTE } from '../../../helpers/constants/routes';
+import Button from '../../../components/ui/button';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  }
+  };
 
   static propTypes = {
     warning: PropTypes.string,
@@ -19,16 +19,16 @@ export default class SecurityTab extends PureComponent {
     setShowIncomingTransactionsFeatureFlag: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
     usePhishDetect: PropTypes.bool.isRequired,
-  }
+  };
 
-  renderSeedWords () {
-    const { t } = this.context
-    const { history } = this.props
+  renderSeedWords() {
+    const { t } = this.context;
+    const { history } = this.props;
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('revealSeedWords') }</span>
+          <span>{t('revealSeedWords')}</span>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
@@ -36,35 +36,38 @@ export default class SecurityTab extends PureComponent {
               type="danger"
               large
               onClick={(event) => {
-                event.preventDefault()
+                event.preventDefault();
                 this.context.metricsEvent({
                   eventOpts: {
                     category: 'Settings',
                     action: 'Reveal Seed Phrase',
                     name: 'Reveal Seed Phrase',
                   },
-                })
-                history.push(REVEAL_SEED_ROUTE)
+                });
+                history.push(REVEAL_SEED_ROUTE);
               }}
             >
-              { t('revealSeedWords') }
+              {t('revealSeedWords')}
             </Button>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  renderMetaMetricsOptIn () {
-    const { t } = this.context
-    const { participateInMetaMetrics, setParticipateInMetaMetrics } = this.props
+  renderMetaMetricsOptIn() {
+    const { t } = this.context;
+    const {
+      participateInMetaMetrics,
+      setParticipateInMetaMetrics,
+    } = this.props;
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('participateInMetaMetrics') }</span>
+          <span>{t('participateInMetaMetrics')}</span>
           <div className="settings-page__content-description">
-            <span>{ t('participateInMetaMetricsDescription') }</span>
+            <span>{t('participateInMetaMetricsDescription')}</span>
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -78,45 +81,50 @@ export default class SecurityTab extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  renderIncomingTransactionsOptIn () {
-    const { t } = this.context
-    const { showIncomingTransactions, setShowIncomingTransactionsFeatureFlag } = this.props
+  renderIncomingTransactionsOptIn() {
+    const { t } = this.context;
+    const {
+      showIncomingTransactions,
+      setShowIncomingTransactionsFeatureFlag,
+    } = this.props;
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('showIncomingTransactions') }</span>
+          <span>{t('showIncomingTransactions')}</span>
           <div className="settings-page__content-description">
-            { t('showIncomingTransactionsDescription') }
+            {t('showIncomingTransactionsDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={showIncomingTransactions}
-              onToggle={(value) => setShowIncomingTransactionsFeatureFlag(!value)}
+              onToggle={(value) =>
+                setShowIncomingTransactionsFeatureFlag(!value)
+              }
               offLabel={t('off')}
               onLabel={t('on')}
             />
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  renderPhishingDetectionToggle () {
-    const { t } = this.context
-    const { usePhishDetect, setUsePhishDetect } = this.props
+  renderPhishingDetectionToggle() {
+    const { t } = this.context;
+    const { usePhishDetect, setUsePhishDetect } = this.props;
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{ t('usePhishingDetection') }</span>
+          <span>{t('usePhishingDetection')}</span>
           <div className="settings-page__content-description">
-            { t('usePhishingDetectionDescription') }
+            {t('usePhishingDetectionDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -130,20 +138,20 @@ export default class SecurityTab extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  render () {
-    const { warning } = this.props
+  render() {
+    const { warning } = this.props;
 
     return (
       <div className="settings-page__body">
-        { warning && <div className="settings-tab__error">{ warning }</div> }
-        { this.renderSeedWords() }
-        { this.renderIncomingTransactionsOptIn() }
-        { this.renderPhishingDetectionToggle() }
-        { this.renderMetaMetricsOptIn() }
+        {warning && <div className="settings-tab__error">{warning}</div>}
+        {this.renderSeedWords()}
+        {this.renderIncomingTransactionsOptIn()}
+        {this.renderPhishingDetectionToggle()}
+        {this.renderMetaMetricsOptIn()}
       </div>
-    )
+    );
   }
 }

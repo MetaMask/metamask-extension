@@ -1,0 +1,27 @@
+.qr-code {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__message-container > div:first-child {
+    @include Paragraph;
+
+    margin-top: 18px;
+    color: #4d4d4d;
+  }
+
+  &__message {
+    @include H7;
+
+    color: #f7861c;
+  }
+
+  &__error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #f7861c;
+    margin-bottom: 9px;
+  }
+}

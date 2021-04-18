@@ -1,1 +1,1 @@
-export { default } from './alerts-tab'
+export { default } from './alerts-tab';

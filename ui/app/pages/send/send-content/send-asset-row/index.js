@@ -1,1 +1,1 @@
-export { default } from './send-asset-row.container'
+export { default } from './send-asset-row.container';

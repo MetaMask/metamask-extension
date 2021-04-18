@@ -1,7 +1,8 @@
 {
   "data": {
     "AppStateController": {
-      "mkrMigrationReminderTimestamp": null
+      "mkrMigrationReminderTimestamp": null,
+      "swapsWelcomeMessageHasBeenShown": true
     },
     "CachedBalancesController": {
       "cachedBalances": {
@@ -27,15 +28,13 @@
       "vault": "{\"data\":\"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT\",\"iv\":\"FbeHDAW5afeWNORfNJBR0Q==\",\"salt\":\"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8=\"}"
     },
     "NetworkController": {
-      "network": "5777",
+      "network": "1337",
       "provider": {
-        "nickname": "",
-        "rpcTarget": "",
+        "nickname": "Localhost 8545",
+        "rpcUrl": "http://localhost:8545",
+        "chainId": "0x539",
         "ticker": "ETH",
-        "type": "localhost"
-      },
-      "settings": {
-        "ticker": "ETH"
+        "type": "rpc"
       }
     },
     "OnboardingController": {

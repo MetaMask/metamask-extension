@@ -1,1 +1,1 @@
-export { default } from './user-preferenced-currency-display.component'
+export { default } from './user-preferenced-currency-display.component';

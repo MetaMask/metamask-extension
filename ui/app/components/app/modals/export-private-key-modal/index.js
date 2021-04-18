@@ -1,1 +1,1 @@
-export { default } from './export-private-key-modal.container'
+export { default } from './export-private-key-modal.container';

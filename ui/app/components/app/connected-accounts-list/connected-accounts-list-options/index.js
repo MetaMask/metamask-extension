@@ -1,1 +1,1 @@
-export { default } from './connected-accounts-list-options.component'
+export { default } from './connected-accounts-list-options.component';

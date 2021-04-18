@@ -1,6 +1,6 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import Modal, { ModalContent } from '../../modal'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import Modal, { ModalContent } from '../../modal';
 
 export default class ConfirmDeleteNetwork extends PureComponent {
   static propTypes = {
@@ -8,22 +8,21 @@ export default class ConfirmDeleteNetwork extends PureComponent {
     delRpcTarget: PropTypes.func.isRequired,
     onConfirm: PropTypes.func.isRequired,
     target: PropTypes.string.isRequired,
-  }
+  };
 
   static contextTypes = {
     t: PropTypes.func,
-  }
+  };
 
   handleDelete = () => {
-    this.props.delRpcTarget(this.props.target)
-      .then(() => {
-        this.props.onConfirm()
-        this.props.hideModal()
-      })
-  }
+    this.props.delRpcTarget(this.props.target).then(() => {
+      this.props.onConfirm();
+      this.props.hideModal();
+    });
+  };
 
-  render () {
-    const { t } = this.context
+  render() {
+    const { t } = this.context;
 
     return (
       <Modal
@@ -38,6 +37,6 @@ export default class ConfirmDeleteNetwork extends PureComponent {
           description={t('deleteNetworkDescription')}
         />
       </Modal>
-    )
+    );
   }
 }

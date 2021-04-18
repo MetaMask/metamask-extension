@@ -1,0 +1,134 @@
+.loading-swaps-quotes {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+
+  &__content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-height: 445px;
+  }
+
+  &__quote-counter {
+    @include H7;
+
+    color: $Grey-500;
+    margin-top: 3px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 4px;
+  }
+
+  &__quote-name-check {
+    @include H4;
+
+    font-weight: bold;
+    color: $Black-100;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    text-transform: capitalize;
+  }
+
+  &__background-1,
+  &__background-2 {
+    width: 265.18px;
+    height: 221.02px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    -webkit-animation: spin 38s linear infinite;
+    -moz-animation: spin 38s linear infinite;
+    animation: spin 38s linear infinite;
+
+    @-moz-keyframes spin {
+      100% {
+        -moz-transform: rotate(360deg);
+      }
+    }
+
+    @-webkit-keyframes spin {
+      100% {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spin {
+      100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+  }
+
+  &__background-2 {
+    width: 182.8px;
+    height: 195.39px;
+    -webkit-animation: spin 42s linear infinite;
+    -moz-animation: spin 42s linear infinite;
+    animation: spin 42s linear infinite;
+  }
+
+  &__mascot-container {
+    position: absolute;
+  }
+
+  &__animation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 60%;
+    width: 316px;
+  }
+
+  &__logo {
+    position: fixed;
+
+    &--transition {
+      -webkit-transition: opacity 0.4s linear;
+      -moz-transition: opacity 0.4s linear;
+      -ms-transition: opacity 0.4s linear;
+      -o-transition: opacity 0.4s linear;
+      transition: opacity 0.4s linear;
+    }
+
+    div {
+      height: 40px;
+      width: 94px;
+      border-radius: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    img {
+      width: 74px;
+      height: 30px;
+    }
+  }
+
+  &__loading-bar-container {
+    width: 248px;
+    height: 3px;
+    background: $Grey-100;
+    display: flex;
+    margin-top: 16px;
+  }
+
+  &__loading-bar {
+    height: 3px;
+    background: $Blue-500;
+    -webkit-transition: width 0.5s linear;
+    -moz-transition: width 0.5s linear;
+    -o-transition: width 0.5s linear;
+    transition: width 0.5s linear;
+  }
+}

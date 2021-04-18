@@ -1,1 +1,1 @@
-export { default } from './snackbar.component'
+export { default } from './snackbar.component';

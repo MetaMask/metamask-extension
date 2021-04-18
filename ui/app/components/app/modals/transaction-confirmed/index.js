@@ -1,1 +1,1 @@
-export { default } from './transaction-confirmed.container'
+export { default } from './transaction-confirmed.container';

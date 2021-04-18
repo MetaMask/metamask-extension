@@ -1,1 +1,1 @@
-export { default } from './confirm-page-container-warning.component'
+export { default } from './confirm-page-container-warning.component';

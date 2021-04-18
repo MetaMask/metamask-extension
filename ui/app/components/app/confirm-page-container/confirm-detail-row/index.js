@@ -1,1 +1,1 @@
-export { default } from './confirm-detail-row.component'
+export { default } from './confirm-detail-row.component';

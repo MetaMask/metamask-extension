@@ -1,1 +1,1 @@
-export { default } from './lock-icon.component'
+export { default } from './lock-icon.component';

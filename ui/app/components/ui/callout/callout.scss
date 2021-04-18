@@ -1,0 +1,65 @@
+.callout {
+  $self: &;
+
+  @include H7;
+
+  padding: 16px;
+  display: grid;
+  grid-template-columns: minmax(0, auto) 1fr minmax(0, auto);
+  grid-template-rows: 1fr;
+  transition: opacity 0.75s 0s;
+
+  a {
+    color: $primary-1;
+  }
+
+  &--dismissible {
+    &#{$self}--first {
+      box-shadow: 0 -5px 5px -5px rgba(0, 0, 0, 0.18);
+    }
+  }
+
+  &--multiple {
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+    &#{$self}--first {
+      padding-top: 16px;
+    }
+
+    &#{$self}--last {
+      padding-bottom: 16px;
+    }
+  }
+
+  &--dismissed {
+    opacity: 0;
+  }
+
+  &--warning {
+    border-left: 2px solid $alert-1;
+  }
+
+  &--danger {
+    border-left: 2px solid $error-1;
+  }
+
+  &--info {
+    border-left: 2px solid $primary-1;
+  }
+
+  &--success {
+    border-left: 2px solid $success-1;
+  }
+
+  & .info-icon {
+    margin: unset;
+    margin-right: 10px;
+  }
+
+  &__close-button {
+    margin-left: 8px;
+    background: unset;
+    cursor: pointer;
+  }
+}

@@ -1,1 +1,1 @@
-export { default } from './unit-input.component'
+export { default } from './unit-input.component';

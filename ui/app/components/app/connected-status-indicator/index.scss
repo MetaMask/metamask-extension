@@ -51,7 +51,8 @@
   }
 
   &__text {
-    font-size: 10px;
+    @include H8;
+
     color: $Grey-500;
     margin-left: 6px;
     white-space: nowrap;

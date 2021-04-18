@@ -1,1 +1,1 @@
-export { default } from './connected-sites.container'
+export { default } from './connected-sites.container';

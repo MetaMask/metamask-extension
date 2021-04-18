@@ -12,7 +12,7 @@
 
 
   .metametrics-opt-in__title {
-    font-size: 38px;
+    @include H1;
   }
 
   .metametrics-opt-in__content {

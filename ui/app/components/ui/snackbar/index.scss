@@ -1,6 +1,7 @@
 .snackbar {
+  @include H7;
+
   padding: 0.75rem 1rem;
-  font-size: 0.75rem;
   color: $Blue-600;
   min-width: 360px;
   width: fit-content;

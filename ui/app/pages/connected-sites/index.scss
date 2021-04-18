@@ -26,8 +26,8 @@
 
   a,
   a:hover {
-    font-size: 14px;
-    line-height: 20px;
+    @include H6;
+
     color: $primary-blue;
     cursor: pointer;
   }

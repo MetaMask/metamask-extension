@@ -1,10 +1,15 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import CurrencyDisplay from '../currency-display'
-import { useTokenDisplayValue } from '../../../hooks/useTokenDisplayValue'
+import React from 'react';
+import PropTypes from 'prop-types';
+import CurrencyDisplay from '../currency-display';
+import { useTokenDisplayValue } from '../../../hooks/useTokenDisplayValue';
 
-export default function TokenCurrencyDisplay ({ className, transactionData, token, prefix }) {
-  const displayValue = useTokenDisplayValue(transactionData, token)
+export default function TokenCurrencyDisplay({
+  className,
+  transactionData,
+  token,
+  prefix,
+}) {
+  const displayValue = useTokenDisplayValue(transactionData, token);
 
   return (
     <CurrencyDisplay
@@ -13,7 +18,7 @@ export default function TokenCurrencyDisplay ({ className, transactionData, toke
       displayValue={displayValue}
       suffix={token.symbol}
     />
-  )
+  );
 }
 
 TokenCurrencyDisplay.propTypes = {
@@ -21,4 +26,4 @@ TokenCurrencyDisplay.propTypes = {
   transactionData: PropTypes.string,
   token: PropTypes.object,
   prefix: PropTypes.string,
-}
+};

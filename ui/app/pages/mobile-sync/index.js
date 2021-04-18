@@ -1,1 +1,1 @@
-export { default } from './mobile-sync.container'
+export { default } from './mobile-sync.container';

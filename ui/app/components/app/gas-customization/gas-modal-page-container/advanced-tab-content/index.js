@@ -1,1 +1,1 @@
-export { default } from './advanced-tab-content.component'
+export { default } from './advanced-tab-content.component';

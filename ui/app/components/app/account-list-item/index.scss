@@ -1,0 +1,27 @@
+.account-list-item {
+  &__top-row {
+    display: flex;
+    margin-top: 10px;
+    margin-left: 8px;
+    position: relative;
+  }
+
+  &__account-name {
+    @include Paragraph;
+
+    margin-left: 8px;
+  }
+
+  &__icon {
+    position: absolute;
+    right: 12px;
+    top: 1px;
+  }
+
+  &__account-address {
+    margin-left: 35px;
+    width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

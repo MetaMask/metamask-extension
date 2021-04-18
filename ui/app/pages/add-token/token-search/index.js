@@ -1,3 +1,3 @@
-import TokenSearch from './token-search.component'
+import TokenSearch from './token-search.component';
 
-export default TokenSearch
+export default TokenSearch;

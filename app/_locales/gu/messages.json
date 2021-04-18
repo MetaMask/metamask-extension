@@ -1,11 +1,4 @@
 {
-  "appName": {
-    "message": "MetaMask",
-    "description": "The name of the application"
-  },
-  "reject": {
-    "message": "નકારો"
-  },
   "about": {
     "message": "વિશે"
   },
@@ -15,20 +8,15 @@
   "advanced": {
     "message": "વિગતવાર"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "back": {
     "message": "પાછળ"
   },
   "basic": {
     "message": "મૂળભૂત"
-  },
-  "off": {
-    "message": "બંધ"
-  },
-  "ok": {
-    "message": "બરાબર, સમજાઇ ગયું"
-  },
-  "on": {
-    "message": "ચાલુ"
   },
   "cancel": {
     "message": "રદ કરો"
@@ -89,6 +77,15 @@
   "next": {
     "message": "આગલું"
   },
+  "off": {
+    "message": "બંધ"
+  },
+  "ok": {
+    "message": "બરાબર, સમજાઇ ગયું"
+  },
+  "on": {
+    "message": "ચાલુ"
+  },
   "origin": {
     "message": "મૂળ"
   },
@@ -98,11 +95,8 @@
   "queue": {
     "message": "કતારમાં"
   },
-  "reset": {
-    "message": "રીસેટ કરો"
-  },
-  "restore": {
-    "message": "પુનઃસ્થાપિત કરો"
+  "reject": {
+    "message": "નકારો"
   },
   "remove": {
     "message": "દૂર કરો"
@@ -110,11 +104,14 @@
   "removeAccount": {
     "message": "એકાઉન્ટ દૂર કરો"
   },
+  "reset": {
+    "message": "રીસેટ કરો"
+  },
+  "restore": {
+    "message": "પુનઃસ્થાપિત કરો"
+  },
   "save": {
     "message": "સાચવો"
-  },
-  "slow": {
-    "message": "ધીમું"
   },
   "search": {
     "message": "શોધો"
@@ -124,6 +121,9 @@
   },
   "settings": {
     "message": "સેટિંગ્સ"
+  },
+  "slow": {
+    "message": "ધીમું"
   },
   "tryAgain": {
     "message": "ફરી પ્રયાસ કરો"

@@ -1,1 +1,1 @@
-export { default } from './send-row-wrapper.component'
+export { default } from './send-row-wrapper.component';

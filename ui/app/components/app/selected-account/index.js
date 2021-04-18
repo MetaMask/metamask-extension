@@ -1,3 +1,3 @@
-import SelectedAccount from './selected-account.container'
+import SelectedAccount from './selected-account.container';
 
-export default SelectedAccount
+export default SelectedAccount;

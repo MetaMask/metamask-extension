@@ -1,11 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
-const Copy = ({
-  className,
-  size,
-  color,
-}) => (
+const Copy = ({ className, size, color }) => (
   <svg
     className={className}
     width={size}
@@ -21,16 +17,16 @@ const Copy = ({
       fill={color}
     />
   </svg>
-)
+);
 
 Copy.defaultProps = {
   className: undefined,
-}
+};
 
 Copy.propTypes = {
   className: PropTypes.string,
   size: PropTypes.number.isRequired,
   color: PropTypes.string.isRequired,
-}
+};
 
-export default Copy
+export default Copy;

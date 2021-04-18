@@ -1,1 +1,1 @@
-export { default } from './confirm-approve'
+export { default } from './confirm-approve';

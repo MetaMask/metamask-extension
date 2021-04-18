@@ -1,1 +1,1 @@
-export { default } from './gas-slider.component'
+export { default } from './gas-slider.component';

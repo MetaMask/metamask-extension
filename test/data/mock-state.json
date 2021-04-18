@@ -1,9 +1,20 @@
 {
+  "appState": {
+    "gasIsLoading": false,
+    "currentView": {
+      "name": "accountDetail",
+      "detailView": null,
+      "context": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+    }
+  },
   "metamask": {
     "featureFlags": {
       "showIncomingTransactions": true
     },
     "network": "4",
+    "provider": {
+      "chainId": "0x4"
+    },
     "identities": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
         "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
@@ -103,10 +114,10 @@
     "nativeCurrency": "ETH",
     "conversionRate": 556.12,
     "addressBook": {
-      "4": {
+      "0x4": {
         "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
           "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-          "chainId": "4",
+          "chainId": "0x4",
           "isEns": false,
           "memo": "",
           "name": "Address Book Account 1"
@@ -1115,13 +1126,5 @@
         "origin": "tmashuang.github.io"
       }
     ]
-  },
-  "appState": {
-    "gasIsLoading": false,
-    "currentView": {
-      "name": "accountDetail",
-      "detailView": null,
-      "context": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
-    }
   }
 }

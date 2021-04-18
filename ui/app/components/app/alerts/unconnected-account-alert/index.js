@@ -1,1 +1,1 @@
-export { default } from './unconnected-account-alert'
+export { default } from './unconnected-account-alert';

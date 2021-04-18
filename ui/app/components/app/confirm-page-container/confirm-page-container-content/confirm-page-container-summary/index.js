@@ -1,1 +1,1 @@
-export { default } from './confirm-page-container-summary.component'
+export { default } from './confirm-page-container-summary.component';

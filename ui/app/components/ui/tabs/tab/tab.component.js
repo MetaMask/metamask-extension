@@ -1,6 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 const Tab = (props) => {
   const {
@@ -11,43 +11,39 @@ const Tab = (props) => {
     name,
     onClick,
     tabIndex,
-  } = props
+  } = props;
 
   return (
     <li
-      className={classnames(
-        'tab',
-        className,
-        {
-          'tab--active': isActive,
-          [activeClassName]: isActive,
-        },
-      )}
+      className={classnames('tab', className, {
+        'tab--active': isActive,
+        [activeClassName]: activeClassName && isActive,
+      })}
       data-testid={dataTestId}
       onClick={(event) => {
-        event.preventDefault()
-        onClick(tabIndex)
+        event.preventDefault();
+        onClick(tabIndex);
       }}
     >
-      { name }
+      <button>{name}</button>
     </li>
-  )
-}
+  );
+};
 
 Tab.propTypes = {
-  activeClassName: PropTypes.string,
-  className: PropTypes.string,
+  'activeClassName': PropTypes.string,
+  'className': PropTypes.string,
   'data-testid': PropTypes.string,
-  isActive: PropTypes.bool, // required, but added using React.cloneElement
-  name: PropTypes.string.isRequired,
-  onClick: PropTypes.func,
-  tabIndex: PropTypes.number, // required, but added using React.cloneElement
-}
+  'isActive': PropTypes.bool, // required, but added using React.cloneElement
+  'name': PropTypes.string.isRequired,
+  'onClick': PropTypes.func,
+  'tabIndex': PropTypes.number, // required, but added using React.cloneElement
+};
 
 Tab.defaultProps = {
   activeClassName: undefined,
   className: undefined,
   onClick: undefined,
-}
+};
 
-export default Tab
+export default Tab;

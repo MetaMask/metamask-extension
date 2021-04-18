@@ -1,0 +1,14 @@
+.confirmation-footer {
+  grid-area: footer;
+
+  &__actions {
+    display: flex;
+    border-top: 1px solid $ui-2;
+    background-color: white;
+    padding: 16px;
+
+    & .button:first-child {
+      margin-right: 16px;
+    }
+  }
+}

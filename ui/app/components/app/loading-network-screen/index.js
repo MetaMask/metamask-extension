@@ -1,1 +1,1 @@
-export { default } from './loading-network-screen.container'
+export { default } from './loading-network-screen.container';

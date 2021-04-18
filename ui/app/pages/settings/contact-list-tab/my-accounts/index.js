@@ -1,1 +1,1 @@
-export { default } from './my-accounts.container'
+export { default } from './my-accounts.container';

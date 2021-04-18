@@ -1,0 +1,108 @@
+.export-private-key-modal {
+  &__body-title {
+    @include H4;
+
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+
+  &__divider {
+    width: 100%;
+    height: 1px;
+    margin: 19px 0 8px 0;
+    background-color: $alto;
+  }
+
+  &__account-name {
+    @include H4;
+
+    margin-top: 9px;
+  }
+
+  &__password {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__password-label,
+  &__password--error {
+    @include H6;
+
+    color: $scorpion;
+    margin-bottom: 10px;
+  }
+
+  &__password--error {
+    color: $crimson;
+    margin-bottom: 0;
+  }
+
+  &__password-input {
+    @include Paragraph;
+
+    padding: 10px 0 13px 17px;
+    width: 291px;
+    height: 44px;
+  }
+
+  &__password::-webkit-input-placeholder {
+    color: $dusty-gray;
+  }
+
+  &__password--warning {
+    @include H7;
+
+    border-radius: 8px;
+    background-color: #fff6f6;
+    font-weight: 500;
+    color: $crimson;
+    width: 292px;
+    padding: 9px 15px;
+    margin-top: 18px;
+  }
+
+  &__password-display-wrapper {
+    height: 80px;
+    width: 291px;
+    border: 1px solid $silver;
+    border-radius: 2px;
+  }
+
+  &__password-display-textarea {
+    @include Paragraph;
+
+    color: $crimson;
+    border: none;
+    height: 75px;
+    width: 100%;
+    overflow: hidden;
+    resize: none;
+    padding: 9px 13px 8px;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  &__button {
+    margin-top: 17px;
+    width: 141px;
+    min-width: initial;
+  }
+
+  &__button--cancel {
+    margin-right: 15px;
+  }
+
+  & .ellip-address-wrapper {
+    display: flex;
+    justify-content: center;
+    border: 1px solid $alto;
+    padding: 5px 10px;
+    margin-top: 7px;
+    width: 286px;
+  }
+}
+

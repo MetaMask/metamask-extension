@@ -54,8 +54,9 @@
   }
 
   &__activity-text {
+    @include H7;
+
     color: $dusty-gray;
-    font-size: 0.75rem;
     cursor: pointer;
 
     &:hover {
@@ -73,7 +74,8 @@
   }
 
   &__action-link {
-    font-size: 0.75rem;
+    @include H7;
+
     cursor: pointer;
     color: $primary-blue;
   }

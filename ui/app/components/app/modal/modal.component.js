@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import Button from '../../ui/button'
-import classnames from 'classnames'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import Button from '../../ui/button';
 
 export default class Modal extends PureComponent {
   static propTypes = {
@@ -21,14 +21,16 @@ export default class Modal extends PureComponent {
     onCancel: PropTypes.func,
     cancelType: PropTypes.string,
     cancelText: PropTypes.string,
-  }
+    rounded: PropTypes.bool,
+  };
 
   static defaultProps = {
     submitType: 'secondary',
     cancelType: 'default',
-  }
+    rounded: false,
+  };
 
-  render () {
+  render() {
     const {
       children,
       headerText,
@@ -43,53 +45,44 @@ export default class Modal extends PureComponent {
       contentClass,
       containerClass,
       hideFooter,
-    } = this.props
+      rounded,
+    } = this.props;
 
     return (
       <div className={classnames('modal-container', containerClass)}>
-        {
-          headerText && (
-            <div className="modal-container__header">
-              <div className="modal-container__header-text">
-                { headerText }
-              </div>
-              <div
-                className="modal-container__header-close"
-                onClick={onClose}
-              />
-            </div>
-          )
-        }
+        {headerText && (
+          <div className="modal-container__header">
+            <div className="modal-container__header-text">{headerText}</div>
+            <div className="modal-container__header-close" onClick={onClose} />
+          </div>
+        )}
         <div className={classnames('modal-container__content', contentClass)}>
-          { children }
+          {children}
         </div>
-        { !hideFooter
-          ? (
-            <div className="modal-container__footer">
-              {
-                onCancel && (
-                  <Button
-                    type={cancelType}
-                    onClick={onCancel}
-                    className="modal-container__footer-button"
-                  >
-                    { cancelText }
-                  </Button>
-                )
-              }
+        {hideFooter ? null : (
+          <div className="modal-container__footer">
+            {onCancel && (
               <Button
-                type={submitType}
-                onClick={onSubmit}
-                disabled={submitDisabled}
+                type={cancelType}
+                rounded={rounded}
+                onClick={onCancel}
                 className="modal-container__footer-button"
               >
-                { submitText }
+                {cancelText}
               </Button>
-            </div>
-          )
-          : null
-        }
+            )}
+            <Button
+              type={submitType}
+              rounded={rounded || false}
+              onClick={onSubmit}
+              disabled={submitDisabled}
+              className="modal-container__footer-button"
+            >
+              {submitText}
+            </Button>
+          </div>
+        )}
       </div>
-    )
+    );
   }
 }

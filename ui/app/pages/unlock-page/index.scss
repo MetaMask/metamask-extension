@@ -21,8 +21,9 @@
   }
 
   &__title {
+    @include H2;
+
     margin-top: 5px;
-    font-size: 2rem;
     font-weight: 800;
     color: $tundora;
   }
@@ -39,6 +40,9 @@
 
   &__link {
     cursor: pointer;
+    background-color: unset;
+    color: unset;
+    font-size: unset;
 
     &--import {
       color: $ecstasy;

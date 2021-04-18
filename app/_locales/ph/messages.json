@@ -1,14 +1,4 @@
 {
-  "appName": {
-    "message": "MetaMask",
-    "description": "The name of the application"
-  },
-  "approve": {
-    "message": "Aprubahan"
-  },
-  "reject": {
-    "message": "Tanggihan"
-  },
   "accountDetails": {
     "message": "Detalye ng Account"
   },
@@ -23,7 +13,14 @@
   },
   "appDescription": {
     "message": "Ethereum Browser Extension",
-    "description": "Ang deskripsyon ng application"
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approve": {
+    "message": "Aprubahan"
   },
   "attemptingConnect": {
     "message": "Sinusubukang kumonekta sa blockchain."
@@ -34,12 +31,6 @@
   "balance": {
     "message": "Balanse:"
   },
-  "buyCoinSwitch": {
-    "message": "Bumili sa CoinSwitch"
-  },
-  "buyCoinSwitchExplainer": {
-    "message": "Ang CoinSwitch ay isang one-stop destination upang makipagpalitan ng higit sa 300 mga cryptocurrency sa pinakamahusay na rate."
-  },
   "cancel": {
     "message": "Kanselahin"
   },
@@ -49,20 +40,17 @@
   "confirmPassword": {
     "message": "Tiyakin ang Password"
   },
-  "continueToCoinSwitch": {
-    "message": "Magpatuloy sa CoinSwitch"
-  },
   "contractDeployment": {
     "message": "Pag-deploy ng Contract"
   },
   "copiedExclamation": {
     "message": "Kinopya!"
   },
-  "copyToClipboard": {
-    "message": "Kinopya sa clipboard"
-  },
   "copyPrivateKey": {
     "message": "Ito ang iyong private key (i-click upang makopya)"
+  },
+  "copyToClipboard": {
+    "message": "Kinopya sa clipboard"
   },
   "create": {
     "message": "Gumawa"
@@ -75,9 +63,6 @@
   },
   "defaultNetwork": {
     "message": "Ang default network para sa Ether transactions ay ang Main Net."
-  },
-  "deposit": {
-    "message": "Deposito"
   },
   "depositEther": {
     "message": "I-deposito ang Ether"
@@ -111,11 +96,11 @@
   },
   "fiat": {
     "message": "FIAT",
-    "description": "Type ng exchange"
+    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Hindi gumagana ang file import? I-click ito!",
-    "description": "Tinutulungan ang user na i-import ang kanilang account mula sa JSON file"
+    "description": "Helps user import their account from a JSON file"
   },
   "from": {
     "message": "Mula sa"
@@ -128,11 +113,11 @@
   },
   "getEtherFromFaucet": {
     "message": "Kumuha ng Ether mula sa faucet para sa $1",
-    "description": "Ipinapakita ang pangalan ng network para sa Ether faucet"
+    "description": "Displays network name for Ether faucet"
   },
   "here": {
     "message": "i-click ito",
-    "description": "tulad ng -i-click dito- para sa mas maraming impormasyon (kasama ng troubleTokenBalances)"
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
   "hide": {
     "message": "Itago"
@@ -142,23 +127,20 @@
   },
   "import": {
     "message": "I-import",
-    "description": "Button para i-import ang account mula sa napiling file"
+    "description": "Button to import an account from a selected file"
   },
   "importAccount": {
     "message": "I-import ang Account"
   },
   "imported": {
     "message": "Na-import na",
-    "description": "status na nagpapakita na ang account ay lubos na na-load sa keyring"
+    "description": "status showing that an account has been fully loaded into the keyring"
   },
   "infoHelp": {
     "message": "Impormasyon at Tulong"
   },
   "invalidAddress": {
     "message": "Invalid ang address"
-  },
-  "invalidInput": {
-    "message": "Invalid ang input."
   },
   "loading": {
     "message": "Naglo-load..."
@@ -177,7 +159,7 @@
   },
   "needImportFile": {
     "message": "Dapat kang pumili ng file para i-import.",
-    "description": "Ang user ay nag-iimport ng account at kailangan magdagdag ng file upang tumuloy"
+    "description": "User is important an account and needs to add a file to continue"
   },
   "newAccount": {
     "message": "Bagong Account"
@@ -199,7 +181,7 @@
   },
   "pastePrivateKey": {
     "message": "I-paste dito ang iyong private key string:",
-    "description": "Para sa pag-import ng account mula sa private key"
+    "description": "For importing an account from a private key"
   },
   "privateKeyWarning": {
     "message": "Babala: Huwag sabihin sa kahit na sino ang key na ito. Maaring makuha at manakaw ng sinumang nakakaalam ng iyong private key ang mga assets sa iyong account."
@@ -212,6 +194,9 @@
   },
   "recipientAddress": {
     "message": "Address ng Tatanggap"
+  },
+  "reject": {
+    "message": "Tanggihan"
   },
   "rejected": {
     "message": "Tinanggihan"
@@ -234,21 +219,21 @@
   "showPrivateKeys": {
     "message": "Ipakita ang Private Keys"
   },
+  "sigRequest": {
+    "message": "Hiling na Signature"
+  },
   "sign": {
     "message": "I-sign"
   },
   "signNotice": {
     "message": "Ang pag-sign ng mensaheng ito ay maaring magdulot ng mapanganib na epekto. I-sign lamang ang mga mensahe mula sa mga site na pinagkakatiwalaan mo ng iyong account. Ang mapanganib na paraang ito ay aalisin sa isa sa mga susunod na bersyon. "
   },
-  "sigRequest": {
-    "message": "Hiling na Signature"
-  },
   "total": {
     "message": "Kabuuan"
   },
   "troubleTokenBalances": {
     "message": "Nagkaroon kami ng problema sa paglo-load ng iyong mga balanseng token. Tingnan ito dito ",
-    "description": "Susundan ng link (dito) para tingnan ang token balances"
+    "description": "Followed by a link (here) to view token balances"
   },
   "typePassword": {
     "message": "I-type ang iyong Password"
@@ -264,9 +249,6 @@
   },
   "viewAccount": {
     "message": "Tingnan ang Account"
-  },
-  "yourSigRequested": {
-    "message": "Hinihiling ang iyong signature"
   },
   "youSign": {
     "message": "Ikaw ay nagsa-sign"

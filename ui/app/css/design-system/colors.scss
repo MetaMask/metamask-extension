@@ -1,0 +1,140 @@
+// These are the colors of the MetaMask design system
+// Only design system colors should be added, no superfluous variables
+// See https://bit.ly/32mnoja (link to figma design system)
+$Blue-000: #eaf6ff;
+$Blue-100: #a7d9fe;
+$Blue-200: #75c4fd;
+$Blue-300: #43aefc;
+$Blue-400: #1098fc;
+$Blue-500: #037dd6;
+$Blue-600: #0260a4;
+$Blue-700: #024272;
+$Blue-800: #01253f;
+$Blue-900: #00080d;
+
+$Grey-000: #f2f3f4;
+$Grey-100: #d6d9dc;
+$Grey-200: #bbc0c5;
+$Grey-300: #9fa6ae;
+$Grey-400: #848c96;
+$Grey-500: #6a737d;
+$Grey-600: #535a61;
+$Grey-700: #3b4046;
+$Grey-800: #24272a;
+$Grey-900: #141618;
+
+$Green-000: #f3fcf5;
+$Green-100: #d6ffdf;
+$Green-200: #afecbd;
+$Green-300: #86e29b;
+$Green-400: #5dd879;
+$Green-500: #28a745;
+$Green-600: #1e7e34;
+$Green-700: #145523;
+$Green-800: #0a2c12;
+$Green-900: #041007;
+
+$Red-000: #fcf2f3;
+$Red-100: #f7d5d8;
+$Red-200: #f1b9be;
+$Red-300: #e88f97;
+$Red-400: #e06470;
+$Red-500: #d73a49;
+$Red-600: #b92534;
+$Red-700: #8e1d28;
+$Red-800: #64141c;
+$Red-900: #3a0c10;
+
+$Orange-000: #fef5ef;
+$Orange-100: #fde2cf;
+$Orange-200: #fbc49d;
+$Orange-300: #faa66c;
+$Orange-400: #f8883b;
+$Orange-500: #f66a0a;
+$Orange-600: #c65507;
+$Orange-700: #954005;
+$Orange-800: #632b04;
+$Orange-900: #321602;
+
+$Yellow-000: #fefae8; // Temporary placeholder
+$Yellow-100: #fefcde;
+$Yellow-500: #ffd33d;
+
+$Black-100: #24292e;
+
+$primary-blue: $Blue-500;
+$primary-orange: $Orange-500;
+
+$accent-yellow: $Yellow-500;
+$accent-green: $Green-500;
+$accent-red: $Red-500;
+$accent-purple: #6f42c1;
+$accent-pink: #ff45d8;
+
+$neutral-white: #fff;
+$neutral-black: $Black-100;
+$neutral-grey: $Grey-500;
+
+// Everything below this line is part of the new color system
+$primary-1: #037dd6;
+$primary-2: #eaf6ff;
+$primary-3: #0260a4;
+
+$secondary-1: #f66a0a;
+$secondary-2: #fef5ef;
+$secondary-3: #c65507;
+
+$error-1: #d73a49;
+$error-2: #fcf2f3;
+$error-3: #b92534;
+
+$alert-1: #ffd33d;
+$alert-2: #fefcde;
+$alert-3: #f8c000;
+
+$success-1: #4cd964;
+$success-2: #caf4d1;
+$success-3: #219e37;
+
+$ui-black: #24292e;
+$ui-white: #fff;
+$ui-1: #f2f3f4;
+$ui-2: #d6d9dc;
+$ui-3: #bbc0c5;
+$ui-4: #6a737d;
+
+$mainnet: #29b6af;
+$ropsten: #ff4a8d;
+$kovan: #9064ff;
+$rinkeby: #f6c343;
+$goerli: #3099f2;
+
+$color-map: (
+  'ui-1': $ui-1,
+  'ui-2': $ui-2,
+  'ui-3': $ui-3,
+  'ui-4': $ui-4,
+  'white': $ui-white,
+  'black': $ui-black,
+  'primary-1': $primary-1,
+  'primary-2': $primary-2,
+  'primary-3': $primary-3,
+  'secondary-1': $secondary-1,
+  'secondary-2': $secondary-2,
+  'secondary-3': $secondary-3,
+  'alert-1': $alert-1,
+  'alert-2': $alert-2,
+  'alert-3': $alert-3,
+  'error-1': $error-1,
+  'error-2': $error-2,
+  'error-3': $error-3,
+  'success-1': $success-1,
+  'success-2': $success-2,
+  'success-3': $success-3,
+  'mainnet': $mainnet,
+  'ropsten': $ropsten,
+  'kovan': $kovan,
+  'rinkeby': $rinkeby,
+  'goerli': $goerli,
+  'transparent': transparent,
+);

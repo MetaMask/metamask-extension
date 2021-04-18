@@ -1,1 +1,1 @@
-export { default } from './token-currency-display.component'
+export { default } from './token-currency-display.component';

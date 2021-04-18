@@ -1,0 +1,3 @@
+; Extra environment variables
+INFURA_PROJECT_ID=00000000000
+SEGMENT_WRITE_KEY=

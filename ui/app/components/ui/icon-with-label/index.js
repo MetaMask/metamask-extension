@@ -1,1 +1,1 @@
-export { default } from './icon-with-label'
+export { default } from './icon-with-label';

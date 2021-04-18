@@ -1,1 +1,1 @@
-export { default } from './transaction-icon'
+export { default } from './transaction-icon';

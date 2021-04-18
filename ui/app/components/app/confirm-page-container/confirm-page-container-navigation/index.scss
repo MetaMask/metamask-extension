@@ -36,13 +36,15 @@
   }
 
   &__navtext {
-    font-size: 9px;
+    @include H9;
+
     font-weight: bold;
   }
 
   &__longtext {
+    @include H9;
+
     color: $oslo-gray;
-    font-size: 8px;
   }
 
   &__imageflip {

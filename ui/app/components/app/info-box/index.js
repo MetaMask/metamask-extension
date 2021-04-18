@@ -1,3 +1,3 @@
-import InfoBox from './info-box.component'
+import InfoBox from './info-box.component';
 
-export default InfoBox
+export default InfoBox;

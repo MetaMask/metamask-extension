@@ -1,3 +1,3 @@
-import Tab from './tab.component'
+import Tab from './tab.component';
 
-export default Tab
+export default Tab;

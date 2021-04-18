@@ -1,1 +1,1 @@
-export { default } from './network-form.component'
+export { default } from './network-form.component';

@@ -1,0 +1,16 @@
+diff --git a/node_modules/error/typed.js b/node_modules/error/typed.js
+index fe9effd..e554568 100644
+--- a/node_modules/error/typed.js
++++ b/node_modules/error/typed.js
+@@ -22,8 +22,10 @@ function TypedError(args) {
+         args.name = errorName[0].toUpperCase() + errorName.substr(1);
+     }
+ 
+-    extend(createError, args);
+     createError._name = args.name;
++    //remove args.name, name is not extensible under strict mode (lavamoat)
++    delete args.name
++    extend(createError, args);
+ 
+     return createError;
+ 

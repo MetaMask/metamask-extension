@@ -1,1 +1,1 @@
-export { default } from './transaction-activity-log-icon.component'
+export { default } from './transaction-activity-log-icon.component';

@@ -1,1 +1,1 @@
-export { default } from './permissions-connect.container'
+export { default } from './permissions-connect.container';

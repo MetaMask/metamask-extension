@@ -1,74 +1,79 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import { getEnvironmentType } from '../../../../app/scripts/lib/util'
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../app/scripts/lib/enums'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
 class ErrorPage extends PureComponent {
   static contextTypes = {
     t: PropTypes.func.isRequired,
-  }
+  };
 
   static propTypes = {
     error: PropTypes.object.isRequired,
-  }
+  };
 
-  renderErrorDetail (content) {
+  renderErrorDetail(content) {
     return (
       <li>
-        <p>
-          {content}
-        </p>
+        <p>{content}</p>
       </li>
-    )
+    );
   }
 
-  renderErrorStack (title, stack) {
+  renderErrorStack(title, stack) {
     return (
       <li>
-        <span>
-          {title}
-        </span>
-        <pre className="error-page__stack">
-          {stack}
-        </pre>
+        <span>{title}</span>
+        <pre className="error-page__stack">{stack}</pre>
       </li>
-    )
+    );
   }
 
-  render () {
-    const { error } = this.props
-    const { t } = this.context
+  render() {
+    const { error } = this.props;
+    const { t } = this.context;
 
-    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+    const supportLink = (
+      <a
+        target="_blank"
+        key="metamaskSupportLink"
+        rel="noopener noreferrer"
+        href="https://metamask.zendesk.com/hc/en-us/requests/new"
+      >
+        <span className="error-page__link-text">{this.context.t('here')}</span>
+      </a>
+    );
+    const message = isPopup
+      ? t('errorPagePopupMessage', [supportLink])
+      : t('errorPageMessage', [supportLink]);
 
     return (
       <section className="error-page">
-        <h1 className="error-page__header">
-          {t('errorPageTitle')}
-        </h1>
-        <h2 className="error-page__subheader">
-          {
-            isPopup
-              ? t('errorPagePopupMessage')
-              : t('errorPageMessage')
-          }
-        </h2>
+        <h1 className="error-page__header">{t('errorPageTitle')}</h1>
+        <h2 className="error-page__subheader">{message}</h2>
         <section className="error-page__details">
           <details>
-            <summary>
-              {t('errorDetails')}
-            </summary>
+            <summary>{t('errorDetails')}</summary>
             <ul>
-              { error.message ? this.renderErrorDetail(t('errorMessage', [error.message])) : null }
-              { error.code ? this.renderErrorDetail(t('errorCode', [error.code])) : null }
-              { error.name ? this.renderErrorDetail(t('errorName', [error.name])) : null }
-              { error.stack ? this.renderErrorStack(t('errorStack'), error.stack) : null }
+              {error.message
+                ? this.renderErrorDetail(t('errorMessage', [error.message]))
+                : null}
+              {error.code
+                ? this.renderErrorDetail(t('errorCode', [error.code]))
+                : null}
+              {error.name
+                ? this.renderErrorDetail(t('errorName', [error.name]))
+                : null}
+              {error.stack
+                ? this.renderErrorStack(t('errorStack'), error.stack)
+                : null}
             </ul>
           </details>
         </section>
       </section>
-    )
+    );
   }
 }
 
-export default ErrorPage
+export default ErrorPage;

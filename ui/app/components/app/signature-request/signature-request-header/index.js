@@ -1,1 +1,1 @@
-export { default } from './signature-request-header.component'
+export { default } from './signature-request-header.component';

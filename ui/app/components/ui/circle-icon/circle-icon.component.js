@@ -1,5 +1,5 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 
 export default class CircleIcon extends PureComponent {
   static propTypes = {
@@ -7,21 +7,16 @@ export default class CircleIcon extends PureComponent {
     circleClass: PropTypes.string,
     iconSource: PropTypes.string.isRequired,
     iconSize: PropTypes.string,
-  }
+  };
 
   static defaultProps = {
     size: '56px',
     iconSize: '18px',
     circleClass: '',
-  }
+  };
 
-  render () {
-    const {
-      size,
-      circleClass,
-      iconSize,
-      iconSource,
-    } = this.props
+  render() {
+    const { size, circleClass, iconSize, iconSource } = this.props;
 
     return (
       <div
@@ -45,8 +40,9 @@ export default class CircleIcon extends PureComponent {
             height: iconSize,
             width: iconSize,
           }}
+          alt=""
         />
       </div>
-    )
+    );
   }
 }

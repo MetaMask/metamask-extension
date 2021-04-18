@@ -1,0 +1,33 @@
+{
+  "resources": {
+    "node-sass": {
+      "native": true
+    },
+    "module-deps": {
+      "packages": {
+        "loose-envify": true
+      }
+    },
+    "@babel/core": {
+      "packages": {
+        "<root>": true,
+        "@babel/preset-env": true,
+        "@babel/preset-react": true,
+        "@babel/plugin-transform-runtime": true,
+        "@babel/plugin-proposal-class-properties": true,
+        "@babel/plugin-proposal-object-rest-spread": true,
+        "@babel/plugin-proposal-optional-chaining": true,
+        "@babel/plugin-proposal-nullish-coalescing-operator": true
+      }
+    },
+    "sass": {
+      "env": "unfrozen",
+      "builtin": {
+        "url": true
+      },
+      "globals": {
+        "Buffer": true
+      }
+    }
+  }
+}

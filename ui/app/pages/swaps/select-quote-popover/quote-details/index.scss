@@ -1,0 +1,102 @@
+.quote-details {
+  display: flex;
+  flex-flow: column;
+  padding-left: 16px;
+  padding-right: 16px;
+
+  &__detail-header {
+    @include H7;
+
+    color: $Grey-400;
+    margin-bottom: 2px;
+    display: flex;
+  }
+
+  &__detail-content {
+    @include H6;
+
+    color: $Black-100;
+
+    > div {
+      justify-content: flex-start;
+    }
+  }
+
+  &__conversion-rate {
+    color: $Black-100;
+    justify-content: flex-start;
+    align-items: center;
+    height: inherit;
+
+    .view-quote__conversion-rate-eth-label {
+      color: $Black-100;
+    }
+
+    i {
+      color: $Blue-500;
+    }
+
+    * {
+      margin-right: 4px;
+    }
+  }
+
+  .view-quote__view-other-button {
+    margin-top: 20px;
+  }
+
+  &__popover-wrap {
+    .popover-content {
+      margin-left: 24px;
+    }
+  }
+
+  &__light-grey {
+    color: #bbc0c5;
+  }
+
+  &__row {
+    height: 60px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    border-top: 1px solid $Grey-100;
+
+    &--high {
+      min-height: 60px;
+      height: inherit;
+    }
+  }
+
+  .view-quote__conversion-rate-token-label {
+    @include H6;
+
+    color: $Black-100;
+    font-weight: bold;
+    margin-left: 2px;
+  }
+
+  &__metafox-logo {
+    width: 17px;
+    margin-right: 4px;
+  }
+
+  .info-tooltip {
+    margin-left: 2px;
+  }
+
+  &--high {
+    min-height: 60px;
+    height: inherit;
+  }
+
+  &__font-small {
+    @include H7;
+  }
+
+  &__bold {
+    font-weight: bold;
+  }
+}

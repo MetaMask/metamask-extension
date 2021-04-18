@@ -1,0 +1,168 @@
+{
+  "data": {
+    "AppStateController": {
+      "connectedStatusPopoverHasBeenShown": false,
+      "swapsWelcomeMessageHasBeenShown": true
+    },
+    "CachedBalancesController": {
+      "cachedBalances": {
+        "4": {},
+        "1337": {
+          "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": "0x15af1d78b58c40000"
+        }
+      }
+    },
+    "CurrencyController": {
+      "conversionDate": 1594348502.519,
+      "conversionRate": 240.09,
+      "currentCurrency": "usd",
+      "nativeCurrency": "ETH"
+    },
+    "IncomingTransactionsController": {
+      "incomingTransactions": {},
+      "incomingTxLastFetchedBlocksByNetwork": {
+        "goerli": null,
+        "kovan": null,
+        "mainnet": null,
+        "rinkeby": 5570536,
+        "localhost": 98
+      }
+    },
+    "KeyringController": {
+      "vault": "{\"data\":\"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT\",\"iv\":\"FbeHDAW5afeWNORfNJBR0Q==\",\"salt\":\"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8=\"}"
+    },
+    "NetworkController": {
+      "provider": {
+        "nickname": "Localhost 8545",
+        "rpcUrl": "http://localhost:8545",
+        "chainId": "0x539",
+        "ticker": "ETH",
+        "type": "rpc"
+      },
+      "network": "1337"
+    },
+    "OnboardingController": {
+      "onboardingTabs": {},
+      "seedPhraseBackedUp": false
+    },
+    "PermissionsMetadata": {
+      "permissionsLog": [
+        {
+          "id": 1764280960,
+          "method": "eth_requestAccounts",
+          "methodType": "restricted",
+          "origin": "http://127.0.0.1:8080",
+          "request": {
+            "method": "eth_requestAccounts",
+            "jsonrpc": "2.0",
+            "id": 1764280960,
+            "origin": "http://127.0.0.1:8080",
+            "tabId": 2
+          },
+          "requestTime": 1594348329232,
+          "response": {
+            "id": 1764280960,
+            "jsonrpc": "2.0",
+            "result": ["0x5cfe73b6021e818b776b421b1c4db2474086a7e1"]
+          },
+          "responseTime": 1594348332276,
+          "success": true
+        }
+      ],
+      "permissionsHistory": {
+        "http://127.0.0.1:8080": {
+          "eth_accounts": {
+            "accounts": {
+              "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": 1594348332276
+            },
+            "lastApproved": 1594348332276
+          }
+        }
+      },
+      "domainMetadata": {
+        "http://127.0.0.1:8080": {
+          "name": "E2E Test Dapp",
+          "icon": "http://127.0.0.1:8080/metamask-fox.svg",
+          "lastUpdated": 1594348323811,
+          "host": "127.0.0.1:8080"
+        }
+      }
+    },
+    "PreferencesController": {
+      "frequentRpcListDetail": [],
+      "accountTokens": {
+        "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
+          "rinkeby": [],
+          "ropsten": []
+        }
+      },
+      "assetImages": {},
+      "tokens": [],
+      "suggestedTokens": {},
+      "useBlockie": false,
+      "useNonceField": false,
+      "usePhishDetect": true,
+      "featureFlags": {
+        "showIncomingTransactions": true,
+        "transactionTime": false
+      },
+      "knownMethodData": {},
+      "participateInMetaMetrics": false,
+      "firstTimeFlowType": "create",
+      "currentLocale": "en",
+      "identities": {
+        "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
+          "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+          "name": "Account 1"
+        }
+      },
+      "lostIdentities": {},
+      "forgottenPassword": false,
+      "preferences": {
+        "useNativeCurrencyAsPrimaryCurrency": true
+      },
+      "completedOnboarding": true,
+      "metaMetricsId": null,
+      "metaMetricsSendCount": 0,
+      "ipfsGateway": "dweb.link",
+      "selectedAddress": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1"
+    },
+    "config": {},
+    "firstTimeInfo": {
+      "date": 1575697234195,
+      "version": "7.7.0"
+    },
+    "PermissionsController": {
+      "permissionsRequests": [],
+      "permissionsDescriptions": {},
+      "domains": {
+        "http://127.0.0.1:8080": {
+          "permissions": [
+            {
+              "@context": ["https://github.com/MetaMask/rpc-cap"],
+              "parentCapability": "eth_accounts",
+              "id": "f55a1c15-ea48-4088-968e-63be474d42fa",
+              "date": 1594348332268,
+              "invoker": "http://127.0.0.1:8080",
+              "caveats": [
+                {
+                  "type": "limitResponseLength",
+                  "value": 1,
+                  "name": "primaryAccountOnly"
+                },
+                {
+                  "type": "filterResponse",
+                  "value": ["0x5cfe73b6021e818b776b421b1c4db2474086a7e1"],
+                  "name": "exposedAccounts"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "meta": {
+    "version": 47
+  }
+}

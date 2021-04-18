@@ -1,1 +1,1 @@
-export { default } from './reject-transactions.container'
+export { default } from './reject-transactions.container';

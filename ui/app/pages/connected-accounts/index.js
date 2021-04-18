@@ -1,1 +1,1 @@
-export { default } from './connected-accounts.container'
+export { default } from './connected-accounts.container';

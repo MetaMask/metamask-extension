@@ -1,3 +1,3 @@
-import LoadingScreen from './loading-screen.component'
+import LoadingScreen from './loading-screen.component';
 
-export default LoadingScreen
+export default LoadingScreen;

@@ -1,0 +1,19 @@
+.definition-list {
+  $self: &;
+
+  &__term {
+    display: flex;
+    align-items: center;
+
+    & i {
+      color: $ui-3;
+      margin-left: 6px;
+      font-size: $font-size-h8;
+    }
+
+    & #{$self}__tooltip-wrapper {
+      display: flex !important;
+      align-items: center;
+    }
+  }
+}

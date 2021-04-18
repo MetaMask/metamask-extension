@@ -1,0 +1,30 @@
+.icon-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: unset;
+  text-align: center;
+
+  @include H7;
+
+  font-size: 13px;
+  cursor: pointer;
+  color: $Blue-500;
+
+  &__circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 36px;
+    width: 36px;
+    background: #037dd6;
+    border-radius: 18px;
+    margin-top: 6px;
+    margin-bottom: 5px;
+  }
+
+  &--disabled {
+    opacity: 0.3;
+    cursor: auto;
+  }
+}

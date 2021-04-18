@@ -24,9 +24,9 @@
   }
 
   &__title {
+    @include H4;
+
     font-weight: bold;
-    font-size: 18px;
-    line-height: 25px;
   }
 
   &__account-info {
@@ -35,8 +35,9 @@
 
     &__account,
     &__balance {
+      @include H6;
+
       font-weight: normal;
-      font-size: 14px;
       color: #24292e;
     }
 
@@ -46,12 +47,13 @@
     }
 
     &__name {
-      margin-left: 8px;
       margin-right: 8px;
+      min-width: 64px;
     }
 
     &__balance {
       color: #6a737d;
+      margin-left: 8px;
     }
   }
 
@@ -59,16 +61,16 @@
     padding: 24px;
 
     &__title {
+      @include H6;
+
       font-weight: bold;
-      font-size: 14px;
-      line-height: 20px;
       color: #24292e;
     }
 
     &__description {
+      @include H7;
+
       font-weight: normal;
-      font-size: 12px;
-      line-height: 17px;
       color: #6a737d;
       margin-top: 8px;
     }
@@ -90,9 +92,9 @@
 
     &__option-label,
     &__option-label--selected {
+      @include H6;
+
       font-weight: normal;
-      font-size: 14px;
-      line-height: 20px;
       color: #474b4d;
     }
 
@@ -101,18 +103,16 @@
     }
 
     &__option-description {
-      font-weight: normal;
-      font-size: 12px;
-      line-height: 17px;
+      @include H7;
+
       color: #6a737d;
       margin-top: 8px;
       margin-bottom: 6px;
     }
 
     &__option-value {
-      font-weight: normal;
-      font-size: 18px;
-      line-height: 25px;
+      @include H4;
+
       color: #24292e;
     }
 
@@ -154,6 +154,15 @@
       border-radius: 4px;
       position: absolute;
     }
+  }
+
+  &__name-and-balance-container {
+    display: flex;
+    flex: 0 0 100%;
+    flex-flow: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-left: 8px;
   }
 }
 

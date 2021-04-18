@@ -1,0 +1,76 @@
+.dropdown-input-pair {
+  display: flex;
+  width: 312px;
+  height: 60px;
+  position: relative;
+
+  &__input {
+    margin: 0 !important;
+
+    input {
+      @include H4;
+
+      padding-top: 6px;
+    }
+
+    div {
+      border: 1px solid $Grey-100;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-left-color: transparent;
+      height: 60px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      /* display: none; <- Crashes Chrome on hover */
+      -webkit-appearance: none;
+      margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield; /* Firefox */
+    }
+  }
+
+  &__list {
+    &--full-width {
+      width: 100%;
+    }
+  }
+
+  &__left-value {
+    @include H7;
+
+    position: absolute;
+    right: 16px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    color: $Grey-500;
+
+    &--two-lines {
+      right: inherit;
+      left: 157px;
+      align-items: unset;
+      top: 34px;
+    }
+  }
+
+  .dropdown-input-pair__selector--closed {
+    height: 60px;
+    width: 142px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  &__two-line-input {
+    div {
+      align-items: flex-start;
+    }
+
+    input {
+      padding-top: 14px;
+    }
+  }
+}

@@ -1,20 +1,20 @@
-import { connect } from 'react-redux'
-import FirstTimeFlowSwitch from './first-time-flow-switch.component'
+import { connect } from 'react-redux';
+import FirstTimeFlowSwitch from './first-time-flow-switch.component';
 
 const mapStateToProps = ({ metamask }) => {
   const {
     completedOnboarding,
     isInitialized,
     isUnlocked,
-    participateInMetaMetrics: optInMetaMetrics,
-  } = metamask
+    seedPhraseBackedUp,
+  } = metamask;
 
   return {
     completedOnboarding,
     isInitialized,
     isUnlocked,
-    optInMetaMetrics,
-  }
-}
+    seedPhraseBackedUp,
+  };
+};
 
-export default connect(mapStateToProps)(FirstTimeFlowSwitch)
+export default connect(mapStateToProps)(FirstTimeFlowSwitch);

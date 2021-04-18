@@ -1,1 +1,1 @@
-export { default } from './security-tab.container'
+export { default } from './security-tab.container';

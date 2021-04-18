@@ -1,0 +1,54 @@
+.loading-overlay {
+  left: 0;
+  z-index: 51;
+  position: fixed;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+
+  &__screen-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__container {
+    position: absolute;
+    top: 33%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__error-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 160px;
+    justify-content: space-evenly;
+  }
+
+  &__error-buttons {
+    display: flex;
+    flex-direction: row;
+
+    button {
+      margin: 5px;
+    }
+  }
+
+  &__emoji {
+    font-size: 32px;
+  }
+
+  &__spinner {
+    height: 58px;
+    width: 58px;
+  }
+}

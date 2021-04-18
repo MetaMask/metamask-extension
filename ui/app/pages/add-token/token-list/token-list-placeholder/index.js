@@ -1,3 +1,3 @@
-import TokenListPlaceholder from './token-list-placeholder.component'
+import TokenListPlaceholder from './token-list-placeholder.component';
 
-export default TokenListPlaceholder
+export default TokenListPlaceholder;

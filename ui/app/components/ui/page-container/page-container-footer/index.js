@@ -1,1 +1,1 @@
-export { default } from './page-container-footer.component'
+export { default } from './page-container-footer.component';

@@ -1,0 +1,220 @@
+.request-encryption-public-key {
+  &__container {
+    width: 380px;
+    border-radius: 8px;
+    background-color: $white;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-flow: column nowrap;
+    z-index: 25;
+    align-items: center;
+    position: relative;
+    height: 100%;
+
+    @media screen and (max-width: $break-small) {
+      width: 100%;
+      top: 0;
+      box-shadow: none;
+    }
+
+    @media screen and (min-width: $break-large) {
+      height: 620px;
+    }
+  }
+
+  &__typed-container {
+    padding: 17px;
+
+    h1 {
+      font-weight: 900;
+      margin-bottom: 5px;
+    }
+
+    * {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    > div {
+      margin-bottom: 10px;
+    }
+  }
+
+  &__header {
+    height: 64px;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+
+  &__header-background {
+    position: absolute;
+    background-color: $athens-grey;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__header__text {
+    @include H3;
+
+    color: #5b5d67;
+    z-index: 3;
+    text-align: center;
+  }
+
+  &__header__tip-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__header__tip {
+    height: 25px;
+    width: 25px;
+    background: $athens-grey;
+    transform: rotate(45deg);
+    position: absolute;
+    bottom: -8px;
+    z-index: 1;
+  }
+
+  &__account-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 18px;
+    margin-bottom: 20px;
+  }
+
+  &__account {
+    color: $dusty-gray;
+    margin-left: 17px;
+  }
+
+  &__account-text {
+    @include H6;
+  }
+
+  &__account-item {
+    @include H7;
+
+    height: 22px;
+    background-color: $white;
+    width: 124px;
+
+    .account-list-item {
+      margin-top: 6px;
+    }
+
+    .account-list-item__account-name {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      width: 80px;
+    }
+
+    .account-list-item__top-row {
+      margin: 0;
+    }
+  }
+
+  &__balance {
+    color: $dusty-gray;
+    margin-right: 17px;
+    width: 124px;
+  }
+
+  &__balance-text {
+    @include H6;
+
+    text-align: right;
+  }
+
+  &__balance-value {
+    text-align: right;
+    margin-top: 2.5px;
+  }
+
+  &__request-icon {
+    margin-top: 25px;
+  }
+
+  &__body {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    flex: 1 1 auto;
+    height: 0;
+  }
+
+  &__notice {
+    @include H6;
+
+    text-align: center;
+    margin-top: 41px;
+    margin-bottom: 11px;
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+    color: $dusty-gray;
+  }
+
+  &__footer {
+    @include H3;
+
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex: 0 0 auto;
+    border-top: 1px solid $geyser;
+    padding: 1.6rem;
+
+    button {
+      width: 165px;
+    }
+
+    &__cancel-button {
+      margin-right: 1.2rem;
+    }
+  }
+
+  &__visual {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    position: relative;
+    margin: 0 20px;
+
+    section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+
+    &-identicon {
+      width: 48px;
+      height: 48px;
+
+      &--default {
+        background-color: #777a87;
+        color: white;
+        width: 48px;
+        height: 48px;
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+    }
+  }
+}

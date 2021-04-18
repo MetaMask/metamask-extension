@@ -1,1 +1,1 @@
-export { default } from './metafox-logo.component'
+export { default } from './metafox-logo.component';

@@ -1,0 +1,48 @@
+@use "design-system";
+
+.chip {
+  $self: &;
+
+  border-radius: 100px;
+  border: 1px solid design-system.$ui-1;
+  padding: 8px 16px;
+  margin: 0 4px;
+  display: flex;
+  align-items: center;
+  width: max-content;
+
+  &__left-icon,
+  &__right-icon {
+    display: flex;
+    align-items: center;
+  }
+
+  @each $variant, $color in design-system.$color-map {
+    &--#{$variant} {
+      border-color: $color;
+    }
+  }
+
+  &--with-left-icon,
+  &--with-right-icon {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  &--with-left-icon {
+    padding-left: 4px;
+
+    #{$self}__label {
+      margin-left: 8px;
+    }
+  }
+
+
+
+  &--with-right-icon {
+    padding-right: 4px;
+    #{$self}__label {
+      margin-right: 8px;
+    }
+  }
+}

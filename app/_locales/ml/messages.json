@@ -1,11 +1,4 @@
 {
-  "appName": {
-    "message": "MetaMask",
-    "description": "The name of the application"
-  },
-  "reject": {
-    "message": "നിരസിക്കുക"
-  },
   "about": {
     "message": "വിവരം"
   },
@@ -15,20 +8,15 @@
   "advanced": {
     "message": "നൂതനം"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
   "back": {
     "message": "പിന്നോട്ട്"
   },
   "basic": {
     "message": "അടിസ്ഥാനം"
-  },
-  "off": {
-    "message": "ഓഫാക്കുക"
-  },
-  "ok": {
-    "message": "ശരി"
-  },
-  "on": {
-    "message": "ഓൺ ചെയ്യുക"
   },
   "cancel": {
     "message": "റദ്ദാക്കൂ"
@@ -89,6 +77,15 @@
   "next": {
     "message": "അടുത്തത്"
   },
+  "off": {
+    "message": "ഓഫാക്കുക"
+  },
+  "ok": {
+    "message": "ശരി"
+  },
+  "on": {
+    "message": "ഓൺ ചെയ്യുക"
+  },
   "origin": {
     "message": "ഉറവിടം"
   },
@@ -98,11 +95,8 @@
   "queue": {
     "message": "ക്യൂവിൽ"
   },
-  "reset": {
-    "message": "വീണ്ടും സജ്ജീകരിക്കുക"
-  },
-  "restore": {
-    "message": "പുനഃസ്ഥാപിക്കുക"
+  "reject": {
+    "message": "നിരസിക്കുക"
   },
   "remove": {
     "message": "നീക്കംചെയ്യുക"
@@ -110,11 +104,14 @@
   "removeAccount": {
     "message": "അക്കൗണ്ട് നീക്കംചെയ്യൽ"
   },
+  "reset": {
+    "message": "വീണ്ടും സജ്ജീകരിക്കുക"
+  },
+  "restore": {
+    "message": "പുനഃസ്ഥാപിക്കുക"
+  },
   "save": {
     "message": "സംരക്ഷിക്കുക"
-  },
-  "slow": {
-    "message": "പതുക്കെ"
   },
   "search": {
     "message": "തിരയൂ"
@@ -124,6 +121,9 @@
   },
   "settings": {
     "message": "ക്രമീകരണങ്ങള്‍"
+  },
+  "slow": {
+    "message": "പതുക്കെ"
   },
   "tryAgain": {
     "message": "വീണ്ടും ശ്രമിക്കുക"

@@ -1,0 +1,28 @@
+diff --git a/node_modules/stylelint/lib/syntaxes/index.js b/node_modules/stylelint/lib/syntaxes/index.js
+index 7afa0c3..73eaa00 100644
+--- a/node_modules/stylelint/lib/syntaxes/index.js
++++ b/node_modules/stylelint/lib/syntaxes/index.js
+@@ -1,16 +1,13 @@
+ 'use strict';
+ 
+-// Use this require pattern so that syntaxes can be bundled separately
+-const importLazy = require('import-lazy')(require);
+-
+ /** @typedef {import('../getPostcssResult').Syntax} Syntax */
+ /** @type {{[k: string]: Syntax}} */
+ module.exports = {
+-	'css-in-js': importLazy('./syntax-css-in-js'),
+-	html: importLazy('./syntax-html'),
+-	less: importLazy('./syntax-less'),
+-	markdown: importLazy('./syntax-markdown'),
+-	sass: importLazy('./syntax-sass'),
+-	scss: importLazy('./syntax-scss'),
+-	sugarss: importLazy('./syntax-sugarss'),
++	'css-in-js': require('./syntax-css-in-js'),
++	html: require('./syntax-html'),
++	less: require('./syntax-less'),
++	markdown: require('./syntax-markdown'),
++	sass: require('./syntax-sass'),
++	scss: require('./syntax-scss'),
++	sugarss: require('./syntax-sugarss'),
+ };

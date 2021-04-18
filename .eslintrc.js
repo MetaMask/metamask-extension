@@ -1,124 +1,160 @@
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
   parserOptions: {
-    'sourceType': 'module',
-    'ecmaVersion': 2017,
-    'ecmaFeatures': {
-      'experimentalObjectRestSpread': true,
-      'impliedStrict': true,
-      'modules': true,
-      'blockBindings': true,
-      'arrowFunctions': true,
-      'objectLiteralShorthandMethods': true,
-      'objectLiteralShorthandProperties': true,
-      'templateStrings': true,
-      'classes': true,
-      'jsx': true,
+    sourceType: 'module',
+    ecmaVersion: 2017,
+    ecmaFeatures: {
+      experimentalObjectRestSpread: true,
+      impliedStrict: true,
+      modules: true,
+      blockBindings: true,
+      arrowFunctions: true,
+      objectLiteralShorthandMethods: true,
+      objectLiteralShorthandProperties: true,
+      templateStrings: true,
+      classes: true,
+      jsx: true,
     },
   },
 
+  ignorePatterns: [
+    '!.eslintrc.js',
+    'node_modules/**',
+    'dist/**',
+    'builds/**',
+    'test-*/**',
+    'docs/**',
+    'coverage/',
+    'jest-coverage/',
+    'development/chromereload.js',
+    'app/vendor/**',
+    'test/e2e/send-eth-with-private-key-test/**',
+    'nyc_output/**',
+    '.vscode/**',
+    'lavamoat/*/policy.json',
+  ],
+
   extends: [
     '@metamask/eslint-config',
-    '@metamask/eslint-config/config/nodejs',
-    '@metamask/eslint-config/config/mocha',
-    'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
+    '@metamask/eslint-config-nodejs',
+    'prettier',
   ],
 
-  plugins: [
-    'babel',
-    'react',
-    'json',
-    'import',
-  ],
+  plugins: ['@babel', 'import', 'prettier'],
 
   globals: {
-    '$': 'readonly',
     document: 'readonly',
-    QUnit: 'readonly',
     window: 'readonly',
   },
 
   rules: {
-    /* TODO: Remove these when upgrading to `@metamask/eslint-config@2` */
-    'array-callback-return': 'error',
-    'callback-return': 'error',
-    'global-require': 'error',
-    'guard-for-in': 'error',
-    /* End v2 rules */
-    'arrow-parens': 'error',
-    'no-tabs': 'error',
-    'no-mixed-operators': 'error',
-    'import/default': 'error',
-    'import/export': 'error',
-    'import/named': 'error',
-    'import/namespace': 'error',
-    'import/newline-after-import': 'error',
-    'import/no-absolute-path': 'error',
-    'import/no-amd': 'error',
-    'import/no-anonymous-default-export': 'error',
-    'import/no-duplicates': 'error',
-    'import/no-dynamic-require': 'error',
-    'import/no-mutable-exports': 'error',
-    'import/no-named-as-default': 'error',
-    'import/no-named-as-default-member': 'error',
-    'import/no-named-default': 'error',
-    'import/no-self-import': 'error',
-    'import/no-unresolved': ['error', { 'commonjs': true }],
-    'import/no-unused-modules': 'error',
-    'import/no-useless-path-segments': ['error', { 'commonjs': true }],
-    'import/no-webpack-loader-syntax': 'error',
-    'react/no-unused-prop-types': 'error',
-    'react/no-unused-state': 'error',
-    'react/jsx-boolean-value': 'error',
-    'react/jsx-curly-brace-presence': ['error', { 'props': 'never', 'children': 'never' }],
-    'react/jsx-equals-spacing': 'error',
-    'react/no-deprecated': 'error',
-    'react/default-props-match-prop-types': 'error',
-    'react/jsx-closing-tag-location': 'error',
-    'react/jsx-no-duplicate-props': 'error',
-    'react/jsx-closing-bracket-location': 'error',
-    'react/jsx-first-prop-new-line': ['error', 'multiline'],
-    'react/jsx-max-props-per-line': ['error', { 'maximum': 1, 'when': 'multiline' } ],
-    'react/jsx-tag-spacing': ['error', {
-      'closingSlash': 'never',
-      'beforeSelfClosing': 'always',
-      'afterOpening': 'never',
-    }],
-    'react/jsx-wrap-multilines': ['error', {
-      'declaration': 'parens-new-line',
-      'assignment': 'parens-new-line',
-      'return': 'parens-new-line',
-      'arrow': 'parens-new-line',
-      'condition': 'parens-new-line',
-      'logical': 'parens-new-line',
-      'prop': 'parens-new-line',
-    }],
-    'babel/semi': ['error', 'never'],
-    'mocha/no-setup-in-describe': 'off',
-  },
+    'default-param-last': 'off',
+    'prefer-object-spread': 'error',
+    'require-atomic-updates': 'off',
 
-  overrides: [{
-    files: [
-      'app/scripts/migrations/*.js',
-      '*.stories.js',
-    ],
-    rules: {
-      'import/no-anonymous-default-export': ['error', { 'allowObject': true }],
+    'import/no-unassigned-import': 'off',
+
+    'no-invalid-this': 'off',
+    '@babel/no-invalid-this': 'error',
+
+    // Prettier handles this
+    '@babel/semi': 'off',
+
+    'node/no-process-env': 'off',
+
+    // TODO: re-enable these rules
+    'node/no-sync': 'off',
+    'node/no-unpublished-import': 'off',
+    'node/no-unpublished-require': 'off',
+  },
+  overrides: [
+    {
+      files: ['ui/**/*.js', 'test/lib/render-helpers.js'],
+      plugins: ['react'],
+      extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended'],
+      rules: {
+        'react/no-unused-prop-types': 'error',
+        'react/no-unused-state': 'error',
+        'react/jsx-boolean-value': 'error',
+        'react/jsx-curly-brace-presence': [
+          'error',
+          { props: 'never', children: 'never' },
+        ],
+        'react/no-deprecated': 'error',
+        'react/default-props-match-prop-types': 'error',
+        'react/jsx-no-duplicate-props': 'error',
+      },
     },
-  }, {
-    files: [
-      'app/scripts/migrations/*.js',
-    ],
-    rules: {
-      'global-require': 'off',
+    {
+      files: ['test/e2e/**/*.spec.js'],
+      extends: ['@metamask/eslint-config-mocha'],
+      rules: {
+        'mocha/no-hooks-for-single-case': 'off',
+        'mocha/no-setup-in-describe': 'off',
+      },
     },
-  }],
+    {
+      files: ['app/scripts/migrations/*.js', '*.stories.js'],
+      rules: {
+        'import/no-anonymous-default-export': ['error', { allowObject: true }],
+      },
+    },
+    {
+      files: ['app/scripts/migrations/*.js'],
+      rules: {
+        'node/global-require': 'off',
+      },
+    },
+    {
+      files: ['**/*.test.js'],
+      excludedFiles: ['ui/**/*.test.js'],
+      extends: ['@metamask/eslint-config-mocha'],
+      rules: {
+        'mocha/no-setup-in-describe': 'off',
+      },
+    },
+    {
+      files: ['ui/**/*.test.js'],
+      extends: ['@metamask/eslint-config-jest'],
+      rules: {
+        'jest/no-restricted-matchers': 'off',
+      },
+    },
+    {
+      files: [
+        'development/**/*.js',
+        'test/e2e/benchmark.js',
+        'test/helpers/setup-helper.js',
+      ],
+      rules: {
+        'node/no-process-exit': 'off',
+        'node/shebang': 'off',
+      },
+    },
+    {
+      files: [
+        '.eslintrc.js',
+        'babel.config.js',
+        'nyc.config.js',
+        'stylelint.config.js',
+        'app/scripts/runLockdown.js',
+        'development/**/*.js',
+        'test/e2e/**/*.js',
+        'test/lib/wait-until-called.js',
+        'test/env.js',
+        'test/setup.js',
+        'jest.config.js',
+      ],
+      parserOptions: {
+        sourceType: 'script',
+      },
+    },
+  ],
 
   settings: {
-    'react': {
-      'version': 'detect',
+    react: {
+      version: 'detect',
     },
   },
-}
+};

@@ -1,120 +1,168 @@
-import assert from 'assert'
-import nock from 'nock'
-import sinon from 'sinon'
-import proxyquire from 'proxyquire'
+import nock from 'nock';
+import sinon from 'sinon';
 
-const fakeLocalStorageHelpers = {}
-const fetchWithCache = proxyquire('./fetch-with-cache', {
-  '../../../lib/local-storage-helpers': fakeLocalStorageHelpers,
-}).default
+import { getStorageItem, setStorageItem } from '../../../lib/storage-helpers';
 
-describe('Fetch with cache', function () {
-  beforeEach(function () {
-    fakeLocalStorageHelpers.loadLocalStorageData = sinon.stub()
-    fakeLocalStorageHelpers.saveLocalStorageData = sinon.stub()
-  })
-  afterEach(function () {
-    sinon.restore()
-    nock.cleanAll()
-  })
+jest.mock('../../../lib/storage-helpers.js', () => ({
+  getStorageItem: jest.fn(),
+  setStorageItem: jest.fn(),
+}));
 
-  it('fetches a url', async function () {
+const fetchWithCache = require('./fetch-with-cache').default;
+
+describe('Fetch with cache', () => {
+  afterEach(() => {
+    sinon.restore();
+    nock.cleanAll();
+  });
+
+  it('fetches a url', async () => {
     nock('https://fetchwithcache.metamask.io')
       .get('/price')
-      .reply(200, '{"average": 1}')
+      .reply(200, '{"average": 1}');
 
-    const response = await fetchWithCache('https://fetchwithcache.metamask.io/price')
-    assert.deepEqual(response, {
+    const response = await fetchWithCache(
+      'https://fetchwithcache.metamask.io/price',
+    );
+    expect(response).toStrictEqual({
       average: 1,
-    })
-  })
+    });
+  });
 
-  it('returns cached response', async function () {
+  it('returns cached response', async () => {
     nock('https://fetchwithcache.metamask.io')
       .get('/price')
-      .reply(200, '{"average": 2}')
+      .reply(200, '{"average": 2}');
 
-    fakeLocalStorageHelpers.loadLocalStorageData.returns({
-      'https://fetchwithcache.metamask.io/price': {
-        cachedResponse: { average: 1 },
-        cachedTime: Date.now(),
-      },
-    })
+    getStorageItem.mockReturnValueOnce({
+      cachedResponse: { average: 1 },
+      cachedTime: Date.now(),
+    });
 
-    const response = await fetchWithCache('https://fetchwithcache.metamask.io/price')
-    assert.deepEqual(response, {
+    const response = await fetchWithCache(
+      'https://fetchwithcache.metamask.io/price',
+    );
+    expect(response).toStrictEqual({
       average: 1,
-    })
-  })
+    });
+  });
 
-  it('fetches URL again after cache refresh time has passed', async function () {
+  it('fetches URL again after cache refresh time has passed', async () => {
     nock('https://fetchwithcache.metamask.io')
       .get('/price')
-      .reply(200, '{"average": 3}')
+      .reply(200, '{"average": 3}');
 
-    fakeLocalStorageHelpers.loadLocalStorageData.returns({
-      'https://fetchwithcache.metamask.io/cached': {
-        cachedResponse: { average: 1 },
-        cachedTime: Date.now() - 1000,
-      },
-    })
+    getStorageItem.mockReturnValueOnce({
+      cachedResponse: { average: 1 },
+      cachedTime: Date.now() - 1000,
+    });
 
-    const response = await fetchWithCache('https://fetchwithcache.metamask.io/price', {}, { cacheRefreshTime: 123 })
-    assert.deepEqual(response, {
+    const response = await fetchWithCache(
+      'https://fetchwithcache.metamask.io/price',
+      {},
+      { cacheRefreshTime: 123 },
+    );
+    expect(response).toStrictEqual({
       average: 3,
-    })
-  })
+    });
+  });
 
-  it('should abort the request when the custom timeout is hit', async function () {
+  it('should abort the request when the custom timeout is hit', async () => {
     nock('https://fetchwithcache.metamask.io')
       .get('/price')
       .delay(100)
-      .reply(200, '{"average": 4}')
+      .reply(200, '{"average": 4}');
 
-    await assert.rejects(
-      () => fetchWithCache('https://fetchwithcache.metamask.io/price', {}, { timeout: 20 }),
-      { name: 'AbortError', message: 'Aborted' },
-    )
-  })
+    await expect(() =>
+      fetchWithCache(
+        'https://fetchwithcache.metamask.io/price',
+        {},
+        { timeout: 20 },
+      ),
+    ).rejects.toThrow({ name: 'AbortError', message: 'Aborted' });
+  });
 
-  it('throws when the response is unsuccessful', async function () {
+  it('throws when the response is unsuccessful', async () => {
     nock('https://fetchwithcache.metamask.io')
       .get('/price')
-      .reply(500, '{"average": 6}')
+      .reply(500, '{"average": 6}');
 
-    await assert.rejects(
-      () => fetchWithCache('https://fetchwithcache.metamask.io/price'),
-    )
-  })
+    await expect(() =>
+      fetchWithCache('https://fetchwithcache.metamask.io/price'),
+    ).rejects.toThrow('');
+  });
 
-  it('throws when a POST request is attempted', async function () {
+  it('throws when a POST request is attempted', async () => {
     nock('https://fetchwithcache.metamask.io')
       .post('/price')
-      .reply(200, '{"average": 7}')
+      .reply(200, '{"average": 7}');
 
-    await assert.rejects(
-      () => fetchWithCache('https://fetchwithcache.metamask.io/price', { method: 'POST' }),
-    )
-  })
+    await expect(() =>
+      fetchWithCache('https://fetchwithcache.metamask.io/price', {
+        method: 'POST',
+      }),
+    ).rejects.toThrow('');
+  });
 
-  it('throws when the request has a truthy body', async function () {
+  it('throws when the request has a truthy body', async () => {
     nock('https://fetchwithcache.metamask.io')
       .get('/price')
-      .reply(200, '{"average": 8}')
+      .reply(200, '{"average": 8}');
 
-    await assert.rejects(
-      () => fetchWithCache('https://fetchwithcache.metamask.io/price', { body: 1 }),
-    )
-  })
+    await expect(() =>
+      fetchWithCache('https://fetchwithcache.metamask.io/price', { body: 1 }),
+    ).rejects.toThrow('');
+  });
 
-  it('throws when the request has an invalid Content-Type header', async function () {
+  it('throws when the request has an invalid Content-Type header', async () => {
     nock('https://fetchwithcache.metamask.io')
       .get('/price')
-      .reply(200, '{"average": 9}')
+      .reply(200, '{"average": 9}');
 
-    await assert.rejects(
-      () => fetchWithCache('https://fetchwithcache.metamask.io/price', { headers: { 'Content-Type': 'text/plain' } }),
-      { message: 'fetchWithCache only supports JSON responses' },
-    )
-  })
-})
+    await expect(() =>
+      fetchWithCache('https://fetchwithcache.metamask.io/price', {
+        headers: { 'Content-Type': 'text/plain' },
+      }),
+    ).rejects.toThrow({
+      message: 'fetchWithCache only supports JSON responses',
+    });
+  });
+
+  it('should correctly cache responses from interwoven requests', async () => {
+    nock('https://fetchwithcache.metamask.io')
+      .get('/foo')
+      .reply(200, '{"average": 9}');
+
+    nock('https://fetchwithcache.metamask.io')
+      .get('/bar')
+      .reply(200, '{"average": 9}');
+
+    const testCache = {};
+    getStorageItem.mockImplementation((key) => testCache[key]);
+    setStorageItem.mockImplementation((key, value) => {
+      testCache[key] = value;
+    });
+
+    await Promise.all([
+      fetchWithCache(
+        'https://fetchwithcache.metamask.io/foo',
+        {},
+        { cacheRefreshTime: 123 },
+      ),
+      fetchWithCache(
+        'https://fetchwithcache.metamask.io/bar',
+        {},
+        { cacheRefreshTime: 123 },
+      ),
+    ]);
+
+    expect(
+      testCache['cachedFetch:https://fetchwithcache.metamask.io/foo']
+        .cachedResponse,
+    ).toStrictEqual({ average: 9 });
+    expect(
+      testCache['cachedFetch:https://fetchwithcache.metamask.io/bar']
+        .cachedResponse,
+    ).toStrictEqual({ average: 9 });
+  });
+});

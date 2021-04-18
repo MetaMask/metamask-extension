@@ -1,3 +1,3 @@
-import preloader from './preloader-icon.component'
+import preloader from './preloader-icon.component';
 
-export default preloader
+export default preloader;

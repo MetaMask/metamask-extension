@@ -1,66 +1,68 @@
 // next version number
-const version = 25
-
 /*
 
 normalizes txParams on unconfirmed txs
 
 */
-import ethUtil from 'ethereumjs-util'
+import { cloneDeep } from 'lodash';
+import { addHexPrefix } from '../lib/util';
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 
-import { cloneDeep } from 'lodash'
+const version = 25;
 
 export default {
   version,
 
-  migrate: async function (originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
-    versionedData.meta.version = version
-    const state = versionedData.data
-    const newState = transformState(state)
-    versionedData.data = newState
-    return versionedData
+  async migrate(originalVersionedData) {
+    const versionedData = cloneDeep(originalVersionedData);
+    versionedData.meta.version = version;
+    const state = versionedData.data;
+    const newState = transformState(state);
+    versionedData.data = newState;
+    return versionedData;
   },
-}
+};
 
-function transformState (state) {
-  const newState = state
+function transformState(state) {
+  const newState = state;
 
   if (newState.TransactionController) {
     if (newState.TransactionController.transactions) {
-      const transactions = newState.TransactionController.transactions
-      newState.TransactionController.transactions = transactions.map((txMeta) => {
-        if (txMeta.status !== 'unapproved') {
-          return txMeta
-        }
-        txMeta.txParams = normalizeTxParams(txMeta.txParams)
-        return txMeta
-      })
+      const { transactions } = newState.TransactionController;
+      newState.TransactionController.transactions = transactions.map(
+        (txMeta) => {
+          if (txMeta.status !== TRANSACTION_STATUSES.UNAPPROVED) {
+            return txMeta;
+          }
+          txMeta.txParams = normalizeTxParams(txMeta.txParams);
+          return txMeta;
+        },
+      );
     }
   }
 
-  return newState
+  return newState;
 }
 
-function normalizeTxParams (txParams) {
+function normalizeTxParams(txParams) {
   // functions that handle normalizing of that key in txParams
   const whiteList = {
-    from: (from) => ethUtil.addHexPrefix(from).toLowerCase(),
-    to: () => ethUtil.addHexPrefix(txParams.to).toLowerCase(),
-    nonce: (nonce) => ethUtil.addHexPrefix(nonce),
-    value: (value) => ethUtil.addHexPrefix(value),
-    data: (data) => ethUtil.addHexPrefix(data),
-    gas: (gas) => ethUtil.addHexPrefix(gas),
-    gasPrice: (gasPrice) => ethUtil.addHexPrefix(gasPrice),
-  }
+    from: (from) => addHexPrefix(from).toLowerCase(),
+    to: () => addHexPrefix(txParams.to).toLowerCase(),
+    nonce: (nonce) => addHexPrefix(nonce),
+    value: (value) => addHexPrefix(value),
+    data: (data) => addHexPrefix(data),
+    gas: (gas) => addHexPrefix(gas),
+    gasPrice: (gasPrice) => addHexPrefix(gasPrice),
+  };
 
   // apply only keys in the whiteList
-  const normalizedTxParams = {}
+  const normalizedTxParams = {};
   Object.keys(whiteList).forEach((key) => {
     if (txParams[key]) {
-      normalizedTxParams[key] = whiteList[key](txParams[key])
+      normalizedTxParams[key] = whiteList[key](txParams[key]);
     }
-  })
+  });
 
-  return normalizedTxParams
+  return normalizedTxParams;
 }

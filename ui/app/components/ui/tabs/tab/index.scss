@@ -1,8 +1,15 @@
 .tab {
-  cursor: pointer;
-  padding: 8px;
-  min-width: 50px;
-  text-align: center;
+  button {
+    cursor: pointer;
+    padding: 8px;
+    min-width: 50px;
+    text-align: center;
+    display: block;
+    width: 100%;
+    background-color: unset;
+    font-size: unset;
+    color: unset;
+  }
 
   &--active {
     color: $black;

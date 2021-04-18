@@ -6,7 +6,10 @@
 
   &__logo {
     max-height: 100%;
-    max-width: 100%;
+    max-width: 50%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   &__item {
@@ -21,6 +24,11 @@
     }
   }
 
+  &__link-text {
+    width: max-content;
+    padding: 0;
+  }
+
   &__link-item {
     padding: 15px 0;
 
@@ -29,13 +37,10 @@
     }
   }
 
-  &__link-text {
-    @extend %link;
-  }
-
   &__version-number {
+    @include H6;
+
     padding-top: 5px;
-    font-size: 13px;
     color: $dusty-gray;
   }
 

@@ -1,1 +1,1 @@
-export { default } from './icon-border'
+export { default } from './icon-border';

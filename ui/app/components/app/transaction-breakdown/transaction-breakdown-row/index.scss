@@ -1,5 +1,6 @@
 .transaction-breakdown-row {
-  font-size: 0.75rem;
+  @include H7;
+
   color: $scorpion;
   display: flex;
   justify-content: space-between;

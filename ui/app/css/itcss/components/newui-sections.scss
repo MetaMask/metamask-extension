@@ -17,7 +17,6 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
 // Main container
 .main-container {
   z-index: $main-container-z-index;
-  font-family: Roboto;
 }
 
 .main-container::-webkit-scrollbar {
@@ -120,7 +119,6 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
 
 .unlock-screen-container {
   z-index: $main-container-z-index;
-  font-family: Roboto;
   display: flex;
   justify-content: center;
   align-items: center;

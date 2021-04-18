@@ -1,1 +1,1 @@
-export { default } from './token-cell'
+export { default } from './token-cell';

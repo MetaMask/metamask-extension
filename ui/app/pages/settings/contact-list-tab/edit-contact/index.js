@@ -1,1 +1,1 @@
-export { default } from './edit-contact.container'
+export { default } from './edit-contact.container';

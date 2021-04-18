@@ -1,1 +1,1 @@
-export { default } from './create-password.container'
+export { default } from './create-password.container';

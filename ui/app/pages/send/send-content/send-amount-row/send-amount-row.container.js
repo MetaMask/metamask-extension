@@ -1,4 +1,4 @@
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import {
   getConversionRate,
   getGasTotal,
@@ -9,20 +9,15 @@ import {
   getTokenBalance,
   getSendMaxModeState,
   sendAmountIsInError,
-} from '../../../../selectors'
-import { getAmountErrorObject, getGasFeeErrorObject } from '../../send.utils'
-import {
-  setMaxModeTo,
-  updateSendAmount,
-} from '../../../../store/actions'
-import {
-  updateSendErrors,
-} from '../../../../ducks/send/send.duck'
-import SendAmountRow from './send-amount-row.component'
+} from '../../../../selectors';
+import { getAmountErrorObject, getGasFeeErrorObject } from '../../send.utils';
+import { setMaxModeTo, updateSendAmount } from '../../../../store/actions';
+import { updateSendErrors } from '../../../../ducks/send/send.duck';
+import SendAmountRow from './send-amount-row.component';
 
-export default connect(mapStateToProps, mapDispatchToProps)(SendAmountRow)
+export default connect(mapStateToProps, mapDispatchToProps)(SendAmountRow);
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     amount: getSendAmount(state),
     balance: getSendFromBalance(state),
@@ -33,18 +28,18 @@ function mapStateToProps (state) {
     sendToken: getSendToken(state),
     tokenBalance: getTokenBalance(state),
     maxModeOn: getSendMaxModeState(state),
-  }
+  };
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     setMaxModeTo: (bool) => dispatch(setMaxModeTo(bool)),
     updateSendAmount: (newAmount) => dispatch(updateSendAmount(newAmount)),
     updateGasFeeError: (amountDataObject) => {
-      dispatch(updateSendErrors(getGasFeeErrorObject(amountDataObject)))
+      dispatch(updateSendErrors(getGasFeeErrorObject(amountDataObject)));
     },
     updateSendAmountError: (amountDataObject) => {
-      dispatch(updateSendErrors(getAmountErrorObject(amountDataObject)))
+      dispatch(updateSendErrors(getAmountErrorObject(amountDataObject)));
     },
-  }
+  };
 }

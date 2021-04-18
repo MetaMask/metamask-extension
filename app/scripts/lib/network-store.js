@@ -1,37 +1,40 @@
-import log from 'loglevel'
+import log from 'loglevel';
+import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
-const FIXTURE_SERVER_HOST = 'localhost'
-const FIXTURE_SERVER_PORT = 12345
-const FIXTURE_SERVER_URL = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}/state.json`
+const fetchWithTimeout = getFetchWithTimeout(30000);
+
+const FIXTURE_SERVER_HOST = 'localhost';
+const FIXTURE_SERVER_PORT = 12345;
+const FIXTURE_SERVER_URL = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}/state.json`;
 
 /**
  * A read-only network-based storage wrapper
  */
 export default class ReadOnlyNetworkStore {
-  constructor () {
-    this._initialized = false
-    this._initializing = this._init()
-    this._state = undefined
+  constructor() {
+    this._initialized = false;
+    this._initializing = this._init();
+    this._state = undefined;
   }
 
   /**
- * Declares this store as compatible with the current browser
- */
-  isSupported = true
+   * Declares this store as compatible with the current browser
+   */
+  isSupported = true;
 
   /**
    * Initializes by loading state from the network
    */
-  async _init () {
+  async _init() {
     try {
-      const response = await window.fetch(FIXTURE_SERVER_URL)
+      const response = await fetchWithTimeout(FIXTURE_SERVER_URL);
       if (response.ok) {
-        this._state = await response.json()
+        this._state = await response.json();
       }
     } catch (error) {
-      log.debug(`Error loading network state: '${error.message}'`)
+      log.debug(`Error loading network state: '${error.message}'`);
     } finally {
-      this._initialized = true
+      this._initialized = true;
     }
   }
 
@@ -39,11 +42,11 @@ export default class ReadOnlyNetworkStore {
    * Returns state
    * @returns {Promise<object>}
    */
-  async get () {
+  async get() {
     if (!this._initialized) {
-      await this._initializing
+      await this._initializing;
     }
-    return this._state
+    return this._state;
   }
 
   /**
@@ -51,10 +54,10 @@ export default class ReadOnlyNetworkStore {
    * @param {Object} state - The state to set
    * @returns {Promise<void>}
    */
-  async set (state) {
+  async set(state) {
     if (!this._initialized) {
-      await this._initializing
+      await this._initializing;
     }
-    this._state = state
+    this._state = state;
   }
 }

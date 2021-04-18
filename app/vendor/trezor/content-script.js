@@ -16,6 +16,6 @@ Passing messages from popup to background script
 
 window.addEventListener('message', event => {
     if (port && event.source === window && event.data) {
-        port.postMessage(event.data);
+        port.postMessage({ data: event.data });
     }
 });

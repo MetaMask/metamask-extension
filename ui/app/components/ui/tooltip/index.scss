@@ -1,0 +1,30 @@
+.tippy-tooltip.white-theme {
+  background: white;
+  color: black;
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+  padding: 12px 16px;
+  padding-bottom: 11px;
+
+  .tippy-tooltip-content {
+    @include H7;
+
+    text-align: left;
+    color: $Grey-500;
+  }
+}
+
+.tippy-popper[x-placement^=top] .white-theme [x-arrow] {
+  border-top-color: $white;
+}
+
+.tippy-popper[x-placement^=right] .white-theme [x-arrow] {
+  border-right-color: $white;
+}
+
+.tippy-popper[x-placement^=left] .white-theme [x-arrow] {
+  border-left-color: $white;
+}
+
+.tippy-popper[x-placement^=bottom] .white-theme [x-arrow] {
+  border-bottom-color: $white;
+}

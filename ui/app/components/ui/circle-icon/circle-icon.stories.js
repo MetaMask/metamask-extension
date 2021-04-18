@@ -1,9 +1,9 @@
-import React from 'react'
-import CircleIcon from './circle-icon.component'
+import React from 'react';
+import CircleIcon from './circle-icon.component';
 
 export default {
   title: 'CircleIcon',
-}
+};
 
 export const basicCircleIcon = () => (
   <CircleIcon
@@ -13,4 +13,4 @@ export const basicCircleIcon = () => (
     iconSize="42px"
     iconSource="images/eth_logo.svg"
   />
-)
+);

@@ -1,1 +1,1 @@
-export { default } from './confirm-remove-account.container'
+export { default } from './confirm-remove-account.container';

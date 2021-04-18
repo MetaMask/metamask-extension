@@ -1,36 +1,36 @@
-const version = 12
-
 /*
 
 This migration modifies our notices to delete their body after being read.
 
 */
 
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash';
+
+const version = 12;
 
 export default {
   version,
 
-  migrate: function (originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
-    versionedData.meta.version = version
+  migrate(originalVersionedData) {
+    const versionedData = cloneDeep(originalVersionedData);
+    versionedData.meta.version = version;
     try {
-      const state = versionedData.data
-      const newState = transformState(state)
-      versionedData.data = newState
+      const state = versionedData.data;
+      const newState = transformState(state);
+      versionedData.data = newState;
     } catch (err) {
-      console.warn(`MetaMask Migration #${version}` + err.stack)
+      console.warn(`MetaMask Migration #${version}${err.stack}`);
     }
-    return Promise.resolve(versionedData)
+    return Promise.resolve(versionedData);
   },
-}
+};
 
-function transformState (state) {
-  const newState = state
+function transformState(state) {
+  const newState = state;
   newState.NoticeController.noticesList.forEach((notice) => {
     if (notice.read) {
-      notice.body = ''
+      notice.body = '';
     }
-  })
-  return newState
+  });
+  return newState;
 }

@@ -1,0 +1,75 @@
+@use "sass:math";
+@use "sass:map";
+
+/**
+ * Calculate the luminance for a color.
+ * See https://www.w3.org/TR/WCAG20-TECHS/G17.html#G17-tests
+ *
+ * Note:
+ * @Gudahtt and @brad-decker have identified a potential performance concern
+ * that **might** impact build times if this function becomes widely used. It
+ * has not been validated, and is predicated on user-land math.pow functions
+ * prior to dart-sass 1.25.0. However, if the build times of sass raise
+ * exponentially a lookup table of all possible values for the math.pow call
+ * can be used to bypass the issue. This will require some logic updates as
+ * well. For reference, the blog post where the performance concern was
+ * originally made is here https://bit.ly/3c3qXzq (css-tricks)
+ */
+@function luminance($color) {
+  $channels: (
+    'red': red($color),
+    'green': green($color),
+    'blue': blue($color),
+  );
+
+  $values: (
+    'red': map.get($channels, 'red') / 255,
+    'blue': map.get($channels, 'red') / 255,
+    'green': map.get($channels, 'red') / 255,
+  );
+
+  @each $name, $value in $values {
+    @if $value <= 0.03928 {
+      $value: $value / 12.92;
+    }
+
+    @else {
+      $value: ($value + 0.055) / 1.055;
+      $value: math.pow($value, 2.4);
+    }
+
+    $values: map.merge($values, ($name: $value));
+  }
+
+  @return (0.2126 * map.get($values, 'red'))
+    + (0.7152 * map.get($values, 'green'))
+    + (0.0722 * map.get($values, 'blue'));
+}
+
+/**
+ * Calculate the contrast ratio between two colors.
+ * See https://www.w3.org/TR/WCAG20-TECHS/G17.html#G17-tests
+ */
+@function contrast($back, $front) {
+  $backLum: luminance($back) + 0.05;
+  $foreLum: luminance($front) + 0.05;
+
+  @return max($backLum, $foreLum) / min($backLum, $foreLum);
+}
+
+/**
+ * Determine whether to use dark or light text on top of given color.
+ * Returns black for dark text and white for light text.
+ */
+@function choose-contrast-color($color) {
+  $lightContrast: contrast($color, white);
+  $darkContrast: contrast($color, black);
+
+  @if ($lightContrast > $darkContrast) {
+    @return white;
+  }
+
+  @else {
+    @return black;
+  }
+}

@@ -1,1 +1,1 @@
-export { default } from './lock.container'
+export { default } from './lock.container';

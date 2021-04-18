@@ -1,0 +1,25 @@
+diff --git a/node_modules/sass/sass.dart.js b/node_modules/sass/sass.dart.js
+index fedd867..fef6a8f 100644
+--- a/node_modules/sass/sass.dart.js
++++ b/node_modules/sass/sass.dart.js
+@@ -16,6 +16,9 @@ self.scheduleImmediate = self.setImmediate
+ // CommonJS globals.
+ self.exports = exports;
+ 
++exports.bridgeJson = (target) => JSON.parse(JSON.stringify(target))
++exports.bridgeFn = (target) => ((...args) => target(...args))
++
+ // Node.js specific exports, check to see if they exist & or polyfilled
+ 
+ if (typeof process !== "undefined") {
+@@ -3616,10 +3619,6 @@ self.fs = require("fs");
+         return C.PlainJavaScriptObject_methods;
+       if (proto === Object.prototype)
+         return C.PlainJavaScriptObject_methods;
+-      if (typeof $constructor == "function") {
+-        Object.defineProperty($constructor, J.JS_INTEROP_INTERCEPTOR_TAG(), {value: C.UnknownJavaScriptObject_methods, enumerable: false, writable: true, configurable: true});
+-        return C.UnknownJavaScriptObject_methods;
+-      }
+       return C.UnknownJavaScriptObject_methods;
+     },
+     JS_INTEROP_INTERCEPTOR_TAG: function() {
