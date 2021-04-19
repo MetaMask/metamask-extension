@@ -1,21 +1,21 @@
 import React from 'react';
 
 import { renderWithProvider } from '../../../../../test/jest';
-import SelectQuotePopover from './index';
+import SelectQuotePopover from '.';
 
 describe('SelectQuotePopover', () => {
   const createProps = (customProps = {}) => {
     return {
-        onClose: jest.fn(),
-        onSubmit: jest.fn(),
-        swapToSymbol: 'ETH',
-        initialAggId: 'initialAggId',
-        onQuoteDetailsIsOpened: jest.fn(),
+      onClose: jest.fn(),
+      onSubmit: jest.fn(),
+      swapToSymbol: 'ETH',
+      initialAggId: 'initialAggId',
+      onQuoteDetailsIsOpened: jest.fn(),
       ...customProps,
     };
   };
 
-  test('renders the component with initial props', () => {
+  it('renders the component with initial props', () => {
     const { container } = renderWithProvider(
       <SelectQuotePopover {...createProps()} />,
     );

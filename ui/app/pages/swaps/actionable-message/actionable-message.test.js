@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { renderWithProvider } from '../../../../../test/jest';
-import ActionableMessage from './index';
+import ActionableMessage from '.';
 
 describe('ActionableMessage', () => {
   const createProps = (customProps = {}) => {
@@ -11,9 +11,11 @@ describe('ActionableMessage', () => {
     };
   };
 
-  test('renders the component with initial props', () => {
+  it('renders the component with initial props', () => {
     const props = createProps();
-    const { container, getByText } = renderWithProvider(<ActionableMessage {...props} />);
+    const { container, getByText } = renderWithProvider(
+      <ActionableMessage {...props} />,
+    );
     expect(getByText(props.message)).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });

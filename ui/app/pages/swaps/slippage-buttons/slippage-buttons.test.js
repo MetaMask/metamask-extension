@@ -1,19 +1,19 @@
 import React from 'react';
 
 import { renderWithProvider } from '../../../../../test/jest';
-import SlippageButtons from './index';
+import SlippageButtons from '.';
 
 describe('SlippageButtons', () => {
   const createProps = (customProps = {}) => {
     return {
-        onSelect: jest.fn(),
-        maxAllowedSlippage: 15,
-        currentSlippage: 3,
+      onSelect: jest.fn(),
+      maxAllowedSlippage: 15,
+      currentSlippage: 3,
       ...customProps,
     };
   };
 
-  test('renders the component with initial props', () => {
+  it('renders the component with initial props', () => {
     const { container, getByText } = renderWithProvider(
       <SlippageButtons {...createProps()} />,
     );

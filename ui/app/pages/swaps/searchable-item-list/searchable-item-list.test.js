@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { renderWithProvider } from '../../../../../test/jest';
-import SearchableItemList from './index';
+import SearchableItemList from '.';
 
 describe('SearchableItemList', () => {
   const createProps = (customProps = {}) => {
@@ -16,22 +16,28 @@ describe('SearchableItemList', () => {
           secondaryLabel: 'secondaryLabel',
           rightPrimaryLabel: 'rightPrimaryLabel',
           rightSecondaryLabel: 'rightSecondaryLabel',
-        }
+        },
       ],
       ...customProps,
     };
   };
 
-  test('renders the component with initial props', () => {
+  it('renders the component with initial props', () => {
     const props = createProps();
     const { container, getByText } = renderWithProvider(
       <SearchableItemList {...props} />,
     );
     expect(getByText(props.listTitle)).toBeInTheDocument();
     expect(getByText(props.itemsToSearch[0].primaryLabel)).toBeInTheDocument();
-    expect(getByText(props.itemsToSearch[0].secondaryLabel)).toBeInTheDocument();
-    expect(getByText(props.itemsToSearch[0].rightPrimaryLabel)).toBeInTheDocument();
-    expect(getByText(props.itemsToSearch[0].rightSecondaryLabel)).toBeInTheDocument();
+    expect(
+      getByText(props.itemsToSearch[0].secondaryLabel),
+    ).toBeInTheDocument();
+    expect(
+      getByText(props.itemsToSearch[0].rightPrimaryLabel),
+    ).toBeInTheDocument();
+    expect(
+      getByText(props.itemsToSearch[0].rightSecondaryLabel),
+    ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });

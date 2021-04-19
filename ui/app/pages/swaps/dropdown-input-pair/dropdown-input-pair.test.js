@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { renderWithProvider } from '../../../../../test/jest';
-import DropdownInputPair from './index';
+import DropdownInputPair from '.';
 
 describe('DropdownInputPair', () => {
   const createProps = (customProps = {}) => {
@@ -10,7 +10,7 @@ describe('DropdownInputPair', () => {
     };
   };
 
-  test('renders the component with initial props', () => {
+  it('renders the component with initial props', () => {
     const props = createProps();
     const { container, getByPlaceholderText } = renderWithProvider(
       <DropdownInputPair {...props} />,
