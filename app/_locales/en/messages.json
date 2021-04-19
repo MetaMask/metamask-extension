@@ -574,6 +574,12 @@
   "editContact": {
     "message": "Edit Contact"
   },
+  "editNonceField": {
+    "message": "Edit Nonce"
+  },
+  "editNonceMessage": {
+    "message": "This is an advanced feature, use cautiously."
+  },
   "editPermission": {
     "message": "Edit Permission"
   },
@@ -1193,6 +1199,9 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webcam not found"
+  },
+  "nonce": {
+    "message": "Nonce"
   },
   "nonceField": {
     "message": "Customize transaction nonce"
