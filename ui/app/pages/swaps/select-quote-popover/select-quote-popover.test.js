@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/jest';
 import SelectQuotePopover from './index';
 
 describe('SelectQuotePopover', () => {

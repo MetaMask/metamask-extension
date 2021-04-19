@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider, createSwapsMockStore } from '../../../../../test/jest';
 import IntroPopup from './index';
 
 describe('IntroPopup', () => {
@@ -12,7 +12,7 @@ describe('IntroPopup', () => {
     };
   };
 
-  const store = configureMockStore()(global.createSwapsMockStore());
+  const store = configureMockStore()(createSwapsMockStore());
 
   test('renders the component with initial props', () => {
     const props = createProps();

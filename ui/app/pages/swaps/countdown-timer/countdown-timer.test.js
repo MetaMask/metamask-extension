@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider, createSwapsMockStore } from '../../../../../test/jest';
 import CountdownTimer from './index';
 
 describe('CountdownTimer', () => {
@@ -17,7 +17,7 @@ describe('CountdownTimer', () => {
     };
   };
 
-  const store = configureMockStore()(global.createSwapsMockStore());
+  const store = configureMockStore()(createSwapsMockStore());
 
   test('renders the component with initial props', () => {
     const { getByTestId } = renderWithProvider(

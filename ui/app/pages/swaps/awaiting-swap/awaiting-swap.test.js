@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
 import AwaitingSwap from './index';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider, createSwapsMockStore } from '../../../../../test/jest';
 
 describe('AwaitingSwap', () => {
   const createProps = (customProps = {}) => {
@@ -16,7 +16,7 @@ describe('AwaitingSwap', () => {
       ...customProps,
     };
   };
-  const store = configureMockStore()(global.createSwapsMockStore());
+  const store = configureMockStore()(createSwapsMockStore());
 
   test('renders the component with initial props', () => {
     const { container, getByText } = renderWithProvider(<AwaitingSwap {...createProps()} />, store);

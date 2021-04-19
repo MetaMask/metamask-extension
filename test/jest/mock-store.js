@@ -1,9 +1,6 @@
-// jest-setup.js is for Jest-specific setup only and runs before our Jest tests.
-import '@testing-library/jest-dom';
+import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 
-import { MAINNET_CHAIN_ID } from '../shared/constants/network';
-
-global.createSwapsMockStore = () => {
+export const createSwapsMockStore = () => {
   return {
     swaps: {
       customGas: {
