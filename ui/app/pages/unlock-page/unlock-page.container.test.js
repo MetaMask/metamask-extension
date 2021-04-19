@@ -1,6 +1,9 @@
 import React from 'react';
 import sinon from 'sinon';
 import { mount } from 'enzyme';
+import configureMockStore from 'redux-mock-store';
+import { fireEvent, screen } from '@testing-library/dom';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import UnlockPage from './unlock-page.container';
 
 describe('Unlock Page', () => {
@@ -47,9 +50,18 @@ describe('Unlock Page', () => {
   });
 
   it('clicks imports seed button', () => {
-    const importSeedButton = wrapper.find('.unlock-page__link--import');
+    const { getByText, getByTestId } = renderWithProvider(
+      <UnlockPage {...props} />,
+      configureMockStore()({ metamask: { currentLocale: 'en' } }),
+    );
 
-    importSeedButton.simulate('click');
+    fireEvent(
+      getByText('import using account seed phrase'),
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
     expect(props.onRestore.calledOnce).toStrictEqual(true);
   });
 });
