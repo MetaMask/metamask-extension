@@ -503,9 +503,6 @@
     "message": "Έγινε εισαγωγή",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Πληροφορίες & Βοήθεια"
-  },
   "initialTransactionConfirmed": {
     "message": "Η αρχική σας συναλλαγή επιβεβαιώθηκε από το δίκτυο. Πατήστε ΕΝΤΑΞΕΙ για επιστροφή."
   },

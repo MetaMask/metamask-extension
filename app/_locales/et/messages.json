@@ -502,9 +502,6 @@
     "message": "Imporditud",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Teave ja abi"
-  },
   "initialTransactionConfirmed": {
     "message": "Võrk kinnitas teie algse tehingu. Tagasi minemiseks klõpsake OK-nuppu."
   },

@@ -172,9 +172,6 @@
     "message": "आयातित",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "जानकारी और सहायता"
-  },
   "insufficientFunds": {
     "message": "अपर्याप्त धन"
   },

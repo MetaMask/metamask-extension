@@ -493,9 +493,6 @@
     "message": "Importert",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Informasjon og hjelp"
-  },
   "initialTransactionConfirmed": {
     "message": "Din opprinnelige transaksjon ble bekreftet av nettverket. Klikk OK for å gå tilbake."
   },

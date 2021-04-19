@@ -286,9 +286,6 @@
     "message": "Pòte",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Enfo & Èd"
-  },
   "initialTransactionConfirmed": {
     "message": "Premye tranzaksyon ou konfime sou rezo a. Klike sou OK pou tounen."
   },

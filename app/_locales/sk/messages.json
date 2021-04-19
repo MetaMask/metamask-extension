@@ -493,9 +493,6 @@
     "message": "Importováno",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Informace a nápověda"
-  },
   "initialTransactionConfirmed": {
     "message": "Sieť potvrdila vašu iniciálnu transakciu. Ak sa chcete vrátiť späť, kliknite na OK."
   },

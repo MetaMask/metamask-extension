@@ -502,9 +502,6 @@
     "message": "المستوردة",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "المعلومات والمساعدة"
-  },
   "initialTransactionConfirmed": {
     "message": "تم تأكيد المعاملة الأولية الخاصة بك بواسطة الشبكة. انقر فوق موافق للعودة."
   },

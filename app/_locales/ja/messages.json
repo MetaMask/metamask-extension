@@ -797,9 +797,6 @@
     "message": "インポート済",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "情報とヘルプ"
-  },
   "initialTransactionConfirmed": {
     "message": "最初のトランザクションがネットワークに確認されました。戻るにはOKをクリックします。"
   },

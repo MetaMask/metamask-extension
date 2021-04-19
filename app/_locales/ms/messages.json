@@ -492,9 +492,6 @@
     "message": "Diimport",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Info & Bantuan"
-  },
   "initialTransactionConfirmed": {
     "message": "Transaksi awal anda telah disahkan oleh rangkaian. Klik OK untuk kembali."
   },

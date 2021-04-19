@@ -493,9 +493,6 @@
     "message": "Importats",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Informació i Ajuda"
-  },
   "initialTransactionConfirmed": {
     "message": "La teva transacció inicial ha sigut confirmada per la xarxa. Fes clic a OK per tornar enrere."
   },

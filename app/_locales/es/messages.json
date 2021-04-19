@@ -797,9 +797,6 @@
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Información y ayuda"
-  },
   "initialTransactionConfirmed": {
     "message": "La red confirmó tu transacción inicial. Hazle clic en Ok para volver."
   },

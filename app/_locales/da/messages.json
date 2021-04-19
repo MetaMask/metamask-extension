@@ -499,9 +499,6 @@
     "message": "Importeret",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Info & hjælp"
-  },
   "initialTransactionConfirmed": {
     "message": "Din indledende transaktion blev bekræftet af netværket. Klik OK for at gå tilbage."
   },

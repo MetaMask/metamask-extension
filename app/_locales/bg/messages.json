@@ -502,9 +502,6 @@
     "message": "Импортирани",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Информация и помощ"
-  },
   "initialTransactionConfirmed": {
     "message": "Първоначалната транзакция беше потвърдена от мрежата. Кликнете върху OK, за да се върнете обратно."
   },

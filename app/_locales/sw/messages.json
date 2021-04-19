@@ -493,9 +493,6 @@
     "message": "Zilizoingizwa",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Taarifa & Msaada"
-  },
   "initialTransactionConfirmed": {
     "message": "Muamala wako wa awali ulithibitishwa na mtandao. Bofya SWA ili urudi nyuma."
   },

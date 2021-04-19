@@ -506,9 +506,6 @@
     "message": "وارد شده",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "معلومات و کمک"
-  },
   "initialTransactionConfirmed": {
     "message": "معامله آغازین تان توسط شبکه تأیید شد. برای رفتن به عقب بالای OK کلیک کنید."
   },

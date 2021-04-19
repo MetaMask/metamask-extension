@@ -506,9 +506,6 @@
     "message": "מיובאות",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "מידע ועזרה"
-  },
   "initialTransactionConfirmed": {
     "message": "העסקה הראשונית שלך אושרה על ידי הרשת. לחצ/י על אישור כדי לחזור."
   },

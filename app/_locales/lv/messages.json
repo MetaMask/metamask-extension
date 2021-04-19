@@ -502,9 +502,6 @@
     "message": "Importēts",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Informācija un palīdzība"
-  },
   "initialTransactionConfirmed": {
     "message": "Jūsu sākotnējais darījums apstiprināts tīklā. Spiediet OK, lai atgrieztos."
   },

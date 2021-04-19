@@ -506,9 +506,6 @@
     "message": "ከውጭ የመጣ",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "መረጃ እና እገዛ "
-  },
   "initialTransactionConfirmed": {
     "message": "የመጀመሪያ ግብይትዎ በአውታረ መረቡ ተረጋግጧል። ወደ ኋላ ለመመለስ እሺ የሚለውን ጠቅ ያድርጉ።"
   },

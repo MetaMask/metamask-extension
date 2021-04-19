@@ -506,9 +506,6 @@
     "message": "Імпортовано",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Інформація та допомога"
-  },
   "initialTransactionConfirmed": {
     "message": "Ваша початкова транзакція підтверджена мережею. Натисніть ОК для повернення."
   },

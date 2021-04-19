@@ -226,9 +226,6 @@
     "message": "இறக்குமதியானது",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "தகவல் மற்றும் உதவி"
-  },
   "insufficientFunds": {
     "message": "போதுமான பணம் இல்லை."
   },

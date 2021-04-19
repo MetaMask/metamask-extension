@@ -788,9 +788,6 @@
     "message": "가져옴",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "정보 및 도움말"
-  },
   "initialTransactionConfirmed": {
     "message": "최초 거래를 네트워크에서 확인했습니다. 확인을 클릭하여 뒤로 돌아가세요."
   },

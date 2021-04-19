@@ -496,9 +496,6 @@
     "message": "Importate",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Informații și ajutor"
-  },
   "initialTransactionConfirmed": {
     "message": "Tranzacția inițială a fost confirmată de rețea. Clic pe OK pentru a reveni."
   },

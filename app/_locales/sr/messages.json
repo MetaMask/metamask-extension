@@ -503,9 +503,6 @@
     "message": "Увезени",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Info i pomoć"
-  },
   "initialTransactionConfirmed": {
     "message": "Vašu početnu transakciju je potvrdila mreža. Kliknite OK da biste se vratili."
   },

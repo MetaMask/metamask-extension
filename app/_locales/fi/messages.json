@@ -506,9 +506,6 @@
     "message": "Tuotu",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Tietoja ja ohje"
-  },
   "initialTransactionConfirmed": {
     "message": "Verkko hyväksyi alkuperäisen tapahtumasi. Siirry takaisin napsauttamalla OK-painiketta."
   },

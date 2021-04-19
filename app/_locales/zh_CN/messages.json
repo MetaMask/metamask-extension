@@ -797,9 +797,6 @@
     "message": "已导入",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "信息 & 帮助"
-  },
   "initialTransactionConfirmed": {
     "message": "您的初始交易已通过网络确认。请点击“确定”返回。"
   },

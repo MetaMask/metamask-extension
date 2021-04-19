@@ -506,9 +506,6 @@
     "message": "Importuota",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Informacija ir žinynas"
-  },
   "initialTransactionConfirmed": {
     "message": "Jūsų pradinė operacija patvirtinta tinkle. Norėdami grįžti, spustelėkite „Gerai“."
   },
