@@ -219,7 +219,7 @@ describe('MetaMask', function () {
       );
       assert.equal(
         await restoreSeedLink.getText(),
-        'Import using account seed phrase',
+        'import using account seed phrase',
       );
       await restoreSeedLink.click();
       await driver.delay(regularDelayMs);

@@ -45,13 +45,13 @@ export function mountWithRouter(component, store = {}, pathname = '/') {
 }
 
 export const I18nProvider = (props) => {
-  const { currentLocale, current, en } = props;
+  const { currentLocale, current, en: eng } = props;
 
   const t = useMemo(() => {
     return (key, ...args) =>
       getMessage(currentLocale, current, key, ...args) ||
-      getMessage(currentLocale, en, key, ...args);
-  }, [currentLocale, current, en]);
+      getMessage(currentLocale, eng, key, ...args);
+  }, [currentLocale, current, eng]);
 
   return (
     <I18nContext.Provider value={t}>{props.children}</I18nContext.Provider>
