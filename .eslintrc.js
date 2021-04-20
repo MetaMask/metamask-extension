@@ -115,6 +115,16 @@ module.exports = {
       },
     },
     {
+      files: ['**/__snapshots__/*.snap'],
+      plugins: ['jest'],
+      rules: {
+        'jest/no-large-snapshots': [
+          'error',
+          { maxSize: 50, inlineMaxSize: 50 },
+        ],
+      },
+    },
+    {
       files: ['ui/**/*.test.js', 'ui/app/__mocks__/*.js'],
       extends: ['@metamask/eslint-config-jest'],
       rules: {
