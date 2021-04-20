@@ -7,17 +7,16 @@ import {
 } from '../../../../../test/jest';
 import IntroPopup from '.';
 
-describe('IntroPopup', () => {
-  const createProps = (customProps = {}) => {
-    return {
-      onClose: jest.fn(),
-      ...customProps,
-    };
+const createProps = (customProps = {}) => {
+  return {
+    onClose: jest.fn(),
+    ...customProps,
   };
+};
 
-  const store = configureMockStore()(createSwapsMockStore());
-
+describe('IntroPopup', () => {
   it('renders the component with initial props', () => {
+    const store = configureMockStore()(createSwapsMockStore());
     const props = createProps();
     const { container } = renderWithProvider(<IntroPopup {...props} />, store);
     expect(container).toMatchSnapshot();

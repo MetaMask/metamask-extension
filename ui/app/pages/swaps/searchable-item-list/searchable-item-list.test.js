@@ -3,25 +3,25 @@ import React from 'react';
 import { renderWithProvider } from '../../../../../test/jest';
 import SearchableItemList from '.';
 
-describe('SearchableItemList', () => {
-  const createProps = (customProps = {}) => {
-    return {
-      defaultToAll: true,
-      listTitle: 'listTitle',
-      itemsToSearch: [
-        {
-          iconUrl: 'iconUrl',
-          selected: true,
-          primaryLabel: 'primaryLabel',
-          secondaryLabel: 'secondaryLabel',
-          rightPrimaryLabel: 'rightPrimaryLabel',
-          rightSecondaryLabel: 'rightSecondaryLabel',
-        },
-      ],
-      ...customProps,
-    };
+const createProps = (customProps = {}) => {
+  return {
+    defaultToAll: true,
+    listTitle: 'listTitle',
+    itemsToSearch: [
+      {
+        iconUrl: 'iconUrl',
+        selected: true,
+        primaryLabel: 'primaryLabel',
+        secondaryLabel: 'secondaryLabel',
+        rightPrimaryLabel: 'rightPrimaryLabel',
+        rightSecondaryLabel: 'rightSecondaryLabel',
+      },
+    ],
+    ...customProps,
   };
+};
 
+describe('SearchableItemList', () => {
   it('renders the component with initial props', () => {
     const props = createProps();
     const { container, getByText } = renderWithProvider(

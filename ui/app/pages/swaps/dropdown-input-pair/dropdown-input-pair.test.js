@@ -3,13 +3,13 @@ import React from 'react';
 import { renderWithProvider } from '../../../../../test/jest';
 import DropdownInputPair from '.';
 
-describe('DropdownInputPair', () => {
-  const createProps = (customProps = {}) => {
-    return {
-      ...customProps,
-    };
+const createProps = (customProps = {}) => {
+  return {
+    ...customProps,
   };
+};
 
+describe('DropdownInputPair', () => {
   it('renders the component with initial props', () => {
     const props = createProps();
     const { container, getByPlaceholderText } = renderWithProvider(
