@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures, tinyDelayMs } = require('../helpers');
+const { withFixtures, regularDelayMs } = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
 
 describe('Metamask Import UI', function () {
@@ -32,7 +32,6 @@ describe('Metamask Import UI', function () {
           text: enLocaleMessages.getStarted.message,
           tag: 'button',
         });
-        await driver.delay(tinyDelayMs);
 
         // clicks the "Import Wallet" option
         await driver.clickElement({ text: 'Import wallet', tag: 'button' });
@@ -100,7 +99,7 @@ describe('Metamask Import UI', function () {
 
         // set account name
         await driver.fill('.new-account-create-form input', '2nd account');
-        await driver.delay(tinyDelayMs);
+        await driver.delay(regularDelayMs);
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
         // should show the correct account name
@@ -245,7 +244,7 @@ describe('Metamask Import UI', function () {
           '.selected-account__name',
         );
         assert.equal(await currentActiveAccountName.getText(), 'Account 1');
-
+        await driver.delay(regularDelayMs);
         await driver.clickElement('.account-menu__icon');
 
         const accountListItemsAgfterRemoval = await driver.findElements(
@@ -283,7 +282,7 @@ describe('Metamask Import UI', function () {
           text: 'Connect Hardware Wallet',
           tag: 'div',
         });
-        await driver.delay(tinyDelayMs);
+        await driver.delay(regularDelayMs);
 
         // should open the TREZOR Connect popup
         await driver.clickElement('.hw-connect__btn:nth-of-type(2)');
