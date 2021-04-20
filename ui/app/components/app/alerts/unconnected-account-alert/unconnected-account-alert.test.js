@@ -132,7 +132,7 @@ describe('Unconnected Account Alert', () => {
       store,
     );
 
-    const dismissButton = getByText(/dismiss/u);
+    const dismissButton = getByText(/Dismiss/u);
     fireEvent.click(dismissButton);
 
     expect(store.getActions()[0].type).toStrictEqual(
@@ -150,7 +150,7 @@ describe('Unconnected Account Alert', () => {
       store,
     );
 
-    const dismissButton = getByText(/dismiss/u);
+    const dismissButton = getByText(/Dismiss/u);
     const dontShowCheckbox = getByRole('checkbox');
 
     fireEvent.click(dontShowCheckbox);
