@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "nhật ký hoạt động"
   },
-  "addAccount": {
-    "message": "Thêm tài khoản"
-  },
   "addAcquiredTokens": {
     "message": "Thêm token mà bạn đã mua bằng MetaMask"
   },

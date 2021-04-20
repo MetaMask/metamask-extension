@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "Журнал активности"
   },
-  "addAccount": {
-    "message": "Добавить счет"
-  },
   "addAcquiredTokens": {
     "message": "Добавьте токены, которые вы приобрели с помощью MetaMask"
   },

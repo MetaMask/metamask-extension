@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "registro de actividades"
   },
-  "addAccount": {
-    "message": "Agregar una cuenta"
-  },
   "addAcquiredTokens": {
     "message": "Agregar los tokens que has adquirido usando MetaMask"
   },

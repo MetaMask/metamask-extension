@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "活动日志"
   },
-  "addAccount": {
-    "message": "添加一个账户"
-  },
   "addAcquiredTokens": {
     "message": "在 MetaMask 上添加获得的代币"
   },

@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "log aktivitas"
   },
-  "addAccount": {
-    "message": "Tambahkan akun"
-  },
   "addAcquiredTokens": {
     "message": "Tambahkan token yang Anda peroleh menggunakan MetaMask"
   },

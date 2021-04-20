@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "アクティビティのログ"
   },
-  "addAccount": {
-    "message": "アカウントの追加"
-  },
   "addAcquiredTokens": {
     "message": "MetaMaskで取得したトークンを追加する"
   },

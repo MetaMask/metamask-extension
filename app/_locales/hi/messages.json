@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "गतिविधि लॉग"
   },
-  "addAccount": {
-    "message": "एक खाता जोड़ें"
-  },
   "addAcquiredTokens": {
     "message": "आपके द्वारा MetaMask का उपयोग करके प्राप्त किए गए टोकन जोड़ें"
   },
