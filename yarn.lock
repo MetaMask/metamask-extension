@@ -4203,7 +4203,7 @@
   optionalDependencies:
     text-encoding "^0.6.4"
 
-JSONStream@^1.0.3:
+JSONStream@^1.0.3, JSONStream@^1.3.5:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/JSONStream/-/JSONStream-1.3.5.tgz#3208c1f08d3a4d99261ab64f92302bc15e111ca0"
   integrity sha512-E+iruNOY8VV9s4JEbe1aNEm6MiszPRr/UfcHMz0TQh1BXSxHK+ASV1R6W4HpjBhSeS+54PIsAMCBmwD06LLsqQ==
@@ -7752,7 +7752,7 @@ clone@2.1.1:
   resolved "https://registry.yarnpkg.com/clone/-/clone-2.1.1.tgz#d217d1e961118e3ac9a4b8bba3285553bf647cdb"
   integrity sha1-0hfR6WERjjrJpLi7oyhVU79kfNs=
 
-clone@2.1.2, clone@^2.0.0, clone@^2.1.1:
+clone@2.1.2, clone@^2.0.0, clone@^2.1.1, clone@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/clone/-/clone-2.1.2.tgz#1b7f4b9f591f1e8f83670401600345a02887435f"
   integrity sha1-G39Ln1kfHo+DZwQBYANFoCiHQ18=
@@ -7993,7 +7993,7 @@ concat-stream@^1.5.0, concat-stream@^1.5.1, concat-stream@^1.5.2, concat-stream@
     readable-stream "^2.2.2"
     typedarray "^0.0.6"
 
-"concat-stream@github:hugomrdias/concat-stream#feat/smaller":
+concat-stream@^2.0.0, "concat-stream@github:hugomrdias/concat-stream#feat/smaller":
   version "2.0.0"
   resolved "https://codeload.github.com/hugomrdias/concat-stream/tar.gz/057bc7b5d6d8df26c8cf00a3f151b6721a0a8034"
   dependencies:
@@ -9427,6 +9427,16 @@ duplexify@^3.1.2, duplexify@^3.4.2:
     end-of-stream "^1.0.0"
     inherits "^2.0.1"
     readable-stream "^2.0.0"
+    stream-shift "^1.0.0"
+
+duplexify@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/duplexify/-/duplexify-4.1.1.tgz#7027dc374f157b122a8ae08c2d3ea4d2d953aa61"
+  integrity sha512-DY3xVEmVHTv1wSzKNbwoU6nVjzI369Y6sPoqfYr0/xlx3IdX2n94xIszTcjPO8W8ZIv0Wb0PXNcjuZyT4wiICA==
+  dependencies:
+    end-of-stream "^1.4.1"
+    inherits "^2.0.3"
+    readable-stream "^3.1.1"
     stream-shift "^1.0.0"
 
 each-props@^1.3.0:
@@ -16514,48 +16524,68 @@ latest-version@^5.0.0:
   dependencies:
     package-json "^6.3.0"
 
-lavamoat-core@^9.0.1:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/lavamoat-core/-/lavamoat-core-9.0.1.tgz#a34a822b4bfabea38f73b7f9bc1a19f86baa9b1f"
-  integrity sha512-FqqasOjl3V6CX/ETniw59r20ukcydOtFhQxtwl6TIEuSc5CJJgY5y9Fi3adk5BTxml3JUMsR3dtygFOV3NuBBw==
+lavamoat-browserify@^13.1.1:
+  version "13.1.1"
+  resolved "https://registry.yarnpkg.com/lavamoat-browserify/-/lavamoat-browserify-13.1.1.tgz#d9175ccd826fcf7abca39b5d1c00092970a3b5ee"
+  integrity sha512-t6t1xDP33yZcbqihsqY1k+Jhz6EoGAeuzxy7K1dsmyFLcLfNjK3OGmuG6eLNUMOxTKmzOLZ1MLw8BC4tnS0z7g==
+  dependencies:
+    JSONStream "^1.3.5"
+    clone "^2.1.2"
+    combine-source-map "^0.8.0"
+    concat-stream "^2.0.0"
+    duplexify "^4.1.1"
+    json-stable-stringify "^1.0.1"
+    lavamoat-core "^10.0.1"
+    merge-deep "^3.0.2"
+    offset-sourcemap-lines "^1.0.1"
+    pify "^4.0.1"
+    readable-stream "^3.6.0"
+    safe-buffer "^5.1.2"
+    through2 "^3.0.0"
+    umd "^3.0.3"
+
+lavamoat-core@^10.0.1:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/lavamoat-core/-/lavamoat-core-10.0.1.tgz#155bb4a50ace2e624941f14ca87705b171f6bba9"
+  integrity sha512-8I/DmRNQ3F8EAparNTR++EWMv4F0sZscKCUWt80NjuNF0mZ0aqDkK/EDsktrhjawY2C5Sq0zQ8eCrWGR7blU8Q==
   dependencies:
     fromentries "^1.2.0"
     json-stable-stringify "^1.0.1"
-    lavamoat-tofu "^5.1.1"
+    lavamoat-tofu "^5.1.3"
     merge-deep "^3.0.2"
     resolve "^1.15.1"
 
-lavamoat-tofu@^5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/lavamoat-tofu/-/lavamoat-tofu-5.1.1.tgz#67d3c5775b587dd439c426f1cd86650b10443760"
-  integrity sha512-LIZTifbbTATA5UClVGI7YGMTOjUXjrVCBOz0DaeUicldLonLlwG81/53/vTIfPM1xV/KA85MIzGPHz4pDdiVkA==
+lavamoat-tofu@^5.1.3:
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/lavamoat-tofu/-/lavamoat-tofu-5.1.3.tgz#8e89a7ac206f3b2dc9c8ea52ecfd4f92f90285ae"
+  integrity sha512-3pO0m3uiAOsEYiomIwwNzPdl9PPcquS3wCkfxb1Dtyezt6IWNkIsXQxz4+iEsNpF0eexFuc3IHPGOUaZ4QiwLg==
   dependencies:
     "@babel/parser" "^7.10.1"
     "@babel/traverse" "^7.10.1"
 
-lavamoat-viz@^6.0.4:
-  version "6.0.4"
-  resolved "https://registry.yarnpkg.com/lavamoat-viz/-/lavamoat-viz-6.0.4.tgz#00b132cef06c24a6836044842548438e0c144059"
-  integrity sha512-LqSNLLTtodZUCxFihGCFrVVEBBICEs79hu2fSJGZFxe8I+R6FNcKmBMVAwpAuPj9dpKJmvckTi2sP8osZX8KCw==
+lavamoat-viz@^6.0.9:
+  version "6.0.9"
+  resolved "https://registry.yarnpkg.com/lavamoat-viz/-/lavamoat-viz-6.0.9.tgz#ddec64becdf62448f7d0ea57c5258246ee14304c"
+  integrity sha512-my8fxPkL/h8URcs/7E785yrM8GU+xfKsalz5W5p1/2/V1TSctd6DJvi/6WV61jrObSEdrYHuQUpM8IH3rcuv+w==
   dependencies:
-    lavamoat-core "^9.0.1"
+    lavamoat-core "^10.0.1"
     ncp "^2.0.0"
     open "^7.0.3"
     pify "^4.0.1"
     serve-handler "^6.1.3"
     yargs "^16.0.0"
 
-lavamoat@^5.1.4:
-  version "5.1.4"
-  resolved "https://registry.yarnpkg.com/lavamoat/-/lavamoat-5.1.4.tgz#211ea0bb2dfaf624f2f5d85a90d6c93b9c1da599"
-  integrity sha512-NaD8Jyt4OVO2euP8XVnlJuDsAO1Tfdt5Mg4wNwms+E8fe/a6mvH6kQncr1O/X42ky9u29+m2NinFMCQKmd8fQw==
+lavamoat@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/lavamoat/-/lavamoat-5.3.1.tgz#66f140210f406c69ec58f18ebcd827b52e3a3276"
+  integrity sha512-XXMDX7dV2lKEymlC3+rAAWp7/j1Qe+j2lgyRMvg1xI2Vux24iW837grHDIyx1qs7LOhu5F98Z772z7jmGjBjfg==
   dependencies:
     "@babel/code-frame" "^7.10.4"
     bindings "^1.5.0"
     htmlescape "^1.1.1"
     json-stable-stringify "^1.0.1"
-    lavamoat-core "^9.0.1"
-    lavamoat-tofu "^5.1.1"
+    lavamoat-core "^10.0.1"
+    lavamoat-tofu "^5.1.3"
     node-gyp-build "^4.2.3"
     object.fromentries "^2.0.2"
     resolve "^1.17.0"
@@ -19434,6 +19464,13 @@ observable-webworkers@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/observable-webworkers/-/observable-webworkers-1.0.0.tgz#dcbd484a9644d512accc351962c6e710313fbb68"
   integrity sha512-+cECwCR8IEh8UY5nefQVLO9Cydqpk1izO+o7BABmKjXfJZyEOzBWY3ss5jbOPM6KmEa9aQExvAtTW6tVTOsNAQ==
+
+offset-sourcemap-lines@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/offset-sourcemap-lines/-/offset-sourcemap-lines-1.0.1.tgz#5854dff74b73fc06efcb61d7b721a8113d99be92"
+  integrity sha1-WFTf90tz/Abvy2HXtyGoET2ZvpI=
+  dependencies:
+    source-map "^0.5.0"
 
 on-finished@^2.3.0, on-finished@~2.3.0:
   version "2.3.0"
@@ -25690,7 +25727,7 @@ ultron@~1.1.0:
   resolved "https://registry.yarnpkg.com/ultron/-/ultron-1.1.1.tgz#9fe1536a10a664a65266a1e3ccf85fd36302bc9c"
   integrity sha512-UIEXBNeYmKptWH6z8ZnqTeS8fV74zG0/eRU9VGkpzz+LIJNs8W/zM/L+7ctCkRrgbNnnR0xxw4bKOr0cW0N0Og==
 
-umd@^3.0.0:
+umd@^3.0.0, umd@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/umd/-/umd-3.0.3.tgz#aa9fe653c42b9097678489c01000acb69f0b26cf"
   integrity sha512-4IcGSufhFshvLNcMCV80UnQVlZ5pMOC8mvNPForqwA4+lzYQuetTESLDQkeLmihq8bRcnpbQa48Wb8Lh16/xow==
