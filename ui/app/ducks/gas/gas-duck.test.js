@@ -168,7 +168,7 @@ describe('Gas Duck', () => {
           .args[0].startsWith('https://api.metaswap.codefi.network/gasPrices'),
       ).toStrictEqual(true);
 
-      expect(mockDistpatch.getCall(2).args).toStrictEqual([
+      expect(mockDistpatch.getCall(3).args).toStrictEqual([
         { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED },
       ]);
     });
@@ -193,7 +193,7 @@ describe('Gas Duck', () => {
       expect(mockDistpatch.getCall(0).args).toStrictEqual([
         { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
       ]);
-      expect(mockDistpatch.getCall(1).args).toStrictEqual([
+      expect(mockDistpatch.getCall(2).args).toStrictEqual([
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
@@ -201,7 +201,7 @@ describe('Gas Duck', () => {
           },
         },
       ]);
-      expect(mockDistpatch.getCall(2).args).toStrictEqual([
+      expect(mockDistpatch.getCall(3).args).toStrictEqual([
         { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED },
       ]);
     });

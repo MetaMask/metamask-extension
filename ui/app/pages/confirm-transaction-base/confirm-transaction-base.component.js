@@ -95,6 +95,8 @@ export default class ConfirmTransactionBase extends Component {
     showAccountInHeader: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     isMainnet: PropTypes.bool,
+    isEthGasPrice: PropTypes.bool,
+    noGasPrice: PropTypes.bool,
   };
 
   state = {
@@ -243,9 +245,12 @@ export default class ConfirmTransactionBase extends Component {
       nextNonce,
       getNextNonce,
       isMainnet,
+      isEthGasPrice,
+      noGasPrice,
     } = this.props;
 
     const notMainnetOrTest = !(isMainnet || process.env.IN_TEST);
+    const gasPriceFetchFailure = isEthGasPrice || noGasPrice;
 
     return (
       <div className="confirm-page-container-content__details">
@@ -253,18 +258,26 @@ export default class ConfirmTransactionBase extends Component {
           <ConfirmDetailRow
             label="Gas Fee"
             value={hexTransactionFee}
-            headerText={notMainnetOrTest ? '' : 'Edit'}
+            headerText={notMainnetOrTest || gasPriceFetchFailure ? '' : 'Edit'}
             headerTextClassName={
-              notMainnetOrTest ? '' : 'confirm-detail-row__header-text--edit'
+              notMainnetOrTest || gasPriceFetchFailure
+                ? ''
+                : 'confirm-detail-row__header-text--edit'
             }
-            onHeaderClick={notMainnetOrTest ? null : () => this.handleEditGas()}
+            onHeaderClick={
+              notMainnetOrTest || gasPriceFetchFailure
+                ? null
+                : () => this.handleEditGas()
+            }
             secondaryText={
               hideFiatConversion
                 ? this.context.t('noConversionRateAvailable')
                 : ''
             }
           />
-          {advancedInlineGasShown || notMainnetOrTest ? (
+          {advancedInlineGasShown ||
+          notMainnetOrTest ||
+          gasPriceFetchFailure ? (
             <AdvancedGasInputs
               updateCustomGasPrice={(newGasPrice) =>
                 updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })

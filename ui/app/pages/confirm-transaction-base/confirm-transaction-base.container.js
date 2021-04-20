@@ -37,6 +37,8 @@ import {
   getUseNonceField,
   getPreferences,
   transactionFeeSelector,
+  getNoGasPriceFetched,
+  getIsEthGasPriceFetched,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { transactionMatchesNetwork } from '../../../../shared/modules/transaction.utils';
@@ -150,6 +152,8 @@ const mapStateToProps = (state, ownProps) => {
     };
   }
   customNonceValue = getCustomNonceValue(state);
+  const isEthGasPrice = getIsEthGasPriceFetched(state);
+  const noGasPrice = getNoGasPriceFetched(state);
 
   return {
     balance,
@@ -189,6 +193,8 @@ const mapStateToProps = (state, ownProps) => {
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     isMainnet,
+    isEthGasPrice,
+    noGasPrice,
   };
 };
 
@@ -205,9 +211,15 @@ export const mapDispatchToProps = (dispatch) => {
     showTransactionConfirmedModal: ({ onSubmit }) => {
       return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }));
     },
-    showCustomizeGasModal: ({ txData, onSubmit, validate }) => {
+    showCustomizeGasModal: ({ txData, onSubmit, validate, hideBasic }) => {
       return dispatch(
-        showModal({ name: 'CUSTOMIZE_GAS', txData, onSubmit, validate }),
+        showModal({
+          name: 'CUSTOMIZE_GAS',
+          txData,
+          onSubmit,
+          validate,
+          hideBasic,
+        }),
       );
     },
     updateGasAndCalculate: (updatedTx) => {
@@ -277,7 +289,15 @@ const getValidateEditGas = ({ balance, conversionRate, txData }) => {
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { balance, conversionRate, txData, unapprovedTxs } = stateProps;
+  const {
+    balance,
+    conversionRate,
+    txData,
+    unapprovedTxs,
+    isEthGasPrice,
+    noGasPrice,
+  } = stateProps;
+
   const {
     cancelAllTransactions: dispatchCancelAllTransactions,
     showCustomizeGasModal: dispatchShowCustomizeGasModal,
@@ -300,6 +320,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         txData,
         onSubmit: (customGas) => dispatchUpdateGasAndCalculate(customGas),
         validate: validateEditGas,
+        hideBasic: isEthGasPrice || noGasPrice,
       }),
     cancelAllTransactions: () =>
       dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),

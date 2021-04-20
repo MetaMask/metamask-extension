@@ -271,6 +271,11 @@ export function getRenderableBasicEstimateData(state, gasLimit) {
     return [];
   }
 
+  if (getNoGasPriceFetched(state) || getIsEthGasPriceFetched(state)) {
+    console.log('gas fetch failed');
+    return [];
+  }
+
   const { showFiatInTestnets } = getPreferences(state);
   const isMainnet = getIsMainnet(state);
   const showFiat = isMainnet || Boolean(showFiatInTestnets);
@@ -296,7 +301,7 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
   if (getBasicGasEstimateLoadingStatus(state)) {
     return [];
   }
-  if (getNoGasPriceFetched(state)) {
+  if (getNoGasPriceFetched(state) || getIsEthGasPriceFetched(state)) {
     return [];
   }
 

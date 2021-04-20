@@ -24,6 +24,8 @@ import {
   getUseNonceField,
   getCustomNonceValue,
   getNextSuggestedNonce,
+  getNoGasPriceFetched,
+  getIsEthGasPriceFetched,
 } from '../../selectors';
 import { currentNetworkTxListSelector } from '../../selectors/transactions';
 import Loading from '../../components/ui/loading-screen';
@@ -116,6 +118,8 @@ export default function ConfirmApprove() {
   const customData = customPermissionAmount
     ? getCustomTxParamsData(data, { customPermissionAmount, decimals })
     : null;
+  const isEthGasPrice = useSelector(getIsEthGasPriceFetched);
+  const noGasPrice = useSelector(getNoGasPriceFetched);
 
   return tokenSymbol === undefined ? (
     <Loading />
@@ -136,7 +140,13 @@ export default function ConfirmApprove() {
           tokenSymbol={tokenSymbol}
           tokenBalance={tokenBalance}
           showCustomizeGasModal={() =>
-            dispatch(showModal({ name: 'CUSTOMIZE_GAS', txData }))
+            dispatch(
+              showModal({
+                name: 'CUSTOMIZE_GAS',
+                txData,
+                hideBasic: isEthGasPrice || noGasPrice,
+              }),
+            )
           }
           showEditApprovalPermissionModal={({
             /* eslint-disable no-shadow */

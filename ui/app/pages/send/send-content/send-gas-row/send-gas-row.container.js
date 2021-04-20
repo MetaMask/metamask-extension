@@ -66,6 +66,8 @@ function mapStateToProps(state) {
     balance,
     conversionRate,
   });
+  const isEthGasPrice = getIsEthGasPriceFetched(state);
+  const noGasPrice = getNoGasPriceFetched(state);
 
   return {
     balance: getSendFromBalance(state),
@@ -87,8 +89,8 @@ function mapStateToProps(state) {
     sendToken: getSendToken(state),
     tokenBalance: getTokenBalance(state),
     isMainnet: getIsMainnet(state),
-    isEthGasPriceFetched: getIsEthGasPriceFetched(state),
-    noGasPriceFetched: getNoGasPriceFetched(state),
+    isEthGasPrice,
+    noGasPrice,
   };
 }
 
