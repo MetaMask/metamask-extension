@@ -80,6 +80,6 @@ ActionableMessage.propTypes = {
   }),
   className: PropTypes.string,
   type: PropTypes.string,
-  withRightButton: PropTypes.boolean,
+  withRightButton: PropTypes.bool,
   infoTooltipText: PropTypes.string,
 };

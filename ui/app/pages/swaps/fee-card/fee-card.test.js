@@ -16,7 +16,14 @@ const createProps = (customProps = {}) => {
     },
     hideTokenApprovalRow: false,
     onFeeCardMaxRowClick: jest.fn(),
-    tokenApprovalTextComponent: <></>,
+    tokenApprovalTextComponent: (
+      <span
+        key="swaps-view-quote-approve-symbol-1"
+        className="view-quote__bold"
+      >
+        ABC
+      </span>
+    ),
     tokenApprovalSourceTokenSymbol: 'ABC',
     onTokenApprovalClick: jest.fn(),
     metaMaskFee: '0.875',
