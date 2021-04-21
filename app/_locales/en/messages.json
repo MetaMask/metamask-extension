@@ -700,6 +700,9 @@
   "externalExtension": {
     "message": "External Extension"
   },
+  "externalSend": {
+    "message": "External Send"
+  },
   "extraApprovalGas": {
     "message": "+$1 approval gas",
     "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
@@ -1586,6 +1589,12 @@
   },
   "showAdvancedGasInlineDescription": {
     "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
+  },
+  "showExternalTransactions": {
+    "message": "Show External Transactions"
+  },
+  "showExternalTransactionsDescription": {
+    "message": "Select this to use Etherscan to show external transactions (incoming and originated from external wallets) in the transactions list"
   },
   "showFiatConversionInTestnets": {
     "message": "Show Conversion on Testnets"
