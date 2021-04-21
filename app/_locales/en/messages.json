@@ -1608,12 +1608,6 @@
   "showHexDataDescription": {
     "message": "Select this to show the hex data field on the send screen"
   },
-  "showIncomingTransactions": {
-    "message": "Show Incoming Transactions"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
-  },
   "showPermissions": {
     "message": "Show permissions"
   },
