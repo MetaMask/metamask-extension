@@ -22,12 +22,16 @@ const createProps = (customProps = {}) => {
 describe('AwaitingSwap', () => {
   it('renders the component with initial props', () => {
     const store = configureMockStore()(createSwapsMockStore());
-    const { container, getByText } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <AwaitingSwap {...createProps()} />,
       store,
     );
     expect(getByText('Processing')).toBeInTheDocument();
+    expect(getByText('View on Etherscan')).toBeInTheDocument();
     expect(getByText('View in activity')).toBeInTheDocument();
-    expect(container).toMatchSnapshot();
+    expect(
+      document.querySelector('.awaiting-swap__main-descrption'),
+    ).toMatchSnapshot();
+    expect(document.querySelector('.swaps-footer')).toMatchSnapshot();
   });
 });

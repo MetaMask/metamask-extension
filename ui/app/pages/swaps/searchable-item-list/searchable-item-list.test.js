@@ -24,9 +24,7 @@ const createProps = (customProps = {}) => {
 describe('SearchableItemList', () => {
   it('renders the component with initial props', () => {
     const props = createProps();
-    const { container, getByText } = renderWithProvider(
-      <SearchableItemList {...props} />,
-    );
+    const { getByText } = renderWithProvider(<SearchableItemList {...props} />);
     expect(getByText(props.listTitle)).toBeInTheDocument();
     expect(getByText(props.itemsToSearch[0].primaryLabel)).toBeInTheDocument();
     expect(
@@ -38,6 +36,11 @@ describe('SearchableItemList', () => {
     expect(
       getByText(props.itemsToSearch[0].rightSecondaryLabel),
     ).toBeInTheDocument();
-    expect(container).toMatchSnapshot();
+    expect(
+      document.querySelector('.searchable-item-list__search'),
+    ).toMatchSnapshot();
+    expect(
+      document.querySelector('.searchable-item-list__item'),
+    ).toMatchSnapshot();
   });
 });

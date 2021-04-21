@@ -25,13 +25,19 @@ const createProps = (customProps = {}) => {
 
 describe('FeeCard', () => {
   it('renders the component with initial props', () => {
-    const { container, getByText } = renderWithProvider(
-      <FeeCard {...createProps()} />,
-    );
+    const { getByText } = renderWithProvider(<FeeCard {...createProps()} />);
     expect(getByText('Using the best quote')).toBeInTheDocument();
     expect(getByText('6 quotes')).toBeInTheDocument();
+    expect(getByText('Max network fee')).toBeInTheDocument();
     expect(getByText('Estimated network fee')).toBeInTheDocument();
-    expect(getByText('Quote includes a 0.875% MetaMask fee')).toBeInTheDocument();
-    expect(container).toMatchSnapshot();
+    expect(
+      getByText('Quote includes a 0.875% MetaMask fee'),
+    ).toBeInTheDocument();
+    expect(
+      document.querySelector('.fee-card__savings-and-quotes-header'),
+    ).toMatchSnapshot();
+    expect(
+      document.querySelector('.fee-card__top-bordered-row'),
+    ).toMatchSnapshot();
   });
 });

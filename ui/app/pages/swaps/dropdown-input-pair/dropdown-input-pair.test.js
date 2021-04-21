@@ -12,10 +12,12 @@ const createProps = (customProps = {}) => {
 describe('DropdownInputPair', () => {
   it('renders the component with initial props', () => {
     const props = createProps();
-    const { container, getByPlaceholderText } = renderWithProvider(
+    const { getByPlaceholderText } = renderWithProvider(
       <DropdownInputPair {...props} />,
     );
-    expect(container).toMatchSnapshot();
     expect(getByPlaceholderText('0')).toBeInTheDocument();
+    expect(
+      document.querySelector('.dropdown-input-pair__input'),
+    ).toMatchSnapshot();
   });
 });

@@ -18,11 +18,22 @@ const createProps = (customProps = {}) => {
 describe('MainQuoteSummary', () => {
   it('renders the component with initial props', () => {
     const props = createProps();
-    const { container, getAllByText } = renderWithProvider(
+    const { getAllByText } = renderWithProvider(
       <MainQuoteSummary {...props} />,
     );
     expect(getAllByText(props.sourceSymbol)).toHaveLength(2);
     expect(getAllByText(props.destinationSymbol)).toHaveLength(2);
-    expect(container).toMatchSnapshot();
+    expect(
+      document.querySelector('.main-quote-summary__source-row'),
+    ).toMatchSnapshot();
+    expect(
+      document.querySelector('.main-quote-summary__destination-row'),
+    ).toMatchSnapshot();
+    expect(
+      document.querySelector('.main-quote-summary__quote-large'),
+    ).toMatchSnapshot();
+    expect(
+      document.querySelector('.main-quote-summary__exchange-rate-container'),
+    ).toMatchSnapshot();
   });
 });
