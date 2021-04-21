@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
 import {
   NEW_ACCOUNT_ROUTE,
@@ -38,9 +37,3 @@ export default class CreateAccountPage extends Component {
     );
   }
 }
-
-CreateAccountPage.propTypes = {};
-
-CreateAccountPage.contextTypes = {
-  t: PropTypes.func,
-};

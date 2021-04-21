@@ -140,14 +140,14 @@ export default class SelectHardware extends Component {
       steps.push({
         title: this.context.t('step1LedgerWallet'),
         message: this.context.t('step1LedgerWalletMsg', [
-          // eslint-disable-next-line react/jsx-key
           <a
             className="hw-connect__msg__link"
             href="https://www.ledger.com/ledger-live"
             rel="noopener noreferrer"
             target="_blank"
+            key="ledger-live-app-link"
           >
-            Ledger Live App
+            {this.context.t('ledgerLiveApp')}
           </a>,
         ]),
       });
@@ -158,12 +158,12 @@ export default class SelectHardware extends Component {
       dimensions: { width: '225px', height: '75px' },
       title: this.context.t('step2LedgerWallet'),
       message: this.context.t('step2LedgerWalletMsg', [
-        // eslint-disable-next-line react/jsx-key
         <a
           className="hw-connect__msg__link"
           href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
           rel="noopener noreferrer"
           target="_blank"
+          key="ledger-support-link"
         >
           {this.context.t('hardwareWalletSupportLinkConversion')}
         </a>,
@@ -171,12 +171,7 @@ export default class SelectHardware extends Component {
     });
 
     return (
-      <div
-        className="hw-tutorial"
-        ref={(node) => {
-          this.referenceNode = node;
-        }}
-      >
+      <div className="hw-tutorial">
         {steps.map((step, index) => (
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>
@@ -202,12 +197,12 @@ export default class SelectHardware extends Component {
         dimensions: { width: '225px', height: '75px' },
         title: this.context.t('step1TrezorWallet'),
         message: this.context.t('step1TrezorWalletMsg', [
-          // eslint-disable-next-line react/jsx-key
           <a
             className="hw-connect__msg__link"
             href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
             rel="noopener noreferrer"
             target="_blank"
+            key="trezor-support-link"
           >
             {this.context.t('hardwareWalletSupportLinkConversion')}
           </a>,
@@ -216,12 +211,7 @@ export default class SelectHardware extends Component {
     ];
 
     return (
-      <div
-        className="hw-tutorial"
-        ref={(node) => {
-          this.referenceNode = node;
-        }}
-      >
+      <div className="hw-tutorial">
         {steps.map((step, index) => (
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>

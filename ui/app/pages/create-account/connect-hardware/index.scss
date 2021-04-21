@@ -114,12 +114,13 @@
     margin-top: 10px;
     margin-bottom: 15px;
 
-    &__link {
+    &--link {
       @include H6;
 
       text-align: center;
-      color: #2f9ae0;
+      color: $primary-1;
       cursor: pointer;
+      background: unset;
     }
   }
 

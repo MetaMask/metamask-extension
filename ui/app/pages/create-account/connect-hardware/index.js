@@ -323,7 +323,6 @@ const mapStateToProps = (state) => ({
   defaultHdPaths: state.appState.defaultHdPaths,
   mostRecentOverviewPage: getMostRecentOverviewPage(state),
   useLedgerLive: state.metamask.useLedgerLive,
-  address: state.metamask.selectedAddress,
 });
 
 const mapDispatchToProps = (dispatch) => {

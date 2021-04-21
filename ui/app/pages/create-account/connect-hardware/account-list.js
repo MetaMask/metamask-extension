@@ -67,14 +67,15 @@ class AccountList extends Component {
           {this.context.t('selectAnAccount')}
         </h3>
         <p className="hw-connect__msg">
-          {this.context.t('selectAnAccountHelp', [
-            <span
-              className="hw-connect__msg__link"
+          {this.context.t('selectAnAccountHelp')}
+          {this.context.t('selectAnAccountHelpDirections', [
+            <button
+              className="hw-connect__msg--link"
               onClick={() => this.setState({ showPopover: true })}
               key="account-help"
             >
               {this.context.t('hardwareWalletSupportLinkConversion')}
-            </span>,
+            </button>,
           ])}
         </p>
       </div>
@@ -121,8 +122,8 @@ class AccountList extends Component {
                   <span className="hw-account-list__item__index">
                     {account.index + 1}
                   </span>
-                  {`${account.address.slice(0, 5)}...${account.address.slice(
-                    -5,
+                  {`${account.address.slice(0, 4)}...${account.address.slice(
+                    -4,
                   )}`}
                   <span className="hw-account-list__item__balance">{`${account.balance}`}</span>
                 </label>
@@ -219,7 +220,6 @@ class AccountList extends Component {
         <Button
           onClick={() => this.setState({ showPopover: false })}
           type="secondary"
-          className="invalid-custom-network-alert__footer-row-button"
         >
           {this.context.t('cancel')}
         </Button>
@@ -229,7 +229,6 @@ class AccountList extends Component {
             this.setState({ showPopover: false });
           }}
           type="primary"
-          className="invalid-custom-network-alert__footer-row-button"
         >
           {this.context.t('save')}
         </Button>

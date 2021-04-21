@@ -674,7 +674,7 @@ export default class PreferencesController {
    */
   setLedgerLivePreference(useLedgerLive) {
     this.store.updateState({ useLedgerLive });
-    return Promise.resolve(useLedgerLive);
+    return useLedgerLive;
   }
 
   /**
