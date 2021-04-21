@@ -6,8 +6,14 @@ import FeeCard from '.';
 
 const createProps = (customProps = {}) => {
   return {
-    primaryFee: '1 ETH',
-    secondaryFee: '2500 USD',
+    primaryFee: {
+      fee: '0.0441 ETH',
+      maxFee: '0.04851 ETH',
+    },
+    secondaryFee: {
+      fee: '$101.98',
+      maxFee: '$112.17',
+    },
     hideTokenApprovalRow: false,
     onFeeCardMaxRowClick: jest.fn(),
     tokenApprovalTextComponent: <></>,
@@ -25,11 +31,16 @@ const createProps = (customProps = {}) => {
 
 describe('FeeCard', () => {
   it('renders the component with initial props', () => {
-    const { getByText } = renderWithProvider(<FeeCard {...createProps()} />);
+    const props = createProps();
+    const { getByText } = renderWithProvider(<FeeCard {...props} />);
     expect(getByText('Using the best quote')).toBeInTheDocument();
     expect(getByText('6 quotes')).toBeInTheDocument();
     expect(getByText('Max network fee')).toBeInTheDocument();
     expect(getByText('Estimated network fee')).toBeInTheDocument();
+    expect(getByText(props.primaryFee.fee)).toBeInTheDocument();
+    expect(getByText(props.primaryFee.maxFee)).toBeInTheDocument();
+    expect(getByText(props.secondaryFee.fee)).toBeInTheDocument();
+    expect(getByText(props.secondaryFee.maxFee)).toBeInTheDocument();
     expect(
       getByText('Quote includes a 0.875% MetaMask fee'),
     ).toBeInTheDocument();

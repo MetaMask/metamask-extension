@@ -17,6 +17,20 @@ const createProps = (customProps = {}) => {
         rightSecondaryLabel: 'rightSecondaryLabel',
       },
     ],
+    fuseSearchKeys: [
+      {
+        name: 'name',
+        weight: 0.499,
+      },
+      {
+        name: 'symbol',
+        weight: 0.499,
+      },
+      {
+        name: 'address',
+        weight: 0.002,
+      },
+    ],
     ...customProps,
   };
 };
