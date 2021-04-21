@@ -14,7 +14,7 @@ exports[`FeeCard renders the component with initial props 1`] = `
         <p
           class="fee-card__savings-text"
         >
-          [swapUsingBestQuote]
+          Using the best quote
         </p>
         <div
           class="fee-card__quote-link-container"
@@ -22,7 +22,7 @@ exports[`FeeCard renders the component with initial props 1`] = `
           <p
             class="fee-card__quote-link-text"
           >
-            [swapNQuotes]
+            6 quotes
           </p>
           <div
             class="fee-card__caret-right"
@@ -44,7 +44,7 @@ exports[`FeeCard renders the component with initial props 1`] = `
           <div
             class="fee-card__row-header-text--bold"
           >
-            [swapEstimatedNetworkFee]
+            Estimated network fee
           </div>
           <div
             class="info-tooltip"
@@ -84,12 +84,12 @@ exports[`FeeCard renders the component with initial props 1`] = `
           <div
             class="fee-card__row-header-text"
           >
-            [swapMaxNetworkFees]
+            Max network fee
           </div>
           <div
             class="fee-card__link"
           >
-            [edit]
+            Edit
           </div>
         </div>
         <div>
@@ -107,7 +107,12 @@ exports[`FeeCard renders the component with initial props 1`] = `
           <div
             class="fee-card__row-header-text"
           >
-            [swapThisWillAllowApprove]
+            <span>
+               
+              This will allow 
+               to be swapped.
+               
+            </span>
           </div>
           <div
             class="info-tooltip"
@@ -132,7 +137,7 @@ exports[`FeeCard renders the component with initial props 1`] = `
         <div
           class="fee-card__link"
         >
-          [swapEditLimit]
+          Edit limit
         </div>
       </div>
       <div
@@ -144,7 +149,7 @@ exports[`FeeCard renders the component with initial props 1`] = `
           <div
             class="fee-card__row-header-text"
           >
-            [swapQuoteIncludesRate]
+            Quote includes a 0.875% MetaMask fee
           </div>
           <div
             class="info-tooltip"

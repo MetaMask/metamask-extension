@@ -18,7 +18,7 @@ exports[`SwapsFooter renders the component with initial props 1`] = `
             role="button"
             tabindex="0"
           >
-            [back]
+            Back
           </button>
           <button
             class="button btn-primary page-container__footer-button swaps-footer__custom-page-container-footer-button-class"
@@ -34,7 +34,7 @@ exports[`SwapsFooter renders the component with initial props 1`] = `
     <div
       class="swaps-footer__bottom-text"
     >
-      [termsOfService]
+      Terms of Service
     </div>
   </div>
 </div>

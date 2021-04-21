@@ -26,7 +26,8 @@ describe('AwaitingSwap', () => {
       <AwaitingSwap {...createProps()} />,
       store,
     );
-    expect(getByText('[swapProcessing]')).toBeInTheDocument();
+    expect(getByText('Processing')).toBeInTheDocument();
+    expect(getByText('View in activity')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });

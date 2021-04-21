@@ -917,17 +917,27 @@ exports[`AwaitingSwap renders the component with initial props 1`] = `
       <div
         class="awaiting-swap__header"
       >
-        [swapProcessing]
+        Processing
       </div>
       <div
         class="awaiting-swap__main-descrption"
       >
-        [swapOnceTransactionHasProcess]
+        <span>
+           
+          Your 
+          <span
+            class="awaiting-swap__amount-and-symbol"
+          >
+            ETH
+          </span>
+           will be added to your account once this transaction has processed.
+           
+        </span>
       </div>
       <div
         class="awaiting-swap__view-on-etherscan awaiting-swap__view-on-etherscan--visible"
       >
-        [viewOnEtherscan]
+        View on Etherscan
       </div>
     </div>
     <div
@@ -947,7 +957,7 @@ exports[`AwaitingSwap renders the component with initial props 1`] = `
               role="button"
               tabindex="0"
             >
-              [swapsViewInActivity]
+              View in activity
             </button>
           </footer>
         </div>

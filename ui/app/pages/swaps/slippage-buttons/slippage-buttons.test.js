@@ -19,7 +19,8 @@ describe('SlippageButtons', () => {
     );
     expect(getByText('2%')).toBeInTheDocument();
     expect(getByText('3%')).toBeInTheDocument();
-    expect(getByText('[swapCustom]')).toBeInTheDocument();
+    expect(getByText('custom')).toBeInTheDocument();
+    expect(getByText('Advanced Options')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });

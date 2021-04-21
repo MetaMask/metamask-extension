@@ -11,7 +11,7 @@ exports[`SlippageButtons renders the component with initial props 1`] = `
       <div
         class="slippage-buttons__header-text"
       >
-        [swapsAdvancedOptions]
+        Advanced Options
       </div>
     </div>
     <div
@@ -26,7 +26,7 @@ exports[`SlippageButtons renders the component with initial props 1`] = `
           <div
             class="slippage-buttons__prefix-text"
           >
-            [swapsMaxSlippage]
+            Slippage Tolerance
           </div>
           <div
             class="info-tooltip"
@@ -71,7 +71,7 @@ exports[`SlippageButtons renders the component with initial props 1`] = `
             class="button-group__button slippage-buttons__button-group-custom-button radio-button"
             role="radio"
           >
-            [swapCustom]
+            custom
           </button>
         </div>
       </div>

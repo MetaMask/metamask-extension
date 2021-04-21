@@ -21,8 +21,8 @@ describe('SwapsFooter', () => {
       <SwapsFooter {...props} />,
     );
     expect(getByText(props.submitText)).toBeInTheDocument();
-    expect(getByText('[back]')).toBeInTheDocument();
-    expect(getByText('[termsOfService]')).toBeInTheDocument();
+    expect(getByText('Back')).toBeInTheDocument();
+    expect(getByText('Terms of Service')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });

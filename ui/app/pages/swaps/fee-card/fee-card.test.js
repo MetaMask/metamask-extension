@@ -28,7 +28,10 @@ describe('FeeCard', () => {
     const { container, getByText } = renderWithProvider(
       <FeeCard {...createProps()} />,
     );
-    expect(getByText('[swapQuoteIncludesRate]')).toBeInTheDocument();
+    expect(getByText('Using the best quote')).toBeInTheDocument();
+    expect(getByText('6 quotes')).toBeInTheDocument();
+    expect(getByText('Estimated network fee')).toBeInTheDocument();
+    expect(getByText('Quote includes a 0.875% MetaMask fee')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });
