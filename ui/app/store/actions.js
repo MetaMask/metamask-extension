@@ -2856,7 +2856,11 @@ export function getCurrentWindowTab() {
 }
 
 export function setLedgerLivePreference(value) {
-  return promisifiedBackground.setLedgerLivePreference(value);
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    await promisifiedBackground.setLedgerLivePreference(value);
+    dispatch(hideLoadingIndication());
+  };
 }
 
 // MetaMetrics

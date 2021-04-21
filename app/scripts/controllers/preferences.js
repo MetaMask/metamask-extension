@@ -672,7 +672,7 @@ export default class PreferencesController {
    * @param {bool} domain - Value for ledger live support
    * @returns {Promise<string>} A promise of the update to useLedgerLive
    */
-  setLedgerLivePreference(useLedgerLive) {
+  async setLedgerLivePreference(useLedgerLive) {
     this.store.updateState({ useLedgerLive });
     return useLedgerLive;
   }

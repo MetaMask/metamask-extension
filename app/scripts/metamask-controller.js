@@ -632,7 +632,6 @@ export default class MetamaskController extends EventEmitter {
       setUseNonceField: this.setUseNonceField.bind(this),
       setUsePhishDetect: this.setUsePhishDetect.bind(this),
       setIpfsGateway: this.setIpfsGateway.bind(this),
-      setLedgerLivePreference: this.setLedgerLivePreference.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
       setMetaMetricsSendCount: this.setMetaMetricsSendCount.bind(this),
       setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
@@ -658,6 +657,7 @@ export default class MetamaskController extends EventEmitter {
         this.unlockHardwareWalletAccount,
         this,
       ),
+      setLedgerLivePreference: nodeify(this.setLedgerLivePreference, this),
 
       // mobile
       fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
@@ -1198,7 +1198,9 @@ export default class MetamaskController extends EventEmitter {
 
     // This must be set as soon as possible to communicate to the
     // keyring's iframe and have the setting initialized properly
-    await this.setLedgerLivePreference(
+    // Optimistically called to not block Metamask login due to
+    // Ledger Keyring GitHub downtime
+    this.setLedgerLivePreference(
       this.preferencesController.getLedgerLivePreference(),
     );
 
@@ -2688,12 +2690,14 @@ export default class MetamaskController extends EventEmitter {
 
     const keyring = await this.getKeyringForDevice('ledger');
     if (keyring?.updateTransportMethod) {
-      keyring.updateTransportMethod(bool).catch((_) => {
+      return keyring.updateTransportMethod(bool).catch((_) => {
         // If there was an error updating the transport, we should
         // fall back to the original value
         this.preferencesController.setLedgerLivePreference(currentValue);
       });
     }
+
+    return undefined;
   }
 
   /**
