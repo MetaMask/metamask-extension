@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AwaitingSwap renders the component with initial props 1`] = `
+<div
+  class="awaiting-swap__main-descrption"
+>
+  <span>
+     
+    Your 
+    <span
+      class="awaiting-swap__amount-and-symbol"
+    >
+      ETH
+    </span>
+     will be added to your account once this transaction has processed.
+     
+  </span>
+</div>
+`;
+
+exports[`AwaitingSwap renders the component with initial props 2`] = `
+<div
+  class="swaps-footer"
+>
+  <div
+    class="swaps-footer__buttons"
+  >
+    <div
+      class="page-container__footer swaps-footer__custom-page-container-footer-class"
+    >
+      <footer>
+        <button
+          class="button btn-primary page-container__footer-button swaps-footer__custom-page-container-footer-button-class swaps-footer__custom-page-container-footer-button-class--single"
+          data-testid="page-container-footer-next"
+          disabled=""
+          role="button"
+          tabindex="0"
+        >
+          View in activity
+        </button>
+      </footer>
+    </div>
+  </div>
+</div>
+`;

@@ -1,172 +1,67 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`FeeCard renders the component with initial props 1`] = `
-<div>
+<div
+  class="fee-card__savings-and-quotes-header"
+>
   <div
-    class="fee-card"
+    class="fee-card__savings-and-quotes-row"
   >
-    <div
-      class="fee-card__savings-and-quotes-header"
+    <p
+      class="fee-card__savings-text"
     >
-      <div
-        class="fee-card__savings-and-quotes-row"
+      Using the best quote
+    </p>
+    <div
+      class="fee-card__quote-link-container"
+    >
+      <p
+        class="fee-card__quote-link-text"
       >
-        <p
-          class="fee-card__savings-text"
-        >
-          [swapUsingBestQuote]
-        </p>
-        <div
-          class="fee-card__quote-link-container"
-        >
-          <p
-            class="fee-card__quote-link-text"
-          >
-            [swapNQuotes]
-          </p>
-          <div
-            class="fee-card__caret-right"
-          >
-            <i
-              class="fa fa-angle-up"
-            />
-          </div>
-        </div>
+        6 quotes
+      </p>
+      <div
+        class="fee-card__caret-right"
+      >
+        <i
+          class="fa fa-angle-up"
+        />
       </div>
     </div>
+  </div>
+</div>
+`;
+
+exports[`FeeCard renders the component with initial props 2`] = `
+<div
+  class="fee-card__top-bordered-row"
+>
+  <div
+    class="fee-card__row-label"
+  >
     <div
-      class="fee-card__main"
+      class="fee-card__row-header-text"
+    >
+      Quote includes a 0.875% MetaMask fee
+    </div>
+    <div
+      class="info-tooltip"
     >
       <div
-        class="fee-card__row-header"
-      >
-        <div>
-          <div
-            class="fee-card__row-header-text--bold"
-          >
-            [swapEstimatedNetworkFee]
-          </div>
-          <div
-            class="info-tooltip"
-          >
-            <div
-              class="fee-card__row-label fee-card__info-tooltip-container"
-            >
-              <div
-                aria-describedby="tippy-tooltip-1"
-                class="info-tooltip__tooltip-container fee-card__info-tooltip-content-container"
-                data-original-title="null"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <img
-                  alt=""
-                  src="images/mm-info-icon.svg"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div
-            class="fee-card__row-header-secondary--bold"
-          />
-          <div
-            class="fee-card__row-header-primary--bold"
-          />
-        </div>
-      </div>
-      <div
-        class="fee-card__row-header"
-      >
-        <div>
-          <div
-            class="fee-card__row-header-text"
-          >
-            [swapMaxNetworkFees]
-          </div>
-          <div
-            class="fee-card__link"
-          >
-            [edit]
-          </div>
-        </div>
-        <div>
-          <div
-            class="fee-card__row-header-secondary"
-          />
-        </div>
-      </div>
-      <div
-        class="fee-card__row-header"
+        class="fee-card__info-tooltip-container"
       >
         <div
-          class="fee-card__row-label"
+          aria-describedby="tippy-tooltip-3"
+          class="info-tooltip__tooltip-container"
+          data-original-title="null"
+          data-tooltipped=""
+          style="display: inline;"
+          tabindex="0"
         >
-          <div
-            class="fee-card__row-header-text"
-          >
-            [swapThisWillAllowApprove]
-          </div>
-          <div
-            class="info-tooltip"
-          >
-            <div>
-              <div
-                aria-describedby="tippy-tooltip-2"
-                class="info-tooltip__tooltip-container fee-card__info-tooltip-container"
-                data-original-title="null"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <img
-                  alt=""
-                  src="images/mm-info-icon.svg"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="fee-card__link"
-        >
-          [swapEditLimit]
-        </div>
-      </div>
-      <div
-        class="fee-card__top-bordered-row"
-      >
-        <div
-          class="fee-card__row-label"
-        >
-          <div
-            class="fee-card__row-header-text"
-          >
-            [swapQuoteIncludesRate]
-          </div>
-          <div
-            class="info-tooltip"
-          >
-            <div
-              class="fee-card__info-tooltip-container"
-            >
-              <div
-                aria-describedby="tippy-tooltip-3"
-                class="info-tooltip__tooltip-container"
-                data-original-title="null"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <img
-                  alt=""
-                  src="images/mm-info-icon.svg"
-                />
-              </div>
-            </div>
-          </div>
+          <img
+            alt=""
+            src="images/mm-info-icon.svg"
+          />
         </div>
       </div>
     </div>

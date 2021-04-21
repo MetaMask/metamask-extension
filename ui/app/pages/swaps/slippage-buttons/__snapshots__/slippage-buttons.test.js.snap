@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SlippageButtons renders the component with initial props 1`] = `
+<div
+  class="slippage-buttons__header"
+>
+  <div
+    class="slippage-buttons__header-text"
+  >
+    Advanced Options
+  </div>
+</div>
+`;
+
+exports[`SlippageButtons renders the component with initial props 2`] = `
+<div
+  class="button-group slippage-buttons__button-group radio-button-group"
+  role="radiogroup"
+>
+  <button
+    aria-checked="false"
+    class="button-group__button radio-button"
+    role="radio"
+  >
+    2%
+  </button>
+  <button
+    aria-checked="true"
+    class="button-group__button radio-button button-group__button--active radio-button--active"
+    role="radio"
+  >
+    3%
+  </button>
+  <button
+    aria-checked="false"
+    class="button-group__button slippage-buttons__button-group-custom-button radio-button"
+    role="radio"
+  >
+    custom
+  </button>
+</div>
+`;

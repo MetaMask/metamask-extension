@@ -70,7 +70,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['ui/**/*.js', 'test/lib/render-helpers.js'],
+      files: ['ui/**/*.js', 'test/lib/render-helpers.js', 'test/jest/*.js'],
       plugins: ['react'],
       extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended'],
       rules: {
@@ -108,17 +108,28 @@ module.exports = {
     },
     {
       files: ['**/*.test.js'],
-      excludedFiles: ['ui/**/*.test.js'],
+      excludedFiles: ['ui/**/*.test.js', 'ui/app/__mocks__/*.js'],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
         'mocha/no-setup-in-describe': 'off',
       },
     },
     {
-      files: ['ui/**/*.test.js'],
+      files: ['**/__snapshots__/*.snap'],
+      plugins: ['jest'],
+      rules: {
+        'jest/no-large-snapshots': [
+          'error',
+          { maxSize: 50, inlineMaxSize: 50 },
+        ],
+      },
+    },
+    {
+      files: ['ui/**/*.test.js', 'ui/app/__mocks__/*.js'],
       extends: ['@metamask/eslint-config-jest'],
       rules: {
         'jest/no-restricted-matchers': 'off',
+        'import/unambiguous': 'off',
       },
     },
     {
