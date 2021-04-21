@@ -22,6 +22,7 @@ describe('Metamask Import UI', function () {
         fixtures: 'onboarding',
         ganacheOptions,
         title: this.test.title,
+        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -287,6 +288,7 @@ describe('Metamask Import UI', function () {
         // should open the TREZOR Connect popup
         await driver.clickElement('.hw-connect__btn:nth-of-type(2)');
         await driver.clickElement({ text: 'Connect', tag: 'button' });
+        await driver.waitUntilXWindowHandles(2);
         const allWindows = await driver.getAllWindowHandles();
         assert.equal(allWindows.length, 2);
       },
