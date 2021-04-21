@@ -31,7 +31,7 @@ function transformState(state) {
       .incomingTxLastFetchedBlockByChainId;
   }
 
-  if (state?.PreferencesController) {
+  if (state?.PreferencesController?.featureFlags) {
     state.PreferencesController.featureFlags.showExternalTransactions =
       state.PreferencesController.featureFlags?.showIncomingTransactions;
     delete state.PreferencesController.featureFlags.showIncomingTransactions;

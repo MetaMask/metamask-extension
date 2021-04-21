@@ -36,7 +36,7 @@ describe('migration #58', function () {
               },
             },
           },
-          incomingTxLastFetchedBlocksByNetwork: {
+          incomingTxLastFetchedBlockByChainId: {
             [MAINNET_CHAIN_ID]: 1,
             [ROPSTEN_CHAIN_ID]: 2,
             [RINKEBY_CHAIN_ID]: 3,
