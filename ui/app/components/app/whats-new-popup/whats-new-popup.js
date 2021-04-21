@@ -65,6 +65,41 @@ export default function WhatsNewPopup({ onClose }) {
     [memoizedNotifications],
   );
 
+  const maybeRenderNotificationItem = (id, isFirstNotification, property) => {
+    const notification = UI_NOTIFICATIONS[id];
+    if (isFirstNotification && property === 'image') {
+      return (
+        <img
+          className="whats-new-popup__notification-image"
+          src={notification[property]}
+        />
+      );
+    }
+
+    if (isFirstNotification && property === 'actionText') {
+      return (
+        <Button
+          type="secondary"
+          className="whats-new-popup__button"
+          rounded
+          onClick={actionFunctions[id]}
+        >
+          {t(notification[property])}
+        </Button>
+      );
+    }
+
+    if (!isFirstNotification && property === 'actionText') {
+      return (
+        <div className="whats-new-popup__link" onClick={actionFunctions[id]}>
+          {t(notification[property])}
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div className="whats-new-popup">
       <Popover
@@ -104,12 +139,7 @@ export default function WhatsNewPopup({ onClose }) {
                 })}
                 key={`whats-new-popop-notificatiion-${index}`}
               >
-                {isFirstNotification && notification.image && (
-                  <img
-                    className="whats-new-popup__notification-image"
-                    src={notification.image}
-                  />
-                )}
+                {maybeRenderNotificationItem(id, isFirstNotification, 'image')}
                 <div className="whats-new-popup__notification-title">
                   {t(notification.title)}
                 </div>
@@ -124,23 +154,10 @@ export default function WhatsNewPopup({ onClose }) {
                     {date}
                   </div>
                 </div>
-                {isFirstNotification && notification.actionText && (
-                  <Button
-                    type="secondary"
-                    className="whats-new-popup__button"
-                    rounded
-                    onClick={actionFunctions[id]}
-                  >
-                    {t(notification.actionText)}
-                  </Button>
-                )}
-                {!isFirstNotification && notification.actionText && (
-                  <div
-                    className="whats-new-popup__link"
-                    onClick={actionFunctions[id]}
-                  >
-                    {t(notification.actionText)}
-                  </div>
+                {maybeRenderNotificationItem(
+                  id,
+                  isFirstNotification,
+                  'actionText',
                 )}
               </div>
             );

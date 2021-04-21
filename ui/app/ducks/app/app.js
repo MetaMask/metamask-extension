@@ -353,7 +353,7 @@ export default function reduceApp(state = {}, action) {
         currentWindowTab: action.value,
       };
 
-    case actionConstants.HIDE_SHOW_WHATS_NEW_POPUP:
+    case actionConstants.HIDE_WHATS_NEW_POPUP:
       return {
         ...appState,
         showWhatsNewPopup: false,
@@ -374,6 +374,6 @@ export function setThreeBoxLastUpdated(lastUpdated) {
 
 export function hideWhatsNewPopup() {
   return {
-    type: actionConstants.HIDE_SHOW_WHATS_NEW_POPUP,
+    type: actionConstants.HIDE_WHATS_NEW_POPUP,
   };
 }
