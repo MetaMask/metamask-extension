@@ -601,7 +601,7 @@ const isContractAddressValid = (
     (swapMetaData.token_from === WETH_SYMBOL &&
       swapMetaData.token_to === ETH_SYMBOL)
   ) {
-    // Sometimes we get a "to" address with a few upper-case chars and since addresses are
+    // Sometimes we get a contract address with a few upper-case chars and since addresses are
     // case-insensitive, we compare uppercase versions for validity.
     return (
       contractAddress.toUpperCase() === ETH_WETH_CONTRACT_ADDRESS.toUpperCase()
