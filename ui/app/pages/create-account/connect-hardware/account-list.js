@@ -70,7 +70,7 @@ class AccountList extends Component {
           {this.context.t('selectAnAccountHelp')}
           {this.context.t('selectAnAccountHelpDirections', [
             <button
-              className="hw-connect__msg--link"
+              className="hw-connect__msg-link"
               onClick={() => this.setState({ showPopover: true })}
               key="account-help"
             >

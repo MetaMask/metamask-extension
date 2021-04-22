@@ -114,7 +114,7 @@
     margin-top: 10px;
     margin-bottom: 15px;
 
-    &--link {
+    &-link {
       @include H6;
 
       text-align: center;
@@ -131,7 +131,7 @@
     text-align: center;
   }
 
-  &__link {
+  &-link {
     color: #2f9ae0;
   }
 
