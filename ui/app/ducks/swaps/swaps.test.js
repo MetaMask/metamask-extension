@@ -114,5 +114,5 @@ describe('Ducks - Swaps', () => {
       expect(setSwapsLiveness).toHaveBeenCalledWith(true);
       expect(isSwapsFeatureEnabled).toBe(true);
     });
-  });  
+  });
 });

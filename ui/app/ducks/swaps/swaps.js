@@ -35,6 +35,7 @@ import {
 import {
   fetchSwapsFeatureLiveness,
   fetchSwapsGasPrices,
+  isContractAddressValid,
 } from '../../pages/swaps/swaps.util';
 import { calcGasTotal } from '../../pages/send/send.utils';
 import {
@@ -59,7 +60,6 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
-import { isContractAddressValid } from '../../pages/swaps/swaps.util';
 
 const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
