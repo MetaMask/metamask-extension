@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SwapFailureIcon renders the component 1`] = `
+<div>
+  <svg
+    fill="none"
+    height="39"
+    viewBox="0 0 45 39"
+    width="45"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M22.203 0.424438L0.285706 38.2816H44.1203L22.203 0.424438ZM22.203 8.39436L37.2064 34.2966H7.19961L22.203 8.39436ZM20.2105 16.3643V24.3342H24.1955V16.3643H20.2105ZM20.2105 28.3192V32.3041H24.1955V28.3192"
+      fill="#D73A49"
+    />
+  </svg>
+</div>
+`;
