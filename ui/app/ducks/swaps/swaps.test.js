@@ -9,7 +9,10 @@ import {
   BSC_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
 } from '../../../../shared/constants/network';
-import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
+import {
+  SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
+  ETH_WETH_CONTRACT_ADDRESS,
+} from '../../../../shared/constants/swaps';
 import * as swaps from './swaps';
 
 jest.mock('../../store/actions.js', () => ({
@@ -124,10 +127,10 @@ describe('Ducks - Swaps', () => {
     });
   });
 
-  describe('isContractAddressToValid', () => {
+  describe('isContractAddressValid', () => {
+    const { isContractAddressValid } = swaps.testables;
     let swapMetaData;
     let usedTradeTxParams;
-    let chainId;
 
     beforeEach(() => {
       swapMetaData = {
@@ -144,9 +147,9 @@ describe('Ducks - Swaps', () => {
         performance_savings: undefined,
         slippage: 5,
         suggested_gas_price: '164',
-        token_from: 'ETH',
+        token_from: ETH_SYMBOL,
         token_from_amount: '1',
-        token_to: 'WETH',
+        token_to: WETH_SYMBOL,
         token_to_amount: '1.0000000',
         used_gas_price: '164',
       };
@@ -155,75 +158,130 @@ describe('Ducks - Swaps', () => {
         from: '0xe53a5bc256898bfa5673b20aceeb2b2152075d17',
         gas: '2427c',
         gasPrice: '27592f5a00',
-        to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        to: ETH_WETH_CONTRACT_ADDRESS,
         value: '0xde0b6b3a7640000',
       };
-      chainId = MAINNET_CHAIN_ID;
     });
 
-    it('returns true if "token_from" is ETH, "token_to" is WETH and "to" address is valid', () => {
+    it('returns true if "token_from" is ETH, "token_to" is WETH and "to" is ETH_WETH contract address', () => {
       expect(
-        swaps.isContractAddressToValid(swapMetaData, usedTradeTxParams),
+        isContractAddressValid(
+          swapMetaData,
+          usedTradeTxParams,
+          MAINNET_CHAIN_ID,
+        ),
       ).toBe(true);
     });
 
-    it('returns true if "token_from" is WETH, "token_to" is ETH and "to" address is valid', () => {
+    it('returns true if "token_from" is WETH, "token_to" is ETH and "to" is ETH_WETH contract address', () => {
       swapMetaData.token_from = WETH_SYMBOL;
       swapMetaData.token_to = ETH_SYMBOL;
       expect(
-        swaps.isContractAddressToValid(swapMetaData, usedTradeTxParams),
+        isContractAddressValid(
+          swapMetaData,
+          usedTradeTxParams,
+          MAINNET_CHAIN_ID,
+        ),
       ).toBe(true);
     });
 
-    it('returns false if "token_from" is ETH, "token_to" is WETH and "to" address is mainnet contract address', () => {
+    it('returns true if "token_from" is ETH, "token_to" is WETH and "to" is ETH_WETH contract address with some uppercase chars', () => {
+      usedTradeTxParams.to = '0xc02AAA39B223fe8d0a0e5c4f27ead9083c756cc2';
+      expect(
+        isContractAddressValid(
+          swapMetaData,
+          usedTradeTxParams,
+          MAINNET_CHAIN_ID,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false if "token_from" is ETH, "token_to" is WETH and "to" is mainnet contract address', () => {
       usedTradeTxParams.to =
         SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[MAINNET_CHAIN_ID];
       expect(
-        swaps.isContractAddressToValid(swapMetaData, usedTradeTxParams),
+        isContractAddressValid(
+          swapMetaData,
+          usedTradeTxParams,
+          MAINNET_CHAIN_ID,
+        ),
       ).toBe(false);
     });
 
-    it('returns false if "token_from" is WETH, "token_to" is ETH and "to" address is mainnet contract address', () => {
+    it('returns false if "token_from" is WETH, "token_to" is ETH and "to" is mainnet contract address', () => {
       swapMetaData.token_from = WETH_SYMBOL;
       swapMetaData.token_to = ETH_SYMBOL;
       usedTradeTxParams.to =
         SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[MAINNET_CHAIN_ID];
       expect(
-        swaps.isContractAddressToValid(swapMetaData, usedTradeTxParams),
+        isContractAddressValid(
+          swapMetaData,
+          usedTradeTxParams,
+          MAINNET_CHAIN_ID,
+        ),
       ).toBe(false);
     });
 
-    it('returns true if "token_from" is BAT and "to" address is mainnet contract address', () => {
+    it('returns false if usedTradeTxParams is null', () => {
+      expect(
+        isContractAddressValid(swapMetaData, null, LOCALHOST_CHAIN_ID),
+      ).toBe(false);
+    });
+
+    it('returns true if "token_from" is BAT and "to" is mainnet contract address', () => {
       swapMetaData.token_from = 'BAT';
       usedTradeTxParams.to =
         SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[MAINNET_CHAIN_ID];
       expect(
-        swaps.isContractAddressToValid(swapMetaData, usedTradeTxParams, MAINNET_CHAIN_ID),
+        isContractAddressValid(
+          swapMetaData,
+          usedTradeTxParams,
+          MAINNET_CHAIN_ID,
+        ),
       ).toBe(true);
     });
 
-    it('returns true if "token_to" is BAT and "to" address is BSC contract address', () => {
+    it('returns true if "token_to" is BAT and "to" is BSC contract address', () => {
       swapMetaData.token_to = 'BAT';
-      usedTradeTxParams.to =
-        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[BSC_CHAIN_ID];
+      usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[BSC_CHAIN_ID];
       expect(
-        swaps.isContractAddressToValid(swapMetaData, usedTradeTxParams, BSC_CHAIN_ID),
+        isContractAddressValid(swapMetaData, usedTradeTxParams, BSC_CHAIN_ID),
       ).toBe(true);
     });
-    
-    it('returns true if "token_to" is BAT and "to" address is testnet contract address', () => {
+
+    it('returns true if "token_to" is BAT and "to" is testnet contract address', () => {
       swapMetaData.token_to = 'BAT';
       usedTradeTxParams.to =
         SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[LOCALHOST_CHAIN_ID];
       expect(
-        swaps.isContractAddressToValid(swapMetaData, usedTradeTxParams, LOCALHOST_CHAIN_ID),
+        isContractAddressValid(
+          swapMetaData,
+          usedTradeTxParams,
+          LOCALHOST_CHAIN_ID,
+        ),
       ).toBe(true);
     });
 
-    it('returns false if "token_to" is BAT and "to" address has mismatch with current chainId', () => {
+    it('returns true if "token_to" is BAT and "to" is testnet contract address with some uppercase chars', () => {
+      swapMetaData.token_to = 'BAT';
+      usedTradeTxParams.to = '0x881D40237659C251811CEC9c364ef91dC08D300C';
+      expect(
+        isContractAddressValid(
+          swapMetaData,
+          usedTradeTxParams,
+          LOCALHOST_CHAIN_ID,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false if "token_to" is BAT and "to" has mismatch with current chainId', () => {
       swapMetaData.token_to = 'BAT';
       expect(
-        swaps.isContractAddressToValid(swapMetaData, usedTradeTxParams, LOCALHOST_CHAIN_ID),
+        isContractAddressValid(
+          swapMetaData,
+          usedTradeTxParams,
+          LOCALHOST_CHAIN_ID,
+        ),
       ).toBe(false);
     });
   });
