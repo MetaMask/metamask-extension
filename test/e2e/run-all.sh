@@ -36,12 +36,6 @@ retry concurrently --kill-others \
   'mocha test/e2e/metamask-ui.spec'
 
 retry concurrently --kill-others \
-  --names 'e2e' \
-  --prefix '[{time}][{name}]' \
-  --success first \
-  'mocha test/e2e/from-import-ui.spec'
-
-retry concurrently --kill-others \
   --names 'sendwithprivatedapp,e2e' \
   --prefix '[{time}][{name}]' \
   --success first \
