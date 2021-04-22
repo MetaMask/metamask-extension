@@ -166,8 +166,8 @@ describe('Ducks - Swaps', () => {
     it('returns true if "token_from" is ETH, "token_to" is WETH and "to" is ETH_WETH contract address', () => {
       expect(
         isContractAddressValid(
+          usedTradeTxParams.to,
           swapMetaData,
-          usedTradeTxParams,
           MAINNET_CHAIN_ID,
         ),
       ).toBe(true);
@@ -178,8 +178,8 @@ describe('Ducks - Swaps', () => {
       swapMetaData.token_to = ETH_SYMBOL;
       expect(
         isContractAddressValid(
+          usedTradeTxParams.to,
           swapMetaData,
-          usedTradeTxParams,
           MAINNET_CHAIN_ID,
         ),
       ).toBe(true);
@@ -189,8 +189,8 @@ describe('Ducks - Swaps', () => {
       usedTradeTxParams.to = '0xc02AAA39B223fe8d0a0e5c4f27ead9083c756cc2';
       expect(
         isContractAddressValid(
+          usedTradeTxParams.to,
           swapMetaData,
-          usedTradeTxParams,
           MAINNET_CHAIN_ID,
         ),
       ).toBe(true);
@@ -201,8 +201,8 @@ describe('Ducks - Swaps', () => {
         SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[MAINNET_CHAIN_ID];
       expect(
         isContractAddressValid(
+          usedTradeTxParams.to,
           swapMetaData,
-          usedTradeTxParams,
           MAINNET_CHAIN_ID,
         ),
       ).toBe(false);
@@ -215,16 +215,16 @@ describe('Ducks - Swaps', () => {
         SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[MAINNET_CHAIN_ID];
       expect(
         isContractAddressValid(
+          usedTradeTxParams.to,
           swapMetaData,
-          usedTradeTxParams,
           MAINNET_CHAIN_ID,
         ),
       ).toBe(false);
     });
 
-    it('returns false if usedTradeTxParams is null', () => {
+    it('returns false if contractAddress is null', () => {
       expect(
-        isContractAddressValid(swapMetaData, null, LOCALHOST_CHAIN_ID),
+        isContractAddressValid(null, swapMetaData, LOCALHOST_CHAIN_ID),
       ).toBe(false);
     });
 
@@ -234,8 +234,8 @@ describe('Ducks - Swaps', () => {
         SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[MAINNET_CHAIN_ID];
       expect(
         isContractAddressValid(
+          usedTradeTxParams.to,
           swapMetaData,
-          usedTradeTxParams,
           MAINNET_CHAIN_ID,
         ),
       ).toBe(true);
@@ -245,7 +245,11 @@ describe('Ducks - Swaps', () => {
       swapMetaData.token_to = 'BAT';
       usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[BSC_CHAIN_ID];
       expect(
-        isContractAddressValid(swapMetaData, usedTradeTxParams, BSC_CHAIN_ID),
+        isContractAddressValid(
+          usedTradeTxParams.to,
+          swapMetaData,
+          BSC_CHAIN_ID,
+        ),
       ).toBe(true);
     });
 
@@ -255,8 +259,8 @@ describe('Ducks - Swaps', () => {
         SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[LOCALHOST_CHAIN_ID];
       expect(
         isContractAddressValid(
+          usedTradeTxParams.to,
           swapMetaData,
-          usedTradeTxParams,
           LOCALHOST_CHAIN_ID,
         ),
       ).toBe(true);
@@ -267,8 +271,8 @@ describe('Ducks - Swaps', () => {
       usedTradeTxParams.to = '0x881D40237659C251811CEC9c364ef91dC08D300C';
       expect(
         isContractAddressValid(
+          usedTradeTxParams.to,
           swapMetaData,
-          usedTradeTxParams,
           LOCALHOST_CHAIN_ID,
         ),
       ).toBe(true);
@@ -278,8 +282,8 @@ describe('Ducks - Swaps', () => {
       swapMetaData.token_to = 'BAT';
       expect(
         isContractAddressValid(
+          usedTradeTxParams.to,
           swapMetaData,
-          usedTradeTxParams,
           LOCALHOST_CHAIN_ID,
         ),
       ).toBe(false);

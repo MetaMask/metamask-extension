@@ -588,10 +588,13 @@ export const fetchQuotesAndSetQuoteState = (
 };
 
 const isContractAddressValid = (
+  contractAddress,
   swapMetaData,
-  usedTradeTxParams,
   chainId = MAINNET_CHAIN_ID,
 ) => {
+  if (!contractAddress) {
+    return false;
+  }
   if (
     (swapMetaData.token_from === ETH_SYMBOL &&
       swapMetaData.token_to === WETH_SYMBOL) ||
@@ -601,7 +604,7 @@ const isContractAddressValid = (
     // Sometimes we get a "to" address with a few upper-case chars and since addresses are
     // case-insensitive, we compare uppercase versions for validity.
     return (
-      usedTradeTxParams?.to.toUpperCase() ===
+      contractAddress.toUpperCase() ===
       ETH_WETH_CONTRACT_ADDRESS.toUpperCase()
     );
   }
@@ -609,7 +612,7 @@ const isContractAddressValid = (
   return (
     contractAddressForChainId &&
     contractAddressForChainId.toUpperCase() ===
-      usedTradeTxParams?.to.toUpperCase()
+      contractAddress.toUpperCase()
   );
 };
 
@@ -711,7 +714,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       sensitiveProperties: swapMetaData,
     });
 
-    if (!isContractAddressValid(swapMetaData, usedTradeTxParams, chainId)) {
+    if (!isContractAddressValid(usedTradeTxParams.to, swapMetaData, chainId)) {
       captureMessage('Invalid contract address', {
         extra: {
           token_from: swapMetaData.token_from,
