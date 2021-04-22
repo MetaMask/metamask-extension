@@ -2690,10 +2690,11 @@ export default class MetamaskController extends EventEmitter {
 
     const keyring = await this.getKeyringForDevice('ledger');
     if (keyring?.updateTransportMethod) {
-      return keyring.updateTransportMethod(bool).catch((_) => {
+      return keyring.updateTransportMethod(bool).catch((e) => {
         // If there was an error updating the transport, we should
         // fall back to the original value
         this.preferencesController.setLedgerLivePreference(currentValue);
+        throw e;
       });
     }
 
