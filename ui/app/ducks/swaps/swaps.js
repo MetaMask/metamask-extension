@@ -604,15 +604,13 @@ const isContractAddressValid = (
     // Sometimes we get a "to" address with a few upper-case chars and since addresses are
     // case-insensitive, we compare uppercase versions for validity.
     return (
-      contractAddress.toUpperCase() ===
-      ETH_WETH_CONTRACT_ADDRESS.toUpperCase()
+      contractAddress.toUpperCase() === ETH_WETH_CONTRACT_ADDRESS.toUpperCase()
     );
   }
   const contractAddressForChainId = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId];
   return (
     contractAddressForChainId &&
-    contractAddressForChainId.toUpperCase() ===
-      contractAddress.toUpperCase()
+    contractAddressForChainId.toUpperCase() === contractAddress.toUpperCase()
   );
 };
 
