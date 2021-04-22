@@ -55,8 +55,10 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
+  SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import { ETH_SYMBOL, WETH_SYMBOL, MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 
 const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -578,6 +580,21 @@ export const fetchQuotesAndSetQuoteState = (
   };
 };
 
+export const isContractAddressToValid = (swapMetaData, usedTradeTxParams, chainId = MAINNET_CHAIN_ID) => {
+  const ETH_WETH_CONTRACT_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
+  if (
+    (swapMetaData.token_from === ETH_SYMBOL && swapMetaData.token_to === WETH_SYMBOL) ||
+    (swapMetaData.token_from === WETH_SYMBOL && swapMetaData.token_to === ETH_SYMBOL)
+  ) {
+    return usedTradeTxParams.to === ETH_WETH_CONTRACT_ADDRESS;
+  }
+  const contractAddressForChainId = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId];
+  return (
+    contractAddressForChainId &&
+    contractAddressForChainId === usedTradeTxParams.to
+  );
+};
+
 export const signAndSendTransactions = (history, metaMetricsEvent) => {
   return async (dispatch, getState) => {
     const state = getState();
@@ -703,6 +720,12 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
         history.push(SWAPS_ERROR_ROUTE);
         return;
       }
+    }
+
+    if (!isContractAddressToValid(swapMetaData, usedTradeTxParams, chainId)) {
+      await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
+      history.push(SWAPS_ERROR_ROUTE);
+      return;
     }
 
     const tradeTxMeta = await dispatch(
