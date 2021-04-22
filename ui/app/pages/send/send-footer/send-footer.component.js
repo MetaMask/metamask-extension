@@ -27,6 +27,7 @@ export default class SendFooter extends Component {
     gasEstimateType: PropTypes.string,
     gasIsLoading: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
+    noGasPrice: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -109,6 +110,7 @@ export default class SendFooter extends Component {
       to,
       gasLimit,
       gasIsLoading,
+      noGasPrice,
     } = this.props;
     const missingTokenBalance = sendToken && !tokenBalance;
     const gasLimitTooLow = gasLimit < 5208; // 5208 is hex value of 21000, minimum gas limit
@@ -118,7 +120,8 @@ export default class SendFooter extends Component {
       missingTokenBalance ||
       !(data || to) ||
       gasLimitTooLow ||
-      gasIsLoading;
+      gasIsLoading ||
+      noGasPrice;
     return shouldBeDisabled;
   }
 

@@ -43,6 +43,7 @@ export default class ConfirmPageContainer extends Component {
     warning: PropTypes.string,
     unapprovedTxCount: PropTypes.number,
     origin: PropTypes.string.isRequired,
+    ethGasPriceWarning: PropTypes.string,
     // Navigation
     totalTx: PropTypes.number,
     positionOfCurrentTx: PropTypes.number,
@@ -103,6 +104,7 @@ export default class ConfirmPageContainer extends Component {
       hideSenderToRecipient,
       showAccountInHeader,
       origin,
+      ethGasPriceWarning,
     } = this.props;
     const renderAssetImage = contentComponent || !identiconAddress;
 
@@ -162,6 +164,7 @@ export default class ConfirmPageContainer extends Component {
             unapprovedTxCount={unapprovedTxCount}
             rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
             origin={origin}
+            ethGasPriceWarning={ethGasPriceWarning}
           />
         )}
         {contentComponent && (

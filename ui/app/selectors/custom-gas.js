@@ -272,7 +272,6 @@ export function getRenderableBasicEstimateData(state, gasLimit) {
   }
 
   if (getNoGasPriceFetched(state) || getIsEthGasPriceFetched(state)) {
-    console.log('gas fetch failed');
     return [];
   }
 

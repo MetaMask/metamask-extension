@@ -3,6 +3,8 @@ import {
   getSendTo,
   accountsWithSendEtherInfoSelector,
   getAddressBookEntry,
+  getIsEthGasPriceFetched,
+  getNoGasPriceFetched,
 } from '../../../selectors';
 
 import * as actions from '../../../store/actions';
@@ -19,6 +21,8 @@ function mapStateToProps(state) {
     ),
     contact: getAddressBookEntry(state, to),
     to,
+    isEthGasPrice: getIsEthGasPriceFetched(state),
+    noGasPrice: getNoGasPriceFetched(state),
   };
 }
 

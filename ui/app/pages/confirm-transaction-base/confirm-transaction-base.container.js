@@ -211,14 +211,13 @@ export const mapDispatchToProps = (dispatch) => {
     showTransactionConfirmedModal: ({ onSubmit }) => {
       return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }));
     },
-    showCustomizeGasModal: ({ txData, onSubmit, validate, hideBasic }) => {
+    showCustomizeGasModal: ({ txData, onSubmit, validate }) => {
       return dispatch(
         showModal({
           name: 'CUSTOMIZE_GAS',
           txData,
           onSubmit,
           validate,
-          hideBasic,
         }),
       );
     },
@@ -289,14 +288,7 @@ const getValidateEditGas = ({ balance, conversionRate, txData }) => {
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const {
-    balance,
-    conversionRate,
-    txData,
-    unapprovedTxs,
-    isEthGasPrice,
-    noGasPrice,
-  } = stateProps;
+  const { balance, conversionRate, txData, unapprovedTxs } = stateProps;
 
   const {
     cancelAllTransactions: dispatchCancelAllTransactions,
@@ -320,7 +312,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         txData,
         onSubmit: (customGas) => dispatchUpdateGasAndCalculate(customGas),
         validate: validateEditGas,
-        hideBasic: isEthGasPrice || noGasPrice,
       }),
     cancelAllTransactions: () =>
       dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),
