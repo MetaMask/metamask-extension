@@ -57,15 +57,9 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
-  SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
-  ETH_WETH_CONTRACT_ADDRESS,
 } from '../../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
-import {
-  ETH_SYMBOL,
-  WETH_SYMBOL,
-  MAINNET_CHAIN_ID,
-} from '../../../../shared/constants/network';
+import { isContractAddressValid } from '../../pages/swaps/swaps.util';
 
 const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -587,33 +581,6 @@ export const fetchQuotesAndSetQuoteState = (
   };
 };
 
-const isContractAddressValid = (
-  contractAddress,
-  swapMetaData,
-  chainId = MAINNET_CHAIN_ID,
-) => {
-  if (!contractAddress) {
-    return false;
-  }
-  if (
-    (swapMetaData.token_from === ETH_SYMBOL &&
-      swapMetaData.token_to === WETH_SYMBOL) ||
-    (swapMetaData.token_from === WETH_SYMBOL &&
-      swapMetaData.token_to === ETH_SYMBOL)
-  ) {
-    // Sometimes we get a contract address with a few upper-case chars and since addresses are
-    // case-insensitive, we compare uppercase versions for validity.
-    return (
-      contractAddress.toUpperCase() === ETH_WETH_CONTRACT_ADDRESS.toUpperCase()
-    );
-  }
-  const contractAddressForChainId = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId];
-  return (
-    contractAddressForChainId &&
-    contractAddressForChainId.toUpperCase() === contractAddress.toUpperCase()
-  );
-};
-
 export const signAndSendTransactions = (history, metaMetricsEvent) => {
   return async (dispatch, getState) => {
     const state = getState();
@@ -844,7 +811,3 @@ export function fetchMetaSwapsGasPriceEstimates() {
     return priceEstimates;
   };
 }
-
-export const testables = {
-  isContractAddressValid,
-};
