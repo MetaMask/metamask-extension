@@ -499,18 +499,12 @@
   "importAccountSeedPhrase": {
     "message": "יבא חשבון באמצעות Seed Phrase"
   },
-  "importUsingSeed": {
-    "message": "ייבא באמצעות צירוף הגרעין של החשבון"
-  },
   "importWallet": {
     "message": "ייבא ארנק"
   },
   "imported": {
     "message": "מיובאות",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "מידע ועזרה"
   },
   "initialTransactionConfirmed": {
     "message": "העסקה הראשונית שלך אושרה על ידי הרשת. לחצ/י על אישור כדי לחזור."
@@ -831,9 +825,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "שחזר את חשבונך באמצעות צירוף הגרעין"
-  },
-  "restoreFromSeed": {
-    "message": "לשחזר את החשבון?"
   },
   "revealSeedWords": {
     "message": "גלה מילות Seed"

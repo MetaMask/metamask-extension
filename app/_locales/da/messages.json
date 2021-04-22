@@ -492,18 +492,12 @@
   "importAccountSeedPhrase": {
     "message": "Importér en Konto med Seedfrase"
   },
-  "importUsingSeed": {
-    "message": "Importér ved brug af kontoens seed-sætning"
-  },
   "importWallet": {
     "message": "Importér pung"
   },
   "imported": {
     "message": "Importeret",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info & hjælp"
   },
   "initialTransactionConfirmed": {
     "message": "Din indledende transaktion blev bekræftet af netværket. Klik OK for at gå tilbage."
@@ -815,9 +809,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Gendan din konto med Seed-sætning"
-  },
-  "restoreFromSeed": {
-    "message": "Genopret konto?"
   },
   "revealSeedWords": {
     "message": "Vis Seedord"

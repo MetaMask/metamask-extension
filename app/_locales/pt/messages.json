@@ -172,9 +172,6 @@
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Informação & Ajuda"
-  },
   "insufficientFunds": {
     "message": "Fundos insuficientes."
   },
@@ -299,9 +296,6 @@
   },
   "resetAccount": {
     "message": "Reinicializar Conta"
-  },
-  "restoreFromSeed": {
-    "message": "Restaurar a partir da frase seed"
   },
   "revealSeedWords": {
     "message": "Revelar Palavras Seed"

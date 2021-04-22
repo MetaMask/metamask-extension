@@ -499,18 +499,12 @@
   "importAccountSeedPhrase": {
     "message": "Tuo tili siemenlauseella"
   },
-  "importUsingSeed": {
-    "message": "Tuo käyttäen tilin siemenlausetta"
-  },
   "importWallet": {
     "message": "Tuo kukkaro"
   },
   "imported": {
     "message": "Tuotu",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Tietoja ja ohje"
   },
   "initialTransactionConfirmed": {
     "message": "Verkko hyväksyi alkuperäisen tapahtumasi. Siirry takaisin napsauttamalla OK-painiketta."
@@ -831,9 +825,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Palauta tilisi käyttäen salaustekstiä (seed phrase)"
-  },
-  "restoreFromSeed": {
-    "message": "Palautetaanko tili?"
   },
   "revealSeedWords": {
     "message": "Paljasta salaussanat"

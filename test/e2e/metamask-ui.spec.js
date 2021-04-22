@@ -217,10 +217,7 @@ describe('MetaMask', function () {
       const restoreSeedLink = await driver.findClickableElement(
         '.unlock-page__link--import',
       );
-      assert.equal(
-        await restoreSeedLink.getText(),
-        'Import using account seed phrase',
-      );
+      assert.equal(await restoreSeedLink.getText(), 'import using seed phrase');
       await restoreSeedLink.click();
       await driver.delay(regularDelayMs);
 

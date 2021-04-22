@@ -487,18 +487,12 @@
   "importAccountSeedPhrase": {
     "message": "Ein Konto mit einem Seed-Schlüssel importieren"
   },
-  "importUsingSeed": {
-    "message": "Mittels mnemonischer Phrase des Kontos importieren"
-  },
   "importWallet": {
     "message": "Wallet importieren"
   },
   "imported": {
     "message": "Importiert",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info & Hilfe"
   },
   "initialTransactionConfirmed": {
     "message": "Ihre erste Transaktion wurde vom Netzwerk bestätigt. Klicken Sie auf Okay, um zurückzukehren."
@@ -803,9 +797,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Ihr Konto mit mnemonischer Phrase wiederherstellen"
-  },
-  "restoreFromSeed": {
-    "message": "Mit Hilfe der Seed-Wörterfolge wiederherstellen."
   },
   "revealSeedWords": {
     "message": "Seed-Wörterfolge anzeigen"

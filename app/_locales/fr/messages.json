@@ -490,18 +490,12 @@
   "importAccountSeedPhrase": {
     "message": "Importez un compte avec une phrase mnémotechnique"
   },
-  "importUsingSeed": {
-    "message": "Importer à partir de la phrase Seed du compte"
-  },
   "importWallet": {
     "message": "Importer le portefeuille"
   },
   "imported": {
     "message": "Importé",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info & Aide"
   },
   "initialTransactionConfirmed": {
     "message": "Votre transaction initiale a été confirmée par le réseau. Cliquez sur OK pour retourner à l'écran précédent."
@@ -816,9 +810,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restaurer votre compte avec une phrase Seed."
-  },
-  "restoreFromSeed": {
-    "message": "Restaurer le compte ?"
   },
   "revealSeedWords": {
     "message": "Révéler les mots Seed"

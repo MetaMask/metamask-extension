@@ -165,20 +165,19 @@ describe('Account Menu', () => {
     });
   });
 
-  describe('Info & Help', () => {
-    let infoHelp;
+  describe('Support', () => {
+    let support;
+    global.platform = { openTab: sinon.spy() };
 
     it('renders import account item', () => {
-      infoHelp = wrapper.find({ text: 'infoHelp' });
-      expect(infoHelp).toHaveLength(1);
+      support = wrapper.find({ text: 'support' });
+      expect(support).toHaveLength(1);
     });
 
-    it('calls toggle menu and push /new-account/connect route to history', () => {
-      infoHelp.simulate('click');
-      expect(props.toggleAccountMenu.calledOnce).toStrictEqual(true);
-      expect(props.history.push.getCall(0).args[0]).toStrictEqual(
-        '/settings/about-us',
-      );
+    it('opens support link when clicked', () => {
+      support = wrapper.find({ text: 'support' });
+      support.simulate('click');
+      expect(global.platform.openTab.calledOnce).toStrictEqual(true);
     });
   });
 

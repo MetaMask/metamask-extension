@@ -781,18 +781,12 @@
   "importAccountSeedPhrase": {
     "message": "시드 구문으로 계정 가져오기"
   },
-  "importUsingSeed": {
-    "message": "계정 시드 구문으로 가져오기"
-  },
   "importWallet": {
     "message": "지갑 가져오기"
   },
   "imported": {
     "message": "가져옴",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "정보 및 도움말"
   },
   "initialTransactionConfirmed": {
     "message": "최초 거래를 네트워크에서 확인했습니다. 확인을 클릭하여 뒤로 돌아가세요."
@@ -1269,9 +1263,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "시드 구문으로 계정 복구"
-  },
-  "restoreFromSeed": {
-    "message": "계정을 복구하시겠습니까?"
   },
   "restoreWalletPreferences": {
     "message": "$1의 데이터 백업이 발견되었습니다. 지갑 환경설정을 복구하시겠습니까?",

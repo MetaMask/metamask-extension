@@ -486,18 +486,12 @@
   "importAccountSeedPhrase": {
     "message": "Importovať účet so seed frázou"
   },
-  "importUsingSeed": {
-    "message": "Importovať pomocou seed frázy účtu"
-  },
   "importWallet": {
     "message": "Importovať Peňaženku"
   },
   "imported": {
     "message": "Importováno",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informace a nápověda"
   },
   "initialTransactionConfirmed": {
     "message": "Sieť potvrdila vašu iniciálnu transakciu. Ak sa chcete vrátiť späť, kliknite na OK."
@@ -803,9 +797,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Obnoviť účet pomocou seed frázy"
-  },
-  "restoreFromSeed": {
-    "message": "Obnovit z seed fráze"
   },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"

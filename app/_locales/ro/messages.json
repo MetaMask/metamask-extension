@@ -489,18 +489,12 @@
   "importAccountSeedPhrase": {
     "message": "Importați un cont cu fraza seed"
   },
-  "importUsingSeed": {
-    "message": "Importare folosind fraza inițială a contului"
-  },
   "importWallet": {
     "message": "Importați portofel"
   },
   "imported": {
     "message": "Importate",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informații și ajutor"
   },
   "initialTransactionConfirmed": {
     "message": "Tranzacția inițială a fost confirmată de rețea. Clic pe OK pentru a reveni."
@@ -821,9 +815,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restaurați-vă contul folosind fraza inițială"
-  },
-  "restoreFromSeed": {
-    "message": "Restabiliți contul?"
   },
   "revealSeedWords": {
     "message": "Arată cuvintele din seed"

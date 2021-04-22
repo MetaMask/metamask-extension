@@ -499,18 +499,12 @@
   "importAccountSeedPhrase": {
     "message": "Імпортувати обліковий запис з початковою фразою"
   },
-  "importUsingSeed": {
-    "message": "Імпортувати, використовуючи початкову фразу облікового запису"
-  },
   "importWallet": {
     "message": "Імпортувати гаманець"
   },
   "imported": {
     "message": "Імпортовано",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Інформація та допомога"
   },
   "initialTransactionConfirmed": {
     "message": "Ваша початкова транзакція підтверджена мережею. Натисніть ОК для повернення."
@@ -834,9 +828,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Відновіть ваш обліковий запис за допомогою seed-фрази"
-  },
-  "restoreFromSeed": {
-    "message": "Відновити обліковий запис?"
   },
   "revealSeedWords": {
     "message": "Показати мнемонічні слова"

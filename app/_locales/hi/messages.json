@@ -781,18 +781,12 @@
   "importAccountSeedPhrase": {
     "message": "सीडफ्रेज़ के साथ कोई खाता आयात करें"
   },
-  "importUsingSeed": {
-    "message": "खाता सीडफ्रेज़ का उपयोग करके आयात करें"
-  },
   "importWallet": {
     "message": "वॉलेट आयात करें"
   },
   "imported": {
     "message": "आयातित",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "जानकारी और मदद"
   },
   "initialTransactionConfirmed": {
     "message": "नेटवर्क द्वारा आपके प्रारंभिक लेनदेन की पुष्टि की गई थी। वापस जाने के लिए ठीक पर क्लिक करें।"
@@ -1269,9 +1263,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "सीड फ्रेज़ के साथ अपने खाते को पुनर्स्थापित करें"
-  },
-  "restoreFromSeed": {
-    "message": "खाता पुनर्स्थापित करें?"
   },
   "restoreWalletPreferences": {
     "message": "$1 से आपके डेटा का बैकअप मिला है। क्या आप अपनी वॉलेट वरीयताओं को पुनर्स्थापित करना चाहते हैं?",

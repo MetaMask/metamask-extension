@@ -486,18 +486,12 @@
   "importAccountSeedPhrase": {
     "message": "Importer en konto med den mnemoniske gjenopprettingsfrasen "
   },
-  "importUsingSeed": {
-    "message": "Importer ved hjelp av kontoens mnemoniske gjenopprettingsfrase"
-  },
   "importWallet": {
     "message": "Importér lommebok "
   },
   "imported": {
     "message": "Importert",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informasjon og hjelp"
   },
   "initialTransactionConfirmed": {
     "message": "Din opprinnelige transaksjon ble bekreftet av nettverket. Klikk OK for å gå tilbake."
@@ -821,9 +815,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Gjenopprett konto med frøfrase"
-  },
-  "restoreFromSeed": {
-    "message": "Gjennopprett konto? "
   },
   "revealSeedWords": {
     "message": "Vis frøord"

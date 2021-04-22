@@ -495,18 +495,12 @@
   "importAccountSeedPhrase": {
     "message": "Fiók importálása seed mondat segítségével"
   },
-  "importUsingSeed": {
-    "message": "Importálás a fiók seed mondatának használatával"
-  },
   "importWallet": {
     "message": "Pénztárca importálása"
   },
   "imported": {
     "message": "Importált",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Információk és súgó"
   },
   "initialTransactionConfirmed": {
     "message": "Eredeti tranzakciódat jóváhagyta a hálózat. A visszatéréshez kattints az OK-ra."
@@ -827,9 +821,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Fiók helyreállítása a seed mondat segítségével"
-  },
-  "restoreFromSeed": {
-    "message": "Visszaállítja a fiókot? "
   },
   "revealSeedWords": {
     "message": "Seed szavak megjelenítése"

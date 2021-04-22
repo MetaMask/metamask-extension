@@ -508,18 +508,12 @@
   "importAccountSeedPhrase": {
     "message": "利用助憶詞還原"
   },
-  "importUsingSeed": {
-    "message": "利用助憶詞匯入帳戶"
-  },
   "importWallet": {
     "message": "匯入錢包"
   },
   "imported": {
     "message": "已匯入私鑰",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "說明 & 資訊"
   },
   "initialTransactionConfirmed": {
     "message": "交易已確認"
@@ -828,9 +822,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "透過助憶詞還原您的帳戶"
-  },
-  "restoreFromSeed": {
-    "message": "還原帳戶？"
   },
   "revealSeedWords": {
     "message": "顯示助憶詞"

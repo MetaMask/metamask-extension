@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { mount } from 'enzyme';
 import { MemoryRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { LegacyI18nProvider } from '../../ui/app/contexts/i18n';
+import { I18nContext, LegacyI18nProvider } from '../../ui/app/contexts/i18n';
+import { getMessage } from '../../ui/app/helpers/utils/i18n-helper';
+import * as en from '../../app/_locales/en/messages.json';
 
 export function mountWithRouter(component, store = {}, pathname = '/') {
   // Instantiate router context
@@ -42,17 +44,48 @@ export function mountWithRouter(component, store = {}, pathname = '/') {
   return mount(<Wrapper />, createContext());
 }
 
+export const I18nProvider = (props) => {
+  const { currentLocale, current, en: eng } = props;
+
+  const t = useMemo(() => {
+    return (key, ...args) =>
+      getMessage(currentLocale, current, key, ...args) ||
+      getMessage(currentLocale, eng, key, ...args);
+  }, [currentLocale, current, eng]);
+
+  return (
+    <I18nContext.Provider value={t}>{props.children}</I18nContext.Provider>
+  );
+};
+
+I18nProvider.propTypes = {
+  currentLocale: PropTypes.string,
+  current: PropTypes.object,
+  en: PropTypes.object,
+  children: PropTypes.node,
+};
+
+I18nProvider.defaultProps = {
+  children: undefined,
+};
+
 export function renderWithProvider(component, store) {
-  const Wrapper = () =>
+  const Wrapper = ({ children }) =>
     store ? (
       <Provider store={store}>
         <MemoryRouter initialEntries={['/']} initialIndex={0}>
-          <LegacyI18nProvider>{component}</LegacyI18nProvider>
+          <I18nProvider currentLocale="en" current={en} en={en}>
+            <LegacyI18nProvider>{children}</LegacyI18nProvider>
+          </I18nProvider>
         </MemoryRouter>
       </Provider>
     ) : (
-      <LegacyI18nProvider>{component}</LegacyI18nProvider>
+      <LegacyI18nProvider>{children}</LegacyI18nProvider>
     );
 
-  return render(<Wrapper />);
+  Wrapper.propTypes = {
+    children: PropTypes.node,
+  };
+
+  return render(component, { wrapper: Wrapper });
 }

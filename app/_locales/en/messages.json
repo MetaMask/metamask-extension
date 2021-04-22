@@ -862,14 +862,18 @@
   "importAccount": {
     "message": "Import Account"
   },
+  "importAccountLinkText": {
+    "message": "import using seed phrase"
+  },
   "importAccountMsg": {
     "message": " Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
   },
   "importAccountSeedPhrase": {
     "message": "Import an account with seed phrase"
   },
-  "importUsingSeed": {
-    "message": "Import using account seed phrase"
+  "importAccountText": {
+    "message": "or $1",
+    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importWallet": {
     "message": "Import wallet"
@@ -880,9 +884,6 @@
   "imported": {
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info & Help"
   },
   "infuraBlockedNotification": {
     "message": "MetaMask is unable to connect to the blockchain host. Review possible reasons $1.",
@@ -1094,6 +1095,13 @@
   },
   "needEtherInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
+  },
+  "needHelp": {
+    "message": "Need help? Contact $1",
+    "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
+  },
+  "needHelpLinkText": {
+    "message": "MetaMask Support"
   },
   "needImportFile": {
     "message": "You must select a file to import.",
@@ -1398,9 +1406,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restore your Account with Seed Phrase"
-  },
-  "restoreFromSeed": {
-    "message": "Restore account?"
   },
   "restoreWalletPreferences": {
     "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
@@ -1710,6 +1715,9 @@
   },
   "submitted": {
     "message": "Submitted"
+  },
+  "support": {
+    "message": "Support"
   },
   "supportCenter": {
     "message": "Visit our Support Center"

@@ -499,18 +499,12 @@
   "importAccountSeedPhrase": {
     "message": "መለያን በዘር ሐረግ አስመጣ"
   },
-  "importUsingSeed": {
-    "message": "የመለያ የዘር ሐረግ በመጠቀም ያስመጡ"
-  },
   "importWallet": {
     "message": "ቋት አስመጣ"
   },
   "imported": {
     "message": "ከውጭ የመጣ",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "መረጃ እና እገዛ "
   },
   "initialTransactionConfirmed": {
     "message": "የመጀመሪያ ግብይትዎ በአውታረ መረቡ ተረጋግጧል። ወደ ኋላ ለመመለስ እሺ የሚለውን ጠቅ ያድርጉ።"
@@ -831,9 +825,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "መለያዎን በዘር ሐረግ ወደነበረበት ይመልሱ"
-  },
-  "restoreFromSeed": {
-    "message": "መለያው ወደነበረበት ይመለስ?"
   },
   "revealSeedWords": {
     "message": "የዘር ቃላትን ይግለጹ"

@@ -781,18 +781,12 @@
   "importAccountSeedPhrase": {
     "message": "Mag-import ng account gamit ang seed phrase"
   },
-  "importUsingSeed": {
-    "message": "I-import gamit ang seed phrase ng account"
-  },
   "importWallet": {
     "message": "I-import ang wallet"
   },
   "imported": {
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Impormasyon at Tulong"
   },
   "initialTransactionConfirmed": {
     "message": "Nakumpirma na ng network ang iyong inisyal na transaksyon. I-click ang OK para bumalik."
@@ -1266,9 +1260,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "I-restore ang iyong Account gamit ang Seed Phrase"
-  },
-  "restoreFromSeed": {
-    "message": "I-restore ang account?"
   },
   "restoreWalletPreferences": {
     "message": "Nakita ang backup ng iyong data mula sa $1. Gusto mo bang i-restore ang mga kagustuhan mo sa wallet?",

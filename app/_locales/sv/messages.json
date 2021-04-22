@@ -489,18 +489,12 @@
   "importAccountSeedPhrase": {
     "message": "Importera konto med"
   },
-  "importUsingSeed": {
-    "message": "Importera med kontots seedfras"
-  },
   "importWallet": {
     "message": "Importera plånbok"
   },
   "imported": {
     "message": "Importerade",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info och hjälp"
   },
   "initialTransactionConfirmed": {
     "message": "Din initiala transaktion har bekräftats av nätverket. Klicka på OK för att gå tillbaka."
@@ -818,9 +812,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Återställ ditt konto med seedphrase"
-  },
-  "restoreFromSeed": {
-    "message": "Återställ konto?"
   },
   "revealSeedWords": {
     "message": "Visa seed-ord"

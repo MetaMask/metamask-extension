@@ -781,18 +781,12 @@
   "importAccountSeedPhrase": {
     "message": "Nhập một tài khoản bằng cụm mật khẩu gốc"
   },
-  "importUsingSeed": {
-    "message": "Nhập bằng cách sử dụng cụm mật khẩu gốc của tài khoản"
-  },
   "importWallet": {
     "message": "Nhập ví"
   },
   "imported": {
     "message": "Đã nhập",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Thông tin và trợ giúp"
   },
   "initialTransactionConfirmed": {
     "message": "Mạng đã xác nhận giao dịch ban đầu của bạn. Nhấp vào OK để quay lại."
@@ -1269,9 +1263,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Khôi phục tài khoản của bạn bằng cụm mật khẩu gốc"
-  },
-  "restoreFromSeed": {
-    "message": "Khôi phục tài khoản?"
   },
   "restoreWalletPreferences": {
     "message": "Đã tìm thấy bản sao lưu dữ liệu của bạn từ $1. Bạn có muốn khôi phục các tùy chọn ưu tiên trong ví của mình không?",

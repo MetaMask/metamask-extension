@@ -781,18 +781,12 @@
   "importAccountSeedPhrase": {
     "message": "Импортировать счет с исходной фразой"
   },
-  "importUsingSeed": {
-    "message": "Импортировать с использованием исходной фразы счета"
-  },
   "importWallet": {
     "message": "Импортировать кошелек"
   },
   "imported": {
     "message": "Импортированный",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Информация и справка"
   },
   "initialTransactionConfirmed": {
     "message": "Ваша первоначальная транзакция была подтверждена сетью. Нажмите ОК, чтобы вернуться."
@@ -1269,9 +1263,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Восстановите свой счет с помощью исходной фразы"
-  },
-  "restoreFromSeed": {
-    "message": "Восстановить счет?"
   },
   "restoreWalletPreferences": {
     "message": "Найдена резервная копия ваших данных из $1. Хотите восстановить настройки кошелька?",

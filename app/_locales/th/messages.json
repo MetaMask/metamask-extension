@@ -244,9 +244,6 @@
     "message": "นำเข้าเรียบร้อย",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "ข้อมูลและความช่วยเหลือ"
-  },
   "insufficientFunds": {
     "message": "เงินทุนไม่เพียงพอ"
   },
@@ -398,9 +395,6 @@
   },
   "resetAccount": {
     "message": "รีเซ็ตบัญชี"
-  },
-  "restoreFromSeed": {
-    "message": "กู้คืนจากกลุ่มคำชีด"
   },
   "revealSeedWords": {
     "message": "เปิดเผยกลุ่มคำชีด"

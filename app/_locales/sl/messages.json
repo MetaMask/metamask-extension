@@ -490,18 +490,12 @@
   "importAccountSeedPhrase": {
     "message": "Uvoz računa z geslom seed phrase"
   },
-  "importUsingSeed": {
-    "message": "Uvozi z seed phase"
-  },
   "importWallet": {
     "message": "Uvozi denarnico"
   },
   "imported": {
     "message": "Uvoženo",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info & Pomoč"
   },
   "initialTransactionConfirmed": {
     "message": "Vaša prvotna transakcija je bila potrjena. Pritisnite V redu in se vrnite nazaj."
@@ -819,9 +813,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Obnovi račun z seed phrase"
-  },
-  "restoreFromSeed": {
-    "message": "Obnovim račun?"
   },
   "revealSeedWords": {
     "message": "Razkrij seed words"

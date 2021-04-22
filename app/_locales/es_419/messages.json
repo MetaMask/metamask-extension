@@ -790,18 +790,12 @@
   "importAccountSeedPhrase": {
     "message": "Importar una cuenta con frase semilla"
   },
-  "importUsingSeed": {
-    "message": "Importar usando la frase semilla de la cuenta"
-  },
   "importWallet": {
     "message": "Importar billetera"
   },
   "imported": {
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Información y ayuda"
   },
   "initialTransactionConfirmed": {
     "message": "La red ha confirmado tu transacción inicial. Haz clic en Aceptar para volver."
@@ -1278,9 +1272,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restaura tu Cuenta con la Frase Semilla"
-  },
-  "restoreFromSeed": {
-    "message": "¿Restaurar cuenta?"
   },
   "restoreWalletPreferences": {
     "message": "Se ha encontrado una copia de seguridad de sus datos de $1. ¿Le gustaría restaurar sus preferencias de billetera?",

@@ -495,18 +495,12 @@
   "importAccountSeedPhrase": {
     "message": "استيراد حساب باستخدام عبارة الأمان"
   },
-  "importUsingSeed": {
-    "message": "استيراد باستخدام عبارة أمان الحساب"
-  },
   "importWallet": {
     "message": "استيراد المحفظة"
   },
   "imported": {
     "message": "المستوردة",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "المعلومات والمساعدة"
   },
   "initialTransactionConfirmed": {
     "message": "تم تأكيد المعاملة الأولية الخاصة بك بواسطة الشبكة. انقر فوق موافق للعودة."
@@ -827,9 +821,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "قم باستعادة حسابك بواسطة عبارة الأمان"
-  },
-  "restoreFromSeed": {
-    "message": "هل تريد استعادة الحساب؟"
   },
   "revealSeedWords": {
     "message": "كشف كلمات عبارات الأمان"

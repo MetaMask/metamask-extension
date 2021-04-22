@@ -790,18 +790,12 @@
   "importAccountSeedPhrase": {
     "message": "使用账户助记词导入账户"
   },
-  "importUsingSeed": {
-    "message": "使用账户助记词导入"
-  },
   "importWallet": {
     "message": "导入钱包"
   },
   "imported": {
     "message": "已导入",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "信息 & 帮助"
   },
   "initialTransactionConfirmed": {
     "message": "您的初始交易已通过网络确认。请点击“确定”返回。"
@@ -1278,9 +1272,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "使用账户助记词恢复您的账户"
-  },
-  "restoreFromSeed": {
-    "message": "从助记词还原"
   },
   "restoreWalletPreferences": {
     "message": "已找到于 $1 的数据备份。您想恢复您的钱包设置吗？",

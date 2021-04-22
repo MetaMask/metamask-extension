@@ -496,18 +496,12 @@
   "importAccountSeedPhrase": {
     "message": "Εισαγωγή λογαριασμού με Φράση Φύτρου"
   },
-  "importUsingSeed": {
-    "message": "Εισαγωγή με χρήση φάσης σπόρου λογαριασμού"
-  },
   "importWallet": {
     "message": "Εισαγωγή Πορτοφολιού"
   },
   "imported": {
     "message": "Έγινε εισαγωγή",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Πληροφορίες & Βοήθεια"
   },
   "initialTransactionConfirmed": {
     "message": "Η αρχική σας συναλλαγή επιβεβαιώθηκε από το δίκτυο. Πατήστε ΕΝΤΑΞΕΙ για επιστροφή."
@@ -831,9 +825,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Επαναφέρετε τον Λογαριασμό σας με Φράση Επαναφοράς"
-  },
-  "restoreFromSeed": {
-    "message": "Επαναφορά λογαριασμού;"
   },
   "revealSeedWords": {
     "message": "Αποκάλυψη Λέξεων Φύτρου"

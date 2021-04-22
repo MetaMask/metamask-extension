@@ -486,18 +486,12 @@
   "importAccountSeedPhrase": {
     "message": "Importa un Compte amb Phrase de Recuperació"
   },
-  "importUsingSeed": {
-    "message": "Importa utilitzant la frase de seeds del compte"
-  },
   "importWallet": {
     "message": "Importar Moneder"
   },
   "imported": {
     "message": "Importats",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informació i Ajuda"
   },
   "initialTransactionConfirmed": {
     "message": "La teva transacció inicial ha sigut confirmada per la xarxa. Fes clic a OK per tornar enrere."
@@ -812,9 +806,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restaura el teu compte amb Frase de Recuperació"
-  },
-  "restoreFromSeed": {
-    "message": "Restaurar compte?"
   },
   "revealSeedWords": {
     "message": "Revelar Paraules de Recuperació"

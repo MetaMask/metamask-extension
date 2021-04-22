@@ -790,18 +790,12 @@
   "importAccountSeedPhrase": {
     "message": "シードフレーズを使用してアカウントをインポート"
   },
-  "importUsingSeed": {
-    "message": "アカウントのシードフレーズから復元する"
-  },
   "importWallet": {
     "message": "ウォレットのインポート"
   },
   "imported": {
     "message": "インポート済",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "情報とヘルプ"
   },
   "initialTransactionConfirmed": {
     "message": "最初のトランザクションがネットワークに確認されました。戻るにはOKをクリックします。"
@@ -1278,9 +1272,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "シードフレーズでアカウントを復元"
-  },
-  "restoreFromSeed": {
-    "message": "アカウントを復元しますか?"
   },
   "restoreWalletPreferences": {
     "message": "$1 のデータバックアップが見つかりました。ウォレットの基本設定を復元しますか?",

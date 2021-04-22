@@ -456,18 +456,12 @@
   "importAccountSeedPhrase": {
     "message": "Mag-import ng Account gamit ang Seed Phrase"
   },
-  "importUsingSeed": {
-    "message": "Mag-import gamit ang seed phrase ng account"
-  },
   "importWallet": {
     "message": "Mag-import ng Wallet"
   },
   "imported": {
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Impormasyon at Tulong"
   },
   "initialTransactionConfirmed": {
     "message": "Nakumpirma ng network ang iyong unang transaksyon. I-click ang OK para bumalik."
@@ -758,9 +752,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "I-restore ang iyong Account gamit ang Seed Phrase"
-  },
-  "restoreFromSeed": {
-    "message": "I-restore ang account?"
   },
   "revealSeedWords": {
     "message": "Ipakita ang Seed Words"

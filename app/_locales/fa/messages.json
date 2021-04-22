@@ -499,18 +499,12 @@
   "importAccountSeedPhrase": {
     "message": "یک حساب با عبارت بازیاب را وارد کنید"
   },
-  "importUsingSeed": {
-    "message": "وارد کردن با استفاده از عبارت بازیاب حساب"
-  },
   "importWallet": {
     "message": "وارد سازی کیف"
   },
   "imported": {
     "message": "وارد شده",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "معلومات و کمک"
   },
   "initialTransactionConfirmed": {
     "message": "معامله آغازین تان توسط شبکه تأیید شد. برای رفتن به عقب بالای OK کلیک کنید."
@@ -834,9 +828,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "حساب تان را با عبارت بازیاب، بازیابی کنید"
-  },
-  "restoreFromSeed": {
-    "message": "بازگرداندن حساب؟"
   },
   "revealSeedWords": {
     "message": "کلمات بازیاب را آشکار کنید"

@@ -493,18 +493,12 @@
   "importAccountSeedPhrase": {
     "message": "Importar uma Conta com Frase-semente"
   },
-  "importUsingSeed": {
-    "message": "Importe usando a seed phrase da conta"
-  },
   "importWallet": {
     "message": "Importar Carteira"
   },
   "imported": {
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informações e ajuda"
   },
   "initialTransactionConfirmed": {
     "message": "Sua transação inicial foi confirmada pela rede. Clique em OK para voltar."
@@ -822,9 +816,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restaurar sua conta com a frase semente"
-  },
-  "restoreFromSeed": {
-    "message": "Restaurar conta?"
   },
   "revealSeedWords": {
     "message": "Revelar Palavras-semente"

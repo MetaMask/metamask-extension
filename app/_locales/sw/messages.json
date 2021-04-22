@@ -486,18 +486,12 @@
   "importAccountSeedPhrase": {
     "message": "Hamisha Akaunti kwa kutumia Kirai Kianzio"
   },
-  "importUsingSeed": {
-    "message": "Hamisha kwa kutumia kirai kianzio cha akaunti"
-  },
   "importWallet": {
     "message": "Hamisha Waleti"
   },
   "imported": {
     "message": "Zilizoingizwa",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Taarifa & Msaada"
   },
   "initialTransactionConfirmed": {
     "message": "Muamala wako wa awali ulithibitishwa na mtandao. Bofya SWA ili urudi nyuma."
@@ -812,9 +806,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Rejesha Akaunti yako kwa kutumia Kirai Kianzio."
-  },
-  "restoreFromSeed": {
-    "message": "Rejesha akaunti?"
   },
   "revealSeedWords": {
     "message": "Onyesha Maneno ya Kianzio"

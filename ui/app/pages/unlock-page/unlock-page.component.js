@@ -16,7 +16,6 @@ export default class UnlockPage extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     isUnlocked: PropTypes.bool,
-    onImport: PropTypes.func,
     onRestore: PropTypes.func,
     onSubmit: PropTypes.func,
     forceUpdateMetamaskState: PropTypes.func,
@@ -110,7 +109,7 @@ export default class UnlockPage extends Component {
 
   renderSubmitButton() {
     const style = {
-      backgroundColor: '#f7861c',
+      backgroundColor: '#037dd6',
       color: 'white',
       marginTop: '20px',
       height: '60px',
@@ -138,7 +137,7 @@ export default class UnlockPage extends Component {
   render() {
     const { password, error } = this.state;
     const { t } = this.context;
-    const { onImport, onRestore } = this.props;
+    const { onRestore } = this.props;
 
     return (
       <div className="unlock-page__container">
@@ -168,15 +167,27 @@ export default class UnlockPage extends Component {
           </form>
           {this.renderSubmitButton()}
           <div className="unlock-page__links">
-            <button className="unlock-page__link" onClick={() => onRestore()}>
-              {t('restoreFromSeed')}
-            </button>
-            <button
-              className="unlock-page__link unlock-page__link--import"
-              onClick={() => onImport()}
-            >
-              {t('importUsingSeed')}
-            </button>
+            {t('importAccountText', [
+              <button
+                key="import-account"
+                className="unlock-page__link unlock-page__link--import"
+                onClick={() => onRestore()}
+              >
+                {t('importAccountLinkText')}
+              </button>,
+            ])}
+          </div>
+          <div className="unlock-page__support">
+            {t('needHelp', [
+              <a
+                href="https://support.metamask.io"
+                target="_blank"
+                rel="noopener noreferrer"
+                key="need-help-link"
+              >
+                {t('needHelpLinkText')}
+              </a>,
+            ])}
           </div>
         </div>
       </div>

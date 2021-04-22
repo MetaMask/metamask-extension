@@ -499,18 +499,12 @@
   "importAccountSeedPhrase": {
     "message": "Importuoti paskyrą su atkūrimo fraze"
   },
-  "importUsingSeed": {
-    "message": "Importuoti naudojant paskyros atkūrimo frazę"
-  },
   "importWallet": {
     "message": "Importuoti slaptažodinę"
   },
   "imported": {
     "message": "Importuota",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informacija ir žinynas"
   },
   "initialTransactionConfirmed": {
     "message": "Jūsų pradinė operacija patvirtinta tinkle. Norėdami grįžti, spustelėkite „Gerai“."
@@ -834,9 +828,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Atkurti paskyrą naudojant atkūrimo frazę"
-  },
-  "restoreFromSeed": {
-    "message": "Atkurti paskyrą?"
   },
   "revealSeedWords": {
     "message": "Atskleisti atkūrimo žodžius"

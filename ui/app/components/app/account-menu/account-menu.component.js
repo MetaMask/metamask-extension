@@ -12,7 +12,6 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import { PRIMARY } from '../../../helpers/constants/common';
 import {
   SETTINGS_ROUTE,
-  ABOUT_US_ROUTE,
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
@@ -411,12 +410,12 @@ export default class AccountMenu extends Component {
         <div className="account-menu__divider" />
         <AccountMenuItem
           onClick={() => {
-            toggleAccountMenu();
-            history.push(ABOUT_US_ROUTE);
+            global.platform.openTab({ url: 'https://support.metamask.io' });
           }}
-          icon={<img src="images/mm-info-icon.svg" alt={t('infoHelp')} />}
-          text={t('infoHelp')}
+          icon={<img src="images/support.svg" alt={t('support')} />}
+          text={t('support')}
         />
+
         <AccountMenuItem
           onClick={() => {
             toggleAccountMenu();

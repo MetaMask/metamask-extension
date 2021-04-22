@@ -112,7 +112,7 @@ describe('Metamask Responsive UI', function () {
         );
         assert.equal(
           await restoreSeedLink.getText(),
-          'Import using account seed phrase',
+          'import using seed phrase',
         );
         await restoreSeedLink.click();
 

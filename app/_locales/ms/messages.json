@@ -485,18 +485,12 @@
   "importAccountSeedPhrase": {
     "message": "Import Akaun dengan Frasa Benih"
   },
-  "importUsingSeed": {
-    "message": "Import menggunakan frasa benih akaun"
-  },
   "importWallet": {
     "message": "Import Dompet"
   },
   "imported": {
     "message": "Diimport",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info & Bantuan"
   },
   "initialTransactionConfirmed": {
     "message": "Transaksi awal anda telah disahkan oleh rangkaian. Klik OK untuk kembali."
@@ -811,9 +805,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Pulihkan Akaun anda dengan Ungkapan Benih"
-  },
-  "restoreFromSeed": {
-    "message": "Pulihkan akaun?"
   },
   "revealSeedWords": {
     "message": "Dedahkan Ungkapan Benih"

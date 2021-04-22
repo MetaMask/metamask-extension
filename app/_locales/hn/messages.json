@@ -172,9 +172,6 @@
     "message": "आयातित",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "जानकारी और सहायता"
-  },
   "insufficientFunds": {
     "message": "अपर्याप्त धन"
   },
@@ -302,9 +299,6 @@
   },
   "resetAccount": {
     "message": "खाता रीसेट करें"
-  },
-  "restoreFromSeed": {
-    "message": "बीज वाक्यांश से पुनर्स्थापित करें"
   },
   "revealSeedWords": {
     "message": "बीज शब्द प्रकट करें"

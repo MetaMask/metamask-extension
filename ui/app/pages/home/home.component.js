@@ -381,7 +381,20 @@ export default class Home extends PureComponent {
                 <TransactionList />
               </Tab>
             </Tabs>
+            <div className="home__support">
+              {t('needHelp', [
+                <a
+                  href="https://support.metamask.io"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key="need-help-link"
+                >
+                  {t('needHelpLinkText')}
+                </a>,
+              ])}
+            </div>
           </div>
+
           {this.renderNotifications()}
         </div>
       </div>

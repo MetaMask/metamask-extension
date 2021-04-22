@@ -793,18 +793,12 @@
   "importAccountSeedPhrase": {
     "message": "Importa un Account con una Frase Seed"
   },
-  "importUsingSeed": {
-    "message": "Importa account con frase seed"
-  },
   "importWallet": {
     "message": "Importa Portafoglio"
   },
   "imported": {
     "message": "Importato",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informazioni & Aiuto"
   },
   "initialTransactionConfirmed": {
     "message": "La transazione iniziale è stata confermata dalla rete. Clicca OK per tornare indietro."
@@ -1284,9 +1278,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Ripristina Account con la Frase Seed"
-  },
-  "restoreFromSeed": {
-    "message": "Ripristina da una frase seed"
   },
   "restoreWalletPreferences": {
     "message": "È stato trovato un backup dei tuoi dati da $1. Vuoi ripristinare le preferenze del portafoglio?",

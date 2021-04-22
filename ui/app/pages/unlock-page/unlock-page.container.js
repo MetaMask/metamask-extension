@@ -64,7 +64,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...restDispatchProps,
     ...restOwnProps,
-    onImport,
     onRestore: onImport,
     onSubmit: ownPropsSubmit || onSubmit,
     history,

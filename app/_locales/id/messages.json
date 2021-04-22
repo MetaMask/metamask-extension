@@ -781,18 +781,12 @@
   "importAccountSeedPhrase": {
     "message": "Impor akun dengan frasa pemulihan"
   },
-  "importUsingSeed": {
-    "message": "Impor menggunakan frasa pemulihan akun"
-  },
   "importWallet": {
     "message": "Impor dompet"
   },
   "imported": {
     "message": "Diimpor",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informasi & Bantuan"
   },
   "initialTransactionConfirmed": {
     "message": "Transaksi awal Anda dikonfirmasikan oleh jaringan. Klik Oke untuk kembali."
@@ -1269,9 +1263,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Memulihkan Akun dengan Frasa Pemulihan"
-  },
-  "restoreFromSeed": {
-    "message": "Pulihkan akun?"
   },
   "restoreWalletPreferences": {
     "message": "Cadangan data Anda dari $1 telah ditemukan. Apakah Anda ingin memulihkan preferensi dompet Anda?",
