@@ -745,7 +745,6 @@ export default class ConfirmTransactionBase extends Component {
         functionType = t('contractInteraction');
       }
     }
-    console.log(errorKey);
     return (
       <ConfirmPageContainer
         fromName={fromName}
