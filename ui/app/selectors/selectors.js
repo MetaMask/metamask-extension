@@ -500,12 +500,14 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
-function getNotificationToExclude(state) {
+function getNotificationsToInclude(state) {
   const currentNetworkIsMainnet = getIsMainnet(state);
   const swapsIsEnabled = getSwapsFeatureLiveness(state);
 
   return {
-    1: !currentNetworkIsMainnet || !swapsIsEnabled,
+    1: currentNetworkIsMainnet && swapsIsEnabled,
+    2: true,
+    3: true,
   };
 }
 
@@ -520,7 +522,7 @@ function getNotificationToExclude(state) {
  * `state.metamask.notifications`. This function returns a list of notifications
  * the can be shown to the user. This list includes all notifications that do not
  * have a truthy `isShown` property, and also which are not filtered out due to
- * conditions encoded in the `getNotificationToExclude` function.
+ * conditions encoded in the `getNotificationsToInclude` function.
  *
  * The returned notifications are sorted by date.
  *
@@ -530,10 +532,10 @@ function getNotificationToExclude(state) {
 
 export function getSortedNotificationsToShow(state) {
   const notifications = Object.values(state.metamask.notifications) || [];
-  const notificationToExclude = getNotificationToExclude(state);
+  const notificationToExclude = getNotificationsToInclude(state);
   const notificationsToShow = notifications.filter(
     (notification) =>
-      !notification.isShown && !notificationToExclude[notification.id],
+      !notification.isShown && notificationToExclude[notification.id],
   );
   const notificationsSortedByDate = notificationsToShow.sort(
     (a, b) => new Date(b.date) - new Date(a.date),
