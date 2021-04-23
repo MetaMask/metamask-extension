@@ -24,7 +24,7 @@ describe('Incremental Security', function () {
         fixtures: 'onboarding',
         ganacheOptions,
         title: this.test.title,
-        failOnConsoleError = false,
+        failOnConsoleError: false,
         dappPath: 'send-eth-with-private-key-test',
       },
       async ({ driver }) => {
