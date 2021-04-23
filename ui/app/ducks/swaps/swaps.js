@@ -2,6 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
 import log from 'loglevel';
 
+import { captureMessage } from '@sentry/browser';
+
 import {
   addToken,
   addUnapprovedTransaction,
@@ -33,6 +35,7 @@ import {
 import {
   fetchSwapsFeatureLiveness,
   fetchSwapsGasPrices,
+  isContractAddressValid,
 } from '../../pages/swaps/swaps.util';
 import { calcGasTotal } from '../../pages/send/send.utils';
 import {
@@ -675,6 +678,19 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       category: 'swaps',
       sensitiveProperties: swapMetaData,
     });
+
+    if (!isContractAddressValid(usedTradeTxParams.to, swapMetaData, chainId)) {
+      captureMessage('Invalid contract address', {
+        extra: {
+          token_from: swapMetaData.token_from,
+          token_to: swapMetaData.token_to,
+          contract_address: usedTradeTxParams.to,
+        },
+      });
+      await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
+      history.push(SWAPS_ERROR_ROUTE);
+      return;
+    }
 
     let finalApproveTxMeta;
     const approveTxParams = getApproveTxParams(state);
