@@ -101,70 +101,66 @@ export default function WhatsNewPopup({ onClose }) {
   };
 
   return (
-    <div className="whats-new-popup">
-      <Popover
-        className="whats-new-popup__popover"
-        title={t('whatsNew')}
-        onClose={() => {
-          const {
-            bottom: containerBottom,
-          } = contentRef.current.getBoundingClientRect();
+    <Popover
+      className="whats-new-popup__popover"
+      title={t('whatsNew')}
+      onClose={() => {
+        const {
+          bottom: containerBottom,
+        } = contentRef.current.getBoundingClientRect();
 
-          const currentlySeenNotifications = {};
-          Object.keys(idRefMap).forEach((notificationId) => {
-            const { bottom: descriptionBottom } = idRefMap[
-              notificationId
-            ].current.getBoundingClientRect();
+        const currentlySeenNotifications = {};
+        Object.keys(idRefMap).forEach((notificationId) => {
+          const { bottom: descriptionBottom } = idRefMap[
+            notificationId
+          ].current.getBoundingClientRect();
 
-            if (descriptionBottom < containerBottom) {
-              currentlySeenNotifications[notificationId] = true;
-            }
-          });
+          if (descriptionBottom < containerBottom) {
+            currentlySeenNotifications[notificationId] = true;
+          }
+        });
 
-          updateViewedNotifications(currentlySeenNotifications);
+        updateViewedNotifications(currentlySeenNotifications);
 
-          onClose();
-        }}
-        contentRef={contentRef}
-        mediumHeight
-      >
-        <div className="whats-new-popup__notifications">
-          {notifications.map(({ id, date }, index) => {
-            const notification = UI_NOTIFICATIONS[id];
-            const isFirstNotification = index === 0;
-            return (
-              <div
-                className={classnames('whats-new-popup__notification', {
-                  'whats-new-popup__first-notification': isFirstNotification,
-                })}
-                key={`whats-new-popop-notificatiion-${index}`}
-              >
-                {maybeRenderNotificationItem(id, isFirstNotification, 'image')}
-                <div className="whats-new-popup__notification-title">
-                  {t(notification.title)}
-                </div>
-                <div
-                  className="whats-new-popup__description-and-date"
-                  ref={idRefMap[id]}
-                >
-                  <div className="whats-new-popup__notification-description">
-                    {t(notification.description)}
-                  </div>
-                  <div className="whats-new-popup__notification-date">
-                    {date}
-                  </div>
-                </div>
-                {maybeRenderNotificationItem(
-                  id,
-                  isFirstNotification,
-                  'actionText',
-                )}
+        onClose();
+      }}
+      contentRef={contentRef}
+      mediumHeight
+    >
+      <div className="whats-new-popup__notifications">
+        {notifications.map(({ id, date }, index) => {
+          const notification = UI_NOTIFICATIONS[id];
+          const isFirstNotification = index === 0;
+          return (
+            <div
+              className={classnames('whats-new-popup__notification', {
+                'whats-new-popup__first-notification': isFirstNotification,
+              })}
+              key={`whats-new-popop-notificatiion-${index}`}
+            >
+              {maybeRenderNotificationItem(id, isFirstNotification, 'image')}
+              <div className="whats-new-popup__notification-title">
+                {t(notification.title)}
               </div>
-            );
-          })}
-        </div>
-      </Popover>
-    </div>
+              <div
+                className="whats-new-popup__description-and-date"
+                ref={idRefMap[id]}
+              >
+                <div className="whats-new-popup__notification-description">
+                  {t(notification.description)}
+                </div>
+                <div className="whats-new-popup__notification-date">{date}</div>
+              </div>
+              {maybeRenderNotificationItem(
+                id,
+                isFirstNotification,
+                'actionText',
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </Popover>
   );
 }
 
