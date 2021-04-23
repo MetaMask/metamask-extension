@@ -23,3 +23,26 @@ export const UI_NOTIFICATIONS = {
     actionText: 'notificationsActionText3',
   },
 };
+
+export const getTranslatedUINoficiations = (t) => {
+  return {
+    1: {
+      ...UI_NOTIFICATIONS[1],
+      title: t('notificationsTitle1'),
+      description: t('notificationsDescription1'),
+      actionText: t('notificationsActionText1'),
+    },
+    2: {
+      ...UI_NOTIFICATIONS[2],
+      title: t('notificationsTitle2'),
+      description: t('notificationsDescription2'),
+      actionText: t('notificationsActionText2'),
+    },
+    3: {
+      ...UI_NOTIFICATIONS[3],
+      title: t('notificationsTitle3'),
+      description: t('notificationsDescription3'),
+      actionText: t('notificationsActionText3'),
+    },
+  };
+};

@@ -8,7 +8,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
 import { updateViewedNotifications } from '../../../store/actions';
-import { UI_NOTIFICATIONS } from '../../../../../shared/notifications';
+import { getTranslatedUINoficiations } from '../../../../../shared/notifications';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../../../shared/constants/swaps';
 import { BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes';
 import { getSortedNotificationsToShow } from '../../../selectors';
@@ -80,14 +80,14 @@ export default function WhatsNewPopup({ onClose }) {
           />
         )}
         <div className="whats-new-popup__notification-title">
-          {t(notification.title)}
+          {notification.title}
         </div>
         <div
           className="whats-new-popup__description-and-date"
           ref={idRefMap[id]}
         >
           <div className="whats-new-popup__notification-description">
-            {t(notification.description)}
+            {notification.description}
           </div>
           <div className="whats-new-popup__notification-date">{date}</div>
         </div>
@@ -98,7 +98,7 @@ export default function WhatsNewPopup({ onClose }) {
             rounded
             onClick={actionFunctions[id]}
           >
-            {t(notification.actionText)}
+            {notification.actionText}
           </Button>
         )}
       </div>
@@ -112,19 +112,19 @@ export default function WhatsNewPopup({ onClose }) {
         key={`whats-new-popop-notificatiion-${index}`}
       >
         <div className="whats-new-popup__notification-title">
-          {t(notification.title)}
+          {notification.title}
         </div>
         <div
           className="whats-new-popup__description-and-date"
           ref={idRefMap[id]}
         >
           <div className="whats-new-popup__notification-description">
-            {t(notification.description)}
+            {notification.description}
           </div>
           <div className="whats-new-popup__notification-date">{date}</div>
         </div>
         <div className="whats-new-popup__link" onClick={actionFunctions[id]}>
-          {t(notification.actionText)}
+          {notification.actionText}
         </div>
       </div>
     );
@@ -159,7 +159,7 @@ export default function WhatsNewPopup({ onClose }) {
     >
       <div className="whats-new-popup__notifications">
         {notifications.map(({ id, date }, index) => {
-          const notification = UI_NOTIFICATIONS[id];
+          const notification = getTranslatedUINoficiations(t)[id];
           return index === 0
             ? renderFirstNotification(notification, id, date)
             : renderSubsequentNotification(notification, id, date, index);
