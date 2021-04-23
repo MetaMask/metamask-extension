@@ -58,7 +58,7 @@ import nodeify from './lib/nodeify';
 import accountImporter from './account-import-strategies';
 import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
-import { segment, segmentLegacy } from './lib/segment';
+import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -128,7 +128,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.metaMetricsController = new MetaMetricsController({
       segment,
-      segmentLegacy,
       preferencesStore: this.preferencesController.store,
       onNetworkDidChange: this.networkController.on.bind(
         this.networkController,
