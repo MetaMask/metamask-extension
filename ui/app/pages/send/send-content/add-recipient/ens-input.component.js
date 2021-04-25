@@ -314,7 +314,7 @@ export default class EnsInput extends Component {
     }
 
     if (ensFailure) {
-      return <i className="fa fa-warning fa-lg warning'" />;
+      return <i className="fa fa-warning fa-lg warning" />;
     }
 
     if (ensResolution && ensResolution !== ZERO_ADDRESS) {
