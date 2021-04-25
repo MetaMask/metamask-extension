@@ -83,6 +83,9 @@ export function isValidAddress(address) {
     return false;
   }
   const prefixed = addHexPrefix(address);
+  if (!isHex(prefixed)) {
+    return false;
+  }
   return (
     (isAllOneCase(prefixed.slice(2)) && ethUtil.isValidAddress(prefixed)) ||
     ethUtil.isValidChecksumAddress(prefixed)

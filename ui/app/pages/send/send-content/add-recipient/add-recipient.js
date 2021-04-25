@@ -22,7 +22,7 @@ export function getToErrorObject(to, sendTokenAddress, chainId) {
   let toError = null;
   if (!to) {
     toError = REQUIRED_ERROR;
-  } else if (!isValidAddress(to)) {
+  } else if (!isValidAddress(to) && !isValidDomainName(to)) {
     toError = isDefaultMetaMaskChain(chainId)
       ? INVALID_RECIPIENT_ADDRESS_ERROR
       : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;
