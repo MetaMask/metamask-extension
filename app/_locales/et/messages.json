@@ -308,9 +308,6 @@
   "done": {
     "message": "Valmis"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Teil ei ole riistvara rahakotti?"
-  },
   "downloadGoogleChrome": {
     "message": "Laadige alla Google Chrome"
   },
@@ -439,9 +436,6 @@
     "message": "Hankige kraanist eetrit $1eest",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Küsige abi."
-  },
   "getStarted": {
     "message": "Alustamine"
   },
@@ -462,9 +456,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Valige riistvara rahakott, mida soovite MetaMaskis kasutada"
-  },
-  "havingTroubleConnecting": {
-    "message": "Kas ühendamisel esineb probleeme?"
   },
   "here": {
     "message": "siin",
@@ -697,9 +688,6 @@
   "optionalCurrencySymbol": {
     "message": "Sümbol (valikuline)"
   },
-  "orderOneHere": {
-    "message": "Tellige Trezor või Ledger ja hoidke oma varasid külmruumis"
-  },
   "origin": {
     "message": "Päritolu"
   },
@@ -758,9 +746,6 @@
   },
   "readdToken": {
     "message": "Saate selle loa tulevikus tagasi lisada, kui lähete oma kontovalikute menüüs vahelehele „Lisa luba“."
-  },
-  "readyToConnect": {
-    "message": "Kas olete ühenduseks valmis?"
   },
   "recents": {
     "message": "Hiljutised"
@@ -983,24 +968,6 @@
   },
   "stateLogsDescription": {
     "message": "Olekulogid sisaldavad teie avalikke konto aadresse ja saadetud tehinguid."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Ühendage riistvara rahakott"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Ühendage oma riistvara rahakott otse oma arvutiga."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Valige konto"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Valige konto, mida soovite vaadata. Korraga saab valida ühe."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Hakake kasutama dAppse ja muud!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Kasutage oma riistvarakontot nagu mis tahes teist Ethereumi kontot. Logige dAppsi, saatke Eth-d, ostke ja hoiustage ERC20 lube ning asendamatuid lube nagu CryptoKitties."
   },
   "storePhrase": {
     "message": "Salvestage see fraas paroolihaldurisse, nagu 1Password."

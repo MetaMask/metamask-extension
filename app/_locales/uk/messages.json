@@ -308,9 +308,6 @@
   "done": {
     "message": "Готово"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Не маєте апаратного гаманця?"
-  },
   "downloadGoogleChrome": {
     "message": "Завантажити Гугл Хром"
   },
@@ -443,9 +440,6 @@
     "message": "Отримайте Ether з крану за $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Отримати допомогу."
-  },
   "getStarted": {
     "message": "Почати"
   },
@@ -466,9 +460,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Оберіть апаратний гаманець, який ви хочете використовувати з MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Проблеми при підключенні?"
   },
   "here": {
     "message": "тут",
@@ -707,9 +698,6 @@
   "optionalCurrencySymbol": {
     "message": "Символ (не обов'язково)"
   },
-  "orderOneHere": {
-    "message": "Замовте Trezor або Ledger та зберігайте ваші кошти у холодному сховищі"
-  },
   "origin": {
     "message": "Походження"
   },
@@ -768,9 +756,6 @@
   },
   "readdToken": {
     "message": "Ви можете знову додати цей токен у меню облікового запису у розділі “Додати токен”. "
-  },
-  "readyToConnect": {
-    "message": "Готові підключитися?"
   },
   "recents": {
     "message": "Останні"
@@ -993,24 +978,6 @@
   },
   "stateLogsDescription": {
     "message": "Логи стану містять ваші публічні адреси облікового запису та надіслані транзакції."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Приєднайте апаратний гаманець"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Під'єднайте ваш апаратний гаманець безпосередньо до вашого комп'ютера."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Оберіть обліковий запис"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Оберіть обліковий запис, який бажаєте переглянути. Ви можете вибрати лише один."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Почніть користуватись dApps та більше!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Використовуйте ваш апаратний обліковий запис, як би ви використовували будь-який обліковий запис Ethereum. Увійдіть в dApps, надсилайте Eth, купуйте та зберігайте токени ERC20 та токени, які не є взаємозамінними, такі як CryptoKitties."
   },
   "storePhrase": {
     "message": "Зберігайте цю фразу у менеджері паролів, як 1Password."

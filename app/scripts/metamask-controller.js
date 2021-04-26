@@ -656,6 +656,7 @@ export default class MetamaskController extends EventEmitter {
         this.unlockHardwareWalletAccount,
         this,
       ),
+      setLedgerLivePreference: nodeify(this.setLedgerLivePreference, this),
 
       // mobile
       fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
@@ -1193,6 +1194,14 @@ export default class MetamaskController extends EventEmitter {
     } catch (error) {
       log.error('Error while unlocking extension.', error);
     }
+
+    // This must be set as soon as possible to communicate to the
+    // keyring's iframe and have the setting initialized properly
+    // Optimistically called to not block Metamask login due to
+    // Ledger Keyring GitHub downtime
+    this.setLedgerLivePreference(
+      this.preferencesController.getLedgerLivePreference(),
+    );
 
     return this.keyringController.fullUpdate();
   }
@@ -2668,6 +2677,27 @@ export default class MetamaskController extends EventEmitter {
       // eslint-disable-next-line no-useless-return
       return;
     }
+  }
+
+  /**
+   * Sets the Ledger Live preference to use for Ledger hardware wallet support
+   * @param {bool} bool - the value representing if the users wants to use Ledger Live
+   */
+  async setLedgerLivePreference(bool) {
+    const currentValue = this.preferencesController.getLedgerLivePreference();
+    this.preferencesController.setLedgerLivePreference(bool);
+
+    const keyring = await this.getKeyringForDevice('ledger');
+    if (keyring?.updateTransportMethod) {
+      return keyring.updateTransportMethod(bool).catch((e) => {
+        // If there was an error updating the transport, we should
+        // fall back to the original value
+        this.preferencesController.setLedgerLivePreference(currentValue);
+        throw e;
+      });
+    }
+
+    return undefined;
   }
 
   /**

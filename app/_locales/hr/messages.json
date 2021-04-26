@@ -308,9 +308,6 @@
   "done": {
     "message": "Gotovo"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Nemate hardverski novčanik?"
-  },
   "downloadGoogleChrome": {
     "message": "Preuzmi preglednik Google Chrome"
   },
@@ -439,9 +436,6 @@
     "message": "Dohvati Ether iz svežnja za $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Potražite pomoć."
-  },
   "getStarted": {
     "message": "Početak upotrebe"
   },
@@ -462,9 +456,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Odaberite hardverski novčanik koji biste željeli upotrebljavati s uslugom MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Imate poteškoća s povezivanjem?"
   },
   "here": {
     "message": "ovdje",
@@ -700,9 +691,6 @@
   "optionalCurrencySymbol": {
     "message": "Simbol (neobavezno)"
   },
-  "orderOneHere": {
-    "message": "Naručite Trezor ili Ledger te čuvajte svoja sredstva u hladnoj pohrani"
-  },
   "origin": {
     "message": "Podrijetlo"
   },
@@ -761,9 +749,6 @@
   },
   "readdToken": {
     "message": "Ovaj token možete dodati kasnije odlaskom pod stavku „Dodaj token” u izborniku mogućnosti računa. "
-  },
-  "readyToConnect": {
-    "message": "Sve je spremno za povezivanje?"
   },
   "recents": {
     "message": "Nedavno"
@@ -986,24 +971,6 @@
   },
   "stateLogsDescription": {
     "message": "U zapisnicima se stanja nalaze javne adrese računa i poslane transakcije."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Povežite se na svoj hardverski novčanik"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Povežite svoj hardverski novčanik izravno na svoje računalo."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Odaberite račun"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Odaberite račun koji želite pregledati. Istovremeno možete odabrati samo jedan račun za pregled."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Započnite upotrebljavati dApps i više!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Upotrebljavajte svoj hardverski račun kako biste upotrebljavali bilo koji drugi račun Ethereum. Prijavite se u dApps, šaljite Eth, kupujte i pohranjujte ERC20 tokene i nezamjenske tokene kao CryptoKitties."
   },
   "storePhrase": {
     "message": "Spremite ovu rečenicu u upravitelj lozinkama poput aplikacije 1Password."

@@ -494,9 +494,6 @@
   "done": {
     "message": "Selesai"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Tidak punya dompet perangkat keras?"
-  },
   "dontShowThisAgain": {
     "message": "Jangan tampilkan ini lagi"
   },
@@ -721,9 +718,6 @@
     "message": "Dapatkan Ether dari keran untuk $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Dapatkan Bantuan."
-  },
   "getStarted": {
     "message": "Persiapan."
   },
@@ -744,9 +738,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Pilih dompet perangkat keras yang ingin Anda gunakan dengan MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Ada masalah saat menghubungkan?"
   },
   "here": {
     "message": "di sini",
@@ -1117,9 +1108,6 @@
   "optionalCurrencySymbol": {
     "message": "Simbol Mata Uang (opsional)"
   },
-  "orderOneHere": {
-    "message": "Pesan Trezor atau Ledger dan simpan dana Anda di penyimpanan dingin"
-  },
   "origin": {
     "message": "Asal"
   },
@@ -1200,9 +1188,6 @@
   },
   "readdToken": {
     "message": "Anda dapat menambahkan token ini kembali di masa mendatang dengan membuka “Tambahkan token” di menu opsi akun Anda."
-  },
-  "readyToConnect": {
-    "message": "Siap untuk Terhubung?"
   },
   "receive": {
     "message": "Terima"
@@ -1503,24 +1488,6 @@
   },
   "statusNotConnected": {
     "message": "Tidak terhubung"
-  },
-  "step1HardwareWallet": {
-    "message": "1. Hubungkan Dompet Perangkat Keras"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Hubungkan dompet perangkat keras Anda langsung ke komputer."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Pilih Akun"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Pilih akun yang ingin Anda lihat. Anda hanya dapat memilih satu pada satu waktu."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Mulai menggunakan situs web3 dan lainnya!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Gunakan akun perangkat keras Anda seperti yang akan Anda lakukan dengan akun Ethereum lainnya. Hubungkan ke situs web3, kirim ETH, beli dan simpan token ERC20 dan token yang tidak dapat dipertukarkan seperti CryptoKitties."
   },
   "storePhrase": {
     "message": "Simpan frasa ini dalam pengelola kata sandi seperti 1Password."
