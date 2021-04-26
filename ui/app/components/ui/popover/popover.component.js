@@ -17,7 +17,7 @@ const Popover = ({
   contentClassName,
   showArrow,
   CustomBackground,
-  contentRef,
+  containerRef,
 }) => {
   const t = useI18nContext();
   return (
@@ -31,6 +31,7 @@ const Popover = ({
         className={classnames('popover-wrap', className, {
           'popover-wrap--medium-height': mediumHeight,
         })}
+        ref={containerRef}
       >
         {showArrow ? <div className="popover-arrow" /> : null}
         <header className="popover-header">
@@ -57,10 +58,7 @@ const Popover = ({
           ) : null}
         </header>
         {children ? (
-          <div
-            className={classnames('popover-content', contentClassName)}
-            ref={contentRef}
-          >
+          <div className={classnames('popover-content', contentClassName)}>
             {children}
           </div>
         ) : null}
@@ -87,7 +85,7 @@ Popover.propTypes = {
   className: PropTypes.string,
   showArrow: PropTypes.bool,
   mediumHeight: PropTypes.bool,
-  contentRef: PropTypes.shape({
+  containerRef: PropTypes.shape({
     current: PropTypes.instanceOf(window.Element),
   }),
 };

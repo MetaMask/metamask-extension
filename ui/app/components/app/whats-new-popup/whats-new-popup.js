@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useRef } from 'react';
+import React, { useContext, useMemo, useRef, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -40,7 +40,7 @@ export default function WhatsNewPopup({ onClose }) {
 
   const notifications = useSelector(getSortedNotificationsToShow);
 
-  const contentRef = useRef();
+  const containerRef = useRef();
 
   const memoizedNotifications = useEqualityCheck(notifications);
   const idRefMap = useMemo(
@@ -55,6 +55,36 @@ export default function WhatsNewPopup({ onClose }) {
     [memoizedNotifications],
   );
 
+  const [seenNotifications, setSeenNotifications] = useState({});
+  const observationsCreated = useRef(false);
+
+  useEffect(() => {
+    const observers = [];
+    observationsCreated.current = true;
+
+    Object.entries(idRefMap).forEach(([id, ref]) => {
+      const observer = new window.IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setSeenNotifications((_seenNotifications) => ({
+              ..._seenNotifications,
+              [id]: true,
+            }));
+          }
+        },
+        {
+          root: containerRef.current,
+          threshold: 1.0,
+        },
+      );
+      observers.push(observer);
+      observer.observe(ref.current);
+    });
+    return () => {
+      observers.forEach((observer) => observer.disconnect());
+    };
+  }, [idRefMap, setSeenNotifications]);
+
   const renderFirstNotification = (notification, id, date) => {
     return (
       <div
@@ -62,6 +92,7 @@ export default function WhatsNewPopup({ onClose }) {
           'whats-new-popup__notification whats-new-popup__first-notification',
         )}
         key="whats-new-popop-notificatiion-0"
+        ref={idRefMap[id]}
       >
         {notification.image && (
           <img
@@ -72,10 +103,7 @@ export default function WhatsNewPopup({ onClose }) {
         <div className="whats-new-popup__notification-title">
           {notification.title}
         </div>
-        <div
-          className="whats-new-popup__description-and-date"
-          ref={idRefMap[id]}
-        >
+        <div className="whats-new-popup__description-and-date">
           <div className="whats-new-popup__notification-description">
             {notification.description}
           </div>
@@ -100,14 +128,12 @@ export default function WhatsNewPopup({ onClose }) {
       <div
         className={classnames('whats-new-popup__notification')}
         key={`whats-new-popop-notificatiion-${index}`}
+        ref={idRefMap[id]}
       >
         <div className="whats-new-popup__notification-title">
           {notification.title}
         </div>
-        <div
-          className="whats-new-popup__description-and-date"
-          ref={idRefMap[id]}
-        >
+        <div className="whats-new-popup__description-and-date">
           <div className="whats-new-popup__notification-description">
             {notification.description}
           </div>
@@ -125,26 +151,10 @@ export default function WhatsNewPopup({ onClose }) {
       className="whats-new-popup__popover"
       title={t('whatsNew')}
       onClose={() => {
-        const {
-          bottom: containerBottom,
-        } = contentRef.current.getBoundingClientRect();
-
-        const currentlySeenNotifications = {};
-        Object.keys(idRefMap).forEach((notificationId) => {
-          const { bottom: descriptionBottom } = idRefMap[
-            notificationId
-          ].current.getBoundingClientRect();
-
-          if (descriptionBottom < containerBottom) {
-            currentlySeenNotifications[notificationId] = true;
-          }
-        });
-
-        updateViewedNotifications(currentlySeenNotifications);
-
+        updateViewedNotifications(seenNotifications);
         onClose();
       }}
-      contentRef={contentRef}
+      containerRef={containerRef}
       mediumHeight
     >
       <div className="whats-new-popup__notifications">
