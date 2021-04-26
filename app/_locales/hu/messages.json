@@ -308,9 +308,6 @@
   "done": {
     "message": "Kész"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Nincs hardveres tárcája? "
-  },
   "downloadGoogleChrome": {
     "message": "Google Chrome letöltése"
   },
@@ -439,9 +436,6 @@
     "message": "Szerezzen Ethert pénzcsapból a(z) $1-ért",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Segítség kérése"
-  },
   "getStarted": {
     "message": "Első lépések"
   },
@@ -462,9 +456,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Válassza ki a MetaMask-kal használni kívánt hardveres pénztárcát"
-  },
-  "havingTroubleConnecting": {
-    "message": "Gond van a csatlakozással?"
   },
   "here": {
     "message": "itt",
@@ -694,9 +685,6 @@
   "optionalCurrencySymbol": {
     "message": "Szimbólum (opcionális)"
   },
-  "orderOneHere": {
-    "message": "Rendeljen trezort vagy főkönyvet, és tárolja pénzeszközeit hideg tárcában"
-  },
   "origin": {
     "message": "Eredet"
   },
@@ -755,9 +743,6 @@
   },
   "readdToken": {
     "message": "Ezt a tokent a jövőben is hozzáadhatja, ha a fiókbeállítások menü „Token hozzáadása” elemére lép."
-  },
-  "readyToConnect": {
-    "message": "Készen áll a csatlakozásra?"
   },
   "recents": {
     "message": "Legutóbbiak"
@@ -980,24 +965,6 @@
   },
   "stateLogsDescription": {
     "message": "Az állapotnaplóban megtalálhatók nyilvános fiókcímeid és elküldött tranzakcióid."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Csatlakoztassa a hardveres pénztárcát"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Csatlakoztassa hardveres tárcáját közvetlenül a számítógéphez."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Válassz egy fiókot"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Válassza ki a megtekinteni kívánt fiókot. Egyszerre csak egyet választhat."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Kezdje el használni a dApps-t és másokat!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Használja hardveres fiókját úgy, mint bármilyen Ethereum fiókot. Jelentkezzen be a dAppsba, küldjön Ethet, vásároljon és tároljon ERC20 tokeneket és nem helyettesíthető tokeneket, például CryptoKitties-t."
   },
   "storePhrase": {
     "message": "Tárolja a mondatot jelszókezelőben, például az 1Passwordben."
