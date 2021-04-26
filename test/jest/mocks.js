@@ -1,4 +1,4 @@
-const TOP_ASSETS_GET_RESPONSE = [
+export const TOP_ASSETS_GET_RESPONSE = [
   {
     symbol: 'LINK',
     address: '0x514910771af9ca656af840dff83e8264ecf986ca',
@@ -21,19 +21,19 @@ const TOP_ASSETS_GET_RESPONSE = [
   },
 ];
 
-const REFRESH_TIME_GET_RESPONSE = {
+export const REFRESH_TIME_GET_RESPONSE = {
   seconds: 3600,
 };
 
-const AGGREGATOR_METADATA_GET_RESPONSE = {};
+export const AGGREGATOR_METADATA_GET_RESPONSE = {};
 
-const GAS_PRICES_GET_RESPONSE = {
+export const GAS_PRICES_GET_RESPONSE = {
   SafeGasPrice: '10',
   ProposeGasPrice: '20',
   FastGasPrice: '30',
 };
 
-const TOKENS_GET_RESPONSE = [
+export const TOKENS_GET_RESPONSE = [
   {
     erc20: true,
     symbol: 'META',
@@ -59,11 +59,3 @@ const TOKENS_GET_RESPONSE = [
     address: '0x0D8775F648430679A709E98d2b0Cb6250d2887EF',
   },
 ];
-
-module.exports = {
-  TOP_ASSETS_GET_RESPONSE,
-  REFRESH_TIME_GET_RESPONSE,
-  AGGREGATOR_METADATA_GET_RESPONSE,
-  GAS_PRICES_GET_RESPONSE,
-  TOKENS_GET_RESPONSE,
-};

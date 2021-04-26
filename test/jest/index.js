@@ -1,13 +1,13 @@
-import { createSwapsMockStore } from './mock-store';
-import { renderWithProvider } from './rendering';
-import { setBackgroundConnection } from './background';
-import MOCKS from './mocks';
-import CONSTANTS from './constants';
+import * as mockStore from './mock-store';
+import * as rendering from './rendering';
+import * as background from './background';
+import * as MOCKS from './mocks';
+import * as CONSTANTS from './constants';
 
 module.exports = {
-  createSwapsMockStore,
-  renderWithProvider,
-  setBackgroundConnection,
+  ...mockStore,
+  ...rendering,
+  ...background,
   MOCKS,
   CONSTANTS,
 };
