@@ -57,8 +57,6 @@ export default class MetaMetricsController {
   /**
    * @param {Object} segment - an instance of analytics-node for tracking
    *  events that conform to the new MetaMetrics tracking plan.
-   * @param {Object} segmentLegacy - an instance of analytics-node for
-   *  tracking legacy schema events. Will eventually be phased out
    * @param {Object} preferencesStore - The preferences controller store, used
    *  to access and subscribe to preferences that will be attached to events
    * @param {function} onNetworkDidChange - Used to attach a listener to the
@@ -73,7 +71,6 @@ export default class MetaMetricsController {
    */
   constructor({
     segment,
-    segmentLegacy,
     preferencesStore,
     onNetworkDidChange,
     getCurrentChainId,
@@ -105,7 +102,6 @@ export default class MetaMetricsController {
       this.network = getNetworkIdentifier();
     });
     this.segment = segment;
-    this.segmentLegacy = segmentLegacy;
   }
 
   generateMetaMetricsId() {
@@ -260,6 +256,12 @@ export default class MetaMetricsController {
     }
     payload[idType] = idValue;
 
+    // If this is an event on the old matomo schema, add a key to the payload
+    // to designate it as such
+    if (matomoEvent === true) {
+      payload.properties.legacy_event = true;
+    }
+
     // Promises will only resolve when the event is sent to segment. For any
     // event that relies on this promise being fulfilled before performing UI
     // updates, or otherwise delaying user interaction, supply the
@@ -278,11 +280,9 @@ export default class MetaMetricsController {
         return resolve();
       };
 
-      const target = matomoEvent === true ? this.segmentLegacy : this.segment;
-
-      target.track(payload, callback);
+      this.segment.track(payload, callback);
       if (flushImmediately) {
-        target.flush();
+        this.segment.flush();
       }
     });
   }

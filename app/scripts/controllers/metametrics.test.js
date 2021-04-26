@@ -11,7 +11,6 @@ import MetaMetricsController from './metametrics';
 import { NETWORK_EVENTS } from './network';
 
 const segment = createSegmentMock(2, 10000);
-const segmentLegacy = createSegmentMock(2, 10000);
 
 const VERSION = '0.0.1-test';
 const NETWORK = 'Mainnet';
@@ -91,7 +90,6 @@ function getMetaMetricsController({
 } = {}) {
   return new MetaMetricsController({
     segment,
-    segmentLegacy,
     getNetworkIdentifier: networkController.getNetworkIdentifier.bind(
       networkController,
     ),
@@ -286,7 +284,7 @@ describe('MetaMetricsController', function () {
     });
 
     it('should track a legacy event', function () {
-      const mock = sinon.mock(segmentLegacy);
+      const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController();
       mock
         .expects('track')
@@ -297,6 +295,7 @@ describe('MetaMetricsController', function () {
           context: DEFAULT_TEST_CONTEXT,
           properties: {
             test: 1,
+            legacy_event: true,
             ...DEFAULT_EVENT_PROPERTIES,
           },
         });
@@ -544,7 +543,6 @@ describe('MetaMetricsController', function () {
   afterEach(function () {
     // flush the queues manually after each test
     segment.flush();
-    segmentLegacy.flush();
     sinon.restore();
   });
 });
