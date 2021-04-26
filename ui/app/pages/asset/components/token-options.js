@@ -69,6 +69,7 @@ const TokenOptions = ({
 TokenOptions.propTypes = {
   onRemove: PropTypes.func.isRequired,
   onViewEtherscan: PropTypes.func.isRequired,
+  onViewAccountDetails: PropTypes.func.isRequired,
   tokenSymbol: PropTypes.string.isRequired,
 };
 
