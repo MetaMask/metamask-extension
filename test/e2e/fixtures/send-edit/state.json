@@ -37,6 +37,19 @@
         "type": "rpc"
       }
     },
+    "NotificationController": {
+      "notifications": {
+        "1": {
+          "isShown": true
+        },
+        "2": {
+          "isShown": true
+        },
+        "3": {
+          "isShown": true
+        }
+      }
+    },
     "OnboardingController": {
       "onboardingTabs": {},
       "seedPhraseBackedUp": false
