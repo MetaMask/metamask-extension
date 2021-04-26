@@ -308,9 +308,6 @@
   "done": {
     "message": "সম্পন্ন "
   },
-  "dontHaveAHardwareWallet": {
-    "message": "একটি হার্ডওয়্যার ওয়ালেট নেই?"
-  },
   "downloadGoogleChrome": {
     "message": "Google Chrome ডাউনলোড করুন"
   },
@@ -443,9 +440,6 @@
     "message": "$1 এর জন্য একটি ফসেট থেকে ইথার পান",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "সহায়তা পান।"
-  },
   "getStarted": {
     "message": "শুরু করুন"
   },
@@ -466,9 +460,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "আপনি MetaMask এর সাথে ব্যবহার করতে চান এমন একটি হার্ডওয়্যার ওয়ালেট নির্বাচন করুন"
-  },
-  "havingTroubleConnecting": {
-    "message": "সংযোগ করতে সমস্যা হচ্ছে?"
   },
   "here": {
     "message": "এখানে",
@@ -499,21 +490,12 @@
   "importAccountSeedPhrase": {
     "message": "সীড ফ্রেজ দিয়ে একটি অ্যাকাউন্ট আমদানি করুন"
   },
-  "importUsingSeed": {
-    "message": "অ্যাকাউন্ট সীড ফ্রেজ ব্যবহার করে আমদানি করুন"
-  },
   "importWallet": {
     "message": "ওয়ালেট আমদানি করুন"
-  },
-  "importYourExisting": {
-    "message": "একটি 12 শব্দের সীড ফ্রেজ ব্যবহার করে আপনার বিদ্যমান ওয়ালেট আমদানি করুন"
   },
   "imported": {
     "message": "আমদানিকৃত",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "তথ্য ও সহায়তা"
   },
   "initialTransactionConfirmed": {
     "message": "আপনার প্রারম্ভিক লেনদেনটি নেটওয়ার্ক নিশ্চিত করেছিল। ফিরে যেতে ঠিক আছে তে ক্লিক করুন।"
@@ -716,9 +698,6 @@
   "optionalCurrencySymbol": {
     "message": "প্রতীক (ঐচ্ছিক)"
   },
-  "orderOneHere": {
-    "message": "একটি Trezor বা লেজার অর্ডার করুন এবং আপনার তহবিলগুলি হীম ঘরে রাখুন"
-  },
   "origin": {
     "message": "উৎস"
   },
@@ -778,9 +757,6 @@
   "readdToken": {
     "message": "আপনি আপনার অ্যাকাউন্টস বিকল্পের মেনুতে \"টোকেনগুলি যোগ করুন\" এ গিয়ে ভবিষ্যতে আবার এই টোকেনটি যোগ করতে পারবেন। "
   },
-  "readyToConnect": {
-    "message": "সংযোগ করার জন্য প্রস্তুত?"
-  },
   "recents": {
     "message": "সাম্প্রতিকগুলি"
   },
@@ -838,9 +814,6 @@
   "restoreAccountWithSeed": {
     "message": "সীড ফ্রেজ দিয়ে আপনার অ্যাকাউন্ট রিস্টোর করুন"
   },
-  "restoreFromSeed": {
-    "message": "অ্যাকাউন্ট রিস্টোর করবেন?"
-  },
   "revealSeedWords": {
     "message": "সীড শব্দগুলি প্রকাশ করুন"
   },
@@ -895,9 +868,6 @@
   "secretBackupPhraseWarning": {
     "message": "সতর্কতা: কখনও আপনার ব্যাকআপ ফ্রেজ প্রকাশ করবেন না। এই ফ্রেজ পেয়ে গেলে যে কেউ আপনার ইথার চিরকালের জন্য নিয়ে নিতে পারবেন।"
   },
-  "secretPhrase": {
-    "message": "আপনার ভল্ট রিস্টোর করতে এখানে আপনার গোপন বারো শব্দের ফ্রেজ লিখুন।"
-  },
   "securityAndPrivacy": {
     "message": "নিরাপত্তা এবং গোপনীয়তা"
   },
@@ -936,9 +906,6 @@
   },
   "sendAmount": {
     "message": "পাঠানো অর্থরাশি"
-  },
-  "sendETH": {
-    "message": "ETH পাঠান"
   },
   "sendTokens": {
     "message": "টোকেনগুলি পাঠান"
@@ -1011,24 +978,6 @@
   },
   "stateLogsDescription": {
     "message": "স্টেট লগগুলিতে আপনার পাবলিক অ্যাকাউন্টের ঠিকানা এবং প্রেরণ করার লেনদেনগুলি আছে।"
-  },
-  "step1HardwareWallet": {
-    "message": "1. হার্ডওয়্যার ওয়ালেট সংযুক্ত করুন"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "আপনার হার্ডওয়্যার ওয়ালেট সরাসরি আপনার কম্পিউটারের সাথে সংযুক্ত করুন।"
-  },
-  "step2HardwareWallet": {
-    "message": "2. একটি অ্যাকাউন্ট নির্বাচন করুন"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "আপনি যে অ্যাকাউন্টটি দেখতে চান সেটি নির্বাচন করুন। আপনি একই সময়ে শুধুমাত্র একটিই বেছে নিতে পারবেন। "
-  },
-  "step3HardwareWallet": {
-    "message": "3. dApps এবং আরও ব্যবহার করে শুরু করুন!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "আপনি কোনো Ethereum অ্যাকাউন্ট যেমন ব্যবহার করেন সেইভাবে আপনার হার্ডওয়্যার অ্যাকাউন্ট ব্যবহার করুন। dApps এ লগইন করুন, Eth পাঠান, ERC20 টোকেন এবং CryptoKitties এর মতো পরস্পর বিনিময়যোগ্য নয় এমন টোকেনগুলি ক্রয় ও সংরক্ষণ করুন।  "
   },
   "storePhrase": {
     "message": "এই বাক্যাংশটি 1Password এর মতো একটি পাসওয়ার্ড পরিচালকে সংরক্ষণ করুন। "

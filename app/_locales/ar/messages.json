@@ -308,9 +308,6 @@
   "done": {
     "message": "تم"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "أليس لديك محفظة أجهزة؟"
-  },
   "downloadGoogleChrome": {
     "message": "تنزيل جوجل كروم"
   },
@@ -439,9 +436,6 @@
     "message": "احصل على الأثير من صنبور مقابل $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "احصل على الدعم."
-  },
   "getStarted": {
     "message": "البدء"
   },
@@ -462,9 +456,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "حدد محفظة أجهزة ترغب في استخدامها مع MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "هل تواجه مشكلة في الاتصال؟"
   },
   "here": {
     "message": "هنا",
@@ -495,21 +486,12 @@
   "importAccountSeedPhrase": {
     "message": "استيراد حساب باستخدام عبارة الأمان"
   },
-  "importUsingSeed": {
-    "message": "استيراد باستخدام عبارة أمان الحساب"
-  },
   "importWallet": {
     "message": "استيراد المحفظة"
-  },
-  "importYourExisting": {
-    "message": "قم باستيراد محفظتك الحالية باستخدام جملة بذرية مكونة من 12 كلمة"
   },
   "imported": {
     "message": "المستوردة",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "المعلومات والمساعدة"
   },
   "initialTransactionConfirmed": {
     "message": "تم تأكيد المعاملة الأولية الخاصة بك بواسطة الشبكة. انقر فوق موافق للعودة."
@@ -709,9 +691,6 @@
   "optionalCurrencySymbol": {
     "message": "الرمز (اختياري)"
   },
-  "orderOneHere": {
-    "message": "اطلب Trezor أو Ledger وحافظ على أموالك في مخزن حصين"
-  },
   "origin": {
     "message": "الأصل"
   },
@@ -771,9 +750,6 @@
   "readdToken": {
     "message": "يمكنك إضافة هذه العملة الرمزية مرة أخرى في المستقبل من خلال الانتقال إلى \"إضافة عملة رمزية\" في قائمة خيارات الحسابات الخاصة بك."
   },
-  "readyToConnect": {
-    "message": "هل أنت جاهز للاتصال؟"
-  },
   "recents": {
     "message": "الحديث"
   },
@@ -831,9 +807,6 @@
   "restoreAccountWithSeed": {
     "message": "قم باستعادة حسابك بواسطة عبارة الأمان"
   },
-  "restoreFromSeed": {
-    "message": "هل تريد استعادة الحساب؟"
-  },
   "revealSeedWords": {
     "message": "كشف كلمات عبارات الأمان"
   },
@@ -888,9 +861,6 @@
   "secretBackupPhraseWarning": {
     "message": "تحذير: لا تكشف مطلقاً عن عبارة الدعم الخاصة بك. يمكن لأي شخص بهذه العبارة أن يستحوذ على الأثير الخاص بك إلى الأبد."
   },
-  "secretPhrase": {
-    "message": "أدخل جملتك السرية المكونة من اثني عشر كلمة هنا لاستعادة خزنتك."
-  },
   "securityAndPrivacy": {
     "message": "الأمن والخصوصية"
   },
@@ -929,9 +899,6 @@
   },
   "sendAmount": {
     "message": "إرسال المبلغ"
-  },
-  "sendETH": {
-    "message": "إرسال عملة إيثيريوم"
   },
   "sendTokens": {
     "message": "إرسال عملات رمزية"
@@ -1004,24 +971,6 @@
   },
   "stateLogsDescription": {
     "message": "تحتوي سجلات الحالة على عناوين حسابك العامة والمعاملات المرسلة."
-  },
-  "step1HardwareWallet": {
-    "message": "1. قم بتوصيل محفظة Hardware Wallet"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "قم بتوصيل محفظة الأجهزة الخاصة بك مباشرة إلى جهاز الكمبيوتر الخاص بك."
-  },
-  "step2HardwareWallet": {
-    "message": "2. حدد حساباً"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "حدد الحساب الذي تريد عرضه. يمكنك اختيار حساب واحد فقط في المرة الواحدة."
-  },
-  "step3HardwareWallet": {
-    "message": "3. ابدأ في استخدام dApps وأكثر!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "استخدم حساب الجهاز الخاص بك كما تفعل مع أي حساب Ethereum. قم بتسجيل الدخول إلى dApps ، إرسال Eth ، قم بشراء وتخزين عملات ERC20 الرمزية والعملات الرمزية الغير قابلة للاستبدال مثل CryptoKitties."
   },
   "storePhrase": {
     "message": "احتفظ بهذه الجملة في مدير كلمات مرور مثل 1Password."

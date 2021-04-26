@@ -136,9 +136,6 @@
     "message": "Na-import na",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Impormasyon at Tulong"
-  },
   "invalidAddress": {
     "message": "Invalid ang address"
   },

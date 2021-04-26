@@ -12,16 +12,16 @@ const CLASSNAME_ROUNDED = 'btn--rounded';
 const CLASSNAME_FIRST_TIME = 'btn--first-time';
 
 const typeHash = {
-  default: CLASSNAME_DEFAULT,
-  primary: CLASSNAME_PRIMARY,
-  secondary: CLASSNAME_SECONDARY,
-  warning: 'btn-warning',
-  danger: 'btn-danger',
+  'default': CLASSNAME_DEFAULT,
+  'primary': CLASSNAME_PRIMARY,
+  'secondary': CLASSNAME_SECONDARY,
+  'warning': 'btn-warning',
+  'danger': 'btn-danger',
   'danger-primary': 'btn-danger-primary',
-  link: 'btn-link',
+  'link': 'btn-link',
   // TODO: Legacy button type to be deprecated
-  confirm: CLASSNAME_CONFIRM,
-  raised: CLASSNAME_RAISED,
+  'confirm': CLASSNAME_CONFIRM,
+  'raised': CLASSNAME_RAISED,
   'first-time': CLASSNAME_FIRST_TIME,
 };
 

@@ -148,9 +148,6 @@
   "done": {
     "message": "เสร็จสิ้น"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "ไม่มี Hardware Wallet ใช่ไหม"
-  },
   "downloadSecretBackup": {
     "message": "ดาวน์โหลด Phrase แบ็คอัพลับนี้และเก็บรักษาไว้ให้ปลอดภัยในฮาร์ดดิสก์หรืออุปกรณ์เก็บข้อมูลภายนอกที่มีการเข้ารหัส"
   },
@@ -243,9 +240,6 @@
   "imported": {
     "message": "นำเข้าเรียบร้อย",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "ข้อมูลและความช่วยเหลือ"
   },
   "insufficientFunds": {
     "message": "เงินทุนไม่เพียงพอ"
@@ -399,9 +393,6 @@
   "resetAccount": {
     "message": "รีเซ็ตบัญชี"
   },
-  "restoreFromSeed": {
-    "message": "กู้คืนจากกลุ่มคำชีด"
-  },
   "revealSeedWords": {
     "message": "เปิดเผยกลุ่มคำชีด"
   },
@@ -420,9 +411,6 @@
   "search": {
     "message": "ค้นหา"
   },
-  "secretPhrase": {
-    "message": "ป้อนกลุ่มคำสิบสองคำเพื่อกู้คืนตู้เซฟของคุณ"
-  },
   "seedPhraseReq": {
     "message": "กลุ่มคำชีดมีความยาว 12 คำ"
   },
@@ -440,9 +428,6 @@
   },
   "sendAmount": {
     "message": "ส่งจำนวนเงินนี้"
-  },
-  "sendETH": {
-    "message": "ส่งอีเธอร์"
   },
   "sendTokens": {
     "message": "ส่งโทเค็น"
@@ -476,15 +461,6 @@
   },
   "stateLogsDescription": {
     "message": "บันทึกของสถานะประกอบด้วยแอดแดรสสาธารณะและธุรกรรมที่ส่ง"
-  },
-  "step1HardwareWallet": {
-    "message": "1. เชื่อมต่อ Hardware Wallet"
-  },
-  "step2HardwareWallet": {
-    "message": "2. เลือกบัญชี"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "ใช้บัญชีฮาร์ดแวร์ของคุณเช่นเดียวกับการใช้กับบัญชี Ethereum ล็อกอินเข้าสู่ dApp ส่ง Eth ซื้อและเก็บโทเคน ERC20 และโทเคนแบบ Non-Fungible เช่น CryptoKitties"
   },
   "storePhrase": {
     "message": "เก็บ Phrase นี้ในตัวจัดการรหัสผ่าน เช่น 1Password"

@@ -10,6 +10,7 @@ import Tooltip from '../../ui/tooltip';
 import Copy from '../../ui/icon/copy-icon.component';
 import Popover from '../../ui/popover';
 import { getBlockExplorerUrlForTx } from '../../../../../shared/modules/transaction.utils';
+import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -156,7 +157,7 @@ export default class TransactionListItemDetails extends PureComponent {
     } = this.props;
     const {
       primaryTransaction: transaction,
-      initialTransaction: { transactionCategory },
+      initialTransaction: { type },
     } = transactionGroup;
     const { hash } = transaction;
 
@@ -255,7 +256,7 @@ export default class TransactionListItemDetails extends PureComponent {
             <div className="transaction-list-item-details__cards-container">
               <TransactionBreakdown
                 nonce={transactionGroup.initialTransaction.txParams.nonce}
-                transactionCategory={transactionCategory}
+                isTokenApprove={type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE}
                 transaction={transaction}
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"

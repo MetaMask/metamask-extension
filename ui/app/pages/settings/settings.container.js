@@ -2,7 +2,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { getAddressBookEntryName } from '../../selectors';
-import { isValidAddress } from '../../helpers/utils/util';
+import { isValidAddress, isHex } from '../../helpers/utils/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
@@ -82,7 +82,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const addressName = getAddressBookEntryName(
     state,
-    isValidAddress(pathNameTail) ? pathNameTail : '',
+    isHex(pathNameTail) && isValidAddress(pathNameTail) ? pathNameTail : '',
   );
 
   return {

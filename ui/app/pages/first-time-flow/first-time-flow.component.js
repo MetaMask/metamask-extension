@@ -12,6 +12,7 @@ import {
   INITIALIZE_END_OF_FLOW_ROUTE,
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
+  INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
 } from '../../helpers/constants/routes';
 import FirstTimeFlowSwitch from './first-time-flow-switch';
 import Welcome from './welcome';
@@ -117,6 +118,16 @@ export default class FirstTimeFlow extends PureComponent {
           />
           <Route
             path={INITIALIZE_BACKUP_SEED_PHRASE_ROUTE}
+            render={(routeProps) => (
+              <SeedPhrase
+                {...routeProps}
+                seedPhrase={seedPhrase}
+                verifySeedPhrase={verifySeedPhrase}
+              />
+            )}
+          />
+          <Route
+            path={INITIALIZE_SEED_PHRASE_INTRO_ROUTE}
             render={(routeProps) => (
               <SeedPhrase
                 {...routeProps}

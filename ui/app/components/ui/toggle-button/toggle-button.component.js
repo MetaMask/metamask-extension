@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactToggleButton from 'react-toggle-button';
+import classnames from 'classnames';
 
 const trackStyle = {
   width: '40px',
@@ -51,7 +52,7 @@ const ToggleButton = (props) => {
   const modifier = value ? 'on' : 'off';
 
   return (
-    <div className={`toggle-button toggle-button--${modifier}`}>
+    <div className={classnames('toggle-button', `toggle-button--${modifier}`)}>
       <ReactToggleButton
         value={value}
         onToggle={onToggle}

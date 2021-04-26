@@ -172,9 +172,6 @@
   "done": {
     "message": "Fini"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Pa gen yon materyèl bous?"
-  },
   "downloadGoogleChrome": {
     "message": "Telechaje Google Chrome"
   },
@@ -241,9 +238,6 @@
     "message": "Jwenn Ether nan yon tiyo pou $1 la",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Jwenn èd."
-  },
   "hardware": {
     "message": "materyèl"
   },
@@ -255,9 +249,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Chwazi yon Materyèl Wallet ou ta renmen itilize ak MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Èske w gen pwoblèm pou konekte?"
   },
   "here": {
     "message": "isit la",
@@ -282,15 +273,9 @@
   "importAccountMsg": {
     "message": " Kont pòte pa pral asosye avèk orijinal ou te kreye nan kont MetaMask seed fraz. Aprann plis sou kont enpòte "
   },
-  "importUsingSeed": {
-    "message": "Pòte lè sèvi avèk seed fraz"
-  },
   "imported": {
     "message": "Pòte",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Enfo & Èd"
   },
   "initialTransactionConfirmed": {
     "message": "Premye tranzaksyon ou konfime sou rezo a. Klike sou OK pou tounen."
@@ -415,9 +400,6 @@
   "ok": {
     "message": "Oke"
   },
-  "orderOneHere": {
-    "message": "Mete nan lòd on Trezor oswa Ledger epi kenbe lajan ou nan yon stòk frèt."
-  },
   "origin": {
     "message": "Orijin"
   },
@@ -468,9 +450,6 @@
   "readdToken": {
     "message": "Ou ka ajoute token sa aprè sa ankò ou prale nan  \"Ajoute token\" nan opsyon meni kont ou an."
   },
-  "readyToConnect": {
-    "message": "Pare pou konekte?"
-  },
   "recipientAddress": {
     "message": "Adrès pou resevwa"
   },
@@ -516,9 +495,6 @@
   "restoreAccountWithSeed": {
     "message": "Retabli kont ou avèk yo Seed Fraz"
   },
-  "restoreFromSeed": {
-    "message": "Restore kont?"
-  },
   "revealSeedWords": {
     "message": "Revele Seed Mo Yo"
   },
@@ -561,9 +537,6 @@
   "searchTokens": {
     "message": "Rechèch Tokens"
   },
-  "secretPhrase": {
-    "message": "Antre fraz sekrè douz mo ou a pou w restore kòf ou a."
-  },
   "seedPhraseReq": {
     "message": "Seed fraz yo se 12 long mo"
   },
@@ -584,9 +557,6 @@
   },
   "send": {
     "message": "Voye"
-  },
-  "sendETH": {
-    "message": "Voye ETH"
   },
   "sendTokens": {
     "message": "Voye Tokens"
@@ -632,24 +602,6 @@
   },
   "stateLogsDescription": {
     "message": "State logs gen adrès kont piblik ou yo epi tranzaksyon ou te voye yo."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Konekte Materyèl bous"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Konekte materyèl bous ou dirèkteman nan òdinatè ou."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Chwazi yon kont"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Chwazi kont ou vle wè a. Ou ka chwazi youn sèlman nan yon moman."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Kòmanse itilize dApps ak plis ankò!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Sèvi ak kont materyèl ou menm jan ou t ap fè pou kont Etherum. Ouvri sesyon an nan dApps, voye Eth, achte ak stòke ERC20 tokens ak e ki pake chanje tokens tankou CryptoKitties."
   },
   "submitted": {
     "message": "Te Soumèt"

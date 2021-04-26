@@ -124,11 +124,17 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Bump manifest version
+          command: .circleci/scripts/release-bump-manifest-version.sh
+      - run:
+          name: Update changelog
+          command: yarn update-changelog --rc
+      - run:
+          name: Commit changes
+          command: .circleci/scripts/release-commit-version-bump.sh
+      - run:
           name: Create GitHub Pull Request for version
-          command: |
-            .circleci/scripts/release-bump-changelog-version.sh
-            .circleci/scripts/release-bump-manifest-version.sh
-            .circleci/scripts/release-create-release-pr.sh
+          command: .circleci/scripts/release-create-release-pr.sh
 
   prep-deps:
     executor: node-browsers
@@ -439,6 +445,9 @@ jobs:
           path: coverage
           destination: coverage
       - store_artifacts:
+          path: jest-coverage
+          destination: jest-coverage
+      - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       # important: generate lavamoat viz AFTER uploading builds as artifacts
@@ -470,9 +479,6 @@ jobs:
           name: Create GitHub release
           command: |
             .circleci/scripts/release-create-gh-release.sh
-      - run:
-          name: Create GitHub Pull Request to sync master with develop
-          command: .circleci/scripts/release-create-master-pr.sh
 
   job-publish-storybook:
     executor: node-browsers
@@ -498,11 +504,15 @@ jobs:
       - run:
           name: test:coverage
           command: yarn test:coverage
+      - run:
+          name: test:coverage:jest
+          command: yarn test:coverage:jest
       - persist_to_workspace:
           root: .
           paths:
             - .nyc_output
             - coverage
+            - jest-coverage
   test-unit-global:
     executor: node-browsers
     steps:

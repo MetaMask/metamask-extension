@@ -302,9 +302,6 @@
   "done": {
     "message": "Hotovo"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Nemáte hardvérovú peňaženku?"
-  },
   "downloadGoogleChrome": {
     "message": "Stiahnuť Google Chrome"
   },
@@ -437,9 +434,6 @@
     "message": "Získejte Ether z faucetu za $1.",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Získajte pomoc."
-  },
   "getStarted": {
     "message": "Začať"
   },
@@ -460,9 +454,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Vyberte hardvérovú peňaženku, ktorú chcete používať s MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Máte problémy s pripojením?"
   },
   "here": {
     "message": "zde",
@@ -486,21 +477,12 @@
   "importAccountSeedPhrase": {
     "message": "Importovať účet so seed frázou"
   },
-  "importUsingSeed": {
-    "message": "Importovať pomocou seed frázy účtu"
-  },
   "importWallet": {
     "message": "Importovať Peňaženku"
-  },
-  "importYourExisting": {
-    "message": "Importujte svoju existujúcu peňaženku pomocou 12-slovnej seed frázy"
   },
   "imported": {
     "message": "Importováno",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informace a nápověda"
   },
   "initialTransactionConfirmed": {
     "message": "Sieť potvrdila vašu iniciálnu transakciu. Ak sa chcete vrátiť späť, kliknite na OK."
@@ -685,9 +667,6 @@
   "optionalCurrencySymbol": {
     "message": "Symbol (voliteľné)"
   },
-  "orderOneHere": {
-    "message": "Objednajte si Trezor alebo Hlavnú knihu a uschovajte svoje prostriedky v sklade"
-  },
   "origin": {
     "message": "Pôvod"
   },
@@ -747,9 +726,6 @@
   "readdToken": {
     "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
   },
-  "readyToConnect": {
-    "message": "Pripravení na pripojenie?"
-  },
   "recents": {
     "message": "Posledné"
   },
@@ -807,9 +783,6 @@
   "restoreAccountWithSeed": {
     "message": "Obnoviť účet pomocou seed frázy"
   },
-  "restoreFromSeed": {
-    "message": "Obnovit z seed fráze"
-  },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
   },
@@ -858,9 +831,6 @@
   "secretBackupPhraseWarning": {
     "message": "UPOZORNENIE: Nikdy nezverejňujte svoju backup frázu. Každý, kto má túto frázu, môže navždy vziať váš Ether."
   },
-  "secretPhrase": {
-    "message": "Zadejte svých 12 slov tajné fráze k obnovení trezoru."
-  },
   "securityAndPrivacy": {
     "message": "Bezpečnosť a súkromie"
   },
@@ -899,9 +869,6 @@
   },
   "sendAmount": {
     "message": "Poslať sumu"
-  },
-  "sendETH": {
-    "message": "Odeslat ETH"
   },
   "sendTokens": {
     "message": "Odeslat tokeny"
@@ -974,24 +941,6 @@
   },
   "stateLogsDescription": {
     "message": "Stavové protokoly obsahují vaše veřejné adresy účtů a odeslané transakce."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Pripojiť hardvérovú peňaženku"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Pripojte hardvérovú peňaženku priamo k počítaču."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Vybrať účet"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Vyberte účet, ktorý chcete zobraziť. Naraz si môžete vybrať iba jeden."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Začať používať dApps a ďalšie!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Použite svoj hardvérový účet, ako keby ste použili akýkoľvek účet Ethereum. Prihláste sa do Dapps, pošlite Eth, nakupujte a ukladajte tokeny ERC20 a nezameniteľné tokeny ako CryptoKitties."
   },
   "storePhrase": {
     "message": "Túto frázu uložte do správcu hesiel ako 1Password."

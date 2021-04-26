@@ -503,9 +503,6 @@
   "done": {
     "message": "完了"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "ハードウェアウォレットをお持ちではありませんか?"
-  },
   "dontShowThisAgain": {
     "message": "再度表示しない"
   },
@@ -730,9 +727,6 @@
     "message": "$1 のFaucetでEtherを得ることができます。",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "サポートを受ける。"
-  },
   "getStarted": {
     "message": "はじめる"
   },
@@ -753,9 +747,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "MetaMaskに接続するハードウェアウォレットを選択してください"
-  },
-  "havingTroubleConnecting": {
-    "message": "接続に問題がありますか?"
   },
   "here": {
     "message": "こちら",
@@ -790,21 +781,12 @@
   "importAccountSeedPhrase": {
     "message": "シードフレーズを使用してアカウントをインポート"
   },
-  "importUsingSeed": {
-    "message": "アカウントのシードフレーズから復元する"
-  },
   "importWallet": {
     "message": "ウォレットのインポート"
-  },
-  "importYourExisting": {
-    "message": "12単語のシードフレーズを使用して既存のウォレットをインポートします"
   },
   "imported": {
     "message": "インポート済",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "情報とヘルプ"
   },
   "initialTransactionConfirmed": {
     "message": "最初のトランザクションがネットワークに確認されました。戻るにはOKをクリックします。"
@@ -1135,9 +1117,6 @@
   "optionalCurrencySymbol": {
     "message": "通貨シンボル(オプション)"
   },
-  "orderOneHere": {
-    "message": "Trezor又はLedgerを注文して資金をコールドストレージに保管できます"
-  },
   "origin": {
     "message": "要求元"
   },
@@ -1219,9 +1198,6 @@
   "readdToken": {
     "message": "アカウントオプションのメニューで\"トークンの追加\"を選択すると、後でこのトークンを戻すことができます。"
   },
-  "readyToConnect": {
-    "message": "接続準備はよろしいですか?"
-  },
   "receive": {
     "message": "受け取る"
   },
@@ -1281,9 +1257,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "シードフレーズでアカウントを復元"
-  },
-  "restoreFromSeed": {
-    "message": "アカウントを復元しますか?"
   },
   "restoreWalletPreferences": {
     "message": "$1 のデータバックアップが見つかりました。ウォレットの基本設定を復元しますか?",
@@ -1355,9 +1328,6 @@
   "secretBackupPhraseWarning": {
     "message": "警告:シードフレーズは絶対に公開しないでください。シードフレーズを使うと、誰でもアカウントからETHを盗み出せます。"
   },
-  "secretPhrase": {
-    "message": "アカウント情報を復元するには、12単語で構成されたシードフレーズを入力してください。"
-  },
   "securityAndPrivacy": {
     "message": "セキュリティとプライバシー"
   },
@@ -1408,9 +1378,6 @@
   },
   "sendAmount": {
     "message": "送金額"
-  },
-  "sendETH": {
-    "message": "ETHの送金"
   },
   "sendSpecifiedTokens": {
     "message": "$1 を送る",
@@ -1530,24 +1497,6 @@
   },
   "statusNotConnected": {
     "message": "未接続"
-  },
-  "step1HardwareWallet": {
-    "message": "1.ハードウェア ウォレットの接続"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "コンピューターに直接ハードウェアウォレットを接続してください。"
-  },
-  "step2HardwareWallet": {
-    "message": "2.アカウントを選択"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "読取るアカウントを１つ選択します。"
-  },
-  "step3HardwareWallet": {
-    "message": "3.web3を使用してサイトに接続しましょう!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Ethereumアカウントと同じように、ハードウェアアカウントを使用します。web3サイトに接続してETH を送金し、ERC20トークンやCryptoKittiesのようなトークンを購入して保管できます。"
   },
   "storePhrase": {
     "message": "このフレーズを1Passwordのようなパスワードマネージャーに保管てください。"
@@ -1682,7 +1631,7 @@
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapNetworkFeeSummary": {
-    "message": "ネットワーク手数料には、スワップの結果をEthereumネットワークに保管する費用も含まれています。MetaMaskは手数料から利益を得ません。"
+    "message": "ネットワーク手数料には、スワップの結果を$1ネットワークに保管する費用も含まれています。MetaMaskは手数料から利益を得ません。"
   },
   "swapNewQuoteIn": {
     "message": "見積の有効期限 $1",

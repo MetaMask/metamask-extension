@@ -93,7 +93,16 @@ export function getAccountType(state) {
   }
 }
 
-export function getCurrentNetworkId(state) {
+/**
+ * get the currently selected networkId which will be 'loading' when the
+ * network changes. The network id should not be used in most cases,
+ * instead use chainId in most situations. There are a limited number of
+ * use cases to use this method still, such as when comparing transaction
+ * metadata that predates the switch to using chainId.
+ * @deprecated - use getCurrentChainId instead
+ * @param {Object} state - redux state object
+ */
+export function deprecatedGetCurrentNetworkId(state) {
   return state.metamask.network;
 }
 
@@ -158,7 +167,7 @@ export function getMetaMaskCachedBalances(state) {
 
   // Fallback to fetching cached balances from network id
   // this can eventually be removed
-  const network = getCurrentNetworkId(state);
+  const network = deprecatedGetCurrentNetworkId(state);
 
   return (
     state.metamask.cachedBalances[chainId] ??
@@ -376,17 +385,6 @@ export function getDomainMetadata(state) {
   return state.metamask.domainMetadata;
 }
 
-export const getBackgroundMetaMetricState = (state) => {
-  return {
-    network: getCurrentNetworkId(state),
-    accountType: getAccountType(state),
-    metaMetricsId: state.metamask.metaMetricsId,
-    numberOfTokens: getNumberOfTokens(state),
-    numberOfAccounts: getNumberOfAccounts(state),
-    participateInMetaMetrics: state.metamask.participateInMetaMetrics,
-  };
-};
-
 export function getRpcPrefsForCurrentProvider(state) {
   const { frequentRpcListDetail, provider } = state.metamask;
   const selectRpcInfo = frequentRpcListDetail.find(
@@ -491,4 +489,8 @@ export function getIsSwapsChain(state) {
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state).toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
+}
+
+export function getNextSuggestedNonce(state) {
+  return Number(state.metamask.nextNonce);
 }

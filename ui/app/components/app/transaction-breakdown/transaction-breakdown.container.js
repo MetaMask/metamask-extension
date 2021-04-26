@@ -6,19 +6,16 @@ import {
 } from '../../../selectors';
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
 import { sumHexes } from '../../../helpers/utils/transactions.util';
-import { TRANSACTION_CATEGORIES } from '../../../../../shared/constants/transaction';
 import TransactionBreakdown from './transaction-breakdown.component';
 
 const mapStateToProps = (state, ownProps) => {
-  const { transaction, transactionCategory } = ownProps;
+  const { transaction, isTokenApprove } = ownProps;
   const {
     txParams: { gas, gasPrice, value } = {},
     txReceipt: { gasUsed } = {},
   } = transaction;
   const { showFiatInTestnets } = getPreferences(state);
   const isMainnet = getIsMainnet(state);
-  const isTokenApprove =
-    transactionCategory === TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE;
 
   const gasLimit = typeof gasUsed === 'string' ? gasUsed : gas;
 

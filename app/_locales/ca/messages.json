@@ -305,9 +305,6 @@
   "done": {
     "message": "Fet"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "No tens una cartera de hardware?"
-  },
   "downloadGoogleChrome": {
     "message": "Descarrega Google Chrome"
   },
@@ -433,9 +430,6 @@
     "message": "Aconsegueix Ether d'una aixeta per $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Aconsegueix ajuda."
-  },
   "getStarted": {
     "message": "Comença"
   },
@@ -453,9 +447,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Selecciona una cartera de hardware que t'agradaria utilizar amb MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Problemes per connectar?"
   },
   "here": {
     "message": "aquí",
@@ -486,21 +477,12 @@
   "importAccountSeedPhrase": {
     "message": "Importa un Compte amb Phrase de Recuperació"
   },
-  "importUsingSeed": {
-    "message": "Importa utilitzant la frase de seeds del compte"
-  },
   "importWallet": {
     "message": "Importar Moneder"
-  },
-  "importYourExisting": {
-    "message": "Importa el teu moneder utilitzant la frase de recuperació de 12 paraules"
   },
   "imported": {
     "message": "Importats",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informació i Ajuda"
   },
   "initialTransactionConfirmed": {
     "message": "La teva transacció inicial ha sigut confirmada per la xarxa. Fes clic a OK per tornar enrere."
@@ -700,9 +682,6 @@
   "optionalCurrencySymbol": {
     "message": "Símbol (opcional)"
   },
-  "orderOneHere": {
-    "message": "Demana un Trezor o un Ledger i congela les teves inversions"
-  },
   "origin": {
     "message": "Origen"
   },
@@ -759,9 +738,6 @@
   "readdToken": {
     "message": "Pots tornar a afegir aquesta fitxa en el futur anant a \"Afegir fitxa\" al menu d'opcions dels teus comptes."
   },
-  "readyToConnect": {
-    "message": "Estàs llest per a connectar?"
-  },
   "recipientAddress": {
     "message": "Adreça del destinatari"
   },
@@ -815,9 +791,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restaura el teu compte amb Frase de Recuperació"
-  },
-  "restoreFromSeed": {
-    "message": "Restaurar compte?"
   },
   "revealSeedWords": {
     "message": "Revelar Paraules de Recuperació"
@@ -873,9 +846,6 @@
   "secretBackupPhraseWarning": {
     "message": "ATENCIÓ: No divulguis mai la teva frase de recuperació. Qualsevol amb aquesta frase pot utilitzar el teu Ether per sempre."
   },
-  "secretPhrase": {
-    "message": "Introdueix aquí la teva frase secreta de dotze paraules per a recuperar la teva caixa forta."
-  },
   "securityAndPrivacy": {
     "message": "Seguretat i privacitat"
   },
@@ -914,9 +884,6 @@
   },
   "sendAmount": {
     "message": "Enviar Quantitat"
-  },
-  "sendETH": {
-    "message": "Envia ETH"
   },
   "sendTokens": {
     "message": "Enviar Fitxes"
@@ -989,24 +956,6 @@
   },
   "stateLogsDescription": {
     "message": "Els registres d'estat contenen les teves adreces de compte públiques i les transaccions enviades."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Connectar Moneder Hardware"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Connecta la teva cartera de hardware directament al teu ordinador."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Selecciona un Compte"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Selecciona el compte que vols veure. Només pots seleccionar 1 cada cop."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Comença a utilitzar dApps i altres!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Fes servir el teu compte de hardware com ho faries amb qualsevol compte Ethereum. Inicia sessió a DApps, envia Eth, compra i emmagatzema fitxes ERC20 i fitxes No Fungibles com CryptoKitties."
   },
   "storePhrase": {
     "message": "Guarda aquesta frase a un gestor de contrasenyes com Contrasenya 1"

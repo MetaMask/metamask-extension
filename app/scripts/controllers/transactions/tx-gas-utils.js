@@ -1,6 +1,6 @@
 import EthQuery from 'ethjs-query';
 import log from 'loglevel';
-import ethUtil from 'ethereumjs-util';
+import { addHexPrefix } from 'ethereumjs-util';
 import { cloneDeep } from 'lodash';
 import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util';
 
@@ -103,7 +103,7 @@ export default class TxGasUtil {
 
     // add additional gas buffer to our estimation for safety
     const gasLimit = this.addGasBuffer(
-      ethUtil.addHexPrefix(estimatedGasHex),
+      addHexPrefix(estimatedGasHex),
       blockGasLimit,
       multiplier,
     );

@@ -6,7 +6,7 @@ import createInflightMiddleware from 'eth-json-rpc-middleware/inflight-cache';
 import createBlockTrackerInspectorMiddleware from 'eth-json-rpc-middleware/block-tracker-inspector';
 import providerFromMiddleware from 'eth-json-rpc-middleware/providerFromMiddleware';
 import createInfuraMiddleware from 'eth-json-rpc-infura';
-import BlockTracker from 'eth-block-tracker';
+import { PollingBlockTracker } from 'eth-block-tracker';
 
 import { NETWORK_TYPE_TO_ID_MAP } from '../../../../shared/constants/network';
 
@@ -18,7 +18,7 @@ export default function createInfuraClient({ network, projectId }) {
     source: 'metamask',
   });
   const infuraProvider = providerFromMiddleware(infuraMiddleware);
-  const blockTracker = new BlockTracker({ provider: infuraProvider });
+  const blockTracker = new PollingBlockTracker({ provider: infuraProvider });
 
   const networkMiddleware = mergeMiddleware([
     createNetworkAndChainIdMiddleware({ network }),

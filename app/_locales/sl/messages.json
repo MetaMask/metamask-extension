@@ -308,9 +308,6 @@
   "done": {
     "message": "Končano"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Nimate strojne denarnice?"
-  },
   "downloadGoogleChrome": {
     "message": "Prenesi Google Chrome"
   },
@@ -461,9 +458,6 @@
   "hardwareWalletsMsg": {
     "message": "Izberite vrsto strojne denarnice"
   },
-  "havingTroubleConnecting": {
-    "message": "Imate težave?"
-  },
   "here": {
     "message": "tukaj",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -490,21 +484,12 @@
   "importAccountSeedPhrase": {
     "message": "Uvoz računa z geslom seed phrase"
   },
-  "importUsingSeed": {
-    "message": "Uvozi z seed phase"
-  },
   "importWallet": {
     "message": "Uvozi denarnico"
-  },
-  "importYourExisting": {
-    "message": "Uvozite svojo obstoječo denarnico s pomočjo 12-besednega gesla seed phrase"
   },
   "imported": {
     "message": "Uvoženo",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info & Pomoč"
   },
   "initialTransactionConfirmed": {
     "message": "Vaša prvotna transakcija je bila potrjena. Pritisnite V redu in se vrnite nazaj."
@@ -701,9 +686,6 @@
   "optionalCurrencySymbol": {
     "message": "Simbol (nezahtevano)"
   },
-  "orderOneHere": {
-    "message": "Naročite Trezor ali Ledger i n zavarujte svoje premoženje s strojno denarnico"
-  },
   "origin": {
     "message": "Izvor"
   },
@@ -763,9 +745,6 @@
   "readdToken": {
     "message": "Ta žeton lahko dodate tudi kasneje z uporabo gumba “Dodaj žeton” v možnostih vašega računa."
   },
-  "readyToConnect": {
-    "message": "Pripravljeni na povezovanje?"
-  },
   "recents": {
     "message": "Nedavno"
   },
@@ -823,9 +802,6 @@
   "restoreAccountWithSeed": {
     "message": "Obnovi račun z seed phrase"
   },
-  "restoreFromSeed": {
-    "message": "Obnovim račun?"
-  },
   "revealSeedWords": {
     "message": "Razkrij seed words"
   },
@@ -877,9 +853,6 @@
   "secretBackupPhraseWarning": {
     "message": "OPOZORILO: Nikoli nikomur ne razkrijte varnostne kopije. Kdorkoli lahko tem geslom vedno prevzame vaš Ether."
   },
-  "secretPhrase": {
-    "message": "Vnesite vaših dvanajst besed za obnovitev vaših računov."
-  },
   "securityAndPrivacy": {
     "message": "Varnost in zasebnost"
   },
@@ -918,9 +891,6 @@
   },
   "sendAmount": {
     "message": "Pošlji znesek"
-  },
-  "sendETH": {
-    "message": "Pošlji ETH"
   },
   "sendTokens": {
     "message": "Pošlji žetone"
@@ -993,24 +963,6 @@
   },
   "stateLogsDescription": {
     "message": "State vsebujejo vaš javni nasklov in zgodovino transakcij."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Povežite strojno denarnico"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Z računalnikom povežite strojno denarnico."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Izberite račun"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Izberite račun, ki ga želute uporabiti. Trenutno lahko izberete le en račun na enkrat."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Začnite uporabljati dApps in več!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Uporabite strojno denarnico kot katerikoli drug Ethereum račun. Prijavite se v dApps, pošljite Ether in ERC20 žetone in žetone kot CryptoKitties."
   },
   "storePhrase": {
     "message": "To geslo shranite v upravitelja gesel, kot je 1Password."

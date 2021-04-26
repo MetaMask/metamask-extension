@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FeeCard renders the component with initial props 1`] = `
+<div
+  class="fee-card__savings-and-quotes-header"
+>
+  <div
+    class="fee-card__savings-and-quotes-row"
+  >
+    <p
+      class="fee-card__savings-text"
+    >
+      Using the best quote
+    </p>
+    <div
+      class="fee-card__quote-link-container"
+    >
+      <p
+        class="fee-card__quote-link-text"
+      >
+        6 quotes
+      </p>
+      <div
+        class="fee-card__caret-right"
+      >
+        <i
+          class="fa fa-angle-up"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`FeeCard renders the component with initial props 2`] = `
+<div
+  class="fee-card__top-bordered-row"
+>
+  <div
+    class="fee-card__row-label"
+  >
+    <div
+      class="fee-card__row-header-text"
+    >
+      Quote includes a 0.875% MetaMask fee
+    </div>
+    <div
+      class="info-tooltip"
+    >
+      <div
+        class="fee-card__info-tooltip-container"
+      >
+        <div
+          aria-describedby="tippy-tooltip-3"
+          class="info-tooltip__tooltip-container"
+          data-original-title="null"
+          data-tooltipped=""
+          style="display: inline;"
+          tabindex="0"
+        >
+          <img
+            alt=""
+            src="images/mm-info-icon.svg"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

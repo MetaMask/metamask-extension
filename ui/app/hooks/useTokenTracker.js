@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import TokenTracker from '@metamask/eth-token-tracker';
 import { useSelector } from 'react-redux';
-import { getCurrentNetwork, getSelectedAddress } from '../selectors';
+import { getCurrentChainId, getSelectedAddress } from '../selectors';
 import { useEqualityCheck } from './useEqualityCheck';
 
 export function useTokenTracker(
@@ -9,7 +9,7 @@ export function useTokenTracker(
   includeFailedTokens = false,
   hideZeroBalanceTokens = false,
 ) {
-  const network = useSelector(getCurrentNetwork);
+  const chainId = useSelector(getCurrentChainId);
   const userAddress = useSelector(getSelectedAddress);
   const [loading, setLoading] = useState(() => tokens?.length >= 0);
   const [tokensWithBalances, setTokensWithBalances] = useState([]);
@@ -74,14 +74,14 @@ export function useTokenTracker(
   // Effect to set loading state and initialize tracker when values change
   useEffect(() => {
     // This effect will only run initially and when:
-    // 1. network is updated,
+    // 1. chainId is updated,
     // 2. userAddress is changed,
     // 3. token list is updated and not equal to previous list
     // in any of these scenarios, we should indicate to the user that their token
     // values are in the process of updating by setting loading state.
     setLoading(true);
 
-    if (!userAddress || network === 'loading' || !global.ethereumProvider) {
+    if (!userAddress || chainId === undefined || !global.ethereumProvider) {
       // If we do not have enough information to build a TokenTracker, we exit early
       // When the values above change, the effect will be restarted. We also teardown
       // tracker because inevitably this effect will run again momentarily.
@@ -98,7 +98,7 @@ export function useTokenTracker(
   }, [
     userAddress,
     teardownTracker,
-    network,
+    chainId,
     memoizedTokens,
     updateBalances,
     buildTracker,

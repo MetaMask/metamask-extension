@@ -302,9 +302,6 @@
   "done": {
     "message": "Klart"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Har du inte en hårdvaruplånbok?"
-  },
   "downloadGoogleChrome": {
     "message": "Ladda ner Google Chrome"
   },
@@ -433,9 +430,6 @@
     "message": "Få Ether från en kran för $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Få hjälp."
-  },
   "getStarted": {
     "message": "Komma igång"
   },
@@ -456,9 +450,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Välj en hårdvaruplånbok som du vill använda med MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Har du problem att ansluta?"
   },
   "here": {
     "message": "här",
@@ -489,21 +480,12 @@
   "importAccountSeedPhrase": {
     "message": "Importera konto med"
   },
-  "importUsingSeed": {
-    "message": "Importera med kontots seedfras"
-  },
   "importWallet": {
     "message": "Importera plånbok"
-  },
-  "importYourExisting": {
-    "message": "Importera din existerande plånbok med hjälp av en 12 ord lång seedfras"
   },
   "imported": {
     "message": "Importerade",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info och hjälp"
   },
   "initialTransactionConfirmed": {
     "message": "Din initiala transaktion har bekräftats av nätverket. Klicka på OK för att gå tillbaka."
@@ -700,9 +682,6 @@
   "optionalCurrencySymbol": {
     "message": "Symbol (frivillig)"
   },
-  "orderOneHere": {
-    "message": "Beställ en Trezor eller Ledger och håll dina medel på is"
-  },
   "origin": {
     "message": "Ursprung"
   },
@@ -762,9 +741,6 @@
   "readdToken": {
     "message": "Du kan lägga till denna token i framtiden genom att välja \"Lägg till token\" i kontots alternativmeny."
   },
-  "readyToConnect": {
-    "message": "Redo att ansluta?"
-  },
   "recents": {
     "message": "Senaste"
   },
@@ -822,9 +798,6 @@
   "restoreAccountWithSeed": {
     "message": "Återställ ditt konto med seedphrase"
   },
-  "restoreFromSeed": {
-    "message": "Återställ konto?"
-  },
   "revealSeedWords": {
     "message": "Visa seed-ord"
   },
@@ -879,9 +852,6 @@
   "secretBackupPhraseWarning": {
     "message": "VARNING: avslöja aldrig din backup-fras. Någon som känner till denna fras kan ta dina Ether för alltid."
   },
-  "secretPhrase": {
-    "message": "Ange din tolv ord långa hemliga fras här för att återställa ditt valv."
-  },
   "securityAndPrivacy": {
     "message": "Säkerhet och integritet"
   },
@@ -920,9 +890,6 @@
   },
   "sendAmount": {
     "message": "Skicka belopp"
-  },
-  "sendETH": {
-    "message": "Skicka ETH"
   },
   "sendTokens": {
     "message": "Skicka tokens"
@@ -995,24 +962,6 @@
   },
   "stateLogsDescription": {
     "message": "Statusloggar innehåller dina publika kontoadresser och skickade transaktioner."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Anslut hårdvaruplånbok"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Koppla din hårdvaruplånbok direkt till din dator"
-  },
-  "step2HardwareWallet": {
-    "message": "2. Välj ett konto"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Välj det konto du vill visa. Du kan bara välja ett åt gången."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Börja använda dApps och mer!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Använd ditt hårdvarukonto som du skulle använda andra Ethereum-konton. Logga in i dAppar, skicka ETH, köp och förvara ERC20-tokens och Non-Fungible tokens som CryptoKitties."
   },
   "storePhrase": {
     "message": "Lagra denna fras i en lösenordshanterare såsom 1Password."

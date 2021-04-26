@@ -81,12 +81,7 @@ const mapStateToProps = (state, ownProps) => {
     provider: { chainId },
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
-  const {
-    txParams = {},
-    lastGasPrice,
-    id: transactionId,
-    transactionCategory,
-  } = txData;
+  const { txParams = {}, lastGasPrice, id: transactionId, type } = txData;
   const transaction =
     Object.values(unapprovedTxs).find(
       ({ id }) => id === (transactionId || Number(paramsTransactionId)),
@@ -154,6 +149,7 @@ const mapStateToProps = (state, ownProps) => {
       },
     };
   }
+  customNonceValue = getCustomNonceValue(state);
 
   return {
     balance,
@@ -184,12 +180,12 @@ const mapStateToProps = (state, ownProps) => {
     },
     advancedInlineGasShown: getAdvancedInlineGasShown(state),
     useNonceField: getUseNonceField(state),
-    customNonceValue: getCustomNonceValue(state),
+    customNonceValue,
     insufficientBalance,
     hideSubtitle: !isMainnet && !showFiatInTestnets,
     hideFiatConversion: !isMainnet && !showFiatInTestnets,
     metaMetricsSendCount,
-    transactionCategory,
+    type,
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     isMainnet,

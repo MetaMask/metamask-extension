@@ -308,9 +308,6 @@
   "done": {
     "message": "Готово"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Нямате хардуерен портфейл?"
-  },
   "downloadGoogleChrome": {
     "message": "Изтеглете Google Chrome"
   },
@@ -439,9 +436,6 @@
     "message": "Вземете Ether от фосет за $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Получете помощ."
-  },
   "getStarted": {
     "message": "Първи стъпки"
   },
@@ -462,9 +456,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Изберете хардуерен портфейл, който искате да използвате с MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Имате проблеми със свързването?"
   },
   "here": {
     "message": "тук",
@@ -495,21 +486,12 @@
   "importAccountSeedPhrase": {
     "message": "Импортирайте акаунт с фраза зародиш"
   },
-  "importUsingSeed": {
-    "message": "Импортиране с помощта на фразата зародиш на профила"
-  },
   "importWallet": {
     "message": "Импортиране на портфейла"
-  },
-  "importYourExisting": {
-    "message": "Импортирайте съществуващия си портфейл с помощта на фраза зародиш с 12 думи"
   },
   "imported": {
     "message": "Импортирани",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Информация и помощ"
   },
   "initialTransactionConfirmed": {
     "message": "Първоначалната транзакция беше потвърдена от мрежата. Кликнете върху OK, за да се върнете обратно."
@@ -712,9 +694,6 @@
   "optionalCurrencySymbol": {
     "message": "Символ (по избор)"
   },
-  "orderOneHere": {
-    "message": "Поръчайте Trezor или Ledger и запазете средствата си "
-  },
   "origin": {
     "message": "Произход"
   },
@@ -774,9 +753,6 @@
   "readdToken": {
     "message": "Можете да добавите този жетон в бъдеще, като отидете на „Добавяне на жетон“ в менюто с опции на акаунти."
   },
-  "readyToConnect": {
-    "message": "Готови ли сте да се свържете? "
-  },
   "recents": {
     "message": "Скорошни"
   },
@@ -834,9 +810,6 @@
   "restoreAccountWithSeed": {
     "message": "Възстановете акаунта си с фраза зародиш"
   },
-  "restoreFromSeed": {
-    "message": "Да се възстанови ли акаунта?"
-  },
   "revealSeedWords": {
     "message": "Разкрий думите зародиш"
   },
@@ -891,9 +864,6 @@
   "secretBackupPhraseWarning": {
     "message": "ВНИМАНИЕ: Никога не разкривайте резервната си фраза. Всеки с тази фраза може да вземе вашия етер завинаги."
   },
-  "secretPhrase": {
-    "message": "Въведете своята тайна фраза от дванадесет думи тук, за да възстановите портфейла си."
-  },
   "securityAndPrivacy": {
     "message": "Сигурност и поверителност"
   },
@@ -932,9 +902,6 @@
   },
   "sendAmount": {
     "message": "Изпратете сумата"
-  },
-  "sendETH": {
-    "message": "Изпрати ETH"
   },
   "sendTokens": {
     "message": "Изпращане на жетони"
@@ -1007,24 +974,6 @@
   },
   "stateLogsDescription": {
     "message": "Държавните дневници съдържат адресите на публичните ви акаунти и изпратените транзакции."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Свържете хардуерния портфейл"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Свържете хардуерния си портфейл директно към компютъра."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Изберете акаунт"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Изберете акаунта, който искате да видите. В даден момент можете да изберете само един."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Започнете да използвате dApps и други!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Използвайте хардуерния си акаунт, както бихте правили с всеки акаунт в Ethereum. Влезте в dApps, изпратете Eth, купете и съхранявайте жетони ERC20 и незаменими жетони като CryptoKitties."
   },
   "storePhrase": {
     "message": "Съхранявайте тази фраза в мениджър на пароли като 1Password."

@@ -308,9 +308,6 @@
   "done": {
     "message": "Valmis"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Teil ei ole riistvara rahakotti?"
-  },
   "downloadGoogleChrome": {
     "message": "Laadige alla Google Chrome"
   },
@@ -439,9 +436,6 @@
     "message": "Hankige kraanist eetrit $1eest",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Küsige abi."
-  },
   "getStarted": {
     "message": "Alustamine"
   },
@@ -462,9 +456,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Valige riistvara rahakott, mida soovite MetaMaskis kasutada"
-  },
-  "havingTroubleConnecting": {
-    "message": "Kas ühendamisel esineb probleeme?"
   },
   "here": {
     "message": "siin",
@@ -495,21 +486,12 @@
   "importAccountSeedPhrase": {
     "message": "Impordi seemnefraasiga konto"
   },
-  "importUsingSeed": {
-    "message": "Impordi konto seemnefraasi abil"
-  },
   "importWallet": {
     "message": "Importige rahakott"
-  },
-  "importYourExisting": {
-    "message": "Importige 12-sõnalise seemnefraasi abil olemasolev rahakott"
   },
   "imported": {
     "message": "Imporditud",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Teave ja abi"
   },
   "initialTransactionConfirmed": {
     "message": "Võrk kinnitas teie algse tehingu. Tagasi minemiseks klõpsake OK-nuppu."
@@ -706,9 +688,6 @@
   "optionalCurrencySymbol": {
     "message": "Sümbol (valikuline)"
   },
-  "orderOneHere": {
-    "message": "Tellige Trezor või Ledger ja hoidke oma varasid külmruumis"
-  },
   "origin": {
     "message": "Päritolu"
   },
@@ -768,9 +747,6 @@
   "readdToken": {
     "message": "Saate selle loa tulevikus tagasi lisada, kui lähete oma kontovalikute menüüs vahelehele „Lisa luba“."
   },
-  "readyToConnect": {
-    "message": "Kas olete ühenduseks valmis?"
-  },
   "recents": {
     "message": "Hiljutised"
   },
@@ -828,9 +804,6 @@
   "restoreAccountWithSeed": {
     "message": "Taastage konto seemnefraasi abil"
   },
-  "restoreFromSeed": {
-    "message": "Taastada konto?"
-  },
   "revealSeedWords": {
     "message": "Kuva seemnesõnu"
   },
@@ -885,9 +858,6 @@
   "secretBackupPhraseWarning": {
     "message": "HOIATUS! Ärge avaldage kunagi oma varundusfraasi. Selle fraasiga on võimalik teie eeter igaveseks ära võtta."
   },
-  "secretPhrase": {
-    "message": "Sisestage hoidla taastamiseks oma salajane 12-sõnaline fraas."
-  },
   "securityAndPrivacy": {
     "message": "Turvalisus ja privaatsus"
   },
@@ -926,9 +896,6 @@
   },
   "sendAmount": {
     "message": "Saatke kogus"
-  },
-  "sendETH": {
-    "message": "Saada ETH"
   },
   "sendTokens": {
     "message": "Saada lube"
@@ -1001,24 +968,6 @@
   },
   "stateLogsDescription": {
     "message": "Olekulogid sisaldavad teie avalikke konto aadresse ja saadetud tehinguid."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Ühendage riistvara rahakott"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Ühendage oma riistvara rahakott otse oma arvutiga."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Valige konto"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Valige konto, mida soovite vaadata. Korraga saab valida ühe."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Hakake kasutama dAppse ja muud!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Kasutage oma riistvarakontot nagu mis tahes teist Ethereumi kontot. Logige dAppsi, saatke Eth-d, ostke ja hoiustage ERC20 lube ning asendamatuid lube nagu CryptoKitties."
   },
   "storePhrase": {
     "message": "Salvestage see fraas paroolihaldurisse, nagu 1Password."

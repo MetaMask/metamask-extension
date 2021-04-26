@@ -494,9 +494,6 @@
   "done": {
     "message": "संपन्न"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "हार्डवेयर वॉलेट नहीं है?"
-  },
   "dontShowThisAgain": {
     "message": "इसे दोबारा न दिखाएँ"
   },
@@ -721,9 +718,6 @@
     "message": "$1 के लिए एक फ़ॉसेट से Ether प्राप्त करें",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "मदद प्राप्त करें।"
-  },
   "getStarted": {
     "message": "प्रारंभ करें"
   },
@@ -744,9 +738,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "किसी हार्डवेयर वॉलेट का चयन करें, जिसे आप MetaMask के साथ उपयोग करना चाहते हैं"
-  },
-  "havingTroubleConnecting": {
-    "message": "कनेक्ट करने में समस्या हो रही है?"
   },
   "here": {
     "message": "यहाँ",
@@ -781,21 +772,12 @@
   "importAccountSeedPhrase": {
     "message": "सीडफ्रेज़ के साथ कोई खाता आयात करें"
   },
-  "importUsingSeed": {
-    "message": "खाता सीडफ्रेज़ का उपयोग करके आयात करें"
-  },
   "importWallet": {
     "message": "वॉलेट आयात करें"
-  },
-  "importYourExisting": {
-    "message": "12 शब्द के सीडफ्रेज़ का उपयोग करके अपने मौजूदा वॉलेट को आयात करें"
   },
   "imported": {
     "message": "आयातित",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "जानकारी और मदद"
   },
   "initialTransactionConfirmed": {
     "message": "नेटवर्क द्वारा आपके प्रारंभिक लेनदेन की पुष्टि की गई थी। वापस जाने के लिए ठीक पर क्लिक करें।"
@@ -1126,9 +1108,6 @@
   "optionalCurrencySymbol": {
     "message": "मुद्रा प्रतीक (वैकल्पिक)"
   },
-  "orderOneHere": {
-    "message": "Trezor या लेजर ऑर्डर करें और अपने धन को कोल्ड स्टोरेज में रखें"
-  },
   "origin": {
     "message": "उत्पत्ति"
   },
@@ -1210,9 +1189,6 @@
   "readdToken": {
     "message": "आप अपने खातों के विकल्प मेनू में \"टोकन जोड़ें\" पर जाकर भविष्य में इस टोकन को वापस जोड़ सकते हैं।"
   },
-  "readyToConnect": {
-    "message": "कनेक्ट करने के लिए तैयार हैं?"
-  },
   "receive": {
     "message": "प्राप्त करें"
   },
@@ -1272,9 +1248,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "सीड फ्रेज़ के साथ अपने खाते को पुनर्स्थापित करें"
-  },
-  "restoreFromSeed": {
-    "message": "खाता पुनर्स्थापित करें?"
   },
   "restoreWalletPreferences": {
     "message": "$1 से आपके डेटा का बैकअप मिला है। क्या आप अपनी वॉलेट वरीयताओं को पुनर्स्थापित करना चाहते हैं?",
@@ -1346,9 +1319,6 @@
   "secretBackupPhraseWarning": {
     "message": "चेतावनी: कभी भी अपने बैकअप वाक्यांश का खुलासा न करें। इस वाक्यांश के साथ कोई भी आपके Ether को हमेशा के लिए ले सकता है।"
   },
-  "secretPhrase": {
-    "message": "अपनी तिजोरी को पुनर्स्थापित करने के लिए अपने गुप्त बारह शब्द वाक्यांश को यहाँ दर्ज करें।"
-  },
   "securityAndPrivacy": {
     "message": "सुरक्षा और गोपनीयता"
   },
@@ -1399,9 +1369,6 @@
   },
   "sendAmount": {
     "message": "राशि भेजें"
-  },
-  "sendETH": {
-    "message": "ETH भेजें"
   },
   "sendSpecifiedTokens": {
     "message": "$1 भेजें",
@@ -1521,24 +1488,6 @@
   },
   "statusNotConnected": {
     "message": "कनेक्ट नहीं है"
-  },
-  "step1HardwareWallet": {
-    "message": "1. हार्डवेयर वॉलेट कनेक्ट करें"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "अपने हार्डवेयर वॉलेट को सीधे अपने कंप्यूटर से कनेक्ट करें।"
-  },
-  "step2HardwareWallet": {
-    "message": "2. किसी खाते का चयन करें"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "उस खाते का चयन करें, जिसे आप देखना चाहते हैं। आप एक समय में केवल एक ही चुन सकते हैं।"
-  },
-  "step3HardwareWallet": {
-    "message": "3. web3 साइटों और अधिक का उपयोग करना प्रारंभ करें!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "अपने हार्डवेयर खाते का उसी तरह से उपयोग करें, जैसे आप किसी भी Ethereum खाते को करेंगे। web3 साइटों से कनेक्ट करें, ETH भेजें, ERC20 और CryptoKitties जैसे गैर-प्रतिमोचन वाले टोकन जैसे टोकन खरीदें और संग्रहीत करें।"
   },
   "storePhrase": {
     "message": "इस वाक्यांश को 1Password जैसे किसी पासवर्ड मैनेजर में संग्रहीत करें।"
@@ -1666,7 +1615,7 @@
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNetworkFeeSummary": {
-    "message": "नेटवर्क शुल्क आपके स्वैप को संसाधित करने के शुल्क और उसे Ethereum नेटवर्क पर संग्रह करने को कवर करता है। MetaMask इस शुल्क से लाभ नहीं कमाता है।"
+    "message": "नेटवर्क शुल्क आपके स्वैप को संसाधित करने के शुल्क और उसे $1 नेटवर्क पर संग्रह करने को कवर करता है। MetaMask इस शुल्क से लाभ नहीं कमाता है।"
   },
   "swapNewQuoteIn": {
     "message": "$1 में नए उद्धरण",

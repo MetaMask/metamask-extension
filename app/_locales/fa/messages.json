@@ -308,9 +308,6 @@
   "done": {
     "message": "تمام"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "آیا کیف سخت افزار ندارید؟"
-  },
   "downloadGoogleChrome": {
     "message": "دانلود گوگل کروم"
   },
@@ -443,9 +440,6 @@
     "message": "اخذ ایتر از یک فاست برای 1$1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "دریافت کمک"
-  },
   "getStarted": {
     "message": "شروع به کار"
   },
@@ -466,9 +460,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "یک کیف سخت افزار را که میخواهید با MetaMast استفاده نمایید، انتخاب کنید"
-  },
-  "havingTroubleConnecting": {
-    "message": "آیا در اتصال مشکلی دارید؟"
   },
   "here": {
     "message": "اینجا",
@@ -499,21 +490,12 @@
   "importAccountSeedPhrase": {
     "message": "یک حساب با عبارت بازیاب را وارد کنید"
   },
-  "importUsingSeed": {
-    "message": "وارد کردن با استفاده از عبارت بازیاب حساب"
-  },
   "importWallet": {
     "message": "وارد سازی کیف"
-  },
-  "importYourExisting": {
-    "message": "کیف موجود تان را با استفاده از عبارت رمزیاب 12 کلمه یی وارد کنید"
   },
   "imported": {
     "message": "وارد شده",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "معلومات و کمک"
   },
   "initialTransactionConfirmed": {
     "message": "معامله آغازین تان توسط شبکه تأیید شد. برای رفتن به عقب بالای OK کلیک کنید."
@@ -716,9 +698,6 @@
   "optionalCurrencySymbol": {
     "message": "سمبول (انتخابی)"
   },
-  "orderOneHere": {
-    "message": "یک Trezor یا Ledger را سفارش داده و پول های تان را در ذخیره سرد نگهدارید"
-  },
   "origin": {
     "message": "مبدأ"
   },
@@ -778,9 +757,6 @@
   "readdToken": {
     "message": "شما میتوانید این رمزیاب را دوباره برای آینده با رفتن به گزینه \"Add token\" در مینوی تنظیمات حساب ها، اضافه نمایید."
   },
-  "readyToConnect": {
-    "message": "آماده برای اتصال هستید؟"
-  },
   "recents": {
     "message": "واپسین"
   },
@@ -838,9 +814,6 @@
   "restoreAccountWithSeed": {
     "message": "حساب تان را با عبارت بازیاب، بازیابی کنید"
   },
-  "restoreFromSeed": {
-    "message": "بازگرداندن حساب؟"
-  },
   "revealSeedWords": {
     "message": "کلمات بازیاب را آشکار کنید"
   },
@@ -895,9 +868,6 @@
   "secretBackupPhraseWarning": {
     "message": "هشدار: هرگز عبارت پشتیبان تان را به کسی فاش نسازید. هرکسیکه این عبارت را داشته باشد ایتر شما را برای همیشه خواهد گرفت."
   },
-  "secretPhrase": {
-    "message": "جهت بازیابی خزانه تان عبارت دوازده کلمه یی تان را اینجا وارد کنید."
-  },
   "securityAndPrivacy": {
     "message": "امنیت و حریم خصوصی"
   },
@@ -936,9 +906,6 @@
   },
   "sendAmount": {
     "message": "ارسال مبلغ"
-  },
-  "sendETH": {
-    "message": "ارسال ETH"
   },
   "sendTokens": {
     "message": "رمزیاب ها را ارسال کنید"
@@ -1011,24 +978,6 @@
   },
   "stateLogsDescription": {
     "message": "دفترچه وضعیت شامل آدرس های حساب عمومی و معاملات فرستاده شده تان میباشد."
-  },
-  "step1HardwareWallet": {
-    "message": "1. اتصال کیف سخت افزار"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "کیف سخت افزار تان را مستقیمًا به کمپیوتر وصل نمایید."
-  },
-  "step2HardwareWallet": {
-    "message": "2. انتخاب یک حساب"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "حسابی را که میخواهید مشاهده نمایید انتخاب کنید. شما میتوانید یک حساب را در یک زمان انتخاب نمایید."
-  },
-  "step3HardwareWallet": {
-    "message": "3. آغاز استفاده از dApps و بیشتر!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "حساب سخت افزار تان را همچنانکه در حساب ایتریم استفاده میکنید، استفاده نمایید. وارد dApps شده، Eth را ارسال نموده، رمزیاب های ERC20 و غیر-قابل تبدیل به پول مانند CryptoKitties را خریداری و ذخیره نمایید."
   },
   "storePhrase": {
     "message": "این عبارت را در یک نرم افزار مدیریت رمز عبور مانند 1Password ذخیره نمایید."

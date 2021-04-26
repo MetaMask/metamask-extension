@@ -1,0 +1,238 @@
+{
+  "data": {
+    "config": {},
+    "PreferencesController": {
+      "frequentRpcListDetail": [
+        {
+          "rpcUrl": "http://localhost:8545",
+          "chainId": "0x539",
+          "ticker": "ETH",
+          "nickname": "Localhost 8545",
+          "rpcPrefs": {}
+        }
+      ],
+      "accountTokens": {
+        "0x0cc5261ab8ce458dc977078a3623e2badd27afd3": {
+          "0x539": []
+        },
+        "0x3ed0ee22e0685ebbf07b2360a8331693c413cc59": {},
+        "0xd38d853771fb546bd8b18b2f3638491bc0b0e906": {
+          "0x539": []
+        }
+      },
+      "accountHiddenTokens": {
+        "0x0cc5261ab8ce458dc977078a3623e2badd27afd3": {
+          "0x539": []
+        },
+        "0x3ed0ee22e0685ebbf07b2360a8331693c413cc59": {},
+        "0xd38d853771fb546bd8b18b2f3638491bc0b0e906": {
+          "0x539": []
+        }
+      },
+      "assetImages": {},
+      "tokens": [],
+      "hiddenTokens": [],
+      "suggestedTokens": {},
+      "useBlockie": false,
+      "useNonceField": false,
+      "usePhishDetect": true,
+      "featureFlags": {
+        "showIncomingTransactions": true
+      },
+      "knownMethodData": {},
+      "firstTimeFlowType": "import",
+      "currentLocale": "en",
+      "identities": {
+        "0x0cc5261ab8ce458dc977078a3623e2badd27afd3": {
+          "name": "Account 1",
+          "address": "0x0cc5261ab8ce458dc977078a3623e2badd27afd3",
+          "lastSelected": 1618940443499
+        },
+        "0x3ed0ee22e0685ebbf07b2360a8331693c413cc59": {
+          "name": "Account 2",
+          "address": "0x3ed0ee22e0685ebbf07b2360a8331693c413cc59"
+        },
+        "0xd38d853771fb546bd8b18b2f3638491bc0b0e906": {
+          "name": "2nd account",
+          "address": "0xd38d853771fb546bd8b18b2f3638491bc0b0e906",
+          "lastSelected": 1618940443010
+        }
+      },
+      "lostIdentities": {},
+      "forgottenPassword": false,
+      "preferences": {
+        "showFiatInTestnets": false,
+        "useNativeCurrencyAsPrimaryCurrency": true,
+        "hideZeroBalanceTokens": false
+      },
+      "completedOnboarding": true,
+      "ipfsGateway": "dweb.link",
+      "infuraBlocked": false,
+      "selectedAddress": "0x0cc5261ab8ce458dc977078a3623e2badd27afd3"
+    },
+    "firstTimeInfo": {
+      "version": "9.3.0",
+      "date": 1617927806790
+    },
+    "NetworkController": {
+      "provider": {
+        "ticker": "ETH",
+        "type": "rpc",
+        "rpcUrl": "http://localhost:8545",
+        "chainId": "0x539",
+        "nickname": "Localhost 8545"
+      },
+      "previousProviderStore": {
+        "ticker": "ETH",
+        "type": "rpc",
+        "rpcUrl": "http://localhost:8545",
+        "chainId": "0x539",
+        "nickname": "Localhost 8545"
+      },
+      "network": "1337"
+    },
+    "CurrencyController": {
+      "conversionDate": 1618940438.187,
+      "conversionRate": 2254.54,
+      "currentCurrency": "usd",
+      "nativeCurrency": "ETH",
+      "usdConversionRate": 2254.54
+    },
+    "CachedBalancesController": {
+      "cachedBalances": {
+        "0x539": {
+          "0x0cc5261ab8ce458dc977078a3623e2badd27afd3": "0x14cffbeaf5a7d3000",
+          "0x3ed0ee22e0685ebbf07b2360a8331693c413cc59": "0x0",
+          "0xd38d853771fb546bd8b18b2f3638491bc0b0e906": "0x0"
+        }
+      }
+    },
+    "MetaMetricsController": {
+      "participateInMetaMetrics": false,
+      "metaMetricsId": null,
+      "metaMetricsSendCount": 1
+    },
+    "PermissionsController": {
+      "permissionsRequests": [],
+      "permissionsDescriptions": {},
+      "domains": {}
+    },
+    "TransactionController": {
+      "transactions": {
+        "1374812123920442": {
+          "id": 1374812123920442,
+          "time": 1618940444708,
+          "status": "confirmed",
+          "metamaskNetworkId": "1337",
+          "chainId": "0x539",
+          "loadingDefaults": false,
+          "txParams": {
+            "from": "0x0cc5261ab8ce458dc977078a3623e2badd27afd3",
+            "to": "0x2f318c334780961fb129d2a6c30d0763d9a5c970",
+            "nonce": "0x0",
+            "value": "0xde0b6b3a7640000",
+            "gas": "0x5208",
+            "gasPrice": "0x363fe1da00"
+          },
+          "origin": "metamask",
+          "type": "sentEther",
+          "history": [],
+          "nonceDetails": {
+            "params": {
+              "highestLocallyConfirmed": 0,
+              "highestSuggested": 0,
+              "nextNetworkNonce": 0
+            },
+            "local": {
+              "name": "local",
+              "nonce": 0,
+              "details": {
+                "startPoint": 0,
+                "highest": 0
+              }
+            },
+            "network": {
+              "name": "network",
+              "nonce": 0,
+              "details": {
+                "blockNumber": "0x5",
+                "baseCount": 0
+              }
+            }
+          },
+          "r": "0x035de1d588f67547bd9c7bb9b34a8330c10085155e42af0017986911ca922e61",
+          "s": "0x36c3c12a323121afe6d63bc8c5929766d385e2e7b7fc892ecd0f10a7ec4ab59e",
+          "v": "0x0a95",
+          "rawTx": "0xf86e8085363fe1da00825208942f318c334780961fb129d2a6c30d0763d9a5c970880de0b6b3a764000080820a95a0035de1d588f67547bd9c7bb9b34a8330c10085155e42af0017986911ca922e61a036c3c12a323121afe6d63bc8c5929766d385e2e7b7fc892ecd0f10a7ec4ab59e",
+          "hash": "0xaba403a1dff459d7549b57369cfdd323c70fc79a307ed8f9cae811ddd6883a74",
+          "submittedTime": 1618940445208,
+          "txReceipt": {
+            "transactionHash": "0xaba403a1dff459d7549b57369cfdd323c70fc79a307ed8f9cae811ddd6883a74",
+            "transactionIndex": {
+              "negative": 0,
+              "words": [0, null],
+              "length": 1,
+              "red": null
+            },
+            "blockHash": "0x734618e63369e7ea10872e68cec4d400d77c55ed525cbc295802d00d7b4bd1d2",
+            "blockNumber": {
+              "negative": 0,
+              "words": [6, null],
+              "length": 1,
+              "red": null
+            },
+            "from": "0x0cc5261ab8ce458dc977078a3623e2badd27afd3",
+            "to": "0x2f318c334780961fb129d2a6c30d0763d9a5c970",
+            "gasUsed": "5208",
+            "cumulativeGasUsed": {
+              "negative": 0,
+              "words": [21000, null],
+              "length": 1,
+              "red": null
+            },
+            "contractAddress": null,
+            "logs": [],
+            "status": "0x1",
+            "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          }
+        }
+      }
+    },
+    "KeyringController": {
+      "vault": "{\"data\":\"Ot+BTtJPag0xubdiv1nO9bsSvTHivHCd6CD7Lxgb1McYw3VqMjgp5rPMZmblJ1lscuMxyiqp99G52uXO9S0em6F9htpa+t/wn6qubRKTTNG9fxNzQrKXRDNhdgfYckVk5VAZ4fgl2iMZcRDvS8H/+gucVKJ33Sl6mXyPofdexXhWDCU6uR2YecnfaIum9cL2u/GqOMPE3jxzy0Wip0x2Jyp3QOKhvu8A3GIjzagLOaQ7a1APdl8=\",\"iv\":\"lbsyPeGYWU6U1+jvmW9UHg==\",\"salt\":\"Zmbhpskwxe4rYfXtELBvlcvW4HISPBATRmMqzsnZPMg=\"}"
+    },
+    "AlertController": {
+      "alertEnabledness": {
+        "unconnectedAccount": true,
+        "web3ShimUsage": true
+      },
+      "unconnectedAccountAlertShownOrigins": {},
+      "web3ShimUsageOrigins": {}
+    },
+    "OnboardingController": {
+      "seedPhraseBackedUp": true,
+      "onboardingTabs": {}
+    },
+    "AddressBookController": {
+      "addressBook": {
+        "0x539": {
+          "0x2f318C334780961FB129D2a6c30D0763d9a5C970": {
+            "address": "0x2f318C334780961FB129D2a6c30D0763d9a5C970",
+            "chainId": "0x539",
+            "isEns": false,
+            "memo": "",
+            "name": ""
+          }
+        }
+      }
+    },
+    "AppStateController": {
+      "connectedStatusPopoverHasBeenShown": true,
+      "swapsWelcomeMessageHasBeenShown": false,
+      "defaultHomeActiveTabName": "Activity"
+    }
+  },
+  "meta": {
+    "version": 57
+  }
+}

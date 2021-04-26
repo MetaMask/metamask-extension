@@ -494,9 +494,6 @@
   "done": {
     "message": "Tapos na"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Wala ka bang hardware wallet?"
-  },
   "dontShowThisAgain": {
     "message": "Huwag itong ipaklita ulit"
   },
@@ -721,9 +718,6 @@
     "message": "Kunin ang Ether mula sa isang faucet sa halagang $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Humingi ng Tulong."
-  },
   "getStarted": {
     "message": "Magsimula"
   },
@@ -744,9 +738,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Pumili ng hardware wallet na gusto mong gamitin kasama ng MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Nagkakaproblema ka ba sa pagkonekta?"
   },
   "here": {
     "message": "dito",
@@ -781,21 +772,12 @@
   "importAccountSeedPhrase": {
     "message": "Mag-import ng account gamit ang seed phrase"
   },
-  "importUsingSeed": {
-    "message": "I-import gamit ang seed phrase ng account"
-  },
   "importWallet": {
     "message": "I-import ang wallet"
-  },
-  "importYourExisting": {
-    "message": "I-import ang iyong kasalukuyang wallet gamit ang 12 salita na seed phrase"
   },
   "imported": {
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Impormasyon at Tulong"
   },
   "initialTransactionConfirmed": {
     "message": "Nakumpirma na ng network ang iyong inisyal na transaksyon. I-click ang OK para bumalik."
@@ -1123,9 +1105,6 @@
   "optionalCurrencySymbol": {
     "message": "Simbolo ng Currency (opsyonal)"
   },
-  "orderOneHere": {
-    "message": "Mag-order ng Trezor o Ledger at itabi ang mga pondo mo sa malamig na storage"
-  },
   "origin": {
     "message": "Pinagmulan"
   },
@@ -1207,9 +1186,6 @@
   "readdToken": {
     "message": "Puwede mong ibalik ang token na ito sa hinaharap sa pamamagitan ng pagpunta sa “Magdagdag ng token” sa menu ng mga opsyon sa iyong account."
   },
-  "readyToConnect": {
-    "message": "Handa ka na bang kumonekta?"
-  },
   "receive": {
     "message": "Tumanggap"
   },
@@ -1269,9 +1245,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "I-restore ang iyong Account gamit ang Seed Phrase"
-  },
-  "restoreFromSeed": {
-    "message": "I-restore ang account?"
   },
   "restoreWalletPreferences": {
     "message": "Nakita ang backup ng iyong data mula sa $1. Gusto mo bang i-restore ang mga kagustuhan mo sa wallet?",
@@ -1343,9 +1316,6 @@
   "secretBackupPhraseWarning": {
     "message": "BABALA: Huwag kailanman ipaalam ang iyong phrase sa pag-back up. Ang sinumang may phrase na ito ay maaaring angkinin ang iyong Ether."
   },
-  "secretPhrase": {
-    "message": "Ilagay ang iyong labindalawang lihim na phrase dito para ma-restore ang iyong vault."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Pagkapribado"
   },
@@ -1396,9 +1366,6 @@
   },
   "sendAmount": {
     "message": "Halaga ng Ipapadala"
-  },
-  "sendETH": {
-    "message": "Magpadala ng ETH"
   },
   "sendSpecifiedTokens": {
     "message": "Magpadala ng $1",
@@ -1518,24 +1485,6 @@
   },
   "statusNotConnected": {
     "message": "Hindi nakakonekta"
-  },
-  "step1HardwareWallet": {
-    "message": "1. Ikonekta ang Hardware Wallet"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Direktang ikonekta ang wallet ng iyong hardware sa computer mo."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Pumili ng Account"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Piliin ang account na gusto mong tingnan. Puwede ka lang pumili ng isa sa isang pagkakataon."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Simulang gamitin ang mga web3 site at higit pa!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Gamitin ang account ng iyong hardware sa parehong paraan ng paggamit mo sa Ethereum account. Kumonekta sa mga web3 site, magpadala ng ETH, bumili at mag-store ng mga ERC20 token at non-fungible token gaya ng CryptoKitties."
   },
   "storePhrase": {
     "message": "I-store ang phrase na ito sa isang password manager gaya ng 1Password."
@@ -1663,7 +1612,7 @@
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNetworkFeeSummary": {
-    "message": "Kasama sa bayarin sa network ang gastusin sa pagproseso ng iyong pag-swap at pag-store nito sa Ethereum network. Hindi kumikita ang MetaMask mula sa bayaring ito."
+    "message": "Kasama sa bayarin sa network ang gastusin sa pagproseso ng iyong pag-swap at pag-store nito sa $1 network. Hindi kumikita ang MetaMask mula sa bayaring ito."
   },
   "swapNewQuoteIn": {
     "message": "Mga bagong quote sa $1",

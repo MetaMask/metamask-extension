@@ -308,9 +308,6 @@
   "done": {
     "message": "ተጠናቅቋል"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "የሃርድዌር ቋት የለዎትም?"
-  },
   "downloadGoogleChrome": {
     "message": "Google Chrome አውርድ"
   },
@@ -443,9 +440,6 @@
     "message": "Ether ከቧንቧ በ$1ያግኙ",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "እገዛ ያግኙ።"
-  },
   "getStarted": {
     "message": "አስጀማሪ መመሪያ"
   },
@@ -466,9 +460,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "ከ MetaMask ጋር ሊጠቀሙበት የሚፈልጉትን የሃርድዌር ቋት ይምረጡ"
-  },
-  "havingTroubleConnecting": {
-    "message": "ግንኙነት መፍጠር ላይ ተቸግረዋል?"
   },
   "here": {
     "message": "እዚህ",
@@ -499,21 +490,12 @@
   "importAccountSeedPhrase": {
     "message": "መለያን በዘር ሐረግ አስመጣ"
   },
-  "importUsingSeed": {
-    "message": "የመለያ የዘር ሐረግ በመጠቀም ያስመጡ"
-  },
   "importWallet": {
     "message": "ቋት አስመጣ"
-  },
-  "importYourExisting": {
-    "message": "ባለ 12 ቃል የዘር ሐረግን በመጠቀም ነባር ቋትዎን ያስመጡ"
   },
   "imported": {
     "message": "ከውጭ የመጣ",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "መረጃ እና እገዛ "
   },
   "initialTransactionConfirmed": {
     "message": "የመጀመሪያ ግብይትዎ በአውታረ መረቡ ተረጋግጧል። ወደ ኋላ ለመመለስ እሺ የሚለውን ጠቅ ያድርጉ።"
@@ -713,9 +695,6 @@
   "optionalCurrencySymbol": {
     "message": "ምልክት (አማራጭ)"
   },
-  "orderOneHere": {
-    "message": "ትሬዞር ወይም ሌጀር በማዘዝ ገንዘብዎን በቀዝቃዛ ማስቀመጫ ውስጥ ያቆዩ"
-  },
   "origin": {
     "message": "መነሻ"
   },
@@ -775,9 +754,6 @@
   "readdToken": {
     "message": "በመለያ አማራጮችዎ ምናሌ ውስጥ ወደ “ተለዋጭ ስም አክል” በመግባት ለወደፊቱ ይህን ተለዋጭ ስም መልሰው ማከል ይችላሉ።"
   },
-  "readyToConnect": {
-    "message": "ለመገናኘት ዝግጁ ነዎት?"
-  },
   "recents": {
     "message": "የቅርብ ጊዜያት"
   },
@@ -835,9 +811,6 @@
   "restoreAccountWithSeed": {
     "message": "መለያዎን በዘር ሐረግ ወደነበረበት ይመልሱ"
   },
-  "restoreFromSeed": {
-    "message": "መለያው ወደነበረበት ይመለስ?"
-  },
   "revealSeedWords": {
     "message": "የዘር ቃላትን ይግለጹ"
   },
@@ -892,9 +865,6 @@
   "secretBackupPhraseWarning": {
     "message": "ማስጠንቀቂያ፡ የመጠባበቂያ ምዕራፍዎን በጭራሽ አይግለጹ። ይህን ሐረገ የያዘ ማንኛውም ሰው የእርስዎን Ether እስከወዲያኛው ሊወስደው ይችላል።"
   },
-  "secretPhrase": {
-    "message": "ካዝናዎን ወደነበረበት ለመመለስ ሚስጥራዊ ባለ አስራ ሁለት ቃል ሐረግዎን ያስገቡ።"
-  },
   "securityAndPrivacy": {
     "message": "ደህንነት እና ግላዊነት"
   },
@@ -933,9 +903,6 @@
   },
   "sendAmount": {
     "message": "መጠኑን ላክ"
-  },
-  "sendETH": {
-    "message": "ETH ላክ"
   },
   "sendTokens": {
     "message": "ተለዋጭ ስሞችን ላክ"
@@ -1008,24 +975,6 @@
   },
   "stateLogsDescription": {
     "message": "ስቴት መዛግብት ይፋዊ የመለያ አድራሻዎትንና የተላኩ ግብይቶችን ይይዛሉ።"
-  },
-  "step1HardwareWallet": {
-    "message": "1. ከሃርድዌር ቋት ጋር ይገናኙ"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "የሃርድዌር ቋትዎን በቀጥታ ከኮምፒዩተርዎ ጋር ያገናኙ።"
-  },
-  "step2HardwareWallet": {
-    "message": "2. መለያ ምረጥ"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "ለማየት የሚፈልጉትን መለያ ይምረጡ። በአንድ ጊዜ መምረጥ የሚችሉት አንድ ብቻ ነው።"
-  },
-  "step3HardwareWallet": {
-    "message": "3. dApps እና ሌሎችን መጠቀም ይጀምሩ!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "የሐርድዌር መለያዎን ከየትኛውም የ Ethereum መለያ ጋር በሚጠቀሙት መንገድ ይጠቀሙ። ወደ dApps በመለያ ይግቡ፣ Eth ይላኩ፣ የ ERC20 ተለዋጭ ስሞችና እንደ CryptoKitties ያሉ የማይለወጡ ተለዋጭ ስሞችን ይግዙና ያከማቹ።"
   },
   "storePhrase": {
     "message": "ይህን ሐረግ እንደ 1Password ባለ የይለፍ ቃል አስተዳዳሪ ውስጥ ያስቀምጡ።"

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ethUtil from 'ethereumjs-util';
+import { toBuffer } from 'ethereumjs-util';
 import ConfirmTransactionBase from '../confirm-transaction-base';
 
 export default class ConfirmDeployContract extends Component {
@@ -29,7 +29,7 @@ export default class ConfirmDeployContract extends Component {
             <div className="confirm-page-container-content__data-field-label">
               {`${t('bytes')}:`}
             </div>
-            <div>{ethUtil.toBuffer(data).length}</div>
+            <div>{toBuffer(data).length}</div>
           </div>
         </div>
         <div className="confirm-page-container-content__data-box-label">

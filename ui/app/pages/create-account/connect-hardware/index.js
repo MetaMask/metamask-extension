@@ -17,9 +17,11 @@ const U2F_ERROR = 'U2F';
 
 const LEDGER_LIVE_PATH = `m/44'/60'/0'/0/0`;
 const MEW_PATH = `m/44'/60'/0'`;
+const BIP44_PATH = `m/44'/60'/0'/0`;
 const HD_PATHS = [
   { name: 'Ledger Live', value: LEDGER_LIVE_PATH },
   { name: 'Legacy (MEW / MyCrypto)', value: MEW_PATH },
+  { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: BIP44_PATH },
 ];
 
 class ConnectHardwareForm extends Component {
@@ -138,10 +140,23 @@ class ConnectHardwareForm extends Component {
         } else if (errorMessage.includes(U2F_ERROR)) {
           this.setState({ error: U2F_ERROR });
         } else if (
+          errorMessage === 'LEDGER_LOCKED' ||
+          errorMessage === 'LEDGER_WRONG_APP'
+        ) {
+          this.setState({
+            error: this.context.t('ledgerLocked'),
+          });
+        } else if (errorMessage.includes('timeout')) {
+          this.setState({
+            error: this.context.t('ledgerTimeout'),
+          });
+        } else if (
           errorMessage !== 'Window closed' &&
           errorMessage !== 'Popup closed'
         ) {
-          this.setState({ error: errorMessage });
+          this.setState({
+            error: errorMessage,
+          });
         }
       });
   };
@@ -246,6 +261,7 @@ class ConnectHardwareForm extends Component {
         <SelectHardware
           connectToHardwareWallet={this.connectToHardwareWallet}
           browserSupported={this.state.browserSupported}
+          useLedgerLive={this.props.useLedgerLive}
         />
       );
     }
@@ -296,6 +312,7 @@ ConnectHardwareForm.propTypes = {
   connectedAccounts: PropTypes.array.isRequired,
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
+  useLedgerLive: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -305,6 +322,7 @@ const mapStateToProps = (state) => ({
   connectedAccounts: getMetaMaskAccountsConnected(state),
   defaultHdPaths: state.appState.defaultHdPaths,
   mostRecentOverviewPage: getMostRecentOverviewPage(state),
+  useLedgerLive: state.metamask.useLedgerLive,
 });
 
 const mapDispatchToProps = (dispatch) => {

@@ -1,24 +1,22 @@
-import assert from 'assert';
 import nock from 'nock';
 import sinon from 'sinon';
-import proxyquire from 'proxyquire';
 
-const fakeStorage = {};
-const fetchWithCache = proxyquire('./fetch-with-cache', {
-  '../../../lib/storage-helpers': fakeStorage,
-}).default;
+import { getStorageItem, setStorageItem } from '../../../lib/storage-helpers';
 
-describe('Fetch with cache', function () {
-  beforeEach(function () {
-    fakeStorage.getStorageItem = sinon.stub();
-    fakeStorage.setStorageItem = sinon.stub();
-  });
-  afterEach(function () {
+jest.mock('../../../lib/storage-helpers.js', () => ({
+  getStorageItem: jest.fn(),
+  setStorageItem: jest.fn(),
+}));
+
+const fetchWithCache = require('./fetch-with-cache').default;
+
+describe('Fetch with cache', () => {
+  afterEach(() => {
     sinon.restore();
     nock.cleanAll();
   });
 
-  it('fetches a url', async function () {
+  it('fetches a url', async () => {
     nock('https://fetchwithcache.metamask.io')
       .get('/price')
       .reply(200, '{"average": 1}');
@@ -26,17 +24,17 @@ describe('Fetch with cache', function () {
     const response = await fetchWithCache(
       'https://fetchwithcache.metamask.io/price',
     );
-    assert.deepStrictEqual(response, {
+    expect(response).toStrictEqual({
       average: 1,
     });
   });
 
-  it('returns cached response', async function () {
+  it('returns cached response', async () => {
     nock('https://fetchwithcache.metamask.io')
       .get('/price')
       .reply(200, '{"average": 2}');
 
-    fakeStorage.getStorageItem.returns({
+    getStorageItem.mockReturnValueOnce({
       cachedResponse: { average: 1 },
       cachedTime: Date.now(),
     });
@@ -44,17 +42,17 @@ describe('Fetch with cache', function () {
     const response = await fetchWithCache(
       'https://fetchwithcache.metamask.io/price',
     );
-    assert.deepStrictEqual(response, {
+    expect(response).toStrictEqual({
       average: 1,
     });
   });
 
-  it('fetches URL again after cache refresh time has passed', async function () {
+  it('fetches URL again after cache refresh time has passed', async () => {
     nock('https://fetchwithcache.metamask.io')
       .get('/price')
       .reply(200, '{"average": 3}');
 
-    fakeStorage.getStorageItem.returns({
+    getStorageItem.mockReturnValueOnce({
       cachedResponse: { average: 1 },
       cachedTime: Date.now() - 1000,
     });
@@ -64,85 +62,84 @@ describe('Fetch with cache', function () {
       {},
       { cacheRefreshTime: 123 },
     );
-    assert.deepStrictEqual(response, {
+    expect(response).toStrictEqual({
       average: 3,
     });
   });
 
-  it('should abort the request when the custom timeout is hit', async function () {
+  it('should abort the request when the custom timeout is hit', async () => {
     nock('https://fetchwithcache.metamask.io')
       .get('/price')
       .delay(100)
       .reply(200, '{"average": 4}');
 
-    await assert.rejects(
-      () =>
-        fetchWithCache(
-          'https://fetchwithcache.metamask.io/price',
-          {},
-          { timeout: 20 },
-        ),
-      { name: 'AbortError', message: 'Aborted' },
-    );
+    await expect(() =>
+      fetchWithCache(
+        'https://fetchwithcache.metamask.io/price',
+        {},
+        { timeout: 20 },
+      ),
+    ).rejects.toThrow({ name: 'AbortError', message: 'Aborted' });
   });
 
-  it('throws when the response is unsuccessful', async function () {
+  it('throws when the response is unsuccessful', async () => {
     nock('https://fetchwithcache.metamask.io')
       .get('/price')
       .reply(500, '{"average": 6}');
 
-    await assert.rejects(() =>
+    await expect(() =>
       fetchWithCache('https://fetchwithcache.metamask.io/price'),
-    );
+    ).rejects.toThrow('');
   });
 
-  it('throws when a POST request is attempted', async function () {
+  it('throws when a POST request is attempted', async () => {
     nock('https://fetchwithcache.metamask.io')
       .post('/price')
       .reply(200, '{"average": 7}');
 
-    await assert.rejects(() =>
+    await expect(() =>
       fetchWithCache('https://fetchwithcache.metamask.io/price', {
         method: 'POST',
       }),
-    );
+    ).rejects.toThrow('');
   });
 
-  it('throws when the request has a truthy body', async function () {
+  it('throws when the request has a truthy body', async () => {
     nock('https://fetchwithcache.metamask.io')
       .get('/price')
       .reply(200, '{"average": 8}');
 
-    await assert.rejects(() =>
+    await expect(() =>
       fetchWithCache('https://fetchwithcache.metamask.io/price', { body: 1 }),
-    );
+    ).rejects.toThrow('');
   });
 
-  it('throws when the request has an invalid Content-Type header', async function () {
+  it('throws when the request has an invalid Content-Type header', async () => {
     nock('https://fetchwithcache.metamask.io')
       .get('/price')
       .reply(200, '{"average": 9}');
 
-    await assert.rejects(
-      () =>
-        fetchWithCache('https://fetchwithcache.metamask.io/price', {
-          headers: { 'Content-Type': 'text/plain' },
-        }),
-      { message: 'fetchWithCache only supports JSON responses' },
-    );
+    await expect(() =>
+      fetchWithCache('https://fetchwithcache.metamask.io/price', {
+        headers: { 'Content-Type': 'text/plain' },
+      }),
+    ).rejects.toThrow({
+      message: 'fetchWithCache only supports JSON responses',
+    });
   });
 
-  it('should correctly cache responses from interwoven requests', async function () {
+  it('should correctly cache responses from interwoven requests', async () => {
     nock('https://fetchwithcache.metamask.io')
       .get('/foo')
       .reply(200, '{"average": 9}');
+
     nock('https://fetchwithcache.metamask.io')
       .get('/bar')
       .reply(200, '{"average": 9}');
 
     const testCache = {};
-    fakeStorage.getStorageItem.callsFake((key) => testCache[key]);
-    fakeStorage.setStorageItem.callsFake((key, value) => {
+    getStorageItem.mockImplementation((key) => testCache[key]);
+    setStorageItem.mockImplementation((key, value) => {
       testCache[key] = value;
     });
 
@@ -159,15 +156,13 @@ describe('Fetch with cache', function () {
       ),
     ]);
 
-    assert.deepStrictEqual(
+    expect(
       testCache['cachedFetch:https://fetchwithcache.metamask.io/foo']
         .cachedResponse,
-      { average: 9 },
-    );
-    assert.deepStrictEqual(
+    ).toStrictEqual({ average: 9 });
+    expect(
       testCache['cachedFetch:https://fetchwithcache.metamask.io/bar']
         .cachedResponse,
-      { average: 9 },
-    );
+    ).toStrictEqual({ average: 9 });
   });
 });

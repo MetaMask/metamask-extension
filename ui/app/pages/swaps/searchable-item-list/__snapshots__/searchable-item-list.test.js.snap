@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchableItemList renders the component with initial props 1`] = `
+<div
+  class="MuiFormControl-root MuiTextField-root searchable-item-list__search MuiFormControl-fullWidth"
+  data-testid="search-list-items"
+>
+  <div
+    class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInputBase-fullWidth MuiInput-fullWidth Mui-focused Mui-focused TextField-inputFocused-11 MuiInputBase-formControl MuiInput-formControl MuiInputBase-adornedStart"
+  >
+    <div
+      class="MuiInputAdornment-root MuiInputAdornment-positionStart"
+      style="margin-right: 12px;"
+    >
+      <img
+        alt=""
+        height="17"
+        src="images/search.svg"
+        width="17"
+      />
+    </div>
+    <input
+      aria-invalid="false"
+      autocomplete="off"
+      class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedStart"
+      dir="auto"
+      type="text"
+      value=""
+    />
+  </div>
+</div>
+`;
+
+exports[`SearchableItemList renders the component with initial props 2`] = `
+<div
+  class="searchable-item-list__item searchable-item-list__item--selected"
+  tabindex="0"
+>
+  <img
+    alt=""
+    class="url-icon"
+    src="iconUrl"
+  />
+  <div
+    class="searchable-item-list__labels"
+  >
+    <div
+      class="searchable-item-list__item-labels"
+    >
+      <span
+        class="searchable-item-list__primary-label"
+      >
+        primaryLabel
+      </span>
+      <span
+        class="searchable-item-list__secondary-label"
+      >
+        secondaryLabel
+      </span>
+    </div>
+    <div
+      class="searchable-item-list__right-labels"
+    >
+      <span
+        class="searchable-item-list__right-primary-label"
+      >
+        rightPrimaryLabel
+      </span>
+      <span
+        class="searchable-item-list__right-secondary-label"
+      >
+        rightSecondaryLabel
+      </span>
+    </div>
+  </div>
+</div>
+`;

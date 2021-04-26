@@ -503,9 +503,6 @@
   "done": {
     "message": "Listo"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "¿No tienes una billetera de hardware?"
-  },
   "dontShowThisAgain": {
     "message": "No mostrar esto de nuevo"
   },
@@ -730,9 +727,6 @@
     "message": "Obtener Ether a partir de un grifo para $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Obtén ayuda."
-  },
   "getStarted": {
     "message": "Comenzar"
   },
@@ -753,9 +747,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Selecciona la billetera de hardware que te gustaría utilizar con MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "¿Problemas de conexión?"
   },
   "here": {
     "message": "Aquí",
@@ -790,21 +781,12 @@
   "importAccountSeedPhrase": {
     "message": "Importar una cuenta con frase semilla"
   },
-  "importUsingSeed": {
-    "message": "Importar usando la frase semilla de la cuenta"
-  },
   "importWallet": {
     "message": "Importar billetera"
-  },
-  "importYourExisting": {
-    "message": "Importa tu billetera existente con una frase semilla de 12 palabras"
   },
   "imported": {
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Información y ayuda"
   },
   "initialTransactionConfirmed": {
     "message": "La red ha confirmado tu transacción inicial. Haz clic en Aceptar para volver."
@@ -1135,9 +1117,6 @@
   "optionalCurrencySymbol": {
     "message": "Símbolo (opcional)"
   },
-  "orderOneHere": {
-    "message": "Pida una billetera Trezor o Ledger y mantenga sus fondos en un almacenamiento en frío"
-  },
   "origin": {
     "message": "Origen"
   },
@@ -1219,9 +1198,6 @@
   "readdToken": {
     "message": "Puedes volver a agregar este token a través de la opción \"Agregar token\" en el menú de opciones de tus cuentas."
   },
-  "readyToConnect": {
-    "message": "¿Listo/a para conectarte?"
-  },
   "receive": {
     "message": "Recibir"
   },
@@ -1281,9 +1257,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restaura tu Cuenta con la Frase Semilla"
-  },
-  "restoreFromSeed": {
-    "message": "¿Restaurar cuenta?"
   },
   "restoreWalletPreferences": {
     "message": "Se ha encontrado una copia de seguridad de sus datos de $1. ¿Le gustaría restaurar sus preferencias de billetera?",
@@ -1355,9 +1328,6 @@
   "secretBackupPhraseWarning": {
     "message": "ADVERTENCIA: Nunca reveles tu frase de respaldo. Cualquier persona que tenga acceso a esta frase puede llevarse tus Ether permanentemente."
   },
-  "secretPhrase": {
-    "message": "Ingresa tu frase secreta de doce palabras para restaurar tu almacén."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad y privacidad"
   },
@@ -1408,9 +1378,6 @@
   },
   "sendAmount": {
     "message": "Enviar monto"
-  },
-  "sendETH": {
-    "message": "Enviar ETH"
   },
   "sendSpecifiedTokens": {
     "message": "Enviar $1",
@@ -1530,24 +1497,6 @@
   },
   "statusNotConnected": {
     "message": "No conectado"
-  },
-  "step1HardwareWallet": {
-    "message": "1. Conecta la billetera de hardware"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Conecta tu billetera de hardware directamente a tu computadora."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Selecciona una cuenta"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Selecciona la cuenta que deseas ver. Solo puedes seleccionar una a la vez."
-  },
-  "step3HardwareWallet": {
-    "message": "3. ¡Comienza a utilizar dApps y más!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Utiliza tu cuenta de hardware como si fuera una cuenta de Ethereum. Inicia sesión en dApps, envía ETH, compra y almacena tokens ERC20 y tokens no fungibles como CryptoKitties."
   },
   "storePhrase": {
     "message": "Almacena esta frase en un administrador de contraseñas como 1Password."
@@ -1682,7 +1631,7 @@
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapNetworkFeeSummary": {
-    "message": "La tarifa de la red cubre el costo de procesar su intercambio y almacenarlo en la red Ethereum. MetaMask no se beneficia de esta tarifa."
+    "message": "La tarifa de la red cubre el costo de procesar su intercambio y almacenarlo en la red $1. MetaMask no se beneficia de esta tarifa."
   },
   "swapNewQuoteIn": {
     "message": "Nuevas cotizaciones en $1",

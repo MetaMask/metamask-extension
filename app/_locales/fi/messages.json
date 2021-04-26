@@ -308,9 +308,6 @@
   "done": {
     "message": "Valmis"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Eikö sinulla ole laitteistokukkaroa?"
-  },
   "downloadGoogleChrome": {
     "message": "Lataa Google Chrome"
   },
@@ -443,9 +440,6 @@
     "message": "Hanki etheriä faucetista kohteelle $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Pyydä apua."
-  },
   "getStarted": {
     "message": "Aloitusopas"
   },
@@ -466,9 +460,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Valitse laitteistokukkaro, jota haluaisit käyttää MetaMaskilla"
-  },
-  "havingTroubleConnecting": {
-    "message": "Onko sinulla yhdistämisvaikeuksia?"
   },
   "here": {
     "message": "tässä",
@@ -499,21 +490,12 @@
   "importAccountSeedPhrase": {
     "message": "Tuo tili siemenlauseella"
   },
-  "importUsingSeed": {
-    "message": "Tuo käyttäen tilin siemenlausetta"
-  },
   "importWallet": {
     "message": "Tuo kukkaro"
-  },
-  "importYourExisting": {
-    "message": "Tuo nykyinen lompakkosi käyttäen 12 sanan \n siemenlausetta"
   },
   "imported": {
     "message": "Tuotu",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Tietoja ja ohje"
   },
   "initialTransactionConfirmed": {
     "message": "Verkko hyväksyi alkuperäisen tapahtumasi. Siirry takaisin napsauttamalla OK-painiketta."
@@ -713,9 +695,6 @@
   "optionalCurrencySymbol": {
     "message": "Symboli (valinnainen)"
   },
-  "orderOneHere": {
-    "message": "Tilaa Trezor tai Ledger ja pidä varasi vakaassa tallennustilassa"
-  },
   "origin": {
     "message": "Alkuperä"
   },
@@ -775,9 +754,6 @@
   "readdToken": {
     "message": "Voit lisätä tämän tietueen myöhemmin takaisin siirtymällä tilisi vaihtoehtovalikon kohtaan ”Lisää tietue”."
   },
-  "readyToConnect": {
-    "message": "Valmiina yhdistämään?"
-  },
   "recents": {
     "message": "Viimeaikaiset"
   },
@@ -835,9 +811,6 @@
   "restoreAccountWithSeed": {
     "message": "Palauta tilisi käyttäen salaustekstiä (seed phrase)"
   },
-  "restoreFromSeed": {
-    "message": "Palautetaanko tili?"
-  },
   "revealSeedWords": {
     "message": "Paljasta salaussanat"
   },
@@ -892,9 +865,6 @@
   "secretBackupPhraseWarning": {
     "message": "VAROITUS: älä koskaan kerro varmuuskopiolausettasi kenellekään. Kuka tahansa tämän lauseen omaava voi napata Etherisi pysyvästi."
   },
-  "secretPhrase": {
-    "message": "Palauta holvisi syöttämällä tähän salainen kahdentoista sanan tekstisi."
-  },
   "securityAndPrivacy": {
     "message": "Turva & yksityisyys"
   },
@@ -933,9 +903,6 @@
   },
   "sendAmount": {
     "message": "Lähetä summa"
-  },
-  "sendETH": {
-    "message": "Lähetä ETH:iä"
   },
   "sendTokens": {
     "message": "Lähetä tietueita"
@@ -1008,24 +975,6 @@
   },
   "stateLogsDescription": {
     "message": "Tilalokeista löydät julkiset tiliosoitteesi sekä lähetetyt maksusiirtosi."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Yhdistä laitteistokukkaro"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Yhdistä hardware-lompakkosi suoraan tietokoneeseesi."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Valitse tili"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Valitse tarkasteltava tili. Voit valita vain yhden kerrallaan."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Ota käyttöön dApps ja paljon muuta!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Käytä laitteistosi tiliä minkä tahansa Ethereum-tilin tavoin. Kirjaudu dAppsiin, lähettää ethereumeja, ostaa ja tallentaa ERC20-tunnuksia sekä CryptoKittiesin kaltaisia ei-korvattavia tunnuksia."
   },
   "storePhrase": {
     "message": "Tallenna tämä teksti johonkin salasanojen hallintaohjelmaan (esim. 1Password)."

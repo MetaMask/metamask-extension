@@ -299,9 +299,6 @@
   "done": {
     "message": "Terminé"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Vous n'avez pas de portefeuille hardware ?"
-  },
   "downloadGoogleChrome": {
     "message": "Télécharger Google Chrome"
   },
@@ -437,9 +434,6 @@
     "message": "Obtenir de l'Ether d'une faucet pour $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Obtenir de l'aide."
-  },
   "getStarted": {
     "message": "Démarrer"
   },
@@ -457,9 +451,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Selectionnez le portefeuille hardware que vous voulez utiliser avec MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Un problème de connection ?"
   },
   "here": {
     "message": "ici",
@@ -490,21 +481,12 @@
   "importAccountSeedPhrase": {
     "message": "Importez un compte avec une phrase mnémotechnique"
   },
-  "importUsingSeed": {
-    "message": "Importer à partir de la phrase Seed du compte"
-  },
   "importWallet": {
     "message": "Importer le portefeuille"
-  },
-  "importYourExisting": {
-    "message": "Importez votre portefeuille existant à l'aide d'une phrase mnémotechnique de 12 mots"
   },
   "imported": {
     "message": "Importé",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info & Aide"
   },
   "initialTransactionConfirmed": {
     "message": "Votre transaction initiale a été confirmée par le réseau. Cliquez sur OK pour retourner à l'écran précédent."
@@ -698,9 +680,6 @@
   "optionalCurrencySymbol": {
     "message": "Symbole (facultatif)"
   },
-  "orderOneHere": {
-    "message": "Commander un Trezor ou un Ledger et conserver vos fonds en \"cold storage\""
-  },
   "origin": {
     "message": "Origine"
   },
@@ -760,9 +739,6 @@
   "readdToken": {
     "message": "Vous pourrez ajouter à nouveau ce jeton en allant sur “Ajouter un jeton” dans le menu des options de votre compte."
   },
-  "readyToConnect": {
-    "message": "Prêt à se connecter ?"
-  },
   "recents": {
     "message": "Récents"
   },
@@ -820,9 +796,6 @@
   "restoreAccountWithSeed": {
     "message": "Restaurer votre compte avec une phrase Seed."
   },
-  "restoreFromSeed": {
-    "message": "Restaurer le compte ?"
-  },
   "revealSeedWords": {
     "message": "Révéler les mots Seed"
   },
@@ -877,9 +850,6 @@
   "secretBackupPhraseWarning": {
     "message": "AVERTISSEMENT : ne révélez jamais votre phrase de sauvegarde. N'importe qui avec cette phrase peut voler votre Ether pour toujours."
   },
-  "secretPhrase": {
-    "message": "Entrez vos 12 mots secrets de votre phrase Seed pour restaurer votre coffre."
-  },
   "securityAndPrivacy": {
     "message": "Sécurité et confidentialité"
   },
@@ -918,9 +888,6 @@
   },
   "sendAmount": {
     "message": "Envoyer le montant"
-  },
-  "sendETH": {
-    "message": "Envoyer des ETH"
   },
   "sendTokens": {
     "message": "Envoyer des jetons"
@@ -993,24 +960,6 @@
   },
   "stateLogsDescription": {
     "message": "Les logs d'Etat contiennent les adresses publiques de vos comptes et vos transactions envoyées."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Connecter le portefeuille hardware"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Connectez votre portefeuille hardware directement à votre ordinateur."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Selectionnez un compte"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Selectionnez le compte que vous voulez afficher. Vous ne pouvez en afficher qu'un seul à la fois."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Vous pouvez maintenant utiliser des dApps et autres... !"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Utilisez ce compte de votre portefeuille hardware comme n'importe quel compte Ethereum. Connectez vous à des dApps, envoyez de l'Eth, achetez et conservez des jetons ERC20 et Non-Fungible comme CryptoKitties."
   },
   "storePhrase": {
     "message": "Stockez cette phrase dans un gestionnaire de mots de passe comme 1Password."

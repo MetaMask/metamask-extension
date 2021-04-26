@@ -308,9 +308,6 @@
   "done": {
     "message": "Efectuat"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Nu aveți portofel hardware?"
-  },
   "downloadGoogleChrome": {
     "message": "Descărcare Google Chrome"
   },
@@ -436,9 +433,6 @@
     "message": "Obțineți Ether de la un robinet pentru $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Obțineți ajutor."
-  },
   "getStarted": {
     "message": "Începe"
   },
@@ -456,9 +450,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Selectați un portofel hardware pe care doriți să îl folosiți cu MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Aveți probleme cu conectarea?"
   },
   "here": {
     "message": "aici",
@@ -489,21 +480,12 @@
   "importAccountSeedPhrase": {
     "message": "Importați un cont cu fraza seed"
   },
-  "importUsingSeed": {
-    "message": "Importare folosind fraza inițială a contului"
-  },
   "importWallet": {
     "message": "Importați portofel"
-  },
-  "importYourExisting": {
-    "message": "Importați portofelul existent folosind o frază seed de 12 cuvinte"
   },
   "imported": {
     "message": "Importate",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informații și ajutor"
   },
   "initialTransactionConfirmed": {
     "message": "Tranzacția inițială a fost confirmată de rețea. Clic pe OK pentru a reveni."
@@ -703,9 +685,6 @@
   "optionalCurrencySymbol": {
     "message": "Simbol (opțional)"
   },
-  "orderOneHere": {
-    "message": "Comandați Trezor sau Ledger și țineți-vă fondurile la rece"
-  },
   "origin": {
     "message": "Origine"
   },
@@ -765,9 +744,6 @@
   "readdToken": {
     "message": "Puteți adăuga din nou acest indicativ în viitor accesând „Adăugați indicativ” din meniul de opțiuni al contului dvs."
   },
-  "readyToConnect": {
-    "message": "Gata de conectare?"
-  },
   "recents": {
     "message": "Recente"
   },
@@ -825,9 +801,6 @@
   "restoreAccountWithSeed": {
     "message": "Restaurați-vă contul folosind fraza inițială"
   },
-  "restoreFromSeed": {
-    "message": "Restabiliți contul?"
-  },
   "revealSeedWords": {
     "message": "Arată cuvintele din seed"
   },
@@ -882,9 +855,6 @@
   "secretBackupPhraseWarning": {
     "message": "ATENȚIE: Nu dezvăluiți niciodată expresia dvs. de rezervă. Oricine are această expresie vă poate lua Ether-ul pentru totdeauna."
   },
-  "secretPhrase": {
-    "message": "Introduceți aici expresia dvs. secretă din 12 cuvinte pentru a restabili seiful."
-  },
   "securityAndPrivacy": {
     "message": "Securitate și confidențialitate"
   },
@@ -923,9 +893,6 @@
   },
   "sendAmount": {
     "message": "Suma trimisă"
-  },
-  "sendETH": {
-    "message": "Trimitere ETH"
   },
   "sendTokens": {
     "message": "Trimiteți indicative"
@@ -998,24 +965,6 @@
   },
   "stateLogsDescription": {
     "message": "Jurnalele de stare conțin adresele contului dvs. public și tranzacțiile trimise."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Conectați portofel hardware"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Conectați portofelul hardware direct la computer."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Selectați un cont"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Selectați contul pe care vreți să îl vizualizați. Puteți alege doar câte unul odată."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Începeți să folosiți dApps și altele!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Folosiți-vă contul hardware la fel ca pe orice cont Ethereum. Conectați-vă la dApps, trimiteți Eth, cumpărați și stocați tokenuri ERC20 și tokenuri non-fungibile precum CryptoKitties."
   },
   "storePhrase": {
     "message": "Păstrați această expresie într-un program de gestionare a parolelor cum ar fi 1Password."

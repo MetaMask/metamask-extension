@@ -1,9 +1,17 @@
 import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
-import ethUtil from 'ethereumjs-util';
+import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import {
+  GOERLI_CHAIN_ID,
+  KOVAN_CHAIN_ID,
+  LOCALHOST_CHAIN_ID,
+  MAINNET_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
+  ROPSTEN_CHAIN_ID,
+} from '../../../../shared/constants/network';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -21,33 +29,19 @@ export function formatDateWithYearContext(
     now.year === dateTime.year ? formatThisYear : fallback,
   );
 }
-
-const valueTable = {
-  wei: '1000000000000000000',
-  kwei: '1000000000000000',
-  mwei: '1000000000000',
-  gwei: '1000000000',
-  szabo: '1000000',
-  finney: '1000',
-  ether: '1',
-  kether: '0.001',
-  mether: '0.000001',
-  gether: '0.000000001',
-  tether: '0.000000000001',
-};
-const bnTable = {};
-Object.keys(valueTable).forEach((currency) => {
-  bnTable[currency] = new ethUtil.BN(valueTable[currency], 10);
-});
-
-export function isEthNetwork(netId) {
+/**
+ * Determines if the provided chainId is a default MetaMask chain
+ * @param {string} chainId - chainId to check
+ */
+export function isDefaultMetaMaskChain(chainId) {
   if (
-    !netId ||
-    netId === '1' ||
-    netId === '3' ||
-    netId === '4' ||
-    netId === '42' ||
-    netId === '1337'
+    !chainId ||
+    chainId === MAINNET_CHAIN_ID ||
+    chainId === ROPSTEN_CHAIN_ID ||
+    chainId === RINKEBY_CHAIN_ID ||
+    chainId === KOVAN_CHAIN_ID ||
+    chainId === GOERLI_CHAIN_ID ||
+    chainId === LOCALHOST_CHAIN_ID
   ) {
     return true;
   }
@@ -89,6 +83,9 @@ export function isValidAddress(address) {
     return false;
   }
   const prefixed = addHexPrefix(address);
+  if (!isHex(prefixed)) {
+    return false;
+  }
   return (
     (isAllOneCase(prefixed.slice(2)) && ethUtil.isValidAddress(prefixed)) ||
     ethUtil.isValidChecksumAddress(prefixed)
@@ -183,84 +180,6 @@ export function formatBalance(
     )} ${ticker}`;
   }
   return formatted;
-}
-
-export function generateBalanceObject(formattedBalance, decimalsToKeep = 1) {
-  let balance = formattedBalance.split(' ')[0];
-  const label = formattedBalance.split(' ')[1];
-  const beforeDecimal = balance.split('.')[0];
-  const afterDecimal = balance.split('.')[1];
-  const shortBalance = shortenBalance(balance, decimalsToKeep);
-
-  if (beforeDecimal === '0' && afterDecimal.substr(0, 5) === '00000') {
-    // eslint-disable-next-line eqeqeq
-    if (afterDecimal == 0) {
-      balance = '0';
-    } else {
-      balance = '<1.0e-5';
-    }
-  } else if (beforeDecimal !== '0') {
-    balance = `${beforeDecimal}.${afterDecimal.slice(0, decimalsToKeep)}`;
-  }
-
-  return { balance, label, shortBalance };
-}
-
-export function shortenBalance(balance, decimalsToKeep = 1) {
-  let truncatedValue;
-  const convertedBalance = parseFloat(balance);
-  if (convertedBalance > 1000000) {
-    truncatedValue = (balance / 1000000).toFixed(decimalsToKeep);
-    return `${truncatedValue}m`;
-  } else if (convertedBalance > 1000) {
-    truncatedValue = (balance / 1000).toFixed(decimalsToKeep);
-    return `${truncatedValue}k`;
-  } else if (convertedBalance === 0) {
-    return '0';
-  } else if (convertedBalance < 0.001) {
-    return '<0.001';
-  } else if (convertedBalance < 1) {
-    const stringBalance = convertedBalance.toString();
-    if (stringBalance.split('.')[1].length > 3) {
-      return convertedBalance.toFixed(3);
-    }
-    return stringBalance;
-  }
-  return convertedBalance.toFixed(decimalsToKeep);
-}
-
-// Takes a BN and an ethereum currency name,
-// returns a BN in wei
-export function normalizeToWei(amount, currency) {
-  try {
-    return amount.mul(bnTable.wei).div(bnTable[currency]);
-  } catch (e) {
-    return amount;
-  }
-}
-
-export function normalizeEthStringToWei(str) {
-  const parts = str.split('.');
-  let eth = new ethUtil.BN(parts[0], 10).mul(bnTable.wei);
-  if (parts[1]) {
-    let decimal = parts[1];
-    while (decimal.length < 18) {
-      decimal += '0';
-    }
-    if (decimal.length > 18) {
-      decimal = decimal.slice(0, 18);
-    }
-    const decimalBN = new ethUtil.BN(decimal, 10);
-    eth = eth.add(decimalBN);
-  }
-  return eth;
-}
-
-const multiple = new ethUtil.BN('10000', 10);
-export function normalizeNumberToWei(n, currency) {
-  const enlarged = n * 10000;
-  const amount = new ethUtil.BN(String(enlarged), 10);
-  return normalizeToWei(amount, currency).div(multiple);
 }
 
 export function isHex(str) {

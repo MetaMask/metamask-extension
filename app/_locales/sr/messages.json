@@ -305,9 +305,6 @@
   "done": {
     "message": "Gotovo"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Nemate hardverski novčanik?"
-  },
   "downloadGoogleChrome": {
     "message": "Preuzmi Google Chrome"
   },
@@ -440,9 +437,6 @@
     "message": "Preuzmite Ether sa slavine za $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Potražite pomoć."
-  },
   "getStarted": {
     "message": "Започнимо"
   },
@@ -463,9 +457,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Izaberite hardverski novčanik koji biste voleli da koristite sa MetaMask-om"
-  },
-  "havingTroubleConnecting": {
-    "message": "Da li imate problem sa povezivanjem?"
   },
   "here": {
     "message": "ovde",
@@ -496,21 +487,12 @@
   "importAccountSeedPhrase": {
     "message": "Uvezi račun sa frazom početnih vrednosti"
   },
-  "importUsingSeed": {
-    "message": "Uvezite koristeći šifru za oporavak naloga (seed phrase)"
-  },
   "importWallet": {
     "message": "Uvezite novčanik"
-  },
-  "importYourExisting": {
-    "message": "Uvezite vaš postojeći novčanik koristeći seed frazu sa 12 reči"
   },
   "imported": {
     "message": "Увезени",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info i pomoć"
   },
   "initialTransactionConfirmed": {
     "message": "Vašu početnu transakciju je potvrdila mreža. Kliknite OK da biste se vratili."
@@ -707,9 +689,6 @@
   "optionalCurrencySymbol": {
     "message": "Simbol (opciono)"
   },
-  "orderOneHere": {
-    "message": "Naručite Trezor ili Ledger i čuvajte svoja sredstva u hladnom skladištu"
-  },
   "origin": {
     "message": "Извор"
   },
@@ -769,9 +748,6 @@
   "readdToken": {
     "message": "U budućnosti možete vratiti ovaj token tako što ćete otvoriti „Dodaj token“ u meniju opcija vašeg naloga."
   },
-  "readyToConnect": {
-    "message": "Spremni za povezivanje?"
-  },
   "recents": {
     "message": "Skorašnje"
   },
@@ -829,9 +805,6 @@
   "restoreAccountWithSeed": {
     "message": "Povratite svoj nalog uz pomoć seed fraze"
   },
-  "restoreFromSeed": {
-    "message": "Obnoviti nalog?"
-  },
   "revealSeedWords": {
     "message": "Otkrivanje početnih reči"
   },
@@ -886,9 +859,6 @@
   "secretBackupPhraseWarning": {
     "message": "UPOZORENJE: Nikada ne otkrivajte svoju rezervnu frazu. Svako sa ovom frazom može zauvek da Vam uzme Vaš Ether."
   },
-  "secretPhrase": {
-    "message": "Unesite ovde svoj tajni izraz od dvanaest reči kako biste povratili svoj trezor."
-  },
   "securityAndPrivacy": {
     "message": "Bezbednost i privatnost"
   },
@@ -927,9 +897,6 @@
   },
   "sendAmount": {
     "message": "Pošaljite iznos"
-  },
-  "sendETH": {
-    "message": "Pošalji ETH"
   },
   "sendTokens": {
     "message": "Pošalji tokene"
@@ -1002,24 +969,6 @@
   },
   "stateLogsDescription": {
     "message": "Dnevnici stanja sadrže adrese vaših javnih naloga i poslatih transakcija."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Poveži hardverski novčanik"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Povežite svoj hardverski novčanik direktno sa kompjuterom."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Izaberite nalog"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Izaberite nalog koji želite da pogledatee. Možete izabrati samo po jedan nalog."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Počnite da koristite dApps i još mnogo toga!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Koristite nalog na vašem hardveru isto onako kako biste koristili bilo koji Ethereum nalog. Prijavite se na dApps, šaljite Eth, kupujte i skladištite ERC20 tokene i nezamenljive tokene poput CryptoKitties."
   },
   "storePhrase": {
     "message": "Čuvajte ovaj izraz u menadžeru šifri kao što je 1Password."

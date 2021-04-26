@@ -284,9 +284,6 @@
   "done": {
     "message": "Tapos na"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Wala ka bang hardware wallet?"
-  },
   "downloadGoogleChrome": {
     "message": "I-download ang Google Chrome"
   },
@@ -412,9 +409,6 @@
     "message": "Kumuha ng Ether mula sa isang faucet para sa $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Humingi ng Tulong."
-  },
   "getStarted": {
     "message": "Magsimula"
   },
@@ -429,9 +423,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Pumili ng hardware wallet na gusto mong gamitin sa MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "May problema ka ba sa pagkonekta?"
   },
   "here": {
     "message": "dito",
@@ -456,21 +447,12 @@
   "importAccountSeedPhrase": {
     "message": "Mag-import ng Account gamit ang Seed Phrase"
   },
-  "importUsingSeed": {
-    "message": "Mag-import gamit ang seed phrase ng account"
-  },
   "importWallet": {
     "message": "Mag-import ng Wallet"
-  },
-  "importYourExisting": {
-    "message": "I-import ang kasalukuyan mong wallet gamit ang isang seed phrase na may 12 salita"
   },
   "imported": {
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Impormasyon at Tulong"
   },
   "initialTransactionConfirmed": {
     "message": "Nakumpirma ng network ang iyong unang transaksyon. I-click ang OK para bumalik."
@@ -647,9 +629,6 @@
   "optionalCurrencySymbol": {
     "message": "Simbolo (opsyonal)"
   },
-  "orderOneHere": {
-    "message": "Mag-order ng Trezor o Ledger para itago sa cold storage ang iyong pondo"
-  },
   "origin": {
     "message": "Pinanggalingan"
   },
@@ -701,9 +680,6 @@
   },
   "readdToken": {
     "message": "Puwede mong idagdag ulit ang token na ito sa hinaharap sa pamamagitan ng pagpunta sa “Magdagdag ng token” sa menu ng mga opsyon ng iyong mga accounts."
-  },
-  "readyToConnect": {
-    "message": "Handa ka nang Kumonekta?"
   },
   "recents": {
     "message": "Kamakailan"
@@ -762,9 +738,6 @@
   "restoreAccountWithSeed": {
     "message": "I-restore ang iyong Account gamit ang Seed Phrase"
   },
-  "restoreFromSeed": {
-    "message": "I-restore ang account?"
-  },
   "revealSeedWords": {
     "message": "Ipakita ang Seed Words"
   },
@@ -807,9 +780,6 @@
   "secretBackupPhraseWarning": {
     "message": "BABALA: Huwag ibunyag ang iyong backup phrase. Mananakaw ng kahit sinong may ganitong parirala ang iyong Ether at hindi na ito maibabalik."
   },
-  "secretPhrase": {
-    "message": "Ilagay ang iyong lihim na pariralang may labindalawang salita para ma-restore ang iyong vault."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
@@ -848,9 +818,6 @@
   },
   "sendAmount": {
     "message": "Magpadala ng Halaga"
-  },
-  "sendETH": {
-    "message": "Magpadala ng ETH"
   },
   "sendTokens": {
     "message": "Magpadala ng Mga Token"
@@ -917,24 +884,6 @@
   },
   "stateLogsDescription": {
     "message": "Ang mga state log ay naglalaman ng iyong mga pampublikong account address at mga ipinadalang transaksyon."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Magkonekta ng Hardware Wallet"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Ikonekta ang iyong hardware wallet nang direkta sa computer."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Pumili ng Account"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Piliin ang halagang gusto mong tingnan. Maaari ka lang pumili nang paisa-isa."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Magsimula gamit ang dApps at higit pa!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Gamitin ang iyong hardware account tulad ng anumang Ethereum account. Mag-log in sa dApps, magpadala ng Eth, bumili at mag-store ng mga ERC20 token at mga Non-Fungible token tulad ng CryptoKitties."
   },
   "storePhrase": {
     "message": "I-store ang pariralang ito sa isang password manager tulad ng 1Password."

@@ -50,6 +50,7 @@ const INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE =
 const INITIALIZE_SELECT_ACTION_ROUTE = '/initialize/select-action';
 const INITIALIZE_SEED_PHRASE_ROUTE = '/initialize/seed-phrase';
 const INITIALIZE_BACKUP_SEED_PHRASE_ROUTE = '/initialize/backup-seed-phrase';
+const INITIALIZE_SEED_PHRASE_INTRO_ROUTE = '/initialize/seed-phrase-intro';
 const INITIALIZE_END_OF_FLOW_ROUTE = '/initialize/end-of-flow';
 const INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE = '/initialize/seed-phrase/confirm';
 const INITIALIZE_METAMETRICS_OPT_IN_ROUTE = '/initialize/metametrics-opt-in';
@@ -126,6 +127,7 @@ const PATH_NAME_MAP = {
   [INITIALIZE_SEED_PHRASE_ROUTE]: 'Initialization Seed Phrase Page',
   [INITIALIZE_BACKUP_SEED_PHRASE_ROUTE]:
     'Initialization Backup Seed Phrase Page',
+  [INITIALIZE_SEED_PHRASE_INTRO_ROUTE]: 'Initialization Seed Phrase Intro Page',
   [INITIALIZE_END_OF_FLOW_ROUTE]: 'End of Initialization Page',
   [INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE]:
     'Initialization Confirm Seed Phrase Page',
@@ -189,6 +191,7 @@ export {
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
+  INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
   CONNECTED_ROUTE,

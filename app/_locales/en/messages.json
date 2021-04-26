@@ -550,9 +550,6 @@
   "done": {
     "message": "Done"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Don’t have a hardware wallet?"
-  },
   "dontShowThisAgain": {
     "message": "Don't show this again"
   },
@@ -573,6 +570,12 @@
   },
   "editContact": {
     "message": "Edit Contact"
+  },
+  "editNonceField": {
+    "message": "Edit Nonce"
+  },
+  "editNonceMessage": {
+    "message": "This is an advanced feature, use cautiously."
   },
   "editPermission": {
     "message": "Edit Permission"
@@ -795,9 +798,6 @@
     "message": "Get Ether from a faucet for the $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Get Help."
-  },
   "getStarted": {
     "message": "Get Started"
   },
@@ -817,14 +817,14 @@
     "message": "(legacy)",
     "description": "Text representing the MEW path"
   },
+  "hardwareWalletSupportLinkConversion": {
+    "message": "click here"
+  },
   "hardwareWallets": {
     "message": "Connect a hardware wallet"
   },
   "hardwareWalletsMsg": {
-    "message": "Select a hardware wallet you'd like to use with MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Having trouble connecting?"
+    "message": "Select a hardware wallet you'd like to use with MetaMask."
   },
   "here": {
     "message": "here",
@@ -856,27 +856,28 @@
   "importAccount": {
     "message": "Import Account"
   },
+  "importAccountLinkText": {
+    "message": "import using seed phrase"
+  },
   "importAccountMsg": {
     "message": " Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
   },
   "importAccountSeedPhrase": {
     "message": "Import an account with seed phrase"
   },
-  "importUsingSeed": {
-    "message": "Import using account seed phrase"
+  "importAccountText": {
+    "message": "or $1",
+    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importWallet": {
     "message": "Import wallet"
   },
   "importYourExisting": {
-    "message": "Import your existing wallet using a 12 word seed phrase"
+    "message": "Import your existing wallet using a seed phrase"
   },
   "imported": {
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info & Help"
   },
   "infuraBlockedNotification": {
     "message": "MetaMask is unable to connect to the blockchain host. Review possible reasons $1.",
@@ -972,6 +973,21 @@
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
   },
+  "ledgerLiveAdvancedSetting": {
+    "message": "Use Ledger Live"
+  },
+  "ledgerLiveAdvancedSettingDescription": {
+    "message": "The new Ledger Live bridge allows you to more easily use your Ledger.  Only available in Chrome."
+  },
+  "ledgerLiveApp": {
+    "message": "Ledger Live App"
+  },
+  "ledgerLocked": {
+    "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
+  },
+  "ledgerTimeout": {
+    "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
+  },
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"
   },
@@ -1064,7 +1080,7 @@
     "message": "MetaMask would like to gather usage data to better understand how our users interact with the extension. This data will be used to continually improve the usability and user experience of our product and the Ethereum ecosystem."
   },
   "mismatchedChain": {
-    "message": "This network details for this Chain ID do not match our records. We recommend that you $1 before proceeding.",
+    "message": "The network details for this chain ID do not match our records. We recommend that you $1 before proceeding.",
     "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
   },
   "mismatchedChainLinkText": {
@@ -1089,6 +1105,13 @@
   "needEtherInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
   },
+  "needHelp": {
+    "message": "Need help? Contact $1",
+    "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
+  },
+  "needHelpLinkText": {
+    "message": "MetaMask Support"
+  },
   "needImportFile": {
     "message": "You must select a file to import.",
     "description": "User is important an account and needs to add a file to continue"
@@ -1102,8 +1125,17 @@
   "networkName": {
     "message": "Network Name"
   },
+  "networkNameBSC": {
+    "message": "BSC"
+  },
   "networkNameDefinition": {
     "message": "The name associated with this network."
+  },
+  "networkNameEthereum": {
+    "message": "Ethereum"
+  },
+  "networkNameTestnet": {
+    "message": "Testnet"
   },
   "networkSettingsChainIdDescription": {
     "message": "The chain ID is used for signing transactions. It must match the chain ID returned by the network. You can enter a decimal or '0x'-prefixed hexadecimal number, but we will display the number in decimal."
@@ -1185,6 +1217,9 @@
   "noWebcamFoundTitle": {
     "message": "Webcam not found"
   },
+  "nonce": {
+    "message": "Nonce"
+  },
   "nonceField": {
     "message": "Customize transaction nonce"
   },
@@ -1233,9 +1268,6 @@
   },
   "optionalCurrencySymbol": {
     "message": "Currency Symbol (optional)"
-  },
-  "orderOneHere": {
-    "message": "Order a Trezor or Ledger and keep your funds in cold storage"
   },
   "origin": {
     "message": "Origin"
@@ -1318,9 +1350,6 @@
   "readdToken": {
     "message": "You can add this token back in the future by going to “Add token” in your accounts options menu."
   },
-  "readyToConnect": {
-    "message": "Ready to Connect?"
-  },
   "receive": {
     "message": "Receive"
   },
@@ -1380,9 +1409,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restore your Account with Seed Phrase"
-  },
-  "restoreFromSeed": {
-    "message": "Restore account?"
   },
   "restoreWalletPreferences": {
     "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
@@ -1455,13 +1481,49 @@
     "message": "WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Ether forever."
   },
   "secretPhrase": {
-    "message": "Enter your secret twelve word phrase here to restore your vault."
+    "message": "Enter your secret phrase here to restore your vault."
   },
   "securityAndPrivacy": {
     "message": "Security & Privacy"
   },
   "securitySettingsDescription": {
     "message": "Privacy settings and wallet seed phrase"
+  },
+  "seedPhraseIntroSidebarBulletFour": {
+    "message": "Write down and store in multiple secret places."
+  },
+  "seedPhraseIntroSidebarBulletOne": {
+    "message": "Save in a password manager"
+  },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "Store in a safe-deposit box."
+  },
+  "seedPhraseIntroSidebarBulletTwo": {
+    "message": "Store in a bank vault."
+  },
+  "seedPhraseIntroSidebarCopyOne": {
+    "message": "Your recovery phrase is the “master key” to your wallet and funds."
+  },
+  "seedPhraseIntroSidebarCopyThree": {
+    "message": "If someone asks for your recovery phrase, they are most likely trying to scam you."
+  },
+  "seedPhraseIntroSidebarCopyTwo": {
+    "message": "Never, ever share your recovery phrase, even with MetaMask!"
+  },
+  "seedPhraseIntroSidebarTitleOne": {
+    "message": "What is a recovery phrase?"
+  },
+  "seedPhraseIntroSidebarTitleThree": {
+    "message": "Should I share my recovery phrase?"
+  },
+  "seedPhraseIntroSidebarTitleTwo": {
+    "message": "How do I save my recovery phrase?"
+  },
+  "seedPhraseIntroTitle": {
+    "message": "Secure your wallet"
+  },
+  "seedPhraseIntroTitleCopy": {
+    "message": "Before getting started, watch this short video to learn about your recovery phrase and how to keep your wallet safe."
   },
   "seedPhrasePlaceholder": {
     "message": "Separate each word with a single space"
@@ -1488,7 +1550,11 @@
     "message": "This account has already been connected to MetaMask"
   },
   "selectAnAccountHelp": {
-    "message": "Select the account to view in MetaMask"
+    "message": "Select an account to view in MetaMask."
+  },
+  "selectAnAccountHelpDirections": {
+    "message": "Don't see your account? $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "selectEachPhrase": {
     "message": "Please select each phrase in order to make sure it is correct."
@@ -1510,9 +1576,6 @@
   },
   "sendAmount": {
     "message": "Send Amount"
-  },
-  "sendETH": {
-    "message": "Send ETH"
   },
   "sendSpecifiedTokens": {
     "message": "Send $1",
@@ -1633,23 +1696,26 @@
   "statusNotConnected": {
     "message": "Not connected"
   },
-  "step1HardwareWallet": {
-    "message": "1. Connect Hardware Wallet"
+  "step1LedgerWallet": {
+    "message": "Download Ledger app"
   },
-  "step1HardwareWalletMsg": {
-    "message": "Connect your hardware wallet directly to your computer."
+  "step1LedgerWalletMsg": {
+    "message": "Download, set up, and enter your password to unlock $1.",
+    "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step2HardwareWallet": {
-    "message": "2. Select an Account"
+  "step1TrezorWallet": {
+    "message": "Plug in Trezor wallet"
   },
-  "step2HardwareWalletMsg": {
-    "message": "Select the account you want to view. You can only choose one at a time."
+  "step1TrezorWalletMsg": {
+    "message": "Connect your wallet directly to your computer. For more on using your hardware wallet device, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
-  "step3HardwareWallet": {
-    "message": "3. Start using web3 sites and more!"
+  "step2LedgerWallet": {
+    "message": "Plug in Ledger wallet"
   },
-  "step3HardwareWalletMsg": {
-    "message": "Use your hardware account like you would with any Ethereum account. Connect to web3 sites, send ETH, buy and store ERC20 tokens and non-fungible tokens like CryptoKitties."
+  "step2LedgerWalletMsg": {
+    "message": "Connect your wallet directly to your computer.  Unlock your Ledger and open the Ethereum app. For more on using your hardware wallet device, $1.",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
@@ -1659,6 +1725,9 @@
   },
   "submitted": {
     "message": "Submitted"
+  },
+  "support": {
+    "message": "Support"
   },
   "supportCenter": {
     "message": "Visit our Support Center"
@@ -1788,7 +1857,7 @@
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapNetworkFeeSummary": {
-    "message": "The network fee covers the cost of processing your swap and storing it on the Ethereum network. MetaMask does not profit from this fee."
+    "message": "The network fee covers the cost of processing your swap and storing it on the $1 network. MetaMask does not profit from this fee."
   },
   "swapNewQuoteIn": {
     "message": "New quotes in $1",
@@ -1974,6 +2043,12 @@
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "Allow this site to switch the network?"
+  },
+  "switchLedgerPaths": {
+    "message": "Switch Ledger paths"
+  },
+  "switchLedgerPathsText": {
+    "message": "Select the Ledger path to view other accounts"
   },
   "switchNetwork": {
     "message": "Switch network"
@@ -2221,6 +2296,9 @@
   },
   "walletSeed": {
     "message": "Seed phrase"
+  },
+  "walletSeedRestore": {
+    "message": "Wallet Seed"
   },
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",
