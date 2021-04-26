@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import { UI_NOTIFICATIONS } from '../../../shared/notifications';
 import migration58 from './058';
 
 describe('migration #58', function () {
@@ -14,86 +13,6 @@ describe('migration #58', function () {
     const newStorage = await migration58.migrate(oldStorage);
     assert.deepEqual(newStorage.meta, {
       version: 58,
-    });
-  });
-
-  describe('setting swaps notification to shown', function () {
-    it(`should set the swaps notification to shown if swapsWelcomeMessageHasBeenShown is true and the notification state has not been initialized`, async function () {
-      const oldStorage = {
-        meta: {},
-        data: {
-          AppStateController: {
-            swapsWelcomeMessageHasBeenShown: true,
-          },
-          foo: 'bar',
-        },
-      };
-      const newStorage = await migration58.migrate(oldStorage);
-      assert.strictEqual(
-        newStorage.data.NotificationController.notifications[1].isShown,
-        true,
-      );
-    });
-
-    it(`should set the swaps notification to shown if swapsWelcomeMessageHasBeenShown is true and the notification state has been initialized`, async function () {
-      const oldStorage = {
-        meta: {},
-        data: {
-          AppStateController: {
-            swapsWelcomeMessageHasBeenShown: true,
-          },
-          NotificationController: {
-            notifications: {
-              1: {
-                isShown: false,
-              },
-              2: {
-                isShown: false,
-              },
-            },
-            bar: 'baz',
-          },
-          foo: 'bar',
-        },
-      };
-      const newStorage = await migration58.migrate(oldStorage);
-      assert.deepEqual(newStorage.data.NotificationController, {
-        ...oldStorage.data.NotificationController,
-        notifications: {
-          ...oldStorage.data.NotificationController.notifications,
-          1: {
-            ...UI_NOTIFICATIONS[1],
-            isShown: true,
-          },
-        },
-      });
-    });
-
-    it(`should not set the swaps notification to shown if swapsWelcomeMessageHasBeenShown is false`, async function () {
-      const oldStorage = {
-        meta: {},
-        data: {
-          AppStateController: {
-            swapsWelcomeMessageHasBeenShown: false,
-          },
-          NotificationController: {
-            1: {
-              fizz: 'buzz',
-              isShown: false,
-            },
-            2: {
-              fizz: 'buzz',
-              isShown: false,
-            },
-          },
-          foo: 'bar',
-        },
-      };
-      const newStorage = await migration58.migrate(oldStorage);
-      assert.deepEqual(
-        newStorage.data.NotificationController,
-        oldStorage.data.NotificationController,
-      );
     });
   });
 

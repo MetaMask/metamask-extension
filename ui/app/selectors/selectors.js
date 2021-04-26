@@ -24,7 +24,6 @@ import {
 } from '../helpers/utils/conversions.util';
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
-import { getSwapsFeatureLiveness } from '../ducks/swaps/swaps';
 
 import { getNativeCurrency } from './send';
 
@@ -500,17 +499,6 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
-function getNotificationsToInclude(state) {
-  const currentNetworkIsMainnet = getIsMainnet(state);
-  const swapsIsEnabled = getSwapsFeatureLiveness(state);
-
-  return {
-    1: currentNetworkIsMainnet && swapsIsEnabled,
-    2: true,
-    3: true,
-  };
-}
-
 /**
  * @typedef {Object} Notification
  * @property {number} id - A unique identifier for the notification
@@ -521,8 +509,7 @@ function getNotificationsToInclude(state) {
  * Notifications are managed by the notification controller and referenced by
  * `state.metamask.notifications`. This function returns a list of notifications
  * the can be shown to the user. This list includes all notifications that do not
- * have a truthy `isShown` property, and also which are not filtered out due to
- * conditions encoded in the `getNotificationsToInclude` function.
+ * have a truthy `isShown` property.
  *
  * The returned notifications are sorted by date.
  *
@@ -532,10 +519,8 @@ function getNotificationsToInclude(state) {
 
 export function getSortedNotificationsToShow(state) {
   const notifications = Object.values(state.metamask.notifications) || [];
-  const notificationToExclude = getNotificationsToInclude(state);
   const notificationsToShow = notifications.filter(
-    (notification) =>
-      !notification.isShown && notificationToExclude[notification.id],
+    (notification) => !notification.isShown,
   );
   const notificationsSortedByDate = notificationsToShow.sort(
     (a, b) => new Date(b.date) - new Date(a.date),

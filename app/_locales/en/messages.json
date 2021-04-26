@@ -1236,40 +1236,40 @@
     "message": "Not Enough Gas"
   },
   "notificationsActionText1": {
-    "message": "Start swapping",
-    "description": "The 'call to action' label on the button, or link, of the swap 'See What's New' notification. Upon clicking, users will be taken to the swaps page."
-  },
-  "notificationsActionText2": {
-    "message": "Get the mobile app",
+    "message": "Get the mobile app and start swapping",
     "description": "The 'call to action' label on the button, or link, of the mobile 'See What's New' notification. Upon clicking, users will be taken to the downloads page on the MetaMask website."
   },
-  "notificationsActionText3": {
+  "notificationsActionText2": {
     "message": "Start survey",
     "description": "The 'call to action' label on the button, or link, of the 'Help improve MetaMask' 'See What's New' notification. Upon clicking, users will be taken to an external page where they can complete a survey."
   },
+  "notificationsActionText3": {
+    "message": "Placeholder (change before merge)",
+    "description": "The 'call to action'"
+  },
   "notificationsDescription1": {
-    "message": "MetaMask now aggregates multiple decentralized exchange aggregators to ensure you always get the best swap price with the lowest netwrok fees.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swap feature to users."
+    "message": "MetaMask Mobile users can now swap tokens inside their wallet, with a single swipe, using the Swaps feature.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
   },
   "notificationsDescription2": {
-    "message": "Sync with your extension wallet in seconds. Scan the QR code with your phone camera to download the app.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes how to sync their MetaMask extension wallet with the mobile wallet."
-  },
-  "notificationsDescription3": {
     "message": "Please share your experience in this 5 minute survey.",
     "description": "Description of a notification in the 'See What's New' popup. Further clarifies how the users can help: by completing a 5 minute survey about MetaMask."
   },
+  "notificationsDescription3": {
+    "message": "Placeholder for security message (change before merge)",
+    "description": "Description of a notification in the 'See What's New' popup."
+  },
   "notificationsTitle1": {
-    "message": "Now Swap tokens directly in your wallet!",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that the swap feature is available in MetaMask."
+    "message": "Swapping on mobile is here!",
+    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
   },
   "notificationsTitle2": {
-    "message": "MetaMask Mobile is here!",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that the can now get MetaMask on Mobile."
-  },
-  "notificationsTitle3": {
     "message": "Help improve MetaMask",
     "description": "Title for a notification in the 'See What's New' popup. Asks users to take action to make MetaMask better."
+  },
+  "notificationsTitle3": {
+    "message": "Placeholder (change before merge)",
+    "description": "Title for a notification in the 'See What's New' popup."
   },
   "ofTextNofM": {
     "message": "of"

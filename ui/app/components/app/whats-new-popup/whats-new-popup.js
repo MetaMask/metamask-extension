@@ -4,37 +4,28 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { I18nContext } from '../../../contexts/i18n';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
-import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
 import { updateViewedNotifications } from '../../../store/actions';
 import { getTranslatedUINoficiations } from '../../../../../shared/notifications';
-import { ETH_SWAPS_TOKEN_OBJECT } from '../../../../../shared/constants/swaps';
-import { BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes';
 import { getSortedNotificationsToShow } from '../../../selectors';
 
-function getActionFunctions(metricsEvent) {
+function getActionFunctions() {
   const actionFunctions = {
     1: () => {
-      metricsEvent({
-        event: 'Swaps Opened',
-        properties: { source: 'Main View', active_currency: 'ETH' },
-        category: 'swaps',
-      });
-      global.platform.openExtensionInBrowser(
-        BUILD_QUOTE_ROUTE,
-        `fromAddress=${ETH_SWAPS_TOKEN_OBJECT.address}`,
-      );
-    },
-    2: () => {
       global.platform.openTab({
         url: 'https://metamask.io/download.html',
       });
     },
-    3: () => {
+    2: () => {
       global.platform.openTab({
         url:
           'https://survey.alchemer.com/s3/6173069/MetaMask-Extension-NPS-January-2021',
+      });
+    },
+    3: () => {
+      global.platform.openTab({
+        url: 'https://community.metamask.io/t/about-the-security-category/72',
       });
     },
   };
@@ -43,10 +34,9 @@ function getActionFunctions(metricsEvent) {
 }
 
 export default function WhatsNewPopup({ onClose }) {
-  const metricsEvent = useContext(MetaMetricsContext);
   const t = useContext(I18nContext);
 
-  const actionFunctions = getActionFunctions(metricsEvent);
+  const actionFunctions = getActionFunctions();
 
   const notifications = useSelector(getSortedNotificationsToShow);
 
