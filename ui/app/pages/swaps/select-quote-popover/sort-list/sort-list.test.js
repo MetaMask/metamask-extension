@@ -70,8 +70,14 @@ describe('SortList', () => {
     expect(getByText('$15.25')).toBeInTheDocument();
     expect(getByText('$14.26')).toBeInTheDocument();
     expect(getByText('$13.27')).toBeInTheDocument();
-    expect(document.querySelector('.select-quote-popover__receiving')).toMatchSnapshot();
-    expect(document.querySelector('.select-quote-popover__network-fees-header')).toMatchSnapshot();
-    expect(document.querySelector('.select-quote-popover__row--selected')).toMatchSnapshot();
+    expect(
+      document.querySelector('.select-quote-popover__receiving'),
+    ).toMatchSnapshot();
+    expect(
+      document.querySelector('.select-quote-popover__network-fees-header'),
+    ).toMatchSnapshot();
+    expect(
+      document.querySelector('.select-quote-popover__row--selected'),
+    ).toMatchSnapshot();
   });
 });

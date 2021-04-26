@@ -1,11 +1,11 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
-import GasModalPageContainer from './';
 import {
   renderWithProvider,
   createSwapsMockStore,
 } from '../../../../../test/jest';
+import GasModalPageContainer from '.';
 
 const createProps = (customProps = {}) => {
   return {
@@ -21,7 +21,7 @@ const createProps = (customProps = {}) => {
 };
 
 describe('GasModalPageContainer', () => {
-  test('renders the component with initial props', () => {
+  it('renders the component with initial props', () => {
     expect(true).toBe(true);
     // const store = configureMockStore()(createSwapsMockStore());
     // const props = createProps();

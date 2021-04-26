@@ -4,7 +4,6 @@ import thunk from 'redux-thunk';
 import nock from 'nock';
 import { waitFor } from '@testing-library/react';
 
-import Swap from './';
 import {
   renderWithProvider,
   createSwapsMockStore,
@@ -12,6 +11,7 @@ import {
   MOCKS,
   CONSTANTS,
 } from '../../../../test/jest';
+import Swap from '.';
 
 const middleware = [thunk];
 
@@ -52,7 +52,7 @@ describe('Swap', () => {
     nock.cleanAll();
   });
 
-  test('renders the component with initial props', async () => {
+  it('renders the component with initial props', async () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const { container, getByText } = renderWithProvider(<Swap />, store);
     await waitFor(() => expect(tokensNock.isDone()).toBe(true));

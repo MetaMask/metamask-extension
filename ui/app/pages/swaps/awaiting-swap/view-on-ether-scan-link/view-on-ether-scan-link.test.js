@@ -27,7 +27,7 @@ describe('ViewOnEtherScanLink', () => {
       <ViewOnEtherScanLink
         {...createProps({
           blockExplorerUrl: 'https://custom-blockchain.explorer',
-          isCustomBlockExplorerUrl: true
+          isCustomBlockExplorerUrl: true,
         })}
       />,
     );

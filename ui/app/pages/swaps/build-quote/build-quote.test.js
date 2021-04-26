@@ -2,12 +2,12 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import BuildQuote from './';
 import {
   renderWithProvider,
   createSwapsMockStore,
   setBackgroundConnection,
 } from '../../../../../test/jest';
+import BuildQuote from '.';
 
 const middleware = [thunk];
 const createProps = (customProps = {}) => {
@@ -24,17 +24,14 @@ const createProps = (customProps = {}) => {
 };
 
 setBackgroundConnection({
-  resetPostFetchState: jest.fn()
+  resetPostFetchState: jest.fn(),
 });
 
 describe('BuildQuote', () => {
-  test('renders the component with initial props', () => {    
+  it('renders the component with initial props', () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const props = createProps();
-    const { getByText } = renderWithProvider(
-      <BuildQuote {...props} />,
-      store,
-    );
+    const { getByText } = renderWithProvider(<BuildQuote {...props} />, store);
     expect(getByText('Swap from')).toBeInTheDocument();
     expect(getByText('Swap to')).toBeInTheDocument();
     expect(getByText('ETH')).toBeInTheDocument();
@@ -42,7 +39,9 @@ describe('BuildQuote', () => {
     expect(getByText('2%')).toBeInTheDocument();
     expect(getByText('3%')).toBeInTheDocument();
     expect(getByText('Review Swap')).toBeInTheDocument();
-    expect(document.querySelector('.slippage-buttons__button-group')).toMatchSnapshot();
+    expect(
+      document.querySelector('.slippage-buttons__button-group'),
+    ).toMatchSnapshot();
     expect(document.querySelector('.swaps-footer')).toMatchSnapshot();
   });
 });
