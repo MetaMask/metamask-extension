@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.4.0] - 2021-04-15
+### Added
+- [#10883](https://github.com/MetaMask/metamask-extension/pull/10883): Notify users when MetaMask is unable to connect to the blockchain host
+
 ## [9.3.0] - 2021-04-02
 ### Added
 - [#10721](https://github.com/MetaMask/metamask-extension/pull/10721): Swaps support for the Binance network
@@ -2177,7 +2181,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.4.0...HEAD
+[9.4.0]: https://github.com/MetaMask/metamask-extension/compare/v9.3.0...v9.4.0
 [9.3.0]: https://github.com/MetaMask/metamask-extension/compare/v9.2.1...v9.3.0
 [9.2.1]: https://github.com/MetaMask/metamask-extension/compare/v9.2.0...v9.2.1
 [9.2.0]: https://github.com/MetaMask/metamask-extension/compare/v9.1.1...v9.2.0
