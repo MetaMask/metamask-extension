@@ -16,6 +16,7 @@ export default class SendAssetRow extends Component {
       }),
     ).isRequired,
     accounts: PropTypes.object.isRequired,
+    assetImages: PropTypes.object,
     selectedAddress: PropTypes.string.isRequired,
     sendTokenAddress: PropTypes.string,
     setSendToken: PropTypes.func.isRequired,
@@ -155,6 +156,7 @@ export default class SendAssetRow extends Component {
   renderAsset(token, insideDropdown = false) {
     const { address, symbol } = token;
     const { t } = this.context;
+    const { assetImages } = this.props;
 
     return (
       <div
@@ -163,7 +165,11 @@ export default class SendAssetRow extends Component {
         onClick={() => this.selectToken(token)}
       >
         <div className="send-v2__asset-dropdown__asset-icon">
-          <Identicon address={address} diameter={36} />
+          <Identicon
+            address={address}
+            diameter={36}
+            image={assetImages[address]}
+          />
         </div>
         <div className="send-v2__asset-dropdown__asset-data">
           <div className="send-v2__asset-dropdown__symbol">{symbol}</div>
