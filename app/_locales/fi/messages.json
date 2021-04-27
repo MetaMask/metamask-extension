@@ -597,12 +597,6 @@
   "myAccounts": {
     "message": "Omat tilit"
   },
-  "myWalletAccounts": {
-    "message": "Omat kukkarotilini"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Kaikki MetaMaskilla luodut tilisi lisätään automaattisesti tähän osastoon."
-  },
   "needEtherInWallet": {
     "message": "Ollaksesi vuorovaikutuksessa hajautettujen sovellusten kanssa sinulla on oltava lompakossasi Ether."
   },

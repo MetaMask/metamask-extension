@@ -582,12 +582,6 @@
   "myAccounts": {
     "message": "Mes comptes"
   },
-  "myWalletAccounts": {
-    "message": "Mes comptes de portefeuille"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Tous vos comptes MetaMask créés seront automatiquement ajoutés à cette section."
-  },
   "needEtherInWallet": {
     "message": "Pour interagir avec des applications décentralisées à l'aide de MetaMask, vous avez besoin d'Ether dans votre portefeuille."
   },

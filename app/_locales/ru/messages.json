@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "Журнал активности"
   },
-  "addAccount": {
-    "message": "Добавить счет"
-  },
   "addAcquiredTokens": {
     "message": "Добавьте токены, которые вы приобрели с помощью MetaMask"
   },
@@ -965,12 +962,6 @@
   },
   "myAccounts": {
     "message": "Мои счета"
-  },
-  "myWalletAccounts": {
-    "message": "Счета моего кошелька"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Все ваши счета, созданные в MetaMask, будут автоматически добавлены в этот раздел."
   },
   "needEtherInWallet": {
     "message": "Для взаимодействия с децентрализованными приложениями с помощью MetaMask вам понадобится Ether в вашем кошельке."

@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "活动日志"
   },
-  "addAccount": {
-    "message": "添加一个账户"
-  },
   "addAcquiredTokens": {
     "message": "在 MetaMask 上添加获得的代币"
   },
@@ -977,12 +974,6 @@
   },
   "myAccounts": {
     "message": "我的账户"
-  },
-  "myWalletAccounts": {
-    "message": "我的钱包账户"
-  },
-  "myWalletAccountsDescription": {
-    "message": "所有创建的 MetaMask 账户将自动添加到此部分。"
   },
   "needEtherInWallet": {
     "message": "使用 MetaMask 与分布式应用交互，需要您的钱包里需要有 Ether。"

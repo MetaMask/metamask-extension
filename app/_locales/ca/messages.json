@@ -581,12 +581,6 @@
   "myAccounts": {
     "message": "Els meus Comptes"
   },
-  "myWalletAccounts": {
-    "message": "Els meus Comptes de Moneder"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Tots els teus comptes creats a MetaMask s'afegiran automàticament a aquesta secció."
-  },
   "needEtherInWallet": {
     "message": "Per a interactuar amb aplicacions descentralitzades fent servir MetaMask, necessitaràs Ether al teu moneder."
   },

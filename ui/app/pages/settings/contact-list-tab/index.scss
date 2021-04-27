@@ -5,12 +5,15 @@
 }
 
 .address-book {
-  flex: 0.4 1 40%;
-  max-width: 40%;
+  flex: 0.4 1 100%;
 
   @media screen and (max-width: 576px) {
     flex: 1;
     max-width: 100%;
+
+    &__container {
+      min-height: 100%;
+    }
   }
 
   &__entry {
@@ -49,6 +52,32 @@
       justify-content: flex-end;
       color: $accent-red;
     }
+  }
+
+  &__container {
+    margin: 0 auto;
+    min-height: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  &__title {
+    @include H4;
+
+    font-weight: 600;
+    margin-bottom: 0.5em;
+  }
+
+  &__sub-title {
+    font-size: small;
+    margin-bottom: 0.5em;
+  }
+
+  &__link {
+    background-color: #fff;
+    color: #037dd6;
   }
 
   &__input {
@@ -247,7 +276,7 @@
 }
 
 .address-book-contact-content {
-  flex: 0.4 1 40%;
+  flex: 0.4 1 100%;
 
   @media screen and (max-width: 576px) {
     flex: 1;

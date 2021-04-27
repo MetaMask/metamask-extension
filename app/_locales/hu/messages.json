@@ -590,12 +590,6 @@
   "myAccounts": {
     "message": "Fiókjaim"
   },
-  "myWalletAccounts": {
-    "message": "Saját tárca fiókjai"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Az összes MetaMask által létrehozott fiókot automatikusan hozzáadja a munkamenethez."
-  },
   "needEtherInWallet": {
     "message": "Ha a MetaMaskon keresztül szeretne interakcióba lépni decentralizált alkalmazással, ahhoz a tárcájában Ethernek kell lennie."
   },

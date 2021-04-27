@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "log attività"
   },
-  "addAccount": {
-    "message": "Aggiungi un account"
-  },
   "addAcquiredTokens": {
     "message": "Aggiungi i token che hai acquistato usando MetaMask"
   },
@@ -980,12 +977,6 @@
   },
   "myAccounts": {
     "message": "Miei Account"
-  },
-  "myWalletAccounts": {
-    "message": "I miei account di portafoglio"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Tutti gli account creati con MetaMask saranno automaticamente aggiunti a questa sezione."
   },
   "needEtherInWallet": {
     "message": "Per interagire con applicazioni decentralizzate con MetaMask, devi possedere Ether nel tuo portafoglio."

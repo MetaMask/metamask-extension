@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "गतिविधि लॉग"
   },
-  "addAccount": {
-    "message": "एक खाता जोड़ें"
-  },
   "addAcquiredTokens": {
     "message": "आपके द्वारा MetaMask का उपयोग करके प्राप्त किए गए टोकन जोड़ें"
   },
@@ -965,12 +962,6 @@
   },
   "myAccounts": {
     "message": "मेरे खाते"
-  },
-  "myWalletAccounts": {
-    "message": "मेरे वॉलेट खाते"
-  },
-  "myWalletAccountsDescription": {
-    "message": "आपके सभी MetaMask निर्मित खाते स्वतः ही इस अनुभाग में जोड़ दिए जाएँगे।"
   },
   "needEtherInWallet": {
     "message": "MetaMask का उपयोग करके विकेंद्रीकृत एप्लिकेशन के साथ सहभागिता करने के लिए, आपको अपने वॉलेट में Ether की आवश्यकता होगी।"

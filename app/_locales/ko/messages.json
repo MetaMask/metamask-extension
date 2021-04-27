@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "활동 로그"
   },
-  "addAccount": {
-    "message": "계정 추가"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask를 이용해 얻은 토큰 추가"
   },
@@ -965,12 +962,6 @@
   },
   "myAccounts": {
     "message": "내 계정"
-  },
-  "myWalletAccounts": {
-    "message": "내 지갑 계정"
-  },
-  "myWalletAccountsDescription": {
-    "message": "MetaMask에서 생성한 모든 계정으로 이 섹션에 자동으로 추가됩니다."
   },
   "needEtherInWallet": {
     "message": "MetaMask를 이용하는 분산형 애플리케이션과 상호작용하려면 지갑에 Ether가 있어야 합니다."

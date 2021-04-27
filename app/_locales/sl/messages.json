@@ -585,12 +585,6 @@
   "myAccounts": {
     "message": "Moji računi"
   },
-  "myWalletAccounts": {
-    "message": "Moji računi Denarnice"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Vsi vaši računi, ustvarjeni v MetaMasku, bodo samodejno dodani v ta razdelek."
-  },
   "needEtherInWallet": {
     "message": "Za interakcijo z decentraliziranimi aplikacijami boste v svoji denarnici potrebovali Eter."
   },

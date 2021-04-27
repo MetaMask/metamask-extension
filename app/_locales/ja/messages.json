@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "アクティビティのログ"
   },
-  "addAccount": {
-    "message": "アカウントの追加"
-  },
   "addAcquiredTokens": {
     "message": "MetaMaskで取得したトークンを追加する"
   },
@@ -977,12 +974,6 @@
   },
   "myAccounts": {
     "message": "マイアカウント"
-  },
-  "myWalletAccounts": {
-    "message": "このウォレットのアカウント"
-  },
-  "myWalletAccountsDescription": {
-    "message": "MetaMaskで作成したすべてのアカウントは、このセクションに自動的に追加されます。"
   },
   "needEtherInWallet": {
     "message": "MetaMaskで分散型アプリケーションを操作するには、ウォレットにEtherが必要です。"

@@ -590,12 +590,6 @@
   "myAccounts": {
     "message": "Moji računi"
   },
-  "myWalletAccounts": {
-    "message": "Moji računi za novčanik"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Svi se vaši računi za MetaMask automatski dodaju u ovaj odjeljak."
-  },
   "needEtherInWallet": {
     "message": "Trebate Ether u svojem novčaniku kako biste ostvarili interakciju s decentraliziranim aplikacijama uporabom usluge MetaMask. "
   },
