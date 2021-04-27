@@ -21,6 +21,7 @@
   &__content {
     grid-area: content;
     padding: 16px 16px 0;
+    min-width: 0;
 
     & > :last-child {
       margin-bottom: 16px;
@@ -58,5 +59,13 @@
 
   &__navigation &__navigation-button:last-child {
     margin-left: 8px;
+  }
+
+  .chip {
+    max-width: 100%;
+
+    &__label {
+      word-break: break-all;
+    }
   }
 }
