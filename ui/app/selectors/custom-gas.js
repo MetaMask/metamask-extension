@@ -27,7 +27,7 @@ export function getCustomGasPrice(state) {
 }
 
 export function getBasicGasEstimateLoadingStatus(state) {
-  return state.gas.basicEstimateIsLoading;
+  return state.gas.basicEstimateStatus === 'LOADING';
 }
 
 export function getAveragePriceEstimateInHexWEI(state) {
@@ -53,10 +53,6 @@ export function getDefaultActiveButtonIndex(
 }
 
 export function getSafeLowEstimate(state) {
-  if (getNoGasPriceFetched(state)) {
-    return false;
-  }
-
   const {
     gas: {
       basicEstimates: { safeLow },
@@ -67,9 +63,6 @@ export function getSafeLowEstimate(state) {
 }
 
 export function getFastPriceEstimate(state) {
-  if (getNoGasPriceFetched(state)) {
-    return false;
-  }
   const {
     gas: {
       basicEstimates: { fast },
@@ -271,10 +264,6 @@ export function getRenderableBasicEstimateData(state, gasLimit) {
     return [];
   }
 
-  if (getNoGasPriceFetched(state) || getIsEthGasPriceFetched(state)) {
-    return [];
-  }
-
   const { showFiatInTestnets } = getPreferences(state);
   const isMainnet = getIsMainnet(state);
   const showFiat = isMainnet || Boolean(showFiatInTestnets);
@@ -298,9 +287,6 @@ export function getRenderableBasicEstimateData(state, gasLimit) {
 
 export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
   if (getBasicGasEstimateLoadingStatus(state)) {
-    return [];
-  }
-  if (getNoGasPriceFetched(state) || getIsEthGasPriceFetched(state)) {
     return [];
   }
 
@@ -373,9 +359,18 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
 }
 
 export function getIsEthGasPriceFetched(state) {
-  return state.gas.isEthGasPriceFetched;
+  const gasState = state.gas;
+  return Boolean(
+    gasState.estimateSource === 'eth_gasprice' &&
+      gasState.basicEstimateStatus === 'READY' &&
+      getIsMainnet(state),
+  );
 }
 
 export function getNoGasPriceFetched(state) {
-  return !state.gas.basicEstimates;
+  const gasState = state.gas;
+  return Boolean(
+    gasState.estimateSource === 'eth_gasprice' &&
+      gasState.basicEstimateStatus === 'FAILED',
+  );
 }

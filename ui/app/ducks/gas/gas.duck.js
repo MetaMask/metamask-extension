@@ -8,17 +8,24 @@ import {
 import { getIsMainnet, getCurrentChainId } from '../../selectors';
 import fetchWithCache from '../../helpers/utils/fetch-with-cache';
 
+const BASIC_ESTIMATE_STATES = {
+  LOADING: 'LOADING',
+  FAILED: 'FAILED',
+  READY: 'READY',
+};
+
+const GAS_SOURCE = {
+  METASWAPS: 'MetaSwaps',
+  ETHGASPRICE: 'eth_gasprice',
+};
+
 // Actions
-const BASIC_GAS_ESTIMATE_LOADING_FINISHED =
-  'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_FINISHED';
-const BASIC_GAS_ESTIMATE_LOADING_STARTED =
-  'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_STARTED';
+const BASIC_GAS_ESTIMATE_STATUS = 'metamask/gas/BASIC_GAS_ESTIMATE_STATUS';
 const RESET_CUSTOM_DATA = 'metamask/gas/RESET_CUSTOM_DATA';
 const SET_BASIC_GAS_ESTIMATE_DATA = 'metamask/gas/SET_BASIC_GAS_ESTIMATE_DATA';
 const SET_CUSTOM_GAS_LIMIT = 'metamask/gas/SET_CUSTOM_GAS_LIMIT';
 const SET_CUSTOM_GAS_PRICE = 'metamask/gas/SET_CUSTOM_GAS_PRICE';
-const SET_IS_ETH_GAS_PRICE_FETCHED =
-  'metamask/gas/SET_IS_ETH_GAS_PRICE_FETCHED';
+const SET_ESTIMATE_SOURCE = 'metamask/gas/SET_ESTIMATE_SOURCE';
 
 const initState = {
   customData: {
@@ -30,22 +37,17 @@ const initState = {
     average: null,
     fast: null,
   },
-  basicEstimateIsLoading: true,
-  isEthGasPriceFetched: false,
+  basicEstimateStatus: BASIC_ESTIMATE_STATES.LOADING,
+  estimateSource: '',
 };
 
 // Reducer
 export default function reducer(state = initState, action) {
   switch (action.type) {
-    case BASIC_GAS_ESTIMATE_LOADING_STARTED:
+    case BASIC_GAS_ESTIMATE_STATUS:
       return {
         ...state,
-        basicEstimateIsLoading: true,
-      };
-    case BASIC_GAS_ESTIMATE_LOADING_FINISHED:
-      return {
-        ...state,
-        basicEstimateIsLoading: false,
+        basicEstimateStatus: action.value,
       };
     case SET_BASIC_GAS_ESTIMATE_DATA:
       return {
@@ -73,10 +75,10 @@ export default function reducer(state = initState, action) {
         ...state,
         customData: cloneDeep(initState.customData),
       };
-    case SET_IS_ETH_GAS_PRICE_FETCHED:
+    case SET_ESTIMATE_SOURCE:
       return {
         ...state,
-        isEthGasPriceFetched: action.value,
+        estimateSource: action.value,
       };
     default:
       return state;
@@ -84,15 +86,10 @@ export default function reducer(state = initState, action) {
 }
 
 // Action Creators
-export function basicGasEstimatesLoadingStarted() {
+export function setBasicEstimateStatus(status) {
   return {
-    type: BASIC_GAS_ESTIMATE_LOADING_STARTED,
-  };
-}
-
-export function basicGasEstimatesLoadingFinished() {
-  return {
-    type: BASIC_GAS_ESTIMATE_LOADING_FINISHED,
+    type: BASIC_GAS_ESTIMATE_STATUS,
+    value: status,
   };
 }
 
@@ -114,26 +111,25 @@ export function fetchBasicGasEstimates() {
   return async (dispatch, getState) => {
     const isMainnet = getIsMainnet(getState());
 
-    dispatch(basicGasEstimatesLoadingStarted());
-
-    let basicEstimates = null;
+    dispatch(setBasicEstimateStatus(BASIC_ESTIMATE_STATES.LOADING));
+    let basicEstimates;
     try {
-      dispatch(setIsEthGasPriceFetched(false));
+      dispatch(setEstimateSource(GAS_SOURCE.ETHGASPRICE));
       if (isMainnet || process.env.IN_TEST) {
         try {
           basicEstimates = await fetchExternalBasicGasEstimates();
+          dispatch(setEstimateSource(GAS_SOURCE.METASWAPS));
         } catch (error) {
           basicEstimates = await fetchEthGasPriceEstimates(getState());
-          dispatch(setIsEthGasPriceFetched(true));
         }
       } else {
         basicEstimates = await fetchEthGasPriceEstimates(getState());
       }
+      dispatch(setBasicGasEstimateData(basicEstimates));
+      dispatch(setBasicEstimateStatus(BASIC_ESTIMATE_STATES.READY));
     } catch (error) {
-      dispatch(setIsEthGasPriceFetched(false));
+      dispatch(setBasicEstimateStatus(BASIC_ESTIMATE_STATES.FAILED));
     }
-    dispatch(setBasicGasEstimateData(basicEstimates));
-    dispatch(basicGasEstimatesLoadingFinished());
 
     return basicEstimates;
   };
@@ -229,9 +225,9 @@ export function resetCustomData() {
   return { type: RESET_CUSTOM_DATA };
 }
 
-export function setIsEthGasPriceFetched(isEthGasPrice) {
+export function setEstimateSource(estimateSource) {
   return {
-    type: SET_IS_ETH_GAS_PRICE_FETCHED,
-    value: isEthGasPrice,
+    type: SET_ESTIMATE_SOURCE,
+    value: estimateSource,
   };
 }
