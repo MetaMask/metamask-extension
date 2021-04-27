@@ -31,5 +31,16 @@ describe('migration #58', function () {
       const newStorage = await migration58.migrate(oldStorage);
       assert.deepEqual(newStorage.data.AppStateController, { bar: 'baz' });
     });
+
+    it('should not modify state if the AppStateController does not exist', async function () {
+      const oldStorage = {
+        meta: {},
+        data: {
+          foo: 'bar',
+        },
+      };
+      const newStorage = await migration58.migrate(oldStorage);
+      assert.deepEqual(newStorage.data, oldStorage.data);
+    });
   });
 });
