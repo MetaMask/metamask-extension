@@ -518,7 +518,7 @@ export function getShowWhatsNewPopup(state) {
  */
 
 export function getSortedNotificationsToShow(state) {
-  const notifications = Object.values(state.metamask.notifications) || [];
+  const notifications = Object.values(state.metamask.notifications);
   const notificationsToShow = notifications.filter(
     (notification) => !notification.isShown,
   );
