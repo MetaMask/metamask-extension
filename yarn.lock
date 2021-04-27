@@ -10472,6 +10472,17 @@ eth-hd-keyring@^3.5.0:
     events "^1.1.1"
     xtend "^4.0.1"
 
+eth-hd-keyring@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/eth-hd-keyring/-/eth-hd-keyring-3.6.0.tgz#6835d30aa411b8d3ef098e82f6427b5325082abb"
+  integrity sha512-n2CwE9VNXsxLrXQa6suv0Umt4NT6+HtoahKgWx3YviXx4rQFwVT5nDwZfjhwrT31ESuoXYNIeJgz5hKLD96QeQ==
+  dependencies:
+    bip39 "^2.2.0"
+    eth-sig-util "^3.0.1"
+    eth-simple-keyring "^4.2.0"
+    ethereumjs-util "^7.0.9"
+    ethereumjs-wallet "^1.0.1"
+
 eth-json-rpc-filters@^4.2.1:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/eth-json-rpc-filters/-/eth-json-rpc-filters-4.2.1.tgz#82204a13c99927dbf42cbb3962846650c6281f33"
@@ -10553,6 +10564,21 @@ eth-keyring-controller@^6.1.0:
     eth-sig-util "^1.4.0"
     eth-simple-keyring "^3.5.0"
     ethereumjs-util "^5.1.2"
+    loglevel "^1.5.0"
+    obs-store "^4.0.3"
+
+eth-keyring-controller@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-6.2.0.tgz#c649e7ced9bc9a11c2a6ab48234fae212569d390"
+  integrity sha512-UYYs+hTgrJNqy7xkI56QpekfsPuZw4kLxrFEUkHefCkBv9poSg/Abx4rvBsRwcj7yxXcxfgTNtoltJfR2we4uw==
+  dependencies:
+    bip39 "^2.4.0"
+    bluebird "^3.5.0"
+    browser-passworder "^2.0.3"
+    eth-hd-keyring "^3.6.0"
+    eth-sig-util "^3.0.1"
+    eth-simple-keyring "^4.2.0"
+    ethereumjs-util "^7.0.9"
     loglevel "^1.5.0"
     obs-store "^4.0.3"
 
@@ -10639,7 +10665,7 @@ eth-sig-util@^2.0.0, eth-sig-util@^2.4.4, eth-sig-util@^2.5.0:
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.0"
 
-eth-sig-util@^3.0.0:
+eth-sig-util@^3.0.0, eth-sig-util@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/eth-sig-util/-/eth-sig-util-3.0.1.tgz#8753297c83a3f58346bd13547b59c4b2cd110c96"
   integrity sha512-0Us50HiGGvZgjtWTyAI/+qTzYPMLy5Q451D0Xy68bxq1QMWdoOddDwGvsqcFT27uohKgalM9z/yxplyt+mY2iQ==
@@ -10660,6 +10686,16 @@ eth-simple-keyring@^3.5.0:
     ethereumjs-wallet "^0.6.0"
     events "^1.1.1"
     xtend "^4.0.1"
+
+eth-simple-keyring@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/eth-simple-keyring/-/eth-simple-keyring-4.2.0.tgz#c197a4bd4cce7d701b5f3607d0b843112ddb17e3"
+  integrity sha512-lBxFObXJTBjktDkQszXrqoB317wghEUYATQ3W19vLAjaznrmbdy1lccPhXIRMT9bHIUgNKOJQkLohNZiT9tO8Q==
+  dependencies:
+    eth-sig-util "^3.0.1"
+    ethereumjs-util "^7.0.9"
+    ethereumjs-wallet "^1.0.1"
+    events "^1.1.1"
 
 eth-trezor-keyring@^0.6.0:
   version "0.6.0"
