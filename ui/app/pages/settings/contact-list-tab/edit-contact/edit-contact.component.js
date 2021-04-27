@@ -68,7 +68,7 @@ export default class EditContact extends PureComponent {
               className="settings-page__address-book-button"
               onClick={async () => {
                 await removeFromAddressBook(chainId, address);
-                history.push(listRoute)
+                history.push(listRoute);
               }}
             >
               {t('deleteAccount')}
