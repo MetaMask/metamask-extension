@@ -40,7 +40,7 @@ export default function WhatsNewPopup({ onClose }) {
 
   const notifications = useSelector(getSortedNotificationsToShow);
 
-  const containerRef = useRef();
+  const popoverWrapRef = useRef();
 
   const memoizedNotifications = useEqualityCheck(notifications);
   const idRefMap = useMemo(
@@ -74,7 +74,7 @@ export default function WhatsNewPopup({ onClose }) {
           }
         },
         {
-          root: containerRef.current,
+          root: popoverWrapRef.current,
           threshold: 1.0,
         },
       );
@@ -155,7 +155,7 @@ export default function WhatsNewPopup({ onClose }) {
         updateViewedNotifications(seenNotifications);
         onClose();
       }}
-      containerRef={containerRef}
+      popoverWrapRef={popoverWrapRef}
       mediumHeight
     >
       <div className="whats-new-popup__notifications">
