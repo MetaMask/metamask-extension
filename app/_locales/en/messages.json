@@ -1235,39 +1235,39 @@
   "notEnoughGas": {
     "message": "Not Enough Gas"
   },
-  "notificationsActionText1": {
+  "notifications1ActionText": {
     "message": "Get the mobile app and start swapping",
     "description": "The 'call to action' label on the button, or link, of the mobile 'See What's New' notification. Upon clicking, users will be taken to the downloads page on the MetaMask website."
   },
-  "notificationsActionText2": {
-    "message": "Start survey",
-    "description": "The 'call to action' label on the button, or link, of the 'Help improve MetaMask' 'See What's New' notification. Upon clicking, users will be taken to an external page where they can complete a survey."
-  },
-  "notificationsActionText3": {
-    "message": "Placeholder (change before merge)",
-    "description": "The 'call to action'"
-  },
-  "notificationsDescription1": {
+  "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their wallet, with a single swipe, using the Swaps feature.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
   },
-  "notificationsDescription2": {
-    "message": "Please share your experience in this 5 minute survey.",
-    "description": "Description of a notification in the 'See What's New' popup. Further clarifies how the users can help: by completing a 5 minute survey about MetaMask."
-  },
-  "notificationsDescription3": {
-    "message": "Placeholder for security message (change before merge)",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notificationsTitle1": {
+  "notifications1Title": {
     "message": "Swapping on mobile is here!",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
   },
-  "notificationsTitle2": {
-    "message": "Help improve MetaMask",
-    "description": "Title for a notification in the 'See What's New' popup. Asks users to take action to make MetaMask better."
+  "notifications2ActionText": {
+    "message": "Start survey",
+    "description": "The 'call to action' label on the button, or link, of the 'Help improve MetaMask' 'See What's New' notification. Upon clicking, users will be taken to an external page where they can complete a survey."
   },
-  "notificationsTitle3": {
+  "notifications2Description": {
+    "notifications2Title": {
+      "message": "Help improve MetaMask",
+      "description": "Title for a notification in the 'See What's New' popup. Asks users to take action to make MetaMask better."
+    },
+    "message": "Please share your experience in this 5 minute survey.",
+    "description": "Description of a notification in the 'See What's New' popup. Further clarifies how the users can help: by completing a 5 minute survey about MetaMask."
+  },
+  "notifications3ActionText": {
+    "message": "Placeholder (change before merge)",
+    "description": "The 'call to action'"
+  },
+  "notifications3Description": {
+    "message": "Placeholder for security message (change before merge)",
+    "description": "Description of a notification in the 'See What's New' popup."
+  },
+  "notifications3Title": {
     "message": "Placeholder (change before merge)",
     "description": "Title for a notification in the 'See What's New' popup."
   },
