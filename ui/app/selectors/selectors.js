@@ -513,7 +513,7 @@ export function getShowWhatsNewPopup(state) {
  *
  * The returned notifications are sorted by date.
  *
- * @param {object} state - the redux state object
+ * @param {Object} state - the redux state object
  * @returns {Notification[]} An array of notifications that can be shown to the user
  */
 
