@@ -64,12 +64,13 @@ export default function WhatsNewPopup({ onClose }) {
 
     Object.entries(idRefMap).forEach(([id, ref]) => {
       const observer = new window.IntersectionObserver(
-        ([entry]) => {
+        ([entry], _observer) => {
           if (entry.isIntersecting) {
             setSeenNotifications((_seenNotifications) => ({
               ..._seenNotifications,
               [id]: true,
             }));
+            _observer.disconnect();
           }
         },
         {
