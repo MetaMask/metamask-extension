@@ -1819,9 +1819,6 @@
   "tokenContractAddress": {
     "message": "토큰 계약 주소"
   },
-  "tokenOptions": {
-    "message": "토큰 옵션"
-  },
   "tokenSymbol": {
     "message": "토큰 기호"
   },

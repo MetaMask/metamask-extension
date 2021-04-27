@@ -1855,9 +1855,6 @@
   "tokenContractAddress": {
     "message": "代币合约地址"
   },
-  "tokenOptions": {
-    "message": "代币选项"
-  },
   "tokenSymbol": {
     "message": "代币符号"
   },

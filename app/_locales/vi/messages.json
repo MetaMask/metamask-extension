@@ -1819,9 +1819,6 @@
   "tokenContractAddress": {
     "message": "Địa chỉ hợp đồng token"
   },
-  "tokenOptions": {
-    "message": "Tùy chọn token"
-  },
   "tokenSymbol": {
     "message": "Ký hiệu token"
   },

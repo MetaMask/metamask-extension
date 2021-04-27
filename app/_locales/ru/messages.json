@@ -1819,9 +1819,6 @@
   "tokenContractAddress": {
     "message": "Адрес контракта токена"
   },
-  "tokenOptions": {
-    "message": "Опции токена"
-  },
   "tokenSymbol": {
     "message": "Символ токена"
   },

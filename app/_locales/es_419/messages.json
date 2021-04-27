@@ -1855,9 +1855,6 @@
   "tokenContractAddress": {
     "message": "Dirección de contrato del token"
   },
-  "tokenOptions": {
-    "message": "Opciones del Token"
-  },
   "tokenSymbol": {
     "message": "Símbolo del token"
   },
