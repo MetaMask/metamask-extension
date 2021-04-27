@@ -1690,9 +1690,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "以下は複数の流動性ソースから収集したすべての見積です。"
   },
-  "swapSlippageTooLow": {
-    "message": "スリッページは 0 より多くする必要があります。"
-  },
   "swapSource": {
     "message": "流動性ソース"
   },

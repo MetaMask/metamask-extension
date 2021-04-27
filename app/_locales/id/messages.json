@@ -1660,9 +1660,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "Di bawah ini adalah semua kuota yang dikumpulkan dari beberapa sumber likuiditas."
   },
-  "swapSlippageTooLow": {
-    "message": "Slippage harus lebih besar dari nol"
-  },
   "swapSource": {
     "message": "Sumber likuiditas"
   },

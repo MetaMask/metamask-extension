@@ -1660,9 +1660,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "नीचे दिए गए सभी उद्धरण कई चलनिधि स्रोतों से एकत्र किए गए हैं।"
   },
-  "swapSlippageTooLow": {
-    "message": "स्लिपेज शून्य से अधिक होना चाहिए"
-  },
   "swapSource": {
     "message": "चलनिधि का स्रोत"
   },

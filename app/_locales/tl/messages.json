@@ -1657,9 +1657,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "Makikita sa ibaba ang lahat ng quote na nakuha mula sa maraming pinagkukunan ng liquidity."
   },
-  "swapSlippageTooLow": {
-    "message": "Dapat ay mas malaki sa zero ang slippage"
-  },
   "swapSource": {
     "message": "Pinagkunan ng liquidity"
   },

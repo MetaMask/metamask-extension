@@ -1981,9 +1981,6 @@
   "swapSlippageNegative": {
     "message": "Slippage must be greater or equal to zero"
   },
-  "swapSlippageTooLow": {
-    "message": "Slippage must be greater than zero"
-  },
   "swapSource": {
     "message": "Liquidity source"
   },

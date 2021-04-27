@@ -39,8 +39,7 @@ export default function SlippageButtons({
   if (customValue) {
     // customValue is a string, e.g. '0'
     if (Number(customValue) < 0) {
-      // TODO: Remove 'swapSlippageTooLow' once `swapSlippageNegative` is translated everywhere.
-      errorText = t('swapSlippageNegative') || t('swapSlippageTooLow');
+      errorText = t('swapSlippageNegative');
     } else if (Number(customValue) > 0 && Number(customValue) <= 1) {
       // We will not show this warning for 0% slippage, because we will only
       // return non-slippage quotes from off-chain makers.

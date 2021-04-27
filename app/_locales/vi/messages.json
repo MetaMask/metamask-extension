@@ -1660,9 +1660,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "Dưới đây là tất cả các báo giá thu thập từ nhiều nguồn thanh khoản."
   },
-  "swapSlippageTooLow": {
-    "message": "Mức trượt giá phải lớn hơn 0"
-  },
   "swapSource": {
     "message": "Nguồn thanh khoản"
   },
