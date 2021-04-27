@@ -8,12 +8,13 @@ import {
   getSelectedIdentity,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
+  getSelectedAddress,
 } from '../../../selectors/selectors';
 import { showModal } from '../../../store/actions';
 import getAccountLink from '../../../../lib/account-link';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import AssetNavigation from './asset-navigation';
-import TokenOptions from './token-options';
+import AssetOptions from './asset-options';
 
 export default function NativeAsset({ nativeCurrency }) {
   const selectedAccountName = useSelector(
@@ -23,8 +24,7 @@ export default function NativeAsset({ nativeCurrency }) {
 
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const selectedIdentity = useSelector(getSelectedIdentity);
-  const { address } = selectedIdentity;
+  const address = useSelector(getSelectedAddress);
   const history = useHistory();
 
   return (
@@ -34,7 +34,7 @@ export default function NativeAsset({ nativeCurrency }) {
         assetName={nativeCurrency}
         onBack={() => history.push(DEFAULT_ROUTE)}
         optionsButton={
-          <TokenOptions
+          <AssetOptions
             isNativeAsset
             onViewEtherscan={() => {
               global.platform.openTab({

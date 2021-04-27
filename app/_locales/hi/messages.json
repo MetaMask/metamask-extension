@@ -1828,9 +1828,6 @@
   "tokenContractAddress": {
     "message": "टोकन अनुबंध पता"
   },
-  "tokenOptions": {
-    "message": "टोकन के विकल्प"
-  },
   "tokenSymbol": {
     "message": "टोकन का प्रतीक"
   },

@@ -1825,9 +1825,6 @@
   "tokenContractAddress": {
     "message": "Address ng Kontrata ng Token"
   },
-  "tokenOptions": {
-    "message": "Mga opsyon ng token"
-  },
   "tokenSymbol": {
     "message": "Simbolo ng Token"
   },

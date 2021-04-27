@@ -14,7 +14,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { showModal } from '../../../store/actions';
 
 import AssetNavigation from './asset-navigation';
-import TokenOptions from './token-options';
+import AssetOptions from './asset-options';
 
 export default function TokenAsset({ token }) {
   const dispatch = useDispatch();
@@ -31,7 +31,7 @@ export default function TokenAsset({ token }) {
         assetName={token.symbol}
         onBack={() => history.push(DEFAULT_ROUTE)}
         optionsButton={
-          <TokenOptions
+          <AssetOptions
             onRemove={() =>
               dispatch(showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token }))
             }
