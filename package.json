@@ -119,7 +119,7 @@
     "eth-json-rpc-filters": "^4.2.1",
     "eth-json-rpc-infura": "^5.1.0",
     "eth-json-rpc-middleware": "^6.0.0",
-    "eth-keyring-controller": "^6.1.0",
+    "eth-keyring-controller": "^6.2.0",
     "eth-method-registry": "^2.0.0",
     "eth-phishing-detect": "^1.1.14",
     "eth-query": "^2.1.2",
