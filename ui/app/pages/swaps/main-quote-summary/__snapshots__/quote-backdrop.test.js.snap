@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`QuotesBackdrop renders the component with initial props 1`] = `
+<g
+  filter="url(#filter0_d)"
+>
+  <path
+    d="M25.4749 54C25.4749 49.5817 29.0566 46 33.4749 46H328.475C332.893 46 336.475 49.5817 336.475 54V185.5C336.475 189.918 332.893 193.5 328.475 193.5H33.4749C29.0566 193.5 25.4749 189.918 25.4749 185.5V54Z"
+    fill="url(#paint0_linear)"
+  />
+</g>
+`;
+
+exports[`QuotesBackdrop renders the component with initial props 2`] = `
+<filter
+  color-interpolation-filters="sRGB"
+  filterUnits="userSpaceOnUse"
+  height="242.164"
+  id="filter0_d"
+  width="389"
+  x="-13.5251"
+  y="0.335938"
+>
+  <feflood
+    flood-opacity="0"
+    result="BackgroundImageFix"
+  />
+  <fecolormatrix
+    in="SourceAlpha"
+    type="matrix"
+    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+  />
+  <feoffset
+    dy="10"
+  />
+  <fegaussianblur
+    stdDeviation="19.5"
+  />
+  <fecolormatrix
+    type="matrix"
+    values="0 0 0 0 0.0117647 0 0 0 0 0.491686 0 0 0 0 0.839216 0 0 0 0.15 0"
+  />
+  <feblend
+    in2="BackgroundImageFix"
+    mode="normal"
+    result="effect1_dropShadow"
+  />
+  <feblend
+    in="SourceGraphic"
+    in2="effect1_dropShadow"
+    mode="normal"
+    result="shape"
+  />
+</filter>
+`;
+
+exports[`QuotesBackdrop renders the component with initial props 3`] = `
+<lineargradient
+  gradientUnits="userSpaceOnUse"
+  id="paint0_linear"
+  x1="25.4749"
+  x2="342.234"
+  y1="90.693"
+  y2="90.693"
+>
+  <stop
+    stop-color="#037DD6"
+  />
+  <stop
+    offset="0.994792"
+    stop-color="#1098FC"
+  />
+</lineargradient>
+`;
