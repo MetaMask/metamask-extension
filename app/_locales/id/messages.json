@@ -1819,9 +1819,6 @@
   "tokenContractAddress": {
     "message": "Alamat Kontrak Token"
   },
-  "tokenOptions": {
-    "message": "Opsi token"
-  },
   "tokenSymbol": {
     "message": "Simbol Token"
   },

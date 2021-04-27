@@ -1855,9 +1855,6 @@
   "tokenContractAddress": {
     "message": "トークンコントラクトのアドレス"
   },
-  "tokenOptions": {
-    "message": "トークンのオプション"
-  },
   "tokenSymbol": {
     "message": "トークンシンボル"
   },

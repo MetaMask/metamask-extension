@@ -179,6 +179,9 @@
   "asset": {
     "message": "Asset"
   },
+  "assetOptions": {
+    "message": "Asset options"
+  },
   "assets": {
     "message": "Assets"
   },
@@ -2131,9 +2134,6 @@
   },
   "tokenContractAddress": {
     "message": "Token Contract Address"
-  },
-  "tokenOptions": {
-    "message": "Token options"
   },
   "tokenSymbol": {
     "message": "Token Symbol"

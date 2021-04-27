@@ -1878,9 +1878,6 @@
   "tokenContractAddress": {
     "message": "Indirizzo Contratto Token"
   },
-  "tokenOptions": {
-    "message": "Opzioni token"
-  },
   "tokenSymbol": {
     "message": "Simbolo Token"
   },
