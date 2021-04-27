@@ -535,12 +535,6 @@
   "myAccounts": {
     "message": "Mga Account Ko"
   },
-  "myWalletAccounts": {
-    "message": "Mga Wallet Account Ko"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Ang lahat ng iyong account na ginawa sa MetaMask ay awtomatikong idadagdag sa seksyong ito."
-  },
   "needEtherInWallet": {
     "message": "Para gumamit ng mga decentralized na application gamit ang MetaMask, mangangailangan ka ng Ether sa iyong wallet."
   },

@@ -6,9 +6,6 @@ import { checksumAddress } from '../../../../helpers/utils/util';
 import {
   CONTACT_EDIT_ROUTE,
   CONTACT_LIST_ROUTE,
-  CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
-  CONTACT_MY_ACCOUNTS_ROUTE,
-  CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
 } from '../../../../helpers/constants/routes';
 import ViewContact from './view-contact.component';
 
@@ -25,21 +22,13 @@ const mapStateToProps = (state, ownProps) => {
     getAddressBookEntry(state, address) || state.metamask.identities[address];
   const { memo, name } = contact || {};
 
-  const showingMyAccounts = Boolean(
-    pathname.match(CONTACT_MY_ACCOUNTS_VIEW_ROUTE),
-  );
-
   return {
     name,
     address: contact ? address : null,
     checkSummedAddress: checksumAddress(address),
     memo,
-    editRoute: showingMyAccounts
-      ? CONTACT_MY_ACCOUNTS_EDIT_ROUTE
-      : CONTACT_EDIT_ROUTE,
-    listRoute: showingMyAccounts
-      ? CONTACT_MY_ACCOUNTS_ROUTE
-      : CONTACT_LIST_ROUTE,
+    editRoute: CONTACT_EDIT_ROUTE,
+    listRoute: CONTACT_LIST_ROUTE,
   };
 };
 

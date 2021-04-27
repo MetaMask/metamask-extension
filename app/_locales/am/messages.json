@@ -594,12 +594,6 @@
   "myAccounts": {
     "message": "የእኔ መለያዎች"
   },
-  "myWalletAccounts": {
-    "message": "የቋት መለያዎቼ"
-  },
-  "myWalletAccountsDescription": {
-    "message": "በ MetaMask የተፈጠሩ መለያዎችዎ በሙሉ በራስ ሰር መንገድ ወደዚህ ክፍል ይታከላሉ።"
-  },
   "needEtherInWallet": {
     "message": "MetaMask በመጠቀም ያልተማከሉ መተግበሪያዎች ጋር ግንኙነት ለማድረግ፣ በቋትዎ ውስጥ Ether ያስፈልግዎታል።"
   },

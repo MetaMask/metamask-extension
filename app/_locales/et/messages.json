@@ -587,12 +587,6 @@
   "myAccounts": {
     "message": "Minu kontod"
   },
-  "myWalletAccounts": {
-    "message": "Minu rahakotikontod"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Sellesse jaotisesse lisatakse automaatselt kõik teie MetaMaski kontod."
-  },
   "needEtherInWallet": {
     "message": "Selleks, et suhelda MetaMaski abil detsentraliseeritud rakendustega, peab teil rahakotis eetrit olema."
   },

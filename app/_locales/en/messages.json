@@ -43,14 +43,14 @@
   "activityLog": {
     "message": "activity log"
   },
-  "addAccount": {
-    "message": "Add an account"
-  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
   "addAlias": {
     "message": "Add alias"
+  },
+  "addContact": {
+    "message": "Add contact"
   },
   "addEthereumChainConfirmationDescription": {
     "message": "This will allow this network to be used within MetaMask."
@@ -68,6 +68,9 @@
   },
   "addEthereumChainConfirmationTitle": {
     "message": "Allow this site to add a network?"
+  },
+  "addFriendsAndAddresses": {
+    "message": "Add friends and addresses you trust"
   },
   "addNetwork": {
     "message": "Add Network"
@@ -242,6 +245,9 @@
   },
   "browserNotSupported": {
     "message": "Your Browser is not supported..."
+  },
+  "builContactList": {
+    "message": "Build your contact list"
   },
   "builtInCalifornia": {
     "message": "MetaMask is designed and built in California."
@@ -1095,12 +1101,6 @@
   },
   "myAccounts": {
     "message": "My Accounts"
-  },
-  "myWalletAccounts": {
-    "message": "My Wallet Accounts"
-  },
-  "myWalletAccountsDescription": {
-    "message": "All of your MetaMask created accounts will automatically be added to this section."
   },
   "needEtherInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."

@@ -575,12 +575,6 @@
   "myAccounts": {
     "message": "Akaunti zangu"
   },
-  "myWalletAccounts": {
-    "message": "Akaunti angu za Waleti"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Akaunti zako zote za MetaMask zilizofunguliwa zitaongezwa kiotomatiki kwenye sehemu hii."
-  },
   "needEtherInWallet": {
     "message": "Ili kuingiliana na programu zilizosambazwa kwa kutumia MetaMask, utahitaji kuwa na Ether kwenye waleti yako."
   },

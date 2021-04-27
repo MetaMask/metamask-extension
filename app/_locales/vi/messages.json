@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "nhật ký hoạt động"
   },
-  "addAccount": {
-    "message": "Thêm tài khoản"
-  },
   "addAcquiredTokens": {
     "message": "Thêm token mà bạn đã mua bằng MetaMask"
   },
@@ -965,12 +962,6 @@
   },
   "myAccounts": {
     "message": "Tài khoản của tôi"
-  },
-  "myWalletAccounts": {
-    "message": "Các tài khoản trong ví của tôi"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Tất cả các tài khoản đã tạo của bạn trong MetaMask sẽ tự động được thêm vào phần này."
   },
   "needEtherInWallet": {
     "message": "Để tương tác với các ứng dụng phi tập trung bằng MetaMask, bạn sẽ cần phải có Ether trong ví của mình."

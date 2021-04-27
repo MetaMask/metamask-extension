@@ -584,12 +584,6 @@
   "myAccounts": {
     "message": "Conturile mele"
   },
-  "myWalletAccounts": {
-    "message": "Conturi My Wallet"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Toate conturile dvs. create pe MetaMask vor fi adăugate automat la această secțiune."
-  },
   "needEtherInWallet": {
     "message": "Pentru a interacționa cu aplicațiile descentralizate prin intermediul MetaMask, trebuie să aveți Ether în portofel."
   },

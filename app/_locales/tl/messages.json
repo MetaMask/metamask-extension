@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "log ng aktibidad"
   },
-  "addAccount": {
-    "message": "Magdagdag ng account"
-  },
   "addAcquiredTokens": {
     "message": "Idagdag ang mga token na nakuha mo gamit ang MetaMask"
   },
@@ -965,12 +962,6 @@
   },
   "myAccounts": {
     "message": "Mga Account Ko"
-  },
-  "myWalletAccounts": {
-    "message": "Mga Wallet Account Ko"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Ang lahat ng iyong ginawang account sa MetaMask ay awtomatikong maidaragdag sa seksyong ito."
   },
   "needEtherInWallet": {
     "message": "Para makaugnayan ang mga decentralized ma application gamit ang MetaMask, kakailanganin mo ang Ether sa iyong wallet."

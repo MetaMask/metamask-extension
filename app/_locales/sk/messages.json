@@ -569,12 +569,6 @@
   "myAccounts": {
     "message": "Moje účty"
   },
-  "myWalletAccounts": {
-    "message": "Účty v Mojej peňaženke"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Do tejto sekcie sa automaticky pridajú všetky vaše účty vytvorené pomocou MetaMask."
-  },
   "needEtherInWallet": {
     "message": "Potřebujete Ether v peněžence, abyste mohli pomocí MetaMasku interagovat s decentralizovanými aplikacemi."
   },

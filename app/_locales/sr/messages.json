@@ -588,12 +588,6 @@
   "myAccounts": {
     "message": "Moji nalozi"
   },
-  "myWalletAccounts": {
-    "message": "Moji nalozi novčanika"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Svi vaši nalozi kreirani u aplikaciji MetaMask biće automatski dodati u ovaj deo."
-  },
   "needEtherInWallet": {
     "message": "Da biste stupili u interakciju sa decentralizovanim aplikacijama koristeći MetaMask, biće vam potreban Ether u vašem novčaniku."
   },

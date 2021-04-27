@@ -581,12 +581,6 @@
   "myAccounts": {
     "message": "Mina konton"
   },
-  "myWalletAccounts": {
-    "message": "Mina plånbokskonton"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Alla dina MetaMask-skapade konton läggs automatiskt till i denna avdelning."
-  },
   "needEtherInWallet": {
     "message": "För att interagera med decentraliserade applikationer med MetaMask behöver du Ether i din plånbok."
   },

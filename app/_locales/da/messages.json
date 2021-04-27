@@ -581,12 +581,6 @@
   "myAccounts": {
     "message": "Mine Konti"
   },
-  "myWalletAccounts": {
-    "message": "Mine Pungkonti"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Alle dine MetaMask-oprettede konti føjes automatisk til dette afsnit."
-  },
   "needEtherInWallet": {
     "message": "Du skal have Ether i din tegnebog for at interagere med decentraliserede applikationer, der bruger MetaMask."
   },
