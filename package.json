@@ -33,7 +33,7 @@
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox test/e2e/run-all.sh",
     "test:e2e:firefox:metrics": "SELENIUM_BROWSER=firefox mocha test/e2e/metrics.spec.js",
     "test:coverage": "nyc --silent --check-coverage yarn test:unit:strict && nyc --silent --no-clean yarn test:unit:lax && nyc report --reporter=text --reporter=html",
-    "test:coverage:jest": "jest --coverage --maxWorkers=2 --collectCoverageFrom=**/ui/app/**/swaps/**",
+    "test:coverage:jest": "jest --coverage --maxWorkers=2",
     "test:coverage:strict": "nyc --check-coverage yarn test:unit:strict",
     "test:coverage:path": "nyc --check-coverage yarn test:unit:path",
     "ganache:start": "./development/run-ganache.sh",

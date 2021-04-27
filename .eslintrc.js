@@ -130,6 +130,7 @@ module.exports = {
       rules: {
         'jest/no-restricted-matchers': 'off',
         'import/unambiguous': 'off',
+        'import/named': 'off',
       },
     },
     {

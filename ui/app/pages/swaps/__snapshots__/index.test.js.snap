@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Swap renders the component with initial props 1`] = `
+<div>
+  <div
+    class="swaps"
+  >
+    <div
+      class="swaps__container"
+    >
+      <div
+        class="swaps__header"
+      >
+        <div
+          class="swaps__title"
+        >
+          Swap
+        </div>
+        <div
+          class="swaps__header-cancel"
+        >
+          Cancel
+        </div>
+      </div>
+      <div
+        class="swaps__content"
+      />
+    </div>
+  </div>
+</div>
+`;
