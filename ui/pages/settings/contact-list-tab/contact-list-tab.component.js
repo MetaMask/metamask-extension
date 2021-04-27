@@ -10,11 +10,11 @@ import EditContact from './edit-contact';
 import AddContact from './add-contact';
 import ViewContact from './view-contact';
 
-AddressBookAddButton.propTypes = {
+AddContactButton.propTypes = {
   label: PropTypes.string,
 };
 
-function AddressBookAddButton(props) {
+function AddContactButton(props) {
   const { label } = props;
   const dispatch = useDispatch();
 
@@ -151,7 +151,7 @@ export default class ContactListTab extends Component {
         {this.renderContactContent()}
         {!addingContact && (
           <div className="address-book-add-button">
-            <AddressBookAddButton label={this.context.t('addAccount')} />
+            <AddContactButton label={this.context.t('addContact')} />
           </div>
         )}
       </div>
