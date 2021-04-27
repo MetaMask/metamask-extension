@@ -3,7 +3,7 @@ export const UI_NOTIFICATIONS = {
   1: {
     id: 1,
     date: '2020-03-17',
-    image: 'images/swaps-logos-small.svg',
+    image: 'images/mobile-link-qr.svg',
   },
   2: {
     id: 2,
@@ -21,7 +21,6 @@ export const getTranslatedUINoficiations = (t) => {
       ...UI_NOTIFICATIONS[1],
       title: t('notifications1Title'),
       description: t('notifications1Description'),
-      actionText: t('notifications1ActionText'),
     },
     2: {
       ...UI_NOTIFICATIONS[2],

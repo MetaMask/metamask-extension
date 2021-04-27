@@ -1235,12 +1235,8 @@
   "notEnoughGas": {
     "message": "Not Enough Gas"
   },
-  "notifications1ActionText": {
-    "message": "Get the mobile app and start swapping",
-    "description": "The 'call to action' label on the button, or link, of the mobile 'See What's New' notification. Upon clicking, users will be taken to the downloads page on the MetaMask website."
-  },
   "notifications1Description": {
-    "message": "MetaMask Mobile users can now swap tokens inside their wallet, with a single swipe, using the Swaps feature.",
+    "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
   },
   "notifications1Title": {
@@ -1260,16 +1256,16 @@
     "description": "Title for a notification in the 'See What's New' popup. Asks users to take action to make MetaMask better."
   },
   "notifications3ActionText": {
-    "message": "Placeholder (change before merge)",
-    "description": "The 'call to action'"
+    "message": "Read more",
+    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
   },
   "notifications3Description": {
-    "message": "Placeholder for security message (change before merge)",
-    "description": "Description of a notification in the 'See What's New' popup."
+    "message": "Stay up to date on MetaMask security best practices and get the latest security tips from official MetaMask support.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
   },
   "notifications3Title": {
-    "message": "Placeholder (change before merge)",
-    "description": "Title for a notification in the 'See What's New' popup."
+    "message": "Stay secure",
+    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
   },
   "ofTextNofM": {
     "message": "of"
