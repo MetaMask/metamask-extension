@@ -308,9 +308,6 @@
   "done": {
     "message": "تمام"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "آیا کیف سخت افزار ندارید؟"
-  },
   "downloadGoogleChrome": {
     "message": "دانلود گوگل کروم"
   },
@@ -443,9 +440,6 @@
     "message": "اخذ ایتر از یک فاست برای 1$1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "دریافت کمک"
-  },
   "getStarted": {
     "message": "شروع به کار"
   },
@@ -466,9 +460,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "یک کیف سخت افزار را که میخواهید با MetaMast استفاده نمایید، انتخاب کنید"
-  },
-  "havingTroubleConnecting": {
-    "message": "آیا در اتصال مشکلی دارید؟"
   },
   "here": {
     "message": "اینجا",
@@ -707,9 +698,6 @@
   "optionalCurrencySymbol": {
     "message": "سمبول (انتخابی)"
   },
-  "orderOneHere": {
-    "message": "یک Trezor یا Ledger را سفارش داده و پول های تان را در ذخیره سرد نگهدارید"
-  },
   "origin": {
     "message": "مبدأ"
   },
@@ -768,9 +756,6 @@
   },
   "readdToken": {
     "message": "شما میتوانید این رمزیاب را دوباره برای آینده با رفتن به گزینه \"Add token\" در مینوی تنظیمات حساب ها، اضافه نمایید."
-  },
-  "readyToConnect": {
-    "message": "آماده برای اتصال هستید؟"
   },
   "recents": {
     "message": "واپسین"
@@ -993,24 +978,6 @@
   },
   "stateLogsDescription": {
     "message": "دفترچه وضعیت شامل آدرس های حساب عمومی و معاملات فرستاده شده تان میباشد."
-  },
-  "step1HardwareWallet": {
-    "message": "1. اتصال کیف سخت افزار"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "کیف سخت افزار تان را مستقیمًا به کمپیوتر وصل نمایید."
-  },
-  "step2HardwareWallet": {
-    "message": "2. انتخاب یک حساب"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "حسابی را که میخواهید مشاهده نمایید انتخاب کنید. شما میتوانید یک حساب را در یک زمان انتخاب نمایید."
-  },
-  "step3HardwareWallet": {
-    "message": "3. آغاز استفاده از dApps و بیشتر!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "حساب سخت افزار تان را همچنانکه در حساب ایتریم استفاده میکنید، استفاده نمایید. وارد dApps شده، Eth را ارسال نموده، رمزیاب های ERC20 و غیر-قابل تبدیل به پول مانند CryptoKitties را خریداری و ذخیره نمایید."
   },
   "storePhrase": {
     "message": "این عبارت را در یک نرم افزار مدیریت رمز عبور مانند 1Password ذخیره نمایید."

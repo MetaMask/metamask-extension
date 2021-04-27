@@ -305,9 +305,6 @@
   "done": {
     "message": "Selesai"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Tiada dompet perkakasan?"
-  },
   "downloadGoogleChrome": {
     "message": "Muat Turun Google Chrome"
   },
@@ -433,9 +430,6 @@
     "message": "Dapatkan Ether daripada pili untuk $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Dapatkan Bantuan."
-  },
   "getStarted": {
     "message": "Bermula"
   },
@@ -456,9 +450,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Pilih dompet perkakasan yang anda ingin gunakan dengan MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Mengalami masalah untuk menyambungkan?"
   },
   "here": {
     "message": "di sini",
@@ -684,9 +675,6 @@
   "optionalCurrencySymbol": {
     "message": "Simbol (pilihan)"
   },
-  "orderOneHere": {
-    "message": "Pesan Trezor atau Ledger dan simpan dana anda di dalam storan sejuk"
-  },
   "origin": {
     "message": "Asal"
   },
@@ -745,9 +733,6 @@
   },
   "readdToken": {
     "message": "Anda boleh tambah token ini kembali pada masa depan dengan pergi ke \"Tambah token\" di dalam menu pilihan akaun anda."
-  },
-  "readyToConnect": {
-    "message": "Bersedia Menyambung?"
   },
   "recents": {
     "message": "Baru-baru ini"
@@ -970,24 +955,6 @@
   },
   "stateLogsDescription": {
     "message": "Log keadaan mengandungi alamat akaun awam anda dan transaksi dihantar."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Sambungkan Dompet Perkakasan"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Sambungkan dompet perkakasan anda terus kepada komputer anda."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Pilih Akaun"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Pilih akaun yang anda mahu lihat. Anda hanya boleh memilih satu pada suatu masa."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Mula menggunakan dApps dan banyak lagi!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Gunakan akaun perkakasan anda sepertimana anda menggunakan akaun Ethereum. Log masuk ke dalam dApps, hantar Eth, beli dan simpan token ERC20 serta token Tidak Mudah Tukar seperti CryptoKitties."
   },
   "storePhrase": {
     "message": "Simpan ungkapan ini di dalam pengurus kata laluan seperti 1Password."

@@ -43,6 +43,9 @@ export default function TokenAsset({ token }) {
               );
               global.platform.openTab({ url });
             }}
+            onViewAccountDetails={() => {
+              dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
+            }}
             tokenSymbol={token.symbol}
           />
         }

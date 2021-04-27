@@ -23,6 +23,7 @@ async function withFixtures(options, testSuite) {
     mockSegment,
     title,
     failOnConsoleError = true,
+    dappPath = undefined,
   } = options;
   const fixtureServer = new FixtureServer();
   const ganacheServer = new Ganache();
@@ -36,15 +37,20 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.start();
     await fixtureServer.loadState(path.join(__dirname, 'fixtures', fixtures));
     if (dapp) {
-      const dappDirectory = path.resolve(
-        __dirname,
-        '..',
-        '..',
-        'node_modules',
-        '@metamask',
-        'test-dapp',
-        'dist',
-      );
+      let dappDirectory;
+      if (dappPath) {
+        dappDirectory = path.resolve(__dirname, dappPath);
+      } else {
+        dappDirectory = path.resolve(
+          __dirname,
+          '..',
+          '..',
+          'node_modules',
+          '@metamask',
+          'test-dapp',
+          'dist',
+        );
+      }
       dappServer = createStaticServer(dappDirectory);
       dappServer.listen(dappPort);
       await new Promise((resolve, reject) => {

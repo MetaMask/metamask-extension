@@ -4,7 +4,12 @@ import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../../components/ui/menu';
 
-const TokenOptions = ({ onRemove, onViewEtherscan, tokenSymbol }) => {
+const TokenOptions = ({
+  onRemove,
+  onViewEtherscan,
+  onViewAccountDetails,
+  tokenSymbol,
+}) => {
   const t = useContext(I18nContext);
   const [tokenOptionsButtonElement, setTokenOptionsButtonElement] = useState(
     null,
@@ -25,6 +30,16 @@ const TokenOptions = ({ onRemove, onViewEtherscan, tokenSymbol }) => {
           anchorElement={tokenOptionsButtonElement}
           onHide={() => setTokenOptionsOpen(false)}
         >
+          <MenuItem
+            iconClassName="fas fa-qrcode"
+            data-testid="token-options__account-details"
+            onClick={() => {
+              setTokenOptionsOpen(false);
+              onViewAccountDetails();
+            }}
+          >
+            {t('accountDetails')}
+          </MenuItem>
           <MenuItem
             iconClassName="fas fa-external-link-alt token-options__icon"
             data-testid="token-options__etherscan"
@@ -54,6 +69,7 @@ const TokenOptions = ({ onRemove, onViewEtherscan, tokenSymbol }) => {
 TokenOptions.propTypes = {
   onRemove: PropTypes.func.isRequired,
   onViewEtherscan: PropTypes.func.isRequired,
+  onViewAccountDetails: PropTypes.func.isRequired,
   tokenSymbol: PropTypes.string.isRequired,
 };
 

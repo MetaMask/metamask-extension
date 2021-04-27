@@ -284,9 +284,6 @@
   "done": {
     "message": "Tapos na"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Wala ka bang hardware wallet?"
-  },
   "downloadGoogleChrome": {
     "message": "I-download ang Google Chrome"
   },
@@ -412,9 +409,6 @@
     "message": "Kumuha ng Ether mula sa isang faucet para sa $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Humingi ng Tulong."
-  },
   "getStarted": {
     "message": "Magsimula"
   },
@@ -429,9 +423,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Pumili ng hardware wallet na gusto mong gamitin sa MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "May problema ka ba sa pagkonekta?"
   },
   "here": {
     "message": "dito",
@@ -638,9 +629,6 @@
   "optionalCurrencySymbol": {
     "message": "Simbolo (opsyonal)"
   },
-  "orderOneHere": {
-    "message": "Mag-order ng Trezor o Ledger para itago sa cold storage ang iyong pondo"
-  },
   "origin": {
     "message": "Pinanggalingan"
   },
@@ -692,9 +680,6 @@
   },
   "readdToken": {
     "message": "Puwede mong idagdag ulit ang token na ito sa hinaharap sa pamamagitan ng pagpunta sa “Magdagdag ng token” sa menu ng mga opsyon ng iyong mga accounts."
-  },
-  "readyToConnect": {
-    "message": "Handa ka nang Kumonekta?"
   },
   "recents": {
     "message": "Kamakailan"
@@ -899,24 +884,6 @@
   },
   "stateLogsDescription": {
     "message": "Ang mga state log ay naglalaman ng iyong mga pampublikong account address at mga ipinadalang transaksyon."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Magkonekta ng Hardware Wallet"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Ikonekta ang iyong hardware wallet nang direkta sa computer."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Pumili ng Account"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Piliin ang halagang gusto mong tingnan. Maaari ka lang pumili nang paisa-isa."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Magsimula gamit ang dApps at higit pa!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Gamitin ang iyong hardware account tulad ng anumang Ethereum account. Mag-log in sa dApps, magpadala ng Eth, bumili at mag-store ng mga ERC20 token at mga Non-Fungible token tulad ng CryptoKitties."
   },
   "storePhrase": {
     "message": "I-store ang pariralang ito sa isang password manager tulad ng 1Password."

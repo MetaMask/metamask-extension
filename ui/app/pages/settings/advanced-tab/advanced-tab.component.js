@@ -33,6 +33,8 @@ export default class AdvancedTab extends PureComponent {
     threeBoxDisabled: PropTypes.bool.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
+    useLedgerLive: PropTypes.bool.isRequired,
+    setLedgerLivePreference: PropTypes.func.isRequired,
   };
 
   state = {
@@ -384,6 +386,32 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  renderLedgerLiveControl() {
+    const { t } = this.context;
+    const { useLedgerLive, setLedgerLivePreference } = this.props;
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{t('ledgerLiveAdvancedSetting')}</span>
+          <div className="settings-page__content-description">
+            {t('ledgerLiveAdvancedSettingDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={useLedgerLive}
+              onToggle={(value) => setLedgerLivePreference(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   handleIpfsGatewayChange(url) {
     const { t } = this.context;
 
@@ -478,6 +506,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAutoLockTimeLimit()}
         {this.renderThreeBoxControl()}
         {this.renderIpfsGatewayControl()}
+        {this.renderLedgerLiveControl()}
       </div>
     );
   }

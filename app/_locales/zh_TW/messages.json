@@ -317,9 +317,6 @@
   "done": {
     "message": "完成"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "還沒有硬體錢包？"
-  },
   "downloadGoogleChrome": {
     "message": "下載 Google Chrome 瀏覽器"
   },
@@ -452,9 +449,6 @@
     "message": "從水管取得 $1 以太幣。",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "取得協助"
-  },
   "getStarted": {
     "message": "開始使用"
   },
@@ -475,9 +469,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "選擇要連線到 MetaMask 的硬體錢包"
-  },
-  "havingTroubleConnecting": {
-    "message": "無法正確連線?"
   },
   "here": {
     "message": "這裡",
@@ -707,9 +698,6 @@
   "optionalCurrencySymbol": {
     "message": "Symbol (可選)"
   },
-  "orderOneHere": {
-    "message": "訂購 Trezor 或 Ledger 讓資產保存於硬體裝置。"
-  },
   "origin": {
     "message": "來源"
   },
@@ -765,9 +753,6 @@
   },
   "readdToken": {
     "message": "未來可以隨時重新加入此代幣"
-  },
-  "readyToConnect": {
-    "message": "準備連線？"
   },
   "recents": {
     "message": "最近"
@@ -981,24 +966,6 @@
   },
   "stateLogsDescription": {
     "message": "狀態紀錄包含您的公開帳戶位址和已傳送的交易資訊"
-  },
-  "step1HardwareWallet": {
-    "message": "1. 連線硬體錢包"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "將您的硬體錢包連接到電腦。"
-  },
-  "step2HardwareWallet": {
-    "message": "2. 選擇帳戶"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "選擇想要檢視的帳戶。一次只能選擇一個帳戶。"
-  },
-  "step3HardwareWallet": {
-    "message": "3. 開始使用！"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "使用您硬體錢包中的帳戶，與去中心化應用服務交易以太幣、ERC20代幣、或迷戀貓等數位資產。"
   },
   "storePhrase": {
     "message": "您可以用密碼管理系統例如 1Password 等軟體儲存助憶詞。"
