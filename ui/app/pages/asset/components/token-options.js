@@ -9,6 +9,7 @@ const TokenOptions = ({
   onViewEtherscan,
   onViewAccountDetails,
   tokenSymbol,
+  isNativeAsset,
 }) => {
   const t = useContext(I18nContext);
   const [tokenOptionsButtonElement, setTokenOptionsButtonElement] = useState(
@@ -50,16 +51,18 @@ const TokenOptions = ({
           >
             {t('viewOnEtherscan')}
           </MenuItem>
-          <MenuItem
-            iconClassName="fas fa-trash-alt token-options__icon"
-            data-testid="token-options__hide"
-            onClick={() => {
-              setTokenOptionsOpen(false);
-              onRemove();
-            }}
-          >
-            {t('hideTokenSymbol', [tokenSymbol])}
-          </MenuItem>
+          {isNativeAsset ? null : (
+            <MenuItem
+              iconClassName="fas fa-trash-alt token-options__icon"
+              data-testid="token-options__hide"
+              onClick={() => {
+                setTokenOptionsOpen(false);
+                onRemove();
+              }}
+            >
+              {t('hideTokenSymbol', [tokenSymbol])}
+            </MenuItem>
+          )}
         </Menu>
       ) : null}
     </>
@@ -67,10 +70,11 @@ const TokenOptions = ({
 };
 
 TokenOptions.propTypes = {
+  isNativeAsset: PropTypes.bool,
   onRemove: PropTypes.func.isRequired,
   onViewEtherscan: PropTypes.func.isRequired,
   onViewAccountDetails: PropTypes.func.isRequired,
-  tokenSymbol: PropTypes.string.isRequired,
+  tokenSymbol: PropTypes.string,
 };
 
 export default TokenOptions;
