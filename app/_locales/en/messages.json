@@ -1978,7 +1978,7 @@
   "swapSelectQuotePopoverDescription": {
     "message": "Below are all the quotes gathered from multiple liquidity sources."
   },
-  "swapSlippageTooLow": {
+  "swapSlippageNegative": {
     "message": "Slippage must be greater or equal to zero"
   },
   "swapSource": {
