@@ -24,6 +24,7 @@ import {
   getGasIsLoading,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
+  getNoGasPriceFetched,
 } from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { addHexPrefix } from '../../../../../app/scripts/lib/util';
@@ -67,6 +68,7 @@ function mapStateToProps(state) {
     gasEstimateType,
     gasIsLoading: getGasIsLoading(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
+    noGasPrice: getNoGasPriceFetched(state),
   };
 }
 

@@ -49,6 +49,7 @@ describe('SendFooter Component', () => {
         update={propsMethodSpies.update}
         sendErrors={{}}
         mostRecentOverviewPage="mostRecentOverviewPage"
+        noGasPrice={false}
       />,
       { context: { t: (str) => str, metricsEvent: () => ({}) } },
     );

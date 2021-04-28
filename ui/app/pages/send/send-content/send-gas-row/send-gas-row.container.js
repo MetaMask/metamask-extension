@@ -18,6 +18,8 @@ import {
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
   getIsMainnet,
+  getIsEthGasPriceFetched,
+  getNoGasPriceFetched,
 } from '../../../../selectors';
 import { isBalanceSufficient, calcGasTotal } from '../../send.utils';
 import { calcMaxAmount } from '../send-amount-row/amount-max-button/amount-max-button.utils';
@@ -64,6 +66,8 @@ function mapStateToProps(state) {
     balance,
     conversionRate,
   });
+  const isEthGasPrice = getIsEthGasPriceFetched(state);
+  const noGasPrice = getNoGasPriceFetched(state);
 
   return {
     balance: getSendFromBalance(state),
@@ -85,6 +89,8 @@ function mapStateToProps(state) {
     sendToken: getSendToken(state),
     tokenBalance: getTokenBalance(state),
     isMainnet: getIsMainnet(state),
+    isEthGasPrice,
+    noGasPrice,
   };
 }
 

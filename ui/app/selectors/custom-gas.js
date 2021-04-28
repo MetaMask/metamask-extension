@@ -27,12 +27,14 @@ export function getCustomGasPrice(state) {
 }
 
 export function getBasicGasEstimateLoadingStatus(state) {
-  return state.gas.basicEstimateIsLoading;
+  return state.gas.basicEstimateStatus === 'LOADING';
 }
 
 export function getAveragePriceEstimateInHexWEI(state) {
-  const averagePriceEstimate = state.gas.basicEstimates.average;
-  return getGasPriceInHexWei(averagePriceEstimate || '0x0');
+  const averagePriceEstimate = state.gas.basicEstimates
+    ? state.gas.basicEstimates.average
+    : '0x0';
+  return getGasPriceInHexWei(averagePriceEstimate);
 }
 
 export function getFastPriceEstimateInHexWEI(state) {
@@ -354,4 +356,18 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
       priceInHexWei: getGasPriceInHexWei(fast, true),
     },
   ];
+}
+
+export function getIsEthGasPriceFetched(state) {
+  const gasState = state.gas;
+  return Boolean(
+    gasState.estimateSource === 'eth_gasprice' &&
+      gasState.basicEstimateStatus === 'READY' &&
+      getIsMainnet(state),
+  );
+}
+
+export function getNoGasPriceFetched(state) {
+  const gasState = state.gas;
+  return Boolean(gasState.basicEstimateStatus === 'FAILED');
 }

@@ -33,6 +33,8 @@ import {
   getUseNonceField,
   getPreferences,
   transactionFeeSelector,
+  getNoGasPriceFetched,
+  getIsEthGasPriceFetched,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { transactionMatchesNetwork } from '../../../../shared/modules/transaction.utils';
@@ -147,6 +149,8 @@ const mapStateToProps = (state, ownProps) => {
     };
   }
   customNonceValue = getCustomNonceValue(state);
+  const isEthGasPrice = getIsEthGasPriceFetched(state);
+  const noGasPrice = getNoGasPriceFetched(state);
 
   return {
     balance,
@@ -186,6 +190,8 @@ const mapStateToProps = (state, ownProps) => {
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     isMainnet,
+    isEthGasPrice,
+    noGasPrice,
   };
 };
 
@@ -204,7 +210,12 @@ export const mapDispatchToProps = (dispatch) => {
     },
     showCustomizeGasModal: ({ txData, onSubmit, validate }) => {
       return dispatch(
-        showModal({ name: 'CUSTOMIZE_GAS', txData, onSubmit, validate }),
+        showModal({
+          name: 'CUSTOMIZE_GAS',
+          txData,
+          onSubmit,
+          validate,
+        }),
       );
     },
     updateGasAndCalculate: (updatedTx) => {
@@ -275,6 +286,7 @@ const getValidateEditGas = ({ balance, conversionRate, txData }) => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { balance, conversionRate, txData, unapprovedTxs } = stateProps;
+
   const {
     cancelAllTransactions: dispatchCancelAllTransactions,
     showCustomizeGasModal: dispatchShowCustomizeGasModal,
