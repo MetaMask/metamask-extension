@@ -4,6 +4,7 @@ import {
   getNativeCurrency,
   getNativeCurrencyImage,
   getSendTokenAddress,
+  getAssetImages,
 } from '../../../../selectors';
 import { updateSendToken } from '../../../../store/actions';
 import SendAssetRow from './send-asset-row.component';
@@ -16,6 +17,7 @@ function mapStateToProps(state) {
     accounts: getMetaMaskAccounts(state),
     nativeCurrency: getNativeCurrency(state),
     nativeCurrencyImage: getNativeCurrencyImage(state),
+    assetImages: getAssetImages(state),
   };
 }
 
