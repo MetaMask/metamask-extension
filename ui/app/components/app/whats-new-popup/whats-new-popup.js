@@ -2,6 +2,7 @@ import React, { useContext, useMemo, useRef, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { getCurrentLocale } from '../../../ducks/metamask/metamask';
 import { I18nContext } from '../../../contexts/i18n';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import Button from '../../ui/button';
@@ -98,6 +99,7 @@ export default function WhatsNewPopup({ onClose }) {
   const t = useContext(I18nContext);
 
   const notifications = useSelector(getSortedNotificationsToShow);
+  const locale = useSelector(getCurrentLocale);
 
   const [seenNotifications, setSeenNotifications] = useState({});
 
@@ -162,7 +164,7 @@ export default function WhatsNewPopup({ onClose }) {
     >
       <div className="whats-new-popup__notifications">
         {notifications.map(({ id }, index) => {
-          const notification = getTranslatedUINoficiations(t)[id];
+          const notification = getTranslatedUINoficiations(t, locale)[id];
           return index === 0
             ? renderFirstNotification(notification, idRefMap)
             : renderSubsequentNotification(notification, idRefMap);
