@@ -1567,24 +1567,6 @@
   "swapHighSlippageWarning": {
     "message": "स्लिपेज राशि बहुत अधिक है। सुनिश्चित करें कि आप जानते हैं कि आप क्या कर रहे हैं!"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "अधिक सीखना चाहते हैं?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "MetaMask स्वैप के बारे में अधिक जानें"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "चलनिधि स्रोतों में निम्न शामिल हैं:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "अब आप अपने MetaMask वॉलेट में सीधे टोकन स्वैप कर सकते हैं। MetaMask स्वैप कई विकेंद्रीकृत विनिमय एग्रीगेटर, पेशेवर बाजार निर्माताओं और व्यक्तिगत DEX को जोड़ता है, ताकि MetaMask उपयोगकर्ताओं को हमेशा सबसे कम नेटवर्क शुल्क के साथ सबसे अच्छा मूल्य मिल सके।"
-  },
-  "swapIntroPopupTitle": {
-    "message": "टोकन स्वैपिंग यहाँ उपलब्ध है!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "हमारे आधिकारिक अनुबंधों के ऑडिट की समीक्षा करें"
-  },
   "swapLowSlippageError": {
     "message": "लेनदेन विफल हो सकता है, अधिकतम स्लिपेज बहुत कम हो सकता है।"
   },
@@ -1686,9 +1668,6 @@
   },
   "swapSourceInfo": {
     "message": "हम सर्वोत्तम दरों और न्यूनतम नेटवर्क शुल्क का पता लगाने के लिए कई चलनिधि स्रोतों (एक्सचेंज, एग्रीगेटर और पेशेवर बाजार निर्माताओं) की खोज करते हैं।"
-  },
-  "swapStartSwapping": {
-    "message": "स्वैप करना शुरू करें"
   },
   "swapSwapFrom": {
     "message": "इससे स्वैप करें"

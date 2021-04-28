@@ -1585,24 +1585,6 @@
   "swapHighSlippageWarning": {
     "message": "L'importo di slippage è molto alto. Assicurati di sapere cosa stai facendo!"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "Vuoi sapere di più?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "Scopri di più su MetaMask Swaps"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "Sorgenti di liquidità incluse:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "Adesso puoi scambiare token direttamente dal tuo portafgolio MetaMask. MetaMask Swaps combina vari siti di scambio decentralizzati, aggregatori e market maker professionisti per assicurare che gli utenti di MetaMask ottengano sempre il miglior prezzo con le tasse di rete minori."
-  },
-  "swapIntroPopupTitle": {
-    "message": "Lo scambio di token è qui!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "Esamina l'audit ufficiale dei nostri smart contracts"
-  },
   "swapLowSlippageError": {
     "message": "La transazione può fallire, il massimo slippage è troppo basso."
   },
@@ -1728,9 +1710,6 @@
   },
   "swapSourceInfo": {
     "message": "Cerchiamo sorgenti di liquidità multiple (siti di scambio, aggregatori, market maker professionisti) per trovare le tariffe migliori e le tasse di rete minori."
-  },
-  "swapStartSwapping": {
-    "message": "Inizia a scambiare"
   },
   "swapSwapFrom": {
     "message": "Scambia da"

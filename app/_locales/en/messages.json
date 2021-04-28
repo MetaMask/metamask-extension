@@ -1238,6 +1238,38 @@
   "notEnoughGas": {
     "message": "Not Enough Gas"
   },
+  "notifications1Description": {
+    "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
+  },
+  "notifications1Title": {
+    "message": "Swapping on mobile is here!",
+    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
+  },
+  "notifications2ActionText": {
+    "message": "Start survey",
+    "description": "The 'call to action' label on the button, or link, of the 'Help improve MetaMask' 'See What's New' notification. Upon clicking, users will be taken to an external page where they can complete a survey."
+  },
+  "notifications2Description": {
+    "message": "Please share your experience in this 5 minute survey.",
+    "description": "Description of a notification in the 'See What's New' popup. Further clarifies how the users can help: by completing a 5 minute survey about MetaMask."
+  },
+  "notifications2Title": {
+    "message": "Help improve MetaMask",
+    "description": "Title for a notification in the 'See What's New' popup. Asks users to take action to make MetaMask better."
+  },
+  "notifications3ActionText": {
+    "message": "Read more",
+    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
+  },
+  "notifications3Description": {
+    "message": "Stay up to date on MetaMask security best practices and get the latest security tips from official MetaMask support.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
+  },
+  "notifications3Title": {
+    "message": "Stay secure",
+    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
+  },
   "ofTextNofM": {
     "message": "of"
   },
@@ -1817,24 +1849,6 @@
   "swapHighSlippageWarning": {
     "message": "Slippage amount is very high. Make sure you know what you are doing!"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "Want to learn more?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "Learn more about MetaMask Swaps"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "Liquidity sources include:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "You can now swap tokens directly in your MetaMask wallet. MetaMask Swaps combines multiple decentralized exchange aggregators, professional market makers, and individual DEXs to ensure MetaMask users always get the best price with the lowest network fees."
-  },
-  "swapIntroPopupTitle": {
-    "message": "Token swapping is here!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "Review our official contracts audit"
-  },
   "swapLowSlippageError": {
     "message": "Transaction may fail, max slippage too low."
   },
@@ -1960,9 +1974,6 @@
   },
   "swapSourceInfo": {
     "message": "We search multiple liquidity sources (exchanges, aggregators and professional market makers) to find the best rates and lowest network fees."
-  },
-  "swapStartSwapping": {
-    "message": "Start swapping"
   },
   "swapSwapFrom": {
     "message": "Swap from"
@@ -2309,6 +2320,10 @@
   },
   "welcomeBack": {
     "message": "Welcome Back!"
+  },
+  "whatsNew": {
+    "message": "What's new",
+    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "What's this?"

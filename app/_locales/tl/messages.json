@@ -1564,24 +1564,6 @@
   "swapHighSlippageWarning": {
     "message": "Sobrang laki ng halaga ng slippage. Tiyaking alam mo ang ginagawa mo!"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "Gusto mo bang matuto pa?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "Matuto pa tungkol sa MetaMask Swaps"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "Kasama sa mga pinagkunan ng liquidity ang:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "Puwede mo nang direktang i-swap ang mga token sa iyong MetaMask wallet. Pinagsasama-sama ng MetaMask Swaps ang maraming decentralized exchange aggregator, propesyonal na market maker, at indibidwal na DEX para matiyak na makukuha palagi ng mga user ng MetaMask ang pinakasulit na presyo nang may pinakamababang bayarin sa network."
-  },
-  "swapIntroPopupTitle": {
-    "message": "Ito na ang pag-swap ng token!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "Suriin ang aming audit ng mga opisyal na kontrata"
-  },
   "swapLowSlippageError": {
     "message": "Maaaring hindi magtagumpay ang transaksyon, masyadong mababa ang max na slippage."
   },
@@ -1683,9 +1665,6 @@
   },
   "swapSourceInfo": {
     "message": "Naghahanap kami ng maraming pinagkukunan ng liquidity (mga exchange, aggregator at propesyonal na market maker) para mahanap ang mga pinakasulit na rate at pinakamababang bayarin sa network."
-  },
-  "swapStartSwapping": {
-    "message": "Simulang mag-swap"
   },
   "swapSwapFrom": {
     "message": "Ipalit mula sa"

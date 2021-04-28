@@ -65,6 +65,13 @@ describe('Incremental Security', function () {
           tag: 'button',
         });
 
+        // closes the what's new popup
+        const popover = await driver.findElement('.popover-container');
+
+        await driver.clickElement('[data-testid="popover-close"]');
+
+        await popover.waitForElementState('hidden');
+
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );

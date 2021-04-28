@@ -494,3 +494,36 @@ export function getNativeCurrencyImage(state) {
 export function getNextSuggestedNonce(state) {
   return Number(state.metamask.nextNonce);
 }
+
+export function getShowWhatsNewPopup(state) {
+  return state.appState.showWhatsNewPopup;
+}
+
+/**
+ * @typedef {Object} Notification
+ * @property {number} id - A unique identifier for the notification
+ * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
+ */
+
+/**
+ * Notifications are managed by the notification controller and referenced by
+ * `state.metamask.notifications`. This function returns a list of notifications
+ * the can be shown to the user. This list includes all notifications that do not
+ * have a truthy `isShown` property.
+ *
+ * The returned notifications are sorted by date.
+ *
+ * @param {Object} state - the redux state object
+ * @returns {Notification[]} An array of notifications that can be shown to the user
+ */
+
+export function getSortedNotificationsToShow(state) {
+  const notifications = Object.values(state.metamask.notifications);
+  const notificationsToShow = notifications.filter(
+    (notification) => !notification.isShown,
+  );
+  const notificationsSortedByDate = notificationsToShow.sort(
+    (a, b) => new Date(b.date) - new Date(a.date),
+  );
+  return notificationsSortedByDate;
+}
