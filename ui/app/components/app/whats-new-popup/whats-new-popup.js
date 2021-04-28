@@ -40,6 +40,9 @@ export default function WhatsNewPopup({ onClose }) {
 
   const notifications = useSelector(getSortedNotificationsToShow);
 
+  const [seenNotifications, setSeenNotifications] = useState({});
+  const [imageLoaded, setImageLoaded] = useState(!notifications[0].image);
+
   const popoverRef = useRef();
 
   const memoizedNotifications = useEqualityCheck(notifications);
@@ -55,36 +58,41 @@ export default function WhatsNewPopup({ onClose }) {
     [memoizedNotifications],
   );
 
-  const [seenNotifications, setSeenNotifications] = useState({});
-  const observationsCreated = useRef(false);
-
   useEffect(() => {
-    const observers = [];
-    observationsCreated.current = true;
+    let observer;
+    if (imageLoaded) {
+      observer = new window.IntersectionObserver(
+        (entries, _observer) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const [id, ref] = Object.entries(idRefMap).find(([_, _ref]) =>
+                _ref.current.isSameNode(entry.target),
+              );
 
-    Object.entries(idRefMap).forEach(([id, ref]) => {
-      const observer = new window.IntersectionObserver(
-        ([entry], _observer) => {
-          if (entry.isIntersecting) {
-            setSeenNotifications((_seenNotifications) => ({
-              ..._seenNotifications,
-              [id]: true,
-            }));
-            _observer.disconnect();
-          }
+              setSeenNotifications((_seenNotifications) => ({
+                ..._seenNotifications,
+                [id]: true,
+              }));
+
+              _observer.unobserve(ref.current);
+            }
+          });
         },
         {
           root: popoverRef.current,
           threshold: 1.0,
         },
       );
-      observers.push(observer);
-      observer.observe(ref.current);
-    });
+
+      Object.values(idRefMap).forEach((ref) => {
+        observer.observe(ref.current);
+      });
+    }
+
     return () => {
-      observers.forEach((observer) => observer.disconnect());
+      observer?.disconnect();
     };
-  }, [idRefMap, setSeenNotifications]);
+  }, [idRefMap, setSeenNotifications, imageLoaded]);
 
   const renderFirstNotification = (notification, id, date) => {
     return (
@@ -99,6 +107,7 @@ export default function WhatsNewPopup({ onClose }) {
           <img
             className="whats-new-popup__notification-image"
             src={notification.image}
+            onLoad={() => setImageLoaded(true)}
           />
         )}
         <div className="whats-new-popup__notification-title">
