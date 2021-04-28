@@ -1,6 +1,6 @@
 import assert from 'assert';
 import currencyFormatter from 'currency-formatter';
-import availableCurrencies from '../../ui/app/helpers/constants/available-conversions.json';
+import availableCurrencies from '../../ui/helpers/constants/available-conversions.json';
 
 describe('currencyFormatting', function () {
   it('be able to format any infura currency', function (done) {
