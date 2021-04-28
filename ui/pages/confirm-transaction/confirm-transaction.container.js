@@ -8,7 +8,11 @@ import {
 import { isTokenMethodAction } from '../../helpers/utils/transactions.util';
 import { fetchBasicGasEstimates } from '../../ducks/gas/gas.duck';
 
-import { getContractMethodData, getTokenParams } from '../../store/actions';
+import {
+  getContractMethodData,
+  getTokenParams,
+  setDefaultHomeActiveTabName,
+} from '../../store/actions';
 import { unconfirmedTransactionsListSelector } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import ConfirmTransaction from './confirm-transaction.component';
@@ -51,6 +55,8 @@ const mapDispatchToProps = (dispatch) => {
     fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
     getContractMethodData: (data) => dispatch(getContractMethodData(data)),
     getTokenParams: (tokenAddress) => dispatch(getTokenParams(tokenAddress)),
+    setDefaultHomeActiveTabName: (tabName) =>
+      dispatch(setDefaultHomeActiveTabName(tabName)),
   };
 };
 
