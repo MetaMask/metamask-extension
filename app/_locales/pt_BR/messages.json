@@ -209,6 +209,15 @@
   "connectingToRopsten": {
     "message": "Conectando à Rede de Testes Ropsten"
   },
+  "contactUs": {
+    "message": "Nos contate"
+  },
+  "contacts": {
+    "message": "Contatos"
+  },
+  "contactsSettingsDescription": {
+    "message": "adicione, edite, remova, e gerencie seus contatos"
+  },
   "continueToWyre": {
     "message": "Continuar para Wyre"
   },
