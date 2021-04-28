@@ -91,6 +91,19 @@
       },
       "network": "1337"
     },
+    "NotificationController": {
+      "notifications": {
+        "1": {
+          "isShown": true
+        },
+        "2": {
+          "isShown": true
+        },
+        "3": {
+          "isShown": true
+        }
+      }
+    },
     "CurrencyController": {
       "conversionDate": 1618940438.187,
       "conversionRate": 2254.54,

@@ -1567,24 +1567,6 @@
   "swapHighSlippageWarning": {
     "message": "Jumlah slippage sangat tinggi. Pastikan Anda mengetahui yang Anda kerjakan!"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "Ingin mempelajari selengkapnya?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "Pelajari selengkapnya tentang Penukaran MetaMask"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "Sumber likuiditas mencakup:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "Sekarang, Anda bisa menukar token secara langsung di dompet MetaMask Anda. Penukaran MetaMask menggabungkan beberapa agregator penukaran terdesentralisasi, pembuat pasar profesional, dan DEX individu untuk memastikan pengguna MetaMask selalu mendapatkan harga terbaik dengan biaya jaringan terendah."
-  },
-  "swapIntroPopupTitle": {
-    "message": "Penukaran token ada di sini!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "Tinjau audit kontrak resmi kami"
-  },
   "swapLowSlippageError": {
     "message": "Transaksi bisa gagal, slippage maks. terlalu rendah."
   },
@@ -1686,9 +1668,6 @@
   },
   "swapSourceInfo": {
     "message": "Kami mencari beberapa sumber likuiditas (penukaran, agregator, dan pembuat pasar profesional) untuk menemukan tarif terbaik dan biaya jaringan terendah."
-  },
-  "swapStartSwapping": {
-    "message": "Mulai menukar"
   },
   "swapSwapFrom": {
     "message": "Tukar dari"
