@@ -165,10 +165,10 @@ export default function WhatsNewPopup({ onClose }) {
           const notification = getTranslatedUINoficiations(t)[id];
           return index === 0
             ? renderFirstNotification(notification, idRefMap)
-            : renderSubsequentNotification({
+            : renderSubsequentNotification(
                 notification,
                 idRefMap,
-              });
+              );
         })}
       </div>
     </Popover>
