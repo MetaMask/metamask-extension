@@ -86,7 +86,7 @@ export default function WhatsNewPopup({ onClose }) {
     });
 
     return () => {
-      observer?.disconnect();
+      observer.disconnect();
     };
   }, [idRefMap, setSeenNotifications]);
 
