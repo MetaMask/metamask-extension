@@ -28,73 +28,66 @@ function getActionFunctionById(id) {
   return actionFunctions[id];
 }
 
-const renderFirstNotification = ({ notification, id, date, idRefMap }) => {
+const renderFirstNotification = (notification, idRefMap) => {
+  const { id, date, title, description, image, actionText } = notification;
   const actionFunction = getActionFunctionById(id);
   return (
     <div
       className={classnames(
         'whats-new-popup__notification whats-new-popup__first-notification',
       )}
-      key="whats-new-popop-notificatiion-0"
+      key={`whats-new-popop-notificatiion-${id}`}
       ref={idRefMap[id]}
     >
-      {notification.image && (
+      {image && (
         <img
           className="whats-new-popup__notification-image"
-          src={notification.image.src}
-          height={notification.image.height}
-          width={notification.image.width}
+          src={image.src}
+          height={image.height}
+          width={image.width}
         />
       )}
-      <div className="whats-new-popup__notification-title">
-        {notification.title}
-      </div>
+      <div className="whats-new-popup__notification-title">{title}</div>
       <div className="whats-new-popup__description-and-date">
         <div className="whats-new-popup__notification-description">
-          {notification.description}
+          {description}
         </div>
         <div className="whats-new-popup__notification-date">{date}</div>
       </div>
-      {notification.actionText && (
+      {actionText && (
         <Button
           type="secondary"
           className="whats-new-popup__button"
           rounded
           onClick={actionFunction}
         >
-          {notification.actionText}
+          {actionText}
         </Button>
       )}
     </div>
   );
 };
 
-const renderSubsequentNotification = ({
-  notification,
-  id,
-  date,
-  index,
-  idRefMap,
-}) => {
+const renderSubsequentNotification = (notification, idRefMap) => {
+  const { id, date, title, description, actionText } = notification;
+
   const actionFunction = getActionFunctionById(id);
   return (
     <div
       className={classnames('whats-new-popup__notification')}
-      key={`whats-new-popop-notificatiion-${index}`}
+      key={`whats-new-popop-notificatiion-${id}`}
       ref={idRefMap[id]}
     >
-      <div className="whats-new-popup__notification-title">
-        {notification.title}
-      </div>
+      <div className="whats-new-popup__notification-title">{title}</div>
       <div className="whats-new-popup__description-and-date">
         <div className="whats-new-popup__notification-description">
-          {notification.description}
+          {description}
         </div>
         <div className="whats-new-popup__notification-date">{date}</div>
       </div>
-      {notification.actionText && (
+      {actionText && (
         <div className="whats-new-popup__link" onClick={actionFunction}>
-          {notification.actionText}
+          {actionText}
         </div>
       )}
     </div>
@@ -168,15 +161,12 @@ export default function WhatsNewPopup({ onClose }) {
       mediumHeight
     >
       <div className="whats-new-popup__notifications">
-        {notifications.map(({ id, date }, index) => {
+        {notifications.map(({ id }, index) => {
           const notification = getTranslatedUINoficiations(t)[id];
           return index === 0
-            ? renderFirstNotification({ notification, id, date, idRefMap })
+            ? renderFirstNotification(notification, idRefMap)
             : renderSubsequentNotification({
                 notification,
-                id,
-                date,
-                index,
                 idRefMap,
               });
         })}
