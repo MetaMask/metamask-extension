@@ -3,8 +3,7 @@ import sinon from 'sinon';
 import BN from 'bn.js';
 
 import GasReducer, {
-  basicGasEstimatesLoadingStarted,
-  basicGasEstimatesLoadingFinished,
+  setBasicEstimateStatus,
   setBasicGasEstimateData,
   setCustomGasPrice,
   setCustomGasLimit,
@@ -49,7 +48,8 @@ describe('Gas Duck', () => {
       fast: null,
       safeLow: null,
     },
-    basicEstimateIsLoading: true,
+    basicEstimateStatus: 'LOADING',
+    estimateSource: '',
   };
 
   const providerState = {
@@ -61,14 +61,12 @@ describe('Gas Duck', () => {
     type: 'mainnet',
   };
 
-  const BASIC_GAS_ESTIMATE_LOADING_FINISHED =
-    'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_FINISHED';
-  const BASIC_GAS_ESTIMATE_LOADING_STARTED =
-    'metamask/gas/BASIC_GAS_ESTIMATE_LOADING_STARTED';
+  const BASIC_GAS_ESTIMATE_STATUS = 'metamask/gas/BASIC_GAS_ESTIMATE_STATUS';
   const SET_BASIC_GAS_ESTIMATE_DATA =
     'metamask/gas/SET_BASIC_GAS_ESTIMATE_DATA';
   const SET_CUSTOM_GAS_LIMIT = 'metamask/gas/SET_CUSTOM_GAS_LIMIT';
   const SET_CUSTOM_GAS_PRICE = 'metamask/gas/SET_CUSTOM_GAS_PRICE';
+  const SET_ESTIMATE_SOURCE = 'metamask/gas/SET_ESTIMATE_SOURCE';
 
   describe('GasReducer()', () => {
     it('should initialize state', () => {
@@ -84,16 +82,13 @@ describe('Gas Duck', () => {
       ).toStrictEqual(mockState);
     });
 
-    it('should set basicEstimateIsLoading to true when receiving a BASIC_GAS_ESTIMATE_LOADING_STARTED action', () => {
+    it('should set basicEstimateStatus to LOADING when receiving a BASIC_GAS_ESTIMATE_STATUS action with value LOADING', () => {
       expect(
-        GasReducer(mockState, { type: BASIC_GAS_ESTIMATE_LOADING_STARTED }),
-      ).toStrictEqual({ basicEstimateIsLoading: true, ...mockState });
-    });
-
-    it('should set basicEstimateIsLoading to false when receiving a BASIC_GAS_ESTIMATE_LOADING_FINISHED action', () => {
-      expect(
-        GasReducer(mockState, { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED }),
-      ).toStrictEqual({ basicEstimateIsLoading: false, ...mockState });
+        GasReducer(mockState, {
+          type: BASIC_GAS_ESTIMATE_STATUS,
+          value: 'LOADING',
+        }),
+      ).toStrictEqual({ basicEstimateStatus: 'LOADING', ...mockState });
     });
 
     it('should set basicEstimates when receiving a SET_BASIC_GAS_ESTIMATE_DATA action', () => {
@@ -127,18 +122,17 @@ describe('Gas Duck', () => {
     });
   });
 
-  describe('basicGasEstimatesLoadingStarted', () => {
-    it('should create the correct action', () => {
-      expect(basicGasEstimatesLoadingStarted()).toStrictEqual({
-        type: BASIC_GAS_ESTIMATE_LOADING_STARTED,
-      });
-    });
+  it('should set estimateSource to Metaswaps when receiving a SET_ESTIMATE_SOURCE action with value Metaswaps', () => {
+    expect(
+      GasReducer(mockState, { type: SET_ESTIMATE_SOURCE, value: 'Metaswaps' }),
+    ).toStrictEqual({ estimateSource: 'Metaswaps', ...mockState });
   });
 
-  describe('basicGasEstimatesLoadingFinished', () => {
+  describe('basicEstimateStatus', () => {
     it('should create the correct action', () => {
-      expect(basicGasEstimatesLoadingFinished()).toStrictEqual({
-        type: BASIC_GAS_ESTIMATE_LOADING_FINISHED,
+      expect(setBasicEstimateStatus('LOADING')).toStrictEqual({
+        type: BASIC_GAS_ESTIMATE_STATUS,
+        value: 'LOADING',
       });
     });
   });
@@ -158,7 +152,7 @@ describe('Gas Duck', () => {
       }));
 
       expect(mockDistpatch.getCall(0).args).toStrictEqual([
-        { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
+        { type: 'metamask/gas/BASIC_GAS_ESTIMATE_STATUS', value: 'LOADING' },
       ]);
 
       expect(
@@ -168,7 +162,11 @@ describe('Gas Duck', () => {
       ).toStrictEqual(true);
 
       expect(mockDistpatch.getCall(2).args).toStrictEqual([
-        { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED },
+        { type: 'metamask/gas/SET_ESTIMATE_SOURCE', value: 'MetaSwaps' },
+      ]);
+
+      expect(mockDistpatch.getCall(4).args).toStrictEqual([
+        { type: 'metamask/gas/BASIC_GAS_ESTIMATE_STATUS', value: 'READY' },
       ]);
     });
 
@@ -190,9 +188,12 @@ describe('Gas Duck', () => {
         metamask: { provider: { ...providerStateForTestNetwork } },
       }));
       expect(mockDistpatch.getCall(0).args).toStrictEqual([
-        { type: BASIC_GAS_ESTIMATE_LOADING_STARTED },
+        { type: 'metamask/gas/BASIC_GAS_ESTIMATE_STATUS', value: 'LOADING' },
       ]);
       expect(mockDistpatch.getCall(1).args).toStrictEqual([
+        { type: 'metamask/gas/SET_ESTIMATE_SOURCE', value: 'eth_gasprice' },
+      ]);
+      expect(mockDistpatch.getCall(2).args).toStrictEqual([
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
@@ -200,8 +201,8 @@ describe('Gas Duck', () => {
           },
         },
       ]);
-      expect(mockDistpatch.getCall(2).args).toStrictEqual([
-        { type: BASIC_GAS_ESTIMATE_LOADING_FINISHED },
+      expect(mockDistpatch.getCall(3).args).toStrictEqual([
+        { type: 'metamask/gas/BASIC_GAS_ESTIMATE_STATUS', value: 'READY' },
       ]);
     });
   });

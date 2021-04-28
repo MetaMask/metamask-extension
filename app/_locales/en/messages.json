@@ -684,6 +684,9 @@
   "estimatedProcessingTimes": {
     "message": "Estimated Processing Times"
   },
+  "ethGasPriceFetchWarning": {
+    "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
+  },
   "eth_accounts": {
     "message": "View the addresses of your permitted accounts (required)",
     "description": "The description for the `eth_accounts` permission"
@@ -779,6 +782,9 @@
   },
   "gasPriceExtremelyLow": {
     "message": "Gas Price Extremely Low"
+  },
+  "gasPriceFetchFailed": {
+    "message": "Gas price estimation failed due to network error."
   },
   "gasPriceInfoTooltipContent": {
     "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."

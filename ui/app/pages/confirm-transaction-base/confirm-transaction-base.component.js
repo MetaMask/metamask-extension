@@ -12,6 +12,8 @@ import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
+  ETH_GAS_PRICE_FETCH_WARNING_KEY,
+  GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
 } from '../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
@@ -23,6 +25,7 @@ import {
   TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction';
 import { getTransactionTypeTitle } from '../../helpers/utils/transactions.util';
+import ErrorMessage from '../../components/ui/error-message';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -95,12 +98,15 @@ export default class ConfirmTransactionBase extends Component {
     showAccountInHeader: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     isMainnet: PropTypes.bool,
+    isEthGasPrice: PropTypes.bool,
+    noGasPrice: PropTypes.bool,
   };
 
   state = {
     submitting: false,
     submitError: null,
     submitWarning: '',
+    ethGasPriceWarning: '',
   };
 
   componentDidUpdate(prevProps) {
@@ -114,12 +120,14 @@ export default class ConfirmTransactionBase extends Component {
       customNonceValue,
       toAddress,
       tryReverseResolveAddress,
+      isEthGasPrice,
     } = this.props;
     const {
       customNonceValue: prevCustomNonceValue,
       nextNonce: prevNextNonce,
       toAddress: prevToAddress,
       transactionStatus: prevTxStatus,
+      isEthGasPrice: prevIsEthGasPrice,
     } = prevProps;
     const statusUpdated = transactionStatus !== prevTxStatus;
     const txDroppedOrConfirmed =
@@ -151,6 +159,18 @@ export default class ConfirmTransactionBase extends Component {
     if (toAddress && toAddress !== prevToAddress) {
       tryReverseResolveAddress(toAddress);
     }
+
+    if (isEthGasPrice !== prevIsEthGasPrice) {
+      if (isEthGasPrice) {
+        this.setState({
+          ethGasPriceWarning: this.context.t(ETH_GAS_PRICE_FETCH_WARNING_KEY),
+        });
+      } else {
+        this.setState({
+          ethGasPriceWarning: '',
+        });
+      }
+    }
   }
 
   getErrorKey() {
@@ -160,6 +180,7 @@ export default class ConfirmTransactionBase extends Component {
       hexTransactionFee,
       txData: { simulationFails, txParams: { value: amount } = {} } = {},
       customGas,
+      noGasPrice,
     } = this.props;
 
     const insufficientBalance =
@@ -191,6 +212,13 @@ export default class ConfirmTransactionBase extends Component {
         errorKey: simulationFails.errorKey
           ? simulationFails.errorKey
           : TRANSACTION_ERROR_KEY,
+      };
+    }
+
+    if (noGasPrice) {
+      return {
+        valid: false,
+        errorKey: GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
       };
     }
 
@@ -243,9 +271,12 @@ export default class ConfirmTransactionBase extends Component {
       nextNonce,
       getNextNonce,
       isMainnet,
+      isEthGasPrice,
+      noGasPrice,
     } = this.props;
 
     const notMainnetOrTest = !(isMainnet || process.env.IN_TEST);
+    const gasPriceFetchFailure = isEthGasPrice || noGasPrice;
 
     return (
       <div className="confirm-page-container-content__details">
@@ -253,18 +284,26 @@ export default class ConfirmTransactionBase extends Component {
           <ConfirmDetailRow
             label="Gas Fee"
             value={hexTransactionFee}
-            headerText={notMainnetOrTest ? '' : 'Edit'}
+            headerText={notMainnetOrTest || gasPriceFetchFailure ? '' : 'Edit'}
             headerTextClassName={
-              notMainnetOrTest ? '' : 'confirm-detail-row__header-text--edit'
+              notMainnetOrTest || gasPriceFetchFailure
+                ? ''
+                : 'confirm-detail-row__header-text--edit'
             }
-            onHeaderClick={notMainnetOrTest ? null : () => this.handleEditGas()}
+            onHeaderClick={
+              notMainnetOrTest || gasPriceFetchFailure
+                ? null
+                : () => this.handleEditGas()
+            }
             secondaryText={
               hideFiatConversion
                 ? this.context.t('noConversionRateAvailable')
                 : ''
             }
           />
-          {advancedInlineGasShown || notMainnetOrTest ? (
+          {advancedInlineGasShown ||
+          notMainnetOrTest ||
+          gasPriceFetchFailure ? (
             <AdvancedGasInputs
               updateCustomGasPrice={(newGasPrice) =>
                 updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })
@@ -278,6 +317,11 @@ export default class ConfirmTransactionBase extends Component {
               customPriceIsSafe
               isSpeedUp={false}
             />
+          ) : null}
+          {noGasPrice ? (
+            <div className="confirm-page-container-content__error-container">
+              <ErrorMessage errorKey={GAS_PRICE_FETCH_FAILURE_ERROR_KEY} />
+            </div>
           ) : null}
         </div>
         <div
@@ -672,7 +716,12 @@ export default class ConfirmTransactionBase extends Component {
       showAccountInHeader,
       txData,
     } = this.props;
-    const { submitting, submitError, submitWarning } = this.state;
+    const {
+      submitting,
+      submitError,
+      submitWarning,
+      ethGasPriceWarning,
+    } = this.state;
 
     const { name } = methodData;
     const { valid, errorKey } = this.getErrorKey();
@@ -696,7 +745,6 @@ export default class ConfirmTransactionBase extends Component {
         functionType = t('contractInteraction');
       }
     }
-
     return (
       <ConfirmPageContainer
         fromName={fromName}
@@ -739,6 +787,7 @@ export default class ConfirmTransactionBase extends Component {
         onSubmit={() => this.handleSubmit()}
         hideSenderToRecipient={hideSenderToRecipient}
         origin={txData.origin}
+        ethGasPriceWarning={ethGasPriceWarning}
       />
     );
   }

@@ -22,6 +22,7 @@ export default class ConfirmPageContainerContent extends Component {
     titleComponent: PropTypes.node,
     warning: PropTypes.string,
     origin: PropTypes.string.isRequired,
+    ethGasPriceWarning: PropTypes.string,
     // Footer
     onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
@@ -81,11 +82,15 @@ export default class ConfirmPageContainerContent extends Component {
       unapprovedTxCount,
       rejectNText,
       origin,
+      ethGasPriceWarning,
     } = this.props;
 
     return (
       <div className="confirm-page-container-content">
         {warning && <ConfirmPageContainerWarning warning={warning} />}
+        {ethGasPriceWarning && (
+          <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
+        )}
         <ConfirmPageContainerSummary
           className={classnames({
             'confirm-page-container-summary--border':
