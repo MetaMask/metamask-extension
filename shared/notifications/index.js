@@ -3,7 +3,11 @@ export const UI_NOTIFICATIONS = {
   1: {
     id: 1,
     date: '2020-03-17',
-    image: 'images/mobile-link-qr.svg',
+    image: {
+      src: 'images/mobile-link-qr.svg',
+      height: '270px',
+      width: '270px',
+    },
   },
   2: {
     id: 2,
