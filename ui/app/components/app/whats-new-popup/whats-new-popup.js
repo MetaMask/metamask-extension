@@ -10,13 +10,8 @@ import { updateViewedNotifications } from '../../../store/actions';
 import { getTranslatedUINoficiations } from '../../../../../shared/notifications';
 import { getSortedNotificationsToShow } from '../../../selectors';
 
-function getActionFunctions() {
+function getActionFunctionById(id) {
   const actionFunctions = {
-    1: () => {
-      global.platform.openTab({
-        url: 'https://metamask.io/download.html',
-      });
-    },
     2: () => {
       global.platform.openTab({
         url:
@@ -30,13 +25,84 @@ function getActionFunctions() {
     },
   };
 
-  return actionFunctions;
+  return actionFunctions[id];
 }
+
+const renderFirstNotification = ({ notification, id, date, idRefMap }) => {
+  const actionFunction = getActionFunctionById(id);
+  return (
+    <div
+      className={classnames(
+        'whats-new-popup__notification whats-new-popup__first-notification',
+      )}
+      key="whats-new-popop-notificatiion-0"
+      ref={idRefMap[id]}
+    >
+      {notification.image && (
+        <img
+          className="whats-new-popup__notification-image"
+          src={notification.image.src}
+          height={notification.image.height}
+          width={notification.image.width}
+        />
+      )}
+      <div className="whats-new-popup__notification-title">
+        {notification.title}
+      </div>
+      <div className="whats-new-popup__description-and-date">
+        <div className="whats-new-popup__notification-description">
+          {notification.description}
+        </div>
+        <div className="whats-new-popup__notification-date">{date}</div>
+      </div>
+      {notification.actionText && (
+        <Button
+          type="secondary"
+          className="whats-new-popup__button"
+          rounded
+          onClick={actionFunction}
+        >
+          {notification.actionText}
+        </Button>
+      )}
+    </div>
+  );
+};
+
+const renderSubsequentNotification = ({
+  notification,
+  id,
+  date,
+  index,
+  idRefMap,
+}) => {
+  const actionFunction = getActionFunctionById(id);
+  return (
+    <div
+      className={classnames('whats-new-popup__notification')}
+      key={`whats-new-popop-notificatiion-${index}`}
+      ref={idRefMap[id]}
+    >
+      <div className="whats-new-popup__notification-title">
+        {notification.title}
+      </div>
+      <div className="whats-new-popup__description-and-date">
+        <div className="whats-new-popup__notification-description">
+          {notification.description}
+        </div>
+        <div className="whats-new-popup__notification-date">{date}</div>
+      </div>
+      {notification.actionText && (
+        <div className="whats-new-popup__link" onClick={actionFunction}>
+          {notification.actionText}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default function WhatsNewPopup({ onClose }) {
   const t = useContext(I18nContext);
-
-  const actionFunctions = getActionFunctions();
 
   const notifications = useSelector(getSortedNotificationsToShow);
 
@@ -90,69 +156,6 @@ export default function WhatsNewPopup({ onClose }) {
     };
   }, [idRefMap, setSeenNotifications]);
 
-  const renderFirstNotification = (notification, id, date) => {
-    return (
-      <div
-        className={classnames(
-          'whats-new-popup__notification whats-new-popup__first-notification',
-        )}
-        key="whats-new-popop-notificatiion-0"
-        ref={idRefMap[id]}
-      >
-        {notification.image && (
-          <img
-            className="whats-new-popup__notification-image"
-            src={notification.image.src}
-            height={notification.image.height}
-            width={notification.image.width}
-          />
-        )}
-        <div className="whats-new-popup__notification-title">
-          {notification.title}
-        </div>
-        <div className="whats-new-popup__description-and-date">
-          <div className="whats-new-popup__notification-description">
-            {notification.description}
-          </div>
-          <div className="whats-new-popup__notification-date">{date}</div>
-        </div>
-        {notification.actionText && (
-          <Button
-            type="secondary"
-            className="whats-new-popup__button"
-            rounded
-            onClick={actionFunctions[id]}
-          >
-            {notification.actionText}
-          </Button>
-        )}
-      </div>
-    );
-  };
-
-  const renderSubsequentNotification = (notification, id, date, index) => {
-    return (
-      <div
-        className={classnames('whats-new-popup__notification')}
-        key={`whats-new-popop-notificatiion-${index}`}
-        ref={idRefMap[id]}
-      >
-        <div className="whats-new-popup__notification-title">
-          {notification.title}
-        </div>
-        <div className="whats-new-popup__description-and-date">
-          <div className="whats-new-popup__notification-description">
-            {notification.description}
-          </div>
-          <div className="whats-new-popup__notification-date">{date}</div>
-        </div>
-        <div className="whats-new-popup__link" onClick={actionFunctions[id]}>
-          {notification.actionText}
-        </div>
-      </div>
-    );
-  };
-
   return (
     <Popover
       className="whats-new-popup__popover"
@@ -168,8 +171,14 @@ export default function WhatsNewPopup({ onClose }) {
         {notifications.map(({ id, date }, index) => {
           const notification = getTranslatedUINoficiations(t)[id];
           return index === 0
-            ? renderFirstNotification(notification, id, date)
-            : renderSubsequentNotification(notification, id, date, index);
+            ? renderFirstNotification({ notification, id, date, idRefMap })
+            : renderSubsequentNotification({
+                notification,
+                id,
+                date,
+                index,
+                idRefMap,
+              });
         })}
       </div>
     </Popover>
