@@ -369,8 +369,5 @@ export function getIsEthGasPriceFetched(state) {
 
 export function getNoGasPriceFetched(state) {
   const gasState = state.gas;
-  return Boolean(
-    gasState.estimateSource === 'eth_gasprice' &&
-      gasState.basicEstimateStatus === 'FAILED',
-  );
+  return Boolean(gasState.basicEstimateStatus === 'FAILED');
 }
