@@ -1164,7 +1164,7 @@ export default class MetamaskController extends EventEmitter {
 
     let { transactions } = this.txController.store.getState();
     // delete tx for other accounts that we're not importing
-    transactions = transactions.filter((tx) => {
+    transactions = Object.values(transactions).filter((tx) => {
       const checksummedTxFrom = toChecksumAddress(tx.txParams.from);
       return accounts.hd.includes(checksummedTxFrom);
     });
