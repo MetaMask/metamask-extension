@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import ContactList from '../../../components/app/contact-list';
+import { showModal } from '../../../store/actions';
 import {
   CONTACT_ADD_ROUTE,
   CONTACT_VIEW_ROUTE,
@@ -10,6 +12,27 @@ import Button from '../../../components/ui/button';
 import EditContact from './edit-contact';
 import AddContact from './add-contact';
 import ViewContact from './view-contact';
+
+AddContactButton.propTypes = {
+  label: PropTypes.string,
+};
+
+function AddContactButton(props) {
+  const { label } = props;
+  const dispatch = useDispatch();
+
+  return (
+    <button
+      className="address-book-add-button__button button btn-secondary btn--rounded"
+      onClick={(e) => {
+        e.preventDefault();
+        dispatch(showModal({ name: 'ADD_NEW_CONTACT' }));
+      }}
+    >
+      {label}
+    </button>
+  );
+}
 
 export default class ContactListTab extends Component {
   static contextTypes = {
@@ -137,7 +160,9 @@ export default class ContactListTab extends Component {
       <div className="address-book-wrapper">
         {this.renderAddressBookContent()}
         {this.renderContactContent()}
-        {!addingContact && addressBook.length > 0 && this.renderAddButton()}
+          <div className="address-book-add-button">
+            <AddContactButton label={this.context.t('addContact')} />
+          </div>
       </div>
     );
   }

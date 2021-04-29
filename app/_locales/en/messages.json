@@ -79,6 +79,9 @@
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
   },
+  "addMemo": {
+    "message": "Add Memo"
+  },
   "addNetwork": {
     "message": "Add Network"
   },
