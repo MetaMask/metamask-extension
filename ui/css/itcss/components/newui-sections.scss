@@ -15,7 +15,7 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
 }
 
 // Fix for UI lag on external monitor: https://github.com/MetaMask/metamask-extension/issues/10173
-.app::after {
+.app.os-mac.browser-chrome::after {
   content: "";
   position: fixed;
   top: 0;
@@ -27,12 +27,8 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
 }
 
 @keyframes emptySpinningDiv {
-  0% {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(1turn);
-  }
+  0% { transform: rotate(0deg); }
+  to { transform: rotate(1turn); }
 }
 
 // Main container

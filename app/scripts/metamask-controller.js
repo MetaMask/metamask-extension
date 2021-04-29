@@ -482,8 +482,8 @@ export default class MetamaskController extends EventEmitter {
         os,
         // This method is presently only supported by Firefox
         this.extension.runtime.getBrowserInfo === undefined
-        ? 'chrome'
-        : 'firefox',
+          ? 'chrome'
+          : 'firefox',
       );
     });
 

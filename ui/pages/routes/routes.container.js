@@ -29,8 +29,6 @@ function mapStateToProps(state) {
   } = appState;
   const { autoLockTimeLimit = 0 } = getPreferences(state);
 
-  console.log("Routes state: ", state);
-
   return {
     sidebar,
     alertOpen,
@@ -47,7 +45,7 @@ function mapStateToProps(state) {
     isMouseUser: state.appState.isMouseUser,
     providerId: getNetworkIdentifier(state),
     autoLockTimeLimit,
-    browserEnvironment: state.appState.browserEnvironment,
+    browserEnvironment: state.metamask.browserEnvironment,
   };
 }
 

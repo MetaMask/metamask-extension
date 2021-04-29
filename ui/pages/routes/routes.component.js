@@ -301,7 +301,9 @@ export default class Routes extends Component {
     const { os, browser } = browserEnvironment;
     return (
       <div
-        className={classnames('app', `os-${os}`, `browser-${browser}`, { 
+        className={classnames('app', {
+          [`os-${os}`]: os,
+          [`browser-${browser}`]: browser,
           'mouse-user-styles': isMouseUser,
         })}
         dir={textDirection}

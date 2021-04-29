@@ -23,6 +23,7 @@ export default class AppStateController extends EventEmitter {
       timeoutMinutes: 0,
       connectedStatusPopoverHasBeenShown: true,
       defaultHomeActiveTabName: null,
+      browserEnvironment: {},
       ...initState,
     });
     this.timer = null;
@@ -164,6 +165,6 @@ export default class AppStateController extends EventEmitter {
    * @returns {void}
    */
   setBrowserEnvironment(os, browser) {
-    this.store.updateState({ browserEnvironment: { os, browser } })
+    this.store.updateState({ browserEnvironment: { os, browser } });
   }
 }
