@@ -32,6 +32,7 @@ const SWAPS_ROUTE = '/swaps';
 const BUILD_QUOTE_ROUTE = '/swaps/build-quote';
 const VIEW_QUOTE_ROUTE = '/swaps/view-quote';
 const LOADING_QUOTES_ROUTE = '/swaps/loading-quotes';
+const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
 const AWAITING_SWAP_ROUTE = '/swaps/awaiting-swap';
 const SWAPS_ERROR_ROUTE = '/swaps/swaps-error';
 const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';

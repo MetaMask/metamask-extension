@@ -33,6 +33,7 @@ import {
   fetchSwapsLiveness,
 } from '../../ducks/swaps/swaps';
 import {
+  AWAITING_SIGNATURES_ROUTE,
   AWAITING_SWAP_ROUTE,
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
@@ -66,6 +67,7 @@ import {
   getSwapsTokensReceivedFromTxMeta,
   fetchAggregatorMetadata,
 } from './swaps.util';
+import AwaitingSignatures from './awaiting-signatures';
 import AwaitingSwap from './awaiting-swap';
 import LoadingQuote from './loading-swaps-quotes';
 import BuildQuote from './build-quote';
@@ -77,6 +79,7 @@ export default function Swap() {
   const dispatch = useDispatch();
 
   const { pathname } = useLocation();
+  const isAwaitingSignaturesRoute = pathname === AWAITING_SIGNATURES_ROUTE;
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE;
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE;
   const isLoadingQuotesRoute = pathname === LOADING_QUOTES_ROUTE;
@@ -370,6 +373,39 @@ export default function Swap() {
                 ) : (
                   <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />
                 );
+              }}
+            />
+            <Route
+              path={AWAITING_SIGNATURES_ROUTE}
+              exact
+              render={() => {
+                return (
+                  <AwaitingSignatures
+                    swapComplete={tradeConfirmed}
+                    txHash={tradeTxData?.hash}
+                    tokensReceived={tokensReceived}
+                    submittingSwap={
+                      routeState === 'awaitingSignature' &&
+                      !(approveTxId || tradeTxId)
+                    }
+                    inputValue={inputValue}
+                    maxSlippage={maxSlippage}
+                  />
+                );
+                // return routeState === 'awaitingSignature' || tradeTxData ? (
+                //   <AwaitingSignatures
+                //     swapComplete={tradeConfirmed}
+                //     txHash={tradeTxData?.hash}
+                //     tokensReceived={tokensReceived}
+                //     submittingSwap={
+                //       routeState === 'awaitingSignature' && !(approveTxId || tradeTxId)
+                //     }
+                //     inputValue={inputValue}
+                //     maxSlippage={maxSlippage}
+                //   />
+                // ) : (
+                //   <Redirect to={{ pathname: DEFAULT_ROUTE }} />
+                // );
               }}
             />
             <Route
