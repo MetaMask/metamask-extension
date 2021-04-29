@@ -158,4 +158,12 @@ export default class AppStateController extends EventEmitter {
       timeoutMinutes * 60 * 1000,
     );
   }
+
+  /**
+   * Sets the current browser and OS environment
+   * @returns {void}
+   */
+  setBrowserEnvironment(os, browser) {
+    this.store.updateState({ browserEnvironment: { os, browser } })
+  }
 }
