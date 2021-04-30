@@ -45,6 +45,7 @@ function mapStateToProps(state) {
     isMouseUser: state.appState.isMouseUser,
     providerId: getNetworkIdentifier(state),
     autoLockTimeLimit,
+    browserEnvironment: state.metamask.browserEnvironment,
   };
 }
 
