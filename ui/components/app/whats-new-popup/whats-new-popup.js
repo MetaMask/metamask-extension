@@ -39,7 +39,7 @@ const renderFirstNotification = (notification, idRefMap) => {
       height={image.height}
       width={image.width}
     />
-  )
+  );
   return (
     <div
       className={classnames(
@@ -90,7 +90,7 @@ const renderSubsequentNotification = (notification, idRefMap) => {
       </div>
       {actionText && (
         <div className="whats-new-popup__link" onClick={actionFunction}>
-          {actionText}
+          {`${actionText} >`}
         </div>
       )}
     </div>
