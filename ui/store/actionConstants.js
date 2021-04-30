@@ -72,6 +72,7 @@ export const BUY_ETH = 'BUY_ETH';
 
 export const TOGGLE_ACCOUNT_MENU = 'TOGGLE_ACCOUNT_MENU';
 
+// preferences
 export const SET_USE_BLOCKIE = 'SET_USE_BLOCKIE';
 export const SET_USE_NONCEFIELD = 'SET_USE_NONCEFIELD';
 export const UPDATE_CUSTOM_NONCE = 'UPDATE_CUSTOM_NONCE';

@@ -35,6 +35,8 @@ export default class AdvancedTab extends PureComponent {
     ipfsGateway: PropTypes.string.isRequired,
     useLedgerLive: PropTypes.bool.isRequired,
     setLedgerLivePreference: PropTypes.func.isRequired,
+    setDismissSeedBackUpReminder: PropTypes.func.isRequired,
+    dismissSeedBackUpReminder: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -255,7 +257,7 @@ export default class AdvancedTab extends PureComponent {
         data-testid="advanced-setting-custom-nonce"
       >
         <div className="settings-page__content-item">
-          <span>{this.context.t('nonceField')}</span>
+          <span>{t('nonceField')}</span>
           <div className="settings-page__content-description">
             {t('nonceFieldDescription')}
           </div>
@@ -490,6 +492,38 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  renderDismissSeedBackupReminderControl() {
+    const { t } = this.context;
+    const {
+      dismissSeedBackUpReminder,
+      setDismissSeedBackUpReminder,
+    } = this.props;
+
+    return (
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-dismiss-reminder"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('dismissReminderField')}</span>
+          <div className="settings-page__content-description">
+            {t('dismissReminderDescriptionField')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={dismissSeedBackUpReminder}
+              onToggle={(value) => setDismissSeedBackUpReminder(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const { warning } = this.props;
 
@@ -507,6 +541,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderThreeBoxControl()}
         {this.renderIpfsGatewayControl()}
         {this.renderLedgerLiveControl()}
+        {this.renderDismissSeedBackupReminderControl()}
       </div>
     );
   }

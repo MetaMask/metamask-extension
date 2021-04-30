@@ -12,6 +12,7 @@ import {
   setUseNonceField,
   setIpfsGateway,
   setLedgerLivePreference,
+  setDismissSeedBackUpReminder,
 } from '../../../store/actions';
 import { getPreferences } from '../../../selectors';
 import AdvancedTab from './advanced-tab.component';
@@ -28,6 +29,7 @@ export const mapStateToProps = (state) => {
     useNonceField,
     ipfsGateway,
     useLedgerLive,
+    dismissSeedBackUpReminder,
   } = metamask;
   const { showFiatInTestnets, autoLockTimeLimit } = getPreferences(state);
 
@@ -42,6 +44,7 @@ export const mapStateToProps = (state) => {
     useNonceField,
     ipfsGateway,
     useLedgerLive,
+    dismissSeedBackUpReminder,
   };
 };
 
@@ -71,8 +74,12 @@ export const mapDispatchToProps = (dispatch) => {
     setIpfsGateway: (value) => {
       return dispatch(setIpfsGateway(value));
     },
-    setLedgerLivePreference: (value) =>
-      dispatch(setLedgerLivePreference(value)),
+    setLedgerLivePreference: (value) => {
+      return dispatch(setLedgerLivePreference(value));
+    },
+    setDismissSeedBackUpReminder: (value) => {
+      return dispatch(setDismissSeedBackUpReminder(value));
+    },
   };
 };
 

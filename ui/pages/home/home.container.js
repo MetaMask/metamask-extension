@@ -52,6 +52,7 @@ const mapStateToProps = (state) => {
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
+    dismissSeedBackUpReminder,
   } = metamask;
   const accountBalance = getCurrentEthBalance(state);
   const { forgottenPassword, threeBoxLastUpdated } = appState;
@@ -84,7 +85,8 @@ const mapStateToProps = (state) => {
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     shouldShowSeedPhraseReminder:
       seedPhraseBackedUp === false &&
-      (parseInt(accountBalance, 16) > 0 || tokens.length > 0),
+      (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
+      dismissSeedBackUpReminder === false,
     isPopup,
     isNotification,
     threeBoxSynced,
