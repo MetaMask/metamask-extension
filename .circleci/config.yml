@@ -485,7 +485,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "5e:a3:2d:35:b6:25:b5:87:b1:41:11:0d:77:50:96:73"
+            - "3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8"
       - checkout
       - attach_workspace:
           at: .
