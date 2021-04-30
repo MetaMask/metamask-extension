@@ -245,9 +245,34 @@ describe('Swaps Util', () => {
       ).toBe(true);
     });
 
-    it('returns false if "token_from" is ETH, "token_to" is WETH and "to" is mainnet contract address', () => {
+    it('returns true if "token_from" is ETH, "token_to" is WETH and "to" is mainnet contract address', () => {
       usedTradeTxParams.to =
         SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[MAINNET_CHAIN_ID];
+      expect(
+        isContractAddressValid(
+          usedTradeTxParams.to,
+          swapMetaData,
+          MAINNET_CHAIN_ID,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true if "token_from" is WETH, "token_to" is ETH and "to" is mainnet contract address', () => {
+      swapMetaData.token_from = WETH_SYMBOL;
+      swapMetaData.token_to = ETH_SYMBOL;
+      usedTradeTxParams.to =
+        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[MAINNET_CHAIN_ID];
+      expect(
+        isContractAddressValid(
+          usedTradeTxParams.to,
+          swapMetaData,
+          MAINNET_CHAIN_ID,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false if "token_from" is ETH, "token_to" is WETH and "to" is BSC contract address', () => {
+      usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[BSC_CHAIN_ID];
       expect(
         isContractAddressValid(
           usedTradeTxParams.to,
@@ -257,11 +282,10 @@ describe('Swaps Util', () => {
       ).toBe(false);
     });
 
-    it('returns false if "token_from" is WETH, "token_to" is ETH and "to" is mainnet contract address', () => {
+    it('returns false if "token_from" is WETH, "token_to" is ETH and "to" is BSC contract address', () => {
       swapMetaData.token_from = WETH_SYMBOL;
       swapMetaData.token_to = ETH_SYMBOL;
-      usedTradeTxParams.to =
-        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[MAINNET_CHAIN_ID];
+      usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[BSC_CHAIN_ID];
       expect(
         isContractAddressValid(
           usedTradeTxParams.to,
@@ -274,6 +298,16 @@ describe('Swaps Util', () => {
     it('returns false if contractAddress is null', () => {
       expect(
         isContractAddressValid(null, swapMetaData, LOCALHOST_CHAIN_ID),
+      ).toBe(false);
+    });
+
+    it('returns false if chainId is incorrect', () => {
+      expect(
+        isContractAddressValid(
+          usedTradeTxParams.to,
+          swapMetaData,
+          'incorrectChainId',
+        ),
       ).toBe(false);
     });
 
