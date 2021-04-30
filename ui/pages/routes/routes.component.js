@@ -90,6 +90,7 @@ export default class Routes extends Component {
     autoLockTimeLimit: PropTypes.number,
     pageChanged: PropTypes.func.isRequired,
     prepareToLeaveSwaps: PropTypes.func,
+    browserEnvironment: PropTypes.object,
   };
 
   static contextTypes = {
@@ -275,6 +276,7 @@ export default class Routes extends Component {
       submittedPendingTransactions,
       isMouseUser,
       prepareToLeaveSwaps,
+      browserEnvironment,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -296,9 +298,14 @@ export default class Routes extends Component {
         ({ id }) => id === sidebarTransaction.id,
       );
 
+    const { os, browser } = browserEnvironment;
     return (
       <div
-        className={classnames('app', { 'mouse-user-styles': isMouseUser })}
+        className={classnames('app', {
+          [`os-${os}`]: os,
+          [`browser-${browser}`]: browser,
+          'mouse-user-styles': isMouseUser,
+        })}
         dir={textDirection}
         onClick={() => setMouseUserState(true)}
         onKeyDown={(e) => {
