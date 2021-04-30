@@ -123,7 +123,7 @@ export async function getSymbolAndDecimals(tokenAddress, existingTokens = []) {
 
   return {
     symbol: symbol || DEFAULT_SYMBOL,
-    decimals: decimals || DEFAULT_DECIMALS,
+    decimals,
   };
 }
 

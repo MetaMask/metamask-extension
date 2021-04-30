@@ -2205,6 +2205,9 @@
   "tokenContractAddress": {
     "message": "Token Contract Address"
   },
+  "tokenDecimalFetchFailed": {
+    "message": "Unable to fecth the token decimals due to network error."
+  },
   "tokenSymbol": {
     "message": "Token Symbol"
   },

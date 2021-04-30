@@ -20,7 +20,7 @@ TokenBalance.propTypes = {
   className: PropTypes.string,
   token: PropTypes.shape({
     address: PropTypes.string.isRequired,
-    decimals: PropTypes.number,
+    decimals: PropTypes.string,
     symbol: PropTypes.string,
   }).isRequired,
 };

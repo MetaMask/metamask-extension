@@ -42,8 +42,9 @@ class AddToken extends Component {
     customAddressError: null,
     customSymbolError: null,
     customDecimalsError: null,
-    autoFilled: false,
     forceEditSymbol: false,
+    symbolAutoFilled: false,
+    decimalAutoFilled: false,
   };
 
   componentDidMount() {
@@ -148,10 +149,11 @@ class AddToken extends Component {
   }
 
   async attemptToAutoFillTokenParams(address) {
-    const { symbol = '', decimals = 0 } = await this.tokenInfoGetter(address);
+    const { symbol = '', decimals } = await this.tokenInfoGetter(address);
 
-    const autoFilled = Boolean(symbol && decimals);
-    this.setState({ autoFilled });
+    const symbolAutoFilled = Boolean(symbol);
+    const decimalAutoFilled = Boolean(decimals);
+    this.setState({ symbolAutoFilled, decimalAutoFilled });
     this.handleCustomSymbolChange(symbol || '');
     this.handleCustomDecimalsChange(decimals);
   }
@@ -162,7 +164,8 @@ class AddToken extends Component {
       customAddress,
       customAddressError: null,
       tokenSelectorError: null,
-      autoFilled: false,
+      symbolAutoFilled: false,
+      decimalAutoFilled: false,
     });
 
     const addressIsValid = isValidHexAddress(customAddress, {
@@ -213,16 +216,20 @@ class AddToken extends Component {
   }
 
   handleCustomDecimalsChange(value) {
-    const customDecimals = value.trim();
-    const validDecimals =
-      customDecimals !== null &&
-      customDecimals !== '' &&
-      customDecimals >= MIN_DECIMAL_VALUE &&
-      customDecimals <= MAX_DECIMAL_VALUE;
-    let customDecimalsError = null;
+    const inValidDecimals = !(
+      value >= MIN_DECIMAL_VALUE && value <= MAX_DECIMAL_VALUE
+    );
 
-    if (!validDecimals) {
-      customDecimalsError = this.context.t('decimalsMustZerotoTen');
+    let customDecimals;
+    let customDecimalsError = null;
+    if (value) {
+      customDecimals = value.trim();
+      customDecimalsError = inValidDecimals
+        ? this.context.t('decimalsMustZerotoTen')
+        : null;
+    } else {
+      customDecimals = '';
+      customDecimalsError = this.context.t('tokenDecimalFetchFailed');
     }
 
     this.setState({ customDecimals, customDecimalsError });
@@ -236,8 +243,9 @@ class AddToken extends Component {
       customAddressError,
       customSymbolError,
       customDecimalsError,
-      autoFilled,
       forceEditSymbol,
+      symbolAutoFilled,
+      decimalAutoFilled,
     } = this.state;
 
     return (
@@ -260,7 +268,7 @@ class AddToken extends Component {
               <span className="add-token__custom-symbol__label">
                 {this.context.t('tokenSymbol')}
               </span>
-              {autoFilled && !forceEditSymbol && (
+              {symbolAutoFilled && !forceEditSymbol && (
                 <div
                   className="add-token__custom-symbol__edit"
                   onClick={() => this.setState({ forceEditSymbol: true })}
@@ -276,7 +284,7 @@ class AddToken extends Component {
           error={customSymbolError}
           fullWidth
           margin="normal"
-          disabled={autoFilled && !forceEditSymbol}
+          disabled={symbolAutoFilled && !forceEditSymbol}
         />
         <TextField
           id="custom-decimals"
@@ -287,7 +295,7 @@ class AddToken extends Component {
           error={customDecimalsError}
           fullWidth
           margin="normal"
-          disabled={autoFilled}
+          disabled={decimalAutoFilled}
           min={MIN_DECIMAL_VALUE}
           max={MAX_DECIMAL_VALUE}
         />
