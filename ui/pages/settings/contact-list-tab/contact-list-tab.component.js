@@ -5,6 +5,7 @@ import {
   CONTACT_ADD_ROUTE,
   CONTACT_VIEW_ROUTE,
 } from '../../../helpers/constants/routes';
+import Button from '../../../components/ui/button';
 import EditContact from './edit-contact';
 import AddContact from './add-contact';
 import ViewContact from './view-contact';
@@ -66,6 +67,25 @@ export default class ContactListTab extends Component {
     );
   }
 
+  renderAddButton() {
+    const { history } = this.props;
+
+    return (
+      <div className="address-book-add-button">
+        <Button
+          className="address-book-add-button__button"
+          type="secondary"
+          rounded
+          onClick={() => {
+            history.push(CONTACT_ADD_ROUTE);
+          }}
+        >
+          {this.context.t('addContact')}
+        </Button>
+      </div>
+    );
+  }
+
   renderContactContent() {
     const {
       viewingContact,
@@ -106,10 +126,13 @@ export default class ContactListTab extends Component {
   }
 
   render() {
+    const { addingContact, addressBook } = this.props;
+
     return (
       <div className="address-book-wrapper">
         {this.renderAddressBookContent()}
         {this.renderContactContent()}
+        {!addingContact && addressBook.length > 0 && this.renderAddButton()}
       </div>
     );
   }
