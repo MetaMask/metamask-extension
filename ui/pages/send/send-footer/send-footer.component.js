@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
+import { hexToDecimal } from '../../../helpers/utils/conversions.util';
 
 export default class SendFooter extends Component {
   static propTypes = {
@@ -112,8 +113,9 @@ export default class SendFooter extends Component {
       gasIsLoading,
       noGasPrice,
     } = this.props;
+
     const missingTokenBalance = sendToken && !tokenBalance;
-    const gasLimitTooLow = gasLimit < 5208; // 5208 is hex value of 21000, minimum gas limit
+    const gasLimitTooLow = hexToDecimal(gasLimit) < 21000;
     const shouldBeDisabled =
       inError ||
       !gasTotal ||
