@@ -66,7 +66,6 @@ export default class AddContact extends PureComponent {
   renderInput() {
     return (
       <EnsInput
-        className="send__to-row"
         scanQrCode={(_) => {
           this.props.scanQrCode();
         }}
