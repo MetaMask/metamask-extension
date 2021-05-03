@@ -7,7 +7,7 @@ export const UI_NOTIFICATIONS = {
       src: 'images/mobile-link-qr.svg',
       height: '230px',
       width: '230px',
-      placeBelowDescription: true,
+      placeImageBelowDescription: true,
     },
   },
   2: {

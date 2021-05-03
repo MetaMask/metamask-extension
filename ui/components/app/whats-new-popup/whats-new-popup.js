@@ -49,7 +49,7 @@ const renderFirstNotification = (notification, idRefMap) => {
       key={`whats-new-popop-notificatiion-${id}`}
       ref={idRefMap[id]}
     >
-      {imageComponent && !placeImageBelowDescription}
+      {!placeImageBelowDescription && imageComponent ? imageComponent : null}
       <div className="whats-new-popup__notification-title">{title}</div>
       <div className="whats-new-popup__description-and-date">
         <div className="whats-new-popup__notification-description">
@@ -57,7 +57,7 @@ const renderFirstNotification = (notification, idRefMap) => {
         </div>
         <div className="whats-new-popup__notification-date">{date}</div>
       </div>
-      {imageComponent && placeImageBelowDescription}
+      {imageComponent && placeImageBelowDescription ? imageComponent : null}
       {actionText && (
         <Button
           type="secondary"
