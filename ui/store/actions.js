@@ -2047,8 +2047,9 @@ export function updatePreferences(value) {
 }
 
 export function setDefaultHomeActiveTabName(value) {
-  return async () => {
+  return async (dispatch) => {
     await promisifiedBackground.setDefaultHomeActiveTabName(value);
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 

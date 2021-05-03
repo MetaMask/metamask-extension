@@ -14,6 +14,7 @@ import {
   updateTransaction,
   getNextNonce,
   tryReverseResolveAddress,
+  setDefaultHomeActiveTabName,
 } from '../../store/actions';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
@@ -238,6 +239,8 @@ export const mapDispatchToProps = (dispatch) => {
       dispatch(updateAndApproveTx(customNonceMerge(txData))),
     setMetaMetricsSendCount: (val) => dispatch(setMetaMetricsSendCount(val)),
     getNextNonce: () => dispatch(getNextNonce()),
+    setDefaultHomeActiveTabName: (tabName) =>
+      dispatch(setDefaultHomeActiveTabName(tabName)),
   };
 };
 

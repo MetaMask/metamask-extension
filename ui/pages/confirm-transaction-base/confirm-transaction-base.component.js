@@ -7,7 +7,10 @@ import ConfirmPageContainer, {
   ConfirmDetailRow,
 } from '../../components/app/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
-import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../helpers/constants/routes';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
@@ -100,6 +103,7 @@ export default class ConfirmTransactionBase extends Component {
     isMainnet: PropTypes.bool,
     isEthGasPrice: PropTypes.bool,
     noGasPrice: PropTypes.bool,
+    setDefaultHomeActiveTabName: PropTypes.func,
   };
 
   state = {
@@ -115,12 +119,12 @@ export default class ConfirmTransactionBase extends Component {
       showTransactionConfirmedModal,
       history,
       clearConfirmTransaction,
-      mostRecentOverviewPage,
       nextNonce,
       customNonceValue,
       toAddress,
       tryReverseResolveAddress,
       isEthGasPrice,
+      setDefaultHomeActiveTabName,
     } = this.props;
     const {
       customNonceValue: prevCustomNonceValue,
@@ -151,7 +155,9 @@ export default class ConfirmTransactionBase extends Component {
       showTransactionConfirmedModal({
         onSubmit: () => {
           clearConfirmTransaction();
-          history.push(mostRecentOverviewPage);
+          setDefaultHomeActiveTabName('Activity').then(() => {
+            history.push(DEFAULT_ROUTE);
+          });
         },
       });
     }
