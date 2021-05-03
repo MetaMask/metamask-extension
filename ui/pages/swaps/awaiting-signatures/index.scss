@@ -27,16 +27,34 @@
 
   &__header {
     @include H3;
-
+    
     color: $Black-100;
   }
 
-  &__main-descrption {
-    @include H6;
+  &__subheader {
+    margin-top: 8px;
+    font-weight: bold;
+  }
 
-    color: $Grey-500;
+  &__steps {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 16px auto;
+
+    > li {
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+
+      > svg {
+        margin-right: 4px;
+      }
+    }
+  }
+
+  &__main-description {
     margin-top: 16px;
-    width: 100%;
   }
 
   &__time-estimate {
@@ -70,6 +88,9 @@
     @include H6;
   }
 
+  &__symbol {
+    font-weight: bold;
+  }
 
   &__amount-and-symbol {
     color: $Black-100;
