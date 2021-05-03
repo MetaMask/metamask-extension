@@ -23,6 +23,7 @@ import {
   SIGNATURE_REQUEST_PATH,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
+  DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import ConfTx from './conf-tx';
 
@@ -45,6 +46,7 @@ export default class ConfirmTransaction extends Component {
     paramsTransactionId: PropTypes.string,
     getTokenParams: PropTypes.func,
     isTokenMethodAction: PropTypes.bool,
+    setDefaultHomeActiveTabName: PropTypes.func,
   };
 
   componentDidMount() {
@@ -89,6 +91,7 @@ export default class ConfirmTransaction extends Component {
       history,
       mostRecentOverviewPage,
       totalUnapprovedCount,
+      setDefaultHomeActiveTabName,
     } = this.props;
 
     if (
@@ -104,7 +107,9 @@ export default class ConfirmTransaction extends Component {
       !transactionId &&
       !totalUnapprovedCount
     ) {
-      history.replace(mostRecentOverviewPage);
+      setDefaultHomeActiveTabName('Activity').then(() => {
+        history.replace(DEFAULT_ROUTE);
+      });
     } else if (
       prevProps.transactionId &&
       transactionId &&

@@ -1112,16 +1112,10 @@ describe('MetaMask', function () {
     });
 
     it('finds the transaction in the transactions list', async function () {
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 1;
-      }, 10000);
-
       await driver.waitForSelector(
         {
-          css: '.transaction-list-item__primary-currency',
+          css:
+            '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
           text: '-1 TST',
         },
         { timeout: 10000 },
@@ -1214,15 +1208,9 @@ describe('MetaMask', function () {
     });
 
     it('finds the transaction in the transactions list', async function () {
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 2;
-      }, 10000);
-
       await driver.waitForSelector({
-        css: '.transaction-list-item__primary-currency',
+        css:
+          '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
         text: '-1.5 TST',
       });
 
@@ -1230,10 +1218,22 @@ describe('MetaMask', function () {
         css: '.list-item__heading',
         text: 'Send TST',
       });
+    });
+
+    it('checks balance', async function () {
+      await driver.clickElement({
+        text: 'Assets',
+        tag: 'button',
+      });
 
       await driver.waitForSelector({
-        css: '.token-overview__primary-balance',
+        css: '.asset-list-item__token-button',
         text: '7.5 TST',
+      });
+
+      await driver.clickElement({
+        text: 'Activity',
+        tag: 'button',
       });
     });
   });
@@ -1363,13 +1363,6 @@ describe('MetaMask', function () {
     });
 
     it('finds the transaction in the transactions list', async function () {
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 3;
-      }, 10000);
-
       await driver.waitForSelector({
         // Select only the heading of the first entry in the transaction list.
         css:
@@ -1422,13 +1415,6 @@ describe('MetaMask', function () {
     });
 
     it('finds the transaction in the transactions list', async function () {
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 4;
-      }, 10000);
-
       await driver.waitForSelector({
         // Select the heading of the first transaction list item in the
         // completed transaction list with text matching Send TST
@@ -1438,7 +1424,8 @@ describe('MetaMask', function () {
       });
 
       await driver.waitForSelector({
-        css: '.transaction-list-item__primary-currency',
+        css:
+          '.transaction-list__completed-transactions .transaction-list-item:first-child .transaction-list-item__primary-currency',
         text: '-1.5 TST',
       });
     });
@@ -1504,13 +1491,6 @@ describe('MetaMask', function () {
     });
 
     it('finds the transaction in the transactions list', async function () {
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 5;
-      }, 10000);
-
       await driver.waitForSelector({
         css:
           '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
@@ -1521,6 +1501,10 @@ describe('MetaMask', function () {
 
   describe('Hide token', function () {
     it('hides the token when clicked', async function () {
+      await driver.clickElement({ text: 'Assets', tag: 'button' });
+
+      await driver.clickElement({ text: 'TST', tag: 'span' });
+
       await driver.clickElement('[data-testid="asset-options__button"]');
 
       await driver.clickElement('[data-testid="asset-options__hide"]');
