@@ -5,8 +5,9 @@ export const UI_NOTIFICATIONS = {
     date: '2021-03-17',
     image: {
       src: 'images/mobile-link-qr.svg',
-      height: '270px',
-      width: '270px',
+      height: '230px',
+      width: '230px',
+      placeImageBelowDescription: true,
     },
   },
   2: {
