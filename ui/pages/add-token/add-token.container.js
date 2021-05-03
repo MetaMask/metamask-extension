@@ -7,7 +7,12 @@ import AddToken from './add-token.component';
 
 const mapStateToProps = (state) => {
   const {
-    metamask: { identities, tokens, pendingTokens },
+    metamask: {
+      identities,
+      tokens,
+      pendingTokens,
+      provider: { chainId },
+    },
   } = state;
   return {
     identities,
@@ -15,6 +20,7 @@ const mapStateToProps = (state) => {
     tokens,
     pendingTokens,
     showSearchTab: getIsMainnet(state) || process.env.IN_TEST === 'true',
+    chainId,
   };
 };
 

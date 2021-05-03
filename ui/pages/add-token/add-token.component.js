@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { checkExistingAddresses } from '../../helpers/utils/util';
+import { createTokenTrackerLinkForChain } from '@metamask/etherscan-link';
 import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import { CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes';
 import TextField from '../../components/ui/text-field';
@@ -8,8 +9,11 @@ import PageContainer from '../../components/ui/page-container';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
-import TokenList from './token-list';
+import ActionableMessage from '../swaps/actionable-message';
+import Typography from '../../components/ui/typography';
+import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
 import TokenSearch from './token-search';
+import TokenList from './token-list';
 
 const emptyAddr = '0x0000000000000000000000000000000000000000';
 
@@ -30,6 +34,7 @@ class AddToken extends Component {
     identities: PropTypes.object,
     showSearchTab: PropTypes.bool.isRequired,
     mostRecentOverviewPage: PropTypes.string.isRequired,
+    chainId: PropTypes.string,
   };
 
   state = {
@@ -223,7 +228,7 @@ class AddToken extends Component {
     let customDecimals;
     let customDecimalsError = null;
     if (value) {
-      customDecimals = value.trim();
+      customDecimals = Number(value.trim());
       customDecimalsError = inValidDecimals
         ? this.context.t('decimalsMustZerotoTen')
         : null;
@@ -248,6 +253,11 @@ class AddToken extends Component {
       decimalAutoFilled,
     } = this.state;
 
+    const { chainId } = this.props;
+    const blockExplorerTokenLink = createTokenTrackerLinkForChain(
+      customAddress,
+      chainId,
+    );
     return (
       <div className="add-token__custom-token-form">
         <TextField
@@ -292,13 +302,45 @@ class AddToken extends Component {
           type="number"
           value={customDecimals}
           onChange={(e) => this.handleCustomDecimalsChange(e.target.value)}
-          error={customDecimalsError}
+          error={customDecimals ? customDecimalsError : null}
           fullWidth
           margin="normal"
           disabled={decimalAutoFilled}
           min={MIN_DECIMAL_VALUE}
           max={MAX_DECIMAL_VALUE}
         />
+        {customDecimals === '' && (
+          <ActionableMessage
+            message={
+              <>
+                <Typography
+                  variant={TYPOGRAPHY.H7}
+                  fontWeight={FONT_WEIGHT.BOLD}
+                >
+                  {this.context.t('tokenDecimalFetchFailed')}
+                </Typography>
+                <Typography
+                  variant={TYPOGRAPHY.H7}
+                  fontWeight={FONT_WEIGHT.NORMAL}
+                >
+                  {this.context.t('verifyThisTokenDecimalOn', [
+                    <a
+                      className="add-token__link"
+                      key="add-token-verify-token-decimal"
+                      href={blockExplorerTokenLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {this.context.t('etherscan')}
+                    </a>,
+                  ])}
+                </Typography>
+              </>
+            }
+            type="warning"
+            withRightButton
+          />
+        )}
       </div>
     );
   }

@@ -2206,7 +2206,7 @@
     "message": "Token Contract Address"
   },
   "tokenDecimalFetchFailed": {
-    "message": "Unable to fecth the token decimals due to network error."
+    "message": "Token decimals not found."
   },
   "tokenSymbol": {
     "message": "Token Symbol"
@@ -2338,6 +2338,10 @@
   },
   "userName": {
     "message": "Username"
+  },
+  "verifyThisTokenDecimalOn": {
+    "message": "Verify this token decimal on $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Verify this token on $1",

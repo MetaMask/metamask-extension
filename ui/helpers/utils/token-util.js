@@ -13,7 +13,6 @@ const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
 }, {});
 
 const DEFAULT_SYMBOL = '';
-const DEFAULT_DECIMALS = '0';
 
 async function getSymbolFromContract(tokenAddress) {
   const token = util.getContractAtAddress(tokenAddress);
@@ -76,25 +75,6 @@ async function getDecimals(tokenAddress) {
   }
 
   return decimals;
-}
-
-export async function fetchSymbolAndDecimals(tokenAddress) {
-  let symbol, decimals;
-
-  try {
-    symbol = await getSymbol(tokenAddress);
-    decimals = await getDecimals(tokenAddress);
-  } catch (error) {
-    log.warn(
-      `symbol() and decimal() calls for token at address ${tokenAddress} resulted in error:`,
-      error,
-    );
-  }
-
-  return {
-    symbol: symbol || DEFAULT_SYMBOL,
-    decimals: decimals || DEFAULT_DECIMALS,
-  };
 }
 
 export async function getSymbolAndDecimals(tokenAddress, existingTokens = []) {
