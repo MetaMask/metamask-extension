@@ -21,7 +21,6 @@ describe('TransactionBreakdown Component', () => {
 
     const wrapper = shallow(
       <TransactionBreakdown transaction={transaction} className="test-class" />,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
 
     expect(wrapper.hasClass('transaction-breakdown')).toStrictEqual(true);

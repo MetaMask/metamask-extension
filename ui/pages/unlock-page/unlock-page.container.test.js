@@ -18,11 +18,7 @@ describe('Unlock Page', () => {
   };
 
   beforeEach(() => {
-    wrapper = mount(<UnlockPage.WrappedComponent {...props} />, {
-      context: {
-        t: (str) => str,
-      },
-    });
+    wrapper = mount(<UnlockPage.WrappedComponent {...props} />);
   });
 
   afterAll(() => {

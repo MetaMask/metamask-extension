@@ -9,14 +9,7 @@ describe('Transaction Confirmed', () => {
       onSubmit: sinon.spy(),
       hideModal: sinon.spy(),
     };
-    const wrapper = mount(
-      <TransactionConfirmed.WrappedComponent {...props} />,
-      {
-        context: {
-          t: (str) => str,
-        },
-      },
-    );
+    const wrapper = mount(<TransactionConfirmed.WrappedComponent {...props} />);
     const submit = wrapper.find(
       '.btn-secondary.modal-container__footer-button',
     );

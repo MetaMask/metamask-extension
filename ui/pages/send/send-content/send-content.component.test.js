@@ -13,9 +13,7 @@ describe('SendContent Component', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(<SendContent showHexData />, {
-      context: { t: (str) => `${str}_t` },
-    });
+    wrapper = shallow(<SendContent showHexData />);
   });
 
   describe('render', () => {

@@ -14,11 +14,7 @@ describe('Confirm Delete Network', () => {
   };
 
   beforeEach(() => {
-    wrapper = mount(<ConfirmDeleteNetwork.WrappedComponent {...props} />, {
-      context: {
-        t: (str) => str,
-      },
-    });
+    wrapper = mount(<ConfirmDeleteNetwork.WrappedComponent {...props} />, {});
   });
 
   afterEach(() => {

@@ -12,11 +12,7 @@ describe('Confirm Reset Account', () => {
   };
 
   beforeEach(() => {
-    wrapper = mount(<ConfirmResetAccount.WrappedComponent {...props} />, {
-      context: {
-        t: (str) => str,
-      },
-    });
+    wrapper = mount(<ConfirmResetAccount.WrappedComponent {...props} />);
   });
 
   afterEach(() => {

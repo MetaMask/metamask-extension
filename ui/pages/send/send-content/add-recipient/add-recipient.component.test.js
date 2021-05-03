@@ -51,7 +51,6 @@ describe('AddRecipient Component', () => {
           },
         ]}
       />,
-      { context: { t: (str) => `${str}_t` } },
     );
     instance = wrapper.instance();
   });

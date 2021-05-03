@@ -26,12 +26,7 @@ describe('App Header', () => {
   };
 
   beforeEach(() => {
-    wrapper = shallow(<AppHeader.WrappedComponent {...props} />, {
-      context: {
-        t: (str) => str,
-        metricsEvent: () => undefined,
-      },
-    });
+    wrapper = shallow(<AppHeader.WrappedComponent {...props} />);
   });
 
   afterEach(() => {

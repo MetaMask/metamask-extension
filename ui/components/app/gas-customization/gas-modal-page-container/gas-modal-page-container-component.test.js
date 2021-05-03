@@ -125,7 +125,6 @@ describe('GasModalPageContainer Component', () => {
           fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
           fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
         />,
-        { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
       );
       const { tabsComponent } = renderTabsWrapperTester
         .find(PageContainer)

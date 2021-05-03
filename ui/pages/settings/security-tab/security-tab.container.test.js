@@ -24,12 +24,7 @@ describe('Security Tab', () => {
   };
 
   beforeEach(() => {
-    wrapper = mount(<SecurityTab.WrappedComponent {...props} />, {
-      context: {
-        t: (str) => str,
-        metricsEvent: () => undefined,
-      },
-    });
+    wrapper = mount(<SecurityTab.WrappedComponent {...props} />);
   });
 
   it('navigates to reveal seed words page', () => {

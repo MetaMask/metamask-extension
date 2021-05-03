@@ -32,10 +32,6 @@ describe('Confirm Remove Account', () => {
         <ConfirmRemoveAccount.WrappedComponent {...props} />
       </Provider>,
       {
-        context: {
-          t: (str) => str,
-          store,
-        },
         childContextTypes: {
           t: PropTypes.func,
           store: PropTypes.object,

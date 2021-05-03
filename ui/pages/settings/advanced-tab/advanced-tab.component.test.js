@@ -16,11 +16,6 @@ describe('AdvancedTab Component', () => {
         threeBoxDisabled
         threeBoxSyncingAllowed={false}
       />,
-      {
-        context: {
-          t: (s) => `_${s}`,
-        },
-      },
     );
 
     expect(root.find('.settings-page__content-row')).toHaveLength(11);
@@ -38,11 +33,6 @@ describe('AdvancedTab Component', () => {
         threeBoxDisabled
         threeBoxSyncingAllowed={false}
       />,
-      {
-        context: {
-          t: (s) => `_${s}`,
-        },
-      },
     );
 
     const autoTimeout = root.find('.settings-page__content-row').at(7);

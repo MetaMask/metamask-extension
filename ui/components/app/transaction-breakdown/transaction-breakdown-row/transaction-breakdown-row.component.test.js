@@ -9,7 +9,6 @@ describe('TransactionBreakdownRow Component', () => {
       <TransactionBreakdownRow title="test" className="test-class">
         Test
       </TransactionBreakdownRow>,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
 
     expect(wrapper.hasClass('transaction-breakdown-row')).toStrictEqual(true);
@@ -26,7 +25,6 @@ describe('TransactionBreakdownRow Component', () => {
       <TransactionBreakdownRow title="test" className="test-class">
         <Button onClick={() => undefined}>Button</Button>
       </TransactionBreakdownRow>,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
 
     expect(wrapper.hasClass('transaction-breakdown-row')).toStrictEqual(true);

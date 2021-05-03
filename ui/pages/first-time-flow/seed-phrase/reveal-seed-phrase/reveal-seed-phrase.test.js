@@ -19,12 +19,7 @@ describe('Reveal Seed Phrase', () => {
   };
 
   beforeEach(() => {
-    wrapper = mount(<RevealSeedPhrase.WrappedComponent {...props} />, {
-      context: {
-        t: (str) => str,
-        metricsEvent: () => undefined,
-      },
-    });
+    wrapper = mount(<RevealSeedPhrase.WrappedComponent {...props} />);
   });
 
   it('seed phrase', () => {

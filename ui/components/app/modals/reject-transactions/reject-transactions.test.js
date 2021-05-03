@@ -13,11 +13,7 @@ describe('Reject Transactions Model', () => {
   };
 
   beforeEach(() => {
-    wrapper = mount(<RejectTransactionsModal.WrappedComponent {...props} />, {
-      context: {
-        t: (str) => str,
-      },
-    });
+    wrapper = mount(<RejectTransactionsModal.WrappedComponent {...props} />);
   });
 
   afterEach(() => {

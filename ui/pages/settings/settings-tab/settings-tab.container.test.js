@@ -22,11 +22,7 @@ describe('Settings Tab', () => {
     useNativeCurrencyAsPrimaryCurrency: true,
   };
   beforeEach(() => {
-    wrapper = mount(<SettingsTab.WrappedComponent {...props} />, {
-      context: {
-        t: (str) => str,
-      },
-    });
+    wrapper = mount(<SettingsTab.WrappedComponent {...props} />);
   });
 
   it('selects currency', async () => {

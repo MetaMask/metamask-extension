@@ -22,11 +22,7 @@ describe('Advanced Gas Inputs', () => {
   beforeEach(() => {
     clock = sinon.useFakeTimers();
 
-    wrapper = mount(<AdvancedTabContent.WrappedComponent {...props} />, {
-      context: {
-        t: (str) => str,
-      },
-    });
+    wrapper = mount(<AdvancedTabContent.WrappedComponent {...props} />, {});
   });
 
   afterEach(() => {

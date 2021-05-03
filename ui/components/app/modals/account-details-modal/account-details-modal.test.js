@@ -33,11 +33,7 @@ describe('Account Details Modal', () => {
   };
 
   beforeEach(() => {
-    wrapper = shallow(<AccountDetailsModal.WrappedComponent {...props} />, {
-      context: {
-        t: (str) => str,
-      },
-    });
+    wrapper = shallow(<AccountDetailsModal.WrappedComponent {...props} />);
   });
 
   it('sets account label when changing default account label', () => {

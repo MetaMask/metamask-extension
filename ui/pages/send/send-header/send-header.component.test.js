@@ -26,7 +26,6 @@ describe('SendHeader Component', () => {
         mostRecentOverviewPage="mostRecentOverviewPage"
         titleKey="mockTitleKey"
       />,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
   });
 

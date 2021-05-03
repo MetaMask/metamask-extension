@@ -3,13 +3,8 @@ import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import ConfirmSeedPhrase from './confirm-seed-phrase/confirm-seed-phrase.component';
 
-function shallowRender(props = {}, context = {}) {
-  return shallow(<ConfirmSeedPhrase {...props} />, {
-    context: {
-      t: (str) => `${str}_t`,
-      ...context,
-    },
-  });
+function shallowRender(props = {}) {
+  return shallow(<ConfirmSeedPhrase {...props} />);
 }
 
 describe('ConfirmSeedPhrase Component', () => {

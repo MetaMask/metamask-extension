@@ -40,7 +40,6 @@ describe('TransactionListItemDetails Component', () => {
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
       />,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
     const child = wrapper.childAt(0);
     expect(child.hasClass('transaction-list-item-details')).toStrictEqual(true);
@@ -86,7 +85,6 @@ describe('TransactionListItemDetails Component', () => {
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
       />,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
 
     const child = wrapper.childAt(0);
@@ -127,7 +125,6 @@ describe('TransactionListItemDetails Component', () => {
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
       />,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
 
     const child = wrapper.childAt(0);
@@ -171,7 +168,6 @@ describe('TransactionListItemDetails Component', () => {
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
       />,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
 
     const child = wrapper.childAt(0);

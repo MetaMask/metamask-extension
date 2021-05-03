@@ -51,7 +51,6 @@ describe('SendFooter Component', () => {
         mostRecentOverviewPage="mostRecentOverviewPage"
         noGasPrice={false}
       />,
-      { context: { t: (str) => str, metricsEvent: () => ({}) } },
     );
   });
 
@@ -225,7 +224,6 @@ describe('SendFooter Component', () => {
           update={propsMethodSpies.update}
           mostRecentOverviewPage="mostRecentOverviewPage"
         />,
-        { context: { t: (str) => str, metricsEvent: () => ({}) } },
       );
     });
 

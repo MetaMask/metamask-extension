@@ -1,7 +1,6 @@
 import React from 'react';
 import sinon from 'sinon';
 import { mount } from 'enzyme';
-import messages from '../../../../../app/_locales/en/messages.json';
 import MetaMetricsOptIn from './metametrics-opt-in-modal.container';
 
 describe('MetaMetrics Opt In', () => {
@@ -14,12 +13,7 @@ describe('MetaMetrics Opt In', () => {
   };
 
   beforeEach(() => {
-    wrapper = mount(<MetaMetricsOptIn.WrappedComponent {...props} />, {
-      context: {
-        metricsEvent: () => undefined,
-        t: (key) => messages[key].message,
-      },
-    });
+    wrapper = mount(<MetaMetricsOptIn.WrappedComponent {...props} />);
   });
 
   afterEach(() => {

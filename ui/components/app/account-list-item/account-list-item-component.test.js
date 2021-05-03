@@ -30,7 +30,6 @@ describe('AccountListItem Component', () => {
           handleClick={propsMethodSpies.handleClick}
           icon={<i className="mockIcon" />}
         />,
-        { context: { t: (str) => `${str}_t` } },
       );
     });
 

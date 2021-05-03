@@ -12,11 +12,7 @@ describe('Reveal Seed Page', () => {
       requestRevealSeedWords: sinon.stub().resolves(),
       mostRecentOverviewPage: '/',
     };
-    const wrapper = mount(<RevealSeedPage.WrappedComponent {...props} />, {
-      context: {
-        t: (str) => str,
-      },
-    });
+    const wrapper = mount(<RevealSeedPage.WrappedComponent {...props} />);
 
     wrapper.find('form').simulate('submit');
     expect(props.requestRevealSeedWords.calledOnce).toStrictEqual(true);

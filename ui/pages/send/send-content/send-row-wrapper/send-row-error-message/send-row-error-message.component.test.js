@@ -12,7 +12,6 @@ describe('SendRowErrorMessage Component', () => {
           errors={{ error1: 'abc', error2: 'def' }}
           errorType="error3"
         />,
-        { context: { t: (str) => `${str}_t` } },
       );
     });
 
