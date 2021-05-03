@@ -13,7 +13,6 @@ const Popover = ({
   onBack,
   onClose,
   className,
-  mediumHeight,
   contentClassName,
   showArrow,
   CustomBackground,
@@ -28,9 +27,7 @@ const Popover = ({
         <div className="popover-bg" onClick={onClose} />
       )}
       <section
-        className={classnames('popover-wrap', className, {
-          'popover-wrap--medium-height': mediumHeight,
-        })}
+        className={classnames('popover-wrap', className)}
         ref={popoverRef}
       >
         {showArrow ? <div className="popover-arrow" /> : null}
@@ -84,7 +81,6 @@ Popover.propTypes = {
   contentClassName: PropTypes.string,
   className: PropTypes.string,
   showArrow: PropTypes.bool,
-  mediumHeight: PropTypes.bool,
   popoverRef: PropTypes.shape({
     current: PropTypes.instanceOf(window.Element),
   }),

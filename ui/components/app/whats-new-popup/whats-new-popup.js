@@ -163,7 +163,6 @@ export default function WhatsNewPopup({ onClose }) {
         onClose();
       }}
       popoverRef={popoverRef}
-      mediumHeight
     >
       <div className="whats-new-popup__notifications">
         {notifications.map(({ id }, index) => {
