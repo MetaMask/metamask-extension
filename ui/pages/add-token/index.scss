@@ -43,7 +43,10 @@
   }
 
   &__link {
+    @include H7;
+
     display: inline;
     color: $primary-blue;
+    padding-left: 0;
   }
 }

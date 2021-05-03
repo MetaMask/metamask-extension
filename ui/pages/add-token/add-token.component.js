@@ -12,6 +12,7 @@ import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 import ActionableMessage from '../swaps/actionable-message';
 import Typography from '../../components/ui/typography';
 import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
+import Button from '../../components/ui/button';
 import TokenSearch from './token-search';
 import TokenList from './token-list';
 
@@ -324,15 +325,16 @@ class AddToken extends Component {
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
                   {this.context.t('verifyThisTokenDecimalOn', [
-                    <a
-                      className="add-token__link"
+                    <Button
+                      type="link"
                       key="add-token-verify-token-decimal"
-                      href={blockExplorerTokenLink}
-                      target="_blank"
+                      className="add-token__link"
                       rel="noopener noreferrer"
+                      target="_blank"
+                      href={blockExplorerTokenLink}
                     >
                       {this.context.t('etherscan')}
-                    </a>,
+                    </Button>,
                   ])}
                 </Typography>
               </>
