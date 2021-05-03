@@ -1,6 +1,6 @@
 import React from 'react';
 import sinon from 'sinon';
-import { shallowWithContext } from '../../../../../test/lib/render-helpers';
+import { shallow } from 'enzyme';
 import { GAS_ESTIMATE_TYPES } from '../../../../helpers/constants/common';
 
 import ButtonGroup from '../../../ui/button-group';
@@ -54,7 +54,7 @@ describe('GasPriceButtonGroup Component', () => {
     sinon.spy(GasPriceButtonGroup.prototype, 'renderButton');
     sinon.spy(GasPriceButtonGroup.prototype, 'renderButtonContent');
 
-    wrapper = shallowWithContext(
+    wrapper = shallow(
       <GasPriceButtonGroup {...mockGasPriceButtonGroupProps} />,
     );
   });
@@ -119,7 +119,7 @@ describe('GasPriceButtonGroup Component', () => {
           { ...mockGasPriceButtonGroupProps.gasButtonInfo[0] },
           mockButtonPropsAndFlags,
         );
-      wrappedRenderButtonResult = shallowWithContext(renderButtonResult);
+      wrappedRenderButtonResult = shallow(renderButtonResult);
     });
 
     it('should render a button', () => {
@@ -183,7 +183,7 @@ describe('GasPriceButtonGroup Component', () => {
           className: 'someClass',
         },
       );
-      const wrappedRenderButtonContentResult = shallowWithContext(
+      const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       );
       expect(
@@ -203,7 +203,7 @@ describe('GasPriceButtonGroup Component', () => {
           className: 'someClass',
         },
       );
-      const wrappedRenderButtonContentResult = shallowWithContext(
+      const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       );
       expect(
@@ -225,7 +225,7 @@ describe('GasPriceButtonGroup Component', () => {
           className: 'someClass',
         },
       );
-      const wrappedRenderButtonContentResult = shallowWithContext(
+      const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       );
       expect(
@@ -247,7 +247,7 @@ describe('GasPriceButtonGroup Component', () => {
           className: 'someClass',
         },
       );
-      const wrappedRenderButtonContentResult = shallowWithContext(
+      const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       );
       expect(
@@ -268,7 +268,7 @@ describe('GasPriceButtonGroup Component', () => {
           showCheck: true,
         },
       );
-      const wrappedRenderButtonContentResult = shallowWithContext(
+      const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       );
       expect(wrappedRenderButtonContentResult.find('.fa-check')).toHaveLength(
@@ -289,7 +289,7 @@ describe('GasPriceButtonGroup Component', () => {
           showCheck: true,
         },
       );
-      const wrappedRenderButtonContentResult = shallowWithContext(
+      const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       );
       expect(wrappedRenderButtonContentResult.children()).toHaveLength(5);
@@ -300,7 +300,7 @@ describe('GasPriceButtonGroup Component', () => {
         {},
         {},
       );
-      const wrappedRenderButtonContentResult = shallowWithContext(
+      const wrappedRenderButtonContentResult = shallow(
         renderButtonContentResult,
       );
       expect(wrappedRenderButtonContentResult.children()).toHaveLength(0);

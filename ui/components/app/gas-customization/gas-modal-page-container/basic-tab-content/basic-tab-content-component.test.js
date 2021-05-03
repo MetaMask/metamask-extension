@@ -1,8 +1,8 @@
 import React from 'react';
+import { shallow } from 'enzyme';
 import GasPriceButtonGroup from '../../gas-price-button-group';
 import Loading from '../../../../ui/loading-screen';
 import { GAS_ESTIMATE_TYPES } from '../../../../../helpers/constants/common';
-import { shallowWithContext } from '../../../../../../test/lib/render-helpers';
 import BasicTabContent from './basic-tab-content.component';
 
 const mockGasPriceButtonGroupProps = {
@@ -42,7 +42,7 @@ describe('BasicTabContent Component', () => {
     let wrapper;
 
     beforeEach(() => {
-      wrapper = shallowWithContext(
+      wrapper = shallow(
         <BasicTabContent
           gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
         />,

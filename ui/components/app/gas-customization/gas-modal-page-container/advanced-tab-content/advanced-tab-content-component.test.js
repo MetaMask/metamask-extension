@@ -1,6 +1,6 @@
 import React from 'react';
 import sinon from 'sinon';
-import { shallowWithContext } from '../../../../../../test/lib/render-helpers';
+import { shallow } from 'enzyme';
 import AdvancedTabContent from './advanced-tab-content.component';
 
 describe('AdvancedTabContent Component', () => {
@@ -13,7 +13,7 @@ describe('AdvancedTabContent Component', () => {
     };
     sinon.spy(AdvancedTabContent.prototype, 'renderDataSummary');
 
-    wrapper = shallowWithContext(
+    wrapper = shallow(
       <AdvancedTabContent
         updateCustomGasPrice={propsMethodSpies.updateCustomGasPrice}
         updateCustomGasLimit={propsMethodSpies.updateCustomGasLimit}
@@ -59,7 +59,7 @@ describe('AdvancedTabContent Component', () => {
     let dataSummary;
 
     beforeEach(() => {
-      dataSummary = shallowWithContext(
+      dataSummary = shallow(
         wrapper.instance().renderDataSummary('mockTotalFee'),
       );
     });

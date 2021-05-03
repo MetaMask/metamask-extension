@@ -1,12 +1,12 @@
 import React from 'react';
-import { shallowWithContext } from '../../../../test/lib/render-helpers';
+import { shallow } from 'enzyme';
 import SignatureRequest from './signature-request.component';
 
 describe('Signature Request Component', () => {
   describe('render', () => {
     const fromAddress = '0x123456789abcdef';
     it('should render a div with one child', () => {
-      const wrapper = shallowWithContext(
+      const wrapper = shallow(
         <SignatureRequest
           clearConfirmTransaction={() => undefined}
           cancel={() => undefined}

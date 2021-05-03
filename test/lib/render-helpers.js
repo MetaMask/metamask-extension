@@ -1,18 +1,12 @@
 import React, { useMemo } from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import { MemoryRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
-
-export function shallowWithContext(jsxComponent) {
-  return shallow(jsxComponent, {
-    context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) },
-  });
-}
 
 export function mountWithRouter(component, store = {}, pathname = '/') {
   // Instantiate router context

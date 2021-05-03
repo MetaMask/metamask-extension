@@ -1,6 +1,6 @@
 import React from 'react';
 import sinon from 'sinon';
-import { shallowWithContext } from '../../../../../test/lib/render-helpers';
+import { shallow } from 'enzyme';
 
 import PageContainer from '../../../ui/page-container';
 
@@ -63,7 +63,7 @@ describe('GasModalPageContainer Component', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowWithContext(
+    wrapper = shallow(
       <GasModalPageContainer
         cancelAndClose={propsMethodSpies.cancelAndClose}
         onSubmit={propsMethodSpies.onSubmit}
@@ -120,7 +120,7 @@ describe('GasModalPageContainer Component', () => {
 
     it('should pass the correct renderTabs property to PageContainer', () => {
       sinon.stub(GP, 'renderTabs').returns('mockTabs');
-      const renderTabsWrapperTester = shallowWithContext(
+      const renderTabsWrapperTester = shallow(
         <GasModalPageContainer
           fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
           fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
@@ -149,7 +149,7 @@ describe('GasModalPageContainer Component', () => {
 
     it('should render a Tabs component with "Basic" and "Advanced" tabs', () => {
       const renderTabsResult = wrapper.instance().renderTabs();
-      const renderedTabs = shallowWithContext(renderTabsResult);
+      const renderedTabs = shallow(renderTabsResult);
       expect(renderedTabs.props().className).toStrictEqual('tabs');
 
       const tabs = renderedTabs.find(Tab);
@@ -188,7 +188,7 @@ describe('GasModalPageContainer Component', () => {
     });
 
     it('should not render the basic tab if hideBasic is true', () => {
-      wrapper = shallowWithContext(
+      wrapper = shallow(
         <GasModalPageContainer
           cancelAndClose={propsMethodSpies.cancelAndClose}
           onSubmit={propsMethodSpies.onSubmit}
@@ -206,7 +206,7 @@ describe('GasModalPageContainer Component', () => {
       );
       const renderTabsResult = wrapper.instance().renderTabs();
 
-      const renderedTabs = shallowWithContext(renderTabsResult);
+      const renderedTabs = shallow(renderTabsResult);
       const tabs = renderedTabs.find(Tab);
       expect(tabs).toHaveLength(1);
       expect(tabs.at(0).props().name).toStrictEqual('advanced');
@@ -228,7 +228,7 @@ describe('GasModalPageContainer Component', () => {
   describe('renderInfoRows', () => {
     it('should render the info rows with the passed data', () => {
       const baseClassName = 'gas-modal-content__info-row';
-      const renderedInfoRowsContainer = shallowWithContext(
+      const renderedInfoRowsContainer = shallow(
         wrapper
           .instance()
           .renderInfoRows(
