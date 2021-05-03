@@ -32,6 +32,15 @@ function getActionFunctionById(id) {
 const renderFirstNotification = (notification, idRefMap) => {
   const { id, date, title, description, image, actionText } = notification;
   const actionFunction = getActionFunctionById(id);
+  const imageComponent = image && (
+    <img
+      className="whats-new-popup__notification-image"
+      src={image.src}
+      height={image.height}
+      width={image.width}
+    />
+  );
+  const placeImageBelowDescription = image?.placeImageBelowDescription;
   return (
     <div
       className={classnames(
@@ -40,14 +49,7 @@ const renderFirstNotification = (notification, idRefMap) => {
       key={`whats-new-popop-notificatiion-${id}`}
       ref={idRefMap[id]}
     >
-      {image && (
-        <img
-          className="whats-new-popup__notification-image"
-          src={image.src}
-          height={image.height}
-          width={image.width}
-        />
-      )}
+      {!placeImageBelowDescription && imageComponent}
       <div className="whats-new-popup__notification-title">{title}</div>
       <div className="whats-new-popup__description-and-date">
         <div className="whats-new-popup__notification-description">
@@ -55,6 +57,7 @@ const renderFirstNotification = (notification, idRefMap) => {
         </div>
         <div className="whats-new-popup__notification-date">{date}</div>
       </div>
+      {placeImageBelowDescription && imageComponent}
       {actionText && (
         <Button
           type="secondary"
@@ -88,7 +91,7 @@ const renderSubsequentNotification = (notification, idRefMap) => {
       </div>
       {actionText && (
         <div className="whats-new-popup__link" onClick={actionFunction}>
-          {actionText}
+          {`${actionText} >`}
         </div>
       )}
     </div>
@@ -160,7 +163,6 @@ export default function WhatsNewPopup({ onClose }) {
         onClose();
       }}
       popoverRef={popoverRef}
-      mediumHeight
     >
       <div className="whats-new-popup__notifications">
         {notifications.map(({ id }, index) => {
