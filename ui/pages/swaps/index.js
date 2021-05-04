@@ -380,32 +380,8 @@ export default function Swap() {
               exact
               render={() => {
                 return (
-                  <AwaitingSignatures
-                    swapComplete={tradeConfirmed}
-                    txHash={tradeTxData?.hash}
-                    tokensReceived={tokensReceived}
-                    submittingSwap={
-                      routeState === 'awaitingSignature' &&
-                      !(approveTxId || tradeTxId)
-                    }
-                    inputValue={inputValue}
-                    maxSlippage={maxSlippage}
-                  />
+                  <AwaitingSignatures />
                 );
-                // return routeState === 'awaitingSignature' || tradeTxData ? (
-                //   <AwaitingSignatures
-                //     swapComplete={tradeConfirmed}
-                //     txHash={tradeTxData?.hash}
-                //     tokensReceived={tokensReceived}
-                //     submittingSwap={
-                //       routeState === 'awaitingSignature' && !(approveTxId || tradeTxId)
-                //     }
-                //     inputValue={inputValue}
-                //     maxSlippage={maxSlippage}
-                //   />
-                // ) : (
-                //   <Redirect to={{ pathname: DEFAULT_ROUTE }} />
-                // );
               }}
             />
             <Route

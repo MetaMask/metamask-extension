@@ -1,11 +1,11 @@
 import React from 'react';
 
 import { renderWithProvider } from '../../../../test/jest';
-import QuotesTimeoutIcon from './quotes-timeout-icon';
+import SwapStepIcon from './swap-step-icon';
 
-describe('QuotesTimeoutIcon', () => {
+describe('SwapStepIcon', () => {
   it('renders the component', () => {
-    const { container } = renderWithProvider(<QuotesTimeoutIcon />);
+    const { container } = renderWithProvider(<SwapStepIcon />);
     expect(container).toMatchSnapshot();
   });
 });
