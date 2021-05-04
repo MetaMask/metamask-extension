@@ -10,13 +10,8 @@ import AwaitingSignatures from '.';
 describe('AwaitingSignatures', () => {
   it('renders the component with initial props for 1 confirmation', () => {
     const store = configureMockStore()(createSwapsMockStore());
-    const { getByText } = renderWithProvider(
-      <AwaitingSignatures />,
-      store,
-    );
-    expect(
-      getByText('Confirm with your hardware wallet'),
-    ).toBeInTheDocument();
+    const { getByText } = renderWithProvider(<AwaitingSignatures />, store);
+    expect(getByText('Confirm with your hardware wallet')).toBeInTheDocument();
     expect(document.querySelector('.swaps-footer')).toMatchSnapshot();
   });
 });

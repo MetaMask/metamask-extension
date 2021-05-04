@@ -20,7 +20,7 @@ export default function AwaitingSignatures() {
   const fetchParams = useSelector(getFetchParams);
   const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {};
   const approveTxParams = useSelector(getApproveTxParams);
-  const needsTwoConfirmations = !!approveTxParams;
+  const needsTwoConfirmations = Boolean(approveTxParams);
 
   const awaitingSignaturesEvent = useNewMetricEvent({
     event: 'Awaiting Signature(s) on a HW wallet',
