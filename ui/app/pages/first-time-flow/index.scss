@@ -143,13 +143,3 @@
     color: $primary-blue;
   }
 }
-
-.first-time-flow__wrapper.intro {
-  @media screen and (min-width: $break-large) {
-    max-width: 1010px;
-  }
-
-  @media screen and (max-width: 1010px) {
-    padding: 0 20px;
-  }
-}

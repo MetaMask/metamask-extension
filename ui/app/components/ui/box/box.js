@@ -9,7 +9,6 @@ import {
   DISPLAY,
   JUSTIFY_CONTENT,
   SIZES,
-  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 
 const ValidSize = PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
@@ -71,7 +70,6 @@ export default function Box({
   borderStyle,
   alignItems,
   justifyContent,
-  textAlign,
   display,
   width,
   height,
@@ -115,8 +113,6 @@ export default function Box({
       !display && (Boolean(justifyContent) || Boolean(alignItems)),
     [`box--justify-content-${justifyContent}`]: Boolean(justifyContent),
     [`box--align-items-${alignItems}`]: Boolean(alignItems),
-    // text align
-    [`box--text-align-${textAlign}`]: Boolean(textAlign),
     // display
     [`box--display-${display}`]: Boolean(display),
     // width & height
@@ -148,7 +144,6 @@ Box.propTypes = {
   borderStyle: PropTypes.oneOf(Object.values(BORDER_STYLE)),
   alignItems: PropTypes.oneOf(Object.values(ALIGN_ITEMS)),
   justifyContent: PropTypes.oneOf(Object.values(JUSTIFY_CONTENT)),
-  textAlign: PropTypes.oneOf(Object.values(TEXT_ALIGN)),
   display: PropTypes.oneOf(Object.values(DISPLAY)),
   width: PropTypes.oneOf(Object.values(BLOCK_SIZES)),
   height: PropTypes.oneOf(Object.values(BLOCK_SIZES)),

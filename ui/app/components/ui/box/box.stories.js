@@ -7,7 +7,6 @@ import {
   COLORS,
   DISPLAY,
   JUSTIFY_CONTENT,
-  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import Box from './box';
 
@@ -39,7 +38,6 @@ export const box = () => {
         undefined,
         'display',
       )}
-      textAlign={select('textAlign', TEXT_ALIGN, undefined, 'left')}
       alignItems={select('alignItems', ALIGN_ITEMS, undefined, 'display')}
       margin={select('margin', sizeKnobOptions, undefined, 'margin')}
       marginTop={select('marginTop', sizeKnobOptions, undefined, 'margin')}
