@@ -7,32 +7,25 @@ import {
 } from '../../../../test/jest';
 import AwaitingSignatures from '.';
 
-const createProps = (customProps = {}) => {
-  return {
-    swapComplete: false,
-    txHash: 'txHash',
-    tokensReceived: 'tokensReceived',
-    submittingSwap: true,
-    inputValue: 5,
-    maxSlippage: 3,
-    ...customProps,
-  };
-};
-
 describe('AwaitingSignatures', () => {
   it('renders the component with initial props', () => {
     const store = configureMockStore()(createSwapsMockStore());
-    const { container } = renderWithProvider(
-      <AwaitingSignatures {...createProps()} />,
+    const { getByText, getAllByText } = renderWithProvider(
+      <AwaitingSignatures />,
       store,
     );
-    // expect(getByText('Processing')).toBeInTheDocument();
-    // expect(getByText('View on Etherscan')).toBeInTheDocument();
-    // expect(getByText('View in activity')).toBeInTheDocument();
-    // expect(
-    //   document.querySelector('.awaiting-signatures__main-descrption'),
-    // ).toMatchSnapshot();
-    // expect(document.querySelector('.swaps-footer')).toMatchSnapshot();
-    expect(container).toMatchSnapshot();
+    expect(getByText('2 transactions')).toBeInTheDocument();
+    expect(
+      getByText('to confirm with your hardware wallet'),
+    ).toBeInTheDocument();
+    expect(getByText('Allow swapping of')).toBeInTheDocument();
+    expect(getByText('BAT')).toBeInTheDocument();
+    expect(getAllByText('ETH')).toHaveLength(2);
+    expect(
+      getByText(
+        'Gas fees on the previous screen are split between these two transactions.',
+      ),
+    ).toBeInTheDocument();
+    expect(document.querySelector('.swaps-footer')).toMatchSnapshot();
   });
 });
