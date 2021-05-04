@@ -90,7 +90,6 @@ export default function AwaitingSignatures() {
         onSubmit={async () => {
           await dispatch(navigateBackToBuildQuote(history));
         }}
-        onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
         submitText={t('cancel')}
         hideCancel
       />
