@@ -22,7 +22,7 @@ const createProps = (customProps = {}) => {
 describe('AwaitingSignatures', () => {
   it('renders the component with initial props', () => {
     const store = configureMockStore()(createSwapsMockStore());
-    const { getByText } = renderWithProvider(
+    const { container } = renderWithProvider(
       <AwaitingSignatures {...createProps()} />,
       store,
     );
@@ -32,6 +32,7 @@ describe('AwaitingSignatures', () => {
     // expect(
     //   document.querySelector('.awaiting-signatures__main-descrption'),
     // ).toMatchSnapshot();
-    expect(document.querySelector('.swaps-footer')).toMatchSnapshot();
+    // expect(document.querySelector('.swaps-footer')).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 });

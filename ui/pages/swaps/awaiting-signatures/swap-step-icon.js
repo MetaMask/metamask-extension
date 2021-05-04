@@ -35,5 +35,5 @@ export default function SwapStepIcon({ stepNumber = 1 }) {
       </svg>
     );
   }
-  return undefined; // Don't return any SVG if a step number is not supported. 
+  return undefined; // Don't return any SVG if a step number is not supported.
 }

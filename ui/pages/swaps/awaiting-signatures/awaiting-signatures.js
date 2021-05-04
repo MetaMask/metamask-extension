@@ -38,27 +38,11 @@ export default function AwaitingSignatures() {
 
   useEffect(() => {
     awaitingSignaturesEvent();
-  }, [dispatch]);
+  }, [awaitingSignaturesEvent]);
 
-  let headerText;
-  let statusImage;
-  let descriptionText;
-  let submitText;
-  let content;
-
-  headerText = needsTwoConfirmations
+  const headerText = needsTwoConfirmations
     ? t('swapTwoTransactions')
     : t('swapConfirmWithHwWallet');
-  statusImage = <PulseLoader />;
-  submitText = t('cancel');
-  descriptionText = t('swapOnceTransactionHasProcess', [
-    <span
-      key="swapOnceTransactionHasProcess-1"
-      className="awaiting-signatures__symbol"
-    >
-      {destinationTokenInfo.symbol}
-    </span>,
-  ]);
 
   return (
     <div className="awaiting-signatures">
@@ -76,7 +60,10 @@ export default function AwaitingSignatures() {
               <li>
                 <SwapStepIcon stepNumber={1} />
                 {t('swapAllowSwappingOf', [
-                  <span className="awaiting-signatures__symbol">
+                  <span
+                    className="awaiting-signatures__symbol"
+                    key="allowToken"
+                  >
                     {destinationTokenInfo.symbol}
                   </span>,
                 ])}
@@ -84,10 +71,10 @@ export default function AwaitingSignatures() {
               <li>
                 <SwapStepIcon stepNumber={2} />
                 {t('swapFromTo', [
-                  <span className="awaiting-signatures__symbol">
+                  <span className="awaiting-signatures__symbol" key="tokenFrom">
                     {sourceTokenInfo.symbol}
                   </span>,
-                  <span className="awaiting-signatures__symbol">
+                  <span className="awaiting-signatures__symbol" key="tokenTo">
                     {destinationTokenInfo.symbol}
                   </span>,
                 ])}
@@ -96,19 +83,17 @@ export default function AwaitingSignatures() {
             <div className="awaiting-signatures__main-description">
               {t('swapGasFeesSplit')}
             </div>
-            {content}
           </>
         )}
       </div>
       <SwapsFooter
         onSubmit={async () => {
-          await dispatch(navigateBackToBuildQuote(history))
+          await dispatch(navigateBackToBuildQuote(history));
         }}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
-        submitText={submitText}
-        hideCancel={true}
+        submitText={t('cancel')}
+        hideCancel
       />
     </div>
   );
 }
-

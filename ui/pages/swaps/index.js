@@ -79,7 +79,6 @@ export default function Swap() {
   const dispatch = useDispatch();
 
   const { pathname } = useLocation();
-  const isAwaitingSignaturesRoute = pathname === AWAITING_SIGNATURES_ROUTE;
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE;
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE;
   const isLoadingQuotesRoute = pathname === LOADING_QUOTES_ROUTE;
@@ -379,9 +378,7 @@ export default function Swap() {
               path={AWAITING_SIGNATURES_ROUTE}
               exact
               render={() => {
-                return (
-                  <AwaitingSignatures />
-                );
+                return <AwaitingSignatures />;
               }}
             />
             <Route
