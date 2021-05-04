@@ -53,7 +53,7 @@ import {
   getUSDConversionRate,
   getSwapsDefaultToken,
   getCurrentChainId,
-  getCurrentKeyring,
+  isHardwareWallet,
 } from '../../selectors';
 import {
   ERROR_FETCHING_QUOTES,
@@ -75,6 +75,7 @@ export const FALLBACK_GAS_MULTIPLIER = 1.5;
 const initialState = {
   aggregatorMetadata: null,
   approveTxId: null,
+  tradeTxId: null,
   balanceError: false,
   fetchingQuotes: false,
   fromToken: null,
@@ -97,6 +98,7 @@ const slice = createSlice({
     clearSwapsState: () => initialState,
     navigatedBackToBuildQuote: (state) => {
       state.approveTxId = null;
+      state.tradeTxId = null;
       state.balanceError = false;
       state.fetchingQuotes = false;
       state.customGas.limit = null;
@@ -587,8 +589,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
   return async (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
-    const keyring = getCurrentKeyring(state);
-    const isHardwareWallet = keyring.type.search('Hardware') !== -1;
+    const hardwareWalletUsed = isHardwareWallet(state);
 
     let swapsFeatureIsLive = false;
     try {
@@ -610,7 +611,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     await dispatch(setBackgroundSwapRouteState('awaiting'));
     await dispatch(stopPollingForQuotes());
 
-    if (!isHardwareWallet) {
+    if (!hardwareWalletUsed) {
       history.push(AWAITING_SWAP_ROUTE);
     }
 
@@ -701,7 +702,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
 
     let finalApproveTxMeta;
     const approveTxParams = getApproveTxParams(state);
-    if (isHardwareWallet) {
+    if (hardwareWalletUsed) {
       history.push(AWAITING_SIGNATURES_ROUTE);
     }
 
@@ -776,7 +777,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       return;
     }
 
-    if (isHardwareWallet) {
+    if (hardwareWalletUsed) {
       history.push(AWAITING_SWAP_ROUTE);
     }
 
