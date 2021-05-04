@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AwaitingSignatures renders the component with initial props 1`] = `
+exports[`AwaitingSignatures renders the component with initial props for 1 confirmation 1`] = `
 <div
   class="swaps-footer"
 >

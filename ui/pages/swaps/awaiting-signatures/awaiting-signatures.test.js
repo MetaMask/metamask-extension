@@ -8,23 +8,14 @@ import {
 import AwaitingSignatures from '.';
 
 describe('AwaitingSignatures', () => {
-  it('renders the component with initial props', () => {
+  it('renders the component with initial props for 1 confirmation', () => {
     const store = configureMockStore()(createSwapsMockStore());
-    const { getByText, getAllByText } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <AwaitingSignatures />,
       store,
     );
-    expect(getByText('2 transactions')).toBeInTheDocument();
     expect(
-      getByText('to confirm with your hardware wallet'),
-    ).toBeInTheDocument();
-    expect(getByText('Allow swapping of')).toBeInTheDocument();
-    expect(getByText('BAT')).toBeInTheDocument();
-    expect(getAllByText('ETH')).toHaveLength(2);
-    expect(
-      getByText(
-        'Gas fees on the previous screen are split between these two transactions.',
-      ),
+      getByText('Confirm with your hardware wallet'),
     ).toBeInTheDocument();
     expect(document.querySelector('.swaps-footer')).toMatchSnapshot();
   });
