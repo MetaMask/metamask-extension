@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { getBuildSpecificAsset } from '../../../helpers/utils/build-types';
 
 export default class MetaFoxLogo extends PureComponent {
   static propTypes = {
@@ -25,7 +26,7 @@ export default class MetaFoxLogo extends PureComponent {
       >
         <img
           height="30"
-          src="./images/logo/metamask-logo-horizontal.svg"
+          src={getBuildSpecificAsset('metafoxLogoHorizontal')}
           className={classnames(
             'app-header__metafox-logo',
             'app-header__metafox-logo--horizontal',
@@ -34,7 +35,7 @@ export default class MetaFoxLogo extends PureComponent {
         />
         <img
           {...iconProps}
-          src="./images/logo/metamask-fox.svg"
+          src={getBuildSpecificAsset('metafoxLogoSmall')}
           className={classnames(
             'app-header__metafox-logo',
             'app-header__metafox-logo--icon',

@@ -7,6 +7,7 @@ import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_SELECT_ACTION_ROUTE,
 } from '../../../helpers/constants/routes';
+import { isBeta } from '../../../helpers/utils/build-types';
 
 export default class Welcome extends PureComponent {
   static propTypes = {
@@ -39,6 +40,38 @@ export default class Welcome extends PureComponent {
     this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE);
   };
 
+  getContent() {
+    const { t } = this.context;
+    return (
+      <>
+        <div className="welcome-page__header">{t('welcome')}</div>
+        <div className="welcome-page__description">
+          <p>{t('metamaskDescription')}</p>
+          <p>{t('happyToSeeYou')}</p>
+        </div>
+      </>
+    );
+  }
+
+  getBetaContent() {
+    const { t } = this.context;
+    return (
+      <>
+        <div className="welcome-page__header">{t('betaWelcome')}</div>
+        <div className="welcome-page__description">
+          <p>{t('betaMetamaskDescription')}</p>
+          <p>
+            {t('betaMetamaskDescriptionExplanation', [
+              <a href="https://metamask.io/terms.html" key="terms-link">
+                {t('betaMetamaskDescriptionExplanationTermsLinkText')}
+              </a>,
+            ])}
+          </p>
+        </div>
+      </>
+    );
+  }
+
   render() {
     const { t } = this.context;
 
@@ -50,11 +83,7 @@ export default class Welcome extends PureComponent {
             width="125"
             height="125"
           />
-          <div className="welcome-page__header">{t('welcome')}</div>
-          <div className="welcome-page__description">
-            <div>{t('metamaskDescription')}</div>
-            <div>{t('happyToSeeYou')}</div>
-          </div>
+          {isBeta() ? this.getBetaContent() : this.getContent()}
           <Button
             type="primary"
             className="first-time-flow__button"

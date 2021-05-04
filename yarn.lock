@@ -2856,10 +2856,9 @@
     color "^0.11.3"
     mersenne-twister "^1.1.0"
 
-"@metamask/logo@^2.5.0":
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/@metamask/logo/-/logo-2.5.0.tgz#4d35bf9e427db66c0030d81b8faa0f5162d17f7a"
-  integrity sha512-SBgWhcbKj0+efpFVAHf5Jh7URGMhH3Os06sgmERui+dvgXMEIBrt2aEeGRXe1aKKRSOhruazHknpdLdqyEvNjA==
+"@metamask/logo@https://github.com/metamask/logo#beta-logo":
+  version "2.6.0"
+  resolved "https://github.com/metamask/logo#8597ade17b7764289c308cd10e18c578ed03208d"
   dependencies:
     gl-mat4 "1.1.4"
     gl-vec3 "1.0.3"

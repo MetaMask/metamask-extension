@@ -1,6 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../../components/ui/button';
+import {
+  isBeta,
+  getBuildSpecificAsset,
+} from '../../../helpers/utils/build-types';
 
 export default class InfoTab extends PureComponent {
   state = {
@@ -97,7 +101,7 @@ export default class InfoTab extends PureComponent {
           <div className="settings-page__content-item settings-page__content-item--without-height">
             <div className="info-tab__item">
               <div className="info-tab__version-header">
-                {t('metamaskVersion')}
+                {isBeta() ? t('betaMetamaskVersion') : t('metamaskVersion')}
               </div>
               <div className="info-tab__version-number">
                 {this.state.version}
@@ -110,7 +114,11 @@ export default class InfoTab extends PureComponent {
           {this.renderInfoLinks()}
         </div>
         <div className="info-tab__logo-wrapper">
-          <img src="images/info-logo.png" className="info-tab__logo" alt="" />
+          <img
+            src={getBuildSpecificAsset('aboutInfoLogo')}
+            className="info-tab__logo"
+            alt=""
+          />
         </div>
       </div>
     );

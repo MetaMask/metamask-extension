@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { I18nContext } from '../../../../contexts/i18n';
 import InfoTooltip from '../../../../components/ui/info-tooltip';
 import ExchangeRateDisplay from '../../exchange-rate-display';
+import { getBuildSpecificAsset } from '../../../../helpers/utils/build-types';
 
 const QuoteDetails = ({
   slippage,
@@ -80,7 +81,7 @@ const QuoteDetails = ({
       <div className="quote-details__row quote-details__row--high">
         <div className="quote-details__detail-header">
           <img
-            src="./images/logo/metamask-fox.svg"
+            src={getBuildSpecificAsset('swapsLogo')}
             className="quote-details__metafox-logo"
             alt=""
           />
