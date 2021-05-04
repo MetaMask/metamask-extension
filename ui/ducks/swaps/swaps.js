@@ -702,6 +702,9 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
 
     let finalApproveTxMeta;
     const approveTxParams = getApproveTxParams(state);
+
+    // For hardware wallets we go to the Awaiting Signatures page first and only after a user
+    // completes 1 or 2 confirmations, we redirect to the Awaiting Swap page.
     if (hardwareWalletUsed) {
       history.push(AWAITING_SIGNATURES_ROUTE);
     }
@@ -777,6 +780,8 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       return;
     }
 
+    // Only after a user confirms swapping on a hardware wallet (second `updateAndApproveTx` call above),
+    // we redirect to the Awaiting Swap page.
     if (hardwareWalletUsed) {
       history.push(AWAITING_SWAP_ROUTE);
     }

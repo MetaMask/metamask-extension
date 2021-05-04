@@ -80,7 +80,7 @@ export function getCurrentKeyring(state) {
 
 /**
  * Checks if the current wallet is a hardware wallet.
- * @param {Object} state 
+ * @param {Object} state
  * @returns {Boolean}
  */
 export function isHardwareWallet(state) {
