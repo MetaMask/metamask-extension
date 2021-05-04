@@ -1576,9 +1576,6 @@
   "swapFinalizing": {
     "message": "确定中……"
   },
-  "swapHighSlippageWarning": {
-    "message": "滑点数量非常大。确保您知道您的操作！"
-  },
   "swapLowSlippageError": {
     "message": "交易可能失败，最大滑点过低。"
   },

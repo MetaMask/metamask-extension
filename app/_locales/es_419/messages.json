@@ -1576,9 +1576,6 @@
   "swapFinalizing": {
     "message": "Finalizando..."
   },
-  "swapHighSlippageWarning": {
-    "message": "La cantidad de deslizamiento es muy alta. ¡Asegúrate de saber lo que estás haciendo!"
-  },
   "swapLowSlippageError": {
     "message": "La transacción puede fallar, el deslizamiento máximo es demasiado bajo."
   },
