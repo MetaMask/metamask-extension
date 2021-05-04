@@ -56,9 +56,6 @@ describe('Incremental Security', function () {
         await driver.clickElement('.first-time-flow__checkbox');
         await driver.clickElement('.first-time-flow__form button');
 
-        // renders the seed phrase intro screen'
-        await driver.clickElement('.seed-phrase-intro__left button');
-
         // skips the seed phrase challenge
         await driver.clickElement({
           text: enLocaleMessages.remindMeLater.message,
