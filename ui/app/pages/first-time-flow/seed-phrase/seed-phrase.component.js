@@ -7,11 +7,13 @@ import {
   INITIALIZE_SEED_PHRASE_ROUTE,
   INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
+  INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import ConfirmSeedPhrase from './confirm-seed-phrase';
 import RevealSeedPhrase from './reveal-seed-phrase';
+import SeedPhraseIntro from './seed-phrase-intro';
 
 export default class SeedPhrase extends PureComponent {
   static propTypes = {
@@ -39,12 +41,15 @@ export default class SeedPhrase extends PureComponent {
   }
 
   render() {
-    const { seedPhrase } = this.props;
+    const { seedPhrase, history } = this.props;
     const { verifiedSeedPhrase } = this.state;
+    const pathname = history?.location?.pathname;
+    const introClass =
+      pathname === INITIALIZE_SEED_PHRASE_INTRO_ROUTE ? 'intro' : '';
 
     return (
       <DragDropContextProvider backend={HTML5Backend}>
-        <div className="first-time-flow__wrapper">
+        <div className={`first-time-flow__wrapper ${introClass}`}>
           <MetaFoxLogo />
           <Switch>
             <Route
@@ -72,6 +77,16 @@ export default class SeedPhrase extends PureComponent {
               path={INITIALIZE_BACKUP_SEED_PHRASE_ROUTE}
               render={(routeProps) => (
                 <RevealSeedPhrase
+                  {...routeProps}
+                  seedPhrase={seedPhrase || verifiedSeedPhrase}
+                />
+              )}
+            />
+            <Route
+              exact
+              path={INITIALIZE_SEED_PHRASE_INTRO_ROUTE}
+              render={(routeProps) => (
+                <SeedPhraseIntro
                   {...routeProps}
                   seedPhrase={seedPhrase || verifiedSeedPhrase}
                 />

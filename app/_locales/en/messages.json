@@ -1524,6 +1524,42 @@
   "securitySettingsDescription": {
     "message": "Privacy settings and wallet seed phrase"
   },
+  "seedPhraseIntroSidebarBulletFour": {
+    "message": "Write down and store in multiple secret places."
+  },
+  "seedPhraseIntroSidebarBulletOne": {
+    "message": "Save in a password manager"
+  },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "Store in a safe-deposit box."
+  },
+  "seedPhraseIntroSidebarBulletTwo": {
+    "message": "Store in a bank vault."
+  },
+  "seedPhraseIntroSidebarCopyOne": {
+    "message": "Your recovery phrase is the “master key” to your wallet and funds."
+  },
+  "seedPhraseIntroSidebarCopyThree": {
+    "message": "If someone asks for your recovery phrase, they are most likely trying to scam you."
+  },
+  "seedPhraseIntroSidebarCopyTwo": {
+    "message": "Never, ever share your recovery phrase, even with MetaMask!"
+  },
+  "seedPhraseIntroSidebarTitleOne": {
+    "message": "What is a recovery phrase?"
+  },
+  "seedPhraseIntroSidebarTitleThree": {
+    "message": "Should I share my recovery phrase?"
+  },
+  "seedPhraseIntroSidebarTitleTwo": {
+    "message": "How do I save my recovery phrase?"
+  },
+  "seedPhraseIntroTitle": {
+    "message": "Secure your wallet"
+  },
+  "seedPhraseIntroTitleCopy": {
+    "message": "Before getting started, watch this short video to learn about your recovery phrase and how to keep your wallet safe."
+  },
   "seedPhrasePlaceholder": {
     "message": "Separate each word with a single space"
   },
