@@ -25,12 +25,12 @@ jest.mock('redux', () => ({
   compose: (_, arg2) => () => arg2(),
 }));
 
-jest.mock('../../../app/store/actions', () => ({
+jest.mock('../../store/actions', () => ({
   updateSendTokenBalance: jest.fn(),
   updateGasData: jest.fn(),
   setGasTotal: jest.fn(),
 }));
-jest.mock('../../../app/ducks/send/send.duck', () => ({
+jest.mock('../../ducks/send/send.duck', () => ({
   updateSendErrors: jest.fn(),
   resetSendState: jest.fn(),
 }));

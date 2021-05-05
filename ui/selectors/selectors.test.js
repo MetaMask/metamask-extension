@@ -1,4 +1,4 @@
-import mockState from '../../../test/data/mock-state.json';
+import mockState from '../../test/data/mock-state.json';
 import * as selectors from './selectors';
 
 describe('Selectors', () => {

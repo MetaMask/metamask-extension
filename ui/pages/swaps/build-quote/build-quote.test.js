@@ -6,7 +6,7 @@ import {
   renderWithProvider,
   createSwapsMockStore,
   setBackgroundConnection,
-} from '../../../../../test/jest';
+} from '../../../../test/jest';
 import BuildQuote from '.';
 
 const middleware = [thunk];

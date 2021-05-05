@@ -15,7 +15,7 @@ jest.mock('react-redux', () => ({
   },
 }));
 
-jest.mock('../../../../../../app/selectors', () => ({
+jest.mock('../../../../../selectors', () => ({
   getGasTotal: (s) => `mockGasTotal:${s}`,
   getSendToken: (s) => `mockSendToken:${s}`,
   getSendFromBalance: (s) => `mockBalance:${s}`,
@@ -28,11 +28,11 @@ jest.mock('./amount-max-button.utils.js', () => ({
   calcMaxAmount: (mockObj) => mockObj.val + 1,
 }));
 
-jest.mock('../../../../../../app/store/actions', () => ({
+jest.mock('../../../../../store/actions', () => ({
   setMaxModeTo: jest.fn(),
   updateSendAmount: jest.fn(),
 }));
-jest.mock('../../../../../../app/ducks/send/send.duck', () => ({
+jest.mock('../../../../../ducks/send/send.duck', () => ({
   updateSendErrors: jest.fn(),
 }));
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { mountWithRouter } from '../../../../../test/lib/render-helpers';
+import { mountWithRouter } from '../../../../test/lib/render-helpers';
 import ColorIndicator from '../../ui/color-indicator';
 import NetworkDropdown from './network-dropdown';
 import { DropdownMenuItem } from './dropdown';

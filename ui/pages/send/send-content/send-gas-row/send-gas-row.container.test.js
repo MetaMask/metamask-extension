@@ -26,7 +26,7 @@ jest.mock('react-redux', () => ({
   },
 }));
 
-jest.mock('../../../../../app/selectors', () => ({
+jest.mock('../../../../selectors', () => ({
   getSendMaxModeState: (s) => `mockMaxModeOn:${s}`,
 }));
 
@@ -37,18 +37,18 @@ jest.mock('../../send.utils.js', () => ({
   calcGasTotal: (gasLimit, gasPrice) => gasLimit + gasPrice,
 }));
 
-jest.mock('../../../../../app/store/actions', () => ({
+jest.mock('../../../../store/actions', () => ({
   showModal: jest.fn(),
   setGasPrice: jest.fn(),
   setGasTotal: jest.fn(),
   setGasLimit: jest.fn(),
 }));
 
-jest.mock('../../../../../app/ducks/send/send.duck', () => ({
+jest.mock('../../../../ducks/send/send.duck', () => ({
   showGasButtonGroup: jest.fn(),
 }));
 
-jest.mock('../../../../../app/ducks/gas/gas.duck', () => ({
+jest.mock('../../../../ducks/gas/gas.duck', () => ({
   resetCustomData: jest.fn(),
   setCustomGasPrice: jest.fn(),
   setCustomGasLimit: jest.fn(),

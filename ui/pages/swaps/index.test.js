@@ -10,7 +10,7 @@ import {
   setBackgroundConnection,
   MOCKS,
   CONSTANTS,
-} from '../../../../test/jest';
+} from '../../../test/jest';
 import Swap from '.';
 
 const middleware = [thunk];

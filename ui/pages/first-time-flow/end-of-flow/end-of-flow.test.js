@@ -1,7 +1,7 @@
 import React from 'react';
 import sinon from 'sinon';
-import { tick } from '../../../../../test/lib/tick';
-import { mountWithRouter } from '../../../../../test/lib/render-helpers';
+import { tick } from '../../../../test/lib/tick';
+import { mountWithRouter } from '../../../../test/lib/render-helpers';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import EndOfFlowScreen from './end-of-flow.container';
 

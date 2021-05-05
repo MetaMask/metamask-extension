@@ -1,6 +1,6 @@
 import freeze from 'deep-freeze-strict';
 import reducers from '../ducks';
-import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
+import { NETWORK_TYPE_RPC } from '../../shared/constants/network';
 import * as actionConstants from './actionConstants';
 
 describe('Redux actionConstants', () => {

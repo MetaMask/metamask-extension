@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../test/jest';
 import BackgroundAnimation from './background-animation';
 
 describe('BackgroundAnimation', () => {

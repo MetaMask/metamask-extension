@@ -223,6 +223,11 @@
         "js-tokens": true
       }
     },
+    "@babel/parser": {
+      "globals": {
+        "BigInt": true
+      }
+    },
     "@babel/plugin-proposal-async-generator-functions": {
       "packages": {
         "@babel/core": true,
@@ -869,6 +874,7 @@
     },
     "acorn": {
       "globals": {
+        "BigInt": true,
         "define": true
       }
     },
@@ -878,6 +884,9 @@
       }
     },
     "acorn-node": {
+      "globals": {
+        "BigInt": true
+      },
       "packages": {
         "acorn": true,
         "acorn-dynamic-import": true,
@@ -1661,7 +1670,10 @@
     "es-abstract": {
       "globals": {
         "AggregateError": true,
+        "Atomics": true,
+        "BigInt": true,
         "FinalizationRegistry": true,
+        "SharedArrayBuffer": true,
         "WeakRef": true
       },
       "packages": {
@@ -3078,6 +3090,7 @@
         "util.inspect": true
       },
       "globals": {
+        "BigInt": true,
         "HTMLElement": true
       }
     },

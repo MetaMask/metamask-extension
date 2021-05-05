@@ -21,7 +21,7 @@ jest.mock('react-redux', () => ({
   },
 }));
 
-jest.mock('../../../../../app/selectors', () => ({
+jest.mock('../../../../selectors', () => ({
   getBasicGasEstimateLoadingStatus: (s) =>
     `mockBasicGasEstimateLoadingStatus:${Object.keys(s).length}`,
   getRenderableBasicEstimateData: (s) =>
@@ -42,20 +42,20 @@ jest.mock('../../../../../app/selectors', () => ({
   isCustomPriceSafe: jest.fn().mockReturnValue(true),
 }));
 
-jest.mock('../../../../../app/store/actions', () => ({
+jest.mock('../../../../store/actions', () => ({
   hideModal: jest.fn(),
   setGasLimit: jest.fn(),
   setGasPrice: jest.fn(),
   updateTransaction: jest.fn(),
 }));
 
-jest.mock('../../../../../app/ducks/gas/gas.duck', () => ({
+jest.mock('../../../../ducks/gas/gas.duck', () => ({
   setCustomGasPrice: jest.fn(),
   setCustomGasLimit: jest.fn(),
   resetCustomData: jest.fn(),
 }));
 
-jest.mock('../../../../../app/ducks/send/send.duck', () => ({
+jest.mock('../../../../ducks/send/send.duck', () => ({
   hideGasButtonGroup: jest.fn(),
 }));
 

@@ -21,7 +21,7 @@ jest.mock('react-redux', () => ({
   },
 }));
 
-jest.mock('../../../../app/store/actions.js', () => ({
+jest.mock('../../../store/actions.js', () => ({
   addToAddressBook: jest.fn(),
   clearSend: jest.fn(),
   signTokenTx: jest.fn(),
@@ -29,7 +29,7 @@ jest.mock('../../../../app/store/actions.js', () => ({
   updateTransaction: jest.fn(),
 }));
 
-jest.mock('../../../../app/selectors/send.js', () => ({
+jest.mock('../../../selectors/send.js', () => ({
   getGasLimit: (s) => `mockGasLimit:${s}`,
   getGasPrice: (s) => `mockGasPrice:${s}`,
   getGasTotal: (s) => `mockGasTotal:${s}`,
@@ -48,7 +48,7 @@ jest.mock('../../../../app/selectors/send.js', () => ({
   getDefaultActiveButtonIndex: () => 0,
 }));
 
-jest.mock('../../../../app/selectors/custom-gas.js', () => ({
+jest.mock('../../../selectors/custom-gas.js', () => ({
   getRenderableEstimateDataForSmallButtonsFromGWEI: (s) => [
     { gasEstimateType: `mockGasEstimateType:${s}` },
   ],

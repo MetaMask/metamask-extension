@@ -8,7 +8,7 @@ import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
 import { updateViewedNotifications } from '../../../store/actions';
-import { getTranslatedUINoficiations } from '../../../../../shared/notifications';
+import { getTranslatedUINoficiations } from '../../../../shared/notifications';
 import { getSortedNotificationsToShow } from '../../../selectors';
 
 function getActionFunctionById(id) {

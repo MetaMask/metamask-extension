@@ -13,7 +13,7 @@ jest.mock('react-redux', () => ({
   },
 }));
 
-jest.mock('../../../../../app/selectors', () => ({
+jest.mock('../../../../selectors', () => ({
   getSendEnsResolution: (s) => `mockSendEnsResolution:${s}`,
   getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
   getAddressBook: (s) => [{ name: `mockAddressBook:${s}` }],
@@ -24,7 +24,7 @@ jest.mock('../../../../../app/selectors', () => ({
   ],
 }));
 
-jest.mock('../../../../../app/store/actions', () => ({
+jest.mock('../../../../store/actions', () => ({
   updateSendTo: jest.fn(),
 }));
 

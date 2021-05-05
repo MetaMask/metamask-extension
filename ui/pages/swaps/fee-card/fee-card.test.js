@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { renderWithProvider } from '../../../../../test/jest';
-import { MAINNET_CHAIN_ID } from '../../../../../shared/constants/network';
+import { renderWithProvider } from '../../../../test/jest';
+import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 import FeeCard from '.';
 
 const createProps = (customProps = {}) => {

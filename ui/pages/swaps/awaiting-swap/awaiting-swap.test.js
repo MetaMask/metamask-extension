@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import {
   renderWithProvider,
   createSwapsMockStore,
-} from '../../../../../test/jest';
+} from '../../../../test/jest';
 import AwaitingSwap from '.';
 
 const createProps = (customProps = {}) => {

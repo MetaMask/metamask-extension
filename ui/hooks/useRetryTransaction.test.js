@@ -1,7 +1,7 @@
 import * as reactRedux from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
-import transactions from '../../../test/data/transaction-data.json';
+import transactions from '../../test/data/transaction-data.json';
 import { showSidebar } from '../store/actions';
 import * as methodDataHook from './useMethodData';
 import * as metricEventHook from './useMetricEvent';

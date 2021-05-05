@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
-} from '../../../../shared/constants/network';
+} from '../../../shared/constants/network';
 import SendTransactionScreen from './send.component';
 import * as util from './send.utils';
 

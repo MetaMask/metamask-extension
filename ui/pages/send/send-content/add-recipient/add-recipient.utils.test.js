@@ -7,16 +7,15 @@ import {
 } from '../../send.constants';
 import { getToErrorObject, getToWarningObject } from './add-recipient';
 
-jest.mock('../../../../../app/helpers/utils/util', () => ({
+jest.mock('../../../../helpers/utils/util', () => ({
   isDefaultMetaMaskChain: jest.fn().mockReturnValue(true),
   isEthNetwork: jest.fn().mockReturnValue(true),
   checkExistingAddresses: jest.fn().mockReturnValue(true),
   isValidAddress: jest.fn((to) => Boolean(to.match(/^[0xabcdef123456798]+$/u))),
-  isValidDomainName: jest.requireActual('../../../../../app/helpers/utils/util')
+  isValidDomainName: jest.requireActual('../../../../helpers/utils/util')
     .isValidDomainName,
-  isOriginContractAddress: jest.requireActual(
-    '../../../../../app/helpers/utils/util',
-  ).isOriginContractAddress,
+  isOriginContractAddress: jest.requireActual('../../../../helpers/utils/util')
+    .isOriginContractAddress,
 }));
 
 describe('add-recipient utils', () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import sinon from 'sinon';
-import { mountWithRouter } from '../../../../../test/lib/render-helpers';
+import { mountWithRouter } from '../../../../test/lib/render-helpers';
 import SelectAction from './select-action.container';
 
 describe('Selection Action', () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../test/jest';
 import AggregatorLogo from './aggregator-logo';
 
 const createProps = (customProps = {}) => {
