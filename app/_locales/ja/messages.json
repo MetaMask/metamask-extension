@@ -1576,9 +1576,6 @@
   "swapFinalizing": {
     "message": "終了中..."
   },
-  "swapHighSlippageWarning": {
-    "message": "非常に大きいスリッページ額です。本当に実行するか確認してください。"
-  },
   "swapLowSlippageError": {
     "message": "トランザクションが失敗する可能性があります。最大スリッページが少なすぎます。"
   },

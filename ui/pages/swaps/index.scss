@@ -29,7 +29,8 @@
     align-items: center;
     height: 100%;
     width: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
 
     &--scrollable {
       overflow: auto;
@@ -42,7 +43,6 @@
       box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
       border-radius: 8px;
       height: 620px;
-      overflow: hidden;
     }
   }
 
