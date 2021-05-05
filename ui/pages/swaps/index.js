@@ -80,6 +80,7 @@ export default function Swap() {
 
   const { pathname } = useLocation();
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE;
+  const isAwaitingSignaturesRoute = pathname === AWAITING_SIGNATURES_ROUTE;
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE;
   const isLoadingQuotesRoute = pathname === LOADING_QUOTES_ROUTE;
 
@@ -245,7 +246,7 @@ export default function Swap() {
       <div className="swaps__container">
         <div className="swaps__header">
           <div className="swaps__title">{t('swap')}</div>
-          {!isAwaitingSwapRoute && (
+          {!isAwaitingSwapRoute && !isAwaitingSignaturesRoute && (
             <div
               className="swaps__header-cancel"
               onClick={async () => {
