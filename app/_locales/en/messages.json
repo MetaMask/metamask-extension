@@ -556,6 +556,12 @@
   "dismiss": {
     "message": "Dismiss"
   },
+  "dismissReminderDescriptionField": {
+    "message": "Turn this on to dismiss the recovery phrase backup reminder message. We highly recommend that you back up your seed phrase to avoid loss of funds"
+  },
+  "dismissReminderField": {
+    "message": "Dismiss recovery phrase backup reminder"
+  },
   "done": {
     "message": "Done"
   },

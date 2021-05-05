@@ -2561,6 +2561,14 @@ export function setLastActiveTime() {
   };
 }
 
+export function setDismissSeedBackUpReminder(value) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    await promisifiedBackground.setDismissSeedBackUpReminder(value);
+    dispatch(hideLoadingIndication());
+  };
+}
+
 export function setConnectedStatusPopoverHasBeenShown() {
   return () => {
     background.setConnectedStatusPopoverHasBeenShown((err) => {
