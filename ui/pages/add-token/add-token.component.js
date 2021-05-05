@@ -222,17 +222,15 @@ class AddToken extends Component {
   }
 
   handleCustomDecimalsChange(value) {
-    const inValidDecimals = !(
-      value >= MIN_DECIMAL_VALUE && value <= MAX_DECIMAL_VALUE
-    );
-
     let customDecimals;
     let customDecimalsError = null;
+
     if (value) {
       customDecimals = Number(value.trim());
-      customDecimalsError = inValidDecimals
-        ? this.context.t('decimalsMustZerotoTen')
-        : null;
+      customDecimalsError =
+        value < MIN_DECIMAL_VALUE || value > MAX_DECIMAL_VALUE
+          ? this.context.t('decimalsMustZerotoTen')
+          : null;
     } else {
       customDecimals = '';
       customDecimalsError = this.context.t('tokenDecimalFetchFailed');
