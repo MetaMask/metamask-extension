@@ -2,6 +2,10 @@
   "name": "metamask-crx",
   "version": "0.0.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/metamask-extension"
+  },
   "scripts": {
     "setup": "yarn install && yarn setup:postinstall",
     "setup:postinstall": "yarn patch-package && yarn allow-scripts",
@@ -57,7 +61,7 @@
     "storybook": "start-storybook -p 6006 -c .storybook --static-dir ./app ./storybook/images",
     "storybook:build": "build-storybook -c .storybook -o storybook-build --static-dir ./app ./storybook/images",
     "storybook:deploy": "storybook-to-ghpages --existing-output-dir storybook-build --remote storybook --branch master",
-    "update-changelog": "node ./development/auto-changelog.js",
+    "update-changelog": "auto-changelog update",
     "generate:migration": "./development/generate-migration.sh",
     "lavamoat:auto": "lavamoat ./development/build/index.js --writeAutoPolicy",
     "lavamoat:debug": "lavamoat ./development/build/index.js --writeAutoPolicyDebug"
@@ -205,6 +209,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.5.5",
     "@lavamoat/allow-scripts": "^1.0.4",
+    "@metamask/auto-changelog": "^1.0.0",
     "@metamask/eslint-config": "^6.0.0",
     "@metamask/eslint-config-jest": "^6.0.0",
     "@metamask/eslint-config-mocha": "^6.0.0",
