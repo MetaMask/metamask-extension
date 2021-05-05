@@ -533,7 +533,7 @@ export default function BuildQuote({
           !isFeatureFlagLoaded ||
           !Number(inputValue) ||
           !selectedToToken?.address ||
-          Number(maxSlippage) === 0 ||
+          Number(maxSlippage) < 0 ||
           Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
           (toTokenIsNotDefault && occurances < 2 && !verificationClicked)
         }

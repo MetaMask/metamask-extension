@@ -1660,9 +1660,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "다음은 여러 유동성 소스에서 수집한 전체 견적입니다."
   },
-  "swapSlippageTooLow": {
-    "message": "슬리패지는 0보다 커야 합니다."
-  },
   "swapSource": {
     "message": "유동성 소스"
   },
