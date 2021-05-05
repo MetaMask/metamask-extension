@@ -129,6 +129,8 @@ $attributes: padding, margin;
 
   // text
   @each $alignment in design-system.$text-align {
-    text-align: $alignment;
+    &--text-align-#{$alignment} {
+      text-align: $alignment;
+    }
   }
 }
