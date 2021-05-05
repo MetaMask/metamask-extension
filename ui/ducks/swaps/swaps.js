@@ -590,7 +590,6 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const hardwareWalletUsed = isHardwareWallet(state);
-
     let swapsFeatureIsLive = false;
     try {
       swapsFeatureIsLive = await fetchSwapsFeatureLiveness(chainId);

@@ -85,7 +85,7 @@ export function getCurrentKeyring(state) {
  */
 export function isHardwareWallet(state) {
   const keyring = getCurrentKeyring(state);
-  return keyring.type.search('Hardware') !== -1;
+  return keyring.type.includes('Hardware');
 }
 
 export function getAccountType(state) {
