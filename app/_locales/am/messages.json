@@ -499,21 +499,12 @@
   "importAccountSeedPhrase": {
     "message": "መለያን በዘር ሐረግ አስመጣ"
   },
-  "importUsingSeed": {
-    "message": "የመለያ የዘር ሐረግ በመጠቀም ያስመጡ"
-  },
   "importWallet": {
     "message": "ቋት አስመጣ"
-  },
-  "importYourExisting": {
-    "message": "ባለ 12 ቃል የዘር ሐረግን በመጠቀም ነባር ቋትዎን ያስመጡ"
   },
   "imported": {
     "message": "ከውጭ የመጣ",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "መረጃ እና እገዛ "
   },
   "initialTransactionConfirmed": {
     "message": "የመጀመሪያ ግብይትዎ በአውታረ መረቡ ተረጋግጧል። ወደ ኋላ ለመመለስ እሺ የሚለውን ጠቅ ያድርጉ።"
@@ -611,12 +602,6 @@
   },
   "myAccounts": {
     "message": "የእኔ መለያዎች"
-  },
-  "myWalletAccounts": {
-    "message": "የቋት መለያዎቼ"
-  },
-  "myWalletAccountsDescription": {
-    "message": "በ MetaMask የተፈጠሩ መለያዎችዎ በሙሉ በራስ ሰር መንገድ ወደዚህ ክፍል ይታከላሉ።"
   },
   "needEtherInWallet": {
     "message": "MetaMask በመጠቀም ያልተማከሉ መተግበሪያዎች ጋር ግንኙነት ለማድረግ፣ በቋትዎ ውስጥ Ether ያስፈልግዎታል።"
@@ -835,9 +820,6 @@
   "restoreAccountWithSeed": {
     "message": "መለያዎን በዘር ሐረግ ወደነበረበት ይመልሱ"
   },
-  "restoreFromSeed": {
-    "message": "መለያው ወደነበረበት ይመለስ?"
-  },
   "revealSeedWords": {
     "message": "የዘር ቃላትን ይግለጹ"
   },
@@ -892,9 +874,6 @@
   "secretBackupPhraseWarning": {
     "message": "ማስጠንቀቂያ፡ የመጠባበቂያ ምዕራፍዎን በጭራሽ አይግለጹ። ይህን ሐረገ የያዘ ማንኛውም ሰው የእርስዎን Ether እስከወዲያኛው ሊወስደው ይችላል።"
   },
-  "secretPhrase": {
-    "message": "ካዝናዎን ወደነበረበት ለመመለስ ሚስጥራዊ ባለ አስራ ሁለት ቃል ሐረግዎን ያስገቡ።"
-  },
   "securityAndPrivacy": {
     "message": "ደህንነት እና ግላዊነት"
   },
@@ -933,9 +912,6 @@
   },
   "sendAmount": {
     "message": "መጠኑን ላክ"
-  },
-  "sendETH": {
-    "message": "ETH ላክ"
   },
   "sendTokens": {
     "message": "ተለዋጭ ስሞችን ላክ"

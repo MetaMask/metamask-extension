@@ -495,21 +495,12 @@
   "importAccountSeedPhrase": {
     "message": "Impordi seemnefraasiga konto"
   },
-  "importUsingSeed": {
-    "message": "Impordi konto seemnefraasi abil"
-  },
   "importWallet": {
     "message": "Importige rahakott"
-  },
-  "importYourExisting": {
-    "message": "Importige 12-sõnalise seemnefraasi abil olemasolev rahakott"
   },
   "imported": {
     "message": "Imporditud",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Teave ja abi"
   },
   "initialTransactionConfirmed": {
     "message": "Võrk kinnitas teie algse tehingu. Tagasi minemiseks klõpsake OK-nuppu."
@@ -604,12 +595,6 @@
   },
   "myAccounts": {
     "message": "Minu kontod"
-  },
-  "myWalletAccounts": {
-    "message": "Minu rahakotikontod"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Sellesse jaotisesse lisatakse automaatselt kõik teie MetaMaski kontod."
   },
   "needEtherInWallet": {
     "message": "Selleks, et suhelda MetaMaski abil detsentraliseeritud rakendustega, peab teil rahakotis eetrit olema."
@@ -828,9 +813,6 @@
   "restoreAccountWithSeed": {
     "message": "Taastage konto seemnefraasi abil"
   },
-  "restoreFromSeed": {
-    "message": "Taastada konto?"
-  },
   "revealSeedWords": {
     "message": "Kuva seemnesõnu"
   },
@@ -885,9 +867,6 @@
   "secretBackupPhraseWarning": {
     "message": "HOIATUS! Ärge avaldage kunagi oma varundusfraasi. Selle fraasiga on võimalik teie eeter igaveseks ära võtta."
   },
-  "secretPhrase": {
-    "message": "Sisestage hoidla taastamiseks oma salajane 12-sõnaline fraas."
-  },
   "securityAndPrivacy": {
     "message": "Turvalisus ja privaatsus"
   },
@@ -926,9 +905,6 @@
   },
   "sendAmount": {
     "message": "Saatke kogus"
-  },
-  "sendETH": {
-    "message": "Saada ETH"
   },
   "sendTokens": {
     "message": "Saada lube"

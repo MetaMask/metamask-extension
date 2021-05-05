@@ -499,21 +499,12 @@
   "importAccountSeedPhrase": {
     "message": "Tuo tili siemenlauseella"
   },
-  "importUsingSeed": {
-    "message": "Tuo käyttäen tilin siemenlausetta"
-  },
   "importWallet": {
     "message": "Tuo kukkaro"
-  },
-  "importYourExisting": {
-    "message": "Tuo nykyinen lompakkosi käyttäen 12 sanan \n siemenlausetta"
   },
   "imported": {
     "message": "Tuotu",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Tietoja ja ohje"
   },
   "initialTransactionConfirmed": {
     "message": "Verkko hyväksyi alkuperäisen tapahtumasi. Siirry takaisin napsauttamalla OK-painiketta."
@@ -614,12 +605,6 @@
   },
   "myAccounts": {
     "message": "Omat tilit"
-  },
-  "myWalletAccounts": {
-    "message": "Omat kukkarotilini"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Kaikki MetaMaskilla luodut tilisi lisätään automaattisesti tähän osastoon."
   },
   "needEtherInWallet": {
     "message": "Ollaksesi vuorovaikutuksessa hajautettujen sovellusten kanssa sinulla on oltava lompakossasi Ether."
@@ -835,9 +820,6 @@
   "restoreAccountWithSeed": {
     "message": "Palauta tilisi käyttäen salaustekstiä (seed phrase)"
   },
-  "restoreFromSeed": {
-    "message": "Palautetaanko tili?"
-  },
   "revealSeedWords": {
     "message": "Paljasta salaussanat"
   },
@@ -892,9 +874,6 @@
   "secretBackupPhraseWarning": {
     "message": "VAROITUS: älä koskaan kerro varmuuskopiolausettasi kenellekään. Kuka tahansa tämän lauseen omaava voi napata Etherisi pysyvästi."
   },
-  "secretPhrase": {
-    "message": "Palauta holvisi syöttämällä tähän salainen kahdentoista sanan tekstisi."
-  },
   "securityAndPrivacy": {
     "message": "Turva & yksityisyys"
   },
@@ -933,9 +912,6 @@
   },
   "sendAmount": {
     "message": "Lähetä summa"
-  },
-  "sendETH": {
-    "message": "Lähetä ETH:iä"
   },
   "sendTokens": {
     "message": "Lähetä tietueita"

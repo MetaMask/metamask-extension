@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "アクティビティのログ"
   },
-  "addAccount": {
-    "message": "アカウントの追加"
-  },
   "addAcquiredTokens": {
     "message": "MetaMaskで取得したトークンを追加する"
   },
@@ -790,21 +787,12 @@
   "importAccountSeedPhrase": {
     "message": "シードフレーズを使用してアカウントをインポート"
   },
-  "importUsingSeed": {
-    "message": "アカウントのシードフレーズから復元する"
-  },
   "importWallet": {
     "message": "ウォレットのインポート"
-  },
-  "importYourExisting": {
-    "message": "12単語のシードフレーズを使用して既存のウォレットをインポートします"
   },
   "imported": {
     "message": "インポート済",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "情報とヘルプ"
   },
   "initialTransactionConfirmed": {
     "message": "最初のトランザクションがネットワークに確認されました。戻るにはOKをクリックします。"
@@ -995,12 +983,6 @@
   },
   "myAccounts": {
     "message": "マイアカウント"
-  },
-  "myWalletAccounts": {
-    "message": "このウォレットのアカウント"
-  },
-  "myWalletAccountsDescription": {
-    "message": "MetaMaskで作成したすべてのアカウントは、このセクションに自動的に追加されます。"
   },
   "needEtherInWallet": {
     "message": "MetaMaskで分散型アプリケーションを操作するには、ウォレットにEtherが必要です。"
@@ -1282,9 +1264,6 @@
   "restoreAccountWithSeed": {
     "message": "シードフレーズでアカウントを復元"
   },
-  "restoreFromSeed": {
-    "message": "アカウントを復元しますか?"
-  },
   "restoreWalletPreferences": {
     "message": "$1 のデータバックアップが見つかりました。ウォレットの基本設定を復元しますか?",
     "description": "$1 is the date at which the data was backed up"
@@ -1355,9 +1334,6 @@
   "secretBackupPhraseWarning": {
     "message": "警告:シードフレーズは絶対に公開しないでください。シードフレーズを使うと、誰でもアカウントからETHを盗み出せます。"
   },
-  "secretPhrase": {
-    "message": "アカウント情報を復元するには、12単語で構成されたシードフレーズを入力してください。"
-  },
   "securityAndPrivacy": {
     "message": "セキュリティとプライバシー"
   },
@@ -1408,9 +1384,6 @@
   },
   "sendAmount": {
     "message": "送金額"
-  },
-  "sendETH": {
-    "message": "ETHの送金"
   },
   "sendSpecifiedTokens": {
     "message": "$1 を送る",
@@ -1639,24 +1612,6 @@
   "swapHighSlippageWarning": {
     "message": "非常に大きいスリッページ額です。本当に実行するか確認してください。"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "詳細を表示しますか?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "MetaMask Swapsの詳細"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "流動性ソースには以下が含まれます。"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "トークンをMetaMaskで直接スワップできるようになりました。MetaMask Swapsは、多数の分散型取引所アグリゲーター、専門のマーケットメーカー、DEX取引所を統合し、ユーザーは常に最低のネットワーク手数料、最適な価格で取引できます。"
-  },
-  "swapIntroPopupTitle": {
-    "message": "トークンのスワップはこちら!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "MetaSwapのコントラクト監査のレビュー"
-  },
   "swapLowSlippageError": {
     "message": "トランザクションが失敗する可能性があります。最大スリッページが少なすぎます。"
   },
@@ -1682,7 +1637,7 @@
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapNetworkFeeSummary": {
-    "message": "ネットワーク手数料には、スワップの結果をEthereumネットワークに保管する費用も含まれています。MetaMaskは手数料から利益を得ません。"
+    "message": "ネットワーク手数料には、スワップの結果を$1ネットワークに保管する費用も含まれています。MetaMaskは手数料から利益を得ません。"
   },
   "swapNewQuoteIn": {
     "message": "見積の有効期限 $1",
@@ -1776,9 +1731,6 @@
   },
   "swapSourceInfo": {
     "message": "最良のレートと最小のネットワーク手数料を探すため、複数の流動性ソース(取引所、アグリゲーター、専門のマーケットメーカー)を検索します。"
-  },
-  "swapStartSwapping": {
-    "message": "スワップの開始"
   },
   "swapSwapFrom": {
     "message": "スワップ元"
@@ -1914,9 +1866,6 @@
   },
   "tokenContractAddress": {
     "message": "トークンコントラクトのアドレス"
-  },
-  "tokenOptions": {
-    "message": "トークンのオプション"
   },
   "tokenSymbol": {
     "message": "トークンシンボル"

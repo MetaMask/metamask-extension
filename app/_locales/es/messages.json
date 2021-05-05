@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "registro de actividades"
   },
-  "addAccount": {
-    "message": "Agregar una cuenta"
-  },
   "addAcquiredTokens": {
     "message": "Agregar los tokens que has adquirido usando MetaMask"
   },
@@ -790,21 +787,12 @@
   "importAccountSeedPhrase": {
     "message": "Importar una cuenta con la frase semilla"
   },
-  "importUsingSeed": {
-    "message": "Importar usando la frase semilla de la cuenta"
-  },
   "importWallet": {
     "message": "Importar Monedero"
-  },
-  "importYourExisting": {
-    "message": "Importa tu monedero existente usando la frase semilla de 12 palabras"
   },
   "imported": {
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Información y ayuda"
   },
   "initialTransactionConfirmed": {
     "message": "La red confirmó tu transacción inicial. Hazle clic en Ok para volver."
@@ -992,12 +980,6 @@
   },
   "myAccounts": {
     "message": "Mis cuentas"
-  },
-  "myWalletAccounts": {
-    "message": "Mis cuentas de monedero"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Todas tus cuentas creadas con MetaMask serán automáticamente agregadas a esta sección."
   },
   "needEtherInWallet": {
     "message": "Para interactuar con una aplicación descentralizada usando MetaMask, necesitas tener Ether en tu monedero"
@@ -1282,9 +1264,6 @@
   "restoreAccountWithSeed": {
     "message": "Restaurar tu Cuenta con la Frase Semilla"
   },
-  "restoreFromSeed": {
-    "message": "¿Restaurar cuenta?"
-  },
   "restoreWalletPreferences": {
     "message": "Se ha encontrado una copia de seguridad de sus datos de $1. ¿Le gustaría restaurar sus preferencias de monedero?",
     "description": "$1 is the date at which the data was backed up"
@@ -1355,9 +1334,6 @@
   "secretBackupPhraseWarning": {
     "message": "ADVERTENCIA: Nunca revele su frase de respaldo. Cualquiera con esta frase puede tomar su Ether para siempre."
   },
-  "secretPhrase": {
-    "message": "Ingresa tu frase de doce (12) palabras para restaurar tu bóveda."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad y Privacidad"
   },
@@ -1408,9 +1384,6 @@
   },
   "sendAmount": {
     "message": "Enviar cantidad"
-  },
-  "sendETH": {
-    "message": "Enviar ETH"
   },
   "sendSpecifiedTokens": {
     "message": "Enviar $1",
@@ -1639,24 +1612,6 @@
   "swapHighSlippageWarning": {
     "message": "La cantidad de deslizamiento es muy alta. ¡Asegúrate de saber lo que estás haciendo!"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "¿Quiere aprender más?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "Más información sobre los Intercambios MetaMask"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "Las fuentes de liquidez incluyen:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "Ahora puede intercambiar tokens directamente en su monedero MetaMask. Intercambios MetaMask combina múltiples agregadores de intercambio descentralizados, creadores de mercado profesionales y DEX individuales para garantizar que los usuarios de MetaMask siempre obtengan el mejor precio con las tarifas de red más bajas."
-  },
-  "swapIntroPopupTitle": {
-    "message": "¡El intercambio de tokens está aquí!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "Revise nuestra auditoría de contratos oficiales"
-  },
   "swapLowSlippageError": {
     "message": "La transacción puede fallar, el deslizamiento máximo es demasiado bajo."
   },
@@ -1682,7 +1637,7 @@
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapNetworkFeeSummary": {
-    "message": "La tarifa de la red cubre el costo de procesar su intercambio y almacenarlo en la red Ethereum. MetaMask no se beneficia de esta tarifa."
+    "message": "La tarifa de la red cubre el costo de procesar su intercambio y almacenarlo en la red $1. MetaMask no se beneficia de esta tarifa."
   },
   "swapNewQuoteIn": {
     "message": "Nuevas cotizaciones en $1",
@@ -1776,9 +1731,6 @@
   },
   "swapSourceInfo": {
     "message": "Buscamos múltiples fuentes de liquidez (exchanges, agregadores y creadores de mercado profesionales) para encontrar las mejores tarifas y las tarifas de red más bajas."
-  },
-  "swapStartSwapping": {
-    "message": "Comenzar intercambio"
   },
   "swapSwapFrom": {
     "message": "Intercambiar desde"
@@ -1914,9 +1866,6 @@
   },
   "tokenContractAddress": {
     "message": "Dirección del contrato de token"
-  },
-  "tokenOptions": {
-    "message": "Opciones del Token"
   },
   "tokenSymbol": {
     "message": "Símbolo del token"

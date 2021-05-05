@@ -492,21 +492,12 @@
   "importAccountSeedPhrase": {
     "message": "Importér en Konto med Seedfrase"
   },
-  "importUsingSeed": {
-    "message": "Importér ved brug af kontoens seed-sætning"
-  },
   "importWallet": {
     "message": "Importér pung"
-  },
-  "importYourExisting": {
-    "message": "Importér din eksisterende pung med en 12-ords seedfrase"
   },
   "imported": {
     "message": "Importeret",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info & hjælp"
   },
   "initialTransactionConfirmed": {
     "message": "Din indledende transaktion blev bekræftet af netværket. Klik OK for at gå tilbage."
@@ -598,12 +589,6 @@
   },
   "myAccounts": {
     "message": "Mine Konti"
-  },
-  "myWalletAccounts": {
-    "message": "Mine Pungkonti"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Alle dine MetaMask-oprettede konti føjes automatisk til dette afsnit."
   },
   "needEtherInWallet": {
     "message": "Du skal have Ether i din tegnebog for at interagere med decentraliserede applikationer, der bruger MetaMask."
@@ -819,9 +804,6 @@
   "restoreAccountWithSeed": {
     "message": "Gendan din konto med Seed-sætning"
   },
-  "restoreFromSeed": {
-    "message": "Genopret konto?"
-  },
   "revealSeedWords": {
     "message": "Vis Seedord"
   },
@@ -876,9 +858,6 @@
   "secretBackupPhraseWarning": {
     "message": "ADVARSEL: Afslør aldrig din backup-frase. Enhver med denne frase kan tage din Ether for altid."
   },
-  "secretPhrase": {
-    "message": "Indtast din hemmelige tolv ord lange sætning for at gendanne din vault."
-  },
   "securityAndPrivacy": {
     "message": "Sikkerhed & Privatliv"
   },
@@ -914,9 +893,6 @@
   },
   "sendAmount": {
     "message": "Send Beløb"
-  },
-  "sendETH": {
-    "message": "Vælg ETH"
   },
   "sendTokens": {
     "message": "Send tokens"

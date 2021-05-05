@@ -495,21 +495,12 @@
   "importAccountSeedPhrase": {
     "message": "Importēt kontu ar atkopšanas frāzi"
   },
-  "importUsingSeed": {
-    "message": "Importēt, izmantojot konta atkopšanas frāzi"
-  },
   "importWallet": {
     "message": "Importēt maku"
-  },
-  "importYourExisting": {
-    "message": "Importējiet esošo maku, izmantojot 12 vārdu atkopšanas frāzi"
   },
   "imported": {
     "message": "Importēts",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informācija un palīdzība"
   },
   "initialTransactionConfirmed": {
     "message": "Jūsu sākotnējais darījums apstiprināts tīklā. Spiediet OK, lai atgrieztos."
@@ -610,12 +601,6 @@
   },
   "myAccounts": {
     "message": "Mani konti"
-  },
-  "myWalletAccounts": {
-    "message": "Mana maka konti"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Visi jūsu izveidotie MetaMask konti tiks automātiski pievienoti šajā sadaļā."
   },
   "needEtherInWallet": {
     "message": "Lai izmantotu decentralizētas lietotnes ar MetaMask, jūsu makā jābūt Ether."
@@ -834,9 +819,6 @@
   "restoreAccountWithSeed": {
     "message": "Atjaunojiet savu kontu ar atkopšanas frāzi"
   },
-  "restoreFromSeed": {
-    "message": "Atjaunot kontu?"
-  },
   "revealSeedWords": {
     "message": "Parādīt atkopšanas vārdus"
   },
@@ -891,9 +873,6 @@
   "secretBackupPhraseWarning": {
     "message": "BRĪDINĀJUMS! Nekādā gadījumā neizpaudiet savu rezerves frāzi. Ikviens, kam pieejama šī frāze, var uz visiem laikiem pārņemt jūsu Ether."
   },
-  "secretPhrase": {
-    "message": "Ievadiet šeit slepeno divpadsmit vārdu frāzi, lai atjaunotu savu seifu."
-  },
   "securityAndPrivacy": {
     "message": "Drošība un konfidencialitāte"
   },
@@ -932,9 +911,6 @@
   },
   "sendAmount": {
     "message": "Nosūtītā summa"
-  },
-  "sendETH": {
-    "message": "Sūtīt ETH"
   },
   "sendTokens": {
     "message": "Nosūtīt marķierus"

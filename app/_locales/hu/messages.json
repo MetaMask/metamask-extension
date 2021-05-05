@@ -495,21 +495,12 @@
   "importAccountSeedPhrase": {
     "message": "Fiók importálása seed mondat segítségével"
   },
-  "importUsingSeed": {
-    "message": "Importálás a fiók seed mondatának használatával"
-  },
   "importWallet": {
     "message": "Pénztárca importálása"
-  },
-  "importYourExisting": {
-    "message": "Importálja meglévő pénztárcáját a 12 szóból álló seed mondat segítségével"
   },
   "imported": {
     "message": "Importált",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Információk és súgó"
   },
   "initialTransactionConfirmed": {
     "message": "Eredeti tranzakciódat jóváhagyta a hálózat. A visszatéréshez kattints az OK-ra."
@@ -607,12 +598,6 @@
   },
   "myAccounts": {
     "message": "Fiókjaim"
-  },
-  "myWalletAccounts": {
-    "message": "Saját tárca fiókjai"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Az összes MetaMask által létrehozott fiókot automatikusan hozzáadja a munkamenethez."
   },
   "needEtherInWallet": {
     "message": "Ha a MetaMaskon keresztül szeretne interakcióba lépni decentralizált alkalmazással, ahhoz a tárcájában Ethernek kell lennie."
@@ -831,9 +816,6 @@
   "restoreAccountWithSeed": {
     "message": "Fiók helyreállítása a seed mondat segítségével"
   },
-  "restoreFromSeed": {
-    "message": "Visszaállítja a fiókot? "
-  },
   "revealSeedWords": {
     "message": "Seed szavak megjelenítése"
   },
@@ -888,9 +870,6 @@
   "secretBackupPhraseWarning": {
     "message": "FIGYELEM: Senkise se adja meg a biztonsági szakaszát. Ennek tulajdonosa örökre elviheti Ether-jeit."
   },
-  "secretPhrase": {
-    "message": "Tárolód helyreállításához írd be titkos tizenkét szavas szókapcsolatodat ide."
-  },
   "securityAndPrivacy": {
     "message": "Biztonság és adatvédelem"
   },
@@ -929,9 +908,6 @@
   },
   "sendAmount": {
     "message": "Összeg küldése"
-  },
-  "sendETH": {
-    "message": "ETH küldése"
   },
   "sendTokens": {
     "message": "Token küldése"

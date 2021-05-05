@@ -490,21 +490,12 @@
   "importAccountSeedPhrase": {
     "message": "Importez un compte avec une phrase mnémotechnique"
   },
-  "importUsingSeed": {
-    "message": "Importer à partir de la phrase Seed du compte"
-  },
   "importWallet": {
     "message": "Importer le portefeuille"
-  },
-  "importYourExisting": {
-    "message": "Importez votre portefeuille existant à l'aide d'une phrase mnémotechnique de 12 mots"
   },
   "imported": {
     "message": "Importé",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info & Aide"
   },
   "initialTransactionConfirmed": {
     "message": "Votre transaction initiale a été confirmée par le réseau. Cliquez sur OK pour retourner à l'écran précédent."
@@ -599,12 +590,6 @@
   },
   "myAccounts": {
     "message": "Mes comptes"
-  },
-  "myWalletAccounts": {
-    "message": "Mes comptes de portefeuille"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Tous vos comptes MetaMask créés seront automatiquement ajoutés à cette section."
   },
   "needEtherInWallet": {
     "message": "Pour interagir avec des applications décentralisées à l'aide de MetaMask, vous avez besoin d'Ether dans votre portefeuille."
@@ -820,9 +805,6 @@
   "restoreAccountWithSeed": {
     "message": "Restaurer votre compte avec une phrase Seed."
   },
-  "restoreFromSeed": {
-    "message": "Restaurer le compte ?"
-  },
   "revealSeedWords": {
     "message": "Révéler les mots Seed"
   },
@@ -877,9 +859,6 @@
   "secretBackupPhraseWarning": {
     "message": "AVERTISSEMENT : ne révélez jamais votre phrase de sauvegarde. N'importe qui avec cette phrase peut voler votre Ether pour toujours."
   },
-  "secretPhrase": {
-    "message": "Entrez vos 12 mots secrets de votre phrase Seed pour restaurer votre coffre."
-  },
   "securityAndPrivacy": {
     "message": "Sécurité et confidentialité"
   },
@@ -918,9 +897,6 @@
   },
   "sendAmount": {
     "message": "Envoyer le montant"
-  },
-  "sendETH": {
-    "message": "Envoyer des ETH"
   },
   "sendTokens": {
     "message": "Envoyer des jetons"

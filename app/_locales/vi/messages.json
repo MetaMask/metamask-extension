@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "nhật ký hoạt động"
   },
-  "addAccount": {
-    "message": "Thêm tài khoản"
-  },
   "addAcquiredTokens": {
     "message": "Thêm token mà bạn đã mua bằng MetaMask"
   },
@@ -781,21 +778,12 @@
   "importAccountSeedPhrase": {
     "message": "Nhập một tài khoản bằng cụm mật khẩu gốc"
   },
-  "importUsingSeed": {
-    "message": "Nhập bằng cách sử dụng cụm mật khẩu gốc của tài khoản"
-  },
   "importWallet": {
     "message": "Nhập ví"
-  },
-  "importYourExisting": {
-    "message": "Nhập ví hiện có của bạn bằng cụm mật khẩu gốc gồm 12 từ"
   },
   "imported": {
     "message": "Đã nhập",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Thông tin và trợ giúp"
   },
   "initialTransactionConfirmed": {
     "message": "Mạng đã xác nhận giao dịch ban đầu của bạn. Nhấp vào OK để quay lại."
@@ -983,12 +971,6 @@
   },
   "myAccounts": {
     "message": "Tài khoản của tôi"
-  },
-  "myWalletAccounts": {
-    "message": "Các tài khoản trong ví của tôi"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Tất cả các tài khoản đã tạo của bạn trong MetaMask sẽ tự động được thêm vào phần này."
   },
   "needEtherInWallet": {
     "message": "Để tương tác với các ứng dụng phi tập trung bằng MetaMask, bạn sẽ cần phải có Ether trong ví của mình."
@@ -1273,9 +1255,6 @@
   "restoreAccountWithSeed": {
     "message": "Khôi phục tài khoản của bạn bằng cụm mật khẩu gốc"
   },
-  "restoreFromSeed": {
-    "message": "Khôi phục tài khoản?"
-  },
   "restoreWalletPreferences": {
     "message": "Đã tìm thấy bản sao lưu dữ liệu của bạn từ $1. Bạn có muốn khôi phục các tùy chọn ưu tiên trong ví của mình không?",
     "description": "$1 is the date at which the data was backed up"
@@ -1346,9 +1325,6 @@
   "secretBackupPhraseWarning": {
     "message": "CẢNH BÁO: Tuyệt đối không để lộ cụm mật khẩu sao lưu của bạn. Bất kỳ ai có cụm mật khẩu này cũng có thể lấy Ether của bạn vĩnh viễn."
   },
-  "secretPhrase": {
-    "message": "Nhập cụm mật khẩu bí mật gồm 12 từ vào đây để khôi phục két của bạn."
-  },
   "securityAndPrivacy": {
     "message": "Bảo mật và quyền riêng tư"
   },
@@ -1399,9 +1375,6 @@
   },
   "sendAmount": {
     "message": "Gửi khoản tiền"
-  },
-  "sendETH": {
-    "message": "Gửi ETH"
   },
   "sendSpecifiedTokens": {
     "message": "Gửi $1",
@@ -1627,24 +1600,6 @@
   "swapHighSlippageWarning": {
     "message": "Số tiền trượt giá rất cao. Hãy chắc chắn rằng bạn hiểu những gì mình đang làm!"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "Bạn muốn tìm hiểu thêm?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "Tìm hiểu thêm về MetaMask Swaps"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "Các nguồn thanh khoản bao gồm:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "Giờ đây bạn có thể hoán đổi token ngay trong ví MetaMask của mình. MetaMask Swaps quy tụ nhiều trình tổng hợp sàn giao dịch phi tập trung, các nhà tạo lập thị trường chuyên nghiệp và các sàn giao dịch phi tập trung dành cho cá nhân nhằm đảm bảo người dùng MetaMask luôn nhận được mức giá tốt nhất với phí mạng thấp nhất."
-  },
-  "swapIntroPopupTitle": {
-    "message": "Tính năng hoán đổi token đã sẵn sàng!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "Xem xét quy trình kiểm tra hợp đồng chính thức của chúng tôi"
-  },
   "swapLowSlippageError": {
     "message": "Giao dịch có thể không thành công, mức trượt giá tối đa quá thấp."
   },
@@ -1666,7 +1621,7 @@
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNetworkFeeSummary": {
-    "message": "Phí mạng dùng để chi trả chi phí xử lý giao dịch hoán đổi của bạn và lưu trữ giao dịch đó trên mạng Ethereum. MetaMask không thu lợi từ khoản phí này."
+    "message": "Phí mạng dùng để chi trả chi phí xử lý giao dịch hoán đổi của bạn và lưu trữ giao dịch đó trên mạng $1. MetaMask không thu lợi từ khoản phí này."
   },
   "swapNewQuoteIn": {
     "message": "Báo giá mới sẽ có sau $1",
@@ -1746,9 +1701,6 @@
   },
   "swapSourceInfo": {
     "message": "Chúng tôi tìm kiếm nhiều nguồn thanh khoản (các sàn giao dịch, trình tổng hợp và nhà tạo lập thị trường) để tìm được mức tỷ lệ tốt nhất và phí mạng thấp nhất."
-  },
-  "swapStartSwapping": {
-    "message": "Bắt đầu hoán đổi"
   },
   "swapSwapFrom": {
     "message": "Hoán đổi từ"
@@ -1878,9 +1830,6 @@
   },
   "tokenContractAddress": {
     "message": "Địa chỉ hợp đồng token"
-  },
-  "tokenOptions": {
-    "message": "Tùy chọn token"
   },
   "tokenSymbol": {
     "message": "Ký hiệu token"

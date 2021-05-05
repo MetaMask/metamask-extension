@@ -1,0 +1,53 @@
+.customize-nonce-modal {
+  padding-left: 24px;
+  padding-right: 18px;
+  display: flex;
+  flex-flow: column nowrap;
+
+  &__main-header {
+    display: flex;
+    align-items: center;
+    padding-top: 24px;
+  }
+
+  &__main-title {
+    flex: 1;
+  }
+
+  &__close {
+    @include H4;
+
+    color: $ui-black;
+    background: none;
+    flex: 0;
+    align-self: flex-start;
+  }
+
+  & &__link {
+    @include H6;
+
+    display: inline;
+    padding-left: 5px;
+  }
+
+  & &__reset {
+    @include H7;
+  }
+
+  &__input {
+    input {
+      @include Paragraph;
+
+      width: 100%;
+    }
+  }
+}
+
+.customize-nonce-modal-content {
+  padding: 0;
+}
+
+.customize-nonce-modal-container {
+  height: 324px;
+  width: 100%;
+}

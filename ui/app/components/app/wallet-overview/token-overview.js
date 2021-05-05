@@ -18,10 +18,7 @@ import {
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { updateSendToken } from '../../../store/actions';
-import {
-  getSwapsFeatureLiveness,
-  setSwapsFromToken,
-} from '../../../ducks/swaps/swaps';
+import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import {
   getAssetImages,
   getCurrentKeyring,
@@ -63,7 +60,6 @@ const TokenOverview = ({ className, token }) => {
     properties: { source: 'Token View', active_currency: token.symbol },
     category: 'swaps',
   });
-  const swapsEnabled = useSelector(getSwapsFeatureLiveness);
 
   return (
     <WalletOverview
@@ -96,41 +92,39 @@ const TokenOverview = ({ className, token }) => {
             label={t('send')}
             data-testid="eth-overview-send"
           />
-          {swapsEnabled ? (
-            <IconButton
-              className="token-overview__button"
-              disabled={!isSwapsChain}
-              Icon={SwapIcon}
-              onClick={() => {
-                if (isSwapsChain) {
-                  enteredSwapsEvent();
-                  dispatch(
-                    setSwapsFromToken({
-                      ...token,
-                      iconUrl: assetImages[token.address],
-                      balance,
-                      string: balanceToRender,
-                    }),
-                  );
-                  if (usingHardwareWallet) {
-                    global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
-                  } else {
-                    history.push(BUILD_QUOTE_ROUTE);
-                  }
+          <IconButton
+            className="token-overview__button"
+            disabled={!isSwapsChain}
+            Icon={SwapIcon}
+            onClick={() => {
+              if (isSwapsChain) {
+                enteredSwapsEvent();
+                dispatch(
+                  setSwapsFromToken({
+                    ...token,
+                    iconUrl: assetImages[token.address],
+                    balance,
+                    string: balanceToRender,
+                  }),
+                );
+                if (usingHardwareWallet) {
+                  global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
+                } else {
+                  history.push(BUILD_QUOTE_ROUTE);
                 }
-              }}
-              label={t('swap')}
-              tooltipRender={(contents) => (
-                <Tooltip
-                  title={t('onlyAvailableOnMainnet')}
-                  position="bottom"
-                  disabled={isSwapsChain}
-                >
-                  {contents}
-                </Tooltip>
-              )}
-            />
-          ) : null}
+              }
+            }}
+            label={t('swap')}
+            tooltipRender={(contents) => (
+              <Tooltip
+                title={t('onlyAvailableOnMainnet')}
+                position="bottom"
+                disabled={isSwapsChain}
+              >
+                {contents}
+              </Tooltip>
+            )}
+          />
         </>
       }
       className={className}

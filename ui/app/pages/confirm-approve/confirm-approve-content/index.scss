@@ -292,6 +292,38 @@
       margin-left: 16px;
     }
   }
+
+  &__custom-nonce-warning {
+    width: 100%;
+    height: 30px;
+  }
+
+  &__custom-nonce-content {
+    display: flex;
+    height: 49px;
+    margin-top: 5px;
+    margin-bottom: 6px;
+    padding: 12px 12px 14px 12px;
+    border: 1px solid #bbc0c5;
+    box-sizing: border-box;
+    border-radius: 6px;
+    align-items: center;
+  }
+
+  &__custom-nonce-header {
+    flex: 1;
+    align-items: center;
+  }
+
+  &__custom-nonce-value {
+    flex: 0;
+  }
+
+  & &__custom-nonce-edit {
+    @include H7;
+
+    width: auto;
+  }
 }
 
 .confirm-approve-content--full {

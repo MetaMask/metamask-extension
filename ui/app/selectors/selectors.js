@@ -93,7 +93,16 @@ export function getAccountType(state) {
   }
 }
 
-export function getCurrentNetworkId(state) {
+/**
+ * get the currently selected networkId which will be 'loading' when the
+ * network changes. The network id should not be used in most cases,
+ * instead use chainId in most situations. There are a limited number of
+ * use cases to use this method still, such as when comparing transaction
+ * metadata that predates the switch to using chainId.
+ * @deprecated - use getCurrentChainId instead
+ * @param {Object} state - redux state object
+ */
+export function deprecatedGetCurrentNetworkId(state) {
   return state.metamask.network;
 }
 
@@ -158,7 +167,7 @@ export function getMetaMaskCachedBalances(state) {
 
   // Fallback to fetching cached balances from network id
   // this can eventually be removed
-  const network = getCurrentNetworkId(state);
+  const network = deprecatedGetCurrentNetworkId(state);
 
   return (
     state.metamask.cachedBalances[chainId] ??
@@ -376,17 +385,6 @@ export function getDomainMetadata(state) {
   return state.metamask.domainMetadata;
 }
 
-export const getBackgroundMetaMetricState = (state) => {
-  return {
-    network: getCurrentNetworkId(state),
-    accountType: getAccountType(state),
-    metaMetricsId: state.metamask.metaMetricsId,
-    numberOfTokens: getNumberOfTokens(state),
-    numberOfAccounts: getNumberOfAccounts(state),
-    participateInMetaMetrics: state.metamask.participateInMetaMetrics,
-  };
-};
-
 export function getRpcPrefsForCurrentProvider(state) {
   const { frequentRpcListDetail, provider } = state.metamask;
   const selectRpcInfo = frequentRpcListDetail.find(
@@ -491,4 +489,41 @@ export function getIsSwapsChain(state) {
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state).toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
+}
+
+export function getNextSuggestedNonce(state) {
+  return Number(state.metamask.nextNonce);
+}
+
+export function getShowWhatsNewPopup(state) {
+  return state.appState.showWhatsNewPopup;
+}
+
+/**
+ * @typedef {Object} Notification
+ * @property {number} id - A unique identifier for the notification
+ * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
+ */
+
+/**
+ * Notifications are managed by the notification controller and referenced by
+ * `state.metamask.notifications`. This function returns a list of notifications
+ * the can be shown to the user. This list includes all notifications that do not
+ * have a truthy `isShown` property.
+ *
+ * The returned notifications are sorted by date.
+ *
+ * @param {Object} state - the redux state object
+ * @returns {Notification[]} An array of notifications that can be shown to the user
+ */
+
+export function getSortedNotificationsToShow(state) {
+  const notifications = Object.values(state.metamask.notifications);
+  const notificationsToShow = notifications.filter(
+    (notification) => !notification.isShown,
+  );
+  const notificationsSortedByDate = notificationsToShow.sort(
+    (a, b) => new Date(b.date) - new Date(a.date),
+  );
+  return notificationsSortedByDate;
 }

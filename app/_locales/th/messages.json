@@ -244,9 +244,6 @@
     "message": "นำเข้าเรียบร้อย",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "ข้อมูลและความช่วยเหลือ"
-  },
   "insufficientFunds": {
     "message": "เงินทุนไม่เพียงพอ"
   },
@@ -399,9 +396,6 @@
   "resetAccount": {
     "message": "รีเซ็ตบัญชี"
   },
-  "restoreFromSeed": {
-    "message": "กู้คืนจากกลุ่มคำชีด"
-  },
   "revealSeedWords": {
     "message": "เปิดเผยกลุ่มคำชีด"
   },
@@ -420,9 +414,6 @@
   "search": {
     "message": "ค้นหา"
   },
-  "secretPhrase": {
-    "message": "ป้อนกลุ่มคำสิบสองคำเพื่อกู้คืนตู้เซฟของคุณ"
-  },
   "seedPhraseReq": {
     "message": "กลุ่มคำชีดมีความยาว 12 คำ"
   },
@@ -440,9 +431,6 @@
   },
   "sendAmount": {
     "message": "ส่งจำนวนเงินนี้"
-  },
-  "sendETH": {
-    "message": "ส่งอีเธอร์"
   },
   "sendTokens": {
     "message": "ส่งโทเค็น"

@@ -1389,7 +1389,12 @@ export function addToken(
   dontShowLoadingIndicator,
 ) {
   return (dispatch) => {
-    !dontShowLoadingIndicator && dispatch(showLoadingIndication());
+    if (!address) {
+      throw new Error('MetaMask - Cannot add token without address');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
     return new Promise((resolve, reject) => {
       background.addToken(address, symbol, decimals, image, (err, tokens) => {
         dispatch(hideLoadingIndication());
@@ -1483,7 +1488,7 @@ export function clearPendingTokens() {
   };
 }
 
-export function createCancelTransaction(txId, customGasPrice) {
+export function createCancelTransaction(txId, customGasPrice, customGasLimit) {
   log.debug('background.cancelTransaction');
   let newTxId;
 
@@ -1492,6 +1497,7 @@ export function createCancelTransaction(txId, customGasPrice) {
       background.createCancelTransaction(
         txId,
         customGasPrice,
+        customGasLimit,
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -2426,8 +2432,12 @@ export function requestAccountsPermissionWithId(origin) {
  * @param {string[]} accounts - The accounts to expose, if any.
  */
 export function approvePermissionsRequest(request, accounts) {
-  return () => {
-    background.approvePermissionsRequest(request, accounts);
+  return (dispatch) => {
+    background.approvePermissionsRequest(request, accounts, (err) => {
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
   };
 }
 
@@ -2454,8 +2464,12 @@ export function rejectPermissionsRequest(requestId) {
  * Clears the given permissions for the given origin.
  */
 export function removePermissionsFor(domains) {
-  return () => {
-    background.removePermissionsFor(domains);
+  return (dispatch) => {
+    background.removePermissionsFor(domains, (err) => {
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
   };
 }
 
@@ -2463,8 +2477,12 @@ export function removePermissionsFor(domains) {
  * Clears all permissions for all domains.
  */
 export function clearPermissions() {
-  return () => {
-    background.clearPermissions();
+  return (dispatch) => {
+    background.clearPermissions((err) => {
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
   };
 }
 
@@ -2555,16 +2573,6 @@ export function setConnectedStatusPopoverHasBeenShown() {
   };
 }
 
-export function setSwapsWelcomeMessageHasBeenShown() {
-  return () => {
-    background.setSwapsWelcomeMessageHasBeenShown((err) => {
-      if (err) {
-        throw new Error(err.message);
-      }
-    });
-  };
-}
-
 export async function setAlertEnabledness(alertId, enabledness) {
   await promisifiedBackground.setAlertEnabledness(alertId, enabledness);
 }
@@ -2609,7 +2617,11 @@ export function getContractMethodData(data = '') {
 
     return getMethodDataAsync(fourBytePrefix).then(({ name, params }) => {
       dispatch(loadingMethodDataFinished());
-      background.addKnownMethodData(fourBytePrefix, { name, params });
+      background.addKnownMethodData(fourBytePrefix, { name, params }, (err) => {
+        if (err) {
+          dispatch(displayWarning(err.message));
+        }
+      });
       return { name, params };
     });
   };
@@ -2857,4 +2869,10 @@ export function trackMetaMetricsEvent(payload, options) {
  */
 export function trackMetaMetricsPage(payload, options) {
   return promisifiedBackground.trackMetaMetricsPage(payload, options);
+}
+
+export function updateViewedNotifications(notificationIdViewedStatusMap) {
+  return promisifiedBackground.updateViewedNotifications(
+    notificationIdViewedStatusMap,
+  );
 }

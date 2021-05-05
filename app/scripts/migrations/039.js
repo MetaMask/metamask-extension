@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import ethUtil from 'ethereumjs-util';
+import { toChecksumAddress } from 'ethereumjs-util';
 
 const version = 39;
 
@@ -12,7 +12,7 @@ function isOldDai(token = {}) {
     token &&
     typeof token === 'object' &&
     token.symbol === DAI_V1_TOKEN_SYMBOL &&
-    ethUtil.toChecksumAddress(token.address) === DAI_V1_CONTRACT_ADDRESS
+    toChecksumAddress(token.address) === DAI_V1_CONTRACT_ADDRESS
   );
 }
 

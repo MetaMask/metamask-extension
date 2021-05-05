@@ -192,9 +192,6 @@
     "message": "Importováno",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Informace a nápověda"
-  },
   "insufficientFunds": {
     "message": "Nedostatek finančních prostředků."
   },
@@ -326,9 +323,6 @@
   "resetAccount": {
     "message": "Resetovat účet"
   },
-  "restoreFromSeed": {
-    "message": "Obnovit z seed fráze"
-  },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
   },
@@ -344,9 +338,6 @@
   "searchTokens": {
     "message": "Hledat tokeny"
   },
-  "secretPhrase": {
-    "message": "Zadejte svých 12 slov tajné fráze k obnovení trezoru."
-  },
   "seedPhraseReq": {
     "message": "klíčové fráze mají 12 slov"
   },
@@ -355,9 +346,6 @@
   },
   "send": {
     "message": "Odeslat"
-  },
-  "sendETH": {
-    "message": "Odeslat ETH"
   },
   "sendTokens": {
     "message": "Odeslat tokeny"

@@ -490,21 +490,12 @@
   "importAccountSeedPhrase": {
     "message": "Uvoz računa z geslom seed phrase"
   },
-  "importUsingSeed": {
-    "message": "Uvozi z seed phase"
-  },
   "importWallet": {
     "message": "Uvozi denarnico"
-  },
-  "importYourExisting": {
-    "message": "Uvozite svojo obstoječo denarnico s pomočjo 12-besednega gesla seed phrase"
   },
   "imported": {
     "message": "Uvoženo",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info & Pomoč"
   },
   "initialTransactionConfirmed": {
     "message": "Vaša prvotna transakcija je bila potrjena. Pritisnite V redu in se vrnite nazaj."
@@ -599,12 +590,6 @@
   },
   "myAccounts": {
     "message": "Moji računi"
-  },
-  "myWalletAccounts": {
-    "message": "Moji računi Denarnice"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Vsi vaši računi, ustvarjeni v MetaMasku, bodo samodejno dodani v ta razdelek."
   },
   "needEtherInWallet": {
     "message": "Za interakcijo z decentraliziranimi aplikacijami boste v svoji denarnici potrebovali Eter."
@@ -823,9 +808,6 @@
   "restoreAccountWithSeed": {
     "message": "Obnovi račun z seed phrase"
   },
-  "restoreFromSeed": {
-    "message": "Obnovim račun?"
-  },
   "revealSeedWords": {
     "message": "Razkrij seed words"
   },
@@ -877,9 +859,6 @@
   "secretBackupPhraseWarning": {
     "message": "OPOZORILO: Nikoli nikomur ne razkrijte varnostne kopije. Kdorkoli lahko tem geslom vedno prevzame vaš Ether."
   },
-  "secretPhrase": {
-    "message": "Vnesite vaših dvanajst besed za obnovitev vaših računov."
-  },
   "securityAndPrivacy": {
     "message": "Varnost in zasebnost"
   },
@@ -918,9 +897,6 @@
   },
   "sendAmount": {
     "message": "Pošlji znesek"
-  },
-  "sendETH": {
-    "message": "Pošlji ETH"
   },
   "sendTokens": {
     "message": "Pošlji žetone"

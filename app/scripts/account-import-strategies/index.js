@@ -1,7 +1,12 @@
 import log from 'loglevel';
 import Wallet from 'ethereumjs-wallet';
 import importers from 'ethereumjs-wallet/thirdparty';
-import ethUtil from 'ethereumjs-util';
+import {
+  toBuffer,
+  isValidPrivate,
+  bufferToHex,
+  stripHexPrefix,
+} from 'ethereumjs-util';
 import { addHexPrefix } from '../lib/util';
 
 const accountImporter = {
@@ -22,13 +27,13 @@ const accountImporter = {
       }
 
       const prefixed = addHexPrefix(privateKey);
-      const buffer = ethUtil.toBuffer(prefixed);
+      const buffer = toBuffer(prefixed);
 
-      if (!ethUtil.isValidPrivate(buffer)) {
+      if (!isValidPrivate(buffer)) {
         throw new Error('Cannot import invalid private key.');
       }
 
-      const stripped = ethUtil.stripHexPrefix(prefixed);
+      const stripped = stripHexPrefix(prefixed);
       return stripped;
     },
     'JSON File': (input, password) => {
@@ -47,7 +52,7 @@ const accountImporter = {
 
 function walletToPrivateKey(wallet) {
   const privateKeyBuffer = wallet.getPrivateKey();
-  return ethUtil.bufferToHex(privateKeyBuffer);
+  return bufferToHex(privateKeyBuffer);
 }
 
 export default accountImporter;

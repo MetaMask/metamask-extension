@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "활동 로그"
   },
-  "addAccount": {
-    "message": "계정 추가"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask를 이용해 얻은 토큰 추가"
   },
@@ -781,21 +778,12 @@
   "importAccountSeedPhrase": {
     "message": "시드 구문으로 계정 가져오기"
   },
-  "importUsingSeed": {
-    "message": "계정 시드 구문으로 가져오기"
-  },
   "importWallet": {
     "message": "지갑 가져오기"
-  },
-  "importYourExisting": {
-    "message": "12단어 시드 구문을 사용하여 지갑 가져오기"
   },
   "imported": {
     "message": "가져옴",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "정보 및 도움말"
   },
   "initialTransactionConfirmed": {
     "message": "최초 거래를 네트워크에서 확인했습니다. 확인을 클릭하여 뒤로 돌아가세요."
@@ -984,12 +972,6 @@
   "myAccounts": {
     "message": "내 계정"
   },
-  "myWalletAccounts": {
-    "message": "내 지갑 계정"
-  },
-  "myWalletAccountsDescription": {
-    "message": "MetaMask에서 생성한 모든 계정으로 이 섹션에 자동으로 추가됩니다."
-  },
   "needEtherInWallet": {
     "message": "MetaMask를 이용하는 분산형 애플리케이션과 상호작용하려면 지갑에 Ether가 있어야 합니다."
   },
@@ -1002,6 +984,9 @@
   },
   "networkName": {
     "message": "네트워크 이름"
+  },
+  "networkNameEthereum": {
+    "message": "이더리움"
   },
   "networkSettingsChainIdDescription": {
     "message": "체인 ID는 거래 서명에 사용합니다. 네트워크에서 반환하는 체인 ID와 일치해야 합니다. 십진수나 '0x'로 시작하는 16진수를 입력할 수 있지만, 표시될 때는 십진수로 표시됩니다."
@@ -1270,9 +1255,6 @@
   "restoreAccountWithSeed": {
     "message": "시드 구문으로 계정 복구"
   },
-  "restoreFromSeed": {
-    "message": "계정을 복구하시겠습니까?"
-  },
   "restoreWalletPreferences": {
     "message": "$1의 데이터 백업이 발견되었습니다. 지갑 환경설정을 복구하시겠습니까?",
     "description": "$1 is the date at which the data was backed up"
@@ -1343,9 +1325,6 @@
   "secretBackupPhraseWarning": {
     "message": "경고: 백업 구문은 절대로 공개하지 마세요. 이 구문이 있는 사람은 귀하의 Ether를 영원히 소유할 수 있습니다."
   },
-  "secretPhrase": {
-    "message": "금고를 복구하려면 비밀 12단어 구문을 여기에 입력하세요."
-  },
   "securityAndPrivacy": {
     "message": "보안 및 개인정보 보호"
   },
@@ -1396,9 +1375,6 @@
   },
   "sendAmount": {
     "message": "금액 보내기"
-  },
-  "sendETH": {
-    "message": "ETH 보내기"
   },
   "sendSpecifiedTokens": {
     "message": "$1 보내기",
@@ -1624,24 +1600,6 @@
   "swapHighSlippageWarning": {
     "message": "슬리패지 금액이 아주 큽니다. 현재 어떤 작업을 하고 있는지 확인하세요!"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "자세한 정보를 확인하고 싶으신가요?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "MetaMask Swaps에 대해 자세히 알아보기"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "다음을 포함한 유동성 소스:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "이제 MetaMask 지갑에서 토큰을 바로 스왑할 수 있습니다. MetaMask Swaps는 다양한 분산형 교환 애그리게이터, 투자전문기관, 개별 DEX를 결합하여 MetaMask 사용자가 언제든 최저 네트워크 요금으로 최상의 가격을 얻을 수 있게 합니다."
-  },
-  "swapIntroPopupTitle": {
-    "message": "토큰 스왑은 여기서 진행됩니다!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "당사의 공식 계약 감사 검토"
-  },
   "swapLowSlippageError": {
     "message": "거래가 실패할 수도 있습니다. 최대 슬리패지가 너무 낮습니다."
   },
@@ -1663,7 +1621,7 @@
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNetworkFeeSummary": {
-    "message": "네트워크 요금에는 스왑을 처리하고 이더리움 네트워크에 보관하는 비용이 적용됩니다. MetaMask는 이 요금을 이용해 이득을 얻지 않습니다."
+    "message": "네트워크 요금에는 스왑을 처리하고 $1 네트워크에 보관하는 비용이 적용됩니다. MetaMask는 이 요금을 이용해 이득을 얻지 않습니다."
   },
   "swapNewQuoteIn": {
     "message": "$1 후에 새 견적",
@@ -1743,9 +1701,6 @@
   },
   "swapSourceInfo": {
     "message": "당사에서는 여러 유동성 소스(교환, 애그리게이터, 투자전문기관)를 검색하여 최상의 요율과 최저 네트워크 요금을 찾습니다."
-  },
-  "swapStartSwapping": {
-    "message": "스왑 시작"
   },
   "swapSwapFrom": {
     "message": "다음에서 스왑"
@@ -1875,9 +1830,6 @@
   },
   "tokenContractAddress": {
     "message": "토큰 계약 주소"
-  },
-  "tokenOptions": {
-    "message": "토큰 옵션"
   },
   "tokenSymbol": {
     "message": "토큰 기호"

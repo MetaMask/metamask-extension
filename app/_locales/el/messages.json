@@ -496,21 +496,12 @@
   "importAccountSeedPhrase": {
     "message": "Εισαγωγή λογαριασμού με Φράση Φύτρου"
   },
-  "importUsingSeed": {
-    "message": "Εισαγωγή με χρήση φάσης σπόρου λογαριασμού"
-  },
   "importWallet": {
     "message": "Εισαγωγή Πορτοφολιού"
-  },
-  "importYourExisting": {
-    "message": "Εισαγάγετε το υπάρχον πορτοφόλι σας χρησιμοποιώντας μια φράση φύτρου 12 λέξεων"
   },
   "imported": {
     "message": "Έγινε εισαγωγή",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Πληροφορίες & Βοήθεια"
   },
   "initialTransactionConfirmed": {
     "message": "Η αρχική σας συναλλαγή επιβεβαιώθηκε από το δίκτυο. Πατήστε ΕΝΤΑΞΕΙ για επιστροφή."
@@ -611,12 +602,6 @@
   },
   "myAccounts": {
     "message": "Οι Λογαριασμοί μου"
-  },
-  "myWalletAccounts": {
-    "message": "Λογαριασμοί Πορτοφολιού"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Όλοι οι λογαριασμοί σας που έχετε δημιουργήσει στο MetaMask θα προστεθούν αυτόματα σε αυτήν την ενότητα."
   },
   "needEtherInWallet": {
     "message": "Για να αλληλεπιδράσετε με αποκεντρωμένες εφαρμογές χρησιμοποιώντας το MetaMask, θα χρειαστείτε Ether στο πορτοφόλι σας."
@@ -835,9 +820,6 @@
   "restoreAccountWithSeed": {
     "message": "Επαναφέρετε τον Λογαριασμό σας με Φράση Επαναφοράς"
   },
-  "restoreFromSeed": {
-    "message": "Επαναφορά λογαριασμού;"
-  },
   "revealSeedWords": {
     "message": "Αποκάλυψη Λέξεων Φύτρου"
   },
@@ -892,9 +874,6 @@
   "secretBackupPhraseWarning": {
     "message": "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Ποτέ μην αποκαλύπτετε την εφεδρική φράση. Όποιος έχει αυτή τη φράση μπορεί να πάρει τα Ether σας για πάντα."
   },
-  "secretPhrase": {
-    "message": "Εισαγάγετε εδώ τη μυστική φράση δώδεκα λέξεων για να επαναφέρετε το χρηματοκιβώτιό σας."
-  },
   "securityAndPrivacy": {
     "message": "Ασφάλεια και Απόρρητο"
   },
@@ -933,9 +912,6 @@
   },
   "sendAmount": {
     "message": "Αποστολή Ποσού"
-  },
-  "sendETH": {
-    "message": "Στείλτε ETH"
   },
   "sendTokens": {
     "message": "Στείλτε Tokens"

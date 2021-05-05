@@ -508,21 +508,12 @@
   "importAccountSeedPhrase": {
     "message": "利用助憶詞還原"
   },
-  "importUsingSeed": {
-    "message": "利用助憶詞匯入帳戶"
-  },
   "importWallet": {
     "message": "匯入錢包"
-  },
-  "importYourExisting": {
-    "message": "使用 12 字的助記詞來匯入你現有的錢包"
   },
   "imported": {
     "message": "已匯入私鑰",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "說明 & 資訊"
   },
   "initialTransactionConfirmed": {
     "message": "交易已確認"
@@ -620,12 +611,6 @@
   },
   "myAccounts": {
     "message": "我的帳戶"
-  },
-  "myWalletAccounts": {
-    "message": "我的錢包帳號"
-  },
-  "myWalletAccountsDescription": {
-    "message": "所有你在 MetaMask 創建的帳號將自動新增到此區塊。"
   },
   "needEtherInWallet": {
     "message": "要使用 MetaMask 存取去中心化應用服務時，您的錢包中需要有以太幣。"
@@ -832,9 +817,6 @@
   "restoreAccountWithSeed": {
     "message": "透過助憶詞還原您的帳戶"
   },
-  "restoreFromSeed": {
-    "message": "還原帳戶？"
-  },
   "revealSeedWords": {
     "message": "顯示助憶詞"
   },
@@ -889,9 +871,6 @@
   "secretBackupPhraseWarning": {
     "message": "警告: 絕對不要洩漏您的助憶詞。任何人只要得知助憶詞代表他可以竊取您所有的以太幣和代幣。"
   },
-  "secretPhrase": {
-    "message": "輸入您的12個助憶詞以回復金庫"
-  },
   "securityAndPrivacy": {
     "message": "安全＆隱私"
   },
@@ -924,9 +903,6 @@
   },
   "sendAmount": {
     "message": "發送數量"
-  },
-  "sendETH": {
-    "message": "發送以太幣"
   },
   "sendTokens": {
     "message": "發送代幣"

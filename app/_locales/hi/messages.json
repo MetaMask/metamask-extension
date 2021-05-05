@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "गतिविधि लॉग"
   },
-  "addAccount": {
-    "message": "एक खाता जोड़ें"
-  },
   "addAcquiredTokens": {
     "message": "आपके द्वारा MetaMask का उपयोग करके प्राप्त किए गए टोकन जोड़ें"
   },
@@ -781,21 +778,12 @@
   "importAccountSeedPhrase": {
     "message": "सीडफ्रेज़ के साथ कोई खाता आयात करें"
   },
-  "importUsingSeed": {
-    "message": "खाता सीडफ्रेज़ का उपयोग करके आयात करें"
-  },
   "importWallet": {
     "message": "वॉलेट आयात करें"
-  },
-  "importYourExisting": {
-    "message": "12 शब्द के सीडफ्रेज़ का उपयोग करके अपने मौजूदा वॉलेट को आयात करें"
   },
   "imported": {
     "message": "आयातित",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "जानकारी और मदद"
   },
   "initialTransactionConfirmed": {
     "message": "नेटवर्क द्वारा आपके प्रारंभिक लेनदेन की पुष्टि की गई थी। वापस जाने के लिए ठीक पर क्लिक करें।"
@@ -983,12 +971,6 @@
   },
   "myAccounts": {
     "message": "मेरे खाते"
-  },
-  "myWalletAccounts": {
-    "message": "मेरे वॉलेट खाते"
-  },
-  "myWalletAccountsDescription": {
-    "message": "आपके सभी MetaMask निर्मित खाते स्वतः ही इस अनुभाग में जोड़ दिए जाएँगे।"
   },
   "needEtherInWallet": {
     "message": "MetaMask का उपयोग करके विकेंद्रीकृत एप्लिकेशन के साथ सहभागिता करने के लिए, आपको अपने वॉलेट में Ether की आवश्यकता होगी।"
@@ -1273,9 +1255,6 @@
   "restoreAccountWithSeed": {
     "message": "सीड फ्रेज़ के साथ अपने खाते को पुनर्स्थापित करें"
   },
-  "restoreFromSeed": {
-    "message": "खाता पुनर्स्थापित करें?"
-  },
   "restoreWalletPreferences": {
     "message": "$1 से आपके डेटा का बैकअप मिला है। क्या आप अपनी वॉलेट वरीयताओं को पुनर्स्थापित करना चाहते हैं?",
     "description": "$1 is the date at which the data was backed up"
@@ -1346,9 +1325,6 @@
   "secretBackupPhraseWarning": {
     "message": "चेतावनी: कभी भी अपने बैकअप वाक्यांश का खुलासा न करें। इस वाक्यांश के साथ कोई भी आपके Ether को हमेशा के लिए ले सकता है।"
   },
-  "secretPhrase": {
-    "message": "अपनी तिजोरी को पुनर्स्थापित करने के लिए अपने गुप्त बारह शब्द वाक्यांश को यहाँ दर्ज करें।"
-  },
   "securityAndPrivacy": {
     "message": "सुरक्षा और गोपनीयता"
   },
@@ -1399,9 +1375,6 @@
   },
   "sendAmount": {
     "message": "राशि भेजें"
-  },
-  "sendETH": {
-    "message": "ETH भेजें"
   },
   "sendSpecifiedTokens": {
     "message": "$1 भेजें",
@@ -1627,24 +1600,6 @@
   "swapHighSlippageWarning": {
     "message": "स्लिपेज राशि बहुत अधिक है। सुनिश्चित करें कि आप जानते हैं कि आप क्या कर रहे हैं!"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "अधिक सीखना चाहते हैं?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "MetaMask स्वैप के बारे में अधिक जानें"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "चलनिधि स्रोतों में निम्न शामिल हैं:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "अब आप अपने MetaMask वॉलेट में सीधे टोकन स्वैप कर सकते हैं। MetaMask स्वैप कई विकेंद्रीकृत विनिमय एग्रीगेटर, पेशेवर बाजार निर्माताओं और व्यक्तिगत DEX को जोड़ता है, ताकि MetaMask उपयोगकर्ताओं को हमेशा सबसे कम नेटवर्क शुल्क के साथ सबसे अच्छा मूल्य मिल सके।"
-  },
-  "swapIntroPopupTitle": {
-    "message": "टोकन स्वैपिंग यहाँ उपलब्ध है!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "हमारे आधिकारिक अनुबंधों के ऑडिट की समीक्षा करें"
-  },
   "swapLowSlippageError": {
     "message": "लेनदेन विफल हो सकता है, अधिकतम स्लिपेज बहुत कम हो सकता है।"
   },
@@ -1666,7 +1621,7 @@
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNetworkFeeSummary": {
-    "message": "नेटवर्क शुल्क आपके स्वैप को संसाधित करने के शुल्क और उसे Ethereum नेटवर्क पर संग्रह करने को कवर करता है। MetaMask इस शुल्क से लाभ नहीं कमाता है।"
+    "message": "नेटवर्क शुल्क आपके स्वैप को संसाधित करने के शुल्क और उसे $1 नेटवर्क पर संग्रह करने को कवर करता है। MetaMask इस शुल्क से लाभ नहीं कमाता है।"
   },
   "swapNewQuoteIn": {
     "message": "$1 में नए उद्धरण",
@@ -1746,9 +1701,6 @@
   },
   "swapSourceInfo": {
     "message": "हम सर्वोत्तम दरों और न्यूनतम नेटवर्क शुल्क का पता लगाने के लिए कई चलनिधि स्रोतों (एक्सचेंज, एग्रीगेटर और पेशेवर बाजार निर्माताओं) की खोज करते हैं।"
-  },
-  "swapStartSwapping": {
-    "message": "स्वैप करना शुरू करें"
   },
   "swapSwapFrom": {
     "message": "इससे स्वैप करें"
@@ -1878,9 +1830,6 @@
   },
   "tokenContractAddress": {
     "message": "टोकन अनुबंध पता"
-  },
-  "tokenOptions": {
-    "message": "टोकन के विकल्प"
   },
   "tokenSymbol": {
     "message": "टोकन का प्रतीक"

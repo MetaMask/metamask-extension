@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "log ng aktibidad"
   },
-  "addAccount": {
-    "message": "Magdagdag ng account"
-  },
   "addAcquiredTokens": {
     "message": "Idagdag ang mga token na nakuha mo gamit ang MetaMask"
   },
@@ -781,21 +778,12 @@
   "importAccountSeedPhrase": {
     "message": "Mag-import ng account gamit ang seed phrase"
   },
-  "importUsingSeed": {
-    "message": "I-import gamit ang seed phrase ng account"
-  },
   "importWallet": {
     "message": "I-import ang wallet"
-  },
-  "importYourExisting": {
-    "message": "I-import ang iyong kasalukuyang wallet gamit ang 12 salita na seed phrase"
   },
   "imported": {
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Impormasyon at Tulong"
   },
   "initialTransactionConfirmed": {
     "message": "Nakumpirma na ng network ang iyong inisyal na transaksyon. I-click ang OK para bumalik."
@@ -983,12 +971,6 @@
   },
   "myAccounts": {
     "message": "Mga Account Ko"
-  },
-  "myWalletAccounts": {
-    "message": "Mga Wallet Account Ko"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Ang lahat ng iyong ginawang account sa MetaMask ay awtomatikong maidaragdag sa seksyong ito."
   },
   "needEtherInWallet": {
     "message": "Para makaugnayan ang mga decentralized ma application gamit ang MetaMask, kakailanganin mo ang Ether sa iyong wallet."
@@ -1270,9 +1252,6 @@
   "restoreAccountWithSeed": {
     "message": "I-restore ang iyong Account gamit ang Seed Phrase"
   },
-  "restoreFromSeed": {
-    "message": "I-restore ang account?"
-  },
   "restoreWalletPreferences": {
     "message": "Nakita ang backup ng iyong data mula sa $1. Gusto mo bang i-restore ang mga kagustuhan mo sa wallet?",
     "description": "$1 is the date at which the data was backed up"
@@ -1343,9 +1322,6 @@
   "secretBackupPhraseWarning": {
     "message": "BABALA: Huwag kailanman ipaalam ang iyong phrase sa pag-back up. Ang sinumang may phrase na ito ay maaaring angkinin ang iyong Ether."
   },
-  "secretPhrase": {
-    "message": "Ilagay ang iyong labindalawang lihim na phrase dito para ma-restore ang iyong vault."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Pagkapribado"
   },
@@ -1396,9 +1372,6 @@
   },
   "sendAmount": {
     "message": "Halaga ng Ipapadala"
-  },
-  "sendETH": {
-    "message": "Magpadala ng ETH"
   },
   "sendSpecifiedTokens": {
     "message": "Magpadala ng $1",
@@ -1624,24 +1597,6 @@
   "swapHighSlippageWarning": {
     "message": "Sobrang laki ng halaga ng slippage. Tiyaking alam mo ang ginagawa mo!"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "Gusto mo bang matuto pa?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "Matuto pa tungkol sa MetaMask Swaps"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "Kasama sa mga pinagkunan ng liquidity ang:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "Puwede mo nang direktang i-swap ang mga token sa iyong MetaMask wallet. Pinagsasama-sama ng MetaMask Swaps ang maraming decentralized exchange aggregator, propesyonal na market maker, at indibidwal na DEX para matiyak na makukuha palagi ng mga user ng MetaMask ang pinakasulit na presyo nang may pinakamababang bayarin sa network."
-  },
-  "swapIntroPopupTitle": {
-    "message": "Ito na ang pag-swap ng token!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "Suriin ang aming audit ng mga opisyal na kontrata"
-  },
   "swapLowSlippageError": {
     "message": "Maaaring hindi magtagumpay ang transaksyon, masyadong mababa ang max na slippage."
   },
@@ -1663,7 +1618,7 @@
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNetworkFeeSummary": {
-    "message": "Kasama sa bayarin sa network ang gastusin sa pagproseso ng iyong pag-swap at pag-store nito sa Ethereum network. Hindi kumikita ang MetaMask mula sa bayaring ito."
+    "message": "Kasama sa bayarin sa network ang gastusin sa pagproseso ng iyong pag-swap at pag-store nito sa $1 network. Hindi kumikita ang MetaMask mula sa bayaring ito."
   },
   "swapNewQuoteIn": {
     "message": "Mga bagong quote sa $1",
@@ -1743,9 +1698,6 @@
   },
   "swapSourceInfo": {
     "message": "Naghahanap kami ng maraming pinagkukunan ng liquidity (mga exchange, aggregator at propesyonal na market maker) para mahanap ang mga pinakasulit na rate at pinakamababang bayarin sa network."
-  },
-  "swapStartSwapping": {
-    "message": "Simulang mag-swap"
   },
   "swapSwapFrom": {
     "message": "Ipalit mula sa"
@@ -1875,9 +1827,6 @@
   },
   "tokenContractAddress": {
     "message": "Address ng Kontrata ng Token"
-  },
-  "tokenOptions": {
-    "message": "Mga opsyon ng token"
   },
   "tokenSymbol": {
     "message": "Simbolo ng Token"

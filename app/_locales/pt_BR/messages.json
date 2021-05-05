@@ -493,21 +493,12 @@
   "importAccountSeedPhrase": {
     "message": "Importar uma Conta com Frase-semente"
   },
-  "importUsingSeed": {
-    "message": "Importe usando a seed phrase da conta"
-  },
   "importWallet": {
     "message": "Importar Carteira"
-  },
-  "importYourExisting": {
-    "message": "Importe sua carteira existente usando uma frase-semente de 12 palavras"
   },
   "imported": {
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informações e ajuda"
   },
   "initialTransactionConfirmed": {
     "message": "Sua transação inicial foi confirmada pela rede. Clique em OK para voltar."
@@ -602,12 +593,6 @@
   },
   "myAccounts": {
     "message": "Minhas Contas"
-  },
-  "myWalletAccounts": {
-    "message": "Contas da Minha Carteira"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Todas as suas contas criadas no MetaMask serão automaticamente adicionadas a esta seção."
   },
   "needEtherInWallet": {
     "message": "Para interagir com aplicações descentralizadas usando o MetaMask, você precisará de Ether na sua carteira."
@@ -826,9 +811,6 @@
   "restoreAccountWithSeed": {
     "message": "Restaurar sua conta com a frase semente"
   },
-  "restoreFromSeed": {
-    "message": "Restaurar conta?"
-  },
   "revealSeedWords": {
     "message": "Revelar Palavras-semente"
   },
@@ -883,9 +865,6 @@
   "secretBackupPhraseWarning": {
     "message": "ATENÇÃO: Nunca revele sua frase de backup a ninguém. Qualquer pessoa com essa frase pode obter seu Ether para sempre."
   },
-  "secretPhrase": {
-    "message": "Digite sua frase secreta de doze palavras aqui para restaurar seu cofre."
-  },
   "securityAndPrivacy": {
     "message": "Segurança & Privacidade"
   },
@@ -924,9 +903,6 @@
   },
   "sendAmount": {
     "message": "Enviar Quantia"
-  },
-  "sendETH": {
-    "message": "Enviar ETH"
   },
   "sendTokens": {
     "message": "Enviar Tokens"

@@ -34,22 +34,29 @@
   }
 
   &__links {
-    margin-top: 25px;
+    margin-top: 15px;
     width: 100%;
+    text-align: center;
+    font-size: 0.75rem;
+
+    button {
+      font-weight: bold;
+    }
   }
 
   &__link {
     cursor: pointer;
     background-color: unset;
-    color: unset;
+    color: $Blue-500;
     font-size: unset;
+  }
 
-    &--import {
-      color: $ecstasy;
-    }
+  &__support {
+    margin-top: 25px;
+    font-size: 0.75rem;
 
-    &--use-classic {
-      margin-top: 10px;
+    a {
+      color: $Blue-500;
     }
   }
 }

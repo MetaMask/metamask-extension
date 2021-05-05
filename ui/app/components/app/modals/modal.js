@@ -29,6 +29,7 @@ import ConfirmDeleteNetwork from './confirm-delete-network';
 import AddToAddressBookModal from './add-to-addressbook-modal';
 import EditApprovalPermission from './edit-approval-permission';
 import NewAccountModal from './new-account-modal';
+import CustomizeNonceModal from './customize-nonce';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -365,6 +366,19 @@ const MODALS = {
 
   REJECT_TRANSACTIONS: {
     contents: <RejectTransactions />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  CUSTOMIZE_NONCE: {
+    contents: <CustomizeNonceModal />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

@@ -2,6 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
 import log from 'loglevel';
 
+import { captureMessage } from '@sentry/browser';
+
 import {
   addToken,
   addUnapprovedTransaction,
@@ -33,6 +35,7 @@ import {
 import {
   fetchSwapsFeatureLiveness,
   fetchSwapsGasPrices,
+  isContractAddressValid,
 } from '../../pages/swaps/swaps.util';
 import { calcGasTotal } from '../../pages/send/send.utils';
 import {
@@ -56,7 +59,7 @@ import {
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../../shared/constants/swaps';
-import { TRANSACTION_CATEGORIES } from '../../../../shared/constants/transaction';
+import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 
 const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -362,6 +365,21 @@ export const fetchAndSetSwapsGasPriceInfo = () => {
   };
 };
 
+export const fetchSwapsLiveness = () => {
+  return async (dispatch, getState) => {
+    let swapsFeatureIsLive = false;
+    try {
+      swapsFeatureIsLive = await fetchSwapsFeatureLiveness(
+        getCurrentChainId(getState()),
+      );
+    } catch (error) {
+      log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
+    }
+    await dispatch(setSwapsLiveness(swapsFeatureIsLive));
+    return swapsFeatureIsLive;
+  };
+};
+
 export const fetchQuotesAndSetQuoteState = (
   history,
   inputValue,
@@ -417,6 +435,7 @@ export const fetchQuotesAndSetQuoteState = (
 
     let destinationTokenAddedForSwap = false;
     if (
+      toTokenAddress &&
       toTokenSymbol !== swapsDefaultToken.symbol &&
       !contractExchangeRates[toTokenAddress]
     ) {
@@ -432,6 +451,7 @@ export const fetchQuotesAndSetQuoteState = (
       );
     }
     if (
+      fromTokenAddress &&
       fromTokenSymbol !== swapsDefaultToken.symbol &&
       !contractExchangeRates[fromTokenAddress] &&
       fromTokenBalance &&
@@ -659,6 +679,19 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       sensitiveProperties: swapMetaData,
     });
 
+    if (!isContractAddressValid(usedTradeTxParams.to, swapMetaData, chainId)) {
+      captureMessage('Invalid contract address', {
+        extra: {
+          token_from: swapMetaData.token_from,
+          token_to: swapMetaData.token_to,
+          contract_address: usedTradeTxParams.to,
+        },
+      });
+      await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
+      history.push(SWAPS_ERROR_ROUTE);
+      return;
+    }
+
     let finalApproveTxMeta;
     const approveTxParams = getApproveTxParams(state);
     if (approveTxParams) {
@@ -673,7 +706,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
         updateTransaction(
           {
             ...approveTxMeta,
-            transactionCategory: TRANSACTION_CATEGORIES.SWAP_APPROVAL,
+            type: TRANSACTION_TYPES.SWAP_APPROVAL,
             sourceTokenSymbol: sourceTokenInfo.symbol,
           },
           true,
@@ -714,7 +747,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
           ...tradeTxMeta,
           sourceTokenSymbol: sourceTokenInfo.symbol,
           destinationTokenSymbol: destinationTokenInfo.symbol,
-          transactionCategory: TRANSACTION_CATEGORIES.SWAP,
+          type: TRANSACTION_TYPES.SWAP,
           destinationTokenDecimals: destinationTokenInfo.decimals,
           destinationTokenAddress: destinationTokenInfo.address,
           swapMetaData,

@@ -2,11 +2,9 @@
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
 import '@formatjs/intl-relativetimeformat/polyfill';
 
-import { EventEmitter } from 'events';
 import PortStream from 'extension-port-stream';
 import extension from 'extensionizer';
 
-import Dnode from 'dnode';
 import Eth from 'ethjs';
 import EthQuery from 'eth-query';
 import StreamProvider from 'web3-stream-provider';
@@ -19,6 +17,7 @@ import {
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType } from './lib/util';
+import metaRPCClientFactory from './lib/metaRPCClientFactory';
 
 start().catch(log.error);
 
@@ -138,20 +137,6 @@ function setupWeb3Connection(connectionStream) {
  * @param {Function} cb - Called when the remote account manager connection is established
  */
 function setupControllerConnection(connectionStream, cb) {
-  const eventEmitter = new EventEmitter();
-  // the "weak: false" option is for nodejs only (eg unit tests)
-  // it is a workaround for node v12 support
-  const backgroundDnode = Dnode(
-    {
-      sendUpdate(state) {
-        eventEmitter.emit('update', state);
-      },
-    },
-    { weak: false },
-  );
-  connectionStream.pipe(backgroundDnode).pipe(connectionStream);
-  backgroundDnode.once('remote', function (backgroundConnection) {
-    backgroundConnection.on = eventEmitter.on.bind(eventEmitter);
-    cb(null, backgroundConnection);
-  });
+  const backgroundRPC = metaRPCClientFactory(connectionStream);
+  cb(null, backgroundRPC);
 }

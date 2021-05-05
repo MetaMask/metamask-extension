@@ -1,14 +1,7 @@
 {
   "author": "https://metamask.io",
   "background": {
-    "scripts": [
-      "globalthis.js",
-      "initSentry.js",
-      "lockdown.js",
-      "runLockdown.js",
-      "bg-libs.js",
-      "background.js"
-    ],
+    "page": "background.html",
     "persistent": true
   },
   "browser_action": {
@@ -78,6 +71,6 @@
     "notifications"
   ],
   "short_name": "__MSG_appName__",
-  "version": "9.4.0",
+  "version": "9.5.0",
   "web_accessible_resources": ["inpage.js", "phishing.html"]
 }

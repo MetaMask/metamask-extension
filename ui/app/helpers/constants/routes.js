@@ -14,11 +14,6 @@ const CONTACT_LIST_ROUTE = '/settings/contact-list';
 const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
 const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
 const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
-const CONTACT_MY_ACCOUNTS_ROUTE = '/settings/contact-list/my-accounts';
-const CONTACT_MY_ACCOUNTS_VIEW_ROUTE =
-  '/settings/contact-list/my-accounts/view';
-const CONTACT_MY_ACCOUNTS_EDIT_ROUTE =
-  '/settings/contact-list/my-accounts/edit';
 const REVEAL_SEED_ROUTE = '/seed';
 const MOBILE_SYNC_ROUTE = '/mobile-sync';
 const RESTORE_VAULT_ROUTE = '/restore-vault';
@@ -85,9 +80,6 @@ const PATH_NAME_MAP = {
   [`${CONTACT_EDIT_ROUTE}/:address`]: 'Edit Contact Settings Page',
   [CONTACT_ADD_ROUTE]: 'Add Contact Settings Page',
   [`${CONTACT_VIEW_ROUTE}/:address`]: 'View Contact Settings Page',
-  [CONTACT_MY_ACCOUNTS_ROUTE]: 'My Accounts List Settings Page',
-  [`${CONTACT_MY_ACCOUNTS_VIEW_ROUTE}/:account`]: 'View Account Settings Page',
-  [`${CONTACT_MY_ACCOUNTS_EDIT_ROUTE}/:account`]: 'Edit Account Settings Page',
   [REVEAL_SEED_ROUTE]: 'Reveal Seed Page',
   [MOBILE_SYNC_ROUTE]: 'Sync With Mobile Page',
   [RESTORE_VAULT_ROUTE]: 'Restore Vault Page',
@@ -183,9 +175,6 @@ export {
   CONTACT_EDIT_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_VIEW_ROUTE,
-  CONTACT_MY_ACCOUNTS_ROUTE,
-  CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
-  CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,

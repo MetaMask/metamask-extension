@@ -15,9 +15,6 @@ import {
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
-  CONTACT_MY_ACCOUNTS_ROUTE,
-  CONTACT_MY_ACCOUNTS_VIEW_ROUTE,
-  CONTACT_MY_ACCOUNTS_EDIT_ROUTE,
 } from '../../helpers/constants/routes';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
@@ -224,27 +221,12 @@ class SettingsPage extends PureComponent {
         <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
         <Route
           exact
-          path={CONTACT_MY_ACCOUNTS_ROUTE}
-          component={ContactListTab}
-        />
-        <Route
-          exact
           path={`${CONTACT_EDIT_ROUTE}/:id`}
           component={ContactListTab}
         />
         <Route
           exact
           path={`${CONTACT_VIEW_ROUTE}/:id`}
-          component={ContactListTab}
-        />
-        <Route
-          exact
-          path={`${CONTACT_MY_ACCOUNTS_VIEW_ROUTE}/:id`}
-          component={ContactListTab}
-        />
-        <Route
-          exact
-          path={`${CONTACT_MY_ACCOUNTS_EDIT_ROUTE}/:id`}
           component={ContactListTab}
         />
         <Route component={SettingsTab} />

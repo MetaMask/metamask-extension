@@ -5,13 +5,18 @@ import { isValidAddress } from 'ethereumjs-util';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   METASWAP_CHAINID_API_HOST_MAP,
+  SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
+  ETH_WETH_CONTRACT_ADDRESS,
 } from '../../../../shared/constants/swaps';
 import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../../shared/modules/swaps.utils';
-
-import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
+import {
+  ETH_SYMBOL,
+  WETH_SYMBOL,
+  MAINNET_CHAIN_ID,
+} from '../../../../shared/constants/network';
 import {
   calcTokenValue,
   calcTokenAmount,
@@ -34,7 +39,7 @@ import { calcGasTotal } from '../send/send.utils';
 const TOKEN_TRANSFER_LOG_TOPIC_HASH =
   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
 
-const CACHE_REFRESH_ONE_HOUR = 3600000;
+const CACHE_REFRESH_FIVE_MINUTES = 300000;
 
 const getBaseApi = function (type, chainId = MAINNET_CHAIN_ID) {
   switch (type) {
@@ -130,6 +135,10 @@ const QUOTE_VALIDATORS = [
     property: 'gasEstimate',
     type: 'number|undefined',
     validator: (gasEstimate) => gasEstimate === undefined || gasEstimate > 0,
+  },
+  {
+    property: 'fee',
+    type: 'number',
   },
 ];
 
@@ -286,7 +295,7 @@ export async function fetchTokens(chainId) {
   const tokens = await fetchWithCache(
     tokenUrl,
     { method: 'GET' },
-    { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR },
+    { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
   );
   const filteredTokens = [
     SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId],
@@ -308,7 +317,7 @@ export async function fetchAggregatorMetadata(chainId) {
   const aggregators = await fetchWithCache(
     aggregatorMetadataUrl,
     { method: 'GET' },
-    { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR },
+    { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
   );
   const filteredAggregators = {};
   for (const aggKey in aggregators) {
@@ -330,7 +339,7 @@ export async function fetchTopAssets(chainId) {
   const response = await fetchWithCache(
     topAssetsUrl,
     { method: 'GET' },
-    { cacheRefreshTime: CACHE_REFRESH_ONE_HOUR },
+    { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
   );
   const topAssetsMap = response.reduce((_topAssetsMap, asset, index) => {
     if (validateData(TOP_ASSET_VALIDATORS, asset, topAssetsUrl)) {
@@ -672,3 +681,39 @@ export function formatSwapsValueForDisplay(destinationAmount) {
   }
   return amountToDisplay;
 }
+
+/**
+ * Checks whether a contract address is valid before swapping tokens.
+ *
+ * @param {string} contractAddress - E.g. "0x881d40237659c251811cec9c364ef91dc08d300c" for mainnet
+ * @param {object} swapMetaData - We check the following 2 fields, e.g. { token_from: "ETH", token_to: "WETH" }
+ * @param {string} chainId - The hex encoded chain ID to check
+ * @returns {boolean} Whether a contract address is valid or not
+ */
+export const isContractAddressValid = (
+  contractAddress,
+  swapMetaData,
+  chainId = MAINNET_CHAIN_ID,
+) => {
+  const contractAddressForChainId = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId];
+  if (!contractAddress || !contractAddressForChainId) {
+    return false;
+  }
+  if (
+    (swapMetaData.token_from === ETH_SYMBOL &&
+      swapMetaData.token_to === WETH_SYMBOL) ||
+    (swapMetaData.token_from === WETH_SYMBOL &&
+      swapMetaData.token_to === ETH_SYMBOL)
+  ) {
+    // Sometimes we get a contract address with a few upper-case chars and since addresses are
+    // case-insensitive, we compare uppercase versions for validity.
+    return (
+      contractAddress.toUpperCase() ===
+        ETH_WETH_CONTRACT_ADDRESS.toUpperCase() ||
+      contractAddressForChainId.toUpperCase() === contractAddress.toUpperCase()
+    );
+  }
+  return (
+    contractAddressForChainId.toUpperCase() === contractAddress.toUpperCase()
+  );
+};

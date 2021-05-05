@@ -226,9 +226,6 @@
     "message": "இறக்குமதியானது",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "தகவல் மற்றும் உதவி"
-  },
   "insufficientFunds": {
     "message": "போதுமான பணம் இல்லை."
   },
@@ -402,9 +399,6 @@
   "restore": {
     "message": "மீட்டமை"
   },
-  "restoreFromSeed": {
-    "message": "விதை வாக்கியத்திலிருந்து மீட்கவும்"
-  },
   "revealSeedWords": {
     "message": "விதை வார்த்தைகள் வெளிப்படுத்த"
   },
@@ -426,9 +420,6 @@
   "searchTokens": {
     "message": "தேடல் டோக்கன்ஸ்"
   },
-  "secretPhrase": {
-    "message": "உங்கள் பெட்டகத்தை மீட்டெடுப்பதற்காக இங்கே உங்கள் ரகசிய பன்னிரண்டு வார்த்தை சொற்றொடரை உள்ளிடவும்."
-  },
   "seedPhraseReq": {
     "message": "விதை வாக்கியங்கள் 12 வார்த்தைகள் நீண்டவை"
   },
@@ -437,9 +428,6 @@
   },
   "send": {
     "message": "அனுப்பு"
-  },
-  "sendETH": {
-    "message": "ETH ஐ அனுப்பு"
   },
   "sendTokens": {
     "message": "டோக்கன்களை அனுப்பவும்"

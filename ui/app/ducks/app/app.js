@@ -50,6 +50,7 @@ export default function reduceApp(state = {}, action) {
     requestAccountTabs: {},
     openMetaMaskTabs: {},
     currentWindowTab: {},
+    showWhatsNewPopup: true,
     ...state,
   };
 
@@ -352,6 +353,12 @@ export default function reduceApp(state = {}, action) {
         currentWindowTab: action.value,
       };
 
+    case actionConstants.HIDE_WHATS_NEW_POPUP:
+      return {
+        ...appState,
+        showWhatsNewPopup: false,
+      };
+
     default:
       return appState;
   }
@@ -362,5 +369,11 @@ export function setThreeBoxLastUpdated(lastUpdated) {
   return {
     type: SET_THREEBOX_LAST_UPDATED,
     value: lastUpdated,
+  };
+}
+
+export function hideWhatsNewPopup() {
+  return {
+    type: actionConstants.HIDE_WHATS_NEW_POPUP,
   };
 }

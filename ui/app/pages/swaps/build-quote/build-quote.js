@@ -75,6 +75,7 @@ export default function BuildQuote({
   setMaxSlippage,
   maxSlippage,
   selectedAccountAddress,
+  isFeatureFlagLoaded,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -512,6 +513,7 @@ export default function BuildQuote({
               setMaxSlippage(newSlippage);
             }}
             maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
+            currentSlippage={maxSlippage}
           />
         </div>
       </div>
@@ -528,6 +530,7 @@ export default function BuildQuote({
         }}
         submitText={t('swapReviewSwap')}
         disabled={
+          !isFeatureFlagLoaded ||
           !Number(inputValue) ||
           !selectedToToken?.address ||
           Number(maxSlippage) === 0 ||
@@ -548,4 +551,5 @@ BuildQuote.propTypes = {
   ethBalance: PropTypes.string,
   setMaxSlippage: PropTypes.func,
   selectedAccountAddress: PropTypes.string,
+  isFeatureFlagLoaded: PropTypes.bool.isRequired,
 };

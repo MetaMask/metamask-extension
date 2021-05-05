@@ -1,6 +1,6 @@
 require('@babel/register');
 
-require('./helper');
+require('./helpers/setup-helper');
 
 window.SVGPathElement = window.SVGPathElement || { prototype: {} };
 global.indexedDB = {};

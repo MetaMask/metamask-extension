@@ -223,11 +223,6 @@
         "js-tokens": true
       }
     },
-    "@babel/parser": {
-      "globals": {
-        "BigInt": true
-      }
-    },
     "@babel/plugin-proposal-async-generator-functions": {
       "packages": {
         "@babel/core": true,
@@ -874,7 +869,6 @@
     },
     "acorn": {
       "globals": {
-        "BigInt": true,
         "define": true
       }
     },
@@ -884,9 +878,6 @@
       }
     },
     "acorn-node": {
-      "globals": {
-        "BigInt": true
-      },
       "packages": {
         "acorn": true,
         "acorn-dynamic-import": true,
@@ -1649,10 +1640,7 @@
     "es-abstract": {
       "globals": {
         "AggregateError": true,
-        "Atomics": true,
-        "BigInt": true,
         "FinalizationRegistry": true,
-        "SharedArrayBuffer": true,
         "WeakRef": true
       },
       "packages": {
@@ -2026,8 +2014,6 @@
         "fs.lstatSync": true,
         "fs.readdir": true,
         "fs.readdirSync": true,
-        "fs.realpath": true,
-        "fs.realpathSync": true,
         "fs.stat": true,
         "fs.statSync": true,
         "path.join": true,
@@ -2214,6 +2200,29 @@
         "vinyl-sourcemaps-apply": true
       }
     },
+    "gulp-dart-sass": {
+      "builtin": {
+        "path.basename": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.join": true,
+        "path.relative": true
+      },
+      "globals": {
+        "process.cwd": true,
+        "process.stderr.write": true
+      },
+      "packages": {
+        "chalk": true,
+        "lodash.clonedeep": true,
+        "plugin-error": true,
+        "replace-ext": true,
+        "sass": true,
+        "strip-ansi": true,
+        "through2": true,
+        "vinyl-sourcemaps-apply": true
+      }
+    },
     "gulp-livereload": {
       "builtin": {
         "path.relative": true
@@ -2243,29 +2252,6 @@
       "packages": {
         "plugin-error": true,
         "rtlcss": true,
-        "through2": true,
-        "vinyl-sourcemaps-apply": true
-      }
-    },
-    "gulp-sass": {
-      "builtin": {
-        "path.basename": true,
-        "path.dirname": true,
-        "path.extname": true,
-        "path.join": true,
-        "path.relative": true
-      },
-      "globals": {
-        "process.cwd": true,
-        "process.stderr.write": true
-      },
-      "packages": {
-        "chalk": true,
-        "lodash": true,
-        "node-sass": true,
-        "plugin-error": true,
-        "replace-ext": true,
-        "strip-ansi": true,
         "through2": true,
         "vinyl-sourcemaps-apply": true
       }
@@ -2924,45 +2910,6 @@
         "setTimeout": true
       }
     },
-    "node-sass": {
-      "builtin": {
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "fs.readdirSync": true,
-        "os.EOL": true,
-        "path.delimiter": true,
-        "path.join": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "__dirname": true,
-        "console.log": true,
-        "process.arch": true,
-        "process.argv.slice": true,
-        "process.cwd": true,
-        "process.env.SASS_BINARY_DIR": true,
-        "process.env.SASS_BINARY_NAME": true,
-        "process.env.SASS_BINARY_PATH": true,
-        "process.env.SASS_BINARY_SITE": true,
-        "process.env.SASS_PATH.split": true,
-        "process.env.hasOwnProperty": true,
-        "process.env.npm_config_cache": true,
-        "process.env.npm_config_sass_binary_cache": true,
-        "process.env.npm_config_sass_binary_dir": true,
-        "process.env.npm_config_sass_binary_name": true,
-        "process.env.npm_config_sass_binary_path": true,
-        "process.env.npm_config_sass_binary_site": true,
-        "process.execPath": true,
-        "process.platform": true,
-        "process.sass": "write",
-        "process.versions.modules": true
-      },
-      "packages": {
-        "lodash": true,
-        "mkdirp": true,
-        "true-case-path": true
-      }
-    },
     "normalize-path": {
       "packages": {
         "remove-trailing-separator": true
@@ -2990,7 +2937,6 @@
         "util.inspect": true
       },
       "globals": {
-        "BigInt": true,
         "HTMLElement": true
       }
     },
@@ -3579,6 +3525,7 @@
         "readline": true
       },
       "globals": {
+        "Buffer": true,
         "HTMLElement": true,
         "InternalError": true,
         "TextDecoder": true,
@@ -3597,6 +3544,7 @@
         "navigator": true,
         "print": true,
         "process": true,
+        "setImmediate": true,
         "setTimeout": true,
         "version": true
       },
@@ -4064,18 +4012,6 @@
     "to-through": {
       "packages": {
         "through2": true
-      }
-    },
-    "true-case-path": {
-      "builtin": {
-        "path.normalize": true,
-        "path.parse": true
-      },
-      "globals": {
-        "process.platform": true
-      },
-      "packages": {
-        "glob": true
       }
     },
     "typedarray-to-buffer": {

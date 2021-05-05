@@ -1,36 +1,35 @@
-import assert from 'assert';
 import BigNumber from 'bignumber.js';
 import { addCurrencies, conversionUtil } from './conversion-util';
 
-describe('conversion utils', function () {
-  describe('addCurrencies()', function () {
-    it('add whole numbers', function () {
+describe('conversion utils', () => {
+  describe('addCurrencies()', () => {
+    it('add whole numbers', () => {
       const result = addCurrencies(3, 9, {
         aBase: 10,
         bBase: 10,
       });
-      assert.strictEqual(result.toNumber(), 12);
+      expect(result.toNumber()).toStrictEqual(12);
     });
 
-    it('add decimals', function () {
+    it('add decimals', () => {
       const result = addCurrencies(1.3, 1.9, {
         aBase: 10,
         bBase: 10,
       });
-      assert.strictEqual(result.toNumber(), 3.2);
+      expect(result.toNumber()).toStrictEqual(3.2);
     });
 
-    it('add repeating decimals', function () {
+    it('add repeating decimals', () => {
       const result = addCurrencies(1 / 3, 1 / 9, {
         aBase: 10,
         bBase: 10,
       });
-      assert.strictEqual(result.toNumber(), 0.4444444444444444);
+      expect(result.toNumber()).toStrictEqual(0.4444444444444444);
     });
   });
 
-  describe('conversionUtil', function () {
-    it('Returns expected types', function () {
+  describe('conversionUtil', () => {
+    it('returns expected types', () => {
       const conv1 = conversionUtil(1000000000000000000, {
         fromNumericBase: 'dec',
         toNumericBase: 'hex',
@@ -40,102 +39,89 @@ describe('conversion utils', function () {
         fromDenomination: 'ETH',
         toDenomination: 'WEI',
       });
-      assert(
-        typeof conv1 === 'string',
-        'conversion 1 should return type string',
-      );
-      assert(conv2 instanceof BigNumber, 'conversion 2 should be a BigNumber');
+      expect(typeof conv1 === 'string').toStrictEqual(true);
+      expect(conv2 instanceof BigNumber).toStrictEqual(true);
     });
-    it('Converts from dec to hex', function () {
-      assert.strictEqual(
+    it('converts from dec to hex', () => {
+      expect(
         conversionUtil('1000000000000000000', {
           fromNumericBase: 'dec',
           toNumericBase: 'hex',
         }),
-        'de0b6b3a7640000',
-      );
-      assert.strictEqual(
+      ).toStrictEqual('de0b6b3a7640000');
+      expect(
         conversionUtil('1500000000000000000', {
           fromNumericBase: 'dec',
           toNumericBase: 'hex',
         }),
-        '14d1120d7b160000',
-      );
+      ).toStrictEqual('14d1120d7b160000');
     });
-    it('Converts hex formatted numbers to dec', function () {
-      assert.strictEqual(
+    it('converts hex formatted numbers to dec', () => {
+      expect(
         conversionUtil('0xde0b6b3a7640000', {
           fromNumericBase: 'hex',
           toNumericBase: 'dec',
         }),
-        '1000000000000000000',
-      );
-      assert.strictEqual(
+      ).toStrictEqual('1000000000000000000');
+      expect(
         conversionUtil('0x14d1120d7b160000', {
           fromNumericBase: 'hex',
           toNumericBase: 'dec',
         }),
-        '1500000000000000000',
-      );
+      ).toStrictEqual('1500000000000000000');
     });
-    it('Converts WEI to ETH', function () {
-      assert.strictEqual(
+    it('converts WEI to ETH', () => {
+      expect(
         conversionUtil('0xde0b6b3a7640000', {
           fromNumericBase: 'hex',
           toNumericBase: 'dec',
           fromDenomination: 'WEI',
           toDenomination: 'ETH',
         }),
-        '1',
-      );
-      assert.strictEqual(
+      ).toStrictEqual('1');
+      expect(
         conversionUtil('0x14d1120d7b160000', {
           fromNumericBase: 'hex',
           toNumericBase: 'dec',
           fromDenomination: 'WEI',
           toDenomination: 'ETH',
         }),
-        '1.5',
-      );
+      ).toStrictEqual('1.5');
     });
-    it('Converts ETH to WEI', function () {
-      assert.strictEqual(
+    it('converts ETH to WEI', () => {
+      expect(
         conversionUtil('1', {
           fromNumericBase: 'dec',
           fromDenomination: 'ETH',
           toDenomination: 'WEI',
         }).toNumber(),
-        1000000000000000000,
-      );
-      assert.strictEqual(
+      ).toStrictEqual(1000000000000000000);
+      expect(
         conversionUtil('1.5', {
           fromNumericBase: 'dec',
           fromDenomination: 'ETH',
           toDenomination: 'WEI',
         }).toNumber(),
-        1500000000000000000,
-      );
+      ).toStrictEqual(1500000000000000000);
     });
-    it('Converts ETH to GWEI', function () {
-      assert.strictEqual(
+    it('converts ETH to GWEI', () => {
+      expect(
         conversionUtil('1', {
           fromNumericBase: 'dec',
           fromDenomination: 'ETH',
           toDenomination: 'GWEI',
         }).toNumber(),
-        1000000000,
-      );
-      assert.strictEqual(
+      ).toStrictEqual(1000000000);
+      expect(
         conversionUtil('1.5', {
           fromNumericBase: 'dec',
           fromDenomination: 'ETH',
           toDenomination: 'GWEI',
         }).toNumber(),
-        1500000000,
-      );
+      ).toStrictEqual(1500000000);
     });
-    it('Converts ETH to USD', function () {
-      assert.strictEqual(
+    it('converts ETH to USD', () => {
+      expect(
         conversionUtil('1', {
           fromNumericBase: 'dec',
           toNumericBase: 'dec',
@@ -143,9 +129,8 @@ describe('conversion utils', function () {
           conversionRate: 468.58,
           numberOfDecimals: 2,
         }),
-        '468.58',
-      );
-      assert.strictEqual(
+      ).toStrictEqual('468.58');
+      expect(
         conversionUtil('1.5', {
           fromNumericBase: 'dec',
           toNumericBase: 'dec',
@@ -153,11 +138,10 @@ describe('conversion utils', function () {
           conversionRate: 468.58,
           numberOfDecimals: 2,
         }),
-        '702.87',
-      );
+      ).toStrictEqual('702.87');
     });
-    it('Converts USD to ETH', function () {
-      assert.strictEqual(
+    it('converts USD to ETH', () => {
+      expect(
         conversionUtil('468.58', {
           fromNumericBase: 'dec',
           toNumericBase: 'dec',
@@ -166,9 +150,8 @@ describe('conversion utils', function () {
           numberOfDecimals: 2,
           invertConversionRate: true,
         }),
-        '1',
-      );
-      assert.strictEqual(
+      ).toStrictEqual('1');
+      expect(
         conversionUtil('702.87', {
           fromNumericBase: 'dec',
           toNumericBase: 'dec',
@@ -177,8 +160,7 @@ describe('conversion utils', function () {
           numberOfDecimals: 2,
           invertConversionRate: true,
         }),
-        '1.5',
-      );
+      ).toStrictEqual('1.5');
     });
   });
 });

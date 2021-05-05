@@ -124,4 +124,13 @@
     height: 100%;
     width: 100%;
   }
+
+  &__support {
+    padding: 10px 0 20px 0;
+    text-align: center;
+
+    a {
+      color: $primary-1;
+    }
+  }
 }

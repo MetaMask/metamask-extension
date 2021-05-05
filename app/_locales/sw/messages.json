@@ -486,21 +486,12 @@
   "importAccountSeedPhrase": {
     "message": "Hamisha Akaunti kwa kutumia Kirai Kianzio"
   },
-  "importUsingSeed": {
-    "message": "Hamisha kwa kutumia kirai kianzio cha akaunti"
-  },
   "importWallet": {
     "message": "Hamisha Waleti"
-  },
-  "importYourExisting": {
-    "message": "Hamisha waleti iliyopo kwa kutumia kirai kianzio cha maneno 12"
   },
   "imported": {
     "message": "Zilizoingizwa",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Taarifa & Msaada"
   },
   "initialTransactionConfirmed": {
     "message": "Muamala wako wa awali ulithibitishwa na mtandao. Bofya SWA ili urudi nyuma."
@@ -592,12 +583,6 @@
   },
   "myAccounts": {
     "message": "Akaunti zangu"
-  },
-  "myWalletAccounts": {
-    "message": "Akaunti angu za Waleti"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Akaunti zako zote za MetaMask zilizofunguliwa zitaongezwa kiotomatiki kwenye sehemu hii."
   },
   "needEtherInWallet": {
     "message": "Ili kuingiliana na programu zilizosambazwa kwa kutumia MetaMask, utahitaji kuwa na Ether kwenye waleti yako."
@@ -816,9 +801,6 @@
   "restoreAccountWithSeed": {
     "message": "Rejesha Akaunti yako kwa kutumia Kirai Kianzio."
   },
-  "restoreFromSeed": {
-    "message": "Rejesha akaunti?"
-  },
   "revealSeedWords": {
     "message": "Onyesha Maneno ya Kianzio"
   },
@@ -873,9 +855,6 @@
   "secretBackupPhraseWarning": {
     "message": "ONYO: Kamwe usiweke wazi kirai chako cha hifadhi mbadala. Mtu yeyote mwenye kirai hiki anaweza kuchukua Ether yako daima."
   },
-  "secretPhrase": {
-    "message": "Ingiza hapa kirai chako cha siri cha maneno kumi na mawili ili urejeshe vault yako."
-  },
   "securityAndPrivacy": {
     "message": "Ulinzi na Faragha"
   },
@@ -914,9 +893,6 @@
   },
   "sendAmount": {
     "message": "Tuma Kiasi"
-  },
-  "sendETH": {
-    "message": "Tuma ETH"
   },
   "sendTokens": {
     "message": "Tuma Vianzio"

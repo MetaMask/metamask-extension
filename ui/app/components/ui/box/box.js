@@ -74,8 +74,9 @@ export default function Box({
   width,
   height,
   children,
+  className,
 }) {
-  const boxClassName = classnames('box', {
+  const boxClassName = classnames('box', className, {
     // ---Borders---
     // if borderWidth or borderColor is supplied w/o style, default to solid
     'box--border-style-solid':
@@ -146,4 +147,5 @@ Box.propTypes = {
   display: PropTypes.oneOf(Object.values(DISPLAY)),
   width: PropTypes.oneOf(Object.values(BLOCK_SIZES)),
   height: PropTypes.oneOf(Object.values(BLOCK_SIZES)),
+  className: PropTypes.string,
 };

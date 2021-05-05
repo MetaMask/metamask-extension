@@ -499,21 +499,12 @@
   "importAccountSeedPhrase": {
     "message": "সীড ফ্রেজ দিয়ে একটি অ্যাকাউন্ট আমদানি করুন"
   },
-  "importUsingSeed": {
-    "message": "অ্যাকাউন্ট সীড ফ্রেজ ব্যবহার করে আমদানি করুন"
-  },
   "importWallet": {
     "message": "ওয়ালেট আমদানি করুন"
-  },
-  "importYourExisting": {
-    "message": "একটি 12 শব্দের সীড ফ্রেজ ব্যবহার করে আপনার বিদ্যমান ওয়ালেট আমদানি করুন"
   },
   "imported": {
     "message": "আমদানিকৃত",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "তথ্য ও সহায়তা"
   },
   "initialTransactionConfirmed": {
     "message": "আপনার প্রারম্ভিক লেনদেনটি নেটওয়ার্ক নিশ্চিত করেছিল। ফিরে যেতে ঠিক আছে তে ক্লিক করুন।"
@@ -614,12 +605,6 @@
   },
   "myAccounts": {
     "message": "আমার অ্যাকাউন্টগুলি"
-  },
-  "myWalletAccounts": {
-    "message": "আমার ওয়ালেট অ্যাকাউন্টগুলি"
-  },
-  "myWalletAccountsDescription": {
-    "message": "MetaMask এর তৈরি করা আপনার সমস্ত অ্যাকাউন্টগুলি স্বয়ংক্রিয়ভাবে এই বিভাগে যোগ হয়ে যাবে।"
   },
   "needEtherInWallet": {
     "message": "MetaMask ব্যবহার করে ছড়িয়ে ছিটিয়ে থাকা অ্যাপ্লিকেশনগুলির সাথে যোগাযোগ করতে, আপনার ওয়ালেটে ইথার লাগবে।"
@@ -838,9 +823,6 @@
   "restoreAccountWithSeed": {
     "message": "সীড ফ্রেজ দিয়ে আপনার অ্যাকাউন্ট রিস্টোর করুন"
   },
-  "restoreFromSeed": {
-    "message": "অ্যাকাউন্ট রিস্টোর করবেন?"
-  },
   "revealSeedWords": {
     "message": "সীড শব্দগুলি প্রকাশ করুন"
   },
@@ -895,9 +877,6 @@
   "secretBackupPhraseWarning": {
     "message": "সতর্কতা: কখনও আপনার ব্যাকআপ ফ্রেজ প্রকাশ করবেন না। এই ফ্রেজ পেয়ে গেলে যে কেউ আপনার ইথার চিরকালের জন্য নিয়ে নিতে পারবেন।"
   },
-  "secretPhrase": {
-    "message": "আপনার ভল্ট রিস্টোর করতে এখানে আপনার গোপন বারো শব্দের ফ্রেজ লিখুন।"
-  },
   "securityAndPrivacy": {
     "message": "নিরাপত্তা এবং গোপনীয়তা"
   },
@@ -936,9 +915,6 @@
   },
   "sendAmount": {
     "message": "পাঠানো অর্থরাশি"
-  },
-  "sendETH": {
-    "message": "ETH পাঠান"
   },
   "sendTokens": {
     "message": "টোকেনগুলি পাঠান"

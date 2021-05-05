@@ -495,21 +495,12 @@
   "importAccountSeedPhrase": {
     "message": "Импортирайте акаунт с фраза зародиш"
   },
-  "importUsingSeed": {
-    "message": "Импортиране с помощта на фразата зародиш на профила"
-  },
   "importWallet": {
     "message": "Импортиране на портфейла"
-  },
-  "importYourExisting": {
-    "message": "Импортирайте съществуващия си портфейл с помощта на фраза зародиш с 12 думи"
   },
   "imported": {
     "message": "Импортирани",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Информация и помощ"
   },
   "initialTransactionConfirmed": {
     "message": "Първоначалната транзакция беше потвърдена от мрежата. Кликнете върху OK, за да се върнете обратно."
@@ -610,12 +601,6 @@
   },
   "myAccounts": {
     "message": "Моите акаунти"
-  },
-  "myWalletAccounts": {
-    "message": "Моите акаунти в портфейла"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Всичките ви създадени от MetaMask акаунти ще бъдат автоматично добавени в този раздел."
   },
   "needEtherInWallet": {
     "message": "За да взаимодействате с децентрализираните приложения, използвайки MetaMask, ще ви е необходим етер в портфейла ви."
@@ -834,9 +819,6 @@
   "restoreAccountWithSeed": {
     "message": "Възстановете акаунта си с фраза зародиш"
   },
-  "restoreFromSeed": {
-    "message": "Да се възстанови ли акаунта?"
-  },
   "revealSeedWords": {
     "message": "Разкрий думите зародиш"
   },
@@ -891,9 +873,6 @@
   "secretBackupPhraseWarning": {
     "message": "ВНИМАНИЕ: Никога не разкривайте резервната си фраза. Всеки с тази фраза може да вземе вашия етер завинаги."
   },
-  "secretPhrase": {
-    "message": "Въведете своята тайна фраза от дванадесет думи тук, за да възстановите портфейла си."
-  },
   "securityAndPrivacy": {
     "message": "Сигурност и поверителност"
   },
@@ -932,9 +911,6 @@
   },
   "sendAmount": {
     "message": "Изпратете сумата"
-  },
-  "sendETH": {
-    "message": "Изпрати ETH"
   },
   "sendTokens": {
     "message": "Изпращане на жетони"

@@ -486,21 +486,12 @@
   "importAccountSeedPhrase": {
     "message": "Importer en konto med den mnemoniske gjenopprettingsfrasen "
   },
-  "importUsingSeed": {
-    "message": "Importer ved hjelp av kontoens mnemoniske gjenopprettingsfrase"
-  },
   "importWallet": {
     "message": "Importér lommebok "
-  },
-  "importYourExisting": {
-    "message": "Importer din eksisterende lommebok ved å bruk en tolvords seed-frase."
   },
   "imported": {
     "message": "Importert",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informasjon og hjelp"
   },
   "initialTransactionConfirmed": {
     "message": "Din opprinnelige transaksjon ble bekreftet av nettverket. Klikk OK for å gå tilbake."
@@ -601,12 +592,6 @@
   },
   "myAccounts": {
     "message": "Mine kontoer "
-  },
-  "myWalletAccounts": {
-    "message": "mine lommebokkontoer"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Alle dine opprettede MetaMask-kontoer vil automatisk bli lagt til denne seksjonen.  "
   },
   "needEtherInWallet": {
     "message": "Du må ha Ether i lommeboken din for å samhandle med desentraliserte applikasjoner gjennom MateMask."
@@ -825,9 +810,6 @@
   "restoreAccountWithSeed": {
     "message": "Gjenopprett konto med frøfrase"
   },
-  "restoreFromSeed": {
-    "message": "Gjennopprett konto? "
-  },
   "revealSeedWords": {
     "message": "Vis frøord"
   },
@@ -878,9 +860,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "ADVARSEL: Du må aldri avsløre gjenopprettingsfrasen din. Alle som har denne frasen kan ta fra deg Etheren din for alltid."
-  },
-  "secretPhrase": {
-    "message": "Skriv inn den tolv ord lange frasen her for å gjenopprette hvelvet ditt. "
   },
   "securityAndPrivacy": {
     "message": "Sikkerhet og personvern"

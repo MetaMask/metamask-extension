@@ -485,21 +485,12 @@
   "importAccountSeedPhrase": {
     "message": "Import Akaun dengan Frasa Benih"
   },
-  "importUsingSeed": {
-    "message": "Import menggunakan frasa benih akaun"
-  },
   "importWallet": {
     "message": "Import Dompet"
-  },
-  "importYourExisting": {
-    "message": "Import dompet sedia ada anda menggunakan frasa benih 12 perkataan"
   },
   "imported": {
     "message": "Diimport",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info & Bantuan"
   },
   "initialTransactionConfirmed": {
     "message": "Transaksi awal anda telah disahkan oleh rangkaian. Klik OK untuk kembali."
@@ -594,12 +585,6 @@
   },
   "myAccounts": {
     "message": "Akaun Saya"
-  },
-  "myWalletAccounts": {
-    "message": "Akaun Dompet Saya"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Semua akaun ciptaan MetaMask anda akan ditambahkan secara automatik kepada bahagian ini."
   },
   "needEtherInWallet": {
     "message": "Untuk berinteraksi dengan aplikasi ternyahpusat menggunakan MetaMask, anda memerlukan Ether di dalam dompet anda."
@@ -815,9 +800,6 @@
   "restoreAccountWithSeed": {
     "message": "Pulihkan Akaun anda dengan Ungkapan Benih"
   },
-  "restoreFromSeed": {
-    "message": "Pulihkan akaun?"
-  },
   "revealSeedWords": {
     "message": "Dedahkan Ungkapan Benih"
   },
@@ -872,9 +854,6 @@
   "secretBackupPhraseWarning": {
     "message": "AMARAN: Jangan sesekali dedahkan frasa sandaran anda. Sesiapa yang memperoleh frasa ini boleh mengambil Ether anda selama-lamanya."
   },
-  "secretPhrase": {
-    "message": "Masukkan ungkapan rahsia dua belas perkataan di sini untuk memulihkan kekubah anda."
-  },
   "securityAndPrivacy": {
     "message": "Keselamatan & Privasi"
   },
@@ -913,9 +892,6 @@
   },
   "sendAmount": {
     "message": "Hantar Amaun"
-  },
-  "sendETH": {
-    "message": "Hantar ETH"
   },
   "sendTokens": {
     "message": "Hantar Token"

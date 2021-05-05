@@ -5,12 +5,15 @@
 }
 
 .address-book {
-  flex: 0.4 1 40%;
-  max-width: 40%;
+  flex: 0.4 1 100%;
 
   @media screen and (max-width: 576px) {
     flex: 1;
     max-width: 100%;
+
+    &__container {
+      min-height: 100%;
+    }
   }
 
   &__entry {
@@ -49,6 +52,32 @@
       justify-content: flex-end;
       color: $accent-red;
     }
+  }
+
+  &__container {
+    margin: 0 auto;
+    min-height: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  &__title {
+    @include H4;
+
+    font-weight: 600;
+    margin-bottom: 0.5em;
+  }
+
+  &__sub-title {
+    font-size: small;
+    margin-bottom: 0.5em;
+  }
+
+  &__link {
+    background-color: #fff;
+    color: #037dd6;
   }
 
   &__input {
@@ -221,23 +250,14 @@
 .address-book-add-button {
   &__button {
     position: absolute;
-    top: 80px;
+    top: 85px;
     right: 16px;
-    height: 56px;
-    width: 56px;
-    border-radius: 18px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    border-width: 1px;
-    background: $primary-blue;
-    margin-right: 5px;
-    cursor: pointer;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+    width: auto;
+    border-radius: 100px;
 
     @media screen and (max-width: 576px) {
-      top: 10px;
+      top: 16px;
+      right: 60px;
     }
   }
 }
@@ -247,7 +267,7 @@
 }
 
 .address-book-contact-content {
-  flex: 0.4 1 40%;
+  flex: 0.4 1 100%;
 
   @media screen and (max-width: 576px) {
     flex: 1;

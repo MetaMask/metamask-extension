@@ -499,21 +499,12 @@
   "importAccountSeedPhrase": {
     "message": "יבא חשבון באמצעות Seed Phrase"
   },
-  "importUsingSeed": {
-    "message": "ייבא באמצעות צירוף הגרעין של החשבון"
-  },
   "importWallet": {
     "message": "ייבא ארנק"
-  },
-  "importYourExisting": {
-    "message": "יבא/י את הארנק הקיים שלך באמצעות seed phrase בן 12 מילים"
   },
   "imported": {
     "message": "מיובאות",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "מידע ועזרה"
   },
   "initialTransactionConfirmed": {
     "message": "העסקה הראשונית שלך אושרה על ידי הרשת. לחצ/י על אישור כדי לחזור."
@@ -611,12 +602,6 @@
   },
   "myAccounts": {
     "message": "החשבונות שלי"
-  },
-  "myWalletAccounts": {
-    "message": "חשבונות הארנק שלי"
-  },
-  "myWalletAccountsDescription": {
-    "message": "כל חשבונותיך שנוצרו ב-MetaMask יתווספו אוטומטית לחלק זה."
   },
   "needEtherInWallet": {
     "message": "כדי לתקשר עם אפליקציות מבוזרות באמצעות MetaMask, צריך להיות לך את'ר בארנק."
@@ -835,9 +820,6 @@
   "restoreAccountWithSeed": {
     "message": "שחזר את חשבונך באמצעות צירוף הגרעין"
   },
-  "restoreFromSeed": {
-    "message": "לשחזר את החשבון?"
-  },
   "revealSeedWords": {
     "message": "גלה מילות Seed"
   },
@@ -889,9 +871,6 @@
   "secretBackupPhraseWarning": {
     "message": "אזהרה: לעולם אין לחשוף את צירוף הגיבוי שלך. כל מי שברשותו צירוף זה יכול לקחת את האת'ר שלך לצמיתות."
   },
-  "secretPhrase": {
-    "message": "הזנ/י את הצירוף הסודי שלך של שתים-עשרה המילים כאן כדי לשחזר את הכספת שלך."
-  },
   "securityAndPrivacy": {
     "message": "אבטחה ופרטיות"
   },
@@ -930,9 +909,6 @@
   },
   "sendAmount": {
     "message": "שלח סכום"
-  },
-  "sendETH": {
-    "message": "שלח/י ETH"
   },
   "sendTokens": {
     "message": "שלח טוקנים"

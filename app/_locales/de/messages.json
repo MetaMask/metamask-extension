@@ -487,21 +487,12 @@
   "importAccountSeedPhrase": {
     "message": "Ein Konto mit einem Seed-Schlüssel importieren"
   },
-  "importUsingSeed": {
-    "message": "Mittels mnemonischer Phrase des Kontos importieren"
-  },
   "importWallet": {
     "message": "Wallet importieren"
-  },
-  "importYourExisting": {
-    "message": "Importieren Sie Ihre bestehende Wallet mit einem 12-Wort-Seed-Schlüssel"
   },
   "imported": {
     "message": "Importiert",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info & Hilfe"
   },
   "initialTransactionConfirmed": {
     "message": "Ihre erste Transaktion wurde vom Netzwerk bestätigt. Klicken Sie auf Okay, um zurückzukehren."
@@ -593,12 +584,6 @@
   },
   "myAccounts": {
     "message": "Meine Accounts"
-  },
-  "myWalletAccounts": {
-    "message": "Meine Wallet-Konten"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Jedes Ihrer von MetaMask erstellten Konten wird automatisch zu diesem Abschnitt hinzugefügt."
   },
   "needEtherInWallet": {
     "message": "Um dezentralisierte Applikationen mit MetaMask verwenden zu können, benötigst du Ether in deiner Wallet."
@@ -807,9 +792,6 @@
   "restoreAccountWithSeed": {
     "message": "Ihr Konto mit mnemonischer Phrase wiederherstellen"
   },
-  "restoreFromSeed": {
-    "message": "Mit Hilfe der Seed-Wörterfolge wiederherstellen."
-  },
   "revealSeedWords": {
     "message": "Seed-Wörterfolge anzeigen"
   },
@@ -864,9 +846,6 @@
   "secretBackupPhraseWarning": {
     "message": "WARNUNG: Legen Sie niemals Ihre Sicherungsphrase offen. Mit dieser Phrase kann sich jeder Ihr Ether für immer aneignen."
   },
-  "secretPhrase": {
-    "message": "Gib die 12 Wörter deiner geheimem Wörterfolge ein um deinen Vault wiederherzustellen."
-  },
   "securityAndPrivacy": {
     "message": "Sicherheit & Datenschutz"
   },
@@ -905,9 +884,6 @@
   },
   "sendAmount": {
     "message": "Betrag senden"
-  },
-  "sendETH": {
-    "message": "ETH senden"
   },
   "sendTokens": {
     "message": "Token senden"

@@ -499,21 +499,12 @@
   "importAccountSeedPhrase": {
     "message": "یک حساب با عبارت بازیاب را وارد کنید"
   },
-  "importUsingSeed": {
-    "message": "وارد کردن با استفاده از عبارت بازیاب حساب"
-  },
   "importWallet": {
     "message": "وارد سازی کیف"
-  },
-  "importYourExisting": {
-    "message": "کیف موجود تان را با استفاده از عبارت رمزیاب 12 کلمه یی وارد کنید"
   },
   "imported": {
     "message": "وارد شده",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "معلومات و کمک"
   },
   "initialTransactionConfirmed": {
     "message": "معامله آغازین تان توسط شبکه تأیید شد. برای رفتن به عقب بالای OK کلیک کنید."
@@ -614,12 +605,6 @@
   },
   "myAccounts": {
     "message": "حساب های من"
-  },
-  "myWalletAccounts": {
-    "message": "حساب های کیف من"
-  },
-  "myWalletAccountsDescription": {
-    "message": "همه حساب های ایجاد شده MetaMask شما بصورت خودکار در این بخش اضافه خواهد شد."
   },
   "needEtherInWallet": {
     "message": "برای تعامل با اپلیکیشن های غیر متمرکز شده با استفاده از MetaMask، شما نیاز به ایتر در کیف تان خواهید داشت."
@@ -838,9 +823,6 @@
   "restoreAccountWithSeed": {
     "message": "حساب تان را با عبارت بازیاب، بازیابی کنید"
   },
-  "restoreFromSeed": {
-    "message": "بازگرداندن حساب؟"
-  },
   "revealSeedWords": {
     "message": "کلمات بازیاب را آشکار کنید"
   },
@@ -895,9 +877,6 @@
   "secretBackupPhraseWarning": {
     "message": "هشدار: هرگز عبارت پشتیبان تان را به کسی فاش نسازید. هرکسیکه این عبارت را داشته باشد ایتر شما را برای همیشه خواهد گرفت."
   },
-  "secretPhrase": {
-    "message": "جهت بازیابی خزانه تان عبارت دوازده کلمه یی تان را اینجا وارد کنید."
-  },
   "securityAndPrivacy": {
     "message": "امنیت و حریم خصوصی"
   },
@@ -936,9 +915,6 @@
   },
   "sendAmount": {
     "message": "ارسال مبلغ"
-  },
-  "sendETH": {
-    "message": "ارسال ETH"
   },
   "sendTokens": {
     "message": "رمزیاب ها را ارسال کنید"

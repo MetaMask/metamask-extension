@@ -282,15 +282,9 @@
   "importAccountMsg": {
     "message": " Kont pòte pa pral asosye avèk orijinal ou te kreye nan kont MetaMask seed fraz. Aprann plis sou kont enpòte "
   },
-  "importUsingSeed": {
-    "message": "Pòte lè sèvi avèk seed fraz"
-  },
   "imported": {
     "message": "Pòte",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Enfo & Èd"
   },
   "initialTransactionConfirmed": {
     "message": "Premye tranzaksyon ou konfime sou rezo a. Klike sou OK pou tounen."
@@ -516,9 +510,6 @@
   "restoreAccountWithSeed": {
     "message": "Retabli kont ou avèk yo Seed Fraz"
   },
-  "restoreFromSeed": {
-    "message": "Restore kont?"
-  },
   "revealSeedWords": {
     "message": "Revele Seed Mo Yo"
   },
@@ -561,9 +552,6 @@
   "searchTokens": {
     "message": "Rechèch Tokens"
   },
-  "secretPhrase": {
-    "message": "Antre fraz sekrè douz mo ou a pou w restore kòf ou a."
-  },
   "seedPhraseReq": {
     "message": "Seed fraz yo se 12 long mo"
   },
@@ -584,9 +572,6 @@
   },
   "send": {
     "message": "Voye"
-  },
-  "sendETH": {
-    "message": "Voye ETH"
   },
   "sendTokens": {
     "message": "Voye Tokens"

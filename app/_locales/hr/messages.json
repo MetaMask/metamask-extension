@@ -495,21 +495,12 @@
   "importAccountSeedPhrase": {
     "message": "Uvezi račun početnom rečenicom"
   },
-  "importUsingSeed": {
-    "message": "Uvezi početnom rečenicom za račun"
-  },
   "importWallet": {
     "message": "Uvezi novčanik"
-  },
-  "importYourExisting": {
-    "message": "Uvezite svoj postojeći novčanik početnom rečenicom od 12 riječi"
   },
   "imported": {
     "message": "Uvezeno",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informacije i pomoć"
   },
   "initialTransactionConfirmed": {
     "message": "Vašu je početnu transakciju potvrdila mreža. Kliknite na U REDU za natrag."
@@ -607,12 +598,6 @@
   },
   "myAccounts": {
     "message": "Moji računi"
-  },
-  "myWalletAccounts": {
-    "message": "Moji računi za novčanik"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Svi se vaši računi za MetaMask automatski dodaju u ovaj odjeljak."
   },
   "needEtherInWallet": {
     "message": "Trebate Ether u svojem novčaniku kako biste ostvarili interakciju s decentraliziranim aplikacijama uporabom usluge MetaMask. "
@@ -831,9 +816,6 @@
   "restoreAccountWithSeed": {
     "message": "Obnovite svoj račun početnom rečenicom"
   },
-  "restoreFromSeed": {
-    "message": "Obnoviti račun?"
-  },
   "revealSeedWords": {
     "message": "Otkrij početne riječi"
   },
@@ -888,9 +870,6 @@
   "secretBackupPhraseWarning": {
     "message": "UPOZORENJE: nikada ne otkrivajte svoju alternativnu rečenicu. Bilo tko ovom rečenicom može zauvijek preuzeti vaš Ether."
   },
-  "secretPhrase": {
-    "message": "Ovdje upišite svoju tajnu rečenicu od 12 riječi kako biste obnovili svoj sef."
-  },
   "securityAndPrivacy": {
     "message": "Sigurnost i privatnost"
   },
@@ -929,9 +908,6 @@
   },
   "sendAmount": {
     "message": "Odaberi iznos"
-  },
-  "sendETH": {
-    "message": "Pošalji ETH"
   },
   "sendTokens": {
     "message": "Pošalji tokene"

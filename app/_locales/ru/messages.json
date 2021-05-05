@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "Журнал активности"
   },
-  "addAccount": {
-    "message": "Добавить счет"
-  },
   "addAcquiredTokens": {
     "message": "Добавьте токены, которые вы приобрели с помощью MetaMask"
   },
@@ -781,21 +778,12 @@
   "importAccountSeedPhrase": {
     "message": "Импортировать счет с исходной фразой"
   },
-  "importUsingSeed": {
-    "message": "Импортировать с использованием исходной фразы счета"
-  },
   "importWallet": {
     "message": "Импортировать кошелек"
-  },
-  "importYourExisting": {
-    "message": "Импортируйте существующий кошелек, используя начальную фразу из 12 слов"
   },
   "imported": {
     "message": "Импортированный",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Информация и справка"
   },
   "initialTransactionConfirmed": {
     "message": "Ваша первоначальная транзакция была подтверждена сетью. Нажмите ОК, чтобы вернуться."
@@ -983,12 +971,6 @@
   },
   "myAccounts": {
     "message": "Мои счета"
-  },
-  "myWalletAccounts": {
-    "message": "Счета моего кошелька"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Все ваши счета, созданные в MetaMask, будут автоматически добавлены в этот раздел."
   },
   "needEtherInWallet": {
     "message": "Для взаимодействия с децентрализованными приложениями с помощью MetaMask вам понадобится Ether в вашем кошельке."
@@ -1273,9 +1255,6 @@
   "restoreAccountWithSeed": {
     "message": "Восстановите свой счет с помощью исходной фразы"
   },
-  "restoreFromSeed": {
-    "message": "Восстановить счет?"
-  },
   "restoreWalletPreferences": {
     "message": "Найдена резервная копия ваших данных из $1. Хотите восстановить настройки кошелька?",
     "description": "$1 is the date at which the data was backed up"
@@ -1346,9 +1325,6 @@
   "secretBackupPhraseWarning": {
     "message": "ПРЕДУПРЕЖДЕНИЕ: Никогда не разглашайте резервную фразу. Любой, у кого есть эта фраза, может забрать ваш Ether навсегда."
   },
-  "secretPhrase": {
-    "message": "Введите здесь свою секретную фразу из двенадцати слов, чтобы восстановить свой сейф."
-  },
   "securityAndPrivacy": {
     "message": "Безопасность и конфиденциальность"
   },
@@ -1399,9 +1375,6 @@
   },
   "sendAmount": {
     "message": "Отправить сумму"
-  },
-  "sendETH": {
-    "message": "Отправить ETH"
   },
   "sendSpecifiedTokens": {
     "message": "Отправить $1",
@@ -1627,24 +1600,6 @@
   "swapHighSlippageWarning": {
     "message": "Величина проскальзывания очень велика. Убедитесь, что вы знаете, что делаете!"
   },
-  "swapIntroLearnMoreHeader": {
-    "message": "Хотите узнать больше?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "Подробнее о свопах MetaMask"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "Источники ликвидности включают:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "Теперь вы можете обменивать токены прямо в кошельке MetaMask. MetaMask Swaps объединяет несколько децентрализованных агрегаторов обменов, профессиональных торговцев и отдельные DEX, чтобы пользователи MetaMask всегда получали лучшую цену с минимальными комиссиями сети."
-  },
-  "swapIntroPopupTitle": {
-    "message": "Обмен токенов здесь!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "Ознакомьтесь с нашим официальным аудитом контрактов"
-  },
   "swapLowSlippageError": {
     "message": "Транзакции могут завершиться неудачей, максимальное проскальзывание слишком мало."
   },
@@ -1666,7 +1621,7 @@
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNetworkFeeSummary": {
-    "message": "Сетевая комиссия покрывает стоимость обработки вашего свопа и его хранения в сети Ethereum. MetaMask не получает прибыли от этой комиссии."
+    "message": "Сетевая комиссия покрывает стоимость обработки вашего свопа и его хранения в сети $1. MetaMask не получает прибыли от этой комиссии."
   },
   "swapNewQuoteIn": {
     "message": "Новые котировки в $1",
@@ -1746,9 +1701,6 @@
   },
   "swapSourceInfo": {
     "message": "Мы ищем несколько источников ликвидности (биржи, агрегаторы и профессиональные продавцы), чтобы найти лучшие цены и самые низкие сетевые комиссии."
-  },
-  "swapStartSwapping": {
-    "message": "Начать обмен"
   },
   "swapSwapFrom": {
     "message": "Своп с"
@@ -1878,9 +1830,6 @@
   },
   "tokenContractAddress": {
     "message": "Адрес контракта токена"
-  },
-  "tokenOptions": {
-    "message": "Опции токена"
   },
   "tokenSymbol": {
     "message": "Символ токена"

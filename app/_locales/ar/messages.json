@@ -495,21 +495,12 @@
   "importAccountSeedPhrase": {
     "message": "استيراد حساب باستخدام عبارة الأمان"
   },
-  "importUsingSeed": {
-    "message": "استيراد باستخدام عبارة أمان الحساب"
-  },
   "importWallet": {
     "message": "استيراد المحفظة"
-  },
-  "importYourExisting": {
-    "message": "قم باستيراد محفظتك الحالية باستخدام جملة بذرية مكونة من 12 كلمة"
   },
   "imported": {
     "message": "المستوردة",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "المعلومات والمساعدة"
   },
   "initialTransactionConfirmed": {
     "message": "تم تأكيد المعاملة الأولية الخاصة بك بواسطة الشبكة. انقر فوق موافق للعودة."
@@ -607,12 +598,6 @@
   },
   "myAccounts": {
     "message": "حساباتي"
-  },
-  "myWalletAccounts": {
-    "message": "حسابات محفظتي"
-  },
-  "myWalletAccountsDescription": {
-    "message": "ستتم إضافة جميع حسابات MetaMask الخاصة بك والتي تم إنشاؤها تلقائياً إلى هذا القسم."
   },
   "needEtherInWallet": {
     "message": "للتفاعل مع التطبيقات اللامركزية باستخدام MetaMask، ستحتاج إلى الإيثير في محفظتك."
@@ -831,9 +816,6 @@
   "restoreAccountWithSeed": {
     "message": "قم باستعادة حسابك بواسطة عبارة الأمان"
   },
-  "restoreFromSeed": {
-    "message": "هل تريد استعادة الحساب؟"
-  },
   "revealSeedWords": {
     "message": "كشف كلمات عبارات الأمان"
   },
@@ -888,9 +870,6 @@
   "secretBackupPhraseWarning": {
     "message": "تحذير: لا تكشف مطلقاً عن عبارة الدعم الخاصة بك. يمكن لأي شخص بهذه العبارة أن يستحوذ على الأثير الخاص بك إلى الأبد."
   },
-  "secretPhrase": {
-    "message": "أدخل جملتك السرية المكونة من اثني عشر كلمة هنا لاستعادة خزنتك."
-  },
   "securityAndPrivacy": {
     "message": "الأمن والخصوصية"
   },
@@ -929,9 +908,6 @@
   },
   "sendAmount": {
     "message": "إرسال المبلغ"
-  },
-  "sendETH": {
-    "message": "إرسال عملة إيثيريوم"
   },
   "sendTokens": {
     "message": "إرسال عملات رمزية"

@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BuildQuote renders the component with initial props 1`] = `
+<div
+  class="button-group slippage-buttons__button-group radio-button-group"
+  role="radiogroup"
+>
+  <button
+    aria-checked="false"
+    class="button-group__button radio-button"
+    role="radio"
+  >
+    2%
+  </button>
+  <button
+    aria-checked="false"
+    class="button-group__button radio-button"
+    role="radio"
+  >
+    3%
+  </button>
+  <button
+    aria-checked="true"
+    class="button-group__button slippage-buttons__button-group-custom-button radio-button--danger radio-button button-group__button--active radio-button--active"
+    role="radio"
+  >
+    15
+    <div
+      class="slippage-buttons__percentage-suffix"
+    >
+      %
+    </div>
+  </button>
+</div>
+`;
+
+exports[`BuildQuote renders the component with initial props 2`] = `
+<div
+  class="swaps-footer"
+>
+  <div
+    class="swaps-footer__buttons"
+  >
+    <div
+      class="page-container__footer swaps-footer__custom-page-container-footer-class"
+    >
+      <footer>
+        <button
+          class="button btn-primary page-container__footer-button swaps-footer__custom-page-container-footer-button-class swaps-footer__custom-page-container-footer-button-class--single"
+          data-testid="page-container-footer-next"
+          disabled=""
+          role="button"
+          tabindex="0"
+        >
+          Review Swap
+        </button>
+      </footer>
+    </div>
+  </div>
+  <div
+    class="swaps-footer__bottom-text"
+  >
+    Terms of Service
+  </div>
+</div>
+`;

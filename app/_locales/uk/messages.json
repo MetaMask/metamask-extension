@@ -499,21 +499,12 @@
   "importAccountSeedPhrase": {
     "message": "Імпортувати обліковий запис з початковою фразою"
   },
-  "importUsingSeed": {
-    "message": "Імпортувати, використовуючи початкову фразу облікового запису"
-  },
   "importWallet": {
     "message": "Імпортувати гаманець"
-  },
-  "importYourExisting": {
-    "message": "Імпортуйте ваш гаманець, що існує, використовуючи початкову фразу з 12 слів"
   },
   "imported": {
     "message": "Імпортовано",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Інформація та допомога"
   },
   "initialTransactionConfirmed": {
     "message": "Ваша початкова транзакція підтверджена мережею. Натисніть ОК для повернення."
@@ -614,12 +605,6 @@
   },
   "myAccounts": {
     "message": "Мої облікові записи"
-  },
-  "myWalletAccounts": {
-    "message": "Облікові записи мого гаманця"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Усі ваші створені облікові записи MetaMask буде автоматично додано в цей розділ."
   },
   "needEtherInWallet": {
     "message": "Щоб взаємодіяти з децентралізованими застосунками використовуючи MetaMask, вам буде потрібен Ether у вашому гаманці."
@@ -838,9 +823,6 @@
   "restoreAccountWithSeed": {
     "message": "Відновіть ваш обліковий запис за допомогою seed-фрази"
   },
-  "restoreFromSeed": {
-    "message": "Відновити обліковий запис?"
-  },
   "revealSeedWords": {
     "message": "Показати мнемонічні слова"
   },
@@ -895,9 +877,6 @@
   "secretBackupPhraseWarning": {
     "message": "ЗАСТЕРЕЖЕННЯ: Ніколи не розголошуйте вашу резервну фразу. Будь-хто з цією фразою зможе забрати ваш Ether назавжди."
   },
-  "secretPhrase": {
-    "message": "Введіть секретну фразу з дванадцяти слів, щоб відновити своє сховище."
-  },
   "securityAndPrivacy": {
     "message": "Безпека й конфіденційність"
   },
@@ -936,9 +915,6 @@
   },
   "sendAmount": {
     "message": "Надіслати суму"
-  },
-  "sendETH": {
-    "message": "Надіслати ETH"
   },
   "sendTokens": {
     "message": "Надіслати токени"

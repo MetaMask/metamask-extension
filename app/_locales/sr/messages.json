@@ -496,21 +496,12 @@
   "importAccountSeedPhrase": {
     "message": "Uvezi račun sa frazom početnih vrednosti"
   },
-  "importUsingSeed": {
-    "message": "Uvezite koristeći šifru za oporavak naloga (seed phrase)"
-  },
   "importWallet": {
     "message": "Uvezite novčanik"
-  },
-  "importYourExisting": {
-    "message": "Uvezite vaš postojeći novčanik koristeći seed frazu sa 12 reči"
   },
   "imported": {
     "message": "Увезени",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info i pomoć"
   },
   "initialTransactionConfirmed": {
     "message": "Vašu početnu transakciju je potvrdila mreža. Kliknite OK da biste se vratili."
@@ -605,12 +596,6 @@
   },
   "myAccounts": {
     "message": "Moji nalozi"
-  },
-  "myWalletAccounts": {
-    "message": "Moji nalozi novčanika"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Svi vaši nalozi kreirani u aplikaciji MetaMask biće automatski dodati u ovaj deo."
   },
   "needEtherInWallet": {
     "message": "Da biste stupili u interakciju sa decentralizovanim aplikacijama koristeći MetaMask, biće vam potreban Ether u vašem novčaniku."
@@ -829,9 +814,6 @@
   "restoreAccountWithSeed": {
     "message": "Povratite svoj nalog uz pomoć seed fraze"
   },
-  "restoreFromSeed": {
-    "message": "Obnoviti nalog?"
-  },
   "revealSeedWords": {
     "message": "Otkrivanje početnih reči"
   },
@@ -886,9 +868,6 @@
   "secretBackupPhraseWarning": {
     "message": "UPOZORENJE: Nikada ne otkrivajte svoju rezervnu frazu. Svako sa ovom frazom može zauvek da Vam uzme Vaš Ether."
   },
-  "secretPhrase": {
-    "message": "Unesite ovde svoj tajni izraz od dvanaest reči kako biste povratili svoj trezor."
-  },
   "securityAndPrivacy": {
     "message": "Bezbednost i privatnost"
   },
@@ -927,9 +906,6 @@
   },
   "sendAmount": {
     "message": "Pošaljite iznos"
-  },
-  "sendETH": {
-    "message": "Pošalji ETH"
   },
   "sendTokens": {
     "message": "Pošalji tokene"
