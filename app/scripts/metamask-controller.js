@@ -735,6 +735,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.addKnownMethodData,
         preferencesController,
       ),
+      setDismissSeedBackUpReminder: nodeify(
+        this.preferencesController.setDismissSeedBackUpReminder,
+        this.preferencesController,
+      ),
 
       // AddressController
       setAddressBook: nodeify(
