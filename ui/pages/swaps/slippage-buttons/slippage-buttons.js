@@ -13,8 +13,12 @@ export default function SlippageButtons({
 }) {
   const t = useContext(I18nContext);
   const [customValue, setCustomValue] = useState(() => {
-    if (currentSlippage && currentSlippage !== 2 && currentSlippage !== 3) {
-      return currentSlippage;
+    if (
+      typeof currentSlippage === 'number' &&
+      currentSlippage !== 2 &&
+      currentSlippage !== 3
+    ) {
+      return currentSlippage.toString();
     }
     return '';
   });
@@ -24,7 +28,7 @@ export default function SlippageButtons({
       return 1;
     } else if (currentSlippage === 2) {
       return 0;
-    } else if (currentSlippage) {
+    } else if (typeof currentSlippage === 'number') {
       return 2;
     }
     return 1; // Choose activeButtonIndex = 1 for 3% slippage by default.
@@ -33,9 +37,12 @@ export default function SlippageButtons({
 
   let errorText = '';
   if (customValue) {
-    if (Number(customValue) <= 0) {
-      errorText = t('swapSlippageTooLow');
-    } else if (Number(customValue) < 0.5) {
+    // customValue is a string, e.g. '0'
+    if (Number(customValue) < 0) {
+      errorText = t('swapSlippageNegative');
+    } else if (Number(customValue) > 0 && Number(customValue) <= 1) {
+      // We will not show this warning for 0% slippage, because we will only
+      // return non-slippage quotes from off-chain makers.
       errorText = t('swapLowSlippageError');
     } else if (
       Number(customValue) >= 5 &&
@@ -136,10 +143,6 @@ export default function SlippageButtons({
                     ref={setInputRef}
                     onBlur={() => {
                       setEnteringCustomValue(false);
-                      if (customValue === '0') {
-                        setCustomValue('');
-                        setActiveButtonIndex(1);
-                      }
                     }}
                     value={customValue || ''}
                   />

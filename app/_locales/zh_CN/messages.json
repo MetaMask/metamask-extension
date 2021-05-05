@@ -1690,9 +1690,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "以下是从多个流动资金来源收集到的所有报价。"
   },
-  "swapSlippageTooLow": {
-    "message": "滑点必须大于零"
-  },
   "swapSource": {
     "message": "流动资金来源"
   },

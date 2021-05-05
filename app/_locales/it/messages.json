@@ -1702,9 +1702,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "Sotto trovi tutte le quotazioni raccolte da multiple sorgenti di liquidità."
   },
-  "swapSlippageTooLow": {
-    "message": "Lo slippage deve essere maggiore di zero"
-  },
   "swapSource": {
     "message": "Sorgente di liquidità"
   },

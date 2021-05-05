@@ -1690,9 +1690,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "A continuación se muestran todas las cotizaciones recopiladas de múltiples fuentes de liquidez."
   },
-  "swapSlippageTooLow": {
-    "message": "El deslizamiento debe ser mayor que cero"
-  },
   "swapSource": {
     "message": "Fuente de liquidez"
   },
