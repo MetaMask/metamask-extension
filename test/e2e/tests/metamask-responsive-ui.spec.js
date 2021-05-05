@@ -42,6 +42,9 @@ describe('Metamask Responsive UI', function () {
         await driver.clickElement('.first-time-flow__checkbox');
         await driver.clickElement('.first-time-flow__form button');
 
+        // renders the seed phrase intro screen
+        await driver.clickElement('.seed-phrase-intro__left button');
+
         // reveals the seed phrase
         await driver.clickElement(
           '.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button',
