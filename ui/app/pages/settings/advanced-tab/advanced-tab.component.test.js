@@ -23,7 +23,7 @@ describe('AdvancedTab Component', () => {
       },
     );
 
-    expect(root.find('.settings-page__content-row')).toHaveLength(10);
+    expect(root.find('.settings-page__content-row')).toHaveLength(11);
   });
 
   it('should update autoLockTimeLimit', () => {
