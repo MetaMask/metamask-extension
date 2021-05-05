@@ -7,8 +7,12 @@ import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {
   getFetchParams,
   getApproveTxParams,
-  navigateBackToBuildQuote,
+  prepareToLeaveSwaps,
 } from '../../../ducks/swaps/swaps';
+import {
+  DEFAULT_ROUTE,
+  BUILD_QUOTE_ROUTE,
+} from '../../../helpers/constants/routes';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import SwapsFooter from '../swaps-footer';
 import SwapStepIcon from './swap-step-icon';
@@ -88,7 +92,11 @@ export default function AwaitingSignatures() {
       </div>
       <SwapsFooter
         onSubmit={async () => {
-          await dispatch(navigateBackToBuildQuote(history));
+          await dispatch(prepareToLeaveSwaps());
+          // Go to the default route and then to the build quote route in order to clean up
+          // the `inputValue` local state in `pages/swaps/index.js`
+          history.push(DEFAULT_ROUTE);
+          history.push(BUILD_QUOTE_ROUTE);
         }}
         submitText={t('cancel')}
         hideCancel
