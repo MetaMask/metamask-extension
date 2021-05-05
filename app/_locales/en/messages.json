@@ -556,6 +556,12 @@
   "dismiss": {
     "message": "Dismiss"
   },
+  "dismissReminderDescriptionField": {
+    "message": "Turn this on to dismiss the recovery phrase backup reminder message. We highly recommend that you back up your seed phrase to avoid loss of funds"
+  },
+  "dismissReminderField": {
+    "message": "Dismiss recovery phrase backup reminder"
+  },
   "done": {
     "message": "Done"
   },
@@ -684,6 +690,9 @@
   "estimatedProcessingTimes": {
     "message": "Estimated Processing Times"
   },
+  "ethGasPriceFetchWarning": {
+    "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
+  },
   "eth_accounts": {
     "message": "View the addresses of your permitted accounts (required)",
     "description": "The description for the `eth_accounts` permission"
@@ -779,6 +788,9 @@
   },
   "gasPriceExtremelyLow": {
     "message": "Gas Price Extremely Low"
+  },
+  "gasPriceFetchFailed": {
+    "message": "Gas price estimation failed due to network error."
   },
   "gasPriceInfoTooltipContent": {
     "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
@@ -1966,8 +1978,8 @@
   "swapSelectQuotePopoverDescription": {
     "message": "Below are all the quotes gathered from multiple liquidity sources."
   },
-  "swapSlippageTooLow": {
-    "message": "Slippage must be greater than zero"
+  "swapSlippageNegative": {
+    "message": "Slippage must be greater or equal to zero"
   },
   "swapSource": {
     "message": "Liquidity source"

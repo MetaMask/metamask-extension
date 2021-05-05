@@ -52,6 +52,7 @@ const ExtensionizerMock = {
     onInstalled: {
       addListener: () => undefined,
     },
+    getPlatformInfo: async () => 'mac',
   },
 };
 

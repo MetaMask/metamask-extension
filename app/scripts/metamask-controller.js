@@ -476,6 +476,17 @@ export default class MetamaskController extends EventEmitter {
       this.submitPassword(password);
     }
 
+    // Lazily update the store with the current extension environment
+    this.extension.runtime.getPlatformInfo(({ os }) => {
+      this.appStateController.setBrowserEnvironment(
+        os,
+        // This method is presently only supported by Firefox
+        this.extension.runtime.getBrowserInfo === undefined
+          ? 'chrome'
+          : 'firefox',
+      );
+    });
+
     // TODO:LegacyProvider: Delete
     this.publicConfigStore = this.createPublicConfigStore();
   }
@@ -721,6 +732,10 @@ export default class MetamaskController extends EventEmitter {
       addKnownMethodData: nodeify(
         preferencesController.addKnownMethodData,
         preferencesController,
+      ),
+      setDismissSeedBackUpReminder: nodeify(
+        this.preferencesController.setDismissSeedBackUpReminder,
+        this.preferencesController,
       ),
 
       // AddressController

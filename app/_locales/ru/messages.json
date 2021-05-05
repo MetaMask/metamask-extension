@@ -1660,9 +1660,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "Ниже приведены все котировки, собранные из нескольких источников ликвидности."
   },
-  "swapSlippageTooLow": {
-    "message": "Проскальзывание должно быть больше нуля"
-  },
   "swapSource": {
     "message": "Источник ликвидности"
   },
