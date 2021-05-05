@@ -1561,9 +1561,6 @@
   "swapFinalizing": {
     "message": "Isinasapinal..."
   },
-  "swapHighSlippageWarning": {
-    "message": "Sobrang laki ng halaga ng slippage. Tiyaking alam mo ang ginagawa mo!"
-  },
   "swapLowSlippageError": {
     "message": "Maaaring hindi magtagumpay ang transaksyon, masyadong mababa ang max na slippage."
   },

@@ -1582,9 +1582,6 @@
   "swapFinalizing": {
     "message": "Finalizzando..."
   },
-  "swapHighSlippageWarning": {
-    "message": "L'importo di slippage è molto alto. Assicurati di sapere cosa stai facendo!"
-  },
   "swapLowSlippageError": {
     "message": "La transazione può fallire, il massimo slippage è troppo basso."
   },

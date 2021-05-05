@@ -1564,9 +1564,6 @@
   "swapFinalizing": {
     "message": "Đang hoàn tất..."
   },
-  "swapHighSlippageWarning": {
-    "message": "Số tiền trượt giá rất cao. Hãy chắc chắn rằng bạn hiểu những gì mình đang làm!"
-  },
   "swapLowSlippageError": {
     "message": "Giao dịch có thể không thành công, mức trượt giá tối đa quá thấp."
   },

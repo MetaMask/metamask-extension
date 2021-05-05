@@ -1564,9 +1564,6 @@
   "swapFinalizing": {
     "message": "Menyelesaikan..."
   },
-  "swapHighSlippageWarning": {
-    "message": "Jumlah slippage sangat tinggi. Pastikan Anda mengetahui yang Anda kerjakan!"
-  },
   "swapLowSlippageError": {
     "message": "Transaksi bisa gagal, slippage maks. terlalu rendah."
   },
