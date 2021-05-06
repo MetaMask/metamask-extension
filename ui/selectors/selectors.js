@@ -78,6 +78,16 @@ export function getCurrentKeyring(state) {
   return keyring;
 }
 
+/**
+ * Checks if the current wallet is a hardware wallet.
+ * @param {Object} state
+ * @returns {Boolean}
+ */
+export function isHardwareWallet(state) {
+  const keyring = getCurrentKeyring(state);
+  return keyring.type.includes('Hardware');
+}
+
 export function getAccountType(state) {
   const currentKeyring = getCurrentKeyring(state);
   const type = currentKeyring && currentKeyring.type;

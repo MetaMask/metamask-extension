@@ -1788,6 +1788,10 @@
   "swapAggregator": {
     "message": "Aggregator"
   },
+  "swapAllowSwappingOf": {
+    "message": "Allow swapping of $1",
+    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
+  },
   "swapAmountReceived": {
     "message": "Guaranteed amount"
   },
@@ -1812,6 +1816,9 @@
   "swapCheckingQuote": {
     "message": "Checking $1",
     "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
+  },
+  "swapConfirmWithHwWallet": {
+    "message": "Confirm with your hardware wallet"
   },
   "swapCustom": {
     "message": "custom"
@@ -1857,6 +1864,13 @@
   },
   "swapFinalizing": {
     "message": "Finalizing..."
+  },
+  "swapFromTo": {
+    "message": "The swap of $1 to $2",
+    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
+  },
+  "swapGasFeesSplit": {
+    "message": "Gas fees on the previous screen are split between these two transactions."
   },
   "swapHighSlippageWarning": {
     "message": "Slippage amount is very high."
@@ -1999,6 +2013,9 @@
   "swapThisWillAllowApprove": {
     "message": "This will allow $1 to be swapped."
   },
+  "swapToConfirmWithHwWallet": {
+    "message": "to confirm with your hardware wallet"
+  },
   "swapTokenAvailable": {
     "message": "Your $1 has been added to your account.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
@@ -2027,6 +2044,9 @@
   },
   "swapTransactionComplete": {
     "message": "Transaction complete"
+  },
+  "swapTwoTransactions": {
+    "message": "2 transactions"
   },
   "swapUnknown": {
     "message": "Unknown"

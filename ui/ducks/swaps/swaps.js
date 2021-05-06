@@ -26,6 +26,7 @@ import {
   cancelTx,
 } from '../../store/actions';
 import {
+  AWAITING_SIGNATURES_ROUTE,
   AWAITING_SWAP_ROUTE,
   BUILD_QUOTE_ROUTE,
   LOADING_QUOTES_ROUTE,
@@ -52,6 +53,7 @@ import {
   getUSDConversionRate,
   getSwapsDefaultToken,
   getCurrentChainId,
+  isHardwareWallet,
 } from '../../selectors';
 import {
   ERROR_FETCHING_QUOTES,
@@ -73,6 +75,7 @@ export const FALLBACK_GAS_MULTIPLIER = 1.5;
 const initialState = {
   aggregatorMetadata: null,
   approveTxId: null,
+  tradeTxId: null,
   balanceError: false,
   fetchingQuotes: false,
   fromToken: null,
@@ -95,6 +98,7 @@ const slice = createSlice({
     clearSwapsState: () => initialState,
     navigatedBackToBuildQuote: (state) => {
       state.approveTxId = null;
+      state.tradeTxId = null;
       state.balanceError = false;
       state.fetchingQuotes = false;
       state.customGas.limit = null;
@@ -585,7 +589,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
   return async (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
-
+    const hardwareWalletUsed = isHardwareWallet(state);
     let swapsFeatureIsLive = false;
     try {
       swapsFeatureIsLive = await fetchSwapsFeatureLiveness(chainId);
@@ -605,7 +609,10 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     await dispatch(setBackgroundSwapRouteState('awaiting'));
     await dispatch(stopPollingForQuotes());
-    history.push(AWAITING_SWAP_ROUTE);
+
+    if (!hardwareWalletUsed) {
+      history.push(AWAITING_SWAP_ROUTE);
+    }
 
     const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state);
 
@@ -694,6 +701,13 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
 
     let finalApproveTxMeta;
     const approveTxParams = getApproveTxParams(state);
+
+    // For hardware wallets we go to the Awaiting Signatures page first and only after a user
+    // completes 1 or 2 confirmations, we redirect to the Awaiting Swap page.
+    if (hardwareWalletUsed) {
+      history.push(AWAITING_SIGNATURES_ROUTE);
+    }
+
     if (approveTxParams) {
       const approveTxMeta = await dispatch(
         addUnapprovedTransaction(
@@ -763,6 +777,12 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
       history.push(SWAPS_ERROR_ROUTE);
       return;
+    }
+
+    // Only after a user confirms swapping on a hardware wallet (second `updateAndApproveTx` call above),
+    // we redirect to the Awaiting Swap page.
+    if (hardwareWalletUsed) {
+      history.push(AWAITING_SWAP_ROUTE);
     }
 
     await forceUpdateMetamaskState(dispatch);
