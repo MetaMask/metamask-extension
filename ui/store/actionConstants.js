@@ -29,7 +29,6 @@ export const HIDE_WARNING = 'HIDE_WARNING';
 export const SHOW_ACCOUNT_DETAIL = 'SHOW_ACCOUNT_DETAIL';
 export const SHOW_ACCOUNTS_PAGE = 'SHOW_ACCOUNTS_PAGE';
 export const SHOW_CONF_TX_PAGE = 'SHOW_CONF_TX_PAGE';
-export const SET_CURRENT_FIAT = 'SET_CURRENT_FIAT';
 // account detail screen
 export const SHOW_SEND_TOKEN_PAGE = 'SHOW_SEND_TOKEN_PAGE';
 export const SHOW_PRIVATE_KEY = 'SHOW_PRIVATE_KEY';
