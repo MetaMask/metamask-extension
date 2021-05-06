@@ -33,6 +33,7 @@ import {
   fetchSwapsLiveness,
 } from '../../ducks/swaps/swaps';
 import {
+  AWAITING_SIGNATURES_ROUTE,
   AWAITING_SWAP_ROUTE,
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
@@ -66,6 +67,7 @@ import {
   getSwapsTokensReceivedFromTxMeta,
   fetchAggregatorMetadata,
 } from './swaps.util';
+import AwaitingSignatures from './awaiting-signatures';
 import AwaitingSwap from './awaiting-swap';
 import LoadingQuote from './loading-swaps-quotes';
 import BuildQuote from './build-quote';
@@ -78,6 +80,7 @@ export default function Swap() {
 
   const { pathname } = useLocation();
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE;
+  const isAwaitingSignaturesRoute = pathname === AWAITING_SIGNATURES_ROUTE;
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE;
   const isLoadingQuotesRoute = pathname === LOADING_QUOTES_ROUTE;
 
@@ -243,7 +246,7 @@ export default function Swap() {
       <div className="swaps__container">
         <div className="swaps__header">
           <div className="swaps__title">{t('swap')}</div>
-          {!isAwaitingSwapRoute && (
+          {!isAwaitingSwapRoute && !isAwaitingSignaturesRoute && (
             <div
               className="swaps__header-cancel"
               onClick={async () => {
@@ -370,6 +373,13 @@ export default function Swap() {
                 ) : (
                   <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />
                 );
+              }}
+            />
+            <Route
+              path={AWAITING_SIGNATURES_ROUTE}
+              exact
+              render={() => {
+                return <AwaitingSignatures />;
               }}
             />
             <Route
