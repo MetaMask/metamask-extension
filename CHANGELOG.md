@@ -6,6 +6,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.5.0] - 2021-04-28
+### Added
+- [#10583](https://github.com/MetaMask/metamask-extension/pull/10583): Adding popup display to show new MetaMask notifications
+- [#10938](https://github.com/MetaMask/metamask-extension/pull/10938): Add menu with "View on Etherscan" and "Account details" links to ETH asset page
+- [#10932](https://github.com/MetaMask/metamask-extension/pull/10932): Add view account details menu item to token page menu
+- [#10895](https://github.com/MetaMask/metamask-extension/pull/10895): Adding new links to contact MetaMask support
+- [#10595](https://github.com/MetaMask/metamask-extension/pull/10595): Adding option to set Custom Nonce to Confirm Approve Page
+- [#10717](https://github.com/MetaMask/metamask-extension/pull/10717): Adding recovery phrase video to onboarding process
+- [#10616](https://github.com/MetaMask/metamask-extension/pull/10616): add trezor HD path for ledger wallets
+
+### Changed
+- [#10939](https://github.com/MetaMask/metamask-extension/pull/10939): Use custom token icons in the send flow token dropdown
+- [#10680](https://github.com/MetaMask/metamask-extension/pull/10680): Remove "My Wallet Account" section in Settings > Contact
+- [#10912](https://github.com/MetaMask/metamask-extension/pull/10912): Harden contract address validation for token swaps
+- [#10882](https://github.com/MetaMask/metamask-extension/pull/10882): Show the custom network name in swaps network fee tooltip
+- [#10859](https://github.com/MetaMask/metamask-extension/pull/10859): Only check whether the swaps feature is live after entering the feature
+- [#10871](https://github.com/MetaMask/metamask-extension/pull/10871): Update swaps metadata every 5 minutes as opposed to an hour
+- [#10842](https://github.com/MetaMask/metamask-extension/pull/10842): Increase default slippage from 2% to 3% in swaps and show Advanced Options by default
+- [#10593](https://github.com/MetaMask/metamask-extension/pull/10593): Prevent tokens without addresses from being added to token list
+- [#10746](https://github.com/MetaMask/metamask-extension/pull/10746): Add New Zealand Dollar to currency options
+- [#10670](https://github.com/MetaMask/metamask-extension/pull/10670): Allow 11 characters in symbol for custom RPCs
+- [#10702](https://github.com/MetaMask/metamask-extension/pull/10702): Hide the suggested token pane when not on Mainnet or test network
+- [#10700](https://github.com/MetaMask/metamask-extension/pull/10700): Prevents autocomplete text from displaying in the Add Token input
+- [#10704](https://github.com/MetaMask/metamask-extension/pull/10704): Removing hard references to 12 word seed phrases in copy
+- [#10703](https://github.com/MetaMask/metamask-extension/pull/10703): Add MetaMask to list of BIP44 HD path examples
+- [#10651](https://github.com/MetaMask/metamask-extension/pull/10651): Change 'Send ETH' title to 'Send' in the send flow
+- [#10674](https://github.com/MetaMask/metamask-extension/pull/10674): Don't render faucet row in deposit modal for custom chains
+
+### Fixed
+- [#10935](https://github.com/MetaMask/metamask-extension/pull/10935): Prevent overflow of hostname on confirmation page
+- [#10923](https://github.com/MetaMask/metamask-extension/pull/10923): Fixing ENS input entry in send flow
+- [#10723](https://github.com/MetaMask/metamask-extension/pull/10723): Fix mismatchedChain typo in custom network approval screen
+- [#10695](https://github.com/MetaMask/metamask-extension/pull/10695): Excluding sourcemaps comment in production builds
+- [#10643](https://github.com/MetaMask/metamask-extension/pull/10643): Prevent network dropdown label highlighting
+- [#10644](https://github.com/MetaMask/metamask-extension/pull/10644): Ensure swaps detail height doesn't create jump in vertical height
+- [#10642](https://github.com/MetaMask/metamask-extension/pull/10642): Position the 3dot menu in the same spot on asset screen and home screen
+- [#10594](https://github.com/MetaMask/metamask-extension/pull/10594): Ensure MetaMask works correctly when on a custom network that shares a chain id with a default Infura network
+- [#10579](https://github.com/MetaMask/metamask-extension/pull/10579): Fixed bug that prevented speeding up cancelled transactions
+- [#10630](https://github.com/MetaMask/metamask-extension/pull/10630): Fixes hidden token bug when zero balance preference is on
+- [#10628](https://github.com/MetaMask/metamask-extension/pull/10628): Removing double click bug from delete custom network modal
+
 ## [9.4.0] - 2021-04-15
 ### Added
 - [#10883](https://github.com/MetaMask/metamask-extension/pull/10883): Notify users when MetaMask is unable to connect to the blockchain host
@@ -2181,7 +2222,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.0...HEAD
+[9.5.0]: https://github.com/MetaMask/metamask-extension/compare/v9.4.0...v9.5.0
 [9.4.0]: https://github.com/MetaMask/metamask-extension/compare/v9.3.0...v9.4.0
 [9.3.0]: https://github.com/MetaMask/metamask-extension/compare/v9.2.1...v9.3.0
 [9.2.1]: https://github.com/MetaMask/metamask-extension/compare/v9.2.0...v9.2.1
