@@ -83,12 +83,12 @@ describe('MetaMask', function () {
 
     let seedPhrase;
 
-    it('renders the seed phrase intro screen', async function () {
+    it('renders the Secret Recovery Phrase intro screen', async function () {
       await driver.clickElement('.seed-phrase-intro__left button');
       await driver.delay(regularDelayMs);
     });
 
-    it('reveals the seed phrase', async function () {
+    it('reveals the Secret Recovery Phrase', async function () {
       const byRevealButton =
         '.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button';
       await driver.findElement(byRevealButton);
@@ -116,7 +116,7 @@ describe('MetaMask', function () {
       await driver.delay(tinyDelayMs);
     }
 
-    it('can retype the seed phrase', async function () {
+    it('can retype the Secret Recovery Phrase', async function () {
       const words = seedPhrase.split(' ');
 
       for (const word of words) {
@@ -218,7 +218,7 @@ describe('MetaMask', function () {
     });
   });
 
-  describe('Import seed phrase', function () {
+  describe('Import Secret Recovery Phrase', function () {
     it('logs out of the vault', async function () {
       await driver.clickElement('.account-menu__icon');
       await driver.delay(regularDelayMs);
@@ -231,11 +231,14 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
     });
 
-    it('imports seed phrase', async function () {
+    it('imports Secret Recovery Phrase', async function () {
       const restoreSeedLink = await driver.findClickableElement(
         '.unlock-page__link--import',
       );
-      assert.equal(await restoreSeedLink.getText(), 'import using seed phrase');
+      assert.equal(
+        await restoreSeedLink.getText(),
+        'import using Secret Recovery Phrase',
+      );
       await restoreSeedLink.click();
       await driver.delay(regularDelayMs);
 

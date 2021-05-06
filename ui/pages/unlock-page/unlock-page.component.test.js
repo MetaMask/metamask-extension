@@ -23,7 +23,7 @@ describe('Unlock Page Component', () => {
       configureMockStore()({ metamask: { currentLocale: 'en' } }),
     );
 
-    fireEvent.click(getByText('import using seed phrase'));
+    fireEvent.click(getByText('import using Secret Recovery Phrase'));
     expect(props.onRestore.calledOnce).toStrictEqual(true);
   });
 });
