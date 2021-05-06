@@ -139,6 +139,20 @@ export default class NetworkForm extends PureComponent {
     return parseInt(chainId, 16).toString(10);
   }
 
+  /**
+   * Prefixes a given id with '0x' if the prefix does not exist
+   *
+   * @param {string} chainId - The chainId to prefix
+   * @returns {string} The chainId, prefixed with '0x'
+   */
+  prefixChainId(chainId) {
+    let prefixedChainId = chainId;
+    if (!chainId.startsWith('0x')) {
+      prefixedChainId = `0x${parseInt(chainId, 10).toString(16)}`;
+    }
+    return prefixedChainId;
+  }
+
   onSubmit = async () => {
     this.setState({
       isSubmitting: true,
@@ -162,11 +176,7 @@ export default class NetworkForm extends PureComponent {
       } = this.state;
 
       const formChainId = stateChainId.trim().toLowerCase();
-      // Ensure chainId is a 0x-prefixed, lowercase hex string
-      let chainId = formChainId;
-      if (!chainId.startsWith('0x')) {
-        chainId = `0x${parseInt(chainId, 10).toString(16)}`;
-      }
+      const chainId = this.prefixChainId(formChainId);
 
       if (!(await this.validateChainIdOnSubmit(formChainId, chainId, rpcUrl))) {
         this.setState({
@@ -317,6 +327,10 @@ export default class NetworkForm extends PureComponent {
     });
   };
 
+  hasError = (errorKey, errorVal) => {
+    return this.state.errors[errorKey] === errorVal;
+  };
+
   validateChainIdOnChange = (chainIdArg = '') => {
     const chainId = chainIdArg.trim();
     let errorMessage = '';
@@ -392,6 +406,8 @@ export default class NetworkForm extends PureComponent {
       this.setErrorTo('chainId', errorMessage);
       return false;
     }
+
+    this.setErrorTo('chainId', '');
     return true;
   };
 
@@ -416,9 +432,16 @@ export default class NetworkForm extends PureComponent {
   };
 
   validateUrlRpcUrl = (url, stateKey) => {
+    const { t } = this.context;
     const { rpcUrls } = this.props;
+    const { chainId: stateChainId } = this.state;
+    const isValidUrl = validUrl.isWebUri(url) && url !== '';
+    const chainIdFetchFailed = this.hasError(
+      'chainId',
+      t('failedToFetchChainId'),
+    );
 
-    if (!validUrl.isWebUri(url) && url !== '') {
+    if (!isValidUrl) {
       this.setErrorTo(
         stateKey,
         this.context.t(
@@ -429,6 +452,13 @@ export default class NetworkForm extends PureComponent {
       this.setErrorTo(stateKey, this.context.t('urlExistsErrorMsg'));
     } else {
       this.setErrorTo(stateKey, '');
+    }
+
+    // Re-validate the chain id if it could not be found with previous rpc url
+    if (stateChainId && isValidUrl && chainIdFetchFailed) {
+      const formChainId = stateChainId.trim().toLowerCase();
+      const chainId = this.prefixChainId(formChainId);
+      this.validateChainIdOnSubmit(formChainId, chainId, url);
     }
   };
 
