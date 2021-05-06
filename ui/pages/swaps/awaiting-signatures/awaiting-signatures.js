@@ -52,6 +52,7 @@ export default function AwaitingSignatures() {
 
   useEffect(() => {
     awaitingSignaturesEvent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const headerText = needsTwoConfirmations
