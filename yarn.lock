@@ -2630,7 +2630,7 @@
     semver "^7.3.5"
     yargs "^17.0.1"
 
-"@metamask/contract-metadata@^1.19.0", "@metamask/contract-metadata@^1.22.0", "@metamask/contract-metadata@^1.24.0":
+"@metamask/contract-metadata@^1.19.0", "@metamask/contract-metadata@^1.22.0", "@metamask/contract-metadata@^1.25.0":
   version "1.25.0"
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.25.0.tgz#442ace91fb40165310764b68d8096d0017bb0492"
   integrity sha512-yhmYB9CQPv0dckNcPoWDcgtrdUp0OgK0uvkRE5QIBv4b3qENI1/03BztvK2ijbTuMlORUpjPq7/1MQDUPoRPVw==
@@ -2663,18 +2663,18 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.1"
 
-"@metamask/controllers@^8.0.0":
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-8.0.0.tgz#42ac5aaef67a03d3fe599a67a36597e01902ca8d"
-  integrity sha512-TrteMifsCxV1g3WHcSD1X98fF4hKep3sXZNGfrvkPqa8mrF03hJke21WBSTRtvJ3vkNLRWgi+5I6lVXFTzbYuQ==
+"@metamask/controllers@^9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-9.0.0.tgz#b8661f6fad246b20b92f684a63ab268b0e5248a7"
+  integrity sha512-qj6sKw5j7a542i+EnN/XJW2JsZZzYbj5j8NjYBiRE70kNsyTQ7iXaaEdyXO6re+OAI5M1ULuWgTULoFlWiuHcA==
   dependencies:
-    "@metamask/contract-metadata" "^1.24.0"
+    "@metamask/contract-metadata" "^1.25.0"
     "@types/uuid" "^8.3.0"
     async-mutex "^0.2.6"
     babel-runtime "^6.26.0"
     eth-ens-namehash "^2.0.8"
     eth-json-rpc-infura "^5.1.0"
-    eth-keyring-controller "^6.1.0"
+    eth-keyring-controller "^6.2.1"
     eth-method-registry "1.1.0"
     eth-phishing-detect "^1.1.13"
     eth-query "^2.1.2"
@@ -10628,6 +10628,21 @@ eth-keyring-controller@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-6.2.0.tgz#c649e7ced9bc9a11c2a6ab48234fae212569d390"
   integrity sha512-UYYs+hTgrJNqy7xkI56QpekfsPuZw4kLxrFEUkHefCkBv9poSg/Abx4rvBsRwcj7yxXcxfgTNtoltJfR2we4uw==
+  dependencies:
+    bip39 "^2.4.0"
+    bluebird "^3.5.0"
+    browser-passworder "^2.0.3"
+    eth-hd-keyring "^3.6.0"
+    eth-sig-util "^3.0.1"
+    eth-simple-keyring "^4.2.0"
+    ethereumjs-util "^7.0.9"
+    loglevel "^1.5.0"
+    obs-store "^4.0.3"
+
+eth-keyring-controller@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-6.2.1.tgz#61901071fc74059ed37cb5ae93870fdcae6e3781"
+  integrity sha512-x2gTM1iHp2Kbvdtd9Eslysw0qzVZiqOzpVB3AU/ni2Xiit+rlcv2H80zYKjrEwlfWFDj4YILD3bOqlnEMmRJOA==
   dependencies:
     bip39 "^2.4.0"
     bluebird "^3.5.0"
