@@ -6,12 +6,7 @@
   width: 100%;
 
   &__content {
-    display: flex;
     flex-flow: column;
-    justify-content: center;
-    height: 100%;
-    padding-left: 32px;
-    padding-right: 32px;
   }
 
   div {
@@ -20,27 +15,11 @@
     justify-content: center;
   }
 
-  &__status-image {
-    margin-top: 12px;
-    margin-bottom: 16px;
-  }
-
-  &__header {
-    @include H3;
-
-    color: $Black-100;
-  }
-
-  &__subheader {
-    margin-top: 8px;
-    font-weight: bold;
-  }
-
   &__steps {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin: 16px auto;
+    margin: 16px auto 12px auto;
 
     li {
       margin-bottom: 4px;
@@ -51,9 +30,5 @@
         margin-right: 4px;
       }
     }
-  }
-
-  &__symbol {
-    font-weight: bold;
   }
 }

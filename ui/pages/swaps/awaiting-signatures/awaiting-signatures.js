@@ -14,6 +14,16 @@ import {
   BUILD_QUOTE_ROUTE,
 } from '../../../helpers/constants/routes';
 import PulseLoader from '../../../components/ui/pulse-loader';
+import Typography from '../../../components/ui/typography';
+import Box from '../../../components/ui/box';
+import {
+  BLOCK_SIZES,
+  COLORS,
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+  JUSTIFY_CONTENT,
+  DISPLAY,
+} from '../../../helpers/constants/design-system';
 import SwapsFooter from '../swaps-footer';
 import SwapStepIcon from './swap-step-icon';
 
@@ -42,7 +52,7 @@ export default function AwaitingSignatures() {
 
   useEffect(() => {
     awaitingSignaturesEvent();
-  }, [awaitingSignaturesEvent]);
+  }, []);
 
   const headerText = needsTwoConfirmations
     ? t('swapTwoTransactions')
@@ -50,46 +60,68 @@ export default function AwaitingSignatures() {
 
   return (
     <div className="awaiting-signatures">
-      <div className="awaiting-signatures__content">
-        <div className="awaiting-signatures__status-image">
+      <Box
+        paddingLeft={8}
+        paddingRight={8}
+        height={BLOCK_SIZES.FULL}
+        justifyContent={JUSTIFY_CONTENT.CENTER}
+        display={DISPLAY.FLEX}
+        className="awaiting-signatures__content"
+      >
+        <Box marginTop={3} marginBottom={4}>
           <PulseLoader />
-        </div>
-        <div className="awaiting-signatures__header">{headerText}</div>
+        </Box>
+        <Typography color={COLORS.BLACK} variant={TYPOGRAPHY.H3}>
+          {headerText}
+        </Typography>
         {needsTwoConfirmations && (
           <>
-            <p className="awaiting-signatures__subheader">
+            <Typography
+              variant={TYPOGRAPHY.Paragraph}
+              boxProps={{ marginTop: 2 }}
+              fontWeight={FONT_WEIGHT.BOLD}
+            >
               {t('swapToConfirmWithHwWallet')}
-            </p>
+            </Typography>
             <ul className="awaiting-signatures__steps">
               <li>
                 <SwapStepIcon stepNumber={1} />
                 {t('swapAllowSwappingOf', [
-                  <span
-                    className="awaiting-signatures__symbol"
+                  <Typography
+                    tag="span"
+                    fontWeight={FONT_WEIGHT.BOLD}
                     key="allowToken"
                   >
-                    {destinationTokenInfo.symbol}
-                  </span>,
+                    {destinationTokenInfo?.symbol}
+                  </Typography>,
                 ])}
               </li>
               <li>
                 <SwapStepIcon stepNumber={2} />
                 {t('swapFromTo', [
-                  <span className="awaiting-signatures__symbol" key="tokenFrom">
-                    {sourceTokenInfo.symbol}
-                  </span>,
-                  <span className="awaiting-signatures__symbol" key="tokenTo">
-                    {destinationTokenInfo.symbol}
-                  </span>,
+                  <Typography
+                    tag="span"
+                    fontWeight={FONT_WEIGHT.BOLD}
+                    key="tokenFrom"
+                  >
+                    {sourceTokenInfo?.symbol}
+                  </Typography>,
+                  <Typography
+                    tag="span"
+                    fontWeight={FONT_WEIGHT.BOLD}
+                    key="tokenTo"
+                  >
+                    {destinationTokenInfo?.symbol}
+                  </Typography>,
                 ])}
               </li>
             </ul>
-            <div className="awaiting-signatures__main-description">
+            <Typography variant={TYPOGRAPHY.Paragraph}>
               {t('swapGasFeesSplit')}
-            </div>
+            </Typography>
           </>
         )}
-      </div>
+      </Box>
       <SwapsFooter
         onSubmit={async () => {
           await dispatch(prepareToLeaveSwaps());
