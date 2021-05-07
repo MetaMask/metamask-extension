@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import cleanErrorStack from './cleanErrorStack';
 
 describe('Clean Error Stack', function () {
@@ -14,7 +14,7 @@ describe('Clean Error Stack', function () {
   });
 
   it('tests error with message', function () {
-    assert.equal(cleanErrorStack(testError), 'Error: Test Message');
+    assert.equal(cleanErrorStack(testError).toString(), 'Error: Test Message');
   });
 
   it('tests error with undefined name', function () {
@@ -29,6 +29,6 @@ describe('Clean Error Stack', function () {
   });
 
   it('tests error with blank message', function () {
-    assert.equal(cleanErrorStack(blankMsgError), 'Error');
+    assert.equal(cleanErrorStack(blankMsgError).toString(), 'Error');
   });
 });

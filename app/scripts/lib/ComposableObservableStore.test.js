@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import { ObservableStore } from '@metamask/obs-store';
 import ComposableObservableStore from './ComposableObservableStore';
 

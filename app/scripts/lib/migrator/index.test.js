@@ -1,5 +1,5 @@
 import fs from 'fs';
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import { cloneDeep } from 'lodash';
 import liveMigrations from '../../migrations';
 import data from '../../first-time-state';
