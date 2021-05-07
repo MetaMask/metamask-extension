@@ -23,7 +23,7 @@ describe('ImportWithSeedPhrase Component', () => {
   });
 
   describe('parseSeedPhrase', () => {
-    it('should handle a regular seed phrase', () => {
+    it('should handle a regular Secret Recovery Phrase', () => {
       const root = shallowRender({
         onSubmit: sinon.spy(),
       });
@@ -33,7 +33,7 @@ describe('ImportWithSeedPhrase Component', () => {
       expect(parseSeedPhrase('foo bar baz')).toStrictEqual('foo bar baz');
     });
 
-    it('should handle a mixed-case seed phrase', () => {
+    it('should handle a mixed-case Secret Recovery Phrase', () => {
       const root = shallowRender({
         onSubmit: sinon.spy(),
       });
@@ -43,7 +43,7 @@ describe('ImportWithSeedPhrase Component', () => {
       expect(parseSeedPhrase('FOO bAr baZ')).toStrictEqual('foo bar baz');
     });
 
-    it('should handle an upper-case seed phrase', () => {
+    it('should handle an upper-case Secret Recovery Phrase', () => {
       const root = shallowRender({
         onSubmit: sinon.spy(),
       });
@@ -53,7 +53,7 @@ describe('ImportWithSeedPhrase Component', () => {
       expect(parseSeedPhrase('FOO BAR BAZ')).toStrictEqual('foo bar baz');
     });
 
-    it('should trim extraneous whitespace from the given seed phrase', () => {
+    it('should trim extraneous whitespace from the given Secret Recovery Phrase', () => {
       const root = shallowRender({
         onSubmit: sinon.spy(),
       });

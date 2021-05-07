@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import { mount } from 'enzyme';
 import RevealSeedPhrase from './reveal-seed-phrase.container';
 
-describe('Reveal Seed Phrase', () => {
+describe('Reveal Secret Recovery Phrase', () => {
   let wrapper;
 
   const TEST_SEED =
@@ -27,7 +27,7 @@ describe('Reveal Seed Phrase', () => {
     });
   });
 
-  it('seed phrase', () => {
+  it('secret recovery phrase', () => {
     const seedPhrase = wrapper.find(
       '.reveal-seed-phrase__secret-words--hidden',
     );
