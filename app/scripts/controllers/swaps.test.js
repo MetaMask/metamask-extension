@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import sinon from 'sinon';
 
 import { ethers } from 'ethers';
@@ -645,7 +645,7 @@ describe('SwapsController', function () {
           topAggId,
           resultQuotes,
         ] = await swapsController._findTopQuoteAndCalculateSavings(testInput);
-        assert.equal(topAggId, [TEST_AGG_ID_2]);
+        assert.equal(topAggId, TEST_AGG_ID_2);
         assert.deepStrictEqual(resultQuotes, expectedResultQuotes);
       });
     });

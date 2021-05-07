@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
@@ -493,8 +493,8 @@ describe('MetaMaskController', function () {
         );
       } catch (e) {
         assert.equal(
-          e,
-          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+          e.message,
+          'MetamaskController:getKeyringForDevice - Unknown device',
         );
       }
     });
@@ -535,8 +535,8 @@ describe('MetaMaskController', function () {
         );
       } catch (e) {
         assert.equal(
-          e,
-          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+          e.message,
+          'MetamaskController:getKeyringForDevice - Unknown device',
         );
       }
     });
@@ -554,8 +554,8 @@ describe('MetaMaskController', function () {
         await metamaskController.forgetDevice('Some random device name');
       } catch (e) {
         assert.equal(
-          e,
-          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+          e.message,
+          'MetamaskController:getKeyringForDevice - Unknown device',
         );
       }
     });

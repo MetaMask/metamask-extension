@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import {
   MAINNET_CHAIN_ID,
   MAINNET_NETWORK_ID,
