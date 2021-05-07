@@ -470,25 +470,16 @@ export function setCurrentCurrency(currencyCode) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setCurrentCurrency`);
-    let data;
     try {
-      data = await promisifiedBackground.setCurrentCurrency(currencyCode);
+      await promisifiedBackground.setCurrentCurrency(currencyCode);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
-      log.error(error.stack);
+      log.error(error);
       dispatch(displayWarning(error.message));
       return;
     } finally {
       dispatch(hideLoadingIndication());
     }
-
-    dispatch({
-      type: actionConstants.SET_CURRENT_FIAT,
-      value: {
-        currentCurrency: data.currentCurrency,
-        conversionRate: data.conversionRate,
-        conversionDate: data.conversionDate,
-      },
-    });
   };
 }
 

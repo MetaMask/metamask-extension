@@ -74,26 +74,6 @@ describe('MetaMask Reducers', () => {
     });
   });
 
-  it('sets current fiat', () => {
-    const value = {
-      currentCurrency: 'yen',
-      conversionRate: 3.14,
-      conversionDate: new Date(2018, 9),
-    };
-
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_CURRENT_FIAT,
-        value,
-      },
-    );
-
-    expect(state.currentCurrency).toStrictEqual(value.currentCurrency);
-    expect(state.conversionRate).toStrictEqual(value.conversionRate);
-    expect(state.conversionDate).toStrictEqual(value.conversionDate);
-  });
-
   it('updates tokens', () => {
     const newTokens = {
       address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',

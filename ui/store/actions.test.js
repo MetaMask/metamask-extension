@@ -618,28 +618,18 @@ describe('Actions', () => {
 
     it('calls setCurrentCurrency', async () => {
       const store = mockStore();
-      const setCurrentCurrency = background.setCurrentCurrency.callsFake(
-        (_, cb) =>
-          cb(null, {
-            currentCurrency: 'currency',
-            conversionRate: 100,
-            conversionDate: 1611839083653,
-          }),
-      );
-
+      background.setCurrentCurrency.callsFake((_, cb) => cb());
       actions._setBackgroundConnection(background);
 
       await store.dispatch(actions.setCurrentCurrency('jpy'));
-      expect(setCurrentCurrency.callCount).toStrictEqual(1);
+      expect(background.setCurrentCurrency.callCount).toStrictEqual(1);
     });
 
     it('throws if setCurrentCurrency throws', async () => {
       const store = mockStore();
-
       background.setCurrentCurrency.callsFake((_, cb) =>
         cb(new Error('error')),
       );
-
       actions._setBackgroundConnection(background);
 
       const expectedActions = [
