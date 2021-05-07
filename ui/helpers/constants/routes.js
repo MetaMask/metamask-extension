@@ -82,7 +82,7 @@ const PATH_NAME_MAP = {
   [`${CONTACT_EDIT_ROUTE}/:address`]: 'Edit Contact Settings Page',
   [CONTACT_ADD_ROUTE]: 'Add Contact Settings Page',
   [`${CONTACT_VIEW_ROUTE}/:address`]: 'View Contact Settings Page',
-  [REVEAL_SEED_ROUTE]: 'Reveal Seed Page',
+  [REVEAL_SEED_ROUTE]: 'Reveal Secret Recovery Phrase Page',
   [MOBILE_SYNC_ROUTE]: 'Sync With Mobile Page',
   [RESTORE_VAULT_ROUTE]: 'Restore Vault Page',
   [ADD_TOKEN_ROUTE]: 'Add Token Page',
@@ -114,16 +114,17 @@ const PATH_NAME_MAP = {
   [INITIALIZE_UNLOCK_ROUTE]: 'Initialization Unlock page',
   [INITIALIZE_CREATE_PASSWORD_ROUTE]: 'Initialization Create Password Page',
   [INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE]:
-    'Initialization Import Account With Seed Phrase Page',
+    'Initialization Import Account With Secret Recovery Phrase Page',
   [INITIALIZE_SELECT_ACTION_ROUTE]:
     'Initialization Choose Restore or New Account Page',
-  [INITIALIZE_SEED_PHRASE_ROUTE]: 'Initialization Seed Phrase Page',
+  [INITIALIZE_SEED_PHRASE_ROUTE]: 'Initialization Secret Recovery Phrase Page',
   [INITIALIZE_BACKUP_SEED_PHRASE_ROUTE]:
-    'Initialization Backup Seed Phrase Page',
-  [INITIALIZE_SEED_PHRASE_INTRO_ROUTE]: 'Initialization Seed Phrase Intro Page',
+    'Initialization Backup Secret Recovery Phrase Page',
+  [INITIALIZE_SEED_PHRASE_INTRO_ROUTE]:
+    'Initialization Secret Recovery Phrase Intro Page',
   [INITIALIZE_END_OF_FLOW_ROUTE]: 'End of Initialization Page',
   [INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE]:
-    'Initialization Confirm Seed Phrase Page',
+    'Initialization Confirm Secret Recovery Phrase Page',
   [INITIALIZE_METAMETRICS_OPT_IN_ROUTE]: 'MetaMetrics Opt In Page',
   [BUILD_QUOTE_ROUTE]: 'Swaps Build Quote Page',
   [VIEW_QUOTE_ROUTE]: 'Swaps View Quotes Page',
