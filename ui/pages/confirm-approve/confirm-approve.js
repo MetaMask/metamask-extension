@@ -26,6 +26,7 @@ import {
   getNextSuggestedNonce,
   getNoGasPriceFetched,
   getIsEthGasPriceFetched,
+  getIsMainnet,
 } from '../../selectors';
 import { currentNetworkTxListSelector } from '../../selectors/transactions';
 import Loading from '../../components/ui/loading-screen';
@@ -120,7 +121,9 @@ export default function ConfirmApprove() {
     : null;
   const isEthGasPrice = useSelector(getIsEthGasPriceFetched);
   const noGasPrice = useSelector(getNoGasPriceFetched);
-
+  const isMainnet = useSelector(getIsMainnet);
+  const hideBasic =
+    isEthGasPrice || noGasPrice || !(isMainnet || process.env.IN_TEST);
   return tokenSymbol === undefined ? (
     <Loading />
   ) : (
@@ -144,7 +147,7 @@ export default function ConfirmApprove() {
               showModal({
                 name: 'CUSTOMIZE_GAS',
                 txData,
-                hideBasic: isEthGasPrice || noGasPrice,
+                hideBasic,
               }),
             )
           }
