@@ -93,13 +93,6 @@ export default function reduceMetamask(state = {}, action) {
       return Object.assign(metamaskState, { identities });
     }
 
-    case actionConstants.SET_CURRENT_FIAT:
-      return Object.assign(metamaskState, {
-        currentCurrency: action.value.currentCurrency,
-        conversionRate: action.value.conversionRate,
-        conversionDate: action.value.conversionDate,
-      });
-
     case actionConstants.UPDATE_TOKENS:
       return {
         ...metamaskState,

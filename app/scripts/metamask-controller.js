@@ -2517,7 +2517,7 @@ export default class MetamaskController extends EventEmitter {
       };
       this.currencyRateController.update(currencyState);
       this.currencyRateController.configure(currencyState);
-      cb(null, this.currencyRateController.state);
+      cb(null);
       return;
     } catch (err) {
       cb(err);
