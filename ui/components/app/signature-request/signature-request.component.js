@@ -27,22 +27,24 @@ export default class SignatureRequest extends PureComponent {
   };
 
   componentDidMount() {
-    const { clearConfirmTransaction, cancel } = this.props;
-    const { metricsEvent } = this.context;
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', (event) => {
-        metricsEvent({
-          eventOpts: {
-            category: 'Transactions',
-            action: 'Sign Request',
-            name: 'Cancel Sig Request Via Notification Close',
-          },
-        });
-        clearConfirmTransaction();
-        cancel(event);
-      });
+      window.addEventListener('beforeunload', this._beforeUnload);
     }
   }
+
+  _beforeUnload = (event) => {
+    const { clearConfirmTransaction, cancel } = this.props;
+    const { metricsEvent } = this.context;
+    metricsEvent({
+      eventOpts: {
+        category: 'Transactions',
+        action: 'Sign Request',
+        name: 'Cancel Sig Request Via Notification Close',
+      },
+    });
+    clearConfirmTransaction();
+    cancel(event);
+  };
 
   formatWallet(wallet) {
     return `${wallet.slice(0, 8)}...${wallet.slice(
@@ -62,6 +64,16 @@ export default class SignatureRequest extends PureComponent {
     } = this.props;
     const { address: fromAddress } = fromAccount;
     const { message, domain = {} } = JSON.parse(data);
+
+    const onSign = (event) => {
+      window.removeEventListener('beforeunload', this._beforeUnload);
+      sign(event);
+    };
+
+    const onCancel = (event) => {
+      window.removeEventListener('beforeunload', this._beforeUnload);
+      cancel(event);
+    };
 
     return (
       <div className="signature-request page-container">
@@ -86,7 +98,7 @@ export default class SignatureRequest extends PureComponent {
           </div>
         </div>
         <Message data={message} />
-        <Footer cancelAction={cancel} signAction={sign} />
+        <Footer cancelAction={onCancel} signAction={onSign} />
       </div>
     );
   }
