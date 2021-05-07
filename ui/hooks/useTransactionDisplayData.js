@@ -145,7 +145,17 @@ export function useTransactionDisplayData(transactionGroup) {
   // 6. Swap
   // 7. Swap Approval
 
-  if (type === null || type === undefined) {
+  const signatureTypes = [
+    null,
+    undefined,
+    TRANSACTION_TYPES.SIGN,
+    TRANSACTION_TYPES.PERSONAL_SIGN,
+    TRANSACTION_TYPES.SIGN_TYPED_DATA,
+    TRANSACTION_TYPES.ETH_DECRYPT,
+    TRANSACTION_TYPES.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+  ];
+
+  if (signatureTypes.includes(type)) {
     category = TRANSACTION_GROUP_CATEGORIES.SIGNATURE_REQUEST;
     title = t('signatureRequest');
     subtitle = origin;
