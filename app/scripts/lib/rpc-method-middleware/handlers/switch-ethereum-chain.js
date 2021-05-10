@@ -63,7 +63,7 @@ async function switchEthereumChainHandler(
 
   const existingNetwork = findCustomRpcBy({ chainId: _chainId });
 
-  if (existingNetwork !== null) {
+  if (existingNetwork) {
     const currentChainId = getCurrentChainId();
     if (currentChainId === _chainId) {
       res.result = null;
@@ -88,5 +88,10 @@ async function switchEthereumChainHandler(
     }
     return end();
   }
-  return end(ethErrors.provider.userRejectedRequest());
+  return end(
+    ethErrors.provider.custom({
+      code: 4902, // To-be-standardized "unrecognized chain ID" error
+      message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${MESSAGE_TYPE.ADD_ETHEREUM_CHAIN} first.`,
+    }),
+  );
 }
