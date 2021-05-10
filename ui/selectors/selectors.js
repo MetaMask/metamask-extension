@@ -255,8 +255,12 @@ export function getAddressBook(state) {
 
 export function getAddressBookEntry(state, address) {
   const addressBook = getAddressBook(state);
+  const chainId = getCurrentChainId(state);
+  const checksumUsesChainId = getCurrentChecksumUsesChainId(state);
   const entry = addressBook.find(
-    (contact) => contact.address === checksumAddress(address),
+    (contact) =>
+      contact.address ===
+      checksumAddress(address, chainId, checksumUsesChainId),
   );
   return entry;
 }
