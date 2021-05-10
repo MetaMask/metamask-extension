@@ -3,6 +3,7 @@ const path = require('path');
 const { merge, cloneDeep } = require('lodash');
 
 const baseManifest = require('../../app/manifest/_base.json');
+const { version } = require('../../package.json');
 
 const { createTask, composeSeries } = require('./task');
 
@@ -23,7 +24,11 @@ function createManifestTasks({ browserPlatforms }) {
             `${platform}.json`,
           ),
         );
-        const result = merge(cloneDeep(baseManifest), platformModifications);
+        const result = merge(
+          cloneDeep(baseManifest),
+          { version },
+          platformModifications,
+        );
         const dir = path.join('.', 'dist', platform);
         await fs.mkdir(dir, { recursive: true });
         await writeJson(result, path.join(dir, 'manifest.json'));

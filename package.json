@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "0.0.0",
+  "version": "9.5.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -103,6 +103,7 @@
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/logo": "^2.5.0",
     "@metamask/obs-store": "^5.0.0",
+    "@metamask/post-message-stream": "^4.0.0",
     "@popperjs/core": "^2.4.0",
     "@reduxjs/toolkit": "^1.5.0",
     "@sentry/browser": "^5.26.0",
@@ -162,7 +163,6 @@
     "nonce-tracker": "^1.0.0",
     "obj-multiplex": "^1.0.0",
     "pify": "^5.0.0",
-    "@metamask/post-message-stream": "^4.0.0",
     "promise-to-callback": "^1.0.0",
     "prop-types": "^15.6.1",
     "pubnub": "4.27.3",

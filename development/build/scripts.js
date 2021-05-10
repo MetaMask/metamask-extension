@@ -22,7 +22,7 @@ const metamaskrc = require('rc')('metamask', {
   SEGMENT_LEGACY_WRITE_KEY: process.env.SEGMENT_LEGACY_WRITE_KEY,
 });
 
-const baseManifest = require('../../app/manifest/_base.json');
+const { version } = require('../../package.json');
 
 const packageJSON = require('../../package.json');
 const {
@@ -424,7 +424,7 @@ function getEnvironmentVariables({ devMode, testing }) {
   return {
     METAMASK_DEBUG: devMode,
     METAMASK_ENVIRONMENT: environment,
-    METAMASK_VERSION: baseManifest.version,
+    METAMASK_VERSION: version,
     NODE_ENV: devMode ? 'development' : 'production',
     IN_TEST: testing ? 'true' : false,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
