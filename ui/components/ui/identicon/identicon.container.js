@@ -1,4 +1,8 @@
 import { connect } from 'react-redux';
+import {
+  getCurrentChainId,
+  getCurrentChecksumUsesChainId,
+} from '../../../selectors';
 import Identicon from './identicon.component';
 
 const mapStateToProps = (state) => {
@@ -7,6 +11,8 @@ const mapStateToProps = (state) => {
   } = state;
 
   return {
+    chainId: getCurrentChainId(state),
+    checksumUsesChainId: getCurrentChecksumUsesChainId(state),
     useBlockie,
   };
 };
