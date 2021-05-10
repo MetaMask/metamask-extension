@@ -1,6 +1,14 @@
 import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
+import * as time from '../../../shared/constants/time';
+
+// 1 hour
+const REMINDER_CHECK_INTERVAL = time.HOUR;
+// 2 days
+const INITIAL_REMINDER_FREQUENCY = time.DAY * 2;
+// 90 days
+const FOLLOWUP_REMINDER_FREQUENCY = time.DAY * 90;
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -24,9 +32,13 @@ export default class AppStateController extends EventEmitter {
       connectedStatusPopoverHasBeenShown: true,
       defaultHomeActiveTabName: null,
       browserEnvironment: {},
+      recoveryPhraseReminderHasBeenShown: false,
+      recoveryPhraseReminderLastShown: 0,
+      shouldShowRecoveryPhraseReminder: false,
       ...initState,
     });
     this.timer = null;
+    this.interval = REMINDER_CHECK_INTERVAL;
 
     this.isUnlocked = isUnlocked;
     this.waitingForUnlock = [];
@@ -43,6 +55,19 @@ export default class AppStateController extends EventEmitter {
 
     const { preferences } = preferencesStore.getState();
     this._setInactiveTimeout(preferences.autoLockTimeLimit);
+  }
+
+  /* eslint-disable accessor-pairs */
+  /**
+   * @type {number}
+   */
+  set interval(interval) {
+    if (this._handleReminderCheck) {
+      clearInterval(this._handleReminderCheck);
+    }
+    this._handleReminderCheck = setInterval(() => {
+      this._checkShouldShowRecoveryPhraseReminder();
+    }, interval);
   }
 
   /**
@@ -113,6 +138,16 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
+   * Record that the user has been shown the recovery phrase reminder
+   */
+  setRecoveryPhraseReminderHasBeenShown() {
+    this.store.updateState({
+      recoveryPhraseReminderHasBeenShown: true,
+      shouldShowRecoveryPhraseReminder: false,
+    });
+  }
+
+  /**
    * Sets the last active time to the current time
    * @returns {void}
    */
@@ -132,6 +167,68 @@ export default class AppStateController extends EventEmitter {
     });
 
     this._resetTimer();
+  }
+
+  _checkShouldShowRecoveryPhraseReminder() {
+    const {
+      recoveryPhraseReminderHasBeenShown,
+      recoveryPhraseReminderLastShown,
+    } = this.store.getState();
+    // Capture the current timestamp
+    const currentTime = new Date().getTime();
+
+    // For the first interval run, set recoveryPhraseReminderLastShown to the current time.
+    if (recoveryPhraseReminderLastShown === 0) {
+      this.store.updateState({
+        recoveryPhraseReminderLastShown: currentTime,
+      });
+      return;
+    }
+
+    // Wait 2 days before the first display
+    if (!recoveryPhraseReminderHasBeenShown) {
+      if (
+        currentTime - recoveryPhraseReminderLastShown >=
+        INITIAL_REMINDER_FREQUENCY
+      ) {
+        this._setShouldShowRecoveryPhraseReminder(true);
+        this._setRecoveryPhraseReminderLastShown(currentTime);
+      }
+      return;
+    }
+
+    // For subsequent displays, wait 90 days
+    if (
+      currentTime - recoveryPhraseReminderLastShown >=
+      FOLLOWUP_REMINDER_FREQUENCY
+    ) {
+      this._setShouldShowRecoveryPhraseReminder(true);
+      this._setRecoveryPhraseReminderLastShown(currentTime);
+    }
+  }
+
+  /**
+   * Record the timestamp of the last time the user has seen the recovery phrase reminder
+   * @param {number} lastShown - timestamp when user was last shown the reminder
+   * @returns {void}
+   * @private
+   */
+  _setRecoveryPhraseReminderLastShown(lastShown) {
+    this.store.updateState({
+      recoveryPhraseReminderLastShown: lastShown,
+    });
+  }
+
+  /**
+   * Set whether or not the user should be shown the recovery phrase reminder
+   * @param {boolean} shouldShow - whether or not the reminder should be shown
+   * @returns {void}
+   * @private
+   */
+  _setShouldShowRecoveryPhraseReminder(shouldShow) {
+    this.store.updateState({
+      shouldShowRecoveryPhraseReminder: shouldShow,
+    });
   }
 
   /**
