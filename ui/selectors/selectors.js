@@ -59,6 +59,11 @@ export function getCurrentChainId(state) {
   return chainId;
 }
 
+export function getCurrentChecksumUsesChainId(state) {
+  const { checksumUsesChainId } = state.metamask.provider;
+  return checksumUsesChainId;
+}
+
 export function getCurrentKeyring(state) {
   const identity = getSelectedIdentity(state);
 
