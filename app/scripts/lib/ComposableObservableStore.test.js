@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { ObservableStore } from '@metamask/obs-store';
 import {
   BaseController,
@@ -66,7 +65,7 @@ describe('ComposableObservableStore', function () {
       controllerMessenger,
     });
     testStore.putState('state');
-    assert.deepEqual(store.getState(), { TestStore: 'state' });
+    expect(store.getState()).toStrictEqual({ TestStore: 'state' });
   });
 
   it('should update structure with observable store', function () {
@@ -75,7 +74,7 @@ describe('ComposableObservableStore', function () {
     const store = new ComposableObservableStore({ controllerMessenger });
     store.updateStructure({ TestStore: testStore });
     testStore.putState('state');
-    assert.deepEqual(store.getState(), { TestStore: 'state' });
+    expect(store.getState()).toStrictEqual({ TestStore: 'state' });
   });
 
   it('should update structure with BaseController-based controller', function () {
@@ -122,7 +121,7 @@ describe('ComposableObservableStore', function () {
     });
   });
 
-  it('should return flattened state', function () {
+  it('should return flattened state', () => {
     const controllerMessenger = new ControllerMessenger();
     const fooStore = new ObservableStore({ foo: 'foo' });
     const barController = new ExampleController({
