@@ -60,6 +60,8 @@ export function valuesFor(obj) {
 
 export function addressSummary(
   address,
+  chainId,
+  checksumUsesChainId,
   firstSegLength = 10,
   lastSegLength = 4,
   includeHex = true,
@@ -67,7 +69,7 @@ export function addressSummary(
   if (!address) {
     return '';
   }
-  let checked = checksumAddress(address);
+  let checked = checksumAddress(address, chainId, checksumUsesChainId);
   if (!includeHex) {
     checked = ethUtil.stripHexPrefix(checked);
   }

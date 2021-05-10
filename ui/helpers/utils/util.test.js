@@ -36,14 +36,25 @@ describe('util', () => {
   describe('#addressSummary', () => {
     it('should add case-sensitive checksum', () => {
       const address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825';
-      const result = util.addressSummary(address);
-      expect(result).toStrictEqual('0xFDEa65C8...b825');
+      const chainId = '0x539';
+      const checksumUsesChainId = true;
+      const result = util.addressSummary(address, chainId, checksumUsesChainId);
+      expect(result).toStrictEqual('0xfDea65C8...b825');
     });
 
     it('should accept arguments for firstseg, lastseg, and keepPrefix', () => {
       const address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825';
-      const result = util.addressSummary(address, 4, 4, false);
-      expect(result).toStrictEqual('FDEa...b825');
+      const chainId = '0x539';
+      const checksumUsesChainId = true;
+      const result = util.addressSummary(
+        address,
+        chainId,
+        checksumUsesChainId,
+        4,
+        4,
+        false,
+      );
+      expect(result).toStrictEqual('fDea...b825');
     });
   });
 
