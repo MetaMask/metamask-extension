@@ -2,18 +2,19 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import {
   getEthConversionFromWeiHex,
   getValueFromWeiHex,
 } from '../../../helpers/utils/conversions.util';
 import { formatDate } from '../../../helpers/utils/util';
-import { getBlockExplorerUrlForTx } from '../../../../shared/modules/transaction.utils';
 import TransactionActivityLogIcon from './transaction-activity-log-icon';
 import { CONFIRMED_STATUS } from './transaction-activity-log.constants';
 
 export default class TransactionActivityLog extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
@@ -31,10 +32,20 @@ export default class TransactionActivityLog extends PureComponent {
   };
 
   handleActivityClick = (activity) => {
-    const etherscanUrl = getBlockExplorerUrlForTx(
-      activity,
-      this.props.rpcPrefs,
-    );
+    const { rpcPrefs } = this.props;
+    const etherscanUrl = getBlockExplorerLink(activity, rpcPrefs);
+
+    if (rpcPrefs.blockExplorerUrl) {
+      this.context.trackEvent({
+        category: 'Transaction',
+        event: 'Clicked Custom Block Explorer Link',
+        properties: {
+          custom_network_url: rpcPrefs.blockExplorerUrl,
+          link_type: 'Transaction Block Explorer',
+        },
+      });
+    }
+
     global.platform.openTab({ url: etherscanUrl });
   };
 

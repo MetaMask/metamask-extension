@@ -10,6 +10,7 @@ const AssetOptions = ({
   onViewAccountDetails,
   tokenSymbol,
   isNativeAsset,
+  isEthNetwork,
 }) => {
   const t = useContext(I18nContext);
   const [assetOptionsButtonElement, setAssetOptionsButtonElement] = useState(
@@ -49,7 +50,9 @@ const AssetOptions = ({
               onViewEtherscan();
             }}
           >
-            {t('viewOnEtherscan')}
+            {isEthNetwork
+              ? t('viewOnEtherscan')
+              : t('viewOnCustomBlockExplorer')}
           </MenuItem>
           {isNativeAsset ? null : (
             <MenuItem
@@ -70,6 +73,7 @@ const AssetOptions = ({
 };
 
 AssetOptions.propTypes = {
+  isEthNetwork: PropTypes.bool,
   isNativeAsset: PropTypes.bool,
   onRemove: PropTypes.func.isRequired,
   onViewEtherscan: PropTypes.func.isRequired,

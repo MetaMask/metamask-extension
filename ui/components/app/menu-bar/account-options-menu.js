@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { getAccountLink } from '@metamask/etherscan-link';
 
 import { showModal } from '../../../store/actions';
 import { CONNECTED_ROUTE } from '../../../helpers/constants/routes';
 import { Menu, MenuItem } from '../../ui/menu';
-import getAccountLink from '../../../helpers/utils/account-link';
 import {
   getCurrentChainId,
   getCurrentKeyring,
@@ -14,7 +14,10 @@ import {
   getSelectedIdentity,
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useMetricEvent } from '../../../hooks/useMetricEvent';
+import {
+  useMetricEvent,
+  useNewMetricEvent,
+} from '../../../hooks/useMetricEvent';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 
@@ -22,6 +25,12 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const keyring = useSelector(getCurrentKeyring);
+  const chainId = useSelector(getCurrentChainId);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const selectedIdentity = useSelector(getSelectedIdentity);
+
   const openFullscreenEvent = useMetricEvent({
     eventOpts: {
       category: 'Navigation',
@@ -51,10 +60,14 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
     },
   });
 
-  const keyring = useSelector(getCurrentKeyring);
-  const chainId = useSelector(getCurrentChainId);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const selectedIdentity = useSelector(getSelectedIdentity);
+  const customBlockExplorerLinkClickedEvent = useNewMetricEvent({
+    category: 'Navigation',
+    event: 'Clicked Custom Block Explorer Link',
+    properties: {
+      custom_network_url: rpcPrefs.blockExplorerUrl,
+      link_type: 'Account Tracker',
+    },
+  });
 
   const { address } = selectedIdentity;
   const isRemovable = keyring.type !== 'HD Key Tree';
@@ -91,6 +104,9 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
       <MenuItem
         onClick={() => {
           viewOnEtherscanEvent();
+          if (rpcPrefs.blockExplorerUrl) {
+            customBlockExplorerLinkClickedEvent();
+          }
           global.platform.openTab({
             url: getAccountLink(address, chainId, rpcPrefs),
           });

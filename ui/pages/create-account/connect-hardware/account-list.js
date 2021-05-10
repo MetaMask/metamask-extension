@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import getAccountLink from '../../../helpers/utils/account-link';
+import { getAccountLink } from '@metamask/etherscan-link';
+
 import Button from '../../../components/ui/button';
 import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
@@ -83,7 +84,7 @@ class AccountList extends Component {
   }
 
   renderAccounts() {
-    const { accounts, connectedAccounts } = this.props;
+    const { accounts, connectedAccounts, rpcPrefs } = this.props;
 
     return (
       <div className="hw-account-list">
@@ -130,11 +131,26 @@ class AccountList extends Component {
               </div>
               <a
                 className="hw-account-list__item__link"
-                href={getAccountLink(
-                  account.address,
-                  this.props.chainId,
-                  this.props.rpcPrefs,
-                )}
+                onClick={() => {
+                  // not sure if this trackevent makes any sense in this context
+                  if (rpcPrefs.blockExplorerUrl) {
+                    this.context.trackEvent({
+                      category: 'Hardware Connect',
+                      event: 'Clicked Custom Block Explorer Link',
+                      properties: {
+                        custom_network_url: rpcPrefs.blockExplorerUrl,
+                        link_type: 'Account Tracker',
+                      },
+                    });
+                  }
+                  global.platform.openTab({
+                    url: getAccountLink(
+                      account.address,
+                      this.props.chainId,
+                      this.props.rpcPrefs,
+                    ),
+                  });
+                }}
                 target="_blank"
                 rel="noopener noreferrer"
                 title={this.context.t('etherscanView')}
@@ -282,6 +298,7 @@ AccountList.propTypes = {
 
 AccountList.contextTypes = {
   t: PropTypes.func,
+  trackEvent: PropTypes.func,
 };
 
 export default AccountList;

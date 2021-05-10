@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
+import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { FLAT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import TransactionActivityLog from '../transaction-activity-log';
@@ -9,13 +10,13 @@ import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import Copy from '../../ui/icon/copy-icon.component';
 import Popover from '../../ui/popover';
-import { getBlockExplorerUrlForTx } from '../../../../shared/modules/transaction.utils';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static defaultProps = {
@@ -53,16 +54,26 @@ export default class TransactionListItemDetails extends PureComponent {
       rpcPrefs,
     } = this.props;
 
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Navigation',
-        action: 'Activity Log',
-        name: 'Clicked "View on Etherscan"',
-      },
-    });
+    if (rpcPrefs.blockExplorerUrl) {
+      this.context.trackEvent({
+        category: 'Transaction',
+        event: 'Clicked Custom Block Explorer Link',
+        properties: {
+          custom_network_url: rpcPrefs.blockExplorerUrl,
+          link_type: 'Transaction Block Explorer',
+        },
+      });
+    } else {
+      this.context.trackEvent({
+        eventOpts: {
+          category: 'Transaction',
+          event: 'Clicked View on Etherscan',
+        },
+      });
+    }
 
     global.platform.openTab({
-      url: getBlockExplorerUrlForTx(primaryTransaction, rpcPrefs),
+      url: getBlockExplorerLink(primaryTransaction, rpcPrefs),
     });
   };
 

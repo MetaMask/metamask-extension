@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { getAccountLink } from '@metamask/etherscan-link';
 import TransactionList from '../../../components/app/transaction-list';
 import { EthOverview } from '../../../components/app/wallet-overview';
 import {
@@ -11,8 +12,8 @@ import {
   getSelectedAddress,
 } from '../../../selectors/selectors';
 import { showModal } from '../../../store/actions';
-import getAccountLink from '../../../helpers/utils/account-link';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import AssetNavigation from './asset-navigation';
 import AssetOptions from './asset-options';
 
@@ -27,16 +28,29 @@ export default function NativeAsset({ nativeCurrency }) {
   const address = useSelector(getSelectedAddress);
   const history = useHistory();
 
+  const customBlockExplorerLinkClickedEvent = useNewMetricEvent({
+    category: 'Navigation',
+    event: 'Clicked Custom Block Explorer Link',
+    properties: {
+      custom_network_url: rpcPrefs.blockExplorerUrl,
+      link_type: 'Account Tracker',
+    },
+  });
+
   return (
     <>
       <AssetNavigation
         accountName={selectedAccountName}
         assetName={nativeCurrency}
         onBack={() => history.push(DEFAULT_ROUTE)}
+        isEthNetwork={!rpcPrefs.blockExplorerUrl}
         optionsButton={
           <AssetOptions
             isNativeAsset
             onViewEtherscan={() => {
+              if (rpcPrefs.blockExplorerUrl) {
+                customBlockExplorerLinkClickedEvent();
+              }
               global.platform.openTab({
                 url: getAccountLink(address, chainId, rpcPrefs),
               });

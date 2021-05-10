@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { getAccountLink } from '@metamask/etherscan-link';
+
 import AccountModalContainer from '../account-modal-container';
-import getAccountLink from '../../../../helpers/utils/account-link';
 import QrView from '../../../ui/qr-code';
 import EditableLabel from '../../../ui/editable-label';
 import Button from '../../../ui/button';
@@ -18,6 +19,7 @@ export default class AccountDetailsModal extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   render() {
@@ -61,6 +63,17 @@ export default class AccountDetailsModal extends Component {
           type="secondary"
           className="account-details-modal__button"
           onClick={() => {
+            // if this link has a custom network url as its base we raise a MetaMetrics event
+            if (rpcPrefs.blockExplorerUrl) {
+              this.context.trackEvent({
+                category: 'Navigation',
+                event: 'Clicked Custom Block Explorer Link',
+                properties: {
+                  custom_network_url: rpcPrefs.blockExplorerUrl,
+                  link_type: 'Account Tracker',
+                },
+              });
+            }
             global.platform.openTab({
               url: getAccountLink(address, chainId, rpcPrefs),
             });
