@@ -3,7 +3,7 @@ const os = require('os');
 const path = require('path');
 const { Builder, By, until } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
-const { version } = require('../../../app/manifest/_base.json');
+const { version } = require('../../../package.json');
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
