@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isValidAddress } from 'ethereumjs-util';
 import { debounce } from 'lodash';
+import { isValidAddress } from '../../helpers/utils/util';
 import {
   getAmountErrorObject,
   getGasFeeErrorObject,
