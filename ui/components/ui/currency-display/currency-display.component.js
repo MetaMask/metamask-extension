@@ -18,6 +18,7 @@ export default function CurrencyDisplay({
   denomination,
   currency,
   suffix,
+  type
 }) {
   const [title, parts] = useCurrencyDisplay(value, {
     displayValue,
@@ -27,26 +28,34 @@ export default function CurrencyDisplay({
     denomination,
     currency,
     suffix,
+    type
   });
   return (
-    <div
-      className={classnames('currency-display-component', className)}
-      data-testid={dataTestId}
-      style={style}
-      title={(!hideTitle && title) || null}
-    >
-      {prefixComponent}
-      <span className="currency-display-component__text">
+    // TODO add error message if fiat is unavailable?
+    <>
+    {(title && parts) ?
+      (
+        <div
+        className={classnames('currency-display-component', className)}
+        data-testid={dataTestId}
+        style={style}
+        title={(!hideTitle && title) || null}
+        >
+        {prefixComponent}
+        <span className="currency-display-component__text">
         {parts.prefix}
         {parts.value}
-      </span>
-      {parts.suffix && (
-        <span className="currency-display-component__suffix">
-          {parts.suffix}
         </span>
-      )}
-    </div>
-  );
+        {parts.suffix && (
+          <span className="currency-display-component__suffix">
+          {parts.suffix}
+          </span>
+          )}
+          </div>
+          ) : null
+        }
+        </>
+        )
 }
 
 CurrencyDisplay.propTypes = {

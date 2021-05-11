@@ -268,8 +268,8 @@ export function getRenderableBasicEstimateData(state, gasLimit) {
 
   const { showFiatInTestnets } = getPreferences(state);
   const isMainnet = getIsMainnet(state);
-  const showFiat = isMainnet || Boolean(showFiatInTestnets);
   const { conversionRate } = state.metamask;
+  const showFiat = Boolean((isMainnet || showFiatInTestnets) && conversionRate);
   const currentCurrency = getCurrentCurrency(state);
 
   const {
@@ -294,7 +294,8 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
 
   const { showFiatInTestnets } = getPreferences(state);
   const isMainnet = getIsMainnet(state);
-  const showFiat = isMainnet || Boolean(showFiatInTestnets);
+  const { conversionRate } = state.metamask;
+  const showFiat = Boolean((isMainnet || showFiatInTestnets) && conversionRate);
   const gasLimit =
     state.send.gasLimit || getCustomGasLimit(state) || GAS_LIMITS.SIMPLE;
   const { conversionRate } = state.metamask;

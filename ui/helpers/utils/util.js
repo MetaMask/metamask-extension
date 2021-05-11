@@ -197,6 +197,18 @@ export function exportAsFile(filename, data, type = 'text/csv') {
 }
 
 /**
+ * Safely checksumms a potentially-null address
+ *
+ * @param {string} [address] - address to checksum
+ * @returns {string} checksummed address
+ *
+ */
+export function checksumAddress(address) {
+  const checksummed = address && address.startsWith('0x') ? ethUtil.toChecksumAddress(address) : '';
+  return checksummed;
+}
+
+/**
  * Shortens an Ethereum address for display, preserving the beginning and end.
  * Returns the given address if it is no longer than 10 characters.
  * Shortened addresses are 13 characters long.

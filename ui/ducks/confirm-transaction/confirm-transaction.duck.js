@@ -210,13 +210,13 @@ export function updateTxDataAndCalculate(txData) {
       gasPrice = getAveragePriceEstimateInHexWEI(state) || '0x0';
     }
 
-    const fiatTransactionAmount = getValueFromWeiHex({
+    const fiatTransactionAmount = conversionRate ? getValueFromWeiHex({
       value,
       fromCurrency: nativeCurrency,
       toCurrency: currentCurrency,
       conversionRate,
       numberOfDecimals: 2,
-    });
+    }) : null;
     const ethTransactionAmount = getValueFromWeiHex({
       value,
       fromCurrency: nativeCurrency,
@@ -235,13 +235,14 @@ export function updateTxDataAndCalculate(txData) {
 
     const hexTransactionFee = getHexGasTotal({ gasLimit, gasPrice });
 
-    const fiatTransactionFee = getTransactionFee({
+    const fiatTransactionFee = conversionRate ? getTransactionFee({
       value: hexTransactionFee,
       fromCurrency: nativeCurrency,
       toCurrency: currentCurrency,
       numberOfDecimals: 2,
       conversionRate,
-    });
+    }) : null;
+    
     const ethTransactionFee = getTransactionFee({
       value: hexTransactionFee,
       fromCurrency: nativeCurrency,

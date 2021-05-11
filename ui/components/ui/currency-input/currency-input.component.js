@@ -6,7 +6,7 @@ import {
   getValueFromWeiHex,
   getWeiHexFromDecimalValue,
 } from '../../../helpers/utils/conversions.util';
-import { ETH } from '../../../helpers/constants/common';
+import { ETH, PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
@@ -121,7 +121,7 @@ export default class CurrencyInput extends PureComponent {
   renderConversionComponent() {
     const { currentCurrency, nativeCurrency, hideFiat } = this.props;
     const { hexValue } = this.state;
-    let currency, numberOfDecimals;
+    let currency, numberOfDecimals, type;
 
     if (hideFiat) {
       return (
@@ -135,10 +135,12 @@ export default class CurrencyInput extends PureComponent {
       // Display ETH
       currency = nativeCurrency || ETH;
       numberOfDecimals = 6;
+      type = PRIMARY;
     } else {
       // Display Fiat
       currency = currentCurrency;
       numberOfDecimals = 2;
+      type = SECONDARY;
     }
 
     return (
@@ -147,6 +149,7 @@ export default class CurrencyInput extends PureComponent {
         currency={currency}
         value={hexValue}
         numberOfDecimals={numberOfDecimals}
+        type={type}
       />
     );
   }
