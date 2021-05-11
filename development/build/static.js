@@ -40,9 +40,8 @@ const copyTargets = [
     dest: ``,
   },
   {
-    src: `./app/`,
-    pattern: `*.html`,
-    dest: ``,
+    src: `./app/loading.html`,
+    dest: `loading.html`,
   },
   {
     src: `./node_modules/globalthis/dist/browser.js`,
@@ -56,6 +55,11 @@ const copyTargets = [
     src: `./app/scripts/`,
     pattern: `runLockdown.js`,
     dest: ``,
+  },
+  {
+    // eslint-disable-next-line node/no-extraneous-require
+    src: require.resolve('@lavamoat/lavapack/src/runtime-cjs.js'),
+    dest: `runtime-cjs.js`,
   },
 ];
 

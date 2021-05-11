@@ -68,9 +68,17 @@ function runInChildProcess(task) {
     );
   }
   return instrumentForTaskStats(taskName, async () => {
-    const childProcess = spawn('yarn', ['build', taskName, '--skip-stats'], {
-      env: process.env,
-    });
+    // run child process with the same build command as the parent
+    // this env var is populated by npm/yarn
+    const buildCommand =
+      process.env.npm_lifecycle_event === 'build:dev' ? 'build:dev' : 'build';
+    const childProcess = spawn(
+      'yarn',
+      [buildCommand, taskName, '--skip-stats'],
+      {
+        env: process.env,
+      },
+    );
     // forward logs to main process
     // skip the first stdout event (announcing the process command)
     childProcess.stdout.once('data', () => {
