@@ -256,7 +256,7 @@ export default class ConfirmApproveContent extends Component {
           <UrlIcon
             className="confirm-approve-content__identicon"
             fallbackClassName="confirm-approve-content__identicon"
-            name={origin ? (new URL(origin)).hostname : ''}
+            name={origin ? new URL(origin).hostname : ''}
             url={siteImage}
           />
         </div>
