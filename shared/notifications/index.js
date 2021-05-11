@@ -22,10 +22,8 @@ export const UI_NOTIFICATIONS = {
     id: 4,
     date: '2021-05-11',
     image: {
-      src: 'images/source-logos-all.svg',
-      height: '103px',
-      width: '239px',
-      placeImageBelowDescription: true,
+      src: 'images/source-logos-bsc.svg',
+      width: '100%',
     },
   },
 };
