@@ -20,13 +20,31 @@ export const UI_NOTIFICATIONS = {
   },
 };
 
+const formatLocale = (locale) => {
+  switch (locale) {
+    case 'pt_BR':
+      return 'pt';
+    case 'pt_PT':
+      return 'pt';
+    case 'zh_CN':
+      return 'zh-Hans-CN';
+    case 'zh_TW':
+      return 'zh-Hans-TW';
+    case 'es_419':
+      return 'es-419';
+    default:
+      return locale;
+  }
+};
+
 export const getTranslatedUINoficiations = (t, locale) => {
+  const formattedLocale = formatLocale(locale);
   return {
     1: {
       ...UI_NOTIFICATIONS[1],
       title: t('notifications1Title'),
       description: t('notifications1Description'),
-      date: new Intl.DateTimeFormat(locale).format(
+      date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[1].date),
       ),
     },
@@ -35,7 +53,7 @@ export const getTranslatedUINoficiations = (t, locale) => {
       title: t('notifications2Title'),
       description: t('notifications2Description'),
       actionText: t('notifications2ActionText'),
-      date: new Intl.DateTimeFormat(locale).format(
+      date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[2].date),
       ),
     },
@@ -44,7 +62,7 @@ export const getTranslatedUINoficiations = (t, locale) => {
       title: t('notifications3Title'),
       description: t('notifications3Description'),
       actionText: t('notifications3ActionText'),
-      date: new Intl.DateTimeFormat(locale).format(
+      date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[3].date),
       ),
     },
