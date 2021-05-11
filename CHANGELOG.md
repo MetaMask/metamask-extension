@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.5.0] - 2021-04-28
+### Uncategorized
+- [#11051](https://github.com/MetaMask/metamask-extension/pull/11051): Fix Sentry sourcemaps
+- [#11001](https://github.com/MetaMask/metamask-extension/pull/11001): Update lodash to `^4.17.21`
+- [#11049](https://github.com/MetaMask/metamask-extension/pull/11049): Use isValidAddress helper instead of ethereumJsUtil.isValidAddress, when appropriate
+- [#11048](https://github.com/MetaMask/metamask-extension/pull/11048): Use UrlIcon instead of Identicon on approve screen
+- [#11036](https://github.com/MetaMask/metamask-extension/pull/11036): Format locale to Intl standard for translated date in notifications.
+
 ### Added
 - [#10583](https://github.com/MetaMask/metamask-extension/pull/10583): Adding popup display to show new MetaMask notifications
 - [#10938](https://github.com/MetaMask/metamask-extension/pull/10938): Add menu with "View on Etherscan" and "Account details" links to ETH asset page
@@ -2221,8 +2228,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.4.0...HEAD
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.3.0...HEAD
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.0...HEAD
 [9.5.0]: https://github.com/MetaMask/metamask-extension/compare/v9.4.0...v9.5.0
 [9.4.0]: https://github.com/MetaMask/metamask-extension/compare/v9.3.0...v9.4.0
