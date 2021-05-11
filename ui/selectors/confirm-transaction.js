@@ -222,13 +222,14 @@ export const transactionFeeSelector = function (state, txData) {
     txParams: { value = '0x0', gas: gasLimit = '0x0', gasPrice = '0x0' } = {},
   } = txData;
 
-  const fiatTransactionAmount = getValueFromWeiHex({
+  const fiatTransactionAmount = conversionRate ? getValueFromWeiHex({
     value,
     fromCurrency: nativeCurrency,
     toCurrency: currentCurrency,
     conversionRate,
     numberOfDecimals: 2,
-  });
+  }) : null;
+
   const ethTransactionAmount = getValueFromWeiHex({
     value,
     fromCurrency: nativeCurrency,
@@ -239,13 +240,14 @@ export const transactionFeeSelector = function (state, txData) {
 
   const hexTransactionFee = getHexGasTotal({ gasLimit, gasPrice });
 
-  const fiatTransactionFee = getTransactionFee({
+  const fiatTransactionFee = conversionRate ? getTransactionFee({
     value: hexTransactionFee,
     fromCurrency: nativeCurrency,
     toCurrency: currentCurrency,
     numberOfDecimals: 2,
     conversionRate,
-  });
+  }): null;
+  
   const ethTransactionFee = getTransactionFee({
     value: hexTransactionFee,
     fromCurrency: nativeCurrency,

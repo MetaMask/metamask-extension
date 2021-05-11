@@ -230,6 +230,7 @@ export function useTransactionDisplayData(transactionGroup) {
     displayValue: primaryDisplayValue,
     suffix: primarySuffix,
     ...primaryCurrencyPreferences,
+    type:PRIMARY
   });
 
   const [secondaryCurrency] = useCurrencyDisplay(primaryValue, {
@@ -237,6 +238,7 @@ export function useTransactionDisplayData(transactionGroup) {
     displayValue: secondaryDisplayValue,
     hideLabel: isTokenCategory || Boolean(swapTokenValue),
     ...secondaryCurrencyPreferences,
+    type:SECONDARY
   });
 
   return {

@@ -51,18 +51,20 @@ export function addEth(...args) {
 
 export function addFiat(...args) {
   return args.reduce((acc, fiatAmount) => {
-    return addCurrencies(acc, fiatAmount, {
-      toNumericBase: 'dec',
-      numberOfDecimals: 2,
-      aBase: 10,
-      bBase: 10,
-    });
+    if(fiatAmount !== null){
+      return addCurrencies(acc, fiatAmount, {
+        toNumericBase: 'dec',
+        numberOfDecimals: 2,
+        aBase: 10,
+        bBase: 10,
+      });
+    }
   });
 }
 
 export function getValueFromWeiHex({
   value,
-  fromCurrency = 'ETH',
+  fromCurrency,
   toCurrency,
   conversionRate,
   numberOfDecimals,

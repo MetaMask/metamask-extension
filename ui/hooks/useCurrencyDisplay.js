@@ -10,6 +10,12 @@ import {
   getNativeCurrency,
 } from '../selectors';
 
+import {
+  conversionUtil,
+} from '../helpers/utils/conversion-util';
+
+import { SECONDARY } from '../helpers/constants/common'
+
 /**
  * Defines the shape of the options parameter for useCurrencyDisplay
  * @typedef {Object} UseCurrencyOptions
@@ -40,27 +46,55 @@ import {
  */
 export function useCurrencyDisplay(
   inputValue,
-  { displayValue, prefix, numberOfDecimals, denomination, currency, ...opts },
+  { displayValue, prefix, numberOfDecimals, denomination, currency, type, ...opts },
 ) {
   const currentCurrency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
   const conversionRate = useSelector(getConversionRate);
 
   const toCurrency = currency || currentCurrency;
+  const validConversionRate = !!nativeCurrency && !!conversionRate;
 
   const value = useMemo(() => {
     if (displayValue) {
       return displayValue;
     }
+    let value;
+    switch(true){
+
+      case type === "SECONDARY" && validConversionRate :
+        value = getValueFromWeiHex({
+          value: inputValue,
+          fromCurrency: nativeCurrency,
+          toCurrency,
+          conversionRate,
+          numberOfDecimals: numberOfDecimals || 2,
+          toDenomination: denomination,
+        });
+        break;
+
+      // if this is a secondary/fiat currency and we don't have a valid conversion rate we return null
+      // so that we don't show a false or stale conversion rate 
+      case type === "SECONDARY" && !validConversionRate:
+        value = null
+        break;
+
+      //if this is a primary currency we don't want to apply a conversion rate so we just convert 
+      // from a hex to a dec with a fromDenomination of WEI
+      default:
+      value = conversionUtil(inputValue, {
+        fromNumericBase: 'hex',
+        toNumericBase: 'dec',
+        fromDenomination: "WEI"
+      });
+    }
+   
+    if(value === null){
+      return null
+    }
+
     return formatCurrency(
-      getValueFromWeiHex({
-        value: inputValue,
-        fromCurrency: nativeCurrency,
-        toCurrency,
-        conversionRate,
-        numberOfDecimals: numberOfDecimals || 2,
-        toDenomination: denomination,
-      }),
+      value,
       toCurrency,
     );
   }, [
@@ -79,8 +113,8 @@ export function useCurrencyDisplay(
     suffix = opts.suffix || toCurrency.toUpperCase();
   }
 
-  return [
+  return value ? [
     `${prefix || ''}${value}${suffix ? ` ${suffix}` : ''}`,
     { prefix, value, suffix },
-  ];
+  ] : [null, null]
 }

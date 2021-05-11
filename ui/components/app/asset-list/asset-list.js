@@ -53,6 +53,7 @@ const AssetList = ({ onClickAsset }) => {
     {
       numberOfDecimals: primaryNumberOfDecimals,
       currency: primaryCurrency,
+      type: PRIMARY
     },
   );
 
@@ -61,6 +62,7 @@ const AssetList = ({ onClickAsset }) => {
     {
       numberOfDecimals: secondaryNumberOfDecimals,
       currency: secondaryCurrency,
+      type: SECONDARY,
     },
   );
 
