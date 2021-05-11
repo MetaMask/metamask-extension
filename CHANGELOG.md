@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.5.1]
+### Uncategorized
+- Adding new changelog entries
+
 ## [9.5.0] - 2021-04-28
 ### Uncategorized
 - [#11051](https://github.com/MetaMask/metamask-extension/pull/11051): Fix Sentry sourcemaps
@@ -2228,7 +2232,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.1...HEAD
+[9.5.1]: https://github.com/MetaMask/metamask-extension/compare/v9.5.0...v9.5.1
 [9.5.0]: https://github.com/MetaMask/metamask-extension/compare/v9.4.0...v9.5.0
 [9.4.0]: https://github.com/MetaMask/metamask-extension/compare/v9.3.0...v9.4.0
 [9.3.0]: https://github.com/MetaMask/metamask-extension/compare/v9.2.1...v9.3.0
