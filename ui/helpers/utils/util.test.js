@@ -249,6 +249,35 @@ describe('util', () => {
     });
   });
 
+  describe('#checksumAddress', () => {
+    it('should return EIP-55 checksum when chainId is undefined', () => {
+      const address = '0x5Fda30Bb72B8Dfe20e48A00dFc108d0915BE9Bb0';
+      const chainId = undefined;
+      const useChainId = true;
+      const result = util.checksumAddress(address, chainId, useChainId);
+      const addressChecksum = '0x5Fda30Bb72B8Dfe20e48A00dFc108d0915BE9Bb0';
+      expect(result).toStrictEqual(addressChecksum);
+    });
+
+    it('should return EIP-55 checksum when useChainId is false', () => {
+      const address = '0x5Fda30Bb72B8Dfe20e48A00dFc108d0915BE9Bb0';
+      const chainId = '0x539';
+      const useChainId = false;
+      const result = util.checksumAddress(address, chainId, useChainId);
+      const addressChecksum = '0x5Fda30Bb72B8Dfe20e48A00dFc108d0915BE9Bb0';
+      expect(result).toStrictEqual(addressChecksum);
+    });
+
+    it('should return EIP-1191 checksum', () => {
+      const address = '0x5Fda30Bb72B8Dfe20e48A00dFc108d0915BE9Bb0';
+      const chainId = '0x539';
+      const useChainId = true;
+      const result = util.checksumAddress(address, chainId, useChainId);
+      const addressChecksum = '0x5FdA30bB72B8Dfe20E48A00DfC108D0915BE9BB0';
+      expect(result).toStrictEqual(addressChecksum);
+    });
+  });
+
   describe('normalizing values', function () {
     describe('#isHex', function () {
       it('should return true when given a hex string', function () {
