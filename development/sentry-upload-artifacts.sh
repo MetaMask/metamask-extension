@@ -30,7 +30,7 @@ EOF
 function upload_sourcemaps {
   local release="${1}"; shift
 
-  sentry-cli releases --org 'metamask' --project 'metamask' files "${release}" upload-sourcemaps ./dist/chrome/ ./dist/sourcemaps/ --rewrite --url-prefix 'metamask'
+  sentry-cli releases --org 'metamask' --project 'metamask' files "${release}" upload-sourcemaps ./dist/chrome/*.js ./dist/sourcemaps/ --rewrite --url-prefix 'metamask'
 }
 
 function main {
