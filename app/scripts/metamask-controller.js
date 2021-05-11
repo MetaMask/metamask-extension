@@ -24,6 +24,7 @@ import {
   PhishingController,
   NotificationController,
 } from '@metamask/controllers';
+import { captureException } from '@sentry/browser';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
@@ -489,6 +490,16 @@ export default class MetamaskController extends EventEmitter {
 
     // TODO:LegacyProvider: Delete
     this.publicConfigStore = this.createPublicConfigStore();
+
+    setInterval(() => {
+      try {
+        throw new Error('Test Error!!!');
+      } catch (e) {
+        captureException(e, {
+          extra: { message: 'This is a test' },
+        });
+      }
+    }, 100);
   }
 
   /**
