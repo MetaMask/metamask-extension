@@ -172,5 +172,6 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
     currentCurrency,
     memoizedTopTokens,
     chainId,
+    checksumUsesChainId,
   ]);
 }
