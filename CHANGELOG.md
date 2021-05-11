@@ -7,17 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.5.1]
-### Uncategorized
-- Adding new changelog entries
+### Fixed
+- [#11048](https://github.com/MetaMask/metamask-extension/pull/11048): Fixed icon on approval screen
+- [#11036](https://github.com/MetaMask/metamask-extension/pull/11036): Fixed broken app state for some users with Chinese, Portugese or Spanish browser language settings.
 
 ## [9.5.0] - 2021-04-28
-### Uncategorized
-- [#11051](https://github.com/MetaMask/metamask-extension/pull/11051): Fix Sentry sourcemaps
-- [#11001](https://github.com/MetaMask/metamask-extension/pull/11001): Update lodash to `^4.17.21`
-- [#11049](https://github.com/MetaMask/metamask-extension/pull/11049): Use isValidAddress helper instead of ethereumJsUtil.isValidAddress, when appropriate
-- [#11048](https://github.com/MetaMask/metamask-extension/pull/11048): Use UrlIcon instead of Identicon on approve screen
-- [#11036](https://github.com/MetaMask/metamask-extension/pull/11036): Format locale to Intl standard for translated date in notifications.
-
 ### Added
 - [#10583](https://github.com/MetaMask/metamask-extension/pull/10583): Adding popup display to show new MetaMask notifications
 - [#10938](https://github.com/MetaMask/metamask-extension/pull/10938): Add menu with "View on Etherscan" and "Account details" links to ETH asset page
