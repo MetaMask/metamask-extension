@@ -20,25 +20,8 @@ export const UI_NOTIFICATIONS = {
   },
 };
 
-const formatLocale = (locale) => {
-  switch (locale) {
-    case 'pt_BR':
-      return 'pt';
-    case 'pt_PT':
-      return 'pt';
-    case 'zh_CN':
-      return 'zh-Hans-CN';
-    case 'zh_TW':
-      return 'zh-Hans-TW';
-    case 'es_419':
-      return 'es-419';
-    default:
-      return locale;
-  }
-};
-
 export const getTranslatedUINoficiations = (t, locale) => {
-  const formattedLocale = formatLocale(locale);
+  const formattedLocale = locale.replace('_', '-');
   return {
     1: {
       ...UI_NOTIFICATIONS[1],
