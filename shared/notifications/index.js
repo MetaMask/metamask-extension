@@ -16,17 +16,18 @@ export const UI_NOTIFICATIONS = {
   },
   3: {
     id: 3,
-    date: '2021-03-8',
+    date: '2021-03-08',
   },
 };
 
 export const getTranslatedUINoficiations = (t, locale) => {
+  const formattedLocale = locale.replace('_', '-');
   return {
     1: {
       ...UI_NOTIFICATIONS[1],
       title: t('notifications1Title'),
       description: t('notifications1Description'),
-      date: new Intl.DateTimeFormat(locale).format(
+      date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[1].date),
       ),
     },
@@ -35,7 +36,7 @@ export const getTranslatedUINoficiations = (t, locale) => {
       title: t('notifications2Title'),
       description: t('notifications2Description'),
       actionText: t('notifications2ActionText'),
-      date: new Intl.DateTimeFormat(locale).format(
+      date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[2].date),
       ),
     },
@@ -44,7 +45,7 @@ export const getTranslatedUINoficiations = (t, locale) => {
       title: t('notifications3Title'),
       description: t('notifications3Description'),
       actionText: t('notifications3ActionText'),
-      date: new Intl.DateTimeFormat(locale).format(
+      date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[3].date),
       ),
     },
