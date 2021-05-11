@@ -1,3 +1,5 @@
+const path = require('path');
+const { writeFileSync, readFileSync } = require('fs');
 const EventEmitter = require('events');
 const gulp = require('gulp');
 const watch = require('gulp-watch');
@@ -14,6 +16,10 @@ const brfs = require('brfs');
 const pify = require('pify');
 const endOfStream = pify(require('end-of-stream'));
 const labeledStreamSplicer = require('labeled-stream-splicer').obj;
+const wrapInStream = require('pumpify').obj;
+const Sqrl = require('squirrelly');
+const lavaPack = require('@lavamoat/lavapack');
+const bifyModuleGroups = require('bify-module-groups');
 
 const metamaskrc = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
@@ -25,8 +31,8 @@ const metamaskrc = require('rc')('metamask', {
     'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496',
 });
 
-const { version } = require('../../package.json');
-
+const { streamFlatMap } = require('../stream-flat-map.js');
+const baseManifest = require('../../app/manifest/_base.json');
 const packageJSON = require('../../package.json');
 const {
   createTask,
@@ -69,60 +75,35 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     // production
     prod: createTasksForBuildJsExtension({ taskPrefix: 'scripts:core:prod' }),
   };
-  const deps = {
-    background: createTasksForBuildJsDeps({
-      label: 'bg-libs',
-      key: 'background',
-    }),
-    ui: createTasksForBuildJsDeps({ label: 'ui-libs', key: 'ui' }),
-  };
 
   // high level tasks
 
-  const prod = composeParallel(deps.background, deps.ui, core.prod);
-
-  const { dev, testDev } = core;
-
-  const test = composeParallel(deps.background, deps.ui, core.test);
-
-  return { prod, dev, testDev, test };
-
-  function createTasksForBuildJsDeps({ key, label }) {
-    return createTask(
-      `scripts:deps:${key}`,
-      createNormalBundle({
-        label,
-        destFilepath: `${label}.js`,
-        modulesToExpose: externalDependenciesMap[key],
-        devMode: false,
-        browserPlatforms,
-      }),
-    );
-  }
+  const { dev, test, testDev, prod } = core;
+  return { dev, test, testDev, prod };
 
   function createTasksForBuildJsExtension({ taskPrefix, devMode, testing }) {
-    const standardBundles = [
+    const standardEntryPoints = [
       'background',
       'ui',
       'phishing-detect',
       'initSentry',
     ];
 
-    const standardSubtasks = standardBundles.map((label) => {
-      let extraEntries;
-      if (devMode && label === 'ui') {
-        extraEntries = ['./development/require-react-devtools.js'];
-      }
-      return createTask(
-        `${taskPrefix}:${label}`,
-        createBundleTaskForBuildJsExtensionNormal({
-          label,
-          devMode,
-          testing,
-          extraEntries,
-        }),
-      );
-    });
+    // let extraEntries;
+    // if (devMode && label === 'ui') {
+    //   extraEntries = ['./development/require-react-devtools.js'];
+    // }
+    const standardSubtask = createTask(
+      `${taskPrefix}:standardEntryPoints`,
+      createFactoredBuild({
+        entryFiles: standardEntryPoints.map(
+          (label) => `./app/scripts/${label}.js`,
+        ),
+        devMode,
+        testing,
+        browserPlatforms,
+      }),
+    );
 
     // inpage must be built before contentscript
     // because inpage bundle result is included inside contentscript
@@ -155,33 +136,12 @@ function createScriptTasks({ browserPlatforms, livereload }) {
 
     // make each bundle run in a separate process
     const allSubtasks = [
-      ...standardSubtasks,
+      standardSubtask,
       contentscriptSubtask,
       disableConsoleSubtask,
     ].map((subtask) => runInChildProcess(subtask));
-    // const allSubtasks = [...standardSubtasks, contentscriptSubtask].map(subtask => (subtask))
     // make a parent task that runs each task in a child thread
     return composeParallel(initiateLiveReload, ...allSubtasks);
-  }
-
-  function createBundleTaskForBuildJsExtensionNormal({
-    label,
-    devMode,
-    testing,
-    extraEntries,
-  }) {
-    return createNormalBundle({
-      label,
-      entryFilepath: `./app/scripts/${label}.js`,
-      destFilepath: `${label}.js`,
-      extraEntries,
-      externalDependencies: devMode
-        ? undefined
-        : externalDependenciesMap[label],
-      devMode,
-      testing,
-      browserPlatforms,
-    });
   }
 
   function createTaskForBuildJsExtensionDisableConsole({ devMode }) {
@@ -225,6 +185,137 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   }
 }
 
+function createFactoredBuild({
+  entryFiles,
+  devMode,
+  testing,
+  browserPlatforms,
+}) {
+  return async function () {
+    // create bundler setup and apply defaults
+    const buildConfiguration = createBuildConfiguration();
+    const { bundlerOpts, events } = buildConfiguration;
+
+    // devMode options
+    const reloadOnChange = Boolean(devMode);
+    // const minify = !devMode;
+    const minify = false;
+
+    const envVars = getEnvironmentVariables({ devMode, testing });
+    setupBundlerDefaults(buildConfiguration, {
+      devMode,
+      envVars,
+      reloadOnChange,
+      minify,
+    });
+
+    // set bundle entries
+    bundlerOpts.entries = [...entryFiles];
+
+    // setup bify-vinyl-gator plugin
+    Object.assign(bundlerOpts, bifyModuleGroups.plugin.args);
+    bundlerOpts.plugin = [...bundlerOpts.plugin, [bifyModuleGroups.plugin]];
+
+    // instrument pipeline
+    let sizeGroupMap;
+    events.on('configurePipeline', ({ pipeline }) => {
+      // to be populated by the group-by-size transform
+      sizeGroupMap = new Map();
+      pipeline.get('groups').unshift(
+        // factor modules
+        bifyModuleGroups.groupByFactor({
+          entryFileToLabel(filepath) {
+            return path.parse(filepath).name;
+          },
+        }),
+        // cap files at 2 mb
+        bifyModuleGroups.groupBySize({
+          sizeLimit: 2e6,
+          groupingMap: sizeGroupMap,
+        }),
+      );
+      pipeline.get('vinyl').unshift(
+        // convert each module group into a stream with a single vinyl file
+        streamFlatMap((moduleGroup) => {
+          const filename = `${moduleGroup.label}.js`;
+          const childStream = wrapInStream(
+            moduleGroup.stream,
+            lavaPack({ raw: true, hasExports: true, includePrelude: false }),
+            source(filename),
+          );
+          return childStream;
+        }),
+        buffer(),
+      );
+      // setup bundle destination
+      browserPlatforms.forEach((platform) => {
+        const dest = `./dist/${platform}/`;
+        pipeline.get('dest').push(gulp.dest(dest));
+      });
+    });
+
+    // wait for bundle completion for postprocessing
+    console.log('settings up bundleDone');
+    events.on('bundleDone', () => {
+      console.log('ding bundleDone', sizeGroupMap);
+      const commonSet = sizeGroupMap.get('common');
+      // create entry points for each file
+      for (const [groupLabel, groupSet] of sizeGroupMap.entries()) {
+        // skip "common" group, they are added tp all other groups
+        if (groupSet === commonSet) continue;
+        // skip "initSentry" util bundle
+        if (groupLabel === 'initSentry') continue;
+        // const dest = `./dist/chrome/${groupLabel}-start.js`;
+        // this is just removing the initial './'
+        // const relativeFilePath = path.relative('.', filepath);
+
+        // // map to path?
+        // const htmlNameMap = {
+        //   'phishing-detect': 'phishing'
+        //   ui:
+        // }
+        // //  simplify for now
+        // if (groupLabel !== 'background') continue
+
+        /* TODO write via vinyl
+        - [x] expand html rendering
+          - popup (ui)
+          - notification (ui)
+          - home (ui)
+          - phishing
+          - background
+          - loading (static)
+        - background not booting correctly -> ui connect error?
+        - breakout initSentry etc
+        - publish lavapack
+        - output via vinyl
+        */
+        switch (groupLabel) {
+          case 'ui': {
+            renderHtmlFile('popup', groupSet, commonSet);
+            renderHtmlFile('notification', groupSet, commonSet);
+            renderHtmlFile('home', groupSet, commonSet);
+            break;
+          }
+          case 'phishing-detect': {
+            renderHtmlFile('phishing', groupSet, commonSet);
+            break;
+          }
+          case 'background': {
+            renderHtmlFile('background', groupSet, commonSet);
+            break;
+          }
+          default: {
+            throw new Error(`buildsys - unknown groupLabel "${groupLabel}"`);
+          }
+        }
+      }
+    });
+
+    await bundleIt(buildConfiguration);
+  };
+}
+
 function createNormalBundle({
   destFilepath,
   entryFilepath,
@@ -240,10 +331,16 @@ function createNormalBundle({
     const buildConfiguration = createBuildConfiguration();
     const { bundlerOpts, events } = buildConfiguration;
 
+    // devMode options
+    const reloadOnChange = Boolean(devMode);
+    const minify = Boolean(devMode) === false;
+
     const envVars = getEnvironmentVariables({ devMode, testing });
     setupBundlerDefaults(buildConfiguration, {
       devMode,
       envVars,
+      reloadOnChange,
+      minify,
     });
 
     // set bundle entries
@@ -294,11 +391,11 @@ function createBuildConfiguration() {
   return { bundlerOpts, events };
 }
 
-function setupBundlerDefaults(buildConfiguration, { devMode, envVars }) {
+function setupBundlerDefaults(
+  buildConfiguration,
+  { devMode, envVars, reloadOnChange, minify },
+) {
   const { bundlerOpts } = buildConfiguration;
-  // devMode options
-  const reloadOnChange = Boolean(devMode);
-  const minify = Boolean(devMode) === false;
 
   Object.assign(bundlerOpts, {
     // source transforms
@@ -391,12 +488,17 @@ async function bundleIt(buildConfiguration) {
   bundler.on('log', log);
   // forward update event (used by watchify)
   bundler.on('update', () => performBundle());
+
+  console.log('bundle it before');
   await performBundle();
+  console.log('bundle it after');
 
   async function performBundle() {
     // this pipeline is created for every bundle
     // the labels are all the steps you can hook into
     const pipeline = labeledStreamSplicer([
+      'groups',
+      [],
       'vinyl',
       [],
       'sourcemaps:init',
@@ -415,7 +517,14 @@ async function bundleIt(buildConfiguration) {
     bundleStream.pipe(pipeline);
     // nothing will consume pipeline, so let it flow
     pipeline.resume();
+
+    console.log('before pipeline done');
     await endOfStream(pipeline);
+    console.log('after pipeline done');
+
+    // call the completion event to handle any post-processing
+    events.emit('bundleDone');
+    console.log('after emit');
   }
 }
 
@@ -427,7 +536,7 @@ function getEnvironmentVariables({ devMode, testing }) {
   return {
     METAMASK_DEBUG: devMode,
     METAMASK_ENVIRONMENT: environment,
-    METAMASK_VERSION: version,
+    METAMASK_VERSION: baseManifest.version,
     NODE_ENV: devMode ? 'development' : 'production',
     IN_TEST: testing ? 'true' : false,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
@@ -476,6 +585,21 @@ function getEnvironment({ devMode, testing }) {
     return 'pull-request';
   }
   return 'other';
+}
+
+function renderHtmlFile(htmlName, groupSet, commonSet) {
+  // groupLabel === 'phishing-detect' ? 'phishing' : groupLabel
+  const htmlFilePath = `./app/${htmlName}.html`;
+  const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
+  const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
+    (label) => `./${label}.js`,
+  );
+  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles });
+  const dest = `./dist/chrome/${htmlName}.html`;
+  // we dont have a way of creating async events atm
+  console.log(`write it "${dest}"`);
+  writeFileSync(dest, htmlOutput);
+  console.log(`write html to "${dest}"`);
 }
 
 function beep() {
