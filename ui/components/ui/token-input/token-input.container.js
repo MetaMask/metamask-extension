@@ -4,6 +4,7 @@ import {
   getIsMainnet,
   getTokenExchangeRates,
   getPreferences,
+  getConversionRate,
 } from '../../../selectors';
 import TokenInput from './token-input.component';
 
@@ -11,13 +12,19 @@ const mapStateToProps = (state) => {
   const {
     metamask: { currentCurrency },
   } = state;
-  const { showFiatInTestnets } = getPreferences(state);
+  const {
+    showFiatInTestnets,
+    useNativeCurrencyAsPrimaryCurrency,
+  } = getPreferences(state);
   const isMainnet = getIsMainnet(state);
+  const conversionRate = getConversionRate(state);
+  const showFiat = !useNativeCurrencyAsPrimaryCurrency && showFiatInTestnets;
 
   return {
     currentCurrency,
     tokenExchangeRates: getTokenExchangeRates(state),
-    hideConversion: !isMainnet && !showFiatInTestnets,
+    hideConversion: (!isMainnet && !showFiatInTestnets) || !conversionRate,
+    showFiat,
   };
 };
 

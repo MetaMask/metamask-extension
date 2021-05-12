@@ -204,7 +204,10 @@ export function exportAsFile(filename, data, type = 'text/csv') {
  *
  */
 export function checksumAddress(address) {
-  const checksummed = address && address.startsWith('0x') ? ethUtil.toChecksumAddress(address) : '';
+  const checksummed =
+    address && address.startsWith('0x')
+      ? ethUtil.toChecksumAddress(address)
+      : '';
   return checksummed;
 }
 

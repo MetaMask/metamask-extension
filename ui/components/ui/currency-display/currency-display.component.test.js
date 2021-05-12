@@ -25,8 +25,8 @@ describe('CurrencyDisplay Component', () => {
       />,
     );
 
-    expect(wrapper.hasClass('currency-display')).toStrictEqual(true);
-    expect(wrapper.text()).toStrictEqual('$123.45');
+    expect(wrapper.childAt(0).hasClass('currency-display')).toStrictEqual(true);
+    expect(wrapper.childAt(0).text()).toStrictEqual('$123.45');
   });
 
   it('should render text with a prefix', () => {
@@ -39,7 +39,7 @@ describe('CurrencyDisplay Component', () => {
       />,
     );
 
-    expect(wrapper.hasClass('currency-display')).toStrictEqual(true);
-    expect(wrapper.text()).toStrictEqual('-$123.45');
+    expect(wrapper.childAt(0).hasClass('currency-display')).toStrictEqual(true);
+    expect(wrapper.childAt(0).text()).toStrictEqual('-$123.45');
   });
 });

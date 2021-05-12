@@ -9,12 +9,13 @@ import {
   getConversionRate,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
-
 import {
-  conversionUtil,
-} from '../helpers/utils/conversion-util';
+  getPreferences,
+} from '../selectors';
 
-import { SECONDARY } from '../helpers/constants/common'
+import { PRIMARY, SECONDARY } from '../helpers/constants/common';
+
+import { conversionUtil } from '../helpers/utils/conversion-util';
 
 /**
  * Defines the shape of the options parameter for useCurrencyDisplay
@@ -46,57 +47,59 @@ import { SECONDARY } from '../helpers/constants/common'
  */
 export function useCurrencyDisplay(
   inputValue,
-  { displayValue, prefix, numberOfDecimals, denomination, currency, type, ...opts },
+  {
+    displayValue,
+    prefix,
+    numberOfDecimals,
+    denomination,
+    currency,
+    type,
+    ...opts
+  },
 ) {
   const currentCurrency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  const toCurrency = currency || currentCurrency;
   const conversionRate = useSelector(getConversionRate);
 
-  const toCurrency = currency || currentCurrency;
-  const validConversionRate = !!nativeCurrency && !!conversionRate;
+  const requiresConversion =
+    (type === SECONDARY && useNativeCurrencyAsPrimaryCurrency) ||
+    (type === PRIMARY && !useNativeCurrencyAsPrimaryCurrency);
 
   const value = useMemo(() => {
     if (displayValue) {
       return displayValue;
     }
-    let value;
-    switch(true){
 
-      case type === "SECONDARY" && validConversionRate :
-        value = getValueFromWeiHex({
-          value: inputValue,
-          fromCurrency: nativeCurrency,
-          toCurrency,
-          conversionRate,
-          numberOfDecimals: numberOfDecimals || 2,
-          toDenomination: denomination,
-        });
-        break;
+    let computedValue;
 
-      // if this is a secondary/fiat currency and we don't have a valid conversion rate we return null
-      // so that we don't show a false or stale conversion rate 
-      case type === "SECONDARY" && !validConversionRate:
-        value = null
-        break;
-
-      //if this is a primary currency we don't want to apply a conversion rate so we just convert 
-      // from a hex to a dec with a fromDenomination of WEI
-      default:
-      value = conversionUtil(inputValue, {
+    if(Boolean(requiresConversion && conversionRate)){
+      computedValue = getValueFromWeiHex({
+        value: inputValue,
+        fromCurrency: nativeCurrency,
+        toCurrency,
+        conversionRate,
+        numberOfDecimals: numberOfDecimals || 2,
+        toDenomination: denomination,
+      });
+    } else if (Boolean(requiresConversion && !conversionRate)) {
+    // if this is a secondary/fiat currency and we don't have a valid conversion rate we return null
+    // so that we don't show a false or stale conversion rate
+      computedValue = null;
+    } else {
+    // if this is native currency we don't want to apply a conversion rate so we just convert
+    // from a hex to a dec with a fromDenomination of WEI
+      computedValue = conversionUtil(inputValue, {
         fromNumericBase: 'hex',
         toNumericBase: 'dec',
-        fromDenomination: "WEI"
+        fromDenomination: 'WEI',
+        numberOfDecimals: numberOfDecimals || 2,
+        toDenomination: denomination,
       });
     }
-   
-    if(value === null){
-      return null
-    }
 
-    return formatCurrency(
-      value,
-      toCurrency,
-    );
+    return computedValue ? formatCurrency(computedValue, toCurrency) : null;
   }, [
     inputValue,
     nativeCurrency,
@@ -105,6 +108,7 @@ export function useCurrencyDisplay(
     numberOfDecimals,
     denomination,
     toCurrency,
+    requiresConversion,
   ]);
 
   let suffix;
@@ -113,8 +117,10 @@ export function useCurrencyDisplay(
     suffix = opts.suffix || toCurrency.toUpperCase();
   }
 
-  return value ? [
-    `${prefix || ''}${value}${suffix ? ` ${suffix}` : ''}`,
-    { prefix, value, suffix },
-  ] : [null, null]
+  return value
+    ? [
+        `${prefix || ''}${value}${suffix ? ` ${suffix}` : ''}`,
+        { prefix, value, suffix },
+      ]
+    : [null, null];
 }

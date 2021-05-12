@@ -23,7 +23,7 @@ export default class CurrencyInput extends PureComponent {
     currentCurrency: PropTypes.string,
     nativeCurrency: PropTypes.string,
     onChange: PropTypes.func,
-    useFiat: PropTypes.bool,
+    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
     hideFiat: PropTypes.bool,
     value: PropTypes.string,
     fiatSuffix: PropTypes.string,
@@ -76,14 +76,16 @@ export default class CurrencyInput extends PureComponent {
   }
 
   shouldUseFiat = () => {
-    const { useFiat, hideFiat } = this.props;
+    const { useNativeCurrencyAsPrimaryCurrency, hideFiat } = this.props;
     const { isSwapped } = this.state || {};
 
     if (hideFiat) {
       return false;
     }
 
-    return isSwapped ? !useFiat : useFiat;
+    return isSwapped
+      ? useNativeCurrencyAsPrimaryCurrency
+      : !useNativeCurrencyAsPrimaryCurrency;
   };
 
   swap = () => {

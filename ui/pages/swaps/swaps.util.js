@@ -451,6 +451,8 @@ export function getRenderableNetworkFeesForQuote({
   chainId,
   nativeCurrencySymbol,
 }) {
+  const showInFiat = Boolean(nativeCurrencySymbol && conversionRate);
+
   const totalGasLimitForCalculation = new BigNumber(tradeGas || '0x0', 16)
     .plus(approveGas || '0x0', 16)
     .toString(16);
@@ -472,12 +474,15 @@ export function getRenderableNetworkFeesForQuote({
     toDenomination: 'ETH',
     numberOfDecimals: 5,
   });
-  const rawNetworkFees = getValueFromWeiHex({
-    value: totalWeiCost,
-    toCurrency: currentCurrency,
-    conversionRate,
-    numberOfDecimals: 2,
-  });
+  const rawNetworkFees = showInFiat
+    ? getValueFromWeiHex({
+        value: totalWeiCost,
+        toCurrency: currentCurrency,
+        conversionRate,
+        numberOfDecimals: 2,
+      })
+    : null;
+
   const formattedNetworkFee = formatCurrency(rawNetworkFees, currentCurrency);
 
   const chainCurrencySymbolToUse =

@@ -6,6 +6,9 @@ import {
   getConversionRate,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
+import {
+  getPreferences,
+} from '../selectors';
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 
 const tests = [
@@ -14,6 +17,7 @@ const tests = [
       value: '0x2386f26fc10000',
       numberOfDecimals: 2,
       currency: 'usd',
+      type: 'SECONDARY',
     },
     result: {
       value: '$2.80',
@@ -25,6 +29,7 @@ const tests = [
     input: {
       value: '0x2386f26fc10000',
       currency: 'usd',
+      type: 'SECONDARY',
     },
     result: {
       value: '$2.80',
@@ -37,6 +42,7 @@ const tests = [
       value: '0x1193461d01595930',
       currency: 'ETH',
       numberOfDecimals: 3,
+      type: 'PRIMARY',
     },
     result: {
       value: '1.266',
@@ -50,6 +56,7 @@ const tests = [
       currency: 'ETH',
       numberOfDecimals: 3,
       hideLabel: true,
+      type: 'PRIMARY',
     },
     result: {
       value: '1.266',
@@ -63,6 +70,7 @@ const tests = [
       currency: 'ETH',
       denomination: 'GWEI',
       hideLabel: true,
+      type: 'PRIMARY',
     },
     result: {
       value: '1',
@@ -76,6 +84,7 @@ const tests = [
       currency: 'ETH',
       denomination: 'WEI',
       hideLabel: true,
+      type: 'PRIMARY',
     },
     result: {
       value: '1000000000',
@@ -109,6 +118,10 @@ describe('useCurrencyDisplay', () => {
           return 'ETH';
         } else if (selector === getConversionRate) {
           return 280.45;
+        } else if (selector === getPreferences) {
+          return {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          };
         }
         return undefined;
       });

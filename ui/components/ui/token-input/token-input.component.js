@@ -7,7 +7,7 @@ import {
   conversionUtil,
   multiplyCurrencies,
 } from '../../../helpers/utils/conversion-util';
-import { ETH } from '../../../helpers/constants/common';
+import { ETH, PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 
 /**
@@ -100,7 +100,7 @@ export default class TokenInput extends PureComponent {
     const { decimalValue } = this.state;
 
     const tokenExchangeRate = tokenExchangeRates?.[token.address] || 0;
-    let currency, numberOfDecimals;
+    let currency, numberOfDecimals, type;
 
     if (hideConversion) {
       return (
@@ -114,10 +114,12 @@ export default class TokenInput extends PureComponent {
       // Display Fiat
       currency = currentCurrency;
       numberOfDecimals = 2;
+      type = SECONDARY;
     } else {
       // Display ETH
       currency = ETH;
       numberOfDecimals = 6;
+      type = PRIMARY;
     }
 
     const decimalEthValue = decimalValue * tokenExchangeRate || 0;
@@ -133,6 +135,7 @@ export default class TokenInput extends PureComponent {
         currency={currency}
         value={hexWeiValue}
         numberOfDecimals={numberOfDecimals}
+        type={type}
       />
     ) : (
       <div className="currency-input__conversion-component">

@@ -9,6 +9,7 @@ import {
   getShouldShowFiat,
   getCurrentCurrency,
   getCurrentChainId,
+  getConversionRate,
 } from '../selectors';
 import { getTokens, getNativeCurrency } from '../ducks/metamask/metamask';
 import { getMessage } from '../helpers/utils/i18n-helper';
@@ -163,9 +164,11 @@ describe('useTransactionDisplayData', () => {
       } else if (selector === getNativeCurrency) {
         return 'ETH';
       } else if (selector === getCurrentCurrency) {
-        return 'ETH';
+        return 'usd';
       } else if (selector === getCurrentChainId) {
         return MAINNET_CHAIN_ID;
+      } else if (selector === getConversionRate) {
+        return 4000;
       }
       return null;
     });

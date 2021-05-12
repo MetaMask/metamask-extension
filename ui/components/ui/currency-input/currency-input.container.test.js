@@ -24,6 +24,7 @@ describe('CurrencyInput container', () => {
             nativeCurrency: 'ETH',
             preferences: {
               showFiatInTestnets: false,
+              useNativeCurrencyAsPrimaryCurrency: true,
             },
             provider: {
               type: 'mainnet',
@@ -36,6 +37,7 @@ describe('CurrencyInput container', () => {
           currentCurrency: 'usd',
           nativeCurrency: 'ETH',
           hideFiat: false,
+          useNativeCurrencyAsPrimaryCurrency: true,
         },
       },
       // Test # 2
@@ -49,6 +51,7 @@ describe('CurrencyInput container', () => {
             nativeCurrency: 'ETH',
             preferences: {
               showFiatInTestnets: false,
+              useNativeCurrencyAsPrimaryCurrency: true,
             },
             provider: {
               type: 'rinkeby',
@@ -60,6 +63,7 @@ describe('CurrencyInput container', () => {
           currentCurrency: 'usd',
           nativeCurrency: 'ETH',
           hideFiat: true,
+          useNativeCurrencyAsPrimaryCurrency: true,
         },
       },
       // Test # 3
@@ -73,6 +77,7 @@ describe('CurrencyInput container', () => {
             nativeCurrency: 'ETH',
             preferences: {
               showFiatInTestnets: true,
+              useNativeCurrencyAsPrimaryCurrency: true,
             },
             provider: {
               type: 'rinkeby',
@@ -84,6 +89,7 @@ describe('CurrencyInput container', () => {
           currentCurrency: 'usd',
           nativeCurrency: 'ETH',
           hideFiat: false,
+          useNativeCurrencyAsPrimaryCurrency: true,
         },
       },
       // Test # 4
@@ -97,6 +103,7 @@ describe('CurrencyInput container', () => {
             nativeCurrency: 'ETH',
             preferences: {
               showFiatInTestnets: true,
+              useNativeCurrencyAsPrimaryCurrency: true,
             },
             provider: {
               type: 'mainnet',
@@ -108,6 +115,7 @@ describe('CurrencyInput container', () => {
           currentCurrency: 'usd',
           nativeCurrency: 'ETH',
           hideFiat: false,
+          useNativeCurrencyAsPrimaryCurrency: true,
         },
       },
     ];

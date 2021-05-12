@@ -52,6 +52,5 @@ export function useUserPreferencedCurrency(type, opts = {}) {
     // Display Fiat
     numberOfDecimals = opts.numberOfDecimals || opts.fiatNumberOfDecimals || 2;
   }
-
   return { currency, numberOfDecimals };
 }

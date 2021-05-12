@@ -23,6 +23,9 @@ describe('CurrencyInput Component', () => {
           nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -33,6 +36,7 @@ describe('CurrencyInput Component', () => {
             nativeSuffix="ETH"
             fiatSuffix="USD"
             nativeCurrency="ETH"
+            useNativeCurrencyAsPrimaryCurrency
           />
         </Provider>,
       );
@@ -49,6 +53,9 @@ describe('CurrencyInput Component', () => {
           nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -62,6 +69,7 @@ describe('CurrencyInput Component', () => {
             nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
+            useNativeCurrencyAsPrimaryCurrency
           />
         </Provider>,
       );
@@ -89,6 +97,9 @@ describe('CurrencyInput Component', () => {
           nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: false,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -99,7 +110,7 @@ describe('CurrencyInput Component', () => {
             value="f602f2234d0ea"
             fiatSuffix="USD"
             nativeSuffix="ETH"
-            useFiat
+            useNativeCurrencyAsPrimaryCurrency={false}
             nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
@@ -130,6 +141,9 @@ describe('CurrencyInput Component', () => {
           nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: false,
+          },
         },
       };
 
@@ -141,7 +155,7 @@ describe('CurrencyInput Component', () => {
             value="f602f2234d0ea"
             fiatSuffix="USD"
             nativeSuffix="ETH"
-            useFiat
+            useNativeCurrencyAsPrimaryCurrency={false}
             hideFiat
             nativeCurrency="ETH"
             currentCurrency="usd"
@@ -189,6 +203,9 @@ describe('CurrencyInput Component', () => {
           nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -200,6 +217,7 @@ describe('CurrencyInput Component', () => {
             nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
+            useNativeCurrencyAsPrimaryCurrency
           />
         </Provider>,
       );
@@ -238,6 +256,9 @@ describe('CurrencyInput Component', () => {
           nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: false,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -249,7 +270,7 @@ describe('CurrencyInput Component', () => {
             nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
-            useFiat
+            useNativeCurrencyAsPrimaryCurrency={false}
           />
         </Provider>,
       );
@@ -288,6 +309,9 @@ describe('CurrencyInput Component', () => {
           nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: false,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -299,7 +323,7 @@ describe('CurrencyInput Component', () => {
             nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
-            useFiat
+            useNativeCurrencyAsPrimaryCurrency={false}
           />
         </Provider>,
       );
@@ -329,6 +353,9 @@ describe('CurrencyInput Component', () => {
           nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -341,6 +368,7 @@ describe('CurrencyInput Component', () => {
             nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
+            useNativeCurrencyAsPrimaryCurrency
           />
         </Provider>,
       );

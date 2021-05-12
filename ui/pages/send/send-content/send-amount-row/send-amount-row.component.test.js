@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import SendRowWrapper from '../send-row-wrapper/send-row-wrapper.component';
-import UserPreferencedTokenInput from '../../../../components/app/user-preferenced-token-input';
+import TokenInput from '../../../../components/ui/token-input';
 import SendAmountRow from './send-amount-row.component';
 
 import AmountMaxButton from './amount-max-button/amount-max-button.container';
@@ -127,15 +127,15 @@ describe('SendAmountRow Component', () => {
       ).toStrictEqual(true);
     });
 
-    it('should render a UserPreferencedTokenInput as the second child of the SendRowWrapper', () => {
+    it('should render a TokenInput as the second child of the SendRowWrapper', () => {
       const { wrapper } = shallowRenderSendAmountRow();
 
       expect(
-        wrapper.find(SendRowWrapper).childAt(1).is(UserPreferencedTokenInput),
+        wrapper.find(SendRowWrapper).childAt(1).is(TokenInput),
       ).toStrictEqual(true);
     });
 
-    it('should render the UserPreferencedTokenInput with the correct props', () => {
+    it('should render the TokenInput with the correct props', () => {
       const {
         wrapper,
         instanceSpies: { updateGas, updateAmount, validateAmount },
