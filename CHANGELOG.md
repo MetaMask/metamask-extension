@@ -2229,7 +2229,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.1...HEAD
 [9.5.1]: https://github.com/MetaMask/metamask-extension/compare/v9.5.0...v9.5.1
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.0...HEAD
 [9.5.0]: https://github.com/MetaMask/metamask-extension/compare/v9.4.0...v9.5.0
 [9.4.0]: https://github.com/MetaMask/metamask-extension/compare/v9.3.0...v9.4.0
 [9.3.0]: https://github.com/MetaMask/metamask-extension/compare/v9.2.1...v9.3.0
