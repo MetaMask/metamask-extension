@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.5.2]
-### Uncategorized
-- [#11071](https://github.com/MetaMask/metamask-extension/pull/11071): Add isHex check for addresses supplied to icons
-- [#11065](https://github.com/MetaMask/metamask-extension/pull/11065): return early from metaRPCHandler if stream has ended
+### Fixed
+- [#11071](https://github.com/MetaMask/metamask-extension/pull/11071): Fixing address entry error when sending a transaction on a custom network
 
 ## [9.5.1]
 ### Fixed
