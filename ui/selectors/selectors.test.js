@@ -15,6 +15,44 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#isHardwareWallet', () => {
+    it('returns false if it is not a HW wallet', () => {
+      mockState.metamask.keyrings[0].type = 'Simple Key Pair';
+      expect(selectors.isHardwareWallet(mockState)).toBe(false);
+    });
+
+    it('returns true if it is a Ledger HW wallet', () => {
+      mockState.metamask.keyrings[0].type = 'Ledger Hardware';
+      expect(selectors.isHardwareWallet(mockState)).toBe(true);
+    });
+
+    it('returns true if it is a Trezor HW wallet', () => {
+      mockState.metamask.keyrings[0].type = 'Trezor Hardware';
+      expect(selectors.isHardwareWallet(mockState)).toBe(true);
+    });
+  });
+
+  describe('#getHardwareWalletType', () => {
+    it('returns undefined if it is not a HW wallet', () => {
+      mockState.metamask.keyrings[0].type = 'Simple Key Pair';
+      expect(selectors.getHardwareWalletType(mockState)).toBeUndefined();
+    });
+
+    it('returns "Ledger Hardware" if it is a Ledger HW wallet', () => {
+      mockState.metamask.keyrings[0].type = 'Ledger Hardware';
+      expect(selectors.getHardwareWalletType(mockState)).toBe(
+        'Ledger Hardware',
+      );
+    });
+
+    it('returns "Trezor Hardware" if it is a Trezor HW wallet', () => {
+      mockState.metamask.keyrings[0].type = 'Trezor Hardware';
+      expect(selectors.getHardwareWalletType(mockState)).toBe(
+        'Trezor Hardware',
+      );
+    });
+  });
+
   it('returns selected identity', () => {
     expect(selectors.getSelectedIdentity(mockState)).toStrictEqual({
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',

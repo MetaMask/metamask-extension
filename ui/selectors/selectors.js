@@ -88,6 +88,16 @@ export function isHardwareWallet(state) {
   return keyring.type.includes('Hardware');
 }
 
+/**
+ * Get a HW wallet type, e.g. "Ledger Hardware"
+ * @param {Object} state
+ * @returns {String|undefined}
+ */
+export function getHardwareWalletType(state) {
+  const keyring = getCurrentKeyring(state);
+  return keyring.type.includes('Hardware') ? keyring.type : undefined;
+}
+
 export function getAccountType(state) {
   const currentKeyring = getCurrentKeyring(state);
   const type = currentKeyring && currentKeyring.type;
