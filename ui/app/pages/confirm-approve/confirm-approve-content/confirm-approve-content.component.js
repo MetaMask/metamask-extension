@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Identicon from '../../../components/ui/identicon';
+import UrlIcon from '../../../components/ui/url-icon';
 import { addressSummary } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
@@ -253,11 +253,11 @@ export default class ConfirmApproveContent extends Component {
           </div>
         )}
         <div className="confirm-approve-content__identicon-wrapper">
-          <Identicon
+          <UrlIcon
             className="confirm-approve-content__identicon"
-            diameter={48}
-            address={origin}
-            image={siteImage}
+            fallbackClassName="confirm-approve-content__identicon"
+            name={origin ? new URL(origin).hostname : ''}
+            url={siteImage}
           />
         </div>
         <div className="confirm-approve-content__title">

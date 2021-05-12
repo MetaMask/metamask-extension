@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.5.1]
+### Fixed
+- [#11048](https://github.com/MetaMask/metamask-extension/pull/11048): Fixed icon on approval screen
+- [#11036](https://github.com/MetaMask/metamask-extension/pull/11036): Fixed broken app state for some users with Chinese, Portugese or Spanish browser language settings.
+
 ## [9.5.0] - 2021-04-28
 ### Added
 - [#10583](https://github.com/MetaMask/metamask-extension/pull/10583): Adding popup display to show new MetaMask notifications
@@ -2221,9 +2226,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.4.0...HEAD
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.3.0...HEAD
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.1...HEAD
+[9.5.1]: https://github.com/MetaMask/metamask-extension/compare/v9.5.0...v9.5.1
 [9.5.0]: https://github.com/MetaMask/metamask-extension/compare/v9.4.0...v9.5.0
 [9.4.0]: https://github.com/MetaMask/metamask-extension/compare/v9.3.0...v9.4.0
 [9.3.0]: https://github.com/MetaMask/metamask-extension/compare/v9.2.1...v9.3.0

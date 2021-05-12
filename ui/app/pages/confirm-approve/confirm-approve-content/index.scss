@@ -15,6 +15,11 @@
     padding-right: 24px;
   }
 
+  &__identicon {
+    width: 48px;
+    height: 48px;
+  }
+
   &__full-tx-content {
     display: flex;
     flex-flow: column;

@@ -1,6 +1,5 @@
-import { isValidAddress } from 'ethereumjs-util';
 import contractMap from '@metamask/contract-metadata';
-import { checksumAddress } from '../app/helpers/utils/util';
+import { isValidAddress, checksumAddress } from '../app/helpers/utils/util';
 
 let iconFactory;
 
