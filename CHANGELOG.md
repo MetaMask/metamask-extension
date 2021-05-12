@@ -19,10 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#10987](https://github.com/MetaMask/metamask-extension/pull/10987): Swaps: Improve hardware wallet UX
 - [#10936](https://github.com/MetaMask/metamask-extension/pull/10936): Swaps: Allow 0% slippage, show a warning for 0 < slippage <= 1, disallows Reviews when negative slippage occurs.
 - [#10946](https://github.com/MetaMask/metamask-extension/pull/10946): Send user to activity view after transaction is complete
-- [#10955](https://github.com/MetaMask/metamask-extension/pull/10955): Anchor the "Need Help" text to the bottom of the full page view
 - [#10767](https://github.com/MetaMask/metamask-extension/pull/10767): Improving error handling when gas prices are unavailable.
-- [#10836](https://github.com/MetaMask/metamask-extension/pull/10836): Improving "Review Swap" error handling
-- [#10800](https://github.com/MetaMask/metamask-extension/pull/10800): Swaps: Using lowercase value for the BSC contract address
 
 ### Fixed
 - [#11025](https://github.com/MetaMask/metamask-extension/pull/11025): Fixed redirection to the build quotes page from the swaps page when failure has occured
@@ -32,16 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#10988](https://github.com/MetaMask/metamask-extension/pull/10988): Allowing for scroll overflow when swaps content is too tall
 - [#10979](https://github.com/MetaMask/metamask-extension/pull/10979): Fixing alignment issue with bottom notification
 - [#10971](https://github.com/MetaMask/metamask-extension/pull/10971): Removing gray background from contact address input
-- [#10963](https://github.com/MetaMask/metamask-extension/pull/10963): Ensure "Add Contact" button appears when a user already has contacts.
 - [#10952](https://github.com/MetaMask/metamask-extension/pull/10952): Prevent lag in external monitors when using Mac + Chrome
-- [#10884](https://github.com/MetaMask/metamask-extension/pull/10884): Prevent localStorage migration error in Firefox
-- [#10774](https://github.com/MetaMask/metamask-extension/pull/10774): Swaps: Use network specific Swaps contract address upon checking approval
-- [#10743](https://github.com/MetaMask/metamask-extension/pull/10743): Swaps: Use correct block explorer name and link in swaps when on custom network
-- [#10744](https://github.com/MetaMask/metamask-extension/pull/10744): Swaps: Ensure gas prices are fetched from the correct chain specific endpoint
-- [#10762](https://github.com/MetaMask/metamask-extension/pull/10762): Swaps: Ensure that price slippage fiat amounts are always shown in Swaps quote view
-- [#10763](https://github.com/MetaMask/metamask-extension/pull/10763): Swaps: Ensure that the approval fee in the swaps custom gas modal is in network specific currency
-- [#10753](https://github.com/MetaMask/metamask-extension/pull/10753): Swaps: Ensure that the correct default currency symbols are used for fees on the view quote screen
-- [#10743](https://github.com/MetaMask/metamask-extension/pull/10743): Swaps: Use correct block explorer name and link in swaps when on custom network
 
 ## [9.5.1]
 ### Fixed
