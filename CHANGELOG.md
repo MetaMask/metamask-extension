@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.6.0]
+### Uncategorized
+- Running auto changelog
+- Fixing changelog, bumping package.json -> 9.5.1
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- Fixing changelog
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- Revert "Remove tests that are only needed for the commit reverted in 68c5defc"
+- Revert "Removing recovery video entry from changelog"
+- Merge remote-tracking branch 'origin/develop' into sync-master
+- Merge remote-tracking branch 'origin/develop' into sync-master
+- Merge remote-tracking branch 'origin/develop' into sync-master
+- Merge remote-tracking branch 'origin/develop' into sync-master
+
 ## [9.5.1]
 ### Uncategorized
 - [#11056](https://github.com/MetaMask/metamask-extension/pull/11056): Sync `master` with `develop`
@@ -2384,7 +2398,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.6.0...HEAD
+[9.6.0]: https://github.com/MetaMask/metamask-extension/compare/v9.5.1...v9.6.0
 [9.5.1]: https://github.com/MetaMask/metamask-extension/compare/v9.5.0...v9.5.1
 [9.5.0]: https://github.com/MetaMask/metamask-extension/compare/v9.4.0...v9.5.0
 [9.4.0]: https://github.com/MetaMask/metamask-extension/compare/v9.3.0...v9.4.0
