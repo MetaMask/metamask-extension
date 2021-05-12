@@ -40,6 +40,7 @@ build-artifacts
 
 #ignore css output and sourcemaps
 ui/css/output/
+ui/app/css/output/
 
 notes.txt
 
