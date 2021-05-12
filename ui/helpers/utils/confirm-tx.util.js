@@ -51,7 +51,7 @@ export function addEth(...args) {
 
 export function addFiat(...args) {
   return args.reduce((acc, fiatAmount) => {
-    if(fiatAmount !== null){
+    if (fiatAmount !== null) {
       return addCurrencies(acc, fiatAmount, {
         toNumericBase: 'dec',
         numberOfDecimals: 2,
@@ -59,12 +59,13 @@ export function addFiat(...args) {
         bBase: 10,
       });
     }
+    return acc;
   });
 }
 
 export function getValueFromWeiHex({
   value,
-  fromCurrency,
+  fromCurrency = 'ETH',
   toCurrency,
   conversionRate,
   numberOfDecimals,
@@ -101,6 +102,7 @@ export function getTransactionFee({
 }
 
 export function formatCurrency(value, currencyCode) {
+  if (value === null) return null;
   const upperCaseCurrencyCode = currencyCode.toUpperCase();
 
   return currencies.find((currency) => currency.code === upperCaseCurrencyCode)

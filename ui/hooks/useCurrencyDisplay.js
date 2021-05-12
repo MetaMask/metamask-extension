@@ -10,11 +10,7 @@ import {
   getNativeCurrency,
 } from '../selectors';
 
-import {
-  conversionUtil,
-} from '../helpers/utils/conversion-util';
-
-import { SECONDARY } from '../helpers/constants/common'
+import { conversionUtil } from '../helpers/utils/conversion-util';
 
 /**
  * Defines the shape of the options parameter for useCurrencyDisplay
@@ -46,24 +42,31 @@ import { SECONDARY } from '../helpers/constants/common'
  */
 export function useCurrencyDisplay(
   inputValue,
-  { displayValue, prefix, numberOfDecimals, denomination, currency, type, ...opts },
+  {
+    displayValue,
+    prefix,
+    numberOfDecimals,
+    denomination,
+    currency,
+    type,
+    ...opts
+  },
 ) {
   const currentCurrency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
   const conversionRate = useSelector(getConversionRate);
 
   const toCurrency = currency || currentCurrency;
-  const validConversionRate = !!nativeCurrency && !!conversionRate;
+  const validConversionRate = Boolean(nativeCurrency && conversionRate);
 
   const value = useMemo(() => {
     if (displayValue) {
       return displayValue;
     }
-    let value;
-    switch(true){
-
-      case type === "SECONDARY" && validConversionRate :
-        value = getValueFromWeiHex({
+    let computedValue;
+    switch (true) {
+      case type === 'SECONDARY' && validConversionRate:
+        computedValue = getValueFromWeiHex({
           value: inputValue,
           fromCurrency: nativeCurrency,
           toCurrency,
@@ -74,29 +77,27 @@ export function useCurrencyDisplay(
         break;
 
       // if this is a secondary/fiat currency and we don't have a valid conversion rate we return null
-      // so that we don't show a false or stale conversion rate 
-      case type === "SECONDARY" && !validConversionRate:
-        value = null
+      // so that we don't show a false or stale conversion rate
+      case type === 'SECONDARY' && !validConversionRate:
+        computedValue = null;
         break;
 
-      //if this is a primary currency we don't want to apply a conversion rate so we just convert 
+      // if this is a primary currency we don't want to apply a conversion rate so we just convert
       // from a hex to a dec with a fromDenomination of WEI
       default:
-      value = conversionUtil(inputValue, {
-        fromNumericBase: 'hex',
-        toNumericBase: 'dec',
-        fromDenomination: "WEI"
-      });
-    }
-   
-    if(value === null){
-      return null
+        computedValue = conversionUtil(inputValue, {
+          fromNumericBase: 'hex',
+          toNumericBase: 'dec',
+          fromDenomination: 'WEI',
+          numberOfDecimals: numberOfDecimals || 2,
+        });
     }
 
-    return formatCurrency(
-      value,
-      toCurrency,
-    );
+    if (computedValue === null) {
+      return null;
+    }
+
+    return formatCurrency(computedValue, toCurrency);
   }, [
     inputValue,
     nativeCurrency,
@@ -105,6 +106,8 @@ export function useCurrencyDisplay(
     numberOfDecimals,
     denomination,
     toCurrency,
+    type,
+    validConversionRate,
   ]);
 
   let suffix;
@@ -112,9 +115,10 @@ export function useCurrencyDisplay(
   if (!opts.hideLabel) {
     suffix = opts.suffix || toCurrency.toUpperCase();
   }
-
-  return value ? [
-    `${prefix || ''}${value}${suffix ? ` ${suffix}` : ''}`,
-    { prefix, value, suffix },
-  ] : [null, null]
+  return value
+    ? [
+        `${prefix || ''}${value}${suffix ? ` ${suffix}` : ''}`,
+        { prefix, value, suffix },
+      ]
+    : [null, null];
 }

@@ -89,6 +89,7 @@ describe('Confirm Transaction utils', () => {
     it('should get the transaction amount in ETH', () => {
       const ethTransactionAmount = utils.getValueFromWeiHex({
         value: '0xde0b6b3a7640000',
+        fromCurrency: 'ETH',
         toCurrency: 'ETH',
         conversionRate: 468.58,
         numberOfDecimals: 6,
