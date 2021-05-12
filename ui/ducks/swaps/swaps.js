@@ -54,6 +54,7 @@ import {
   getSwapsDefaultToken,
   getCurrentChainId,
   isHardwareWallet,
+  getHardwareWalletType,
 } from '../../selectors';
 import {
   ERROR_FETCHING_QUOTES,
@@ -483,6 +484,8 @@ export const fetchQuotesAndSetQuoteState = (
 
     dispatch(setFromToken(selectedFromToken));
 
+    const hardwareWalletUsed = isHardwareWallet(state);
+    const hardwareWalletType = getHardwareWalletType(state);
     metaMetricsEvent({
       event: 'Quotes Requested',
       category: 'swaps',
@@ -493,6 +496,8 @@ export const fetchQuotesAndSetQuoteState = (
         request_type: balanceError ? 'Quote' : 'Order',
         slippage: maxSlippage,
         custom_slippage: maxSlippage !== 2,
+        is_hardware_wallet: hardwareWalletUsed,
+        hardware_wallet_type: hardwareWalletType,
         anonymizedData: true,
       },
     });
@@ -563,6 +568,8 @@ export const fetchQuotesAndSetQuoteState = (
             response_time: Date.now() - fetchStartTime,
             best_quote_source: newSelectedQuote.aggregator,
             available_quotes: Object.values(fetchedQuotes)?.length,
+            is_hardware_wallet: hardwareWalletUsed,
+            hardware_wallet_type: hardwareWalletType,
             anonymizedData: true,
           },
         });
