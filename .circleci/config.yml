@@ -52,6 +52,9 @@ workflows:
       - test-lint-lockfile:
           requires:
             - prep-deps
+      - test-lint-changelog:
+          requires:
+            - prep-deps
       - test-e2e-chrome:
           requires:
             - prep-build-test
@@ -83,6 +86,7 @@ workflows:
             - test-lint
             - test-lint-shellcheck
             - test-lint-lockfile
+            - test-lint-changelog
             - test-unit
             - test-unit-global
             - validate-source-maps
@@ -281,6 +285,33 @@ jobs:
       - run:
           name: lockfile-lint
           command: yarn lint:lockfile
+
+  test-lint-changelog:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^Version-v(\d+)[.](\d+)[.](\d+)$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: Validate changelog
+                command: yarn auto-changelog validate
+      - when:
+          condition:
+            matches:
+              pattern: /^Version-v(\d+)[.](\d+)[.](\d+)$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: Validate release candidate changelog
+                command: yarn auto-changelog validate --rc
+
 
   test-deps:
     executor: node-browsers
@@ -485,7 +516,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "5e:a3:2d:35:b6:25:b5:87:b1:41:11:0d:77:50:96:73"
+            - "3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8"
       - checkout
       - attach_workspace:
           at: .

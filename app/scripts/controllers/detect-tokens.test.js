@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { ObservableStore } from '@metamask/obs-store';
 import contracts from '@metamask/contract-metadata';

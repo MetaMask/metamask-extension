@@ -1,0 +1,71 @@
+.intro-popup {
+  &__liquidity-sources-label {
+    @include H7;
+
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: $Black-100;
+
+    @media screen and (min-width: 576px) {
+      @include H6;
+    }
+  }
+
+  &__learn-more-header {
+    @include H4;
+
+    font-weight: bold;
+    margin-bottom: 12px;
+    margin-top: 16px;
+  }
+
+  &__learn-more-link {
+    @include H6;
+
+    color: $Blue-500;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+
+  &__content {
+    margin-left: 24px;
+
+    > img {
+      width: 96%;
+      margin-left: -9px;
+    }
+  }
+
+  &__footer {
+    border-top: none;
+  }
+
+  &__button {
+    border-radius: 100px;
+    height: 44px;
+  }
+
+  &__source-logo-container {
+    width: 276px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 16px;
+    background: $Grey-000;
+    border-radius: 8px;
+
+    @media screen and (min-width: 576px) {
+      width: 412px;
+
+      img {
+        width: 364px;
+      }
+    }
+  }
+
+  &__popover {
+    @media screen and (min-width: 576px) {
+      width: 460px;
+    }
+  }
+}

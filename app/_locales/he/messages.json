@@ -308,9 +308,6 @@
   "done": {
     "message": "סיום"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "אין לך ארנק חומרה?"
-  },
   "downloadGoogleChrome": {
     "message": "הורד/י את גוגל כרום"
   },
@@ -443,9 +440,6 @@
     "message": "השג/י את'ר מברז (faucet) עבור ה-$1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "בקש/י עזרה."
-  },
   "getStarted": {
     "message": "תחילת העבודה"
   },
@@ -466,9 +460,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "בחר/י ארנק חומרה שבו תרצה להשתמש עם MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "חווה קשיים בהתחברות?"
   },
   "here": {
     "message": "כאן",
@@ -698,9 +689,6 @@
   "optionalCurrencySymbol": {
     "message": "סמל (אופציונלי)"
   },
-  "orderOneHere": {
-    "message": "הזמנ/י Trezor או Ledger ושמר/י את הכספים שלך באחסון קר"
-  },
   "origin": {
     "message": "מקור"
   },
@@ -759,9 +747,6 @@
   },
   "readdToken": {
     "message": "באפשרותך להוסיף טוקן זה בחזרה בעתיד על ידי מעבר אל \"הוסף טוקן\" בתפריט אפשרויות החשבונות שלך."
-  },
-  "readyToConnect": {
-    "message": "מוכנ/ה להתחבר?"
   },
   "recents": {
     "message": "אחרונים"
@@ -981,24 +966,6 @@
   },
   "stateLogsDescription": {
     "message": "יומני המצב מכילים את כתובות החשבון הציבוריות שלך ועסקאות שנשלחו."
-  },
-  "step1HardwareWallet": {
-    "message": "1. חבר/י ארנק חומרה"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "חבר/י את ארנק החומרה שלך ישירות למחשב שלך."
-  },
-  "step2HardwareWallet": {
-    "message": "2. בחר/י חשבון"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "בחר/י את החשבון שברצונך להציג. באפשרותך לבחור רק אחד בכל פעם."
-  },
-  "step3HardwareWallet": {
-    "message": "3. התחל/י להשתמש ב- dApps ועוד!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "השתמש/י בחשבון החומרה שלך כי שהיית משתמש/ת בכל חשבון אתריום"
   },
   "storePhrase": {
     "message": "אחסנ/י צירוף זה במנהל ססמאות כמו 1Password."

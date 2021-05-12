@@ -1,7 +1,11 @@
 {
   "name": "metamask-crx",
-  "version": "0.0.0",
+  "version": "9.5.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/metamask-extension"
+  },
   "scripts": {
     "setup": "yarn install && yarn setup:postinstall",
     "setup:postinstall": "yarn patch-package && yarn allow-scripts",
@@ -49,7 +53,7 @@
     "verify-locales": "node ./development/verify-locale-strings.js",
     "verify-locales:fix": "node ./development/verify-locale-strings.js --fix",
     "mozilla-lint": "addons-linter dist/firefox",
-    "watch": "mocha --watch --require test/env.js --require test/setup.js --reporter min --recursive \"test/unit/**/*.js\" \"ui/app/**/*.test.js\" \"shared/**/*.test.js\"",
+    "watch": "mocha --watch --require test/env.js --require test/setup.js --reporter min --recursive \"test/unit/**/*.js\" \"ui/**/*.test.js\" \"shared/**/*.test.js\"",
     "devtools:react": "react-devtools",
     "devtools:redux": "remotedev --hostname=localhost --port=8000",
     "start:dev": "concurrently -k -n build,react,redux yarn:start yarn:devtools:react yarn:devtools:redux",
@@ -57,7 +61,7 @@
     "storybook": "start-storybook -p 6006 -c .storybook --static-dir ./app ./storybook/images",
     "storybook:build": "build-storybook -c .storybook -o storybook-build --static-dir ./app ./storybook/images",
     "storybook:deploy": "storybook-to-ghpages --existing-output-dir storybook-build --remote storybook --branch master",
-    "update-changelog": "node ./development/auto-changelog.js",
+    "update-changelog": "auto-changelog update",
     "generate:migration": "./development/generate-migration.sh",
     "lavamoat:auto": "lavamoat ./development/build/index.js --writeAutoPolicy",
     "lavamoat:debug": "lavamoat ./development/build/index.js --writeAutoPolicyDebug"
@@ -91,14 +95,15 @@
     "@lavamoat/preinstall-always-fail": "^1.0.0",
     "@material-ui/core": "^4.11.0",
     "@metamask/contract-metadata": "^1.22.0",
-    "@metamask/controllers": "^6.2.1",
-    "@metamask/eth-ledger-bridge-keyring": "^0.3.0",
+    "@metamask/controllers": "^8.0.0",
+    "@metamask/eth-ledger-bridge-keyring": "^0.4.0",
     "@metamask/eth-token-tracker": "^3.0.1",
     "@metamask/etherscan-link": "^2.0.0",
     "@metamask/inpage-provider": "^8.0.4",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/logo": "^2.5.0",
     "@metamask/obs-store": "^5.0.0",
+    "@metamask/post-message-stream": "^4.0.0",
     "@popperjs/core": "^2.4.0",
     "@reduxjs/toolkit": "^1.5.0",
     "@sentry/browser": "^5.26.0",
@@ -158,7 +163,6 @@
     "nonce-tracker": "^1.0.0",
     "obj-multiplex": "^1.0.0",
     "pify": "^5.0.0",
-    "post-message-stream": "^3.0.0",
     "promise-to-callback": "^1.0.0",
     "prop-types": "^15.6.1",
     "pubnub": "4.27.3",
@@ -206,6 +210,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.5.5",
     "@lavamoat/allow-scripts": "^1.0.4",
+    "@metamask/auto-changelog": "^1.0.0",
     "@metamask/eslint-config": "^6.0.0",
     "@metamask/eslint-config-jest": "^6.0.0",
     "@metamask/eslint-config-mocha": "^6.0.0",
@@ -329,7 +334,8 @@
       "gc-stats": false,
       "github:assemblyscript/assemblyscript": false,
       "tiny-secp256k1": false,
-      "@lavamoat/preinstall-always-fail": false
+      "@lavamoat/preinstall-always-fail": false,
+      "fsevents": false
     }
   }
 }

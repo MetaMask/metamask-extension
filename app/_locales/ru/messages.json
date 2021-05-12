@@ -491,9 +491,6 @@
   "done": {
     "message": "Выполнено"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "У вас нет аппаратного кошелька?"
-  },
   "dontShowThisAgain": {
     "message": "Больше не показывать это сообщение"
   },
@@ -718,9 +715,6 @@
     "message": "Получите Ether из крана для $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Получить справку."
-  },
   "getStarted": {
     "message": "Начать работу"
   },
@@ -741,9 +735,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Выберите аппаратный кошелек, который вы хотите использовать с MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Проблемы с подключением?"
   },
   "here": {
     "message": "здесь",
@@ -1108,9 +1099,6 @@
   "optionalCurrencySymbol": {
     "message": "Символ валюты (необязательно)"
   },
-  "orderOneHere": {
-    "message": "Закажите Trezor или Ledger и храните свои средства в холодном хранилище"
-  },
   "origin": {
     "message": "Источник"
   },
@@ -1191,9 +1179,6 @@
   },
   "readdToken": {
     "message": "Вы можете снова добавить этот токен в будущем, выбрав «Добавить токен» в меню опций вашего счета."
-  },
-  "readyToConnect": {
-    "message": "Готовы подключиться?"
   },
   "receive": {
     "message": "Получить"
@@ -1495,24 +1480,6 @@
   "statusNotConnected": {
     "message": "Не подключен"
   },
-  "step1HardwareWallet": {
-    "message": "1. Подключить аппаратный кошелек"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Подключите свой аппаратный кошелек напрямую к компьютеру."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Выберите счет"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Выберите желаемый счет для просмотра. Вы можете выбирать только по одному."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Начните использовать сайты web3 и другое!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Используйте свой аппаратный счет, как обычный счет Ethereum. Подключайтесь к сайтам web3, отправляйте ETH, покупайте и храните токены ERC20 и незаменяемые токены, такие как CryptoKitties."
-  },
   "storePhrase": {
     "message": "Сохраните эту фразу в диспетчере паролей, например в 1Password."
   },
@@ -1596,9 +1563,6 @@
   },
   "swapFinalizing": {
     "message": "Завершение..."
-  },
-  "swapHighSlippageWarning": {
-    "message": "Величина проскальзывания очень велика. Убедитесь, что вы знаете, что делаете!"
   },
   "swapLowSlippageError": {
     "message": "Транзакции могут завершиться неудачей, максимальное проскальзывание слишком мало."
@@ -1692,9 +1656,6 @@
   },
   "swapSelectQuotePopoverDescription": {
     "message": "Ниже приведены все котировки, собранные из нескольких источников ликвидности."
-  },
-  "swapSlippageTooLow": {
-    "message": "Проскальзывание должно быть больше нуля"
   },
   "swapSource": {
     "message": "Источник ликвидности"

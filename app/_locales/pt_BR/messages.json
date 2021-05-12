@@ -302,9 +302,6 @@
   "done": {
     "message": "Concluído"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Não tem uma carteira física?"
-  },
   "downloadGoogleChrome": {
     "message": "Baixar Google Chrome"
   },
@@ -437,9 +434,6 @@
     "message": "Obtenha Ether em uma torneira para $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Obtenha Ajuda."
-  },
   "getStarted": {
     "message": "Primeiros passos"
   },
@@ -460,9 +454,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Selecione um hardware que gostaria de utilizar com o MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Está tendo dificuldade para se conectar?"
   },
   "here": {
     "message": "aqui",
@@ -689,9 +680,6 @@
   "optionalCurrencySymbol": {
     "message": "Símbolo (opcional)"
   },
-  "orderOneHere": {
-    "message": "Peça uma Trezor ou Ledger e guarde seus fundos off-line"
-  },
   "origin": {
     "message": "Origem"
   },
@@ -750,9 +738,6 @@
   },
   "readdToken": {
     "message": "Você pode adicionar esse token novamente no futuro acessando \"Adicionar token\" no menu de opções da sua conta."
-  },
-  "readyToConnect": {
-    "message": "Pronto para Conectar?"
   },
   "recents": {
     "message": "Recentes"
@@ -975,24 +960,6 @@
   },
   "stateLogsDescription": {
     "message": "Os registros de estado contêm seus endereços de conta pública e transações enviadas."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Conectar Carteira Física"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Conecte sua carteira de hardware diretamente ao seu computador."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Selecione uma Conta"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Selecione a conta que você deseja ver. Você só pode escolher uma por vez."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Comece a usar dApps e muito mais!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Use sua conta física como faria com qualquer conta de Ethereum. Faça login em dApps, envie Eth, compre e guarde tokens ERC20 e Tokens Não Fungíveis, como CryptoKitties."
   },
   "storePhrase": {
     "message": "Guarde esta frase em um gerenciador de senhas como o 1Password."

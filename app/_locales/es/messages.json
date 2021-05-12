@@ -500,9 +500,6 @@
   "done": {
     "message": "Completo"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "¿No tienes un monedero físico?"
-  },
   "dontShowThisAgain": {
     "message": "No mostrar esto de nuevo"
   },
@@ -727,9 +724,6 @@
     "message": "Obtenga Ether de un faucet (grifo) por $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Pedir ayuda."
-  },
   "getStarted": {
     "message": "Empezar"
   },
@@ -750,9 +744,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Seleccionar un monedero físico que quieres usar con MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "¿Tienes problemas de conexión?"
   },
   "here": {
     "message": "Aquí",
@@ -1117,9 +1108,6 @@
   "optionalCurrencySymbol": {
     "message": "Símbolo (opcional)"
   },
-  "orderOneHere": {
-    "message": "Cómprate un Trezor o Ledger y guarda tus fondos en almacenamiento frío"
-  },
   "origin": {
     "message": "Origen"
   },
@@ -1200,9 +1188,6 @@
   },
   "readdToken": {
     "message": "Puedes volver a agregar este token en el futuro pinchando sobre 'Agregar token' en el menú de opciones de tu cuenta"
-  },
-  "readyToConnect": {
-    "message": "¿Listo/a para conectar?"
   },
   "receive": {
     "message": "Recibir"
@@ -1504,24 +1489,6 @@
   "statusNotConnected": {
     "message": "No conectado"
   },
-  "step1HardwareWallet": {
-    "message": "1. Conectar monedero físico."
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Conéctate el monedero físico directamente al ordenador."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Seleccionar una cuenta"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Seleccione la cuenta que quieres ver. Sólo se puede eligir una a la vez."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Empezar a usar dApps ¡y más!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Usa tu cuenta física igual que harías con cualquier cuenta de Ethereum. Regístrate con dApps, manda Eth, compra y almacena tokens de ERC20 y otros tokens no-fungibles, como CryptoKitties."
-  },
   "storePhrase": {
     "message": "Guarde esta frase en un administrador de contraseñas como 1Password."
   },
@@ -1608,9 +1575,6 @@
   },
   "swapFinalizing": {
     "message": "Finalizando..."
-  },
-  "swapHighSlippageWarning": {
-    "message": "La cantidad de deslizamiento es muy alta. ¡Asegúrate de saber lo que estás haciendo!"
   },
   "swapLowSlippageError": {
     "message": "La transacción puede fallar, el deslizamiento máximo es demasiado bajo."
@@ -1722,9 +1686,6 @@
   },
   "swapSelectQuotePopoverDescription": {
     "message": "A continuación se muestran todas las cotizaciones recopiladas de múltiples fuentes de liquidez."
-  },
-  "swapSlippageTooLow": {
-    "message": "El deslizamiento debe ser mayor que cero"
   },
   "swapSource": {
     "message": "Fuente de liquidez"

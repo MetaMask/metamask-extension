@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import data from '../first-time-state';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import migration24 from './024';

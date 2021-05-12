@@ -305,9 +305,6 @@
   "done": {
     "message": "Ferdig"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Har du ikke en hardware-lommebok?"
-  },
   "downloadGoogleChrome": {
     "message": "Last ned Google Chrome "
   },
@@ -436,9 +433,6 @@
     "message": "Få Ether fra en kran for $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Få hjelp."
-  },
   "getStarted": {
     "message": "Kom i gang"
   },
@@ -456,9 +450,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Velg maskinvarelommeboken som du vil bruke med MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Har du problemer med å koble til?"
   },
   "here": {
     "message": "her",
@@ -688,9 +679,6 @@
   "optionalCurrencySymbol": {
     "message": "Symbol (valgfritt)"
   },
-  "orderOneHere": {
-    "message": "Bestill en Trezor eller Ledger og oppbevar midlene dine i kjølerom"
-  },
   "origin": {
     "message": "Opprinnelse"
   },
@@ -749,9 +737,6 @@
   },
   "readdToken": {
     "message": "Du kan legge til dette tokenet igjen i fremtiden ved å gå til \"Legg til token\" i menyen for kontoalternativer."
-  },
-  "readyToConnect": {
-    "message": "Klar til å koble til?"
   },
   "recents": {
     "message": "Nylige"
@@ -968,24 +953,6 @@
   },
   "stateLogsDescription": {
     "message": "Tilstandslogger inneholder de offentlige kontoadressene og sendte transaksjoner."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Koble til maskinvarelommebok"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Koble hardware-lommebok din direkte til datamaskinen din."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Velg en konto"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Velg den kontoen du ønsker å se. Du kan bare velge en av gangen."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Begynn å bruke dApps mer! "
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Bruk hardware-kontoen din slik du ville gjort med enhver Ethereumkonto. Logg på dApps, send Eth, kjøp og lagre ERC20-tokener og ikke-fungible tokener som CryptoKitties."
   },
   "storePhrase": {
     "message": "Lagre denne frasen i en passordbehandler slik som 1Password."
