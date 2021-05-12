@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { checkExistingAddresses } from '../../helpers/utils/util';
-import { createTokenTrackerLinkForChain } from '@metamask/etherscan-link';
+import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import { CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes';
 import TextField from '../../components/ui/text-field';
@@ -253,10 +253,8 @@ class AddToken extends Component {
     } = this.state;
 
     const { chainId } = this.props;
-    const blockExplorerTokenLink = createTokenTrackerLinkForChain(
-      customAddress,
-      chainId,
-    );
+    const blockExplorerTokenLink = getTokenTrackerLink(customAddress, chainId);
+
     return (
       <div className="add-token__custom-token-form">
         <TextField
