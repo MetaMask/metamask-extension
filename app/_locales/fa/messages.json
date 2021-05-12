@@ -754,9 +754,6 @@
   "recents": {
     "message": "واپسین"
   },
-  "recipientAddress": {
-    "message": "آدرس دریافت کننده"
-  },
   "recipientAddressPlaceholder": {
     "message": "جستجو، آدرس عمومی (0x)، یا ENS"
   },

@@ -17,7 +17,7 @@ import {
 } from '../../../hooks/useMetricEvent';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { updateSendToken } from '../../../store/actions';
+import { updateSendAsset } from '../../../ducks/send';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import {
   getAssetImages,
@@ -85,7 +85,12 @@ const TokenOverview = ({ className, token }) => {
             className="token-overview__button"
             onClick={() => {
               sendTokenEvent();
-              dispatch(updateSendToken(token));
+              dispatch(
+                updateSendAsset({
+                  type: 'TOKEN',
+                  details: token,
+                }),
+              );
               history.push(SEND_ROUTE);
             }}
             Icon={SendIcon}

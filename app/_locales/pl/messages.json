@@ -748,9 +748,6 @@
   "recents": {
     "message": "Ostatnie"
   },
-  "recipientAddress": {
-    "message": "Adres odbiorcy"
-  },
   "recipientAddressPlaceholder": {
     "message": "Szukaj, adres publiczny (0x) lub ENS"
   },

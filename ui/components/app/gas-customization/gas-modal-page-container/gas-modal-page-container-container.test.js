@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 
-import { hideModal, setGasLimit, setGasPrice } from '../../../../store/actions';
+import { hideModal } from '../../../../store/actions';
 
 import {
   setCustomGasPrice,
@@ -8,7 +8,11 @@ import {
   resetCustomData,
 } from '../../../../ducks/gas/gas.duck';
 
-import { hideGasButtonGroup } from '../../../../ducks/send/send.duck';
+import {
+  hideGasButtonGroup,
+  setGasLimit,
+  setGasPrice,
+} from '../../../../ducks/send';
 
 let mapDispatchToProps;
 let mergeProps;
@@ -29,7 +33,7 @@ jest.mock('../../../../selectors', () => ({
   getDefaultActiveButtonIndex: (a, b) => a + b,
   getCurrentEthBalance: (state) => state.metamask.balance || '0x0',
   getSendToken: () => null,
-  getTokenBalance: (state) => state.metamask.send.tokenBalance || '0x0',
+  getTokenBalance: (state) => state.send.tokenBalance || '0x0',
   getCustomGasPrice: (state) => state.gas.customData.price || '0x0',
   getCustomGasLimit: (state) => state.gas.customData.limit || '0x0',
   getCurrentCurrency: jest.fn().mockReturnValue('usd'),
@@ -44,8 +48,6 @@ jest.mock('../../../../selectors', () => ({
 
 jest.mock('../../../../store/actions', () => ({
   hideModal: jest.fn(),
-  setGasLimit: jest.fn(),
-  setGasPrice: jest.fn(),
   updateTransaction: jest.fn(),
 }));
 
@@ -55,8 +57,10 @@ jest.mock('../../../../ducks/gas/gas.duck', () => ({
   resetCustomData: jest.fn(),
 }));
 
-jest.mock('../../../../ducks/send/send.duck', () => ({
+jest.mock('../../../../ducks/send', () => ({
   hideGasButtonGroup: jest.fn(),
+  setGasLimit: jest.fn(),
+  setGasPrice: jest.fn(),
 }));
 
 require('./gas-modal-page-container.container');

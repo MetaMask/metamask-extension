@@ -1,41 +1,32 @@
 import { connect } from 'react-redux';
+import { addToAddressBook } from '../../../store/actions';
 import {
-  addToAddressBook,
-  clearSend,
-  signTokenTx,
-  signTx,
-  updateTransaction,
-} from '../../../store/actions';
-import {
-  getGasLimit,
-  getGasPrice,
-  getGasTotal,
-  getSendToken,
-  getSendAmount,
-  getSendEditingTransactionId,
-  getSendFromObject,
-  getSendTo,
-  getSendToAccounts,
-  getSendHexData,
-  getTokenBalance,
-  getUnapprovedTxs,
-  getSendErrors,
-  isSendFormInError,
-  getGasIsLoading,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
-  getNoGasPriceFetched,
 } from '../../../selectors';
+import {
+  resetSendState,
+  getGasPrice,
+  getSendTo,
+  getSendErrors,
+  isSendFormInError,
+  isSendFormInvalid,
+  signTransaction,
+} from '../../../ducks/send';
+import { getSendToAccounts } from '../../../ducks/metamask/metamask';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import SendFooter from './send-footer.component';
-import {
-  addressIsNew,
-  constructTxParams,
-  constructUpdatedTx,
-} from './send-footer.utils';
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendFooter);
+
+function addressIsNew(toAccounts, newAddress) {
+  const newAddressNormalized = newAddress.toLowerCase();
+  const foundMatching = toAccounts.some(
+    ({ address }) => address.toLowerCase() === newAddressNormalized,
+  );
+  return !foundMatching;
+}
 
 function mapStateToProps(state) {
   const gasButtonInfo = getRenderableEstimateDataForSmallButtonsFromGWEI(state);
@@ -48,74 +39,22 @@ function mapStateToProps(state) {
     activeButtonIndex >= 0
       ? gasButtonInfo[activeButtonIndex].gasEstimateType
       : 'custom';
-  const editingTransactionId = getSendEditingTransactionId(state);
 
   return {
-    amount: getSendAmount(state),
-    data: getSendHexData(state),
-    editingTransactionId,
-    from: getSendFromObject(state),
-    gasLimit: getGasLimit(state),
-    gasPrice: getGasPrice(state),
-    gasTotal: getGasTotal(state),
     inError: isSendFormInError(state),
-    sendToken: getSendToken(state),
+    disabled: isSendFormInvalid(state),
     to: getSendTo(state),
     toAccounts: getSendToAccounts(state),
-    tokenBalance: getTokenBalance(state),
-    unapprovedTxs: getUnapprovedTxs(state),
     sendErrors: getSendErrors(state),
     gasEstimateType,
-    gasIsLoading: getGasIsLoading(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
-    noGasPrice: getNoGasPriceFetched(state),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    clearSend: () => dispatch(clearSend()),
-    sign: ({ sendToken, to, amount, from, gas, gasPrice, data }) => {
-      const txParams = constructTxParams({
-        amount,
-        data,
-        from,
-        gas,
-        gasPrice,
-        sendToken,
-        to,
-      });
-
-      sendToken
-        ? dispatch(signTokenTx(sendToken.address, to, amount, txParams))
-        : dispatch(signTx(txParams));
-    },
-    update: ({
-      amount,
-      data,
-      editingTransactionId,
-      from,
-      gas,
-      gasPrice,
-      sendToken,
-      to,
-      unapprovedTxs,
-    }) => {
-      const editingTx = constructUpdatedTx({
-        amount,
-        data,
-        editingTransactionId,
-        from,
-        gas,
-        gasPrice,
-        sendToken,
-        to,
-        unapprovedTxs,
-      });
-
-      return dispatch(updateTransaction(editingTx));
-    },
-
+    resetSendState: () => dispatch(resetSendState()),
+    sign: () => dispatch(signTransaction()),
     addToAddressBookIfNew: (newAddress, toAccounts, nickname = '') => {
       const hexPrefixedAddress = addHexPrefix(newAddress);
       if (addressIsNew(toAccounts, hexPrefixedAddress)) {

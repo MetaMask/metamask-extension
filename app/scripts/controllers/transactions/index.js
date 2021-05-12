@@ -23,6 +23,7 @@ import {
   TRANSACTION_TYPES,
 } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
+import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -30,7 +31,6 @@ import * as txUtils from './lib/util';
 
 const hstInterface = new ethers.utils.Interface(abi);
 
-const SIMPLE_GAS_COST = '0x5208'; // Hex for 21000, cost of a simple send.
 const MAX_MEMSTORE_TX_LIST_SIZE = 100; // Number of transactions (by unique nonces) to keep in memory
 
 /**
@@ -366,7 +366,7 @@ export default class TransactionController extends EventEmitter {
       }
 
       // This is a standard ether simple send, gas requirement is exactly 21k
-      return { gasLimit: SIMPLE_GAS_COST };
+      return { gasLimit: GAS_LIMITS.SIMPLE };
     }
 
     const {

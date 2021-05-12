@@ -5,8 +5,6 @@ import Dialog from '../../../../components/ui/dialog';
 import AddRecipient from './add-recipient.component';
 
 const propsMethodSpies = {
-  closeToDropdown: sinon.spy(),
-  openToDropdown: sinon.spy(),
   updateGas: sinon.spy(),
   updateSendTo: sinon.spy(),
   updateSendToError: sinon.spy(),
@@ -20,14 +18,11 @@ describe('AddRecipient Component', () => {
   beforeEach(() => {
     wrapper = shallow(
       <AddRecipient
-        closeToDropdown={propsMethodSpies.closeToDropdown}
         inError={false}
         inWarning={false}
         network="mockNetwork"
-        openToDropdown={propsMethodSpies.openToDropdown}
         to="mockTo"
         toAccounts={['mockAccount']}
-        toDropdownOpen={false}
         updateGas={propsMethodSpies.updateGas}
         updateSendTo={propsMethodSpies.updateSendTo}
         updateSendToError={propsMethodSpies.updateSendToError}
@@ -57,8 +52,6 @@ describe('AddRecipient Component', () => {
   });
 
   afterEach(() => {
-    propsMethodSpies.closeToDropdown.resetHistory();
-    propsMethodSpies.openToDropdown.resetHistory();
     propsMethodSpies.updateSendTo.resetHistory();
     propsMethodSpies.updateSendToError.resetHistory();
     propsMethodSpies.updateSendToWarning.resetHistory();

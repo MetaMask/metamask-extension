@@ -751,9 +751,6 @@
   "recents": {
     "message": "אחרונים"
   },
-  "recipientAddress": {
-    "message": "כתובת הנמען"
-  },
   "recipientAddressPlaceholder": {
     "message": "חיפוש, כתובת ציבורית (0x), או ENS"
   },

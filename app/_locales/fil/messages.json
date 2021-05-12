@@ -678,9 +678,6 @@
   "recents": {
     "message": "Kamakailan"
   },
-  "recipientAddress": {
-    "message": "Address ng Recipient"
-  },
   "recipientAddressPlaceholder": {
     "message": "Maghanap, pampublikong address (0x), o ENS"
   },

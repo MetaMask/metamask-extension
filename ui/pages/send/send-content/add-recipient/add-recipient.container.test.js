@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 
-import { updateSendTo } from '../../../../store/actions';
+import { updateSendTo } from '../../../../ducks/send';
 
 let mapStateToProps;
 let mapDispatchToProps;
@@ -14,8 +14,6 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../../../../selectors', () => ({
-  getSendEnsResolution: (s) => `mockSendEnsResolution:${s}`,
-  getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
   getAddressBook: (s) => [{ name: `mockAddressBook:${s}` }],
   getAddressBookEntry: (s) => `mockAddressBookEntry:${s}`,
   accountsWithSendEtherInfoSelector: () => [
@@ -24,8 +22,10 @@ jest.mock('../../../../selectors', () => ({
   ],
 }));
 
-jest.mock('../../../../store/actions', () => ({
+jest.mock('../../../../ducks/send', () => ({
   updateSendTo: jest.fn(),
+  getSendEnsResolution: (s) => `mockSendEnsResolution:${s}`,
+  getSendEnsResolutionError: (s) => `mockSendEnsResolutionError:${s}`,
 }));
 
 require('./add-recipient.container.js');
@@ -57,7 +57,10 @@ describe('add-recipient container', () => {
         mapDispatchToPropsObject.updateSendTo('mockTo', 'mockNickname');
         expect(dispatchSpy.calledOnce).toStrictEqual(true);
         expect(updateSendTo).toHaveBeenCalled();
-        expect(updateSendTo).toHaveBeenCalledWith('mockTo', 'mockNickname');
+        expect(updateSendTo).toHaveBeenCalledWith({
+          to: 'mockTo',
+          nickname: 'mockNickname',
+        });
       });
     });
   });

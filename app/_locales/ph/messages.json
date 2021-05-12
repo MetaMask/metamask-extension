@@ -189,9 +189,6 @@
   "readdToken": {
     "message": "Upang muling idagdag ang token na ito, pumunta sa “Magdagdag ng Token” sa options menu ng iyong account."
   },
-  "recipientAddress": {
-    "message": "Address ng Tatanggap"
-  },
   "reject": {
     "message": "Tanggihan"
   },

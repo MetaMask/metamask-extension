@@ -731,9 +731,6 @@
   "recents": {
     "message": "Baru-baru ini"
   },
-  "recipientAddress": {
-    "message": "Alamat Penerima"
-  },
   "recipientAddressPlaceholder": {
     "message": "Cari, alamat awam (0x), atau ENS"
   },

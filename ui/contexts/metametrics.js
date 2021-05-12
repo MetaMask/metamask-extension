@@ -15,7 +15,7 @@ import {
   getNumberOfAccounts,
   getNumberOfTokens,
 } from '../selectors/selectors';
-import { getSendToken } from '../selectors/send';
+import { getSendToken } from '../ducks/send';
 import { txDataSelector } from '../selectors/confirm-transaction';
 import { getEnvironmentType } from '../../app/scripts/lib/util';
 import { trackMetaMetricsEvent } from '../store/actions';

@@ -750,9 +750,6 @@
   "recents": {
     "message": "Nesenie"
   },
-  "recipientAddress": {
-    "message": "Saņēmēja adrese"
-  },
   "recipientAddressPlaceholder": {
     "message": "Meklēšana, publiskā adrese (0x) vai ENS"
   },

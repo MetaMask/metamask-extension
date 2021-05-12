@@ -6,11 +6,12 @@ import { isEqual, shuffle } from 'lodash';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getTokenExchangeRates,
-  getConversionRate,
   getCurrentCurrency,
   getSwapsDefaultToken,
   getCurrentChainId,
 } from '../selectors';
+import { getConversionRate } from '../ducks/metamask/metamask';
+
 import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';

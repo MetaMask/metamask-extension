@@ -1204,9 +1204,6 @@
   "recents": {
     "message": "最近の履歴"
   },
-  "recipientAddress": {
-    "message": "受取アドレス"
-  },
   "recipientAddressPlaceholder": {
     "message": "パブリックアドレス(0x)、またはENSを検索"
   },

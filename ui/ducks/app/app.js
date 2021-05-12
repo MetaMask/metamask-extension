@@ -293,18 +293,6 @@ export default function reduceApp(state = {}, action) {
         isMouseUser: action.value,
       };
 
-    case actionConstants.GAS_LOADING_STARTED:
-      return {
-        ...appState,
-        gasIsLoading: true,
-      };
-
-    case actionConstants.GAS_LOADING_FINISHED:
-      return {
-        ...appState,
-        gasIsLoading: false,
-      };
-
     case actionConstants.SET_SELECTED_SETTINGS_RPC_URL:
       return {
         ...appState,
@@ -376,4 +364,9 @@ export function hideWhatsNewPopup() {
   return {
     type: actionConstants.HIDE_WHATS_NEW_POPUP,
   };
+}
+
+// Selectors
+export function getQrCodeData(state) {
+  return state.appState.qrCodeData;
 }

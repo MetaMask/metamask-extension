@@ -37,9 +37,12 @@ const REQUIRED_ERROR = 'required';
 const KNOWN_RECIPIENT_ADDRESS_ERROR = 'knownAddressRecipient';
 const CONTRACT_ADDRESS_ERROR = 'contractAddressError';
 const CONFUSING_ENS_ERROR = 'confusingEnsDomain';
-
-const SIMPLE_GAS_COST = '0x5208'; // Hex for 21000, cost of a simple send.
-const BASE_TOKEN_GAS_COST = '0x186a0'; // Hex for 100000, a base estimate for token transfers.
+const ENS_NO_ADDRESS_FOR_NAME = 'noAddressForName';
+const ENS_NOT_FOUND_ON_NETWORK = 'ensNotFoundOnCurrentNetwork';
+const ENS_NOT_SUPPORTED_ON_NETWORK = 'ensNotSupportedOnNetwork'; // 'Network does not support ENS'
+const ENS_ILLEGAL_CHARACTER = 'ensIllegalCharacter';
+const ENS_UNKNOWN_ERROR = 'ensUnknownError';
+const ENS_REGISTRATION_ERROR = 'ensRegistrationError';
 
 export {
   INSUFFICIENT_FUNDS_ERROR,
@@ -48,6 +51,12 @@ export {
   KNOWN_RECIPIENT_ADDRESS_ERROR,
   CONTRACT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
+  ENS_NO_ADDRESS_FOR_NAME,
+  ENS_NOT_FOUND_ON_NETWORK,
+  ENS_NOT_SUPPORTED_ON_NETWORK,
+  ENS_ILLEGAL_CHARACTER,
+  ENS_UNKNOWN_ERROR,
+  ENS_REGISTRATION_ERROR,
   MIN_GAS_LIMIT_DEC,
   MIN_GAS_LIMIT_HEX,
   MIN_GAS_PRICE_DEC,
@@ -57,7 +66,5 @@ export {
   NEGATIVE_ETH_ERROR,
   REQUIRED_ERROR,
   CONFUSING_ENS_ERROR,
-  SIMPLE_GAS_COST,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
-  BASE_TOKEN_GAS_COST,
 };

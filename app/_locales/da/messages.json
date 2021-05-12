@@ -735,9 +735,6 @@
   "recents": {
     "message": "Seneste"
   },
-  "recipientAddress": {
-    "message": "Modtagerens adresse"
-  },
   "recipientAddressPlaceholder": {
     "message": "Søg, offentlig adresse (0x) eller ENS"
   },

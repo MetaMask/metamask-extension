@@ -751,9 +751,6 @@
   "recents": {
     "message": "最近"
   },
-  "recipientAddress": {
-    "message": "接收位址"
-  },
   "recipientAddressPlaceholder": {
     "message": "搜尋，公開地址 (0x)，或 ENS"
   },

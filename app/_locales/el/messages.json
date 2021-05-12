@@ -751,9 +751,6 @@
   "recents": {
     "message": "Πρόσφατα"
   },
-  "recipientAddress": {
-    "message": "Διεύθυνση Παραλήπτη"
-  },
   "recipientAddressPlaceholder": {
     "message": "Αναζήτηση, δημόσια διεύθυνση (0x) ή ENS"
   },

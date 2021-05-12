@@ -741,9 +741,6 @@
   "recents": {
     "message": "Recente"
   },
-  "recipientAddress": {
-    "message": "Adresă destinatar"
-  },
   "recipientAddressPlaceholder": {
     "message": "Căutare, adresa publică (0x) sau ENS"
   },

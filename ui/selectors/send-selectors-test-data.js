@@ -210,7 +210,6 @@ const state = {
   identities: {},
   send: {
     fromDropdownOpen: false,
-    toDropdownOpen: false,
     errors: { someError: null },
   },
 };

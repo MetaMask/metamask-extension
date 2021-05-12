@@ -1,9 +1,8 @@
 import abi from 'human-standard-token-abi';
 import pify from 'pify';
 import log from 'loglevel';
-import { capitalize } from 'lodash';
+import { capitalize, isEqual } from 'lodash';
 import getBuyEthUrl from '../../app/scripts/lib/buy-eth-url';
-import { calcTokenBalance, estimateGasForSend } from '../pages/send/send.utils';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -13,13 +12,14 @@ import { getSymbolAndDecimals } from '../helpers/utils/token-util';
 import switchDirection from '../helpers/utils/switch-direction';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../shared/constants/app';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
-import { setCustomGasLimit } from '../ducks/gas/gas.duck';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
+  getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
 } from '../selectors';
+import { resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { LISTED_CONTRACT_ADDRESSES } from '../../shared/constants/tokens';
@@ -634,173 +634,10 @@ export function signTx(txData) {
   };
 }
 
-export function setGasLimit(gasLimit) {
-  return {
-    type: actionConstants.UPDATE_GAS_LIMIT,
-    value: gasLimit,
-  };
-}
-
-export function setGasPrice(gasPrice) {
-  return {
-    type: actionConstants.UPDATE_GAS_PRICE,
-    value: gasPrice,
-  };
-}
-
-export function setGasTotal(gasTotal) {
-  return {
-    type: actionConstants.UPDATE_GAS_TOTAL,
-    value: gasTotal,
-  };
-}
-
-export function updateGasData({
-  gasPrice,
-  blockGasLimit,
-  selectedAddress,
-  sendToken,
-  to,
-  value,
-  data,
-}) {
-  return (dispatch) => {
-    dispatch(gasLoadingStarted());
-    return estimateGasForSend({
-      estimateGasMethod: promisifiedBackground.estimateGas,
-      blockGasLimit,
-      selectedAddress,
-      sendToken,
-      to,
-      value,
-      estimateGasPrice: gasPrice,
-      data,
-    })
-      .then((gas) => {
-        dispatch(setGasLimit(gas));
-        dispatch(setCustomGasLimit(gas));
-        dispatch(updateSendErrors({ gasLoadingError: null }));
-        dispatch(gasLoadingFinished());
-      })
-      .catch((err) => {
-        log.error(err);
-        dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }));
-        dispatch(gasLoadingFinished());
-      });
-  };
-}
-
-export function gasLoadingStarted() {
-  return {
-    type: actionConstants.GAS_LOADING_STARTED,
-  };
-}
-
-export function gasLoadingFinished() {
-  return {
-    type: actionConstants.GAS_LOADING_FINISHED,
-  };
-}
-
-export function updateSendTokenBalance({ sendToken, tokenContract, address }) {
-  return (dispatch) => {
-    const tokenBalancePromise = tokenContract
-      ? tokenContract.balanceOf(address)
-      : Promise.resolve();
-    return tokenBalancePromise
-      .then((usersToken) => {
-        if (usersToken) {
-          const newTokenBalance = calcTokenBalance({ sendToken, usersToken });
-          dispatch(setSendTokenBalance(newTokenBalance));
-        }
-      })
-      .catch((err) => {
-        log.error(err);
-        updateSendErrors({ tokenBalance: 'tokenBalanceError' });
-      });
-  };
-}
-
-export function updateSendErrors(errorObject) {
-  return {
-    type: actionConstants.UPDATE_SEND_ERRORS,
-    value: errorObject,
-  };
-}
-
-export function setSendTokenBalance(tokenBalance) {
-  return {
-    type: actionConstants.UPDATE_SEND_TOKEN_BALANCE,
-    value: tokenBalance,
-  };
-}
-
-export function updateSendHexData(value) {
-  return {
-    type: actionConstants.UPDATE_SEND_HEX_DATA,
-    value,
-  };
-}
-
-export function updateSendTo(to, nickname = '') {
-  return {
-    type: actionConstants.UPDATE_SEND_TO,
-    value: { to, nickname },
-  };
-}
-
-export function updateSendAmount(amount) {
-  return {
-    type: actionConstants.UPDATE_SEND_AMOUNT,
-    value: amount,
-  };
-}
-
 export function updateCustomNonce(value) {
   return {
     type: actionConstants.UPDATE_CUSTOM_NONCE,
     value,
-  };
-}
-
-export function setMaxModeTo(bool) {
-  return {
-    type: actionConstants.UPDATE_MAX_MODE,
-    value: bool,
-  };
-}
-
-export function updateSend(newSend) {
-  return {
-    type: actionConstants.UPDATE_SEND,
-    value: newSend,
-  };
-}
-
-export function updateSendToken(token) {
-  return {
-    type: actionConstants.UPDATE_SEND_TOKEN,
-    value: token,
-  };
-}
-
-export function clearSend() {
-  return {
-    type: actionConstants.CLEAR_SEND,
-  };
-}
-
-export function updateSendEnsResolution(ensResolution) {
-  return {
-    type: actionConstants.UPDATE_SEND_ENS_RESOLUTION,
-    payload: ensResolution,
-  };
-}
-
-export function updateSendEnsResolutionError(errorMessage) {
-  return {
-    type: actionConstants.UPDATE_SEND_ENS_RESOLUTION_ERROR,
-    payload: errorMessage,
   };
 }
 
@@ -885,7 +722,7 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
     return new Promise((resolve, reject) => {
       background.updateAndApproveTransaction(txData, (err) => {
         dispatch(updateTransactionParams(txData.id, txData.txParams));
-        dispatch(clearSend());
+        dispatch(resetSendState());
 
         if (err) {
           dispatch(txError(err));
@@ -901,7 +738,7 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(clearSend());
+        dispatch(resetSendState());
         dispatch(completedTx(txData.id));
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
@@ -1071,7 +908,7 @@ export function cancelTx(txData, _showLoadingIndication = true) {
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(clearSend());
+        dispatch(resetSendState());
         dispatch(completedTx(txData.id));
         dispatch(hideLoadingIndication());
         dispatch(closeCurrentNotificationWindow());
@@ -1114,7 +951,7 @@ export function cancelTxs(txDataList) {
 
       const newState = await updateMetamaskStateFromBackground();
       dispatch(updateMetamaskState(newState));
-      dispatch(clearSend());
+      dispatch(resetSendState());
 
       txIds.forEach((id) => {
         dispatch(completedTx(id));
@@ -1202,19 +1039,59 @@ export function updateMetamaskState(newState) {
   return (dispatch, getState) => {
     const { metamask: currentState } = getState();
 
-    const { currentLocale, selectedAddress } = currentState;
+    const { currentLocale, selectedAddress, provider } = currentState;
     const {
       currentLocale: newLocale,
       selectedAddress: newSelectedAddress,
+      provider: newProvider,
     } = newState;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
       dispatch(updateCurrentLocale(newLocale));
     }
+
     if (selectedAddress !== newSelectedAddress) {
       dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
     }
 
+    // Ensuring that the chainId is not undefined for both providers ensures we
+    // can rely upon the logic of our getMetaMaskAccounts selector instead of
+    // replicating its behavior here in a way more tolerant of missing
+    // properties
+    if (provider?.chainId !== undefined && newProvider?.chainId !== undefined) {
+      const newAccounts = getMetaMaskAccounts({ metamask: newState });
+      const oldAccounts = getMetaMaskAccounts({ metamask: currentState });
+      const newSelectedAccount = newAccounts[newSelectedAddress];
+      const oldSelectedAccount = newAccounts[selectedAddress];
+      // dispatch an ACCOUNT_CHANGED for any account whose balance or other
+      // properties changed in this update
+      Object.entries(oldAccounts).forEach(([address, oldAccount]) => {
+        if (!isEqual(oldAccount, newAccounts[address])) {
+          dispatch({
+            type: actionConstants.ACCOUNT_CHANGED,
+            payload: { account: newAccounts[address] },
+          });
+        }
+      });
+      // Also emit an event for the selected account changing, either due to a
+      // property update or if the entire account changes.
+      if (isEqual(oldSelectedAccount, newSelectedAccount) === false) {
+        dispatch({
+          type: actionConstants.SELECTED_ACCOUNT_CHANGED,
+          payload: { account: newSelectedAccount },
+        });
+      }
+    }
+
+    if (
+      provider?.chainId !== newProvider?.chainId &&
+      newProvider?.chainId !== undefined
+    ) {
+      dispatch({
+        type: actionConstants.CHAIN_CHANGED,
+        payload: newProvider.chainId,
+      });
+    }
     dispatch({
       type: actionConstants.UPDATE_METAMASK_STATE,
       value: newState,
@@ -1305,6 +1182,7 @@ export function showAccountDetail(address) {
 
     try {
       await _setSelectedAddress(dispatch, address);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error.message));
       return;
@@ -2570,18 +2448,6 @@ export function setConnectedStatusPopoverHasBeenShown() {
   };
 }
 
-export async function setAlertEnabledness(alertId, enabledness) {
-  await promisifiedBackground.setAlertEnabledness(alertId, enabledness);
-}
-
-export async function setUnconnectedAccountAlertShown(origin) {
-  await promisifiedBackground.setUnconnectedAccountAlertShown(origin);
-}
-
-export async function setWeb3ShimUsageAlertDismissed(origin) {
-  await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
-}
-
 export function loadingMethodDataStarted() {
   return {
     type: actionConstants.LOADING_METHOD_DATA_STARTED,
@@ -2848,6 +2714,18 @@ export function setLedgerLivePreference(value) {
   };
 }
 
+// Wrappers around promisifedBackground
+/**
+ * The "actions" below are not actions nor action creators. They cannot use
+ * dispatch nor should they be dispatched when used. Instead they can be
+ * called directly. These wrappers will be moved into their location at some
+ * point in the future.
+ */
+
+export function estimateGas() {
+  return promisifiedBackground.estimateGas();
+}
+
 // MetaMetrics
 /**
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
@@ -2878,4 +2756,16 @@ export function updateViewedNotifications(notificationIdViewedStatusMap) {
   return promisifiedBackground.updateViewedNotifications(
     notificationIdViewedStatusMap,
   );
+}
+
+export async function setAlertEnabledness(alertId, enabledness) {
+  await promisifiedBackground.setAlertEnabledness(alertId, enabledness);
+}
+
+export async function setUnconnectedAccountAlertShown(origin) {
+  await promisifiedBackground.setUnconnectedAccountAlertShown(origin);
+}
+
+export async function setWeb3ShimUsageAlertDismissed(origin) {
+  await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
 }

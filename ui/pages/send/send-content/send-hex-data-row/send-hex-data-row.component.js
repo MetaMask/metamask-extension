@@ -6,7 +6,6 @@ export default class SendHexDataRow extends Component {
   static propTypes = {
     inError: PropTypes.bool,
     updateSendHexData: PropTypes.func.isRequired,
-    updateGas: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -14,10 +13,9 @@ export default class SendHexDataRow extends Component {
   };
 
   onInput = (event) => {
-    const { updateSendHexData, updateGas } = this.props;
+    const { updateSendHexData } = this.props;
     const data = event.target.value.replace(/\n/gu, '') || null;
     updateSendHexData(data);
-    updateGas({ data });
   };
 
   render() {
