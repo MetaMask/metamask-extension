@@ -86,21 +86,21 @@
       ]
     },
     "PreferencesController": {
-        "frequentRpcListDetail": [
-          {
-              "rpcUrl": "http://127.0.0.1:8545/1",
-              "chainId": "0x539",
-              "ticker": "ETH",
-              "nickname": "http://127.0.0.1:8545/1",
-              "rpcPrefs": {}
-          },
-          {
-            "rpcUrl": "http://127.0.0.1:8545/2",
-            "chainId": "0x539",
-            "ticker": "ETH",
-            "nickname": "http://127.0.0.1:8545/2",
-            "rpcPrefs": {}
-          }
+      "frequentRpcListDetail": [
+        {
+          "rpcUrl": "http://127.0.0.1:8545/1",
+          "chainId": "0x539",
+          "ticker": "ETH",
+          "nickname": "http://127.0.0.1:8545/1",
+          "rpcPrefs": {}
+        },
+        {
+          "rpcUrl": "http://127.0.0.1:8545/2",
+          "chainId": "0x539",
+          "ticker": "ETH",
+          "nickname": "http://127.0.0.1:8545/2",
+          "rpcPrefs": {}
+        }
       ],
       "accountTokens": {
         "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {

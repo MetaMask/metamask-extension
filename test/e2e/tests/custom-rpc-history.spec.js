@@ -25,25 +25,25 @@ describe('Stores custom RPC history', function () {
 
         const rpcUrl = 'http://127.0.0.1:8545/1';
         const chainId = '0x539'; // Ganache default, decimal 1337
-    
+
         await driver.clickElement('.network-display');
         await driver.delay(regularDelayMs);
-    
+
         await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
         await driver.delay(regularDelayMs);
-    
+
         await driver.findElement('.settings-page__sub-header-text');
-    
+
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[1];
         const chainIdInput = customRpcInputs[2];
-    
+
         await rpcUrlInput.clear();
         await rpcUrlInput.sendKeys(rpcUrl);
-    
+
         await chainIdInput.clear();
         await chainIdInput.sendKeys(chainId);
-    
+
         await driver.clickElement('.network-form__footer .btn-secondary');
         await driver.findElement({ text: rpcUrl, tag: 'div' });
       },
@@ -64,25 +64,25 @@ describe('Stores custom RPC history', function () {
 
         const rpcUrl = 'http://127.0.0.1:8545/2';
         const chainId = '0x539'; // Ganache default, decimal 1337
-    
+
         await driver.clickElement('.network-display');
         await driver.delay(regularDelayMs);
-    
+
         await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
         await driver.delay(regularDelayMs);
-    
+
         await driver.findElement('.settings-page__sub-header-text');
-    
+
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[1];
         const chainIdInput = customRpcInputs[2];
-    
+
         await rpcUrlInput.clear();
         await rpcUrlInput.sendKeys(rpcUrl);
-    
+
         await chainIdInput.clear();
         await chainIdInput.sendKeys(chainId);
-    
+
         await driver.clickElement('.network-form__footer .btn-secondary');
         await driver.findElement({ text: rpcUrl, tag: 'div' });
       },
@@ -103,7 +103,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
         await driver.delay(regularDelayMs);
-    
+
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
         await driver.delay(largeDelayMs * 2);
       },
@@ -124,16 +124,16 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
         await driver.delay(regularDelayMs);
-    
+
         // only recent 3 are found and in correct order (most recent at the top)
         const customRpcs = await driver.findElements({
           text: 'http://127.0.0.1:8545/',
           tag: 'span',
         });
-    
+
         // click Mainnet to dismiss network dropdown
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
-    
+
         assert.equal(customRpcs.length, 2);
       },
     );
@@ -158,34 +158,35 @@ describe('Stores custom RPC history', function () {
         await driver.delay(regularDelayMs);
 
         // cancel new custom rpc
-        await driver.clickElement(
-          '.network-form__footer button.btn-default',
-        );
+        await driver.clickElement('.network-form__footer button.btn-default');
 
         const networkListItems = await driver.findClickableElements(
           '.networks-tab__networks-list-name',
         );
-        const lastNetworkListItem = networkListItems[networkListItems.length - 1];
+        const lastNetworkListItem =
+          networkListItems[networkListItems.length - 1];
         await lastNetworkListItem.click();
         await driver.delay(100);
-    
+
         await driver.clickElement('.btn-danger');
         await driver.delay(regularDelayMs);
-    
+
         // wait for confirm delete modal to be visible
-        const confirmDeleteModal = await driver.findVisibleElement('span .modal');
-    
+        const confirmDeleteModal = await driver.findVisibleElement(
+          'span .modal',
+        );
+
         await driver.clickElement(
           '.button.btn-danger.modal-container__footer-button',
         );
-    
+
         // wait for confirm delete modal to be removed from DOM.
         await confirmDeleteModal.waitForElementState('hidden');
-    
+
         const newNetworkListItems = await driver.findElements(
           '.networks-tab__networks-list-name',
         );
-    
+
         assert.equal(networkListItems.length - 1, newNetworkListItems.length);
       },
     );

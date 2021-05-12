@@ -1557,5 +1557,4 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
     });
   });
-
 });
