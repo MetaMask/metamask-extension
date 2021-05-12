@@ -1,5 +1,9 @@
 import contractMap from '@metamask/contract-metadata';
-import { isValidAddress, checksumAddress, isHex  } from '../app/helpers/utils/util';
+import {
+  isValidAddress,
+  checksumAddress,
+  isHex,
+} from '../app/helpers/utils/util';
 
 let iconFactory;
 
