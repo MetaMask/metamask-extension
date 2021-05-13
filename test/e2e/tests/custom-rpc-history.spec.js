@@ -50,45 +50,6 @@ describe('Stores custom RPC history', function () {
     );
   });
 
-  it(`creates second custom RPC entry`, async function () {
-    await withFixtures(
-      {
-        fixtures: 'imported-account',
-        ganacheOptions,
-        title: this.test.title,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
-        const rpcUrl = 'http://127.0.0.1:8545/2';
-        const chainId = '0x539'; // Ganache default, decimal 1337
-
-        await driver.clickElement('.network-display');
-        await driver.delay(regularDelayMs);
-
-        await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
-        await driver.delay(regularDelayMs);
-
-        await driver.findElement('.settings-page__sub-header-text');
-
-        const customRpcInputs = await driver.findElements('input[type="text"]');
-        const rpcUrlInput = customRpcInputs[1];
-        const chainIdInput = customRpcInputs[2];
-
-        await rpcUrlInput.clear();
-        await rpcUrlInput.sendKeys(rpcUrl);
-
-        await chainIdInput.clear();
-        await chainIdInput.sendKeys(chainId);
-
-        await driver.clickElement('.network-form__footer .btn-secondary');
-        await driver.findElement({ text: rpcUrl, tag: 'div' });
-      },
-    );
-  });
-
   it('selects another provider', async function () {
     await withFixtures(
       {
