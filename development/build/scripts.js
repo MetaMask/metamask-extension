@@ -275,46 +275,20 @@ function createFactoredBuild({
       for (const [groupLabel, groupSet] of sizeGroupMap.entries()) {
         // skip "common" group, they are added tp all other groups
         if (groupSet === commonSet) continue;
-        // skip "initSentry" util bundle
-        if (groupLabel === 'initSentry') continue;
-        // const dest = `./dist/chrome/${groupLabel}-start.js`;
-        // this is just removing the initial './'
-        // const relativeFilePath = path.relative('.', filepath);
 
-        // // map to path?
-        // const htmlNameMap = {
-        //   'phishing-detect': 'phishing'
-        //   ui:
-        // }
-        // //  simplify for now
-        // if (groupLabel !== 'background') continue
-
-        /* TODO write via vinyl
-        - [x] expand html rendering
-          - popup (ui)
-          - notification (ui)
-          - home (ui)
-          - phishing
-          - background
-          - loading (static)
-        - [x] background not booting correctly -> ui connect error?
-        - [x] breakout initSentry etc
-        - [ ] publish lavapack
-        - [ ] output via vinyl
-        */
         switch (groupLabel) {
           case 'ui': {
-            renderHtmlFile('popup', groupSet, commonSet);
-            renderHtmlFile('notification', groupSet, commonSet);
-            renderHtmlFile('home', groupSet, commonSet);
+            renderHtmlFile('popup', groupSet, commonSet, browserPlatforms);
+            renderHtmlFile('notification', groupSet, commonSet, browserPlatforms);
+            renderHtmlFile('home', groupSet, commonSet, browserPlatforms);
             break;
           }
           case 'phishing-detect': {
-            renderHtmlFile('phishing', groupSet, commonSet);
+            renderHtmlFile('phishing', groupSet, commonSet, browserPlatforms);
             break;
           }
           case 'background': {
-            renderHtmlFile('background', groupSet, commonSet);
+            renderHtmlFile('background', groupSet, commonSet, browserPlatforms);
             break;
           }
           default: {
@@ -595,7 +569,7 @@ function getEnvironment({ devMode, testing }) {
   return 'other';
 }
 
-function renderHtmlFile(htmlName, groupSet, commonSet) {
+function renderHtmlFile(htmlName, groupSet, commonSet, browserPlatforms) {
   // groupLabel === 'phishing-detect' ? 'phishing' : groupLabel
   const htmlFilePath = `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
@@ -603,11 +577,12 @@ function renderHtmlFile(htmlName, groupSet, commonSet) {
     (label) => `./${label}.js`,
   );
   const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles });
-  const dest = `./dist/chrome/${htmlName}.html`;
-  // we dont have a way of creating async events atm
-  console.log(`write it "${dest}"`);
-  writeFileSync(dest, htmlOutput);
-  console.log(`write html to "${dest}"`);
+  browserPlatforms.forEach(platform => {
+    const dest = `./dist/${platform}/${htmlName}.html`;
+    // we dont have a way of creating async events atm
+    writeFileSync(dest, htmlOutput);
+    console.log(`wrote html to "${dest}"`);
+  })
 }
 
 function beep() {
