@@ -46,6 +46,7 @@ import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   SWAP_FAILED_ERROR,
+  CONTRACT_DATA_DISABLED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
 } from '../../../shared/constants/swaps';
 
@@ -134,7 +135,7 @@ export default function Swap() {
     tradeTxData?.txReceipt?.status === '0x0';
   const conversionError = approveError || tradeError;
 
-  if (conversionError) {
+  if (conversionError && swapsErrorKey !== CONTRACT_DATA_DISABLED_ERROR) {
     swapsErrorKey = SWAP_FAILED_ERROR;
   }
 
@@ -318,6 +319,8 @@ export default function Swap() {
               path={SWAPS_ERROR_ROUTE}
               exact
               render={() => {
+                console.log('SWAPS_ERROR_ROUTE');
+                console.log(swapsErrorKey);
                 if (swapsErrorKey) {
                   return (
                     <AwaitingSwap
