@@ -200,6 +200,7 @@
     "web3-stream-provider": "^4.0.0"
   },
   "devDependencies": {
+    "@babel/code-frame": "^7.12.13",
     "@babel/core": "^7.12.1",
     "@babel/eslint-parser": "^7.13.14",
     "@babel/eslint-plugin": "^7.12.1",
