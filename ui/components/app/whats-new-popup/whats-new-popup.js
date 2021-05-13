@@ -27,6 +27,7 @@ function getActionFunctionById(id, history) {
       });
     },
     4: () => {
+      updateViewedNotifications({ 4: true });
       history.push(BUILD_QUOTE_ROUTE);
     },
   };
