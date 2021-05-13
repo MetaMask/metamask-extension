@@ -1,5 +1,9 @@
 import contractMap from '@metamask/contract-metadata';
-import { isValidAddress, checksumAddress } from '../app/helpers/utils/util';
+import {
+  isValidAddress,
+  checksumAddress,
+  isHex,
+} from '../app/helpers/utils/util';
 
 let iconFactory;
 
@@ -16,7 +20,12 @@ function IconFactory(jazzicon) {
 }
 
 IconFactory.prototype.iconForAddress = function (address, diameter) {
-  const addr = checksumAddress(address);
+  let addr = address;
+
+  if (isHex(address)) {
+    addr = checksumAddress(address);
+  }
+
   if (iconExistsFor(addr)) {
     return imageElFor(addr);
   }

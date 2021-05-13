@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import contractMap from '@metamask/contract-metadata';
 
-import { checksumAddress } from '../../../helpers/utils/util';
+import { checksumAddress, isHex } from '../../../helpers/utils/util';
 import Jazzicon from '../jazzicon';
 import BlockieIdenticon from './blockieIdenticon';
 
@@ -85,10 +85,12 @@ export default class Identicon extends PureComponent {
     }
 
     if (address) {
-      const checksummedAddress = checksumAddress(address);
+      if (isHex(address)) {
+        const checksummedAddress = checksumAddress(address);
 
-      if (contractMap[checksummedAddress]?.logo) {
-        return this.renderJazzicon();
+        if (contractMap[checksummedAddress]?.logo) {
+          return this.renderJazzicon();
+        }
       }
 
       return (

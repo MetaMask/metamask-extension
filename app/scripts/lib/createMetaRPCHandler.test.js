@@ -58,4 +58,40 @@ describe('createMetaRPCHandler', function () {
       done();
     });
   });
+  it('can not throw an error for writing an error after end', function (done) {
+    const api = {
+      foo: (param1, cb) => {
+        assert.strictEqual(param1, 'bar');
+        cb(new Error('foo-error'));
+      },
+    };
+    const streamTest = createThoughStream();
+    const handler = createMetaRPCHandler(api, streamTest);
+    streamTest.end();
+    handler({
+      id: 1,
+      method: 'foo',
+      params: ['bar'],
+    });
+    done();
+  });
+  it('can not throw an error for write after end', function (done) {
+    const api = {
+      foo: (param1, cb) => {
+        assert.strictEqual(param1, 'bar');
+        cb(undefined, {
+          foo: 'bar',
+        });
+      },
+    };
+    const streamTest = createThoughStream();
+    const handler = createMetaRPCHandler(api, streamTest);
+    streamTest.end();
+    handler({
+      id: 1,
+      method: 'foo',
+      params: ['bar'],
+    });
+    done();
+  });
 });

@@ -2024,6 +2024,9 @@ export default class MetamaskController extends EventEmitter {
     // set up postStream transport
     outStream.on('data', createMetaRPCHandler(api, outStream));
     const handleUpdate = (update) => {
+      if (outStream._writableState.ended) {
+        return;
+      }
       // send notification to client-side
       outStream.write({
         jsonrpc: '2.0',
