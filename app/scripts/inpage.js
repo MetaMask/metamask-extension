@@ -33,7 +33,7 @@ cleanContextForImports();
 /* eslint-disable import/first */
 import log from 'loglevel';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import { initializeProvider } from '@metamask/inpage-provider';
+import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 
 restoreContextAfterImports();
 
