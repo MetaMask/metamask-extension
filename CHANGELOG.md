@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.5.2]
+### Fixed
+- [#11071](https://github.com/MetaMask/metamask-extension/pull/11071): Fixing address entry error when sending a transaction on a custom network
+
 ## [9.5.1]
 ### Fixed
 - [#11048](https://github.com/MetaMask/metamask-extension/pull/11048): Fixed icon on approval screen
@@ -2227,7 +2231,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.2...HEAD
+[9.5.2]: https://github.com/MetaMask/metamask-extension/compare/v9.5.1...v9.5.2
 [9.5.1]: https://github.com/MetaMask/metamask-extension/compare/v9.5.0...v9.5.1
 [9.5.0]: https://github.com/MetaMask/metamask-extension/compare/v9.4.0...v9.5.0
 [9.4.0]: https://github.com/MetaMask/metamask-extension/compare/v9.3.0...v9.4.0
