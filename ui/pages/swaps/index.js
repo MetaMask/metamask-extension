@@ -319,8 +319,6 @@ export default function Swap() {
               path={SWAPS_ERROR_ROUTE}
               exact
               render={() => {
-                console.log('SWAPS_ERROR_ROUTE');
-                console.log(swapsErrorKey);
                 if (swapsErrorKey) {
                   return (
                     <AwaitingSwap
