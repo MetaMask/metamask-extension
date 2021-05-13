@@ -1,6 +1,6 @@
 import querystring from 'querystring';
 import pump from 'pump';
-import LocalMessageDuplexStream from 'post-message-stream';
+import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from 'obj-multiplex';
 import extension from 'extensionizer';
 import PortStream from 'extension-port-stream';
@@ -57,7 +57,7 @@ function injectScript(content) {
  */
 async function setupStreams() {
   // the transport-specific streams for communication between inpage and background
-  const pageStream = new LocalMessageDuplexStream({
+  const pageStream = new WindowPostMessageStream({
     name: CONTENT_SCRIPT,
     target: INPAGE,
   });
@@ -89,7 +89,7 @@ async function setupStreams() {
 
   // TODO:LegacyProvider: Delete
   // handle legacy provider
-  const legacyPageStream = new LocalMessageDuplexStream({
+  const legacyPageStream = new WindowPostMessageStream({
     name: LEGACY_CONTENT_SCRIPT,
     target: LEGACY_INPAGE,
   });

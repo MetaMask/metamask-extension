@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import TypedMessageManager from './typed-message-manager';

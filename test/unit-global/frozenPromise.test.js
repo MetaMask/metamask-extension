@@ -2,7 +2,7 @@
 import './globalPatch';
 import 'ses/lockdown';
 import '../../app/scripts/runLockdown';
-import assert from 'assert'; /* eslint-disable-line import/first,import/order */
+import { strict as assert } from 'assert'; /* eslint-disable-line import/first,import/order */
 
 describe('Promise global is immutable', function () {
   it('throws when reassinging promise (syntax 1)', function () {

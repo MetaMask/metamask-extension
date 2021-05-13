@@ -491,9 +491,6 @@
   "done": {
     "message": "완료"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "하드웨어 지갑이 없으신가요?"
-  },
   "dontShowThisAgain": {
     "message": "이 메시지를 다시 표시하지 않음"
   },
@@ -718,9 +715,6 @@
     "message": "$1용 포시트에서 Ether 얻기",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "도움을 받으세요."
-  },
   "getStarted": {
     "message": "시작하기"
   },
@@ -741,9 +735,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "MetaMask와 함께 사용할 하드웨어 지갑 선택"
-  },
-  "havingTroubleConnecting": {
-    "message": "연결에 문제가 있으신가요?"
   },
   "here": {
     "message": "여기",
@@ -1108,9 +1099,6 @@
   "optionalCurrencySymbol": {
     "message": "통화 기호(선택 사항)"
   },
-  "orderOneHere": {
-    "message": "Trezor나 Ledger를 주문하고 자금을 냉동 창고에 보관하세요."
-  },
   "origin": {
     "message": "원본"
   },
@@ -1191,9 +1179,6 @@
   },
   "readdToken": {
     "message": "나중에 계정 옵션 메뉴의 “토큰 추가”로 이동하면 이 토큰을 다시 추가할 수 있습니다."
-  },
-  "readyToConnect": {
-    "message": "연결할 준비가 되셨나요?"
   },
   "receive": {
     "message": "받기"
@@ -1495,24 +1480,6 @@
   "statusNotConnected": {
     "message": "연결되지 않음"
   },
-  "step1HardwareWallet": {
-    "message": "1. 하드웨어 지갑 연결"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "하드웨어 지갑을 컴퓨터에 바로 연결합니다."
-  },
-  "step2HardwareWallet": {
-    "message": "2. 계정 선택"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "확인할 계정을 선택하세요. 한 번에 하나만 선택할 수 있습니다."
-  },
-  "step3HardwareWallet": {
-    "message": "3. web3 사이트 등을 사용해 시작하세요!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "하드웨어 계정을 이더리움 계정에서처럼 사용하세요. web3 사이트에 연결하고, ETH를 보내고, ERC20 토큰 및 CryptoKitties 같은 대체 불가능 토큰을 구매하고 저장하세요."
-  },
   "storePhrase": {
     "message": "이 구문을 1Password 같은 암호 관리자에 저장하세요."
   },
@@ -1596,9 +1563,6 @@
   },
   "swapFinalizing": {
     "message": "마무리 중..."
-  },
-  "swapHighSlippageWarning": {
-    "message": "슬리패지 금액이 아주 큽니다. 현재 어떤 작업을 하고 있는지 확인하세요!"
   },
   "swapLowSlippageError": {
     "message": "거래가 실패할 수도 있습니다. 최대 슬리패지가 너무 낮습니다."
@@ -1692,9 +1656,6 @@
   },
   "swapSelectQuotePopoverDescription": {
     "message": "다음은 여러 유동성 소스에서 수집한 전체 견적입니다."
-  },
-  "swapSlippageTooLow": {
-    "message": "슬리패지는 0보다 커야 합니다."
   },
   "swapSource": {
     "message": "유동성 소스"

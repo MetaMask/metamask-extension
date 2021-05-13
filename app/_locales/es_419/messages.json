@@ -500,9 +500,6 @@
   "done": {
     "message": "Listo"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "¿No tienes una billetera de hardware?"
-  },
   "dontShowThisAgain": {
     "message": "No mostrar esto de nuevo"
   },
@@ -727,9 +724,6 @@
     "message": "Obtener Ether a partir de un grifo para $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Obtén ayuda."
-  },
   "getStarted": {
     "message": "Comenzar"
   },
@@ -750,9 +744,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Selecciona la billetera de hardware que te gustaría utilizar con MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "¿Problemas de conexión?"
   },
   "here": {
     "message": "Aquí",
@@ -1117,9 +1108,6 @@
   "optionalCurrencySymbol": {
     "message": "Símbolo (opcional)"
   },
-  "orderOneHere": {
-    "message": "Pida una billetera Trezor o Ledger y mantenga sus fondos en un almacenamiento en frío"
-  },
   "origin": {
     "message": "Origen"
   },
@@ -1200,9 +1188,6 @@
   },
   "readdToken": {
     "message": "Puedes volver a agregar este token a través de la opción \"Agregar token\" en el menú de opciones de tus cuentas."
-  },
-  "readyToConnect": {
-    "message": "¿Listo/a para conectarte?"
   },
   "receive": {
     "message": "Recibir"
@@ -1504,24 +1489,6 @@
   "statusNotConnected": {
     "message": "No conectado"
   },
-  "step1HardwareWallet": {
-    "message": "1. Conecta la billetera de hardware"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Conecta tu billetera de hardware directamente a tu computadora."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Selecciona una cuenta"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Selecciona la cuenta que deseas ver. Solo puedes seleccionar una a la vez."
-  },
-  "step3HardwareWallet": {
-    "message": "3. ¡Comienza a utilizar dApps y más!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Utiliza tu cuenta de hardware como si fuera una cuenta de Ethereum. Inicia sesión en dApps, envía ETH, compra y almacena tokens ERC20 y tokens no fungibles como CryptoKitties."
-  },
   "storePhrase": {
     "message": "Almacena esta frase en un administrador de contraseñas como 1Password."
   },
@@ -1608,9 +1575,6 @@
   },
   "swapFinalizing": {
     "message": "Finalizando..."
-  },
-  "swapHighSlippageWarning": {
-    "message": "La cantidad de deslizamiento es muy alta. ¡Asegúrate de saber lo que estás haciendo!"
   },
   "swapLowSlippageError": {
     "message": "La transacción puede fallar, el deslizamiento máximo es demasiado bajo."
@@ -1722,9 +1686,6 @@
   },
   "swapSelectQuotePopoverDescription": {
     "message": "A continuación se muestran todas las cotizaciones recopiladas de múltiples fuentes de liquidez."
-  },
-  "swapSlippageTooLow": {
-    "message": "El deslizamiento debe ser mayor que cero"
   },
   "swapSource": {
     "message": "Fuente de liquidez"
