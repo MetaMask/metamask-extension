@@ -49,12 +49,11 @@ const copyTargets = [
   },
   {
     src: `./node_modules/ses/dist/lockdown.cjs`,
-    dest: `lockdown.js`,
+    dest: `lockdown-install.js`,
   },
   {
-    src: `./app/scripts/`,
-    pattern: `runLockdown.js`,
-    dest: ``,
+    src: `./app/scripts/lockdown-run.js`,
+    dest: `lockdown-run.js`,
   },
   {
     // eslint-disable-next-line node/no-extraneous-require

@@ -19,6 +19,7 @@ const labeledStreamSplicer = require('labeled-stream-splicer').obj;
 const wrapInStream = require('pumpify').obj;
 const Sqrl = require('squirrelly');
 const lavaPack = require('@lavamoat/lavapack');
+
 const bifyModuleGroups = require('bify-module-groups');
 
 const metamaskrc = require('rc')('metamask', {
@@ -83,7 +84,6 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       'background',
       'ui',
       'phishing-detect',
-      'initSentry',
     ];
 
     // let extraEntries;
@@ -106,13 +106,19 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     // because inpage bundle result is included inside contentscript
     const contentscriptSubtask = createTask(
       `${taskPrefix}:contentscript`,
-      createTaskForBuildJsExtensionContentscript({ devMode, testing }),
+      createTaskForBundleContentscript({ devMode, testing }),
     );
 
     // this can run whenever
     const disableConsoleSubtask = createTask(
       `${taskPrefix}:disable-console`,
-      createTaskForBuildJsExtensionDisableConsole({ devMode }),
+      createTaskForBundleDisableConsole({ devMode }),
+    );
+
+    // this can run whenever
+    const installSentrySubtask = createTask(
+      `${taskPrefix}:sentry`,
+      createTaskForBundleSentry({ devMode }),
     );
 
     // task for initiating browser livereload
@@ -136,12 +142,13 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       standardSubtask,
       contentscriptSubtask,
       disableConsoleSubtask,
+      installSentrySubtask,
     ].map((subtask) => runInChildProcess(subtask));
     // make a parent task that runs each task in a child thread
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
 
-  function createTaskForBuildJsExtensionDisableConsole({ devMode }) {
+  function createTaskForBundleDisableConsole({ devMode }) {
     const label = 'disable-console';
     return createNormalBundle({
       label,
@@ -152,7 +159,19 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     });
   }
 
-  function createTaskForBuildJsExtensionContentscript({ devMode, testing }) {
+  function createTaskForBundleSentry({ devMode }) {
+    const label = 'sentry-install';
+    return createNormalBundle({
+      label,
+      entryFilepath: `./app/scripts/${label}.js`,
+      destFilepath: `${label}.js`,
+      devMode,
+      browserPlatforms,
+    });
+  }
+
+  // the "contentscript" bundle contains the "inpage" bundle 
+  function createTaskForBundleContentscript({ devMode, testing }) {
     const inpage = 'inpage';
     const contentscript = 'contentscript';
     return composeSeries(
@@ -282,10 +301,10 @@ function createFactoredBuild({
           - phishing
           - background
           - loading (static)
-        - background not booting correctly -> ui connect error?
-        - breakout initSentry etc
-        - publish lavapack
-        - output via vinyl
+        - [x] background not booting correctly -> ui connect error?
+        - [x] breakout initSentry etc
+        - [ ] publish lavapack
+        - [ ] output via vinyl
         */
         switch (groupLabel) {
           case 'ui': {
