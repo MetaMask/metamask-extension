@@ -13,6 +13,8 @@ import {
   getSelectedAccount,
   getCurrentChainId,
   getIsSwapsChain,
+  isHardwareWallet,
+  getHardwareWalletType,
 } from '../../selectors/selectors';
 import {
   getQuotes,
@@ -184,6 +186,8 @@ export default function Swap() {
     };
   }, [dispatch, chainId]);
 
+  const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const hardwareWalletType = useSelector(getHardwareWalletType);
   const exitedSwapsEvent = useNewMetricEvent({
     event: 'Exited Swaps',
     category: 'swaps',
@@ -195,6 +199,8 @@ export default function Swap() {
       slippage: fetchParams?.slippage,
       custom_slippage: fetchParams?.slippage !== 2,
       current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
     },
   });
   const exitEventRef = useRef();
