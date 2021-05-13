@@ -223,11 +223,6 @@
         "js-tokens": true
       }
     },
-    "@babel/parser": {
-      "globals": {
-        "BigInt": true
-      }
-    },
     "@babel/plugin-proposal-async-generator-functions": {
       "packages": {
         "@babel/core": true,
@@ -805,6 +800,28 @@
         "through2": true
       }
     },
+    "@lavamoat/lavapack": {
+      "builtin": {
+        "assert": true,
+        "buffer.Buffer.from": true,
+        "path.join": true,
+        "path.relative": true
+      },
+      "globals": {
+        "__MODULE_CONTENT__": true,
+        "__dirname": true,
+        "process.cwd": true
+      },
+      "packages": {
+        "JSONStream": true,
+        "combine-source-map": true,
+        "convert-source-map": true,
+        "json-stable-stringify": true,
+        "offset-sourcemap-lines": true,
+        "through2": true,
+        "umd": true
+      }
+    },
     "@nodelib/fs.scandir": {
       "builtin": {
         "fs.lstat": true,
@@ -874,7 +891,6 @@
     },
     "acorn": {
       "globals": {
-        "BigInt": true,
         "define": true
       }
     },
@@ -884,9 +900,6 @@
       }
     },
     "acorn-node": {
-      "globals": {
-        "BigInt": true
-      },
       "packages": {
         "acorn": true,
         "acorn-dynamic-import": true,
@@ -1082,29 +1095,10 @@
       }
     },
     "bify-module-groups": {
-      "globals": {
-        "console.log": true
-      },
       "packages": {
         "pify": true,
         "pump": true,
         "through2": true
-      }
-    },
-    "bify-vinyl-gator": {
-      "builtin": {
-        "fs.readFileSync": true,
-        "path.join": true,
-        "path.relative": true
-      },
-      "globals": {
-        "Buffer.from": true,
-        "__dirname": true,
-        "process.cwd": true
-      },
-      "packages": {
-        "through2": true,
-        "vinyl": true
       }
     },
     "bl": {
@@ -1675,10 +1669,7 @@
     "es-abstract": {
       "globals": {
         "AggregateError": true,
-        "Atomics": true,
-        "BigInt": true,
         "FinalizationRegistry": true,
-        "SharedArrayBuffer": true,
         "WeakRef": true
       },
       "packages": {
@@ -2975,7 +2966,6 @@
         "util.inspect": true
       },
       "globals": {
-        "BigInt": true,
         "HTMLElement": true
       }
     },
@@ -3015,6 +3005,11 @@
       "packages": {
         "for-own": true,
         "make-iterator": true
+      }
+    },
+    "offset-sourcemap-lines": {
+      "packages": {
+        "source-map": true
       }
     },
     "once": {
