@@ -30,7 +30,7 @@ EOF
 function upload_sourcemaps {
   local release="${1}"; shift
 
-  sentry-cli releases --org 'metamask' --project 'metamask' files "${release}" upload-sourcemaps ./dist/chrome/*.js ./dist/sourcemaps/ --rewrite --url-prefix 'metamask'
+  sentry-cli releases files "${release}" upload-sourcemaps ./dist/chrome/*.js ./dist/sourcemaps/ --rewrite --url-prefix 'metamask'
 }
 
 function main {
@@ -62,6 +62,12 @@ function main {
   if [[ -z $release ]]
   then
     die 'Required parameter "release" missing; either include parameter or set VERSION environment variable'
+  elif [[ -z $SENTRY_ORG ]]
+  then
+    die 'Required environment variable "SENTRY_ORG" missing'
+  elif  [[ -z $SENTRY_PROJECT ]]
+  then
+    die 'Required environment variable "SENTRY_PROJECT" missing'
   fi
 
   printf 'uploading source files and sourcemaps for Sentry release "%s"...\n' "${release}"

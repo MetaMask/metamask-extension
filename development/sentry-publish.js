@@ -11,6 +11,12 @@ start().catch((error) => {
 });
 
 async function start() {
+  if (!process.env.SENTRY_ORG) {
+    throw new Error('Missing required "SENTRY_ORG" environment variable');
+  } else if (!process.env.SENTRY_PROJECT) {
+    throw new Error('Missing required "SENTRY_PROJECT" environment variable');
+  }
+
   const authWorked = await checkIfAuthWorks();
   if (!authWorked) {
     throw new Error(`Sentry auth failed`);
@@ -25,15 +31,11 @@ async function start() {
   } else {
     // create sentry release
     console.log(`creating Sentry release for "${VERSION}"...`);
-    await exec(
-      `sentry-cli releases --org 'metamask' --project 'metamask' new ${VERSION}`,
-    );
+    await exec(`sentry-cli releases new ${VERSION}`);
     console.log(
       `removing any existing files from Sentry release "${VERSION}"...`,
     );
-    await exec(
-      `sentry-cli releases --org 'metamask' --project 'metamask' files ${VERSION} delete --all`,
-    );
+    await exec(`sentry-cli releases files ${VERSION} delete --all`);
   }
 
   // check if version has artifacts or not
@@ -52,26 +54,20 @@ async function start() {
 
 async function checkIfAuthWorks() {
   const itWorked = await doesNotFail(async () => {
-    await exec(
-      `sentry-cli releases --org 'metamask' --project 'metamask' list`,
-    );
+    await exec(`sentry-cli releases list`);
   });
   return itWorked;
 }
 
 async function checkIfVersionExists() {
   const versionAlreadyExists = await doesNotFail(async () => {
-    await exec(
-      `sentry-cli releases --org 'metamask' --project 'metamask' info ${VERSION}`,
-    );
+    await exec(`sentry-cli releases info ${VERSION}`);
   });
   return versionAlreadyExists;
 }
 
 async function checkIfVersionHasArtifacts() {
-  const artifacts = await exec(
-    `sentry-cli releases --org 'metamask' --project 'metamask' files ${VERSION} list`,
-  );
+  const artifacts = await exec(`sentry-cli releases files ${VERSION} list`);
   // When there's no artifacts, we get a response from the shell like this ['', '']
   return artifacts[0] && artifacts[0].length > 0;
 }

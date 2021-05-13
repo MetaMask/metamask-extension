@@ -20,6 +20,9 @@ const metamaskrc = require('rc')('metamask', {
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
   SEGMENT_LEGACY_WRITE_KEY: process.env.SEGMENT_LEGACY_WRITE_KEY,
+  SENTRY_DSN_DEV:
+    process.env.SENTRY_DSN_DEV ||
+    'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496',
 });
 
 const { version } = require('../../package.json');
@@ -431,6 +434,7 @@ function getEnvironmentVariables({ devMode, testing }) {
     PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
     CONF: devMode ? metamaskrc : {},
     SENTRY_DSN: process.env.SENTRY_DSN,
+    SENTRY_DSN_DEV: metamaskrc.SENTRY_DSN_DEV,
     INFURA_PROJECT_ID: testing
       ? '00000000000000000000000000000000'
       : metamaskrc.INFURA_PROJECT_ID,
