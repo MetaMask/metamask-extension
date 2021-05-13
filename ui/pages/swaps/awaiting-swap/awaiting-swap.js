@@ -13,6 +13,8 @@ import {
   getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
   getUSDConversionRate,
+  isHardwareWallet,
+  getHardwareWalletType,
 } from '../../../selectors';
 
 import {
@@ -95,6 +97,8 @@ export default function AwaitingSwap({
     feeinUnformattedFiat = renderableNetworkFees.rawNetworkFees;
   }
 
+  const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const hardwareWalletType = useSelector(getHardwareWalletType);
   const quotesExpiredEvent = useNewMetricEvent({
     event: 'Quotes Timed Out',
     sensitiveProperties: {
@@ -105,6 +109,8 @@ export default function AwaitingSwap({
       slippage: fetchParams?.slippage,
       custom_slippage: fetchParams?.slippage === 2,
       gas_fees: feeinUnformattedFiat,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
     },
     category: 'swaps',
   });
