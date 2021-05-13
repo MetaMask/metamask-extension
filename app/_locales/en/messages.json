@@ -1963,10 +1963,10 @@
     "message": "No quotes available"
   },
   "swapContractDataDisabledErrorDescription": {
-    "message": "In the Ethereum app on your Ledger go to Settings, allow Contract data and then try to swap again"
+    "message": "In the Ethereum app on your Ledger, go to \"Settings\" and allow contract data. Then, try your swap again."
   },
   "swapContractDataDisabledErrorTitle": {
-    "message": "Contract data is not allowed on your Ledger"
+    "message": "Contract data is not enabled on your Ledger"
   },
   "swapRate": {
     "message": "Rate"
