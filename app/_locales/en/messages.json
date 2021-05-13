@@ -1820,6 +1820,12 @@
   "swapConfirmWithHwWallet": {
     "message": "Confirm with your hardware wallet"
   },
+  "swapContractDataDisabledErrorDescription": {
+    "message": "In the Ethereum app on your Ledger, go to \"Settings\" and allow contract data. Then, try your swap again."
+  },
+  "swapContractDataDisabledErrorTitle": {
+    "message": "Contract data is not enabled on your Ledger"
+  },
   "swapCustom": {
     "message": "custom"
   },

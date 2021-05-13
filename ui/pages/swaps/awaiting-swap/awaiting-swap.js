@@ -33,6 +33,7 @@ import {
   SWAP_FAILED_ERROR,
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
+  CONTRACT_DATA_DISABLED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
 } from '../../../../shared/constants/swaps';
@@ -184,6 +185,11 @@ export default function AwaitingSwap({
     descriptionText = t('swapQuotesNotAvailableErrorDescription');
     submitText = t('tryAgain');
     statusImage = <SwapFailureIcon />;
+  } else if (errorKey === CONTRACT_DATA_DISABLED_ERROR) {
+    headerText = t('swapContractDataDisabledErrorTitle');
+    descriptionText = t('swapContractDataDisabledErrorDescription');
+    submitText = t('tryAgain');
+    statusImage = <SwapFailureIcon />;
   } else if (!errorKey && !swapComplete) {
     headerText = t('swapProcessing');
     statusImage = <PulseLoader />;
@@ -283,6 +289,7 @@ AwaitingSwap.propTypes = {
     ERROR_FETCHING_QUOTES,
     QUOTES_NOT_AVAILABLE_ERROR,
     OFFLINE_FOR_MAINTENANCE,
+    CONTRACT_DATA_DISABLED_ERROR,
   ]),
   submittingSwap: PropTypes.bool,
   inputValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),

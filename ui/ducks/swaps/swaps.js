@@ -59,6 +59,7 @@ import {
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
+  CONTRACT_DATA_DISABLED_ERROR,
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../shared/constants/swaps';
@@ -785,7 +786,10 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     try {
       await dispatch(updateAndApproveTx(finalTradeTxMeta, true));
     } catch (e) {
-      await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
+      const errorKey = e.message.includes('EthAppPleaseEnableContractData')
+        ? CONTRACT_DATA_DISABLED_ERROR
+        : SWAP_FAILED_ERROR;
+      await dispatch(setSwapsErrorKey(errorKey));
       history.push(SWAPS_ERROR_ROUTE);
       return;
     }
