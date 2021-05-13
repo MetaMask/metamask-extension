@@ -39,6 +39,8 @@ import {
   getSwapsDefaultToken,
   getCurrentChainId,
   getNativeCurrency,
+  isHardwareWallet,
+  getHardwareWalletType,
 } from '../../../selectors';
 import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util';
 import { getTokens } from '../../../ducks/metamask/metamask';
@@ -330,6 +332,8 @@ export default function ViewQuote() {
     available_quotes: numberOfQuotes,
   };
 
+  const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const hardwareWalletType = useSelector(getHardwareWalletType);
   const allAvailableQuotesOpened = useNewMetricEvent({
     event: 'All Available Quotes Opened',
     category: 'swaps',
@@ -340,6 +344,8 @@ export default function ViewQuote() {
         usedQuote?.aggregator === topQuote?.aggregator
           ? null
           : usedQuote?.aggregator,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
     },
   });
   const quoteDetailsOpened = useNewMetricEvent({
@@ -352,6 +358,8 @@ export default function ViewQuote() {
         usedQuote?.aggregator === topQuote?.aggregator
           ? null
           : usedQuote?.aggregator,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
     },
   });
   const editSpendLimitOpened = useNewMetricEvent({
@@ -362,13 +370,20 @@ export default function ViewQuote() {
       custom_spend_limit_set: originalApproveAmount === approveAmount,
       custom_spend_limit_amount:
         originalApproveAmount === approveAmount ? null : approveAmount,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
     },
   });
 
   const bestQuoteReviewedEvent = useNewMetricEvent({
     event: 'Best Quote Reviewed',
     category: 'swaps',
-    sensitiveProperties: { ...eventObjectBase, network_fees: feeInFiat },
+    sensitiveProperties: {
+      ...eventObjectBase,
+      network_fees: feeInFiat,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
+    },
   });
   useEffect(() => {
     if (

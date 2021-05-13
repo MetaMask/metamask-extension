@@ -545,6 +545,8 @@ export const fetchQuotesAndSetQuoteState = (
             request_type: balanceError ? 'Quote' : 'Order',
             slippage: maxSlippage,
             custom_slippage: maxSlippage !== 2,
+            is_hardware_wallet: hardwareWalletUsed,
+            hardware_wallet_type: hardwareWalletType,
           },
         });
         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
@@ -685,6 +687,8 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       performance_savings: usedQuote.savings?.performance,
       fee_savings: usedQuote.savings?.fee,
       median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: getHardwareWalletType(state),
     };
 
     metaMetricsEvent({
