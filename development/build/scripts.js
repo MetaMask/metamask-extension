@@ -80,11 +80,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   return { dev, test, testDev, prod };
 
   function createTasksForBuildJsExtension({ taskPrefix, devMode, testing }) {
-    const standardEntryPoints = [
-      'background',
-      'ui',
-      'phishing-detect',
-    ];
+    const standardEntryPoints = ['background', 'ui', 'phishing-detect'];
 
     // let extraEntries;
     // if (devMode && label === 'ui') {
@@ -170,7 +166,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     });
   }
 
-  // the "contentscript" bundle contains the "inpage" bundle 
+  // the "contentscript" bundle contains the "inpage" bundle
   function createTaskForBundleContentscript({ devMode, testing }) {
     const inpage = 'inpage';
     const contentscript = 'contentscript';
