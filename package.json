@@ -7,7 +7,6 @@
     "url": "https://github.com/MetaMask/metamask-extension"
   },
   "scripts": {
-    "abc": "node -e 'console.log(Object.entries(process.env).map(([key,val])=>`${key}: ${val}`).join(`\n`))'",
     "setup": "yarn install && yarn setup:postinstall",
     "setup:postinstall": "yarn patch-package && yarn allow-scripts",
     "start": "yarn build:dev dev",
