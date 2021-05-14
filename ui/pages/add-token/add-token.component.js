@@ -259,9 +259,9 @@ class AddToken extends Component {
       chainId,
       null,
       null,
-      { blockExplorerUrl: rpcPrefs.blockExplorerUrl ?? null },
+      { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },
     );
-    const blockExplorerLabel = rpcPrefs.blockExplorerUrl
+    const blockExplorerLabel = rpcPrefs?.blockExplorerUrl
       ? new URL(blockExplorerTokenLink).hostname
       : this.context.t('etherscan');
 
