@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { regularDelayMs, largeDelayMs, withFixtures } = require('../helpers');
+const { withFixtures } = require('../helpers');
 
 describe('Stores custom RPC history', function () {
   const ganacheOptions = {
@@ -27,10 +27,8 @@ describe('Stores custom RPC history', function () {
         const chainId = '0x539'; // Ganache default, decimal 1337
 
         await driver.clickElement('.network-display');
-        await driver.delay(regularDelayMs);
 
         await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
-        await driver.delay(regularDelayMs);
 
         await driver.findElement('.settings-page__sub-header-text');
 
@@ -63,10 +61,8 @@ describe('Stores custom RPC history', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.clickElement('.network-display');
-        await driver.delay(regularDelayMs);
 
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
-        await driver.delay(largeDelayMs * 2);
       },
     );
   });
@@ -84,7 +80,6 @@ describe('Stores custom RPC history', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.clickElement('.network-display');
-        await driver.delay(regularDelayMs);
 
         // only recent 3 are found and in correct order (most recent at the top)
         const customRpcs = await driver.findElements({
@@ -113,10 +108,8 @@ describe('Stores custom RPC history', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.clickElement('.network-display');
-        await driver.delay(regularDelayMs);
 
         await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
-        await driver.delay(regularDelayMs);
 
         // cancel new custom rpc
         await driver.clickElement('.network-form__footer button.btn-default');
@@ -127,10 +120,8 @@ describe('Stores custom RPC history', function () {
         const lastNetworkListItem =
           networkListItems[networkListItems.length - 1];
         await lastNetworkListItem.click();
-        await driver.delay(100);
 
         await driver.clickElement('.btn-danger');
-        await driver.delay(regularDelayMs);
 
         // wait for confirm delete modal to be visible
         const confirmDeleteModal = await driver.findVisibleElement(
