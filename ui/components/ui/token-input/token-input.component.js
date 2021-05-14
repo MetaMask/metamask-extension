@@ -102,13 +102,13 @@ export default class TokenInput extends PureComponent {
     const tokenExchangeRate = tokenExchangeRates?.[token.address] || 0;
     let currency, numberOfDecimals;
 
-    if (hideConversion) {
-      return (
-        <div className="currency-input__conversion-component">
-          {this.context.t('noConversionRateAvailable')}
-        </div>
-      );
-    }
+    // if (hideConversion) {
+    //   return (
+    //     <div className="currency-input__conversion-component">
+    //       {this.context.t('noConversionRateAvailable')}
+    //     </div>
+    //   );
+    // }
 
     if (showFiat) {
       // Display Fiat

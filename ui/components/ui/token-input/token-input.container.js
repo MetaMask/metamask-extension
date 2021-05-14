@@ -12,16 +12,19 @@ const mapStateToProps = (state) => {
   const {
     metamask: { currentCurrency },
   } = state;
-  const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
+  const {
+    showFiatInTestnets,
+    useNativeCurrencyAsPrimaryCurrency,
+  } = getPreferences(state);
   const isMainnet = getIsMainnet(state);
   const conversionRate = getConversionRate(state);
-  const showFiat = !useNativeCurrencyAsPrimaryCurrency && showFiatInTestnets
+  const showFiat = !useNativeCurrencyAsPrimaryCurrency && showFiatInTestnets;
 
   return {
     currentCurrency,
     tokenExchangeRates: getTokenExchangeRates(state),
     hideConversion: (!isMainnet && !showFiatInTestnets) || !conversionRate,
-    showFiat: showFiat,
+    showFiat,
   };
 };
 

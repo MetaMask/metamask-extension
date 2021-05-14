@@ -17,6 +17,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -55,6 +58,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -89,6 +95,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -126,6 +135,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -164,6 +176,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -219,6 +234,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -264,6 +282,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -310,6 +331,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);

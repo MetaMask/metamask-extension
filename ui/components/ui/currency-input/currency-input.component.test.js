@@ -23,6 +23,9 @@ describe('CurrencyInput Component', () => {
           nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -49,6 +52,9 @@ describe('CurrencyInput Component', () => {
           nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -89,6 +95,9 @@ describe('CurrencyInput Component', () => {
           nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -130,6 +139,9 @@ describe('CurrencyInput Component', () => {
           nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
 
@@ -189,6 +201,9 @@ describe('CurrencyInput Component', () => {
           nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -238,6 +253,9 @@ describe('CurrencyInput Component', () => {
           nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -288,6 +306,9 @@ describe('CurrencyInput Component', () => {
           nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -329,6 +350,9 @@ describe('CurrencyInput Component', () => {
           nativeCurrency: 'ETH',
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          preferences: {
+            useNativeCurrencyAsPrimaryCurrency: true,
+          },
         },
       };
       const store = configureMockStore()(mockStore);

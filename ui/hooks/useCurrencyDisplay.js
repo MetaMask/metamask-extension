@@ -55,47 +55,24 @@ export function useCurrencyDisplay(
     ...opts
   },
 ) {
-  
   const currentCurrency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  // const toCurrency = currency || currentCurrency;
-  
-  // first determine which is primary and secondary currency (this probably shouldn't be computed... should raise to state)
-  const primaryCurrency = {
-    currency: useNativeCurrencyAsPrimaryCurrency ? nativeCurrency : currentCurrency,
-    value: useNativeCurrencyAsPrimaryCurrency ? inputValue : null;
-  } 
-  const secondaryCurrency = {
-   currency: useNativeCurrencyAsPrimaryCurrency ? currentCurrency : nativeCurrency;
-   value: useNativeCurrencyAsPrimaryCurrency ? null : inputValue;
-  }
-
+  const toCurrency = currency || currentCurrency;
   const conversionRate = useSelector(getConversionRate);
-  // we can't rely on this conversion rate if nativeCurrency is falsy 
-  // because we use the nativeCurrency symbol for the network to fetch conversion rate
-  const validConversionRate = Boolean(nativeCurrency && conversionRate);
 
-  // const requiresConversion = 
-  if(primaryCurrency.value){
-    secondaryCurrency.value =
-    getValueFromWeiHex({
-      value: inputValue,
-      fromCurrency: nativeCurrency,
-      toCurrency,
-      conversionRate,
-      numberOfDecimals: numberOfDecimals || 2,
-      toDenomination: denomination,
-    });
-  }
+  const requiresConversion =
+    (type === SECONDARY && useNativeCurrencyAsPrimaryCurrency) ||
+    (type === PRIMARY && !useNativeCurrencyAsPrimaryCurrency);
 
   const value = useMemo(() => {
     if (displayValue) {
       return displayValue;
     }
+
     let computedValue;
     switch (true) {
-      case requiresConversion && validConversionRate:
+      case Boolean(requiresConversion && conversionRate):
         computedValue = getValueFromWeiHex({
           value: inputValue,
           fromCurrency: nativeCurrency,
@@ -108,12 +85,12 @@ export function useCurrencyDisplay(
 
       // if this is a secondary/fiat currency and we don't have a valid conversion rate we return null
       // so that we don't show a false or stale conversion rate
-      case requiresConversion && !validConversionRate:
+      case Boolean(requiresConversion && !conversionRate):
         // flip back to primary currency?
         computedValue = null;
         break;
 
-      // if this is a primary currency we don't want to apply a conversion rate so we just convert
+      // if this is native currency we don't want to apply a conversion rate so we just convert
       // from a hex to a dec with a fromDenomination of WEI
       default:
         computedValue = conversionUtil(inputValue, {
@@ -137,8 +114,7 @@ export function useCurrencyDisplay(
     numberOfDecimals,
     denomination,
     toCurrency,
-    type,
-    validConversionRate,
+    requiresConversion,
   ]);
 
   let suffix;
