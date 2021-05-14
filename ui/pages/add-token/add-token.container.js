@@ -2,7 +2,10 @@ import { connect } from 'react-redux';
 
 import { setPendingTokens, clearPendingTokens } from '../../store/actions';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import { getIsMainnet } from '../../selectors/selectors';
+import {
+  getIsMainnet,
+  getRpcPrefsForCurrentProvider,
+} from '../../selectors/selectors';
 import AddToken from './add-token.component';
 
 const mapStateToProps = (state) => {
@@ -21,6 +24,7 @@ const mapStateToProps = (state) => {
     pendingTokens,
     showSearchTab: getIsMainnet(state) || process.env.IN_TEST === 'true',
     chainId,
+    rpcPrefs: getRpcPrefsForCurrentProvider(state),
   };
 };
 

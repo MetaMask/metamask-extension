@@ -36,6 +36,7 @@ class AddToken extends Component {
     showSearchTab: PropTypes.bool.isRequired,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     chainId: PropTypes.string,
+    rpcPrefs: PropTypes.object,
   };
 
   state = {
@@ -252,8 +253,17 @@ class AddToken extends Component {
       decimalAutoFilled,
     } = this.state;
 
-    const { chainId } = this.props;
-    const blockExplorerTokenLink = getTokenTrackerLink(customAddress, chainId);
+    const { chainId, rpcPrefs } = this.props;
+    const blockExplorerTokenLink = getTokenTrackerLink(
+      customAddress,
+      chainId,
+      null,
+      null,
+      { blockExplorerUrl: rpcPrefs.blockExplorerUrl ?? null },
+    );
+    const blockExplorerLabel = rpcPrefs.blockExplorerUrl
+      ? new URL(blockExplorerTokenLink).hostname
+      : this.context.t('etherscan');
 
     return (
       <div className="add-token__custom-token-form">
@@ -329,7 +339,7 @@ class AddToken extends Component {
                       target="_blank"
                       href={blockExplorerTokenLink}
                     >
-                      {this.context.t('etherscan')}
+                      {blockExplorerLabel}
                     </Button>,
                   ])}
                 </Typography>
