@@ -40,10 +40,29 @@ export default function TransactionIcon({ status, category }) {
 
   const Icon = ICON_MAP[category];
 
-  return <Icon color={color} size={28} />;
+  return Icon ? (
+    <Icon color={color} size={28} />
+  ) : (
+    <div className="transaction-icon__grey-circle" />
+  );
 }
 
 TransactionIcon.propTypes = {
-  status: PropTypes.string.isRequired,
-  category: PropTypes.string.isRequired,
+  status: PropTypes.oneOf([
+    TRANSACTION_GROUP_CATEGORIES.APPROVAL,
+    TRANSACTION_GROUP_CATEGORIES.INTERACTION,
+    TRANSACTION_GROUP_CATEGORIES.SEND,
+    TRANSACTION_GROUP_CATEGORIES.SIGNATURE_REQUEST,
+    TRANSACTION_GROUP_CATEGORIES.RECEIVE,
+    TRANSACTION_GROUP_CATEGORIES.SWAP,
+  ]).isRequired,
+  category: PropTypes.oneOf([
+    TRANSACTION_GROUP_STATUSES.PENDING,
+    TRANSACTION_STATUSES.UNAPPROVED,
+    TRANSACTION_STATUSES.APPROVED,
+    TRANSACTION_STATUSES.FAILED,
+    TRANSACTION_STATUSES.REJECTED,
+    TRANSACTION_GROUP_STATUSES.CANCELLED,
+    TRANSACTION_STATUSES.DROPPED,
+  ]).isRequired,
 };
