@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { captureException } from '@sentry/browser';
 import Approve from '../../ui/icon/approve-icon.component';
 import Interaction from '../../ui/icon/interaction-icon.component';
 import Receive from '../../ui/icon/receive-icon.component';
@@ -40,11 +41,17 @@ export default function TransactionIcon({ status, category }) {
 
   const Icon = ICON_MAP[category];
 
-  return Icon ? (
-    <Icon color={color} size={28} />
-  ) : (
-    <div className="transaction-icon__grey-circle" />
-  );
+  if (!Icon) {
+    captureException(
+      Error(
+        `The category prop passed to TransactionIcon is not supported. The prop is: ${category}`,
+      ),
+    );
+
+    return <div className="transaction-icon__grey-circle" />;
+  }
+
+  return <Icon color={color} size={28} />;
 }
 
 TransactionIcon.propTypes = {
