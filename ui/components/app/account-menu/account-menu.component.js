@@ -78,7 +78,6 @@ export default class AccountMenu extends Component {
   };
 
   addressFuse = new Fuse([], {
-    shouldSort: false,
     threshold: 0.45,
     location: 0,
     distance: 100,
