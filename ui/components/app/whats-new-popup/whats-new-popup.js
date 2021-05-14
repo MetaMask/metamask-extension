@@ -1,4 +1,5 @@
 import React, { useContext, useMemo, useRef, useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -10,8 +11,9 @@ import Popover from '../../ui/popover';
 import { updateViewedNotifications } from '../../../store/actions';
 import { getTranslatedUINoficiations } from '../../../../shared/notifications';
 import { getSortedNotificationsToShow } from '../../../selectors';
+import { BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes';
 
-function getActionFunctionById(id) {
+function getActionFunctionById(id, history) {
   const actionFunctions = {
     2: () => {
       global.platform.openTab({
@@ -24,14 +26,18 @@ function getActionFunctionById(id) {
         url: 'https://community.metamask.io/t/about-the-security-category/72',
       });
     },
+    4: () => {
+      updateViewedNotifications({ 4: true });
+      history.push(BUILD_QUOTE_ROUTE);
+    },
   };
 
   return actionFunctions[id];
 }
 
-const renderFirstNotification = (notification, idRefMap) => {
+const renderFirstNotification = (notification, idRefMap, history) => {
   const { id, date, title, description, image, actionText } = notification;
-  const actionFunction = getActionFunctionById(id);
+  const actionFunction = getActionFunctionById(id, history);
   const imageComponent = image && (
     <img
       className="whats-new-popup__notification-image"
@@ -72,10 +78,10 @@ const renderFirstNotification = (notification, idRefMap) => {
   );
 };
 
-const renderSubsequentNotification = (notification, idRefMap) => {
+const renderSubsequentNotification = (notification, idRefMap, history) => {
   const { id, date, title, description, actionText } = notification;
 
-  const actionFunction = getActionFunctionById(id);
+  const actionFunction = getActionFunctionById(id, history);
   return (
     <div
       className={classnames('whats-new-popup__notification')}
@@ -100,6 +106,7 @@ const renderSubsequentNotification = (notification, idRefMap) => {
 
 export default function WhatsNewPopup({ onClose }) {
   const t = useContext(I18nContext);
+  const history = useHistory();
 
   const notifications = useSelector(getSortedNotificationsToShow);
   const locale = useSelector(getCurrentLocale);
@@ -168,8 +175,8 @@ export default function WhatsNewPopup({ onClose }) {
         {notifications.map(({ id }, index) => {
           const notification = getTranslatedUINoficiations(t, locale)[id];
           return index === 0
-            ? renderFirstNotification(notification, idRefMap)
-            : renderSubsequentNotification(notification, idRefMap);
+            ? renderFirstNotification(notification, idRefMap, history)
+            : renderSubsequentNotification(notification, idRefMap, history);
         })}
       </div>
     </Popover>

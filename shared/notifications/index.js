@@ -18,6 +18,14 @@ export const UI_NOTIFICATIONS = {
     id: 3,
     date: '2021-03-08',
   },
+  4: {
+    id: 4,
+    date: '2021-05-11',
+    image: {
+      src: 'images/source-logos-bsc.svg',
+      width: '100%',
+    },
+  },
 };
 
 export const getTranslatedUINoficiations = (t, locale) => {
@@ -47,6 +55,15 @@ export const getTranslatedUINoficiations = (t, locale) => {
       actionText: t('notifications3ActionText'),
       date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[3].date),
+      ),
+    },
+    4: {
+      ...UI_NOTIFICATIONS[4],
+      title: t('notifications4Title'),
+      description: t('notifications4Description'),
+      actionText: t('notifications4ActionText'),
+      date: new Intl.DateTimeFormat(locale).format(
+        new Date(UI_NOTIFICATIONS[4].date),
       ),
     },
   };
