@@ -34,7 +34,6 @@ const metamaskrc = require('rc')('metamask', {
 
 const { streamFlatMap } = require('../stream-flat-map.js');
 const baseManifest = require('../../app/manifest/_base.json');
-const packageJSON = require('../../package.json');
 const {
   createTask,
   composeParallel,
@@ -43,17 +42,6 @@ const {
 } = require('./task');
 
 module.exports = createScriptTasks;
-
-const dependencies = Object.keys(
-  (packageJSON && packageJSON.dependencies) || {},
-);
-const materialUIDependencies = ['@material-ui/core'];
-const reactDepenendencies = dependencies.filter((dep) => dep.match(/react/u));
-
-const externalDependenciesMap = {
-  background: ['3box', '@ethereumjs/common', 'unicode-confusables'],
-  ui: [...materialUIDependencies, ...reactDepenendencies],
-};
 
 function createScriptTasks({ browserPlatforms, livereload }) {
   // internal tasks
@@ -178,9 +166,6 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         label: inpage,
         entryFilepath: `./app/scripts/${inpage}.js`,
         destFilepath: `${inpage}.js`,
-        externalDependencies: devMode
-          ? undefined
-          : externalDependenciesMap[inpage],
         devMode,
         testing,
         browserPlatforms,
@@ -189,9 +174,6 @@ function createScriptTasks({ browserPlatforms, livereload }) {
         label: contentscript,
         entryFilepath: `./app/scripts/${contentscript}.js`,
         destFilepath: `${contentscript}.js`,
-        externalDependencies: devMode
-          ? undefined
-          : externalDependenciesMap[contentscript],
         devMode,
         testing,
         browserPlatforms,
@@ -270,9 +252,7 @@ function createFactoredBuild({
     });
 
     // wait for bundle completion for postprocessing
-    console.log('settings up bundleDone');
     events.on('bundleDone', () => {
-      console.log('ding bundleDone', sizeGroupMap);
       const commonSet = sizeGroupMap.get('common');
       // create entry points for each file
       for (const [groupLabel, groupSet] of sizeGroupMap.entries()) {
@@ -282,7 +262,12 @@ function createFactoredBuild({
         switch (groupLabel) {
           case 'ui': {
             renderHtmlFile('popup', groupSet, commonSet, browserPlatforms);
-            renderHtmlFile('notification', groupSet, commonSet, browserPlatforms);
+            renderHtmlFile(
+              'notification',
+              groupSet,
+              commonSet,
+              browserPlatforms,
+            );
             renderHtmlFile('home', groupSet, commonSet, browserPlatforms);
             break;
           }
@@ -310,7 +295,6 @@ function createNormalBundle({
   entryFilepath,
   extraEntries = [],
   modulesToExpose,
-  externalDependencies,
   devMode,
   testing,
   browserPlatforms,
@@ -340,14 +324,6 @@ function createNormalBundle({
 
     if (modulesToExpose) {
       bundlerOpts.require = bundlerOpts.require.concat(modulesToExpose);
-    }
-
-    if (externalDependencies) {
-      // there doesnt seem to be a standard bify option for this
-      // so we'll put it here but manually call it after bundle
-      bundlerOpts.manualExternal = bundlerOpts.manualExternal.concat(
-        externalDependencies,
-      );
     }
 
     // instrument pipeline
@@ -478,9 +454,7 @@ async function bundleIt(buildConfiguration) {
   // forward update event (used by watchify)
   bundler.on('update', () => performBundle());
 
-  console.log('bundle it before');
   await performBundle();
-  console.log('bundle it after');
 
   async function performBundle() {
     // this pipeline is created for every bundle
@@ -507,13 +481,10 @@ async function bundleIt(buildConfiguration) {
     // nothing will consume pipeline, so let it flow
     pipeline.resume();
 
-    console.log('before pipeline done');
     await endOfStream(pipeline);
-    console.log('after pipeline done');
 
     // call the completion event to handle any post-processing
     events.emit('bundleDone');
-    console.log('after emit');
   }
 }
 
@@ -577,19 +548,18 @@ function getEnvironment({ devMode, testing }) {
 }
 
 function renderHtmlFile(htmlName, groupSet, commonSet, browserPlatforms) {
-  // groupLabel === 'phishing-detect' ? 'phishing' : groupLabel
   const htmlFilePath = `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
   const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
     (label) => `./${label}.js`,
   );
   const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles });
-  browserPlatforms.forEach(platform => {
+  browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm
     writeFileSync(dest, htmlOutput);
     console.log(`wrote html to "${dest}"`);
-  })
+  });
 }
 
 function beep() {
