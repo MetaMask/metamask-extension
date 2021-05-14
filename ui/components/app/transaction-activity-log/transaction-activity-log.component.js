@@ -35,16 +35,17 @@ export default class TransactionActivityLog extends PureComponent {
     const { rpcPrefs } = this.props;
     const etherscanUrl = getBlockExplorerLink(activity, rpcPrefs);
 
-    if (rpcPrefs.blockExplorerUrl) {
-      this.context.trackEvent({
-        category: 'Transaction',
-        event: 'Clicked Custom Block Explorer Link',
-        properties: {
-          custom_network_url: rpcPrefs.blockExplorerUrl,
-          link_type: 'Transaction Block Explorer',
-        },
-      });
-    }
+    this.context.trackEvent({
+      category: 'Transactions',
+      event: 'Clicked Block Explorer Link',
+      properties: {
+        link_type: 'Transaction Block Explorer',
+        action: 'Activity Details',
+        block_explorer_domain: etherscanUrl
+          ? new URL(etherscanUrl)?.hostname
+          : '',
+      },
+    });
 
     global.platform.openTab({ url: etherscanUrl });
   };

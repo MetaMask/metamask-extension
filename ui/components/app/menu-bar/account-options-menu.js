@@ -30,6 +30,8 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const selectedIdentity = useSelector(getSelectedIdentity);
+  const { address } = selectedIdentity;
+  const addressLink = getAccountLink(address, chainId, rpcPrefs);
 
   const openFullscreenEvent = useMetricEvent({
     eventOpts: {
@@ -45,13 +47,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
       name: 'Viewed Account Details',
     },
   });
-  const viewOnEtherscanEvent = useMetricEvent({
-    eventOpts: {
-      category: 'Navigation',
-      action: 'Account Options',
-      name: 'Clicked View on Etherscan',
-    },
-  });
+
   const openConnectedSitesEvent = useMetricEvent({
     eventOpts: {
       category: 'Navigation',
@@ -60,16 +56,16 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
     },
   });
 
-  const customBlockExplorerLinkClickedEvent = useNewMetricEvent({
+  const blockExplorerLinkClickedEvent = useNewMetricEvent({
     category: 'Navigation',
-    event: 'Clicked Custom Block Explorer Link',
+    event: 'Clicked Block Explorer Link',
     properties: {
-      custom_network_url: rpcPrefs.blockExplorerUrl,
       link_type: 'Account Tracker',
+      action: 'Account Options',
+      block_explorer_domain: addressLink ? new URL(addressLink)?.hostname : '',
     },
   });
 
-  const { address } = selectedIdentity;
   const isRemovable = keyring.type !== 'HD Key Tree';
 
   return (
@@ -103,12 +99,9 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
       </MenuItem>
       <MenuItem
         onClick={() => {
-          viewOnEtherscanEvent();
-          if (rpcPrefs.blockExplorerUrl) {
-            customBlockExplorerLinkClickedEvent();
-          }
+          blockExplorerLinkClickedEvent();
           global.platform.openTab({
-            url: getAccountLink(address, chainId, rpcPrefs),
+            url: addressLink,
           });
           onClose();
         }}

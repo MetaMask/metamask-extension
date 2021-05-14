@@ -48,32 +48,28 @@ export default class TransactionListItemDetails extends PureComponent {
     justCopied: false,
   };
 
-  handleEtherscanClick = () => {
+  handleBlockExplorerClick = () => {
     const {
       transactionGroup: { primaryTransaction },
       rpcPrefs,
     } = this.props;
+    const blockExplorerLink = getBlockExplorerLink(
+      primaryTransaction,
+      rpcPrefs,
+    );
 
-    if (rpcPrefs.blockExplorerUrl) {
-      this.context.trackEvent({
-        category: 'Transaction',
-        event: 'Clicked Custom Block Explorer Link',
-        properties: {
-          custom_network_url: rpcPrefs.blockExplorerUrl,
-          link_type: 'Transaction Block Explorer',
-        },
-      });
-    } else {
-      this.context.trackEvent({
-        eventOpts: {
-          category: 'Transaction',
-          event: 'Clicked View on Etherscan',
-        },
-      });
-    }
+    this.context.trackEvent({
+      category: 'Transactions',
+      event: 'Clicked Block Explorer Link',
+      properties: {
+        link_type: 'Transaction Block Explorer',
+        action: 'Transaction Details',
+        block_explorer_domain: blockExplorerLink ? new URL(blockExplorerLink)?.hostname : '',
+      },
+    });
 
     global.platform.openTab({
-      url: getBlockExplorerLink(primaryTransaction, rpcPrefs),
+      url: blockExplorerLink,
     });
   };
 
@@ -214,7 +210,7 @@ export default class TransactionListItemDetails extends PureComponent {
               >
                 <Button
                   type="raised"
-                  onClick={this.handleEtherscanClick}
+                  onClick={this.handleBlockExplorerClick}
                   disabled={!hash}
                 >
                   <img src="/images/arrow-popout.svg" alt="" />

@@ -27,13 +27,15 @@ export default function NativeAsset({ nativeCurrency }) {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const address = useSelector(getSelectedAddress);
   const history = useHistory();
+  const accountLink = getAccountLink(address, chainId, rpcPrefs);
 
-  const customBlockExplorerLinkClickedEvent = useNewMetricEvent({
+  const blockExplorerLinkClickedEvent = useNewMetricEvent({
     category: 'Navigation',
-    event: 'Clicked Custom Block Explorer Link',
+    event: 'Clicked Block Explorer Link',
     properties: {
-      custom_network_url: rpcPrefs.blockExplorerUrl,
       link_type: 'Account Tracker',
+      action: 'Asset Options',
+      block_explorer_domain: accountLink ? new URL(accountLink)?.hostname : '',
     },
   });
 
@@ -47,12 +49,10 @@ export default function NativeAsset({ nativeCurrency }) {
         optionsButton={
           <AssetOptions
             isNativeAsset
-            onViewEtherscan={() => {
-              if (rpcPrefs.blockExplorerUrl) {
-                customBlockExplorerLinkClickedEvent();
-              }
+            onClickBlockExplorer={() => {
+              blockExplorerLinkClickedEvent();
               global.platform.openTab({
-                url: getAccountLink(address, chainId, rpcPrefs),
+                url: accountLink,
               });
             }}
             onViewAccountDetails={() => {

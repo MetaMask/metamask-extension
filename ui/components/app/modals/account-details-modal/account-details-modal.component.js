@@ -63,19 +63,20 @@ export default class AccountDetailsModal extends Component {
           type="secondary"
           className="account-details-modal__button"
           onClick={() => {
-            // if this link has a custom network url as its base we raise a MetaMetrics event
-            if (rpcPrefs.blockExplorerUrl) {
-              this.context.trackEvent({
-                category: 'Navigation',
-                event: 'Clicked Custom Block Explorer Link',
-                properties: {
-                  custom_network_url: rpcPrefs.blockExplorerUrl,
-                  link_type: 'Account Tracker',
-                },
-              });
-            }
+            const accountLink = getAccountLink(address, chainId, rpcPrefs);
+            this.context.trackEvent({
+              category: 'Navigation',
+              event: 'Clicked Block Explorer Link',
+              properties: {
+                link_type: 'Account Tracker',
+                action: 'Account Details Modal',
+                block_explorer_domain: accountLink
+                  ? new URL(accountLink)?.hostname
+                  : '',
+              },
+            });
             global.platform.openTab({
-              url: getAccountLink(address, chainId, rpcPrefs),
+              url: accountLink,
             });
           }}
         >

@@ -31,7 +31,7 @@ export default class ConfirmRemoveAccount extends Component {
 
   renderSelectedAccount() {
     const { t } = this.context;
-    const { identity, rpcPrefs } = this.props;
+    const { identity, rpcPrefs, chainId } = this.props;
     return (
       <div className="confirm-remove-account__account">
         <div className="confirm-remove-account__account__identicon">
@@ -55,22 +55,24 @@ export default class ConfirmRemoveAccount extends Component {
           <a
             className=""
             onClick={() => {
-              if (rpcPrefs.blockExplorerUrl) {
-                this.context.trackEvent({
-                  category: 'Navigation',
-                  event: 'Clicked Custom Block Explorer Link',
-                  properties: {
-                    custom_network_url: rpcPrefs.blockExplorerUrl,
-                    link_type: 'Account Tracker',
-                  },
-                });
-              }
+              const accountLink = getAccountLink(
+                identity.address,
+                chainId,
+                rpcPrefs,
+              );
+              this.context.trackEvent({
+                category: 'Accounts',
+                event: 'Clicked Block Explorer Link',
+                properties: {
+                  link_type: 'Account Tracker',
+                  action: 'Remove Account',
+                  block_explorer_domain: accountLink
+                    ? new URL(accountLink)?.hostname
+                    : '',
+                },
+              });
               global.platform.openTab({
-                url: getAccountLink(
-                  identity.address,
-                  this.props.chainId,
-                  rpcPrefs,
-                ),
+                url: accountLink,
               });
             }}
             target="_blank"

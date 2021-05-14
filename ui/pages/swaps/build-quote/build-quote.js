@@ -238,12 +238,15 @@ export default function BuildQuote({
     ? new URL(blockExplorerTokenLink).hostname
     : t('etherscan');
 
-  const customBlockExplorerLinkClickedEvent = useNewMetricEvent({
+  const blockExplorerLinkClickedEvent = useNewMetricEvent({
     category: 'Swaps',
-    event: 'Clicked Custom Block Explorer Link',
+    event: 'Clicked Block Explorer Link',
     properties: {
-      custom_network_url: rpcPrefs.blockExplorerUrl,
       link_type: 'Token Tracker',
+      action: 'Swaps Confirmation',
+      block_explorer_domain: blockExplorerTokenLink
+        ? new URL(blockExplorerTokenLink)?.hostname
+        : '',
     },
   });
 
@@ -450,10 +453,7 @@ export default function BuildQuote({
                           className="build-quote__token-etherscan-link build-quote__underline"
                           key="build-quote-etherscan-link"
                           onClick={() => {
-                            // if this link has a custom network url as its base we raise a MetaMetrics event
-                            if (rpcPrefs.blockExplorerUrl) {
-                              customBlockExplorerLinkClickedEvent();
-                            }
+                            blockExplorerLinkClickedEvent();
                             global.platform.openTab({
                               url: blockExplorerTokenLink,
                             });
@@ -497,9 +497,7 @@ export default function BuildQuote({
                       className="build-quote__token-etherscan-link"
                       key="build-quote-etherscan-link"
                       onClick={() => {
-                        if (rpcPrefs.blockExplorerUrl) {
-                          customBlockExplorerLinkClickedEvent();
-                        }
+                        blockExplorerLinkClickedEvent();
                         global.platform.openTab({
                           url: blockExplorerTokenLink,
                         });

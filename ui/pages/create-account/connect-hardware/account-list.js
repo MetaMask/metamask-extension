@@ -84,7 +84,7 @@ class AccountList extends Component {
   }
 
   renderAccounts() {
-    const { accounts, connectedAccounts, rpcPrefs } = this.props;
+    const { accounts, connectedAccounts, rpcPrefs, chainId } = this.props;
 
     return (
       <div className="hw-account-list">
@@ -132,23 +132,24 @@ class AccountList extends Component {
               <a
                 className="hw-account-list__item__link"
                 onClick={() => {
-                  // not sure if this trackevent makes any sense in this context
-                  if (rpcPrefs.blockExplorerUrl) {
-                    this.context.trackEvent({
-                      category: 'Hardware Connect',
-                      event: 'Clicked Custom Block Explorer Link',
-                      properties: {
-                        custom_network_url: rpcPrefs.blockExplorerUrl,
-                        link_type: 'Account Tracker',
-                      },
-                    });
-                  }
+                  const accountLink = getAccountLink(
+                    account.address,
+                    chainId,
+                    rpcPrefs,
+                  );
+                  this.context.trackEvent({
+                    category: 'Account',
+                    event: 'Clicked Block Explorer Link',
+                    properties: {
+                      actions: 'Hardware Connect',
+                      link_type: 'Account Tracker',
+                      block_explorer_domain: accountLink
+                        ? new URL(accountLink)?.hostname
+                        : '',
+                    },
+                  });
                   global.platform.openTab({
-                    url: getAccountLink(
-                      account.address,
-                      this.props.chainId,
-                      this.props.rpcPrefs,
-                    ),
+                    url: accountLink,
                   });
                 }}
                 target="_blank"

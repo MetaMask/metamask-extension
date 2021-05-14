@@ -25,13 +25,23 @@ export default function TokenAsset({ token }) {
   const selectedAccountName = selectedIdentity.name;
   const selectedAddress = selectedIdentity.address;
   const history = useHistory();
+  const tokenTrackerLink = getTokenTrackerLink(
+    token.address,
+    chainId,
+    null,
+    selectedAddress,
+    rpcPrefs,
+  );
 
-  const customBlockExplorerLinkClickedEvent = useNewMetricEvent({
+  const blockExplorerLinkClickedEvent = useNewMetricEvent({
     category: 'Navigation',
-    event: 'Clicked Custom Block Explorer Link',
+    event: 'Clicked Block Explorer Link',
     properties: {
-      custom_network_url: rpcPrefs.blockExplorerUrl,
       link_type: 'Token Tracker',
+      action: 'Token Options',
+      block_explorer_domain: tokenTrackerLink
+        ? new URL(tokenTrackerLink)?.hostname
+        : '',
     },
   });
 
@@ -47,19 +57,9 @@ export default function TokenAsset({ token }) {
               dispatch(showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token }))
             }
             isEthNetwork={!rpcPrefs.blockExplorerUrl}
-            onViewEtherscan={() => {
-              const url = getTokenTrackerLink(
-                token.address,
-                chainId,
-                null,
-                selectedAddress,
-                rpcPrefs,
-              );
-              // if this link has a custom network url as its base we raise a MetaMetrics event
-              if (rpcPrefs.blockExplorerUrl) {
-                customBlockExplorerLinkClickedEvent();
-              }
-              global.platform.openTab({ url });
+            onClickBlockExplorer={() => {
+              blockExplorerLinkClickedEvent();
+              global.platform.openTab({ url: tokenTrackerLink });
             }}
             onViewAccountDetails={() => {
               dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));

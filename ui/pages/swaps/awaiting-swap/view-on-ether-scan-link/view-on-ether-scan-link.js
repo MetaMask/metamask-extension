@@ -11,12 +11,15 @@ export default function ViewOnEtherScanLink({
 }) {
   const t = useContext(I18nContext);
 
-  const customBlockExplorerLinkClickedEvent = useNewMetricEvent({
+  const blockExplorerLinkClickedEvent = useNewMetricEvent({
     category: 'Swaps',
-    event: 'Clicked Custom Block Explorer Link',
+    event: 'Clicked Block Explorer Link',
     properties: {
-      custom_network_url: blockExplorerUrl,
       link_type: 'Transaction Block Explorer',
+      action: 'Swap Transaction',
+      block_explorer_domain: blockExplorerUrl
+        ? new URL(blockExplorerUrl)?.hostname
+        : '',
     },
   });
 
@@ -27,9 +30,7 @@ export default function ViewOnEtherScanLink({
         'awaiting-swap__view-on-etherscan--invisible': !txHash,
       })}
       onClick={() => {
-        if (isCustomBlockExplorerUrl) {
-          customBlockExplorerLinkClickedEvent();
-        }
+        blockExplorerLinkClickedEvent();
         global.platform.openTab({ url: blockExplorerUrl });
       }}
     >
