@@ -3,6 +3,7 @@ import { createSelector } from 'reselect';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   MAINNET_CHAIN_ID,
+  BSC_CHAIN_ID,
   TEST_CHAINS,
   NETWORK_TYPE_RPC,
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
@@ -517,6 +518,21 @@ export function getShowWhatsNewPopup(state) {
 }
 
 /**
+ * Get an object of notification IDs and if they are allowed or not.
+ * @param {Object} state
+ * @returns {Object}
+ */
+function getAllowedNotificationIds(state) {
+  return {
+    1: true,
+    2: true,
+    3: true,
+    4: getCurrentChainId(state) === BSC_CHAIN_ID,
+    6: true,
+  };
+}
+
+/**
  * @typedef {Object} Notification
  * @property {number} id - A unique identifier for the notification
  * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
@@ -536,8 +552,10 @@ export function getShowWhatsNewPopup(state) {
 
 export function getSortedNotificationsToShow(state) {
   const notifications = Object.values(state.metamask.notifications);
+  const allowedNotificationIds = getAllowedNotificationIds(state);
   const notificationsToShow = notifications.filter(
-    (notification) => !notification.isShown,
+    (notification) =>
+      !notification.isShown && allowedNotificationIds[notification.id],
   );
   const notificationsSortedByDate = notificationsToShow.sort(
     (a, b) => new Date(b.date) - new Date(a.date),

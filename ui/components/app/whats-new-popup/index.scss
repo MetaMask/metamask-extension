@@ -25,6 +25,12 @@
     }
   }
 
+  &__notification {
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
   &__notification-image {
     align-self: center;
     margin-bottom: 16px;
