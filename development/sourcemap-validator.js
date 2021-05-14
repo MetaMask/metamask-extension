@@ -113,13 +113,15 @@ async function validateSourcemapForFile({ buildName }) {
       // warn if source content is missing
       if (!result.source) {
         valid = false;
-        const location = { start: { line: position.line, column: position.column + 1 } }
+        const location = {
+          start: { line: position.line, column: position.column + 1 },
+        };
         const codeSample = codeFrameColumns(rawBuild, location, {
           message: `missing source for position`,
           highlightCode: true,
-        })
+        });
         console.error(
-          `missing source for position, in bundle "${buildName}"\n${codeSample}`
+          `missing source for position, in bundle "${buildName}"\n${codeSample}`,
         );
         return;
       }
@@ -131,11 +133,13 @@ async function validateSourcemapForFile({ buildName }) {
       const foundValidSource = portion.includes(targetString);
       if (!foundValidSource) {
         valid = false;
-        const location = { start: { line: result.line + 1, column: result.column + 1 } }
+        const location = {
+          start: { line: result.line + 1, column: result.column + 1 },
+        };
         const codeSample = codeFrameColumns(sourceContent, location, {
           message: `expected to see ${JSON.stringify(targetString)}`,
           highlightCode: true,
-        })
+        });
         console.error(
           `Sourcemap seems invalid, ${result.source}\n${codeSample}`,
         );
@@ -144,27 +148,6 @@ async function validateSourcemapForFile({ buildName }) {
   });
   console.log(`  checked ${sampleCount} samples`);
   return valid;
-}
-
-const CODE_FENCE_LENGTH = 80;
-const TITLE_PADDING_LENGTH = 1;
-
-function getFencedCode(filename, code) {
-  const title = `${' '.repeat(TITLE_PADDING_LENGTH)}${filename}${' '.repeat(
-    TITLE_PADDING_LENGTH,
-  )}`;
-  const openingFenceLength = Math.max(
-    CODE_FENCE_LENGTH - (filename.length + TITLE_PADDING_LENGTH * 2),
-    0,
-  );
-  const startOpeningFenceLength = Math.floor(openingFenceLength / 2);
-  const endOpeningFenceLength = Math.ceil(openingFenceLength / 2);
-  const openingFence = `${'='.repeat(
-    startOpeningFenceLength,
-  )}${title}${'='.repeat(endOpeningFenceLength)}`;
-  const closingFence = '='.repeat(CODE_FENCE_LENGTH);
-
-  return `${openingFence}\n${code}\n${closingFence}\n`;
 }
 
 function indicesOf(substring, string) {
