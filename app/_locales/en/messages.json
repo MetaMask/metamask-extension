@@ -1082,9 +1082,6 @@
   "metametricsCommitmentsIntro": {
     "message": "MetaMask will.."
   },
-  "metametricsCommitmentsMaintainAggregate": {
-    "message": "Maintain a public aggregate dashboard to educate the community"
-  },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 collect your full IP address",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"

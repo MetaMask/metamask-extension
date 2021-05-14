@@ -50,12 +50,6 @@ export default class MetaMetricsOptInModal extends Component {
                     {t('metametricsCommitmentsSendAnonymizedEvents')}
                   </div>
                 </div>
-                <div className="metametrics-opt-in__row">
-                  <i className="fa fa-check" />
-                  <div className="metametrics-opt-in__row-description">
-                    {t('metametricsCommitmentsMaintainAggregate')}
-                  </div>
-                </div>
                 <div className="metametrics-opt-in__row metametrics-opt-in__break-row">
                   <i className="fa fa-times" />
                   <div className="metametrics-opt-in__row-description">
