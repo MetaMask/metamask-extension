@@ -29,6 +29,7 @@ export default class ConfirmRemoveAccount extends Component {
   };
 
   renderSelectedAccount() {
+    const { t } = this.context;
     const { identity } = this.props;
     return (
       <div className="confirm-remove-account__account">
@@ -36,12 +37,14 @@ export default class ConfirmRemoveAccount extends Component {
           <Identicon address={identity.address} diameter={32} />
         </div>
         <div className="confirm-remove-account__account__name">
-          <span className="confirm-remove-account__account__label">Name</span>
+          <span className="confirm-remove-account__account__label">
+            {t('name')}
+          </span>
           <span className="account_value">{identity.name}</span>
         </div>
         <div className="confirm-remove-account__account__address">
           <span className="confirm-remove-account__account__label">
-            Public Address
+            {t('publicAddress')}
           </span>
           <span className="account_value">
             {addressSummary(identity.address, 4, 4)}
@@ -57,12 +60,9 @@ export default class ConfirmRemoveAccount extends Component {
             )}
             target="_blank"
             rel="noopener noreferrer"
-            title={this.context.t('etherscanView')}
+            title={t('etherscanView')}
           >
-            <img
-              src="images/popout.svg"
-              alt={this.context.t('etherscanView')}
-            />
+            <img src="images/popout.svg" alt={t('etherscanView')} />
           </a>
         </div>
       </div>

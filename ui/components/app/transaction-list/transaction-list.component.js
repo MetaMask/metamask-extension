@@ -159,7 +159,7 @@ export default function TransactionList({
               rounded
               onClick={viewMore}
             >
-              View More
+              {t('viewMore')}
             </Button>
           )}
         </div>
