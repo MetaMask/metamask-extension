@@ -562,6 +562,9 @@
   "dismissReminderField": {
     "message": "Dismiss recovery phrase backup reminder"
   },
+  "domain": {
+    "message": "Domain"
+  },
   "done": {
     "message": "Done"
   },
@@ -1117,6 +1120,9 @@
   "myAccounts": {
     "message": "My Accounts"
   },
+  "name": {
+    "message": "Name"
+  },
   "needEtherInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
   },
@@ -1399,6 +1405,9 @@
   },
   "provide": {
     "message": "Provide"
+  },
+  "publicAddress": {
+    "message": "Public Address"
   },
   "queue": {
     "message": "Queue"
@@ -2339,6 +2348,9 @@
   },
   "viewContact": {
     "message": "View Contact"
+  },
+  "viewMore": {
+    "message": "View More"
   },
   "viewOnCustomBlockExplorer": {
     "message": "View at $1"
