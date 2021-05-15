@@ -69,7 +69,7 @@ export default class MetaMetricsOptInModal extends Component {
                     {t('metametricsCommitmentsNeverCollectIP', [
                       <span
                         className="metametrics-opt-in__bold"
-                        key="neverCollectKeys"
+                        key="neverCollectIP"
                       >
                         {t('metametricsCommitmentsBoldNever')}
                       </span>,
@@ -82,7 +82,7 @@ export default class MetaMetricsOptInModal extends Component {
                     {t('metametricsCommitmentsNeverSellDataForProfit', [
                       <span
                         className="metametrics-opt-in__bold"
-                        key="neverCollectKeys"
+                        key="neverSellData"
                       >
                         {t('metametricsCommitmentsBoldNever')}
                       </span>,
