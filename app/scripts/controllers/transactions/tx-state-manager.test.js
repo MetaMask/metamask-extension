@@ -706,6 +706,56 @@ describe('TransactionStateManager', function () {
         'first tx should be dropped',
       );
       assert.equal(
+        result[0].txParams.nonce,
+        '0x4',
+        'the first tx should be from the second group',
+      );
+      assert.equal(
+        result[1].type,
+        TRANSACTION_TYPES.CANCEL,
+        'second transaction should be a cancel',
+      );
+      assert.equal(
+        result[1].txParams.nonce,
+        '0x4',
+        'the second tx should be from the second group',
+      );
+    });
+
+    it('does not cut off entire groups of transactions when adding new transaction when under limit', function () {
+      // In this test case the earliest two transactions are a dropped attempted ether send and a
+      // following cancel transaction with the same nonce. Then, a bit later the same scenario on a
+      // different network. None of these should be dropped because we haven't yet reached the limit
+      const txs = generateTransactions(9, {
+        chainId: (i) => ([0, 1, 4, 5].includes(i) ? currentChainId : '0x1'),
+        to: VALID_ADDRESS,
+        from: VALID_ADDRESS_TWO,
+        nonce: (i) => {
+          if (i === 1) return '0';
+          else if (i === 5) return '4';
+          return `${i}`;
+        },
+        status: (i) =>
+          i === 0 || i === 4
+            ? TRANSACTION_STATUSES.DROPPED
+            : TRANSACTION_STATUSES.CONFIRMED,
+        type: (i) =>
+          i === 1 || i === 5
+            ? TRANSACTION_TYPES.CANCEL
+            : TRANSACTION_STATUSES.SENT_ETHER,
+      });
+      txs.forEach((tx) => txStateManager.addTransaction(tx));
+      const result = txStateManager.getTransactions({
+        filterToCurrentNetwork: false,
+      });
+      assert.equal(result.length, 9, `all nine transactions should be present`);
+      assert.equal(result[0].id, 0, 'first tx should be present');
+      assert.equal(
+        result[0].status,
+        TRANSACTION_STATUSES.DROPPED,
+        'first tx should be dropped',
+      );
+      assert.equal(
         result[1].type,
         TRANSACTION_TYPES.CANCEL,
         'second transaction should be a cancel',
