@@ -101,12 +101,12 @@ const QUOTE_VALIDATORS = [
   {
     property: 'sourceToken',
     type: 'string',
-    validator: isValidHexAddress,
+    validator: (input) => isValidHexAddress(input, { allowNonPrefixed: false }),
   },
   {
     property: 'destinationToken',
     type: 'string',
-    validator: isValidHexAddress,
+    validator: (input) => isValidHexAddress(input, { allowNonPrefixed: false }),
   },
   {
     property: 'aggregator',
@@ -146,7 +146,7 @@ const TOKEN_VALIDATORS = [
   {
     property: 'address',
     type: 'string',
-    validator: isValidHexAddress,
+    validator: (input) => isValidHexAddress(input, { allowNonPrefixed: false }),
   },
   {
     property: 'symbol',

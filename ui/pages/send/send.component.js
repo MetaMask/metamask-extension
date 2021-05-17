@@ -171,7 +171,7 @@ export default class SendTransactionScreen extends Component {
     if (qrCodeData) {
       if (qrCodeData.type === 'address') {
         scannedAddress = qrCodeData.values.address.toLowerCase();
-        if (isValidHexAddress(scannedAddress)) {
+        if (isValidHexAddress(scannedAddress, { allowNonPrefixed: false })) {
           const currentAddress = prevTo?.toLowerCase();
           if (currentAddress !== scannedAddress) {
             updateSendTo(scannedAddress);
