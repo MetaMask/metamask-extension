@@ -13,11 +13,7 @@ import {
   ALLOWED_SWAPS_CHAIN_IDS,
 } from '../../../shared/constants/swaps';
 
-import {
-  shortenAddress,
-  checksumAddress,
-  getAccountByAddress,
-} from '../helpers/utils/util';
+import { shortenAddress, getAccountByAddress } from '../helpers/utils/util';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -25,6 +21,7 @@ import {
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { getNativeCurrency } from './send';
 
 /**
@@ -241,7 +238,7 @@ export function getAddressBook(state) {
 export function getAddressBookEntry(state, address) {
   const addressBook = getAddressBook(state);
   const entry = addressBook.find(
-    (contact) => contact.address === checksumAddress(address),
+    (contact) => contact.address === toChecksumHexAddress(address),
   );
   return entry;
 }

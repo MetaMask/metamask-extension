@@ -1,7 +1,8 @@
 import contractMap from '@metamask/contract-metadata';
-import { isHexString, addHexPrefix } from 'ethereumjs-util';
-import { isValidHexAddress } from '../../shared/modules/hexstring-utils';
-import { checksumAddress } from '../app/helpers/utils/util';
+import {
+  isValidHexAddress,
+  toChecksumHexAddress,
+} from '../../shared/modules/hexstring-utils';
 
 let iconFactory;
 
@@ -18,11 +19,7 @@ function IconFactory(jazzicon) {
 }
 
 IconFactory.prototype.iconForAddress = function (address, diameter) {
-  let addr = address;
-
-  if (isHexString(addHexPrefix(address))) {
-    addr = checksumAddress(addHexPrefix(address));
-  }
+  const addr = toChecksumHexAddress(address);
 
   if (iconExistsFor(addr)) {
     return imageElFor(addr);

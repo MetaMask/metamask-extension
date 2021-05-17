@@ -2,11 +2,11 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { getAddressBookEntry } from '../../../../selectors';
-import { checksumAddress } from '../../../../helpers/utils/util';
 import {
   CONTACT_EDIT_ROUTE,
   CONTACT_LIST_ROUTE,
 } from '../../../../helpers/constants/routes';
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import ViewContact from './view-contact.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -25,7 +25,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     name,
     address: contact ? address : null,
-    checkSummedAddress: checksumAddress(address),
+    checkSummedAddress: toChecksumHexAddress(address),
     memo,
     editRoute: CONTACT_EDIT_ROUTE,
     listRoute: CONTACT_LIST_ROUTE,

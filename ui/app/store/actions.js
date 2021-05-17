@@ -3,7 +3,6 @@ import pify from 'pify';
 import log from 'loglevel';
 import { capitalize } from 'lodash';
 import getBuyEthUrl from '../../../app/scripts/lib/buy-eth-url';
-import { checksumAddress } from '../helpers/utils/util';
 import { calcTokenBalance, estimateGasForSend } from '../pages/send/send.utils';
 import {
   fetchLocale,
@@ -27,6 +26,7 @@ import {
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -1729,7 +1729,7 @@ export function addToAddressBook(recipient, nickname = '', memo = '') {
     let set;
     try {
       set = await promisifiedBackground.setAddressBook(
-        checksumAddress(recipient),
+        toChecksumHexAddress(recipient),
         nickname,
         chainId,
         memo,
@@ -1755,7 +1755,7 @@ export function removeFromAddressBook(chainId, addressToRemove) {
   return async () => {
     await promisifiedBackground.removeFromAddressBook(
       chainId,
-      checksumAddress(addressToRemove),
+      toChecksumHexAddress(addressToRemove),
     );
   };
 }

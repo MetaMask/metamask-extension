@@ -4,9 +4,10 @@ import classnames from 'classnames';
 import copyToClipboard from 'copy-to-clipboard';
 import Tooltip from '../tooltip';
 import Identicon from '../identicon';
-import { checksumAddress, shortenAddress } from '../../../helpers/utils/util';
+import { shortenAddress } from '../../../helpers/utils/util';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
   DEFAULT_VARIANT,
   CARDS_VARIANT,
@@ -56,7 +57,10 @@ function SenderAddress({
     >
       {!addressOnly && (
         <div className="sender-to-recipient__sender-icon">
-          <Identicon address={checksumAddress(senderAddress)} diameter={24} />
+          <Identicon
+            address={toChecksumHexAddress(senderAddress)}
+            diameter={24}
+          />
         </div>
       )}
       <Tooltip
@@ -203,8 +207,8 @@ export default function SenderToRecipient({
   warnUserOnAccountMismatch,
 }) {
   const t = useI18nContext();
-  const checksummedSenderAddress = checksumAddress(senderAddress);
-  const checksummedRecipientAddress = checksumAddress(recipientAddress);
+  const checksummedSenderAddress = toChecksumHexAddress(senderAddress);
+  const checksummedRecipientAddress = toChecksumHexAddress(recipientAddress);
 
   return (
     <div className={classnames('sender-to-recipient', variantHash[variant])}>

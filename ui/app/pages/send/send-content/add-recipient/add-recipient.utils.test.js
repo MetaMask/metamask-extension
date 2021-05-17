@@ -23,6 +23,7 @@ jest.mock('../../../../../shared/modules/hexstring-utils', () => ({
     Boolean(to.match(/^[0xabcdef123456798]+$/u)),
   ),
   isBurnAddress: jest.fn(() => false),
+  toChecksumHexAddress: jest.fn((input) => input),
 }));
 
 describe('add-recipient utils', () => {

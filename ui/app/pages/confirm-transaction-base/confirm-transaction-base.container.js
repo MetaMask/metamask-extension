@@ -23,11 +23,7 @@ import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util';
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
 import { conversionGreaterThan } from '../../helpers/utils/conversion-util';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
-import {
-  checksumAddress,
-  shortenAddress,
-  valuesFor,
-} from '../../helpers/utils/util';
+import { shortenAddress, valuesFor } from '../../helpers/utils/util';
 import {
   getAdvancedInlineGasShown,
   getCustomNonceValue,
@@ -40,6 +36,7 @@ import {
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { transactionMatchesNetwork } from '../../../../shared/modules/transaction.utils';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
@@ -104,9 +101,9 @@ const mapStateToProps = (state, ownProps) => {
   const toName =
     identities[toAddress]?.name ||
     casedContractMap[toAddress]?.name ||
-    shortenAddress(checksumAddress(toAddress));
+    shortenAddress(toChecksumHexAddress(toAddress));
 
-  const checksummedAddress = checksumAddress(toAddress);
+  const checksummedAddress = toChecksumHexAddress(toAddress);
   const addressBookObject = addressBook[checksummedAddress];
   const toEns = ensResolutionsByAddress[checksummedAddress] || '';
   const toNickname = addressBookObject ? addressBookObject.name : '';
