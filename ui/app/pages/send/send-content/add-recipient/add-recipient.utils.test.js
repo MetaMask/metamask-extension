@@ -18,7 +18,7 @@ jest.mock('../../../../../app/helpers/utils/util', () => ({
   ).isOriginContractAddress,
 }));
 
-jest.mock('../../../../../shared/modules/hexstring-utils', () => ({
+jest.mock('../../../../../../shared/modules/hexstring-utils', () => ({
   isValidHexAddress: jest.fn((to) =>
     Boolean(to.match(/^[0xabcdef123456798]+$/u)),
   ),

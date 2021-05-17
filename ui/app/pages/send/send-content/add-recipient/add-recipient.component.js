@@ -11,7 +11,7 @@ import Confusable from '../../../../components/ui/confusable';
 import {
   isBurnAddress,
   isValidHexAddress,
-} from '../../../../../shared/modules/hexstring-utils';
+} from '../../../../../../shared/modules/hexstring-utils';
 
 export default class AddRecipient extends Component {
   static propTypes = {

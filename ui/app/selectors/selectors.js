@@ -21,7 +21,7 @@ import {
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { getNativeCurrency } from './send';
 
 /**

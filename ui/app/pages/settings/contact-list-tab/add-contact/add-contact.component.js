@@ -10,7 +10,7 @@ import PageContainerFooter from '../../../../components/ui/page-container/page-c
 import {
   isBurnAddress,
   isValidHexAddress,
-} from '../../../../../shared/modules/hexstring-utils';
+} from '../../../../../../shared/modules/hexstring-utils';
 
 export default class AddContact extends PureComponent {
   static contextTypes = {

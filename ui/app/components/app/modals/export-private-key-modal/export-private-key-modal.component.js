@@ -7,7 +7,7 @@ import copyToClipboard from 'copy-to-clipboard';
 import ReadOnlyInput from '../../../ui/readonly-input';
 import Button from '../../../ui/button';
 import AccountModalContainer from '../account-modal-container';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 
 export default class ExportPrivateKeyModal extends Component {
   static contextTypes = {

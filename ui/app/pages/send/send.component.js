@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
-import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
+import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
   getAmountErrorObject,
   getGasFeeErrorObject,

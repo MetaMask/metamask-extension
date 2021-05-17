@@ -2,10 +2,10 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import Identicon from '../../ui/identicon';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import AccountListItem from './account-list-item';
 
-jest.mock('../../../../shared/modules/hexstring-utils', () => ({
+jest.mock('../../../../../shared/modules/hexstring-utils', () => ({
   toChecksumHexAddress: jest.fn(() => 'mockCheckSumAddress'),
 }));
 

@@ -4,7 +4,7 @@ import qrCode from 'qrcode-generator';
 import { connect } from 'react-redux';
 import { isHexPrefixed } from 'ethereumjs-util';
 import ReadOnlyInput from '../readonly-input/readonly-input';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 
 export default connect(mapStateToProps)(QrCodeView);
 

@@ -6,7 +6,7 @@ import {
   CONTACT_EDIT_ROUTE,
   CONTACT_LIST_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import ViewContact from './view-contact.component';
 
 const mapStateToProps = (state, ownProps) => {

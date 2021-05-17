@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import contractMap from '@metamask/contract-metadata';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 
 import Jazzicon from '../jazzicon';
 import BlockieIdenticon from './blockieIdenticon';

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Identicon from '../../ui/identicon';
 import AccountMismatchWarning from '../../ui/account-mismatch-warning/account-mismatch-warning.component';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 
 export default function AccountListItem({
   account,

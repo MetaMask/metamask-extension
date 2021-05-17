@@ -34,7 +34,7 @@ import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import fetchWithCache from '../../helpers/utils/fetch-with-cache';
 
 import { calcGasTotal } from '../send/send.utils';
-import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
+import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 const TOKEN_TRANSFER_LOG_TOPIC_HASH =
   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';

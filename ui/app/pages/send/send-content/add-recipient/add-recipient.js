@@ -19,7 +19,7 @@ import {
   isBurnAddress,
   isValidHexAddress,
   toChecksumHexAddress,
-} from '../../../../../shared/modules/hexstring-utils';
+} from '../../../../../../shared/modules/hexstring-utils';
 
 export function getToErrorObject(to, sendTokenAddress, chainId) {
   let toError = null;

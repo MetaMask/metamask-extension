@@ -4,7 +4,7 @@ import {
   getAddressBook,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import TransactionListItemDetails from './transaction-list-item-details.component';
 
 const mapStateToProps = (state, ownProps) => {
