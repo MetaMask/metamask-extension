@@ -2538,11 +2538,12 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@lavamoat/allow-scripts@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@lavamoat/allow-scripts/-/allow-scripts-1.0.4.tgz#1804c552c40e522ad5210879181869030737321a"
-  integrity sha512-720ZQn/PGI1kOvO51I4bTknX3jhztbuytHSHh4i9D4fAqz4NHW14vLR6xbvyk8gh+QtbmsLloeulrA81+if1bw==
+"@lavamoat/allow-scripts@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@lavamoat/allow-scripts/-/allow-scripts-1.0.5.tgz#2ea55ae12edfeb48216c4b20380277e0cc348b5e"
+  integrity sha512-hlsF635Xf+jexx/EPrnq07bA7MpJLfLW4oL9eDg+1vi1YbYiWr97Fzf26c9RPHyuK66zICR1RvtL/7RkmfIIag==
   dependencies:
+    "@lavamoat/preinstall-always-fail" "^1.0.0"
     "@npmcli/run-script" "^1.8.1"
     "@yarnpkg/lockfile" "^1.1.0"
     npm-logical-tree "^1.2.1"

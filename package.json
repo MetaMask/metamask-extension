@@ -209,7 +209,7 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.5.5",
-    "@lavamoat/allow-scripts": "^1.0.4",
+    "@lavamoat/allow-scripts": "^1.0.5",
     "@metamask/auto-changelog": "^1.0.0",
     "@metamask/eslint-config": "^6.0.0",
     "@metamask/eslint-config-jest": "^6.0.0",
