@@ -16,6 +16,12 @@ describe('hexstring utils', function () {
       assert.equal(result, true);
     });
 
+    it('should NOT allow 40-char non-prefixed hex when allowNonPrefixed is false', function () {
+      const address = 'fdea65c8e26263f6d9a1b5de9555d2931a33b825';
+      const result = isValidHexAddress(address, { allowNonPrefixed: false });
+      assert.equal(result, false);
+    });
+
     it('should NOT allow any length of non hex-prefixed string', function () {
       const address = 'fdea65c8e26263f6d9a1b5de9555d2931a33b85';
       const result = isValidHexAddress(address);

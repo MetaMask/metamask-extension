@@ -19,7 +19,7 @@ function IconFactory(jazzicon) {
 IconFactory.prototype.iconForAddress = function (address, diameter) {
   let addr = address;
 
-  if (isValidHexAddress(address, false)) {
+  if (isValidHexAddress(address, { allowNonPrefixed: false })) {
     addr = checksumAddress(address);
   }
 

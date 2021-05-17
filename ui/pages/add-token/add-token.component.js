@@ -165,7 +165,9 @@ class AddToken extends Component {
       autoFilled: false,
     });
 
-    const addressIsValid = isValidHexAddress(customAddress, false);
+    const addressIsValid = isValidHexAddress(customAddress, {
+      allowNonPrefixed: false,
+    });
     const standardAddress = addHexPrefix(customAddress).toLowerCase();
 
     switch (true) {

@@ -867,7 +867,7 @@ export default class PreferencesController {
         `Invalid decimals "${decimals}": must be 0 <= 36.`,
       );
     }
-    if (!isValidHexAddress(address, false)) {
+    if (!isValidHexAddress(address, { allowNonPrefixed: false })) {
       throw ethErrors.rpc.invalidParams(`Invalid address "${address}".`);
     }
   }
