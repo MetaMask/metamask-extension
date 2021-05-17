@@ -38,7 +38,11 @@ describe('Identicon', () => {
 
   it('renders div with address prop', () => {
     const wrapper = mount(
-      <Identicon store={store} className="test-address" address="0x0" />,
+      <Identicon
+        store={store}
+        className="test-address"
+        address="0x0000000000000000000000000000000000000000"
+      />,
     );
 
     expect(wrapper.find('div.test-address').prop('className')).toStrictEqual(

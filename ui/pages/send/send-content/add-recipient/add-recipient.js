@@ -11,18 +11,25 @@ import {
 } from '../../send.constants';
 
 import {
-  isValidAddress,
   checkExistingAddresses,
   isValidDomainName,
   isOriginContractAddress,
   isDefaultMetaMaskChain,
 } from '../../../../helpers/utils/util';
+import {
+  isBurnAddress,
+  isValidHexAddress,
+} from '../../../../../shared/modules/hexstring-utils';
 
 export function getToErrorObject(to, sendTokenAddress, chainId) {
   let toError = null;
   if (!to) {
     toError = REQUIRED_ERROR;
-  } else if (!isValidAddress(to) && !isValidDomainName(to)) {
+  } else if (
+    isBurnAddress(to) ||
+    (!isValidHexAddress(to, { mixedCaseUseChecksum: true }) &&
+      !isValidDomainName(to))
+  ) {
     toError = isDefaultMetaMaskChain(chainId)
       ? INVALID_RECIPIENT_ADDRESS_ERROR
       : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;

@@ -2,10 +2,13 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { getAddressBookEntryName } from '../../selectors';
-import { isValidAddress, isHex } from '../../helpers/utils/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import {
+  isValidHexAddress,
+  isBurnAddress,
+} from '../../../shared/modules/hexstring-utils';
 
 import {
   ABOUT_US_ROUTE,
@@ -64,7 +67,10 @@ const mapStateToProps = (state, ownProps) => {
 
   const addressName = getAddressBookEntryName(
     state,
-    isHex(pathNameTail) && isValidAddress(pathNameTail) ? pathNameTail : '',
+    !isBurnAddress(pathNameTail) &&
+      isValidHexAddress(pathNameTail, { mixedCaseUseChecksum: true })
+      ? pathNameTail
+      : '',
   );
 
   return {

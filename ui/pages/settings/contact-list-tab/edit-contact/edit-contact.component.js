@@ -4,8 +4,11 @@ import { Redirect } from 'react-router-dom';
 import Identicon from '../../../../components/ui/identicon';
 import Button from '../../../../components/ui/button/button.component';
 import TextField from '../../../../components/ui/text-field';
-import { isValidAddress } from '../../../../helpers/utils/util';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
+import {
+  isBurnAddress,
+  isValidHexAddress,
+} from '../../../../../shared/modules/hexstring-utils';
 
 export default class EditContact extends PureComponent {
   static contextTypes = {
@@ -135,7 +138,12 @@ export default class EditContact extends PureComponent {
               this.state.newAddress !== address
             ) {
               // if the user makes a valid change to the address field, remove the original address
-              if (isValidAddress(this.state.newAddress)) {
+              if (
+                !isBurnAddress(this.state.newAddress) &&
+                isValidHexAddress(this.state.newAddress, {
+                  mixedCaseUseChecksum: true,
+                })
+              ) {
                 await removeFromAddressBook(chainId, address);
                 await addToAddressBook(
                   this.state.newAddress,
