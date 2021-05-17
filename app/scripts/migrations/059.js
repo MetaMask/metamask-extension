@@ -31,7 +31,7 @@ function transformState(state) {
     const nonceNetworkGroupedObject = groupBy(
       Object.values(transactions),
       (tx) => {
-        return `${tx.txParams.nonce}-${tx.chainId ?? tx.metamaskNetworkId}`;
+        return `${tx.txParams?.nonce}-${tx.chainId ?? tx.metamaskNetworkId}`;
       },
     );
 

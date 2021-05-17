@@ -6,7 +6,10 @@ import {
   RINKEBY_CHAIN_ID,
   GOERLI_CHAIN_ID,
 } from '../../../shared/constants/network';
-import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
+import {
+  TRANSACTION_TYPES,
+  TRANSACTION_STATUSES,
+} from '../../../shared/constants/transaction';
 import migration59 from './059';
 
 const ERRONEOUS_TRANSACTION_STATE = {
@@ -86,9 +89,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
     type: TRANSACTION_TYPES.SENT_ETHER,
     id: 9,
     chainId: RINKEBY_CHAIN_ID,
-    txParams: {
-      nonce: '0x9',
-    },
+    status: TRANSACTION_STATUSES.UNAPPROVED,
   },
 };
 
