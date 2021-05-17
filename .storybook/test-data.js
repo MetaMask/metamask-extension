@@ -1369,18 +1369,6 @@ const state = {
         "icon": "https://metamask.github.io/test-dapp/metamask-fox.svg",
         "lastUpdated": 1620723443380,
         "host": "metamask.github.io"
-      },
-      "https://ropsten.etherscan.io": {
-        "name": "ropsten.etherscan.io",
-        "icon": "https://ropsten.etherscan.io/images/favicon2.ico",
-        "lastUpdated": 1620710660267,
-        "host": "ropsten.etherscan.io"
-      },
-      "https://app.uniswap.org": {
-        "name": "Uniswap Interface",
-        "icon": "https://app.uniswap.org/favicon.png",
-        "lastUpdated": 1620710668999,
-        "host": "app.uniswap.org"
       }
     },
     "threeBoxSyncingAllowed": false,
