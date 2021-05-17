@@ -10,12 +10,12 @@ export const UI_NOTIFICATIONS = {
       placeImageBelowDescription: true,
     },
   },
-  2: {
-    id: 2,
-    date: '2021-03-08',
-  },
   3: {
     id: 3,
+    date: '2021-03-08',
+  },
+  4: {
+    id: 4,
     date: '2021-05-11',
     image: {
       src: 'images/source-logos-bsc.svg',
@@ -35,22 +35,22 @@ export const getTranslatedUINoficiations = (t, locale) => {
         new Date(UI_NOTIFICATIONS[1].date),
       ),
     },
-    2: {
-      ...UI_NOTIFICATIONS[2],
+    3: {
+      ...UI_NOTIFICATIONS[3],
       title: t('notifications3Title'),
       description: t('notifications3Description'),
       actionText: t('notifications3ActionText'),
       date: new Intl.DateTimeFormat(formattedLocale).format(
-        new Date(UI_NOTIFICATIONS[2].date),
+        new Date(UI_NOTIFICATIONS[3].date),
       ),
     },
-    3: {
-      ...UI_NOTIFICATIONS[3],
+    4: {
+      ...UI_NOTIFICATIONS[4],
       title: t('notifications4Title'),
       description: t('notifications4Description'),
       actionText: t('notifications4ActionText'),
       date: new Intl.DateTimeFormat(locale).format(
-        new Date(UI_NOTIFICATIONS[3].date),
+        new Date(UI_NOTIFICATIONS[4].date),
       ),
     },
   };
