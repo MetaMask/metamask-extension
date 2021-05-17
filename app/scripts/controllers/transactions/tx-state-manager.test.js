@@ -6,6 +6,8 @@ import {
 } from '../../../../shared/constants/transaction';
 import {
   KOVAN_CHAIN_ID,
+  MAINNET_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
   KOVAN_NETWORK_ID,
 } from '../../../../shared/constants/network';
 import TxStateManager from './tx-state-manager';
@@ -636,7 +638,10 @@ describe('TransactionStateManager', function () {
       const limit = txStateManager.txHistoryLimit;
       // In this test case the earliest two transactions are a dropped attempted ether send and a
       // following cancel transaction with the same nonce. these two transactions should be dropped
-      // together as soon as the 11th unique nonce is attempted to be added, mocked here with limit + 1
+      // together as soon as the 11th unique nonce is attempted to be added. We use limit + 2 to
+      // first get into the state where we are over the "limit" of transactions because of a set
+      // of transactions with a unique nonce/network combo, then add an additional new transaction
+      // to trigger the removal of one group of nonces.
       const txs = generateTransactions(limit + 2, {
         chainId: currentChainId,
         to: VALID_ADDRESS,
@@ -653,15 +658,14 @@ describe('TransactionStateManager', function () {
       const result = txStateManager.getTransactions();
       assert.equal(result.length, limit, `limit of ${limit} is enforced`);
       assert.notEqual(result[0].id, 0, 'first tx should be removed');
-      assert.notEqual(
-        result[0].status,
-        TRANSACTION_STATUSES.DROPPED,
-        'first tx should not be dropped',
-      );
-      assert.notEqual(
-        result[1].type,
-        TRANSACTION_TYPES.CANCEL,
-        'Cancel tx should be dropped',
+      assert.equal(
+        result.some(
+          (tx) =>
+            tx.status === TRANSACTION_STATUSES.DROPPED ||
+            tx.status === TRANSACTION_TYPES.CANCEL,
+        ),
+        false,
+        'the cancel and dropped transactions should not be present in the result',
       );
     });
 
@@ -673,14 +677,14 @@ describe('TransactionStateManager', function () {
       // single transaction but the other shouldn't be dropped until adding the fifth additional
       // transaction
       const txs = generateTransactions(limit + 5, {
-        chainId: (i) => ([0, 1, 4, 5].includes(i) ? currentChainId : '0x1'),
+        chainId: (i) => {
+          if (i === 0 || i === 1) return MAINNET_CHAIN_ID;
+          else if (i === 4 || i === 5) return RINKEBY_CHAIN_ID;
+          return currentChainId;
+        },
         to: VALID_ADDRESS,
         from: VALID_ADDRESS_TWO,
-        nonce: (i) => {
-          if (i === 1) return '0';
-          else if (i === 5) return '4';
-          return `${i}`;
-        },
+        nonce: (i) => ([0, 1, 4, 5].includes(i) ? '0' : `${i}`),
         status: (i) =>
           i === 0 || i === 4
             ? TRANSACTION_STATUSES.DROPPED
@@ -694,31 +698,20 @@ describe('TransactionStateManager', function () {
       const result = txStateManager.getTransactions({
         filterToCurrentNetwork: false,
       });
+
       assert.equal(
         result.length,
         limit + 1,
         `limit of ${limit} + 1 for the grouped transactions is enforced`,
       );
-      assert.notEqual(result[0].id, 0, 'first tx should be removed');
+      // The first group of transactions on mainnet should be removed
       assert.equal(
-        result[0].status,
-        TRANSACTION_STATUSES.DROPPED,
-        'first tx should be dropped',
-      );
-      assert.equal(
-        result[0].txParams.nonce,
-        '0x4',
-        'the first tx should be from the second group',
-      );
-      assert.equal(
-        result[1].type,
-        TRANSACTION_TYPES.CANCEL,
-        'second transaction should be a cancel',
-      );
-      assert.equal(
-        result[1].txParams.nonce,
-        '0x4',
-        'the second tx should be from the second group',
+        result.some(
+          (tx) =>
+            tx.chainId === MAINNET_CHAIN_ID && tx.txParams.nonce === '0x0',
+        ),
+        false,
+        'the mainnet transactions with nonce 0x0 should not be present in the result',
       );
     });
 
@@ -726,7 +719,8 @@ describe('TransactionStateManager', function () {
       // In this test case the earliest two transactions are a dropped attempted ether send and a
       // following cancel transaction with the same nonce. Then, a bit later the same scenario on a
       // different network. None of these should be dropped because we haven't yet reached the limit
-      const txs = generateTransactions(9, {
+      const limit = txStateManager.txHistoryLimit;
+      const txs = generateTransactions(limit - 1, {
         chainId: (i) => ([0, 1, 4, 5].includes(i) ? currentChainId : '0x1'),
         to: VALID_ADDRESS,
         from: VALID_ADDRESS_TWO,
@@ -750,16 +744,6 @@ describe('TransactionStateManager', function () {
       });
       assert.equal(result.length, 9, `all nine transactions should be present`);
       assert.equal(result[0].id, 0, 'first tx should be present');
-      assert.equal(
-        result[0].status,
-        TRANSACTION_STATUSES.DROPPED,
-        'first tx should be dropped',
-      );
-      assert.equal(
-        result[1].type,
-        TRANSACTION_TYPES.CANCEL,
-        'second transaction should be a cancel',
-      );
     });
   });
 
