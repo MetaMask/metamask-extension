@@ -85,8 +85,10 @@ export default class Identicon extends PureComponent {
       return this.renderImage();
     }
 
-    if (isHexString(addHexPrefix(address))) {
-      const checksummedAddress = checksumAddress(addHexPrefix(address));
+    if (address) {
+      const checksummedAddress =
+        isHexString(addHexPrefix(address)) &&
+        checksumAddress(addHexPrefix(address));
 
       if (contractMap[checksummedAddress]?.logo) {
         return this.renderJazzicon();
