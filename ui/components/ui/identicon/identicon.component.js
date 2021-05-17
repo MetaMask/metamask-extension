@@ -2,8 +2,8 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import contractMap from '@metamask/contract-metadata';
+import { isHexString, addHexPrefix } from 'ethereumjs-util';
 
-import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { checksumAddress } from '../../../helpers/utils/util';
 import Jazzicon from '../jazzicon';
 import BlockieIdenticon from './blockieIdenticon';
@@ -85,8 +85,8 @@ export default class Identicon extends PureComponent {
       return this.renderImage();
     }
 
-    if (isValidHexAddress(address)) {
-      const checksummedAddress = checksumAddress(address);
+    if (isHexString(addHexPrefix(address))) {
+      const checksummedAddress = checksumAddress(addHexPrefix(address));
 
       if (contractMap[checksummedAddress]?.logo) {
         return this.renderJazzicon();
