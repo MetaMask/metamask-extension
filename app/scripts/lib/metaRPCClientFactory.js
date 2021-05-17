@@ -6,6 +6,7 @@ class MetaRPCClient {
   constructor(connectionStream) {
     this.connectionStream = connectionStream;
     this.notificationChannel = new SafeEventEmitter();
+    this.uncaughtErrorChannel = new SafeEventEmitter();
     this.requests = new Map();
     this.connectionStream.on('data', this.handleResponse.bind(this));
     this.connectionStream.on('end', this.close.bind(this));
@@ -17,25 +18,29 @@ class MetaRPCClient {
     });
   }
 
+  onUncaughtError(handler) {
+    this.uncaughtErrorChannel.addListener('error', (error) => {
+      handler(error);
+    });
+  }
+
   close() {
     this.notificationChannel.removeAllListeners();
+    this.uncaughtErrorChannel.removeAllListeners();
   }
 
   handleResponse(data) {
     const { id, result, error, method, params } = data;
+    const isNotification = id === undefined && error === undefined;
     const cb = this.requests.get(id);
 
-    if (method && params && id) {
+    if (method && params && !isNotification) {
       // dont handle server-side to client-side requests
       return;
     }
-    if (method && params && !id) {
+    if (method && params && isNotification) {
       // handle servier-side to client-side notification
       this.notificationChannel.emit('notification', data);
-      return;
-    }
-    if (!cb) {
-      // not found in request list
       return;
     }
 
@@ -43,8 +48,17 @@ class MetaRPCClient {
       const e = new EthereumRpcError(error.code, error.message, error.data);
       // preserve the stack from serializeError
       e.stack = error.stack;
-      this.requests.delete(id);
-      cb(e);
+      if (cb) {
+        this.requests.delete(id);
+        cb(e);
+        return;
+      }
+      this.uncaughtErrorChannel.emit('error', e);
+      return;
+    }
+
+    if (!cb) {
+      // not found in request list
       return;
     }
 
