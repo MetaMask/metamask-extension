@@ -1,0 +1,139 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SortList renders the component with initial props 1`] = `
+<div
+  class="select-quote-popover__column-header select-quote-popover__receiving"
+>
+  <span
+    class="select-quote-popover__receiving-symbol"
+  >
+    WETH
+  </span>
+  <div
+    class="select-quote-popover__receiving-label"
+  >
+    <span>
+      Receiving
+    </span>
+    <div
+      class="info-tooltip"
+    >
+      <div>
+        <div
+          aria-describedby="tippy-tooltip-1"
+          class="info-tooltip__tooltip-container"
+          data-original-title="null"
+          data-tooltipped=""
+          style="display: inline;"
+          tabindex="0"
+        >
+          <img
+            alt=""
+            src="images/mm-info-icon.svg"
+          />
+        </div>
+      </div>
+    </div>
+    <svg
+      fill="none"
+      height="9"
+      viewBox="0 0 6 9"
+      width="6"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M0.7948 4.96973C0.365112 4.96973 0.150269 5.47754 0.462769 5.77051L2.78699 8.09473C2.96277 8.29004 3.25574 8.29004 3.45105 8.09473L5.77527 5.77051C6.06824 5.47754 5.85339 4.96973 5.44324 4.96973H0.7948ZM5.77527 2.91895L3.45105 0.594727C3.25574 0.418945 2.96277 0.418945 2.78699 0.594727L0.462769 2.91895C0.150269 3.23145 0.365112 3.71973 0.7948 3.71973H5.44324C5.85339 3.71973 6.06824 3.23145 5.77527 2.91895Z"
+        fill="#037DD6"
+      />
+    </svg>
+  </div>
+</div>
+`;
+
+exports[`SortList renders the component with initial props 2`] = `
+<div
+  class="select-quote-popover__column-header select-quote-popover__network-fees select-quote-popover__network-fees-header"
+>
+  <span>
+    Estimated network fees
+  </span>
+  <div
+    class="info-tooltip"
+  >
+    <div>
+      <div
+        aria-describedby="tippy-tooltip-2"
+        class="info-tooltip__tooltip-container"
+        data-original-title="null"
+        data-tooltipped=""
+        style="display: inline;"
+        tabindex="0"
+      >
+        <img
+          alt=""
+          src="images/mm-info-icon.svg"
+        />
+      </div>
+    </div>
+  </div>
+  <svg
+    fill="none"
+    height="9"
+    viewBox="0 0 6 9"
+    width="6"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M0.7948 4.96973C0.365112 4.96973 0.150269 5.47754 0.462769 5.77051L2.78699 8.09473C2.96277 8.29004 3.25574 8.29004 3.45105 8.09473L5.77527 5.77051C6.06824 5.47754 5.85339 4.96973 5.44324 4.96973H0.7948ZM5.77527 2.91895L3.45105 0.594727C3.25574 0.418945 2.96277 0.418945 2.78699 0.594727L0.462769 2.91895C0.150269 3.23145 0.365112 3.71973 0.7948 3.71973H5.44324C5.85339 3.71973 6.06824 3.23145 5.77527 2.91895Z"
+      fill="#037DD6"
+    />
+  </svg>
+</div>
+`;
+
+exports[`SortList renders the component with initial props 3`] = `
+<div
+  class="select-quote-popover__row select-quote-popover__row--selected"
+>
+  <div
+    class="select-quote-popover__receiving"
+  >
+    <div
+      class="select-quote-popover__receiving-value"
+    >
+      <div
+        class="select-quote-popover__receiving-value-text"
+        title="101000000000000000000"
+      >
+        101000000000000000000
+      </div>
+    </div>
+    <span
+      class="select-quote-popover__zero-slippage"
+    >
+      0% Slippage
+    </span>
+  </div>
+  <div
+    class="select-quote-popover__network-fees"
+  >
+    $14.26
+  </div>
+  <div
+    class="select-quote-popover__quote-source"
+  >
+    <div
+      class="select-quote-popover__quote-source-label select-quote-popover__quote-source-label--orange"
+    >
+      RFQ
+    </div>
+  </div>
+  <div
+    class="select-quote-popover__caret-right"
+  >
+    <i
+      class="fa fa-angle-up"
+    />
+  </div>
+</div>
+`;

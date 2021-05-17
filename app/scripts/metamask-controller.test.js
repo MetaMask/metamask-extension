@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
@@ -52,6 +52,7 @@ const ExtensionizerMock = {
     onInstalled: {
       addListener: () => undefined,
     },
+    getPlatformInfo: async () => 'mac',
   },
 };
 
@@ -184,8 +185,8 @@ describe('MetaMaskController', function () {
       const simpleKeyrings = metamaskController.keyringController.getKeyringsByType(
         'Simple Key Pair',
       );
-      const privKeyBuffer = simpleKeyrings[0].wallets[0]._privKey;
-      const pubKeyBuffer = simpleKeyrings[0].wallets[0]._pubKey;
+      const privKeyBuffer = simpleKeyrings[0].wallets[0].privateKey;
+      const pubKeyBuffer = simpleKeyrings[0].wallets[0].publicKey;
       const addressBuffer = pubToAddress(pubKeyBuffer);
       const privKey = bufferToHex(privKeyBuffer);
       const pubKey = bufferToHex(addressBuffer);
@@ -492,8 +493,8 @@ describe('MetaMaskController', function () {
         );
       } catch (e) {
         assert.equal(
-          e,
-          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+          e.message,
+          'MetamaskController:getKeyringForDevice - Unknown device',
         );
       }
     });
@@ -504,9 +505,9 @@ describe('MetaMaskController', function () {
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         'Trezor Hardware',
       );
-      assert.equal(
+      assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
-        'Trezor Hardware',
+        ['Trezor Hardware'],
       );
       assert.equal(keyrings.length, 1);
     });
@@ -517,9 +518,9 @@ describe('MetaMaskController', function () {
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         'Ledger Hardware',
       );
-      assert.equal(
+      assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
-        'Ledger Hardware',
+        ['Ledger Hardware'],
       );
       assert.equal(keyrings.length, 1);
     });
@@ -534,8 +535,8 @@ describe('MetaMaskController', function () {
         );
       } catch (e) {
         assert.equal(
-          e,
-          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+          e.message,
+          'MetamaskController:getKeyringForDevice - Unknown device',
         );
       }
     });
@@ -553,8 +554,8 @@ describe('MetaMaskController', function () {
         await metamaskController.forgetDevice('Some random device name');
       } catch (e) {
         assert.equal(
-          e,
-          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+          e.message,
+          'MetamaskController:getKeyringForDevice - Unknown device',
         );
       }
     });
@@ -906,7 +907,10 @@ describe('MetaMaskController', function () {
       try {
         await metamaskController.signMessage(messages[0].msgParams);
       } catch (error) {
-        assert.equal(error.message, 'message length is invalid');
+        assert.equal(
+          error.message,
+          'Expected message to be an Uint8Array with length 32',
+        );
       }
     });
   });

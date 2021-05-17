@@ -1,0 +1,275 @@
+.address-book-wrapper {
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.address-book {
+  flex: 0.4 1 100%;
+
+  @media screen and (max-width: 576px) {
+    flex: 1;
+    max-width: 100%;
+
+    &__container {
+      min-height: 100%;
+    }
+  }
+
+  &__entry {
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 16px 14px;
+    flex: 0 0 auto;
+    border-bottom: 1px solid #dedede;
+
+    &:hover {
+      border: 1px solid $primary-blue;
+      cursor: pointer;
+    }
+  }
+
+  &__name {
+    padding: 3px;
+  }
+
+  &__header,
+  &__header--edit {
+    &__name {
+      @include H3;
+
+      margin-left: 24px;
+    }
+  }
+
+  &__header--edit {
+    display: flex;
+    justify-content: space-between;
+
+    .button {
+      @include H6;
+
+      justify-content: flex-end;
+      color: $accent-red;
+    }
+  }
+
+  &__container {
+    margin: 0 auto;
+    min-height: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  &__title {
+    @include H4;
+
+    font-weight: 600;
+    margin-bottom: 0.5em;
+  }
+
+  &__sub-title {
+    font-size: small;
+    margin-bottom: 0.5em;
+  }
+
+  &__link {
+    background-color: #fff;
+    color: #037dd6;
+  }
+
+  &__input {
+    @include H4;
+
+    border: 1px solid $Grey-200;
+    border-radius: 6px;
+    color: $Grey-800;
+    padding: 0.875rem 1rem;
+
+    &:focus-within {
+      border-color: $Blue-500;
+    }
+
+    margin-top: 0.25rem;
+
+    &--address {
+      @include H6;
+    }
+  }
+
+  &__view-contact {
+    &__text-area-wrapper {
+      height: 96px !important;
+    }
+
+    &__text-area {
+      line-height: initial !important;
+    }
+
+    &__group {
+      display: flex;
+      flex-flow: column nowrap;
+      padding: 1.5rem 1.5rem 0 1.5rem;
+
+      &__label,
+      &__label--capitalized {
+        @include H7;
+
+        color: $Grey-500;
+        margin-bottom: 0.25rem;
+      }
+
+      &__label--capitalized {
+        text-transform: capitalize;
+      }
+
+      &__value,
+      &__static-address {
+        @include H4;
+
+        display: flex;
+        flex-flow: row nowrap;
+        color: $Grey-800;
+        word-break: break-word;
+
+        &--address {
+          @include H6;
+        }
+
+        &--copy-icon {
+          display: inline-block;
+          width: 20px;
+          height: 20px;
+          padding: 0;
+          background: none;
+          padding-left: 0;
+          margin-left: 10px;
+        }
+      }
+
+      &__static-address {
+        @include H6;
+
+        &--copy-icon {
+          cursor: pointer;
+
+          &:hover {
+            color: black;
+          }
+        }
+      }
+
+      .unit-input__input {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+  }
+
+  &__edit-contact {
+    display: flex;
+    flex-flow: column nowrap;
+    padding-bottom: 0 !important;
+    height: 100%;
+
+    &__content {
+      flex: 1 1 auto;
+
+      > div {
+        padding-top: 0;
+      }
+    }
+
+    .page-container__footer {
+      border-top: none;
+    }
+  }
+
+  &__add-contact {
+    display: flex;
+    flex-flow: column nowrap;
+    padding-bottom: 0 !important;
+    height: 100%;
+
+    &__content {
+      flex: 1 1 auto;
+      height: 100%;
+    }
+
+    &__error {
+      @include H7;
+
+      left: 8px;
+      color: $red;
+    }
+  }
+
+  &__my-accounts-button {
+    display: flex;
+    flex-flow: column;
+    cursor: pointer;
+    padding: 15px;
+
+    &:hover {
+      background-color: rgba(222, 222, 222, 0.2);
+    }
+
+    &__header {
+      @include H4;
+
+      color: #000;
+    }
+
+    &__content {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &__text {
+      @include Paragraph;
+
+      color: #6a737d;
+    }
+
+    &__caret {
+      display: block;
+      background-image: url(/images/caret-right.svg);
+      width: 30px;
+      opacity: 0.5;
+      background-repeat: no-repeat;
+
+      [dir='rtl'] & {
+        transform: rotate(180deg);
+      }
+    }
+  }
+}
+
+.address-book-add-button {
+  &__button {
+    position: absolute;
+    top: 85px;
+    right: 16px;
+    width: auto;
+    border-radius: 100px;
+
+    @media screen and (max-width: 576px) {
+      top: 16px;
+      right: 60px;
+    }
+  }
+}
+
+.address-book--hidden {
+  display: none;
+}
+
+.address-book-contact-content {
+  flex: 0.4 1 100%;
+
+  @media screen and (max-width: 576px) {
+    flex: 1;
+  }
+}

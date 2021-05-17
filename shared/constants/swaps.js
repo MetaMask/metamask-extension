@@ -12,6 +12,7 @@ export const QUOTES_EXPIRED_ERROR = 'quotes-expired';
 export const SWAP_FAILED_ERROR = 'swap-failed-error';
 export const ERROR_FETCHING_QUOTES = 'error-fetching-quotes';
 export const QUOTES_NOT_AVAILABLE_ERROR = 'quotes-not-avilable';
+export const CONTRACT_DATA_DISABLED_ERROR = 'contract-data-disabled';
 export const OFFLINE_FOR_MAINTENANCE = 'offline-for-maintenance';
 export const SWAPS_FETCH_ORDER_CONFLICT = 'swaps-fetch-order-conflict';
 
@@ -50,6 +51,9 @@ const MAINNET_CONTRACT_ADDRESS = '0x881d40237659c251811cec9c364ef91dc08d300c';
 const TESTNET_CONTRACT_ADDRESS = '0x881d40237659c251811cec9c364ef91dc08d300c';
 
 const BSC_CONTRACT_ADDRESS = '0x1a1ec25dc08e98e5e93f1104b5e5cdd298707d31';
+
+export const ETH_WETH_CONTRACT_ADDRESS =
+  '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
 
 const METASWAP_ETH_API_HOST = 'https://api.metaswap.codefi.network';
 

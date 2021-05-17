@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "log ng aktibidad"
   },
-  "addAccount": {
-    "message": "Magdagdag ng account"
-  },
   "addAcquiredTokens": {
     "message": "Idagdag ang mga token na nakuha mo gamit ang MetaMask"
   },
@@ -491,11 +488,11 @@
   "dismiss": {
     "message": "I-dismiss"
   },
+  "dismissReminderDescriptionField": {
+    "message": "I-on ito para i-dismiss ang mensahe ng paalala ng pag-back up ng recovery phrase. Lubos naming inirerekomendang i-back up mo ang iyong Secret Recovery Phrase para maiwasan ang pagkawala ng pondo"
+  },
   "done": {
     "message": "Tapos na"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "Wala ka bang hardware wallet?"
   },
   "dontShowThisAgain": {
     "message": "Huwag itong ipaklita ulit"
@@ -529,7 +526,7 @@
     "message": "Mag-request ng pampublikong encryption key"
   },
   "endOfFlowMessage1": {
-    "message": "Naipasa mo ang pagsusulit - panatilihing ligtas ang iyong seedphrase, responsibilidad mo ito!"
+    "message": "Pumasa ka sa test - panatilihing ligtas ang iyong Secret Recovery Phrase, responsibilidad mo ito!"
   },
   "endOfFlowMessage10": {
     "message": "Tapos Na Lahat"
@@ -544,13 +541,13 @@
     "message": "Huwag kailanmang ibahagi ang parirala sa sinuman."
   },
   "endOfFlowMessage5": {
-    "message": "Mag-ingat sa phishing! Hindi kailanman basta na lang hihingin ng MetaMask ang iyong seed phrase."
+    "message": "Mag-ingat sa phishing! Hindi kailanman basta na lang hihingin ng MetaMask ang iyong Secret Recovery Phrase."
   },
   "endOfFlowMessage6": {
-    "message": "Kung kailangan mong i-back up ulit ang iyong seed phrase, makikita mo ito sa Mga Setting -> Seguridad."
+    "message": "Kung kailangan mong i-back up ulit ang iyong Secret Recovery Phrase, makikita mo ito sa Mga Setting -> Seguridad."
   },
   "endOfFlowMessage8": {
-    "message": "Hindi mababawi ng MetaMask ang iyong seedphrase."
+    "message": "Hindi mababawi ng MetaMask ang iyong Secret Recovery Phrase."
   },
   "endOfFlowMessage9": {
     "message": "Matuto pa."
@@ -721,9 +718,6 @@
     "message": "Kunin ang Ether mula sa isang faucet sa halagang $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Humingi ng Tulong."
-  },
   "getStarted": {
     "message": "Magsimula"
   },
@@ -744,9 +738,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Pumili ng hardware wallet na gusto mong gamitin kasama ng MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Nagkakaproblema ka ba sa pagkonekta?"
   },
   "here": {
     "message": "dito",
@@ -775,24 +766,24 @@
   "importAccount": {
     "message": "Mag-import ng Account"
   },
+  "importAccountLinkText": {
+    "message": "i-import gamit ang Secret Recovery Phrase"
+  },
   "importAccountMsg": {
-    "message": " Ang mga na-import na account ay hindi mauugnay sa orihinal mong nagawang seedphrase ng MetaMask account. Matuto pa tungkol sa mga na-import account "
+    "message": " Ang mga na-import na account ay hindi mauugnay sa orihinal mong nagawang Secret Recovery Phrase ng MetaMask account. Matuto pa tungkol sa mga na-import account "
   },
   "importAccountSeedPhrase": {
-    "message": "Mag-import ng account gamit ang seed phrase"
-  },
-  "importUsingSeed": {
-    "message": "I-import gamit ang seed phrase ng account"
+    "message": "Mag-import ng account gamit ang Secret Recovery Phrase"
   },
   "importWallet": {
     "message": "I-import ang wallet"
   },
+  "importYourExisting": {
+    "message": "I-import ang iyong kasalukuyang wallet gamit ang isang Secret Recovery Phrase"
+  },
   "imported": {
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Impormasyon at Tulong"
   },
   "initialTransactionConfirmed": {
     "message": "Nakumpirma na ng network ang iyong inisyal na transaksyon. I-click ang OK para bumalik."
@@ -851,7 +842,7 @@
     "message": "Hindi valid ang RPC URL"
   },
   "invalidSeedPhrase": {
-    "message": "Hindi valid ang seed phrase"
+    "message": "Hindi valid ang Secret Recovery Phrase"
   },
   "ipfsGateway": {
     "message": "IPFS Gateway"
@@ -981,12 +972,6 @@
   "myAccounts": {
     "message": "Mga Account Ko"
   },
-  "myWalletAccounts": {
-    "message": "Mga Wallet Account Ko"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Ang lahat ng iyong ginawang account sa MetaMask ay awtomatikong maidaragdag sa seksyong ito."
-  },
   "needEtherInWallet": {
     "message": "Para makaugnayan ang mga decentralized ma application gamit ang MetaMask, kakailanganin mo ang Ether sa iyong wallet."
   },
@@ -1057,7 +1042,7 @@
     "message": "Walang naitakdang address para sa pangalang ito."
   },
   "noAlreadyHaveSeed": {
-    "message": "May seed phrase na ako"
+    "message": "Hindi, may Secret Recovery Phrase na ako"
   },
   "noConversionRateAvailable": {
     "message": "Hindi Available ang Rate ng Conversion"
@@ -1119,9 +1104,6 @@
   },
   "optionalCurrencySymbol": {
     "message": "Simbolo ng Currency (opsyonal)"
-  },
-  "orderOneHere": {
-    "message": "Mag-order ng Trezor o Ledger at itabi ang mga pondo mo sa malamig na storage"
   },
   "origin": {
     "message": "Pinagmulan"
@@ -1204,9 +1186,6 @@
   "readdToken": {
     "message": "Puwede mong ibalik ang token na ito sa hinaharap sa pamamagitan ng pagpunta sa “Magdagdag ng token” sa menu ng mga opsyon sa iyong account."
   },
-  "readyToConnect": {
-    "message": "Handa ka na bang kumonekta?"
-  },
   "receive": {
     "message": "Tumanggap"
   },
@@ -1244,7 +1223,7 @@
     "message": "Tanggalin ang account"
   },
   "removeAccountDescription": {
-    "message": "Tatanggalin ang account na ito sa iyong wallet. Tiyaking nasa iyo ang orihinal na seed phrase o pribadong key para sa na-import na account na ito bago magpatuloy. Puwede kang mag-import o gumawa ulit ng mga account mula sa drop-down ng account. "
+    "message": "Tatanggalin ang account na ito sa iyong wallet. Tiyaking nasa iyo ang orihinal na Secret Recovery Phrase o private key para sa na-import na account na ito bago magpatuloy. Puwede kang mag-import o gumawa ulit ng mga account mula sa drop-down ng account. "
   },
   "requestsAwaitingAcknowledgement": {
     "message": "mga request na hinihintay na tanggapin"
@@ -1259,16 +1238,13 @@
     "message": "I-reset ang Account"
   },
   "resetAccountDescription": {
-    "message": "Kapag ni-reset ang iyong account, maki-clear ang history ng iyong transaksyon. Hindi nito babaguhin ang mga balanse sa iyong mga account o hindi mo kakailanganing ilagay ulit ang iyong seed phrase."
+    "message": "Kapag ni-reset ang iyong account, maki-clear ang history ng iyong transaksyon. Hindi nito babaguhin ang mga balanse sa iyong mga account o hindi mo kakailanganing ilagay ulit ang iyong Secret Recovery Phrase."
   },
   "restore": {
     "message": "I-restore"
   },
   "restoreAccountWithSeed": {
-    "message": "I-restore ang iyong Account gamit ang Seed Phrase"
-  },
-  "restoreFromSeed": {
-    "message": "I-restore ang account?"
+    "message": "I-restore ang iyong Account gamit ang Secret Recovery Phrase"
   },
   "restoreWalletPreferences": {
     "message": "Nakita ang backup ng iyong data mula sa $1. Gusto mo bang i-restore ang mga kagustuhan mo sa wallet?",
@@ -1281,13 +1257,13 @@
     "message": "Ang isang token dito ay muling ginagamit ang isang simbolo mula sa ibang token na tinitingnan mo, maaari itong maging nakakalito."
   },
   "revealSeedWords": {
-    "message": "Ipakita ang Seed Phrase"
+    "message": "Ipakita ang Secret Recovery Phrase"
   },
   "revealSeedWordsDescription": {
-    "message": "Kung papalitan mo ang iyong browser o ililipat ang mga computer, kakailanganin mo ang seed phrase na ito para ma-access ang iyong mga account. I-save ang mga iyon sa isang ligtas at sikretong lugar."
+    "message": "Kung magpapalit ka man ng browser o computer, kakailanganin mo ang Secret Recovery Phrase na ito para ma-access ang iyong mga account. I-save ang mga iyon sa isang ligtas at sikretong lugar."
   },
   "revealSeedWordsTitle": {
-    "message": "Seed Phrase"
+    "message": "Secret Recovery Phrase"
   },
   "revealSeedWordsWarning": {
     "message": "Magagamit ang mga salitang ito para manakaw ang lahat ng iyong account."
@@ -1344,16 +1320,16 @@
     "message": "Seguridad at Pagkapribado"
   },
   "securitySettingsDescription": {
-    "message": "Mga setting ng pagkapribado at seed phrase ng wallet"
+    "message": "Mga setting ng privacy at Secret Recovery Phrase ng wallet"
   },
   "seedPhrasePlaceholder": {
     "message": "Paghiwa-hiwalayin ang bawat salita gamit ang espasyo"
   },
   "seedPhrasePlaceholderPaste": {
-    "message": "I-paste ang seed phrase mula sa clipboard"
+    "message": "I-paste ang Secret Recovery Phrase mula sa clipboard"
   },
   "seedPhraseReq": {
-    "message": "Ang mga seed phrase ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
+    "message": "Ang mga Secret Recovery Phrase ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
   },
   "selectAHigherGasFee": {
     "message": "Pumili ng mas malaking bayarin sa gas para mapabilis ang pagproseso ng iyong transaksyon.*"
@@ -1438,7 +1414,7 @@
     "message": "Ipakita ang Mga Pribadong Key"
   },
   "showSeedPhrase": {
-    "message": "Ipakita ang seed phrase"
+    "message": "Ipakita ang Secret Recovery Phrase"
   },
   "sigRequest": {
     "message": "Request na Paglagda"
@@ -1509,24 +1485,6 @@
   },
   "statusNotConnected": {
     "message": "Hindi nakakonekta"
-  },
-  "step1HardwareWallet": {
-    "message": "1. Ikonekta ang Hardware Wallet"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Direktang ikonekta ang wallet ng iyong hardware sa computer mo."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Pumili ng Account"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Piliin ang account na gusto mong tingnan. Puwede ka lang pumili ng isa sa isang pagkakataon."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Simulang gamitin ang mga web3 site at higit pa!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Gamitin ang account ng iyong hardware sa parehong paraan ng paggamit mo sa Ethereum account. Kumonekta sa mga web3 site, magpadala ng ETH, bumili at mag-store ng mga ERC20 token at non-fungible token gaya ng CryptoKitties."
   },
   "storePhrase": {
     "message": "I-store ang phrase na ito sa isang password manager gaya ng 1Password."
@@ -1611,27 +1569,6 @@
   },
   "swapFinalizing": {
     "message": "Isinasapinal..."
-  },
-  "swapHighSlippageWarning": {
-    "message": "Sobrang laki ng halaga ng slippage. Tiyaking alam mo ang ginagawa mo!"
-  },
-  "swapIntroLearnMoreHeader": {
-    "message": "Gusto mo bang matuto pa?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "Matuto pa tungkol sa MetaMask Swaps"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "Kasama sa mga pinagkunan ng liquidity ang:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "Puwede mo nang direktang i-swap ang mga token sa iyong MetaMask wallet. Pinagsasama-sama ng MetaMask Swaps ang maraming decentralized exchange aggregator, propesyonal na market maker, at indibidwal na DEX para matiyak na makukuha palagi ng mga user ng MetaMask ang pinakasulit na presyo nang may pinakamababang bayarin sa network."
-  },
-  "swapIntroPopupTitle": {
-    "message": "Ito na ang pag-swap ng token!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "Suriin ang aming audit ng mga opisyal na kontrata"
   },
   "swapLowSlippageError": {
     "message": "Maaaring hindi magtagumpay ang transaksyon, masyadong mababa ang max na slippage."
@@ -1726,17 +1663,11 @@
   "swapSelectQuotePopoverDescription": {
     "message": "Makikita sa ibaba ang lahat ng quote na nakuha mula sa maraming pinagkukunan ng liquidity."
   },
-  "swapSlippageTooLow": {
-    "message": "Dapat ay mas malaki sa zero ang slippage"
-  },
   "swapSource": {
     "message": "Pinagkunan ng liquidity"
   },
   "swapSourceInfo": {
     "message": "Naghahanap kami ng maraming pinagkukunan ng liquidity (mga exchange, aggregator at propesyonal na market maker) para mahanap ang mga pinakasulit na rate at pinakamababang bayarin sa network."
-  },
-  "swapStartSwapping": {
-    "message": "Simulang mag-swap"
   },
   "swapSwapFrom": {
     "message": "Ipalit mula sa"
@@ -1843,7 +1774,7 @@
     "message": "Test Faucet"
   },
   "thisWillCreate": {
-    "message": "Gagawa ito ng bagong wallet at seed phrase"
+    "message": "Gagawa ito ng bagong wallet at Secret Recovery Phrase"
   },
   "tips": {
     "message": "Mga Tip"
@@ -1866,9 +1797,6 @@
   },
   "tokenContractAddress": {
     "message": "Address ng Kontrata ng Token"
-  },
-  "tokenOptions": {
-    "message": "Mga opsyon ng token"
   },
   "tokenSymbol": {
     "message": "Simbolo ng Token"
@@ -2019,7 +1947,10 @@
     "message": "ang aming gabay sa pagkonekta ng hardware wallet"
   },
   "walletSeed": {
-    "message": "Seed phrase"
+    "message": "Secret Recovery Phrase"
+  },
+  "walletSeedRestore": {
+    "message": "Recovery Phrase ng Wallet Secret"
   },
   "welcome": {
     "message": "Welcome sa MetaMask"

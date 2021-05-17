@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import { ObservableStore } from '@metamask/obs-store';
 import ComposableObservableStore from './ComposableObservableStore';
 
@@ -31,5 +31,10 @@ describe('ComposableObservableStore', function () {
       BarStore: barStore,
     });
     assert.deepEqual(store.getFlatState(), { foo: 'foo', bar: 'bar' });
+  });
+
+  it('should return empty flattened state when not configured', function () {
+    const store = new ComposableObservableStore();
+    assert.deepEqual(store.getFlatState(), {});
   });
 });

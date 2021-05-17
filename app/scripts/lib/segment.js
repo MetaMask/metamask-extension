@@ -4,7 +4,6 @@ const isDevOrTestEnvironment = Boolean(
   process.env.METAMASK_DEBUG || process.env.IN_TEST,
 );
 const SEGMENT_WRITE_KEY = process.env.SEGMENT_WRITE_KEY ?? null;
-const SEGMENT_LEGACY_WRITE_KEY = process.env.SEGMENT_LEGACY_WRITE_KEY ?? null;
 const SEGMENT_HOST = process.env.SEGMENT_HOST ?? null;
 
 // flushAt controls how many events are sent to segment at once. Segment will
@@ -86,15 +85,6 @@ export const segment =
   !SEGMENT_WRITE_KEY || (isDevOrTestEnvironment && !SEGMENT_HOST)
     ? createSegmentMock(SEGMENT_FLUSH_AT, SEGMENT_FLUSH_INTERVAL)
     : new Analytics(SEGMENT_WRITE_KEY, {
-        host: SEGMENT_HOST,
-        flushAt: SEGMENT_FLUSH_AT,
-        flushInterval: SEGMENT_FLUSH_INTERVAL,
-      });
-
-export const segmentLegacy =
-  !SEGMENT_LEGACY_WRITE_KEY || (isDevOrTestEnvironment && !SEGMENT_HOST)
-    ? createSegmentMock(SEGMENT_FLUSH_AT, SEGMENT_FLUSH_INTERVAL)
-    : new Analytics(SEGMENT_LEGACY_WRITE_KEY, {
         host: SEGMENT_HOST,
         flushAt: SEGMENT_FLUSH_AT,
         flushInterval: SEGMENT_FLUSH_INTERVAL,

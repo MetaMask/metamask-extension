@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import { obj as createThoughStream } from 'through2';
 import metaRPCClientFactory from './metaRPCClientFactory';
 

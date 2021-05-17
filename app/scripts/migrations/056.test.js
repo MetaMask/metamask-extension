@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import migration56 from './056';
 
 const BAD_TOKEN_DATA = { symbol: null, decimals: null };

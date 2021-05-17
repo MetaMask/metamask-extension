@@ -22,9 +22,12 @@ import {
   ApprovalController,
   CurrencyRateController,
   PhishingController,
+  NotificationController,
 } from '@metamask/controllers';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
+import { UI_NOTIFICATIONS } from '../../shared/notifications';
+
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -58,7 +61,7 @@ import nodeify from './lib/nodeify';
 import accountImporter from './account-import-strategies';
 import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
-import { segment, segmentLegacy } from './lib/segment';
+import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -128,7 +131,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.metaMetricsController = new MetaMetricsController({
       segment,
-      segmentLegacy,
       preferencesStore: this.preferencesController.store,
       onNetworkDidChange: this.networkController.on.bind(
         this.networkController,
@@ -160,6 +162,11 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.phishingController = new PhishingController();
+
+    this.notificationController = new NotificationController(
+      { allNotifications: UI_NOTIFICATIONS },
+      initState.NotificationController,
+    );
 
     // now we can initialize the RPC provider, which other controllers require
     this.initializeProvider();
@@ -427,6 +434,7 @@ export default class MetamaskController extends EventEmitter {
       PermissionsController: this.permissionsController.permissions,
       PermissionsMetadata: this.permissionsController.store,
       ThreeBoxController: this.threeBoxController.store,
+      NotificationController: this.notificationController,
     });
 
     this.memStore = new ComposableObservableStore(null, {
@@ -455,6 +463,7 @@ export default class MetamaskController extends EventEmitter {
       SwapsController: this.swapsController.store,
       EnsController: this.ensController.store,
       ApprovalController: this.approvalController,
+      NotificationController: this.notificationController,
     });
     this.memStore.subscribe(this.sendUpdate.bind(this));
 
@@ -466,6 +475,17 @@ export default class MetamaskController extends EventEmitter {
     ) {
       this.submitPassword(password);
     }
+
+    // Lazily update the store with the current extension environment
+    this.extension.runtime.getPlatformInfo(({ os }) => {
+      this.appStateController.setBrowserEnvironment(
+        os,
+        // This method is presently only supported by Firefox
+        this.extension.runtime.getBrowserInfo === undefined
+          ? 'chrome'
+          : 'firefox',
+      );
+    });
 
     // TODO:LegacyProvider: Delete
     this.publicConfigStore = this.createPublicConfigStore();
@@ -657,6 +677,7 @@ export default class MetamaskController extends EventEmitter {
         this.unlockHardwareWalletAccount,
         this,
       ),
+      setLedgerLivePreference: nodeify(this.setLedgerLivePreference, this),
 
       // mobile
       fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
@@ -712,6 +733,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.addKnownMethodData,
         preferencesController,
       ),
+      setDismissSeedBackUpReminder: nodeify(
+        this.preferencesController.setDismissSeedBackUpReminder,
+        this.preferencesController,
+      ),
 
       // AddressController
       setAddressBook: nodeify(
@@ -734,10 +759,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       setConnectedStatusPopoverHasBeenShown: nodeify(
         this.appStateController.setConnectedStatusPopoverHasBeenShown,
-        this.appStateController,
-      ),
-      setSwapsWelcomeMessageHasBeenShown: nodeify(
-        this.appStateController.setSwapsWelcomeMessageHasBeenShown,
         this.appStateController,
       ),
 
@@ -946,6 +967,12 @@ export default class MetamaskController extends EventEmitter {
         approvalController.reject,
         approvalController,
       ),
+
+      // Notifications
+      updateViewedNotifications: nodeify(
+        this.notificationController.updateViewed,
+        this.notificationController,
+      ),
     };
   }
 
@@ -1152,7 +1179,7 @@ export default class MetamaskController extends EventEmitter {
 
     let { transactions } = this.txController.store.getState();
     // delete tx for other accounts that we're not importing
-    transactions = transactions.filter((tx) => {
+    transactions = Object.values(transactions).filter((tx) => {
       const checksummedTxFrom = toChecksumAddress(tx.txParams.from);
       return accounts.hd.includes(checksummedTxFrom);
     });
@@ -1194,6 +1221,14 @@ export default class MetamaskController extends EventEmitter {
     } catch (error) {
       log.error('Error while unlocking extension.', error);
     }
+
+    // This must be set as soon as possible to communicate to the
+    // keyring's iframe and have the setting initialized properly
+    // Optimistically called to not block Metamask login due to
+    // Ledger Keyring GitHub downtime
+    this.setLedgerLivePreference(
+      this.preferencesController.getLedgerLivePreference(),
+    );
 
     return this.keyringController.fullUpdate();
   }
@@ -2013,6 +2048,9 @@ export default class MetamaskController extends EventEmitter {
     // set up postStream transport
     outStream.on('data', createMetaRPCHandler(api, outStream));
     const handleUpdate = (update) => {
+      if (outStream._writableState.ended) {
+        return;
+      }
       // send notification to client-side
       outStream.write({
         jsonrpc: '2.0',
@@ -2482,7 +2520,7 @@ export default class MetamaskController extends EventEmitter {
       };
       this.currencyRateController.update(currencyState);
       this.currencyRateController.configure(currencyState);
-      cb(null, this.currencyRateController.state);
+      cb(null);
       return;
     } catch (err) {
       cb(err);
@@ -2669,6 +2707,27 @@ export default class MetamaskController extends EventEmitter {
       // eslint-disable-next-line no-useless-return
       return;
     }
+  }
+
+  /**
+   * Sets the Ledger Live preference to use for Ledger hardware wallet support
+   * @param {bool} bool - the value representing if the users wants to use Ledger Live
+   */
+  async setLedgerLivePreference(bool) {
+    const currentValue = this.preferencesController.getLedgerLivePreference();
+    this.preferencesController.setLedgerLivePreference(bool);
+
+    const keyring = await this.getKeyringForDevice('ledger');
+    if (keyring?.updateTransportMethod) {
+      return keyring.updateTransportMethod(bool).catch((e) => {
+        // If there was an error updating the transport, we should
+        // fall back to the original value
+        this.preferencesController.setLedgerLivePreference(currentValue);
+        throw e;
+      });
+    }
+
+    return undefined;
   }
 
   /**

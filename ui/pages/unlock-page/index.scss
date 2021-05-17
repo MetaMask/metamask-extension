@@ -1,0 +1,62 @@
+.unlock-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 357px;
+  padding: 30px;
+  font-weight: 400;
+  color: $silver-chalice;
+
+  &__container {
+    background: $white;
+    display: flex;
+    align-self: stretch;
+    justify-content: center;
+    flex: 1 0 auto;
+  }
+
+  &__mascot-container {
+    margin-top: 24px;
+  }
+
+  &__title {
+    @include H2;
+
+    margin-top: 5px;
+    font-weight: 800;
+    color: $tundora;
+  }
+
+  &__form {
+    width: 100%;
+    margin: 56px 0 8px;
+  }
+
+  &__links {
+    margin-top: 15px;
+    width: 100%;
+    text-align: center;
+    font-size: 0.75rem;
+
+    button {
+      font-weight: bold;
+    }
+  }
+
+  &__link {
+    cursor: pointer;
+    background-color: unset;
+    color: $Blue-500;
+    font-size: unset;
+  }
+
+  &__support {
+    margin-top: 25px;
+    font-size: 0.75rem;
+
+    a {
+      color: $Blue-500;
+    }
+  }
+}

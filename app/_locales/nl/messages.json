@@ -166,9 +166,6 @@
     "message": "geïmporteerd",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Info en hulp"
-  },
   "insufficientFunds": {
     "message": "Onvoldoende fondsen."
   },
@@ -289,9 +286,6 @@
   },
   "resetAccount": {
     "message": "Account opnieuw instellen"
-  },
-  "restoreFromSeed": {
-    "message": "Herstel vanuit back-up woorden"
   },
   "revealSeedWords": {
     "message": "Onthul back-up woorden"
