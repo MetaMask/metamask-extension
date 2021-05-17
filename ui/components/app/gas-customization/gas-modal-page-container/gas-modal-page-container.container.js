@@ -38,6 +38,7 @@ import {
   getSendMaxModeState,
   getAveragePriceEstimateInHexWEI,
   isCustomPriceExcessive,
+  getIsEthGasPriceFetched,
 } from '../../../../selectors';
 
 import {
@@ -132,7 +133,7 @@ const mapStateToProps = (state, ownProps) => {
         balance,
         conversionRate,
       });
-
+  const isEthGasPrice = getIsEthGasPriceFetched(state);
   return {
     hideBasic,
     isConfirm: isConfirm(state),
@@ -143,7 +144,9 @@ const mapStateToProps = (state, ownProps) => {
     customGasTotal,
     newTotalFiat,
     customPriceIsSafe:
-      isMainnet || process.env.IN_TEST ? isCustomPriceSafe(state) : true,
+      (isMainnet || process.env.IN_TEST) && !isEthGasPrice
+        ? isCustomPriceSafe(state)
+        : true,
     customPriceIsExcessive: isCustomPriceExcessive(state),
     maxModeOn,
     gasPriceButtonGroupProps: {
