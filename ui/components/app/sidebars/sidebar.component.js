@@ -30,12 +30,16 @@ export default class Sidebar extends Component {
 
   renderSidebarContent() {
     const { type, sidebarProps = {} } = this.props;
-    const { transaction = {}, onSubmit } = sidebarProps;
+    const { transaction = {}, onSubmit, hideBasic } = sidebarProps;
     switch (type) {
       case 'customize-gas':
         return (
           <div className="sidebar-left">
-            <CustomizeGas transaction={transaction} onSubmit={onSubmit} />
+            <CustomizeGas
+              transaction={transaction}
+              onSubmit={onSubmit}
+              hideBasic={hideBasic}
+            />
           </div>
         );
       default:

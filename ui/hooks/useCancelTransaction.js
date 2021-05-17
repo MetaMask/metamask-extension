@@ -7,7 +7,11 @@ import {
   getHexGasTotal,
   increaseLastGasPrice,
 } from '../helpers/utils/confirm-tx.util';
-import { getConversionRate, getSelectedAccount } from '../selectors';
+import {
+  getConversionRate,
+  getSelectedAccount,
+  getIsMainnet,
+} from '../selectors';
 import {
   setCustomGasLimit,
   setCustomGasPriceForRetry,
@@ -43,7 +47,8 @@ export function useCancelTransaction(transactionGroup) {
       multiplierBase: 10,
     }),
   );
-
+  const isMainnet = useSelector(getIsMainnet);
+  const hideBasic = !(isMainnet || process.env.IN_TEST);
   const cancelTransaction = useCallback(
     (event) => {
       event.stopPropagation();
@@ -62,6 +67,7 @@ export function useCancelTransaction(transactionGroup) {
           transitionName: 'sidebar-left',
           type: 'customize-gas',
           props: {
+            hideBasic,
             transaction: tx,
             onSubmit: (newGasLimit, newGasPrice) => {
               const userCustomizedGasTotal = getHexGasTotal({
@@ -82,7 +88,7 @@ export function useCancelTransaction(transactionGroup) {
         }),
       );
     },
-    [dispatch, transaction, defaultNewGasPrice],
+    [dispatch, transaction, defaultNewGasPrice, hideBasic],
   );
 
   const hasEnoughCancelGas =
