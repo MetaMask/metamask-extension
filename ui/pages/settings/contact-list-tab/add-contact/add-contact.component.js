@@ -54,7 +54,9 @@ export default class AddContact extends PureComponent {
   }
 
   validate = (address) => {
-    const valid = !isBurnAddress(address) && isValidHexAddress(address);
+    const valid =
+      !isBurnAddress(address) &&
+      isValidHexAddress(address, { mixedCaseUseChecksum: true });
     const validEnsAddress = isValidDomainName(address);
 
     if (valid || validEnsAddress || address === '') {

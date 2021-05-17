@@ -144,7 +144,10 @@ export default class EnsInput extends Component {
 
   onPaste = (event) => {
     event.clipboardData.items[0].getAsString((text) => {
-      if (!isBurnAddress(text) && isValidHexAddress(text)) {
+      if (
+        !isBurnAddress(text) &&
+        isValidHexAddress(text, { mixedCaseUseChecksum: true })
+      ) {
         this.props.onPaste(text);
       }
     });
@@ -171,7 +174,10 @@ export default class EnsInput extends Component {
 
     if (
       !networkHasEnsSupport &&
-      !(isBurnAddress(input) === false && isValidHexAddress(input)) &&
+      !(
+        isBurnAddress(input) === false &&
+        isValidHexAddress(input, { mixedCaseUseChecksum: true })
+      ) &&
       !isHexString(input)
     ) {
       updateEnsResolution('');
@@ -186,7 +192,7 @@ export default class EnsInput extends Component {
     } else if (
       onValidAddressTyped &&
       !isBurnAddress(input) &&
-      isValidHexAddress(input)
+      isValidHexAddress(input, { mixedCaseUseChecksum: true })
     ) {
       onValidAddressTyped(input);
     } else {

@@ -36,19 +36,19 @@ describe('hexstring utils', function () {
 
     it('should recognize correct capitalized checksum', function () {
       const address = '0xFDEa65C8e26263F6d9A1B5de9555D2931A33b825';
-      const result = isValidHexAddress(address);
+      const result = isValidHexAddress(address, { mixedCaseUseChecksum: true });
       assert.equal(result, true);
     });
 
     it('should recognize incorrect capitalized checksum', function () {
       const address = '0xFDea65C8e26263F6d9A1B5de9555D2931A33b825';
-      const result = isValidHexAddress(address);
+      const result = isValidHexAddress(address, { mixedCaseUseChecksum: true });
       assert.equal(result, false);
     });
 
     it('should recognize this sample hashed address', function () {
       const address = '0x5Fda30Bb72B8Dfe20e48A00dFc108d0915BE9Bb0';
-      const result = isValidHexAddress(address);
+      const result = isValidHexAddress(address, { mixedCaseUseChecksum: true });
       const hashed = toChecksumAddress(address.toLowerCase());
       assert.equal(hashed, address);
       assert.equal(result, true);

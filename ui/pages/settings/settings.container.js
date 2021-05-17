@@ -5,7 +5,10 @@ import { getAddressBookEntryName } from '../../selectors';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
+import {
+  isValidHexAddress,
+  isBurnAddress,
+} from '../../../shared/modules/hexstring-utils';
 
 import {
   ABOUT_US_ROUTE,
@@ -64,7 +67,10 @@ const mapStateToProps = (state, ownProps) => {
 
   const addressName = getAddressBookEntryName(
     state,
-    isValidHexAddress(pathNameTail) ? pathNameTail : '',
+    !isBurnAddress(pathNameTail) &&
+      isValidHexAddress(pathNameTail, { mixedCaseUseChecksum: true })
+      ? pathNameTail
+      : '',
   );
 
   return {

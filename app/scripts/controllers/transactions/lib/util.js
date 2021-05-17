@@ -110,7 +110,7 @@ export function validateFrom(txParams) {
       `Invalid "from" address "${txParams.from}": not a string.`,
     );
   }
-  if (!isValidHexAddress(txParams.from)) {
+  if (!isValidHexAddress(txParams.from, { allowNonPrefixed: false })) {
     throw ethErrors.rpc.invalidParams('Invalid "from" address.');
   }
 }
@@ -130,7 +130,7 @@ export function validateRecipient(txParams) {
     }
   } else if (
     txParams.to !== undefined &&
-    !isValidHexAddress(txParams.to, false)
+    !isValidHexAddress(txParams.to, { allowNonPrefixed: false })
   ) {
     throw ethErrors.rpc.invalidParams('Invalid "to" address.');
   }

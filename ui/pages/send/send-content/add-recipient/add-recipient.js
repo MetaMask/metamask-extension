@@ -27,7 +27,8 @@ export function getToErrorObject(to, sendTokenAddress, chainId) {
     toError = REQUIRED_ERROR;
   } else if (
     isBurnAddress(to) ||
-    (!isValidHexAddress(to) && !isValidDomainName(to))
+    (!isValidHexAddress(to, { mixedCaseUseChecksum: true }) &&
+      !isValidDomainName(to))
   ) {
     toError = isDefaultMetaMaskChain(chainId)
       ? INVALID_RECIPIENT_ADDRESS_ERROR

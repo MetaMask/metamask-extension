@@ -74,8 +74,8 @@ const QUOTE_VALIDATORS = [
     validator: (trade) =>
       trade &&
       validHex(trade.data) &&
-      isValidHexAddress(trade.to) &&
-      isValidHexAddress(trade.from) &&
+      isValidHexAddress(trade.to, { allowNonPrefixed: false }) &&
+      isValidHexAddress(trade.from, { allowNonPrefixed: false }) &&
       truthyString(trade.value),
   },
   {
@@ -85,8 +85,8 @@ const QUOTE_VALIDATORS = [
       approvalTx === null ||
       (approvalTx &&
         validHex(approvalTx.data) &&
-        isValidHexAddress(approvalTx.to) &&
-        isValidHexAddress(approvalTx.from)),
+        isValidHexAddress(approvalTx.to, { allowNonPrefixed: false }) &&
+        isValidHexAddress(approvalTx.from, { allowNonPrefixed: false })),
   },
   {
     property: 'sourceAmount',

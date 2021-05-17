@@ -104,7 +104,10 @@ export default class AddRecipient extends Component {
 
     let content;
 
-    if (!isBurnAddress(query) && isValidHexAddress(query)) {
+    if (
+      !isBurnAddress(query) &&
+      isValidHexAddress(query, { mixedCaseUseChecksum: true })
+    ) {
       content = this.renderExplicitAddress(query);
     } else if (ensResolution) {
       content = this.renderExplicitAddress(

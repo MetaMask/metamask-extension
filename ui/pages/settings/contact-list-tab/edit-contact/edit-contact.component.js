@@ -140,7 +140,9 @@ export default class EditContact extends PureComponent {
               // if the user makes a valid change to the address field, remove the original address
               if (
                 !isBurnAddress(this.state.newAddress) &&
-                isValidHexAddress(this.state.newAddress)
+                isValidHexAddress(this.state.newAddress, {
+                  mixedCaseUseChecksum: true,
+                })
               ) {
                 await removeFromAddressBook(chainId, address);
                 await addToAddressBook(
