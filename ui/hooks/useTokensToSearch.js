@@ -14,6 +14,7 @@ import {
 import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { useEqualityCheck } from './useEqualityCheck';
 
 const tokenList = shuffle(
