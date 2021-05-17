@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.5.3]
+### Uncategorized
+- Updating util import paths for master
+- [#11117](https://github.com/MetaMask/metamask-extension/pull/11117): use safer toChecksum utility
+- [#11107](https://github.com/MetaMask/metamask-extension/pull/11107): Migration to remove erroneous tx state
+- [#11104](https://github.com/MetaMask/metamask-extension/pull/11104): Throw error if transaction type is not recognized by useTransactionDisplay data
+- [#11103](https://github.com/MetaMask/metamask-extension/pull/11103): fix splitting of transaction nonce groups in state
+- [#11101](https://github.com/MetaMask/metamask-extension/pull/11101): Improve type checking and handle incorrect category in transaction-icon component
+- [#11089](https://github.com/MetaMask/metamask-extension/pull/11089): create safer isValidAddress method
+- [#11016](https://github.com/MetaMask/metamask-extension/pull/11016): Group signature transactions
+- [#11015](https://github.com/MetaMask/metamask-extension/pull/11015): Prevent an undefined gas price from breaking the transaction list
+
 ## [9.5.2]
 ### Fixed
 - [#11071](https://github.com/MetaMask/metamask-extension/pull/11071): Fixing address entry error when sending a transaction on a custom network
@@ -2230,7 +2242,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.3...HEAD
+[9.5.3]: https://github.com/MetaMask/metamask-extension/compare/v9.5.2...v9.5.3
 [9.5.2]: https://github.com/MetaMask/metamask-extension/compare/v9.5.1...v9.5.2
 [9.5.1]: https://github.com/MetaMask/metamask-extension/compare/v9.5.0...v9.5.1
 [9.5.0]: https://github.com/MetaMask/metamask-extension/compare/v9.4.0...v9.5.0
