@@ -4,10 +4,10 @@ import React, { Component } from 'react';
 
 import { stripHexPrefix } from 'ethereumjs-util';
 import copyToClipboard from 'copy-to-clipboard';
-import { checksumAddress } from '../../../../helpers/utils/util';
 import ReadOnlyInput from '../../../ui/readonly-input';
 import Button from '../../../ui/button';
 import AccountModalContainer from '../account-modal-container';
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 
 export default class ExportPrivateKeyModal extends Component {
   static contextTypes = {
@@ -149,7 +149,7 @@ export default class ExportPrivateKeyModal extends Component {
         <span className="export-private-key-modal__account-name">{name}</span>
         <ReadOnlyInput
           wrapperClass="ellip-address-wrapper"
-          value={checksumAddress(address)}
+          value={toChecksumHexAddress(address)}
         />
         <div className="export-private-key-modal__divider" />
         <span className="export-private-key-modal__body-title">

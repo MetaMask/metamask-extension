@@ -12,6 +12,7 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -67,7 +68,7 @@ export function addressSummary(
   if (!address) {
     return '';
   }
-  let checked = checksumAddress(address);
+  let checked = toChecksumHexAddress(address);
   if (!includeHex) {
     checked = ethUtil.stripHexPrefix(checked);
   }
@@ -193,18 +194,6 @@ export function exportAsFile(filename, data, type = 'text/csv') {
     elem.click();
     document.body.removeChild(elem);
   }
-}
-
-/**
- * Safely checksumms a potentially-null address
- *
- * @param {string} [address] - address to checksum
- * @returns {string} checksummed address
- *
- */
-export function checksumAddress(address) {
-  const checksummed = address ? ethUtil.toChecksumAddress(address) : '';
-  return checksummed;
 }
 
 /**

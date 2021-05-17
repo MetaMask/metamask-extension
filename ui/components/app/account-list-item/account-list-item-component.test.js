@@ -1,18 +1,19 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
-import * as utils from '../../../helpers/utils/util';
 import Identicon from '../../ui/identicon';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import AccountListItem from './account-list-item';
 
+jest.mock('../../../../shared/modules/hexstring-utils', () => ({
+  toChecksumHexAddress: jest.fn(() => 'mockCheckSumAddress'),
+}));
+
 describe('AccountListItem Component', () => {
-  let wrapper, propsMethodSpies, checksumAddressStub;
+  let wrapper, propsMethodSpies;
 
   describe('render', () => {
     beforeAll(() => {
-      checksumAddressStub = sinon
-        .stub(utils, 'checksumAddress')
-        .returns('mockCheckSumAddress');
       propsMethodSpies = {
         handleClick: sinon.spy(),
       };
@@ -36,7 +37,6 @@ describe('AccountListItem Component', () => {
 
     afterEach(() => {
       propsMethodSpies.handleClick.resetHistory();
-      checksumAddressStub.resetHistory();
     });
 
     afterAll(() => {
@@ -126,9 +126,7 @@ describe('AccountListItem Component', () => {
       expect(
         wrapper.find('.account-list-item__account-address').text(),
       ).toStrictEqual('mockCheckSumAddress');
-      expect(checksumAddressStub.getCall(0).args).toStrictEqual([
-        'mockAddress',
-      ]);
+      expect(toChecksumHexAddress).toHaveBeenCalledWith('mockAddress');
     });
 
     it('should not render the account address as a checksumAddress if displayAddress is false', () => {

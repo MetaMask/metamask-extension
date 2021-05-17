@@ -1,4 +1,3 @@
-import { toChecksumAddress } from 'ethereumjs-util';
 import contractMap from '@metamask/contract-metadata';
 import { isConfusing } from 'unicode-confusables';
 import {
@@ -19,6 +18,7 @@ import {
 import {
   isBurnAddress,
   isValidHexAddress,
+  toChecksumHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
 
 export function getToErrorObject(to, sendTokenAddress, chainId) {
@@ -44,7 +44,8 @@ export function getToWarningObject(to, tokens = [], sendToken = null) {
   let toWarning = null;
   if (
     sendToken &&
-    (toChecksumAddress(to) in contractMap || checkExistingAddresses(to, tokens))
+    (toChecksumHexAddress(to) in contractMap ||
+      checkExistingAddresses(to, tokens))
   ) {
     toWarning = KNOWN_RECIPIENT_ADDRESS_ERROR;
   } else if (isValidDomainName(to) && isConfusing(to)) {
