@@ -1,8 +1,13 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
-import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
+import {
+  TRANSACTION_STATUSES,
+  TRANSACTION_TYPES,
+} from '../../../../shared/constants/transaction';
 import {
   KOVAN_CHAIN_ID,
+  MAINNET_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
   KOVAN_NETWORK_ID,
 } from '../../../../shared/constants/network';
 import TxStateManager from './tx-state-manager';
@@ -10,6 +15,36 @@ import { snapshotFromTxMeta } from './lib/tx-state-history-helpers';
 
 const VALID_ADDRESS = '0x0000000000000000000000000000000000000000';
 const VALID_ADDRESS_TWO = '0x0000000000000000000000000000000000000001';
+
+function generateTransactions(
+  numToGen,
+  {
+    chainId,
+    to,
+    from,
+    status,
+    type = TRANSACTION_TYPES.SENT_ETHER,
+    nonce = (i) => `${i}`,
+  },
+) {
+  const txs = [];
+  for (let i = 0; i < numToGen; i++) {
+    const tx = {
+      id: i,
+      time: new Date() * i,
+      status: typeof status === 'function' ? status(i) : status,
+      chainId: typeof chainId === 'function' ? chainId(i) : chainId,
+      txParams: {
+        nonce: nonce(i),
+        to,
+        from,
+      },
+      type: typeof type === 'function' ? type(i) : type,
+    };
+    txs.push(tx);
+  }
+  return txs;
+}
 describe('TransactionStateManager', function () {
   let txStateManager;
   const currentNetworkId = KOVAN_NETWORK_ID;
@@ -540,19 +575,13 @@ describe('TransactionStateManager', function () {
 
     it('cuts off early txs beyond a limit', function () {
       const limit = txStateManager.txHistoryLimit;
-      for (let i = 0; i < limit + 1; i++) {
-        const tx = {
-          id: i,
-          time: new Date(),
-          status: TRANSACTION_STATUSES.CONFIRMED,
-          metamaskNetworkId: currentNetworkId,
-          txParams: {
-            to: VALID_ADDRESS,
-            from: VALID_ADDRESS,
-          },
-        };
-        txStateManager.addTransaction(tx);
-      }
+      const txs = generateTransactions(limit + 1, {
+        chainId: currentChainId,
+        to: VALID_ADDRESS,
+        from: VALID_ADDRESS_TWO,
+        status: TRANSACTION_STATUSES.CONFIRMED,
+      });
+      txs.forEach((tx) => txStateManager.addTransaction(tx));
       const result = txStateManager.getTransactions();
       assert.equal(result.length, limit, `limit of ${limit} txs enforced`);
       assert.equal(result[0].id, 1, 'early txs truncated');
@@ -560,52 +589,42 @@ describe('TransactionStateManager', function () {
 
     it('cuts off early txs beyond a limit whether or not it is confirmed or rejected', function () {
       const limit = txStateManager.txHistoryLimit;
-      for (let i = 0; i < limit + 1; i++) {
-        const tx = {
-          id: i,
-          time: new Date(),
-          status: TRANSACTION_STATUSES.REJECTED,
-          metamaskNetworkId: currentNetworkId,
-          txParams: {
-            to: VALID_ADDRESS,
-            from: VALID_ADDRESS,
-          },
-        };
-        txStateManager.addTransaction(tx);
-      }
+      const txs = generateTransactions(limit + 1, {
+        chainId: currentChainId,
+        to: VALID_ADDRESS,
+        from: VALID_ADDRESS_TWO,
+        status: TRANSACTION_STATUSES.REJECTED,
+      });
+      txs.forEach((tx) => txStateManager.addTransaction(tx));
       const result = txStateManager.getTransactions();
       assert.equal(result.length, limit, `limit of ${limit} txs enforced`);
       assert.equal(result[0].id, 1, 'early txs truncated');
     });
 
     it('cuts off early txs beyond a limit but does not cut unapproved txs', function () {
-      const unconfirmedTx = {
-        id: 0,
-        time: new Date(),
-        status: TRANSACTION_STATUSES.UNAPPROVED,
-        metamaskNetworkId: currentNetworkId,
-        txParams: {
-          to: VALID_ADDRESS,
-          from: VALID_ADDRESS,
-        },
-      };
-      txStateManager.addTransaction(unconfirmedTx);
       const limit = txStateManager.txHistoryLimit;
-      for (let i = 1; i < limit + 1; i++) {
-        const tx = {
-          id: i,
-          time: new Date(),
-          status: TRANSACTION_STATUSES.CONFIRMED,
-          metamaskNetworkId: currentNetworkId,
-          txParams: {
-            to: VALID_ADDRESS,
-            from: VALID_ADDRESS,
-          },
-        };
-        txStateManager.addTransaction(tx);
-      }
+      const txs = generateTransactions(
+        // we add two transactions over limit here to first insert the must be always present
+        // unapproved tx, then another to force the original logic of adding
+        // one more beyond the first additional.
+        limit + 2,
+        {
+          chainId: currentChainId,
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS_TWO,
+          status: (i) =>
+            i === 0
+              ? TRANSACTION_STATUSES.UNAPPROVED
+              : TRANSACTION_STATUSES.CONFIRMED,
+        },
+      );
+      txs.forEach((tx) => txStateManager.addTransaction(tx));
       const result = txStateManager.getTransactions();
-      assert.equal(result.length, limit, `limit of ${limit} txs enforced`);
+      assert.equal(
+        result.length,
+        limit + 1,
+        `limit of ${limit} + 1 for the unapproved tx is enforced`,
+      );
       assert.equal(result[0].id, 0, 'first tx should still be there');
       assert.equal(
         result[0].status,
@@ -613,6 +632,118 @@ describe('TransactionStateManager', function () {
         'first tx should be unapproved',
       );
       assert.equal(result[1].id, 2, 'early txs truncated');
+    });
+
+    it('cuts off entire groups of transactions by nonce when adding new transaction', function () {
+      const limit = txStateManager.txHistoryLimit;
+      // In this test case the earliest two transactions are a dropped attempted ether send and a
+      // following cancel transaction with the same nonce. these two transactions should be dropped
+      // together as soon as the 11th unique nonce is attempted to be added. We use limit + 2 to
+      // first get into the state where we are over the "limit" of transactions because of a set
+      // of transactions with a unique nonce/network combo, then add an additional new transaction
+      // to trigger the removal of one group of nonces.
+      const txs = generateTransactions(limit + 2, {
+        chainId: currentChainId,
+        to: VALID_ADDRESS,
+        from: VALID_ADDRESS_TWO,
+        nonce: (i) => (i === 1 ? `0` : `${i}`),
+        status: (i) =>
+          i === 0
+            ? TRANSACTION_STATUSES.DROPPED
+            : TRANSACTION_STATUSES.CONFIRMED,
+        type: (i) =>
+          i === 1 ? TRANSACTION_TYPES.CANCEL : TRANSACTION_STATUSES.SENT_ETHER,
+      });
+      txs.forEach((tx) => txStateManager.addTransaction(tx));
+      const result = txStateManager.getTransactions();
+      assert.equal(result.length, limit, `limit of ${limit} is enforced`);
+      assert.notEqual(result[0].id, 0, 'first tx should be removed');
+      assert.equal(
+        result.some(
+          (tx) =>
+            tx.status === TRANSACTION_STATUSES.DROPPED ||
+            tx.status === TRANSACTION_TYPES.CANCEL,
+        ),
+        false,
+        'the cancel and dropped transactions should not be present in the result',
+      );
+    });
+
+    it('cuts off entire groups of transactions by nonce + network when adding new transaction', function () {
+      const limit = txStateManager.txHistoryLimit;
+      // In this test case the earliest two transactions are a dropped attempted ether send and a
+      // following cancel transaction with the same nonce. Then, a bit later the same scenario on a
+      // different network. The first two transactions should be dropped after adding even another
+      // single transaction but the other shouldn't be dropped until adding the fifth additional
+      // transaction
+      const txs = generateTransactions(limit + 5, {
+        chainId: (i) => {
+          if (i === 0 || i === 1) return MAINNET_CHAIN_ID;
+          else if (i === 4 || i === 5) return RINKEBY_CHAIN_ID;
+          return currentChainId;
+        },
+        to: VALID_ADDRESS,
+        from: VALID_ADDRESS_TWO,
+        nonce: (i) => ([0, 1, 4, 5].includes(i) ? '0' : `${i}`),
+        status: (i) =>
+          i === 0 || i === 4
+            ? TRANSACTION_STATUSES.DROPPED
+            : TRANSACTION_STATUSES.CONFIRMED,
+        type: (i) =>
+          i === 1 || i === 5
+            ? TRANSACTION_TYPES.CANCEL
+            : TRANSACTION_STATUSES.SENT_ETHER,
+      });
+      txs.forEach((tx) => txStateManager.addTransaction(tx));
+      const result = txStateManager.getTransactions({
+        filterToCurrentNetwork: false,
+      });
+
+      assert.equal(
+        result.length,
+        limit + 1,
+        `limit of ${limit} + 1 for the grouped transactions is enforced`,
+      );
+      // The first group of transactions on mainnet should be removed
+      assert.equal(
+        result.some(
+          (tx) =>
+            tx.chainId === MAINNET_CHAIN_ID && tx.txParams.nonce === '0x0',
+        ),
+        false,
+        'the mainnet transactions with nonce 0x0 should not be present in the result',
+      );
+    });
+
+    it('does not cut off entire groups of transactions when adding new transaction when under limit', function () {
+      // In this test case the earliest two transactions are a dropped attempted ether send and a
+      // following cancel transaction with the same nonce. Then, a bit later the same scenario on a
+      // different network. None of these should be dropped because we haven't yet reached the limit
+      const limit = txStateManager.txHistoryLimit;
+      const txs = generateTransactions(limit - 1, {
+        chainId: (i) => ([0, 1, 4, 5].includes(i) ? currentChainId : '0x1'),
+        to: VALID_ADDRESS,
+        from: VALID_ADDRESS_TWO,
+        nonce: (i) => {
+          if (i === 1) return '0';
+          else if (i === 5) return '4';
+          return `${i}`;
+        },
+        status: (i) =>
+          i === 0 || i === 4
+            ? TRANSACTION_STATUSES.DROPPED
+            : TRANSACTION_STATUSES.CONFIRMED,
+        type: (i) =>
+          i === 1 || i === 5
+            ? TRANSACTION_TYPES.CANCEL
+            : TRANSACTION_STATUSES.SENT_ETHER,
+      });
+      txs.forEach((tx) => txStateManager.addTransaction(tx));
+      const result = txStateManager.getTransactions({
+        filterToCurrentNetwork: false,
+      });
+      assert.equal(result.length, 9, `all nine transactions should be present`);
+      assert.equal(result[0].id, 0, 'first tx should be present');
     });
   });
 
