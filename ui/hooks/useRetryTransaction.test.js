@@ -3,23 +3,31 @@ import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
 import transactions from '../../test/data/transaction-data.json';
 import { showSidebar } from '../store/actions';
+import { getIsMainnet } from '../selectors';
 import * as methodDataHook from './useMethodData';
 import * as metricEventHook from './useMetricEvent';
 import { useRetryTransaction } from './useRetryTransaction';
 
 describe('useRetryTransaction', () => {
   describe('when transaction meets retry enabled criteria', () => {
+    let useSelector;
     const dispatch = sinon.spy(() => Promise.resolve({ blockTime: 0 }));
     const trackEvent = sinon.spy();
     const event = {
       preventDefault: () => undefined,
       stopPropagation: () => undefined,
     };
-
     beforeAll(() => {
       sinon.stub(reactRedux, 'useDispatch').returns(dispatch);
       sinon.stub(methodDataHook, 'useMethodData').returns({});
       sinon.stub(metricEventHook, 'useMetricEvent').returns(trackEvent);
+      useSelector = sinon.stub(reactRedux, 'useSelector');
+      useSelector.callsFake((selector) => {
+        if (selector === getIsMainnet) {
+          return true;
+        }
+        return undefined;
+      });
     });
 
     afterEach(() => {
@@ -61,7 +69,10 @@ describe('useRetryTransaction', () => {
           showSidebar({
             transitionName: 'sidebar-left',
             type: 'customize-gas',
-            props: { transaction: retryEnabledTransaction.initialTransaction },
+            props: {
+              transaction: retryEnabledTransaction.initialTransaction,
+              hideBasic: false,
+            },
           }),
         ),
       ).toStrictEqual(true);
@@ -104,7 +115,10 @@ describe('useRetryTransaction', () => {
           showSidebar({
             transitionName: 'sidebar-left',
             type: 'customize-gas',
-            props: { transaction: cancelledTransaction.primaryTransaction },
+            props: {
+              transaction: cancelledTransaction.primaryTransaction,
+              hideBasic: false,
+            },
           }),
         ),
       ).toStrictEqual(true);
