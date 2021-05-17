@@ -78,20 +78,6 @@ export function addressSummary(
     : '...';
 }
 
-export function isValidAddress(address) {
-  if (!address || address === '0x0000000000000000000000000000000000000000') {
-    return false;
-  }
-  const prefixed = addHexPrefix(address);
-  if (!isHex(prefixed)) {
-    return false;
-  }
-  return (
-    (isAllOneCase(prefixed.slice(2)) && ethUtil.isValidAddress(prefixed)) ||
-    ethUtil.isValidChecksumAddress(prefixed)
-  );
-}
-
 export function isValidDomainName(address) {
   const match = punycode
     .toASCII(address)
@@ -110,15 +96,6 @@ export function isOriginContractAddress(to, sendTokenAddress) {
     return false;
   }
   return to.toLowerCase() === sendTokenAddress.toLowerCase();
-}
-
-export function isAllOneCase(address) {
-  if (!address) {
-    return true;
-  }
-  const lower = address.toLowerCase();
-  const upper = address.toUpperCase();
-  return address === lower || address === upper;
 }
 
 // Takes wei Hex, returns wei BN, even if input is null
@@ -180,10 +157,6 @@ export function formatBalance(
     )} ${ticker}`;
   }
   return formatted;
-}
-
-export function isHex(str) {
-  return Boolean(str.match(/^(0x)?[0-9a-fA-F]+$/u));
 }
 
 export function getContractAtAddress(tokenAddress) {
@@ -251,13 +224,6 @@ export function shortenAddress(address = '') {
   }
 
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
-}
-
-export function isValidAddressHead(address) {
-  const addressLengthIsLessThanFull = address.length < 42;
-  const addressIsHex = isHex(address);
-
-  return addressLengthIsLessThanFull && addressIsHex;
 }
 
 export function getAccountByAddress(accounts = [], targetAddress) {

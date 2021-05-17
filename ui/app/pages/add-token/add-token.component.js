@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  checkExistingAddresses,
-  isValidAddress,
-} from '../../helpers/utils/util';
+import { checkExistingAddresses } from '../../helpers/utils/util';
 import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import { CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes';
 import TextField from '../../components/ui/text-field';
 import PageContainer from '../../components/ui/page-container';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
 import TokenList from './token-list';
 import TokenSearch from './token-search';
 
@@ -167,7 +165,9 @@ class AddToken extends Component {
       autoFilled: false,
     });
 
-    const addressIsValid = isValidAddress(customAddress);
+    const addressIsValid = isValidHexAddress(customAddress, {
+      allowNonPrefixed: false,
+    });
     const standardAddress = addHexPrefix(customAddress).toLowerCase();
 
     switch (true) {

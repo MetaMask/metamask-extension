@@ -1,7 +1,6 @@
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
 import abi from 'human-standard-token-abi';
-import { isValidAddress } from 'ethereumjs-util';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   METASWAP_CHAINID_API_HOST_MAP,
@@ -35,6 +34,7 @@ import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import fetchWithCache from '../../helpers/utils/fetch-with-cache';
 
 import { calcGasTotal } from '../send/send.utils';
+import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 
 const TOKEN_TRANSFER_LOG_TOPIC_HASH =
   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
@@ -74,8 +74,8 @@ const QUOTE_VALIDATORS = [
     validator: (trade) =>
       trade &&
       validHex(trade.data) &&
-      isValidAddress(trade.to) &&
-      isValidAddress(trade.from) &&
+      isValidHexAddress(trade.to, { allowNonPrefixed: false }) &&
+      isValidHexAddress(trade.from, { allowNonPrefixed: false }) &&
       truthyString(trade.value),
   },
   {
@@ -85,8 +85,8 @@ const QUOTE_VALIDATORS = [
       approvalTx === null ||
       (approvalTx &&
         validHex(approvalTx.data) &&
-        isValidAddress(approvalTx.to) &&
-        isValidAddress(approvalTx.from)),
+        isValidHexAddress(approvalTx.to, { allowNonPrefixed: false }) &&
+        isValidHexAddress(approvalTx.from, { allowNonPrefixed: false })),
   },
   {
     property: 'sourceAmount',
@@ -101,12 +101,12 @@ const QUOTE_VALIDATORS = [
   {
     property: 'sourceToken',
     type: 'string',
-    validator: isValidAddress,
+    validator: (input) => isValidHexAddress(input, { allowNonPrefixed: false }),
   },
   {
     property: 'destinationToken',
     type: 'string',
-    validator: isValidAddress,
+    validator: (input) => isValidHexAddress(input, { allowNonPrefixed: false }),
   },
   {
     property: 'aggregator',
@@ -146,7 +146,7 @@ const TOKEN_VALIDATORS = [
   {
     property: 'address',
     type: 'string',
-    validator: isValidAddress,
+    validator: (input) => isValidHexAddress(input, { allowNonPrefixed: false }),
   },
   {
     property: 'symbol',
