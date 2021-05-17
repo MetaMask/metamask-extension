@@ -9,12 +9,12 @@ import networkMap from 'ethereum-ens-network-map';
 import log from 'loglevel';
 import { isHexString } from 'ethereumjs-util';
 import { ellipsify } from '../../send.utils';
+import { isValidDomainName } from '../../../../helpers/utils/util';
+import { MAINNET_NETWORK_ID } from '../../../../../shared/constants/network';
 import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
-import { isValidDomainName } from '../../../../helpers/utils/util';
-import { MAINNET_NETWORK_ID } from '../../../../../shared/constants/network';
 
 // Local Constants
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';

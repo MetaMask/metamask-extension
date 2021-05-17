@@ -11,11 +11,13 @@ jest.mock('../../../../helpers/utils/util', () => ({
   isDefaultMetaMaskChain: jest.fn().mockReturnValue(true),
   isEthNetwork: jest.fn().mockReturnValue(true),
   checkExistingAddresses: jest.fn().mockReturnValue(true),
+  isValidDomainName: jest.requireActual('../../../../helpers/utils/util')
+    .isValidDomainName,
   isOriginContractAddress: jest.requireActual('../../../../helpers/utils/util')
     .isOriginContractAddress,
 }));
 
-jest.mock('../../../../../../shared/modules/hexstring-utils', () => ({
+jest.mock('../../../../../shared/modules/hexstring-utils', () => ({
   isValidHexAddress: jest.fn((to) =>
     Boolean(to.match(/^[0xabcdef123456798]+$/u)),
   ),
