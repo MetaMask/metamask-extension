@@ -26,6 +26,7 @@ class MetaRPCClient {
 
   close() {
     this.notificationChannel.removeAllListeners();
+    this.uncaughtErrorChannel.removeAllListeners();
   }
 
   handleResponse(data) {
