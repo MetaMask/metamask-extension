@@ -591,7 +591,7 @@ describe('TransactionStateManager', function () {
         chainId: currentChainId,
         to: VALID_ADDRESS,
         from: VALID_ADDRESS_TWO,
-        status: TRANSACTION_STATUSES.CONFIRMED,
+        status: TRANSACTION_STATUSES.REJECTED,
       });
       txs.forEach((tx) => txStateManager.addTransaction(tx));
       const result = txStateManager.getTransactions();
