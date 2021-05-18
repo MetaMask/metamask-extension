@@ -505,7 +505,7 @@ jobs:
           at: .
       - run:
           name: sentry sourcemaps upload
-          command: yarn sentry:publish
+          command: SENTRY_ORG=metamask SENTRY_PROJECT=metamask yarn sentry:publish
       - run:
           name: Create GitHub release
           command: |
