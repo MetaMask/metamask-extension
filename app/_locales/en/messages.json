@@ -1288,6 +1288,10 @@
     "message": "Swap on Binance Smart Chain",
     "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
   },
+  "notifications5Description": {
+    "message": "Your \"Seed Phrase\" is now called your \"Secret Recovery Phrase.\"",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
+  },
   "ofTextNofM": {
     "message": "of"
   },

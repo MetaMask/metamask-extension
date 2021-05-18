@@ -22,6 +22,10 @@ export const UI_NOTIFICATIONS = {
       width: '100%',
     },
   },
+  5: {
+    id: 5,
+    date: '2021-05-18',
+  },
 };
 
 export const getTranslatedUINoficiations = (t, locale) => {
@@ -51,6 +55,15 @@ export const getTranslatedUINoficiations = (t, locale) => {
       actionText: t('notifications4ActionText'),
       date: new Intl.DateTimeFormat(locale).format(
         new Date(UI_NOTIFICATIONS[4].date),
+      ),
+    },
+    5: {
+      ...UI_NOTIFICATIONS[5],
+      title: t('walletSeed'),
+      description: t('notifications5Description'),
+      actionText: t('notifications3ActionText'),
+      date: new Intl.DateTimeFormat(locale).format(
+        new Date(UI_NOTIFICATIONS[5].date),
       ),
     },
   };
