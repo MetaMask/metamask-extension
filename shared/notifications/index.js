@@ -10,10 +10,6 @@ export const UI_NOTIFICATIONS = {
       placeImageBelowDescription: true,
     },
   },
-  2: {
-    id: 2,
-    date: '2020-08-31',
-  },
   3: {
     id: 3,
     date: '2021-03-08',
@@ -37,15 +33,6 @@ export const getTranslatedUINoficiations = (t, locale) => {
       description: t('notifications1Description'),
       date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[1].date),
-      ),
-    },
-    2: {
-      ...UI_NOTIFICATIONS[2],
-      title: t('notifications2Title'),
-      description: t('notifications2Description'),
-      actionText: t('notifications2ActionText'),
-      date: new Intl.DateTimeFormat(formattedLocale).format(
-        new Date(UI_NOTIFICATIONS[2].date),
       ),
     },
     3: {
