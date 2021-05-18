@@ -424,7 +424,7 @@ const state = {
         "gasPriceSpecified": true,
         "gasLimitSpecified": true,
         "estimatedGas": "0x73f780",
-        "origin": "MetaMask",
+        "origin": "https://metamask.github.io",
         "nonceDetails": {
           "params": {
             "highestLocallyConfirmed": 0,
