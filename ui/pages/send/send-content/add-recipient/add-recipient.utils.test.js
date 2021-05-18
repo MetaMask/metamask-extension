@@ -25,14 +25,6 @@ jest.mock('../../../../../shared/modules/hexstring-utils', () => ({
   toChecksumHexAddress: jest.fn((input) => input),
 }));
 
-jest.mock('../../../../../../shared/modules/hexstring-utils', () => ({
-  isValidHexAddress: jest.fn((to) =>
-    Boolean(to.match(/^[0xabcdef123456798]+$/u)),
-  ),
-  isBurnAddress: jest.fn(() => false),
-  toChecksumHexAddress: jest.fn((input) => input),
-}));
-
 describe('add-recipient utils', () => {
   describe('getToErrorObject()', () => {
     it('should return a required error if "to" is falsy', () => {
