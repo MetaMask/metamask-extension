@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#10932](https://github.com/MetaMask/metamask-extension/pull/10932): Add view account details menu item to token page menu
 - [#10895](https://github.com/MetaMask/metamask-extension/pull/10895): Adding new links to contact MetaMask support
 - [#10595](https://github.com/MetaMask/metamask-extension/pull/10595): Adding option to set Custom Nonce to Confirm Approve Page
+- [#10717](https://github.com/MetaMask/metamask-extension/pull/10717): Adding recovery phrase video to onboarding process
 - [#10616](https://github.com/MetaMask/metamask-extension/pull/10616): add trezor HD path for ledger wallets
 
 ### Changed

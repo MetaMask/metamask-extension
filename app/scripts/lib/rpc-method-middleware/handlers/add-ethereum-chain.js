@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { ethErrors, errorCodes } from 'eth-rpc-errors';
 import validUrl from 'valid-url';
 import { omit } from 'lodash';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
@@ -123,12 +123,16 @@ async function addEthereumChainHandler(
 
   const existingNetwork = findCustomRpcBy({ chainId: _chainId });
 
-  if (existingNetwork !== null) {
+  if (existingNetwork) {
+    // If the network already exists, the request is considered successful
+    res.result = null;
+
     const currentChainId = getCurrentChainId();
     if (currentChainId === _chainId) {
-      res.result = null;
       return end();
     }
+
+    // Ask the user to switch the network
     try {
       await updateRpcTarget(
         await requestUserApproval({
@@ -144,7 +148,12 @@ async function addEthereumChainHandler(
       );
       res.result = null;
     } catch (error) {
-      return end(error);
+      // For the purposes of this method, it does not matter if the user
+      // declines to switch the selected network. However, other errors indicate
+      // that something is wrong.
+      if (error.code !== errorCodes.provider.userRejectedRequest) {
+        return end(error);
+      }
     }
     return end();
   }
@@ -251,6 +260,14 @@ async function addEthereumChainHandler(
       },
     });
 
+    // Once the network has been added, the requested is considered successful
+    res.result = null;
+  } catch (error) {
+    return end(error);
+  }
+
+  // Ask the user to switch the network
+  try {
     await updateRpcTarget(
       await requestUserApproval({
         origin,
@@ -263,10 +280,13 @@ async function addEthereumChainHandler(
         },
       }),
     );
-
-    res.result = null;
   } catch (error) {
-    return end(error);
+    // For the purposes of this method, it does not matter if the user
+    // declines to switch the selected network. However, other errors indicate
+    // that something is wrong.
+    if (error.code !== errorCodes.provider.userRejectedRequest) {
+      return end(error);
+    }
   }
   return end();
 }

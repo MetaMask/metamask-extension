@@ -308,9 +308,6 @@
   "done": {
     "message": "Pabeigts"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Nav aparatūras maka?"
-  },
   "downloadGoogleChrome": {
     "message": "Lejupielādēt ar Google Chrome"
   },
@@ -439,9 +436,6 @@
     "message": "Vai vēlaties $1 iegūt Ether no krāna?",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Saņemt palīdzību."
-  },
   "getStarted": {
     "message": "Sākt darbu"
   },
@@ -462,9 +456,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Atlasiet aparatūras maku lietošanai ar MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Neizdodas pieslēgties?"
   },
   "here": {
     "message": "šeit",
@@ -697,9 +688,6 @@
   "optionalCurrencySymbol": {
     "message": "Simbols (neobligāti)"
   },
-  "orderOneHere": {
-    "message": "Pasūtiet Trezor vai Ledger un glabājiet savus līdzekļus aukstajā krātuvē"
-  },
   "origin": {
     "message": "Avots"
   },
@@ -758,9 +746,6 @@
   },
   "readdToken": {
     "message": "Jūs varat šo marķieri iestatīt atpakaļ nākotnē, konta opciju izvēlnē atverot \"Pievienot marķieri\"."
-  },
-  "readyToConnect": {
-    "message": "Vai esat gatavi izveidot savienojumu?"
   },
   "recents": {
     "message": "Nesenie"
@@ -983,24 +968,6 @@
   },
   "stateLogsDescription": {
     "message": "Statusa žurnāli ietver publisko kontu adreses un nosūtītos darījumus."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Pieslēgt aparatūras maku"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Savienojiet aparatūras maku tieši ar datoru."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Atlasiet kontu"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Atlasiet kontu, kuru vēlaties skatīt. Vienlaicīgi varat izvēlēties tikai vienu kontu."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Sāciet izmantot dApps un citas funkcijas!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Lietojiet aparatūras kontu līdzīgi citiem Ethereum kontiem. Pierakstieties dApps, sūtiet Eth, pērciet un glabājiet ERC20 žetonus un neatvietojamos žetonus, piemēram, CryptoKitties."
   },
   "storePhrase": {
     "message": "Saglabājiet šo frāzi paroļu pārvaldniekā, piemēram, 1Password."

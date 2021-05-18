@@ -1,0 +1,39 @@
+@import 'confirm-seed-phrase/index';
+@import 'reveal-seed-phrase/index';
+@import 'seed-phrase-intro/index';
+
+.seed-phrase {
+  &__sections {
+    display: flex;
+
+    @media screen and (min-width: $break-large) {
+      flex-direction: row;
+    }
+
+    @media screen and (max-width: $break-small) {
+      flex-direction: column;
+    }
+  }
+
+  &__main {
+    flex: 3;
+    min-width: 0;
+  }
+
+  &__side {
+    flex: 2;
+    min-width: 0;
+
+    @media screen and (min-width: $break-large) {
+      margin-left: 81px;
+    }
+
+    @media screen and (max-width: $break-small) {
+      margin-top: 24px;
+    }
+
+    .first-time-flow__text-block {
+      color: #5a5a5a;
+    }
+  }
+}

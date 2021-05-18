@@ -40,9 +40,7 @@ export default async function getFirstPreferredLangCode() {
 
   const firstPreferredLangCode = userPreferredLocaleCodes
     .map((code) => code.toLowerCase().replace('_', '-'))
-    .find((code) =>
-      Object.prototype.hasOwnProperty.call(existingLocaleCodes, code),
-    );
+    .find((code) => existingLocaleCodes[code] !== undefined);
 
   return existingLocaleCodes[firstPreferredLangCode] || 'en';
 }

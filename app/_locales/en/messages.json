@@ -486,7 +486,7 @@
     "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
   },
   "decimal": {
-    "message": "Decimals of Precision"
+    "message": "Token Decimal"
   },
   "decimalsMustZerotoTen": {
     "message": "Decimals must be at least 0, and not over 36."
@@ -556,11 +556,17 @@
   "dismiss": {
     "message": "Dismiss"
   },
+  "dismissReminderDescriptionField": {
+    "message": "Turn this on to dismiss the recovery phrase backup reminder message. We highly recommend that you back up your Secret Recovery Phrase to avoid loss of funds"
+  },
+  "dismissReminderField": {
+    "message": "Dismiss recovery phrase backup reminder"
+  },
+  "domain": {
+    "message": "Domain"
+  },
   "done": {
     "message": "Done"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "Don’t have a hardware wallet?"
   },
   "dontShowThisAgain": {
     "message": "Don't show this again"
@@ -600,7 +606,7 @@
     "message": "Request encryption public key"
   },
   "endOfFlowMessage1": {
-    "message": "You passed the test - keep your seedphrase safe, it's your responsibility!"
+    "message": "You passed the test - keep your Secret Recovery Phrase safe, it's your responsibility!"
   },
   "endOfFlowMessage10": {
     "message": "All Done"
@@ -615,17 +621,17 @@
     "message": "Never share the phrase with anyone."
   },
   "endOfFlowMessage5": {
-    "message": "Be careful of phishing! MetaMask will never spontaneously ask for your seed phrase."
+    "message": "Be careful of phishing! MetaMask will never spontaneously ask for your Secret Recovery Phrase."
   },
   "endOfFlowMessage6": {
-    "message": "If you need to back up your seed phrase again, you can find it in Settings -> Security."
+    "message": "If you need to back up your Secret Recovery Phrase again, you can find it in Settings -> Security."
   },
   "endOfFlowMessage7": {
     "message": "If you ever have questions or see something fishy, contact our support $1.",
     "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask cannot recover your seedphrase."
+    "message": "MetaMask cannot recover your Secret Recovery Phrase."
   },
   "endOfFlowMessage9": {
     "message": "Learn more."
@@ -686,6 +692,9 @@
   },
   "estimatedProcessingTimes": {
     "message": "Estimated Processing Times"
+  },
+  "ethGasPriceFetchWarning": {
+    "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
   "eth_accounts": {
     "message": "View the addresses of your permitted accounts (required)",
@@ -783,6 +792,9 @@
   "gasPriceExtremelyLow": {
     "message": "Gas Price Extremely Low"
   },
+  "gasPriceFetchFailed": {
+    "message": "Gas price estimation failed due to network error."
+  },
   "gasPriceInfoTooltipContent": {
     "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
   },
@@ -810,9 +822,6 @@
     "message": "Get Ether from a faucet for the $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Get Help."
-  },
   "getStarted": {
     "message": "Get Started"
   },
@@ -832,14 +841,14 @@
     "message": "(legacy)",
     "description": "Text representing the MEW path"
   },
+  "hardwareWalletSupportLinkConversion": {
+    "message": "click here"
+  },
   "hardwareWallets": {
     "message": "Connect a hardware wallet"
   },
   "hardwareWalletsMsg": {
-    "message": "Select a hardware wallet you'd like to use with MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Having trouble connecting?"
+    "message": "Select a hardware wallet you'd like to use with MetaMask."
   },
   "here": {
     "message": "here",
@@ -872,13 +881,13 @@
     "message": "Import Account"
   },
   "importAccountLinkText": {
-    "message": "import using seed phrase"
+    "message": "import using Secret Recovery Phrase"
   },
   "importAccountMsg": {
-    "message": " Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
+    "message": " Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts "
   },
   "importAccountSeedPhrase": {
-    "message": "Import an account with seed phrase"
+    "message": "Import an account with Secret Recovery Phrase"
   },
   "importAccountText": {
     "message": "or $1",
@@ -888,7 +897,7 @@
     "message": "Import wallet"
   },
   "importYourExisting": {
-    "message": "Import your existing wallet using a seed phrase"
+    "message": "Import your existing wallet using a Secret Recovery Phrase"
   },
   "imported": {
     "message": "Imported",
@@ -958,7 +967,7 @@
     "message": "Invalid RPC URL"
   },
   "invalidSeedPhrase": {
-    "message": "Invalid seed phrase"
+    "message": "Invalid Secret Recovery Phrase"
   },
   "ipfsGateway": {
     "message": "IPFS Gateway"
@@ -987,6 +996,21 @@
   },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
+  },
+  "ledgerLiveAdvancedSetting": {
+    "message": "Use Ledger Live"
+  },
+  "ledgerLiveAdvancedSettingDescription": {
+    "message": "The new Ledger Live bridge allows you to more easily use your Ledger.  Only available in Chrome."
+  },
+  "ledgerLiveApp": {
+    "message": "Ledger Live App"
+  },
+  "ledgerLocked": {
+    "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
+  },
+  "ledgerTimeout": {
+    "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
   },
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"
@@ -1096,6 +1120,9 @@
   "myAccounts": {
     "message": "My Accounts"
   },
+  "name": {
+    "message": "Name"
+  },
   "needEtherInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
   },
@@ -1194,7 +1221,7 @@
     "message": "No address has been set for this name."
   },
   "noAlreadyHaveSeed": {
-    "message": "No, I already have a seed phrase"
+    "message": "No, I already have a Secret Recovery Phrase"
   },
   "noConversionRateAvailable": {
     "message": "No Conversion Rate Available"
@@ -1261,6 +1288,18 @@
     "message": "Stay secure",
     "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
   },
+  "notifications4ActionText": {
+    "message": "Start swapping",
+    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
+  },
+  "notifications4Description": {
+    "message": "Get the best prices on token swaps right inside your wallet. MetaMask now connects you to multiple decentralized exchange aggregators and professional market makers on Binance Smart Chain.",
+    "description": "Description of a notification in the 'See What's New' popup."
+  },
+  "notifications4Title": {
+    "message": "Swap on Binance Smart Chain",
+    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
+  },
   "ofTextNofM": {
     "message": "of"
   },
@@ -1294,9 +1333,6 @@
   },
   "optionalCurrencySymbol": {
     "message": "Currency Symbol (optional)"
-  },
-  "orderOneHere": {
-    "message": "Order a Trezor or Ledger and keep your funds in cold storage"
   },
   "origin": {
     "message": "Origin"
@@ -1370,6 +1406,9 @@
   "provide": {
     "message": "Provide"
   },
+  "publicAddress": {
+    "message": "Public Address"
+  },
   "queue": {
     "message": "Queue"
   },
@@ -1378,9 +1417,6 @@
   },
   "readdToken": {
     "message": "You can add this token back in the future by going to “Add token” in your accounts options menu."
-  },
-  "readyToConnect": {
-    "message": "Ready to Connect?"
   },
   "receive": {
     "message": "Receive"
@@ -1419,7 +1455,7 @@
     "message": "Remove account"
   },
   "removeAccountDescription": {
-    "message": "This account will be removed from your wallet. Please make sure you have the original seed phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
+    "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
@@ -1434,13 +1470,13 @@
     "message": "Reset Account"
   },
   "resetAccountDescription": {
-    "message": "Resetting your account will clear your transaction history. This will not change the balances in your accounts or require you to re-enter your seed phrase."
+    "message": "Resetting your account will clear your transaction history. This will not change the balances in your accounts or require you to re-enter your Secret Recovery Phrase."
   },
   "restore": {
     "message": "Restore"
   },
   "restoreAccountWithSeed": {
-    "message": "Restore your Account with Seed Phrase"
+    "message": "Restore your Account with Secret Recovery Phrase"
   },
   "restoreWalletPreferences": {
     "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
@@ -1453,13 +1489,13 @@
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
   },
   "revealSeedWords": {
-    "message": "Reveal Seed Phrase"
+    "message": "Reveal Secret Recovery Phrase"
   },
   "revealSeedWordsDescription": {
-    "message": "If you ever change browsers or move computers, you will need this seed phrase to access your accounts. Save them somewhere safe and secret."
+    "message": "If you ever change browsers or move computers, you will need this Secret Recovery Phrase to access your accounts. Save them somewhere safe and secret."
   },
   "revealSeedWordsTitle": {
-    "message": "Seed Phrase"
+    "message": "Secret Recovery Phrase"
   },
   "revealSeedWordsWarning": {
     "message": "These words can be used to steal all your accounts."
@@ -1519,16 +1555,52 @@
     "message": "Security & Privacy"
   },
   "securitySettingsDescription": {
-    "message": "Privacy settings and wallet seed phrase"
+    "message": "Privacy settings and wallet Secret Recovery Phrase"
+  },
+  "seedPhraseIntroSidebarBulletFour": {
+    "message": "Write down and store in multiple secret places."
+  },
+  "seedPhraseIntroSidebarBulletOne": {
+    "message": "Save in a password manager"
+  },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "Store in a safe-deposit box."
+  },
+  "seedPhraseIntroSidebarBulletTwo": {
+    "message": "Store in a bank vault."
+  },
+  "seedPhraseIntroSidebarCopyOne": {
+    "message": "Your recovery phrase is the “master key” to your wallet and funds."
+  },
+  "seedPhraseIntroSidebarCopyThree": {
+    "message": "If someone asks for your recovery phrase, they are most likely trying to scam you."
+  },
+  "seedPhraseIntroSidebarCopyTwo": {
+    "message": "Never, ever share your recovery phrase, even with MetaMask!"
+  },
+  "seedPhraseIntroSidebarTitleOne": {
+    "message": "What is a recovery phrase?"
+  },
+  "seedPhraseIntroSidebarTitleThree": {
+    "message": "Should I share my recovery phrase?"
+  },
+  "seedPhraseIntroSidebarTitleTwo": {
+    "message": "How do I save my recovery phrase?"
+  },
+  "seedPhraseIntroTitle": {
+    "message": "Secure your wallet"
+  },
+  "seedPhraseIntroTitleCopy": {
+    "message": "Before getting started, watch this short video to learn about your recovery phrase and how to keep your wallet safe."
   },
   "seedPhrasePlaceholder": {
     "message": "Separate each word with a single space"
   },
   "seedPhrasePlaceholderPaste": {
-    "message": "Paste seed phrase from clipboard"
+    "message": "Paste Secret Recovery Phrase from clipboard"
   },
   "seedPhraseReq": {
-    "message": "Seed phrases contain 12, 15, 18, 21, or 24 words"
+    "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
   },
   "selectAHigherGasFee": {
     "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
@@ -1546,7 +1618,11 @@
     "message": "This account has already been connected to MetaMask"
   },
   "selectAnAccountHelp": {
-    "message": "Select the account to view in MetaMask"
+    "message": "Select an account to view in MetaMask."
+  },
+  "selectAnAccountHelpDirections": {
+    "message": "Don't see your account? $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "selectEachPhrase": {
     "message": "Please select each phrase in order to make sure it is correct."
@@ -1616,7 +1692,7 @@
     "message": "Show Private Keys"
   },
   "showSeedPhrase": {
-    "message": "Show seed phrase"
+    "message": "Show Secret Recovery Phrase"
   },
   "sigRequest": {
     "message": "Signature Request"
@@ -1688,23 +1764,26 @@
   "statusNotConnected": {
     "message": "Not connected"
   },
-  "step1HardwareWallet": {
-    "message": "1. Connect Hardware Wallet"
+  "step1LedgerWallet": {
+    "message": "Download Ledger app"
   },
-  "step1HardwareWalletMsg": {
-    "message": "Connect your hardware wallet directly to your computer."
+  "step1LedgerWalletMsg": {
+    "message": "Download, set up, and enter your password to unlock $1.",
+    "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step2HardwareWallet": {
-    "message": "2. Select an Account"
+  "step1TrezorWallet": {
+    "message": "Plug in Trezor wallet"
   },
-  "step2HardwareWalletMsg": {
-    "message": "Select the account you want to view. You can only choose one at a time."
+  "step1TrezorWalletMsg": {
+    "message": "Connect your wallet directly to your computer. For more on using your hardware wallet device, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
-  "step3HardwareWallet": {
-    "message": "3. Start using web3 sites and more!"
+  "step2LedgerWallet": {
+    "message": "Plug in Ledger wallet"
   },
-  "step3HardwareWalletMsg": {
-    "message": "Use your hardware account like you would with any Ethereum account. Connect to web3 sites, send ETH, buy and store ERC20 tokens and non-fungible tokens like CryptoKitties."
+  "step2LedgerWalletMsg": {
+    "message": "Connect your wallet directly to your computer.  Unlock your Ledger and open the Ethereum app. For more on using your hardware wallet device, $1.",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
@@ -1730,6 +1809,10 @@
   "swapAggregator": {
     "message": "Aggregator"
   },
+  "swapAllowSwappingOf": {
+    "message": "Allow swapping of $1",
+    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
+  },
   "swapAmountReceived": {
     "message": "Guaranteed amount"
   },
@@ -1754,6 +1837,15 @@
   "swapCheckingQuote": {
     "message": "Checking $1",
     "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
+  },
+  "swapConfirmWithHwWallet": {
+    "message": "Confirm with your hardware wallet"
+  },
+  "swapContractDataDisabledErrorDescription": {
+    "message": "In the Ethereum app on your Ledger, go to \"Settings\" and allow contract data. Then, try your swap again."
+  },
+  "swapContractDataDisabledErrorTitle": {
+    "message": "Contract data is not enabled on your Ledger"
   },
   "swapCustom": {
     "message": "custom"
@@ -1800,8 +1892,15 @@
   "swapFinalizing": {
     "message": "Finalizing..."
   },
+  "swapFromTo": {
+    "message": "The swap of $1 to $2",
+    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
+  },
+  "swapGasFeesSplit": {
+    "message": "Gas fees on the previous screen are split between these two transactions."
+  },
   "swapHighSlippageWarning": {
-    "message": "Slippage amount is very high. Make sure you know what you are doing!"
+    "message": "Slippage amount is very high."
   },
   "swapLowSlippageError": {
     "message": "Transaction may fail, max slippage too low."
@@ -1920,8 +2019,8 @@
   "swapSelectQuotePopoverDescription": {
     "message": "Below are all the quotes gathered from multiple liquidity sources."
   },
-  "swapSlippageTooLow": {
-    "message": "Slippage must be greater than zero"
+  "swapSlippageNegative": {
+    "message": "Slippage must be greater or equal to zero"
   },
   "swapSource": {
     "message": "Liquidity source"
@@ -1940,6 +2039,9 @@
   },
   "swapThisWillAllowApprove": {
     "message": "This will allow $1 to be swapped."
+  },
+  "swapToConfirmWithHwWallet": {
+    "message": "to confirm with your hardware wallet"
   },
   "swapTokenAvailable": {
     "message": "Your $1 has been added to your account.",
@@ -1969,6 +2071,9 @@
   },
   "swapTransactionComplete": {
     "message": "Transaction complete"
+  },
+  "swapTwoTransactions": {
+    "message": "2 transactions"
   },
   "swapUnknown": {
     "message": "Unknown"
@@ -2011,6 +2116,12 @@
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "Allow this site to switch the network?"
+  },
+  "switchLedgerPaths": {
+    "message": "Switch Ledger paths"
+  },
+  "switchLedgerPathsText": {
+    "message": "Select the Ledger path to view other accounts"
   },
   "switchNetwork": {
     "message": "Switch network"
@@ -2070,7 +2181,7 @@
     "message": "Test Faucet"
   },
   "thisWillCreate": {
-    "message": "This will create a new wallet and seed phrase"
+    "message": "This will create a new wallet and Secret Recovery Phrase"
   },
   "tips": {
     "message": "Tips"
@@ -2093,6 +2204,9 @@
   },
   "tokenContractAddress": {
     "message": "Token Contract Address"
+  },
+  "tokenDecimalFetchFailed": {
+    "message": "Token decimal required."
   },
   "tokenSymbol": {
     "message": "Token Symbol"
@@ -2225,6 +2339,10 @@
   "userName": {
     "message": "Username"
   },
+  "verifyThisTokenDecimalOn": {
+    "message": "Token decimal can be found on $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
   "verifyThisTokenOn": {
     "message": "Verify this token on $1",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -2237,6 +2355,9 @@
   },
   "viewContact": {
     "message": "View Contact"
+  },
+  "viewMore": {
+    "message": "View More"
   },
   "viewOnCustomBlockExplorer": {
     "message": "View at $1"
@@ -2254,10 +2375,10 @@
     "message": "our hardware wallet connection guide"
   },
   "walletSeed": {
-    "message": "Seed phrase"
+    "message": "Secret Recovery Phrase"
   },
   "walletSeedRestore": {
-    "message": "Wallet Seed"
+    "message": "Wallet Secret Recovery Phrase"
   },
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",
@@ -2297,7 +2418,7 @@
     "message": "You are signing"
   },
   "yourPrivateSeedPhrase": {
-    "message": "Your private seed phrase"
+    "message": "Your private Secret Recovery Phrase"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"

@@ -503,9 +503,6 @@
   "done": {
     "message": "Finito"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Non hai un portafoglio hardware?"
-  },
   "dontShowThisAgain": {
     "message": "Non mostrare di nuovo"
   },
@@ -730,9 +727,6 @@
     "message": "Ottieni Get Ether da un faucet per $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Aiuto."
-  },
   "getStarted": {
     "message": "Inizia"
   },
@@ -753,9 +747,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Selezione un portafoglio hardware che vuoi utilizzare con MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Problemi di connessione?"
   },
   "here": {
     "message": "qui",
@@ -1123,9 +1114,6 @@
   "optionalCurrencySymbol": {
     "message": "Simbolo (opzionale)"
   },
-  "orderOneHere": {
-    "message": "Compra un Trezor o un Ledger e tieni i tuoi soldi al sicuro"
-  },
   "origin": {
     "message": "Origine"
   },
@@ -1206,9 +1194,6 @@
   },
   "readdToken": {
     "message": "Puoi aggiungere nuovamente questo token in futuro andando in “Aggiungi token” nel menu delle opzioni del tuo account."
-  },
-  "readyToConnect": {
-    "message": "Pronto a Connetterti?"
   },
   "receive": {
     "message": "Ricevi"
@@ -1510,24 +1495,6 @@
   "statusNotConnected": {
     "message": "Non connesso"
   },
-  "step1HardwareWallet": {
-    "message": "1. Connetti Portafoglio Hardware"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Connetti il tuo portafoglio hardware al tuo computer."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Seleziona un Account"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Selezione l'account che vuoi vedere. Puoi selezionarne solo uno alla volta."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Inizia a usare dApps e molto altro ancora!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Usa il tuo account hardware come utilizzeresti qualsiasi account Ethereum. Accedi alle dApps, invia Eth, compra e conserva token ERC20 e token non fungibili come CryptoKitties"
-  },
   "storePhrase": {
     "message": "Conserva questa frase in un gestore di password come 1Password."
   },
@@ -1614,9 +1581,6 @@
   },
   "swapFinalizing": {
     "message": "Finalizzando..."
-  },
-  "swapHighSlippageWarning": {
-    "message": "L'importo di slippage è molto alto. Assicurati di sapere cosa stai facendo!"
   },
   "swapLowSlippageError": {
     "message": "La transazione può fallire, il massimo slippage è troppo basso."
@@ -1734,9 +1698,6 @@
   },
   "swapSelectQuotePopoverDescription": {
     "message": "Sotto trovi tutte le quotazioni raccolte da multiple sorgenti di liquidità."
-  },
-  "swapSlippageTooLow": {
-    "message": "Lo slippage deve essere maggiore di zero"
   },
   "swapSource": {
     "message": "Sorgente di liquidità"

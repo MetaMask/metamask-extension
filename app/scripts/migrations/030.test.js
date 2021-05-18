@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import migrationTemplate from './030';
 
 const storage = {

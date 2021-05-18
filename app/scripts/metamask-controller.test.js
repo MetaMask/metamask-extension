@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
@@ -52,6 +52,7 @@ const ExtensionizerMock = {
     onInstalled: {
       addListener: () => undefined,
     },
+    getPlatformInfo: async () => 'mac',
   },
 };
 
@@ -492,8 +493,8 @@ describe('MetaMaskController', function () {
         );
       } catch (e) {
         assert.equal(
-          e,
-          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+          e.message,
+          'MetamaskController:getKeyringForDevice - Unknown device',
         );
       }
     });
@@ -504,9 +505,9 @@ describe('MetaMaskController', function () {
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         'Trezor Hardware',
       );
-      assert.equal(
+      assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
-        'Trezor Hardware',
+        ['Trezor Hardware'],
       );
       assert.equal(keyrings.length, 1);
     });
@@ -517,9 +518,9 @@ describe('MetaMaskController', function () {
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         'Ledger Hardware',
       );
-      assert.equal(
+      assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
-        'Ledger Hardware',
+        ['Ledger Hardware'],
       );
       assert.equal(keyrings.length, 1);
     });
@@ -534,8 +535,8 @@ describe('MetaMaskController', function () {
         );
       } catch (e) {
         assert.equal(
-          e,
-          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+          e.message,
+          'MetamaskController:getKeyringForDevice - Unknown device',
         );
       }
     });
@@ -553,8 +554,8 @@ describe('MetaMaskController', function () {
         await metamaskController.forgetDevice('Some random device name');
       } catch (e) {
         assert.equal(
-          e,
-          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+          e.message,
+          'MetamaskController:getKeyringForDevice - Unknown device',
         );
       }
     });

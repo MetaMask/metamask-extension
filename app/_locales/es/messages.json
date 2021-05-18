@@ -497,11 +497,11 @@
   "dismiss": {
     "message": "Descartar"
   },
+  "dismissReminderDescriptionField": {
+    "message": "Active esta opción para ignorar el recordatorio de respaldo de la frase de recuperación. Le recomendamos que respalde la frase secreta de recuperación para evitar la pérdida de fondos."
+  },
   "done": {
     "message": "Completo"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "¿No tienes un monedero físico?"
   },
   "dontShowThisAgain": {
     "message": "No mostrar esto de nuevo"
@@ -535,7 +535,7 @@
     "message": "Solicitar clave pública de cifrado"
   },
   "endOfFlowMessage1": {
-    "message": "Pasó la prueba - mantenga su frase semilla segura, ¡es su responsabilidad!"
+    "message": "Pasó la prueba. Es importante que guarde la frase secreta de recuperación en un lugar seguro."
   },
   "endOfFlowMessage10": {
     "message": "Todo Listo"
@@ -550,13 +550,13 @@
     "message": "Nunca comparta la frase con nadie."
   },
   "endOfFlowMessage5": {
-    "message": "¡Cuidado con el phishing! MetaMask nunca le pedirá espontáneamente su frase semilla."
+    "message": "Tenga cuidado con el phishing. MetaMask nunca le pedirá la frase secreta de recuperación sin anticipárselo."
   },
   "endOfFlowMessage6": {
-    "message": "Si necesita hacer una copia de seguridad de su frase semilla nuevamente, puede encontrarla en Configuración -> Seguridad."
+    "message": "Si necesita volver a crear una copia de seguridad de la frase secreta de recuperación, puede encontrarla en Configuración -> Seguridad."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask no puede recuperar tu frase semilla. Saber más."
+    "message": "MetaMask no puede recuperar la frase secreta de recuperación."
   },
   "endOfFlowMessage9": {
     "message": "Saber más."
@@ -727,9 +727,6 @@
     "message": "Obtenga Ether de un faucet (grifo) por $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Pedir ayuda."
-  },
   "getStarted": {
     "message": "Empezar"
   },
@@ -750,9 +747,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Seleccionar un monedero físico que quieres usar con MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "¿Tienes problemas de conexión?"
   },
   "here": {
     "message": "Aquí",
@@ -781,14 +775,20 @@
   "importAccount": {
     "message": "Importar cuenta"
   },
+  "importAccountLinkText": {
+    "message": "importar con la frase secreta de recuperación"
+  },
   "importAccountMsg": {
-    "message": "Las cuentas importadas no serán asociadas con tu cuenta original creada con tu MetaMask. Aprende más acerca de importar cuentas "
+    "message": " Las cuentas importadas no se asociarán con la frase secreta de recuperación de la cuenta original de MetaMask. Más información sobre las cuentas importadas "
   },
   "importAccountSeedPhrase": {
-    "message": "Importar una cuenta con la frase semilla"
+    "message": "Importar una cuenta con la frase secreta de recuperación"
   },
   "importWallet": {
     "message": "Importar Monedero"
+  },
+  "importYourExisting": {
+    "message": "Importar la cartera existente con una frase secreta de recuperación"
   },
   "imported": {
     "message": "Importado",
@@ -851,7 +851,7 @@
     "message": "URL del RPC inválida "
   },
   "invalidSeedPhrase": {
-    "message": "Frase semilla inválida."
+    "message": "Frase secreta de recuperación no válida"
   },
   "ipfsGateway": {
     "message": "Puerta de enlace IPFS"
@@ -1051,7 +1051,7 @@
     "message": "No se ha establecido ninguna dirección para este nombre."
   },
   "noAlreadyHaveSeed": {
-    "message": "No, ya tengo una frase semilla"
+    "message": "No, ya tengo una frase secreta de recuperación"
   },
   "noConversionRateAvailable": {
     "message": "No hay ninguna Tasa de Conversión Disponible"
@@ -1116,9 +1116,6 @@
   },
   "optionalCurrencySymbol": {
     "message": "Símbolo (opcional)"
-  },
-  "orderOneHere": {
-    "message": "Cómprate un Trezor o Ledger y guarda tus fondos en almacenamiento frío"
   },
   "origin": {
     "message": "Origen"
@@ -1201,9 +1198,6 @@
   "readdToken": {
     "message": "Puedes volver a agregar este token en el futuro pinchando sobre 'Agregar token' en el menú de opciones de tu cuenta"
   },
-  "readyToConnect": {
-    "message": "¿Listo/a para conectar?"
-  },
   "receive": {
     "message": "Recibir"
   },
@@ -1241,7 +1235,7 @@
     "message": "Borrar cuenta"
   },
   "removeAccountDescription": {
-    "message": "Se borrará esta cuenta de tu monedero. Por favor, asegúrate de tener la frase semilla o clave personal original para esta cuenta importada antes de seguir adelante. Podrás importar o crear cuentas de nuevo del menu desplegable de cuentas."
+    "message": "Esta cuenta se quitará de la cartera. Antes de continuar, asegúrese de tener la frase secreta de recuperación original o la clave privada de esta cuenta importada. Puede importar o crear cuentas nuevamente desde el menú desplegable de la cuenta."
   },
   "requestsAwaitingAcknowledgement": {
     "message": "peticiones pendientes de reconocimiento"
@@ -1256,13 +1250,13 @@
     "message": "Reiniciar cuenta"
   },
   "resetAccountDescription": {
-    "message": "Reiniciar tu cuenta borrará tu historial de transacciones."
+    "message": "Restablecer la cuenta borrará el historial de transacciones. Esto no cambiará los saldos de las cuentas ni se le pedirá que vuelva a escribir la frase secreta de recuperación."
   },
   "restore": {
     "message": "Restaurar"
   },
   "restoreAccountWithSeed": {
-    "message": "Restaurar tu Cuenta con la Frase Semilla"
+    "message": "Restaurar la cuenta con la frase secreta de recuperación"
   },
   "restoreWalletPreferences": {
     "message": "Se ha encontrado una copia de seguridad de sus datos de $1. ¿Le gustaría restaurar sus preferencias de monedero?",
@@ -1275,13 +1269,13 @@
     "message": "Un token aquí reutiliza un símbolo de otro token que está observando, esto puede ser confuso o engañoso."
   },
   "revealSeedWords": {
-    "message": "Revelar Frase Semilla"
+    "message": "Revelar frase secreta de recuperación"
   },
   "revealSeedWordsDescription": {
-    "message": "Si en algún momento cambias de navegador o de ordenador, necesitarás esta frase semilla para acceder a tus cuentas. Guárdatela en un lugar seguro y secreto."
+    "message": "Si alguna vez cambia de explorador o de equipo, necesitará esta frase secreta de recuperación para acceder a sus cuentas. Guárdela en un lugar seguro y secreto."
   },
   "revealSeedWordsTitle": {
-    "message": "Frase Semilla"
+    "message": "Frase secreta de recuperación"
   },
   "revealSeedWordsWarning": {
     "message": "¡No recuperes tu semilla en un lugar público! Esas palabras pueden ser usadas para robarte todas tus cuentas"
@@ -1338,16 +1332,16 @@
     "message": "Seguridad y Privacidad"
   },
   "securitySettingsDescription": {
-    "message": "Configuración de privacidad y frase semilla de monedero"
+    "message": "Configuración de privacidad y frase secreta de recuperación de la cartera"
   },
   "seedPhrasePlaceholder": {
     "message": "Separar a cada palabra con un sólo espacio"
   },
   "seedPhrasePlaceholderPaste": {
-    "message": "Pegar la frase semilla del portapapeles"
+    "message": "Pegar la frase secreta de recuperación desde el Portapapeles"
   },
   "seedPhraseReq": {
-    "message": "Las frases semilla contienen 12, 15, 18, 21 oo 24 palabras"
+    "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
   },
   "selectAHigherGasFee": {
     "message": "Seleccione una comisión de gas más elevada para agilizar el procesamiento de tu transacción.*"
@@ -1432,7 +1426,7 @@
     "message": "Mostrar claves privadas"
   },
   "showSeedPhrase": {
-    "message": "Mostrar frase semilla"
+    "message": "Mostrar frase secreta de recuperación"
   },
   "sigRequest": {
     "message": "Solicitud de firma"
@@ -1503,24 +1497,6 @@
   },
   "statusNotConnected": {
     "message": "No conectado"
-  },
-  "step1HardwareWallet": {
-    "message": "1. Conectar monedero físico."
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Conéctate el monedero físico directamente al ordenador."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Seleccionar una cuenta"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Seleccione la cuenta que quieres ver. Sólo se puede eligir una a la vez."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Empezar a usar dApps ¡y más!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Usa tu cuenta física igual que harías con cualquier cuenta de Ethereum. Regístrate con dApps, manda Eth, compra y almacena tokens de ERC20 y otros tokens no-fungibles, como CryptoKitties."
   },
   "storePhrase": {
     "message": "Guarde esta frase en un administrador de contraseñas como 1Password."
@@ -1608,9 +1584,6 @@
   },
   "swapFinalizing": {
     "message": "Finalizando..."
-  },
-  "swapHighSlippageWarning": {
-    "message": "La cantidad de deslizamiento es muy alta. ¡Asegúrate de saber lo que estás haciendo!"
   },
   "swapLowSlippageError": {
     "message": "La transacción puede fallar, el deslizamiento máximo es demasiado bajo."
@@ -1722,9 +1695,6 @@
   },
   "swapSelectQuotePopoverDescription": {
     "message": "A continuación se muestran todas las cotizaciones recopiladas de múltiples fuentes de liquidez."
-  },
-  "swapSlippageTooLow": {
-    "message": "El deslizamiento debe ser mayor que cero"
   },
   "swapSource": {
     "message": "Fuente de liquidez"
@@ -1843,7 +1813,7 @@
     "message": "Grifo de prueba"
   },
   "thisWillCreate": {
-    "message": "Esto creará un nuevo monedero y frase semilla"
+    "message": "Esto creará una cartera y una frase secreta de recuperación nuevas"
   },
   "tips": {
     "message": "Consejos"
@@ -2016,7 +1986,10 @@
     "message": "nuestra guía de monedero físico"
   },
   "walletSeed": {
-    "message": "Semilla del monedero"
+    "message": "Frase secreta de recuperación"
+  },
+  "walletSeedRestore": {
+    "message": "Frase secreta de recuperación de la cartera"
   },
   "web3ShimUsageNotification": {
     "message": "Notamos que el sitio web actual intentó utilizar la API window.web3 eliminada. Si el sitio parece estar roto, haga clic en $1 para obtener más información.",
@@ -2048,7 +2021,7 @@
     "message": "Usted está firmando"
   },
   "yourPrivateSeedPhrase": {
-    "message": "Tu frase semilla privada"
+    "message": "Su frase secreta de recuperación privada"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "No hubo precio de gas al agilizar"

@@ -488,11 +488,11 @@
   "dismiss": {
     "message": "Đóng"
   },
+  "dismissReminderDescriptionField": {
+    "message": "Bật tùy chọn này để tắt thông báo nhắc sao lưu cụm mật khẩu khôi phục. Bạn nên sao lưu Cụm mật khẩu khôi phục bí mật của mình để tránh mất tiền"
+  },
   "done": {
     "message": "Hoàn tất"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "Bạn không có ví cứng?"
   },
   "dontShowThisAgain": {
     "message": "Không hiển thị lại"
@@ -526,7 +526,7 @@
     "message": "Yêu cầu khóa mã hóa công khai"
   },
   "endOfFlowMessage1": {
-    "message": "Bạn đã vượt qua bài kiểm tra. Hãy lưu giữ cụm mật khẩu gốc của bạn an toàn, đó là trách nhiệm của bạn!"
+    "message": "Bạn đã vượt qua bài kiểm tra. Hãy lưu giữ Cụm mật khẩu khôi phục bí mật của bạn an toàn, đó là trách nhiệm của bạn!"
   },
   "endOfFlowMessage10": {
     "message": "Tất cả đã hoàn tất"
@@ -541,13 +541,13 @@
     "message": "Tuyệt đối không chia sẻ cụm mật khẩu với bất kỳ ai."
   },
   "endOfFlowMessage5": {
-    "message": "Hãy cẩn thận với hoạt động lừa đảo! MetaMask sẽ không bao giờ tự ý hỏi cụm mật khẩu gốc của bạn."
+    "message": "Hãy cẩn thận với hoạt động lừa đảo! MetaMask sẽ không bao giờ tự ý hỏi Cụm mật khẩu khôi phục bí mật của bạn."
   },
   "endOfFlowMessage6": {
-    "message": "Nếu cần sao lưu lại cụm mật khẩu gốc của mình, bạn có thể tìm thấy cụm mật khẩu này trong phần Cài đặt -> Bảo mật."
+    "message": "Nếu bạn cần sao lưu lại Cụm mật khẩu khôi phục bí mật, bạn có thể tìm thấy chức năng này trong Cài đặt -> Bảo mật."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask không thể khôi phục cụm mật khẩu gốc của bạn."
+    "message": "MetaMask không thể khôi phục Cụm mật khẩu khôi phục bí mật của bạn."
   },
   "endOfFlowMessage9": {
     "message": "Tìm hiểu thêm."
@@ -718,9 +718,6 @@
     "message": "Nhận Ether từ một vòi dành cho $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Nhận trợ giúp."
-  },
   "getStarted": {
     "message": "Bắt đầu"
   },
@@ -741,9 +738,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Chọn một ví cứng mà bạn muốn sử dụng với MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Bạn đang gặp sự cố với việc kết nối?"
   },
   "here": {
     "message": "tại đây",
@@ -772,14 +766,20 @@
   "importAccount": {
     "message": "Nhập tài khoản"
   },
+  "importAccountLinkText": {
+    "message": "nhập bằng Cụm mật khẩu khôi phục bí mật"
+  },
   "importAccountMsg": {
-    "message": " Tài khoản đã nhập sẽ không được liên kết với cụm mật khẩu gốc cho tài khoản MetaMask đã tạo ban đầu của bạn. Tìm hiểu thêm về các tài khoản đã nhập "
+    "message": " Tài khoản đã nhập sẽ không được liên kết với Cụm mật khẩu khôi phục bí mật cho tài khoản MetaMask đã tạo ban đầu của bạn. Tìm hiểu thêm về các tài khoản đã nhập "
   },
   "importAccountSeedPhrase": {
-    "message": "Nhập một tài khoản bằng cụm mật khẩu gốc"
+    "message": "Nhập một tài khoản bằng Cụm mật khẩu khôi phục bí mật"
   },
   "importWallet": {
     "message": "Nhập ví"
+  },
+  "importYourExisting": {
+    "message": "Nhập ví hiện tại của bạn bằng Cụm mật khẩu khôi phục bí mật"
   },
   "imported": {
     "message": "Đã nhập",
@@ -842,7 +842,7 @@
     "message": "URL RPC không hợp lệ"
   },
   "invalidSeedPhrase": {
-    "message": "Cụm mật khẩu gốc không hợp lệ"
+    "message": "Cụm mật khẩu khôi phục bí mật không hợp lệ"
   },
   "ipfsGateway": {
     "message": "Cổng kết nối IPFS"
@@ -1042,7 +1042,7 @@
     "message": "Chưa có địa chỉ nào được đặt cho tên này."
   },
   "noAlreadyHaveSeed": {
-    "message": "Không, tôi đã có cụm mật khẩu gốc"
+    "message": "Không, tôi đã có Cụm mật khẩu bí mật"
   },
   "noConversionRateAvailable": {
     "message": "Không có sẵn tỷ lệ quy đổi nào"
@@ -1107,9 +1107,6 @@
   },
   "optionalCurrencySymbol": {
     "message": "Ký hiệu tiền tệ (không bắt buộc)"
-  },
-  "orderOneHere": {
-    "message": "Đặt mua một ví Trezor hoặc Ledger và giữ tiền của bạn trong ví lưu trữ lạnh"
   },
   "origin": {
     "message": "Nguồn gốc"
@@ -1192,9 +1189,6 @@
   "readdToken": {
     "message": "Bạn có thể thêm lại token này trong tương lai bằng cách chuyển đến mục “Thêm token” trong trình đơn tùy chọn tài khoản."
   },
-  "readyToConnect": {
-    "message": "Bạn đã sẵn sàng kết nối chưa?"
-  },
   "receive": {
     "message": "Nhận"
   },
@@ -1232,7 +1226,7 @@
     "message": "Xóa tài khoản"
   },
   "removeAccountDescription": {
-    "message": "Tài khoản này sẽ được xóa khỏi ví của bạn. Xin đảm bảo rằng bạn có cụm mật khẩu gốc ban đầu hoặc khóa riêng tư cho tài khoản được nhập trước khi tiếp tục. Bạn có thể nhập hoặc tạo lại tài khoản từ trình đơn tài khoản thả xuống. "
+    "message": "Tài khoản này sẽ được xóa khỏi ví của bạn. Xin đảm bảo rằng bạn có Cụm mật khẩu khôi phục bí mật ban đầu hoặc khóa riêng tư cho tài khoản được nhập trước khi tiếp tục. Bạn có thể nhập hoặc tạo lại tài khoản từ trình đơn tài khoản thả xuống. "
   },
   "requestsAwaitingAcknowledgement": {
     "message": "yêu cầu đang chờ xác nhận"
@@ -1247,13 +1241,13 @@
     "message": "Đặt lại tài khoản"
   },
   "resetAccountDescription": {
-    "message": "Nếu đặt lại tài khoản của bạn, toàn bộ lịch sử giao dịch sẽ bị xóa. Việc này sẽ không làm thay đổi số dư trong tài khoản của bạn hoặc yêu cầu bạn phải nhập lại cụm mật khẩu gốc."
+    "message": "Nếu đặt lại tài khoản của bạn, toàn bộ lịch sử giao dịch sẽ bị xóa. Việc này sẽ không làm thay đổi số dư trong tài khoản của bạn hoặc yêu cầu bạn phải nhập lại Cụm mật khẩu khôi phục bí mật."
   },
   "restore": {
     "message": "Khôi phục"
   },
   "restoreAccountWithSeed": {
-    "message": "Khôi phục tài khoản của bạn bằng cụm mật khẩu gốc"
+    "message": "Khôi phục tài khoản của bạn bằng cụm mật khẩu khôi phục bí mật"
   },
   "restoreWalletPreferences": {
     "message": "Đã tìm thấy bản sao lưu dữ liệu của bạn từ $1. Bạn có muốn khôi phục các tùy chọn ưu tiên trong ví của mình không?",
@@ -1266,13 +1260,13 @@
     "message": "Một token trong đây sử dụng lại ký hiệu của một token khác mà bạn thấy, điều này có thể gây nhầm lẫn hoặc mang tính lừa dối."
   },
   "revealSeedWords": {
-    "message": "Hiện cụm mật khẩu gốc"
+    "message": "Hiện cụm mật khẩu khôi phục bí mật"
   },
   "revealSeedWordsDescription": {
-    "message": "Nếu thay đổi trình duyệt hoặc chuyển máy tính, bạn sẽ cần cụm mật khẩu gốc này để truy cập tài khoản của mình. Hãy lưu cụm mật khẩu gốc này ở nơi an toàn và bí mật."
+    "message": "Nếu thay đổi trình duyệt hoặc chuyển máy tính, bạn sẽ cần Cụm mật khẩu khôi phục bí mật này để truy cập tài khoản của mình. Hãy lưu cụm mật khẩu gốc này ở nơi an toàn và bí mật."
   },
   "revealSeedWordsTitle": {
-    "message": "Cụm mật khẩu gốc"
+    "message": "Cụm mật khẩu khôi phục bí mật"
   },
   "revealSeedWordsWarning": {
     "message": "Kẻ xấu có thể dùng các từ này để đánh cắp tất cả các tài khoản của bạn."
@@ -1329,16 +1323,16 @@
     "message": "Bảo mật và quyền riêng tư"
   },
   "securitySettingsDescription": {
-    "message": "Cụm mật khẩu gốc của ví và các tùy chọn cài đặt quyền riêng tư"
+    "message": "Các cài đặt quyền riêng tư và Cụm mật khẩu khôi phục bí mật của ví"
   },
   "seedPhrasePlaceholder": {
     "message": "Phân tách mỗi từ bằng một dấu cách"
   },
   "seedPhrasePlaceholderPaste": {
-    "message": "Dán cụm mật khẩu gốc từ khay nhớ tạm"
+    "message": "Dán Cụm mật khẩu khôi phục bí mật từ khay nhớ tạm"
   },
   "seedPhraseReq": {
-    "message": "Cụm mật khẩu gốc gồm 12, 15, 18, 21 hoặc 24 từ"
+    "message": "Cụm mật khẩu khôi phục bí mật gồm 12, 15, 18, 21 hoặc 24 từ"
   },
   "selectAHigherGasFee": {
     "message": "Chọn phí gas cao hơn để tăng tốc quá trình xử lý giao dịch của bạn.*"
@@ -1423,7 +1417,7 @@
     "message": "Hiện khóa riêng tư"
   },
   "showSeedPhrase": {
-    "message": "Hiển thị cụm mật khẩu gốc"
+    "message": "Hiển thị Cụm mật khẩu khôi phục bí mật"
   },
   "sigRequest": {
     "message": "Yêu cầu chữ ký"
@@ -1494,24 +1488,6 @@
   },
   "statusNotConnected": {
     "message": "Chưa kết nối"
-  },
-  "step1HardwareWallet": {
-    "message": "1. Kết nối với ví cứng"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Kết nối ví cứng của bạn trực tiếp với máy tính."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Chọn một tài khoản"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Chọn tài khoản bạn muốn xem. Bạn chỉ chọn được một tài khoản tại một thời điểm."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Bắt đầu sử dụng các trang web trên web3 và nhiều hơn thế!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Sử dụng cùng một tài khoản ví cứng mà bạn sẽ dùng với mọi tài khoản Ethereum của mình. Kết nối với các trang web trên web3, gửi ETH, mua và lưu trữ token ERC20 cũng như token không thể thay thế, chẳng hạn như CryptoKitties."
   },
   "storePhrase": {
     "message": "Lưu cụm mật khẩu này trong trình quản lý mật khẩu chẳng hạn như 1Password."
@@ -1596,9 +1572,6 @@
   },
   "swapFinalizing": {
     "message": "Đang hoàn tất..."
-  },
-  "swapHighSlippageWarning": {
-    "message": "Số tiền trượt giá rất cao. Hãy chắc chắn rằng bạn hiểu những gì mình đang làm!"
   },
   "swapLowSlippageError": {
     "message": "Giao dịch có thể không thành công, mức trượt giá tối đa quá thấp."
@@ -1692,9 +1665,6 @@
   },
   "swapSelectQuotePopoverDescription": {
     "message": "Dưới đây là tất cả các báo giá thu thập từ nhiều nguồn thanh khoản."
-  },
-  "swapSlippageTooLow": {
-    "message": "Mức trượt giá phải lớn hơn 0"
   },
   "swapSource": {
     "message": "Nguồn thanh khoản"
@@ -1807,7 +1777,7 @@
     "message": "Vòi thử nghiệm"
   },
   "thisWillCreate": {
-    "message": "Thao tác này sẽ tạo một ví mới và cụm mật khẩu gốc"
+    "message": "Thao tác này sẽ tạo một ví mới và Cụm mật khẩu khôi phục bí mật"
   },
   "tips": {
     "message": "Mẹo"
@@ -1980,7 +1950,10 @@
     "message": "hướng dẫn của chúng tôi về cách kết nối ví cứng"
   },
   "walletSeed": {
-    "message": "Cụm mật khẩu gốc"
+    "message": "Cụm mật khẩu khôi phục bí mật"
+  },
+  "walletSeedRestore": {
+    "message": "Cụm mật khẩu khôi phục bí mật của ví"
   },
   "welcome": {
     "message": "Chào mừng bạn đến với MetaMask"
@@ -2008,7 +1981,7 @@
     "message": "Bạn đang ký"
   },
   "yourPrivateSeedPhrase": {
-    "message": "Cụm mật khẩu gốc riêng tư của bạn"
+    "message": "Cụm mật khẩu bí mật, riêng tư của bạn"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Giá gas bằng 0 khi tăng tốc"

@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import migration31 from './031';
 
 describe('migration #31', function () {

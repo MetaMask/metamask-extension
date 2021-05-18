@@ -16,12 +16,6 @@ then
     exit 1
 fi
 
-if [[ -z "${GITHUB_TOKEN:-}" ]]
-then
-    printf '%s\n' 'GITHUB_TOKEN environment variable must be set'
-    exit 1
-fi
-
 function install_github_cli ()
 {
     printf '%s\n' 'Installing hub CLI'
