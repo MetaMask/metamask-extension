@@ -64,7 +64,9 @@ export default class TransactionListItemDetails extends PureComponent {
       properties: {
         link_type: 'Transaction Block Explorer',
         action: 'Transaction Details',
-        block_explorer_domain: blockExplorerLink ? new URL(blockExplorerLink)?.hostname : '',
+        block_explorer_domain: blockExplorerLink
+          ? new URL(blockExplorerLink)?.hostname
+          : '',
       },
     });
 
