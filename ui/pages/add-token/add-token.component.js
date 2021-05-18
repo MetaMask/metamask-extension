@@ -13,8 +13,8 @@ import ActionableMessage from '../swaps/actionable-message';
 import Typography from '../../components/ui/typography';
 import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
-import TokenList from './token-list';
 import TokenSearch from './token-search';
+import TokenList from './token-list';
 
 const emptyAddr = '0x0000000000000000000000000000000000000000';
 
