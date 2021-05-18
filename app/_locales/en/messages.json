@@ -1042,6 +1042,9 @@
   "mainnet": {
     "message": "Ethereum Mainnet"
   },
+  "makeAnotherSwap": {
+    "message": "Make another swap"
+  },
   "max": {
     "message": "Max"
   },
