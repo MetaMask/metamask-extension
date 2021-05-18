@@ -38,10 +38,9 @@ import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
 } from '../../../../shared/constants/swaps';
 import { CHAIN_ID_TO_TYPE_MAP as VALID_INFURA_CHAIN_IDS } from '../../../../shared/constants/network';
-import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 
-import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
@@ -212,7 +211,7 @@ export default function AwaitingSwap({
   } else if (!errorKey && swapComplete) {
     headerText = t('swapTransactionComplete');
     statusImage = <SwapSuccessIcon />;
-    submitText = t('swapViewToken', [destinationTokenInfo.symbol]);
+    submitText = t('close');
     descriptionText = t('swapTokenAvailable', [
       <span
         key="swapTokenAvailable-2"
@@ -262,12 +261,8 @@ export default function AwaitingSwap({
             );
           } else if (errorKey) {
             await dispatch(navigateBackToBuildQuote(history));
-          } else if (
-            isSwapsDefaultTokenSymbol(destinationTokenInfo?.symbol, chainId)
-          ) {
-            history.push(DEFAULT_ROUTE);
           } else {
-            history.push(`${ASSET_ROUTE}/${destinationTokenInfo?.address}`);
+            history.push(DEFAULT_ROUTE);
           }
         }}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
