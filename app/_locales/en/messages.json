@@ -486,7 +486,7 @@
     "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
   },
   "decimal": {
-    "message": "Decimals of Precision"
+    "message": "Token Decimal"
   },
   "decimalsMustZerotoTen": {
     "message": "Decimals must be at least 0, and not over 36."
@@ -2205,6 +2205,9 @@
   "tokenContractAddress": {
     "message": "Token Contract Address"
   },
+  "tokenDecimalFetchFailed": {
+    "message": "Token decimal required."
+  },
   "tokenSymbol": {
     "message": "Token Symbol"
   },
@@ -2335,6 +2338,10 @@
   },
   "userName": {
     "message": "Username"
+  },
+  "verifyThisTokenDecimalOn": {
+    "message": "Token decimal can be found on $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Verify this token on $1",

@@ -9,7 +9,7 @@ import {
   loadRelativeTimeFormatLocaleData,
 } from '../helpers/utils/i18n-helper';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
-import { fetchSymbolAndDecimals } from '../helpers/utils/token-util';
+import { getSymbolAndDecimals } from '../helpers/utils/token-util';
 import switchDirection from '../helpers/utils/switch-direction';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../shared/constants/app';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
@@ -2251,7 +2251,7 @@ export function setPendingTokens(pendingTokens) {
   const { customToken = {}, selectedTokens = {} } = pendingTokens;
   const { address, symbol, decimals } = customToken;
   const tokens =
-    address && symbol && decimals
+    address && symbol && decimals >= 0 <= 36
       ? {
           ...selectedTokens,
           [address]: {
@@ -2653,12 +2653,10 @@ export function getTokenParams(tokenAddress) {
     dispatch(loadingTokenParamsStarted());
     log.debug(`loadingTokenParams`);
 
-    return fetchSymbolAndDecimals(tokenAddress, existingTokens).then(
-      ({ symbol, decimals }) => {
-        dispatch(addToken(tokenAddress, symbol, Number(decimals)));
-        dispatch(loadingTokenParamsFinished());
-      },
-    );
+    return getSymbolAndDecimals(tokenAddress).then(({ symbol, decimals }) => {
+      dispatch(addToken(tokenAddress, symbol, Number(decimals)));
+      dispatch(loadingTokenParamsFinished());
+    });
   };
 }
 

@@ -82,7 +82,7 @@ describe('Add Token', () => {
 
       expect(
         wrapper.find('AddToken').instance().state.customDecimals,
-      ).toStrictEqual(tokenPrecision);
+      ).toStrictEqual(Number(tokenPrecision));
     });
 
     it('next', () => {
