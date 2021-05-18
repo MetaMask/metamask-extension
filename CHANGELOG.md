@@ -7,16 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.5.3]
-### Uncategorized
-- Updating util import paths for master
-- [#11117](https://github.com/MetaMask/metamask-extension/pull/11117): use safer toChecksum utility
-- [#11107](https://github.com/MetaMask/metamask-extension/pull/11107): Migration to remove erroneous tx state
-- [#11104](https://github.com/MetaMask/metamask-extension/pull/11104): Throw error if transaction type is not recognized by useTransactionDisplay data
-- [#11103](https://github.com/MetaMask/metamask-extension/pull/11103): fix splitting of transaction nonce groups in state
-- [#11101](https://github.com/MetaMask/metamask-extension/pull/11101): Improve type checking and handle incorrect category in transaction-icon component
-- [#11089](https://github.com/MetaMask/metamask-extension/pull/11089): create safer isValidAddress method
-- [#11016](https://github.com/MetaMask/metamask-extension/pull/11016): Group signature transactions
-- [#11015](https://github.com/MetaMask/metamask-extension/pull/11015): Prevent an undefined gas price from breaking the transaction list
+### Fixed
+- [#11103](https://github.com/MetaMask/metamask-extension/pull/11103): Fixes bug that made MetaMask unusable and displayed 'Minified React error #130' on certain networks and accounts
+- [#11015](https://github.com/MetaMask/metamask-extension/pull/11015): Prevent big number error when attempting to view transaction list
 
 ## [9.5.2]
 ### Fixed
