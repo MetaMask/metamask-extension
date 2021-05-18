@@ -26,9 +26,12 @@ import { multiplyCurrencies } from '../helpers/utils/conversion-util';
  */
 export function useCancelTransaction(transactionGroup) {
   const { primaryTransaction } = transactionGroup;
-  const gasPrice = primaryTransaction.txParams?.gasPrice?.startsWith('-')
-    ? '0x0'
-    : primaryTransaction.txParams?.gasPrice;
+
+  const transactionGasPrice = primaryTransaction.txParams?.gasPrice;
+  const gasPrice =
+    transactionGasPrice === undefined || transactionGasPrice?.startsWith('-')
+      ? '0x0'
+      : primaryTransaction.txParams?.gasPrice;
   const transaction = primaryTransaction;
   const dispatch = useDispatch();
   const selectedAccount = useSelector(getSelectedAccount);

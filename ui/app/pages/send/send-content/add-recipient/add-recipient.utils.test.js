@@ -11,12 +11,19 @@ jest.mock('../../../../../app/helpers/utils/util', () => ({
   isDefaultMetaMaskChain: jest.fn().mockReturnValue(true),
   isEthNetwork: jest.fn().mockReturnValue(true),
   checkExistingAddresses: jest.fn().mockReturnValue(true),
-  isValidAddress: jest.fn((to) => Boolean(to.match(/^[0xabcdef123456798]+$/u))),
   isValidDomainName: jest.requireActual('../../../../../app/helpers/utils/util')
     .isValidDomainName,
   isOriginContractAddress: jest.requireActual(
     '../../../../../app/helpers/utils/util',
   ).isOriginContractAddress,
+}));
+
+jest.mock('../../../../../../shared/modules/hexstring-utils', () => ({
+  isValidHexAddress: jest.fn((to) =>
+    Boolean(to.match(/^[0xabcdef123456798]+$/u)),
+  ),
+  isBurnAddress: jest.fn(() => false),
+  toChecksumHexAddress: jest.fn((input) => input),
 }));
 
 describe('add-recipient utils', () => {

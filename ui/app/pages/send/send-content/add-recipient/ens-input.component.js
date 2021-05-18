@@ -7,13 +7,14 @@ import copyToClipboard from 'copy-to-clipboard/index';
 import ENS from 'ethjs-ens';
 import networkMap from 'ethereum-ens-network-map';
 import log from 'loglevel';
+import { isHexString } from 'ethereumjs-util';
 import { ellipsify } from '../../send.utils';
-import {
-  isValidDomainName,
-  isValidAddress,
-  isValidAddressHead,
-} from '../../../../helpers/utils/util';
+import { isValidDomainName } from '../../../../helpers/utils/util';
 import { MAINNET_NETWORK_ID } from '../../../../../../shared/constants/network';
+import {
+  isBurnAddress,
+  isValidHexAddress,
+} from '../../../../../../shared/modules/hexstring-utils';
 
 // Local Constants
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -143,7 +144,10 @@ export default class EnsInput extends Component {
 
   onPaste = (event) => {
     event.clipboardData.items[0].getAsString((text) => {
-      if (isValidAddress(text)) {
+      if (
+        !isBurnAddress(text) &&
+        isValidHexAddress(text, { mixedCaseUseChecksum: true })
+      ) {
         this.props.onPaste(text);
       }
     });
@@ -170,8 +174,11 @@ export default class EnsInput extends Component {
 
     if (
       !networkHasEnsSupport &&
-      !isValidAddress(input) &&
-      !isValidAddressHead(input)
+      !(
+        isBurnAddress(input) === false &&
+        isValidHexAddress(input, { mixedCaseUseChecksum: true })
+      ) &&
+      !isHexString(input)
     ) {
       updateEnsResolution('');
       updateEnsResolutionError(
@@ -182,7 +189,11 @@ export default class EnsInput extends Component {
 
     if (isValidDomainName(input)) {
       this.lookupEnsName(input);
-    } else if (onValidAddressTyped && isValidAddress(input)) {
+    } else if (
+      onValidAddressTyped &&
+      !isBurnAddress(input) &&
+      isValidHexAddress(input, { mixedCaseUseChecksum: true })
+    ) {
       onValidAddressTyped(input);
     } else {
       updateEnsResolution('');

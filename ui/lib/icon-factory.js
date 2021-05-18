@@ -1,9 +1,8 @@
 import contractMap from '@metamask/contract-metadata';
 import {
-  isValidAddress,
-  checksumAddress,
-  isHex,
-} from '../app/helpers/utils/util';
+  isValidHexAddress,
+  toChecksumHexAddress,
+} from '../../shared/modules/hexstring-utils';
 
 let iconFactory;
 
@@ -20,11 +19,7 @@ function IconFactory(jazzicon) {
 }
 
 IconFactory.prototype.iconForAddress = function (address, diameter) {
-  let addr = address;
-
-  if (isHex(address)) {
-    addr = checksumAddress(address);
-  }
+  const addr = toChecksumHexAddress(address);
 
   if (iconExistsFor(addr)) {
     return imageElFor(addr);
@@ -56,7 +51,9 @@ IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
 
 function iconExistsFor(address) {
   return (
-    contractMap[address] && isValidAddress(address) && contractMap[address].logo
+    contractMap[address] &&
+    isValidHexAddress(address, { allowNonPrefixed: false }) &&
+    contractMap[address].logo
   );
 }
 

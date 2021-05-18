@@ -4,12 +4,13 @@ import { debounce } from 'lodash';
 import Identicon from '../../../../components/ui/identicon';
 import TextField from '../../../../components/ui/text-field';
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes';
-import {
-  isValidAddress,
-  isValidDomainName,
-} from '../../../../helpers/utils/util';
+import { isValidDomainName } from '../../../../helpers/utils/util';
 import EnsInput from '../../../send/send-content/add-recipient/ens-input';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
+import {
+  isBurnAddress,
+  isValidHexAddress,
+} from '../../../../../../shared/modules/hexstring-utils';
 
 export default class AddContact extends PureComponent {
   static contextTypes = {
@@ -53,7 +54,9 @@ export default class AddContact extends PureComponent {
   }
 
   validate = (address) => {
-    const valid = isValidAddress(address);
+    const valid =
+      !isBurnAddress(address) &&
+      isValidHexAddress(address, { mixedCaseUseChecksum: true });
     const validEnsAddress = isValidDomainName(address);
 
     if (valid || validEnsAddress || address === '') {

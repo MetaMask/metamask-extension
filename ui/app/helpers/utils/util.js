@@ -12,6 +12,7 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
 } from '../../../../shared/constants/network';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -67,7 +68,7 @@ export function addressSummary(
   if (!address) {
     return '';
   }
-  let checked = checksumAddress(address);
+  let checked = toChecksumHexAddress(address);
   if (!includeHex) {
     checked = ethUtil.stripHexPrefix(checked);
   }
@@ -76,20 +77,6 @@ export function addressSummary(
         checked.length - lastSegLength,
       )}`
     : '...';
-}
-
-export function isValidAddress(address) {
-  if (!address || address === '0x0000000000000000000000000000000000000000') {
-    return false;
-  }
-  const prefixed = addHexPrefix(address);
-  if (!isHex(prefixed)) {
-    return false;
-  }
-  return (
-    (isAllOneCase(prefixed.slice(2)) && ethUtil.isValidAddress(prefixed)) ||
-    ethUtil.isValidChecksumAddress(prefixed)
-  );
 }
 
 export function isValidDomainName(address) {
@@ -110,15 +97,6 @@ export function isOriginContractAddress(to, sendTokenAddress) {
     return false;
   }
   return to.toLowerCase() === sendTokenAddress.toLowerCase();
-}
-
-export function isAllOneCase(address) {
-  if (!address) {
-    return true;
-  }
-  const lower = address.toLowerCase();
-  const upper = address.toUpperCase();
-  return address === lower || address === upper;
 }
 
 // Takes wei Hex, returns wei BN, even if input is null
@@ -182,10 +160,6 @@ export function formatBalance(
   return formatted;
 }
 
-export function isHex(str) {
-  return Boolean(str.match(/^(0x)?[0-9a-fA-F]+$/u));
-}
-
 export function getContractAtAddress(tokenAddress) {
   return global.eth.contract(abi).at(tokenAddress);
 }
@@ -223,18 +197,6 @@ export function exportAsFile(filename, data, type = 'text/csv') {
 }
 
 /**
- * Safely checksumms a potentially-null address
- *
- * @param {string} [address] - address to checksum
- * @returns {string} checksummed address
- *
- */
-export function checksumAddress(address) {
-  const checksummed = address ? ethUtil.toChecksumAddress(address) : '';
-  return checksummed;
-}
-
-/**
  * Shortens an Ethereum address for display, preserving the beginning and end.
  * Returns the given address if it is no longer than 10 characters.
  * Shortened addresses are 13 characters long.
@@ -251,13 +213,6 @@ export function shortenAddress(address = '') {
   }
 
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
-}
-
-export function isValidAddressHead(address) {
-  const addressLengthIsLessThanFull = address.length < 42;
-  const addressIsHex = isHex(address);
-
-  return addressLengthIsLessThanFull && addressIsHex;
 }
 
 export function getAccountByAddress(accounts = [], targetAddress) {

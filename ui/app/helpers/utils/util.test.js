@@ -1,4 +1,4 @@
-import { BN, toChecksumAddress } from 'ethereumjs-util';
+import { BN } from 'ethereumjs-util';
 import * as util from './util';
 
 describe('util', () => {
@@ -44,52 +44,6 @@ describe('util', () => {
       const address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825';
       const result = util.addressSummary(address, 4, 4, false);
       expect(result).toStrictEqual('FDEa...b825');
-    });
-  });
-
-  describe('#isValidAddress', () => {
-    it('should allow 40-char non-prefixed hex', () => {
-      const address = 'fdea65c8e26263f6d9a1b5de9555d2931a33b825';
-      const result = util.isValidAddress(address);
-      expect(result).toStrictEqual(true);
-    });
-
-    it('should allow 42-char non-prefixed hex', () => {
-      const address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825';
-      const result = util.isValidAddress(address);
-      expect(result).toStrictEqual(true);
-    });
-
-    it('should not allow less non hex-prefixed', () => {
-      const address = 'fdea65c8e26263f6d9a1b5de9555d2931a33b85';
-      const result = util.isValidAddress(address);
-      expect(result).toStrictEqual(false);
-    });
-
-    it('should not allow less hex-prefixed', () => {
-      const address = '0xfdea65ce26263f6d9a1b5de9555d2931a33b85';
-      const result = util.isValidAddress(address);
-      expect(result).toStrictEqual(false);
-    });
-
-    it('should recognize correct capitalized checksum', () => {
-      const address = '0xFDEa65C8e26263F6d9A1B5de9555D2931A33b825';
-      const result = util.isValidAddress(address);
-      expect(result).toStrictEqual(true);
-    });
-
-    it('should recognize incorrect capitalized checksum', () => {
-      const address = '0xFDea65C8e26263F6d9A1B5de9555D2931A33b825';
-      const result = util.isValidAddress(address);
-      expect(result).toStrictEqual(false);
-    });
-
-    it('should recognize this sample hashed address', () => {
-      const address = '0x5Fda30Bb72B8Dfe20e48A00dFc108d0915BE9Bb0';
-      const result = util.isValidAddress(address);
-      const hashed = toChecksumAddress(address.toLowerCase());
-      expect(hashed).toStrictEqual(address);
-      expect(result).toStrictEqual(true);
     });
   });
 
@@ -239,36 +193,6 @@ describe('util', () => {
   });
 
   describe('normalizing values', function () {
-    describe('#isHex', function () {
-      it('should return true when given a hex string', function () {
-        const result = util.isHex(
-          'c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2',
-        );
-        expect(result).toStrictEqual(true);
-      });
-
-      it('should return false when given a non-hex string', () => {
-        const result = util.isHex(
-          'c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714imnotreal',
-        );
-        expect(result).toStrictEqual(false);
-      });
-
-      it('should return false when given a string containing a non letter/number character', () => {
-        const result = util.isHex(
-          'c3ab8ff13720!8ad9047dd39466b3c%8974e592c2fa383d4a396071imnotreal',
-        );
-        expect(result).toStrictEqual(false);
-      });
-
-      it('should return true when given a hex string with hex-prefix', () => {
-        const result = util.isHex(
-          '0xc3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2',
-        );
-        expect(result).toStrictEqual(true);
-      });
-    });
-
     describe('#getRandomFileName', () => {
       it('should only return a string containing alphanumeric characters', () => {
         const result = util.getRandomFileName();

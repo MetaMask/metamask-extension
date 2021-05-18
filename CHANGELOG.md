@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.5.3]
+### Fixed
+- [#11103](https://github.com/MetaMask/metamask-extension/pull/11103): Fixes bug that made MetaMask unusable and displayed 'Minified React error #130' on certain networks and accounts
+- [#11015](https://github.com/MetaMask/metamask-extension/pull/11015): Prevent big number error when attempting to view transaction list
+
 ## [9.5.2]
 ### Fixed
 - [#11071](https://github.com/MetaMask/metamask-extension/pull/11071): Fixing address entry error when sending a transaction on a custom network
@@ -2230,7 +2235,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.3...HEAD
+[9.5.3]: https://github.com/MetaMask/metamask-extension/compare/v9.5.2...v9.5.3
 [9.5.2]: https://github.com/MetaMask/metamask-extension/compare/v9.5.1...v9.5.2
 [9.5.1]: https://github.com/MetaMask/metamask-extension/compare/v9.5.0...v9.5.1
 [9.5.0]: https://github.com/MetaMask/metamask-extension/compare/v9.4.0...v9.5.0

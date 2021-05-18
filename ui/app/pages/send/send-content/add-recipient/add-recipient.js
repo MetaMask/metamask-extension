@@ -1,4 +1,3 @@
-import { toChecksumAddress } from 'ethereumjs-util';
 import contractMap from '@metamask/contract-metadata';
 import { isConfusing } from 'unicode-confusables';
 import {
@@ -11,18 +10,26 @@ import {
 } from '../../send.constants';
 
 import {
-  isValidAddress,
   checkExistingAddresses,
   isValidDomainName,
   isOriginContractAddress,
   isDefaultMetaMaskChain,
 } from '../../../../helpers/utils/util';
+import {
+  isBurnAddress,
+  isValidHexAddress,
+  toChecksumHexAddress,
+} from '../../../../../../shared/modules/hexstring-utils';
 
 export function getToErrorObject(to, sendTokenAddress, chainId) {
   let toError = null;
   if (!to) {
     toError = REQUIRED_ERROR;
-  } else if (!isValidAddress(to) && !isValidDomainName(to)) {
+  } else if (
+    isBurnAddress(to) ||
+    (!isValidHexAddress(to, { mixedCaseUseChecksum: true }) &&
+      !isValidDomainName(to))
+  ) {
     toError = isDefaultMetaMaskChain(chainId)
       ? INVALID_RECIPIENT_ADDRESS_ERROR
       : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;
@@ -37,7 +44,8 @@ export function getToWarningObject(to, tokens = [], sendToken = null) {
   let toWarning = null;
   if (
     sendToken &&
-    (toChecksumAddress(to) in contractMap || checkExistingAddresses(to, tokens))
+    (toChecksumHexAddress(to) in contractMap ||
+      checkExistingAddresses(to, tokens))
   ) {
     toWarning = KNOWN_RECIPIENT_ADDRESS_ERROR;
   } else if (isValidDomainName(to) && isConfusing(to)) {
