@@ -1288,6 +1288,10 @@
     "message": "Swap on Binance Smart Chain",
     "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
   },
+  "notifications5Description": {
+    "message": "Your \"Seed Phrase\" is now called your \"Secret Recovery Phrase.\"",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
+  },
   "notifications6DescriptionOne": {
     "message": "As of Chrome version 91, the API that enabled our Ledger support (U2F) no longer supports hardware wallets. MetaMask has implemented a new Ledger Live support that allows you to continue to connect to your Ledger device via the Ledger Live desktop app.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."

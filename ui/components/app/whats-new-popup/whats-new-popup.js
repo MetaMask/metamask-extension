@@ -32,6 +32,12 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ 4: true });
       history.push(BUILD_QUOTE_ROUTE);
     },
+    5: () => {
+      updateViewedNotifications({ 5: true });
+      global.platform.openTab({
+        url: 'https://metamask.zendesk.com/hc/en-us/articles/360060826432',
+      });
+    },
   };
 
   return actionFunctions[id];
