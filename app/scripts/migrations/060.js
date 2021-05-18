@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isPlainObject } from 'lodash';
 
 const version = 60;
 const SUPPORT_NOTIFICATION_KEY = 2;
@@ -20,11 +20,16 @@ export default {
 };
 
 function transformState(state) {
-  if (
-    state?.NotificationController?.notifications[SUPPORT_NOTIFICATION_KEY]
-      .date === SUPPORT_NOTIFICATION_DATE
-  ) {
-    delete state.NotificationController.notifications[SUPPORT_NOTIFICATION_KEY];
+  const notifications = state?.NotificationController?.notifications;
+  if (isPlainObject(notifications)) {
+    if (
+      notifications[SUPPORT_NOTIFICATION_KEY]?.date ===
+      SUPPORT_NOTIFICATION_DATE
+    ) {
+      delete state.NotificationController.notifications[
+        SUPPORT_NOTIFICATION_KEY
+      ];
+    }
   }
   return state;
 }
