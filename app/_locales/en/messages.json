@@ -873,6 +873,9 @@
   "history": {
     "message": "History"
   },
+  "iUnderstand": {
+    "message": "I understand"
+  },
   "import": {
     "message": "Import",
     "description": "Button to import an account from a selected file"
@@ -1943,8 +1946,12 @@
   "swapPriceDifferenceTooltip": {
     "message": "The difference in market prices can be affected by fees taken by intermediaries, size of market, size of trade, or market inefficiencies."
   },
-  "swapPriceDifferenceUnavailable": {
-    "message": "Market price is unavailable.  Make sure you feel comfortable with the returned amount before proceeding."
+  "swapPriceUnavailableDescription": {
+    "message": "The market price of $1 is unknown and this swap could cause the price of $1 to change.",
+    "description": "$1 is a name of a token, e.g. BAT"
+  },
+  "swapPriceUnavailableTitle": {
+    "message": "Market price is unavailable"
   },
   "swapProcessing": {
     "message": "Processing"

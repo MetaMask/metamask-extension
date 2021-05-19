@@ -1631,9 +1631,6 @@
   "swapPriceDifferenceTooltip": {
     "message": "La diferencia en los precios de mercado puede verse afectada por las tarifas cobradas por los intermediarios, el tamaño del mercado, el tamaño del comercio o las ineficiencias del mercado."
   },
-  "swapPriceDifferenceUnavailable": {
-    "message": "El precio de mercado no está disponible. Asegúrese de sentirse cómodo con el monto devuelto antes de continuar."
-  },
   "swapProcessing": {
     "message": "Procesando"
   },
