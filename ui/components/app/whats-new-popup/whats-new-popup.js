@@ -30,6 +30,12 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ 4: true });
       history.push(BUILD_QUOTE_ROUTE);
     },
+    5: () => {
+      updateViewedNotifications({ 5: true });
+      global.platform.openTab({
+        url: 'https://metamask.zendesk.com/hc/en-us/articles/360060826432',
+      });
+    },
   };
 
   return actionFunctions[id];
@@ -174,7 +180,8 @@ export default function WhatsNewPopup({ onClose }) {
       <div className="whats-new-popup__notifications">
         {notifications.map(({ id }, index) => {
           const notification = getTranslatedUINoficiations(t, locale)[id];
-          return index === 0
+          // Display the swaps notification with full image
+          return index === 0 || id === 1
             ? renderFirstNotification(notification, idRefMap, history)
             : renderSubsequentNotification(notification, idRefMap, history);
         })}
