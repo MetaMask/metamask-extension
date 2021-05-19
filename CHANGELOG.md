@@ -11,9 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#10905](https://github.com/MetaMask/metamask-extension/pull/10905): Implemented basic switchEthereumChain feature
 - [#10967](https://github.com/MetaMask/metamask-extension/pull/10967): Add setting to dismiss seed phrase backup reminder
 - [#10293](https://github.com/MetaMask/metamask-extension/pull/10293): Implement Ledger Live bridge
-- [#10962](https://github.com/MetaMask/metamask-extension/pull/10962): Add backwards compatibility for ETH <-> WETH contract address validation
 - [#11131](https://github.com/MetaMask/metamask-extension/pull/11131): What's New: Adding notification for updated seed phrase wording
-- [#11083](https://github.com/MetaMask/metamask-extension/pull/11083): Adding BSC Swaps notification when if a user is on BSC Mainnet
+- [#11083](https://github.com/MetaMask/metamask-extension/pull/11083): Adding BSC Swaps notification when a user is on BSC Mainnet
 - [#11088](https://github.com/MetaMask/metamask-extension/pull/11088): Swaps: Add specific error content if Contract data are not enabled on Ledger
 - [#11064](https://github.com/MetaMask/metamask-extension/pull/11064): Supporting EIP-712 signing for Ledger accounts
 
@@ -26,9 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#10767](https://github.com/MetaMask/metamask-extension/pull/10767): Improving error handling when gas prices are unavailable.
 - [#11118](https://github.com/MetaMask/metamask-extension/pull/11118): Removing support survey notification from What's New
 - [#11115](https://github.com/MetaMask/metamask-extension/pull/11115): Hide basic tab in advanced gas modal for speedup and cancel when on testnets
-- [#10963](https://github.com/MetaMask/metamask-extension/pull/10963): Ensure method of adding contact when contacts exist
-- [#10955](https://github.com/MetaMask/metamask-extension/pull/10955): Anchor the Need Help text to the bottom of the expanded page
-- [#10774](https://github.com/MetaMask/metamask-extension/pull/10774): Swaps: Use network specific swaps contract address when checking swap contract token approval
 
 ### Fixed
 - [#11025](https://github.com/MetaMask/metamask-extension/pull/11025): Fixed redirection to the build quotes page from the swaps page when failure has occured
@@ -36,7 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#11013](https://github.com/MetaMask/metamask-extension/pull/11013): Prevent signature request component from canceling hardware wallet signing
 - [#10982](https://github.com/MetaMask/metamask-extension/pull/10982): Re-validating chain id when rpc url changes [custom network form]
 - [#10988](https://github.com/MetaMask/metamask-extension/pull/10988): Allowing for scroll overflow when swaps content is too tall
-- [#10979](https://github.com/MetaMask/metamask-extension/pull/10979): Fixes alignment issue with bottom notification
 - [#10971](https://github.com/MetaMask/metamask-extension/pull/10971): Removing gray background from contact address input
 - [#10952](https://github.com/MetaMask/metamask-extension/pull/10952): Prevent lag in external monitors when using Mac + Chrome
 - [#11127](https://github.com/MetaMask/metamask-extension/pull/11127): Fixes token removal when cancelling a swaps quote
@@ -44,10 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#11097](https://github.com/MetaMask/metamask-extension/pull/11097): Fixes account search results ordering
 - [#10884](https://github.com/MetaMask/metamask-extension/pull/10884): Fixes localStorage migration error in Firefox response
 - [#10762](https://github.com/MetaMask/metamask-extension/pull/10762): Ensure that priceSlippage fiat amounts are always shown in the quote view
-- [#10763](https://github.com/MetaMask/metamask-extension/pull/10763): Swaps: Ensure that the approval fee in the swaps custom gas modal is in network specific currency
-- [#10753](https://github.com/MetaMask/metamask-extension/pull/10753): Swaps: Ensure that the correct default currency symbols are used for fees on the view quote screen
-- [#10743](https://github.com/MetaMask/metamask-extension/pull/10743): Swaps: Use correct block explorer name and link in swaps when on custom network
-- [#10744](https://github.com/MetaMask/metamask-extension/pull/10744): Swaps: Ensure swaps gas prices are fetched from the correct chain specific endpoint
+- [#11031](https://github.com/MetaMask/metamask-extension/pull/11031): Fixes error behavior of addEthereumChain
 
 ## [9.5.3]
 ### Fixed
