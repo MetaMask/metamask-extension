@@ -71,14 +71,14 @@ async function checkIfVersionExists() {
 }
 
 async function checkIfVersionHasArtifacts() {
-  const artifacts = await runCommand('sentry-cli', [
+  const [artifact] = await runCommand('sentry-cli', [
     'releases',
     'files',
     VERSION,
     'list',
   ]);
   // When there's no artifacts, we get a response from the shell like this ['', '']
-  return artifacts[0] && artifacts[0].length > 0;
+  return artifact?.length > 0;
 }
 
 async function doesNotFail(asyncFn) {
