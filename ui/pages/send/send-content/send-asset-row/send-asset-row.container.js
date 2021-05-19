@@ -4,7 +4,7 @@ import {
   getNativeCurrencyImage,
   getAssetImages,
 } from '../../../../selectors';
-import { updateSendAsset, getSendTokenAddress } from '../../../../ducks/send';
+import { updateSendAsset, getSendAssetAddress } from '../../../../ducks/send';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import SendAssetRow from './send-asset-row.component';
 
@@ -12,7 +12,7 @@ function mapStateToProps(state) {
   return {
     tokens: state.metamask.tokens,
     selectedAddress: state.metamask.selectedAddress,
-    sendTokenAddress: getSendTokenAddress(state),
+    sendAssetAddress: getSendAssetAddress(state),
     accounts: getMetaMaskAccounts(state),
     nativeCurrency: getNativeCurrency(state),
     nativeCurrencyImage: getNativeCurrencyImage(state),

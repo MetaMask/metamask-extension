@@ -15,13 +15,14 @@ import {
 } from '../../../../ducks/gas/gas.duck';
 import {
   getSendMaxModeState,
-  getSendToken,
   getGasLimit,
   getGasPrice,
   getSendAmount,
   updateGasLimit,
   updateGasPrice,
   useAdvancedGasEstimation,
+  getSendAsset,
+  ASSET_TYPES,
 } from '../../../../ducks/send';
 import {
   conversionRateSelector as getConversionRate,
@@ -68,7 +69,7 @@ const mapStateToProps = (state, ownProps) => {
     ({ id }) => id === (transaction.id || txData.id),
   );
   const buttonDataLoading = getBasicGasEstimateLoadingStatus(state);
-  const sendToken = getSendToken(state);
+  const asset = getSendAsset(state);
 
   // a "default" txParams is used during the send flow, since the transaction doesn't exist yet in that case
   const txParams = selectedTransaction?.txParams
@@ -76,7 +77,7 @@ const mapStateToProps = (state, ownProps) => {
     : {
         gas: gasLimit || '0x5208',
         gasPrice: gasPrice || getAveragePriceEstimateInHexWEI(state, true),
-        value: sendToken ? '0x0' : amount,
+        value: asset.type === ASSET_TYPES.TOKEN ? '0x0' : amount,
       };
 
   const { gasPrice: currentGasPrice, gas: currentGasLimit } = txParams;
@@ -114,15 +115,13 @@ const mapStateToProps = (state, ownProps) => {
   const isMainnet = getIsMainnet(state);
   const showFiat = Boolean(isMainnet || showFiatInTestnets);
 
-  const isSendTokenSet = Boolean(sendToken);
-
   const newTotalEth =
-    maxModeOn && !isSendTokenSet
+    maxModeOn && asset.type === ASSET_TYPES.NATIVE
       ? sumHexWEIsToRenderableEth([balance, '0x0'])
       : sumHexWEIsToRenderableEth([value, customGasTotal]);
 
   const sendAmount =
-    maxModeOn && !isSendTokenSet
+    maxModeOn && asset.type === ASSET_TYPES.NATIVE
       ? subtractHexWEIsFromRenderableEth(balance, customGasTotal)
       : sumHexWEIsToRenderableEth([value, '0x0']);
 
@@ -176,7 +175,6 @@ const mapStateToProps = (state, ownProps) => {
     txId: transaction.id,
     insufficientBalance,
     isMainnet,
-    sendToken,
     balance,
     conversionRate,
     value,

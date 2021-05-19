@@ -18,7 +18,7 @@ export default class SendAssetRow extends Component {
     accounts: PropTypes.object.isRequired,
     assetImages: PropTypes.object,
     selectedAddress: PropTypes.string.isRequired,
-    sendTokenAddress: PropTypes.string,
+    sendAssetAddress: PropTypes.string,
     updateSendAsset: PropTypes.func.isRequired,
     nativeCurrency: PropTypes.string,
     nativeCurrencyImage: PropTypes.string,
@@ -75,9 +75,9 @@ export default class SendAssetRow extends Component {
   }
 
   renderSendToken() {
-    const { sendTokenAddress } = this.props;
+    const { sendAssetAddress } = this.props;
     const token = this.props.tokens.find(
-      ({ address }) => address === sendTokenAddress,
+      ({ address }) => address === sendAssetAddress,
     );
     return (
       <div

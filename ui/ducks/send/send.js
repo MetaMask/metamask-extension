@@ -1035,10 +1035,24 @@ export function updateSendAsset({ type, details }) {
   };
 }
 
+/**
+ * This method is for usage when validating user input so that validation
+ * is only run after a delay in typing of 300ms. Usage at callsites requires
+ * passing in both the dispatch method and the payload to dispatch, which makes
+ * it only applicable for use within action creators.
+ */
 const debouncedValidateRecipientUserInput = debounce((dispatch, payload) => {
   dispatch(validateRecipientUserInput(payload));
 }, 300);
 
+/**
+ * This method is called to update the user's input into the ENS input field.
+ * Once the field is updated, the field will be validated using a debounced
+ * version of the validateRecipientUserInput action. This way validation only
+ * occurs once the user has stopped typing.
+ * @param {string} userInput - the value that the user is typing into the field
+ * @returns {void}
+ */
 export function updateRecipientUserInput(userInput) {
   return async (dispatch, getState) => {
     await dispatch(actions.updateRecipientUserInput(userInput));
@@ -1061,6 +1075,18 @@ export function useMyAccountsForRecipientSearch() {
   };
 }
 
+/**
+ * Updates the recipient in state based on the input provided, and then will
+ * recompute gas limit when sending a TOKEN asset type. Changing the recipient
+ * address results in hex data changing because the recipient address is
+ * encoded in the data instead of being in the 'to' field. The to field in a
+ * token send will always be the token contract address.
+ * @param {Object} recipient - Recipient information
+ * @param {string} recipient.address - hex address to send the transaction to
+ * @param {string} [recipient.nickname] - Alias for the address to display
+ *  to the user
+ * @returns {void}
+ */
 export function updateRecipient({ address, nickname }) {
   return async (dispatch, getState) => {
     await dispatch(actions.updateRecipient({ address, nickname }));
@@ -1071,6 +1097,10 @@ export function updateRecipient({ address, nickname }) {
   };
 }
 
+/**
+ * Clears out the recipient user input, ENS resolution and recipient validation
+ * @returns {void}
+ */
 export function resetRecipientInput() {
   return async (dispatch) => {
     await dispatch(updateRecipientUserInput(''));
@@ -1079,6 +1109,16 @@ export function resetRecipientInput() {
   };
 }
 
+/**
+ * When a user has enabled hex data field in advanced settings they will be
+ * able to supply hex data on a transaction. This method updates the user
+ * supplied data. Note, when sending native assets this will result in
+ * recomputing estimated gasLimit. When sending a ERC20 asset this is not done
+ * because the data sent in the transaction will be determined by the asset,
+ * recipient and value, NOT what the user has supplied.
+ * @param {string} hexData - hex encoded string representing transaction data
+ * @returns {void}
+ */
 export function updateSendHexData(hexData) {
   return async (dispatch, getState) => {
     await dispatch(actions.updateUserInputHexData(hexData));
@@ -1089,6 +1129,13 @@ export function updateSendHexData(hexData) {
   };
 }
 
+/**
+ * Toggles the amount.mode between INPUT and MAX modes.
+ * As a result, the amount.value will change to either '0x0' when moving from
+ * MAX to INPUT, or to the maximum allowable amount based on current asset when
+ * moving from INPUT to MAX.
+ * @returns {void}
+ */
 export function toggleSendMaxMode() {
   return async (dispatch, getState) => {
     const state = getState();
@@ -1102,6 +1149,15 @@ export function toggleSendMaxMode() {
   };
 }
 
+/**
+ * Signs a transaction or updates a transaction in state if editing.
+ * This method is called when a user clicks the next button in the footer of
+ * the send page, signaling that a transaction should be executed. This method
+ * will create the transaction in state (by way of the various global provider
+ * constructs) which will eventually (and fairly quickly from user perspective)
+ * result in a confirmation window being displayed for the transaction.
+ * @returns {void}
+ */
 export function signTransaction() {
   return async (dispatch, getState) => {
     const state = getState();
@@ -1113,6 +1169,11 @@ export function signTransaction() {
       amount: { value },
     } = state[name];
     if (stage === SEND_STAGES.EDIT) {
+      // When dealing with the edit flow there is already a transaction in
+      // state that we must update, this branch is responsible for that logic.
+      // We first must grab the previous transaction object from state and then
+      // merge in the modified txParams. Once the transaction has been modified
+      // we can send that to the background to update the transaction in state.
       const unapprovedTxs = getUnapprovedTxs(state);
       const unapprovedTx = unapprovedTxs[id];
       const editingTx = {
@@ -1121,6 +1182,11 @@ export function signTransaction() {
       };
       dispatch(updateTransaction(editingTx));
     } else if (asset.type === ASSET_TYPES.TOKEN) {
+      // When sending a token transaction we have to the token.transfer method
+      // on the token contract to construct the transaction. This results in
+      // the proper transaction data and properties being set and a new
+      // transaction being added to background state. Once the new transaction
+      // is added to state a subsequent confirmation will be queued.
       try {
         const token = global.eth.contract(abi).at(asset.details.address);
         token.transfer(address, value, {
@@ -1135,6 +1201,9 @@ export function signTransaction() {
         dispatch(displayWarning(error.message));
       }
     } else {
+      // When sending a native asset we use the ethQuery.sendTransaction method
+      // which will result in the transaction being added to background state
+      // and a subsequent confirmation will be queued.
       global.ethQuery.sendTransaction(txParams, (err) => {
         if (err) {
           dispatch(displayWarning(err.message));
@@ -1146,6 +1215,8 @@ export function signTransaction() {
 }
 
 // Selectors
+
+// Gas selectors
 export function getGasLimit(state) {
   return state[name].gas.gasLimit;
 }
@@ -1158,84 +1229,73 @@ export function getGasTotal(state) {
   return state[name].gas.gasTotal;
 }
 
+export function gasFeeIsInError(state) {
+  return Boolean(state[name].gas.error);
+}
+
+export function getMinimumGasLimitForSend(state) {
+  return state[name].gas.minimumGasLimit;
+}
+
+export function getGasButtonGroupShown(state) {
+  return state[name].gas.mode === 'BASIC';
+}
+
+// Asset Selectors
+
 export function getSendAsset(state) {
   return state[name].asset;
 }
 
-export function getSendToken(state) {
-  if (state[name].asset.type === ASSET_TYPES.TOKEN) {
-    return state[name].asset.details;
-  }
-  return null;
+export function getSendAssetAddress(state) {
+  return getSendAsset(state)?.details?.address;
 }
 
-export function getSendTokenAddress(state) {
-  return getSendToken(state)?.address;
-}
-
+// Amount Selectors
 export function getSendAmount(state) {
   return state[name].amount.value;
+}
+
+export function getIsBalanceInsufficient(state) {
+  return state[name].gas.error === INSUFFICIENT_FUNDS_ERROR;
+}
+export function getSendMaxModeState(state) {
+  return state[name].amount.mode === AMOUNT_MODES.MAX;
 }
 
 export function getSendHexData(state) {
   return state[name].draftTransaction.userInputHexData;
 }
 
-export function getSendTransactionId(state) {
-  return state[name].stage === SEND_STAGES.EDIT
-    ? state[name].draftTransaction.id
-    : null;
+export function sendAmountIsInError(state) {
+  return Boolean(state[name].amount.error);
 }
 
-export function getIsBalanceInsufficient(state) {
-  return state[name].gas.error === INSUFFICIENT_FUNDS_ERROR;
-}
-
-export function getSendFrom(state) {
-  return state[name].account.address;
-}
-
-export function getSendFromBalance(state) {
-  return state[name].account.balance;
-}
-
-export function getSendFromObject(state) {
-  return state[name].account;
-}
-
-export function getSendMaxModeState(state) {
-  return state[name].amount.mode === AMOUNT_MODES.MAX;
-}
+// Recipient Selectors
 
 export function getSendTo(state) {
   return state[name].recipient.address;
 }
 
-export function getSendToNickname(state) {
-  return state[name].recipient.nickname;
+export function getIsUsingMyAccountForRecipientSearch(state) {
+  return state[name].recipient.mode === RECIPIENT_SEARCH_MODES.MY_ACCOUNTS;
 }
 
-export function getTokenBalance(state) {
-  return state[name].asset.balance;
+export function getRecipientUserInput(state) {
+  return state[name].recipient.userInput;
 }
+
+export function getRecipient(state) {
+  return state[name].recipient;
+}
+
+// Overall validity and stage selectors
 
 export function getSendErrors(state) {
   return {
     gas: state.send.gas.error,
     amount: state.send.amount.error,
   };
-}
-
-export function sendAmountIsInError(state) {
-  return Boolean(state[name].amount.error);
-}
-
-export function gasFeeIsInError(state) {
-  return Boolean(state[name].gas.error);
-}
-
-export function getGasButtonGroupShown(state) {
-  return state[name].gas.mode === 'BASIC';
 }
 
 export function isSendStateInitialized(state) {
@@ -1252,24 +1312,4 @@ export function isSendFormInError(state) {
 
 export function getSendStage(state) {
   return state[name].stage;
-}
-
-export function getIsUsingMyAccountForRecipientSearch(state) {
-  return state[name].recipient.mode === RECIPIENT_SEARCH_MODES.MY_ACCOUNTS;
-}
-
-export function getRecipientUserInput(state) {
-  return state[name].recipient.userInput;
-}
-
-export function getRecipient(state) {
-  return state[name].recipient;
-}
-
-export function getDraftTransaction(state) {
-  return state[name].draftTransaction;
-}
-
-export function getMinimumGasLimitForSend(state) {
-  return state[name].gas.minimumGasLimit;
 }
