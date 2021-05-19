@@ -15,14 +15,26 @@ export default {
 };
 
 const PageSet = ({ children }) => {
-  const knob = text("Origin", "https://metamask.github.io")
+  const origin = text("Origin", "https://metamask.github.io")
+  const domainIconUrl = text("Icon URL", "https://metamask.github.io/test-dapp/metamask-fox.svg")
   const currentNetworkTxList = useSelector(currentNetworkTxListSelector);
 
   useEffect(() => {
+    //transaction ID, maps to entry in state.metamask.currentNetworkTxList
     const transaction = currentNetworkTxList.find(({ id }) => id === 7900715443136469);
-    transaction.origin = knob
+    transaction.origin = origin
     store.dispatch(updateMetamaskState({ currentNetworkTxList: [transaction] }))
-  }, [knob])
+    console.log(store.getState())
+  }, [origin])
+
+  useEffect(() => {
+    store.dispatch(updateMetamaskState({ domainMetadata: {
+      [origin]: {
+        icon: domainIconUrl
+      }
+    } }))
+    console.log(store.getState())
+  }, [domainIconUrl])
   
   const params = useParams();
   params.id = 7900715443136469;
@@ -31,7 +43,7 @@ const PageSet = ({ children }) => {
 
 export const ApproveTokens = () => {
   store.dispatch(updateMetamaskState({ currentNetworkTxList: [currentNetworkTxListSample] }))
-
+  store.dispatch(updateMetamaskState({ domainMetadata: domainMetadata }))
   return (
     <PageSet>
       <ConfirmApprove />
