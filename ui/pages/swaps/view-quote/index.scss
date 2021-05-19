@@ -97,15 +97,16 @@
 
       &.medium .actionable-message,
       &.fiat-error .actionable-message {
-        border-color: $Yellow-500;
-        background: $Yellow-100;
+        border-color: $Red-300;
+        background: $Red-000;
 
         .actionable-message__message {
           color: inherit;
         }
 
         button {
-          background: $Yellow-500;
+          background: $Red-500;
+          color: #fff;
           border-radius: 42px;
         }
       }
@@ -160,8 +161,6 @@
     width: 100%;
     align-items: center;
     justify-content: center;
-    width: intrinsic;           /* Safari/WebKit uses a non-standard name */
-    width: max-content;
     max-width: 340px;
     margin-top: 8px;
 
@@ -171,6 +170,7 @@
       }
 
       display: flex;
+      flex-direction: column;
     }
   }
 
