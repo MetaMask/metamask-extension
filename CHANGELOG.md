@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.6.0]
+### Uncategorized
+- Running auto-changelog
+- Bumping package.json
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- bumping package.json -> 9.5.2
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- Fixing changelog, bumping package.json -> 9.5.1
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- Fixing changelog
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- Revert "Remove tests that are only needed for the commit reverted in 68c5defc"
+- Revert "Removing recovery video entry from changelog"
+- Merge remote-tracking branch 'origin/develop' into sync-master
+- Merge remote-tracking branch 'origin/develop' into sync-master
+- Merge remote-tracking branch 'origin/develop' into sync-master
+- Merge remote-tracking branch 'origin/develop' into sync-master
+
 ## [9.5.3]
 ### Uncategorized
 - [#11131](https://github.com/MetaMask/metamask-extension/pull/11131): Adding notification for updated seed phrase wording
@@ -2423,7 +2441,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.3...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.6.0...HEAD
+[9.6.0]: https://github.com/MetaMask/metamask-extension/compare/v9.5.3...v9.6.0
 [9.5.3]: https://github.com/MetaMask/metamask-extension/compare/v9.5.2...v9.5.3
 [9.5.2]: https://github.com/MetaMask/metamask-extension/compare/v9.5.1...v9.5.2
 [9.5.1]: https://github.com/MetaMask/metamask-extension/compare/v9.5.0...v9.5.1
