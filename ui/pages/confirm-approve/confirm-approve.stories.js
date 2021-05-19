@@ -13,19 +13,12 @@ export default {
 
 const PageSet = ({ children }) => {
   const params = useParams();
+  //transaction ID: maps to a transaction in state.metamask.currentNetworkTxList
   params.id = 1906703652727041;
   return children;
 };
 
 export const ApproveTokens = () => {
-  // useEffect for creating Redux knobs
-  useEffect(() => {
-    store.dispatch(
-      updateMetamaskState({
-        // stateUpdateHere
-      }),
-    );
-  });
 
   return (
     <PageSet>
