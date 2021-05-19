@@ -35,7 +35,9 @@ const PageSet = ({ children }) => {
   }, [domainIconUrl])
   
   const params = useParams();
+  //transaction ID: maps to a transaction in state.metamask.currentNetworkTxList
   params.id = 7900715443136469;
+
   return children;
 };
 
