@@ -24,7 +24,6 @@ const PageSet = ({ children }) => {
     const transaction = currentNetworkTxList.find(({ id }) => id === 7900715443136469);
     transaction.origin = origin
     store.dispatch(updateMetamaskState({ currentNetworkTxList: [transaction] }))
-    console.log(store.getState())
   }, [origin])
 
   useEffect(() => {
@@ -33,7 +32,6 @@ const PageSet = ({ children }) => {
         icon: domainIconUrl
       }
     } }))
-    console.log(store.getState())
   }, [domainIconUrl])
   
   const params = useParams();
