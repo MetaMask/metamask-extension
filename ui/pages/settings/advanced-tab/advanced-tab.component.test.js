@@ -15,6 +15,10 @@ describe('AdvancedTab Component', () => {
         setThreeBoxSyncingPermission={() => undefined}
         threeBoxDisabled
         threeBoxSyncingAllowed={false}
+        useLedgerLive={false}
+        setLedgerLivePreference={() => undefined}
+        setDismissSeedBackUpReminder={() => undefined}
+        dismissSeedBackUpReminder={false}
       />,
       {
         context: {
@@ -37,6 +41,10 @@ describe('AdvancedTab Component', () => {
         setThreeBoxSyncingPermission={() => undefined}
         threeBoxDisabled
         threeBoxSyncingAllowed={false}
+        useLedgerLive={false}
+        setLedgerLivePreference={() => undefined}
+        setDismissSeedBackUpReminder={() => undefined}
+        dismissSeedBackUpReminder={false}
       />,
       {
         context: {
