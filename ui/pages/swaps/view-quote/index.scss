@@ -98,7 +98,7 @@
       &.low,
       &.medium,
       &.high {
-        .actionable-message { 
+        .actionable-message {
           .actionable-message__message {
             color: inherit;
           }
@@ -112,7 +112,7 @@
       }
 
       &.low {
-        .actionable-message { 
+        .actionable-message {
           button {
             background: $Blue-500;
             color: #fff;
@@ -124,7 +124,7 @@
         .actionable-message {
           border-color: $Yellow-500;
           background: $Yellow-100;
- 
+
           button {
             background: $Yellow-500;
           }
@@ -135,7 +135,7 @@
         .actionable-message {
           border-color: $Red-300;
           background: $Red-000;
-    
+
           button {
             background: $Red-500;
             color: #fff;
