@@ -38,6 +38,7 @@ import {
   getSendMaxModeState,
   getAveragePriceEstimateInHexWEI,
   isCustomPriceExcessive,
+  getIsGasEstimatesFetched,
 } from '../../../../selectors';
 
 import {
@@ -132,7 +133,7 @@ const mapStateToProps = (state, ownProps) => {
         balance,
         conversionRate,
       });
-
+  const isGasEstimate = getIsGasEstimatesFetched(state);
   return {
     hideBasic,
     isConfirm: isConfirm(state),
@@ -142,7 +143,10 @@ const mapStateToProps = (state, ownProps) => {
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     customGasTotal,
     newTotalFiat,
-    customPriceIsSafe: isCustomPriceSafe(state),
+    customPriceIsSafe:
+      (isMainnet || process.env.IN_TEST) && isGasEstimate
+        ? isCustomPriceSafe(state)
+        : true,
     customPriceIsExcessive: isCustomPriceExcessive(state),
     maxModeOn,
     gasPriceButtonGroupProps: {

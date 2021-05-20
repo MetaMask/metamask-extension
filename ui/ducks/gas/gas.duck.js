@@ -11,13 +11,13 @@ import {
 import { getIsMainnet, getCurrentChainId } from '../../selectors';
 import fetchWithCache from '../../helpers/utils/fetch-with-cache';
 
-const BASIC_ESTIMATE_STATES = {
+export const BASIC_ESTIMATE_STATES = {
   LOADING: 'LOADING',
   FAILED: 'FAILED',
   READY: 'READY',
 };
 
-const GAS_SOURCE = {
+export const GAS_SOURCE = {
   METASWAPS: 'MetaSwaps',
   ETHGASPRICE: 'eth_gasprice',
 };
