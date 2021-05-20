@@ -38,9 +38,10 @@ import {
   OFFLINE_FOR_MAINTENANCE,
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
 } from '../../../../shared/constants/swaps';
+import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
@@ -280,8 +281,13 @@ export default function AwaitingSwap({
             );
           } else if (errorKey) {
             await dispatch(navigateBackToBuildQuote(history));
-          } else {
+          } else if (
+            isSwapsDefaultTokenSymbol(destinationTokenInfo?.symbol, chainId) ||
+            swapComplete
+          ) {
             history.push(DEFAULT_ROUTE);
+          } else {
+            history.push(`${ASSET_ROUTE}/${destinationTokenInfo?.address}`);
           }
         }}
         onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
