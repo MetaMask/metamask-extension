@@ -2550,16 +2550,15 @@
     semver "^7.3.4"
     yargs "^16.2.0"
 
-"@lavamoat/lavapack@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@lavamoat/lavapack/-/lavapack-1.0.3.tgz#904d9f10f37560c9da738681cdb67538c4ff5148"
-  integrity sha512-vbuW5Q7ImiZ1XmcdCnH/IaU7H140Op0cqQOm3sqDWpyP1Ggm6Hx2U+WKpENQ50actq1YafkzVUzNJOEJLUMloQ==
+"@lavamoat/lavapack@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@lavamoat/lavapack/-/lavapack-1.0.4.tgz#e72d6b29fa70da8236a127c1d95cb581cda6941e"
+  integrity sha512-Zhcn+eJyHIS4AAmN9IIjs8WCh12Q7NpFXXz0pI3Y54uknTdx5TPlwr3ARKf0jEXDOWNok/TuK2uPld54BSG/FQ==
   dependencies:
     JSONStream "^1.3.5"
     combine-source-map "^0.8.0"
     convert-source-map "^1.7.0"
     json-stable-stringify "^1.0.1"
-    offset-sourcemap-lines "^1.0.1"
     through2 "^4.0.2"
     umd "^3.0.3"
 
@@ -19584,13 +19583,6 @@ observable-webworkers@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/observable-webworkers/-/observable-webworkers-1.0.0.tgz#dcbd484a9644d512accc351962c6e710313fbb68"
   integrity sha512-+cECwCR8IEh8UY5nefQVLO9Cydqpk1izO+o7BABmKjXfJZyEOzBWY3ss5jbOPM6KmEa9aQExvAtTW6tVTOsNAQ==
-
-offset-sourcemap-lines@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/offset-sourcemap-lines/-/offset-sourcemap-lines-1.0.1.tgz#5854dff74b73fc06efcb61d7b721a8113d99be92"
-  integrity sha1-WFTf90tz/Abvy2HXtyGoET2ZvpI=
-  dependencies:
-    source-map "^0.5.0"
 
 on-finished@^2.3.0, on-finished@~2.3.0:
   version "2.3.0"
