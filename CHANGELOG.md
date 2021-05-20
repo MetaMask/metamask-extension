@@ -306,7 +306,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [8.1.3] - 2020-10-29
 ### Uncategorized
-- [#9642](https://github.com/MetaMask/metamask-extension/pull/9642) Prevent excessive overflow from swap dropdowns
+- Prevent excessive overflow from swap dropdowns ([#9642](https://github.com/MetaMask/metamask-extension/pull/9642))
 - Fix sorting Quote Source column of quote sort list ([#9658](https://github.com/MetaMask/metamask-extension/pull/9658))
 - Fix adding contact with QR code ([#9667](https://github.com/MetaMask/metamask-extension/pull/9667))
 - Fix ENS resolution of `.eth` URLs with query strings ([#9674](https://github.com/MetaMask/metamask-extension/pull/9674))
@@ -811,10 +811,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.7.2] - 2019-07-03
 ### Uncategorized
-- \* Normalize and Validate txParams in TransactionStateManager.addTx too ([#6713](https://github.com/MetaMask/metamask-extension/pull/6713))
+- Normalize and Validate txParams in TransactionStateManager.addTx too ([#6713](https://github.com/MetaMask/metamask-extension/pull/6713))
 - Update to Node.js v10 ([#6759](https://github.com/MetaMask/metamask-extension/pull/6759))
 - Fixes #6694 ([#6694](https://github.com/MetaMask/metamask-extension/pull/6694))
-- \* Add tests for ImportWithSeedPhrase#parseSeedPhrase ([#6743](https://github.com/MetaMask/metamask-extension/pull/6743))
+- Add tests for ImportWithSeedPhrase#parseSeedPhrase ([#6743](https://github.com/MetaMask/metamask-extension/pull/6743))
 - Fixes #6740 ([#6740](https://github.com/MetaMask/metamask-extension/pull/6740))
 - Fixes #6741 ([#6741](https://github.com/MetaMask/metamask-extension/pull/6741))
 - Fixes #6760, correct PropTypes for nextRoute ([#6761](https://github.com/MetaMask/metamask-extension/pull/6761))
@@ -888,7 +888,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.4.0] - 2019-04-18
 ### Uncategorized
-- \* Move send to pages/ ([#6445](https://github.com/MetaMask/metamask-extension/pull/6445))
+- Move send to pages/ ([#6445](https://github.com/MetaMask/metamask-extension/pull/6445))
 - update publishing.md with dev diagram ([#6470](https://github.com/MetaMask/metamask-extension/pull/6470))
 - Update to eth-method-registry@1.2.0 ([#6403](https://github.com/MetaMask/metamask-extension/pull/6403))
 - Fix switcher height when Custom RPC is selected or loading ([#6468](https://github.com/MetaMask/metamask-extension/pull/6468))
@@ -959,17 +959,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Change "Token Address" to "Token Contract Address" ([#6182](https://github.com/MetaMask/metamask-extension/pull/6182))
 - Fixes #6176 ([#6177](https://github.com/MetaMask/metamask-extension/pull/6177))
-- \* Add Copy Tx ID button to transaction-list-item-details ([#6146](https://github.com/MetaMask/metamask-extension/pull/6146))
+- Add Copy Tx ID button to transaction-list-item-details ([#6146](https://github.com/MetaMask/metamask-extension/pull/6146))
 - Checksum address before slicing it for the confirm screen ([#6133](https://github.com/MetaMask/metamask-extension/pull/6133))
 - Add button to force edit token symbol when adding custom token ([#6147](https://github.com/MetaMask/metamask-extension/pull/6147))
 - Fix incorrectly showing checksums on non-ETH blockchains ([#6124](https://github.com/MetaMask/metamask-extension/pull/6124): recent-blocks - dont listen for block when on infura providers -[#5973] (https://github.com/MetaMask/metamask-extension/pull/5973))
 
 ## [6.0.1] - 2019-02-12
 ### Uncategorized
-- [#6139](https://github.com/MetaMask/metamask-extension/pull/6139) Fix advanced gas controls on the confirm screen
-- [#6134](https://github.com/MetaMask/metamask-extension/pull/6134) Trim whitespace from seed phrase during import
-- [#6119](https://github.com/MetaMask/metamask-extension/pull/6119) Update Italian translation
-- [#6125](https://github.com/MetaMask/metamask-extension/pull/6125) Improved Traditional Chinese translation
+- Fix advanced gas controls on the confirm screen ([#6139](https://github.com/MetaMask/metamask-extension/pull/6139))
+- Trim whitespace from seed phrase during import ([#6134](https://github.com/MetaMask/metamask-extension/pull/6134))
+- Update Italian translation ([#6119](https://github.com/MetaMask/metamask-extension/pull/6119))
+- Improved Traditional Chinese translation ([#6125](https://github.com/MetaMask/metamask-extension/pull/6125))
 
 ## [6.0.0] - 2019-02-11
 ### Uncategorized
@@ -1036,14 +1036,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.2.1] - 2018-12-12
 ### Uncategorized
-- [#5917] bugfix: Ensures that advanced tab gas limit reflects tx gas limit
+- bugfix: Ensures that advanced tab gas limit reflects tx gas limit ([#5917](https://github.com/MetaMask/metamask-extension/pull/5917))
 
 ## [5.2.0] - 2018-12-11
 ### Uncategorized
-- [#5704] Implements new gas customization features for sending, confirming and speeding up transactions
-- [#5886] Groups transactions - speed up, cancel and original - by nonce in the transaction history list
-- [#5892] bugfix: eliminates infinite spinner issues caused by switching quickly from a loading network that ultimately fails to resolve
-- [$5902] bugfix: provider crashes caused caching issues in `json-rpc-engine`. Fixed in (https://github.com/MetaMask/json-rpc-engine/commit/6de511afbd03ccef4550ea43ff4010b7d7a84039)
+- Implements new gas customization features for sending, confirming and speeding up transactions ([#5704](https://github.com/MetaMask/metamask-extension/pull/5704))
+- Groups transactions - speed up, cancel and original - by nonce in the transaction history list ([#5886](https://github.com/MetaMask/metamask-extension/pull/5886))
+- bugfix: eliminates infinite spinner issues caused by switching quickly from a loading network that ultimately fails to resolve ([#5892](https://github.com/MetaMask/metamask-extension/pull/5892))
+- bugfix: provider crashes caused caching issues in `json-rpc-engine`. ([#5902](https://github.com/MetaMask/metamask-extension/pull/5902))
+  - Fixed in (https://github.com/MetaMask/json-rpc-engine/commit/6de511afbd03ccef4550ea43ff4010b7d7a84039)
 
 ## [5.1.0] - 2018-12-03
 ### Uncategorized
@@ -1060,7 +1061,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Open full-screen UI on install ([#5835](https://github.com/MetaMask/metamask-extension/pull/5835))
 - Locked versions for some dependencies to avoid possible issues from event-stream hack.
 - Hide app-header when provider request pending ([#5831](https://github.com/MetaMask/metamask-extension/pull/5831))
-- \* transactions - autofill gasPrice for retry attempts with either the recomened gasprice or a %10 bump ([#5786](https://github.com/MetaMask/metamask-extension/pull/5786))
+- transactions - autofill gasPrice for retry attempts with either the recomened gasprice or a %10 bump ([#5786](https://github.com/MetaMask/metamask-extension/pull/5786))
 - transactions - ensure err is defined when setting tx failed ([#5801](https://github.com/MetaMask/metamask-extension/pull/5801))
 - Consider HW Wallets for signTypedMessage ([#5792](https://github.com/MetaMask/metamask-extension/pull/5792))
 - Show disabled cursor in .network-disabled state ([#5829](https://github.com/MetaMask/metamask-extension/pull/5829))
@@ -1102,9 +1103,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Fix bug where data lookups like balances would get stale data (stopped block-tracker bug)
 - Transaction Details now show entry for onchain failure
-- [#5559](https://github.com/MetaMask/metamask-extension/pull/5559) Localize language names in translation select list
+- Localize language names in translation select list ([#5559](https://github.com/MetaMask/metamask-extension/pull/5559))
 - Fix bug when eth.getCode() called with no contract ([#5283](https://github.com/MetaMask/metamask-extension/pull/5283))
-- [#5563](https://github.com/MetaMask/metamask-extension/pull/5563#pullrequestreview-166769174) Feature: improve Hatian Creole translations
+- Feature: improve Hatian Creole translations ([#5563](https://github.com/MetaMask/metamask-extension/pull/5563#pullrequestreview-166769174))
 - Feature: improve Slovenian translations
 - Add support for alternate `wallet_watchAsset` rpc method name
 - Attempt chain ID lookup via `eth_chainId` before `net_version`
@@ -1129,9 +1130,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.14.0] - 2018-10-11
 ### Uncategorized
 - Update transaction statuses when switching networks.
-- [#5470](https://github.com/MetaMask/metamask-extension/pull/5470) 100% coverage in French locale, fixed the procedure to verify proposed locale.
+- 100% coverage in French locale, fixed the procedure to verify proposed locale. ([#5470](https://github.com/MetaMask/metamask-extension/pull/5470))
 - Added rudimentary support for the subscription API to support web3 1.0 and Truffle's Drizzle.
-- [#5502](https://github.com/MetaMask/metamask-extension/pull/5502) Update Italian translation.
+- Update Italian translation. ([#5502](https://github.com/MetaMask/metamask-extension/pull/5502))
 
 ## [4.13.0] - 2018-10-04
 ### Uncategorized
