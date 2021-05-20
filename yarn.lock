@@ -2620,10 +2620,10 @@
     prop-types "^15.7.2"
     react-is "^16.8.0"
 
-"@metamask/auto-changelog@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/auto-changelog/-/auto-changelog-1.0.0.tgz#ca6a71d1b983cf08b715bdcd8e240d746974d0c7"
-  integrity sha512-3Bcm+JsEmNllPi7kRtzS6EAjYTzz+Isa4QFq2DQ4DFwIsv2HUxdR+KNU2GJ1BdX4lbPcQTrpTdaPgBZ9G4NhLA==
+"@metamask/auto-changelog@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@metamask/auto-changelog/-/auto-changelog-2.0.1.tgz#c5e9099c11f05d5e77fea91722a612c971764eff"
+  integrity sha512-ugIjpnPcf7nhIKEpGb4bfwTILzfwQae2aNJhrqxicY9LqI+CuTNA4+VFJIaX6zRYrgFINMYpLMgYvMB3Gj61kA==
   dependencies:
     cross-spawn "^7.0.3"
     diff "^5.0.0"
