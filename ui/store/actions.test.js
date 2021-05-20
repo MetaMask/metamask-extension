@@ -618,7 +618,7 @@ describe('Actions', () => {
 
     it('calls setCurrentCurrency', async () => {
       const store = mockStore();
-      background.setCurrentCurrency.callsFake((_, cb) => cb());
+      background.setCurrentCurrency = sinon.stub().callsFake((_, cb) => cb());
       actions._setBackgroundConnection(background);
 
       await store.dispatch(actions.setCurrentCurrency('jpy'));
@@ -627,9 +627,9 @@ describe('Actions', () => {
 
     it('throws if setCurrentCurrency throws', async () => {
       const store = mockStore();
-      background.setCurrentCurrency.callsFake((_, cb) =>
-        cb(new Error('error')),
-      );
+      background.setCurrentCurrency = sinon
+        .stub()
+        .callsFake((_, cb) => cb(new Error('error')));
       actions._setBackgroundConnection(background);
 
       const expectedActions = [
