@@ -2538,10 +2538,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@lavamoat/allow-scripts@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@lavamoat/allow-scripts/-/allow-scripts-1.0.5.tgz#2ea55ae12edfeb48216c4b20380277e0cc348b5e"
-  integrity sha512-hlsF635Xf+jexx/EPrnq07bA7MpJLfLW4oL9eDg+1vi1YbYiWr97Fzf26c9RPHyuK66zICR1RvtL/7RkmfIIag==
+"@lavamoat/allow-scripts@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@lavamoat/allow-scripts/-/allow-scripts-1.0.6.tgz#fbdf7c35a5c2c2cff05ba002b7bc8f3355bda22c"
+  integrity sha512-bBUN2xuQEXWmWTJrfkwaM8Ige7TNfTTRodyW353VYnzX7kW866Tm/Ag0hdbukFvJfNjRHabVmLKxYYL8l/uyZQ==
   dependencies:
     "@lavamoat/preinstall-always-fail" "^1.0.0"
     "@npmcli/run-script" "^1.8.1"
