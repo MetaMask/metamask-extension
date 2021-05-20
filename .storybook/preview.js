@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { addDecorator, addParameters } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import { withKnobs } from '@storybook/addon-knobs';
 import { Provider } from 'react-redux';
 import configureStore from '../ui/store/store';
@@ -49,7 +50,7 @@ const history = createBrowserHistory();
 const proxiedBackground = new Proxy({}, {
     get(_, method) {
       return function() {
-        console.log('Background call:', method)
+        action(`Background call: ${method}`)()
         return new Promise(() => {})
       }
     }

@@ -7,18 +7,19 @@ import { useSelector } from 'react-redux';
 import { updateMetamaskState } from '../../store/actions';
 import { currentNetworkTxListSelector } from '../../selectors/transactions';
 import { store } from '../../../.storybook/preview';
+import { _setBackgroundConnection } from '../../store/actions'
 import {
   currentNetworkTxListSample,
   domainMetadata,
 } from '../../../.storybook/initial-states/approval-screens/token-approval';
 import ConfirmApprove from '.';
 
-// transaction ID, maps to entry in state.metamask.currentNetworkTxList
-const txId = 7900715443136469;
-
 export default {
   title: 'Confirmation Screens',
 };
+
+// transaction ID, maps to entry in state.metamask.currentNetworkTxList
+const txId = 7900715443136469;
 
 const PageSet = ({ children }) => {
   const origin = text('Origin', 'https://metamask.github.io');
@@ -26,10 +27,11 @@ const PageSet = ({ children }) => {
     'Icon URL',
     'https://metamask.github.io/test-dapp/metamask-fox.svg',
   );
-  const currentNetworkTxList = useSelector(currentNetworkTxListSelector);
 
+  const currentNetworkTxList = useSelector(currentNetworkTxListSelector);
+  const transaction = currentNetworkTxList.find(({ id }) => id === txId);
+  
   useEffect(() => {
-    const transaction = currentNetworkTxList.find(({ id }) => id === txId);
     transaction.origin = origin;
     store.dispatch(
       updateMetamaskState({ currentNetworkTxList: [transaction] }),
