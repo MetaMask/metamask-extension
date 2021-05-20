@@ -13,6 +13,9 @@ import {
 } from '../../../.storybook/initial-states/approval-screens/token-approval';
 import ConfirmApprove from '.';
 
+// transaction ID, maps to entry in state.metamask.currentNetworkTxList
+const txId = 7900715443136469;
+
 export default {
   title: 'Confirmation Screens',
 };
@@ -26,10 +29,7 @@ const PageSet = ({ children }) => {
   const currentNetworkTxList = useSelector(currentNetworkTxListSelector);
 
   useEffect(() => {
-    // transaction ID, maps to entry in state.metamask.currentNetworkTxList
-    const transaction = currentNetworkTxList.find(
-      ({ id }) => id === 7900715443136469,
-    );
+    const transaction = currentNetworkTxList.find(({ id }) => id === txId);
     transaction.origin = origin;
     store.dispatch(
       updateMetamaskState({ currentNetworkTxList: [transaction] }),
@@ -49,7 +49,7 @@ const PageSet = ({ children }) => {
   }, [domainIconUrl]);
 
   const params = useParams();
-  params.id = 7900715443136469;
+  params.id = txId;
 
   return children;
 };
