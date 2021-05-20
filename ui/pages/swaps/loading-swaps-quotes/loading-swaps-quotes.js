@@ -10,6 +10,10 @@ import {
   getFetchParams,
   getQuotesFetchStartTime,
 } from '../../../ducks/swaps/swaps';
+import {
+  isHardwareWallet,
+  getHardwareWalletType,
+} from '../../../selectors/selectors';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import Mascot from '../../../components/ui/mascot';
@@ -67,6 +71,8 @@ export default function LoadingSwapsQuotes({
 
   const fetchParams = useSelector(getFetchParams);
   const quotesFetchStartTime = useSelector(getQuotesFetchStartTime);
+  const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const hardwareWalletType = useSelector(getHardwareWalletType);
   const quotesRequestCancelledEventConfig = {
     event: 'Quotes Request Cancelled',
     category: 'swaps',
@@ -78,6 +84,8 @@ export default function LoadingSwapsQuotes({
       slippage: fetchParams?.slippage,
       custom_slippage: fetchParams?.slippage !== 2,
       response_time: Date.now() - quotesFetchStartTime,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
     },
   };
 

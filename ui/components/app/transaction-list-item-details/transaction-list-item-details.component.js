@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
+import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { FLAT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import TransactionActivityLog from '../transaction-activity-log';
@@ -9,13 +10,13 @@ import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import Copy from '../../ui/icon/copy-icon.component';
 import Popover from '../../ui/popover';
-import { getBlockExplorerUrlForTx } from '../../../../shared/modules/transaction.utils';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static defaultProps = {
@@ -47,22 +48,30 @@ export default class TransactionListItemDetails extends PureComponent {
     justCopied: false,
   };
 
-  handleEtherscanClick = () => {
+  handleBlockExplorerClick = () => {
     const {
       transactionGroup: { primaryTransaction },
       rpcPrefs,
     } = this.props;
+    const blockExplorerLink = getBlockExplorerLink(
+      primaryTransaction,
+      rpcPrefs,
+    );
 
-    this.context.metricsEvent({
-      eventOpts: {
-        category: 'Navigation',
-        action: 'Activity Log',
-        name: 'Clicked "View on Etherscan"',
+    this.context.trackEvent({
+      category: 'Transactions',
+      event: 'Clicked Block Explorer Link',
+      properties: {
+        link_type: 'Transaction Block Explorer',
+        action: 'Transaction Details',
+        block_explorer_domain: blockExplorerLink
+          ? new URL(blockExplorerLink)?.hostname
+          : '',
       },
     });
 
     global.platform.openTab({
-      url: getBlockExplorerUrlForTx(primaryTransaction, rpcPrefs),
+      url: blockExplorerLink,
     });
   };
 
@@ -203,7 +212,7 @@ export default class TransactionListItemDetails extends PureComponent {
               >
                 <Button
                   type="raised"
-                  onClick={this.handleEtherscanClick}
+                  onClick={this.handleBlockExplorerClick}
                   disabled={!hash}
                 >
                   <img src="/images/arrow-popout.svg" alt="" />

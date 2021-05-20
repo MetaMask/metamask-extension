@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isValidAddress } from 'ethereumjs-util';
 import { debounce } from 'lodash';
+import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
   getAmountErrorObject,
   getGasFeeErrorObject,
@@ -171,7 +171,7 @@ export default class SendTransactionScreen extends Component {
     if (qrCodeData) {
       if (qrCodeData.type === 'address') {
         scannedAddress = qrCodeData.values.address.toLowerCase();
-        if (isValidAddress(scannedAddress)) {
+        if (isValidHexAddress(scannedAddress, { allowNonPrefixed: false })) {
           const currentAddress = prevTo?.toLowerCase();
           if (currentAddress !== scannedAddress) {
             updateSendTo(scannedAddress);

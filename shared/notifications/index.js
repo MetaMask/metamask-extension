@@ -10,33 +10,33 @@ export const UI_NOTIFICATIONS = {
       placeImageBelowDescription: true,
     },
   },
-  2: {
-    id: 2,
-    date: '2020-08-31',
-  },
   3: {
     id: 3,
-    date: '2021-03-8',
+    date: '2021-03-08',
+  },
+  4: {
+    id: 4,
+    date: '2021-05-11',
+    image: {
+      src: 'images/source-logos-bsc.svg',
+      width: '100%',
+    },
+  },
+  5: {
+    id: 5,
+    date: '2021-05-18',
   },
 };
 
 export const getTranslatedUINoficiations = (t, locale) => {
+  const formattedLocale = locale.replace('_', '-');
   return {
     1: {
       ...UI_NOTIFICATIONS[1],
       title: t('notifications1Title'),
       description: t('notifications1Description'),
-      date: new Intl.DateTimeFormat(locale).format(
+      date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[1].date),
-      ),
-    },
-    2: {
-      ...UI_NOTIFICATIONS[2],
-      title: t('notifications2Title'),
-      description: t('notifications2Description'),
-      actionText: t('notifications2ActionText'),
-      date: new Intl.DateTimeFormat(locale).format(
-        new Date(UI_NOTIFICATIONS[2].date),
       ),
     },
     3: {
@@ -44,8 +44,26 @@ export const getTranslatedUINoficiations = (t, locale) => {
       title: t('notifications3Title'),
       description: t('notifications3Description'),
       actionText: t('notifications3ActionText'),
-      date: new Intl.DateTimeFormat(locale).format(
+      date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[3].date),
+      ),
+    },
+    4: {
+      ...UI_NOTIFICATIONS[4],
+      title: t('notifications4Title'),
+      description: t('notifications4Description'),
+      actionText: t('notifications4ActionText'),
+      date: new Intl.DateTimeFormat(locale).format(
+        new Date(UI_NOTIFICATIONS[4].date),
+      ),
+    },
+    5: {
+      ...UI_NOTIFICATIONS[5],
+      title: t('walletSeed'),
+      description: t('notifications5Description'),
+      actionText: t('notifications3ActionText'),
+      date: new Intl.DateTimeFormat(locale).format(
+        new Date(UI_NOTIFICATIONS[5].date),
       ),
     },
   };

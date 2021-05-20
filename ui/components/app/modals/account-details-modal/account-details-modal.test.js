@@ -36,6 +36,7 @@ describe('Account Details Modal', () => {
     wrapper = shallow(<AccountDetailsModal.WrappedComponent {...props} />, {
       context: {
         t: (str) => str,
+        trackEvent: (e) => e,
       },
     });
   });

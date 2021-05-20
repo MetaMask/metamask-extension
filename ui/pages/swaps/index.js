@@ -13,6 +13,8 @@ import {
   getSelectedAccount,
   getCurrentChainId,
   getIsSwapsChain,
+  isHardwareWallet,
+  getHardwareWalletType,
 } from '../../selectors/selectors';
 import {
   getQuotes,
@@ -46,6 +48,7 @@ import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   SWAP_FAILED_ERROR,
+  CONTRACT_DATA_DISABLED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
 } from '../../../shared/constants/swaps';
 
@@ -134,7 +137,7 @@ export default function Swap() {
     tradeTxData?.txReceipt?.status === '0x0';
   const conversionError = approveError || tradeError;
 
-  if (conversionError) {
+  if (conversionError && swapsErrorKey !== CONTRACT_DATA_DISABLED_ERROR) {
     swapsErrorKey = SWAP_FAILED_ERROR;
   }
 
@@ -184,6 +187,8 @@ export default function Swap() {
     };
   }, [dispatch, chainId]);
 
+  const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const hardwareWalletType = useSelector(getHardwareWalletType);
   const exitedSwapsEvent = useNewMetricEvent({
     event: 'Exited Swaps',
     category: 'swaps',
@@ -195,6 +200,8 @@ export default function Swap() {
       slippage: fetchParams?.slippage,
       custom_slippage: fetchParams?.slippage !== 2,
       current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
     },
   });
   const exitEventRef = useRef();

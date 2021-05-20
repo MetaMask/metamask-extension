@@ -6,10 +6,11 @@ import { Menu, MenuItem } from '../../../components/ui/menu';
 
 const AssetOptions = ({
   onRemove,
-  onViewEtherscan,
+  onClickBlockExplorer,
   onViewAccountDetails,
   tokenSymbol,
   isNativeAsset,
+  isEthNetwork,
 }) => {
   const t = useContext(I18nContext);
   const [assetOptionsButtonElement, setAssetOptionsButtonElement] = useState(
@@ -46,10 +47,10 @@ const AssetOptions = ({
             data-testid="asset-options__etherscan"
             onClick={() => {
               setAssetOptionsOpen(false);
-              onViewEtherscan();
+              onClickBlockExplorer();
             }}
           >
-            {t('viewOnEtherscan')}
+            {isEthNetwork ? t('viewOnEtherscan') : t('viewinExplorer')}
           </MenuItem>
           {isNativeAsset ? null : (
             <MenuItem
@@ -70,9 +71,10 @@ const AssetOptions = ({
 };
 
 AssetOptions.propTypes = {
+  isEthNetwork: PropTypes.bool,
   isNativeAsset: PropTypes.bool,
   onRemove: PropTypes.func.isRequired,
-  onViewEtherscan: PropTypes.func.isRequired,
+  onClickBlockExplorer: PropTypes.func.isRequired,
   onViewAccountDetails: PropTypes.func.isRequired,
   tokenSymbol: PropTypes.string,
 };

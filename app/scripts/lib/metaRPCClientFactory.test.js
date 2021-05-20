@@ -85,4 +85,58 @@ describe('metaRPCClientFactory', function () {
       });
     });
   });
+
+  it('should be able to handle notifications', function (done) {
+    const streamTest = createThoughStream();
+    const metaRPCClient = metaRPCClientFactory(streamTest);
+
+    metaRPCClient.onNotification((notification) => {
+      assert(notification.method, 'foobarbaz');
+      done();
+    });
+
+    // send a notification
+    streamTest.write({
+      jsonrpc: '2.0',
+      method: 'foobarbaz',
+      params: ['bar'],
+    });
+  });
+
+  it('should be able to handle errors with no id', function (done) {
+    const streamTest = createThoughStream();
+    const metaRPCClient = metaRPCClientFactory(streamTest);
+
+    metaRPCClient.onUncaughtError((error) => {
+      assert(error.code, 1);
+      done();
+    });
+
+    streamTest.write({
+      jsonrpc: '2.0',
+      error: {
+        code: 1,
+        message: 'error msg',
+      },
+    });
+  });
+
+  it('should be able to handle errors with null id', function (done) {
+    const streamTest = createThoughStream();
+    const metaRPCClient = metaRPCClientFactory(streamTest);
+
+    metaRPCClient.onUncaughtError((error) => {
+      assert(error.code, 1);
+      done();
+    });
+
+    streamTest.write({
+      jsonrpc: '2.0',
+      id: null,
+      error: {
+        code: 1,
+        message: 'error msg',
+      },
+    });
+  });
 });

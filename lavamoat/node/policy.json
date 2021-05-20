@@ -808,7 +808,6 @@
         "path.relative": true
       },
       "globals": {
-        "__MODULE_CONTENT__": true,
         "__dirname": true,
         "process.cwd": true
       },
@@ -817,7 +816,6 @@
         "combine-source-map": true,
         "convert-source-map": true,
         "json-stable-stringify": true,
-        "offset-sourcemap-lines": true,
         "through2": true,
         "umd": true
       }
@@ -3005,11 +3003,6 @@
       "packages": {
         "for-own": true,
         "make-iterator": true
-      }
-    },
-    "offset-sourcemap-lines": {
-      "packages": {
-        "source-map": true
       }
     },
     "once": {

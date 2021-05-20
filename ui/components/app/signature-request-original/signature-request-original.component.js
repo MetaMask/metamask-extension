@@ -188,12 +188,13 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   renderTypedData = (data) => {
+    const { t } = this.context;
     const { domain, message } = JSON.parse(data);
     return (
       <div className="request-signature__typed-container">
         {domain ? (
           <div>
-            <h1>Domain</h1>
+            <h1>{t('domain')}</h1>
             <ObjectInspector data={domain} expandLevel={1} name="domain" />
           </div>
         ) : (
@@ -201,7 +202,7 @@ export default class SignatureRequestOriginal extends Component {
         )}
         {message ? (
           <div>
-            <h1>Message</h1>
+            <h1>{t('message')}</h1>
             <ObjectInspector data={message} expandLevel={1} name="message" />
           </div>
         ) : (

@@ -3,7 +3,7 @@ import React, { useContext, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import { createCustomExplorerLink } from '@metamask/etherscan-link';
+import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
@@ -13,6 +13,8 @@ import {
   getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
   getUSDConversionRate,
+  isHardwareWallet,
+  getHardwareWalletType,
 } from '../../../selectors';
 
 import {
@@ -31,10 +33,10 @@ import {
   SWAP_FAILED_ERROR,
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
+  CONTRACT_DATA_DISABLED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
 } from '../../../../shared/constants/swaps';
-import { CHAIN_ID_TO_TYPE_MAP as VALID_INFURA_CHAIN_IDS } from '../../../../shared/constants/network';
 import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 
@@ -42,7 +44,6 @@ import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
-import { getBlockExplorerUrlForTx } from '../../../../shared/modules/transaction.utils';
 
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
@@ -95,6 +96,8 @@ export default function AwaitingSwap({
     feeinUnformattedFiat = renderableNetworkFees.rawNetworkFees;
   }
 
+  const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const hardwareWalletType = useSelector(getHardwareWalletType);
   const quotesExpiredEvent = useNewMetricEvent({
     event: 'Quotes Timed Out',
     sensitiveProperties: {
@@ -105,21 +108,20 @@ export default function AwaitingSwap({
       slippage: fetchParams?.slippage,
       custom_slippage: fetchParams?.slippage === 2,
       gas_fees: feeinUnformattedFiat,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
     },
     category: 'swaps',
   });
 
-  let blockExplorerUrl;
-  if (txHash && rpcPrefs.blockExplorerUrl) {
-    blockExplorerUrl = getBlockExplorerUrlForTx({ hash: txHash }, rpcPrefs);
-  } else if (txHash && SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId]) {
-    blockExplorerUrl = createCustomExplorerLink(
-      txHash,
-      SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId],
-    );
-  } else if (txHash && VALID_INFURA_CHAIN_IDS[chainId]) {
-    blockExplorerUrl = getBlockExplorerUrlForTx({ chainId, hash: txHash });
-  }
+  const baseNetworkUrl =
+    rpcPrefs.blockExplorerUrl ??
+    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
+    null;
+  const blockExplorerUrl = getBlockExplorerLink(
+    { hash: txHash, chainId },
+    { blockExplorerUrl: baseNetworkUrl },
+  );
 
   const isCustomBlockExplorerUrl =
     SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ||
@@ -176,6 +178,11 @@ export default function AwaitingSwap({
   } else if (errorKey === QUOTES_NOT_AVAILABLE_ERROR) {
     headerText = t('swapQuotesNotAvailableErrorTitle');
     descriptionText = t('swapQuotesNotAvailableErrorDescription');
+    submitText = t('tryAgain');
+    statusImage = <SwapFailureIcon />;
+  } else if (errorKey === CONTRACT_DATA_DISABLED_ERROR) {
+    headerText = t('swapContractDataDisabledErrorTitle');
+    descriptionText = t('swapContractDataDisabledErrorDescription');
     submitText = t('tryAgain');
     statusImage = <SwapFailureIcon />;
   } else if (!errorKey && !swapComplete) {
@@ -277,6 +284,7 @@ AwaitingSwap.propTypes = {
     ERROR_FETCHING_QUOTES,
     QUOTES_NOT_AVAILABLE_ERROR,
     OFFLINE_FOR_MAINTENANCE,
+    CONTRACT_DATA_DISABLED_ERROR,
   ]),
   submittingSwap: PropTypes.bool,
   inputValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),

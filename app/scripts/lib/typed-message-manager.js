@@ -3,12 +3,12 @@ import { strict as assert } from 'assert';
 import { ObservableStore } from '@metamask/obs-store';
 import { ethErrors } from 'eth-rpc-errors';
 import { typedSignatureHash, TYPED_MESSAGE_SCHEMA } from 'eth-sig-util';
-import { isValidAddress } from 'ethereumjs-util';
 import log from 'loglevel';
 import jsonschema from 'jsonschema';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import createId from '../../../shared/modules/random-id';
+import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 
 /**
  * Represents, and contains data about, an 'eth_signTypedData' type signature request. These are created when a
@@ -160,7 +160,8 @@ export default class TypedMessageManager extends EventEmitter {
     assert.ok('data' in params, 'Params must include a "data" field.');
     assert.ok('from' in params, 'Params must include a "from" field.');
     assert.ok(
-      typeof params.from === 'string' && isValidAddress(params.from),
+      typeof params.from === 'string' &&
+        isValidHexAddress(params.from, { allowNonPrefixed: false }),
       '"from" field must be a valid, lowercase, hexadecimal Ethereum address string.',
     );
 

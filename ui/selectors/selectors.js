@@ -3,6 +3,7 @@ import { createSelector } from 'reselect';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   MAINNET_CHAIN_ID,
+  BSC_CHAIN_ID,
   TEST_CHAINS,
   NETWORK_TYPE_RPC,
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
@@ -13,11 +14,7 @@ import {
   ALLOWED_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import {
-  shortenAddress,
-  checksumAddress,
-  getAccountByAddress,
-} from '../helpers/utils/util';
+import { shortenAddress, getAccountByAddress } from '../helpers/utils/util';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -25,6 +22,7 @@ import {
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { getNativeCurrency } from './send';
 
 /**
@@ -86,6 +84,16 @@ export function getCurrentKeyring(state) {
 export function isHardwareWallet(state) {
   const keyring = getCurrentKeyring(state);
   return keyring.type.includes('Hardware');
+}
+
+/**
+ * Get a HW wallet type, e.g. "Ledger Hardware"
+ * @param {Object} state
+ * @returns {String|undefined}
+ */
+export function getHardwareWalletType(state) {
+  const keyring = getCurrentKeyring(state);
+  return keyring.type.includes('Hardware') ? keyring.type : undefined;
 }
 
 export function getAccountType(state) {
@@ -251,7 +259,7 @@ export function getAddressBook(state) {
 export function getAddressBookEntry(state, address) {
   const addressBook = getAddressBook(state);
   const entry = addressBook.find(
-    (contact) => contact.address === checksumAddress(address),
+    (contact) => contact.address === toChecksumHexAddress(address),
   );
   return entry;
 }
@@ -510,6 +518,21 @@ export function getShowWhatsNewPopup(state) {
 }
 
 /**
+ * Get an object of notification IDs and if they are allowed or not.
+ * @param {Object} state
+ * @returns {Object}
+ */
+function getAllowedNotificationIds(state) {
+  return {
+    1: true,
+    2: true,
+    3: true,
+    4: getCurrentChainId(state) === BSC_CHAIN_ID,
+    5: true,
+  };
+}
+
+/**
  * @typedef {Object} Notification
  * @property {number} id - A unique identifier for the notification
  * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
@@ -529,8 +552,10 @@ export function getShowWhatsNewPopup(state) {
 
 export function getSortedNotificationsToShow(state) {
   const notifications = Object.values(state.metamask.notifications);
+  const allowedNotificationIds = getAllowedNotificationIds(state);
   const notificationsToShow = notifications.filter(
-    (notification) => !notification.isShown,
+    (notification) =>
+      !notification.isShown && allowedNotificationIds[notification.id],
   );
   const notificationsSortedByDate = notificationsToShow.sort(
     (a, b) => new Date(b.date) - new Date(a.date),

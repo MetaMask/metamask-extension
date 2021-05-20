@@ -1,3 +1,5 @@
+import { MESSAGE_TYPE } from './app';
+
 /**
  * Transaction Type is a MetaMask construct used internally
  * @typedef {Object} TransactionTypes
@@ -51,6 +53,11 @@ export const TRANSACTION_TYPES = {
   DEPLOY_CONTRACT: 'contractDeployment',
   SWAP: 'swap',
   SWAP_APPROVAL: 'swapApproval',
+  SIGN: MESSAGE_TYPE.ETH_SIGN,
+  SIGN_TYPED_DATA: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+  PERSONAL_SIGN: MESSAGE_TYPE.PERSONAL_SIGN,
+  ETH_DECRYPT: MESSAGE_TYPE.ETH_DECRYPT,
+  ETH_GET_ENCRYPTION_PUBLIC_KEY: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
 };
 
 /**

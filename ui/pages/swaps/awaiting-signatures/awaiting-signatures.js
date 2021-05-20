@@ -10,6 +10,10 @@ import {
   prepareToLeaveSwaps,
 } from '../../../ducks/swaps/swaps';
 import {
+  isHardwareWallet,
+  getHardwareWalletType,
+} from '../../../selectors/selectors';
+import {
   DEFAULT_ROUTE,
   BUILD_QUOTE_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -34,6 +38,8 @@ export default function AwaitingSignatures() {
   const fetchParams = useSelector(getFetchParams);
   const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {};
   const approveTxParams = useSelector(getApproveTxParams);
+  const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = Boolean(approveTxParams);
 
   const awaitingSignaturesEvent = useNewMetricEvent({
@@ -46,6 +52,8 @@ export default function AwaitingSignatures() {
       request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
       slippage: fetchParams?.slippage,
       custom_slippage: fetchParams?.slippage === 2,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
     },
     category: 'swaps',
   });

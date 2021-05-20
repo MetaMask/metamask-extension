@@ -54,10 +54,12 @@ import {
   getSwapsDefaultToken,
   getCurrentChainId,
   isHardwareWallet,
+  getHardwareWalletType,
 } from '../../selectors';
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
+  CONTRACT_DATA_DISABLED_ERROR,
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../shared/constants/swaps';
@@ -441,7 +443,7 @@ export const fetchQuotesAndSetQuoteState = (
     if (
       toTokenAddress &&
       toTokenSymbol !== swapsDefaultToken.symbol &&
-      !contractExchangeRates[toTokenAddress]
+      contractExchangeRates[toTokenAddress] === undefined
     ) {
       destinationTokenAddedForSwap = true;
       await dispatch(
@@ -483,6 +485,8 @@ export const fetchQuotesAndSetQuoteState = (
 
     dispatch(setFromToken(selectedFromToken));
 
+    const hardwareWalletUsed = isHardwareWallet(state);
+    const hardwareWalletType = getHardwareWalletType(state);
     metaMetricsEvent({
       event: 'Quotes Requested',
       category: 'swaps',
@@ -493,6 +497,8 @@ export const fetchQuotesAndSetQuoteState = (
         request_type: balanceError ? 'Quote' : 'Order',
         slippage: maxSlippage,
         custom_slippage: maxSlippage !== 2,
+        is_hardware_wallet: hardwareWalletUsed,
+        hardware_wallet_type: hardwareWalletType,
         anonymizedData: true,
       },
     });
@@ -540,6 +546,8 @@ export const fetchQuotesAndSetQuoteState = (
             request_type: balanceError ? 'Quote' : 'Order',
             slippage: maxSlippage,
             custom_slippage: maxSlippage !== 2,
+            is_hardware_wallet: hardwareWalletUsed,
+            hardware_wallet_type: hardwareWalletType,
           },
         });
         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
@@ -563,6 +571,8 @@ export const fetchQuotesAndSetQuoteState = (
             response_time: Date.now() - fetchStartTime,
             best_quote_source: newSelectedQuote.aggregator,
             available_quotes: Object.values(fetchedQuotes)?.length,
+            is_hardware_wallet: hardwareWalletUsed,
+            hardware_wallet_type: hardwareWalletType,
             anonymizedData: true,
           },
         });
@@ -678,6 +688,8 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       performance_savings: usedQuote.savings?.performance,
       fee_savings: usedQuote.savings?.fee,
       median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: getHardwareWalletType(state),
     };
 
     metaMetricsEvent({
@@ -774,7 +786,10 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     try {
       await dispatch(updateAndApproveTx(finalTradeTxMeta, true));
     } catch (e) {
-      await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
+      const errorKey = e.message.includes('EthAppPleaseEnableContractData')
+        ? CONTRACT_DATA_DISABLED_ERROR
+        : SWAP_FAILED_ERROR;
+      await dispatch(setSwapsErrorKey(errorKey));
       history.push(SWAPS_ERROR_ROUTE);
       return;
     }

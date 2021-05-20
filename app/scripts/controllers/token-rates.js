@@ -1,8 +1,8 @@
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import { normalize as normalizeAddress } from 'eth-sig-util';
-import { toChecksumAddress } from 'ethereumjs-util';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 
 const fetchWithTimeout = getFetchWithTimeout(30000);
 
@@ -45,7 +45,7 @@ export default class TokenRatesController {
         this._tokens.forEach((token) => {
           const price =
             prices[token.address.toLowerCase()] ||
-            prices[toChecksumAddress(token.address)];
+            prices[toChecksumHexAddress(token.address)];
           contractExchangeRates[normalizeAddress(token.address)] = price
             ? price[nativeCurrency]
             : 0;

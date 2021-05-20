@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-set -x
 set -e
 set -u
 set -o pipefail
@@ -27,33 +26,10 @@ Options:
 EOF
 }
 
-function upload_bundles {
-  local release="${1}"; shift
-
-  for filepath in ./dist/chrome/*.js
-  do
-    if [[ -f $filepath ]]
-    then
-      upload_bundle "${release}" "${filepath}"
-    fi
-  done
-}
-
-function upload_bundle {
-  local release="${1}"; shift
-  local filepath="${1}"; shift
-  local filename
-
-  filename="$( basename "${filepath}" )"
-
-  printf 'Uploading %s\n' "${filename}"
-  sentry-cli releases --org 'metamask' --project 'metamask' files "${release}" upload "${filepath}" "metamask/${filename}"
-}
-
 function upload_sourcemaps {
   local release="${1}"; shift
 
-  sentry-cli releases --org 'metamask' --project 'metamask' files "${release}" upload-sourcemaps ./dist/sourcemaps/ --url-prefix 'sourcemaps'
+  sentry-cli releases files "${release}" upload-sourcemaps ./dist/chrome/*.js ./dist/sourcemaps/ --rewrite --url-prefix 'metamask'
 }
 
 function main {
@@ -85,11 +61,15 @@ function main {
   if [[ -z $release ]]
   then
     die 'Required parameter "release" missing; either include parameter or set VERSION environment variable'
+  elif [[ -z $SENTRY_ORG ]]
+  then
+    die 'Required environment variable "SENTRY_ORG" missing'
+  elif  [[ -z $SENTRY_PROJECT ]]
+  then
+    die 'Required environment variable "SENTRY_PROJECT" missing'
   fi
 
-  printf 'uploading source files Sentry release "%s"...\n' "${release}"
-  upload_bundles "${release}"
-  printf 'uploading sourcemaps Sentry release "%s"...\n' "${release}"
+  printf 'uploading source files and sourcemaps for Sentry release "%s"...\n' "${release}"
   upload_sourcemaps "${release}"
   printf 'all done!\n'
 }
