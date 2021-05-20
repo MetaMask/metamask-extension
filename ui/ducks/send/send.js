@@ -522,8 +522,8 @@ const slice = createSlice({
      * hex data used in the transaction will be that for interacting with the
      * ERC20 contract
      */
-    updateUserInputHexData: (state, payload) => {
-      state.draftTransaction.userInputHexData = payload;
+    updateUserInputHexData: (state, action) => {
+      state.draftTransaction.userInputHexData = action.payload;
       if (state.asset.type === ASSET_TYPES.NATIVE) {
         slice.caseReducers.updateDraftTransaction(state);
       }
