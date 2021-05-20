@@ -187,28 +187,43 @@ export default class TransactionStateManager extends EventEmitter {
     const transactions = this.getTransactions({
       filterToCurrentNetwork: false,
     });
-    const txCount = transactions.length;
     const { txHistoryLimit } = this;
 
     // checks if the length of the tx history is longer then desired persistence
     // limit and then if it is removes the oldest confirmed or rejected tx.
     // Pending or unapproved transactions will not be removed by this
-    // operation.
+    // operation. For safety of presenting a fully functional transaction UI
+    // representation, this function will not break apart transactions with the
+    // same nonce, per network. Not accounting for transactions of the same
+    // nonce and network combo can result in confusing or broken experiences
+    // in the UI.
     //
     // TODO: we are already limiting what we send to the UI, and in the future
     // we will send UI only collected groups of transactions *per page* so at
     // some point in the future, this persistence limit can be adjusted. When
     // we do that I think we should figure out a better storage solution for
     // transaction history entries.
-    if (txCount > txHistoryLimit - 1) {
-      const index = transactions.findIndex((metaTx) => {
-        return getFinalStates().includes(metaTx.status);
-      });
-      if (index !== -1) {
-        this._deleteTransaction(transactions[index].id);
-      }
-    }
+    const nonceNetworkSet = new Set();
+    const txsToDelete = transactions
+      .reverse()
+      .filter((tx) => {
+        const { nonce } = tx.txParams;
+        const { chainId, metamaskNetworkId, status } = tx;
+        const key = `${nonce}-${chainId ?? metamaskNetworkId}`;
+        if (nonceNetworkSet.has(key)) {
+          return false;
+        } else if (
+          nonceNetworkSet.size < txHistoryLimit - 1 ||
+          getFinalStates().includes(status) === false
+        ) {
+          nonceNetworkSet.add(key);
+          return false;
+        }
+        return true;
+      })
+      .map((tx) => tx.id);
 
+    this._deleteTransactions(txsToDelete);
     this._addTransactionsToState([txMeta]);
     return txMeta;
   }
@@ -608,6 +623,22 @@ export default class TransactionStateManager extends EventEmitter {
   _deleteTransaction(targetTransactionId) {
     const { transactions } = this.store.getState();
     delete transactions[targetTransactionId];
+    this.store.updateState({
+      transactions,
+    });
+  }
+
+  /**
+   * removes multiple transaction from state. This is not intended for external use.
+   *
+   * @private
+   * @param {number[]} targetTransactionIds - the transactions to delete
+   */
+  _deleteTransactions(targetTransactionIds) {
+    const { transactions } = this.store.getState();
+    targetTransactionIds.forEach((transactionId) => {
+      delete transactions[transactionId];
+    });
     this.store.updateState({
       transactions,
     });

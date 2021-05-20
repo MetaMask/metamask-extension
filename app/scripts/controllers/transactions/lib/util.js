@@ -1,7 +1,7 @@
-import { isValidAddress } from 'ethereumjs-util';
 import { ethErrors } from 'eth-rpc-errors';
 import { addHexPrefix } from '../../../lib/util';
 import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction';
+import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
 
 const normalizers = {
   from: (from) => addHexPrefix(from),
@@ -110,7 +110,7 @@ export function validateFrom(txParams) {
       `Invalid "from" address "${txParams.from}": not a string.`,
     );
   }
-  if (!isValidAddress(txParams.from)) {
+  if (!isValidHexAddress(txParams.from, { allowNonPrefixed: false })) {
     throw ethErrors.rpc.invalidParams('Invalid "from" address.');
   }
 }
@@ -128,7 +128,10 @@ export function validateRecipient(txParams) {
     } else {
       throw ethErrors.rpc.invalidParams('Invalid "to" address.');
     }
-  } else if (txParams.to !== undefined && !isValidAddress(txParams.to)) {
+  } else if (
+    txParams.to !== undefined &&
+    !isValidHexAddress(txParams.to, { allowNonPrefixed: false })
+  ) {
     throw ethErrors.rpc.invalidParams('Invalid "to" address.');
   }
   return txParams;

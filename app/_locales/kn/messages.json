@@ -308,9 +308,6 @@
   "done": {
     "message": "ಮುಗಿದಿದೆ"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "ಹಾರ್ಡ್‌ವೇರ್ ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ಹೊಂದಿಲ್ಲವೇ?"
-  },
   "downloadGoogleChrome": {
     "message": "Google Chrome ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ"
   },
@@ -443,9 +440,6 @@
     "message": "$1 ಗಾಗಿ ಫಾಸೆಟ್‌ನಿಂದ ಎಥರ್ ಅನ್ನು ಪಡೆಯಿರಿ",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "ಸಹಾಯವನ್ನು ಪಡೆಯಿರಿ."
-  },
   "getStarted": {
     "message": "ಪ್ರಾರಂಭಗೊಂಡಿದೆ"
   },
@@ -466,9 +460,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "MetaMask ನೊಂದಿಗೆ ಬಳಸಲು ನೀವು ಇಷ್ಟಪಡುವ ಹಾರ್ಡ‌ವೇರ್ ವ್ಯಾಲೆಟ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-  },
-  "havingTroubleConnecting": {
-    "message": "ಸಂಪರ್ಕಿಸುವಲ್ಲಿ ತೊಂದರೆ ಇದೆಯೇ?"
   },
   "here": {
     "message": "ಇಲ್ಲಿ",
@@ -499,18 +490,12 @@
   "importAccountSeedPhrase": {
     "message": "ಸೀಡ್‌ ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ಖಾತೆಯನ್ನು ಆಮದು ಮಾಡಿ"
   },
-  "importUsingSeed": {
-    "message": "ಸೀಡ್‌ ಫ್ರೇಸ್‌ ಖಾತೆಯನ್ನು ಬಳಸಿಕೊಂಡು ಆಮದು ಮಾಡಿ"
-  },
   "importWallet": {
     "message": "ವ್ಯಾಲೆಟ್ ಅನ್ನು ಆಮದು ಮಾಡಿ"
   },
   "imported": {
     "message": "ಆಮದುಮಾಡಲಾಗಿದೆ",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "ಮಾಹಿತಿ & ಸಹಾಯ"
   },
   "initialTransactionConfirmed": {
     "message": "ನಿಮ್ಮ ಆರಂಭಿಕ ವಹಿವಾಟನ್ನು ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಖಚಿತಪಡಿಸಲಾಗಿದೆ. ಹಿಂತಿರುಗಲು ಸರಿ ಕ್ಲಿಕ್ ಮಾಡಿ."
@@ -612,12 +597,6 @@
   "myAccounts": {
     "message": "ನನ್ನ ಖಾತೆಗಳು"
   },
-  "myWalletAccounts": {
-    "message": "ನನ್ನ ವ್ಯಾಲೆಟ್ ಖಾತೆಗಳು"
-  },
-  "myWalletAccountsDescription": {
-    "message": "ನಿಮ್ಮ MetaMask ರಚಿಸಿದ ಎಲ್ಲಾ ಖಾತೆಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಈ ವಿಭಾಗಕ್ಕೆ ಸೇರಿಸಲಾಗುತ್ತದೆ."
-  },
   "needEtherInWallet": {
     "message": "MetaMask ಬಳಸಿಕೊಂಡು ವಿಕೇಂದ್ರೀಕೃತ ಖಾತೆಗಳೊಂದಿಗೆ ಸಂವಹನ ನಡೆಸಲು, ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ನಲ್ಲಿ ನಿಮಗೆ ಎಥರ್ ಅಗತ್ಯವಿದೆ."
   },
@@ -713,9 +692,6 @@
   "optionalCurrencySymbol": {
     "message": "ಚಿಹ್ನೆ (ಐಚ್ಛಿಕ)"
   },
-  "orderOneHere": {
-    "message": "ಟ್ರೆಜರ್ ಅಥವಾ ಲೆಡ್ಜರ್ ಅನ್ನು ಆರ್ಡರ್ ಮಾಡಿ ಮತ್ತು ನಿಮ್ಮ ನಿಧಿಗಳನ್ನು ಕೋಲ್ಡ್ ಸ್ಟೋರೇಜ್‌ನಲ್ಲಿರಿಸಿ"
-  },
   "origin": {
     "message": "ಮೂಲ"
   },
@@ -775,9 +751,6 @@
   "readdToken": {
     "message": "ನಿಮ್ಮ ಖಾತೆಗಳ ಆಯ್ಕೆಗಳ ಮೆನುವಿನಲ್ಲಿ \"ಟೋಕನ್ ಸೇರಿಸು\" ಗೆ ಹೋಗುವ ಮೂಲಕ ನೀವು ಈ ಟೋಕನ್ ಅನ್ನು ಭವಿಷ್ಯದಲ್ಲಿ ಮರಳಿ ಸೇರಿಸಬಹುದು."
   },
-  "readyToConnect": {
-    "message": "ಸಂಪರ್ಕಿಸಲು ಸಿದ್ಧವೇ?"
-  },
   "recents": {
     "message": "ಇತ್ತೀಚಿನವುಗಳು"
   },
@@ -834,9 +807,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "ಸೀಡ್ ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಮರುಸ್ಥಾಪಿಸಿ"
-  },
-  "restoreFromSeed": {
-    "message": "ಖಾತೆಯನ್ನು ಮರುಸ್ಥಾಪಿಸುವುದೇ?"
   },
   "revealSeedWords": {
     "message": "ಸೀಡ್ ವರ್ಡ್ಸ್ ಬಹಿರಂಗಪಡಿಸಿ"
@@ -1002,24 +972,6 @@
   },
   "stateLogsDescription": {
     "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳು ನಿಮ್ಮ ಸಾರ್ವಜನಿಕ ಖಾತೆಯ ವಿಳಾಸಗಳು ಮತ್ತು ಕಳುಹಿಸಲಾದ ವಹಿವಾಟುಗಳನ್ನು ಹೊಂದಿರುತ್ತವೆ."
-  },
-  "step1HardwareWallet": {
-    "message": "1. ಹಾರ್ಡ್‌ವೆರ್ ವ್ಯಾಲೆಟ್ ಸಂಪರ್ಕಪಡಿಸಿ"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "ನಿಮ್ಮ ಹಾರ್ಡ್‌ವೇರ್ ವ್ಯಾಲೆಟ್ ಅನ್ನು ನೇರವಾಗಿ ನಿಮ್ಮ ಕಂಪ್ಯೂಟರ್‌ಗೆ ಸಂಪರ್ಕಿಸಿ."
-  },
-  "step2HardwareWallet": {
-    "message": "2. ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "ನೀವು ವೀಕ್ಷಿಸಲು ಬಯಸುವ ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ. ನೀವು ಒಮ್ಮೆಗೆ ಒಂದನ್ನು ಮಾತ್ರ ಆಯ್ಕೆಮಾಡಬಹುದು."
-  },
-  "step3HardwareWallet": {
-    "message": "3. dApps ಮತ್ತು ಹೆಚ್ಚಿನದನ್ನು ಬಳಸಲು ಪ್ರಾರಂಭಿಸಿ!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "ಯಾವುದೇ ಎಥೆರಿಯಮ್ ಖಾತೆಯೊಂದಿಗೆ ನಿಮ್ಮ ಹಾರ್ಡ್‌ವೇರ್ ಖಾತೆಯನ್ನು ಬಳಸಿ. dApps ಗೆ ಲಾಗಿನ್ ಮಾಡಿ, Eth ಕಳುಹಿಸಿ, ERC20 ಟೋಕನ್‌ಗಳನ್ನು ಮತ್ತು ಕ್ರಿಪ್ಟೋಕಿಟ್ಟೀಸ್‌ನಂತಹ ಫಂಗಿಬಲ್ ಟೋಕನ್‌ಗಳನ್ನು ಖರೀದಿಸಿ ಮತ್ತು ಸಂಗ್ರಹಿಸಿ."
   },
   "storePhrase": {
     "message": "ಈ ಫ್ರೇಸ್ ಅನ್ನು ಪಾಸ್‌ವರ್ಡ್ ನಿರ್ವಾಹಕದಲ್ಲಿ 1Password ರೂಪದಲ್ಲಿ ಸಂಗ್ರಹಿಸಿ."

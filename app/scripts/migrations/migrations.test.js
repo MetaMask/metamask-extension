@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import wallet1 from '../../../test/lib/migrations/001.json';
 import vault4 from '../../../test/lib/migrations/004.json';
 import migration2 from './002';
@@ -52,7 +52,7 @@ describe('wallet1 is migrated successfully', function () {
         const fourthData = fourthResult.data;
         assert.equal(
           fourthData.config.provider.rpcTarget,
-          null,
+          undefined,
           'old rpcTarget should not exist.',
         );
         assert.equal(
@@ -65,15 +65,15 @@ describe('wallet1 is migrated successfully', function () {
       })
       .then((fifthResult) => {
         const fifthData = fifthResult.data;
-        assert.equal(fifthData.vault, null, 'old vault should not exist');
+        assert.equal(fifthData.vault, undefined, 'old vault should not exist');
         assert.equal(
           fifthData.walletNicknames,
-          null,
+          undefined,
           'old walletNicknames should not exist',
         );
         assert.equal(
           fifthData.config.selectedAccount,
-          null,
+          undefined,
           'old config.selectedAccount should not exist',
         );
         assert.equal(
@@ -102,7 +102,7 @@ describe('wallet1 is migrated successfully', function () {
       .then((sixthResult) => {
         assert.equal(
           sixthResult.data.KeyringController.selectedAccount,
-          null,
+          undefined,
           'old selectedAccount should not exist',
         );
         assert.equal(
@@ -117,12 +117,12 @@ describe('wallet1 is migrated successfully', function () {
       .then((seventhResult) => {
         assert.equal(
           seventhResult.data.transactions,
-          null,
+          undefined,
           'old transactions should not exist',
         );
         assert.equal(
           seventhResult.data.gasMultiplier,
-          null,
+          undefined,
           'old gasMultiplier should not exist',
         );
         assert.equal(
@@ -142,7 +142,7 @@ describe('wallet1 is migrated successfully', function () {
       .then((eighthResult) => {
         assert.equal(
           eighthResult.data.noticesList,
-          null,
+          undefined,
           'old noticesList should not exist',
         );
         assert.equal(
@@ -157,22 +157,22 @@ describe('wallet1 is migrated successfully', function () {
       .then((ninthResult) => {
         assert.equal(
           ninthResult.data.currentFiat,
-          null,
+          undefined,
           'old currentFiat should not exist',
         );
         assert.equal(
           ninthResult.data.fiatCurrency,
-          null,
+          undefined,
           'old fiatCurrency should not exist',
         );
         assert.equal(
           ninthResult.data.conversionRate,
-          null,
+          undefined,
           'old conversionRate should not exist',
         );
         assert.equal(
           ninthResult.data.conversionDate,
-          null,
+          undefined,
           'old conversionDate should not exist',
         );
 
@@ -198,7 +198,7 @@ describe('wallet1 is migrated successfully', function () {
       .then((tenthResult) => {
         assert.equal(
           tenthResult.data.shapeShiftTxList,
-          null,
+          undefined,
           'old shapeShiftTxList should not exist',
         );
         assert.equal(
@@ -211,12 +211,12 @@ describe('wallet1 is migrated successfully', function () {
       .then((eleventhResult) => {
         assert.equal(
           eleventhResult.data.isDisclaimerConfirmed,
-          null,
+          undefined,
           'isDisclaimerConfirmed should not exist',
         );
         assert.equal(
           eleventhResult.data.TOSHash,
-          null,
+          undefined,
           'TOSHash should not exist',
         );
 

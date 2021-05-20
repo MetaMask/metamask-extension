@@ -43,9 +43,6 @@
   "activityLog": {
     "message": "log attività"
   },
-  "addAccount": {
-    "message": "Aggiungi un account"
-  },
   "addAcquiredTokens": {
     "message": "Aggiungi i token che hai acquistato usando MetaMask"
   },
@@ -506,9 +503,6 @@
   "done": {
     "message": "Finito"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Non hai un portafoglio hardware?"
-  },
   "dontShowThisAgain": {
     "message": "Non mostrare di nuovo"
   },
@@ -733,9 +727,6 @@
     "message": "Ottieni Get Ether da un faucet per $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Aiuto."
-  },
   "getStarted": {
     "message": "Inizia"
   },
@@ -756,9 +747,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Selezione un portafoglio hardware che vuoi utilizzare con MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Problemi di connessione?"
   },
   "here": {
     "message": "qui",
@@ -793,18 +781,12 @@
   "importAccountSeedPhrase": {
     "message": "Importa un Account con una Frase Seed"
   },
-  "importUsingSeed": {
-    "message": "Importa account con frase seed"
-  },
   "importWallet": {
     "message": "Importa Portafoglio"
   },
   "imported": {
     "message": "Importato",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informazioni & Aiuto"
   },
   "initialTransactionConfirmed": {
     "message": "La transazione iniziale è stata confermata dalla rete. Clicca OK per tornare indietro."
@@ -996,12 +978,6 @@
   "myAccounts": {
     "message": "Miei Account"
   },
-  "myWalletAccounts": {
-    "message": "I miei account di portafoglio"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Tutti gli account creati con MetaMask saranno automaticamente aggiunti a questa sezione."
-  },
   "needEtherInWallet": {
     "message": "Per interagire con applicazioni decentralizzate con MetaMask, devi possedere Ether nel tuo portafoglio."
   },
@@ -1138,9 +1114,6 @@
   "optionalCurrencySymbol": {
     "message": "Simbolo (opzionale)"
   },
-  "orderOneHere": {
-    "message": "Compra un Trezor o un Ledger e tieni i tuoi soldi al sicuro"
-  },
   "origin": {
     "message": "Origine"
   },
@@ -1222,9 +1195,6 @@
   "readdToken": {
     "message": "Puoi aggiungere nuovamente questo token in futuro andando in “Aggiungi token” nel menu delle opzioni del tuo account."
   },
-  "readyToConnect": {
-    "message": "Pronto a Connetterti?"
-  },
   "receive": {
     "message": "Ricevi"
   },
@@ -1284,9 +1254,6 @@
   },
   "restoreAccountWithSeed": {
     "message": "Ripristina Account con la Frase Seed"
-  },
-  "restoreFromSeed": {
-    "message": "Ripristina da una frase seed"
   },
   "restoreWalletPreferences": {
     "message": "È stato trovato un backup dei tuoi dati da $1. Vuoi ripristinare le preferenze del portafoglio?",
@@ -1528,24 +1495,6 @@
   "statusNotConnected": {
     "message": "Non connesso"
   },
-  "step1HardwareWallet": {
-    "message": "1. Connetti Portafoglio Hardware"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Connetti il tuo portafoglio hardware al tuo computer."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Seleziona un Account"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Selezione l'account che vuoi vedere. Puoi selezionarne solo uno alla volta."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Inizia a usare dApps e molto altro ancora!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Usa il tuo account hardware come utilizzeresti qualsiasi account Ethereum. Accedi alle dApps, invia Eth, compra e conserva token ERC20 e token non fungibili come CryptoKitties"
-  },
   "storePhrase": {
     "message": "Conserva questa frase in un gestore di password come 1Password."
   },
@@ -1632,27 +1581,6 @@
   },
   "swapFinalizing": {
     "message": "Finalizzando..."
-  },
-  "swapHighSlippageWarning": {
-    "message": "L'importo di slippage è molto alto. Assicurati di sapere cosa stai facendo!"
-  },
-  "swapIntroLearnMoreHeader": {
-    "message": "Vuoi sapere di più?"
-  },
-  "swapIntroLearnMoreLink": {
-    "message": "Scopri di più su MetaMask Swaps"
-  },
-  "swapIntroLiquiditySourcesLabel": {
-    "message": "Sorgenti di liquidità incluse:"
-  },
-  "swapIntroPopupSubTitle": {
-    "message": "Adesso puoi scambiare token direttamente dal tuo portafgolio MetaMask. MetaMask Swaps combina vari siti di scambio decentralizzati, aggregatori e market maker professionisti per assicurare che gli utenti di MetaMask ottengano sempre il miglior prezzo con le tasse di rete minori."
-  },
-  "swapIntroPopupTitle": {
-    "message": "Lo scambio di token è qui!"
-  },
-  "swapLearnMoreContractsAuditReview": {
-    "message": "Esamina l'audit ufficiale dei nostri smart contracts"
   },
   "swapLowSlippageError": {
     "message": "La transazione può fallire, il massimo slippage è troppo basso."
@@ -1771,17 +1699,11 @@
   "swapSelectQuotePopoverDescription": {
     "message": "Sotto trovi tutte le quotazioni raccolte da multiple sorgenti di liquidità."
   },
-  "swapSlippageTooLow": {
-    "message": "Lo slippage deve essere maggiore di zero"
-  },
   "swapSource": {
     "message": "Sorgente di liquidità"
   },
   "swapSourceInfo": {
     "message": "Cerchiamo sorgenti di liquidità multiple (siti di scambio, aggregatori, market maker professionisti) per trovare le tariffe migliori e le tasse di rete minori."
-  },
-  "swapStartSwapping": {
-    "message": "Inizia a scambiare"
   },
   "swapSwapFrom": {
     "message": "Scambia da"
@@ -1928,9 +1850,6 @@
   },
   "tokenContractAddress": {
     "message": "Indirizzo Contratto Token"
-  },
-  "tokenOptions": {
-    "message": "Opzioni token"
   },
   "tokenSymbol": {
     "message": "Simbolo Token"

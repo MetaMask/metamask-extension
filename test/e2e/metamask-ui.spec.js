@@ -1,4 +1,4 @@
-const assert = require('assert');
+const { strict: assert } = require('assert');
 
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers');
@@ -83,12 +83,12 @@ describe('MetaMask', function () {
 
     let seedPhrase;
 
-    it('renders the seed phrase intro screen', async function () {
+    it('renders the Secret Recovery Phrase intro screen', async function () {
       await driver.clickElement('.seed-phrase-intro__left button');
       await driver.delay(regularDelayMs);
     });
 
-    it('reveals the seed phrase', async function () {
+    it('reveals the Secret Recovery Phrase', async function () {
       const byRevealButton =
         '.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button';
       await driver.findElement(byRevealButton);
@@ -116,7 +116,7 @@ describe('MetaMask', function () {
       await driver.delay(tinyDelayMs);
     }
 
-    it('can retype the seed phrase', async function () {
+    it('can retype the Secret Recovery Phrase', async function () {
       const words = seedPhrase.split(' ');
 
       for (const word of words) {
@@ -134,6 +134,24 @@ describe('MetaMask', function () {
         tag: 'button',
       });
       await driver.delay(regularDelayMs);
+    });
+  });
+
+  describe("Close the what's new popup", function () {
+    it("should show the what's new popover", async function () {
+      const popoverTitle = await driver.findElement(
+        '.popover-header__title h2',
+      );
+
+      assert.equal(await popoverTitle.getText(), "What's new");
+    });
+
+    it("should close the what's new popup", async function () {
+      const popover = await driver.findElement('.popover-container');
+
+      await driver.clickElement('[data-testid="popover-close"]');
+
+      await popover.waitForElementState('hidden');
     });
   });
 
@@ -200,7 +218,7 @@ describe('MetaMask', function () {
     });
   });
 
-  describe('Import seed phrase', function () {
+  describe('Import Secret Recovery Phrase', function () {
     it('logs out of the vault', async function () {
       await driver.clickElement('.account-menu__icon');
       await driver.delay(regularDelayMs);
@@ -213,13 +231,13 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
     });
 
-    it('imports seed phrase', async function () {
+    it('imports Secret Recovery Phrase', async function () {
       const restoreSeedLink = await driver.findClickableElement(
         '.unlock-page__link--import',
       );
       assert.equal(
         await restoreSeedLink.getText(),
-        'Import using account seed phrase',
+        'import using Secret Recovery Phrase',
       );
       await restoreSeedLink.click();
       await driver.delay(regularDelayMs);
@@ -1102,16 +1120,10 @@ describe('MetaMask', function () {
     });
 
     it('finds the transaction in the transactions list', async function () {
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 1;
-      }, 10000);
-
       await driver.waitForSelector(
         {
-          css: '.transaction-list-item__primary-currency',
+          css:
+            '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
           text: '-1 TST',
         },
         { timeout: 10000 },
@@ -1204,15 +1216,9 @@ describe('MetaMask', function () {
     });
 
     it('finds the transaction in the transactions list', async function () {
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 2;
-      }, 10000);
-
       await driver.waitForSelector({
-        css: '.transaction-list-item__primary-currency',
+        css:
+          '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
         text: '-1.5 TST',
       });
 
@@ -1220,10 +1226,22 @@ describe('MetaMask', function () {
         css: '.list-item__heading',
         text: 'Send TST',
       });
+    });
+
+    it('checks balance', async function () {
+      await driver.clickElement({
+        text: 'Assets',
+        tag: 'button',
+      });
 
       await driver.waitForSelector({
-        css: '.token-overview__primary-balance',
+        css: '.asset-list-item__token-button',
         text: '7.5 TST',
+      });
+
+      await driver.clickElement({
+        text: 'Activity',
+        tag: 'button',
       });
     });
   });
@@ -1353,13 +1371,6 @@ describe('MetaMask', function () {
     });
 
     it('finds the transaction in the transactions list', async function () {
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 3;
-      }, 10000);
-
       await driver.waitForSelector({
         // Select only the heading of the first entry in the transaction list.
         css:
@@ -1412,13 +1423,6 @@ describe('MetaMask', function () {
     });
 
     it('finds the transaction in the transactions list', async function () {
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 4;
-      }, 10000);
-
       await driver.waitForSelector({
         // Select the heading of the first transaction list item in the
         // completed transaction list with text matching Send TST
@@ -1428,7 +1432,8 @@ describe('MetaMask', function () {
       });
 
       await driver.waitForSelector({
-        css: '.transaction-list-item__primary-currency',
+        css:
+          '.transaction-list__completed-transactions .transaction-list-item:first-child .transaction-list-item__primary-currency',
         text: '-1.5 TST',
       });
     });
@@ -1494,13 +1499,6 @@ describe('MetaMask', function () {
     });
 
     it('finds the transaction in the transactions list', async function () {
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 5;
-      }, 10000);
-
       await driver.waitForSelector({
         css:
           '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
@@ -1511,9 +1509,13 @@ describe('MetaMask', function () {
 
   describe('Hide token', function () {
     it('hides the token when clicked', async function () {
-      await driver.clickElement('[data-testid="token-options__button"]');
+      await driver.clickElement({ text: 'Assets', tag: 'button' });
 
-      await driver.clickElement('[data-testid="token-options__hide"]');
+      await driver.clickElement({ text: 'TST', tag: 'span' });
+
+      await driver.clickElement('[data-testid="asset-options__button"]');
+
+      await driver.clickElement('[data-testid="asset-options__hide"]');
 
       // wait for confirm hide modal to be visible
       const confirmHideModal = await driver.findVisibleElement('span .modal');
@@ -1553,112 +1555,6 @@ describe('MetaMask', function () {
         text: '0 BAT',
       });
       await driver.delay(regularDelayMs);
-    });
-  });
-
-  describe('Stores custom RPC history', function () {
-    it(`creates first custom RPC entry`, async function () {
-      const rpcUrl = 'http://127.0.0.1:8545/1';
-      const chainId = '0x539'; // Ganache default, decimal 1337
-
-      await driver.clickElement('.network-display');
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
-      await driver.delay(regularDelayMs);
-
-      await driver.findElement('.settings-page__sub-header-text');
-
-      const customRpcInputs = await driver.findElements('input[type="text"]');
-      const rpcUrlInput = customRpcInputs[1];
-      const chainIdInput = customRpcInputs[2];
-
-      await rpcUrlInput.clear();
-      await rpcUrlInput.sendKeys(rpcUrl);
-
-      await chainIdInput.clear();
-      await chainIdInput.sendKeys(chainId);
-
-      await driver.clickElement('.network-form__footer .btn-secondary');
-      await driver.findElement({ text: rpcUrl, tag: 'div' });
-    });
-
-    it(`creates second custom RPC entry`, async function () {
-      const rpcUrl = 'http://127.0.0.1:8545/2';
-      const chainId = '0x539'; // Ganache default, decimal 1337
-
-      await driver.clickElement('.network-display');
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
-      await driver.delay(regularDelayMs);
-
-      await driver.findElement('.settings-page__sub-header-text');
-
-      const customRpcInputs = await driver.findElements('input[type="text"]');
-      const rpcUrlInput = customRpcInputs[1];
-      const chainIdInput = customRpcInputs[2];
-
-      await rpcUrlInput.clear();
-      await rpcUrlInput.sendKeys(rpcUrl);
-
-      await chainIdInput.clear();
-      await chainIdInput.sendKeys(chainId);
-
-      await driver.clickElement('.network-form__footer .btn-secondary');
-      await driver.findElement({ text: rpcUrl, tag: 'div' });
-    });
-
-    it('selects another provider', async function () {
-      await driver.clickElement('.network-display');
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
-      await driver.delay(largeDelayMs * 2);
-    });
-
-    it('finds all recent RPCs in history', async function () {
-      await driver.clickElement('.network-display');
-      await driver.delay(regularDelayMs);
-
-      // only recent 3 are found and in correct order (most recent at the top)
-      const customRpcs = await driver.findElements({
-        text: 'http://127.0.0.1:8545/',
-        tag: 'span',
-      });
-
-      // click Mainnet to dismiss network dropdown
-      await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
-
-      assert.equal(customRpcs.length, 2);
-    });
-
-    it('deletes a custom RPC', async function () {
-      const networkListItems = await driver.findClickableElements(
-        '.networks-tab__networks-list-name',
-      );
-      const lastNetworkListItem = networkListItems[networkListItems.length - 1];
-      await lastNetworkListItem.click();
-      await driver.delay(100);
-
-      await driver.clickElement('.btn-danger');
-      await driver.delay(regularDelayMs);
-
-      // wait for confirm delete modal to be visible
-      const confirmDeleteModal = await driver.findVisibleElement('span .modal');
-
-      await driver.clickElement(
-        '.button.btn-danger.modal-container__footer-button',
-      );
-
-      // wait for confirm delete modal to be removed from DOM.
-      await confirmDeleteModal.waitForElementState('hidden');
-
-      const newNetworkListItems = await driver.findElements(
-        '.networks-tab__networks-list-name',
-      );
-
-      assert.equal(networkListItems.length - 1, newNetworkListItems.length);
     });
   });
 });

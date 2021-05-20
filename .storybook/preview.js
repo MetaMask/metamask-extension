@@ -3,12 +3,12 @@ import { addDecorator, addParameters } from '@storybook/react';
 import { useGlobals } from '@storybook/api';
 import { withKnobs } from '@storybook/addon-knobs';
 import { Provider } from 'react-redux';
-import configureStore from '../ui/app/store/store';
-import '../ui/app/css/index.scss';
+import configureStore from '../ui/store/store';
+import '../ui/css/index.scss';
 import localeList from '../app/_locales/index.json';
 import * as allLocales from './locales';
 import { I18nProvider, LegacyI18nProvider } from './i18n';
-import testData from './test-data.js'
+import testData from './test-data.js';
 
 addParameters({
   backgrounds: {
@@ -41,7 +41,7 @@ const styles = {
   alignItems: 'center',
 };
 
-const store = configureStore(testData)
+const store = configureStore(testData);
 
 const metamaskDecorator = (story, context) => {
   const currentLocale = context.globals.locale;

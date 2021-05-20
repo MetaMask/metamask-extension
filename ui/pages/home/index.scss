@@ -1,0 +1,136 @@
+.home {
+  &__container {
+    display: flex;
+    min-height: 100%;
+  }
+
+  &__main-view {
+    flex: 1 1 66.5%;
+    background: $white;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__balance-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+
+  // TODO: fix style import order so this isn't required to override specificity of `tab` class
+  &__main-view &__tabs {
+    border: none;
+    box-shadow: 0 3px 4px rgba(135, 134, 134, 0.16);
+  }
+
+  &__main-view &__tab {
+    @include H6;
+
+    flex-grow: 1;
+    color: $Grey-500;
+    font-weight: 500;
+  }
+
+  &__main-view &__tab--active {
+    color: $Blue-500;
+  }
+
+  &__main-view &__tab button {
+    padding: 16px 8px;
+  }
+
+  &__connect-status-text {
+    display: flex;
+    flex-direction: column;
+
+    @include H6;
+
+    padding-left: 24px;
+    padding-right: 24px;
+    color: $Grey-800;
+
+    div {
+      margin-bottom: 20px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &__connected-status-popover {
+    width: 329px;
+    margin-top: -15px;
+
+    .popover-header {
+      padding-bottom: 20px;
+
+      &__title {
+        padding-bottom: 0;
+      }
+    }
+
+    .popover-content {
+      overflow-y: auto;
+    }
+
+    .popover-arrow {
+      top: -6px;
+      left: 24px;
+    }
+
+    .popover-footer {
+      @include H6;
+
+      border-top: 0;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 20px;
+
+      & :only-child {
+        margin: 0;
+      }
+
+      button {
+        height: 39px;
+        width: 133px;
+        border-radius: 39px;
+        padding: 0;
+      }
+
+      a,
+      a:hover {
+        color: $dodger-blue;
+        cursor: pointer;
+      }
+    }
+  }
+
+  &__connected-status-popover-bg {
+    height: 55px;
+    width: 120px;
+    border-radius: 34px;
+    position: absolute;
+    top: 73px;
+    opacity: 1;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.2);
+    background: none;
+  }
+
+  &__connected-status-popover-bg-container {
+    height: 100%;
+    width: 100%;
+  }
+
+  &__support {
+    padding: 10px 0 20px 0;
+    text-align: center;
+
+    a {
+      color: $primary-1;
+    }
+  }
+}

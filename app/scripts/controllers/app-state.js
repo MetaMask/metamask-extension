@@ -22,8 +22,8 @@ export default class AppStateController extends EventEmitter {
     this.store = new ObservableStore({
       timeoutMinutes: 0,
       connectedStatusPopoverHasBeenShown: true,
-      swapsWelcomeMessageHasBeenShown: false,
       defaultHomeActiveTabName: null,
+      browserEnvironment: {},
       ...initState,
     });
     this.timer = null;
@@ -113,15 +113,6 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Record that the user has seen the swap screen welcome message
-   */
-  setSwapsWelcomeMessageHasBeenShown() {
-    this.store.updateState({
-      swapsWelcomeMessageHasBeenShown: true,
-    });
-  }
-
-  /**
    * Sets the last active time to the current time
    * @returns {void}
    */
@@ -167,5 +158,13 @@ export default class AppStateController extends EventEmitter {
       () => this.onInactiveTimeout(),
       timeoutMinutes * 60 * 1000,
     );
+  }
+
+  /**
+   * Sets the current browser and OS environment
+   * @returns {void}
+   */
+  setBrowserEnvironment(os, browser) {
+    this.store.updateState({ browserEnvironment: { os, browser } });
   }
 }

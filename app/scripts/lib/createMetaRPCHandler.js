@@ -2,6 +2,9 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 
 const createMetaRPCHandler = (api, outStream) => {
   return (data) => {
+    if (outStream._writableState.ended) {
+      return;
+    }
     if (!api[data.method]) {
       outStream.write({
         jsonrpc: '2.0',
@@ -13,6 +16,9 @@ const createMetaRPCHandler = (api, outStream) => {
       return;
     }
     api[data.method](...data.params, (err, result) => {
+      if (outStream._writableState.ended) {
+        return;
+      }
       if (err) {
         outStream.write({
           jsonrpc: '2.0',

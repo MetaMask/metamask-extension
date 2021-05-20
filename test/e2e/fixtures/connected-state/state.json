@@ -1,8 +1,7 @@
 {
   "data": {
     "AppStateController": {
-      "connectedStatusPopoverHasBeenShown": false,
-      "swapsWelcomeMessageHasBeenShown": true
+      "connectedStatusPopoverHasBeenShown": false
     },
     "CachedBalancesController": {
       "cachedBalances": {
@@ -40,6 +39,19 @@
         "type": "rpc"
       },
       "network": "1337"
+    },
+    "NotificationController": {
+      "notifications": {
+        "1": {
+          "isShown": true
+        },
+        "3": {
+          "isShown": true
+        },
+        "5": {
+          "isShown": true
+        }
+      }
     },
     "OnboardingController": {
       "onboardingTabs": {},

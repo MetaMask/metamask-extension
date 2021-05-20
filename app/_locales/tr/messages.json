@@ -196,9 +196,6 @@
     "message": "Alındı",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Bilgi ve yardım"
-  },
   "insufficientFunds": {
     "message": "Yetersiz kaynak."
   },
@@ -341,9 +338,6 @@
   },
   "resetAccount": {
     "message": "Hesabı sıfıla"
-  },
-  "restoreFromSeed": {
-    "message": "Kaynak ifadeden geri getir. Restore from seed phrase"
   },
   "revealSeedWords": {
     "message": "Kaynak kelimelerini göster"

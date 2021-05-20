@@ -1,0 +1,46 @@
+.asset {
+  &__container {
+    background-color: white;
+  }
+
+  &__overview {
+    box-shadow: 0 3px 4px rgba(135, 134, 134, 0.16);
+  }
+}
+
+.asset-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  height: 64px;
+}
+
+.asset-breadcrumb {
+  @include H6;
+
+  color: $Black-100;
+  background-color: inherit;
+
+  &__chevron {
+    font-size: $font-size-paragraph;
+    padding: 0 10px 0 2px;
+  }
+
+  &__asset {
+    font-weight: bold;
+  }
+}
+
+.asset-options {
+  &__button {
+    font-size: $font-size-paragraph;
+    color: $Black-100;
+    background-color: inherit;
+    padding: 2px 0 2px 8px;
+  }
+
+  &__icon {
+    font-weight: 900;
+  }
+}

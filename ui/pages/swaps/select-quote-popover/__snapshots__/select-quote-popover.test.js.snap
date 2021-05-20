@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SelectQuotePopover renders the component with initial props 1`] = `
+<div>
+  <div
+    class="select-quote-popover"
+  />
+</div>
+`;

@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ViewOnEtherScanLink renders the component with a custom block explorer link 1`] = `
+<div>
+  <div
+    class="awaiting-swap__view-on-etherscan awaiting-swap__view-on-etherscan--visible"
+  >
+    View at custom-blockchain.explorer
+  </div>
+</div>
+`;
+
+exports[`ViewOnEtherScanLink renders the component with initial props 1`] = `
+<div>
+  <div
+    class="awaiting-swap__view-on-etherscan awaiting-swap__view-on-etherscan--visible"
+  >
+    View on Etherscan
+  </div>
+</div>
+`;
