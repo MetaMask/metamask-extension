@@ -210,7 +210,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.5.5",
     "@lavamoat/allow-scripts": "^1.0.6",
-    "@metamask/auto-changelog": "^1.0.0",
+    "@metamask/auto-changelog": "^2.0.1",
     "@metamask/eslint-config": "^6.0.0",
     "@metamask/eslint-config-jest": "^6.0.0",
     "@metamask/eslint-config-mocha": "^6.0.0",
