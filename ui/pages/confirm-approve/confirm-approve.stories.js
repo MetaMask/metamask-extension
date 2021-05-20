@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { updateMetamaskState } from '../../store/actions';
 import { currentNetworkTxListSelector } from '../../selectors/transactions';
 import { store } from '../../../.storybook/preview';
-import { _setBackgroundConnection } from '../../store/actions'
+
 import {
   currentNetworkTxListSample,
   domainMetadata,
@@ -30,7 +30,7 @@ const PageSet = ({ children }) => {
 
   const currentNetworkTxList = useSelector(currentNetworkTxListSelector);
   const transaction = currentNetworkTxList.find(({ id }) => id === txId);
-  
+
   useEffect(() => {
     transaction.origin = origin;
     store.dispatch(
