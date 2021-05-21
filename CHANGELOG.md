@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.5.4]
+### Fixed
+- [#11153](https://github.com/MetaMask/metamask-extension/pull/11153): Prevent UI crash when the transaction being retried or canceled is missing.
+
 ## [9.5.3]
 ### Fixed
 - Fixes bug that made MetaMask unusable and displayed 'Minified React error #130' on certain networks and accounts ([#11103](https://github.com/MetaMask/metamask-extension/pull/11103))
@@ -2237,7 +2241,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.3...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.4...HEAD
+[9.5.4]: https://github.com/MetaMask/metamask-extension/compare/v9.5.3...v9.5.4
 [9.5.3]: https://github.com/MetaMask/metamask-extension/compare/v9.5.2...v9.5.3
 [9.5.2]: https://github.com/MetaMask/metamask-extension/compare/v9.5.1...v9.5.2
 [9.5.1]: https://github.com/MetaMask/metamask-extension/compare/v9.5.0...v9.5.1
