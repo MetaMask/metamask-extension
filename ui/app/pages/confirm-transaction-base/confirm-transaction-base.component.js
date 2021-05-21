@@ -1,4 +1,3 @@
-import { toBuffer } from 'ethereumjs-util';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
@@ -23,6 +22,8 @@ import {
   TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction';
 import { getTransactionTypeTitle } from '../../helpers/utils/transactions.util';
+import ErrorMessage from '../../components/ui/error-message';
+import { toBuffer } from '../../../../shared/modules/buffer-utils';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
