@@ -873,9 +873,6 @@
   "history": {
     "message": "History"
   },
-  "iUnderstand": {
-    "message": "I understand"
-  },
   "import": {
     "message": "Import",
     "description": "Button to import an account from a selected file"
@@ -2205,6 +2202,9 @@
   },
   "tokenSymbol": {
     "message": "Token Symbol"
+  },
+  "tooltipApproveButton": {
+    "message": "I understand"
   },
   "total": {
     "message": "Total"

@@ -36,7 +36,7 @@ export default function ViewQuotePriceDifference(props) {
     priceDifferenceTitle = t('swapPriceUnavailableTitle');
     priceDifferenceMessage = t('swapPriceUnavailableDescription');
     priceDifferenceClass = 'high';
-    priceDifferenceAcknowledgementText = t('iUnderstand');
+    priceDifferenceAcknowledgementText = t('tooltipApproveButton');
   } else {
     priceDifferenceTitle = t('swapPriceDifferenceTitle', [
       priceDifferencePercentage,
@@ -50,7 +50,7 @@ export default function ViewQuotePriceDifference(props) {
       priceSlippageFromDestination, // Destination tokens total value
     ]);
     priceDifferenceClass = usedQuote.priceSlippage.bucket;
-    priceDifferenceAcknowledgementText = t('iUnderstand');
+    priceDifferenceAcknowledgementText = t('tooltipApproveButton');
   }
 
   return (
