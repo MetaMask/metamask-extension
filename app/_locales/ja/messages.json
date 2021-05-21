@@ -1628,12 +1628,6 @@
     "message": "価格差は $1% です",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
-  "swapPriceDifferenceTooltip": {
-    "message": "市場価格の違いは、仲介業者が負担する手数料、市場規模、取引量、または取引価格差の影響を受けることがあります。"
-  },
-  "swapPriceDifferenceUnavailable": {
-    "message": "マーケット価格は利用できません。続行する前に、返金額に問題がないことを確認してください。"
-  },
   "swapProcessing": {
     "message": "処理中"
   },

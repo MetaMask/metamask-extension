@@ -144,6 +144,6 @@ describe('View Price Quote Difference', () => {
       'Could not determine price.';
 
     renderComponent(props);
-    expect(component.html()).toContain('fiat-error');
+    expect(component.html()).toContain('high');
   });
 });

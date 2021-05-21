@@ -1619,12 +1619,6 @@
     "message": "价格差异 ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
-  "swapPriceDifferenceTooltip": {
-    "message": "市场价格的差异可能受到中介机构收取的费用、市场规模、交易规模或市场效率低下的影响。"
-  },
-  "swapPriceDifferenceUnavailable": {
-    "message": "市场价格不可用。 请确认您对退回的数额感到满意后再继续。"
-  },
   "swapProcessing": {
     "message": "处理中"
   },

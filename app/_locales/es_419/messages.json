@@ -1619,12 +1619,6 @@
     "message": "Diferencia de precio de ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
-  "swapPriceDifferenceTooltip": {
-    "message": "La diferencia en los precios de mercado puede verse afectada por las tarifas cobradas por los intermediarios, el tamaño del mercado, el tamaño del comercio o las ineficiencias del mercado."
-  },
-  "swapPriceDifferenceUnavailable": {
-    "message": "El precio de mercado no está disponible. Asegúrese de sentirse cómodo con el monto devuelto antes de continuar."
-  },
   "swapProcessing": {
     "message": "Procesando"
   },

@@ -6,6 +6,11 @@ import { I18nContext } from '../../../contexts/i18n';
 
 import ActionableMessage from '../actionable-message';
 import Tooltip from '../../../components/ui/tooltip';
+import Box from '../../../components/ui/box';
+import {
+  JUSTIFY_CONTENT,
+  DISPLAY,
+} from '../../../helpers/constants/design-system';
 
 export default function ViewQuotePriceDifference(props) {
   const {
@@ -28,9 +33,10 @@ export default function ViewQuotePriceDifference(props) {
   let priceDifferenceAcknowledgementText = '';
   if (priceSlippageUnknownFiatValue) {
     // A calculation error signals we cannot determine dollar value
-    priceDifferenceMessage = t('swapPriceDifferenceUnavailable');
-    priceDifferenceClass = 'fiat-error';
-    priceDifferenceAcknowledgementText = t('continue');
+    priceDifferenceTitle = t('swapPriceUnavailableTitle');
+    priceDifferenceMessage = t('swapPriceUnavailableDescription');
+    priceDifferenceClass = 'high';
+    priceDifferenceAcknowledgementText = t('tooltipApproveButton');
   } else {
     priceDifferenceTitle = t('swapPriceDifferenceTitle', [
       priceDifferencePercentage,
@@ -44,9 +50,7 @@ export default function ViewQuotePriceDifference(props) {
       priceSlippageFromDestination, // Destination tokens total value
     ]);
     priceDifferenceClass = usedQuote.priceSlippage.bucket;
-    priceDifferenceAcknowledgementText = t(
-      'swapPriceDifferenceAcknowledgement',
-    );
+    priceDifferenceAcknowledgementText = t('tooltipApproveButton');
   }
 
   return (
@@ -60,11 +64,22 @@ export default function ViewQuotePriceDifference(props) {
         message={
           <div className="view-quote__price-difference-warning-contents">
             <div className="view-quote__price-difference-warning-contents-text">
-              {priceDifferenceTitle && (
+              <Box
+                display={DISPLAY.FLEX}
+                justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+                paddingBottom={2}
+              >
                 <div className="view-quote__price-difference-warning-contents-title">
                   {priceDifferenceTitle}
                 </div>
-              )}
+                <Tooltip
+                  position="bottom"
+                  theme="white"
+                  title={t('swapPriceImpactTooltip')}
+                >
+                  <i className="fa fa-info-circle" />
+                </Tooltip>
+              </Box>
               {priceDifferenceMessage}
               {!acknowledged && (
                 <div className="view-quote__price-difference-warning-contents-actions">
@@ -78,13 +93,6 @@ export default function ViewQuotePriceDifference(props) {
                 </div>
               )}
             </div>
-            <Tooltip
-              position="bottom"
-              theme="white"
-              title={t('swapPriceDifferenceTooltip')}
-            >
-              <i className="fa fa-info-circle" />
-            </Tooltip>
           </div>
         }
       />

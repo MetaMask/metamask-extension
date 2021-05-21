@@ -95,45 +95,52 @@
     &-wrapper {
       width: 100%;
 
-      &.medium .actionable-message,
-      &.fiat-error .actionable-message {
-        border-color: $Yellow-500;
-        background: $Yellow-100;
+      &.low,
+      &.medium,
+      &.high {
+        .actionable-message {
+          .actionable-message__message {
+            color: inherit;
+          }
 
-        .actionable-message__message {
-          color: inherit;
+          button {
+            font-size: $font-size-h8;
+            padding: 4px 12px;
+            border-radius: 42px;
+          }
         }
+      }
 
-        button {
-          background: $Yellow-500;
-          border-radius: 42px;
+      &.low {
+        .actionable-message {
+          button {
+            background: $Blue-500;
+            color: #fff;
+          }
+        }
+      }
+
+      &.medium {
+        .actionable-message {
+          border-color: $Yellow-500;
+          background: $Yellow-100;
+
+          button {
+            background: $Yellow-500;
+          }
         }
       }
 
       &.high {
         .actionable-message {
-          border-color: $Red-500;
-          background: $Red-100;
+          border-color: $Red-300;
+          background: $Red-000;
 
-          .actionable-message__message {
-            color: $Red-500;
+          button {
+            background: $Red-500;
+            color: #fff;
           }
         }
-
-        button {
-          background: $Red-500;
-          color: #fff;
-          border-radius: 42px;
-
-          /* Offsets the width of ActionableMessage icon */
-          margin-right: -22px;
-        }
-      }
-
-      /* Hides info tooltip if there's a fiat error message */
-      &.fiat-error div[data-tooltipped] {
-        /* !important overrides style being applied directly to tooltip by component */
-        display: none !important;
       }
     }
 
@@ -160,10 +167,9 @@
     width: 100%;
     align-items: center;
     justify-content: center;
-    width: intrinsic;           /* Safari/WebKit uses a non-standard name */
-    width: max-content;
     max-width: 340px;
     margin-top: 8px;
+    margin-bottom: 28px;
 
     @media screen and (min-width: 576px) {
       &--thin {
