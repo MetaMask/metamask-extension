@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.5.4]
-### Uncategorized
-- [#11153](https://github.com/MetaMask/metamask-extension/pull/11153): Capture exception instead of throw error in useTransactionDisplayData
+### Fixed
+- [#11153](https://github.com/MetaMask/metamask-extension/pull/11153): Prevent UI crash when the transaction being retried or canceled is missing.
 
 ## [9.5.3]
 ### Fixed
