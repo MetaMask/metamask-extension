@@ -500,9 +500,6 @@
   "done": {
     "message": "完成"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "没有硬件钱包？"
-  },
   "dontShowThisAgain": {
     "message": "不再显示"
   },
@@ -727,9 +724,6 @@
     "message": "从水管获取 $1 网络的 Ether",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "获取帮助。"
-  },
   "getStarted": {
     "message": "开始使用"
   },
@@ -750,9 +744,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "选择希望用于 MetaMask 的硬件钱包"
-  },
-  "havingTroubleConnecting": {
-    "message": "连接出现问题？"
   },
   "here": {
     "message": "这里",
@@ -1117,9 +1108,6 @@
   "optionalCurrencySymbol": {
     "message": "符号（选填）"
   },
-  "orderOneHere": {
-    "message": "订购 Trezor 或 Ledger ，将个人资金进行冷存储"
-  },
   "origin": {
     "message": "来源"
   },
@@ -1200,9 +1188,6 @@
   },
   "readdToken": {
     "message": "之后您还可以通过帐户选项菜单中的“添加代币”来添加此代币。"
-  },
-  "readyToConnect": {
-    "message": "是否准备连接？"
   },
   "receive": {
     "message": "接收"
@@ -1504,24 +1489,6 @@
   "statusNotConnected": {
     "message": "未连接"
   },
-  "step1HardwareWallet": {
-    "message": "1. 连接硬件钱包"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "将您的硬件钱包直接连接到电脑上。"
-  },
-  "step2HardwareWallet": {
-    "message": "2. 选择账户"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "请选择您想查看的账户。每次只能选择一个账户。"
-  },
-  "step3HardwareWallet": {
-    "message": "3. 开始使用 web3 站点和更多功能！"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "使用您的硬件钱包，操作与以太坊账户制作相同。登录 dApps，发送 ETH ，购买和保存 ERC20 代币和诸如 CryptoKitties 等不可替代代币。"
-  },
   "storePhrase": {
     "message": "通过如 1Password 等密码管理工具保存该账户助记词。"
   },
@@ -1609,9 +1576,6 @@
   "swapFinalizing": {
     "message": "确定中……"
   },
-  "swapHighSlippageWarning": {
-    "message": "滑点数量非常大。确保您知道您的操作！"
-  },
   "swapLowSlippageError": {
     "message": "交易可能失败，最大滑点过低。"
   },
@@ -1654,12 +1618,6 @@
   "swapPriceDifferenceTitle": {
     "message": "价格差异 ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceDifferenceTooltip": {
-    "message": "市场价格的差异可能受到中介机构收取的费用、市场规模、交易规模或市场效率低下的影响。"
-  },
-  "swapPriceDifferenceUnavailable": {
-    "message": "市场价格不可用。 请确认您对退回的数额感到满意后再继续。"
   },
   "swapProcessing": {
     "message": "处理中"
@@ -1723,9 +1681,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "以下是从多个流动资金来源收集到的所有报价。"
   },
-  "swapSlippageTooLow": {
-    "message": "滑点必须大于零"
-  },
   "swapSource": {
     "message": "流动资金来源"
   },
@@ -1764,9 +1719,6 @@
   "swapVerifyTokenExplanation": {
     "message": "多个代币可以使用相同的名称和符号。检查 $1（以太坊浏览器）以确认这是您正在寻找的代币。",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapViewToken": {
-    "message": "查看 $1"
   },
   "swapYourTokenBalance": {
     "message": "$1 $2 可用",

@@ -24,6 +24,24 @@ export const createSwapsMockStore = () => {
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
         '0x1111111111111111111111111111111111111111': 0.1,
       },
+      identities: {
+        '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
+          address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
+          name: 'Send Account 1',
+        },
+        '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb': {
+          address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+          name: 'Send Account 2',
+        },
+        '0x2f8d4a878cfa04a6e60d46362f5644deab66572d': {
+          address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
+          name: 'Send Account 3',
+        },
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          name: 'Send Account 4',
+        },
+      },
       accounts: {
         '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
           address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -35,6 +53,21 @@ export const createSwapsMockStore = () => {
         },
       },
       selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      keyringTypes: ['Simple Key Pair', 'HD Key Tree'],
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          accounts: [
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            'c5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+            '2f8d4a878cfa04a6e60d46362f5644deab66572d',
+          ],
+        },
+        {
+          type: 'Simple Key Pair',
+          accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
+        },
+      ],
       frequentRpcListDetail: [],
       tokens: [
         {

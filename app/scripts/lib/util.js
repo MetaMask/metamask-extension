@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import extension from 'extensionizer';
 import { stripHexPrefix } from 'ethereumjs-util';
 import BN from 'bn.js';

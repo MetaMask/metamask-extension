@@ -1,4 +1,4 @@
-import * as actions from '../../ui/app/store/actions';
+import * as actions from '../../ui/store/actions';
 
 export const setBackgroundConnection = (backgroundConnection = {}) => {
   actions._setBackgroundConnection(backgroundConnection);

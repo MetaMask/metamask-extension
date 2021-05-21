@@ -43,6 +43,7 @@ export default class PreferencesController {
       useBlockie: false,
       useNonceField: false,
       usePhishDetect: true,
+      dismissSeedBackUpReminder: false,
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace
@@ -67,6 +68,7 @@ export default class PreferencesController {
       // ENS decentralized website resolution
       ipfsGateway: 'dweb.link',
       infuraBlocked: null,
+      useLedgerLive: false,
       ...opts.initState,
     };
 
@@ -664,6 +666,35 @@ export default class PreferencesController {
   setIpfsGateway(domain) {
     this.store.updateState({ ipfsGateway: domain });
     return Promise.resolve(domain);
+  }
+
+  /**
+   * A setter for the `useLedgerLive` property
+   * @param {bool} useLedgerLive - Value for ledger live support
+   * @returns {Promise<string>} A promise of the update to useLedgerLive
+   */
+  async setLedgerLivePreference(useLedgerLive) {
+    this.store.updateState({ useLedgerLive });
+    return useLedgerLive;
+  }
+
+  /**
+   * A getter for the `useLedgerLive` property
+   * @returns {boolean} User preference of using Ledger Live
+   */
+  getLedgerLivePreference() {
+    return this.store.getState().useLedgerLive;
+  }
+
+  /**
+   * A setter for the user preference to dismiss the seed phrase backup reminder
+   * @param {bool} dismissBackupReminder- User preference for dismissing the back up reminder
+   * @returns {void}
+   */
+  async setDismissSeedBackUpReminder(dismissSeedBackUpReminder) {
+    await this.store.updateState({
+      dismissSeedBackUpReminder,
+    });
   }
 
   //
