@@ -28,6 +28,7 @@ import {
   prepareToLeaveSwaps,
 } from '../../../ducks/swaps/swaps';
 import Mascot from '../../../components/ui/mascot';
+import Box from '../../../components/ui/box';
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
@@ -98,19 +99,25 @@ export default function AwaitingSwap({
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
+  const sensitiveProperties = {
+    token_from: sourceTokenInfo?.symbol,
+    token_from_amount: fetchParams?.value,
+    token_to: destinationTokenInfo?.symbol,
+    request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
+    slippage: fetchParams?.slippage,
+    custom_slippage: fetchParams?.slippage === 2,
+    gas_fees: feeinUnformattedFiat,
+    is_hardware_wallet: hardwareWalletUsed,
+    hardware_wallet_type: hardwareWalletType,
+  };
   const quotesExpiredEvent = useNewMetricEvent({
     event: 'Quotes Timed Out',
-    sensitiveProperties: {
-      token_from: sourceTokenInfo?.symbol,
-      token_from_amount: fetchParams?.value,
-      token_to: destinationTokenInfo?.symbol,
-      request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
-      slippage: fetchParams?.slippage,
-      custom_slippage: fetchParams?.slippage === 2,
-      gas_fees: feeinUnformattedFiat,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
-    },
+    sensitiveProperties,
+    category: 'swaps',
+  });
+  const makeAnotherSwapEvent = useNewMetricEvent({
+    event: 'Make Another Swap',
+    sensitiveProperties,
     category: 'swaps',
   });
 
@@ -207,7 +214,7 @@ export default function AwaitingSwap({
   } else if (!errorKey && swapComplete) {
     headerText = t('swapTransactionComplete');
     statusImage = <SwapSuccessIcon />;
-    submitText = t('swapViewToken', [destinationTokenInfo.symbol]);
+    submitText = t('close');
     descriptionText = t('swapTokenAvailable', [
       <span
         key="swapTokenAvailable-2"
@@ -225,6 +232,22 @@ export default function AwaitingSwap({
     );
   }
 
+  const MakeAnotherSwap = () => {
+    return (
+      <Box marginBottom={3}>
+        <a
+          href="#"
+          onClick={() => {
+            makeAnotherSwapEvent();
+            dispatch(navigateBackToBuildQuote(history));
+          }}
+        >
+          {t('makeAnotherSwap')}
+        </a>
+      </Box>
+    );
+  };
+
   return (
     <div className="awaiting-swap">
       <div className="awaiting-swap__content">
@@ -240,6 +263,7 @@ export default function AwaitingSwap({
         <div className="awaiting-swap__main-descrption">{descriptionText}</div>
         {content}
       </div>
+      {!errorKey && swapComplete && <MakeAnotherSwap />}
       <SwapsFooter
         onSubmit={async () => {
           if (errorKey === OFFLINE_FOR_MAINTENANCE) {
@@ -258,7 +282,8 @@ export default function AwaitingSwap({
           } else if (errorKey) {
             await dispatch(navigateBackToBuildQuote(history));
           } else if (
-            isSwapsDefaultTokenSymbol(destinationTokenInfo?.symbol, chainId)
+            isSwapsDefaultTokenSymbol(destinationTokenInfo?.symbol, chainId) ||
+            swapComplete
           ) {
             history.push(DEFAULT_ROUTE);
           } else {
