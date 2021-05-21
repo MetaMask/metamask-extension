@@ -934,7 +934,7 @@
   "sendTokens": {
     "message": "Pošalji tokene"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "ether je poslat"
   },
   "separateEachWord": {

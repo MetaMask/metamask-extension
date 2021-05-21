@@ -940,7 +940,7 @@
   "sendTokens": {
     "message": "ተለዋጭ ስሞችን ላክ"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "የተላከ ether"
   },
   "separateEachWord": {

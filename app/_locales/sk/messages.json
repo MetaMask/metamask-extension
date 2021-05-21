@@ -906,7 +906,7 @@
   "sendTokens": {
     "message": "Odeslat tokeny"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "poslaný ether"
   },
   "separateEachWord": {

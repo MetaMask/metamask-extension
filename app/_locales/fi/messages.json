@@ -940,7 +940,7 @@
   "sendTokens": {
     "message": "Lähetä tietueita"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "lähetä etheriä"
   },
   "separateEachWord": {

@@ -943,7 +943,7 @@
   "sendTokens": {
     "message": "Надіслати токени"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "надісланий ефір"
   },
   "separateEachWord": {

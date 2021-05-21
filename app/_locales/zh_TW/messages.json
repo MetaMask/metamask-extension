@@ -931,7 +931,7 @@
   "sendTokens": {
     "message": "發送代幣"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "發送以太幣"
   },
   "separateEachWord": {

@@ -943,7 +943,7 @@
   "sendTokens": {
     "message": "Siųsti žetonus"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "siųsti eterių"
   },
   "separateEachWord": {

@@ -943,7 +943,7 @@
   "sendTokens": {
     "message": "টোকেনগুলি পাঠান"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "পাঠানো ইথার "
   },
   "separateEachWord": {

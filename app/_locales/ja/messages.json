@@ -1419,7 +1419,7 @@
   "sendTokens": {
     "message": "トークンを送る"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "Etherの送金"
   },
   "separateEachWord": {

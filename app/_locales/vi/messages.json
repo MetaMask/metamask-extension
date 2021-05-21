@@ -1410,7 +1410,7 @@
   "sendTokens": {
     "message": "Gửi token"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "đã gửi ether"
   },
   "separateEachWord": {

@@ -855,7 +855,7 @@
   "sendTokens": {
     "message": "Magpadala ng Mga Token"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "nagpadala ng ether"
   },
   "separateEachWord": {

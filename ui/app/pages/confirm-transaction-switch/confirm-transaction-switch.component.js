@@ -31,7 +31,7 @@ export default class ConfirmTransactionSwitch extends Component {
       return <Redirect to={{ pathname }} />;
     }
 
-    if (transactionCategory === TRANSACTION_CATEGORIES.SENT_ETHER) {
+    if (transactionCategory === TRANSACTION_CATEGORIES.SEND_ETHER) {
       const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SEND_ETHER_PATH}`;
       return <Redirect to={{ pathname }} />;
     }

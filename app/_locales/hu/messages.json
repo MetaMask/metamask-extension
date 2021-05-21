@@ -936,7 +936,7 @@
   "sendTokens": {
     "message": "Token küldése"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "elküldött ether"
   },
   "separateEachWord": {

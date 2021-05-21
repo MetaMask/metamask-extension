@@ -211,7 +211,7 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('sendSpecifiedTokens', [token?.symbol || t('token')]);
     recipientAddress = getTokenAddressParam(tokenData);
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
-  } else if (transactionCategory === TRANSACTION_CATEGORIES.SENT_ETHER) {
+  } else if (transactionCategory === TRANSACTION_CATEGORIES.SEND_ETHER) {
     category = TRANSACTION_GROUP_CATEGORIES.SEND;
     title = t('sendETH');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);

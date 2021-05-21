@@ -927,7 +927,7 @@
   "sendTokens": {
     "message": "Skicka tokens"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "skickat ether"
   },
   "separateEachWord": {

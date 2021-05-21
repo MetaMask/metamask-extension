@@ -1410,7 +1410,7 @@
   "sendTokens": {
     "message": "टोकन भेजें"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "Ether भेजा गया"
   },
   "separateEachWord": {

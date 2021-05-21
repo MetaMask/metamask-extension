@@ -783,7 +783,7 @@ describe('Transaction Controller', function () {
         data: '',
       });
       assert.deepEqual(result, {
-        transactionCategory: TRANSACTION_CATEGORIES.SENT_ETHER,
+        transactionCategory: TRANSACTION_CATEGORIES.SEND_ETHER,
         getCodeResponse: null,
       });
     });
@@ -829,7 +829,7 @@ describe('Transaction Controller', function () {
         data: '0xabd',
       });
       assert.deepEqual(result, {
-        transactionCategory: TRANSACTION_CATEGORIES.SENT_ETHER,
+        transactionCategory: TRANSACTION_CATEGORIES.SEND_ETHER,
         getCodeResponse: '0x',
       });
     });
@@ -840,7 +840,7 @@ describe('Transaction Controller', function () {
         data: '0xabd',
       });
       assert.deepEqual(result, {
-        transactionCategory: TRANSACTION_CATEGORIES.SENT_ETHER,
+        transactionCategory: TRANSACTION_CATEGORIES.SEND_ETHER,
         getCodeResponse: null,
       });
     });

@@ -939,7 +939,7 @@
   "sendTokens": {
     "message": "Изпращане на жетони"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "изпратен етер"
   },
   "separateEachWord": {

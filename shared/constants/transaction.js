@@ -63,7 +63,7 @@ export const TRANSACTION_STATUSES = {
  * @property {'approve'} TOKEN_METHOD_APPROVE - A token transaction requesting an
  *  allowance of the token to spend on behalf of the user
  * @property {'incoming'} INCOMING - An incoming (deposit) transaction
- * @property {'sentEther'} SENT_ETHER - A transaction sending ether to a recipient
+ * @property {'ethSendAction'} SEND_ETHER - A transaction sending ether to a recipient
  * @property {'contractInteraction'} CONTRACT_INTERACTION - A transaction that is
  *  interacting with a smart contract's methods that we have not treated as a special
  *  case, such as approve, transfer, and transferfrom
@@ -85,7 +85,7 @@ export const TRANSACTION_CATEGORIES = {
   TOKEN_METHOD_TRANSFER_FROM: 'transferfrom',
   TOKEN_METHOD_APPROVE: 'approve',
   INCOMING: 'incoming',
-  SENT_ETHER: 'sentEther',
+  SEND_ETHER: 'ethSendAction',
   CONTRACT_INTERACTION: 'contractInteraction',
   DEPLOY_CONTRACT: 'contractDeployment',
   SWAP: 'swap',

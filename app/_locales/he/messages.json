@@ -937,7 +937,7 @@
   "sendTokens": {
     "message": "שלח טוקנים"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "את'ר שנשלח"
   },
   "separateEachWord": {

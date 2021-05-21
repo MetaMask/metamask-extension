@@ -1419,7 +1419,7 @@
   "sendTokens": {
     "message": "发送代币"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "发送 Ether"
   },
   "separateEachWord": {

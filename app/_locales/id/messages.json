@@ -1410,7 +1410,7 @@
   "sendTokens": {
     "message": "Kirim Token"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "ether terkirim"
   },
   "separateEachWord": {

@@ -939,7 +939,7 @@
   "sendTokens": {
     "message": "Nosūtīt marķierus"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "nosūtītie ether"
   },
   "separateEachWord": {

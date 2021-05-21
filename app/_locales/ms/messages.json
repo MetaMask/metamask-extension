@@ -920,7 +920,7 @@
   "sendTokens": {
     "message": "Hantar Token"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "menghantar ether"
   },
   "separateEachWord": {

@@ -936,7 +936,7 @@
   "sendTokens": {
     "message": "إرسال عملات رمزية"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "أرسل عملة إيثير"
   },
   "separateEachWord": {

@@ -912,7 +912,7 @@
   "sendTokens": {
     "message": "Token senden"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "Ether senden"
   },
   "separateEachWord": {

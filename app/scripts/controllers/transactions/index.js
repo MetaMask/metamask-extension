@@ -347,7 +347,7 @@ export default class TransactionController extends EventEmitter {
       return {};
     } else if (
       txMeta.txParams.to &&
-      txMeta.transactionCategory === TRANSACTION_CATEGORIES.SENT_ETHER
+      txMeta.transactionCategory === TRANSACTION_CATEGORIES.SEND_ETHER
     ) {
       // if there's data in the params, but there's no contract code, it's not a valid transaction
       if (txMeta.txParams.data) {
@@ -849,7 +849,7 @@ export default class TransactionController extends EventEmitter {
       const codeIsEmpty = !code || code === '0x' || code === '0x0';
 
       result = codeIsEmpty
-        ? TRANSACTION_CATEGORIES.SENT_ETHER
+        ? TRANSACTION_CATEGORIES.SEND_ETHER
         : TRANSACTION_CATEGORIES.CONTRACT_INTERACTION;
     }
 

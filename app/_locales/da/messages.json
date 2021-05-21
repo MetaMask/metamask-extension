@@ -921,7 +921,7 @@
   "sendTokens": {
     "message": "Send tokens"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "sendte ether"
   },
   "separateEachWord": {

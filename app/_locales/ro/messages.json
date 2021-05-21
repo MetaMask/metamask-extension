@@ -930,7 +930,7 @@
   "sendTokens": {
     "message": "Trimiteți indicative"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "trimiteți ether"
   },
   "separateEachWord": {

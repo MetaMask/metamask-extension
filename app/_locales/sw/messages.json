@@ -921,7 +921,7 @@
   "sendTokens": {
     "message": "Tuma Vianzio"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "ether iliyotumwa"
   },
   "separateEachWord": {

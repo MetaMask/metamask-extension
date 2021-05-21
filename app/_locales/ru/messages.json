@@ -1410,7 +1410,7 @@
   "sendTokens": {
     "message": "Отправить токены"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "отправленный Ether"
   },
   "separateEachWord": {

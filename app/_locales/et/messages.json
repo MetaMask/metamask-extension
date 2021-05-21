@@ -933,7 +933,7 @@
   "sendTokens": {
     "message": "Saada lube"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "saadetud eeter"
   },
   "separateEachWord": {

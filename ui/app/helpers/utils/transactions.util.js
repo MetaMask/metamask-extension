@@ -211,8 +211,8 @@ export function getTransactionCategoryTitle(t, transactionCategory) {
     case TRANSACTION_CATEGORIES.TOKEN_METHOD_APPROVE: {
       return t('approve');
     }
-    case TRANSACTION_CATEGORIES.SENT_ETHER: {
-      return t('sentEther');
+    case TRANSACTION_CATEGORIES.SEND_ETHER: {
+      return t('ethSendAction');
     }
     case TRANSACTION_CATEGORIES.CONTRACT_INTERACTION: {
       return t('contractInteraction');

@@ -943,7 +943,7 @@
   "sendTokens": {
     "message": "رمزیاب ها را ارسال کنید"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "ایتر ارسال شد"
   },
   "separateEachWord": {

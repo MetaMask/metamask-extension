@@ -1407,7 +1407,7 @@
   "sendTokens": {
     "message": "토큰 보내기"
   },
-  "sentEther": {
+  "ethSendAction": {
     "message": "Ether 보냄"
   },
   "separateEachWord": {
