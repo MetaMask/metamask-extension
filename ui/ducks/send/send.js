@@ -280,7 +280,7 @@ const computeEstimatedGasLimit = createAsyncThunk(
         blockGasLimit: metamask.blockGasLimit,
         selectedAddress: metamask.selectedAddress,
         sendToken: send.asset.details,
-        to: send.recipient.address.toLowerCase(),
+        to: send.recipient.address?.toLowerCase(),
         value: send.amount.value,
         data: send.draftTransaction.userInputHexData,
       });
@@ -637,14 +637,24 @@ const slice = createSlice({
       slice.caseReducers.updateDraftTransaction(state);
     },
     updateRecipient: (state, action) => {
-      state.recipient.address = action.payload.address;
+      state.recipient.address = action.payload.address ?? '';
       state.recipient.nickname = action.payload.nickname ?? '';
-      // if an id exists on the draft transaction, we progress to the edit
-      // stage, otherwise we progress to the draft stage.
-      state.stage =
-        state.draftTransaction.id === null
-          ? SEND_STAGES.DRAFT
-          : SEND_STAGES.EDIT;
+
+      if (state.recipient.address === '') {
+        // If address is null we are clearing the recipient and must return
+        // to the ADD_RECIPIENT stage.
+        state.stage = SEND_STAGES.ADD_RECIPIENT;
+      } else {
+        // if and address is provided and an id exists on the draft transaction,
+        // we progress to the EDIT stage, otherwise we progress to the DRAFT
+        // stage. We also reset the search mode for recipient search.
+        state.stage =
+          state.draftTransaction.id === null
+            ? SEND_STAGES.DRAFT
+            : SEND_STAGES.EDIT;
+        state.recipient.mode = RECIPIENT_SEARCH_MODES.CONTACT_LIST;
+      }
+
       // validate send state
       slice.caseReducers.validateSendState(state);
       // update the draft transaction
@@ -1104,6 +1114,7 @@ export function updateRecipient({ address, nickname }) {
 export function resetRecipientInput() {
   return async (dispatch) => {
     await dispatch(updateRecipientUserInput(''));
+    await dispatch(updateRecipient({ address: null, nickname: null }));
     await dispatch(resetResolution());
     await dispatch(validateRecipientUserInput());
   };
