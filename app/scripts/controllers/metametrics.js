@@ -330,7 +330,17 @@ export default class MetaMetricsController {
   async trackEvent(payload, options) {
     // event and category are required fields for all payloads
     if (!payload.event || !payload.category) {
-      throw new Error('Must specify event and category.');
+      throw new Error(
+        `Must specify event and category. Event was: ${
+          payload.event
+        }. Category was: ${payload.category}. Payload keys were: ${Object.keys(
+          payload,
+        )}. ${
+          typeof payload.properties === 'object'
+            ? `Payload property keys were: ${Object.keys(payload.properties)}`
+            : ''
+        }`,
+      );
     }
 
     if (!this.state.participateInMetaMetrics && !options?.isOptIn) {
