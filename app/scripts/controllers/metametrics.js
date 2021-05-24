@@ -331,9 +331,15 @@ export default class MetaMetricsController {
     // event and category are required fields for all payloads
     if (!payload.event || !payload.category) {
       throw new Error(
-        `Must specify event and category. Passed payload was: ${JSON.stringify(
+        `Must specify event and category. Event was: ${
+          payload.event
+        }. Category was: ${payload.category}. Payload keys were: ${Object.keys(
           payload,
-        )}`,
+        )}. ${
+          typeof payload.properties === 'object'
+            ? `Payload property keys were: ${Object.keys(payload.properties)}`
+            : ''
+        }`,
       );
     }
 
