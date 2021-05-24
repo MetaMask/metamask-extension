@@ -28,7 +28,9 @@ import {
   getSwapsDefaultToken,
   getIsSwapsChain,
   getNativeCurrencyImage,
+  getPreferences,
 } from '../../../selectors/selectors';
+import { getConversionRate } from '../../../selectors';
 import SwapIcon from '../../ui/icon/swap-icon.component';
 import BuyIcon from '../../ui/icon/overview-buy-icon.component';
 import SendIcon from '../../ui/icon/overview-send-icon.component';
@@ -57,6 +59,7 @@ const EthOverview = ({ className }) => {
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = keyring.type.search('Hardware') !== -1;
   const balanceIsCached = useSelector(isBalanceCached);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const showFiat = useSelector(getShouldShowFiat);
   const selectedAccount = useSelector(getSelectedAccount);
   const { balance } = selectedAccount;
@@ -64,6 +67,7 @@ const EthOverview = ({ className }) => {
   const isTestnetChain = useSelector(getIsTestnet);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
+  const conversionRate = useSelector(getConversionRate);
 
   const enteredSwapsEvent = useNewMetricEvent({
     event: 'Swaps Opened',
@@ -71,6 +75,8 @@ const EthOverview = ({ className }) => {
     category: 'swaps',
   });
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+
+  const swapPrimary = !conversionRate && !useNativeCurrencyAsPrimaryCurrency;
 
   return (
     <WalletOverview
@@ -88,7 +94,7 @@ const EthOverview = ({ className }) => {
                 })}
                 data-testid="eth-overview__primary-currency"
                 value={balance}
-                type={PRIMARY}
+                type={swapPrimary ? SECONDARY : PRIMARY}
                 ethNumberOfDecimals={4}
                 hideTitle
               />
@@ -104,7 +110,7 @@ const EthOverview = ({ className }) => {
                 })}
                 data-testid="eth-overview__secondary-currency"
                 value={balance}
-                type={SECONDARY}
+                type={swapPrimary ? PRIMARY : SECONDARY}
                 ethNumberOfDecimals={4}
                 hideTitle
               />

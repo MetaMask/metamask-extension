@@ -74,7 +74,7 @@ export function useCurrencyDisplay(
 
     let computedValue;
 
-    if(Boolean(requiresConversion && conversionRate)){
+    if (requiresConversion && conversionRate) {
       computedValue = getValueFromWeiHex({
         value: inputValue,
         fromCurrency: nativeCurrency,
@@ -83,13 +83,13 @@ export function useCurrencyDisplay(
         numberOfDecimals: numberOfDecimals || 2,
         toDenomination: denomination,
       });
-    } else if (Boolean(requiresConversion && !conversionRate)) {
-    // if this is a secondary/fiat currency and we don't have a valid conversion rate we return null
-    // so that we don't show a false or stale conversion rate
+    } else if (requiresConversion && !conversionRate) {
+      // if this is a secondary/fiat currency and we don't have a valid conversion rate we return null
+      // so that we don't show a false or stale conversion rate
       computedValue = null;
     } else {
-    // if this is native currency we don't want to apply a conversion rate so we just convert
-    // from a hex to a dec with a fromDenomination of WEI
+      // if this is native currency we don't want to apply a conversion rate so we just convert
+      // from a hex to a dec with a fromDenomination of WEI
       computedValue = conversionUtil(inputValue, {
         fromNumericBase: 'hex',
         toNumericBase: 'dec',
