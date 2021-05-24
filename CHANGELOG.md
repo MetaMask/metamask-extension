@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.5.5]
-### Uncategorized
-- [#11166](https://github.com/MetaMask/metamask-extension/pull/11166): Add stringified payload to metametrics controller trackEvent error message
-- [#11165](https://github.com/MetaMask/metamask-extension/pull/11165): Add event property to event sent on tx:status-update in metamask-controller
-- [#11159](https://github.com/MetaMask/metamask-extension/pull/11159): implement safer to buffer
+### Fixed
+- [#11159](https://github.com/MetaMask/metamask-extension/pull/11159): Fixes crash after entering invalid data in to the Hex Data field when sending a transaction
 
 ## [9.5.4]
 ### Fixed
