@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-
 import React, { useEffect } from 'react';
 import { text } from '@storybook/addon-knobs';
 import { useParams } from 'react-router-dom';
@@ -52,7 +51,6 @@ const PageSet = ({ children }) => {
 
   const params = useParams();
   params.id = txId;
-
   return children;
 };
 
