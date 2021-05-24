@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.5.5]
+### Uncategorized
+- [#11166](https://github.com/MetaMask/metamask-extension/pull/11166): Add stringified payload to metametrics controller trackEvent error message
+- [#11165](https://github.com/MetaMask/metamask-extension/pull/11165): Add event property to event sent on tx:status-update in metamask-controller
+- [#11159](https://github.com/MetaMask/metamask-extension/pull/11159): implement safer to buffer
+
 ## [9.5.4]
 ### Fixed
 - [#11153](https://github.com/MetaMask/metamask-extension/pull/11153): Prevent UI crash when the transaction being retried or canceled is missing.
@@ -2239,7 +2245,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.4...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.5...HEAD
+[9.5.5]: https://github.com/MetaMask/metamask-extension/compare/v9.5.4...v9.5.5
 [9.5.4]: https://github.com/MetaMask/metamask-extension/compare/v9.5.3...v9.5.4
 [9.5.3]: https://github.com/MetaMask/metamask-extension/compare/v9.5.2...v9.5.3
 [9.5.2]: https://github.com/MetaMask/metamask-extension/compare/v9.5.1...v9.5.2
