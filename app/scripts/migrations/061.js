@@ -18,15 +18,14 @@ export default {
 };
 
 function transformState(state) {
+  const currentTime = new Date().getTime();
   if (state.AppStateController) {
     state.AppStateController.recoveryPhraseReminderHasBeenShown = false;
-    state.AppStateController.recoveryPhraseReminderLastShown = 0;
-    state.AppStateController.shouldShowRecoveryPhraseReminder = false;
+    state.AppStateController.recoveryPhraseReminderLastShown = currentTime;
   } else {
     state.AppStateController = {
       recoveryPhraseReminderHasBeenShown: false,
-      recoveryPhraseReminderLastShown: 0,
-      shouldShowRecoveryPhraseReminder: false,
+      recoveryPhraseReminderLastShown: currentTime,
     };
   }
   return state;

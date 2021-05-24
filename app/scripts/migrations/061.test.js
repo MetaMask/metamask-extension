@@ -1,7 +1,18 @@
 import { strict as assert } from 'assert';
+import sinon from 'sinon';
 import migration61 from './061';
 
 describe('migration #61', function () {
+  let dateStub;
+
+  beforeEach(function () {
+    dateStub = sinon.stub(Date.prototype, 'getTime').returns(1621580400000);
+  });
+
+  afterEach(function () {
+    dateStub.restore();
+  });
+
   it('should update the version metadata', async function () {
     const oldStorage = {
       meta: {
@@ -16,7 +27,7 @@ describe('migration #61', function () {
     });
   });
 
-  it('should set recoveryPhraseReminderHasBeenShown to false, recoveryPhraseReminderLastShown to 0, and shouldShowRecoveryPhraseReminder to false', async function () {
+  it('should set recoveryPhraseReminderHasBeenShown to false and recoveryPhraseReminderLastShown to the current time', async function () {
     const oldStorage = {
       meta: {},
       data: {
@@ -30,8 +41,7 @@ describe('migration #61', function () {
     assert.deepEqual(newStorage.data, {
       AppStateController: {
         recoveryPhraseReminderHasBeenShown: false,
-        recoveryPhraseReminderLastShown: 0,
-        shouldShowRecoveryPhraseReminder: false,
+        recoveryPhraseReminderLastShown: 1621580400000,
         existingProperty: 'foo',
       },
     });
@@ -50,8 +60,7 @@ describe('migration #61', function () {
       existingProperty: 'foo',
       AppStateController: {
         recoveryPhraseReminderHasBeenShown: false,
-        recoveryPhraseReminderLastShown: 0,
-        shouldShowRecoveryPhraseReminder: false,
+        recoveryPhraseReminderLastShown: 1621580400000,
       },
     });
   });

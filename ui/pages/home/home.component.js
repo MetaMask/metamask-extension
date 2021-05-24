@@ -77,8 +77,9 @@ export default class Home extends PureComponent {
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
     notificationsToShow: PropTypes.bool.isRequired,
-    shouldShowRecoveryPhraseReminder: PropTypes.bool.isRequired,
+    showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
+    setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
     seedPhraseBackedUp: PropTypes.bool.isRequired,
   };
 
@@ -166,6 +167,15 @@ export default class Home extends PureComponent {
       setupThreeBox();
     }
   }
+
+  onRecoveryPhraseReminderClose = () => {
+    const {
+      setRecoveryPhraseReminderHasBeenShown,
+      setRecoveryPhraseReminderLastShown,
+    } = this.props;
+    setRecoveryPhraseReminderHasBeenShown(true);
+    setRecoveryPhraseReminderLastShown(new Date().getTime());
+  };
 
   renderNotifications() {
     const { t } = this.context;
@@ -329,9 +339,8 @@ export default class Home extends PureComponent {
       notificationsToShow,
       showWhatsNewPopup,
       hideWhatsNewPopup,
-      shouldShowRecoveryPhraseReminder,
-      setRecoveryPhraseReminderHasBeenShown,
       seedPhraseBackedUp,
+      showRecoveryPhraseReminder,
     } = this.props;
 
     if (forgottenPassword) {
@@ -352,10 +361,10 @@ export default class Home extends PureComponent {
         />
         <div className="home__container">
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
-          {!showWhatsNew && shouldShowRecoveryPhraseReminder ? (
+          {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
               hasBackedUp={seedPhraseBackedUp}
-              onConfirm={setRecoveryPhraseReminderHasBeenShown}
+              onConfirm={this.onRecoveryPhraseReminderClose}
             />
           ) : null}
           {isPopup && !connectedStatusPopoverHasBeenShown

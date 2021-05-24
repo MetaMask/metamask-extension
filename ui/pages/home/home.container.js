@@ -14,6 +14,7 @@ import {
   getInfuraBlocked,
   getShowWhatsNewPopup,
   getSortedNotificationsToShow,
+  getShowRecoveryPhraseReminder,
 } from '../../selectors';
 
 import {
@@ -26,6 +27,7 @@ import {
   setWeb3ShimUsageAlertDismissed,
   setAlertEnabledness,
   setRecoveryPhraseReminderHasBeenShown,
+  setRecoveryPhraseReminderLastShown,
 } from '../../store/actions';
 import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
@@ -54,7 +56,6 @@ const mapStateToProps = (state) => {
     defaultHomeActiveTabName,
     swapsState,
     dismissSeedBackUpReminder,
-    shouldShowRecoveryPhraseReminder,
   } = metamask;
   const accountBalance = getCurrentEthBalance(state);
   const { forgottenPassword, threeBoxLastUpdated } = appState;
@@ -109,7 +110,8 @@ const mapStateToProps = (state) => {
     infuraBlocked: getInfuraBlocked(state),
     notificationsToShow: getSortedNotificationsToShow(state).length > 0,
     showWhatsNewPopup: getShowWhatsNewPopup(state),
-    shouldShowRecoveryPhraseReminder,
+    showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
+    seedPhraseBackedUp,
   };
 };
 
@@ -137,6 +139,8 @@ const mapDispatchToProps = (dispatch) => ({
   hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
   setRecoveryPhraseReminderHasBeenShown: () =>
     dispatch(setRecoveryPhraseReminderHasBeenShown()),
+  setRecoveryPhraseReminderLastShown: (lastShown) =>
+    dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
 });
 
 export default compose(
