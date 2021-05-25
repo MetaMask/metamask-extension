@@ -22,7 +22,6 @@ export default {
 const history = createBrowserHistory();
 
 const PageSet = ({ children }) => {
-
   const symbol = text('symbol', 'DAI');
   const image = text(
     'Icon URL',
@@ -30,19 +29,17 @@ const PageSet = ({ children }) => {
   );
 
   const state = store.getState();
-  const suggestedTokensState = state.metamask.suggestedTokens
-
+  const suggestedTokensState = state.metamask.pendingTokens
   useEffect(() => {
     suggestedTokensState["0x6b175474e89094c44da98b954eedeac495271d0f"].symbol = symbol
     store.dispatch(
-      updateMetamaskState({ suggestedTokens: suggestedTokensState})
-      
+      updateMetamaskState({ pendingTokens: suggestedTokensState})
     );
   }, [symbol]);
   useEffect(() => {
     suggestedTokensState["0x6b175474e89094c44da98b954eedeac495271d0f"].image = image
     store.dispatch(
-      updateMetamaskState({ suggestedTokens: suggestedTokensState})
+      updateMetamaskState({ pendingTokens: suggestedTokensState})
     );
   }, [image]);
 
@@ -51,14 +48,17 @@ const PageSet = ({ children }) => {
 };
 
 export const AddToken = () => {
+  
   // store.dispatch(
   //   updateMetamaskState({ currentNetworkTxList: [currentNetworkTxListSample] }),
   // );
   // store.dispatch(updateMetamaskState({ domainMetadata }));
-  store.dispatch(updateMetamaskState({ suggestedTokens: suggestedTokens}))
+  store.dispatch(updateMetamaskState({ pendingTokens: suggestedTokens}))
   return (
+    <PageSet>
        <ConfirmAddToken
         history={history}
        /> 
+       </PageSet>
   );
 };
