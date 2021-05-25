@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { toBuffer } from 'ethereumjs-util';
 import ConfirmTransactionBase from '../confirm-transaction-base';
+import { toBuffer } from '../../../../shared/modules/buffer-utils';
 
 export default class ConfirmDeployContract extends Component {
   static contextTypes = {
