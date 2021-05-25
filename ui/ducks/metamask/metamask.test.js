@@ -48,13 +48,11 @@ describe('MetaMask Reducers', () => {
       {},
       {
         type: actionConstants.SHOW_ACCOUNT_DETAIL,
-        value: 'test address',
       },
     );
 
     expect(state.isUnlocked).toStrictEqual(true);
     expect(state.isInitialized).toStrictEqual(true);
-    expect(state.selectedAddress).toStrictEqual('test address');
   });
 
   it('sets account label', () => {

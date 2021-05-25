@@ -12,7 +12,6 @@ import {
   useAdvancedGasEstimation,
   updateGasLimit,
   updateGasPrice,
-  ASSET_TYPES,
 } from '../../../../ducks/send';
 
 let mapDispatchToProps;
@@ -60,7 +59,7 @@ jest.mock('../../../../ducks/send', () => ({
   useAdvancedGasEstimation: jest.fn(),
   updateGasLimit: jest.fn(),
   updateGasPrice: jest.fn(),
-  getSendAsset: jest.fn(() => ({ type: ASSET_TYPES.NATIVE })),
+  getSendAsset: jest.fn(() => ({ type: 'NATIVE' })),
 }));
 
 require('./gas-modal-page-container.container');
@@ -251,7 +250,7 @@ describe('gas-modal-page-container container', () => {
         'mockNewLimit',
         'mockNewPrice',
       ]);
-      expect(dispatchProps.useAdvancedGasEstimation.callCount).toStrictEqual(0);
+      expect(dispatchProps.useAdvancedGasEstimation.callCount).toStrictEqual(1);
       expect(dispatchProps.cancelAndClose.callCount).toStrictEqual(1);
 
       expect(dispatchProps.updateCustomGasPrice.callCount).toStrictEqual(0);

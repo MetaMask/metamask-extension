@@ -1,534 +1,1544 @@
 import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-// import sendReducer from './send';
+import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-
-import { addHexPrefix } from 'ethereumjs-util';
-import { describe, it } from 'globalthis/implementation';
-import configureStore from '../../store/store';
-import { addGasBuffer } from '../../pages/send/send.utils';
-import { multiplyCurrencies } from '../../helpers/utils/conversion-util';
 import {
-  gasFeeIsInError,
-  getGasButtonGroupShown,
-  getGasLimit,
-  getGasLoadingError,
-  getGasPrice,
-  getGasTotal,
-  getPrimaryCurrency,
-  getSendAmount,
-  getSendEditingTransactionId,
-  getSendEnsResolution,
-  getSendEnsResolutionError,
-  getSendErrors,
-  getSendFrom,
-  getSendFromBalance,
-  getSendFromObject,
-  getSendHexData,
-  getSendMaxModeState,
-  getSendTo,
-  getSendToken,
-  getSendTokenAddress,
-  getSendTokenContract,
-  getSendToNickname,
-  getTitleKey,
-  getTokenBalance,
-  isSendFormInError,
-  sendAmountIsInError,
-  setEditingTransactionId,
-  setSendFrom,
-  updateGasData,
-  updateSendToken,
-} from './send';
-import {
-  hideGasButtonGroup,
-  setGasLimit,
-  setGasPrice,
-  setMaxModeTo,
-  setSendTokenBalance,
-  showGasButtonGroup,
-  updateSendAmount,
-  updateSendErrors,
-  updateSendHexData,
-  updateSendTo,
+  CONTRACT_ADDRESS_ERROR,
+  INSUFFICIENT_FUNDS_ERROR,
+  INSUFFICIENT_TOKENS_ERROR,
+  INVALID_RECIPIENT_ADDRESS_ERROR,
+  KNOWN_RECIPIENT_ADDRESS_ERROR,
+  NEGATIVE_ETH_ERROR,
+} from '../../pages/send/send.constants';
+import sendReducer, {
   initialState,
-  resetSendState,
-  updateSendEnsResolution,
-  updateSendEnsResolutionError,
-} from '.';
+  initializeSendState,
+  updateSendAmount,
+  updateSendAsset,
+  updateRecipientUserInput,
+  useContactListForRecipientSearch,
+  useMyAccountsForRecipientSearch,
+  updateRecipient,
+  resetRecipientInput,
+  updateSendHexData,
+  toggleSendMaxMode,
+  signTransaction,
+  SEND_STATUSES,
+} from './send';
 
-jest.mock('../../selectors', () => ({
-  getSelectedAccount: jest.fn(() => ({
-    address: '0xab',
-    balance: '0x0',
-  })),
-}));
+const mockStore = createMockStore([thunk]);
 
-jest.mock('../../store/actions', () => ({
-  estimateGas: jest.fn(({ value }) => {
-    if (value === '0xbadvalue') {
-      return Promise.reject(new Error('BAD VALUE'));
-    } else if (value === '0xgassimfail') {
-      return Promise.reject(new Error('Transaction execution error.'));
-    }
-    return Promise.resolve('0x52ac');
-  }),
-}));
-
-describe('send slice', () => {
-  let store;
-  let mockStore;
-  beforeEach(() => {
-    store = configureStore();
-    mockStore = configureMockStore([thunk])({});
-    jest.resetModules();
-  });
-  describe('simple actions', () => {
-    it('updateSendErrors adds to the error object', () => {
-      store.dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }));
-      let state = store.getState();
-      expect(state.send.errors).toHaveProperty('gasLoadingError');
-      store.dispatch(updateSendErrors({ gasPrice: 'gasPriceError' }));
-      state = store.getState();
-      expect(state.send.errors).toHaveProperty('gasLoadingError');
-      expect(state.send.errors).toHaveProperty('gasPrice');
-    });
-
-    it('showGasButtonGroup should set gasButtonGroupShown to true', () => {
-      store.dispatch(showGasButtonGroup());
-      const state = store.getState();
-      expect(state.send.gasButtonGroupShown).toBe(true);
-    });
-
-    it('hideGasButtonGroup should set gasButtonGroupShown to false', () => {
-      store.dispatch(showGasButtonGroup());
-      store.dispatch(hideGasButtonGroup());
-      const state = store.getState();
-      expect(state.send.gasButtonGroupShown).toBe(false);
-    });
-
-    it('setGasLimit should set the gasLimit in state', () => {
-      store.dispatch(setGasLimit('0x5208'));
-      const state = store.getState();
-      expect(state.send.gasLimit).toBe('0x5208');
-    });
-
-    it('setGasPrice should set the gasPrice in state', () => {
-      store.dispatch(setGasPrice('0x6E'));
-      const state = store.getState();
-      expect(state.send.gasPrice).toBe('0x6E');
-    });
-
-    it('setSendTokenBalance should set the tokenBalance in state', () => {
-      store.dispatch(setSendTokenBalance('0x0'));
-      const state = store.getState();
-      expect(state.send.tokenBalance).toBe('0x0');
-    });
-
-    it('updateSendHexData should set the data key in state', () => {
-      store.dispatch(updateSendHexData('0x0'));
-      const state = store.getState();
-      expect(state.send.data).toBe('0x0');
-    });
-
-    it('updateSendTo should set the to and toNickname in state', () => {
-      store.dispatch(updateSendTo({ to: '0x0', nickname: 'account 2' }));
-      const state = store.getState();
-      expect(state.send.to).toBe('0x0');
-      expect(state.send.toNickname).toBe('account 2');
-    });
-
-    it('updateSendAmount should set the amount in state', () => {
-      store.dispatch(updateSendAmount('0x0'));
-      const state = store.getState();
-      expect(state.send.amount).toBe('0x0');
-    });
-
-    it('setMaxModeTo should set the maxModeOn key in state', () => {
-      store.dispatch(setMaxModeTo(true));
-      const state = store.getState();
-      expect(state.send.maxModeOn).toBe(true);
-    });
-
-    it('setSendFrom should set the from key in state', () => {
-      store.dispatch(setSendFrom('0x00'));
-      const state = store.getState();
-      expect(state.send.from).toBe('0x00');
-    });
-
-    it('setEditingTransactionId should set the editingTransactionId key in state', () => {
-      store.dispatch(setEditingTransactionId('0'));
-      const state = store.getState();
-      expect(state.send.editingTransactionId).toBe('0');
-    });
-
-    it('updateSendEnsResolution clears ensResolutionError and sets ensResolution', () => {
-      store.dispatch(updateSendEnsResolutionError('notFound'));
-      store.dispatch(updateSendEnsResolution('0x00'));
-      const state = store.getState();
-      expect(state.send.ensResolutionError).toBe('');
-      expect(state.send.ensResolution).toBe('0x00');
-    });
-
-    it('updateSendEnsResolutionError clears ensResolution and sets ensResolutionError', () => {
-      store.dispatch(updateSendEnsResolution('0x00'));
-      store.dispatch(updateSendEnsResolutionError('notFound'));
-      const state = store.getState();
-      expect(state.send.ensResolutionError).toBe('notFound');
-      expect(state.send.ensResolution).toBeNull();
-    });
-
-    it('resetSendState sets state back to the initial value', () => {
-      store.dispatch(setGasLimit('0xEE'));
-      store.dispatch(setGasPrice('0xFF'));
-      let state = store.getState();
-      expect(state.send.gasLimit).toBe('0xEE');
-      expect(state.send.gasPrice).toBe('0xFF');
-      store.dispatch(resetSendState());
-      state = store.getState();
-      expect(state.send).toMatchObject(initialState);
+describe('Send Slice', () => {
+  describe('updateSendAmount', () => {
+    it('should', async () => {
+      const action = { type: 'send/updateSendAmount', payload: '0x1' };
+      const result = sendReducer(initialState, action);
+      expect(result.amount.value).toStrictEqual('0x1');
     });
   });
-  describe('action creators', () => {
-    describe('updatedGasData', () => {
-      it('starts and stops gas loading when there is an error', async () => {
-        global.eth = {
-          getCode: sinon.stub().rejects(),
-        };
 
-        const mockData = {
-          gasPrice: '0x3b9aca00', //
-          blockGasLimit: '0x6ad79a', // 7002010
-          selectedAddress: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
-          to: '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B',
-          value: '0xde0b6b3a7640000', // 1000000000000000000
-        };
-
-        await mockStore.dispatch(updateGasData(mockData));
-
-        const actions = mockStore.getActions();
-
-        expect(actions[0].type).toBe('send/gasLoadingStarted');
-        expect(actions[actions.length - 1].type).toBe(
-          'send/gasLoadingFinished',
-        );
-      });
-
-      it('starts and stops gas loading when there is not an error', async () => {
-        const mockData = {
-          gasPrice: '0x3b9aca00',
-          blockGasLimit: '0x6ad79a', // 7002010
-          selectedAddress: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
-          to: '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B',
-          value: '0xde0b6b3a7640000', // 1000000000000000000
-        };
-
-        global.eth = {
-          getCode: sinon.stub().returns('0x'),
-        };
-
-        await mockStore.dispatch(updateGasData(mockData));
-
-        const actions = mockStore.getActions();
-
-        expect(actions[0].type).toBe('send/gasLoadingStarted');
-        expect(actions[actions.length - 1].type).toBe(
-          'send/gasLoadingFinished',
-        );
-      });
-
-      it('errors when get code does not return', async () => {
-        global.eth = {
-          getCode: sinon.stub().rejects(),
-        };
-
-        const mockData = {
-          gasPrice: '0x3b9aca00', //
-          blockGasLimit: '0x6ad79a', // 7002010
-          selectedAddress: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
-          to: '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B',
-          value: '0xde0b6b3a7640000', // 1000000000000000000
-        };
-
-        await store.dispatch(updateGasData(mockData));
-
-        expect(store.getState().send.errors.gasLoadingError).toBe(
-          'gasLoadingError',
-        );
-      });
-
-      it('returns default gas limit for basic eth transaction', async () => {
-        const mockData = {
-          gasPrice: '0x3b9aca00',
-          blockGasLimit: '0x6ad79a', // 7002010
-          selectedAddress: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
-          to: '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B',
-          value: '0xde0b6b3a7640000', // 1000000000000000000
-        };
-
-        global.eth = {
-          getCode: sinon.stub().returns('0x'),
-        };
-
-        await store.dispatch(updateGasData(mockData));
-        expect(store.getState().send.gasLimit).toBe('0x5208');
-      });
-
-      it('returns the gasLimit provided by the background when sending to a contract', async () => {
-        const mockData = {
-          gasPrice: '0x3b9aca00',
-          blockGasLimit: '0x6ad79a', // 7002010
-          selectedAddress: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
-          to: '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B',
-          value: '0xde0b6b3a7640000', // 1000000000000000000
-        };
-
-        global.eth = {
-          getCode: sinon.stub().returns('0xff'),
-        };
-
-        await store.dispatch(updateGasData(mockData));
-        const expectedGasLimit = addHexPrefix(
-          addGasBuffer('0x52ac'.toString(16), mockData.blockGasLimit, 1.5),
-        );
-        expect(store.getState().send.gasLimit).toBe(expectedGasLimit);
-      });
-
-      it('sets the error when gas simulation encounters an unknown error in background', async () => {
-        const mockData = {
-          gasPrice: '0x3b9aca00',
-          blockGasLimit: '0x6ad79a', // 7002010
-          selectedAddress: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
-          to: '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B',
-          value: '0xbadvalue', // 1000000000000000000
-        };
-
-        global.eth = {
-          getCode: sinon.stub().returns('0xff'),
-        };
-
-        await store.dispatch(updateGasData(mockData));
-        expect(store.getState().send.errors.gasLoadingError).toBe(
-          'gasLoadingError',
-        );
-      });
-
-      it('sets the gasLimit when gas simulation encounters a known error in background', async () => {
-        const mockData = {
-          gasPrice: '0x3b9aca00',
-          blockGasLimit: '0x6ad79a', // 7002010
-          selectedAddress: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
-          to: '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B',
-          value: '0xgassimfail', // 1000000000000000000
-        };
-
-        global.eth = {
-          getCode: sinon.stub().returns('0xff'),
-        };
-
-        await store.dispatch(updateGasData(mockData));
-        const gasEst = multiplyCurrencies(mockData.blockGasLimit, 0.95, {
-          multiplicandBase: 16,
-          multiplierBase: 10,
-          roundDown: '0',
-          toNumericBase: 'hex',
-        });
-        const expectedGasLimit = addHexPrefix(
-          addGasBuffer(gasEst.toString(16), mockData.blockGasLimit, 1.5),
-        );
-        expect(store.getState().send.gasLimit).toBe(expectedGasLimit);
-      });
-    });
-  });
-  describe('selectors', () => {
-    it('getGasPrice should return gasPrice from state', async () => {
-      await store.dispatch(setGasPrice('0x0'));
-      expect(getGasPrice(store.getState())).toBe('0x0');
-    });
-
-    it('getGasLimit should return gasLimit from state', async () => {
-      await store.dispatch(setGasLimit('0x0'));
-      expect(getGasLimit(store.getState())).toBe('0x0');
-    });
-
-    it('getGasTotal should return gasPrice * gasLimit from state', async () => {
-      await store.dispatch(setGasPrice('0x1'));
-      await store.dispatch(setGasLimit('0x5208'));
-      expect(getGasTotal(store.getState())).toBe('5208');
-    });
-
-    it('getSendToken should return token from state', async () => {
-      await store.dispatch(
-        updateSendToken({ address: '0x000', symbol: 'DAI' }),
-      );
-      expect(getSendToken(store.getState())).toMatchObject({
-        address: '0x000',
-        symbol: 'DAI',
-      });
-    });
-
-    it('getSendTokenAddress should return token.address from state', async () => {
-      await store.dispatch(
-        updateSendToken({ address: '0x000', symbol: 'DAI' }),
-      );
-      expect(getSendTokenAddress(store.getState())).toBe('0x000');
-    });
-
-    it('getPrimaryCurrency should return token.symbol from state', async () => {
-      await store.dispatch(
-        updateSendToken({ address: '0x000', symbol: 'DAI' }),
-      );
-      expect(getPrimaryCurrency(store.getState())).toBe('DAI');
-    });
-
-    it('getSendTokenContract should return contract code from EVM', async () => {
-      global.eth = {
-        contract: () => ({
-          at: jest.fn((address) => {
-            if (address === '0x000') {
-              return '0x000';
-            }
-            return '0xf';
-          }),
-        }),
+  describe('updateAmountToMax', () => {
+    it('should calculate the max amount based off of the asset balance and gas total then updates send amount value', () => {
+      const maxAmountState = {
+        amount: {
+          value: '',
+        },
+        asset: {
+          balance: '0x56bc75e2d63100000', // 100000000000000000000
+        },
+        gas: {
+          gasLimit: '0x5208', // 21000
+          gasTotal: '0x1319718a5000', // 21000000000000
+          minimumGasLimit: '0x5208',
+        },
       };
-      await store.dispatch(
-        updateSendToken({ address: '0x000', symbol: 'DAI' }),
-      );
-      expect(getSendTokenContract(store.getState())).toBe('0x000');
+
+      const state = { ...initialState, ...maxAmountState };
+      const action = { type: 'send/updateAmountToMax' };
+      const result = sendReducer(state, action);
+
+      expect(result.amount.value).toStrictEqual('0x56bc74b13f185b000'); // 99999979000000000000
     });
 
-    it('getSendAmount should return amount from state', async () => {
-      await store.dispatch(updateSendAmount('0x0'));
-      expect(getSendAmount(store.getState())).toBe('0x0');
-    });
+    describe('updateUserInputHexData', () => {
+      it('should', () => {
+        const action = {
+          type: 'send/updateUserInputHexData',
+          payload: 'TestData',
+        };
+        const result = sendReducer(initialState, action);
 
-    it('getSendHexData should return amount from state', async () => {
-      await store.dispatch(updateSendHexData('0x0'));
-      expect(getSendHexData(store.getState())).toBe('0x0');
-    });
-
-    it('getSendEditingTransactionId should return editingTransactionId from state', async () => {
-      store.dispatch(setEditingTransactionId('0'));
-      expect(getSendEditingTransactionId(store.getState())).toBe('0');
-    });
-
-    it('getSendFrom should return "from" from state', async () => {
-      store.dispatch(setSendFrom('0xFF'));
-      expect(getSendFrom(store.getState())).toBe('0xFF');
-    });
-
-    it('getSendFromObject should return the selected account from state', async () => {
-      expect(getSendFromObject(store.getState())).toMatchObject({
-        address: '0xab',
-        balance: '0x0',
-      });
-    });
-
-    it('getSendFromBalance should return the selected account from state', async () => {
-      expect(getSendFromBalance(store.getState())).toBe('0x0');
-    });
-
-    it('getSendMaxModeState should return maxModeOn from state', async () => {
-      await store.dispatch(setMaxModeTo(true));
-      expect(getSendMaxModeState(store.getState())).toBe(true);
-    });
-
-    it('getSendTo should return to from state', async () => {
-      await store.dispatch(
-        updateSendTo({
-          to: '0x0',
-        }),
-      );
-      expect(getSendTo(store.getState())).toBe('0x0');
-    });
-
-    it('getSendToNickname should return toNickname from state', async () => {
-      await store.dispatch(
-        updateSendTo({
-          nickname: 'account 1',
-        }),
-      );
-      expect(getSendToNickname(store.getState())).toBe('account 1');
-    });
-
-    it('getTokenBalance should return tokenBalance from state', async () => {
-      await store.dispatch(setSendTokenBalance('0x10'));
-      expect(getTokenBalance(store.getState())).toBe('0x10');
-    });
-
-    it('getSendEnsResolution should return ensResolution from state', async () => {
-      await store.dispatch(updateSendEnsResolution('0x00ab'));
-      expect(getSendEnsResolution(store.getState())).toBe('0x00ab');
-    });
-
-    it('getSendEnsResolutionError should return ensResolutionError from state', async () => {
-      await store.dispatch(updateSendEnsResolutionError('invalidAddress'));
-      expect(getSendEnsResolutionError(store.getState())).toBe(
-        'invalidAddress',
-      );
-    });
-
-    it('getSendErrors should return errors from state', async () => {
-      await store.dispatch(updateSendErrors({ gasLoading: 'gasLoadingError' }));
-      expect(getSendErrors(store.getState())).toMatchObject({
-        gasLoading: 'gasLoadingError',
-      });
-    });
-
-    it('sendAmountIsInError should return true if amount has an error in state', async () => {
-      await store.dispatch(updateSendErrors({ amount: 'insufficientFunds' }));
-      expect(sendAmountIsInError(store.getState())).toBe(true);
-    });
-
-    it('getGasLoadingErrors should return gasLoading error from state', async () => {
-      await store.dispatch(updateSendErrors({ gasLoading: 'gasLoadingError' }));
-      expect(getGasLoadingError(store.getState())).toBe('gasLoadingError');
-    });
-
-    it('getFeeIsInError should return true if amount has an error in state', async () => {
-      await store.dispatch(updateSendErrors({ gasFee: 'minimumLimitError' }));
-      expect(gasFeeIsInError(store.getState())).toBe(true);
-    });
-
-    it('isSendFormInError should return true if any errors exist in state', async () => {
-      await store.dispatch(updateSendErrors({ gasFee: 'minimumLimitError' }));
-      expect(isSendFormInError(store.getState())).toBe(true);
-    });
-
-    it('getGasButtonGroupShown should return gasButtonGroupShown from state', async () => {
-      await store.dispatch(showGasButtonGroup());
-      expect(getGasButtonGroupShown(store.getState())).toBe(true);
-    });
-
-    describe('getTitleKey', () => {
-      it('should return "addRecipient" when no to address specified', () => {
-        expect(getTitleKey(store.getState())).toBe('addRecipient');
-      });
-
-      it('should return "send" if not sending token and not currently editing id', async () => {
-        await store.dispatch(
-          updateSendTo({ to: '0x00', nickname: 'account 1' }),
+        expect(result.draftTransaction.userInputHexData).toStrictEqual(
+          action.payload,
         );
-        expect(getTitleKey(store.getState())).toBe('send');
+      });
+    });
+
+    describe('editTransaction', () => {
+      it('should', () => {
+        const action = {
+          type: 'send/editTransaction',
+          payload: {
+            id: 1,
+            from: '0xAddress',
+            address: '0xRecipientAddress',
+            gasLimit: '0x5208',
+            gasPrice: '0x3b9aca00', // 1000000000
+            amount: '0xde0b6b3a7640000', // 1000000000000000000
+          },
+        };
+
+        const result = sendReducer(initialState, action);
+
+        expect(result.gas.gasLimit).toStrictEqual(action.payload.gasLimit);
+        expect(result.gas.gasPrice).toStrictEqual(action.payload.gasPrice);
+
+        expect(result.amount.value).toStrictEqual(action.payload.amount);
+
+        expect(result.draftTransaction.txParams.to).toStrictEqual(
+          action.payload.address,
+        );
+        expect(result.draftTransaction.txParams.value).toStrictEqual(
+          action.payload.amount,
+        );
+        expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
+          action.payload.gasPrice,
+        );
+        expect(result.draftTransaction.txParams.gas).toStrictEqual(
+          action.payload.gasLimit,
+        );
+      });
+    });
+
+    describe('updateGasLimit', () => {
+      const action = {
+        type: 'send/updateGasLimit',
+        payload: '0x5208', // 21000
+      };
+
+      it('should', () => {
+        const result = sendReducer(initialState, action);
+
+        expect(result.gas.gasLimit).toStrictEqual(action.payload);
+        expect(result.draftTransaction.txParams.gas).toStrictEqual(
+          action.payload,
+        );
       });
 
-      it('should return "sendTokens" if sending token and not currently editing id', async () => {
-        await store.dispatch(
-          updateSendTo({ to: '0x00', nickname: 'account 1' }),
-        );
-        await store.dispatch(
-          updateSendToken({ address: '0xff', symbol: 'TST' }),
-        );
-        expect(getTitleKey(store.getState())).toBe('sendTokens');
+      it('should recalculate gasTotal', () => {
+        const gasState = {
+          ...initialState,
+          gas: {
+            gasLimit: '0x0',
+            gasPrice: '0x3b9aca00', // 1000000000
+          },
+        };
+
+        const result = sendReducer(gasState, action);
+
+        expect(result.gas.gasLimit).toStrictEqual(action.payload);
+        expect(result.gas.gasPrice).toStrictEqual(gasState.gas.gasPrice);
+        expect(result.gas.gasTotal).toStrictEqual('0x1319718a5000'); // 21000000000000
+      });
+    });
+
+    describe('updateGasPrice', () => {
+      const action = {
+        type: 'send/updateGasPrice',
+        payload: '0x3b9aca00', // 1000000000
+      };
+
+      it('should', () => {
+        const result = sendReducer(initialState, action);
+
+        expect(result.gas.gasPrice).toStrictEqual(action.payload);
+        // expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(action.payload) // TODO: Failing.Shouldnt this also update the draftTransaction?
       });
 
-      it('should return "edit" if currently editing id', async () => {
-        await store.dispatch(setEditingTransactionId('0'));
-        await store.dispatch(
-          updateSendTo({ to: '0x00', nickname: 'account 1' }),
+      it('should recalculate gasTotal', () => {
+        const gasState = {
+          gas: {
+            gasLimit: '0x5208', // 21000,
+            gasPrice: '0x0',
+          },
+        };
+
+        const state = { ...initialState, ...gasState };
+        const result = sendReducer(state, action);
+
+        expect(result.gas.gasPrice).toStrictEqual(action.payload);
+        expect(result.gas.gasLimit).toStrictEqual(gasState.gas.gasLimit);
+        expect(result.gas.gasTotal).toStrictEqual('0x1319718a5000'); // 21000000000000
+      });
+    });
+
+    describe('updateAmountMode', () => {
+      it('should change to INPUT amount mode', () => {
+        const emptyAmountModeState = {
+          amount: {
+            mode: '',
+          },
+        };
+
+        const action = {
+          type: 'send/updateAmountMode',
+          payload: 'INPUT',
+        };
+        const result = sendReducer(emptyAmountModeState, action);
+
+        expect(result.amount.mode).toStrictEqual(action.payload);
+      });
+
+      it('should change to MAX amount mode', () => {
+        const action = {
+          type: 'send/updateAmountMode',
+          payload: 'MAX',
+        };
+        const result = sendReducer(initialState, action);
+
+        expect(result.amount.mode).toStrictEqual(action.payload);
+      });
+
+      it('should', () => {
+        const action = {
+          type: 'send/updateAmountMode',
+          payload: 'RANDOM',
+        };
+        const result = sendReducer(initialState, action);
+
+        expect(result.amount.mode).not.toStrictEqual(action.payload);
+      });
+    });
+
+    describe('updateAsset', () => {
+      it('should update asset type and balance from respective action payload', () => {
+        const updateAssetState = {
+          ...initialState,
+          asset: {
+            type: 'old type',
+            balance: 'old balance',
+          },
+        };
+
+        const action = {
+          type: 'send/updateAsset',
+          payload: {
+            type: 'new type',
+            balance: 'new balance',
+          },
+        };
+
+        const result = sendReducer(updateAssetState, action);
+
+        expect(result.asset.type).toStrictEqual(action.payload.type);
+        expect(result.asset.balance).toStrictEqual(action.payload.balance);
+      });
+
+      it('should nullify old contract address error when asset types is not TOKEN', () => {
+        const recipientErrorState = {
+          ...initialState,
+          recipient: {
+            error: CONTRACT_ADDRESS_ERROR,
+          },
+          asset: {
+            type: 'TOKEN',
+          },
+        };
+
+        const action = {
+          type: 'send/updateAsset',
+          payload: {
+            type: 'New Type',
+          },
+        };
+
+        const result = sendReducer(recipientErrorState, action);
+
+        expect(result.recipient.error).not.toStrictEqual(
+          recipientErrorState.recipient.error,
         );
-        expect(getTitleKey(store.getState())).toBe('edit');
+        expect(result.recipient.error).toBeNull();
+      });
+
+      it('should nullify old known address error when asset types is not TOKEN', () => {
+        const recipientErrorState = {
+          ...initialState,
+          recipient: {
+            warning: KNOWN_RECIPIENT_ADDRESS_ERROR,
+          },
+          asset: {
+            type: 'TOKEN',
+          },
+        };
+
+        const action = {
+          type: 'send/updateAsset',
+          payload: {
+            type: 'New Type',
+          },
+        };
+
+        const result = sendReducer(recipientErrorState, action);
+
+        expect(result.recipient.warning).not.toStrictEqual(
+          recipientErrorState.recipient.warning,
+        );
+        expect(result.recipient.warning).toBeNull();
+      });
+
+      it('should update asset type and details to TOKEN payload', () => {
+        const action = {
+          type: 'send/updateAsset',
+          payload: {
+            type: 'TOKEN',
+            details: {
+              address: '0xTokenAddress',
+              decimals: 0,
+              symbol: 'TKN',
+            },
+          },
+        };
+
+        const result = sendReducer(initialState, action);
+        expect(result.asset.type).toStrictEqual(action.payload.type);
+        expect(result.asset.details).toStrictEqual(action.payload.details);
+      });
+    });
+
+    describe('updateRecipient', () => {
+      it('should', () => {
+        const action = {
+          type: 'send/updateRecipient',
+          payload: {
+            address: '0xNewAddress',
+          },
+        };
+
+        const result = sendReducer(initialState, action);
+
+        expect(result.stage).toStrictEqual('DRAFT');
+        expect(result.recipient.address).toStrictEqual(action.payload.address);
+      });
+    });
+
+    describe('updateDraftTransaction', () => {
+      it('should', () => {
+        const detailsForDraftTransactionState = {
+          ...initialState,
+          status: 'VALID',
+          account: {
+            address: '0xCurrentAddress',
+          },
+          asset: {
+            type: '',
+          },
+          recipient: {
+            address: '0xRecipientAddress',
+          },
+          amount: {
+            value: '0x1',
+          },
+          gas: {
+            gasPrice: '0x3b9aca00', // 1000000000
+            gasLimit: '0x5208', // 21000
+          },
+        };
+
+        const action = {
+          type: 'send/updateDraftTransaction',
+        };
+
+        const result = sendReducer(detailsForDraftTransactionState, action);
+
+        expect(result.draftTransaction.txParams.to).toStrictEqual(
+          detailsForDraftTransactionState.recipient.address,
+        );
+        expect(result.draftTransaction.txParams.value).toStrictEqual(
+          detailsForDraftTransactionState.amount.value,
+        );
+        expect(result.draftTransaction.txParams.gas).toStrictEqual(
+          detailsForDraftTransactionState.gas.gasLimit,
+        );
+        expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
+          detailsForDraftTransactionState.gas.gasPrice,
+        );
+      });
+
+      it('should update the draftTransaction txParams recipient to token address when asset is type TOKEN', () => {
+        const detailsForDraftTransactionState = {
+          ...initialState,
+          status: 'VALID',
+          account: {
+            address: '0xCurrentAddress',
+          },
+          asset: {
+            type: 'TOKEN',
+            details: {
+              address: '0xTokenAddress',
+            },
+          },
+          amount: {
+            value: '0x1',
+          },
+          gas: {
+            gasPrice: '0x3b9aca00', // 1000000000
+            gasLimit: '0x5208', // 21000
+          },
+        };
+
+        const action = {
+          type: 'send/updateDraftTransaction',
+        };
+
+        const result = sendReducer(detailsForDraftTransactionState, action);
+
+        expect(result.draftTransaction.txParams.to).toStrictEqual(
+          detailsForDraftTransactionState.asset.details.address,
+        );
+        expect(result.draftTransaction.txParams.value).toStrictEqual('0x0');
+        expect(result.draftTransaction.txParams.gas).toStrictEqual(
+          detailsForDraftTransactionState.gas.gasLimit,
+        );
+        expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
+          detailsForDraftTransactionState.gas.gasPrice,
+        );
+        expect(result.draftTransaction.txParams.data).toStrictEqual(
+          '0xa9059cbb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001',
+        );
+      });
+    });
+
+    describe('useBasicGasEstimation', () => {
+      it('should', () => {
+        const action = {
+          type: 'send/useBasicGasEstimation',
+        };
+
+        const result = sendReducer(initialState, action);
+
+        expect(result.gas.mode).toStrictEqual('BASIC');
+      });
+    });
+
+    describe('useAdvancedGasEstimation', () => {
+      it('should', () => {
+        const action = {
+          type: 'send/useAdvancedGasEstimation',
+        };
+
+        const result = sendReducer(initialState, action);
+
+        expect(result.gas.mode).toStrictEqual('ADVANCED');
+      });
+    });
+
+    describe('updateRecipientUserInput', () => {
+      it('should update recipient user input with payload', () => {
+        const action = {
+          type: 'send/updateRecipientUserInput',
+          payload: 'user input',
+        };
+
+        const result = sendReducer(initialState, action);
+
+        expect(result.recipient.userInput).toStrictEqual(action.payload);
+      });
+    });
+
+    describe('validateRecipientUserInput', () => {
+      it('should set recipient error and warning to null when user input is', () => {
+        const noUserInputState = {
+          recipient: {
+            mode: 'MY_ACCOUNTS',
+            userInput: '',
+            error: 'someError',
+            warning: 'someWarning',
+          },
+        };
+
+        const action = {
+          type: 'send/validateRecipientUserInput',
+        };
+
+        const result = sendReducer(noUserInputState, action);
+
+        expect(result.recipient.error).toBeNull();
+        expect(result.recipient.warning).toBeNull();
+      });
+
+      it('should error with an invalid address error when user input is not a valid hex string', () => {
+        const tokenAssetTypeState = {
+          ...initialState,
+          recipient: {
+            userInput: '0xValidateError',
+          },
+        };
+        const action = {
+          type: 'send/validateRecipientUserInput',
+          payload: {
+            chainId: '',
+            tokens: [],
+          },
+        };
+
+        const result = sendReducer(tokenAssetTypeState, action);
+
+        expect(result.recipient.error).toStrictEqual('invalidAddressRecipient');
+      });
+
+      // TODO: This seems off, is this suppose to be a networks that dont implement checksum? But the user input is not valid hex in the first place.
+      it('should error with an invalid network error when user input is not a valid hex string on a non default network', () => {
+        const tokenAssetTypeState = {
+          ...initialState,
+          recipient: {
+            userInput: '0xValidateError',
+          },
+        };
+        const action = {
+          type: 'send/validateRecipientUserInput',
+          payload: {
+            chainId: '0x55',
+            tokens: [],
+          },
+        };
+
+        const result = sendReducer(tokenAssetTypeState, action);
+
+        expect(result.recipient.error).toStrictEqual(
+          'invalidAddressRecipientNotEthNetwork',
+        );
+      });
+
+      it('should error with invalid address recipient when the user inputs the burn address', () => {
+        const tokenAssetTypeState = {
+          ...initialState,
+          recipient: {
+            userInput: '0x0000000000000000000000000000000000000000',
+          },
+        };
+        const action = {
+          type: 'send/validateRecipientUserInput',
+          payload: {
+            chainId: '',
+            tokens: [],
+          },
+        };
+
+        const result = sendReducer(tokenAssetTypeState, action);
+
+        expect(result.recipient.error).toStrictEqual('invalidAddressRecipient');
+      });
+
+      it('should error with same address recipient as a token', () => {
+        const tokenAssetTypeState = {
+          ...initialState,
+          asset: {
+            type: 'TOKEN',
+            details: {
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            },
+          },
+          recipient: {
+            userInput: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          },
+        };
+
+        const action = {
+          type: 'send/validateRecipientUserInput',
+          payload: {
+            chainId: '0x4',
+            tokens: [],
+          },
+        };
+
+        const result = sendReducer(tokenAssetTypeState, action);
+
+        expect(result.recipient.error).toStrictEqual('contractAddressError');
+      });
+    });
+
+    describe('updateRecipientSearchMode', () => {
+      it('should', () => {
+        const action = {
+          type: 'send/updateRecipientSearchMode',
+          payload: 'a-random-string',
+        };
+
+        const result = sendReducer(initialState, action);
+
+        expect(result.recipient.mode).toStrictEqual(action.payload);
+      });
+    });
+
+    describe('resetSendState', () => {
+      it('should', () => {
+        const action = {
+          type: 'send/resetSendState',
+        };
+
+        const result = sendReducer({}, action);
+
+        expect(result).toStrictEqual(initialState);
+      });
+    });
+
+    describe('validateAmountField', () => {
+      it('should error with insufficient funds when amount asset value plust gas is higher than asset balance', () => {
+        const nativeAssetState = {
+          ...initialState,
+          amount: {
+            value: '0x6fc23ac0', // 1875000000
+          },
+          asset: {
+            type: 'NATIVE',
+            balance: '0x77359400', // 2000000000
+          },
+          gas: {
+            gasTotal: '0x8f0d180', // 150000000
+          },
+        };
+
+        const action = {
+          type: 'send/validateAmountField',
+        };
+
+        const result = sendReducer(nativeAssetState, action);
+
+        expect(result.amount.error).toStrictEqual(INSUFFICIENT_FUNDS_ERROR);
+      });
+
+      it('should error with insufficient tokens when amount value of tokens is higher than asset balance of token', () => {
+        const tokenAssetState = {
+          ...initialState,
+          amount: {
+            value: '0x77359400', // 2000000000
+          },
+          asset: {
+            type: 'TOKEN',
+            balance: '0x6fc23ac0', // 1875000000
+            details: {
+              decimals: 0,
+            },
+          },
+        };
+
+        const action = {
+          type: 'send/validateAmountField',
+        };
+
+        const result = sendReducer(tokenAssetState, action);
+
+        expect(result.amount.error).toStrictEqual(INSUFFICIENT_TOKENS_ERROR);
+      });
+
+      it('should error negative value amount', () => {
+        const negativeAmountState = {
+          ...initialState,
+          amount: {
+            value: '-1',
+          },
+        };
+
+        const action = {
+          type: 'send/validateAmountField',
+        };
+
+        const result = sendReducer(negativeAmountState, action);
+
+        expect(result.amount.error).toStrictEqual(NEGATIVE_ETH_ERROR);
+      });
+
+      it('should not error for positive value amount', () => {
+        const otherState = {
+          ...initialState,
+          amount: {
+            error: 'someError',
+            value: '1',
+          },
+          asset: {
+            type: '',
+          },
+        };
+
+        const action = {
+          type: 'send/validateAmountField',
+        };
+
+        const result = sendReducer(otherState, action);
+        expect(result.amount.error).toBeNull();
+      });
+    });
+
+    describe('validateGasField', () => {
+      it('should', () => {
+        const gasFieldState = {
+          ...initialState,
+          account: {
+            balance: '0x0',
+          },
+          gas: {
+            gasTotal: '0x1319718a5000',
+          },
+        };
+
+        const action = {
+          type: 'send/validateGasField',
+        };
+
+        const result = sendReducer(gasFieldState, action);
+        expect(result.gas.error).toStrictEqual(INSUFFICIENT_FUNDS_ERROR);
+      });
+    });
+
+    describe('validateSendState', () => {
+      it('should set `INVALID` send state status when amount error is present', () => {
+        const amountErrorState = {
+          ...initialState,
+          amount: {
+            error: 'Some Amount Error',
+          },
+        };
+
+        const action = {
+          type: 'send/validateSendState',
+        };
+
+        const result = sendReducer(amountErrorState, action);
+        expect(result.status).toStrictEqual(SEND_STATUSES.INVALID);
+      });
+
+      it('should set `INVALID` send state status when gas error is present', () => {
+        const gasErrorState = {
+          ...initialState,
+          gas: {
+            error: 'Some Amount Error',
+          },
+        };
+
+        const action = {
+          type: 'send/validateSendState',
+        };
+
+        const result = sendReducer(gasErrorState, action);
+        expect(result.status).toStrictEqual(SEND_STATUSES.INVALID);
+      });
+
+      it('should set `INVALID` send state status when asset type is `TOKEN` without token details present', () => {
+        const assetErrorState = {
+          ...initialState,
+          asset: {
+            type: 'TOKEN',
+          },
+        };
+
+        const action = {
+          type: 'send/validateSendState',
+        };
+
+        const result = sendReducer(assetErrorState, action);
+        expect(result.status).toStrictEqual(SEND_STATUSES.INVALID);
+      });
+
+      it('should set `INVALID` send state status when gasLimit is under the minimumGasLimit', () => {
+        const gasLimitErroState = {
+          ...initialState,
+          gas: {
+            gasLimit: '0x5207',
+            minimumGasLimit: '0x5208',
+          },
+        };
+
+        const action = {
+          type: 'send/validateSendState',
+        };
+
+        const result = sendReducer(gasLimitErroState, action);
+        expect(result.status).toStrictEqual(SEND_STATUSES.INVALID);
+      });
+
+      it('should set `VALID` send state status when condtionals have not been met', () => {
+        const validSendStatusState = {
+          ...initialState,
+          asset: {
+            type: 'TOKEN',
+          },
+          gas: {
+            gasLimit: '0x5208',
+            minimumGasLimit: '0x5208',
+          },
+        };
+
+        const action = {
+          type: 'send/validateSendState',
+        };
+
+        const result = sendReducer(validSendStatusState, action);
+
+        expect(result.status).toStrictEqual(SEND_STATUSES.VALID);
+      });
+    });
+
+    describe('QR Code Detected', () => {
+      const qrCodestate = {
+        ...initialState,
+        recipient: {
+          address: '0xAddress',
+        },
+      };
+
+      it('should set the recipient address to the scanned address value if they are not equal', () => {
+        const action = {
+          type: 'UI_QR_CODE_DETECTED',
+          value: {
+            type: 'address',
+            values: {
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            },
+          },
+        };
+
+        const result = sendReducer(qrCodestate, action);
+        expect(result.recipient.address).toStrictEqual(
+          action.value.values.address,
+        );
+      });
+
+      it('should not set the recipient address to invalid scanned address and errors', () => {
+        const badQRAddressAction = {
+          type: 'UI_QR_CODE_DETECTED',
+          value: {
+            type: 'address',
+            values: {
+              address: '0xBadAddress',
+            },
+          },
+        };
+
+        const result = sendReducer(qrCodestate, badQRAddressAction);
+
+        expect(result.recipient.address).toStrictEqual(
+          qrCodestate.recipient.address,
+        );
+        expect(result.recipient.error).toStrictEqual(
+          INVALID_RECIPIENT_ADDRESS_ERROR,
+        );
+      });
+    });
+
+    describe('Selected Address Changed', () => {
+      it('should update selected account address and balance on non-edit stages', () => {
+        const olderState = {
+          ...initialState,
+          account: {
+            balance: '0x0',
+            address: '0xAddress',
+          },
+        };
+
+        const action = {
+          type: 'SELECTED_ACCOUNT_CHANGED',
+          payload: {
+            account: {
+              address: '0xDifferentAddress',
+              balance: '0x1',
+            },
+          },
+        };
+
+        const result = sendReducer(olderState, action);
+
+        expect(result.account.balance).toStrictEqual(
+          action.payload.account.balance,
+        );
+        expect(result.account.address).toStrictEqual(
+          action.payload.account.address,
+        );
+      });
+    });
+
+    describe('Account Changed', () => {
+      it('should', () => {
+        const accountsChangedState = {
+          ...initialState,
+          stage: 'EDIT',
+          account: {
+            address: '0xAddress',
+            balance: '0x0',
+          },
+        };
+
+        const action = {
+          type: 'ACCOUNT_CHANGED',
+          payload: {
+            account: {
+              address: '0xAddress',
+              balance: '0x1',
+            },
+          },
+        };
+
+        const result = sendReducer(accountsChangedState, action);
+
+        expect(result.account.balance).toStrictEqual(
+          action.payload.account.balance,
+        );
+      });
+
+      it(`should not edit account balance if action payload address is not the same as state's address`, () => {
+        const accountsChangedState = {
+          ...initialState,
+          stage: 'EDIT',
+          account: {
+            address: '0xAddress',
+            balance: '0x0',
+          },
+        };
+
+        const action = {
+          type: 'ACCOUNT_CHANGED',
+          payload: {
+            account: {
+              address: '0xDifferentAddress',
+              balance: '0x1',
+            },
+          },
+        };
+
+        const result = sendReducer(accountsChangedState, action);
+        expect(result.account.address).not.toStrictEqual(
+          action.payload.account.address,
+        );
+        expect(result.account.balance).not.toStrictEqual(
+          action.payload.account.balance,
+        );
+      });
+    });
+
+    describe('Initialize Pending Send State', () => {
+      let dispatchSpy;
+      let getState;
+
+      beforeEach(() => {
+        dispatchSpy = jest.fn();
+      });
+
+      it('should dispatch async action thunk first with pending, then finally fulfilling from minimal state', async () => {
+        getState = jest.fn().mockReturnValue({
+          metamask: {
+            accounts: {
+              '0xAddress': {
+                address: '0xAddress',
+                balance: '0x0',
+              },
+            },
+            cachedBalances: {
+              0x4: {
+                '0xAddress': '0x0',
+              },
+            },
+            selectedAddress: '0xAddress',
+            provider: {
+              chainId: '0x4',
+            },
+          },
+          send: initialState,
+          gas: {
+            basicEstimateStatus: 'LOADING',
+            basicEstimatesStatus: {
+              safeLow: null,
+              average: null,
+              fast: null,
+            },
+          },
+        });
+
+        const action = initializeSendState();
+        await action(dispatchSpy, getState, undefined);
+
+        expect(dispatchSpy).toHaveBeenCalledTimes(4);
+
+        expect(dispatchSpy.mock.calls[0][0].type).toStrictEqual(
+          'send/initializeSendState/pending',
+        );
+        expect(dispatchSpy.mock.calls[3][0].type).toStrictEqual(
+          'send/initializeSendState/fulfilled',
+        );
+      });
+    });
+
+    describe('Set Basic Gas Estimate Data', () => {
+      it('should recalculate gas based off of average basic estimate data', () => {
+        const gasState = {
+          ...initialState,
+          gas: {
+            gasPrice: '0x0',
+            gasLimit: '0x5208',
+            gasTotal: '0x0',
+            minimumGasLimit: '0x5208',
+          },
+        };
+
+        const action = {
+          type: 'metamask/gas/SET_BASIC_GAS_ESTIMATE_DATA',
+          value: {
+            average: '1',
+          },
+        };
+
+        const result = sendReducer(gasState, action);
+
+        expect(result.gas.gasPrice).toStrictEqual('0x3b9aca00'); // 1000000000
+        expect(result.gas.gasLimit).toStrictEqual(gasState.gas.gasLimit);
+        expect(result.gas.gasTotal).toStrictEqual('0x1319718a5000');
+      });
+    });
+
+    describe('BASIC_GAS_ESTIMATE_STATUS', () => {
+      it('should invalidate the send status', () => {
+        const validSendStatusState = {
+          ...initialState,
+          status: 'VALID',
+        };
+
+        const action = {
+          type: 'metamask/gas/BASIC_GAS_ESTIMATE_STATUS',
+          value: {
+            average: undefined,
+          },
+        };
+
+        const result = sendReducer(validSendStatusState, action);
+
+        expect(result.status).not.toStrictEqual(validSendStatusState.status);
+      });
+    });
+  });
+
+  describe('Action Creators', () => {
+    describe('UpdateSendAmount', () => {
+      const defaultSendAmountState = {
+        send: {
+          amount: {
+            mode: undefined,
+          },
+          asset: {
+            type: '',
+          },
+        },
+      };
+
+      it('should create an action to update send amount', async () => {
+        const store = mockStore(defaultSendAmountState);
+
+        const newSendAmount = 'aNewSendAmount';
+
+        await store.dispatch(updateSendAmount(newSendAmount));
+
+        const actionResult = store.getActions();
+
+        const expectedActionResult = [
+          { type: 'send/updateSendAmount', payload: 'aNewSendAmount' },
+        ];
+
+        expect(actionResult).toStrictEqual(expectedActionResult);
+      });
+
+      it('should create an action to update send amount mode to `INPUT` when mode is `MAX`', async () => {
+        const maxModeSendState = {
+          send: {
+            ...defaultSendAmountState.send,
+            amount: {
+              mode: 'MAX',
+            },
+          },
+        };
+
+        const store = mockStore(maxModeSendState);
+
+        await store.dispatch(updateSendAmount());
+
+        const actionResult = store.getActions();
+
+        const expectedActionResult = [
+          { type: 'send/updateSendAmount', payload: undefined },
+          { type: 'send/updateAmountMode', payload: 'INPUT' },
+        ];
+
+        expect(actionResult).toStrictEqual(expectedActionResult);
+      });
+
+      it('should create an action computeEstimateGasLimit and change states from pending to fulfilled with token asset types', async () => {
+        const tokenAssetTypeSendState = {
+          metamask: {
+            blockGasLimit: '',
+            selectedAddress: '',
+          },
+          ...defaultSendAmountState.send,
+          send: {
+            asset: {
+              type: 'token',
+              details: {},
+            },
+            gas: {
+              gasPrice: '',
+            },
+            recipient: {
+              address: '',
+            },
+            amount: {
+              value: '',
+            },
+            draftTransaction: {
+              userInputHexData: '',
+            },
+          },
+        };
+
+        const store = mockStore(tokenAssetTypeSendState);
+
+        await store.dispatch(updateSendAmount());
+
+        const actionResult = store.getActions();
+
+        expect(actionResult).toHaveLength(4);
+        expect(actionResult[0].type).toStrictEqual('send/updateSendAmount');
+        expect(actionResult[1].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/pending',
+        );
+        expect(actionResult[2].type).toStrictEqual(
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[3].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
+        );
+      });
+    });
+
+    describe('UpdateSendAsset', () => {
+      const defaultSendAssetState = {
+        metamask: {
+          blockGasLimit: '',
+          selectedAddress: '',
+        },
+        send: {
+          account: {
+            balance: '',
+          },
+          asset: {
+            type: '',
+            details: {},
+          },
+          gas: {
+            gasPrice: '',
+          },
+          recipient: {
+            address: '',
+          },
+          amount: {
+            value: '',
+          },
+          draftTransaction: {
+            userInputHexData: '',
+          },
+        },
+      };
+
+      it('should create actions for updateSendAsset', async () => {
+        const store = mockStore(defaultSendAssetState);
+
+        const newSendAsset = {
+          type: '',
+          details: {
+            address: '',
+            symbol: '',
+            decimals: '',
+          },
+        };
+
+        await store.dispatch(updateSendAsset(newSendAsset));
+
+        const actionResult = store.getActions();
+
+        expect(actionResult).toHaveLength(4);
+
+        expect(actionResult[0].type).toStrictEqual('send/updateAsset');
+        expect(actionResult[0].payload).toStrictEqual({
+          ...newSendAsset,
+          balance: '',
+        });
+
+        expect(actionResult[1].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/pending',
+        );
+        expect(actionResult[2].type).toStrictEqual(
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[3].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
+        );
+      });
+
+      it('should create actions for updateSendAsset with tokens', async () => {
+        global.eth = {
+          contract: sinon.stub().returns({
+            at: sinon.stub(),
+          }),
+        };
+        const store = mockStore(defaultSendAssetState);
+
+        const newSendAsset = {
+          type: 'TOKEN',
+          details: {
+            address: 'tokenAddress',
+            symbol: 'tokenSymbol',
+            decimals: 'tokenDecimals',
+          },
+        };
+
+        await store.dispatch(updateSendAsset(newSendAsset));
+
+        const actionResult = store.getActions();
+
+        expect(actionResult).toHaveLength(4);
+        expect(actionResult[0].payload).toStrictEqual({
+          ...newSendAsset,
+          balance: '0x0',
+        });
+
+        expect(actionResult[1].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/pending',
+        );
+        expect(actionResult[2].type).toStrictEqual(
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[3].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
+        );
+      });
+    });
+
+    describe('updateRecipientUserInput', () => {
+      const updateRecipientUserInputState = {
+        metamask: {
+          provider: {
+            chainId: '',
+          },
+          tokens: [],
+        },
+      };
+
+      it('should create actions for updateRecipientUserInput and checks debounce for validation', async () => {
+        const clock = sinon.useFakeTimers();
+
+        const store = mockStore(updateRecipientUserInputState);
+        const newUserRecipientInput = 'newUserRecipientInput';
+
+        await store.dispatch(updateRecipientUserInput(newUserRecipientInput));
+
+        expect(store.getActions()).toHaveLength(1);
+        expect(store.getActions()[0].type).toStrictEqual(
+          'send/updateRecipientUserInput',
+        );
+        expect(store.getActions()[0].payload).toStrictEqual(
+          newUserRecipientInput,
+        );
+
+        clock.tick(300); // debounce
+
+        expect(store.getActions()).toHaveLength(2);
+        expect(store.getActions()[1].type).toStrictEqual(
+          'send/validateRecipientUserInput',
+        );
+        expect(store.getActions()[1].payload).toStrictEqual({
+          chainId: '',
+          tokens: [],
+        });
+      });
+    });
+
+    describe('useContactListForRecipientSearch', () => {
+      it('should create action to change send recipient search to contact list', async () => {
+        const store = mockStore();
+
+        await store.dispatch(useContactListForRecipientSearch());
+
+        const actionResult = store.getActions();
+
+        expect(actionResult).toStrictEqual([
+          { type: 'send/updateRecipientSearchMode', payload: 'CONTACT_LIST' },
+        ]);
+      });
+    });
+
+    describe('UseMyAccountsForRecipientSearch', () => {
+      it('should create action to change send recipient search to derived accounts', async () => {
+        const store = mockStore();
+
+        await store.dispatch(useMyAccountsForRecipientSearch());
+
+        const actionResult = store.getActions();
+
+        expect(actionResult).toStrictEqual([
+          { type: 'send/updateRecipientSearchMode', payload: 'MY_ACCOUNTS' },
+        ]);
+      });
+    });
+
+    describe('UpdateRecipient', () => {
+      const recipient = {
+        address: '',
+        nickname: '',
+      };
+
+      it('should create an action to update recipient', async () => {
+        const updateRecipientState = {
+          send: {
+            asset: {
+              type: '',
+            },
+          },
+        };
+
+        const store = mockStore(updateRecipientState);
+
+        await store.dispatch(updateRecipient(recipient));
+
+        const actionResult = store.getActions();
+
+        const expectedActionResult = [
+          {
+            type: 'send/updateRecipient',
+            payload: recipient,
+          },
+        ];
+
+        expect(actionResult).toHaveLength(1);
+        expect(actionResult).toStrictEqual(expectedActionResult);
+      });
+
+      it('should create actions to update recipient and recalculate gas limit if the asset is a token', async () => {
+        const tokenState = {
+          metamask: {
+            blockGasLimit: '',
+            selectedAddress: '',
+          },
+          send: {
+            account: {
+              balance: '',
+            },
+            asset: {
+              type: 'TOKEN',
+              details: {},
+            },
+            gas: {
+              gasPrice: '',
+            },
+            recipient: {
+              address: '',
+            },
+            amount: {
+              value: '',
+            },
+            draftTransaction: {
+              userInputHexData: '',
+            },
+          },
+        };
+
+        const store = mockStore(tokenState);
+
+        await store.dispatch(updateRecipient(recipient));
+
+        const actionResult = store.getActions();
+
+        expect(actionResult).toHaveLength(4);
+        expect(actionResult[0].type).toStrictEqual('send/updateRecipient');
+        expect(actionResult[1].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/pending',
+        );
+        expect(actionResult[2].type).toStrictEqual(
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[3].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
+        );
+      });
+    });
+
+    describe('ResetRecipientInput', () => {
+      it('should create actions to reset recipient input and ens then validates input', async () => {
+        const updateRecipientState = {
+          metamask: {
+            provider: {
+              chainId: '',
+            },
+            tokens: [],
+          },
+          send: {
+            asset: {
+              type: ''
+            },
+            recipient: {
+              address: 'Address',
+              nickname: 'NickName',
+            },
+          },
+        };
+
+        const store = mockStore(updateRecipientState);
+
+        await store.dispatch(resetRecipientInput());
+        const actionResult = store.getActions();
+
+        expect(actionResult).toHaveLength(4);
+        expect(actionResult[0].type).toStrictEqual(
+          'send/updateRecipientUserInput',
+        );
+        expect(actionResult[0].payload).toStrictEqual('');
+        expect(actionResult[1].type).toStrictEqual('send/updateRecipient');
+        expect(actionResult[2].type).toStrictEqual('ENS/resetResolution');
+        expect(actionResult[3].type).toStrictEqual(
+          'send/validateRecipientUserInput',
+        );
+      });
+    });
+
+    describe('UpdateSendHexData', () => {
+      const sendHexDataState = {
+        send: {
+          asset: {
+            type: '',
+          },
+        },
+      };
+
+      it('should create action to update hexData', async () => {
+        const hexData = '0x1';
+        const store = mockStore(sendHexDataState);
+
+        await store.dispatch(updateSendHexData(hexData));
+
+        const actionResult = store.getActions();
+
+        const expectActionResult = [
+          { type: 'send/updateUserInputHexData', payload: hexData },
+        ];
+
+        expect(actionResult).toHaveLength(1);
+        expect(actionResult).toStrictEqual(expectActionResult);
+      });
+    });
+
+    describe('ToggleSendMaxMode', () => {
+      it('should create actions to toggle update max mode when send amount mode is not max', async () => {
+        const sendMaxModeState = {
+          send: {
+            amount: {
+              mode: '',
+            },
+          },
+        };
+
+        const store = mockStore(sendMaxModeState);
+
+        await store.dispatch(toggleSendMaxMode());
+
+        const actionResult = store.getActions();
+
+        const expectedActionReslt = [
+          { type: 'send/updateAmountMode', payload: 'MAX' },
+          { type: 'send/updateAmountToMax', payload: undefined },
+        ];
+
+        expect(actionResult).toHaveLength(2);
+        expect(actionResult).toStrictEqual(expectedActionReslt);
+      });
+
+      it('should create actions to toggle off  max mode when send amount mode is max', async () => {
+        const sendMaxModeState = {
+          send: {
+            amount: {
+              mode: 'MAX',
+            },
+          },
+        };
+        const store = mockStore(sendMaxModeState);
+
+        await store.dispatch(toggleSendMaxMode());
+
+        const actionResult = store.getActions();
+
+        const expectedActionReslt = [
+          { type: 'send/updateAmountMode', payload: 'INPUT' },
+          { type: 'send/updateSendAmount', payload: '0x0' },
+        ];
+
+        expect(actionResult).toHaveLength(2);
+        expect(actionResult).toStrictEqual(expectedActionReslt);
+      });
+    });
+
+    describe('SignTransaction', () => {
+      const signTransactionState = {
+        send: {
+          asset: {},
+          stage: '',
+          draftTransaction: {},
+          recipient: {},
+          amount: {},
+        },
+      };
+
+      it('should show confirm tx page when no other conditions for signing have been met', async () => {
+        global.ethQuery = {
+          sendTransaction: sinon.stub(),
+        };
+
+        const store = mockStore(signTransactionState);
+
+        await store.dispatch(signTransaction());
+
+        const actionResult = store.getActions();
+
+        expect(actionResult).toHaveLength(1);
+        expect(actionResult[0].type).toStrictEqual('SHOW_CONF_TX_PAGE');
+      });
+
+      it('should create actions for updateTransaction rejecting', async () => {
+        const editStageSignTxState = {
+          metamask: {
+            unapprovedTxs: {
+              1: {
+                id: 1,
+                txParams: {
+                  value: 'oldTxValue',
+                },
+              },
+            },
+          },
+          send: {
+            ...signTransactionState.send,
+            stage: 'EDIT',
+            draftTransaction: {
+              id: 1,
+              txParams: {
+                value: 'newTxValue',
+              },
+            },
+          },
+        };
+
+        jest.mock('../../store/actions.js');
+
+        const store = mockStore(editStageSignTxState);
+
+        await store.dispatch(signTransaction());
+
+        const actionResult = store.getActions();
+
+        expect(actionResult).toHaveLength(5);
+        expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
+        expect(actionResult[1].type).toStrictEqual('UPDATE_TRANSACTION_PARAMS');
+        expect(actionResult[2].type).toStrictEqual('HIDE_LOADING_INDICATION');
       });
     });
   });

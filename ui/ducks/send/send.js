@@ -938,10 +938,9 @@ const slice = createSlice({
         // the gasPrice in our slice. We call into the caseReducer
         // updateGasPrice to also tap into the appropriate follow up checks
         // and gasTotal calculation.
-        slice.caseReducers.updateGasPrice(
-          state,
-          getGasPriceInHexWei(action.value.average ?? '0x0'),
-        );
+        slice.caseReducers.updateGasPrice(state, {
+          payload: getGasPriceInHexWei(action.value.average ?? '0x0'), // TODO: Is this more correct?
+        });
       })
       .addCase(BASIC_GAS_ESTIMATE_STATUS, (state, action) => {
         // When we fetch gas prices we should temporarily set the form invalid

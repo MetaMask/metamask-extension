@@ -63,22 +63,18 @@ describe('Redux actionConstants', () => {
   describe('SHOW_ACCOUNT_DETAIL', () => {
     it('updates metamask state', () => {
       const initialState = {
-        metamask: {
-          selectedAddress: 'foo',
-        },
+        metamask: {},
       };
       freeze(initialState);
 
       const action = {
         type: actionConstants.SHOW_ACCOUNT_DETAIL,
-        value: 'bar',
       };
       freeze(action);
 
       const resultingState = reducers(initialState, action);
-      expect(resultingState.metamask.selectedAddress).toStrictEqual(
-        action.value,
-      );
+      expect(resultingState.metamask.isUnlocked).toStrictEqual(true);
+      expect(resultingState.metamask.isInitialized).toStrictEqual(true);
     });
   });
 });
