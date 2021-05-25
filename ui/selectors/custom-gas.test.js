@@ -109,8 +109,6 @@ describe('custom-gas selectors', () => {
       expect(isCustomPriceExcessive(mockState)).toStrictEqual(true);
     });
     it('should return false gas.basicEstimates.price 0x28bed01600 (175) (checkSend=true)', () => {
-      // Inconsistent state from the selectors? ui/ducks/send/send.js3L1117
-      // Is there suppose to be a send[gas]?
       const mockState = {
         send: {
           gas: {

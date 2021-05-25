@@ -485,7 +485,7 @@ describe('Send Slice', () => {
         expect(result.recipient.error).toStrictEqual('invalidAddressRecipient');
       });
 
-      // TODO: This seems off, is this suppose to be a networks that dont implement checksum? But the user input is not valid hex in the first place.
+      // TODO: Expectation might change in the future
       it('should error with an invalid network error when user input is not a valid hex string on a non default network', () => {
         const tokenAssetTypeState = {
           ...initialState,
