@@ -1,0 +1,136 @@
+@use "sass:map";
+@use "design-system";
+@use "utilities";
+
+$attributes: padding, margin;
+
+.box {
+  // Padding and Margin
+  @each $attribute in $attributes {
+    @each $size in design-system.$sizes-numeric {
+      &--#{$attribute}-#{$size} {
+        #{$attribute}: utilities.get-spacing($size);
+      }
+    }
+
+    @each $size in design-system.$sizes-numeric {
+      @each $direction in design-system.$directions {
+        &--#{$attribute}-#{$direction}-#{$size} {
+          #{$attribute}-#{$direction}: utilities.get-spacing($size);
+        }
+      }
+    }
+  }
+
+  // Borders
+  @each $size in design-system.$sizes-numeric {
+    &--border-size-#{$size} {
+      border-width: #{$size}px;
+    }
+  }
+
+  @each $variant, $color in design-system.$color-map {
+    &--border-color-#{$variant} {
+      border-color: $color;
+    }
+  }
+
+  @each $border-style in design-system.$border-style {
+    &--border-style-#{$border-style} {
+      border-style: $border-style;
+    }
+  }
+
+  &--rounded-none {
+    border-radius: 0;
+  }
+
+  &--rounded-xs {
+    border-radius: 0.125rem;
+  }
+
+  &--rounded-sm {
+    border-radius: 0.25rem;
+  }
+
+  &--rounded-md {
+    border-radius: 0.375rem;
+  }
+
+  &--rounded-lg {
+    border-radius: 0.5rem;
+  }
+
+  &--rounded-xl {
+    border-radius: 0.75rem;
+  }
+
+  // Display and Flex/Grid alignment
+  @each $display in design-system.$display {
+    &--display-#{$display} {
+      display: $display;
+    }
+  }
+
+  @each $alignment in design-system.$align-items {
+    &--align-items-#{$alignment} {
+      align-items: $alignment;
+    }
+  }
+
+  @each $justification in design-system.$justify-content {
+    &--justify-content-#{$justification} {
+      justify-content: $justification;
+    }
+  }
+
+  // Width and Height
+  &--width-full {
+    width: 100%;
+  }
+
+  &--height-full {
+    height: 100%;
+  }
+
+  @each $fraction, $value in design-system.$fractions {
+    &--width-#{$fraction} {
+      width: $value;
+    }
+
+    &--height-#{$fraction} {
+      height: $value;
+    }
+  }
+
+  &--height-screen {
+    height: 100vh;
+  }
+
+  &--width-screen {
+    width: 100vw;
+  }
+
+  &--height-max {
+    height: max-content;
+  }
+
+  &--width-max {
+    width: max-content;
+  }
+
+  &--height-min {
+    height: min-content;
+  }
+
+  &--width-min {
+    width: min-content;
+  }
+
+  // text
+  @each $alignment in design-system.$text-align {
+    &--text-align-#{$alignment} {
+      text-align: $alignment;
+    }
+  }
+}

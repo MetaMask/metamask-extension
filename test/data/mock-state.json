@@ -15,6 +15,12 @@
     "provider": {
       "chainId": "0x4"
     },
+    "keyrings": [
+      {
+        "type": "Ledger Hardware",
+        "accounts": ["0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"]
+      }
+    ],
     "identities": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
         "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",

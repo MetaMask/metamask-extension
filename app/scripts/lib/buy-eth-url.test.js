@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import {
   KOVAN_CHAIN_ID,
   MAINNET_CHAIN_ID,

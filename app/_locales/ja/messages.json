@@ -497,11 +497,11 @@
   "dismiss": {
     "message": "却下"
   },
+  "dismissReminderDescriptionField": {
+    "message": "これをオンにすると、リカバリー フレーズ バックアップのリマインダーメッセージが解除されます。資金の損失を防ぐために、シークレット リカバリー フレーズのバックアップを取ることを強くお勧めします。"
+  },
   "done": {
     "message": "完了"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "ハードウェアウォレットをお持ちではありませんか?"
   },
   "dontShowThisAgain": {
     "message": "再度表示しない"
@@ -535,7 +535,7 @@
     "message": "公開暗号鍵の要求"
   },
   "endOfFlowMessage1": {
-    "message": "テストに合格しました。シードフレーズを安全に保管してください。これは利用者の責務です。"
+    "message": "テストに合格しました。シークレット リカバリー フレーズを安全に保管してください。保管はお客様の責任となります。"
   },
   "endOfFlowMessage10": {
     "message": "全て完了"
@@ -550,13 +550,13 @@
     "message": "シードフレーズは絶対に誰にも教えないでください。"
   },
   "endOfFlowMessage5": {
-    "message": "フィッシング詐欺に注意してください!MetaMaskは自発的にシードフレーズを絶対に要求しません。"
+    "message": "フィッシングにご注意ください!MetaMask の動作として、シークレット リカバリー フレーズを要求することは絶対にありません。"
   },
   "endOfFlowMessage6": {
-    "message": "シードフレーズを再度バックアップする場合は、[設定] -> [セキュリティとプライバシー] で見つけることができます。"
+    "message": "シークレット リカバリー フレーズを再度バックアップする場合は、[設定] -> [セキュリティとプライバシー] にアクセスしてください。"
   },
   "endOfFlowMessage8": {
-    "message": "MetaMaskはシードフレーズを復元できません。"
+    "message": "MetaMask はシークレット リカバリー フレーズを復元できません。"
   },
   "endOfFlowMessage9": {
     "message": "詳細を表示。"
@@ -727,9 +727,6 @@
     "message": "$1 のFaucetでEtherを得ることができます。",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "サポートを受ける。"
-  },
   "getStarted": {
     "message": "はじめる"
   },
@@ -750,9 +747,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "MetaMaskに接続するハードウェアウォレットを選択してください"
-  },
-  "havingTroubleConnecting": {
-    "message": "接続に問題がありますか?"
   },
   "here": {
     "message": "こちら",
@@ -781,14 +775,20 @@
   "importAccount": {
     "message": "アカウントのインポート"
   },
+  "importAccountLinkText": {
+    "message": "シークレット リカバリー フレーズを使用してインポートする"
+  },
   "importAccountMsg": {
-    "message": "追加したアカウントはMetaMaskのアカウントパスフレーズとは関連付けられません。インポートしたアカウントについての詳細は"
+    "message": " インポートされたアカウントは、最初に作成した MetaMask アカウントのシークレット リカバリー フレーズと関連付けられません。インポートされたアカウントの詳細を表示"
   },
   "importAccountSeedPhrase": {
-    "message": "シードフレーズを使用してアカウントをインポート"
+    "message": "シークレット リカバリー フレーズを使用してアカウントをインポートする:"
   },
   "importWallet": {
     "message": "ウォレットのインポート"
+  },
+  "importYourExisting": {
+    "message": "シークレット リカバリー フレーズを使用して既存のウォレットをインポートする"
   },
   "imported": {
     "message": "インポート済",
@@ -854,7 +854,7 @@
     "message": "無効な RPC URL"
   },
   "invalidSeedPhrase": {
-    "message": "無効なシードフレーズ"
+    "message": "無効なシークレット リカバリー フレーズ"
   },
   "ipfsGateway": {
     "message": "IPFSゲートウェイ"
@@ -1054,7 +1054,7 @@
     "message": "この名前にはアドレスが設定されていません。"
   },
   "noAlreadyHaveSeed": {
-    "message": "いいえ、既にシードフレーズがあります"
+    "message": "いいえ、既にシークレット リカバリー フレーズを持っています"
   },
   "noConversionRateAvailable": {
     "message": "どの換算レートも利用できません"
@@ -1116,9 +1116,6 @@
   },
   "optionalCurrencySymbol": {
     "message": "通貨シンボル(オプション)"
-  },
-  "orderOneHere": {
-    "message": "Trezor又はLedgerを注文して資金をコールドストレージに保管できます"
   },
   "origin": {
     "message": "要求元"
@@ -1201,9 +1198,6 @@
   "readdToken": {
     "message": "アカウントオプションのメニューで\"トークンの追加\"を選択すると、後でこのトークンを戻すことができます。"
   },
-  "readyToConnect": {
-    "message": "接続準備はよろしいですか?"
-  },
   "receive": {
     "message": "受け取る"
   },
@@ -1241,7 +1235,7 @@
     "message": "アカウントの削除"
   },
   "removeAccountDescription": {
-    "message": "このアカウントはウォレットから削除されます。続行する前に、ウォレットにインポートしたアカウントのシードフレーズか秘密鍵を保管してください。アカウントは、アカウントのドロップダウンから再度インポート、または作成できます。"
+    "message": "このアカウントはウォレットから削除されます。続行する前に、インポートしたアカウントの元のシークレット リカバリー フレーズまたは秘密鍵を持っていることを確認してください。アカウントはアカウント ドロップダウンから再度インポートまたは作成できます。"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "承認されるまで待機する"
@@ -1256,13 +1250,13 @@
     "message": "アカウントをリセット"
   },
   "resetAccountDescription": {
-    "message": "アカウントをリセットするとトランザクション履歴がクリアされます。シードフレーズの再入力は不要です。これによりアカウント内の残高が変更されることはありません。"
+    "message": "アカウントをリセットすると、トランザクション履歴がクリアされます。これによってアカウント内の残高が変更されることはありません。また、シークレット リカバリー フレーズの再入力を要求することはありません。"
   },
   "restore": {
     "message": "復元"
   },
   "restoreAccountWithSeed": {
-    "message": "シードフレーズでアカウントを復元"
+    "message": "シークレット リカバリー フレーズでアカウントを復元する"
   },
   "restoreWalletPreferences": {
     "message": "$1 のデータバックアップが見つかりました。ウォレットの基本設定を復元しますか?",
@@ -1275,13 +1269,13 @@
     "message": "既に登録されているトークンシンボルと同じシンボルの登録はお勧めしません。混乱や操作ミスの原因になります。"
   },
   "revealSeedWords": {
-    "message": "シードフレーズを表示"
+    "message": "シークレット リカバリー フレーズを公開する"
   },
   "revealSeedWordsDescription": {
-    "message": "ブラウザを変更したりコンピュータを変更した場合は、アカウントにアクセスするためにシードフレーズが必要になります。安全で秘密の場所に保管してください。"
+    "message": "ブラウザーを変更した場合や、コンピューターを移動した場合は、自分のアカウントにアクセスするためにこのシークレット リカバリー フレーズが必要になります。安全で秘密の場所に保管してください。"
   },
   "revealSeedWordsTitle": {
-    "message": "シードフレーズ"
+    "message": "シークレット リカバリー フレーズ"
   },
   "revealSeedWordsWarning": {
     "message": "シードフレーズは全てのアカウントを盗む手段にも使えます。"
@@ -1338,16 +1332,16 @@
     "message": "セキュリティとプライバシー"
   },
   "securitySettingsDescription": {
-    "message": "プライバシーの設定とウォレットのシードフレーズ"
+    "message": "プライバシーの設定とシークレット リカバリー フレーズ"
   },
   "seedPhrasePlaceholder": {
     "message": "シードフレーズを単語ごとに半角スペースで分割して入力して下さい"
   },
   "seedPhrasePlaceholderPaste": {
-    "message": "シードフレーズをクリップボードからペーストして下さい"
+    "message": "クリップボードからシークレット リカバリー フレーズを貼り付けます"
   },
   "seedPhraseReq": {
-    "message": "シードフレーズには、12,15,18,21、または24単語が含まれます"
+    "message": "シークレット リカバリー フレーズには、12、15、18、21、24 語が含まれます"
   },
   "selectAHigherGasFee": {
     "message": "トランザクションの処理を早めるには、より高いガス料金を選択してください。"
@@ -1432,7 +1426,7 @@
     "message": "秘密鍵の表示"
   },
   "showSeedPhrase": {
-    "message": "シードフレーズの表示"
+    "message": "シークレット リカバリー フレーズを表示する"
   },
   "sigRequest": {
     "message": "署名リクエスト"
@@ -1503,24 +1497,6 @@
   },
   "statusNotConnected": {
     "message": "未接続"
-  },
-  "step1HardwareWallet": {
-    "message": "1.ハードウェア ウォレットの接続"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "コンピューターに直接ハードウェアウォレットを接続してください。"
-  },
-  "step2HardwareWallet": {
-    "message": "2.アカウントを選択"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "読取るアカウントを１つ選択します。"
-  },
-  "step3HardwareWallet": {
-    "message": "3.web3を使用してサイトに接続しましょう!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Ethereumアカウントと同じように、ハードウェアアカウントを使用します。web3サイトに接続してETH を送金し、ERC20トークンやCryptoKittiesのようなトークンを購入して保管できます。"
   },
   "storePhrase": {
     "message": "このフレーズを1Passwordのようなパスワードマネージャーに保管てください。"
@@ -1609,9 +1585,6 @@
   "swapFinalizing": {
     "message": "終了中..."
   },
-  "swapHighSlippageWarning": {
-    "message": "非常に大きいスリッページ額です。本当に実行するか確認してください。"
-  },
   "swapLowSlippageError": {
     "message": "トランザクションが失敗する可能性があります。最大スリッページが少なすぎます。"
   },
@@ -1654,12 +1627,6 @@
   "swapPriceDifferenceTitle": {
     "message": "価格差は $1% です",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceDifferenceTooltip": {
-    "message": "市場価格の違いは、仲介業者が負担する手数料、市場規模、取引量、または取引価格差の影響を受けることがあります。"
-  },
-  "swapPriceDifferenceUnavailable": {
-    "message": "マーケット価格は利用できません。続行する前に、返金額に問題がないことを確認してください。"
   },
   "swapProcessing": {
     "message": "処理中"
@@ -1723,9 +1690,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "以下は複数の流動性ソースから収集したすべての見積です。"
   },
-  "swapSlippageTooLow": {
-    "message": "スリッページは 0 より多くする必要があります。"
-  },
   "swapSource": {
     "message": "流動性ソース"
   },
@@ -1764,9 +1728,6 @@
   "swapVerifyTokenExplanation": {
     "message": "複数のトークンが同じ名前とシンボルであることがあります。$1で実際のトークンでを確認してください。",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapViewToken": {
-    "message": "$1 を表示"
   },
   "swapYourTokenBalance": {
     "message": "$1 $2 はスワップに使用できます",
@@ -1843,7 +1804,7 @@
     "message": "テストFaucet"
   },
   "thisWillCreate": {
-    "message": "新しいウォレットとシードフレーズが作成されます"
+    "message": "これにより、新しいウォレットとシークレット リカバリー フレーズが作成されます"
   },
   "tips": {
     "message": "ヒント"
@@ -2016,7 +1977,10 @@
     "message": "ハードウェアウォレット接続ガイド"
   },
   "walletSeed": {
-    "message": "シードフレーズ"
+    "message": "シークレット リカバリー フレーズ"
+  },
+  "walletSeedRestore": {
+    "message": "ウォレット シークレット リカバリー フレーズ"
   },
   "web3ShimUsageNotification": {
     "message": "このサイトは削除されたwindow.web3 APIを使用します。サイトに問題が発生しているなら、$1 で詳細を見ることができます。",
@@ -2048,7 +2012,7 @@
     "message": "署名しています"
   },
   "yourPrivateSeedPhrase": {
-    "message": "秘密のシードフレーズ"
+    "message": "秘密のシークレット リカバリー フレーズ"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "追加のGas価格を0にできません"

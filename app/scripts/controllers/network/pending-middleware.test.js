@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import { txMetaStub } from '../../../../test/stub/tx-meta-stub';
 import {
   createPendingNonceMiddleware,

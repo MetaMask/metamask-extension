@@ -1,0 +1,143 @@
+$fa-font-path: '/fonts/fontawesome';
+
+@import '../../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome';
+@import '../../../node_modules/@fortawesome/fontawesome-free/scss/solid';
+@import '../../../node_modules/@fortawesome/fontawesome-free/scss/regular';
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 100;
+  src: local('Roboto Thin'), local('Roboto-Thin'), url('/fonts/Roboto/Roboto-Thin.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Roboto Light'), local('Roboto-Light'), url('/fonts/Roboto/Roboto-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto'), local('Roboto-Regular'), url('/fonts/Roboto/Roboto-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Roboto Medium'), local('Roboto-Medium'), url('/fonts/Roboto/Roboto-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Roboto Bold'), local('Roboto-Bold'), url('/fonts/Roboto/Roboto-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 900;
+  src: local('Roboto Black'), local('Roboto-Black'), url('/fonts/Roboto/Roboto-Black.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Euclid';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/Euclid/EuclidCircularB-Regular-WebXL.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Euclid';
+  font-style: italic;
+  font-weight: 400;
+  src: url('/fonts/Euclid/EuclidCircularB-RegularItalic-WebXL.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Euclid';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/Euclid/EuclidCircularB-Bold-WebXL.ttf') format('truetype');
+}
+
+$font-family: Euclid, Roboto, Helvetica, Arial, sans-serif;
+
+$typography-variants: (
+  'h1': 2.5rem,
+  'h2': 2rem,
+  'h3': 1.5rem,
+  'h4': 1.125rem,
+  'h5': 1rem,
+  'h6': 0.875rem,
+  'paragraph': 1rem,
+  'h7': 0.75rem,
+  'h8': 0.625rem,
+  'h9': 0.5rem,
+);
+
+$font-size-h1: map-get($typography-variants, 'h1');
+$font-size-h2: map-get($typography-variants, 'h2');
+$font-size-h3: map-get($typography-variants, 'h3');
+$font-size-h4: map-get($typography-variants, 'h4');
+$font-size-h5: map-get($typography-variants, 'h5');
+$font-size-h6: map-get($typography-variants, 'h6');
+$font-size-paragraph: map-get($typography-variants, 'paragraph');
+$font-size-h7: map-get($typography-variants, 'h7');
+$font-size-h8: map-get($typography-variants, 'h8');
+$font-size-h9: map-get($typography-variants, 'h9');
+
+@mixin typography($variant) {
+  font-size: map-get($typography-variants, $variant);
+  font-family: $font-family;
+  line-height: 140%;
+  font-style: normal;
+  font-weight: normal;
+}
+
+// Typography
+@mixin H1 {
+  @include typography('h1');
+}
+
+@mixin H2 {
+  @include typography('h2');
+}
+
+@mixin H3 {
+  @include typography('h3');
+}
+
+@mixin H4 {
+  @include typography('h4');
+}
+
+@mixin H5 {
+  @include typography('h5');
+}
+
+@mixin H6 {
+  @include typography('h6');
+}
+
+@mixin Paragraph {
+  @include typography('paragraph');
+}
+
+@mixin H7 {
+  @include typography('h7');
+}
+
+@mixin H8 {
+  @include typography('h8');
+}
+
+@mixin H9 {
+  @include typography('h9');
+}

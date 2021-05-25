@@ -1,0 +1,40 @@
+.toggle-button {
+  display: flex;
+  $self: &;
+
+  &__status {
+    @include Paragraph;
+
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    display: grid;
+  }
+
+  &__label-off,
+  &__label-on {
+    grid-area: 1 / 1 / 1 / 1;
+  }
+
+  &__label-off {
+    visibility: hidden;
+  }
+
+  &__label-on {
+    visibility: visible;
+  }
+
+  &--off {
+    #{ $self }__label-off {
+      visibility: visible;
+    }
+
+    #{ $self }__label-on {
+      visibility: hidden;
+    }
+  }
+
+  &--disabled {
+    opacity: 0.5;
+  }
+}

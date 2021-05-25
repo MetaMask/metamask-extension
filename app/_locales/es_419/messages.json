@@ -500,9 +500,6 @@
   "done": {
     "message": "Listo"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "¿No tienes una billetera de hardware?"
-  },
   "dontShowThisAgain": {
     "message": "No mostrar esto de nuevo"
   },
@@ -727,9 +724,6 @@
     "message": "Obtener Ether a partir de un grifo para $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Obtén ayuda."
-  },
   "getStarted": {
     "message": "Comenzar"
   },
@@ -750,9 +744,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Selecciona la billetera de hardware que te gustaría utilizar con MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "¿Problemas de conexión?"
   },
   "here": {
     "message": "Aquí",
@@ -1117,9 +1108,6 @@
   "optionalCurrencySymbol": {
     "message": "Símbolo (opcional)"
   },
-  "orderOneHere": {
-    "message": "Pida una billetera Trezor o Ledger y mantenga sus fondos en un almacenamiento en frío"
-  },
   "origin": {
     "message": "Origen"
   },
@@ -1200,9 +1188,6 @@
   },
   "readdToken": {
     "message": "Puedes volver a agregar este token a través de la opción \"Agregar token\" en el menú de opciones de tus cuentas."
-  },
-  "readyToConnect": {
-    "message": "¿Listo/a para conectarte?"
   },
   "receive": {
     "message": "Recibir"
@@ -1504,24 +1489,6 @@
   "statusNotConnected": {
     "message": "No conectado"
   },
-  "step1HardwareWallet": {
-    "message": "1. Conecta la billetera de hardware"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Conecta tu billetera de hardware directamente a tu computadora."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Selecciona una cuenta"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Selecciona la cuenta que deseas ver. Solo puedes seleccionar una a la vez."
-  },
-  "step3HardwareWallet": {
-    "message": "3. ¡Comienza a utilizar dApps y más!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Utiliza tu cuenta de hardware como si fuera una cuenta de Ethereum. Inicia sesión en dApps, envía ETH, compra y almacena tokens ERC20 y tokens no fungibles como CryptoKitties."
-  },
   "storePhrase": {
     "message": "Almacena esta frase en un administrador de contraseñas como 1Password."
   },
@@ -1609,9 +1576,6 @@
   "swapFinalizing": {
     "message": "Finalizando..."
   },
-  "swapHighSlippageWarning": {
-    "message": "La cantidad de deslizamiento es muy alta. ¡Asegúrate de saber lo que estás haciendo!"
-  },
   "swapLowSlippageError": {
     "message": "La transacción puede fallar, el deslizamiento máximo es demasiado bajo."
   },
@@ -1654,12 +1618,6 @@
   "swapPriceDifferenceTitle": {
     "message": "Diferencia de precio de ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceDifferenceTooltip": {
-    "message": "La diferencia en los precios de mercado puede verse afectada por las tarifas cobradas por los intermediarios, el tamaño del mercado, el tamaño del comercio o las ineficiencias del mercado."
-  },
-  "swapPriceDifferenceUnavailable": {
-    "message": "El precio de mercado no está disponible. Asegúrese de sentirse cómodo con el monto devuelto antes de continuar."
   },
   "swapProcessing": {
     "message": "Procesando"
@@ -1723,9 +1681,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "A continuación se muestran todas las cotizaciones recopiladas de múltiples fuentes de liquidez."
   },
-  "swapSlippageTooLow": {
-    "message": "El deslizamiento debe ser mayor que cero"
-  },
   "swapSource": {
     "message": "Fuente de liquidez"
   },
@@ -1764,9 +1719,6 @@
   "swapVerifyTokenExplanation": {
     "message": "Varios tokens pueden usar el mismo nombre y símbolo. Verifique $1 para verificar que este es el token que está buscando.",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapViewToken": {
-    "message": "Ver $1"
   },
   "swapYourTokenBalance": {
     "message": "$1 $2 están disponibles para intercambiar",

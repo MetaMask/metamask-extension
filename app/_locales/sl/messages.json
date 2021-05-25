@@ -308,9 +308,6 @@
   "done": {
     "message": "Končano"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Nimate strojne denarnice?"
-  },
   "downloadGoogleChrome": {
     "message": "Prenesi Google Chrome"
   },
@@ -460,9 +457,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Izberite vrsto strojne denarnice"
-  },
-  "havingTroubleConnecting": {
-    "message": "Imate težave?"
   },
   "here": {
     "message": "tukaj",
@@ -686,9 +680,6 @@
   "optionalCurrencySymbol": {
     "message": "Simbol (nezahtevano)"
   },
-  "orderOneHere": {
-    "message": "Naročite Trezor ali Ledger i n zavarujte svoje premoženje s strojno denarnico"
-  },
   "origin": {
     "message": "Izvor"
   },
@@ -747,9 +738,6 @@
   },
   "readdToken": {
     "message": "Ta žeton lahko dodate tudi kasneje z uporabo gumba “Dodaj žeton” v možnostih vašega računa."
-  },
-  "readyToConnect": {
-    "message": "Pripravljeni na povezovanje?"
   },
   "recents": {
     "message": "Nedavno"
@@ -969,24 +957,6 @@
   },
   "stateLogsDescription": {
     "message": "State vsebujejo vaš javni nasklov in zgodovino transakcij."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Povežite strojno denarnico"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Z računalnikom povežite strojno denarnico."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Izberite račun"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Izberite račun, ki ga želute uporabiti. Trenutno lahko izberete le en račun na enkrat."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Začnite uporabljati dApps in več!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Uporabite strojno denarnico kot katerikoli drug Ethereum račun. Prijavite se v dApps, pošljite Ether in ERC20 žetone in žetone kot CryptoKitties."
   },
   "storePhrase": {
     "message": "To geslo shranite v upravitelja gesel, kot je 1Password."
