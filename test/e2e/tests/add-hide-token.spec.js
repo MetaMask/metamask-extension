@@ -23,6 +23,11 @@ describe('Hide token', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
+        await driver.waitForSelector({
+          css: '.asset-list-item__token-button',
+          text: '0 TST',
+        });
+
         let assets = await driver.findElements('.asset-list-item');
         assert.equal(assets.length, 2);
 
