@@ -47,7 +47,7 @@ export default function ConfirmPageContainerHeader({
               visibility: showEdit ? 'initial' : 'hidden',
             }}
           >
-            <img src="/images/caret-left.svg" alt="" />
+            <img src="./images/caret-left.svg" alt="" />
             <span
               className="confirm-page-container-header__back-button"
               onClick={() => onEdit()}
