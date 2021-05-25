@@ -147,11 +147,25 @@ describe('Send Slice', () => {
         payload: '0x3b9aca00', // 1000000000
       };
 
-      it('should', () => {
-        const result = sendReducer(initialState, action);
+      it('should update gas price and update draft transaction with validated state', () => {
+        const validSendState = {
+          ...initialState,
+          account: {
+            balance: '0x56bc75e2d63100000',
+          },
+          gas: {
+            gasTotal: '0x1319718a5000', // 21000000000000
+            gasLimit: '0x5208', // 21000
+            minimumGasLimit: '0x5208',
+          },
+        };
+
+        const result = sendReducer(validSendState, action);
 
         expect(result.gas.gasPrice).toStrictEqual(action.payload);
-        // expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(action.payload) // TODO: Failing.Shouldnt this also update the draftTransaction?
+        expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
+          action.payload,
+        );
       });
 
       it('should recalculate gasTotal', () => {
@@ -669,14 +683,14 @@ describe('Send Slice', () => {
     });
 
     describe('validateGasField', () => {
-      it('should', () => {
+      it('should error when total amount of gas is higher than account balance', () => {
         const gasFieldState = {
           ...initialState,
           account: {
             balance: '0x0',
           },
           gas: {
-            gasTotal: '0x1319718a5000',
+            gasTotal: '0x1319718a5000', // 21000000000000
           },
         };
 
