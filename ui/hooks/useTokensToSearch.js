@@ -119,7 +119,7 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
       others: [],
     };
 
-    memoizedTokensToSearch.forEach((token) => {
+    [...memoizedTokensToSearch, ...memoizedUsersToken].forEach((token) => {
       const renderableDataToken = getRenderableTokenData(
         { ...usersTokensAddressMap[token.address], ...token },
         tokenConversionRates,
@@ -129,10 +129,14 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
       );
       if (
         isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
-        (usersTokensAddressMap[token.address] &&
-          Number(renderableDataToken.balance ?? 0) !== 0)
+        usersTokensAddressMap[token.address]
       ) {
-        tokensToSearchBuckets.owned.push(renderableDataToken);
+        const foundItem = tokensToSearchBuckets.owned.find((item) => {
+          return item.symbol === token.symbol;
+        });
+        if (!foundItem) {
+          tokensToSearchBuckets.owned.push(renderableDataToken);
+        }
       } else if (memoizedTopTokens[token.address]) {
         tokensToSearchBuckets.top[
           memoizedTopTokens[token.address].index
