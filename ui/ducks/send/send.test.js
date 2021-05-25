@@ -1375,7 +1375,7 @@ describe('Send Slice', () => {
           },
           send: {
             asset: {
-              type: ''
+              type: '',
             },
             recipient: {
               address: 'Address',
