@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
+import PropTypes from 'prop-types';
 import Button from '../../components/ui/button';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import Identicon from '../../components/ui/identicon';
-import PropTypes from 'prop-types';
 import TokenBalance from '../../components/ui/token-balance';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 
