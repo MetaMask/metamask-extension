@@ -337,8 +337,9 @@ export default class NetworkForm extends PureComponent {
     const chainId = chainIdArg.trim();
     let errorMessage = '';
     let radix = 10;
-    const hexChainId =
-      chainId === '0x' ? chainId : `0x${decimalToHex(chainId)}`;
+    const hexChainId = chainId.startsWith('0x')
+      ? chainId
+      : `0x${decimalToHex(chainId)}`;
     const [matchingChainId] = networksToRender.filter(
       (e) => e.chainId === hexChainId,
     );
