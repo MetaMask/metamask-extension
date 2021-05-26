@@ -35,7 +35,7 @@ const PageSet = ({ children }) => {
     store.dispatch(
       updateMetamaskState({ currentNetworkTxList: [transaction] }),
     );
-  }, [origin]);
+  }, [origin, transaction]);
 
   useEffect(() => {
     store.dispatch(
@@ -47,7 +47,7 @@ const PageSet = ({ children }) => {
         },
       }),
     );
-  }, [domainIconUrl]);
+  }, [domainIconUrl, origin]);
 
   const params = useParams();
   params.id = txId;
