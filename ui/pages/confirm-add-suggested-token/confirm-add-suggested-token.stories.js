@@ -12,10 +12,7 @@ export default {
 
 const PageSet = ({ children }) => {
   const symbol = text('symbol', 'DAI');
-  const image = text(
-    'Icon URL',
-    './images/dai.png',
-  );
+  const image = text('Icon URL', './images/dai.png');
 
   const state = store.getState();
   const suggestedTokensState = state.metamask.suggestedTokens;
