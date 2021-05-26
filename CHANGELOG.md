@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.5.6]
-### Uncategorized
-- [#11188](https://github.com/MetaMask/metamask-extension/pull/11188): Adding "What's New" notification for Ledger Support Update
-- [#11169](https://github.com/MetaMask/metamask-extension/pull/11169): Disable Ledger Live toggle for Firefox users
-- [#10293](https://github.com/MetaMask/metamask-extension/pull/10293): Implement Ledger Live bridge
+### Added
+- [#10293](https://github.com/MetaMask/metamask-extension/pull/10293): Add Ledger Live Support
 
 ## [9.5.5]
 ### Fixed
