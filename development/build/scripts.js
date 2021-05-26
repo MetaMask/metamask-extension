@@ -554,7 +554,6 @@ function renderHtmlFile(htmlName, groupSet, commonSet, browserPlatforms) {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm
     writeFileSync(dest, htmlOutput);
-    console.log(`wrote html to "${dest}"`);
   });
 }
 
