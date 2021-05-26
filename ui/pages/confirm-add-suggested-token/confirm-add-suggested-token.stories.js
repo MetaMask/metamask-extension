@@ -14,7 +14,7 @@ const PageSet = ({ children }) => {
   const symbol = text('symbol', 'DAI');
   const image = text(
     'Icon URL',
-    'https://assets.coingecko.com/coins/images/9956/small/dai-multi-collateral-mcd.png?1574218774',
+    './images/dai.png',
   );
 
   const state = store.getState();
