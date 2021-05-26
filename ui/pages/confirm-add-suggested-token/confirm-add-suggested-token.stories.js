@@ -27,7 +27,7 @@ const PageSet = ({ children }) => {
     store.dispatch(
       updateMetamaskState({ suggestedTokens: suggestedTokensState }),
     );
-  }, [symbol]);
+  }, [symbol, suggestedTokensState]);
   useEffect(() => {
     suggestedTokensState[
       '0x6b175474e89094c44da98b954eedeac495271d0f'
@@ -35,7 +35,7 @@ const PageSet = ({ children }) => {
     store.dispatch(
       updateMetamaskState({ suggestedTokens: suggestedTokensState }),
     );
-  }, [image]);
+  }, [image, suggestedTokensState]);
 
   return children;
 };
