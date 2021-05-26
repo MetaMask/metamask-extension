@@ -12,6 +12,12 @@
     border-bottom: 1px solid $Grey-100;
   }
 
+  &__notification {
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
   &__notification-image {
     align-self: center;
     margin-bottom: 16px;

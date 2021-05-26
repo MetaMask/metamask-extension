@@ -562,6 +562,9 @@
   "dismissReminderField": {
     "message": "Dismiss recovery phrase backup reminder"
   },
+  "dismissReminderDescriptionField": {
+    "message": "Ative isso para descartar a mensagem de lembrete de backup da frase de recuperação. Recomendamos enfaticamente que você faça o backup da sua Frase de recuperação secreta para evitar perda de fundos"
+  },
   "done": {
     "message": "Done"
   },
@@ -603,7 +606,11 @@
     "message": "Request encryption public key"
   },
   "endOfFlowMessage1": {
+<<<<<<< HEAD
     "message": "You passed the test - keep your Secret Recovery Phrase safe, it's your responsibility!"
+=======
+    "message": "Você passou no teste. Guarde sua Frase de recuperação secreta em segurança, é sua responsabilidade!"
+>>>>>>> upstream/develop
   },
   "endOfFlowMessage10": {
     "message": "All Done"
@@ -618,6 +625,7 @@
     "message": "Never share the phrase with anyone."
   },
   "endOfFlowMessage5": {
+<<<<<<< HEAD
     "message": "Be careful of phishing! MetaMask will never spontaneously ask for your Secret Recovery Phrase."
   },
   "endOfFlowMessage6": {
@@ -629,6 +637,15 @@
   },
   "endOfFlowMessage8": {
     "message": "MetaMask cannot recover your Secret Recovery Phrase."
+=======
+    "message": "Cuidado com phishing! O MetaMask jamais pedirá espontaneamente sua Frase de recuperação secreta."
+  },
+  "endOfFlowMessage6": {
+    "message": "Se você precisar fazer backup da sua Frase de recuperação secreta novamente, encontre-a em Configurações -> Segurança."
+  },
+  "endOfFlowMessage8": {
+    "message": "O MetaMask não pode recuperar sua Frase de recuperação secreta."
+>>>>>>> upstream/develop
   },
   "endOfFlowMessage9": {
     "message": "Learn more."
@@ -880,7 +897,11 @@
   "importAccountLinkText": {
     "message": "import using Secret Recovery Phrase"
   },
+  "importAccountLinkText": {
+    "message": "importar usando a Frase de recuperação secreta"
+  },
   "importAccountMsg": {
+<<<<<<< HEAD
     "message": " Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts "
   },
   "importAccountSeedPhrase": {
@@ -889,12 +910,21 @@
   "importAccountText": {
     "message": "or $1",
     "description": "$1 represents the text from `importAccountLinkText` as a link"
+=======
+    "message": " As contas importadas não estarão associadas à Frase de recuperação secreta da conta do MetaMask criada originalmente. Saiba mais sobre as contas importadas "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Importe uma conta com a Frase de recuperação secreta"
+>>>>>>> upstream/develop
   },
   "importWallet": {
     "message": "Import wallet"
   },
   "importYourExisting": {
     "message": "Import your existing wallet using a Secret Recovery Phrase"
+  },
+  "importYourExisting": {
+    "message": "Importar a carteira existente usando uma Frase de recuperação secreta"
   },
   "imported": {
     "message": "Imported",
@@ -964,6 +994,7 @@
     "message": "Invalid RPC URL"
   },
   "invalidSeedPhrase": {
+<<<<<<< HEAD
     "message": "Invalid Secret Recovery Phrase"
   },
   "ipfsGateway": {
@@ -971,6 +1002,9 @@
   },
   "ipfsGatewayDescription": {
     "message": "Enter the URL of the IPFS CID gateway to use for ENS content resolution."
+=======
+    "message": "Frase de recuperação secreta inválida"
+>>>>>>> upstream/develop
   },
   "jsonFile": {
     "message": "JSON File",
@@ -1215,7 +1249,11 @@
     "message": "No address has been set for this name."
   },
   "noAlreadyHaveSeed": {
+<<<<<<< HEAD
     "message": "No, I already have a Secret Recovery Phrase"
+=======
+    "message": "Não, eu já tenho uma Frase de recuperação secreta"
+>>>>>>> upstream/develop
   },
   "noConversionRateAvailable": {
     "message": "No Conversion Rate Available"
@@ -1434,7 +1472,11 @@
     "message": "Remove account"
   },
   "removeAccountDescription": {
+<<<<<<< HEAD
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
+=======
+    "message": "Esta conta será removida da sua carteira. Antes de continuar, você precisa garantir que tem a Frase de recuperação secreta original ou chave privada para esta conta importada. Você pode importar ou criar contas novamente a partir do menu suspenso da conta. "
+>>>>>>> upstream/develop
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
@@ -1449,12 +1491,17 @@
     "message": "Reset Account"
   },
   "resetAccountDescription": {
+<<<<<<< HEAD
     "message": "Resetting your account will clear your transaction history. This will not change the balances in your accounts or require you to re-enter your Secret Recovery Phrase."
+=======
+    "message": "Redefinir sua conta limpará o histórico de transações. Isso não alterará os saldos nas suas contas nem exigirá a reinserção da Frase de recuperação secreta."
+>>>>>>> upstream/develop
   },
   "restore": {
     "message": "Restore"
   },
   "restoreAccountWithSeed": {
+<<<<<<< HEAD
     "message": "Restore your Account with Secret Recovery Phrase"
   },
   "restoreWalletPreferences": {
@@ -1475,6 +1522,18 @@
   },
   "revealSeedWordsTitle": {
     "message": "Secret Recovery Phrase"
+=======
+    "message": "Restaure sua conta com a Frase de recuperação secreta"
+  },
+  "revealSeedWords": {
+    "message": "Revelar Frase de recuperação secreta"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Se você alguma vez mudou de navegador ou trocou de computador, precisará dessa Frase de recuperação secreta para acessar suas contas. Salve-as em um lugar seguro e secreto."
+  },
+  "revealSeedWordsTitle": {
+    "message": "Frase de recuperação secreta"
+>>>>>>> upstream/develop
   },
   "revealSeedWordsWarning": {
     "message": "These words can be used to steal all your accounts."
@@ -1534,6 +1593,7 @@
     "message": "Security & Privacy"
   },
   "securitySettingsDescription": {
+<<<<<<< HEAD
     "message": "Privacy settings and wallet Secret Recovery Phrase"
   },
   "seedPhraseIntroSidebarBulletFour": {
@@ -1571,6 +1631,9 @@
   },
   "seedPhraseIntroTitleCopy": {
     "message": "Before getting started, watch this short video to learn about your recovery phrase and how to keep your wallet safe."
+=======
+    "message": "Configurações de privacidade e Frase de recuperação secreta"
+>>>>>>> upstream/develop
   },
   "seedPhrasePlaceholder": {
     "message": "Separate each word with a single space"
@@ -1578,8 +1641,15 @@
   "seedPhrasePlaceholderPaste": {
     "message": "Paste Secret Recovery Phrase from clipboard"
   },
+  "seedPhrasePlaceholderPaste": {
+    "message": "Cole a Frase de recuperação secreta da área de transferência"
+  },
   "seedPhraseReq": {
+<<<<<<< HEAD
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
+=======
+    "message": "As Frases de recuperação secreta contêm 12, 15, 18, 21 ou 24 palavras"
+>>>>>>> upstream/develop
   },
   "selectAHigherGasFee": {
     "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
@@ -1672,6 +1742,9 @@
   },
   "showSeedPhrase": {
     "message": "Show Secret Recovery Phrase"
+  },
+  "showSeedPhrase": {
+    "message": "Mostrar Frase de recuperação secreta"
   },
   "sigRequest": {
     "message": "Signature Request"
@@ -2160,7 +2233,11 @@
     "message": "Test Faucet"
   },
   "thisWillCreate": {
+<<<<<<< HEAD
     "message": "This will create a new wallet and Secret Recovery Phrase"
+=======
+    "message": "Isso criará uma nova carteira e Frase de recuperação secreta"
+>>>>>>> upstream/develop
   },
   "tips": {
     "message": "Tips"
@@ -2344,6 +2421,7 @@
     "message": "our hardware wallet connection guide"
   },
   "walletSeed": {
+<<<<<<< HEAD
     "message": "Secret Recovery Phrase"
   },
   "walletSeedRestore": {
@@ -2352,6 +2430,12 @@
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",
     "description": "$1 is a clickable link."
+=======
+    "message": "Frase de recuperação secreta"
+  },
+  "walletSeedRestore": {
+    "message": "Frase de recuperação secreta da carteira"
+>>>>>>> upstream/develop
   },
   "welcome": {
     "message": "Welcome to MetaMask"
@@ -2387,7 +2471,11 @@
     "message": "You are signing"
   },
   "yourPrivateSeedPhrase": {
+<<<<<<< HEAD
     "message": "Your private Secret Recovery Phrase"
+=======
+    "message": "Sua Frase de recuperação secreta privada"
+>>>>>>> upstream/develop
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"

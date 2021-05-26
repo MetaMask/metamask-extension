@@ -1,6 +1,8 @@
 @import 'token-list/index';
 
 .add-token {
+  $self: &;
+
   &__custom-token-form {
     padding: 8px 16px 16px;
 
@@ -12,6 +14,9 @@
     input[type="number"]:hover::-webkit-inner-spin-button {
       -webkit-appearance: none;
       display: none;
+    }
+    & #{$self}__decimal-warning {
+      margin-top: 5px;
     }
   }
 
@@ -40,5 +45,13 @@
       padding-right: 4px;
       cursor: pointer;
     }
+  }
+
+  &__link {
+    @include H7;
+
+    display: inline;
+    color: $primary-blue;
+    padding-left: 0;
   }
 }

@@ -2,6 +2,11 @@ import { ethErrors } from 'eth-rpc-errors';
 import { omit } from 'lodash';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
+  ETH_SYMBOL,
+  CHAIN_ID_TO_TYPE_MAP,
+  NETWORK_TO_NAME_MAP,
+} from '../../../../../shared/constants/network';
+import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
@@ -11,6 +16,18 @@ const switchEthereumChain = {
   implementation: switchEthereumChainHandler,
 };
 export default switchEthereumChain;
+
+function findExistingNetwork(chainId, findCustomRpcBy) {
+  if (chainId in CHAIN_ID_TO_TYPE_MAP) {
+    return {
+      chainId,
+      nickname: NETWORK_TO_NAME_MAP[chainId],
+      ticker: ETH_SYMBOL,
+    };
+  }
+
+  return findCustomRpcBy({ chainId });
+}
 
 async function switchEthereumChainHandler(
   req,
@@ -61,7 +78,7 @@ async function switchEthereumChainHandler(
     );
   }
 
-  const existingNetwork = findCustomRpcBy({ chainId: _chainId });
+  const existingNetwork = findExistingNetwork(_chainId, findCustomRpcBy);
 
   if (existingNetwork) {
     const currentChainId = getCurrentChainId();
@@ -75,7 +92,6 @@ async function switchEthereumChainHandler(
           origin,
           type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
           requestData: {
-            rpcUrl: existingNetwork.rpcUrl,
             chainId: existingNetwork.chainId,
             nickname: existingNetwork.nickname,
             ticker: existingNetwork.ticker,

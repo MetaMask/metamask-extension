@@ -562,6 +562,9 @@
   "dismissReminderField": {
     "message": "Dismiss recovery phrase backup reminder"
   },
+  "dismissReminderDescriptionField": {
+    "message": "これをオンにすると、リカバリー フレーズ バックアップのリマインダーメッセージが解除されます。資金の損失を防ぐために、シークレット リカバリー フレーズのバックアップを取ることを強くお勧めします。"
+  },
   "done": {
     "message": "Done"
   },
@@ -603,7 +606,11 @@
     "message": "Request encryption public key"
   },
   "endOfFlowMessage1": {
+<<<<<<< HEAD
     "message": "You passed the test - keep your Secret Recovery Phrase safe, it's your responsibility!"
+=======
+    "message": "テストに合格しました。シークレット リカバリー フレーズを安全に保管してください。保管はお客様の責任となります。"
+>>>>>>> upstream/develop
   },
   "endOfFlowMessage10": {
     "message": "All Done"
@@ -618,6 +625,7 @@
     "message": "Never share the phrase with anyone."
   },
   "endOfFlowMessage5": {
+<<<<<<< HEAD
     "message": "Be careful of phishing! MetaMask will never spontaneously ask for your Secret Recovery Phrase."
   },
   "endOfFlowMessage6": {
@@ -629,6 +637,15 @@
   },
   "endOfFlowMessage8": {
     "message": "MetaMask cannot recover your Secret Recovery Phrase."
+=======
+    "message": "フィッシングにご注意ください!MetaMask の動作として、シークレット リカバリー フレーズを要求することは絶対にありません。"
+  },
+  "endOfFlowMessage6": {
+    "message": "シークレット リカバリー フレーズを再度バックアップする場合は、[設定] -> [セキュリティとプライバシー] にアクセスしてください。"
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask はシークレット リカバリー フレーズを復元できません。"
+>>>>>>> upstream/develop
   },
   "endOfFlowMessage9": {
     "message": "Learn more."
@@ -880,7 +897,11 @@
   "importAccountLinkText": {
     "message": "import using Secret Recovery Phrase"
   },
+  "importAccountLinkText": {
+    "message": "シークレット リカバリー フレーズを使用してインポートする"
+  },
   "importAccountMsg": {
+<<<<<<< HEAD
     "message": " Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts "
   },
   "importAccountSeedPhrase": {
@@ -889,12 +910,21 @@
   "importAccountText": {
     "message": "or $1",
     "description": "$1 represents the text from `importAccountLinkText` as a link"
+=======
+    "message": " インポートされたアカウントは、最初に作成した MetaMask アカウントのシークレット リカバリー フレーズと関連付けられません。インポートされたアカウントの詳細を表示"
+  },
+  "importAccountSeedPhrase": {
+    "message": "シークレット リカバリー フレーズを使用してアカウントをインポートする:"
+>>>>>>> upstream/develop
   },
   "importWallet": {
     "message": "Import wallet"
   },
   "importYourExisting": {
     "message": "Import your existing wallet using a Secret Recovery Phrase"
+  },
+  "importYourExisting": {
+    "message": "シークレット リカバリー フレーズを使用して既存のウォレットをインポートする"
   },
   "imported": {
     "message": "Imported",
@@ -964,7 +994,11 @@
     "message": "Invalid RPC URL"
   },
   "invalidSeedPhrase": {
+<<<<<<< HEAD
     "message": "Invalid Secret Recovery Phrase"
+=======
+    "message": "無効なシークレット リカバリー フレーズ"
+>>>>>>> upstream/develop
   },
   "ipfsGateway": {
     "message": "IPFS Gateway"
@@ -1215,7 +1249,11 @@
     "message": "No address has been set for this name."
   },
   "noAlreadyHaveSeed": {
+<<<<<<< HEAD
     "message": "No, I already have a Secret Recovery Phrase"
+=======
+    "message": "いいえ、既にシークレット リカバリー フレーズを持っています"
+>>>>>>> upstream/develop
   },
   "noConversionRateAvailable": {
     "message": "No Conversion Rate Available"
@@ -1434,7 +1472,11 @@
     "message": "Remove account"
   },
   "removeAccountDescription": {
+<<<<<<< HEAD
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
+=======
+    "message": "このアカウントはウォレットから削除されます。続行する前に、インポートしたアカウントの元のシークレット リカバリー フレーズまたは秘密鍵を持っていることを確認してください。アカウントはアカウント ドロップダウンから再度インポートまたは作成できます。"
+>>>>>>> upstream/develop
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
@@ -1449,13 +1491,21 @@
     "message": "Reset Account"
   },
   "resetAccountDescription": {
+<<<<<<< HEAD
     "message": "Resetting your account will clear your transaction history. This will not change the balances in your accounts or require you to re-enter your Secret Recovery Phrase."
+=======
+    "message": "アカウントをリセットすると、トランザクション履歴がクリアされます。これによってアカウント内の残高が変更されることはありません。また、シークレット リカバリー フレーズの再入力を要求することはありません。"
+>>>>>>> upstream/develop
   },
   "restore": {
     "message": "Restore"
   },
   "restoreAccountWithSeed": {
+<<<<<<< HEAD
     "message": "Restore your Account with Secret Recovery Phrase"
+=======
+    "message": "シークレット リカバリー フレーズでアカウントを復元する"
+>>>>>>> upstream/develop
   },
   "restoreWalletPreferences": {
     "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
@@ -1468,6 +1518,7 @@
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
   },
   "revealSeedWords": {
+<<<<<<< HEAD
     "message": "Reveal Secret Recovery Phrase"
   },
   "revealSeedWordsDescription": {
@@ -1475,6 +1526,15 @@
   },
   "revealSeedWordsTitle": {
     "message": "Secret Recovery Phrase"
+=======
+    "message": "シークレット リカバリー フレーズを公開する"
+  },
+  "revealSeedWordsDescription": {
+    "message": "ブラウザーを変更した場合や、コンピューターを移動した場合は、自分のアカウントにアクセスするためにこのシークレット リカバリー フレーズが必要になります。安全で秘密の場所に保管してください。"
+  },
+  "revealSeedWordsTitle": {
+    "message": "シークレット リカバリー フレーズ"
+>>>>>>> upstream/develop
   },
   "revealSeedWordsWarning": {
     "message": "These words can be used to steal all your accounts."
@@ -1534,6 +1594,7 @@
     "message": "Security & Privacy"
   },
   "securitySettingsDescription": {
+<<<<<<< HEAD
     "message": "Privacy settings and wallet Secret Recovery Phrase"
   },
   "seedPhraseIntroSidebarBulletFour": {
@@ -1571,15 +1632,25 @@
   },
   "seedPhraseIntroTitleCopy": {
     "message": "Before getting started, watch this short video to learn about your recovery phrase and how to keep your wallet safe."
+=======
+    "message": "プライバシーの設定とシークレット リカバリー フレーズ"
+>>>>>>> upstream/develop
   },
   "seedPhrasePlaceholder": {
     "message": "Separate each word with a single space"
   },
   "seedPhrasePlaceholderPaste": {
+<<<<<<< HEAD
     "message": "Paste Secret Recovery Phrase from clipboard"
   },
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
+=======
+    "message": "クリップボードからシークレット リカバリー フレーズを貼り付けます"
+  },
+  "seedPhraseReq": {
+    "message": "シークレット リカバリー フレーズには、12、15、18、21、24 語が含まれます"
+>>>>>>> upstream/develop
   },
   "selectAHigherGasFee": {
     "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
@@ -1671,7 +1742,11 @@
     "message": "Show Private Keys"
   },
   "showSeedPhrase": {
+<<<<<<< HEAD
     "message": "Show Secret Recovery Phrase"
+=======
+    "message": "シークレット リカバリー フレーズを表示する"
+>>>>>>> upstream/develop
   },
   "sigRequest": {
     "message": "Signature Request"
@@ -1927,12 +2002,15 @@
     "message": "Price difference of ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
+<<<<<<< HEAD
   "swapPriceDifferenceTooltip": {
     "message": "The difference in market prices can be affected by fees taken by intermediaries, size of market, size of trade, or market inefficiencies."
   },
   "swapPriceDifferenceUnavailable": {
     "message": "Market price is unavailable.  Make sure you feel comfortable with the returned amount before proceeding."
   },
+=======
+>>>>>>> upstream/develop
   "swapProcessing": {
     "message": "Processing"
   },
@@ -2064,9 +2142,12 @@
     "message": "Multiple tokens can use the same name and symbol. Check $1 to verify this is the token you're looking for.",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
+<<<<<<< HEAD
   "swapViewToken": {
     "message": "View $1"
   },
+=======
+>>>>>>> upstream/develop
   "swapYourTokenBalance": {
     "message": "$1 $2 available to swap",
     "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
@@ -2160,7 +2241,11 @@
     "message": "Test Faucet"
   },
   "thisWillCreate": {
+<<<<<<< HEAD
     "message": "This will create a new wallet and Secret Recovery Phrase"
+=======
+    "message": "これにより、新しいウォレットとシークレット リカバリー フレーズが作成されます"
+>>>>>>> upstream/develop
   },
   "tips": {
     "message": "Tips"
@@ -2344,10 +2429,17 @@
     "message": "our hardware wallet connection guide"
   },
   "walletSeed": {
+<<<<<<< HEAD
     "message": "Secret Recovery Phrase"
   },
   "walletSeedRestore": {
     "message": "Wallet Secret Recovery Phrase"
+=======
+    "message": "シークレット リカバリー フレーズ"
+  },
+  "walletSeedRestore": {
+    "message": "ウォレット シークレット リカバリー フレーズ"
+>>>>>>> upstream/develop
   },
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",
@@ -2387,7 +2479,11 @@
     "message": "You are signing"
   },
   "yourPrivateSeedPhrase": {
+<<<<<<< HEAD
     "message": "Your private Secret Recovery Phrase"
+=======
+    "message": "秘密のシークレット リカバリー フレーズ"
+>>>>>>> upstream/develop
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"

@@ -1,4 +1,5 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { useCallback } from 'react';
 import { showSidebar } from '../store/actions';
 import {
@@ -7,8 +8,8 @@ import {
   setCustomGasLimit,
 } from '../ducks/gas/gas.duck';
 import { increaseLastGasPrice } from '../helpers/utils/confirm-tx.util';
+import { getIsMainnet } from '../selectors';
 import { useMetricEvent } from './useMetricEvent';
-
 /**
  * Provides a reusable hook that, given a transactionGroup, will return
  * a method for beginning the retry process
@@ -17,6 +18,8 @@ import { useMetricEvent } from './useMetricEvent';
  */
 export function useRetryTransaction(transactionGroup) {
   const { primaryTransaction } = transactionGroup;
+  const isMainnet = useSelector(getIsMainnet);
+  const hideBasic = !(isMainnet || process.env.IN_TEST);
   // Signature requests do not have a txParams, but this hook is called indiscriminately
   const gasPrice = primaryTransaction.txParams?.gasPrice;
   const trackMetricsEvent = useMetricEvent({
@@ -46,11 +49,11 @@ export function useRetryTransaction(transactionGroup) {
         showSidebar({
           transitionName: 'sidebar-left',
           type: 'customize-gas',
-          props: { transaction },
+          props: { transaction, hideBasic },
         }),
       );
     },
-    [dispatch, trackMetricsEvent, gasPrice, primaryTransaction],
+    [dispatch, trackMetricsEvent, gasPrice, primaryTransaction, hideBasic],
   );
 
   return retryTransaction;

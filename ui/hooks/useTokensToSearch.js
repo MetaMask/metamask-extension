@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import contractMap from '@metamask/contract-metadata';
 import BigNumber from 'bignumber.js';
 import { isEqual, shuffle } from 'lodash';
-import { checksumAddress } from '../helpers/utils/util';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getTokenExchangeRates,
@@ -14,6 +13,7 @@ import {
 } from '../selectors';
 import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { useEqualityCheck } from './useEqualityCheck';
 
 const tokenList = shuffle(
@@ -58,12 +58,12 @@ export function getRenderableTokenData(
     ) || '';
   const usedIconUrl =
     iconUrl ||
-    (contractMap[checksumAddress(address)] &&
-      `images/contract/${contractMap[checksumAddress(address)].logo}`);
+    (contractMap[toChecksumHexAddress(address)] &&
+      `images/contract/${contractMap[toChecksumHexAddress(address)].logo}`);
   return {
     ...token,
     primaryLabel: symbol,
-    secondaryLabel: name || contractMap[checksumAddress(address)]?.name,
+    secondaryLabel: name || contractMap[toChecksumHexAddress(address)]?.name,
     rightPrimaryLabel:
       string && `${new BigNumber(string).round(6).toString()} ${symbol}`,
     rightSecondaryLabel: formattedFiat,
@@ -71,7 +71,7 @@ export function getRenderableTokenData(
     identiconAddress: usedIconUrl ? null : address,
     balance,
     decimals,
-    name: name || contractMap[checksumAddress(address)]?.name,
+    name: name || contractMap[toChecksumHexAddress(address)]?.name,
     rawFiat,
   };
 }

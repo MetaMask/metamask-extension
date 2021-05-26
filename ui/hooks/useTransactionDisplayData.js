@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { captureException } from '@sentry/browser';
 import { getKnownMethodData } from '../selectors/selectors';
 import {
   getStatusKey,
@@ -220,6 +221,12 @@ export function useTransactionDisplayData(transactionGroup) {
     category = TRANSACTION_GROUP_CATEGORIES.SEND;
     title = t('send');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
+  } else {
+    captureException(
+      Error(
+        `useTransactionDisplayData does not recognize transaction type. Type received is: ${type}`,
+      ),
+    );
   }
 
   const primaryCurrencyPreferences = useUserPreferencedCurrency(PRIMARY);

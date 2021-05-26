@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { captureException } from '@sentry/browser';
 import Approve from '../../ui/icon/approve-icon.component';
 import Interaction from '../../ui/icon/interaction-icon.component';
 import Receive from '../../ui/icon/receive-icon.component';
@@ -40,10 +41,35 @@ export default function TransactionIcon({ status, category }) {
 
   const Icon = ICON_MAP[category];
 
+  if (!Icon) {
+    captureException(
+      Error(
+        `The category prop passed to TransactionIcon is not supported. The prop is: ${category}`,
+      ),
+    );
+
+    return <div className="transaction-icon__grey-circle" />;
+  }
+
   return <Icon color={color} size={28} />;
 }
 
 TransactionIcon.propTypes = {
-  status: PropTypes.string.isRequired,
-  category: PropTypes.string.isRequired,
+  status: PropTypes.oneOf([
+    TRANSACTION_GROUP_CATEGORIES.APPROVAL,
+    TRANSACTION_GROUP_CATEGORIES.INTERACTION,
+    TRANSACTION_GROUP_CATEGORIES.SEND,
+    TRANSACTION_GROUP_CATEGORIES.SIGNATURE_REQUEST,
+    TRANSACTION_GROUP_CATEGORIES.RECEIVE,
+    TRANSACTION_GROUP_CATEGORIES.SWAP,
+  ]).isRequired,
+  category: PropTypes.oneOf([
+    TRANSACTION_GROUP_STATUSES.PENDING,
+    TRANSACTION_STATUSES.UNAPPROVED,
+    TRANSACTION_STATUSES.APPROVED,
+    TRANSACTION_STATUSES.FAILED,
+    TRANSACTION_STATUSES.REJECTED,
+    TRANSACTION_GROUP_STATUSES.CANCELLED,
+    TRANSACTION_STATUSES.DROPPED,
+  ]).isRequired,
 };

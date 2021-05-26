@@ -443,7 +443,7 @@ export const fetchQuotesAndSetQuoteState = (
     if (
       toTokenAddress &&
       toTokenSymbol !== swapsDefaultToken.symbol &&
-      !contractExchangeRates[toTokenAddress]
+      contractExchangeRates[toTokenAddress] === undefined
     ) {
       destinationTokenAddedForSwap = true;
       await dispatch(

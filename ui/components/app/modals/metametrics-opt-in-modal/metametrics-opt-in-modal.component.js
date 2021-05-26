@@ -27,76 +27,81 @@ export default class MetaMetricsOptInModal extends Component {
               <img src="images/metrics-chart.svg" alt="" />
             </div>
             <div className="metametrics-opt-in__title">
-              Help Us Improve MetaMask
+              {t('metametricsHelpImproveMetaMask')}
             </div>
             <div className="metametrics-opt-in__body">
               <div className="metametrics-opt-in__description">
-                MetaMask would like to gather usage data to better understand
-                how our users interact with the extension. This data will be
-                used to continually improve the usability and user experience of
-                our product and the Ethereum ecosystem.
+                {t('metametricsOptInDescription')}
               </div>
               <div className="metametrics-opt-in__description">
-                MetaMask will..
+                {t('metametricsCommitmentsIntro')}
               </div>
 
               <div className="metametrics-opt-in__committments">
                 <div className="metametrics-opt-in__row">
                   <i className="fa fa-check" />
                   <div className="metametrics-opt-in__row-description">
-                    Always allow you to opt-out via Settings
+                    {t('metametricsCommitmentsAllowOptOut')}
                   </div>
                 </div>
                 <div className="metametrics-opt-in__row">
                   <i className="fa fa-check" />
                   <div className="metametrics-opt-in__row-description">
-                    Send anonymized click & pageview events
-                  </div>
-                </div>
-                <div className="metametrics-opt-in__row">
-                  <i className="fa fa-check" />
-                  <div className="metametrics-opt-in__row-description">
-                    Maintain a public aggregate dashboard to educate the
-                    community
+                    {t('metametricsCommitmentsSendAnonymizedEvents')}
                   </div>
                 </div>
                 <div className="metametrics-opt-in__row metametrics-opt-in__break-row">
                   <i className="fa fa-times" />
                   <div className="metametrics-opt-in__row-description">
-                    <span className="metametrics-opt-in__bold">Never</span>{' '}
-                    collect keys, addresses, transactions, balances, hashes, or
-                    any personal information
+                    {t('metametricsCommitmentsNeverCollectKeysEtc', [
+                      <span
+                        className="metametrics-opt-in__bold"
+                        key="neverCollectKeys"
+                      >
+                        {t('metametricsCommitmentsBoldNever')}
+                      </span>,
+                    ])}
                   </div>
                 </div>
                 <div className="metametrics-opt-in__row">
                   <i className="fa fa-times" />
                   <div className="metametrics-opt-in__row-description">
-                    <span className="metametrics-opt-in__bold">Never</span>{' '}
-                    collect your full IP address
+                    {t('metametricsCommitmentsNeverCollectIP', [
+                      <span
+                        className="metametrics-opt-in__bold"
+                        key="neverCollectIP"
+                      >
+                        {t('metametricsCommitmentsBoldNever')}
+                      </span>,
+                    ])}
                   </div>
                 </div>
                 <div className="metametrics-opt-in__row">
                   <i className="fa fa-times" />
                   <div className="metametrics-opt-in__row-description">
-                    <span className="metametrics-opt-in__bold">Never</span> sell
-                    data for profit. Ever!
+                    {t('metametricsCommitmentsNeverSellDataForProfit', [
+                      <span
+                        className="metametrics-opt-in__bold"
+                        key="neverSellData"
+                      >
+                        {t('metametricsCommitmentsBoldNever')}
+                      </span>,
+                    ])}
                   </div>
                 </div>
               </div>
             </div>
             <div className="metametrics-opt-in__bottom-text">
-              This data is aggregated and is therefore anonymous for the
-              purposes of General Data Protection Regulation (EU) 2016/679. For
-              more information in relation to our privacy practices, please see
-              our&nbsp;
-              <a
-                href="https://metamask.io/privacy.html"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Privacy Policy here
-              </a>
-              .
+              {t('gdprMessage', [
+                <a
+                  key="metametrics-bottom-text-wrapper"
+                  href="https://metamask.io/privacy.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('gdprMessagePrivacyPolicy')}
+                </a>,
+              ])}
             </div>
           </div>
           <div className="metametrics-opt-in__footer">

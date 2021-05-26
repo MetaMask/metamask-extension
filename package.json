@@ -1,10 +1,10 @@
 {
   "name": "metamask-crx",
-  "version": "9.5.2",
+  "version": "9.5.5",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/metamask-extension"
+    "url": "https://github.com/MetaMask/metamask-extension.git"
   },
   "scripts": {
     "setup": "yarn install && yarn setup:postinstall",
@@ -79,6 +79,7 @@
     "**/xmlhttprequest-ssl": "^1.6.2",
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.21",
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/elliptic": "^6.5.4",
+    "3box/ipfs/libp2p-mdns/multicast-dns/dns-packet": "^5.2.2",
     "3box/**/libp2p-crypto/node-forge": "^0.10.0",
     "3box/**/libp2p-keychain/node-forge": "^0.10.0",
     "analytics-node/axios": "^0.21.1",
@@ -95,10 +96,10 @@
     "@lavamoat/preinstall-always-fail": "^1.0.0",
     "@material-ui/core": "^4.11.0",
     "@metamask/contract-metadata": "^1.22.0",
-    "@metamask/controllers": "^8.0.0",
-    "@metamask/eth-ledger-bridge-keyring": "^0.4.0",
+    "@metamask/controllers": "^9.0.0",
+    "@metamask/eth-ledger-bridge-keyring": "^0.5.0",
     "@metamask/eth-token-tracker": "^3.0.1",
-    "@metamask/etherscan-link": "^2.0.0",
+    "@metamask/etherscan-link": "^2.1.0",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/logo": "^2.5.0",
     "@metamask/obs-store": "^5.0.0",
@@ -209,8 +210,8 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.5.5",
-    "@lavamoat/allow-scripts": "^1.0.4",
-    "@metamask/auto-changelog": "^1.0.0",
+    "@lavamoat/allow-scripts": "^1.0.6",
+    "@metamask/auto-changelog": "^2.1.0",
     "@metamask/eslint-config": "^6.0.0",
     "@metamask/eslint-config-jest": "^6.0.0",
     "@metamask/eslint-config-mocha": "^6.0.0",
@@ -270,6 +271,7 @@
     "gulp-terser-js": "^5.2.2",
     "gulp-watch": "^5.0.1",
     "gulp-zip": "^4.0.0",
+    "history": "^5.0.0",
     "jest": "^26.6.3",
     "jsdom": "^11.2.0",
     "koa": "^2.7.0",

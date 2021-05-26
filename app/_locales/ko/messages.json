@@ -562,6 +562,9 @@
   "dismissReminderField": {
     "message": "Dismiss recovery phrase backup reminder"
   },
+  "dismissReminderDescriptionField": {
+    "message": "이것을 켜서 복구 구문 백업 알림 메시지를 해지하십시오. 지갑을 복원할 수 있도록 비밀 복구 구문을 저장할 것을 강력하게 권장합니다."
+  },
   "done": {
     "message": "Done"
   },
@@ -603,7 +606,11 @@
     "message": "Request encryption public key"
   },
   "endOfFlowMessage1": {
+<<<<<<< HEAD
     "message": "You passed the test - keep your Secret Recovery Phrase safe, it's your responsibility!"
+=======
+    "message": "테스트를 통과하셨습니다. 비밀 복구 구문을 안전하게 보관할 책임은 귀하에게 있습니다!"
+>>>>>>> upstream/develop
   },
   "endOfFlowMessage10": {
     "message": "All Done"
@@ -618,6 +625,7 @@
     "message": "Never share the phrase with anyone."
   },
   "endOfFlowMessage5": {
+<<<<<<< HEAD
     "message": "Be careful of phishing! MetaMask will never spontaneously ask for your Secret Recovery Phrase."
   },
   "endOfFlowMessage6": {
@@ -629,6 +637,15 @@
   },
   "endOfFlowMessage8": {
     "message": "MetaMask cannot recover your Secret Recovery Phrase."
+=======
+    "message": "피싱을 조심하십시오! MetaMask에서는 절대로 시드 구문을 갑자기 물어보지 않습니다."
+  },
+  "endOfFlowMessage6": {
+    "message": "비밀 복구 구문을 다시 백업해야 한다면 설정 -> 보안에서 시드 구문을 찾을 수 있습니다."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMask에서는 계정 시드 구문을 복구할 수 없습니다."
+>>>>>>> upstream/develop
   },
   "endOfFlowMessage9": {
     "message": "Learn more."
@@ -880,8 +897,15 @@
   "importAccountLinkText": {
     "message": "import using Secret Recovery Phrase"
   },
+  "importAccountLinkText": {
+    "message": "계정 시드 구문으로 가져오기"
+  },
   "importAccountMsg": {
+<<<<<<< HEAD
     "message": " Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts "
+=======
+    "message": " 가져온 계정은 생성한 MetaMask 계정 시드 구문 원본에 연결되지 않습니다. 가져온 계정에 대해 자세히 알아보십시오. "
+>>>>>>> upstream/develop
   },
   "importAccountSeedPhrase": {
     "message": "Import an account with Secret Recovery Phrase"
@@ -895,6 +919,9 @@
   },
   "importYourExisting": {
     "message": "Import your existing wallet using a Secret Recovery Phrase"
+  },
+  "importYourExisting": {
+    "message": "12단어 시드 구문을 사용하여 지갑 가져오기"
   },
   "imported": {
     "message": "Imported",
@@ -964,7 +991,11 @@
     "message": "Invalid RPC URL"
   },
   "invalidSeedPhrase": {
+<<<<<<< HEAD
     "message": "Invalid Secret Recovery Phrase"
+=======
+    "message": "잘못된 계정 시드 구문"
+>>>>>>> upstream/develop
   },
   "ipfsGateway": {
     "message": "IPFS Gateway"
@@ -1434,7 +1465,11 @@
     "message": "Remove account"
   },
   "removeAccountDescription": {
+<<<<<<< HEAD
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
+=======
+    "message": "이 계정이 지갑에서 제거됩니다. 계속하기 전에 가져온 이 계정에 대한 원본 시드 구문이나 비공개 키가 있는지 확인하십시오. 계정 드롭다운에서 계정을 가져오거나 다시 만들 수 있습니다. "
+>>>>>>> upstream/develop
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
@@ -1449,7 +1484,11 @@
     "message": "Reset Account"
   },
   "resetAccountDescription": {
+<<<<<<< HEAD
     "message": "Resetting your account will clear your transaction history. This will not change the balances in your accounts or require you to re-enter your Secret Recovery Phrase."
+=======
+    "message": "계정을 재설정하면 거래 내역이 지워집니다. 계정의 잔액이 변경되지 않으면 시드 구문을 다시 입력하지 않아도 됩니다."
+>>>>>>> upstream/develop
   },
   "restore": {
     "message": "Restore"
@@ -1468,6 +1507,7 @@
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
   },
   "revealSeedWords": {
+<<<<<<< HEAD
     "message": "Reveal Secret Recovery Phrase"
   },
   "revealSeedWordsDescription": {
@@ -1475,6 +1515,15 @@
   },
   "revealSeedWordsTitle": {
     "message": "Secret Recovery Phrase"
+=======
+    "message": "계정 시드 구문 공개"
+  },
+  "revealSeedWordsDescription": {
+    "message": "브라우저를 변경하거나 컴퓨터를 옮긴 경우, 계정에 액세스하려면 이 시드 구문이 필요합니다. 기밀이 보장된 안전한 곳에 보관하십시오."
+  },
+  "revealSeedWordsTitle": {
+    "message": "계정 시드 구문"
+>>>>>>> upstream/develop
   },
   "revealSeedWordsWarning": {
     "message": "These words can be used to steal all your accounts."
@@ -1671,7 +1720,11 @@
     "message": "Show Private Keys"
   },
   "showSeedPhrase": {
+<<<<<<< HEAD
     "message": "Show Secret Recovery Phrase"
+=======
+    "message": "계정 시드 구문 표시"
+>>>>>>> upstream/develop
   },
   "sigRequest": {
     "message": "Signature Request"
@@ -2064,9 +2117,12 @@
     "message": "Multiple tokens can use the same name and symbol. Check $1 to verify this is the token you're looking for.",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
+<<<<<<< HEAD
   "swapViewToken": {
     "message": "View $1"
   },
+=======
+>>>>>>> upstream/develop
   "swapYourTokenBalance": {
     "message": "$1 $2 available to swap",
     "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
@@ -2344,6 +2400,7 @@
     "message": "our hardware wallet connection guide"
   },
   "walletSeed": {
+<<<<<<< HEAD
     "message": "Secret Recovery Phrase"
   },
   "walletSeedRestore": {
@@ -2352,6 +2409,12 @@
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",
     "description": "$1 is a clickable link."
+=======
+    "message": "계정 시드 구문"
+  },
+  "walletSeedRestore": {
+    "message": "지갑 계정 시드 구문"
+>>>>>>> upstream/develop
   },
   "welcome": {
     "message": "Welcome to MetaMask"
@@ -2387,7 +2450,11 @@
     "message": "You are signing"
   },
   "yourPrivateSeedPhrase": {
+<<<<<<< HEAD
     "message": "Your private Secret Recovery Phrase"
+=======
+    "message": "비밀 백업 구문 확인"
+>>>>>>> upstream/develop
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"

@@ -486,7 +486,7 @@
     "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
   },
   "decimal": {
-    "message": "Decimals of Precision"
+    "message": "Token Decimal"
   },
   "decimalsMustZerotoTen": {
     "message": "Decimals must be at least 0, and not over 36."
@@ -561,6 +561,9 @@
   },
   "dismissReminderField": {
     "message": "Dismiss recovery phrase backup reminder"
+  },
+  "domain": {
+    "message": "Domain"
   },
   "done": {
     "message": "Done"
@@ -1039,6 +1042,9 @@
   "mainnet": {
     "message": "Ethereum Mainnet"
   },
+  "makeAnotherSwap": {
+    "message": "Create a new swap"
+  },
   "max": {
     "message": "Max"
   },
@@ -1116,6 +1122,9 @@
   },
   "myAccounts": {
     "message": "My Accounts"
+  },
+  "name": {
+    "message": "Name"
   },
   "needEtherInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
@@ -1258,18 +1267,6 @@
     "message": "Swapping on mobile is here!",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
   },
-  "notifications2ActionText": {
-    "message": "Start survey",
-    "description": "The 'call to action' label on the button, or link, of the 'Help improve MetaMask' 'See What's New' notification. Upon clicking, users will be taken to an external page where they can complete a survey."
-  },
-  "notifications2Description": {
-    "message": "Please share your experience in this 5 minute survey.",
-    "description": "Description of a notification in the 'See What's New' popup. Further clarifies how the users can help: by completing a 5 minute survey about MetaMask."
-  },
-  "notifications2Title": {
-    "message": "Help improve MetaMask",
-    "description": "Title for a notification in the 'See What's New' popup. Asks users to take action to make MetaMask better."
-  },
   "notifications3ActionText": {
     "message": "Read more",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
@@ -1281,6 +1278,22 @@
   "notifications3Title": {
     "message": "Stay secure",
     "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
+  },
+  "notifications4ActionText": {
+    "message": "Start swapping",
+    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
+  },
+  "notifications4Description": {
+    "message": "Get the best prices on token swaps right inside your wallet. MetaMask now connects you to multiple decentralized exchange aggregators and professional market makers on Binance Smart Chain.",
+    "description": "Description of a notification in the 'See What's New' popup."
+  },
+  "notifications4Title": {
+    "message": "Swap on Binance Smart Chain",
+    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
+  },
+  "notifications5Description": {
+    "message": "Your \"Seed Phrase\" is now called your \"Secret Recovery Phrase.\"",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
   "ofTextNofM": {
     "message": "of"
@@ -1387,6 +1400,9 @@
   },
   "provide": {
     "message": "Provide"
+  },
+  "publicAddress": {
+    "message": "Public Address"
   },
   "queue": {
     "message": "Queue"
@@ -1920,18 +1936,18 @@
     "message": "You are about to swap $1 $2 (~$3) for $4 $5 (~$6).",
     "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
   },
-  "swapPriceDifferenceAcknowledgement": {
-    "message": "I'm aware"
-  },
   "swapPriceDifferenceTitle": {
     "message": "Price difference of ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
-  "swapPriceDifferenceTooltip": {
-    "message": "The difference in market prices can be affected by fees taken by intermediaries, size of market, size of trade, or market inefficiencies."
+  "swapPriceImpactTooltip": {
+    "message": "Price impact is the difference between the current market price and the amount received during transaction execution. Price impact is a function of the size of your trade relative to the size of the liquidity pool."
   },
-  "swapPriceDifferenceUnavailable": {
-    "message": "Market price is unavailable.  Make sure you feel comfortable with the returned amount before proceeding."
+  "swapPriceUnavailableDescription": {
+    "message": "Price impact could not be determined due to lack of market price data. Please confirm that you are comfortable with the amount of tokens you are about to receive before swapping."
+  },
+  "swapPriceUnavailableTitle": {
+    "message": "Check your rate before proceeding"
   },
   "swapProcessing": {
     "message": "Processing"
@@ -2064,9 +2080,6 @@
     "message": "Multiple tokens can use the same name and symbol. Check $1 to verify this is the token you're looking for.",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
-  "swapViewToken": {
-    "message": "View $1"
-  },
   "swapYourTokenBalance": {
     "message": "$1 $2 available to swap",
     "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
@@ -2184,8 +2197,14 @@
   "tokenContractAddress": {
     "message": "Token Contract Address"
   },
+  "tokenDecimalFetchFailed": {
+    "message": "Token decimal required."
+  },
   "tokenSymbol": {
     "message": "Token Symbol"
+  },
+  "tooltipApproveButton": {
+    "message": "I understand"
   },
   "total": {
     "message": "Total"
@@ -2315,6 +2334,10 @@
   "userName": {
     "message": "Username"
   },
+  "verifyThisTokenDecimalOn": {
+    "message": "Token decimal can be found on $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
   "verifyThisTokenOn": {
     "message": "Verify this token on $1",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -2327,6 +2350,9 @@
   },
   "viewContact": {
     "message": "View Contact"
+  },
+  "viewMore": {
+    "message": "View More"
   },
   "viewOnCustomBlockExplorer": {
     "message": "View at $1"

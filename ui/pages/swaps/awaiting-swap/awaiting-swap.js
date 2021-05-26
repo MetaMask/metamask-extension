@@ -3,7 +3,7 @@ import React, { useContext, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import { createCustomExplorerLink } from '@metamask/etherscan-link';
+import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
@@ -28,6 +28,7 @@ import {
   prepareToLeaveSwaps,
 } from '../../../ducks/swaps/swaps';
 import Mascot from '../../../components/ui/mascot';
+import Box from '../../../components/ui/box';
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
@@ -37,7 +38,6 @@ import {
   OFFLINE_FOR_MAINTENANCE,
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
 } from '../../../../shared/constants/swaps';
-import { CHAIN_ID_TO_TYPE_MAP as VALID_INFURA_CHAIN_IDS } from '../../../../shared/constants/network';
 import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 
@@ -45,7 +45,6 @@ import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
-import { getBlockExplorerUrlForTx } from '../../../../shared/modules/transaction.utils';
 
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
@@ -100,33 +99,36 @@ export default function AwaitingSwap({
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
+  const sensitiveProperties = {
+    token_from: sourceTokenInfo?.symbol,
+    token_from_amount: fetchParams?.value,
+    token_to: destinationTokenInfo?.symbol,
+    request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
+    slippage: fetchParams?.slippage,
+    custom_slippage: fetchParams?.slippage === 2,
+    gas_fees: feeinUnformattedFiat,
+    is_hardware_wallet: hardwareWalletUsed,
+    hardware_wallet_type: hardwareWalletType,
+  };
   const quotesExpiredEvent = useNewMetricEvent({
     event: 'Quotes Timed Out',
-    sensitiveProperties: {
-      token_from: sourceTokenInfo?.symbol,
-      token_from_amount: fetchParams?.value,
-      token_to: destinationTokenInfo?.symbol,
-      request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
-      slippage: fetchParams?.slippage,
-      custom_slippage: fetchParams?.slippage === 2,
-      gas_fees: feeinUnformattedFiat,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
-    },
+    sensitiveProperties,
+    category: 'swaps',
+  });
+  const makeAnotherSwapEvent = useNewMetricEvent({
+    event: 'Make Another Swap',
+    sensitiveProperties,
     category: 'swaps',
   });
 
-  let blockExplorerUrl;
-  if (txHash && rpcPrefs.blockExplorerUrl) {
-    blockExplorerUrl = getBlockExplorerUrlForTx({ hash: txHash }, rpcPrefs);
-  } else if (txHash && SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId]) {
-    blockExplorerUrl = createCustomExplorerLink(
-      txHash,
-      SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId],
-    );
-  } else if (txHash && VALID_INFURA_CHAIN_IDS[chainId]) {
-    blockExplorerUrl = getBlockExplorerUrlForTx({ chainId, hash: txHash });
-  }
+  const baseNetworkUrl =
+    rpcPrefs.blockExplorerUrl ??
+    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
+    null;
+  const blockExplorerUrl = getBlockExplorerLink(
+    { hash: txHash, chainId },
+    { blockExplorerUrl: baseNetworkUrl },
+  );
 
   const isCustomBlockExplorerUrl =
     SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ||
@@ -212,7 +214,7 @@ export default function AwaitingSwap({
   } else if (!errorKey && swapComplete) {
     headerText = t('swapTransactionComplete');
     statusImage = <SwapSuccessIcon />;
-    submitText = t('swapViewToken', [destinationTokenInfo.symbol]);
+    submitText = t('close');
     descriptionText = t('swapTokenAvailable', [
       <span
         key="swapTokenAvailable-2"
@@ -230,6 +232,22 @@ export default function AwaitingSwap({
     );
   }
 
+  const MakeAnotherSwap = () => {
+    return (
+      <Box marginBottom={3}>
+        <a
+          href="#"
+          onClick={() => {
+            makeAnotherSwapEvent();
+            dispatch(navigateBackToBuildQuote(history));
+          }}
+        >
+          {t('makeAnotherSwap')}
+        </a>
+      </Box>
+    );
+  };
+
   return (
     <div className="awaiting-swap">
       <div className="awaiting-swap__content">
@@ -245,6 +263,7 @@ export default function AwaitingSwap({
         <div className="awaiting-swap__main-descrption">{descriptionText}</div>
         {content}
       </div>
+      {!errorKey && swapComplete && <MakeAnotherSwap />}
       <SwapsFooter
         onSubmit={async () => {
           if (errorKey === OFFLINE_FOR_MAINTENANCE) {
@@ -263,7 +282,8 @@ export default function AwaitingSwap({
           } else if (errorKey) {
             await dispatch(navigateBackToBuildQuote(history));
           } else if (
-            isSwapsDefaultTokenSymbol(destinationTokenInfo?.symbol, chainId)
+            isSwapsDefaultTokenSymbol(destinationTokenInfo?.symbol, chainId) ||
+            swapComplete
           ) {
             history.push(DEFAULT_ROUTE);
           } else {

@@ -2,13 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import Identicon from '../../../../components/ui/identicon';
-import { isValidAddress } from '../../../../helpers/utils/util';
 import Dialog from '../../../../components/ui/dialog';
 import ContactList from '../../../../components/app/contact-list';
 import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component';
 import { ellipsify } from '../../send.utils';
 import Button from '../../../../components/ui/button';
 import Confusable from '../../../../components/ui/confusable';
+import {
+  isBurnAddress,
+  isValidHexAddress,
+} from '../../../../../shared/modules/hexstring-utils';
 
 export default class AddRecipient extends Component {
   static propTypes = {
@@ -101,7 +104,10 @@ export default class AddRecipient extends Component {
 
     let content;
 
-    if (isValidAddress(query)) {
+    if (
+      !isBurnAddress(query) &&
+      isValidHexAddress(query, { mixedCaseUseChecksum: true })
+    ) {
       content = this.renderExplicitAddress(query);
     } else if (ensResolution) {
       content = this.renderExplicitAddress(
