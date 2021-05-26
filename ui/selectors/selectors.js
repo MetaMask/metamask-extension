@@ -529,6 +529,7 @@ function getAllowedNotificationIds(state) {
     3: true,
     4: getCurrentChainId(state) === BSC_CHAIN_ID,
     5: true,
+    6: true,
   };
 }
 

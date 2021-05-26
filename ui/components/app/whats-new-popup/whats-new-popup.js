@@ -41,6 +41,31 @@ function getActionFunctionById(id, history) {
   return actionFunctions[id];
 }
 
+const renderDescription = (description) => {
+  if (!Array.isArray(description)) {
+    return (
+      <div className="whats-new-popup__notification-description">
+        {description}
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {description.map((piece, index) => {
+        return (
+          <div
+            className="whats-new-popup__notification-description"
+            key={`item-${index}`}
+          >
+            {piece}
+          </div>
+        );
+      })}
+    </>
+  );
+};
+
 const renderFirstNotification = (notification, idRefMap, history) => {
   const { id, date, title, description, image, actionText } = notification;
   const actionFunction = getActionFunctionById(id, history);
@@ -58,15 +83,13 @@ const renderFirstNotification = (notification, idRefMap, history) => {
       className={classnames(
         'whats-new-popup__notification whats-new-popup__first-notification',
       )}
-      key={`whats-new-popop-notificatiion-${id}`}
+      key={`whats-new-popop-notification-${id}`}
       ref={idRefMap[id]}
     >
       {!placeImageBelowDescription && imageComponent}
       <div className="whats-new-popup__notification-title">{title}</div>
       <div className="whats-new-popup__description-and-date">
-        <div className="whats-new-popup__notification-description">
-          {description}
-        </div>
+        {renderDescription(description)}
         <div className="whats-new-popup__notification-date">{date}</div>
       </div>
       {placeImageBelowDescription && imageComponent}
@@ -91,14 +114,12 @@ const renderSubsequentNotification = (notification, idRefMap, history) => {
   return (
     <div
       className={classnames('whats-new-popup__notification')}
-      key={`whats-new-popop-notificatiion-${id}`}
+      key={`whats-new-popop-notification-${id}`}
       ref={idRefMap[id]}
     >
       <div className="whats-new-popup__notification-title">{title}</div>
       <div className="whats-new-popup__description-and-date">
-        <div className="whats-new-popup__notification-description">
-          {description}
-        </div>
+        {renderDescription(description)}
         <div className="whats-new-popup__notification-date">{date}</div>
       </div>
       {actionText && (
