@@ -8,10 +8,12 @@ import { I18nContext } from '../../../contexts/i18n';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
+import Typography from '../../ui/typography';
 import { updateViewedNotifications } from '../../../store/actions';
 import { getTranslatedUINoficiations } from '../../../../shared/notifications';
 import { getSortedNotificationsToShow } from '../../../selectors';
 import { BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes';
+import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 function getActionFunctionById(id, history) {
   const actionFunctions = {
@@ -44,22 +46,22 @@ function getActionFunctionById(id, history) {
 const renderDescription = (description) => {
   if (!Array.isArray(description)) {
     return (
-      <div className="whats-new-popup__notification-description">
-        {description}
-      </div>
+      <Typography variant={TYPOGRAPHY.Paragraph}>{description}</Typography>
     );
   }
 
   return (
     <>
       {description.map((piece, index) => {
+        const isLast = index === description.length - 1;
         return (
-          <div
-            className="whats-new-popup__notification-description"
+          <Typography
             key={`item-${index}`}
+            variant={TYPOGRAPHY.Paragraph}
+            boxProps={{ marginBottom: isLast ? 0 : 2 }}
           >
             {piece}
-          </div>
+          </Typography>
         );
       })}
     </>
@@ -89,7 +91,9 @@ const renderFirstNotification = (notification, idRefMap, history) => {
       {!placeImageBelowDescription && imageComponent}
       <div className="whats-new-popup__notification-title">{title}</div>
       <div className="whats-new-popup__description-and-date">
-        {renderDescription(description)}
+        <div className="whats-new-popup__notification-description">
+          {renderDescription(description)}
+        </div>
         <div className="whats-new-popup__notification-date">{date}</div>
       </div>
       {placeImageBelowDescription && imageComponent}
@@ -119,7 +123,9 @@ const renderSubsequentNotification = (notification, idRefMap, history) => {
     >
       <div className="whats-new-popup__notification-title">{title}</div>
       <div className="whats-new-popup__description-and-date">
-        {renderDescription(description)}
+        <div className="whats-new-popup__notification-description">
+          {renderDescription(description)}
+        </div>
         <div className="whats-new-popup__notification-date">{date}</div>
       </div>
       {actionText && (
