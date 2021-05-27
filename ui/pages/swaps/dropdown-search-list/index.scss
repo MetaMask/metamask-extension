@@ -165,12 +165,15 @@
 
   &__import-token {
     flex-direction: column;
+
     .actionable-message {
       margin-top: 0;
+
       &--danger {
         border-color: $Red-300;
         background: $Red-000;
       }
+
       &__message {
         color: $Black-100;
         text-align: left;
