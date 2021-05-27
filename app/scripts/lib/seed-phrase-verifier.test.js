@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import { cloneDeep } from 'lodash';
 import KeyringController from 'eth-keyring-controller';
 import firstTimeState from '../first-time-state';

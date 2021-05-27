@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import { stripHexPrefix } from 'ethereumjs-util';
 import accountImporter from '.';
 
