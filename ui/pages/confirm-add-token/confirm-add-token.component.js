@@ -1,9 +1,9 @@
-import { ADD_TOKEN_ROUTE, ASSET_ROUTE } from '../../helpers/constants/routes';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { ADD_TOKEN_ROUTE, ASSET_ROUTE } from '../../helpers/constants/routes';
 
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
-import PropTypes from 'prop-types';
 import TokenBalance from '../../components/ui/token-balance';
 
 export default class ConfirmAddToken extends Component {
