@@ -1,3 +1,4 @@
+const { callbackify } = require('util');
 const path = require('path');
 const { writeFileSync, readFileSync } = require('fs');
 const EventEmitter = require('events');
@@ -6,19 +7,21 @@ const watch = require('gulp-watch');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
 const log = require('fancy-log');
-const watchify = require('watchify');
 const browserify = require('browserify');
-const envify = require('loose-envify/custom');
-const sourcemaps = require('gulp-sourcemaps');
-const terser = require('gulp-terser-js');
+const watchify = require('watchify');
 const babelify = require('babelify');
 const brfs = require('brfs');
+const envify = require('loose-envify/custom');
+const sourcemaps = require('gulp-sourcemaps');
+const applySourceMap = require('vinyl-sourcemaps-apply');
 const pify = require('pify');
+const through = require('through2');
 const endOfStream = pify(require('end-of-stream'));
 const labeledStreamSplicer = require('labeled-stream-splicer').obj;
 const wrapInStream = require('pumpify').obj;
 const Sqrl = require('squirrelly');
 const lavaPack = require('@lavamoat/lavapack');
+const terser = require('terser');
 
 const bifyModuleGroups = require('bify-module-groups');
 
@@ -195,7 +198,7 @@ function createFactoredBuild({
 
     // devMode options
     const reloadOnChange = Boolean(devMode);
-    const minify = !devMode;
+    const minify = Boolean(devMode) === false;
 
     const envVars = getEnvironmentVariables({ devMode, testing });
     setupBundlerDefaults(buildConfiguration, {
@@ -412,17 +415,33 @@ function setupReloadOnChange({ bundlerOpts, events }) {
 }
 
 function setupMinification(buildConfiguration) {
+  const minifyOpts = {
+    mangle: {
+      reserved: ['MetamaskInpageProvider'],
+    },
+  };
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
     pipeline.get('minify').push(
-      terser({
-        mangle: {
-          reserved: ['MetamaskInpageProvider'],
-        },
-        sourceMap: {
-          content: true,
-        },
-      }),
+      // this is the "gulp-terser-js" wrapper around the latest version of terser
+      through.obj(
+        callbackify(async (file, _enc) => {
+          const input = {
+            [file.sourceMap.file]: file.contents.toString(),
+          };
+          const opts = {
+            sourceMap: {
+              filename: file.sourceMap.file,
+              content: file.sourceMap,
+            },
+            ...minifyOpts,
+          };
+          const res = await terser.minify(input, opts);
+          file.contents = Buffer.from(res.code);
+          applySourceMap(file, res.map);
+          return file;
+        }),
+      ),
     );
   });
 }
