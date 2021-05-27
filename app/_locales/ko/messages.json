@@ -1702,9 +1702,6 @@
     "message": "여러 토큰이 같은 이름과 기호를 사용할 수 있습니다. $1을 확인하여 이것이 원하는 토큰인지 확인하세요.",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
-  "swapViewToken": {
-    "message": "$1 보기"
-  },
   "swapYourTokenBalance": {
     "message": "$1 $2 스왑 가능",
     "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"

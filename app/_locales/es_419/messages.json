@@ -1619,12 +1619,6 @@
     "message": "Diferencia de precio de ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
-  "swapPriceDifferenceTooltip": {
-    "message": "La diferencia en los precios de mercado puede verse afectada por las tarifas cobradas por los intermediarios, el tamaño del mercado, el tamaño del comercio o las ineficiencias del mercado."
-  },
-  "swapPriceDifferenceUnavailable": {
-    "message": "El precio de mercado no está disponible. Asegúrese de sentirse cómodo con el monto devuelto antes de continuar."
-  },
   "swapProcessing": {
     "message": "Procesando"
   },
@@ -1725,9 +1719,6 @@
   "swapVerifyTokenExplanation": {
     "message": "Varios tokens pueden usar el mismo nombre y símbolo. Verifique $1 para verificar que este es el token que está buscando.",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapViewToken": {
-    "message": "Ver $1"
   },
   "swapYourTokenBalance": {
     "message": "$1 $2 están disponibles para intercambiar",

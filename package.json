@@ -1,10 +1,10 @@
 {
   "name": "metamask-crx",
-  "version": "9.5.3",
+  "version": "9.5.5",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/metamask-extension"
+    "url": "https://github.com/MetaMask/metamask-extension.git"
   },
   "scripts": {
     "setup": "yarn install && yarn setup:postinstall",
@@ -80,6 +80,7 @@
     "**/xmlhttprequest-ssl": "^1.6.2",
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/lodash": "^4.17.21",
     "3box/ipfs/ipld-zcash/zcash-bitcore-lib/elliptic": "^6.5.4",
+    "3box/ipfs/libp2p-mdns/multicast-dns/dns-packet": "^5.2.2",
     "3box/**/libp2p-crypto/node-forge": "^0.10.0",
     "3box/**/libp2p-keychain/node-forge": "^0.10.0",
     "analytics-node/axios": "^0.21.1",
@@ -214,7 +215,7 @@
     "@babel/register": "^7.5.5",
     "@lavamoat/allow-scripts": "^1.0.6",
     "@lavamoat/lavapack": "^1.0.4",
-    "@metamask/auto-changelog": "^2.0.1",
+    "@metamask/auto-changelog": "^2.1.0",
     "@metamask/eslint-config": "^6.0.0",
     "@metamask/eslint-config-jest": "^6.0.0",
     "@metamask/eslint-config-mocha": "^6.0.0",
@@ -277,6 +278,7 @@
     "gulp-stylelint": "^13.0.0",
     "gulp-watch": "^5.0.1",
     "gulp-zip": "^4.0.0",
+    "history": "^5.0.0",
     "jest": "^26.6.3",
     "jsdom": "^11.2.0",
     "koa": "^2.7.0",

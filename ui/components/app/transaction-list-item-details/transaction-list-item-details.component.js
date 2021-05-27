@@ -215,7 +215,7 @@ export default class TransactionListItemDetails extends PureComponent {
                   onClick={this.handleBlockExplorerClick}
                   disabled={!hash}
                 >
-                  <img src="/images/arrow-popout.svg" alt="" />
+                  <img src="./images/arrow-popout.svg" alt="" />
                 </Button>
               </Tooltip>
               {showRetry && (

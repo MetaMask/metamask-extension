@@ -404,7 +404,7 @@ export default function BuildQuote({
             }}
           >
             <img
-              src="/images/icons/swap2.svg"
+              src="./images/icons/swap2.svg"
               alt={t('swapSwapSwitch')}
               width="12"
               height="16"

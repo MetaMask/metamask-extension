@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { captureException } from '@sentry/browser';
 import { getKnownMethodData } from '../selectors/selectors';
 import {
   getStatusKey,
@@ -221,8 +222,10 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('send');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else {
-    throw new Error(
-      `useTransactionDisplayData does not recognize transaction type. Type received is: ${type}`,
+    captureException(
+      Error(
+        `useTransactionDisplayData does not recognize transaction type. Type received is: ${type}`,
+      ),
     );
   }
 
