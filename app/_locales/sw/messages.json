@@ -302,9 +302,6 @@
   "done": {
     "message": "Imekamilika"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Huna waleti ya programu maunzi?"
-  },
   "downloadGoogleChrome": {
     "message": "Pakua Google chrome"
   },
@@ -433,9 +430,6 @@
     "message": "Pata Ether kutoka kwenye mfereji $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Pata Msaada"
-  },
   "getStarted": {
     "message": "Anza"
   },
@@ -456,9 +450,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Chagua waleti ya programu maunzi ambayo ungependa kutumia kwenye MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Je, unapata shida kuunganisha?"
   },
   "here": {
     "message": "hapa",
@@ -679,9 +670,6 @@
   "optionalCurrencySymbol": {
     "message": "Ishara (hiari)"
   },
-  "orderOneHere": {
-    "message": "Agiza Trezor au Leja na weka fedha zako kwenye ifadhi ya baridi"
-  },
   "origin": {
     "message": "Asili"
   },
@@ -740,9 +728,6 @@
   },
   "readdToken": {
     "message": "Unaweza kuongeza tena kianzio hiki hapo baadaye kwa kwenda kwenye \"Ongeza kianzio\" kwenye machaguo yako ya menyu ya akaunti."
-  },
-  "readyToConnect": {
-    "message": "Uko tayari Kuunganisha?"
   },
   "recents": {
     "message": "Za hivi karibuni"
@@ -965,24 +950,6 @@
   },
   "stateLogsDescription": {
     "message": "Kumbukumbu za hali zinajumusiha anwani zako za akaunti za umma na miamala iliyotumwa."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Unganisha Programu Maunzi ya Waleti"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Unganisha programu maunzi yako ya waleti moja kwa moja kwenye kompyuta yako."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Chagua Akaunto"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Chagua akaunti unayotaka kutazama. Unaweza kuchagua moja tu kwa wakati mmoja."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Anza kutumia dApps na zaidi!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Tumia akaunti yako ya programu maunzi kama ambavyo ungetumia kwa akaunti ya Ethereum. Ingia kwenye dApps, tuma Eth, nunua na hifadhi vianzio vya ERC20 na Vianzio visivyobadilishika kama vile CryptoKitties."
   },
   "storePhrase": {
     "message": "Hifadhi kirai hiki kwenye kidhibiti nenosiri kama vile 1Password."

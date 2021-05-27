@@ -302,9 +302,6 @@
   "done": {
     "message": "Klart"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Har du inte en hårdvaruplånbok?"
-  },
   "downloadGoogleChrome": {
     "message": "Ladda ner Google Chrome"
   },
@@ -433,9 +430,6 @@
     "message": "Få Ether från en kran för $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Få hjälp."
-  },
   "getStarted": {
     "message": "Komma igång"
   },
@@ -456,9 +450,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Välj en hårdvaruplånbok som du vill använda med MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Har du problem att ansluta?"
   },
   "here": {
     "message": "här",
@@ -685,9 +676,6 @@
   "optionalCurrencySymbol": {
     "message": "Symbol (frivillig)"
   },
-  "orderOneHere": {
-    "message": "Beställ en Trezor eller Ledger och håll dina medel på is"
-  },
   "origin": {
     "message": "Ursprung"
   },
@@ -746,9 +734,6 @@
   },
   "readdToken": {
     "message": "Du kan lägga till denna token i framtiden genom att välja \"Lägg till token\" i kontots alternativmeny."
-  },
-  "readyToConnect": {
-    "message": "Redo att ansluta?"
   },
   "recents": {
     "message": "Senaste"
@@ -971,24 +956,6 @@
   },
   "stateLogsDescription": {
     "message": "Statusloggar innehåller dina publika kontoadresser och skickade transaktioner."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Anslut hårdvaruplånbok"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Koppla din hårdvaruplånbok direkt till din dator"
-  },
-  "step2HardwareWallet": {
-    "message": "2. Välj ett konto"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Välj det konto du vill visa. Du kan bara välja ett åt gången."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Börja använda dApps och mer!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Använd ditt hårdvarukonto som du skulle använda andra Ethereum-konton. Logga in i dAppar, skicka ETH, köp och förvara ERC20-tokens och Non-Fungible tokens som CryptoKitties."
   },
   "storePhrase": {
     "message": "Lagra denna fras i en lösenordshanterare såsom 1Password."

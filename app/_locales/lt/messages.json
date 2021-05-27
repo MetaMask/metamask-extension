@@ -308,9 +308,6 @@
   "done": {
     "message": "Atlikta"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Nėra aparatinės įrangos slaptažodinės?"
-  },
   "downloadGoogleChrome": {
     "message": "Atsiunčiama „Google Chrome“"
   },
@@ -443,9 +440,6 @@
     "message": "Gaukite eterių iš čiaupo $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Gaukite pagalbos."
-  },
   "getStarted": {
     "message": "Darbo pradžia"
   },
@@ -466,9 +460,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Pasirinkite aparatinės įrangos slaptažodinę, kurią pageidaujate naudoti su „MetaTask“"
-  },
-  "havingTroubleConnecting": {
-    "message": "Kyla problemų susiejant?"
   },
   "here": {
     "message": "čia",
@@ -701,9 +692,6 @@
   "optionalCurrencySymbol": {
     "message": "Simbolis (nebūtinas)"
   },
-  "orderOneHere": {
-    "message": "Užsisakykite „Trezor“ arba „Ledger“ ir laikykite savo lėšas šaltojoje saugykloje"
-  },
   "origin": {
     "message": "Kilmė"
   },
@@ -762,9 +750,6 @@
   },
   "readdToken": {
     "message": "Šį žetoną galite bet kada galite įtraukti ir vėl, tiesiog savo paskyros parinkčių meniu nueikite  į „Įtraukti žetoną“."
-  },
-  "readyToConnect": {
-    "message": "Pasirengę prisijungti?"
   },
   "recents": {
     "message": "Naujausi"
@@ -987,24 +972,6 @@
   },
   "stateLogsDescription": {
     "message": "Būsenos žurnaluose yra jūsų viešos paskyros adresų ir išsiųstų operacijų."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Prijunkite aparatinės įrangos slaptažodinę"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Prijunkite savo aparatinės įrangos slaptažodinę tiesiogiai prie savo kompiuterio."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Pasirinkite paskyrą"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Pasirinkite norimą peržiūrėti sąskaitą. Vienu metu galima rinktis tik vieną."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Pradėkite naudoti decentralizuotas programas ir daugiau!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Naudokitės savo aparatinės įrangos paskyra kaip „Ethereum“ paskyra. Junkitės prie decentralizuotų programų, siųskite eterius, pirkite ir laikykite ERC20 žetonus ir nekeičiamus žetonus, tokius kaip „CryptoKitties“."
   },
   "storePhrase": {
     "message": "Laikykite šią frazę slaptažodžių tvarkyklėje kaip 1 slaptažodį."

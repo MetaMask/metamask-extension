@@ -559,9 +559,6 @@
   "done": {
     "message": "Done"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Don’t have a hardware wallet?"
-  },
   "dontShowThisAgain": {
     "message": "Don't show this again"
   },
@@ -810,9 +807,6 @@
     "message": "Get Ether from a faucet for the $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Get Help."
-  },
   "getStarted": {
     "message": "Get Started"
   },
@@ -832,14 +826,14 @@
     "message": "(legacy)",
     "description": "Text representing the MEW path"
   },
+  "hardwareWalletSupportLinkConversion": {
+    "message": "click here"
+  },
   "hardwareWallets": {
     "message": "Connect a hardware wallet"
   },
   "hardwareWalletsMsg": {
-    "message": "Select a hardware wallet you'd like to use with MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Having trouble connecting?"
+    "message": "Select a hardware wallet you'd like to use with MetaMask."
   },
   "here": {
     "message": "here",
@@ -987,6 +981,21 @@
   },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
+  },
+  "ledgerLiveAdvancedSetting": {
+    "message": "Use Ledger Live"
+  },
+  "ledgerLiveAdvancedSettingDescription": {
+    "message": "The new Ledger Live bridge allows you to more easily use your Ledger.  Only available in Chrome."
+  },
+  "ledgerLiveApp": {
+    "message": "Ledger Live App"
+  },
+  "ledgerLocked": {
+    "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
+  },
+  "ledgerTimeout": {
+    "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
   },
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"
@@ -1261,6 +1270,22 @@
     "message": "Stay secure",
     "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
   },
+  "notifications6DescriptionOne": {
+    "message": "As of Chrome version 91, the API that enabled our Ledger support (U2F) no longer supports hardware wallets. MetaMask has implemented a new Ledger Live support that allows you to continue to connect to your Ledger device via the Ledger Live desktop app.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionThree": {
+    "message": "When interacting with your Ledger account in MetaMask, a new tab will open and you will be asked to open the Ledger Live app.  Once the app opens, you'll be asked to allow a WebSocket connection to your MetaMask account.  That's all!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionTwo": {
+    "message": "You can enable Ledger Live support by clicking Settings > Advanced > Use Ledger Live.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6Title": {
+    "message": "Ledger Support Update for Chrome Users",
+    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
+  },
   "ofTextNofM": {
     "message": "of"
   },
@@ -1294,9 +1319,6 @@
   },
   "optionalCurrencySymbol": {
     "message": "Currency Symbol (optional)"
-  },
-  "orderOneHere": {
-    "message": "Order a Trezor or Ledger and keep your funds in cold storage"
   },
   "origin": {
     "message": "Origin"
@@ -1378,9 +1400,6 @@
   },
   "readdToken": {
     "message": "You can add this token back in the future by going to “Add token” in your accounts options menu."
-  },
-  "readyToConnect": {
-    "message": "Ready to Connect?"
   },
   "receive": {
     "message": "Receive"
@@ -1546,7 +1565,11 @@
     "message": "This account has already been connected to MetaMask"
   },
   "selectAnAccountHelp": {
-    "message": "Select the account to view in MetaMask"
+    "message": "Select an account to view in MetaMask."
+  },
+  "selectAnAccountHelpDirections": {
+    "message": "Don't see your account? $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "selectEachPhrase": {
     "message": "Please select each phrase in order to make sure it is correct."
@@ -1688,23 +1711,26 @@
   "statusNotConnected": {
     "message": "Not connected"
   },
-  "step1HardwareWallet": {
-    "message": "1. Connect Hardware Wallet"
+  "step1LedgerWallet": {
+    "message": "Download Ledger app"
   },
-  "step1HardwareWalletMsg": {
-    "message": "Connect your hardware wallet directly to your computer."
+  "step1LedgerWalletMsg": {
+    "message": "Download, set up, and enter your password to unlock $1.",
+    "description": "$1 represents the `ledgerLiveApp` localization value"
   },
-  "step2HardwareWallet": {
-    "message": "2. Select an Account"
+  "step1TrezorWallet": {
+    "message": "Plug in Trezor wallet"
   },
-  "step2HardwareWalletMsg": {
-    "message": "Select the account you want to view. You can only choose one at a time."
+  "step1TrezorWalletMsg": {
+    "message": "Connect your wallet directly to your computer. For more on using your hardware wallet device, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
-  "step3HardwareWallet": {
-    "message": "3. Start using web3 sites and more!"
+  "step2LedgerWallet": {
+    "message": "Plug in Ledger wallet"
   },
-  "step3HardwareWalletMsg": {
-    "message": "Use your hardware account like you would with any Ethereum account. Connect to web3 sites, send ETH, buy and store ERC20 tokens and non-fungible tokens like CryptoKitties."
+  "step2LedgerWalletMsg": {
+    "message": "Connect your wallet directly to your computer.  Unlock your Ledger and open the Ethereum app. For more on using your hardware wallet device, $1.",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
@@ -2011,6 +2037,12 @@
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "Allow this site to switch the network?"
+  },
+  "switchLedgerPaths": {
+    "message": "Switch Ledger paths"
+  },
+  "switchLedgerPathsText": {
+    "message": "Select the Ledger path to view other accounts"
   },
   "switchNetwork": {
     "message": "Switch network"
