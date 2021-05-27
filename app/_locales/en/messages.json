@@ -52,6 +52,9 @@
   "addContact": {
     "message": "Add contact"
   },
+  "addCustomTokenByContractAddress": {
+    "message": "Manually add tokens not listed by copy and pasting a token contract address in the search above."
+  },
   "addEthereumChainConfirmationDescription": {
     "message": "This will allow this network to be used within MetaMask."
   },
@@ -409,6 +412,9 @@
   },
   "continueToWyre": {
     "message": "Continue to Wyre"
+  },
+  "contract": {
+    "message": "Contract"
   },
   "contractAddressError": {
     "message": "You are sending tokens to the token's contract address. This may result in the loss of these tokens."
@@ -892,6 +898,12 @@
   "importAccountText": {
     "message": "or $1",
     "description": "$1 represents the text from `importAccountLinkText` as a link"
+  },
+  "importTokenQuestion": {
+    "message": "Import token?"
+  },
+  "importTokenWarning": {
+    "message": "Add at your own risk. Anyone can create a token, including creating fake versions of existing tokens that claim to represent projects."
   },
   "importWallet": {
     "message": "Import wallet"
