@@ -48,14 +48,14 @@ const AssetList = ({ onClickAsset }) => {
     numberOfDecimals: secondaryNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
 
-  const [, primaryCurrencyProperties] = useCurrencyDisplay(
-    selectedAccountBalance,
-    {
-      numberOfDecimals: primaryNumberOfDecimals,
-      currency: primaryCurrency,
-      type: PRIMARY,
-    },
-  );
+  const [
+    primaryCurrencyDisplay,
+    primaryCurrencyProperties,
+  ] = useCurrencyDisplay(selectedAccountBalance, {
+    numberOfDecimals: primaryNumberOfDecimals,
+    currency: primaryCurrency,
+    type: PRIMARY,
+  });
 
   const [
     secondaryCurrencyDisplay,
@@ -67,21 +67,24 @@ const AssetList = ({ onClickAsset }) => {
   });
 
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
-  const showSecondaryCurrency = showFiat && primaryCurrencyProperties?.value;
-
+  const showSecondaryCurrency =
+    showFiat && primaryCurrencyProperties?.value !== null;
   return (
     <>
       <AssetListItem
         onClick={() => onClickAsset(nativeCurrency)}
         data-testid="wallet-balance"
         primary={
-          primaryCurrencyProperties?.value ?? secondaryCurrencyProperties?.value
-        }
-        tokenSymbol={
-          primaryCurrencyProperties?.suffix ??
-          secondaryCurrencyProperties?.suffix
+          primaryCurrencyProperties?.value
+            ? primaryCurrencyDisplay
+            : secondaryCurrencyDisplay
         }
         secondary={showSecondaryCurrency ? secondaryCurrencyDisplay : undefined}
+        tokenSymbol={
+          primaryCurrencyProperties?.value
+            ? primaryCurrencyProperties?.suffix
+            : secondaryCurrencyProperties?.suffix
+        }
         tokenImage={primaryTokenImage}
         identiconBorder
       />

@@ -20,7 +20,7 @@ describe('Token Cell', () => {
         '0xAnotherToken': 0.015,
       },
       conversionRate: 7.0,
-      preferences: {},
+      preferences: { useNativeCurrencyAsPrimaryCurrency: true },
       provider: {
         chainId: '0x1',
         ticker: 'ETH',
@@ -71,13 +71,7 @@ describe('Token Cell', () => {
 
   it('renders token balance', () => {
     expect(wrapper.find('.asset-list-item__token-value').text()).toStrictEqual(
-      '5.000',
-    );
-  });
-
-  it('renders token symbol', () => {
-    expect(wrapper.find('.asset-list-item__token-symbol').text()).toStrictEqual(
-      'TEST',
+      '5.000 TEST',
     );
   });
 

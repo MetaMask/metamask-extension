@@ -98,11 +98,10 @@ const AssetListItem = ({
         <button
           className="asset-list-item__token-button"
           onClick={onClick}
-          title={`${primary} ${tokenSymbol}`}
+          title={primary}
         >
           <h2>
             <span className="asset-list-item__token-value">{primary}</span>
-            <span className="asset-list-item__token-symbol">{tokenSymbol}</span>
           </h2>
         </button>
       }
@@ -115,7 +114,7 @@ const AssetListItem = ({
           diameter={32}
           address={tokenAddress}
           image={tokenImage}
-          alt={`${primary} ${tokenSymbol}`}
+          alt={primary}
           imageBorder={identiconBorder}
         />
       }
