@@ -4,6 +4,8 @@ import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '../../../../components/ui/text-field';
 import { usePrevious } from '../../../../hooks/usePrevious';
+import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import { getSymbolAndDecimals } from '../../../../helpers/utils/token-util';
 
 const renderAdornment = () => (
   <InputAdornment position="start" style={{ marginRight: '12px' }}>
@@ -22,7 +24,32 @@ export default function ListItemSearch({
   const fuseRef = useRef();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const handleSearch = (newSearchQuery) => {
+  /**
+   * Search a custom token based on a contract address.
+   * @param {String} contractAddress
+   */
+  const handleSearchByContractAddress = async (contractAddress) => {
+    const newToken = await getSymbolAndDecimals(contractAddress);
+    // Name, address and logoUrl will be returned from a new API
+    // that we will call instead of "getSymbolAndDecimals".
+    newToken.name = newToken.symbol;
+    newToken.primaryLabel = newToken.symbol;
+    newToken.address = contractAddress;
+    newToken.notImported = true;
+    setSearchQuery(contractAddress);
+    onSearch({
+      searchQuery: contractAddress,
+      results: [newToken],
+    });
+  };
+
+  const handleSearch = async (newSearchQuery) => {
+    const trimmedNewSearchQuery = newSearchQuery.trim();
+    const validHexAddress = isValidHexAddress(trimmedNewSearchQuery);
+    if (validHexAddress) {
+      await handleSearchByContractAddress(trimmedNewSearchQuery);
+      return;
+    }
     setSearchQuery(newSearchQuery);
     const fuseSearchResult = fuseRef.current.search(newSearchQuery);
     onSearch({

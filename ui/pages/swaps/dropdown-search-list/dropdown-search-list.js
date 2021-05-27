@@ -12,6 +12,17 @@ import { I18nContext } from '../../../contexts/i18n';
 import SearchableItemList from '../searchable-item-list';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import UrlIcon from '../../../components/ui/url-icon';
+import Popover from '../../../components/ui/popover';
+import Button from '../../../components/ui/button';
+import Box from '../../../components/ui/box';
+import Typography from '../../../components/ui/typography';
+import ActionableMessage from '../actionable-message';
+import {
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+  ALIGN_ITEMS,
+  DISPLAY,
+} from '../../../helpers/constants/design-system';
 
 export default function DropdownSearchList({
   searchListClassName,
@@ -34,7 +45,9 @@ export default function DropdownSearchList({
 }) {
   const t = useContext(I18nContext);
   const [isOpen, setIsOpen] = useState(false);
+  const [isImportTokenModalOpen, setIsImportTokenModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(startingItem);
+  const [tokenForImport, setTokenForImport] = useState(null);
   const close = useCallback(() => {
     setIsOpen(false);
     onClose?.();
@@ -42,12 +55,31 @@ export default function DropdownSearchList({
 
   const onClickItem = useCallback(
     (item) => {
+      if (item.notImported) {
+        // Opens a modal window for importing a token.
+        setTokenForImport(item);
+        setIsImportTokenModalOpen(true);
+        return;
+      }
       onSelect?.(item);
       setSelectedItem(item);
       close();
     },
     [onSelect, close],
   );
+
+  const onImportTokenClick = () => {
+    // Only when a user confirms import of a token, we add it an show it in a dropdown.
+    onSelect?.(tokenForImport);
+    setSelectedItem(tokenForImport);
+    setTokenForImport(null);
+    close();
+  };
+
+  const onImportTokenCloseClick = () => {
+    setIsImportTokenModalOpen(false);
+    close();
+  };
 
   const onClickSelector = useCallback(() => {
     if (!isOpen) {
@@ -81,6 +113,27 @@ export default function DropdownSearchList({
     }
   };
 
+  const ImportTokenModalFooter = (
+    <>
+      <Button
+        type="secondary"
+        className="page-container__footer-button"
+        onClick={onImportTokenCloseClick}
+        rounded
+      >
+        {t('cancel')}
+      </Button>
+      <Button
+        type="confirm"
+        className="page-container__footer-button"
+        onClick={onImportTokenClick}
+        rounded
+      >
+        {t('import')}
+      </Button>
+    </>
+  );
+
   return (
     <div
       className={classnames('dropdown-search-list', className)}
@@ -88,6 +141,46 @@ export default function DropdownSearchList({
       onKeyUp={onKeyUp}
       tabIndex="0"
     >
+      {tokenForImport && isImportTokenModalOpen && (
+        <Popover
+          title={t('importTokenQuestion')}
+          onClose={() => setIsImportTokenModalOpen(false)}
+          footer={ImportTokenModalFooter}
+        >
+          <Box
+            padding={[0, 6, 4, 6]}
+            alignItems={ALIGN_ITEMS.CENTER}
+            display={DISPLAY.FLEX}
+            className="dropdown-search-list__import-token"
+          >
+            <ActionableMessage
+              type="danger"
+              message={t('importTokenWarning')}
+            />
+            <UrlIcon
+              url={tokenForImport.iconUrl}
+              className="dropdown-search-list__token-icon"
+              fallbackClassName="dropdown-search-list__token-icon"
+              name={tokenForImport.symbol}
+            />
+            <Typography
+              ariant={TYPOGRAPHY.H4}
+              fontWeight={FONT_WEIGHT.BOLD}
+              boxProps={{ marginTop: 2, marginBottom: 3 }}
+            >
+              {tokenForImport.name}
+            </Typography>
+            <Typography variant={TYPOGRAPHY.H6}>{t('contract')}:</Typography>
+            <Typography
+              className="dropdown-search-list__contract-address"
+              variant={TYPOGRAPHY.H7}
+              boxProps={{ marginBottom: 6 }}
+            >
+              {tokenForImport.address}
+            </Typography>
+          </Box>
+        </Popover>
+      )}
       {!isOpen && (
         <div
           className={classnames(
@@ -141,6 +234,15 @@ export default function DropdownSearchList({
               ) : (
                 <div className="dropdown-search-list__placeholder">
                   {t('swapBuildQuotePlaceHolderText', [searchQuery])}
+                  <div
+                    tabIndex="0"
+                    className="searchable-item-list__item searchable-item-list__item--add-token"
+                    key="searchable-item-list-item-last"
+                  >
+                    <ActionableMessage
+                      message={t('addCustomTokenByContractAddress')}
+                    />
+                  </div>
                 </div>
               )
             }

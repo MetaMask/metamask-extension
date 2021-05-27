@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Identicon from '../../../../components/ui/identicon';
 import UrlIcon from '../../../../components/ui/url-icon';
+import Button from '../../../../components/ui/button';
+import ActionableMessage from '../../actionable-message';
+import { I18nContext } from '../../../../contexts/i18n';
 
 export default function ItemList({
   results = [],
@@ -16,6 +19,10 @@ export default function ItemList({
   hideItemIf,
   listContainerClassName,
 }) {
+  const t = useContext(I18nContext);
+
+  // If there is a token for import based on a contract address, it's the only one in the list.
+  const hasTokenForImport = results.length === 1 && results[0].notImported;
   return results.length === 0 ? (
     Placeholder && <Placeholder searchQuery={searchQuery} />
   ) : (
@@ -96,9 +103,23 @@ export default function ItemList({
                     </div>
                   )}
               </div>
+              {result.notImported && (
+                <Button type="confirm" onClick={onClick} rounded>
+                  {t('import')}
+                </Button>
+              )}
             </div>
           );
         })}
+        {!hasTokenForImport && (
+          <div
+            tabIndex="0"
+            className="searchable-item-list__item searchable-item-list__item--add-token"
+            key="searchable-item-list-item-last"
+          >
+            <ActionableMessage message={t('addCustomTokenByContractAddress')} />
+          </div>
+        )}
       </div>
     </div>
   );
