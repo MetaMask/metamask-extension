@@ -38,7 +38,7 @@ const PageSet = ({ children }) => {
 };
 
 export const AddSuggestedToken = () => {
-  store.dispatch(updateMetamaskState({ suggestedTokens }));
+  store.dispatch(updateMetamaskState({ suggestedTokens, pendingTokens: {} }));
   return (
     <PageSet>
       <ConfirmAddSuggestedToken />
