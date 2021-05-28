@@ -75,11 +75,6 @@ function createScriptTasks({ browserPlatforms, livereload }) {
 
   function createTasksForBuildJsExtension({ taskPrefix, devMode, testing }) {
     const standardEntryPoints = ['background', 'ui', 'phishing-detect'];
-
-    // let extraEntries;
-    // if (devMode && label === 'ui') {
-    //   extraEntries = ['./development/require-react-devtools.js'];
-    // }
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
@@ -352,8 +347,9 @@ function createBuildConfiguration() {
     transform: [],
     plugin: [],
     require: [],
-    // not a standard bify option
+    // non-standard bify options
     manualExternal: [],
+    manualIgnore: [],
   };
   return { bundlerOpts, events };
 }
@@ -377,6 +373,11 @@ function setupBundlerDefaults(
     // for sourcemaps
     debug: true,
   });
+
+  // ensure react-devtools are not included in non-dev builds
+  if (!devMode) {
+    bundlerOpts.manualIgnore.push('react-devtools');
+  }
 
   // inject environment variables via node-style `process.env`
   if (envVars) {
@@ -465,8 +466,9 @@ function setupSourcemaps(buildConfiguration, { devMode }) {
 async function bundleIt(buildConfiguration) {
   const { bundlerOpts, events } = buildConfiguration;
   const bundler = browserify(bundlerOpts);
-  // manually apply non-standard option
+  // manually apply non-standard options
   bundler.external(bundlerOpts.manualExternal);
+  bundler.ignore(bundlerOpts.manualIgnore);
   // output build logs to terminal
   bundler.on('log', log);
   // forward update event (used by watchify)

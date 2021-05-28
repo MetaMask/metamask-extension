@@ -2,6 +2,8 @@
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
 import '@formatjs/intl-relativetimeformat/polyfill';
 
+import 'react-devtools';
+
 import PortStream from 'extension-port-stream';
 import extension from 'extensionizer';
 
