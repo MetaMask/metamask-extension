@@ -30,6 +30,7 @@ export default function ListItemSearch({
    */
   const handleSearchByContractAddress = async (contractAddress) => {
     const newToken = await getSymbolAndDecimals(contractAddress);
+    const tokenFound = newToken.symbol && newToken.decimals !== undefined;
     // Name, address and logoUrl will be returned from a new API
     // that we will call instead of "getSymbolAndDecimals".
     newToken.name = newToken.symbol;
@@ -39,7 +40,7 @@ export default function ListItemSearch({
     setSearchQuery(contractAddress);
     onSearch({
       searchQuery: contractAddress,
-      results: [newToken],
+      results: tokenFound ? [newToken] : [],
     });
   };
 
