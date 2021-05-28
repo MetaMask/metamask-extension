@@ -19,6 +19,7 @@ import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {
   isHardwareWallet,
   getHardwareWalletType,
+  getCurrentChainId,
 } from '../../../selectors/selectors';
 
 export default function DropdownSearchList({
@@ -48,10 +49,13 @@ export default function DropdownSearchList({
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
+  const chainId = useSelector(getCurrentChainId);
   const tokenImportedEvent = useNewMetricEvent({
     event: 'Token Imported',
     sensitiveProperties: {
-      imported_token: tokenForImport,
+      symbol: tokenForImport?.symbol,
+      address: tokenForImport?.address,
+      chain_id: chainId,
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: hardwareWalletType,
     },
