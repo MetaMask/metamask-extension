@@ -61,7 +61,7 @@ export const getTranslatedUINoficiations = (t, locale) => {
         t('notifications6DescriptionTwo'),
         t('notifications6DescriptionThree'),
       ],
-      date: new Intl.DateTimeFormat(locale).format(
+      date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[6].date),
       ),
     },
