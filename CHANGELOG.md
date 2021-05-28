@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.5.7]
-### Reverted
-- [#10293](https://github.com/MetaMask/metamask-extension/pull/10293): Add Ledger Live Support
+### Fixed
+- Revert "Add Ledger Live Support" ([#10293](https://github.com/MetaMask/metamask-extension/pull/10293)), which introduced a UI crash for some locales
 
 ## [9.5.6]
 ### Added
