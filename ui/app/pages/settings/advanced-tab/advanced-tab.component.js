@@ -7,9 +7,6 @@ import TextField from '../../../components/ui/text-field';
 import Button from '../../../components/ui/button';
 import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
 
-import { getPlatform } from '../../../../app/scripts/lib/util';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -408,7 +405,6 @@ export default class AdvancedTab extends PureComponent {
               onToggle={(value) => setLedgerLivePreference(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
-              disabled={getPlatform() === PLATFORM_FIREFOX}
             />
           </div>
         </div>
