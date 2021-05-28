@@ -60,7 +60,7 @@ export default function DropdownSearchList({
   );
 
   const onImportTokenClick = () => {
-    // Only when a user confirms import of a token, we add it an show it in a dropdown.
+    // Only when a user confirms import of a token, we add it and show it in a dropdown.
     onSelect?.(tokenForImport);
     setSelectedItem(tokenForImport);
     setTokenForImport(null);
