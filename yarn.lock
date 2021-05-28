@@ -2621,9 +2621,9 @@
     react-is "^16.8.0"
 
 "@metamask/auto-changelog@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@metamask/auto-changelog/-/auto-changelog-2.1.0.tgz#5cb546f05b07695476d9489540b8d2744d350eda"
-  integrity sha512-FO1NsgcrHQY6CWlD9wFEWgmxWgam1GqtfFGiRH7lp4aYSGn/43ktBMkZ/rF0//7XvUDXn27nC2CClRUBCrg8Jg==
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@metamask/auto-changelog/-/auto-changelog-2.2.0.tgz#ccc5f8d2f056793e9736445c0444596d4fcd6ffd"
+  integrity sha512-MZiEAx5QOrCInjBn9Ao/j00qyAivcqK7dEuDD+g+yabCNPFFvNq8U8i53h2Vb4zdj5NzKHIRwYNShOoQxt9BmA==
   dependencies:
     cross-spawn "^7.0.3"
     diff "^5.0.0"
@@ -23513,14 +23513,7 @@ semver@7.0.0:
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.0.0.tgz#5f3ca35761e47e05b206c6daff2cf814f0316b8e"
   integrity sha512-+GB6zVA9LWh6zovYQLALHwv5rb2PHGlJi3lfiqIHxR0uuwCgefcOJc59v9fv1w8GbStwxuuqqAjI9NMAOOgq1A==
 
-semver@^7.2.1, semver@^7.3.2, semver@^7.3.4:
-  version "7.3.4"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-7.3.4.tgz#27aaa7d2e4ca76452f98d3add093a72c943edc97"
-  integrity sha512-tCfb2WLjqFAtXn4KEdxIhalnRtoKFN7nAwj0B3ZXCbQloV2tq5eDbcTmT68JJD3nRJq24/XgxtQKFIpQdtvmVw==
-  dependencies:
-    lru-cache "^6.0.0"
-
-semver@^7.3.5:
+semver@^7.2.1, semver@^7.3.2, semver@^7.3.4, semver@^7.3.5:
   version "7.3.5"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.3.5.tgz#0b621c879348d8998e4b0e4be94b3f12e6018ef7"
   integrity sha512-PoeGJYh8HK4BTO/a9Tf6ZG3veo/A7ZVsYrSA6J8ny9nb3B1VrpkuN+z9OE5wfE5p6H4LchYZsegiQgbJD94ZFQ==
