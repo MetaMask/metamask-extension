@@ -25,10 +25,10 @@ export default function ListItemSearch({
   const [searchQuery, setSearchQuery] = useState('');
 
   /**
-   * Search a custom token based on a contract address.
+   * Search a custom token for import based on a contract address.
    * @param {String} contractAddress
    */
-  const handleSearchByContractAddress = async (contractAddress) => {
+  const handleSearchTokenForImport = async (contractAddress) => {
     const newToken = await getSymbolAndDecimals(contractAddress);
     const tokenFound = newToken.symbol && newToken.decimals !== undefined;
     // Name, address and logoUrl will be returned from a new API
@@ -47,16 +47,17 @@ export default function ListItemSearch({
   const handleSearch = async (newSearchQuery) => {
     const trimmedNewSearchQuery = newSearchQuery.trim();
     const validHexAddress = isValidHexAddress(trimmedNewSearchQuery);
-    if (validHexAddress) {
-      await handleSearchByContractAddress(trimmedNewSearchQuery);
+    const fuseSearchResult = fuseRef.current.search(newSearchQuery);
+    const results =
+      defaultToAll && newSearchQuery === '' ? listToSearch : fuseSearchResult;
+    if (results.length === 0 && validHexAddress) {
+      await handleSearchTokenForImport(trimmedNewSearchQuery);
       return;
     }
     setSearchQuery(newSearchQuery);
-    const fuseSearchResult = fuseRef.current.search(newSearchQuery);
     onSearch({
       searchQuery: newSearchQuery,
-      results:
-        defaultToAll && newSearchQuery === '' ? listToSearch : fuseSearchResult,
+      results,
     });
   };
 
