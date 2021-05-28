@@ -5,6 +5,7 @@ import React, {
   useContext,
   useRef,
 } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
@@ -14,6 +15,11 @@ import PulseLoader from '../../../components/ui/pulse-loader';
 import UrlIcon from '../../../components/ui/url-icon';
 import ActionableMessage from '../actionable-message';
 import ImportToken from '../import-token';
+import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
+import {
+  isHardwareWallet,
+  getHardwareWalletType,
+} from '../../../selectors/selectors';
 
 export default function DropdownSearchList({
   searchListClassName,
@@ -39,6 +45,19 @@ export default function DropdownSearchList({
   const [isImportTokenModalOpen, setIsImportTokenModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(startingItem);
   const [tokenForImport, setTokenForImport] = useState(null);
+
+  const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const hardwareWalletType = useSelector(getHardwareWalletType);
+  const tokenImportedEvent = useNewMetricEvent({
+    event: 'Token Imported',
+    sensitiveProperties: {
+      imported_token: tokenForImport,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
+    },
+    category: 'swaps',
+  });
+
   const close = useCallback(() => {
     setIsOpen(false);
     onClose?.();
@@ -60,6 +79,7 @@ export default function DropdownSearchList({
   );
 
   const onImportTokenClick = () => {
+    tokenImportedEvent();
     // Only when a user confirms import of a token, we add it and show it in a dropdown.
     onSelect?.(tokenForImport);
     setSelectedItem(tokenForImport);
