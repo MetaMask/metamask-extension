@@ -67,7 +67,6 @@ export default class PreferencesController {
       // ENS decentralized website resolution
       ipfsGateway: 'dweb.link',
       infuraBlocked: null,
-      useLedgerLive: false,
       ...opts.initState,
     };
 
@@ -665,24 +664,6 @@ export default class PreferencesController {
   setIpfsGateway(domain) {
     this.store.updateState({ ipfsGateway: domain });
     return Promise.resolve(domain);
-  }
-
-  /**
-   * A setter for the `useLedgerLive` property
-   * @param {bool} domain - Value for ledger live support
-   * @returns {Promise<string>} A promise of the update to useLedgerLive
-   */
-  async setLedgerLivePreference(useLedgerLive) {
-    this.store.updateState({ useLedgerLive });
-    return useLedgerLive;
-  }
-
-  /**
-   * A getter for the `useLedgerLive` property
-   * @returns {boolean} User preference of using Ledger Live
-   */
-  getLedgerLivePreference() {
-    return this.store.getState().useLedgerLive;
   }
 
   //

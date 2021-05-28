@@ -11,7 +11,6 @@ export default class SelectHardware extends Component {
   static propTypes = {
     connectToHardwareWallet: PropTypes.func.isRequired,
     browserSupported: PropTypes.bool.isRequired,
-    useLedgerLive: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -66,21 +65,16 @@ export default class SelectHardware extends Component {
           {this.renderConnectToLedgerButton()}
           {this.renderConnectToTrezorButton()}
         </div>
+        <Button
+          type="primary"
+          large
+          className="hw-connect__connect-btn"
+          onClick={this.connect}
+          disabled={!this.state.selectedDevice}
+        >
+          {this.context.t('connect')}
+        </Button>
       </>
-    );
-  }
-
-  renderContinueButton() {
-    return (
-      <Button
-        type="primary"
-        large
-        className="hw-connect__connect-btn"
-        onClick={this.connect}
-        disabled={!this.state.selectedDevice}
-      >
-        {this.context.t('continue')}
-      </Button>
     );
   }
 
@@ -123,109 +117,118 @@ export default class SelectHardware extends Component {
     );
   }
 
-  renderTutorialsteps() {
-    switch (this.state.selectedDevice) {
-      case 'ledger':
-        return this.renderLedgerTutorialSteps();
-      case 'trezor':
-        return this.renderTrezorTutorialSteps();
-      default:
-        return '';
-    }
-  }
+  getAffiliateLinks() {
+    const links = {
+      trezor: `<a class='hw-connect__get-hw__link' href='https://shop.trezor.io/?a=metamask' target='_blank'>Trezor</a>`,
+      ledger: `<a class='hw-connect__get-hw__link' href='https://www.ledger.com/products/ledger-nano-s?r=17c4991a03fa&tracker=MY_TRACKER' target='_blank'>Ledger</a>`,
+    };
 
-  renderLedgerTutorialSteps() {
-    const steps = [];
-    if (this.props.useLedgerLive) {
-      steps.push({
-        title: this.context.t('step1LedgerWallet'),
-        message: this.context.t('step1LedgerWalletMsg', [
-          <a
-            className="hw-connect__msg-link"
-            href="https://www.ledger.com/ledger-live"
-            rel="noopener noreferrer"
-            target="_blank"
-            key="ledger-live-app-link"
-          >
-            {this.context.t('ledgerLiveApp')}
-          </a>,
-        ]),
-      });
-    }
-
-    steps.push({
-      asset: 'plug-in-wallet',
-      dimensions: { width: '225px', height: '75px' },
-      title: this.context.t('step2LedgerWallet'),
-      message: this.context.t('step2LedgerWalletMsg', [
-        <a
-          className="hw-connect__msg-link"
-          href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
-          rel="noopener noreferrer"
-          target="_blank"
-          key="ledger-support-link"
-        >
-          {this.context.t('hardwareWalletSupportLinkConversion')}
-        </a>,
-      ]),
-    });
+    const text = this.context.t('orderOneHere');
+    const response = text
+      .replace('Trezor', links.trezor)
+      .replace('Ledger', links.ledger);
 
     return (
-      <div className="hw-tutorial">
+      <div
+        className="hw-connect__get-hw__msg"
+        dangerouslySetInnerHTML={{ __html: response }}
+      />
+    );
+  }
+
+  renderTrezorAffiliateLink() {
+    return (
+      <div className="hw-connect__get-hw">
+        <p className="hw-connect__get-hw__msg">
+          {this.context.t('dontHaveAHardwareWallet')}
+        </p>
+        {this.getAffiliateLinks()}
+      </div>
+    );
+  }
+
+  scrollToTutorial = () => {
+    if (this.referenceNode) {
+      this.referenceNode.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  renderLearnMore() {
+    return (
+      <p className="hw-connect__learn-more" onClick={this.scrollToTutorial}>
+        {this.context.t('learnMore')}
+        <img
+          className="hw-connect__learn-more__arrow"
+          src="images/caret-right.svg"
+          alt=""
+        />
+      </p>
+    );
+  }
+
+  renderTutorialSteps() {
+    const steps = [
+      {
+        asset: 'hardware-wallet-step-1',
+        dimensions: { width: '225px', height: '75px' },
+        title: this.context.t('step1HardwareWallet'),
+        message: this.context.t('step1HardwareWalletMsg'),
+      },
+      {
+        asset: 'hardware-wallet-step-2',
+        dimensions: { width: '300px', height: '100px' },
+        title: this.context.t('step2HardwareWallet'),
+        message: this.context.t('step2HardwareWalletMsg'),
+      },
+      {
+        asset: 'hardware-wallet-step-3',
+        dimensions: { width: '120px', height: '90px' },
+        title: this.context.t('step3HardwareWallet'),
+        message: this.context.t('step3HardwareWalletMsg'),
+      },
+    ];
+
+    return (
+      <div
+        className="hw-tutorial"
+        ref={(node) => {
+          this.referenceNode = node;
+        }}
+      >
         {steps.map((step, index) => (
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>
             <p className="hw-connect__msg">{step.message}</p>
-            {step.asset && (
-              <img
-                className="hw-connect__step-asset"
-                src={`images/${step.asset}.svg`}
-                {...step.dimensions}
-                alt=""
-              />
-            )}
+            <img
+              className="hw-connect__step-asset"
+              src={`images/${step.asset}.svg`}
+              {...step.dimensions}
+              alt=""
+            />
           </div>
         ))}
       </div>
     );
   }
 
-  renderTrezorTutorialSteps() {
-    const steps = [
-      {
-        asset: 'plug-in-wallet',
-        dimensions: { width: '225px', height: '75px' },
-        title: this.context.t('step1TrezorWallet'),
-        message: this.context.t('step1TrezorWalletMsg', [
-          <a
-            className="hw-connect__msg-link"
-            href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
-            rel="noopener noreferrer"
-            target="_blank"
-            key="trezor-support-link"
-          >
-            {this.context.t('hardwareWalletSupportLinkConversion')}
-          </a>,
-        ]),
-      },
-    ];
-
+  renderFooter() {
     return (
-      <div className="hw-tutorial">
-        {steps.map((step, index) => (
-          <div className="hw-connect" key={index}>
-            <h3 className="hw-connect__title">{step.title}</h3>
-            <p className="hw-connect__msg">{step.message}</p>
-            {step.asset && (
-              <img
-                className="hw-connect__step-asset"
-                src={`images/${step.asset}.svg`}
-                {...step.dimensions}
-                alt=""
-              />
-            )}
-          </div>
-        ))}
+      <div className="hw-connect__footer">
+        <h3 className="hw-connect__footer__title">
+          {this.context.t('readyToConnect')}
+        </h3>
+        {this.renderButtons()}
+        <p className="hw-connect__footer__msg">
+          {this.context.t('havingTroubleConnecting')}
+          <a
+            className="hw-connect__footer__link"
+            href="https://support.metamask.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {this.context.t('getHelp')}
+          </a>
+        </p>
       </div>
     );
   }
@@ -235,8 +238,10 @@ export default class SelectHardware extends Component {
       <div className="new-external-account-form">
         {this.renderHeader()}
         {this.renderButtons()}
-        {this.state.selectedDevice && this.renderTutorialsteps()}
-        {this.renderContinueButton()}
+        {this.renderTrezorAffiliateLink()}
+        {this.renderLearnMore()}
+        {this.renderTutorialSteps()}
+        {this.renderFooter()}
       </div>
     );
   }

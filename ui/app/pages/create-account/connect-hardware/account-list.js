@@ -4,14 +4,8 @@ import getAccountLink from '../../../../lib/account-link';
 import Button from '../../../components/ui/button';
 import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
-import Popover from '../../../components/ui/popover';
 
 class AccountList extends Component {
-  state = {
-    showPopover: false,
-    pathValue: null,
-  };
-
   goToNextPage = () => {
     // If we have < 5 accounts, it's restricted by BIP-44
     if (this.props.accounts.length === 5) {
@@ -25,13 +19,8 @@ class AccountList extends Component {
     this.props.getPage(this.props.device, -1, this.props.selectedPath);
   };
 
-  setPath(pathValue) {
-    this.setState({ pathValue });
-  }
-
   renderHdPathSelector() {
-    const { selectedPath, hdPaths } = this.props;
-    const { pathValue } = this.state;
+    const { onPathChange, selectedPath, hdPaths } = this.props;
 
     return (
       <div>
@@ -43,9 +32,9 @@ class AccountList extends Component {
           <Dropdown
             className="hw-connect__hdPath__select"
             options={hdPaths}
-            selectedOption={pathValue || selectedPath}
+            selectedOption={selectedPath}
             onChange={(value) => {
-              this.setPath(value);
+              onPathChange(value);
             }}
           />
         </div>
@@ -58,25 +47,18 @@ class AccountList extends Component {
   }
 
   renderHeader() {
+    const { device } = this.props;
     return (
       <div className="hw-connect">
         <h3 className="hw-connect__unlock-title">
-          {this.context.t('selectAnAccount')}
+          {`${this.context.t('unlock')} ${this.capitalizeDevice(device)}`}
         </h3>
+        {device.toLowerCase() === 'ledger' ? this.renderHdPathSelector() : null}
         <h3 className="hw-connect__hdPath__title">
           {this.context.t('selectAnAccount')}
         </h3>
         <p className="hw-connect__msg">
           {this.context.t('selectAnAccountHelp')}
-          {this.context.t('selectAnAccountHelpDirections', [
-            <button
-              className="hw-connect__msg-link"
-              onClick={() => this.setState({ showPopover: true })}
-              key="account-help"
-            >
-              {this.context.t('hardwareWalletSupportLinkConversion')}
-            </button>,
-          ])}
         </p>
       </div>
     );
@@ -211,44 +193,7 @@ class AccountList extends Component {
     );
   }
 
-  renderSelectPathPopover() {
-    const { pathValue } = this.state;
-    const { onPathChange } = this.props;
-
-    const footer = (
-      <div className="switch-ledger-path-popover__footer">
-        <Button
-          onClick={() => this.setState({ showPopover: false })}
-          type="secondary"
-        >
-          {this.context.t('cancel')}
-        </Button>
-        <Button
-          onClick={() => {
-            onPathChange(pathValue);
-            this.setState({ showPopover: false });
-          }}
-          type="primary"
-        >
-          {this.context.t('save')}
-        </Button>
-      </div>
-    );
-
-    return (
-      <Popover
-        title={this.context.t('switchLedgerPaths')}
-        subtitle={this.context.t('switchLedgerPathsText')}
-        contentClassName="switch-ledger-path-popover__content"
-        footer={footer}
-      >
-        {this.renderHdPathSelector()}
-      </Popover>
-    );
-  }
-
   render() {
-    const { showPopover } = this.state;
     return (
       <div className="new-external-account-form account-list">
         {this.renderHeader()}
@@ -256,7 +201,6 @@ class AccountList extends Component {
         {this.renderPagination()}
         {this.renderButtons()}
         {this.renderForgetDevice()}
-        {showPopover && this.renderSelectPathPopover()}
       </div>
     );
   }
