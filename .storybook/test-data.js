@@ -261,7 +261,7 @@ const state = {
       }
     },
     "assetImages": {
-      "0xad6d458402f60fd3bd25163575031acdce07538d": "https://i.ibb.co/D4Vb7Gm/logo.png"
+      "0xad6d458402f60fd3bd25163575031acdce07538d": "./images/logo.png"
     },
     "hiddenTokens": [],
     "suggestedTokens": {},
