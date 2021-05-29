@@ -14,18 +14,21 @@ const state = {
     "isUnlocked": true,
     "isAccountMenuOpen": false,
     "rpcUrl": "https://rawtestrpc.metamask.io/",
-    "identities": {
-      "0x983211ce699ea5ab57cc528086154b6db1ad8e55": {
+    "identities": { 
+      "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4": {
         "name": "Account 1",
-        "address": "0x983211ce699ea5ab57cc528086154b6db1ad8e55"
+        "address": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4",
+        "balance": "0"
       },
       "0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e": {
         "name": "Account 2",
-        "address": "0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e"
+        "address": "0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e",
+        "balance": "0"
       },
       "0x9d0ba4ddac06032527b140912ec808ab9451b788": {
         "name": "Account 3",
-        "address": "0x9d0ba4ddac06032527b140912ec808ab9451b788"
+        "address": "0x9d0ba4ddac06032527b140912ec808ab9451b788",
+        "balance": "0"
       }
     },
     "unapprovedTxs": {
@@ -106,7 +109,7 @@ const state = {
       "gasPrice": null,
       "gasTotal": null,
       "tokenBalance": "8.7a73149c048545a3fe58",
-      "from": "",
+      "from": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4",
       "to": "0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e",
       "amount": "3782dace9d900000",
       "memo": "",
@@ -161,17 +164,14 @@ const state = {
     },
     "network": "3",
     "accounts": {
-      "0x983211ce699ea5ab57cc528086154b6db1ad8e55": {
-        "address": "0x983211ce699ea5ab57cc528086154b6db1ad8e55",
-        "balance": "0x176e5b6f173ebe66"
+      "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4": {
+        "address": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4",
       },
       "0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e": {
         "address": "0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e",
-        "balance": "0x2d3142f5000"
       },
       "0x9d0ba4ddac06032527b140912ec808ab9451b788": {
         "address": "0x9d0ba4ddac06032527b140912ec808ab9451b788",
-        "balance": "0x15f6f0b9d4f8d000"
       }
     },
     "currentBlockGasLimit": "0x793af4",
@@ -190,7 +190,7 @@ const state = {
         "0x9d0ba4ddac06032527b140912ec808ab9451b788": "0x15f6f0b9d4f8d000"
       },
       "0x3": {
-        "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4": "0x176e5b6f173ebe66",
+        "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4": "0",
         "0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e": "0x2d3142f5000",
         "0x9d0ba4ddac06032527b140912ec808ab9451b788": "0x15f6f0b9d4f8d000"
       }
@@ -639,7 +639,7 @@ const state = {
       "chainId": "0x3",
       "loadingDefaults": false,
       "txParams": {
-        "from": "0x983211ce699ea5ab57cc528086154b6db1ad8e55",
+        "from": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4",
         "to": "0xad6d458402f60fd3bd25163575031acdce07538d",
         "value": "0x0",
         "data": "0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170",
@@ -658,7 +658,7 @@ const state = {
           "chainId": "0x3",
           "loadingDefaults": true,
           "txParams": {
-            "from": "0x983211ce699ea5ab57cc528086154b6db1ad8e55",
+            "from": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4",
             "to": "0xad6d458402f60fd3bd25163575031acdce07538d",
             "value": "0x0",
             "data": "0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170",
