@@ -1,7 +1,5 @@
 .hw-tutorial {
   width: 375px;
-  border-top: 1px solid #d2d8dd;
-  border-bottom: 1px solid #d2d8dd;
   overflow: visible;
   display: block;
   padding: 15px 30px;
@@ -94,23 +92,6 @@
     }
   }
 
-  &__learn-more {
-    @include H6;
-
-    margin-top: 15px;
-    color: #5b5d67;
-    text-align: center;
-    cursor: pointer;
-
-    &__arrow {
-      transform: rotate(90deg);
-      display: block;
-      text-align: center;
-      height: 30px;
-      margin: 0 auto 10px;
-    }
-  }
-
   &__title {
     @include H4;
 
@@ -132,6 +113,14 @@
     color: #9b9b9b;
     margin-top: 10px;
     margin-bottom: 15px;
+
+    &-link {
+      @include H6;
+
+      text-align: center;
+      color: $primary-1;
+      background: unset;
+    }
   }
 
   &__error {
@@ -139,57 +128,6 @@
     margin: 20px 20px 10px;
     display: block;
     text-align: center;
-  }
-
-  &__link {
-    color: #2f9ae0;
-  }
-
-  &__footer {
-    &__title {
-      @include H4;
-
-      padding-top: 15px;
-      padding-bottom: 12px;
-      font-weight: 400;
-      text-align: center;
-    }
-
-    &__msg {
-      @include H6;
-
-      color: #9b9b9b;
-      margin-top: 12px;
-      margin-bottom: 27px;
-      width: 100%;
-      display: block;
-      margin-left: 20px;
-    }
-
-    &__link {
-      color: #2f9ae0;
-      margin-left: 5px;
-    }
-  }
-
-  &__get-hw {
-    width: 100%;
-    padding-bottom: 10px;
-    padding-top: 10px;
-
-    &__msg {
-      @include H6;
-
-      color: #9b9b9b;
-    }
-
-    &__link {
-      @include H4;
-
-      text-align: center;
-      color: #2f9ae0;
-      cursor: pointer;
-    }
   }
 
   &__step-asset {
@@ -356,5 +294,20 @@
 
     color: #2f9ae0;
     cursor: pointer;
+  }
+}
+
+.switch-ledger-path-popover__content {
+  padding: 0 24px 48px 24px;
+}
+
+.switch-ledger-path-popover__footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+
+  button:first-of-type {
+    margin-right: 15px;
   }
 }

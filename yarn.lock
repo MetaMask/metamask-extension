@@ -2704,14 +2704,14 @@
   resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-6.0.0.tgz#ec53e8ab278073e882411ed89705bc7d06b78c81"
   integrity sha512-LyakGYGwM8UQOGhwWa+5erAI1hXuiTgf/y7USzOomX6H9KiuY09IAUYnPh7ToPG2sedD2F48UF1bUm8yvCoZOw==
 
-"@metamask/eth-ledger-bridge-keyring@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@metamask/eth-ledger-bridge-keyring/-/eth-ledger-bridge-keyring-0.3.0.tgz#4fc2a6345199e18f94c098d8c632d3d55add5c36"
-  integrity sha512-Iv9fmxPClBohIK6ciy0ZVYNTUodlmrdQt19cZDAicSfFdR2Gcgbq2FDA75o63+fW8TwPEohhDRV/vWQ0MU5esw==
+"@metamask/eth-ledger-bridge-keyring@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eth-ledger-bridge-keyring/-/eth-ledger-bridge-keyring-0.4.0.tgz#764834adf146fc86ab7688a6c8f1e08708ed0d71"
+  integrity sha512-FkoAsP19YMKHNQzfPL5l9QJwp4YsEaN8d5pbJc+VcMzoC5rkt1iyDQdderERUV9DQlS3flBjxECCZ+QX54HD5w==
   dependencies:
     eth-sig-util "^1.4.2"
     ethereumjs-tx "^1.3.4"
-    ethereumjs-util "^5.1.5"
+    ethereumjs-util "^7.0.9"
     events "^2.0.0"
     hdkey "0.8.0"
 

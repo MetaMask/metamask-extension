@@ -308,9 +308,6 @@
   "done": {
     "message": "Gotowe"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Nie masz portfela sprzętowego?"
-  },
   "downloadGoogleChrome": {
     "message": "Ściągnij Google Chrome"
   },
@@ -443,9 +440,6 @@
     "message": "Zdobądź Eter ze źródła za $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Po pomoc."
-  },
   "getStarted": {
     "message": "Rozpocznij"
   },
@@ -466,9 +460,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Wybierz portfel sprzętowy, którego chcesz użyć z MetaMaskiem"
-  },
-  "havingTroubleConnecting": {
-    "message": "Problem z połączeniem?"
   },
   "here": {
     "message": "tutaj",
@@ -695,9 +686,6 @@
   "optionalCurrencySymbol": {
     "message": "Symbol (opcjonalnie)"
   },
-  "orderOneHere": {
-    "message": "Zamów Trezor lub Ledger i trzymaj swoje środki w portfelu sprzętowym."
-  },
   "origin": {
     "message": "Pochodzenie"
   },
@@ -756,9 +744,6 @@
   },
   "readdToken": {
     "message": "Możesz później ponownie dodać ten token poprzez \"Dodaj token\" w opcjach menu swojego konta."
-  },
-  "readyToConnect": {
-    "message": "Gotowy na połączenie?"
   },
   "recents": {
     "message": "Ostatnie"
@@ -981,24 +966,6 @@
   },
   "stateLogsDescription": {
     "message": "Logi stanów zawierają Twoje publiczne adresy kont i wykonanych transakcji."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Podłącz portfel sprzętowy"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Połącz swój portfel sprzętowy z komputerem."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Wybierz konto"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Wybierz konto, które chcesz przeglądać. Możesz wybrać tylko jedno konto w danym momencie."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Zacznij używać dystrybuowanych aplikacji (dApps) i wiele więcej!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Używaj swojego konta sprzętowego tak, jak używasz jakiegokolwiek konta z Ethereum. Loguj się do dystrybuowanych aplikacji (dApps), wysyłaj Eth, kupuj i przechowaj tokeny ERC20 i niewymienne tokeny, jak np. CryptoKitties."
   },
   "storePhrase": {
     "message": "Przechowuj tę frazę w menedżerze haseł, takim jak 1Password."
