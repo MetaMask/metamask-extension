@@ -500,9 +500,6 @@
   "done": {
     "message": "完成"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "没有硬件钱包？"
-  },
   "dontShowThisAgain": {
     "message": "不再显示"
   },
@@ -727,9 +724,6 @@
     "message": "从水管获取 $1 网络的 Ether",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "获取帮助。"
-  },
   "getStarted": {
     "message": "开始使用"
   },
@@ -750,9 +744,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "选择希望用于 MetaMask 的硬件钱包"
-  },
-  "havingTroubleConnecting": {
-    "message": "连接出现问题？"
   },
   "here": {
     "message": "这里",
@@ -1117,9 +1108,6 @@
   "optionalCurrencySymbol": {
     "message": "符号（选填）"
   },
-  "orderOneHere": {
-    "message": "订购 Trezor 或 Ledger ，将个人资金进行冷存储"
-  },
   "origin": {
     "message": "来源"
   },
@@ -1200,9 +1188,6 @@
   },
   "readdToken": {
     "message": "之后您还可以通过帐户选项菜单中的“添加代币”来添加此代币。"
-  },
-  "readyToConnect": {
-    "message": "是否准备连接？"
   },
   "receive": {
     "message": "接收"
@@ -1503,24 +1488,6 @@
   },
   "statusNotConnected": {
     "message": "未连接"
-  },
-  "step1HardwareWallet": {
-    "message": "1. 连接硬件钱包"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "将您的硬件钱包直接连接到电脑上。"
-  },
-  "step2HardwareWallet": {
-    "message": "2. 选择账户"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "请选择您想查看的账户。每次只能选择一个账户。"
-  },
-  "step3HardwareWallet": {
-    "message": "3. 开始使用 web3 站点和更多功能！"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "使用您的硬件钱包，操作与以太坊账户制作相同。登录 dApps，发送 ETH ，购买和保存 ERC20 代币和诸如 CryptoKitties 等不可替代代币。"
   },
   "storePhrase": {
     "message": "通过如 1Password 等密码管理工具保存该账户助记词。"

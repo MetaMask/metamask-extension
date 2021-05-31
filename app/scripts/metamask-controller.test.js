@@ -504,9 +504,9 @@ describe('MetaMaskController', function () {
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         'Trezor Hardware',
       );
-      assert.equal(
+      assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
-        'Trezor Hardware',
+        ['Trezor Hardware'],
       );
       assert.equal(keyrings.length, 1);
     });
@@ -517,9 +517,9 @@ describe('MetaMaskController', function () {
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
         'Ledger Hardware',
       );
-      assert.equal(
+      assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
-        'Ledger Hardware',
+        ['Ledger Hardware'],
       );
       assert.equal(keyrings.length, 1);
     });
