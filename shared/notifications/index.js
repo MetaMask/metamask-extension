@@ -57,7 +57,7 @@ export const getTranslatedUINoficiations = (t, locale) => {
       title: t('notifications4Title'),
       description: t('notifications4Description'),
       actionText: t('notifications4ActionText'),
-      date: new Intl.DateTimeFormat(locale).format(
+      date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[4].date),
       ),
     },
@@ -66,7 +66,7 @@ export const getTranslatedUINoficiations = (t, locale) => {
       title: t('walletSeed'),
       description: t('notifications5Description'),
       actionText: t('notifications3ActionText'),
-      date: new Intl.DateTimeFormat(locale).format(
+      date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[5].date),
       ),
     },
@@ -78,7 +78,7 @@ export const getTranslatedUINoficiations = (t, locale) => {
         t('notifications6DescriptionTwo'),
         t('notifications6DescriptionThree'),
       ],
-      date: new Intl.DateTimeFormat(locale).format(
+      date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[6].date),
       ),
     },
