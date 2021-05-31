@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import migration33 from './033';
 
 describe('Migration to delete notice controller', function () {

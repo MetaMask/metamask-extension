@@ -1,0 +1,155 @@
+@import 'welcome/index';
+@import 'select-action/index';
+@import 'seed-phrase/index';
+@import 'end-of-flow/index';
+@import 'metametrics-opt-in/index';
+
+
+.first-time-flow {
+  width: 100%;
+  background-color: $white;
+  display: flex;
+  justify-content: center;
+
+  &__wrapper {
+    @media screen and (min-width: $break-large) {
+      max-width: 742px;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      margin-top: 2%;
+    }
+
+    .app-header__metafox-logo {
+      margin-bottom: 40px;
+
+      @media screen and (max-width: $break-small) {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__create-back {
+    margin-bottom: 16px;
+  }
+
+  &__header {
+    @include H1;
+
+    margin-bottom: 24px;
+    color: black;
+  }
+
+  &__subheader {
+    margin-bottom: 16px;
+  }
+
+  &__input {
+    max-width: 350px;
+  }
+
+  &__textarea-wrapper {
+    margin-bottom: 8px;
+    display: inline-flex;
+    padding: 0;
+    position: relative;
+    min-width: 0;
+    flex-direction: column;
+    max-width: 350px;
+  }
+
+  &__textarea-label {
+    @include H4;
+
+    margin-bottom: 9px;
+    color: #1b344d;
+  }
+
+  &__textarea {
+    @include Paragraph;
+
+    /*rtl:ignore*/
+    direction: ltr;
+    border: 1px solid #cdcdcd;
+    border-radius: 6px;
+    background-color: #fff;
+    padding: 16px;
+    margin-top: 8px;
+  }
+
+  &__seedphrase {
+    margin-top: 9px !important;
+  }
+
+  &__breadcrumbs {
+    margin: 36px 0;
+  }
+
+  &__text-block {
+    margin-bottom: 24px;
+    color: black;
+
+    @media screen and (max-width: $break-small) {
+      @include H6;
+
+      margin-bottom: 16px;
+    }
+  }
+
+  &__button {
+    margin: 35px 0 14px;
+    width: 170px;
+    height: 44px;
+  }
+
+  &__checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-top: 24px;
+  }
+
+  &__checkbox {
+    background: #fff;
+    border: 1px solid #cdcdcd;
+    box-sizing: border-box;
+    height: 34px;
+    width: 34px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      border: 1.5px solid #2f9ae0;
+    }
+
+    .fa-check {
+      color: #2f9ae0;
+    }
+  }
+
+  &__checkbox-label {
+    @include H4;
+
+    color: #939090;
+    margin-left: 18px;
+  }
+
+  &__link-text {
+    color: $primary-blue;
+  }
+}
+
+.first-time-flow__wrapper.intro {
+  @media screen and (min-width: $break-large) {
+    max-width: 1010px;
+  }
+
+  @media screen and (max-width: 1010px) {
+    padding: 0 20px;
+  }
+}

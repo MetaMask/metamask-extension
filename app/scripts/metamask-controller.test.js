@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
@@ -52,6 +52,7 @@ const ExtensionizerMock = {
     onInstalled: {
       addListener: () => undefined,
     },
+    getPlatformInfo: async () => 'mac',
   },
 };
 
@@ -492,8 +493,8 @@ describe('MetaMaskController', function () {
         );
       } catch (e) {
         assert.equal(
-          e,
-          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+          e.message,
+          'MetamaskController:getKeyringForDevice - Unknown device',
         );
       }
     });
@@ -534,8 +535,8 @@ describe('MetaMaskController', function () {
         );
       } catch (e) {
         assert.equal(
-          e,
-          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+          e.message,
+          'MetamaskController:getKeyringForDevice - Unknown device',
         );
       }
     });
@@ -553,8 +554,8 @@ describe('MetaMaskController', function () {
         await metamaskController.forgetDevice('Some random device name');
       } catch (e) {
         assert.equal(
-          e,
-          'Error: MetamaskController:getKeyringForDevice - Unknown device',
+          e.message,
+          'MetamaskController:getKeyringForDevice - Unknown device',
         );
       }
     });
@@ -653,43 +654,21 @@ describe('MetaMaskController', function () {
   });
 
   describe('#setCustomRpc', function () {
-    let rpcUrl;
-
-    beforeEach(function () {
-      rpcUrl = metamaskController.setCustomRpc(
+    it('returns custom RPC that when called', async function () {
+      const rpcUrl = await metamaskController.setCustomRpc(
         CUSTOM_RPC_URL,
         CUSTOM_RPC_CHAIN_ID,
       );
+      assert.equal(rpcUrl, CUSTOM_RPC_URL);
     });
 
-    it('returns custom RPC that when called', async function () {
-      assert.equal(await rpcUrl, CUSTOM_RPC_URL);
-    });
-
-    it('changes the network controller rpc', function () {
+    it('changes the network controller rpc', async function () {
+      await metamaskController.setCustomRpc(
+        CUSTOM_RPC_URL,
+        CUSTOM_RPC_CHAIN_ID,
+      );
       const networkControllerState = metamaskController.networkController.store.getState();
       assert.equal(networkControllerState.provider.rpcUrl, CUSTOM_RPC_URL);
-    });
-  });
-
-  describe('#setCurrentCurrency', function () {
-    let defaultMetaMaskCurrency;
-
-    beforeEach(function () {
-      defaultMetaMaskCurrency =
-        metamaskController.currencyRateController.state.currentCurrency;
-    });
-
-    it('defaults to usd', function () {
-      assert.equal(defaultMetaMaskCurrency, 'usd');
-    });
-
-    it('sets currency to JPY', function () {
-      metamaskController.setCurrentCurrency('JPY', noop);
-      assert.equal(
-        metamaskController.currencyRateController.state.currentCurrency,
-        'JPY',
-      );
     });
   });
 

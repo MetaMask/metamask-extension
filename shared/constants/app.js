@@ -28,5 +28,5 @@ export const MESSAGE_TYPE = {
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
   ADD_ETHEREUM_CHAIN: 'wallet_addEthereumChain',
-  SWITCH_ETHEREUM_CHAIN: 'metamask_switchEthereumChain',
+  SWITCH_ETHEREUM_CHAIN: 'wallet_switchEthereumChain',
 };
