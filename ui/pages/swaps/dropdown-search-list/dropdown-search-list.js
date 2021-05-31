@@ -233,7 +233,7 @@ export default function DropdownSearchList({
                         blockExplorerLink &&
                         t('addCustomTokenByContractAddress', [
                           <a
-                            key="searchable-item-list__etherscan-link"
+                            key="dropdown-search-list__etherscan-link"
                             onClick={() => {
                               blockExplorerLinkClickedEvent();
                               global.platform.openTab({
