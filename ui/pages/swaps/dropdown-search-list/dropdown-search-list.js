@@ -20,7 +20,9 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getCurrentChainId,
+  getRpcPrefsForCurrentProvider,
 } from '../../../selectors/selectors';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 
 export default function DropdownSearchList({
   searchListClassName,
@@ -50,6 +52,8 @@ export default function DropdownSearchList({
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const chainId = useSelector(getCurrentChainId);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+
   const tokenImportedEvent = useNewMetricEvent({
     event: 'Token Imported',
     sensitiveProperties: {
@@ -128,6 +132,27 @@ export default function DropdownSearchList({
     }
   };
 
+  const blockExplorerLink =
+    rpcPrefs.blockExplorerUrl ??
+    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
+    null;
+
+  const blockExplorerLabel = rpcPrefs.blockExplorerUrl
+    ? new URL(blockExplorerLink).hostname
+    : t('etherscan');
+
+  const blockExplorerLinkClickedEvent = useNewMetricEvent({
+    category: 'Swaps',
+    event: 'Clicked Block Explorer Link',
+    properties: {
+      link_type: 'Token Tracker',
+      action: 'Verify Contract Address',
+      block_explorer_domain: blockExplorerLink
+        ? new URL(blockExplorerLink)?.hostname
+        : '',
+    },
+  });
+
   const importTokenProps = {
     onImportTokenCloseClick,
     onImportTokenClick,
@@ -204,7 +229,24 @@ export default function DropdownSearchList({
                     key="searchable-item-list-item-last"
                   >
                     <ActionableMessage
-                      message={t('addCustomTokenByContractAddress')}
+                      message={
+                        blockExplorerLink &&
+                        t('addCustomTokenByContractAddress', [
+                          <a
+                            key="searchable-item-list__etherscan-link"
+                            onClick={() => {
+                              blockExplorerLinkClickedEvent();
+                              global.platform.openTab({
+                                url: blockExplorerLink,
+                              });
+                            }}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {blockExplorerLabel}
+                          </a>,
+                        ])
+                      }
                     />
                   </div>
                 </div>

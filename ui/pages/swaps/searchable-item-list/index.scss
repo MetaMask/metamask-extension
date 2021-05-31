@@ -85,12 +85,22 @@
       opacity: 1;
       pointer-events: none;
 
+      &:hover {
+        background: none;
+      }
+
       .actionable-message {
         margin: 0;
 
         &__message {
           text-align: left;
           color: $Black-100;
+        }
+
+        a {
+          pointer-events: auto;
+          color: #037dd6;
+          cursor: pointer;
         }
       }
     }

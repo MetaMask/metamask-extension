@@ -1,3 +1,4 @@
+import { defaultNetworksData } from '../../ui/pages/settings/networks-tab/networks-tab.constants';
 import {
   MAINNET_CHAIN_ID,
   ETH_SYMBOL,
@@ -88,6 +89,12 @@ export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
   [BSC_CHAIN_ID]: BNB_SWAPS_TOKEN_OBJECT,
 };
 
+const chainIdToBlockExplorerUrls = {};
+defaultNetworksData.forEach((network) => {
+  chainIdToBlockExplorerUrls[network.chainId] = network.blockExplorerUrl;
+});
+
 export const SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP = {
   [BSC_CHAIN_ID]: BSC_DEFAULT_BLOCK_EXPLORER_URL,
+  ...chainIdToBlockExplorerUrls,
 };

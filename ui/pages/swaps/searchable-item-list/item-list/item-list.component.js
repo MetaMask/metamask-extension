@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Identicon from '../../../../components/ui/identicon';
@@ -6,6 +7,12 @@ import UrlIcon from '../../../../components/ui/url-icon';
 import Button from '../../../../components/ui/button';
 import ActionableMessage from '../../actionable-message';
 import { I18nContext } from '../../../../contexts/i18n';
+import {
+  getCurrentChainId,
+  getRpcPrefsForCurrentProvider,
+} from '../../../../selectors';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/swaps';
+import { useNewMetricEvent } from '../../../../hooks/useMetricEvent';
 
 export default function ItemList({
   results = [],
@@ -20,6 +27,28 @@ export default function ItemList({
   listContainerClassName,
 }) {
   const t = useContext(I18nContext);
+  const chainId = useSelector(getCurrentChainId);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const blockExplorerLink =
+    rpcPrefs.blockExplorerUrl ??
+    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
+    null;
+
+  const blockExplorerLabel = rpcPrefs.blockExplorerUrl
+    ? new URL(blockExplorerLink).hostname
+    : t('etherscan');
+
+  const blockExplorerLinkClickedEvent = useNewMetricEvent({
+    category: 'Swaps',
+    event: 'Clicked Block Explorer Link',
+    properties: {
+      link_type: 'Token Tracker',
+      action: 'Verify Contract Address',
+      block_explorer_domain: blockExplorerLink
+        ? new URL(blockExplorerLink)?.hostname
+        : '',
+    },
+  });
 
   // If there is a token for import based on a contract address, it's the only one in the list.
   const hasTokenForImport = results.length === 1 && results[0].notImported;
@@ -117,7 +146,26 @@ export default function ItemList({
             className="searchable-item-list__item searchable-item-list__item--add-token"
             key="searchable-item-list-item-last"
           >
-            <ActionableMessage message={t('addCustomTokenByContractAddress')} />
+            <ActionableMessage
+              message={
+                blockExplorerLink &&
+                t('addCustomTokenByContractAddress', [
+                  <a
+                    key="searchable-item-list__etherscan-link"
+                    onClick={() => {
+                      blockExplorerLinkClickedEvent();
+                      global.platform.openTab({
+                        url: blockExplorerLink,
+                      });
+                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {blockExplorerLabel}
+                  </a>,
+                ])
+              }
+            />
           </div>
         )}
       </div>

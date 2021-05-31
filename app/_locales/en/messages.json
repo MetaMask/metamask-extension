@@ -53,7 +53,8 @@
     "message": "Add contact"
   },
   "addCustomTokenByContractAddress": {
-    "message": "Manually add tokens not listed by copy and pasting a token contract address in the search above."
+    "message": "Can’t find a token? You can manually add any token by pasting its address. Token contract addresses can be found on $1.",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "addEthereumChainConfirmationDescription": {
     "message": "This will allow this network to be used within MetaMask."
@@ -903,7 +904,7 @@
     "message": "Import token?"
   },
   "importTokenWarning": {
-    "message": "Add at your own risk. Anyone can create a token, including creating fake versions of existing tokens that claim to represent projects."
+    "message": "Anyone can create a token with any name, including fake versions of existing tokens. Add and trade at your own risk!"
   },
   "importWallet": {
     "message": "Import wallet"

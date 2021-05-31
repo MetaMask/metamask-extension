@@ -110,14 +110,14 @@
   }
 
   .dropdown-input-pair {
-    .searchable-item-list {    
+    .searchable-item-list {
       &__item--add-token {
         display: none;
       }
     }
 
     &__to {
-      .searchable-item-list {    
+      .searchable-item-list {
         &__item--add-token {
           display: flex;
         }
