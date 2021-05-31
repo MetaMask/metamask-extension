@@ -7,9 +7,11 @@ import { I18nContext } from '../../../contexts/i18n';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
+import Typography from '../../ui/typography';
 import { updateViewedNotifications } from '../../../store/actions';
 import { getTranslatedUINoficiations } from '../../../../../shared/notifications';
 import { getSortedNotificationsToShow } from '../../../selectors';
+import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 function getActionFunctionById(id) {
   const actionFunctions = {
@@ -29,6 +31,31 @@ function getActionFunctionById(id) {
   return actionFunctions[id];
 }
 
+const renderDescription = (description) => {
+  if (!Array.isArray(description)) {
+    return (
+      <Typography variant={TYPOGRAPHY.Paragraph}>{description}</Typography>
+    );
+  }
+
+  return (
+    <>
+      {description.map((piece, index) => {
+        const isLast = index === description.length - 1;
+        return (
+          <Typography
+            key={`item-${index}`}
+            variant={TYPOGRAPHY.Paragraph}
+            boxProps={{ marginBottom: isLast ? 0 : 2 }}
+          >
+            {piece}
+          </Typography>
+        );
+      })}
+    </>
+  );
+};
+
 const renderFirstNotification = (notification, idRefMap) => {
   const { id, date, title, description, image, actionText } = notification;
   const actionFunction = getActionFunctionById(id);
@@ -46,14 +73,14 @@ const renderFirstNotification = (notification, idRefMap) => {
       className={classnames(
         'whats-new-popup__notification whats-new-popup__first-notification',
       )}
-      key={`whats-new-popop-notificatiion-${id}`}
+      key={`whats-new-popop-notification-${id}`}
       ref={idRefMap[id]}
     >
       {!placeImageBelowDescription && imageComponent}
       <div className="whats-new-popup__notification-title">{title}</div>
       <div className="whats-new-popup__description-and-date">
         <div className="whats-new-popup__notification-description">
-          {description}
+          {renderDescription(description)}
         </div>
         <div className="whats-new-popup__notification-date">{date}</div>
       </div>
@@ -79,13 +106,13 @@ const renderSubsequentNotification = (notification, idRefMap) => {
   return (
     <div
       className={classnames('whats-new-popup__notification')}
-      key={`whats-new-popop-notificatiion-${id}`}
+      key={`whats-new-popop-notification-${id}`}
       ref={idRefMap[id]}
     >
       <div className="whats-new-popup__notification-title">{title}</div>
       <div className="whats-new-popup__description-and-date">
         <div className="whats-new-popup__notification-description">
-          {description}
+          {renderDescription(description)}
         </div>
         <div className="whats-new-popup__notification-date">{date}</div>
       </div>
