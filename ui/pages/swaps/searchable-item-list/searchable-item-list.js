@@ -38,6 +38,7 @@ export default function SearchableItemList({
         error={itemSelectorError}
         searchPlaceholderText={searchPlaceholderText}
         defaultToAll={defaultToAll}
+        listContainerClassName={listContainerClassName}
       />
       <ItemList
         searchQuery={searchQuery}
