@@ -47,15 +47,19 @@ const colors = {
 };
 
 const ToggleButton = (props) => {
-  const { value, onToggle, offLabel, onLabel } = props;
+  const { value, onToggle, offLabel, onLabel, disabled } = props;
 
   const modifier = value ? 'on' : 'off';
 
   return (
-    <div className={classnames('toggle-button', `toggle-button--${modifier}`)}>
+    <div
+      className={classnames('toggle-button', `toggle-button--${modifier}`, {
+        'toggle-button--disabled': disabled,
+      })}
+    >
       <ReactToggleButton
         value={value}
-        onToggle={onToggle}
+        onToggle={disabled ? undefined : onToggle}
         activeLabel=""
         inactiveLabel=""
         trackStyle={value ? trackStyle : offTrackStyle}
@@ -76,6 +80,7 @@ ToggleButton.propTypes = {
   onToggle: PropTypes.func,
   offLabel: PropTypes.string,
   onLabel: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 export default ToggleButton;
