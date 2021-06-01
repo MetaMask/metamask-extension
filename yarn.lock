@@ -2621,9 +2621,9 @@
     react-is "^16.8.0"
 
 "@metamask/auto-changelog@^2.1.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@metamask/auto-changelog/-/auto-changelog-2.2.0.tgz#ccc5f8d2f056793e9736445c0444596d4fcd6ffd"
-  integrity sha512-MZiEAx5QOrCInjBn9Ao/j00qyAivcqK7dEuDD+g+yabCNPFFvNq8U8i53h2Vb4zdj5NzKHIRwYNShOoQxt9BmA==
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@metamask/auto-changelog/-/auto-changelog-2.3.0.tgz#e8edf9210753b495d799b64af07de24ed0839004"
+  integrity sha512-l5Tk9Dx1+wF3L1ZvN+HObS7R077BDErRmElq5LckJTtAbAhEhg/MMD/6u2yZBmVIlPrint29BVt3tsqRp1GjIA==
   dependencies:
     cross-spawn "^7.0.3"
     diff "^5.0.0"
