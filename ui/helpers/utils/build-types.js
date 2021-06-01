@@ -1,6 +1,7 @@
 const assetList = {
   main: {
     metafoxLogoHorizontal: '/images/logo/metamask-logo-horizontal.svg',
+    metafoxLogoHorizontalDark: '/images/logo/metamask-logo-horizontal.svg',
     metafoxLogoSmall: '/images/logo/metamask-fox.svg',
     permissionsRedirectLogo: '/images/logo/metamask-fox.svg',
     aboutInfoLogo: '/images/info-logo.png',
@@ -8,6 +9,7 @@ const assetList = {
   },
   beta: {
     metafoxLogoHorizontal: '/images/beta/metamask-logo-horizontal.png',
+    metafoxLogoHorizontalDark: '/images/beta/metamask-logo-horizontal-dark.png',
     metafoxLogoSmall: '/images/beta/metamask-header-logo.png',
     permissionsRedirectLogo: '/images/beta/64.png',
     aboutInfoLogo: '/images/beta/128.png',

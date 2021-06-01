@@ -32,7 +32,9 @@ function createManifestTasks({
         const result = merge(
           cloneDeep(baseManifest),
           platformModifications,
-          isBeta ? getBetaModifications(platform, betaVersionsMap) : { version },
+          isBeta
+            ? getBetaModifications(platform, betaVersionsMap)
+            : { version },
         );
         const dir = path.join('.', 'dist', platform);
         await fs.mkdir(dir, { recursive: true });

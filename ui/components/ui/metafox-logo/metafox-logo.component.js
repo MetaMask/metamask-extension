@@ -7,14 +7,16 @@ export default class MetaFoxLogo extends PureComponent {
   static propTypes = {
     onClick: PropTypes.func,
     unsetIconHeight: PropTypes.bool,
+    useDark: PropTypes.bool,
   };
 
   static defaultProps = {
     onClick: undefined,
+    useDark: false,
   };
 
   render() {
-    const { onClick, unsetIconHeight } = this.props;
+    const { onClick, unsetIconHeight, useDark } = this.props;
     const iconProps = unsetIconHeight ? {} : { height: 42, width: 42 };
 
     return (
@@ -26,7 +28,9 @@ export default class MetaFoxLogo extends PureComponent {
       >
         <img
           height="30"
-          src={getBuildSpecificAsset('metafoxLogoHorizontal')}
+          src={getBuildSpecificAsset(
+            useDark ? 'metafoxLogoHorizontalDark' : 'metafoxLogoHorizontal',
+          )}
           className={classnames(
             'app-header__metafox-logo',
             'app-header__metafox-logo--horizontal',
