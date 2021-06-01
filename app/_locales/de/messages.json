@@ -296,9 +296,6 @@
   "done": {
     "message": "Fertig"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Sie haben kein Hardware-Wallet?"
-  },
   "downloadGoogleChrome": {
     "message": "Google Chrome herunterladen"
   },
@@ -431,9 +428,6 @@
     "message": "Ether für $1 vom Faucet holen",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Erhalten Sie Hilfe."
-  },
   "getStarted": {
     "message": "Erste Schritte"
   },
@@ -454,9 +448,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Wählen Sie ein Hardware-Wallet aus, das Sie mit MetaMask verwenden möchten"
-  },
-  "havingTroubleConnecting": {
-    "message": "Verbindungsprobleme?"
   },
   "here": {
     "message": "hier",
@@ -674,9 +665,6 @@
   "optionalBlockExplorerUrl": {
     "message": "Block-Explorer-URL (optional)"
   },
-  "orderOneHere": {
-    "message": "Bestellen Sie ein Trezor oder Ledger und legen Sie Ihr Geld auf Eis"
-  },
   "origin": {
     "message": "Ursprung"
   },
@@ -731,9 +719,6 @@
   },
   "readdToken": {
     "message": "Du kannst diesen Token immer erneut hinzufügen, indem du in den Menüpunkt \"Token hinzufügen\" in den Einstellungen deines Accounts gehst."
-  },
-  "readyToConnect": {
-    "message": "Bereit für die Verbindung?"
   },
   "recents": {
     "message": "Letzte"
@@ -956,24 +941,6 @@
   },
   "stateLogsDescription": {
     "message": "Statelogs zeigen die Public Adresse und die gesendeten Transaktionen deines Accounts."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Hardware-Wallet verknüpfen"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Verknüpfen Sie Ihr Hardware-Wallet direkt mit Ihrem Computer."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Ein Konto auswählen"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Wählen Sie das Konto aus, das Sie anzeigen wollen. Sie können nur eines zur Zeit wählen."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Erste Schritte mit dApps und mehr!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Verwenden Sie Ihr Hardware-Konto so wie jedes Ethereum-Konto. Loggen Sie sich bei dApps ein, senden Sie Eth, kaufen und speichern Sie ERC20-Token und Nicht-Fungible-Token wie CryptoKitties."
   },
   "storePhrase": {
     "message": "Speichern Sie diesen Schlüssel in einem Passwortmanager wie 1Password."

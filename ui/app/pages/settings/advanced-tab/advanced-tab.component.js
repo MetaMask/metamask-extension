@@ -7,6 +7,9 @@ import TextField from '../../../components/ui/text-field';
 import Button from '../../../components/ui/button';
 import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
 
+import { getPlatform } from '../../../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../../../../shared/constants/app';
+
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -33,6 +36,8 @@ export default class AdvancedTab extends PureComponent {
     threeBoxDisabled: PropTypes.bool.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
+    useLedgerLive: PropTypes.bool.isRequired,
+    setLedgerLivePreference: PropTypes.func.isRequired,
   };
 
   state = {
@@ -384,6 +389,33 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  renderLedgerLiveControl() {
+    const { t } = this.context;
+    const { useLedgerLive, setLedgerLivePreference } = this.props;
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{t('ledgerLiveAdvancedSetting')}</span>
+          <div className="settings-page__content-description">
+            {t('ledgerLiveAdvancedSettingDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={useLedgerLive}
+              onToggle={(value) => setLedgerLivePreference(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+              disabled={getPlatform() === PLATFORM_FIREFOX}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   handleIpfsGatewayChange(url) {
     const { t } = this.context;
 
@@ -478,6 +510,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAutoLockTimeLimit()}
         {this.renderThreeBoxControl()}
         {this.renderIpfsGatewayControl()}
+        {this.renderLedgerLiveControl()}
       </div>
     );
   }

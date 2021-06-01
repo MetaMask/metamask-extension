@@ -491,9 +491,6 @@
   "done": {
     "message": "Hoàn tất"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "Bạn không có ví cứng?"
-  },
   "dontShowThisAgain": {
     "message": "Không hiển thị lại"
   },
@@ -718,9 +715,6 @@
     "message": "Nhận Ether từ một vòi dành cho $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Nhận trợ giúp."
-  },
   "getStarted": {
     "message": "Bắt đầu"
   },
@@ -741,9 +735,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Chọn một ví cứng mà bạn muốn sử dụng với MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Bạn đang gặp sự cố với việc kết nối?"
   },
   "here": {
     "message": "tại đây",
@@ -1108,9 +1099,6 @@
   "optionalCurrencySymbol": {
     "message": "Ký hiệu tiền tệ (không bắt buộc)"
   },
-  "orderOneHere": {
-    "message": "Đặt mua một ví Trezor hoặc Ledger và giữ tiền của bạn trong ví lưu trữ lạnh"
-  },
   "origin": {
     "message": "Nguồn gốc"
   },
@@ -1191,9 +1179,6 @@
   },
   "readdToken": {
     "message": "Bạn có thể thêm lại token này trong tương lai bằng cách chuyển đến mục “Thêm token” trong trình đơn tùy chọn tài khoản."
-  },
-  "readyToConnect": {
-    "message": "Bạn đã sẵn sàng kết nối chưa?"
   },
   "receive": {
     "message": "Nhận"
@@ -1494,24 +1479,6 @@
   },
   "statusNotConnected": {
     "message": "Chưa kết nối"
-  },
-  "step1HardwareWallet": {
-    "message": "1. Kết nối với ví cứng"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Kết nối ví cứng của bạn trực tiếp với máy tính."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Chọn một tài khoản"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Chọn tài khoản bạn muốn xem. Bạn chỉ chọn được một tài khoản tại một thời điểm."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Bắt đầu sử dụng các trang web trên web3 và nhiều hơn thế!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Sử dụng cùng một tài khoản ví cứng mà bạn sẽ dùng với mọi tài khoản Ethereum của mình. Kết nối với các trang web trên web3, gửi ETH, mua và lưu trữ token ERC20 cũng như token không thể thay thế, chẳng hạn như CryptoKitties."
   },
   "storePhrase": {
     "message": "Lưu cụm mật khẩu này trong trình quản lý mật khẩu chẳng hạn như 1Password."

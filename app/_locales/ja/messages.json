@@ -500,9 +500,6 @@
   "done": {
     "message": "完了"
   },
-  "dontHaveAHardwareWallet": {
-    "message": "ハードウェアウォレットをお持ちではありませんか?"
-  },
   "dontShowThisAgain": {
     "message": "再度表示しない"
   },
@@ -727,9 +724,6 @@
     "message": "$1 のFaucetでEtherを得ることができます。",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "サポートを受ける。"
-  },
   "getStarted": {
     "message": "はじめる"
   },
@@ -750,9 +744,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "MetaMaskに接続するハードウェアウォレットを選択してください"
-  },
-  "havingTroubleConnecting": {
-    "message": "接続に問題がありますか?"
   },
   "here": {
     "message": "こちら",
@@ -1117,9 +1108,6 @@
   "optionalCurrencySymbol": {
     "message": "通貨シンボル(オプション)"
   },
-  "orderOneHere": {
-    "message": "Trezor又はLedgerを注文して資金をコールドストレージに保管できます"
-  },
   "origin": {
     "message": "要求元"
   },
@@ -1200,9 +1188,6 @@
   },
   "readdToken": {
     "message": "アカウントオプションのメニューで\"トークンの追加\"を選択すると、後でこのトークンを戻すことができます。"
-  },
-  "readyToConnect": {
-    "message": "接続準備はよろしいですか?"
   },
   "receive": {
     "message": "受け取る"
@@ -1503,24 +1488,6 @@
   },
   "statusNotConnected": {
     "message": "未接続"
-  },
-  "step1HardwareWallet": {
-    "message": "1.ハードウェア ウォレットの接続"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "コンピューターに直接ハードウェアウォレットを接続してください。"
-  },
-  "step2HardwareWallet": {
-    "message": "2.アカウントを選択"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "読取るアカウントを１つ選択します。"
-  },
-  "step3HardwareWallet": {
-    "message": "3.web3を使用してサイトに接続しましょう!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Ethereumアカウントと同じように、ハードウェアアカウントを使用します。web3サイトに接続してETH を送金し、ERC20トークンやCryptoKittiesのようなトークンを購入して保管できます。"
   },
   "storePhrase": {
     "message": "このフレーズを1Passwordのようなパスワードマネージャーに保管てください。"
