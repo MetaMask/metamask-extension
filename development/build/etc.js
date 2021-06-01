@@ -12,7 +12,7 @@ module.exports = createEtcTasks;
 function createEtcTasks({
   browserPlatforms,
   livereload,
-  beta,
+  isBeta,
   betaVersionsMap,
 }) {
   const clean = createTask('clean', async function clean() {
@@ -33,7 +33,7 @@ function createEtcTasks({
     'zip',
     composeParallel(
       ...browserPlatforms.map((platform) =>
-        createZipTask(platform, beta ? betaVersionsMap[platform] : undefined),
+        createZipTask(platform, isBeta ? betaVersionsMap[platform] : undefined),
       ),
     ),
   );

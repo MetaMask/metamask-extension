@@ -12,7 +12,7 @@ module.exports = createManifestTasks;
 
 function createManifestTasks({
   browserPlatforms,
-  beta = false,
+  isBeta = false,
   betaVersionsMap = {},
 }) {
   // merge base manifest with per-platform manifests
@@ -32,7 +32,7 @@ function createManifestTasks({
         const result = merge(
           cloneDeep(baseManifest),
           platformModifications,
-          beta ? getBetaModifications(platform, betaVersionsMap) : { version },
+          isBeta ? getBetaModifications(platform, betaVersionsMap) : { version },
         );
         const dir = path.join('.', 'dist', platform);
         await fs.mkdir(dir, { recursive: true });
