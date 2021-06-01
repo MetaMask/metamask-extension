@@ -17,6 +17,7 @@ export default function SearchableItemList({
   hideRightLabels,
   hideItemIf,
   listContainerClassName,
+  shouldSearchForImports,
 }) {
   const itemListRef = useRef();
 
@@ -38,7 +39,7 @@ export default function SearchableItemList({
         error={itemSelectorError}
         searchPlaceholderText={searchPlaceholderText}
         defaultToAll={defaultToAll}
-        listContainerClassName={listContainerClassName}
+        shouldSearchForImports={shouldSearchForImports}
       />
       <ItemList
         searchQuery={searchQuery}
@@ -75,4 +76,5 @@ SearchableItemList.propTypes = {
   hideRightLabels: PropTypes.bool,
   hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
+  shouldSearchForImports: PropTypes.bool,
 };

@@ -20,12 +20,10 @@ export default function ListItemSearch({
   fuseSearchKeys,
   searchPlaceholderText,
   defaultToAll,
-  listContainerClassName,
+  shouldSearchForImports,
 }) {
   const fuseRef = useRef();
   const [searchQuery, setSearchQuery] = useState('');
-  const isTokenToDropdown =
-    listContainerClassName === 'build-quote__open-to-dropdown';
 
   /**
    * Search a custom token for import based on a contract address.
@@ -53,7 +51,7 @@ export default function ListItemSearch({
     const fuseSearchResult = fuseRef.current.search(newSearchQuery);
     const results =
       defaultToAll && newSearchQuery === '' ? listToSearch : fuseSearchResult;
-    if (isTokenToDropdown && results.length === 0 && validHexAddress) {
+    if (shouldSearchForImports && results.length === 0 && validHexAddress) {
       await handleSearchTokenForImport(trimmedNewSearchQuery);
       return;
     }
@@ -115,5 +113,5 @@ ListItemSearch.propTypes = {
   fuseSearchKeys: PropTypes.arrayOf(PropTypes.object).isRequired,
   searchPlaceholderText: PropTypes.string,
   defaultToAll: PropTypes.bool,
-  listContainerClassName: PropTypes.string,
+  shouldSearchForImports: PropTypes.bool,
 };

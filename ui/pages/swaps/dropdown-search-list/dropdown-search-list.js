@@ -42,6 +42,7 @@ export default function DropdownSearchList({
   hideRightLabels,
   hideItemIf,
   listContainerClassName,
+  shouldSearchForImports,
 }) {
   const t = useContext(I18nContext);
   const [isOpen, setIsOpen] = useState(false);
@@ -267,6 +268,7 @@ export default function DropdownSearchList({
             hideRightLabels={hideRightLabels}
             hideItemIf={hideItemIf}
             listContainerClassName={listContainerClassName}
+            shouldSearchForImports={shouldSearchForImports}
           />
           <div
             className="dropdown-search-list__close-area"
@@ -305,4 +307,5 @@ DropdownSearchList.propTypes = {
   hideRightLabels: PropTypes.bool,
   hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
+  shouldSearchForImports: PropTypes.bool,
 };

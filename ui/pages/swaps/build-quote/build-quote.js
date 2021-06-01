@@ -466,6 +466,7 @@ export default function BuildQuote({
             listContainerClassName="build-quote__open-to-dropdown"
             hideRightLabels
             defaultToAll
+            shouldSearchForImports
           />
         </div>
         {toTokenIsNotDefault &&
