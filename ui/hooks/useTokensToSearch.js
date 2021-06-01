@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import contractMap from '@metamask/contract-metadata';
 import BigNumber from 'bignumber.js';
-import { isEqual, shuffle } from 'lodash';
+import { isEqual, shuffle, uniqBy } from 'lodash';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getTokenExchangeRates,
@@ -119,7 +119,12 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
       others: [],
     };
 
-    [...memoizedTokensToSearch, ...memoizedUsersToken].forEach((token) => {
+    const memoizedSwapsAndUserTokensWithoutDuplicities = uniqBy(
+      [...memoizedTokensToSearch, ...memoizedUsersToken],
+      'symbol',
+    );
+
+    memoizedSwapsAndUserTokensWithoutDuplicities.forEach((token) => {
       const renderableDataToken = getRenderableTokenData(
         { ...usersTokensAddressMap[token.address], ...token },
         tokenConversionRates,
@@ -131,12 +136,7 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
         isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
         usersTokensAddressMap[token.address]
       ) {
-        const foundItem = tokensToSearchBuckets.owned.find((item) => {
-          return item.symbol === token.symbol;
-        });
-        if (!foundItem) {
-          tokensToSearchBuckets.owned.push(renderableDataToken);
-        }
+        tokensToSearchBuckets.owned.push(renderableDataToken);
       } else if (memoizedTopTokens[token.address]) {
         tokensToSearchBuckets.top[
           memoizedTopTokens[token.address].index
