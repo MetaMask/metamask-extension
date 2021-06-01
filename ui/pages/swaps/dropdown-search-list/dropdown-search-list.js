@@ -74,18 +74,17 @@ export default function DropdownSearchList({
 
   const onClickItem = useCallback(
     (item) => {
-      if (item.notImported) {
-        // Opens a modal window for importing a token.
-        setTokenForImport(item);
-        setIsImportTokenModalOpen(true);
-        return;
-      }
       onSelect?.(item);
       setSelectedItem(item);
       close();
     },
     [onSelect, close],
   );
+
+  const onOpenImportTokenModalClick = (item) => {
+    setTokenForImport(item);
+    setIsImportTokenModalOpen(true);
+  };
 
   const onImportTokenClick = () => {
     tokenImportedEvent();
@@ -257,6 +256,7 @@ export default function DropdownSearchList({
             fuseSearchKeys={fuseSearchKeys}
             defaultToAll={defaultToAll}
             onClickItem={onClickItem}
+            onOpenImportTokenModalClick={onOpenImportTokenModalClick}
             maxListItems={maxListItems}
             className={classnames(
               'dropdown-search-list__token-container',

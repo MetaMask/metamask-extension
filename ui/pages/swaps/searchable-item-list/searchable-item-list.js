@@ -12,6 +12,7 @@ export default function SearchableItemList({
   listTitle,
   maxListItems,
   onClickItem,
+  onOpenImportTokenModalClick,
   Placeholder,
   searchPlaceholderText,
   hideRightLabels,
@@ -45,6 +46,7 @@ export default function SearchableItemList({
         searchQuery={searchQuery}
         results={results}
         onClickItem={onClickItem}
+        onOpenImportTokenModalClick={onOpenImportTokenModalClick}
         Placeholder={Placeholder}
         listTitle={listTitle}
         maxListItems={maxListItems}
@@ -61,6 +63,7 @@ SearchableItemList.propTypes = {
   itemSelectorError: PropTypes.string,
   itemsToSearch: PropTypes.array,
   onClickItem: PropTypes.func,
+  onOpenImportTokenModalClick: PropTypes.func,
   Placeholder: PropTypes.func,
   className: PropTypes.string,
   searchPlaceholderText: PropTypes.string,

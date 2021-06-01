@@ -17,6 +17,7 @@ import { useNewMetricEvent } from '../../../../hooks/useMetricEvent';
 export default function ItemList({
   results = [],
   onClickItem,
+  onOpenImportTokenModalClick,
   Placeholder,
   listTitle,
   maxListItems = 6,
@@ -71,7 +72,13 @@ export default function ItemList({
             return null;
           }
 
-          const onClick = () => onClickItem?.(result);
+          const onClick = () => {
+            if (result.notImported) {
+              onOpenImportTokenModalClick(result);
+            } else {
+              onClickItem?.(result);
+            }
+          };
           const {
             iconUrl,
             identiconAddress,
@@ -186,6 +193,7 @@ ItemList.propTypes = {
     }),
   ),
   onClickItem: PropTypes.func,
+  onOpenImportTokenModalClick: PropTypes.func,
   Placeholder: PropTypes.func,
   listTitle: PropTypes.string,
   maxListItems: PropTypes.number,
