@@ -121,7 +121,7 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
 
     const memoizedSwapsAndUserTokensWithoutDuplicities = uniqBy(
       [...memoizedTokensToSearch, ...memoizedUsersToken],
-      'symbol',
+      'address',
     );
 
     memoizedSwapsAndUserTokensWithoutDuplicities.forEach((token) => {
