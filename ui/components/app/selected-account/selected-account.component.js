@@ -15,6 +15,8 @@ class SelectedAccount extends Component {
   };
 
   static propTypes = {
+    chainId: PropTypes.string,
+    checksumUsesChainId: PropTypes.bool,
     selectedIdentity: PropTypes.object.isRequired,
   };
 
@@ -31,8 +33,12 @@ class SelectedAccount extends Component {
 
   render() {
     const { t } = this.context;
-    const { selectedIdentity } = this.props;
-    const checksummedAddress = checksumAddress(selectedIdentity.address);
+    const { selectedIdentity, chainId, checksumUsesChainId } = this.props;
+    const checksummedAddress = checksumAddress(
+      selectedIdentity.address,
+      chainId,
+      checksumUsesChainId,
+    );
 
     return (
       <div className="selected-account">
