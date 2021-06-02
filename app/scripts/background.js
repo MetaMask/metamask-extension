@@ -341,7 +341,15 @@ function setupController(initState, initLangCode) {
       const portStream = new PortStream(remotePort);
       // communication with popup
       controller.isClientOpen = true;
-      controller.setupTrustedCommunication(portStream, remotePort.sender);
+
+      // catch stream destroyed or ended already errors
+      try {
+        controller.setupTrustedCommunication(portStream, remotePort.sender);
+      } catch (e) {
+        if (e.message.includes('already')) {
+          console.error(e);
+        }
+      }
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
@@ -400,7 +408,15 @@ function setupController(initState, initLangCode) {
   // communication with page or other extension
   function connectExternal(remotePort) {
     const portStream = new PortStream(remotePort);
-    controller.setupUntrustedCommunication(portStream, remotePort.sender);
+
+    // catch stream destroyed or ended already errors
+    try {
+      controller.setupUntrustedCommunication(portStream, remotePort.sender);
+    } catch (e) {
+      if (e.message.includes('already')) {
+        console.error(e);
+      }
+    }
   }
 
   //
