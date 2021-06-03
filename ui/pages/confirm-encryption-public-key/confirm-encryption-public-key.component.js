@@ -32,10 +32,6 @@ export default class ConfirmEncryptionPublicKey extends Component {
     mostRecentOverviewPage: PropTypes.string.isRequired,
   };
 
-  state = {
-    fromAccount: this.props.fromAccount,
-  };
-
   componentDidMount = () => {
     if (
       getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
@@ -91,7 +87,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
   };
 
   renderAccount = () => {
-    const { fromAccount } = this.state;
+    const { fromAccount } = this.props;
     const { t } = this.context;
 
     return (
@@ -108,11 +104,8 @@ export default class ConfirmEncryptionPublicKey extends Component {
   };
 
   renderBalance = () => {
-    const { conversionRate } = this.props;
+    const { conversionRate, fromAccount: { balance } } = this.props;
     const { t } = this.context;
-    const {
-      fromAccount: { balance },
-    } = this.state;
 
     const balanceInEther = conversionUtil(balance, {
       fromNumericBase: 'hex',
