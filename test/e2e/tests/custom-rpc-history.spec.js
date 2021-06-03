@@ -12,10 +12,12 @@ describe('Stores custom RPC history', function () {
     ],
   };
   it(`creates first custom RPC entry`, async function () {
+    const port = 8546;
+    const chainId = 1338;
     await withFixtures(
       {
         fixtures: 'imported-account',
-        ganacheOptions,
+        ganacheOptions: { ...ganacheOptions, concurrent: { port, chainId } },
         title: this.test.title,
       },
       async ({ driver }) => {
@@ -23,9 +25,8 @@ describe('Stores custom RPC history', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        const rpcUrl = 'https://rpc-mumbai.matic.today';
-        const chainId = '80001';
-        const networkName = 'Matic';
+        const rpcUrl = `http://127.0.0.1:${port}`;
+        const networkName = 'Secondary Ganache Testnet';
 
         await driver.clickElement('.network-display');
 
@@ -45,7 +46,7 @@ describe('Stores custom RPC history', function () {
         await rpcUrlInput.sendKeys(rpcUrl);
 
         await chainIdInput.clear();
-        await chainIdInput.sendKeys(chainId);
+        await chainIdInput.sendKeys(chainId.toString());
 
         await driver.clickElement('.network-form__footer .btn-secondary');
         await driver.findElement({ text: networkName, tag: 'div' });
