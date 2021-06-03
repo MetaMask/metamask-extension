@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import nock from 'nock';
 
 import getFetchWithTimeout from './fetch-with-timeout';

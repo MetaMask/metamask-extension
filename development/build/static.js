@@ -35,7 +35,7 @@ const copyTargets = [
     dest: `fonts/fontawesome`,
   },
   {
-    src: `./ui/app/css/output/`,
+    src: `./ui/css/output/`,
     pattern: `*.css`,
     dest: ``,
   },

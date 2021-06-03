@@ -1,0 +1,170 @@
+.build-quote {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  padding-top: 4px;
+
+  &__content {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  &__content {
+    display: flex;
+  }
+
+  &__dropdown-swap-to-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 12px;
+  }
+
+  &__dropdown-input-pair-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    margin-bottom: 12px;
+    flex: 0.5 1 auto;
+    max-height: 56px;
+  }
+
+  &__title,
+  &__input-label {
+    @include H5;
+
+    font-weight: bold;
+    color: $Black-100;
+    margin-top: 3px;
+  }
+
+  &__swap-arrows-row {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 16px;
+    padding-top: 12px;
+    height: 24px;
+    position: relative;
+  }
+
+  &__swap-arrows {
+    flex: 0 0 auto;
+    height: 16px;
+    width: 12px;
+    cursor: pointer;
+    background: unset;
+  }
+
+  &__max-button {
+    @include H7;
+
+    color: $Blue-500;
+    cursor: pointer;
+  }
+
+  &__balance-message {
+    @include H7;
+
+    width: 100%;
+    color: $Grey-500;
+    margin-top: 4px;
+    display: flex;
+    flex-flow: column;
+    height: 18px;
+
+    &--error {
+      div:first-of-type {
+        font-weight: bold;
+        color: $Black-100;
+      }
+
+      div:last-of-type {
+        font-weight: normal;
+        color: $Grey-500;
+      }
+    }
+  }
+
+  &__slippage-buttons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32px;
+  }
+
+  &__open-dropdown,
+  &__open-to-dropdown {
+    max-height: 330px;
+    box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+    position: absolute;
+    width: 100%;
+  }
+
+  .dropdown-input-pair {
+    .searchable-item-list {
+      &__item--add-token {
+        display: none;
+      }
+    }
+
+    &__to {
+      .searchable-item-list {
+        &__item--add-token {
+          display: flex;
+        }
+      }
+    }
+  }
+
+  &__open-to-dropdown {
+    max-height: 194px;
+
+    @media screen and (min-width: 576px) {
+      max-height: 276px;
+    }
+  }
+
+  &__token-message {
+    @include H7;
+
+    width: 100%;
+    color: $Grey-500;
+    margin-top: 4px;
+
+    .info-tooltip {
+      display: inline-block;
+    }
+  }
+
+  &__token-etherscan-link {
+    color: $Blue-500;
+    cursor: pointer;
+  }
+
+  &__token-tooltip-container {
+    // Needed to override the style property added by the react-tippy library
+    display: flex !important;
+  }
+
+  &__bold {
+    font-weight: bold;
+  }
+
+  &__underline {
+    text-decoration: underline;
+  }
+
+  /* Prevents the swaps "Swap to" field from overflowing */
+  .dropdown-input-pair__to .dropdown-search-list {
+    width: 100%;
+  }
+}

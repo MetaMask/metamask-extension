@@ -39,7 +39,7 @@ test-builds
 build-artifacts
 
 #ignore css output and sourcemaps
-ui/app/css/output/
+ui/css/output/
 
 notes.txt
 

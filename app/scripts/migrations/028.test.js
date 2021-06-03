@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import firstTimeState from '../first-time-state';
 import migration28 from './028';
 

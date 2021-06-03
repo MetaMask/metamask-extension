@@ -1,0 +1,107 @@
+.actionable-message {
+  background: $Blue-000;
+  border: 1px solid $Blue-200;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 18px;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  position: relative;
+
+  @include H7;
+
+  &__message {
+    color: $Blue-600;
+    text-align: center;
+  }
+
+  &__actions {
+    display: flex;
+    width: 80%;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 10px;
+    color: $Blue-600;
+  }
+
+  &__action {
+    font-weight: bold;
+  }
+
+  &__info-tooltip-wrapper {
+    position: absolute;
+    right: 4px;
+    top: 8px;
+  }
+
+  &--warning {
+    background: $Yellow-100;
+    border: 1px solid $Yellow-500;
+    justify-content: center;
+
+    .actionable-message__message,
+    .actionable-message__action {
+      color: $Black-100;
+    }
+
+    .actionable-message__action--secondary {
+      text-decoration: underline;
+    }
+  }
+
+  &--danger {
+    background: $Red-000;
+    border: 1px solid $Red-300;
+    justify-content: flex-start;
+
+    .actionable-message__message {
+      color: $Black-100;
+      text-align: left;
+    }
+
+    button {
+      background: $Red-500;
+      color: #fff;
+    }
+  }
+
+  &--left-aligned {
+    .actionable-message__message,
+    .actionable-message__actions {
+    }
+  }
+
+  &--with-right-button {
+    padding: 12px;
+
+    .actionable-message__message {
+      justify-content: flex-start;
+      text-align: left;
+      width: 100%;
+    }
+
+    .actionable-message__actions {
+      justify-content: flex-end;
+      width: 100%;
+    }
+
+    .actionable-message__action {
+      font-weight: normal;
+      border-radius: 42px;
+      min-width: 72px;
+      height: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      @include H8;
+    }
+  }
+}
+
+.actionable-message--warning.actionable-message--with-right-button {
+  .actionable-message__action {
+    background: $Yellow-500;
+  }
+}

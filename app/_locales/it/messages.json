@@ -1582,9 +1582,6 @@
   "swapFinalizing": {
     "message": "Finalizzando..."
   },
-  "swapHighSlippageWarning": {
-    "message": "L'importo di slippage è molto alto. Assicurati di sapere cosa stai facendo!"
-  },
   "swapLowSlippageError": {
     "message": "La transazione può fallire, il massimo slippage è troppo basso."
   },
@@ -1624,18 +1621,9 @@
     "message": "Stai per scambiare $1 $2 (~$3) per $4 $5 (~$6).",
     "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
   },
-  "swapPriceDifferenceAcknowledgement": {
-    "message": "Sono consapevole"
-  },
   "swapPriceDifferenceTitle": {
     "message": "Differenza di prezzo di circa ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceDifferenceTooltip": {
-    "message": "La differenza tra i prezzi del mercato può essere influenzata da commissioni prelevate da intermediari, dimensione del mercato, dimensione dello scambio, o inefficienze del mercato."
-  },
-  "swapPriceDifferenceUnavailable": {
-    "message": "Il prezzo di mercato non è disponibile. Assicurati di sentirti a tuo agio con l'importo restituito prima di procedere."
   },
   "swapProcessing": {
     "message": "In elaborazione"
@@ -1702,9 +1690,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "Sotto trovi tutte le quotazioni raccolte da multiple sorgenti di liquidità."
   },
-  "swapSlippageTooLow": {
-    "message": "Lo slippage deve essere maggiore di zero"
-  },
   "swapSource": {
     "message": "Sorgente di liquidità"
   },
@@ -1754,9 +1739,6 @@
   "swapVerifyTokenExplanation": {
     "message": "Più token possono usare lo stesso nome e simbolo. Verifica su $1 che questo sia il token che stai cercando.",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapViewToken": {
-    "message": "Vedi $1"
   },
   "swapYourTokenBalance": {
     "message": "$1 $2 disponibili allo scambio",

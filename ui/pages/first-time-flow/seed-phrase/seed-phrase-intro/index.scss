@@ -1,0 +1,44 @@
+.seed-phrase-intro {
+  &__sections {
+    display: flex;
+
+    @media screen and (min-width: $break-large) {
+      flex-direction: row;
+    }
+
+    @media screen and (max-width: 970px) {
+      flex-direction: column;
+    }
+  }
+
+  &__left {
+    flex: 3;
+    min-width: 0;
+  }
+
+  &__right {
+    flex: 1;
+    min-width: 0;
+
+    @media screen and (max-width: 970px) {
+      margin-top: 24px;
+    }
+  }
+
+  video {
+    border-radius: 8px;
+
+    @media screen and (max-width: 970px) {
+      width: 95%;
+    }
+  }
+
+  &__copy {
+    max-width: 696px;
+  }
+
+  &__sidebar_list {
+    list-style: disc;
+    padding-left: 20px;
+  }
+}

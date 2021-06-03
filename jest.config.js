@@ -1,12 +1,12 @@
 module.exports = {
   restoreMocks: true,
   coverageDirectory: 'jest-coverage/',
-  collectCoverageFrom: ['<rootDir>/ui/app/**/swaps/**'],
+  collectCoverageFrom: ['<rootDir>/ui/**/swaps/**'],
   coveragePathIgnorePatterns: ['.stories.js', '.snap'],
   coverageThreshold: {
     global: {
       branches: 32.75,
-      functions: 43.31,
+      functions: 42.9,
       lines: 43.12,
       statements: 43.67,
     },

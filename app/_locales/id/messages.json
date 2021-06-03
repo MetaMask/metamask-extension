@@ -488,6 +488,9 @@
   "dismiss": {
     "message": "Lewatkan"
   },
+  "dismissReminderDescriptionField": {
+    "message": "Aktifkan ini untuk melewatkan pesan pengingat pencadangan frasa pemulihan. Kami sangat merekomendasikan agar Anda mencadangkan Frasa Pemulihan Rahasia Anda untuk menghindari hilangnya dana"
+  },
   "done": {
     "message": "Selesai"
   },
@@ -523,7 +526,7 @@
     "message": "Minta kunci publik enkripsi"
   },
   "endOfFlowMessage1": {
-    "message": "Anda lulus ujian - jaga frasa pemulihan Anda tetap aman, ini tanggung jawab Anda!"
+    "message": "Anda lulus ujian - jaga Frasa Pemulihan Rahasia Anda tetap aman, ini tanggung jawab Anda!"
   },
   "endOfFlowMessage10": {
     "message": "Semua Selesai"
@@ -538,13 +541,13 @@
     "message": "Jangan bagikan frasa kepada siapa pun."
   },
   "endOfFlowMessage5": {
-    "message": "Berhati-hatilah dengan phishing! MetaMask tidak pernah secara spontan meminta frasa pemulihan Anda."
+    "message": "Berhati-hatilah dengan phishing! MetaMask tidak pernah secara spontan meminta Frasa Pemulihan Rahasia Anda."
   },
   "endOfFlowMessage6": {
-    "message": "Jika Anda perlu mencadangkan frasa pemulihan lagi, Anda dapat menemukannya di Pengaturan -> Keamanan."
+    "message": "Jika Anda perlu mencadangkan Frasa Pemulihan Rahasia lagi, Anda dapat menemukannya di Pengaturan -> Keamanan."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask tidak dapat memulihkan frasa pemulihan Anda."
+    "message": "MetaMask tidak dapat memulihkan Frasa Pemulihan Rahasia Anda."
   },
   "endOfFlowMessage9": {
     "message": "Pelajari selengkapnya."
@@ -763,14 +766,20 @@
   "importAccount": {
     "message": "Impor Akun"
   },
+  "importAccountLinkText": {
+    "message": "impor menggunakan Frasa Pemulihan Rahasia"
+  },
   "importAccountMsg": {
-    "message": " Akun yang diimpor tidak akan dikaitkan dengan frasa pemulihan akun MetaMask yang asli dibuat. Pelajari selengkapnya tentang akun yang diimpor "
+    "message": " Akun yang diimpor tidak akan dikaitkan dengan Frasa Pemulihan Rahasia akun MetaMask yang asli dibuat. Pelajari selengkapnya tentang akun yang diimpor "
   },
   "importAccountSeedPhrase": {
-    "message": "Impor akun dengan frasa pemulihan"
+    "message": "Impor akun dengan Frasa Pemulihan Rahasia"
   },
   "importWallet": {
     "message": "Impor dompet"
+  },
+  "importYourExisting": {
+    "message": "Impor dompet Anda yang ada menggunakan Frasa Pemulihan Rahasia"
   },
   "imported": {
     "message": "Diimpor",
@@ -833,7 +842,7 @@
     "message": "URL RPC Tidak Valid"
   },
   "invalidSeedPhrase": {
-    "message": "Frasa pemulihan tidak valid"
+    "message": "Frasa Pemulihan Rahasia Tidak Valid"
   },
   "ipfsGateway": {
     "message": "Gateway IPFS"
@@ -1033,7 +1042,7 @@
     "message": "Tidak ada alamat yang ditetapkan untuk nama ini."
   },
   "noAlreadyHaveSeed": {
-    "message": "Tidak, saya sudah memiliki frasa pemulihan"
+    "message": "Tidak, saya sudah memiliki Frasa Pemulihan Rahasia"
   },
   "noConversionRateAvailable": {
     "message": "Tidak Ada Nilai Konversi yang Tersedia"
@@ -1217,7 +1226,7 @@
     "message": "Hapus akun"
   },
   "removeAccountDescription": {
-    "message": "Akun ini akan dihapus dari dompet Anda. Pastikan Anda memiliki frasa pemulihan asli atau kunci privat untuk akun impor ini sebelum melanjutkan. Anda dapat mengimpor atau membuat akun lagi dari akun drop down. "
+    "message": "Akun ini akan dihapus dari dompet Anda. Pastikan Anda memiliki Frasa Pemulihan Rahasia asli atau kunci privat untuk akun impor ini sebelum melanjutkan. Anda dapat mengimpor atau membuat akun lagi dari drop down akun. "
   },
   "requestsAwaitingAcknowledgement": {
     "message": "permintaan menunggu untuk diakui"
@@ -1232,13 +1241,13 @@
     "message": "Atur Ulang Akun"
   },
   "resetAccountDescription": {
-    "message": "Mengatur ulang akun akan mengosongkan riwayat transaksi Anda. Ini tidak akan mengubah saldo di akun atau mengharuskan Anda untuk memasukkan kembali frasa pemulihan Anda."
+    "message": "Mengatur ulang akun akan mengosongkan riwayat transaksi Anda. Ini tidak akan mengubah saldo di akun atau mengharuskan Anda untuk memasukkan kembali Frasa Pemulihan Rahasia Anda."
   },
   "restore": {
     "message": "Pulihkan"
   },
   "restoreAccountWithSeed": {
-    "message": "Memulihkan Akun dengan Frasa Pemulihan"
+    "message": "Memulihkan Akun dengan Frasa Pemulihan Rahasia"
   },
   "restoreWalletPreferences": {
     "message": "Cadangan data Anda dari $1 telah ditemukan. Apakah Anda ingin memulihkan preferensi dompet Anda?",
@@ -1251,13 +1260,13 @@
     "message": "Token di sini menggunakan kembali simbol dari token lain yang Anda lihat, ini bisa jadi membingungkan atau menipu."
   },
   "revealSeedWords": {
-    "message": "Mengungkapkan Frasa Pemulihan"
+    "message": "Mengungkapkan Frasa Pemulihan Rahasia"
   },
   "revealSeedWordsDescription": {
-    "message": "Jika Anda pernah mengubah browser atau mengganti komputer, Anda akan memerlukan frasa pemulihan ini untuk mengakses akun Anda. Simpan di tempat yang aman dan rahasia."
+    "message": "Jika Anda pernah mengubah browser atau mengganti komputer, Anda akan memerlukan Frasa Pemulihan Rahasia ini untuk mengakses akun Anda. Simpan di tempat yang aman dan rahasia."
   },
   "revealSeedWordsTitle": {
-    "message": "Frasa Pemulihan"
+    "message": "Frasa Pemulihan Rahasia"
   },
   "revealSeedWordsWarning": {
     "message": "Kata-kata ini dapat digunakan untuk mencuri semua akun Anda."
@@ -1314,16 +1323,16 @@
     "message": "Keamanan & Privasi"
   },
   "securitySettingsDescription": {
-    "message": "Pengaturan privasi dan frasa pemulihan dompet"
+    "message": "Pengaturan privasi dan Frasa Pemulihan Rahasia dompet"
   },
   "seedPhrasePlaceholder": {
     "message": "Pisahkan setiap kata dengan satu spasi"
   },
   "seedPhrasePlaceholderPaste": {
-    "message": "Tempel frasa pemulihan dari clipboard"
+    "message": "Tempel Frasa Pemulihan Rahasia dari clipboard"
   },
   "seedPhraseReq": {
-    "message": "Frasa pemulihan berisi 12, 15, 18, 21, atau 24 kata"
+    "message": "Frasa Pemulihan Rahasia berisi 12, 15, 18, 21, atau 24 kata"
   },
   "selectAHigherGasFee": {
     "message": "Pilih biaya jaringan yang lebih tinggi untuk mempercepat pemrosesan transaksi Anda.*"
@@ -1408,7 +1417,7 @@
     "message": "Tampilkan Kunci Privat"
   },
   "showSeedPhrase": {
-    "message": "Tampilkan frasa pemulihan"
+    "message": "Menampilkan Frasa Pemulihan Rahasia"
   },
   "sigRequest": {
     "message": "Permintaan Tanda Tangan"
@@ -1564,9 +1573,6 @@
   "swapFinalizing": {
     "message": "Menyelesaikan..."
   },
-  "swapHighSlippageWarning": {
-    "message": "Jumlah slippage sangat tinggi. Pastikan Anda mengetahui yang Anda kerjakan!"
-  },
   "swapLowSlippageError": {
     "message": "Transaksi bisa gagal, slippage maks. terlalu rendah."
   },
@@ -1660,9 +1666,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "Di bawah ini adalah semua kuota yang dikumpulkan dari beberapa sumber likuiditas."
   },
-  "swapSlippageTooLow": {
-    "message": "Slippage harus lebih besar dari nol"
-  },
   "swapSource": {
     "message": "Sumber likuiditas"
   },
@@ -1698,9 +1701,6 @@
   "swapVerifyTokenExplanation": {
     "message": "Beberapa token dapat menggunakan simbol dan nama yang sama. Periksa $1 untuk memverifikasi inilah token yang Anda cari.",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapViewToken": {
-    "message": "Lihat $1"
   },
   "swapYourTokenBalance": {
     "message": "$1 $2 tersedia untuk ditukar",
@@ -1774,7 +1774,7 @@
     "message": "Uji Fungsi"
   },
   "thisWillCreate": {
-    "message": "Ini akan membuat frasa pemulihan dan dompet baru"
+    "message": "Ini akan membuat Frasa Pemulihan Rahasia dan dompet baru"
   },
   "tips": {
     "message": "Kiat"
@@ -1947,7 +1947,10 @@
     "message": "panduan koneksi dompet perangkat keras kami"
   },
   "walletSeed": {
-    "message": "Frasa pemulihan"
+    "message": "Frasa Pemulihan Rahasia"
+  },
+  "walletSeedRestore": {
+    "message": "Frasa Pemulihan Rahasia Dompet"
   },
   "welcome": {
     "message": "Selamat datang di MetaMask"
@@ -1975,7 +1978,7 @@
     "message": "Anda sudah masuk"
   },
   "yourPrivateSeedPhrase": {
-    "message": "Frasa pemulihan privat Anda"
+    "message": "Frasa Pemulihan Rahasia pribadi Anda"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Biaya jaringan nol dipercepat"

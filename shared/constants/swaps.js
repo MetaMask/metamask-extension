@@ -12,6 +12,7 @@ export const QUOTES_EXPIRED_ERROR = 'quotes-expired';
 export const SWAP_FAILED_ERROR = 'swap-failed-error';
 export const ERROR_FETCHING_QUOTES = 'error-fetching-quotes';
 export const QUOTES_NOT_AVAILABLE_ERROR = 'quotes-not-avilable';
+export const CONTRACT_DATA_DISABLED_ERROR = 'contract-data-disabled';
 export const OFFLINE_FOR_MAINTENANCE = 'offline-for-maintenance';
 export const SWAPS_FETCH_ORDER_CONFLICT = 'swaps-fetch-order-conflict';
 
@@ -62,6 +63,7 @@ const SWAPS_TESTNET_CHAIN_ID = '0x539';
 const SWAPS_TESTNET_HOST = 'https://metaswap-api.airswap-dev.codefi.network';
 
 const BSC_DEFAULT_BLOCK_EXPLORER_URL = 'https://bscscan.com/';
+const MAINNET_DEFAULT_BLOCK_EXPLORER_URL = 'https://etherscan.io/';
 
 export const ALLOWED_SWAPS_CHAIN_IDS = {
   [MAINNET_CHAIN_ID]: true,
@@ -89,4 +91,5 @@ export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
 
 export const SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP = {
   [BSC_CHAIN_ID]: BSC_DEFAULT_BLOCK_EXPLORER_URL,
+  [MAINNET_CHAIN_ID]: MAINNET_DEFAULT_BLOCK_EXPLORER_URL,
 };
