@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
+import log from 'loglevel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '../../../../components/ui/text-field';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
-import { getSymbolAndDecimals } from '../../../../helpers/utils/token-util';
+import { fetchToken } from '../../swaps.util';
+import { getCurrentChainId } from '../../../../selectors/selectors';
 
 const renderAdornment = () => (
   <InputAdornment position="start" style={{ marginRight: '12px' }}>
@@ -24,24 +27,32 @@ export default function ListItemSearch({
 }) {
   const fuseRef = useRef();
   const [searchQuery, setSearchQuery] = useState('');
+  const chainId = useSelector(getCurrentChainId);
 
   /**
    * Search a custom token for import based on a contract address.
    * @param {String} contractAddress
    */
   const handleSearchTokenForImport = async (contractAddress) => {
-    const newToken = await getSymbolAndDecimals(contractAddress);
-    const tokenFound = newToken.symbol && newToken.decimals !== undefined;
-    // Name, address and logoUrl will be returned from a new API
-    // that we will call instead of "getSymbolAndDecimals".
-    newToken.name = newToken.symbol;
-    newToken.primaryLabel = newToken.symbol;
-    newToken.address = contractAddress;
-    newToken.notImported = true;
     setSearchQuery(contractAddress);
+    try {
+      const token = await fetchToken(contractAddress, chainId);
+      if (token) {
+        token.primaryLabel = token.symbol;
+        token.secondaryLabel = token.name;
+        token.notImported = true;
+        onSearch({
+          searchQuery: contractAddress,
+          results: [token],
+        });
+        return;
+      }
+    } catch (e) {
+      log.error('Token not found, show 0 results.', e);
+    }
     onSearch({
       searchQuery: contractAddress,
-      results: tokenFound ? [newToken] : [],
+      results: [], // No token for import found.
     });
   };
 
