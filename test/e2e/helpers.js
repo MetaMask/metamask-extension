@@ -115,7 +115,7 @@ async function withFixtures(options, testSuite) {
     await fixtureServer.stop();
     await ganacheServer.quit();
     if (ganacheOptions?.concurrent) {
-      secondaryGanacheServer.quit();
+      await secondaryGanacheServer.quit();
     }
     if (webDriver) {
       await webDriver.quit();
