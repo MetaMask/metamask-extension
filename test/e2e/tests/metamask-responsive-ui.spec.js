@@ -42,7 +42,10 @@ describe('Metamask Responsive UI', function () {
         await driver.clickElement('.first-time-flow__checkbox');
         await driver.clickElement('.first-time-flow__form button');
 
-        // reveals the seed phrase
+        // renders the Secret Recovery Phrase intro screen
+        await driver.clickElement('.seed-phrase-intro__left button');
+
+        // reveals the Secret Recovery Phrase
         await driver.clickElement(
           '.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button',
         );
@@ -64,7 +67,7 @@ describe('Metamask Responsive UI', function () {
           await driver.delay(tinyDelayMs);
         }
 
-        // can retype the seed phrase
+        // can retype the Secret Recovery Phrase
         const words = seedPhrase.split(' ');
         for (const word of words) {
           await clickWordAndWait(word);
@@ -103,13 +106,13 @@ describe('Metamask Responsive UI', function () {
       async ({ driver }) => {
         await driver.navigate();
 
-        // Import seed phrase
+        // Import Secret Recovery Phrase
         const restoreSeedLink = await driver.findClickableElement(
           '.unlock-page__link--import',
         );
         assert.equal(
           await restoreSeedLink.getText(),
-          'import using seed phrase',
+          'import using Secret Recovery Phrase',
         );
         await restoreSeedLink.click();
 

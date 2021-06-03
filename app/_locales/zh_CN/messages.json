@@ -1576,9 +1576,6 @@
   "swapFinalizing": {
     "message": "确定中……"
   },
-  "swapHighSlippageWarning": {
-    "message": "滑点数量非常大。确保您知道您的操作！"
-  },
   "swapLowSlippageError": {
     "message": "交易可能失败，最大滑点过低。"
   },
@@ -1621,12 +1618,6 @@
   "swapPriceDifferenceTitle": {
     "message": "价格差异 ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceDifferenceTooltip": {
-    "message": "市场价格的差异可能受到中介机构收取的费用、市场规模、交易规模或市场效率低下的影响。"
-  },
-  "swapPriceDifferenceUnavailable": {
-    "message": "市场价格不可用。 请确认您对退回的数额感到满意后再继续。"
   },
   "swapProcessing": {
     "message": "处理中"
@@ -1690,9 +1681,6 @@
   "swapSelectQuotePopoverDescription": {
     "message": "以下是从多个流动资金来源收集到的所有报价。"
   },
-  "swapSlippageTooLow": {
-    "message": "滑点必须大于零"
-  },
   "swapSource": {
     "message": "流动资金来源"
   },
@@ -1731,9 +1719,6 @@
   "swapVerifyTokenExplanation": {
     "message": "多个代币可以使用相同的名称和符号。检查 $1（以太坊浏览器）以确认这是您正在寻找的代币。",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapViewToken": {
-    "message": "查看 $1"
   },
   "swapYourTokenBalance": {
     "message": "$1 $2 可用",

@@ -4,7 +4,7 @@ const gulpZip = require('gulp-zip');
 const del = require('del');
 const pify = require('pify');
 const pump = pify(require('pump'));
-const baseManifest = require('../../app/manifest/_base.json');
+const { version } = require('../../package.json');
 const { createTask, composeParallel } = require('./task');
 
 module.exports = createEtcTasks;
@@ -38,7 +38,7 @@ function createZipTask(target) {
   return async () => {
     await pump(
       gulp.src(`dist/${target}/**`),
-      gulpZip(`metamask-${target}-${baseManifest.version}.zip`),
+      gulpZip(`metamask-${target}-${version}.zip`),
       gulp.dest('builds'),
     );
   };

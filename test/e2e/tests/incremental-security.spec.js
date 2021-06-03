@@ -17,7 +17,7 @@ describe('Incremental Security', function () {
       },
     ],
   };
-  it('Back up seed phrase from backup reminder', async function () {
+  it('Back up Secret Recovery Phrase from backup reminder', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -56,7 +56,10 @@ describe('Incremental Security', function () {
         await driver.clickElement('.first-time-flow__checkbox');
         await driver.clickElement('.first-time-flow__form button');
 
-        // skips the seed phrase challenge
+        // renders the Secret Recovery Phrase intro screen'
+        await driver.clickElement('.seed-phrase-intro__left button');
+
+        // skips the Secret Recovery Phrase challenge
         await driver.clickElement({
           text: enLocaleMessages.remindMeLater.message,
           tag: 'button',
@@ -115,7 +118,7 @@ describe('Incremental Security', function () {
         let balance = await currencyDisplay.getText();
         assert.strictEqual(balance, '1');
 
-        // backs up the seed phrase
+        // backs up the Secret Recovery Phrase
         // should show a backup reminder
         const backupReminder = await driver.findElements({
           xpath:
@@ -126,7 +129,7 @@ describe('Incremental Security', function () {
         // should take the user to the seedphrase backup screen
         await driver.clickElement('.home-notification__accept-button');
 
-        // reveals the seed phrase
+        // reveals the Secret Recovery Phrase
         await driver.clickElement(
           '.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button',
         );
@@ -150,7 +153,7 @@ describe('Incremental Security', function () {
           await driver.delay(tinyDelayMs);
         }
 
-        // can retype the seed phrase
+        // can retype the Secret Recovery Phrase
         const words = seedPhrase.split(' ');
 
         for (const word of words) {

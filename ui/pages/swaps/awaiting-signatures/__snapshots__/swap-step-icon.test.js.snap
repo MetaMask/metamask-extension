@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SwapStepIcon renders the component 1`] = `
+<div>
+  <svg
+    fill="none"
+    height="14"
+    viewBox="0 0 14 14"
+    width="14"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      cx="7"
+      cy="7"
+      r="6.25"
+      stroke="#037DD6"
+      stroke-width="1.5"
+    />
+    <path
+      d="M6.50983 5.192H5.27783L6.14183 4H7.71783V9.68H6.50983V5.192Z"
+      fill="#037DD6"
+    />
+  </svg>
+</div>
+`;

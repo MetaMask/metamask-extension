@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AwaitingSignatures renders the component with initial props for 1 confirmation 1`] = `
+<div
+  class="swaps-footer"
+>
+  <div
+    class="swaps-footer__buttons"
+  >
+    <div
+      class="page-container__footer swaps-footer__custom-page-container-footer-class"
+    >
+      <footer>
+        <button
+          class="button btn-primary page-container__footer-button swaps-footer__custom-page-container-footer-button-class swaps-footer__custom-page-container-footer-button-class--single"
+          data-testid="page-container-footer-next"
+          role="button"
+          tabindex="0"
+        >
+          Cancel
+        </button>
+      </footer>
+    </div>
+  </div>
+</div>
+`;

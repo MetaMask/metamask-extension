@@ -7,9 +7,8 @@ import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 // Destructuring breaks the inlining of the environment variables
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG;
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
+const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
 /* eslint-enable prefer-destructuring */
-const SENTRY_DSN_DEV =
-  'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496';
 
 // This describes the subset of Redux state attached to errors sent to Sentry
 // These properties have some potential to be useful for debugging, and they do

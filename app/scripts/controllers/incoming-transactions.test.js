@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 import nock from 'nock';

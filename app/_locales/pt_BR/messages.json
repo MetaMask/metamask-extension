@@ -299,6 +299,9 @@
   "directDepositEtherExplainer": {
     "message": "Se você já tem Ether, a forma mais rápida de colocá-lo em sua nova carteira é o depósito direto."
   },
+  "dismissReminderDescriptionField": {
+    "message": "Ative isso para descartar a mensagem de lembrete de backup da frase de recuperação. Recomendamos enfaticamente que você faça o backup da sua Frase de recuperação secreta para evitar perda de fundos"
+  },
   "done": {
     "message": "Concluído"
   },
@@ -321,7 +324,7 @@
     "message": "Editar Contato"
   },
   "endOfFlowMessage1": {
-    "message": "Você passou no teste — mantenha sua frase semente segura, a responsabilidade é sua!"
+    "message": "Você passou no teste. Guarde sua Frase de recuperação secreta em segurança, é sua responsabilidade!"
   },
   "endOfFlowMessage10": {
     "message": "Pronto"
@@ -336,13 +339,13 @@
     "message": "Nunca compartilhe a frase com ninguém."
   },
   "endOfFlowMessage5": {
-    "message": "Cuidado com o phishing! O MetaMask nunca solicitará espontaneamente sua frase semente."
+    "message": "Cuidado com phishing! O MetaMask jamais pedirá espontaneamente sua Frase de recuperação secreta."
   },
   "endOfFlowMessage6": {
-    "message": "Se precisar fazer backup de sua frase-semente de novo, acesse Configurações -> Segurança."
+    "message": "Se você precisar fazer backup da sua Frase de recuperação secreta novamente, encontre-a em Configurações -> Segurança."
   },
   "endOfFlowMessage8": {
-    "message": "O MetaMask não pode recuperar sua frase semente. Saiba mais."
+    "message": "O MetaMask não pode recuperar sua Frase de recuperação secreta."
   },
   "endOfFlowMessage9": {
     "message": "Saiba mais."
@@ -478,14 +481,20 @@
   "importAccount": {
     "message": "Importar Conta"
   },
+  "importAccountLinkText": {
+    "message": "importar usando a Frase de recuperação secreta"
+  },
   "importAccountMsg": {
-    "message": "As contas importadas não serão associadas à sua frase-semente da conta MetaMask criada originalmente. Saiba mais sobre contas importadas"
+    "message": " As contas importadas não estarão associadas à Frase de recuperação secreta da conta do MetaMask criada originalmente. Saiba mais sobre as contas importadas "
   },
   "importAccountSeedPhrase": {
-    "message": "Importar uma Conta com Frase-semente"
+    "message": "Importe uma conta com a Frase de recuperação secreta"
   },
   "importWallet": {
     "message": "Importar Carteira"
+  },
+  "importYourExisting": {
+    "message": "Importar a carteira existente usando uma Frase de recuperação secreta"
   },
   "imported": {
     "message": "Importado",
@@ -519,7 +528,7 @@
     "message": "URL de RPC inválida"
   },
   "invalidSeedPhrase": {
-    "message": "Frase semente inválida"
+    "message": "Frase de recuperação secreta inválida"
   },
   "jsonFile": {
     "message": "Arquivo JSON",
@@ -645,7 +654,7 @@
     "message": "Nenhum endereço foi definido para este nome."
   },
   "noAlreadyHaveSeed": {
-    "message": "Não, eu já tenho uma frase semente"
+    "message": "Não, eu já tenho uma Frase de recuperação secreta"
   },
   "noConversionRateAvailable": {
     "message": "Nenhuma Taxa de Conversão Disponível"
@@ -773,7 +782,7 @@
     "message": "Remover conta"
   },
   "removeAccountDescription": {
-    "message": "Esta conta será removida de sua carteira. Verifique se você tem a frase-semente original ou a chave particular desta conta importada antes de continuar. Você pode importar ou criar contas novamente no menu suspenso da conta."
+    "message": "Esta conta será removida da sua carteira. Antes de continuar, você precisa garantir que tem a Frase de recuperação secreta original ou chave privada para esta conta importada. Você pode importar ou criar contas novamente a partir do menu suspenso da conta. "
   },
   "requestsAwaitingAcknowledgement": {
     "message": "solicitações aguardando confirmação"
@@ -788,22 +797,22 @@
     "message": "Redefinir Conta"
   },
   "resetAccountDescription": {
-    "message": "Restabelecer a sua conta limpará todo o seu histórico de transações."
+    "message": "Redefinir sua conta limpará o histórico de transações. Isso não alterará os saldos nas suas contas nem exigirá a reinserção da Frase de recuperação secreta."
   },
   "restore": {
     "message": "Restaurar"
   },
   "restoreAccountWithSeed": {
-    "message": "Restaurar sua conta com a frase semente"
+    "message": "Restaure sua conta com a Frase de recuperação secreta"
   },
   "revealSeedWords": {
-    "message": "Revelar Palavras-semente"
+    "message": "Revelar Frase de recuperação secreta"
   },
   "revealSeedWordsDescription": {
-    "message": "Se você mudar de navegador ou computador, precisará dessa frase semente para acessar suas contas. Salve-as em algum lugar seguro e secreto."
+    "message": "Se você alguma vez mudou de navegador ou trocou de computador, precisará dessa Frase de recuperação secreta para acessar suas contas. Salve-as em um lugar seguro e secreto."
   },
   "revealSeedWordsTitle": {
-    "message": "Frase Semente"
+    "message": "Frase de recuperação secreta"
   },
   "revealSeedWordsWarning": {
     "message": "Essas palavras podem ser usadas para roubar todas as suas contas."
@@ -854,13 +863,16 @@
     "message": "Segurança & Privacidade"
   },
   "securitySettingsDescription": {
-    "message": "Configurações de privacidade e frase-semente da carteira"
+    "message": "Configurações de privacidade e Frase de recuperação secreta"
   },
   "seedPhrasePlaceholder": {
     "message": "Separe cada palavra com um único espaço"
   },
+  "seedPhrasePlaceholderPaste": {
+    "message": "Cole a Frase de recuperação secreta da área de transferência"
+  },
   "seedPhraseReq": {
-    "message": "As frases-semente têm 12 palavras"
+    "message": "As Frases de recuperação secreta contêm 12, 15, 18, 21 ou 24 palavras"
   },
   "selectAHigherGasFee": {
     "message": "Selecione uma taxa de gás mais alta para acelerar o processamento de sua transação.*"
@@ -921,6 +933,9 @@
   },
   "showPrivateKeys": {
     "message": "Mostrar Chaves Privadas"
+  },
+  "showSeedPhrase": {
+    "message": "Mostrar Frase de recuperação secreta"
   },
   "sigRequest": {
     "message": "Solicitação de Assinatura"
@@ -1007,7 +1022,7 @@
     "message": "Torneira de Testes"
   },
   "thisWillCreate": {
-    "message": "Isso criará uma nova carteira e frase-semente"
+    "message": "Isso criará uma nova carteira e Frase de recuperação secreta"
   },
   "tips": {
     "message": "Doações"
@@ -1140,7 +1155,10 @@
     "message": "Visite nosso site"
   },
   "walletSeed": {
-    "message": "Semente da Carteira"
+    "message": "Frase de recuperação secreta"
+  },
+  "walletSeedRestore": {
+    "message": "Frase de recuperação secreta da carteira"
   },
   "welcome": {
     "message": "Bem-vindo ao MetaMask"
@@ -1161,7 +1179,7 @@
     "message": "Você está assinando"
   },
   "yourPrivateSeedPhrase": {
-    "message": "Sua frase-semente particular"
+    "message": "Sua Frase de recuperação secreta privada"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Preço de Gas zero na agilização"
