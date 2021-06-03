@@ -54,27 +54,28 @@ describe('createMetaRPCHandler', () => {
       streamTest.end();
     });
   });
-  it('can not throw an error for writing an error after end', function (done) {
+  it('can not throw an error for writing an error after end', () => {
     const api = {
       foo: (param1, cb) => {
-        assert.strictEqual(param1, 'bar');
+        expect(param1).toStrictEqual('bar');
         cb(new Error('foo-error'));
       },
     };
     const streamTest = createThoughStream();
     const handler = createMetaRPCHandler(api, streamTest);
     streamTest.end();
-    handler({
-      id: 1,
-      method: 'foo',
-      params: ['bar'],
-    });
-    done();
+    expect(() => {
+      handler({
+        id: 1,
+        method: 'foo',
+        params: ['bar'],
+      });
+    }).not.toThrow();
   });
-  it('can not throw an error for write after end', function (done) {
+  it('can not throw an error for write after end', () => {
     const api = {
       foo: (param1, cb) => {
-        assert.strictEqual(param1, 'bar');
+        expect(param1).toStrictEqual('bar');
         cb(undefined, {
           foo: 'bar',
         });
@@ -83,11 +84,12 @@ describe('createMetaRPCHandler', () => {
     const streamTest = createThoughStream();
     const handler = createMetaRPCHandler(api, streamTest);
     streamTest.end();
-    handler({
-      id: 1,
-      method: 'foo',
-      params: ['bar'],
-    });
-    done();
+    expect(() => {
+      handler({
+        id: 1,
+        method: 'foo',
+        params: ['bar'],
+      });
+    }).not.toThrow();
   });
 });

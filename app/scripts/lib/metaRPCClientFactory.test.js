@@ -81,13 +81,12 @@ describe('metaRPCClientFactory', () => {
     });
   });
 
-  it('should be able to handle notifications', function (done) {
+  it('should be able to handle notifications', () => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     metaRPCClient.onNotification((notification) => {
-      assert(notification.method, 'foobarbaz');
-      done();
+      expect(notification.method).toStrictEqual('foobarbaz');
     });
 
     // send a notification
@@ -98,13 +97,12 @@ describe('metaRPCClientFactory', () => {
     });
   });
 
-  it('should be able to handle errors with no id', function (done) {
+  it('should be able to handle errors with no id', () => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     metaRPCClient.onUncaughtError((error) => {
-      assert(error.code, 1);
-      done();
+      expect(error.code).toStrictEqual(1);
     });
 
     streamTest.write({
@@ -116,13 +114,12 @@ describe('metaRPCClientFactory', () => {
     });
   });
 
-  it('should be able to handle errors with null id', function (done) {
+  it('should be able to handle errors with null id', () => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     metaRPCClient.onUncaughtError((error) => {
-      assert(error.code, 1);
-      done();
+      expect(error.code).toStrictEqual(1);
     });
 
     streamTest.write({

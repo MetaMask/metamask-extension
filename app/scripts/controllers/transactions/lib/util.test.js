@@ -124,9 +124,7 @@ describe('txUtils', () => {
       txParams.from = 'im going to fail';
       expect(() => {
         txUtils.validateFrom(txParams);
-      }).toThrow(
-        'This method only supports 0x-prefixed hex strings but input was:',
-      );
+      }).toThrow('Invalid "from" address.');
 
       // should run
       txParams.from = '0x1678a085c290ebd122dc42cba69373b5953b831d';

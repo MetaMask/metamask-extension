@@ -639,17 +639,16 @@ describe('TransactionStateManager', () => {
       });
       txs.forEach((tx) => txStateManager.addTransaction(tx));
       const result = txStateManager.getTransactions();
-      assert.equal(result.length, limit, `limit of ${limit} is enforced`);
-      assert.notEqual(result[0].id, 0, 'first tx should be removed');
-      assert.equal(
+      expect(result).toHaveLength(limit); // `limit of ${limit} is enforced`;
+      expect(result[0].id).not.toStrictEqual(0); // 'first tx should be removed';
+      expect(
         result.some(
           (tx) =>
             tx.status === TRANSACTION_STATUSES.DROPPED ||
             tx.status === TRANSACTION_TYPES.CANCEL,
         ),
-        false,
-        'the cancel and dropped transactions should not be present in the result',
-      );
+      ).toStrictEqual(false);
+      // 'the cancel and dropped transactions should not be present in the result',
     });
 
     it('cuts off entire groups of transactions by nonce + network when adding new transaction', function () {
@@ -682,20 +681,15 @@ describe('TransactionStateManager', () => {
         filterToCurrentNetwork: false,
       });
 
-      assert.equal(
-        result.length,
-        limit + 1,
-        `limit of ${limit} + 1 for the grouped transactions is enforced`,
-      );
+      expect(result).toHaveLength(limit + 1); // `limit of ${limit} + 1 for the grouped transactions is enforced`,
       // The first group of transactions on mainnet should be removed
-      assert.equal(
+      expect(
         result.some(
           (tx) =>
             tx.chainId === MAINNET_CHAIN_ID && tx.txParams.nonce === '0x0',
         ),
-        false,
-        'the mainnet transactions with nonce 0x0 should not be present in the result',
-      );
+      ).toStrictEqual(false);
+      // 'the mainnet transactions with nonce 0x0 should not be present in the result'
     });
 
     it('does not cut off entire groups of transactions when adding new transaction when under limit', function () {
@@ -725,8 +719,8 @@ describe('TransactionStateManager', () => {
       const result = txStateManager.getTransactions({
         filterToCurrentNetwork: false,
       });
-      assert.equal(result.length, 9, `all nine transactions should be present`);
-      assert.equal(result[0].id, 0, 'first tx should be present');
+      expect(result).toHaveLength(9); // `all nine transactions should be present`;
+      expect(result[0].id).toStrictEqual(0); // 'first tx should be present';
     });
   });
 

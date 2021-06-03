@@ -428,7 +428,7 @@ describe('permissions log', function () {
 
       permHistory = permLog.getHistory();
 
-      expect(permHistory).toStrictEqual(EXPECTED_HISTORIES.case1[1]);
+      expect(permHistory).toStrictEqual(EXPECTED_HISTORIES.case1[1]); // should have correct history
     });
 
     it('handles eth_accounts response without caveats', async function () {
