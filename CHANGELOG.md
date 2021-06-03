@@ -40,6 +40,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#10884](https://github.com/MetaMask/metamask-extension/pull/10884): Fixes localStorage migration error in Firefox response
 - [#10762](https://github.com/MetaMask/metamask-extension/pull/10762): Ensure that priceSlippage fiat amounts are always shown in the quote view
 - [#11031](https://github.com/MetaMask/metamask-extension/pull/11031): Fixes error behavior of addEthereumChain
+## [9.5.8]
+
+### Fixed
+- [#11207](https://github.com/MetaMask/metamask-extension/pull/11207) - Fix error causing crashes on some locales on v9.5.6 
+
+### Added
+- Re-added "Add Ledger Live Support" ([#10293](https://github.com/MetaMask/metamask-extension/pull/10293)), which was reverted in the previous version
+
+## [9.5.7]
+### Fixed
+- Revert "Add Ledger Live Support" ([#10293](https://github.com/MetaMask/metamask-extension/pull/10293)), which introduced a UI crash for some locales
+
+## [9.5.6]
+### Added
+- [#10293](https://github.com/MetaMask/metamask-extension/pull/10293): Add Ledger Live Support
+
+## [9.5.5]
+### Fixed
+- [#11159](https://github.com/MetaMask/metamask-extension/pull/11159): Fixes crash after entering invalid data in to the Hex Data field when sending a transaction
+
+## [9.5.4]
+### Fixed
+- [#11153](https://github.com/MetaMask/metamask-extension/pull/11153): Prevent UI crash when the transaction being retried or canceled is missing.
 
 ## [9.5.3]
 ### Fixed
@@ -2273,6 +2296,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.6.0...HEAD
 [9.6.0]: https://github.com/MetaMask/metamask-extension/compare/v9.5.3...v9.6.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.7...HEAD
+[9.5.7]: https://github.com/MetaMask/metamask-extension/compare/v9.5.6...v9.5.7
+[9.5.6]: https://github.com/MetaMask/metamask-extension/compare/v9.5.5...v9.5.6
+[9.5.5]: https://github.com/MetaMask/metamask-extension/compare/v9.5.4...v9.5.5
+[9.5.4]: https://github.com/MetaMask/metamask-extension/compare/v9.5.3...v9.5.4
 [9.5.3]: https://github.com/MetaMask/metamask-extension/compare/v9.5.2...v9.5.3
 [9.5.2]: https://github.com/MetaMask/metamask-extension/compare/v9.5.1...v9.5.2
 [9.5.1]: https://github.com/MetaMask/metamask-extension/compare/v9.5.0...v9.5.1

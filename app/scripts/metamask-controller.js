@@ -347,6 +347,7 @@ export default class MetamaskController extends EventEmitter {
         if (txReceipt && txReceipt.status === '0x0') {
           this.metaMetricsController.trackEvent(
             {
+              event: 'Tx Status Update: On-Chain Failure',
               category: 'Background',
               properties: {
                 action: 'Transactions',
