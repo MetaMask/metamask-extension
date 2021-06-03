@@ -81,7 +81,8 @@
     "analytics-node/axios": "^0.21.1",
     "ganache-core/lodash": "^4.17.21",
     "netmask": "^2.0.1",
-    "pull-ws": "^3.3.2"
+    "pull-ws": "^3.3.2",
+    "ws": "^7.4.6"
   },
   "dependencies": {
     "3box": "^1.10.2",
