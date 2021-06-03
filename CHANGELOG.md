@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.5.9]
-## [9.5.8]
 ### Added
 - Re-added "Add Ledger Live Support" ([#10293](https://github.com/MetaMask/metamask-extension/pull/10293)), which was reverted in the previous version
 
@@ -2270,7 +2269,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.9...HEAD
 [9.5.9]: https://github.com/MetaMask/metamask-extension/compare/v9.5.8...v9.5.9
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.8...HEAD
 [9.5.8]: https://github.com/MetaMask/metamask-extension/compare/v9.5.7...v9.5.8
 [9.5.7]: https://github.com/MetaMask/metamask-extension/compare/v9.5.6...v9.5.7
 [9.5.6]: https://github.com/MetaMask/metamask-extension/compare/v9.5.5...v9.5.6
