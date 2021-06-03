@@ -333,6 +333,38 @@ export default function BuildQuote({
     dispatch(resetSwapsPostFetchState());
   }, [dispatch]);
 
+  const BlockExplorerLink = () => {
+    return (
+      <a
+        className="build-quote__token-etherscan-link build-quote__underline"
+        key="build-quote-etherscan-link"
+        onClick={() => {
+          blockExplorerLinkClickedEvent();
+          global.platform.openTab({
+            url: blockExplorerTokenLink,
+          });
+        }}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {blockExplorerLabel}
+      </a>
+    );
+  };
+
+  let tokenVerificationDescription = '';
+  if (blockExplorerTokenLink) {
+    if (occurances === 1) {
+      tokenVerificationDescription = t('verifyThisTokenOn', [
+        <BlockExplorerLink key="block-explorer-link" />,
+      ]);
+    } else if (occurances === 0) {
+      tokenVerificationDescription = t('verifyThisUnconfirmedTokenOn', [
+        <BlockExplorerLink key="block-explorer-link" />,
+      ]);
+    }
+  }
+
   return (
     <div className="build-quote">
       <div className="build-quote__content">
@@ -434,37 +466,21 @@ export default function BuildQuote({
             listContainerClassName="build-quote__open-to-dropdown"
             hideRightLabels
             defaultToAll
+            shouldSearchForImports
           />
         </div>
         {toTokenIsNotDefault &&
           (occurances < 2 ? (
             <ActionableMessage
+              type={occurances === 1 ? 'warning' : 'danger'}
               message={
                 <div className="build-quote__token-verification-warning-message">
                   <div className="build-quote__bold">
                     {occurances === 1
                       ? t('swapTokenVerificationOnlyOneSource')
-                      : t('swapTokenVerificationNoSource')}
+                      : t('swapTokenVerificationAddedManually')}
                   </div>
-                  <div>
-                    {blockExplorerTokenLink &&
-                      t('verifyThisTokenOn', [
-                        <a
-                          className="build-quote__token-etherscan-link build-quote__underline"
-                          key="build-quote-etherscan-link"
-                          onClick={() => {
-                            blockExplorerLinkClickedEvent();
-                            global.platform.openTab({
-                              url: blockExplorerTokenLink,
-                            });
-                          }}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {blockExplorerLabel}
-                        </a>,
-                      ])}
-                  </div>
+                  <div>{tokenVerificationDescription}</div>
                 </div>
               }
               primaryAction={
@@ -475,7 +491,6 @@ export default function BuildQuote({
                       onClick: () => setVerificationClicked(true),
                     }
               }
-              type="warning"
               withRightButton
               infoTooltipText={
                 blockExplorerTokenLink &&

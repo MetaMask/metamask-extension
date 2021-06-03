@@ -47,6 +47,8 @@ const getBaseApi = function (type, chainId = MAINNET_CHAIN_ID) {
       return `${METASWAP_CHAINID_API_HOST_MAP[chainId]}/trades?`;
     case 'tokens':
       return `${METASWAP_CHAINID_API_HOST_MAP[chainId]}/tokens`;
+    case 'token':
+      return `${METASWAP_CHAINID_API_HOST_MAP[chainId]}/token`;
     case 'topAssets':
       return `${METASWAP_CHAINID_API_HOST_MAP[chainId]}/topAssets`;
     case 'featureFlag':
@@ -290,10 +292,20 @@ export async function fetchTradesInfo(
   return newQuotes;
 }
 
+export async function fetchToken(contractAddress, chainId) {
+  const tokenUrl = getBaseApi('token', chainId);
+  const token = await fetchWithCache(
+    `${tokenUrl}?address=${contractAddress}`,
+    { method: 'GET' },
+    { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
+  );
+  return token;
+}
+
 export async function fetchTokens(chainId) {
-  const tokenUrl = getBaseApi('tokens', chainId);
+  const tokensUrl = getBaseApi('tokens', chainId);
   const tokens = await fetchWithCache(
-    tokenUrl,
+    tokensUrl,
     { method: 'GET' },
     { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
   );
@@ -301,7 +313,7 @@ export async function fetchTokens(chainId) {
     SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId],
     ...tokens.filter((token) => {
       return (
-        validateData(TOKEN_VALIDATORS, token, tokenUrl) &&
+        validateData(TOKEN_VALIDATORS, token, tokensUrl) &&
         !(
           isSwapsDefaultTokenSymbol(token.symbol, chainId) ||
           isSwapsDefaultTokenAddress(token.address, chainId)

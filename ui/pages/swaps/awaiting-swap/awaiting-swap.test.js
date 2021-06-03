@@ -27,7 +27,7 @@ describe('AwaitingSwap', () => {
       store,
     );
     expect(getByText('Processing')).toBeInTheDocument();
-    expect(getByText('View on Etherscan')).toBeInTheDocument();
+    expect(getByText('ETH')).toBeInTheDocument();
     expect(getByText('View in activity')).toBeInTheDocument();
     expect(
       document.querySelector('.awaiting-swap__main-descrption'),
