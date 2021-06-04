@@ -18,6 +18,7 @@ import {
 import { getTokenData, sumHexes } from '../../helpers/utils/transactions.util';
 
 import { conversionUtil } from '../../helpers/utils/conversion-util';
+import { getAveragePriceEstimateInHexWEI } from '../../selectors/custom-gas';
 
 // Actions
 const createActionType = (action) => `metamask/confirm-transaction/${action}`;
@@ -198,9 +199,16 @@ export function updateTxDataAndCalculate(txData) {
 
     dispatch(updateTxData(txData));
 
-    const {
-      txParams: { value = '0x0', gas: gasLimit = '0x0', gasPrice = '0x0' } = {},
+    const { txParams: { value = '0x0', gas: gasLimit = '0x0' } = {} } = txData;
+
+    // if the gas price from our infura endpoint is null or undefined
+    // use the metaswap average price estimation as a fallback
+    let {
+      txParams: { gasPrice },
     } = txData;
+    if (!gasPrice) {
+      gasPrice = getAveragePriceEstimateInHexWEI(state) || '0x0';
+    }
 
     const fiatTransactionAmount = getValueFromWeiHex({
       value,
