@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import AssetListItem from '../asset-list-item';
-import { getSelectedAddress, getPreferences } from '../../../selectors';
+import {
+  getSelectedAddress,
+  getPreferences,
+  getCurrentCurrency,
+} from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 
@@ -18,16 +22,25 @@ export default function TokenCell({
 }) {
   const userAddress = useSelector(getSelectedAddress);
   const t = useI18nContext();
+  const currentCurrency = useSelector(getCurrentCurrency).toUpperCase();
 
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const formattedFiat = useTokenFiatAmount(address, string, symbol);
+  const formattedFiat = useTokenFiatAmount(address, string, symbol, {}, true);
 
   const primary = useNativeCurrencyAsPrimaryCurrency
-    ? `${string || 0} ${symbol}`
+    ? `${string || 0}`
     : formattedFiat;
   const secondary = useNativeCurrencyAsPrimaryCurrency
     ? formattedFiat
-    : `${string || 0} ${symbol}`;
+    : `${string || 0}`;
+
+  const primarySymbol = useNativeCurrencyAsPrimaryCurrency
+    ? symbol
+    : currentCurrency;
+
+  const secondarySymbol = useNativeCurrencyAsPrimaryCurrency
+    ? currentCurrency
+    : symbol;
 
   const warning = balanceError ? (
     <span>
@@ -53,12 +66,14 @@ export default function TokenCell({
       onClick={onClick.bind(null, address)}
       tokenAddress={address}
       tokenImage={image}
-      tokenSymbol={symbol}
       tokenDecimals={decimals}
       warning={warning}
       // if primary is null we move secondary to primary and don't show secondary
       primary={primary || secondary}
+      primarySymbol={primarySymbol}
       secondary={primary ? secondary : null}
+      secondarySymbol={primary ? secondarySymbol : null}
+      primaryIsFiat={!useNativeCurrencyAsPrimaryCurrency}
     />
   );
 }

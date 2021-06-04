@@ -71,14 +71,14 @@ describe('Token Cell', () => {
 
   it('renders token balance', () => {
     expect(wrapper.find('.asset-list-item__token-value').text()).toStrictEqual(
-      '5.000 TEST',
+      '5.000',
     );
   });
 
   it('renders converted fiat amount', () => {
-    expect(wrapper.find('.list-item__subheading').text()).toStrictEqual(
-      '$0.52 USD',
-    );
+    expect(
+      wrapper.find('.asset-list-item__secondary-value').text(),
+    ).toStrictEqual('$0.52');
   });
 
   it('calls onClick when clicked', () => {

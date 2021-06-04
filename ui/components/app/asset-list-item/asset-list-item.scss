@@ -39,6 +39,12 @@
   .list-item__subheading {
     @include H6;
 
+    & h3 {
+      & span {
+        padding-right: 5px;
+      }
+    }
+
     margin-top: 6px;
   }
 

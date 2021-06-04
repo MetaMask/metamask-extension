@@ -20,13 +20,15 @@ const AssetListItem = ({
   iconClassName,
   onClick,
   tokenAddress,
-  tokenSymbol,
+  primarySymbol,
   tokenDecimals,
   tokenImage,
   warning,
   primary,
   secondary,
+  secondarySymbol,
   identiconBorder,
+  primaryIsFiat,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -71,17 +73,19 @@ const AssetListItem = ({
             updateSendToken({
               address: tokenAddress,
               decimals: tokenDecimals,
-              symbol: tokenSymbol,
+              symbol: primaryIsFiat ? secondarySymbol : primarySymbol,
             }),
           );
           history.push(SEND_ROUTE);
         }}
       >
-        {t('sendSpecifiedTokens', [tokenSymbol])}
+        {t('sendSpecifiedTokens', [
+          primaryIsFiat ? secondarySymbol : primarySymbol,
+        ])}
       </Button>
     );
   }, [
-    tokenSymbol,
+    primarySymbol,
     sendTokenEvent,
     tokenAddress,
     tokenDecimals,
@@ -98,15 +102,28 @@ const AssetListItem = ({
         <button
           className="asset-list-item__token-button"
           onClick={onClick}
-          title={primary}
+          title={`${primary} ${primarySymbol}`}
         >
           <h2>
             <span className="asset-list-item__token-value">{primary}</span>
+            <span className="asset-list-item__token-symbol">
+              {primarySymbol}
+            </span>
           </h2>
         </button>
       }
       titleIcon={titleIcon}
-      subtitle={<h3 title={secondary}>{secondary}</h3>}
+      subtitle={
+        <h3
+          className="asset-list-item__subtitle"
+          title={`${secondary} ${secondarySymbol}`}
+        >
+          <span className="asset-list-item__secondary-value">{secondary}</span>
+          <span className="asset-list-item__secondary-symbol">
+            {secondarySymbol}
+          </span>
+        </h3>
+      }
       onClick={onClick}
       icon={
         <Identicon
@@ -114,7 +131,7 @@ const AssetListItem = ({
           diameter={32}
           address={tokenAddress}
           image={tokenImage}
-          alt={primary}
+          alt={`${primary} ${primarySymbol}`}
           imageBorder={identiconBorder}
         />
       }
@@ -135,13 +152,15 @@ AssetListItem.propTypes = {
   'iconClassName': PropTypes.string,
   'onClick': PropTypes.func.isRequired,
   'tokenAddress': PropTypes.string,
-  'tokenSymbol': PropTypes.string,
+  'primarySymbol': PropTypes.string,
   'tokenDecimals': PropTypes.number,
   'tokenImage': PropTypes.string,
   'warning': PropTypes.node,
   'primary': PropTypes.string,
   'secondary': PropTypes.string,
+  'secondarySymbol': PropTypes.string,
   'identiconBorder': PropTypes.bool,
+  'primaryIsFiat': PropTypes.bool,
 };
 
 AssetListItem.defaultProps = {

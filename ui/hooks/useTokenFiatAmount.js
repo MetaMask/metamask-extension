@@ -32,7 +32,7 @@ export function useTokenFiatAmount(
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
   const userPrefersShownFiat = useSelector(getShouldShowFiat);
-  const showFiat = overrides.showFiat ?? userPrefersShownFiat;
+  const showFiat = overrides?.showFiat ?? userPrefersShownFiat;
   const tokenExchangeRate =
     overrides.exchangeRate ?? contractExchangeRates[tokenAddress];
   const formattedFiat = useMemo(

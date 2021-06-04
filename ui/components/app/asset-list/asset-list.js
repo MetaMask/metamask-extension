@@ -48,27 +48,27 @@ const AssetList = ({ onClickAsset }) => {
     numberOfDecimals: secondaryNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
 
-  const [
-    primaryCurrencyDisplay,
-    primaryCurrencyProperties,
-  ] = useCurrencyDisplay(selectedAccountBalance, {
-    numberOfDecimals: primaryNumberOfDecimals,
-    currency: primaryCurrency,
-    type: PRIMARY,
-  });
+  const [, primaryCurrencyProperties] = useCurrencyDisplay(
+    selectedAccountBalance,
+    {
+      numberOfDecimals: primaryNumberOfDecimals,
+      currency: primaryCurrency,
+      type: PRIMARY,
+    },
+  );
 
-  const [
-    secondaryCurrencyDisplay,
-    secondaryCurrencyProperties,
-  ] = useCurrencyDisplay(selectedAccountBalance, {
-    numberOfDecimals: secondaryNumberOfDecimals,
-    currency: secondaryCurrency,
-    type: SECONDARY,
-  });
+  const [, secondaryCurrencyProperties] = useCurrencyDisplay(
+    selectedAccountBalance,
+    {
+      numberOfDecimals: secondaryNumberOfDecimals,
+      currency: secondaryCurrency,
+      type: SECONDARY,
+    },
+  );
 
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const showSecondaryCurrency =
-    showFiat && primaryCurrencyProperties?.value !== null;
+    showFiat && Boolean(primaryCurrencyProperties?.value);
   return (
     <>
       <AssetListItem
@@ -76,14 +76,19 @@ const AssetList = ({ onClickAsset }) => {
         data-testid="wallet-balance"
         primary={
           primaryCurrencyProperties?.value
-            ? primaryCurrencyDisplay
-            : secondaryCurrencyDisplay
+            ? primaryCurrencyProperties.value
+            : secondaryCurrencyProperties.value
         }
-        secondary={showSecondaryCurrency ? secondaryCurrencyDisplay : undefined}
-        tokenSymbol={
+        secondary={
+          showSecondaryCurrency ? secondaryCurrencyProperties.value : undefined
+        }
+        secondarySymbol={
+          showSecondaryCurrency ? secondaryCurrencyProperties.suffix : undefined
+        }
+        primarySymbol={
           primaryCurrencyProperties?.value
-            ? primaryCurrencyProperties?.suffix
-            : secondaryCurrencyProperties?.suffix
+            ? primaryCurrencyProperties.suffix
+            : secondaryCurrencyProperties.suffix
         }
         tokenImage={primaryTokenImage}
         identiconBorder
