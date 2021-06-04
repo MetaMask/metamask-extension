@@ -1,4 +1,4 @@
-{
+﻿{
   "about": {
     "message": "Sobre"
   },
@@ -2416,6 +2416,6 @@
     "message": "Sua Frase de recuperação secreta privada"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message": "Preço zero do gas na aceleração"
+    "message":  "Preço zero do gas na aceleração"
   }
 }

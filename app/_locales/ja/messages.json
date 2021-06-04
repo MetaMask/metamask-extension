@@ -1,4 +1,4 @@
-{
+﻿{
   "about": {
     "message": "バージョン情報"
   },
@@ -2416,6 +2416,6 @@
     "message": "秘密のシークレット リカバリー フレーズ"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message": "スピードアップ時にゼロのガス価格"
+    "message":  "スピードアップ時にゼロのガス価格"
   }
 }

@@ -1,4 +1,4 @@
-{
+﻿{
   "about": {
     "message": "Giới thiệu"
   },
@@ -2416,6 +2416,6 @@
     "message": "Cụm mật khẩu bí mật, riêng tư của bạn"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message": "Giá gas bằng 0 khi tăng tốc"
+    "message":  "Giá gas bằng 0 khi tăng tốc"
   }
 }

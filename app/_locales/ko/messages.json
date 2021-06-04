@@ -1,4 +1,4 @@
-{
+﻿{
   "about": {
     "message": "정보"
   },
@@ -2416,6 +2416,6 @@
     "message": "개인 시드 구문"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message": "가속화 시 가스 가격 0"
+    "message":  "가속화 시 가스 가격 0"
   }
 }

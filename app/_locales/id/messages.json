@@ -1,4 +1,4 @@
-{
+﻿{
   "about": {
     "message": "Tentang"
   },
@@ -2416,6 +2416,6 @@
     "message": "Frasa Pemulihan Rahasia pribadi Anda"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message": "Biaya jaringan nol dipercepat"
+    "message":  "Biaya jaringan nol dipercepat"
   }
 }

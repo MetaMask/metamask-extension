@@ -1,4 +1,4 @@
-{
+﻿{
   "about": {
     "message": "Acerca de"
   },
@@ -2416,6 +2416,6 @@
     "message": "Su frase secreta de recuperación privada"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message": "No hay entradas sobre el precio del gas al acelerar la transacción"
+    "message":  "No hay entradas sobre el precio del gas al acelerar la transacción"
   }
 }
