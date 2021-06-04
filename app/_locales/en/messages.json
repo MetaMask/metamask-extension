@@ -289,6 +289,9 @@
   "chainIdDefinition": {
     "message": "The chain ID used to sign transactions for this network."
   },
+  "chainIdExistsErrorMsg": {
+    "message": "This Chain ID is currently used by the $1 network."
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
@@ -2349,7 +2352,7 @@
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
   },
   "urlExistsErrorMsg": {
-    "message": "URL is already present in existing list of networks"
+    "message": "This URL is currently used by the $1 network."
   },
   "usePhishingDetection": {
     "message": "Use Phishing Detection"
