@@ -14,7 +14,7 @@
   },
   "accessAndSpendNotice": {
     "message": "$1 dapat diakses dan digunakan hingga jumlah maksimum ini",
-    "description": "$1 is the url of the site requesting ability to spend"
+    "description": "$1 is the url of the site requesting ability to spend "
   },
   "accessingYourCamera": {
     "message": "Mengakses kamera Anda..."

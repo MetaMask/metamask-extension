@@ -2401,7 +2401,7 @@
   },
   "xOfYPending": {
     "message": "$2개 중 $1개 보류 중",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
+    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total "
   },
   "yesLetsTry": {
     "message": "예, 시도하겠습니다."

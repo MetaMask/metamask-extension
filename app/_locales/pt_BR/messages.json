@@ -64,7 +64,7 @@
   },
   "addEthereumChainConfirmationRisksLearnMoreLink": {
     "message": "fraudes e riscos de segurança da rede",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
+    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key "
   },
   "addEthereumChainConfirmationTitle": {
     "message": "Permitir que este site adicione uma rede?"

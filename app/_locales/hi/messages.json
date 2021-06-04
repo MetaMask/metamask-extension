@@ -14,7 +14,7 @@
   },
   "accessAndSpendNotice": {
     "message": "$1 इस अधिकतम राशि तक पहुँच सकते हैं और खर्च कर सकते हैं",
-    "description": "$1 is the url of the site requesting ability to spend"
+    "description": "$1 is the url of the site requesting ability to spend "
   },
   "accessingYourCamera": {
     "message": "आपके कैमरे तक पहुँच रहा है..."

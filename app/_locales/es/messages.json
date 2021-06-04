@@ -14,7 +14,7 @@
   },
   "accessAndSpendNotice": {
     "message": "$1 puede acceder y gastar hasta este importe máximo",
-    "description": "$1 is the url of the site requesting ability to spend"
+    "description": "$1 is the url of the site requesting ability to spend "
   },
   "accessingYourCamera": {
     "message": "Accediendo a la cámara…"

@@ -64,7 +64,7 @@
   },
   "addEthereumChainConfirmationRisksLearnMoreLink": {
     "message": "詐欺やネットワーク セキュリティのリスク",
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
+    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key "
   },
   "addEthereumChainConfirmationTitle": {
     "message": "このサイトにネットワークの追加を許可しますか？"
