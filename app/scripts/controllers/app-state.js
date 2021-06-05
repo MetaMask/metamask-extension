@@ -24,6 +24,8 @@ export default class AppStateController extends EventEmitter {
       connectedStatusPopoverHasBeenShown: true,
       defaultHomeActiveTabName: null,
       browserEnvironment: {},
+      recoveryPhraseReminderHasBeenShown: false,
+      recoveryPhraseReminderLastShown: new Date().getTime(),
       ...initState,
     });
     this.timer = null;
@@ -109,6 +111,27 @@ export default class AppStateController extends EventEmitter {
   setConnectedStatusPopoverHasBeenShown() {
     this.store.updateState({
       connectedStatusPopoverHasBeenShown: true,
+    });
+  }
+
+  /**
+   * Record that the user has been shown the recovery phrase reminder
+   * @returns {void}
+   */
+  setRecoveryPhraseReminderHasBeenShown() {
+    this.store.updateState({
+      recoveryPhraseReminderHasBeenShown: true,
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has seen the recovery phrase reminder
+   * @param {number} lastShown - timestamp when user was last shown the reminder
+   * @returns {void}
+   */
+  setRecoveryPhraseReminderLastShown(lastShown) {
+    this.store.updateState({
+      recoveryPhraseReminderLastShown: lastShown,
     });
   }
 
