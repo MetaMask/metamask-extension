@@ -40,6 +40,7 @@ import {
   transactionFeeSelector,
   getNoGasPriceFetched,
   getIsEthGasPriceFetched,
+  getCurrentChecksumUsesChainId,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
@@ -103,13 +104,18 @@ const mapStateToProps = (state, ownProps) => {
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
   const toAddress = propsToAddress || txParamsToAddress;
+  const checksumUsesChainId = getCurrentChecksumUsesChainId(state);
 
   const toName =
     identities[toAddress]?.name ||
     casedContractMap[toAddress]?.name ||
-    shortenAddress(checksumAddress(toAddress));
+    shortenAddress(checksumAddress(toAddress, chainId, checksumUsesChainId));
 
-  const checksummedAddress = checksumAddress(toAddress);
+  const checksummedAddress = checksumAddress(
+    toAddress,
+    chainId,
+    checksumUsesChainId,
+  );
   const addressBookObject = addressBook[checksummedAddress];
   const toEns = ensResolutionsByAddress[checksummedAddress] || '';
   const toNickname = addressBookObject ? addressBookObject.name : '';
