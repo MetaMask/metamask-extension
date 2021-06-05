@@ -1,13 +1,13 @@
 // Freezes all intrinsics
 try {
   // eslint-disable-next-line no-undef,import/unambiguous
-  lockdown({
-    consoleTaming: 'unsafe',
-    errorTaming: 'unsafe',
-    mathTaming: 'unsafe',
-    dateTaming: 'unsafe',
-    overrideTaming: 'severe',
-  });
+  // lockdown({
+  //   consoleTaming: 'unsafe',
+  //   errorTaming: 'unsafe',
+  //   mathTaming: 'unsafe',
+  //   dateTaming: 'unsafe',
+  //   overrideTaming: 'severe',
+  // });
 } catch (error) {
   // If the `lockdown` call throws an exception, it interferes with the
   // contentscript injection on some versions of Firefox. The error is
