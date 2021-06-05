@@ -19,6 +19,7 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
 } from '../../shared/constants/app';
+import { SECOND } from '../../shared/constants/time';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -491,7 +492,7 @@ async function openPopup() {
         clearInterval(interval);
         resolve();
       }
-    }, 1000);
+    }, SECOND);
   });
 }
 

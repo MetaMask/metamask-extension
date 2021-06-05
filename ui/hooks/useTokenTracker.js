@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import TokenTracker from '@metamask/eth-token-tracker';
 import { useSelector } from 'react-redux';
 import { getCurrentChainId, getSelectedAddress } from '../selectors';
+import { SECOND } from '../../shared/constants/time';
 import { useEqualityCheck } from './useEqualityCheck';
 
 export function useTokenTracker(
@@ -52,7 +53,7 @@ export function useTokenTracker(
         provider: global.ethereumProvider,
         tokens: tokenList,
         includeFailedTokens,
-        pollingInterval: 8000,
+        pollingInterval: SECOND * 8,
       });
 
       tokenTracker.current.on('update', updateBalances);

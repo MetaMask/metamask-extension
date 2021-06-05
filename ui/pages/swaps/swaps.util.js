@@ -16,6 +16,7 @@ import {
   WETH_SYMBOL,
   MAINNET_CHAIN_ID,
 } from '../../../shared/constants/network';
+import { SECOND } from '../../../shared/constants/time';
 import {
   calcTokenValue,
   calcTokenAmount,
@@ -239,7 +240,7 @@ export async function fetchTradesInfo(
     sourceToken,
     sourceAmount: calcTokenValue(value, sourceDecimals).toString(10),
     slippage,
-    timeout: 10000,
+    timeout: SECOND * 10,
     walletAddress: fromAddress,
   };
 
@@ -252,7 +253,7 @@ export async function fetchTradesInfo(
   const tradesResponse = await fetchWithCache(
     tradeURL,
     { method: 'GET' },
-    { cacheRefreshTime: 0, timeout: 15000 },
+    { cacheRefreshTime: 0, timeout: SECOND * 15 },
   );
   const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
     if (
