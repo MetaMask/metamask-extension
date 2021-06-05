@@ -3,6 +3,8 @@ import { checksumAddress } from '../../../helpers/utils/util';
 import { tryReverseResolveAddress } from '../../../store/actions';
 import {
   getAddressBook,
+  getCurrentChainId,
+  getCurrentChecksumUsesChainId,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
 import TransactionListItemDetails from './transaction-list-item-details.component';
@@ -11,9 +13,15 @@ const mapStateToProps = (state, ownProps) => {
   const { metamask } = state;
   const { ensResolutionsByAddress } = metamask;
   const { recipientAddress, senderAddress } = ownProps;
+  const chainId = getCurrentChainId(state);
+  const checksumUsesChainId = getCurrentChecksumUsesChainId(state);
   let recipientEns;
   if (recipientAddress) {
-    const address = checksumAddress(recipientAddress);
+    const address = checksumAddress(
+      recipientAddress,
+      chainId,
+      checksumUsesChainId,
+    );
     recipientEns = ensResolutionsByAddress[address] || '';
   }
   const addressBook = getAddressBook(state);
