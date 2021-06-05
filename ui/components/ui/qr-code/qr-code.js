@@ -3,6 +3,10 @@ import React from 'react';
 import qrCode from 'qrcode-generator';
 import { connect } from 'react-redux';
 import { isHexPrefixed } from 'ethereumjs-util';
+import {
+  getCurrentChainId,
+  getCurrentChecksumUsesChainId,
+} from '../../../selectors';
 import ReadOnlyInput from '../readonly-input/readonly-input';
 import { checksumAddress } from '../../../helpers/utils/util';
 
@@ -10,18 +14,24 @@ export default connect(mapStateToProps)(QrCodeView);
 
 function mapStateToProps(state) {
   const { buyView, warning } = state.appState;
+  const chainId = getCurrentChainId(state);
+  const checksumUsesChainId = getCurrentChecksumUsesChainId(state);
   return {
     // Qr code is not fetched from state. 'message' and 'data' props are passed instead.
     buyView,
     warning,
+    chainId,
+    checksumUsesChainId,
   };
 }
 
 function QrCodeView(props) {
-  const { Qr, warning } = props;
+  const { Qr, warning, chainId, checksumUsesChainId } = props;
   const { message, data } = Qr;
   const address = `${isHexPrefixed(data) ? 'ethereum:' : ''}${checksumAddress(
     data,
+    chainId,
+    checksumUsesChainId,
   )}`;
   const qrImage = qrCode(4, 'M');
   qrImage.addData(address);
@@ -65,4 +75,6 @@ QrCodeView.propTypes = {
     ]),
     data: PropTypes.string.isRequired,
   }).isRequired,
+  chainId: PropTypes.string,
+  checksumUsesChainId: PropTypes.bool,
 };
