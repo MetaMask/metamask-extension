@@ -18,6 +18,8 @@ import { setCustomGasLimit } from '../ducks/gas/gas.duck';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
+  getCurrentChainId,
+  getCurrentChecksumUsesChainId,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
 } from '../selectors';
@@ -1723,12 +1725,14 @@ export function addToAddressBook(recipient, nickname = '', memo = '') {
   log.debug(`background.addToAddressBook`);
 
   return async (dispatch, getState) => {
-    const { chainId } = getState().metamask.provider;
+    const state = getState();
+    const chainId = getCurrentChainId(state);
+    const checksumUsesChainId = getCurrentChecksumUsesChainId(state);
 
     let set;
     try {
       set = await promisifiedBackground.setAddressBook(
-        checksumAddress(recipient),
+        checksumAddress(recipient, chainId, checksumUsesChainId),
         nickname,
         chainId,
         memo,
@@ -1751,10 +1755,12 @@ export function addToAddressBook(recipient, nickname = '', memo = '') {
 export function removeFromAddressBook(chainId, addressToRemove) {
   log.debug(`background.removeFromAddressBook`);
 
-  return async () => {
+  return async (_, getState) => {
+    const state = getState();
+    const checksumUsesChainId = getCurrentChecksumUsesChainId(state);
     await promisifiedBackground.removeFromAddressBook(
       chainId,
-      checksumAddress(addressToRemove),
+      checksumAddress(addressToRemove, chainId, checksumUsesChainId),
     );
   };
 }
