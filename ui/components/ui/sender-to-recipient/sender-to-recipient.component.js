@@ -56,7 +56,7 @@ function SenderAddress({
     >
       {!addressOnly && (
         <div className="sender-to-recipient__sender-icon">
-          <Identicon address={checksumAddress(senderAddress)} diameter={24} />
+          <Identicon address={checksummedSenderAddress} diameter={24} />
         </div>
       )}
       <Tooltip
@@ -201,10 +201,20 @@ export default function SenderToRecipient({
   recipientAddress,
   variant,
   warnUserOnAccountMismatch,
+  chainId,
+  checksumUsesChainId,
 }) {
   const t = useI18nContext();
-  const checksummedSenderAddress = checksumAddress(senderAddress);
-  const checksummedRecipientAddress = checksumAddress(recipientAddress);
+  const checksummedSenderAddress = checksumAddress(
+    senderAddress,
+    chainId,
+    checksumUsesChainId,
+  );
+  const checksummedRecipientAddress = checksumAddress(
+    recipientAddress,
+    chainId,
+    checksumUsesChainId,
+  );
 
   return (
     <div className={classnames('sender-to-recipient', variantHash[variant])}>
@@ -255,4 +265,6 @@ SenderToRecipient.propTypes = {
   onRecipientClick: PropTypes.func,
   onSenderClick: PropTypes.func,
   warnUserOnAccountMismatch: PropTypes.bool,
+  chainId: PropTypes.string,
+  checksumUsesChainId: PropTypes.bool,
 };
