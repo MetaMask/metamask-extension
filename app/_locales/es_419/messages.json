@@ -1,4 +1,4 @@
-﻿{
+{
   "about": {
     "message": "Acerca de"
   },
@@ -14,7 +14,7 @@
   },
   "accessAndSpendNotice": {
     "message": "$1 puede acceder y gastar hasta este importe máximo",
-    "description": "$1 is the url of the site requesting ability to spend "
+    "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessingYourCamera": {
     "message": "Accediendo a la cámara…"
@@ -2044,9 +2044,6 @@
   "swapTokenVerificationMessage": {
     "message": "Siempre confirme la dirección del token en $1.",
     "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationNoSource": {
-    "message": "Este token no se verificó."
   },
   "swapTokenVerificationOnlyOneSource": {
     "message": "Solo se verificó en una fuente."

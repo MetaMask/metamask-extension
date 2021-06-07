@@ -1,4 +1,4 @@
-﻿{
+{
   "about": {
     "message": "Общие сведения"
   },
@@ -14,7 +14,7 @@
   },
   "accessAndSpendNotice": {
     "message": "$1 может получить доступ и потратить до этой максимальной суммы",
-    "description": "$1 is the url of the site requesting ability to spend "
+    "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessingYourCamera": {
     "message": "Доступ к камере..."
@@ -2009,9 +2009,6 @@
   "swapTokenVerificationMessage": {
     "message": "Всегда проверяйте адрес токена на $1.",
     "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationNoSource": {
-    "message": "Этот токен не проверен."
   },
   "swapTokenVerificationOnlyOneSource": {
     "message": "Токен проверен только в 1 источнике."

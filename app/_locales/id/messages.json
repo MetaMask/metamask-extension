@@ -1,4 +1,4 @@
-﻿{
+{
   "about": {
     "message": "Tentang"
   },
@@ -14,7 +14,7 @@
   },
   "accessAndSpendNotice": {
     "message": "$1 dapat diakses dan digunakan hingga jumlah maksimum ini",
-    "description": "$1 is the url of the site requesting ability to spend "
+    "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessingYourCamera": {
     "message": "Mengakses kamera Anda..."
@@ -2009,9 +2009,6 @@
   "swapTokenVerificationMessage": {
     "message": "Selalu konfirmasikan alamat token di $1.",
     "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
-  },
-  "swapTokenVerificationNoSource": {
-    "message": "Token ini belum diverifikasi."
   },
   "swapTokenVerificationOnlyOneSource": {
     "message": "Hanya diverifikasi di 1 sumber."

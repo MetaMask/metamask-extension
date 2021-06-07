@@ -1,4 +1,4 @@
-﻿{
+{
   "about": {
     "message": "정보"
   },
@@ -2050,9 +2050,6 @@
     "message": "항상 $1에서 토큰 주소를 확인하십시오.",
     "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
   },
-  "swapTokenVerificationNoSource": {
-    "message": "토큰이 확인되지 않았습니다."
-  },
   "swapTokenVerificationOnlyOneSource": {
     "message": "1개의 소스에서만 확인됩니다."
   },
@@ -2393,7 +2390,7 @@
   },
   "xOfYPending": {
     "message": "$2개 중 $1개 보류 중",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total "
+    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
   },
   "yesLetsTry": {
     "message": "예, 시도하겠습니다."
