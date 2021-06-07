@@ -67,9 +67,10 @@
 
   &__buttons {
     display: flex;
+    margin-top: 10px;
 
     .first-time-flow__button:last-of-type {
-      margin-left: 20px;
+      margin-left: 10px;
     }
   }
 }
