@@ -2,8 +2,8 @@ import {
   conversionRateSelector,
   currentCurrencySelector,
   unconfirmedTransactionsHashSelector,
-  getNativeCurrency,
 } from '../../selectors';
+import { getNativeCurrency } from '../metamask/metamask';
 
 import {
   getValueFromWeiHex,

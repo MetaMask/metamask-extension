@@ -7,11 +7,9 @@ import {
   getHexGasTotal,
   increaseLastGasPrice,
 } from '../helpers/utils/confirm-tx.util';
-import {
-  getConversionRate,
-  getSelectedAccount,
-  getIsMainnet,
-} from '../selectors';
+import { getSelectedAccount, getIsMainnet } from '../selectors';
+import { getConversionRate } from '../ducks/metamask/metamask';
+
 import {
   setCustomGasLimit,
   setCustomGasPriceForRetry,

@@ -24,7 +24,7 @@ import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/temp
 
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { DAY } from '../../shared/constants/time';
-import { getNativeCurrency } from './send';
+import { getNativeCurrency } from '../ducks/metamask/metamask';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
