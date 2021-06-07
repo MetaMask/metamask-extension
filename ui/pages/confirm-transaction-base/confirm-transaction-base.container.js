@@ -40,7 +40,6 @@ import {
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
