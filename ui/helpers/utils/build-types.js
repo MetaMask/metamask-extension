@@ -8,12 +8,12 @@ const assetList = {
     swapsLogo: '/images/logo/metamask-fox.svg',
   },
   beta: {
-    metafoxLogoHorizontal: '/images/beta/metamask-logo-horizontal.png',
-    metafoxLogoHorizontalDark: '/images/beta/metamask-logo-horizontal-dark.png',
-    metafoxLogoSmall: '/images/beta/metamask-header-logo.png',
-    permissionsRedirectLogo: '/images/beta/64.png',
+    metafoxLogoHorizontal: '/images/beta/metamask-logo-horizontal.svg',
+    metafoxLogoHorizontalDark: '/images/beta/metamask-logo-horizontal-dark.svg',
+    metafoxLogoSmall: '/images/beta/metamask-fox.svg',
+    permissionsRedirectLogo: '/images/beta/metamask-fox.svg',
     aboutInfoLogo: '/images/beta/128.png',
-    swapsLogo: '/images/beta/128.png',
+    swapsLogo: '/images/beta/metamask-fox.svg',
   },
 };
 
