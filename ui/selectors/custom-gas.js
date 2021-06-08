@@ -10,6 +10,7 @@ import { calcGasTotal } from '../pages/send/send.utils';
 
 import { GAS_ESTIMATE_TYPES } from '../helpers/constants/common';
 import { BASIC_ESTIMATE_STATES, GAS_SOURCE } from '../ducks/gas/gas.duck';
+import { GAS_LIMITS } from '../../shared/constants/gas';
 import {
   getCurrentCurrency,
   getIsMainnet,
@@ -295,7 +296,9 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
   const isMainnet = getIsMainnet(state);
   const showFiat = isMainnet || Boolean(showFiatInTestnets);
   const gasLimit =
-    state.metamask.send.gasLimit || getCustomGasLimit(state) || '0x5208';
+    state.metamask.send.gasLimit ||
+    getCustomGasLimit(state) ||
+    GAS_LIMITS.SIMPLE;
   const { conversionRate } = state.metamask;
   const currentCurrency = getCurrentCurrency(state);
   const {
