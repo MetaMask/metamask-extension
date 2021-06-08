@@ -1,6 +1,10 @@
 import * as actionConstants from '../../store/actionConstants';
 import { ALERT_TYPES } from '../../../shared/constants/alerts';
 import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
+import {
+  accountsWithSendEtherInfoSelector,
+  getAddressBook,
+} from '../../selectors';
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -35,6 +39,7 @@ export default function reduceMetamask(state = {}, action) {
     featureFlags: {},
     welcomeScreenSeen: false,
     currentLocale: '',
+    currentBlockGasLimit: '',
     preferences: {
       autoLockTimeLimit: undefined,
       showFiatInTestnets: false,
@@ -46,6 +51,8 @@ export default function reduceMetamask(state = {}, action) {
     participateInMetaMetrics: null,
     metaMetricsSendCount: 0,
     nextNonce: null,
+    conversionRate: null,
+    nativeCurrency: 'ETH',
     ...state,
   };
 
@@ -378,3 +385,29 @@ export const getUnconnectedAccountAlertShown = (state) =>
   state.metamask.unconnectedAccountAlertShownOrigins;
 
 export const getTokens = (state) => state.metamask.tokens;
+
+export function getBlockGasLimit(state) {
+  return state.metamask.currentBlockGasLimit;
+}
+
+export function getConversionRate(state) {
+  return state.metamask.conversionRate;
+}
+
+export function getNativeCurrency(state) {
+  return state.metamask.nativeCurrency;
+}
+
+export function getSendHexDataFeatureFlagState(state) {
+  return state.metamask.featureFlags.sendHexData;
+}
+
+export function getSendToAccounts(state) {
+  const fromAccounts = accountsWithSendEtherInfoSelector(state);
+  const addressBookAccounts = getAddressBook(state);
+  return [...fromAccounts, ...addressBookAccounts];
+}
+
+export function getUnapprovedTxs(state) {
+  return state.metamask.unapprovedTxs;
+}

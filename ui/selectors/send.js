@@ -1,24 +1,10 @@
 import abi from 'human-standard-token-abi';
 import { calcGasTotal } from '../pages/send/send.utils';
 import {
-  accountsWithSendEtherInfoSelector,
-  getAddressBook,
   getSelectedAccount,
   getTargetAccount,
   getAveragePriceEstimateInHexWEI,
 } from '.';
-
-export function getBlockGasLimit(state) {
-  return state.metamask.currentBlockGasLimit;
-}
-
-export function getConversionRate(state) {
-  return state.metamask.conversionRate;
-}
-
-export function getNativeCurrency(state) {
-  return state.metamask.nativeCurrency;
-}
 
 export function getGasLimit(state) {
   return state.metamask.send.gasLimit || '0';
@@ -58,10 +44,6 @@ export function getSendAmount(state) {
 
 export function getSendHexData(state) {
   return state.metamask.send.data;
-}
-
-export function getSendHexDataFeatureFlagState(state) {
-  return state.metamask.featureFlags.sendHexData;
 }
 
 export function getSendEditingTransactionId(state) {
@@ -104,11 +86,6 @@ export function getSendToNickname(state) {
   return state.metamask.send.toNickname;
 }
 
-export function getSendToAccounts(state) {
-  const fromAccounts = accountsWithSendEtherInfoSelector(state);
-  const addressBookAccounts = getAddressBook(state);
-  return [...fromAccounts, ...addressBookAccounts];
-}
 export function getTokenBalance(state) {
   return state.metamask.send.tokenBalance;
 }
@@ -119,10 +96,6 @@ export function getSendEnsResolution(state) {
 
 export function getSendEnsResolutionError(state) {
   return state.metamask.send.ensResolutionError;
-}
-
-export function getUnapprovedTxs(state) {
-  return state.metamask.unapprovedTxs;
 }
 
 export function getQrCodeData(state) {

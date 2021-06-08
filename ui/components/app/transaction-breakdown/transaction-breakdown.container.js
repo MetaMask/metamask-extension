@@ -1,9 +1,6 @@
 import { connect } from 'react-redux';
-import {
-  getIsMainnet,
-  getNativeCurrency,
-  getPreferences,
-} from '../../../selectors';
+import { getIsMainnet, getPreferences } from '../../../selectors';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
 import { sumHexes } from '../../../helpers/utils/transactions.util';
 import TransactionBreakdown from './transaction-breakdown.component';

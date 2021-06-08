@@ -15,10 +15,8 @@ import {
   getSendEditingTransactionId,
   getSendFromObject,
   getSendTo,
-  getSendToAccounts,
   getSendHexData,
   getTokenBalance,
-  getUnapprovedTxs,
   getSendErrors,
   isSendFormInError,
   getGasIsLoading,
@@ -28,6 +26,10 @@ import {
 } from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import {
+  getSendToAccounts,
+  getUnapprovedTxs,
+} from '../../../ducks/metamask/metamask';
 import SendFooter from './send-footer.component';
 import {
   addressIsNew,

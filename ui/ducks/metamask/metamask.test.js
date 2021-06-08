@@ -1,9 +1,111 @@
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import * as actionConstants from '../../store/actionConstants';
-import reduceMetamask from './metamask';
+import reduceMetamask, {
+  getBlockGasLimit,
+  getConversionRate,
+  getNativeCurrency,
+  getSendHexDataFeatureFlagState,
+  getSendToAccounts,
+  getUnapprovedTxs,
+} from './metamask';
 
 describe('MetaMask Reducers', () => {
+  const mockState = {
+    metamask: reduceMetamask(
+      {
+        isInitialized: true,
+        isUnlocked: true,
+        featureFlags: { sendHexData: true },
+        identities: {
+          '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
+            address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
+            name: 'Send Account 1',
+          },
+          '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb': {
+            address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+            name: 'Send Account 2',
+          },
+          '0x2f8d4a878cfa04a6e60d46362f5644deab66572d': {
+            address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
+            name: 'Send Account 3',
+          },
+          '0xd85a4b6a394794842887b8284293d69163007bbb': {
+            address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+            name: 'Send Account 4',
+          },
+        },
+        cachedBalances: {},
+        currentBlockGasLimit: '0x4c1878',
+        conversionRate: 1200.88200327,
+        nativeCurrency: 'ETH',
+        network: '3',
+        provider: {
+          type: 'testnet',
+          chainId: '0x3',
+        },
+        accounts: {
+          '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
+            code: '0x',
+            balance: '0x47c9d71831c76efe',
+            nonce: '0x1b',
+            address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
+          },
+          '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb': {
+            code: '0x',
+            balance: '0x37452b1315889f80',
+            nonce: '0xa',
+            address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+          },
+          '0x2f8d4a878cfa04a6e60d46362f5644deab66572d': {
+            code: '0x',
+            balance: '0x30c9d71831c76efe',
+            nonce: '0x1c',
+            address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
+          },
+          '0xd85a4b6a394794842887b8284293d69163007bbb': {
+            code: '0x',
+            balance: '0x0',
+            nonce: '0x0',
+            address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+          },
+        },
+        addressBook: {
+          '0x3': {
+            '0x06195827297c7a80a443b6894d3bdb8824b43896': {
+              address: '0x06195827297c7a80a443b6894d3bdb8824b43896',
+              name: 'Address Book Account 1',
+              chainId: '0x3',
+            },
+          },
+        },
+        unapprovedTxs: {
+          4768706228115573: {
+            id: 4768706228115573,
+            time: 1487363153561,
+            status: TRANSACTION_STATUSES.UNAPPROVED,
+            gasMultiplier: 1,
+            metamaskNetworkId: '3',
+            txParams: {
+              from: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+              to: '0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761',
+              value: '0xde0b6b3a7640000',
+              metamaskId: 4768706228115573,
+              metamaskNetworkId: '3',
+              gas: '0x5209',
+            },
+            txFee: '17e0186e60800',
+            txValue: 'de0b6b3a7640000',
+            maxCost: 'de234b52e4a0800',
+            gasPrice: '4a817c800',
+          },
+        },
+      },
+      {},
+    ),
+  };
   it('init state', () => {
     const initState = reduceMetamask(undefined, {});
+
     expect.anything(initState);
   });
 
@@ -402,5 +504,95 @@ describe('MetaMask Reducers', () => {
 
     expect(state.send.ensResolutionError).toStrictEqual('ens name not found');
     expect(state.send.ensResolution).toBeNull();
+  });
+
+  describe('metamask state selectors', () => {
+    describe('getBlockGasLimit', () => {
+      it('should return the current block gas limit', () => {
+        expect(getBlockGasLimit(mockState)).toStrictEqual('0x4c1878');
+      });
+    });
+
+    describe('getConversionRate()', () => {
+      it('should return the eth conversion rate', () => {
+        expect(getConversionRate(mockState)).toStrictEqual(1200.88200327);
+      });
+    });
+
+    describe('getNativeCurrency()', () => {
+      it('should return the ticker symbol of the selected network', () => {
+        expect(getNativeCurrency(mockState)).toStrictEqual('ETH');
+      });
+    });
+
+    describe('getSendHexDataFeatureFlagState()', () => {
+      it('should return the sendHexData feature flag state', () => {
+        expect(getSendHexDataFeatureFlagState(mockState)).toStrictEqual(true);
+      });
+    });
+
+    describe('getSendToAccounts()', () => {
+      it('should return an array including all the users accounts and the address book', () => {
+        expect(getSendToAccounts(mockState)).toStrictEqual([
+          {
+            code: '0x',
+            balance: '0x47c9d71831c76efe',
+            nonce: '0x1b',
+            address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
+            name: 'Send Account 1',
+          },
+          {
+            code: '0x',
+            balance: '0x37452b1315889f80',
+            nonce: '0xa',
+            address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+            name: 'Send Account 2',
+          },
+          {
+            code: '0x',
+            balance: '0x30c9d71831c76efe',
+            nonce: '0x1c',
+            address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
+            name: 'Send Account 3',
+          },
+          {
+            code: '0x',
+            balance: '0x0',
+            nonce: '0x0',
+            address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+            name: 'Send Account 4',
+          },
+          {
+            address: '0x06195827297c7a80a443b6894d3bdb8824b43896',
+            name: 'Address Book Account 1',
+            chainId: '0x3',
+          },
+        ]);
+      });
+    });
+
+    it('should return the unapproved txs', () => {
+      expect(getUnapprovedTxs(mockState)).toStrictEqual({
+        4768706228115573: {
+          id: 4768706228115573,
+          time: 1487363153561,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          gasMultiplier: 1,
+          metamaskNetworkId: '3',
+          txParams: {
+            from: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+            to: '0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761',
+            value: '0xde0b6b3a7640000',
+            metamaskId: 4768706228115573,
+            metamaskNetworkId: '3',
+            gas: '0x5209',
+          },
+          txFee: '17e0186e60800',
+          txValue: 'de0b6b3a7640000',
+          maxCost: 'de234b52e4a0800',
+          gasPrice: '4a817c800',
+        },
+      });
+    });
   });
 });
