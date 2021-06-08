@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
+import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import {
   getMetaMaskAccounts,
-  getNativeCurrency,
   getNativeCurrencyImage,
   getSendTokenAddress,
   getAssetImages,
