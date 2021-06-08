@@ -8,6 +8,7 @@ import {
   conversionUtil,
 } from '../../helpers/utils/conversion-util';
 
+import { GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   calcGasTotal,
   estimateGasForSend,
@@ -23,8 +24,6 @@ import {
 } from './send.utils';
 
 import {
-  BASE_TOKEN_GAS_COST,
-  SIMPLE_GAS_COST,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
 } from './send.constants';
@@ -381,38 +380,38 @@ describe('send utils', () => {
       expect(result).toStrictEqual('0xabc16');
     });
 
-    it(`should return ${SIMPLE_GAS_COST} if ethQuery.getCode does not return '0x'`, async () => {
+    it(`should return ${GAS_LIMITS.SIMPLE} if ethQuery.getCode does not return '0x'`, async () => {
       expect(baseMockParams.estimateGasMethod.callCount).toStrictEqual(0);
       const result = await estimateGasForSend({
         ...baseMockParams,
         to: '0x123',
       });
-      expect(result).toStrictEqual(SIMPLE_GAS_COST);
+      expect(result).toStrictEqual(GAS_LIMITS.SIMPLE);
     });
 
-    it(`should return ${SIMPLE_GAS_COST} if not passed a sendToken or truthy to address`, async () => {
+    it(`should return ${GAS_LIMITS.SIMPLE} if not passed a sendToken or truthy to address`, async () => {
       expect(baseMockParams.estimateGasMethod.callCount).toStrictEqual(0);
       const result = await estimateGasForSend({ ...baseMockParams, to: null });
-      expect(result).toStrictEqual(SIMPLE_GAS_COST);
+      expect(result).toStrictEqual(GAS_LIMITS.SIMPLE);
     });
 
-    it(`should not return ${SIMPLE_GAS_COST} if passed a sendToken`, async () => {
+    it(`should not return ${GAS_LIMITS.SIMPLE} if passed a sendToken`, async () => {
       expect(baseMockParams.estimateGasMethod.callCount).toStrictEqual(0);
       const result = await estimateGasForSend({
         ...baseMockParams,
         to: '0x123',
         sendToken: { address: '0x0' },
       });
-      expect(result).not.toStrictEqual(SIMPLE_GAS_COST);
+      expect(result).not.toStrictEqual(GAS_LIMITS.SIMPLE);
     });
 
-    it(`should return ${BASE_TOKEN_GAS_COST} if passed a sendToken but no to address`, async () => {
+    it(`should return ${GAS_LIMITS.BASE_TOKEN_ESTIMATE} if passed a sendToken but no to address`, async () => {
       const result = await estimateGasForSend({
         ...baseMockParams,
         to: null,
         sendToken: { address: '0x0' },
       });
-      expect(result).toStrictEqual(BASE_TOKEN_GAS_COST);
+      expect(result).toStrictEqual(GAS_LIMITS.BASE_TOKEN_ESTIMATE);
     });
 
     it(`should return the adjusted blockGasLimit if it fails with a 'Transaction execution error.'`, async () => {

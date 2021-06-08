@@ -56,6 +56,7 @@ import {
 import { MIN_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants';
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils';
 import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction';
+import { GAS_LIMITS } from '../../../../../shared/constants/gas';
 import GasModalPageContainer from './gas-modal-page-container.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -73,7 +74,7 @@ const mapStateToProps = (state, ownProps) => {
   const txParams = selectedTransaction?.txParams
     ? selectedTransaction.txParams
     : {
-        gas: send.gasLimit || '0x5208',
+        gas: send.gasLimit || GAS_LIMITS.SIMPLE,
         gasPrice: send.gasPrice || getAveragePriceEstimateInHexWEI(state, true),
         value: sendToken ? '0x0' : send.amount,
       };
@@ -82,7 +83,7 @@ const mapStateToProps = (state, ownProps) => {
   const value = ownProps.transaction?.txParams?.value || txParams.value;
   const customModalGasPriceInHex = getCustomGasPrice(state) || currentGasPrice;
   const customModalGasLimitInHex =
-    getCustomGasLimit(state) || currentGasLimit || '0x5208';
+    getCustomGasLimit(state) || currentGasLimit || GAS_LIMITS.SIMPLE;
   const customGasTotal = calcGasTotal(
     customModalGasLimitInHex,
     customModalGasPriceInHex,
