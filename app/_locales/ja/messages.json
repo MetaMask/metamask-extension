@@ -1034,6 +1034,9 @@
   "mainnet": {
     "message": "イーサリアム メインネット"
   },
+  "makeAnotherSwap": {
+    "message": "新しいスワップの作成"
+  },
   "max": {
     "message": "最大"
   },
@@ -2143,6 +2146,9 @@
   },
   "tokenSymbol": {
     "message": "トークン シンボル"
+  },
+  "tooltipApproveButton": {
+    "message": "理解しました"
   },
   "total": {
     "message": "合計"
