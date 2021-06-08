@@ -1034,9 +1034,6 @@
   "mainnet": {
     "message": "Сеть Ethereum Mainnet"
   },
-  "makeAnotherSwap": {
-    "message": "Создать новый своп"
-  },
   "max": {
     "message": "Макс."
   },
@@ -1896,15 +1893,6 @@
     "message": "Разница в цене составляет ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
-  "swapPriceImpactTooltip": {
-    "message": "Колебание цены — это разница между текущей рыночной ценой и суммой, полученной во время выполнения транзакции. Колебание цены зависит от размера вашей сделки относительно размера пула ликвидности."
-  },
-  "swapPriceUnavailableDescription": {
-    "message": "Колебание цены определить не удалось из-за отсутствия данных о рыночных ценах. Перед свопом подтвердите, что вас устраивает количество токенов, которое вы получите."
-  },
-  "swapPriceUnavailableTitle": {
-    "message": "Прежде чем продолжить, проверьте курс"
-  },
   "swapProcessing": {
     "message": "Обработка"
   },
@@ -2158,9 +2146,6 @@
   },
   "tokenSymbol": {
     "message": "Символ токена"
-  },
-  "tooltipApproveButton": {
-    "message": "Я понимаю"
   },
   "total": {
     "message": "Итого"

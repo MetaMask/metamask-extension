@@ -1034,9 +1034,6 @@
   "mainnet": {
     "message": "Ethereum Mainnet"
   },
-  "makeAnotherSwap": {
-    "message": "एक नया स्वैप बनाएँ"
-  },
   "max": {
     "message": "अधिकतम"
   },
@@ -1896,15 +1893,6 @@
     "message": "~$1% का मूल्य अंतर",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
-  "swapPriceImpactTooltip": {
-    "message": "मूल्य प्रभाव, वर्तमान बाजार मूल्य और लेन-देन निष्पादन के दौरान प्राप्त राशि के बीच का अंतर है। मूल्य प्रभाव चलनिधि पूल के आकार के सापेक्ष आपके व्यापार के आकार का एक कार्य है।"
-  },
-  "swapPriceUnavailableDescription": {
-    "message": "बाजार मूल्य डेटा की कमी के कारण मूल्य प्रभाव को निर्धारित नहीं किया जा सका। कृपया पुष्टि करें कि आप स्वैप करने से पहले प्राप्त होने वाले टोकन की राशि को लेकर सहज हैं।"
-  },
-  "swapPriceUnavailableTitle": {
-    "message": "आगे बढ़ने से पहले अपने दर की जाँच करें"
-  },
   "swapProcessing": {
     "message": "प्रसंस्करण"
   },
@@ -2158,9 +2146,6 @@
   },
   "tokenSymbol": {
     "message": "टोकन का प्रतीक"
-  },
-  "tooltipApproveButton": {
-    "message": "मैं समझता हूं"
   },
   "total": {
     "message": "कुलयोग"

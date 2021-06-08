@@ -1034,9 +1034,6 @@
   "mainnet": {
     "message": "Red principal de Ethereum"
   },
-  "makeAnotherSwap": {
-    "message": "Crear un nuevo canje"
-  },
   "max": {
     "message": "Máx."
   },
@@ -2155,9 +2152,6 @@
   },
   "tokenSymbol": {
     "message": "Símbolo del token"
-  },
-  "tooltipApproveButton": {
-    "message": "Comprendo"
   },
   "total": {
     "message": "Total"
