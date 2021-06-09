@@ -5,6 +5,7 @@ import {
   ETH_SYMBOL,
   CHAIN_ID_TO_TYPE_MAP,
   NETWORK_TO_NAME_MAP,
+  CHAIN_ID_TO_RPC_URL_MAP,
 } from '../../../../../shared/constants/network';
 import {
   isPrefixedFormattedHexString,
@@ -21,8 +22,9 @@ function findExistingNetwork(chainId, findCustomRpcBy) {
   if (chainId in CHAIN_ID_TO_TYPE_MAP) {
     return {
       chainId,
-      nickname: NETWORK_TO_NAME_MAP[chainId],
       ticker: ETH_SYMBOL,
+      nickname: NETWORK_TO_NAME_MAP[chainId],
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[chainId],
     };
   }
 
@@ -92,6 +94,7 @@ async function switchEthereumChainHandler(
           origin,
           type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
           requestData: {
+            rpcUrl: existingNetwork.rpcUrl,
             chainId: existingNetwork.chainId,
             nickname: existingNetwork.nickname,
             ticker: existingNetwork.ticker,
