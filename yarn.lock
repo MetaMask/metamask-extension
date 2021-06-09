@@ -3819,6 +3819,23 @@
   dependencies:
     cbor "^5.1.0"
 
+"@truffle/codec@^0.10.10-decoder-no-web3.0":
+  version "0.10.10-decoder-no-web3.0"
+  resolved "https://registry.yarnpkg.com/@truffle/codec/-/codec-0.10.10-decoder-no-web3.0.tgz#12be9d9fbc2113da44933df5a439998eb5dfb105"
+  integrity sha512-ryAn+7tOQn9ih0BYdC8mq+kTGx2xPzM5mfSGyjqf+WwwIBqgag5fI+1CBieypIYqAsMwDsnpcJlfNT1pYEeKLw==
+  dependencies:
+    big.js "^5.2.2"
+    bn.js "^5.1.3"
+    cbor "^5.1.0"
+    debug "^4.3.1"
+    lodash.clonedeep "^4.5.0"
+    lodash.escaperegexp "^4.1.2"
+    lodash.partition "^4.6.0"
+    lodash.sum "^4.0.2"
+    semver "^7.3.4"
+    utf8 "^3.0.0"
+    web3-utils "1.3.6"
+
 "@truffle/codec@^0.10.9":
   version "0.10.9"
   resolved "https://registry.yarnpkg.com/@truffle/codec/-/codec-0.10.9.tgz#9c6f6a57b12894ad44fc37f41ddce18ebfc7b7e5"
@@ -3858,15 +3875,15 @@
     debug "^4.3.1"
     glob "^7.1.6"
 
-"@truffle/decoder@^4.5.15":
-  version "4.5.15"
-  resolved "https://registry.yarnpkg.com/@truffle/decoder/-/decoder-4.5.15.tgz#c122fae8699d7a5d87fcfef288950c00bce87200"
-  integrity sha512-RS3SeF+ArDOsFMnSyOw3sQUupJkAOIxcA1hxwJZoNuP6rcahGJPwpCPLB8Jha+K25diqjwicatGX3EUWmIXq7g==
+"@truffle/decoder@^4.5.16-decoder-no-web3.0":
+  version "4.5.16-decoder-no-web3.0"
+  resolved "https://registry.yarnpkg.com/@truffle/decoder/-/decoder-4.5.16-decoder-no-web3.0.tgz#cd07b63ed22d8ad1df5cf0785d2567f96c1785fe"
+  integrity sha512-LZglPAIZH6zn2WEz9G4NGPl81q0kT2U1qPw+qsWJZguzWjcFylMmNiuwi0msVYYZFr7cbbJ//FPVKGjx3Jv1Vw==
   dependencies:
     "@truffle/abi-utils" "^0.2.1"
-    "@truffle/codec" "^0.10.9"
+    "@truffle/codec" "^0.10.10-decoder-no-web3.0"
     "@truffle/compile-common" "^0.7.7"
-    "@truffle/source-map-utils" "^1.3.43"
+    "@truffle/source-map-utils" "^1.3.44-decoder-no-web3.0"
     bn.js "^5.1.3"
     debug "^4.3.1"
     web3 "1.3.6"
@@ -3881,13 +3898,13 @@
   resolved "https://registry.yarnpkg.com/@truffle/expect/-/expect-0.0.17.tgz#27a07fe65747a9d5730b35f7dafe64839ce799f3"
   integrity sha512-XxtRZHt3Ke3x9TtUUz9PB8C9EDC5nVn6K/QWLlpsyENLWHWHhReZ0YmABzX+r0sQGsDfpgo06dkh4Mk0VOjSdg==
 
-"@truffle/source-map-utils@^1.3.43":
-  version "1.3.43"
-  resolved "https://registry.yarnpkg.com/@truffle/source-map-utils/-/source-map-utils-1.3.43.tgz#0371f1bd690c53dc0c6dc5d5013bec95dd436a04"
-  integrity sha512-QDXNnvJO2R/5eTpTgiZFggkqKcDEA0LoxdVGJKCoMY5hCwSoG+ybpmWtsMBW+1hCYewxjvb5yGgYkhnTv/fs0A==
+"@truffle/source-map-utils@^1.3.44-decoder-no-web3.0":
+  version "1.3.44-decoder-no-web3.0"
+  resolved "https://registry.yarnpkg.com/@truffle/source-map-utils/-/source-map-utils-1.3.44-decoder-no-web3.0.tgz#40c6745258540be568e9fe045a0d402fdafa7d37"
+  integrity sha512-epfoeU1wPa6O//pN39JsrI4tXWqGNfEueKPSUAaiZY1EiNuE52eb8l3lECAswd6+uzTLShCGzxkvyn6Q2gv73w==
   dependencies:
     "@truffle/code-utils" "^1.2.27"
-    "@truffle/codec" "^0.10.9"
+    "@truffle/codec" "^0.10.10-decoder-no-web3.0"
     debug "^4.3.1"
     json-pointer "^0.6.0"
     node-interval-tree "^1.3.3"
