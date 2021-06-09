@@ -92,6 +92,7 @@ async function switchEthereumChainHandler(
           origin,
           type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
           requestData: {
+            rpcUrl: existingNetwork.rpcUrl,
             chainId: existingNetwork.chainId,
             nickname: existingNetwork.nickname,
             ticker: existingNetwork.ticker,
