@@ -1895,9 +1895,9 @@ export function exportAccount(password, address) {
 
 export function exportAccounts(password, addresses) {
   return function (dispatch) {
-    log.debug(`background.submitPassword`);
+    log.debug(`background.verifyPassword`);
     return new Promise((resolve, reject) => {
-      background.submitPassword(password, function (err) {
+      background.verifyPassword(password, function (err) {
         if (err) {
           log.error('Error in submitting password.');
           reject(err);
