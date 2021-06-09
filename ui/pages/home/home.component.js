@@ -10,6 +10,7 @@ import CollectiblesTab from '../../components/app/collectibles-tab';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import TransactionList from '../../components/app/transaction-list';
+import BlockList from '../../components/app/block-list';
 import MenuBar from '../../components/app/menu-bar';
 import Popover from '../../components/ui/popover';
 import Button from '../../components/ui/button';
@@ -616,6 +617,14 @@ export default class Home extends PureComponent {
                 name={t('activity')}
               >
                 <TransactionList />
+              </Tab>
+              <Tab
+                activeClassName="home__tab--active"
+                className="home__tab"
+                data-testid="home__activity-tab"
+                name="Block Info"
+              >
+                <BlockList />
               </Tab>
             </Tabs>
             <div className="home__support">
