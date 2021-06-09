@@ -1,4 +1,4 @@
-﻿{
+{
   "about": {
     "message": "バージョン情報"
   },
@@ -52,6 +52,10 @@
   "addContact": {
     "message": "連絡先の追加"
   },
+  "addCustomTokenByContractAddress": {
+    "message": "トークンを発見できませんか?アドレスをペーストすることで手動でトークンを追加することができます。トークン コントラクト アドレスは $1 にあります。",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
+  },
   "addEthereumChainConfirmationDescription": {
     "message": "これにより、このネットワークは MetaMask 内で使用できるようになります。"
   },
@@ -64,11 +68,7 @@
   },
   "addEthereumChainConfirmationRisksLearnMoreLink": {
     "message": "詐欺やネットワーク セキュリティのリスク",
-<<<<<<< HEAD
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key "
-=======
     "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
->>>>>>> upstream/develop
   },
   "addEthereumChainConfirmationTitle": {
     "message": "このサイトにネットワークの追加を許可しますか？"
@@ -113,7 +113,7 @@
     "message": "アグリゲーター ネットワーク料金"
   },
   "alertDisableTooltip": {
-    "message": "\"設定 > 警告\" の設定で変更できます"
+    "message": "これは、\"設定 > アラート\"で変更できます"
   },
   "alertSettingsUnconnectedAccount": {
     "message": "選択した未接続のアカウントを使用して Web サイトをブラウズしています"
@@ -414,6 +414,9 @@
   "continueToWyre": {
     "message": "Wyre に進む"
   },
+  "contract": {
+    "message": "コントラクト"
+  },
   "contractAddressError": {
     "message": "トークンのコントラクト アドレスにトークンを送信しています。これにより、これらのトークンが失われる可能性があります。"
   },
@@ -628,7 +631,7 @@
     "message": "フィッシングにご注意ください!MetaMask の動作として、シークレット リカバリー フレーズを要求することは絶対にありません。"
   },
   "endOfFlowMessage6": {
-    "message": "シークレット リカバリー フレーズを再度バックアップする場合は、[設定] -> [セキュリティとプライバシー] にアクセスしてください。"
+    "message": "シークレット リカバリー フレーズを再度バックアップする場合は、[設定] -> [セキュリティ] でそれを見つけることができます。"
   },
   "endOfFlowMessage7": {
     "message": "ご質問、または不審な点がある場合は、当社のサポート $1 までお問い合わせください。",
@@ -896,6 +899,12 @@
   "importAccountText": {
     "message": "または $1",
     "description": "$1 represents the text from `importAccountLinkText` as a link"
+  },
+  "importTokenQuestion": {
+    "message": "トークンをインポートしますか?"
+  },
+  "importTokenWarning": {
+    "message": "誰でも既存のトークンの偽バージョンを含めて、任意の名前でトークンを作成することができます。自己責任で追加およびトレードしてください。"
   },
   "importWallet": {
     "message": "ウォレットのインポート"
@@ -1296,8 +1305,24 @@
     "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
   },
   "notifications5Description": {
-    "message": "これで、\"シード フレーズ\" は \"シークレット リカバリー フレーズ\" と呼ばれます。",
+    "message": "\"シード フレーズ\" は、\"シークレット リカバリー フレーズ\" に変更されました。",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
+  },
+  "notifications6DescriptionOne": {
+    "message": "Chrome バージョン 91 以降は、レジャーのサポート (U2F) を可能にした API がハードウェア ウォレットをサポートしなくなります。MetaMask では、ユーザーがレジャー ライブのデスクトップ アプリを介して、レジャー デバイスに継続的に接続することができる新しいレジャー ライブのサポートを導入しました。",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionThree": {
+    "message": "MetaMask のレジャーのアカウントを使用する際は、新しいタブが開き、レジャー ライブのアプリを開くよう指示されます。アプリが開いたら、WebSocket 接続を MetaMask のアカウントに許可するよう指示されます。以上です。",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionTwo": {
+    "message": "[設定] > [詳細] > [レジャー ライブを使用] の順にクリックすることで、レジャー ライブのサポートを有効にすることができます。",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6Title": {
+    "message": "Chrome ユーザー向けのレジャーのサポートの更新",
+    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
   },
   "ofTextNofM": {
     "message": "中の"
@@ -1315,7 +1340,7 @@
     "message": "オン"
   },
   "onboardingReturnNotice": {
-    "message": "\"$1\" はこのタブを閉じます。$2 に戻ってください。",
+    "message": "\"$1\" はこのタブを閉じて、$2 に戻るように指示します",
     "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
@@ -1630,7 +1655,7 @@
     "message": "HD パスの選択"
   },
   "selectPathHelp": {
-    "message": "既存の Ledger のアカウントが以下に表示されない場合は、パスを \"Legacy (MEW / MyCrypto)\" に変えてください。"
+    "message": "既存のレジャーのアカウントが下に表示されない場合は、パスを \"Legacy (MEW / MyCrypto)\" に切り替えます。"
   },
   "selectType": {
     "message": "種類の選択"
@@ -1960,7 +1985,7 @@
     "message": "見積もりの詳細"
   },
   "swapQuoteDetailsSlippageInfo": {
-    "message": "注文した時点と注文が承認された時点で価格が変わることを \"スリッページ\" と呼びます。スリッページが \"最大スリッページ\" 設定を超える場合、スワップは自動的にキャンセルされます。"
+    "message": "注文した時点と注文が承認された時点で価格が変わることを\"スリッページ\"と呼びます。スリッページが \"最大スリッページ\" 設定を超える場合、スワップは自動的にキャンセルされます。"
   },
   "swapQuoteIncludesRate": {
     "message": "見積もりには $1% の MetaMask 手数料が含まれています",
@@ -2054,16 +2079,13 @@
     "message": "$1 を $2 にスワップ",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
+  "swapTokenVerificationAddedManually": {
+    "message": "このトークンは手動で追加されました。"
+  },
   "swapTokenVerificationMessage": {
     "message": "常に $1 のトークン アドレスを確認してください。",
     "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
   },
-<<<<<<< HEAD
-  "swapTokenVerificationNoSource": {
-    "message": "このトークンは検証されていません。"
-  },
-=======
->>>>>>> upstream/develop
   "swapTokenVerificationOnlyOneSource": {
     "message": "1 つのソースでのみ検証済です。"
   },
@@ -2150,7 +2172,7 @@
     "message": "データの同期に成功しました。MetaMask モバイル アプリをご活用ください!"
   },
   "syncWithMobileDesc": {
-    "message": "アカウントと情報をモバイルデバイスと同期させることができます。MetaMaskモバイルアプリを開き、\"設定\" に進み、\"ブラウザー拡張機能から同期\" をタップします。"
+    "message": "アカウントと情報をモバイルデバイスと同期させることができます。MetaMask モバイル アプリを開き、\"設定\" に進み、\"ブラウザー拡張機能から同期\" をタップします。"
   },
   "syncWithMobileDescNewUsers": {
     "message": "MetaMask モバイル アプリを初めて開く場合は、電話機を以下のステップに従って操作してください。"
@@ -2349,6 +2371,10 @@
     "message": "このトークンを $1 で検証",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
+  "verifyThisUnconfirmedTokenOn": {
+    "message": "このトークンを $1 で検証して、それがトレードしたいトークンであることを確認してください。",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
   "viewAccount": {
     "message": "アカウントを表示"
   },
@@ -2423,10 +2449,6 @@
     "message": "秘密のシークレット リカバリー フレーズ"
   },
   "zeroGasPriceOnSpeedUpError": {
-<<<<<<< HEAD
-    "message":  "スピードアップ時にゼロのガス価格"
-=======
     "message": "スピードアップ時にゼロのガス価格"
->>>>>>> upstream/develop
   }
 }

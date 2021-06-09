@@ -1,4 +1,4 @@
-﻿{
+{
   "about": {
     "message": "इसके बारे में"
   },
@@ -14,7 +14,7 @@
   },
   "accessAndSpendNotice": {
     "message": "$1 इस अधिकतम राशि तक पहुँच सकते हैं और खर्च कर सकते हैं",
-    "description": "$1 is the url of the site requesting ability to spend "
+    "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessingYourCamera": {
     "message": "आपके कैमरे तक पहुँच रहा है..."
@@ -51,6 +51,10 @@
   },
   "addContact": {
     "message": "संपर्क जोड़ें"
+  },
+  "addCustomTokenByContractAddress": {
+    "message": "टोकन नहीं मिल रहा है? आप अपने पते को चिपकाकर मैन्युअल रूप से किसी भी टोकन को जोड़ सकते हैं। टोकन अनुबंध पते $1 पर मिल सकते हैं।",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "addEthereumChainConfirmationDescription": {
     "message": "इससे इस नेटवर्क को MetaMask के अंदर उपयोग करने की अनुमति मिलेगी।"
@@ -410,6 +414,9 @@
   "continueToWyre": {
     "message": "Wyre पर जारी रखें"
   },
+  "contract": {
+    "message": "अनुबंध"
+  },
   "contractAddressError": {
     "message": "आप टोकन के अनुबंध पते पर टोकन भेज रहे हैं। इसके परिणामस्वरूप इन टोकनों का नुकसान हो सकता है।"
   },
@@ -624,7 +631,7 @@
     "message": "फ़िशिंग से सावधान रहें! MetaMask कभी भी अनायास ही आपके गुप्त रिकवरी फ्रेज़ के बारे में नहीं पूछेगा।"
   },
   "endOfFlowMessage6": {
-    "message": "यदि आपको अपने गुप्त रिकवरी फ्रेज़ को फिर से बैकअप लेने की आवश्यकता है, तो आप इसे सेटिंग्स -> सुरक्षा में पा सकते हैं।"
+    "message": "यदि आपको अपने गुप्त रिकवरी फ्रेज़ को फिर से बैकअप लेने की आवश्यकता है, तो आप इसे सेटिंग -> सुरक्षा में पा सकते हैं।"
   },
   "endOfFlowMessage7": {
     "message": "यदि आपको कभी कुछ पूछना हो या कुछ गड़बड़ लगे, तो हमारी सहायता $1 से संपर्क करें।",
@@ -892,6 +899,12 @@
   "importAccountText": {
     "message": "या $1",
     "description": "$1 represents the text from `importAccountLinkText` as a link"
+  },
+  "importTokenQuestion": {
+    "message": "टोकन का आयात करें?"
+  },
+  "importTokenWarning": {
+    "message": "कोई भी किसी भी नाम के साथ एक टोकन बना सकता है, जिसमें मौजूदा टोकन के नकली संस्करण शामिल हैं। अपने जोखिम पर जोड़ें और व्यापार करें!"
   },
   "importWallet": {
     "message": "वॉलेट आयात करें"
@@ -1295,6 +1308,22 @@
     "message": "आपके \"सीड फ्रेज़\" को अब आपका \"गुप्त रिकवरी फ्रेज़\" कहा जाता है।",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
+  "notifications6DescriptionOne": {
+    "message": "Chrome के संस्करण 91 से, वह API जो हमारे Ledger सपोर्ट (U2F) को सक्षम करती है वह अब हार्डवेयर वॉलेट का समर्थन नहीं करती। MetaMask ने एक नया Ledger Live सपोर्ट लागू किया है, जिसकी मदद से आप Ledger Live डेस्कटॉप ऐप के माध्यम से अपने Ledger डिवाइस से कनेक्ट करना जारी रख सकते हैं।",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionThree": {
+    "message": "MetaMask में अपने Ledger खाते पर काम करते समय, एक नया टैब खुल जाएगा और आपको Ledger Live ऐप खोलने के लिए कहा जाएगा।  ऐप खुलने के बाद, आपको अपने MetaMask खाते के लिए एक WebSocket कनेक्शन को अनुमति देने के लिए कहा जाएगा।  बस इतना ही!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionTwo": {
+    "message": "आप सेटिंग > उन्नत > Ledger Live का उपयोग करें पर क्लिक करके Ledger Live सहायता को सक्षम कर सकते हैं।",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6Title": {
+    "message": "Chrome उपयोगकर्ताओं के लिए Ledger सहायता अद्यतन",
+    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
+  },
   "ofTextNofM": {
     "message": "/"
   },
@@ -1626,7 +1655,7 @@
     "message": "HD पथ का चयन करें"
   },
   "selectPathHelp": {
-    "message": "यदि आपको नीचे आपके मौजूदा लेजर खाते दिखाई नहीं देते हैं, तो पथ को \"लीगेसी (MEW / MyCrypto)\" पर स्विच करने का प्रयास करें।"
+    "message": "यदि आपको अपने मौजूदा लेजर खाते नीचे नहीं दिखाई देते हैं, तो पथ को \"Legacy (MEW / MyCrypto)\" पर स्विच करने का प्रयास करें"
   },
   "selectType": {
     "message": "प्रकार का चयन करें"
@@ -2050,16 +2079,13 @@
     "message": "$1 से $2 में स्वैप करें",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
+  "swapTokenVerificationAddedManually": {
+    "message": "इस टोकन को मैन्युअल रूप से जोड़ा गया है।"
+  },
   "swapTokenVerificationMessage": {
     "message": "हमेशा $1 पर टोकन पते की पुष्टि करें।",
     "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
   },
-<<<<<<< HEAD
-  "swapTokenVerificationNoSource": {
-    "message": "यह टोकन सत्यापित नहीं किया गया है।"
-  },
-=======
->>>>>>> upstream/develop
   "swapTokenVerificationOnlyOneSource": {
     "message": "केवल 1 स्रोत पर सत्यापित।"
   },
@@ -2146,7 +2172,7 @@
     "message": "आपका डेटा सफलतापूर्वक सिंक कर लिया गया है। MetaMask मोबाइल ऐप का आनंद लें!"
   },
   "syncWithMobileDesc": {
-    "message": "आप अपने खाते और जानकारी को अपने मोबाइल डिवाइस के साथ सिंक कर सकते हैं। MetaMask मोबाइल ऐप खोलें, \"सेटिंग\" पर जाएं और \"ब्राउज़र एक्सटेंशन से सिंक करें\" पर टैप करें"
+    "message": "आप अपने खाते और जानकारी को अपने मोबाइल डिवाइस के साथ सिंक कर सकते हैं। MetaMask मोबाइल ऐप खोलें, \"सेटिंग\" पर जाएँ और \"ब्राउज़र एक्सटेंशन से सिंक करें\" पर टैप करें"
   },
   "syncWithMobileDescNewUsers": {
     "message": "यदि आप पहली बार MetaMask मोबाइल ऐप खोलते हैं, तो बस अपने फ़ोन में दिए गए चरणों का पालन करें।"
@@ -2345,6 +2371,10 @@
     "message": "इस टोकन को $1 पर सत्यापित करें",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
+  "verifyThisUnconfirmedTokenOn": {
+    "message": "इस टोकन को $1 पर सत्यापित करें और सुनिश्चित करें कि यह वही टोकन है जिससे आप व्यापार करना चाहते हैं।",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
   "viewAccount": {
     "message": "खाता देखें"
   },
@@ -2419,6 +2449,6 @@
     "message": "आपका निजी गुप्त रिकवरी फ्रेज़"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message":  "ज़ीरो गैस मूल्य में तेज़ी"
+    "message": "ज़ीरो गैस मूल्य में तेज़ी"
   }
 }

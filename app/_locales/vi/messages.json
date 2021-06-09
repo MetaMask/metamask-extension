@@ -1,4 +1,4 @@
-﻿{
+{
   "about": {
     "message": "Giới thiệu"
   },
@@ -51,6 +51,10 @@
   },
   "addContact": {
     "message": "Thêm người liên hệ"
+  },
+  "addCustomTokenByContractAddress": {
+    "message": "Bạn không tìm thấy token? Bạn có thể dán địa chỉ của bất kỳ token nào để thêm token đó theo cách thủ công. Bạn có thể tìm thấy địa chỉ hợp đồng token trên $1.",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "addEthereumChainConfirmationDescription": {
     "message": "Thao tác này sẽ cho phép sử dụng mạng này trong MetaMask."
@@ -109,7 +113,7 @@
     "message": "Phí mạng cho trình tổng hợp"
   },
   "alertDisableTooltip": {
-    "message": "Bạn có thể thay đổi trong phần \"Cài đặt > Cảnh báo\""
+    "message": "Bạn có thể thay đổi tùy chọn này trong phần \"Cài đặt > Cảnh báo\""
   },
   "alertSettingsUnconnectedAccount": {
     "message": "Đang duyệt trang web khi chọn một tài khoản không được kết nối"
@@ -410,6 +414,9 @@
   "continueToWyre": {
     "message": "Tiếp tục chuyển đến Wyre"
   },
+  "contract": {
+    "message": "Hợp đồng"
+  },
   "contractAddressError": {
     "message": "Bạn đang gửi token đến địa chỉ hợp đồng của token. Điều này có thể khiến bạn bị mất những token này."
   },
@@ -624,7 +631,7 @@
     "message": "Hãy cẩn thận với hoạt động lừa đảo! MetaMask sẽ không bao giờ tự ý hỏi Cụm mật khẩu khôi phục bí mật của bạn."
   },
   "endOfFlowMessage6": {
-    "message": "Nếu bạn cần sao lưu lại Cụm mật khẩu khôi phục bí mật, bạn có thể tìm thấy chức năng này trong Cài đặt -> Bảo mật."
+    "message": "Nếu bạn cần sao lưu lại Cụm mật khẩu khôi phục bí mật, bạn có thể tìm thấy chức năng này trong phần Cài đặt -> Bảo mật."
   },
   "endOfFlowMessage7": {
     "message": "Nếu bạn có thắc mắc hoặc thấy điều gì đó đáng ngờ, hãy liên hệ với bộ phận hỗ trợ của chúng tôi $1.",
@@ -892,6 +899,12 @@
   "importAccountText": {
     "message": "hoặc $1",
     "description": "$1 represents the text from `importAccountLinkText` as a link"
+  },
+  "importTokenQuestion": {
+    "message": "Bạn muốn nhập token?"
+  },
+  "importTokenWarning": {
+    "message": "Bất kỳ ai cũng tạo được token bằng bất kỳ tên nào, kể cả phiên bản giả của token hiện có. Bạn tự chịu rủi ro khi thêm và giao dịch!"
   },
   "importWallet": {
     "message": "Nhập ví"
@@ -1295,6 +1308,22 @@
     "message": "Từ giờ, \"Cụm mật khẩu gốc\" sẽ được gọi là \"Cụm mật khẩu khôi phục bí mật.\"",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
+  "notifications6DescriptionOne": {
+    "message": "Kể từ phiên bản Chrome 91, API từng cho phép hỗ trợ Ledger (U2F) của chúng tôi không còn hỗ trợ ví cứng nữa. MetaMask đã triển khai một tính năng hỗ trợ Ledger Live mới cho phép bạn tiếp tục kết nối với thiết bị Ledger của mình thông qua ứng dụng Ledger Live trên máy tính.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionThree": {
+    "message": "Khi tương tác với tài khoản Ledger của bạn trong MetaMask, một tab mới sẽ mở ra và bạn sẽ được yêu cầu mở ứng dụng Ledger Live.  Khi ứng dụng này mở ra, bạn sẽ được yêu cầu cho phép kết nối WebSocket với tài khoản MetaMask của mình.  Đơn giản vậy thôi!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionTwo": {
+    "message": "Bạn có thể kích hoạt tính năng hỗ trợ Ledger Live bằng cách nhấp vào phần Cài đặt > Nâng cao > Sử dụng Ledger Live.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6Title": {
+    "message": "Thông tin cập nhật về việc hỗ trợ Ledger cho người dùng Chrome",
+    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
+  },
   "ofTextNofM": {
     "message": "trên"
   },
@@ -1311,7 +1340,7 @@
     "message": "Bật"
   },
   "onboardingReturnNotice": {
-    "message": "\"$1\" sẽ đóng tab này và quay về $2",
+    "message": "\"$1\" sẽ đóng tab này và chuyển về $2",
     "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
@@ -1888,7 +1917,7 @@
     "message": "Đang hoàn tất..."
   },
   "swapFromTo": {
-    "message": "Hoán đổi $1 sang $2",
+    "message": "Giao dịch hoán đổi $1 sang $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
   "swapGasFeesSplit": {
@@ -2050,16 +2079,13 @@
     "message": "Hoán đổi $1 sang $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
+  "swapTokenVerificationAddedManually": {
+    "message": "Token này đã được thêm theo cách thủ công."
+  },
   "swapTokenVerificationMessage": {
     "message": "Luôn xác nhận địa chỉ token trên $1.",
     "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
   },
-<<<<<<< HEAD
-  "swapTokenVerificationNoSource": {
-    "message": "Token này chưa được xác minh."
-  },
-=======
->>>>>>> upstream/develop
   "swapTokenVerificationOnlyOneSource": {
     "message": "Chỉ được xác minh trên 1 nguồn."
   },
@@ -2345,6 +2371,10 @@
     "message": "Xác minh token này trên $1",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
+  "verifyThisUnconfirmedTokenOn": {
+    "message": "Hãy xác minh token này trên $1 và đảm bảo đây là token bạn muốn giao dịch.",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
   "viewAccount": {
     "message": "Xem tài khoản"
   },
@@ -2419,6 +2449,6 @@
     "message": "Cụm mật khẩu bí mật, riêng tư của bạn"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message":  "Giá gas bằng 0 khi tăng tốc"
+    "message": "Giá gas bằng 0 khi tăng tốc"
   }
 }

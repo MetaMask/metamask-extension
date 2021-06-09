@@ -1,4 +1,4 @@
-﻿{
+{
   "about": {
     "message": "Общие сведения"
   },
@@ -14,7 +14,7 @@
   },
   "accessAndSpendNotice": {
     "message": "$1 может получить доступ и потратить до этой максимальной суммы",
-    "description": "$1 is the url of the site requesting ability to spend "
+    "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessingYourCamera": {
     "message": "Доступ к камере..."
@@ -51,6 +51,10 @@
   },
   "addContact": {
     "message": "Добавить контакт"
+  },
+  "addCustomTokenByContractAddress": {
+    "message": "Невозможно найти токен? Вы можете вручную добавить любой токен, вставив его адрес. Контактные адреса токена можно найти на $1.",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "addEthereumChainConfirmationDescription": {
     "message": "Это позволит использовать ее в MetaMask."
@@ -109,7 +113,7 @@
     "message": "Комиссия сети агрегатора"
   },
   "alertDisableTooltip": {
-    "message": "Это можно изменить в разделе «Настройки» > «Предупреждения»"
+    "message": "Это можно изменить в \"Настройки > Оповещения\""
   },
   "alertSettingsUnconnectedAccount": {
     "message": "Просмотр веб-сайта с выбранным неподключенным счетом"
@@ -280,7 +284,7 @@
     "message": "Отменено"
   },
   "chainId": {
-    "message": "Идентификатор цепи"
+    "message": "Идентификатор цепочки"
   },
   "chainIdDefinition": {
     "message": "Идентификатор цепочки, используемый для подписания транзакций для этой сети."
@@ -409,6 +413,9 @@
   },
   "continueToWyre": {
     "message": "Продолжить к Wyre"
+  },
+  "contract": {
+    "message": "Контракт"
   },
   "contractAddressError": {
     "message": "Вы отправляете токены на адрес контракта токена. Это может привести к потере токенов."
@@ -893,6 +900,12 @@
     "message": "или $1",
     "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
+  "importTokenQuestion": {
+    "message": "Импортировать токен?"
+  },
+  "importTokenWarning": {
+    "message": "Кто угодно может создать токен с любым именем, включая поддельные версии существующих токенов. Добавляйте и торгуйте на свой страх и риск!"
+  },
   "importWallet": {
     "message": "Импортировать кошелек"
   },
@@ -1292,8 +1305,24 @@
     "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
   },
   "notifications5Description": {
-    "message": "Исходная фраза теперь называется секретной фразой восстановления.",
+    "message": "\"Исходная фраза\" теперь называется \"секретной фразой восстановления.\"",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
+  },
+  "notifications6DescriptionOne": {
+    "message": "Начиная с Chrome версии 91, API, обеспечивающий поддержку нашего Ledger (U2F), аппаратные кошельки больше не поддерживаются. MetaMask реализовала новую поддержку Ledger Live, которая позволяет продолжать подключаться к устройству Ledger через настольное приложение Ledger Live.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionThree": {
+    "message": "При взаимодействии с вашим счетом Ledger в MetaMask откроется новая вкладка, и вам будет предложено открыть приложение Ledger Live.  Когда приложение откроется, вам будет предложено разрешить WebSocket-соединение с вашим счетом MetaMask.  Вот и все!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionTwo": {
+    "message": "Вы можете включить поддержку Ledger Live, нажав «Настройки» > «Дополнительно» > «Использовать Ledger Live».",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6Title": {
+    "message": "Обновление поддержки Ledger для пользователей Chrome",
+    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
   },
   "ofTextNofM": {
     "message": "из"
@@ -1311,7 +1340,7 @@
     "message": "Вкл."
   },
   "onboardingReturnNotice": {
-    "message": "Кнопка «$1» закрывает эту вкладку и возвращает на сайт $2",
+    "message": "\"$1\" закроет эту вкладку и вернется к $2",
     "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
@@ -1626,7 +1655,7 @@
     "message": "Выберите путь HD"
   },
   "selectPathHelp": {
-    "message": "Если вы не видите имеющиеся счета Ledger ниже, попробуйте изменить путь на «Legacy (MEW / MyCrypto)»"
+    "message": "Если вы не видите свои существующие книги счетов ниже, попробуйте переключить проход на \"Legacy (MEW / MyCrypto)\""
   },
   "selectType": {
     "message": "Выбрать тип"
@@ -1837,7 +1866,7 @@
     "message": "Подтвердить с помощью аппаратного кошелька"
   },
   "swapContractDataDisabledErrorDescription": {
-    "message": "В приложении Ethereum на устройстве Ledger перейдите в раздел «Настройки» и разрешите использование данных о контракте. Затем попробуйте выполнить своп повторно."
+    "message": "В приложении Ethereum на устройстве Ledger перейдите в раздел \"Настройки\" и разрешите использование данных о контракте. Затем попробуйте выполнить своп повторно."
   },
   "swapContractDataDisabledErrorTitle": {
     "message": "На устройстве Ledger не включены данные о контракте"
@@ -1956,7 +1985,7 @@
     "message": "Детали котировки"
   },
   "swapQuoteDetailsSlippageInfo": {
-    "message": "Изменение цены в период между размещением заказа и подтверждением называется проскальзыванием. Своп будет автоматически отменен, если фактическое проскальзывание превысит установленное допустимое значение."
+    "message": "Изменение цены в период между размещением заказа и подтверждением называется \"проскальзыванием\". Своп будет автоматически отменен, если фактическое проскальзывание превысит установленное \"допустимое значение\"."
   },
   "swapQuoteIncludesRate": {
     "message": "Котировка включает $1% MetaMask fee",
@@ -2050,16 +2079,13 @@
     "message": "Своп $1 на $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
+  "swapTokenVerificationAddedManually": {
+    "message": "Этот токен был добавлен вручную."
+  },
   "swapTokenVerificationMessage": {
     "message": "Всегда проверяйте адрес токена на $1.",
     "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
   },
-<<<<<<< HEAD
-  "swapTokenVerificationNoSource": {
-    "message": "Этот токен не проверен."
-  },
-=======
->>>>>>> upstream/develop
   "swapTokenVerificationOnlyOneSource": {
     "message": "Токен проверен только в 1 источнике."
   },
@@ -2146,7 +2172,7 @@
     "message": "Ваши данные были успешно синхронизированы. Наслаждайтесь мобильным приложением MetaMask!"
   },
   "syncWithMobileDesc": {
-    "message": "Вы можете синхронизировать свои счета и информацию со своим мобильным устройством. Откройте мобильное приложение MetaMask, перейдите в раздел «Настройки» и нажмите «Синхронизировать из расширения браузера»"
+    "message": "Вы можете синхронизировать свои счета и информацию со своим мобильным устройством. Откройте мобильное приложение MetaMask, перейдите в \"Настройки\" и нажмите \"Синхронизировать из расширения браузера\""
   },
   "syncWithMobileDescNewUsers": {
     "message": "Если вы открываете приложение MetaMask Mobile в первый раз, просто следуйте инструкциям на телефоне."
@@ -2345,6 +2371,10 @@
     "message": "Проверить этот токен на $1",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
+  "verifyThisUnconfirmedTokenOn": {
+    "message": "Проверьте этот токен на $1 и убедитесь, что это тот токен, которым вы хотите торговать.",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
   "viewAccount": {
     "message": "Посмотреть счет"
   },
@@ -2419,6 +2449,6 @@
     "message": "Ваша личная секретная фраза восстановления"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message":  "Нулевая цена на топливо при ускорении"
+    "message": "Нулевая цена на топливо при ускорении"
   }
 }

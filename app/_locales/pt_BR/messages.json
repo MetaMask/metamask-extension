@@ -1,4 +1,4 @@
-﻿{
+{
   "about": {
     "message": "Sobre"
   },
@@ -52,6 +52,10 @@
   "addContact": {
     "message": "Adicionar contato"
   },
+  "addCustomTokenByContractAddress": {
+    "message": "Não conseguiu encontrar um token? Cole o endereço para adicionar manualmente qualquer token. Os endereços de contato do token podem ser encontrados em $1.",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
+  },
   "addEthereumChainConfirmationDescription": {
     "message": "Isso permitirá esta rede ser usada dentro do MetaMask."
   },
@@ -64,11 +68,7 @@
   },
   "addEthereumChainConfirmationRisksLearnMoreLink": {
     "message": "fraudes e riscos de segurança da rede",
-<<<<<<< HEAD
-    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key "
-=======
     "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
->>>>>>> upstream/develop
   },
   "addEthereumChainConfirmationTitle": {
     "message": "Permitir que este site adicione uma rede?"
@@ -413,6 +413,9 @@
   },
   "continueToWyre": {
     "message": "Continuar para o Wyre"
+  },
+  "contract": {
+    "message": "Contrato"
   },
   "contractAddressError": {
     "message": "Você está enviando tokens ao endereço de contrato do token. Isso pode resultar na perda destes tokens."
@@ -897,6 +900,12 @@
     "message": "ou $1",
     "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
+  "importTokenQuestion": {
+    "message": "Importar token?"
+  },
+  "importTokenWarning": {
+    "message": "Qualquer pessoa pode criar um token com um nome, incluindo versões falsas de tokens existentes. Adicione e negocie, assumindo o risco sozinho!"
+  },
   "importWallet": {
     "message": "Importar carteira"
   },
@@ -1299,8 +1308,24 @@
     "message": "A sua \"Frase Semente\" agora é chamada de sua \"Frase Secreta de Recuperação.\"",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
+  "notifications6DescriptionOne": {
+    "message": "A partir do Chrome versão 91, a API que permitia nosso suporte ao Ledger (U2F) não é mais compatível com carteiras de hardware. O MetaMask implementou um novo suporte ao Ledger Live que permite continuar conectando o seu dispositivo Ledger device por meio do aplicativo de desktop Ledger Live.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionThree": {
+    "message": "Ao interagir com sua conta do Ledger no MetaMask, uma nova aba será aberta e você deverá abrir o aplicativo Ledger Live.  Quando o aplicativo for aberto, você precisará permitir uma conexão do WebSocket com sua conta do MetaMask.  É isso!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionTwo": {
+    "message": "Você pode habilitar o suporte do Ledger Live clicando em Configurações > Avançadas > Usar Ledger Live.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6Title": {
+    "message": "Atualização de suporte do Ledger para usuários do Chrome",
+    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
+  },
   "ofTextNofM": {
-    "message": " de "
+    "message": "de"
   },
   "off": {
     "message": "Desativado"
@@ -1630,7 +1655,7 @@
     "message": "Selecionar caminho do disco rígido"
   },
   "selectPathHelp": {
-    "message": "Se você não vir suas contas existentes do Ledger abaixo, tente alternar os caminhos para \"Legacy (MEW / MyCrypto)\""
+    "message": "Se você não vir as contas existentes do livro-razão abaixo, tente alternar os caminhos para \"Legacy (MEW / MyCrypto)\""
   },
   "selectType": {
     "message": "Selecionar tipo"
@@ -2054,16 +2079,13 @@
     "message": "Swap $1 para $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
+  "swapTokenVerificationAddedManually": {
+    "message": "Este token foi adicionado manualmente."
+  },
   "swapTokenVerificationMessage": {
     "message": "Sempre confirme o endereço do token em $1.",
     "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
   },
-<<<<<<< HEAD
-  "swapTokenVerificationNoSource": {
-    "message": "Este token não foi verificado."
-  },
-=======
->>>>>>> upstream/develop
   "swapTokenVerificationOnlyOneSource": {
     "message": "Verificado somente em 1 fonte."
   },
@@ -2150,7 +2172,7 @@
     "message": "Seus dados foram sincronizados. Curta o app MetaMask para dispositivos móveis!"
   },
   "syncWithMobileDesc": {
-    "message": "Você pode sincronizar suas contas e informações com o dispositivo móvel. Abra o aplicativo MetaMask para dispositivos móveis, acesse \"Configurações\" e toque em \"Sincronizar pela extensão do navegador\""
+    "message": "Você pode sincronizar suas contas e informações com o dispositivo móvel. Abra o app MetaMask para dispositivos móveis, acesse \"Configurações\" e toque em \"Sincronizar pela extensão do navegador\""
   },
   "syncWithMobileDescNewUsers": {
     "message": "Se você tiver acabado de abrir o app MetaMask para dispositivos móveis pela primeira vez, basta seguir as etapas no seu telefone."
@@ -2349,6 +2371,10 @@
     "message": "Verificar este token em $1",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
+  "verifyThisUnconfirmedTokenOn": {
+    "message": "Verifique este token em $1 garanta que seja o token que você deseja negociar.",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
   "viewAccount": {
     "message": "Exibir conta"
   },
@@ -2423,10 +2449,6 @@
     "message": "Sua Frase de recuperação secreta privada"
   },
   "zeroGasPriceOnSpeedUpError": {
-<<<<<<< HEAD
-    "message":  "Preço zero do gas na aceleração"
-=======
     "message": "Preço zero do gas na aceleração"
->>>>>>> upstream/develop
   }
 }
