@@ -334,6 +334,7 @@
     "lodash": "^4.17.21",
     "loglevel": "^1.8.1",
     "luxon": "^3.2.1",
+    "moment": "^2.29.4",
     "nanoid": "^2.1.6",
     "nonce-tracker": "^1.0.0",
     "obj-multiplex": "^1.0.0",

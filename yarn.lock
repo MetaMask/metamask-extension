@@ -24034,6 +24034,7 @@ __metadata:
     madge: "npm:^6.1.0"
     mocha: "npm:^9.2.2"
     mockttp: "npm:^2.6.0"
+    moment: "npm:^2.29.4"
     nanoid: "npm:^2.1.6"
     nock: "npm:^13.2.9"
     node-fetch: "npm:^2.6.1"
@@ -25061,6 +25062,13 @@ __metadata:
   version: 1.0.1
   resolution: "module-not-found-error@npm:1.0.1"
   checksum: ebd65339d4d5980dd55cd32dbf112ec02b8e33f30866312b94caeee4783322259f18cf2270e9d2e600df3bd1876c35612b87f5c2525c21885fb1f83e85a9b9b0
+  languageName: node
+  linkType: hard
+
+"moment@npm:^2.29.4":
+  version: 2.29.4
+  resolution: "moment@npm:2.29.4"
+  checksum: 157c5af5a0ba8196e577bc67feb583303191d21ba1f7f2af30b3b40d4c63a64d505ba402be2a1454832082fac6be69db1e0d186c3279dae191e6634b0c33705
   languageName: node
   linkType: hard
 

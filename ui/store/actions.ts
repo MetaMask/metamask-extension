@@ -4653,3 +4653,14 @@ export async function updateSnapRegistry() {
   await submitRequestToBackground('updateSnapRegistry', []);
 }
 ///: END:ONLY_INCLUDE_IN
+
+export function resetBlockList(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    await submitRequestToBackground('resetBlockList', []);
+  };
+}

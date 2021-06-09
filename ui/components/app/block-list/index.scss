@@ -1,0 +1,28 @@
+.block-list {
+  display: flex;
+  flex-flow: column;
+  margin: 32px;
+
+  &__block {
+    display: flex;
+    flex-flow: column;
+    border: 1px solid #A9A9A9;
+    color: 1px solid #D3D3D3;
+    padding: 24px;
+    margin-top: 12px;
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+
+    button {
+      margin-left: 8px;
+      margin-right: 8px;
+    }
+  }
+}
