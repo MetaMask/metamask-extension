@@ -32,8 +32,9 @@ export const KOVAN_DISPLAY_NAME = 'Kovan';
 export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet';
 export const GOERLI_DISPLAY_NAME = 'Goerli';
 
+const infuraProjectId = process.env.INFURA_PROJECT_ID;
 const getRpcUrl = (network) =>
-  `https://${network}.infura.io/v3/${process.env.INFURA_PROJECT_ID}`;
+  `https://${network}.infura.io/v3/${infuraProjectId}`;
 
 export const ROPSTEN_RPC_URL = getRpcUrl('ropsten');
 export const RINKEBY_RPC_URL = getRpcUrl('rinkeby');
