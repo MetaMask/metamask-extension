@@ -289,6 +289,9 @@
   "chainIdDefinition": {
     "message": "The chain ID used to sign transactions for this network."
   },
+  "chainIdExistsErrorMsg": {
+    "message": "This Chain ID is currently used by the $1 network."
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
@@ -1454,6 +1457,30 @@
   "recipientAddressPlaceholder": {
     "message": "Search, public address (0x), or ENS"
   },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "Start here"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "Got it"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "Always keep your Secret Recovery Phrase in a secure and secret place"
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "Need to backup your Secret Recovery Phrase again?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "Never share your Secret Recovery Phrase with anyone"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "The MetaMask team will never ask for your Secret Recovery Phrase"
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "Your Secret Recovery Phrase controls all of your accounts."
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "Protect your funds"
+  },
   "reject": {
     "message": "Reject"
   },
@@ -2349,7 +2376,7 @@
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
   },
   "urlExistsErrorMsg": {
-    "message": "URL is already present in existing list of networks"
+    "message": "This URL is currently used by the $1 network."
   },
   "usePhishingDetection": {
     "message": "Use Phishing Detection"

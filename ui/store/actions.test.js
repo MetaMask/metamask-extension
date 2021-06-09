@@ -5,6 +5,7 @@ import EthQuery from 'eth-query';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
+import { GAS_LIMITS } from '../../shared/constants/gas';
 import * as actions from './actions';
 
 const middleware = [thunk];
@@ -902,8 +903,8 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'GAS_LOADING_STARTED' },
-        { type: 'UPDATE_GAS_LIMIT', value: '0x5208' },
-        { type: 'metamask/gas/SET_CUSTOM_GAS_LIMIT', value: '0x5208' },
+        { type: 'UPDATE_GAS_LIMIT', value: GAS_LIMITS.SIMPLE },
+        { type: 'metamask/gas/SET_CUSTOM_GAS_LIMIT', value: GAS_LIMITS.SIMPLE },
         { type: 'UPDATE_SEND_ERRORS', value: { gasLoadingError: null } },
         { type: 'GAS_LOADING_FINISHED' },
       ];
@@ -929,7 +930,7 @@ describe('Actions', () => {
   describe('#updateTransaction', () => {
     const txParams = {
       from: '0x1',
-      gas: '0x5208',
+      gas: GAS_LIMITS.SIMPLE,
       gasPrice: '0x3b9aca00',
       to: '0x2',
       value: '0x0',
@@ -998,7 +999,7 @@ describe('Actions', () => {
           id: '1',
           value: {
             from: '0x1',
-            gas: '0x5208',
+            gas: GAS_LIMITS.SIMPLE,
             gasPrice: '0x3b9aca00',
             to: '0x2',
             value: '0x0',

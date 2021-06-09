@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import {
-  getConversionRate,
   getGasTotal,
   getGasPrice,
   getGasLimit,
@@ -39,6 +38,7 @@ import {
   setGasTotal,
   updateSendAmount,
 } from '../../../../store/actions';
+import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import SendGasRow from './send-gas-row.component';
 
 export default connect(

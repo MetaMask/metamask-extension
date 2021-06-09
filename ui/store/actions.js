@@ -2570,6 +2570,26 @@ export function setConnectedStatusPopoverHasBeenShown() {
   };
 }
 
+export function setRecoveryPhraseReminderHasBeenShown() {
+  return () => {
+    background.setRecoveryPhraseReminderHasBeenShown((err) => {
+      if (err) {
+        throw new Error(err.message);
+      }
+    });
+  };
+}
+
+export function setRecoveryPhraseReminderLastShown(lastShown) {
+  return () => {
+    background.setRecoveryPhraseReminderLastShown(lastShown, (err) => {
+      if (err) {
+        throw new Error(err.message);
+      }
+    });
+  };
+}
+
 export async function setAlertEnabledness(alertId, enabledness) {
   await promisifiedBackground.setAlertEnabledness(alertId, enabledness);
 }

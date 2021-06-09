@@ -1,3 +1,4 @@
+import { GAS_LIMITS } from '../../shared/constants/gas';
 import {
   getCustomGasLimit,
   getCustomGasPrice,
@@ -221,7 +222,7 @@ describe('custom-gas selectors', () => {
             conversionRate: 2557.1,
             currentCurrency: 'usd',
             send: {
-              gasLimit: '0x5208',
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
             preferences: {
               showFiatInTestnets: false,
@@ -272,7 +273,7 @@ describe('custom-gas selectors', () => {
             conversionRate: 2557.1,
             currentCurrency: 'usd',
             send: {
-              gasLimit: '0x5208',
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
             preferences: {
               showFiatInTestnets: false,
@@ -323,7 +324,7 @@ describe('custom-gas selectors', () => {
             conversionRate: 2557.1,
             currentCurrency: 'usd',
             send: {
-              gasLimit: '0x5208',
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
             preferences: {
               showFiatInTestnets: true,
@@ -368,7 +369,7 @@ describe('custom-gas selectors', () => {
             conversionRate: 2557.1,
             currentCurrency: 'usd',
             send: {
-              gasLimit: '0x5208',
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
             preferences: {
               showFiatInTestnets: true,
@@ -393,7 +394,7 @@ describe('custom-gas selectors', () => {
         expect(
           getRenderableBasicEstimateData(
             test.mockState,
-            '0x5208',
+            GAS_LIMITS.SIMPLE,
             test.useFastestButtons,
           ),
         ).toStrictEqual(test.expectedResult);
@@ -429,7 +430,7 @@ describe('custom-gas selectors', () => {
             conversionRate: 255.71,
             currentCurrency: 'usd',
             send: {
-              gasLimit: '0x5208',
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
             preferences: {
               showFiatInTestnets: false,
@@ -474,7 +475,7 @@ describe('custom-gas selectors', () => {
             conversionRate: 2557.1,
             currentCurrency: 'usd',
             send: {
-              gasLimit: '0x5208',
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
             preferences: {
               showFiatInTestnets: false,
@@ -525,7 +526,7 @@ describe('custom-gas selectors', () => {
             conversionRate: 2557.1,
             currentCurrency: 'usd',
             send: {
-              gasLimit: '0x5208',
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
             preferences: {
               showFiatInTestnets: false,
@@ -576,7 +577,7 @@ describe('custom-gas selectors', () => {
             conversionRate: 2557.1,
             currentCurrency: 'usd',
             send: {
-              gasLimit: '0x5208',
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
             preferences: {
               showFiatInTestnets: true,
@@ -621,7 +622,7 @@ describe('custom-gas selectors', () => {
             conversionRate: 2557.1,
             currentCurrency: 'usd',
             send: {
-              gasLimit: '0x5208',
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
             preferences: {
               showFiatInTestnets: true,

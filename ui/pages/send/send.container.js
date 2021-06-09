@@ -3,8 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import {
-  getBlockGasLimit,
-  getConversionRate,
   getGasLimit,
   getGasPrice,
   getGasTotal,
@@ -13,7 +11,6 @@ import {
   getSendTokenContract,
   getSendAmount,
   getSendEditingTransactionId,
-  getSendHexDataFeatureFlagState,
   getSendFromObject,
   getSendTo,
   getSendToNickname,
@@ -38,7 +35,12 @@ import {
 } from '../../store/actions';
 import { resetSendState, updateSendErrors } from '../../ducks/send/send.duck';
 import { fetchBasicGasEstimates } from '../../ducks/gas/gas.duck';
-import { getTokens } from '../../ducks/metamask/metamask';
+import {
+  getBlockGasLimit,
+  getConversionRate,
+  getSendHexDataFeatureFlagState,
+  getTokens,
+} from '../../ducks/metamask/metamask';
 import { isValidDomainName } from '../../helpers/utils/util';
 import { calcGasTotal } from './send.utils';
 import SendEther from './send.component';

@@ -8,9 +8,9 @@ import {
   getDefaultActiveButtonIndex,
   getRenderableGasButtonData,
   getUSDConversionRate,
-  getNativeCurrency,
   getSwapsDefaultToken,
 } from '../../../selectors';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 
 import {
   getSwapsCustomizationModalPrice,

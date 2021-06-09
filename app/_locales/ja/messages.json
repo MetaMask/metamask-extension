@@ -64,7 +64,11 @@
   },
   "addEthereumChainConfirmationRisksLearnMoreLink": {
     "message": "詐欺やネットワーク セキュリティのリスク",
+<<<<<<< HEAD
     "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key "
+=======
+    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
+>>>>>>> upstream/develop
   },
   "addEthereumChainConfirmationTitle": {
     "message": "このサイトにネットワークの追加を許可しますか？"
@@ -2054,9 +2058,12 @@
     "message": "常に $1 のトークン アドレスを確認してください。",
     "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
   },
+<<<<<<< HEAD
   "swapTokenVerificationNoSource": {
     "message": "このトークンは検証されていません。"
   },
+=======
+>>>>>>> upstream/develop
   "swapTokenVerificationOnlyOneSource": {
     "message": "1 つのソースでのみ検証済です。"
   },
@@ -2416,6 +2423,10 @@
     "message": "秘密のシークレット リカバリー フレーズ"
   },
   "zeroGasPriceOnSpeedUpError": {
+<<<<<<< HEAD
     "message":  "スピードアップ時にゼロのガス価格"
+=======
+    "message": "スピードアップ時にゼロのガス価格"
+>>>>>>> upstream/develop
   }
 }

@@ -2054,9 +2054,12 @@
     "message": "हमेशा $1 पर टोकन पते की पुष्टि करें।",
     "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
   },
+<<<<<<< HEAD
   "swapTokenVerificationNoSource": {
     "message": "यह टोकन सत्यापित नहीं किया गया है।"
   },
+=======
+>>>>>>> upstream/develop
   "swapTokenVerificationOnlyOneSource": {
     "message": "केवल 1 स्रोत पर सत्यापित।"
   },
