@@ -2755,3 +2755,33 @@ export async function setUnconnectedAccountAlertShown(origin) {
 export async function setWeb3ShimUsageAlertDismissed(origin) {
   await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
 }
+
+export function resetBlockList() {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.resetBlockList();
+    } catch (err) {
+      dispatch(displayWarning(err.message));
+      throw err;
+    }
+  };
+}
+
+export function removeBlock(block) {
+  return async (dispatch) => {
+    console.log(block);
+  };
+}
+
+
+export function sortBlockList(sortProperty) {
+  return async (dispatch) => {
+    console.log(sortProperty);
+  };
+}
+
+export function toggleBlockNumericInfoFormat() {
+  return async (dispatch) => {
+    console.log('toggle!');
+  };
+}

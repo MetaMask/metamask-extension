@@ -1,6 +1,6 @@
 import { stripHexPrefix } from 'ethereumjs-util';
 import { createSelector } from 'reselect';
-import { addHexPrefix } from '../../app/scripts/lib/util';
+import BigNumber from 'bignumber.js';
 import {
   MAINNET_CHAIN_ID,
   BSC_CHAIN_ID,
