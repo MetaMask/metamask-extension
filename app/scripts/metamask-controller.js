@@ -2217,6 +2217,9 @@ export default class MetamaskController extends EventEmitter {
             nickname,
           );
         },
+        setProviderType: this.networkController.setProviderType.bind(
+          this.networkController,
+        ),
         addCustomRpc: async ({
           chainId,
           blockExplorerUrl,

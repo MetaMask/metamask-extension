@@ -1,8 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors';
-import {
-  CHAIN_ID_TO_TYPE_MAP,
-  NETWORK_TYPE_RPC,
-} from '../../../../shared/constants/network';
+import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 import {
   JUSTIFY_CONTENT,
   SEVERITIES,
@@ -25,14 +22,6 @@ const PENDING_TX_DROP_NOTICE = {
 
 async function getAlerts() {
   return [PENDING_TX_DROP_NOTICE];
-}
-
-function getNetworkType(chainId) {
-  if (chainId in CHAIN_ID_TO_TYPE_MAP) {
-    return CHAIN_ID_TO_TYPE_MAP[chainId];
-  }
-
-  return NETWORK_TYPE_RPC;
 }
 
 function getValues(pendingApproval, t, actions) {
@@ -76,7 +65,7 @@ function getValues(pendingApproval, t, actions) {
             colored: false,
             outline: true,
             targetNetwork: {
-              type: getNetworkType(pendingApproval.requestData.chainId),
+              type: pendingApproval.requestData.type || NETWORK_TYPE_RPC,
               nickname: pendingApproval.requestData.nickname,
             },
           },
