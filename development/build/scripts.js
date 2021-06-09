@@ -313,6 +313,7 @@ function setupBundlerDefaults(buildConfiguration, { devMode, envVars }) {
     // for sourcemaps
     debug: true,
   });
+  
 
   // inject environment variables via node-style `process.env`
   if (envVars) {
@@ -385,6 +386,7 @@ function setupSourcemaps(buildConfiguration, { devMode }) {
 async function bundleIt(buildConfiguration) {
   const { bundlerOpts, events } = buildConfiguration;
   const bundler = browserify(bundlerOpts);
+  bundler.ignore(['fs-extra']);
   // manually apply non-standard option
   bundler.external(bundlerOpts.manualExternal);
   // output build logs to terminal
