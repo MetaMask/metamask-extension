@@ -2,7 +2,7 @@
 
 This demo page shows how to interact with new Metamask API, which uses HCaptcha widget to prove, that transaction was created by human
 
-#API Changes:
+# API Changes:
 
 * New Metamask RPC endpoint - `metamask_requestCaptcha`
 * New Event from Metamask background - `captchaTokenReceived`
