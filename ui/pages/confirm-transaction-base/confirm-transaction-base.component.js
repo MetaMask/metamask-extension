@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { forAddress } from "@truffle/decoder";
+import * as codec from '@truffle/codec';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmPageContainer, {
@@ -109,6 +111,7 @@ export default class ConfirmTransactionBase extends Component {
   state = {
     submitting: false,
     submitError: null,
+    decoding: null,
     submitWarning: '',
     ethGasPriceWarning: '',
   };
@@ -382,23 +385,60 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
+  // TODO: Add Ganache Trace Stuff Here
   renderData(functionType) {
     const { t } = this.context;
     const {
-      txData: { txParams: { data } = {} } = {},
+      txData: { txParams = {} } = {},
       methodData: { params } = {},
       hideData,
       dataComponent,
     } = this.props;
+    const { data } = txParams;
+
+    const { decoding } = this.state;
 
     if (hideData) {
       return null;
+    }
+
+    if (!decoding) {
+      this.getDecoding(txParams);
+    } else {
+      
+        switch (decoding.kind) {
+          case 'function':
+
+            const { arguments: args, abi: { name } } = decoding;
+            return (
+              <div>
+                <h2>{ name }</h2>
+                <ol>
+                  { args.map((argument, index) => {
+                    const { name, value } = argument;
+                    return (
+                      <div key={index}>
+                        <span>{name}</span>
+                        <span>{ codec.Format.Utils.Inspect.nativize(value) }</span>
+                      </div>
+                    );
+                  })}
+                </ol>
+              </div>
+            )
+
+          case 'constructor':
+          default:
+            return 'Unable to render function data';
+
+        }
     }
 
     return (
       dataComponent || (
         <div className="confirm-page-container-content__data">
           <div className="confirm-page-container-content__data-box-label">
+            Please enjoy this decoding while we load the good stuff:
             {`${t('functionType')}:`}
             <span className="confirm-page-container-content__function-type">
               {functionType}
@@ -421,6 +461,18 @@ export default class ConfirmTransactionBase extends Component {
         </div>
       )
     );
+  }
+
+  async getDecoding (txParams) {
+    const base = 'http://164.90.247.198:81/tx';
+    const url = `${base}?to=${txParams.to}&from=${txParams.from}&data=${txParams.data}`;
+    const projectInfo = await fetch(url).then(res => res.json());
+    const decoder = await forAddress(txParams.to, ethereum, projectInfo);
+    const decoding = await decoder.decodeTransaction(txParams);
+
+    this.setState({
+      decoding,
+    });
   }
 
   handleEdit() {

@@ -18,6 +18,8 @@ import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
+import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
+
 
 start().catch(log.error);
 
@@ -112,7 +114,7 @@ function initializeUi(activeTab, container, connectionStream, cb) {
 function connectToAccountManager(connectionStream, cb) {
   const mx = setupMultiplex(connectionStream);
   setupControllerConnection(mx.createStream('controller'), cb);
-  setupWeb3Connection(mx.createStream('provider'));
+  setupWeb3Connection(mx.createStream('provider'), mx.createStream('1193'));
 }
 
 /**
@@ -120,7 +122,7 @@ function connectToAccountManager(connectionStream, cb) {
  *
  * @param {PortDuplexStream} connectionStream - PortStream instance establishing a background connection
  */
-function setupWeb3Connection(connectionStream) {
+function setupWeb3Connection(connectionStream, newProviderStream) {
   const providerStream = new StreamProvider();
   providerStream.pipe(connectionStream).pipe(providerStream);
   connectionStream.on('error', console.error.bind(console));
@@ -128,6 +130,11 @@ function setupWeb3Connection(connectionStream) {
   global.ethereumProvider = providerStream;
   global.ethQuery = new EthQuery(providerStream);
   global.eth = new Eth(providerStream);
+
+  initializeProvider({
+    connectionStream: newProviderStream,
+    logger: log,
+  });
 }
 
 /**
