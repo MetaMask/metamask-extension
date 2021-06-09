@@ -253,11 +253,7 @@ async function estimateGasForSend({
   // run tx
   try {
     const estimatedGas = await estimateGasMethod(paramsForGasEstimate);
-    const estimateWithBuffer = addGasBuffer(
-      estimatedGas.toString(16),
-      blockGasLimit,
-      1.5,
-    );
+    const estimateWithBuffer = addGasBuffer(estimatedGas, blockGasLimit, 1.5);
     return addHexPrefix(estimateWithBuffer);
   } catch (error) {
     const simulationFailed =
