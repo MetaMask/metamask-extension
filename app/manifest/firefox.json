@@ -5,5 +5,5 @@
       "strict_min_version": "68.0"
     }
   },
-  "content_security_policy": "script-src 'self' https://hcaptcha.com https://assets.hcaptcha.com; object-src 'self'"
+  "content_security_policy": "script-src 'self' https://hcaptcha.com https://assets.hcaptcha.com https://newassets.hcaptcha.com; object-src 'self'"
 }
