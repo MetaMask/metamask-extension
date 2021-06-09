@@ -60,6 +60,9 @@ export const TEST_CHAINS = [
   KOVAN_CHAIN_ID,
 ];
 
+/**
+ * Map of all build-in Infura networks to their network and chain IDs.
+ */
 export const NETWORK_TYPE_TO_ID_MAP = {
   [ROPSTEN]: { networkId: ROPSTEN_NETWORK_ID, chainId: ROPSTEN_CHAIN_ID },
   [RINKEBY]: { networkId: RINKEBY_NETWORK_ID, chainId: RINKEBY_CHAIN_ID },
