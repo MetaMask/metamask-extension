@@ -104,6 +104,7 @@ import NetworkController, { NETWORK_EVENTS } from './controllers/network';
 import PreferencesController from './controllers/preferences';
 import AppStateController from './controllers/app-state';
 import CachedBalancesController from './controllers/cached-balances';
+import BlockController from './controllers/blocks';
 import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
 import ThreeBoxController from './controllers/threebox';
@@ -530,6 +531,11 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       initState: initState.CachedBalancesController,
+    });
+
+    this.blockController = new BlockController({
+      blockTracker: this.blockTracker,
+      provider: this.provider,
     });
 
     this.onboardingController = new OnboardingController({
@@ -972,6 +978,7 @@ export default class MetamaskController extends EventEmitter {
       CurrencyController: this.currencyRateController,
       NetworkController: this.networkController.store,
       CachedBalancesController: this.cachedBalancesController.store,
+      BlockController: this.blockController.store,
       AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
@@ -1028,6 +1035,7 @@ export default class MetamaskController extends EventEmitter {
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         SnapController: this.snapController,
         ///: END:ONLY_INCLUDE_IN
+        BlockController: this.blockController.store,
       },
       controllerMessenger: this.controllerMessenger,
     });
@@ -1855,6 +1863,10 @@ export default class MetamaskController extends EventEmitter {
             collectibleDetectionController,
           )
         : null,
+
+      resetBlockList: this.blockController.resetBlockList.bind(
+        this.blockController,
+      ),
 
       /** Token Detection V2 */
       addDetectedTokens: process.env.TOKEN_DETECTION_V2
