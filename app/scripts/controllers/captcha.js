@@ -50,7 +50,7 @@ export default class CaptchaTokenController {
     }
     const payload = {
       method: NOTIFICATION_NAMES.captchaTokenReceived,
-      payload: { token },
+      params: { token },
     };
     this._notifyDomain(origin, payload);
     this.store.updateState({

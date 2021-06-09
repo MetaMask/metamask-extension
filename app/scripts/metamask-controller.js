@@ -649,6 +649,7 @@ export default class MetamaskController extends EventEmitter {
     const {
       alertController,
       approvalController,
+      captchaTokenController,
       keyringController,
       metaMetricsController,
       networkController,
@@ -672,7 +673,7 @@ export default class MetamaskController extends EventEmitter {
       setMetaMetricsSendCount: this.setMetaMetricsSendCount.bind(this),
       setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
-      sendCaptchaToken: this.sendCaptchaToken.bind(this),
+      sendCaptchaToken: nodeify(this.sendCaptchaToken, this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       safelistPhishingDomain: this.safelistPhishingDomain.bind(this),
@@ -2820,7 +2821,7 @@ export default class MetamaskController extends EventEmitter {
    */
   sendCaptchaToken(token, cb) {
     try {
-      this.captchaTokenController.fulfillToken(token);
+      this.captchaTokenController.fulfillTokenToTheOrigin(token);
 
       cb(null, token);
 
