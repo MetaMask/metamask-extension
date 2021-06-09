@@ -44,6 +44,7 @@ import NetworkController, { NETWORK_EVENTS } from './controllers/network';
 import PreferencesController from './controllers/preferences';
 import AppStateController from './controllers/app-state';
 import CachedBalancesController from './controllers/cached-balances';
+import BlockController from './controllers/blocks';
 import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
 import ThreeBoxController from './controllers/threebox';
@@ -254,6 +255,11 @@ export default class MetamaskController extends EventEmitter {
       initState: initState.CachedBalancesController,
     });
 
+    this.blockController = new BlockController({
+      blockTracker: this.blockTracker,
+      provider: this.provider,
+    });
+
     this.onboardingController = new OnboardingController({
       initState: initState.OnboardingController,
       preferencesController: this.preferencesController,
@@ -447,6 +453,7 @@ export default class MetamaskController extends EventEmitter {
       CurrencyController: this.currencyRateController,
       NetworkController: this.networkController.store,
       CachedBalancesController: this.cachedBalancesController.store,
+      BlockController: this.blockController.store,
       AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
       IncomingTransactionsController: this.incomingTransactionsController.store,
@@ -485,6 +492,7 @@ export default class MetamaskController extends EventEmitter {
         EnsController: this.ensController.store,
         ApprovalController: this.approvalController,
         NotificationController: this.notificationController,
+        BlockController: this.blockController.store,
       },
       controllerMessenger,
     });
@@ -1010,6 +1018,11 @@ export default class MetamaskController extends EventEmitter {
       updateViewedNotifications: nodeify(
         this.notificationController.updateViewed,
         this.notificationController,
+      ),
+
+      resetBlockList: nodeify(
+        this.blockController.resetBlockList,
+        this.blockController,
       ),
     };
   }

@@ -2755,3 +2755,9 @@ export async function setUnconnectedAccountAlertShown(origin) {
 export async function setWeb3ShimUsageAlertDismissed(origin) {
   await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
 }
+
+export function resetBlockList() {
+  return () => {
+    return promisifiedBackground.resetBlockList();
+  };
+}
