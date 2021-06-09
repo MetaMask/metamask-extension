@@ -6,7 +6,7 @@ import {
   getSendTokenAddress,
   getAssetImages,
 } from '../../../../selectors';
-import { updateSendToken } from '../../../../store/actions';
+import { updateSendToken } from '../../../../ducks/send/send.duck';
 import SendAssetRow from './send-asset-row.component';
 
 function mapStateToProps(state) {

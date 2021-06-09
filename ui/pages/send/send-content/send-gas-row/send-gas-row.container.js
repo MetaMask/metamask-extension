@@ -25,20 +25,18 @@ import { calcMaxAmount } from '../send-amount-row/amount-max-button/amount-max-b
 import {
   showGasButtonGroup,
   updateSendErrors,
+  setGasPrice,
+  setGasLimit,
+  setGasTotal,
+  updateSendAmount,
 } from '../../../../ducks/send/send.duck';
 import {
   resetCustomData,
   setCustomGasPrice,
   setCustomGasLimit,
 } from '../../../../ducks/gas/gas.duck';
-import {
-  showModal,
-  setGasPrice,
-  setGasLimit,
-  setGasTotal,
-  updateSendAmount,
-} from '../../../../store/actions';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
+import { showModal } from '../../../../store/actions';
 import SendGasRow from './send-gas-row.component';
 
 export default connect(

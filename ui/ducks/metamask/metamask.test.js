@@ -150,13 +150,11 @@ describe('MetaMask Reducers', () => {
       {},
       {
         type: actionConstants.SHOW_ACCOUNT_DETAIL,
-        value: 'test address',
       },
     );
 
     expect(state.isUnlocked).toStrictEqual(true);
     expect(state.isInitialized).toStrictEqual(true);
-    expect(state.selectedAddress).toStrictEqual('test address');
   });
 
   it('sets account label', () => {
@@ -194,30 +192,6 @@ describe('MetaMask Reducers', () => {
     expect(state.tokens).toStrictEqual(newTokens);
   });
 
-  it('updates send gas limit', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.UPDATE_GAS_LIMIT,
-        value: '0xGasLimit',
-      },
-    );
-
-    expect(state.send.gasLimit).toStrictEqual('0xGasLimit');
-  });
-
-  it('updates send gas price', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.UPDATE_GAS_PRICE,
-        value: '0xGasPrice',
-      },
-    );
-
-    expect(state.send.gasPrice).toStrictEqual('0xGasPrice');
-  });
-
   it('toggles account menu', () => {
     const state = reduceMetamask(
       {},
@@ -227,153 +201,6 @@ describe('MetaMask Reducers', () => {
     );
 
     expect(state.isAccountMenuOpen).toStrictEqual(true);
-  });
-
-  it('updates gas total', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.UPDATE_GAS_TOTAL,
-        value: '0xGasTotal',
-      },
-    );
-
-    expect(state.send.gasTotal).toStrictEqual('0xGasTotal');
-  });
-
-  it('updates send token balance', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.UPDATE_SEND_TOKEN_BALANCE,
-        value: '0xTokenBalance',
-      },
-    );
-
-    expect(state.send.tokenBalance).toStrictEqual('0xTokenBalance');
-  });
-
-  it('updates data', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.UPDATE_SEND_HEX_DATA,
-        value: '0xData',
-      },
-    );
-
-    expect(state.send.data).toStrictEqual('0xData');
-  });
-
-  it('updates send to', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.UPDATE_SEND_TO,
-        value: {
-          to: '0xAddress',
-          nickname: 'nickname',
-        },
-      },
-    );
-
-    expect(state.send.to).toStrictEqual('0xAddress');
-    expect(state.send.toNickname).toStrictEqual('nickname');
-  });
-
-  it('update send amount', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.UPDATE_SEND_AMOUNT,
-        value: '0xAmount',
-      },
-    );
-
-    expect(state.send.amount).toStrictEqual('0xAmount');
-  });
-
-  it('updates max mode', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.UPDATE_MAX_MODE,
-        value: true,
-      },
-    );
-
-    expect(state.send.maxModeOn).toStrictEqual(true);
-  });
-
-  it('update send', () => {
-    const value = {
-      gasLimit: '0xGasLimit',
-      gasPrice: '0xGasPrice',
-      gasTotal: '0xGasTotal',
-      tokenBalance: '0xBalance',
-      from: '0xAddress',
-      to: '0xAddress',
-      toNickname: '',
-      maxModeOn: false,
-      amount: '0xAmount',
-      memo: '0xMemo',
-      errors: {},
-      editingTransactionId: 22,
-      ensResolution: null,
-      ensResolutionError: '',
-    };
-
-    const sendState = reduceMetamask(
-      {},
-      {
-        type: actionConstants.UPDATE_SEND,
-        value,
-      },
-    );
-
-    expect(sendState.send).toStrictEqual(value);
-  });
-
-  it('clears send', () => {
-    const initStateSend = {
-      send: {
-        gasLimit: null,
-        gasPrice: null,
-        gasTotal: null,
-        tokenBalance: null,
-        from: '',
-        to: '',
-        amount: '0x0',
-        memo: '',
-        errors: {},
-        maxModeOn: false,
-        editingTransactionId: null,
-        toNickname: '',
-      },
-    };
-
-    const sendState = {
-      send: {
-        gasLimit: '0xGasLimit',
-        gasPrice: '0xGasPrice',
-        gasTotal: '0xGasTotal',
-        tokenBalance: '0xBalance',
-        from: '0xAddress',
-        to: '0xAddress',
-        toNickname: '',
-        maxModeOn: false,
-        amount: '0xAmount',
-        memo: '0xMemo',
-        errors: {},
-        editingTransactionId: 22,
-      },
-    };
-
-    const state = reduceMetamask(sendState, {
-      type: actionConstants.CLEAR_SEND,
-    });
-
-    expect(state.send).toStrictEqual(initStateSend.send);
   });
 
   it('updates value of tx by id', () => {
@@ -478,32 +305,6 @@ describe('MetaMask Reducers', () => {
     });
 
     expect(state.pendingTokens).toStrictEqual({});
-  });
-
-  it('update ensResolution', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.UPDATE_SEND_ENS_RESOLUTION,
-        payload: '0x1337',
-      },
-    );
-
-    expect(state.send.ensResolution).toStrictEqual('0x1337');
-    expect(state.send.ensResolutionError).toStrictEqual('');
-  });
-
-  it('update ensResolutionError', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.UPDATE_SEND_ENS_RESOLUTION_ERROR,
-        payload: 'ens name not found',
-      },
-    );
-
-    expect(state.send.ensResolutionError).toStrictEqual('ens name not found');
-    expect(state.send.ensResolution).toBeNull();
   });
 
   describe('metamask state selectors', () => {

@@ -10,7 +10,7 @@ import InfoIcon from '../../ui/icon/info-icon.component';
 import Button from '../../ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMetricEvent } from '../../../hooks/useMetricEvent';
-import { updateSendToken } from '../../../store/actions';
+import { updateSendToken } from '../../../ducks/send/send.duck';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 

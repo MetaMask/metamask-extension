@@ -19,22 +19,6 @@ export default function reduceMetamask(state = {}, action) {
     tokens: [],
     pendingTokens: {},
     customNonceValue: '',
-    send: {
-      gasLimit: null,
-      gasPrice: null,
-      gasTotal: null,
-      tokenBalance: '0x0',
-      from: '',
-      to: '',
-      amount: '0',
-      memo: '',
-      errors: {},
-      maxModeOn: false,
-      editingTransactionId: null,
-      toNickname: '',
-      ensResolution: null,
-      ensResolutionError: '',
-    },
     useBlockie: false,
     featureFlags: {},
     welcomeScreenSeen: false,
@@ -106,166 +90,16 @@ export default function reduceMetamask(state = {}, action) {
         tokens: action.newTokens,
       };
 
-    // metamask.send
-    case actionConstants.UPDATE_GAS_LIMIT:
-      return {
-        ...metamaskState,
-        send: {
-          ...metamaskState.send,
-          gasLimit: action.value,
-        },
-      };
     case actionConstants.UPDATE_CUSTOM_NONCE:
       return {
         ...metamaskState,
         customNonceValue: action.value,
-      };
-    case actionConstants.UPDATE_GAS_PRICE:
-      return {
-        ...metamaskState,
-        send: {
-          ...metamaskState.send,
-          gasPrice: action.value,
-        },
       };
 
     case actionConstants.TOGGLE_ACCOUNT_MENU:
       return {
         ...metamaskState,
         isAccountMenuOpen: !metamaskState.isAccountMenuOpen,
-      };
-
-    case actionConstants.UPDATE_GAS_TOTAL:
-      return {
-        ...metamaskState,
-        send: {
-          ...metamaskState.send,
-          gasTotal: action.value,
-        },
-      };
-
-    case actionConstants.UPDATE_SEND_TOKEN_BALANCE:
-      return {
-        ...metamaskState,
-        send: {
-          ...metamaskState.send,
-          tokenBalance: action.value,
-        },
-      };
-
-    case actionConstants.UPDATE_SEND_HEX_DATA:
-      return {
-        ...metamaskState,
-        send: {
-          ...metamaskState.send,
-          data: action.value,
-        },
-      };
-
-    case actionConstants.UPDATE_SEND_TO:
-      return {
-        ...metamaskState,
-        send: {
-          ...metamaskState.send,
-          to: action.value.to,
-          toNickname: action.value.nickname,
-        },
-      };
-
-    case actionConstants.UPDATE_SEND_AMOUNT:
-      return {
-        ...metamaskState,
-        send: {
-          ...metamaskState.send,
-          amount: action.value,
-        },
-      };
-
-    case actionConstants.UPDATE_MAX_MODE:
-      return {
-        ...metamaskState,
-        send: {
-          ...metamaskState.send,
-          maxModeOn: action.value,
-        },
-      };
-
-    case actionConstants.UPDATE_SEND:
-      return Object.assign(metamaskState, {
-        send: {
-          ...metamaskState.send,
-          ...action.value,
-        },
-      });
-
-    case actionConstants.UPDATE_SEND_TOKEN: {
-      const newSend = {
-        ...metamaskState.send,
-        token: action.value,
-      };
-      // erase token-related state when switching back to native currency
-      if (newSend.editingTransactionId && !newSend.token) {
-        const unapprovedTx =
-          newSend?.unapprovedTxs?.[newSend.editingTransactionId] || {};
-        const txParams = unapprovedTx.txParams || {};
-        Object.assign(newSend, {
-          tokenBalance: null,
-          balance: '0',
-          from: unapprovedTx.from || '',
-          unapprovedTxs: {
-            ...newSend.unapprovedTxs,
-            [newSend.editingTransactionId]: {
-              ...unapprovedTx,
-              txParams: {
-                ...txParams,
-                data: '',
-              },
-            },
-          },
-        });
-      }
-      return Object.assign(metamaskState, {
-        send: newSend,
-      });
-    }
-
-    case actionConstants.UPDATE_SEND_ENS_RESOLUTION:
-      return {
-        ...metamaskState,
-        send: {
-          ...metamaskState.send,
-          ensResolution: action.payload,
-          ensResolutionError: '',
-        },
-      };
-
-    case actionConstants.UPDATE_SEND_ENS_RESOLUTION_ERROR:
-      return {
-        ...metamaskState,
-        send: {
-          ...metamaskState.send,
-          ensResolution: null,
-          ensResolutionError: action.payload,
-        },
-      };
-
-    case actionConstants.CLEAR_SEND:
-      return {
-        ...metamaskState,
-        send: {
-          gasLimit: null,
-          gasPrice: null,
-          gasTotal: null,
-          tokenBalance: null,
-          from: '',
-          to: '',
-          amount: '0x0',
-          memo: '',
-          errors: {},
-          maxModeOn: false,
-          editingTransactionId: null,
-          toNickname: '',
-        },
       };
 
     case actionConstants.UPDATE_TRANSACTION_PARAMS: {

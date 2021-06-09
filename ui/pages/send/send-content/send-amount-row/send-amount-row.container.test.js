@@ -1,8 +1,10 @@
 import sinon from 'sinon';
 
-import { setMaxModeTo, updateSendAmount } from '../../../../store/actions';
-
-import { updateSendErrors } from '../../../../ducks/send/send.duck';
+import {
+  updateSendErrors,
+  setMaxModeTo,
+  updateSendAmount,
+} from '../../../../ducks/send/send.duck';
 
 let mapDispatchToProps;
 
@@ -28,13 +30,10 @@ jest.mock('../../send.utils', () => ({
   }),
 }));
 
-jest.mock('../../../../store/actions', () => ({
-  setMaxModeTo: jest.fn(),
-  updateSendAmount: jest.fn(),
-}));
-
 jest.mock('../../../../ducks/send/send.duck', () => ({
   updateSendErrors: jest.fn(),
+  setMaxModeTo: jest.fn(),
+  updateSendAmount: jest.fn(),
 }));
 
 require('./send-amount-row.container.js');
