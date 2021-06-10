@@ -13,7 +13,7 @@ import {
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { forAddress } from "@truffle/decoder";
+import * as Codec from "@truffle/codec";
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -348,9 +348,13 @@ export function constructTxParams({
 }
 
 export async function getDecoding (txParams, chainId = 1) {
-  const base = 'http://164.90.247.198:81/tx';
+  const base = 'http://164.90.247.198/tx';
   const url = `${base}?to=${txParams.to}&from=${txParams.from}&data=${txParams.data}&chain=${chainId}`;
-  const projectInfo = await fetch(url).then(res => res.json());
+  const encodedTx = await fetch(url).then(res => res.json());
+
+  // TODO: GNIDAN make something sensible here:
+  return Codec.Format.Utils.Serial
+
   const decoder = await forAddress(txParams.to, ethereum, projectInfo);
   const decoding = await decoder.decodeTransaction(txParams);
   return decoding;

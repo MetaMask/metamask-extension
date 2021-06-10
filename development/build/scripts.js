@@ -386,7 +386,7 @@ function setupSourcemaps(buildConfiguration, { devMode }) {
 async function bundleIt(buildConfiguration) {
   const { bundlerOpts, events } = buildConfiguration;
   const bundler = browserify(bundlerOpts);
-  bundler.ignore(['fs-extra']);
+  bundler.ignore(['fs-extra', 'colors']);
   // manually apply non-standard option
   bundler.external(bundlerOpts.manualExternal);
   // output build logs to terminal
