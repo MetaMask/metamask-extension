@@ -347,15 +347,48 @@ export function constructTxParams({
   return addHexPrefixToObjectValues(txParams);
 }
 
+export function deserializeCalldataDecoding(decoding) {
+  switch (decoding.kind) {
+    case "function": {
+      return {
+        ...decoding,
+        class: Codec.Format.Utils.Serial.deserializeType(decoding.class),
+        arguments: decoding.arguments.map(({ name, value }) => ({
+          name,
+          value: Codec.Format.Utils.Serial.deserializeResult(value)
+        }))
+      };
+    }
+    case "constructor": {
+      return {
+        ...decoding,
+        class: Codec.Format.Utils.Serial.deserializeType(decoding.class),
+        arguments: decoding.arguments.map(({ name, value }) => ({
+          name,
+          value: Codec.Format.Utils.Serial.deserializeResult(value)
+        }))
+      };
+    }
+    case "message": {
+      return {
+        ...decoding,
+        class: Codec.Format.Utils.Serial.deserializeType(decoding.class)
+      };
+    }
+    case "unknown": {
+      return decoding;
+    }
+    case "create": {
+      return decoding;
+    }
+  }
+}
+
 export async function getDecoding (txParams, chainId = 1) {
   const base = 'http://164.90.247.198/tx';
   const url = `${base}?to=${txParams.to}&from=${txParams.from}&data=${txParams.data}&chain=${chainId}`;
-  const encodedTx = await fetch(url).then(res => res.json());
+  const result = await fetch(url).then(res => res.json());
 
-  // TODO: GNIDAN make something sensible here:
-  return Codec.Format.Utils.Serial
-
-  const decoder = await forAddress(txParams.to, ethereum, projectInfo);
-  const decoding = await decoder.decodeTransaction(txParams);
+  const decoding = deserializeCalldataDecoding(result);
   return decoding;
 }
