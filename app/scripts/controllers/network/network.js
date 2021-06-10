@@ -19,6 +19,7 @@ import {
   RINKEBY_CHAIN_ID,
   INFURA_BLOCKED_KEY,
 } from '../../../../shared/constants/network';
+import { SECOND } from '../../../../shared/constants/time';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -29,7 +30,7 @@ import createInfuraClient from './createInfuraClient';
 import createJsonRpcClient from './createJsonRpcClient';
 
 const env = process.env.METAMASK_ENV;
-const fetchWithTimeout = getFetchWithTimeout(30000);
+const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
 
 let defaultProviderConfigOpts;
 if (process.env.IN_TEST === 'true') {

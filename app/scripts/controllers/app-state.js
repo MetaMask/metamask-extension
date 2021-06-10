@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
+import { MINUTE } from '../../../shared/constants/time';
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -179,7 +180,7 @@ export default class AppStateController extends EventEmitter {
 
     this.timer = setTimeout(
       () => this.onInactiveTimeout(),
-      timeoutMinutes * 60 * 1000,
+      timeoutMinutes * MINUTE,
     );
   }
 
