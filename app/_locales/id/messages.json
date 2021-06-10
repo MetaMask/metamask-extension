@@ -1448,9 +1448,6 @@
   "recents": {
     "message": "Terkini"
   },
-  "recipientAddress": {
-    "message": "Alamat Penerima"
-  },
   "recipientAddressPlaceholder": {
     "message": "Cari, alamat publik (0x), atau ENS"
   },

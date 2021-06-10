@@ -1,20 +1,18 @@
+import { debounce } from 'lodash';
 import { connect } from 'react-redux';
-import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../../shared/constants/network';
 import {
-  getSendTo,
-  getSendToNickname,
-  getAddressBookEntry,
-  getCurrentChainId,
-} from '../../../../selectors';
+  lookupEnsName,
+  initializeEnsSlice,
+  resetResolution,
+} from '../../../../ducks/ens';
 import EnsInput from './ens-input.component';
 
-export default connect((state) => {
-  const selectedAddress = getSendTo(state);
-  const chainId = getCurrentChainId(state);
+function mapDispatchToProps(dispatch) {
   return {
-    network: CHAIN_ID_TO_NETWORK_ID_MAP[chainId],
-    selectedAddress,
-    selectedName: getSendToNickname(state),
-    contact: getAddressBookEntry(state, selectedAddress),
+    lookupEnsName: debounce((ensName) => dispatch(lookupEnsName(ensName)), 150),
+    initializeEnsSlice: () => dispatch(initializeEnsSlice()),
+    resetEnsResolution: debounce(() => dispatch(resetResolution()), 300),
   };
-})(EnsInput);
+}
+
+export default connect(null, mapDispatchToProps)(EnsInput);

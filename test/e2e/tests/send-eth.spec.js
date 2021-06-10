@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const { withFixtures, regularDelayMs } = require('../helpers');
 
 describe('Send ETH from inside MetaMask using default gas', function () {
   const ganacheOptions = {
@@ -43,6 +43,7 @@ describe('Send ETH from inside MetaMask using default gas', function () {
         await inputAmount.press(driver.Key.BACK_SPACE);
         await inputAmount.press(driver.Key.BACK_SPACE);
         await inputAmount.press(driver.Key.BACK_SPACE);
+        await driver.delay(regularDelayMs);
 
         await driver.assertElementNotPresent('.send-v2__error-amount');
 
