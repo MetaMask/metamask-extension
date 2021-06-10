@@ -14,7 +14,6 @@ import { getTranslatedUINoficiations } from '../../../../shared/notifications';
 import { getSortedNotificationsToShow } from '../../../selectors';
 import { BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
-import { BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes';
 
 function getActionFunctionById(id, history) {
   const actionFunctions = {

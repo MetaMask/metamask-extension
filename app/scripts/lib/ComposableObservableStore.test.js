@@ -191,9 +191,4 @@ describe('ComposableObservableStore', function () {
         }),
     );
   });
-
-  it('should return empty flattened state when not configured', function () {
-    const store = new ComposableObservableStore();
-    assert.deepEqual(store.getFlatState(), {});
-  });
 });
