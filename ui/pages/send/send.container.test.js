@@ -4,9 +4,9 @@ import {
   updateSendTokenBalance,
   updateGasData,
   setGasTotal,
-} from '../../store/actions';
-
-import { updateSendErrors, resetSendState } from '../../ducks/send/send.duck';
+  updateSendErrors,
+  resetSendState,
+} from '../../ducks/send/send.duck';
 
 let mapDispatchToProps;
 
@@ -25,14 +25,12 @@ jest.mock('redux', () => ({
   compose: (_, arg2) => () => arg2(),
 }));
 
-jest.mock('../../store/actions', () => ({
-  updateSendTokenBalance: jest.fn(),
-  updateGasData: jest.fn(),
-  setGasTotal: jest.fn(),
-}));
 jest.mock('../../ducks/send/send.duck', () => ({
   updateSendErrors: jest.fn(),
   resetSendState: jest.fn(),
+  updateSendTokenBalance: jest.fn(),
+  updateGasData: jest.fn(),
+  setGasTotal: jest.fn(),
 }));
 
 jest.mock('./send.utils.js', () => ({

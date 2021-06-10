@@ -2,13 +2,9 @@ import { connect } from 'react-redux';
 import { addHexPrefix } from '../../../../../app/scripts/lib/util';
 import {
   hideModal,
-  setGasLimit,
-  setGasPrice,
   createRetryTransaction,
   createSpeedUpTransaction,
   hideSidebar,
-  updateSendAmount,
-  setGasTotal,
   updateTransaction,
 } from '../../../../store/actions';
 import {
@@ -19,6 +15,10 @@ import {
 } from '../../../../ducks/gas/gas.duck';
 import {
   hideGasButtonGroup,
+  setGasLimit,
+  setGasPrice,
+  setGasTotal,
+  updateSendAmount,
   updateSendErrors,
 } from '../../../../ducks/send/send.duck';
 import {
@@ -60,7 +60,10 @@ import { GAS_LIMITS } from '../../../../../shared/constants/gas';
 import GasModalPageContainer from './gas-modal-page-container.component';
 
 const mapStateToProps = (state, ownProps) => {
-  const { currentNetworkTxList, send } = state.metamask;
+  const {
+    metamask: { currentNetworkTxList },
+    send,
+  } = state;
   const { modalState: { props: modalProps } = {} } = state.appState.modal || {};
   const { txData = {} } = modalProps || {};
   const { transaction = {}, onSubmit } = ownProps;

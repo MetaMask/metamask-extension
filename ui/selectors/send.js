@@ -7,11 +7,11 @@ import {
 } from '.';
 
 export function getGasLimit(state) {
-  return state.metamask.send.gasLimit || '0';
+  return state.send.gasLimit || '0';
 }
 
 export function getGasPrice(state) {
-  return state.metamask.send.gasPrice || getAveragePriceEstimateInHexWEI(state);
+  return state.send.gasPrice || getAveragePriceEstimateInHexWEI(state);
 }
 
 export function getGasTotal(state) {
@@ -24,7 +24,7 @@ export function getPrimaryCurrency(state) {
 }
 
 export function getSendToken(state) {
-  return state.metamask.send.token;
+  return state.send.token;
 }
 
 export function getSendTokenAddress(state) {
@@ -39,15 +39,15 @@ export function getSendTokenContract(state) {
 }
 
 export function getSendAmount(state) {
-  return state.metamask.send.amount;
+  return state.send.amount;
 }
 
 export function getSendHexData(state) {
-  return state.metamask.send.data;
+  return state.send.data;
 }
 
 export function getSendEditingTransactionId(state) {
-  return state.metamask.send.editingTransactionId;
+  return state.send.editingTransactionId;
 }
 
 export function getSendErrors(state) {
@@ -59,7 +59,7 @@ export function sendAmountIsInError(state) {
 }
 
 export function getSendFrom(state) {
-  return state.metamask.send.from;
+  return state.send.from;
 }
 
 export function getSendFromBalance(state) {
@@ -75,27 +75,27 @@ export function getSendFromObject(state) {
 }
 
 export function getSendMaxModeState(state) {
-  return state.metamask.send.maxModeOn;
+  return state.send.maxModeOn;
 }
 
 export function getSendTo(state) {
-  return state.metamask.send.to;
+  return state.send.to;
 }
 
 export function getSendToNickname(state) {
-  return state.metamask.send.toNickname;
+  return state.send.toNickname;
 }
 
 export function getTokenBalance(state) {
-  return state.metamask.send.tokenBalance;
+  return state.send.tokenBalance;
 }
 
 export function getSendEnsResolution(state) {
-  return state.metamask.send.ensResolution;
+  return state.send.ensResolution;
 }
 
 export function getSendEnsResolutionError(state) {
-  return state.metamask.send.ensResolutionError;
+  return state.send.ensResolutionError;
 }
 
 export function getQrCodeData(state) {

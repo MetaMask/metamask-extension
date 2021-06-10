@@ -23,17 +23,17 @@ import {
   getCurrentChainId,
 } from '../../selectors';
 
+import { showQrScanner, qrCodeDetected } from '../../store/actions';
 import {
+  resetSendState,
+  updateSendErrors,
   updateSendTo,
   updateSendTokenBalance,
   updateGasData,
   setGasTotal,
-  showQrScanner,
-  qrCodeDetected,
   updateSendEnsResolution,
   updateSendEnsResolutionError,
-} from '../../store/actions';
-import { resetSendState, updateSendErrors } from '../../ducks/send/send.duck';
+} from '../../ducks/send/send.duck';
 import { fetchBasicGasEstimates } from '../../ducks/gas/gas.duck';
 import {
   getBlockGasLimit,

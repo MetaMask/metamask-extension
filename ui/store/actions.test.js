@@ -838,7 +838,9 @@ describe('Actions', () => {
     it('errors in when sendTransaction throws', async () => {
       const store = mockStore();
       const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
         { type: 'SHOW_CONF_TX_PAGE', id: undefined },
       ];
 
@@ -849,67 +851,6 @@ describe('Actions', () => {
       actions._setBackgroundConnection(background);
 
       await store.dispatch(actions.signTx());
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('#updatedGasData', () => {
-    it('errors when get code does not return', async () => {
-      const store = mockStore();
-
-      background.estimateGas = sinon.stub().rejects();
-
-      actions._setBackgroundConnection(background);
-
-      global.eth = {
-        getCode: sinon.stub().rejects(),
-      };
-
-      const expectedActions = [
-        { type: 'GAS_LOADING_STARTED' },
-        {
-          type: 'UPDATE_SEND_ERRORS',
-          value: { gasLoadingError: 'gasLoadingError' },
-        },
-        { type: 'GAS_LOADING_FINISHED' },
-      ];
-
-      const mockData = {
-        gasPrice: '0x3b9aca00', //
-        blockGasLimit: '0x6ad79a', // 7002010
-        selectedAddress: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
-        to: '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B',
-        value: '0xde0b6b3a7640000', // 1000000000000000000
-      };
-
-      await store.dispatch(actions.updateGasData(mockData));
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-
-    it('returns default gas limit for basic eth transaction', async () => {
-      const mockData = {
-        gasPrice: '0x3b9aca00',
-        blockGasLimit: '0x6ad79a', // 7002010
-        selectedAddress: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
-        to: '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B',
-        value: '0xde0b6b3a7640000', // 1000000000000000000
-      };
-
-      global.eth = {
-        getCode: sinon.stub().returns('0x'),
-      };
-      const store = mockStore();
-
-      const expectedActions = [
-        { type: 'GAS_LOADING_STARTED' },
-        { type: 'UPDATE_GAS_LIMIT', value: GAS_LIMITS.SIMPLE },
-        { type: 'metamask/gas/SET_CUSTOM_GAS_LIMIT', value: GAS_LIMITS.SIMPLE },
-        { type: 'UPDATE_SEND_ERRORS', value: { gasLoadingError: null } },
-        { type: 'GAS_LOADING_FINISHED' },
-      ];
-
-      await store.dispatch(actions.updateGasData(mockData));
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });

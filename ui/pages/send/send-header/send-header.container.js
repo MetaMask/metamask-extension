@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { clearSend } from '../../../store/actions';
+import { clearSend } from '../../../ducks/send/send.duck';
 import { getTitleKey } from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import SendHeader from './send-header.component';
