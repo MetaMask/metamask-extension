@@ -205,7 +205,7 @@ export default class NetworkController extends EventEmitter {
     });
   }
 
-  async setProviderType(type, rpcUrl = '', ticker = 'ETH', nickname = '') {
+  async setProviderType(type) {
     assert.notStrictEqual(
       type,
       NETWORK_TYPE_RPC,
@@ -216,7 +216,13 @@ export default class NetworkController extends EventEmitter {
       `Unknown Infura provider type "${type}".`,
     );
     const { chainId } = NETWORK_TYPE_TO_ID_MAP[type];
-    this.setProviderConfig({ type, rpcUrl, chainId, ticker, nickname });
+    this.setProviderConfig({
+      type,
+      rpcUrl: '',
+      chainId,
+      ticker: 'ETH',
+      nickname: '',
+    });
   }
 
   resetConnection() {
