@@ -3,6 +3,7 @@ import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import SendRowWrapper from '../send-row-wrapper/send-row-wrapper.component';
 import GasPriceButtonGroup from '../../../../components/app/gas-customization/gas-price-button-group';
+import { GAS_INPUT_MODES } from '../../../../ducks/send';
 import SendGasRow from './send-gas-row.component';
 
 import GasFeeDisplay from './gas-fee-display/gas-fee-display.component';
@@ -24,7 +25,7 @@ describe('SendGasRow Component', () => {
           gasFeeError
           gasLoadingError={false}
           gasTotal="mockGasTotal"
-          gasButtonGroupShown={false}
+          gasInputMode={GAS_INPUT_MODES.CUSTOM}
           showCustomizeGasModal={propsMethodSpies.showCustomizeGasModal}
           resetGasButtons={propsMethodSpies.resetGasButtons}
           gasPriceButtonGroupProps={{
@@ -76,8 +77,8 @@ describe('SendGasRow Component', () => {
       expect(propsMethodSpies.resetGasButtons.callCount).toStrictEqual(1);
     });
 
-    it('should render the GasPriceButtonGroup if gasButtonGroupShown is true', () => {
-      wrapper.setProps({ gasButtonGroupShown: true });
+    it('should render the GasPriceButtonGroup if gasInputMode is BASIC', () => {
+      wrapper.setProps({ gasInputMode: GAS_INPUT_MODES.BASIC });
       const rendered = wrapper.find(SendRowWrapper).first().childAt(0);
       expect(wrapper.children()).toHaveLength(2);
 
@@ -95,8 +96,8 @@ describe('SendGasRow Component', () => {
       ).toStrictEqual('bar');
     });
 
-    it('should render an advanced options button if gasButtonGroupShown is true', () => {
-      wrapper.setProps({ gasButtonGroupShown: true });
+    it('should render an advanced options button if gasInputMode is BASIC', () => {
+      wrapper.setProps({ gasInputMode: GAS_INPUT_MODES.BASIC });
       const rendered = wrapper.find(SendRowWrapper).last();
       expect(wrapper.children()).toHaveLength(2);
 

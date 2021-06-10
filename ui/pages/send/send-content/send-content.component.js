@@ -18,7 +18,6 @@ export default class SendContent extends Component {
   };
 
   static propTypes = {
-    updateGas: PropTypes.func,
     showAddToAddressBookModal: PropTypes.func,
     showHexData: PropTypes.bool,
     contact: PropTypes.object,
@@ -29,8 +28,6 @@ export default class SendContent extends Component {
     isEthGasPrice: PropTypes.bool,
     noGasPrice: PropTypes.bool,
   };
-
-  updateGas = (updateData) => this.props.updateGas(updateData);
 
   render() {
     const {
@@ -54,11 +51,9 @@ export default class SendContent extends Component {
           {warning && this.renderWarning()}
           {this.maybeRenderAddContact()}
           <SendAssetRow />
-          <SendAmountRow updateGas={this.updateGas} />
+          <SendAmountRow />
           <SendGasRow />
-          {this.props.showHexData && (
-            <SendHexDataRow updateGas={this.updateGas} />
-          )}
+          {this.props.showHexData && <SendHexDataRow />}
         </div>
       </PageContainerContent>
     );

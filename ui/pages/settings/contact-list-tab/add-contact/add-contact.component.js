@@ -32,6 +32,7 @@ export default class AddContact extends PureComponent {
     ensAddress: '',
     error: '',
     ensError: '',
+    input: '',
   };
 
   constructor(props) {
@@ -66,22 +67,29 @@ export default class AddContact extends PureComponent {
     }
   };
 
+  onChange = (input) => {
+    this.setState({ input });
+    this.dValidate(input);
+  };
+
   renderInput() {
     return (
       <EnsInput
         scanQrCode={(_) => {
           this.props.scanQrCode();
         }}
-        onChange={this.dValidate}
+        onChange={this.onChange}
         onPaste={(text) => this.setState({ ethAddress: text })}
-        onReset={() => this.setState({ ethAddress: '', ensAddress: '' })}
+        onReset={() =>
+          this.setState({ ethAddress: '', ensAddress: '', input: '' })
+        }
         updateEnsResolution={(address) => {
           this.setState({ ensAddress: address, error: '', ensError: '' });
         }}
         updateEnsResolutionError={(message) =>
           this.setState({ ensError: message })
         }
-        value={this.state.ethAddress || ''}
+        userInput={this.state.ethAddress || this.state.input}
       />
     );
   }

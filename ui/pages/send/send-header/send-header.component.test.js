@@ -1,73 +1,120 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import sinon from 'sinon';
-import PageContainerHeader from '../../../components/ui/page-container/page-container-header';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+
+import { fireEvent } from '@testing-library/react';
+import { ASSET_TYPES, initialState, SEND_STAGES } from '../../../ducks/send';
+import { renderWithProvider } from '../../../../test/jest';
 import SendHeader from './send-header.component';
 
+const middleware = [thunk];
+
+jest.mock('react-router-dom', () => {
+  const original = jest.requireActual('react-router-dom');
+  return {
+    ...original,
+    useHistory: () => ({
+      push: jest.fn(),
+    }),
+  };
+});
+
 describe('SendHeader Component', () => {
-  let wrapper;
-
-  const propsMethodSpies = {
-    clearSend: sinon.spy(),
-  };
-  const historySpies = {
-    push: sinon.spy(),
-  };
-
-  beforeAll(() => {
-    sinon.spy(SendHeader.prototype, 'onClose');
-  });
-
-  beforeEach(() => {
-    wrapper = shallow(
-      <SendHeader
-        clearSend={propsMethodSpies.clearSend}
-        history={historySpies}
-        mostRecentOverviewPage="mostRecentOverviewPage"
-        titleKey="mockTitleKey"
-      />,
-      { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
-    );
-  });
-
-  afterEach(() => {
-    propsMethodSpies.clearSend.resetHistory();
-    historySpies.push.resetHistory();
-    SendHeader.prototype.onClose.resetHistory();
-  });
-
-  afterAll(() => {
-    sinon.restore();
-  });
-
-  describe('onClose', () => {
-    it('should call clearSend', () => {
-      expect(propsMethodSpies.clearSend.callCount).toStrictEqual(0);
-      wrapper.instance().onClose();
-      expect(propsMethodSpies.clearSend.callCount).toStrictEqual(1);
-    });
-
-    it('should call history.push', () => {
-      expect(historySpies.push.callCount).toStrictEqual(0);
-      wrapper.instance().onClose();
-      expect(historySpies.push.callCount).toStrictEqual(1);
-      expect(historySpies.push.getCall(0).args[0]).toStrictEqual(
-        'mostRecentOverviewPage',
+  describe('Title', () => {
+    it('should render "Add Recipient" for UNINITIALIZED or ADD_RECIPIENT stages', () => {
+      const { getByText, rerender } = renderWithProvider(
+        <SendHeader />,
+        configureMockStore(middleware)({
+          send: initialState,
+          gas: { basicEstimateStatus: 'LOADING' },
+          history: { mostRecentOverviewPage: 'activity' },
+        }),
       );
+      expect(getByText('Add Recipient')).toBeTruthy();
+      rerender(
+        <SendHeader />,
+        configureMockStore(middleware)({
+          send: { ...initialState, stage: SEND_STAGES.ADD_RECIPIENT },
+          gas: { basicEstimateStatus: 'LOADING' },
+          history: { mostRecentOverviewPage: 'activity' },
+        }),
+      );
+      expect(getByText('Add Recipient')).toBeTruthy();
+    });
+
+    it('should render "Send" for DRAFT stage when asset type is NATIVE', () => {
+      const { getByText } = renderWithProvider(
+        <SendHeader />,
+        configureMockStore(middleware)({
+          send: {
+            ...initialState,
+            stage: SEND_STAGES.DRAFT,
+            asset: { ...initialState.asset, type: ASSET_TYPES.NATIVE },
+          },
+          gas: { basicEstimateStatus: 'LOADING' },
+          history: { mostRecentOverviewPage: 'activity' },
+        }),
+      );
+      expect(getByText('Send')).toBeTruthy();
+    });
+
+    it('should render "Send Tokens" for DRAFT stage when asset type is TOKEN', () => {
+      const { getByText } = renderWithProvider(
+        <SendHeader />,
+        configureMockStore(middleware)({
+          send: {
+            ...initialState,
+            stage: SEND_STAGES.DRAFT,
+            asset: { ...initialState.asset, type: ASSET_TYPES.TOKEN },
+          },
+          gas: { basicEstimateStatus: 'LOADING' },
+          history: { mostRecentOverviewPage: 'activity' },
+        }),
+      );
+      expect(getByText('Send Tokens')).toBeTruthy();
+    });
+
+    it('should render "Edit" for EDIT stage', () => {
+      const { getByText } = renderWithProvider(
+        <SendHeader />,
+        configureMockStore(middleware)({
+          send: {
+            ...initialState,
+            stage: SEND_STAGES.EDIT,
+          },
+          gas: { basicEstimateStatus: 'LOADING' },
+          history: { mostRecentOverviewPage: 'activity' },
+        }),
+      );
+      expect(getByText('Edit')).toBeTruthy();
     });
   });
 
-  describe('render', () => {
-    it('should render a PageContainerHeader component', () => {
-      expect(wrapper.find(PageContainerHeader)).toHaveLength(1);
+  describe('Cancel Button', () => {
+    it('has a cancel button in header', () => {
+      const { getByText } = renderWithProvider(
+        <SendHeader />,
+        configureMockStore(middleware)({
+          send: initialState,
+          gas: { basicEstimateStatus: 'LOADING' },
+          history: { mostRecentOverviewPage: 'activity' },
+        }),
+      );
+      expect(getByText('Cancel')).toBeTruthy();
     });
 
-    it('should pass the correct props to PageContainerHeader', () => {
-      const { onClose, title } = wrapper.find(PageContainerHeader).props();
-      expect(title).toStrictEqual('mockTitleKey');
-      expect(SendHeader.prototype.onClose.callCount).toStrictEqual(0);
-      onClose();
-      expect(SendHeader.prototype.onClose.callCount).toStrictEqual(1);
+    it('resets send state when clicked', () => {
+      const store = configureMockStore(middleware)({
+        send: initialState,
+        gas: { basicEstimateStatus: 'LOADING' },
+        history: { mostRecentOverviewPage: 'activity' },
+      });
+      const { getByText } = renderWithProvider(<SendHeader />, store);
+      const expectedActions = [
+        { type: 'send/resetSendState', payload: undefined },
+      ];
+      fireEvent.click(getByText('Cancel'));
+      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 });

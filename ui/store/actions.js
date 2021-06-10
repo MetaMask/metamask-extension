@@ -1,7 +1,7 @@
 import abi from 'human-standard-token-abi';
 import pify from 'pify';
 import log from 'loglevel';
-import { capitalize } from 'lodash';
+import { capitalize, isEqual } from 'lodash';
 import getBuyEthUrl from '../../app/scripts/lib/buy-eth-url';
 import {
   fetchLocale,
@@ -15,14 +15,15 @@ import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
+  getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
 } from '../selectors';
+import { resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { LISTED_CONTRACT_ADDRESSES } from '../../shared/constants/tokens';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { clearSend } from '../ducks/send/send.duck';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -721,7 +722,7 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
     return new Promise((resolve, reject) => {
       background.updateAndApproveTransaction(txData, (err) => {
         dispatch(updateTransactionParams(txData.id, txData.txParams));
-        dispatch(clearSend());
+        dispatch(resetSendState());
 
         if (err) {
           dispatch(txError(err));
@@ -737,7 +738,7 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(clearSend());
+        dispatch(resetSendState());
         dispatch(completedTx(txData.id));
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
@@ -907,7 +908,7 @@ export function cancelTx(txData, _showLoadingIndication = true) {
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(clearSend());
+        dispatch(resetSendState());
         dispatch(completedTx(txData.id));
         dispatch(hideLoadingIndication());
         dispatch(closeCurrentNotificationWindow());
@@ -950,7 +951,7 @@ export function cancelTxs(txDataList) {
 
       const newState = await updateMetamaskStateFromBackground();
       dispatch(updateMetamaskState(newState));
-      dispatch(clearSend());
+      dispatch(resetSendState());
 
       txIds.forEach((id) => {
         dispatch(completedTx(id));
@@ -1038,19 +1039,59 @@ export function updateMetamaskState(newState) {
   return (dispatch, getState) => {
     const { metamask: currentState } = getState();
 
-    const { currentLocale, selectedAddress } = currentState;
+    const { currentLocale, selectedAddress, provider } = currentState;
     const {
       currentLocale: newLocale,
       selectedAddress: newSelectedAddress,
+      provider: newProvider,
     } = newState;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
       dispatch(updateCurrentLocale(newLocale));
     }
+
     if (selectedAddress !== newSelectedAddress) {
       dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
     }
 
+    // Ensuring that the chainId is not undefined for both providers ensures we
+    // can rely upon the logic of our getMetaMaskAccounts selector instead of
+    // replicating its behavior here in a way more tolerant of missing
+    // properties
+    if (provider?.chainId !== undefined && newProvider?.chainId !== undefined) {
+      const newAccounts = getMetaMaskAccounts({ metamask: newState });
+      const oldAccounts = getMetaMaskAccounts({ metamask: currentState });
+      const newSelectedAccount = newAccounts[newSelectedAddress];
+      const oldSelectedAccount = newAccounts[selectedAddress];
+      // dispatch an ACCOUNT_CHANGED for any account whose balance or other
+      // properties changed in this update
+      Object.entries(oldAccounts).forEach(([address, oldAccount]) => {
+        if (!isEqual(oldAccount, newAccounts[address])) {
+          dispatch({
+            type: actionConstants.ACCOUNT_CHANGED,
+            payload: { account: newAccounts[address] },
+          });
+        }
+      });
+      // Also emit an event for the selected account changing, either due to a
+      // property update or if the entire account changes.
+      if (isEqual(oldSelectedAccount, newSelectedAccount) === false) {
+        dispatch({
+          type: actionConstants.SELECTED_ACCOUNT_CHANGED,
+          payload: { account: newSelectedAccount },
+        });
+      }
+    }
+
+    if (
+      provider?.chainId !== newProvider?.chainId &&
+      newProvider?.chainId !== undefined
+    ) {
+      dispatch({
+        type: actionConstants.CHAIN_CHANGED,
+        payload: newProvider.chainId,
+      });
+    }
     dispatch({
       type: actionConstants.UPDATE_METAMASK_STATE,
       value: newState,
@@ -1141,6 +1182,7 @@ export function showAccountDetail(address) {
 
     try {
       await _setSelectedAddress(dispatch, address);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error.message));
       return;

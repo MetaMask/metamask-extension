@@ -14,9 +14,21 @@ const defaultState = {
     currentLocale: 'test',
     selectedAddress: '0xFirstAddress',
     provider: { chainId: '0x1' },
+    accounts: {
+      '0xFirstAddress': {
+        balance: '0x0',
+      },
+    },
+    cachedBalances: {
+      '0x1': {
+        '0xFirstAddress': '0x0',
+      },
+    },
   },
 };
 const mockStore = (state = defaultState) => configureStore(middleware)(state);
+
+const baseMockState = defaultState.metamask;
 
 describe('Actions', () => {
   let background;
@@ -25,12 +37,7 @@ describe('Actions', () => {
 
   beforeEach(async () => {
     background = sinon.createStubInstance(MetaMaskController, {
-      getState: sinon.stub().callsFake((cb) =>
-        cb(null, {
-          currentLocale: 'test',
-          selectedAddress: '0xFirstAddress',
-        }),
-      ),
+      getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
     });
   });
 
@@ -58,10 +65,7 @@ describe('Actions', () => {
         { type: 'UNLOCK_SUCCEEDED', value: undefined },
         {
           type: 'UPDATE_METAMASK_STATE',
-          value: {
-            currentLocale: 'test',
-            selectedAddress: '0xFirstAddress',
-          },
+          value: baseMockState,
         },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
@@ -111,7 +115,7 @@ describe('Actions', () => {
         { type: 'UNLOCK_SUCCEEDED', value: undefined },
         {
           type: 'UPDATE_METAMASK_STATE',
-          value: { currentLocale: 'test', selectedAddress: '0xFirstAddress' },
+          value: baseMockState,
         },
         { type: 'DISPLAY_WARNING', value: 'error' },
         { type: 'UNLOCK_FAILED', value: 'error' },
@@ -159,10 +163,7 @@ describe('Actions', () => {
         { type: 'FORGOT_PASSWORD', value: false },
         {
           type: 'UPDATE_METAMASK_STATE',
-          value: {
-            currentLocale: 'test',
-            selectedAddress: '0xFirstAddress',
-          },
+          value: baseMockState,
         },
         { type: 'SHOW_ACCOUNTS_PAGE' },
         { type: 'HIDE_LOADING_INDICATION' },
@@ -254,6 +255,19 @@ describe('Actions', () => {
         cb(null, {
           currentLocale: 'test',
           selectedAddress: '0xAnotherAddress',
+          provider: {
+            chainId: '0x1',
+          },
+          accounts: {
+            '0xAnotherAddress': {
+              balance: '0x0',
+            },
+          },
+          cachedBalances: {
+            '0x1': {
+              '0xAnotherAddress': '0x0',
+            },
+          },
         }),
       );
 
@@ -264,6 +278,8 @@ describe('Actions', () => {
       const expectedActions = [
         'SHOW_LOADING_INDICATION',
         'SELECTED_ADDRESS_CHANGED',
+        'ACCOUNT_CHANGED',
+        'SELECTED_ACCOUNT_CHANGED',
         'UPDATE_METAMASK_STATE',
         'HIDE_LOADING_INDICATION',
         'SHOW_ACCOUNTS_PAGE',
@@ -400,7 +416,9 @@ describe('Actions', () => {
 
   describe('#addNewAccount', () => {
     it('adds a new account', async () => {
-      const store = mockStore({ metamask: { identities: {} } });
+      const store = mockStore({
+        metamask: { identities: {}, ...defaultState.metamask },
+      });
 
       const addNewAccount = background.addNewAccount.callsFake((cb) =>
         cb(null, {
@@ -660,7 +678,7 @@ describe('Actions', () => {
       const store = mockStore();
 
       const signMessage = background.signMessage.callsFake((_, cb) =>
-        cb(null, defaultState),
+        cb(null, defaultState.metamask),
       );
 
       actions._setBackgroundConnection(background);
@@ -705,7 +723,7 @@ describe('Actions', () => {
       const store = mockStore();
 
       const signPersonalMessage = background.signPersonalMessage.callsFake(
-        (_, cb) => cb(null, defaultState),
+        (_, cb) => cb(null, defaultState.metamask),
       );
 
       actions._setBackgroundConnection(background);
@@ -786,7 +804,7 @@ describe('Actions', () => {
       const store = mockStore();
 
       const signTypedMsg = background.signTypedMessage.callsFake((_, cb) =>
-        cb(null, defaultState),
+        cb(null, defaultState.metamask),
       );
 
       actions._setBackgroundConnection(background);
@@ -895,12 +913,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         updateTransaction: updateTransactionStub,
-        getState: sinon.stub().callsFake((cb) =>
-          cb(null, {
-            currentLocale: 'test',
-            selectedAddress: '0xFirstAddress',
-          }),
-        ),
+        getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
       actions._setBackgroundConnection(background.getApi());
@@ -1699,10 +1712,7 @@ describe('Actions', () => {
         { type: 'FORGOT_PASSWORD', value: true },
         {
           type: 'UPDATE_METAMASK_STATE',
-          value: {
-            currentLocale: 'test',
-            selectedAddress: '0xFirstAddress',
-          },
+          value: baseMockState,
         },
       ];
 
@@ -1762,6 +1772,19 @@ describe('Actions', () => {
           cb(null, {
             currentLocale: 'test',
             selectedAddress: '0xFirstAddress',
+            provider: {
+              chainId: '0x1',
+            },
+            accounts: {
+              '0xFirstAddress': {
+                balance: '0x0',
+              },
+            },
+            cachedBalances: {
+              '0x1': {
+                '0xFirstAddress': '0x0',
+              },
+            },
           }),
         ),
       });
