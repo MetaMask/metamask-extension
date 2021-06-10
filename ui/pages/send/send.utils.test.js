@@ -290,7 +290,7 @@ describe('send utils', () => {
         if (typeof to === 'string' && to.match(/willFailBecauseOf:/u)) {
           throw new Error(to.match(/:(.+)$/u)[1]);
         }
-        return { toString: (n) => `0xabc${n}` };
+        return '0xabc16';
       }),
     };
     const baseexpectedCall = {
