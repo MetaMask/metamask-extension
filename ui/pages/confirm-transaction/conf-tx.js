@@ -38,7 +38,7 @@ function mapStateToProps(state) {
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
     unapprovedTypedMessagesCount,
-    send: state.metamask.send,
+    send: state.send,
     currentNetworkTxList: state.metamask.currentNetworkTxList,
   };
 }

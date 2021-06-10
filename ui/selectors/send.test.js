@@ -111,7 +111,7 @@ describe('send selectors', () => {
     it('should return the symbol of the send token', () => {
       expect(
         getPrimaryCurrency({
-          metamask: { send: { token: { symbol: 'DEF' } } },
+          send: { token: { symbol: 'DEF' } },
         }),
       ).toStrictEqual('DEF');
     });
@@ -121,13 +121,11 @@ describe('send selectors', () => {
     it('should return the current send token if set', () => {
       expect(
         getSendToken({
-          metamask: {
-            send: {
-              token: {
-                address: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-                decimals: 4,
-                symbol: 'DEF',
-              },
+          send: {
+            token: {
+              address: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+              decimals: 4,
+              symbol: 'DEF',
             },
           },
         }),
@@ -143,13 +141,11 @@ describe('send selectors', () => {
     it('should return the contract at the send token address', () => {
       expect(
         getSendTokenContract({
-          metamask: {
-            send: {
-              token: {
-                address: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-                decimals: 4,
-                symbol: 'DEF',
-              },
+          send: {
+            token: {
+              address: '0x8d6b81208414189a58339873ab429b6c47ab92d3',
+              decimals: 4,
+              symbol: 'DEF',
             },
           },
         }),
@@ -157,10 +153,7 @@ describe('send selectors', () => {
     });
 
     it('should return null if send token is not set', () => {
-      const modifiedMetamaskState = { ...mockState.metamask, send: {} };
-      expect(
-        getSendTokenContract({ ...mockState, metamask: modifiedMetamaskState }),
-      ).toBeNull();
+      expect(getSendTokenContract({ ...mockState, send: {} })).toBeNull();
     });
   });
 
@@ -197,11 +190,10 @@ describe('send selectors', () => {
 
     it('should get the selected account balance if the send.from does not exist', () => {
       const editedMockState = {
-        metamask: {
-          ...mockState.metamask,
-          send: {
-            from: null,
-          },
+        ...mockState,
+        send: {
+          ...mockState.send,
+          from: null,
         },
       };
       expect(getSendFromBalance(editedMockState)).toStrictEqual('0x0');
@@ -220,11 +212,9 @@ describe('send selectors', () => {
 
     it('should return the current account if send.from does not exist', () => {
       const editedMockState = {
-        metamask: {
-          ...mockState.metamask,
-          send: {
-            from: null,
-          },
+        ...mockState,
+        send: {
+          from: null,
         },
       };
       expect(getSendFromObject(editedMockState)).toStrictEqual({
@@ -339,9 +329,7 @@ describe('send selectors', () => {
   describe('send-header selectors', () => {
     const getMetamaskSendMockState = (send) => {
       return {
-        metamask: {
-          send: { ...send },
-        },
+        send: { ...send },
       };
     };
 
