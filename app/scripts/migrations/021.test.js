@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import wallet2 from '../../../test/lib/migrations/002.json';
 import migration21 from './021';
 

@@ -1,0 +1,87 @@
+.whats-new-popup {
+  &__notifications {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__notification,
+  &__first-notification {
+    display: flex;
+    flex-direction: column;
+    margin: 0 24px 24px 24px;
+    border-bottom: 1px solid $Grey-100;
+    position: relative;
+  }
+
+  &__last-notification {
+    > * {
+      &:nth-last-child(2) {
+        margin-bottom: 0;
+      };
+    }
+
+    .whats-new-popup__intersection-observable {
+      bottom: 8px;
+    }
+  }
+
+  &__notification {
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__notification-image {
+    align-self: center;
+    margin-bottom: 16px;
+  }
+
+  &__description-and-date {
+    margin-bottom: 16px;
+  }
+
+  &__notification-date {
+    color: $Grey-500;
+  }
+
+  &__button {
+    margin-right: auto;
+  }
+
+  &__button,
+  &__link {
+    margin-bottom: 24px;
+  }
+
+  &__link {
+    @include H6;
+
+    color: $Blue-500;
+    cursor: pointer;
+  }
+
+  &__notification-title {
+    @include H4;
+
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  &__intersection-observable {
+    bottom: 22px;
+    position: absolute;
+    height: 1px;
+    width: 100%;
+  }
+}
+
+.popover-wrap.whats-new-popup__popover {
+  @media screen and (min-width: 576px) {
+    max-height: 600px;
+    width: 500px;
+  }
+
+  @media screen and (max-width: 575px) {
+    max-height: 568px;
+  }
+}

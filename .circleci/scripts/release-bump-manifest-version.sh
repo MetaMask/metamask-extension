@@ -19,9 +19,7 @@ fi
 printf '%s\n' 'Updating the manifest version if needed'
 
 version="${CIRCLE_BRANCH/Version-v/}"
-updated_manifest="$(jq ".version = \"$version\"" app/manifest/_base.json)"
-printf '%s\n' "$updated_manifest" > app/manifest/_base.json
-yarn prettier --write app/manifest/_base.json
+yarn version --no-git-tag-version --new-version "${version}"
 
 if [[ -z $(git status --porcelain) ]]
 then

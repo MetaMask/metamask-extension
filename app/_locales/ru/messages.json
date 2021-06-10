@@ -41,13 +41,36 @@
     "message": "Активность"
   },
   "activityLog": {
-    "message": "Журнал активности"
+    "message": "журнал активности"
   },
   "addAcquiredTokens": {
     "message": "Добавьте токены, которые вы приобрели с помощью MetaMask"
   },
   "addAlias": {
     "message": "Добавить псевдоним"
+  },
+  "addContact": {
+    "message": "Добавить контакт"
+  },
+  "addEthereumChainConfirmationDescription": {
+    "message": "Это позволит использовать ее в MetaMask."
+  },
+  "addEthereumChainConfirmationRisks": {
+    "message": "MetaMask не проверяет пользовательские сети."
+  },
+  "addEthereumChainConfirmationRisksLearnMore": {
+    "message": "Подробнее о $1.",
+    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
+  },
+  "addEthereumChainConfirmationRisksLearnMoreLink": {
+    "message": "мошенничестве и угрозах безопасности сети",
+    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
+  },
+  "addEthereumChainConfirmationTitle": {
+    "message": "Разрешить этому сайту добавить сеть?"
+  },
+  "addFriendsAndAddresses": {
+    "message": "Добавьте друзей и адреса, которым доверяете"
   },
   "addNetwork": {
     "message": "Добавить сеть"
@@ -86,13 +109,19 @@
     "message": "Комиссия сети агрегатора"
   },
   "alertDisableTooltip": {
-    "message": "Это можно изменить в \"Настройки > Оповещения\""
+    "message": "Это можно изменить в разделе «Настройки» > «Предупреждения»"
   },
   "alertSettingsUnconnectedAccount": {
     "message": "Просмотр веб-сайта с выбранным неподключенным счетом"
   },
   "alertSettingsUnconnectedAccountDescription": {
-    "message": "Это предупреждение отображается во всплывающем окне, когда вы просматриваете подключенный сайт Web3, но текущий выбранный счет не подключен."
+    "message": "Это предупреждение отображается во всплывающем окне, когда вы просматриваете подключенный сайт web3, но текущий выбранный счет не подключен."
+  },
+  "alertSettingsWeb3ShimUsage": {
+    "message": "Когда веб-сайт пытается использовать удаленный API window.web3"
+  },
+  "alertSettingsWeb3ShimUsageDescription": {
+    "message": "Это предупреждение отображается во всплывающем окне, когда вы просматриваете сайт, который пытается использовать удаленный API window.web3 и из-за этого может не работать."
   },
   "alerts": {
     "message": "Предупреждения"
@@ -137,6 +166,9 @@
   "approve": {
     "message": "Утвердить предел расходов"
   },
+  "approveButtonText": {
+    "message": "Одобрить"
+  },
   "approveSpendLimit": {
     "message": "Утвердить предел расходов $1",
     "description": "The token symbol that is being approved"
@@ -146,6 +178,9 @@
   },
   "asset": {
     "message": "Актив"
+  },
+  "assetOptions": {
+    "message": "Варианты активов"
   },
   "assets": {
     "message": "Активы"
@@ -199,7 +234,10 @@
     "message": "Базовый"
   },
   "blockExplorerUrl": {
-    "message": "Проводник блока"
+    "message": "URL-адрес проводника блока"
+  },
+  "blockExplorerUrlDefinition": {
+    "message": "URL-адрес, используемый как проводник блоков для этой сети."
   },
   "blockExplorerView": {
     "message": "Посмотреть счет на $1",
@@ -210,6 +248,9 @@
   },
   "browserNotSupported": {
     "message": "Ваш браузер не поддерживается..."
+  },
+  "builContactList": {
+    "message": "Создайте список контактов"
   },
   "builtInCalifornia": {
     "message": "MetaMask разработан и построен в Калифорнии."
@@ -226,6 +267,9 @@
   "bytes": {
     "message": "Байт"
   },
+  "canToggleInSettings": {
+    "message": "Вы можете повторно включить это уведомление в разделе «Настройки» -> «Предупреждения»."
+  },
   "cancel": {
     "message": "Отмена"
   },
@@ -237,6 +281,9 @@
   },
   "chainId": {
     "message": "Идентификатор цепи"
+  },
+  "chainIdDefinition": {
+    "message": "Идентификатор цепочки, используемый для подписания транзакций для этой сети."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Вам необходимо использовать MetaMask в Google Chrome, чтобы подключиться к аппаратному кошельку."
@@ -258,6 +305,15 @@
   },
   "confirmed": {
     "message": "Подтверждено"
+  },
+  "confusableUnicode": {
+    "message": "«$1» соответствует «$2»."
+  },
+  "confusableZeroWidthUnicode": {
+    "message": "Найден символ нулевой ширины."
+  },
+  "confusingEnsDomain": {
+    "message": "В имени ENS обнаружен непонятный символ. Убедитесь, что это не обманчивое имя."
   },
   "congratulations": {
     "message": "Поздравляем"
@@ -348,8 +404,14 @@
   "contactsSettingsDescription": {
     "message": "Добавляйте, редактируйте, удаляйте и управляйте своими контактами"
   },
+  "continue": {
+    "message": "Продолжить"
+  },
   "continueToWyre": {
     "message": "Продолжить к Wyre"
+  },
+  "contractAddressError": {
+    "message": "Вы отправляете токены на адрес контракта токена. Это может привести к потере токенов."
   },
   "contractDeployment": {
     "message": "Развертывание контракта"
@@ -390,6 +452,12 @@
   "currencyConversion": {
     "message": "Обмен валюты"
   },
+  "currencySymbol": {
+    "message": "Символ валюты"
+  },
+  "currencySymbolDefinition": {
+    "message": "Тикер, который отображается для валюты этой сети."
+  },
   "currentAccountNotConnected": {
     "message": "Ваша текущий счет не подключен"
   },
@@ -418,7 +486,7 @@
     "message": "Некоторые данные вашего счета были скопированы во время предыдущей установки MetaMask. Они могли включать ваши настройки, контакты и токены. Хотите восстановить эти данные сейчас?"
   },
   "decimal": {
-    "message": "Десятичных знаков точности"
+    "message": "Число десятичных знаков токена"
   },
   "decimalsMustZerotoTen": {
     "message": "Число десятичных знаков должно быть не менее 0, но не более 36."
@@ -488,6 +556,15 @@
   "dismiss": {
     "message": "Отклонить"
   },
+  "dismissReminderDescriptionField": {
+    "message": "Включите этот параметр, чтобы отклонить сообщение с напоминанием о резервном копировании фразы восстановления. Мы настоятельно рекомендуем сделать резервную копию секретной фразы восстановления, чтобы избежать потери средств"
+  },
+  "dismissReminderField": {
+    "message": "Отклонить напоминание о резервном копировании фразы восстановления"
+  },
+  "domain": {
+    "message": "Домен"
+  },
   "done": {
     "message": "Выполнено"
   },
@@ -512,6 +589,12 @@
   "editContact": {
     "message": "Изменить контакт"
   },
+  "editNonceField": {
+    "message": "Изменить одноразовый номер"
+  },
+  "editNonceMessage": {
+    "message": "Это расширенная функция, используйте ее с осторожностью."
+  },
   "editPermission": {
     "message": "Изменить разрешение"
   },
@@ -523,7 +606,7 @@
     "message": "Запросить открытый ключ шифрования."
   },
   "endOfFlowMessage1": {
-    "message": "Вы прошли тест — храните свою исходную фразу в безопасности, это ваша ответственность!"
+    "message": "Вы прошли тест — храните свою секретную фразу восстановления в безопасности, это ваша ответственность!"
   },
   "endOfFlowMessage10": {
     "message": "Выполнено"
@@ -538,16 +621,16 @@
     "message": "Никогда не говорите никому эту фразу."
   },
   "endOfFlowMessage5": {
-    "message": "Остерегайтесь фишинга! MetaMask никогда неожиданно не запросит вашу исходную фразу."
+    "message": "Остерегайтесь фишинга! MetaMask никогда неожиданно не запросит вашу секретную фразу восстановления."
   },
   "endOfFlowMessage6": {
-    "message": "Если вам нужно снова создать резервную копию исходной фразы, вы можете найти ее в Настройки -> Безопасность."
+    "message": "Если вам нужно снова создать резервную копию секретной фразы восстановления, вы можете найти ее в Настройки -> Безопасность."
   },
   "endOfFlowMessage8": {
-    "message": "Просто помните, что MetaMask не может восстановить исходную фразу."
+    "message": "Просто помните, что MetaMask не может восстановить секретную фразу восстановления."
   },
   "endOfFlowMessage9": {
-    "message": "Дополнительная информация"
+    "message": "Дополнительная информация."
   },
   "endpointReturnedDifferentChainId": {
     "message": "Конечная точка вернула другой идентификатор цепочки: $1",
@@ -587,6 +670,14 @@
     "message": "Код: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
+  "errorPageMessage": {
+    "message": "Повторите попытку, перезагрузив страницу, или обратитесь в службу поддержки $1.",
+    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
+  },
+  "errorPagePopupMessage": {
+    "message": "Повторите попытку, закрыв и вновь открыв всплывающее окно, или обратитесь в службу поддержки $1.",
+    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
+  },
   "errorPageTitle": {
     "message": "MetaMask обнаружил ошибку",
     "description": "Title of generic error page"
@@ -597,6 +688,9 @@
   },
   "estimatedProcessingTimes": {
     "message": "Расчетное время обработки"
+  },
+  "ethGasPriceFetchWarning": {
+    "message": "Указана вспомогательная цена газа, поскольку сервис определения основной стоимости сейчас недоступен."
   },
   "eth_accounts": {
     "message": "Просмотр адресов ваших разрешенных счетов (обязательно)",
@@ -685,8 +779,17 @@
   "gasPrice": {
     "message": "Цена топлива (GWEI)"
   },
+  "gasPriceExcessive": {
+    "message": "Установлена неоправданно высокая плата за газ. Рекомендуем снизить ее."
+  },
+  "gasPriceExcessiveInput": {
+    "message": "Цена газа очень высокая"
+  },
   "gasPriceExtremelyLow": {
     "message": "Цена топлива очень низкая"
+  },
+  "gasPriceFetchFailed": {
+    "message": "Не удалось определить цену газа из-за ошибки сети."
   },
   "gasPriceInfoTooltipContent": {
     "message": "Цена топлива указывает количество Ether, которое вы готовы платить за каждую единицу топлива."
@@ -730,11 +833,18 @@
   "hardwareWalletConnected": {
     "message": "Аппаратный кошелек подключен"
   },
+  "hardwareWalletLegacyDescription": {
+    "message": "(Legacy)",
+    "description": "Text representing the MEW path"
+  },
+  "hardwareWalletSupportLinkConversion": {
+    "message": "нажмите здесь"
+  },
   "hardwareWallets": {
     "message": "Подключить аппаратный кошелек"
   },
   "hardwareWalletsMsg": {
-    "message": "Выберите аппаратный кошелек, который вы хотите использовать с MetaMask"
+    "message": "Выберите аппаратный кошелек, который хотите использовать с MetaMask."
   },
   "here": {
     "message": "здесь",
@@ -753,6 +863,9 @@
     "message": "Скрыть $1",
     "description": "$1 is the symbol for a token (e.g. 'DAI')"
   },
+  "hideZeroBalanceTokens": {
+    "message": "Скрыть токены без баланса"
+  },
   "history": {
     "message": "История"
   },
@@ -763,18 +876,28 @@
   "importAccount": {
     "message": "Импортировать счет"
   },
+  "importAccountLinkText": {
+    "message": "импортировать с использованием секретной фразы восстановления"
+  },
   "importAccountMsg": {
-    "message": " Импортированные счета не будут связаны с исходной фразой вашей изначально созданного счета MetaMask. Узнайте больше об импортированных счетах "
+    "message": " Импортированные счета не будут связаны с секретной фразой восстановления вашего изначально созданного счета MetaMask. Узнайте больше об импортированных счетах "
   },
   "importAccountSeedPhrase": {
-    "message": "Импортировать счет с исходной фразой"
+    "message": "Импортировать счет с секретной фразой восстановления"
   },
   "importWallet": {
     "message": "Импортировать кошелек"
   },
+  "importYourExisting": {
+    "message": "Импортируйте существующий кошелек, используя начальную секретную фразу восстановления"
+  },
   "imported": {
     "message": "Импортированный",
     "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "infuraBlockedNotification": {
+    "message": "MetaMask не удалось подключиться к хосту блокчейна. Узнать возможные причины можно $1.",
+    "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
   "initialTransactionConfirmed": {
     "message": "Ваша первоначальная транзакция была подтверждена сетью. Нажмите ОК, чтобы вернуться."
@@ -800,6 +923,9 @@
   "invalidBlockExplorerURL": {
     "message": "Недействительный URL-адрес проводника блока"
   },
+  "invalidChainIdTooBig": {
+    "message": "Недействительный идентификатор цепочки. Он слишком длинный."
+  },
   "invalidCustomNetworkAlertContent1": {
     "message": "Необходимо повторно ввести идентификатор цепочки для пользовательской сети «$1».",
     "description": "$1 is the name/identifier of the network."
@@ -824,7 +950,7 @@
     "message": "Неверный шлюз IPFS: Значение должно быть действительным URL"
   },
   "invalidNumber": {
-    "message": "Недопустимое число. Введите десятичное число или шестнадцатеричное число с префиксом \"0x\"."
+    "message": "Недопустимое число. Введите десятичное число или шестнадцатеричное число с префиксом “0x”."
   },
   "invalidNumberLeadingZeros": {
     "message": "Недопустимое число. Удалите все начальные нули."
@@ -833,7 +959,7 @@
     "message": "Недействительный URL-адрес RPC"
   },
   "invalidSeedPhrase": {
-    "message": "Неверная исходная фраза"
+    "message": "Недействительная секретная фраза восстановления"
   },
   "ipfsGateway": {
     "message": "Шлюз IPFS"
@@ -862,6 +988,21 @@
   },
   "ledgerAccountRestriction": {
     "message": "Вам необходимо использовать свой последний счет, прежде чем вы сможете добавить новый."
+  },
+  "ledgerLiveAdvancedSetting": {
+    "message": "Использовать Ledger Live"
+  },
+  "ledgerLiveAdvancedSettingDescription": {
+    "message": "Новое решение Ledger Live Bridge упрощает использование Ledger.  Доступно только в Chrome."
+  },
+  "ledgerLiveApp": {
+    "message": "Приложение Ledger Live"
+  },
+  "ledgerLocked": {
+    "message": "Не удалось подключиться к устройству Ledger. Убедитесь, что устройство разблокировано и приложение Ethereum открыто."
+  },
+  "ledgerTimeout": {
+    "message": "Ledger Live слишком долго не отвечает, или время ожидания подключения истекло. Убедитесь, что приложение Ledger Live открыто и устройство разблокировано."
   },
   "letsGoSetUp": {
     "message": "Да, давайте настроим!"
@@ -954,6 +1095,14 @@
   "metametricsOptInDescription": {
     "message": "MetaMask хотел бы собрать основные данные об использовании, чтобы лучше понять, как наши пользователи взаимодействуют с расширением. Эти данные будут использоваться для постоянного улучшения удобства и опыта использования нашего продукта и экосистемы Ethereum."
   },
+  "mismatchedChain": {
+    "message": "Сведения о сети для этого идентификатора цепочки не совпадают с указанными в записях. Мы рекомендуем $1, прежде чем продолжить.",
+    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
+  },
+  "mismatchedChainLinkText": {
+    "message": "проверить сведения о сети",
+    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
+  },
   "mobileSyncText": {
     "message": "Введите свой пароль, чтобы подтвердить ваш личность!"
   },
@@ -963,8 +1112,18 @@
   "myAccounts": {
     "message": "Мои счета"
   },
+  "name": {
+    "message": "Название"
+  },
   "needEtherInWallet": {
     "message": "Для взаимодействия с децентрализованными приложениями с помощью MetaMask вам понадобится Ether в вашем кошельке."
+  },
+  "needHelp": {
+    "message": "Нужна помощь? Обратитесь в $1",
+    "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
+  },
+  "needHelpLinkText": {
+    "message": "Поддержка MetaMask"
   },
   "needImportFile": {
     "message": "Вы должны выбрать файл для импорта.",
@@ -973,14 +1132,35 @@
   "negativeETH": {
     "message": "Невозможно отправить отрицательное количество ETH."
   },
+  "networkDetails": {
+    "message": "Сведения о сети"
+  },
   "networkName": {
     "message": "Имя сети"
+  },
+  "networkNameBSC": {
+    "message": "BSC"
+  },
+  "networkNameDefinition": {
+    "message": "Имя, связанное с этой сетью."
+  },
+  "networkNameEthereum": {
+    "message": "Ethereum"
+  },
+  "networkNameTestnet": {
+    "message": "Тестовая сеть"
   },
   "networkSettingsChainIdDescription": {
     "message": "Идентификатор цепочки используется для подписания транзакций. Он должен соответствовать идентификатору цепочки, возвращаемому сетью. Вы можете ввести десятичное число или шестнадцатеричное число с префиксом «0x», но мы будем отображать число в десятичном виде."
   },
   "networkSettingsDescription": {
     "message": "Добавление и редактирование пользовательских сетей RPC"
+  },
+  "networkURL": {
+    "message": "URL-адрес сети"
+  },
+  "networkURLDefinition": {
+    "message": "URL-адрес, используемый для доступа к этой сети."
   },
   "networks": {
     "message": "Сети"
@@ -1033,7 +1213,7 @@
     "message": "Для этого имени не задан адрес."
   },
   "noAlreadyHaveSeed": {
-    "message": "Нет, у меня уже есть исходная фраза"
+    "message": "Нет, у меня уже есть секретная фраза восстановления"
   },
   "noConversionRateAvailable": {
     "message": "Нет доступного курса обмена"
@@ -1050,6 +1230,9 @@
   "noWebcamFoundTitle": {
     "message": "Веб-камера не найдена"
   },
+  "nonce": {
+    "message": "Случайный код"
+  },
   "nonceField": {
     "message": "Настроить одноразовый номер транзакции"
   },
@@ -1064,6 +1247,42 @@
   },
   "notEnoughGas": {
     "message": "Недостаточно топлива"
+  },
+  "notifications1Description": {
+    "message": "Теперь пользователи MetaMask Mobile могут обменивать токены в своем мобильном кошельке. Отсканируйте QR-код, чтобы скачать мобильное приложение и начать обмен.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
+  },
+  "notifications1Title": {
+    "message": "Обмен на мобильном устройстве уже доступен!",
+    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
+  },
+  "notifications3ActionText": {
+    "message": "Подробнее",
+    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
+  },
+  "notifications3Description": {
+    "message": "Ознакомьтесь с методами безопасной работы в MetaMask и актуальными советами по безопасности на официальном сайте поддержки MetaMask.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
+  },
+  "notifications3Title": {
+    "message": "Следуйте рекомендациям по безопасности",
+    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
+  },
+  "notifications4ActionText": {
+    "message": "Начать обмен",
+    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
+  },
+  "notifications4Description": {
+    "message": "Получайте лучшие ценовые предложения на обмен токенов прямо в своем кошельке. Теперь через MetaMask можно взаимодействовать с несколькими децентрализованными агрегаторами обменов и профессиональными маркет-мейкерами в Binance Smart Chain.",
+    "description": "Description of a notification in the 'See What's New' popup."
+  },
+  "notifications4Title": {
+    "message": "Обменивайте токены в Binance Smart Chain",
+    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
+  },
+  "notifications5Description": {
+    "message": "Исходная фраза теперь называется секретной фразой восстановления.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
   "ofTextNofM": {
     "message": "из"
@@ -1081,11 +1300,11 @@
     "message": "Вкл."
   },
   "onboardingReturnNotice": {
-    "message": "\"$1\" закроет эту вкладку и вернется к $2",
+    "message": "Кнопка «$1» закрывает эту вкладку и возвращает на сайт $2",
     "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
-    "message": "Вредоносный сетевой провайдер Ethereum может дезинформировать о состоянии блокчейн и записывать ваши действия в сети. Добавляйте только те пользовательские сети, которым доверяете."
+    "message": "Вредоносный сетевой провайдер может дезинформировать о состоянии блокчейна и записывать ваши действия в сети. Добавляйте только те пользовательские сети, которым доверяете."
   },
   "onlyAvailableOnMainnet": {
     "message": "Доступно только в mainnet"
@@ -1106,7 +1325,7 @@
     "message": "Параметры"
   },
   "participateInMetaMetrics": {
-    "message": "Участвуйте в MetaMetrics"
+    "message": "Участие в MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
     "message": "Участвуйте в MetaMetrics, чтобы помочь нам улучшить его"
@@ -1153,7 +1372,7 @@
     "message": "Выберите Native, чтобы установить приоритет отображения значений в собственной валюте цепи (например, ETH). Выберите Fiat, чтобы установить приоритет отображения значений в выбранной валюте конвертации."
   },
   "privacyMsg": {
-    "message": "Политикой конфиденциальности"
+    "message": "Политика конфиденциальности"
   },
   "privateKey": {
     "message": "Закрытый ключ",
@@ -1170,6 +1389,9 @@
   },
   "provide": {
     "message": "Предоставить"
+  },
+  "publicAddress": {
+    "message": "Публичный адрес"
   },
   "queue": {
     "message": "Очередь"
@@ -1217,7 +1439,7 @@
     "message": "Удалить счет"
   },
   "removeAccountDescription": {
-    "message": "Этот счет будет удален из вашего кошелька. Перед продолжением убедитесь, что у вас есть исходная фраза или закрытый ключ для этой импортированного счета. Вы можете импортировать или снова создать счета из раскрывающегося списка. "
+    "message": "Этот счет будет удален из вашего кошелька. Перед продолжением убедитесь, что у вас есть секретная фраза восстановления или закрытый ключ для этой импортированного счета. Вы можете импортировать или снова создать счета из раскрывающегося списка. "
   },
   "requestsAwaitingAcknowledgement": {
     "message": "запросы, ожидающие подтверждения"
@@ -1232,13 +1454,13 @@
     "message": "Сбросить счет"
   },
   "resetAccountDescription": {
-    "message": "Сброс вашего счета удалит историю транзакций. Это не изменит остатки на ваших счетах и не потребует повторного ввода исходной фразы."
+    "message": "Сброс вашего счета удалит историю транзакций. Это не изменит остатки на ваших счетах и не потребует повторного ввода секретной фразы восстановления."
   },
   "restore": {
     "message": "Восстановить"
   },
   "restoreAccountWithSeed": {
-    "message": "Восстановите свой счет с помощью исходной фразы"
+    "message": "Восстановите свой счет с помощью секретной фразы восстановления"
   },
   "restoreWalletPreferences": {
     "message": "Найдена резервная копия ваших данных из $1. Хотите восстановить настройки кошелька?",
@@ -1251,13 +1473,13 @@
     "message": "Токен здесь повторно использует символ из другого токена, который вы смотрите, это может запутать или ввести в заблуждение."
   },
   "revealSeedWords": {
-    "message": "Раскрыть исходную фразу"
+    "message": "Показать секретную фразу восстановления"
   },
   "revealSeedWordsDescription": {
-    "message": "Если вы меняете браузер или переходите на другой компьютер, вам понадобится эта исходная фраза для доступа к своим счетам. Сохраните ее в безопасном секретном месте."
+    "message": "Если вы меняете браузер или переходите на другой компьютер, вам понадобится эта секретная фраза восстановления для доступа к своим счетам. Сохраните ее в безопасном секретном месте."
   },
   "revealSeedWordsTitle": {
-    "message": "Исходная фраза"
+    "message": "Секретная фраза восстановления"
   },
   "revealSeedWordsWarning": {
     "message": "Эти слова можно использовать для кражи всех ваших счетов."
@@ -1310,20 +1532,23 @@
   "secretBackupPhraseWarning": {
     "message": "ПРЕДУПРЕЖДЕНИЕ: Никогда не разглашайте резервную фразу. Любой, у кого есть эта фраза, может забрать ваш Ether навсегда."
   },
+  "secretPhrase": {
+    "message": "Введите здесь секретную фразу, чтобы восстановить хранилище."
+  },
   "securityAndPrivacy": {
     "message": "Безопасность и конфиденциальность"
   },
   "securitySettingsDescription": {
-    "message": "Настройки конфиденциальности и исходная фраза кошелька"
+    "message": "Настройки конфиденциальности и секретная фраза восстановления кошелька"
   },
   "seedPhrasePlaceholder": {
     "message": "Отделяйте каждое слово одним пробелом"
   },
   "seedPhrasePlaceholderPaste": {
-    "message": "Вставить исходную фразу из буфера обмена"
+    "message": "Вставить секретную фразу восстановления из буфера обмена"
   },
   "seedPhraseReq": {
-    "message": "Исходные фразы содержат 12, 15, 18, 21 или 24 слова"
+    "message": "Секретные фразы восстановления содержат 12, 15, 18, 21 или 24 слова"
   },
   "selectAHigherGasFee": {
     "message": "Выберите более высокую плату за топливо, чтобы ускорить обработку транзакции. *"
@@ -1337,8 +1562,15 @@
   "selectAnAccount": {
     "message": "Выберите счет"
   },
+  "selectAnAccountAlreadyConnected": {
+    "message": "Этот счет уже подключен к MetaMask"
+  },
   "selectAnAccountHelp": {
-    "message": "Выберите счет для просмотра в MetaMask"
+    "message": "Выберите счет для просмотра в MetaMask."
+  },
+  "selectAnAccountHelpDirections": {
+    "message": "Не видите свой счет? $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "selectEachPhrase": {
     "message": "Выберите каждую фразу, чтобы убедиться, что она верна."
@@ -1347,7 +1579,7 @@
     "message": "Выберите путь HD"
   },
   "selectPathHelp": {
-    "message": "Если вы не видите свои существующие книги счетов ниже, попробуйте переключить проход на \"Legacy (MEW / MyCrypto)\""
+    "message": "Если вы не видите имеющиеся счета Ledger ниже, попробуйте изменить путь на «Legacy (MEW / MyCrypto)»"
   },
   "selectType": {
     "message": "Выбрать тип"
@@ -1408,7 +1640,7 @@
     "message": "Показать закрытые ключи"
   },
   "showSeedPhrase": {
-    "message": "Показать исходную фразу"
+    "message": "Показать секретную фразу восстановления"
   },
   "sigRequest": {
     "message": "Запрос на подпись"
@@ -1480,6 +1712,27 @@
   "statusNotConnected": {
     "message": "Не подключен"
   },
+  "step1LedgerWallet": {
+    "message": "Скачать приложение Ledger"
+  },
+  "step1LedgerWalletMsg": {
+    "message": "Скачайте $1, настройте его и введите пароль для разблокировки.",
+    "description": "$1 represents the `ledgerLiveApp` localization value"
+  },
+  "step1TrezorWallet": {
+    "message": "Подключить кошелек Trezor"
+  },
+  "step1TrezorWalletMsg": {
+    "message": "Подключите кошелек напрямую к компьютеру. Для получения дополнительной информации об использовании аппаратного ключа $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
+  "step2LedgerWallet": {
+    "message": "Подключить кошелек Ledger"
+  },
+  "step2LedgerWalletMsg": {
+    "message": "Подключите кошелек напрямую к компьютеру.  Разблокируйте устройство Ledger и откройте приложение Ethereum. Для получения дополнительной информации об использовании аппаратного ключа $1.",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "storePhrase": {
     "message": "Сохраните эту фразу в диспетчере паролей, например в 1Password."
   },
@@ -1489,6 +1742,9 @@
   "submitted": {
     "message": "Отправлено"
   },
+  "support": {
+    "message": "Поддержка"
+  },
   "supportCenter": {
     "message": "Посетите наш центр поддержки"
   },
@@ -1496,10 +1752,14 @@
     "message": "Своп"
   },
   "swapAdvancedSlippageInfo": {
-    "message": "Если цена меняется в период между размещением вашего заказа и подтверждением, это называется «проскальзыванием». Ваш своп будет автоматически отменен, если проскальзывание превысит вашу настройку «максимального проскальзывания»."
+    "message": "Изменение цены в период между размещением заказа и подтверждением называется проскальзыванием. Ваш своп будет автоматически отменен, если проскальзывание превысит вашу настройку «максимального проскальзывания»."
   },
   "swapAggregator": {
     "message": "Агрегатор"
+  },
+  "swapAllowSwappingOf": {
+    "message": "Разрешите своп $1",
+    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
   },
   "swapAmountReceived": {
     "message": "Гарантированная сумма"
@@ -1515,6 +1775,9 @@
     "message": "Вам нужно еще $1 $2 для завершения этого свопа",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
+  "swapBetterQuoteAvailable": {
+    "message": "Есть лучшая котировка"
+  },
   "swapBuildQuotePlaceHolderText": {
     "message": "Нет доступных токенов соответствующих $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -1522,6 +1785,15 @@
   "swapCheckingQuote": {
     "message": "Проверка $1",
     "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
+  },
+  "swapConfirmWithHwWallet": {
+    "message": "Подтвердить с помощью аппаратного кошелька"
+  },
+  "swapContractDataDisabledErrorDescription": {
+    "message": "В приложении Ethereum на устройстве Ledger перейдите в раздел «Настройки» и разрешите использование данных о контракте. Затем попробуйте выполнить своп повторно."
+  },
+  "swapContractDataDisabledErrorTitle": {
+    "message": "На устройстве Ledger не включены данные о контракте"
   },
   "swapCustom": {
     "message": "специальный"
@@ -1549,6 +1821,10 @@
   "swapEstimatedNetworkFeesInfo": {
     "message": "Это оценочная сетевая комиссия, которая будет использована для завершения вашего свопа. Фактическая сумма может меняться в зависимости от условий сети."
   },
+  "swapFailedErrorDescriptionWithSupportLink": {
+    "message": "Иногда транзакции завершаются неудачей. Мы рады помочь вам в таких случаях. Если проблема не исчезнет, обратитесь в нашу службу поддержки на сайте $1.",
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
   "swapFailedErrorTitle": {
     "message": "Своп не удался"
   },
@@ -1564,8 +1840,15 @@
   "swapFinalizing": {
     "message": "Завершение..."
   },
+  "swapFromTo": {
+    "message": "Своп $1 на $2",
+    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
+  },
+  "swapGasFeesSplit": {
+    "message": "Плата за газ, указанная на предыдущем экране, распределяется между этими двумя транзакциями."
+  },
   "swapHighSlippageWarning": {
-    "message": "Величина проскальзывания очень велика. Убедитесь, что вы знаете, что делаете!"
+    "message": "Величина проскальзывания очень велика."
   },
   "swapLowSlippageError": {
     "message": "Транзакции могут завершиться неудачей, максимальное проскальзывание слишком мало."
@@ -1584,8 +1867,12 @@
     "message": "Комиссия MetaMask"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "Мы всегда находим лучшую цену из лучших источников ликвидности. Комиссия в размере $1% автоматически включается в каждую котировку на поддержку текущих разработок, чтобы сделать MetaMask еще лучше.",
+    "message": "Мы всегда находим лучшую цену из лучших источников ликвидности. В эту котировку автоматически включается комиссия в размере $1%.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+  },
+  "swapNQuotes": {
+    "message": "Котировок: $1",
+    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapNetworkFeeSummary": {
     "message": "Сетевая комиссия покрывает стоимость обработки вашего свопа и его хранения в сети $1. MetaMask не получает прибыли от этой комиссии."
@@ -1598,6 +1885,14 @@
     "message": "Ваш $1 будет добавлен к вашему счету после обработки этой транзакции.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
+  "swapPriceDifference": {
+    "message": "Вы собираетесь обменять $1 $2 (~$3) на $4 $5 (~$6).",
+    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
+  },
+  "swapPriceDifferenceTitle": {
+    "message": "Разница в цене составляет ~$1%",
+    "description": "$1 is a number (ex: 1.23) that represents the price difference."
+  },
   "swapProcessing": {
     "message": "Обработка"
   },
@@ -1605,7 +1900,7 @@
     "message": "Детали котировки"
   },
   "swapQuoteDetailsSlippageInfo": {
-    "message": "Если цена меняется в период между размещением вашего заказа и подтверждением, это называется \"проскальзыванием\". Ваш своп будет автоматически отменен, если проскальзывание превысит вашу настройку \"максимального проскальзывания\"."
+    "message": "Изменение цены в период между размещением заказа и подтверждением называется проскальзыванием. Своп будет автоматически отменен, если фактическое проскальзывание превысит установленное допустимое значение."
   },
   "swapQuoteIncludesRate": {
     "message": "Котировка включает $1% MetaMask fee",
@@ -1645,6 +1940,9 @@
   "swapRequestForQuotation": {
     "message": "Запрос котировки"
   },
+  "swapReviewSwap": {
+    "message": "Проверить своп"
+  },
   "swapSearchForAToken": {
     "message": "Поиск токена"
   },
@@ -1660,8 +1958,8 @@
   "swapSelectQuotePopoverDescription": {
     "message": "Ниже приведены все котировки, собранные из нескольких источников ликвидности."
   },
-  "swapSlippageTooLow": {
-    "message": "Проскальзывание должно быть больше нуля"
+  "swapSlippageNegative": {
+    "message": "Проскальзывание должно быть больше или равно нулю"
   },
   "swapSource": {
     "message": "Источник ликвидности"
@@ -1681,22 +1979,46 @@
   "swapThisWillAllowApprove": {
     "message": "Это позволит обмен $1."
   },
+  "swapToConfirmWithHwWallet": {
+    "message": "подтвердить с помощью аппаратного кошелька"
+  },
   "swapTokenAvailable": {
     "message": "Ваш $1 был добавлен в ваш счет.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
+  },
+  "swapTokenBalanceUnavailable": {
+    "message": "Не удалось получить количество токенов $1 на балансе",
+    "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
   },
   "swapTokenToToken": {
     "message": "Своп $1 на $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
+  "swapTokenVerificationMessage": {
+    "message": "Всегда проверяйте адрес токена на $1.",
+    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
+  },
+  "swapTokenVerificationOnlyOneSource": {
+    "message": "Токен проверен только в 1 источнике."
+  },
+  "swapTokenVerificationSources": {
+    "message": "Токен проверен в таком количестве источников: $1.",
+    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
+  },
   "swapTransactionComplete": {
     "message": "Транзакция завершена"
+  },
+  "swapTwoTransactions": {
+    "message": "2 транзакции"
   },
   "swapUnknown": {
     "message": "Неизвестный"
   },
+  "swapUsingBestQuote": {
+    "message": "Используется лучшая котировка"
+  },
   "swapVerifyTokenExplanation": {
-    "message": "Несколько токенов могут использовать одно и то же имя и символ. Проверьте $1, чтобы убедиться, что это именно тот токен, который вы ищете.",
+    "message": "Несколько токенов могут использовать одно и то же имя и символ. Убедитесь, что это именно тот токен, который вы ищете, на $1.",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
   "swapViewToken": {
@@ -1712,8 +2034,11 @@
   "swapsAdvancedOptions": {
     "message": "Расширенные опции"
   },
+  "swapsExcessiveSlippageWarning": {
+    "message": "Величина проскальзывания очень велика. Сделка будет невыгодной. Снизьте допустимое проскальзывание ниже 15%."
+  },
   "swapsMaxSlippage": {
-    "message": "Максимальное проскальзывание"
+    "message": "Допустимое проскальзывание"
   },
   "swapsNotEnoughForTx": {
     "message": "Недостаточно $1 для завершения этой транзакции",
@@ -1722,11 +2047,29 @@
   "swapsViewInActivity": {
     "message": "Посмотреть в журнале активности"
   },
+  "switchEthereumChainConfirmationDescription": {
+    "message": "В результате сеть, выбранная в MetaMask, будет переключена на ранее добавленную:"
+  },
+  "switchEthereumChainConfirmationTitle": {
+    "message": "Разрешить этому сайту переключить сеть?"
+  },
+  "switchLedgerPaths": {
+    "message": "Переключить пути Ledger"
+  },
+  "switchLedgerPathsText": {
+    "message": "Выберите путь Ledger для просмотра других счетов"
+  },
+  "switchNetwork": {
+    "message": "Переключить сеть"
+  },
   "switchNetworks": {
     "message": "Переключить сети"
   },
   "switchToThisAccount": {
     "message": "Переключить на этот счет"
+  },
+  "switchingNetworksCancelsPendingConfirmations": {
+    "message": "В случае переключения сетей все ожидающие подтверждения будут отменены"
   },
   "symbol": {
     "message": "Символ"
@@ -1735,7 +2078,7 @@
     "message": "Символ должен состоять из 11 или менее знаков."
   },
   "syncWithMobile": {
-    "message": "Синхронизировать с мобильным приложением"
+    "message": "Синхронизировать с мобильным устройством"
   },
   "syncWithMobileBeCareful": {
     "message": "Убедитесь, что никто не смотрит на ваш экран, когда вы сканируете этот код"
@@ -1744,7 +2087,7 @@
     "message": "Ваши данные были успешно синхронизированы. Наслаждайтесь мобильным приложением MetaMask!"
   },
   "syncWithMobileDesc": {
-    "message": "Вы можете синхронизировать свои счета и информацию со своим мобильным устройством. Откройте мобильное приложение MetaMask, перейдите в \"Настройки\" и нажмите \"Синхронизировать из расширения браузера\""
+    "message": "Вы можете синхронизировать свои счета и информацию со своим мобильным устройством. Откройте мобильное приложение MetaMask, перейдите в раздел «Настройки» и нажмите «Синхронизировать из расширения браузера»"
   },
   "syncWithMobileDescNewUsers": {
     "message": "Если вы открываете приложение MetaMask Mobile в первый раз, просто следуйте инструкциям на телефоне."
@@ -1753,7 +2096,7 @@
     "message": "Отсканируйте этот код с помощью мобильного приложения MetaMask"
   },
   "syncWithMobileTitle": {
-    "message": "Синхронизировать с мобильным приложением"
+    "message": "Синхронизировать с мобильным устройством"
   },
   "syncWithThreeBox": {
     "message": "Синхронизация данных с 3Box (экспериментальная)"
@@ -1774,7 +2117,7 @@
     "message": "Тестовый кран"
   },
   "thisWillCreate": {
-    "message": "Это создаст новый кошелек и начальную фразу"
+    "message": "Это создаст новый кошелек и секретную фразу восстановления"
   },
   "tips": {
     "message": "Советы"
@@ -1797,6 +2140,9 @@
   },
   "tokenContractAddress": {
     "message": "Адрес контракта токена"
+  },
+  "tokenDecimalFetchFailed": {
+    "message": "Укажите число десятичных знаков токена."
   },
   "tokenSymbol": {
     "message": "Символ токена"
@@ -1900,6 +2246,14 @@
   "unlockMessage": {
     "message": "Ожидание децентрализованной сети"
   },
+  "unrecognizedChain": {
+    "message": "Эта пользовательская сеть не распознана. Мы рекомендуем $1, прежде чем продолжить",
+    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
+  },
+  "unrecognizedChainLinkText": {
+    "message": "проверить сведения о сети",
+    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
+  },
   "updatedWithDate": {
     "message": "Обновлено $1"
   },
@@ -1921,6 +2275,10 @@
   "userName": {
     "message": "Имя пользователя"
   },
+  "verifyThisTokenDecimalOn": {
+    "message": "Число десятичных знаков токена можно найти на $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
   "verifyThisTokenOn": {
     "message": "Проверить этот токен на $1",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -1928,8 +2286,14 @@
   "viewAccount": {
     "message": "Посмотреть счет"
   },
+  "viewAllDetails": {
+    "message": "Просмотреть все сведения"
+  },
   "viewContact": {
     "message": "Посмотреть контакт"
+  },
+  "viewMore": {
+    "message": "Посмотреть больше"
   },
   "viewOnCustomBlockExplorer": {
     "message": "Посмотреть на $1"
@@ -1947,13 +2311,20 @@
     "message": "наше руководство по подключению аппаратного кошелька"
   },
   "walletSeed": {
-    "message": "Исходная фраза"
+    "message": "Секретная фраза восстановления"
+  },
+  "walletSeedRestore": {
+    "message": "Секретная фраза восстановления кошелька"
   },
   "welcome": {
     "message": "Добро пожаловать в MetaMask"
   },
   "welcomeBack": {
     "message": "Добро пожаловать обратно!"
+  },
+  "whatsNew": {
+    "message": "Узнайте что нового",
+    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "Что это?"
@@ -1965,6 +2336,10 @@
     "message": "$1 из $2",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
+  "xOfYPending": {
+    "message": "$1 из $2 в ожидании",
+    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
+  },
   "yesLetsTry": {
     "message": "Да, давайте попробуем"
   },
@@ -1975,7 +2350,7 @@
     "message": "Вы подписываете"
   },
   "yourPrivateSeedPhrase": {
-    "message": "Ваша личная исходная фраза"
+    "message": "Ваша личная секретная фраза восстановления"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Нулевая цена на топливо при ускорении"

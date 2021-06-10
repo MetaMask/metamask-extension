@@ -7,24 +7,24 @@ import { getEnvironmentType } from '../app/scripts/lib/util';
 import { ALERT_TYPES } from '../shared/constants/alerts';
 import { SENTRY_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
-import Root from './app/pages';
-import * as actions from './app/store/actions';
-import configureStore from './app/store/store';
-import txHelper from './lib/tx-helper';
+import * as actions from './store/actions';
+import configureStore from './store/store';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
-} from './app/helpers/utils/i18n-helper';
-import switchDirection from './app/helpers/utils/switch-direction';
+} from './helpers/utils/i18n-helper';
+import switchDirection from './helpers/utils/switch-direction';
 import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
-} from './app/selectors';
-import { ALERT_STATE } from './app/ducks/alerts';
+} from './selectors';
+import { ALERT_STATE } from './ducks/alerts';
 import {
   getUnconnectedAccountAlertEnabledness,
   getUnconnectedAccountAlertShown,
-} from './app/ducks/metamask/metamask';
+} from './ducks/metamask/metamask';
+import Root from './pages';
+import txHelper from './helpers/utils/tx-helper';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn');
 

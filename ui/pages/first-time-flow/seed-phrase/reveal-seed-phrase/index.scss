@@ -1,0 +1,76 @@
+.reveal-seed-phrase {
+  @media screen and (max-width: 576px) {
+    display: flex;
+    flex-direction: column;
+    width: 96%;
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+
+  &__secret {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    border: 1px solid #cdcdcd;
+    border-radius: 6px;
+    background-color: $white;
+    padding: 18px;
+    margin-top: 36px;
+    max-width: 350px;
+  }
+
+  &__secret-words {
+    @include H4;
+
+    width: 310px;
+    text-align: center;
+
+    &--hidden {
+      filter: blur(5px);
+    }
+  }
+
+  &__secret-blocker {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 0 18px;
+    cursor: pointer;
+  }
+
+  &__reveal-button {
+    @include H7;
+
+    color: $white;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  &__export-text {
+    color: $primary-blue;
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  button {
+    margin-top: 0;
+  }
+
+  &__buttons {
+    display: flex;
+    margin-top: 10px;
+
+    .first-time-flow__button:last-of-type {
+      margin-left: 10px;
+    }
+  }
+}

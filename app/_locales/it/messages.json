@@ -1582,9 +1582,6 @@
   "swapFinalizing": {
     "message": "Finalizzando..."
   },
-  "swapHighSlippageWarning": {
-    "message": "L'importo di slippage è molto alto. Assicurati di sapere cosa stai facendo!"
-  },
   "swapLowSlippageError": {
     "message": "La transazione può fallire, il massimo slippage è troppo basso."
   },
@@ -1701,9 +1698,6 @@
   },
   "swapSelectQuotePopoverDescription": {
     "message": "Sotto trovi tutte le quotazioni raccolte da multiple sorgenti di liquidità."
-  },
-  "swapSlippageTooLow": {
-    "message": "Lo slippage deve essere maggiore di zero"
   },
   "swapSource": {
     "message": "Sorgente di liquidità"
