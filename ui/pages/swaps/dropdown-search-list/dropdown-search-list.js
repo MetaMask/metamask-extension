@@ -5,6 +5,7 @@ import React, {
   useContext,
   useRef,
 } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
@@ -12,6 +13,16 @@ import { I18nContext } from '../../../contexts/i18n';
 import SearchableItemList from '../searchable-item-list';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import UrlIcon from '../../../components/ui/url-icon';
+import ActionableMessage from '../actionable-message';
+import ImportToken from '../import-token';
+import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
+import {
+  isHardwareWallet,
+  getHardwareWalletType,
+  getCurrentChainId,
+  getRpcPrefsForCurrentProvider,
+} from '../../../selectors/selectors';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 
 export default function DropdownSearchList({
   searchListClassName,
@@ -31,10 +42,31 @@ export default function DropdownSearchList({
   hideRightLabels,
   hideItemIf,
   listContainerClassName,
+  shouldSearchForImports,
 }) {
   const t = useContext(I18nContext);
   const [isOpen, setIsOpen] = useState(false);
+  const [isImportTokenModalOpen, setIsImportTokenModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(startingItem);
+  const [tokenForImport, setTokenForImport] = useState(null);
+
+  const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const hardwareWalletType = useSelector(getHardwareWalletType);
+  const chainId = useSelector(getCurrentChainId);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+
+  const tokenImportedEvent = useNewMetricEvent({
+    event: 'Token Imported',
+    sensitiveProperties: {
+      symbol: tokenForImport?.symbol,
+      address: tokenForImport?.address,
+      chain_id: chainId,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
+    },
+    category: 'swaps',
+  });
+
   const close = useCallback(() => {
     setIsOpen(false);
     onClose?.();
@@ -48,6 +80,25 @@ export default function DropdownSearchList({
     },
     [onSelect, close],
   );
+
+  const onOpenImportTokenModalClick = (item) => {
+    setTokenForImport(item);
+    setIsImportTokenModalOpen(true);
+  };
+
+  const onImportTokenClick = () => {
+    tokenImportedEvent();
+    // Only when a user confirms import of a token, we add it and show it in a dropdown.
+    onSelect?.(tokenForImport);
+    setSelectedItem(tokenForImport);
+    setTokenForImport(null);
+    close();
+  };
+
+  const onImportTokenCloseClick = () => {
+    setIsImportTokenModalOpen(false);
+    close();
+  };
 
   const onClickSelector = useCallback(() => {
     if (!isOpen) {
@@ -81,6 +132,34 @@ export default function DropdownSearchList({
     }
   };
 
+  const blockExplorerLink =
+    rpcPrefs.blockExplorerUrl ??
+    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
+    null;
+
+  const blockExplorerLabel = rpcPrefs.blockExplorerUrl
+    ? new URL(blockExplorerLink).hostname
+    : t('etherscan');
+
+  const blockExplorerLinkClickedEvent = useNewMetricEvent({
+    category: 'Swaps',
+    event: 'Clicked Block Explorer Link',
+    properties: {
+      link_type: 'Token Tracker',
+      action: 'Verify Contract Address',
+      block_explorer_domain: blockExplorerLink
+        ? new URL(blockExplorerLink)?.hostname
+        : '',
+    },
+  });
+
+  const importTokenProps = {
+    onImportTokenCloseClick,
+    onImportTokenClick,
+    setIsImportTokenModalOpen,
+    tokenForImport,
+  };
+
   return (
     <div
       className={classnames('dropdown-search-list', className)}
@@ -88,6 +167,9 @@ export default function DropdownSearchList({
       onKeyUp={onKeyUp}
       tabIndex="0"
     >
+      {tokenForImport && isImportTokenModalOpen && (
+        <ImportToken {...importTokenProps} />
+      )}
       {!isOpen && (
         <div
           className={classnames(
@@ -141,6 +223,32 @@ export default function DropdownSearchList({
               ) : (
                 <div className="dropdown-search-list__placeholder">
                   {t('swapBuildQuotePlaceHolderText', [searchQuery])}
+                  <div
+                    tabIndex="0"
+                    className="searchable-item-list__item searchable-item-list__item--add-token"
+                    key="searchable-item-list-item-last"
+                  >
+                    <ActionableMessage
+                      message={
+                        blockExplorerLink &&
+                        t('addCustomTokenByContractAddress', [
+                          <a
+                            key="dropdown-search-list__etherscan-link"
+                            onClick={() => {
+                              blockExplorerLinkClickedEvent();
+                              global.platform.openTab({
+                                url: blockExplorerLink,
+                              });
+                            }}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {blockExplorerLabel}
+                          </a>,
+                        ])
+                      }
+                    />
+                  </div>
                 </div>
               )
             }
@@ -148,6 +256,7 @@ export default function DropdownSearchList({
             fuseSearchKeys={fuseSearchKeys}
             defaultToAll={defaultToAll}
             onClickItem={onClickItem}
+            onOpenImportTokenModalClick={onOpenImportTokenModalClick}
             maxListItems={maxListItems}
             className={classnames(
               'dropdown-search-list__token-container',
@@ -159,6 +268,7 @@ export default function DropdownSearchList({
             hideRightLabels={hideRightLabels}
             hideItemIf={hideItemIf}
             listContainerClassName={listContainerClassName}
+            shouldSearchForImports={shouldSearchForImports}
           />
           <div
             className="dropdown-search-list__close-area"
@@ -197,4 +307,5 @@ DropdownSearchList.propTypes = {
   hideRightLabels: PropTypes.bool,
   hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
+  shouldSearchForImports: PropTypes.bool,
 };

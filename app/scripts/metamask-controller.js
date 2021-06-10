@@ -20,6 +20,7 @@ import contractMap from '@metamask/contract-metadata';
 import {
   AddressBookController,
   ApprovalController,
+  ControllerMessenger,
   CurrencyRateController,
   PhishingController,
   NotificationController,
@@ -28,6 +29,7 @@ import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { MILLISECOND } from '../../shared/constants/time';
 
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
@@ -81,7 +83,10 @@ export default class MetamaskController extends EventEmitter {
 
     this.defaultMaxListeners = 20;
 
-    this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200);
+    this.sendUpdate = debounce(
+      this.privateSendUpdate.bind(this),
+      MILLISECOND * 200,
+    );
     this.opts = opts;
     this.extension = opts.extension;
     this.platform = opts.platform;
@@ -96,8 +101,13 @@ export default class MetamaskController extends EventEmitter {
     this.getRequestAccountTabIds = opts.getRequestAccountTabIds;
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds;
 
+    const controllerMessenger = new ControllerMessenger();
+
     // observable state store
-    this.store = new ComposableObservableStore(initState);
+    this.store = new ComposableObservableStore({
+      state: initState,
+      controllerMessenger,
+    });
 
     // external connections by origin
     // Do not modify directly. Use the associated methods.
@@ -157,10 +167,14 @@ export default class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
     });
 
-    this.currencyRateController = new CurrencyRateController(
-      { includeUSDRate: true },
-      initState.CurrencyController,
-    );
+    const currencyRateMessenger = controllerMessenger.getRestricted({
+      name: 'CurrencyRateController',
+    });
+    this.currencyRateController = new CurrencyRateController({
+      includeUSDRate: true,
+      messenger: currencyRateMessenger,
+      state: initState.CurrencyController,
+    });
 
     this.phishingController = new PhishingController();
 
@@ -222,10 +236,12 @@ export default class MetamaskController extends EventEmitter {
         this.accountTracker.start();
         this.incomingTransactionsController.start();
         this.tokenRatesController.start();
+        this.currencyRateController.start();
       } else {
         this.accountTracker.stop();
         this.incomingTransactionsController.stop();
         this.tokenRatesController.stop();
+        this.currencyRateController.stop();
       }
     });
 
@@ -364,18 +380,15 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
-      this.setCurrentCurrency(
-        this.currencyRateController.state.currentCurrency,
-        (error) => {
-          if (error) {
-            throw error;
-          }
-        },
-      );
+    this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, async () => {
+      const { ticker } = this.networkController.getProviderConfig();
+      try {
+        await this.currencyRateController.setNativeCurrency(ticker);
+      } catch (error) {
+        // TODO: Handle failure to get conversion rate more gracefully
+        console.error(error);
+      }
     });
-    const { ticker } = this.networkController.getProviderConfig();
-    this.currencyRateController.configure({ nativeCurrency: ticker ?? 'ETH' });
     this.networkController.lookupNetwork();
     this.messageManager = new MessageManager();
     this.personalMessageManager = new PersonalMessageManager();
@@ -439,33 +452,37 @@ export default class MetamaskController extends EventEmitter {
       NotificationController: this.notificationController,
     });
 
-    this.memStore = new ComposableObservableStore(null, {
-      AppStateController: this.appStateController.store,
-      NetworkController: this.networkController.store,
-      AccountTracker: this.accountTracker.store,
-      TxController: this.txController.memStore,
-      CachedBalancesController: this.cachedBalancesController.store,
-      TokenRatesController: this.tokenRatesController.store,
-      MessageManager: this.messageManager.memStore,
-      PersonalMessageManager: this.personalMessageManager.memStore,
-      DecryptMessageManager: this.decryptMessageManager.memStore,
-      EncryptionPublicKeyManager: this.encryptionPublicKeyManager.memStore,
-      TypesMessageManager: this.typedMessageManager.memStore,
-      KeyringController: this.keyringController.memStore,
-      PreferencesController: this.preferencesController.store,
-      MetaMetricsController: this.metaMetricsController.store,
-      AddressBookController: this.addressBookController,
-      CurrencyController: this.currencyRateController,
-      AlertController: this.alertController.store,
-      OnboardingController: this.onboardingController.store,
-      IncomingTransactionsController: this.incomingTransactionsController.store,
-      PermissionsController: this.permissionsController.permissions,
-      PermissionsMetadata: this.permissionsController.store,
-      ThreeBoxController: this.threeBoxController.store,
-      SwapsController: this.swapsController.store,
-      EnsController: this.ensController.store,
-      ApprovalController: this.approvalController,
-      NotificationController: this.notificationController,
+    this.memStore = new ComposableObservableStore({
+      config: {
+        AppStateController: this.appStateController.store,
+        NetworkController: this.networkController.store,
+        AccountTracker: this.accountTracker.store,
+        TxController: this.txController.memStore,
+        CachedBalancesController: this.cachedBalancesController.store,
+        TokenRatesController: this.tokenRatesController.store,
+        MessageManager: this.messageManager.memStore,
+        PersonalMessageManager: this.personalMessageManager.memStore,
+        DecryptMessageManager: this.decryptMessageManager.memStore,
+        EncryptionPublicKeyManager: this.encryptionPublicKeyManager.memStore,
+        TypesMessageManager: this.typedMessageManager.memStore,
+        KeyringController: this.keyringController.memStore,
+        PreferencesController: this.preferencesController.store,
+        MetaMetricsController: this.metaMetricsController.store,
+        AddressBookController: this.addressBookController,
+        CurrencyController: this.currencyRateController,
+        AlertController: this.alertController.store,
+        OnboardingController: this.onboardingController.store,
+        IncomingTransactionsController: this.incomingTransactionsController
+          .store,
+        PermissionsController: this.permissionsController.permissions,
+        PermissionsMetadata: this.permissionsController.store,
+        ThreeBoxController: this.threeBoxController.store,
+        SwapsController: this.swapsController.store,
+        EnsController: this.ensController.store,
+        ApprovalController: this.approvalController,
+        NotificationController: this.notificationController,
+      },
+      controllerMessenger,
     });
     this.memStore.subscribe(this.sendUpdate.bind(this));
 
@@ -649,7 +666,11 @@ export default class MetamaskController extends EventEmitter {
     return {
       // etc
       getState: (cb) => cb(null, this.getState()),
-      setCurrentCurrency: this.setCurrentCurrency.bind(this),
+      setCurrentCurrency: nodeify(
+        this.currencyRateController.setCurrentCurrency.bind(
+          this.currencyRateController,
+        ),
+      ),
       setUseBlockie: this.setUseBlockie.bind(this),
       setUseNonceField: this.setUseNonceField.bind(this),
       setUsePhishDetect: this.setUsePhishDetect.bind(this),
@@ -761,6 +782,14 @@ export default class MetamaskController extends EventEmitter {
       ),
       setConnectedStatusPopoverHasBeenShown: nodeify(
         this.appStateController.setConnectedStatusPopoverHasBeenShown,
+        this.appStateController,
+      ),
+      setRecoveryPhraseReminderHasBeenShown: nodeify(
+        this.appStateController.setRecoveryPhraseReminderHasBeenShown,
+        this.appStateController,
+      ),
+      setRecoveryPhraseReminderLastShown: nodeify(
+        this.appStateController.setRecoveryPhraseReminderLastShown,
         this.appStateController,
       ),
 
@@ -2510,29 +2539,6 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
 
   // Log blocks
-
-  /**
-   * A method for setting the user's preferred display currency.
-   * @param {string} currencyCode - The code of the preferred currency.
-   * @param {Function} cb - A callback function returning currency info.
-   */
-  setCurrentCurrency(currencyCode, cb) {
-    const { ticker } = this.networkController.getProviderConfig();
-    try {
-      const currencyState = {
-        nativeCurrency: ticker,
-        currentCurrency: currencyCode,
-      };
-      this.currencyRateController.update(currencyState);
-      this.currencyRateController.configure(currencyState);
-      cb(null);
-      return;
-    } catch (err) {
-      cb(err);
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
-  }
 
   /**
    * A method for selecting a custom URL for an ethereum RPC provider and updating it

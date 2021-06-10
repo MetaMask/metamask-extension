@@ -1,6 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
+import { waitFor } from '@testing-library/react';
 import { mountWithRouter } from '../../../../test/lib/render-helpers';
 import { ROPSTEN_CHAIN_ID } from '../../../../shared/constants/network';
 import MenuBar from './menu-bar';
@@ -30,21 +31,25 @@ const initState = {
 const mockStore = configureStore();
 
 describe('MenuBar', () => {
-  it('opens account detail menu when account options is clicked', () => {
+  it('opens account detail menu when account options is clicked', async () => {
     const store = mockStore(initState);
     const wrapper = mountWithRouter(
       <Provider store={store}>
         <MenuBar />
       </Provider>,
     );
-    expect(!wrapper.exists('AccountOptionsMenu')).toStrictEqual(true);
+    await waitFor(() =>
+      expect(!wrapper.exists('AccountOptionsMenu')).toStrictEqual(true),
+    );
     const accountOptions = wrapper.find('.menu-bar__account-options');
     accountOptions.simulate('click');
     wrapper.update();
-    expect(wrapper.exists('AccountOptionsMenu')).toStrictEqual(true);
+    await waitFor(() =>
+      expect(wrapper.exists('AccountOptionsMenu')).toStrictEqual(true),
+    );
   });
 
-  it('sets accountDetailsMenuOpen to false when closed', () => {
+  it('sets accountDetailsMenuOpen to false when closed', async () => {
     const store = mockStore(initState);
     const wrapper = mountWithRouter(
       <Provider store={store}>
@@ -54,10 +59,14 @@ describe('MenuBar', () => {
     const accountOptions = wrapper.find('.menu-bar__account-options');
     accountOptions.simulate('click');
     wrapper.update();
-    expect(wrapper.exists('AccountOptionsMenu')).toStrictEqual(true);
+    await waitFor(() =>
+      expect(wrapper.exists('AccountOptionsMenu')).toStrictEqual(true),
+    );
     const accountDetailsMenu = wrapper.find('AccountOptionsMenu');
-    accountDetailsMenu.prop('onClose')();
-    wrapper.update();
-    expect(!wrapper.exists('AccountOptionsMenu')).toStrictEqual(true);
+    await waitFor(() => {
+      accountDetailsMenu.prop('onClose')();
+      wrapper.update();
+      expect(!wrapper.exists('AccountOptionsMenu')).toStrictEqual(true);
+    });
   });
 });

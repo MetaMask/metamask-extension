@@ -2,18 +2,19 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import contractMap from '@metamask/contract-metadata';
 import BigNumber from 'bignumber.js';
-import { isEqual, shuffle } from 'lodash';
+import { isEqual, shuffle, uniqBy } from 'lodash';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getTokenExchangeRates,
-  getConversionRate,
   getCurrentCurrency,
   getSwapsDefaultToken,
   getCurrentChainId,
 } from '../selectors';
+import { getConversionRate } from '../ducks/metamask/metamask';
+
 import { getSwapsTokens } from '../ducks/swaps/swaps';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { useEqualityCheck } from './useEqualityCheck';
 
 const tokenList = shuffle(
@@ -119,7 +120,12 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
       others: [],
     };
 
-    memoizedTokensToSearch.forEach((token) => {
+    const memoizedSwapsAndUserTokensWithoutDuplicities = uniqBy(
+      [...memoizedTokensToSearch, ...memoizedUsersToken],
+      'address',
+    );
+
+    memoizedSwapsAndUserTokensWithoutDuplicities.forEach((token) => {
       const renderableDataToken = getRenderableTokenData(
         { ...usersTokensAddressMap[token.address], ...token },
         tokenConversionRates,
@@ -129,8 +135,7 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
       );
       if (
         isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
-        (usersTokensAddressMap[token.address] &&
-          Number(renderableDataToken.balance ?? 0) !== 0)
+        usersTokensAddressMap[token.address]
       ) {
         tokensToSearchBuckets.owned.push(renderableDataToken);
       } else if (memoizedTopTokens[token.address]) {

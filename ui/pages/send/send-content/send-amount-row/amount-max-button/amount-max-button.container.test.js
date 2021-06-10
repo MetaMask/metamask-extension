@@ -1,8 +1,10 @@
 import sinon from 'sinon';
 
-import { setMaxModeTo, updateSendAmount } from '../../../../../store/actions';
-
-import { updateSendErrors } from '../../../../../ducks/send/send.duck';
+import {
+  updateSendErrors,
+  setMaxModeTo,
+  updateSendAmount,
+} from '../../../../../ducks/send/send.duck';
 
 let mapStateToProps;
 let mapDispatchToProps;
@@ -28,11 +30,9 @@ jest.mock('./amount-max-button.utils.js', () => ({
   calcMaxAmount: (mockObj) => mockObj.val + 1,
 }));
 
-jest.mock('../../../../../store/actions', () => ({
+jest.mock('../../../../../ducks/send/send.duck', () => ({
   setMaxModeTo: jest.fn(),
   updateSendAmount: jest.fn(),
-}));
-jest.mock('../../../../../ducks/send/send.duck', () => ({
   updateSendErrors: jest.fn(),
 }));
 

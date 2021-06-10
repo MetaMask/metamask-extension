@@ -150,21 +150,6 @@ const state = {
       },
     ],
     selectedAddress: '0xd85a4b6a394794842887b8284293d69163007bbb',
-    send: {
-      gasLimit: '0xFFFF',
-      gasPrice: '0xaa',
-      gasTotal: '0xb451dc41b578',
-      tokenBalance: 3434,
-      from: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
-      to: '0x987fedabc',
-      amount: '0x080',
-      memo: '',
-      errors: {
-        someError: null,
-      },
-      maxModeOn: false,
-      editingTransactionId: 97531,
-    },
     unapprovedTxs: {
       4768706228115573: {
         id: 4768706228115573,
@@ -210,8 +195,19 @@ const state = {
   identities: {},
   send: {
     fromDropdownOpen: false,
-    toDropdownOpen: false,
-    errors: { someError: null },
+    gasLimit: '0xFFFF',
+    gasPrice: '0xaa',
+    gasTotal: '0xb451dc41b578',
+    tokenBalance: 3434,
+    from: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+    to: '0x987fedabc',
+    amount: '0x080',
+    memo: '',
+    errors: {
+      someError: null,
+    },
+    maxModeOn: false,
+    editingTransactionId: 97531,
   },
 };
 

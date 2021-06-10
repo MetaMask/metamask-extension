@@ -4,11 +4,11 @@ import {
   formatCurrency,
   getValueFromWeiHex,
 } from '../helpers/utils/confirm-tx.util';
+import { getCurrentCurrency } from '../selectors';
 import {
-  getCurrentCurrency,
   getConversionRate,
   getNativeCurrency,
-} from '../selectors';
+} from '../ducks/metamask/metamask';
 
 /**
  * Defines the shape of the options parameter for useCurrencyDisplay

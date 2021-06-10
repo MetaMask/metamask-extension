@@ -38,9 +38,6 @@ const KNOWN_RECIPIENT_ADDRESS_ERROR = 'knownAddressRecipient';
 const CONTRACT_ADDRESS_ERROR = 'contractAddressError';
 const CONFUSING_ENS_ERROR = 'confusingEnsDomain';
 
-const SIMPLE_GAS_COST = '0x5208'; // Hex for 21000, cost of a simple send.
-const BASE_TOKEN_GAS_COST = '0x186a0'; // Hex for 100000, a base estimate for token transfers.
-
 export {
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
@@ -57,7 +54,5 @@ export {
   NEGATIVE_ETH_ERROR,
   REQUIRED_ERROR,
   CONFUSING_ENS_ERROR,
-  SIMPLE_GAS_COST,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
-  BASE_TOKEN_GAS_COST,
 };

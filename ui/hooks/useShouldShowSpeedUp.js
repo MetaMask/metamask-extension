@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { SECOND } from '../../shared/constants/time';
 
 /**
  * Evaluates whether the transaction is eligible to be sped up, and registers
@@ -24,7 +25,7 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
     // for determining enabled status change
     let timeoutId;
     if (!hasRetried && isEarliestNonce && !speedUpEnabled) {
-      if (Date.now() - submittedTime > 5000) {
+      if (Date.now() - submittedTime > SECOND * 5) {
         setSpeedUpEnabled(true);
       } else {
         timeoutId = setTimeout(() => {

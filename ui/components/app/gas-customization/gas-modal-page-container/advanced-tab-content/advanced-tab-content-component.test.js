@@ -23,6 +23,7 @@ describe('AdvancedTabContent Component', () => {
         insufficientBalance={false}
         customPriceIsSafe
         isSpeedUp={false}
+        customPriceIsExcessive={false}
       />,
     );
   });

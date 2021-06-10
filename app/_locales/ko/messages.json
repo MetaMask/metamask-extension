@@ -1038,6 +1038,9 @@
   "mainnet": {
     "message": "이더리움 메인넷"
   },
+  "makeAnotherSwap": {
+    "message": "새 스왑 생성"
+  },
   "max": {
     "message": "최대"
   },
@@ -1933,6 +1936,15 @@
     "message": "~$1%의 가격 차이",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
+  "swapPriceImpactTooltip": {
+    "message": "가격 영향은 현재 시장 가격과 거래 실행 도중 받은 금액 사이의 차이입니다. 가격 영향은 유동성 풀의 크기 대비 거래의 크기를 나타내는 함수입니다."
+  },
+  "swapPriceUnavailableDescription": {
+    "message": "시장 가격 데이터가 부족하여 가격 영향을 파악할 수 없습니다. 스왑하기 전에 받게 될 토큰 수에 만족하시는지 확인하시기 바랍니다."
+  },
+  "swapPriceUnavailableTitle": {
+    "message": "진행하기 전에 요율을 확인하십시오."
+  },
   "swapProcessing": {
     "message": "처리 중"
   },
@@ -2061,9 +2073,6 @@
     "message": "여러 토큰이 같은 이름과 기호를 사용할 수 있습니다. $1을(를) 확인하여 원하는 토큰인지 확인하세요.",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
-  "swapViewToken": {
-    "message": "$1 보기"
-  },
   "swapYourTokenBalance": {
     "message": "$1 $2 스왑 가능",
     "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
@@ -2186,6 +2195,9 @@
   },
   "tokenSymbol": {
     "message": "토큰 기호"
+  },
+  "tooltipApproveButton": {
+    "message": "이해했습니다."
   },
   "total": {
     "message": "합계"

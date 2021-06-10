@@ -27,6 +27,7 @@ async function withFixtures(options, testSuite) {
   } = options;
   const fixtureServer = new FixtureServer();
   const ganacheServer = new Ganache();
+  let secondaryGanacheServer;
   let dappServer;
   let segmentServer;
   let segmentStub;
@@ -34,6 +35,16 @@ async function withFixtures(options, testSuite) {
   let webDriver;
   try {
     await ganacheServer.start(ganacheOptions);
+    if (ganacheOptions?.concurrent) {
+      const { port, chainId } = ganacheOptions.concurrent;
+      secondaryGanacheServer = new Ganache();
+      await secondaryGanacheServer.start({
+        blockTime: 2,
+        _chainIdRpc: chainId,
+        port,
+        vmErrorsOnRPCResponse: false,
+      });
+    }
     await fixtureServer.start();
     await fixtureServer.loadState(path.join(__dirname, 'fixtures', fixtures));
     if (dapp) {
@@ -103,6 +114,9 @@ async function withFixtures(options, testSuite) {
   } finally {
     await fixtureServer.stop();
     await ganacheServer.quit();
+    if (ganacheOptions?.concurrent) {
+      await secondaryGanacheServer.quit();
+    }
     if (webDriver) {
       await webDriver.quit();
     }

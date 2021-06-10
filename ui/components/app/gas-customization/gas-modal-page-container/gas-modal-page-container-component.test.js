@@ -76,6 +76,7 @@ describe('GasModalPageContainer Component', () => {
         customGasLimitInHex="mockCustomGasLimitInHex"
         insufficientBalance={false}
         disableSave={false}
+        customPriceIsExcessive={false}
       />,
     );
   });
@@ -124,6 +125,7 @@ describe('GasModalPageContainer Component', () => {
         <GasModalPageContainer
           fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
           fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
+          customPriceIsExcessive={false}
         />,
         { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
       );
@@ -202,6 +204,7 @@ describe('GasModalPageContainer Component', () => {
           customGasLimitInHex="mockCustomGasLimitInHex"
           insufficientBalance={false}
           disableSave={false}
+          customPriceIsExcessive={false}
           hideBasic
         />,
       );

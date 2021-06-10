@@ -2,12 +2,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   getPermissionsRequests,
-  getNativeCurrency,
   getAccountsWithLabels,
   getLastConnectedInfo,
   getDomainMetadata,
   getSelectedAddress,
 } from '../../selectors';
+import { getNativeCurrency } from '../../ducks/metamask/metamask';
 
 import { formatDate } from '../../helpers/utils/util';
 import {

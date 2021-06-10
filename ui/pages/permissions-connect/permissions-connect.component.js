@@ -3,12 +3,13 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
+import { MILLISECOND } from '../../../shared/constants/time';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 
-const APPROVE_TIMEOUT = 1200;
+const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
 export default class PermissionConnect extends Component {
   static propTypes = {

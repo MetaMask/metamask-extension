@@ -11,13 +11,12 @@ import {
 import { calcTokenAmount } from '../../helpers/utils/token-util';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 
+import { GAS_LIMITS } from '../../../shared/constants/gas';
 import {
-  BASE_TOKEN_GAS_COST,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   MIN_GAS_LIMIT_HEX,
   NEGATIVE_ETH_ERROR,
-  SIMPLE_GAS_COST,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
 } from './send.constants';
 
@@ -208,10 +207,10 @@ async function estimateGasForSend({
     // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
     const codeIsEmpty = !code || code === '0x' || code === '0x0';
     if (codeIsEmpty) {
-      return SIMPLE_GAS_COST;
+      return GAS_LIMITS.SIMPLE;
     }
   } else if (sendToken && !to) {
-    return BASE_TOKEN_GAS_COST;
+    return GAS_LIMITS.BASE_TOKEN_ESTIMATE;
   }
 
   if (sendToken) {
