@@ -13,6 +13,7 @@ import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../../../shared/constants/transaction';
+import { SECOND } from '../../../../shared/constants/time';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import TransactionController from '.';
 
@@ -468,7 +469,7 @@ describe('Transaction Controller', function () {
         },
       };
       // eslint-disable-next-line @babel/no-invalid-this
-      this.timeout(15000);
+      this.timeout(SECOND * 15);
       const wrongValue = '0x05';
 
       txController.addTransaction(txMeta);

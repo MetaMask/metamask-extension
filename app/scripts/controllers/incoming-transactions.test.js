@@ -19,6 +19,7 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
+import { MILLISECOND } from '../../../shared/constants/time';
 
 const IncomingTransactionsController = proxyquire('./incoming-transactions', {
   '../../../shared/modules/random-id': { default: () => 54321 },
@@ -26,7 +27,7 @@ const IncomingTransactionsController = proxyquire('./incoming-transactions', {
 
 const FAKE_CHAIN_ID = '0x1338';
 const MOCK_SELECTED_ADDRESS = '0x0101';
-const SET_STATE_TIMEOUT = 10;
+const SET_STATE_TIMEOUT = MILLISECOND * 10;
 
 const EXISTING_INCOMING_TX = { id: 777, hash: '0x123456' };
 const PREPOPULATED_INCOMING_TXS_BY_HASH = {
