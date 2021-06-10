@@ -1,0 +1,72 @@
+name: Lint and Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint-test:
+    name: Lint and Test
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - name: Get Yarn cache directory
+        run: echo "::set-output name=YARN_CACHE_DIR::$(yarn cache dir)"
+        id: yarn-cache-dir
+      - name: Get Yarn version
+        run: echo "::set-output name=YARN_VERSION::$(yarn --version)"
+        id: yarn-version
+      - name: Cache yarn dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir.outputs.YARN_CACHE_DIR }}
+            build-artifacts/yarn-install-har
+          key: yarn-cache-${{ runner.os }}-${{ steps.yarn-version.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
+      - name: Install dependencies
+        run: ./development/deps-install.sh
+      - name: Store HAR artifacts from install
+        uses: actions/upload-artifact@v2
+        with:
+          name: install-artifacts
+          path: build-artifacts/yarn-install-har
+      - name: Run postinstall scripts
+        run: yarn setup:postinstall
+      - name: Lint
+        run: yarn lint
+      - name: Lint locales
+        run: yarn verify-locales --quiet
+      - name: Lint lockfile
+        run: yarn lint:lockfile
+      - name: Validate RC changelog
+        if: ${{ startsWith(github.ref, 'Version-v') }}
+        run: yarn auto-changelog validate --rc
+      - name: Validate changelog
+        if: ${{ !startsWith(github.ref, 'Version-v') }}
+        run: yarn auto-changelog validate
+      - name: Run Mocha unit tests
+        run: yarn test:coverage
+      - name: Run Jest unit tests
+        run: yarn test:coverage:jest
+      - name: Run global unit tests
+        run: yarn test:unit:global
+      - name: Save coverage artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: |
+            coverage
+            jest-coverage
+          if-no-files-found: error
+  all-jobs-pass:
+    name: All jobs pass
+    runs-on: ubuntu-20.04
+    needs:
+      - lint-test
+    steps:
+      - run: echo "Great success!"
