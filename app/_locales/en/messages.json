@@ -244,8 +244,11 @@
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
   "betaMetamaskDescriptionExplanation": {
-    "message": "Use this version to test upcoming features before they’re released. Your use and feedback helps us build the best version of MetaMask possible. Your use of MetaMask Beta is subject to our standard $1 as well as our Supplemental Beta Terms [link]. As a Beta, there may be an increased risk of bugs. By proceeding, you accept and acknowledge these risks, as well as those risks found in our Terms and Beta Terms.",
-    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText"
+    "message": "Use this version to test upcoming features before they’re released. Your use and feedback helps us build the best version of MetaMask possible. Your use of MetaMask Beta is subject to our standard $1 as well as our $2. As a Beta, there may be an increased risk of bugs. By proceeding, you accept and acknowledge these risks, as well as those risks found in our Terms and Beta Terms.",
+    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
+  },
+  "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
+    "message": "Supplemental Beta Terms"
   },
   "betaMetamaskDescriptionExplanationTermsLinkText": {
     "message": "Terms"

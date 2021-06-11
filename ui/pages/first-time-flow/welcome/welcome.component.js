@@ -65,6 +65,12 @@ export default class Welcome extends PureComponent {
               <a href="https://metamask.io/terms.html" key="terms-link">
                 {t('betaMetamaskDescriptionExplanationTermsLinkText')}
               </a>,
+              <a
+                href="https://metamask.io/beta-terms.html"
+                key="beta-terms-link"
+              >
+                {t('betaMetamaskDescriptionExplanationBetaTermsLinkText')}
+              </a>,
             ])}
           </p>
         </div>
