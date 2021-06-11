@@ -6,8 +6,8 @@ on:
   pull_request:
 
 jobs:
-  lint-test:
-    name: Lint and Test
+  prep-deps:
+    name: Prepare dependencies
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -37,6 +37,31 @@ jobs:
           path: build-artifacts/yarn-install-har
       - name: Run postinstall scripts
         run: yarn setup:postinstall
+      - name: Archive dependencies
+        run: tar -czf dependencies.tgz node_modules
+      - name: Store dependencies as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dependencies
+          path: dependencies.tgz
+          retention-days: 1
+          if-no-files-found: error
+  lint-test:
+    name: Lint and Test
+    runs-on: ubuntu-20.04
+    needs: prep-deps
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - name: Download dependencies
+        uses: actions/download-artifact@v2
+        with:
+          name: dependencies
+      - name: Extract dependencies
+        run: tar -xzf dependencies.tgz
       - name: Lint
         run: yarn lint
       - name: Lint locales
