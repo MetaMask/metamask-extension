@@ -5,6 +5,7 @@ import Identicon from '../../../../components/ui/identicon/identicon.component';
 import TokenBalance from '../../../../components/ui/token-balance';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
 import { ERC20, PRIMARY } from '../../../../helpers/constants/common';
+import { ASSET_TYPES } from '../../../../ducks/send';
 
 export default class SendAssetRow extends Component {
   static propTypes = {
@@ -55,7 +56,7 @@ export default class SendAssetRow extends Component {
         });
         this.props.updateSendAsset({
           type,
-          details: type === 'NATIVE' ? null : token,
+          details: type === ASSET_TYPES.NATIVE ? null : token,
         });
       },
     );
@@ -126,7 +127,7 @@ export default class SendAssetRow extends Component {
             ? 'send-v2__asset-dropdown__asset'
             : 'send-v2__asset-dropdown__single-asset'
         }
-        onClick={() => this.selectToken('NATIVE')}
+        onClick={() => this.selectToken(ASSET_TYPES.NATIVE)}
       >
         <div className="send-v2__asset-dropdown__asset-icon">
           <Identicon
@@ -165,7 +166,7 @@ export default class SendAssetRow extends Component {
       <div
         key={address}
         className="send-v2__asset-dropdown__asset"
-        onClick={() => this.selectToken('TOKEN', token)}
+        onClick={() => this.selectToken(ASSET_TYPES.TOKEN, token)}
       >
         <div className="send-v2__asset-dropdown__asset-icon">
           <Identicon

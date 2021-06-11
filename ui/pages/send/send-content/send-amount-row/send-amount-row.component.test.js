@@ -3,6 +3,7 @@ import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import SendRowWrapper from '../send-row-wrapper/send-row-wrapper.component';
 import UserPreferencedTokenInput from '../../../../components/app/user-preferenced-token-input';
+import { ASSET_TYPES } from '../../../../ducks/send';
 import SendAmountRow from './send-amount-row.component';
 
 import AmountMaxButton from './amount-max-button/amount-max-button.component';
@@ -81,7 +82,7 @@ function shallowRenderSendAmountRow() {
       amount="mockAmount"
       inError={false}
       asset={{
-        type: 'TOKEN',
+        type: ASSET_TYPES.TOKEN,
         balance: 'mockTokenBalance',
         details: { address: 'mockTokenAddress' },
       }}

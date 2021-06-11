@@ -55,12 +55,15 @@ jest.mock('../../../../ducks/gas/gas.duck', () => ({
   resetCustomData: jest.fn(),
 }));
 
-jest.mock('../../../../ducks/send', () => ({
-  useCustomGasFee: jest.fn(),
-  updateGasLimit: jest.fn(),
-  updateGasPrice: jest.fn(),
-  getSendAsset: jest.fn(() => ({ type: 'NATIVE' })),
-}));
+jest.mock('../../../../ducks/send', () => {
+  const { ASSET_TYPES } = jest.requireActual('../../../../ducks/send');
+  return {
+    useCustomGasFee: jest.fn(),
+    updateGasLimit: jest.fn(),
+    updateGasPrice: jest.fn(),
+    getSendAsset: jest.fn(() => ({ type: ASSET_TYPES.NATIVE })),
+  };
+});
 
 require('./gas-modal-page-container.container');
 

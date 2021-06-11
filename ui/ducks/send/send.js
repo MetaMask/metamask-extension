@@ -151,12 +151,12 @@ export const ASSET_TYPES = {
  * 2. MAX - The user selects the MAX button and amount is calculated based on
  *  balance - (amount + gasTotal)
  */
-const AMOUNT_MODES = {
+export const AMOUNT_MODES = {
   INPUT: 'INPUT',
   MAX: 'MAX',
 };
 
-const RECIPIENT_SEARCH_MODES = {
+export const RECIPIENT_SEARCH_MODES = {
   MY_ACCOUNTS: 'MY_ACCOUNTS',
   CONTACT_LIST: 'CONTACT_LIST',
 };
@@ -1016,7 +1016,7 @@ export function updateSendAmount(amount) {
     if (state.send.amount.mode === AMOUNT_MODES.MAX) {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
     }
-    if (state.send.asset.type === 'token') {
+    if (state.send.asset.type === ASSET_TYPES.TOKEN) {
       await dispatch(computeEstimatedGasLimit());
     }
   };

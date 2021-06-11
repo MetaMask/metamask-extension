@@ -3,7 +3,11 @@ import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { showSendTokenPage } from '../../store/actions';
-import { editTransaction, updateSendAsset } from '../../ducks/send';
+import {
+  ASSET_TYPES,
+  editTransaction,
+  updateSendAsset,
+} from '../../ducks/send';
 import { conversionUtil } from '../../helpers/utils/conversion-util';
 import {
   getTokenValueParam,
@@ -49,7 +53,7 @@ const mapDispatchToProps = (dispatch) => {
 
       dispatch(
         updateSendAsset({
-          type: 'TOKEN',
+          type: ASSET_TYPES.TOKEN,
           details: { ...tokenProps, address: tokenAddress },
         }),
       );

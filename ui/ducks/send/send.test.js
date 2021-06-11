@@ -26,6 +26,10 @@ import sendReducer, {
   signTransaction,
   SEND_STATUSES,
   GAS_INPUT_MODES,
+  ASSET_TYPES,
+  SEND_STAGES,
+  AMOUNT_MODES,
+  RECIPIENT_SEARCH_MODES,
 } from './send';
 
 const mockStore = createMockStore([thunk]);
@@ -200,7 +204,7 @@ describe('Send Slice', () => {
 
         const action = {
           type: 'send/updateAmountMode',
-          payload: 'INPUT',
+          payload: AMOUNT_MODES.INPUT,
         };
         const result = sendReducer(emptyAmountModeState, action);
 
@@ -210,7 +214,7 @@ describe('Send Slice', () => {
       it('should change to MAX amount mode', () => {
         const action = {
           type: 'send/updateAmountMode',
-          payload: 'MAX',
+          payload: AMOUNT_MODES.MAX,
         };
         const result = sendReducer(initialState, action);
 
@@ -259,7 +263,7 @@ describe('Send Slice', () => {
             error: CONTRACT_ADDRESS_ERROR,
           },
           asset: {
-            type: 'TOKEN',
+            type: ASSET_TYPES.TOKEN,
           },
         };
 
@@ -285,7 +289,7 @@ describe('Send Slice', () => {
             warning: KNOWN_RECIPIENT_ADDRESS_WARNING,
           },
           asset: {
-            type: 'TOKEN',
+            type: ASSET_TYPES.TOKEN,
           },
         };
 
@@ -308,7 +312,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/updateAsset',
           payload: {
-            type: 'TOKEN',
+            type: ASSET_TYPES.TOKEN,
             details: {
               address: '0xTokenAddress',
               decimals: 0,
@@ -334,7 +338,7 @@ describe('Send Slice', () => {
 
         const result = sendReducer(initialState, action);
 
-        expect(result.stage).toStrictEqual('DRAFT');
+        expect(result.stage).toStrictEqual(SEND_STAGES.DRAFT);
         expect(result.recipient.address).toStrictEqual(action.payload.address);
       });
     });
@@ -343,7 +347,7 @@ describe('Send Slice', () => {
       it('should', () => {
         const detailsForDraftTransactionState = {
           ...initialState,
-          status: 'VALID',
+          status: SEND_STATUSES.VALID,
           account: {
             address: '0xCurrentAddress',
           },
@@ -385,12 +389,12 @@ describe('Send Slice', () => {
       it('should update the draftTransaction txParams recipient to token address when asset is type TOKEN', () => {
         const detailsForDraftTransactionState = {
           ...initialState,
-          status: 'VALID',
+          status: SEND_STATUSES.VALID,
           account: {
             address: '0xCurrentAddress',
           },
           asset: {
-            type: 'TOKEN',
+            type: ASSET_TYPES.TOKEN,
             details: {
               address: '0xTokenAddress',
             },
@@ -467,7 +471,7 @@ describe('Send Slice', () => {
       it('should set recipient error and warning to null when user input is', () => {
         const noUserInputState = {
           recipient: {
-            mode: 'MY_ACCOUNTS',
+            mode: RECIPIENT_SEARCH_MODES.MY_ACCOUNTS,
             userInput: '',
             error: 'someError',
             warning: 'someWarning',
@@ -551,7 +555,7 @@ describe('Send Slice', () => {
         const tokenAssetTypeState = {
           ...initialState,
           asset: {
-            type: 'TOKEN',
+            type: ASSET_TYPES.TOKEN,
             details: {
               address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             },
@@ -608,7 +612,7 @@ describe('Send Slice', () => {
             value: '0x6fc23ac0', // 1875000000
           },
           asset: {
-            type: 'NATIVE',
+            type: ASSET_TYPES.NATIVE,
             balance: '0x77359400', // 2000000000
           },
           gas: {
@@ -632,7 +636,7 @@ describe('Send Slice', () => {
             value: '0x77359400', // 2000000000
           },
           asset: {
-            type: 'TOKEN',
+            type: ASSET_TYPES.TOKEN,
             balance: '0x6fc23ac0', // 1875000000
             details: {
               decimals: 0,
@@ -745,7 +749,7 @@ describe('Send Slice', () => {
         const assetErrorState = {
           ...initialState,
           asset: {
-            type: 'TOKEN',
+            type: ASSET_TYPES.TOKEN,
           },
         };
 
@@ -778,7 +782,7 @@ describe('Send Slice', () => {
         const validSendStatusState = {
           ...initialState,
           asset: {
-            type: 'TOKEN',
+            type: ASSET_TYPES.TOKEN,
             details: {
               address: '0x000',
             },
@@ -883,7 +887,7 @@ describe('Send Slice', () => {
       it('should', () => {
         const accountsChangedState = {
           ...initialState,
-          stage: 'EDIT',
+          stage: SEND_STAGES.EDIT,
           account: {
             address: '0xAddress',
             balance: '0x0',
@@ -910,7 +914,7 @@ describe('Send Slice', () => {
       it(`should not edit account balance if action payload address is not the same as state's address`, () => {
         const accountsChangedState = {
           ...initialState,
-          stage: 'EDIT',
+          stage: SEND_STAGES.EDIT,
           account: {
             address: '0xAddress',
             balance: '0x0',
@@ -1020,7 +1024,7 @@ describe('Send Slice', () => {
       it('should invalidate the send status when status is LOADING', () => {
         const validSendStatusState = {
           ...initialState,
-          status: 'VALID',
+          status: SEND_STATUSES.VALID,
         };
 
         const action = {
@@ -1036,7 +1040,7 @@ describe('Send Slice', () => {
       it('should invalidate the send status when status is FAILED and use INLINE gas input mode', () => {
         const validSendStatusState = {
           ...initialState,
-          status: 'VALID',
+          status: SEND_STATUSES.VALID,
         };
 
         const action = {
@@ -1118,7 +1122,7 @@ describe('Send Slice', () => {
           send: {
             ...defaultSendAmountState.send,
             amount: {
-              mode: 'MAX',
+              mode: AMOUNT_MODES.MAX,
             },
           },
         };
@@ -1131,7 +1135,7 @@ describe('Send Slice', () => {
 
         const expectedActionResult = [
           { type: 'send/updateSendAmount', payload: undefined },
-          { type: 'send/updateAmountMode', payload: 'INPUT' },
+          { type: 'send/updateAmountMode', payload: AMOUNT_MODES.INPUT },
         ];
 
         expect(actionResult).toStrictEqual(expectedActionResult);
@@ -1146,7 +1150,7 @@ describe('Send Slice', () => {
           ...defaultSendAmountState.send,
           send: {
             asset: {
-              type: 'token',
+              type: ASSET_TYPES.TOKEN,
               details: {},
             },
             gas: {
@@ -1257,7 +1261,7 @@ describe('Send Slice', () => {
         const store = mockStore(defaultSendAssetState);
 
         const newSendAsset = {
-          type: 'TOKEN',
+          type: ASSET_TYPES.TOKEN,
           details: {
             address: 'tokenAddress',
             symbol: 'tokenSymbol',
@@ -1335,7 +1339,10 @@ describe('Send Slice', () => {
         const actionResult = store.getActions();
 
         expect(actionResult).toStrictEqual([
-          { type: 'send/updateRecipientSearchMode', payload: 'CONTACT_LIST' },
+          {
+            type: 'send/updateRecipientSearchMode',
+            payload: RECIPIENT_SEARCH_MODES.CONTACT_LIST,
+          },
         ]);
       });
     });
@@ -1349,7 +1356,10 @@ describe('Send Slice', () => {
         const actionResult = store.getActions();
 
         expect(actionResult).toStrictEqual([
-          { type: 'send/updateRecipientSearchMode', payload: 'MY_ACCOUNTS' },
+          {
+            type: 'send/updateRecipientSearchMode',
+            payload: RECIPIENT_SEARCH_MODES.MY_ACCOUNTS,
+          },
         ]);
       });
     });
@@ -1397,7 +1407,7 @@ describe('Send Slice', () => {
               balance: '',
             },
             asset: {
-              type: 'TOKEN',
+              type: ASSET_TYPES.TOKEN,
               details: {},
             },
             gas: {
@@ -1516,7 +1526,7 @@ describe('Send Slice', () => {
         const actionResult = store.getActions();
 
         const expectedActionReslt = [
-          { type: 'send/updateAmountMode', payload: 'MAX' },
+          { type: 'send/updateAmountMode', payload: AMOUNT_MODES.MAX },
           { type: 'send/updateAmountToMax', payload: undefined },
         ];
 
@@ -1528,7 +1538,7 @@ describe('Send Slice', () => {
         const sendMaxModeState = {
           send: {
             amount: {
-              mode: 'MAX',
+              mode: AMOUNT_MODES.MAX,
             },
           },
         };
@@ -1539,7 +1549,7 @@ describe('Send Slice', () => {
         const actionResult = store.getActions();
 
         const expectedActionReslt = [
-          { type: 'send/updateAmountMode', payload: 'INPUT' },
+          { type: 'send/updateAmountMode', payload: AMOUNT_MODES.INPUT },
           { type: 'send/updateSendAmount', payload: '0x0' },
         ];
 
@@ -1588,7 +1598,7 @@ describe('Send Slice', () => {
           },
           send: {
             ...signTransactionState.send,
-            stage: 'EDIT',
+            stage: SEND_STAGES.EDIT,
             draftTransaction: {
               id: 1,
               txParams: {

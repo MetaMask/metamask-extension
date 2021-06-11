@@ -10,7 +10,7 @@ import InfoIcon from '../../ui/icon/info-icon.component';
 import Button from '../../ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMetricEvent } from '../../../hooks/useMetricEvent';
-import { updateSendAsset } from '../../../ducks/send';
+import { ASSET_TYPES, updateSendAsset } from '../../../ducks/send';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 
@@ -69,7 +69,7 @@ const AssetListItem = ({
           sendTokenEvent();
           dispatch(
             updateSendAsset({
-              type: 'TOKEN',
+              type: ASSET_TYPES.TOKEN,
               details: {
                 address: tokenAddress,
                 decimals: tokenDecimals,

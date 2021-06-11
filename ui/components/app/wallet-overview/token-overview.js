@@ -17,7 +17,7 @@ import {
 } from '../../../hooks/useMetricEvent';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { updateSendAsset } from '../../../ducks/send';
+import { ASSET_TYPES, updateSendAsset } from '../../../ducks/send';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import {
   getAssetImages,
@@ -87,7 +87,7 @@ const TokenOverview = ({ className, token }) => {
               sendTokenEvent();
               dispatch(
                 updateSendAsset({
-                  type: 'TOKEN',
+                  type: ASSET_TYPES.TOKEN,
                   details: token,
                 }),
               ).then(() => {
