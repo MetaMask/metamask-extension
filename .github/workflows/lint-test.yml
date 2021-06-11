@@ -63,10 +63,22 @@ jobs:
             coverage
             jest-coverage
           if-no-files-found: error
+  audit-deps:
+    name: Audit dependencies
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - name: Run Yarn audit
+        run: ./development/yarn-audit.sh
   all-jobs-pass:
     name: All jobs pass
     runs-on: ubuntu-20.04
     needs:
       - lint-test
+      - audit-deps
     steps:
       - run: echo "Great success!"
