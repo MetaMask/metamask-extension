@@ -25,7 +25,6 @@ workflows:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
-      - test-deps
       - validate-lavamoat-config:
           filters:
             branches:
@@ -242,16 +241,6 @@ jobs:
       - run:
           name: ShellCheck Lint
           command: ./development/shellcheck.sh
-
-  test-deps:
-    executor: node-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: yarn audit
-          command: .circleci/scripts/yarn-audit.sh
 
   test-e2e-chrome:
     executor: node-browsers
