@@ -296,7 +296,7 @@ export default class MobileSyncPage extends Component {
     const { t } = this.context;
 
     if (syncing) {
-      return <LoadingScreen loadingMessage="Sync in progress" />;
+      return <LoadingScreen loadingMessage={t('syncInProgress')} />;
     }
 
     if (completed) {

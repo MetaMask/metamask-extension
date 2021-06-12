@@ -32,7 +32,7 @@ export default class SendHexDataRow extends Component {
       >
         <textarea
           onInput={this.onInput}
-          placeholder="Optional"
+          placeholder={t('optional')}
           className="send-v2__hex-data__input"
         />
       </SendRowWrapper>
