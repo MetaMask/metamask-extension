@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
+import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import {
   getMetaMaskAccounts,
-  getNativeCurrency,
   getNativeCurrencyImage,
   getSendTokenAddress,
   getAssetImages,
 } from '../../../../selectors';
-import { updateSendToken } from '../../../../store/actions';
+import { updateSendToken } from '../../../../ducks/send/send.duck';
 import SendAssetRow from './send-asset-row.component';
 
 function mapStateToProps(state) {

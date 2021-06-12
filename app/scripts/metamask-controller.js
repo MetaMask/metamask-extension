@@ -29,6 +29,7 @@ import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { MILLISECOND } from '../../shared/constants/time';
 
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
@@ -82,7 +83,10 @@ export default class MetamaskController extends EventEmitter {
 
     this.defaultMaxListeners = 20;
 
-    this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200);
+    this.sendUpdate = debounce(
+      this.privateSendUpdate.bind(this),
+      MILLISECOND * 200,
+    );
     this.opts = opts;
     this.extension = opts.extension;
     this.platform = opts.platform;
@@ -1962,7 +1966,7 @@ export default class MetamaskController extends EventEmitter {
             return reject(err);
           }
 
-          return resolve(res);
+          return resolve(res.toString(16));
         },
       );
     });
@@ -2218,6 +2222,9 @@ export default class MetamaskController extends EventEmitter {
             nickname,
           );
         },
+        setProviderType: this.networkController.setProviderType.bind(
+          this.networkController,
+        ),
         addCustomRpc: async ({
           chainId,
           blockExplorerUrl,

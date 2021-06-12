@@ -11,10 +11,10 @@ import { useMetricEvent } from '../../../hooks/useMetricEvent';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import {
   getCurrentAccountWithSendEtherInfo,
-  getNativeCurrency,
   getShouldShowFiat,
   getNativeCurrencyImage,
 } from '../../../selectors';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 
 const AssetList = ({ onClickAsset }) => {

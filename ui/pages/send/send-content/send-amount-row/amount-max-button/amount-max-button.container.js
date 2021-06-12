@@ -7,8 +7,11 @@ import {
   getSendMaxModeState,
   getBasicGasEstimateLoadingStatus,
 } from '../../../../../selectors';
-import { updateSendAmount, setMaxModeTo } from '../../../../../store/actions';
-import { updateSendErrors } from '../../../../../ducks/send/send.duck';
+import {
+  updateSendErrors,
+  updateSendAmount,
+  setMaxModeTo,
+} from '../../../../../ducks/send/send.duck';
 import { calcMaxAmount } from './amount-max-button.utils';
 import AmountMaxButton from './amount-max-button.component';
 

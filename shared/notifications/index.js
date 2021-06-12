@@ -24,7 +24,7 @@ export const UI_NOTIFICATIONS = {
   },
   5: {
     id: 5,
-    date: '2021-05-18',
+    date: '2021-06-09',
   },
   6: {
     id: 6,

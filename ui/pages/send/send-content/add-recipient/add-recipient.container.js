@@ -7,7 +7,7 @@ import {
   getAddressBookEntry,
 } from '../../../../selectors';
 
-import { updateSendTo } from '../../../../store/actions';
+import { updateSendTo } from '../../../../ducks/send/send.duck';
 import AddRecipient from './add-recipient.component';
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddRecipient);

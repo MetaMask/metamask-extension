@@ -11,8 +11,8 @@ import {
 } from '../helpers/utils/confirm-tx.util';
 import { sumHexes } from '../helpers/utils/transactions.util';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
+import { getNativeCurrency } from '../ducks/metamask/metamask';
 import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
-import { getNativeCurrency } from '.';
 
 const unapprovedTxsSelector = (state) => state.metamask.unapprovedTxs;
 const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;

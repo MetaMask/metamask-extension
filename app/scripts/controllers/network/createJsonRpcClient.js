@@ -6,9 +6,10 @@ import createInflightMiddleware from 'eth-json-rpc-middleware/inflight-cache';
 import createBlockTrackerInspectorMiddleware from 'eth-json-rpc-middleware/block-tracker-inspector';
 import providerFromMiddleware from 'eth-json-rpc-middleware/providerFromMiddleware';
 import { PollingBlockTracker } from 'eth-block-tracker';
+import { SECOND } from '../../../../shared/constants/time';
 
 const inTest = process.env.IN_TEST === 'true';
-const blockTrackerOpts = inTest ? { pollingInterval: 1000 } : {};
+const blockTrackerOpts = inTest ? { pollingInterval: SECOND } : {};
 const getTestMiddlewares = () => {
   return inTest ? [createEstimateGasDelayTestMiddleware()] : [];
 };
@@ -51,7 +52,7 @@ function createChainIdMiddleware(chainId) {
 function createEstimateGasDelayTestMiddleware() {
   return createAsyncMiddleware(async (req, _, next) => {
     if (req.method === 'eth_estimateGas') {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, SECOND * 2));
     }
     return next();
   });
