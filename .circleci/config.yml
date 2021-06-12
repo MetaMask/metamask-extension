@@ -248,7 +248,7 @@ jobs:
       - checkout
       - run:
           name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
+          command: ./development/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -260,7 +260,7 @@ jobs:
       - run:
           name: test:e2e:chrome
           command: |
-            if .circleci/scripts/test-run-e2e.sh
+            if ./development/test-run-e2e.sh
             then
               yarn test:e2e:chrome --retries 2
             fi
@@ -275,7 +275,7 @@ jobs:
       - checkout
       - run:
           name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
+          command: ./development/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -287,7 +287,7 @@ jobs:
       - run:
           name: test:e2e:chrome:metrics
           command: |
-            if .circleci/scripts/test-run-e2e.sh
+            if ./development/test-run-e2e.sh
             then
               yarn test:e2e:chrome:metrics --retries 2
             fi
@@ -302,7 +302,7 @@ jobs:
       - checkout
       - run:
           name: Install Firefox
-          command: ./.circleci/scripts/firefox-install.sh
+          command: ./development/firefox-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -314,7 +314,7 @@ jobs:
       - run:
           name: test:e2e:firefox
           command: |
-            if .circleci/scripts/test-run-e2e.sh
+            if ./development/test-run-e2e.sh
             then
               yarn test:e2e:firefox --retries 2
             fi
@@ -329,7 +329,7 @@ jobs:
       - checkout
       - run:
           name: Install Firefox
-          command: ./.circleci/scripts/firefox-install.sh
+          command: ./development/firefox-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -341,7 +341,7 @@ jobs:
       - run:
           name: test:e2e:firefox:metrics
           command: |
-            if .circleci/scripts/test-run-e2e.sh
+            if ./development/test-run-e2e.sh
             then
               yarn test:e2e:firefox:metrics --retries 2
             fi
@@ -356,7 +356,7 @@ jobs:
       - checkout
       - run:
           name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
+          command: ./development/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
