@@ -280,6 +280,7 @@ export default class ConfirmTransactionBase extends Component {
       isEthGasPrice,
       noGasPrice,
     } = this.props;
+    const { t } = this.context;
 
     const notMainnetOrTest = !(isMainnet || process.env.IN_TEST);
     const gasPriceFetchFailure = isEthGasPrice || noGasPrice;
@@ -288,7 +289,7 @@ export default class ConfirmTransactionBase extends Component {
       <div className="confirm-page-container-content__details">
         <div className="confirm-page-container-content__gas-fee">
           <ConfirmDetailRow
-            label="Gas Fee"
+            label={t('gasFee')}
             value={hexTransactionFee}
             headerText={notMainnetOrTest || gasPriceFetchFailure ? '' : 'Edit'}
             headerTextClassName={
@@ -302,9 +303,7 @@ export default class ConfirmTransactionBase extends Component {
                 : () => this.handleEditGas()
             }
             secondaryText={
-              hideFiatConversion
-                ? this.context.t('noConversionRateAvailable')
-                : ''
+              hideFiatConversion ? t('noConversionRateAvailable') : ''
             }
           />
           {advancedInlineGasShown ||
@@ -336,15 +335,15 @@ export default class ConfirmTransactionBase extends Component {
           }
         >
           <ConfirmDetailRow
-            label="Total"
+            label={t('total')}
             value={hexTransactionTotal}
             primaryText={primaryTotalTextOverride}
             secondaryText={
               hideFiatConversion
-                ? this.context.t('noConversionRateAvailable')
+                ? t('noConversionRateAvailable')
                 : secondaryTotalTextOverride
             }
-            headerText="Amount + Gas Fee"
+            headerText={t('amountGasFee')}
             headerTextClassName="confirm-detail-row__header-text--total"
             primaryValueTextColor="#2f9ae0"
           />
@@ -353,7 +352,7 @@ export default class ConfirmTransactionBase extends Component {
           <div>
             <div className="confirm-detail-row">
               <div className="confirm-detail-row__label">
-                {this.context.t('nonceFieldHeading')}
+                {t('nonceFieldHeading')}
               </div>
               <div className="custom-nonce-input">
                 <TextField
