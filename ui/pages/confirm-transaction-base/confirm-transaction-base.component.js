@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { getDecoding } from '../../helpers/utils/util';
-import { EthTxParams } from '../../../ui/components/ui/eth-tx-params';
+import { getDecoding, deserializeCalldataDecoding } from '../../helpers/utils/util';
+import EthTxParams from '../../../ui/components/ui/eth-tx-params';
 import ConfirmPageContainer, {
   ConfirmDetailRow,
 } from '../../components/app/confirm-page-container';
@@ -112,6 +112,7 @@ export default class ConfirmTransactionBase extends Component {
     submitting: false,
     submitError: null,
     decoding: null,
+    definitions: null,
     submitWarning: '',
     ethGasPriceWarning: '',
   };
@@ -396,16 +397,17 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const { data } = txParams;
 
-    const { decoding } = this.state;
+    const { decoding, definitions } = this.state;
 
     if (hideData) {
       return null;
     }
 
-    if (!decoding) {
+    if (!decoding && !definitions) {
       this.getDecoding(txParams);
     } else {
-      return <EthTxParams decoding={decoding}></EthTxParams> 
+      const data = deserializeCalldataDecoding(decoding);
+      return <EthTxParams decoding={data} definitions={definitions}></EthTxParams> 
     }
 
     return (
@@ -439,9 +441,7 @@ export default class ConfirmTransactionBase extends Component {
 
   async getDecoding (txParams, chainId) {
     const decoding = await getDecoding(txParams, chainId);
-    this.setState({
-      decoding,
-    });
+    this.setState(decoding);
   }
 
   handleEdit() {
