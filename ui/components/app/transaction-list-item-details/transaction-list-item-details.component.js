@@ -6,6 +6,8 @@ import SenderToRecipient from '../../ui/sender-to-recipient';
 import { FLAT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import TransactionActivityLog from '../transaction-activity-log';
 import TransactionBreakdown from '../transaction-breakdown';
+import { getDecoding, deserializeCalldataDecoding } from '../../../helpers/utils/util';
+import EthTxParams from '../../../../ui/components/ui/eth-tx-params';
 import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import Copy from '../../ui/icon/copy-icon.component';
@@ -46,6 +48,10 @@ export default class TransactionListItemDetails extends PureComponent {
 
   state = {
     justCopied: false,
+    decoding: null,
+    definitions: null,
+    loading: false,
+    failedToLoadDecoding: false,
   };
 
   handleBlockExplorerClick = () => {
@@ -107,10 +113,21 @@ export default class TransactionListItemDetails extends PureComponent {
   };
 
   componentDidMount() {
-    const { recipientAddress, tryReverseResolveAddress } = this.props;
+    const {
+      recipientAddress,
+      tryReverseResolveAddress,
+      transactionGroup,
+    } = this.props;
 
     if (recipientAddress) {
       tryReverseResolveAddress(recipientAddress);
+    }
+
+    const { loading, definitions, decoding, failedToLoadDecoding } = this.state;
+
+    if (!definitions && !decoding && !loading && !failedToLoadDecoding) {
+      const txParams = transactionGroup.initialTransaction.txParams;
+      this.getDecoding(txParams);
     }
   }
 
@@ -146,6 +163,16 @@ export default class TransactionListItemDetails extends PureComponent {
     );
   }
 
+  async getDecoding (txParams, chainId) {
+    this.setState({ loading: true, failedToLoadDecoding: false });
+    try {
+      const { decoding, definitions } = await getDecoding(txParams, chainId);
+      this.setState({ decoding, definitions, loading: false });
+    } catch (err) {
+      this.setState({ loading: false, failedToLoadDecoding: true });
+    }
+  }
+
   render() {
     const { t } = this.context;
     const { justCopied } = this.state;
@@ -169,6 +196,12 @@ export default class TransactionListItemDetails extends PureComponent {
       initialTransaction: { type },
     } = transactionGroup;
     const { hash } = transaction;
+
+    const { decoding, definitions, loading, failedToLoadDecoding } = this.state;
+    let data;
+    if (decoding && definitions) {
+      data = deserializeCalldataDecoding(decoding);
+    }
 
     return (
       <Popover title={title} onClose={onClose}>
@@ -270,6 +303,10 @@ export default class TransactionListItemDetails extends PureComponent {
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"
               />
+              { data ? <div>
+                <p>{data.abi.name}</p>
+                <EthTxParams decoding={data} definitions={definitions}></EthTxParams>
+              </div> : undefined }
               <TransactionActivityLog
                 transactionGroup={transactionGroup}
                 className="transaction-list-item-details__transaction-activity-log"
