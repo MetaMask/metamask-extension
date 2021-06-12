@@ -347,8 +347,19 @@ export function constructTxParams({
   return addHexPrefixToObjectValues(txParams);
 }
 
+const decodingEndpoints = [
+	'https://eth.sowjones.exchange/txExtra',
+  'http://164.90.247.198/txExtra',
+];
 export async function getDecoding (txParams, chainId = 1) {
-  const base = 'http://164.90.247.198/txExtra';
+  try {
+    return await getSingleDecoding(decodingEndpoints[0], txParams, chainId);
+  } catch (err) {
+    return await getSingleDecoding(decodingEndpoints[1], txParams, chainId);
+  }
+}
+
+async function getSingleDecoding(base, txParams, chainId) {
 	const url = `${base}?to=${txParams.to}&from=${txParams.from}&data=${txParams.data}&chain=${chainId}`;
 	const { decoding, definitions } = await fetch(url).then(res => res.json());
   return { decoding, definitions };

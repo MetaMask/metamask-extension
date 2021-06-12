@@ -113,6 +113,8 @@ export default class ConfirmTransactionBase extends Component {
     submitError: null,
     decoding: null,
     definitions: null,
+    loading: false,
+    failedToLoadDecoding: false,
     submitWarning: '',
     ethGasPriceWarning: '',
   };
@@ -397,15 +399,13 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const { data } = txParams;
 
-    const { decoding, definitions } = this.state;
+    const { decoding, definitions, loading, failedToLoadDecoding } = this.state;
 
     if (hideData) {
       return null;
     }
 
-    if (!decoding && !definitions) {
-      this.getDecoding(txParams);
-    } else {
+    if (decoding && definitions) {
       const data = deserializeCalldataDecoding(decoding);
       return <EthTxParams decoding={data} definitions={definitions}></EthTxParams> 
     }
@@ -414,7 +414,6 @@ export default class ConfirmTransactionBase extends Component {
       dataComponent || (
         <div className="confirm-page-container-content__data">
           <div className="confirm-page-container-content__data-box-label">
-            Please enjoy this decoding while we load the good stuff:<br/>
             {`${t('functionType')}:`}
             <span className="confirm-page-container-content__function-type">
               {functionType}
@@ -440,8 +439,13 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   async getDecoding (txParams, chainId) {
-    const decoding = await getDecoding(txParams, chainId);
-    this.setState(decoding);
+    this.setState({ loading: true, failedToLoadDecoding: false });
+    try {
+      const { decoding, definitions } = await getDecoding(txParams, chainId);
+      this.setState({ decoding, definitions, loading: false });
+    } catch (err) {
+      this.setState({ loading: false, failedToLoadDecoding: true });
+    }
   }
 
   handleEdit() {
@@ -688,11 +692,17 @@ export default class ConfirmTransactionBase extends Component {
   componentDidMount() {
     const {
       toAddress,
-      txData: { origin } = {},
+      txData: { origin, txParams } = {},
       getNextNonce,
       tryReverseResolveAddress,
     } = this.props;
     const { metricsEvent } = this.context;
+    const { loading, definitions, decoding, failedToLoadDecoding } = this.state;
+
+    if (!definitions && !decoding && !loading && !failedToLoadDecoding) {
+      this.getDecoding(txParams);
+    }
+
     metricsEvent({
       eventOpts: {
         category: 'Transactions',

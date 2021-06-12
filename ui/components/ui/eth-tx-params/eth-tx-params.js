@@ -83,15 +83,17 @@ function renderNamedItem (name, item, index, definitions) {
     case 'array': {
       return (<details key={index} open>
         <summary>{deCamelCase(name) + ': '}</summary>
-        <ol>
-          {
-            item.value.map((data, index) => {
-              return <li className="solidity-value" key={index}>
-                {renderItem(data, definitions)}
-              </li>
-            })
-          }
-        </ol>
+        <div className="solidity-named-item solidity-item">
+          <ol>
+            {
+              item.value.map((data, index) => {
+                return <li className="solidity-value" key={index}>
+                  {renderItem(data, definitions)}
+                </li>
+              })
+            }
+          </ol>
+        </div>
       </details>);
     }
 

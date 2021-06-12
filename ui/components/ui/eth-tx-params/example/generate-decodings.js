@@ -57,7 +57,7 @@ async function run () {
 }
 
 async function getDecoding (txParams, chainId = 1) {
-	const base = 'http://164.90.247.198/txExtra';
+	const base = 'https://eth.sowjones.exchange/txExtra';
 	const url = `${base}?to=${txParams.to}&from=${txParams.from}&data=${txParams.data}&chain=${chainId}`;
 	const result = await fetch(url).then(res => res.json());
 	return result;
