@@ -9,6 +9,7 @@ import { reconstructSource } from "./reconstruct-source.js";
 const EthTxParams = ({
   decoding,
   definitions,
+  showName=false,
 }) => {
   switch (decoding.kind) {
     case 'function':
@@ -16,6 +17,7 @@ const EthTxParams = ({
       const {arguments: args, abi: { name } } = decoding;
       return (
         <div className="eth-tx-params">
+          { showName ? <div className="solidity-func-name">{ deCamelCase(name).toUpperCase() }</div> : undefined }
           <ol>
             {
               args.map((argument, index) =>

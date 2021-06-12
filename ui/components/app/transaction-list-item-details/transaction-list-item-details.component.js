@@ -304,8 +304,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 className="transaction-list-item-details__transaction-breakdown"
               />
               { data ? <div>
-                <p>{data.abi.name}</p>
-                <EthTxParams decoding={data} definitions={definitions}></EthTxParams>
+                <EthTxParams decoding={data} definitions={definitions} showName="true"></EthTxParams>
               </div> : undefined }
               <TransactionActivityLog
                 transactionGroup={transactionGroup}
