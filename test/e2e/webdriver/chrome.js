@@ -14,10 +14,11 @@ class ChromeDriver {
     const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options);
+    const service = new chrome.ServiceBuilder().setStdio('inherit');
     if (port) {
-      const service = new chrome.ServiceBuilder().setPort(port);
-      builder.setChromeService(service);
+      service.setPort(port);
     }
+    builder.setChromeService(service);
     const driver = builder.build();
     const chromeDriver = new ChromeDriver(driver);
     const extensionId = await chromeDriver.getExtensionIdByName('MetaMask');
