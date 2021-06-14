@@ -322,6 +322,9 @@ export default class MetamaskController extends EventEmitter {
       getPermittedAccounts: this.permissionsController.getAccounts.bind(
         this.permissionsController,
       ),
+      getProviderConfig: this.networkController.getProviderConfig.bind(
+        this.networkController,
+      ),
       networkStore: this.networkController.networkStore,
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
