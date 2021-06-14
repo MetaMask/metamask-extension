@@ -4,14 +4,11 @@ import {
   formatCurrency,
   getValueFromWeiHex,
 } from '../helpers/utils/confirm-tx.util';
-import { getCurrentCurrency } from '../selectors';
+import { getCurrentCurrency, getPreferences } from '../selectors';
 import {
   getConversionRate,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
-import {
-  getPreferences,
-} from '../selectors';
 
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 

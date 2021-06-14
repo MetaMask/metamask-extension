@@ -26,19 +26,21 @@ export default function TokenCell({
 
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const formattedFiat = useTokenFiatAmount(address, string, symbol, {}, true);
+  const useNativeCurrencyAsPrimaryDisplay = useNativeCurrencyAsPrimaryCurrency || string === '0';
 
-  const primary = useNativeCurrencyAsPrimaryCurrency
+  const primary = useNativeCurrencyAsPrimaryDisplay
     ? `${string || 0}`
     : formattedFiat;
-  const secondary = useNativeCurrencyAsPrimaryCurrency
+
+  const secondary = useNativeCurrencyAsPrimaryDisplay
     ? formattedFiat
     : `${string || 0}`;
 
-  const primarySymbol = useNativeCurrencyAsPrimaryCurrency
+  const primarySymbol = useNativeCurrencyAsPrimaryDisplay
     ? symbol
     : currentCurrency;
 
-  const secondarySymbol = useNativeCurrencyAsPrimaryCurrency
+  const secondarySymbol = useNativeCurrencyAsPrimaryDisplay
     ? currentCurrency
     : symbol;
 
@@ -72,8 +74,8 @@ export default function TokenCell({
       primary={primary || secondary}
       primarySymbol={primarySymbol}
       secondary={primary ? secondary : null}
-      secondarySymbol={primary ? secondarySymbol : null}
-      primaryIsFiat={!useNativeCurrencyAsPrimaryCurrency}
+      secondarySymbol={secondarySymbol}
+      primaryIsFiat={!useNativeCurrencyAsPrimaryDisplay}
     />
   );
 }

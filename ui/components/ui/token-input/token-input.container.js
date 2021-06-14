@@ -4,8 +4,8 @@ import {
   getIsMainnet,
   getTokenExchangeRates,
   getPreferences,
-  getConversionRate,
 } from '../../../selectors';
+import { getConversionRate } from '../../../ducks/metamask/metamask';
 import TokenInput from './token-input.component';
 
 const mapStateToProps = (state) => {

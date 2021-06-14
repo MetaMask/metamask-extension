@@ -30,7 +30,7 @@ import {
   getNativeCurrencyImage,
   getPreferences,
 } from '../../../selectors/selectors';
-import { getConversionRate } from '../../../selectors';
+import { getConversionRate } from '../../../ducks/metamask/metamask';
 import SwapIcon from '../../ui/icon/swap-icon.component';
 import BuyIcon from '../../ui/icon/overview-buy-icon.component';
 import SendIcon from '../../ui/icon/overview-send-icon.component';

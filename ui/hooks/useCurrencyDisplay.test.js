@@ -1,14 +1,12 @@
 import { renderHook } from '@testing-library/react-hooks';
 import * as reactRedux from 'react-redux';
 import sinon from 'sinon';
-import { getCurrentCurrency } from '../selectors';
+import { getCurrentCurrency, getPreferences } from '../selectors';
 import {
   getConversionRate,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
-import {
-  getPreferences,
-} from '../selectors';
+
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 
 const tests = [

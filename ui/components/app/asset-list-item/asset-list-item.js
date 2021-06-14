@@ -86,6 +86,8 @@ const AssetListItem = ({
     );
   }, [
     primarySymbol,
+    secondarySymbol,
+    primaryIsFiat,
     sendTokenEvent,
     tokenAddress,
     tokenDecimals,
@@ -93,6 +95,7 @@ const AssetListItem = ({
     t,
     dispatch,
   ]);
+
 
   return (
     <ListItem
@@ -114,6 +117,7 @@ const AssetListItem = ({
       }
       titleIcon={titleIcon}
       subtitle={
+        secondary && (
         <h3
           className="asset-list-item__subtitle"
           title={`${secondary} ${secondarySymbol}`}
@@ -123,6 +127,7 @@ const AssetListItem = ({
             {secondarySymbol}
           </span>
         </h3>
+        )
       }
       onClick={onClick}
       icon={

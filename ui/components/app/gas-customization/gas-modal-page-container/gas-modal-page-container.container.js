@@ -28,18 +28,21 @@ import {
   getIsMainnet,
   getSendToken,
   getPreferences,
+  getTokenBalance,
+  getSendMaxModeState,
+} from '../../../../selectors';
+
+import {
   getBasicGasEstimateLoadingStatus,
   getCustomGasLimit,
   getCustomGasPrice,
   getDefaultActiveButtonIndex,
   getRenderableBasicEstimateData,
   isCustomPriceSafe,
-  getTokenBalance,
-  getSendMaxModeState,
   getAveragePriceEstimateInHexWEI,
   isCustomPriceExcessive,
   getIsGasEstimatesFetched,
-} from '../../../../selectors';
+} from '../../../../selectors/custom-gas';
 
 import {
   addHexes,

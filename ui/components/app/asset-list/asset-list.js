@@ -14,7 +14,7 @@ import {
   getShouldShowFiat,
   getNativeCurrencyImage,
 } from '../../../selectors';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import { getConversionRate, getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 
 const AssetList = ({ onClickAsset }) => {
@@ -22,6 +22,7 @@ const AssetList = ({ onClickAsset }) => {
   const selectedAccountBalance = useSelector(
     (state) => getCurrentAccountWithSendEtherInfo(state).balance,
   );
+  const conversionRate = useSelector(getConversionRate);
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
   const selectTokenEvent = useMetricEvent({
@@ -68,7 +69,8 @@ const AssetList = ({ onClickAsset }) => {
 
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const showSecondaryCurrency =
-    showFiat && Boolean(primaryCurrencyProperties?.value);
+    showFiat && Boolean(primaryCurrencyProperties?.value) && Boolean(conversionRate);
+   
   return (
     <>
       <AssetListItem
@@ -76,19 +78,19 @@ const AssetList = ({ onClickAsset }) => {
         data-testid="wallet-balance"
         primary={
           primaryCurrencyProperties?.value
-            ? primaryCurrencyProperties.value
-            : secondaryCurrencyProperties.value
+            ? primaryCurrencyProperties?.value
+            : secondaryCurrencyProperties?.value
         }
         secondary={
-          showSecondaryCurrency ? secondaryCurrencyProperties.value : undefined
+          showSecondaryCurrency ? secondaryCurrencyProperties?.value : undefined
         }
         secondarySymbol={
-          showSecondaryCurrency ? secondaryCurrencyProperties.suffix : undefined
+          showSecondaryCurrency ? secondaryCurrencyProperties?.suffix : undefined
         }
         primarySymbol={
           primaryCurrencyProperties?.value
-            ? primaryCurrencyProperties.suffix
-            : secondaryCurrencyProperties.suffix
+            ? primaryCurrencyProperties?.suffix
+            : secondaryCurrencyProperties?.suffix
         }
         tokenImage={primaryTokenImage}
         identiconBorder
