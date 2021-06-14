@@ -113,7 +113,7 @@
     "message": "Комиссия сети агрегатора"
   },
   "alertDisableTooltip": {
-    "message": "Это можно изменить в \"Настройки > Оповещения\""
+    "message": "Это можно изменить в разделе «Настройки» > «Предупреждения»"
   },
   "alertSettingsUnconnectedAccount": {
     "message": "Просмотр веб-сайта с выбранным неподключенным счетом"
@@ -288,6 +288,9 @@
   },
   "chainIdDefinition": {
     "message": "Идентификатор цепочки, используемый для подписания транзакций для этой сети."
+  },
+  "chainIdExistsErrorMsg": {
+    "message": "Этот идентификатор цепочки в настоящее время используется сетью $1."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Вам необходимо использовать MetaMask в Google Chrome, чтобы подключиться к аппаратному кошельку."
@@ -1305,7 +1308,7 @@
     "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
   },
   "notifications5Description": {
-    "message": "\"Исходная фраза\" теперь называется \"секретной фразой восстановления.\"",
+    "message": "Исходная фраза теперь называется секретной фразой восстановления.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
   "notifications6DescriptionOne": {
@@ -1340,7 +1343,7 @@
     "message": "Вкл."
   },
   "onboardingReturnNotice": {
-    "message": "\"$1\" закроет эту вкладку и вернется к $2",
+    "message": "Кнопка «$1» закрывает эту вкладку и возвращает на сайт $2",
     "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
@@ -1453,6 +1456,30 @@
   },
   "recipientAddressPlaceholder": {
     "message": "Поиск, публичный адрес (0x) или ENS"
+  },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "Начать здесь"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "Понятно"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "Всегда храните свою секретную фразу восстановления в надежном и секретном месте"
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "Нужно снова сделать резервную копию секретной фразы восстановления?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "Никогда никому не сообщайте свою секретную фразу восстановления"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "Команда MetaMask никогда неожиданно не запросит вашу секретную фразу восстановления"
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "Ваша секретная фраза восстановления контролирует все ваши счета."
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "Защитите свои активы"
   },
   "reject": {
     "message": "Отклонить"
@@ -1655,7 +1682,7 @@
     "message": "Выберите путь HD"
   },
   "selectPathHelp": {
-    "message": "Если вы не видите свои существующие книги счетов ниже, попробуйте переключить проход на \"Legacy (MEW / MyCrypto)\""
+    "message": "Если вы не видите имеющиеся счета Ledger ниже, попробуйте изменить путь на «Legacy (MEW / MyCrypto)»"
   },
   "selectType": {
     "message": "Выбрать тип"
@@ -1866,7 +1893,7 @@
     "message": "Подтвердить с помощью аппаратного кошелька"
   },
   "swapContractDataDisabledErrorDescription": {
-    "message": "В приложении Ethereum на устройстве Ledger перейдите в раздел \"Настройки\" и разрешите использование данных о контракте. Затем попробуйте выполнить своп повторно."
+    "message": "В приложении Ethereum на устройстве Ledger перейдите в раздел «Настройки» и разрешите использование данных о контракте. Затем попробуйте выполнить своп повторно."
   },
   "swapContractDataDisabledErrorTitle": {
     "message": "На устройстве Ledger не включены данные о контракте"
@@ -1985,7 +2012,7 @@
     "message": "Детали котировки"
   },
   "swapQuoteDetailsSlippageInfo": {
-    "message": "Изменение цены в период между размещением заказа и подтверждением называется \"проскальзыванием\". Своп будет автоматически отменен, если фактическое проскальзывание превысит установленное \"допустимое значение\"."
+    "message": "Изменение цены в период между размещением заказа и подтверждением называется проскальзыванием. Своп будет автоматически отменен, если фактическое проскальзывание превысит установленное допустимое значение."
   },
   "swapQuoteIncludesRate": {
     "message": "Котировка включает $1% MetaMask fee",
@@ -2172,7 +2199,7 @@
     "message": "Ваши данные были успешно синхронизированы. Наслаждайтесь мобильным приложением MetaMask!"
   },
   "syncWithMobileDesc": {
-    "message": "Вы можете синхронизировать свои счета и информацию со своим мобильным устройством. Откройте мобильное приложение MetaMask, перейдите в \"Настройки\" и нажмите \"Синхронизировать из расширения браузера\""
+    "message": "Вы можете синхронизировать свои счета и информацию со своим мобильным устройством. Откройте мобильное приложение MetaMask, перейдите в раздел «Настройки» и нажмите «Синхронизировать из расширения браузера»"
   },
   "syncWithMobileDescNewUsers": {
     "message": "Если вы открываете приложение MetaMask Mobile в первый раз, просто следуйте инструкциям на телефоне."
@@ -2349,7 +2376,7 @@
     "message": "Для URL требуется соответствующий префикс HTTP/HTTPS."
   },
   "urlExistsErrorMsg": {
-    "message": "URL уже присутствует в имеющемся списке сетей"
+    "message": "Это URL в настоящее время используется сетью $1."
   },
   "usePhishingDetection": {
     "message": "Использовать обнаружение фишинга"

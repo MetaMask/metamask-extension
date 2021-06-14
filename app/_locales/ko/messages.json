@@ -119,7 +119,7 @@
     "message": "연결되지 않은 계정을 선택하여 웹사이트 탐색"
   },
   "alertSettingsUnconnectedAccountDescription": {
-    "message": "이 경고는 현재 선택된 계정이 연결되지 않은 상태에서 연결된 web3 사이트를 탐색하는 경우 팝업으로 표시됩니다."
+    "message": "이 경고는 연결된 web3 사이트를 탐색하고 있지만 현재 선택된 계정이 연결되지 않은 경우 팝업에 표시됩니다."
   },
   "alertSettingsWeb3ShimUsage": {
     "message": "웹사이트가 제거된 window.web3 API를 이용하는 경우"
@@ -288,6 +288,9 @@
   },
   "chainIdDefinition": {
     "message": "이 네트워크의 거래에 서명하는 데 사용되는 체인 ID입니다."
+  },
+  "chainIdExistsErrorMsg": {
+    "message": "이 체인 ID는 현재 $1 네트워크에서 사용됩니다."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "하드웨어 지갑에 연결하려면 Google Chrome에서 MetaMask를 사용해야 합니다."
@@ -502,7 +505,7 @@
     "message": "암호 해독"
   },
   "decryptCopy": {
-    "message": "암호화된 메시지 복사"
+    "message": "암호 해독된 메시지 복사"
   },
   "decryptInlineError": {
     "message": "다음 오류 때문에 이 메시지를 해독할 수 없습니다. $1",
@@ -638,10 +641,10 @@
     "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask에서는 비밀 복구 구문을 복구할 수 없습니다."
+    "message": "MetaMask에서는 계정 시드 구문을 복구할 수 없습니다."
   },
   "endOfFlowMessage9": {
-    "message": "자세한 내용을 알아보세요."
+    "message": "자세한 내용을 알아보십시오."
   },
   "endpointReturnedDifferentChainId": {
     "message": "엔드포인트에서 다른 체인 ID를 반환했습니다. $1",
@@ -682,11 +685,11 @@
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
   "errorPageMessage": {
-    "message": "페이지를 새로고침하여 다시 시도하거나 $1에 문의하여 지원을 받으세요.",
+    "message": "페이지를 새로고침하여 다시 시도하거나 $1에 요청하여 도움을 받으십시오.",
     "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPagePopupMessage": {
-    "message": "팝업을 닫은 후 다시 열어 다시 시도하거나 $1에 문의하여 지원을 받으세요.",
+    "message": "팝업을 닫은 후 다시 열어 다시 시도하거나 $1에 요청하여 도움을 받으세요.",
     "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
@@ -759,7 +762,7 @@
     "message": "금지된 IPFS 게이트웨이: CID 게이트웨이를 지정하세요."
   },
   "forgetDevice": {
-    "message": "이 장치 지우기"
+    "message": "이 장치 잊기"
   },
   "from": {
     "message": "발신"
@@ -1305,7 +1308,7 @@
     "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
   },
   "notifications5Description": {
-    "message": "\"시드 구문\"을 이제 \"비밀 복구 구문\"이라고 합니다.",
+    "message": "\"시드 구문\"을 이제 \"계정 시드 구문\"이라고 합니다.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
   "notifications6DescriptionOne": {
@@ -1340,11 +1343,11 @@
     "message": "켜기"
   },
   "onboardingReturnNotice": {
-    "message": "\"$1\"에서 이 탭을 닫고 $2(으)로 돌아갑니다.",
+    "message": "\"$1\"이(가) 이 탭을 닫고 $2로 돌아갑니다.",
     "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
-    "message": "악성 네트워크 공급업체는 블록체인 상태를 거짓으로 보고하고 사용자의 네트워크 활동을 기록할 수 있습니다. 신뢰하는 맞춤형 네트워크만 추가하세요."
+    "message": "악성 네트워크 공급업체는 블록체인 상태를 거짓으로 보고하고 네트워크 활동을 기록할 수 있습니다. 신뢰하는 맞춤형 네트워크만 추가하세요."
   },
   "onlyAvailableOnMainnet": {
     "message": "메인넷에서만 사용 가능"
@@ -1453,6 +1456,30 @@
   },
   "recipientAddressPlaceholder": {
     "message": "검색, 공개 주소(0x) 또는 ENS"
+  },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "여기에서 시작"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "확인"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "계정 시드 구문은 언제나 보안이 유지되고 알려지지 않은 곳에 보관해야 합니다."
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "계정 시드 구문을 다시 백업해야 합니까?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "절대로 다른 사람과 계정 시드 구문을 공유하지 마십시오"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "MetaMask 팀에서는 절대로 계정 시드 구문을 물어보지 않습니다"
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "계정 시드 구문으로 귀하의 모든 계정을 관리합니다."
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "자금을 지키세요"
   },
   "reject": {
     "message": "거부"
@@ -1642,10 +1669,10 @@
     "message": "이 계정은 이미 MetaMask와 연결되어 있습니다."
   },
   "selectAnAccountHelp": {
-    "message": "MetaMask에서 확인할 계정을 선택하세요."
+    "message": "MetaMask에서 확인할 계정을 선택하십시오."
   },
   "selectAnAccountHelpDirections": {
-    "message": "계정이 표시되지 않나요? $1",
+    "message": "계정을 찾을 수 없습니까? $1",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "selectEachPhrase": {
@@ -1655,7 +1682,7 @@
     "message": "HD 경로 선택"
   },
   "selectPathHelp": {
-    "message": "아래에 기존 Ledger 계정이 표시되지 않는다면 경로를 \"Legacy(MEW / MyCrypto)\"로 변경해 보세요."
+    "message": "아래에 기존 Ledger 계정이 표시되지 않는다면 경로를 \"Legacy (MEW / MyCrypto)\"로 변경해 보세요."
   },
   "selectType": {
     "message": "유형 선택"
@@ -1866,7 +1893,7 @@
     "message": "하드웨어 지갑으로 확인합니다."
   },
   "swapContractDataDisabledErrorDescription": {
-    "message": "Ledger의 이더리움 앱에서 \"설정\"으로 이동하여 계약 데이터를 허용하세요. 그 다음 스왑을 다시 시도하세요."
+    "message": "Ledger의 이더리움 앱에서 \"설정 \"으로 이동하여 계약 데이터를 허용하십시오. 그 다음 스왑을 다시 시도하세요."
   },
   "swapContractDataDisabledErrorTitle": {
     "message": "Ledger에서 계약 데이터를 사용할 수 없습니다."
@@ -1985,14 +2012,14 @@
     "message": "견적 세부 정보"
   },
   "swapQuoteDetailsSlippageInfo": {
-    "message": "주문 시점과 확인 시점 사이에 가격이 변동되는 현상을 \"슬리패지\"라고 합니다. 슬리패지가 \"슬리패지 허용치\" 설정을 초과하면 스왑이 자동으로 취소됩니다."
+    "message": "주문 시점과 확인 시점 사이에 가격이 변동되는 현상을 \"슬리패지\"라고 합니다. 슬리패지가 \"최대 슬리패지\" 설정을 초과하면 스왑이 자동으로 취소됩니다."
   },
   "swapQuoteIncludesRate": {
-    "message": "견적에는 $1% MetaMask 수수료가 포함됩니다.",
+    "message": "견적에는 $1% MetaMask 요금이 포함됩니다.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapQuoteNofN": {
-    "message": "$1/$2개 견적",
+    "message": "$2의 $1 견적",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
@@ -2202,7 +2229,7 @@
     "message": "포시트(수도꼭지) 테스트"
   },
   "thisWillCreate": {
-    "message": "새 지갑과 비밀 복구 구문이 생성됩니다."
+    "message": "새 지갑과 시드 구문을 만듭니다."
   },
   "tips": {
     "message": "팁"
@@ -2349,7 +2376,7 @@
     "message": "URI에는 적절한 HTTP/HTTPS 접두사가 필요합니다."
   },
   "urlExistsErrorMsg": {
-    "message": "URL이 기존 네트워크 목록에 이미 있습니다."
+    "message": "이 URL은 현재 $1 네트워크에서 사용됩니다."
   },
   "usePhishingDetection": {
     "message": "피싱 감지 사용"

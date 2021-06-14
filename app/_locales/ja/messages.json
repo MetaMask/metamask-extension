@@ -113,7 +113,7 @@
     "message": "アグリゲーター ネットワーク料金"
   },
   "alertDisableTooltip": {
-    "message": "これは、\"設定 > アラート\"で変更できます"
+    "message": "これは、[\"設定 > 警告\"] で変更できます"
   },
   "alertSettingsUnconnectedAccount": {
     "message": "選択した未接続のアカウントを使用して Web サイトをブラウズしています"
@@ -288,6 +288,9 @@
   },
   "chainIdDefinition": {
     "message": "このネットワークのトランザクションの署名に使用されるチェーン ID。"
+  },
+  "chainIdExistsErrorMsg": {
+    "message": "このチェーン ID は現在 $1 ネットワークで使用しています。"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "ハードウェア ウォレットに接続するには、MetaMask on Google Chrome を使用する必要があります。"
@@ -1305,7 +1308,7 @@
     "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
   },
   "notifications5Description": {
-    "message": "\"シード フレーズ\" は、\"シークレット リカバリー フレーズ\" に変更されました。",
+    "message": "これで、\"シード フレーズ\" は \"シークレット リカバリー フレーズ\" と呼ばれます。",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
   "notifications6DescriptionOne": {
@@ -1340,7 +1343,7 @@
     "message": "オン"
   },
   "onboardingReturnNotice": {
-    "message": "\"$1\" はこのタブを閉じて、$2 に戻るように指示します",
+    "message": "\"$1\" はこのタブを閉じます。$2 に戻ってください。",
     "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
@@ -1453,6 +1456,30 @@
   },
   "recipientAddressPlaceholder": {
     "message": "検索、パブリック アドレス (0x)、または ENS"
+  },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "ここから開始"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "OK"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "シークレット リカバリー フレーズは常に安全かつ秘密の場所に保管してください"
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "シークレット リカバリー フレーズのバックアップが必要ですか？"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "シークレット リカバリー フレーズは誰とも決して共有しないでください"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "MetaMask チームが、ユーザーのシークレット リカバリー フレーズを確認することは絶対にありません"
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "シークレット リカバリー フレーズは、ご利用のすべてのアカウントを制御します。"
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "資産を保護してください"
   },
   "reject": {
     "message": "拒否"
@@ -1655,7 +1682,7 @@
     "message": "HD パスの選択"
   },
   "selectPathHelp": {
-    "message": "既存のレジャーのアカウントが下に表示されない場合は、パスを \"Legacy (MEW / MyCrypto)\" に切り替えます。"
+    "message": "既存の Ledger のアカウントが以下に表示されない場合は、パスを \"Legacy (MEW / MyCrypto)\" に変えてください。"
   },
   "selectType": {
     "message": "種類の選択"
@@ -1985,7 +2012,7 @@
     "message": "見積もりの詳細"
   },
   "swapQuoteDetailsSlippageInfo": {
-    "message": "注文した時点と注文が承認された時点で価格が変わることを\"スリッページ\"と呼びます。スリッページが \"最大スリッページ\" 設定を超える場合、スワップは自動的にキャンセルされます。"
+    "message": "注文した時点と注文が承認された時点で価格が変わることを \"スリッページ\" と呼びます。スリッページが \"最大スリッページ\" 設定を超える場合、スワップは自動的にキャンセルされます。"
   },
   "swapQuoteIncludesRate": {
     "message": "見積もりには $1% の MetaMask 手数料が含まれています",
@@ -2172,7 +2199,7 @@
     "message": "データの同期に成功しました。MetaMask モバイル アプリをご活用ください!"
   },
   "syncWithMobileDesc": {
-    "message": "アカウントと情報をモバイルデバイスと同期させることができます。MetaMask モバイル アプリを開き、\"設定\" に進み、\"ブラウザー拡張機能から同期\" をタップします。"
+    "message": "アカウントと情報をモバイルデバイスと同期させることができます。MetaMaskモバイルアプリを開き、\"設定\" に進み、\"ブラウザー拡張機能から同期\" をタップします。"
   },
   "syncWithMobileDescNewUsers": {
     "message": "MetaMask モバイル アプリを初めて開く場合は、電話機を以下のステップに従って操作してください。"
@@ -2349,7 +2376,7 @@
     "message": "URL には適切な HTTP/HTTPS プレフィックスが必要です。"
   },
   "urlExistsErrorMsg": {
-    "message": "URL はネットワークの既存のリストに既に存在します"
+    "message": "この URL は現在 $1 ネットワークで使用しています。"
   },
   "usePhishingDetection": {
     "message": "フィッシング検出を使用"

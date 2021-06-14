@@ -289,6 +289,9 @@
   "chainIdDefinition": {
     "message": "इस नेटवर्क के लिए लेन-देन पर हस्ताक्षर करने के लिए उपयोग की जाने वाली चेन ID।"
   },
+  "chainIdExistsErrorMsg": {
+    "message": "यह चेन ID वर्तमान में $1 नेटवर्क द्वारा उपयोग किया जाता है।"
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "अपने हार्डवेयर वॉलेट से कनेक्ट करने के लिए आपको Google Chrome पर MetaMask का उपयोग करने की आवश्यकता है।"
   },
@@ -1454,6 +1457,30 @@
   "recipientAddressPlaceholder": {
     "message": "खोज, सार्वजनिक पता (0x) या ENS"
   },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "यहाँ से प्रारंभ करें"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "समझ गया"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "अपने गुप्त रिकवरी फ्रेज़ को हमेशा सुरक्षित और गुप्त स्थान पर रखें।"
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "अपने गुप्त रिकवरी फ्रेज़ को फिर से बैकअप करने की आवश्यकता है?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "कभी भी अपना गुप्त रिकवरी फ्रेज़ किसी के साथ साझा न करें"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "MetaMask टीम कभी भी आपके गुप्त रिकवरी फ्रेज़ के बारे में नहीं पूछेगा"
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "आपका गुप्त रिकवरी फ्रेज़ आपके सभी खातों को नियंत्रित करता है।"
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "अपने धन को सुरक्षित रखें"
+  },
   "reject": {
     "message": "अस्वीकार करें"
   },
@@ -1655,7 +1682,7 @@
     "message": "HD पथ का चयन करें"
   },
   "selectPathHelp": {
-    "message": "यदि आपको अपने मौजूदा लेजर खाते नीचे नहीं दिखाई देते हैं, तो पथ को \"Legacy (MEW / MyCrypto)\" पर स्विच करने का प्रयास करें"
+    "message": "यदि आपको नीचे आपके मौजूदा लेजर खाते दिखाई नहीं देते हैं, तो पथ को \"लीगेसी (MEW / MyCrypto)\" पर स्विच करने का प्रयास करें।"
   },
   "selectType": {
     "message": "प्रकार का चयन करें"
@@ -2172,7 +2199,7 @@
     "message": "आपका डेटा सफलतापूर्वक सिंक कर लिया गया है। MetaMask मोबाइल ऐप का आनंद लें!"
   },
   "syncWithMobileDesc": {
-    "message": "आप अपने खाते और जानकारी को अपने मोबाइल डिवाइस के साथ सिंक कर सकते हैं। MetaMask मोबाइल ऐप खोलें, \"सेटिंग\" पर जाएँ और \"ब्राउज़र एक्सटेंशन से सिंक करें\" पर टैप करें"
+    "message": "आप अपने खाते और जानकारी को अपने मोबाइल डिवाइस के साथ सिंक कर सकते हैं। MetaMask मोबाइल ऐप खोलें, \"सेटिंग\" पर जाएं और \"ब्राउज़र एक्सटेंशन से सिंक करें\" पर टैप करें"
   },
   "syncWithMobileDescNewUsers": {
     "message": "यदि आप पहली बार MetaMask मोबाइल ऐप खोलते हैं, तो बस अपने फ़ोन में दिए गए चरणों का पालन करें।"
@@ -2349,7 +2376,7 @@
     "message": "URL को उपयुक्त HTTP/HTTPS उपसर्ग की आवश्यकता होती है।"
   },
   "urlExistsErrorMsg": {
-    "message": "URL नेटवर्क की मौजूदा सूची में पहले से मौजूद है"
+    "message": "यह URL वर्तमान में $1 नेटवर्क द्वारा उपयोग किया जाता है।"
   },
   "usePhishingDetection": {
     "message": "फ़िशिंग डिटेक्शन का उपयोग करें"

@@ -289,6 +289,9 @@
   "chainIdDefinition": {
     "message": "O ID da chain usado para assinar transações para essa rede."
   },
+  "chainIdExistsErrorMsg": {
+    "message": "O ID da chain é usado no momento pela rede $1."
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "Você precisa usar MetaMask no Google Chrome para se conectar com sua carteira de hardware."
   },
@@ -1454,6 +1457,30 @@
   "recipientAddressPlaceholder": {
     "message": "Busca, endereço público (0x) ou ENS"
   },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "Iniciar aqui"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "Entendi"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "Mantenha sempre o sigilo e proteja a sua Frase de Recuperação Secreta."
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "Precisa fazer backup da sua Frase de recuperação Secreta novamente?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "Nunca compartilhe a sua Frase de recuperação secreta com ninguém"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "A equipe do MetaMask jamais pedirá sua Frase de recuperação secreta."
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "Sua Frase de recuperação secreta controla todas as suas contas."
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "Proteja seu dinheiro"
+  },
   "reject": {
     "message": "Rejeitar"
   },
@@ -1655,7 +1682,7 @@
     "message": "Selecionar caminho do disco rígido"
   },
   "selectPathHelp": {
-    "message": "Se você não vir as contas existentes do livro-razão abaixo, tente alternar os caminhos para \"Legacy (MEW / MyCrypto)\""
+    "message": "Se você não vir suas contas existentes do Ledger abaixo, tente alternar os caminhos para \"Legacy (MEW / MyCrypto)\""
   },
   "selectType": {
     "message": "Selecionar tipo"
@@ -2172,7 +2199,7 @@
     "message": "Seus dados foram sincronizados. Curta o app MetaMask para dispositivos móveis!"
   },
   "syncWithMobileDesc": {
-    "message": "Você pode sincronizar suas contas e informações com o dispositivo móvel. Abra o app MetaMask para dispositivos móveis, acesse \"Configurações\" e toque em \"Sincronizar pela extensão do navegador\""
+    "message": "Você pode sincronizar suas contas e informações com o dispositivo móvel. Abra o aplicativo MetaMask para dispositivos móveis, acesse \"Configurações\" e toque em \"Sincronizar pela extensão do navegador\""
   },
   "syncWithMobileDescNewUsers": {
     "message": "Se você tiver acabado de abrir o app MetaMask para dispositivos móveis pela primeira vez, basta seguir as etapas no seu telefone."
@@ -2349,7 +2376,7 @@
     "message": "Os URLs precisam do prefixo HTTP/HTTPS adequado."
   },
   "urlExistsErrorMsg": {
-    "message": "O URL já está presente na lista de redes existente"
+    "message": "O ID da chain é usado no momento pela rede $1."
   },
   "usePhishingDetection": {
     "message": "Usar detecção de phishing"

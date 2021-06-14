@@ -289,6 +289,9 @@
   "chainIdDefinition": {
     "message": "ID rantai digunakan untuk menandatangani transaksi untuk jaringan ini."
   },
+  "chainIdExistsErrorMsg": {
+    "message": "ID Rantai ini saat ini digunakan oleh jaringan $1."
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "Anda perlu menggunakan MetaMask di Google Chrome untuk terhubung ke Dompet Perangkat Keras Anda."
   },
@@ -1305,7 +1308,7 @@
     "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
   },
   "notifications5Description": {
-    "message": "\"Frasa Pemulihan\" Anda kini disebut \"Frasa Pemulihan Rahasia\".",
+    "message": "\"Frasa Pemulihan\" Anda kini disebut \"Frasa Pemulihan Rahasia.\"",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
   "notifications6DescriptionOne": {
@@ -1453,6 +1456,30 @@
   },
   "recipientAddressPlaceholder": {
     "message": "Cari, alamat publik (0x), atau ENS"
+  },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "Mulai di sini"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "Mengerti"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "Jaga selalu Frasa Pemulihan Rahasia Anda di tempat yang aman dan rahasia"
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "Perlu mencadangkan Frasa Pemulihan Rahasia Anda lagi?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "Jangan membagikan Frasa Pemulihan Rahasia Anda kepada siapa pun"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "Tim MetaMask tidak akan pernah meminta Frasa Pemulihan Rahasia Anda"
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "Frasa Pemulihan Rahasia Anda mengendalikan semua akun Anda."
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "Lindungi dana Anda"
   },
   "reject": {
     "message": "Tolak"
@@ -2349,7 +2376,7 @@
     "message": "URL memerlukan awalan HTTP/HTTPS yang sesuai."
   },
   "urlExistsErrorMsg": {
-    "message": "URL sudah ada dalam daftar jaringan yang ada"
+    "message": "URL ini saat ini digunakan oleh jaringan $1."
   },
   "usePhishingDetection": {
     "message": "Menggunakan Deteksi Phishing"

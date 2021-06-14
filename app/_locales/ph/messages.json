@@ -104,7 +104,7 @@
     "message": "Mga Advanced na Opsyon"
   },
   "advancedSettingsDescription": {
-    "message": "I-access ang mga pang-developer na feature, i-download ang Mga Log ng Estado, I-reset ang Account, i-set up ang mga testnet at custom na RPC"
+    "message": "I-access ang mga pang-developer na feature, i-download ang Mga Log ng Status, I-reset ang Account, i-set up ang mga testnet at custom na RPC"
   },
   "affirmAgree": {
     "message": "Sang-ayon ako"
@@ -288,6 +288,9 @@
   },
   "chainIdDefinition": {
     "message": "Ginagamit ang chain ID para maglagda ng mga transaksyon para sa network na ito."
+  },
+  "chainIdExistsErrorMsg": {
+    "message": "Kasalukuyang ginagamit ng $1 network ang Chain ID na ito."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Kailangan mong gamitin ang MetaMask sa Google Chrome para maikonekta sa iyong Hardware Wallet."
@@ -648,7 +651,7 @@
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "Hindi nakita ang ENS name sa kasalukuyang network. Subukang lumipat sa Ethereum Mainnet."
+    "message": "Hindi nahanap ang ENS name sa kasalukuyang network. Subukang lumipat sa Ethereum Mainnet."
   },
   "ensRegistrationError": {
     "message": "Nagka-error sa pag-register ng ENS name"
@@ -1035,7 +1038,7 @@
     "message": "Mga Link"
   },
   "loadMore": {
-    "message": "Matuto Pa"
+    "message": "Mag-load Pa"
   },
   "loading": {
     "message": "Nilo-load..."
@@ -1305,7 +1308,7 @@
     "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
   },
   "notifications5Description": {
-    "message": "Ang \"Seed Phrase\" mo ay tinatawag na ngayong \"Secret Recovery Phrase\" mo.",
+    "message": "Tinatawag na ngayong \"Secret Recovery Phrase\" mo ang iyong \"Seed Phrase.\"",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
   "notifications6DescriptionOne": {
@@ -1453,6 +1456,30 @@
   },
   "recipientAddressPlaceholder": {
     "message": "Maghanap, pampublikong address (0x), o ENS"
+  },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "Magsimula rito"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "OK"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "Palaging panatilihin ang iyong Secret Recovery Phrase sa isang ligtas at lihim na lugar"
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "Kailangan ulit i-back up ang Secret Recovery Phrase mo?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "Huwag kailanman ipaalam sa iba ang iyong Secret Recovery Phrase"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "Hindi kailanman hihingin ng MetaMask team ang iyong Secret Recovery Phrase"
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "Kinokontrol ng iyong Secret Recovery Phrase ang lahat ng iyong account."
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "Protektahan ang iyong pondo!"
   },
   "reject": {
     "message": "Tanggihan"
@@ -1655,7 +1682,7 @@
     "message": "Pumili ng HD Path"
   },
   "selectPathHelp": {
-    "message": "Kung hindi mo makita ang mga kasalukuyan mong Ledger account sa ibaba, subukang ilipat ang path sa \"Legacy (MEW / MyCrypto)\""
+    "message": "Kung hindi mo makita ang iyong mga kasalukuyang Ledger account sa ibaba, subukang ilipat ang path sa \"Legacy (MEW / MyCrypto)\""
   },
   "selectType": {
     "message": "Pumili ng Uri"
@@ -1866,7 +1893,7 @@
     "message": "Kumpirmahin ang iyong hardware wallet"
   },
   "swapContractDataDisabledErrorDescription": {
-    "message": "Sa Ethereum app sa Ledger mo, pumunta sa \"Mga Setting\" at payagan ang data ng kontrata. Pagkatapos ay subukan ulit ang iyong pag-swap."
+    "message": "Sa Ethereum app sa iyong Ledger, pumunta sa \"Mga Setting\" at payagan ang data ng kontrata. Pagkatapos ay subukan ulit ang iyong pag-swap."
   },
   "swapContractDataDisabledErrorTitle": {
     "message": "Hindi naka-enable sa iyong Ledger ang data ng kontrata"
@@ -1985,7 +2012,7 @@
     "message": "Mga detalye ng quote"
   },
   "swapQuoteDetailsSlippageInfo": {
-    "message": "Kung magbabago ang presyo sa pagitan ng oras ng pag-order mo at sa oras na nakumpirma ito, tinatawag itong \"slippage\". Awtomatikong makakansela ang Pag-swap mo kung lalampas ang slippage sa setting mo ng \"tolerance ng slippage.\""
+    "message": "Kung magbabago ang presyo sa pagitan ng oras ng pag-order mo at sa oras na nakumpirma ito, tinatawag itong \"slippage\". Awtomatikong makakansela ang iyong Pag-swap kung lalampas ang slippage sa iyong setting na \"tolerance ng slippage.\""
   },
   "swapQuoteIncludesRate": {
     "message": "Kasama sa quote ang $1% bayarin sa MetaMask",
@@ -2172,7 +2199,7 @@
     "message": "Matagumpay na na-sync ang iyong data. I-enjoy ang MetaMask mobile app!"
   },
   "syncWithMobileDesc": {
-    "message": "Puwede mong i-sync ang iyong mga account at impormasyon sa mobile device mo. Buksan ang MetaMask mobile app, pumunta sa \"Mga Setting\" at i-tap ang \"I-sync mula sa Browser Extension\""
+    "message": "Puwede mong i-sync ang iyong mga account at impormasyon sa mobile device mo. Buksan ang MetaMask mobile app, pumunta sa \"Mga Setting\" at mag-tap sa \"I-sync mula sa Browser Extension\""
   },
   "syncWithMobileDescNewUsers": {
     "message": "Kung unang pagkakataon mong bubuksan ang MetaMask Mobile app, sundin lang ang mga hakbang sa iyong telepono."
@@ -2349,7 +2376,7 @@
     "message": "Kinakailangan ng mga URL ang naaangkop na HTTP/HTTPS prefix."
   },
   "urlExistsErrorMsg": {
-    "message": "Nasa kasalukuyang listahan ng mga network na ang URL"
+    "message": "Kasalukuyang ginagamit ng $1 network ang URL na ito."
   },
   "usePhishingDetection": {
     "message": "Gumamit ng Pag-detect ng Phishing"

@@ -289,6 +289,9 @@
   "chainIdDefinition": {
     "message": "El identificador de cadena que se utiliza para firmar transacciones en esta red."
   },
+  "chainIdExistsErrorMsg": {
+    "message": "En este momento, la red $1 está utilizando este identificador de cadena."
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "Debe usar MetaMask en Google Chrome para poder conectarse a su cartera de hardware."
   },
@@ -1340,7 +1343,7 @@
     "message": "Activado"
   },
   "onboardingReturnNotice": {
-    "message": "\"$1\" cerrará esta pestaña y volverá directamente a $2",
+    "message": "\"$1\" cerrará esta pestaña y lo dirigirá de nuevo a $2",
     "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
@@ -1453,6 +1456,30 @@
   },
   "recipientAddressPlaceholder": {
     "message": "Búsqueda, dirección pública (0x) o ENS"
+  },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "Iniciar aquí"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "Entendido"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "Guarde siempre su frase secreta de recuperación en un lugar seguro y secreto."
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "¿Necesita volver a crear una copia de seguridad de su frase secreta de recuperación?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "No comparta nunca su frase secreta de recuperación con nadie."
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "El equipo de MetaMask nunca le pedirá su frase secreta de recuperación."
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "Mediante su frase secreta de recuperación, se controlan todas sus cuentas."
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "Proteja sus fondos."
   },
   "reject": {
     "message": "Rechazar"
@@ -1655,7 +1682,7 @@
     "message": "Seleccione la ruta de acceso al disco duro"
   },
   "selectPathHelp": {
-    "message": "Si no ve sus cuentas del libro mayor existentes a continuación, intente cambiar de ruta de acceso a \"Legacy (MEW / MyCrypto)\""
+    "message": "Si no ve sus cuentas existentes en Ledger a continuación, intente cambiar de ruta de acceso a \"Legacy (MEW / MyCrypto)\""
   },
   "selectType": {
     "message": "Seleccionar tipo"
@@ -1828,7 +1855,7 @@
     "message": "Canjear"
   },
   "swapAdvancedSlippageInfo": {
-    "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina \"desfase\". El canje se cancelará automáticamente si el desfase supera lo establecido en la configuración \"max slippage\" (desfase máximo)."
+    "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina “desfase”. El canje se cancelará automáticamente si el desfase supera lo establecido en la configuración “max slippage” (desfase máximo)."
   },
   "swapAggregator": {
     "message": "Agregador"
@@ -1866,7 +1893,7 @@
     "message": "Confirmar con la cartera de hardware"
   },
   "swapContractDataDisabledErrorDescription": {
-    "message": "En la aplicación de Ethereum en su Ledger, diríjase \"Configuración\" y habilite los datos de contrato. A continuación, intente canjear de nuevo."
+    "message": "En la aplicación de Ethereum en su Ledger, diríjase a \"Configuración\" y habilite los datos de contrato. A continuación, intente canjear de nuevo."
   },
   "swapContractDataDisabledErrorTitle": {
     "message": "Los datos de contrato no se habilitaron en su Ledger"
@@ -1985,7 +2012,7 @@
     "message": "Detalles de cotización"
   },
   "swapQuoteDetailsSlippageInfo": {
-    "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina \"desfase\". El canje se cancelará de forma automática si el desfase supera lo establecido en la configuración \"tolerancia de desfase\"."
+    "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina \"desfase\". El canje se cancelará automáticamente si el desfase supera lo establecido en la configuración \"tolerancia de desfase\"."
   },
   "swapQuoteIncludesRate": {
     "message": "La cotización incluye una cuota de MetaMask de $1 %",
@@ -2349,7 +2376,7 @@
     "message": "Las direcciones URL requieren el prefijo HTTP/HTTPS adecuado."
   },
   "urlExistsErrorMsg": {
-    "message": "La dirección URL ya está en la lista de redes existentes"
+    "message": "En este momento, la red $1 está utilizando esta dirección URL."
   },
   "usePhishingDetection": {
     "message": "Usar detección de phishing"
