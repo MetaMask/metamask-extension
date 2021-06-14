@@ -27,6 +27,7 @@ const AssetListItem = ({
   primary,
   secondary,
   identiconBorder,
+  isERC721,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -121,10 +122,12 @@ const AssetListItem = ({
       }
       midContent={midContent}
       rightContent={
-        <>
-          <i className="fas fa-chevron-right asset-list-item__chevron-right" />
-          {sendTokenButton}
-        </>
+        !isERC721 && (
+          <>
+            <i className="fas fa-chevron-right asset-list-item__chevron-right" />
+            {sendTokenButton}
+          </>
+        )
       }
     />
   );
@@ -143,6 +146,7 @@ AssetListItem.propTypes = {
   'primary': PropTypes.string,
   'secondary': PropTypes.string,
   'identiconBorder': PropTypes.bool,
+  'isERC721': PropTypes.bool,
 };
 
 AssetListItem.defaultProps = {

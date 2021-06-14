@@ -46,8 +46,18 @@ export default function TokenList({ onTokenClick }) {
   return (
     <div>
       {tokensWithBalances.map((tokenData, index) => {
+        const { isERC721 } = tokens.find(
+          (token) => token.address === tokenData.address,
+        );
         tokenData.image = assetImages[tokenData.address];
-        return <TokenCell key={index} {...tokenData} onClick={onTokenClick} />;
+        return (
+          <TokenCell
+            key={index}
+            {...tokenData}
+            isERC721={isERC721}
+            onClick={onTokenClick}
+          />
+        );
       })}
     </div>
   );
