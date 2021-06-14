@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "Teie lehitsejat ei toetata..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask on projekteeritud ja loodud Californias."
-  },
   "buyWithWyre": {
     "message": "Ostke ETH-d Wyre'iga"
   },
