@@ -25,7 +25,10 @@ import {
 } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
-import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
+import {
+  MAINNET,
+  NETWORK_TYPE_RPC,
+} from '../../../../shared/constants/network';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -191,7 +194,7 @@ export default class TransactionController extends EventEmitter {
       networkId: networkId === 'loading' ? 0 : parseInt(networkId, 10),
     };
 
-    return Common.forCustomChain('mainnet', customChainParams, HARDFORK);
+    return Common.forCustomChain(MAINNET, customChainParams, HARDFORK);
   }
 
   /**
