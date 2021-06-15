@@ -38,6 +38,9 @@ const minResult = calculateResult((array) => Math.min(...array));
 const maxResult = calculateResult((array) => Math.max(...array));
 const averageResult = calculateResult((array) => calculateAverage(array));
 const standardDeviationResult = calculateResult((array) => {
+  if (array.length === 1) {
+    return 0;
+  }
   const average = calculateAverage(array);
   const squareDiffs = array.map((value) => Math.pow(value - average, 2));
   return Math.sqrt(calculateAverage(squareDiffs));
@@ -46,7 +49,7 @@ const standardDeviationResult = calculateResult((array) => {
 const calculateMarginOfError = (array) =>
   ttest(array).confidence()[1] - calculateAverage(array);
 const marginOfErrorResult = calculateResult((array) =>
-  calculateMarginOfError(array),
+  array.length === 1 ? 0 : calculateMarginOfError(array),
 );
 
 async function profilePageLoad(pages, numSamples) {
