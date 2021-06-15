@@ -7,47 +7,46 @@ import {
   getSelectedAddress,
   getPreferences,
   getCurrentCurrency,
+  getTokenExchangeRates,
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { getConversionRate } from '../../../ducks/metamask/metamask';
 
 export default function TokenCell({
   address,
   decimals,
   balanceError,
   symbol,
-  string,
+  string: amount,
   image,
   onClick,
 }) {
   const userAddress = useSelector(getSelectedAddress);
   const t = useI18nContext();
   const currentCurrency = useSelector(getCurrentCurrency).toUpperCase();
-  const conversionRate = useSelector(getConversionRate);
+  const contractExchangeRates = useSelector(getTokenExchangeRates);
 
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const formattedFiat = useTokenFiatAmount(address, string, symbol, {}, true);
+  const formattedFiat = useTokenFiatAmount(address, amount, symbol, {}, true);
+  const tokenExchangeRate = contractExchangeRates[address];
 
-  // Native currency should be primary currency if settings are set as such *or* if we don't have a valid conversionRate
+  // Native currency should be primary currency if settings are set as such
+  // OR if we don't have a valid tokenExchangeRate
   const useNativeCurrencyAsPrimaryDisplay =
-    useNativeCurrencyAsPrimaryCurrency || !conversionRate;
+    useNativeCurrencyAsPrimaryCurrency || !tokenExchangeRate;
 
-  const primary = useNativeCurrencyAsPrimaryDisplay
-    ? `${string || 0}`
-    : formattedFiat;
-
-  const secondary = useNativeCurrencyAsPrimaryDisplay
-    ? formattedFiat
-    : `${string || 0}`;
-
-  const primarySymbol = useNativeCurrencyAsPrimaryDisplay
-    ? symbol
-    : currentCurrency;
-
-  const secondarySymbol = useNativeCurrencyAsPrimaryDisplay
-    ? currentCurrency
-    : symbol;
+  let primary, primarySymbol, secondary, secondarySymbol;
+  if (useNativeCurrencyAsPrimaryDisplay) {
+    primary = amount || '0';
+    primarySymbol = symbol;
+    secondary = formattedFiat;
+    secondarySymbol = currentCurrency;
+  } else {
+    primary = formattedFiat;
+    primarySymbol = currentCurrency;
+    secondary = amount || '0';
+    secondarySymbol = symbol;
+  }
 
   const warning = balanceError ? (
     <span>

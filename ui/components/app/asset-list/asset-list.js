@@ -71,6 +71,10 @@ const AssetList = ({ onClickAsset }) => {
   );
 
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
+
+  // Show the secondary currency if the settings indicate to do so
+  // AND the primary currency has value (if this is false we want to show the secondary as the primary)
+  // AND we have a valid conversionRate (if this is false we don't want to show an invalid conversion)
   const showSecondaryCurrency =
     showFiat &&
     Boolean(primaryCurrencyProperties?.value) &&
@@ -86,6 +90,11 @@ const AssetList = ({ onClickAsset }) => {
             ? primaryCurrencyProperties?.value
             : secondaryCurrencyProperties?.value
         }
+        primarySymbol={
+          primaryCurrencyProperties?.value
+            ? primaryCurrencyProperties?.suffix
+            : secondaryCurrencyProperties?.suffix
+        }
         secondary={
           showSecondaryCurrency ? secondaryCurrencyProperties?.value : undefined
         }
@@ -93,11 +102,6 @@ const AssetList = ({ onClickAsset }) => {
           showSecondaryCurrency
             ? secondaryCurrencyProperties?.suffix
             : undefined
-        }
-        primarySymbol={
-          primaryCurrencyProperties?.value
-            ? primaryCurrencyProperties?.suffix
-            : secondaryCurrencyProperties?.suffix
         }
         tokenImage={primaryTokenImage}
         identiconBorder
