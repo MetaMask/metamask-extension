@@ -97,6 +97,9 @@
   "addTokens": {
     "message": "Add Tokens"
   },
+  "addressBookIcon": {
+    "message": "Address book icon"
+  },
   "advanced": {
     "message": "Advanced"
   },
