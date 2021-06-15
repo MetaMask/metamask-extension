@@ -52,6 +52,10 @@
   "addContact": {
     "message": "संपर्क जोड़ें"
   },
+  "addCustomTokenByContractAddress": {
+    "message": "टोकन नहीं मिल रहा है? आप अपने पते को चिपकाकर मैन्युअल रूप से किसी भी टोकन को जोड़ सकते हैं। टोकन अनुबंध पते $1 पर मिल सकते हैं।",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
+  },
   "addEthereumChainConfirmationDescription": {
     "message": "इससे इस नेटवर्क को MetaMask के अंदर उपयोग करने की अनुमति मिलेगी।"
   },
@@ -282,6 +286,9 @@
   "chainIdDefinition": {
     "message": "इस नेटवर्क के लिए लेन-देन पर हस्ताक्षर करने के लिए उपयोग की जाने वाली चेन ID।"
   },
+  "chainIdExistsErrorMsg": {
+    "message": "यह चेन ID वर्तमान में $1 नेटवर्क द्वारा उपयोग किया जाता है।"
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "अपने हार्डवेयर वॉलेट से कनेक्ट करने के लिए आपको Google Chrome पर MetaMask का उपयोग करने की आवश्यकता है।"
   },
@@ -406,6 +413,9 @@
   },
   "continueToWyre": {
     "message": "Wyre पर जारी रखें"
+  },
+  "contract": {
+    "message": "अनुबंध"
   },
   "contractAddressError": {
     "message": "आप टोकन के अनुबंध पते पर टोकन भेज रहे हैं। इसके परिणामस्वरूप इन टोकनों का नुकसान हो सकता है।"
@@ -621,7 +631,11 @@
     "message": "फ़िशिंग से सावधान रहें! MetaMask कभी भी अनायास ही आपके गुप्त रिकवरी फ्रेज़ के बारे में नहीं पूछेगा।"
   },
   "endOfFlowMessage6": {
-    "message": "यदि आपको अपने गुप्त रिकवरी फ्रेज़ को फिर से बैकअप लेने की आवश्यकता है, तो आप इसे सेटिंग्स -> सुरक्षा में पा सकते हैं।"
+    "message": "यदि आपको अपने गुप्त रिकवरी फ्रेज़ को फिर से बैकअप लेने की आवश्यकता है, तो आप इसे सेटिंग -> सुरक्षा में पा सकते हैं।"
+  },
+  "endOfFlowMessage7": {
+    "message": "यदि आपको कभी कुछ पूछना हो या कुछ गड़बड़ लगे, तो हमारी सहायता $1 से संपर्क करें।",
+    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask आपके गुप्त रिकवरी फ्रेज़ को पुनर्प्राप्त नहीं कर सकता है।"
@@ -881,6 +895,16 @@
   },
   "importAccountSeedPhrase": {
     "message": "गुप्त रिकवरी फ्रेज़ के साथ एक खाता आयात करें"
+  },
+  "importAccountText": {
+    "message": "या $1",
+    "description": "$1 represents the text from `importAccountLinkText` as a link"
+  },
+  "importTokenQuestion": {
+    "message": "टोकन का आयात करें?"
+  },
+  "importTokenWarning": {
+    "message": "कोई भी किसी भी नाम के साथ एक टोकन बना सकता है, जिसमें मौजूदा टोकन के नकली संस्करण शामिल हैं। अपने जोखिम पर जोड़ें और व्यापार करें!"
   },
   "importWallet": {
     "message": "वॉलेट आयात करें"
@@ -1284,6 +1308,22 @@
     "message": "आपके \"सीड फ्रेज़\" को अब आपका \"गुप्त रिकवरी फ्रेज़\" कहा जाता है।",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
+  "notifications6DescriptionOne": {
+    "message": "Chrome के संस्करण 91 से, वह API जो हमारे Ledger सपोर्ट (U2F) को सक्षम करती है वह अब हार्डवेयर वॉलेट का समर्थन नहीं करती। MetaMask ने एक नया Ledger Live सपोर्ट लागू किया है, जिसकी मदद से आप Ledger Live डेस्कटॉप ऐप के माध्यम से अपने Ledger डिवाइस से कनेक्ट करना जारी रख सकते हैं।",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionThree": {
+    "message": "MetaMask में अपने Ledger खाते पर काम करते समय, एक नया टैब खुल जाएगा और आपको Ledger Live ऐप खोलने के लिए कहा जाएगा।  ऐप खुलने के बाद, आपको अपने MetaMask खाते के लिए एक WebSocket कनेक्शन को अनुमति देने के लिए कहा जाएगा।  बस इतना ही!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionTwo": {
+    "message": "आप सेटिंग > उन्नत > Ledger Live का उपयोग करें पर क्लिक करके Ledger Live सहायता को सक्षम कर सकते हैं।",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6Title": {
+    "message": "Chrome उपयोगकर्ताओं के लिए Ledger सहायता अद्यतन",
+    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
+  },
   "ofTextNofM": {
     "message": "/"
   },
@@ -1414,6 +1454,30 @@
   "recipientAddressPlaceholder": {
     "message": "खोज, सार्वजनिक पता (0x) या ENS"
   },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "यहाँ से प्रारंभ करें"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "समझ गया"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "अपने गुप्त रिकवरी फ्रेज़ को हमेशा सुरक्षित और गुप्त स्थान पर रखें।"
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "अपने गुप्त रिकवरी फ्रेज़ को फिर से बैकअप करने की आवश्यकता है?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "कभी भी अपना गुप्त रिकवरी फ्रेज़ किसी के साथ साझा न करें"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "MetaMask टीम कभी भी आपके गुप्त रिकवरी फ्रेज़ के बारे में नहीं पूछेगा"
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "आपका गुप्त रिकवरी फ्रेज़ आपके सभी खातों को नियंत्रित करता है।"
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "अपने धन को सुरक्षित रखें"
+  },
   "reject": {
     "message": "अस्वीकार करें"
   },
@@ -1540,6 +1604,42 @@
   },
   "securitySettingsDescription": {
     "message": "गोपनीयता सेटिंग्स और वॉलेट का गुप्त रिकवरी फ्रेज़"
+  },
+  "seedPhraseIntroSidebarBulletFour": {
+    "message": "लिख लें और कई गुप्त स्थानों में स्टोर करें।"
+  },
+  "seedPhraseIntroSidebarBulletOne": {
+    "message": "पासवर्ड मैनेजर में सहेजें"
+  },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "सेफ़ डिपोज़िट बॉक्स में स्टोर करें।"
+  },
+  "seedPhraseIntroSidebarBulletTwo": {
+    "message": "बैंक की तिजोरी में रखें।"
+  },
+  "seedPhraseIntroSidebarCopyOne": {
+    "message": "आपका रिकवरी फ्रेज़ आपके वॉलेट और धन के लिए “मास्टर कुंजी” है।"
+  },
+  "seedPhraseIntroSidebarCopyThree": {
+    "message": "यदि कोई व्यक्ति आपका रिकवरी फ्रेज़ मांगता है, तो सबसे अधिक संभावना है कि वे आपको धोखा देने का प्रयास कर रहे हैं।"
+  },
+  "seedPhraseIntroSidebarCopyTwo": {
+    "message": "कभी भी अपना रिकवरी फ्रेज़ साझा न करें, MetaMask के साथ भी नहीं!"
+  },
+  "seedPhraseIntroSidebarTitleOne": {
+    "message": "रिकवरी फ्रेज़ क्या है?"
+  },
+  "seedPhraseIntroSidebarTitleThree": {
+    "message": "क्या मुझे अपना रिकवरी फ्रेज़ साझा करना चाहिए?"
+  },
+  "seedPhraseIntroSidebarTitleTwo": {
+    "message": "मैं अपना रिकवरी फ्रेज़ कैसे सहेजूं?"
+  },
+  "seedPhraseIntroTitle": {
+    "message": "अपने वॉलेट को सुरक्षित करें"
+  },
+  "seedPhraseIntroTitleCopy": {
+    "message": "शुरुआत करने से पहले, अपने रिकवरी फ्रेज़ और अपने वॉलेट को सुरक्षित रखने के तरीके के बारे में जानने के लिए यह छोटा-सा वीडियो देखें।"
   },
   "seedPhrasePlaceholder": {
     "message": "प्रत्येक शब्द को एक रिक्ति से अलग करें"
@@ -2003,6 +2103,9 @@
     "message": "$1 से $2 में स्वैप करें",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
+  "swapTokenVerificationAddedManually": {
+    "message": "इस टोकन को मैन्युअल रूप से जोड़ा गया है।"
+  },
   "swapTokenVerificationMessage": {
     "message": "हमेशा $1 पर टोकन पते की पुष्टि करें।",
     "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
@@ -2270,7 +2373,7 @@
     "message": "URL को उपयुक्त HTTP/HTTPS उपसर्ग की आवश्यकता होती है।"
   },
   "urlExistsErrorMsg": {
-    "message": "URL नेटवर्क की मौजूदा सूची में पहले से मौजूद है"
+    "message": "यह URL वर्तमान में $1 नेटवर्क द्वारा उपयोग किया जाता है।"
   },
   "usePhishingDetection": {
     "message": "फ़िशिंग डिटेक्शन का उपयोग करें"
@@ -2290,6 +2393,10 @@
   },
   "verifyThisTokenOn": {
     "message": "इस टोकन को $1 पर सत्यापित करें",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "verifyThisUnconfirmedTokenOn": {
+    "message": "इस टोकन को $1 पर सत्यापित करें और सुनिश्चित करें कि यह वही टोकन है जिससे आप व्यापार करना चाहते हैं।",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAccount": {
@@ -2324,6 +2431,10 @@
   },
   "walletSeedRestore": {
     "message": "वॉलेट का गुप्त रिकवरी फ्रेज़"
+  },
+  "web3ShimUsageNotification": {
+    "message": "हमने देखा है कि वर्तमान वेबसाइट ने हटाए गए window.web3 API का उपयोग करने की कोशिश की। यदि साइट में गड़बड़ी लगती है, तो कृपया अधिक जानकारी के लिए $1 पर क्लिक करें।",
+    "description": "$1 is a clickable link."
   },
   "welcome": {
     "message": "MetaMask में आपका स्वागत है"
