@@ -162,19 +162,19 @@ export default class TransactionController extends EventEmitter {
     // type will be one of our default network names or 'rpc'. the default
     // network names are sufficient configuration, simply pass the name as the
     // chain argument in the constructor.
-    const { type, nickname } = this.getProviderConfig();
+    const { type, nickname: name } = this.getProviderConfig();
 
     if (type === 'rpc') {
       // For 'rpc' we need to use the same basic configuration as mainnet,
       // since we only support EVM compatible chains, and then override the
       // name, chainId and networkId properties. This is done using the
       // `forCustomChain` static method on the Common class.
-      const chainId = this._getCurrentChainId();
+      const chainId = parseInt(this._getCurrentChainId(), 16);
       const networkId = this.networkStore.getState();
 
       const customChainParams = {
-        name: nickname,
-        chainId: parseInt(chainId, 16),
+        name,
+        chainId,
         // It is improbable for a transaction to be signed while the network
         // is loading for two reasons.
         // 1. Pending, unconfirmed transactions are wiped on network change
