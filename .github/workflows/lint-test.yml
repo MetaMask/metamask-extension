@@ -188,7 +188,7 @@ jobs:
         run: |
           if ./development/test-run-e2e.sh
           then
-            xvfb-run -e /dev/stderr -a yarn test:e2e:chrome
+            ENABLE_CHROME_LOGGING=true xvfb-run -e /dev/stderr -a yarn test:e2e:chrome
           fi
       - name: Save Chrome E2E test artifacts on failure
         uses: actions/upload-artifact@v2
@@ -226,7 +226,7 @@ jobs:
         run: |
           if ./development/test-run-e2e.sh
           then
-            xvfb-run -e /dev/stderr -a yarn test:e2e:chrome:metrics
+            ENABLE_CHROME_LOGGING=true xvfb-run -e /dev/stderr -a yarn test:e2e:chrome:metrics
           fi
       - name: Save Chrome E2E metrics test artifacts on failure
         uses: actions/upload-artifact@v2
@@ -340,7 +340,7 @@ jobs:
         run: |
           if ./development/test-run-e2e.sh
           then
-            xvfb-run -e /dev/stderr -a yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json
+            ENABLE_CHROME_LOGGING=true xvfb-run -e /dev/stderr -a yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json
           fi
       - name: Save benchmark artifacts
         uses: actions/upload-artifact@v2
