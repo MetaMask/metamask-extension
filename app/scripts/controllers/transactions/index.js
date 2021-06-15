@@ -25,6 +25,7 @@ import {
 } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
+import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -159,38 +160,38 @@ export default class TransactionController extends EventEmitter {
    * @returns {Common} common configuration object
    */
   getCommonConfiguration() {
+    const { type, nickname: name } = this.getProviderConfig();
+
     // type will be one of our default network names or 'rpc'. the default
     // network names are sufficient configuration, simply pass the name as the
     // chain argument in the constructor.
-    const { type, nickname: name } = this.getProviderConfig();
-
-    if (type === 'rpc') {
-      // For 'rpc' we need to use the same basic configuration as mainnet,
-      // since we only support EVM compatible chains, and then override the
-      // name, chainId and networkId properties. This is done using the
-      // `forCustomChain` static method on the Common class.
-      const chainId = parseInt(this._getCurrentChainId(), 16);
-      const networkId = this.networkStore.getState();
-
-      const customChainParams = {
-        name,
-        chainId,
-        // It is improbable for a transaction to be signed while the network
-        // is loading for two reasons.
-        // 1. Pending, unconfirmed transactions are wiped on network change
-        // 2. The UI is unusable (loading indicator) when network is loading.
-        // seeing the networkId to 0 is for type safety and to explicity lead
-        // the transaction to failing if a user is able to get to this branch
-        // on a custom network that requires valid network id. I have not ran
-        // into this limitation on any network I have attempted, even when
-        // hardcoding networkId to 'loading'.
-        networkId: networkId === 'loading' ? 0 : parseInt(networkId, 10),
-      };
-
-      return Common.forCustomChain('mainnet', customChainParams, HARDFORK);
+    if (type !== NETWORK_TYPE_RPC) {
+      return new Common({ chain: type, hardfork: HARDFORK });
     }
 
-    return new Common({ chain: type, hardfork: HARDFORK });
+    // For 'rpc' we need to use the same basic configuration as mainnet,
+    // since we only support EVM compatible chains, and then override the
+    // name, chainId and networkId properties. This is done using the
+    // `forCustomChain` static method on the Common class.
+    const chainId = parseInt(this._getCurrentChainId(), 16);
+    const networkId = this.networkStore.getState();
+
+    const customChainParams = {
+      name,
+      chainId,
+      // It is improbable for a transaction to be signed while the network
+      // is loading for two reasons.
+      // 1. Pending, unconfirmed transactions are wiped on network change
+      // 2. The UI is unusable (loading indicator) when network is loading.
+      // seeing the networkId to 0 is for type safety and to explicity lead
+      // the transaction to failing if a user is able to get to this branch
+      // on a custom network that requires valid network id. I have not ran
+      // into this limitation on any network I have attempted, even when
+      // hardcoding networkId to 'loading'.
+      networkId: networkId === 'loading' ? 0 : parseInt(networkId, 10),
+    };
+
+    return Common.forCustomChain('mainnet', customChainParams, HARDFORK);
   }
 
   /**
