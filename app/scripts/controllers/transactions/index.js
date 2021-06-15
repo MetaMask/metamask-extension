@@ -183,7 +183,7 @@ export default class TransactionController extends EventEmitter {
       // is loading for two reasons.
       // 1. Pending, unconfirmed transactions are wiped on network change
       // 2. The UI is unusable (loading indicator) when network is loading.
-      // seeing the networkId to 0 is for type safety and to explicity lead
+      // setting the networkId to 0 is for type safety and to explicity lead
       // the transaction to failing if a user is able to get to this branch
       // on a custom network that requires valid network id. I have not ran
       // into this limitation on any network I have attempted, even when
