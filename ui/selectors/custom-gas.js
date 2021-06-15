@@ -9,6 +9,8 @@ import { formatETHFee } from '../helpers/utils/formatters';
 import { calcGasTotal } from '../pages/send/send.utils';
 
 import { GAS_ESTIMATE_TYPES } from '../helpers/constants/common';
+import { BASIC_ESTIMATE_STATES, GAS_SOURCE } from '../ducks/gas/gas.duck';
+import { GAS_LIMITS } from '../../shared/constants/gas';
 import {
   getCurrentCurrency,
   getIsMainnet,
@@ -294,7 +296,7 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
   const isMainnet = getIsMainnet(state);
   const showFiat = isMainnet || Boolean(showFiatInTestnets);
   const gasLimit =
-    state.metamask.send.gasLimit || getCustomGasLimit(state) || '0x5208';
+    state.send.gasLimit || getCustomGasLimit(state) || GAS_LIMITS.SIMPLE;
   const { conversionRate } = state.metamask;
   const currentCurrency = getCurrentCurrency(state);
   const {
@@ -361,13 +363,21 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
 export function getIsEthGasPriceFetched(state) {
   const gasState = state.gas;
   return Boolean(
-    gasState.estimateSource === 'eth_gasprice' &&
-      gasState.basicEstimateStatus === 'READY' &&
+    gasState.estimateSource === GAS_SOURCE.ETHGASPRICE &&
+      gasState.basicEstimateStatus === BASIC_ESTIMATE_STATES.READY &&
       getIsMainnet(state),
   );
 }
 
 export function getNoGasPriceFetched(state) {
   const gasState = state.gas;
-  return Boolean(gasState.basicEstimateStatus === 'FAILED');
+  return Boolean(gasState.basicEstimateStatus === BASIC_ESTIMATE_STATES.FAILED);
+}
+
+export function getIsGasEstimatesFetched(state) {
+  const gasState = state.gas;
+  return Boolean(
+    gasState.estimateSource === GAS_SOURCE.METASWAPS &&
+      gasState.basicEstimateStatus === BASIC_ESTIMATE_STATES.READY,
+  );
 }

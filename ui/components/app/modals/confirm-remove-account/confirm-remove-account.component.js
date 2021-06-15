@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { getAccountLink } from '@metamask/etherscan-link';
 import Modal from '../../modal';
 import { addressSummary } from '../../../../helpers/utils/util';
 import Identicon from '../../../ui/identicon';
-import getAccountLink from '../../../../helpers/utils/account-link';
 
 export default class ConfirmRemoveAccount extends Component {
   static propTypes = {
@@ -16,6 +16,7 @@ export default class ConfirmRemoveAccount extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   handleRemove = () => {
@@ -30,7 +31,7 @@ export default class ConfirmRemoveAccount extends Component {
 
   renderSelectedAccount() {
     const { t } = this.context;
-    const { identity } = this.props;
+    const { identity, rpcPrefs, chainId } = this.props;
     return (
       <div className="confirm-remove-account__account">
         <div className="confirm-remove-account__account__identicon">
@@ -53,11 +54,27 @@ export default class ConfirmRemoveAccount extends Component {
         <div className="confirm-remove-account__account__link">
           <a
             className=""
-            href={getAccountLink(
-              identity.address,
-              this.props.chainId,
-              this.props.rpcPrefs,
-            )}
+            onClick={() => {
+              const accountLink = getAccountLink(
+                identity.address,
+                chainId,
+                rpcPrefs,
+              );
+              this.context.trackEvent({
+                category: 'Accounts',
+                event: 'Clicked Block Explorer Link',
+                properties: {
+                  link_type: 'Account Tracker',
+                  action: 'Remove Account',
+                  block_explorer_domain: accountLink
+                    ? new URL(accountLink)?.hostname
+                    : '',
+                },
+              });
+              global.platform.openTab({
+                url: accountLink,
+              });
+            }}
             target="_blank"
             rel="noopener noreferrer"
             title={t('etherscanView')}

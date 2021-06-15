@@ -109,6 +109,22 @@
     width: 100%;
   }
 
+  .dropdown-input-pair {
+    .searchable-item-list {
+      &__item--add-token {
+        display: none;
+      }
+    }
+
+    &__to {
+      .searchable-item-list {
+        &__item--add-token {
+          display: flex;
+        }
+      }
+    }
+  }
+
   &__open-to-dropdown {
     max-height: 194px;
 

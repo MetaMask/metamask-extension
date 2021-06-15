@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getTokenExchangeRates,
-  getConversionRate,
   getCurrentCurrency,
   getShouldShowFiat,
 } from '../selectors';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
+import { getConversionRate } from '../ducks/metamask/metamask';
 
 /**
  * Get the token balance converted to fiat and formatted for display

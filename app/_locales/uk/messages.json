@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "Ваш браузер не підтримується..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask розроблено й створено в Каліфорнії."
-  },
   "buyWithWyre": {
     "message": "Купити ETH через Wyre"
   },

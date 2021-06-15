@@ -20,6 +20,10 @@
     justify-content: center;
   }
 
+  a {
+    color: $Blue-500;
+  }
+
   &__status-image {
     margin-top: 12px;
     margin-bottom: 16px;

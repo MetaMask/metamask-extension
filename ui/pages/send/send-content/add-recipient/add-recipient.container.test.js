@@ -1,6 +1,5 @@
 import sinon from 'sinon';
-
-import { updateSendTo } from '../../../../store/actions';
+import { updateSendTo } from '../../../../ducks/send/send.duck';
 
 let mapStateToProps;
 let mapDispatchToProps;
@@ -24,7 +23,7 @@ jest.mock('../../../../selectors', () => ({
   ],
 }));
 
-jest.mock('../../../../store/actions', () => ({
+jest.mock('../../../../ducks/send/send.duck.js', () => ({
   updateSendTo: jest.fn(),
 }));
 

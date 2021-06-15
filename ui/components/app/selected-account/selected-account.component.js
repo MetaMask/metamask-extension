@@ -5,6 +5,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 
 import Tooltip from '../../ui/tooltip';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { SECOND } from '../../../../shared/constants/time';
 
 class SelectedAccount extends Component {
   state = {
@@ -50,7 +51,7 @@ class SelectedAccount extends Component {
               this.setState({ copied: true });
               this.copyTimeout = setTimeout(
                 () => this.setState({ copied: false }),
-                3000,
+                SECOND * 3,
               );
               copyToClipboard(checksummedAddress);
             }}

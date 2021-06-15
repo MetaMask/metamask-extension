@@ -249,11 +249,8 @@
   "browserNotSupported": {
     "message": "ご使用のブラウザーはサポートされていません..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "連絡先リストを作成する"
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask はカリフォルニアで設計および作成されました。"
   },
   "buy": {
     "message": "購入"
@@ -1033,6 +1030,9 @@
   },
   "mainnet": {
     "message": "イーサリアム メインネット"
+  },
+  "makeAnotherSwap": {
+    "message": "新しいスワップの作成"
   },
   "max": {
     "message": "最大"
@@ -1893,12 +1893,6 @@
     "message": "約 $1% の価格差",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
-  "swapPriceDifferenceTooltip": {
-    "message": "市場価格の違いは、仲介業者が負担する手数料、市場規模、取引量、または取引価格差の影響を受けることがあります。"
-  },
-  "swapPriceDifferenceUnavailable": {
-    "message": "マーケット価格は利用できません。続行する前に、返金額に問題がないことを確認してください。"
-  },
   "swapProcessing": {
     "message": "処理中"
   },
@@ -2027,9 +2021,6 @@
     "message": "複数のトークンが同じ名前とシンボルを使用できます。$1 をチェックして、これが探しているトークンであることを確認します。",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
-  "swapViewToken": {
-    "message": "$1 を表示"
-  },
   "swapYourTokenBalance": {
     "message": "$1 $2 はスワップに使用可能です",
     "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
@@ -2152,6 +2143,9 @@
   },
   "tokenSymbol": {
     "message": "トークン シンボル"
+  },
+  "tooltipApproveButton": {
+    "message": "理解しました"
   },
   "total": {
     "message": "合計"

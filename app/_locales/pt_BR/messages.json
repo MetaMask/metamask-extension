@@ -249,11 +249,8 @@
   "browserNotSupported": {
     "message": "Seu navegador não é compatível..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "Crie sua lista de contatos"
-  },
-  "builtInCalifornia": {
-    "message": "O MetaMask é projetado e construído na Califórnia."
   },
   "buy": {
     "message": "Comprar"
@@ -1027,6 +1024,9 @@
   },
   "mainnet": {
     "message": "Mainnet do Ethereum"
+  },
+  "makeAnotherSwap": {
+    "message": "Criar novo swap"
   },
   "max": {
     "message": "Máx"
@@ -1877,6 +1877,15 @@
     "message": "Diferença de preço de aproximadamente $1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
+  "swapPriceImpactTooltip": {
+    "message": "O impacto no preço é a diferença entre o preço de mercado atual e o valor recebido durante a execução da transação. O impacto no preço é uma função do tamanho do seu comércio em relação ao tamanho do pool de liquidez."
+  },
+  "swapPriceUnavailableDescription": {
+    "message": "O impacto no preço não poderia ser determinado devido aos dados do preço de mercado. Confirme que você está satisfeito com o valor dos tokens que você está prestes a receber antes de fazer swap."
+  },
+  "swapPriceUnavailableTitle": {
+    "message": "Verifique sua taxa antes de continuar"
+  },
   "swapProcessing": {
     "message": "Processando"
   },
@@ -2127,6 +2136,9 @@
   },
   "tokenSymbol": {
     "message": "Símbolo do token"
+  },
+  "tooltipApproveButton": {
+    "message": "Eu entendo"
   },
   "total": {
     "message": "Total"

@@ -21,6 +21,8 @@ describe('Confirm Remove Account', () => {
       address: '0x0',
       name: 'Account 1',
     },
+    chainId: '0x0',
+    rpcPrefs: {},
   };
 
   const mockStore = configureStore();

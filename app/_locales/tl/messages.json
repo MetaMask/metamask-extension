@@ -211,9 +211,6 @@
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong Browser..."
   },
-  "builtInCalifornia": {
-    "message": "Ang MetaMask ay idinisenyo at binuo sa California."
-  },
   "buy": {
     "message": "Bilhin"
   },
@@ -1698,9 +1695,6 @@
   "swapVerifyTokenExplanation": {
     "message": "Maaaring gamitin ng maraming token ang iisang pangalan at simbolo. Suriin ang $1 para ma-verify na ito ang token na hinahanap mo.",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
-  },
-  "swapViewToken": {
-    "message": "Tingnan ang $1"
   },
   "swapYourTokenBalance": {
     "message": "Available ang $1 $2 na i-swap",

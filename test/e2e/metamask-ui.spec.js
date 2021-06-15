@@ -1,24 +1,42 @@
 const { strict: assert } = require('assert');
+const path = require('path');
 
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
+const createStaticServer = require('../../development/create-static-server');
 const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
 
 const ganacheServer = new Ganache();
+const dappPort = 8080;
 
 describe('MetaMask', function () {
   let driver;
+  let dappServer;
   let tokenAddress;
 
   const testSeedPhrase =
     'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
-  this.timeout(0);
   this.bail(true);
 
   before(async function () {
     await ganacheServer.start();
+    const dappDirectory = path.resolve(
+      __dirname,
+      '..',
+      '..',
+      'node_modules',
+      '@metamask',
+      'test-dapp',
+      'dist',
+    );
+    dappServer = createStaticServer(dappDirectory);
+    dappServer.listen(dappPort);
+    await new Promise((resolve, reject) => {
+      dappServer.on('listening', resolve);
+      dappServer.on('error', reject);
+    });
     const result = await buildWebDriver();
     driver = result.driver;
     await driver.navigate();
@@ -43,6 +61,14 @@ describe('MetaMask', function () {
   after(async function () {
     await ganacheServer.quit();
     await driver.quit();
+    await new Promise((resolve, reject) => {
+      dappServer.close((error) => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve();
+      });
+    });
   });
 
   describe('Going through the first time flow', function () {
@@ -1504,57 +1530,6 @@ describe('MetaMask', function () {
           '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
         text: 'Approve TST spend limit',
       });
-    });
-  });
-
-  describe('Hide token', function () {
-    it('hides the token when clicked', async function () {
-      await driver.clickElement({ text: 'Assets', tag: 'button' });
-
-      await driver.clickElement({ text: 'TST', tag: 'span' });
-
-      await driver.clickElement('[data-testid="asset-options__button"]');
-
-      await driver.clickElement('[data-testid="asset-options__hide"]');
-
-      // wait for confirm hide modal to be visible
-      const confirmHideModal = await driver.findVisibleElement('span .modal');
-
-      await driver.clickElement(
-        '[data-testid="hide-token-confirmation__hide"]',
-      );
-
-      // wait for confirm hide modal to be removed from DOM.
-      await confirmHideModal.waitForElementState('hidden');
-    });
-  });
-
-  describe('Add existing token using search', function () {
-    it('clicks on the Add Token button', async function () {
-      await driver.clickElement({ text: 'Add Token', tag: 'button' });
-      await driver.delay(regularDelayMs);
-    });
-
-    it('can pick a token from the existing options', async function () {
-      await driver.fill('#search-tokens', 'BAT');
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement({ text: 'BAT', tag: 'span' });
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement({ text: 'Next', tag: 'button' });
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement({ text: 'Add Tokens', tag: 'button' });
-      await driver.delay(largeDelayMs);
-    });
-
-    it('renders the balance for the chosen token', async function () {
-      await driver.waitForSelector({
-        css: '.token-overview__primary-balance',
-        text: '0 BAT',
-      });
-      await driver.delay(regularDelayMs);
     });
   });
 });

@@ -249,11 +249,8 @@
   "browserNotSupported": {
     "message": "आपका ब्राउज़र समर्थित नहीं है..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "अपनी संपर्क सूची बनाएं"
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask को कैलिफोर्निया में डिज़ाइन और निर्मित किया गया है।"
   },
   "buy": {
     "message": "खरीदें"
@@ -1033,6 +1030,9 @@
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
+  },
+  "makeAnotherSwap": {
+    "message": "एक नया स्वैप बनाएँ"
   },
   "max": {
     "message": "अधिकतम"
@@ -1893,6 +1893,15 @@
     "message": "~$1% का मूल्य अंतर",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
+  "swapPriceImpactTooltip": {
+    "message": "मूल्य प्रभाव, वर्तमान बाजार मूल्य और लेन-देन निष्पादन के दौरान प्राप्त राशि के बीच का अंतर है। मूल्य प्रभाव चलनिधि पूल के आकार के सापेक्ष आपके व्यापार के आकार का एक कार्य है।"
+  },
+  "swapPriceUnavailableDescription": {
+    "message": "बाजार मूल्य डेटा की कमी के कारण मूल्य प्रभाव को निर्धारित नहीं किया जा सका। कृपया पुष्टि करें कि आप स्वैप करने से पहले प्राप्त होने वाले टोकन की राशि को लेकर सहज हैं।"
+  },
+  "swapPriceUnavailableTitle": {
+    "message": "आगे बढ़ने से पहले अपने दर की जाँच करें"
+  },
   "swapProcessing": {
     "message": "प्रसंस्करण"
   },
@@ -2021,9 +2030,6 @@
     "message": "एकाधिक टोकन एक ही नाम और प्रतीक का उपयोग कर सकते हैं। यह सत्यापित करने के लिए $1 की जाँच करें कि यह वही टोकन है, जिसकी आप तलाश कर रहे हैं।",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
   },
-  "swapViewToken": {
-    "message": "$1 देखें"
-  },
   "swapYourTokenBalance": {
     "message": "$1 $2 स्वैप के लिए उपलब्ध है",
     "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
@@ -2146,6 +2152,9 @@
   },
   "tokenSymbol": {
     "message": "टोकन का प्रतीक"
+  },
+  "tooltipApproveButton": {
+    "message": "मैं समझता हूं"
   },
   "total": {
     "message": "कुलयोग"

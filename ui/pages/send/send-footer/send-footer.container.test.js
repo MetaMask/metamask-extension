@@ -1,11 +1,7 @@
 import sinon from 'sinon';
+import { clearSend } from '../../../ducks/send/send.duck';
 
-import {
-  clearSend,
-  signTx,
-  signTokenTx,
-  addToAddressBook,
-} from '../../../store/actions';
+import { signTx, signTokenTx, addToAddressBook } from '../../../store/actions';
 import {
   addressIsNew,
   constructTxParams,
@@ -23,10 +19,13 @@ jest.mock('react-redux', () => ({
 
 jest.mock('../../../store/actions.js', () => ({
   addToAddressBook: jest.fn(),
-  clearSend: jest.fn(),
   signTokenTx: jest.fn(),
   signTx: jest.fn(),
   updateTransaction: jest.fn(),
+}));
+
+jest.mock('../../../ducks/send/send.duck.js', () => ({
+  clearSend: jest.fn(),
 }));
 
 jest.mock('../../../selectors/send.js', () => ({

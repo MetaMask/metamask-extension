@@ -12,8 +12,8 @@ import Typography from '../../ui/typography';
 import { updateViewedNotifications } from '../../../store/actions';
 import { getTranslatedUINoficiations } from '../../../../shared/notifications';
 import { getSortedNotificationsToShow } from '../../../selectors';
-import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes';
+import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 function getActionFunctionById(id, history) {
   const actionFunctions = {

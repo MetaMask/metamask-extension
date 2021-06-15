@@ -3,7 +3,6 @@ import pify from 'pify';
 import log from 'loglevel';
 import { capitalize } from 'lodash';
 import getBuyEthUrl from '../../app/scripts/lib/buy-eth-url';
-import { calcTokenBalance, estimateGasForSend } from '../pages/send/send.utils';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -13,7 +12,6 @@ import { getSymbolAndDecimals } from '../helpers/utils/token-util';
 import switchDirection from '../helpers/utils/switch-direction';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../shared/constants/app';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
-import { setCustomGasLimit } from '../ducks/gas/gas.duck';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
@@ -22,8 +20,9 @@ import {
 } from '../selectors';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { LISTED_CONTRACT_ADDRESSES } from '../../shared/constants/tokens';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { clearSend } from '../ducks/send/send.duck';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -38,7 +37,6 @@ export function goHome() {
     type: actionConstants.GO_HOME,
   };
 }
-
 // async actions
 
 export function tryUnlockMetamask(password) {
@@ -624,135 +622,15 @@ export function signTypedMsg(msgData) {
 }
 
 export function signTx(txData) {
-  return (dispatch) => {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
     global.ethQuery.sendTransaction(txData, (err) => {
       if (err) {
         dispatch(displayWarning(err.message));
       }
     });
+    dispatch(hideLoadingIndication());
     dispatch(showConfTxPage());
-  };
-}
-
-export function setGasLimit(gasLimit) {
-  return {
-    type: actionConstants.UPDATE_GAS_LIMIT,
-    value: gasLimit,
-  };
-}
-
-export function setGasPrice(gasPrice) {
-  return {
-    type: actionConstants.UPDATE_GAS_PRICE,
-    value: gasPrice,
-  };
-}
-
-export function setGasTotal(gasTotal) {
-  return {
-    type: actionConstants.UPDATE_GAS_TOTAL,
-    value: gasTotal,
-  };
-}
-
-export function updateGasData({
-  gasPrice,
-  blockGasLimit,
-  selectedAddress,
-  sendToken,
-  to,
-  value,
-  data,
-}) {
-  return (dispatch) => {
-    dispatch(gasLoadingStarted());
-    return estimateGasForSend({
-      estimateGasMethod: promisifiedBackground.estimateGas,
-      blockGasLimit,
-      selectedAddress,
-      sendToken,
-      to,
-      value,
-      estimateGasPrice: gasPrice,
-      data,
-    })
-      .then((gas) => {
-        dispatch(setGasLimit(gas));
-        dispatch(setCustomGasLimit(gas));
-        dispatch(updateSendErrors({ gasLoadingError: null }));
-        dispatch(gasLoadingFinished());
-      })
-      .catch((err) => {
-        log.error(err);
-        dispatch(updateSendErrors({ gasLoadingError: 'gasLoadingError' }));
-        dispatch(gasLoadingFinished());
-      });
-  };
-}
-
-export function gasLoadingStarted() {
-  return {
-    type: actionConstants.GAS_LOADING_STARTED,
-  };
-}
-
-export function gasLoadingFinished() {
-  return {
-    type: actionConstants.GAS_LOADING_FINISHED,
-  };
-}
-
-export function updateSendTokenBalance({ sendToken, tokenContract, address }) {
-  return (dispatch) => {
-    const tokenBalancePromise = tokenContract
-      ? tokenContract.balanceOf(address)
-      : Promise.resolve();
-    return tokenBalancePromise
-      .then((usersToken) => {
-        if (usersToken) {
-          const newTokenBalance = calcTokenBalance({ sendToken, usersToken });
-          dispatch(setSendTokenBalance(newTokenBalance));
-        }
-      })
-      .catch((err) => {
-        log.error(err);
-        updateSendErrors({ tokenBalance: 'tokenBalanceError' });
-      });
-  };
-}
-
-export function updateSendErrors(errorObject) {
-  return {
-    type: actionConstants.UPDATE_SEND_ERRORS,
-    value: errorObject,
-  };
-}
-
-export function setSendTokenBalance(tokenBalance) {
-  return {
-    type: actionConstants.UPDATE_SEND_TOKEN_BALANCE,
-    value: tokenBalance,
-  };
-}
-
-export function updateSendHexData(value) {
-  return {
-    type: actionConstants.UPDATE_SEND_HEX_DATA,
-    value,
-  };
-}
-
-export function updateSendTo(to, nickname = '') {
-  return {
-    type: actionConstants.UPDATE_SEND_TO,
-    value: { to, nickname },
-  };
-}
-
-export function updateSendAmount(amount) {
-  return {
-    type: actionConstants.UPDATE_SEND_AMOUNT,
-    value: amount,
   };
 }
 
@@ -763,57 +641,15 @@ export function updateCustomNonce(value) {
   };
 }
 
-export function setMaxModeTo(bool) {
-  return {
-    type: actionConstants.UPDATE_MAX_MODE,
-    value: bool,
-  };
-}
-
-export function updateSend(newSend) {
-  return {
-    type: actionConstants.UPDATE_SEND,
-    value: newSend,
-  };
-}
-
-export function updateSendToken(token) {
-  return {
-    type: actionConstants.UPDATE_SEND_TOKEN,
-    value: token,
-  };
-}
-
-export function clearSend() {
-  return {
-    type: actionConstants.CLEAR_SEND,
-  };
-}
-
-export function updateSendEnsResolution(ensResolution) {
-  return {
-    type: actionConstants.UPDATE_SEND_ENS_RESOLUTION,
-    payload: ensResolution,
-  };
-}
-
-export function updateSendEnsResolutionError(errorMessage) {
-  return {
-    type: actionConstants.UPDATE_SEND_ENS_RESOLUTION_ERROR,
-    payload: errorMessage,
-  };
-}
-
 export function signTokenTx(tokenAddress, toAddress, amount, txData) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
 
     try {
       const token = global.eth.contract(abi).at(tokenAddress);
-      const txPromise = token.transfer(toAddress, addHexPrefix(amount), txData);
+      token.transfer(toAddress, addHexPrefix(amount), txData);
       dispatch(showConfTxPage());
       dispatch(hideLoadingIndication());
-      await txPromise;
     } catch (error) {
       dispatch(hideLoadingIndication());
       dispatch(displayWarning(error.message));
@@ -2570,16 +2406,24 @@ export function setConnectedStatusPopoverHasBeenShown() {
   };
 }
 
-export async function setAlertEnabledness(alertId, enabledness) {
-  await promisifiedBackground.setAlertEnabledness(alertId, enabledness);
+export function setRecoveryPhraseReminderHasBeenShown() {
+  return () => {
+    background.setRecoveryPhraseReminderHasBeenShown((err) => {
+      if (err) {
+        throw new Error(err.message);
+      }
+    });
+  };
 }
 
-export async function setUnconnectedAccountAlertShown(origin) {
-  await promisifiedBackground.setUnconnectedAccountAlertShown(origin);
-}
-
-export async function setWeb3ShimUsageAlertDismissed(origin) {
-  await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
+export function setRecoveryPhraseReminderLastShown(lastShown) {
+  return () => {
+    background.setRecoveryPhraseReminderLastShown(lastShown, (err) => {
+      if (err) {
+        throw new Error(err.message);
+      }
+    });
+  };
 }
 
 export function loadingMethodDataStarted() {
@@ -2848,6 +2692,18 @@ export function setLedgerLivePreference(value) {
   };
 }
 
+// Wrappers around promisifedBackground
+/**
+ * The "actions" below are not actions nor action creators. They cannot use
+ * dispatch nor should they be dispatched when used. Instead they can be
+ * called directly. These wrappers will be moved into their location at some
+ * point in the future.
+ */
+
+export function estimateGas(params) {
+  return promisifiedBackground.estimateGas(params);
+}
+
 // MetaMetrics
 /**
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
@@ -2878,4 +2734,16 @@ export function updateViewedNotifications(notificationIdViewedStatusMap) {
   return promisifiedBackground.updateViewedNotifications(
     notificationIdViewedStatusMap,
   );
+}
+
+export async function setAlertEnabledness(alertId, enabledness) {
+  await promisifiedBackground.setAlertEnabledness(alertId, enabledness);
+}
+
+export async function setUnconnectedAccountAlertShown(origin) {
+  await promisifiedBackground.setUnconnectedAccountAlertShown(origin);
+}
+
+export async function setWeb3ShimUsageAlertDismissed(origin) {
+  await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
 }
