@@ -1335,8 +1335,14 @@
     "message": "Need help? Contact $1",
     "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
   },
+  "needHelpFeedback": {
+    "message": "Share your Feedback"
+  },
   "needHelpLinkText": {
     "message": "MetaMask Support"
+  },
+  "needHelpSubmitTicket": {
+    "message": "Submit a Ticket"
   },
   "needImportFile": {
     "message": "You must select a file to import.",

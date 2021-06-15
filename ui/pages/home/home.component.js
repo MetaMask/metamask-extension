@@ -16,6 +16,8 @@ import { EthOverview } from '../../components/app/wallet-overview';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 
+import { isBeta } from '../../helpers/utils/build-types';
+
 import {
   ASSET_ROUTE,
   RESTORE_VAULT_ROUTE,
@@ -285,6 +287,43 @@ export default class Home extends PureComponent {
     );
   }
 
+  getFooterContent() {
+    const { t } = this.context;
+
+    if (isBeta()) {
+      return (
+        <>
+          <a
+            href="https://metamask.zendesk.com/hc/en-us/requests/new"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('needHelpSubmitTicket')}
+          </a>{' '}
+          |{' '}
+          <a
+            href="https://community.metamask.io/c/metamask-beta/30"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('needHelpFeedback')}
+          </a>
+        </>
+      );
+    }
+
+    return t('needHelp', [
+      <a
+        href="https://support.metamask.io"
+        target="_blank"
+        rel="noopener noreferrer"
+        key="need-help-link"
+      >
+        {t('needHelpLinkText')}
+      </a>,
+    ]);
+  }
+
   renderPopover = () => {
     const { setConnectedStatusPopoverHasBeenShown } = this.props;
     const { t } = this.context;
@@ -401,18 +440,7 @@ export default class Home extends PureComponent {
                 <TransactionList />
               </Tab>
             </Tabs>
-            <div className="home__support">
-              {t('needHelp', [
-                <a
-                  href="https://support.metamask.io"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  key="need-help-link"
-                >
-                  {t('needHelpLinkText')}
-                </a>,
-              ])}
-            </div>
+            <div className="home__support">{this.getFooterContent()}</div>
           </div>
 
           {this.renderNotifications()}
