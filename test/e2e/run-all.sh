@@ -5,27 +5,11 @@ set -e
 set -u
 set -o pipefail
 
-retry () {
-  retry=0
-  limit="${METAMASK_E2E_RETRY_LIMIT:-3}"
-  while [[ $retry -lt $limit ]]
-  do
-    "$@" && break
-    retry=$(( retry + 1 ))
-    sleep 1
-  done
+readonly __DIR__=$( cd "${BASH_SOURCE[0]%/*}" && pwd )
 
-  if [[ $retry == "$limit" ]]
-  then
-    exit 1
-  fi
-}
-
-export PATH="$PATH:./node_modules/.bin"
-
-for spec in test/e2e/tests/*.spec.js
+for spec in "${__DIR__}"/tests/*.spec.js
 do
-  retry mocha --no-timeouts "${spec}"
+  node "${__DIR__}/run-e2e-test.js" "${spec}"
 done
 
-retry mocha --no-timeouts test/e2e/metamask-ui.spec
+node "${__DIR__}/run-e2e-test.js" "${__DIR__}/metamask-ui.spec.js"
