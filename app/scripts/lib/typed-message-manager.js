@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { strict as assert } from 'assert';
+import assert from 'assert';
 import { ObservableStore } from '@metamask/obs-store';
 import { ethErrors } from 'eth-rpc-errors';
 import { typedSignatureHash, TYPED_MESSAGE_SCHEMA } from 'eth-sig-util';
@@ -177,7 +177,7 @@ export default class TypedMessageManager extends EventEmitter {
         break;
       case 'V3':
       case 'V4': {
-        assert.equal(
+        assert.strictEqual(
           typeof params.data,
           'string',
           '"params.data" must be a string.',
@@ -191,7 +191,7 @@ export default class TypedMessageManager extends EventEmitter {
           data.primaryType in data.types,
           `Primary type of "${data.primaryType}" has no type definition.`,
         );
-        assert.equal(
+        assert.strictEqual(
           validation.errors.length,
           0,
           'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.',
