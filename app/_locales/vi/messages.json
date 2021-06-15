@@ -249,7 +249,7 @@
   "browserNotSupported": {
     "message": "Trình duyệt của bạn không được hỗ trợ..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "Xây dựng danh sách liên hệ của bạn"
   },
   "buy": {

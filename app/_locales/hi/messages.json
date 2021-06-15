@@ -249,7 +249,7 @@
   "browserNotSupported": {
     "message": "आपका ब्राउज़र समर्थित नहीं है..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "अपनी संपर्क सूची बनाएं"
   },
   "buy": {

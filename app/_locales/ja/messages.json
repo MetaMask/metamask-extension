@@ -249,7 +249,7 @@
   "browserNotSupported": {
     "message": "ご使用のブラウザーはサポートされていません..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "連絡先リストを作成する"
   },
   "buy": {

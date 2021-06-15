@@ -249,7 +249,7 @@
   "browserNotSupported": {
     "message": "지원되지 않는 브라우저입니다..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "연락처 목록 작성하기"
   },
   "buy": {

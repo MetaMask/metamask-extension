@@ -256,7 +256,7 @@
   "browserNotSupported": {
     "message": "Your Browser is not supported..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "Build your contact list"
   },
   "builtAroundTheWorld": {

@@ -249,7 +249,7 @@
   "browserNotSupported": {
     "message": "El explorador no es compatible…"
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "Cree su lista de contactos"
   },
   "buy": {
