@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.6.1]
-### Uncategorized
-- [#11309](https://github.com/MetaMask/metamask-extension/pull/11309): patch breaking change in signTypeData param validation
+### Fixed
+- [#11309](https://github.com/MetaMask/metamask-extension/pull/11309): Fixed signTypeData parameter validation issue
 
 ## [9.6.0]
 ### Added
