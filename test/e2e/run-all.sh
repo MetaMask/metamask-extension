@@ -28,10 +28,4 @@ do
   retry mocha --no-timeouts "${spec}"
 done
 
-retry concurrently --kill-others \
-  --names 'dapp,e2e' \
-  --prefix '[{time}][{name}]' \
-  --success first \
-  'yarn dapp' \
-  'mocha test/e2e/metamask-ui.spec'
-
+retry mocha --no-timeouts test/e2e/metamask-ui.spec

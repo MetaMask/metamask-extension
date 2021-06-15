@@ -1,24 +1,42 @@
 const { strict: assert } = require('assert');
+const path = require('path');
 
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
+const createStaticServer = require('../../development/create-static-server');
 const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
 
 const ganacheServer = new Ganache();
+const dappPort = 8080;
 
 describe('MetaMask', function () {
   let driver;
+  let dappServer;
   let tokenAddress;
 
   const testSeedPhrase =
     'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
-  this.timeout(0);
   this.bail(true);
 
   before(async function () {
     await ganacheServer.start();
+    const dappDirectory = path.resolve(
+      __dirname,
+      '..',
+      '..',
+      'node_modules',
+      '@metamask',
+      'test-dapp',
+      'dist',
+    );
+    dappServer = createStaticServer(dappDirectory);
+    dappServer.listen(dappPort);
+    await new Promise((resolve, reject) => {
+      dappServer.on('listening', resolve);
+      dappServer.on('error', reject);
+    });
     const result = await buildWebDriver();
     driver = result.driver;
     await driver.navigate();
@@ -43,6 +61,14 @@ describe('MetaMask', function () {
   after(async function () {
     await ganacheServer.quit();
     await driver.quit();
+    await new Promise((resolve, reject) => {
+      dappServer.close((error) => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve();
+      });
+    });
   });
 
   describe('Going through the first time flow', function () {
