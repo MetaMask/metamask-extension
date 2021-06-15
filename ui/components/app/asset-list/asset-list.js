@@ -14,7 +14,10 @@ import {
   getShouldShowFiat,
   getNativeCurrencyImage,
 } from '../../../selectors';
-import { getConversionRate, getNativeCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getConversionRate,
+  getNativeCurrency,
+} from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 
 const AssetList = ({ onClickAsset }) => {
@@ -69,8 +72,10 @@ const AssetList = ({ onClickAsset }) => {
 
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const showSecondaryCurrency =
-    showFiat && Boolean(primaryCurrencyProperties?.value) && Boolean(conversionRate);
-   
+    showFiat &&
+    Boolean(primaryCurrencyProperties?.value) &&
+    Boolean(conversionRate);
+
   return (
     <>
       <AssetListItem
@@ -85,7 +90,9 @@ const AssetList = ({ onClickAsset }) => {
           showSecondaryCurrency ? secondaryCurrencyProperties?.value : undefined
         }
         secondarySymbol={
-          showSecondaryCurrency ? secondaryCurrencyProperties?.suffix : undefined
+          showSecondaryCurrency
+            ? secondaryCurrencyProperties?.suffix
+            : undefined
         }
         primarySymbol={
           primaryCurrencyProperties?.value

@@ -9,9 +9,12 @@ import {
   getShouldShowFiat,
   getCurrentCurrency,
   getCurrentChainId,
-  getConversionRate,
 } from '../selectors';
-import { getTokens, getNativeCurrency } from '../ducks/metamask/metamask';
+import {
+  getTokens,
+  getNativeCurrency,
+  getConversionRate,
+} from '../ducks/metamask/metamask';
 import { getMessage } from '../helpers/utils/i18n-helper';
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';

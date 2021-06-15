@@ -10,6 +10,7 @@ import {
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
+import { getConversionRate } from '../../../ducks/metamask/metamask';
 
 export default function TokenCell({
   address,
@@ -23,10 +24,14 @@ export default function TokenCell({
   const userAddress = useSelector(getSelectedAddress);
   const t = useI18nContext();
   const currentCurrency = useSelector(getCurrentCurrency).toUpperCase();
+  const conversionRate = useSelector(getConversionRate);
 
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const formattedFiat = useTokenFiatAmount(address, string, symbol, {}, true);
-  const useNativeCurrencyAsPrimaryDisplay = useNativeCurrencyAsPrimaryCurrency || string === '0';
+
+  // Native currency should be primary currency if settings are set as such *or* if we don't have a valid conversionRate
+  const useNativeCurrencyAsPrimaryDisplay =
+    useNativeCurrencyAsPrimaryCurrency || !conversionRate;
 
   const primary = useNativeCurrencyAsPrimaryDisplay
     ? `${string || 0}`

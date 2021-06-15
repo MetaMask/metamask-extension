@@ -96,7 +96,6 @@ const AssetListItem = ({
     dispatch,
   ]);
 
-
   return (
     <ListItem
       className={classnames('asset-list-item', className)}
@@ -118,15 +117,17 @@ const AssetListItem = ({
       titleIcon={titleIcon}
       subtitle={
         secondary && (
-        <h3
-          className="asset-list-item__subtitle"
-          title={`${secondary} ${secondarySymbol}`}
-        >
-          <span className="asset-list-item__secondary-value">{secondary}</span>
-          <span className="asset-list-item__secondary-symbol">
-            {secondarySymbol}
-          </span>
-        </h3>
+          <h3
+            className="asset-list-item__subtitle"
+            title={`${secondary} ${secondarySymbol}`}
+          >
+            <span className="asset-list-item__secondary-value">
+              {secondary}
+            </span>
+            <span className="asset-list-item__secondary-symbol">
+              {secondarySymbol}
+            </span>
+          </h3>
         )
       }
       onClick={onClick}
