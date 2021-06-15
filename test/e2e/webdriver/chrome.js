@@ -14,7 +14,9 @@ class ChromeDriver {
     const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options);
-    const service = new chrome.ServiceBuilder().setStdio('inherit');
+    const service = new chrome.ServiceBuilder()
+      .setStdio('inherit')
+      .enableChromeLogging();
     if (port) {
       service.setPort(port);
     }

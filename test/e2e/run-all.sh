@@ -7,18 +7,13 @@ set -o pipefail
 
 retry () {
   retry=0
-  limit="${METAMASK_E2E_RETRY_LIMIT:-1}"
+  limit="${METAMASK_E2E_RETRY_LIMIT:-10}"
   while [[ $retry -lt $limit ]]
   do
-    "$@" && break
+    "$@"
     retry=$(( retry + 1 ))
     sleep 1
   done
-
-  if [[ $retry == "$limit" ]]
-  then
-    exit 1
-  fi
 }
 
 export PATH="$PATH:./node_modules/.bin"
