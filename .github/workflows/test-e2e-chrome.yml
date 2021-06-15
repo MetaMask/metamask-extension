@@ -1,0 +1,45 @@
+name: Chrome E2E Tests
+
+on:
+  workflow_run:
+    workflows:
+      - Lint and Test
+    types:
+      - completed
+
+jobs:
+  tests:
+    name: Chrome E2E Tests
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - name: Download dependencies
+        uses: actions/download-artifact@v2
+        with:
+          name: dependencies
+      - name: Extract dependencies
+        run: tar -xzf dependencies.tgz
+      - name: Download test build
+        uses: actions/download-artifact@v2
+        with:
+          name: build-test
+      - name: Extract test build
+        run: tar -xzf build-test.tgz
+      - name: Install Chrome
+        run: ./development/chrome-install.sh
+      - name: Run Chrome E2E tests
+        run: |
+          if ./development/test-run-e2e.sh
+          then
+            ENABLE_CHROME_LOGGING=true xvfb-run -e /dev/stderr -a yarn test:e2e:chrome
+          fi
+      - name: Save Chrome E2E test artifacts on failure
+        uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: test-artifacts-e2e-chrome
+          path: test-artifacts
