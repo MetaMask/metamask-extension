@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.6.1]
+### Fixed
+- [#11309](https://github.com/MetaMask/metamask-extension/pull/11309): Fixed signTypeData parameter validation issue
+
 ## [9.6.0]
 ### Added
 - [#10905](https://github.com/MetaMask/metamask-extension/pull/10905): Implemented basic switchEthereumChain feature
@@ -2302,7 +2306,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.6.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.6.1...HEAD
+[9.6.1]: https://github.com/MetaMask/metamask-extension/compare/v9.6.0...v9.6.1
 [9.6.0]: https://github.com/MetaMask/metamask-extension/compare/v9.5.9...v9.6.0
 [9.5.9]: https://github.com/MetaMask/metamask-extension/compare/v9.5.8...v9.5.9
 [9.5.8]: https://github.com/MetaMask/metamask-extension/compare/v9.5.7...v9.5.8
