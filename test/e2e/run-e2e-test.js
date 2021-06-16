@@ -24,6 +24,12 @@ async function main() {
               'Set how many times the test should be retried upon failure.',
             type: 'number',
           })
+          .option('leave-running', {
+            default: false,
+            description:
+              'Leaves the browser running after a test fails, along with anything else that the test used (ganache, the test dapp, etc.)',
+            type: 'boolean',
+          })
           .positional('e2e-test-path', {
             describe: 'The path for the E2E test to run.',
             type: 'string',
@@ -33,7 +39,7 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, e2eTestPath, retries } = argv;
+  const { browser, e2eTestPath, retries, leaveRunning } = argv;
 
   if (!browser) {
     exitWithError(
@@ -61,6 +67,10 @@ async function main() {
       return;
     }
     throw error;
+  }
+
+  if (leaveRunning) {
+    process.env.E2E_LEAVE_RUNNING = 'true';
   }
 
   await retry(retries, async () => {

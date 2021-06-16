@@ -20,6 +20,8 @@ describe('MetaMask', function () {
 
   this.bail(true);
 
+  let failed = false;
+
   before(async function () {
     await ganacheServer.start();
     const dappDirectory = path.resolve(
@@ -54,11 +56,15 @@ describe('MetaMask', function () {
       }
     }
     if (this.currentTest.state === 'failed') {
+      failed = true;
       await driver.verboseReportOnFailure(this.currentTest.title);
     }
   });
 
   after(async function () {
+    if (process.env.E2E_LEAVE_RUNNING === 'true' && failed) {
+      return;
+    }
     await ganacheServer.quit();
     await driver.quit();
     await new Promise((resolve, reject) => {
