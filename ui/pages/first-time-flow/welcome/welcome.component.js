@@ -8,6 +8,8 @@ import {
   INITIALIZE_SELECT_ACTION_ROUTE,
 } from '../../../helpers/constants/routes';
 import { isBeta } from '../../../helpers/utils/build-types';
+import WelcomeFooter from './welcome-footer.component';
+import BetaWelcomeFooter from './beta-welcome-footer.component';
 
 export default class Welcome extends PureComponent {
   static propTypes = {
@@ -40,44 +42,6 @@ export default class Welcome extends PureComponent {
     this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE);
   };
 
-  getContent() {
-    const { t } = this.context;
-    return (
-      <>
-        <div className="welcome-page__header">{t('welcome')}</div>
-        <div className="welcome-page__description">
-          <p>{t('metamaskDescription')}</p>
-          <p>{t('happyToSeeYou')}</p>
-        </div>
-      </>
-    );
-  }
-
-  getBetaContent() {
-    const { t } = this.context;
-    return (
-      <>
-        <div className="welcome-page__header">{t('betaWelcome')}</div>
-        <div className="welcome-page__description">
-          <p>{t('betaMetamaskDescription')}</p>
-          <p>
-            {t('betaMetamaskDescriptionExplanation', [
-              <a href="https://metamask.io/terms.html" key="terms-link">
-                {t('betaMetamaskDescriptionExplanationTermsLinkText')}
-              </a>,
-              <a
-                href="https://metamask.io/beta-terms.html"
-                key="beta-terms-link"
-              >
-                {t('betaMetamaskDescriptionExplanationBetaTermsLinkText')}
-              </a>,
-            ])}
-          </p>
-        </div>
-      </>
-    );
-  }
-
   render() {
     const { t } = this.context;
 
@@ -89,7 +53,7 @@ export default class Welcome extends PureComponent {
             width="125"
             height="125"
           />
-          {isBeta() ? this.getBetaContent() : this.getContent()}
+          {isBeta() ? <BetaWelcomeFooter /> : <WelcomeFooter />}
           <Button
             type="primary"
             className="first-time-flow__button"
