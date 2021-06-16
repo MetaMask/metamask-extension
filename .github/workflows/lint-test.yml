@@ -188,7 +188,7 @@ jobs:
         run: |
           if ./development/test-run-e2e.sh
           then
-            ENABLE_CHROME_LOGGING=true xvfb-run -e /dev/stderr -a yarn test:e2e:chrome --retries 2
+            ENABLE_CHROME_LOGGING=true xvfb-run -e /dev/stderr -as '-screen 0 1280x1024x24' yarn test:e2e:chrome --retries 2
           fi
       - name: Save Chrome E2E test artifacts on failure
         uses: actions/upload-artifact@v2
@@ -226,7 +226,7 @@ jobs:
         run: |
           if ./development/test-run-e2e.sh
           then
-            ENABLE_CHROME_LOGGING=true xvfb-run -e /dev/stderr -a yarn test:e2e:chrome:metrics --retries 2
+            ENABLE_CHROME_LOGGING=true xvfb-run -e /dev/stderr -as '-screen 0 1280x1024x24' yarn test:e2e:chrome:metrics --retries 2
           fi
       - name: Save Chrome E2E metrics test artifacts on failure
         uses: actions/upload-artifact@v2
@@ -264,7 +264,7 @@ jobs:
         run: |
           if ./development/test-run-e2e.sh
           then
-            xvfb-run -e /dev/stderr -a yarn test:e2e:firefox --retries 2
+            xvfb-run -e /dev/stderr -as '-screen 0 1280x1024x24' yarn test:e2e:firefox --retries 2
           fi
       - name: Save Firefox E2E test artifacts on failure
         uses: actions/upload-artifact@v2
@@ -302,7 +302,7 @@ jobs:
         run: |
           if ./development/test-run-e2e.sh
           then
-            xvfb-run -e /dev/stderr -a yarn test:e2e:firefox:metrics --retries 2
+            xvfb-run -e /dev/stderr -as '-screen 0 1280x1024x24' yarn test:e2e:firefox:metrics --retries 2
           fi
       - name: Save Firefox E2E metrics test artifacts on failure
         uses: actions/upload-artifact@v2
@@ -340,7 +340,7 @@ jobs:
         run: |
           if ./development/test-run-e2e.sh
           then
-            ENABLE_CHROME_LOGGING=true xvfb-run -e /dev/stderr -a yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json
+            ENABLE_CHROME_LOGGING=true xvfb-run -e /dev/stderr -as '-screen 0 1280x1024x24' yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json
           fi
       - name: Save benchmark artifacts
         uses: actions/upload-artifact@v2
