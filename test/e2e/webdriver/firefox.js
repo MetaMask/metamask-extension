@@ -76,7 +76,7 @@ class FirefoxDriver {
     return await this._driver
       .wait(
         until.elementLocated(
-          By.xpath("//dl/div[contains(., 'Internal UUID')]/dd"),
+          By.xpath("//dl/div[contains(., 'UUID')]/dd"),
         ),
         1000,
       )
