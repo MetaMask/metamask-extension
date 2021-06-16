@@ -154,7 +154,7 @@ export function getTokenAddressParam(tokenData = {}) {
  * @returns {string | undefined} A decimal string value.
  */
 export function getTokenValueParam(tokenData = {}) {
-  return tokenData?.args?._value?.toString();
+  return tokenData?.args?._value?.toString() || tokenData?.args?.[1];
 }
 
 export function getTokenValue(tokenParams = []) {

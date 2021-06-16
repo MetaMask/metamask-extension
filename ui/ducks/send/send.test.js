@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { describe } from 'globalthis/implementation';
+import { ethers } from 'ethers';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
@@ -11,6 +11,9 @@ import {
   NEGATIVE_ETH_ERROR,
 } from '../../pages/send/send.constants';
 import { BASIC_ESTIMATE_STATES, GAS_SOURCE } from '../gas/gas.duck';
+import { RINKEBY_CHAIN_ID } from '../../../shared/constants/network';
+import { GAS_LIMITS } from '../../../shared/constants/gas';
+import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
 import sendReducer, {
   initialState,
   initializeSendState,
@@ -30,9 +33,27 @@ import sendReducer, {
   SEND_STAGES,
   AMOUNT_MODES,
   RECIPIENT_SEARCH_MODES,
+  editTransaction,
 } from './send';
 
 const mockStore = createMockStore([thunk]);
+
+jest.mock('../../store/actions', () => {
+  const actual = jest.requireActual('../../store/actions');
+  return {
+    ...actual,
+    estimateGas: jest.fn(() => Promise.resolve('0x0')),
+  };
+});
+
+jest.mock('./send', () => {
+  const actual = jest.requireActual('./send');
+  return {
+    __esModule: true,
+    ...actual,
+    getERC20Balance: jest.fn(() => '0x0'),
+  };
+});
 
 describe('Send Slice', () => {
   describe('Reducers', () => {
@@ -78,42 +99,6 @@ describe('Send Slice', () => {
 
         expect(result.draftTransaction.userInputHexData).toStrictEqual(
           action.payload,
-        );
-      });
-    });
-
-    describe('editTransaction', () => {
-      it('should', () => {
-        const action = {
-          type: 'send/editTransaction',
-          payload: {
-            id: 1,
-            from: '0xAddress',
-            address: '0xRecipientAddress',
-            gasLimit: '0x5208',
-            gasPrice: '0x3b9aca00', // 1000000000
-            amount: '0xde0b6b3a7640000', // 1000000000000000000
-          },
-        };
-
-        const result = sendReducer(initialState, action);
-
-        expect(result.gas.gasLimit).toStrictEqual(action.payload.gasLimit);
-        expect(result.gas.gasPrice).toStrictEqual(action.payload.gasPrice);
-
-        expect(result.amount.value).toStrictEqual(action.payload.amount);
-
-        expect(result.draftTransaction.txParams.to).toStrictEqual(
-          action.payload.address,
-        );
-        expect(result.draftTransaction.txParams.value).toStrictEqual(
-          action.payload.amount,
-        );
-        expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
-          action.payload.gasPrice,
-        );
-        expect(result.draftTransaction.txParams.gas).toStrictEqual(
-          action.payload.gasLimit,
         );
       });
     });
@@ -1622,6 +1607,209 @@ describe('Send Slice', () => {
         expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
         expect(actionResult[1].type).toStrictEqual('UPDATE_TRANSACTION_PARAMS');
         expect(actionResult[2].type).toStrictEqual('HIDE_LOADING_INDICATION');
+      });
+    });
+
+    describe('editTransaction', () => {
+      it('should set up the appropriate state for editing a native asset transaction', async () => {
+        const editTransactionState = {
+          metamask: {
+            provider: {
+              chainId: RINKEBY_CHAIN_ID,
+            },
+            tokens: [],
+            addressBook: {
+              [RINKEBY_CHAIN_ID]: {},
+            },
+            identities: {},
+            unapprovedTxs: {
+              1: {
+                id: 1,
+                txParams: {
+                  from: '0xAddress',
+                  to: '0xRecipientAddress',
+                  gas: GAS_LIMITS.SIMPLE,
+                  gasPrice: '0x3b9aca00', // 1000000000
+                  value: '0xde0b6b3a7640000', // 1000000000000000000
+                },
+              },
+            },
+          },
+          send: {
+            asset: {
+              type: '',
+            },
+            recipient: {
+              address: 'Address',
+              nickname: 'NickName',
+            },
+          },
+        };
+
+        const store = mockStore(editTransactionState);
+
+        await store.dispatch(editTransaction(ASSET_TYPES.NATIVE, 1));
+        const actionResult = store.getActions();
+
+        expect(actionResult).toHaveLength(1);
+        expect(actionResult[0].type).toStrictEqual('send/editTransaction');
+        expect(actionResult[0].payload).toStrictEqual({
+          address: '0xRecipientAddress',
+          amount: '0xde0b6b3a7640000',
+          from: '0xAddress',
+          gasLimit: GAS_LIMITS.SIMPLE,
+          gasPrice: '0x3b9aca00',
+          id: 1,
+          nickname: '',
+        });
+
+        const action = actionResult[0];
+
+        const result = sendReducer(initialState, action);
+
+        expect(result.gas.gasLimit).toStrictEqual(action.payload.gasLimit);
+        expect(result.gas.gasPrice).toStrictEqual(action.payload.gasPrice);
+
+        expect(result.amount.value).toStrictEqual(action.payload.amount);
+
+        expect(result.draftTransaction.txParams.to).toStrictEqual(
+          action.payload.address,
+        );
+        expect(result.draftTransaction.txParams.value).toStrictEqual(
+          action.payload.amount,
+        );
+        expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
+          action.payload.gasPrice,
+        );
+        expect(result.draftTransaction.txParams.gas).toStrictEqual(
+          action.payload.gasLimit,
+        );
+      });
+
+      it('should set up the appropriate state for editing a token asset transaction', async () => {
+        const editTransactionState = {
+          metamask: {
+            blockGasLimit: '0x3a98',
+            selectedAddress: '',
+            provider: {
+              chainId: RINKEBY_CHAIN_ID,
+            },
+            tokens: [],
+            addressBook: {
+              [RINKEBY_CHAIN_ID]: {},
+            },
+            identities: {},
+            unapprovedTxs: {
+              1: {
+                id: 1,
+                txParams: {
+                  from: '0xAddress',
+                  to: '0xTokenAddress',
+                  gas: GAS_LIMITS.SIMPLE,
+                  gasPrice: '0x3b9aca00', // 1000000000
+                  value: '0x0',
+                },
+              },
+            },
+          },
+          send: {
+            account: {
+              address: '0xAddress',
+              balance: '0x0',
+            },
+            asset: {
+              type: '',
+            },
+            gas: {
+              gasPrice: '',
+            },
+            amount: {
+              value: '',
+            },
+            draftTransaction: {
+              userInputHexData: '',
+            },
+            recipient: {
+              address: 'Address',
+              nickname: 'NickName',
+            },
+          },
+        };
+
+        global.eth = {
+          contract: sinon.stub().returns({
+            at: sinon.stub(),
+          }),
+          getCode: jest.fn(() => '0xa'),
+        };
+
+        const store = mockStore(editTransactionState);
+
+        await store.dispatch(
+          editTransaction(
+            ASSET_TYPES.TOKEN,
+            1,
+            {
+              name: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+              args: ['0xRecipientAddress', ethers.BigNumber.from(15000)],
+            },
+            { address: '0xAddress', symbol: 'SYMB', decimals: 18 },
+          ),
+        );
+        const actionResult = store.getActions();
+
+        expect(actionResult).toHaveLength(5);
+        expect(actionResult[0].type).toStrictEqual('send/updateAsset');
+        expect(actionResult[0].payload).toStrictEqual({
+          balance: '0x0',
+          type: ASSET_TYPES.TOKEN,
+          details: {
+            address: '0xTokenAddress',
+            decimals: 18,
+            symbol: 'SYMB',
+          },
+        });
+        expect(actionResult[1].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/pending',
+        );
+        expect(actionResult[2].type).toStrictEqual(
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[3].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
+        );
+        expect(actionResult[4].type).toStrictEqual('send/editTransaction');
+        expect(actionResult[4].payload).toStrictEqual({
+          address: '0xrecipientaddress', // getting address from tokenData does .toLowerCase
+          amount: '0x3a98',
+          from: '0xAddress',
+          gasLimit: GAS_LIMITS.SIMPLE,
+          gasPrice: '0x3b9aca00',
+          id: 1,
+          nickname: '',
+        });
+
+        const action = actionResult[4];
+
+        const result = sendReducer(initialState, action);
+
+        expect(result.gas.gasLimit).toStrictEqual(action.payload.gasLimit);
+        expect(result.gas.gasPrice).toStrictEqual(action.payload.gasPrice);
+
+        expect(result.amount.value).toStrictEqual(action.payload.amount);
+
+        expect(result.draftTransaction.txParams.to).toStrictEqual(
+          action.payload.address,
+        );
+        expect(result.draftTransaction.txParams.value).toStrictEqual(
+          action.payload.amount,
+        );
+        expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
+          action.payload.gasPrice,
+        );
+        expect(result.draftTransaction.txParams.gas).toStrictEqual(
+          action.payload.gasLimit,
+        );
       });
     });
   });

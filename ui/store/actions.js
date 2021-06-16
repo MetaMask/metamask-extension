@@ -1054,6 +1054,8 @@ export function updateMetamaskState(newState) {
       dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
     }
 
+    const newAddressBook = newState.addressBook?.[newProvider?.chainId] ?? {};
+    const oldAddressBook = currentState.addressBook?.[provider?.chainId] ?? {};
     const newAccounts = getMetaMaskAccounts({ metamask: newState });
     const oldAccounts = getMetaMaskAccounts({ metamask: currentState });
     const newSelectedAccount = newAccounts[newSelectedAddress];
@@ -1074,6 +1076,13 @@ export function updateMetamaskState(newState) {
       dispatch({
         type: actionConstants.SELECTED_ACCOUNT_CHANGED,
         payload: { account: newSelectedAccount },
+      });
+    }
+    // We need to keep track of changing address book entries
+    if (isEqual(oldAddressBook, newAddressBook) === false) {
+      dispatch({
+        type: actionConstants.ADDRESS_BOOK_UPDATED,
+        payload: { addressBook: newAddressBook },
       });
     }
 
