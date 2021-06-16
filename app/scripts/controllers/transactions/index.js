@@ -1,10 +1,11 @@
 import EventEmitter from 'safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak, toBuffer } from 'ethereumjs-util';
-import Transaction from 'ethereumjs-tx';
 import EthQuery from 'ethjs-query';
 import { ethErrors } from 'eth-rpc-errors';
 import abi from 'human-standard-token-abi';
+import Common from '@ethereumjs/common';
+import { TransactionFactory } from '@ethereumjs/tx';
 import { ethers } from 'ethers';
 import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
@@ -24,10 +25,16 @@ import {
 } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
+import {
+  MAINNET,
+  NETWORK_TYPE_RPC,
+} from '../../../../shared/constants/network';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
 import * as txUtils from './lib/util';
+
+const HARDFORK = 'berlin';
 
 const hstInterface = new ethers.utils.Interface(abi);
 
@@ -53,7 +60,7 @@ const MAX_MEMSTORE_TX_LIST_SIZE = 100; // Number of transactions (by unique nonc
   @param {Object} opts.networkStore - an observable store for network number
   @param {Object} opts.blockTracker - An instance of eth-blocktracker
   @param {Object} opts.provider - A network provider.
-  @param {Function} opts.signTransaction - function the signs an ethereumjs-tx
+  @param {Function} opts.signTransaction - function the signs an @ethereumjs/tx
   @param {Object} opts.getPermittedAccounts - get accounts that an origin has permissions for
   @param {Function} opts.signTransaction - ethTx signer that returns a rawTx
   @param {number} [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
@@ -65,6 +72,7 @@ export default class TransactionController extends EventEmitter {
     super();
     this.networkStore = opts.networkStore || new ObservableStore({});
     this._getCurrentChainId = opts.getCurrentChainId;
+    this.getProviderConfig = opts.getProviderConfig;
     this.preferencesStore = opts.preferencesStore || new ObservableStore({});
     this.provider = opts.provider;
     this.getPermittedAccounts = opts.getPermittedAccounts;
@@ -144,6 +152,49 @@ export default class TransactionController extends EventEmitter {
       return 0;
     }
     return integerChainId;
+  }
+
+  /**
+   * @ethereumjs/tx uses @ethereumjs/common as a configuration tool for
+   * specifying which chain, network, hardfork and EIPs to support for
+   * a transaction. By referencing this configuration, and analyzing the fields
+   * specified in txParams, @ethereumjs/tx is able to determine which EIP-2718
+   * transaction type to use.
+   * @returns {Common} common configuration object
+   */
+  getCommonConfiguration() {
+    const { type, nickname: name } = this.getProviderConfig();
+
+    // type will be one of our default network names or 'rpc'. the default
+    // network names are sufficient configuration, simply pass the name as the
+    // chain argument in the constructor.
+    if (type !== NETWORK_TYPE_RPC) {
+      return new Common({ chain: type, hardfork: HARDFORK });
+    }
+
+    // For 'rpc' we need to use the same basic configuration as mainnet,
+    // since we only support EVM compatible chains, and then override the
+    // name, chainId and networkId properties. This is done using the
+    // `forCustomChain` static method on the Common class.
+    const chainId = parseInt(this._getCurrentChainId(), 16);
+    const networkId = this.networkStore.getState();
+
+    const customChainParams = {
+      name,
+      chainId,
+      // It is improbable for a transaction to be signed while the network
+      // is loading for two reasons.
+      // 1. Pending, unconfirmed transactions are wiped on network change
+      // 2. The UI is unusable (loading indicator) when network is loading.
+      // setting the networkId to 0 is for type safety and to explicity lead
+      // the transaction to failing if a user is able to get to this branch
+      // on a custom network that requires valid network id. I have not ran
+      // into this limitation on any network I have attempted, even when
+      // hardcoding networkId to 'loading'.
+      networkId: networkId === 'loading' ? 0 : parseInt(networkId, 10),
+    };
+
+    return Common.forCustomChain(MAINNET, customChainParams, HARDFORK);
   }
 
   /**
@@ -561,17 +612,22 @@ export default class TransactionController extends EventEmitter {
     const txMeta = this.txStateManager.getTransaction(txId);
     // add network/chain id
     const chainId = this.getChainId();
-    const txParams = { ...txMeta.txParams, chainId };
+    const txParams = {
+      ...txMeta.txParams,
+      chainId,
+      gasLimit: txMeta.txParams.gas,
+    };
     // sign tx
     const fromAddress = txParams.from;
-    const ethTx = new Transaction(txParams);
-    await this.signEthTx(ethTx, fromAddress);
+    const common = this.getCommonConfiguration();
+    const unsignedEthTx = TransactionFactory.fromTxData(txParams, { common });
+    const signedEthTx = await this.signEthTx(unsignedEthTx, fromAddress);
 
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation
-    txMeta.r = bufferToHex(ethTx.r);
-    txMeta.s = bufferToHex(ethTx.s);
-    txMeta.v = bufferToHex(ethTx.v);
+    txMeta.r = bufferToHex(signedEthTx.r);
+    txMeta.s = bufferToHex(signedEthTx.s);
+    txMeta.v = bufferToHex(signedEthTx.v);
 
     this.txStateManager.updateTransaction(
       txMeta,
@@ -580,7 +636,7 @@ export default class TransactionController extends EventEmitter {
 
     // set state to signed
     this.txStateManager.setTxStatusSigned(txMeta.id);
-    const rawTx = bufferToHex(ethTx.serialize());
+    const rawTx = bufferToHex(signedEthTx.serialize());
     return rawTx;
   }
 
