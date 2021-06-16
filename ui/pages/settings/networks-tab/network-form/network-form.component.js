@@ -176,7 +176,7 @@ export default class NetworkForm extends PureComponent {
         blockExplorerUrl,
       } = this.state;
 
-      const formChainId = stateChainId.trim().toLowerCase();
+      const formChainId = stateChainId.trim();
       const chainId = this.prefixChainId(formChainId);
 
       if (!(await this.validateChainIdOnSubmit(formChainId, chainId, rpcUrl))) {
@@ -394,7 +394,7 @@ export default class NetworkForm extends PureComponent {
 
     if (providerError || typeof endpointChainId !== 'string') {
       errorMessage = t('failedToFetchChainId');
-    } else if (parsedChainId !== endpointChainId) {
+    } else if (parsedChainId.toUpperCase() !== endpointChainId.toUpperCase()) {
       // Here, we are in an error state. The endpoint should always return a
       // hexadecimal string. If the user entered a decimal string, we attempt
       // to convert the endpoint's return value to decimal before rendering it
@@ -477,7 +477,7 @@ export default class NetworkForm extends PureComponent {
 
     // Re-validate the chain id if it could not be found with previous rpc url
     if (stateChainId && isValidUrl && chainIdFetchFailed) {
-      const formChainId = stateChainId.trim().toLowerCase();
+      const formChainId = stateChainId.trim();
       const chainId = this.prefixChainId(formChainId);
       this.validateChainIdOnSubmit(formChainId, chainId, url);
     }
