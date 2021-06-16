@@ -36,7 +36,6 @@ export const SENTRY_STATE = {
     isInitialized: true,
     isUnlocked: true,
     metaMetricsId: true,
-    metaMetricsSendCount: true,
     nativeCurrency: true,
     network: true,
     nextNonce: true,

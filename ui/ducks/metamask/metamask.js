@@ -33,7 +33,6 @@ export default function reduceMetamask(state = {}, action) {
     completedOnboarding: false,
     knownMethodData: {},
     participateInMetaMetrics: null,
-    metaMetricsSendCount: 0,
     nextNonce: null,
     conversionRate: null,
     nativeCurrency: 'ETH',
@@ -124,12 +123,6 @@ export default function reduceMetamask(state = {}, action) {
       return {
         ...metamaskState,
         participateInMetaMetrics: action.value,
-      };
-
-    case actionConstants.SET_METAMETRICS_SEND_COUNT:
-      return {
-        ...metamaskState,
-        metaMetricsSendCount: action.value,
       };
 
     case actionConstants.SET_USE_BLOCKIE:

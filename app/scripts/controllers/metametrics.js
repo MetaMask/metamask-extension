@@ -8,30 +8,6 @@ import {
 } from '../../../shared/constants/metametrics';
 
 /**
- * Used to determine whether or not to attach a user's metametrics id
- * to events that include on-chain data. This helps to prevent identifying
- * a user by being able to trace their activity on etherscan/block exploring
- */
-const trackableSendCounts = {
-  1: true,
-  10: true,
-  30: true,
-  50: true,
-  100: true,
-  250: true,
-  500: true,
-  1000: true,
-  2500: true,
-  5000: true,
-  10000: true,
-  25000: true,
-};
-
-export function sendCountIsTrackable(sendCount) {
-  return Boolean(trackableSendCounts[sendCount]);
-}
-
-/**
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsContext} MetaMetricsContext
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
@@ -48,9 +24,6 @@ export function sendCountIsTrackable(sendCount) {
  * @property {?boolean} participateInMetaMetrics - The user's preference for
  *  participating in the MetaMetrics analytics program. This setting controls
  *  whether or not events are tracked
- * @property {number} metaMetricsSendCount - How many send transactions have
- *  been tracked through this controller. Used to prevent attaching sensitive
- *  data that can be traced through on chain data.
  */
 
 export default class MetaMetricsController {
@@ -89,7 +62,6 @@ export default class MetaMetricsController {
     this.store = new ObservableStore({
       participateInMetaMetrics: null,
       metaMetricsId: null,
-      metaMetricsSendCount: 0,
       ...initState,
     });
 
@@ -136,10 +108,6 @@ export default class MetaMetricsController {
 
   get state() {
     return this.store.getState();
-  }
-
-  setMetaMetricsSendCount(val) {
-    this.store.updateState({ metaMetricsSendCount: val });
   }
 
   /**
@@ -231,11 +199,7 @@ export default class MetaMetricsController {
     // to be updated to work with the new tracking plan. I think we should use
     // a config setting for this instead of trying to match the event name
     const isSendFlow = Boolean(payload.event.match(/^send|^confirm/iu));
-    if (
-      isSendFlow &&
-      this.state.metaMetricsSendCount &&
-      !sendCountIsTrackable(this.state.metaMetricsSendCount + 1)
-    ) {
+    if (isSendFlow) {
       excludeMetaMetricsId = true;
     }
     // If we are tracking sensitive data we will always use the anonymousId
