@@ -421,12 +421,12 @@ export default class PreferencesController {
 
   async updateTokenType(tokenAddress) {
     const { tokens } = this.store.getState();
-    const previousIndex = tokens.findIndex((token) => {
+    const tokenIndex = tokens.findIndex((token) => {
       return token.address === tokenAddress;
     });
-    tokens[previousIndex].isERC721 = await this._detectIsERC721(tokenAddress);
+    tokens[tokenIndex].isERC721 = await this._detectIsERC721(tokenAddress);
     this.store.updateState({ tokens });
-    return Promise.resolve(tokens[previousIndex]);
+    return Promise.resolve(tokens[tokenIndex]);
   }
 
   /**
@@ -786,25 +786,22 @@ export default class PreferencesController {
    */
   async _detectIsERC721(tokenAddress) {
     const checksumAddress = toChecksumHexAddress(tokenAddress);
-    let isERC721;
     // if this token is already in our contract metadata map we don't need
     // to check against the contract
     if (contractsMap[checksumAddress]?.erc721 === true) {
-      isERC721 = Promise.resolve(true);
-    } else {
-      const tokenContract = await new ethers.Contract(
-        tokenAddress,
-        abiERC721,
-        this.ethersProvider,
-      );
-      isERC721 = await tokenContract
-        .supportsInterface(ERC721METADATA_INTERFACE_ID)
-        .catch((error) => {
-          log.debug(error);
-          return false;
-        });
+      return Promise.resolve(true);
     }
-    return isERC721;
+    const tokenContract = await new ethers.Contract(
+      tokenAddress,
+      abiERC721,
+      this.ethersProvider,
+    );
+    return await tokenContract
+      .supportsInterface(ERC721METADATA_INTERFACE_ID)
+      .catch((error) => {
+        log.debug(error);
+        return false;
+      });
   }
 
   /**
