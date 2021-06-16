@@ -28,6 +28,7 @@ describe('Send Duck', () => {
     ensResolution: null,
     ensResolutionError: '',
     gasIsLoading: false,
+    token: null,
   };
   const OPEN_TO_DROPDOWN = 'metamask/send/OPEN_TO_DROPDOWN';
   const CLOSE_TO_DROPDOWN = 'metamask/send/CLOSE_TO_DROPDOWN';

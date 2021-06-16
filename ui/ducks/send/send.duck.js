@@ -47,6 +47,7 @@ const initState = {
   ensResolution: null,
   ensResolutionError: '',
   gasIsLoading: false,
+  token: null,
 };
 
 // Reducer
@@ -180,6 +181,7 @@ export default function reducer(state = initState, action) {
         maxModeOn: false,
         editingTransactionId: null,
         toNickname: '',
+        token: null,
       };
     case GAS_LOADING_STARTED:
       return {

@@ -28,9 +28,8 @@ const mapDispatchToProps = (dispatch) => {
         txParams: { from, to: tokenAddress, gas: gasLimit, gasPrice } = {},
       } = txData;
 
-      const to = getTokenValueParam(tokenData);
-      const tokenAmountInDec = getTokenAddressParam(tokenData);
-
+      const to = getTokenAddressParam(tokenData);
+      const tokenAmountInDec = getTokenValueParam(tokenData);
       const tokenAmountInHex = conversionUtil(tokenAmountInDec, {
         fromNumericBase: 'dec',
         toNumericBase: 'hex',
