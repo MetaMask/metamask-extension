@@ -72,12 +72,15 @@ const slice = createSlice({
         state.error = ENS_REGISTRATION_ERROR;
       } else {
         state.resolution = action.payload;
+        state.error = null;
       }
       if (
         isValidDomainName(state.resolution) &&
         isConfusing(state.resolution)
       ) {
         state.warning = CONFUSING_ENS_ERROR;
+      } else {
+        state.warning = null;
       }
     },
     enableEnsLookup: (state, action) => {

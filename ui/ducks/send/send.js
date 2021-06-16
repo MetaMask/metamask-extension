@@ -749,6 +749,8 @@ const slice = createSlice({
           isOriginContractAddress(recipient.userInput, asset.details.address)
         ) {
           recipient.error = CONTRACT_ADDRESS_ERROR;
+        } else {
+          recipient.error = null;
         }
 
         if (
@@ -757,6 +759,8 @@ const slice = createSlice({
             checkExistingAddresses(recipient.userInput, tokens))
         ) {
           recipient.warning = KNOWN_RECIPIENT_ADDRESS_WARNING;
+        } else {
+          recipient.warning = null;
         }
       }
     },
@@ -901,8 +905,10 @@ const slice = createSlice({
         }
       })
       .addCase(ADDRESS_BOOK_UPDATED, (state, action) => {
+        // When the address book updates from background state changes we need
+        // to check to see if an entry exists for the current address or if the
+        // entry changed.
         const { addressBook } = action.payload;
-        console.log(state.recipient.address, addressBook);
         if (
           addressBook[state.recipient.address] &&
           state.recipient.nickname.length === 0
