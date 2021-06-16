@@ -297,184 +297,6 @@ describe('MetaMask', function () {
     });
   });
 
-  describe('Send ETH from inside MetaMask using default gas', function () {
-    it('starts a send transaction', async function () {
-      await driver.clickElement('[data-testid="eth-overview-send"]');
-      await driver.delay(regularDelayMs);
-
-      await driver.fill(
-        'input[placeholder="Search, public address (0x), or ENS"]',
-        '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-      );
-
-      const inputAmount = await driver.findElement('.unit-input__input');
-      await inputAmount.fill('1000');
-
-      const errorAmount = await driver.findElement('.send-v2__error-amount');
-      assert.equal(
-        await errorAmount.getText(),
-        'Insufficient funds.',
-        'send screen should render an insufficient fund error message',
-      );
-
-      await inputAmount.press(driver.Key.BACK_SPACE);
-      await driver.delay(50);
-      await inputAmount.press(driver.Key.BACK_SPACE);
-      await driver.delay(50);
-      await inputAmount.press(driver.Key.BACK_SPACE);
-      await driver.delay(tinyDelayMs);
-
-      await driver.assertElementNotPresent('.send-v2__error-amount');
-
-      const amountMax = await driver.findClickableElement(
-        '.send-v2__amount-max',
-      );
-      await amountMax.click();
-
-      let inputValue = await inputAmount.getAttribute('value');
-
-      assert(Number(inputValue) > 99);
-
-      await amountMax.click();
-
-      assert.equal(await inputAmount.isEnabled(), true);
-
-      await inputAmount.fill('1');
-
-      inputValue = await inputAmount.getAttribute('value');
-      assert.equal(inputValue, '1');
-      await driver.delay(regularDelayMs);
-
-      // Continue to next screen
-      await driver.clickElement({ text: 'Next', tag: 'button' });
-      await driver.delay(regularDelayMs);
-    });
-
-    it('confirms the transaction', async function () {
-      await driver.clickElement({ text: 'Confirm', tag: 'button' });
-      await driver.delay(largeDelayMs * 2);
-    });
-
-    it('finds the transaction in the transactions list', async function () {
-      await driver.clickElement('[data-testid="home__activity-tab"]');
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 1;
-      }, 10000);
-
-      await driver.waitForSelector({
-        css: '.transaction-list-item__primary-currency',
-        text: '-1 ETH',
-      });
-    });
-  });
-
-  describe('Send ETH from inside MetaMask using fast gas option', function () {
-    it('starts a send transaction', async function () {
-      await driver.clickElement('[data-testid="eth-overview-send"]');
-      await driver.delay(regularDelayMs);
-
-      await driver.fill(
-        'input[placeholder="Search, public address (0x), or ENS"]',
-        '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-      );
-
-      const inputAmount = await driver.findElement('.unit-input__input');
-      await inputAmount.fill('1');
-
-      const inputValue = await inputAmount.getAttribute('value');
-      assert.equal(inputValue, '1');
-
-      // Set the gas price
-      await driver.clickElement({ text: 'Fast', tag: 'button/div/div' });
-      await driver.delay(regularDelayMs);
-
-      // Continue to next screen
-      await driver.clickElement({ text: 'Next', tag: 'button' });
-      await driver.delay(regularDelayMs);
-    });
-
-    it('confirms the transaction', async function () {
-      await driver.clickElement({ text: 'Confirm', tag: 'button' });
-      await driver.delay(largeDelayMs);
-    });
-
-    it('finds the transaction in the transactions list', async function () {
-      await driver.waitForSelector(
-        '.transaction-list__completed-transactions .transaction-list-item:nth-child(2)',
-      );
-      await driver.waitForSelector({
-        css: '.transaction-list-item__primary-currency',
-        text: '-1 ETH',
-      });
-    });
-  });
-
-  describe('Send ETH from inside MetaMask using advanced gas modal', function () {
-    it('starts a send transaction', async function () {
-      await driver.clickElement('[data-testid="eth-overview-send"]');
-      await driver.delay(regularDelayMs);
-
-      await driver.fill(
-        'input[placeholder="Search, public address (0x), or ENS"]',
-        '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-      );
-
-      const inputAmount = await driver.findElement('.unit-input__input');
-      await inputAmount.fill('1');
-
-      const inputValue = await inputAmount.getAttribute('value');
-      assert.equal(inputValue, '1');
-
-      // Set the gas limit
-      await driver.clickElement('.advanced-gas-options-btn');
-      await driver.delay(regularDelayMs);
-
-      // wait for gas modal to be visible
-      const gasModal = await driver.findVisibleElement('span .modal');
-
-      await driver.clickElement({ text: 'Save', tag: 'button' });
-
-      // Wait for gas modal to be removed from DOM
-      await gasModal.waitForElementState('hidden');
-      await driver.delay(regularDelayMs);
-
-      // Continue to next screen
-      await driver.clickElement({ text: 'Next', tag: 'button' });
-      await driver.delay(regularDelayMs);
-    });
-
-    it('confirms the transaction', async function () {
-      const transactionAmounts = await driver.findElements(
-        '.currency-display-component__text',
-      );
-      const transactionAmount = transactionAmounts[0];
-      assert.equal(await transactionAmount.getText(), '1');
-
-      await driver.clickElement({ text: 'Confirm', tag: 'button' });
-      await driver.delay(largeDelayMs);
-    });
-
-    it('finds the transaction in the transactions list', async function () {
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 3;
-      }, 10000);
-
-      await driver.waitForSelector(
-        {
-          css: '.transaction-list-item__primary-currency',
-          text: '-1 ETH',
-        },
-        { timeout: 10000 },
-      );
-    });
-  });
-
   describe('Send ETH from dapp using advanced gas controls', function () {
     let windowHandles;
     let extension;
@@ -585,11 +407,12 @@ describe('MetaMask', function () {
     });
 
     it('finds the transaction in the transactions list', async function () {
+      await driver.clickElement('[data-testid="home__activity-tab"]');
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(
           '.transaction-list__completed-transactions .transaction-list-item',
         );
-        return confirmedTxes.length === 4;
+        return confirmedTxes.length === 1;
       }, 10000);
 
       await driver.waitForSelector({
@@ -804,7 +627,7 @@ describe('MetaMask', function () {
         const confirmedTxes = await driver.findElements(
           '.transaction-list__completed-transactions .transaction-list-item',
         );
-        return confirmedTxes.length === 5;
+        return confirmedTxes.length === 2;
       }, 10000);
     });
   });
@@ -855,7 +678,7 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs);
 
       await driver.waitForSelector(
-        '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(6)',
+        '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(3)',
       );
 
       await driver.waitForSelector(
@@ -937,7 +760,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
 
       await driver.waitForSelector(
-        '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(7)',
+        '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(4)',
         { timeout: 10000 },
       );
       await driver.waitForSelector(
@@ -972,7 +795,7 @@ describe('MetaMask', function () {
         const confirmedTxes = await driver.findElements(
           '.transaction-list__completed-transactions .transaction-list-item',
         );
-        return confirmedTxes.length === 8;
+        return confirmedTxes.length === 5;
       }, 10000);
 
       await driver.waitForSelector(
@@ -991,12 +814,12 @@ describe('MetaMask', function () {
       const balance = await driver.waitForSelector(
         {
           css: '[data-testid="eth-overview__primary-currency"]',
-          text: '87.',
+          text: '90.',
         },
         { timeout: 10000 },
       );
       const tokenAmount = await balance.getText();
-      assert.ok(/^87.*\s*ETH.*$/u.test(tokenAmount));
+      assert.ok(/^90.*\s*ETH.*$/u.test(tokenAmount));
       await driver.delay(regularDelayMs);
     });
   });
