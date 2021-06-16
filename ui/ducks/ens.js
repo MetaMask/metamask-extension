@@ -22,12 +22,12 @@ import {
 import { isValidDomainName } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import {
+  BURN_ADDRESS,
   isBurnAddress,
   isValidHexAddress,
 } from '../../shared/modules/hexstring-utils';
 
 // Local Constants
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ZERO_X_ERROR_ADDRESS = '0x';
 
 const initialState = {
@@ -67,7 +67,7 @@ const slice = createSlice({
     },
     processEnsResult: (state, action) => {
       state.resolution = action.payload;
-      if (state.resolution === ZERO_ADDRESS) {
+      if (state.resolution === BURN_ADDRESS) {
         state.error = ENS_NO_ADDRESS_FOR_NAME;
       }
       if (state.resolution === ZERO_X_ERROR_ADDRESS) {
