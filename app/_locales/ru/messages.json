@@ -52,6 +52,10 @@
   "addContact": {
     "message": "Добавить контакт"
   },
+  "addCustomTokenByContractAddress": {
+    "message": "Невозможно найти токен? Вы можете вручную добавить любой токен, вставив его адрес. Контактные адреса токена можно найти на $1.",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
+  },
   "addEthereumChainConfirmationDescription": {
     "message": "Это позволит использовать ее в MetaMask."
   },
@@ -277,10 +281,13 @@
     "message": "Отменено"
   },
   "chainId": {
-    "message": "Идентификатор цепи"
+    "message": "Идентификатор цепочки"
   },
   "chainIdDefinition": {
     "message": "Идентификатор цепочки, используемый для подписания транзакций для этой сети."
+  },
+  "chainIdExistsErrorMsg": {
+    "message": "Этот идентификатор цепочки в настоящее время используется сетью $1."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Вам необходимо использовать MetaMask в Google Chrome, чтобы подключиться к аппаратному кошельку."
@@ -406,6 +413,9 @@
   },
   "continueToWyre": {
     "message": "Продолжить к Wyre"
+  },
+  "contract": {
+    "message": "Контракт"
   },
   "contractAddressError": {
     "message": "Вы отправляете токены на адрес контракта токена. Это может привести к потере токенов."
@@ -622,6 +632,10 @@
   },
   "endOfFlowMessage6": {
     "message": "Если вам нужно снова создать резервную копию секретной фразы восстановления, вы можете найти ее в Настройки -> Безопасность."
+  },
+  "endOfFlowMessage7": {
+    "message": "Если у вас возникнут вопросы или вы увидите что-то подозрительное, обратитесь в службу поддержки $1.",
+    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "endOfFlowMessage8": {
     "message": "Просто помните, что MetaMask не может восстановить секретную фразу восстановления."
@@ -881,6 +895,16 @@
   },
   "importAccountSeedPhrase": {
     "message": "Импортировать счет с секретной фразой восстановления"
+  },
+  "importAccountText": {
+    "message": "или $1",
+    "description": "$1 represents the text from `importAccountLinkText` as a link"
+  },
+  "importTokenQuestion": {
+    "message": "Импортировать токен?"
+  },
+  "importTokenWarning": {
+    "message": "Кто угодно может создать токен с любым именем, включая поддельные версии существующих токенов. Добавляйте и торгуйте на свой страх и риск!"
   },
   "importWallet": {
     "message": "Импортировать кошелек"
@@ -1284,6 +1308,22 @@
     "message": "Исходная фраза теперь называется секретной фразой восстановления.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
+  "notifications6DescriptionOne": {
+    "message": "Начиная с Chrome версии 91, API, обеспечивающий поддержку нашего Ledger (U2F), аппаратные кошельки больше не поддерживаются. MetaMask реализовала новую поддержку Ledger Live, которая позволяет продолжать подключаться к устройству Ledger через настольное приложение Ledger Live.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionThree": {
+    "message": "При взаимодействии с вашим счетом Ledger в MetaMask откроется новая вкладка, и вам будет предложено открыть приложение Ledger Live.  Когда приложение откроется, вам будет предложено разрешить WebSocket-соединение с вашим счетом MetaMask.  Вот и все!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionTwo": {
+    "message": "Вы можете включить поддержку Ledger Live, нажав «Настройки» > «Дополнительно» > «Использовать Ledger Live».",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6Title": {
+    "message": "Обновление поддержки Ledger для пользователей Chrome",
+    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
+  },
   "ofTextNofM": {
     "message": "из"
   },
@@ -1414,6 +1454,30 @@
   "recipientAddressPlaceholder": {
     "message": "Поиск, публичный адрес (0x) или ENS"
   },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "Начать здесь"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "Понятно"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "Всегда храните свою секретную фразу восстановления в надежном и секретном месте"
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "Нужно снова сделать резервную копию секретной фразы восстановления?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "Никогда никому не сообщайте свою секретную фразу восстановления"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "Команда MetaMask никогда неожиданно не запросит вашу секретную фразу восстановления"
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "Ваша секретная фраза восстановления контролирует все ваши счета."
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "Защитите свои активы"
+  },
   "reject": {
     "message": "Отклонить"
   },
@@ -1473,7 +1537,7 @@
     "message": "Токен здесь повторно использует символ из другого токена, который вы смотрите, это может запутать или ввести в заблуждение."
   },
   "revealSeedWords": {
-    "message": "Показать секретную фразу восстановления"
+    "message": "Раскрыть секретную фразу восстановления"
   },
   "revealSeedWordsDescription": {
     "message": "Если вы меняете браузер или переходите на другой компьютер, вам понадобится эта секретная фраза восстановления для доступа к своим счетам. Сохраните ее в безопасном секретном месте."
@@ -1540,6 +1604,42 @@
   },
   "securitySettingsDescription": {
     "message": "Настройки конфиденциальности и секретная фраза восстановления кошелька"
+  },
+  "seedPhraseIntroSidebarBulletFour": {
+    "message": "Запишите и храните в нескольких секретных местах."
+  },
+  "seedPhraseIntroSidebarBulletOne": {
+    "message": "В диспетчере паролей."
+  },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "В банковской ячейке."
+  },
+  "seedPhraseIntroSidebarBulletTwo": {
+    "message": "В банковском сейфе."
+  },
+  "seedPhraseIntroSidebarCopyOne": {
+    "message": "Фраза восстановления — это главный ключ к кошельку и средствам в нем."
+  },
+  "seedPhraseIntroSidebarCopyThree": {
+    "message": "Если кто-нибудь интересуется вашей фразой восстановления, этот человек, скорее всего, пытается вас обмануть."
+  },
+  "seedPhraseIntroSidebarCopyTwo": {
+    "message": "Не сообщайте свою фразу восстановления никому, даже сотрудникам MetaMask."
+  },
+  "seedPhraseIntroSidebarTitleOne": {
+    "message": "Что такое фраза восстановления?"
+  },
+  "seedPhraseIntroSidebarTitleThree": {
+    "message": "Можно ли сообщать кому-либо свою фразу восстановления?"
+  },
+  "seedPhraseIntroSidebarTitleTwo": {
+    "message": "Как хранить фразу восстановления?"
+  },
+  "seedPhraseIntroTitle": {
+    "message": "Защитите свой кошелек"
+  },
+  "seedPhraseIntroTitleCopy": {
+    "message": "Прежде чем приступить к работе, посмотрите это короткое видео о том, что такое фраза восстановления и как обезопасить кошелек."
   },
   "seedPhrasePlaceholder": {
     "message": "Отделяйте каждое слово одним пробелом"
@@ -2003,6 +2103,9 @@
     "message": "Своп $1 на $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
+  "swapTokenVerificationAddedManually": {
+    "message": "Этот токен был добавлен вручную."
+  },
   "swapTokenVerificationMessage": {
     "message": "Всегда проверяйте адрес токена на $1.",
     "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
@@ -2270,7 +2373,7 @@
     "message": "Для URL требуется соответствующий префикс HTTP/HTTPS."
   },
   "urlExistsErrorMsg": {
-    "message": "URL уже присутствует в имеющемся списке сетей"
+    "message": "Это URL в настоящее время используется сетью $1."
   },
   "usePhishingDetection": {
     "message": "Использовать обнаружение фишинга"
@@ -2290,6 +2393,10 @@
   },
   "verifyThisTokenOn": {
     "message": "Проверить этот токен на $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "verifyThisUnconfirmedTokenOn": {
+    "message": "Проверьте этот токен на $1 и убедитесь, что это тот токен, которым вы хотите торговать.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAccount": {
@@ -2324,6 +2431,10 @@
   },
   "walletSeedRestore": {
     "message": "Секретная фраза восстановления кошелька"
+  },
+  "web3ShimUsageNotification": {
+    "message": "Мы заметили, что текущий веб-сайт пытался использовать удаленный API window.web3. Если сайт не работает, нажмите $1 для получения дополнительной информации.",
+    "description": "$1 is a clickable link."
   },
   "welcome": {
     "message": "Добро пожаловать в MetaMask"

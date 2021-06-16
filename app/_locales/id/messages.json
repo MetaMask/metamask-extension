@@ -52,6 +52,10 @@
   "addContact": {
     "message": "Tambah kontak"
   },
+  "addCustomTokenByContractAddress": {
+    "message": "Tidak dapat menemukan token? Anda dapat menambahkan token secara manual dengan menempelkan alamatnya. Alamat kontrak token dapat ditemukan di $1.",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
+  },
   "addEthereumChainConfirmationDescription": {
     "message": "Ini akan memungkinkan jaringan ini digunakan dengan MetaMask."
   },
@@ -282,6 +286,9 @@
   "chainIdDefinition": {
     "message": "ID rantai digunakan untuk menandatangani transaksi untuk jaringan ini."
   },
+  "chainIdExistsErrorMsg": {
+    "message": "ID Rantai ini saat ini digunakan oleh jaringan $1."
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "Anda perlu menggunakan MetaMask di Google Chrome untuk terhubung ke Dompet Perangkat Keras Anda."
   },
@@ -406,6 +413,9 @@
   },
   "continueToWyre": {
     "message": "Lanjutkan ke Wyre"
+  },
+  "contract": {
+    "message": "Kontrak"
   },
   "contractAddressError": {
     "message": "Anda mengirim token ke alamat kontrak token. Ini dapat mengakibatkan token ini hilang."
@@ -622,6 +632,10 @@
   },
   "endOfFlowMessage6": {
     "message": "Jika Anda perlu mencadangkan Frasa Pemulihan Rahasia lagi, Anda dapat menemukannya di Pengaturan -> Keamanan."
+  },
+  "endOfFlowMessage7": {
+    "message": "Jika Anda memiliki pertanyaan atau melihat sesuatu yang mencurigakan, hubungi dukungan $1 kami.",
+    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask tidak dapat memulihkan Frasa Pemulihan Rahasia Anda."
@@ -881,6 +895,16 @@
   },
   "importAccountSeedPhrase": {
     "message": "Impor akun dengan Frasa Pemulihan Rahasia"
+  },
+  "importAccountText": {
+    "message": "atau $1",
+    "description": "$1 represents the text from `importAccountLinkText` as a link"
+  },
+  "importTokenQuestion": {
+    "message": "Impor token?"
+  },
+  "importTokenWarning": {
+    "message": "Siapa pun dapat membuat token dengan nama apa pun, termasuk versi palsu dari token yang ada. Tambahkan dan perdagangkan dengan risiko Anda sendiri!"
   },
   "importWallet": {
     "message": "Impor dompet"
@@ -1284,6 +1308,22 @@
     "message": "\"Frasa Pemulihan\" Anda kini disebut \"Frasa Pemulihan Rahasia.\"",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
+  "notifications6DescriptionOne": {
+    "message": "Pada Chrome versi 91, API yang memungkinkan dukungan Ledger (U2F) kami tidak lagi mendukung dompet perangkat keras. MetaMask telah menerapkan dukungan Ledger Live baru yang memungkinkan Anda terus terhubung ke perangkat Ledger Anda melalui aplikasi desktop Ledger Live.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionThree": {
+    "message": "Saat berinteraksi dengan akun Ledger Anda di MetaMask, tab baru akan terbuka dan Anda akan diminta untuk membuka aplikasi Ledger Live.  Setelah aplikasi tersebut terbuka, Anda akan diminta untuk mengizinkan koneksi WebSocket ke akun MetaMask Anda.  Tidak diperlukan tindakan lebih lanjut.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionTwo": {
+    "message": "Anda dapat mengaktifkan dukungan Ledger Live dengan mengklik Pengaturan > Lanjutan > Gunakan Ledger Live.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6Title": {
+    "message": "Pembaruan Dukungan Ledger untuk Pengguna Chrome",
+    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
+  },
   "ofTextNofM": {
     "message": "dari"
   },
@@ -1414,6 +1454,30 @@
   "recipientAddressPlaceholder": {
     "message": "Cari, alamat publik (0x), atau ENS"
   },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "Mulai di sini"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "Mengerti"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "Jaga selalu Frasa Pemulihan Rahasia Anda di tempat yang aman dan rahasia"
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "Perlu mencadangkan Frasa Pemulihan Rahasia Anda lagi?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "Jangan membagikan Frasa Pemulihan Rahasia Anda kepada siapa pun"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "Tim MetaMask tidak akan pernah meminta Frasa Pemulihan Rahasia Anda"
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "Frasa Pemulihan Rahasia Anda mengendalikan semua akun Anda."
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "Lindungi dana Anda"
+  },
   "reject": {
     "message": "Tolak"
   },
@@ -1439,7 +1503,7 @@
     "message": "Hapus akun"
   },
   "removeAccountDescription": {
-    "message": "Akun ini akan dihapus dari dompet Anda. Pastikan Anda memiliki Frasa Pemulihan Rahasia asli atau kunci privat untuk akun impor ini sebelum melanjutkan. Anda dapat mengimpor atau membuat akun lagi dari drop down akun. "
+    "message": "Akun ini akan dihapus dari dompet Anda. Pastikan Anda memiliki Frasa Pemulihan Rahasia asli atau kunci privat untuk akun impor ini sebelum melanjutkan. Anda dapat mengimpor atau membuat akun lagi dari akun drop down. "
   },
   "requestsAwaitingAcknowledgement": {
     "message": "permintaan menunggu untuk diakui"
@@ -1540,6 +1604,42 @@
   },
   "securitySettingsDescription": {
     "message": "Pengaturan privasi dan Frasa Pemulihan Rahasia dompet"
+  },
+  "seedPhraseIntroSidebarBulletFour": {
+    "message": "Tuliskan dan simpan di beberapa tempat rahasia."
+  },
+  "seedPhraseIntroSidebarBulletOne": {
+    "message": "Simpan dalam pengelola kata sandi"
+  },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "Simpan di kotak deposit yang aman."
+  },
+  "seedPhraseIntroSidebarBulletTwo": {
+    "message": "Simpan di vault bank."
+  },
+  "seedPhraseIntroSidebarCopyOne": {
+    "message": "Frasa pemulihan Anda adalah “kunci induk” ke dompet dan dana Anda."
+  },
+  "seedPhraseIntroSidebarCopyThree": {
+    "message": "Jika seseorang menanyakan frasa pemulihan Anda, kemungkinan mereka akan mencoba menipu Anda."
+  },
+  "seedPhraseIntroSidebarCopyTwo": {
+    "message": "Jangan pernah membagikan frasa pemulihan Anda bahkan kepada MetaMask!"
+  },
+  "seedPhraseIntroSidebarTitleOne": {
+    "message": "Apa itu frasa pemulihan?"
+  },
+  "seedPhraseIntroSidebarTitleThree": {
+    "message": "Haruskah saya membagikan frasa pemulihan saya?"
+  },
+  "seedPhraseIntroSidebarTitleTwo": {
+    "message": "Bagaimana cara menyimpan frasa pemulihan saya?"
+  },
+  "seedPhraseIntroTitle": {
+    "message": "Amankan dompet Anda"
+  },
+  "seedPhraseIntroTitleCopy": {
+    "message": "Sebelum memulai, lihat video singkat ini untuk mempelajari tentang frasa pemulihan Anda dan cara menjaga keamanan dompet Anda."
   },
   "seedPhrasePlaceholder": {
     "message": "Pisahkan setiap kata dengan satu spasi"
@@ -2003,6 +2103,9 @@
     "message": "Tukar $1 untuk $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
+  "swapTokenVerificationAddedManually": {
+    "message": "Token ini telah ditambahkan secara manual."
+  },
   "swapTokenVerificationMessage": {
     "message": "Selalu konfirmasikan alamat token di $1.",
     "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
@@ -2270,7 +2373,7 @@
     "message": "URL memerlukan awalan HTTP/HTTPS yang sesuai."
   },
   "urlExistsErrorMsg": {
-    "message": "URL sudah ada dalam daftar jaringan yang ada"
+    "message": "URL ini saat ini digunakan oleh jaringan $1."
   },
   "usePhishingDetection": {
     "message": "Menggunakan Deteksi Phishing"
@@ -2290,6 +2393,10 @@
   },
   "verifyThisTokenOn": {
     "message": "Verifikasikan token ini di $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "verifyThisUnconfirmedTokenOn": {
+    "message": "Verifikasi token ini di $1 dan pastikan ini adalah token yang ingin Anda perdagangkan.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAccount": {
@@ -2324,6 +2431,10 @@
   },
   "walletSeedRestore": {
     "message": "Frasa Pemulihan Rahasia Dompet"
+  },
+  "web3ShimUsageNotification": {
+    "message": "Kami melihat situs web saat ini mencoba menggunakan API window.web3 yang dihapus. Jika situs tersebut tampak bermasalah, silakan klik $1 untuk informasi selengkapnya.",
+    "description": "$1 is a clickable link."
   },
   "welcome": {
     "message": "Selamat datang di MetaMask"
