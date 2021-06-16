@@ -188,7 +188,7 @@ jobs:
         run: |
           if ./development/test-run-e2e.sh
           then
-            ENABLE_CHROME_LOGGING=true xvfb-run -e /dev/stderr -a yarn test:e2e:chrome
+            ENABLE_CHROME_LOGGING=true xvfb-run -e /dev/stderr -a yarn test:e2e:chrome --retries 2
           fi
       - name: Save Chrome E2E test artifacts on failure
         uses: actions/upload-artifact@v2
@@ -226,7 +226,7 @@ jobs:
         run: |
           if ./development/test-run-e2e.sh
           then
-            ENABLE_CHROME_LOGGING=true xvfb-run -e /dev/stderr -a yarn test:e2e:chrome:metrics
+            ENABLE_CHROME_LOGGING=true xvfb-run -e /dev/stderr -a yarn test:e2e:chrome:metrics --retries 2
           fi
       - name: Save Chrome E2E metrics test artifacts on failure
         uses: actions/upload-artifact@v2
@@ -264,7 +264,7 @@ jobs:
         run: |
           if ./development/test-run-e2e.sh
           then
-            xvfb-run -e /dev/stderr -a yarn test:e2e:firefox
+            xvfb-run -e /dev/stderr -a yarn test:e2e:firefox --retries 2
           fi
       - name: Save Firefox E2E test artifacts on failure
         uses: actions/upload-artifact@v2
@@ -302,7 +302,7 @@ jobs:
         run: |
           if ./development/test-run-e2e.sh
           then
-            xvfb-run -e /dev/stderr -a yarn test:e2e:firefox:metrics
+            xvfb-run -e /dev/stderr -a yarn test:e2e:firefox:metrics --retries 2
           fi
       - name: Save Firefox E2E metrics test artifacts on failure
         uses: actions/upload-artifact@v2
