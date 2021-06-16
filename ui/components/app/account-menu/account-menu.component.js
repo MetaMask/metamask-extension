@@ -319,14 +319,6 @@ export default class AccountMenu extends Component {
       supportLink = 'https://metamask.zendesk.com/hc/en-us/requests/new';
     }
 
-    <AccountMenuItem
-      onClick={() => {
-        global.platform.openTab({ url: 'https://support.metamask.io' });
-      }}
-      icon={<img src="images/support.svg" alt={t('support')} />}
-      text={t('support')}
-    />;
-
     return (
       <div className="account-menu">
         <div className="account-menu__close-area" onClick={toggleAccountMenu} />
