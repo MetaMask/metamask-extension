@@ -58,6 +58,11 @@ const AssetListItem = ({
     </>
   ) : null;
 
+  const symbol = useMemo(
+    () => (primaryIsFiat ? secondarySymbol : primarySymbol),
+    [primaryIsFiat, secondarySymbol, primarySymbol],
+  );
+
   const sendTokenButton = useMemo(() => {
     if (tokenAddress === null || tokenAddress === undefined) {
       return null;
@@ -73,21 +78,17 @@ const AssetListItem = ({
             updateSendToken({
               address: tokenAddress,
               decimals: tokenDecimals,
-              symbol: primaryIsFiat ? secondarySymbol : primarySymbol,
+              symbol,
             }),
           );
           history.push(SEND_ROUTE);
         }}
       >
-        {t('sendSpecifiedTokens', [
-          primaryIsFiat ? secondarySymbol : primarySymbol,
-        ])}
+        {t('sendSpecifiedTokens', [symbol])}
       </Button>
     );
   }, [
-    primarySymbol,
-    secondarySymbol,
-    primaryIsFiat,
+    symbol,
     sendTokenEvent,
     tokenAddress,
     tokenDecimals,
