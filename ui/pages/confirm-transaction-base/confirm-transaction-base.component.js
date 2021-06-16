@@ -472,35 +472,16 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleCancel() {
-    const { metricsEvent } = this.context;
     const {
       txData,
       cancelTransaction,
       history,
       mostRecentOverviewPage,
       clearConfirmTransaction,
-      actionKey,
-      txData: { origin },
-      methodData = {},
       updateCustomNonce,
     } = this.props;
 
     this._removeBeforeUnload();
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Confirm Screen',
-        name: 'Cancel',
-      },
-      customVariables: {
-        recipientKnown: null,
-        functionType:
-          actionKey ||
-          getMethodName(methodData.name) ||
-          TRANSACTION_TYPES.CONTRACT_INTERACTION,
-        origin,
-      },
-    });
     updateCustomNonce('');
     cancelTransaction(txData).then(() => {
       clearConfirmTransaction();
@@ -509,16 +490,12 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleSubmit() {
-    const { metricsEvent } = this.context;
     const {
-      txData: { origin },
       sendTransaction,
       clearConfirmTransaction,
       txData,
       history,
-      actionKey,
       mostRecentOverviewPage,
-      methodData = {},
       updateCustomNonce,
     } = this.props;
     const { submitting } = this.state;
@@ -534,21 +511,6 @@ export default class ConfirmTransactionBase extends Component {
       },
       () => {
         this._removeBeforeUnload();
-        metricsEvent({
-          eventOpts: {
-            category: 'Transactions',
-            action: 'Confirm Screen',
-            name: 'Transaction Completed',
-          },
-          customVariables: {
-            recipientKnown: null,
-            functionType:
-              actionKey ||
-              getMethodName(methodData.name) ||
-              TRANSACTION_TYPES.CONTRACT_INTERACTION,
-            origin,
-          },
-        });
 
         sendTransaction(txData)
           .then(() => {
@@ -636,18 +598,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   _beforeUnload = () => {
-    const { txData: { origin, id } = {}, cancelTransaction } = this.props;
-    const { metricsEvent } = this.context;
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Confirm Screen',
-        name: 'Cancel Tx Via Notification Close',
-      },
-      customVariables: {
-        origin,
-      },
-    });
+    const { txData: { id } = {}, cancelTransaction } = this.props;
     cancelTransaction({ id });
   };
 
