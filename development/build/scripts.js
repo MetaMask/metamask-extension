@@ -44,7 +44,7 @@ const materialUIDependencies = ['@material-ui/core'];
 const reactDepenendencies = dependencies.filter((dep) => dep.match(/react/u));
 
 const externalDependenciesMap = {
-  background: ['3box'],
+  background: ['3box', '@ethereumjs/common', 'unicode-confusables'],
   ui: [...materialUIDependencies, ...reactDepenendencies],
 };
 
