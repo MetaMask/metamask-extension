@@ -1054,39 +1054,30 @@ export function updateMetamaskState(newState) {
       dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
     }
 
-    // Ensuring that the chainId is not undefined for both providers ensures we
-    // can rely upon the logic of our getMetaMaskAccounts selector instead of
-    // replicating its behavior here in a way more tolerant of missing
-    // properties
-    if (provider?.chainId !== undefined && newProvider?.chainId !== undefined) {
-      const newAccounts = getMetaMaskAccounts({ metamask: newState });
-      const oldAccounts = getMetaMaskAccounts({ metamask: currentState });
-      const newSelectedAccount = newAccounts[newSelectedAddress];
-      const oldSelectedAccount = newAccounts[selectedAddress];
-      // dispatch an ACCOUNT_CHANGED for any account whose balance or other
-      // properties changed in this update
-      Object.entries(oldAccounts).forEach(([address, oldAccount]) => {
-        if (!isEqual(oldAccount, newAccounts[address])) {
-          dispatch({
-            type: actionConstants.ACCOUNT_CHANGED,
-            payload: { account: newAccounts[address] },
-          });
-        }
-      });
-      // Also emit an event for the selected account changing, either due to a
-      // property update or if the entire account changes.
-      if (isEqual(oldSelectedAccount, newSelectedAccount) === false) {
+    const newAccounts = getMetaMaskAccounts({ metamask: newState });
+    const oldAccounts = getMetaMaskAccounts({ metamask: currentState });
+    const newSelectedAccount = newAccounts[newSelectedAddress];
+    const oldSelectedAccount = newAccounts[selectedAddress];
+    // dispatch an ACCOUNT_CHANGED for any account whose balance or other
+    // properties changed in this update
+    Object.entries(oldAccounts).forEach(([address, oldAccount]) => {
+      if (!isEqual(oldAccount, newAccounts[address])) {
         dispatch({
-          type: actionConstants.SELECTED_ACCOUNT_CHANGED,
-          payload: { account: newSelectedAccount },
+          type: actionConstants.ACCOUNT_CHANGED,
+          payload: { account: newAccounts[address] },
         });
       }
+    });
+    // Also emit an event for the selected account changing, either due to a
+    // property update or if the entire account changes.
+    if (isEqual(oldSelectedAccount, newSelectedAccount) === false) {
+      dispatch({
+        type: actionConstants.SELECTED_ACCOUNT_CHANGED,
+        payload: { account: newSelectedAccount },
+      });
     }
 
-    if (
-      provider?.chainId !== newProvider?.chainId &&
-      newProvider?.chainId !== undefined
-    ) {
+    if (provider?.chainId !== newProvider?.chainId) {
       dispatch({
         type: actionConstants.CHAIN_CHANGED,
         payload: newProvider.chainId,
