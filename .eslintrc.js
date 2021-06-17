@@ -108,7 +108,11 @@ module.exports = {
     },
     {
       files: ['**/*.test.js'],
-      excludedFiles: ['ui/**/*.test.js', 'ui/__mocks__/*.js'],
+      excludedFiles: [
+        'ui/**/*.test.js',
+        'ui/__mocks__/*.js',
+        'shared/**/*.test.js',
+      ],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
         'mocha/no-setup-in-describe': 'off',
@@ -125,7 +129,7 @@ module.exports = {
       },
     },
     {
-      files: ['ui/**/*.test.js', 'ui/__mocks__/*.js'],
+      files: ['ui/**/*.test.js', 'ui/__mocks__/*.js', 'shared/**/*.test.js'],
       extends: ['@metamask/eslint-config-jest'],
       rules: {
         'jest/no-restricted-matchers': 'off',
