@@ -2429,6 +2429,9 @@
   "viewContact": {
     "message": "View Contact"
   },
+  "viewFullTransactionDetails": {
+    "message": "View full transaction details"
+  },
   "viewMore": {
     "message": "View More"
   },

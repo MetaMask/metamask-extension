@@ -303,7 +303,7 @@ export default class ConfirmApproveContent extends Component {
               >
                 <div className="confirm-approve-content__view-full-tx-button cursor-pointer">
                   <div className="confirm-approve-content__small-blue-text">
-                    View full transaction details
+                    {t('viewFullTransactionDetails')}
                   </div>
                   <i
                     className={classnames({
@@ -332,7 +332,7 @@ export default class ConfirmApproveContent extends Component {
                 >
                   <div className="confirm-approve-content__view-full-tx-button cursor-pointer">
                     <div className="confirm-approve-content__small-blue-text">
-                      View full transaction details
+                      {t('viewFullTransactionDetails')}
                     </div>
                     <i
                       className={classnames({
