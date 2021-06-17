@@ -1273,19 +1273,21 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(4);
-        expect(actionResult[0].payload).toStrictEqual({
+        expect(actionResult).toHaveLength(6);
+        expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
+        expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
+        expect(actionResult[2].payload).toStrictEqual({
           ...newSendAsset,
           balance: '0x0',
         });
 
-        expect(actionResult[1].type).toStrictEqual(
+        expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[2].type).toStrictEqual(
+        expect(actionResult[4].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[3].type).toStrictEqual(
+        expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });

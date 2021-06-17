@@ -42,6 +42,7 @@ import {
   estimateGas,
   hideLoadingIndication,
   showConfTxPage,
+  showLoadingIndication,
   updateTransaction,
 } from '../../store/actions';
 import {
@@ -1044,11 +1045,15 @@ export function updateSendAsset({ type, details }) {
       // overview page and asset list on the wallet overview page contain
       // send buttons that call this method before initialization occurs.
       // When this happens we don't yet have an account.address so default to
-      // the currently active account.
+      // the currently active account. In addition its possible for the balance
+      // check to take a decent amount of time, so we display a loading
+      // indication so that that immediate feedback is displayed to the user.
+      await dispatch(showLoadingIndication());
       balance = await getERC20Balance(
         details,
         state.send.account.address ?? getSelectedAddress(state),
       );
+      await dispatch(hideLoadingIndication());
     } else {
       // if changing to native currency, get it from the account key in send
       // state which is kept in sync when accounts change.
