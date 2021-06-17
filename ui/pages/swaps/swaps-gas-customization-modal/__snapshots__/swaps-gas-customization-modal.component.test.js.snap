@@ -49,6 +49,11 @@ exports[`GasCustomizationModalComponent renders the component with initial props
 >
   <div>
     <div
+      class="gas-price-button-group__label"
+    >
+      Fast
+    </div>
+    <div
       class="gas-price-button-group__time-estimate"
     >
       ~ 1 min 0 sec
