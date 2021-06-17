@@ -2,6 +2,8 @@
 
 const path = require('path');
 const { promises: fs, constants: fsConstants } = require('fs');
+const yargs = require('yargs/yargs');
+const { hideBin } = require('yargs/helpers');
 const ttest = require('ttest');
 const { withFixtures } = require('./helpers');
 const { PAGES } = require('./webdriver/driver');
@@ -129,60 +131,52 @@ async function getFirstParentDirectoryThatExists(directory) {
 }
 
 async function main() {
-  const args = process.argv.slice(2);
+  const { argv } = yargs(hideBin(process.argv)).usage(
+    '$0 [options]',
+    'Run a page load benchmark',
+    (_yargs) =>
+      _yargs
+        .option('pages', {
+          array: true,
+          default: ['home'],
+          description:
+            'Set the page(s) to be benchmarked. This flag can accept multiple values (space-separated).',
+          choices: ALL_PAGES,
+        })
+        .option('samples', {
+          default: DEFAULT_NUM_SAMPLES,
+          description: 'The number of times the benchmark should be run.',
+          type: 'number',
+        })
+        .option('out', {
+          description:
+            'Output filename. Output printed to STDOUT of this is omitted.',
+          type: 'string',
+          normalize: true,
+        }),
+  );
 
-  let pages = ['home'];
-  let numSamples = DEFAULT_NUM_SAMPLES;
-  let outputPath;
+  const { pages, samples, out } = argv;
+
   let outputDirectory;
   let existingParentDirectory;
-
-  while (args.length) {
-    if (/^(--pages|-p)$/u.test(args[0])) {
-      if (args[1] === undefined) {
-        throw new Error('Missing pages argument');
-      }
-      pages = args[1].split(',');
-      for (const page of pages) {
-        if (!ALL_PAGES.includes(page)) {
-          throw new Error(`Invalid page: '${page}`);
-        }
-      }
-      args.splice(0, 2);
-    } else if (/^(--samples|-s)$/u.test(args[0])) {
-      if (args[1] === undefined) {
-        throw new Error('Missing number of samples');
-      }
-      numSamples = parseInt(args[1], 10);
-      if (isNaN(numSamples)) {
-        throw new Error(`Invalid 'samples' argument given: '${args[1]}'`);
-      }
-      args.splice(0, 2);
-    } else if (/^(--out|-o)$/u.test(args[0])) {
-      if (args[1] === undefined) {
-        throw new Error('Missing output filename');
-      }
-      outputPath = path.resolve(args[1]);
-      outputDirectory = path.dirname(outputPath);
-      existingParentDirectory = await getFirstParentDirectoryThatExists(
-        outputDirectory,
-      );
-      if (!(await isWritable(existingParentDirectory))) {
-        throw new Error(`Specified directory is not writable: '${args[1]}'`);
-      }
-      args.splice(0, 2);
-    } else {
-      throw new Error(`Unrecognized argument: '${args[0]}'`);
+  if (out) {
+    outputDirectory = path.dirname(out);
+    existingParentDirectory = await getFirstParentDirectoryThatExists(
+      outputDirectory,
+    );
+    if (!(await isWritable(existingParentDirectory))) {
+      throw new Error('Specified output file directory is not writable');
     }
   }
 
-  const results = await profilePageLoad(pages, numSamples);
+  const results = await profilePageLoad(pages, samples);
 
-  if (outputPath) {
+  if (out) {
     if (outputDirectory !== existingParentDirectory) {
       await fs.mkdir(outputDirectory, { recursive: true });
     }
-    await fs.writeFile(outputPath, JSON.stringify(results, null, 2));
+    await fs.writeFile(out, JSON.stringify(results, null, 2));
   } else {
     console.log(JSON.stringify(results, null, 2));
   }
