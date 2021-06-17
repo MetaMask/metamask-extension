@@ -1758,9 +1758,11 @@ describe('Send Slice', () => {
         );
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(5);
-        expect(actionResult[0].type).toStrictEqual('send/updateAsset');
-        expect(actionResult[0].payload).toStrictEqual({
+        expect(actionResult).toHaveLength(7);
+        expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
+        expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
+        expect(actionResult[2].type).toStrictEqual('send/updateAsset');
+        expect(actionResult[2].payload).toStrictEqual({
           balance: '0x0',
           type: ASSET_TYPES.TOKEN,
           details: {
@@ -1769,17 +1771,17 @@ describe('Send Slice', () => {
             symbol: 'SYMB',
           },
         });
-        expect(actionResult[1].type).toStrictEqual(
+        expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[2].type).toStrictEqual(
+        expect(actionResult[4].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[3].type).toStrictEqual(
+        expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
-        expect(actionResult[4].type).toStrictEqual('send/editTransaction');
-        expect(actionResult[4].payload).toStrictEqual({
+        expect(actionResult[6].type).toStrictEqual('send/editTransaction');
+        expect(actionResult[6].payload).toStrictEqual({
           address: '0xrecipientaddress', // getting address from tokenData does .toLowerCase
           amount: '0x3a98',
           from: '0xAddress',
@@ -1789,7 +1791,7 @@ describe('Send Slice', () => {
           nickname: '',
         });
 
-        const action = actionResult[4];
+        const action = actionResult[6];
 
         const result = sendReducer(initialState, action);
 
