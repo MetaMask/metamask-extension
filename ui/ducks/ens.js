@@ -49,9 +49,9 @@ const slice = createSlice({
   initialState,
   reducers: {
     processEnsError: (state, action) => {
-      const { recipient, network, reason } = action.payload;
+      const { ensName, network, reason } = action.payload;
       if (
-        isValidDomainName(recipient) &&
+        isValidDomainName(ensName) &&
         reason.message === 'ENS name not defined.'
       ) {
         state.error =
@@ -143,6 +143,7 @@ export function initializeEnsSlice() {
 
 export function lookupEnsName(ensName) {
   return async (dispatch, getState) => {
+    const trimmedEnsName = ensName.trim();
     let state = getState();
     if (state[name].stage === 'UNINITIALIZED') {
       await dispatch(initializeEnsSlice());
@@ -151,23 +152,23 @@ export function lookupEnsName(ensName) {
     if (
       state[name].stage === 'NO_NETWORK_SUPPORT' &&
       !(
-        isBurnAddress(ensName) === false &&
-        isValidHexAddress(ensName, { mixedCaseUseChecksum: true })
+        isBurnAddress(trimmedEnsName) === false &&
+        isValidHexAddress(trimmedEnsName, { mixedCaseUseChecksum: true })
       ) &&
-      !isHexString(ensName)
+      !isHexString(trimmedEnsName)
     ) {
       await dispatch(resetResolution());
     } else {
-      const recipient = ensName.trim();
-
-      log.info(`ENS attempting to resolve name: ${recipient}`);
+      log.info(`ENS attempting to resolve name: ${trimmedEnsName}`);
       try {
-        const address = await ens.lookup(recipient);
+        const address = await ens.lookup(trimmedEnsName);
         await dispatch(processEnsResult(address));
       } catch (reason) {
         const chainId = getCurrentChainId(state);
         const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-        await dispatch(processEnsError({ recipient, reason, network }));
+        await dispatch(
+          processEnsError({ ensName: trimmedEnsName, reason, network }),
+        );
       }
     }
   };
