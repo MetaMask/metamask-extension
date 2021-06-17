@@ -66,12 +66,12 @@ const slice = createSlice({
       }
     },
     processEnsResult: (state, action) => {
-      state.resolution = action.payload;
       if (state.resolution === BURN_ADDRESS) {
         state.error = ENS_NO_ADDRESS_FOR_NAME;
-      }
-      if (state.resolution === ZERO_X_ERROR_ADDRESS) {
+      } else if (state.resolution === ZERO_X_ERROR_ADDRESS) {
         state.error = ENS_REGISTRATION_ERROR;
+      } else {
+        state.resolution = action.payload;
       }
       if (
         isValidDomainName(state.resolution) &&
@@ -107,6 +107,7 @@ const slice = createSlice({
     builder.addCase(CHAIN_CHANGED, (state, action) => {
       if (action.payload !== state.currentChainId) {
         state.stage = 'UNINITIALIZED';
+        ens = null;
       }
     });
   },
@@ -125,17 +126,17 @@ const {
 export { resetResolution };
 
 export function initializeEnsSlice() {
-  return async (dispatch, getState) => {
+  return (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
     const networkIsSupported = Boolean(networkMap[network]);
     if (networkIsSupported) {
       ens = new ENS({ provider: global.ethereumProvider, network });
-      await dispatch(enableEnsLookup(network));
+      dispatch(enableEnsLookup(network));
     } else {
       ens = null;
-      await dispatch(disableEnsLookup());
+      dispatch(disableEnsLookup());
     }
   };
 }
@@ -143,7 +144,7 @@ export function initializeEnsSlice() {
 export function lookupEnsName(ensName) {
   return async (dispatch, getState) => {
     let state = getState();
-    if (state[name].stage === 'UNINITIALIZED' || ens === null) {
+    if (state[name].stage === 'UNINITIALIZED') {
       await dispatch(initializeEnsSlice());
     }
     state = getState();
@@ -164,7 +165,9 @@ export function lookupEnsName(ensName) {
         const address = await ens.lookup(recipient);
         await dispatch(processEnsResult(address));
       } catch (reason) {
-        await dispatch(processEnsError({ recipient, reason }));
+        const chainId = getCurrentChainId(state);
+        const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+        await dispatch(processEnsError({ recipient, reason, network }));
       }
     }
   };
