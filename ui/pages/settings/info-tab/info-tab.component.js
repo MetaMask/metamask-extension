@@ -1,10 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../../components/ui/button';
-import {
-  isBeta,
-  getBuildSpecificAsset,
-} from '../../../helpers/utils/build-types';
+import { isBeta } from '../../../helpers/utils/build-types';
 
 export default class InfoTab extends PureComponent {
   state = {
@@ -114,11 +111,7 @@ export default class InfoTab extends PureComponent {
           {this.renderInfoLinks()}
         </div>
         <div className="info-tab__logo-wrapper">
-          <img
-            src={getBuildSpecificAsset('aboutInfoLogo')}
-            className="info-tab__logo"
-            alt=""
-          />
+          <img src="/images/info-logo.png" className="info-tab__logo" alt="" />
         </div>
       </div>
     );

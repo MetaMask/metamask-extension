@@ -1,28 +1,13 @@
-import betaJson from '../../../app/images/beta/mascot.json';
+import betaJson from '../../../app/build-types/beta/beta-mascot.json';
 
 const assetList = {
   main: {
-    // Images
-    metafoxLogoHorizontal: '/images/logo/metamask-logo-horizontal.svg',
     metafoxLogoHorizontalDark: '/images/logo/metamask-logo-horizontal.svg',
-    metafoxLogoSmall: '/images/logo/metamask-fox.svg',
-    permissionsRedirectLogo: '/images/logo/metamask-fox.svg',
-    aboutInfoLogo: '/images/info-logo.png',
-    swapsLogo: '/images/logo/metamask-fox.svg',
-
-    // Mesh - will use default provided by library if standard
+    // Will use default provided by the @metamask/logo library
     foxMeshJson: undefined,
   },
   beta: {
-    // Images
-    metafoxLogoHorizontal: '/images/beta/metamask-logo-horizontal.svg',
-    metafoxLogoHorizontalDark: '/images/beta/metamask-logo-horizontal-dark.svg',
-    metafoxLogoSmall: '/images/beta/metamask-fox.svg',
-    permissionsRedirectLogo: '/images/beta/metamask-fox.svg',
-    aboutInfoLogo: '/images/beta/128.png',
-    swapsLogo: '/images/beta/metamask-fox.svg',
-
-    // Mesh
+    metafoxLogoHorizontalDark: '/images/logo/metamask-logo-horizontal-dark.svg',
     foxMeshJson: betaJson,
   },
 };

@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import SiteIcon from '../../../components/ui/site-icon';
 import { I18nContext } from '../../../contexts/i18n';
-import { getBuildSpecificAsset } from '../../../helpers/utils/build-types';
 
 export default function PermissionsRedirect({ domainMetadata }) {
   const t = useContext(I18nContext);
@@ -21,10 +20,7 @@ export default function PermissionsRedirect({ domainMetadata }) {
             <span className="permissions-redirect__check" />
             {renderBrokenLine()}
           </div>
-          <SiteIcon
-            icon={getBuildSpecificAsset('permissionsRedirectLogo')}
-            size={64}
-          />
+          <SiteIcon icon="/images/logo/metamask-fox.svg" size={64} />
         </div>
       </div>
     </div>

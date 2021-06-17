@@ -43,6 +43,7 @@ function defineAllTasks() {
     livereload,
     browserPlatforms,
     shouldIncludeLockdown,
+    isBeta: IS_BETA,
   });
   const manifestTasks = createManifestTasks({
     browserPlatforms,
