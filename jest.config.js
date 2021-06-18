@@ -5,10 +5,10 @@ module.exports = {
   coveragePathIgnorePatterns: ['.stories.js', '.snap'],
   coverageThreshold: {
     global: {
-      branches: 32.75,
-      functions: 42.9,
-      lines: 43.12,
-      statements: 43.67,
+      branches: 45.45,
+      functions: 55.29,
+      lines: 60.22,
+      statements: 60.43,
     },
   },
   setupFiles: ['./test/setup.js', './test/env.js'],
