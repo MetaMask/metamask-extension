@@ -1077,7 +1077,7 @@ export function updateMetamaskState(newState) {
       });
     }
 
-    if (provider?.chainId !== newProvider?.chainId) {
+    if (provider.chainId !== newProvider.chainId) {
       dispatch({
         type: actionConstants.CHAIN_CHANGED,
         payload: newProvider.chainId,
