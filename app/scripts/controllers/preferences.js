@@ -506,11 +506,8 @@ export default class PreferencesController {
         let addressBookKey = rpcDetail.chainId;
         if (!addressBookKey) {
           // We need to find the networkId to determine what these addresses were keyed by
-          const provider = new ethers.providers.JsonRpcProvider(
-            rpcDetail.rpcUrl,
-          );
           try {
-            addressBookKey = await provider.send('net_version');
+            addressBookKey = await this.ethersProvider.send('net_version');
             assert(typeof addressBookKey === 'string');
           } catch (error) {
             log.debug(error);
