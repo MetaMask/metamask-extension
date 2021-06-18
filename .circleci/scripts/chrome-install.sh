@@ -6,7 +6,7 @@ set -o pipefail
 
 CHROME_VERSION='79.0.3945.117-1'
 CHROME_BINARY="google-chrome-stable_${CHROME_VERSION}_amd64.deb"
-CHROME_BINARY_URL="http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/${CHROME_BINARY}"
+CHROME_BINARY_URL="http://mirror.cs.uchicago.edu/google-chrome/pool/main/g/google-chrome-stable/${CHROME_BINARY}"
 
 wget -O "${CHROME_BINARY}" -t 5 "${CHROME_BINARY_URL}"
 
