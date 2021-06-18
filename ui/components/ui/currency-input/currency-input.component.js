@@ -24,7 +24,7 @@ export default class CurrencyInput extends PureComponent {
     nativeCurrency: PropTypes.string,
     onChange: PropTypes.func,
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
-    hideFiat: PropTypes.bool,
+    showFiat: PropTypes.bool,
     value: PropTypes.string,
     fiatSuffix: PropTypes.string,
     nativeSuffix: PropTypes.string,
@@ -76,10 +76,10 @@ export default class CurrencyInput extends PureComponent {
   }
 
   shouldUseFiat = () => {
-    const { useNativeCurrencyAsPrimaryCurrency, hideFiat } = this.props;
+    const { useNativeCurrencyAsPrimaryCurrency, showFiat } = this.props;
     const { isSwapped } = this.state || {};
 
-    if (hideFiat) {
+    if (!showFiat) {
       return false;
     }
 
@@ -121,11 +121,11 @@ export default class CurrencyInput extends PureComponent {
   };
 
   renderConversionComponent() {
-    const { currentCurrency, nativeCurrency, hideFiat } = this.props;
+    const { currentCurrency, nativeCurrency, showFiat } = this.props;
     const { hexValue } = this.state;
-    let currency, numberOfDecimals, type;
+    let currency, numberOfDecimals, type, isSwapped;
 
-    if (hideFiat) {
+    if (!showFiat) {
       return (
         <div className="currency-input__conversion-component">
           {this.context.t('noConversionRateAvailable')}
@@ -143,6 +143,7 @@ export default class CurrencyInput extends PureComponent {
       currency = currentCurrency;
       numberOfDecimals = 2;
       type = SECONDARY;
+      isSwapped = this.state.isSwapped;
     }
 
     return (
@@ -152,6 +153,7 @@ export default class CurrencyInput extends PureComponent {
         value={hexValue}
         numberOfDecimals={numberOfDecimals}
         type={type}
+        isSwapped={isSwapped}
       />
     );
   }

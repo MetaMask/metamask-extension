@@ -11,7 +11,7 @@ import CurrencyInput from './currency-input.component';
 describe('CurrencyInput Component', () => {
   describe('rendering', () => {
     it('should render properly without a suffix', () => {
-      const wrapper = shallow(<CurrencyInput />);
+      const wrapper = shallow(<CurrencyInput showFiat />);
 
       expect(wrapper).toHaveLength(1);
       expect(wrapper.find(UnitInput)).toHaveLength(1);
@@ -37,6 +37,7 @@ describe('CurrencyInput Component', () => {
             fiatSuffix="USD"
             nativeCurrency="ETH"
             useNativeCurrencyAsPrimaryCurrency
+            showFiat
           />
         </Provider>,
       );
@@ -69,6 +70,7 @@ describe('CurrencyInput Component', () => {
             nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
+            showFiat
             useNativeCurrencyAsPrimaryCurrency
           />
         </Provider>,
@@ -114,6 +116,7 @@ describe('CurrencyInput Component', () => {
             nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
+            showFiat
           />
         </Provider>,
       );
@@ -156,10 +159,10 @@ describe('CurrencyInput Component', () => {
             fiatSuffix="USD"
             nativeSuffix="ETH"
             useNativeCurrencyAsPrimaryCurrency={false}
-            hideFiat
             nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
+            showFiat={false}
           />
         </Provider>,
         {
@@ -218,6 +221,7 @@ describe('CurrencyInput Component', () => {
             currentCurrency="usd"
             conversionRate={231.06}
             useNativeCurrencyAsPrimaryCurrency
+            showFiat
           />
         </Provider>,
       );
@@ -271,6 +275,7 @@ describe('CurrencyInput Component', () => {
             currentCurrency="usd"
             conversionRate={231.06}
             useNativeCurrencyAsPrimaryCurrency={false}
+            showFiat
           />
         </Provider>,
       );
@@ -324,6 +329,7 @@ describe('CurrencyInput Component', () => {
             currentCurrency="usd"
             conversionRate={231.06}
             useNativeCurrencyAsPrimaryCurrency={false}
+            showFiat
           />
         </Provider>,
       );
@@ -369,6 +375,7 @@ describe('CurrencyInput Component', () => {
             currentCurrency="usd"
             conversionRate={231.06}
             useNativeCurrencyAsPrimaryCurrency
+            showFiat
           />
         </Provider>,
       );

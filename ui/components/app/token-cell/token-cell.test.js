@@ -75,6 +75,12 @@ describe('Token Cell', () => {
     );
   });
 
+  it('renders token symbol', () => {
+    expect(wrapper.find('.asset-list-item__token-symbol').text()).toStrictEqual(
+      'TEST',
+    );
+  });
+
   it('renders converted fiat amount', () => {
     expect(
       wrapper.find('.asset-list-item__secondary-value').text(),

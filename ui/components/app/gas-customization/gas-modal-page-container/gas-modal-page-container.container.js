@@ -27,9 +27,9 @@ import {
   getCurrentEthBalance,
   getIsMainnet,
   getSendToken,
-  getPreferences,
   getTokenBalance,
   getSendMaxModeState,
+  getShouldShowFiat,
 } from '../../../../selectors';
 
 import {
@@ -102,9 +102,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const conversionRate = getConversionRate(state);
   const currentCurrency = getCurrentCurrency(state);
-  const { showFiatInTestnets } = getPreferences(state);
   const isMainnet = getIsMainnet(state);
-  const showFiat = Boolean((isMainnet || showFiatInTestnets) && conversionRate);
+  const showFiat = getShouldShowFiat(state);
 
   const newTotalFiat = showFiat
     ? sumHexWEIsToRenderableFiat(

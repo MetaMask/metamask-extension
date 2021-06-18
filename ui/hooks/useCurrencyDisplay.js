@@ -51,6 +51,7 @@ export function useCurrencyDisplay(
     denomination,
     currency,
     type,
+    isSwapped,
     ...opts
   },
 ) {
@@ -62,7 +63,8 @@ export function useCurrencyDisplay(
 
   const requiresConversion =
     (type === SECONDARY && useNativeCurrencyAsPrimaryCurrency) ||
-    (type === PRIMARY && !useNativeCurrencyAsPrimaryCurrency);
+    (type === PRIMARY && !useNativeCurrencyAsPrimaryCurrency) ||
+    (type === SECONDARY && !useNativeCurrencyAsPrimaryCurrency && isSwapped);
 
   const value = useMemo(() => {
     if (displayValue) {

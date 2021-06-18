@@ -19,6 +19,7 @@ export default function CurrencyDisplay({
   currency,
   suffix,
   type,
+  isSwapped,
 }) {
   const [title, parts] = useCurrencyDisplay(value, {
     displayValue,
@@ -29,6 +30,7 @@ export default function CurrencyDisplay({
     currency,
     suffix,
     type,
+    isSwapped,
   });
   return (
     <>
@@ -70,4 +72,5 @@ CurrencyDisplay.propTypes = {
   'suffix': PropTypes.string,
   'value': PropTypes.string,
   'type': PropTypes.string,
+  'isSwapped': PropTypes.bool,
 };
