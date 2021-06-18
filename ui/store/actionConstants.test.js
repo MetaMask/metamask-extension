@@ -69,6 +69,7 @@ describe('Redux actionConstants', () => {
 
       const action = {
         type: actionConstants.SHOW_ACCOUNT_DETAIL,
+        value: 'bar',
       };
       freeze(action);
 
