@@ -46,7 +46,7 @@ export default function TokenList({ onTokenClick }) {
   return (
     <div>
       {tokensWithBalances.map((tokenData, index) => {
-        const { isERC721 } = tokens.find(
+        const additionalTokenData = tokens.find(
           (token) => token.address === tokenData.address,
         );
         tokenData.image = assetImages[tokenData.address];
@@ -54,7 +54,7 @@ export default function TokenList({ onTokenClick }) {
           <TokenCell
             key={index}
             {...tokenData}
-            isERC721={isERC721}
+            isERC721={additionalTokenData?.isERC721}
             onClick={onTokenClick}
           />
         );
