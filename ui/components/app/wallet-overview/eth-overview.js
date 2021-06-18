@@ -76,7 +76,8 @@ const EthOverview = ({ className }) => {
   });
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
-  const treatSecondaryCurrencyAsPrimary = !conversionRate && !useNativeCurrencyAsPrimaryCurrency;
+  const treatSecondaryCurrencyAsPrimary =
+    !conversionRate && !useNativeCurrencyAsPrimaryCurrency;
 
   return (
     <WalletOverview
@@ -102,7 +103,7 @@ const EthOverview = ({ className }) => {
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
             </div>
-            {showFiat && (
+            {showFiat && conversionRate && (
               <UserPreferencedCurrencyDisplay
                 className={classnames({
                   'eth-overview__cached-secondary-balance': balanceIsCached,
@@ -110,7 +111,7 @@ const EthOverview = ({ className }) => {
                 })}
                 data-testid="eth-overview__secondary-currency"
                 value={balance}
-                type={treatSecondaryCurrencyAsPrimary ? PRIMARY : SECONDARY}
+                type={SECONDARY}
                 ethNumberOfDecimals={4}
                 hideTitle
               />
