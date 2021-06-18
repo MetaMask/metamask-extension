@@ -76,7 +76,7 @@ const EthOverview = ({ className }) => {
   });
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
-  const swapPrimary = !conversionRate && !useNativeCurrencyAsPrimaryCurrency;
+  const treatSecondaryCurrencyAsPrimary = !conversionRate && !useNativeCurrencyAsPrimaryCurrency;
 
   return (
     <WalletOverview
@@ -94,7 +94,7 @@ const EthOverview = ({ className }) => {
                 })}
                 data-testid="eth-overview__primary-currency"
                 value={balance}
-                type={swapPrimary ? SECONDARY : PRIMARY}
+                type={treatSecondaryCurrencyAsPrimary ? SECONDARY : PRIMARY}
                 ethNumberOfDecimals={4}
                 hideTitle
               />
@@ -110,7 +110,7 @@ const EthOverview = ({ className }) => {
                 })}
                 data-testid="eth-overview__secondary-currency"
                 value={balance}
-                type={swapPrimary ? PRIMARY : SECONDARY}
+                type={treatSecondaryCurrencyAsPrimary ? PRIMARY : SECONDARY}
                 ethNumberOfDecimals={4}
                 hideTitle
               />
