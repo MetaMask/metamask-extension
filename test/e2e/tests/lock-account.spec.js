@@ -37,7 +37,7 @@ describe('Lock and unlock', function () {
         const walletBalance = await driver.findElement(
           '[data-testid="wallet-balance"] .list-item__heading',
         );
-        assert.match(await walletBalance.getText(), /25\sETH/);
+        assert.equal(/^25\s*ETH$/u.test(await walletBalance.getText()), true);
       },
     );
   });
