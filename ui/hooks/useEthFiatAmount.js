@@ -23,9 +23,7 @@ export function useEthFiatAmount(
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
   const userPrefersShownFiat = useSelector(getShouldShowFiat);
-  const showFiat = Boolean(
-    (overrides.showFiat ?? userPrefersShownFiat) && conversionRate,
-  );
+  const showFiat = Boolean(overrides.showFiat ?? userPrefersShownFiat);
   const formattedFiat = useMemo(
     () =>
       showFiat

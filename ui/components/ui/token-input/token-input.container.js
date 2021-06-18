@@ -1,29 +1,17 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import {
-  getIsMainnet,
-  getTokenExchangeRates,
-  getPreferences,
-} from '../../../selectors';
-import { getConversionRate } from '../../../ducks/metamask/metamask';
+import { getTokenExchangeRates, getShouldShowFiat } from '../../../selectors';
 import TokenInput from './token-input.component';
 
 const mapStateToProps = (state) => {
   const {
     metamask: { currentCurrency },
   } = state;
-  const {
-    showFiatInTestnets,
-    useNativeCurrencyAsPrimaryCurrency,
-  } = getPreferences(state);
-  const isMainnet = getIsMainnet(state);
-  const conversionRate = getConversionRate(state);
-  const showFiat = !useNativeCurrencyAsPrimaryCurrency && showFiatInTestnets;
+  const showFiat = getShouldShowFiat(state);
 
   return {
     currentCurrency,
     tokenExchangeRates: getTokenExchangeRates(state),
-    hideConversion: (!isMainnet && !showFiatInTestnets) || !conversionRate,
     showFiat,
   };
 };

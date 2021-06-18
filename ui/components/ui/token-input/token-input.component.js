@@ -25,7 +25,6 @@ export default class TokenInput extends PureComponent {
     onChange: PropTypes.func,
     value: PropTypes.string,
     showFiat: PropTypes.bool,
-    hideConversion: PropTypes.bool,
     token: PropTypes.shape({
       address: PropTypes.string.isRequired,
       decimals: PropTypes.number,
@@ -90,25 +89,11 @@ export default class TokenInput extends PureComponent {
   };
 
   renderConversionComponent() {
-    const {
-      tokenExchangeRates,
-      showFiat,
-      currentCurrency,
-      hideConversion,
-      token,
-    } = this.props;
+    const { tokenExchangeRates, showFiat, currentCurrency, token } = this.props;
     const { decimalValue } = this.state;
 
     const tokenExchangeRate = tokenExchangeRates?.[token.address] || 0;
     let currency, numberOfDecimals, type;
-
-    if (hideConversion) {
-      return (
-        <div className="currency-input__conversion-component">
-          {this.context.t('noConversionRateAvailable')}
-        </div>
-      );
-    }
 
     if (showFiat) {
       // Display Fiat

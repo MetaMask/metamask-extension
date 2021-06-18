@@ -103,7 +103,7 @@ const EthOverview = ({ className }) => {
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
             </div>
-            {showFiat && conversionRate && (
+            {showFiat && (
               <UserPreferencedCurrencyDisplay
                 className={classnames({
                   'eth-overview__cached-secondary-balance': balanceIsCached,

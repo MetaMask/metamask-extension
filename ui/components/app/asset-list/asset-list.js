@@ -14,10 +14,7 @@ import {
   getShouldShowFiat,
   getNativeCurrencyImage,
 } from '../../../selectors';
-import {
-  getConversionRate,
-  getNativeCurrency,
-} from '../../../ducks/metamask/metamask';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 
 const AssetList = ({ onClickAsset }) => {
@@ -25,9 +22,8 @@ const AssetList = ({ onClickAsset }) => {
   const selectedAccountBalance = useSelector(
     (state) => getCurrentAccountWithSendEtherInfo(state).balance,
   );
-  const conversionRate = useSelector(getConversionRate);
   const nativeCurrency = useSelector(getNativeCurrency);
-  const showFiat = useSelector(getShouldShowFiat);
+  const showSecondary = useSelector(getShouldShowFiat);
   const selectTokenEvent = useMetricEvent({
     eventOpts: {
       category: 'Navigation',
@@ -72,37 +68,28 @@ const AssetList = ({ onClickAsset }) => {
 
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
 
-  // Show the secondary currency if the settings indicate to do so
-  // AND the primary currency has value (if this is false we want to show the secondary as the primary)
-  // AND we have a valid conversionRate (if this is false we don't want to show an invalid conversion)
-  const showSecondaryCurrency =
-    showFiat &&
-    Boolean(primaryCurrencyProperties?.value) &&
-    Boolean(conversionRate);
+  let primary, primarySymbol, secondary, secondarySymbol;
+  if (primaryCurrencyProperties?.value) {
+    primary = primaryCurrencyProperties.value;
+    primarySymbol = primaryCurrencyProperties?.suffix;
+    secondary = secondaryCurrencyProperties?.value;
+    secondarySymbol = secondaryCurrencyProperties?.suffix;
+  } else {
+    primary = secondaryCurrencyProperties?.value;
+    primarySymbol = secondaryCurrencyProperties?.suffix;
+    secondary = primaryCurrencyProperties?.value;
+    secondarySymbol = primaryCurrencyProperties?.suffix;
+  }
 
   return (
     <>
       <AssetListItem
         onClick={() => onClickAsset(nativeCurrency)}
         data-testid="wallet-balance"
-        primary={
-          primaryCurrencyProperties?.value
-            ? primaryCurrencyProperties?.value
-            : secondaryCurrencyProperties?.value
-        }
-        primarySymbol={
-          primaryCurrencyProperties?.value
-            ? primaryCurrencyProperties?.suffix
-            : secondaryCurrencyProperties?.suffix
-        }
-        secondary={
-          showSecondaryCurrency ? secondaryCurrencyProperties?.value : undefined
-        }
-        secondarySymbol={
-          showSecondaryCurrency
-            ? secondaryCurrencyProperties?.suffix
-            : undefined
-        }
+        primary={primary}
+        primarySymbol={primarySymbol}
+        secondary={showSecondary ? secondary : undefined}
+        secondarySymbol={showSecondary ? secondarySymbol : undefined}
         tokenImage={primaryTokenImage}
         identiconBorder
       />

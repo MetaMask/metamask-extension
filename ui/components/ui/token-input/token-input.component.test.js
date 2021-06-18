@@ -171,7 +171,7 @@ describe('TokenInput Component', () => {
       );
     });
 
-    it('should render properly with a token value for fiat, but hideConversion is true', () => {
+    it('should render properly with a token value for fiat, but no conversion rate when token exchange rate is not available', () => {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
@@ -192,9 +192,8 @@ describe('TokenInput Component', () => {
               decimals: 4,
               symbol: 'ABC',
             }}
-            tokenExchangeRates={{ '0x1': 2 }}
+            tokenExchangeRates={{ '0x1': null }}
             showFiat
-            hideConversion
           />
         </Provider>,
         {
@@ -299,7 +298,6 @@ describe('TokenInput Component', () => {
             }}
             tokenExchangeRates={{ '0x1': 2 }}
             showFiat
-            useNativeCurrencyAsPrimaryCurrency
           />
         </Provider>,
       );
