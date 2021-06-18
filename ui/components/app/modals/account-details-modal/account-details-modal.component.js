@@ -48,6 +48,8 @@ export default class AccountDetailsModal extends Component {
         <EditableLabel
           className="account-details-modal__name"
           defaultValue={name}
+          chainId={chainId}
+          address={address}
           onSubmit={(label) => setAccountLabel(address, label)}
         />
 
