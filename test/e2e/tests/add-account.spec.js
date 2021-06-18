@@ -31,7 +31,10 @@ describe('Add account', function () {
 
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
-        const accountName = await driver.findElement('.selected-account__name');
+        const accountName = await driver.waitForSelector({
+          css: '.selected-account__name',
+          text: '2nd',
+        });
         assert.equal(await accountName.getText(), '2nd account');
       },
     );
