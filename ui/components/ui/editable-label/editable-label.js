@@ -1,7 +1,6 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-
 import ENS from '../../../../app/scripts/controllers/ens/ens';
 import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../shared/constants/network';
 
