@@ -1481,6 +1481,9 @@
   "recipientAddressPlaceholder": {
     "message": "Search, public address (0x), or ENS"
   },
+  "recommendedGasLabel": {
+    "message": "Recommended"
+  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Start here"
   },

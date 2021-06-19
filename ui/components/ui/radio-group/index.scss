@@ -1,0 +1,49 @@
+.radio-group {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 100px;
+  width: 300px;
+
+  label {
+    cursor: pointer;
+  }
+
+  &__column-recommended {
+    height: 20px;
+  }
+
+  &__column-line {
+    width: 1px;
+    height: 5px;
+    background-color: $ui-2;
+    margin: 0 auto;
+  }
+
+  &__column-horizontal-line {
+    height: 1px;
+    background-color: $ui-2;
+    width: 100%;
+  }
+
+  &__column:first-child &__column-horizontal-line {
+    width: 50px;
+    margin-left: 50px;
+  }
+
+  &__column:last-child &__column-horizontal-line {
+    width: 51px;
+  }
+
+  &__column-radio {
+    margin-inline-end: 1px;
+  }
+
+  &__column-radio,
+  &__column-label {
+    text-align: center;
+  }
+
+  &__column-label {
+    padding-top: 6px;
+  }
+}
