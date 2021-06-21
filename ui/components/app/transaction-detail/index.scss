@@ -1,0 +1,11 @@
+.transaction-detail {
+  .transaction-detail-item {
+    padding: 20px 0;
+    border-bottom: 1px solid $ui-3;
+
+    &:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+  }
+}
