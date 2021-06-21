@@ -151,8 +151,32 @@ export default class TransactionController extends EventEmitter {
   @emits ${txMeta.id}:unapproved
   */
   addTransaction(txMeta) {
+    const {
+      type,
+      status,
+      chainId,
+      origin: referrer,
+      txParams: { gasPrice },
+      metamaskNetworkId: network,
+    } = txMeta;
+    const source = referrer === 'metamask' ? 'user' : 'dapp';
+
     this.txStateManager.addTransaction(txMeta);
     this.emit(`${txMeta.id}:unapproved`, txMeta);
+
+    this._trackMetaMetricsEvent({
+      event: 'Transaction Added',
+      category: 'Transactions',
+      sensitiveProperties: {
+        type,
+        status,
+        gasPrice,
+        referrer,
+        source,
+        network,
+        chain_id: chainId,
+      },
+    });
   }
 
   /**
