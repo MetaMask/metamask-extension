@@ -187,6 +187,7 @@ export function getTokenFiatAmount(
   // is currently unknown, the fiat amount cannot be calculated so it is not
   // shown to the user
   if (
+    !conversionRate ||
     conversionRate <= 0 ||
     !contractExchangeRate ||
     tokenAmount === undefined

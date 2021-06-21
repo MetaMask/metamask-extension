@@ -116,14 +116,14 @@ export function decEthToConvertedCurrency(
   convertedCurrency,
   conversionRate,
 ) {
-  return conversionUtil(ethTotal, {
+  return conversionRate ? conversionUtil(ethTotal, {
     fromNumericBase: 'dec',
     toNumericBase: 'dec',
     fromCurrency: 'ETH',
     toCurrency: convertedCurrency,
     numberOfDecimals: 2,
     conversionRate,
-  });
+  }) : null;
 }
 
 export function decGWEIToHexWEI(decGWEI) {

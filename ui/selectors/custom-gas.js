@@ -14,9 +14,9 @@ import { GAS_LIMITS } from '../../shared/constants/gas';
 import {
   getCurrentCurrency,
   getIsMainnet,
-  getPreferences,
   getGasPrice,
 } from '.';
+import { getShouldShowFiat } from './selectors';
 
 const NUMBER_OF_DECIMALS_SM_BTNS = 5;
 
@@ -265,11 +265,8 @@ export function getRenderableBasicEstimateData(state, gasLimit) {
   if (getBasicGasEstimateLoadingStatus(state)) {
     return [];
   }
-
-  const { showFiatInTestnets } = getPreferences(state);
-  const isMainnet = getIsMainnet(state);
   const { conversionRate } = state.metamask;
-  const showFiat = Boolean((isMainnet || showFiatInTestnets) && conversionRate);
+  const showFiat = getShouldShowFiat(state);
   const currentCurrency = getCurrentCurrency(state);
 
   const {
@@ -292,10 +289,8 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
     return [];
   }
 
-  const { showFiatInTestnets } = getPreferences(state);
-  const isMainnet = getIsMainnet(state);
+  const showFiat = getShouldShowFiat(state);
   const { conversionRate } = state.metamask;
-  const showFiat = Boolean((isMainnet || showFiatInTestnets) && conversionRate);
   const gasLimit =
     state.send.gasLimit || getCustomGasLimit(state) || GAS_LIMITS.SIMPLE;
   const currentCurrency = getCurrentCurrency(state);
