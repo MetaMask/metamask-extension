@@ -5,6 +5,8 @@ const { promises: fs, constants: fsConstants } = require('fs');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const ttest = require('ttest');
+const { retry } = require('../../development/lib/retry');
+const { exitWithError } = require('../../development/lib/exit-with-error');
 const { withFixtures } = require('./helpers');
 const { PAGES } = require('./webdriver/driver');
 
@@ -54,12 +56,16 @@ const marginOfErrorResult = calculateResult((array) =>
   array.length === 1 ? 0 : calculateMarginOfError(array),
 );
 
-async function profilePageLoad(pages, numSamples) {
+async function profilePageLoad(pages, numSamples, retries) {
   const results = {};
   for (const pageName of pages) {
     const runResults = [];
     for (let i = 0; i < numSamples; i += 1) {
-      runResults.push(await measurePage(pageName));
+      let result;
+      await retry(retries, async () => {
+        result = await measurePage(pageName);
+      });
+      runResults.push(result);
     }
 
     if (runResults.some((result) => result.navigation.lenth > 1)) {
@@ -153,10 +159,16 @@ async function main() {
             'Output filename. Output printed to STDOUT of this is omitted.',
           type: 'string',
           normalize: true,
+        })
+        .option('retries', {
+          default: 0,
+          description:
+            'Set how many times each benchmark sample should be retried upon failure.',
+          type: 'number',
         }),
   );
 
-  const { pages, samples, out } = argv;
+  const { pages, samples, out, retries } = argv;
 
   let outputDirectory;
   let existingParentDirectory;
@@ -170,7 +182,7 @@ async function main() {
     }
   }
 
-  const results = await profilePageLoad(pages, samples);
+  const results = await profilePageLoad(pages, samples, retries);
 
   if (out) {
     if (outputDirectory !== existingParentDirectory) {
@@ -182,7 +194,6 @@ async function main() {
   }
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
+main().catch((error) => {
+  exitWithError(error);
 });

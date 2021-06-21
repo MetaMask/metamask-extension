@@ -1,5 +1,3 @@
-const { exitWithError } = require('./exit-with-error');
-
 /**
  * Run the given function, retrying it upon failure until reaching the
  * specified number of retries.
@@ -19,7 +17,7 @@ async function retry(retries, functionToRetry) {
       attempts += 1;
     }
   }
-  exitWithError('Retry limit reached');
+  throw new Error('Retry limit reached');
 }
 
 module.exports = { retry };
