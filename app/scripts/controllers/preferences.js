@@ -419,6 +419,14 @@ export default class PreferencesController {
     return Promise.resolve(tokens);
   }
 
+  /**
+   * Adds isERC721 field to token object
+   * (Called when a user attempts to add tokens that were previously added which do not yet had isERC721 field)
+   *
+   * @param {string} tokenAddress - The contract address of the token requiring the isERC721 field added.
+   * @returns {Promise<object>} The new token object with the added isERC721 field.
+   *
+   */
   async updateTokenType(tokenAddress) {
     const { tokens } = this.store.getState();
     const tokenIndex = tokens.findIndex((token) => {

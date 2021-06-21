@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
+import contractMaps from '@metamask/contract-metadata';
 import {
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
@@ -97,6 +98,45 @@ describe('preferences controller', function () {
           address: '0x7e57e277',
         },
       });
+    });
+  });
+
+  describe('updateTokenType', function () {
+    it('should add isERC721 = true to token object in state when token is collectible and in our contract-metadata repo', async function () {
+      const contractAddresses = Object.keys(contractMaps);
+      const erc721ContractAddresses = contractAddresses.filter(
+        (contractAddress) => contractMaps[contractAddress].erc721 === true,
+      );
+      const address = erc721ContractAddresses[0];
+      const { symbol, decimals } = contractMaps[address];
+      preferencesController.store.updateState({
+        tokens: [{ address, symbol, decimals }],
+      });
+      const result = await preferencesController.updateTokenType(address);
+      assert.equal(result.isERC721, true);
+    });
+
+    it('should add isERC721 = true to token object in state when token is collectible and not in our contract-metadata repo', async function () {
+      preferencesController.store.updateState({
+        tokens: [
+          {
+            address: '0xda5584cc586d07c7141aa427224a4bd58e64af7d',
+            symbol: 'TESTNFT',
+            decimals: '0',
+          },
+        ],
+      });
+      const sandbox = sinon.createSandbox();
+      sandbox
+        .stub(preferencesController, '_detectIsERC721')
+        .callsFake(() => true);
+      // sandbox.stub(ethers, 'Contract');
+      // sinon.stub(ethers.Contract.prototype, 'supportsInterface').returns(true);
+
+      const result = await preferencesController.updateTokenType(
+        '0xda5584cc586d07c7141aa427224a4bd58e64af7d',
+      );
+      assert.equal(result.isERC721, true);
     });
   });
 
