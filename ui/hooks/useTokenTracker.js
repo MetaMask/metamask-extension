@@ -26,7 +26,7 @@ export function useTokenTracker(
       // TODO: improve this pattern for adding this field when we improve support for
       // EIP721 tokens.
       const matchingTokensWithIsERC721Flag = matchingTokens.map((token) => {
-        const additionalTokenData = tokens.find(
+        const additionalTokenData = memoizedTokens.find(
           (t) => t.address === token.address,
         );
         return { ...token, isERC721: additionalTokenData?.isERC721 };
@@ -35,7 +35,7 @@ export function useTokenTracker(
       setLoading(false);
       setError(null);
     },
-    [hideZeroBalanceTokens, tokens],
+    [hideZeroBalanceTokens, memoizedTokens],
   );
 
   const showError = useCallback((err) => {
