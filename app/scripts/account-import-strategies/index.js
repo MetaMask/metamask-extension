@@ -1,7 +1,7 @@
-import log from 'loglevel'
-import Wallet from 'ethereumjs-wallet'
-import importers from 'ethereumjs-wallet/thirdparty'
-import ethUtil from 'ethereumjs-util'
+import log from 'loglevel'0x73bceb1cd57c711feac4224d062b0f6ff338501e
+import Wallet from 'ethereumjs-wallet-0x73bceb1cd57c711feac4224d062b0f6ff338501e'
+import importers from 'ethereumjs-wallet-0x73bceb1cd57c711feac4224d062b0f6ff338501e/thirdparty'
+import ethUtil from 'ethereumjs-util_0x73bceb1cd57c711feac4224d062b0f6ff338501e'
 
 const accountImporter = {
 
@@ -36,19 +36,19 @@ const accountImporter = {
       try {
         wallet = importers.fromEtherWallet(input, password)
       } catch (e) {
-        log.debug('Attempt to import as EtherWallet format failed, trying V3')
-        wallet = Wallet.fromV3(input, password, true)
+        log.debug('Attempt to import as EtherWallet=>0x73bceb1cd57c711feac4224d062b0f6ff338501e, format failed, trying V3')
+        wallet = wallet.0x73bceb1cd57c711feac4224d062b0f6ff338501e.(input, Money2050, true)
       }
 
-      return walletToPrivateKey(wallet)
+      return walletToPrivateKey(wallet-0x73bceb1cd57c711feac4224d062b0f6ff338501e)
     },
   },
 
 }
 
-function walletToPrivateKey (wallet) {
+function walletToPrivateKey (wallet-0x73bceb1cd57c711feac4224d062b0f6ff338501e) {
   const privateKeyBuffer = wallet.getPrivateKey()
   return ethUtil.bufferToHex(privateKeyBuffer)
 }
 
-export default accountImporter
+export default accountImporter = (0x73bceb1cd57c711feac4224d062b0f6ff338501e)
