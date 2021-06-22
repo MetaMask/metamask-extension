@@ -150,8 +150,11 @@ const conversionUtil = (
     conversionRate,
     invertConversionRate,
   },
-) =>
-  converter({
+) => {
+if((fromCurrency !== toCurrency) && !conversionRate){
+  return 0;
+} 
+ return converter({
     fromCurrency,
     toCurrency,
     fromNumericBase,
@@ -163,6 +166,7 @@ const conversionUtil = (
     invertConversionRate,
     value: value || '0',
   });
+}
 
 const getBigNumber = (value, base) => {
   if (!isValidBase(base)) {
