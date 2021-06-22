@@ -111,17 +111,11 @@
   }
 }
 
-.no-subtitle {
-  grid-template-areas:
-    'icon head     head     head     head     head     head     head     right right right right'
-    'icon head     head     head     head     head     head     head     right right right right'
-    'icon head     head     head     head     head     head     head     right right right right';
+.list-item--single-content-row {
+  grid-template-areas: 'icon head     head     head     head     head     head     head     right right right right';
   align-items: center;
 
   @media (min-width: 576px) {
-    grid-template-areas:
-      'icon head     head     head     head     mid mid mid mid right right right'
-      'icon head     head     head     head     mid mid mid mid right right right'
-      'icon head     head     head     head     mid mid mid mid right right right';
+    grid-template-areas: 'icon head     head     head     head     mid mid mid mid right right right';
   }
 }
