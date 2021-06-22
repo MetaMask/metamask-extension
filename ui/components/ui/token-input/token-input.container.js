@@ -1,9 +1,8 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
-  getIsMainnet,
   getTokenExchangeRates,
-  getPreferences,
+  getShouldShowFiat,
 } from '../../../selectors';
 import TokenInput from './token-input.component';
 
@@ -11,13 +10,11 @@ const mapStateToProps = (state) => {
   const {
     metamask: { currentCurrency },
   } = state;
-  const { showFiatInTestnets } = getPreferences(state);
-  const isMainnet = getIsMainnet(state);
 
   return {
     currentCurrency,
     tokenExchangeRates: getTokenExchangeRates(state),
-    hideConversion: !isMainnet && !showFiatInTestnets,
+    hideConversion: !getShouldShowFiat(state),
   };
 };
 
