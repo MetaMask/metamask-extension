@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import contractMaps from '@metamask/contract-metadata';
+import abiERC721 from 'human-standard-collectible-abi';
 import {
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
@@ -117,26 +118,85 @@ describe('preferences controller', function () {
     });
 
     it('should add isERC721 = true to token object in state when token is collectible and not in our contract-metadata repo', async function () {
+      const tokenAddress = '0xda5584cc586d07c7141aa427224a4bd58e64af7d';
       preferencesController.store.updateState({
         tokens: [
           {
-            address: '0xda5584cc586d07c7141aa427224a4bd58e64af7d',
+            address: tokenAddress,
             symbol: 'TESTNFT',
             decimals: '0',
           },
         ],
       });
-      const sandbox = sinon.createSandbox();
-      sandbox
+      sinon
         .stub(preferencesController, '_detectIsERC721')
         .callsFake(() => true);
-      // sandbox.stub(ethers, 'Contract');
-      // sinon.stub(ethers.Contract.prototype, 'supportsInterface').returns(true);
 
-      const result = await preferencesController.updateTokenType(
-        '0xda5584cc586d07c7141aa427224a4bd58e64af7d',
+      const result = await preferencesController.updateTokenType(tokenAddress);
+      assert.equal(
+        preferencesController._detectIsERC721.getCall(0).args[0],
+        tokenAddress,
       );
       assert.equal(result.isERC721, true);
+    });
+  });
+
+  describe('_detectIsERC721', function () {
+    it('should return true when token is in our contract-metadata repo', async function () {
+      const tokenAddress = '0x06012c8cf97BEaD5deAe237070F9587f8E7A266d';
+
+      const result = await preferencesController._detectIsERC721(tokenAddress);
+      assert.equal(result, true);
+    });
+
+    it('should return true when the token is not in our contract-metadata repo but tokenContract.supportsInterface returns true', async function () {
+      const tokenAddress = '0xda5584cc586d07c7141aa427224a4bd58e64af7d';
+
+      const supportsInterfaceStub = sinon.stub().returns(Promise.resolve(true));
+      sinon
+        .stub(preferencesController, '_createEthersContract')
+        .callsFake(() => ({ supportsInterface: supportsInterfaceStub }));
+
+      const result = await preferencesController._detectIsERC721(tokenAddress);
+      assert.equal(
+        preferencesController._createEthersContract.getCall(0).args[0],
+        tokenAddress,
+      );
+      assert.deepEqual(
+        preferencesController._createEthersContract.getCall(0).args[1],
+        abiERC721,
+      );
+      assert.equal(
+        preferencesController._createEthersContract.getCall(0).args[2],
+        preferencesController.ethersProvider,
+      );
+      assert.equal(result, true);
+    });
+
+    it('should return false when the token is not in our contract-metadata repo and tokenContract.supportsInterface returns false', async function () {
+      const tokenAddress = '0xda5584cc586d07c7141aa427224a4bd58e64af7d';
+
+      const supportsInterfaceStub = sinon
+        .stub()
+        .returns(Promise.resolve(false));
+      sinon
+        .stub(preferencesController, '_createEthersContract')
+        .callsFake(() => ({ supportsInterface: supportsInterfaceStub }));
+
+      const result = await preferencesController._detectIsERC721(tokenAddress);
+      assert.equal(
+        preferencesController._createEthersContract.getCall(0).args[0],
+        tokenAddress,
+      );
+      assert.deepEqual(
+        preferencesController._createEthersContract.getCall(0).args[1],
+        abiERC721,
+      );
+      assert.equal(
+        preferencesController._createEthersContract.getCall(0).args[2],
+        preferencesController.ethersProvider,
+      );
+      assert.equal(result, false);
     });
   });
 

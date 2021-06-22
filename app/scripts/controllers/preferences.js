@@ -796,17 +796,28 @@ export default class PreferencesController {
     if (contractsMap[checksumAddress]?.erc721 === true) {
       return Promise.resolve(true);
     }
-    const tokenContract = await new ethers.Contract(
+    const tokenContract = await this._createEthersContract(
       tokenAddress,
       abiERC721,
       this.ethersProvider,
     );
+
     return await tokenContract
       .supportsInterface(ERC721METADATA_INTERFACE_ID)
       .catch((error) => {
+        console.log('error', error);
         log.debug(error);
         return false;
       });
+  }
+
+  async _createEthersContract(tokenAddress, abi, ethersProvider) {
+    const tokenContract = await new ethers.Contract(
+      tokenAddress,
+      abi,
+      ethersProvider,
+    );
+    return tokenContract;
   }
 
   /**
