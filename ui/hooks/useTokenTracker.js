@@ -23,11 +23,19 @@ export function useTokenTracker(
       const matchingTokens = hideZeroBalanceTokens
         ? tokenWithBalances.filter((token) => Number(token.balance) > 0)
         : tokenWithBalances;
-      setTokensWithBalances(matchingTokens);
+      // TODO: improve this pattern for adding this field when we improve support for
+      // EIP721 tokens.
+      const matchingTokensWithIsERC721Flag = matchingTokens.map((token) => {
+        const additionalTokenData = memoizedTokens.find(
+          (t) => t.address === token.address,
+        );
+        return { ...token, isERC721: additionalTokenData?.isERC721 };
+      });
+      setTokensWithBalances(matchingTokensWithIsERC721Flag);
       setLoading(false);
       setError(null);
     },
-    [hideZeroBalanceTokens],
+    [hideZeroBalanceTokens, memoizedTokens],
   );
 
   const showError = useCallback((err) => {
