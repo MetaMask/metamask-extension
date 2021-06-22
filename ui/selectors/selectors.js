@@ -24,7 +24,10 @@ import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/temp
 
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { DAY } from '../../shared/constants/time';
-import { getNativeCurrency } from '../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getConversionRate,
+} from '../ducks/metamask/metamask';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -379,8 +382,9 @@ export function getPreferences({ metamask }) {
 
 export function getShouldShowFiat(state) {
   const isMainNet = getIsMainnet(state);
+  const conversionRate = getConversionRate(state);
   const { showFiatInTestnets } = getPreferences(state);
-  return Boolean(isMainNet || showFiatInTestnets);
+  return Boolean((isMainNet || showFiatInTestnets) && conversionRate);
 }
 
 export function getShouldHideZeroBalanceTokens(state) {
