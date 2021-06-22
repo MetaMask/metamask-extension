@@ -6,9 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [9.6.1]
-### Fixed
-- [#11309](https://github.com/MetaMask/metamask-extension/pull/11309): Fixed signTypeData parameter validation issue
 ## [9.7.0]
 ### Added
 - [#11021](https://github.com/MetaMask/metamask-extension/pull/11021): Add periodic reminder modal for backing up recovery phrase
@@ -24,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - [#11017](https://github.com/MetaMask/metamask-extension/pull/11017): Fixes custom RPC block explorer links
 - [#11257](https://github.com/MetaMask/metamask-extension/pull/11257): Fixes incorrect network currency label in encryption public key requests
+
+## [9.6.1]
+### Fixed
+- [#11309](https://github.com/MetaMask/metamask-extension/pull/11309): Fixed signTypeData parameter validation issue
 
 ## [9.6.0]
 ### Added
@@ -106,12 +107,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [9.5.0] - 2021-04-28
 ### Added
-- [#10583](https://github.com/MetaMask/metamask-extension/pull/10583): Adding popup display to show new MetaMask notifications
-- [#10938](https://github.com/MetaMask/metamask-extension/pull/10938): Add menu with "View on Etherscan" and "Account details" links to ETH asset page
-- [#10932](https://github.com/MetaMask/metamask-extension/pull/10932): Add view account details menu item to token page menu
-- [#10895](https://github.com/MetaMask/metamask-extension/pull/10895): Adding new links to contact MetaMask support
-- [#10595](https://github.com/MetaMask/metamask-extension/pull/10595): Adding option to set Custom Nonce to Confirm Approve Page
-- [#10616](https://github.com/MetaMask/metamask-extension/pull/10616): add trezor HD path for ledger wallets
 - Adding popup display to show new MetaMask notifications ([#10583](https://github.com/MetaMask/metamask-extension/pull/10583))
 - Add menu with "View on Etherscan" and "Account details" links to ETH asset page ([#10938](https://github.com/MetaMask/metamask-extension/pull/10938))
 - Add view account details menu item to token page menu ([#10932](https://github.com/MetaMask/metamask-extension/pull/10932))
@@ -2327,14 +2322,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.6.1...HEAD
-[9.6.1]: https://github.com/MetaMask/metamask-extension/compare/v9.6.0...v9.6.1
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.7.0...HEAD
-[9.7.0]: https://github.com/MetaMask/metamask-extension/compare/v9.6.0...v9.7.0
+[9.7.0]: https://github.com/MetaMask/metamask-extension/compare/v9.6.1...v9.7.0
+[9.6.1]: https://github.com/MetaMask/metamask-extension/compare/v9.6.0...v9.6.1
 [9.6.0]: https://github.com/MetaMask/metamask-extension/compare/v9.5.9...v9.6.0
 [9.5.9]: https://github.com/MetaMask/metamask-extension/compare/v9.5.8...v9.5.9
 [9.5.8]: https://github.com/MetaMask/metamask-extension/compare/v9.5.7...v9.5.8
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.5.7...HEAD
 [9.5.7]: https://github.com/MetaMask/metamask-extension/compare/v9.5.6...v9.5.7
 [9.5.6]: https://github.com/MetaMask/metamask-extension/compare/v9.5.5...v9.5.6
 [9.5.5]: https://github.com/MetaMask/metamask-extension/compare/v9.5.4...v9.5.5
