@@ -91,6 +91,7 @@ const TokenOverview = ({ className, token }) => {
             Icon={SendIcon}
             label={t('send')}
             data-testid="eth-overview-send"
+            disabled={token.isERC721}
           />
           <IconButton
             className="token-overview__button"
@@ -145,6 +146,7 @@ TokenOverview.propTypes = {
     address: PropTypes.string.isRequired,
     decimals: PropTypes.number,
     symbol: PropTypes.string,
+    isERC721: PropTypes.bool,
   }).isRequired,
 };
 

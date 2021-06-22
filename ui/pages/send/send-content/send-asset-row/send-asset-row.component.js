@@ -22,6 +22,9 @@ export default class SendAssetRow extends Component {
     setSendToken: PropTypes.func.isRequired,
     nativeCurrency: PropTypes.string,
     nativeCurrencyImage: PropTypes.string,
+    setUnsendableAssetError: PropTypes.func.isRequired,
+    updateSendErrors: PropTypes.func.isRequired,
+    updateTokenType: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -31,13 +34,41 @@ export default class SendAssetRow extends Component {
 
   state = {
     isShowingDropdown: false,
+    sendableTokens: [],
   };
+
+  async componentDidMount() {
+    const sendableTokens = this.props.tokens.filter((token) => !token.isERC721);
+    this.setState({ sendableTokens });
+  }
 
   openDropdown = () => this.setState({ isShowingDropdown: true });
 
   closeDropdown = () => this.setState({ isShowingDropdown: false });
 
-  selectToken = (token) => {
+  clearUnsendableAssetError = () => {
+    this.props.setUnsendableAssetError(false);
+    this.props.updateSendErrors({
+      unsendableAssetError: null,
+      gasLoadingError: null,
+    });
+  };
+
+  selectToken = async (token) => {
+    if (token && token.isERC721 === undefined) {
+      const updatedToken = await this.props.updateTokenType(token.address);
+      if (updatedToken.isERC721) {
+        this.props.setUnsendableAssetError(true);
+        this.props.updateSendErrors({
+          unsendableAssetError: 'unsendableAssetError',
+        });
+      }
+    }
+
+    if ((token && token.isERC721 === false) || token === undefined) {
+      this.clearUnsendableAssetError();
+    }
+
     this.setState(
       {
         isShowingDropdown: false,
@@ -65,7 +96,9 @@ export default class SendAssetRow extends Component {
       <SendRowWrapper label={`${t('asset')}:`}>
         <div className="send-v2__asset-dropdown">
           {this.renderSendToken()}
-          {this.props.tokens.length > 0 ? this.renderAssetDropdown() : null}
+          {this.state.sendableTokens.length > 0
+            ? this.renderAssetDropdown()
+            : null}
         </div>
       </SendRowWrapper>
     );
@@ -96,7 +129,9 @@ export default class SendAssetRow extends Component {
           />
           <div className="send-v2__asset-dropdown__list">
             {this.renderNativeCurrency(true)}
-            {this.props.tokens.map((token) => this.renderAsset(token, true))}
+            {this.state.sendableTokens.map((token) =>
+              this.renderAsset(token, true),
+            )}
           </div>
         </div>
       )
@@ -119,7 +154,7 @@ export default class SendAssetRow extends Component {
     return (
       <div
         className={
-          this.props.tokens.length > 0
+          this.state.sendableTokens.length > 0
             ? 'send-v2__asset-dropdown__asset'
             : 'send-v2__asset-dropdown__single-asset'
         }
@@ -146,7 +181,7 @@ export default class SendAssetRow extends Component {
             />
           </div>
         </div>
-        {!insideDropdown && this.props.tokens.length > 0 && (
+        {!insideDropdown && this.state.sendableTokens.length > 0 && (
           <i className="fa fa-caret-down fa-lg send-v2__asset-dropdown__caret" />
         )}
       </div>

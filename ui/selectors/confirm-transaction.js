@@ -218,8 +218,12 @@ export const transactionFeeSelector = function (state, txData) {
   const conversionRate = conversionRateSelector(state);
   const nativeCurrency = getNativeCurrency(state);
 
-  const {
-    txParams: { value = '0x0', gas: gasLimit = '0x0', gasPrice = '0x0' } = {},
+  const { txParams: { value = '0x0', gas: gasLimit = '0x0' } = {} } = txData;
+
+  // if the gas price from our infura endpoint is null or undefined
+  // use the metaswap average price estimation as a fallback
+  let {
+    txParams: { gasPrice },
   } = txData;
 
   const fiatTransactionAmount = getValueFromWeiHex({
