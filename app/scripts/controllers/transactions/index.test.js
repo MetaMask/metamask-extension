@@ -15,7 +15,7 @@ import {
 } from '../../../../shared/constants/transaction';
 import { SECOND } from '../../../../shared/constants/time';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
-import TransactionController from '.';
+import TransactionController, { TRANSACTION_EVENTS } from '.';
 
 const noop = () => true;
 const currentNetworkId = '42';
@@ -419,17 +419,17 @@ describe('Transaction Controller', function () {
   });
 
   describe('#addTransaction', function () {
-    let trackMetaMetricsEventSpy;
+    let trackTransactionMetricsEventSpy;
 
     beforeEach(function () {
-      trackMetaMetricsEventSpy = sinon.spy(
+      trackTransactionMetricsEventSpy = sinon.spy(
         txController,
-        '_trackMetaMetricsEvent',
+        '_trackTransactionMetricsEvent',
       );
     });
 
     afterEach(function () {
-      trackMetaMetricsEventSpy.restore();
+      trackTransactionMetricsEventSpy.restore();
     });
 
     it('should emit updates', function (done) {
@@ -470,7 +470,7 @@ describe('Transaction Controller', function () {
       txController.addTransaction(txMeta);
     });
 
-    it('should call _trackMetaMetricsEvent with the correct payload (one)', function () {
+    it('should call _trackTransactionMetricsEvent with the correct params', function () {
       const txMeta = {
         id: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
@@ -484,65 +484,20 @@ describe('Transaction Controller', function () {
         type: 'sentEther',
         origin: 'metamask',
         chainId: currentChainId,
+        time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
       };
-      const expectedPayload = {
-        event: 'Transaction Added',
-        category: 'Transactions',
-        sensitiveProperties: {
-          chain_id: '0x2a',
-          gasPrice: '0x77359400',
-          network: '42',
-          referrer: 'metamask',
-          source: 'user',
-          status: 'unapproved',
-          type: 'sentEther',
-        },
-      };
 
       txController.addTransaction(txMeta);
-      assert.equal(trackMetaMetricsEventSpy.callCount, 1);
+
+      assert.equal(trackTransactionMetricsEventSpy.callCount, 1);
       assert.deepEqual(
-        trackMetaMetricsEventSpy.getCall(0).args[0],
-        expectedPayload,
+        trackTransactionMetricsEventSpy.getCall(0).args[0],
+        txMeta,
       );
-    });
-
-    it('should call _trackMetaMetricsEvent with the correct payload (two)', function () {
-      const txMeta = {
-        id: 1,
-        status: TRANSACTION_STATUSES.UNAPPROVED,
-        txParams: {
-          from: fromAccount.address,
-          to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
-          gasPrice: '0x77359400',
-          gas: '0x7b0d',
-          nonce: '0x4b',
-        },
-        type: 'sentEther',
-        origin: 'other',
-        chainId: '0x3',
-        metamaskNetworkId: '3',
-      };
-      const expectedPayload = {
-        event: 'Transaction Added',
-        category: 'Transactions',
-        sensitiveProperties: {
-          chain_id: '0x3',
-          gasPrice: '0x77359400',
-          network: '3',
-          referrer: 'other',
-          source: 'dapp',
-          status: 'unapproved',
-          type: 'sentEther',
-        },
-      };
-
-      txController.addTransaction(txMeta);
-      assert.equal(trackMetaMetricsEventSpy.callCount, 1);
-      assert.deepEqual(
-        trackMetaMetricsEventSpy.getCall(0).args[0],
-        expectedPayload,
+      assert.equal(
+        trackTransactionMetricsEventSpy.getCall(0).args[1],
+        TRANSACTION_EVENTS.ADDED,
       );
     });
   });
@@ -817,7 +772,8 @@ describe('Transaction Controller', function () {
   });
 
   describe('#publishTransaction', function () {
-    let hash, txMeta;
+    let hash, txMeta, trackTransactionMetricsEventSpy;
+
     beforeEach(function () {
       hash =
         '0x2a5523c6fa98b47b7d9b6c8320179785150b42a16bcff36b398c5062b65657e8';
@@ -825,12 +781,21 @@ describe('Transaction Controller', function () {
         id: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
         txParams: {
+          gas: '0x7b0d',
           to: VALID_ADDRESS,
           from: VALID_ADDRESS_TWO,
         },
         metamaskNetworkId: currentNetworkId,
       };
       providerResultStub.eth_sendRawTransaction = hash;
+      trackTransactionMetricsEventSpy = sinon.spy(
+        txController,
+        '_trackTransactionMetricsEvent',
+      );
+    });
+
+    afterEach(function () {
+      trackTransactionMetricsEventSpy.restore();
     });
 
     it('should publish a tx, updates the rawTx when provided a one', async function () {
@@ -857,6 +822,25 @@ describe('Transaction Controller', function () {
         '0x2cc5a25744486f7383edebbf32003e5a66e18135799593d6b5cdd2bb43674f09',
       );
       assert.equal(publishedTx.status, TRANSACTION_STATUSES.SUBMITTED);
+    });
+
+    it('should call _trackTransactionMetricsEvent with the correct params', async function () {
+      const rawTx =
+        '0x477b2e6553c917af0db0388ae3da62965ff1a184558f61b749d1266b2e6d024c';
+      txController.txStateManager.addTransaction(txMeta);
+      await txController.publishTransaction(txMeta.id, rawTx);
+      assert.equal(trackTransactionMetricsEventSpy.callCount, 1);
+      assert.deepEqual(
+        trackTransactionMetricsEventSpy.getCall(0).args[0],
+        txMeta,
+      );
+      assert.equal(
+        trackTransactionMetricsEventSpy.getCall(0).args[1],
+        TRANSACTION_EVENTS.SUBMITTED,
+      );
+      assert.deepEqual(trackTransactionMetricsEventSpy.getCall(0).args[2], {
+        gas_limit: txMeta.txParams.gas,
+      });
     });
   });
 
@@ -1196,6 +1180,156 @@ describe('Transaction Controller', function () {
       assert.ok(
         states.includes(TRANSACTION_STATUSES.SUBMITTED),
         'includes submitted',
+      );
+    });
+  });
+
+  describe('#_trackTransactionMetricsEvent', function () {
+    let trackMetaMetricsEventSpy;
+
+    beforeEach(function () {
+      trackMetaMetricsEventSpy = sinon.spy(
+        txController,
+        '_trackMetaMetricsEvent',
+      );
+    });
+
+    afterEach(function () {
+      trackMetaMetricsEventSpy.restore();
+    });
+
+    it('should call _trackMetaMetricsEvent with the correct payload (user source)', function () {
+      const txMeta = {
+        id: 1,
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        txParams: {
+          from: fromAccount.address,
+          to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          gasPrice: '0x77359400',
+          gas: '0x7b0d',
+          nonce: '0x4b',
+        },
+        type: 'sentEther',
+        origin: 'metamask',
+        chainId: currentChainId,
+        time: 1624408066355,
+        metamaskNetworkId: currentNetworkId,
+      };
+      const expectedPayload = {
+        event: 'Transaction Added',
+        category: 'Transactions',
+        sensitiveProperties: {
+          chain_id: '0x2a',
+          gas_price: '0x77359400',
+          first_seen: 1624408066355,
+          network: '42',
+          referrer: 'metamask',
+          source: 'user',
+          status: 'unapproved',
+          type: 'sentEther',
+        },
+      };
+
+      txController._trackTransactionMetricsEvent(
+        txMeta,
+        TRANSACTION_EVENTS.ADDED,
+      );
+      assert.equal(trackMetaMetricsEventSpy.callCount, 1);
+      assert.deepEqual(
+        trackMetaMetricsEventSpy.getCall(0).args[0],
+        expectedPayload,
+      );
+    });
+
+    it('should call _trackMetaMetricsEvent with the correct payload (dapp source)', function () {
+      const txMeta = {
+        id: 1,
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        txParams: {
+          from: fromAccount.address,
+          to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          gasPrice: '0x77359400',
+          gas: '0x7b0d',
+          nonce: '0x4b',
+        },
+        type: 'sentEther',
+        origin: 'other',
+        chainId: currentChainId,
+        time: 1624408066355,
+        metamaskNetworkId: currentNetworkId,
+      };
+      const expectedPayload = {
+        event: 'Transaction Added',
+        category: 'Transactions',
+        sensitiveProperties: {
+          chain_id: '0x2a',
+          gas_price: '0x77359400',
+          first_seen: 1624408066355,
+          network: '42',
+          referrer: 'other',
+          source: 'dapp',
+          status: 'unapproved',
+          type: 'sentEther',
+        },
+      };
+
+      txController._trackTransactionMetricsEvent(
+        txMeta,
+        TRANSACTION_EVENTS.ADDED,
+      );
+      assert.equal(trackMetaMetricsEventSpy.callCount, 1);
+      assert.deepEqual(
+        trackMetaMetricsEventSpy.getCall(0).args[0],
+        expectedPayload,
+      );
+    });
+
+    it('should call _trackMetaMetricsEvent with the correct payload (extra params)', function () {
+      const txMeta = {
+        id: 1,
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        txParams: {
+          from: fromAccount.address,
+          to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          gasPrice: '0x77359400',
+          gas: '0x7b0d',
+          nonce: '0x4b',
+        },
+        type: 'sentEther',
+        origin: 'other',
+        chainId: currentChainId,
+        time: 1624408066355,
+        metamaskNetworkId: currentNetworkId,
+      };
+      const expectedPayload = {
+        event: 'Transaction Added',
+        category: 'Transactions',
+        sensitiveProperties: {
+          baz: 3.0,
+          foo: 'bar',
+          chain_id: '0x2a',
+          gas_price: '0x77359400',
+          first_seen: 1624408066355,
+          network: '42',
+          referrer: 'other',
+          source: 'dapp',
+          status: 'unapproved',
+          type: 'sentEther',
+        },
+      };
+
+      txController._trackTransactionMetricsEvent(
+        txMeta,
+        TRANSACTION_EVENTS.ADDED,
+        {
+          baz: 3.0,
+          foo: 'bar',
+        },
+      );
+      assert.equal(trackMetaMetricsEventSpy.callCount, 1);
+      assert.deepEqual(
+        trackMetaMetricsEventSpy.getCall(0).args[0],
+        expectedPayload,
       );
     });
   });
