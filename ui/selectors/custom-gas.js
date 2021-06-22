@@ -15,7 +15,6 @@ import { GAS_LIMITS } from '../../shared/constants/gas';
 import {
   getCurrentCurrency,
   getIsMainnet,
-  getPreferences,
   getShouldShowFiat
 } from '.';
 
@@ -290,9 +289,6 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
   if (getBasicGasEstimateLoadingStatus(state)) {
     return [];
   }
-
-  const { showFiatInTestnets } = getPreferences(state);
-  const isMainnet = getIsMainnet(state);
   const showFiat = getShouldShowFiat(state);
   const gasLimit =
     state.send.gas.gasLimit || getCustomGasLimit(state) || GAS_LIMITS.SIMPLE;
