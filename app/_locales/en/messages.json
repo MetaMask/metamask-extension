@@ -798,6 +798,9 @@
   "gasFee": {
     "message": "Gas Fee"
   },
+  "gasFeeEstimate": {
+    "message": "Estimate"
+  },
   "gasLimit": {
     "message": "Gas Limit"
   },
@@ -1084,6 +1087,12 @@
   },
   "max": {
     "message": "Max"
+  },
+  "maxFee": {
+    "message": "Max fee"
+  },
+  "maxPriorityFee": {
+    "message": "Max priority fee"
   },
   "memo": {
     "message": "memo"
@@ -1477,6 +1486,9 @@
   },
   "recipientAddressPlaceholder": {
     "message": "Search, public address (0x), or ENS"
+  },
+  "recommendedGasLabel": {
+    "message": "Recommended"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Start here"

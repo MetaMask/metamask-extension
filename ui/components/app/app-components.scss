@@ -2,6 +2,7 @@
 @import 'account-list-item/index';
 @import 'account-menu/index';
 @import 'add-token-button/index';
+@import 'advanced-gas-controls/index';
 @import 'alerts/alerts';
 @import 'app-header/index';
 @import 'asset-list-item/asset-list-item';
@@ -10,6 +11,7 @@
 @import 'connected-accounts-permissions/index';
 @import 'connected-sites-list/index';
 @import 'connected-status-indicator/index';
+@import 'edit-gas-display/index';
 @import 'gas-customization/gas-modal-page-container/index';
 @import 'gas-customization/gas-price-button-group/index';
 @import 'gas-customization/index';
@@ -32,10 +34,13 @@
 @import 'token-cell/token-cell';
 @import 'transaction-activity-log/index';
 @import 'transaction-breakdown/index';
+@import 'transaction-detail/index';
+@import 'transaction-detail-item/index';
 @import 'transaction-icon/transaction-icon';
 @import 'transaction-list-item-details/index';
 @import 'transaction-list-item/index';
 @import 'transaction-list/index';
 @import 'transaction-status/index';
+@import 'transaction-total-banner/index';
 @import 'wallet-overview/index';
 @import 'whats-new-popup/index';

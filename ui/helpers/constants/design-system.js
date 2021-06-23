@@ -139,6 +139,7 @@ export const TEXT_ALIGN = {
   CENTER: 'center',
   RIGHT: 'right',
   JUSTIFY: 'justify',
+  END: 'end',
 };
 
 export const FONT_WEIGHT = {
