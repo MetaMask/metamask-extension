@@ -34,8 +34,10 @@ const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
  * @typedef {Object} EtherscanTransaction
  * @property {string} blockNumber - The number of the block this transaction was found in, in decimal
  * @property {string} from - The hex-prefixed address of the sender
- * @property {string} gas - The gas limit, in decimal WEI
- * @property {string} gasPrice - The gas price, in decimal WEI
+ * @property {string} gas - The gas limit, in decimal GWEI
+ * @property {string} [gasPrice] - The gas price, in decimal GWEI
+ * @property {string} [maxFeePerGas] - The maximum fee per gas, inclusive of tip, in decimal GWEI
+ * @property {string} [maxPriorityFeePerGas] - The maximum tip per gas in decimal GWEI
  * @property {string} hash - The hex-prefixed transaction hash
  * @property {string} isError - Whether the transaction was confirmed or failed (0 for confirmed, 1 for failed)
  * @property {string} nonce - The transaction nonce, in decimal
@@ -267,6 +269,25 @@ export default class IncomingTransactionsController {
       etherscanTransaction.isError === '0'
         ? TRANSACTION_STATUSES.CONFIRMED
         : TRANSACTION_STATUSES.FAILED;
+    const txParams = {
+      from: etherscanTransaction.from,
+      gas: bnToHex(new BN(etherscanTransaction.gas)),
+      nonce: bnToHex(new BN(etherscanTransaction.nonce)),
+      to: etherscanTransaction.to,
+      value: bnToHex(new BN(etherscanTransaction.value)),
+    };
+
+    if (etherscanTransaction.gasPrice) {
+      txParams.gasPrice = bnToHex(new BN(etherscanTransaction.gasPrice));
+    } else if (etherscanTransaction.maxFeePerGas) {
+      txParams.maxFeePerGas = bnToHex(
+        new BN(etherscanTransaction.maxFeePerGas),
+      );
+      txParams.maxPriorityFeePerGas = bnToHex(
+        new BN(etherscanTransaction.maxPriorityFeePerGas),
+      );
+    }
+
     return {
       blockNumber: etherscanTransaction.blockNumber,
       id: createId(),
@@ -274,14 +295,7 @@ export default class IncomingTransactionsController {
       metamaskNetworkId: CHAIN_ID_TO_NETWORK_ID_MAP[chainId],
       status,
       time,
-      txParams: {
-        from: etherscanTransaction.from,
-        gas: bnToHex(new BN(etherscanTransaction.gas)),
-        gasPrice: bnToHex(new BN(etherscanTransaction.gasPrice)),
-        nonce: bnToHex(new BN(etherscanTransaction.nonce)),
-        to: etherscanTransaction.to,
-        value: bnToHex(new BN(etherscanTransaction.value)),
-      },
+      txParams,
       hash: etherscanTransaction.hash,
       type: TRANSACTION_TYPES.INCOMING,
     };
