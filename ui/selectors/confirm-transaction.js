@@ -159,7 +159,7 @@ const contractExchangeRatesSelector = (state) =>
 
 const tokenDecimalsSelector = createSelector(
   tokenPropsSelector,
-  (tokenProps) => tokenProps && tokenProps.tokenDecimals,
+  (tokenProps) => tokenProps && tokenProps.decimals,
 );
 
 const tokenDataArgsSelector = createSelector(
