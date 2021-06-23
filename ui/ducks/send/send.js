@@ -512,6 +512,13 @@ const slice = createSlice({
       state.amount.value = addHexPrefix(action.payload);
       // Once amount has changed, validate the field
       slice.caseReducers.validateAmountField(state);
+      if (state.asset.type === ASSET_TYPES.NATIVE) {
+        // if sending the native asset the amount being sent will impact the
+        // gas field as well because the gas validation takes into
+        // consideration the available balance minus amount sent before
+        // checking if there is enough left to cover the gas fee.
+        slice.caseReducers.validateGasField(state);
+      }
       // validate send state
       slice.caseReducers.validateSendState(state);
     },
