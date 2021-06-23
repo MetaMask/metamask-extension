@@ -29,7 +29,6 @@ import {
   getCurrentCurrency,
   getCurrentEthBalance,
   getIsMainnet,
-  getPreferences,
   getBasicGasEstimateLoadingStatus,
   getCustomGasLimit,
   getCustomGasPrice,
@@ -39,6 +38,7 @@ import {
   getAveragePriceEstimateInHexWEI,
   isCustomPriceExcessive,
   getIsGasEstimatesFetched,
+  getShouldShowFiat,
 } from '../../../../selectors';
 
 import {
@@ -112,9 +112,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const balance = getCurrentEthBalance(state);
 
-  const { showFiatInTestnets } = getPreferences(state);
   const isMainnet = getIsMainnet(state);
-  const showFiat = Boolean(isMainnet || showFiatInTestnets);
+  const showFiat = getShouldShowFiat(state);
 
   const newTotalEth =
     maxModeOn && asset.type === ASSET_TYPES.NATIVE
