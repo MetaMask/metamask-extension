@@ -846,7 +846,7 @@ const slice = createSlice({
           state.status = SEND_STATUSES.INVALID;
           break;
         case state.asset.type === ASSET_TYPES.TOKEN &&
-          state.asset.details.isERC721:
+          state.asset.details.isERC721 === true:
           state.state = SEND_STATUSES.INVALID;
           break;
         default:
@@ -971,7 +971,9 @@ const slice = createSlice({
         // When we receive a new gasLimit from the computeEstimatedGasLimit
         // thunk we need to update our gasLimit in the slice. We call into the
         // caseReducer updateGasLimit to tap into the appropriate follow up
-        // checks and gasTotal calculation.
+        // checks and gasTotal calculation. First set isGasEstimateLoading to
+        // false.
+        state.gas.isGasEstimateLoading = false;
         if (action.payload?.gasLimit) {
           slice.caseReducers.updateGasLimit(state, {
             payload: action.payload.gasLimit,
