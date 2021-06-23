@@ -148,7 +148,7 @@ class RestoreVaultPage extends Component {
               }}
               href="#"
             >
-              {`< Back`}
+              {`< ${t('back')}`}
             </a>
             <div className="import-account__title">
               {this.context.t('restoreAccountWithSeed')}

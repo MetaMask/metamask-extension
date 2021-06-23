@@ -62,7 +62,7 @@ export default class AmountMaxButton extends Component {
     const { maxModeOn, buttonDataLoading, inError } = this.props;
 
     return (
-      <div
+      <button
         className="send-v2__amount-max"
         onClick={buttonDataLoading || inError ? null : this.onMaxClick}
       >
@@ -75,7 +75,7 @@ export default class AmountMaxButton extends Component {
         >
           {this.context.t('max')}
         </div>
-      </div>
+      </button>
     );
   }
 }

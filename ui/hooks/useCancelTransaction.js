@@ -7,16 +7,15 @@ import {
   getHexGasTotal,
   increaseLastGasPrice,
 } from '../helpers/utils/confirm-tx.util';
-import {
-  getConversionRate,
-  getSelectedAccount,
-  getIsMainnet,
-} from '../selectors';
+import { getSelectedAccount, getIsMainnet } from '../selectors';
+import { getConversionRate } from '../ducks/metamask/metamask';
+
 import {
   setCustomGasLimit,
   setCustomGasPriceForRetry,
 } from '../ducks/gas/gas.duck';
 import { multiplyCurrencies } from '../helpers/utils/conversion-util';
+import { GAS_LIMITS } from '../../shared/constants/gas';
 
 /**
  * Determine whether a transaction can be cancelled and provide a method to
@@ -52,13 +51,13 @@ export function useCancelTransaction(transactionGroup) {
   const cancelTransaction = useCallback(
     (event) => {
       event.stopPropagation();
-      dispatch(setCustomGasLimit('0x5208'));
+      dispatch(setCustomGasLimit(GAS_LIMITS.SIMPLE));
       dispatch(setCustomGasPriceForRetry(defaultNewGasPrice));
       const tx = {
         ...transaction,
         txParams: {
           ...transaction.txParams,
-          gas: '0x5208',
+          gas: GAS_LIMITS.SIMPLE,
           value: '0x0',
         },
       };

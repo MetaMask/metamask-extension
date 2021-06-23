@@ -23,7 +23,8 @@ import {
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { getNativeCurrency } from './send';
+import { DAY } from '../../shared/constants/time';
+import { getNativeCurrency } from '../ducks/metamask/metamask';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -562,4 +563,16 @@ export function getSortedNotificationsToShow(state) {
     (a, b) => new Date(b.date) - new Date(a.date),
   );
   return notificationsSortedByDate;
+}
+
+export function getShowRecoveryPhraseReminder(state) {
+  const {
+    recoveryPhraseReminderLastShown,
+    recoveryPhraseReminderHasBeenShown,
+  } = state.metamask;
+
+  const currentTime = new Date().getTime();
+  const frequency = recoveryPhraseReminderHasBeenShown ? DAY * 90 : DAY * 2;
+
+  return currentTime - recoveryPhraseReminderLastShown >= frequency;
 }

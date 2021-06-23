@@ -12,8 +12,22 @@ describe('Send Duck', () => {
   };
   const initState = {
     toDropdownOpen: false,
-    errors: {},
     gasButtonGroupShown: true,
+    errors: {},
+    gasLimit: null,
+    gasPrice: null,
+    gasTotal: null,
+    tokenBalance: '0x0',
+    from: '',
+    to: '',
+    amount: '0',
+    memo: '',
+    maxModeOn: false,
+    editingTransactionId: null,
+    toNickname: '',
+    ensResolution: null,
+    ensResolutionError: '',
+    gasIsLoading: false,
   };
   const OPEN_TO_DROPDOWN = 'metamask/send/OPEN_TO_DROPDOWN';
   const CLOSE_TO_DROPDOWN = 'metamask/send/CLOSE_TO_DROPDOWN';

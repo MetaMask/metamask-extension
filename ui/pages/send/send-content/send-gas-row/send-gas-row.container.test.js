@@ -1,11 +1,6 @@
 import sinon from 'sinon';
 
-import {
-  showModal,
-  setGasPrice,
-  setGasTotal,
-  setGasLimit,
-} from '../../../../store/actions';
+import { showModal } from '../../../../store/actions';
 
 import {
   resetCustomData,
@@ -13,7 +8,12 @@ import {
   setCustomGasLimit,
 } from '../../../../ducks/gas/gas.duck';
 
-import { showGasButtonGroup } from '../../../../ducks/send/send.duck';
+import {
+  showGasButtonGroup,
+  setGasPrice,
+  setGasTotal,
+  setGasLimit,
+} from '../../../../ducks/send/send.duck';
 
 let mapDispatchToProps;
 let mergeProps;
@@ -39,13 +39,13 @@ jest.mock('../../send.utils.js', () => ({
 
 jest.mock('../../../../store/actions', () => ({
   showModal: jest.fn(),
-  setGasPrice: jest.fn(),
-  setGasTotal: jest.fn(),
-  setGasLimit: jest.fn(),
 }));
 
 jest.mock('../../../../ducks/send/send.duck', () => ({
   showGasButtonGroup: jest.fn(),
+  setGasPrice: jest.fn(),
+  setGasTotal: jest.fn(),
+  setGasLimit: jest.fn(),
 }));
 
 jest.mock('../../../../ducks/gas/gas.duck', () => ({

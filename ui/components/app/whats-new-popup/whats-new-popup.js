@@ -68,7 +68,7 @@ const renderDescription = (description) => {
   );
 };
 
-const renderFirstNotification = (notification, idRefMap, history) => {
+const renderFirstNotification = (notification, idRefMap, history, isLast) => {
   const { id, date, title, description, image, actionText } = notification;
   const actionFunction = getActionFunctionById(id, history);
   const imageComponent = image && (
@@ -84,9 +84,11 @@ const renderFirstNotification = (notification, idRefMap, history) => {
     <div
       className={classnames(
         'whats-new-popup__notification whats-new-popup__first-notification',
+        {
+          'whats-new-popup__last-notification': isLast,
+        },
       )}
       key={`whats-new-popop-notification-${id}`}
-      ref={idRefMap[id]}
     >
       {!placeImageBelowDescription && imageComponent}
       <div className="whats-new-popup__notification-title">{title}</div>
@@ -107,19 +109,29 @@ const renderFirstNotification = (notification, idRefMap, history) => {
           {actionText}
         </Button>
       )}
+      <div
+        className="whats-new-popup__intersection-observable"
+        ref={idRefMap[id]}
+      />
     </div>
   );
 };
 
-const renderSubsequentNotification = (notification, idRefMap, history) => {
+const renderSubsequentNotification = (
+  notification,
+  idRefMap,
+  history,
+  isLast,
+) => {
   const { id, date, title, description, actionText } = notification;
 
   const actionFunction = getActionFunctionById(id, history);
   return (
     <div
-      className={classnames('whats-new-popup__notification')}
+      className={classnames('whats-new-popup__notification', {
+        'whats-new-popup__last-notification': isLast,
+      })}
       key={`whats-new-popop-notification-${id}`}
-      ref={idRefMap[id]}
     >
       <div className="whats-new-popup__notification-title">{title}</div>
       <div className="whats-new-popup__description-and-date">
@@ -133,6 +145,10 @@ const renderSubsequentNotification = (notification, idRefMap, history) => {
           {`${actionText} >`}
         </div>
       )}
+      <div
+        className="whats-new-popup__intersection-observable"
+        ref={idRefMap[id]}
+      />
     </div>
   );
 };
@@ -207,10 +223,16 @@ export default function WhatsNewPopup({ onClose }) {
       <div className="whats-new-popup__notifications">
         {notifications.map(({ id }, index) => {
           const notification = getTranslatedUINoficiations(t, locale)[id];
+          const isLast = index === notifications.length - 1;
           // Display the swaps notification with full image
           return index === 0 || id === 1
-            ? renderFirstNotification(notification, idRefMap, history)
-            : renderSubsequentNotification(notification, idRefMap, history);
+            ? renderFirstNotification(notification, idRefMap, history, isLast)
+            : renderSubsequentNotification(
+                notification,
+                idRefMap,
+                history,
+                isLast,
+              );
         })}
       </div>
     </Popover>

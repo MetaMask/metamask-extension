@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import TokenTracker from '@metamask/eth-token-tracker';
 import { useSelector } from 'react-redux';
 import { getCurrentChainId, getSelectedAddress } from '../selectors';
+import { SECOND } from '../../shared/constants/time';
 import { useEqualityCheck } from './useEqualityCheck';
 
 export function useTokenTracker(
@@ -22,11 +23,19 @@ export function useTokenTracker(
       const matchingTokens = hideZeroBalanceTokens
         ? tokenWithBalances.filter((token) => Number(token.balance) > 0)
         : tokenWithBalances;
-      setTokensWithBalances(matchingTokens);
+      // TODO: improve this pattern for adding this field when we improve support for
+      // EIP721 tokens.
+      const matchingTokensWithIsERC721Flag = matchingTokens.map((token) => {
+        const additionalTokenData = memoizedTokens.find(
+          (t) => t.address === token.address,
+        );
+        return { ...token, isERC721: additionalTokenData?.isERC721 };
+      });
+      setTokensWithBalances(matchingTokensWithIsERC721Flag);
       setLoading(false);
       setError(null);
     },
-    [hideZeroBalanceTokens],
+    [hideZeroBalanceTokens, memoizedTokens],
   );
 
   const showError = useCallback((err) => {
@@ -52,7 +61,7 @@ export function useTokenTracker(
         provider: global.ethereumProvider,
         tokens: tokenList,
         includeFailedTokens,
-        pollingInterval: 8000,
+        pollingInterval: SECOND * 8,
       });
 
       tokenTracker.current.on('update', updateBalances);

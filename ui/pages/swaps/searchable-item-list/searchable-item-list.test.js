@@ -1,6 +1,10 @@
 import React from 'react';
+import configureMockStore from 'redux-mock-store';
 
-import { renderWithProvider } from '../../../../test/jest';
+import {
+  renderWithProvider,
+  createSwapsMockStore,
+} from '../../../../test/jest';
 import SearchableItemList from '.';
 
 const createProps = (customProps = {}) => {
@@ -37,8 +41,12 @@ const createProps = (customProps = {}) => {
 
 describe('SearchableItemList', () => {
   it('renders the component with initial props', () => {
+    const store = configureMockStore()(createSwapsMockStore());
     const props = createProps();
-    const { getByText } = renderWithProvider(<SearchableItemList {...props} />);
+    const { getByText } = renderWithProvider(
+      <SearchableItemList {...props} />,
+      store,
+    );
     expect(getByText(props.listTitle)).toBeInTheDocument();
     expect(getByText(props.itemsToSearch[0].primaryLabel)).toBeInTheDocument();
     expect(

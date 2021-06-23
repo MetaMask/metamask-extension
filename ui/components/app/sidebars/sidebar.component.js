@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import CustomizeGas from '../gas-customization/gas-modal-page-container';
+import { MILLISECOND } from '../../../../shared/constants/time';
 
 export default class Sidebar extends Component {
   static propTypes = {
@@ -60,8 +61,8 @@ export default class Sidebar extends Component {
       <div>
         <ReactCSSTransitionGroup
           transitionName={transitionName}
-          transitionEnterTimeout={300}
-          transitionLeaveTimeout={200}
+          transitionEnterTimeout={MILLISECOND * 300}
+          transitionLeaveTimeout={MILLISECOND * 200}
         >
           {sidebarOpen && !sidebarShouldClose
             ? this.renderSidebarContent()
