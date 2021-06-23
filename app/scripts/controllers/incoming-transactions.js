@@ -18,8 +18,9 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
+import { SECOND } from '../../../shared/constants/time';
 
-const fetchWithTimeout = getFetchWithTimeout(30000);
+const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
 
 /**
  * @typedef {import('../../../shared/constants/transaction').TransactionMeta} TransactionMeta

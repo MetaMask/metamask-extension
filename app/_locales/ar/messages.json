@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "متصفحك غير مدعوم..."
   },
-  "builtInCalifornia": {
-    "message": "تم تصميم وإنشاء MetaMask في ولاية كاليفورنيا."
-  },
   "buyWithWyre": {
     "message": "قم بشراء عملة إيثير بواسطة Wyre"
   },

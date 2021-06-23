@@ -261,7 +261,7 @@ const state = {
       }
     },
     "assetImages": {
-      "0xad6d458402f60fd3bd25163575031acdce07538d": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xaD6D458402F60fD3Bd25163575031ACDce07538D/logo.png"
+      "0xad6d458402f60fd3bd25163575031acdce07538d": "./images/logo.png"
     },
     "hiddenTokens": [],
     "suggestedTokens": {},
@@ -272,7 +272,7 @@ const state = {
     "ipfsGateway": "dweb.link",
     "infuraBlocked": false,
     "migratedPrivacyMode": false,
-    "selectedAddress": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4",
+    "selectedAddress": "0x9d0ba4ddac06032527b140912ec808ab9451b788",
     "metaMetricsId": "0xc2377d11fec1c3b7dd88c4854240ee5e3ed0d9f63b00456d98d80320337b827f",
     "conversionDate": 1620710825.03,
     "conversionRate": 3910.28,

@@ -14,6 +14,7 @@ import ConnectedAccounts from '../connected-accounts';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import { EthOverview } from '../../components/app/wallet-overview';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
+import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 
 import {
   ASSET_ROUTE,
@@ -76,6 +77,10 @@ export default class Home extends PureComponent {
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
     notificationsToShow: PropTypes.bool.isRequired,
+    showRecoveryPhraseReminder: PropTypes.bool.isRequired,
+    setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
+    setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
+    seedPhraseBackedUp: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -162,6 +167,15 @@ export default class Home extends PureComponent {
       setupThreeBox();
     }
   }
+
+  onRecoveryPhraseReminderClose = () => {
+    const {
+      setRecoveryPhraseReminderHasBeenShown,
+      setRecoveryPhraseReminderLastShown,
+    } = this.props;
+    setRecoveryPhraseReminderHasBeenShown(true);
+    setRecoveryPhraseReminderLastShown(new Date().getTime());
+  };
 
   renderNotifications() {
     const { t } = this.context;
@@ -325,6 +339,8 @@ export default class Home extends PureComponent {
       notificationsToShow,
       showWhatsNewPopup,
       hideWhatsNewPopup,
+      seedPhraseBackedUp,
+      showRecoveryPhraseReminder,
     } = this.props;
 
     if (forgottenPassword) {
@@ -332,6 +348,8 @@ export default class Home extends PureComponent {
     } else if (this.state.closing || this.state.redirecting) {
       return null;
     }
+
+    const showWhatsNew = notificationsToShow && showWhatsNewPopup;
 
     return (
       <div className="main-container">
@@ -342,8 +360,12 @@ export default class Home extends PureComponent {
           exact
         />
         <div className="home__container">
-          {notificationsToShow && showWhatsNewPopup ? (
-            <WhatsNewPopup onClose={hideWhatsNewPopup} />
+          {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
+          {!showWhatsNew && showRecoveryPhraseReminder ? (
+            <RecoveryPhraseReminder
+              hasBackedUp={seedPhraseBackedUp}
+              onConfirm={this.onRecoveryPhraseReminderClose}
+            />
           ) : null}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()

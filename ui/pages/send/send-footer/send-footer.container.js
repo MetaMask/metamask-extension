@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import {
   addToAddressBook,
-  clearSend,
   signTokenTx,
   signTx,
   updateTransaction,
@@ -15,10 +14,8 @@ import {
   getSendEditingTransactionId,
   getSendFromObject,
   getSendTo,
-  getSendToAccounts,
   getSendHexData,
   getTokenBalance,
-  getUnapprovedTxs,
   getSendErrors,
   isSendFormInError,
   getGasIsLoading,
@@ -28,6 +25,11 @@ import {
 } from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import {
+  getSendToAccounts,
+  getUnapprovedTxs,
+} from '../../../ducks/metamask/metamask';
+import { clearSend } from '../../../ducks/send/send.duck';
 import SendFooter from './send-footer.component';
 import {
   addressIsNew,
@@ -86,7 +88,7 @@ function mapDispatchToProps(dispatch) {
         to,
       });
 
-      sendToken
+      return sendToken
         ? dispatch(signTokenTx(sendToken.address, to, amount, txParams))
         : dispatch(signTx(txParams));
     },

@@ -10,6 +10,7 @@ import {
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+import { decimalToHex } from '../../../../helpers/utils/conversions.util';
 
 const FORM_STATE_KEYS = [
   'rpcUrl',
@@ -39,7 +40,7 @@ export default class NetworkForm extends PureComponent {
     isCurrentRpcTarget: PropTypes.bool,
     blockExplorerUrl: PropTypes.string,
     rpcPrefs: PropTypes.object,
-    rpcUrls: PropTypes.array,
+    networksToRender: PropTypes.array,
     isFullScreen: PropTypes.bool,
   };
 
@@ -332,11 +333,25 @@ export default class NetworkForm extends PureComponent {
   };
 
   validateChainIdOnChange = (chainIdArg = '') => {
+    const { networksToRender } = this.props;
     const chainId = chainIdArg.trim();
     let errorMessage = '';
     let radix = 10;
+    const hexChainId = chainId.startsWith('0x')
+      ? chainId
+      : `0x${decimalToHex(chainId)}`;
+    const [matchingChainId] = networksToRender.filter(
+      (e) => e.chainId === hexChainId,
+    );
 
-    if (chainId.startsWith('0x')) {
+    if (chainId === '') {
+      this.setErrorTo('chainId', '');
+      return;
+    } else if (matchingChainId) {
+      errorMessage = this.context.t('chainIdExistsErrorMsg', [
+        matchingChainId.label ?? matchingChainId.labelKey,
+      ]);
+    } else if (chainId.startsWith('0x')) {
       radix = 16;
       if (!/^0x[0-9a-f]+$/iu.test(chainId)) {
         errorMessage = this.context.t('invalidHexNumber');
@@ -433,23 +448,29 @@ export default class NetworkForm extends PureComponent {
 
   validateUrlRpcUrl = (url, stateKey) => {
     const { t } = this.context;
-    const { rpcUrls } = this.props;
+    const { networksToRender } = this.props;
     const { chainId: stateChainId } = this.state;
-    const isValidUrl = validUrl.isWebUri(url) && url !== '';
+    const isValidUrl = validUrl.isWebUri(url);
     const chainIdFetchFailed = this.hasError(
       'chainId',
       t('failedToFetchChainId'),
     );
+    const [matchingRPCUrl] = networksToRender.filter((e) => e.rpcUrl === url);
 
-    if (!isValidUrl) {
+    if (!isValidUrl && url !== '') {
       this.setErrorTo(
         stateKey,
         this.context.t(
           this.isValidWhenAppended(url) ? 'urlErrorMsg' : 'invalidRPC',
         ),
       );
-    } else if (rpcUrls.includes(url)) {
-      this.setErrorTo(stateKey, this.context.t('urlExistsErrorMsg'));
+    } else if (matchingRPCUrl) {
+      this.setErrorTo(
+        stateKey,
+        this.context.t('urlExistsErrorMsg', [
+          matchingRPCUrl.label ?? matchingRPCUrl.labelKey,
+        ]),
+      );
     } else {
       this.setErrorTo(stateKey, '');
     }

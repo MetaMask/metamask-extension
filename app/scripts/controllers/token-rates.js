@@ -3,11 +3,12 @@ import log from 'loglevel';
 import { normalize as normalizeAddress } from 'eth-sig-util';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { MINUTE, SECOND } from '../../../shared/constants/time';
 
-const fetchWithTimeout = getFetchWithTimeout(30000);
+const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
 
 // By default, poll every 3 minutes
-const DEFAULT_INTERVAL = 180 * 1000;
+const DEFAULT_INTERVAL = MINUTE * 3;
 
 /**
  * A controller that polls for token exchange

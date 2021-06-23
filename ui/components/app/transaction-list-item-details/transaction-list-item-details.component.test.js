@@ -5,6 +5,7 @@ import SenderToRecipient from '../../ui/sender-to-recipient';
 import TransactionBreakdown from '../transaction-breakdown';
 import TransactionActivityLog from '../transaction-activity-log';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
+import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import TransactionListItemDetails from './transaction-list-item-details.component';
 
 describe('TransactionListItemDetails Component', () => {
@@ -15,7 +16,7 @@ describe('TransactionListItemDetails Component', () => {
       status: TRANSACTION_STATUSES.CONFIRMED,
       txParams: {
         from: '0x1',
-        gas: '0x5208',
+        gas: GAS_LIMITS.SIMPLE,
         gasPrice: '0x3b9aca00',
         nonce: '0xa4',
         to: '0x2',
@@ -57,7 +58,7 @@ describe('TransactionListItemDetails Component', () => {
       status: TRANSACTION_STATUSES.CONFIRMED,
       txParams: {
         from: '0x1',
-        gas: '0x5208',
+        gas: GAS_LIMITS.SIMPLE,
         gasPrice: '0x3b9aca00',
         nonce: '0xa4',
         to: '0x2',
@@ -102,7 +103,7 @@ describe('TransactionListItemDetails Component', () => {
       status: 'confirmed',
       txParams: {
         from: '0x1',
-        gas: '0x5208',
+        gas: GAS_LIMITS.SIMPLE,
         gasPrice: '0x3b9aca00',
         nonce: '0xa4',
         to: '0x2',
@@ -146,7 +147,7 @@ describe('TransactionListItemDetails Component', () => {
       hash: '0xaa',
       txParams: {
         from: '0x1',
-        gas: '0x5208',
+        gas: GAS_LIMITS.SIMPLE,
         gasPrice: '0x3b9aca00',
         nonce: '0xa4',
         to: '0x2',

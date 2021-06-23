@@ -32,11 +32,11 @@ export default class SendGasRow extends Component {
 
   static contextTypes = {
     t: PropTypes.func,
-    metricsEvent: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   renderAdvancedOptionsButton() {
-    const { metricsEvent } = this.context;
+    const { trackEvent } = this.context;
     const {
       showCustomizeGasModal,
       isMainnet,
@@ -54,12 +54,9 @@ export default class SendGasRow extends Component {
       <div
         className="advanced-gas-options-btn"
         onClick={() => {
-          metricsEvent({
-            eventOpts: {
-              category: 'Transactions',
-              action: 'Edit Screen',
-              name: 'Clicked "Advanced Options"',
-            },
+          trackEvent({
+            category: 'Transactions',
+            event: 'Clicked "Advanced Options"',
           });
           showCustomizeGasModal();
         }}
@@ -105,7 +102,7 @@ export default class SendGasRow extends Component {
       isEthGasPrice,
       noGasPrice,
     } = this.props;
-    const { metricsEvent } = this.context;
+    const { trackEvent } = this.context;
     const gasPriceFetchFailure = isEthGasPrice || noGasPrice;
 
     const gasPriceButtonGroup = (
@@ -115,11 +112,11 @@ export default class SendGasRow extends Component {
           showCheck={false}
           {...gasPriceButtonGroupProps}
           handleGasPriceSelection={async (opts) => {
-            metricsEvent({
-              eventOpts: {
-                category: 'Transactions',
-                action: 'Edit Screen',
-                name: 'Changed Gas Button',
+            trackEvent({
+              category: 'Transactions',
+              event: 'User Clicked Gas Estimate Button',
+              properties: {
+                gasEstimateType: opts.gasEstimateType.toLowerCase(),
               },
             });
             await gasPriceButtonGroupProps.handleGasPriceSelection(opts);

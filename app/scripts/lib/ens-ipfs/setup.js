@@ -1,8 +1,9 @@
 import extension from 'extensionizer';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import { SECOND } from '../../../../shared/constants/time';
 import resolveEnsToIpfsContentId from './resolver';
 
-const fetchWithTimeout = getFetchWithTimeout(30000);
+const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
 
 const supportedTopLevelDomains = ['eth'];
 

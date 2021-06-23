@@ -55,9 +55,9 @@
 
 .home-notification-wrapper--show-first {
   > div {
-    position: absolute;
-    bottom: 0;
-    right: 0;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
     visibility: hidden;
   }
 

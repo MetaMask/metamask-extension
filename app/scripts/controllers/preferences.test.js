@@ -1,10 +1,13 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
+import contractMaps from '@metamask/contract-metadata';
+import abiERC721 from 'human-standard-collectible-abi';
 import {
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
 } from '../../../shared/constants/network';
 import PreferencesController from './preferences';
+import NetworkController from './network';
 
 describe('preferences controller', function () {
   let preferencesController;
@@ -13,19 +16,32 @@ describe('preferences controller', function () {
   let triggerNetworkChange;
   let switchToMainnet;
   let switchToRinkeby;
+  let provider;
   const migrateAddressBookState = sinon.stub();
 
   beforeEach(function () {
+    const sandbox = sinon.createSandbox();
     currentChainId = MAINNET_CHAIN_ID;
-    network = {
-      getCurrentChainId: () => currentChainId,
-      on: sinon.spy(),
+    const networkControllerProviderConfig = {
+      getAccounts: () => undefined,
     };
+    network = new NetworkController();
+    network.setInfuraProjectId('foo');
+    network.initializeProvider(networkControllerProviderConfig);
+    provider = network.getProviderAndBlockTracker().provider;
+
+    sandbox.stub(network, 'getCurrentChainId').callsFake(() => currentChainId);
+    sandbox
+      .stub(network, 'getProviderConfig')
+      .callsFake(() => ({ type: 'mainnet' }));
+    const spy = sandbox.spy(network, 'on');
+
     preferencesController = new PreferencesController({
       migrateAddressBookState,
       network,
+      provider,
     });
-    triggerNetworkChange = network.on.firstCall.args[1];
+    triggerNetworkChange = spy.firstCall.args[1];
     switchToMainnet = () => {
       currentChainId = MAINNET_CHAIN_ID;
       triggerNetworkChange();
@@ -83,6 +99,104 @@ describe('preferences controller', function () {
           address: '0x7e57e277',
         },
       });
+    });
+  });
+
+  describe('updateTokenType', function () {
+    it('should add isERC721 = true to token object in state when token is collectible and in our contract-metadata repo', async function () {
+      const contractAddresses = Object.keys(contractMaps);
+      const erc721ContractAddresses = contractAddresses.filter(
+        (contractAddress) => contractMaps[contractAddress].erc721 === true,
+      );
+      const address = erc721ContractAddresses[0];
+      const { symbol, decimals } = contractMaps[address];
+      preferencesController.store.updateState({
+        tokens: [{ address, symbol, decimals }],
+      });
+      const result = await preferencesController.updateTokenType(address);
+      assert.equal(result.isERC721, true);
+    });
+
+    it('should add isERC721 = true to token object in state when token is collectible and not in our contract-metadata repo', async function () {
+      const tokenAddress = '0xda5584cc586d07c7141aa427224a4bd58e64af7d';
+      preferencesController.store.updateState({
+        tokens: [
+          {
+            address: tokenAddress,
+            symbol: 'TESTNFT',
+            decimals: '0',
+          },
+        ],
+      });
+      sinon
+        .stub(preferencesController, '_detectIsERC721')
+        .callsFake(() => true);
+
+      const result = await preferencesController.updateTokenType(tokenAddress);
+      assert.equal(
+        preferencesController._detectIsERC721.getCall(0).args[0],
+        tokenAddress,
+      );
+      assert.equal(result.isERC721, true);
+    });
+  });
+
+  describe('_detectIsERC721', function () {
+    it('should return true when token is in our contract-metadata repo', async function () {
+      const tokenAddress = '0x06012c8cf97BEaD5deAe237070F9587f8E7A266d';
+
+      const result = await preferencesController._detectIsERC721(tokenAddress);
+      assert.equal(result, true);
+    });
+
+    it('should return true when the token is not in our contract-metadata repo but tokenContract.supportsInterface returns true', async function () {
+      const tokenAddress = '0xda5584cc586d07c7141aa427224a4bd58e64af7d';
+
+      const supportsInterfaceStub = sinon.stub().returns(Promise.resolve(true));
+      sinon
+        .stub(preferencesController, '_createEthersContract')
+        .callsFake(() => ({ supportsInterface: supportsInterfaceStub }));
+
+      const result = await preferencesController._detectIsERC721(tokenAddress);
+      assert.equal(
+        preferencesController._createEthersContract.getCall(0).args[0],
+        tokenAddress,
+      );
+      assert.deepEqual(
+        preferencesController._createEthersContract.getCall(0).args[1],
+        abiERC721,
+      );
+      assert.equal(
+        preferencesController._createEthersContract.getCall(0).args[2],
+        preferencesController.ethersProvider,
+      );
+      assert.equal(result, true);
+    });
+
+    it('should return false when the token is not in our contract-metadata repo and tokenContract.supportsInterface returns false', async function () {
+      const tokenAddress = '0xda5584cc586d07c7141aa427224a4bd58e64af7d';
+
+      const supportsInterfaceStub = sinon
+        .stub()
+        .returns(Promise.resolve(false));
+      sinon
+        .stub(preferencesController, '_createEthersContract')
+        .callsFake(() => ({ supportsInterface: supportsInterfaceStub }));
+
+      const result = await preferencesController._detectIsERC721(tokenAddress);
+      assert.equal(
+        preferencesController._createEthersContract.getCall(0).args[0],
+        tokenAddress,
+      );
+      assert.deepEqual(
+        preferencesController._createEthersContract.getCall(0).args[1],
+        abiERC721,
+      );
+      assert.equal(
+        preferencesController._createEthersContract.getCall(0).args[2],
+        preferencesController.ethersProvider,
+      );
+      assert.equal(result, false);
     });
   });
 
@@ -291,7 +405,12 @@ describe('preferences controller', function () {
       assert.equal(tokens.length, 1, 'one token removed');
 
       const [token1] = tokens;
-      assert.deepEqual(token1, { address: '0xb', symbol: 'B', decimals: 5 });
+      assert.deepEqual(token1, {
+        address: '0xb',
+        symbol: 'B',
+        decimals: 5,
+        isERC721: false,
+      });
     });
 
     it('should remove a token from its state on corresponding address', async function () {
@@ -310,7 +429,12 @@ describe('preferences controller', function () {
       assert.equal(tokensFirst.length, 1, 'one token removed in account');
 
       const [token1] = tokensFirst;
-      assert.deepEqual(token1, { address: '0xb', symbol: 'B', decimals: 5 });
+      assert.deepEqual(token1, {
+        address: '0xb',
+        symbol: 'B',
+        decimals: 5,
+        isERC721: false,
+      });
 
       await preferencesController.setSelectedAddress('0x7e57e3');
       const tokensSecond = preferencesController.getTokens();
@@ -335,7 +459,12 @@ describe('preferences controller', function () {
       assert.equal(tokensFirst.length, 1, 'one token removed in network');
 
       const [token1] = tokensFirst;
-      assert.deepEqual(token1, { address: '0xb', symbol: 'B', decimals: 5 });
+      assert.deepEqual(token1, {
+        address: '0xb',
+        symbol: 'B',
+        decimals: 5,
+        isERC721: false,
+      });
 
       switchToRinkeby();
       const tokensSecond = preferencesController.getTokens();

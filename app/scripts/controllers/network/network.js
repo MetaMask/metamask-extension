@@ -19,6 +19,7 @@ import {
   RINKEBY_CHAIN_ID,
   INFURA_BLOCKED_KEY,
 } from '../../../../shared/constants/network';
+import { SECOND } from '../../../../shared/constants/time';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -29,7 +30,7 @@ import createInfuraClient from './createInfuraClient';
 import createJsonRpcClient from './createJsonRpcClient';
 
 const env = process.env.METAMASK_ENV;
-const fetchWithTimeout = getFetchWithTimeout(30000);
+const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
 
 let defaultProviderConfigOpts;
 if (process.env.IN_TEST === 'true') {
@@ -205,7 +206,7 @@ export default class NetworkController extends EventEmitter {
     });
   }
 
-  async setProviderType(type, rpcUrl = '', ticker = 'ETH', nickname = '') {
+  async setProviderType(type) {
     assert.notStrictEqual(
       type,
       NETWORK_TYPE_RPC,
@@ -216,7 +217,13 @@ export default class NetworkController extends EventEmitter {
       `Unknown Infura provider type "${type}".`,
     );
     const { chainId } = NETWORK_TYPE_TO_ID_MAP[type];
-    this.setProviderConfig({ type, rpcUrl, chainId, ticker, nickname });
+    this.setProviderConfig({
+      type,
+      rpcUrl: '',
+      chainId,
+      ticker: 'ETH',
+      nickname: '',
+    });
   }
 
   resetConnection() {

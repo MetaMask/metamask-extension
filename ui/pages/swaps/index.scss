@@ -14,6 +14,7 @@
 @import 'slippage-buttons/index';
 @import 'swaps-footer/index';
 @import 'view-quote/index';
+@import 'import-token/index';
 
 .swaps {
   display: flex;
@@ -31,11 +32,7 @@
     height: 100%;
     width: 100%;
     overflow-x: hidden;
-    overflow-y: scroll;
-
-    &--scrollable {
-      overflow: auto;
-    }
+    overflow-y: auto;
 
     @media screen and (min-width: 576px) {
       width: 460px;

@@ -149,9 +149,6 @@
   "browserNotSupported": {
     "message": "您的瀏覽器尚未支援..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask 是在加州設計製造"
-  },
   "buy": {
     "message": "買"
   },
