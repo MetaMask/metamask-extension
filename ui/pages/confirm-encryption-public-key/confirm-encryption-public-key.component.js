@@ -105,7 +105,11 @@ export default class ConfirmEncryptionPublicKey extends Component {
   };
 
   renderBalance = () => {
-    const { conversionRate, nativeCurrency, fromAccount: { balance } } = this.props;
+    const {
+      conversionRate,
+      nativeCurrency,
+      fromAccount: { balance },
+    } = this.props;
     const { t } = this.context;
 
     const nativeCurrencyBalance = conversionUtil(balance, {
