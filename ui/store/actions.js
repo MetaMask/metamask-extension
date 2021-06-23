@@ -1246,21 +1246,6 @@ export function addToken(
   };
 }
 
-export function updateTokenType(tokenAddress) {
-  return async (dispatch) => {
-    let token = {};
-    dispatch(showLoadingIndication());
-    try {
-      token = await promisifiedBackground.updateTokenType(tokenAddress);
-    } catch (error) {
-      log.error(error);
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-    return token;
-  };
-}
-
 export function removeToken(address) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
@@ -2736,6 +2721,16 @@ export function setLedgerLivePreference(value) {
 
 export function estimateGas(params) {
   return promisifiedBackground.estimateGas(params);
+}
+
+export async function updateTokenType(tokenAddress) {
+  let token = {};
+  try {
+    token = await promisifiedBackground.updateTokenType(tokenAddress);
+  } catch (error) {
+    log.error(error);
+  }
+  return token;
 }
 
 // MetaMetrics

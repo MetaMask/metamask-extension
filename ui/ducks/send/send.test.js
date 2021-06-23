@@ -42,6 +42,7 @@ jest.mock('../../store/actions', () => {
   return {
     ...actual,
     estimateGas: jest.fn(() => Promise.resolve('0x0')),
+    updateTokenType: jest.fn(() => Promise.resolve({ isERC721: false })),
   };
 });
 
@@ -1757,6 +1758,7 @@ describe('Send Slice', () => {
             address: '0xTokenAddress',
             decimals: 18,
             symbol: 'SYMB',
+            isERC721: false,
           },
         });
         expect(actionResult[3].type).toStrictEqual(

@@ -5,7 +5,6 @@ import {
   getNativeCurrencyImage,
   getAssetImages,
 } from '../../../../selectors';
-import { updateTokenType } from '../../../../store/actions';
 import { updateSendAsset, getSendAssetAddress } from '../../../../ducks/send';
 import SendAssetRow from './send-asset-row.component';
 
@@ -23,7 +22,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateTokenType: (tokenAddress) => dispatch(updateTokenType(tokenAddress)),
     updateSendAsset: ({ type, details }) =>
       dispatch(updateSendAsset({ type, details })),
   };

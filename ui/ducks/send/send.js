@@ -44,6 +44,7 @@ import {
   hideLoadingIndication,
   showConfTxPage,
   showLoadingIndication,
+  updateTokenType,
   updateTransaction,
 } from '../../store/actions';
 import {
@@ -831,6 +832,7 @@ const slice = createSlice({
         // 5. State is invalid if the send state is uninitialized
         // 6. State is invalid if gas estimates are loading
         // 7. State is invalid if gasLimit is less than the minimumGasLimit
+        // 8. State is invalid if the selected asset is a ERC721
         case Boolean(state.amount.error):
         case Boolean(state.gas.error):
         case state.asset.type === ASSET_TYPES.TOKEN &&
@@ -842,6 +844,10 @@ const slice = createSlice({
           new BigNumber(state.gas.minimumGasLimit),
         ):
           state.status = SEND_STATUSES.INVALID;
+          break;
+        case state.asset.type === ASSET_TYPES.TOKEN &&
+          state.asset.details.isERC721:
+          state.state = SEND_STATUSES.INVALID;
           break;
         default:
           state.status = SEND_STATUSES.VALID;
@@ -1078,6 +1084,11 @@ export function updateSendAsset({ type, details }) {
         details,
         state.send.account.address ?? getSelectedAddress(state),
       );
+      if (details && details.isERC721 === undefined) {
+        const updatedAssetDetails = await updateTokenType(details.address);
+        details.isERC721 = updatedAssetDetails.isERC721;
+      }
+
       await dispatch(hideLoadingIndication());
     } else {
       // if changing to native currency, get it from the account key in send
@@ -1383,6 +1394,13 @@ export function getSendAsset(state) {
 
 export function getSendAssetAddress(state) {
   return getSendAsset(state)?.details?.address;
+}
+
+export function getIsAssetSendable(state) {
+  if (state[name].asset.type === ASSET_TYPES.NATIVE) {
+    return true;
+  }
+  return state[name].asset.details.isERC721 === false;
 }
 
 // Amount Selectors

@@ -23,9 +23,6 @@ export default class SendAssetRow extends Component {
     updateSendAsset: PropTypes.func.isRequired,
     nativeCurrency: PropTypes.string,
     nativeCurrencyImage: PropTypes.string,
-    setUnsendableAssetError: PropTypes.func.isRequired,
-    updateSendErrors: PropTypes.func.isRequired,
-    updateTokenType: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -47,28 +44,7 @@ export default class SendAssetRow extends Component {
 
   closeDropdown = () => this.setState({ isShowingDropdown: false });
 
-  clearUnsendableAssetError = () => {
-    this.props.setUnsendableAssetError(false);
-    this.props.updateSendErrors({
-      unsendableAssetError: null,
-      gasLoadingError: null,
-    });
-  };
-
-  selectToken = async (type, token) => {
-    if (token && token.isERC721 === undefined) {
-      const updatedToken = await this.props.updateTokenType(token.address);
-      if (updatedToken.isERC721) {
-        this.props.setUnsendableAssetError(true);
-        this.props.updateSendErrors({
-          unsendableAssetError: 'unsendableAssetError',
-        });
-      }
-    }
-
-    if ((token && token.isERC721 === false) || token === undefined) {
-      this.clearUnsendableAssetError();
-    }
+  selectToken = (type, token) => {
     this.setState(
       {
         isShowingDropdown: false,
