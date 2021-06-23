@@ -11,8 +11,8 @@ export default {
 };
 
 const PageSet = ({ children }) => {
-  const symbol = text('symbol', 'DAI');
-  const image = text('Icon URL', './images/dai.png');
+  const symbol = text('symbol', 'META');
+  const image = text('Icon URL', 'metamark.svg');
 
   const state = store.getState();
   const suggestedTokensState = state.metamask.suggestedTokens;
