@@ -751,9 +751,6 @@
   "recents": {
     "message": "የቅርብ ጊዜያት"
   },
-  "recipientAddress": {
-    "message": "የተቀባይ አድራሻ"
-  },
   "recipientAddressPlaceholder": {
     "message": "ፍለጋ፣ ለሕዝብ ክፍት የሆነ አድራሻ (0x), ወይም ENS"
   },

@@ -754,9 +754,6 @@
   "recents": {
     "message": "Останні"
   },
-  "recipientAddress": {
-    "message": "Адреса отримувача"
-  },
   "recipientAddressPlaceholder": {
     "message": "Пошук, публічна адреса (0x), або ENS"
   },

@@ -1411,9 +1411,6 @@
   "recents": {
     "message": "हाल ही के"
   },
-  "recipientAddress": {
-    "message": "प्राप्तकर्ता का पता"
-  },
   "recipientAddressPlaceholder": {
     "message": "खोज, सार्वजनिक पता (0x) या ENS"
   },

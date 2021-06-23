@@ -754,9 +754,6 @@
   "recents": {
     "message": "ಇತ್ತೀಚಿನವುಗಳು"
   },
-  "recipientAddress": {
-    "message": "ಸ್ವೀಕರಿಸುವವರ ವಿಳಾಸ"
-  },
   "recipientAddressPlaceholder": {
     "message": "ಸಾರ್ವಜನಿಕ ವಿಳಾಸ (0x) ಅಥವಾ ENS ಹುಡುಕಿ"
   },

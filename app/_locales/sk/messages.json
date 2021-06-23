@@ -723,9 +723,6 @@
   "recents": {
     "message": "Posledné"
   },
-  "recipientAddress": {
-    "message": "Adresa příjemce"
-  },
   "recipientAddressPlaceholder": {
     "message": "Vyhľadávať verejnú adresu (0x) alebo ENS"
   },

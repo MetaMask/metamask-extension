@@ -15,17 +15,18 @@ import {
 } from '../../store/actions';
 import { unconfirmedTransactionsListSelector } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import { getSendTo } from '../../ducks/send';
 import ConfirmTransaction from './confirm-transaction.component';
 
 const mapStateToProps = (state, ownProps) => {
   const {
     metamask: { unapprovedTxs },
-    send,
   } = state;
   const {
     match: { params = {} },
   } = ownProps;
   const { id } = params;
+  const sendTo = getSendTo(state);
 
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
   const totalUnconfirmed = unconfirmedTransactions.length;
@@ -36,7 +37,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     totalUnapprovedCount: totalUnconfirmed,
-    send,
+    sendTo,
     unapprovedTxs,
     id,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),

@@ -272,9 +272,6 @@
   "readdToken": {
     "message": "U kunt dit token in de toekomst weer toevoegen door naar \"Token toevoegen\" te gaan in het menu met accountopties."
   },
-  "recipientAddress": {
-    "message": "Geadresseerde adres"
-  },
   "reject": {
     "message": "Afwijzen"
   },

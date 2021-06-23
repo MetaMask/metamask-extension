@@ -744,9 +744,6 @@
   "recents": {
     "message": "Hiljutised"
   },
-  "recipientAddress": {
-    "message": "Saaja aadress"
-  },
   "recipientAddressPlaceholder": {
     "message": "Otsing, avalik aadress (0x) või ENS"
   },

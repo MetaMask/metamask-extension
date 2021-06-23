@@ -1411,9 +1411,6 @@
   "recents": {
     "message": "Недавние"
   },
-  "recipientAddress": {
-    "message": "Адрес получателя"
-  },
   "recipientAddressPlaceholder": {
     "message": "Поиск, публичный адрес (0x) или ENS"
   },
