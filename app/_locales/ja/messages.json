@@ -1448,9 +1448,6 @@
   "recents": {
     "message": "最近"
   },
-  "recipientAddress": {
-    "message": "受信者のアドレス"
-  },
   "recipientAddressPlaceholder": {
     "message": "検索、パブリック アドレス (0x)、または ENS"
   },

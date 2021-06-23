@@ -1448,9 +1448,6 @@
   "recents": {
     "message": "Recientes"
   },
-  "recipientAddress": {
-    "message": "Dirección del destinatario"
-  },
   "recipientAddressPlaceholder": {
     "message": "Búsqueda, dirección pública (0x) o ENS"
   },

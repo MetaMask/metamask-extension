@@ -1,33 +1,47 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import PageContainerHeader from '../../../components/ui/page-container/page-container-header';
+import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  ASSET_TYPES,
+  getSendAsset,
+  getSendStage,
+  resetSendState,
+  SEND_STAGES,
+} from '../../../ducks/send';
 
-export default class SendHeader extends Component {
-  static propTypes = {
-    clearSend: PropTypes.func,
-    history: PropTypes.object,
-    mostRecentOverviewPage: PropTypes.string,
-    titleKey: PropTypes.string,
-  };
+export default function SendHeader() {
+  const history = useHistory();
+  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  const dispatch = useDispatch();
+  const stage = useSelector(getSendStage);
+  const asset = useSelector(getSendAsset);
+  const t = useI18nContext();
 
-  static contextTypes = {
-    t: PropTypes.func,
-  };
-
-  onClose() {
-    const { clearSend, history, mostRecentOverviewPage } = this.props;
-    clearSend();
+  const onClose = () => {
+    dispatch(resetSendState());
     history.push(mostRecentOverviewPage);
+  };
+
+  let title = asset.type === ASSET_TYPES.NATIVE ? t('send') : t('sendTokens');
+
+  if (
+    stage === SEND_STAGES.ADD_RECIPIENT ||
+    stage === SEND_STAGES.UNINITIALIZED
+  ) {
+    title = t('addRecipient');
+  } else if (stage === SEND_STAGES.EDIT) {
+    title = t('edit');
   }
 
-  render() {
-    return (
-      <PageContainerHeader
-        className="send__header"
-        onClose={() => this.onClose()}
-        title={this.context.t(this.props.titleKey)}
-        headerCloseText={this.context.t('cancel')}
-      />
-    );
-  }
+  return (
+    <PageContainerHeader
+      className="send__header"
+      onClose={onClose}
+      title={title}
+      headerCloseText={t('cancel')}
+    />
+  );
 }

@@ -18,12 +18,8 @@ export default class SendContent extends Component {
     t: PropTypes.func,
   };
 
-  state = {
-    unsendableAssetError: false,
-  };
-
   static propTypes = {
-    updateGas: PropTypes.func,
+    isAssetSendable: PropTypes.bool,
     showAddToAddressBookModal: PropTypes.func,
     showHexData: PropTypes.bool,
     contact: PropTypes.object,
@@ -35,11 +31,6 @@ export default class SendContent extends Component {
     noGasPrice: PropTypes.bool,
   };
 
-  updateGas = (updateData) => this.props.updateGas(updateData);
-
-  setUnsendableAssetError = (unsendableAssetError) =>
-    this.setState({ unsendableAssetError });
-
   render() {
     const {
       warning,
@@ -47,9 +38,9 @@ export default class SendContent extends Component {
       gasIsExcessive,
       isEthGasPrice,
       noGasPrice,
+      isAssetSendable,
     } = this.props;
 
-    const { unsendableAssetError } = this.state;
     let gasError;
     if (gasIsExcessive) gasError = GAS_PRICE_EXCESSIVE_ERROR_KEY;
     else if (noGasPrice) gasError = GAS_PRICE_FETCH_FAILURE_ERROR_KEY;
@@ -59,18 +50,15 @@ export default class SendContent extends Component {
         <div className="send-v2__form">
           {gasError && this.renderError(gasError)}
           {isEthGasPrice && this.renderWarning(ETH_GAS_PRICE_FETCH_WARNING_KEY)}
-          {unsendableAssetError && this.renderError(UNSENDABLE_ASSET_ERROR_KEY)}
+          {isAssetSendable === false &&
+            this.renderError(UNSENDABLE_ASSET_ERROR_KEY)}
           {error && this.renderError(error)}
           {warning && this.renderWarning()}
           {this.maybeRenderAddContact()}
-          <SendAssetRow
-            setUnsendableAssetError={this.setUnsendableAssetError}
-          />
-          <SendAmountRow updateGas={this.updateGas} />
+          <SendAssetRow />
+          <SendAmountRow />
           <SendGasRow />
-          {this.props.showHexData && (
-            <SendHexDataRow updateGas={this.updateGas} />
-          )}
+          {this.props.showHexData && <SendHexDataRow />}
         </div>
       </PageContainerContent>
     );
