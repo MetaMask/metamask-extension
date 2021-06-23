@@ -54,7 +54,7 @@ describe('Stores custom RPC history', function () {
     );
   });
 
-  it('warns user when they enter url or chainId for an already configured network', async function () {
+  it('warns user when they enter url for an already configured network', async function () {
     await withFixtures(
       {
         fixtures: 'imported-account',
@@ -68,6 +68,40 @@ describe('Stores custom RPC history', function () {
 
         // duplicate network
         const duplicateRpcUrl = 'http://localhost:8545';
+
+        await driver.clickElement('.network-display');
+
+        await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
+
+        await driver.findElement('.settings-page__sub-header-text');
+
+        const customRpcInputs = await driver.findElements('input[type="text"]');
+        const rpcUrlInput = customRpcInputs[1];
+
+        await rpcUrlInput.clear();
+        await rpcUrlInput.sendKeys(duplicateRpcUrl);
+        await driver.findElement({
+          text: 'This URL is currently used by the Localhost 8545 network.',
+          tag: 'p',
+        });
+      },
+    );
+  });
+
+  it('warns user when they enter chainId for an already configured network', async function () {
+    await withFixtures(
+      {
+        fixtures: 'imported-account',
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        // duplicate network
+        const newRpcUrl = 'http://localhost:8544';
         const duplicateChainId = '0x539';
 
         await driver.clickElement('.network-display');
@@ -81,11 +115,7 @@ describe('Stores custom RPC history', function () {
         const chainIdInput = customRpcInputs[2];
 
         await rpcUrlInput.clear();
-        await rpcUrlInput.sendKeys(duplicateRpcUrl);
-        await driver.findElement({
-          text: 'This URL is currently used by the Localhost 8545 network.',
-          tag: 'p',
-        });
+        await rpcUrlInput.sendKeys(newRpcUrl);
 
         await chainIdInput.clear();
         await chainIdInput.sendKeys(duplicateChainId);
