@@ -1934,6 +1934,21 @@ export default class MetamaskController extends EventEmitter {
     cb(null, this.getState());
   }
 
+  /**
+   * Method to return a boolean if the keyring for the currently selected
+   * account is a ledger or trezor keyring.
+   * TODO: remove this method when Ledger and Trezor release their supported
+   * client utilities for EIP-1559
+   * @returns {boolean} true if the keyring type supports EIP-1559
+   */
+  getCurrentAccountEIP1559Compatibility() {
+    const selectedAddress = this.preferencesController.getSelectedAddress();
+    const keyring = this.keyringController.getKeyringForAccount(
+      selectedAddress,
+    );
+    return keyring.type !== 'ledger' && keyring.type !== 'trezor';
+  }
+
   //=============================================================================
   // END (VAULT / KEYRING RELATED METHODS)
   //=============================================================================
