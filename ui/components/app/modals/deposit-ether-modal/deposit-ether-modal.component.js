@@ -145,8 +145,8 @@ export default class DepositEtherModal extends Component {
                 <div
                   className="deposit-ether-modal__logo"
                   style={{
-                    backgroundImage: "url('./images/transak.png')",
-                    height: '40px',
+                    backgroundImage: "url('./images/transak.svg')",
+                    height: '60px',
                   }}
                 />
               ),
