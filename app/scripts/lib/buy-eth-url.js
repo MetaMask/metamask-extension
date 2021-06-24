@@ -5,6 +5,7 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
+import { TRANSAK_API_KEY } from '../constants/on-ramp';
 
 /**
  * Create a Transak Checkout URL.
@@ -14,7 +15,7 @@ import {
  */
 const createTransakUrl = (address) => {
   const queryParams = new URLSearchParams({
-    apiKey: '25ac1309-a49b-4411-b20e-5e56c61a5b1c', // It's a public key that is needed for the URL.
+    apiKey: TRANSAK_API_KEY,
     hostURL: 'https://metamask.io',
     defaultCryptoCurrency: 'ETH',
     walletAddress: address,

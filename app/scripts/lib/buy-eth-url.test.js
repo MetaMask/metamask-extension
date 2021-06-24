@@ -5,6 +5,7 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
+import { TRANSAK_API_KEY } from '../constants/on-ramp';
 import getBuyEthUrl from './buy-eth-url';
 
 describe('buy-eth-url', function () {
@@ -37,7 +38,7 @@ describe('buy-eth-url', function () {
 
     assert.equal(
       transakUrl,
-      'https://global.transak.com/?apiKey=25ac1309-a49b-4411-b20e-5e56c61a5b1c&hostURL=https%3A%2F%2Fmetamask.io&defaultCryptoCurrency=ETH&walletAddress=0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&defaultCryptoCurrency=ETH&walletAddress=0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc`,
     );
   });
 
