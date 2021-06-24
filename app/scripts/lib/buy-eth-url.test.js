@@ -23,12 +23,21 @@ describe('buy-eth-url', function () {
     chainId: KOVAN_CHAIN_ID,
   };
 
-  it('returns wyre url with address for network 1', function () {
+  it('returns Wyre url with an ETH address for Ethereum mainnet', function () {
     const wyreUrl = getBuyEthUrl(mainnet);
 
     assert.equal(
       wyreUrl,
       'https://pay.sendwyre.com/purchase?dest=ethereum:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card',
+    );
+  });
+
+  it('returns Transak url with an ETH address for Ethereum mainnet', function () {
+    const transakUrl = getBuyEthUrl({ ...mainnet, service: 'transak' });
+
+    assert.equal(
+      transakUrl,
+      'https://global.transak.com/?apiKey=25ac1309-a49b-4411-b20e-5e56c61a5b1c&hostURL=https%3A%2F%2Fmetamask.io&defaultCryptoCurrency=ETH&walletAddress=0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     );
   });
 

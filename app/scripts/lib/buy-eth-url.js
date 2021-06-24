@@ -7,6 +7,22 @@ import {
 } from '../../../shared/constants/network';
 
 /**
+ * Create a Transak Checkout URL.
+ * API docs here: https://www.notion.so/Query-Parameters-9ec523df3b874ec58cef4fa3a906f238
+ * @param {String} address Ethereum destination address
+ * @returns String
+ */
+const createTransakUrl = (address) => {
+  const queryParams = new URLSearchParams({
+    apiKey: '25ac1309-a49b-4411-b20e-5e56c61a5b1c',
+    hostURL: 'https://metamask.io',
+    defaultCryptoCurrency: 'ETH',
+    walletAddress: address,
+  });
+  return `https://global.transak.com/?${queryParams}`;
+};
+
+/**
  * Gives the caller a url at which the user can acquire eth, depending on the network they are in
  *
  * @param {Object} opts - Options required to determine the correct url
@@ -26,6 +42,8 @@ export default function getBuyEthUrl({ chainId, address, service }) {
   switch (service) {
     case 'wyre':
       return `https://pay.sendwyre.com/purchase?dest=ethereum:${address}&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`;
+    case 'transak':
+      return createTransakUrl(address);
     case 'metamask-faucet':
       return 'https://faucet.metamask.io/';
     case 'rinkeby-faucet':
