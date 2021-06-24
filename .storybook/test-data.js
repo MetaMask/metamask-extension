@@ -140,7 +140,6 @@ const state = {
       }
     },
     "participateInMetaMetrics": true,
-    "metaMetricsSendCount": 2,
     "nextNonce": 71,
     "connectedStatusPopoverHasBeenShown": true,
     "swapsWelcomeMessageHasBeenShown": true,

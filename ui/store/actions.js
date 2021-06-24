@@ -1968,27 +1968,6 @@ export function setParticipateInMetaMetrics(val) {
   };
 }
 
-export function setMetaMetricsSendCount(val) {
-  return (dispatch) => {
-    log.debug(`background.setMetaMetricsSendCount`);
-    return new Promise((resolve, reject) => {
-      background.setMetaMetricsSendCount(val, (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-
-        dispatch({
-          type: actionConstants.SET_METAMETRICS_SEND_COUNT,
-          value: val,
-        });
-        resolve(val);
-      });
-    });
-  };
-}
-
 export function setUseBlockie(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());

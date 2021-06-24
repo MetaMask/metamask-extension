@@ -120,8 +120,7 @@
     },
     "MetaMetricsController": {
       "metaMetricsId": null,
-      "participateInMetaMetrics": false,
-      "metaMetricsSendCount": 0
+      "participateInMetaMetrics": false
     },
     "ThreeBoxController": {
       "threeBoxSyncingAllowed": true,
