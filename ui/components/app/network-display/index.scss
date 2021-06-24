@@ -5,7 +5,6 @@
   padding: 0 10px;
   border-radius: 4px;
   min-height: 25px;
-  cursor: pointer;
   user-select: none;
 
   &--disabled {
@@ -36,7 +35,6 @@
     background-color: lighten($dodger-blue, 35%);
   }
 
-
   & .chip__label {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -55,5 +53,9 @@
     height: 8px;
     width: 12px;
     display: block;
+  }
+
+  &--clickable {
+    cursor: pointer;
   }
 }
