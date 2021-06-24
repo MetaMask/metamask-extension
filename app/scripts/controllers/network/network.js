@@ -375,7 +375,7 @@ export default class NetworkController extends EventEmitter {
   }
 
   _switchNetwork(opts) {
-    // Indicate to subsribers that network is about to change
+    // Indicate to subscribers that network is about to change
     this.emit(NETWORK_EVENTS.NETWORK_WILL_CHANGE);
     // Set loading state
     this.setNetworkState('loading');
