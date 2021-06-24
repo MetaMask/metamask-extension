@@ -35,9 +35,9 @@ const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
  * @property {string} blockNumber - The number of the block this transaction was found in, in decimal
  * @property {string} from - The hex-prefixed address of the sender
  * @property {string} gas - The gas limit, in decimal GWEI
- * @property {string} [gasPrice] - The gas price, in decimal GWEI
- * @property {string} [maxFeePerGas] - The maximum fee per gas, inclusive of tip, in decimal GWEI
- * @property {string} [maxPriorityFeePerGas] - The maximum tip per gas in decimal GWEI
+ * @property {string} [gasPrice] - The gas price, in decimal WEI
+ * @property {string} [maxFeePerGas] - The maximum fee per gas, inclusive of tip, in decimal WEI
+ * @property {string} [maxPriorityFeePerGas] - The maximum tip per gas in decimal WEI
  * @property {string} hash - The hex-prefixed transaction hash
  * @property {string} isError - Whether the transaction was confirmed or failed (0 for confirmed, 1 for failed)
  * @property {string} nonce - The transaction nonce, in decimal
