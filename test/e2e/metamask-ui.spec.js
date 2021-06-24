@@ -206,50 +206,6 @@ describe('MetaMask', function () {
     });
   });
 
-  describe('Lock an unlock', function () {
-    it('logs out of the account', async function () {
-      await driver.clickElement('.account-menu__icon');
-      await driver.delay(regularDelayMs);
-
-      const lockButton = await driver.findClickableElement(
-        '.account-menu__lock-button',
-      );
-      assert.equal(await lockButton.getText(), 'Lock');
-      await lockButton.click();
-      await driver.delay(regularDelayMs);
-    });
-
-    it('accepts the account password after lock', async function () {
-      await driver.fill('#password', 'correct horse battery staple');
-      await driver.press('#password', driver.Key.ENTER);
-      await driver.delay(largeDelayMs * 4);
-    });
-  });
-
-  describe('Add account', function () {
-    it('choose Create Account from the account menu', async function () {
-      await driver.clickElement('.account-menu__icon');
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement({ text: 'Create Account', tag: 'div' });
-      await driver.delay(regularDelayMs);
-    });
-
-    it('set account name', async function () {
-      await driver.fill('.new-account-create-form input', '2nd account');
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement({ text: 'Create', tag: 'button' });
-      await driver.delay(largeDelayMs);
-    });
-
-    it('should display correct account name', async function () {
-      const accountName = await driver.findElement('.selected-account__name');
-      assert.equal(await accountName.getText(), '2nd account');
-      await driver.delay(regularDelayMs);
-    });
-  });
-
   describe('Import Secret Recovery Phrase', function () {
     it('logs out of the vault', async function () {
       await driver.clickElement('.account-menu__icon');
