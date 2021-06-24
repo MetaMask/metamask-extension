@@ -101,6 +101,10 @@ export function isCustomPriceSafeForCustomNetwork(state) {
 
   const customGasPrice = getCustomGasPrice(state);
 
+  if (!customGasPrice) {
+    return true;
+  }
+
   const customPriceSafe = conversionGreaterThan(
     {
       value: customGasPrice,
