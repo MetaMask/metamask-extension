@@ -86,8 +86,6 @@ export default class ConfirmTransactionBase extends Component {
     hideSubtitle: PropTypes.bool,
     identiconAddress: PropTypes.string,
     onEdit: PropTypes.func,
-    setMetaMetricsSendCount: PropTypes.func,
-    metaMetricsSendCount: PropTypes.number,
     subtitleComponent: PropTypes.node,
     title: PropTypes.string,
     advancedInlineGasShown: PropTypes.bool,
@@ -474,35 +472,16 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleCancel() {
-    const { metricsEvent } = this.context;
     const {
       txData,
       cancelTransaction,
       history,
       mostRecentOverviewPage,
       clearConfirmTransaction,
-      actionKey,
-      txData: { origin },
-      methodData = {},
       updateCustomNonce,
     } = this.props;
 
     this._removeBeforeUnload();
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Confirm Screen',
-        name: 'Cancel',
-      },
-      customVariables: {
-        recipientKnown: null,
-        functionType:
-          actionKey ||
-          getMethodName(methodData.name) ||
-          TRANSACTION_TYPES.CONTRACT_INTERACTION,
-        origin,
-      },
-    });
     updateCustomNonce('');
     cancelTransaction(txData).then(() => {
       clearConfirmTransaction();
@@ -511,18 +490,12 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleSubmit() {
-    const { metricsEvent } = this.context;
     const {
-      txData: { origin },
       sendTransaction,
       clearConfirmTransaction,
       txData,
       history,
-      actionKey,
       mostRecentOverviewPage,
-      metaMetricsSendCount = 0,
-      setMetaMetricsSendCount,
-      methodData = {},
       updateCustomNonce,
     } = this.props;
     const { submitting } = this.state;
@@ -538,44 +511,27 @@ export default class ConfirmTransactionBase extends Component {
       },
       () => {
         this._removeBeforeUnload();
-        metricsEvent({
-          eventOpts: {
-            category: 'Transactions',
-            action: 'Confirm Screen',
-            name: 'Transaction Completed',
-          },
-          customVariables: {
-            recipientKnown: null,
-            functionType:
-              actionKey ||
-              getMethodName(methodData.name) ||
-              TRANSACTION_TYPES.CONTRACT_INTERACTION,
-            origin,
-          },
-        });
 
-        setMetaMetricsSendCount(metaMetricsSendCount + 1).then(() => {
-          sendTransaction(txData)
-            .then(() => {
-              clearConfirmTransaction();
-              this.setState(
-                {
-                  submitting: false,
-                },
-                () => {
-                  history.push(mostRecentOverviewPage);
-                  updateCustomNonce('');
-                },
-              );
-            })
-            .catch((error) => {
-              this.setState({
+        sendTransaction(txData)
+          .then(() => {
+            clearConfirmTransaction();
+            this.setState(
+              {
                 submitting: false,
-                submitError: error.message,
-              });
-              updateCustomNonce('');
+              },
+              () => {
+                history.push(mostRecentOverviewPage);
+                updateCustomNonce('');
+              },
+            );
+          })
+          .catch((error) => {
+            this.setState({
+              submitting: false,
+              submitError: error.message,
             });
-        });
+            updateCustomNonce('');
+          });
       },
     );
   }
@@ -642,18 +598,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   _beforeUnload = () => {
-    const { txData: { origin, id } = {}, cancelTransaction } = this.props;
-    const { metricsEvent } = this.context;
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Confirm Screen',
-        name: 'Cancel Tx Via Notification Close',
-      },
-      customVariables: {
-        origin,
-      },
-    });
+    const { txData: { id } = {}, cancelTransaction } = this.props;
     cancelTransaction({ id });
   };
 
