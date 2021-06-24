@@ -29,12 +29,14 @@ import {
   getCurrentCurrency,
   getCurrentEthBalance,
   getIsMainnet,
+  getIsTestnet,
   getBasicGasEstimateLoadingStatus,
   getCustomGasLimit,
   getCustomGasPrice,
   getDefaultActiveButtonIndex,
   getRenderableBasicEstimateData,
   isCustomPriceSafe,
+  isCustomPriceSafeForCustomNetwork,
   getAveragePriceEstimateInHexWEI,
   isCustomPriceExcessive,
   getIsGasEstimatesFetched,
@@ -113,6 +115,7 @@ const mapStateToProps = (state, ownProps) => {
   const balance = getCurrentEthBalance(state);
 
   const isMainnet = getIsMainnet(state);
+  const isTestnet = getIsTestnet(state);
   const showFiat = getShouldShowFiat(state);
 
   const newTotalEth =
@@ -134,6 +137,16 @@ const mapStateToProps = (state, ownProps) => {
         conversionRate,
       });
   const isGasEstimate = getIsGasEstimatesFetched(state);
+
+  let customPriceIsSafe;
+  if ((isMainnet || process.env.IN_TEST) && isGasEstimate) {
+    customPriceIsSafe = isCustomPriceSafe(state);
+  } else if (isTestnet) {
+    customPriceIsSafe = true;
+  } else {
+    customPriceIsSafe = isCustomPriceSafeForCustomNetwork(state);
+  }
+
   return {
     hideBasic,
     isConfirm: isConfirm(state),
@@ -143,10 +156,7 @@ const mapStateToProps = (state, ownProps) => {
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     customGasTotal,
     newTotalFiat,
-    customPriceIsSafe:
-      (isMainnet || process.env.IN_TEST) && isGasEstimate
-        ? isCustomPriceSafe(state)
-        : true,
+    customPriceIsSafe,
     customPriceIsExcessive: isCustomPriceExcessive(state),
     maxModeOn,
     gasPriceButtonGroupProps: {
