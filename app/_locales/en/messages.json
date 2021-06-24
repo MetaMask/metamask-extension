@@ -608,6 +608,9 @@
   "editContact": {
     "message": "Edit Contact"
   },
+  "editGasTitle": {
+    "message": "Edit gas fee"
+  },
   "editNonceField": {
     "message": "Edit Nonce"
   },

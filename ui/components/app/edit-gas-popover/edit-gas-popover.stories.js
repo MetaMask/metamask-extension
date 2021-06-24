@@ -1,14 +1,14 @@
 import React from 'react';
-import EditGasDisplay from '.';
+import EditGasPopover from '.';
 
 export default {
-  title: 'Edit Gas Display',
+  title: 'Edit Gas Display Popover',
 };
 
 export const basic = () => {
   return (
     <div style={{ width: '600px' }}>
-      <EditGasDisplay />
+      <EditGasPopover />
     </div>
   );
 };
