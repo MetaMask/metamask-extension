@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 import ContactList from '../../../components/app/contact-list';
 import { showModal } from '../../../store/actions';
-import {
-  CONTACT_ADD_ROUTE,
-  CONTACT_VIEW_ROUTE,
-} from '../../../helpers/constants/routes';
-import Button from '../../../components/ui/button';
+import { CONTACT_VIEW_ROUTE } from '../../../helpers/constants/routes';
 import EditContact from './edit-contact';
 import AddContact from './add-contact';
 import ViewContact from './view-contact';
@@ -16,6 +11,29 @@ import ViewContact from './view-contact';
 AddContactButton.propTypes = {
   label: PropTypes.string,
 };
+
+RenderAddContactLink.propTypes = {
+  label: PropTypes.string,
+};
+
+function RenderAddContactLink(props) {
+  const { label } = props;
+  const dispatch = useDispatch();
+
+  return (
+    <div>
+      <button
+        className="address-book__link"
+        onClick={(e) => {
+          e.preventDefault();
+          dispatch(showModal({ name: 'ADD_NEW_CONTACT' }));
+        }}
+      >
+        + {label}
+      </button>
+    </div>
+  );
+}
 
 function AddContactButton(props) {
   const { label } = props;
@@ -78,38 +96,8 @@ export default class ContactListTab extends Component {
           <p className="address-book__sub-title">
             {t('addFriendsAndAddresses')}
           </p>
-          <button
-            className="address-book__link"
-            onClick={() => {
-              history.push(CONTACT_ADD_ROUTE);
-            }}
-          >
-            + {t('addContact')}
-          </button>
+          <RenderAddContactLink label={t('addContact')} />
         </div>
-      </div>
-    );
-  }
-
-  renderAddButton() {
-    const { history, viewingContact, editingContact } = this.props;
-
-    return (
-      <div className="address-book-add-button">
-        <Button
-          className={classnames({
-            'address-book-add-button__button': true,
-            'address-book-add-button__button--hidden':
-              viewingContact || editingContact,
-          })}
-          type="secondary"
-          rounded
-          onClick={() => {
-            history.push(CONTACT_ADD_ROUTE);
-          }}
-        >
-          {this.context.t('addContact')}
-        </Button>
       </div>
     );
   }
