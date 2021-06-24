@@ -14,7 +14,7 @@ import {
  */
 const createTransakUrl = (address) => {
   const queryParams = new URLSearchParams({
-    apiKey: '25ac1309-a49b-4411-b20e-5e56c61a5b1c',
+    apiKey: '25ac1309-a49b-4411-b20e-5e56c61a5b1c', // It's a public key that is needed for the URL.
     hostURL: 'https://metamask.io',
     defaultCryptoCurrency: 'ETH',
     walletAddress: address,
