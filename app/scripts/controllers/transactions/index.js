@@ -26,6 +26,7 @@ import {
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import {
+  HARDFORKS,
   MAINNET,
   NETWORK_TYPE_RPC,
 } from '../../../../shared/constants/network';
@@ -33,8 +34,6 @@ import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
 import * as txUtils from './lib/util';
-
-const HARDFORK = 'berlin';
 
 const hstInterface = new ethers.utils.Interface(abi);
 
@@ -81,6 +80,7 @@ export default class TransactionController extends EventEmitter {
     this.networkStore = opts.networkStore || new ObservableStore({});
     this._getCurrentChainId = opts.getCurrentChainId;
     this.getProviderConfig = opts.getProviderConfig;
+    this.getEIP1559Compatibility = opts.getEIP1559Compatibility;
     this.preferencesStore = opts.preferencesStore || new ObservableStore({});
     this.provider = opts.provider;
     this.getPermittedAccounts = opts.getPermittedAccounts;
@@ -170,14 +170,23 @@ export default class TransactionController extends EventEmitter {
    * transaction type to use.
    * @returns {Common} common configuration object
    */
-  getCommonConfiguration() {
+  async getCommonConfiguration() {
     const { type, nickname: name } = this.getProviderConfig();
+    const supportsEIP1559 = await this.getEIP1559Compatibility();
+
+    // This logic below will have to be updated each time a hardfork happens
+    // that carries with it a new Transaction type. It is inconsequential for
+    // hardforks that do not include new types.
+    const hardfork = supportsEIP1559 ? HARDFORKS.LONDON : HARDFORKS.BERLIN;
 
     // type will be one of our default network names or 'rpc'. the default
     // network names are sufficient configuration, simply pass the name as the
     // chain argument in the constructor.
     if (type !== NETWORK_TYPE_RPC) {
-      return new Common({ chain: type, hardfork: HARDFORK });
+      return new Common({
+        chain: type,
+        hardfork,
+      });
     }
 
     // For 'rpc' we need to use the same basic configuration as mainnet,
@@ -202,7 +211,7 @@ export default class TransactionController extends EventEmitter {
       networkId: networkId === 'loading' ? 0 : parseInt(networkId, 10),
     };
 
-    return Common.forCustomChain(MAINNET, customChainParams, HARDFORK);
+    return Common.forCustomChain(MAINNET, customChainParams, hardfork);
   }
 
   /**
@@ -629,7 +638,7 @@ export default class TransactionController extends EventEmitter {
     };
     // sign tx
     const fromAddress = txParams.from;
-    const common = this.getCommonConfiguration();
+    const common = await this.getCommonConfiguration();
     const unsignedEthTx = TransactionFactory.fromTxData(txParams, { common });
     const signedEthTx = await this.signEthTx(unsignedEthTx, fromAddress);
 
