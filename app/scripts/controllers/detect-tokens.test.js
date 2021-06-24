@@ -31,6 +31,9 @@ describe('DetectTokensController', function () {
       '0xbc86727e770de68b1060c91f6bb6945c73e10388',
     ]);
     sandbox
+      .stub(network, 'getLatestBlock')
+      .callsFake(() => Promise.resolve({}));
+    sandbox
       .stub(preferences, '_detectIsERC721')
       .returns(Promise.resolve(false));
   });

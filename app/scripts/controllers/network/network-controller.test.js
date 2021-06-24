@@ -22,7 +22,6 @@ describe('NetworkController', function () {
       setProviderTypeAndWait = () =>
         new Promise((resolve) => {
           networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
-            console.log('here');
             resolve();
           });
           networkController.setProviderType('mainnet');

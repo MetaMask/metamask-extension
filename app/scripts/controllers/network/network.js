@@ -83,9 +83,11 @@ export default class NetworkController extends EventEmitter {
     // will require a decent sized refactor of how we're accessing network
     // state. Currently this is only used for detecting EIP 1559 support but
     // can be extended to track other network details.
-    this.networkDetails = new ObservableStore({
-      ...defaultNetworkDetailsState,
-    });
+    this.networkDetails = new ObservableStore(
+      opts.networkDetails || {
+        ...defaultNetworkDetailsState,
+      },
+    );
     this.store = new ComposedStore({
       provider: this.providerStore,
       previousProviderStore: this.previousProviderStore,
