@@ -12,3 +12,11 @@ export const basic = () => {
     </div>
   );
 };
+
+export const basicWithDifferentButtonText = () => {
+  return (
+    <div style={{ width: '600px' }}>
+      <EditGasPopover confirmButtonText="Custom Value" />
+    </div>
+  );
+};
