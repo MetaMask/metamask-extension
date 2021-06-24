@@ -158,7 +158,7 @@ export default class NetworkController extends EventEmitter {
   /**
    * Method to check if the block header contains fields that indicate EIP 1559
    * support (baseFeePerGas).
-   * @returns {boolean} true if current network supports EIP 1559
+   * @returns {Promise<boolean>} true if current network supports EIP 1559
    */
   async getEIP1559Compatibility() {
     const { EIPS } = this.networkDetails.getState();
