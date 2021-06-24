@@ -28,6 +28,7 @@ import {
   getIsMainnet,
   getSendToken,
   getPreferences,
+  getIsTestnet,
   getBasicGasEstimateLoadingStatus,
   getCustomGasLimit,
   getCustomGasPrice,
@@ -36,6 +37,7 @@ import {
   isCustomPriceSafe,
   getTokenBalance,
   getSendMaxModeState,
+  isCustomPriceSafeForCustomNetwork,
   getAveragePriceEstimateInHexWEI,
   isCustomPriceExcessive,
   getIsGasEstimatesFetched,
@@ -118,6 +120,7 @@ const mapStateToProps = (state, ownProps) => {
   const showFiat = Boolean(isMainnet || showFiatInTestnets);
 
   const isSendTokenSet = Boolean(sendToken);
+  const isTestnet = getIsTestnet(state);
 
   const newTotalEth =
     maxModeOn && !isSendTokenSet
@@ -138,6 +141,16 @@ const mapStateToProps = (state, ownProps) => {
         conversionRate,
       });
   const isGasEstimate = getIsGasEstimatesFetched(state);
+
+  let customPriceIsSafe;
+  if ((isMainnet || process.env.IN_TEST) && isGasEstimate) {
+    customPriceIsSafe = isCustomPriceSafe(state);
+  } else if (isTestnet) {
+    customPriceIsSafe = true;
+  } else {
+    customPriceIsSafe = isCustomPriceSafeForCustomNetwork(state);
+  }
+
   return {
     hideBasic,
     isConfirm: isConfirm(state),
@@ -147,10 +160,7 @@ const mapStateToProps = (state, ownProps) => {
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     customGasTotal,
     newTotalFiat,
-    customPriceIsSafe:
-      (isMainnet || process.env.IN_TEST) && isGasEstimate
-        ? isCustomPriceSafe(state)
-        : true,
+    customPriceIsSafe,
     customPriceIsExcessive: isCustomPriceExcessive(state),
     maxModeOn,
     gasPriceButtonGroupProps: {

@@ -100,6 +100,28 @@ export function isCustomPriceSafe(state) {
   return customPriceSafe;
 }
 
+export function isCustomPriceSafeForCustomNetwork(state) {
+  const estimatedPrice = state.gas.basicEstimates.average;
+
+  const customGasPrice = getCustomGasPrice(state);
+
+  if (!customGasPrice) {
+    return true;
+  }
+
+  const customPriceSafe = conversionGreaterThan(
+    {
+      value: customGasPrice,
+      fromNumericBase: 'hex',
+      fromDenomination: 'WEI',
+      toDenomination: 'GWEI',
+    },
+    { value: estimatedPrice, fromNumericBase: 'dec' },
+  );
+
+  return customPriceSafe;
+}
+
 export function isCustomPriceExcessive(state, checkSend = false) {
   const customPrice = checkSend ? getGasPrice(state) : getCustomGasPrice(state);
   const fastPrice = getFastPriceEstimate(state);
