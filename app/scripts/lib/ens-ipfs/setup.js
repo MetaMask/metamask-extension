@@ -2,6 +2,8 @@ import extension from 'extensionizer';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import { SECOND } from '../../../../shared/constants/time';
 import resolveEnsToIpfsContentId from './resolver';
+import base64 from "base64-js";
+import base32Encode from "base32-encode";
 
 const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
 
@@ -55,6 +57,7 @@ export default function setupEnsIpfsResolver({
         provider,
         name,
       });
+
       if (type === 'ipfs-ns' || type === 'ipns-ns') {
         const resolvedUrl = `https://${hash}.${type.slice(
           0,
@@ -81,6 +84,11 @@ export default function setupEnsIpfsResolver({
         url = `http://127.0.0.1:43110/${hash}${pathname}${search || ''}${
           fragment || ''
         }`;
+      } else if (type === 'skynet-ns') {
+        const padded = hash.padEnd(hash.length + 4 - (hash.length % 4), "=");
+        const decoded = base64.toByteArray(padded);
+        const base32EncodedSkylink = base32Encode(decoded, "RFC4648-HEX", { padding: false }).toLowerCase();
+        url = `https://${base32EncodedSkylink}.siasky.net/${pathname}${search || ''}${fragment || ''}`;
       }
     } catch (err) {
       console.warn(err);
