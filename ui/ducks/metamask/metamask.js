@@ -238,3 +238,7 @@ export function getSendToAccounts(state) {
 export function getUnapprovedTxs(state) {
   return state.metamask.unapprovedTxs;
 }
+
+export function isEIP1559Network(state) {
+  return state.metamask.networkDetails.EIPS[1559] === true;
+}

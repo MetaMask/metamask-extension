@@ -30,6 +30,9 @@ describe('preferences controller', function () {
     network.initializeProvider(networkControllerProviderConfig);
     provider = network.getProviderAndBlockTracker().provider;
 
+    sandbox
+      .stub(network, 'getLatestBlock')
+      .callsFake(() => Promise.resolve({}));
     sandbox.stub(network, 'getCurrentChainId').callsFake(() => currentChainId);
     sandbox
       .stub(network, 'getProviderConfig')
