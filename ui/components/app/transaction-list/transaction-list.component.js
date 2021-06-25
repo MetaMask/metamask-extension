@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import {
@@ -114,6 +114,11 @@ export default function TransactionList({
   );
 
   const pendingLength = pendingTransactions.length;
+
+  useEffect(() => {
+    const el = document.querySelector('.app');
+    el.scroll(0, 0);
+  }, []);
 
   return (
     <div className="transaction-list">
