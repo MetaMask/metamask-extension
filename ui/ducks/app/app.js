@@ -57,6 +57,8 @@ export default function reduceApp(state = {}, action) {
     newNetworkAdded: '',
     newCollectibleAddedMessage: '',
     sendInputCurrencySwitched: false,
+    showTestnetMessageInDropdown: true,
+    transactionsToDisplayOnFailure: {},
     ...state,
   };
 
@@ -354,6 +356,21 @@ export default function reduceApp(state = {}, action) {
         ...appState,
         gasLoadingAnimationIsShowing: action.value,
       };
+    case actionConstants.ADD_TRANSACTION_TO_DISPLAY_ON_FAILURE:
+      return {
+        ...appState,
+        transactionsToDisplayOnFailure: {
+          ...appState.transactionsToDisplayOnFailure,
+          [action.value]: true,
+        },
+      };
+
+    case actionConstants.REMOVE_TRANSACTION_TO_DISPLAY_ON_FAILURE:
+      delete appState.transactionsToDisplayOnFailure[action.value];
+      return {
+        ...appState,
+        transactionsToDisplayOnFailure: appState.transactionsToDisplayOnFailure,
+      };
 
     case actionConstants.SET_WEBHID_CONNECTED_STATUS:
       return {
@@ -392,6 +409,19 @@ export function hideWhatsNewPopup() {
 
 export function toggleGasLoadingAnimation(value) {
   return { type: actionConstants.TOGGLE_GAS_LOADING_ANIMATION, value };
+}
+export function addTransactionToDisplayOnFailure(txId) {
+  return {
+    type: actionConstants.ADD_TRANSACTION_TO_DISPLAY_ON_FAILURE,
+    value: txId,
+  };
+}
+
+export function removeTransactionToDisplayOnFailure(txId) {
+  return {
+    type: actionConstants.REMOVE_TRANSACTION_TO_DISPLAY_ON_FAILURE,
+    value: txId,
+  };
 }
 
 export function setLedgerWebHidConnectedStatus(value) {

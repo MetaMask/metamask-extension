@@ -52,6 +52,7 @@ export default class ConfirmTransaction extends Component {
     getTokenParams: PropTypes.func,
     isTokenMethodAction: PropTypes.bool,
     setDefaultHomeActiveTabName: PropTypes.func,
+    failedTransactionsToDisplayCount: PropTypes.number,
   };
 
   constructor(props) {
@@ -80,6 +81,7 @@ export default class ConfirmTransaction extends Component {
       paramsTransactionId,
       getTokenParams,
       isTokenMethodAction,
+      failedTransactionsToDisplayCount,
     } = this.props;
 
     getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
@@ -94,7 +96,7 @@ export default class ConfirmTransaction extends Component {
 
     window.addEventListener('beforeunload', this._beforeUnload);
 
-    if (!totalUnapprovedCount && !sendTo) {
+    if (!totalUnapprovedCount && !sendTo && !failedTransactionsToDisplayCount) {
       history.replace(mostRecentOverviewPage);
       return;
     }

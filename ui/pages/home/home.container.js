@@ -19,6 +19,7 @@ import {
   hasUnsignedQRHardwareTransaction,
   hasUnsignedQRHardwareMessage,
   getNewCollectibleAddedMessage,
+  getFailedTransactionsToDisplayCount,
 } from '../../selectors';
 
 import {
@@ -124,6 +125,9 @@ const mapStateToProps = (state) => {
     newNetworkAdded: getNewNetworkAdded(state),
     isSigningQRHardwareTransaction,
     newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
+    failedTransactionsToDisplayCount: getFailedTransactionsToDisplayCount(
+      state,
+    ),
   };
 };
 

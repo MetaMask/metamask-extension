@@ -33,6 +33,8 @@ import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
+import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
+import { removeTransactionToDisplayOnFailure } from '../ducks/app/app';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -1036,7 +1038,7 @@ export function unlockSucceeded(message) {
 
 export function updateMetamaskState(newState) {
   return (dispatch, getState) => {
-    const { metamask: currentState } = getState();
+    const { metamask: currentState, appState } = getState();
 
     const { currentLocale, selectedAddress, provider } = currentState;
     const {
@@ -1044,6 +1046,11 @@ export function updateMetamaskState(newState) {
       selectedAddress: newSelectedAddress,
       provider: newProvider,
     } = newState;
+
+    const { currentNetworkTxList } = getState().metamask;
+    const { currentNetworkTxList: newNetworkTxList } = newState;
+
+    const { transactionsToDisplayOnFailure } = appState;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
       dispatch(updateCurrentLocale(newLocale));
@@ -1106,6 +1113,28 @@ export function updateMetamaskState(newState) {
     dispatch({
       type: actionConstants.UPDATE_METAMASK_STATE,
       value: newState,
+    });
+
+    // Remove successful transactions from `transactionsToDisplayOnFailure`.
+
+    const transactionIdsToRemove = Object.keys(
+      transactionsToDisplayOnFailure,
+    ).filter((id) => {
+      const currentTx = currentNetworkTxList.find((tx) => String(tx.id) === id);
+      const newTx = newNetworkTxList.find((tx) => String(tx.id) === id);
+      if (currentTx && newTx) {
+        return (
+          newTx.status !== currentTx.status &&
+          newTx.status !== TRANSACTION_STATUSES.FAILED &&
+          newTx.status !== TRANSACTION_STATUSES.SIGNED &&
+          newTx.status !== TRANSACTION_STATUSES.APPROVED
+        );
+      }
+      return false;
+    });
+
+    transactionIdsToRemove.forEach((id) => {
+      dispatch(removeTransactionToDisplayOnFailure(id));
     });
   };
 }

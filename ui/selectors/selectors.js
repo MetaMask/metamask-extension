@@ -462,6 +462,25 @@ export function getUnapprovedConfirmations(state) {
   return Object.values(pendingApprovals);
 }
 
+export function getFailedTransactionsToDisplay(state) {
+  const { currentNetworkTxList } = state.metamask;
+  const { transactionsToDisplayOnFailure } = state.appState;
+  const failedTransactions = currentNetworkTxList.reduce(
+    (_failedTransactions, tx) => {
+      if (transactionsToDisplayOnFailure[tx.id]) {
+        return { ..._failedTransactions, [tx.id]: tx };
+      }
+      return _failedTransactions;
+    },
+    {},
+  );
+  return failedTransactions;
+}
+
+export function getFailedTransactionsToDisplayCount(state) {
+  return Object.keys(getFailedTransactionsToDisplay(state)).length;
+}
+
 export function getUnapprovedTemplatedConfirmations(state) {
   const unapprovedConfirmations = getUnapprovedConfirmations(state);
   return unapprovedConfirmations.filter((approval) =>

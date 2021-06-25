@@ -82,6 +82,7 @@ export default class ConfirmPageContainer extends Component {
     disabled: PropTypes.bool,
     editingGas: PropTypes.bool,
     handleCloseEditGas: PropTypes.func,
+    isFailedTransaction: PropTypes.bool,
     // Gas Popover
     currentTransaction: PropTypes.object.isRequired,
     contact: PropTypes.object,
@@ -139,6 +140,7 @@ export default class ConfirmPageContainer extends Component {
       contact = {},
       isOwnedAccount,
       supportsEIP1559V2,
+      isFailedTransaction,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -226,7 +228,11 @@ export default class ConfirmPageContainer extends Component {
               onCancel={onCancel}
               cancelText={this.context.t('reject')}
               onSubmit={onSubmit}
-              submitText={this.context.t('confirm')}
+              submitText={
+                isFailedTransaction
+                  ? this.context.t('close')
+                  : this.context.t('confirm')
+              }
               disabled={disabled}
               unapprovedTxCount={unapprovedTxCount}
               rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
@@ -235,6 +241,7 @@ export default class ConfirmPageContainer extends Component {
               hideTitle={hideTitle}
               supportsEIP1559V2={supportsEIP1559V2}
               hasTopBorder={showAddToAddressDialog}
+              isFailedTransaction={isFailedTransaction}
             />
           )}
           {shouldDisplayWarning && (
@@ -246,8 +253,14 @@ export default class ConfirmPageContainer extends Component {
             <PageContainerFooter
               onCancel={onCancel}
               cancelText={this.context.t('reject')}
+              hideCancel={isFailedTransaction}
               onSubmit={onSubmit}
-              submitText={this.context.t('confirm')}
+              submitText={
+                isFailedTransaction
+                  ? this.context.t('close')
+                  : this.context.t('confirm')
+              }
+              submitButtonType={isFailedTransaction ? 'default' : 'confirm'}
               disabled={disabled}
             >
               {unapprovedTxCount > 1 && (
