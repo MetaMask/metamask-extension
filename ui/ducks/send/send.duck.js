@@ -254,6 +254,7 @@ export function updateGasData({
   to,
   value,
   data,
+  isNonStandardEthChain = false,
 }) {
   return (dispatch) => {
     dispatch(gasLoadingStarted());
@@ -266,6 +267,7 @@ export function updateGasData({
       value,
       estimateGasPrice: gasPrice,
       data,
+      isNonStandardEthChain,
     })
       .then((gas) => {
         dispatch(setGasLimit(gas));

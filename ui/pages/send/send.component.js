@@ -59,6 +59,7 @@ export default class SendTransactionScreen extends Component {
     qrCodeData: PropTypes.object,
     sendTokenAddress: PropTypes.string,
     gasIsExcessive: PropTypes.bool.isRequired,
+    isNonStandardEthChain: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -303,6 +304,7 @@ export default class SendTransactionScreen extends Component {
       sendToken,
       to: currentToAddress,
       updateAndSetGasLimit,
+      isNonStandardEthChain = false,
     } = this.props;
 
     updateAndSetGasLimit({
@@ -315,6 +317,7 @@ export default class SendTransactionScreen extends Component {
       to: getToAddressForGasUpdate(updatedToAddress, currentToAddress),
       value: value || amount,
       data,
+      isNonStandardEthChain,
     });
   }
 
