@@ -6,6 +6,7 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
+import { TRANSAK_API_KEY } from '../constants/on-ramp';
 import getBuyEthUrl from './buy-eth-url';
 
 describe('buy-eth-url', function () {
@@ -24,7 +25,7 @@ describe('buy-eth-url', function () {
     chainId: KOVAN_CHAIN_ID,
   };
 
-  it('returns a Wyre url with an order reservation ID', async function () {
+  it('returns Wyre url with an ETH address for Ethereum mainnet', async function () {
     nock('https://api.metaswap.codefi.network')
       .get(
         '/fiatOnRampUrl?serviceName=wyre&destinationAddress=0x0dcd5d886577d5581b0c524242ef2ee70be3e7bc',
@@ -47,6 +48,15 @@ describe('buy-eth-url', function () {
     assert.equal(
       wyreUrl,
       'https://pay.sendwyre.com/purchase?dest=ethereum:0x0dcd5d886577d5581b0c524242ef2ee70be3e7bc&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card',
+    );
+  });
+
+  it('returns Transak url with an ETH address for Ethereum mainnet', async function () {
+    const transakUrl = await getBuyEthUrl({ ...mainnet, service: 'transak' });
+
+    assert.equal(
+      transakUrl,
+      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&defaultCryptoCurrency=ETH&walletAddress=0x0dcd5d886577d5581b0c524242ef2ee70be3e7bc`,
     );
   });
 

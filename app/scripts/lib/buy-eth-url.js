@@ -10,6 +10,7 @@ import {
 } from '../../../shared/constants/network';
 import { SECOND } from '../../../shared/constants/time';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
+import { TRANSAK_API_KEY } from '../constants/on-ramp';
 
 const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
 
@@ -41,6 +42,22 @@ const createWyrePurchaseUrl = async (address) => {
 };
 
 /**
+ * Create a Transak Checkout URL.
+ * API docs here: https://www.notion.so/Query-Parameters-9ec523df3b874ec58cef4fa3a906f238
+ * @param {String} address Ethereum destination address
+ * @returns String
+ */
+const createTransakUrl = (address) => {
+  const queryParams = new URLSearchParams({
+    apiKey: TRANSAK_API_KEY,
+    hostURL: 'https://metamask.io',
+    defaultCryptoCurrency: 'ETH',
+    walletAddress: address,
+  });
+  return `https://global.transak.com/?${queryParams}`;
+};
+
+/**
  * Gives the caller a url at which the user can acquire eth, depending on the network they are in
  *
  * @param {Object} opts - Options required to determine the correct url
@@ -60,6 +77,8 @@ export default async function getBuyEthUrl({ chainId, address, service }) {
   switch (service) {
     case 'wyre':
       return await createWyrePurchaseUrl(address);
+    case 'transak':
+      return createTransakUrl(address);
     case 'metamask-faucet':
       return 'https://faucet.metamask.io/';
     case 'rinkeby-faucet':
