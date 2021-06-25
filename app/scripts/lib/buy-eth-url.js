@@ -25,7 +25,7 @@ const createWyrePurchaseUrl = async (address) => {
     const response = await fetchWithTimeout(fiatOnRampUrlApi, {
       method: 'GET',
       headers: {
-        Accept: 'application/json',
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
     });
