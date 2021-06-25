@@ -15,6 +15,7 @@ import {
   getShowWhatsNewPopup,
   getSortedNotificationsToShow,
   getShowRecoveryPhraseReminder,
+  getFailedTransactionsToDisplayCount
 } from '../../selectors';
 
 import {
@@ -112,6 +113,7 @@ const mapStateToProps = (state) => {
     showWhatsNewPopup: getShowWhatsNewPopup(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     seedPhraseBackedUp,
+    failedTransactionsToDisplayCount: getFailedTransactionsToDisplayCount(state),
   };
 };
 

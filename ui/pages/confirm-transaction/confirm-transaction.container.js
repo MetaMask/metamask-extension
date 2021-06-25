@@ -13,7 +13,11 @@ import {
   getTokenParams,
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
-import { unconfirmedTransactionsListSelector } from '../../selectors';
+import {
+  unconfirmedTransactionsListSelector,
+  getFailedTransactionsToDisplayCount,
+  getFailedTransactionsToDisplay,
+} from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import ConfirmTransaction from './confirm-transaction.component';
 
@@ -26,12 +30,21 @@ const mapStateToProps = (state, ownProps) => {
     match: { params = {} },
   } = ownProps;
   const { id } = params;
-
+  console.log('%%%%%%%%%%%%%%%');
+  console.log('%%% id', id);
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
+  console.log('%%% unconfirmedTransactions', unconfirmedTransactions);
+  const failedTransactionsToDisplay = getFailedTransactionsToDisplay(state);
+  console.log('%%% failedTransactionsToDisplay', failedTransactionsToDisplay);
   const totalUnconfirmed = unconfirmedTransactions.length;
-  const transaction = totalUnconfirmed
-    ? unapprovedTxs[id] || unconfirmedTransactions[0]
-    : {};
+  console.log('%%% totalUnconfirmed', totalUnconfirmed);
+  const transaction =
+    totalUnconfirmed || Object.keys(failedTransactionsToDisplay).length
+      ? unapprovedTxs[id] ||
+        failedTransactionsToDisplay[id] ||
+        unconfirmedTransactions[0]
+      : {};
+  console.log('%%% transaction', transaction);
   const { id: transactionId, type } = transaction;
 
   return {
@@ -44,6 +57,9 @@ const mapStateToProps = (state, ownProps) => {
     transactionId: transactionId && String(transactionId),
     transaction,
     isTokenMethodAction: isTokenMethodAction(type),
+    failedTransactionsToDisplayCount: getFailedTransactionsToDisplayCount(
+      state,
+    ),
   };
 };
 

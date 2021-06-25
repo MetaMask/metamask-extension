@@ -50,6 +50,7 @@ export default function reduceApp(state = {}, action) {
     openMetaMaskTabs: {},
     currentWindowTab: {},
     showWhatsNewPopup: true,
+    failedTransactionsToDisplay: {},
     ...state,
   };
 
@@ -346,6 +347,25 @@ export default function reduceApp(state = {}, action) {
         showWhatsNewPopup: false,
       };
 
+    case actionConstants.ADD_TX_TO_FAILED_TXES_TO_DISPLAY:
+      return {
+        ...appState,
+        failedTransactionsToDisplay: {
+          ...appState.failedTransactionsToDisplay,
+          [action.value]: true,
+        },
+      };
+
+    case actionConstants.REMOVE_TX_TO_FAILED_TXES_TO_DISPLAY:
+      const { failedTransactionsToDisplay } = appState;
+      const newFailedTransactionsToDisplay = { ...failedTransactionsToDisplay };
+      delete newFailedTransactionsToDisplay[action.value];
+      return {
+        ...appState,
+        failedTransactionsToDisplay: newFailedTransactionsToDisplay,
+      };
+
+
     default:
       return appState;
   }
@@ -362,6 +382,20 @@ export function setThreeBoxLastUpdated(lastUpdated) {
 export function hideWhatsNewPopup() {
   return {
     type: actionConstants.HIDE_WHATS_NEW_POPUP,
+  };
+}
+
+export function addTxToFailedTxesToDisplay(txId) {
+  return {
+    type: actionConstants.ADD_TX_TO_FAILED_TXES_TO_DISPLAY,
+    value: txId,
+  };
+}
+
+export function removeTxFromFailedTxesToDisplay(txId) {
+  return {
+    type: actionConstants.REMOVE_TX_TO_FAILED_TXES_TO_DISPLAY,
+    value: txId,
   };
 }
 

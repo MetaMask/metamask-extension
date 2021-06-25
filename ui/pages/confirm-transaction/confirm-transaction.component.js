@@ -62,9 +62,10 @@ export default class ConfirmTransaction extends Component {
       paramsTransactionId,
       getTokenParams,
       isTokenMethodAction,
+      failedTransactionsToDisplayCount,
     } = this.props;
 
-    if (!totalUnapprovedCount && !send.to) {
+    if (!totalUnapprovedCount && !send.to && !failedTransactionsToDisplayCount) {
       history.replace(mostRecentOverviewPage);
       return;
     }
