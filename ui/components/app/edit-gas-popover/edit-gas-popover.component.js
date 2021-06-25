@@ -1,12 +1,14 @@
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 
+import { useDispatch, useSelector } from 'react-redux';
 import Popover from '../../ui/popover';
 import Button from '../../ui/button';
 import EditGasDisplay from '../edit-gas-display';
 import EditGasDisplayEducation from '../edit-gas-display-education';
 
 import { I18nContext } from '../../../contexts/i18n';
+import { hideModal, hideSidebar } from '../../../store/actions';
 
 export default function EditGasPopover({
   popoverTitle,
@@ -14,7 +16,23 @@ export default function EditGasPopover({
   editGasDisplayProps,
 }) {
   const t = useContext(I18nContext);
+  const dispatch = useDispatch();
+  const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
   const [showEducationContent, setShowEducationContent] = useState(false);
+
+  /**
+   * Temporary placeholder, this should be managed by the parent component but
+   * we will be extracting this component from the hard to maintain modal/
+   * sidebar component. For now this is just to be able to appropriately close
+   * the modal in testing
+   */
+  const closePopover = useCallback(() => {
+    if (showSidebar) {
+      dispatch(hideSidebar());
+    } else {
+      dispatch(hideModal());
+    }
+  }, [showSidebar, dispatch]);
 
   const title = showEducationContent
     ? t('editGasEducationModalTitle')
@@ -24,13 +42,15 @@ export default function EditGasPopover({
   return (
     <Popover
       title={title}
-      onClose={() => console.log('Closing!')}
+      onClose={closePopover}
       onBack={
         showEducationContent ? () => setShowEducationContent(false) : undefined
       }
       footer={
         <>
-          <Button type="primary">{footerButtonText}</Button>
+          <Button type="primary" onClick={closePopover}>
+            {footerButtonText}
+          </Button>
         </>
       }
     >
