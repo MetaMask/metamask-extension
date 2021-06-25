@@ -1817,6 +1817,9 @@
   "speedUpPopoverTitle": {
     "message": "Speed up transaction"
   },
+  "speedUpTooltipText": {
+    "message": "New gas fee"
+  },
   "speedUpTransaction": {
     "message": "Speed up this transaction"
   },

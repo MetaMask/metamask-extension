@@ -28,17 +28,12 @@ export default function EditGasDisplay({ alwaysShowForm, type }) {
             variant={TYPOGRAPHY.H8}
             fontWeight={FONT_WEIGHT.BOLD}
           >
-            New gas fee{' '}
+            {t('speedUpTooltipText')}{' '}
             <InfoTooltip position="top" contentText={t('speedUpExplanation')} />
           </Typography>
         </div>
       )}
-      <TransactionTotalBanner
-        total="9.99"
-        detail="Up to $17.79 (0.01234 ETH)"
-        timing="Likely in < 30 seconds
-"
-      />
+      <TransactionTotalBanner total="" detail="" timing="" />
       <RadioGroup
         name="gas-recommendation"
         options={[
