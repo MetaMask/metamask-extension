@@ -31,8 +31,8 @@ const createWyrePurchaseUrl = async (address) => {
       },
     });
     const parsedResponse = await response.json();
-    if (response.ok) {
-      return parsedResponse.url || wyrePurchaseUrlFallback;
+    if (response.ok && parsedResponse.url) {
+      return parsedResponse.url;
     }
     log.warn('Failed to create a Wyre purchase URL', parsedResponse);
   } catch (err) {
