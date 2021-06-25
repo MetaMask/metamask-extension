@@ -27,4 +27,15 @@
   .advanced-gas-controls {
     margin-top: 20px;
   }
+
+  &__education {
+    margin-top: 20px;
+
+    button {
+      display: block;
+      margin: 0 auto;
+      background: transparent;
+      color: $primary-1;
+    }
+  }
 }

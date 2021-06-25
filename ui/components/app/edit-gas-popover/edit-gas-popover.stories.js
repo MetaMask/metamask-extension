@@ -20,3 +20,11 @@ export const basicWithDifferentButtonText = () => {
     </div>
   );
 };
+
+export const educationalContentFlow = () => {
+  return (
+    <div style={{ width: '600px' }}>
+      <EditGasPopover editGasDisplayProps={{ showEducationButton: true }} />
+    </div>
+  );
+};

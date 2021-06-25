@@ -12,3 +12,11 @@ export const basic = () => {
     </div>
   );
 };
+
+export const withEducation = () => {
+  return (
+    <div style={{ width: '600px' }}>
+      <EditGasDisplay showEducationButton />
+    </div>
+  );
+};
