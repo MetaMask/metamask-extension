@@ -20,18 +20,18 @@ const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
  */
 const createWyrePurchaseUrl = async (address) => {
   const fiatOnRampUrlApi = `${METASWAP_CHAINID_API_HOST_MAP[MAINNET_CHAIN_ID]}/fiatOnRampUrl?serviceName=wyre&destinationAddress=${address}`;
-  const wyrePurchaseUrlFallback = `https://pay.sendwyre.com/purchase?dest=ethereum:${address}&destCurrency=ETH&accountId=AC-7AG3W4XH4N2`;
+  const wyrePurchaseUrlFallback = `https://pay.sendwyre.com/purchase?dest=ethereum:${address}&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`;
   try {
     const response = await fetchWithTimeout(fiatOnRampUrlApi, {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
       },
     });
     const parsedResponse = await response.json();
     if (response.ok) {
-      return parsedResponse.result?.url;
+      return parsedResponse.url || wyrePurchaseUrlFallback;
     }
     log.warn('Failed to create a Wyre purchase URL', parsedResponse);
   } catch (err) {

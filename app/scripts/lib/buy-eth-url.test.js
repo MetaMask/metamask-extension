@@ -30,15 +30,13 @@ describe('buy-eth-url', function () {
         '/fiatOnRampUrl?serviceName=wyre&destinationAddress=0x0dcd5d886577d5581b0c524242ef2ee70be3e7bc',
       )
       .reply(200, {
-        result: {
-          url:
-            'https://pay.sendwyre.com/purchase?accountId=AC-7AG3W4XH4N2&utm_campaign=AC-7AG3W4XH4N2&destCurrency=ETH&utm_medium=widget&paymentMethod=debit-card&reservation=MLZVUF8FMXZUMARJC23B&dest=ethereum%3A0x0dcd5d886577d5581b0c524242ef2ee70be3e7bc&utm_source=checkout',
-        },
+        url:
+          'https://pay.sendwyre.com/purchase?accountId=AC-7AG3W4XH4N2&utm_campaign=AC-7AG3W4XH4N2&destCurrency=ETH&utm_medium=widget&paymentMethod=debit-card&reservation=MLZVUF8FMXZUMARJC23B&dest=ethereum%3A0x0dcd5d886577d5581b0c524242ef2ee70be3e7bc&utm_source=checkout&paymentMethod=debit-card',
       });
     const wyreUrl = await getBuyEthUrl(mainnet);
     assert.equal(
       wyreUrl,
-      'https://pay.sendwyre.com/purchase?accountId=AC-7AG3W4XH4N2&utm_campaign=AC-7AG3W4XH4N2&destCurrency=ETH&utm_medium=widget&paymentMethod=debit-card&reservation=MLZVUF8FMXZUMARJC23B&dest=ethereum%3A0x0dcd5d886577d5581b0c524242ef2ee70be3e7bc&utm_source=checkout',
+      'https://pay.sendwyre.com/purchase?accountId=AC-7AG3W4XH4N2&utm_campaign=AC-7AG3W4XH4N2&destCurrency=ETH&utm_medium=widget&paymentMethod=debit-card&reservation=MLZVUF8FMXZUMARJC23B&dest=ethereum%3A0x0dcd5d886577d5581b0c524242ef2ee70be3e7bc&utm_source=checkout&paymentMethod=debit-card',
     );
     nock.cleanAll();
   });
@@ -48,7 +46,7 @@ describe('buy-eth-url', function () {
 
     assert.equal(
       wyreUrl,
-      'https://pay.sendwyre.com/purchase?dest=ethereum:0x0dcd5d886577d5581b0c524242ef2ee70be3e7bc&destCurrency=ETH&accountId=AC-7AG3W4XH4N2',
+      'https://pay.sendwyre.com/purchase?dest=ethereum:0x0dcd5d886577d5581b0c524242ef2ee70be3e7bc&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card',
     );
   });
 
