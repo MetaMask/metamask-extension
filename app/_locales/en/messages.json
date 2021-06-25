@@ -1756,6 +1756,9 @@
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
   },
+  "moreDetails": {
+    "message": "More details"
+  },
   "multiplier": {
     "message": "multiplier"
   },
