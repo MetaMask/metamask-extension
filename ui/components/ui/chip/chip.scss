@@ -37,7 +37,20 @@
     }
   }
 
+  &--with-input &__input {
+    direction: ltr;
+    border: none;
+    background: transparent;
+    text-align: center;
 
+    &:focus {
+      text-align: left;
+    }
+
+    &:focus-visible {
+      outline: none;
+    }
+  }
 
   &--with-right-icon {
     padding-right: 4px;
