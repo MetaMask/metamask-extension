@@ -6,9 +6,16 @@ set -o pipefail
 
 CHROME_VERSION='79.0.3945.117-1'
 CHROME_BINARY="google-chrome-stable_${CHROME_VERSION}_amd64.deb"
-CHROME_BINARY_URL="http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/${CHROME_BINARY}"
+CHROME_BINARY_URL="http://mirror.cs.uchicago.edu/google-chrome/pool/main/g/google-chrome-stable/${CHROME_BINARY}"
+
+CHROME_BINARY_SHA512SUM='2d4f76202219a40e560477d79023fa4a847187a086278924a9d916dcd5fbefafdcf7dfd8879fae907b8276b244e71a3b8a1b00a88dee87b18738ce31134a6713'
 
 wget -O "${CHROME_BINARY}" -t 5 "${CHROME_BINARY_URL}"
+
+if [[ $(shasum -a 512 "${CHROME_BINARY}" | cut '--delimiter= ' -f1) != "${CHROME_BINARY_SHA512SUM}" ]]
+then
+  exit 1
+fi
 
 (sudo dpkg -i "${CHROME_BINARY}" || sudo apt-get -fy install)
 

@@ -4,11 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { uniqBy, isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
-import {
-  createCustomTokenTrackerLink,
-  createTokenTrackerLinkForChain,
-} from '@metamask/etherscan-link';
+import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
+import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {
   useTokensToSearch,
   getRenderableTokenData,
@@ -18,7 +16,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import DropdownInputPair from '../dropdown-input-pair';
 import DropdownSearchList from '../dropdown-search-list';
 import SlippageButtons from '../slippage-buttons';
-import { getTokens } from '../../../ducks/metamask/metamask';
+import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import ActionableMessage from '../actionable-message';
 
@@ -35,11 +33,11 @@ import {
 import {
   getSwapsDefaultToken,
   getTokenExchangeRates,
-  getConversionRate,
   getCurrentCurrency,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
+
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -223,29 +221,34 @@ export default function BuildQuote({
     );
   };
 
-  let blockExplorerTokenLink;
-  let blockExplorerLabel;
-  if (rpcPrefs.blockExplorerUrl) {
-    blockExplorerTokenLink = createCustomTokenTrackerLink(
-      selectedToToken.address,
-      rpcPrefs.blockExplorerUrl,
-    );
-    blockExplorerLabel = new URL(rpcPrefs.blockExplorerUrl).hostname;
-  } else if (SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId]) {
-    blockExplorerTokenLink = createCustomTokenTrackerLink(
-      selectedToToken.address,
-      SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId],
-    );
-    blockExplorerLabel = new URL(
-      SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId],
-    ).hostname;
-  } else {
-    blockExplorerTokenLink = createTokenTrackerLinkForChain(
-      selectedToToken.address,
-      chainId,
-    );
-    blockExplorerLabel = t('etherscan');
-  }
+  const blockExplorerTokenLink = getTokenTrackerLink(
+    selectedToToken.address,
+    chainId,
+    null, // no networkId
+    null, // no holderAddress
+    {
+      blockExplorerUrl:
+        rpcPrefs.blockExplorerUrl ??
+        SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
+        null,
+    },
+  );
+
+  const blockExplorerLabel = rpcPrefs.blockExplorerUrl
+    ? new URL(blockExplorerTokenLink).hostname
+    : t('etherscan');
+
+  const blockExplorerLinkClickedEvent = useNewMetricEvent({
+    category: 'Swaps',
+    event: 'Clicked Block Explorer Link',
+    properties: {
+      link_type: 'Token Tracker',
+      action: 'Swaps Confirmation',
+      block_explorer_domain: blockExplorerTokenLink
+        ? new URL(blockExplorerTokenLink)?.hostname
+        : '',
+    },
+  });
 
   const { destinationTokenAddedForSwap } = fetchParams || {};
   const { address: toAddress } = toToken || {};
@@ -330,6 +333,38 @@ export default function BuildQuote({
     dispatch(resetSwapsPostFetchState());
   }, [dispatch]);
 
+  const BlockExplorerLink = () => {
+    return (
+      <a
+        className="build-quote__token-etherscan-link build-quote__underline"
+        key="build-quote-etherscan-link"
+        onClick={() => {
+          blockExplorerLinkClickedEvent();
+          global.platform.openTab({
+            url: blockExplorerTokenLink,
+          });
+        }}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {blockExplorerLabel}
+      </a>
+    );
+  };
+
+  let tokenVerificationDescription = '';
+  if (blockExplorerTokenLink) {
+    if (occurances === 1) {
+      tokenVerificationDescription = t('verifyThisTokenOn', [
+        <BlockExplorerLink key="block-explorer-link" />,
+      ]);
+    } else if (occurances === 0) {
+      tokenVerificationDescription = t('verifyThisUnconfirmedTokenOn', [
+        <BlockExplorerLink key="block-explorer-link" />,
+      ]);
+    }
+  }
+
   return (
     <div className="build-quote">
       <div className="build-quote__content">
@@ -401,7 +436,7 @@ export default function BuildQuote({
             }}
           >
             <img
-              src="/images/icons/swap2.svg"
+              src="./images/icons/swap2.svg"
               alt={t('swapSwapSwitch')}
               width="12"
               height="16"
@@ -431,32 +466,21 @@ export default function BuildQuote({
             listContainerClassName="build-quote__open-to-dropdown"
             hideRightLabels
             defaultToAll
+            shouldSearchForImports
           />
         </div>
         {toTokenIsNotDefault &&
           (occurances < 2 ? (
             <ActionableMessage
+              type={occurances === 1 ? 'warning' : 'danger'}
               message={
                 <div className="build-quote__token-verification-warning-message">
                   <div className="build-quote__bold">
                     {occurances === 1
                       ? t('swapTokenVerificationOnlyOneSource')
-                      : t('swapTokenVerificationNoSource')}
+                      : t('swapTokenVerificationAddedManually')}
                   </div>
-                  <div>
-                    {blockExplorerTokenLink &&
-                      t('verifyThisTokenOn', [
-                        <a
-                          className="build-quote__token-etherscan-link build-quote__underline"
-                          key="build-quote-etherscan-link"
-                          href={blockExplorerTokenLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {blockExplorerLabel}
-                        </a>,
-                      ])}
-                  </div>
+                  <div>{tokenVerificationDescription}</div>
                 </div>
               }
               primaryAction={
@@ -467,7 +491,6 @@ export default function BuildQuote({
                       onClick: () => setVerificationClicked(true),
                     }
               }
-              type="warning"
               withRightButton
               infoTooltipText={
                 blockExplorerTokenLink &&
@@ -488,7 +511,12 @@ export default function BuildQuote({
                     <a
                       className="build-quote__token-etherscan-link"
                       key="build-quote-etherscan-link"
-                      href={blockExplorerTokenLink}
+                      onClick={() => {
+                        blockExplorerLinkClickedEvent();
+                        global.platform.openTab({
+                          url: blockExplorerTokenLink,
+                        });
+                      }}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

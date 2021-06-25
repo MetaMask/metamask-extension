@@ -49,7 +49,7 @@ export default class ContactListTab extends Component {
     return (
       <div className="address-book__container">
         <div>
-          <img src="/images/address-book.svg" alt="Address book icon" />
+          <img src="./images/address-book.svg" alt="Address book icon" />
           <h4 className="address-book__title">{t('builContactList')}</h4>
           <p className="address-book__sub-title">
             {t('addFriendsAndAddresses')}

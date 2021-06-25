@@ -6,6 +6,7 @@ import { getConversionRate, getSelectedAccount } from '../selectors';
 import { showModal } from '../store/actions';
 import { increaseLastGasPrice } from '../helpers/utils/confirm-tx.util';
 import * as actionConstants from '../store/actionConstants';
+import { GAS_LIMITS } from '../../shared/constants/gas';
 import { useCancelTransaction } from './useCancelTransaction';
 
 describe('useCancelTransaction', function () {
@@ -77,7 +78,7 @@ describe('useCancelTransaction', function () {
 
         // call onSubmit myself
         dispatchAction[dispatchAction.length - 1][0].value.props.onSubmit(
-          '0x5208',
+          GAS_LIMITS.SIMPLE,
           '0x1',
         );
 
@@ -86,9 +87,9 @@ describe('useCancelTransaction', function () {
             showModal({
               name: 'CANCEL_TRANSACTION',
               transactionId,
-              newGasFee: '0x5208',
+              newGasFee: GAS_LIMITS.SIMPLE,
               defaultNewGasPrice: '0x1',
-              gasLimit: '0x5208',
+              gasLimit: GAS_LIMITS.SIMPLE,
             }),
           ),
         ).toStrictEqual(true);
@@ -147,7 +148,7 @@ describe('useCancelTransaction', function () {
         ).toStrictEqual(transactionId);
 
         dispatchAction[dispatchAction.length - 1][0].value.props.onSubmit(
-          '0x5208',
+          GAS_LIMITS.SIMPLE,
           '0x1',
         );
 
@@ -156,9 +157,9 @@ describe('useCancelTransaction', function () {
             showModal({
               name: 'CANCEL_TRANSACTION',
               transactionId,
-              newGasFee: '0x5208',
+              newGasFee: GAS_LIMITS.SIMPLE,
               defaultNewGasPrice: '0x1',
-              gasLimit: '0x5208',
+              gasLimit: GAS_LIMITS.SIMPLE,
             }),
           ),
         ).toStrictEqual(true);

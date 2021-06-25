@@ -1,13 +1,14 @@
 import { strict as assert } from 'assert';
 import nock from 'nock';
 
+import { MILLISECOND, SECOND } from '../constants/time';
 import getFetchWithTimeout from './fetch-with-timeout';
 
 describe('getFetchWithTimeout', function () {
   it('fetches a url', async function () {
     nock('https://api.infura.io').get('/money').reply(200, '{"hodl": false}');
 
-    const fetchWithTimeout = getFetchWithTimeout(30000);
+    const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
     const response = await (
       await fetchWithTimeout('https://api.infura.io/money')
     ).json();
@@ -19,10 +20,10 @@ describe('getFetchWithTimeout', function () {
   it('throws when the request hits a custom timeout', async function () {
     nock('https://api.infura.io')
       .get('/moon')
-      .delay(2000)
+      .delay(SECOND * 2)
       .reply(200, '{"moon": "2012-12-21T11:11:11Z"}');
 
-    const fetchWithTimeout = getFetchWithTimeout(123);
+    const fetchWithTimeout = getFetchWithTimeout(MILLISECOND * 123);
 
     try {
       await fetchWithTimeout('https://api.infura.io/moon').then((r) =>
@@ -37,10 +38,10 @@ describe('getFetchWithTimeout', function () {
   it('should abort the request when the custom timeout is hit', async function () {
     nock('https://api.infura.io')
       .get('/moon')
-      .delay(2000)
+      .delay(SECOND * 2)
       .reply(200, '{"moon": "2012-12-21T11:11:11Z"}');
 
-    const fetchWithTimeout = getFetchWithTimeout(123);
+    const fetchWithTimeout = getFetchWithTimeout(MILLISECOND * 123);
 
     try {
       await fetchWithTimeout('https://api.infura.io/moon').then((r) =>

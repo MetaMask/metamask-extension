@@ -12,11 +12,13 @@ export default function SearchableItemList({
   listTitle,
   maxListItems,
   onClickItem,
+  onOpenImportTokenModalClick,
   Placeholder,
   searchPlaceholderText,
   hideRightLabels,
   hideItemIf,
   listContainerClassName,
+  shouldSearchForImports,
 }) {
   const itemListRef = useRef();
 
@@ -38,11 +40,13 @@ export default function SearchableItemList({
         error={itemSelectorError}
         searchPlaceholderText={searchPlaceholderText}
         defaultToAll={defaultToAll}
+        shouldSearchForImports={shouldSearchForImports}
       />
       <ItemList
         searchQuery={searchQuery}
         results={results}
         onClickItem={onClickItem}
+        onOpenImportTokenModalClick={onOpenImportTokenModalClick}
         Placeholder={Placeholder}
         listTitle={listTitle}
         maxListItems={maxListItems}
@@ -59,6 +63,7 @@ SearchableItemList.propTypes = {
   itemSelectorError: PropTypes.string,
   itemsToSearch: PropTypes.array,
   onClickItem: PropTypes.func,
+  onOpenImportTokenModalClick: PropTypes.func,
   Placeholder: PropTypes.func,
   className: PropTypes.string,
   searchPlaceholderText: PropTypes.string,
@@ -74,4 +79,5 @@ SearchableItemList.propTypes = {
   hideRightLabels: PropTypes.bool,
   hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
+  shouldSearchForImports: PropTypes.bool,
 };

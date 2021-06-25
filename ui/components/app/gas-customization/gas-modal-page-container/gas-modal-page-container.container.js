@@ -2,13 +2,9 @@ import { connect } from 'react-redux';
 import { addHexPrefix } from '../../../../../app/scripts/lib/util';
 import {
   hideModal,
-  setGasLimit,
-  setGasPrice,
   createRetryTransaction,
   createSpeedUpTransaction,
   hideSidebar,
-  updateSendAmount,
-  setGasTotal,
   updateTransaction,
 } from '../../../../store/actions';
 import {
@@ -19,6 +15,10 @@ import {
 } from '../../../../ducks/gas/gas.duck';
 import {
   hideGasButtonGroup,
+  setGasLimit,
+  setGasPrice,
+  setGasTotal,
+  updateSendAmount,
   updateSendErrors,
 } from '../../../../ducks/send/send.duck';
 import {
@@ -28,6 +28,7 @@ import {
   getIsMainnet,
   getSendToken,
   getPreferences,
+  getIsTestnet,
   getBasicGasEstimateLoadingStatus,
   getCustomGasLimit,
   getCustomGasPrice,
@@ -36,8 +37,10 @@ import {
   isCustomPriceSafe,
   getTokenBalance,
   getSendMaxModeState,
+  isCustomPriceSafeForCustomNetwork,
   getAveragePriceEstimateInHexWEI,
   isCustomPriceExcessive,
+  getIsGasEstimatesFetched,
 } from '../../../../selectors';
 
 import {
@@ -55,10 +58,14 @@ import {
 import { MIN_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants';
 import { calcMaxAmount } from '../../../../pages/send/send-content/send-amount-row/amount-max-button/amount-max-button.utils';
 import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction';
+import { GAS_LIMITS } from '../../../../../shared/constants/gas';
 import GasModalPageContainer from './gas-modal-page-container.component';
 
 const mapStateToProps = (state, ownProps) => {
-  const { currentNetworkTxList, send } = state.metamask;
+  const {
+    metamask: { currentNetworkTxList },
+    send,
+  } = state;
   const { modalState: { props: modalProps } = {} } = state.appState.modal || {};
   const { txData = {} } = modalProps || {};
   const { transaction = {}, onSubmit } = ownProps;
@@ -72,7 +79,7 @@ const mapStateToProps = (state, ownProps) => {
   const txParams = selectedTransaction?.txParams
     ? selectedTransaction.txParams
     : {
-        gas: send.gasLimit || '0x5208',
+        gas: send.gasLimit || GAS_LIMITS.SIMPLE,
         gasPrice: send.gasPrice || getAveragePriceEstimateInHexWEI(state, true),
         value: sendToken ? '0x0' : send.amount,
       };
@@ -81,7 +88,7 @@ const mapStateToProps = (state, ownProps) => {
   const value = ownProps.transaction?.txParams?.value || txParams.value;
   const customModalGasPriceInHex = getCustomGasPrice(state) || currentGasPrice;
   const customModalGasLimitInHex =
-    getCustomGasLimit(state) || currentGasLimit || '0x5208';
+    getCustomGasLimit(state) || currentGasLimit || GAS_LIMITS.SIMPLE;
   const customGasTotal = calcGasTotal(
     customModalGasLimitInHex,
     customModalGasPriceInHex,
@@ -113,6 +120,7 @@ const mapStateToProps = (state, ownProps) => {
   const showFiat = Boolean(isMainnet || showFiatInTestnets);
 
   const isSendTokenSet = Boolean(sendToken);
+  const isTestnet = getIsTestnet(state);
 
   const newTotalEth =
     maxModeOn && !isSendTokenSet
@@ -132,6 +140,16 @@ const mapStateToProps = (state, ownProps) => {
         balance,
         conversionRate,
       });
+  const isGasEstimate = getIsGasEstimatesFetched(state);
+
+  let customPriceIsSafe;
+  if ((isMainnet || process.env.IN_TEST) && isGasEstimate) {
+    customPriceIsSafe = isCustomPriceSafe(state);
+  } else if (isTestnet) {
+    customPriceIsSafe = true;
+  } else {
+    customPriceIsSafe = isCustomPriceSafeForCustomNetwork(state);
+  }
 
   return {
     hideBasic,
@@ -142,7 +160,7 @@ const mapStateToProps = (state, ownProps) => {
     customGasLimit: calcCustomGasLimit(customModalGasLimitInHex),
     customGasTotal,
     newTotalFiat,
-    customPriceIsSafe: isCustomPriceSafe(state),
+    customPriceIsSafe,
     customPriceIsExcessive: isCustomPriceExcessive(state),
     maxModeOn,
     gasPriceButtonGroupProps: {

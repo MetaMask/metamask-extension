@@ -1,9 +1,7 @@
 import { useSelector } from 'react-redux';
-import {
-  getPreferences,
-  getShouldShowFiat,
-  getNativeCurrency,
-} from '../selectors';
+import { getPreferences, getShouldShowFiat } from '../selectors';
+import { getNativeCurrency } from '../ducks/metamask/metamask';
+
 import { PRIMARY, SECONDARY, ETH } from '../helpers/constants/common';
 
 /**

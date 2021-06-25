@@ -7,14 +7,14 @@ import { CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes';
 import TextField from '../../components/ui/text-field';
 import PageContainer from '../../components/ui/page-container';
 import { Tabs, Tab } from '../../components/ui/tabs';
-import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 import ActionableMessage from '../swaps/actionable-message';
 import Typography from '../../components/ui/typography';
 import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
-import TokenList from './token-list';
 import TokenSearch from './token-search';
+import TokenList from './token-list';
 
 const emptyAddr = '0x0000000000000000000000000000000000000000';
 

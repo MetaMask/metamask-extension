@@ -51,12 +51,18 @@
   }
 
   &--danger {
-    background: $Red-100;
-    border: 1px solid $Red-500;
+    background: $Red-000;
+    border: 1px solid $Red-300;
     justify-content: flex-start;
 
     .actionable-message__message {
-      color: $Red-500;
+      color: $Black-100;
+      text-align: left;
+    }
+
+    button {
+      background: $Red-500;
+      color: #fff;
     }
   }
 

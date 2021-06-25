@@ -12,8 +12,13 @@ import SendAssetRow from './send-asset-row/send-asset-row.container';
 describe('SendContent Component', () => {
   let wrapper;
 
+  const defaultProps = {
+    showHexData: true,
+    gasIsExcessive: false,
+  };
+
   beforeEach(() => {
-    wrapper = shallow(<SendContent showHexData />, {
+    wrapper = shallow(<SendContent {...defaultProps} />, {
       context: { t: (str) => `${str}_t` },
     });
   });

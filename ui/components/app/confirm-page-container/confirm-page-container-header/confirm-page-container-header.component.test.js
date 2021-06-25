@@ -8,6 +8,11 @@ import ConfirmPageContainerHeader from './confirm-page-container-header.componen
 
 const util = require('../../../../../app/scripts/lib/util');
 
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useLayoutEffect: jest.requireActual('react').useEffect,
+}));
+
 describe('Confirm Detail Row Component', () => {
   describe('render', () => {
     it('should render a div with a confirm-page-container-header class', () => {
