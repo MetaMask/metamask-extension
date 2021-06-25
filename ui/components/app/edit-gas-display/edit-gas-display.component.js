@@ -14,6 +14,7 @@ import RadioGroup from '../../ui/radio-group/radio-group.component';
 import AdvancedGasControls from '../advanced-gas-controls/advanced-gas-controls.component';
 
 import { I18nContext } from '../../../contexts/i18n';
+import ActionableMessage from '../../../pages/swaps/actionable-message';
 
 export default function EditGasDisplay({
   alwaysShowForm,
@@ -23,11 +24,20 @@ export default function EditGasDisplay({
 }) {
   const t = useContext(I18nContext);
 
+  const [warning] = useState(null);
   const [showAdvancedForm, setShowAdvancedForm] = useState(false);
 
   return (
     <div className="edit-gas-display">
       <div className="edit-gas-display__content">
+        {warning && (
+          <div className="edit-gas-display__warning">
+            <ActionableMessage
+              className="actionable-message--warning"
+              message="Swaps are time sensitive. “Medium” is not reccomended."
+            />
+          </div>
+        )}
         {type === 'speed-up' && (
           <div className="edit-gas-display__top-tooltip">
             <Typography

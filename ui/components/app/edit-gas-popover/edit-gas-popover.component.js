@@ -54,7 +54,7 @@ export default function EditGasPopover({
         </>
       }
     >
-      <div style={{ padding: '20px' }}>
+      <div style={{ padding: '0 20px 20px 20px' }}>
         {showEducationContent ? (
           <EditGasDisplayEducation />
         ) : (

@@ -1,4 +1,8 @@
 .edit-gas-display {
+  & .actionable-message--warning {
+    margin-top: 0;
+  }
+
   &__top-tooltip {
     text-align: center;
 
