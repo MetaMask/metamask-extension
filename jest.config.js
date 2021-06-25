@@ -2,11 +2,7 @@ module.exports = {
   restoreMocks: true,
   coverageDirectory: 'jest-coverage/',
   collectCoverageFrom: ['<rootDir>/ui/**/swaps/**'],
-  coveragePathIgnorePatterns: [
-    '.stories.js',
-    '.snap',
-    '**/shared/**/?(*.)+(test).js',
-  ],
+  coveragePathIgnorePatterns: ['.stories.js', '.snap'],
   coverageThreshold: {
     global: {
       branches: 32.75,
@@ -17,5 +13,8 @@ module.exports = {
   },
   setupFiles: ['./test/setup.js', './test/env.js'],
   setupFilesAfterEnv: ['./test/jest/setup.js'],
-  testMatch: ['ui/**/?(*.)+(test).js', '**/shared/**/?(*.)+(test).js'],
+  testMatch: [
+    '<rootDir>/ui/**/?(*.)+(test).js',
+    '<rootDir>/shared/**/?(*.)+(test).js',
+  ],
 };
