@@ -38,7 +38,7 @@ describe('Transaction.utils', function () {
   });
 
   describe('isLegacyTransaction', function () {
-    it('should return true if both maxFeePerGas and maxPriorityFeePerGas are not supplied', () => {
+    it('should return true if no gas related fields are supplied', () => {
       expect(
         isLegacyTransaction({
           txParams: {},
