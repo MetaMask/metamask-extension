@@ -56,6 +56,8 @@ export default function reduceApp(state = {}, action) {
     ledgerTransportStatus: TRANSPORT_STATES.NONE,
     newNetworkAdded: '',
     newCollectibleAddedMessage: '',
+    showTestnetMessageInDropdown: true,
+    transactionsToDisplayOnFailure: {},
     ...state,
   };
 
@@ -353,6 +355,21 @@ export default function reduceApp(state = {}, action) {
         ...appState,
         gasLoadingAnimationIsShowing: action.value,
       };
+    case actionConstants.ADD_TXS_TO_FAILED_TXES_TO_DISPLAY:
+      return {
+        ...appState,
+        transactionsToDisplayOnFailure: {
+          ...appState.transactionsToDisplayOnFailure,
+          [action.value]: true,
+        },
+      };
+
+    case actionConstants.REMOVE_TX_TO_FAILED_TXES_TO_DISPLAY:
+      delete appState.transactionsToDisplayOnFailure[action.value];
+      return {
+        ...appState,
+        transactionsToDisplayOnFailure: appState.transactionsToDisplayOnFailure,
+      };
 
     case actionConstants.SET_WEBHID_CONNECTED_STATUS:
       return {
@@ -387,6 +404,19 @@ export function hideWhatsNewPopup() {
 
 export function toggleGasLoadingAnimation(value) {
   return { type: actionConstants.TOGGLE_GAS_LOADING_ANIMATION, value };
+}
+export function addTxToFailedTxesToDisplay(txId) {
+  return {
+    type: actionConstants.ADD_TXS_TO_FAILED_TXES_TO_DISPLAY,
+    value: txId,
+  };
+}
+
+export function removeTxFromFailedTxesToDisplay(txId) {
+  return {
+    type: actionConstants.REMOVE_TX_TO_FAILED_TXES_TO_DISPLAY,
+    value: txId,
+  };
 }
 
 export function setLedgerWebHidConnectedStatus(value) {

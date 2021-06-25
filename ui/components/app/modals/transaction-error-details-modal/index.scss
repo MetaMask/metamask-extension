@@ -1,0 +1,43 @@
+.transaction-error-details {
+  color: $ui-4;
+
+  &__main {
+    padding: 10px;
+    margin: 10px;
+  }
+
+  &__header {
+    display: flex;
+    padding: 24px 24px 16px;
+    flex-direction: column;
+    background: white;
+    position: relative;
+    border-radius: 10px;
+
+    &__title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      @include H4;
+
+      font-weight: bold;
+      padding-bottom: 8px;
+      font-weight: bold;
+
+      h2 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      button {
+        margin-right: 24px;
+      }
+
+      &.center {
+        justify-content: center;
+      }
+    }
+  }
+}
