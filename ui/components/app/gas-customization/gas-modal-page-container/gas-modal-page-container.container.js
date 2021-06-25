@@ -118,7 +118,6 @@ const mapStateToProps = (state, ownProps) => {
   const isTestnet = getIsTestnet(state);
   const showFiat = getShouldShowFiat(state);
 
-
   const newTotalEth =
     maxModeOn && asset.type === ASSET_TYPES.NATIVE
       ? sumHexWEIsToRenderableEth([balance, '0x0'])
