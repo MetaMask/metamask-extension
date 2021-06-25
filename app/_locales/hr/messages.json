@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "Vaš se preglednik ne podržava..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask je osmišljen i izrađen u Kaliforniji."
-  },
   "buyWithWyre": {
     "message": "Kupi ETH Wyerom"
   },
@@ -746,9 +743,6 @@
   },
   "recents": {
     "message": "Nedavno"
-  },
-  "recipientAddress": {
-    "message": "Adresa primatelja"
   },
   "recipientAddressPlaceholder": {
     "message": "Pretraži, javne adrese (0x) ili ENS"

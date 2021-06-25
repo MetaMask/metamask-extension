@@ -46,7 +46,7 @@ export default class TransactionBreakdown extends PureComponent {
     return (
       <div className={classnames('transaction-breakdown', className)}>
         <div className="transaction-breakdown__title">{t('transaction')}</div>
-        <TransactionBreakdownRow title="Nonce">
+        <TransactionBreakdownRow title={t('nonce')}>
           {typeof nonce === 'undefined' ? null : (
             <HexToDecimal
               className="transaction-breakdown__value"

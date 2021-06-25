@@ -9,14 +9,10 @@ import { formatETHFee } from '../helpers/utils/formatters';
 import { calcGasTotal } from '../pages/send/send.utils';
 
 import { GAS_ESTIMATE_TYPES } from '../helpers/constants/common';
+import { getGasPrice } from '../ducks/send';
 import { BASIC_ESTIMATE_STATES, GAS_SOURCE } from '../ducks/gas/gas.duck';
 import { GAS_LIMITS } from '../../shared/constants/gas';
-import {
-  getCurrentCurrency,
-  getIsMainnet,
-  getPreferences,
-  getGasPrice,
-} from '.';
+import { getCurrentCurrency, getIsMainnet, getShouldShowFiat } from '.';
 
 const NUMBER_OF_DECIMALS_SM_BTNS = 5;
 
@@ -288,9 +284,7 @@ export function getRenderableBasicEstimateData(state, gasLimit) {
     return [];
   }
 
-  const { showFiatInTestnets } = getPreferences(state);
-  const isMainnet = getIsMainnet(state);
-  const showFiat = isMainnet || Boolean(showFiatInTestnets);
+  const showFiat = getShouldShowFiat(state);
   const { conversionRate } = state.metamask;
   const currentCurrency = getCurrentCurrency(state);
 
@@ -313,12 +307,9 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
   if (getBasicGasEstimateLoadingStatus(state)) {
     return [];
   }
-
-  const { showFiatInTestnets } = getPreferences(state);
-  const isMainnet = getIsMainnet(state);
-  const showFiat = isMainnet || Boolean(showFiatInTestnets);
+  const showFiat = getShouldShowFiat(state);
   const gasLimit =
-    state.send.gasLimit || getCustomGasLimit(state) || GAS_LIMITS.SIMPLE;
+    state.send.gas.gasLimit || getCustomGasLimit(state) || GAS_LIMITS.SIMPLE;
   const { conversionRate } = state.metamask;
   const currentCurrency = getCurrentCurrency(state);
   const {

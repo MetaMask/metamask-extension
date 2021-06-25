@@ -97,6 +97,9 @@
   "addTokens": {
     "message": "Add Tokens"
   },
+  "addressBookIcon": {
+    "message": "Address book icon"
+  },
   "advanced": {
     "message": "Advanced"
   },
@@ -149,6 +152,9 @@
   },
   "amount": {
     "message": "Amount"
+  },
+  "amountGasFee": {
+    "message": "Amount + Gas Fee"
   },
   "amountWithColon": {
     "message": "Amount:"
@@ -223,7 +229,7 @@
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
   "backupApprovalNotice": {
-    "message": "Backup your Secret Recovery code to keep your wallet and funds secure."
+    "message": "Backup your Secret Recovery Phrase to keep your wallet and funds secure."
   },
   "backupNow": {
     "message": "Backup now"
@@ -253,14 +259,20 @@
   "browserNotSupported": {
     "message": "Your Browser is not supported..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "Build your contact list"
   },
-  "builtInCalifornia": {
-    "message": "MetaMask is designed and built in California."
+  "builtAroundTheWorld": {
+    "message": "MetaMask is designed and built around the world."
   },
   "buy": {
     "message": "Buy"
+  },
+  "buyWithTransak": {
+    "message": "Buy ETH with Transak"
+  },
+  "buyWithTransakDescription": {
+    "message": "Transak supports debit card and bank transfers (depending on location) in 59+ countries. ETH deposits into your MetaMask account."
   },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
@@ -414,6 +426,9 @@
   "continue": {
     "message": "Continue"
   },
+  "continueToTransak": {
+    "message": "Continue to Transak"
+  },
   "continueToWyre": {
     "message": "Continue to Wyre"
   },
@@ -491,6 +506,9 @@
   },
   "customToken": {
     "message": "Custom Token"
+  },
+  "data": {
+    "message": "Data"
   },
   "dataBackupFoundInfo": {
     "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
@@ -650,11 +668,20 @@
     "message": "The endpoint returned a different chain ID: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
+  "ensIllegalCharacter": {
+    "message": "Illegal Character for ENS."
+  },
   "ensNotFoundOnCurrentNetwork": {
     "message": "ENS name not found on the current network. Try switching to Ethereum Mainnet."
   },
+  "ensNotSupportedOnNetwork": {
+    "message": "Network does not support ENS"
+  },
   "ensRegistrationError": {
     "message": "Error in ENS name registration"
+  },
+  "ensUnknownError": {
+    "message": "ENS Lookup failed."
   },
   "enterAnAlias": {
     "message": "Enter an alias"
@@ -776,6 +803,12 @@
   },
   "functionType": {
     "message": "Function Type"
+  },
+  "gasFee": {
+    "message": "Gas Fee"
+  },
+  "gasFeeEstimate": {
+    "message": "Estimate"
   },
   "gasLimit": {
     "message": "Gas Limit"
@@ -1063,6 +1096,12 @@
   },
   "max": {
     "message": "Max"
+  },
+  "maxFee": {
+    "message": "Max fee"
+  },
+  "maxPriorityFee": {
+    "message": "Max priority fee"
   },
   "memo": {
     "message": "memo"
@@ -1355,6 +1394,9 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
+  "optional": {
+    "message": "Optional"
+  },
   "optionalBlockExplorerUrl": {
     "message": "Block Explorer URL (optional)"
   },
@@ -1451,11 +1493,11 @@
   "recents": {
     "message": "Recents"
   },
-  "recipientAddress": {
-    "message": "Recipient Address"
-  },
   "recipientAddressPlaceholder": {
     "message": "Search, public address (0x), or ENS"
+  },
+  "recommendedGasLabel": {
+    "message": "Recommended"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Start here"
@@ -2189,6 +2231,9 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be 11 characters or fewer."
   },
+  "syncInProgress": {
+    "message": "Sync in progress"
+  },
   "syncWithMobile": {
     "message": "Sync with mobile"
   },
@@ -2369,6 +2414,10 @@
     "message": "verify the network details",
     "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
   },
+  "unsendableAsset": {
+    "message": "Sending collectible (ERC-721) tokens is not currently supported",
+    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+  },
   "updatedWithDate": {
     "message": "Updated $1"
   },
@@ -2410,6 +2459,9 @@
   },
   "viewContact": {
     "message": "View Contact"
+  },
+  "viewFullTransactionDetails": {
+    "message": "View full transaction details"
   },
   "viewMore": {
     "message": "View More"

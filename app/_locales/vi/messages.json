@@ -52,6 +52,10 @@
   "addContact": {
     "message": "Thêm người liên hệ"
   },
+  "addCustomTokenByContractAddress": {
+    "message": "Bạn không tìm thấy token? Bạn có thể dán địa chỉ của bất kỳ token nào để thêm token đó theo cách thủ công. Bạn có thể tìm thấy địa chỉ hợp đồng token trên $1.",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
+  },
   "addEthereumChainConfirmationDescription": {
     "message": "Thao tác này sẽ cho phép sử dụng mạng này trong MetaMask."
   },
@@ -249,11 +253,8 @@
   "browserNotSupported": {
     "message": "Trình duyệt của bạn không được hỗ trợ..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "Xây dựng danh sách liên hệ của bạn"
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask được thiết kế và phát triển tại California."
   },
   "buy": {
     "message": "Mua"
@@ -284,6 +285,9 @@
   },
   "chainIdDefinition": {
     "message": "Mã chuỗi được dùng để ký các giao dịch cho mạng này."
+  },
+  "chainIdExistsErrorMsg": {
+    "message": "Mạng $1 hiện đang sử dụng mã chuỗi này."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Bạn cần sử dụng MetaMask trên Google Chrome để kết nối với Ví cứng của bạn."
@@ -409,6 +413,9 @@
   },
   "continueToWyre": {
     "message": "Tiếp tục chuyển đến Wyre"
+  },
+  "contract": {
+    "message": "Hợp đồng"
   },
   "contractAddressError": {
     "message": "Bạn đang gửi token đến địa chỉ hợp đồng của token. Điều này có thể khiến bạn bị mất những token này."
@@ -624,7 +631,11 @@
     "message": "Hãy cẩn thận với hoạt động lừa đảo! MetaMask sẽ không bao giờ tự ý hỏi Cụm mật khẩu khôi phục bí mật của bạn."
   },
   "endOfFlowMessage6": {
-    "message": "Nếu bạn cần sao lưu lại Cụm mật khẩu khôi phục bí mật, bạn có thể tìm thấy chức năng này trong Cài đặt -> Bảo mật."
+    "message": "Nếu bạn cần sao lưu lại Cụm mật khẩu khôi phục bí mật, bạn có thể tìm thấy chức năng này trong phần Cài đặt -> Bảo mật."
+  },
+  "endOfFlowMessage7": {
+    "message": "Nếu bạn có thắc mắc hoặc thấy điều gì đó đáng ngờ, hãy liên hệ với bộ phận hỗ trợ của chúng tôi $1.",
+    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask không thể khôi phục Cụm mật khẩu khôi phục bí mật của bạn."
@@ -884,6 +895,16 @@
   },
   "importAccountSeedPhrase": {
     "message": "Nhập một tài khoản bằng Cụm mật khẩu khôi phục bí mật"
+  },
+  "importAccountText": {
+    "message": "hoặc $1",
+    "description": "$1 represents the text from `importAccountLinkText` as a link"
+  },
+  "importTokenQuestion": {
+    "message": "Bạn muốn nhập token?"
+  },
+  "importTokenWarning": {
+    "message": "Bất kỳ ai cũng tạo được token bằng bất kỳ tên nào, kể cả phiên bản giả của token hiện có. Bạn tự chịu rủi ro khi thêm và giao dịch!"
   },
   "importWallet": {
     "message": "Nhập ví"
@@ -1287,6 +1308,22 @@
     "message": "Từ giờ, \"Cụm mật khẩu gốc\" sẽ được gọi là \"Cụm mật khẩu khôi phục bí mật.\"",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
+  "notifications6DescriptionOne": {
+    "message": "Kể từ phiên bản Chrome 91, API từng cho phép hỗ trợ Ledger (U2F) của chúng tôi không còn hỗ trợ ví cứng nữa. MetaMask đã triển khai một tính năng hỗ trợ Ledger Live mới cho phép bạn tiếp tục kết nối với thiết bị Ledger của mình thông qua ứng dụng Ledger Live trên máy tính.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionThree": {
+    "message": "Khi tương tác với tài khoản Ledger của bạn trong MetaMask, một tab mới sẽ mở ra và bạn sẽ được yêu cầu mở ứng dụng Ledger Live.  Khi ứng dụng này mở ra, bạn sẽ được yêu cầu cho phép kết nối WebSocket với tài khoản MetaMask của mình.  Đơn giản vậy thôi!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionTwo": {
+    "message": "Bạn có thể kích hoạt tính năng hỗ trợ Ledger Live bằng cách nhấp vào phần Cài đặt > Nâng cao > Sử dụng Ledger Live.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6Title": {
+    "message": "Thông tin cập nhật về việc hỗ trợ Ledger cho người dùng Chrome",
+    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
+  },
   "ofTextNofM": {
     "message": "trên"
   },
@@ -1411,11 +1448,32 @@
   "recents": {
     "message": "Gần đây"
   },
-  "recipientAddress": {
-    "message": "Địa chỉ người nhận"
-  },
   "recipientAddressPlaceholder": {
     "message": "Tìm kiếm, địa chỉ công khai (0x) hoặc ENS"
+  },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "Bắt đầu tại đây"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "Đã hiểu"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "Luôn lưu giữ Cụm mật khẩu khôi phục bí mật ở nơi an toàn và bí mật"
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "Bạn cần sao lưu lại Cụm mật khẩu khôi phục bí mật?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "Tuyệt đối không cho ai biết Cụm mật khẩu khôi phục bí mật"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "Nhóm MetaMask sẽ không bao giờ hỏi Cụm mật khẩu khôi phục bí mật của bạn"
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "Cụm mật khẩu khôi phục bí mật sẽ kiểm soát mọi thứ trong tài khoản của bạn."
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "Bảo vệ tiền của bạn"
   },
   "reject": {
     "message": "Từ chối"
@@ -1442,7 +1500,7 @@
     "message": "Xóa tài khoản"
   },
   "removeAccountDescription": {
-    "message": "Tài khoản này sẽ được xóa khỏi ví của bạn. Xin đảm bảo rằng bạn có Cụm mật khẩu khôi phục bí mật ban đầu hoặc khóa riêng tư cho tài khoản được nhập trước khi tiếp tục. Bạn có thể nhập hoặc tạo lại tài khoản từ trình đơn tài khoản thả xuống. "
+    "message": "Tài khoản này sẽ được xóa khỏi ví của bạn. Hãy đảm bảo rằng bạn có Cụm mật khẩu khôi phục bí mật ban đầu hoặc khóa riêng tư cho tài khoản được nhập trước khi tiếp tục. Bạn có thể nhập hoặc tạo lại tài khoản từ trình đơn tài khoản thả xuống. "
   },
   "requestsAwaitingAcknowledgement": {
     "message": "yêu cầu đang chờ xác nhận"
@@ -1476,10 +1534,10 @@
     "message": "Một token trong đây sử dụng lại ký hiệu của một token khác mà bạn thấy, điều này có thể gây nhầm lẫn hoặc mang tính lừa dối."
   },
   "revealSeedWords": {
-    "message": "Hiện cụm mật khẩu khôi phục bí mật"
+    "message": "Hiện Cụm mật khẩu khôi phục bí mật"
   },
   "revealSeedWordsDescription": {
-    "message": "Nếu thay đổi trình duyệt hoặc chuyển máy tính, bạn sẽ cần Cụm mật khẩu khôi phục bí mật này để truy cập tài khoản của mình. Hãy lưu cụm mật khẩu gốc này ở nơi an toàn và bí mật."
+    "message": "Nếu thay đổi trình duyệt hoặc chuyển máy tính, bạn sẽ cần Cụm mật khẩu khôi phục bí mật này để truy cập tài khoản của mình. Hãy lưu Cụm mật khẩu khôi phục bí mật này ở nơi an toàn và bí mật."
   },
   "revealSeedWordsTitle": {
     "message": "Cụm mật khẩu khôi phục bí mật"
@@ -1543,6 +1601,42 @@
   },
   "securitySettingsDescription": {
     "message": "Các cài đặt quyền riêng tư và Cụm mật khẩu khôi phục bí mật của ví"
+  },
+  "seedPhraseIntroSidebarBulletFour": {
+    "message": "Viết ra và cất ở nhiều nơi bí mật."
+  },
+  "seedPhraseIntroSidebarBulletOne": {
+    "message": "Lưu trong một trình quản lý mật khẩu"
+  },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "Lưu giữ trong hộp ký gửi an toàn."
+  },
+  "seedPhraseIntroSidebarBulletTwo": {
+    "message": "Lưu giữ trong két an toàn."
+  },
+  "seedPhraseIntroSidebarCopyOne": {
+    "message": "Cụm mật khẩu khôi phục bí mật là “chìa khóa chính” để truy cập ví và số tiền của bạn."
+  },
+  "seedPhraseIntroSidebarCopyThree": {
+    "message": "Nếu ai đó hỏi bạn cụm mật khẩu khôi phục bí mật, thì họ đang cố gắng lừa đảo bạn."
+  },
+  "seedPhraseIntroSidebarCopyTwo": {
+    "message": "Đừng bao giờ cho ai biết cụm mật khẩu khôi phục bí mật, kể cả MetaMask!"
+  },
+  "seedPhraseIntroSidebarTitleOne": {
+    "message": "Cụm mật khẩu khôi phục là gì?"
+  },
+  "seedPhraseIntroSidebarTitleThree": {
+    "message": "Tôi có nên cho ai biết cụm mật khẩu khôi phục bí mật của mình không?"
+  },
+  "seedPhraseIntroSidebarTitleTwo": {
+    "message": "Tôi lưu cụm mật khẩu khôi phục của mình bằng cách nào?"
+  },
+  "seedPhraseIntroTitle": {
+    "message": "Bảo mật cho ví của bạn"
+  },
+  "seedPhraseIntroTitleCopy": {
+    "message": "Trước khi bắt đầu, hãy xem video ngắn này để tìm hiểu thêm về cụm mật khẩu khôi phục bí mật của bạn và cách bảo vệ ví của bạn."
   },
   "seedPhrasePlaceholder": {
     "message": "Phân tách mỗi từ bằng một dấu cách"
@@ -1844,7 +1938,7 @@
     "message": "Đang hoàn tất..."
   },
   "swapFromTo": {
-    "message": "Hoán đổi $1 sang $2",
+    "message": "Giao dịch hoán đổi $1 sang $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
   "swapGasFeesSplit": {
@@ -2005,6 +2099,9 @@
   "swapTokenToToken": {
     "message": "Hoán đổi $1 sang $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
+  },
+  "swapTokenVerificationAddedManually": {
+    "message": "Token này đã được thêm theo cách thủ công."
   },
   "swapTokenVerificationMessage": {
     "message": "Luôn xác nhận địa chỉ token trên $1.",
@@ -2273,7 +2370,7 @@
     "message": "URL phải có tiền tố HTTP/HTTPS phù hợp."
   },
   "urlExistsErrorMsg": {
-    "message": "URL đã có trong danh sách mạng hiện tại"
+    "message": "Mạng $1 hiện đang sử dụng URL này."
   },
   "usePhishingDetection": {
     "message": "Sử dụng tính năng Phát hiện lừa đảo"
@@ -2293,6 +2390,10 @@
   },
   "verifyThisTokenOn": {
     "message": "Xác minh token này trên $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "verifyThisUnconfirmedTokenOn": {
+    "message": "Hãy xác minh token này trên $1 và đảm bảo đây là token bạn muốn giao dịch.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAccount": {
@@ -2327,6 +2428,10 @@
   },
   "walletSeedRestore": {
     "message": "Cụm mật khẩu khôi phục bí mật của ví"
+  },
+  "web3ShimUsageNotification": {
+    "message": "Chúng tôi nhận thấy rằng trang web hiện tại đã cố dùng API window.web3 đã bị xóa. Nếu trang web có vẻ như đã bị lỗi, vui lòng nhấp vào $1 để biết thêm thông tin.",
+    "description": "$1 is a clickable link."
   },
   "welcome": {
     "message": "Chào mừng bạn đến với MetaMask"

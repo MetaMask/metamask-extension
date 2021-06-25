@@ -137,9 +137,6 @@
   "browserNotSupported": {
     "message": "Votre navigateur internet n'est pas supporté..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask est designé et developpé en Californie."
-  },
   "buyWithWyre": {
     "message": "Acheter ETH avec Wyre"
   },
@@ -735,9 +732,6 @@
   },
   "recents": {
     "message": "Récents"
-  },
-  "recipientAddress": {
-    "message": "Adresse du destinataire"
   },
   "recipientAddressPlaceholder": {
     "message": "Recherche, adresse publique (0x) ou ENS"

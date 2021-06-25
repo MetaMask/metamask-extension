@@ -10,7 +10,6 @@ import {
   cancelTxs,
   updateAndApproveTx,
   showModal,
-  setMetaMetricsSendCount,
   updateTransaction,
   getNextNonce,
   tryReverseResolveAddress,
@@ -32,10 +31,10 @@ import {
   getKnownMethodData,
   getMetaMaskAccounts,
   getUseNonceField,
-  getPreferences,
   transactionFeeSelector,
   getNoGasPriceFetched,
   getIsEthGasPriceFetched,
+  getShouldShowFiat,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
@@ -65,7 +64,6 @@ const mapStateToProps = (state, ownProps) => {
     match: { params = {} },
   } = ownProps;
   const { id: paramsTransactionId } = params;
-  const { showFiatInTestnets } = getPreferences(state);
   const isMainnet = getIsMainnet(state);
   const { confirmTransaction, metamask } = state;
   const {
@@ -76,7 +74,6 @@ const mapStateToProps = (state, ownProps) => {
     assetImages,
     network,
     unapprovedTxs,
-    metaMetricsSendCount,
     nextNonce,
     provider: { chainId },
   } = metamask;
@@ -184,9 +181,8 @@ const mapStateToProps = (state, ownProps) => {
     useNonceField: getUseNonceField(state),
     customNonceValue,
     insufficientBalance,
-    hideSubtitle: !isMainnet && !showFiatInTestnets,
-    hideFiatConversion: !isMainnet && !showFiatInTestnets,
-    metaMetricsSendCount,
+    hideSubtitle: !getShouldShowFiat(state),
+    hideFiatConversion: !getShouldShowFiat(state),
     type,
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
@@ -234,7 +230,6 @@ export const mapDispatchToProps = (dispatch) => {
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
     sendTransaction: (txData) =>
       dispatch(updateAndApproveTx(customNonceMerge(txData))),
-    setMetaMetricsSendCount: (val) => dispatch(setMetaMetricsSendCount(val)),
     getNextNonce: () => dispatch(getNextNonce()),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),
