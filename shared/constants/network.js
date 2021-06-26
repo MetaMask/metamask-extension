@@ -32,6 +32,16 @@ export const KOVAN_DISPLAY_NAME = 'Kovan';
 export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet';
 export const GOERLI_DISPLAY_NAME = 'Goerli';
 
+const infuraProjectId = process.env.INFURA_PROJECT_ID;
+const getRpcUrl = (network) =>
+  `https://${network}.infura.io/v3/${infuraProjectId}`;
+
+export const ROPSTEN_RPC_URL = getRpcUrl('ropsten');
+export const RINKEBY_RPC_URL = getRpcUrl('rinkeby');
+export const KOVAN_RPC_URL = getRpcUrl('kovan');
+export const MAINNET_RPC_URL = getRpcUrl('mainnet');
+export const GOERLI_RPC_URL = getRpcUrl('goerli');
+
 export const ETH_SYMBOL = 'ETH';
 export const WETH_SYMBOL = 'WETH';
 export const TEST_ETH_SYMBOL = 'TESTETH';
@@ -50,6 +60,9 @@ export const TEST_CHAINS = [
   KOVAN_CHAIN_ID,
 ];
 
+/**
+ * Map of all build-in Infura networks to their network and chain IDs.
+ */
 export const NETWORK_TYPE_TO_ID_MAP = {
   [ROPSTEN]: { networkId: ROPSTEN_NETWORK_ID, chainId: ROPSTEN_CHAIN_ID },
   [RINKEBY]: { networkId: RINKEBY_NETWORK_ID, chainId: RINKEBY_CHAIN_ID },
@@ -84,6 +97,14 @@ export const CHAIN_ID_TO_TYPE_MAP = Object.entries(
   chainIdToTypeMap[chainId] = networkType;
   return chainIdToTypeMap;
 }, {});
+
+export const CHAIN_ID_TO_RPC_URL_MAP = {
+  [ROPSTEN_CHAIN_ID]: ROPSTEN_RPC_URL,
+  [RINKEBY_CHAIN_ID]: RINKEBY_RPC_URL,
+  [KOVAN_CHAIN_ID]: KOVAN_RPC_URL,
+  [GOERLI_CHAIN_ID]: GOERLI_RPC_URL,
+  [MAINNET_CHAIN_ID]: MAINNET_RPC_URL,
+};
 
 export const CHAIN_ID_TO_NETWORK_ID_MAP = Object.values(
   NETWORK_TYPE_TO_ID_MAP,

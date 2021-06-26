@@ -1,0 +1,30 @@
+.import-token {
+  flex-direction: column;
+
+  .actionable-message {
+    margin-top: 0;
+
+    &--danger {
+      border-color: $Red-300;
+      background: $Red-000;
+    }
+
+    &__message {
+      color: $Black-100;
+      text-align: left;
+    }
+  }
+
+  &__contract-address {
+    border-radius: 8px;
+    background-color: $Grey-000;
+    padding: 5px 10px;
+  }
+
+  &__token-icon {
+    font-size: $font-size-h2;
+    margin-top: 24px;
+    width: 69px;
+    height: 69px;
+  }
+}

@@ -15,6 +15,7 @@ export default function TokenCell({
   string,
   image,
   onClick,
+  isERC721,
 }) {
   const userAddress = useSelector(getSelectedAddress);
   const t = useI18nContext();
@@ -50,6 +51,7 @@ export default function TokenCell({
       warning={warning}
       primary={`${string || 0}`}
       secondary={formattedFiat}
+      isERC721={isERC721}
     />
   );
 }
@@ -62,6 +64,7 @@ TokenCell.propTypes = {
   string: PropTypes.string,
   image: PropTypes.string,
   onClick: PropTypes.func.isRequired,
+  isERC721: PropTypes.bool,
 };
 
 TokenCell.defaultProps = {

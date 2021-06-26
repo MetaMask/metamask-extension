@@ -12,6 +12,49 @@ describe('Stores custom RPC history', function () {
     ],
   };
   it(`creates first custom RPC entry`, async function () {
+    const port = 8546;
+    const chainId = 1338;
+    await withFixtures(
+      {
+        fixtures: 'imported-account',
+        ganacheOptions: { ...ganacheOptions, concurrent: { port, chainId } },
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        const rpcUrl = `http://127.0.0.1:${port}`;
+        const networkName = 'Secondary Ganache Testnet';
+
+        await driver.clickElement('.network-display');
+
+        await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
+
+        await driver.findElement('.settings-page__sub-header-text');
+
+        const customRpcInputs = await driver.findElements('input[type="text"]');
+        const networkNameInput = customRpcInputs[0];
+        const rpcUrlInput = customRpcInputs[1];
+        const chainIdInput = customRpcInputs[2];
+
+        await networkNameInput.clear();
+        await networkNameInput.sendKeys(networkName);
+
+        await rpcUrlInput.clear();
+        await rpcUrlInput.sendKeys(rpcUrl);
+
+        await chainIdInput.clear();
+        await chainIdInput.sendKeys(chainId.toString());
+
+        await driver.clickElement('.network-form__footer .btn-secondary');
+        await driver.findElement({ text: networkName, tag: 'div' });
+      },
+    );
+  });
+
+  it('warns user when they enter url for an already configured network', async function () {
     await withFixtures(
       {
         fixtures: 'imported-account',
@@ -23,8 +66,43 @@ describe('Stores custom RPC history', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        const rpcUrl = 'http://127.0.0.1:8545/1';
-        const chainId = '0x539'; // Ganache default, decimal 1337
+        // duplicate network
+        const duplicateRpcUrl = 'http://localhost:8545';
+
+        await driver.clickElement('.network-display');
+
+        await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
+
+        await driver.findElement('.settings-page__sub-header-text');
+
+        const customRpcInputs = await driver.findElements('input[type="text"]');
+        const rpcUrlInput = customRpcInputs[1];
+
+        await rpcUrlInput.clear();
+        await rpcUrlInput.sendKeys(duplicateRpcUrl);
+        await driver.findElement({
+          text: 'This URL is currently used by the Localhost 8545 network.',
+          tag: 'p',
+        });
+      },
+    );
+  });
+
+  it('warns user when they enter chainId for an already configured network', async function () {
+    await withFixtures(
+      {
+        fixtures: 'imported-account',
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        // duplicate network
+        const newRpcUrl = 'http://localhost:8544';
+        const duplicateChainId = '0x539';
 
         await driver.clickElement('.network-display');
 
@@ -37,13 +115,15 @@ describe('Stores custom RPC history', function () {
         const chainIdInput = customRpcInputs[2];
 
         await rpcUrlInput.clear();
-        await rpcUrlInput.sendKeys(rpcUrl);
+        await rpcUrlInput.sendKeys(newRpcUrl);
 
         await chainIdInput.clear();
-        await chainIdInput.sendKeys(chainId);
-
-        await driver.clickElement('.network-form__footer .btn-secondary');
-        await driver.findElement({ text: rpcUrl, tag: 'div' });
+        await chainIdInput.sendKeys(duplicateChainId);
+        await driver.findElement({
+          text:
+            'This Chain ID is currently used by the Localhost 8545 network.',
+          tag: 'p',
+        });
       },
     );
   });

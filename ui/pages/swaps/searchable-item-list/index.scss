@@ -43,7 +43,7 @@
   &__list-container {
     display: flex;
     flex-direction: column;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   &__item {
@@ -63,7 +63,7 @@
     }
 
     &:last-of-type {
-      border-bottom: 1px solid $Grey-100;
+      border-bottom: none;
     }
 
     &:hover,
@@ -78,6 +78,38 @@
     &--disabled {
       opacity: 0.4;
       pointer-events: none;
+    }
+
+    &--add-token {
+      min-height: auto;
+      opacity: 1;
+      pointer-events: none;
+
+      &:hover {
+        background: none;
+      }
+
+      .actionable-message {
+        margin: 0;
+
+        &__message {
+          text-align: left;
+          color: $Black-100;
+        }
+
+        a {
+          pointer-events: auto;
+          color: #037dd6;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .btn-primary {
+      @include H7;
+
+      width: auto;
+      padding: 7px 11px;
     }
 
     > img {

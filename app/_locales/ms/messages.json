@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "Pelayar anda tidak disokong..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask direka dan dibina di California."
-  },
   "buyWithWyre": {
     "message": "Beli ETH dengan Wyre"
   },
@@ -730,9 +727,6 @@
   },
   "recents": {
     "message": "Baru-baru ini"
-  },
-  "recipientAddress": {
-    "message": "Alamat Penerima"
   },
   "recipientAddressPlaceholder": {
     "message": "Cari, alamat awam (0x), atau ENS"

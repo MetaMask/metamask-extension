@@ -10,6 +10,14 @@ import {
 } from '../../helpers/utils/conversions.util';
 import { getIsMainnet, getCurrentChainId } from '../../selectors';
 import fetchWithCache from '../../helpers/utils/fetch-with-cache';
+import {
+  BASIC_GAS_ESTIMATE_STATUS,
+  RESET_CUSTOM_DATA,
+  SET_BASIC_GAS_ESTIMATE_DATA,
+  SET_CUSTOM_GAS_LIMIT,
+  SET_CUSTOM_GAS_PRICE,
+  SET_ESTIMATE_SOURCE,
+} from './gas-action-constants';
 
 export const BASIC_ESTIMATE_STATES = {
   LOADING: 'LOADING',
@@ -21,14 +29,6 @@ export const GAS_SOURCE = {
   METASWAPS: 'MetaSwaps',
   ETHGASPRICE: 'eth_gasprice',
 };
-
-// Actions
-const BASIC_GAS_ESTIMATE_STATUS = 'metamask/gas/BASIC_GAS_ESTIMATE_STATUS';
-const RESET_CUSTOM_DATA = 'metamask/gas/RESET_CUSTOM_DATA';
-const SET_BASIC_GAS_ESTIMATE_DATA = 'metamask/gas/SET_BASIC_GAS_ESTIMATE_DATA';
-const SET_CUSTOM_GAS_LIMIT = 'metamask/gas/SET_CUSTOM_GAS_LIMIT';
-const SET_CUSTOM_GAS_PRICE = 'metamask/gas/SET_CUSTOM_GAS_PRICE';
-const SET_ESTIMATE_SOURCE = 'metamask/gas/SET_ESTIMATE_SOURCE';
 
 const initState = {
   customData: {

@@ -1,0 +1,17 @@
+.edit-gas-display {
+  .radio-group {
+    margin: 20px auto;
+  }
+
+  &__advanced-button {
+    display: block;
+    margin: 0 auto;
+    background: transparent;
+    color: $primary-1;
+    font-weight: bold;
+  }
+
+  .advanced-gas-controls {
+    margin-top: 20px;
+  }
+}

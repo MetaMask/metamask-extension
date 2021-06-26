@@ -44,7 +44,7 @@ const materialUIDependencies = ['@material-ui/core'];
 const reactDepenendencies = dependencies.filter((dep) => dep.match(/react/u));
 
 const externalDependenciesMap = {
-  background: ['3box'],
+  background: ['3box', '@ethereumjs/common', 'unicode-confusables'],
   ui: [...materialUIDependencies, ...reactDepenendencies],
 };
 
@@ -433,6 +433,7 @@ function getEnvironmentVariables({ devMode, testing }) {
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
     PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
     CONF: devMode ? metamaskrc : {},
+    SHOW_EIP_1559_UI: process.env.SHOW_EIP_1559_UI === '1',
     SENTRY_DSN: process.env.SENTRY_DSN,
     SENTRY_DSN_DEV: metamaskrc.SENTRY_DSN_DEV,
     INFURA_PROJECT_ID: testing

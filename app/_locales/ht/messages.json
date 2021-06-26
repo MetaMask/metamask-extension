@@ -73,9 +73,6 @@
   "browserNotSupported": {
     "message": "Navigatè ou a pa sipòte..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask fèt e bati nan California."
-  },
   "cancel": {
     "message": "Anile"
   },
@@ -449,9 +446,6 @@
   },
   "readdToken": {
     "message": "Ou ka ajoute token sa aprè sa ankò ou prale nan  \"Ajoute token\" nan opsyon meni kont ou an."
-  },
-  "recipientAddress": {
-    "message": "Adrès pou resevwa"
   },
   "reject": {
     "message": "Rejte"

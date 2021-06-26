@@ -14,6 +14,7 @@ import {
   getInfuraBlocked,
   getShowWhatsNewPopup,
   getSortedNotificationsToShow,
+  getShowRecoveryPhraseReminder,
 } from '../../selectors';
 
 import {
@@ -25,6 +26,8 @@ import {
   setDefaultHomeActiveTabName,
   setWeb3ShimUsageAlertDismissed,
   setAlertEnabledness,
+  setRecoveryPhraseReminderHasBeenShown,
+  setRecoveryPhraseReminderLastShown,
 } from '../../store/actions';
 import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
@@ -107,6 +110,8 @@ const mapStateToProps = (state) => {
     infuraBlocked: getInfuraBlocked(state),
     notificationsToShow: getSortedNotificationsToShow(state).length > 0,
     showWhatsNewPopup: getShowWhatsNewPopup(state),
+    showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
+    seedPhraseBackedUp,
   };
 };
 
@@ -132,6 +137,10 @@ const mapDispatchToProps = (dispatch) => ({
   disableWeb3ShimUsageAlert: () =>
     setAlertEnabledness(ALERT_TYPES.web3ShimUsage, false),
   hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
+  setRecoveryPhraseReminderHasBeenShown: () =>
+    dispatch(setRecoveryPhraseReminderHasBeenShown()),
+  setRecoveryPhraseReminderLastShown: (lastShown) =>
+    dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
 });
 
 export default compose(

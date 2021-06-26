@@ -101,6 +101,9 @@
         },
         "5": {
           "isShown": true
+        },
+        "6": {
+          "isShown": true
         }
       }
     },
@@ -122,8 +125,7 @@
     },
     "MetaMetricsController": {
       "participateInMetaMetrics": false,
-      "metaMetricsId": null,
-      "metaMetricsSendCount": 1
+      "metaMetricsId": null
     },
     "PermissionsController": {
       "permissionsRequests": [],
