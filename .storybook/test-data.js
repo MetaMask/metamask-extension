@@ -15,9 +15,9 @@ const state = {
     "isAccountMenuOpen": false,
     "rpcUrl": "https://rawtestrpc.metamask.io/",
     "identities": {
-      "0x983211ce699ea5ab57cc528086154b6db1ad8e55": {
+      "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4": {
         "name": "Account 1",
-        "address": "0x983211ce699ea5ab57cc528086154b6db1ad8e55"
+        "address": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4"
       },
       "0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e": {
         "name": "Account 2",
@@ -161,8 +161,8 @@ const state = {
     },
     "network": "3",
     "accounts": {
-      "0x983211ce699ea5ab57cc528086154b6db1ad8e55": {
-        "address": "0x983211ce699ea5ab57cc528086154b6db1ad8e55",
+      "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4": {
+        "address": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4",
         "balance": "0x176e5b6f173ebe66"
       },
       "0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e": {
@@ -261,7 +261,7 @@ const state = {
       }
     },
     "assetImages": {
-      "0xad6d458402f60fd3bd25163575031acdce07538d": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xaD6D458402F60fD3Bd25163575031ACDce07538D/logo.png"
+      "0xad6d458402f60fd3bd25163575031acdce07538d": ""
     },
     "hiddenTokens": [],
     "suggestedTokens": {},
@@ -639,7 +639,7 @@ const state = {
       "chainId": "0x3",
       "loadingDefaults": false,
       "txParams": {
-        "from": "0x983211ce699ea5ab57cc528086154b6db1ad8e55",
+        "from": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4",
         "to": "0xad6d458402f60fd3bd25163575031acdce07538d",
         "value": "0x0",
         "data": "0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170",
