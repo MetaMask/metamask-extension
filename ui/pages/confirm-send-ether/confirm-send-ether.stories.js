@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 
-import ConfirmSendEther from '.';
 import { select } from '@storybook/addon-knobs';
 import { store } from '../../../.storybook/preview';
 import { updateTransactionParams } from '../../store/actions';
+import ConfirmSendEther from '.';
 
 export default {
   title: 'Confirmation Screens',
@@ -50,7 +50,7 @@ const PageSet = ({ children }) => {
 export const SendEther = () => {
   return (
     <PageSet>
-       <ConfirmSendEther/> 
+      <ConfirmSendEther />
     </PageSet>
   );
 };
