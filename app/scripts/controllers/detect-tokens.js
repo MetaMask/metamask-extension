@@ -25,6 +25,7 @@ export default class DetectTokensController {
     keyringMemStore,
     tokenList,
   } = {}) {
+    console.log('inside detecttokens');
     this.preferences = preferences;
     this.interval = interval;
     this.network = network;
@@ -90,6 +91,49 @@ export default class DetectTokensController {
       });
     });
   }
+  async detectNewTokensFromAPI() {
+    if (!this.isActive) {
+      return;
+    }
+    if (this._network.store.getState().provider.chainId !== MAINNET_CHAIN_ID) {
+      return;
+    }
+
+    const tokensAddressForBalance = [];
+    const tokensToDetect = {}
+    this.web3.setProvider(this._network._provider);
+    const apiTokens = this._tokenList;
+    for (const token of apiTokens) {
+      if (
+        !this.tokenAddresses.includes(token.address.toLowerCase()) &&
+        !this.hiddenTokens.includes(token.address.toLowerCase())
+      ) {
+        tokensAddressForBalance.push(token.address);
+        tokensToDetect[token.address] = token;
+      }
+    }
+    let result;
+    try {
+      result = await this._getTokenBalances(tokensAddressForBalance);
+    } catch (error) {
+      warn(
+        `MetaMask - DetectTokensController single call balance fetch failed`,
+        error,
+      );
+      return;
+    }
+
+    tokensAddressForBalance.forEach((tokenAddress, index) => {
+      const balance = result[index];
+      if (balance && !balance.isZero()) {
+        this._preferences.addToken(
+          tokenAddress,
+          tokensToDetect[tokenAddress].symbol,
+          tokensToDetect[tokenAddress].decimals,
+        );
+      }
+    });
+  }
 
   /**
    * For each token in tokenlist ptovided by the TokenListController, find check selectedAddress balance.
@@ -148,7 +192,8 @@ export default class DetectTokensController {
     if (!(this.isActive && this.selectedAddress)) {
       return;
     }
-    this.detectNewTokens();
+    //this.detectNewTokens();
+    this.detectNewTokensFromAPI();
     this.interval = DEFAULT_INTERVAL;
   }
 
@@ -162,7 +207,8 @@ export default class DetectTokensController {
       return;
     }
     this._handle = setInterval(() => {
-      this.detectNewTokens();
+      //this.detectNewTokens();
+      this.detectNewTokensFromAPI();
     }, interval);
   }
 
@@ -227,7 +273,16 @@ export default class DetectTokensController {
       }
     });
   }
-
+  /**
+   * @type {Object}
+   */
+   set tokenList(tokenList) {
+    if (!tokenList) {
+      return;
+    }
+    console.log(`tokenList ${JSON.stringify(tokenList)}`)
+    this._tokenList = tokenList;
+  }
   /**
    * @type {Object}
    */
