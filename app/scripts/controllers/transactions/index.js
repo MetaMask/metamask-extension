@@ -376,7 +376,12 @@ export default class TransactionController extends EventEmitter {
     if (simulationFails) {
       txMeta.simulationFails = simulationFails;
     }
-    if (defaultGasPrice && !txMeta.txParams.gasPrice) {
+    if (
+      defaultGasPrice &&
+      !txMeta.txParams.gasPrice &&
+      !txMeta.txParams.maxPriorityFeePerGas &&
+      !txMeta.txParams.maxFeePerGas
+    ) {
       txMeta.txParams.gasPrice = defaultGasPrice;
     }
     if (defaultGasLimit && !txMeta.txParams.gas) {
@@ -391,7 +396,10 @@ export default class TransactionController extends EventEmitter {
    * @returns {Promise<string|undefined>} The default gas price
    */
   async _getDefaultGasPrice(txMeta) {
-    if (txMeta.txParams.gasPrice) {
+    if (
+      txMeta.txParams.gasPrice ||
+      (txMeta.txParams.maxFeePerGas && txMeta.txParams.maxPriorityFeePerGas)
+    ) {
       return undefined;
     }
     const gasPrice = await this.query.gasPrice();
