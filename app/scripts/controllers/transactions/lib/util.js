@@ -1,6 +1,9 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { addHexPrefix } from '../../../lib/util';
-import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction';
+import {
+  TRANSACTION_ENVELOPE_TYPES,
+  TRANSACTION_STATUSES,
+} from '../../../../../shared/constants/transaction';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
 
 const normalizers = {
@@ -12,6 +15,10 @@ const normalizers = {
   data: (data) => addHexPrefix(data),
   gas: (gas) => addHexPrefix(gas),
   gasPrice: (gasPrice) => addHexPrefix(gasPrice),
+  maxFeePerGas: (maxFeePerGas) => addHexPrefix(maxFeePerGas),
+  maxPriorityFeePerGas: (maxPriorityFeePerGas) =>
+    addHexPrefix(maxPriorityFeePerGas),
+  type: (type) => addHexPrefix(type),
 };
 
 export function normalizeAndValidateTxParams(txParams, lowerCase = true) {
@@ -64,6 +71,15 @@ export function validateTxParams(txParams) {
       case 'to':
         validateRecipient(txParams);
         break;
+      case 'gasPrice':
+        validateGasPrice(txParams);
+        break;
+      case 'maxFeePerGas':
+        validateMaxFeePerGas(txParams);
+        break;
+      case 'maxPriorityFeePerGas':
+        validateMaxPriorityFeePerGas(txParams);
+        break;
       case 'value':
         if (typeof value !== 'string') {
           throw ethErrors.rpc.invalidParams(
@@ -97,6 +113,92 @@ export function validateTxParams(txParams) {
         }
     }
   });
+}
+
+/**
+ * Validates the {@code maxPriorityFeePerGas} field in the given txParams
+ * @param {Object} txParams
+ * @throws {Error} if gasPrice is also included in txParams
+ */
+export function validateMaxPriorityFeePerGas(txParams) {
+  if (
+    txParams.type &&
+    txParams.type !== TRANSACTION_ENVELOPE_TYPES.FEE_MARKET
+  ) {
+    throw ethErrors.rpc.invalidParams(
+      `Invalid transaction envelope type: specified type "${txParams.type}" but including maxFeePerGas and maxPriorityFeePerGas requires type: "${TRANSACTION_ENVELOPE_TYPES.FEE_MARKET}"
+      `,
+    );
+  }
+
+  if (typeof txParams.gasPrice !== 'undefined') {
+    throw ethErrors.rpc.invalidParams(
+      `Invalid transaction params: specified maxPriorityFeePerGas but also included gasPrice, these cannot be mixed`,
+    );
+  }
+
+  if (typeof txParams.maxPriorityFeePerGas !== 'string') {
+    throw ethErrors.rpc.invalidParams(
+      `Invalid transaction params: maxPriorityFeePerGas is not a string. got: (${txParams.maxPriorityFeePerGas})`,
+    );
+  }
+}
+
+/**
+ * Validates the {@code maxFeePerGas} field in the given txParams
+ * @param {Object} txParams
+ * @throws {Error} if gasPrice is also included in txParams
+ */
+export function validateMaxFeePerGas(txParams) {
+  if (
+    txParams.type &&
+    txParams.type !== TRANSACTION_ENVELOPE_TYPES.FEE_MARKET
+  ) {
+    throw ethErrors.rpc.invalidParams(
+      `Invalid transaction envelope type: specified type "${txParams.type}" but including maxFeePerGas and maxPriorityFeePerGas requires type: "${TRANSACTION_ENVELOPE_TYPES.FEE_MARKET}"
+      `,
+    );
+  }
+  if (typeof txParams.gasPrice !== 'undefined') {
+    throw ethErrors.rpc.invalidParams(
+      `Invalid transaction params: specified maxFeePerGas but also included gasPrice, these cannot be mixed`,
+    );
+  }
+  if (typeof txParams.maxFeePerGas !== 'string') {
+    throw ethErrors.rpc.invalidParams(
+      `Invalid transaction params: maxFeePerGas is not a string. got: (${txParams.maxFeePerGas})`,
+    );
+  }
+}
+
+/**
+ * Validates the {@code gasPrice} field in the given txParams
+ * @param {Object} txParams
+ * @throws {Error} if gasPrice is included alongside the FEE_MARKET type field
+ * @throws {Error} if maxFeePerGas or maxPriorityFeePerGas is also included
+ */
+export function validateGasPrice(txParams) {
+  if (
+    txParams.type &&
+    txParams.type === TRANSACTION_ENVELOPE_TYPES.FEE_MARKET
+  ) {
+    throw ethErrors.rpc.invalidParams(
+      `Invalid transaction envelope type: specified type "${TRANSACTION_ENVELOPE_TYPES.FEE_MARKET}" but included a gasPrice instead of maxFeePerGas and maxPriorityFeePerGas`,
+    );
+  }
+  if (
+    typeof txParams.maxFeePerGas !== 'undefined' ||
+    typeof txParams.maxPriorityFeePerGas !== 'undefined'
+  ) {
+    throw ethErrors.rpc.invalidParams(
+      `Invalid transaction params: specified gasPrice alongside maxFeePerGas or maxPriorityFeePerGas, these cannot be mixed`,
+    );
+  }
+  if (typeof txParams.gasPrice !== 'string') {
+    throw ethErrors.rpc.invalidParams(
+      `Invalid transaction params: gasPrice is not a string. got: (${txParams.gasPrice})`,
+    );
+  }
 }
 
 /**
