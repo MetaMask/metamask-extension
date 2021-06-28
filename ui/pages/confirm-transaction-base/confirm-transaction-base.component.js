@@ -339,56 +339,54 @@ export default class ConfirmTransactionBase extends Component {
     if (process.env.SHOW_EIP_1559_UI) {
       return (
         <div className="confirm-page-container-content__details">
-          <div className="confirm-page-container-content__gas-fee">
-            <TransactionDetail
-              rows={[
-                <TransactionDetailItem
-                  key="gas-item"
-                  detailTitle={
-                    <>
-                      {t('transactionDetailGasHeading')}
-                      <InfoTooltip contentText="" position="top">
-                        <i className="fa fa-info-circle" />
-                      </InfoTooltip>
-                    </>
-                  }
-                  detailText={
-                    <UserPreferencedCurrencyDisplay
-                      type={PRIMARY}
-                      value={hexTransactionFee}
-                      hideLabel={false}
-                    />
-                  }
-                  detailTotal={
-                    <UserPreferencedCurrencyDisplay
-                      type={SECONDARY}
-                      value={hexTransactionFee}
-                      hideLabel
-                    />
-                  }
-                />,
-                <TransactionDetailItem
-                  key="total-item"
-                  detailTitle={t('total')}
-                  detailText={
-                    <UserPreferencedCurrencyDisplay
-                      type={PRIMARY}
-                      value={hexTransactionTotal}
-                      hideLabel={false}
-                    />
-                  }
-                  detailTotal={
-                    <UserPreferencedCurrencyDisplay
-                      type={SECONDARY}
-                      value={hexTransactionTotal}
-                      hideLabel
-                    />
-                  }
-                  subTitle={t('transactionDetailGasTotalSubtitle')}
-                />,
-              ]}
-            />
-          </div>
+          <TransactionDetail
+            rows={[
+              <TransactionDetailItem
+                key="gas-item"
+                detailTitle={
+                  <>
+                    {t('transactionDetailGasHeading')}
+                    <InfoTooltip contentText="" position="top">
+                      <i className="fa fa-info-circle" />
+                    </InfoTooltip>
+                  </>
+                }
+                detailText={
+                  <UserPreferencedCurrencyDisplay
+                    type={PRIMARY}
+                    value={hexTransactionFee}
+                    hideLabel={false}
+                  />
+                }
+                detailTotal={
+                  <UserPreferencedCurrencyDisplay
+                    type={SECONDARY}
+                    value={hexTransactionFee}
+                    hideLabel
+                  />
+                }
+              />,
+              <TransactionDetailItem
+                key="total-item"
+                detailTitle={t('total')}
+                detailText={
+                  <UserPreferencedCurrencyDisplay
+                    type={PRIMARY}
+                    value={hexTransactionTotal}
+                    hideLabel={false}
+                  />
+                }
+                detailTotal={
+                  <UserPreferencedCurrencyDisplay
+                    type={SECONDARY}
+                    value={hexTransactionTotal}
+                    hideLabel
+                  />
+                }
+                subTitle={t('transactionDetailGasTotalSubtitle')}
+              />,
+            ]}
+          />
         </div>
       );
     }
