@@ -57,7 +57,6 @@ export default function setupEnsIpfsResolver({
         provider,
         name,
       });
-
       if (type === 'ipfs-ns' || type === 'ipns-ns') {
         const resolvedUrl = `https://${hash}.${type.slice(
           0,
@@ -88,7 +87,7 @@ export default function setupEnsIpfsResolver({
         const padded = hash.padEnd(hash.length + 4 - (hash.length % 4), "=");
         const decoded = base64.toByteArray(padded);
         const base32EncodedSkylink = base32Encode(decoded, "RFC4648-HEX", { padding: false }).toLowerCase();
-        url = `https://${base32EncodedSkylink}.siasky.net/${pathname}${search || ''}${fragment || ''}`;
+        url = `https://${base32EncodedSkylink}.siasky.net${pathname}${search || ''}${fragment || ''}`;
       }
     } catch (err) {
       console.warn(err);
