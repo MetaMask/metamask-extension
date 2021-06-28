@@ -285,7 +285,7 @@ export default class PreferencesController {
    */
   syncAddresses(addresses) {
     if (!Array.isArray(addresses) || addresses.length === 0) {
-      throw new Error('Expected non-empty array of addresses.');
+      throw new Error('Expected non-empty array of addresses. Error #11201');
     }
 
     const { identities, lostIdentities } = this.store.getState();
