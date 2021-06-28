@@ -73,6 +73,16 @@ export const METAMASK_CONTROLLER_EVENTS = {
   UPDATE_BADGE: 'updateBadge',
 };
 
+/**
+ * Accounts can be instantiated from simple, HD or the two hardware wallet
+ * keyring types. Both simple and HD are treated as default but we do special
+ * case accounts managed by a hardware wallet.
+ */
+const KEYRING_TYPES = {
+  LEDGER: 'Ledger Hardware',
+  TREZOR: 'Trezor Hardware',
+};
+
 export default class MetamaskController extends EventEmitter {
   /**
    * @constructor
@@ -1786,7 +1796,7 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.keyringController.getKeyringForAccount(address);
 
     switch (keyring.type) {
-      case 'Ledger Hardware': {
+      case KEYRING_TYPES.LEDGER: {
         return new Promise((_, reject) => {
           reject(
             new Error('Ledger does not support eth_getEncryptionPublicKey.'),
@@ -1794,7 +1804,7 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
-      case 'Trezor Hardware': {
+      case KEYRING_TYPES.TREZOR: {
         return new Promise((_, reject) => {
           reject(
             new Error('Trezor does not support eth_getEncryptionPublicKey.'),
@@ -1931,6 +1941,24 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
     cb(null, this.getState());
+  }
+
+  /**
+   * Method to return a boolean if the keyring for the currently selected
+   * account is a ledger or trezor keyring.
+   * TODO: remove this method when Ledger and Trezor release their supported
+   * client utilities for EIP-1559
+   * @returns {boolean} true if the keyring type supports EIP-1559
+   */
+  getCurrentAccountEIP1559Compatibility() {
+    const selectedAddress = this.preferencesController.getSelectedAddress();
+    const keyring = this.keyringController.getKeyringForAccount(
+      selectedAddress,
+    );
+    return (
+      keyring.type !== KEYRING_TYPES.LEDGER &&
+      keyring.type !== KEYRING_TYPES.TREZOR
+    );
   }
 
   //=============================================================================
