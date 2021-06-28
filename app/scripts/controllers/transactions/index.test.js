@@ -482,6 +482,7 @@ describe('Transaction Controller', function () {
           nonce: '0x4b',
         },
         type: 'sentEther',
+        transaction_envelope_type: 'legacy',
         origin: 'metamask',
         chainId: currentChainId,
         time: 1624408066355,
@@ -1222,6 +1223,7 @@ describe('Transaction Controller', function () {
           chain_id: '0x2a',
           gas_price: '0x77359400',
           first_seen: 1624408066355,
+          transaction_envelope_type: 'legacy',
           network: '42',
           referrer: 'metamask',
           source: 'user',
@@ -1265,6 +1267,7 @@ describe('Transaction Controller', function () {
           chain_id: '0x2a',
           gas_price: '0x77359400',
           first_seen: 1624408066355,
+          transaction_envelope_type: 'legacy',
           network: '42',
           referrer: 'other',
           source: 'dapp',
@@ -1310,6 +1313,59 @@ describe('Transaction Controller', function () {
           chain_id: '0x2a',
           gas_price: '0x77359400',
           first_seen: 1624408066355,
+          transaction_envelope_type: 'legacy',
+          network: '42',
+          referrer: 'other',
+          source: 'dapp',
+          status: 'unapproved',
+          type: 'sentEther',
+        },
+      };
+
+      txController._trackTransactionMetricsEvent(
+        txMeta,
+        TRANSACTION_EVENTS.ADDED,
+        {
+          baz: 3.0,
+          foo: 'bar',
+        },
+      );
+      assert.equal(trackMetaMetricsEventSpy.callCount, 1);
+      assert.deepEqual(
+        trackMetaMetricsEventSpy.getCall(0).args[0],
+        expectedPayload,
+      );
+    });
+
+    it('should call _trackMetaMetricsEvent with the correct payload (EIP-1559)', function () {
+      const txMeta = {
+        id: 1,
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        txParams: {
+          from: fromAccount.address,
+          to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          maxFeePerGas: '0x77359400',
+          maxPriorityFeePerGas: '0x77359400',
+          gas: '0x7b0d',
+          nonce: '0x4b',
+        },
+        type: 'sentEther',
+        origin: 'other',
+        chainId: currentChainId,
+        time: 1624408066355,
+        metamaskNetworkId: currentNetworkId,
+      };
+      const expectedPayload = {
+        event: 'Transaction Added',
+        category: 'Transactions',
+        sensitiveProperties: {
+          baz: 3.0,
+          foo: 'bar',
+          chain_id: '0x2a',
+          max_fee_per_gas: '0x77359400',
+          max_priority_fee_per_gas: '0x77359400',
+          first_seen: 1624408066355,
+          transaction_envelope_type: 'fee-market',
           network: '42',
           referrer: 'other',
           source: 'dapp',
