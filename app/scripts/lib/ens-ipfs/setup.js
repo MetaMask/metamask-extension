@@ -84,11 +84,18 @@ export default function setupEnsIpfsResolver({
           fragment || ''
         }`;
       } else if (type === 'skynet-ns') {
-        const padded = hash.padEnd(hash.length + 4 - (hash.length % 4), "=");
+        const padded = hash.padEnd(hash.length + 4 - (hash.length % 4), '=');
         const decoded = base64.toByteArray(padded);
-        const base32EncodedSkylink = base32Encode(decoded, 'RFC4648-HEX', { padding: false }).toLowerCase();
+
+        const opts = { padding: false };
+        const base32EncodedSkylink = base32Encode(
+          decoded,
+          'RFC4648-HEX',
+          opts,
+        ).toLowerCase();
         url = `https://${base32EncodedSkylink}.siasky.net${pathname}${
-          search || ''}${fragment || ''}`;
+          search || ''
+        }${fragment || ''}`;
       }
     } catch (err) {
       console.warn(err);
