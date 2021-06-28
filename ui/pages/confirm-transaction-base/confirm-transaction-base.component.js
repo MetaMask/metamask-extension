@@ -384,6 +384,7 @@ export default class ConfirmTransactionBase extends Component {
                       hideLabel
                     />
                   }
+                  subTitle={t('transactionDetailGasTotalSubtitle')}
                 />,
               ]}
             />
