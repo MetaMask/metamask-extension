@@ -11,8 +11,6 @@ import {
   getHexGasTotal,
   addFiat,
   addEth,
-  increaseLastGasPrice,
-  hexGreaterThan,
 } from '../../helpers/utils/confirm-tx.util';
 
 import { getTokenData, sumHexes } from '../../helpers/utils/transactions.util';
@@ -180,32 +178,6 @@ export function updateNonce(nonce) {
   };
 }
 
-function increaseFromLastGasPrice(txData) {
-  const {
-    lastGasPrice,
-    txParams: { gasPrice: previousGasPrice } = {},
-  } = txData;
-
-  // Set the minimum to a 10% increase from the lastGasPrice.
-  const minimumGasPrice = increaseLastGasPrice(lastGasPrice);
-  const gasPriceBelowMinimum = hexGreaterThan(
-    minimumGasPrice,
-    previousGasPrice,
-  );
-  const gasPrice =
-    !previousGasPrice || gasPriceBelowMinimum
-      ? minimumGasPrice
-      : previousGasPrice;
-
-  return {
-    ...txData,
-    txParams: {
-      ...txData.txParams,
-      gasPrice,
-    },
-  };
-}
-
 export function updateTxDataAndCalculate(txData) {
   return (dispatch, getState) => {
     const state = getState();
@@ -303,12 +275,7 @@ export function setTransactionToConfirm(transactionId) {
     }
 
     if (transaction.txParams) {
-      const { lastGasPrice } = transaction;
-      const txData = lastGasPrice
-        ? increaseFromLastGasPrice(transaction)
-        : transaction;
-      dispatch(updateTxDataAndCalculate(txData));
-
+      dispatch(updateTxDataAndCalculate(transaction));
       const { txParams } = transaction;
 
       if (txParams.data) {
