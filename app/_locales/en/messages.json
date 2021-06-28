@@ -617,6 +617,39 @@
   "editContact": {
     "message": "Edit Contact"
   },
+  "editGasEducationButtonText": {
+    "message": "How should I choose?"
+  },
+  "editGasEducationHighExplanation": {
+    "message": "This is best for swaps or other time sensitive transactions. If a swap takes too long to process it will often fail and you may lose funds."
+  },
+  "editGasEducationLearnMoreLinkText": {
+    "message": "Learn more about customizing gas."
+  },
+  "editGasEducationLowExplanation": {
+    "message": "Low A lower gas fee should only be selected for transactions where processing time is less important. With a lower fee, it can be be hard to predict when (or if) your transaction with be successful."
+  },
+  "editGasEducationMediumExplanation": {
+    "message": "A medium gas fee is good for sending, withdrawing or other non-time sensitive but important transactions."
+  },
+  "editGasEducationModalIntro": {
+    "message": "The right gas amount to select depends on the type of transaction and how important it is."
+  },
+  "editGasEducationModalTitle": {
+    "message": "How to choose?"
+  },
+  "editGasHigh": {
+    "message": "High"
+  },
+  "editGasLow": {
+    "message": "Low"
+  },
+  "editGasMedium": {
+    "message": "Medium"
+  },
+  "editGasTitle": {
+    "message": "Edit gas fee"
+  },
   "editNonceField": {
     "message": "Edit Nonce"
   },
@@ -1816,6 +1849,15 @@
   },
   "speedUpCancellation": {
     "message": "Speed up this cancellation"
+  },
+  "speedUpExplanation": {
+    "message": "We’ve restimated the gas fee based on current network conditions and have increased it by at least 10% (required by the network)."
+  },
+  "speedUpPopoverTitle": {
+    "message": "Speed up transaction"
+  },
+  "speedUpTooltipText": {
+    "message": "New gas fee"
   },
   "speedUpTransaction": {
     "message": "Speed up this transaction"

@@ -22,6 +22,7 @@ import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import { hexToDecimal } from '../../helpers/utils/conversions.util';
 import AdvancedGasInputs from '../../components/app/gas-customization/advanced-gas-inputs';
 import TextField from '../../components/ui/text-field';
+import AdvancedGasControls from '../../components/app/advanced-gas-controls';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
@@ -283,6 +284,24 @@ export default class ConfirmTransactionBase extends Component {
     const notMainnetOrTest = !(isMainnet || process.env.IN_TEST);
     const gasPriceFetchFailure = isEthGasPrice || noGasPrice;
 
+    const inlineGasControls = process.env.SHOW_EIP_1559_UI ? (
+      <AdvancedGasControls />
+    ) : (
+      <AdvancedGasInputs
+        updateCustomGasPrice={(newGasPrice) =>
+          updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })
+        }
+        updateCustomGasLimit={(newGasLimit) =>
+          updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })
+        }
+        customGasPrice={customGas.gasPrice}
+        customGasLimit={customGas.gasLimit}
+        insufficientBalance={insufficientBalance}
+        customPriceIsSafe
+        isSpeedUp={false}
+      />
+    );
+
     return (
       <div className="confirm-page-container-content__details">
         <div className="confirm-page-container-content__gas-fee">
@@ -304,23 +323,9 @@ export default class ConfirmTransactionBase extends Component {
               hideFiatConversion ? t('noConversionRateAvailable') : ''
             }
           />
-          {advancedInlineGasShown ||
-          notMainnetOrTest ||
-          gasPriceFetchFailure ? (
-            <AdvancedGasInputs
-              updateCustomGasPrice={(newGasPrice) =>
-                updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })
-              }
-              updateCustomGasLimit={(newGasLimit) =>
-                updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })
-              }
-              customGasPrice={customGas.gasPrice}
-              customGasLimit={customGas.gasLimit}
-              insufficientBalance={insufficientBalance}
-              customPriceIsSafe
-              isSpeedUp={false}
-            />
-          ) : null}
+          {advancedInlineGasShown || notMainnetOrTest || gasPriceFetchFailure
+            ? inlineGasControls
+            : null}
           {noGasPrice ? (
             <div className="confirm-page-container-content__error-container">
               <ErrorMessage errorKey={GAS_PRICE_FETCH_FAILURE_ERROR_KEY} />
