@@ -2367,6 +2367,9 @@
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
   },
+  "transactionDetailGasHeading": {
+    "message": "Estimated gas fee"
+  },
   "transactionDropped": {
     "message": "Transaction dropped at $2."
   },
