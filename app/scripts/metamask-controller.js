@@ -73,6 +73,16 @@ export const METAMASK_CONTROLLER_EVENTS = {
   UPDATE_BADGE: 'updateBadge',
 };
 
+/**
+ * Accounts can be instantiated from simple, HD or the two hardware wallet
+ * keyring types. Both simple and HD are treated as default but we do special
+ * case accounts managed by a hardware wallet.
+ */
+const KEYRING_TYPES = {
+  LEDGER: 'Ledger Hardware',
+  TREZOR: 'Trezor Hardware',
+};
+
 export default class MetamaskController extends EventEmitter {
   /**
    * @constructor
@@ -1787,7 +1797,7 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.keyringController.getKeyringForAccount(address);
 
     switch (keyring.type) {
-      case 'Ledger Hardware': {
+      case KEYRING_TYPES.LEDGER: {
         return new Promise((_, reject) => {
           reject(
             new Error('Ledger does not support eth_getEncryptionPublicKey.'),
@@ -1795,7 +1805,7 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
-      case 'Trezor Hardware': {
+      case KEYRING_TYPES.TREZOR: {
         return new Promise((_, reject) => {
           reject(
             new Error('Trezor does not support eth_getEncryptionPublicKey.'),
@@ -1946,7 +1956,10 @@ export default class MetamaskController extends EventEmitter {
     const keyring = this.keyringController.getKeyringForAccount(
       selectedAddress,
     );
-    return keyring.type !== 'ledger' && keyring.type !== 'trezor';
+    return (
+      keyring.type !== KEYRING_TYPES.LEDGER &&
+      keyring.type !== KEYRING_TYPES.TREZOR
+    );
   }
 
   //=============================================================================
