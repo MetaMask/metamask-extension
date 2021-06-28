@@ -300,6 +300,8 @@ export default class TransactionController extends EventEmitter {
       txParams: normalizedTxParams,
     });
 
+    txMeta.dappSuggestedGasFees = null;
+
     if (origin === 'metamask') {
       // Assert the from address is the selected address
       if (normalizedTxParams.from !== this.getSelectedAddress()) {
@@ -313,6 +315,16 @@ export default class TransactionController extends EventEmitter {
         });
       }
     } else {
+      if (txParams.gasPrice) {
+        txMeta.dappSuggestedGasFees = {
+          gasPrice: txParams.gasPrice,
+        };
+      } else if (txParams.maxFeePerGas || txParams.maxPriorityFeePerGas) {
+        txMeta.dappSuggestedGasFees = {
+          maxPriorityFeePerGas: txParams.maxPriorityFeePerGas,
+          maxFeePerGas: txParams.maxFeePerGas,
+        };
+      }
       // Assert that the origin has permissions to initiate transactions from
       // the specified address
       const permittedAddresses = await this.getPermittedAccounts(origin);
