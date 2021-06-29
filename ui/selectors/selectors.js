@@ -377,7 +377,7 @@ export function getIsTestnet(state) {
 }
 
 export function getIsNonStandardEthChain(state) {
-  return !(getIsMainnet(state) || getIsTestnet(state));
+  return !(getIsMainnet(state) || getIsTestnet(state) || process.env.IN_TEST);
 }
 
 export function getPreferences({ metamask }) {
