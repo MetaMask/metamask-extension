@@ -84,14 +84,18 @@ export default class TransactionStateManager extends EventEmitter {
     // If we are dealing with a transaction suggested by a dapp and not
     // an internally created metamask transaction, we need to keep record of
     // the originally submitted gasParams.
-    if (typeof opts.origin === 'string' && opts.origin !== 'metamask') {
+    if (
+      opts.txParams &&
+      typeof opts.origin === 'string' &&
+      opts.origin !== 'metamask'
+    ) {
       if (typeof opts.txParams.gasPrice !== 'undefined') {
         dappSuggestedGasFees = {
           gasPrice: opts.txParams.gasPrice,
         };
       } else if (
-        typeof opts.txParams?.maxFeePerGas !== 'undefined' ||
-        typeof opts.txParams?.maxPriorityFeePerGas !== 'undefined'
+        typeof opts.txParams.maxFeePerGas !== 'undefined' ||
+        typeof opts.txParams.maxPriorityFeePerGas !== 'undefined'
       ) {
         dappSuggestedGasFees = {
           maxPriorityFeePerGas: opts.txParams.maxPriorityFeePerGas,
@@ -99,10 +103,10 @@ export default class TransactionStateManager extends EventEmitter {
         };
       }
 
-      if (typeof opts.txParams?.gas !== 'undefined') {
+      if (typeof opts.txParams.gas !== 'undefined') {
         dappSuggestedGasFees = {
           ...dappSuggestedGasFees,
-          gas: opts.txParams?.gas,
+          gas: opts.txParams.gas,
         };
       }
     }
