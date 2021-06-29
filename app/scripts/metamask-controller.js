@@ -701,7 +701,6 @@ export default class MetamaskController extends EventEmitter {
       swapsController,
       threeBoxController,
       txController,
-      gasFeeController,
     } = this;
 
     return {
