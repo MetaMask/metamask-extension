@@ -23,7 +23,6 @@ export default function AdvancedGasControls() {
     <div className="advanced-gas-controls">
       <AdvancedGasControlsRow
         titleText={t('gasLimit')}
-        titleUnit="(GWEI)"
         onChange={setGasLimit}
         tooltipText=""
         titleDetailText=""
