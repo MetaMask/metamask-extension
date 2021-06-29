@@ -839,9 +839,6 @@ describe('Transaction Controller', function () {
         trackTransactionMetricsEventSpy.getCall(0).args[1],
         TRANSACTION_EVENTS.SUBMITTED,
       );
-      assert.deepEqual(trackTransactionMetricsEventSpy.getCall(0).args[2], {
-        gas_limit: txMeta.txParams.gas,
-      });
     });
   });
 
@@ -1222,6 +1219,7 @@ describe('Transaction Controller', function () {
         sensitiveProperties: {
           chain_id: '0x2a',
           gas_price: '0x77359400',
+          gas_limit: '0x7b0d',
           first_seen: 1624408066355,
           transaction_envelope_type: 'legacy',
           network: '42',
@@ -1266,6 +1264,7 @@ describe('Transaction Controller', function () {
         sensitiveProperties: {
           chain_id: '0x2a',
           gas_price: '0x77359400',
+          gas_limit: '0x7b0d',
           first_seen: 1624408066355,
           transaction_envelope_type: 'legacy',
           network: '42',
@@ -1312,6 +1311,7 @@ describe('Transaction Controller', function () {
           foo: 'bar',
           chain_id: '0x2a',
           gas_price: '0x77359400',
+          gas_limit: '0x7b0d',
           first_seen: 1624408066355,
           transaction_envelope_type: 'legacy',
           network: '42',
@@ -1364,6 +1364,7 @@ describe('Transaction Controller', function () {
           chain_id: '0x2a',
           max_fee_per_gas: '0x77359400',
           max_priority_fee_per_gas: '0x77359400',
+          gas_limit: '0x7b0d',
           first_seen: 1624408066355,
           transaction_envelope_type: 'fee-market',
           network: '42',

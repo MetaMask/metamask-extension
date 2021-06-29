@@ -691,10 +691,7 @@ export default class TransactionController extends EventEmitter {
 
     this.txStateManager.setTxStatusSubmitted(txId);
 
-    const { gas } = txMeta.txParams;
-    this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.SUBMITTED, {
-      gas_limit: gas,
-    });
+    this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.SUBMITTED);
   }
 
   /**
@@ -1129,7 +1126,7 @@ export default class TransactionController extends EventEmitter {
       status,
       chainId,
       origin: referrer,
-      txParams: { gasPrice, maxFeePerGas, maxPriorityFeePerGas },
+      txParams: { gasPrice, gas: gasLimit, maxFeePerGas, maxPriorityFeePerGas },
       metamaskNetworkId: network,
     } = txMeta;
     const source = referrer === 'metamask' ? 'user' : 'dapp';
@@ -1157,6 +1154,7 @@ export default class TransactionController extends EventEmitter {
           ? 'fee-market'
           : 'legacy',
         first_seen: time,
+        gas_limit: gasLimit,
         ...gasParams,
         ...extraParams,
       },
