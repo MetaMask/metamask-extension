@@ -57,25 +57,25 @@ const createProps = (customProps = {}) => {
 describe('GasCustomizationModalComponent', () => {
   it('renders the component with initial props', () => {
     const props = createProps();
-    const { getByText } = renderWithProvider(
+    const { getByText, getByTestId } = renderWithProvider(
       <GasCustomizationModalComponent {...props} />,
     );
-    expect(document.querySelector('.page-container__header')).toMatchSnapshot();
+    expect(getByTestId('page-container__header')).toMatchSnapshot();
     expect(getByText('$0.52')).toBeInTheDocument();
     expect(getByText('0.0048 ETH')).toBeInTheDocument();
-    expect(document.querySelector('.button-group__button')).toMatchSnapshot();
+    expect(getByTestId('button-group__button0')).toMatchSnapshot();
     expect(getByText('~ 1 min 30 sec')).toBeInTheDocument();
     expect(getByText('$0.39')).toBeInTheDocument();
     expect(getByText('0.004 ETH')).toBeInTheDocument();
     expect(
-      document.querySelector('.gas-modal-content__info-row__send-info'),
+      getByTestId('gas-modal-content__info-row__send-info'),
     ).toMatchSnapshot();
     expect(
-      document.querySelector('.gas-modal-content__info-row__transaction-info'),
+      getByTestId('gas-modal-content__info-row__transaction-info'),
     ).toMatchSnapshot();
     expect(
-      document.querySelector('.gas-modal-content__info-row__total-info'),
+      getByTestId('gas-modal-content__info-row__total-info'),
     ).toMatchSnapshot();
-    expect(document.querySelector('.page-container__footer')).toMatchSnapshot();
+    expect(getByText('Save')).toBeInTheDocument();
   });
 });

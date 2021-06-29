@@ -47,7 +47,10 @@ export default function FeeCard({
 
   return (
     <div className="fee-card">
-      <div className="fee-card__savings-and-quotes-header">
+      <div
+        className="fee-card__savings-and-quotes-header"
+        data-testid="fee-card__savings-and-quotes-header"
+      >
         <div className="fee-card__savings-and-quotes-row">
           {bestQuoteText && (
             <p className="fee-card__savings-text">{bestQuoteText}</p>
@@ -66,7 +69,10 @@ export default function FeeCard({
         </div>
       </div>
       <div className="fee-card__main">
-        <div className="fee-card__row-header">
+        <div
+          className="fee-card__row-header"
+          data-testid="fee-card__row-header"
+        >
           <div>
             <div className="fee-card__row-header-text--bold">
               {t('swapEstimatedNetworkFee')}

@@ -3,6 +3,7 @@
 exports[`FeeCard renders the component with initial props 1`] = `
 <div
   class="fee-card__savings-and-quotes-header"
+  data-testid="fee-card__savings-and-quotes-header"
 >
   <div
     class="fee-card__savings-and-quotes-row"

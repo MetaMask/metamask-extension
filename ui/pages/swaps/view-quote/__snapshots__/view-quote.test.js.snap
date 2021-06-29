@@ -2,29 +2,8 @@
 
 exports[`ViewQuote renders the component with initial props 1`] = `
 <div
-  class="info-tooltip"
->
-  <div>
-    <div
-      aria-describedby="tippy-tooltip-1"
-      class="info-tooltip__tooltip-container"
-      data-original-title="null"
-      data-tooltipped=""
-      style="display: inline;"
-      tabindex="0"
-    >
-      <img
-        alt=""
-        src="images/mm-info-icon.svg"
-      />
-    </div>
-  </div>
-</div>
-`;
-
-exports[`ViewQuote renders the component with initial props 2`] = `
-<div
   class="main-quote-summary__source-row"
+  data-testid="main-quote-summary__source-row"
 >
   <span
     class="main-quote-summary__source-row-value"
@@ -46,9 +25,10 @@ exports[`ViewQuote renders the component with initial props 2`] = `
 </div>
 `;
 
-exports[`ViewQuote renders the component with initial props 3`] = `
+exports[`ViewQuote renders the component with initial props 2`] = `
 <div
   class="main-quote-summary__exchange-rate-container"
+  data-testid="main-quote-summary__exchange-rate-container"
 >
   <div
     class="exchange-rate-display main-quote-summary__exchange-rate-display"
@@ -92,9 +72,10 @@ exports[`ViewQuote renders the component with initial props 3`] = `
 </div>
 `;
 
-exports[`ViewQuote renders the component with initial props 4`] = `
+exports[`ViewQuote renders the component with initial props 3`] = `
 <div
   class="fee-card__savings-and-quotes-header"
+  data-testid="fee-card__savings-and-quotes-header"
 >
   <div
     class="fee-card__savings-and-quotes-row"
@@ -120,9 +101,10 @@ exports[`ViewQuote renders the component with initial props 4`] = `
 </div>
 `;
 
-exports[`ViewQuote renders the component with initial props 5`] = `
+exports[`ViewQuote renders the component with initial props 4`] = `
 <div
   class="fee-card__row-header"
+  data-testid="fee-card__row-header"
 >
   <div>
     <div

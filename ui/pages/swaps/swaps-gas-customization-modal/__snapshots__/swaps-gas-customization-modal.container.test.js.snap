@@ -3,6 +3,7 @@
 exports[`GasCustomizationModalContainer renders the component with initial props 1`] = `
 <div
   class="page-container__header page-container__header--no-padding-bottom"
+  data-testid="page-container__header"
 >
   <div
     class="page-container__title"
@@ -45,6 +46,7 @@ exports[`GasCustomizationModalContainer renders the component with initial props
 exports[`GasCustomizationModalContainer renders the component with initial props 2`] = `
 <div
   class="gas-modal-content__info-row__send-info"
+  data-testid="gas-modal-content__info-row__send-info"
 >
   <span
     class="gas-modal-content__info-row__send-info__label"
@@ -62,6 +64,7 @@ exports[`GasCustomizationModalContainer renders the component with initial props
 exports[`GasCustomizationModalContainer renders the component with initial props 3`] = `
 <div
   class="gas-modal-content__info-row__transaction-info"
+  data-testid="gas-modal-content__info-row__transaction-info"
 >
   <span
     class="gas-modal-content__info-row__transaction-info__label"
@@ -79,6 +82,7 @@ exports[`GasCustomizationModalContainer renders the component with initial props
 exports[`GasCustomizationModalContainer renders the component with initial props 4`] = `
 <div
   class="gas-modal-content__info-row__total-info"
+  data-testid="gas-modal-content__info-row__total-info"
 >
   <span
     class="gas-modal-content__info-row__total-info__label"
@@ -90,23 +94,5 @@ exports[`GasCustomizationModalContainer renders the component with initial props
   >
     0 ETH
   </span>
-</div>
-`;
-
-exports[`GasCustomizationModalContainer renders the component with initial props 5`] = `
-<div
-  class="page-container__footer"
->
-  <footer>
-    <button
-      class="button btn-secondary page-container__footer-button"
-      data-testid="page-container-footer-next"
-      disabled=""
-      role="button"
-      tabindex="0"
-    >
-      Save
-    </button>
-  </footer>
 </div>
 `;

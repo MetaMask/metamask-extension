@@ -33,19 +33,19 @@ describe('ViewQuote', () => {
   it('renders the component with initial props', () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const props = createProps();
-    const { getByText } = renderWithProvider(<ViewQuote {...props} />, store);
+    const { getByText, getByTestId } = renderWithProvider(
+      <ViewQuote {...props} />,
+      store,
+    );
     expect(getByText('New quotes in')).toBeInTheDocument();
-    expect(document.querySelector('.info-tooltip')).toMatchSnapshot();
+    expect(getByTestId('main-quote-summary__source-row')).toMatchSnapshot();
     expect(
-      document.querySelector('.main-quote-summary__source-row'),
+      getByTestId('main-quote-summary__exchange-rate-container'),
     ).toMatchSnapshot();
     expect(
-      document.querySelector('.main-quote-summary__exchange-rate-container'),
+      getByTestId('fee-card__savings-and-quotes-header'),
     ).toMatchSnapshot();
-    expect(
-      document.querySelector('.fee-card__savings-and-quotes-header'),
-    ).toMatchSnapshot();
-    expect(document.querySelector('.fee-card__row-header')).toMatchSnapshot();
+    expect(getByTestId('fee-card__row-header')).toMatchSnapshot();
     expect(getByText('Back')).toBeInTheDocument();
     expect(getByText('Swap')).toBeInTheDocument();
   });
