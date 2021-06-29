@@ -78,7 +78,7 @@ const mapStateToProps = (state, ownProps) => {
     provider: { chainId },
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
-  const { txParams = {}, lastGasPrice, id: transactionId, type } = txData;
+  const { txParams = {}, id: transactionId, type } = txData;
   const transaction =
     Object.values(unapprovedTxs).find(
       ({ id }) => id === (transactionId || Number(paramsTransactionId)),
@@ -107,7 +107,6 @@ const mapStateToProps = (state, ownProps) => {
   const addressBookObject = addressBook[checksummedAddress];
   const toEns = ensResolutionsByAddress[checksummedAddress] || '';
   const toNickname = addressBookObject ? addressBookObject.name : '';
-  const isTxReprice = Boolean(lastGasPrice);
   const transactionStatus = transaction ? transaction.status : '';
 
   const {
@@ -165,7 +164,6 @@ const mapStateToProps = (state, ownProps) => {
     tokenData,
     methodData,
     tokenProps,
-    isTxReprice,
     conversionRate,
     transactionStatus,
     nonce,

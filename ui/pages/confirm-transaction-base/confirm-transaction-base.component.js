@@ -51,7 +51,6 @@ export default class ConfirmTransactionBase extends Component {
     hexTransactionAmount: PropTypes.string,
     hexTransactionFee: PropTypes.string,
     hexTransactionTotal: PropTypes.string,
-    isTxReprice: PropTypes.bool,
     methodData: PropTypes.object,
     nonce: PropTypes.string,
     useNonceField: PropTypes.bool,
@@ -649,7 +648,6 @@ export default class ConfirmTransactionBase extends Component {
   render() {
     const { t } = this.context;
     const {
-      isTxReprice,
       fromName,
       fromAddress,
       toName,
@@ -709,7 +707,7 @@ export default class ConfirmTransactionBase extends Component {
         toAddress={toAddress}
         toEns={toEns}
         toNickname={toNickname}
-        showEdit={onEdit && !isTxReprice}
+        showEdit={onEdit}
         action={functionType}
         title={title}
         titleComponent={this.renderTitleComponent()}
