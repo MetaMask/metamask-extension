@@ -41,6 +41,7 @@ import {
 import {
   displayWarning,
   estimateGas,
+  getGasFeeEstimatesAndStartPolling,
   hideLoadingIndication,
   showConfTxPage,
   showLoadingIndication,
@@ -356,6 +357,8 @@ export const initializeSendState = createAsyncThunk(
     // Initiate gas slices work to fetch gasPrice estimates. We need to get the
     // new state after this is set to determine if initialization can proceed.
     await thunkApi.dispatch(fetchBasicGasEstimates());
+
+    await getGasFeeEstimatesAndStartPolling();
     const {
       gas: { basicEstimateStatus, basicEstimates },
     } = thunkApi.getState();
