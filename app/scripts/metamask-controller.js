@@ -24,6 +24,7 @@ import {
   CurrencyRateController,
   PhishingController,
   NotificationController,
+  GasFeeController,
 } from '@metamask/controllers';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
@@ -172,6 +173,23 @@ export default class MetamaskController extends EventEmitter {
       version: this.platform.getVersion(),
       environment: process.env.METAMASK_ENVIRONMENT,
       initState: initState.MetaMetricsController,
+    });
+
+    this.gasFeeController = new GasFeeController({
+      interval: 10000,
+      messenger: controllerMessenger,
+      getProvider: () =>
+        this.networkController.getProviderAndBlockTracker().provider,
+      onNetworkStateChange: this.networkController.on.bind(
+        this.networkController,
+        NETWORK_EVENTS.NETWORK_DID_CHANGE,
+      ),
+      getCurrentNetworkEIP1559Compatibility: this.networkController.getEIP1559Compatibility.bind(
+        this.networkController,
+      ),
+      getCurrentAccountEIP1559Compatibility: this.getCurrentAccountEIP1559Compatibility.bind(
+        this,
+      ),
     });
 
     this.appStateController = new AppStateController({
@@ -470,6 +488,7 @@ export default class MetamaskController extends EventEmitter {
       PermissionsMetadata: this.permissionsController.store,
       ThreeBoxController: this.threeBoxController.store,
       NotificationController: this.notificationController,
+      GasFeeController: this.gasFeeController,
     });
 
     this.memStore = new ComposableObservableStore({
@@ -501,6 +520,7 @@ export default class MetamaskController extends EventEmitter {
         EnsController: this.ensController.store,
         ApprovalController: this.approvalController,
         NotificationController: this.notificationController,
+        GasFeeController: this.gasFeeController,
       },
       controllerMessenger,
     });
@@ -681,6 +701,7 @@ export default class MetamaskController extends EventEmitter {
       swapsController,
       threeBoxController,
       txController,
+      gasFeeController,
     } = this;
 
     return {
@@ -1026,6 +1047,12 @@ export default class MetamaskController extends EventEmitter {
       updateViewedNotifications: nodeify(
         this.notificationController.updateViewed,
         this.notificationController,
+      ),
+
+      // GasFeeController
+      getGasFeeEstimatesAndStartPolling: nodeify(
+        this.gasFeeController.getGasFeeEstimatesAndStartPolling,
+        this.gasFeeController,
       ),
     };
   }
