@@ -99,8 +99,7 @@ function ensureProperTransactionEnvelopeTypeProvided(txParams, field) {
         txParams.type !== TRANSACTION_ENVELOPE_TYPES.FEE_MARKET
       ) {
         throw ethErrors.rpc.invalidParams(
-          `Invalid transaction envelope type: specified type "${txParams.type}" but including maxFeePerGas and maxPriorityFeePerGas requires type: "${TRANSACTION_ENVELOPE_TYPES.FEE_MARKET}"
-          `,
+          `Invalid transaction envelope type: specified type "${txParams.type}" but including maxFeePerGas and maxPriorityFeePerGas requires type: "${TRANSACTION_ENVELOPE_TYPES.FEE_MARKET}"`,
         );
       }
       break;
