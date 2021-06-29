@@ -298,9 +298,8 @@ export default class TransactionController extends EventEmitter {
     */
     let txMeta = this.txStateManager.generateTxMeta({
       txParams: normalizedTxParams,
+      origin,
     });
-
-    txMeta.dappSuggestedGasFees = null;
 
     if (origin === 'metamask') {
       // Assert the from address is the selected address
@@ -315,16 +314,6 @@ export default class TransactionController extends EventEmitter {
         });
       }
     } else {
-      if (txParams.gasPrice) {
-        txMeta.dappSuggestedGasFees = {
-          gasPrice: txParams.gasPrice,
-        };
-      } else if (txParams.maxFeePerGas || txParams.maxPriorityFeePerGas) {
-        txMeta.dappSuggestedGasFees = {
-          maxPriorityFeePerGas: txParams.maxPriorityFeePerGas,
-          maxFeePerGas: txParams.maxFeePerGas,
-        };
-      }
       // Assert that the origin has permissions to initiate transactions from
       // the specified address
       const permittedAddresses = await this.getPermittedAccounts(origin);
@@ -332,8 +321,6 @@ export default class TransactionController extends EventEmitter {
         throw ethErrors.provider.unauthorized({ data: { origin } });
       }
     }
-
-    txMeta.origin = origin;
 
     const { type, getCodeResponse } = await this._determineTransactionType(
       txParams,
