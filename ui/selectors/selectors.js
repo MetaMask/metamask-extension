@@ -376,6 +376,10 @@ export function getIsTestnet(state) {
   return TEST_CHAINS.includes(chainId);
 }
 
+export function getIsNonStandardEthChain(state) {
+  return !(getIsMainnet(state) || getIsTestnet(state));
+}
+
 export function getPreferences({ metamask }) {
   return metamask.preferences;
 }
