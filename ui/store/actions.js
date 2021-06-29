@@ -20,7 +20,10 @@ import {
 } from '../selectors';
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
-import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
+import {
+  getUnconnectedAccountAlertEnabledness,
+  isEIP1559Network,
+} from '../ducks/metamask/metamask';
 import { LISTED_CONTRACT_ADDRESSES } from '../../shared/constants/tokens';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import * as actionConstants from './actionConstants';
@@ -1056,6 +1059,18 @@ export function updateMetamaskState(newState) {
       });
     }
 
+    // track when gasFeeEstimates change
+    if (
+      isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates) === false
+    ) {
+      dispatch({
+        type: actionConstants.GAS_FEE_ESTIMATES_UPDATED,
+        payload: {
+          gasFeeEstimates: newState.gasFeeEstimates,
+          isEIP1559Network: isEIP1559Network({ metamask: newState }),
+        },
+      });
+    }
     if (provider.chainId !== newProvider.chainId) {
       dispatch({
         type: actionConstants.CHAIN_CHANGED,
@@ -2712,8 +2727,19 @@ export async function updateTokenType(tokenAddress) {
   return token;
 }
 
+/**
+ * initiates polling for gas fee estimates.
+ *
+ * @returns {string} a unique identify of the polling request that can be used
+ *  to remove that request from consideration of whether polling needs to
+ *  continue.
+ */
 export function getGasFeeEstimatesAndStartPolling() {
   return promisifiedBackground.getGasFeeEstimatesAndStartPolling();
+}
+
+export function disconnectGasFeeEstimatePoller(pollToken) {
+  return promisifiedBackground.disconnectGasFeeEstimatePoller(pollToken);
 }
 
 // MetaMetrics
