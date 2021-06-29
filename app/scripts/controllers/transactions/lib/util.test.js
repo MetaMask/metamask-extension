@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../../../shared/constants/transaction';
+import { BURN_ADDRESS } from '../../../../../shared/modules/hexstring-utils';
 import * as txUtils from './util';
 
 describe('txUtils', function () {
@@ -47,6 +48,170 @@ describe('txUtils', function () {
       };
       assert.throws(() => txUtils.validateTxParams(sample), {
         message: 'Invalid transaction value "-0x01": not a positive number.',
+      });
+    });
+
+    describe('when validating gasPrice', function () {
+      it('should error when specifying incorrect type', function () {
+        const txParams = {
+          gasPrice: '0x1',
+          type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+        };
+
+        assert.throws(() => {
+          txUtils.validateTxParams(txParams);
+        }, Error);
+      });
+
+      it('should error when gasPrice is not a string', function () {
+        const txParams = {
+          gasPrice: 1,
+        };
+
+        assert.throws(() => {
+          txUtils.validateTxParams(txParams);
+        }, Error);
+      });
+
+      it('should error when specifying maxFeePerGas', function () {
+        const txParams = {
+          gasPrice: '0x1',
+          maxFeePerGas: '0x1',
+        };
+
+        assert.throws(() => {
+          txUtils.validateTxParams(txParams);
+        }, Error);
+      });
+
+      it('should error when specifying maxPriorityFeePerGas', function () {
+        const txParams = {
+          gasPrice: '0x1',
+          maxPriorityFeePerGas: '0x1',
+        };
+
+        assert.throws(() => {
+          txUtils.validateTxParams(txParams);
+        }, Error);
+      });
+
+      it('should validate if gasPrice is set with no type or EIP-1559 gas fields', function () {
+        const txParams = {
+          gasPrice: '0x1',
+          to: BURN_ADDRESS,
+        };
+        assert.doesNotThrow(() => txUtils.validateTxParams(txParams));
+      });
+
+      it('should validate if gasPrice is set with a type of "0x0"', function () {
+        const txParams = {
+          gasPrice: '0x1',
+          type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+          to: BURN_ADDRESS,
+        };
+        assert.doesNotThrow(() => txUtils.validateTxParams(txParams));
+      });
+    });
+
+    describe('when validating maxFeePerGas', function () {
+      it('should error when specifying incorrect type', function () {
+        const txParams = {
+          maxFeePerGas: '0x1',
+          type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+        };
+
+        assert.throws(() => {
+          txUtils.validateTxParams(txParams);
+        }, Error);
+      });
+
+      it('should error when maxFeePerGas is not a string', function () {
+        const txParams = {
+          maxFeePerGas: 1,
+        };
+
+        assert.throws(() => {
+          txUtils.validateTxParams(txParams);
+        }, Error);
+      });
+
+      it('should error when specifying gasPrice', function () {
+        const txParams = {
+          gasPrice: '0x1',
+          maxFeePerGas: '0x1',
+        };
+
+        assert.throws(() => {
+          txUtils.validateTxParams(txParams);
+        }, Error);
+      });
+
+      it('should validate if maxFeePerGas is set with no type or gasPrice field', function () {
+        const txParams = {
+          maxFeePerGas: '0x1',
+          to: BURN_ADDRESS,
+        };
+        assert.doesNotThrow(() => txUtils.validateTxParams(txParams));
+      });
+
+      it('should validate if maxFeePerGas is set with a type of "0x2"', function () {
+        const txParams = {
+          maxFeePerGas: '0x1',
+          type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+          to: BURN_ADDRESS,
+        };
+        assert.doesNotThrow(() => txUtils.validateTxParams(txParams));
+      });
+    });
+
+    describe('when validating maxPriorityFeePerGas', function () {
+      it('should error when specifying incorrect type', function () {
+        const txParams = {
+          maxPriorityFeePerGas: '0x1',
+          type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+        };
+
+        assert.throws(() => {
+          txUtils.validateTxParams(txParams);
+        }, Error);
+      });
+
+      it('should error when maxPriorityFeePerGas is not a string', function () {
+        const txParams = {
+          maxPriorityFeePerGas: 1,
+        };
+
+        assert.throws(() => {
+          txUtils.validateTxParams(txParams);
+        }, Error);
+      });
+
+      it('should error when specifying gasPrice', function () {
+        const txParams = {
+          gasPrice: '0x1',
+          maxPriorityFeePerGas: '0x1',
+        };
+
+        assert.throws(() => {
+          txUtils.validateTxParams(txParams);
+        }, Error);
+      });
+
+      it('should validate if maxPriorityFeePerGas is set with no type or gasPrice field', function () {
+        const txParams = {
+          maxPriorityFeePerGas: '0x1',
+          to: BURN_ADDRESS,
+        };
+        assert.doesNotThrow(() => txUtils.validateTxParams(txParams));
+      });
+
+      it('should validate if maxPriorityFeePerGas is set with a type of "0x2"', function () {
+        const txParams = {
+          maxPriorityFeePerGas: '0x1',
+          type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+          to: BURN_ADDRESS,
+        };
+        assert.doesNotThrow(() => txUtils.validateTxParams(txParams));
       });
     });
   });
@@ -151,164 +316,6 @@ describe('txUtils', function () {
         Error,
         'Invalid recipient address',
       );
-    });
-  });
-
-  describe('#validateGasPrice', function () {
-    it('should error when specifying incorrect type', function () {
-      const txParams = {
-        gasPrice: '0x1',
-        type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
-      };
-
-      assert.throws(() => {
-        txUtils.validateGasPrice(txParams);
-      }, Error);
-    });
-
-    it('should error when gasPrice is not a string', function () {
-      const txParams = {
-        gasPrice: 1,
-      };
-
-      assert.throws(() => {
-        txUtils.validateGasPrice(txParams);
-      }, Error);
-    });
-
-    it('should error when specifying maxFeePerGas', function () {
-      const txParams = {
-        gasPrice: '0x1',
-        maxFeePerGas: '0x1',
-      };
-
-      assert.throws(() => {
-        txUtils.validateGasPrice(txParams);
-      }, Error);
-    });
-
-    it('should error when specifying maxPriorityFeePerGas', function () {
-      const txParams = {
-        gasPrice: '0x1',
-        maxPriorityFeePerGas: '0x1',
-      };
-
-      assert.throws(() => {
-        txUtils.validateGasPrice(txParams);
-      }, Error);
-    });
-
-    it('should validate if gasPrice is set with no type or EIP-1559 gas fields', function () {
-      const txParams = {
-        gasPrice: '0x1',
-      };
-      assert.doesNotThrow(() => txUtils.validateGasPrice(txParams));
-    });
-
-    it('should validate if gasPrice is set with a type of "0x0"', function () {
-      const txParams = {
-        gasPrice: '0x1',
-        type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
-      };
-      assert.doesNotThrow(() => txUtils.validateGasPrice(txParams));
-    });
-  });
-
-  describe('#validateMaxFeePerGas', function () {
-    it('should error when specifying incorrect type', function () {
-      const txParams = {
-        maxFeePerGas: '0x1',
-        type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
-      };
-
-      assert.throws(() => {
-        txUtils.validateMaxFeePerGas(txParams);
-      }, Error);
-    });
-
-    it('should error when maxFeePerGas is not a string', function () {
-      const txParams = {
-        maxFeePerGas: 1,
-      };
-
-      assert.throws(() => {
-        txUtils.validateMaxFeePerGas(txParams);
-      }, Error);
-    });
-
-    it('should error when specifying gasPrice', function () {
-      const txParams = {
-        gasPrice: '0x1',
-        maxFeePerGas: '0x1',
-      };
-
-      assert.throws(() => {
-        txUtils.validateMaxFeePerGas(txParams);
-      }, Error);
-    });
-
-    it('should validate if maxFeePerGas is set with no type or gasPrice field', function () {
-      const txParams = {
-        maxFeePerGas: '0x1',
-      };
-      assert.doesNotThrow(() => txUtils.validateMaxFeePerGas(txParams));
-    });
-
-    it('should validate if maxFeePerGas is set with a type of "0x2"', function () {
-      const txParams = {
-        maxFeePerGas: '0x1',
-        type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
-      };
-      assert.doesNotThrow(() => txUtils.validateMaxFeePerGas(txParams));
-    });
-  });
-
-  describe('#validateMaxPriorityFeePerGas', function () {
-    it('should error when specifying incorrect type', function () {
-      const txParams = {
-        maxPriorityFeePerGas: '0x1',
-        type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
-      };
-
-      assert.throws(() => {
-        txUtils.validateMaxPriorityFeePerGas(txParams);
-      }, Error);
-    });
-
-    it('should error when maxPriorityFeePerGas is not a string', function () {
-      const txParams = {
-        maxPriorityFeePerGas: 1,
-      };
-
-      assert.throws(() => {
-        txUtils.validateMaxPriorityFeePerGas(txParams);
-      }, Error);
-    });
-
-    it('should error when specifying gasPrice', function () {
-      const txParams = {
-        gasPrice: '0x1',
-        maxPriorityFeePerGas: '0x1',
-      };
-
-      assert.throws(() => {
-        txUtils.validateMaxPriorityFeePerGas(txParams);
-      }, Error);
-    });
-
-    it('should validate if maxPriorityFeePerGas is set with no type or gasPrice field', function () {
-      const txParams = {
-        maxPriorityFeePerGas: '0x1',
-      };
-      assert.doesNotThrow(() => txUtils.validateMaxPriorityFeePerGas(txParams));
-    });
-
-    it('should validate if maxPriorityFeePerGas is set with a type of "0x2"', function () {
-      const txParams = {
-        maxPriorityFeePerGas: '0x1',
-        type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
-      };
-      assert.doesNotThrow(() => txUtils.validateMaxPriorityFeePerGas(txParams));
     });
   });
 
