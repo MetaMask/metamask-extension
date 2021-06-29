@@ -14,6 +14,7 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../shared/constants/swaps';
+
 import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils';
 
 import {
@@ -21,6 +22,7 @@ import {
   fetchSwapsFeatureLiveness as defaultFetchSwapsFeatureLiveness,
   fetchSwapsQuoteRefreshTime as defaultFetchSwapsQuoteRefreshTime,
 } from '../../../ui/pages/swaps/swaps.util';
+import { MINUTE, SECOND } from '../../../shared/constants/time';
 import { NETWORK_EVENTS } from './network';
 
 // The MAX_GAS_LIMIT is a number that is higher than the maximum gas costs we have observed on any aggregator
@@ -32,11 +34,11 @@ const POLL_COUNT_LIMIT = 3;
 
 // If for any reason the MetaSwap API fails to provide a refresh time,
 // provide a reasonable fallback to avoid further errors
-const FALLBACK_QUOTE_REFRESH_TIME = 60000;
+const FALLBACK_QUOTE_REFRESH_TIME = MINUTE;
 
 // This is the amount of time to wait, after successfully fetching quotes
 // and their gas estimates, before fetching for new quotes
-const QUOTE_POLLING_DIFFERENCE_INTERVAL = 10 * 1000;
+const QUOTE_POLLING_DIFFERENCE_INTERVAL = SECOND * 10;
 
 function calculateGasEstimateWithRefund(
   maxGas = MAX_GAS_LIMIT,
@@ -346,7 +348,7 @@ export default class SwapsController {
       const gasTimeout = setTimeout(() => {
         gasTimedOut = true;
         resolve({ gasLimit: null, simulationFails: true });
-      }, 5000);
+      }, SECOND * 5);
 
       // Remove gas from params that will be passed to the `estimateGas` call
       // Including it can cause the estimate to fail if the actual gas needed

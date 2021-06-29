@@ -21,6 +21,11 @@ const firstTimeState = {
       rpcUrl: 'http://localhost:8545',
       chainId: '0x539',
     },
+    networkDetails: {
+      EIPS: {
+        1559: false,
+      },
+    },
   },
 };
 

@@ -84,7 +84,6 @@ function getMockPreferencesStore({ currentLocale = LOCALE } = {}) {
 function getMetaMetricsController({
   participateInMetaMetrics = true,
   metaMetricsId = TEST_META_METRICS_ID,
-  metaMetricsSendCount = 0,
   preferencesStore = getMockPreferencesStore(),
   networkController = getMockNetworkController(),
 } = {}) {
@@ -106,7 +105,6 @@ function getMetaMetricsController({
     initState: {
       participateInMetaMetrics,
       metaMetricsId,
-      metaMetricsSendCount,
     },
   });
 }
@@ -195,14 +193,6 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController();
       metaMetricsController.setParticipateInMetaMetrics(false);
       assert.equal(metaMetricsController.state.metaMetricsId, null);
-    });
-  });
-
-  describe('setMetaMetricsSendCount', function () {
-    it('should update the send count in state', function () {
-      const metaMetricsController = getMetaMetricsController();
-      metaMetricsController.setMetaMetricsSendCount(1);
-      assert.equal(metaMetricsController.state.metaMetricsSendCount, 1);
     });
   });
 
@@ -334,61 +324,6 @@ describe('MetaMetricsController', function () {
           test: 1,
         },
       });
-      mock.verify();
-    });
-
-    it('should use anonymousId when metametrics send count is not trackable in send flow', function () {
-      const mock = sinon.mock(segment);
-      const metaMetricsController = getMetaMetricsController({
-        metaMetricsSendCount: 1,
-      });
-      mock
-        .expects('track')
-        .once()
-        .withArgs({
-          event: 'Send Fake Event',
-          anonymousId: METAMETRICS_ANONYMOUS_ID,
-          context: DEFAULT_TEST_CONTEXT,
-          properties: {
-            test: 1,
-            ...DEFAULT_EVENT_PROPERTIES,
-          },
-        });
-      metaMetricsController.trackEvent({
-        event: 'Send Fake Event',
-        category: 'Unit Test',
-        properties: {
-          test: 1,
-        },
-      });
-      mock.verify();
-    });
-
-    it('should use user metametrics id when metametrics send count is trackable in send flow', function () {
-      const mock = sinon.mock(segment);
-      const metaMetricsController = getMetaMetricsController();
-      mock
-        .expects('track')
-        .once()
-        .withArgs({
-          event: 'Send Fake Event',
-          userId: TEST_META_METRICS_ID,
-          context: DEFAULT_TEST_CONTEXT,
-          properties: {
-            test: 1,
-            ...DEFAULT_EVENT_PROPERTIES,
-          },
-        });
-      metaMetricsController.trackEvent(
-        {
-          event: 'Send Fake Event',
-          category: 'Unit Test',
-          properties: {
-            test: 1,
-          },
-        },
-        { metaMetricsSendCount: 0 },
-      );
       mock.verify();
     });
 

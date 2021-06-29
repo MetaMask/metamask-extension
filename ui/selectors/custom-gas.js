@@ -9,13 +9,10 @@ import { formatETHFee } from '../helpers/utils/formatters';
 import { calcGasTotal } from '../pages/send/send.utils';
 
 import { GAS_ESTIMATE_TYPES } from '../helpers/constants/common';
+import { getGasPrice } from '../ducks/send';
 import { BASIC_ESTIMATE_STATES, GAS_SOURCE } from '../ducks/gas/gas.duck';
-import {
-  getCurrentCurrency,
-  getIsMainnet,
-  getPreferences,
-  getGasPrice,
-} from '.';
+import { GAS_LIMITS } from '../../shared/constants/gas';
+import { getCurrentCurrency, getIsMainnet, getShouldShowFiat } from '.';
 
 const NUMBER_OF_DECIMALS_SM_BTNS = 5;
 
@@ -94,6 +91,28 @@ export function isCustomPriceSafe(state) {
       toDenomination: 'GWEI',
     },
     { value: safeLow, fromNumericBase: 'dec' },
+  );
+
+  return customPriceSafe;
+}
+
+export function isCustomPriceSafeForCustomNetwork(state) {
+  const estimatedPrice = state.gas.basicEstimates.average;
+
+  const customGasPrice = getCustomGasPrice(state);
+
+  if (!customGasPrice) {
+    return true;
+  }
+
+  const customPriceSafe = conversionGreaterThan(
+    {
+      value: customGasPrice,
+      fromNumericBase: 'hex',
+      fromDenomination: 'WEI',
+      toDenomination: 'GWEI',
+    },
+    { value: estimatedPrice, fromNumericBase: 'dec' },
   );
 
   return customPriceSafe;
@@ -265,9 +284,7 @@ export function getRenderableBasicEstimateData(state, gasLimit) {
     return [];
   }
 
-  const { showFiatInTestnets } = getPreferences(state);
-  const isMainnet = getIsMainnet(state);
-  const showFiat = isMainnet || Boolean(showFiatInTestnets);
+  const showFiat = getShouldShowFiat(state);
   const { conversionRate } = state.metamask;
   const currentCurrency = getCurrentCurrency(state);
 
@@ -290,12 +307,9 @@ export function getRenderableEstimateDataForSmallButtonsFromGWEI(state) {
   if (getBasicGasEstimateLoadingStatus(state)) {
     return [];
   }
-
-  const { showFiatInTestnets } = getPreferences(state);
-  const isMainnet = getIsMainnet(state);
-  const showFiat = isMainnet || Boolean(showFiatInTestnets);
+  const showFiat = getShouldShowFiat(state);
   const gasLimit =
-    state.metamask.send.gasLimit || getCustomGasLimit(state) || '0x5208';
+    state.send.gas.gasLimit || getCustomGasLimit(state) || GAS_LIMITS.SIMPLE;
   const { conversionRate } = state.metamask;
   const currentCurrency = getCurrentCurrency(state);
   const {

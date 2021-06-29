@@ -11,10 +11,10 @@ import { useMetricEvent } from '../../../hooks/useMetricEvent';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import {
   getCurrentAccountWithSendEtherInfo,
-  getNativeCurrency,
   getShouldShowFiat,
   getNativeCurrencyImage,
 } from '../../../selectors';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 
 const AssetList = ({ onClickAsset }) => {
@@ -56,13 +56,13 @@ const AssetList = ({ onClickAsset }) => {
     },
   );
 
-  const [secondaryCurrencyDisplay] = useCurrencyDisplay(
-    selectedAccountBalance,
-    {
-      numberOfDecimals: secondaryNumberOfDecimals,
-      currency: secondaryCurrency,
-    },
-  );
+  const [
+    secondaryCurrencyDisplay,
+    secondaryCurrencyProperties,
+  ] = useCurrencyDisplay(selectedAccountBalance, {
+    numberOfDecimals: secondaryNumberOfDecimals,
+    currency: secondaryCurrency,
+  });
 
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
 
@@ -71,7 +71,9 @@ const AssetList = ({ onClickAsset }) => {
       <AssetListItem
         onClick={() => onClickAsset(nativeCurrency)}
         data-testid="wallet-balance"
-        primary={primaryCurrencyProperties.value}
+        primary={
+          primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
+        }
         tokenSymbol={primaryCurrencyProperties.suffix}
         secondary={showFiat ? secondaryCurrencyDisplay : undefined}
         tokenImage={primaryTokenImage}

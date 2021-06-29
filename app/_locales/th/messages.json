@@ -49,9 +49,6 @@
   "blockiesIdenticon": {
     "message": "ใช้งาน Blockies Identicon"
   },
-  "builtInCalifornia": {
-    "message": "MetaMask ออกแบบและพัฒนาที่แคลิฟอร์เนีย"
-  },
   "cancel": {
     "message": "ยกเลิก"
   },
@@ -374,9 +371,6 @@
   },
   "readdToken": {
     "message": "คุณสามารถเพิ่มโทเค็นนี้ในอนาคตได้โดยไปที่ “เพิ่มโทเค็น” ในเมนูตัวเลือกบัญชีของคุณ"
-  },
-  "recipientAddress": {
-    "message": "แอดแดรสผู้รับ"
   },
   "reject": {
     "message": "ปฏิเสธ"

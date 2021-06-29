@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import { txMetaStub } from '../../../../test/stub/tx-meta-stub';
 import {
   createPendingNonceMiddleware,
@@ -55,7 +56,7 @@ describe('PendingNonceMiddleware', function () {
       blockHash: null,
       blockNumber: null,
       from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
-      gas: '0x5208',
+      gas: GAS_LIMITS.SIMPLE,
       gasPrice: '0x1e8480',
       hash:
         '0x2cc5a25744486f7383edebbf32003e5a66e18135799593d6b5cdd2bb43674f09',

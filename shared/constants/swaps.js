@@ -63,6 +63,7 @@ const SWAPS_TESTNET_CHAIN_ID = '0x539';
 const SWAPS_TESTNET_HOST = 'https://metaswap-api.airswap-dev.codefi.network';
 
 const BSC_DEFAULT_BLOCK_EXPLORER_URL = 'https://bscscan.com/';
+const MAINNET_DEFAULT_BLOCK_EXPLORER_URL = 'https://etherscan.io/';
 
 export const ALLOWED_SWAPS_CHAIN_IDS = {
   [MAINNET_CHAIN_ID]: true,
@@ -90,4 +91,5 @@ export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
 
 export const SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP = {
   [BSC_CHAIN_ID]: BSC_DEFAULT_BLOCK_EXPLORER_URL,
+  [MAINNET_CHAIN_ID]: MAINNET_DEFAULT_BLOCK_EXPLORER_URL,
 };

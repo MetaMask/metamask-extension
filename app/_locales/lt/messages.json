@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "Jūsų naršyklė neatpažįstama..."
   },
-  "builtInCalifornia": {
-    "message": "„MetaMask“ suprojektuota ir įdiegta Kalifornijoje."
-  },
   "buyWithWyre": {
     "message": "Pirkti ETH su „Wyre“"
   },
@@ -753,9 +750,6 @@
   },
   "recents": {
     "message": "Naujausi"
-  },
-  "recipientAddress": {
-    "message": "Gavėjo adresas"
   },
   "recipientAddressPlaceholder": {
     "message": "Ieška, viešieji adresai (0x) arba ENS"

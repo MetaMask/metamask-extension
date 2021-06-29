@@ -25,9 +25,11 @@ export default function Typography({
     'typography',
     className,
     `typography--${variant}`,
-    `typography--align-${align}`,
-    `typography--color-${color}`,
     `typography--weight-${fontWeight}`,
+    {
+      [`typography--align-${align}`]: Boolean(align),
+      [`typography--color-${color}`]: Boolean(color),
+    },
   );
 
   let Tag = tag ?? variant;

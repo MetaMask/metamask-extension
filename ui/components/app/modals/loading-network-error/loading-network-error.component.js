@@ -8,7 +8,7 @@ const LoadingNetworkError = (props, context) => {
 
   return (
     <Modal onSubmit={() => hideModal()} submitText={t('tryAgain')}>
-      <ModalContent description="Oops! Something went wrong." />
+      <ModalContent description={t('somethingWentWrong')} />
     </Modal>
   );
 };

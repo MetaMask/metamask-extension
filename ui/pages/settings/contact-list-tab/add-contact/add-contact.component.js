@@ -11,6 +11,7 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
+import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../send/send.constants';
 
 export default class AddContact extends PureComponent {
   static contextTypes = {
@@ -24,28 +25,32 @@ export default class AddContact extends PureComponent {
     qrCodeData:
       PropTypes.object /* eslint-disable-line react/no-unused-prop-types */,
     qrCodeDetected: PropTypes.func,
+    ensResolution: PropTypes.string,
+    ensError: PropTypes.string,
+    resetResolution: PropTypes.func,
   };
 
   state = {
     newName: '',
     ethAddress: '',
-    ensAddress: '',
     error: '',
-    ensError: '',
+    input: '',
   };
 
   constructor(props) {
     super(props);
-    this.dValidate = debounce(this.validate, 1000);
+    this.dValidate = debounce(this.validate, 500);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.qrCodeData) {
       if (nextProps.qrCodeData.type === 'address') {
+        const { ensResolution } = this.props;
         const scannedAddress = nextProps.qrCodeData.values.address.toLowerCase();
-        const currentAddress = this.state.ensAddress || this.state.ethAddress;
+        const currentAddress = ensResolution || this.state.ethAddress;
         if (currentAddress.toLowerCase() !== scannedAddress) {
-          this.setState({ ethAddress: scannedAddress, ensAddress: '' });
+          this.setState({ input: scannedAddress });
+          this.validate(scannedAddress);
           // Clean up QR code data after handling
           this.props.qrCodeDetected(null);
         }
@@ -62,8 +67,13 @@ export default class AddContact extends PureComponent {
     if (valid || validEnsAddress || address === '') {
       this.setState({ error: '', ethAddress: address });
     } else {
-      this.setState({ error: 'Invalid Address' });
+      this.setState({ error: INVALID_RECIPIENT_ADDRESS_ERROR });
     }
+  };
+
+  onChange = (input) => {
+    this.setState({ input });
+    this.dValidate(input);
   };
 
   renderInput() {
@@ -72,33 +82,33 @@ export default class AddContact extends PureComponent {
         scanQrCode={(_) => {
           this.props.scanQrCode();
         }}
-        onChange={this.dValidate}
-        onPaste={(text) => this.setState({ ethAddress: text })}
-        onReset={() => this.setState({ ethAddress: '', ensAddress: '' })}
-        updateEnsResolution={(address) => {
-          this.setState({ ensAddress: address, error: '', ensError: '' });
+        onChange={this.onChange}
+        onPaste={(text) => {
+          this.setState({ input: text });
+          this.validate(text);
         }}
-        updateEnsResolutionError={(message) =>
-          this.setState({ ensError: message })
-        }
-        value={this.state.ethAddress || ''}
+        onReset={() => {
+          this.props.resetResolution();
+          this.setState({ ethAddress: '', input: '' });
+        }}
+        userInput={this.state.input}
       />
     );
   }
 
   render() {
     const { t } = this.context;
-    const { history, addToAddressBook } = this.props;
+    const { history, addToAddressBook, ensError, ensResolution } = this.props;
 
-    const errorToRender = this.state.ensError || this.state.error;
+    const errorToRender = ensError || this.state.error;
 
     return (
       <div className="settings-page__content-row address-book__add-contact">
-        {this.state.ensAddress && (
+        {ensResolution && (
           <div className="address-book__view-contact__group">
-            <Identicon address={this.state.ensAddress} diameter={60} />
+            <Identicon address={ensResolution} diameter={60} />
             <div className="address-book__view-contact__group__value">
-              {this.state.ensAddress}
+              {ensResolution}
             </div>
           </div>
         )}
@@ -124,7 +134,7 @@ export default class AddContact extends PureComponent {
             {this.renderInput()}
             {errorToRender && (
               <div className="address-book__add-contact__error">
-                {errorToRender}
+                {t(errorToRender)}
               </div>
             )}
           </div>
@@ -134,7 +144,7 @@ export default class AddContact extends PureComponent {
           disabled={Boolean(this.state.error)}
           onSubmit={async () => {
             await addToAddressBook(
-              this.state.ensAddress || this.state.ethAddress,
+              ensResolution || this.state.ethAddress,
               this.state.newName,
             );
             history.push(CONTACT_LIST_ROUTE);

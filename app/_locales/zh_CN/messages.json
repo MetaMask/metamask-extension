@@ -217,9 +217,6 @@
   "browserNotSupported": {
     "message": "您的浏览器不支持该功能……"
   },
-  "builtInCalifornia": {
-    "message": "MetaMask在加利福尼亚设计和制造。"
-  },
   "buy": {
     "message": "购买"
   },
@@ -1194,9 +1191,6 @@
   },
   "recents": {
     "message": "最近记录"
-  },
-  "recipientAddress": {
-    "message": "接收地址"
   },
   "recipientAddressPlaceholder": {
     "message": "查找、公用地址 (0x) 或 ENS"
