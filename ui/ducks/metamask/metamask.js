@@ -242,3 +242,11 @@ export function getUnapprovedTxs(state) {
 export function isEIP1559Network(state) {
   return state.metamask.networkDetails.EIPS[1559] === true;
 }
+
+export function getGasFeeEstimates(state) {
+  return state.metamask.gasFeeEstimates;
+}
+
+export function getEstimatedGasFeeTimeBounds(state) {
+  return state.metamask.estimatedGasFeeTimeBounds;
+}
