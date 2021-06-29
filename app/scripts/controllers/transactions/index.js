@@ -29,6 +29,7 @@ import {
   MAINNET,
   NETWORK_TYPE_RPC,
 } from '../../../../shared/constants/network';
+import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -689,10 +690,7 @@ export default class TransactionController extends EventEmitter {
 
     this.txStateManager.setTxStatusSubmitted(txId);
 
-    const { gas } = txMeta.txParams;
-    this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.SUBMITTED, {
-      gas_limit: gas,
-    });
+    this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.SUBMITTED);
   }
 
   /**
@@ -1127,10 +1125,19 @@ export default class TransactionController extends EventEmitter {
       status,
       chainId,
       origin: referrer,
-      txParams: { gasPrice },
+      txParams: { gasPrice, gas: gasLimit, maxFeePerGas, maxPriorityFeePerGas },
       metamaskNetworkId: network,
     } = txMeta;
     const source = referrer === 'metamask' ? 'user' : 'dapp';
+
+    const gasParams = {};
+
+    if (isEIP1559Transaction(txMeta)) {
+      gasParams.max_fee_per_gas = maxFeePerGas;
+      gasParams.max_priority_fee_per_gas = maxPriorityFeePerGas;
+    } else {
+      gasParams.gas_price = gasPrice;
+    }
 
     this._trackMetaMetricsEvent({
       event,
@@ -1142,8 +1149,12 @@ export default class TransactionController extends EventEmitter {
         source,
         network,
         chain_id: chainId,
-        gas_price: gasPrice,
+        transaction_envelope_type: isEIP1559Transaction(txMeta)
+          ? 'fee-market'
+          : 'legacy',
         first_seen: time,
+        gas_limit: gasLimit,
+        ...gasParams,
         ...extraParams,
       },
     });
