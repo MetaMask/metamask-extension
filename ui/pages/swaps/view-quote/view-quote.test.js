@@ -46,7 +46,6 @@ describe('ViewQuote', () => {
       document.querySelector('.fee-card__savings-and-quotes-header'),
     ).toMatchSnapshot();
     expect(document.querySelector('.fee-card__row-header')).toMatchSnapshot();
-    expect(document.querySelector('.swaps-footer')).toMatchSnapshot();
     expect(getByText('Back')).toBeInTheDocument();
     expect(getByText('Swap')).toBeInTheDocument();
   });

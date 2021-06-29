@@ -166,37 +166,3 @@ exports[`ViewQuote renders the component with initial props 5`] = `
   </div>
 </div>
 `;
-
-exports[`ViewQuote renders the component with initial props 6`] = `
-<div
-  class="swaps-footer"
->
-  <div
-    class="swaps-footer__buttons view-quote__thin-swaps-footer swaps-footer__buttons--border"
-  >
-    <div
-      class="page-container__footer swaps-footer__custom-page-container-footer-class view-quote__thin-swaps-footer"
-    >
-      <footer>
-        <button
-          class="button btn-default page-container__footer-button swaps-footer__custom-page-container-footer-button-class"
-          data-testid="page-container-footer-cancel"
-          role="button"
-          tabindex="0"
-        >
-          Back
-        </button>
-        <button
-          class="button btn-primary page-container__footer-button swaps-footer__custom-page-container-footer-button-class"
-          data-testid="page-container-footer-next"
-          disabled=""
-          role="button"
-          tabindex="0"
-        >
-          Swap
-        </button>
-      </footer>
-    </div>
-  </div>
-</div>
-`;

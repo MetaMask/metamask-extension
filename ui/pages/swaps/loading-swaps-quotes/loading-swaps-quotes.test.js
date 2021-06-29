@@ -36,6 +36,6 @@ describe('LoadingSwapsQuotes', () => {
     );
     expect(getByText('Quote 1 of 2')).toBeInTheDocument();
     expect(getByText('Checking agg', { exact: false })).toBeInTheDocument();
-    expect(document.querySelector('.swaps-footer')).toMatchSnapshot();
+    expect(getByText('Back')).toBeInTheDocument();
   });
 });
