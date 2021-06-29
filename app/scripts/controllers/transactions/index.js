@@ -298,6 +298,7 @@ export default class TransactionController extends EventEmitter {
     */
     let txMeta = this.txStateManager.generateTxMeta({
       txParams: normalizedTxParams,
+      origin,
     });
 
     if (origin === 'metamask') {
@@ -320,8 +321,6 @@ export default class TransactionController extends EventEmitter {
         throw ethErrors.provider.unauthorized({ data: { origin } });
       }
     }
-
-    txMeta.origin = origin;
 
     const { type, getCodeResponse } = await this._determineTransactionType(
       txParams,
