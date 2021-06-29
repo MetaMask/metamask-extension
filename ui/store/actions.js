@@ -2712,6 +2712,10 @@ export async function updateTokenType(tokenAddress) {
   return token;
 }
 
+export function getGasFeeEstimatesAndStartPolling() {
+  return promisifiedBackground.getGasFeeEstimatesAndStartPolling();
+}
+
 // MetaMetrics
 /**
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
