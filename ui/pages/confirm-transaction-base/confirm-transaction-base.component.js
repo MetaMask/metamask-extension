@@ -31,6 +31,10 @@ import { getTransactionTypeTitle } from '../../helpers/utils/transactions.util';
 import ErrorMessage from '../../components/ui/error-message';
 import { toBuffer } from '../../../shared/modules/buffer-utils';
 
+import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
+import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
+import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
+
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -301,6 +305,91 @@ export default class ConfirmTransactionBase extends Component {
       />
     );
 
+    const nonceField = useNonceField ? (
+      <div>
+        <div className="confirm-detail-row">
+          <div className="confirm-detail-row__label">
+            {t('nonceFieldHeading')}
+          </div>
+          <div className="custom-nonce-input">
+            <TextField
+              type="number"
+              min="0"
+              placeholder={
+                typeof nextNonce === 'number' ? nextNonce.toString() : null
+              }
+              onChange={({ target: { value } }) => {
+                if (!value.length || Number(value) < 0) {
+                  updateCustomNonce('');
+                } else {
+                  updateCustomNonce(String(Math.floor(value)));
+                }
+                getNextNonce();
+              }}
+              fullWidth
+              margin="dense"
+              value={customNonceValue || ''}
+            />
+          </div>
+        </div>
+      </div>
+    ) : null;
+
+    if (process.env.SHOW_EIP_1559_UI) {
+      return (
+        <div className="confirm-page-container-content__details">
+          <TransactionDetail
+            rows={[
+              <TransactionDetailItem
+                key="gas-item"
+                detailTitle={
+                  <>
+                    {t('transactionDetailGasHeading')}
+                    <InfoTooltip contentText="" position="top">
+                      <i className="fa fa-info-circle" />
+                    </InfoTooltip>
+                  </>
+                }
+                detailText={
+                  <UserPreferencedCurrencyDisplay
+                    type={PRIMARY}
+                    value={hexTransactionFee}
+                    hideLabel={false}
+                  />
+                }
+                detailTotal={
+                  <UserPreferencedCurrencyDisplay
+                    type={SECONDARY}
+                    value={hexTransactionFee}
+                    hideLabel
+                  />
+                }
+              />,
+              <TransactionDetailItem
+                key="total-item"
+                detailTitle={t('total')}
+                detailText={
+                  <UserPreferencedCurrencyDisplay
+                    type={PRIMARY}
+                    value={hexTransactionTotal}
+                    hideLabel={false}
+                  />
+                }
+                detailTotal={
+                  <UserPreferencedCurrencyDisplay
+                    type={SECONDARY}
+                    value={hexTransactionTotal}
+                    hideLabel
+                  />
+                }
+                subTitle={t('transactionDetailGasTotalSubtitle')}
+              />,
+            ]}
+          />
+        </div>
+      );
+    }
+
     return (
       <div className="confirm-page-container-content__details">
         <div className="confirm-page-container-content__gas-fee">
@@ -350,35 +439,7 @@ export default class ConfirmTransactionBase extends Component {
             primaryValueTextColor="#2f9ae0"
           />
         </div>
-        {useNonceField ? (
-          <div>
-            <div className="confirm-detail-row">
-              <div className="confirm-detail-row__label">
-                {t('nonceFieldHeading')}
-              </div>
-              <div className="custom-nonce-input">
-                <TextField
-                  type="number"
-                  min="0"
-                  placeholder={
-                    typeof nextNonce === 'number' ? nextNonce.toString() : null
-                  }
-                  onChange={({ target: { value } }) => {
-                    if (!value.length || Number(value) < 0) {
-                      updateCustomNonce('');
-                    } else {
-                      updateCustomNonce(String(Math.floor(value)));
-                    }
-                    getNextNonce();
-                  }}
-                  fullWidth
-                  margin="dense"
-                  value={customNonceValue || ''}
-                />
-              </div>
-            </div>
-          </div>
-        ) : null}
+        {nonceField}
       </div>
     );
   }
