@@ -386,6 +386,15 @@ export function getIsEthGasPriceFetched(state) {
   );
 }
 
+export function getIsCustomNetworkGasPriceFetched(state) {
+  const gasState = state.gas;
+  return Boolean(
+    gasState.estimateSource === GAS_SOURCE.ETHGASPRICE &&
+      gasState.basicEstimateStatus === BASIC_ESTIMATE_STATES.READY &&
+      !getIsMainnet(state),
+  );
+}
+
 export function getNoGasPriceFetched(state) {
   const gasState = state.gas;
   return Boolean(gasState.basicEstimateStatus === BASIC_ESTIMATE_STATES.FAILED);
