@@ -175,9 +175,13 @@ export default class MetamaskController extends EventEmitter {
       initState: initState.MetaMetricsController,
     });
 
+    const gasFeeMessenger = controllerMessenger.getRestricted({
+      name: 'GasFeeController',
+    });
+
     this.gasFeeController = new GasFeeController({
       interval: 10000,
-      messenger: controllerMessenger,
+      messenger: gasFeeMessenger,
       getProvider: () =>
         this.networkController.getProviderAndBlockTracker().provider,
       onNetworkStateChange: this.networkController.on.bind(
