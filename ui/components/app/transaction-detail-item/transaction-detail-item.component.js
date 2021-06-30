@@ -27,13 +27,17 @@ export default function TransactionDetailItem({
           {detailTitle}
         </Typography>
         {detailText && (
-          <Typography className="transaction-detail-item__detail-text">
+          <Typography
+            variant={TYPOGRAPHY.H6}
+            className="transaction-detail-item__detail-text"
+          >
             {detailText}
           </Typography>
         )}
         <Typography
           color={COLORS.BLACK}
           fontWeight={FONT_WEIGHT.BOLD}
+          variant={TYPOGRAPHY.H6}
           className="transaction-detail-item__total"
         >
           {detailTotal}
