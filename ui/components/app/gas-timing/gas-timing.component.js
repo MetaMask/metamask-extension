@@ -21,13 +21,12 @@ export default function GasTiming({ text, tooltipText, attitude }) {
 }
 
 GasTiming.propTypes = {
-  text: PropTypes.string,
+  text: PropTypes.string.isRequired,
   tooltipText: PropTypes.string,
   attitude: PropTypes.oneOf(['positive', 'negative', 'warning', '']),
 };
 
 GasTiming.defaultProps = {
-  text: '',
   tooltipText: '',
   attitude: '',
 };
