@@ -49,6 +49,10 @@ jest.mock('../../../../store/actions', () => ({
   updateTransaction: jest.fn(),
 }));
 
+jest.mock('../../../../ducks/metamask/metamask.js', () => ({
+  updateTransactionGasFees: jest.fn(),
+}));
+
 jest.mock('../../../../ducks/gas/gas.duck', () => ({
   setCustomGasPrice: jest.fn(),
   setCustomGasLimit: jest.fn(),
@@ -79,6 +83,7 @@ describe('gas-modal-page-container container', () => {
 
     afterEach(() => {
       dispatchSpy.resetHistory();
+      jest.clearAllMocks();
     });
 
     describe('useCustomGas()', () => {
@@ -137,17 +142,6 @@ describe('gas-modal-page-container container', () => {
         expect(updateGasPrice).toHaveBeenCalledWith('aaaa');
       });
     });
-
-    describe('updateConfirmTxGasAndCalculate()', () => {
-      it('should dispatch a updateGasAndCalculate action with the correct props', () => {
-        mapDispatchToPropsObject.updateConfirmTxGasAndCalculate('ffff', 'aaaa');
-        expect(dispatchSpy.callCount).toStrictEqual(3);
-        expect(setCustomGasPrice).toHaveBeenCalled();
-        expect(setCustomGasLimit).toHaveBeenCalled();
-        expect(setCustomGasLimit).toHaveBeenCalledWith('0xffff');
-        expect(setCustomGasPrice).toHaveBeenCalledWith('0xaaaa');
-      });
-    });
   });
 
   describe('mergeProps', () => {
@@ -169,7 +163,7 @@ describe('gas-modal-page-container container', () => {
         updateCustomGasPrice: sinon.spy(),
         useCustomGas: sinon.spy(),
         setGasData: sinon.spy(),
-        updateConfirmTxGasAndCalculate: sinon.spy(),
+        updateTransactionGasFees: sinon.spy(),
         someOtherDispatchProp: sinon.spy(),
         createSpeedUpTransaction: sinon.spy(),
         hideSidebar: sinon.spy(),
@@ -192,18 +186,14 @@ describe('gas-modal-page-container container', () => {
       ).toStrictEqual('bar');
       expect(result.someOwnProp).toStrictEqual(123);
 
-      expect(
-        dispatchProps.updateConfirmTxGasAndCalculate.callCount,
-      ).toStrictEqual(0);
+      expect(dispatchProps.updateTransactionGasFees.callCount).toStrictEqual(0);
       expect(dispatchProps.setGasData.callCount).toStrictEqual(0);
       expect(dispatchProps.useCustomGas.callCount).toStrictEqual(0);
       expect(dispatchProps.hideModal.callCount).toStrictEqual(0);
 
       result.onSubmit();
 
-      expect(
-        dispatchProps.updateConfirmTxGasAndCalculate.callCount,
-      ).toStrictEqual(1);
+      expect(dispatchProps.updateTransactionGasFees.callCount).toStrictEqual(1);
       expect(dispatchProps.setGasData.callCount).toStrictEqual(0);
       expect(dispatchProps.useCustomGas.callCount).toStrictEqual(0);
       expect(dispatchProps.hideModal.callCount).toStrictEqual(1);
@@ -236,18 +226,14 @@ describe('gas-modal-page-container container', () => {
       ).toStrictEqual('bar');
       expect(result.someOwnProp).toStrictEqual(123);
 
-      expect(
-        dispatchProps.updateConfirmTxGasAndCalculate.callCount,
-      ).toStrictEqual(0);
+      expect(dispatchProps.updateTransactionGasFees.callCount).toStrictEqual(0);
       expect(dispatchProps.setGasData.callCount).toStrictEqual(0);
       expect(dispatchProps.useCustomGas.callCount).toStrictEqual(0);
       expect(dispatchProps.cancelAndClose.callCount).toStrictEqual(0);
 
       result.onSubmit('mockNewLimit', 'mockNewPrice');
 
-      expect(
-        dispatchProps.updateConfirmTxGasAndCalculate.callCount,
-      ).toStrictEqual(0);
+      expect(dispatchProps.updateTransactionGasFees.callCount).toStrictEqual(0);
       expect(dispatchProps.setGasData.callCount).toStrictEqual(1);
       expect(dispatchProps.setGasData.getCall(0).args).toStrictEqual([
         'mockNewLimit',
@@ -276,9 +262,7 @@ describe('gas-modal-page-container container', () => {
 
       result.onSubmit();
 
-      expect(
-        dispatchProps.updateConfirmTxGasAndCalculate.callCount,
-      ).toStrictEqual(0);
+      expect(dispatchProps.updateTransactionGasFees.callCount).toStrictEqual(0);
       expect(dispatchProps.setGasData.callCount).toStrictEqual(0);
       expect(dispatchProps.useCustomGas.callCount).toStrictEqual(0);
       expect(dispatchProps.cancelAndClose.callCount).toStrictEqual(1);
