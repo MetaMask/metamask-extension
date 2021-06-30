@@ -251,6 +251,17 @@ async function estimateGasLimitForSend({
     );
   }
 
+  // The buffer multipler reduces transaction failures by ensuring that the
+  // estimated gas is always sufficient. Without the multiplier, estimates
+  // for contract interactions can become inaccurate over time. This is because
+  // gas estimation is non-deterministic. The gas required for the exact same
+  // transaction call can change based on state of a contract or changes in the
+  // contracts environment (blockchain data or contracts it interacts with).
+  // Applying the 1.5 buffer has proven to be a useful guard against this non-
+  // deterministic behaviour.
+  //
+  // Gas estimation of simple sends should, however, be deterministic. As such
+  // no buffer is needed in those cases.
   const bufferMultiplier = isSimpleSendOnNonStandardNetwork ? 1 : 1.5;
 
   try {
