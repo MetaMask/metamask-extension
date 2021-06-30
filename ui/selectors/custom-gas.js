@@ -109,6 +109,10 @@ export function isCustomPriceSafeForCustomNetwork(state) {
     return true;
   }
 
+  if (!estimatedPrice) {
+    return false;
+  }
+
   const customPriceSafe = conversionGreaterThan(
     {
       value: customGasPrice,
@@ -388,6 +392,15 @@ export function getIsEthGasPriceFetched(state) {
     gasState.estimateSource === GAS_SOURCE.ETHGASPRICE &&
       gasState.basicEstimateStatus === BASIC_ESTIMATE_STATES.READY &&
       getIsMainnet(state),
+  );
+}
+
+export function getIsCustomNetworkGasPriceFetched(state) {
+  const gasState = state.gas;
+  return Boolean(
+    gasState.estimateSource === GAS_SOURCE.ETHGASPRICE &&
+      gasState.basicEstimateStatus === BASIC_ESTIMATE_STATES.READY &&
+      !getIsMainnet(state),
   );
 }
 

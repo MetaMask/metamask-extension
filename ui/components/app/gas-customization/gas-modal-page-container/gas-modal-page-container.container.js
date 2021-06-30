@@ -41,6 +41,7 @@ import {
   getAveragePriceEstimateInHexWEI,
   isCustomPriceExcessive,
   getIsGasEstimatesFetched,
+  getIsCustomNetworkGasPriceFetched,
 } from '../../../../selectors';
 
 import {
@@ -141,13 +142,17 @@ const mapStateToProps = (state, ownProps) => {
         conversionRate,
       });
   const isGasEstimate = getIsGasEstimatesFetched(state);
+  const customNetworkEstimateWasFetched = getIsCustomNetworkGasPriceFetched(
+    state,
+  );
 
-  let customPriceIsSafe;
+  let customPriceIsSafe = true;
   if ((isMainnet || process.env.IN_TEST) && isGasEstimate) {
     customPriceIsSafe = isCustomPriceSafe(state);
-  } else if (isTestnet) {
-    customPriceIsSafe = true;
-  } else {
+  } else if (
+    !(isMainnet || process.env.IN_TEST || isTestnet) &&
+    customNetworkEstimateWasFetched
+  ) {
     customPriceIsSafe = isCustomPriceSafeForCustomNetwork(state);
   }
 
