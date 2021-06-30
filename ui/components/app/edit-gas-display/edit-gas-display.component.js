@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 
-import { Button } from '@material-ui/core';
+import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
 import {
   COLORS,
