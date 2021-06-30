@@ -105,6 +105,10 @@ export function isCustomPriceSafeForCustomNetwork(state) {
     return true;
   }
 
+  if (!estimatedPrice) {
+    return false;
+  }
+
   const customPriceSafe = conversionGreaterThan(
     {
       value: customGasPrice,

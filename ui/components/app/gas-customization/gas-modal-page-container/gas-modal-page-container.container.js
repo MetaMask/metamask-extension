@@ -138,12 +138,10 @@ const mapStateToProps = (state, ownProps) => {
       });
   const isGasEstimate = getIsGasEstimatesFetched(state);
 
-  let customPriceIsSafe;
+  let customPriceIsSafe = true;
   if ((isMainnet || process.env.IN_TEST) && isGasEstimate) {
     customPriceIsSafe = isCustomPriceSafe(state);
-  } else if (isTestnet) {
-    customPriceIsSafe = true;
-  } else {
+  } else if (!(isMainnet || process.env.IN_TEST || isTestnet)) {
     customPriceIsSafe = isCustomPriceSafeForCustomNetwork(state);
   }
 
