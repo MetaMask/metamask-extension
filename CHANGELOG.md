@@ -7,17 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.7.1]
-### Uncategorized
-- Fix gas-modal-page-container.container check for custom gas price safety ([#11426](https://github.com/MetaMask/metamask-extension/pull/11426))
-- fix jest tests to run ui tests ([#11390](https://github.com/MetaMask/metamask-extension/pull/11390))
-- use jest for testing shared ([#11334](https://github.com/MetaMask/metamask-extension/pull/11334))
-- add eip-1559 fields to event schema ([#11408](https://github.com/MetaMask/metamask-extension/pull/11408))
-- Add methods to easily detect transaction type based on gas fields ([#11382](https://github.com/MetaMask/metamask-extension/pull/11382))
-- Updating address error ([#11389](https://github.com/MetaMask/metamask-extension/pull/11389))
-- Removing obsolete client-side transaction metrics events ([#11329](https://github.com/MetaMask/metamask-extension/pull/11329))
-- Adding metric events for Approved, Rejected, and Submitted to the TxController ([#11358](https://github.com/MetaMask/metamask-extension/pull/11358))
-- Add 'Transaction Added' metric event to TransactionController ([#11341](https://github.com/MetaMask/metamask-extension/pull/11341))
-- Adding gasEstimateType to 'Changed Gas Button' metrics event ([#11352](https://github.com/MetaMask/metamask-extension/pull/11352))
+### Fixed
+- [#11426](https://github.com/MetaMask/metamask-extension/pull/11426): Fixed bug that broke transaction speed up and cancel, when attempting those actions immediately after opening MetaMask
 
 ## [9.7.0]
 ### Added
