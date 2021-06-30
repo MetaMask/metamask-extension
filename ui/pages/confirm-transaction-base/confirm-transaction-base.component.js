@@ -113,6 +113,7 @@ export default class ConfirmTransactionBase extends Component {
     submitError: null,
     submitWarning: '',
     ethGasPriceWarning: '',
+    editingGas: false,
   };
 
   componentDidUpdate(prevProps) {
@@ -259,7 +260,17 @@ export default class ConfirmTransactionBase extends Component {
       },
     });
 
-    showCustomizeGasModal();
+    if (process.env.SHOW_EIP_1559_UI) {
+      this.setState({ editingGas: true });
+    } else {
+      showCustomizeGasModal();
+    }
+  }
+
+  // TODO: rename this 'handleCloseEditGas' later when we remove the
+  // SHOW_EIP_1559_UI flag/branch
+  handleCloseNewGasPopover() {
+    this.setState({ editingGas: false });
   }
 
   renderDetails() {
@@ -389,6 +400,13 @@ export default class ConfirmTransactionBase extends Component {
         </div>
       );
     }
+    const showInlineControls = process.env.SHOW_EIP_1559_UI
+      ? advancedInlineGasShown
+      : advancedInlineGasShown || notMainnetOrTest || gasPriceFetchFailure;
+
+    const showGasEditButton = process.env.SHOW_EIP_1559_UI
+      ? !showInlineControls
+      : !(notMainnetOrTest || gasPriceFetchFailure);
 
     return (
       <div className="confirm-page-container-content__details">
@@ -396,24 +414,18 @@ export default class ConfirmTransactionBase extends Component {
           <ConfirmDetailRow
             label={t('gasFee')}
             value={hexTransactionFee}
-            headerText={notMainnetOrTest || gasPriceFetchFailure ? '' : 'Edit'}
+            headerText={showGasEditButton ? 'Edit' : ''}
             headerTextClassName={
-              notMainnetOrTest || gasPriceFetchFailure
-                ? ''
-                : 'confirm-detail-row__header-text--edit'
+              showGasEditButton ? 'confirm-detail-row__header-text--edit' : ''
             }
             onHeaderClick={
-              notMainnetOrTest || gasPriceFetchFailure
-                ? null
-                : () => this.handleEditGas()
+              showGasEditButton ? () => this.handleEditGas() : null
             }
             secondaryText={
               hideFiatConversion ? t('noConversionRateAvailable') : ''
             }
           />
-          {advancedInlineGasShown || notMainnetOrTest || gasPriceFetchFailure
-            ? inlineGasControls
-            : null}
+          {showInlineControls ? inlineGasControls : null}
           {noGasPrice ? (
             <div className="confirm-page-container-content__error-container">
               <ErrorMessage errorKey={GAS_PRICE_FETCH_FAILURE_ERROR_KEY} />
@@ -735,6 +747,7 @@ export default class ConfirmTransactionBase extends Component {
       submitError,
       submitWarning,
       ethGasPriceWarning,
+      editingGas,
     } = this.state;
 
     const { name } = methodData;
@@ -802,6 +815,8 @@ export default class ConfirmTransactionBase extends Component {
         hideSenderToRecipient={hideSenderToRecipient}
         origin={txData.origin}
         ethGasPriceWarning={ethGasPriceWarning}
+        editingGas={editingGas}
+        handleCloseEditGas={() => this.handleCloseNewGasPopover()}
       />
     );
   }

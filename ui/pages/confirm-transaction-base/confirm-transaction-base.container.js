@@ -10,7 +10,6 @@ import {
   cancelTxs,
   updateAndApproveTx,
   showModal,
-  updateTransaction,
   getNextNonce,
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
@@ -39,6 +38,7 @@ import {
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { updateTransactionGasFees } from '../../ducks/metamask/metamask';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
@@ -213,9 +213,6 @@ export const mapDispatchToProps = (dispatch) => {
         }),
       );
     },
-    updateGasAndCalculate: (updatedTx) => {
-      return dispatch(updateTransaction(updatedTx));
-    },
     showRejectTransactionsConfirmationModal: ({
       onSubmit,
       unapprovedTxCount,
@@ -231,6 +228,9 @@ export const mapDispatchToProps = (dispatch) => {
     getNextNonce: () => dispatch(getNextNonce()),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),
+    updateTransactionGasFees: (gasFees) => {
+      dispatch(updateTransactionGasFees({ ...gasFees, expectHexWei: true }));
+    },
   };
 };
 
@@ -286,7 +286,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
     cancelAllTransactions: dispatchCancelAllTransactions,
     showCustomizeGasModal: dispatchShowCustomizeGasModal,
-    updateGasAndCalculate: dispatchUpdateGasAndCalculate,
+    updateTransactionGasFees: dispatchUpdateTransactionGasFees,
     ...otherDispatchProps
   } = dispatchProps;
 
@@ -303,21 +303,17 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     showCustomizeGasModal: () =>
       dispatchShowCustomizeGasModal({
         txData,
-        onSubmit: (customGas) => dispatchUpdateGasAndCalculate(customGas),
+        onSubmit: (customGas) => dispatchUpdateTransactionGasFees(customGas),
         validate: validateEditGas,
       }),
     cancelAllTransactions: () =>
       dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),
     updateGasAndCalculate: ({ gasLimit, gasPrice }) => {
-      const updatedTx = {
-        ...txData,
-        txParams: {
-          ...txData.txParams,
-          gas: gasLimit,
-          gasPrice,
-        },
-      };
-      dispatchUpdateGasAndCalculate(updatedTx);
+      dispatchUpdateTransactionGasFees({
+        gasLimit,
+        gasPrice,
+        transaction: txData,
+      });
     },
   };
 };
