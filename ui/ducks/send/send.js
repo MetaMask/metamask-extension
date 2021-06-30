@@ -80,6 +80,7 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../shared/modules/hexstring-utils';
+import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
 
 // typedefs
 /**
@@ -176,6 +177,7 @@ async function estimateGasLimitForSend({
   to,
   data,
   isNonStandardEthChain,
+  chainId,
   ...options
 }) {
   let isSimpleSendOnNonStandardNetwork = false;
@@ -262,7 +264,12 @@ async function estimateGasLimitForSend({
   //
   // Gas estimation of simple sends should, however, be deterministic. As such
   // no buffer is needed in those cases.
-  const bufferMultiplier = isSimpleSendOnNonStandardNetwork ? 1 : 1.5;
+  let bufferMultiplier = 1.5;
+  if (isSimpleSendOnNonStandardNetwork) {
+    bufferMultiplier = 1;
+  } else if (CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId]) {
+    bufferMultiplier = CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId];
+  }
 
   try {
     // call into the background process that will simulate transaction
@@ -328,6 +335,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const state = thunkApi.getState();
     const { send, metamask } = state;
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
+    const chainId = getCurrentChainId(state);
     if (send.stage !== SEND_STAGES.EDIT) {
       const gasLimit = await estimateGasLimitForSend({
         gasPrice: send.gas.gasPrice,
@@ -338,6 +346,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
         value: send.amount.value,
         data: send.draftTransaction.userInputHexData,
         isNonStandardEthChain,
+        chainId,
       });
       await thunkApi.dispatch(setCustomGasLimit(gasLimit));
       return {
@@ -363,6 +372,7 @@ export const initializeSendState = createAsyncThunk(
   async (_, thunkApi) => {
     const state = thunkApi.getState();
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
+    const chainId = getCurrentChainId(state);
     const {
       send: { asset, stage, recipient, amount, draftTransaction },
       metamask,
@@ -410,6 +420,7 @@ export const initializeSendState = createAsyncThunk(
         value: amount.value,
         data: draftTransaction.userInputHexData,
         isNonStandardEthChain,
+        chainId,
       });
       gasLimit = estimatedGasLimit || gasLimit;
     }
