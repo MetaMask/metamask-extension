@@ -7,7 +7,7 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_BACKGROUND,
 } from '../../../shared/constants/app';
-import { getEnvironmentType, sufficientBalance } from './util';
+import { getEnvironmentType } from './util';
 
 describe('app utils', function () {
   describe('getEnvironmentType', function () {
@@ -65,44 +65,6 @@ describe('app utils', function () {
         'http://extension-id/popup.html?param=foo#hash',
       );
       assert.equal(environmentType, ENVIRONMENT_TYPE_POPUP);
-    });
-  });
-
-  describe('SufficientBalance', function () {
-    it('returns true if max tx cost is equal to balance.', function () {
-      const tx = {
-        value: '0x1',
-        gas: '0x2',
-        gasPrice: '0x3',
-      };
-      const balance = '0x8';
-
-      const result = sufficientBalance(tx, balance);
-      assert.ok(result, 'sufficient balance found.');
-    });
-
-    it('returns true if max tx cost is less than balance.', function () {
-      const tx = {
-        value: '0x1',
-        gas: '0x2',
-        gasPrice: '0x3',
-      };
-      const balance = '0x9';
-
-      const result = sufficientBalance(tx, balance);
-      assert.ok(result, 'sufficient balance found.');
-    });
-
-    it('returns false if max tx cost is more than balance.', function () {
-      const tx = {
-        value: '0x1',
-        gas: '0x2',
-        gasPrice: '0x3',
-      };
-      const balance = '0x6';
-
-      const result = sufficientBalance(tx, balance);
-      assert.ok(!result, 'insufficient balance found.');
     });
   });
 

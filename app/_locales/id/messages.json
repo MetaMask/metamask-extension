@@ -253,11 +253,8 @@
   "browserNotSupported": {
     "message": "Browser Anda tidak didukung..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "Buat daftar kontak Anda"
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask didesain dan didirikan di California."
   },
   "buy": {
     "message": "Beli"
@@ -1450,9 +1447,6 @@
   },
   "recents": {
     "message": "Terkini"
-  },
-  "recipientAddress": {
-    "message": "Alamat Penerima"
   },
   "recipientAddressPlaceholder": {
     "message": "Cari, alamat publik (0x), atau ENS"

@@ -253,11 +253,8 @@
   "browserNotSupported": {
     "message": "ご使用のブラウザーはサポートされていません..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "連絡先リストを作成する"
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask はカリフォルニアで設計および作成されました。"
   },
   "buy": {
     "message": "購入"
@@ -1450,9 +1447,6 @@
   },
   "recents": {
     "message": "最近"
-  },
-  "recipientAddress": {
-    "message": "受信者のアドレス"
   },
   "recipientAddressPlaceholder": {
     "message": "検索、パブリック アドレス (0x)、または ENS"

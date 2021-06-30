@@ -12,6 +12,7 @@ import {
 } from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
+import { SECOND } from '../../../shared/constants/time';
 import SwapsController, { utils } from './swaps';
 import { NETWORK_EVENTS } from './network';
 
@@ -33,6 +34,8 @@ const TEST_AGG_ID_5 = 'TEST_AGG_5';
 const TEST_AGG_ID_6 = 'TEST_AGG_6';
 const TEST_AGG_ID_BEST = 'TEST_AGG_BEST';
 const TEST_AGG_ID_APPROVAL = 'TEST_AGG_APPROVAL';
+
+const POLLING_TIMEOUT = SECOND * 1000;
 
 const MOCK_APPROVAL_NEEDED = {
   data:
@@ -836,7 +839,7 @@ describe('SwapsController', function () {
       it('clears polling timeout', function () {
         swapsController.pollingTimeout = setTimeout(
           () => assert.fail(),
-          1000000,
+          POLLING_TIMEOUT,
         );
         swapsController.resetSwapsState();
         assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
@@ -847,7 +850,7 @@ describe('SwapsController', function () {
       it('clears polling timeout', function () {
         swapsController.pollingTimeout = setTimeout(
           () => assert.fail(),
-          1000000,
+          POLLING_TIMEOUT,
         );
         swapsController.stopPollingForQuotes();
         assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
@@ -865,7 +868,7 @@ describe('SwapsController', function () {
       it('clears polling timeout', function () {
         swapsController.pollingTimeout = setTimeout(
           () => assert.fail(),
-          1000000,
+          POLLING_TIMEOUT,
         );
         swapsController.resetPostFetchState();
         assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);

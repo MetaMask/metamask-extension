@@ -10,6 +10,8 @@ import {
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
 
+import { conversionUtil } from '../helpers/utils/conversion-util';
+
 /**
  * Defines the shape of the options parameter for useCurrencyDisplay
  * @typedef {Object} UseCurrencyOptions
@@ -45,24 +47,37 @@ export function useCurrencyDisplay(
   const currentCurrency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
   const conversionRate = useSelector(getConversionRate);
-
-  const toCurrency = currency || currentCurrency;
+  const isUserPreferredCurrency = currency === currentCurrency;
 
   const value = useMemo(() => {
     if (displayValue) {
       return displayValue;
     }
-    return formatCurrency(
-      getValueFromWeiHex({
-        value: inputValue,
-        fromCurrency: nativeCurrency,
-        toCurrency,
-        conversionRate,
+    if (
+      currency === nativeCurrency ||
+      (!isUserPreferredCurrency && !nativeCurrency)
+    ) {
+      return conversionUtil(inputValue, {
+        fromNumericBase: 'hex',
+        toNumericBase: 'dec',
+        fromDenomination: 'WEI',
         numberOfDecimals: numberOfDecimals || 2,
         toDenomination: denomination,
-      }),
-      toCurrency,
-    );
+      });
+    } else if (isUserPreferredCurrency && conversionRate) {
+      return formatCurrency(
+        getValueFromWeiHex({
+          value: inputValue,
+          fromCurrency: nativeCurrency,
+          toCurrency: currency,
+          conversionRate,
+          numberOfDecimals: numberOfDecimals || 2,
+          toDenomination: denomination,
+        }),
+        currency,
+      );
+    }
+    return null;
   }, [
     inputValue,
     nativeCurrency,
@@ -70,13 +85,14 @@ export function useCurrencyDisplay(
     displayValue,
     numberOfDecimals,
     denomination,
-    toCurrency,
+    currency,
+    isUserPreferredCurrency,
   ]);
 
   let suffix;
 
   if (!opts.hideLabel) {
-    suffix = opts.suffix || toCurrency.toUpperCase();
+    suffix = opts.suffix || currency?.toUpperCase();
   }
 
   return [

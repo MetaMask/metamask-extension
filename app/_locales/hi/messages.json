@@ -253,11 +253,8 @@
   "browserNotSupported": {
     "message": "आपका ब्राउज़र समर्थित नहीं है..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "अपनी संपर्क सूची बनाएं"
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask को कैलिफोर्निया में डिज़ाइन और निर्मित किया गया है।"
   },
   "buy": {
     "message": "खरीदें"
@@ -1450,9 +1447,6 @@
   },
   "recents": {
     "message": "हाल ही के"
-  },
-  "recipientAddress": {
-    "message": "प्राप्तकर्ता का पता"
   },
   "recipientAddressPlaceholder": {
     "message": "खोज, सार्वजनिक पता (0x) या ENS"

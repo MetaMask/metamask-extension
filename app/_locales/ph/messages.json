@@ -253,11 +253,8 @@
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong Browser..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "Buuin ang iyong listahan ng contact"
-  },
-  "builtInCalifornia": {
-    "message": "Ang MetaMask ay idinisenyo at binuo sa California."
   },
   "buy": {
     "message": "Bumili"
@@ -1450,9 +1447,6 @@
   },
   "recents": {
     "message": "Mga Kamakailan"
-  },
-  "recipientAddress": {
-    "message": "Address ng Tatanggap"
   },
   "recipientAddressPlaceholder": {
     "message": "Maghanap, pampublikong address (0x), o ENS"

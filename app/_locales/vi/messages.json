@@ -253,11 +253,8 @@
   "browserNotSupported": {
     "message": "Trình duyệt của bạn không được hỗ trợ..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "Xây dựng danh sách liên hệ của bạn"
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask được thiết kế và phát triển tại California."
   },
   "buy": {
     "message": "Mua"
@@ -1450,9 +1447,6 @@
   },
   "recents": {
     "message": "Gần đây"
-  },
-  "recipientAddress": {
-    "message": "Địa chỉ người nhận"
   },
   "recipientAddressPlaceholder": {
     "message": "Tìm kiếm, địa chỉ công khai (0x) hoặc ENS"

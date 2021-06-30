@@ -6,6 +6,7 @@ import {
   ETH_GAS_PRICE_FETCH_WARNING_KEY,
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
   GAS_PRICE_EXCESSIVE_ERROR_KEY,
+  UNSENDABLE_ASSET_ERROR_KEY,
 } from '../../../helpers/constants/error-keys';
 import SendAmountRow from './send-amount-row';
 import SendGasRow from './send-gas-row';
@@ -18,7 +19,7 @@ export default class SendContent extends Component {
   };
 
   static propTypes = {
-    updateGas: PropTypes.func,
+    isAssetSendable: PropTypes.bool,
     showAddToAddressBookModal: PropTypes.func,
     showHexData: PropTypes.bool,
     contact: PropTypes.object,
@@ -30,8 +31,6 @@ export default class SendContent extends Component {
     noGasPrice: PropTypes.bool,
   };
 
-  updateGas = (updateData) => this.props.updateGas(updateData);
-
   render() {
     const {
       warning,
@@ -39,6 +38,7 @@ export default class SendContent extends Component {
       gasIsExcessive,
       isEthGasPrice,
       noGasPrice,
+      isAssetSendable,
     } = this.props;
 
     let gasError;
@@ -50,15 +50,15 @@ export default class SendContent extends Component {
         <div className="send-v2__form">
           {gasError && this.renderError(gasError)}
           {isEthGasPrice && this.renderWarning(ETH_GAS_PRICE_FETCH_WARNING_KEY)}
-          {error && this.renderError()}
+          {isAssetSendable === false &&
+            this.renderError(UNSENDABLE_ASSET_ERROR_KEY)}
+          {error && this.renderError(error)}
           {warning && this.renderWarning()}
           {this.maybeRenderAddContact()}
           <SendAssetRow />
-          <SendAmountRow updateGas={this.updateGas} />
+          <SendAmountRow />
           <SendGasRow />
-          {this.props.showHexData && (
-            <SendHexDataRow updateGas={this.updateGas} />
-          )}
+          {this.props.showHexData && <SendHexDataRow />}
         </div>
       </PageContainerContent>
     );
@@ -97,12 +97,11 @@ export default class SendContent extends Component {
     );
   }
 
-  renderError(gasError = '') {
+  renderError(error) {
     const { t } = this.context;
-    const { error } = this.props;
     return (
       <Dialog type="error" className="send__error-dialog">
-        {gasError === '' ? t(error) : t(gasError)}
+        {t(error)}
       </Dialog>
     );
   }

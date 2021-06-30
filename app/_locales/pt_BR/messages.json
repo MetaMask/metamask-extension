@@ -253,11 +253,8 @@
   "browserNotSupported": {
     "message": "Seu navegador não é compatível..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "Crie sua lista de contatos"
-  },
-  "builtInCalifornia": {
-    "message": "O MetaMask é projetado e construído na Califórnia."
   },
   "buy": {
     "message": "Comprar"
@@ -1134,7 +1131,7 @@
     "message": "Informe sua senha para confirmar que é você mesmo!"
   },
   "mustSelectOne": {
-    "message": "Selecione pelo menos 1 token."
+    "message": "Selecione pelo menos 1 token."
   },
   "myAccounts": {
     "message": "Minhas contas"
@@ -1450,9 +1447,6 @@
   },
   "recents": {
     "message": "Recentes"
-  },
-  "recipientAddress": {
-    "message": "Endereço do destinatário"
   },
   "recipientAddressPlaceholder": {
     "message": "Busca, endereço público (0x) ou ENS"

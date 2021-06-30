@@ -1,33 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { isEqual } from 'lodash';
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 
 export default class SendFooter extends Component {
   static propTypes = {
     addToAddressBookIfNew: PropTypes.func,
-    amount: PropTypes.string,
-    data: PropTypes.string,
-    clearSend: PropTypes.func,
-    editingTransactionId: PropTypes.string,
-    from: PropTypes.object,
-    gasLimit: PropTypes.string,
-    gasPrice: PropTypes.string,
-    gasTotal: PropTypes.string,
+    resetSendState: PropTypes.func,
+    disabled: PropTypes.bool.isRequired,
     history: PropTypes.object,
-    inError: PropTypes.bool,
-    sendToken: PropTypes.object,
     sign: PropTypes.func,
     to: PropTypes.string,
     toAccounts: PropTypes.array,
-    tokenBalance: PropTypes.string,
-    unapprovedTxs: PropTypes.object,
-    update: PropTypes.func,
     sendErrors: PropTypes.object,
     gasEstimateType: PropTypes.string,
-    gasIsLoading: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
-    noGasPrice: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -36,8 +24,8 @@ export default class SendFooter extends Component {
   };
 
   onCancel() {
-    const { clearSend, history, mostRecentOverviewPage } = this.props;
-    clearSend();
+    const { resetSendState, history, mostRecentOverviewPage } = this.props;
+    resetSendState();
     history.push(mostRecentOverviewPage);
   }
 
@@ -45,45 +33,17 @@ export default class SendFooter extends Component {
     event.preventDefault();
     const {
       addToAddressBookIfNew,
-      amount,
-      data,
-      editingTransactionId,
-      from: { address: from },
-      gasLimit: gas,
-      gasPrice,
-      sendToken,
       sign,
       to,
-      unapprovedTxs,
-      update,
       toAccounts,
       history,
       gasEstimateType,
     } = this.props;
     const { metricsEvent } = this.context;
 
-    // Should not be needed because submit should be disabled if there are errors.
-    // const noErrors = !amountError && toError === null
-
-    // if (!noErrors) {
-    //   return
-    // }
-
     // TODO: add nickname functionality
     await addToAddressBookIfNew(to, toAccounts);
-    const promise = editingTransactionId
-      ? update({
-          amount,
-          data,
-          editingTransactionId,
-          from,
-          gas,
-          gasPrice,
-          sendToken,
-          to,
-          unapprovedTxs,
-        })
-      : sign({ data, sendToken, to, amount, from, gas, gasPrice });
+    const promise = sign();
 
     Promise.resolve(promise).then(() => {
       metricsEvent({
@@ -100,35 +60,13 @@ export default class SendFooter extends Component {
     });
   }
 
-  formShouldBeDisabled() {
-    const {
-      data,
-      inError,
-      sendToken,
-      tokenBalance,
-      gasTotal,
-      to,
-      gasLimit,
-      gasIsLoading,
-      noGasPrice,
-    } = this.props;
-    const missingTokenBalance = sendToken && !tokenBalance;
-    const gasLimitTooLow = gasLimit < 5208; // 5208 is hex value of 21000, minimum gas limit
-    const shouldBeDisabled =
-      inError ||
-      !gasTotal ||
-      missingTokenBalance ||
-      !(data || to) ||
-      gasLimitTooLow ||
-      gasIsLoading ||
-      noGasPrice;
-    return shouldBeDisabled;
-  }
-
   componentDidUpdate(prevProps) {
-    const { inError, sendErrors } = this.props;
+    const { sendErrors } = this.props;
     const { metricsEvent } = this.context;
-    if (!prevProps.inError && inError) {
+    if (
+      Object.keys(sendErrors).length > 0 &&
+      isEqual(sendErrors, prevProps.sendErrors) === false
+    ) {
       const errorField = Object.keys(sendErrors).find((key) => sendErrors[key]);
       const errorMessage = sendErrors[errorField];
 
@@ -151,7 +89,7 @@ export default class SendFooter extends Component {
       <PageContainerFooter
         onCancel={() => this.onCancel()}
         onSubmit={(e) => this.onSubmit(e)}
-        disabled={this.formShouldBeDisabled()}
+        disabled={this.props.disabled}
       />
     );
   }

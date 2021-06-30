@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
-import { updateSendHexData } from '../../../../store/actions';
+import { getSendHexData, updateSendHexData } from '../../../../ducks/send';
 import SendHexDataRow from './send-hex-data-row.component';
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendHexDataRow);
 
 function mapStateToProps(state) {
   return {
-    data: state.metamask.send.data,
+    data: getSendHexData(state),
   };
 }
 

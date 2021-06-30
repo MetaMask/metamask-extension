@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import CustomizeGas from '../gas-customization/gas-modal-page-container';
+import { MILLISECOND } from '../../../../shared/constants/time';
+
+import EditGasPopover from '../edit-gas-popover/edit-gas-popover.component';
 
 export default class Sidebar extends Component {
   static propTypes = {
@@ -12,6 +15,10 @@ export default class Sidebar extends Component {
     type: PropTypes.string,
     sidebarProps: PropTypes.object,
     onOverlayClose: PropTypes.func,
+  };
+
+  static contextTypes = {
+    t: PropTypes.func,
   };
 
   renderOverlay() {
@@ -47,6 +54,18 @@ export default class Sidebar extends Component {
     }
   }
 
+  renderGasPopover() {
+    const { t } = this.context;
+
+    return (
+      <EditGasPopover
+        popoverTitle={t('speedUpPopoverTitle')}
+        editGasDisplayProps={{ alwaysShowForm: true, type: 'speed-up' }}
+        confirmButtonText={t('submit')}
+      />
+    );
+  }
+
   componentDidUpdate(prevProps) {
     if (!prevProps.sidebarShouldClose && this.props.sidebarShouldClose) {
       this.props.hideSidebar();
@@ -56,18 +75,22 @@ export default class Sidebar extends Component {
   render() {
     const { transitionName, sidebarOpen, sidebarShouldClose } = this.props;
 
+    const showSidebar = sidebarOpen && !sidebarShouldClose;
+
+    if (showSidebar && process.env.SHOW_EIP_1559_UI) {
+      return this.renderGasPopover();
+    }
+
     return (
       <div>
         <ReactCSSTransitionGroup
           transitionName={transitionName}
-          transitionEnterTimeout={300}
-          transitionLeaveTimeout={200}
+          transitionEnterTimeout={MILLISECOND * 300}
+          transitionLeaveTimeout={MILLISECOND * 200}
         >
-          {sidebarOpen && !sidebarShouldClose
-            ? this.renderSidebarContent()
-            : null}
+          {showSidebar ? this.renderSidebarContent() : null}
         </ReactCSSTransitionGroup>
-        {sidebarOpen && !sidebarShouldClose ? this.renderOverlay() : null}
+        {showSidebar ? this.renderOverlay() : null}
       </div>
     );
   }

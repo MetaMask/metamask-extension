@@ -125,8 +125,7 @@
     },
     "MetaMetricsController": {
       "participateInMetaMetrics": false,
-      "metaMetricsId": null,
-      "metaMetricsSendCount": 1
+      "metaMetricsId": null
     },
     "PermissionsController": {
       "permissionsRequests": [],

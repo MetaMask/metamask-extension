@@ -253,11 +253,8 @@
   "browserNotSupported": {
     "message": "Ваш браузер не поддерживается..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "Создайте список контактов"
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask разработан и построен в Калифорнии."
   },
   "buy": {
     "message": "Купить"
@@ -1450,9 +1447,6 @@
   },
   "recents": {
     "message": "Недавние"
-  },
-  "recipientAddress": {
-    "message": "Адрес получателя"
   },
   "recipientAddressPlaceholder": {
     "message": "Поиск, публичный адрес (0x) или ENS"
