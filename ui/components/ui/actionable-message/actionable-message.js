@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import InfoTooltip from '../../../components/ui/info-tooltip';
+import InfoTooltip from '../info-tooltip';
 
 const CLASSNAME_WARNING = 'actionable-message--warning';
 const CLASSNAME_DANGER = 'actionable-message--danger';

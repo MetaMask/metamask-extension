@@ -9,7 +9,7 @@ import PageContainer from '../../components/ui/page-container';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
-import ActionableMessage from '../swaps/actionable-message';
+import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography';
 import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
