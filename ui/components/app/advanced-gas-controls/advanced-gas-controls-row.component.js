@@ -16,6 +16,7 @@ import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 
 export default function AdvancedGasControlsRow({
   titleText,
+  titleUnit,
   tooltipText,
   titleDetailText,
   error,
@@ -39,7 +40,14 @@ export default function AdvancedGasControlsRow({
             >
               {titleText}
             </Typography>
-
+            <Typography
+              tag={TYPOGRAPHY.H6}
+              variant={TYPOGRAPHY.H6}
+              color={COLORS.UI4}
+              boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+            >
+              {titleUnit}
+            </Typography>
             <InfoTooltip position="top" contentText={tooltipText} />
           </div>
           {titleDetailText && (
@@ -70,6 +78,7 @@ export default function AdvancedGasControlsRow({
 
 AdvancedGasControlsRow.propTypes = {
   titleText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  titleUnit: PropTypes.string,
   tooltipText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   titleDetailText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   error: PropTypes.string,
@@ -79,6 +88,7 @@ AdvancedGasControlsRow.propTypes = {
 
 AdvancedGasControlsRow.defaultProps = {
   titleText: '',
+  titleUnit: '',
   tooltipText: '',
   titleDetailText: '',
   error: '',

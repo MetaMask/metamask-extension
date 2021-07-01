@@ -32,6 +32,7 @@ export default function AdvancedGasControls() {
         <>
           <AdvancedGasControlsRow
             titleText={t('maxPriorityFee')}
+            titleUnit="(GWEI)"
             tooltipText=""
             onChange={setMaxPriorityFee}
             value={maxPriorityFee}
@@ -55,6 +56,7 @@ export default function AdvancedGasControls() {
           />
           <AdvancedGasControlsRow
             titleText={t('maxFee')}
+            titleUnit="(GWEI)"
             tooltipText=""
             onChange={setMaxFee}
             value={maxFee}
@@ -81,6 +83,7 @@ export default function AdvancedGasControls() {
         <>
           <AdvancedGasControlsRow
             titleText={t('gasPrice')}
+            titleUnit="(GWEI)"
             onChange={setGasPrice}
             tooltipText=""
             titleDetailText=""
