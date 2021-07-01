@@ -228,7 +228,7 @@ export default class ExtensionPlatform {
 
   _viewOnEtherscan(url) {
     if (url.startsWith('https://')) {
-      extension.tabs.create({ url});
+      extension.tabs.create({ url });
     }
   }
 }
