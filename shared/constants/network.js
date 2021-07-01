@@ -19,6 +19,8 @@ export const GOERLI_CHAIN_ID = '0x5';
 export const KOVAN_CHAIN_ID = '0x2a';
 export const LOCALHOST_CHAIN_ID = '0x539';
 export const BSC_CHAIN_ID = '0x38';
+export const OPTIMISM_CHAIN_ID = '0xa';
+export const OPTIMISM_TESTNET_CHAIN_ID = '0x45';
 
 /**
  * The largest possible chain ID we can handle.
@@ -120,3 +122,8 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
 };
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
+
+export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
+  [OPTIMISM_CHAIN_ID]: 1,
+  [OPTIMISM_TESTNET_CHAIN_ID]: 1,
+};
