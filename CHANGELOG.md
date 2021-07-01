@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.7.1]
+### Fixed
+- [#11426](https://github.com/MetaMask/metamask-extension/pull/11426): Fixed bug that broke transaction speed up and cancel, when attempting those actions immediately after opening MetaMask
+
 ## [9.7.0]
 ### Added
 - [#11021](https://github.com/MetaMask/metamask-extension/pull/11021): Add periodic reminder modal for backing up recovery phrase
@@ -2317,7 +2321,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.7.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.7.1...HEAD
+[9.7.1]: https://github.com/MetaMask/metamask-extension/compare/v9.7.0...v9.7.1
 [9.7.0]: https://github.com/MetaMask/metamask-extension/compare/v9.6.1...v9.7.0
 [9.6.1]: https://github.com/MetaMask/metamask-extension/compare/v9.6.0...v9.6.1
 [9.6.0]: https://github.com/MetaMask/metamask-extension/compare/v9.5.9...v9.6.0

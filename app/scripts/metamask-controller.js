@@ -676,7 +676,6 @@ export default class MetamaskController extends EventEmitter {
       setUsePhishDetect: this.setUsePhishDetect.bind(this),
       setIpfsGateway: this.setIpfsGateway.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
-      setMetaMetricsSendCount: this.setMetaMetricsSendCount.bind(this),
       setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
@@ -2752,18 +2751,6 @@ export default class MetamaskController extends EventEmitter {
         bool,
       );
       cb(null, metaMetricsId);
-      return;
-    } catch (err) {
-      cb(err);
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
-  }
-
-  setMetaMetricsSendCount(val, cb) {
-    try {
-      this.metaMetricsController.setMetaMetricsSendCount(val);
-      cb(null);
       return;
     } catch (err) {
       cb(err);
