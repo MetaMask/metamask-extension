@@ -85,7 +85,7 @@ export default function AdvancedGasControls() {
             titleText={t('gasPrice')}
             titleUnit="(GWEI)"
             onChange={setGasPrice}
-            tooltipText=""
+            tooltipText={t('editGasPriceTooltip')}
             titleDetailText=""
             value={gasPrice}
           />

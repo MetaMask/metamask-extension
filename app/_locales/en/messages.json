@@ -647,6 +647,9 @@
   "editGasMedium": {
     "message": "Medium"
   },
+  "editGasPriceTooltip": {
+    "message": "This network uses an older version of gas pricing which requires a “Gas price” field. Gas price is the maximum amount you are willing to pay per unit of gas."
+  },
   "editGasTitle": {
     "message": "Edit gas fee"
   },
