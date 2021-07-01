@@ -7,6 +7,10 @@ import {
   BSC_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
 } from '../../../../shared/constants/network';
+import TransactionDetail from '../../../components/app/transaction-detail/transaction-detail.component';
+import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
+import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 
 export default function FeeCard({
   primaryFee,
@@ -66,71 +70,109 @@ export default function FeeCard({
         </div>
       </div>
       <div className="fee-card__main">
-        <div className="fee-card__row-header">
-          <div>
-            <div className="fee-card__row-header-text--bold">
-              {t('swapEstimatedNetworkFee')}
-            </div>
-            <InfoTooltip
-              position="top"
-              contentText={
-                <>
-                  <p className="fee-card__info-tooltip-paragraph">
-                    {t('swapNetworkFeeSummary', [getTranslatedNetworkName()])}
-                  </p>
-                  <p className="fee-card__info-tooltip-paragraph">
-                    {t('swapEstimatedNetworkFeeSummary', [
-                      <span className="fee-card__bold" key="fee-card-bold-1">
-                        {t('swapEstimatedNetworkFee')}
-                      </span>,
-                    ])}
-                  </p>
-                  <p className="fee-card__info-tooltip-paragraph">
-                    {t('swapMaxNetworkFeeInfo', [
-                      <span className="fee-card__bold" key="fee-card-bold-2">
-                        {t('swapMaxNetworkFees')}
-                      </span>,
-                    ])}
-                  </p>
-                </>
-              }
-              containerClassName="fee-card__info-tooltip-content-container"
-              wrapperClassName="fee-card__row-label fee-card__info-tooltip-container"
-              wide
-            />
-          </div>
-          <div>
-            <div className="fee-card__row-header-secondary--bold">
-              {primaryFee.fee}
-            </div>
-            {secondaryFee && (
-              <div className="fee-card__row-header-primary--bold">
-                {secondaryFee.fee}
+        {process.env.SHOW_EIP_1559_UI && (
+          <TransactionDetail
+            rows={[
+              <TransactionDetailItem
+                key="gas-item"
+                detailTitle={
+                  <>
+                    {t('transactionDetailGasHeading')}
+                    <InfoTooltip contentText="" position="top">
+                      <i className="fa fa-info-circle" />
+                    </InfoTooltip>
+                  </>
+                }
+                detailText={primaryFee.fee}
+                detailTotal={secondaryFee.fee}
+                subTitle="Very likely in < 15 seconds"
+                subText={
+                  secondaryFee?.maxFee !== undefined && (
+                    <>
+                      {`${t('swapMaxGasFee')} ${secondaryFee.maxFee}`}
+                      <span
+                        className="fee-card__edit-link"
+                        onClick={() => onFeeCardMaxRowClick()}
+                      >
+                        {t('edit')}
+                      </span>
+                    </>
+                  )
+                }
+              />,
+            ]}
+          />
+        )}
+        {!process.env.SHOW_EIP_1559_UI && (
+          <div className="fee-card__row-header">
+            <div>
+              <div className="fee-card__row-header-text--bold">
+                {t('swapEstimatedNetworkFee')}
               </div>
-            )}
-          </div>
-        </div>
-        <div
-          className="fee-card__row-header"
-          onClick={() => onFeeCardMaxRowClick()}
-        >
-          <div>
-            <div className="fee-card__row-header-text">
-              {t('swapMaxNetworkFees')}
+              <InfoTooltip
+                position="top"
+                contentText={
+                  <>
+                    <p className="fee-card__info-tooltip-paragraph">
+                      {t('swapNetworkFeeSummary', [getTranslatedNetworkName()])}
+                    </p>
+                    <p className="fee-card__info-tooltip-paragraph">
+                      {t('swapEstimatedNetworkFeeSummary', [
+                        <span className="fee-card__bold" key="fee-card-bold-1">
+                          {t('swapEstimatedNetworkFee')}
+                        </span>,
+                      ])}
+                    </p>
+                    <p className="fee-card__info-tooltip-paragraph">
+                      {t('swapMaxNetworkFeeInfo', [
+                        <span className="fee-card__bold" key="fee-card-bold-2">
+                          {t('swapMaxNetworkFees')}
+                        </span>,
+                      ])}
+                    </p>
+                  </>
+                }
+                containerClassName="fee-card__info-tooltip-content-container"
+                wrapperClassName="fee-card__row-label fee-card__info-tooltip-container"
+                wide
+              />
             </div>
-            <div className="fee-card__link">{t('edit')}</div>
-          </div>
-          <div>
-            <div className="fee-card__row-header-secondary">
-              {primaryFee.maxFee}
-            </div>
-            {secondaryFee?.maxFee !== undefined && (
-              <div className="fee-card__row-header-primary">
-                {secondaryFee.maxFee}
+            <div>
+              <div className="fee-card__row-header-secondary--bold">
+                {primaryFee.fee}
               </div>
-            )}
+              {secondaryFee && (
+                <div className="fee-card__row-header-primary--bold">
+                  {secondaryFee.fee}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
+        {!process.env.SHOW_EIP_1559_UI && (
+          <div
+            className="fee-card__row-header"
+            onClick={() => onFeeCardMaxRowClick()}
+          >
+            <div>
+              <div className="fee-card__row-header-text">
+                {t('swapMaxNetworkFees')}
+              </div>
+              <div className="fee-card__link">{t('edit')}</div>
+            </div>
+            <div>
+              <div className="fee-card__row-header-secondary">
+                {primaryFee.maxFee}
+              </div>
+              {secondaryFee?.maxFee !== undefined && (
+                <div className="fee-card__row-header-primary">
+                  {secondaryFee.maxFee}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {!hideTokenApprovalRow && (
           <div className="fee-card__row-header">
             <div className="fee-card__row-label">
