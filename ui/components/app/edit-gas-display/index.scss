@@ -16,6 +16,20 @@
     }
   }
 
+  &__dapp-acknowledgement-warning {
+    margin-bottom: 20px;
+  }
+
+  button.edit-gas-display__dapp-acknowledgement-button {
+    margin: 0 auto;
+    display: block;
+    color: $secondary-1;
+    border: 1px solid $secondary-1;
+    text-transform: unset;
+    width: auto;
+    background: transparent;
+  }
+
   .radio-group {
     margin: 20px auto;
   }
