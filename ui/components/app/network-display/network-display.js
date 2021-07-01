@@ -74,6 +74,7 @@ export default function NetworkDisplay({
         'network-display--colored': colored,
         'network-display--disabled': disabled,
         [`network-display--${networkType}`]: colored && networkType,
+        'network-display--clickable': typeof onClick === 'function',
       })}
       labelProps={{
         variant: TYPOGRAPHY.H7,
