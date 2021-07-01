@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 
+import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
 import {
   COLORS,
@@ -21,11 +22,20 @@ export default function EditGasDisplay({
   type,
   showEducationButton,
   onEducationClick,
+  dappSuggestedGasFee,
+  dappOrigin,
 }) {
   const t = useContext(I18nContext);
 
   const [warning] = useState(null);
   const [showAdvancedForm, setShowAdvancedForm] = useState(false);
+  const [
+    dappSuggestedGasFeeAcknowledged,
+    setDappSuggestedGasFeeAcknowledged,
+  ] = useState(false);
+
+  const requireDappAcknowledgement =
+    dappSuggestedGasFee && !dappSuggestedGasFeeAcknowledged;
 
   return (
     <div className="edit-gas-display">
@@ -35,6 +45,15 @@ export default function EditGasDisplay({
             <ActionableMessage
               className="actionable-message--warning"
               message="Swaps are time sensitive. “Medium” is not reccomended."
+            />
+          </div>
+        )}
+        {requireDappAcknowledgement && (
+          <div className="edit-gas-display__dapp-acknowledgement-warning">
+            <ActionableMessage
+              className="actionable-message--warning"
+              message={t('gasDisplayDappWarning', [dappOrigin])}
+              useIcon
             />
           </div>
         )}
@@ -53,17 +72,34 @@ export default function EditGasDisplay({
             </Typography>
           </div>
         )}
+
         <TransactionTotalBanner total="" detail="" timing="" />
-        <RadioGroup
-          name="gas-recommendation"
-          options={[
-            { value: 'low', label: t('editGasLow'), recommended: false },
-            { value: 'medium', label: t('editGasMedium'), recommended: false },
-            { value: 'high', label: t('editGasHigh'), recommended: true },
-          ]}
-          selectedValue="high"
-        />
-        {!alwaysShowForm && (
+
+        {requireDappAcknowledgement && (
+          <Button
+            className="edit-gas-display__dapp-acknowledgement-button"
+            onClick={() => setDappSuggestedGasFeeAcknowledged(true)}
+          >
+            {t('gasDisplayAcknowledgeDappButtonText')}
+          </Button>
+        )}
+
+        {!requireDappAcknowledgement && (
+          <RadioGroup
+            name="gas-recommendation"
+            options={[
+              { value: 'low', label: t('editGasLow'), recommended: false },
+              {
+                value: 'medium',
+                label: t('editGasMedium'),
+                recommended: false,
+              },
+              { value: 'high', label: t('editGasHigh'), recommended: true },
+            ]}
+            selectedValue="high"
+          />
+        )}
+        {!requireDappAcknowledgement && !alwaysShowForm && (
           <button
             className="edit-gas-display__advanced-button"
             onClick={() => setShowAdvancedForm(!showAdvancedForm)}
@@ -76,9 +112,10 @@ export default function EditGasDisplay({
             )}
           </button>
         )}
-        {(alwaysShowForm || showAdvancedForm) && <AdvancedGasControls />}
+        {((!requireDappAcknowledgement && alwaysShowForm) ||
+          showAdvancedForm) && <AdvancedGasControls />}
       </div>
-      {showEducationButton && (
+      {!requireDappAcknowledgement && showEducationButton && (
         <div className="edit-gas-display__education">
           <button onClick={onEducationClick}>
             {t('editGasEducationButtonText')}
@@ -94,6 +131,8 @@ EditGasDisplay.propTypes = {
   type: PropTypes.oneOf(['customize-gas', 'speed-up']),
   showEducationButton: PropTypes.bool,
   onEducationClick: PropTypes.func,
+  dappSuggestedGasFee: PropTypes.number,
+  dappOrigin: PropTypes.string,
 };
 
 EditGasDisplay.defaultProps = {
@@ -101,4 +140,6 @@ EditGasDisplay.defaultProps = {
   type: 'customize-gas',
   showEducationButton: false,
   onEducationClick: undefined,
+  dappSuggestedGasFee: 0,
+  dappOrigin: '',
 };

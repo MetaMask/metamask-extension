@@ -20,3 +20,14 @@ export const withEducation = () => {
     </div>
   );
 };
+
+export const withDappSuggestedGas = () => {
+  return (
+    <div style={{ width: '600px' }}>
+      <EditGasDisplay
+        dappSuggestedGasFee="100000"
+        dappOrigin="davidwalsh.name"
+      />
+    </div>
+  );
+};
