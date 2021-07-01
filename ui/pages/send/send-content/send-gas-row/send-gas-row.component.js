@@ -64,10 +64,6 @@ export default class SendGasRow extends Component {
       minimumGasLimit,
     } = this.props;
     const { trackEvent } = this.context;
-<<<<<<< HEAD
-    const gasPriceFetchFailure = isEthGasPrice || noGasPrice;
-=======
->>>>>>> origin/develop
 
     const gasPriceButtonGroup = (
       <div>
