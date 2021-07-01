@@ -280,7 +280,11 @@ const MODALS = {
   },
 
   CUSTOMIZE_METASWAP_GAS: {
-    contents: <SwapsGasCustomizationModal />,
+    contents: process.env.SHOW_EIP_1559_UI ? (
+      <EditGasPopover />
+    ) : (
+      <SwapsGasCustomizationModal />
+    ),
     mobileModalStyle: {
       width: '100vw',
       height: '100vh',
