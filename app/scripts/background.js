@@ -52,6 +52,14 @@ let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 
+window.onload = () => {
+  platform.getActiveTabs().then((tabs) => {
+    const storedOpenMetamaskTabsIDs = JSON.parse(sessionStorage.getItem("openMetamaskTabsIDs") || '{}');
+    const activeMetaMaskTab = tabs.find(tab => storedOpenMetamaskTabsIDs[tab.id])
+    activeMetaMaskTab && platform.reloadTab(activeMetaMaskTab.id)
+  });
+};
+
 // state persistence
 const inTest = process.env.IN_TEST === 'true';
 const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
@@ -349,9 +357,15 @@ function setupController(initState, initLangCode) {
       if (processName === ENVIRONMENT_TYPE_FULLSCREEN) {
         const tabId = remotePort.sender.tab.id;
         openMetamaskTabsIDs[tabId] = true;
+        const storedOpenMetamaskTabsIDs = JSON.parse(sessionStorage.getItem("openMetamaskTabsIDs") || '{}');
+        storedOpenMetamaskTabsIDs[tabId] = true;
+        sessionStorage.setItem("openMetamaskTabsIDs", JSON.stringify(storedOpenMetamaskTabsIDs));
 
         endOfStream(portStream, () => {
           delete openMetamaskTabsIDs[tabId];
+          const storedOpenMetamaskTabsIDsForDeletion = JSON.parse(sessionStorage.getItem("openMetamaskTabsIDs") || '{}');
+          delete storedOpenMetamaskTabsIDsForDeletion[tabId];
+          sessionStorage.setItem("openMetamaskTabsIDs", JSON.stringify(storedOpenMetamaskTabsIDsForDeletion));
           controller.isClientOpen = isClientOpenStatus();
         });
       }

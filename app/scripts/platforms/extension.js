@@ -12,6 +12,19 @@ export default class ExtensionPlatform {
     extension.runtime.reload();
   }
 
+  reloadTab(tabId) {
+    return new Promise((resolve, reject) => {
+      extension.tabs.reload(tabId, () => {
+        const err = checkForError();
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
+  }
+
   openTab(options) {
     return new Promise((resolve, reject) => {
       extension.tabs.create(options, (newTab) => {
