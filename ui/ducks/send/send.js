@@ -37,6 +37,7 @@ import {
   getIsMainnet,
   getSelectedAddress,
   getTargetAccount,
+  getIsNonStandardEthChain,
 } from '../../selectors';
 import {
   displayWarning,
@@ -174,8 +175,11 @@ async function estimateGasLimitForSend({
   sendToken,
   to,
   data,
+  isNonStandardEthChain,
   ...options
 }) {
+  let isSimpleSendOnNonStandardNetwork = false;
+
   // blockGasLimit may be a falsy, but defined, value when we receive it from
   // state, so we use logical or to fall back to MIN_GAS_LIMIT_HEX.
   const blockGasLimit = options.blockGasLimit || MIN_GAS_LIMIT_HEX;
@@ -211,8 +215,10 @@ async function estimateGasLimitForSend({
       // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
       const contractCodeIsEmpty =
         !contractCode || contractCode === '0x' || contractCode === '0x0';
-      if (contractCodeIsEmpty) {
+      if (contractCodeIsEmpty && !isNonStandardEthChain) {
         return GAS_LIMITS.SIMPLE;
+      } else if (contractCodeIsEmpty && isNonStandardEthChain) {
+        isSimpleSendOnNonStandardNetwork = true;
       }
     }
 
@@ -231,17 +237,33 @@ async function estimateGasLimitForSend({
     }
   }
 
-  // If we do not yet have a gasLimit, we must call into our background
-  // process to get an estimate for gasLimit based on known parameters.
+  if (!isSimpleSendOnNonStandardNetwork) {
+    // If we do not yet have a gasLimit, we must call into our background
+    // process to get an estimate for gasLimit based on known parameters.
 
-  paramsForGasEstimate.gas = addHexPrefix(
-    multiplyCurrencies(blockGasLimit, 0.95, {
-      multiplicandBase: 16,
-      multiplierBase: 10,
-      roundDown: '0',
-      toNumericBase: 'hex',
-    }),
-  );
+    paramsForGasEstimate.gas = addHexPrefix(
+      multiplyCurrencies(blockGasLimit, 0.95, {
+        multiplicandBase: 16,
+        multiplierBase: 10,
+        roundDown: '0',
+        toNumericBase: 'hex',
+      }),
+    );
+  }
+
+  // The buffer multipler reduces transaction failures by ensuring that the
+  // estimated gas is always sufficient. Without the multiplier, estimates
+  // for contract interactions can become inaccurate over time. This is because
+  // gas estimation is non-deterministic. The gas required for the exact same
+  // transaction call can change based on state of a contract or changes in the
+  // contracts environment (blockchain data or contracts it interacts with).
+  // Applying the 1.5 buffer has proven to be a useful guard against this non-
+  // deterministic behaviour.
+  //
+  // Gas estimation of simple sends should, however, be deterministic. As such
+  // no buffer is needed in those cases.
+  const bufferMultiplier = isSimpleSendOnNonStandardNetwork ? 1 : 1.5;
+
   try {
     // call into the background process that will simulate transaction
     // execution on the node and return an estimate of gasLimit
@@ -249,7 +271,7 @@ async function estimateGasLimitForSend({
     const estimateWithBuffer = addGasBuffer(
       estimatedGasLimit,
       blockGasLimit,
-      1.5,
+      bufferMultiplier,
     );
     return addHexPrefix(estimateWithBuffer);
   } catch (error) {
@@ -303,7 +325,9 @@ export async function getERC20Balance(token, accountAddress) {
 export const computeEstimatedGasLimit = createAsyncThunk(
   'send/computeEstimatedGasLimit',
   async (_, thunkApi) => {
-    const { send, metamask } = thunkApi.getState();
+    const state = thunkApi.getState();
+    const { send, metamask } = state;
+    const isNonStandardEthChain = getIsNonStandardEthChain(state);
     if (send.stage !== SEND_STAGES.EDIT) {
       const gasLimit = await estimateGasLimitForSend({
         gasPrice: send.gas.gasPrice,
@@ -313,6 +337,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
         to: send.recipient.address?.toLowerCase(),
         value: send.amount.value,
         data: send.draftTransaction.userInputHexData,
+        isNonStandardEthChain,
       });
       await thunkApi.dispatch(setCustomGasLimit(gasLimit));
       return {
@@ -337,6 +362,7 @@ export const initializeSendState = createAsyncThunk(
   'send/initializeSendState',
   async (_, thunkApi) => {
     const state = thunkApi.getState();
+    const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const {
       send: { asset, stage, recipient, amount, draftTransaction },
       metamask,
@@ -383,6 +409,7 @@ export const initializeSendState = createAsyncThunk(
         to: recipient.address.toLowerCase(),
         value: amount.value,
         data: draftTransaction.userInputHexData,
+        isNonStandardEthChain,
       });
       gasLimit = estimatedGasLimit || gasLimit;
     }

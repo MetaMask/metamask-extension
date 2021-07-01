@@ -1113,6 +1113,9 @@ describe('Send Slice', () => {
           metamask: {
             blockGasLimit: '',
             selectedAddress: '',
+            provider: {
+              chainId: '0x1',
+            },
           },
           ...defaultSendAmountState.send,
           send: {
@@ -1160,6 +1163,9 @@ describe('Send Slice', () => {
         metamask: {
           blockGasLimit: '',
           selectedAddress: '',
+          provider: {
+            chainId: '0x1',
+          },
         },
         send: {
           account: {
@@ -1372,6 +1378,9 @@ describe('Send Slice', () => {
           metamask: {
             blockGasLimit: '',
             selectedAddress: '',
+            provider: {
+              chainId: '0x1',
+            },
           },
           send: {
             account: {
