@@ -1,0 +1,59 @@
+.edit-gas-display {
+  & .actionable-message--warning {
+    margin-top: 0;
+  }
+
+  &__top-tooltip {
+    text-align: center;
+
+    .info-tooltip {
+      display: inline-block;
+
+      img {
+        height: 10px;
+        width: 10px;
+      }
+    }
+  }
+
+  &__dapp-acknowledgement-warning {
+    margin-bottom: 20px;
+  }
+
+  button.edit-gas-display__dapp-acknowledgement-button {
+    margin: 0 auto;
+    display: block;
+    color: $secondary-1;
+    border: 1px solid $secondary-1;
+    text-transform: unset;
+    width: auto;
+    background: transparent;
+  }
+
+  .radio-group {
+    margin: 20px auto;
+  }
+
+  &__advanced-button {
+    display: block;
+    margin: 0 auto;
+    background: transparent;
+    color: $primary-1;
+    font-weight: bold;
+  }
+
+  .advanced-gas-controls {
+    margin-top: 20px;
+  }
+
+  &__education {
+    margin-top: 20px;
+
+    button {
+      display: block;
+      margin: 0 auto;
+      background: transparent;
+      color: $primary-1;
+    }
+  }
+}

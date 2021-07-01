@@ -52,6 +52,10 @@
   "addContact": {
     "message": "Adicionar contato"
   },
+  "addCustomTokenByContractAddress": {
+    "message": "Não conseguiu encontrar um token? Cole o endereço para adicionar manualmente qualquer token. Os endereços de contato do token podem ser encontrados em $1.",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
+  },
   "addEthereumChainConfirmationDescription": {
     "message": "Isso permitirá esta rede ser usada dentro do MetaMask."
   },
@@ -249,11 +253,8 @@
   "browserNotSupported": {
     "message": "Seu navegador não é compatível..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "Crie sua lista de contatos"
-  },
-  "builtInCalifornia": {
-    "message": "O MetaMask é projetado e construído na Califórnia."
   },
   "buy": {
     "message": "Comprar"
@@ -284,6 +285,9 @@
   },
   "chainIdDefinition": {
     "message": "O ID da chain usado para assinar transações para essa rede."
+  },
+  "chainIdExistsErrorMsg": {
+    "message": "O ID da chain é usado no momento pela rede $1."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Você precisa usar MetaMask no Google Chrome para se conectar com sua carteira de hardware."
@@ -409,6 +413,9 @@
   },
   "continueToWyre": {
     "message": "Continuar para o Wyre"
+  },
+  "contract": {
+    "message": "Contrato"
   },
   "contractAddressError": {
     "message": "Você está enviando tokens ao endereço de contrato do token. Isso pode resultar na perda destes tokens."
@@ -625,6 +632,10 @@
   },
   "endOfFlowMessage6": {
     "message": "Se você precisar fazer backup da sua Frase de recuperação secreta novamente, encontre-a em Configurações -> Segurança."
+  },
+  "endOfFlowMessage7": {
+    "message": "Se você tiver alguma pergunta ou vir algo suspeito, entre em contato com o atendimento ao cliente em $1.",
+    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "endOfFlowMessage8": {
     "message": "O MetaMask não pode recuperar sua Frase de recuperação secreta."
@@ -885,6 +896,16 @@
   "importAccountSeedPhrase": {
     "message": "Importe uma conta com a Frase de recuperação secreta"
   },
+  "importAccountText": {
+    "message": "ou $1",
+    "description": "$1 represents the text from `importAccountLinkText` as a link"
+  },
+  "importTokenQuestion": {
+    "message": "Importar token?"
+  },
+  "importTokenWarning": {
+    "message": "Qualquer pessoa pode criar um token com um nome, incluindo versões falsas de tokens existentes. Adicione e negocie, assumindo o risco sozinho!"
+  },
   "importWallet": {
     "message": "Importar carteira"
   },
@@ -960,6 +981,12 @@
   },
   "invalidSeedPhrase": {
     "message": "Frase de recuperação secreta inválida"
+  },
+  "ipfsGateway": {
+    "message": "Gateway IPFS"
+  },
+  "ipfsGatewayDescription": {
+    "message": "Informe o URL do gateway de CID do IPFS para usar com resolução de conteúdo de ENS."
   },
   "jsonFile": {
     "message": "Arquivo JSON",
@@ -1104,7 +1131,7 @@
     "message": "Informe sua senha para confirmar que é você mesmo!"
   },
   "mustSelectOne": {
-    "message": "Selecione pelo menos 1 token."
+    "message": "Selecione pelo menos 1 token."
   },
   "myAccounts": {
     "message": "Minhas contas"
@@ -1281,8 +1308,24 @@
     "message": "A sua \"Frase Semente\" agora é chamada de sua \"Frase Secreta de Recuperação.\"",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
+  "notifications6DescriptionOne": {
+    "message": "A partir do Chrome versão 91, a API que permitia nosso suporte ao Ledger (U2F) não é mais compatível com carteiras de hardware. O MetaMask implementou um novo suporte ao Ledger Live que permite continuar conectando o seu dispositivo Ledger device por meio do aplicativo de desktop Ledger Live.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionThree": {
+    "message": "Ao interagir com sua conta do Ledger no MetaMask, uma nova aba será aberta e você deverá abrir o aplicativo Ledger Live.  Quando o aplicativo for aberto, você precisará permitir uma conexão do WebSocket com sua conta do MetaMask.  É isso!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionTwo": {
+    "message": "Você pode habilitar o suporte do Ledger Live clicando em Configurações > Avançadas > Usar Ledger Live.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6Title": {
+    "message": "Atualização de suporte do Ledger para usuários do Chrome",
+    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
+  },
   "ofTextNofM": {
-    "message": " de "
+    "message": "de"
   },
   "off": {
     "message": "Desativado"
@@ -1405,11 +1448,32 @@
   "recents": {
     "message": "Recentes"
   },
-  "recipientAddress": {
-    "message": "Endereço do destinatário"
-  },
   "recipientAddressPlaceholder": {
     "message": "Busca, endereço público (0x) ou ENS"
+  },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "Iniciar aqui"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "Entendi"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "Mantenha sempre o sigilo e proteja a sua Frase de Recuperação Secreta."
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "Precisa fazer backup da sua Frase de recuperação Secreta novamente?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "Nunca compartilhe a sua Frase de recuperação secreta com ninguém"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "A equipe do MetaMask jamais pedirá sua Frase de recuperação secreta."
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "Sua Frase de recuperação secreta controla todas as suas contas."
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "Proteja seu dinheiro"
   },
   "reject": {
     "message": "Rejeitar"
@@ -1458,6 +1522,16 @@
   },
   "restoreAccountWithSeed": {
     "message": "Restaure sua conta com a Frase de recuperação secreta"
+  },
+  "restoreWalletPreferences": {
+    "message": "Encontramos um backup dos seus dados de $1. Gostaria de restaurar as preferências da sua carteira?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "retryTransaction": {
+    "message": "Refazer transação"
+  },
+  "reusedTokenNameWarning": {
+    "message": "O token aqui reutiliza um símbolo de outro token que você observa; isso pode causar confusões ou induzir ao erro."
   },
   "revealSeedWords": {
     "message": "Revelar Frase de recuperação secreta"
@@ -1527,6 +1601,42 @@
   },
   "securitySettingsDescription": {
     "message": "Configurações de privacidade e Frase de recuperação secreta"
+  },
+  "seedPhraseIntroSidebarBulletFour": {
+    "message": "Anote e guarde em vários locais secretos."
+  },
+  "seedPhraseIntroSidebarBulletOne": {
+    "message": "Salve em um gerenciador de senhas"
+  },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "Guarde dentro de um cofre."
+  },
+  "seedPhraseIntroSidebarBulletTwo": {
+    "message": "Guarde em um cofre-forte bancário."
+  },
+  "seedPhraseIntroSidebarCopyOne": {
+    "message": "A sua frase de recuperação é a “chave-mestra” para sua carteira e seus fundos."
+  },
+  "seedPhraseIntroSidebarCopyThree": {
+    "message": "Caso alguém lhe peça a sua frase de recuperação, essa pessoa provavelmente está tentando dar um golpe em você."
+  },
+  "seedPhraseIntroSidebarCopyTwo": {
+    "message": "Jamais compartilhe a sua frase de recuperação, mesmo com o MetaMask!"
+  },
+  "seedPhraseIntroSidebarTitleOne": {
+    "message": "O que é uma frase de recuperação?"
+  },
+  "seedPhraseIntroSidebarTitleThree": {
+    "message": "Devo compartilhar minha frase de recuperação?"
+  },
+  "seedPhraseIntroSidebarTitleTwo": {
+    "message": "Como salvo minha frase de recuperação?"
+  },
+  "seedPhraseIntroTitle": {
+    "message": "Proteger sua carteira"
+  },
+  "seedPhraseIntroTitleCopy": {
+    "message": "Antes de iniciar, assista esse vídeo curto para aprender sobre sua frase de recuperação e sobre como manter sua carteira segura."
   },
   "seedPhrasePlaceholder": {
     "message": "Separe cada palavra com um único espaço"
@@ -1990,6 +2100,9 @@
     "message": "Swap $1 para $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
+  "swapTokenVerificationAddedManually": {
+    "message": "Este token foi adicionado manualmente."
+  },
   "swapTokenVerificationMessage": {
     "message": "Sempre confirme o endereço do token em $1.",
     "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
@@ -2257,7 +2370,7 @@
     "message": "Os URLs precisam do prefixo HTTP/HTTPS adequado."
   },
   "urlExistsErrorMsg": {
-    "message": "O URL já está presente na lista de redes existente"
+    "message": "O ID da chain é usado no momento pela rede $1."
   },
   "usePhishingDetection": {
     "message": "Usar detecção de phishing"
@@ -2277,6 +2390,10 @@
   },
   "verifyThisTokenOn": {
     "message": "Verificar este token em $1",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "verifyThisUnconfirmedTokenOn": {
+    "message": "Verifique este token em $1 garanta que seja o token que você deseja negociar.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAccount": {
@@ -2311,6 +2428,10 @@
   },
   "walletSeedRestore": {
     "message": "Frase de recuperação secreta da carteira"
+  },
+  "web3ShimUsageNotification": {
+    "message": "Percebemos que o site atual tentou usar a API window.web3 removida. Se o site parecer estar corrompido, clique em $1 para obter mais informações.",
+    "description": "$1 is a clickable link."
   },
   "welcome": {
     "message": "Bem-vindo(a) ao MetaMask"

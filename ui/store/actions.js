@@ -1,7 +1,6 @@
-import abi from 'human-standard-token-abi';
 import pify from 'pify';
 import log from 'loglevel';
-import { capitalize } from 'lodash';
+import { capitalize, isEqual } from 'lodash';
 import getBuyEthUrl from '../../app/scripts/lib/buy-eth-url';
 import {
   fetchLocale,
@@ -15,14 +14,15 @@ import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
+  getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
 } from '../selectors';
+import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { LISTED_CONTRACT_ADDRESSES } from '../../shared/constants/tokens';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { clearSend } from '../ducks/send/send.duck';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -621,39 +621,10 @@ export function signTypedMsg(msgData) {
   };
 }
 
-export function signTx(txData) {
-  return async (dispatch) => {
-    dispatch(showLoadingIndication());
-    global.ethQuery.sendTransaction(txData, (err) => {
-      if (err) {
-        dispatch(displayWarning(err.message));
-      }
-    });
-    dispatch(hideLoadingIndication());
-    dispatch(showConfTxPage());
-  };
-}
-
 export function updateCustomNonce(value) {
   return {
     type: actionConstants.UPDATE_CUSTOM_NONCE,
     value,
-  };
-}
-
-export function signTokenTx(tokenAddress, toAddress, amount, txData) {
-  return async (dispatch) => {
-    dispatch(showLoadingIndication());
-
-    try {
-      const token = global.eth.contract(abi).at(tokenAddress);
-      token.transfer(toAddress, addHexPrefix(amount), txData);
-      dispatch(showConfTxPage());
-      dispatch(hideLoadingIndication());
-    } catch (error) {
-      dispatch(hideLoadingIndication());
-      dispatch(displayWarning(error.message));
-    }
   };
 }
 
@@ -721,7 +692,7 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
     return new Promise((resolve, reject) => {
       background.updateAndApproveTransaction(txData, (err) => {
         dispatch(updateTransactionParams(txData.id, txData.txParams));
-        dispatch(clearSend());
+        dispatch(resetSendState());
 
         if (err) {
           dispatch(txError(err));
@@ -737,7 +708,7 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(clearSend());
+        dispatch(resetSendState());
         dispatch(completedTx(txData.id));
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
@@ -907,7 +878,7 @@ export function cancelTx(txData, _showLoadingIndication = true) {
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(clearSend());
+        dispatch(resetSendState());
         dispatch(completedTx(txData.id));
         dispatch(hideLoadingIndication());
         dispatch(closeCurrentNotificationWindow());
@@ -950,7 +921,7 @@ export function cancelTxs(txDataList) {
 
       const newState = await updateMetamaskStateFromBackground();
       dispatch(updateMetamaskState(newState));
-      dispatch(clearSend());
+      dispatch(resetSendState());
 
       txIds.forEach((id) => {
         dispatch(completedTx(id));
@@ -1038,19 +1009,59 @@ export function updateMetamaskState(newState) {
   return (dispatch, getState) => {
     const { metamask: currentState } = getState();
 
-    const { currentLocale, selectedAddress } = currentState;
+    const { currentLocale, selectedAddress, provider } = currentState;
     const {
       currentLocale: newLocale,
       selectedAddress: newSelectedAddress,
+      provider: newProvider,
     } = newState;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
       dispatch(updateCurrentLocale(newLocale));
     }
+
     if (selectedAddress !== newSelectedAddress) {
       dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
     }
 
+    const newAddressBook = newState.addressBook?.[newProvider?.chainId] ?? {};
+    const oldAddressBook = currentState.addressBook?.[provider?.chainId] ?? {};
+    const newAccounts = getMetaMaskAccounts({ metamask: newState });
+    const oldAccounts = getMetaMaskAccounts({ metamask: currentState });
+    const newSelectedAccount = newAccounts[newSelectedAddress];
+    const oldSelectedAccount = newAccounts[selectedAddress];
+    // dispatch an ACCOUNT_CHANGED for any account whose balance or other
+    // properties changed in this update
+    Object.entries(oldAccounts).forEach(([address, oldAccount]) => {
+      if (!isEqual(oldAccount, newAccounts[address])) {
+        dispatch({
+          type: actionConstants.ACCOUNT_CHANGED,
+          payload: { account: newAccounts[address] },
+        });
+      }
+    });
+    // Also emit an event for the selected account changing, either due to a
+    // property update or if the entire account changes.
+    if (isEqual(oldSelectedAccount, newSelectedAccount) === false) {
+      dispatch({
+        type: actionConstants.SELECTED_ACCOUNT_CHANGED,
+        payload: { account: newSelectedAccount },
+      });
+    }
+    // We need to keep track of changing address book entries
+    if (isEqual(oldAddressBook, newAddressBook) === false) {
+      dispatch({
+        type: actionConstants.ADDRESS_BOOK_UPDATED,
+        payload: { addressBook: newAddressBook },
+      });
+    }
+
+    if (provider.chainId !== newProvider.chainId) {
+      dispatch({
+        type: actionConstants.CHAIN_CHANGED,
+        payload: newProvider.chainId,
+      });
+    }
     dispatch({
       type: actionConstants.UPDATE_METAMASK_STATE,
       value: newState,
@@ -1141,6 +1152,7 @@ export function showAccountDetail(address) {
 
     try {
       await _setSelectedAddress(dispatch, address);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error.message));
       return;
@@ -1657,9 +1669,16 @@ export function hideAlert() {
  * or null (used to clear the previous value)
  */
 export function qrCodeDetected(qrCodeData) {
-  return {
-    type: actionConstants.QR_CODE_DETECTED,
-    value: qrCodeData,
+  return async (dispatch) => {
+    await dispatch({
+      type: actionConstants.QR_CODE_DETECTED,
+      value: qrCodeData,
+    });
+
+    // If on the send page, the send slice will listen for the QR_CODE_DETECTED
+    // action and update its state. Address changes need to recompute gasLimit
+    // so we fire this method so that the send page gasLimit can be recomputed
+    dispatch(computeEstimatedGasLimit());
   };
 }
 
@@ -1807,8 +1826,8 @@ export function showSendTokenPage() {
 }
 
 export function buyEth(opts) {
-  return (dispatch) => {
-    const url = getBuyEthUrl(opts);
+  return async (dispatch) => {
+    const url = await getBuyEthUrl(opts);
     global.platform.openTab({ url });
     dispatch({
       type: actionConstants.BUY_ETH,
@@ -2681,6 +2700,16 @@ export function setLedgerLivePreference(value) {
 
 export function estimateGas(params) {
   return promisifiedBackground.estimateGas(params);
+}
+
+export async function updateTokenType(tokenAddress) {
+  let token = {};
+  try {
+    token = await promisifiedBackground.updateTokenType(tokenAddress);
+  } catch (error) {
+    log.error(error);
+  }
+  return token;
 }
 
 // MetaMetrics

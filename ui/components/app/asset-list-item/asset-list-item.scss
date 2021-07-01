@@ -10,15 +10,22 @@
     text-align: start;
 
     & h2 {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      max-width: 100%;
+      display: flex;
     }
 
     & span {
       padding-right: 5px;
     }
+  }
+
+  &__token-value {
+    flex: 1;
+    padding-right: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    display: block;
+    overflow: hidden;
   }
 
   &__chevron-right {

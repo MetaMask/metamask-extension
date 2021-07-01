@@ -31,10 +31,10 @@ import {
   getKnownMethodData,
   getMetaMaskAccounts,
   getUseNonceField,
-  getPreferences,
   transactionFeeSelector,
   getNoGasPriceFetched,
   getIsEthGasPriceFetched,
+  getShouldShowFiat,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
@@ -64,7 +64,6 @@ const mapStateToProps = (state, ownProps) => {
     match: { params = {} },
   } = ownProps;
   const { id: paramsTransactionId } = params;
-  const { showFiatInTestnets } = getPreferences(state);
   const isMainnet = getIsMainnet(state);
   const { confirmTransaction, metamask } = state;
   const {
@@ -79,7 +78,7 @@ const mapStateToProps = (state, ownProps) => {
     provider: { chainId },
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
-  const { txParams = {}, lastGasPrice, id: transactionId, type } = txData;
+  const { txParams = {}, id: transactionId, type } = txData;
   const transaction =
     Object.values(unapprovedTxs).find(
       ({ id }) => id === (transactionId || Number(paramsTransactionId)),
@@ -108,7 +107,6 @@ const mapStateToProps = (state, ownProps) => {
   const addressBookObject = addressBook[checksummedAddress];
   const toEns = ensResolutionsByAddress[checksummedAddress] || '';
   const toNickname = addressBookObject ? addressBookObject.name : '';
-  const isTxReprice = Boolean(lastGasPrice);
   const transactionStatus = transaction ? transaction.status : '';
 
   const {
@@ -166,7 +164,6 @@ const mapStateToProps = (state, ownProps) => {
     tokenData,
     methodData,
     tokenProps,
-    isTxReprice,
     conversionRate,
     transactionStatus,
     nonce,
@@ -182,8 +179,8 @@ const mapStateToProps = (state, ownProps) => {
     useNonceField: getUseNonceField(state),
     customNonceValue,
     insufficientBalance,
-    hideSubtitle: !isMainnet && !showFiatInTestnets,
-    hideFiatConversion: !isMainnet && !showFiatInTestnets,
+    hideSubtitle: !getShouldShowFiat(state),
+    hideFiatConversion: !getShouldShowFiat(state),
     type,
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),

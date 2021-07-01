@@ -10,6 +10,14 @@ import GasReducer, {
   fetchBasicGasEstimates,
 } from './gas.duck';
 
+import {
+  BASIC_GAS_ESTIMATE_STATUS,
+  SET_BASIC_GAS_ESTIMATE_DATA,
+  SET_CUSTOM_GAS_PRICE,
+  SET_CUSTOM_GAS_LIMIT,
+  SET_ESTIMATE_SOURCE,
+} from './gas-action-constants';
+
 jest.mock('../../helpers/utils/storage-helpers.js', () => ({
   getStorageItem: jest.fn(),
   setStorageItem: jest.fn(),
@@ -60,13 +68,6 @@ describe('Gas Duck', () => {
     ticker: 'ETH',
     type: 'mainnet',
   };
-
-  const BASIC_GAS_ESTIMATE_STATUS = 'metamask/gas/BASIC_GAS_ESTIMATE_STATUS';
-  const SET_BASIC_GAS_ESTIMATE_DATA =
-    'metamask/gas/SET_BASIC_GAS_ESTIMATE_DATA';
-  const SET_CUSTOM_GAS_LIMIT = 'metamask/gas/SET_CUSTOM_GAS_LIMIT';
-  const SET_CUSTOM_GAS_PRICE = 'metamask/gas/SET_CUSTOM_GAS_PRICE';
-  const SET_ESTIMATE_SOURCE = 'metamask/gas/SET_ESTIMATE_SOURCE';
 
   describe('GasReducer()', () => {
     it('should initialize state', () => {

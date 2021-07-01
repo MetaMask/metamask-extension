@@ -2,13 +2,20 @@ import { strict as assert } from 'assert';
 import { ObservableStore } from '@metamask/obs-store';
 import { ethErrors } from 'eth-rpc-errors';
 import { normalize as normalizeAddress } from 'eth-sig-util';
-import ethers from 'ethers';
+import { ethers } from 'ethers';
 import log from 'loglevel';
+import abiERC721 from 'human-standard-collectible-abi';
+import contractsMap from '@metamask/contract-metadata';
 import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens';
 import { NETWORK_TYPE_TO_ID_MAP } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
-import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
+import {
+  isValidHexAddress,
+  toChecksumHexAddress,
+} from '../../../shared/modules/hexstring-utils';
 import { NETWORK_EVENTS } from './network';
+
+const ERC721METADATA_INTERFACE_ID = '0x5b5e139f';
 
 export default class PreferencesController {
   /**
@@ -73,11 +80,18 @@ export default class PreferencesController {
     };
 
     this.network = opts.network;
+    this.ethersProvider = new ethers.providers.Web3Provider(opts.provider);
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(12);
     this.openPopup = opts.openPopup;
     this.migrateAddressBookState = opts.migrateAddressBookState;
-    this._subscribeToNetworkDidChange();
+
+    this.network.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
+      const { tokens, hiddenTokens } = this._getTokenRelatedStates();
+      this.ethersProvider = new ethers.providers.Web3Provider(opts.provider);
+      this._updateAccountTokens(tokens, this.getAssetImages(), hiddenTokens);
+    });
+
     this._subscribeToInfuraAvailability();
 
     global.setPreference = (key, value) => {
@@ -393,6 +407,8 @@ export default class PreferencesController {
     });
     const previousIndex = tokens.indexOf(previousEntry);
 
+    newEntry.isERC721 = await this._detectIsERC721(newEntry.address);
+
     if (previousEntry) {
       tokens[previousIndex] = newEntry;
     } else {
@@ -401,6 +417,24 @@ export default class PreferencesController {
     assetImages[address] = image;
     this._updateAccountTokens(tokens, assetImages, updatedHiddenTokens);
     return Promise.resolve(tokens);
+  }
+
+  /**
+   * Adds isERC721 field to token object
+   * (Called when a user attempts to add tokens that were previously added which do not yet had isERC721 field)
+   *
+   * @param {string} tokenAddress - The contract address of the token requiring the isERC721 field added.
+   * @returns {Promise<object>} The new token object with the added isERC721 field.
+   *
+   */
+  async updateTokenType(tokenAddress) {
+    const { tokens } = this.store.getState();
+    const tokenIndex = tokens.findIndex((token) => {
+      return token.address === tokenAddress;
+    });
+    tokens[tokenIndex].isERC721 = await this._detectIsERC721(tokenAddress);
+    this.store.updateState({ tokens });
+    return Promise.resolve(tokens[tokenIndex]);
   }
 
   /**
@@ -480,11 +514,8 @@ export default class PreferencesController {
         let addressBookKey = rpcDetail.chainId;
         if (!addressBookKey) {
           // We need to find the networkId to determine what these addresses were keyed by
-          const provider = new ethers.providers.JsonRpcProvider(
-            rpcDetail.rpcUrl,
-          );
           try {
-            addressBookKey = await provider.send('net_version');
+            addressBookKey = await this.ethersProvider.send('net_version');
             assert(typeof addressBookKey === 'string');
           } catch (error) {
             log.debug(error);
@@ -701,17 +732,6 @@ export default class PreferencesController {
   // PRIVATE METHODS
   //
 
-  /**
-   * Handle updating token list to reflect current network by listening for the
-   * NETWORK_DID_CHANGE event.
-   */
-  _subscribeToNetworkDidChange() {
-    this.network.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
-      const { tokens, hiddenTokens } = this._getTokenRelatedStates();
-      this._updateAccountTokens(tokens, this.getAssetImages(), hiddenTokens);
-    });
-  }
-
   _subscribeToInfuraAvailability() {
     this.network.on(NETWORK_EVENTS.INFURA_IS_BLOCKED, () => {
       this._setInfuraBlocked(true);
@@ -761,6 +781,43 @@ export default class PreferencesController {
       accountHiddenTokens,
       hiddenTokens,
     });
+  }
+
+  /**
+   * Detects whether or not a token is ERC-721 compatible.
+   *
+   * @param {string} tokensAddress - the token contract address.
+   *
+   */
+  async _detectIsERC721(tokenAddress) {
+    const checksumAddress = toChecksumHexAddress(tokenAddress);
+    // if this token is already in our contract metadata map we don't need
+    // to check against the contract
+    if (contractsMap[checksumAddress]?.erc721 === true) {
+      return Promise.resolve(true);
+    }
+    const tokenContract = await this._createEthersContract(
+      tokenAddress,
+      abiERC721,
+      this.ethersProvider,
+    );
+
+    return await tokenContract
+      .supportsInterface(ERC721METADATA_INTERFACE_ID)
+      .catch((error) => {
+        console.log('error', error);
+        log.debug(error);
+        return false;
+      });
+  }
+
+  async _createEthersContract(tokenAddress, abi, ethersProvider) {
+    const tokenContract = await new ethers.Contract(
+      tokenAddress,
+      abi,
+      ethersProvider,
+    );
+    return tokenContract;
   }
 
   /**

@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "הדפדפן שלך אינו נתמך..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask תוכנן ונבנה בקליפורניה."
-  },
   "buyWithWyre": {
     "message": "רכישת את'ר עם Wyre"
   },
@@ -750,9 +747,6 @@
   },
   "recents": {
     "message": "אחרונים"
-  },
-  "recipientAddress": {
-    "message": "כתובת הנמען"
   },
   "recipientAddressPlaceholder": {
     "message": "חיפוש, כתובת ציבורית (0x), או ENS"

@@ -128,9 +128,6 @@
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong Browser..."
   },
-  "builtInCalifornia": {
-    "message": "Ang MetaMask ay dinisenyo at binuo sa California."
-  },
   "buyWithWyre": {
     "message": "Bumili ng ETH gamit ang Wyre"
   },
@@ -677,9 +674,6 @@
   },
   "recents": {
     "message": "Kamakailan"
-  },
-  "recipientAddress": {
-    "message": "Address ng Recipient"
   },
   "recipientAddressPlaceholder": {
     "message": "Maghanap, pampublikong address (0x), o ENS"

@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import EventEmitter from 'events';
 import { toBuffer } from 'ethereumjs-util';
-import EthTx from 'ethereumjs-tx';
+import { TransactionFactory } from '@ethereumjs/tx';
 import { ObservableStore } from '@metamask/obs-store';
 import sinon from 'sinon';
 
@@ -20,6 +20,9 @@ import TransactionController, { TRANSACTION_EVENTS } from '.';
 const noop = () => true;
 const currentNetworkId = '42';
 const currentChainId = '0x2a';
+const providerConfig = {
+  type: 'kovan',
+};
 
 const VALID_ADDRESS = '0x0000000000000000000000000000000000000000';
 const VALID_ADDRESS_TWO = '0x0000000000000000000000000000000000000001';
@@ -36,6 +39,7 @@ describe('Transaction Controller', function () {
     };
     provider = createTestProviderTools({ scaffold: providerResultStub })
       .provider;
+
     fromAccount = getTestAccounts()[0];
     const blockTrackerStub = new EventEmitter();
     blockTrackerStub.getCurrentBlock = noop;
@@ -46,13 +50,14 @@ describe('Transaction Controller', function () {
         return '0xee6b2800';
       },
       networkStore: new ObservableStore(currentNetworkId),
+      getEIP1559Compatibility: () => Promise.resolve(true),
       txHistoryLimit: 10,
       blockTracker: blockTrackerStub,
       signTransaction: (ethTx) =>
         new Promise((resolve) => {
-          ethTx.sign(fromAccount.key);
-          resolve();
+          resolve(ethTx.sign(fromAccount.key));
         }),
+      getProviderConfig: () => providerConfig,
       getPermittedAccounts: () => undefined,
       getCurrentChainId: () => currentChainId,
       getParticipateInMetrics: () => false,
@@ -565,8 +570,8 @@ describe('Transaction Controller', function () {
         noop,
       );
       const rawTx = await txController.signTransaction('1');
-      const ethTx = new EthTx(toBuffer(rawTx));
-      assert.equal(ethTx.getChainId(), 42);
+      const ethTx = TransactionFactory.fromSerializedData(toBuffer(rawTx));
+      assert.equal(ethTx.common.chainIdBN().toNumber(), 42);
     });
   });
 
