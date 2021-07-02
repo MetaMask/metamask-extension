@@ -3,6 +3,10 @@ import extension from 'extensionizer';
 import { stripHexPrefix } from 'ethereumjs-util';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
+import {
+  MAINNET_CHAIN_ID,
+  TEST_CHAINS,
+} from '../../../shared/constants/network';
 
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -180,6 +184,15 @@ function bnToHex(inputBn) {
   return addHexPrefix(inputBn.toString(16));
 }
 
+function getChainType(chainId) {
+  if (chainId === MAINNET_CHAIN_ID) {
+    return 'mainnet';
+  } else if (TEST_CHAINS.includes(chainId)) {
+    return 'testnet';
+  }
+  return 'custom';
+}
+
 export {
   getPlatform,
   getEnvironmentType,
@@ -189,4 +202,5 @@ export {
   checkForError,
   addHexPrefix,
   bnToHex,
+  getChainType,
 };
