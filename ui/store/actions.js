@@ -1324,7 +1324,7 @@ export function clearPendingTokens() {
   };
 }
 
-export function createCancelTransaction(txId, customGasPrice, customGasLimit) {
+export function createCancelTransaction(txId, customGasSettings) {
   log.debug('background.cancelTransaction');
   let newTxId;
 
@@ -1332,8 +1332,7 @@ export function createCancelTransaction(txId, customGasPrice, customGasLimit) {
     return new Promise((resolve, reject) => {
       background.createCancelTransaction(
         txId,
-        customGasPrice,
-        customGasLimit,
+        customGasSettings,
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -1353,7 +1352,7 @@ export function createCancelTransaction(txId, customGasPrice, customGasLimit) {
   };
 }
 
-export function createSpeedUpTransaction(txId, customGasPrice, customGasLimit) {
+export function createSpeedUpTransaction(txId, customGasSettings) {
   log.debug('background.createSpeedUpTransaction');
   let newTx;
 
@@ -1361,8 +1360,7 @@ export function createSpeedUpTransaction(txId, customGasPrice, customGasLimit) {
     return new Promise((resolve, reject) => {
       background.createSpeedUpTransaction(
         txId,
-        customGasPrice,
-        customGasLimit,
+        customGasSettings,
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -1381,16 +1379,14 @@ export function createSpeedUpTransaction(txId, customGasPrice, customGasLimit) {
   };
 }
 
-export function createRetryTransaction(txId, customGasPrice, customGasLimit) {
-  log.debug('background.createRetryTransaction');
+export function createRetryTransaction(txId, customGasSettings) {
   let newTx;
 
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.createSpeedUpTransaction(
         txId,
-        customGasPrice,
-        customGasLimit,
+        customGasSettings,
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
