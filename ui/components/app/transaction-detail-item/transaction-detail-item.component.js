@@ -30,6 +30,7 @@ export default function TransactionDetailItem({
           <Typography
             variant={TYPOGRAPHY.H6}
             className="transaction-detail-item__detail-text"
+            color={COLORS.UI4}
           >
             {detailText}
           </Typography>
@@ -48,11 +49,14 @@ export default function TransactionDetailItem({
           <Typography
             variant={TYPOGRAPHY.H7}
             className="transaction-detail-item__subtitle"
+            color={COLORS.UI4}
           >
             {subTitle}
           </Typography>
         )}
-        <Typography variant={TYPOGRAPHY.H7}>{subText}</Typography>
+        <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4}>
+          {subText}
+        </Typography>
       </div>
     </div>
   );
