@@ -8,6 +8,7 @@ exports[`BuildQuote renders the component with initial props 1`] = `
   <button
     aria-checked="false"
     class="button-group__button radio-button"
+    data-testid="button-group__button0"
     role="radio"
   >
     2%
@@ -15,6 +16,7 @@ exports[`BuildQuote renders the component with initial props 1`] = `
   <button
     aria-checked="false"
     class="button-group__button radio-button"
+    data-testid="button-group__button1"
     role="radio"
   >
     3%
@@ -22,6 +24,7 @@ exports[`BuildQuote renders the component with initial props 1`] = `
   <button
     aria-checked="true"
     class="button-group__button slippage-buttons__button-group-custom-button radio-button--danger radio-button button-group__button--active radio-button--active"
+    data-testid="button-group__button2"
     role="radio"
   >
     15
@@ -31,36 +34,5 @@ exports[`BuildQuote renders the component with initial props 1`] = `
       %
     </div>
   </button>
-</div>
-`;
-
-exports[`BuildQuote renders the component with initial props 2`] = `
-<div
-  class="swaps-footer"
->
-  <div
-    class="swaps-footer__buttons"
-  >
-    <div
-      class="page-container__footer swaps-footer__custom-page-container-footer-class"
-    >
-      <footer>
-        <button
-          class="button btn-primary page-container__footer-button swaps-footer__custom-page-container-footer-button-class swaps-footer__custom-page-container-footer-button-class--single"
-          data-testid="page-container-footer-next"
-          disabled=""
-          role="button"
-          tabindex="0"
-        >
-          Review Swap
-        </button>
-      </footer>
-    </div>
-  </div>
-  <div
-    class="swaps-footer__bottom-text"
-  >
-    Terms of Service
-  </div>
 </div>
 `;

@@ -32,6 +32,6 @@ describe('AwaitingSwap', () => {
     expect(
       document.querySelector('.awaiting-swap__main-descrption'),
     ).toMatchSnapshot();
-    expect(document.querySelector('.swaps-footer')).toMatchSnapshot();
+    expect(getByText('View in activity')).toBeInTheDocument();
   });
 });
