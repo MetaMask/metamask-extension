@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import InfoTooltip from '../../../components/ui/info-tooltip';
+import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {
   MAINNET_CHAIN_ID,
   BSC_CHAIN_ID,
@@ -9,8 +10,9 @@ import {
 } from '../../../../shared/constants/network';
 import TransactionDetail from '../../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
-import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+
+const GAS_FEES_LEARN_MORE_URL =
+  'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
 
 export default function FeeCard({
   primaryFee,
@@ -49,6 +51,11 @@ export default function FeeCard({
     }
   };
 
+  const gasFeesLearnMoreLinkClickedEvent = useNewMetricEvent({
+    category: 'Swaps',
+    event: 'Clicked "Gas Fees: Learn More" Link',
+  });
+
   return (
     <div className="fee-card">
       <div className="fee-card__savings-and-quotes-header">
@@ -78,9 +85,39 @@ export default function FeeCard({
                 detailTitle={
                   <>
                     {t('transactionDetailGasHeading')}
-                    <InfoTooltip contentText="" position="top">
-                      <i className="fa fa-info-circle" />
-                    </InfoTooltip>
+                    <InfoTooltip
+                      position="top"
+                      contentText={
+                        <>
+                          <p className="fee-card__info-tooltip-paragraph">
+                            {t('swapGasFeesSummary', [
+                              getTranslatedNetworkName(),
+                            ])}
+                          </p>
+                          <p className="fee-card__info-tooltip-paragraph">
+                            {t('swapGasFeesDetails')}
+                          </p>
+                          <p className="fee-card__info-tooltip-paragraph">
+                            <a
+                              className="fee-card__link"
+                              onClick={() => {
+                                gasFeesLearnMoreLinkClickedEvent();
+                                global.platform.openTab({
+                                  url: GAS_FEES_LEARN_MORE_URL,
+                                });
+                              }}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {t('swapGasFeesLearnMore')}
+                            </a>
+                          </p>
+                        </>
+                      }
+                      containerClassName="fee-card__info-tooltip-content-container"
+                      wrapperClassName="fee-card__row-label fee-card__info-tooltip-container"
+                      wide
+                    />
                   </>
                 }
                 detailText={primaryFee.fee}

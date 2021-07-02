@@ -141,7 +141,7 @@
     margin-right: 4px;
   }
 
-  &__link {
+  &__link, &__link:hover {
     color: $Blue-500;
     cursor: pointer;
   }
