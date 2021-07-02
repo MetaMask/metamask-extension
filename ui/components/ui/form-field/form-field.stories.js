@@ -9,7 +9,7 @@ export default {
 };
 
 export const Plain = ({ ...props }) => {
-    const options = {text: false, numeric: true};
+  const options = { text: false, numeric: true };
   const [value, setValue] = useState('');
   return (
     <div style={{ width: '600px' }}>
@@ -24,7 +24,7 @@ export const Plain = ({ ...props }) => {
   );
 };
 
-export const formFieldWithTitleDetail = () => {
+export const FormFieldWithTitleDetail = () => {
   const [clicked, setClicked] = useState(false);
   const detailOptions = {
     text: <div style={{ fontSize: '12px' }}>Detail</div>,
@@ -39,22 +39,17 @@ export const formFieldWithTitleDetail = () => {
     checkmark: <i className="fas fa-check" />,
   };
   return (
-      <Plain
-        titleText="Title"
-        titleDetail={
-          detailOptions[
-            select('detailType', ['text', 'button', 'checkmark'], 'text')
-          ]
-        }
-      />
+    <Plain
+      titleText="Title"
+      titleDetail={
+        detailOptions[
+          select('detailType', ['text', 'button', 'checkmark'], 'text')
+        ]
+      }
+    />
   );
 };
 
-export const formFieldWithError = () => {
-  return (
-      <Plain
-        titleText="Title"
-        error="Incorrect Format"
-      />
-  );
+export const FormFieldWithError = () => {
+  return <Plain titleText="Title" error="Incorrect Format" />;
 };
