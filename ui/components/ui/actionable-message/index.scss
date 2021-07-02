@@ -9,6 +9,21 @@
   align-items: center;
   position: relative;
 
+  &--with-icon {
+    padding-inline-start: 32px;
+  }
+
+  &--with-icon.actionable-message--warning {
+    justify-content: normal;
+  }
+
+  &__icon {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    left: 8px;
+  }
+
   @include H7;
 
   &__message {
@@ -69,6 +84,7 @@
   &--left-aligned {
     .actionable-message__message,
     .actionable-message__actions {
+      text-align: left;
     }
   }
 

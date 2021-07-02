@@ -68,3 +68,17 @@ export const LeftAligned = () => (
     />
   </div>
 );
+
+export const withIcon = () => (
+  <div style={{ height: '200px', width: '300px' }}>
+    <ActionableMessage
+      message={text(
+        'Message',
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      )}
+      className="actionable-message--left-aligned actionable-message--warning"
+      useIcon
+      iconFill="#f8c000"
+    />
+  </div>
+);
