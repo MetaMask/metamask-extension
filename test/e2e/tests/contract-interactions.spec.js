@@ -64,7 +64,7 @@ describe('Deploy contract and call contract methods', function () {
         assert.ok(confirmDataText.includes('127.0.0.1'));
         assert.ok(confirmDataText.includes('Bytes:'));
         assert.ok(confirmDataText.includes('675'));
-  
+
         // confirms a deploy contract transaction
         await driver.clickElement({ text: 'Details', tag: 'button' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });

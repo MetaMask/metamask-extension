@@ -254,6 +254,10 @@ describe('MetaMask', function () {
   });
 
   describe('Navigate transactions', function () {
+    let windowHandles;
+    let extension;
+    let popup;
+    let dapp;
     it('connects the dapp', async function () {
       await driver.openNewPage('http://127.0.0.1:8080/');
       await driver.delay(regularDelayMs);
@@ -287,7 +291,6 @@ describe('MetaMask', function () {
     });
 
     it('adds multiple transactions', async function () {
-
       const send3eth = await driver.findClickableElement({
         text: 'Send',
         tag: 'button',
@@ -404,10 +407,6 @@ describe('MetaMask', function () {
         true,
         'second transaction in focus',
       );
-
-      const windowHandles = await driver.getAllWindowHandles();
-      const extension = windowHandles[0];
-      const dapp = windowHandles[1];
 
       await driver.switchToWindow(dapp);
       await driver.delay(regularDelayMs);
