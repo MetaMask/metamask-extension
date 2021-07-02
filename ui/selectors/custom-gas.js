@@ -2,7 +2,7 @@ import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   conversionUtil,
   conversionGreaterThan,
-} from '../helpers/utils/conversion-util';
+} from '../../shared/modules/conversion.utils';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { decEthToConvertedCurrency as ethTotalToConvertedCurrency } from '../helpers/utils/conversions.util';
 import { formatETHFee } from '../helpers/utils/formatters';
