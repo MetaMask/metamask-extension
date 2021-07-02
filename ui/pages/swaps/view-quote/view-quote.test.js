@@ -7,7 +7,7 @@ import {
   createSwapsMockStore,
   setBackgroundConnection,
 } from '../../../../test/jest';
-import BuildQuote from '.';
+import ViewQuote from '.';
 
 const middleware = [thunk];
 const createProps = (customProps = {}) => {
@@ -25,22 +25,28 @@ const createProps = (customProps = {}) => {
 
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
+  safeRefetchQuotes: jest.fn(),
+  setSwapsErrorKey: jest.fn(),
 });
 
-describe('BuildQuote', () => {
+describe('ViewQuote', () => {
   it('renders the component with initial props', () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const props = createProps();
-    const { getByText } = renderWithProvider(<BuildQuote {...props} />, store);
-    expect(getByText('Swap from')).toBeInTheDocument();
-    expect(getByText('Swap to')).toBeInTheDocument();
-    expect(getByText('ETH')).toBeInTheDocument();
-    expect(getByText('Slippage Tolerance')).toBeInTheDocument();
-    expect(getByText('2%')).toBeInTheDocument();
-    expect(getByText('3%')).toBeInTheDocument();
-    expect(getByText('Review Swap')).toBeInTheDocument();
+    const { getByText, getByTestId } = renderWithProvider(
+      <ViewQuote {...props} />,
+      store,
+    );
+    expect(getByText('New quotes in')).toBeInTheDocument();
+    expect(getByTestId('main-quote-summary__source-row')).toMatchSnapshot();
     expect(
-      document.querySelector('.slippage-buttons__button-group'),
+      getByTestId('main-quote-summary__exchange-rate-container'),
     ).toMatchSnapshot();
+    expect(
+      getByTestId('fee-card__savings-and-quotes-header'),
+    ).toMatchSnapshot();
+    expect(getByTestId('fee-card__row-header')).toMatchSnapshot();
+    expect(getByText('Back')).toBeInTheDocument();
+    expect(getByText('Swap')).toBeInTheDocument();
   });
 });
