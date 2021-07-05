@@ -15,7 +15,7 @@ import RadioGroup from '../../ui/radio-group/radio-group.component';
 import AdvancedGasControls from '../advanced-gas-controls/advanced-gas-controls.component';
 
 import { I18nContext } from '../../../contexts/i18n';
-import ActionableMessage from '../../../pages/swaps/actionable-message';
+import ActionableMessage from '../../ui/actionable-message/actionable-message';
 
 export default function EditGasDisplay({
   alwaysShowForm,

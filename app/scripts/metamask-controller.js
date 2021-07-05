@@ -325,6 +325,9 @@ export default class MetamaskController extends EventEmitter {
         this.keyringController.memStore,
       ),
       version,
+      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
     });
 
     this.txController = new TransactionController({

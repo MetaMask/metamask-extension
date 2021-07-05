@@ -1,6 +1,7 @@
 import React from 'react';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
+import GasTiming from '../gas-timing/gas-timing.component';
 import TransactionDetail from '.';
 
 export default {
@@ -20,7 +21,7 @@ const rows = [
     }
     detailText="0.00896 ETH"
     detailTotal="$15.73"
-    subTitle="Very likely in < 15 seconds"
+    subTitle={<GasTiming text="Very likely in < 15 seconds" />}
     subText={
       <>
         From <strong>$15.73 - $19.81</strong>
