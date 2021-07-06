@@ -23,14 +23,9 @@ import {
  */
 export function getMaximumGasTotalInHexWei({
   gasLimit = '0x0',
-  gasPrice = '0x0',
+  gasPrice,
   maxFeePerGas,
 } = {}) {
-  if (maxFeePerGas && gasPrice) {
-    throw new Error(
-      `getMaximumGasTotalInHexWei expects either gasPrice OR maxFeePerGas but both were provided`,
-    );
-  }
   if (maxFeePerGas) {
     return addHexPrefix(
       multiplyCurrencies(gasLimit, maxFeePerGas, {
@@ -38,6 +33,11 @@ export function getMaximumGasTotalInHexWei({
         multiplicandBase: 16,
         multiplierBase: 16,
       }),
+    );
+  }
+  if (!gasPrice) {
+    throw new Error(
+      'getMaximumGasTotalInHexWei requires gasPrice be provided to calculate legacy gas total',
     );
   }
   return addHexPrefix(
@@ -76,12 +76,33 @@ export function getMinimumGasTotalInHexWei({
   maxFeePerGas,
   baseFeePerGas,
 } = {}) {
-  if ((maxFeePerGas || maxPriorityFeePerGas || baseFeePerGas) && gasPrice) {
+  const isEIP1559Estimate = Boolean(
+    maxFeePerGas || maxPriorityFeePerGas || baseFeePerGas,
+  );
+  if (isEIP1559Estimate && gasPrice) {
     throw new Error(
       `getMinimumGasTotalInHexWei expects either gasPrice OR the EIP-1559 gas fields, but both were provided`,
     );
   }
-  if (gasPrice) {
+
+  if (isEIP1559Estimate === false && !gasPrice) {
+    throw new Error(
+      `getMinimumGasTotalInHexWei expects either gasPrice OR the EIP-1559 gas fields, but neither were provided`,
+    );
+  }
+
+  if (isEIP1559Estimate && !baseFeePerGas) {
+    throw new Error(
+      `getMinimumGasTotalInHexWei requires baseFeePerGas be provided when calculating EIP-1559 totals`,
+    );
+  }
+
+  if (isEIP1559Estimate && (!maxFeePerGas || !maxPriorityFeePerGas)) {
+    throw new Error(
+      `getMinimumGasTotalInHexWei requires maxFeePerGas and maxPriorityFeePerGas be provided when calculating EIP-1559 totals`,
+    );
+  }
+  if (isEIP1559Estimate === false) {
     return getMaximumGasTotalInHexWei({ gasLimit, gasPrice });
   }
   const minimumFeePerGas = addCurrencies(baseFeePerGas, maxPriorityFeePerGas, {
@@ -89,13 +110,6 @@ export function getMinimumGasTotalInHexWei({
     aBase: 16,
     bBase: 16,
   });
-  const minimum = addHexPrefix(
-    multiplyCurrencies(gasLimit, minimumFeePerGas, {
-      toNumericBase: 'hex',
-      multiplicandBase: 16,
-      multiplierBase: 16,
-    }),
-  );
 
   if (
     conversionGreaterThan(
@@ -105,5 +119,11 @@ export function getMinimumGasTotalInHexWei({
   ) {
     return getMaximumGasTotalInHexWei({ gasLimit, maxFeePerGas });
   }
-  return minimum;
+  return addHexPrefix(
+    multiplyCurrencies(gasLimit, minimumFeePerGas, {
+      toNumericBase: 'hex',
+      multiplicandBase: 16,
+      multiplierBase: 16,
+    }),
+  );
 }
