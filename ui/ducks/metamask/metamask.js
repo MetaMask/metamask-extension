@@ -288,6 +288,10 @@ export function isEIP1559Network(state) {
   return state.metamask.networkDetails.EIPS[1559] === true;
 }
 
+export function getGasEstimateType(state) {
+  return state.metamask.gasEstimateType;
+}
+
 export function getGasFeeEstimates(state) {
   return state.metamask.gasFeeEstimates;
 }

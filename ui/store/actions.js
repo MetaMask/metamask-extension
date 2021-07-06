@@ -1067,6 +1067,7 @@ export function updateMetamaskState(newState) {
         type: actionConstants.GAS_FEE_ESTIMATES_UPDATED,
         payload: {
           gasFeeEstimates: newState.gasFeeEstimates,
+          gasEstimateType: newState.gasEstimateType,
           isEIP1559Network: isEIP1559Network({ metamask: newState }),
         },
       });

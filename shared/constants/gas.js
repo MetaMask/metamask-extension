@@ -1,3 +1,4 @@
+import { GAS_ESTIMATE_TYPES as GasFeeControllerEstimateTypes } from '@metamask/controllers';
 import { addHexPrefix } from 'ethereumjs-util';
 
 const TWENTY_ONE_THOUSAND = 21000;
@@ -9,3 +10,5 @@ export const GAS_LIMITS = {
   // a base estimate for token transfers.
   BASE_TOKEN_ESTIMATE: addHexPrefix(ONE_HUNDRED_THOUSAND.toString(16)),
 };
+
+export const GAS_ESTIMATE_TYPES = { ...GasFeeControllerEstimateTypes };
