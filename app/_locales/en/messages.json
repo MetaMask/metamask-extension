@@ -1806,6 +1806,9 @@
   "settings": {
     "message": "Settings"
   },
+  "show": {
+    "message": "Show"
+  },
   "showAdvancedGasInline": {
     "message": "Advanced gas controls"
   },

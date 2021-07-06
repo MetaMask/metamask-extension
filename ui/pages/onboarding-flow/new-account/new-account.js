@@ -121,7 +121,7 @@ export default function NewAccount({ onSubmit }) {
                   setShowPassword(!showPassword);
                 }}
               >
-                {showPassword ? 'Hide' : 'Show'}
+                {showPassword ? t('hide') : t('show')}
               </button>
             }
           />
