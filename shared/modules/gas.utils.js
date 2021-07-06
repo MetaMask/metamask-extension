@@ -26,6 +26,11 @@ export function getMaximumGasTotalInHexWei({
   gasPrice = '0x0',
   maxFeePerGas,
 } = {}) {
+  if (maxFeePerGas && gasPrice) {
+    throw new Error(
+      `getMaximumGasTotalInHexWei expects either gasPrice OR maxFeePerGas but both were provided`,
+    );
+  }
   if (maxFeePerGas) {
     return addHexPrefix(
       multiplyCurrencies(gasLimit, maxFeePerGas, {
@@ -71,6 +76,11 @@ export function getMinimumGasTotalInHexWei({
   maxFeePerGas,
   baseFeePerGas,
 } = {}) {
+  if ((maxFeePerGas || maxPriorityFeePerGas || baseFeePerGas) && gasPrice) {
+    throw new Error(
+      `getMinimumGasTotalInHexWei expects either gasPrice OR the EIP-1559 gas fields, but both were provided`,
+    );
+  }
   if (gasPrice) {
     return getMaximumGasTotalInHexWei({ gasLimit, gasPrice });
   }
