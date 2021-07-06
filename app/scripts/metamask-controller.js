@@ -228,8 +228,8 @@ export default class MetamaskController extends EventEmitter {
       name: 'TokenListController',
     });
     this.tokenListController = new TokenListController({
-      chainId: this.networkController.getCurrentChainId(),
-      onNetworkStateChange: this.networkController.store.subscribe.bind(this.networkController.store),
+      chainId: hexToDecimal(this.networkController.getCurrentChainId()),
+      onNetworkStateChange: this._onModifiedNetworkStateChange.bind(this),
       messenger: tokenListMessenger,
       state: initState.tokenListController,
     });
@@ -373,7 +373,7 @@ export default class MetamaskController extends EventEmitter {
       preferences: this.preferencesController,
       network: this.networkController,
       keyringMemStore: this.keyringController.memStore,
-      tokenList: this.tokenListController
+      tokenList: this.tokenListController,
     });
 
     this.addressBookController = new AddressBookController(
@@ -658,7 +658,18 @@ export default class MetamaskController extends EventEmitter {
     );
     return providerProxy;
   }
-
+  _onModifiedNetworkStateChange = (cb) => {
+    this.networkController.store.subscribe(async (networkState) => {
+      const modifiedNetworkState = {
+        ...networkState,
+        provider: {
+          ...networkState.provider,
+          chainId: hexToDecimal(networkState.provider.chainId),
+        },
+      };
+      return await cb(modifiedNetworkState);
+    });
+  };
   /**
    * TODO:LegacyProvider: Delete
    * Constructor helper: initialize a public config store.
