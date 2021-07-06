@@ -7,13 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.8.0]
-### Uncategorized
-- Add some metrics events to the 3box controller ([#11447](https://github.com/MetaMask/metamask-extension/pull/11447))
-- Ensure transaction controller correctly estimates gas for special custom networks ([#11441](https://github.com/MetaMask/metamask-extension/pull/11441))
-- Add list of custom networks with special gas limit buffers ([#11435](https://github.com/MetaMask/metamask-extension/pull/11435))
-- Ensure that eth_estimateGas is called to estimate gas limit for simple sends on custom networks ([#11418](https://github.com/MetaMask/metamask-extension/pull/11418))
-- Refactor send page state management ([#10965](https://github.com/MetaMask/metamask-extension/pull/10965))
-- add erc-721 token detection and flag to disable sending ([#11210](https://github.com/MetaMask/metamask-extension/pull/11210))
+### Added
+- [#11435](https://github.com/MetaMask/metamask-extension/pull/11435): Add gas limit buffers for optimism network
+
+### Changed
+- [#11210](https://github.com/MetaMask/metamask-extension/pull/11210): Disable sending ERC-721 assets (NFTs)
+- [#11418](https://github.com/MetaMask/metamask-extension/pull/11418): Use network gas estimate for gas limits of simple sends on custom networks
 
 ## [9.7.1]
 ### Fixed
