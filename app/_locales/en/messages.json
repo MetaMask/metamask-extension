@@ -471,6 +471,9 @@
   "createAccount": {
     "message": "Create Account"
   },
+  "createNewWallet": {
+    "message": "Create a new wallet"
+  },
   "createPassword": {
     "message": "Create Password"
   },
@@ -1464,6 +1467,12 @@
   "passwordNotLongEnough": {
     "message": "Password not long enough"
   },
+  "passwordSetupDetails": {
+    "message": "This password will unlock your MetaMask wallet only on this device. MetaMask can not recover this password."
+  },
+  "passwordTermsWarning": {
+    "message": "I understand that MetaMask cannot recover this password for me. $1"
+  },
   "passwordsDontMatch": {
     "message": "Passwords Don't Match"
   },
@@ -1796,6 +1805,9 @@
   },
   "settings": {
     "message": "Settings"
+  },
+  "show": {
+    "message": "Show"
   },
   "showAdvancedGasInline": {
     "message": "Advanced gas controls"
