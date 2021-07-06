@@ -6,7 +6,7 @@ import {
   multiplyCurrencies,
   conversionGreaterThan,
   conversionLessThan,
-} from '../../helpers/utils/conversion-util';
+} from '../../../shared/modules/conversion.utils';
 
 import { calcTokenAmount } from '../../helpers/utils/token-util';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
