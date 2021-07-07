@@ -10,7 +10,7 @@ import {
   multiplyCurrencies,
   subtractCurrencies,
 } from '../../../shared/modules/conversion.utils';
-import { GAS_LIMITS } from '../../../shared/constants/gas';
+import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
@@ -414,13 +414,20 @@ export const initializeSendState = createAsyncThunk(
       // Instruct the background process that polling for gas prices should begin
       gasEstimatePollToken = await getGasFeeEstimatesAndStartPolling();
       const {
-        metamask: { gasFeeEstimates },
+        metamask: { gasFeeEstimates, gasEstimateType },
       } = thunkApi.getState();
 
-      basicEstimateStatus = BASIC_ESTIMATE_STATES.READY;
-      if (gasFeeEstimates.gasPrice) {
-        gasPrice = gasFeeEstimates.gasPrice;
+      if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+        gasPrice = getGasPriceInHexWei(gasFeeEstimates.medium);
+      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+        gasPrice = getGasPriceInHexWei(gasFeeEstimates.gasPrice);
+      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+        gasPrice = getGasPriceInHexWei(
+          gasFeeEstimates.medium.suggestedMaxFeePerGas,
+        );
       }
+
+      basicEstimateStatus = BASIC_ESTIMATE_STATES.READY;
     }
     // Set a basic gasLimit in the event that other estimation fails
     let gasLimit =
@@ -1089,10 +1096,20 @@ const slice = createSlice({
         // When the gasFeeController updates its gas fee estimates we need to
         // update and validate state based on those new values
         if (process.env.SHOW_EIP_1559_UI) {
-          const { gasFeeEstimates, isEIP1559Network } = action.payload;
-          if (isEIP1559Network === false && gasFeeEstimates.gasPrice) {
+          const { gasFeeEstimates, gasEstimateType } = action.payload;
+          let payload = null;
+          if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+            payload = getGasPriceInHexWei(
+              gasFeeEstimates.medium.suggestedMaxFeePerGas,
+            );
+          } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+            payload = getGasPriceInHexWei(gasFeeEstimates.medium);
+          } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+            payload = getGasPriceInHexWei(gasFeeEstimates.gasPrice);
+          }
+          if (payload) {
             slice.caseReducers.updateGasPrice(state, {
-              payload: gasFeeEstimates.gasPrice,
+              payload,
             });
           }
         }
