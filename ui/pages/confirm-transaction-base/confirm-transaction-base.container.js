@@ -21,7 +21,7 @@ import {
 } from '../../helpers/constants/error-keys';
 import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util';
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
-import { conversionGreaterThan } from '../../helpers/utils/conversion-util';
+import { conversionGreaterThan } from '../../../shared/modules/conversion.utils';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
 import {

@@ -9,7 +9,7 @@ import {
   conversionUtil,
   multiplyCurrencies,
   subtractCurrencies,
-} from '../../helpers/utils/conversion-util';
+} from '../../../shared/modules/conversion.utils';
 import { GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   CONTRACT_ADDRESS_ERROR,

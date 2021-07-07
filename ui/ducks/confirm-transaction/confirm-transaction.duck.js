@@ -15,7 +15,7 @@ import {
 
 import { getTokenData, sumHexes } from '../../helpers/utils/transactions.util';
 
-import { conversionUtil } from '../../helpers/utils/conversion-util';
+import { conversionUtil } from '../../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from '../../selectors/custom-gas';
 
 // Actions
