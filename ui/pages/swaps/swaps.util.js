@@ -775,7 +775,6 @@ export const isContractAddressValid = (
 export const getNetworkNameByChainId = (chainId) => {
   switch (chainId) {
     case MAINNET_CHAIN_ID:
-    case LOCALHOST_CHAIN_ID:
       return ETHEREUM;
     case BSC_CHAIN_ID:
       return BSC;
