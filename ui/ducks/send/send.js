@@ -40,6 +40,7 @@ import {
   getIsNonStandardEthChain,
 } from '../../selectors';
 import {
+  disconnectGasFeeEstimatePoller,
   displayWarning,
   estimateGas,
   getGasFeeEstimatesAndStartPolling,
@@ -1126,21 +1127,26 @@ const {
   useCustomGas,
   updateGasLimit,
   updateGasPrice,
-  resetSendState,
   validateRecipientUserInput,
   updateRecipientSearchMode,
 } = actions;
 
-export {
-  useDefaultGas,
-  useCustomGas,
-  updateGasLimit,
-  updateGasPrice,
-  resetSendState,
-};
+export { useDefaultGas, useCustomGas, updateGasLimit, updateGasPrice };
 
 // Action Creators
 
+export function resetSendState() {
+  return async (dispatch, getState) => {
+    const state = getState();
+    dispatch(actions.resetSendState());
+
+    if (state[name].gas.gasEstimatePollToken) {
+      await disconnectGasFeeEstimatePoller(
+        state[name].gas.gasEstimatePollToken,
+      );
+    }
+  };
+}
 /**
  * Updates the amount the user intends to send and performs side effects.
  * 1. If the current mode is MAX change to INPUT

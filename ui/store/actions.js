@@ -2735,6 +2735,14 @@ export function getGasFeeEstimatesAndStartPolling() {
   return promisifiedBackground.getGasFeeEstimatesAndStartPolling();
 }
 
+/**
+ * Informs the GasFeeController that a specific token is no longer requiring
+ * gas fee estimates. If all tokens unsubscribe the controller stops polling.
+ *
+ * @param {string} pollToken - Poll token received from calling
+ *  `getGasFeeEstimatesAndStartPolling`.
+ * @returns {void}
+ */
 export function disconnectGasFeeEstimatePoller(pollToken) {
   return promisifiedBackground.disconnectGasFeeEstimatePoller(pollToken);
 }
