@@ -781,7 +781,7 @@ export const getNetworkNameByChainId = (chainId) => {
     case POLYGON_CHAIN_ID:
       return POLYGON;
     default:
-      throw new Error('This network is not supported for token swaps');
+      throw new Error(`Cannot find network name for chainId: ${chainId}`);
   }
 };
 
