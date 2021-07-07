@@ -391,7 +391,7 @@ export const fetchSwapsLiveness = () => {
       log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
     }
     await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
-    return swapsLivenessForNetwork.swapsFeatureIsLive;
+    return swapsLivenessForNetwork;
   };
 };
 
