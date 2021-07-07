@@ -167,6 +167,7 @@ export default function Swap() {
     };
   }, []);
 
+  // eslint-disable-next-line
   useEffect(() => {
     if (isFeatureFlagLoaded) {
       fetchTokens(chainId, useNewSwapsApi)
@@ -187,7 +188,7 @@ export default function Swap() {
         dispatch(prepareToLeaveSwaps());
       };
     }
-  }, [dispatch, chainId, isFeatureFlagLoaded]);
+  }, [dispatch, chainId, isFeatureFlagLoaded, useNewSwapsApi]);
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
