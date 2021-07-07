@@ -73,6 +73,7 @@ const initialState = {
     topAggId: null,
     routeState: '',
     swapsFeatureIsLive: true,
+    useNewSwapsApi: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
   },
 };
@@ -119,15 +120,19 @@ export default class SwapsController {
   // Sets the refresh rate for quote updates from the MetaSwap API
   async _setSwapsQuoteRefreshTime() {
     const chainId = this._getCurrentChainId();
+    const { swapsState } = this.store.getState();
+
     // Default to fallback time unless API returns valid response
     let swapsQuoteRefreshTime = FALLBACK_QUOTE_REFRESH_TIME;
     try {
-      swapsQuoteRefreshTime = await this._fetchSwapsQuoteRefreshTime(chainId);
+      swapsQuoteRefreshTime = await this._fetchSwapsQuoteRefreshTime(
+        chainId,
+        swapsState.useNewSwapsApi,
+      );
     } catch (e) {
       console.error('Request for swaps quote refresh time failed: ', e);
     }
 
-    const { swapsState } = this.store.getState();
     this.store.updateState({
       swapsState: { ...swapsState, swapsQuoteRefreshTime },
     });
@@ -162,6 +167,9 @@ export default class SwapsController {
     isPolledRequest,
   ) {
     const { chainId } = fetchParamsMetaData;
+    const {
+      swapsState: { useNewSwapsApi },
+    } = this.store.getState();
 
     if (!fetchParams) {
       return null;
@@ -182,7 +190,10 @@ export default class SwapsController {
     this.indexOfNewestCallInFlight = indexOfCurrentCall;
 
     let [newQuotes] = await Promise.all([
-      this._fetchTradesInfo(fetchParams, fetchParamsMetaData),
+      this._fetchTradesInfo(fetchParams, {
+        ...fetchParamsMetaData,
+        useNewSwapsApi,
+      }),
       this._setSwapsQuoteRefreshTime(),
     ]);
 
@@ -449,22 +460,22 @@ export default class SwapsController {
     this.store.updateState({ swapsState: { ...swapsState, routeState } });
   }
 
-  setSwapsLiveness(swapsFeatureIsLive) {
+  setSwapsLiveness(swapsLiveness) {
     const { swapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: { ...swapsState, swapsFeatureIsLive },
+      swapsState: { ...swapsState, ...swapsLiveness },
     });
   }
 
   resetPostFetchState() {
     const { swapsState } = this.store.getState();
-
     this.store.updateState({
       swapsState: {
         ...initialState.swapsState,
         tokens: swapsState.tokens,
         fetchParams: swapsState.fetchParams,
         swapsFeatureIsLive: swapsState.swapsFeatureIsLive,
+        useNewSwapsApi: swapsState.useNewSwapsApi,
         swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
       },
     });
@@ -473,7 +484,6 @@ export default class SwapsController {
 
   resetSwapsState() {
     const { swapsState } = this.store.getState();
-
     this.store.updateState({
       swapsState: {
         ...initialState.swapsState,

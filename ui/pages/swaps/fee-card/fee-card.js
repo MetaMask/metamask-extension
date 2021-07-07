@@ -6,6 +6,7 @@ import {
   MAINNET_CHAIN_ID,
   BSC_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
+  POLYGON_CHAIN_ID,
 } from '../../../../shared/constants/network';
 
 export default function FeeCard({
@@ -38,6 +39,8 @@ export default function FeeCard({
         return t('networkNameEthereum');
       case BSC_CHAIN_ID:
         return t('networkNameBSC');
+      case POLYGON_CHAIN_ID:
+        return t('networkNamePolygon');
       case LOCALHOST_CHAIN_ID:
         return t('networkNameTestnet');
       default:

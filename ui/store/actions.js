@@ -2121,9 +2121,9 @@ export function setPendingTokens(pendingTokens) {
 
 // Swaps
 
-export function setSwapsLiveness(swapsFeatureIsLive) {
+export function setSwapsLiveness(swapsLiveness) {
   return async (dispatch) => {
-    await promisifiedBackground.setSwapsLiveness(swapsFeatureIsLive);
+    await promisifiedBackground.setSwapsLiveness(swapsLiveness);
     await forceUpdateMetamaskState(dispatch);
   };
 }

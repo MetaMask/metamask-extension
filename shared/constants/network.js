@@ -4,6 +4,9 @@ export const KOVAN = 'kovan';
 export const MAINNET = 'mainnet';
 export const GOERLI = 'goerli';
 export const NETWORK_TYPE_RPC = 'rpc';
+export const ETHEREUM = 'ethereum';
+export const POLYGON = 'polygon';
+export const BSC = 'bsc';
 
 export const MAINNET_NETWORK_ID = '1';
 export const ROPSTEN_NETWORK_ID = '3';
@@ -21,6 +24,7 @@ export const LOCALHOST_CHAIN_ID = '0x539';
 export const BSC_CHAIN_ID = '0x38';
 export const OPTIMISM_CHAIN_ID = '0xa';
 export const OPTIMISM_TESTNET_CHAIN_ID = '0x45';
+export const POLYGON_CHAIN_ID = '0x89';
 
 /**
  * The largest possible chain ID we can handle.
