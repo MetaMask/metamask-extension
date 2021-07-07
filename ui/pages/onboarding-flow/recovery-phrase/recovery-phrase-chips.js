@@ -23,8 +23,7 @@ export default function RecoveryPhraseChips({
   indicesToCheck,
 }) {
   const t = useI18nContext();
-  const hideSeedPhrase =
-    seedPhraseRevealed !== undefined && !seedPhraseRevealed;
+  const hideSeedPhrase = seedPhraseRevealed === false;
   return (
     <Box
       borderColor={COLORS.UI2}
