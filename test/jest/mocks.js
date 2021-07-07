@@ -60,20 +60,22 @@ export const TOKENS_GET_RESPONSE = [
   },
 ];
 
-export const FEATURE_FLAGS_RESPONSE = {
-  bsc: {
-    mobile_active: false,
-    extension_active: true,
-    fallback_to_v1: true,
-  },
-  ethereum: {
-    mobile_active: false,
-    extension_active: true,
-    fallback_to_v1: true,
-  },
-  polygon: {
-    mobile_active: false,
-    extension_active: true,
-    fallback_to_v1: false,
-  },
+export const createFeatureFlagsResponse = () => {
+  return {
+    bsc: {
+      mobile_active: false,
+      extension_active: true,
+      fallback_to_v1: true,
+    },
+    ethereum: {
+      mobile_active: false,
+      extension_active: true,
+      fallback_to_v1: true,
+    },
+    polygon: {
+      mobile_active: false,
+      extension_active: true,
+      fallback_to_v1: false,
+    },
+  };
 };

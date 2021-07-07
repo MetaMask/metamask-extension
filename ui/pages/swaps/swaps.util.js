@@ -50,8 +50,13 @@ const CACHE_REFRESH_FIVE_MINUTES = 300000;
 
 const SWAPS_API_V2_BASE_URL = 'https://api2.metaswap.codefi.network';
 
+/**
+ * @param {string} type Type of an API call, e.g. "tokens"
+ * @param {string} chainId
+ * @returns string
+ */
 const getBaseUrlForApiV2 = (type, chainId) => {
-  const noNetworkTypes = ['refreshTime'];
+  const noNetworkTypes = ['refreshTime']; // These types don't need network info in the URL.
   if (noNetworkTypes.includes(type)) {
     return SWAPS_API_V2_BASE_URL;
   }

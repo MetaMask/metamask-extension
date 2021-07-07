@@ -1,5 +1,6 @@
 import nock from 'nock';
 
+import { MOCKS } from '../../../test/jest';
 import { setSwapsLiveness } from '../../store/actions';
 import { setStorageItem } from '../../helpers/utils/storage-helpers';
 import * as swaps from './swaps';
@@ -28,26 +29,6 @@ describe('Ducks - Swaps', () => {
         'cachedFetch:https://api2.metaswap.codefi.network/featureFlags',
         null,
       );
-    };
-
-    const createFeatureFlagsResponse = () => {
-      return {
-        bsc: {
-          mobile_active: false,
-          extension_active: true,
-          fallback_to_v1: true,
-        },
-        ethereum: {
-          mobile_active: false,
-          extension_active: true,
-          fallback_to_v1: true,
-        },
-        polygon: {
-          mobile_active: false,
-          extension_active: true,
-          fallback_to_v1: false,
-        },
-      };
     };
 
     afterEach(() => {
@@ -82,7 +63,7 @@ describe('Ducks - Swaps', () => {
         swapsFeatureIsLive: true,
         useNewSwapsApi: true,
       };
-      const featureFlagsResponse = createFeatureFlagsResponse();
+      const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
       });
@@ -102,7 +83,7 @@ describe('Ducks - Swaps', () => {
         swapsFeatureIsLive: true,
         useNewSwapsApi: false,
       };
-      const featureFlagsResponse = createFeatureFlagsResponse();
+      const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
       featureFlagsResponse.ethereum.extension_active = false;
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
@@ -123,7 +104,7 @@ describe('Ducks - Swaps', () => {
         swapsFeatureIsLive: false,
         useNewSwapsApi: false,
       };
-      const featureFlagsResponse = createFeatureFlagsResponse();
+      const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
       featureFlagsResponse.ethereum.extension_active = false;
       featureFlagsResponse.ethereum.fallback_to_v1 = false;
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
@@ -164,7 +145,7 @@ describe('Ducks - Swaps', () => {
         swapsFeatureIsLive: true,
         useNewSwapsApi: true,
       };
-      const featureFlagsResponse = createFeatureFlagsResponse();
+      const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
       });
