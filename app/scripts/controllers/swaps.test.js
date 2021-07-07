@@ -659,6 +659,7 @@ describe('SwapsController', function () {
         const quotes = await swapsController.fetchAndSetQuotes(undefined);
         assert.strictEqual(quotes, null);
       });
+
       it('calls fetchTradesInfo with the given fetchParams and returns the correct quotes', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
         fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
@@ -696,15 +697,15 @@ describe('SwapsController', function () {
           metaMaskFeeInEth: '0.5050505050505050505',
           ethValueOfTokens: '50',
         });
-
         assert.strictEqual(
-          fetchTradesInfoStub.calledOnceWithExactly(
-            MOCK_FETCH_PARAMS,
-            MOCK_FETCH_METADATA,
-          ),
+          fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS, {
+            ...MOCK_FETCH_METADATA,
+            useNewSwapsApi: false,
+          }),
           true,
         );
       });
+
       it('performs the allowance check', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
         fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
@@ -879,12 +880,14 @@ describe('SwapsController', function () {
         const tokens = 'test';
         const fetchParams = 'test';
         const swapsFeatureIsLive = false;
+        const useNewSwapsApi = false;
         const swapsQuoteRefreshTime = 0;
         swapsController.store.updateState({
           swapsState: {
             tokens,
             fetchParams,
             swapsFeatureIsLive,
+            useNewSwapsApi,
             swapsQuoteRefreshTime,
           },
         });
