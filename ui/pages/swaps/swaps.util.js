@@ -400,7 +400,6 @@ export async function fetchTopAssets(chainId, useNewSwapsApi) {
   return topAssetsMap;
 }
 
-// We only use this function with the old API. With the new API we call "fetchSwapsFeatureFlags"
 export async function fetchSwapsFeatureLiveness(chainId) {
   const status = await fetchWithCache(
     getBaseApi('featureFlag', chainId),
