@@ -48,19 +48,24 @@ const TOKEN_TRANSFER_LOG_TOPIC_HASH =
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 
-const SWAPS_NEW_API_URL = 'https://api2.metaswap.codefi.network/networks';
+const SWAPS_API_V2_BASE_URL = 'https://api2.metaswap.codefi.network';
 
-const SWAPS_FEATURE_FLAGS_API_URL =
-  'https://api2.metaswap.codefi.network/featureFlags';
+const getBaseUrlForApiV2 = (type, chainId) => {
+  const noNetworkTypes = ['refreshTime'];
+  if (noNetworkTypes.includes(type)) {
+    return SWAPS_API_V2_BASE_URL;
+  }
+  const chainIdDecimal = parseInt(chainId, 16);
+  return `${SWAPS_API_V2_BASE_URL}/networks/${chainIdDecimal}`;
+};
 
 const getBaseApi = function (
   type,
   chainId = MAINNET_CHAIN_ID,
   useNewSwapsApi = false,
 ) {
-  const chainIdDecimal = parseInt(chainId, 16);
   const baseUrl = useNewSwapsApi
-    ? `${SWAPS_NEW_API_URL}/${chainIdDecimal}`
+    ? getBaseUrlForApiV2(type, chainId)
     : METASWAP_CHAINID_API_HOST_MAP[chainId];
   switch (type) {
     case 'trade':
@@ -402,7 +407,7 @@ export async function fetchSwapsFeatureLiveness(chainId) {
 
 export async function fetchSwapsFeatureFlags() {
   const response = await fetchWithCache(
-    SWAPS_FEATURE_FLAGS_API_URL,
+    `${SWAPS_API_V2_BASE_URL}/featureFlags`,
     { method: 'GET' },
     { cacheRefreshTime: 600000 },
   );
