@@ -6,6 +6,9 @@ import {
   METASWAP_CHAINID_API_HOST_MAP,
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
   ETH_WETH_CONTRACT_ADDRESS,
+  ETHEREUM,
+  POLYGON,
+  BSC,
 } from '../../../shared/constants/swaps';
 import {
   isSwapsDefaultTokenAddress,
@@ -18,9 +21,6 @@ import {
   BSC_CHAIN_ID,
   POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
-  ETHEREUM,
-  POLYGON,
-  BSC,
 } from '../../../shared/constants/network';
 import { SECOND } from '../../../shared/constants/time';
 import {

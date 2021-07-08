@@ -8,13 +8,13 @@ import {
   POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
   RINKEBY_CHAIN_ID,
-  ETHEREUM,
-  POLYGON,
-  BSC,
 } from '../../../shared/constants/network';
 import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
   ETH_WETH_CONTRACT_ADDRESS,
+  ETHEREUM,
+  POLYGON,
+  BSC,
 } from '../../../shared/constants/swaps';
 import {
   TOKENS,
