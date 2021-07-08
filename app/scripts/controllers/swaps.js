@@ -462,8 +462,9 @@ export default class SwapsController {
 
   setSwapsLiveness(swapsLiveness) {
     const { swapsState } = this.store.getState();
+    const { swapsFeatureIsLive, useNewSwapsApi } = swapsLiveness;
     this.store.updateState({
-      swapsState: { ...swapsState, ...swapsLiveness },
+      swapsState: { ...swapsState, swapsFeatureIsLive, useNewSwapsApi },
     });
   }
 
