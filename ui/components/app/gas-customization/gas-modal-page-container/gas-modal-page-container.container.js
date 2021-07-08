@@ -220,11 +220,11 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setCustomGasLimit(addHexPrefix(gasLimit.toString(16))));
       return dispatch(updateTransaction(updatedTx));
     },
-    createRetryTransaction: (txId, gasPrice, gasLimit) => {
-      return dispatch(createRetryTransaction(txId, gasPrice, gasLimit));
+    createRetryTransaction: (txId, customGasSettings) => {
+      return dispatch(createRetryTransaction(txId, customGasSettings));
     },
-    createSpeedUpTransaction: (txId, gasPrice, gasLimit) => {
-      return dispatch(createSpeedUpTransaction(txId, gasPrice, gasLimit));
+    createSpeedUpTransaction: (txId, customGasSettings) => {
+      return dispatch(createSpeedUpTransaction(txId, customGasSettings));
     },
     hideSidebar: () => dispatch(hideSidebar()),
     fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
@@ -264,7 +264,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       if (ownProps.onSubmit) {
         dispatchHideSidebar();
         dispatchCancelAndClose();
-        ownProps.onSubmit(gasLimit, gasPrice);
+        ownProps.onSubmit({ gasLimit, gasPrice });
         return;
       }
       if (isConfirm) {
@@ -279,11 +279,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatchUpdateConfirmTxGasAndCalculate(gasLimit, gasPrice, updatedTx);
         dispatchHideModal();
       } else if (isSpeedUp) {
-        dispatchCreateSpeedUpTransaction(txId, gasPrice, gasLimit);
+        dispatchCreateSpeedUpTransaction(txId, { gasPrice, gasLimit });
         dispatchHideSidebar();
         dispatchCancelAndClose();
       } else if (isRetry) {
-        dispatchCreateRetryTransaction(txId, gasPrice, gasLimit);
+        dispatchCreateRetryTransaction(txId, { gasPrice, gasLimit });
         dispatchHideSidebar();
         dispatchCancelAndClose();
       } else {

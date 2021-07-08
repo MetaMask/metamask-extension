@@ -739,11 +739,11 @@ describe('Transaction Controller', function () {
       const addTransactionArgs = addTransactionSpy.getCall(0).args[0];
       assert.deepEqual(addTransactionArgs.txParams, expectedTxParams);
 
-      const { lastGasPrice, type } = addTransactionArgs;
+      const { previousGasParams, type } = addTransactionArgs;
       assert.deepEqual(
-        { lastGasPrice, type },
+        { gasPrice: previousGasParams.gasPrice, type },
         {
-          lastGasPrice: '0xa',
+          gasPrice: '0xa',
           type: TRANSACTION_TYPES.RETRY,
         },
       );
@@ -762,11 +762,11 @@ describe('Transaction Controller', function () {
 
       assert.deepEqual(result.txParams, expectedTxParams);
 
-      const { lastGasPrice, type } = result;
+      const { previousGasParams, type } = result;
       assert.deepEqual(
-        { lastGasPrice, type },
+        { gasPrice: previousGasParams.gasPrice, type },
         {
-          lastGasPrice: '0xa',
+          gasPrice: '0xa',
           type: TRANSACTION_TYPES.RETRY,
         },
       );

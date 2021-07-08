@@ -1972,27 +1972,40 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
 
   /**
-   * Allows a user to attempt to cancel a previously submitted transaction by creating a new
-   * transaction.
-   * @param {number} originalTxId - the id of the txMeta that you want to attempt to cancel
-   * @param {string} [customGasPrice] - the hex value to use for the cancel transaction
+   * Allows a user to attempt to cancel a previously submitted transaction
+   * by creating a new transaction.
+   * @param {number} originalTxId - the id of the txMeta that you want to
+   *  attempt to cancel
+   * @param {import(
+   *  './controllers/transactions'
+   * ).CustomGasSettings} [customGasSettings] - overrides to use for gas params
+   *  instead of allowing this method to generate them
    * @returns {Object} MetaMask state
    */
-  async createCancelTransaction(originalTxId, customGasPrice, customGasLimit) {
+  async createCancelTransaction(originalTxId, customGasSettings) {
     await this.txController.createCancelTransaction(
       originalTxId,
-      customGasPrice,
-      customGasLimit,
+      customGasSettings,
     );
     const state = await this.getState();
     return state;
   }
 
-  async createSpeedUpTransaction(originalTxId, customGasPrice, customGasLimit) {
+  /**
+   * Allows a user to attempt to speed up a previously submitted transaction
+   * by creating a new transaction.
+   * @param {number} originalTxId - the id of the txMeta that you want to
+   *  attempt to speed up
+   * @param {import(
+   *  './controllers/transactions'
+   * ).CustomGasSettings} [customGasSettings] - overrides to use for gas params
+   *  instead of allowing this method to generate them
+   * @returns {Object} MetaMask state
+   */
+  async createSpeedUpTransaction(originalTxId, customGasSettings) {
     await this.txController.createSpeedUpTransaction(
       originalTxId,
-      customGasPrice,
-      customGasLimit,
+      customGasSettings,
     );
     const state = await this.getState();
     return state;
