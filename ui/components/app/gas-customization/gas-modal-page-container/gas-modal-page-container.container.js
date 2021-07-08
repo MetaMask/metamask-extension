@@ -264,7 +264,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       if (ownProps.onSubmit) {
         dispatchHideSidebar();
         dispatchCancelAndClose();
-        console.log('here');
         ownProps.onSubmit({ gasLimit, gasPrice });
         return;
       }
