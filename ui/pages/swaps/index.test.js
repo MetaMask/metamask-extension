@@ -49,7 +49,7 @@ describe('Swap', () => {
 
     featureFlagsNock = nock(CONSTANTS.METASWAP_API_V2_BASE_URL)
       .get('/featureFlags')
-      .reply(200, MOCKS.FEATURE_FLAGS_RESPONSE);
+      .reply(200, MOCKS.createFeatureFlagsResponse());
   });
 
   afterAll(() => {
