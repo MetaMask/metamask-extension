@@ -14,6 +14,7 @@ export default function EditGasPopover({
   popoverTitle,
   confirmButtonText,
   editGasDisplayProps,
+  onClose,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -27,12 +28,14 @@ export default function EditGasPopover({
    * the modal in testing
    */
   const closePopover = useCallback(() => {
-    if (showSidebar) {
+    if (onClose) {
+      onClose();
+    } else if (showSidebar) {
       dispatch(hideSidebar());
     } else {
       dispatch(hideModal());
     }
-  }, [showSidebar, dispatch]);
+  }, [showSidebar, onClose, dispatch]);
 
   const title = showEducationContent
     ? t('editGasEducationModalTitle')
@@ -73,6 +76,7 @@ EditGasPopover.propTypes = {
   editGasDisplayProps: PropTypes.object,
   confirmButtonText: PropTypes.string,
   showEducationButton: PropTypes.bool,
+  onClose: PropTypes.func,
 };
 
 EditGasPopover.defaultProps = {
