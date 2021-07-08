@@ -1,5 +1,6 @@
 .edit-gas-display {
-  & .actionable-message--warning {
+  & .actionable-message--warning,
+  & .actionable-message--error {
     margin-top: 0;
   }
 
