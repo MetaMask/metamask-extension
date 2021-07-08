@@ -1456,7 +1456,7 @@ describe('Send Slice', () => {
         );
         expect(actionResult[0].payload).toStrictEqual('');
         expect(actionResult[1].type).toStrictEqual('send/updateRecipient');
-        expect(actionResult[2].type).toStrictEqual('ENS/resetResolution');
+        expect(actionResult[2].type).toStrictEqual('ENS/resetEnsResolution');
         expect(actionResult[3].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );

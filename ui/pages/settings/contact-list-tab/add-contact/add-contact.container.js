@@ -7,7 +7,11 @@ import {
   qrCodeDetected,
 } from '../../../../store/actions';
 import { getQrCodeData } from '../../../../ducks/app/app';
-import { getEnsError, getEnsResolution, resetEnsResolution } from '../../../../ducks/ens';
+import {
+  getEnsError,
+  getEnsResolution,
+  resetEnsResolution,
+} from '../../../../ducks/ens';
 import AddContact from './add-contact.component';
 
 const mapStateToProps = (state) => {
