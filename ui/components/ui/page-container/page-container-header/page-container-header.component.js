@@ -61,6 +61,7 @@ export default class PageContainerHeader extends Component {
         className={classnames('page-container__header', className, {
           'page-container__header--no-padding-bottom': Boolean(tabs),
         })}
+        data-testid="page-container__header"
       >
         {this.renderHeaderRow()}
 

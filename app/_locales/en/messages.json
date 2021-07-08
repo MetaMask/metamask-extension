@@ -322,6 +322,9 @@
   "confirmSecretBackupPhrase": {
     "message": "Confirm your Secret Backup Phrase"
   },
+  "confirmSeedPhrase": {
+    "message": "Confirm Seed Phrase"
+  },
   "confirmed": {
     "message": "Confirmed"
   },
@@ -470,6 +473,9 @@
   },
   "createAccount": {
     "message": "Create Account"
+  },
+  "createNewWallet": {
+    "message": "Create a new wallet"
   },
   "createPassword": {
     "message": "Create Password"
@@ -646,6 +652,9 @@
   },
   "editGasMedium": {
     "message": "Medium"
+  },
+  "editGasPriceTooltip": {
+    "message": "This network uses an older version of gas pricing which requires a “Gas price” field. Gas price is the maximum amount you are willing to pay per unit of gas."
   },
   "editGasTitle": {
     "message": "Edit gas fee"
@@ -1134,6 +1143,10 @@
   "makeAnotherSwap": {
     "message": "Create a new swap"
   },
+  "makeSureNoOneWatching": {
+    "message": "Make sure no one is watching your screen",
+    "description": "Warning to users to be care while creating and saving their new seed phrase"
+  },
   "max": {
     "message": "Max"
   },
@@ -1461,6 +1474,12 @@
   "passwordNotLongEnough": {
     "message": "Password not long enough"
   },
+  "passwordSetupDetails": {
+    "message": "This password will unlock your MetaMask wallet only on this device. MetaMask can not recover this password."
+  },
+  "passwordTermsWarning": {
+    "message": "I understand that MetaMask cannot recover this password for me. $1"
+  },
   "passwordsDontMatch": {
     "message": "Passwords Don't Match"
   },
@@ -1684,11 +1703,20 @@
   "secretPhrase": {
     "message": "Enter your secret phrase here to restore your vault."
   },
+  "secureWallet": {
+    "message": "Secure Wallet"
+  },
   "securityAndPrivacy": {
     "message": "Security & Privacy"
   },
   "securitySettingsDescription": {
     "message": "Privacy settings and wallet Secret Recovery Phrase"
+  },
+  "seedPhraseConfirm": {
+    "message": "Confirm Secret Recovery Phrase"
+  },
+  "seedPhraseEnterMissingWords": {
+    "message": "Confirm Secret Recovery Phrase"
   },
   "seedPhraseIntroSidebarBulletFour": {
     "message": "Write down and store in multiple secret places."
@@ -1734,6 +1762,12 @@
   },
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
+  },
+  "seedPhraseWriteDownDetails": {
+    "message": "Write down this 12-word Secret Recovery Phrase and save it in a place that you trust and only you can access."
+  },
+  "seedPhraseWriteDownHeader": {
+    "message": "Write down your Secret Recovery Phrase"
   },
   "selectAHigherGasFee": {
     "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
@@ -1793,6 +1827,9 @@
   },
   "settings": {
     "message": "Settings"
+  },
+  "show": {
+    "message": "Show"
   },
   "showAdvancedGasInline": {
     "message": "Advanced gas controls"

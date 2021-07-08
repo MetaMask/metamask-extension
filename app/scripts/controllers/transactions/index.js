@@ -16,6 +16,7 @@ import {
   bnToHex,
   BnMultiplyByFraction,
   addHexPrefix,
+  getChainType,
 } from '../../lib/util';
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/helpers/constants/error-keys';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/pages/swaps/swaps.util';
@@ -29,6 +30,7 @@ import {
   HARDFORKS,
   MAINNET,
   NETWORK_TYPE_RPC,
+  CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
 } from '../../../../shared/constants/network';
 import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
 import TransactionStateManager from './tx-state-manager';
@@ -423,11 +425,16 @@ export default class TransactionController extends EventEmitter {
    * @returns {Promise<Object>} Object containing the default gas limit, or the simulation failure object
    */
   async _getDefaultGasLimit(txMeta, getCodeResponse) {
+    const chainId = this._getCurrentChainId();
+    const customNetworkGasBuffer = CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId];
+    const chainType = getChainType(chainId);
+
     if (txMeta.txParams.gas) {
       return {};
     } else if (
       txMeta.txParams.to &&
-      txMeta.type === TRANSACTION_TYPES.SENT_ETHER
+      txMeta.type === TRANSACTION_TYPES.SENT_ETHER &&
+      chainType !== 'custom'
     ) {
       // if there's data in the params, but there's no contract code, it's not a valid transaction
       if (txMeta.txParams.data) {
@@ -456,6 +463,7 @@ export default class TransactionController extends EventEmitter {
     const gasLimit = this.txGasUtil.addGasBuffer(
       addHexPrefix(estimatedGasHex),
       blockGasLimit,
+      customNetworkGasBuffer,
     );
     return { gasLimit, simulationFails };
   }

@@ -10,7 +10,7 @@ import {
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
 
-import { conversionUtil } from '../helpers/utils/conversion-util';
+import { conversionUtil } from '../../shared/modules/conversion.utils';
 
 /**
  * Defines the shape of the options parameter for useCurrencyDisplay
