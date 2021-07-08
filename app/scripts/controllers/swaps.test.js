@@ -135,7 +135,6 @@ const EMPTY_INIT_STATE = {
 
 const sandbox = sinon.createSandbox();
 const fetchTradesInfoStub = sandbox.stub();
-const fetchSwapsFeatureLivenessStub = sandbox.stub();
 const fetchSwapsQuoteRefreshTimeStub = sandbox.stub();
 const getCurrentChainIdStub = sandbox.stub();
 getCurrentChainIdStub.returns(MAINNET_CHAIN_ID);
@@ -151,7 +150,6 @@ describe('SwapsController', function () {
       getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
       tokenRatesStore: MOCK_TOKEN_RATES_STORE,
       fetchTradesInfo: fetchTradesInfoStub,
-      fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
       fetchSwapsQuoteRefreshTime: fetchSwapsQuoteRefreshTimeStub,
       getCurrentChainId: getCurrentChainIdStub,
     });
@@ -202,7 +200,6 @@ describe('SwapsController', function () {
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
-        fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
@@ -227,7 +224,6 @@ describe('SwapsController', function () {
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
-        fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
@@ -252,7 +248,6 @@ describe('SwapsController', function () {
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
-        fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;

@@ -81,8 +81,6 @@ const getBaseApi = function (
       return `${baseUrl}/token`;
     case 'topAssets':
       return `${baseUrl}/topAssets`;
-    case 'featureFlag':
-      return `${baseUrl}/featureFlag`;
     case 'aggregatorMetadata':
       return `${baseUrl}/aggregatorMetadata`;
     case 'gasPrices':
@@ -398,15 +396,6 @@ export async function fetchTopAssets(chainId, useNewSwapsApi) {
     return _topAssetsMap;
   }, {});
   return topAssetsMap;
-}
-
-export async function fetchSwapsFeatureLiveness(chainId) {
-  const status = await fetchWithCache(
-    getBaseApi('featureFlag', chainId),
-    { method: 'GET' },
-    { cacheRefreshTime: 600000 },
-  );
-  return status?.active;
 }
 
 export async function fetchSwapsFeatureFlags() {

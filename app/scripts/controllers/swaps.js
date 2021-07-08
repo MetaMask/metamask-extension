@@ -19,7 +19,6 @@ import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils'
 
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
-  fetchSwapsFeatureLiveness as defaultFetchSwapsFeatureLiveness,
   fetchSwapsQuoteRefreshTime as defaultFetchSwapsQuoteRefreshTime,
 } from '../../../ui/pages/swaps/swaps.util';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
@@ -86,7 +85,6 @@ export default class SwapsController {
     getProviderConfig,
     tokenRatesStore,
     fetchTradesInfo = defaultFetchTradesInfo,
-    fetchSwapsFeatureLiveness = defaultFetchSwapsFeatureLiveness,
     fetchSwapsQuoteRefreshTime = defaultFetchSwapsQuoteRefreshTime,
     getCurrentChainId,
   }) {
@@ -95,7 +93,6 @@ export default class SwapsController {
     });
 
     this._fetchTradesInfo = fetchTradesInfo;
-    this._fetchSwapsFeatureLiveness = fetchSwapsFeatureLiveness;
     this._fetchSwapsQuoteRefreshTime = fetchSwapsQuoteRefreshTime;
     this._getCurrentChainId = getCurrentChainId;
 
