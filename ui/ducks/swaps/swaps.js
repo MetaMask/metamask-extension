@@ -412,7 +412,7 @@ export const fetchQuotesAndSetQuoteState = (
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
         swapsFeatureFlags,
-        getCurrentChainId(getState()),
+        chainId,
       );
     } catch (error) {
       log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
@@ -624,7 +624,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
         swapsFeatureFlags,
-        getCurrentChainId(getState()),
+        chainId,
       );
     } catch (error) {
       log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
