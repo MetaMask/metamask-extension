@@ -12,6 +12,7 @@ import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import FeeCard from '../fee-card';
+import EditGasPopover from '../../../components/app/edit-gas-popover/edit-gas-popover.component';
 import {
   FALLBACK_GAS_MULTIPLIER,
   getQuotes,
@@ -94,6 +95,7 @@ export default function ViewQuote() {
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false);
   const [warningHidden, setWarningHidden] = useState(false);
   const [originalApproveAmount, setOriginalApproveAmount] = useState(null);
+  const [showEditGasPopover, setShowEditGasPopover] = useState(false);
 
   const [
     acknowledgedPriceDifference,
@@ -474,26 +476,29 @@ export default function ViewQuote() {
     extraInfoRowLabel = t('aggregatorFeeCost');
   }
 
-  const onFeeCardMaxRowClick = () =>
-    dispatch(
-      showModal({
-        name: 'CUSTOMIZE_METASWAP_GAS',
-        value: tradeValue,
-        customGasLimitMessage: approveGas
-          ? t('extraApprovalGas', [hexToDecimal(approveGas)])
-          : '',
-        customTotalSupplement: approveGasTotal,
-        extraInfoRow: extraInfoRowLabel
-          ? {
-              label: extraInfoRowLabel,
-              value: `${extraNetworkFeeTotalInEth} ${nativeCurrencySymbol}`,
-            }
-          : null,
-        initialGasPrice: gasPrice,
-        initialGasLimit: maxGasLimit,
-        minimumGasLimit: new BigNumber(nonCustomMaxGasLimit, 16).toNumber(),
-      }),
-    );
+  const onFeeCardMaxRowClick = () => {
+    process.env.SHOW_EIP_1559_UI
+      ? setShowEditGasPopover(true)
+      : dispatch(
+          showModal({
+            name: 'CUSTOMIZE_METASWAP_GAS',
+            value: tradeValue,
+            customGasLimitMessage: approveGas
+              ? t('extraApprovalGas', [hexToDecimal(approveGas)])
+              : '',
+            customTotalSupplement: approveGasTotal,
+            extraInfoRow: extraInfoRowLabel
+              ? {
+                  label: extraInfoRowLabel,
+                  value: `${extraNetworkFeeTotalInEth} ${nativeCurrencySymbol}`,
+                }
+              : null,
+            initialGasPrice: gasPrice,
+            initialGasLimit: maxGasLimit,
+            minimumGasLimit: new BigNumber(nonCustomMaxGasLimit, 16).toNumber(),
+          }),
+        );
+  };
 
   const tokenApprovalTextComponent = (
     <span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">
@@ -590,6 +595,10 @@ export default function ViewQuote() {
   const isShowingWarning =
     showInsufficientWarning || shouldShowPriceDifferenceWarning;
 
+  const onCloseEditGasPopover = () => {
+    setShowEditGasPopover(false);
+  };
+
   return (
     <div className="view-quote">
       <div
@@ -607,6 +616,16 @@ export default function ViewQuote() {
             onQuoteDetailsIsOpened={quoteDetailsOpened}
           />
         )}
+
+        {showEditGasPopover && process.env.SHOW_EIP_1559_UI && (
+          <EditGasPopover
+            popoverTitle={t('speedUpPopoverTitle')}
+            editGasDisplayProps={{ alwaysShowForm: true, type: 'speed-up' }}
+            confirmButtonText={t('submit')}
+            onClose={onCloseEditGasPopover}
+          />
+        )}
+
         <div
           className={classnames('view-quote__warning-wrapper', {
             'view-quote__warning-wrapper--thin': !isShowingWarning,
