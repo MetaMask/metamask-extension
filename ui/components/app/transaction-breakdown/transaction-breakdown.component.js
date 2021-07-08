@@ -25,6 +25,7 @@ export default class TransactionBreakdown extends PureComponent {
     totalInHex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     baseFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     priorityFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    effectiveGasPrice: PropTypes.number,
   };
 
   static defaultProps = {
@@ -46,6 +47,7 @@ export default class TransactionBreakdown extends PureComponent {
       isTokenApprove,
       baseFee,
       priorityFee,
+      effectiveGasPrice,
     } = this.props;
     return (
       <div className={classnames('transaction-breakdown', className)}>
@@ -137,6 +139,24 @@ export default class TransactionBreakdown extends PureComponent {
             )}
           </TransactionBreakdownRow>
         )}
+        <TransactionBreakdownRow
+          title={t('transactionHistoryEffectiveGasPrice')}
+        >
+          <div>
+            <UserPreferencedCurrencyDisplay
+              className="transaction-breakdown__value transaction-breakdown__value--effective-gas-price"
+              type={PRIMARY}
+              value={effectiveGasPrice}
+            />
+            {showFiat && (
+              <UserPreferencedCurrencyDisplay
+                className="transaction-breakdown__value"
+                type={SECONDARY}
+                value={effectiveGasPrice}
+              />
+            )}
+          </div>
+        </TransactionBreakdownRow>
         <TransactionBreakdownRow title={t('total')}>
           <div>
             <UserPreferencedCurrencyDisplay
