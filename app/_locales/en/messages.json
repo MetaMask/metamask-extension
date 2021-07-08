@@ -322,6 +322,9 @@
   "confirmSecretBackupPhrase": {
     "message": "Confirm your Secret Backup Phrase"
   },
+  "confirmSeedPhrase": {
+    "message": "Confirm Seed Phrase"
+  },
   "confirmed": {
     "message": "Confirmed"
   },
@@ -1140,6 +1143,10 @@
   "makeAnotherSwap": {
     "message": "Create a new swap"
   },
+  "makeSureNoOneWatching": {
+    "message": "Make sure no one is watching your screen",
+    "description": "Warning to users to be care while creating and saving their new seed phrase"
+  },
   "max": {
     "message": "Max"
   },
@@ -1696,11 +1703,20 @@
   "secretPhrase": {
     "message": "Enter your secret phrase here to restore your vault."
   },
+  "secureWallet": {
+    "message": "Secure Wallet"
+  },
   "securityAndPrivacy": {
     "message": "Security & Privacy"
   },
   "securitySettingsDescription": {
     "message": "Privacy settings and wallet Secret Recovery Phrase"
+  },
+  "seedPhraseConfirm": {
+    "message": "Confirm Secret Recovery Phrase"
+  },
+  "seedPhraseEnterMissingWords": {
+    "message": "Confirm Secret Recovery Phrase"
   },
   "seedPhraseIntroSidebarBulletFour": {
     "message": "Write down and store in multiple secret places."
@@ -1746,6 +1762,12 @@
   },
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
+  },
+  "seedPhraseWriteDownDetails": {
+    "message": "Write down this 12-word Secret Recovery Phrase and save it in a place that you trust and only you can access."
+  },
+  "seedPhraseWriteDownHeader": {
+    "message": "Write down your Secret Recovery Phrase"
   },
   "selectAHigherGasFee": {
     "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
