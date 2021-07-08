@@ -49,13 +49,18 @@ const TOKEN_TRANSFER_LOG_TOPIC_HASH =
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 
 const SWAPS_API_V2_BASE_URL = 'https://api2.metaswap.codefi.network';
+const GAS_API_BASE_URL = 'https://api2.metaswap.codefi.network';
 
 /**
  * @param {string} type Type of an API call, e.g. "tokens"
  * @param {string} chainId
  * @returns string
  */
-const getBaseUrlForApiV2 = (type, chainId) => {
+const getBaseUrlForNewSwapsApi = (type, chainId) => {
+  const gasApiTypes = ['gasPrices'];
+  if (gasApiTypes.includes(type)) {
+    return GAS_API_BASE_URL; // Gas calculations are in its own repo.
+  }
   const noNetworkTypes = ['refreshTime']; // These types don't need network info in the URL.
   if (noNetworkTypes.includes(type)) {
     return SWAPS_API_V2_BASE_URL;
@@ -70,7 +75,7 @@ const getBaseApi = function (
   useNewSwapsApi = false,
 ) {
   const baseUrl = useNewSwapsApi
-    ? getBaseUrlForApiV2(type, chainId)
+    ? getBaseUrlForNewSwapsApi(type, chainId)
     : METASWAP_CHAINID_API_HOST_MAP[chainId];
   switch (type) {
     case 'trade':
