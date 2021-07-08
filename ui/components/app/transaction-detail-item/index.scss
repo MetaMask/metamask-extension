@@ -3,6 +3,20 @@
 
   &__row {
     display: flex;
+
+    &--action-row {
+      justify-content: flex-end;
+      align-items: flex-start;
+      margin-bottom: 4px;
+    }
+  }
+
+  &__action-button.button {
+    @include H7;
+
+    width: auto;
+    padding: 0;
+    text-transform: uppercase;
   }
 
   &__title {
