@@ -15,7 +15,7 @@ import {
 } from '../../../shared/modules/hexstring-utils';
 import { NETWORK_EVENTS } from './network';
 
-const ERC721METADATA_INTERFACE_ID = '0x5b5e139f';
+const ERC721_INTERFACE_ID = '0x80ac58cd';
 
 export default class PreferencesController {
   /**
@@ -803,7 +803,7 @@ export default class PreferencesController {
     );
 
     return await tokenContract
-      .supportsInterface(ERC721METADATA_INTERFACE_ID)
+      .supportsInterface(ERC721_INTERFACE_ID)
       .catch((error) => {
         console.log('error', error);
         log.debug(error);
