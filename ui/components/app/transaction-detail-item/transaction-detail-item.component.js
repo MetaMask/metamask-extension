@@ -20,7 +20,7 @@ export default function TransactionDetailItem({
 }) {
   return (
     <div className="transaction-detail-item">
-      {actionText && (
+      {actionText && handleActionClick && (
         <div className="transaction-detail-item__row transaction-detail-item__row--action-row">
           <Button
             className="transaction-detail-item__action-button"
