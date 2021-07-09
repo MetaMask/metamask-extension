@@ -1183,6 +1183,9 @@
   "networkNameEthereum": {
     "message": "Ethereum"
   },
+  "networkNamePolygon": {
+    "message": "Polygon"
+  },
   "networkNameTestnet": {
     "message": "Testnet"
   },
