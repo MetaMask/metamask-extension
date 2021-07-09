@@ -80,8 +80,6 @@ function getGasFeeEstimate(
  * @property {DecGweiString} [maxFeePerGas] - the maxFeePerGas input value.
  * @property {string} [maxFeePerGasFiat] - the maxFeePerGas converted to the
  *  user's preferred currency.
- * @property {string} [maxFeePerGasPrimary] - the maxFeePerGas converted to the
- *  native currency for the selected network.
  * @property {(DecGweiString) => void} setMaxFeePerGas - state setter method to
  *  update the maxFeePerGas.
  * @property {DecGweiString} [maxPriorityFeePerGas] - the maxPriorityFeePerGas
@@ -101,8 +99,15 @@ function getGasFeeEstimate(
  *  estimates.
  * @property {([EstimateLevel]) => void} setEstimateToUse - Setter method for
  *  choosing which EstimateLevel to use.
- * @property {string} estimatedMinimumFiat - The amount estimated to be paid
- *  based on current network conditions.
+ * @property {string} [estimatedMinimumFiat] - The amount estimated to be paid
+ *  based on current network conditions. Expressed in user's preferred
+ *  currency.
+ * @property {string} [estimatedMaximumFiat] - the maximum amount estimated to be
+ *  paid if current network transaction volume increases. Expressed in user's
+ *  preferred currency.
+ * @property {string} [estimatedMaximumNative] - the maximum amount estimated to
+ *  be paid if the current network transaction volume increases. Expressed in
+ *  the network's native currency.
  */
 
 /**
@@ -173,7 +178,7 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
   const maxFeePerGasToUse =
     maxFeePerGas ??
     getGasFeeEstimate(
-      'maxFeePerGas',
+      'suggestedMaxFeePerGas',
       gasFeeEstimates,
       gasEstimateType,
       estimateToUse,
@@ -182,7 +187,7 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
   const maxPriorityFeePerGasToUse =
     maxPriorityFeePerGas ??
     getGasFeeEstimate(
-      'maxPriorityFeePerGas',
+      'suggestedMaxPriorityFeePerGas',
       gasFeeEstimates,
       gasEstimateType,
       estimateToUse,
@@ -251,7 +256,7 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
 
   // We need to display the total amount of native currency will be expended
   // given the selected gas fees.
-  const [maxFeePerGasPrimary] = useCurrencyDisplay(maximumCostInHexWei, {
+  const [estimatedMaximumNative] = useCurrencyDisplay(maximumCostInHexWei, {
     numberOfDecimals: primaryNumberOfDecimals,
     currency: primaryCurrency,
   });
@@ -288,7 +293,6 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
   return {
     maxFeePerGas: maxFeePerGasToUse,
     maxFeePerGasFiat: showFiat ? maxFeePerGasFiat : '',
-    maxFeePerGasPrimary,
     setMaxFeePerGas,
     isMaxFeeError,
     maxPriorityFeePerGas: maxPriorityFeePerGasToUse,
@@ -303,6 +307,8 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
     estimateToUse,
     setEstimateToUse,
     estimatedMinimumFiat: showFiat ? estimatedMinimumFiat : '',
+    estimatedMaximumFiat: showFiat ? maxFeePerGasFiat : '',
+    estimatedMaximumNative,
     isGasEstimatesLoading,
     gasFeeEstimates,
     gasEstimateType,
