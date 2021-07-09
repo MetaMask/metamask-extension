@@ -142,36 +142,32 @@ export default class TransactionBreakdown extends PureComponent {
         <TransactionBreakdownRow
           title={t('transactionHistoryEffectiveGasPrice')}
         >
-          <div>
+          <UserPreferencedCurrencyDisplay
+            className="transaction-breakdown__value transaction-breakdown__value--effective-gas-price"
+            type={PRIMARY}
+            value={effectiveGasPrice}
+          />
+          {showFiat && (
             <UserPreferencedCurrencyDisplay
-              className="transaction-breakdown__value transaction-breakdown__value--effective-gas-price"
-              type={PRIMARY}
+              className="transaction-breakdown__value"
+              type={SECONDARY}
               value={effectiveGasPrice}
             />
-            {showFiat && (
-              <UserPreferencedCurrencyDisplay
-                className="transaction-breakdown__value"
-                type={SECONDARY}
-                value={effectiveGasPrice}
-              />
-            )}
-          </div>
+          )}
         </TransactionBreakdownRow>
         <TransactionBreakdownRow title={t('total')}>
-          <div>
+          <UserPreferencedCurrencyDisplay
+            className="transaction-breakdown__value transaction-breakdown__value--eth-total"
+            type={PRIMARY}
+            value={totalInHex}
+          />
+          {showFiat && (
             <UserPreferencedCurrencyDisplay
-              className="transaction-breakdown__value transaction-breakdown__value--eth-total"
-              type={PRIMARY}
+              className="transaction-breakdown__value"
+              type={SECONDARY}
               value={totalInHex}
             />
-            {showFiat && (
-              <UserPreferencedCurrencyDisplay
-                className="transaction-breakdown__value"
-                type={SECONDARY}
-                value={totalInHex}
-              />
-            )}
-          </div>
+          )}
         </TransactionBreakdownRow>
       </div>
     );
