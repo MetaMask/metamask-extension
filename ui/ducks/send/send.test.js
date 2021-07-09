@@ -1400,7 +1400,7 @@ describe('Send Slice', () => {
         );
       });
 
-      it('should create actions to update recipient and recalculate gas limit if the asset is a token', async () => {
+      it('should create actions to reset recipient input and ens, calculate gas and then validate input', async () => {
         const tokenState = {
           metamask: {
             blockGasLimit: '',
