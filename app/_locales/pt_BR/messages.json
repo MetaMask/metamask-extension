@@ -6,7 +6,7 @@
     "message": "Versão, central de suporte e informações de contato"
   },
   "acceleratingATransaction": {
-    "message": "* Acelerar uma transação usando um Gas Price mais alto aumenta as chances de agilizar o processamento pela rede, mas nem sempre é garantido."
+    "message": "* Acelerar uma transação usando um Gas Price mais alto aumenta as chances de obter o processamento pela rede mais rapidamente, mas nem sempre é garantido."
   },
   "acceptTermsOfUse": {
     "message": "Eu li e concordo com $1",
@@ -53,11 +53,11 @@
     "message": "Adicionar contato"
   },
   "addCustomTokenByContractAddress": {
-    "message": "Não conseguiu encontrar um token? Cole o endereço para adicionar manualmente qualquer token. Os endereços de contato do token podem ser encontrados em $1.",
+    "message": "Não conseguiu encontrar um token? Cole o endereço para adicionar manualmente qualquer token. Os endereços de contrato do token podem ser encontrados em $1.",
     "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "addEthereumChainConfirmationDescription": {
-    "message": "Isso permitirá esta rede ser usada dentro do MetaMask."
+    "message": "Essa ação permitirá que esta rede seja usada no MetaMask."
   },
   "addEthereumChainConfirmationRisks": {
     "message": "O MetaMask não verifica redes personalizadas."
@@ -86,7 +86,7 @@
     "message": "Adicionar tokens sugeridos"
   },
   "addToAddressBook": {
-    "message": "Adicionar ao catálogo de endereço"
+    "message": "Adicionar ao catálogo de endereços"
   },
   "addToAddressBookModalPlaceholder": {
     "message": "por ex., John D."
@@ -97,8 +97,11 @@
   "addTokens": {
     "message": "Adicionar tokens"
   },
+  "addressBookIcon": {
+    "message": "Ícone de catálogo de endereços"
+  },
   "advanced": {
-    "message": "Avançadas"
+    "message": "Avançado"
   },
   "advancedOptions": {
     "message": "Opções avançadas"
@@ -149,6 +152,9 @@
   },
   "amount": {
     "message": "Valor"
+  },
+  "amountGasFee": {
+    "message": "Valor + Taxa de gas"
   },
   "amountWithColon": {
     "message": "Valor:"
@@ -223,7 +229,7 @@
     "message": "Este código secreto é obrigatório para recuperar sua carteira caso você perca seu dispositivo, esqueça sua senha, precise reinstalar o MetaMask ou queira acessar sua carteira em outro dispositivo."
   },
   "backupApprovalNotice": {
-    "message": "Faça backup do código secreto de recuperação para manter sua carteira e seus fundos em segurança."
+    "message": "Faça backup da sua frase secreta de recuperação para manter sua carteira e os fundos em segurança."
   },
   "backupNow": {
     "message": "Fazer backup agora"
@@ -256,8 +262,17 @@
   "buildContactList": {
     "message": "Crie sua lista de contatos"
   },
+  "builtAroundTheWorld": {
+    "message": "O MetaMask é projetado e construído no mundo todo."
+  },
   "buy": {
     "message": "Comprar"
+  },
+  "buyWithTransak": {
+    "message": "Comprar ETH com Transak"
+  },
+  "buyWithTransakDescription": {
+    "message": "A Transak suporta cartões de débito e transferências bancárias (dependendo da localização) em mais de 59 países. Depósitos de ETH em sua conta MetaMask."
   },
   "buyWithWyre": {
     "message": "Comprar ETH com Wyre"
@@ -411,6 +426,9 @@
   "continue": {
     "message": "Continuar"
   },
+  "continueToTransak": {
+    "message": "Continuar para o Transak"
+  },
   "continueToWyre": {
     "message": "Continuar para o Wyre"
   },
@@ -488,6 +506,9 @@
   },
   "customToken": {
     "message": "Token personalizado"
+  },
+  "data": {
+    "message": "Dados"
   },
   "dataBackupFoundInfo": {
     "message": "Foi feito backup de alguns dos dados da sua conta durante uma instalação anterior do MetaMask. Isso poderia incluir configurações, contatos e tokens. Gostaria de restaurar esses dados agora?"
@@ -596,8 +617,41 @@
   "editContact": {
     "message": "Editar contato"
   },
+  "editGasEducationButtonText": {
+    "message": "Como devo escolher?"
+  },
+  "editGasEducationHighExplanation": {
+    "message": "É o melhor para swaps ou outras transações sensíveis ao tempo. Se um swap demorar muito para ser processado, ele falhará e você poderá perder fundos."
+  },
+  "editGasEducationLearnMoreLinkText": {
+    "message": "Saiba mais sobre como personalizar gas."
+  },
+  "editGasEducationLowExplanation": {
+    "message": "Baixo Uma taxa de gas mais baixa só deve ser selecionada para transações em que o tempo de processamento é menos importante. Com uma taxa menor, pode ser difícil prever quando (ou se) sua transação será bem-sucedida."
+  },
+  "editGasEducationMediumExplanation": {
+    "message": "Uma taxa média de gas é boa para enviar, sacar ou outras transações não sensíveis ao tempo, mas importantes."
+  },
+  "editGasEducationModalIntro": {
+    "message": "O valor certo de gas a ser selecionado depende do tipo de transação e da importância dele."
+  },
+  "editGasEducationModalTitle": {
+    "message": "Como escolher?"
+  },
+  "editGasHigh": {
+    "message": "Alto"
+  },
+  "editGasLow": {
+    "message": "Baixo"
+  },
+  "editGasMedium": {
+    "message": "Médio"
+  },
+  "editGasTitle": {
+    "message": "Editar taxa de gas"
+  },
   "editNonceField": {
-    "message": "Editar Nonce (Número Aleatório)"
+    "message": "Editar Nonce"
   },
   "editNonceMessage": {
     "message": "Esse é um recurso avançado; use com cautela."
@@ -619,7 +673,7 @@
     "message": "Tudo pronto"
   },
   "endOfFlowMessage2": {
-    "message": "Digas para armazenar em segurança"
+    "message": "Dicas para armazenar e segurança"
   },
   "endOfFlowMessage3": {
     "message": "Salve um backup em vários locais."
@@ -647,11 +701,20 @@
     "message": "O endpoint retornou um ID diferente da chain: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
+  "ensIllegalCharacter": {
+    "message": "Caractere inválido para ENS."
+  },
   "ensNotFoundOnCurrentNetwork": {
     "message": "Nome ENS não encontrado na rede atual. Procure alternar para a mainnet do Ethereum."
   },
+  "ensNotSupportedOnNetwork": {
+    "message": "A rede não suporta ENS"
+  },
   "ensRegistrationError": {
     "message": "Erro no registro do nome ENS"
+  },
+  "ensUnknownError": {
+    "message": "Falha na pesquisa de ENS."
   },
   "enterAnAlias": {
     "message": "Informar um alias"
@@ -773,6 +836,19 @@
   },
   "functionType": {
     "message": "Tipo de função"
+  },
+  "gasDisplayAcknowledgeDappButtonText": {
+    "message": "Editar sugestão de aplicativo"
+  },
+  "gasDisplayDappWarning": {
+    "message": "Esta taxa de gas foi sugerida pela app por $1. Ele está usando uma estimativa de gas antiga, que pode ser imprecisa. No entanto, editar essa taxa de gas pode causar consequências indesejadas. Entre em contato com a equipe do aplicativo se tiver dúvidas.",
+    "description": "$1 represents the Dapp's origin"
+  },
+  "gasFee": {
+    "message": "Taxa de gas"
+  },
+  "gasFeeEstimate": {
+    "message": "Estimado"
   },
   "gasLimit": {
     "message": "Gas Limit"
@@ -1059,7 +1135,13 @@
     "message": "Criar novo swap"
   },
   "max": {
-    "message": "Máx"
+    "message": "Máx."
+  },
+  "maxFee": {
+    "message": "Taxa máxima"
+  },
+  "maxPriorityFee": {
+    "message": "Taxa máxima de prioridade"
   },
   "memo": {
     "message": "memorando"
@@ -1131,7 +1213,7 @@
     "message": "Informe sua senha para confirmar que é você mesmo!"
   },
   "mustSelectOne": {
-    "message": "Selecione pelo menos 1 token."
+    "message": "Selecione pelo menos 1 token."
   },
   "myAccounts": {
     "message": "Minhas contas"
@@ -1261,7 +1343,7 @@
     "message": "Personalizar nonce da transação"
   },
   "nonceFieldDescription": {
-    "message": "Ative isso para alterar o nonce (número da transação) nas telas de confirmação. Esse é um recurso avançado; use com cautela."
+    "message": "tive isso para alterar o nonce (número da transação) nas telas de confirmação. Esse é um recurso avançado; use com cautela."
   },
   "nonceFieldHeading": {
     "message": "Nonce personalizado"
@@ -1352,6 +1434,9 @@
   "onlyConnectTrust": {
     "message": "Conecte-se somente com sites em quem você confia."
   },
+  "optional": {
+    "message": "Opcional"
+  },
   "optionalBlockExplorerUrl": {
     "message": "URL do Block Explorer (opcional)"
   },
@@ -1440,7 +1525,7 @@
     "message": "Em fila"
   },
   "readdToken": {
-    "message": "Você pode adicionar este token novamente no futuro ao ir a “Adicionar token” no menu de opções das suas contas."
+    "message": "Você pode adicionar este token novamente no futuro ao ir a \"Adicionar token\" no menu de opções das suas contas."
   },
   "receive": {
     "message": "Receber"
@@ -1450,6 +1535,9 @@
   },
   "recipientAddressPlaceholder": {
     "message": "Busca, endereço público (0x) ou ENS"
+  },
+  "recommendedGasLabel": {
+    "message": "Recomendado"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Iniciar aqui"
@@ -1464,7 +1552,7 @@
     "message": "Precisa fazer backup da sua Frase de recuperação Secreta novamente?"
   },
   "recoveryPhraseReminderItemOne": {
-    "message": "Nunca compartilhe a sua Frase de recuperação secreta com ninguém"
+    "message": "Nunca compartilhe a sua frase de recuperação secreta com ninguém"
   },
   "recoveryPhraseReminderItemTwo": {
     "message": "A equipe do MetaMask jamais pedirá sua Frase de recuperação secreta."
@@ -1615,7 +1703,7 @@
     "message": "Guarde em um cofre-forte bancário."
   },
   "seedPhraseIntroSidebarCopyOne": {
-    "message": "A sua frase de recuperação é a “chave-mestra” para sua carteira e seus fundos."
+    "message": "A sua frase de recuperação é a \"chave-mestra\" para sua carteira e seus fundos."
   },
   "seedPhraseIntroSidebarCopyThree": {
     "message": "Caso alguém lhe peça a sua frase de recuperação, essa pessoa provavelmente está tentando dar um golpe em você."
@@ -1769,6 +1857,15 @@
   "speedUpCancellation": {
     "message": "Acelerar este cancelamento"
   },
+  "speedUpExplanation": {
+    "message": "Nós reestimamos a taxa de gas com base nas condições atuais da rede e aumentamos em pelo menos 10% (exigido pela rede)."
+  },
+  "speedUpPopoverTitle": {
+    "message": "Acelerar a transação"
+  },
+  "speedUpTooltipText": {
+    "message": "Nova taxa de gas"
+  },
   "speedUpTransaction": {
     "message": "Acelerar esta transação"
   },
@@ -1849,7 +1946,7 @@
     "message": "Swap"
   },
   "swapAdvancedSlippageInfo": {
-    "message": "Quando o preço varia entre o momento em que seu pedido é feito e o momento em que é confirmado, isso recebe o nome de “slippage”. Seu swap será automaticamente cancelado se o slippage for superior à configuração “slippage máximo”."
+    "message": "Quando o preço varia entre o momento em que seu pedido é feito e o momento em que é confirmado, isso recebe o nome de \"slippage\". Seu swap será automaticamente cancelado se o slippage for superior à configuração “slippage máximo”."
   },
   "swapAggregator": {
     "message": "Agregador"
@@ -1987,7 +2084,7 @@
     "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
   },
   "swapPriceDifferenceTitle": {
-    "message": "Diferença de preço de aproximadamente $1%",
+    "message": "Diferença de preço de aproximadamente ~$1%",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
   "swapPriceImpactTooltip": {
@@ -2183,6 +2280,9 @@
   "symbolBetweenZeroTwelve": {
     "message": "O símbolo deve ter 11 caracteres ou menos."
   },
+  "syncInProgress": {
+    "message": "Sincronização em andamento"
+  },
   "syncWithMobile": {
     "message": "Sincronizar com dispositivo móvel"
   },
@@ -2274,6 +2374,12 @@
   "transactionCreated": {
     "message": "Transação criada com valor de $1 a $2."
   },
+  "transactionDetailGasHeading": {
+    "message": "Taxa estimada de gas"
+  },
+  "transactionDetailGasTotalSubtitle": {
+    "message": "Valor + taxa de gas"
+  },
   "transactionDropped": {
     "message": "Transação abandonada a $2."
   },
@@ -2363,6 +2469,10 @@
     "message": "Verifique os detalhes da rede",
     "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
   },
+  "unsendableAsset": {
+    "message": "O envio de tokens colecionáveis ​​(ERC-721) não é compatível no momento",
+    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+  },
   "updatedWithDate": {
     "message": "Atualizado(a) em $1"
   },
@@ -2404,6 +2514,9 @@
   },
   "viewContact": {
     "message": "Exibir contato"
+  },
+  "viewFullTransactionDetails": {
+    "message": "Exibir todos os detalhes da transação"
   },
   "viewMore": {
     "message": "Exibir Mais"

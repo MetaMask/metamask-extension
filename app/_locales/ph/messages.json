@@ -6,14 +6,14 @@
     "message": "Bersyon, support center, at impormasyon sa pakikipag-ugnayan"
   },
   "acceleratingATransaction": {
-    "message": "* Kapag in-accelerate ang transaksyon sa pamamagitan ng paggamit ng mas mataas na presyo ng gas, mas magiging malaki ang tsansang mas mabilis na maiproseso ng network, pero hindi ito palaging ginagarantiya."
+    "message": "* Kapag pinapabilis ang transaksyon gamit ang mas mataas na presyo ng gas, mas lumalaki ang tsansang mas mabilis na maiproseso ng network, pero hindi ito palaging ginagarantiya."
   },
   "acceptTermsOfUse": {
     "message": "Nabasa ko at sumasang-ayon ako sa $1",
     "description": "$1 is the `terms` message"
   },
   "accessAndSpendNotice": {
-    "message": "Maaaring i-access ng $1 ang max na halagang ito at gumastos hanggang sa max na halagang ito",
+    "message": "$1 maaaring i-access at gumastos hanggang sa maximum na halagang ito",
     "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessingYourCamera": {
@@ -97,6 +97,9 @@
   "addTokens": {
     "message": "Magdagdag ng Mga Token"
   },
+  "addressBookIcon": {
+    "message": "Icon ng address book"
+  },
   "advanced": {
     "message": "Advanced"
   },
@@ -149,6 +152,9 @@
   },
   "amount": {
     "message": "Halaga"
+  },
+  "amountGasFee": {
+    "message": "Halaga + Gas Fee"
   },
   "amountWithColon": {
     "message": "Halaga:"
@@ -223,7 +229,7 @@
     "message": "Ang lihim na code na ito ay kinakailangan para ma-recover ang iyong wallet sakaling maiwala mo ang iyong device, makalimutan ang iyong password, kailanganin mong i-install ulit ang MetaMask, o gusto mong i-access ang iyong wallet sa ibang device."
   },
   "backupApprovalNotice": {
-    "message": "I-back up ang iyong Lihim na Code sa Pag-recover para mapanatiling secure ang iyong wallet at mga pondo."
+    "message": "I-back up ang iyong Lihim na Phrase sa Pag-recover para mapanatiling secure ang iyong wallet at mga pondo."
   },
   "backupNow": {
     "message": "I-back up ngayon"
@@ -256,8 +262,17 @@
   "buildContactList": {
     "message": "Buuin ang iyong listahan ng contact"
   },
+  "builtAroundTheWorld": {
+    "message": "Ang MetaMask ay dinisenyo at binuo sa iba't ibang panig ng mundo."
+  },
   "buy": {
     "message": "Bumili"
+  },
+  "buyWithTransak": {
+    "message": "Bumili ng ETH gamit ang Transak"
+  },
+  "buyWithTransakDescription": {
+    "message": "Ang Transak ay sumusuporta sa debit card at mga bank transfer (depende sa lokasyon) sa mahigit 59 na bansa. Ang ETH ay idinedeposito sa iyong MetaMask account."
   },
   "buyWithWyre": {
     "message": "Bumili ng ETH gamit ang Wyre"
@@ -411,6 +426,9 @@
   "continue": {
     "message": "Magpatuloy"
   },
+  "continueToTransak": {
+    "message": "Magpatuloy sa Transak"
+  },
   "continueToWyre": {
     "message": "Magpatuloy sa Wyre"
   },
@@ -488,6 +506,9 @@
   },
   "customToken": {
     "message": "Custom na Token"
+  },
+  "data": {
+    "message": "Data"
   },
   "dataBackupFoundInfo": {
     "message": "Ang ilan sa data ng iyong account ay na-back up sa nakaraang pag-install ng MetaMask. Maaaring kasama rito ang iyong mga setting, contact, at token. Gusto mo na bang i-restore ang data na ito ngayon?"
@@ -596,6 +617,39 @@
   "editContact": {
     "message": "I-edit ang Contact"
   },
+  "editGasEducationButtonText": {
+    "message": "Paano ako pipili?"
+  },
+  "editGasEducationHighExplanation": {
+    "message": "Maganda ito para sa mga swap o iba pang time sensitive transaction. Kung natatagalan ang proseso ng isang swap, madalas magiging fail ito at maaari kang mawalan ng fund."
+  },
+  "editGasEducationLearnMoreLinkText": {
+    "message": "Alamin ang higit pa tungkol sa customizing gas."
+  },
+  "editGasEducationLowExplanation": {
+    "message": "Mababa Ang mababang gas fee ay dapat lang piliin sa mga transaksyon kung saan di-gaanong mahalaga ang processing time. Sa mas mababang fee, mahirap masabi kung kailan (o kung) magiging tagumpay ang transaksyon mo."
+  },
+  "editGasEducationMediumExplanation": {
+    "message": "Ang katamtamang gas fee ay maganda para sa pagpapadala, pagwi-withdraw o sa ibang mga transaksyon na di-time sensitive pero mahalaga."
+  },
+  "editGasEducationModalIntro": {
+    "message": "Ang pipiliing tamang dami ng gas ay depende sa uri ng transaksyon at kung gaano kahalaga ito."
+  },
+  "editGasEducationModalTitle": {
+    "message": "Paano pipili?"
+  },
+  "editGasHigh": {
+    "message": "Mataas"
+  },
+  "editGasLow": {
+    "message": "Mababa"
+  },
+  "editGasMedium": {
+    "message": "Katamtaman"
+  },
+  "editGasTitle": {
+    "message": "I-edit ang gas fee"
+  },
   "editNonceField": {
     "message": "I-edit ang Nonce"
   },
@@ -647,11 +701,20 @@
     "message": "Nagbalik ang endpoint ng ibang chain ID: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
+  "ensIllegalCharacter": {
+    "message": "Ilegal na Karakter para sa ENS."
+  },
   "ensNotFoundOnCurrentNetwork": {
     "message": "Hindi nahanap ang ENS name sa kasalukuyang network. Subukang lumipat sa Ethereum Mainnet."
   },
+  "ensNotSupportedOnNetwork": {
+    "message": "Hindi sinusuportahan ng network ang ENS"
+  },
   "ensRegistrationError": {
     "message": "Nagka-error sa pag-register ng ENS name"
+  },
+  "ensUnknownError": {
+    "message": "Nag-fail ang Paghahanap ng ENS."
   },
   "enterAnAlias": {
     "message": "Maglagay ng alias"
@@ -773,6 +836,19 @@
   },
   "functionType": {
     "message": "Uri ng Function"
+  },
+  "gasDisplayAcknowledgeDappButtonText": {
+    "message": "I-edit ang app suggestion"
+  },
+  "gasDisplayDappWarning": {
+    "message": "Isina-suggest ng app ang gas fee na ito $1. Gumagamit ito ng legacy gas estimation na maaaring di-tama. Pero, ang pag-eedit sa gas fee na ito ay puwedeng magdulot ng di-sinasadyang mga resulta. Makipag-ugnayan sa app team kung may mga tanong ka.",
+    "description": "$1 represents the Dapp's origin"
+  },
+  "gasFee": {
+    "message": "Gas Fee"
+  },
+  "gasFeeEstimate": {
+    "message": "Estimate"
   },
   "gasLimit": {
     "message": "Limitasyon sa Gas"
@@ -1060,6 +1136,12 @@
   },
   "max": {
     "message": "Max"
+  },
+  "maxFee": {
+    "message": "Max fee"
+  },
+  "maxPriorityFee": {
+    "message": "Max priority fee"
   },
   "memo": {
     "message": "memo"
@@ -1352,6 +1434,9 @@
   "onlyConnectTrust": {
     "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo."
   },
+  "optional": {
+    "message": "Opsyonal"
+  },
   "optionalBlockExplorerUrl": {
     "message": "URL ng Block Explorer (opsyonal)"
   },
@@ -1450,6 +1535,9 @@
   },
   "recipientAddressPlaceholder": {
     "message": "Maghanap, pampublikong address (0x), o ENS"
+  },
+  "recommendedGasLabel": {
+    "message": "Inirerekomenda"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Magsimula rito"
@@ -1615,7 +1703,7 @@
     "message": "Ilagay sa bank vault."
   },
   "seedPhraseIntroSidebarCopyOne": {
-    "message": "Ang iyong recovery phrase ay ang iyong “pangunahing key” sa wallet at pondo mo."
+    "message": "Ang iyong recovery phrase ay ang iyong \"pangunahing key\" sa wallet at pondo mo."
   },
   "seedPhraseIntroSidebarCopyThree": {
     "message": "Kung may manghihingi man ng iyong recovery phrase, malamang na sinusubukan ka niyang i-scam."
@@ -1768,6 +1856,15 @@
   },
   "speedUpCancellation": {
     "message": "Pabilisin ang pagkanselang ito"
+  },
+  "speedUpExplanation": {
+    "message": "Muli kaming nag-estimate ng gas fee batay sa kasalukuyang mga kalagayan ng network at nadagdagan ito ng di-bababa sa 10% (kahilingan ng network)."
+  },
+  "speedUpPopoverTitle": {
+    "message": "Pabilisin ang transaksyon"
+  },
+  "speedUpTooltipText": {
+    "message": "Bagong gas fee"
   },
   "speedUpTransaction": {
     "message": "Pabilisin ang transaksyong ito"
@@ -2183,6 +2280,9 @@
   "symbolBetweenZeroTwelve": {
     "message": "Dapat ay 11 character o mas kaunti ang simbolo."
   },
+  "syncInProgress": {
+    "message": "Kasalukuyang nagsi-sync"
+  },
   "syncWithMobile": {
     "message": "I-sync sa mobile"
   },
@@ -2190,7 +2290,7 @@
     "message": "Tiyaking walang ibang nakakakita sa iyong screen kapag na-scan mo ang code na ito"
   },
   "syncWithMobileComplete": {
-    "message": "Matagumpay na na-sync ang iyong data. I-enjoy ang MetaMask mobile app!"
+    "message": "Matagumpay na-sync ang iyong data. I-enjoy ang MetaMask mobile app!"
   },
   "syncWithMobileDesc": {
     "message": "Puwede mong i-sync ang iyong mga account at impormasyon sa mobile device mo. Buksan ang MetaMask mobile app, pumunta sa \"Mga Setting\" at mag-tap sa \"I-sync mula sa Browser Extension\""
@@ -2273,6 +2373,12 @@
   },
   "transactionCreated": {
     "message": "Nagawa ang transaksyon na nagkakahalagang $1 sa $2."
+  },
+  "transactionDetailGasHeading": {
+    "message": "Tinatayang bayarin sa gas"
+  },
+  "transactionDetailGasTotalSubtitle": {
+    "message": "Halaga + gas fee"
   },
   "transactionDropped": {
     "message": "Tinanggihan ang transaksyon sa $2."
@@ -2363,6 +2469,10 @@
     "message": "i-verify ang mga detalye ng network",
     "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
   },
+  "unsendableAsset": {
+    "message": "Ang pagpapadala ng mga collectible (ERC-721) token ay hindi suportado sa kasalukuyan",
+    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+  },
   "updatedWithDate": {
     "message": "Na-update noong $1"
   },
@@ -2404,6 +2514,9 @@
   },
   "viewContact": {
     "message": "Tingnan ang Contact"
+  },
+  "viewFullTransactionDetails": {
+    "message": "Tingnan ang lahat ng detalye ng transaksyon"
   },
   "viewMore": {
     "message": "Tumingin Pa"
