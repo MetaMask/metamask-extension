@@ -817,6 +817,7 @@ export default class ConfirmTransactionBase extends Component {
         ethGasPriceWarning={ethGasPriceWarning}
         editingGas={editingGas}
         handleCloseEditGas={() => this.handleCloseNewGasPopover()}
+        currentTransaction={txData}
       />
     );
   }

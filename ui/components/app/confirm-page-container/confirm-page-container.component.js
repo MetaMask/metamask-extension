@@ -63,6 +63,8 @@ export default class ConfirmPageContainer extends Component {
     disabled: PropTypes.bool,
     editingGas: PropTypes.bool,
     handleCloseEditGas: PropTypes.func,
+    // Gas Popover
+    currentTransaction: PropTypes.object.isRequired,
   };
 
   render() {
@@ -110,6 +112,7 @@ export default class ConfirmPageContainer extends Component {
       ethGasPriceWarning,
       editingGas,
       handleCloseEditGas,
+      currentTransaction,
     } = this.props;
     const renderAssetImage = contentComponent || !identiconAddress;
 
@@ -188,7 +191,12 @@ export default class ConfirmPageContainer extends Component {
             )}
           </PageContainerFooter>
         )}
-        {editingGas && <EditGasPopover onClose={handleCloseEditGas} />}
+        {editingGas && (
+          <EditGasPopover
+            onClose={handleCloseEditGas}
+            transaction={currentTransaction}
+          />
+        )}
       </div>
     );
   }
