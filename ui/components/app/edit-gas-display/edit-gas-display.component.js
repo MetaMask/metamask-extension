@@ -1,6 +1,8 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 
+import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
+
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
 import {
@@ -143,19 +145,20 @@ export default function EditGasDisplay({
             name="gas-recommendation"
             options={[
               {
-                value: 'low',
+                value: GAS_RECOMMENDATIONS.LOW,
                 label: t('editGasLow'),
-                recommended: defaultEstimateToUse === 'low',
+                recommended: defaultEstimateToUse === GAS_RECOMMENDATIONS.LOW,
               },
               {
-                value: 'medium',
+                value: GAS_RECOMMENDATIONS.MEDIUM,
                 label: t('editGasMedium'),
-                recommended: defaultEstimateToUse === 'medium',
+                recommended:
+                  defaultEstimateToUse === GAS_RECOMMENDATIONS.MEDIUM,
               },
               {
-                value: 'high',
+                value: GAS_RECOMMENDATIONS.HIGH,
                 label: t('editGasHigh'),
-                recommended: defaultEstimateToUse === 'high',
+                recommended: defaultEstimateToUse === GAS_RECOMMENDATIONS.HIGH,
               },
             ]}
             selectedValue={estimateToUse}
@@ -217,7 +220,7 @@ EditGasDisplay.propTypes = {
   onEducationClick: PropTypes.func,
   dappSuggestedGasFee: PropTypes.number,
   dappOrigin: PropTypes.string,
-  defaultEstimateToUse: PropTypes.oneOf(['low', 'medium', 'high']),
+  defaultEstimateToUse: PropTypes.oneOf(Object.values(GAS_RECOMMENDATIONS)),
 };
 
 EditGasDisplay.defaultProps = {

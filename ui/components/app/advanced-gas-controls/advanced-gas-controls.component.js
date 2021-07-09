@@ -9,7 +9,10 @@ import {
   COLORS,
 } from '../../../helpers/constants/design-system';
 import FormField from '../../ui/form-field';
-import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import {
+  GAS_ESTIMATE_TYPES,
+  GAS_RECOMMENDATIONS,
+} from '../../../../shared/constants/gas';
 
 const DEFAULT_ESTIMATES_LEVEL = 'medium';
 
@@ -184,7 +187,7 @@ export default function AdvancedGasControls({
 }
 
 AdvancedGasControls.propTypes = {
-  estimateToUse: PropTypes.oneOf(['high', 'medium', 'low']),
+  estimateToUse: PropTypes.oneOf(Object.values(GAS_RECOMMENDATIONS)),
   gasFeeEstimates: PropTypes.oneOf([
     PropTypes.shape({
       gasPrice: PropTypes.string,
