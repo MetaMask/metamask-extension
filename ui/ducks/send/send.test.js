@@ -1348,7 +1348,7 @@ describe('Send Slice', () => {
         nickname: '',
       };
 
-      it('should create actions to update recipient and recalculate gas limit if the asset type is not set ', async () => {
+      it('should create actions to update recipient and recalculate gas limit if the asset type is not set', async () => {
         global.eth = {
           getCode: sinon.stub(),
         };
