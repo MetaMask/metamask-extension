@@ -437,7 +437,8 @@ export const initializeSendState = createAsyncThunk(
         : GAS_LIMITS.SIMPLE;
     if (
       basicEstimateStatus === BASIC_ESTIMATE_STATES.READY &&
-      stage !== SEND_STAGES.EDIT
+      stage !== SEND_STAGES.EDIT &&
+      recipient.address
     ) {
       // Run our estimateGasLimit logic to get a more accurate estimation of
       // required gas. If this value isn't nullish, set it as the new gasLimit
@@ -1267,12 +1268,9 @@ export function useMyAccountsForRecipientSearch() {
  * @returns {void}
  */
 export function updateRecipient({ address, nickname }) {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     await dispatch(actions.updateRecipient({ address, nickname }));
-    const state = getState();
-    if (state.send.asset.type === ASSET_TYPES.TOKEN) {
-      await dispatch(computeEstimatedGasLimit());
-    }
+    await dispatch(computeEstimatedGasLimit());
   };
 }
 
