@@ -75,7 +75,7 @@ import {
   isValidDomainName,
 } from '../../helpers/utils/util';
 import { getTokens, getUnapprovedTxs } from '../metamask/metamask';
-import { resetResolution } from '../ens';
+import { resetEnsResolution } from '../ens';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -1218,7 +1218,7 @@ export function resetRecipientInput() {
   return async (dispatch) => {
     await dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
-    await dispatch(resetResolution());
+    await dispatch(resetEnsResolution());
     await dispatch(validateRecipientUserInput());
   };
 }

@@ -27,7 +27,7 @@ export default class AddContact extends PureComponent {
     qrCodeDetected: PropTypes.func,
     ensResolution: PropTypes.string,
     ensError: PropTypes.string,
-    resetResolution: PropTypes.func,
+    resetEnsResolution: PropTypes.func,
   };
 
   state = {
@@ -88,7 +88,7 @@ export default class AddContact extends PureComponent {
           this.validate(text);
         }}
         onReset={() => {
-          this.props.resetResolution();
+          this.props.resetEnsResolution();
           this.setState({ ethAddress: '', input: '' });
         }}
         userInput={this.state.input}

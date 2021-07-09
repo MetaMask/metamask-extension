@@ -10,7 +10,7 @@ import { getQrCodeData } from '../../../../ducks/app/app';
 import {
   getEnsError,
   getEnsResolution,
-  resetResolution,
+  resetEnsResolution,
 } from '../../../../ducks/ens';
 import AddContact from './add-contact.component';
 
@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(addToAddressBook(recipient, nickname)),
     scanQrCode: () => dispatch(showQrScanner()),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
-    resetResolution: () => dispatch(resetResolution()),
+    resetEnsResolution: () => dispatch(resetEnsResolution()),
   };
 };
 
