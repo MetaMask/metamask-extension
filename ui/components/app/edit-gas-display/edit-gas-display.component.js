@@ -51,7 +51,7 @@ export default function EditGasDisplay({
     maxFeePerGas,
     setMaxFeePerGas,
     maxFeePerGasFiat,
-    maxFeePerGasPrimary,
+    estimatedMaximumNative,
     isGasEstimatesLoading,
     gasFeeEstimates,
     gasEstimateType,
@@ -62,6 +62,7 @@ export default function EditGasDisplay({
     estimateToUse,
     setEstimateToUse,
     estimatedMinimumFiat,
+    estimatedMaximumFiat,
     isMaxFeeError,
     isMaxPriorityFeeError,
     isGasTooLow,
@@ -112,10 +113,10 @@ export default function EditGasDisplay({
                 tag="span"
                 key="secondary"
               >
-                {maxFeePerGasFiat}
+                {estimatedMaximumFiat}
               </Typography>,
               <Typography tag="span" key="primary">
-                {maxFeePerGasPrimary}
+                {estimatedMaximumNative}
               </Typography>,
             ])
           }
