@@ -212,6 +212,7 @@ export default function TransactionListItem({
       )}
       {process.env.SHOW_EIP_1559_UI && showRetryEditGasPopover && (
         <EditGasPopover
+          popoverTitle={t('cancelPopoverTitle')}
           onClose={closeRetryEditGasPopover}
           mode={EDIT_GAS_MODE.SPEED_UP}
           transaction={transactionGroup.primaryTransaction}
@@ -219,6 +220,7 @@ export default function TransactionListItem({
       )}
       {process.env.SHOW_EIP_1559_UI && showCancelEditGasPopover && (
         <EditGasPopover
+          popoverTitle={t('speedUpPopoverTitle')}
           onClose={closeCancelEditGasPopover}
           mode={EDIT_GAS_MODE.CANCEL}
           transaction={transactionGroup.primaryTransaction}

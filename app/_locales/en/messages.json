@@ -289,6 +289,9 @@
   "cancel": {
     "message": "Cancel"
   },
+  "cancelPopoverTitle": {
+    "message": "Cancel transaction"
+  },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
   },
