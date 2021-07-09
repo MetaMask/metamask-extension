@@ -1348,11 +1348,35 @@ describe('Send Slice', () => {
         nickname: '',
       };
 
-      it('should create an action to update recipient', async () => {
+      it('should create actions to update recipient and recalculate gas limit if the asset type is not set', async () => {
+        global.eth = {
+          getCode: sinon.stub(),
+        };
+
         const updateRecipientState = {
+          metamask: {
+            provider: {
+              chainId: '0x1',
+            },
+          },
           send: {
+            account: {
+              balance: '',
+            },
             asset: {
               type: '',
+            },
+            gas: {
+              gasPrice: '',
+            },
+            recipient: {
+              address: '',
+            },
+            amount: {
+              value: '',
+            },
+            draftTransaction: {
+              userInputHexData: '',
             },
           },
         };
@@ -1363,18 +1387,20 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        const expectedActionResult = [
-          {
-            type: 'send/updateRecipient',
-            payload: recipient,
-          },
-        ];
-
-        expect(actionResult).toHaveLength(1);
-        expect(actionResult).toStrictEqual(expectedActionResult);
+        expect(actionResult).toHaveLength(4);
+        expect(actionResult[0].type).toStrictEqual('send/updateRecipient');
+        expect(actionResult[1].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/pending',
+        );
+        expect(actionResult[2].type).toStrictEqual(
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[3].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
+        );
       });
 
-      it('should create actions to update recipient and recalculate gas limit if the asset is a token', async () => {
+      it('should create actions to reset recipient input and ens, calculate gas and then validate input', async () => {
         const tokenState = {
           metamask: {
             blockGasLimit: '',
@@ -1443,6 +1469,13 @@ describe('Send Slice', () => {
               address: 'Address',
               nickname: 'NickName',
             },
+            gas: {
+              gasPrice: '0x1',
+            },
+            amount: {
+              value: '0x1',
+            },
+            draftTransaction: {},
           },
         };
 
@@ -1451,14 +1484,23 @@ describe('Send Slice', () => {
         await store.dispatch(resetRecipientInput());
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(4);
+        expect(actionResult).toHaveLength(7);
         expect(actionResult[0].type).toStrictEqual(
           'send/updateRecipientUserInput',
         );
         expect(actionResult[0].payload).toStrictEqual('');
         expect(actionResult[1].type).toStrictEqual('send/updateRecipient');
-        expect(actionResult[2].type).toStrictEqual('ENS/resetEnsResolution');
+        expect(actionResult[2].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/pending',
+        );
         expect(actionResult[3].type).toStrictEqual(
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[4].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
+        );
+        expect(actionResult[5].type).toStrictEqual('ENS/resetEnsResolution');
+        expect(actionResult[6].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
       });
