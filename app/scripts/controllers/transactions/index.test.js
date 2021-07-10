@@ -773,6 +773,59 @@ describe('Transaction Controller', function () {
     });
   });
 
+  describe('#signTransaction', function () {
+    let fromTxDataSpy;
+
+    beforeEach(function () {
+      fromTxDataSpy = sinon.spy(TransactionFactory, 'fromTxData');
+    });
+
+    afterEach(function () {
+      fromTxDataSpy.restore();
+    });
+
+    it('sets txParams.type to 0x0 (non-EIP-1559)', async function () {
+      txController.txStateManager._addTransactionsToState([
+        {
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          id: 1,
+          metamaskNetworkId: currentNetworkId,
+          history: [{}],
+          txParams: {
+            from: VALID_ADDRESS_TWO,
+            to: VALID_ADDRESS,
+            gasPrice: '0x77359400',
+            gas: '0x7b0d',
+            nonce: '0x4b',
+          },
+        },
+      ]);
+      await txController.signTransaction('1');
+      assert.equal(fromTxDataSpy.getCall(0).args[0].type, '0x0');
+    });
+
+    it('sets txParams.type to 0x2 (EIP-1559)', async function () {
+      txController.txStateManager._addTransactionsToState([
+        {
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          id: 2,
+          metamaskNetworkId: currentNetworkId,
+          history: [{}],
+          txParams: {
+            from: VALID_ADDRESS_TWO,
+            to: VALID_ADDRESS,
+            maxFeePerGas: '0x77359400',
+            maxPriorityFeePerGas: '0x77359400',
+            gas: '0x7b0d',
+            nonce: '0x4b',
+          },
+        },
+      ]);
+      await txController.signTransaction('2');
+      assert.equal(fromTxDataSpy.getCall(0).args[0].type, '0x2');
+    });
+  });
+
   describe('#publishTransaction', function () {
     let hash, txMeta, trackTransactionMetricsEventSpy;
 
