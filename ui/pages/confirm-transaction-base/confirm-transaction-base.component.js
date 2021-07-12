@@ -781,7 +781,7 @@ export default class ConfirmTransactionBase extends Component {
         toAddress={toAddress}
         toEns={toEns}
         toNickname={toNickname}
-        showEdit={onEdit}
+        showEdit={Boolean(onEdit)}
         action={functionType}
         title={title}
         titleComponent={this.renderTitleComponent()}
