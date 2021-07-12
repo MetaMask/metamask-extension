@@ -52,35 +52,37 @@ export default function EditGasPopover({
   }, [showSidebar, onClose, dispatch]);
 
   const onSubmit = useCallback(() => {
-    if (transaction && mode) {
-      switch (mode) {
-        case EDIT_GAS_MODE.CANCEL:
-          dispatch(
-            createCancelTransaction(transaction.id, {
-              /** new gas settings */
-            }),
-          );
-          break;
-        case EDIT_GAS_MODE.SPEED_UP:
-          dispatch(
-            createSpeedUpTransaction(transaction.id, {
-              /** new gas settings */
-            }),
-          );
-          break;
-        case EDIT_GAS_MODE.MODIFY_IN_PLACE:
-          dispatch(
-            updateTransaction({
-              ...transaction,
-              txParams: { ...transaction.txParams /** ...newGasSettings */ },
-            }),
-          );
-          break;
-        default:
-          break;
-      }
+    if (!transaction || !mode) {
       closePopover();
     }
+    switch (mode) {
+      case EDIT_GAS_MODE.CANCEL:
+        dispatch(
+          createCancelTransaction(transaction.id, {
+            /** new gas settings */
+          }),
+        );
+        break;
+      case EDIT_GAS_MODE.SPEED_UP:
+        dispatch(
+          createSpeedUpTransaction(transaction.id, {
+            /** new gas settings */
+          }),
+        );
+        break;
+      case EDIT_GAS_MODE.MODIFY_IN_PLACE:
+        dispatch(
+          updateTransaction({
+            ...transaction,
+            txParams: { ...transaction.txParams /** ...newGasSettings */ },
+          }),
+        );
+        break;
+      default:
+        break;
+    }
+
+    closePopover();
   }, [transaction, mode, dispatch, closePopover]);
 
   const title = showEducationContent
