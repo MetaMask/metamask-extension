@@ -3,10 +3,10 @@ import { warn } from 'loglevel';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
 import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
 import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts';
-import { MINUTE, SECOND } from '../../../shared/constants/time';
+import { MINUTE } from '../../../shared/constants/time';
 
 // By default, poll every 3 minutes
-const DEFAULT_INTERVAL = SECOND * 30;
+const DEFAULT_INTERVAL = MINUTE * 3;
 
 /**
  * A controller that polls for token exchange
