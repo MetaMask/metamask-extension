@@ -1238,13 +1238,15 @@ export default class TransactionController extends EventEmitter {
     this._trackMetaMetricsEvent({
       event,
       category: 'Transactions',
-      sensitiveProperties: {
-        type,
-        status,
+      properties: {
+        chain_id: chainId,
         referrer,
         source,
         network,
-        chain_id: chainId,
+        type,
+      },
+      sensitiveProperties: {
+        status,
         transaction_envelope_type: isEIP1559Transaction(txMeta)
           ? 'fee-market'
           : 'legacy',
