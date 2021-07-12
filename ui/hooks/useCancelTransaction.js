@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { showModal, showSidebar } from '../store/actions';
 import { isBalanceSufficient } from '../pages/send/send.utils';
 import { getSelectedAccount, getIsMainnet } from '../selectors';
@@ -34,9 +34,19 @@ export function useCancelTransaction(transactionGroup) {
   const conversionRate = useSelector(getConversionRate);
   const isMainnet = useSelector(getIsMainnet);
   const hideBasic = !(isMainnet || process.env.IN_TEST);
+
+  const [showCancelEditGasPopover, setShowCancelEditGasPopover] = useState(
+    false,
+  );
+
+  const closeCancelEditGasPopover = () => setShowCancelEditGasPopover(false);
+
   const cancelTransaction = useCallback(
     (event) => {
       event.stopPropagation();
+      if (process.env.SHOW_EIP_1559_UI) {
+        return setShowCancelEditGasPopover(true);
+      }
       if (isLegacyTransaction(primaryTransaction)) {
         // To support the current process of cancelling or speeding up
         // a transaction, we have to inform the custom gas state of the new
@@ -88,5 +98,8 @@ export function useCancelTransaction(transactionGroup) {
       conversionRate,
     });
 
-  return [hasEnoughCancelGas, cancelTransaction];
+  return [
+    hasEnoughCancelGas,
+    { cancelTransaction, showCancelEditGasPopover, closeCancelEditGasPopover },
+  ];
 }
