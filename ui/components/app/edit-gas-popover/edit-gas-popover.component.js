@@ -136,7 +136,11 @@ export default function EditGasPopover({
       }
       footer={
         <>
-          <Button type="primary" onClick={onSubmit}>
+          <Button
+            type="primary"
+            onClick={onSubmit}
+            disabled={isMaxFeeError || isMaxPriorityFeeError || isGasTooLow}
+          >
             {footerButtonText}
           </Button>
         </>
