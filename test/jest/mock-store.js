@@ -220,6 +220,7 @@ export const createSwapsMockStore = () => {
         topAggId: null,
         routeState: '',
         swapsFeatureIsLive: false,
+        useNewSwapsApi: false,
       },
     },
     appState: {

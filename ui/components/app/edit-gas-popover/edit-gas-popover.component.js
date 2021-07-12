@@ -28,15 +28,14 @@ export default function EditGasPopover({
    * the modal in testing
    */
   const closePopover = useCallback(() => {
-    if (typeof onClose === 'function') {
-      return onClose();
-    }
-    if (showSidebar) {
+    if (onClose) {
+      onClose();
+    } else if (showSidebar) {
       dispatch(hideSidebar());
     } else {
       dispatch(hideModal());
     }
-  }, [showSidebar, dispatch, onClose]);
+  }, [showSidebar, onClose, dispatch]);
 
   const title = showEducationContent
     ? t('editGasEducationModalTitle')

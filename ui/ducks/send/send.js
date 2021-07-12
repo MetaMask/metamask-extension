@@ -10,7 +10,7 @@ import {
   multiplyCurrencies,
   subtractCurrencies,
 } from '../../../shared/modules/conversion.utils';
-import { GAS_LIMITS } from '../../../shared/constants/gas';
+import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
@@ -40,8 +40,10 @@ import {
   getIsNonStandardEthChain,
 } from '../../selectors';
 import {
+  disconnectGasFeeEstimatePoller,
   displayWarning,
   estimateGas,
+  getGasFeeEstimatesAndStartPolling,
   hideLoadingIndication,
   showConfTxPage,
   showLoadingIndication,
@@ -62,6 +64,7 @@ import {
   SELECTED_ACCOUNT_CHANGED,
   ACCOUNT_CHANGED,
   ADDRESS_BOOK_UPDATED,
+  GAS_FEE_ESTIMATES_UPDATED,
 } from '../../store/actionConstants';
 import {
   calcTokenAmount,
@@ -75,7 +78,7 @@ import {
   isValidDomainName,
 } from '../../helpers/utils/util';
 import { getTokens, getUnapprovedTxs } from '../metamask/metamask';
-import { resetResolution } from '../ens';
+import { resetEnsResolution } from '../ens';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -389,17 +392,44 @@ export const initializeSendState = createAsyncThunk(
     // the getMetaMaskAccounts selector. getTargetAccount consumes this
     // selector and returns the account at the specified address.
     const account = getTargetAccount(state, fromAddress);
-    // Initiate gas slices work to fetch gasPrice estimates. We need to get the
-    // new state after this is set to determine if initialization can proceed.
-    await thunkApi.dispatch(fetchBasicGasEstimates());
-    const {
-      gas: { basicEstimateStatus, basicEstimates },
-    } = thunkApi.getState();
+
     // Default gasPrice to 1 gwei if all estimation fails
-    const gasPrice =
-      basicEstimateStatus === BASIC_ESTIMATE_STATES.READY
-        ? getGasPriceInHexWei(basicEstimates.average)
-        : '0x1';
+    let gasPrice = '0x1';
+    let basicEstimateStatus = BASIC_ESTIMATE_STATES.LOADING;
+    let gasEstimatePollToken = null;
+
+    if (Boolean(process.env.SHOW_EIP_1559_UI) === false) {
+      // Initiate gas slices work to fetch gasPrice estimates. We need to get the
+      // new state after this is set to determine if initialization can proceed.
+      await thunkApi.dispatch(fetchBasicGasEstimates());
+      const {
+        gas: { basicEstimates, basicEstimateStatus: apiBasicEstimateStatus },
+      } = thunkApi.getState();
+
+      basicEstimateStatus = apiBasicEstimateStatus;
+
+      if (basicEstimateStatus === BASIC_ESTIMATE_STATES.READY) {
+        gasPrice = getGasPriceInHexWei(basicEstimates.average);
+      }
+    } else {
+      // Instruct the background process that polling for gas prices should begin
+      gasEstimatePollToken = await getGasFeeEstimatesAndStartPolling();
+      const {
+        metamask: { gasFeeEstimates, gasEstimateType },
+      } = thunkApi.getState();
+
+      if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+        gasPrice = getGasPriceInHexWei(gasFeeEstimates.medium);
+      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+        gasPrice = getGasPriceInHexWei(gasFeeEstimates.gasPrice);
+      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+        gasPrice = getGasPriceInHexWei(
+          gasFeeEstimates.medium.suggestedMaxFeePerGas,
+        );
+      }
+
+      basicEstimateStatus = BASIC_ESTIMATE_STATES.READY;
+    }
     // Set a basic gasLimit in the event that other estimation fails
     let gasLimit =
       asset.type === ASSET_TYPES.TOKEN
@@ -407,12 +437,13 @@ export const initializeSendState = createAsyncThunk(
         : GAS_LIMITS.SIMPLE;
     if (
       basicEstimateStatus === BASIC_ESTIMATE_STATES.READY &&
-      stage !== SEND_STAGES.EDIT
+      stage !== SEND_STAGES.EDIT &&
+      recipient.address
     ) {
       // Run our estimateGasLimit logic to get a more accurate estimation of
       // required gas. If this value isn't nullish, set it as the new gasLimit
       const estimatedGasLimit = await estimateGasLimitForSend({
-        gasPrice: getGasPriceInHexWei(basicEstimates.average),
+        gasPrice,
         blockGasLimit: metamask.blockGasLimit,
         selectedAddress: fromAddress,
         sendToken: asset.details,
@@ -451,6 +482,7 @@ export const initializeSendState = createAsyncThunk(
       gasPrice,
       gasLimit,
       gasTotal: addHexPrefix(calcGasTotal(gasLimit, gasPrice)),
+      gasEstimatePollToken,
     };
   },
 );
@@ -470,6 +502,8 @@ export const initialState = {
   gas: {
     // indicate whether the gas estimate is loading
     isGasEstimateLoading: true,
+    // String token indentifying a listener for polling on the gasFeeController
+    gasEstimatePollToken: null,
     // has the user set custom gas in the custom gas modal
     isCustomGasSet: false,
     // maximum gas needed for tx
@@ -991,6 +1025,10 @@ const slice = createSlice({
         state.gas.gasLimit = action.payload.gasLimit;
         state.gas.gasPrice = action.payload.gasPrice;
         state.gas.gasTotal = action.payload.gasTotal;
+        state.gas.gasEstimatePollToken = action.payload.gasEstimatePollToken;
+        if (action.payload.gasEstimatePollToken) {
+          state.gas.isGasEstimateLoading = false;
+        }
         if (state.stage !== SEND_STAGES.UNINITIALIZED) {
           slice.caseReducers.validateRecipientUserInput(state, {
             payload: {
@@ -1030,9 +1068,11 @@ const slice = createSlice({
         // the gasPrice in our slice. We call into the caseReducer
         // updateGasPrice to also tap into the appropriate follow up checks
         // and gasTotal calculation.
-        slice.caseReducers.updateGasPrice(state, {
-          payload: getGasPriceInHexWei(action.value.average),
-        });
+        if (Boolean(process.env.SHOW_EIP_1559_UI) === false) {
+          slice.caseReducers.updateGasPrice(state, {
+            payload: getGasPriceInHexWei(action.value.average),
+          });
+        }
       })
       .addCase(BASIC_GAS_ESTIMATE_STATUS, (state, action) => {
         // When we fetch gas prices we should temporarily set the form invalid
@@ -1053,6 +1093,28 @@ const slice = createSlice({
             state.gas.isGasEstimateLoading = false;
             slice.caseReducers.validateSendState(state);
         }
+      })
+      .addCase(GAS_FEE_ESTIMATES_UPDATED, (state, action) => {
+        // When the gasFeeController updates its gas fee estimates we need to
+        // update and validate state based on those new values
+        if (process.env.SHOW_EIP_1559_UI) {
+          const { gasFeeEstimates, gasEstimateType } = action.payload;
+          let payload = null;
+          if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+            payload = getGasPriceInHexWei(
+              gasFeeEstimates.medium.suggestedMaxFeePerGas,
+            );
+          } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+            payload = getGasPriceInHexWei(gasFeeEstimates.medium);
+          } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+            payload = getGasPriceInHexWei(gasFeeEstimates.gasPrice);
+          }
+          if (payload) {
+            slice.caseReducers.updateGasPrice(state, {
+              payload,
+            });
+          }
+        }
       });
   },
 });
@@ -1066,21 +1128,26 @@ const {
   useCustomGas,
   updateGasLimit,
   updateGasPrice,
-  resetSendState,
   validateRecipientUserInput,
   updateRecipientSearchMode,
 } = actions;
 
-export {
-  useDefaultGas,
-  useCustomGas,
-  updateGasLimit,
-  updateGasPrice,
-  resetSendState,
-};
+export { useDefaultGas, useCustomGas, updateGasLimit, updateGasPrice };
 
 // Action Creators
 
+export function resetSendState() {
+  return async (dispatch, getState) => {
+    const state = getState();
+    dispatch(actions.resetSendState());
+
+    if (state[name].gas.gasEstimatePollToken) {
+      await disconnectGasFeeEstimatePoller(
+        state[name].gas.gasEstimatePollToken,
+      );
+    }
+  };
+}
 /**
  * Updates the amount the user intends to send and performs side effects.
  * 1. If the current mode is MAX change to INPUT
@@ -1201,12 +1268,9 @@ export function useMyAccountsForRecipientSearch() {
  * @returns {void}
  */
 export function updateRecipient({ address, nickname }) {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     await dispatch(actions.updateRecipient({ address, nickname }));
-    const state = getState();
-    if (state.send.asset.type === ASSET_TYPES.TOKEN) {
-      await dispatch(computeEstimatedGasLimit());
-    }
+    await dispatch(computeEstimatedGasLimit());
   };
 }
 
@@ -1218,7 +1282,7 @@ export function resetRecipientInput() {
   return async (dispatch) => {
     await dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
-    await dispatch(resetResolution());
+    await dispatch(resetEnsResolution());
     await dispatch(validateRecipientUserInput());
   };
 }
