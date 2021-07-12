@@ -1,6 +1,6 @@
 import EventEmitter from 'safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
-import { bufferToHex, keccak, toBuffer } from 'ethereumjs-util';
+import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
 import EthQuery from 'ethjs-query';
 import { ethErrors } from 'eth-rpc-errors';
 import abi from 'human-standard-token-abi';
@@ -20,6 +20,7 @@ import {
 } from '../../lib/util';
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/helpers/constants/error-keys';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/pages/swaps/swaps.util';
+import { hexWEIToDecGWEI } from '../../../../ui/helpers/utils/conversions.util';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
@@ -1232,6 +1233,8 @@ export default class TransactionController extends EventEmitter {
       gasParams.gas_price = gasPrice;
     }
 
+    const gasParamsInGwei = this._getGasValuesInGWEI(gasParams);
+
     this._trackMetaMetricsEvent({
       event,
       category: 'Transactions',
@@ -1247,7 +1250,7 @@ export default class TransactionController extends EventEmitter {
           : 'legacy',
         first_seen: time,
         gas_limit: gasLimit,
-        ...gasParams,
+        ...gasParamsInGwei,
         ...extraParams,
       },
     });
@@ -1255,6 +1258,16 @@ export default class TransactionController extends EventEmitter {
 
   _getTransactionCompletionTime(submittedTime) {
     return Math.round((Date.now() - submittedTime) / 1000).toString();
+  }
+
+  _getGasValuesInGWEI(gasParams) {
+    const gasValuesInGwei = {};
+    for (const param in gasParams) {
+      if (isHexString(gasParams[param])) {
+        gasValuesInGwei[param] = hexWEIToDecGWEI(gasParams[param]);
+      }
+    }
+    return gasValuesInGwei;
   }
 
   _failTransaction(txId, error) {
