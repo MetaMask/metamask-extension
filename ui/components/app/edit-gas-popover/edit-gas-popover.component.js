@@ -2,6 +2,8 @@ import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { useDispatch, useSelector } from 'react-redux';
+import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
+
 import Popover from '../../ui/popover';
 import Button from '../../ui/button';
 import EditGasDisplay from '../edit-gas-display';
@@ -23,9 +25,10 @@ export const EDIT_GAS_MODE = {
 };
 
 export default function EditGasPopover({
-  popoverTitle,
-  confirmButtonText,
-  editGasDisplayProps,
+  popoverTitle = '',
+  confirmButtonText = '',
+  editGasDisplayProps = {},
+  defaultEstimateToUse = 'medium',
   transaction,
   mode,
   onClose,
@@ -33,7 +36,41 @@ export default function EditGasPopover({
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
+
+  const showEducationButton = mode === EDIT_GAS_MODE.MODIFY_IN_PLACE;
   const [showEducationContent, setShowEducationContent] = useState(false);
+
+  const [warning] = useState(null);
+
+  const [showAdvancedForm, setShowAdvancedForm] = useState(false);
+  const [
+    dappSuggestedGasFeeAcknowledged,
+    setDappSuggestedGasFeeAcknowledged,
+  ] = useState(false);
+
+  const {
+    maxPriorityFeePerGas,
+    setMaxPriorityFeePerGas,
+    maxPriorityFeePerGasFiat,
+    maxFeePerGas,
+    setMaxFeePerGas,
+    maxFeePerGasFiat,
+    estimatedMaximumNative,
+    isGasEstimatesLoading,
+    gasFeeEstimates,
+    gasEstimateType,
+    gasPrice,
+    setGasPrice,
+    gasLimit,
+    setGasLimit,
+    estimateToUse,
+    setEstimateToUse,
+    estimatedMinimumFiat,
+    estimatedMaximumFiat,
+    isMaxFeeError,
+    isMaxPriorityFeeError,
+    isGasTooLow,
+  } = useGasFeeInputs(defaultEstimateToUse);
 
   /**
    * Temporary placeholder, this should be managed by the parent component but
@@ -110,8 +147,37 @@ export default function EditGasPopover({
           <EditGasDisplayEducation />
         ) : (
           <EditGasDisplay
-            {...editGasDisplayProps}
+            showEducationButton={showEducationButton}
+            warning={warning}
+            showAdvancedForm={showAdvancedForm}
+            setShowAdvancedForm={setShowAdvancedForm}
+            dappSuggestedGasFeeAcknowledged={dappSuggestedGasFeeAcknowledged}
+            setDappSuggestedGasFeeAcknowledged={
+              setDappSuggestedGasFeeAcknowledged
+            }
+            maxPriorityFeePerGas={maxPriorityFeePerGas}
+            setMaxPriorityFeePerGas={setMaxPriorityFeePerGas}
+            maxPriorityFeePerGasFiat={maxPriorityFeePerGasFiat}
+            maxFeePerGas={maxFeePerGas}
+            setMaxFeePerGas={setMaxFeePerGas}
+            maxFeePerGasFiat={maxFeePerGasFiat}
+            estimatedMaximumNative={estimatedMaximumNative}
+            isGasEstimatesLoading={isGasEstimatesLoading}
+            gasFeeEstimates={gasFeeEstimates}
+            gasEstimateType={gasEstimateType}
+            gasPrice={gasPrice}
+            setGasPrice={setGasPrice}
+            gasLimit={gasLimit}
+            setGasLimit={setGasLimit}
+            estimateToUse={estimateToUse}
+            setEstimateToUse={setEstimateToUse}
+            estimatedMinimumFiat={estimatedMinimumFiat}
+            estimatedMaximumFiat={estimatedMaximumFiat}
+            isMaxFeeError={isMaxFeeError}
+            isMaxPriorityFeeError={isMaxPriorityFeeError}
+            isGasTooLow={isGasTooLow}
             onEducationClick={() => setShowEducationContent(true)}
+            {...editGasDisplayProps}
           />
         )}
       </div>
@@ -123,15 +189,8 @@ EditGasPopover.propTypes = {
   popoverTitle: PropTypes.string,
   editGasDisplayProps: PropTypes.object,
   confirmButtonText: PropTypes.string,
-  showEducationButton: PropTypes.bool,
   onClose: PropTypes.func,
   transaction: PropTypes.object,
   mode: PropTypes.oneOf(Object.values(EDIT_GAS_MODE)),
-};
-
-EditGasPopover.defaultProps = {
-  popoverTitle: '',
-  editGasDisplayProps: {},
-  confirmButtonText: '',
-  showEducationButton: false,
+  defaultEstimateToUse: PropTypes.string,
 };

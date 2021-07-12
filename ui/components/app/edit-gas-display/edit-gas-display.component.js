@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
@@ -19,54 +19,49 @@ import AdvancedGasControls from '../advanced-gas-controls/advanced-gas-controls.
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 
 import { I18nContext } from '../../../contexts/i18n';
-import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 
 export default function EditGasDisplay({
-  alwaysShowForm,
-  type,
-  showEducationButton,
+  alwaysShowForm = false,
+  type = 'customize-gas',
+  showEducationButton = false,
   onEducationClick,
-  dappSuggestedGasFee,
-  dappOrigin,
-  defaultEstimateToUse = 'medium',
+  dappSuggestedGasFee = 0,
+  dappOrigin = '',
+  defaultEstimateToUse,
+  maxPriorityFeePerGas,
+  setMaxPriorityFeePerGas,
+  maxPriorityFeePerGasFiat,
+  maxFeePerGas,
+  setMaxFeePerGas,
+  maxFeePerGasFiat,
+  estimatedMaximumNative,
+  isGasEstimatesLoading,
+  gasFeeEstimates,
+  gasEstimateType,
+  gasPrice,
+  setGasPrice,
+  gasLimit,
+  setGasLimit,
+  estimateToUse,
+  setEstimateToUse,
+  estimatedMinimumFiat,
+  estimatedMaximumFiat,
+  isMaxFeeError,
+  isMaxPriorityFeeError,
+  isGasTooLow,
+  dappSuggestedGasFeeAcknowledged,
+  setDappSuggestedGasFeeAcknowledged,
+  showAdvancedForm,
+  setShowAdvancedForm,
+  warning,
 }) {
   const t = useContext(I18nContext);
-
-  const [warning] = useState(null);
-
-  const [showAdvancedForm, setShowAdvancedForm] = useState(false);
-  const [
-    dappSuggestedGasFeeAcknowledged,
-    setDappSuggestedGasFeeAcknowledged,
-  ] = useState(false);
 
   const requireDappAcknowledgement = Boolean(
     dappSuggestedGasFee && !dappSuggestedGasFeeAcknowledged,
   );
 
-  const {
-    maxPriorityFeePerGas,
-    setMaxPriorityFeePerGas,
-    maxPriorityFeePerGasFiat,
-    maxFeePerGas,
-    setMaxFeePerGas,
-    maxFeePerGasFiat,
-    estimatedMaximumNative,
-    isGasEstimatesLoading,
-    gasFeeEstimates,
-    gasEstimateType,
-    gasPrice,
-    setGasPrice,
-    gasLimit,
-    setGasLimit,
-    estimateToUse,
-    setEstimateToUse,
-    estimatedMinimumFiat,
-    estimatedMaximumFiat,
-    isMaxFeeError,
-    isMaxPriorityFeeError,
-    isGasTooLow,
-  } = useGasFeeInputs(defaultEstimateToUse);
+  console.log('defaultEstimateToUse: ', defaultEstimateToUse);
 
   return (
     <div className="edit-gas-display">
@@ -222,13 +217,31 @@ EditGasDisplay.propTypes = {
   dappSuggestedGasFee: PropTypes.number,
   dappOrigin: PropTypes.string,
   defaultEstimateToUse: PropTypes.oneOf(Object.values(GAS_RECOMMENDATIONS)),
-};
 
-EditGasDisplay.defaultProps = {
-  alwaysShowForm: false,
-  type: 'customize-gas',
-  showEducationButton: false,
-  onEducationClick: undefined,
-  dappSuggestedGasFee: 0,
-  dappOrigin: '',
+  maxPriorityFeePerGas: PropTypes.string,
+  setMaxPriorityFeePerGas: PropTypes.func,
+  maxPriorityFeePerGasFiat: PropTypes.string,
+  maxFeePerGas: PropTypes.string,
+  setMaxFeePerGas: PropTypes.func,
+  maxFeePerGasFiat: PropTypes.string,
+  estimatedMaximumNative: PropTypes.string,
+  isGasEstimatesLoading: PropTypes.boolean,
+  gasFeeEstimates: PropTypes.object,
+  gasEstimateType: PropTypes.string,
+  gasPrice: PropTypes.string,
+  setGasPrice: PropTypes.func,
+  gasLimit: PropTypes.number,
+  setGasLimit: PropTypes.func,
+  estimateToUse: PropTypes.string,
+  setEstimateToUse: PropTypes.func,
+  estimatedMinimumFiat: PropTypes.string,
+  estimatedMaximumFiat: PropTypes.string,
+  isMaxFeeError: PropTypes.boolean,
+  isMaxPriorityFeeError: PropTypes.boolean,
+  isGasTooLow: PropTypes.boolean,
+  dappSuggestedGasFeeAcknowledged: PropTypes.boolean,
+  setDappSuggestedGasFeeAcknowledged: PropTypes.func,
+  showAdvancedForm: PropTypes.bool,
+  setShowAdvancedForm: PropTypes.func,
+  warning: PropTypes.string,
 };
