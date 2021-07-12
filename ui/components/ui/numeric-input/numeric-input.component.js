@@ -4,7 +4,13 @@ import PropTypes from 'prop-types';
 import Typography from '../typography/typography';
 import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
-export default function NumericInput({ detailText, value, onChange, error }) {
+export default function NumericInput({
+  detailText,
+  value,
+  onChange,
+  error,
+  autoFocus,
+}) {
   return (
     <div
       className={classNames('numeric-input', { 'numeric-input--error': error })}
@@ -12,8 +18,9 @@ export default function NumericInput({ detailText, value, onChange, error }) {
       <input
         type="number"
         value={value}
-        onChange={(e) => onChange?.(Number(e.target.value))}
+        onChange={(e) => onChange?.(parseInt(e.target.value, 10))}
         min="0"
+        autoFocus={autoFocus}
       />
       {detailText && (
         <Typography color={COLORS.UI4} variant={TYPOGRAPHY.H7} tag="span">
@@ -29,6 +36,7 @@ NumericInput.propTypes = {
   detailText: PropTypes.string,
   onChange: PropTypes.func,
   error: PropTypes.string,
+  autoFocus: PropTypes.bool,
 };
 
 NumericInput.defaultProps = {
@@ -36,4 +44,5 @@ NumericInput.defaultProps = {
   detailText: '',
   onChange: undefined,
   error: '',
+  autoFocus: false,
 };
