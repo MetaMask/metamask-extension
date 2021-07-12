@@ -1386,4 +1386,28 @@ describe('Transaction Controller', function () {
       );
     });
   });
+
+  describe('#_getTransactionCompletionTime', function () {
+    let nowStub;
+
+    beforeEach(function () {
+      nowStub = sinon.stub(Date, 'now').returns(1625782016341);
+    });
+
+    afterEach(function () {
+      nowStub.restore();
+    });
+
+    it('calculates completion time (one)', function () {
+      const submittedTime = 1625781997397;
+      const result = txController._getTransactionCompletionTime(submittedTime);
+      assert.equal(result, '19');
+    });
+
+    it('calculates completion time (two)', function () {
+      const submittedTime = 1625781995397;
+      const result = txController._getTransactionCompletionTime(submittedTime);
+      assert.equal(result, '21');
+    });
+  });
 });

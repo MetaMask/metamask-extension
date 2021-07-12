@@ -669,15 +669,12 @@ export default class TransactionController extends EventEmitter {
       this._markNonceDuplicatesDropped(txId);
 
       const { submittedTime } = txMeta;
-      const { blockNumber } = txReceipt;
       const metricsParams = { gas_used: gasUsed };
-      const completionTime = await this._getTransactionCompletionTime(
-        blockNumber,
-        submittedTime,
-      );
 
-      if (completionTime) {
-        metricsParams.completion_time = completionTime;
+      if (submittedTime) {
+        metricsParams.completion_time = this._getTransactionCompletionTime(
+          submittedTime,
+        );
       }
 
       if (txReceipt.status === '0x0') {
@@ -1105,20 +1102,8 @@ export default class TransactionController extends EventEmitter {
     });
   }
 
-  async _getTransactionCompletionTime(blockNumber, submittedTime) {
-    const transactionBlock = await this.query.getBlockByNumber(
-      blockNumber.toString(16),
-      false,
-    );
-
-    if (!transactionBlock) {
-      return '';
-    }
-
-    return new BigNumber(transactionBlock.timestamp, 10)
-      .minus(submittedTime / 1000)
-      .round()
-      .toString(10);
+  _getTransactionCompletionTime(submittedTime) {
+    return Math.round((Date.now() - submittedTime) / 1000).toString();
   }
 
   _failTransaction(txId, error) {
