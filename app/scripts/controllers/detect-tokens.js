@@ -4,10 +4,10 @@ import { warn } from 'loglevel';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
 import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
 import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts';
-import { MINUTE } from '../../../shared/constants/time';
+import { MINUTE, SECOND } from '../../../shared/constants/time';
 
 // By default, poll every 3 minutes
-const DEFAULT_INTERVAL = MINUTE * 3;
+const DEFAULT_INTERVAL = SECOND * 30;
 
 /**
  * A controller that polls for token exchange
@@ -91,6 +91,10 @@ export default class DetectTokensController {
       });
     });
   }
+
+  /**
+   * For each token in tokenlist ptovided by the TokenListController, find check selectedAddress balance.
+   */
   async detectNewTokensFromAPI() {
     if (!this.isActive) {
       return;
@@ -105,6 +109,10 @@ export default class DetectTokensController {
     const tokensAddressForBalance = [];
     const tokensToDetect = {};
     this.web3.setProvider(this._network._provider);
+    console.log(
+      `isStatic: `,
+      Object.keys(this._tokenList.state.tokensChainsCache),
+    );
     const apiTokens = this._tokenList.state.tokenList;
     for (const tokenAddress in apiTokens) {
       if (
