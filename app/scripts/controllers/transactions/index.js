@@ -24,6 +24,7 @@ import { hexWEIToDecGWEI } from '../../../../ui/helpers/utils/conversions.util';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
+  TRANSACTION_ENVELOPE_TYPES,
 } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
@@ -727,7 +728,11 @@ export default class TransactionController extends EventEmitter {
     const txMeta = this.txStateManager.getTransaction(txId);
     // add network/chain id
     const chainId = this.getChainId();
+    const type = isEIP1559Transaction(txMeta)
+      ? TRANSACTION_ENVELOPE_TYPES.FEE_MARKET
+      : TRANSACTION_ENVELOPE_TYPES.LEGACY;
     const txParams = {
+      type,
       ...txMeta.txParams,
       chainId,
       gasLimit: txMeta.txParams.gas,
