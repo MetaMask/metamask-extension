@@ -10,7 +10,6 @@ import {
   setCustomGasPrice,
   setCustomGasLimit,
   resetCustomData,
-  fetchBasicGasEstimates,
 } from '../../../../ducks/gas/gas.duck';
 import {
   getSendMaxModeState,
@@ -225,7 +224,6 @@ const mapDispatchToProps = (dispatch) => {
       return dispatch(createSpeedUpTransaction(txId, customGasSettings));
     },
     hideSidebar: () => dispatch(hideSidebar()),
-    fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
   };
 };
 

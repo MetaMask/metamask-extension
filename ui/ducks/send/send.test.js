@@ -10,9 +10,8 @@ import {
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   NEGATIVE_ETH_ERROR,
 } from '../../pages/send/send.constants';
-import { BASIC_ESTIMATE_STATES } from '../gas/gas.duck';
 import { RINKEBY_CHAIN_ID } from '../../../shared/constants/network';
-import { GAS_LIMITS } from '../../../shared/constants/gas';
+import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
 import sendReducer, {
   initialState,
@@ -953,6 +952,11 @@ describe('Send Slice', () => {
       it('should dispatch async action thunk first with pending, then finally fulfilling from minimal state', async () => {
         getState = jest.fn().mockReturnValue({
           metamask: {
+            gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
+            gasFeeEstimates: {},
+            networkDetails: {
+              EIPS: {},
+            },
             accounts: {
               '0xAddress': {
                 address: '0xAddress',
@@ -970,6 +974,7 @@ describe('Send Slice', () => {
             },
           },
           send: initialState,
+
           gas: {
             basicEstimateStatus: 'LOADING',
             basicEstimatesStatus: {
@@ -983,12 +988,12 @@ describe('Send Slice', () => {
         const action = initializeSendState();
         await action(dispatchSpy, getState, undefined);
 
-        expect(dispatchSpy).toHaveBeenCalledTimes(4);
+        expect(dispatchSpy).toHaveBeenCalledTimes(3);
 
         expect(dispatchSpy.mock.calls[0][0].type).toStrictEqual(
           'send/initializeSendState/pending',
         );
-        expect(dispatchSpy.mock.calls[3][0].type).toStrictEqual(
+        expect(dispatchSpy.mock.calls[2][0].type).toStrictEqual(
           'send/initializeSendState/fulfilled',
         );
       });
@@ -1007,9 +1012,12 @@ describe('Send Slice', () => {
         };
 
         const action = {
-          type: 'metamask/gas/SET_BASIC_GAS_ESTIMATE_DATA',
-          value: {
-            average: '1',
+          type: 'GAS_FEE_ESTIMATES_UPDATED',
+          payload: {
+            gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+            gasFeeEstimates: {
+              medium: '1',
+            },
           },
         };
 
@@ -1018,40 +1026,6 @@ describe('Send Slice', () => {
         expect(result.gas.gasPrice).toStrictEqual('0x3b9aca00'); // 1000000000
         expect(result.gas.gasLimit).toStrictEqual(gasState.gas.gasLimit);
         expect(result.gas.gasTotal).toStrictEqual('0x1319718a5000');
-      });
-    });
-
-    describe('BASIC_GAS_ESTIMATE_STATUS', () => {
-      it('should invalidate the send status when status is LOADING', () => {
-        const validSendStatusState = {
-          ...initialState,
-          status: SEND_STATUSES.VALID,
-        };
-
-        const action = {
-          type: 'metamask/gas/BASIC_GAS_ESTIMATE_STATUS',
-          value: BASIC_ESTIMATE_STATES.LOADING,
-        };
-
-        const result = sendReducer(validSendStatusState, action);
-
-        expect(result.status).not.toStrictEqual(validSendStatusState.status);
-      });
-
-      it('should invalidate the send status when status is FAILED and use INLINE gas input mode', () => {
-        const validSendStatusState = {
-          ...initialState,
-          status: SEND_STATUSES.VALID,
-        };
-
-        const action = {
-          type: 'metamask/gas/BASIC_GAS_ESTIMATE_STATUS',
-          value: BASIC_ESTIMATE_STATES.FAILED,
-        };
-
-        const result = sendReducer(validSendStatusState, action);
-
-        expect(result.status).not.toStrictEqual(validSendStatusState.status);
       });
     });
   });

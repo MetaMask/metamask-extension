@@ -25,6 +25,10 @@ import {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
+import {
+  disconnectGasFeeEstimatePoller,
+  getGasFeeEstimatesAndStartPolling,
+} from '../../store/actions';
 import ConfTx from './conf-tx';
 
 export default class ConfirmTransaction extends Component {
@@ -38,7 +42,6 @@ export default class ConfirmTransaction extends Component {
     sendTo: PropTypes.string,
     setTransactionToConfirm: PropTypes.func,
     clearConfirmTransaction: PropTypes.func,
-    fetchBasicGasEstimates: PropTypes.func,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     transaction: PropTypes.object,
     getContractMethodData: PropTypes.func,
@@ -56,7 +59,6 @@ export default class ConfirmTransaction extends Component {
       history,
       mostRecentOverviewPage,
       transaction: { txParams: { data, to } = {} } = {},
-      fetchBasicGasEstimates,
       getContractMethodData,
       transactionId,
       paramsTransactionId,
@@ -64,12 +66,15 @@ export default class ConfirmTransaction extends Component {
       isTokenMethodAction,
     } = this.props;
 
+    getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
+      this.setState({ pollingToken });
+    });
+
     if (!totalUnapprovedCount && !sendTo) {
       history.replace(mostRecentOverviewPage);
       return;
     }
 
-    fetchBasicGasEstimates();
     getContractMethodData(data);
     if (isTokenMethodAction) {
       getTokenParams(to);
@@ -77,6 +82,12 @@ export default class ConfirmTransaction extends Component {
     const txId = transactionId || paramsTransactionId;
     if (txId) {
       this.props.setTransactionToConfirm(txId);
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.state.pollingToken) {
+      disconnectGasFeeEstimatePoller(this.state.pollingToken);
     }
   }
 

@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import PageContainer from '../../../ui/page-container';
 import { Tabs, Tab } from '../../../ui/tabs';
+import {
+  disconnectGasFeeEstimatePoller,
+  getGasFeeEstimatesAndStartPolling,
+} from '../../../../store/actions';
 import AdvancedTabContent from './advanced-tab-content';
 import BasicTabContent from './basic-tab-content';
 
@@ -17,7 +21,6 @@ export default class GasModalPageContainer extends Component {
     updateCustomGasPrice: PropTypes.func,
     updateCustomGasLimit: PropTypes.func,
     insufficientBalance: PropTypes.bool,
-    fetchBasicGasEstimates: PropTypes.func,
     gasPriceButtonGroupProps: PropTypes.object,
     infoRowProps: PropTypes.shape({
       originalTotalFiat: PropTypes.string,
@@ -39,7 +42,15 @@ export default class GasModalPageContainer extends Component {
   };
 
   componentDidMount() {
-    this.props.fetchBasicGasEstimates();
+    getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
+      this.setState({ pollingToken });
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.state.pollingToken) {
+      disconnectGasFeeEstimatePoller(this.state.pollingToken);
+    }
   }
 
   renderBasicTabContent(gasPriceButtonGroupProps) {

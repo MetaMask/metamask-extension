@@ -50,15 +50,7 @@ import {
   updateTokenType,
   updateTransaction,
 } from '../../store/actions';
-import {
-  fetchBasicGasEstimates,
-  setCustomGasLimit,
-  BASIC_ESTIMATE_STATES,
-} from '../gas/gas.duck';
-import {
-  SET_BASIC_GAS_ESTIMATE_DATA,
-  BASIC_GAS_ESTIMATE_STATUS,
-} from '../gas/gas-action-constants';
+import { setCustomGasLimit } from '../gas/gas.duck';
 import {
   QR_CODE_DETECTED,
   SELECTED_ACCOUNT_CHANGED,
@@ -395,48 +387,31 @@ export const initializeSendState = createAsyncThunk(
 
     // Default gasPrice to 1 gwei if all estimation fails
     let gasPrice = '0x1';
-    let basicEstimateStatus = BASIC_ESTIMATE_STATES.LOADING;
     let gasEstimatePollToken = null;
 
-    if (Boolean(process.env.SHOW_EIP_1559_UI) === false) {
-      // Initiate gas slices work to fetch gasPrice estimates. We need to get the
-      // new state after this is set to determine if initialization can proceed.
-      await thunkApi.dispatch(fetchBasicGasEstimates());
-      const {
-        gas: { basicEstimates, basicEstimateStatus: apiBasicEstimateStatus },
-      } = thunkApi.getState();
+    // Instruct the background process that polling for gas prices should begin
+    gasEstimatePollToken = await getGasFeeEstimatesAndStartPolling();
+    const {
+      metamask: { gasFeeEstimates, gasEstimateType },
+    } = thunkApi.getState();
 
-      basicEstimateStatus = apiBasicEstimateStatus;
-
-      if (basicEstimateStatus === BASIC_ESTIMATE_STATES.READY) {
-        gasPrice = getGasPriceInHexWei(basicEstimates.average);
-      }
-    } else {
-      // Instruct the background process that polling for gas prices should begin
-      gasEstimatePollToken = await getGasFeeEstimatesAndStartPolling();
-      const {
-        metamask: { gasFeeEstimates, gasEstimateType },
-      } = thunkApi.getState();
-
-      if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
-        gasPrice = getGasPriceInHexWei(gasFeeEstimates.medium);
-      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
-        gasPrice = getGasPriceInHexWei(gasFeeEstimates.gasPrice);
-      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
-        gasPrice = getGasPriceInHexWei(
-          gasFeeEstimates.medium.suggestedMaxFeePerGas,
-        );
-      }
-
-      basicEstimateStatus = BASIC_ESTIMATE_STATES.READY;
+    if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+      gasPrice = getGasPriceInHexWei(gasFeeEstimates.medium);
+    } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+      gasPrice = getGasPriceInHexWei(gasFeeEstimates.gasPrice);
+    } else if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+      gasPrice = getGasPriceInHexWei(
+        gasFeeEstimates.medium.suggestedMaxFeePerGas,
+      );
     }
+
     // Set a basic gasLimit in the event that other estimation fails
     let gasLimit =
       asset.type === ASSET_TYPES.TOKEN
         ? GAS_LIMITS.BASE_TOKEN_ESTIMATE
         : GAS_LIMITS.SIMPLE;
     if (
-      basicEstimateStatus === BASIC_ESTIMATE_STATES.READY &&
+      gasEstimateType !== GAS_ESTIMATE_TYPES.NONE &&
       stage !== SEND_STAGES.EDIT &&
       recipient.address
     ) {
@@ -1063,57 +1038,24 @@ const slice = createSlice({
           });
         }
       })
-      .addCase(SET_BASIC_GAS_ESTIMATE_DATA, (state, action) => {
-        // When we receive a new gasPrice via the gas duck we need to update
-        // the gasPrice in our slice. We call into the caseReducer
-        // updateGasPrice to also tap into the appropriate follow up checks
-        // and gasTotal calculation.
-        if (Boolean(process.env.SHOW_EIP_1559_UI) === false) {
-          slice.caseReducers.updateGasPrice(state, {
-            payload: getGasPriceInHexWei(action.value.average),
-          });
-        }
-      })
-      .addCase(BASIC_GAS_ESTIMATE_STATUS, (state, action) => {
-        // When we fetch gas prices we should temporarily set the form invalid
-        // Once the price updates we get that value in the
-        // SET_BASIC_GAS_ESTIMATE_DATA extraReducer above. Finally as long as
-        // the state is 'READY' we will revalidate the form.
-        switch (action.value) {
-          case BASIC_ESTIMATE_STATES.FAILED:
-            state.status = SEND_STATUSES.INVALID;
-            state.gas.isGasEstimateLoading = true;
-            break;
-          case BASIC_ESTIMATE_STATES.LOADING:
-            state.status = SEND_STATUSES.INVALID;
-            state.gas.isGasEstimateLoading = true;
-            break;
-          case BASIC_ESTIMATE_STATES.READY:
-          default:
-            state.gas.isGasEstimateLoading = false;
-            slice.caseReducers.validateSendState(state);
-        }
-      })
       .addCase(GAS_FEE_ESTIMATES_UPDATED, (state, action) => {
         // When the gasFeeController updates its gas fee estimates we need to
         // update and validate state based on those new values
-        if (process.env.SHOW_EIP_1559_UI) {
-          const { gasFeeEstimates, gasEstimateType } = action.payload;
-          let payload = null;
-          if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
-            payload = getGasPriceInHexWei(
-              gasFeeEstimates.medium.suggestedMaxFeePerGas,
-            );
-          } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
-            payload = getGasPriceInHexWei(gasFeeEstimates.medium);
-          } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
-            payload = getGasPriceInHexWei(gasFeeEstimates.gasPrice);
-          }
-          if (payload) {
-            slice.caseReducers.updateGasPrice(state, {
-              payload,
-            });
-          }
+        const { gasFeeEstimates, gasEstimateType } = action.payload;
+        let payload = null;
+        if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+          payload = getGasPriceInHexWei(
+            gasFeeEstimates.medium.suggestedMaxFeePerGas,
+          );
+        } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+          payload = getGasPriceInHexWei(gasFeeEstimates.medium);
+        } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+          payload = getGasPriceInHexWei(gasFeeEstimates.gasPrice);
+        }
+        if (payload) {
+          slice.caseReducers.updateGasPrice(state, {
+            payload,
+          });
         }
       });
   },
