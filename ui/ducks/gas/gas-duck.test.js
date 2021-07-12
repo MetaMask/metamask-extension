@@ -1,21 +1,10 @@
-import nock from 'nock';
 import sinon from 'sinon';
-import BN from 'bn.js';
 
-import GasReducer, {
-  setBasicEstimateStatus,
-  setBasicGasEstimateData,
-  setCustomGasPrice,
-  setCustomGasLimit,
-  fetchBasicGasEstimates,
-} from './gas.duck';
+import GasReducer, { setCustomGasPrice, setCustomGasLimit } from './gas.duck';
 
 import {
-  BASIC_GAS_ESTIMATE_STATUS,
-  SET_BASIC_GAS_ESTIMATE_DATA,
   SET_CUSTOM_GAS_PRICE,
   SET_CUSTOM_GAS_LIMIT,
-  SET_ESTIMATE_SOURCE,
 } from './gas-action-constants';
 
 describe('Gas Duck', () => {
@@ -40,15 +29,6 @@ describe('Gas Duck', () => {
       price: null,
       limit: null,
     },
-  };
-
-  const providerState = {
-    chainId: '0x1',
-    nickname: '',
-    rpcPrefs: {},
-    rpcUrl: '',
-    ticker: 'ETH',
-    type: 'mainnet',
   };
 
   describe('GasReducer()', () => {
