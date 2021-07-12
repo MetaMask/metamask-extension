@@ -6,7 +6,7 @@ import { mapValues, cloneDeep } from 'lodash';
 import abi from 'human-standard-token-abi';
 import { calcTokenAmount } from '../../../ui/helpers/utils/token-util';
 import { calcGasTotal } from '../../../ui/pages/send/send.utils';
-import { conversionUtil } from '../../../ui/helpers/utils/conversion-util';
+import { conversionUtil } from '../../../shared/modules/conversion.utils';
 import {
   DEFAULT_ERC20_APPROVE_GAS,
   QUOTES_EXPIRED_ERROR,

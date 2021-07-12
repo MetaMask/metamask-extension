@@ -4,7 +4,19 @@ export const createSwapsMockStore = () => {
   return {
     swaps: {
       customGas: {
+        limit: '0x0',
         fallBackPrice: 5,
+        priceEstimates: {
+          blockTime: 14.1,
+          safeLow: 2.5,
+          safeLowWait: 6.6,
+          average: 4,
+          avgWait: 5.3,
+          fast: 5,
+          fastWait: 3.3,
+          fastest: 10,
+          fastestWait: 0.5,
+        },
       },
       fromToken: 'ETH',
     },
@@ -84,7 +96,108 @@ export const createSwapsMockStore = () => {
         },
       ],
       swapsState: {
-        quotes: {},
+        quotes: {
+          TEST_AGG_1: {
+            trade: {
+              from: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
+              value: '0x0',
+              gas: '0x61a80', // 4e5
+              to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
+            },
+            sourceAmount: '10000000000000000000', // 10e18
+            destinationAmount: '20000000000000000000', // 20e18
+            error: null,
+            sourceToken: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            destinationToken: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            approvalNeeded: null,
+            maxGas: 600000,
+            averageGas: 120000,
+            estimatedRefund: 80000,
+            fetchTime: 607,
+            aggregator: 'TEST_AGG_1',
+            aggType: 'AGG',
+            slippage: 2,
+            sourceTokenInfo: {
+              address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+              symbol: 'DAI',
+              decimals: 18,
+              iconUrl: 'https://foo.bar/logo.png',
+            },
+            destinationTokenInfo: {
+              address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              symbol: 'USDC',
+              decimals: 18,
+            },
+            fee: 1,
+          },
+
+          TEST_AGG_BEST: {
+            trade: {
+              from: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
+              value: '0x0',
+              gas: '0x61a80',
+              to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
+            },
+            sourceAmount: '10000000000000000000',
+            destinationAmount: '25000000000000000000', // 25e18
+            error: null,
+            sourceToken: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            destinationToken: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            approvalNeeded: null,
+            maxGas: 1100000,
+            averageGas: 411000,
+            estimatedRefund: 343090,
+            fetchTime: 1003,
+            aggregator: 'TEST_AGG_BEST',
+            aggType: 'AGG',
+            slippage: 2,
+            sourceTokenInfo: {
+              address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+              symbol: 'DAI',
+              decimals: 18,
+              iconUrl: 'https://foo.bar/logo.png',
+            },
+            destinationTokenInfo: {
+              address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              symbol: 'USDC',
+              decimals: 18,
+            },
+            fee: 1,
+          },
+          TEST_AGG_2: {
+            trade: {
+              from: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
+              value: '0x0',
+              gas: '0x61a80',
+              to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
+            },
+            sourceAmount: '10000000000000000000',
+            destinationAmount: '22000000000000000000', // 22e18
+            error: null,
+            sourceToken: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            destinationToken: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            approvalNeeded: null,
+            maxGas: 368000,
+            averageGas: 197000,
+            estimatedRefund: 18205,
+            fetchTime: 1354,
+            aggregator: 'TEST_AGG_2',
+            aggType: 'AGG',
+            slippage: 2,
+            sourceTokenInfo: {
+              address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+              symbol: 'DAI',
+              decimals: 18,
+              iconUrl: 'https://foo.bar/logo.png',
+            },
+            destinationTokenInfo: {
+              address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              symbol: 'USDC',
+              decimals: 18,
+            },
+            fee: 1,
+          },
+        },
         fetchParams: {
           metaData: {
             sourceTokenInfo: {
@@ -97,16 +210,29 @@ export const createSwapsMockStore = () => {
         },
         tradeTxId: null,
         approveTxId: null,
-        quotesLastFetched: null,
+        quotesLastFetched: 1519211809934,
+        swapsQuoteRefreshTime: 60000,
         customMaxGas: '',
         customGasPrice: null,
-        selectedAggId: null,
+        selectedAggId: 'TEST_AGG_2',
         customApproveTxData: '',
         errorKey: '',
         topAggId: null,
         routeState: '',
         swapsFeatureIsLive: false,
         useNewSwapsApi: false,
+      },
+    },
+    appState: {
+      modal: {
+        open: true,
+        modalState: {
+          name: 'test',
+          props: {
+            initialGasLimit: 100,
+            minimumGasLimit: 5,
+          },
+        },
       },
     },
   };

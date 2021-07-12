@@ -77,10 +77,10 @@ describe('useCancelTransaction', function () {
         ).toStrictEqual(transactionId);
 
         // call onSubmit myself
-        dispatchAction[dispatchAction.length - 1][0].value.props.onSubmit(
-          GAS_LIMITS.SIMPLE,
-          '0x1',
-        );
+        dispatchAction[dispatchAction.length - 1][0].value.props.onSubmit({
+          gasLimit: GAS_LIMITS.SIMPLE,
+          gasPrice: '0x1',
+        });
 
         expect(
           dispatch.calledWith(
@@ -88,8 +88,10 @@ describe('useCancelTransaction', function () {
               name: 'CANCEL_TRANSACTION',
               transactionId,
               newGasFee: GAS_LIMITS.SIMPLE,
-              defaultNewGasPrice: '0x1',
-              gasLimit: GAS_LIMITS.SIMPLE,
+              customGasSettings: {
+                gasPrice: '0x1',
+                gasLimit: GAS_LIMITS.SIMPLE,
+              },
             }),
           ),
         ).toStrictEqual(true);
@@ -147,10 +149,10 @@ describe('useCancelTransaction', function () {
             .id,
         ).toStrictEqual(transactionId);
 
-        dispatchAction[dispatchAction.length - 1][0].value.props.onSubmit(
-          GAS_LIMITS.SIMPLE,
-          '0x1',
-        );
+        dispatchAction[dispatchAction.length - 1][0].value.props.onSubmit({
+          gasLimit: GAS_LIMITS.SIMPLE,
+          gasPrice: '0x1',
+        });
 
         expect(
           dispatch.calledWith(
@@ -158,8 +160,10 @@ describe('useCancelTransaction', function () {
               name: 'CANCEL_TRANSACTION',
               transactionId,
               newGasFee: GAS_LIMITS.SIMPLE,
-              defaultNewGasPrice: '0x1',
-              gasLimit: GAS_LIMITS.SIMPLE,
+              customGasSettings: {
+                gasPrice: '0x1',
+                gasLimit: GAS_LIMITS.SIMPLE,
+              },
             }),
           ),
         ).toStrictEqual(true);

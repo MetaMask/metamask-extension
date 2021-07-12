@@ -22,6 +22,7 @@ import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import { hexToDecimal } from '../../helpers/utils/conversions.util';
 import AdvancedGasInputs from '../../components/app/gas-customization/advanced-gas-inputs';
 import TextField from '../../components/ui/text-field';
+import AdvancedGasControls from '../../components/app/advanced-gas-controls';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
@@ -29,6 +30,10 @@ import {
 import { getTransactionTypeTitle } from '../../helpers/utils/transactions.util';
 import ErrorMessage from '../../components/ui/error-message';
 import { toBuffer } from '../../../shared/modules/buffer-utils';
+
+import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
+import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
+import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -50,7 +55,6 @@ export default class ConfirmTransactionBase extends Component {
     hexTransactionAmount: PropTypes.string,
     hexTransactionFee: PropTypes.string,
     hexTransactionTotal: PropTypes.string,
-    isTxReprice: PropTypes.bool,
     methodData: PropTypes.object,
     nonce: PropTypes.string,
     useNonceField: PropTypes.bool,
@@ -109,6 +113,7 @@ export default class ConfirmTransactionBase extends Component {
     submitError: null,
     submitWarning: '',
     ethGasPriceWarning: '',
+    editingGas: false,
   };
 
   componentDidUpdate(prevProps) {
@@ -255,7 +260,17 @@ export default class ConfirmTransactionBase extends Component {
       },
     });
 
-    showCustomizeGasModal();
+    if (process.env.SHOW_EIP_1559_UI) {
+      this.setState({ editingGas: true });
+    } else {
+      showCustomizeGasModal();
+    }
+  }
+
+  // TODO: rename this 'handleCloseEditGas' later when we remove the
+  // SHOW_EIP_1559_UI flag/branch
+  handleCloseNewGasPopover() {
+    this.setState({ editingGas: false });
   }
 
   renderDetails() {
@@ -278,50 +293,139 @@ export default class ConfirmTransactionBase extends Component {
       isEthGasPrice,
       noGasPrice,
     } = this.props;
+    const { t } = this.context;
 
     const notMainnetOrTest = !(isMainnet || process.env.IN_TEST);
     const gasPriceFetchFailure = isEthGasPrice || noGasPrice;
+
+    const inlineGasControls = process.env.SHOW_EIP_1559_UI ? (
+      <AdvancedGasControls />
+    ) : (
+      <AdvancedGasInputs
+        updateCustomGasPrice={(newGasPrice) =>
+          updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })
+        }
+        updateCustomGasLimit={(newGasLimit) =>
+          updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })
+        }
+        customGasPrice={customGas.gasPrice}
+        customGasLimit={customGas.gasLimit}
+        insufficientBalance={insufficientBalance}
+        customPriceIsSafe
+        isSpeedUp={false}
+      />
+    );
+
+    const nonceField = useNonceField ? (
+      <div>
+        <div className="confirm-detail-row">
+          <div className="confirm-detail-row__label">
+            {t('nonceFieldHeading')}
+          </div>
+          <div className="custom-nonce-input">
+            <TextField
+              type="number"
+              min="0"
+              placeholder={
+                typeof nextNonce === 'number' ? nextNonce.toString() : null
+              }
+              onChange={({ target: { value } }) => {
+                if (!value.length || Number(value) < 0) {
+                  updateCustomNonce('');
+                } else {
+                  updateCustomNonce(String(Math.floor(value)));
+                }
+                getNextNonce();
+              }}
+              fullWidth
+              margin="dense"
+              value={customNonceValue || ''}
+            />
+          </div>
+        </div>
+      </div>
+    ) : null;
+
+    if (process.env.SHOW_EIP_1559_UI) {
+      return (
+        <div className="confirm-page-container-content__details">
+          <TransactionDetail
+            rows={[
+              <TransactionDetailItem
+                key="gas-item"
+                detailTitle={
+                  <>
+                    {t('transactionDetailGasHeading')}
+                    <InfoTooltip contentText="" position="top">
+                      <i className="fa fa-info-circle" />
+                    </InfoTooltip>
+                  </>
+                }
+                detailText={
+                  <UserPreferencedCurrencyDisplay
+                    type={PRIMARY}
+                    value={hexTransactionFee}
+                    hideLabel={false}
+                  />
+                }
+                detailTotal={
+                  <UserPreferencedCurrencyDisplay
+                    type={SECONDARY}
+                    value={hexTransactionFee}
+                    hideLabel
+                  />
+                }
+              />,
+              <TransactionDetailItem
+                key="total-item"
+                detailTitle={t('total')}
+                detailText={
+                  <UserPreferencedCurrencyDisplay
+                    type={PRIMARY}
+                    value={hexTransactionTotal}
+                    hideLabel={false}
+                  />
+                }
+                detailTotal={
+                  <UserPreferencedCurrencyDisplay
+                    type={SECONDARY}
+                    value={hexTransactionTotal}
+                    hideLabel
+                  />
+                }
+                subTitle={t('transactionDetailGasTotalSubtitle')}
+              />,
+            ]}
+          />
+        </div>
+      );
+    }
+    const showInlineControls = process.env.SHOW_EIP_1559_UI
+      ? advancedInlineGasShown
+      : advancedInlineGasShown || notMainnetOrTest || gasPriceFetchFailure;
+
+    const showGasEditButton = process.env.SHOW_EIP_1559_UI
+      ? !showInlineControls
+      : !(notMainnetOrTest || gasPriceFetchFailure);
 
     return (
       <div className="confirm-page-container-content__details">
         <div className="confirm-page-container-content__gas-fee">
           <ConfirmDetailRow
-            label="Gas Fee"
+            label={t('gasFee')}
             value={hexTransactionFee}
-            headerText={notMainnetOrTest || gasPriceFetchFailure ? '' : 'Edit'}
+            headerText={showGasEditButton ? 'Edit' : ''}
             headerTextClassName={
-              notMainnetOrTest || gasPriceFetchFailure
-                ? ''
-                : 'confirm-detail-row__header-text--edit'
+              showGasEditButton ? 'confirm-detail-row__header-text--edit' : ''
             }
             onHeaderClick={
-              notMainnetOrTest || gasPriceFetchFailure
-                ? null
-                : () => this.handleEditGas()
+              showGasEditButton ? () => this.handleEditGas() : null
             }
             secondaryText={
-              hideFiatConversion
-                ? this.context.t('noConversionRateAvailable')
-                : ''
+              hideFiatConversion ? t('noConversionRateAvailable') : ''
             }
           />
-          {advancedInlineGasShown ||
-          notMainnetOrTest ||
-          gasPriceFetchFailure ? (
-            <AdvancedGasInputs
-              updateCustomGasPrice={(newGasPrice) =>
-                updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })
-              }
-              updateCustomGasLimit={(newGasLimit) =>
-                updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })
-              }
-              customGasPrice={customGas.gasPrice}
-              customGasLimit={customGas.gasLimit}
-              insufficientBalance={insufficientBalance}
-              customPriceIsSafe
-              isSpeedUp={false}
-            />
-          ) : null}
+          {showInlineControls ? inlineGasControls : null}
           {noGasPrice ? (
             <div className="confirm-page-container-content__error-container">
               <ErrorMessage errorKey={GAS_PRICE_FETCH_FAILURE_ERROR_KEY} />
@@ -334,48 +438,20 @@ export default class ConfirmTransactionBase extends Component {
           }
         >
           <ConfirmDetailRow
-            label="Total"
+            label={t('total')}
             value={hexTransactionTotal}
             primaryText={primaryTotalTextOverride}
             secondaryText={
               hideFiatConversion
-                ? this.context.t('noConversionRateAvailable')
+                ? t('noConversionRateAvailable')
                 : secondaryTotalTextOverride
             }
-            headerText="Amount + Gas Fee"
+            headerText={t('amountGasFee')}
             headerTextClassName="confirm-detail-row__header-text--total"
             primaryValueTextColor="#2f9ae0"
           />
         </div>
-        {useNonceField ? (
-          <div>
-            <div className="confirm-detail-row">
-              <div className="confirm-detail-row__label">
-                {this.context.t('nonceFieldHeading')}
-              </div>
-              <div className="custom-nonce-input">
-                <TextField
-                  type="number"
-                  min="0"
-                  placeholder={
-                    typeof nextNonce === 'number' ? nextNonce.toString() : null
-                  }
-                  onChange={({ target: { value } }) => {
-                    if (!value.length || Number(value) < 0) {
-                      updateCustomNonce('');
-                    } else {
-                      updateCustomNonce(String(Math.floor(value)));
-                    }
-                    getNextNonce();
-                  }}
-                  fullWidth
-                  margin="dense"
-                  value={customNonceValue || ''}
-                />
-              </div>
-            </div>
-          </div>
-        ) : null}
+        {nonceField}
       </div>
     );
   }
@@ -645,7 +721,6 @@ export default class ConfirmTransactionBase extends Component {
   render() {
     const { t } = this.context;
     const {
-      isTxReprice,
       fromName,
       fromAddress,
       toName,
@@ -672,6 +747,7 @@ export default class ConfirmTransactionBase extends Component {
       submitError,
       submitWarning,
       ethGasPriceWarning,
+      editingGas,
     } = this.state;
 
     const { name } = methodData;
@@ -705,7 +781,7 @@ export default class ConfirmTransactionBase extends Component {
         toAddress={toAddress}
         toEns={toEns}
         toNickname={toNickname}
-        showEdit={onEdit && !isTxReprice}
+        showEdit={onEdit}
         action={functionType}
         title={title}
         titleComponent={this.renderTitleComponent()}
@@ -739,6 +815,8 @@ export default class ConfirmTransactionBase extends Component {
         hideSenderToRecipient={hideSenderToRecipient}
         origin={txData.origin}
         ethGasPriceWarning={ethGasPriceWarning}
+        editingGas={editingGas}
+        handleCloseEditGas={() => this.handleCloseNewGasPopover()}
       />
     );
   }

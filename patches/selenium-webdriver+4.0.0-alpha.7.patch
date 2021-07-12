@@ -1,0 +1,19 @@
+diff --git a/node_modules/selenium-webdriver/chromium.js b/node_modules/selenium-webdriver/chromium.js
+index d828ce5..87176f4 100644
+--- a/node_modules/selenium-webdriver/chromium.js
++++ b/node_modules/selenium-webdriver/chromium.js
+@@ -197,6 +197,14 @@ class ServiceBuilder extends remote.DriverService.Builder {
+     return this.addArguments('--log-path=' + path);
+   }
+ 
++  /**
++   * Enables Chrome logging.
++   * @returns {!ServiceBuilder} A self reference.
++   */
++  enableChromeLogging() {
++    return this.addArguments('--enable-chrome-logs');
++  }
++
+   /**
+    * Enables verbose logging.
+    * @return {!ServiceBuilder} A self reference.

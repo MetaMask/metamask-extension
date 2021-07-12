@@ -24,6 +24,7 @@ import {
   CurrencyRateController,
   PhishingController,
   NotificationController,
+  GasFeeController,
 } from '@metamask/controllers';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
@@ -71,6 +72,16 @@ export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
   UPDATE_BADGE: 'updateBadge',
+};
+
+/**
+ * Accounts can be instantiated from simple, HD or the two hardware wallet
+ * keyring types. Both simple and HD are treated as default but we do special
+ * case accounts managed by a hardware wallet.
+ */
+const KEYRING_TYPES = {
+  LEDGER: 'Ledger Hardware',
+  TREZOR: 'Trezor Hardware',
 };
 
 export default class MetamaskController extends EventEmitter {
@@ -162,6 +173,32 @@ export default class MetamaskController extends EventEmitter {
       version: this.platform.getVersion(),
       environment: process.env.METAMASK_ENVIRONMENT,
       initState: initState.MetaMetricsController,
+    });
+
+    const gasFeeMessenger = controllerMessenger.getRestricted({
+      name: 'GasFeeController',
+    });
+
+    this.gasFeeController = new GasFeeController({
+      interval: 10000,
+      messenger: gasFeeMessenger,
+      getProvider: () =>
+        this.networkController.getProviderAndBlockTracker().provider,
+      onNetworkStateChange: this.networkController.on.bind(
+        this.networkController,
+        NETWORK_EVENTS.NETWORK_DID_CHANGE,
+      ),
+      getCurrentNetworkEIP1559Compatibility: this.networkController.getEIP1559Compatibility.bind(
+        this.networkController,
+      ),
+      getCurrentAccountEIP1559Compatibility: this.getCurrentAccountEIP1559Compatibility.bind(
+        this,
+      ),
+      getCurrentNetworkLegacyGasAPICompatibility: () =>
+        this.networkController.getCurrentChainId() === MAINNET_CHAIN_ID,
+      getChainId: this.networkController.getCurrentChainId.bind(
+        this.networkController,
+      ),
     });
 
     this.appStateController = new AppStateController({
@@ -326,6 +363,12 @@ export default class MetamaskController extends EventEmitter {
       getPermittedAccounts: this.permissionsController.getAccounts.bind(
         this.permissionsController,
       ),
+      getProviderConfig: this.networkController.getProviderConfig.bind(
+        this.networkController,
+      ),
+      getEIP1559Compatibility: this.networkController.getEIP1559Compatibility.bind(
+        this.networkController,
+      ),
       networkStore: this.networkController.networkStore,
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
@@ -454,6 +497,7 @@ export default class MetamaskController extends EventEmitter {
       PermissionsMetadata: this.permissionsController.store,
       ThreeBoxController: this.threeBoxController.store,
       NotificationController: this.notificationController,
+      GasFeeController: this.gasFeeController,
     });
 
     this.memStore = new ComposableObservableStore({
@@ -485,6 +529,7 @@ export default class MetamaskController extends EventEmitter {
         EnsController: this.ensController.store,
         ApprovalController: this.approvalController,
         NotificationController: this.notificationController,
+        GasFeeController: this.gasFeeController,
       },
       controllerMessenger,
     });
@@ -1010,6 +1055,17 @@ export default class MetamaskController extends EventEmitter {
       updateViewedNotifications: nodeify(
         this.notificationController.updateViewed,
         this.notificationController,
+      ),
+
+      // GasFeeController
+      getGasFeeEstimatesAndStartPolling: nodeify(
+        this.gasFeeController.getGasFeeEstimatesAndStartPolling,
+        this.gasFeeController,
+      ),
+
+      disconnectGasFeeEstimatePoller: nodeify(
+        this.gasFeeController.disconnectPoller,
+        this.gasFeeController,
       ),
     };
   }
@@ -1786,7 +1842,7 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.keyringController.getKeyringForAccount(address);
 
     switch (keyring.type) {
-      case 'Ledger Hardware': {
+      case KEYRING_TYPES.LEDGER: {
         return new Promise((_, reject) => {
           reject(
             new Error('Ledger does not support eth_getEncryptionPublicKey.'),
@@ -1794,7 +1850,7 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
-      case 'Trezor Hardware': {
+      case KEYRING_TYPES.TREZOR: {
         return new Promise((_, reject) => {
           reject(
             new Error('Trezor does not support eth_getEncryptionPublicKey.'),
@@ -1933,32 +1989,63 @@ export default class MetamaskController extends EventEmitter {
     cb(null, this.getState());
   }
 
+  /**
+   * Method to return a boolean if the keyring for the currently selected
+   * account is a ledger or trezor keyring.
+   * TODO: remove this method when Ledger and Trezor release their supported
+   * client utilities for EIP-1559
+   * @returns {boolean} true if the keyring type supports EIP-1559
+   */
+  getCurrentAccountEIP1559Compatibility() {
+    const selectedAddress = this.preferencesController.getSelectedAddress();
+    const keyring = this.keyringController.getKeyringForAccount(
+      selectedAddress,
+    );
+    return (
+      keyring.type !== KEYRING_TYPES.LEDGER &&
+      keyring.type !== KEYRING_TYPES.TREZOR
+    );
+  }
+
   //=============================================================================
   // END (VAULT / KEYRING RELATED METHODS)
   //=============================================================================
 
   /**
-   * Allows a user to attempt to cancel a previously submitted transaction by creating a new
-   * transaction.
-   * @param {number} originalTxId - the id of the txMeta that you want to attempt to cancel
-   * @param {string} [customGasPrice] - the hex value to use for the cancel transaction
+   * Allows a user to attempt to cancel a previously submitted transaction
+   * by creating a new transaction.
+   * @param {number} originalTxId - the id of the txMeta that you want to
+   *  attempt to cancel
+   * @param {import(
+   *  './controllers/transactions'
+   * ).CustomGasSettings} [customGasSettings] - overrides to use for gas params
+   *  instead of allowing this method to generate them
    * @returns {Object} MetaMask state
    */
-  async createCancelTransaction(originalTxId, customGasPrice, customGasLimit) {
+  async createCancelTransaction(originalTxId, customGasSettings) {
     await this.txController.createCancelTransaction(
       originalTxId,
-      customGasPrice,
-      customGasLimit,
+      customGasSettings,
     );
     const state = await this.getState();
     return state;
   }
 
-  async createSpeedUpTransaction(originalTxId, customGasPrice, customGasLimit) {
+  /**
+   * Allows a user to attempt to speed up a previously submitted transaction
+   * by creating a new transaction.
+   * @param {number} originalTxId - the id of the txMeta that you want to
+   *  attempt to speed up
+   * @param {import(
+   *  './controllers/transactions'
+   * ).CustomGasSettings} [customGasSettings] - overrides to use for gas params
+   *  instead of allowing this method to generate them
+   * @returns {Object} MetaMask state
+   */
+  async createSpeedUpTransaction(originalTxId, customGasSettings) {
     await this.txController.createSpeedUpTransaction(
       originalTxId,
-      customGasPrice,
-      customGasLimit,
+      customGasSettings,
     );
     const state = await this.getState();
     return state;

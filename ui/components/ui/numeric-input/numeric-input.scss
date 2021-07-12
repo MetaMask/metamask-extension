@@ -1,0 +1,28 @@
+.numeric-input {
+  border: 1px solid $ui-3;
+  position: relative;
+  border-radius: 6px;
+
+  &--error {
+    border-color: $error-1;
+  }
+
+  input {
+    width: 100%;
+    border: 0;
+    padding: 10px;
+    border-radius: 6px;
+
+    /* ensures the increment/decrement arrows always display */
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      opacity: 1;
+    }
+  }
+
+  span {
+    position: absolute;
+    right: 40px;
+    top: 7px;
+  }
+}

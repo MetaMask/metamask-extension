@@ -1,0 +1,20 @@
+.typography.gas-timing {
+  color: $ui-4;
+
+  &--positive {
+    color: $success-3;
+  }
+
+  &--warning {
+    color: $alert-3;
+  }
+
+  &--negative {
+    color: $error-1;
+  }
+
+  .info-tooltip {
+    display: inline-block;
+    margin-inline-start: 4px;
+  }
+}

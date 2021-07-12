@@ -29,17 +29,20 @@ export default function AmountMaxButton() {
     dispatch(toggleSendMaxMode());
   };
 
+  const disabled = process.env.SHOW_EIP_1559_UI
+    ? isDraftTransactionInvalid
+    : buttonDataLoading || isDraftTransactionInvalid;
+
   return (
     <button
       className="send-v2__amount-max"
-      disabled={buttonDataLoading || isDraftTransactionInvalid}
+      disabled={disabled}
       onClick={onMaxClick}
     >
       <input type="checkbox" checked={maxModeOn} readOnly />
       <div
         className={classnames('send-v2__amount-max__button', {
-          'send-v2__amount-max__button__disabled':
-            buttonDataLoading || isDraftTransactionInvalid,
+          'send-v2__amount-max__button__disabled': disabled,
         })}
       >
         {t('max')}

@@ -63,4 +63,6 @@ Chip.propTypes = {
   rightIcon: PropTypes.node,
   className: PropTypes.string,
   onClick: PropTypes.func,
+  inputValue: PropTypes.string,
+  setInputValue: PropTypes.func,
 };

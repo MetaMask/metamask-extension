@@ -10,8 +10,7 @@ const mapStateToProps = (state, ownProps) => {
     transactionId,
     originalGasPrice,
     newGasFee,
-    defaultNewGasPrice,
-    gasLimit,
+    customGasSettings,
   } = ownProps;
   const { currentNetworkTxList } = metamask;
   const transaction = currentNetworkTxList.find(
@@ -23,18 +22,15 @@ const mapStateToProps = (state, ownProps) => {
     transactionId,
     transactionStatus,
     originalGasPrice,
-    defaultNewGasPrice,
+    customGasSettings,
     newGasFee,
-    gasLimit,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    createCancelTransaction: (txId, customGasPrice, customGasLimit) => {
-      return dispatch(
-        createCancelTransaction(txId, customGasPrice, customGasLimit),
-      );
+    createCancelTransaction: (txId, customGasSettings) => {
+      return dispatch(createCancelTransaction(txId, customGasSettings));
     },
     showTransactionConfirmedModal: () =>
       dispatch(showModal({ name: 'TRANSACTION_CONFIRMED' })),
@@ -42,12 +38,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const {
-    transactionId,
-    defaultNewGasPrice,
-    gasLimit,
-    ...restStateProps
-  } = stateProps;
+  const { transactionId, customGasSettings, ...restStateProps } = stateProps;
   // eslint-disable-next-line no-shadow
   const { createCancelTransaction, ...restDispatchProps } = dispatchProps;
 
@@ -56,7 +47,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...restDispatchProps,
     ...ownProps,
     createCancelTransaction: () =>
-      createCancelTransaction(transactionId, defaultNewGasPrice, gasLimit),
+      createCancelTransaction(transactionId, customGasSettings),
   };
 };
 

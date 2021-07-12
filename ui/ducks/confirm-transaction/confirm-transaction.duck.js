@@ -3,7 +3,7 @@ import {
   currentCurrencySelector,
   unconfirmedTransactionsHashSelector,
 } from '../../selectors';
-import { getNativeCurrency } from '../metamask/metamask';
+import { getNativeCurrency, getTokens } from '../metamask/metamask';
 
 import {
   getValueFromWeiHex,
@@ -11,19 +11,19 @@ import {
   getHexGasTotal,
   addFiat,
   addEth,
-  increaseLastGasPrice,
-  hexGreaterThan,
 } from '../../helpers/utils/confirm-tx.util';
 
 import { getTokenData, sumHexes } from '../../helpers/utils/transactions.util';
 
-import { conversionUtil } from '../../helpers/utils/conversion-util';
+import { conversionUtil } from '../../../shared/modules/conversion.utils';
+import { getAveragePriceEstimateInHexWEI } from '../../selectors/custom-gas';
 
 // Actions
 const createActionType = (action) => `metamask/confirm-transaction/${action}`;
 
 const UPDATE_TX_DATA = createActionType('UPDATE_TX_DATA');
 const UPDATE_TOKEN_DATA = createActionType('UPDATE_TOKEN_DATA');
+const UPDATE_TOKEN_PROPS = createActionType('UPDATE_TOKEN_PROPS');
 const CLEAR_CONFIRM_TRANSACTION = createActionType('CLEAR_CONFIRM_TRANSACTION');
 const UPDATE_TRANSACTION_AMOUNTS = createActionType(
   'UPDATE_TRANSACTION_AMOUNTS',
@@ -36,6 +36,7 @@ const UPDATE_NONCE = createActionType('UPDATE_NONCE');
 const initState = {
   txData: {},
   tokenData: {},
+  tokenProps: {},
   fiatTransactionAmount: '',
   fiatTransactionFee: '',
   fiatTransactionTotal: '',
@@ -62,6 +63,13 @@ export default function reducer(state = initState, action = {}) {
       return {
         ...state,
         tokenData: {
+          ...action.payload,
+        },
+      };
+    case UPDATE_TOKEN_PROPS:
+      return {
+        ...state,
+        tokenProps: {
           ...action.payload,
         },
       };
@@ -135,6 +143,13 @@ export function updateTokenData(tokenData) {
   };
 }
 
+export function updateTokenProps(tokenProps) {
+  return {
+    type: UPDATE_TOKEN_PROPS,
+    payload: tokenProps,
+  };
+}
+
 export function updateTransactionAmounts(amounts) {
   return {
     type: UPDATE_TRANSACTION_AMOUNTS,
@@ -163,32 +178,6 @@ export function updateNonce(nonce) {
   };
 }
 
-function increaseFromLastGasPrice(txData) {
-  const {
-    lastGasPrice,
-    txParams: { gasPrice: previousGasPrice } = {},
-  } = txData;
-
-  // Set the minimum to a 10% increase from the lastGasPrice.
-  const minimumGasPrice = increaseLastGasPrice(lastGasPrice);
-  const gasPriceBelowMinimum = hexGreaterThan(
-    minimumGasPrice,
-    previousGasPrice,
-  );
-  const gasPrice =
-    !previousGasPrice || gasPriceBelowMinimum
-      ? minimumGasPrice
-      : previousGasPrice;
-
-  return {
-    ...txData,
-    txParams: {
-      ...txData.txParams,
-      gasPrice,
-    },
-  };
-}
-
 export function updateTxDataAndCalculate(txData) {
   return (dispatch, getState) => {
     const state = getState();
@@ -198,9 +187,14 @@ export function updateTxDataAndCalculate(txData) {
 
     dispatch(updateTxData(txData));
 
-    const {
-      txParams: { value = '0x0', gas: gasLimit = '0x0', gasPrice = '0x0' } = {},
-    } = txData;
+    const { txParams: { value = '0x0', gas: gasLimit = '0x0' } = {} } = txData;
+
+    // if the gas price from our infura endpoint is null or undefined
+    // use the metaswap average price estimation as a fallback
+    let { txParams: { gasPrice } = {} } = txData;
+    if (!gasPrice) {
+      gasPrice = getAveragePriceEstimateInHexWEI(state) || '0x0';
+    }
 
     const fiatTransactionAmount = getValueFromWeiHex({
       value,
@@ -281,18 +275,24 @@ export function setTransactionToConfirm(transactionId) {
     }
 
     if (transaction.txParams) {
-      const { lastGasPrice } = transaction;
-      const txData = lastGasPrice
-        ? increaseFromLastGasPrice(transaction)
-        : transaction;
-      dispatch(updateTxDataAndCalculate(txData));
-
+      dispatch(updateTxDataAndCalculate(transaction));
       const { txParams } = transaction;
 
       if (txParams.data) {
-        const { data } = txParams;
+        const { to: tokenAddress, data } = txParams;
 
         const tokenData = getTokenData(data);
+        const tokens = getTokens(state);
+        const currentToken = tokens?.find(
+          ({ address }) => tokenAddress === address,
+        );
+
+        dispatch(
+          updateTokenProps({
+            decimals: currentToken?.decimals,
+            symbol: currentToken?.symbol,
+          }),
+        );
         dispatch(updateTokenData(tokenData));
       }
 
