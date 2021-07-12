@@ -1212,17 +1212,19 @@ describe('Transaction Controller', function () {
       const expectedPayload = {
         event: 'Transaction Added',
         category: 'Transactions',
-        sensitiveProperties: {
+        properties: {
           chain_id: '0x2a',
+          network: '42',
+          referrer: 'metamask',
+          source: 'user',
+          type: 'sentEther',
+        },
+        sensitiveProperties: {
           gas_price: '2',
           gas_limit: '0x7b0d',
           first_seen: 1624408066355,
           transaction_envelope_type: 'legacy',
-          network: '42',
-          referrer: 'metamask',
-          source: 'user',
           status: 'unapproved',
-          type: 'sentEther',
         },
       };
 
@@ -1257,17 +1259,19 @@ describe('Transaction Controller', function () {
       const expectedPayload = {
         event: 'Transaction Added',
         category: 'Transactions',
-        sensitiveProperties: {
+        properties: {
           chain_id: '0x2a',
+          network: '42',
+          referrer: 'other',
+          source: 'dapp',
+          type: 'sentEther',
+        },
+        sensitiveProperties: {
           gas_price: '2',
           gas_limit: '0x7b0d',
           first_seen: 1624408066355,
           transaction_envelope_type: 'legacy',
-          network: '42',
-          referrer: 'other',
-          source: 'dapp',
           status: 'unapproved',
-          type: 'sentEther',
         },
       };
 
@@ -1302,19 +1306,21 @@ describe('Transaction Controller', function () {
       const expectedPayload = {
         event: 'Transaction Added',
         category: 'Transactions',
+        properties: {
+          network: '42',
+          referrer: 'other',
+          source: 'dapp',
+          type: 'sentEther',
+          chain_id: '0x2a',
+        },
         sensitiveProperties: {
           baz: 3.0,
           foo: 'bar',
-          chain_id: '0x2a',
           gas_price: '2',
           gas_limit: '0x7b0d',
           first_seen: 1624408066355,
           transaction_envelope_type: 'legacy',
-          network: '42',
-          referrer: 'other',
-          source: 'dapp',
           status: 'unapproved',
-          type: 'sentEther',
         },
       };
 
@@ -1354,20 +1360,22 @@ describe('Transaction Controller', function () {
       const expectedPayload = {
         event: 'Transaction Added',
         category: 'Transactions',
+        properties: {
+          chain_id: '0x2a',
+          network: '42',
+          referrer: 'other',
+          source: 'dapp',
+          type: 'sentEther',
+        },
         sensitiveProperties: {
           baz: 3.0,
           foo: 'bar',
-          chain_id: '0x2a',
           max_fee_per_gas: '2',
           max_priority_fee_per_gas: '2',
           gas_limit: '0x7b0d',
           first_seen: 1624408066355,
           transaction_envelope_type: 'fee-market',
-          network: '42',
-          referrer: 'other',
-          source: 'dapp',
           status: 'unapproved',
-          type: 'sentEther',
         },
       };
 
