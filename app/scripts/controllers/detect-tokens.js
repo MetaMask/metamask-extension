@@ -1,5 +1,4 @@
 import Web3 from 'web3';
-import contracts from '@metamask/contract-metadata';
 import { warn } from 'loglevel';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
 import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
@@ -36,7 +35,7 @@ export default class DetectTokensController {
   /**
    * For each token in @metamask/contract-metadata, find check selectedAddress balance.
    */
-  async detectNewTokens() {
+  /* async detectNewTokens() {
     if (!this.isActive) {
       return;
     }
@@ -76,7 +75,7 @@ export default class DetectTokensController {
         );
       }
     });
-  }
+  }*/
 
   async _getTokenBalances(tokens) {
     const ethContract = this.web3.eth
@@ -95,7 +94,7 @@ export default class DetectTokensController {
   /**
    * For each token in tokenlist ptovided by the TokenListController, find check selectedAddress balance.
    */
-  async detectNewTokensFromAPI() {
+  async detectNewTokens() {
     if (!this.isActive) {
       return;
     }
@@ -155,8 +154,7 @@ export default class DetectTokensController {
     if (!(this.isActive && this.selectedAddress)) {
       return;
     }
-    // this.detectNewTokens();
-    this.detectNewTokensFromAPI();
+    this.detectNewTokens();
     this.interval = DEFAULT_INTERVAL;
   }
 
@@ -170,8 +168,7 @@ export default class DetectTokensController {
       return;
     }
     this._handle = setInterval(() => {
-      // this.detectNewTokens();
-      this.detectNewTokensFromAPI();
+      this.detectNewTokens();
     }, interval);
   }
 
