@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 
-import { decimalToHex } from '../../../helpers/utils/conversions.util';
+import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+
+import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
 
 import Popover from '../../ui/popover';
 import Button from '../../ui/button';
@@ -95,16 +97,17 @@ export default function EditGasPopover({
       closePopover();
     }
 
-    const cancelSpeedUpGas = process.env.SHOW_EIP_1559_UI
-      ? {
-          gasLimit: decimalToHex(gasLimit),
-          maxFeePerGas: decimalToHex(maxFeePerGas),
-          maxPriorityFeePerGas: decimalToHex(maxPriorityFeePerGas),
-        }
-      : {
-          gasLimit: decimalToHex(gasLimit),
-          gasPrice: decimalToHex(gasPrice),
-        };
+    const cancelSpeedUpGas =
+      gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET
+        ? {
+            gasLimit: decGWEIToHexWEI(gasLimit),
+            maxFeePerGas: decGWEIToHexWEI(maxFeePerGas),
+            maxPriorityFeePerGas: decGWEIToHexWEI(maxPriorityFeePerGas),
+          }
+        : {
+            gasLimit: decGWEIToHexWEI(gasLimit),
+            gasPrice: decGWEIToHexWEI(gasPrice),
+          };
 
     switch (mode) {
       case EDIT_GAS_MODE.CANCEL:
@@ -121,13 +124,13 @@ export default function EditGasPopover({
               ...transaction.txParams,
               ...(process.env.SHOW_EIP_1559_UI
                 ? {
-                    gas: decimalToHex(gasLimit),
-                    maxFeePerGas: decimalToHex(maxFeePerGas),
-                    maxPriorityFeePerGas: decimalToHex(maxPriorityFeePerGas),
+                    gas: decGWEIToHexWEI(gasLimit),
+                    maxFeePerGas: decGWEIToHexWEI(maxFeePerGas),
+                    maxPriorityFeePerGas: decGWEIToHexWEI(maxPriorityFeePerGas),
                   }
                 : {
-                    gas: decimalToHex(gasLimit),
-                    gasPrice: decimalToHex(gasPrice),
+                    gas: decGWEIToHexWEI(gasLimit),
+                    gasPrice: decGWEIToHexWEI(gasPrice),
                   }),
             },
           }),
@@ -147,6 +150,7 @@ export default function EditGasPopover({
     gasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
+    gasEstimateType,
   ]);
 
   const title = showEducationContent
