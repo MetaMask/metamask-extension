@@ -41,7 +41,6 @@ import {
   getIsGasEstimatesFetched,
   getShouldShowFiat,
   getIsCustomNetworkGasPriceFetched,
-  getShouldShowFiat,
 } from '../../../../selectors';
 
 import {
