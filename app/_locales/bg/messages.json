@@ -750,9 +750,6 @@
   "recents": {
     "message": "Скорошни"
   },
-  "recipientAddress": {
-    "message": "Адрес на получателя"
-  },
   "recipientAddressPlaceholder": {
     "message": "Търсене, публичен адрес (0x) или ENS"
   },

@@ -754,9 +754,6 @@
   "recents": {
     "message": "সাম্প্রতিকগুলি"
   },
-  "recipientAddress": {
-    "message": "প্রাপকের ঠিকানা"
-  },
   "recipientAddressPlaceholder": {
     "message": "অনুসন্ধান, সার্বজনীন ঠিকানা (0x), বা ENS"
   },

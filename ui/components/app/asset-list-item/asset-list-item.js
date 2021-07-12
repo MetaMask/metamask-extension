@@ -10,7 +10,7 @@ import InfoIcon from '../../ui/icon/info-icon.component';
 import Button from '../../ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMetricEvent } from '../../../hooks/useMetricEvent';
-import { updateSendToken } from '../../../ducks/send/send.duck';
+import { ASSET_TYPES, updateSendAsset } from '../../../ducks/send';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 
@@ -27,6 +27,7 @@ const AssetListItem = ({
   primary,
   secondary,
   identiconBorder,
+  isERC721,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -68,13 +69,17 @@ const AssetListItem = ({
           e.stopPropagation();
           sendTokenEvent();
           dispatch(
-            updateSendToken({
-              address: tokenAddress,
-              decimals: tokenDecimals,
-              symbol: tokenSymbol,
+            updateSendAsset({
+              type: ASSET_TYPES.TOKEN,
+              details: {
+                address: tokenAddress,
+                decimals: tokenDecimals,
+                symbol: tokenSymbol,
+              },
             }),
-          );
-          history.push(SEND_ROUTE);
+          ).then(() => {
+            history.push(SEND_ROUTE);
+          });
         }}
       >
         {t('sendSpecifiedTokens', [tokenSymbol])}
@@ -107,7 +112,7 @@ const AssetListItem = ({
         </button>
       }
       titleIcon={titleIcon}
-      subtitle={<h3 title={secondary}>{secondary}</h3>}
+      subtitle={secondary ? <h3 title={secondary}>{secondary}</h3> : null}
       onClick={onClick}
       icon={
         <Identicon
@@ -121,10 +126,12 @@ const AssetListItem = ({
       }
       midContent={midContent}
       rightContent={
-        <>
-          <i className="fas fa-chevron-right asset-list-item__chevron-right" />
-          {sendTokenButton}
-        </>
+        !isERC721 && (
+          <>
+            <i className="fas fa-chevron-right asset-list-item__chevron-right" />
+            {sendTokenButton}
+          </>
+        )
       }
     />
   );
@@ -143,6 +150,7 @@ AssetListItem.propTypes = {
   'primary': PropTypes.string,
   'secondary': PropTypes.string,
   'identiconBorder': PropTypes.bool,
+  'isERC721': PropTypes.bool,
 };
 
 AssetListItem.defaultProps = {

@@ -650,11 +650,20 @@
     "message": "The endpoint returned a different chain ID: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
+  "ensIllegalCharacter": {
+    "message": "Illegal Character for ENS."
+  },
   "ensNotFoundOnCurrentNetwork": {
     "message": "ENS name not found on the current network. Try switching to Ethereum Mainnet."
   },
+  "ensNotSupportedOnNetwork": {
+    "message": "Network does not support ENS"
+  },
   "ensRegistrationError": {
     "message": "Error in ENS name registration"
+  },
+  "ensUnknownError": {
+    "message": "ENS Lookup failed."
   },
   "enterAnAlias": {
     "message": "Enter an alias"
@@ -1174,6 +1183,9 @@
   "networkNameEthereum": {
     "message": "Ethereum"
   },
+  "networkNamePolygon": {
+    "message": "Polygon"
+  },
   "networkNameTestnet": {
     "message": "Testnet"
   },
@@ -1450,9 +1462,6 @@
   },
   "recents": {
     "message": "Recents"
-  },
-  "recipientAddress": {
-    "message": "Recipient Address"
   },
   "recipientAddressPlaceholder": {
     "message": "Search, public address (0x), or ENS"
@@ -2368,6 +2377,10 @@
   "unrecognizedChainLinkText": {
     "message": "verify the network details",
     "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
+  },
+  "unsendableAsset": {
+    "message": "Sending collectible (ERC-721) tokens is not currently supported",
+    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
   },
   "updatedWithDate": {
     "message": "Updated $1"

@@ -132,11 +132,17 @@ export default class MetamaskController extends EventEmitter {
     this.networkController = new NetworkController(initState.NetworkController);
     this.networkController.setInfuraProjectId(opts.infuraProjectId);
 
+    // now we can initialize the RPC provider, which other controllers require
+    this.initializeProvider();
+    this.provider = this.networkController.getProviderAndBlockTracker().provider;
+    this.blockTracker = this.networkController.getProviderAndBlockTracker().blockTracker;
+
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
       openPopup: opts.openPopup,
       network: this.networkController,
+      provider: this.provider,
       migrateAddressBookState: this.migrateAddressBookState.bind(this),
     });
 
@@ -182,11 +188,6 @@ export default class MetamaskController extends EventEmitter {
       { allNotifications: UI_NOTIFICATIONS },
       initState.NotificationController,
     );
-
-    // now we can initialize the RPC provider, which other controllers require
-    this.initializeProvider();
-    this.provider = this.networkController.getProviderAndBlockTracker().provider;
-    this.blockTracker = this.networkController.getProviderAndBlockTracker().blockTracker;
 
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController({
@@ -314,6 +315,9 @@ export default class MetamaskController extends EventEmitter {
         this.keyringController.memStore,
       ),
       version,
+      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
     });
 
     this.txController = new TransactionController({
@@ -727,6 +731,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       addToken: nodeify(preferencesController.addToken, preferencesController),
+      updateTokenType: nodeify(
+        preferencesController.updateTokenType,
+        preferencesController,
+      ),
       removeToken: nodeify(
         preferencesController.removeToken,
         preferencesController,

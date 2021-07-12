@@ -1415,9 +1415,6 @@
   "recents": {
     "message": "최근"
   },
-  "recipientAddress": {
-    "message": "수신인 주소"
-  },
   "recipientAddressPlaceholder": {
     "message": "검색, 공개 주소(0x) 또는 ENS"
   },

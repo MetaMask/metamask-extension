@@ -741,9 +741,6 @@
   "recents": {
     "message": "Nylige"
   },
-  "recipientAddress": {
-    "message": "Mottakeradresse"
-  },
   "recipientAddressPlaceholder": {
     "message": "Søk, offentlig adresse (0x) eller ENS"
   },

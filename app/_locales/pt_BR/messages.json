@@ -1405,9 +1405,6 @@
   "recents": {
     "message": "Recentes"
   },
-  "recipientAddress": {
-    "message": "Endereço do destinatário"
-  },
   "recipientAddressPlaceholder": {
     "message": "Busca, endereço público (0x) ou ENS"
   },

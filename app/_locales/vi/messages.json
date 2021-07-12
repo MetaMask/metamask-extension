@@ -1411,9 +1411,6 @@
   "recents": {
     "message": "Gần đây"
   },
-  "recipientAddress": {
-    "message": "Địa chỉ người nhận"
-  },
   "recipientAddressPlaceholder": {
     "message": "Tìm kiếm, địa chỉ công khai (0x) hoặc ENS"
   },

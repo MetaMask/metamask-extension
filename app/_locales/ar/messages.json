@@ -747,9 +747,6 @@
   "recents": {
     "message": "الحديث"
   },
-  "recipientAddress": {
-    "message": "عنوان المستلم"
-  },
   "recipientAddressPlaceholder": {
     "message": "البحث، العنوان العام (0x)، أو ENS"
   },

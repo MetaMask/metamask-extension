@@ -742,9 +742,6 @@
   "recents": {
     "message": "Nedavno"
   },
-  "recipientAddress": {
-    "message": "Prejemnikov naslov"
-  },
   "recipientAddressPlaceholder": {
     "message": "Iskanje, javni naslov (0x) ali ENS"
   },

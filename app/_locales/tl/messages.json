@@ -1192,9 +1192,6 @@
   "recents": {
     "message": "Mga Kamakailan"
   },
-  "recipientAddress": {
-    "message": "Address ng Tatanggap"
-  },
   "recipientAddressPlaceholder": {
     "message": "Maghanap, pampublikong address (0x), o ENS"
   },

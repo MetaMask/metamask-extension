@@ -34,9 +34,10 @@ import {
   SWAPS_MAINTENANCE_ROUTE,
 } from '../../helpers/constants/routes';
 import {
-  fetchSwapsFeatureLiveness,
+  fetchSwapsFeatureFlags,
   fetchSwapsGasPrices,
   isContractAddressValid,
+  getSwapsLivenessForNetwork,
 } from '../../pages/swaps/swaps.util';
 import { calcGasTotal } from '../../pages/send/send.utils';
 import {
@@ -223,8 +224,11 @@ export function shouldShowCustomPriceTooLowWarning(state) {
 
 const getSwapsState = (state) => state.metamask.swapsState;
 
-export const getSwapsFeatureLiveness = (state) =>
+export const getSwapsFeatureIsLive = (state) =>
   state.metamask.swapsState.swapsFeatureIsLive;
+
+export const getUseNewSwapsApi = (state) =>
+  state.metamask.swapsState.useNewSwapsApi;
 
 export const getSwapsQuoteRefreshTime = (state) =>
   state.metamask.swapsState.swapsQuoteRefreshTime;
@@ -373,16 +377,21 @@ export const fetchAndSetSwapsGasPriceInfo = () => {
 
 export const fetchSwapsLiveness = () => {
   return async (dispatch, getState) => {
-    let swapsFeatureIsLive = false;
+    let swapsLivenessForNetwork = {
+      swapsFeatureIsLive: false,
+      useNewSwapsApi: false,
+    };
     try {
-      swapsFeatureIsLive = await fetchSwapsFeatureLiveness(
+      const swapsFeatureFlags = await fetchSwapsFeatureFlags();
+      swapsLivenessForNetwork = getSwapsLivenessForNetwork(
+        swapsFeatureFlags,
         getCurrentChainId(getState()),
       );
     } catch (error) {
       log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
     }
-    await dispatch(setSwapsLiveness(swapsFeatureIsLive));
-    return swapsFeatureIsLive;
+    await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
+    return swapsLivenessForNetwork;
   };
 };
 
@@ -395,15 +404,22 @@ export const fetchQuotesAndSetQuoteState = (
   return async (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
-    let swapsFeatureIsLive = false;
+    let swapsLivenessForNetwork = {
+      swapsFeatureIsLive: false,
+      useNewSwapsApi: false,
+    };
     try {
-      swapsFeatureIsLive = await fetchSwapsFeatureLiveness(chainId);
+      const swapsFeatureFlags = await fetchSwapsFeatureFlags();
+      swapsLivenessForNetwork = getSwapsLivenessForNetwork(
+        swapsFeatureFlags,
+        chainId,
+      );
     } catch (error) {
       log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
     }
-    await dispatch(setSwapsLiveness(swapsFeatureIsLive));
+    await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
 
-    if (!swapsFeatureIsLive) {
+    if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
       await history.push(SWAPS_MAINTENANCE_ROUTE);
       return;
     }
@@ -600,15 +616,22 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const hardwareWalletUsed = isHardwareWallet(state);
-    let swapsFeatureIsLive = false;
+    let swapsLivenessForNetwork = {
+      swapsFeatureIsLive: false,
+      useNewSwapsApi: false,
+    };
     try {
-      swapsFeatureIsLive = await fetchSwapsFeatureLiveness(chainId);
+      const swapsFeatureFlags = await fetchSwapsFeatureFlags();
+      swapsLivenessForNetwork = getSwapsLivenessForNetwork(
+        swapsFeatureFlags,
+        chainId,
+      );
     } catch (error) {
       log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
     }
-    await dispatch(setSwapsLiveness(swapsFeatureIsLive));
+    await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
 
-    if (!swapsFeatureIsLive) {
+    if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
       await history.push(SWAPS_MAINTENANCE_ROUTE);
       return;
     }
@@ -808,12 +831,13 @@ export function fetchMetaSwapsGasPriceEstimates() {
   return async (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
+    const useNewSwapsApi = getUseNewSwapsApi(state);
 
     dispatch(swapGasPriceEstimatesFetchStarted());
 
     let priceEstimates;
     try {
-      priceEstimates = await fetchSwapsGasPrices(chainId);
+      priceEstimates = await fetchSwapsGasPrices(chainId, useNewSwapsApi);
     } catch (e) {
       log.warn('Fetching swaps gas prices failed:', e);
 
