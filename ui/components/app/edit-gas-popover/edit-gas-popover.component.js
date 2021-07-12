@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 
+import { decimalToHex } from '../../../helpers/utils/conversions.util';
+
 import Popover from '../../ui/popover';
 import Button from '../../ui/button';
 import EditGasDisplay from '../edit-gas-display';
@@ -92,26 +94,42 @@ export default function EditGasPopover({
     if (!transaction || !mode) {
       closePopover();
     }
+
+    const cancelSpeedUpGas = process.env.SHOW_EIP_1559_UI
+      ? {
+          gasLimit: decimalToHex(gasLimit),
+          maxFeePerGas: decimalToHex(maxFeePerGas),
+          maxPriorityFeePerGas: decimalToHex(maxPriorityFeePerGas),
+        }
+      : {
+          gasLimit: decimalToHex(gasLimit),
+          gasPrice: decimalToHex(gasPrice),
+        };
+
     switch (mode) {
       case EDIT_GAS_MODE.CANCEL:
-        dispatch(
-          createCancelTransaction(transaction.id, {
-            /** new gas settings */
-          }),
-        );
+        dispatch(createCancelTransaction(transaction.id, cancelSpeedUpGas));
         break;
       case EDIT_GAS_MODE.SPEED_UP:
-        dispatch(
-          createSpeedUpTransaction(transaction.id, {
-            /** new gas settings */
-          }),
-        );
+        dispatch(createSpeedUpTransaction(transaction.id, cancelSpeedUpGas));
         break;
       case EDIT_GAS_MODE.MODIFY_IN_PLACE:
         dispatch(
           updateTransaction({
             ...transaction,
-            txParams: { ...transaction.txParams /** ...newGasSettings */ },
+            txParams: {
+              ...transaction.txParams,
+              ...(process.env.SHOW_EIP_1559_UI
+                ? {
+                    gas: decimalToHex(gasLimit),
+                    maxFeePerGas: decimalToHex(maxFeePerGas),
+                    maxPriorityFeePerGas: decimalToHex(maxPriorityFeePerGas),
+                  }
+                : {
+                    gas: decimalToHex(gasLimit),
+                    gasPrice: decimalToHex(gasPrice),
+                  }),
+            },
           }),
         );
         break;
@@ -120,7 +138,16 @@ export default function EditGasPopover({
     }
 
     closePopover();
-  }, [transaction, mode, dispatch, closePopover]);
+  }, [
+    transaction,
+    mode,
+    dispatch,
+    closePopover,
+    gasLimit,
+    gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+  ]);
 
   const title = showEducationContent
     ? t('editGasEducationModalTitle')
