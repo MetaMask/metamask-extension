@@ -94,7 +94,7 @@ export default class DetectTokensController {
   /**
    * For each token in tokenlist ptovided by the TokenListController, find check selectedAddress balance.
    */
-  async detectNewTokensFromAPI() {
+  async detectNewTokens() {
     if (!this.isActive) {
       return;
     }
@@ -202,8 +202,7 @@ export default class DetectTokensController {
     if (!(this.isActive && this.selectedAddress)) {
       return;
     }
-    // this.detectNewTokens();
-    this.detectNewTokensFromAPI();
+    this.detectNewTokens();
     this.interval = DEFAULT_INTERVAL;
   }
 
@@ -217,8 +216,7 @@ export default class DetectTokensController {
       return;
     }
     this._handle = setInterval(() => {
-      // this.detectNewTokens();
-      this.detectNewTokensFromAPI();
+      this.detectNewTokens();
     }, interval);
   }
 
