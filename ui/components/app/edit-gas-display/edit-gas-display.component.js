@@ -24,8 +24,8 @@ import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import { I18nContext } from '../../../contexts/i18n';
 
 export default function EditGasDisplay({
+  mode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
   alwaysShowForm = false,
-  type = 'customize-gas',
   showEducationButton = false,
   onEducationClick,
   dappSuggestedGasFee = 0,
@@ -57,7 +57,6 @@ export default function EditGasDisplay({
   showAdvancedForm,
   setShowAdvancedForm,
   warning,
-  mode,
 }) {
   const t = useContext(I18nContext);
 
@@ -215,14 +214,12 @@ export default function EditGasDisplay({
 
 EditGasDisplay.propTypes = {
   alwaysShowForm: PropTypes.bool,
-  type: PropTypes.oneOf(['customize-gas', 'speed-up']),
-  mode: PropTypes.string,
+  mode: PropTypes.oneOf(Object.values(EDIT_GAS_MODES)),
   showEducationButton: PropTypes.bool,
   onEducationClick: PropTypes.func,
   dappSuggestedGasFee: PropTypes.number,
   dappOrigin: PropTypes.string,
   defaultEstimateToUse: PropTypes.oneOf(Object.values(GAS_RECOMMENDATIONS)),
-
   maxPriorityFeePerGas: PropTypes.string,
   setMaxPriorityFeePerGas: PropTypes.func,
   maxPriorityFeePerGasFiat: PropTypes.string,

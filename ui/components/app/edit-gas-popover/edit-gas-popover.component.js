@@ -9,7 +9,10 @@ import {
   EDIT_GAS_MODES,
 } from '../../../../shared/constants/gas';
 
-import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
+import {
+  decGWEIToHexWEI,
+  decimalToHex,
+} from '../../../helpers/utils/conversions.util';
 
 import Popover from '../../ui/popover';
 import Button from '../../ui/button';
@@ -94,24 +97,26 @@ export default function EditGasPopover({
       closePopover();
     }
 
-    const cancelSpeedUpGas =
+    const newGasSettings =
       gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET
         ? {
-            gasLimit: decGWEIToHexWEI(gasLimit),
+            gas: decimalToHex(gasLimit),
+            gasLimit: decimalToHex(gasLimit),
             maxFeePerGas: decGWEIToHexWEI(maxFeePerGas),
             maxPriorityFeePerGas: decGWEIToHexWEI(maxPriorityFeePerGas),
           }
         : {
-            gasLimit: decGWEIToHexWEI(gasLimit),
+            gas: decimalToHex(gasLimit),
+            gasLimit: decimalToHex(gasLimit),
             gasPrice: decGWEIToHexWEI(gasPrice),
           };
 
     switch (mode) {
       case EDIT_GAS_MODES.CANCEL:
-        dispatch(createCancelTransaction(transaction.id, cancelSpeedUpGas));
+        dispatch(createCancelTransaction(transaction.id, newGasSettings));
         break;
       case EDIT_GAS_MODES.SPEED_UP:
-        dispatch(createSpeedUpTransaction(transaction.id, cancelSpeedUpGas));
+        dispatch(createSpeedUpTransaction(transaction.id, newGasSettings));
         break;
       case EDIT_GAS_MODES.MODIFY_IN_PLACE:
         dispatch(
@@ -119,16 +124,7 @@ export default function EditGasPopover({
             ...transaction,
             txParams: {
               ...transaction.txParams,
-              ...(process.env.SHOW_EIP_1559_UI
-                ? {
-                    gas: decGWEIToHexWEI(gasLimit),
-                    maxFeePerGas: decGWEIToHexWEI(maxFeePerGas),
-                    maxPriorityFeePerGas: decGWEIToHexWEI(maxPriorityFeePerGas),
-                  }
-                : {
-                    gas: decGWEIToHexWEI(gasLimit),
-                    gasPrice: decGWEIToHexWEI(gasPrice),
-                  }),
+              ...newGasSettings,
             },
           }),
         );
@@ -156,7 +152,7 @@ export default function EditGasPopover({
   } else if (showEducationContent) {
     title = t('editGasEducationModalTitle');
   } else if (mode === EDIT_GAS_MODES.SPEED_UP) {
-    title = t('speedUp');
+    title = t('speedUpPopoverTitle');
   } else if (mode === EDIT_GAS_MODES.CANCEL) {
     title = t('cancelPopoverTitle');
   }
