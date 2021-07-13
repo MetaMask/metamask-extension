@@ -4,10 +4,13 @@
     padding-top: 20px;
 
     button {
+      @include H7;
+
       color: $primary-1;
       background: transparent;
       border: 0;
       padding-inline-end: 0;
+      text-transform: uppercase;
     }
   }
 

@@ -7,7 +7,6 @@ import {
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
-import Button from '../../ui/button';
 
 export default function TransactionDetailItem({
   detailTitle,
@@ -15,22 +14,9 @@ export default function TransactionDetailItem({
   detailTotal,
   subTitle,
   subText,
-  handleActionClick,
-  actionText,
 }) {
   return (
     <div className="transaction-detail-item">
-      {actionText && handleActionClick && (
-        <div className="transaction-detail-item__row transaction-detail-item__row--action-row">
-          <Button
-            className="transaction-detail-item__action-button"
-            onClick={handleActionClick}
-            type="link"
-          >
-            {actionText}
-          </Button>
-        </div>
-      )}
       <div className="transaction-detail-item__row">
         <Typography
           color={COLORS.BLACK}
@@ -77,8 +63,6 @@ export default function TransactionDetailItem({
 }
 
 TransactionDetailItem.propTypes = {
-  handleActionClick: PropTypes.func,
-  actionText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   detailTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   detailText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   detailTotal: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
