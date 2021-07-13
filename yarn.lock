@@ -25953,7 +25953,7 @@ typical@^5.0.0:
   resolved "https://registry.yarnpkg.com/typical/-/typical-5.1.0.tgz#7116ca103caf2574985fc84fbaa8fd0ee5ea1684"
   integrity sha512-t5Ik8UAwBal1P1XzuVE4dc+RYQZicLUGJdvqr/vdqsED7SQECgsGBylldSsfWZL7RQjxT3xhQcKHWhLaVSR6YQ==
 
-umd@^3.0.0:
+umd@^3.0.0, umd@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/umd/-/umd-3.0.3.tgz#aa9fe653c42b9097678489c01000acb69f0b26cf"
   integrity sha512-4IcGSufhFshvLNcMCV80UnQVlZ5pMOC8mvNPForqwA4+lzYQuetTESLDQkeLmihq8bRcnpbQa48Wb8Lh16/xow==
