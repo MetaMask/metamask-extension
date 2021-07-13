@@ -1,34 +1,44 @@
 # things that *are* used, that depcheck is wrong about
 ignores:
-  # deps
-  # - "@babel/runtime"
-  # - "@fortawesome/fontawesome-free"
-  # - "eth-phishing-detect"
+  # 
+  # webapp deps
+  # 
+
+  - "@babel/runtime"
+  - "@fortawesome/fontawesome-free"
   - "punycode"
+  
+  # 
   # dev deps
+  #
+  
+  # safety fallback for npm lifecycle scripts, not used normally
   - "@lavamoat/preinstall-always-fail"
-  # - "@metamask/auto-changelog"
-  # - "@metamask/forwarder"
-  # - "@metamask/test-dapp"
-  # - "@sentry/cli"
-  # - "@storybook/addon-backgrounds"
-  # - "@storybook/addon-toolbars"
-  # - "@storybook/core"
-  # - "chromedriver"
-  # - "css-loader"
-  # - "depcheck"
-  # - "ganache-cli"
-  # - "geckodriver"
-  # - "get-port"
-  # - "lavamoat-viz"
-  # - "prettier-plugin-sort-json"
-  # - "resolve-url-loader"
-  # - "sass-loader"
-  # - "semver"
-  # - "source-map-explorer"
-  # - "style-loader"
+  # used in testing + ci
+  - "@metamask/auto-changelog" # invoked as `auto-changelog`
+  - "@metamask/forwarder"
+  - "@metamask/test-dapp"
+  - "chromedriver"
+  - "geckodriver"
+  - "ganache-cli"
+  - "lavamoat-viz"
+  - "@sentry/cli" # invoked as `sentry-cli`
+  - "prettier-plugin-sort-json" # automatically imported by prettier
+  - "source-map-explorer"
+  - "depcheck" # ooo meta
+  # storybook
+  - "@storybook/core"
+  - "@storybook/addon-backgrounds"
+  - "@storybook/addon-toolbars"
+  - "style-loader"
+  - "css-loader"
+  - "sass-loader"
+  - "resolve-url-loader"
 
 # files depcheck should not parse 
 ignorePatterns:
-  # seems to incorrectly parse @include pragmas?
+  # seems to incorrectly parse scss @include pragmas?
   - "**/*.scss"
+  # self-contained bundle used for testing
+  - "**/send-eth-with-private-key-test/web3js.js"
+  - "**/send-eth-with-private-key-test/ethereumjs-tx.js"
