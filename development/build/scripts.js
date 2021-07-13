@@ -206,7 +206,7 @@ function createFactoredBuild({
     // set bundle entries
     bundlerOpts.entries = [...entryFiles];
 
-    // setup bify-vinyl-gator plugin
+    // setup bundle factoring with bify-module-groups plugin
     Object.assign(bundlerOpts, bifyModuleGroups.plugin.args);
     bundlerOpts.plugin = [...bundlerOpts.plugin, [bifyModuleGroups.plugin]];
 
