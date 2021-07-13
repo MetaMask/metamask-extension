@@ -92,18 +92,20 @@ const slice = createSlice({
     },
     disableEnsLookup: (state) => {
       state.stage = 'NO_NETWORK_SUPPORT';
-      state.error = ENS_NOT_SUPPORTED_ON_NETWORK;
+      state.error = null;
       state.warning = null;
       state.resolution = null;
       state.network = null;
     },
-    resetResolution: (state) => {
+    ensNotSupported: (state) => {
       state.resolution = null;
       state.warning = null;
-      state.error =
-        state.stage === 'NO_NETWORK_SUPPORT'
-          ? ENS_NOT_SUPPORTED_ON_NETWORK
-          : null;
+      state.error = ENS_NOT_SUPPORTED_ON_NETWORK;
+    },
+    resetEnsResolution: (state) => {
+      state.resolution = null;
+      state.warning = null;
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -123,9 +125,10 @@ const {
   disableEnsLookup,
   ensLookup,
   enableEnsLookup,
-  resetResolution,
+  ensNotSupported,
+  resetEnsResolution,
 } = actions;
-export { resetResolution };
+export { resetEnsResolution };
 
 export function initializeEnsSlice() {
   return (dispatch, getState) => {
@@ -159,7 +162,7 @@ export function lookupEnsName(ensName) {
       ) &&
       !isHexString(trimmedEnsName)
     ) {
-      await dispatch(resetResolution());
+      await dispatch(ensNotSupported());
     } else {
       log.info(`ENS attempting to resolve name: ${trimmedEnsName}`);
       let address;

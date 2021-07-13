@@ -62,18 +62,19 @@ export default class EnsInput extends Component {
     }
     // Empty ENS state if input is empty
     // maybe scan ENS
-
     if (isValidDomainName(input)) {
       lookupEnsName(input);
-    } else if (
-      onValidAddressTyped &&
-      !isBurnAddress(input) &&
-      isValidHexAddress(input, { mixedCaseUseChecksum: true })
-    ) {
-      onValidAddressTyped(input);
     } else {
       resetEnsResolution();
+      if (
+        onValidAddressTyped &&
+        !isBurnAddress(input) &&
+        isValidHexAddress(input, { mixedCaseUseChecksum: true })
+      ) {
+        onValidAddressTyped(input);
+      }
     }
+
     return null;
   };
 

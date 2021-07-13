@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { PageContainerFooter } from '../../ui/page-container';
+import EditGasPopover from '../edit-gas-popover';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -60,6 +61,10 @@ export default class ConfirmPageContainer extends Component {
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
     disabled: PropTypes.bool,
+    editingGas: PropTypes.bool,
+    handleCloseEditGas: PropTypes.func,
+    // Gas Popover
+    currentTransaction: PropTypes.object.isRequired,
   };
 
   render() {
@@ -105,6 +110,9 @@ export default class ConfirmPageContainer extends Component {
       showAccountInHeader,
       origin,
       ethGasPriceWarning,
+      editingGas,
+      handleCloseEditGas,
+      currentTransaction,
     } = this.props;
     const renderAssetImage = contentComponent || !identiconAddress;
 
@@ -182,6 +190,12 @@ export default class ConfirmPageContainer extends Component {
               </a>
             )}
           </PageContainerFooter>
+        )}
+        {editingGas && (
+          <EditGasPopover
+            onClose={handleCloseEditGas}
+            transaction={currentTransaction}
+          />
         )}
       </div>
     );

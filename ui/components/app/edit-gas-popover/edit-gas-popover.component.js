@@ -8,12 +8,27 @@ import EditGasDisplay from '../edit-gas-display';
 import EditGasDisplayEducation from '../edit-gas-display-education';
 
 import { I18nContext } from '../../../contexts/i18n';
-import { hideModal, hideSidebar } from '../../../store/actions';
+import {
+  createCancelTransaction,
+  createSpeedUpTransaction,
+  hideModal,
+  hideSidebar,
+  updateTransaction,
+} from '../../../store/actions';
+
+export const EDIT_GAS_MODE = {
+  SPEED_UP: 'speed-up',
+  CANCEL: 'cancel',
+  MODIFY_IN_PLACE: 'modify-in-place',
+};
 
 export default function EditGasPopover({
   popoverTitle,
   confirmButtonText,
   editGasDisplayProps,
+  transaction,
+  mode,
+  onClose,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -27,12 +42,48 @@ export default function EditGasPopover({
    * the modal in testing
    */
   const closePopover = useCallback(() => {
-    if (showSidebar) {
+    if (onClose) {
+      onClose();
+    } else if (showSidebar) {
       dispatch(hideSidebar());
     } else {
       dispatch(hideModal());
     }
-  }, [showSidebar, dispatch]);
+  }, [showSidebar, onClose, dispatch]);
+
+  const onSubmit = useCallback(() => {
+    if (!transaction || !mode) {
+      closePopover();
+    }
+    switch (mode) {
+      case EDIT_GAS_MODE.CANCEL:
+        dispatch(
+          createCancelTransaction(transaction.id, {
+            /** new gas settings */
+          }),
+        );
+        break;
+      case EDIT_GAS_MODE.SPEED_UP:
+        dispatch(
+          createSpeedUpTransaction(transaction.id, {
+            /** new gas settings */
+          }),
+        );
+        break;
+      case EDIT_GAS_MODE.MODIFY_IN_PLACE:
+        dispatch(
+          updateTransaction({
+            ...transaction,
+            txParams: { ...transaction.txParams /** ...newGasSettings */ },
+          }),
+        );
+        break;
+      default:
+        break;
+    }
+
+    closePopover();
+  }, [transaction, mode, dispatch, closePopover]);
 
   const title = showEducationContent
     ? t('editGasEducationModalTitle')
@@ -48,7 +99,7 @@ export default function EditGasPopover({
       }
       footer={
         <>
-          <Button type="primary" onClick={closePopover}>
+          <Button type="primary" onClick={onSubmit}>
             {footerButtonText}
           </Button>
         </>
@@ -73,6 +124,9 @@ EditGasPopover.propTypes = {
   editGasDisplayProps: PropTypes.object,
   confirmButtonText: PropTypes.string,
   showEducationButton: PropTypes.bool,
+  onClose: PropTypes.func,
+  transaction: PropTypes.object,
+  mode: PropTypes.oneOf(Object.values(EDIT_GAS_MODE)),
 };
 
 EditGasPopover.defaultProps = {

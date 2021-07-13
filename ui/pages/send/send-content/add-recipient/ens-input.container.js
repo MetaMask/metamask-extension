@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {
   lookupEnsName,
   initializeEnsSlice,
-  resetResolution,
+  resetEnsResolution,
 } from '../../../../ducks/ens';
 import EnsInput from './ens-input.component';
 
@@ -11,7 +11,7 @@ function mapDispatchToProps(dispatch) {
   return {
     lookupEnsName: debounce((ensName) => dispatch(lookupEnsName(ensName)), 150),
     initializeEnsSlice: () => dispatch(initializeEnsSlice()),
-    resetEnsResolution: debounce(() => dispatch(resetResolution()), 300),
+    resetEnsResolution: debounce(() => dispatch(resetEnsResolution()), 300),
   };
 }
 
