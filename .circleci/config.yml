@@ -325,9 +325,6 @@ jobs:
       - run:
           name: yarn audit
           command: .circleci/scripts/yarn-audit.sh
-      - run:
-          name: depcheck
-          command: yarn depcheck
 
   test-deps-depcheck:
     executor: node-browsers
