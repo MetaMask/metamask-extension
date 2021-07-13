@@ -73,7 +73,7 @@ function runInChildProcess(task) {
     if (
       process.env.npm_lifecycle_event === 'build:dev' ||
       (taskName.includes('scripts:core:dev') &&
-      !process.argv[0].includes('lavamoat'))
+        !process.argv[0].includes('lavamoat'))
     ) {
       childProcess = spawn('yarn', ['build:dev', taskName, '--skip-stats'], {
         env: process.env,
