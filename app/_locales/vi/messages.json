@@ -471,6 +471,9 @@
   "createAccount": {
     "message": "Tạo tài khoản"
   },
+  "createNewWallet": {
+    "message": "Tạo một ví mới"
+  },
   "createPassword": {
     "message": "Tạo mật khẩu"
   },
@@ -646,6 +649,9 @@
   },
   "editGasMedium": {
     "message": "Trung bình"
+  },
+  "editGasPriceTooltip": {
+    "message": "Mạng này dùng một phiên bản giá gas cũ nên cần có trường \"Giá ga\". Giá gas là số tiền tối đa mà bạn sẵn sàng trả cho một đơn vị gas."
   },
   "editGasTitle": {
     "message": "Chỉnh sửa phí gas"
@@ -1461,6 +1467,12 @@
   "passwordNotLongEnough": {
     "message": "Mật khẩu không đủ dài"
   },
+  "passwordSetupDetails": {
+    "message": "Mật khẩu này sẽ chỉ mở khóa ví MetaMask của bạn trên thiết bị này. MetaMask không thể khôi phục mật khẩu này."
+  },
+  "passwordTermsWarning": {
+    "message": "Tôi hiểu rằng MetaMask không thể giúp tôi khôi phục mật khẩu này. $1"
+  },
   "passwordsDontMatch": {
     "message": "Mật khẩu không khớp"
   },
@@ -1793,6 +1805,9 @@
   },
   "settings": {
     "message": "Cài đặt"
+  },
+  "show": {
+    "message": "Hiện"
   },
   "showAdvancedGasInline": {
     "message": "Quyền kiểm soát gas nâng cao"

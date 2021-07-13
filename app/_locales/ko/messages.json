@@ -471,6 +471,9 @@
   "createAccount": {
     "message": "계정 생성"
   },
+  "createNewWallet": {
+    "message": "새 지갑 생성"
+  },
   "createPassword": {
     "message": "암호 생성"
   },
@@ -646,6 +649,9 @@
   },
   "editGasMedium": {
     "message": "중간"
+  },
+  "editGasPriceTooltip": {
+    "message": "이 네트워크.는 구 버전의 가스 가격을 사용하기 때문에 “가스 가격” 필드가 요구됩니다. 가스 가격은 귀하가 단위 가스당 지불할 최대 금액입니다."
   },
   "editGasTitle": {
     "message": "가스 요금 수정"
@@ -1461,6 +1467,12 @@
   "passwordNotLongEnough": {
     "message": "암호가 짧습니다."
   },
+  "passwordSetupDetails": {
+    "message": "이 암호는 이 장치에서만 MetaMask 지갑의 잠금을 해제합니다. MetaMask는 이 암호를 복구할 수 없습니다."
+  },
+  "passwordTermsWarning": {
+    "message": "MetaMask가 이 암호를 복구할 수 없음을 이해합니다. $1"
+  },
   "passwordsDontMatch": {
     "message": "암호가 일치하지 않습니다."
   },
@@ -1793,6 +1805,9 @@
   },
   "settings": {
     "message": "설정"
+  },
+  "show": {
+    "message": "표시"
   },
   "showAdvancedGasInline": {
     "message": "고급 Gas 제어 기능"

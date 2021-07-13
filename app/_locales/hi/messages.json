@@ -471,6 +471,9 @@
   "createAccount": {
     "message": "खाता बनाएँ"
   },
+  "createNewWallet": {
+    "message": "एक नया वॉलेट बनाएँ"
+  },
   "createPassword": {
     "message": "पासवर्ड बनाएँ"
   },
@@ -646,6 +649,9 @@
   },
   "editGasMedium": {
     "message": "मध्यम"
+  },
+  "editGasPriceTooltip": {
+    "message": "यह नेटवर्क गैस मूल्य निर्धारण के पुराने संस्करण का उपयोग करता है जिसके लिए \"गैस मूल्य\" फ़ील्ड की आवश्यकता होती है। गैस की कीमत वह अधिकतम राशि है जो आप प्रति यूनिट गैस का भुगतान चाहते हैं।"
   },
   "editGasTitle": {
     "message": "गैस शुल्क संपादित करें"
@@ -1461,6 +1467,12 @@
   "passwordNotLongEnough": {
     "message": "पासवर्ड की लंबाई पर्याप्त नहीं है"
   },
+  "passwordSetupDetails": {
+    "message": "यह पासवर्ड आपके MetaMask वॉलेट को केवल इस डिवाइस पर अनलॉक करेगा। MetaMask इस पासवर्ड को पुनर्प्राप्त नहीं कर सकता है।"
+  },
+  "passwordTermsWarning": {
+    "message": "मैं समझता हूँ कि MetaMask मेरे लिए यह पासवर्ड पुनर्प्राप्त नहीं कर सकता है। $1"
+  },
   "passwordsDontMatch": {
     "message": "पासवर्ड मेल नहीं खाते"
   },
@@ -1793,6 +1805,9 @@
   },
   "settings": {
     "message": "सेटिंग"
+  },
+  "show": {
+    "message": "दिखाएँ"
   },
   "showAdvancedGasInline": {
     "message": "उन्नत गैस नियंत्रण"

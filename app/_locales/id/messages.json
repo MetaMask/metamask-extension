@@ -471,6 +471,9 @@
   "createAccount": {
     "message": "Buat Akun"
   },
+  "createNewWallet": {
+    "message": "Buat dompet baru"
+  },
   "createPassword": {
     "message": "Buat Kata Sandi"
   },
@@ -646,6 +649,9 @@
   },
   "editGasMedium": {
     "message": "Menengah"
+  },
+  "editGasPriceTooltip": {
+    "message": "Jaringan ini menggunakan versi lama biaya jaringan yang memerlukan bidang “Biaya jaringan”. Biaya jaringan adalah jumlah maksimum yang akan Anda bayarkan per unit biaya jaringan."
   },
   "editGasTitle": {
     "message": "Edit biaya jaringan"
@@ -1461,6 +1467,12 @@
   "passwordNotLongEnough": {
     "message": "Kata sandi kurang panjang"
   },
+  "passwordSetupDetails": {
+    "message": "Kata sandi ini akan membuka dompet MetaMask Anda hanya di perangkat ini. MetaMask tidak dapat memulihkan kata sandi ini."
+  },
+  "passwordTermsWarning": {
+    "message": "Saya mengerti bahwa MetaMask tidak dapat memulihkan kata sandi ini untuk saya. $1"
+  },
   "passwordsDontMatch": {
     "message": "Kata Sandi Tidak Cocok"
   },
@@ -1793,6 +1805,9 @@
   },
   "settings": {
     "message": "Pengaturan"
+  },
+  "show": {
+    "message": "Tampilkan"
   },
   "showAdvancedGasInline": {
     "message": "Kontrol biaya jaringan tingkat lanjut"

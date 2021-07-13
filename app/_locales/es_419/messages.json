@@ -471,6 +471,9 @@
   "createAccount": {
     "message": "Crear cuenta"
   },
+  "createNewWallet": {
+    "message": "Crear una cartera nueva"
+  },
   "createPassword": {
     "message": "Crear contraseña"
   },
@@ -646,6 +649,9 @@
   },
   "editGasMedium": {
     "message": "Media"
+  },
+  "editGasPriceTooltip": {
+    "message": "Esta red usa una versión más vieja del precio del gas que requiere un campo de \"Precio de gas\". El precio del gas es la cantidad máxima que está dispuesto a pagar por unidad de gas."
   },
   "editGasTitle": {
     "message": "Editar cuota de gas"
@@ -1461,6 +1467,12 @@
   "passwordNotLongEnough": {
     "message": "La contraseña no es suficientemente larga"
   },
+  "passwordSetupDetails": {
+    "message": "Esta contraseña desbloqueará su cartera de MetaMask solo en este dispositivo. MetaMask no puede recuperar esta contraseña."
+  },
+  "passwordTermsWarning": {
+    "message": "Entiendo que MetaMask no me puede ayudar a recuperar esta contraseña. $1"
+  },
   "passwordsDontMatch": {
     "message": "Las contraseñas no coinciden"
   },
@@ -1793,6 +1805,9 @@
   },
   "settings": {
     "message": "Configuración"
+  },
+  "show": {
+    "message": "Mostrar"
   },
   "showAdvancedGasInline": {
     "message": "Controles avanzados de gas"

@@ -471,6 +471,9 @@
   "createAccount": {
     "message": "アカウントの作成"
   },
+  "createNewWallet": {
+    "message": "新しいウォレットの作成"
+  },
   "createPassword": {
     "message": "パスワードの作成"
   },
@@ -646,6 +649,9 @@
   },
   "editGasMedium": {
     "message": "ミディアム"
+  },
+  "editGasPriceTooltip": {
+    "message": "このネットワークでは、古いバージョンのガス価格を使用しており、ここには「ガス価格」フィールドが必要となります。ガス価格とは、ガス1本あたりに支払う金額の上限です。"
   },
   "editGasTitle": {
     "message": "ガス費の編集"
@@ -1461,6 +1467,12 @@
   "passwordNotLongEnough": {
     "message": "パスワードの長さが足りません"
   },
+  "passwordSetupDetails": {
+    "message": "このパスワードによって、このデバイスでのみ MetaMask ウォレットのロックが解除されます。MetaMask はこのパスワードを復元できません。"
+  },
+  "passwordTermsWarning": {
+    "message": "MetaMask ではこのパスワードを復元できないことを理解しています。$1"
+  },
   "passwordsDontMatch": {
     "message": "パスワードが一致しません"
   },
@@ -1793,6 +1805,9 @@
   },
   "settings": {
     "message": "設定"
+  },
+  "show": {
+    "message": "表示"
   },
   "showAdvancedGasInline": {
     "message": "高度なガス コントロール"
