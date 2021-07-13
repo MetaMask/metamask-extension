@@ -52,6 +52,11 @@ export default class ConfirmTransaction extends Component {
     setDefaultHomeActiveTabName: PropTypes.func,
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   componentDidMount() {
     const {
       totalUnapprovedCount = 0,

@@ -736,7 +736,9 @@ const slice = createSlice({
       // We keep a copy of txParams in state that could be submitted to the
       // network if the form state is valid.
       if (state.status === SEND_STATUSES.VALID) {
-        state.draftTransaction.txParams.from = state.account.address;
+        if (state.stage !== SEND_STAGES.EDIT) {
+          state.draftTransaction.txParams.from = state.account.address;
+        }
         switch (state.asset.type) {
           case ASSET_TYPES.TOKEN:
             // When sending a token the to address is the contract address of
@@ -901,7 +903,7 @@ const slice = createSlice({
           break;
         case state.asset.type === ASSET_TYPES.TOKEN &&
           state.asset.details.isERC721 === true:
-          state.state = SEND_STATUSES.INVALID;
+          state.status = SEND_STATUSES.INVALID;
           break;
         default:
           state.status = SEND_STATUSES.VALID;
