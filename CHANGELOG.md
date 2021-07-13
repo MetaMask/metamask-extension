@@ -8,9 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [9.8.1]
 ### Uncategorized
-- moving some properties to identifiable payload ([#11506](https://github.com/MetaMask/metamask-extension/pull/11506))
-- Converting gas params for tx metrics to decimal GWEI ([#11482](https://github.com/MetaMask/metamask-extension/pull/11482))
-- Using current time in place of block timestamp for completion time metric ([#11483](https://github.com/MetaMask/metamask-extension/pull/11483))
+- Adjusting transaction metrics values
 
 ## [9.8.0]
 ### Added
