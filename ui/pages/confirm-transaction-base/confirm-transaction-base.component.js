@@ -346,10 +346,19 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     ) : null;
 
+    const showInlineControls = process.env.SHOW_EIP_1559_UI
+      ? advancedInlineGasShown
+      : advancedInlineGasShown || notMainnetOrTest || gasPriceFetchFailure;
+
+    const showGasEditButton = process.env.SHOW_EIP_1559_UI
+      ? !showInlineControls
+      : !(notMainnetOrTest || gasPriceFetchFailure);
+
     if (process.env.SHOW_EIP_1559_UI) {
       return (
         <div className="confirm-page-container-content__details">
           <TransactionDetail
+            onEdit={() => this.handleEditGas()}
             rows={[
               <TransactionDetailItem
                 key="gas-item"
@@ -400,13 +409,6 @@ export default class ConfirmTransactionBase extends Component {
         </div>
       );
     }
-    const showInlineControls = process.env.SHOW_EIP_1559_UI
-      ? advancedInlineGasShown
-      : advancedInlineGasShown || notMainnetOrTest || gasPriceFetchFailure;
-
-    const showGasEditButton = process.env.SHOW_EIP_1559_UI
-      ? !showInlineControls
-      : !(notMainnetOrTest || gasPriceFetchFailure);
 
     return (
       <div className="confirm-page-container-content__details">
