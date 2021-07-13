@@ -51,6 +51,7 @@ export default class PreferencesController {
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
+      useStaticTokenList: false,
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace
@@ -136,6 +137,16 @@ export default class PreferencesController {
    */
   setUsePhishDetect(val) {
     this.store.updateState({ usePhishDetect: val });
+  }
+
+  /**
+   * Setter for the `useStaticTokenList` property
+   *
+   * @param {boolean} val - Whether or not the user prefers to use the static token list or dynamic token list from the API
+   *
+   */
+  setUseStaticTokenList(val) {
+    this.store.updateState({ useStaticTokenList: val });
   }
 
   /**

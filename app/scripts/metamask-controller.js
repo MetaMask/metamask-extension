@@ -25,6 +25,7 @@ import {
   PhishingController,
   NotificationController,
   GasFeeController,
+  TokenListController,
 } from '@metamask/controllers';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
@@ -32,6 +33,7 @@ import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
 
+import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -219,6 +221,21 @@ export default class MetamaskController extends EventEmitter {
       state: initState.CurrencyController,
     });
 
+    const tokenListMessenger = controllerMessenger.getRestricted({
+      name: 'TokenListController',
+    });
+    this.tokenListController = new TokenListController({
+      chainId: hexToDecimal(this.networkController.getCurrentChainId()),
+      useStaticTokenList: this.preferencesController.store.getState()
+        .useStaticTokenList,
+      onNetworkStateChange: this._onModifiedNetworkStateChange.bind(this),
+      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+        this.preferencesController.store,
+      ),
+      messenger: tokenListMessenger,
+      state: initState.tokenListController,
+    });
+
     this.phishingController = new PhishingController();
 
     this.notificationController = new NotificationController(
@@ -275,11 +292,13 @@ export default class MetamaskController extends EventEmitter {
         this.incomingTransactionsController.start();
         this.tokenRatesController.start();
         this.currencyRateController.start();
+        this.tokenListController.start();
       } else {
         this.accountTracker.stop();
         this.incomingTransactionsController.stop();
         this.tokenRatesController.stop();
         this.currencyRateController.stop();
+        this.tokenListController.stop();
       }
     });
 
@@ -498,6 +517,7 @@ export default class MetamaskController extends EventEmitter {
       ThreeBoxController: this.threeBoxController.store,
       NotificationController: this.notificationController,
       GasFeeController: this.gasFeeController,
+      TokenListController: this.tokenListController,
     });
 
     this.memStore = new ComposableObservableStore({
@@ -530,6 +550,7 @@ export default class MetamaskController extends EventEmitter {
         ApprovalController: this.approvalController,
         NotificationController: this.notificationController,
         GasFeeController: this.gasFeeController,
+        TokenListController: this.tokenListController,
       },
       controllerMessenger,
     });
@@ -604,6 +625,24 @@ export default class MetamaskController extends EventEmitter {
     );
     return providerProxy;
   }
+
+  /**
+   * The TokenListController defined in the @metamask/controller repo accepts chainId as decimal string,
+   *  this function converts the hex to decimal when the network changes.
+   * @param {*} cb
+   */
+  _onModifiedNetworkStateChange = (cb) => {
+    this.networkController.store.subscribe(async (networkState) => {
+      const modifiedNetworkState = {
+        ...networkState,
+        provider: {
+          ...networkState.provider,
+          chainId: hexToDecimal(networkState.provider.chainId),
+        },
+      };
+      return await cb(modifiedNetworkState);
+    });
+  };
 
   /**
    * TODO:LegacyProvider: Delete
@@ -723,6 +762,7 @@ export default class MetamaskController extends EventEmitter {
       setUseBlockie: this.setUseBlockie.bind(this),
       setUseNonceField: this.setUseNonceField.bind(this),
       setUsePhishDetect: this.setUsePhishDetect.bind(this),
+      setUseStaticTokenList: this.setUseStaticTokenList.bind(this),
       setIpfsGateway: this.setIpfsGateway.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
       setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
@@ -2788,6 +2828,23 @@ export default class MetamaskController extends EventEmitter {
   setUsePhishDetect(val, cb) {
     try {
       this.preferencesController.setUsePhishDetect(val);
+      cb(null);
+      return;
+    } catch (err) {
+      cb(err);
+      // eslint-disable-next-line no-useless-return
+      return;
+    }
+  }
+
+  /**
+   * Sets whether or not to use phishing detection.
+   * @param {boolean} val
+   * @param {Function} cb
+   */
+  setUseStaticTokenList(val, cb) {
+    try {
+      this.preferencesController.setUseStaticTokenList(val);
       cb(null);
       return;
     } catch (err) {
