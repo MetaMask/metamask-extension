@@ -1,0 +1,34 @@
+# things that *are* used, that depcheck is wrong about
+ignores:
+  # deps
+  # - "@babel/runtime"
+  # - "@fortawesome/fontawesome-free"
+  # - "eth-phishing-detect"
+  - "punycode"
+  # dev deps
+  - "@lavamoat/preinstall-always-fail"
+  # - "@metamask/auto-changelog"
+  # - "@metamask/forwarder"
+  # - "@metamask/test-dapp"
+  # - "@sentry/cli"
+  # - "@storybook/addon-backgrounds"
+  # - "@storybook/addon-toolbars"
+  # - "@storybook/core"
+  # - "chromedriver"
+  # - "css-loader"
+  # - "depcheck"
+  # - "ganache-cli"
+  # - "geckodriver"
+  # - "get-port"
+  # - "lavamoat-viz"
+  # - "prettier-plugin-sort-json"
+  # - "resolve-url-loader"
+  # - "sass-loader"
+  # - "semver"
+  # - "source-map-explorer"
+  # - "style-loader"
+
+# files depcheck should not parse 
+ignorePatterns:
+  # seems to incorrectly parse @include pragmas?
+  - "**/*.scss"
