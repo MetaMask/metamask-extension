@@ -85,7 +85,7 @@ export default function EditGasDisplay({
             />
           </div>
         )}
-        {type === 'speed-up' && (
+        {mode === EDIT_GAS_MODES.SPEED_UP && (
           <div className="edit-gas-display__top-tooltip">
             <Typography
               color={COLORS.BLACK}
