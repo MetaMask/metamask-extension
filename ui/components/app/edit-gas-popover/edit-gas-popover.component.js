@@ -4,7 +4,10 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 
-import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import {
+  GAS_ESTIMATE_TYPES,
+  EDIT_GAS_MODES,
+} from '../../../../shared/constants/gas';
 
 import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
 
@@ -22,12 +25,6 @@ import {
   updateTransaction,
 } from '../../../store/actions';
 
-export const EDIT_GAS_MODE = {
-  SPEED_UP: 'speed-up',
-  CANCEL: 'cancel',
-  MODIFY_IN_PLACE: 'modify-in-place',
-};
-
 export default function EditGasPopover({
   popoverTitle = '',
   confirmButtonText = '',
@@ -41,7 +38,7 @@ export default function EditGasPopover({
   const dispatch = useDispatch();
   const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
 
-  const showEducationButton = mode === EDIT_GAS_MODE.MODIFY_IN_PLACE;
+  const showEducationButton = mode === EDIT_GAS_MODES.MODIFY_IN_PLACE;
   const [showEducationContent, setShowEducationContent] = useState(false);
 
   const [warning] = useState(null);
@@ -110,13 +107,13 @@ export default function EditGasPopover({
           };
 
     switch (mode) {
-      case EDIT_GAS_MODE.CANCEL:
+      case EDIT_GAS_MODES.CANCEL:
         dispatch(createCancelTransaction(transaction.id, cancelSpeedUpGas));
         break;
-      case EDIT_GAS_MODE.SPEED_UP:
+      case EDIT_GAS_MODES.SPEED_UP:
         dispatch(createSpeedUpTransaction(transaction.id, cancelSpeedUpGas));
         break;
-      case EDIT_GAS_MODE.MODIFY_IN_PLACE:
+      case EDIT_GAS_MODES.MODIFY_IN_PLACE:
         dispatch(
           updateTransaction({
             ...transaction,
@@ -153,9 +150,17 @@ export default function EditGasPopover({
     gasEstimateType,
   ]);
 
-  const title = showEducationContent
-    ? t('editGasEducationModalTitle')
-    : popoverTitle || t('editGasTitle');
+  let title = t('editGasTitle');
+  if (popoverTitle) {
+    title = popoverTitle;
+  } else if (showEducationContent) {
+    title = t('editGasEducationModalTitle');
+  } else if (mode === EDIT_GAS_MODES.SPEED_UP) {
+    title = t('speedUp');
+  } else if (mode === EDIT_GAS_MODES.CANCEL) {
+    title = t('cancelPopoverTitle');
+  }
+
   const footerButtonText = confirmButtonText || t('save');
 
   return (
@@ -212,6 +217,7 @@ export default function EditGasPopover({
             isMaxPriorityFeeError={isMaxPriorityFeeError}
             isGasTooLow={isGasTooLow}
             onEducationClick={() => setShowEducationContent(true)}
+            mode={mode}
             {...editGasDisplayProps}
           />
         )}
@@ -226,6 +232,6 @@ EditGasPopover.propTypes = {
   confirmButtonText: PropTypes.string,
   onClose: PropTypes.func,
   transaction: PropTypes.object,
-  mode: PropTypes.oneOf(Object.values(EDIT_GAS_MODE)),
+  mode: PropTypes.oneOf(Object.values(EDIT_GAS_MODES)),
   defaultEstimateToUse: PropTypes.string,
 };

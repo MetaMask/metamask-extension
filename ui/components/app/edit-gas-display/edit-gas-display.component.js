@@ -1,7 +1,10 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
-import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
+import {
+  GAS_RECOMMENDATIONS,
+  EDIT_GAS_MODES,
+} from '../../../../shared/constants/gas';
 
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -54,14 +57,13 @@ export default function EditGasDisplay({
   showAdvancedForm,
   setShowAdvancedForm,
   warning,
+  mode,
 }) {
   const t = useContext(I18nContext);
 
   const requireDappAcknowledgement = Boolean(
     dappSuggestedGasFee && !dappSuggestedGasFeeAcknowledged,
   );
-
-  console.log('defaultEstimateToUse: ', defaultEstimateToUse);
 
   return (
     <div className="edit-gas-display">
@@ -136,31 +138,33 @@ export default function EditGasDisplay({
             </Typography>
           </div>
         )}
-        {!requireDappAcknowledgement && (
-          <RadioGroup
-            name="gas-recommendation"
-            options={[
-              {
-                value: GAS_RECOMMENDATIONS.LOW,
-                label: t('editGasLow'),
-                recommended: defaultEstimateToUse === GAS_RECOMMENDATIONS.LOW,
-              },
-              {
-                value: GAS_RECOMMENDATIONS.MEDIUM,
-                label: t('editGasMedium'),
-                recommended:
-                  defaultEstimateToUse === GAS_RECOMMENDATIONS.MEDIUM,
-              },
-              {
-                value: GAS_RECOMMENDATIONS.HIGH,
-                label: t('editGasHigh'),
-                recommended: defaultEstimateToUse === GAS_RECOMMENDATIONS.HIGH,
-              },
-            ]}
-            selectedValue={estimateToUse}
-            onChange={setEstimateToUse}
-          />
-        )}
+        {!requireDappAcknowledgement &&
+          ![EDIT_GAS_MODES.SPEED_UP, EDIT_GAS_MODES.CANCEL].includes(mode) && (
+            <RadioGroup
+              name="gas-recommendation"
+              options={[
+                {
+                  value: GAS_RECOMMENDATIONS.LOW,
+                  label: t('editGasLow'),
+                  recommended: defaultEstimateToUse === GAS_RECOMMENDATIONS.LOW,
+                },
+                {
+                  value: GAS_RECOMMENDATIONS.MEDIUM,
+                  label: t('editGasMedium'),
+                  recommended:
+                    defaultEstimateToUse === GAS_RECOMMENDATIONS.MEDIUM,
+                },
+                {
+                  value: GAS_RECOMMENDATIONS.HIGH,
+                  label: t('editGasHigh'),
+                  recommended:
+                    defaultEstimateToUse === GAS_RECOMMENDATIONS.HIGH,
+                },
+              ]}
+              selectedValue={estimateToUse}
+              onChange={setEstimateToUse}
+            />
+          )}
         {!alwaysShowForm && (
           <button
             className="edit-gas-display__advanced-button"
@@ -212,6 +216,7 @@ export default function EditGasDisplay({
 EditGasDisplay.propTypes = {
   alwaysShowForm: PropTypes.bool,
   type: PropTypes.oneOf(['customize-gas', 'speed-up']),
+  mode: PropTypes.string,
   showEducationButton: PropTypes.bool,
   onEducationClick: PropTypes.func,
   dappSuggestedGasFee: PropTypes.number,

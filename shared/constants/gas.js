@@ -29,3 +29,12 @@ export const GAS_RECOMMENDATIONS = {
   MEDIUM: 'medium',
   HIGH: 'high',
 };
+
+/**
+ * These represent the different edit modes presented in the UI
+ */
+export const EDIT_GAS_MODES = {
+  SPEED_UP: 'speed-up',
+  CANCEL: 'cancel',
+  MODIFY_IN_PLACE: 'modify-in-place',
+};
