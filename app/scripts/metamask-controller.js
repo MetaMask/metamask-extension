@@ -195,8 +195,16 @@ export default class MetamaskController extends EventEmitter {
         this,
       ),
       legacyAPIEndpoint: `https://gas-api.metaswap.codefi.network/networks/<chain_id>/gasPrices`,
-      getCurrentNetworkLegacyGasAPICompatibility: () => true,
-      getChainId: () => this.networkController.getCurrentChainId(),
+      EIP1559APIEndpoint: `https://gas-api.metaswap.codefi.network/networks/<chain_id>/suggestedGasFees`,
+      getCurrentNetworkLegacyGasAPICompatibility: () => {
+        const chainId = this.networkController.getCurrentChainId();
+        return process.env.IN_TEST || chainId === MAINNET_CHAIN_ID;
+      },
+      getChainId: () => {
+        return process.env.IN_TEST
+          ? MAINNET_CHAIN_ID
+          : this.networkController.getCurrentChainId();
+      },
     });
 
     this.appStateController = new AppStateController({
@@ -2050,6 +2058,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   estimateGas(estimateGasParams) {
+    console.log(estimateGasParams);
     return new Promise((resolve, reject) => {
       return this.txController.txGasUtil.query.estimateGas(
         estimateGasParams,

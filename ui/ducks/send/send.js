@@ -178,8 +178,16 @@ async function estimateGasLimitForSend({
   let isSimpleSendOnNonStandardNetwork = false;
 
   // blockGasLimit may be a falsy, but defined, value when we receive it from
-  // state, so we use logical or to fall back to MIN_GAS_LIMIT_HEX.
-  const blockGasLimit = options.blockGasLimit || MIN_GAS_LIMIT_HEX;
+  // state, so we use logical or to fall back to MIN_GAS_LIMIT_HEX. Some
+  // network implementations check the gas parameter supplied to
+  // eth_estimateGas for validity. For this reason, we set token sends
+  // blockGasLimit default to a higher number. Note that the current gasLimit
+  // on a BLOCK is 15,000,000 and will be 30,000,000 on mainnet after London.
+  // Meanwhile, MIN_GAS_LIMIT_HEX is 0x5208.
+  const blockGasLimit =
+    options.blockGasLimit || sendToken
+      ? GAS_LIMITS.BASE_TOKEN_ESTIMATE
+      : MIN_GAS_LIMIT_HEX;
   // The parameters below will be sent to our background process to estimate
   // how much gas will be used for a transaction. That background process is
   // located in tx-gas-utils.js in the transaction controller folder.
@@ -334,7 +342,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     if (send.stage !== SEND_STAGES.EDIT) {
       const gasLimit = await estimateGasLimitForSend({
         gasPrice: send.gas.gasPrice,
-        blockGasLimit: metamask.blockGasLimit,
+        blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress: metamask.selectedAddress,
         sendToken: send.asset.details,
         to: send.recipient.address?.toLowerCase(),
@@ -419,7 +427,7 @@ export const initializeSendState = createAsyncThunk(
       // required gas. If this value isn't nullish, set it as the new gasLimit
       const estimatedGasLimit = await estimateGasLimitForSend({
         gasPrice,
-        blockGasLimit: metamask.blockGasLimit,
+        blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress: fromAddress,
         sendToken: asset.details,
         to: recipient.address.toLowerCase(),
