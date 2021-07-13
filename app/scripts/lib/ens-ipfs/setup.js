@@ -58,10 +58,11 @@ export default function setupEnsIpfsResolver({
         name,
       });
       if (type === 'ipfs-ns' || type === 'ipns-ns') {
-        const resolvedUrl = `https://${hash}.${type.slice(
-          0,
-          4,
-        )}.${ipfsGateway}${pathname}${search || ''}${fragment || ''}`;
+        const resolvedUrl = `https://${name
+          .replace(/-/gu, '--')
+          .replace(/\./gu, '-')}.ipns.${ipfsGateway}${pathname}${search || ''}${
+          fragment || ''
+        }`;
         try {
           // check if ipfs gateway has result
           const response = await fetchWithTimeout(resolvedUrl, {
