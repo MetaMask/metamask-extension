@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.8.1]
-### Uncategorized
+### Changed
 - Adjusting transaction metrics values
 
 ## [9.8.0]
