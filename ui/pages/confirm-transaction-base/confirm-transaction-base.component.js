@@ -414,7 +414,7 @@ export default class ConfirmTransactionBase extends Component {
           <ConfirmDetailRow
             label={t('gasFee')}
             value={hexTransactionFee}
-            headerText={showGasEditButton ? 'Edit' : ''}
+            headerText={showGasEditButton ? t('edit') : ''}
             headerTextClassName={
               showGasEditButton ? 'confirm-detail-row__header-text--edit' : ''
             }
