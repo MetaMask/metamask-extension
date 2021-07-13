@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.8.1]
+### Uncategorized
+- moving some properties to identifiable payload ([#11506](https://github.com/MetaMask/metamask-extension/pull/11506))
+- Converting gas params for tx metrics to decimal GWEI ([#11482](https://github.com/MetaMask/metamask-extension/pull/11482))
+- Using current time in place of block timestamp for completion time metric ([#11483](https://github.com/MetaMask/metamask-extension/pull/11483))
+
 ## [9.8.0]
 ### Added
 - [#11435](https://github.com/MetaMask/metamask-extension/pull/11435): Add gas limit buffers for optimism network
@@ -2329,7 +2335,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.8.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.8.1...HEAD
+[9.8.1]: https://github.com/MetaMask/metamask-extension/compare/v9.8.0...v9.8.1
 [9.8.0]: https://github.com/MetaMask/metamask-extension/compare/v9.7.1...v9.8.0
 [9.7.1]: https://github.com/MetaMask/metamask-extension/compare/v9.7.0...v9.7.1
 [9.7.0]: https://github.com/MetaMask/metamask-extension/compare/v9.6.1...v9.7.0
