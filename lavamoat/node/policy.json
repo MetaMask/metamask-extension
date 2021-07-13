@@ -2330,26 +2330,6 @@
         "through2": true
       }
     },
-    "gulp-terser-js": {
-      "builtin": {
-        "fs.readFileSync": true,
-        "path.basename": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "Buffer.from": true,
-        "console.error": true,
-        "console.log": true,
-        "process.stdout.columns": true
-      },
-      "packages": {
-        "plugin-error": true,
-        "source-map": true,
-        "terser": true,
-        "through2": true,
-        "vinyl-sourcemaps-apply": true
-      }
-    },
     "gulp-watch": {
       "builtin": {
         "path.dirname": true,
@@ -3957,9 +3937,19 @@
         "Buffer.from": true,
         "atob": true,
         "btoa": true,
-        "define": true
+        "console.log": true,
+        "console.warn": true,
+        "define": true,
+        "process.argv": true,
+        "process.exit": true,
+        "process.platform": true,
+        "process.stderr.write": true,
+        "process.stdin.on": true,
+        "process.stdin.resume": true,
+        "process.stdin.setEncoding": true
       },
       "packages": {
+        "acorn": true,
         "source-map": true
       }
     },

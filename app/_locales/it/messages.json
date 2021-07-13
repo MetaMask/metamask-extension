@@ -217,9 +217,6 @@
   "browserNotSupported": {
     "message": "Il tuo Browser non è supportato..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask è progettato e realizzato in California."
-  },
   "buy": {
     "message": "Compra"
   },
@@ -1200,9 +1197,6 @@
   },
   "recents": {
     "message": "Recenti"
-  },
-  "recipientAddress": {
-    "message": "Indirizzo Destinatario"
   },
   "recipientAddressPlaceholder": {
     "message": "Ricerca, indirizzo pubblico (0x) o ENS"

@@ -1,9 +1,6 @@
 import { connect } from 'react-redux';
-import {
-  getIsMainnet,
-  getNativeCurrency,
-  getPreferences,
-} from '../../../selectors';
+import { getShouldShowFiat } from '../../../selectors';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
 import { sumHexes } from '../../../helpers/utils/transactions.util';
 import TransactionBreakdown from './transaction-breakdown.component';
@@ -14,8 +11,6 @@ const mapStateToProps = (state, ownProps) => {
     txParams: { gas, gasPrice, value } = {},
     txReceipt: { gasUsed } = {},
   } = transaction;
-  const { showFiatInTestnets } = getPreferences(state);
-  const isMainnet = getIsMainnet(state);
 
   const gasLimit = typeof gasUsed === 'string' ? gasUsed : gas;
 
@@ -25,7 +20,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     nativeCurrency: getNativeCurrency(state),
-    showFiat: isMainnet || Boolean(showFiatInTestnets),
+    showFiat: getShouldShowFiat(state),
     totalInHex,
     gas,
     gasPrice,

@@ -23,6 +23,7 @@ export default function ConfirmTokenTransactionBase({
   contractExchangeRate,
   conversionRate,
   currentCurrency,
+  onEdit,
 }) {
   const t = useContext(I18nContext);
 
@@ -69,6 +70,7 @@ export default function ConfirmTokenTransactionBase({
   return (
     <ConfirmTransactionBase
       toAddress={toAddress}
+      onEdit={onEdit}
       identiconAddress={tokenAddress}
       title={tokensText}
       subtitleComponent={
@@ -105,4 +107,5 @@ ConfirmTokenTransactionBase.propTypes = {
   contractExchangeRate: PropTypes.number,
   conversionRate: PropTypes.number,
   currentCurrency: PropTypes.string,
+  onEdit: PropTypes.func,
 };

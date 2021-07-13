@@ -29,10 +29,11 @@ import {
   getAggregatorMetadata,
   getBackgroundSwapRouteState,
   getSwapsErrorKey,
-  getSwapsFeatureLiveness,
+  getSwapsFeatureIsLive,
   prepareToLeaveSwaps,
   fetchAndSetSwapsGasPriceInfo,
   fetchSwapsLiveness,
+  getUseNewSwapsApi,
 } from '../../ducks/swaps/swaps';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -103,9 +104,10 @@ export default function Swap() {
   const aggregatorMetadata = useSelector(getAggregatorMetadata);
   const fetchingQuotes = useSelector(getFetchingQuotes);
   let swapsErrorKey = useSelector(getSwapsErrorKey);
-  const swapsEnabled = useSelector(getSwapsFeatureLiveness);
+  const swapsEnabled = useSelector(getSwapsFeatureIsLive);
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
+  const useNewSwapsApi = useSelector(getUseNewSwapsApi);
 
   const {
     balance: ethBalance,
@@ -165,27 +167,28 @@ export default function Swap() {
     };
   }, []);
 
+  // eslint-disable-next-line
   useEffect(() => {
-    fetchTokens(chainId)
-      .then((tokens) => {
-        dispatch(setSwapsTokens(tokens));
-      })
-      .catch((error) => console.error(error));
-
-    fetchTopAssets(chainId).then((topAssets) => {
-      dispatch(setTopAssets(topAssets));
-    });
-
-    fetchAggregatorMetadata(chainId).then((newAggregatorMetadata) => {
-      dispatch(setAggregatorMetadata(newAggregatorMetadata));
-    });
-
-    dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
-
-    return () => {
-      dispatch(prepareToLeaveSwaps());
-    };
-  }, [dispatch, chainId]);
+    if (isFeatureFlagLoaded) {
+      fetchTokens(chainId, useNewSwapsApi)
+        .then((tokens) => {
+          dispatch(setSwapsTokens(tokens));
+        })
+        .catch((error) => console.error(error));
+      fetchTopAssets(chainId, useNewSwapsApi).then((topAssets) => {
+        dispatch(setTopAssets(topAssets));
+      });
+      fetchAggregatorMetadata(chainId, useNewSwapsApi).then(
+        (newAggregatorMetadata) => {
+          dispatch(setAggregatorMetadata(newAggregatorMetadata));
+        },
+      );
+      dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
+      return () => {
+        dispatch(prepareToLeaveSwaps());
+      };
+    }
+  }, [dispatch, chainId, isFeatureFlagLoaded, useNewSwapsApi]);
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);

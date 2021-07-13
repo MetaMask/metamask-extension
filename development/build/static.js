@@ -79,7 +79,7 @@ for (const tag of languageTags) {
 const copyTargetsDev = [
   ...copyTargets,
   {
-    src: './app/scripts/',
+    src: './development',
     pattern: '/chromereload.js',
     dest: ``,
   },

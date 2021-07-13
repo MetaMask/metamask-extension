@@ -4,9 +4,10 @@ import {
   isValidChecksumAddress,
   addHexPrefix,
   toChecksumAddress,
+  zeroAddress,
 } from 'ethereumjs-util';
 
-export const BURN_ADDRESS = '0x0000000000000000000000000000000000000000';
+export const BURN_ADDRESS = zeroAddress();
 
 export function isBurnAddress(address) {
   return address === BURN_ADDRESS;

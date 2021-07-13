@@ -16,9 +16,9 @@ import { I18nContext } from '../../../contexts/i18n';
 import DropdownInputPair from '../dropdown-input-pair';
 import DropdownSearchList from '../dropdown-search-list';
 import SlippageButtons from '../slippage-buttons';
-import { getTokens } from '../../../ducks/metamask/metamask';
+import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import ActionableMessage from '../actionable-message';
+import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 
 import {
   fetchQuotesAndSetQuoteState,
@@ -33,11 +33,11 @@ import {
 import {
   getSwapsDefaultToken,
   getTokenExchangeRates,
-  getConversionRate,
   getCurrentCurrency,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
+
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -141,7 +141,9 @@ export default function BuildQuote({
   const toTokenIsNotDefault =
     selectedToToken?.address &&
     !isSwapsDefaultTokenAddress(selectedToToken?.address, chainId);
-  const occurances = Number(selectedToToken?.occurances || 0);
+  const occurrences = Number(
+    selectedToToken?.occurances || selectedToToken?.occurrences || 0,
+  );
   const {
     address: fromTokenAddress,
     symbol: fromTokenSymbol,
@@ -333,6 +335,38 @@ export default function BuildQuote({
     dispatch(resetSwapsPostFetchState());
   }, [dispatch]);
 
+  const BlockExplorerLink = () => {
+    return (
+      <a
+        className="build-quote__token-etherscan-link build-quote__underline"
+        key="build-quote-etherscan-link"
+        onClick={() => {
+          blockExplorerLinkClickedEvent();
+          global.platform.openTab({
+            url: blockExplorerTokenLink,
+          });
+        }}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {blockExplorerLabel}
+      </a>
+    );
+  };
+
+  let tokenVerificationDescription = '';
+  if (blockExplorerTokenLink) {
+    if (occurrences === 1) {
+      tokenVerificationDescription = t('verifyThisTokenOn', [
+        <BlockExplorerLink key="block-explorer-link" />,
+      ]);
+    } else if (occurrences === 0) {
+      tokenVerificationDescription = t('verifyThisUnconfirmedTokenOn', [
+        <BlockExplorerLink key="block-explorer-link" />,
+      ]);
+    }
+  }
+
   return (
     <div className="build-quote">
       <div className="build-quote__content">
@@ -434,37 +468,21 @@ export default function BuildQuote({
             listContainerClassName="build-quote__open-to-dropdown"
             hideRightLabels
             defaultToAll
+            shouldSearchForImports
           />
         </div>
         {toTokenIsNotDefault &&
-          (occurances < 2 ? (
+          (occurrences < 2 ? (
             <ActionableMessage
+              type={occurrences === 1 ? 'warning' : 'danger'}
               message={
                 <div className="build-quote__token-verification-warning-message">
                   <div className="build-quote__bold">
-                    {occurances === 1
+                    {occurrences === 1
                       ? t('swapTokenVerificationOnlyOneSource')
-                      : t('swapTokenVerificationNoSource')}
+                      : t('swapTokenVerificationAddedManually')}
                   </div>
-                  <div>
-                    {blockExplorerTokenLink &&
-                      t('verifyThisTokenOn', [
-                        <a
-                          className="build-quote__token-etherscan-link build-quote__underline"
-                          key="build-quote-etherscan-link"
-                          onClick={() => {
-                            blockExplorerLinkClickedEvent();
-                            global.platform.openTab({
-                              url: blockExplorerTokenLink,
-                            });
-                          }}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {blockExplorerLabel}
-                        </a>,
-                      ])}
-                  </div>
+                  <div>{tokenVerificationDescription}</div>
                 </div>
               }
               primaryAction={
@@ -475,7 +493,6 @@ export default function BuildQuote({
                       onClick: () => setVerificationClicked(true),
                     }
               }
-              type="warning"
               withRightButton
               infoTooltipText={
                 blockExplorerTokenLink &&
@@ -488,7 +505,7 @@ export default function BuildQuote({
                 className="build-quote__bold"
                 key="token-verification-bold-text"
               >
-                {t('swapTokenVerificationSources', [occurances])}
+                {t('swapTokenVerificationSources', [occurrences])}
               </span>
               {blockExplorerTokenLink && (
                 <>
@@ -548,7 +565,7 @@ export default function BuildQuote({
           !selectedToToken?.address ||
           Number(maxSlippage) < 0 ||
           Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
-          (toTokenIsNotDefault && occurances < 2 && !verificationClicked)
+          (toTokenIsNotDefault && occurrences < 2 && !verificationClicked)
         }
         hideCancel
         showTermsOfService

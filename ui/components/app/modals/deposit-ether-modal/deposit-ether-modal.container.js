@@ -27,6 +27,9 @@ function mapDispatchToProps(dispatch) {
     toWyre: (address) => {
       dispatch(buyEth({ service: 'wyre', address }));
     },
+    toTransak: (address) => {
+      dispatch(buyEth({ service: 'transak', address }));
+    },
     hideModal: () => {
       dispatch(hideModal());
     },

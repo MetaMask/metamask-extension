@@ -14,7 +14,11 @@ export default function ListItem({
   className,
   'data-testid': dataTestId,
 }) {
-  const primaryClassName = classnames('list-item', className);
+  const primaryClassName = classnames(
+    'list-item',
+    className,
+    subtitle || children ? '' : 'list-item--single-content-row',
+  );
 
   return (
     <div

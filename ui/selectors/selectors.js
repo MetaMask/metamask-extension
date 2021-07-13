@@ -23,7 +23,11 @@ import {
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { getNativeCurrency } from './send';
+import { DAY } from '../../shared/constants/time';
+import {
+  getNativeCurrency,
+  getConversionRate,
+} from '../ducks/metamask/metamask';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -372,14 +376,19 @@ export function getIsTestnet(state) {
   return TEST_CHAINS.includes(chainId);
 }
 
+export function getIsNonStandardEthChain(state) {
+  return !(getIsMainnet(state) || getIsTestnet(state) || process.env.IN_TEST);
+}
+
 export function getPreferences({ metamask }) {
   return metamask.preferences;
 }
 
 export function getShouldShowFiat(state) {
   const isMainNet = getIsMainnet(state);
+  const conversionRate = getConversionRate(state);
   const { showFiatInTestnets } = getPreferences(state);
-  return Boolean(isMainNet || showFiatInTestnets);
+  return Boolean((isMainNet || showFiatInTestnets) && conversionRate);
 }
 
 export function getShouldHideZeroBalanceTokens(state) {
@@ -562,4 +571,16 @@ export function getSortedNotificationsToShow(state) {
     (a, b) => new Date(b.date) - new Date(a.date),
   );
   return notificationsSortedByDate;
+}
+
+export function getShowRecoveryPhraseReminder(state) {
+  const {
+    recoveryPhraseReminderLastShown,
+    recoveryPhraseReminderHasBeenShown,
+  } = state.metamask;
+
+  const currentTime = new Date().getTime();
+  const frequency = recoveryPhraseReminderHasBeenShown ? DAY * 90 : DAY * 2;
+
+  return currentTime - recoveryPhraseReminderLastShown >= frequency;
 }

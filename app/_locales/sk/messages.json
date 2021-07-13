@@ -137,9 +137,6 @@
   "browserNotSupported": {
     "message": "Váš prehliadač nie je podporovaný..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask je navržen a vytvořen v Kalifornii."
-  },
   "buyWithWyre": {
     "message": "Kúpte ETH s Wyre"
   },
@@ -722,9 +719,6 @@
   },
   "recents": {
     "message": "Posledné"
-  },
-  "recipientAddress": {
-    "message": "Adresa příjemce"
   },
   "recipientAddressPlaceholder": {
     "message": "Vyhľadávať verejnú adresu (0x) alebo ENS"

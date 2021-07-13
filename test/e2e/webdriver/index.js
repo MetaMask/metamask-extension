@@ -48,9 +48,9 @@ async function setupFetchMocking(driver) {
         return { json: async () => clone(mockResponses.gasPricesBasic) };
       } else if (url.match(/chromeextensionmm/u)) {
         return { json: async () => clone(mockResponses.metametrics) };
-      } else if (url.match(/^https:\/\/(api\.metaswap|.*airswap-dev)/u)) {
-        if (url.match(/featureFlag$/u)) {
-          return { json: async () => clone(mockResponses.swaps.featureFlag) };
+      } else if (url.match(/^https:\/\/(api2\.metaswap\.codefi\.network)/u)) {
+        if (url.match(/featureFlags$/u)) {
+          return { json: async () => clone(mockResponses.swaps.featureFlags) };
         }
       }
       return window.origFetch(...args);

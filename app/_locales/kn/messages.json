@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "ನಿಮ್ಮ ಬ್ರೌಸರ್ ಬೆಂಬಲಿಸುತ್ತಿಲ್ಲ..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask ಅನ್ನು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ ಮತ್ತು ಕ್ಯಾಲಿಫೋರ್ನಿಯಾದಲ್ಲಿ ನಿರ್ಮಿಸಲಾಗಿದೆ."
-  },
   "buyWithWyre": {
     "message": "Wyre ನೊಂದಿಗೆ ETH ಖರೀದಿಸಿ"
   },
@@ -753,9 +750,6 @@
   },
   "recents": {
     "message": "ಇತ್ತೀಚಿನವುಗಳು"
-  },
-  "recipientAddress": {
-    "message": "ಸ್ವೀಕರಿಸುವವರ ವಿಳಾಸ"
   },
   "recipientAddressPlaceholder": {
     "message": "ಸಾರ್ವಜನಿಕ ವಿಳಾಸ (0x) ಅಥವಾ ENS ಹುಡುಕಿ"
