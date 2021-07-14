@@ -49,3 +49,11 @@ export const basic = () => {
     </div>
   );
 };
+
+export const editable = () => {
+  return (
+    <div style={{ width: '400px' }}>
+      <TransactionDetail rows={rows} onEdit={() => console.log('Edit!')} />
+    </div>
+  );
+};
