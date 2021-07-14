@@ -11,6 +11,7 @@ import {
 import {
   multiplyCurrencies,
   conversionLessThan,
+  conversionGreaterThan,
 } from '../../shared/modules/conversion.utils';
 import {
   getMaximumGasTotalInHexWei,
@@ -22,9 +23,14 @@ import {
   decGWEIToHexWEI,
   decimalToHex,
   hexToDecimal,
+  addHexes,
 } from '../helpers/utils/conversions.util';
-import { getShouldShowFiat } from '../selectors';
 import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
+import {
+  getShouldShowFiat,
+  getSelectedAccount,
+  txDataSelector,
+} from '../selectors';
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -165,6 +171,9 @@ export function useGasFeeInputs(
   minimumGasLimit,
   editGasMode,
 ) {
+  const { balance: ethBalance } = useSelector(getSelectedAccount);
+  const txData = useSelector(txDataSelector);
+
   // We need to know whether to show fiat conversions or not, so that we can
   // default our fiat values to empty strings if showing fiat is not wanted or
   // possible.
@@ -413,6 +422,16 @@ export function useGasFeeInputs(
     ...gasWarnings,
   };
 
+  const minimumTxCostInHexWei = addHexes(
+    minimumCostInHexWei,
+    txData?.txParams?.value,
+  );
+
+  const balanceError = conversionGreaterThan(
+    { value: minimumTxCostInHexWei, fromNumericBase: 'hex' },
+    { value: ethBalance, fromNumericBase: 'hex' },
+  );
+
   return {
     maxFeePerGas: maxFeePerGasToUse,
     maxFeePerGasFiat: showFiat ? maxFeePerGasFiat : '',
@@ -443,5 +462,6 @@ export function useGasFeeInputs(
       setMaxFeePerGas(maxFeePerGasToUse);
       setMaxPriorityFeePerGas(maxPriorityFeePerGasToUse);
     },
+    balanceError,
   };
 }
