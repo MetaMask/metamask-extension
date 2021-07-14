@@ -2,6 +2,10 @@
   & .actionable-message--warning,
   & .actionable-message--error {
     margin-top: 0;
+
+    & .actionable-message__message {
+      text-align: start;
+    }
   }
 
   &__top-tooltip {
@@ -22,7 +26,7 @@
   }
 
   button.edit-gas-display__dapp-acknowledgement-button {
-    margin: 0 auto;
+    margin: 40px auto 0 auto;
     display: block;
     color: $secondary-1;
     border: 1px solid $secondary-1;

@@ -9,17 +9,18 @@ import {
 } from '../../../helpers/constants/design-system';
 
 export default function TransactionDetailItem({
-  detailTitle,
-  detailText,
-  detailTotal,
-  subTitle,
-  subText,
+  detailTitle = '',
+  detailText = '',
+  detailTitleColor = COLORS.BLACK,
+  detailTotal = '',
+  subTitle = '',
+  subText = '',
 }) {
   return (
     <div className="transaction-detail-item">
       <div className="transaction-detail-item__row">
         <Typography
-          color={COLORS.BLACK}
+          color={detailTitleColor}
           fontWeight={FONT_WEIGHT.BOLD}
           variant={TYPOGRAPHY.H6}
           className="transaction-detail-item__title"
@@ -64,16 +65,9 @@ export default function TransactionDetailItem({
 
 TransactionDetailItem.propTypes = {
   detailTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  detailTitleColor: PropTypes.string,
   detailText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   detailTotal: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   subTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   subText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-};
-
-TransactionDetailItem.defaultProps = {
-  detailTitle: '',
-  detailText: '',
-  detailTotal: '',
-  subTitle: '',
-  subText: '',
 };
