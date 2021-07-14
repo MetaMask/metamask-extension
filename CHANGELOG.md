@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.8.0]
+### Added
+- [#11435](https://github.com/MetaMask/metamask-extension/pull/11435): Add gas limit buffers for optimism network
+
+### Changed
+- [#11210](https://github.com/MetaMask/metamask-extension/pull/11210): Disable sending ERC-721 assets (NFTs)
+- [#11418](https://github.com/MetaMask/metamask-extension/pull/11418): Use network gas estimate for gas limits of simple sends on custom networks
+
 ## [9.7.1]
 ### Fixed
 - [#11426](https://github.com/MetaMask/metamask-extension/pull/11426): Fixed bug that broke transaction speed up and cancel, when attempting those actions immediately after opening MetaMask
@@ -2326,7 +2334,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.7.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.8.0...HEAD
+[9.8.0]: https://github.com/MetaMask/metamask-extension/compare/v9.7.1...v9.8.0
 [9.7.1]: https://github.com/MetaMask/metamask-extension/compare/v9.7.0...v9.7.1
 [9.7.0]: https://github.com/MetaMask/metamask-extension/compare/v9.6.1...v9.7.0
 [9.6.1]: https://github.com/MetaMask/metamask-extension/compare/v9.6.0...v9.6.1

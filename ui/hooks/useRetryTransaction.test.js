@@ -53,8 +53,8 @@ describe('useRetryTransaction', () => {
       const { result } = renderHook(() =>
         useRetryTransaction(retryEnabledTransaction, true),
       );
-      const retry = result.current;
-      retry(event);
+      const { retryTransaction } = result.current;
+      retryTransaction(event);
       expect(trackEvent.calledOnce).toStrictEqual(true);
     });
 
@@ -62,8 +62,8 @@ describe('useRetryTransaction', () => {
       const { result } = renderHook(() =>
         useRetryTransaction(retryEnabledTransaction, true),
       );
-      const retry = result.current;
-      await retry(event);
+      const { retryTransaction } = result.current;
+      await retryTransaction(event);
       expect(
         dispatch.calledWith(
           showSidebar({
@@ -108,8 +108,8 @@ describe('useRetryTransaction', () => {
       const { result } = renderHook(() =>
         useRetryTransaction(cancelledTransaction, true),
       );
-      const retry = result.current;
-      await retry(event);
+      const { retryTransaction } = result.current;
+      await retryTransaction(event);
       expect(
         dispatch.calledWith(
           showSidebar({

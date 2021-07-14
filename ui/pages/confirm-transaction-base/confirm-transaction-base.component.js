@@ -346,10 +346,19 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     ) : null;
 
+    const showInlineControls = process.env.SHOW_EIP_1559_UI
+      ? advancedInlineGasShown
+      : advancedInlineGasShown || notMainnetOrTest || gasPriceFetchFailure;
+
+    const showGasEditButton = process.env.SHOW_EIP_1559_UI
+      ? !showInlineControls
+      : !(notMainnetOrTest || gasPriceFetchFailure);
+
     if (process.env.SHOW_EIP_1559_UI) {
       return (
         <div className="confirm-page-container-content__details">
           <TransactionDetail
+            onEdit={() => this.handleEditGas()}
             rows={[
               <TransactionDetailItem
                 key="gas-item"
@@ -400,13 +409,6 @@ export default class ConfirmTransactionBase extends Component {
         </div>
       );
     }
-    const showInlineControls = process.env.SHOW_EIP_1559_UI
-      ? advancedInlineGasShown
-      : advancedInlineGasShown || notMainnetOrTest || gasPriceFetchFailure;
-
-    const showGasEditButton = process.env.SHOW_EIP_1559_UI
-      ? !showInlineControls
-      : !(notMainnetOrTest || gasPriceFetchFailure);
 
     return (
       <div className="confirm-page-container-content__details">
@@ -414,7 +416,7 @@ export default class ConfirmTransactionBase extends Component {
           <ConfirmDetailRow
             label={t('gasFee')}
             value={hexTransactionFee}
-            headerText={showGasEditButton ? 'Edit' : ''}
+            headerText={showGasEditButton ? t('edit') : ''}
             headerTextClassName={
               showGasEditButton ? 'confirm-detail-row__header-text--edit' : ''
             }
@@ -781,7 +783,7 @@ export default class ConfirmTransactionBase extends Component {
         toAddress={toAddress}
         toEns={toEns}
         toNickname={toNickname}
-        showEdit={onEdit}
+        showEdit={Boolean(onEdit)}
         action={functionType}
         title={title}
         titleComponent={this.renderTitleComponent()}
@@ -817,6 +819,7 @@ export default class ConfirmTransactionBase extends Component {
         ethGasPriceWarning={ethGasPriceWarning}
         editingGas={editingGas}
         handleCloseEditGas={() => this.handleCloseNewGasPopover()}
+        currentTransaction={txData}
       />
     );
   }

@@ -289,6 +289,9 @@
   "cancel": {
     "message": "Cancel"
   },
+  "cancelPopoverTitle": {
+    "message": "Cancel transaction"
+  },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
   },
@@ -650,6 +653,12 @@
   "editGasLow": {
     "message": "Low"
   },
+  "editGasMaxFeeLow": {
+    "message": "Max fee too low for network conditions"
+  },
+  "editGasMaxPriorityFeeLow": {
+    "message": "Max priority fee too low for network conditions"
+  },
   "editGasMedium": {
     "message": "Medium"
   },
@@ -658,6 +667,13 @@
   },
   "editGasTitle": {
     "message": "Edit gas fee"
+  },
+  "editGasTooLow": {
+    "message": "Unknown processing time"
+  },
+  "editGasTotalBannerSubtitle": {
+    "message": "Up to $1 ($2)",
+    "display": "$1 represents a fiat value"
   },
   "editNonceField": {
     "message": "Edit Nonce"
@@ -2447,6 +2463,15 @@
   },
   "transactionFee": {
     "message": "Transaction Fee"
+  },
+  "transactionHistoryBaseFee": {
+    "message": "Base fee (GWEI)"
+  },
+  "transactionHistoryEffectiveGasPrice": {
+    "message": "Effective gas price"
+  },
+  "transactionHistoryPriorityFee": {
+    "message": "Priority fee (GWEI)"
   },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with gas fee increased to $1 at $2"

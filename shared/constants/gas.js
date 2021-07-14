@@ -20,3 +20,21 @@ export const GAS_ESTIMATE_TYPES = {
   ETH_GASPRICE: 'eth_gasPrice',
   NONE: 'none',
 };
+
+/**
+ * These represent gas recommendation levels presented in the UI
+ */
+export const GAS_RECOMMENDATIONS = {
+  LOW: 'low',
+  MEDIUM: 'medium',
+  HIGH: 'high',
+};
+
+/**
+ * These represent the different edit modes presented in the UI
+ */
+export const EDIT_GAS_MODES = {
+  SPEED_UP: 'speed-up',
+  CANCEL: 'cancel',
+  MODIFY_IN_PLACE: 'modify-in-place',
+};

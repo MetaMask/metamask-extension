@@ -58,8 +58,10 @@ describe('useCancelTransaction', function () {
         const { result } = renderHook(() =>
           useCancelTransaction(transactionGroup),
         );
-        expect(typeof result.current[1]).toStrictEqual('function');
-        result.current[1]({
+        expect(typeof result.current[1].cancelTransaction).toStrictEqual(
+          'function',
+        );
+        result.current[1].cancelTransaction({
           preventDefault: () => undefined,
           stopPropagation: () => undefined,
         });
@@ -134,8 +136,10 @@ describe('useCancelTransaction', function () {
         const { result } = renderHook(() =>
           useCancelTransaction(transactionGroup),
         );
-        expect(typeof result.current[1]).toStrictEqual('function');
-        result.current[1]({
+        expect(typeof result.current[1].cancelTransaction).toStrictEqual(
+          'function',
+        );
+        result.current[1].cancelTransaction({
           preventDefault: () => undefined,
           stopPropagation: () => undefined,
         });
