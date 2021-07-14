@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { PageContainerFooter } from '../../ui/page-container';
 import EditGasPopover from '../edit-gas-popover';
+import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -193,6 +194,7 @@ export default class ConfirmPageContainer extends Component {
         )}
         {editingGas && (
           <EditGasPopover
+            mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
             onClose={handleCloseEditGas}
             transaction={currentTransaction}
           />
