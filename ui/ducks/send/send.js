@@ -491,9 +491,12 @@ export const initialState = {
     isCustomGasSet: false,
     // maximum gas needed for tx
     gasLimit: '0x0',
-    // price in gwei to pay per gas
+    // price in wei to pay per gas
     gasPrice: '0x0',
-    // maximum total price in gwei to pay
+    // expected price in wei necessary to pay per gas used for a transaction
+    // to be included in a reasonable timeframe. Comes from GasFeeController.
+    gasPriceEstimate: '0x0',
+    // maximum total price in wei to pay
     gasTotal: '0x0',
     // minimum supported gasLimit
     minimumGasLimit: GAS_LIMITS.SIMPLE,
@@ -1062,11 +1065,22 @@ const slice = createSlice({
         } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
           payload = getGasPriceInHexWei(gasFeeEstimates.gasPrice);
         }
-        if (payload) {
+        // If a new gasPrice can be derived, and either the gasPriceEstimate
+        // was '0x0' or the gasPrice selected matches the previous estimate,
+        // update the gasPrice. This will ensure that we only update the
+        // gasPrice if the user is using our previous estimated value.
+        if (
+          payload &&
+          (state.gas.gasPriceEstimate === '0x0' ||
+            state.gas.gasPrice === state.gas.gasPriceEstimate)
+        ) {
           slice.caseReducers.updateGasPrice(state, {
             payload,
           });
         }
+
+        // Record the latest gasPriceEstimate for future comparisons
+        state.gas.gasPriceEstimate = payload ?? state.gas.gasPriceEstimate;
       });
   },
 });

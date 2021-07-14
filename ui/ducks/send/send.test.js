@@ -1005,6 +1005,7 @@ describe('Send Slice', () => {
           ...initialState,
           gas: {
             gasPrice: '0x0',
+            gasPriceEstimate: '0x0',
             gasLimit: '0x5208',
             gasTotal: '0x0',
             minimumGasLimit: '0x5208',
