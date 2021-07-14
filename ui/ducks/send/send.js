@@ -69,7 +69,11 @@ import {
   isOriginContractAddress,
   isValidDomainName,
 } from '../../helpers/utils/util';
-import { getTokens, getUnapprovedTxs } from '../metamask/metamask';
+import {
+  getGasEstimateType,
+  getTokens,
+  getUnapprovedTxs,
+} from '../metamask/metamask';
 import { resetEnsResolution } from '../ens';
 import {
   isBurnAddress,
@@ -1477,11 +1481,22 @@ export function getMinimumGasLimitForSend(state) {
 
 export function getGasInputMode(state) {
   const isMainnet = getIsMainnet(state);
+  const gasEstimateType = getGasEstimateType(state);
   const showAdvancedGasFields = getAdvancedInlineGasShown(state);
   if (state[name].gas.isCustomGasSet) {
     return GAS_INPUT_MODES.CUSTOM;
   }
   if ((!isMainnet && !process.env.IN_TEST) || showAdvancedGasFields) {
+    return GAS_INPUT_MODES.INLINE;
+  }
+
+  // We get eth_gasPrice estimation if the legacy API fails but we need to
+  // instruct the UI to render the INLINE inputs in this case, only on
+  // mainnet or IN_TEST.
+  if (
+    (isMainnet || process.env.IN_TEST) &&
+    gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE
+  ) {
     return GAS_INPUT_MODES.INLINE;
   }
   return GAS_INPUT_MODES.BASIC;
