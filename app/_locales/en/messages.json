@@ -2440,6 +2440,19 @@
   "transactionDetailGasHeading": {
     "message": "Estimated gas fee"
   },
+  "transactionDetailGasTooltip": {
+    "message": "Gas fees are paid to crypto miners who process transactions on the Ethereum network. MetaMask does not profit from gas fees. Gas fees are set by the network and fluctuate based on network traffic and transaction complexity.",
+    "description": "$1 will be a link to the MetaMask website"
+  },
+  "transactionDetailGasTooltipConversion": {
+    "message": "Learn more about gas fees"
+  },
+  "transactionDetailGasTooltipExplanation": {
+    "message": "Gas fees are set by the network and fluctuate based on network traffic and transaction complexity."
+  },
+  "transactionDetailGasTooltipIntro": {
+    "message": "Gas fees are paid to crypto miners who process transactions on the Ethereum network. MetaMask does not profit from gas fees."
+  },
   "transactionDetailGasTotalSubtitle": {
     "message": "Amount + gas fee"
   },

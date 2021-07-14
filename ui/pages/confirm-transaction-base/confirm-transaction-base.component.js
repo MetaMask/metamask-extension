@@ -380,7 +380,20 @@ export default class ConfirmTransactionBase extends Component {
                   ) : (
                     <>
                       {t('transactionDetailGasHeading')}
-                      <InfoTooltip contentText="" position="top">
+                      <InfoTooltip
+                        contentText={
+                          <>
+                            <p>{t('transactionDetailGasTooltipIntro')}</p>
+                            <p>{t('transactionDetailGasTooltipExplanation')}</p>
+                            <p>
+                              <a href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172">
+                                {t('transactionDetailGasTooltipConversion')}
+                              </a>
+                            </p>
+                          </>
+                        }
+                        position="top"
+                      >
                         <i className="fa fa-info-circle" />
                       </InfoTooltip>
                     </>
