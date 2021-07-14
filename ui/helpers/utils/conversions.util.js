@@ -80,6 +80,7 @@ export function getWeiHexFromDecimalValue({
   conversionRate,
   fromDenomination,
   invertConversionRate,
+  numberOfDecimals,
 }) {
   return conversionUtil(value, {
     fromNumericBase: 'dec',
@@ -88,6 +89,7 @@ export function getWeiHexFromDecimalValue({
     fromCurrency,
     conversionRate,
     invertConversionRate,
+    numberOfDecimals,
     fromDenomination,
     toDenomination: WEI,
   });

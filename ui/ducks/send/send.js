@@ -76,6 +76,7 @@ import {
   isValidHexAddress,
 } from '../../../shared/modules/hexstring-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
+import { ETH, GWEI } from '../../helpers/constants/common';
 
 // typedefs
 /**
@@ -361,6 +362,29 @@ export const computeEstimatedGasLimit = createAsyncThunk(
 );
 
 /**
+ * This method is used to keep the original logic from the gas.duck.js file
+ * after receiving a gasPrice from eth_gasPrice. First, the returned gasPrice
+ * was converted to GWEI, then it was converted to a Number, then in the send
+ * duck (here) we would use getGasPriceInHexWei to get back to hexWei. Now that
+ * we receive a GWEI estimate from the controller, we still need to do this
+ * weird conversion to get the proper rounding.
+ * @param {T} gasPriceEstimate
+ * @returns
+ */
+function getRoundedGasPrice(gasPriceEstimate) {
+  const gasPriceInDecGwei = conversionUtil(gasPriceEstimate, {
+    numberOfDecimals: 4,
+    toDenomination: GWEI,
+    fromNumericBase: 'dec',
+    toNumericBase: 'dec',
+    fromCurrency: ETH,
+    fromDenomination: GWEI,
+  });
+  const gasPriceAsNumber = Number(gasPriceInDecGwei);
+  return getGasPriceInHexWei(gasPriceAsNumber);
+}
+
+/**
  * Responsible for initializing required state for the send slice.
  * This method is dispatched from the send page in the componentDidMount
  * method. It is also dispatched anytime the network changes to ensure that
@@ -406,7 +430,7 @@ export const initializeSendState = createAsyncThunk(
     if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
       gasPrice = getGasPriceInHexWei(gasFeeEstimates.medium);
     } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
-      gasPrice = getGasPriceInHexWei(gasFeeEstimates.gasPrice);
+      gasPrice = getRoundedGasPrice(gasFeeEstimates.gasPrice);
     } else if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
       gasPrice = getGasPriceInHexWei(
         gasFeeEstimates.medium.suggestedMaxFeePerGas,
@@ -1063,7 +1087,7 @@ const slice = createSlice({
         } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
           payload = getGasPriceInHexWei(gasFeeEstimates.medium);
         } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
-          payload = getGasPriceInHexWei(gasFeeEstimates.gasPrice);
+          payload = getRoundedGasPrice(gasFeeEstimates.gasPrice);
         }
         // If a new gasPrice can be derived, and either the gasPriceEstimate
         // was '0x0' or the gasPrice selected matches the previous estimate,
