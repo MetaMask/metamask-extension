@@ -214,8 +214,7 @@ export default function EditGasPopover({
             isGasTooLow={isGasTooLow}
             onEducationClick={() => setShowEducationContent(true)}
             mode={mode}
-            dappSuggestedGasFees={transaction?.dappSuggestedGasFees}
-            dappOrigin={transaction?.origin || null}
+            transaction={transaction}
             {...editGasDisplayProps}
           />
         )}
