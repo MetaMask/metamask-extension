@@ -149,7 +149,7 @@ export default function AdvancedGasControls({
       ) : (
         <>
           <FormField
-            titleText={t('gasPrice')}
+            titleText={t('advancedGasPriceTitle')}
             titleUnit="(GWEI)"
             onChange={(value) => {
               setGasPrice(value);

@@ -103,6 +103,9 @@
   "advanced": {
     "message": "Advanced"
   },
+  "advancedGasPriceTitle": {
+    "message": "Gas price"
+  },
   "advancedOptions": {
     "message": "Advanced Options"
   },

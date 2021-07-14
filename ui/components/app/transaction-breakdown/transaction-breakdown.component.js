@@ -124,7 +124,7 @@ export default class TransactionBreakdown extends PureComponent {
           </TransactionBreakdownRow>
         )}
         {!process.env.SHOW_EIP_1559_UI && (
-          <TransactionBreakdownRow title={t('gasPrice')}>
+          <TransactionBreakdownRow title={t('advancedGasPriceTitle')}>
             {typeof gasPrice === 'undefined' ? (
               '?'
             ) : (
