@@ -17,6 +17,8 @@ import {
   SET_CUSTOM_GAS_LIMIT,
   SET_CUSTOM_GAS_PRICE,
   SET_ESTIMATE_SOURCE,
+  SET_CUSTOM_MAX_FEE_PER_GAS,
+  SET_CUSTOM_MAX_PRIORITY_FEE_PER_GAS,
 } from './gas-action-constants';
 
 export const BASIC_ESTIMATE_STATES = {
@@ -34,6 +36,8 @@ const initState = {
   customData: {
     price: null,
     limit: null,
+    maxFeePerGas: null,
+    maxPriorityFeePerGas: null,
   },
   basicEstimates: {
     safeLow: null,
@@ -71,6 +75,22 @@ export default function reducer(state = initState, action) {
         customData: {
           ...state.customData,
           limit: action.value,
+        },
+      };
+    case SET_CUSTOM_MAX_FEE_PER_GAS:
+      return {
+        ...state,
+        customData: {
+          ...state.customData,
+          maxFeePerGas: action.value,
+        },
+      };
+    case SET_CUSTOM_MAX_PRIORITY_FEE_PER_GAS:
+      return {
+        ...state,
+        customData: {
+          ...state.customData,
+          maxPriorityFeePerGas: action.value,
         },
       };
     case RESET_CUSTOM_DATA:
@@ -218,9 +238,24 @@ export function setCustomGasPrice(newPrice) {
 }
 
 export function setCustomGasLimit(newLimit) {
+  console.log('newLimit', newLimit);
   return {
     type: SET_CUSTOM_GAS_LIMIT,
     value: newLimit,
+  };
+}
+
+export function setCustomMaxFeePerGas(newMaxFeePerGas) {
+  return {
+    type: SET_CUSTOM_MAX_FEE_PER_GAS,
+    value: newMaxFeePerGas,
+  };
+}
+
+export function setCustomMaxPriorityFeePerGas(newMaxPriorityFeePerGas) {
+  return {
+    type: SET_CUSTOM_MAX_PRIORITY_FEE_PER_GAS,
+    value: newMaxPriorityFeePerGas,
   };
 }
 

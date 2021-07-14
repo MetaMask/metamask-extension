@@ -15,6 +15,7 @@ import {
   hideSidebar,
   updateTransaction,
 } from '../../../store/actions';
+import { resetCustomData } from '../../../ducks/gas/gas.duck';
 
 export const EDIT_GAS_MODE = {
   SPEED_UP: 'speed-up',
@@ -42,6 +43,7 @@ export default function EditGasPopover({
    * the modal in testing
    */
   const closePopover = useCallback(() => {
+    dispatch(resetCustomData());
     if (onClose) {
       onClose();
     } else if (showSidebar) {

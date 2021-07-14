@@ -1,18 +1,31 @@
 import { addHexPrefix } from 'ethereumjs-util';
 import { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
 } from '../../shared/modules/gas.utils';
+import {
+  setCustomGasPrice,
+  setCustomGasLimit,
+  setCustomMaxFeePerGas,
+  setCustomMaxPriorityFeePerGas,
+} from '../ducks/gas/gas.duck';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import {
   decGWEIToHexWEI,
   decimalToHex,
+  hexToDecimal,
 } from '../helpers/utils/conversions.util';
-import { getShouldShowFiat } from '../selectors';
+import {
+  getShouldShowFiat,
+  getCustomGasPrice,
+  getCustomGasLimit,
+  getCustomMaxFeePerGas,
+  getCustomMaxPriorityFeePerGas,
+} from '../selectors';
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -121,6 +134,7 @@ function getGasFeeEstimate(
  * ).GasEstimates} - gas fee input state and the GasFeeEstimates object
  */
 export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
+  const dispatch = useDispatch();
   // We need to know whether to show fiat conversions or not, so that we can
   // default our fiat values to empty strings if showing fiat is not wanted or
   // possible.
@@ -140,13 +154,44 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
     numberOfDecimals: fiatNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY);
 
+  const selectedMaxFeePerGas = useSelector(getCustomMaxFeePerGas);
+  const maxFeePerGas = selectedMaxFeePerGas
+    ? hexToDecimal(selectedMaxFeePerGas)
+    : selectedMaxFeePerGas;
+  const selectedMaxPriorityFeePerGas = useSelector(
+    getCustomMaxPriorityFeePerGas,
+  );
+  const maxPriorityFeePerGas = selectedMaxPriorityFeePerGas
+    ? hexToDecimal(selectedMaxPriorityFeePerGas)
+    : selectedMaxPriorityFeePerGas;
+  const selectedGasPrice = useSelector(getCustomGasPrice);
+  const gasPrice = selectedGasPrice
+    ? hexToDecimal(selectedGasPrice)
+    : selectedGasPrice;
+  const selectedGasLimit = useSelector(getCustomGasLimit);
+  const gasLimit = selectedGasLimit ? hexToDecimal(selectedGasLimit) : 21000;
+
+  const setMaxFeePerGas = useCallback(
+    (newMaxFeePerGas) =>
+      dispatch(setCustomMaxFeePerGas(decimalToHex(newMaxFeePerGas))),
+    [dispatch],
+  );
+  const setMaxPriorityFeePerGas = useCallback(
+    (newMaxPriorityFeePerGas) =>
+      dispatch(
+        setCustomMaxPriorityFeePerGas(decimalToHex(newMaxPriorityFeePerGas)),
+      ),
+    [dispatch],
+  );
+  const setGasPrice = useCallback(
+    (newGasPrice) => dispatch(setCustomGasPrice(decimalToHex(newGasPrice))),
+    [dispatch],
+  );
+  const setGasLimit = (newGasLimit) =>
+    dispatch(setCustomGasLimit(decimalToHex(newGasLimit)));
   // This hook keeps track of a few pieces of transitional state. It is
   // transitional because it is only used to modify a transaction in the
   // metamask (background) state tree.
-  const [maxFeePerGas, setMaxFeePerGas] = useState(null);
-  const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(null);
-  const [gasPrice, setGasPrice] = useState(null);
-  const [gasLimit, setGasLimit] = useState(21000);
   const [estimateToUse, setInternalEstimateToUse] = useState(
     defaultEstimateToUse,
   );
@@ -164,12 +209,15 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
   // When a user selects an estimate level, it will wipe out what they have
   // previously put in the inputs. This returns the inputs to the estimated
   // values at the level specified.
-  const setEstimateToUse = useCallback((estimateLevel) => {
-    setInternalEstimateToUse(estimateLevel);
-    setMaxFeePerGas(null);
-    setMaxPriorityFeePerGas(null);
-    setGasPrice(null);
-  }, []);
+  const setEstimateToUse = useCallback(
+    (estimateLevel) => {
+      setInternalEstimateToUse(estimateLevel);
+      setMaxFeePerGas(null);
+      setMaxPriorityFeePerGas(null);
+      setGasPrice(null);
+    },
+    [setMaxFeePerGas, setMaxPriorityFeePerGas, setGasPrice],
+  );
 
   // We specify whether to use the estimate value by checking if the state
   // value has been set. The state value is only set by user input and is wiped

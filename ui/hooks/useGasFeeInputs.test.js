@@ -7,7 +7,20 @@ import {
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
 import { ETH, PRIMARY } from '../helpers/constants/common';
-import { getCurrentCurrency, getShouldShowFiat } from '../selectors';
+import {
+  getCurrentCurrency,
+  getShouldShowFiat,
+  getCustomGasPrice,
+  getCustomGasLimit,
+  getCustomMaxFeePerGas,
+  getCustomMaxPriorityFeePerGas,
+} from '../selectors';
+import {
+  setCustomGasPrice,
+  setCustomGasLimit,
+  setCustomMaxFeePerGas,
+  setCustomMaxPriorityFeePerGas,
+} from '../ducks/gas/gas.duck';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 import { useGasFeeInputs } from './useGasFeeInputs';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -20,12 +33,27 @@ jest.mock('./useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
 }));
 
+jest.mock('../ducks/gas/gas.duck', () => ({
+  setCustomGasPrice: jest.fn(),
+  setCustomGasLimit: jest.fn(),
+  setCustomMaxFeePerGas: jest.fn(),
+  setCustomMaxPriorityFeePerGas: jest.fn(),
+}));
+
+let mockState = {};
+const mockDispatch = (mockAction) => {
+  Object.keys(mockAction).forEach((key) => {
+    mockState[key] = mockAction[key];
+  });
+};
+
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
 
   return {
     ...actual,
     useSelector: jest.fn(),
+    useDispatch: jest.fn(() => mockDispatch),
   };
 });
 
@@ -84,6 +112,18 @@ const generateUseSelectorRouter = () => (selector) => {
   if (selector === getShouldShowFiat) {
     return true;
   }
+  if (selector === getCustomGasPrice) {
+    return mockState.gasPrice;
+  }
+  if (selector === getCustomGasLimit) {
+    return mockState.gasLimit;
+  }
+  if (selector === getCustomMaxFeePerGas) {
+    return mockState.maxFeePerGas;
+  }
+  if (selector === getCustomMaxPriorityFeePerGas) {
+    return mockState.maxPriorityFeePerGas;
+  }
   return undefined;
 };
 
@@ -98,6 +138,7 @@ function getTotalCostInETH(gwei, gasLimit) {
 
 describe('useGasFeeInputs', () => {
   beforeEach(() => {
+    mockState = {};
     jest.clearAllMocks();
     useUserPreferencedCurrency.mockImplementation((type) => {
       if (type === PRIMARY) {
@@ -105,6 +146,17 @@ describe('useGasFeeInputs', () => {
       }
       return { currency: 'USD', numberOfDecimals: 2 };
     });
+
+    setCustomGasPrice.mockImplementation((value) => {
+      return { gasPrice: value };
+    });
+    setCustomGasLimit.mockImplementation((value) => ({ gasLimit: value }));
+    setCustomMaxFeePerGas.mockImplementation((value) => ({
+      maxFeePerGas: value,
+    }));
+    setCustomMaxPriorityFeePerGas.mockImplementation((value) => ({
+      maxPriorityFeePerGas: value,
+    }));
   });
 
   describe('when using gasPrice API for estimation', () => {
@@ -135,7 +187,7 @@ describe('useGasFeeInputs', () => {
     });
 
     it('updates values when user modifies gasPrice', () => {
-      const { result } = renderHook(() => useGasFeeInputs());
+      const { result, rerender } = renderHook(() => useGasFeeInputs());
       expect(result.current.gasPrice).toBe(
         LEGACY_GAS_ESTIMATE_RETURN_VALUE.gasFeeEstimates.medium,
       );
@@ -154,6 +206,7 @@ describe('useGasFeeInputs', () => {
       act(() => {
         result.current.setGasPrice('30');
       });
+      rerender();
       totalEthGasFee = getTotalCostInETH('30', result.current.gasLimit);
       totalFiat = (
         Number(totalEthGasFee) * MOCK_ETH_USD_CONVERSION_RATE
@@ -199,7 +252,7 @@ describe('useGasFeeInputs', () => {
     });
 
     it('updates values when user modifies maxFeePerGas', () => {
-      const { result } = renderHook(() => useGasFeeInputs());
+      const { result, rerender } = renderHook(() => useGasFeeInputs());
       expect(result.current.maxFeePerGas).toBe(
         FEE_MARKET_ESTIMATE_RETURN_VALUE.gasFeeEstimates.medium
           .suggestedMaxFeePerGas,
@@ -221,6 +274,7 @@ describe('useGasFeeInputs', () => {
       act(() => {
         result.current.setMaxFeePerGas('90');
       });
+      rerender();
       totalEthGasFee = getTotalCostInETH('90', result.current.gasLimit);
       totalMaxFiat = (
         Number(totalEthGasFee) * MOCK_ETH_USD_CONVERSION_RATE

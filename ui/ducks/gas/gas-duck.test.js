@@ -50,6 +50,8 @@ describe('Gas Duck', () => {
     customData: {
       price: null,
       limit: null,
+      maxFeePerGas: null,
+      maxPriorityFeePerGas: null,
     },
     basicEstimates: {
       average: null,
