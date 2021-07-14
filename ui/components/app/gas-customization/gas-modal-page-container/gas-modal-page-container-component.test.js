@@ -117,7 +117,9 @@ describe('GasModalPageContainer Component', () => {
     });
 
     it('should pass the correct renderTabs property to PageContainer', () => {
-      sinon.stub(GP, 'renderTabs').returns('mockTabs');
+      jest
+        .spyOn(GasModalPageContainer.prototype, 'renderTabs')
+        .mockImplementation(() => 'mockTabs');
       const renderTabsWrapperTester = shallowWithContext(
         <GasModalPageContainer customPriceIsExcessive={false} />,
         { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
@@ -126,7 +128,7 @@ describe('GasModalPageContainer Component', () => {
         .find(PageContainer)
         .props();
       expect(tabsComponent).toStrictEqual('mockTabs');
-      GasModalPageContainer.prototype.renderTabs.restore();
+      GasModalPageContainer.prototype.renderTabs.mockClear();
     });
   });
 

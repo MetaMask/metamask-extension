@@ -41,6 +41,13 @@ export default class GasModalPageContainer extends Component {
     customPriceIsExcessive: PropTypes.bool.isRequired,
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      pollingToken: undefined,
+    };
+  }
+
   componentDidMount() {
     getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
       this.setState({ pollingToken });
