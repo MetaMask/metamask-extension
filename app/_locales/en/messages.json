@@ -941,6 +941,22 @@
   "gasPriceInfoTooltipContent": {
     "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
   },
+  "gasTimingAtLeast": {
+    "message": "At least $1",
+    "description": "$1 represents an amount of time"
+  },
+  "gasTimingLessThan": {
+    "message": "Less than $1",
+    "description": "$1 represents an amount of time"
+  },
+  "gasTimingMinutes": {
+    "message": "$1 minutes",
+    "description": "$1 represents a number of minutes"
+  },
+  "gasTimingSeconds": {
+    "message": "$1 seconds",
+    "description": "$1 represents a number of seconds"
+  },
   "gasTimingUnkownProcessingTime": {
     "message": "Unknown processing time"
   },
