@@ -228,7 +228,17 @@ export default class MetamaskController extends EventEmitter {
       chainId: hexToDecimal(this.networkController.getCurrentChainId()),
       useStaticTokenList: this.preferencesController.store.getState()
         .useStaticTokenList,
-      onNetworkStateChange: this._onModifiedNetworkStateChange.bind(this),
+      onNetworkStateChange: (cb) =>
+        this.networkController.store.subscribe(async (networkState) => {
+          const modifiedNetworkState = {
+            ...networkState,
+            provider: {
+              ...networkState.provider,
+              chainId: hexToDecimal(networkState.provider.chainId),
+            },
+          };
+          return await cb(modifiedNetworkState);
+        }),
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
@@ -627,24 +637,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * The TokenListController defined in the @metamask/controller repo accepts chainId as decimal string,
-   *  this function converts the hex to decimal when the network changes.
-   * @param {*} cb
-   */
-  _onModifiedNetworkStateChange = (cb) => {
-    this.networkController.store.subscribe(async (networkState) => {
-      const modifiedNetworkState = {
-        ...networkState,
-        provider: {
-          ...networkState.provider,
-          chainId: hexToDecimal(networkState.provider.chainId),
-        },
-      };
-      return await cb(modifiedNetworkState);
-    });
-  };
-
-  /**
    * TODO:LegacyProvider: Delete
    * Constructor helper: initialize a public config store.
    * This store is used to make some config info available to Dapps synchronously.
@@ -762,7 +754,10 @@ export default class MetamaskController extends EventEmitter {
       setUseBlockie: this.setUseBlockie.bind(this),
       setUseNonceField: this.setUseNonceField.bind(this),
       setUsePhishDetect: this.setUsePhishDetect.bind(this),
-      setUseStaticTokenList: this.setUseStaticTokenList.bind(this),
+      setUseStaticTokenList: nodeify(
+        this.preferencesController.setUseStaticTokenList,
+        this.preferencesController,
+      ),
       setIpfsGateway: this.setIpfsGateway.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
       setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
