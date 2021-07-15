@@ -271,39 +271,45 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
     },
   );
 
-  let isMaxPriorityFeeError = false;
-  let isMaxFeeError = false;
+  const gasErrors = {};
+  if (gasLimit < 21000) {
+    gasErrors.gasLimit = 'gasLimitTooLow';
+  }
 
   switch (gasEstimateType) {
     case GAS_ESTIMATE_TYPES.FEE_MARKET:
-      isMaxPriorityFeeError =
+      if (
         !isGasEstimatesLoading &&
         maxPriorityFeePerGasToUse <
-          gasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas;
-      isMaxFeeError =
+          gasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas
+      ) {
+        gasErrors.maxPriorityFee = 'editGasMaxPriorityFeeLow';
+      }
+
+      if (
         !isGasEstimatesLoading &&
-        maxFeePerGasToUse < gasFeeEstimates?.low?.suggestedMaxFeePerGas;
+        maxFeePerGasToUse < gasFeeEstimates?.low?.suggestedMaxFeePerGas
+      ) {
+        gasErrors.maxFee = 'editGasMaxFeeLow';
+      }
       break;
     default:
       break;
   }
 
-  const isGasTooLow = Boolean(isMaxPriorityFeeError || isMaxFeeError);
+  const hasGasErrors = Boolean(Object.keys(gasErrors).length);
 
   return {
     maxFeePerGas: maxFeePerGasToUse,
     maxFeePerGasFiat: showFiat ? maxFeePerGasFiat : '',
     setMaxFeePerGas,
-    isMaxFeeError,
     maxPriorityFeePerGas: maxPriorityFeePerGasToUse,
     maxPriorityFeePerGasFiat: showFiat ? maxPriorityFeePerGasFiat : '',
     setMaxPriorityFeePerGas,
-    isMaxPriorityFeeError,
     gasPrice: gasPriceToUse,
     setGasPrice,
     gasLimit,
     setGasLimit,
-    isGasTooLow,
     estimateToUse,
     setEstimateToUse,
     estimatedMinimumFiat: showFiat ? estimatedMinimumFiat : '',
@@ -313,5 +319,7 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
     gasFeeEstimates,
     gasEstimateType,
     estimatedGasFeeTimeBounds,
+    gasErrors,
+    hasGasErrors,
   };
 }

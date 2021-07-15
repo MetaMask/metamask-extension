@@ -31,8 +31,7 @@ export default function AdvancedGasControls({
   setGasPrice,
   maxPriorityFeeFiat,
   maxFeeFiat,
-  maxPriorityFeeError,
-  maxFeeError,
+  gasErrors,
 }) {
   const t = useContext(I18nContext);
 
@@ -63,6 +62,7 @@ export default function AdvancedGasControls({
     <div className="advanced-gas-controls">
       <FormField
         titleText={t('gasLimit')}
+        error={gasErrors.gasLimit ? t(gasErrors.gasLimit) : null}
         onChange={setGasLimit}
         tooltipText={t('editGasLimitTooltip')}
         value={gasLimit}
@@ -106,7 +106,9 @@ export default function AdvancedGasControls({
                 </>
               )
             }
-            error={maxPriorityFeeError}
+            error={
+              gasErrors.maxPriorityFee ? t(gasErrors.maxPriorityFee) : null
+            }
           />
           <FormField
             titleText={t('maxFee')}
@@ -143,7 +145,7 @@ export default function AdvancedGasControls({
                 </>
               )
             }
-            error={maxFeeError}
+            error={gasErrors.maxFee ? t(gasErrors.maxFee) : null}
           />
         </>
       ) : (
@@ -216,6 +218,5 @@ AdvancedGasControls.propTypes = {
   setGasPrice: PropTypes.func,
   maxPriorityFeeFiat: PropTypes.string,
   maxFeeFiat: PropTypes.string,
-  maxPriorityFeeError: PropTypes.string,
-  maxFeeError: PropTypes.string,
+  gasErrors: PropTypes.object,
 };
