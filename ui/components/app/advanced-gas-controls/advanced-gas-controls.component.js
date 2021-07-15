@@ -64,7 +64,7 @@ export default function AdvancedGasControls({
       <FormField
         titleText={t('gasLimit')}
         onChange={setGasLimit}
-        tooltipText=""
+        tooltipText={t('editGasLimitTooltip')}
         value={gasLimit}
         numeric
         autoFocus
@@ -74,7 +74,7 @@ export default function AdvancedGasControls({
           <FormField
             titleText={t('maxPriorityFee')}
             titleUnit="(GWEI)"
-            tooltipText=""
+            tooltipText={t('editGasMaxPriorityFeeTooltip')}
             onChange={(value) => {
               setMaxPriorityFee(value);
               onManualChange?.();
@@ -111,7 +111,7 @@ export default function AdvancedGasControls({
           <FormField
             titleText={t('maxFee')}
             titleUnit="(GWEI)"
-            tooltipText=""
+            tooltipText={t('editGasMaxFeeTooltip')}
             onChange={(value) => {
               setMaxFee(value);
               onManualChange?.();

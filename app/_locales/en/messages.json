@@ -650,14 +650,23 @@
   "editGasHigh": {
     "message": "High"
   },
+  "editGasLimitTooltip": {
+    "message": "Gas limit is the maximum units of gas you are willing to use. Units of gas are a multiplier to “Max priority fee” and “Max fee”."
+  },
   "editGasLow": {
     "message": "Low"
   },
   "editGasMaxFeeLow": {
     "message": "Max fee too low for network conditions"
   },
+  "editGasMaxFeeTooltip": {
+    "message": "The max fee is the most you’ll pay (base fee + priority fee)."
+  },
   "editGasMaxPriorityFeeLow": {
     "message": "Max priority fee too low for network conditions"
+  },
+  "editGasMaxPriorityFeeTooltip": {
+    "message": "Max priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction. You’ll most often pay your max setting"
   },
   "editGasMedium": {
     "message": "Medium"
