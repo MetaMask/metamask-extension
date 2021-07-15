@@ -863,10 +863,10 @@
     "message": "Function Type"
   },
   "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Edit app suggestion"
+    "message": "Edit suggested gas fee"
   },
   "gasDisplayDappWarning": {
-    "message": "This gas fee has been suggested by the app $1. It’s using legacy gas estimation which may be inaccurate. However, editing this gas fee may cause unintended consequences. Please reach out to the app team if you have questions.",
+    "message": "This gas fee has been suggested by $1. It’s using legacy gas estimation which may be inaccurate. However, editing this gas fee may cause a problem with your transaction. Please reach out to $1 if you have questions.",
     "description": "$1 represents the Dapp's origin"
   },
   "gasFee": {
