@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
@@ -8,22 +7,34 @@ import { I18nContext } from '../../../contexts/i18n';
 import Typography from '../../ui/typography/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import InfoTooltip from '../../ui/info-tooltip';
+import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 
-function toHumanReadableTime(milliseconds) {
-  const rtf = new Intl.RelativeTimeFormat(undefined, {
-    localeMatcher: 'best fit',
-    numeric: 'always',
-    style: 'long',
-  });
+// Once we reach this second threshold, we switch to minutes as a unit
+const SECOND_CUTOFF = 90;
 
-  return rtf.format(milliseconds / 1000, 'second');
-}
-
-export default function GasTiming({ maxPriorityFeePerGas = 0 }) {
+export default function GasTiming() {
   const { gasFeeEstimates, isGasEstimatesLoading } = useGasFeeEstimates();
+  const { maxPriorityFeePerGas } = useGasFeeInputs();
   const { low, medium, high } = gasFeeEstimates;
 
   const t = useContext(I18nContext);
+
+  // Shows "seconds" as unit of time if under SECOND_CUTOFF, otherwise "minutes"
+  const toHumanReadableTime = (milliseconds) => {
+    const seconds = Math.ceil(milliseconds / 1000);
+    if (seconds <= SECOND_CUTOFF) {
+      return t('gasTimingSeconds', [seconds]);
+    }
+    return t('gasTimingMinutes', [Math.ceil(seconds / 60)]);
+  };
+
+  // Prevents a range being shown if the values are the same
+  const getRangeOrSingleValue = (value1, value2) => {
+    if (value1 === value2) {
+      return value1;
+    }
+    return `${value1} - ${value2}`;
+  };
 
   // Don't show anything if we don't have enough information
   if (isGasEstimatesLoading || maxPriorityFeePerGas < 1) {
@@ -32,7 +43,7 @@ export default function GasTiming({ maxPriorityFeePerGas = 0 }) {
 
   let text = '';
   let attitude = '';
-  let tooltipText = '';
+  const tooltipText = '';
 
   // 1:  Longer than the `low.maxWaitTimeEstimate`
   if (maxPriorityFeePerGas < low.maxPriorityFeePerGas) {
@@ -53,9 +64,10 @@ export default function GasTiming({ maxPriorityFeePerGas = 0 }) {
         toHumanReadableTime(low.maxWaitTimeEstimate),
       ]);
     } else {
-      text = `${toHumanReadableTime(
-        low.minWaitTimeEstimate,
-      )} - ${toHumanReadableTime(low.maxWaitTimeEstimate)}`;
+      text = getRangeOrSingleValue(
+        toHumanReadableTime(low.minWaitTimeEstimate),
+        toHumanReadableTime(low.maxWaitTimeEstimate),
+      );
     }
   }
   // 3: Between the `medium.minWaitTimeEstimate` and `medium.maxWaitTimeEstimate`
@@ -72,9 +84,10 @@ export default function GasTiming({ maxPriorityFeePerGas = 0 }) {
         toHumanReadableTime(medium.maxWaitTimeEstimate),
       ]);
     } else {
-      text = `${toHumanReadableTime(
-        medium.minWaitTimeEstimate,
-      )} - ${toHumanReadableTime(medium.maxWaitTimeEstimate)}`;
+      text = getRangeOrSingleValue(
+        toHumanReadableTime(medium.minWaitTimeEstimate),
+        toHumanReadableTime(medium.maxWaitTimeEstimate),
+      );
     }
   }
   // 4: Between the `high.minWaitTimeEstimate` and the `high.maxWaitTimeEstimate`
@@ -88,9 +101,10 @@ export default function GasTiming({ maxPriorityFeePerGas = 0 }) {
         toHumanReadableTime(high.maxWaitTimeEstimate),
       ]);
     } else {
-      text = `${toHumanReadableTime(
-        high.minWaitTimeEstimate,
-      )} - ${toHumanReadableTime(high.maxWaitTimeEstimate)}`;
+      text = getRangeOrSingleValue(
+        toHumanReadableTime(high.minWaitTimeEstimate),
+        toHumanReadableTime(high.maxWaitTimeEstimate),
+      );
     }
   }
   // 5: Faster than `high.minWaitTimeEstimate`
@@ -117,7 +131,3 @@ export default function GasTiming({ maxPriorityFeePerGas = 0 }) {
     </Typography>
   );
 }
-
-GasTiming.propTypes = {
-  maxPriorityFeePerGas: PropTypes.number.isRequired,
-};

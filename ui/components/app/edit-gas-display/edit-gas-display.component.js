@@ -116,7 +116,7 @@ export default function EditGasDisplay({
               </Typography>,
             ])
           }
-          timing={<GasTiming maxPriorityFeePerGas={maxPriorityFeePerGas} />}
+          timing={<GasTiming />}
         />
         {requireDappAcknowledgement && (
           <Button
