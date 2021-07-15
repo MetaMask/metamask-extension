@@ -2046,6 +2046,19 @@ export function setUsePhishDetect(val) {
   };
 }
 
+export function setUseStaticTokenList(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseStaticTokenList`);
+    background.setUseStaticTokenList(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
 export function setIpfsGateway(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
