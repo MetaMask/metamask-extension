@@ -78,7 +78,7 @@ export const withIcon = () => (
       )}
       className="actionable-message--left-aligned actionable-message--warning"
       useIcon
-      iconFill="#f8c000"
+      iconFillColor="#f8c000"
     />
   </div>
 );

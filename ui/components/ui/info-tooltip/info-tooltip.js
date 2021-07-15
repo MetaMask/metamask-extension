@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Tooltip from '../tooltip';
+import InfoTooltipIcon from './info-tooltip-icon';
 
 const positionArrowClassMap = {
   top: 'info-tooltip__top-tooltip-arrow',
@@ -16,7 +17,7 @@ export default function InfoTooltip({
   containerClassName,
   wrapperClassName,
   wide,
-  iconFillColor = '#b8b8b8',
+  iconFillColor = '',
 }) {
   return (
     <div className="info-tooltip">
@@ -33,14 +34,7 @@ export default function InfoTooltip({
         html={contentText}
         theme={wide ? 'tippy-tooltip-wideInfo' : 'tippy-tooltip-info'}
       >
-        <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0
-              2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7
-              6H4.3V4.3h1.5V8z"
-            fill={iconFillColor}
-          />
-        </svg>
+        <InfoTooltipIcon fillColor={iconFillColor} />
       </Tooltip>
     </div>
   );
