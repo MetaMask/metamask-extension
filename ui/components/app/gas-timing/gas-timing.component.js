@@ -7,7 +7,6 @@ import { I18nContext } from '../../../contexts/i18n';
 
 import Typography from '../../ui/typography/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
-import InfoTooltip from '../../ui/info-tooltip';
 
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
@@ -35,7 +34,6 @@ export default function GasTiming() {
 
   let text = '';
   let attitude = '';
-  const tooltipText = '';
 
   // Anything medium or faster is positive
   if (maxPriorityFeePerGas >= medium.maxPriorityFeePerGas) {
@@ -66,7 +64,6 @@ export default function GasTiming() {
       })}
     >
       {text}
-      {tooltipText && <InfoTooltip position="top" contentText={tooltipText} />}
     </Typography>
   );
 }
