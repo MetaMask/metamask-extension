@@ -40,17 +40,42 @@ async function start() {
     .join(', ');
 
   // links to bundle browser builds
+  const bundles = {};
   const fileType = '.html';
   const sourceMapRoot = '/build-artifacts/source-map-explorer/';
   const bundleFiles = await glob(`.${sourceMapRoot}*${fileType}`);
-  const bundleLinks = bundleFiles
-    .map((bundleFile) => {
-      const fileName = bundleFile.split(sourceMapRoot)[1];
-      const bundleName = fileName.split(fileType)[0];
-      const url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileName}`;
-      return `<a href="${url}">${bundleName}</a>`;
-    })
-    .join(', ');
+
+  bundleFiles.forEach((bundleFile) => {
+    const fileName = bundleFile.split(sourceMapRoot)[1];
+    const bundleName = fileName.split(fileType)[0];
+    const url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileName}`;
+    let fileRoot = bundleName;
+    let fileIndex;
+
+    if (bundleName.indexOf('-') > -1) {
+      const split = bundleName.split('-');
+      // Handle bundles that have hyphens in their name
+      if (split.length === 2 && !isNaN(parseInt(split[1], 10))) {
+        fileRoot = split[0];
+        fileIndex = split[1];
+      } else if (split.length === 3) {
+        fileRoot = [split[0], split[1]].join('-');
+        fileIndex = split[2];
+      }
+    }
+
+    const link = `<a href="${url}">${fileIndex || fileRoot}</a>`;
+
+    if (fileRoot in bundles) {
+      bundles[fileRoot].push(link);
+    } else {
+      bundles[fileRoot] = [link];
+    }
+  });
+
+  const bundleMarkup = `<ul>${Object.keys(bundles)
+    .map((key) => `<li>${key}: ${bundles[key].join(', ')}</li>`)
+    .join('')}</ul>`;
 
   const coverageUrl = `${BUILD_LINK_BASE}/coverage/index.html`;
   const coverageLink = `<a href="${coverageUrl}">Report</a>`;
@@ -67,7 +92,7 @@ async function start() {
 
   const contentRows = [
     `builds: ${buildLinks}`,
-    `bundle viz: ${bundleLinks}`,
+    `bundle viz: ${bundleMarkup}`,
     `build viz: ${depVizLink}`,
     `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
