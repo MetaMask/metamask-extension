@@ -2,6 +2,7 @@
 const { promises: fs } = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
+const glob = require('fast-glob');
 const VERSION = require('../dist/chrome/manifest.json').version; // eslint-disable-line import/no-unresolved
 
 start().catch(console.error);
@@ -39,19 +40,15 @@ async function start() {
     .join(', ');
 
   // links to bundle browser builds
-  const bundles = [
-    'background',
-    'ui',
-    'inpage',
-    'contentscript',
-    'ui-libs',
-    'bg-libs',
-    'phishing-detect',
-  ];
-  const bundleLinks = bundles
-    .map((bundle) => {
-      const url = `${BUILD_LINK_BASE}/build-artifacts/source-map-explorer/${bundle}.html`;
-      return `<a href="${url}">${bundle}</a>`;
+  const fileType = '.html';
+  const sourceMapRoot = '/build-artifacts/source-map-explorer/';
+  const bundleFiles = await glob(`.${sourceMapRoot}*${fileType}`);
+  const bundleLinks = bundleFiles
+    .map((bundleFile) => {
+      const fileName = bundleFile.split(sourceMapRoot)[1];
+      const bundleName = fileName.split(fileType)[0];
+      const url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileName}`;
+      return `<a href="${url}">${bundleName}</a>`;
     })
     .join(', ');
 
