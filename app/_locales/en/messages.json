@@ -1914,7 +1914,7 @@
     "message": "Speed up this cancellation"
   },
   "speedUpExplanation": {
-    "message": "We’ve restimated the gas fee based on current network conditions and have increased it by at least 10% (required by the network)."
+    "message": "We’ve updated the gas fee based on current network conditions and have increased it by at least 10% (required by the network)."
   },
   "speedUpPopoverTitle": {
     "message": "Speed up transaction"
