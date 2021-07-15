@@ -229,7 +229,7 @@ export default class MetamaskController extends EventEmitter {
       useStaticTokenList: this.preferencesController.store.getState()
         .useStaticTokenList,
       onNetworkStateChange: (cb) =>
-        this.networkController.store.subscribe(async (networkState) => {
+        this.networkController.store.subscribe((networkState) => {
           const modifiedNetworkState = {
             ...networkState,
             provider: {
@@ -237,7 +237,7 @@ export default class MetamaskController extends EventEmitter {
               chainId: hexToDecimal(networkState.provider.chainId),
             },
           };
-          return await cb(modifiedNetworkState);
+          return cb(modifiedNetworkState);
         }),
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
@@ -2823,23 +2823,6 @@ export default class MetamaskController extends EventEmitter {
   setUsePhishDetect(val, cb) {
     try {
       this.preferencesController.setUsePhishDetect(val);
-      cb(null);
-      return;
-    } catch (err) {
-      cb(err);
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
-  }
-
-  /**
-   * Sets whether or not to use phishing detection.
-   * @param {boolean} val
-   * @param {Function} cb
-   */
-  setUseStaticTokenList(val, cb) {
-    try {
-      this.preferencesController.setUseStaticTokenList(val);
       cb(null);
       return;
     } catch (err) {
