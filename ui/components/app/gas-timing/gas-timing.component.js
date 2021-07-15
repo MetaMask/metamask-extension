@@ -19,10 +19,7 @@ function toHumanReadableTime(milliseconds) {
   return rtf.format(milliseconds / 1000, 'second');
 }
 
-export default function GasTiming({
-  tooltipText = '',
-  maxPriorityFeePerGas = 0,
-}) {
+export default function GasTiming({ maxPriorityFeePerGas = 0 }) {
   const { gasFeeEstimates, isGasEstimatesLoading } = useGasFeeEstimates();
   const { low, medium, high } = gasFeeEstimates;
 
@@ -35,6 +32,7 @@ export default function GasTiming({
 
   let text = '';
   let attitude = '';
+  let tooltipText = '';
 
   // 1:  Longer than the `low.maxWaitTimeEstimate`
   if (maxPriorityFeePerGas < low.maxPriorityFeePerGas) {
@@ -121,6 +119,5 @@ export default function GasTiming({
 }
 
 GasTiming.propTypes = {
-  tooltipText: PropTypes.string,
   maxPriorityFeePerGas: PropTypes.number.isRequired,
 };
