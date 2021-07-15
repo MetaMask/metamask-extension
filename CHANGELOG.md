@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Adjusting transaction metrics values
 
+### Fixed
+- [11538](https://github.com/MetaMask/metamask-extension/pull/11538): Fixed bug that prevented users from continuing to swap after going 'back' from the View Quote page of the swaps flow.
+
 ## [9.8.0]
 ### Added
 - [#11435](https://github.com/MetaMask/metamask-extension/pull/11435): Add gas limit buffers for optimism network
