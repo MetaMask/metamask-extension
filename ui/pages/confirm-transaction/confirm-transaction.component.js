@@ -58,6 +58,7 @@ export default class ConfirmTransaction extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     const {
       totalUnapprovedCount = 0,
       sendTo,
@@ -72,7 +73,11 @@ export default class ConfirmTransaction extends Component {
     } = this.props;
 
     getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
-      this.setState({ pollingToken });
+      if (this._isMounted) {
+        this.setState({ pollingToken });
+      } else {
+        disconnectGasFeeEstimatePoller(pollingToken);
+      }
     });
 
     if (!totalUnapprovedCount && !sendTo) {
@@ -91,6 +96,7 @@ export default class ConfirmTransaction extends Component {
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     if (this.state.pollingToken) {
       disconnectGasFeeEstimatePoller(this.state.pollingToken);
     }

@@ -44,11 +44,17 @@ export function useGasFeeEstimates() {
   const gasFeeEstimates = useSelector(getGasFeeEstimates);
   const estimatedGasFeeTimeBounds = useSelector(getEstimatedGasFeeTimeBounds);
   useEffect(() => {
+    let active = true;
     let pollToken;
     getGasFeeEstimatesAndStartPolling().then((newPollToken) => {
-      pollToken = newPollToken;
+      if (active) {
+        pollToken = newPollToken;
+      } else {
+        disconnectGasFeeEstimatePoller(newPollToken);
+      }
     });
     return () => {
+      active = false;
       if (pollToken) {
         disconnectGasFeeEstimatePoller(pollToken);
       }

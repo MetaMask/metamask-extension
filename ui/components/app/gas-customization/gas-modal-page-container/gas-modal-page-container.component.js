@@ -49,12 +49,18 @@ export default class GasModalPageContainer extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
-      this.setState({ pollingToken });
+      if (this._isMounted) {
+        this.setState({ pollingToken });
+      } else {
+        disconnectGasFeeEstimatePoller(pollingToken);
+      }
     });
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     if (this.state.pollingToken) {
       disconnectGasFeeEstimatePoller(this.state.pollingToken);
     }

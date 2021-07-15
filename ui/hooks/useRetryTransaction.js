@@ -7,7 +7,6 @@ import { getIsMainnet } from '../selectors';
 import { isLegacyTransaction } from '../../shared/modules/transaction.utils';
 import { useMetricEvent } from './useMetricEvent';
 import { useIncrementedGasFees } from './useIncrementedGasFees';
-import { useGasFeeEstimates } from './useGasFeeEstimates';
 
 /**
  * @typedef {Object} RetryTransactionReturnValue
@@ -26,9 +25,6 @@ import { useGasFeeEstimates } from './useGasFeeEstimates';
 export function useRetryTransaction(transactionGroup) {
   const { primaryTransaction } = transactionGroup;
   const isMainnet = useSelector(getIsMainnet);
-
-  // Starts polling for gas prices that will be used for retry gas pricing
-  useGasFeeEstimates();
 
   const hideBasic = !(isMainnet || process.env.IN_TEST);
   const customGasSettings = useIncrementedGasFees(transactionGroup);

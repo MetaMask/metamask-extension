@@ -189,10 +189,13 @@ async function estimateGasLimitForSend({
   // blockGasLimit default to a higher number. Note that the current gasLimit
   // on a BLOCK is 15,000,000 and will be 30,000,000 on mainnet after London.
   // Meanwhile, MIN_GAS_LIMIT_HEX is 0x5208.
-  const blockGasLimit =
-    options.blockGasLimit || sendToken
-      ? GAS_LIMITS.BASE_TOKEN_ESTIMATE
-      : MIN_GAS_LIMIT_HEX;
+  let blockGasLimit = MIN_GAS_LIMIT_HEX;
+  if (options.blockGasLimit) {
+    blockGasLimit = options.blockGasLimit;
+  } else if (sendToken) {
+    blockGasLimit = GAS_LIMITS.BASE_TOKEN_ESTIMATE;
+  }
+
   // The parameters below will be sent to our background process to estimate
   // how much gas will be used for a transaction. That background process is
   // located in tx-gas-utils.js in the transaction controller folder.
