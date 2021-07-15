@@ -14,7 +14,6 @@ const SECOND_CUTOFF = 90;
 export default function GasTiming() {
   const { gasFeeEstimates, isGasEstimatesLoading } = useGasFeeEstimates();
   const { maxPriorityFeePerGas } = useGasFeeInputs();
-  const { low, medium, high } = gasFeeEstimates;
 
   const t = useContext(I18nContext);
 
@@ -32,15 +31,21 @@ export default function GasTiming() {
     return null;
   }
 
+  const { low, medium, high } = gasFeeEstimates;
+
   let text = '';
   let attitude = '';
 
   // Anything medium or faster is positive
-  if (maxPriorityFeePerGas >= medium.maxPriorityFeePerGas) {
+  if (
+    Number(maxPriorityFeePerGas) >= Number(medium.suggestedMaxPriorityFeePerGas)
+  ) {
     attitude = 'positive';
 
     // High+ is very likely, medium is likely
-    if (maxPriorityFeePerGas < high.maxPriorityFeePerGas) {
+    if (
+      Number(maxPriorityFeePerGas) < Number(high.suggestedMaxPriorityFeePerGas)
+    ) {
       text = t('gasTimingPositive', [
         toHumanReadableTime(medium.maxWaitTimeEstimate),
       ]);
