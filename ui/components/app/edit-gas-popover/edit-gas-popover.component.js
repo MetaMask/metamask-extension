@@ -41,7 +41,8 @@ export default function EditGasPopover({
   const dispatch = useDispatch();
   const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
 
-  const showEducationButton = mode === EDIT_GAS_MODES.MODIFY_IN_PLACE;
+  const showEducationButton =
+    mode === EDIT_GAS_MODES.MODIFY_IN_PLACE && process.env.SHOW_EIP_1559_UI;
   const [showEducationContent, setShowEducationContent] = useState(false);
 
   const [warning] = useState(null);
