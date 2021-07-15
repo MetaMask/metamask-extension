@@ -2058,7 +2058,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   estimateGas(estimateGasParams) {
-    console.log(estimateGasParams);
     return new Promise((resolve, reject) => {
       return this.txController.txGasUtil.query.estimateGas(
         estimateGasParams,
