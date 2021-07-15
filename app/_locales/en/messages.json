@@ -941,27 +941,25 @@
   "gasPriceInfoTooltipContent": {
     "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
   },
-  "gasTimingAtLeast": {
-    "message": "At least $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingLessThan": {
-    "message": "Less than $1",
-    "description": "$1 represents an amount of time"
-  },
   "gasTimingMinutes": {
     "message": "$1 minutes",
     "description": "$1 represents a number of minutes"
+  },
+  "gasTimingNegative": {
+    "message": "Maybe in $1",
+    "description": "$1 represents an amount of time"
+  },
+  "gasTimingPositive": {
+    "message": "Likely in < $1",
+    "description": "$1 represents an amount of time"
   },
   "gasTimingSeconds": {
     "message": "$1 seconds",
     "description": "$1 represents a number of seconds"
   },
-  "gasTimingUnkownProcessingTime": {
-    "message": "Unknown processing time"
-  },
-  "gasTimingUnkownProcessingTimeTooltip": {
-    "message": "Your max fee is low for current market conditions. We don’t know when (or if) your transaction will be processed."
+  "gasTimingVeryPositive": {
+    "message": "Very likely in < $1",
+    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gas Used"
