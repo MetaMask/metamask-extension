@@ -18,6 +18,8 @@ import { useCurrencyDisplay } from './useCurrencyDisplay';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
 
+const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
+
 /**
  * Opaque string type representing a decimal (base 10) number in GWEI
  * @typedef {`${number}`} DecGweiString
@@ -272,7 +274,11 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
     },
   );
 
+  // Separating errors from warnings so we can know which value problems
+  // are blocking or simply useful information for the users
   const gasErrors = {};
+  const gasWarnings = {};
+
   if (gasLimit < 21000 || gasLimit > 7920027) {
     gasErrors.gasLimit = GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS;
   }
@@ -287,6 +293,13 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
           gasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas
       ) {
         gasErrors.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW;
+      } else if (
+        gasFeeEstimates?.high &&
+        maxPriorityFeePerGasToUse >
+          gasFeeEstimates.high.suggestedMaxPriorityFeePerGas * HIGH_FEE_WARNING_MULTIPLIER
+      ) {
+        gasWarnings.maxPriorityFee =
+          GAS_FORM_ERRORS.MAX_PRORITY_FEE_HIGH_WARNING;
       }
 
       if (
@@ -294,13 +307,27 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
         maxFeePerGasToUse < gasFeeEstimates?.low?.suggestedMaxFeePerGas
       ) {
         gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_TOO_LOW;
+      } else if (
+        gasFeeEstimates?.high &&
+        maxFeePerGasToUse > gasFeeEstimates.high.suggestedMaxFeePerGas * HIGH_FEE_WARNING_MULTIPLIER
+      ) {
+        gasWarnings.maxFee = GAS_FORM_ERRORS.MAX_FEE_HIGH_WARNING;
       }
       break;
     default:
       break;
   }
 
-  const hasGasErrors = Boolean(Object.keys(gasErrors).length);
+  // Determine if we have any errors which should block submission
+  const hasBlockingGasErrors = Boolean(Object.keys(gasErrors).length);
+
+  // Now that we've determined errors that block submission, we can pool the warnings
+  // and errors into one object for easier use within the UI.  This object should have
+  // no effect on whether or not the user can submit the form
+  const errorsAndWarnings = {
+    ...gasErrors,
+    ...gasWarnings,
+  };
 
   return {
     maxFeePerGas: maxFeePerGasToUse,
@@ -322,7 +349,7 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
     gasFeeEstimates,
     gasEstimateType,
     estimatedGasFeeTimeBounds,
-    gasErrors,
-    hasGasErrors,
+    gasErrors: errorsAndWarnings,
+    hasGasErrors: hasBlockingGasErrors,
   };
 }

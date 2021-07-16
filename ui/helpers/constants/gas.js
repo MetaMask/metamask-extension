@@ -3,6 +3,8 @@ export const GAS_FORM_ERRORS = {
   MAX_PRIORITY_FEE_TOO_LOW: 'editGasMaxPriorityFeeLow',
   MAX_FEE_TOO_LOW: 'editGasMaxFeeLow',
   MAX_PRIORITY_FEE_ZERO: 'editGasMaxPriorityFeeZeroError',
+  MAX_PRORITY_FEE_HIGH_WARNING: 'editGasMaxPriorityFeeHigh',
+  MAX_FEE_HIGH_WARNING: 'editGasMaxFeeHigh',
 };
 
 export function getGasFormErrorText(type, t) {
@@ -15,6 +17,10 @@ export function getGasFormErrorText(type, t) {
       return t('editGasMaxFeeLow');
     case GAS_FORM_ERRORS.MAX_PRIORITY_FEE_ZERO:
       return t('editGasMaxPriorityFeeZeroError');
+    case GAS_FORM_ERRORS.MAX_PRORITY_FEE_HIGH_WARNING:
+      return t('editGasMaxPriorityFeeZeroError');
+    case GAS_FORM_ERRORS.MAX_FEE_HIGH_WARNING:
+      return t('editGasMaxFeeHigh');
     default:
       return '';
   }
