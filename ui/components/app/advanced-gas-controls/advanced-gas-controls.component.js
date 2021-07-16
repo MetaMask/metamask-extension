@@ -13,6 +13,7 @@ import {
   GAS_ESTIMATE_TYPES,
   GAS_RECOMMENDATIONS,
 } from '../../../../shared/constants/gas';
+import { getGasFormErrorText } from '../../../helpers/constants/gas';
 
 const DEFAULT_ESTIMATES_LEVEL = 'medium';
 
@@ -62,7 +63,9 @@ export default function AdvancedGasControls({
     <div className="advanced-gas-controls">
       <FormField
         titleText={t('gasLimit')}
-        error={gasErrors.gasLimit ? t(gasErrors.gasLimit) : null}
+        error={
+          gasErrors?.gasLimit ? getGasFormErrorText(gasErrors.gasLimit, t) : null
+        }
         onChange={setGasLimit}
         tooltipText={t('editGasLimitTooltip')}
         value={gasLimit}
@@ -107,7 +110,9 @@ export default function AdvancedGasControls({
               )
             }
             error={
-              gasErrors.maxPriorityFee ? t(gasErrors.maxPriorityFee) : null
+              gasErrors?.maxPriorityFee
+                ? getGasFormErrorText(gasErrors.maxPriorityFee, t)
+                : null
             }
           />
           <FormField
@@ -145,7 +150,9 @@ export default function AdvancedGasControls({
                 </>
               )
             }
-            error={gasErrors.maxFee ? t(gasErrors.maxFee) : null}
+            error={
+              gasErrors?.maxFee ? getGasFormErrorText(gasErrors.maxFee, t) : null
+            }
           />
         </>
       ) : (

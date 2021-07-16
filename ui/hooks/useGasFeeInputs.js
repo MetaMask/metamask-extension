@@ -13,6 +13,7 @@ import {
   decimalToHex,
 } from '../helpers/utils/conversions.util';
 import { getShouldShowFiat } from '../selectors';
+import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -273,7 +274,7 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
 
   const gasErrors = {};
   if (gasLimit < 21000) {
-    gasErrors.gasLimit = 'gasLimitTooLow';
+    gasErrors.gasLimit = GAS_FORM_ERRORS.GAS_LIMIT_TOO_LOW;
   }
 
   switch (gasEstimateType) {
@@ -283,14 +284,14 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
         maxPriorityFeePerGasToUse <
           gasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas
       ) {
-        gasErrors.maxPriorityFee = 'editGasMaxPriorityFeeLow';
+        gasErrors.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW;
       }
 
       if (
         !isGasEstimatesLoading &&
         maxFeePerGasToUse < gasFeeEstimates?.low?.suggestedMaxFeePerGas
       ) {
-        gasErrors.maxFee = 'editGasMaxFeeLow';
+        gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_TOO_LOW;
       }
       break;
     default:
