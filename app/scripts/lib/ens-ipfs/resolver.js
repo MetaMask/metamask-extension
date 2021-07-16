@@ -1,7 +1,7 @@
 import namehash from 'eth-ens-namehash';
 import Eth from 'ethjs-query';
 import EthContract from 'ethjs-contract';
-import contentHash from 'content-hash';
+import contentHash from '@ensdomains/content-hash';
 import registryAbi from './contracts/registry';
 import resolverAbi from './contracts/resolver';
 
