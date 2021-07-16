@@ -300,7 +300,7 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
             HIGH_FEE_WARNING_MULTIPLIER
       ) {
         gasWarnings.maxPriorityFee =
-          GAS_FORM_ERRORS.MAX_PRORITY_FEE_HIGH_WARNING;
+          GAS_FORM_ERRORS.MAX_PRIORITY_FEE_HIGH_WARNING;
       }
 
       if (
