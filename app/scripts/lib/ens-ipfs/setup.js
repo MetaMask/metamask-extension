@@ -87,11 +87,11 @@ export default function setupEnsIpfsResolver({
         const padded = hash.padEnd(hash.length + 4 - (hash.length % 4), '=');
         const decoded = base64.toByteArray(padded);
 
-        const opts = { padding: false };
+        const options = { padding: false };
         const base32EncodedSkylink = base32Encode(
           decoded,
           'RFC4648-HEX',
-          opts,
+          options,
         ).toLowerCase();
         url = `https://${base32EncodedSkylink}.siasky.net${pathname}${
           search || ''
