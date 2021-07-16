@@ -168,20 +168,22 @@ export default function EditGasPopover({
         showEducationContent ? () => setShowEducationContent(false) : undefined
       }
       footer={
-        <>
-          <Button
-            type="primary"
-            onClick={onSubmit}
-            disabled={
-              isMaxFeeError ||
-              isMaxPriorityFeeError ||
-              isGasTooLow ||
-              isGasEstimatesLoading
-            }
-          >
-            {footerButtonText}
-          </Button>
-        </>
+        showEducationContent ? null : (
+          <>
+            <Button
+              type="primary"
+              onClick={onSubmit}
+              disabled={
+                isMaxFeeError ||
+                isMaxPriorityFeeError ||
+                isGasTooLow ||
+                isGasEstimatesLoading
+              }
+            >
+              {footerButtonText}
+            </Button>
+          </>
+        )
       }
     >
       <div style={{ padding: '0 20px 20px 20px' }}>
