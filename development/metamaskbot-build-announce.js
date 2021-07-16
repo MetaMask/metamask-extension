@@ -50,18 +50,11 @@ async function start() {
     const bundleName = fileName.split(fileType)[0];
     const url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileName}`;
     let fileRoot = bundleName;
-    let fileIndex;
+    let fileIndex = bundleName.match(/-[0-9]{1,}$/u)?.index;
 
-    if (bundleName.indexOf('-') > -1) {
-      const split = bundleName.split('-');
-      // Handle bundles that have hyphens in their name
-      if (split.length === 2 && !isNaN(parseInt(split[1], 10))) {
-        fileRoot = split[0];
-        fileIndex = split[1];
-      } else if (split.length === 3) {
-        fileRoot = [split[0], split[1]].join('-');
-        fileIndex = split[2];
-      }
+    if (fileIndex) {
+      fileRoot = bundleName.slice(0, fileIndex);
+      fileIndex = bundleName.slice(fileIndex + 1, bundleName.length);
     }
 
     const link = `<a href="${url}">${fileIndex || fileRoot}</a>`;
@@ -92,11 +85,14 @@ async function start() {
 
   const contentRows = [
     `builds: ${buildLinks}`,
-    `bundle viz: ${bundleMarkup}`,
     `build viz: ${depVizLink}`,
     `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
+    `<details>
+       <summary>bundle viz:</summary>
+       ${bundleMarkup}
+     </details>`,
   ];
   const hiddenContent = `<ul>${contentRows
     .map((row) => `<li>${row}</li>`)
