@@ -253,45 +253,11 @@ describe('MetaMask', function () {
     });
   });
 
-  describe('Send ETH from dapp using advanced gas controls', function () {
+  describe('Navigate transactions', function () {
     let windowHandles;
     let extension;
     let popup;
     let dapp;
-
-    it('goes to the settings screen', async function () {
-      await driver.clickElement('.account-menu__icon');
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement({ text: 'Settings', tag: 'div' });
-
-      // await driver.findElement('.tab-bar')
-
-      await driver.clickElement({ text: 'Advanced', tag: 'div' });
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement(
-        '[data-testid="advanced-setting-show-testnet-conversion"] .settings-page__content-item-col > div > div',
-      );
-
-      const advancedGasTitle = await driver.findElement({
-        text: 'Advanced gas controls',
-        tag: 'span',
-      });
-      await driver.scrollToElement(advancedGasTitle);
-
-      await driver.clickElement(
-        '[data-testid="advanced-setting-advanced-gas-inline"] .settings-page__content-item-col > div > div',
-      );
-      windowHandles = await driver.getAllWindowHandles();
-      extension = windowHandles[0];
-      await driver.closeAllWindowHandlesExcept([extension]);
-
-      await driver.clickElement('.app-header__logo-container');
-
-      await driver.delay(largeDelayMs);
-    });
-
     it('connects the dapp', async function () {
       await driver.openNewPage('http://127.0.0.1:8080/');
       await driver.delay(regularDelayMs);
@@ -324,87 +290,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
     });
 
-    it('initiates a send from the dapp', async function () {
-      await driver.clickElement({ text: 'Send', tag: 'button' }, 10000);
-      await driver.delay(2000);
-
-      windowHandles = await driver.getAllWindowHandles();
-      await driver.switchToWindowWithTitle(
-        'MetaMask Notification',
-        windowHandles,
-      );
-      await driver.delay(regularDelayMs);
-
-      await driver.assertElementNotPresent({ text: 'Data', tag: 'li' });
-
-      const [gasPriceInput, gasLimitInput] = await driver.findElements(
-        '.advanced-gas-inputs__gas-edit-row__input',
-      );
-
-      await gasPriceInput.clear();
-      await driver.delay(50);
-      await gasPriceInput.fill('10');
-      await driver.delay(50);
-      await driver.delay(tinyDelayMs);
-      await driver.delay(50);
-
-      await gasLimitInput.fill('');
-      await driver.delay(50);
-      await gasLimitInput.fill('25000');
-
-      await driver.delay(1000);
-
-      await driver.clickElement({ text: 'Confirm', tag: 'button' }, 10000);
-      await driver.delay(regularDelayMs);
-
-      await driver.waitUntilXWindowHandles(2);
-      await driver.switchToWindow(extension);
-      await driver.delay(regularDelayMs);
-    });
-
-    it('finds the transaction in the transactions list', async function () {
-      await driver.clickElement('[data-testid="home__activity-tab"]');
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 1;
-      }, 10000);
-
-      await driver.waitForSelector({
-        css: '.transaction-list-item__primary-currency',
-        text: '-3 ETH',
-      });
-    });
-
-    it('the transaction has the expected gas price', async function () {
-      const txValue = await driver.findClickableElement(
-        '.transaction-list-item__primary-currency',
-      );
-      await txValue.click();
-      const popoverCloseButton = await driver.findClickableElement(
-        '.popover-header__button',
-      );
-      await driver.waitForSelector({
-        css: '[data-testid="transaction-breakdown__gas-price"]',
-        text: '10',
-      });
-      await popoverCloseButton.click();
-    });
-  });
-
-  describe('Navigate transactions', function () {
     it('adds multiple transactions', async function () {
-      await driver.delay(regularDelayMs);
-
-      await driver.waitUntilXWindowHandles(2);
-      const windowHandles = await driver.getAllWindowHandles();
-      const extension = windowHandles[0];
-      const dapp = windowHandles[1];
-
-      await driver.switchToWindow(dapp);
-      await driver.delay(largeDelayMs);
-
       const send3eth = await driver.findClickableElement({
         text: 'Send',
         tag: 'button',
@@ -427,6 +313,7 @@ describe('MetaMask', function () {
       await driver.switchToWindow(extension);
       await driver.delay(regularDelayMs);
 
+      await driver.clickElement('[data-testid="home__activity-tab"]');
       await driver.clickElement('.transaction-list-item');
       await driver.delay(largeDelayMs);
     });
@@ -521,10 +408,6 @@ describe('MetaMask', function () {
         'second transaction in focus',
       );
 
-      const windowHandles = await driver.getAllWindowHandles();
-      const extension = windowHandles[0];
-      const dapp = windowHandles[1];
-
       await driver.switchToWindow(dapp);
       await driver.delay(regularDelayMs);
 
@@ -583,200 +466,8 @@ describe('MetaMask', function () {
         const confirmedTxes = await driver.findElements(
           '.transaction-list__completed-transactions .transaction-list-item',
         );
-        return confirmedTxes.length === 2;
+        return confirmedTxes.length === 1;
       }, 10000);
-    });
-  });
-
-  describe('Deploy contract and call contract methods', function () {
-    let extension;
-    let dapp;
-    it('creates a deploy contract transaction', async function () {
-      const windowHandles = await driver.getAllWindowHandles();
-      extension = windowHandles[0];
-      dapp = windowHandles[1];
-      await driver.delay(tinyDelayMs);
-
-      await driver.switchToWindow(dapp);
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement('#deployButton');
-      await driver.delay(regularDelayMs);
-
-      await driver.switchToWindow(extension);
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement({ text: 'Contract Deployment', tag: 'h2' });
-      await driver.delay(largeDelayMs);
-    });
-
-    it('displays the contract creation data', async function () {
-      await driver.clickElement({ text: 'Data', tag: 'button' });
-      await driver.delay(regularDelayMs);
-
-      await driver.findElement({ text: '127.0.0.1', tag: 'div' });
-
-      const confirmDataDiv = await driver.findElement(
-        '.confirm-page-container-content__data-box',
-      );
-      const confirmDataText = await confirmDataDiv.getText();
-      assert.ok(confirmDataText.includes('Origin:'));
-      assert.ok(confirmDataText.includes('127.0.0.1'));
-      assert.ok(confirmDataText.includes('Bytes:'));
-      assert.ok(confirmDataText.includes('675'));
-
-      await driver.clickElement({ text: 'Details', tag: 'button' });
-      await driver.delay(regularDelayMs);
-    });
-
-    it('confirms a deploy contract transaction', async function () {
-      await driver.clickElement({ text: 'Confirm', tag: 'button' });
-      await driver.delay(largeDelayMs);
-
-      await driver.waitForSelector(
-        '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(3)',
-      );
-
-      await driver.waitForSelector(
-        {
-          css: '.list-item__title',
-          text: 'Contract Deployment',
-        },
-        { timeout: 10000 },
-      );
-      await driver.delay(regularDelayMs);
-    });
-
-    it('calls and confirms a contract method where ETH is sent', async function () {
-      await driver.switchToWindow(dapp);
-      await driver.delay(regularDelayMs);
-
-      await driver.waitForSelector(
-        {
-          css: '#contractStatus',
-          text: 'Deployed',
-        },
-        { timeout: 15000 },
-      );
-
-      await driver.clickElement('#depositButton');
-      await driver.delay(largeDelayMs);
-
-      await driver.waitForSelector(
-        {
-          css: '#contractStatus',
-          text: 'Deposit initiated',
-        },
-        { timeout: 10000 },
-      );
-
-      await driver.switchToWindow(extension);
-      await driver.delay(largeDelayMs * 2);
-
-      await driver.findElements('.transaction-list-item--unconfirmed');
-      const txListValue = await driver.findClickableElement(
-        '.transaction-list-item__primary-currency',
-      );
-      await driver.waitForSelector(
-        {
-          css: '.transaction-list-item__primary-currency',
-          text: '-4 ETH',
-        },
-        { timeout: 10000 },
-      );
-      await txListValue.click();
-      await driver.delay(regularDelayMs);
-
-      // Set the gas limit
-      await driver.clickElement('.confirm-detail-row__header-text--edit');
-      // wait for gas modal to be visible.
-      const gasModal = await driver.findVisibleElement('span .modal');
-      await driver.clickElement('.page-container__tab:nth-of-type(2)');
-      await driver.delay(regularDelayMs);
-
-      const [gasPriceInput, gasLimitInput] = await driver.findElements(
-        '.advanced-gas-inputs__gas-edit-row__input',
-      );
-      const gasLimitValue = await gasLimitInput.getAttribute('value');
-      assert(Number(gasLimitValue) < 100000, 'Gas Limit too high');
-
-      await gasPriceInput.fill('10');
-      await driver.delay(50);
-
-      await gasLimitInput.fill('60001');
-
-      await driver.delay(1000);
-
-      await driver.clickElement({ text: 'Save', tag: 'button' });
-
-      // wait for gas modal to be detached from DOM
-      await gasModal.waitForElementState('hidden');
-
-      await driver.clickElement({ text: 'Confirm', tag: 'button' });
-      await driver.delay(regularDelayMs);
-
-      await driver.waitForSelector(
-        '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(4)',
-        { timeout: 10000 },
-      );
-      await driver.waitForSelector(
-        {
-          css:
-            '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
-          text: '-4 ETH',
-        },
-        { timeout: 10000 },
-      );
-    });
-
-    it('calls and confirms a contract method where ETH is received', async function () {
-      await driver.switchToWindow(dapp);
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement('#withdrawButton');
-      await driver.delay(regularDelayMs);
-
-      await driver.switchToWindow(extension);
-      await driver.delay(largeDelayMs * 2);
-
-      await driver.clickElement(
-        '.transaction-list__pending-transactions  .transaction-list-item',
-      );
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement({ text: 'Confirm', tag: 'button' });
-      await driver.delay(regularDelayMs);
-
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 5;
-      }, 10000);
-
-      await driver.waitForSelector(
-        {
-          css: '.transaction-list-item__primary-currency',
-          text: '-0 ETH',
-        },
-        { timeout: 10000 },
-      );
-
-      await driver.closeAllWindowHandlesExcept([extension, dapp]);
-      await driver.switchToWindow(extension);
-    });
-
-    it('renders the correct ETH balance', async function () {
-      const balance = await driver.waitForSelector(
-        {
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: '90.',
-        },
-        { timeout: 10000 },
-      );
-      const tokenAmount = await balance.getText();
-      assert.ok(/^90.*\s*ETH.*$/u.test(tokenAmount));
-      await driver.delay(regularDelayMs);
     });
   });
 

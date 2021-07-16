@@ -93,3 +93,7 @@ export const SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP = {
   [BSC_CHAIN_ID]: BSC_DEFAULT_BLOCK_EXPLORER_URL,
   [MAINNET_CHAIN_ID]: MAINNET_DEFAULT_BLOCK_EXPLORER_URL,
 };
+
+export const ETHEREUM = 'ethereum';
+export const POLYGON = 'polygon';
+export const BSC = 'bsc';

@@ -6,7 +6,7 @@ import { mapValues, cloneDeep } from 'lodash';
 import abi from 'human-standard-token-abi';
 import { calcTokenAmount } from '../../../ui/helpers/utils/token-util';
 import { calcGasTotal } from '../../../ui/pages/send/send.utils';
-import { conversionUtil } from '../../../ui/helpers/utils/conversion-util';
+import { conversionUtil } from '../../../shared/modules/conversion.utils';
 import {
   DEFAULT_ERC20_APPROVE_GAS,
   QUOTES_EXPIRED_ERROR,
@@ -19,7 +19,6 @@ import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils'
 
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
-  fetchSwapsFeatureLiveness as defaultFetchSwapsFeatureLiveness,
   fetchSwapsQuoteRefreshTime as defaultFetchSwapsQuoteRefreshTime,
 } from '../../../ui/pages/swaps/swaps.util';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
@@ -73,6 +72,7 @@ const initialState = {
     topAggId: null,
     routeState: '',
     swapsFeatureIsLive: true,
+    useNewSwapsApi: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
   },
 };
@@ -85,7 +85,6 @@ export default class SwapsController {
     getProviderConfig,
     tokenRatesStore,
     fetchTradesInfo = defaultFetchTradesInfo,
-    fetchSwapsFeatureLiveness = defaultFetchSwapsFeatureLiveness,
     fetchSwapsQuoteRefreshTime = defaultFetchSwapsQuoteRefreshTime,
     getCurrentChainId,
   }) {
@@ -94,7 +93,6 @@ export default class SwapsController {
     });
 
     this._fetchTradesInfo = fetchTradesInfo;
-    this._fetchSwapsFeatureLiveness = fetchSwapsFeatureLiveness;
     this._fetchSwapsQuoteRefreshTime = fetchSwapsQuoteRefreshTime;
     this._getCurrentChainId = getCurrentChainId;
 
@@ -119,17 +117,23 @@ export default class SwapsController {
   // Sets the refresh rate for quote updates from the MetaSwap API
   async _setSwapsQuoteRefreshTime() {
     const chainId = this._getCurrentChainId();
+    const { swapsState } = this.store.getState();
+
     // Default to fallback time unless API returns valid response
     let swapsQuoteRefreshTime = FALLBACK_QUOTE_REFRESH_TIME;
     try {
-      swapsQuoteRefreshTime = await this._fetchSwapsQuoteRefreshTime(chainId);
+      swapsQuoteRefreshTime = await this._fetchSwapsQuoteRefreshTime(
+        chainId,
+        swapsState.useNewSwapsApi,
+      );
     } catch (e) {
       console.error('Request for swaps quote refresh time failed: ', e);
     }
 
-    const { swapsState } = this.store.getState();
+    const { swapsState: latestSwapsState } = this.store.getState();
+
     this.store.updateState({
-      swapsState: { ...swapsState, swapsQuoteRefreshTime },
+      swapsState: { ...latestSwapsState, swapsQuoteRefreshTime },
     });
   }
 
@@ -162,6 +166,9 @@ export default class SwapsController {
     isPolledRequest,
   ) {
     const { chainId } = fetchParamsMetaData;
+    const {
+      swapsState: { useNewSwapsApi },
+    } = this.store.getState();
 
     if (!fetchParams) {
       return null;
@@ -182,7 +189,10 @@ export default class SwapsController {
     this.indexOfNewestCallInFlight = indexOfCurrentCall;
 
     let [newQuotes] = await Promise.all([
-      this._fetchTradesInfo(fetchParams, fetchParamsMetaData),
+      this._fetchTradesInfo(fetchParams, {
+        ...fetchParamsMetaData,
+        useNewSwapsApi,
+      }),
       this._setSwapsQuoteRefreshTime(),
     ]);
 
@@ -449,22 +459,23 @@ export default class SwapsController {
     this.store.updateState({ swapsState: { ...swapsState, routeState } });
   }
 
-  setSwapsLiveness(swapsFeatureIsLive) {
+  setSwapsLiveness(swapsLiveness) {
     const { swapsState } = this.store.getState();
+    const { swapsFeatureIsLive, useNewSwapsApi } = swapsLiveness;
     this.store.updateState({
-      swapsState: { ...swapsState, swapsFeatureIsLive },
+      swapsState: { ...swapsState, swapsFeatureIsLive, useNewSwapsApi },
     });
   }
 
   resetPostFetchState() {
     const { swapsState } = this.store.getState();
-
     this.store.updateState({
       swapsState: {
         ...initialState.swapsState,
         tokens: swapsState.tokens,
         fetchParams: swapsState.fetchParams,
         swapsFeatureIsLive: swapsState.swapsFeatureIsLive,
+        useNewSwapsApi: swapsState.useNewSwapsApi,
         swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
       },
     });
@@ -473,7 +484,6 @@ export default class SwapsController {
 
   resetSwapsState() {
     const { swapsState } = this.store.getState();
-
     this.store.updateState({
       swapsState: {
         ...initialState.swapsState,

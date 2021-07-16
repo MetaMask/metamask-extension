@@ -15,6 +15,10 @@ export default class Sidebar extends Component {
     onOverlayClose: PropTypes.func,
   };
 
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   renderOverlay() {
     const { onOverlayClose } = this.props;
 
@@ -57,6 +61,8 @@ export default class Sidebar extends Component {
   render() {
     const { transitionName, sidebarOpen, sidebarShouldClose } = this.props;
 
+    const showSidebar = sidebarOpen && !sidebarShouldClose;
+
     return (
       <div>
         <ReactCSSTransitionGroup
@@ -64,11 +70,9 @@ export default class Sidebar extends Component {
           transitionEnterTimeout={MILLISECOND * 300}
           transitionLeaveTimeout={MILLISECOND * 200}
         >
-          {sidebarOpen && !sidebarShouldClose
-            ? this.renderSidebarContent()
-            : null}
+          {showSidebar ? this.renderSidebarContent() : null}
         </ReactCSSTransitionGroup>
-        {sidebarOpen && !sidebarShouldClose ? this.renderOverlay() : null}
+        {showSidebar ? this.renderOverlay() : null}
       </div>
     );
   }

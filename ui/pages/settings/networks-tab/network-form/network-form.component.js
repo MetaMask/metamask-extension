@@ -358,14 +358,27 @@ export default class NetworkForm extends PureComponent {
   };
 
   validateChainIdOnChange = (selfRpcUrl, chainIdArg = '') => {
+    const { t } = this.context;
     const { networksToRender } = this.props;
     const chainId = chainIdArg.trim();
+
     let errorKey = '';
     let errorMessage = '';
     let radix = 10;
-    const hexChainId = chainId.startsWith('0x')
-      ? chainId
-      : `0x${decimalToHex(chainId)}`;
+    let hexChainId = chainId;
+
+    if (!hexChainId.startsWith('0x')) {
+      try {
+        hexChainId = `0x${decimalToHex(hexChainId)}`;
+      } catch (err) {
+        this.setErrorTo('chainId', {
+          key: 'invalidHexNumber',
+          msg: t('invalidHexNumber'),
+        });
+        return;
+      }
+    }
+
     const [matchingChainId] = networksToRender.filter(
       (e) => e.chainId === hexChainId && e.rpcUrl !== selfRpcUrl,
     );
@@ -375,26 +388,26 @@ export default class NetworkForm extends PureComponent {
       return;
     } else if (matchingChainId) {
       errorKey = 'chainIdExistsErrorMsg';
-      errorMessage = this.context.t('chainIdExistsErrorMsg', [
+      errorMessage = t('chainIdExistsErrorMsg', [
         matchingChainId.label ?? matchingChainId.labelKey,
       ]);
     } else if (chainId.startsWith('0x')) {
       radix = 16;
       if (!/^0x[0-9a-f]+$/iu.test(chainId)) {
         errorKey = 'invalidHexNumber';
-        errorMessage = this.context.t('invalidHexNumber');
+        errorMessage = t('invalidHexNumber');
       } else if (!isPrefixedFormattedHexString(chainId)) {
-        errorMessage = this.context.t('invalidHexNumberLeadingZeros');
+        errorMessage = t('invalidHexNumberLeadingZeros');
       }
     } else if (!/^[0-9]+$/u.test(chainId)) {
       errorKey = 'invalidNumber';
-      errorMessage = this.context.t('invalidNumber');
+      errorMessage = t('invalidNumber');
     } else if (chainId.startsWith('0')) {
       errorKey = 'invalidNumberLeadingZeros';
-      errorMessage = this.context.t('invalidNumberLeadingZeros');
+      errorMessage = t('invalidNumberLeadingZeros');
     } else if (!isSafeChainId(parseInt(chainId, radix))) {
       errorKey = 'invalidChainIdTooBig';
-      errorMessage = this.context.t('invalidChainIdTooBig');
+      errorMessage = t('invalidChainIdTooBig');
     }
 
     this.setErrorTo('chainId', {

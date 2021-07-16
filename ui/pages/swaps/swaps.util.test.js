@@ -1,14 +1,20 @@
 import nock from 'nock';
+import { MOCKS } from '../../../test/jest';
 import {
   ETH_SYMBOL,
   WETH_SYMBOL,
   MAINNET_CHAIN_ID,
   BSC_CHAIN_ID,
+  POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
 } from '../../../shared/constants/network';
 import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
   ETH_WETH_CONTRACT_ADDRESS,
+  ETHEREUM,
+  POLYGON,
+  BSC,
 } from '../../../shared/constants/swaps';
 import {
   TOKENS,
@@ -17,13 +23,14 @@ import {
   AGGREGATOR_METADATA,
   TOP_ASSETS,
 } from './swaps-util-test-constants';
-
 import {
   fetchTradesInfo,
   fetchTokens,
   fetchAggregatorMetadata,
   fetchTopAssets,
   isContractAddressValid,
+  getNetworkNameByChainId,
+  getSwapsLivenessForNetwork,
 } from './swaps.util';
 
 jest.mock('../../helpers/utils/storage-helpers.js', () => ({
@@ -370,6 +377,77 @@ describe('Swaps Util', () => {
           LOCALHOST_CHAIN_ID,
         ),
       ).toBe(false);
+    });
+  });
+
+  describe('getNetworkNameByChainId', () => {
+    it('returns "ethereum" for mainnet chain ID', () => {
+      expect(getNetworkNameByChainId(MAINNET_CHAIN_ID)).toBe(ETHEREUM);
+    });
+
+    it('returns "bsc" for mainnet chain ID', () => {
+      expect(getNetworkNameByChainId(BSC_CHAIN_ID)).toBe(BSC);
+    });
+
+    it('returns "polygon" for mainnet chain ID', () => {
+      expect(getNetworkNameByChainId(POLYGON_CHAIN_ID)).toBe(POLYGON);
+    });
+
+    it('returns an empty string for an unsupported network', () => {
+      expect(getNetworkNameByChainId(RINKEBY_CHAIN_ID)).toBe('');
+    });
+  });
+
+  describe('getSwapsLivenessForNetwork', () => {
+    it('returns info that Swaps are enabled and cannot use API v2 for localhost chain ID', () => {
+      const expectedSwapsLiveness = {
+        swapsFeatureIsLive: true,
+        useNewSwapsApi: false,
+      };
+      expect(
+        getSwapsLivenessForNetwork(
+          MOCKS.createFeatureFlagsResponse(),
+          LOCALHOST_CHAIN_ID,
+        ),
+      ).toMatchObject(expectedSwapsLiveness);
+    });
+
+    it('returns info that Swaps are disabled and cannot use API v2 if network name is not found', () => {
+      const expectedSwapsLiveness = {
+        swapsFeatureIsLive: false,
+        useNewSwapsApi: false,
+      };
+      expect(
+        getSwapsLivenessForNetwork(
+          MOCKS.createFeatureFlagsResponse(),
+          RINKEBY_CHAIN_ID,
+        ),
+      ).toMatchObject(expectedSwapsLiveness);
+    });
+
+    it('returns info that Swaps are enabled and can use API v2 for mainnet chain ID', () => {
+      const expectedSwapsLiveness = {
+        swapsFeatureIsLive: true,
+        useNewSwapsApi: true,
+      };
+      expect(
+        getSwapsLivenessForNetwork(
+          MOCKS.createFeatureFlagsResponse(),
+          MAINNET_CHAIN_ID,
+        ),
+      ).toMatchObject(expectedSwapsLiveness);
+    });
+
+    it('returns info that Swaps are enabled but can only use API v1 for mainnet chain ID', () => {
+      const expectedSwapsLiveness = {
+        swapsFeatureIsLive: true,
+        useNewSwapsApi: false,
+      };
+      const swapsFeatureFlags = MOCKS.createFeatureFlagsResponse();
+      swapsFeatureFlags[ETHEREUM].extension_active = false;
+      expect(
+        getSwapsLivenessForNetwork(swapsFeatureFlags, MAINNET_CHAIN_ID),
+      ).toMatchObject(expectedSwapsLiveness);
     });
   });
 });

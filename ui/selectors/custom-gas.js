@@ -2,7 +2,7 @@ import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   conversionUtil,
   conversionGreaterThan,
-} from '../helpers/utils/conversion-util';
+} from '../../shared/modules/conversion.utils';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { decEthToConvertedCurrency as ethTotalToConvertedCurrency } from '../helpers/utils/conversions.util';
 import { formatETHFee } from '../helpers/utils/formatters';
@@ -103,6 +103,10 @@ export function isCustomPriceSafeForCustomNetwork(state) {
 
   if (!customGasPrice) {
     return true;
+  }
+
+  if (!estimatedPrice) {
+    return false;
   }
 
   const customPriceSafe = conversionGreaterThan(
@@ -379,6 +383,15 @@ export function getIsEthGasPriceFetched(state) {
     gasState.estimateSource === GAS_SOURCE.ETHGASPRICE &&
       gasState.basicEstimateStatus === BASIC_ESTIMATE_STATES.READY &&
       getIsMainnet(state),
+  );
+}
+
+export function getIsCustomNetworkGasPriceFetched(state) {
+  const gasState = state.gas;
+  return Boolean(
+    gasState.estimateSource === GAS_SOURCE.ETHGASPRICE &&
+      gasState.basicEstimateStatus === BASIC_ESTIMATE_STATES.READY &&
+      !getIsMainnet(state),
   );
 }
 

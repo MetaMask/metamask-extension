@@ -19,6 +19,9 @@ export const GOERLI_CHAIN_ID = '0x5';
 export const KOVAN_CHAIN_ID = '0x2a';
 export const LOCALHOST_CHAIN_ID = '0x539';
 export const BSC_CHAIN_ID = '0x38';
+export const OPTIMISM_CHAIN_ID = '0xa';
+export const OPTIMISM_TESTNET_CHAIN_ID = '0x45';
+export const POLYGON_CHAIN_ID = '0x89';
 
 /**
  * The largest possible chain ID we can handle.
@@ -120,3 +123,29 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
 };
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
+
+/**
+ * Hardforks are points in the chain where logic is changed significantly
+ * enough where there is a fork and the new fork becomes the active chain.
+ * These constants are presented in chronological order starting with BERLIN
+ * because when we first needed to track the hardfork we had launched support
+ * for EIP-2718 (where transactions can have types and different shapes) and
+ * EIP-2930 (optional access lists), which were included in BERLIN.
+ *
+ * BERLIN - forked at block number 12,244,000, included typed transactions and
+ *  optional access lists
+ * LONDON - future, upcoming fork that introduces the baseFeePerGas, an amount
+ *  of the ETH transaction fees that will be burned instead of given to the
+ *  miner. This change necessitated the third type of transaction envelope to
+ *  specify maxFeePerGas and maxPriorityFeePerGas moving the fee bidding system
+ *  to a second price auction model.
+ */
+export const HARDFORKS = {
+  BERLIN: 'berlin',
+  LONDON: 'london',
+};
+
+export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
+  [OPTIMISM_CHAIN_ID]: 1,
+  [OPTIMISM_TESTNET_CHAIN_ID]: 1,
+};

@@ -217,3 +217,120 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
     );
   });
 });
+
+describe('Send ETH from dapp using advanced gas controls', function () {
+  let windowHandles;
+  let extension;
+  let popup;
+  let dapp;
+  const ganacheOptions = {
+    accounts: [
+      {
+        secretKey:
+          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+        balance: 25000000000000000000,
+      },
+    ],
+  };
+  it('should display the correct gas price on the transaction', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: 'imported-account',
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        // goes to the settings screen
+        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await driver.clickElement({ text: 'Advanced', tag: 'div' });
+        await driver.clickElement(
+          '[data-testid="advanced-setting-show-testnet-conversion"] .settings-page__content-item-col > div > div',
+        );
+        const advancedGasTitle = await driver.findElement({
+          text: 'Advanced gas controls',
+          tag: 'span',
+        });
+        await driver.scrollToElement(advancedGasTitle);
+        await driver.clickElement(
+          '[data-testid="advanced-setting-advanced-gas-inline"] .settings-page__content-item-col > div > div',
+        );
+        windowHandles = await driver.getAllWindowHandles();
+        extension = windowHandles[0];
+        await driver.closeAllWindowHandlesExcept([extension]);
+        await driver.clickElement('.app-header__logo-container');
+
+        // connects the dapp
+        await driver.openNewPage('http://127.0.0.1:8080/');
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
+        await driver.waitUntilXWindowHandles(3);
+        windowHandles = await driver.getAllWindowHandles();
+        extension = windowHandles[0];
+        dapp = await driver.switchToWindowWithTitle(
+          'E2E Test Dapp',
+          windowHandles,
+        );
+        popup = windowHandles.find(
+          (handle) => handle !== extension && handle !== dapp,
+        );
+        await driver.switchToWindow(popup);
+        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
+        await driver.waitUntilXWindowHandles(2);
+        await driver.switchToWindow(dapp);
+
+        // initiates a send from the dapp
+        await driver.clickElement({ text: 'Send', tag: 'button' }, 10000);
+        await driver.delay(2000);
+        windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        await driver.assertElementNotPresent({ text: 'Data', tag: 'li' });
+        const [gasPriceInput, gasLimitInput] = await driver.findElements(
+          '.advanced-gas-inputs__gas-edit-row__input',
+        );
+        await gasPriceInput.clear();
+        await driver.delay(50);
+        await gasPriceInput.fill('10');
+        await driver.delay(50);
+        await driver.delay(50);
+        await gasLimitInput.fill('');
+        await driver.delay(50);
+        await gasLimitInput.fill('25000');
+        await driver.delay(1000);
+        await driver.clickElement({ text: 'Confirm', tag: 'button' }, 10000);
+        await driver.waitUntilXWindowHandles(2);
+        await driver.switchToWindow(extension);
+
+        // finds the transaction in the transactions list
+        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.waitForSelector(
+          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          { timeout: 10000 },
+        );
+        await driver.waitForSelector({
+          css: '.transaction-list-item__primary-currency',
+          text: '-3 ETH',
+        });
+
+        // the transaction has the expected gas price
+        const txValue = await driver.findClickableElement(
+          '.transaction-list-item__primary-currency',
+        );
+        await txValue.click();
+        const gasPrice = await driver.waitForSelector({
+          css: '[data-testid="transaction-breakdown__gas-price"]',
+          text: '10',
+        });
+        assert.equal(await gasPrice.getText(), '10');
+      },
+    );
+  });
+});

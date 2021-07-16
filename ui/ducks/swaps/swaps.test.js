@@ -1,5 +1,6 @@
 import nock from 'nock';
 
+import { MOCKS } from '../../../test/jest';
 import { setSwapsLiveness } from '../../store/actions';
 import { setStorageItem } from '../../helpers/utils/storage-helpers';
 import * as swaps from './swaps';
@@ -25,7 +26,7 @@ describe('Ducks - Swaps', () => {
   describe('fetchSwapsLiveness', () => {
     const cleanFeatureFlagApiCache = () => {
       setStorageItem(
-        'cachedFetch:https://api.metaswap.codefi.network/featureFlag',
+        'cachedFetch:https://api2.metaswap.codefi.network/featureFlags',
         null,
       );
     };
@@ -34,12 +35,12 @@ describe('Ducks - Swaps', () => {
       cleanFeatureFlagApiCache();
     });
 
-    const mockFeatureFlagApiResponse = ({
-      active = false,
+    const mockFeatureFlagsApiResponse = ({
+      featureFlagsResponse,
       replyWithError = false,
     } = {}) => {
-      const apiNock = nock('https://api.metaswap.codefi.network').get(
-        '/featureFlag',
+      const apiNock = nock('https://api2.metaswap.codefi.network').get(
+        '/featureFlags',
       );
       if (replyWithError) {
         return apiNock.replyWithError({
@@ -47,9 +48,7 @@ describe('Ducks - Swaps', () => {
           code: 'serverSideError',
         });
       }
-      return apiNock.reply(200, {
-        active,
-      });
+      return apiNock.reply(200, featureFlagsResponse);
     };
 
     const createGetState = () => {
@@ -58,61 +57,111 @@ describe('Ducks - Swaps', () => {
       });
     };
 
-    it('returns true if the Swaps feature is enabled', async () => {
+    it('checks that Swaps for ETH are enabled and can use new API', async () => {
       const mockDispatch = jest.fn();
-      const featureFlagApiNock = mockFeatureFlagApiResponse({ active: true });
-      const isSwapsFeatureEnabled = await swaps.fetchSwapsLiveness()(
+      const expectedSwapsLiveness = {
+        swapsFeatureIsLive: true,
+        useNewSwapsApi: true,
+      };
+      const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
+      const featureFlagApiNock = mockFeatureFlagsApiResponse({
+        featureFlagsResponse,
+      });
+      const swapsLiveness = await swaps.fetchSwapsLiveness()(
         mockDispatch,
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
       expect(mockDispatch).toHaveBeenCalledTimes(1);
-      expect(setSwapsLiveness).toHaveBeenCalledWith(true);
-      expect(isSwapsFeatureEnabled).toBe(true);
+      expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
+      expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
 
-    it('returns false if the Swaps feature is disabled', async () => {
+    it('checks that Swaps for ETH are disabled for API v2 and enabled for API v1', async () => {
       const mockDispatch = jest.fn();
-      const featureFlagApiNock = mockFeatureFlagApiResponse({ active: false });
-      const isSwapsFeatureEnabled = await swaps.fetchSwapsLiveness()(
+      const expectedSwapsLiveness = {
+        swapsFeatureIsLive: true,
+        useNewSwapsApi: false,
+      };
+      const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
+      featureFlagsResponse.ethereum.extension_active = false;
+      const featureFlagApiNock = mockFeatureFlagsApiResponse({
+        featureFlagsResponse,
+      });
+      const swapsLiveness = await swaps.fetchSwapsLiveness()(
         mockDispatch,
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
       expect(mockDispatch).toHaveBeenCalledTimes(1);
-      expect(setSwapsLiveness).toHaveBeenCalledWith(false);
-      expect(isSwapsFeatureEnabled).toBe(false);
+      expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
+      expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
 
-    it('returns false if the /featureFlag API call throws an error', async () => {
+    it('checks that Swaps for ETH are disabled for API v1 and v2', async () => {
       const mockDispatch = jest.fn();
-      const featureFlagApiNock = mockFeatureFlagApiResponse({
+      const expectedSwapsLiveness = {
+        swapsFeatureIsLive: false,
+        useNewSwapsApi: false,
+      };
+      const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
+      featureFlagsResponse.ethereum.extension_active = false;
+      featureFlagsResponse.ethereum.fallback_to_v1 = false;
+      const featureFlagApiNock = mockFeatureFlagsApiResponse({
+        featureFlagsResponse,
+      });
+      const swapsLiveness = await swaps.fetchSwapsLiveness()(
+        mockDispatch,
+        createGetState(),
+      );
+      expect(featureFlagApiNock.isDone()).toBe(true);
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
+      expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
+    });
+
+    it('checks that Swaps for ETH are disabled if the /featureFlags API call throws an error', async () => {
+      const mockDispatch = jest.fn();
+      const expectedSwapsLiveness = {
+        swapsFeatureIsLive: false,
+        useNewSwapsApi: false,
+      };
+      const featureFlagApiNock = mockFeatureFlagsApiResponse({
         replyWithError: true,
       });
-      const isSwapsFeatureEnabled = await swaps.fetchSwapsLiveness()(
+      const swapsLiveness = await swaps.fetchSwapsLiveness()(
         mockDispatch,
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
       expect(mockDispatch).toHaveBeenCalledTimes(1);
-      expect(setSwapsLiveness).toHaveBeenCalledWith(false);
-      expect(isSwapsFeatureEnabled).toBe(false);
+      expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
+      expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
 
-    it('only calls the API once and returns true from cache for the second call', async () => {
+    it('only calls the API once and returns response from cache for the second call', async () => {
       const mockDispatch = jest.fn();
-      const featureFlagApiNock = mockFeatureFlagApiResponse({ active: true });
+      const expectedSwapsLiveness = {
+        swapsFeatureIsLive: true,
+        useNewSwapsApi: true,
+      };
+      const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
+      const featureFlagApiNock = mockFeatureFlagsApiResponse({
+        featureFlagsResponse,
+      });
       await swaps.fetchSwapsLiveness()(mockDispatch, createGetState());
       expect(featureFlagApiNock.isDone()).toBe(true);
-      const featureFlagApiNock2 = mockFeatureFlagApiResponse({ active: true });
-      const isSwapsFeatureEnabled = await swaps.fetchSwapsLiveness()(
+      const featureFlagApiNock2 = mockFeatureFlagsApiResponse({
+        featureFlagsResponse,
+      });
+      const swapsLiveness = await swaps.fetchSwapsLiveness()(
         mockDispatch,
         createGetState(),
       );
       expect(featureFlagApiNock2.isDone()).toBe(false); // Second API call wasn't made, cache was used instead.
       expect(mockDispatch).toHaveBeenCalledTimes(2);
-      expect(setSwapsLiveness).toHaveBeenCalledWith(true);
-      expect(isSwapsFeatureEnabled).toBe(true);
+      expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
+      expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
   });
 });

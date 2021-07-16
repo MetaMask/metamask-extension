@@ -6,6 +6,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.8.0]
+### Added
+- [#11435](https://github.com/MetaMask/metamask-extension/pull/11435): Add gas limit buffers for optimism network
+
+### Changed
+- [#11210](https://github.com/MetaMask/metamask-extension/pull/11210): Disable sending ERC-721 assets (NFTs)
+- [#11418](https://github.com/MetaMask/metamask-extension/pull/11418): Use network gas estimate for gas limits of simple sends on custom networks
+
+## [9.7.1]
+### Fixed
+- [#11426](https://github.com/MetaMask/metamask-extension/pull/11426): Fixed bug that broke transaction speed up and cancel, when attempting those actions immediately after opening MetaMask
+
+## [9.7.0]
+### Added
+- [#11021](https://github.com/MetaMask/metamask-extension/pull/11021): Add periodic reminder modal for backing up recovery phrase
+- [#11179](https://github.com/MetaMask/metamask-extension/pull/11179): Add warning to the custom network form when attempting to add a custom network that already exists
+
+### Changed
+- [#11200](https://github.com/MetaMask/metamask-extension/pull/11200): Swaps: Shows custom tokens added from main assets tab
+- [#11111](https://github.com/MetaMask/metamask-extension/pull/11111): Removing low gas price warning in advanced tab on test networks
+- [#11145](https://github.com/MetaMask/metamask-extension/pull/11145): Swaps: Improving price difference notifications and warnings
+- [#11124](https://github.com/MetaMask/metamask-extension/pull/11124): Swaps: Allowing for continual new swap submissions without flow reset
+- [#11278](https://github.com/MetaMask/metamask-extension/pull/11278): Updated contract-metadata version to 1.26.0
+
+### Fixed
+- [#11017](https://github.com/MetaMask/metamask-extension/pull/11017): Fixes custom RPC block explorer links
+- [#11257](https://github.com/MetaMask/metamask-extension/pull/11257): Fixes incorrect network currency label in encryption public key requests
+
 ## [9.6.1]
 ### Fixed
 - [#11309](https://github.com/MetaMask/metamask-extension/pull/11309): Fixed signTypeData parameter validation issue
@@ -2306,7 +2334,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.6.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.8.0...HEAD
+[9.8.0]: https://github.com/MetaMask/metamask-extension/compare/v9.7.1...v9.8.0
+[9.7.1]: https://github.com/MetaMask/metamask-extension/compare/v9.7.0...v9.7.1
+[9.7.0]: https://github.com/MetaMask/metamask-extension/compare/v9.6.1...v9.7.0
 [9.6.1]: https://github.com/MetaMask/metamask-extension/compare/v9.6.0...v9.6.1
 [9.6.0]: https://github.com/MetaMask/metamask-extension/compare/v9.5.9...v9.6.0
 [9.5.9]: https://github.com/MetaMask/metamask-extension/compare/v9.5.8...v9.5.9

@@ -51,6 +51,10 @@ const defaultProviderConfig = {
   ...defaultProviderConfigOpts,
 };
 
+const defaultNetworkDetailsState = {
+  EIPS: { 1559: undefined },
+};
+
 export const NETWORK_EVENTS = {
   // Fired after the actively selected network is changed
   NETWORK_DID_CHANGE: 'networkDidChange',
@@ -74,10 +78,21 @@ export default class NetworkController extends EventEmitter {
       this.providerStore.getState(),
     );
     this.networkStore = new ObservableStore('loading');
+    // We need to keep track of a few details about the current network
+    // Ideally we'd merge this.networkStore with this new store, but doing so
+    // will require a decent sized refactor of how we're accessing network
+    // state. Currently this is only used for detecting EIP 1559 support but
+    // can be extended to track other network details.
+    this.networkDetails = new ObservableStore(
+      opts.networkDetails || {
+        ...defaultNetworkDetailsState,
+      },
+    );
     this.store = new ComposedStore({
       provider: this.providerStore,
       previousProviderStore: this.previousProviderStore,
       network: this.networkStore,
+      networkDetails: this.networkDetails,
     });
 
     // provider and block tracker
@@ -120,6 +135,42 @@ export default class NetworkController extends EventEmitter {
     return { provider, blockTracker };
   }
 
+  /**
+   * Method to return the latest block for the current network
+   * @returns {Object} Block header
+   */
+  getLatestBlock() {
+    return new Promise((resolve, reject) => {
+      const { provider } = this.getProviderAndBlockTracker();
+      const ethQuery = new EthQuery(provider);
+      ethQuery.sendAsync(
+        { method: 'eth_getBlockByNumber', params: ['latest', false] },
+        (err, block) => {
+          if (err) {
+            return reject(err);
+          }
+          return resolve(block);
+        },
+      );
+    });
+  }
+
+  /**
+   * Method to check if the block header contains fields that indicate EIP 1559
+   * support (baseFeePerGas).
+   * @returns {Promise<boolean>} true if current network supports EIP 1559
+   */
+  async getEIP1559Compatibility() {
+    const { EIPS } = this.networkDetails.getState();
+    if (EIPS[1559] !== undefined) {
+      return EIPS[1559];
+    }
+    const latestBlock = await this.getLatestBlock();
+    const supportsEIP1559 = latestBlock.baseFeePerGas !== undefined;
+    this.setNetworkEIPSupport(1559, supportsEIP1559);
+    return supportsEIP1559;
+  }
+
   verifyNetwork() {
     // Check network when restoring connectivity:
     if (this.isNetworkLoading()) {
@@ -133,6 +184,26 @@ export default class NetworkController extends EventEmitter {
 
   setNetworkState(network) {
     this.networkStore.putState(network);
+  }
+
+  /**
+   * Set EIP support indication in the networkDetails store
+   * @param {number} EIPNumber - The number of the EIP to mark support for
+   * @param {boolean} isSupported - True if the EIP is supported
+   */
+  setNetworkEIPSupport(EIPNumber, isSupported) {
+    this.networkDetails.updateState({
+      EIPS: {
+        [EIPNumber]: isSupported,
+      },
+    });
+  }
+
+  /**
+   * Reset EIP support to default (no support)
+   */
+  clearNetworkDetails() {
+    this.networkDetails.putState({ ...defaultNetworkDetailsState });
   }
 
   isNetworkLoading() {
@@ -154,6 +225,8 @@ export default class NetworkController extends EventEmitter {
         'NetworkController - lookupNetwork aborted due to missing chainId',
       );
       this.setNetworkState('loading');
+      // keep network details in sync with network state
+      this.clearNetworkDetails();
       return;
     }
 
@@ -174,10 +247,14 @@ export default class NetworkController extends EventEmitter {
       if (initialNetwork === currentNetwork) {
         if (err) {
           this.setNetworkState('loading');
+          // keep network details in sync with network state
+          this.clearNetworkDetails();
           return;
         }
 
         this.setNetworkState(networkVersion);
+        // look up EIP-1559 support
+        this.getEIP1559Compatibility();
       }
     });
   }
@@ -298,9 +375,15 @@ export default class NetworkController extends EventEmitter {
   }
 
   _switchNetwork(opts) {
+    // Indicate to subscribers that network is about to change
     this.emit(NETWORK_EVENTS.NETWORK_WILL_CHANGE);
+    // Set loading state
     this.setNetworkState('loading');
+    // Reset network details
+    this.clearNetworkDetails();
+    // Configure the provider appropriately
     this._configureProvider(opts);
+    // Notify subscribers that network has changed
     this.emit(NETWORK_EVENTS.NETWORK_DID_CHANGE, opts.type);
   }
 
