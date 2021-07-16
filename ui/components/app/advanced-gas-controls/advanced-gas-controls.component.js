@@ -64,7 +64,9 @@ export default function AdvancedGasControls({
       <FormField
         titleText={t('gasLimit')}
         error={
-          gasErrors?.gasLimit ? getGasFormErrorText(gasErrors.gasLimit, t) : null
+          gasErrors?.gasLimit
+            ? getGasFormErrorText(gasErrors.gasLimit, t)
+            : null
         }
         onChange={setGasLimit}
         tooltipText={t('editGasLimitTooltip')}
@@ -151,7 +153,9 @@ export default function AdvancedGasControls({
               )
             }
             error={
-              gasErrors?.maxFee ? getGasFormErrorText(gasErrors.maxFee, t) : null
+              gasErrors?.maxFee
+                ? getGasFormErrorText(gasErrors.maxFee, t)
+                : null
             }
           />
         </>

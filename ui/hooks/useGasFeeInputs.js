@@ -273,13 +273,15 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
   );
 
   const gasErrors = {};
-  if (gasLimit < 21000) {
-    gasErrors.gasLimit = GAS_FORM_ERRORS.GAS_LIMIT_TOO_LOW;
+  if (gasLimit < 21000 || gasLimit > 7920027) {
+    gasErrors.gasLimit = GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS;
   }
 
   switch (gasEstimateType) {
     case GAS_ESTIMATE_TYPES.FEE_MARKET:
-      if (
+      if (maxPriorityFeePerGasToUse < 1) {
+        gasErrors.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_ZERO;
+      } else if (
         !isGasEstimatesLoading &&
         maxPriorityFeePerGasToUse <
           gasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas

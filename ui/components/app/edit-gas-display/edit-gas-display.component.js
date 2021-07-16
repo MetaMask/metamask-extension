@@ -131,8 +131,13 @@ export default function EditGasDisplay({
               color={COLORS.ERROR1}
               variant={TYPOGRAPHY.H7}
               align={TEXT_ALIGN.CENTER}
+              fontWeight={FONT_WEIGHT.BOLD}
             >
-              {t('editGasTooLow')}
+              {t('editGasTooLow')}{' '}
+              <InfoTooltip
+                position="top"
+                contentText={t('editGasTooLowTooltip')}
+              />
             </Typography>
           </div>
         )}
