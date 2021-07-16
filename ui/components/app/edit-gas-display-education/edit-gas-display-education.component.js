@@ -14,13 +14,6 @@ export default function EditGasDisplayEducation() {
 
   return (
     <div className="edit-gas-display-education">
-      <Typography
-        color={COLORS.BLACK}
-        variant={TYPOGRAPHY.H4}
-        fontWeight={FONT_WEIGHT.BOLD}
-      >
-        {t('editGasEducationModalTitle')}
-      </Typography>
       <Typography tag="p" color={COLORS.UI4} variant={TYPOGRAPHY.H6}>
         {t('editGasEducationModalIntro')}
       </Typography>
