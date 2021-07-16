@@ -18,6 +18,8 @@ import {
   getMinimumGasTotalInHexWei,
 } from '../../shared/modules/gas.utils';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
+import { isEIP1559Network } from '../ducks/metamask/metamask';
+
 import {
   hexWEIToDecGWEI,
   decGWEIToHexWEI,
@@ -173,7 +175,7 @@ export function useGasFeeInputs(
 ) {
   const { balance: ethBalance } = useSelector(getSelectedAccount);
   const txData = useSelector(txDataSelector);
-
+  const networkSupportsEIP1559 = useSelector(isEIP1559Network);
   // We need to know whether to show fiat conversions or not, so that we can
   // default our fiat values to empty strings if showing fiat is not wanted or
   // possible.
@@ -282,12 +284,13 @@ export function useGasFeeInputs(
   const gasSettings = {
     gasLimit: decimalToHex(gasLimit),
   };
-
-  if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
-    gasSettings.maxFeePerGas = decGWEIToHexWEI(maxFeePerGasToUse);
-    gasSettings.maxPriorityFeePerGas = decGWEIToHexWEI(
-      maxPriorityFeePerGasToUse,
-    );
+  if (networkSupportsEIP1559) {
+    gasSettings.maxFeePerGas = maxFeePerGasToUse
+      ? decGWEIToHexWEI(maxFeePerGasToUse)
+      : decGWEIToHexWEI(gasPriceToUse || '0');
+    gasSettings.maxPriorityFeePerGas = maxPriorityFeePerGasToUse
+      ? decGWEIToHexWEI(maxPriorityFeePerGasToUse)
+      : gasSettings.maxFeePerGas;
     gasSettings.baseFeePerGas = decGWEIToHexWEI(
       gasFeeEstimates.estimatedBaseFee ?? '0',
     );

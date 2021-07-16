@@ -34,31 +34,33 @@ export default function AdvancedGasControls({
   maxFeeFiat,
   gasErrors,
   minimumGasLimit = 21000,
+  networkSupportsEIP1559,
 }) {
   const t = useContext(I18nContext);
 
   const suggestedValues = {};
 
-  switch (gasEstimateType) {
-    case GAS_ESTIMATE_TYPES.FEE_MARKET:
-      suggestedValues.maxPriorityFeePerGas =
-        gasFeeEstimates?.[estimateToUse]?.suggestedMaxPriorityFeePerGas;
-      suggestedValues.maxFeePerGas =
-        gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas;
-      break;
-    case GAS_ESTIMATE_TYPES.LEGACY:
-      suggestedValues.gasPrice = gasFeeEstimates?.[estimateToUse];
-      break;
-    case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
-      suggestedValues.gasPrice = gasFeeEstimates?.gasPrice;
-      break;
-    default:
-      break;
+  if (networkSupportsEIP1559) {
+    suggestedValues.maxFeePerGas =
+      gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas ||
+      gasFeeEstimates?.gasPrice;
+    suggestedValues.maxPriorityFeePerGas =
+      gasFeeEstimates?.[estimateToUse]?.suggestedMaxPriorityFeePerGas ||
+      suggestedValues.maxFeePerGas;
+  } else {
+    switch (gasEstimateType) {
+      case GAS_ESTIMATE_TYPES.LEGACY:
+        suggestedValues.gasPrice = gasFeeEstimates?.[estimateToUse];
+        break;
+      case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
+        suggestedValues.gasPrice = gasFeeEstimates?.gasPrice;
+        break;
+      default:
+        break;
+    }
   }
 
-  const showFeeMarketFields =
-    process.env.SHOW_EIP_1559_UI &&
-    gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET;
+  const showFeeMarketFields = networkSupportsEIP1559;
 
   return (
     <div className="advanced-gas-controls">
@@ -233,4 +235,5 @@ AdvancedGasControls.propTypes = {
   maxFeeFiat: PropTypes.string,
   gasErrors: PropTypes.object,
   minimumGasLimit: PropTypes.number,
+  networkSupportsEIP1559: PropTypes.object,
 };

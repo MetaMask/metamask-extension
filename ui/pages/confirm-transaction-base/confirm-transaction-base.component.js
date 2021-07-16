@@ -39,6 +39,10 @@ import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 
 import { COLORS } from '../../helpers/constants/design-system';
+import {
+  disconnectGasFeeEstimatePoller,
+  getGasFeeEstimatesAndStartPolling,
+} from '../../store/actions';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -58,7 +62,8 @@ export default class ConfirmTransactionBase extends Component {
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
     hexTransactionAmount: PropTypes.string,
-    hexTransactionFee: PropTypes.string,
+    hexMinimumTransactionFee: PropTypes.string,
+    hexMaximumTransactionFee: PropTypes.string,
     hexTransactionTotal: PropTypes.string,
     methodData: PropTypes.object,
     nonce: PropTypes.string,
@@ -191,7 +196,7 @@ export default class ConfirmTransactionBase extends Component {
     const {
       balance,
       conversionRate,
-      hexTransactionFee,
+      hexMaximumTransactionFee,
       txData: { simulationFails, txParams: { value: amount } = {} } = {},
       customGas,
       noGasPrice,
@@ -201,7 +206,7 @@ export default class ConfirmTransactionBase extends Component {
       balance &&
       !isBalanceSufficient({
         amount,
-        gasTotal: hexTransactionFee || '0x0',
+        gasTotal: hexMaximumTransactionFee || '0x0',
         balance,
         conversionRate,
       });
@@ -282,7 +287,7 @@ export default class ConfirmTransactionBase extends Component {
     const {
       primaryTotalTextOverride,
       secondaryTotalTextOverride,
-      hexTransactionFee,
+      hexMinimumTransactionFee,
       hexTransactionTotal,
       useNonceField,
       customNonceValue,
@@ -422,14 +427,14 @@ export default class ConfirmTransactionBase extends Component {
                 detailText={
                   <UserPreferencedCurrencyDisplay
                     type={PRIMARY}
-                    value={hexTransactionFee}
+                    value={hexMinimumTransactionFee}
                     hideLabel={false}
                   />
                 }
                 detailTotal={
                   <UserPreferencedCurrencyDisplay
                     type={SECONDARY}
-                    value={hexTransactionFee}
+                    value={hexMinimumTransactionFee}
                     hideLabel
                   />
                 }
@@ -496,7 +501,7 @@ export default class ConfirmTransactionBase extends Component {
         <div className="confirm-page-container-content__gas-fee">
           <ConfirmDetailRow
             label={t('gasFee')}
-            value={hexTransactionFee}
+            value={hexMinimumTransactionFee}
             headerText={showGasEditButton ? t('edit') : ''}
             headerTextClassName={
               showGasEditButton ? 'confirm-detail-row__header-text--edit' : ''
@@ -769,6 +774,7 @@ export default class ConfirmTransactionBase extends Component {
   };
 
   componentDidMount() {
+    this._isMounted = true;
     const {
       toAddress,
       txData: { origin } = {},
@@ -795,9 +801,28 @@ export default class ConfirmTransactionBase extends Component {
     if (toAddress) {
       tryReverseResolveAddress(toAddress);
     }
+
+    /**
+     * This makes a request to get estimates and begin polling, keeping track of the poll
+     * token in component state.
+     * It then disconnects polling upon componentWillUnmount. If the hook is unmounted
+     * while waiting for `getGasFeeEstimatesAndStartPolling` to resolve, the `_isMounted`
+     * flag ensures that a call to disconnect happens after promise resolution.
+     */
+    getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
+      if (this._isMounted) {
+        this.setState({ pollingToken });
+      } else {
+        disconnectGasFeeEstimatePoller(pollingToken);
+      }
+    });
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
+    if (this.state.pollingToken) {
+      disconnectGasFeeEstimatePoller(this.state.pollingToken);
+    }
     this._removeBeforeUnload();
   }
 
