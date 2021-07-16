@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.8.1]
+### Changed
+- Adjusting transaction metrics values
+
+### Fixed
+- [11538](https://github.com/MetaMask/metamask-extension/pull/11538): Fixed bug that prevented users from continuing to swap after going 'back' from the View Quote page of the swaps flow.
+
 ## [9.8.0]
 ### Added
 - [#11435](https://github.com/MetaMask/metamask-extension/pull/11435): Add gas limit buffers for optimism network
@@ -2334,7 +2341,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.8.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.8.1...HEAD
+[9.8.1]: https://github.com/MetaMask/metamask-extension/compare/v9.8.0...v9.8.1
 [9.8.0]: https://github.com/MetaMask/metamask-extension/compare/v9.7.1...v9.8.0
 [9.7.1]: https://github.com/MetaMask/metamask-extension/compare/v9.7.0...v9.7.1
 [9.7.0]: https://github.com/MetaMask/metamask-extension/compare/v9.6.1...v9.7.0
