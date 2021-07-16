@@ -1212,17 +1212,19 @@ describe('Transaction Controller', function () {
       const expectedPayload = {
         event: 'Transaction Added',
         category: 'Transactions',
-        sensitiveProperties: {
+        properties: {
           chain_id: '0x2a',
-          gas_price: '0x77359400',
-          gas_limit: '0x7b0d',
-          first_seen: 1624408066355,
-          transaction_envelope_type: 'legacy',
           network: '42',
           referrer: 'metamask',
           source: 'user',
-          status: 'unapproved',
           type: 'sentEther',
+        },
+        sensitiveProperties: {
+          gas_price: '2',
+          gas_limit: '0x7b0d',
+          first_seen: 1624408066355,
+          transaction_envelope_type: 'legacy',
+          status: 'unapproved',
         },
       };
 
@@ -1257,17 +1259,19 @@ describe('Transaction Controller', function () {
       const expectedPayload = {
         event: 'Transaction Added',
         category: 'Transactions',
-        sensitiveProperties: {
+        properties: {
           chain_id: '0x2a',
-          gas_price: '0x77359400',
-          gas_limit: '0x7b0d',
-          first_seen: 1624408066355,
-          transaction_envelope_type: 'legacy',
           network: '42',
           referrer: 'other',
           source: 'dapp',
-          status: 'unapproved',
           type: 'sentEther',
+        },
+        sensitiveProperties: {
+          gas_price: '2',
+          gas_limit: '0x7b0d',
+          first_seen: 1624408066355,
+          transaction_envelope_type: 'legacy',
+          status: 'unapproved',
         },
       };
 
@@ -1302,19 +1306,21 @@ describe('Transaction Controller', function () {
       const expectedPayload = {
         event: 'Transaction Added',
         category: 'Transactions',
-        sensitiveProperties: {
-          baz: 3.0,
-          foo: 'bar',
-          chain_id: '0x2a',
-          gas_price: '0x77359400',
-          gas_limit: '0x7b0d',
-          first_seen: 1624408066355,
-          transaction_envelope_type: 'legacy',
+        properties: {
           network: '42',
           referrer: 'other',
           source: 'dapp',
-          status: 'unapproved',
           type: 'sentEther',
+          chain_id: '0x2a',
+        },
+        sensitiveProperties: {
+          baz: 3.0,
+          foo: 'bar',
+          gas_price: '2',
+          gas_limit: '0x7b0d',
+          first_seen: 1624408066355,
+          transaction_envelope_type: 'legacy',
+          status: 'unapproved',
         },
       };
 
@@ -1354,20 +1360,22 @@ describe('Transaction Controller', function () {
       const expectedPayload = {
         event: 'Transaction Added',
         category: 'Transactions',
-        sensitiveProperties: {
-          baz: 3.0,
-          foo: 'bar',
+        properties: {
           chain_id: '0x2a',
-          max_fee_per_gas: '0x77359400',
-          max_priority_fee_per_gas: '0x77359400',
-          gas_limit: '0x7b0d',
-          first_seen: 1624408066355,
-          transaction_envelope_type: 'fee-market',
           network: '42',
           referrer: 'other',
           source: 'dapp',
-          status: 'unapproved',
           type: 'sentEther',
+        },
+        sensitiveProperties: {
+          baz: 3.0,
+          foo: 'bar',
+          max_fee_per_gas: '2',
+          max_priority_fee_per_gas: '2',
+          gas_limit: '0x7b0d',
+          first_seen: 1624408066355,
+          transaction_envelope_type: 'fee-market',
+          status: 'unapproved',
         },
       };
 
@@ -1384,6 +1392,56 @@ describe('Transaction Controller', function () {
         trackMetaMetricsEventSpy.getCall(0).args[0],
         expectedPayload,
       );
+    });
+  });
+
+  describe('#_getTransactionCompletionTime', function () {
+    let nowStub;
+
+    beforeEach(function () {
+      nowStub = sinon.stub(Date, 'now').returns(1625782016341);
+    });
+
+    afterEach(function () {
+      nowStub.restore();
+    });
+
+    it('calculates completion time (one)', function () {
+      const submittedTime = 1625781997397;
+      const result = txController._getTransactionCompletionTime(submittedTime);
+      assert.equal(result, '19');
+    });
+
+    it('calculates completion time (two)', function () {
+      const submittedTime = 1625781995397;
+      const result = txController._getTransactionCompletionTime(submittedTime);
+      assert.equal(result, '21');
+    });
+  });
+
+  describe('#_getGasValuesInGWEI', function () {
+    it('converts gas values in hex GWEi to dec GWEI (EIP-1559)', function () {
+      const params = {
+        max_fee_per_gas: '0x77359400',
+        max_priority_fee_per_gas: '0x77359400',
+      };
+      const expectedParams = {
+        max_fee_per_gas: '2',
+        max_priority_fee_per_gas: '2',
+      };
+      const result = txController._getGasValuesInGWEI(params);
+      assert.deepEqual(result, expectedParams);
+    });
+
+    it('converts gas values in hex GWEi to dec GWEI (non EIP-1559)', function () {
+      const params = {
+        gas_price: '0x37e11d600',
+      };
+      const expectedParams = {
+        gas_price: '15',
+      };
+      const result = txController._getGasValuesInGWEI(params);
+      assert.deepEqual(result, expectedParams);
     });
   });
 });

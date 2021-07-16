@@ -1,7 +1,7 @@
 import EventEmitter from 'safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
-import { bufferToHex, keccak, toBuffer } from 'ethereumjs-util';
 import Transaction from 'ethereumjs-tx';
+import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
 import EthQuery from 'ethjs-query';
 import { ethErrors } from 'eth-rpc-errors';
 import abi from 'human-standard-token-abi';
@@ -19,6 +19,7 @@ import {
 } from '../../lib/util';
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/helpers/constants/error-keys';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/pages/swaps/swaps.util';
+import { hexWEIToDecGWEI } from '../../../../ui/helpers/utils/conversions.util';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
@@ -669,15 +670,12 @@ export default class TransactionController extends EventEmitter {
       this._markNonceDuplicatesDropped(txId);
 
       const { submittedTime } = txMeta;
-      const { blockNumber } = txReceipt;
       const metricsParams = { gas_used: gasUsed };
-      const completionTime = await this._getTransactionCompletionTime(
-        blockNumber,
-        submittedTime,
-      );
 
-      if (completionTime) {
-        metricsParams.completion_time = completionTime;
+      if (submittedTime) {
+        metricsParams.completion_time = this._getTransactionCompletionTime(
+          submittedTime,
+        );
       }
 
       if (txReceipt.status === '0x0') {
@@ -1084,41 +1082,43 @@ export default class TransactionController extends EventEmitter {
       gasParams.gas_price = gasPrice;
     }
 
+    const gasParamsInGwei = this._getGasValuesInGWEI(gasParams);
+
     this._trackMetaMetricsEvent({
       event,
       category: 'Transactions',
-      sensitiveProperties: {
-        type,
-        status,
+      properties: {
+        chain_id: chainId,
         referrer,
         source,
         network,
-        chain_id: chainId,
+        type,
+      },
+      sensitiveProperties: {
+        status,
         transaction_envelope_type: isEIP1559Transaction(txMeta)
           ? 'fee-market'
           : 'legacy',
         first_seen: time,
         gas_limit: gasLimit,
-        ...gasParams,
+        ...gasParamsInGwei,
         ...extraParams,
       },
     });
   }
 
-  async _getTransactionCompletionTime(blockNumber, submittedTime) {
-    const transactionBlock = await this.query.getBlockByNumber(
-      blockNumber.toString(16),
-      false,
-    );
+  _getTransactionCompletionTime(submittedTime) {
+    return Math.round((Date.now() - submittedTime) / 1000).toString();
+  }
 
-    if (!transactionBlock) {
-      return '';
+  _getGasValuesInGWEI(gasParams) {
+    const gasValuesInGwei = {};
+    for (const param in gasParams) {
+      if (isHexString(gasParams[param])) {
+        gasValuesInGwei[param] = hexWEIToDecGWEI(gasParams[param]);
+      }
     }
-
-    return new BigNumber(transactionBlock.timestamp, 10)
-      .minus(submittedTime / 1000)
-      .round()
-      .toString(10);
+    return gasValuesInGwei;
   }
 
   _failTransaction(txId, error) {

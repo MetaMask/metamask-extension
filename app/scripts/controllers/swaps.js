@@ -130,8 +130,10 @@ export default class SwapsController {
       console.error('Request for swaps quote refresh time failed: ', e);
     }
 
+    const { swapsState: latestSwapsState } = this.store.getState();
+
     this.store.updateState({
-      swapsState: { ...swapsState, swapsQuoteRefreshTime },
+      swapsState: { ...latestSwapsState, swapsQuoteRefreshTime },
     });
   }
 
