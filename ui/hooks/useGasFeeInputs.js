@@ -296,7 +296,8 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
       } else if (
         gasFeeEstimates?.high &&
         maxPriorityFeePerGasToUse >
-          gasFeeEstimates.high.suggestedMaxPriorityFeePerGas * HIGH_FEE_WARNING_MULTIPLIER
+          gasFeeEstimates.high.suggestedMaxPriorityFeePerGas *
+            HIGH_FEE_WARNING_MULTIPLIER
       ) {
         gasWarnings.maxPriorityFee =
           GAS_FORM_ERRORS.MAX_PRORITY_FEE_HIGH_WARNING;
@@ -309,7 +310,9 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
         gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_TOO_LOW;
       } else if (
         gasFeeEstimates?.high &&
-        maxFeePerGasToUse > gasFeeEstimates.high.suggestedMaxFeePerGas * HIGH_FEE_WARNING_MULTIPLIER
+        maxFeePerGasToUse >
+          gasFeeEstimates.high.suggestedMaxFeePerGas *
+            HIGH_FEE_WARNING_MULTIPLIER
       ) {
         gasWarnings.maxFee = GAS_FORM_ERRORS.MAX_FEE_HIGH_WARNING;
       }
