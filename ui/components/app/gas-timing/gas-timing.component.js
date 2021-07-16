@@ -27,7 +27,7 @@ export default function GasTiming() {
   };
 
   // Don't show anything if we don't have enough information
-  if (isGasEstimatesLoading || maxPriorityFeePerGas < 1) {
+  if (isGasEstimatesLoading) {
     return null;
   }
 
