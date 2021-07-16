@@ -126,10 +126,7 @@ exports[`ViewQuote renders the component with initial props 4`] = `
           style="display: inline;"
           tabindex="0"
         >
-          <img
-            alt=""
-            src="images/mm-info-icon.svg"
-          />
+          &lt;InfoTooltipIcon /&gt;
         </div>
       </div>
     </div>

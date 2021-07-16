@@ -220,6 +220,7 @@ export default function EditGasPopover({
             isGasTooLow={isGasTooLow}
             onEducationClick={() => setShowEducationContent(true)}
             mode={mode}
+            transaction={transaction}
             {...editGasDisplayProps}
           />
         )}

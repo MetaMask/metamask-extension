@@ -28,8 +28,7 @@ export default function EditGasDisplay({
   alwaysShowForm = false,
   showEducationButton = false,
   onEducationClick,
-  dappSuggestedGasFee = 0,
-  dappOrigin = '',
+  transaction,
   defaultEstimateToUse,
   maxPriorityFeePerGas,
   setMaxPriorityFeePerGas,
@@ -61,7 +60,7 @@ export default function EditGasDisplay({
   const t = useContext(I18nContext);
 
   const requireDappAcknowledgement = Boolean(
-    dappSuggestedGasFee && !dappSuggestedGasFeeAcknowledged,
+    transaction?.dappSuggestedGasFees && !dappSuggestedGasFeeAcknowledged,
   );
 
   return (
@@ -79,7 +78,8 @@ export default function EditGasDisplay({
           <div className="edit-gas-display__dapp-acknowledgement-warning">
             <ActionableMessage
               className="actionable-message--warning"
-              message={t('gasDisplayDappWarning', [dappOrigin])}
+              message={t('gasDisplayDappWarning', [transaction.dappOrigin])}
+              iconFillColor="#f8c000"
               useIcon
             />
           </div>
@@ -164,7 +164,7 @@ export default function EditGasDisplay({
               onChange={setEstimateToUse}
             />
           )}
-        {!alwaysShowForm && (
+        {!alwaysShowForm && !requireDappAcknowledgement && (
           <button
             className="edit-gas-display__advanced-button"
             onClick={() => setShowAdvancedForm(!showAdvancedForm)}
@@ -217,8 +217,6 @@ EditGasDisplay.propTypes = {
   mode: PropTypes.oneOf(Object.values(EDIT_GAS_MODES)),
   showEducationButton: PropTypes.bool,
   onEducationClick: PropTypes.func,
-  dappSuggestedGasFee: PropTypes.number,
-  dappOrigin: PropTypes.string,
   defaultEstimateToUse: PropTypes.oneOf(Object.values(GAS_RECOMMENDATIONS)),
   maxPriorityFeePerGas: PropTypes.string,
   setMaxPriorityFeePerGas: PropTypes.func,
@@ -246,4 +244,5 @@ EditGasDisplay.propTypes = {
   showAdvancedForm: PropTypes.bool,
   setShowAdvancedForm: PropTypes.func,
   warning: PropTypes.string,
+  transaction: PropTypes.object,
 };

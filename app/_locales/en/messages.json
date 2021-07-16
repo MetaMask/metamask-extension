@@ -2442,8 +2442,24 @@
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
   },
+  "transactionDetailDappGasHeading": {
+    "message": "$1 suggested gas fee",
+    "description": "$1 represents a dapp origin"
+  },
+  "transactionDetailDappGasTooltip": {
+    "message": "This gas fee suggestion is using legacy gas estimation which may be inaccurate."
+  },
   "transactionDetailGasHeading": {
     "message": "Estimated gas fee"
+  },
+  "transactionDetailGasTooltipConversion": {
+    "message": "Learn more about gas fees"
+  },
+  "transactionDetailGasTooltipExplanation": {
+    "message": "Gas fees are set by the network and fluctuate based on network traffic and transaction complexity."
+  },
+  "transactionDetailGasTooltipIntro": {
+    "message": "Gas fees are paid to crypto miners who process transactions on the Ethereum network. MetaMask does not profit from gas fees."
   },
   "transactionDetailGasTotalSubtitle": {
     "message": "Amount + gas fee"
