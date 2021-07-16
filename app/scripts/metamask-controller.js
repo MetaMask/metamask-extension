@@ -223,20 +223,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: currencyRateMessenger,
       state: initState.CurrencyController,
     });
-    const tokenListMessenger = controllerMessenger.getRestricted({
-      name: 'TokenListController',
-    });
-    this.tokenListController = new TokenListController({
-      chainId: hexToDecimal(this.networkController.getCurrentChainId()),
-      useStaticTokenList: this.preferencesController.store.getState()
-        .useStaticTokenList,
-      onNetworkStateChange: this._onModifiedNetworkStateChange.bind(this),
-      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
-        this.preferencesController.store,
-      ),
-      messenger: tokenListMessenger,
-      state: initState.tokenListController,
-    });
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
@@ -662,19 +648,6 @@ export default class MetamaskController extends EventEmitter {
     );
     return providerProxy;
   }
-
-  _onModifiedNetworkStateChange = (cb) => {
-    this.networkController.store.subscribe(async (networkState) => {
-      const modifiedNetworkState = {
-        ...networkState,
-        provider: {
-          ...networkState.provider,
-          chainId: hexToDecimal(networkState.provider.chainId),
-        },
-      };
-      return await cb(modifiedNetworkState);
-    });
-  };
 
   /**
    * TODO:LegacyProvider: Delete
@@ -2900,23 +2873,6 @@ export default class MetamaskController extends EventEmitter {
   setUsePhishDetect(val, cb) {
     try {
       this.preferencesController.setUsePhishDetect(val);
-      cb(null);
-      return;
-    } catch (err) {
-      cb(err);
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
-  }
-
-  /**
-   * Sets whether or not to use phishing detection.
-   * @param {boolean} val
-   * @param {Function} cb
-   */
-  setUseStaticTokenList(val, cb) {
-    try {
-      this.preferencesController.setUseStaticTokenList(val);
       cb(null);
       return;
     } catch (err) {
