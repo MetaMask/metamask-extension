@@ -196,11 +196,17 @@ export default class MetamaskController extends EventEmitter {
       getCurrentAccountEIP1559Compatibility: this.getCurrentAccountEIP1559Compatibility.bind(
         this,
       ),
-      getCurrentNetworkLegacyGasAPICompatibility: () =>
-        this.networkController.getCurrentChainId() === MAINNET_CHAIN_ID,
-      getChainId: this.networkController.getCurrentChainId.bind(
-        this.networkController,
-      ),
+      legacyAPIEndpoint: `https://gas-api.metaswap.codefi.network/networks/<chain_id>/gasPrices`,
+      EIP1559APIEndpoint: `https://gas-api.metaswap.codefi.network/networks/<chain_id>/suggestedGasFees`,
+      getCurrentNetworkLegacyGasAPICompatibility: () => {
+        const chainId = this.networkController.getCurrentChainId();
+        return process.env.IN_TEST || chainId === MAINNET_CHAIN_ID;
+      },
+      getChainId: () => {
+        return process.env.IN_TEST
+          ? MAINNET_CHAIN_ID
+          : this.networkController.getCurrentChainId();
+      },
     });
 
     this.appStateController = new AppStateController({

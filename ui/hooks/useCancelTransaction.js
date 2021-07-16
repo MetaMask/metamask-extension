@@ -5,10 +5,7 @@ import { isBalanceSufficient } from '../pages/send/send.utils';
 import { getSelectedAccount, getIsMainnet } from '../selectors';
 import { getConversionRate } from '../ducks/metamask/metamask';
 
-import {
-  setCustomGasLimit,
-  setCustomGasPriceForRetry,
-} from '../ducks/gas/gas.duck';
+import { setCustomGasLimit, setCustomGasPrice } from '../ducks/gas/gas.duck';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { isLegacyTransaction } from '../../shared/modules/transaction.utils';
 import { getMaximumGasTotalInHexWei } from '../../shared/modules/gas.utils';
@@ -51,7 +48,7 @@ export function useCancelTransaction(transactionGroup) {
         // To support the current process of cancelling or speeding up
         // a transaction, we have to inform the custom gas state of the new
         // gasPrice/gasLimit to start at.
-        dispatch(setCustomGasPriceForRetry(customGasSettings.gasPrice));
+        dispatch(setCustomGasPrice(customGasSettings.gasPrice));
         dispatch(setCustomGasLimit(GAS_LIMITS.SIMPLE));
       }
       const tx = {

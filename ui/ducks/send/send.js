@@ -50,15 +50,7 @@ import {
   updateTokenType,
   updateTransaction,
 } from '../../store/actions';
-import {
-  fetchBasicGasEstimates,
-  setCustomGasLimit,
-  BASIC_ESTIMATE_STATES,
-} from '../gas/gas.duck';
-import {
-  SET_BASIC_GAS_ESTIMATE_DATA,
-  BASIC_GAS_ESTIMATE_STATUS,
-} from '../gas/gas-action-constants';
+import { setCustomGasLimit } from '../gas/gas.duck';
 import {
   QR_CODE_DETECTED,
   SELECTED_ACCOUNT_CHANGED,
@@ -77,13 +69,18 @@ import {
   isOriginContractAddress,
   isValidDomainName,
 } from '../../helpers/utils/util';
-import { getTokens, getUnapprovedTxs } from '../metamask/metamask';
+import {
+  getGasEstimateType,
+  getTokens,
+  getUnapprovedTxs,
+} from '../metamask/metamask';
 import { resetEnsResolution } from '../ens';
 import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../shared/modules/hexstring-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
+import { ETH, GWEI } from '../../helpers/constants/common';
 
 // typedefs
 /**
@@ -186,8 +183,19 @@ async function estimateGasLimitForSend({
   let isSimpleSendOnNonStandardNetwork = false;
 
   // blockGasLimit may be a falsy, but defined, value when we receive it from
-  // state, so we use logical or to fall back to MIN_GAS_LIMIT_HEX.
-  const blockGasLimit = options.blockGasLimit || MIN_GAS_LIMIT_HEX;
+  // state, so we use logical or to fall back to MIN_GAS_LIMIT_HEX. Some
+  // network implementations check the gas parameter supplied to
+  // eth_estimateGas for validity. For this reason, we set token sends
+  // blockGasLimit default to a higher number. Note that the current gasLimit
+  // on a BLOCK is 15,000,000 and will be 30,000,000 on mainnet after London.
+  // Meanwhile, MIN_GAS_LIMIT_HEX is 0x5208.
+  let blockGasLimit = MIN_GAS_LIMIT_HEX;
+  if (options.blockGasLimit) {
+    blockGasLimit = options.blockGasLimit;
+  } else if (sendToken) {
+    blockGasLimit = GAS_LIMITS.BASE_TOKEN_ESTIMATE;
+  }
+
   // The parameters below will be sent to our background process to estimate
   // how much gas will be used for a transaction. That background process is
   // located in tx-gas-utils.js in the transaction controller folder.
@@ -342,7 +350,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     if (send.stage !== SEND_STAGES.EDIT) {
       const gasLimit = await estimateGasLimitForSend({
         gasPrice: send.gas.gasPrice,
-        blockGasLimit: metamask.blockGasLimit,
+        blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress: metamask.selectedAddress,
         sendToken: send.asset.details,
         to: send.recipient.address?.toLowerCase(),
@@ -359,6 +367,29 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     return null;
   },
 );
+
+/**
+ * This method is used to keep the original logic from the gas.duck.js file
+ * after receiving a gasPrice from eth_gasPrice. First, the returned gasPrice
+ * was converted to GWEI, then it was converted to a Number, then in the send
+ * duck (here) we would use getGasPriceInHexWei to get back to hexWei. Now that
+ * we receive a GWEI estimate from the controller, we still need to do this
+ * weird conversion to get the proper rounding.
+ * @param {T} gasPriceEstimate
+ * @returns
+ */
+function getRoundedGasPrice(gasPriceEstimate) {
+  const gasPriceInDecGwei = conversionUtil(gasPriceEstimate, {
+    numberOfDecimals: 4,
+    toDenomination: GWEI,
+    fromNumericBase: 'dec',
+    toNumericBase: 'dec',
+    fromCurrency: ETH,
+    fromDenomination: GWEI,
+  });
+  const gasPriceAsNumber = Number(gasPriceInDecGwei);
+  return getGasPriceInHexWei(gasPriceAsNumber);
+}
 
 /**
  * Responsible for initializing required state for the send slice.
@@ -395,48 +426,31 @@ export const initializeSendState = createAsyncThunk(
 
     // Default gasPrice to 1 gwei if all estimation fails
     let gasPrice = '0x1';
-    let basicEstimateStatus = BASIC_ESTIMATE_STATES.LOADING;
     let gasEstimatePollToken = null;
 
-    if (Boolean(process.env.SHOW_EIP_1559_UI) === false) {
-      // Initiate gas slices work to fetch gasPrice estimates. We need to get the
-      // new state after this is set to determine if initialization can proceed.
-      await thunkApi.dispatch(fetchBasicGasEstimates());
-      const {
-        gas: { basicEstimates, basicEstimateStatus: apiBasicEstimateStatus },
-      } = thunkApi.getState();
+    // Instruct the background process that polling for gas prices should begin
+    gasEstimatePollToken = await getGasFeeEstimatesAndStartPolling();
+    const {
+      metamask: { gasFeeEstimates, gasEstimateType },
+    } = thunkApi.getState();
 
-      basicEstimateStatus = apiBasicEstimateStatus;
-
-      if (basicEstimateStatus === BASIC_ESTIMATE_STATES.READY) {
-        gasPrice = getGasPriceInHexWei(basicEstimates.average);
-      }
-    } else {
-      // Instruct the background process that polling for gas prices should begin
-      gasEstimatePollToken = await getGasFeeEstimatesAndStartPolling();
-      const {
-        metamask: { gasFeeEstimates, gasEstimateType },
-      } = thunkApi.getState();
-
-      if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
-        gasPrice = getGasPriceInHexWei(gasFeeEstimates.medium);
-      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
-        gasPrice = getGasPriceInHexWei(gasFeeEstimates.gasPrice);
-      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
-        gasPrice = getGasPriceInHexWei(
-          gasFeeEstimates.medium.suggestedMaxFeePerGas,
-        );
-      }
-
-      basicEstimateStatus = BASIC_ESTIMATE_STATES.READY;
+    if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+      gasPrice = getGasPriceInHexWei(gasFeeEstimates.medium);
+    } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+      gasPrice = getRoundedGasPrice(gasFeeEstimates.gasPrice);
+    } else if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+      gasPrice = getGasPriceInHexWei(
+        gasFeeEstimates.medium.suggestedMaxFeePerGas,
+      );
     }
+
     // Set a basic gasLimit in the event that other estimation fails
     let gasLimit =
       asset.type === ASSET_TYPES.TOKEN
         ? GAS_LIMITS.BASE_TOKEN_ESTIMATE
         : GAS_LIMITS.SIMPLE;
     if (
-      basicEstimateStatus === BASIC_ESTIMATE_STATES.READY &&
+      gasEstimateType !== GAS_ESTIMATE_TYPES.NONE &&
       stage !== SEND_STAGES.EDIT &&
       recipient.address
     ) {
@@ -444,7 +458,7 @@ export const initializeSendState = createAsyncThunk(
       // required gas. If this value isn't nullish, set it as the new gasLimit
       const estimatedGasLimit = await estimateGasLimitForSend({
         gasPrice,
-        blockGasLimit: metamask.blockGasLimit,
+        blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress: fromAddress,
         sendToken: asset.details,
         to: recipient.address.toLowerCase(),
@@ -508,9 +522,12 @@ export const initialState = {
     isCustomGasSet: false,
     // maximum gas needed for tx
     gasLimit: '0x0',
-    // price in gwei to pay per gas
+    // price in wei to pay per gas
     gasPrice: '0x0',
-    // maximum total price in gwei to pay
+    // expected price in wei necessary to pay per gas used for a transaction
+    // to be included in a reasonable timeframe. Comes from GasFeeController.
+    gasPriceEstimate: '0x0',
+    // maximum total price in wei to pay
     gasTotal: '0x0',
     // minimum supported gasLimit
     minimumGasLimit: GAS_LIMITS.SIMPLE,
@@ -761,7 +778,9 @@ const slice = createSlice({
       // We keep a copy of txParams in state that could be submitted to the
       // network if the form state is valid.
       if (state.status === SEND_STATUSES.VALID) {
-        state.draftTransaction.txParams.from = state.account.address;
+        if (state.stage !== SEND_STAGES.EDIT) {
+          state.draftTransaction.txParams.from = state.account.address;
+        }
         switch (state.asset.type) {
           case ASSET_TYPES.TOKEN:
             // When sending a token the to address is the contract address of
@@ -926,7 +945,7 @@ const slice = createSlice({
           break;
         case state.asset.type === ASSET_TYPES.TOKEN &&
           state.asset.details.isERC721 === true:
-          state.state = SEND_STATUSES.INVALID;
+          state.status = SEND_STATUSES.INVALID;
           break;
         default:
           state.status = SEND_STATUSES.VALID;
@@ -1063,58 +1082,36 @@ const slice = createSlice({
           });
         }
       })
-      .addCase(SET_BASIC_GAS_ESTIMATE_DATA, (state, action) => {
-        // When we receive a new gasPrice via the gas duck we need to update
-        // the gasPrice in our slice. We call into the caseReducer
-        // updateGasPrice to also tap into the appropriate follow up checks
-        // and gasTotal calculation.
-        if (Boolean(process.env.SHOW_EIP_1559_UI) === false) {
-          slice.caseReducers.updateGasPrice(state, {
-            payload: getGasPriceInHexWei(action.value.average),
-          });
-        }
-      })
-      .addCase(BASIC_GAS_ESTIMATE_STATUS, (state, action) => {
-        // When we fetch gas prices we should temporarily set the form invalid
-        // Once the price updates we get that value in the
-        // SET_BASIC_GAS_ESTIMATE_DATA extraReducer above. Finally as long as
-        // the state is 'READY' we will revalidate the form.
-        switch (action.value) {
-          case BASIC_ESTIMATE_STATES.FAILED:
-            state.status = SEND_STATUSES.INVALID;
-            state.gas.isGasEstimateLoading = true;
-            break;
-          case BASIC_ESTIMATE_STATES.LOADING:
-            state.status = SEND_STATUSES.INVALID;
-            state.gas.isGasEstimateLoading = true;
-            break;
-          case BASIC_ESTIMATE_STATES.READY:
-          default:
-            state.gas.isGasEstimateLoading = false;
-            slice.caseReducers.validateSendState(state);
-        }
-      })
       .addCase(GAS_FEE_ESTIMATES_UPDATED, (state, action) => {
         // When the gasFeeController updates its gas fee estimates we need to
         // update and validate state based on those new values
-        if (process.env.SHOW_EIP_1559_UI) {
-          const { gasFeeEstimates, gasEstimateType } = action.payload;
-          let payload = null;
-          if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
-            payload = getGasPriceInHexWei(
-              gasFeeEstimates.medium.suggestedMaxFeePerGas,
-            );
-          } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
-            payload = getGasPriceInHexWei(gasFeeEstimates.medium);
-          } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
-            payload = getGasPriceInHexWei(gasFeeEstimates.gasPrice);
-          }
-          if (payload) {
-            slice.caseReducers.updateGasPrice(state, {
-              payload,
-            });
-          }
+        const { gasFeeEstimates, gasEstimateType } = action.payload;
+        let payload = null;
+        if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+          payload = getGasPriceInHexWei(
+            gasFeeEstimates.medium.suggestedMaxFeePerGas,
+          );
+        } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+          payload = getGasPriceInHexWei(gasFeeEstimates.medium);
+        } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+          payload = getRoundedGasPrice(gasFeeEstimates.gasPrice);
         }
+        // If a new gasPrice can be derived, and either the gasPriceEstimate
+        // was '0x0' or the gasPrice selected matches the previous estimate,
+        // update the gasPrice. This will ensure that we only update the
+        // gasPrice if the user is using our previous estimated value.
+        if (
+          payload &&
+          (state.gas.gasPriceEstimate === '0x0' ||
+            state.gas.gasPrice === state.gas.gasPriceEstimate)
+        ) {
+          slice.caseReducers.updateGasPrice(state, {
+            payload,
+          });
+        }
+
+        // Record the latest gasPriceEstimate for future comparisons
+        state.gas.gasPriceEstimate = payload ?? state.gas.gasPriceEstimate;
       });
   },
 });
@@ -1487,11 +1484,22 @@ export function getMinimumGasLimitForSend(state) {
 
 export function getGasInputMode(state) {
   const isMainnet = getIsMainnet(state);
+  const gasEstimateType = getGasEstimateType(state);
   const showAdvancedGasFields = getAdvancedInlineGasShown(state);
   if (state[name].gas.isCustomGasSet) {
     return GAS_INPUT_MODES.CUSTOM;
   }
   if ((!isMainnet && !process.env.IN_TEST) || showAdvancedGasFields) {
+    return GAS_INPUT_MODES.INLINE;
+  }
+
+  // We get eth_gasPrice estimation if the legacy API fails but we need to
+  // instruct the UI to render the INLINE inputs in this case, only on
+  // mainnet or IN_TEST.
+  if (
+    (isMainnet || process.env.IN_TEST) &&
+    gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE
+  ) {
     return GAS_INPUT_MODES.INLINE;
   }
   return GAS_INPUT_MODES.BASIC;
