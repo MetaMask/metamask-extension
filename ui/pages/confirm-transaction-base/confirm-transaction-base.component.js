@@ -808,7 +808,7 @@ export default class ConfirmTransactionBase extends Component {
     }
 
     /**
-     * Thismakes a request to get estimates and begin polling, keeping track of the poll
+     * This makes a request to get estimates and begin polling, keeping track of the poll
      * token in component state.
      * It then disconnects polling upon componentWillUnmount. If the hook is unmounted
      * while waiting for `getGasFeeEstimatesAndStartPolling` to resolve, the `_isMounted`
