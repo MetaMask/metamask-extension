@@ -128,9 +128,6 @@
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong Browser..."
   },
-  "builtInCalifornia": {
-    "message": "Ang MetaMask ay dinisenyo at binuo sa California."
-  },
   "buyWithWyre": {
     "message": "Bumili ng ETH gamit ang Wyre"
   },

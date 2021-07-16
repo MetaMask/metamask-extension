@@ -4,7 +4,7 @@ import {
   conversionUtil,
   addCurrencies,
   subtractCurrencies,
-} from './conversion-util';
+} from '../../../shared/modules/conversion.utils';
 import { formatCurrency } from './confirm-tx.util';
 
 export function bnToHex(inputBn) {

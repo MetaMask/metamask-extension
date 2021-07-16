@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "Browserul dvs. nu este compatibil..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask este concepută și creată în California."
-  },
   "buyWithWyre": {
     "message": "Cumpărați ETH cu Wyre"
   },

@@ -36,7 +36,7 @@ import {
   getValueFromWeiHex,
 } from '../../helpers/utils/conversions.util';
 
-import { subtractCurrencies } from '../../helpers/utils/conversion-util';
+import { subtractCurrencies } from '../../../shared/modules/conversion.utils';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import fetchWithCache from '../../helpers/utils/fetch-with-cache';
 

@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "Το Πρόγραμμα Περιήγησής σας δεν υποστηρίζεται..."
   },
-  "builtInCalifornia": {
-    "message": "Το MetaMask έχει σχεδιαστεί και αναπτυχθεί στην Καλιφόρνια."
-  },
   "buyWithWyre": {
     "message": "Αγοράστε ETH με το Wyre"
   },

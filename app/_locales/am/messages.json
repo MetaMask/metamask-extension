@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "ማሰሺያዎት አልተደገፈም..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask ካሊፎርኒያ ውስጥ ተዘጋጅቶ የተገነባ ነው።"
-  },
   "buyWithWyre": {
     "message": "ETH በ Wyre ይግዙ"
   },
