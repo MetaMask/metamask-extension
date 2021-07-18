@@ -6745,15 +6745,6 @@ bify-packagedata-stream@1.0.0:
     resolve-package-path "^1.2.7"
     through2 "^3.0.0"
 
-bify-vinyl-gator@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/bify-vinyl-gator/-/bify-vinyl-gator-1.0.0.tgz#aa1ce5c6a5829c75250fea6b04ec6a45c558efde"
-  integrity sha512-mGR/U+veqIrMWRWV1TUayNEmSIhaGDggYLwIBwDA7v2bTSHrEZcyyLs6FN3cF2cuyCzvpV1w4eH6P/So0nhCbA==
-  dependencies:
-    requirejs "^2.3.6"
-    through2 "^4.0.2"
-    vinyl "^2.2.1"
-
 big-integer@1.6.36:
   version "1.6.36"
   resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.36.tgz#78631076265d4ae3555c04f85e7d9d2f3a071a36"
@@ -7111,7 +7102,7 @@ brorand@^1.0.1, brorand@^1.0.5, brorand@^1.1.0:
   resolved "https://registry.yarnpkg.com/brorand/-/brorand-1.1.0.tgz#12c25efe40a45e3c323eb8675a0a0ce57b22371f"
   integrity sha1-EsJe/kCkXjwyPrhnWgoM5XsiNx8=
 
-browser-pack@^6.0.1, browser-pack@^6.1.0:
+browser-pack@^6.0.1:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/browser-pack/-/browser-pack-6.1.0.tgz#c34ba10d0b9ce162b5af227c7131c92c2ecd5774"
   integrity sha512-erYug8XoqzU3IfcU8fUgyHqyOXqIE4tUTTQ+7mqUjQlvnXkOO6OlT9c/ZoJVHYoAaqGxr09CN53G7XIsO4KtWA==
@@ -23638,11 +23629,6 @@ require-uncached@^1.0.2:
     caller-path "^0.1.0"
     resolve-from "^1.0.0"
 
-requirejs@^2.3.6:
-  version "2.3.6"
-  resolved "https://registry.yarnpkg.com/requirejs/-/requirejs-2.3.6.tgz#e5093d9601c2829251258c0b9445d4d19fa9e7c9"
-  integrity sha512-ipEzlWQe6RK3jkzikgCupiTbTvm4S0/CAU5GlgptkN5SO6F3u0UD0K18wy6ErDqiCyP4J4YYe1HuAShvsxePLg==
-
 reselect@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-3.0.1.tgz#efdaa98ea7451324d092b2b2163a6a1d7a9a2147"
@@ -27396,18 +27382,6 @@ vinyl@^2.0.0, vinyl@^2.1.0, vinyl@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/vinyl/-/vinyl-2.2.0.tgz#d85b07da96e458d25b2ffe19fece9f2caa13ed86"
   integrity sha512-MBH+yP0kC/GQ5GwBqrTPTzEfiiLjta7hTtvQtbxBgTeSXsmKQRQecjibMbxIXzVT3Y9KJK+drOz1/k+vsu8Nkg==
-  dependencies:
-    clone "^2.1.1"
-    clone-buffer "^1.0.0"
-    clone-stats "^1.0.0"
-    cloneable-readable "^1.0.0"
-    remove-trailing-separator "^1.0.1"
-    replace-ext "^1.0.0"
-
-vinyl@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/vinyl/-/vinyl-2.2.1.tgz#23cfb8bbab5ece3803aa2c0a1eb28af7cbba1974"
-  integrity sha512-LII3bXRFBZLlezoG5FfZVcXflZgWP/4dCwKtxd5ky9+LOtM4CS3bIRQsmR1KMnMW07jpE8fqR2lcxPZ+8sJIcw==
   dependencies:
     clone "^2.1.1"
     clone-buffer "^1.0.0"
