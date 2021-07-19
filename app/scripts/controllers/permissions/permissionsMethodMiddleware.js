@@ -22,11 +22,17 @@ export default function createPermissionsMethodMiddleware({
       // The getAccounts call below wraps the rpc-cap middleware, and returns
       // an empty array in case of errors (such as 4100:unauthorized)
       case 'eth_accounts': {
-        res.result = await getAccounts();
+        console.log("eth_accounts intercepted")
+        // res.result = await getAccounts();
+        res.result = ["0x0123456789012345678901234567890123456789"]
         return;
       }
 
       case 'eth_requestAccounts': {
+        console.log("eth_requestAccounts intercepted")
+        res.result = ["0x0123456789012345678901234567890123456789"]
+        return;
+
         if (isProcessingRequestAccounts) {
           res.error = ethErrors.rpc.resourceUnavailable(
             'Already processing eth_requestAccounts. Please wait.',
