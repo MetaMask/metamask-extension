@@ -78,7 +78,7 @@ const getBaseApi = function (
     ? getBaseUrlForNewSwapsApi(type, chainId)
     : METASWAP_CHAINID_API_HOST_MAP[chainId];
   if (!baseUrl) {
-    throw new Error(`baseUrl for API calls is empty for chainId: ${chainId}`);
+    throw new Error(`Swaps API calls are disabled for chainId: ${chainId}`);
   }
   switch (type) {
     case 'trade':
