@@ -414,6 +414,7 @@ export default class ConfirmTransactionBase extends Component {
                     hideLabel
                   />
                 }
+                subText={t('editGasSubTextFee', [])}
               />,
               <TransactionDetailItem
                 key="total-item"
@@ -433,6 +434,7 @@ export default class ConfirmTransactionBase extends Component {
                   />
                 }
                 subTitle={t('transactionDetailGasTotalSubtitle')}
+                subText={t('editGasSubTextAmount', [])}
               />,
             ]}
           />
