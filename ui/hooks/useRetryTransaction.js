@@ -2,11 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useCallback, useState } from 'react';
 import { showSidebar } from '../store/actions';
-import {
-  fetchBasicGasEstimates,
-  setCustomGasPriceForRetry,
-  setCustomGasLimit,
-} from '../ducks/gas/gas.duck';
+import { setCustomGasLimit, setCustomGasPrice } from '../ducks/gas/gas.duck';
 import { getIsMainnet } from '../selectors';
 import { isLegacyTransaction } from '../../shared/modules/transaction.utils';
 import { useMetricEvent } from './useMetricEvent';
@@ -29,6 +25,7 @@ import { useIncrementedGasFees } from './useIncrementedGasFees';
 export function useRetryTransaction(transactionGroup) {
   const { primaryTransaction } = transactionGroup;
   const isMainnet = useSelector(getIsMainnet);
+
   const hideBasic = !(isMainnet || process.env.IN_TEST);
   const customGasSettings = useIncrementedGasFees(transactionGroup);
   const trackMetricsEvent = useMetricEvent({
@@ -51,12 +48,11 @@ export function useRetryTransaction(transactionGroup) {
       if (process.env.SHOW_EIP_1559_UI) {
         setShowRetryEditGasPopover(true);
       } else {
-        await dispatch(fetchBasicGasEstimates);
         if (isLegacyTransaction(primaryTransaction)) {
           // To support the current process of cancelling or speeding up
           // a transaction, we have to inform the custom gas state of the new
           // gasPrice to start at.
-          dispatch(setCustomGasPriceForRetry(customGasSettings.gasPrice));
+          dispatch(setCustomGasPrice(customGasSettings.gasPrice));
           dispatch(setCustomGasLimit(primaryTransaction.txParams.gas));
         }
 

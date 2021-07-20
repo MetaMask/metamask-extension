@@ -9,6 +9,11 @@
     flex-grow: 1;
   }
 
+  &__title--dapp-suggested {
+    color: $secondary-1;
+    font-weight: bold;
+  }
+
   .info-tooltip {
     display: inline-block;
     margin-inline-start: 4px;

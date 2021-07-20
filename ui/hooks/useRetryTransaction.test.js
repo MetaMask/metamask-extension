@@ -8,6 +8,10 @@ import * as methodDataHook from './useMethodData';
 import * as metricEventHook from './useMetricEvent';
 import { useRetryTransaction } from './useRetryTransaction';
 
+jest.mock('./useGasFeeEstimates', () => ({
+  useGasFeeEstimates: jest.fn(),
+}));
+
 describe('useRetryTransaction', () => {
   describe('when transaction meets retry enabled criteria', () => {
     let useSelector;

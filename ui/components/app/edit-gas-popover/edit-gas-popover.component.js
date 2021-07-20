@@ -41,7 +41,8 @@ export default function EditGasPopover({
   const dispatch = useDispatch();
   const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
 
-  const showEducationButton = mode === EDIT_GAS_MODES.MODIFY_IN_PLACE;
+  const showEducationButton =
+    mode === EDIT_GAS_MODES.MODIFY_IN_PLACE && process.env.SHOW_EIP_1559_UI;
   const [showEducationContent, setShowEducationContent] = useState(false);
 
   const [warning] = useState(null);
@@ -167,15 +168,22 @@ export default function EditGasPopover({
         showEducationContent ? () => setShowEducationContent(false) : undefined
       }
       footer={
-        <>
-          <Button
-            type="primary"
-            onClick={onSubmit}
-            disabled={isMaxFeeError || isMaxPriorityFeeError || isGasTooLow}
-          >
-            {footerButtonText}
-          </Button>
-        </>
+        showEducationContent ? null : (
+          <>
+            <Button
+              type="primary"
+              onClick={onSubmit}
+              disabled={
+                isMaxFeeError ||
+                isMaxPriorityFeeError ||
+                isGasTooLow ||
+                isGasEstimatesLoading
+              }
+            >
+              {footerButtonText}
+            </Button>
+          </>
+        )
       }
     >
       <div style={{ padding: '0 20px 20px 20px' }}>
@@ -214,6 +222,7 @@ export default function EditGasPopover({
             isGasTooLow={isGasTooLow}
             onEducationClick={() => setShowEducationContent(true)}
             mode={mode}
+            transaction={transaction}
             {...editGasDisplayProps}
           />
         )}

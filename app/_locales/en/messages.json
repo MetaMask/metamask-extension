@@ -103,6 +103,9 @@
   "advanced": {
     "message": "Advanced"
   },
+  "advancedGasPriceTitle": {
+    "message": "Gas price"
+  },
   "advancedOptions": {
     "message": "Advanced Options"
   },
@@ -650,23 +653,32 @@
   "editGasHigh": {
     "message": "High"
   },
+  "editGasLimitTooltip": {
+    "message": "Gas limit is the maximum units of gas you are willing to use. Units of gas are a multiplier to “Max priority fee” and “Max fee”."
+  },
   "editGasLow": {
     "message": "Low"
   },
   "editGasMaxFeeLow": {
     "message": "Max fee too low for network conditions"
   },
+  "editGasMaxFeeTooltip": {
+    "message": "The max fee is the most you’ll pay (base fee + priority fee)."
+  },
   "editGasMaxPriorityFeeLow": {
     "message": "Max priority fee too low for network conditions"
+  },
+  "editGasMaxPriorityFeeTooltip": {
+    "message": "Max priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction. You’ll most often pay your max setting"
   },
   "editGasMedium": {
     "message": "Medium"
   },
   "editGasPriceTooltip": {
-    "message": "This network uses an older version of gas pricing which requires a “Gas price” field. Gas price is the maximum amount you are willing to pay per unit of gas."
+    "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
   },
   "editGasTitle": {
-    "message": "Edit gas fee"
+    "message": "Edit priority"
   },
   "editGasTooLow": {
     "message": "Unknown processing time"
@@ -863,10 +875,10 @@
     "message": "Function Type"
   },
   "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Edit app suggestion"
+    "message": "Edit suggested gas fee"
   },
   "gasDisplayDappWarning": {
-    "message": "This gas fee has been suggested by the app $1. It’s using legacy gas estimation which may be inaccurate. However, editing this gas fee may cause unintended consequences. Please reach out to the app team if you have questions.",
+    "message": "This gas fee has been suggested by $1. It’s using legacy gas estimation which may be inaccurate. However, editing this gas fee may cause a problem with your transaction. Please reach out to $1 if you have questions.",
     "description": "$1 represents the Dapp's origin"
   },
   "gasFee": {
@@ -1914,7 +1926,7 @@
     "message": "Speed up this cancellation"
   },
   "speedUpExplanation": {
-    "message": "We’ve restimated the gas fee based on current network conditions and have increased it by at least 10% (required by the network)."
+    "message": "We’ve updated the gas fee based on current network conditions and have increased it by at least 10% (required by the network)."
   },
   "speedUpPopoverTitle": {
     "message": "Speed up transaction"
@@ -2443,8 +2455,24 @@
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
   },
+  "transactionDetailDappGasHeading": {
+    "message": "$1 suggested gas fee",
+    "description": "$1 represents a dapp origin"
+  },
+  "transactionDetailDappGasTooltip": {
+    "message": "This gas fee suggestion is using legacy gas estimation which may be inaccurate."
+  },
   "transactionDetailGasHeading": {
     "message": "Estimated gas fee"
+  },
+  "transactionDetailGasTooltipConversion": {
+    "message": "Learn more about gas fees"
+  },
+  "transactionDetailGasTooltipExplanation": {
+    "message": "Gas fees are set by the network and fluctuate based on network traffic and transaction complexity."
+  },
+  "transactionDetailGasTooltipIntro": {
+    "message": "Gas fees are paid to crypto miners who process transactions on the Ethereum network. MetaMask does not profit from gas fees."
   },
   "transactionDetailGasTotalSubtitle": {
     "message": "Amount + gas fee"

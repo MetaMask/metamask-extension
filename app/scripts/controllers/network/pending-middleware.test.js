@@ -53,6 +53,7 @@ describe('PendingNonceMiddleware', function () {
       getPendingTransactionByHash,
     });
     const spec = {
+      accessList: null,
       blockHash: null,
       blockNumber: null,
       from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
@@ -62,6 +63,7 @@ describe('PendingNonceMiddleware', function () {
         '0x2cc5a25744486f7383edebbf32003e5a66e18135799593d6b5cdd2bb43674f09',
       input: '0x',
       nonce: '0x4',
+      type: '0x0',
       to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
       transactionIndex: null,
       value: '0x0',

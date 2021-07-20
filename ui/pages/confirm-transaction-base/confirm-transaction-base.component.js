@@ -35,6 +35,8 @@ import TransactionDetail from '../../components/app/transaction-detail/transacti
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 
+import { COLORS } from '../../helpers/constants/design-system';
+
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -292,6 +294,7 @@ export default class ConfirmTransactionBase extends Component {
       isMainnet,
       isEthGasPrice,
       noGasPrice,
+      txData,
     } = this.props;
     const { t } = this.context;
 
@@ -363,13 +366,40 @@ export default class ConfirmTransactionBase extends Component {
               <TransactionDetailItem
                 key="gas-item"
                 detailTitle={
-                  <>
-                    {t('transactionDetailGasHeading')}
-                    <InfoTooltip contentText="" position="top">
-                      <i className="fa fa-info-circle" />
-                    </InfoTooltip>
-                  </>
+                  txData.dappSuggestedGasFees ? (
+                    <>
+                      {t('transactionDetailDappGasHeading', [txData.origin])}
+                      <InfoTooltip
+                        contentText={t('transactionDetailDappGasTooltip')}
+                        position="top"
+                        iconFillColor="#f66a0a"
+                      >
+                        <i className="fa fa-info-circle" />
+                      </InfoTooltip>
+                    </>
+                  ) : (
+                    <>
+                      {t('transactionDetailGasHeading')}
+                      <InfoTooltip
+                        contentText={
+                          <>
+                            <p>{t('transactionDetailGasTooltipIntro')}</p>
+                            <p>{t('transactionDetailGasTooltipExplanation')}</p>
+                            <p>
+                              <a href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172">
+                                {t('transactionDetailGasTooltipConversion')}
+                              </a>
+                            </p>
+                          </>
+                        }
+                        position="top"
+                      >
+                        <i className="fa fa-info-circle" />
+                      </InfoTooltip>
+                    </>
+                  )
                 }
+                detailTitleColor={COLORS.SECONDARY1}
                 detailText={
                   <UserPreferencedCurrencyDisplay
                     type={PRIMARY}

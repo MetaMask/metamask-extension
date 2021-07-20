@@ -25,6 +25,7 @@ import {
   PhishingController,
   NotificationController,
   GasFeeController,
+  TokenListController,
 } from '@metamask/controllers';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
@@ -32,6 +33,7 @@ import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
 
+import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -194,11 +196,17 @@ export default class MetamaskController extends EventEmitter {
       getCurrentAccountEIP1559Compatibility: this.getCurrentAccountEIP1559Compatibility.bind(
         this,
       ),
-      getCurrentNetworkLegacyGasAPICompatibility: () =>
-        this.networkController.getCurrentChainId() === MAINNET_CHAIN_ID,
-      getChainId: this.networkController.getCurrentChainId.bind(
-        this.networkController,
-      ),
+      legacyAPIEndpoint: `https://gas-api.metaswap.codefi.network/networks/<chain_id>/gasPrices`,
+      EIP1559APIEndpoint: `https://gas-api.metaswap.codefi.network/networks/<chain_id>/suggestedGasFees`,
+      getCurrentNetworkLegacyGasAPICompatibility: () => {
+        const chainId = this.networkController.getCurrentChainId();
+        return process.env.IN_TEST || chainId === MAINNET_CHAIN_ID;
+      },
+      getChainId: () => {
+        return process.env.IN_TEST
+          ? MAINNET_CHAIN_ID
+          : this.networkController.getCurrentChainId();
+      },
     });
 
     this.appStateController = new AppStateController({
@@ -217,6 +225,31 @@ export default class MetamaskController extends EventEmitter {
       includeUSDRate: true,
       messenger: currencyRateMessenger,
       state: initState.CurrencyController,
+    });
+
+    const tokenListMessenger = controllerMessenger.getRestricted({
+      name: 'TokenListController',
+    });
+    this.tokenListController = new TokenListController({
+      chainId: hexToDecimal(this.networkController.getCurrentChainId()),
+      useStaticTokenList: this.preferencesController.store.getState()
+        .useStaticTokenList,
+      onNetworkStateChange: (cb) =>
+        this.networkController.store.subscribe((networkState) => {
+          const modifiedNetworkState = {
+            ...networkState,
+            provider: {
+              ...networkState.provider,
+              chainId: hexToDecimal(networkState.provider.chainId),
+            },
+          };
+          return cb(modifiedNetworkState);
+        }),
+      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+        this.preferencesController.store,
+      ),
+      messenger: tokenListMessenger,
+      state: initState.tokenListController,
     });
 
     this.phishingController = new PhishingController();
@@ -275,11 +308,13 @@ export default class MetamaskController extends EventEmitter {
         this.incomingTransactionsController.start();
         this.tokenRatesController.start();
         this.currencyRateController.start();
+        this.tokenListController.start();
       } else {
         this.accountTracker.stop();
         this.incomingTransactionsController.stop();
         this.tokenRatesController.stop();
         this.currencyRateController.stop();
+        this.tokenListController.stop();
       }
     });
 
@@ -498,6 +533,7 @@ export default class MetamaskController extends EventEmitter {
       ThreeBoxController: this.threeBoxController.store,
       NotificationController: this.notificationController,
       GasFeeController: this.gasFeeController,
+      TokenListController: this.tokenListController,
     });
 
     this.memStore = new ComposableObservableStore({
@@ -530,6 +566,7 @@ export default class MetamaskController extends EventEmitter {
         ApprovalController: this.approvalController,
         NotificationController: this.notificationController,
         GasFeeController: this.gasFeeController,
+        TokenListController: this.tokenListController,
       },
       controllerMessenger,
     });
@@ -723,6 +760,10 @@ export default class MetamaskController extends EventEmitter {
       setUseBlockie: this.setUseBlockie.bind(this),
       setUseNonceField: this.setUseNonceField.bind(this),
       setUsePhishDetect: this.setUsePhishDetect.bind(this),
+      setUseStaticTokenList: nodeify(
+        this.preferencesController.setUseStaticTokenList,
+        this.preferencesController,
+      ),
       setIpfsGateway: this.setIpfsGateway.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
       setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
