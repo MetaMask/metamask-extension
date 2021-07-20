@@ -182,6 +182,7 @@ async function estimateGasLimitForSend({
 }) {
   let isSimpleSendOnNonStandardNetwork = false;
 
+  // blockGasLimit may be a falsy, but defined, value when we receive it from
   // state, so we use logical or to fall back to MIN_GAS_LIMIT_HEX. Some
   // network implementations check the gas parameter supplied to
   // eth_estimateGas for validity. For this reason, we set token sends
