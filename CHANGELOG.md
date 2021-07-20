@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.8.2]
+### Uncategorized
+- Version v9.8.1 RC ([#11517](https://github.com/MetaMask/metamask-extension/pull/11517))
+- Updating CHANGELOG.md
+- Retrieve state after async action before updating state in _setSwapsQuoteRefreshTime ([#11538](https://github.com/MetaMask/metamask-extension/pull/11538))
+- Update CHANGELOG.md header
+- Updating changelog for 9.8.1
+- Version v9.8.1
+- moving some properties to identifiable payload ([#11506](https://github.com/MetaMask/metamask-extension/pull/11506))
+- Converting gas params for tx metrics to decimal GWEI ([#11482](https://github.com/MetaMask/metamask-extension/pull/11482))
+- Using current time in place of block timestamp for completion time metric ([#11483](https://github.com/MetaMask/metamask-extension/pull/11483))
+
 ## [9.8.1]
 ### Changed
 - Adjusting transaction metrics values
@@ -2336,7 +2348,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.8.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.8.2...HEAD
+[9.8.2]: https://github.com/MetaMask/metamask-extension/compare/v9.8.1...v9.8.2
 [9.8.1]: https://github.com/MetaMask/metamask-extension/compare/v9.8.0...v9.8.1
 [9.8.0]: https://github.com/MetaMask/metamask-extension/compare/v9.7.1...v9.8.0
 [9.7.1]: https://github.com/MetaMask/metamask-extension/compare/v9.7.0...v9.7.1
