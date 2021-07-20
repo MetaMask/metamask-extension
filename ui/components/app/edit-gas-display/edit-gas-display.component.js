@@ -29,7 +29,6 @@ export default function EditGasDisplay({
   showEducationButton = false,
   onEducationClick,
   transaction,
-  defaultEstimateToUse,
   maxPriorityFeePerGas,
   setMaxPriorityFeePerGas,
   maxPriorityFeePerGasFiat,
@@ -149,19 +148,19 @@ export default function EditGasDisplay({
                 {
                   value: GAS_RECOMMENDATIONS.LOW,
                   label: t('editGasLow'),
-                  recommended: defaultEstimateToUse === GAS_RECOMMENDATIONS.LOW,
+                  recommended: estimateToUse === GAS_RECOMMENDATIONS.LOW,
                 },
                 {
                   value: GAS_RECOMMENDATIONS.MEDIUM,
                   label: t('editGasMedium'),
                   recommended:
-                    defaultEstimateToUse === GAS_RECOMMENDATIONS.MEDIUM,
+                  estimateToUse === GAS_RECOMMENDATIONS.MEDIUM,
                 },
                 {
                   value: GAS_RECOMMENDATIONS.HIGH,
                   label: t('editGasHigh'),
                   recommended:
-                    defaultEstimateToUse === GAS_RECOMMENDATIONS.HIGH,
+                  estimateToUse === GAS_RECOMMENDATIONS.HIGH,
                 },
               ]}
               selectedValue={estimateToUse}
@@ -218,7 +217,6 @@ EditGasDisplay.propTypes = {
   mode: PropTypes.oneOf(Object.values(EDIT_GAS_MODES)),
   showEducationButton: PropTypes.bool,
   onEducationClick: PropTypes.func,
-  defaultEstimateToUse: PropTypes.oneOf(Object.values(GAS_RECOMMENDATIONS)),
   maxPriorityFeePerGas: PropTypes.string,
   setMaxPriorityFeePerGas: PropTypes.func,
   maxPriorityFeePerGasFiat: PropTypes.string,
