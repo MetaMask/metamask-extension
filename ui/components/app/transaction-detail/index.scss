@@ -1,4 +1,7 @@
 .transaction-detail {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+
   .transaction-detail-edit {
     text-align: end;
     padding-top: 20px;
@@ -26,5 +29,9 @@
       padding-bottom: 0;
       border-bottom: 0;
     }
+  }
+
+  &--loading {
+    opacity: 0;
   }
 }
