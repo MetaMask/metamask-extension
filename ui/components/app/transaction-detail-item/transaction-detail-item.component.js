@@ -46,16 +46,19 @@ export default function TransactionDetailItem({
         </Typography>
       </div>
       <div className="transaction-detail-item__row">
-        {subTitle && (
-          <Typography
-            variant={TYPOGRAPHY.H7}
-            className="transaction-detail-item__subtitle"
-            color={COLORS.UI4}
-          >
-            {subTitle}
-          </Typography>
-        )}
-        <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4}>
+        <Typography
+          variant={TYPOGRAPHY.H7}
+          className="transaction-detail-item__subtitle"
+          color={COLORS.UI4}
+        >
+          {subTitle}
+        </Typography>
+
+        <Typography
+          variant={TYPOGRAPHY.H7}
+          color={COLORS.UI4}
+          className="transaction-detail-item__subtext"
+        >
           {subText}
         </Typography>
       </div>
