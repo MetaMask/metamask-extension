@@ -399,7 +399,9 @@ export default class ConfirmTransactionBase extends Component {
                     </>
                   )
                 }
-                detailTitleColor={COLORS.SECONDARY1}
+                detailTitleColor={
+                  txData.dappSuggestedGasFees ? COLORS.SECONDARY1 : COLORS.BLACK
+                }
                 detailText={
                   <UserPreferencedCurrencyDisplay
                     type={PRIMARY}
