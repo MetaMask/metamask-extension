@@ -8,7 +8,6 @@ import { getMessage } from '../../../helpers/utils/i18n-helper';
 
 import * as i18nhooks from '../../../hooks/useI18nContext';
 import * as useGasFeeEstimatesExport from '../../../hooks/useGasFeeEstimates';
-import * as useGasFeeInputsExport from '../../../hooks/useGasFeeInputs';
 
 import GasTiming from '.';
 
@@ -53,10 +52,6 @@ describe('Gas timing', () => {
       gasFeeEstimates: null,
     });
 
-    sinon.stub(useGasFeeInputsExport, 'useGasFeeInputs').returns({
-      maxPriorityFeePerGas: 10,
-    });
-
     const wrapper = shallow(<GasTiming />);
     expect(wrapper.html()).toBeNull();
   });
@@ -67,11 +62,7 @@ describe('Gas timing', () => {
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
     });
 
-    sinon.stub(useGasFeeInputsExport, 'useGasFeeInputs').returns({
-      maxPriorityFeePerGas: 10,
-    });
-
-    const wrapper = shallow(<GasTiming />);
+    const wrapper = shallow(<GasTiming maxPriorityFeePerGas={10} />);
     expect(wrapper.html()).toContain('gasTimingVeryPositive');
   });
 
@@ -81,11 +72,7 @@ describe('Gas timing', () => {
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
     });
 
-    sinon.stub(useGasFeeInputsExport, 'useGasFeeInputs').returns({
-      maxPriorityFeePerGas: 8,
-    });
-
-    const wrapper = shallow(<GasTiming />);
+    const wrapper = shallow(<GasTiming maxPriorityFeePerGas={8} />);
     expect(wrapper.html()).toContain('gasTimingPositive');
   });
 
@@ -95,11 +82,7 @@ describe('Gas timing', () => {
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
     });
 
-    sinon.stub(useGasFeeInputsExport, 'useGasFeeInputs').returns({
-      maxPriorityFeePerGas: 3,
-    });
-
-    const wrapper = shallow(<GasTiming />);
+    const wrapper = shallow(<GasTiming maxPriorityFeePerGas={3} />);
     expect(wrapper.html()).toContain('gasTimingNegative');
   });
 });

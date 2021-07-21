@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
-import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 import { I18nContext } from '../../../contexts/i18n';
 
 import Typography from '../../ui/typography/typography';
@@ -11,9 +11,8 @@ import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
 
-export default function GasTiming() {
+export default function GasTiming({ maxPriorityFeePerGas }) {
   const { gasFeeEstimates, isGasEstimatesLoading } = useGasFeeEstimates();
-  const { maxPriorityFeePerGas } = useGasFeeInputs();
 
   const t = useContext(I18nContext);
 
@@ -72,3 +71,7 @@ export default function GasTiming() {
     </Typography>
   );
 }
+
+GasTiming.propTypes = {
+  maxPriorityFeePerGas: PropTypes.object,
+};
