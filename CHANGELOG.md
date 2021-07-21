@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - [11565](https://github.com/MetaMask/metamask-extension/pull/11565): Fix gas limit estimation for some tokens on custom networks
+- [11581](https://github.com/MetaMask/metamask-extension/pull/11581): Fixed bug that resulted in sends to some contracts being disabled.
 
 ## [9.8.1]
 ### Changed
