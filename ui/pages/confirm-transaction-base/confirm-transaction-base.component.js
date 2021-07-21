@@ -417,7 +417,11 @@ export default class ConfirmTransactionBase extends Component {
                     hideLabel
                   />
                 }
-                subTitle={<GasTiming />}
+                subTitle={
+                  <GasTiming
+                    maxPriorityFeePerGas={txData.txParams.maxPriorityFeePerGas}
+                  />
+                }
               />,
               <TransactionDetailItem
                 key="total-item"
