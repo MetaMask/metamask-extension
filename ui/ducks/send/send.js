@@ -1037,6 +1037,11 @@ const slice = createSlice({
           });
         }
       })
+      .addCase(computeEstimatedGasLimit.rejected, (state) => {
+        // If gas estimation fails, we should set the loading state to false,
+        // because it is no longer loading
+        state.gas.isGasEstimateLoading = false;
+      })
       .addCase(SET_BASIC_GAS_ESTIMATE_DATA, (state, action) => {
         // When we receive a new gasPrice via the gas duck we need to update
         // the gasPrice in our slice. We call into the caseReducer
