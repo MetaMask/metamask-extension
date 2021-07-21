@@ -81,8 +81,8 @@ export default function AdvancedGasControls({
             titleUnit="(GWEI)"
             tooltipText={t('editGasMaxPriorityFeeTooltip')}
             onChange={(value) => {
-              setMaxPriorityFee(value);
               onManualChange?.();
+              setMaxPriorityFee(value);
             }}
             value={maxPriorityFee}
             detailText={maxPriorityFeeFiat}
@@ -122,8 +122,8 @@ export default function AdvancedGasControls({
             titleUnit="(GWEI)"
             tooltipText={t('editGasMaxFeeTooltip')}
             onChange={(value) => {
-              setMaxFee(value);
               onManualChange?.();
+              setMaxFee(value);
             }}
             value={maxFee}
             numeric
@@ -165,8 +165,8 @@ export default function AdvancedGasControls({
             titleText={t('advancedGasPriceTitle')}
             titleUnit="(GWEI)"
             onChange={(value) => {
-              setGasPrice(value);
               onManualChange?.();
+              setGasPrice(value);
             }}
             tooltipText={t('editGasPriceTooltip')}
             value={gasPrice}

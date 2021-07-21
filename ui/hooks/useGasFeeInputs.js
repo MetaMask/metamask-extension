@@ -354,5 +354,13 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
     estimatedGasFeeTimeBounds,
     gasErrors: errorsAndWarnings,
     hasGasErrors: hasBlockingGasErrors,
+    onManualChange: () => {
+      setEstimateToUse(null);
+      // Restore existing values
+      setGasPrice(gasPriceToUse);
+      setGasLimit(gasLimit);
+      setMaxFeePerGas(maxFeePerGasToUse);
+      setMaxPriorityFeePerGas(maxPriorityFeePerGasToUse);
+    },
   };
 }
