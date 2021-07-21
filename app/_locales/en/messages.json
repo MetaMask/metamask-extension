@@ -2140,9 +2140,6 @@
   "swapLowSlippageError": {
     "message": "Transaction may fail, max slippage too low."
   },
-  "swapMaxGasFee": {
-    "message": "up to"
-  },
   "swapMaxNetworkFeeInfo": {
     "message": "“$1” is the most you’ll spend. When the network is volatile this can be a large amount.",
     "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"

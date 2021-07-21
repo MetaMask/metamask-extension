@@ -133,7 +133,7 @@ export default function FeeCard({
                 subText={
                   secondaryFee?.maxFee !== undefined && (
                     <>
-                      {`${t('swapMaxGasFee')} ${secondaryFee.maxFee}`}
+                      {`${t('maxFee')}: ${secondaryFee.maxFee}`}
                       <span
                         className="fee-card__edit-link"
                         onClick={() => onFeeCardMaxRowClick()}
