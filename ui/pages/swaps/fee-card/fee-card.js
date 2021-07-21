@@ -11,6 +11,7 @@ import {
 } from '../../../../shared/constants/network';
 import TransactionDetail from '../../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
+import GasTiming from '../../../components/app/gas-timing/gas-timing.component';
 
 const GAS_FEES_LEARN_MORE_URL =
   'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
@@ -128,7 +129,7 @@ export default function FeeCard({
                 }
                 detailText={primaryFee.fee}
                 detailTotal={secondaryFee.fee}
-                subTitle="Very likely in < 15 seconds"
+                subTitle={<GasTiming />}
                 subText={
                   secondaryFee?.maxFee !== undefined && (
                     <>
