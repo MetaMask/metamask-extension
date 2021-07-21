@@ -60,6 +60,11 @@ const copyTargets = [
     src: require.resolve('@lavamoat/lavapack/src/runtime-cjs.js'),
     dest: `runtime-cjs.js`,
   },
+  {
+    // eslint-disable-next-line node/no-extraneous-require
+    src: require.resolve('@lavamoat/lavapack/src/runtime.js'),
+    dest: `runtime-lavamoat.js`,
+  },
 ];
 
 const languageTags = new Set();
