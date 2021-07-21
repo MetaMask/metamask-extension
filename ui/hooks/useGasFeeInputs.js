@@ -1,6 +1,5 @@
 import { addHexPrefix } from 'ethereumjs-util';
 import { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
 import {
@@ -12,7 +11,6 @@ import {
   decGWEIToHexWEI,
   decimalToHex,
 } from '../helpers/utils/conversions.util';
-import { getShouldShowFiat } from '../selectors';
 import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
@@ -124,11 +122,6 @@ function getGasFeeEstimate(
  * ).GasEstimates} - gas fee input state and the GasFeeEstimates object
  */
 export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
-  // We need to know whether to show fiat conversions or not, so that we can
-  // default our fiat values to empty strings if showing fiat is not wanted or
-  // possible.
-  const showFiat = useSelector(getShouldShowFiat);
-
   // We need to know the current network's currency and its decimal precision
   // to calculate the amount to display to the user.
   const {
@@ -334,10 +327,10 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
 
   return {
     maxFeePerGas: maxFeePerGasToUse,
-    maxFeePerGasFiat: showFiat ? maxFeePerGasFiat : '',
+    maxFeePerGasFiat,
     setMaxFeePerGas,
     maxPriorityFeePerGas: maxPriorityFeePerGasToUse,
-    maxPriorityFeePerGasFiat: showFiat ? maxPriorityFeePerGasFiat : '',
+    maxPriorityFeePerGasFiat,
     setMaxPriorityFeePerGas,
     gasPrice: gasPriceToUse,
     setGasPrice,
@@ -345,8 +338,8 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
     setGasLimit,
     estimateToUse,
     setEstimateToUse,
-    estimatedMinimumFiat: showFiat ? estimatedMinimumFiat : '',
-    estimatedMaximumFiat: showFiat ? maxFeePerGasFiat : '',
+    estimatedMinimumFiat,
+    estimatedMaximumFiat: maxFeePerGasFiat,
     estimatedMaximumNative,
     isGasEstimatesLoading,
     gasFeeEstimates,
