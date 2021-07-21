@@ -2634,10 +2634,10 @@
     semver "^7.3.4"
     yargs "^16.2.0"
 
-"@lavamoat/lavapack@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@lavamoat/lavapack/-/lavapack-1.0.4.tgz#e72d6b29fa70da8236a127c1d95cb581cda6941e"
-  integrity sha512-Zhcn+eJyHIS4AAmN9IIjs8WCh12Q7NpFXXz0pI3Y54uknTdx5TPlwr3ARKf0jEXDOWNok/TuK2uPld54BSG/FQ==
+"@lavamoat/lavapack@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@lavamoat/lavapack/-/lavapack-1.1.0.tgz#775b0f3fe855a76c35d7d91409269b27189b3de2"
+  integrity sha512-KhBBdcx4rH6LS1DwFfTFoHqAun9A4PDtIJNRXZHa1cXXbeoYyVDxQ4KA8+9E7mbICvJfUa1SpHx+v5cKwSl2dQ==
   dependencies:
     JSONStream "^1.3.5"
     combine-source-map "^0.8.0"
