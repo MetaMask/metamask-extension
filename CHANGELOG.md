@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [11538](https://github.com/MetaMask/metamask-extension/pull/11538): Fixed bug that prevented users from continuing to swap after going 'back' from the View Quote page of the swaps flow.
 
 ## [9.8.0]
+### Fixed
+- [#11361](https://github.com/MetaMask/metamask-extension/pull/11361): Ensures custom network balance displays correctly when no ticker symbol is provided, and ensure ticker symbol displays correctly after all network switches.
+- [#10965](https://github.com/MetaMask/metamask-extension/pull/10965): Fixed bug that resulted in sends to some contracts being disabled on custom networks.
+
 ### Added
 - [#11435](https://github.com/MetaMask/metamask-extension/pull/11435): Add gas limit buffers for optimism network
 
