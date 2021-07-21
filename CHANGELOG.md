@@ -7,16 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.8.2]
-### Uncategorized
-- Version v9.8.1 RC ([#11517](https://github.com/MetaMask/metamask-extension/pull/11517))
-- Updating CHANGELOG.md
-- Retrieve state after async action before updating state in _setSwapsQuoteRefreshTime ([#11538](https://github.com/MetaMask/metamask-extension/pull/11538))
-- Update CHANGELOG.md header
-- Updating changelog for 9.8.1
-- Version v9.8.1
-- moving some properties to identifiable payload ([#11506](https://github.com/MetaMask/metamask-extension/pull/11506))
-- Converting gas params for tx metrics to decimal GWEI ([#11482](https://github.com/MetaMask/metamask-extension/pull/11482))
-- Using current time in place of block timestamp for completion time metric ([#11483](https://github.com/MetaMask/metamask-extension/pull/11483))
+### Changed
+- [1156511545](https://github.com/MetaMask/metamask-extension/pull/11545): Allow MetaMask Swaps to support Polygon network
+
+### Fixed
+- [11565](https://github.com/MetaMask/metamask-extension/pull/11565): Fix gas limit estimation for some tokens on custom networks
+- [11581](https://github.com/MetaMask/metamask-extension/pull/11581): Fixed bug that resulted in sends to some contracts being disabled.
 
 ## [9.8.1]
 ### Changed
