@@ -4,6 +4,7 @@ const { writeFileSync, readFileSync } = require('fs');
 const EventEmitter = require('events');
 const gulp = require('gulp');
 const watch = require('gulp-watch');
+const Vinyl = require('vinyl');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
 const log = require('fancy-log');
@@ -20,7 +21,7 @@ const endOfStream = pify(require('end-of-stream'));
 const labeledStreamSplicer = require('labeled-stream-splicer').obj;
 const wrapInStream = require('pumpify').obj;
 const Sqrl = require('squirrelly');
-const lavaPack = require('@lavamoat/lavapack');
+const lavapack = require('@lavamoat/lavapack');
 const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
 
@@ -245,19 +246,24 @@ function createFactoredBuild({
           groupingMap: sizeGroupMap,
         }),
       );
-      pipeline.get('vinyl').unshift(
-        // convert each module group into a stream with a single vinyl file
-        streamFlatMap((moduleGroup) => {
-          const filename = `${moduleGroup.label}.js`;
-          const childStream = wrapInStream(
-            moduleGroup.stream,
-            // we manually readd lavapack here bc bify-module-groups removes it
-            lavaPack({ raw: true, hasExports: true, includePrelude: false }),
-            source(filename),
-          );
-          return childStream;
+      // converts each module group into a single vinyl file containing its bundle
+      const moduleGroupPackerStream = streamFlatMap((moduleGroup) => {
+        const filename = `${moduleGroup.label}.js`;
+        const childStream = wrapInStream(
+          moduleGroup.stream,
+          // we manually readd lavapack here bc bify-module-groups removes it
+          lavapack({ raw: true, hasExports: true, includePrelude: false }),
+          source(filename),
+        );
+        return childStream;
+      });
+      pipeline.get('vinyl').unshift(moduleGroupPackerStream, buffer());
+      // add lavamoat policy loader file to packer output
+      moduleGroupPackerStream.push(
+        new Vinyl({
+          path: 'policy-load.js',
+          contents: lavapack.makePolicyLoaderStream(lavamoatOpts),
         }),
-        buffer(),
       );
       // setup bundle destination
       browserPlatforms.forEach((platform) => {
