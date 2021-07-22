@@ -222,7 +222,7 @@ export default function EditGasPopover({
               mode={mode}
               transaction={transaction}
               hasGasErrors={hasGasErrors}
-              gasErrors={gasErrors}	
+              gasErrors={gasErrors}
               onManualChange={onManualChange}
               {...editGasDisplayProps}
             />
