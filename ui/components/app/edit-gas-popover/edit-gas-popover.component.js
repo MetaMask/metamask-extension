@@ -1,8 +1,10 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
+import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
 import {
   GAS_ESTIMATE_TYPES,
@@ -40,6 +42,9 @@ export default function EditGasPopover({
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
+
+  const editDisplayNode = useRef(null);
+  const loadingAnimationClass = useShouldAnimateGasEstimations(editDisplayNode);
 
   const showEducationButton =
     mode === EDIT_GAS_MODES.MODIFY_IN_PLACE && process.env.SHOW_EIP_1559_UI;
@@ -186,6 +191,8 @@ export default function EditGasPopover({
           <EditGasDisplayEducation />
         ) : (
           <EditGasDisplay
+            ref={editDisplayNode}
+            className={classNames(loadingAnimationClass)}
             showEducationButton={showEducationButton}
             warning={warning}
             showAdvancedForm={showAdvancedForm}
