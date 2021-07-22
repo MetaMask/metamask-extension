@@ -1,5 +1,4 @@
-import { useSelector } from 'react-redux';
-import { captureException } from '@sentry/browser';
+import { useDispatch, useSelector } from 'react-redux';
 import { getKnownMethodData } from '../selectors/selectors';
 import {
   getStatusKey,
@@ -23,6 +22,7 @@ import {
   TRANSACTION_GROUP_CATEGORIES,
   TRANSACTION_STATUSES,
 } from '../../shared/constants/transaction';
+import { captureSingleException } from '../store/actions';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -58,6 +58,7 @@ import { useCurrentAsset } from './useCurrentAsset';
 export function useTransactionDisplayData(transactionGroup) {
   // To determine which primary currency to display for swaps transactions we need to be aware
   // of which asset, if any, we are viewing at present
+  const dispatch = useDispatch();
   const currentAsset = useCurrentAsset();
   const knownTokens = useSelector(getTokens);
   const t = useI18nContext();
@@ -222,8 +223,8 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('send');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else {
-    captureException(
-      Error(
+    dispatch(
+      captureSingleException(
         `useTransactionDisplayData does not recognize transaction type. Type received is: ${type}`,
       ),
     );
