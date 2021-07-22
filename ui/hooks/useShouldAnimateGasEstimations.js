@@ -1,11 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { isEqual } from 'lodash';
 
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 
-const LOADING_CLASS = 'transaction-detail--loading';
-
-export function useShouldAnimateGasEstimations(containerNode) {
+export function useShouldAnimateGasEstimations() {
   const { isGasEstimatesLoading, gasFeeEstimates } = useGasFeeEstimates();
 
   // Do the animation only when gas prices have changed...
@@ -26,21 +24,5 @@ export function useShouldAnimateGasEstimations(containerNode) {
   const showLoadingAnimation =
     isGasEstimatesLoading || (gasEstimatesChanged && !gasJustLoaded);
 
-  // When the loading animation completes, remove the className to reveal contents
-  useEffect(() => {
-    const eventName = 'transitionend';
-    const node = containerNode?.current;
-    const eventHandler = () => {
-      node?.classList.remove(LOADING_CLASS);
-    };
-
-    node?.addEventListener(eventName, eventHandler);
-    return () => {
-      node?.removeEventListener(eventName, eventHandler);
-    };
-  }, [containerNode]);
-
-  console.log("shouldAnimate?  ", showLoadingAnimation)
-
-  return showLoadingAnimation ? LOADING_CLASS : null;
+  return showLoadingAnimation;
 }
