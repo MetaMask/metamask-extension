@@ -299,7 +299,7 @@ export default function Swap() {
                   dispatch(setBalanceError(balanceError));
                   setTokenFromError(
                     countDecimals(newInputValue) > fromToken.decimals
-                      ? 'too-many-decimals'
+                      ? 'tooManyDecimals'
                       : null,
                   );
                 };
