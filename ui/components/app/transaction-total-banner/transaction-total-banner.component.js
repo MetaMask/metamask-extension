@@ -4,9 +4,11 @@ import PropTypes from 'prop-types';
 import Typography from '../../ui/typography/typography';
 import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
-import GasTiming from '../gas-timing/gas-timing.component';
-
-export default function TransactionTotalBanner({ total, detail, timing }) {
+export default function TransactionTotalBanner({
+  total = '',
+  detail = '',
+  timing,
+}) {
   return (
     <div className="transaction-total-banner">
       <Typography color={COLORS.BLACK} variant={TYPOGRAPHY.H1}>
@@ -21,7 +23,7 @@ export default function TransactionTotalBanner({ total, detail, timing }) {
           {detail}
         </Typography>
       )}
-      {timing && <GasTiming text={timing} />}
+      {timing}
     </div>
   );
 }
@@ -30,10 +32,4 @@ TransactionTotalBanner.propTypes = {
   total: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   detail: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   timing: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-};
-
-TransactionTotalBanner.defaultProps = {
-  total: '',
-  detail: '',
-  timing: '',
 };
