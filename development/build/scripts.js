@@ -21,6 +21,7 @@ const labeledStreamSplicer = require('labeled-stream-splicer').obj;
 const wrapInStream = require('pumpify').obj;
 const Sqrl = require('squirrelly');
 const lavaPack = require('@lavamoat/lavapack');
+const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
 
 const bifyModuleGroups = require('bify-module-groups');
@@ -207,7 +208,22 @@ function createFactoredBuild({
     // set bundle entries
     bundlerOpts.entries = [...entryFiles];
 
+    // setup lavamoat
+    // lavamoat will add lavapack but it will be removed by bify-module-groups
+    // we will re-add it later by installing a lavapack runtime
+    const lavamoatOpts = {
+      policy: path.resolve(__dirname, '../../lavamoat/browserify/policy.json'),
+      policyOverride: path.resolve(
+        __dirname,
+        '../../lavamoat/browserify/policy-override.json',
+      ),
+      writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
+    };
+    Object.assign(bundlerOpts, lavamoatBrowserify.args);
+    bundlerOpts.plugin.push([lavamoatBrowserify, lavamoatOpts]);
+
     // setup bundle factoring with bify-module-groups plugin
+    // note: this will remove lavapack, but its ok bc we manually readd it later
     Object.assign(bundlerOpts, bifyModuleGroups.plugin.args);
     bundlerOpts.plugin = [...bundlerOpts.plugin, [bifyModuleGroups.plugin]];
 
@@ -235,6 +251,7 @@ function createFactoredBuild({
           const filename = `${moduleGroup.label}.js`;
           const childStream = wrapInStream(
             moduleGroup.stream,
+            // we manually readd lavapack here bc bify-module-groups removes it
             lavaPack({ raw: true, hasExports: true, includePrelude: false }),
             source(filename),
           );

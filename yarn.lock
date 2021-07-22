@@ -8544,7 +8544,7 @@ clone@2.1.1:
   resolved "https://registry.yarnpkg.com/clone/-/clone-2.1.1.tgz#d217d1e961118e3ac9a4b8bba3285553bf647cdb"
   integrity sha1-0hfR6WERjjrJpLi7oyhVU79kfNs=
 
-clone@2.1.2, clone@^2.0.0, clone@^2.1.1:
+clone@2.1.2, clone@^2.0.0, clone@^2.1.1, clone@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/clone/-/clone-2.1.2.tgz#1b7f4b9f591f1e8f83670401600345a02887435f"
   integrity sha1-G39Ln1kfHo+DZwQBYANFoCiHQ18=
@@ -8795,7 +8795,7 @@ concat-stream@^1.5.0, concat-stream@^1.5.1, concat-stream@^1.5.2, concat-stream@
     readable-stream "^2.2.2"
     typedarray "^0.0.6"
 
-"concat-stream@github:hugomrdias/concat-stream#feat/smaller":
+concat-stream@^2.0.0, "concat-stream@github:hugomrdias/concat-stream#feat/smaller":
   version "2.0.0"
   resolved "https://codeload.github.com/hugomrdias/concat-stream/tar.gz/057bc7b5d6d8df26c8cf00a3f151b6721a0a8034"
   dependencies:
@@ -17565,6 +17565,26 @@ latest-version@^5.0.0:
   dependencies:
     package-json "^6.3.0"
 
+lavamoat-browserify@^13.1.1:
+  version "13.1.1"
+  resolved "https://registry.yarnpkg.com/lavamoat-browserify/-/lavamoat-browserify-13.1.1.tgz#d9175ccd826fcf7abca39b5d1c00092970a3b5ee"
+  integrity sha512-t6t1xDP33yZcbqihsqY1k+Jhz6EoGAeuzxy7K1dsmyFLcLfNjK3OGmuG6eLNUMOxTKmzOLZ1MLw8BC4tnS0z7g==
+  dependencies:
+    JSONStream "^1.3.5"
+    clone "^2.1.2"
+    combine-source-map "^0.8.0"
+    concat-stream "^2.0.0"
+    duplexify "^4.1.1"
+    json-stable-stringify "^1.0.1"
+    lavamoat-core "^10.0.1"
+    merge-deep "^3.0.2"
+    offset-sourcemap-lines "^1.0.1"
+    pify "^4.0.1"
+    readable-stream "^3.6.0"
+    safe-buffer "^5.1.2"
+    through2 "^3.0.0"
+    umd "^3.0.3"
+
 lavamoat-core@^10.0.1:
   version "10.0.1"
   resolved "https://registry.yarnpkg.com/lavamoat-core/-/lavamoat-core-10.0.1.tgz#155bb4a50ace2e624941f14ca87705b171f6bba9"
@@ -20583,6 +20603,13 @@ observable-webworkers@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/observable-webworkers/-/observable-webworkers-1.0.0.tgz#dcbd484a9644d512accc351962c6e710313fbb68"
   integrity sha512-+cECwCR8IEh8UY5nefQVLO9Cydqpk1izO+o7BABmKjXfJZyEOzBWY3ss5jbOPM6KmEa9aQExvAtTW6tVTOsNAQ==
+
+offset-sourcemap-lines@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/offset-sourcemap-lines/-/offset-sourcemap-lines-1.0.1.tgz#5854dff74b73fc06efcb61d7b721a8113d99be92"
+  integrity sha1-WFTf90tz/Abvy2HXtyGoET2ZvpI=
+  dependencies:
+    source-map "^0.5.0"
 
 on-finished@^2.3.0, on-finished@~2.3.0:
   version "2.3.0"
