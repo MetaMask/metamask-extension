@@ -74,6 +74,7 @@ export default function EditGasPopover({
     estimatedMaximumFiat,
     hasGasErrors,
     gasErrors,
+    onManualChange,
   } = useGasFeeInputs(defaultEstimateToUse);
 
   /**
@@ -216,6 +217,7 @@ export default function EditGasPopover({
             mode={mode}
             transaction={transaction}
             gasErrors={gasErrors}
+            onManualChange={onManualChange}
             {...editGasDisplayProps}
           />
         )}
