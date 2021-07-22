@@ -80,6 +80,33 @@ function getGasFeeEstimate(
 }
 
 /**
+ * This method tries to determine if any estimate level matches the
+ * current maxFeePerGas and maxPriorityFeePerGas values. If we find
+ * a match, we can pre-select a radio button in the RadioGroup
+ */
+function getMatchingEstimateFromGasFees(
+  gasFeeEstimates,
+  maxFeePerGas,
+  maxPriorityFeePerGas,
+) {
+  if (process.env.SHOW_EIP_1559_UI) {
+    let matchingGasFee = null;
+    ['low', 'medium', 'high'].forEach((estimateLevel) => {
+      if (
+        gasFeeEstimates?.[estimateLevel]?.suggestedMaxPriorityFeePerGas ===
+          maxPriorityFeePerGas &&
+        gasFeeEstimates?.[estimateLevel]?.suggestedMaxFeePerGas === maxFeePerGas
+      ) {
+        matchingGasFee = estimateLevel;
+      }
+    });
+    return matchingGasFee;
+  }
+
+  return null;
+}
+
+/**
  * @typedef {Object} GasFeeInputReturnType
  * @property {DecGweiString} [maxFeePerGas] - the maxFeePerGas input value.
  * @property {string} [maxFeePerGasFiat] - the maxFeePerGas converted to the
@@ -144,6 +171,16 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium', transaction) {
     numberOfDecimals: fiatNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY);
 
+  // We need the gas estimates from the GasFeeController in the background.
+  // Calling this hooks initiates polling for new gas estimates and returns the
+  // current estimate.
+  const {
+    gasEstimateType,
+    gasFeeEstimates,
+    isGasEstimatesLoading,
+    estimatedGasFeeTimeBounds,
+  } = useGasFeeEstimates();
+
   // This hook keeps track of a few pieces of transitional state. It is
   // transitional because it is only used to modify a transaction in the
   // metamask (background) state tree.
@@ -168,18 +205,14 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium', transaction) {
       : 21000,
   );
   const [estimateToUse, setInternalEstimateToUse] = useState(
-    transaction ? null : defaultEstimateToUse,
+    transaction
+      ? getMatchingEstimateFromGasFees(
+          gasFeeEstimates,
+          maxFeePerGas,
+          maxPriorityFeePerGas,
+        )
+      : defaultEstimateToUse,
   );
-
-  // We need the gas estimates from the GasFeeController in the background.
-  // Calling this hooks initiates polling for new gas estimates and returns the
-  // current estimate.
-  const {
-    gasEstimateType,
-    gasFeeEstimates,
-    isGasEstimatesLoading,
-    estimatedGasFeeTimeBounds,
-  } = useGasFeeEstimates();
 
   // When a user selects an estimate level, it will wipe out what they have
   // previously put in the inputs. This returns the inputs to the estimated
