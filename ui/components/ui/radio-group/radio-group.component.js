@@ -14,6 +14,7 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
   return (
     <div className="radio-group">
       {options.map((option) => {
+        const checked = option.value === selectedValue;
         return (
           <div className="radio-group__column" key={`${name}-${option.value}`}>
             <label>
@@ -29,7 +30,8 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
                 <input
                   type="radio"
                   name={name}
-                  defaultChecked={option.value === selectedValue}
+                  defaultChecked={checked}
+                  checked={checked}
                   value={option.value}
                   onChange={() => onChange?.(option.value)}
                 />

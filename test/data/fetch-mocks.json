@@ -8,9 +8,21 @@
     "mockMetaMetricsResponse": true
   },
   "swaps": {
-    "featureFlag": {
-      "status": {
-        "active": true
+    "featureFlags": {
+      "bsc": {
+        "mobile_active": false,
+        "extension_active": true,
+        "fallback_to_v1": true
+      },
+      "ethereum": {
+        "mobile_active": false,
+        "extension_active": true,
+        "fallback_to_v1": true
+      },
+      "polygon": {
+        "mobile_active": false,
+        "extension_active": true,
+        "fallback_to_v1": false
       }
     }
   }

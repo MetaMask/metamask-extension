@@ -50,6 +50,7 @@ describe('Transaction Controller', function () {
         return '0xee6b2800';
       },
       networkStore: new ObservableStore(currentNetworkId),
+      getEIP1559Compatibility: () => Promise.resolve(true),
       txHistoryLimit: 10,
       blockTracker: blockTrackerStub,
       signTransaction: (ethTx) =>
@@ -482,6 +483,7 @@ describe('Transaction Controller', function () {
           nonce: '0x4b',
         },
         type: 'sentEther',
+        transaction_envelope_type: 'legacy',
         origin: 'metamask',
         chainId: currentChainId,
         time: 1624408066355,
@@ -737,11 +739,11 @@ describe('Transaction Controller', function () {
       const addTransactionArgs = addTransactionSpy.getCall(0).args[0];
       assert.deepEqual(addTransactionArgs.txParams, expectedTxParams);
 
-      const { lastGasPrice, type } = addTransactionArgs;
+      const { previousGasParams, type } = addTransactionArgs;
       assert.deepEqual(
-        { lastGasPrice, type },
+        { gasPrice: previousGasParams.gasPrice, type },
         {
-          lastGasPrice: '0xa',
+          gasPrice: '0xa',
           type: TRANSACTION_TYPES.RETRY,
         },
       );
@@ -760,14 +762,67 @@ describe('Transaction Controller', function () {
 
       assert.deepEqual(result.txParams, expectedTxParams);
 
-      const { lastGasPrice, type } = result;
+      const { previousGasParams, type } = result;
       assert.deepEqual(
-        { lastGasPrice, type },
+        { gasPrice: previousGasParams.gasPrice, type },
         {
-          lastGasPrice: '0xa',
+          gasPrice: '0xa',
           type: TRANSACTION_TYPES.RETRY,
         },
       );
+    });
+  });
+
+  describe('#signTransaction', function () {
+    let fromTxDataSpy;
+
+    beforeEach(function () {
+      fromTxDataSpy = sinon.spy(TransactionFactory, 'fromTxData');
+    });
+
+    afterEach(function () {
+      fromTxDataSpy.restore();
+    });
+
+    it('sets txParams.type to 0x0 (non-EIP-1559)', async function () {
+      txController.txStateManager._addTransactionsToState([
+        {
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          id: 1,
+          metamaskNetworkId: currentNetworkId,
+          history: [{}],
+          txParams: {
+            from: VALID_ADDRESS_TWO,
+            to: VALID_ADDRESS,
+            gasPrice: '0x77359400',
+            gas: '0x7b0d',
+            nonce: '0x4b',
+          },
+        },
+      ]);
+      await txController.signTransaction('1');
+      assert.equal(fromTxDataSpy.getCall(0).args[0].type, '0x0');
+    });
+
+    it('sets txParams.type to 0x2 (EIP-1559)', async function () {
+      txController.txStateManager._addTransactionsToState([
+        {
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          id: 2,
+          metamaskNetworkId: currentNetworkId,
+          history: [{}],
+          txParams: {
+            from: VALID_ADDRESS_TWO,
+            to: VALID_ADDRESS,
+            maxFeePerGas: '0x77359400',
+            maxPriorityFeePerGas: '0x77359400',
+            gas: '0x7b0d',
+            nonce: '0x4b',
+          },
+        },
+      ]);
+      await txController.signTransaction('2');
+      assert.equal(fromTxDataSpy.getCall(0).args[0].type, '0x2');
     });
   });
 
@@ -838,9 +893,6 @@ describe('Transaction Controller', function () {
         trackTransactionMetricsEventSpy.getCall(0).args[1],
         TRANSACTION_EVENTS.SUBMITTED,
       );
-      assert.deepEqual(trackTransactionMetricsEventSpy.getCall(0).args[2], {
-        gas_limit: txMeta.txParams.gas,
-      });
     });
   });
 
@@ -1218,15 +1270,19 @@ describe('Transaction Controller', function () {
       const expectedPayload = {
         event: 'Transaction Added',
         category: 'Transactions',
-        sensitiveProperties: {
+        properties: {
           chain_id: '0x2a',
-          gas_price: '0x77359400',
-          first_seen: 1624408066355,
           network: '42',
           referrer: 'metamask',
           source: 'user',
-          status: 'unapproved',
           type: 'sentEther',
+        },
+        sensitiveProperties: {
+          gas_price: '2',
+          gas_limit: '0x7b0d',
+          first_seen: 1624408066355,
+          transaction_envelope_type: 'legacy',
+          status: 'unapproved',
         },
       };
 
@@ -1261,15 +1317,19 @@ describe('Transaction Controller', function () {
       const expectedPayload = {
         event: 'Transaction Added',
         category: 'Transactions',
-        sensitiveProperties: {
+        properties: {
           chain_id: '0x2a',
-          gas_price: '0x77359400',
-          first_seen: 1624408066355,
           network: '42',
           referrer: 'other',
           source: 'dapp',
-          status: 'unapproved',
           type: 'sentEther',
+        },
+        sensitiveProperties: {
+          gas_price: '2',
+          gas_limit: '0x7b0d',
+          first_seen: 1624408066355,
+          transaction_envelope_type: 'legacy',
+          status: 'unapproved',
         },
       };
 
@@ -1304,17 +1364,21 @@ describe('Transaction Controller', function () {
       const expectedPayload = {
         event: 'Transaction Added',
         category: 'Transactions',
-        sensitiveProperties: {
-          baz: 3.0,
-          foo: 'bar',
-          chain_id: '0x2a',
-          gas_price: '0x77359400',
-          first_seen: 1624408066355,
+        properties: {
           network: '42',
           referrer: 'other',
           source: 'dapp',
-          status: 'unapproved',
           type: 'sentEther',
+          chain_id: '0x2a',
+        },
+        sensitiveProperties: {
+          baz: 3.0,
+          foo: 'bar',
+          gas_price: '2',
+          gas_limit: '0x7b0d',
+          first_seen: 1624408066355,
+          transaction_envelope_type: 'legacy',
+          status: 'unapproved',
         },
       };
 
@@ -1331,6 +1395,111 @@ describe('Transaction Controller', function () {
         trackMetaMetricsEventSpy.getCall(0).args[0],
         expectedPayload,
       );
+    });
+
+    it('should call _trackMetaMetricsEvent with the correct payload (EIP-1559)', function () {
+      const txMeta = {
+        id: 1,
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        txParams: {
+          from: fromAccount.address,
+          to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          maxFeePerGas: '0x77359400',
+          maxPriorityFeePerGas: '0x77359400',
+          gas: '0x7b0d',
+          nonce: '0x4b',
+        },
+        type: 'sentEther',
+        origin: 'other',
+        chainId: currentChainId,
+        time: 1624408066355,
+        metamaskNetworkId: currentNetworkId,
+      };
+      const expectedPayload = {
+        event: 'Transaction Added',
+        category: 'Transactions',
+        properties: {
+          chain_id: '0x2a',
+          network: '42',
+          referrer: 'other',
+          source: 'dapp',
+          type: 'sentEther',
+        },
+        sensitiveProperties: {
+          baz: 3.0,
+          foo: 'bar',
+          max_fee_per_gas: '2',
+          max_priority_fee_per_gas: '2',
+          gas_limit: '0x7b0d',
+          first_seen: 1624408066355,
+          transaction_envelope_type: 'fee-market',
+          status: 'unapproved',
+        },
+      };
+
+      txController._trackTransactionMetricsEvent(
+        txMeta,
+        TRANSACTION_EVENTS.ADDED,
+        {
+          baz: 3.0,
+          foo: 'bar',
+        },
+      );
+      assert.equal(trackMetaMetricsEventSpy.callCount, 1);
+      assert.deepEqual(
+        trackMetaMetricsEventSpy.getCall(0).args[0],
+        expectedPayload,
+      );
+    });
+  });
+
+  describe('#_getTransactionCompletionTime', function () {
+    let nowStub;
+
+    beforeEach(function () {
+      nowStub = sinon.stub(Date, 'now').returns(1625782016341);
+    });
+
+    afterEach(function () {
+      nowStub.restore();
+    });
+
+    it('calculates completion time (one)', function () {
+      const submittedTime = 1625781997397;
+      const result = txController._getTransactionCompletionTime(submittedTime);
+      assert.equal(result, '19');
+    });
+
+    it('calculates completion time (two)', function () {
+      const submittedTime = 1625781995397;
+      const result = txController._getTransactionCompletionTime(submittedTime);
+      assert.equal(result, '21');
+    });
+  });
+
+  describe('#_getGasValuesInGWEI', function () {
+    it('converts gas values in hex GWEi to dec GWEI (EIP-1559)', function () {
+      const params = {
+        max_fee_per_gas: '0x77359400',
+        max_priority_fee_per_gas: '0x77359400',
+      };
+      const expectedParams = {
+        max_fee_per_gas: '2',
+        max_priority_fee_per_gas: '2',
+      };
+      const result = txController._getGasValuesInGWEI(params);
+      assert.deepEqual(result, expectedParams);
+    });
+
+    it('converts gas values in hex GWEi to dec GWEI (non EIP-1559)', function () {
+      const params = {
+        gas_price: '0x37e11d600',
+      };
+      const expectedParams = {
+        gas_price: '15',
+      };
+      const result = txController._getGasValuesInGWEI(params);
+      assert.deepEqual(result, expectedParams);
     });
   });
 });

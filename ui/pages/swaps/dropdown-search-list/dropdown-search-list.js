@@ -13,7 +13,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import SearchableItemList from '../searchable-item-list';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import UrlIcon from '../../../components/ui/url-icon';
-import ActionableMessage from '../actionable-message';
+import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import ImportToken from '../import-token';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {

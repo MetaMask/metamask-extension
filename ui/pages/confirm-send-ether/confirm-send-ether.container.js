@@ -17,9 +17,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    editTransaction: (txData) => {
+    editTransaction: async (txData) => {
       const { id } = txData;
-      dispatch(editTransaction(ASSET_TYPES.NATIVE, id.toString()));
+      await dispatch(editTransaction(ASSET_TYPES.NATIVE, id.toString()));
       dispatch(clearConfirmTransaction());
     },
   };

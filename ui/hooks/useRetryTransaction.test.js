@@ -8,6 +8,10 @@ import * as methodDataHook from './useMethodData';
 import * as metricEventHook from './useMetricEvent';
 import { useRetryTransaction } from './useRetryTransaction';
 
+jest.mock('./useGasFeeEstimates', () => ({
+  useGasFeeEstimates: jest.fn(),
+}));
+
 describe('useRetryTransaction', () => {
   describe('when transaction meets retry enabled criteria', () => {
     let useSelector;
@@ -53,8 +57,8 @@ describe('useRetryTransaction', () => {
       const { result } = renderHook(() =>
         useRetryTransaction(retryEnabledTransaction, true),
       );
-      const retry = result.current;
-      retry(event);
+      const { retryTransaction } = result.current;
+      retryTransaction(event);
       expect(trackEvent.calledOnce).toStrictEqual(true);
     });
 
@@ -62,8 +66,8 @@ describe('useRetryTransaction', () => {
       const { result } = renderHook(() =>
         useRetryTransaction(retryEnabledTransaction, true),
       );
-      const retry = result.current;
-      await retry(event);
+      const { retryTransaction } = result.current;
+      await retryTransaction(event);
       expect(
         dispatch.calledWith(
           showSidebar({
@@ -108,8 +112,8 @@ describe('useRetryTransaction', () => {
       const { result } = renderHook(() =>
         useRetryTransaction(cancelledTransaction, true),
       );
-      const retry = result.current;
-      await retry(event);
+      const { retryTransaction } = result.current;
+      await retryTransaction(event);
       expect(
         dispatch.calledWith(
           showSidebar({

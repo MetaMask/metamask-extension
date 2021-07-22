@@ -10,9 +10,8 @@ import {
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   NEGATIVE_ETH_ERROR,
 } from '../../pages/send/send.constants';
-import { BASIC_ESTIMATE_STATES } from '../gas/gas.duck';
 import { RINKEBY_CHAIN_ID } from '../../../shared/constants/network';
-import { GAS_LIMITS } from '../../../shared/constants/gas';
+import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
 import sendReducer, {
   initialState,
@@ -42,6 +41,7 @@ jest.mock('../../store/actions', () => {
   return {
     ...actual,
     estimateGas: jest.fn(() => Promise.resolve('0x0')),
+    getGasFeeEstimatesAndStartPolling: jest.fn(() => Promise.resolve()),
     updateTokenType: jest.fn(() => Promise.resolve({ isERC721: false })),
   };
 });
@@ -952,6 +952,11 @@ describe('Send Slice', () => {
       it('should dispatch async action thunk first with pending, then finally fulfilling from minimal state', async () => {
         getState = jest.fn().mockReturnValue({
           metamask: {
+            gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
+            gasFeeEstimates: {},
+            networkDetails: {
+              EIPS: {},
+            },
             accounts: {
               '0xAddress': {
                 address: '0xAddress',
@@ -969,6 +974,7 @@ describe('Send Slice', () => {
             },
           },
           send: initialState,
+
           gas: {
             basicEstimateStatus: 'LOADING',
             basicEstimatesStatus: {
@@ -982,12 +988,12 @@ describe('Send Slice', () => {
         const action = initializeSendState();
         await action(dispatchSpy, getState, undefined);
 
-        expect(dispatchSpy).toHaveBeenCalledTimes(4);
+        expect(dispatchSpy).toHaveBeenCalledTimes(3);
 
         expect(dispatchSpy.mock.calls[0][0].type).toStrictEqual(
           'send/initializeSendState/pending',
         );
-        expect(dispatchSpy.mock.calls[3][0].type).toStrictEqual(
+        expect(dispatchSpy.mock.calls[2][0].type).toStrictEqual(
           'send/initializeSendState/fulfilled',
         );
       });
@@ -999,6 +1005,7 @@ describe('Send Slice', () => {
           ...initialState,
           gas: {
             gasPrice: '0x0',
+            gasPriceEstimate: '0x0',
             gasLimit: '0x5208',
             gasTotal: '0x0',
             minimumGasLimit: '0x5208',
@@ -1006,9 +1013,12 @@ describe('Send Slice', () => {
         };
 
         const action = {
-          type: 'metamask/gas/SET_BASIC_GAS_ESTIMATE_DATA',
-          value: {
-            average: '1',
+          type: 'GAS_FEE_ESTIMATES_UPDATED',
+          payload: {
+            gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+            gasFeeEstimates: {
+              medium: '1',
+            },
           },
         };
 
@@ -1017,40 +1027,6 @@ describe('Send Slice', () => {
         expect(result.gas.gasPrice).toStrictEqual('0x3b9aca00'); // 1000000000
         expect(result.gas.gasLimit).toStrictEqual(gasState.gas.gasLimit);
         expect(result.gas.gasTotal).toStrictEqual('0x1319718a5000');
-      });
-    });
-
-    describe('BASIC_GAS_ESTIMATE_STATUS', () => {
-      it('should invalidate the send status when status is LOADING', () => {
-        const validSendStatusState = {
-          ...initialState,
-          status: SEND_STATUSES.VALID,
-        };
-
-        const action = {
-          type: 'metamask/gas/BASIC_GAS_ESTIMATE_STATUS',
-          value: BASIC_ESTIMATE_STATES.LOADING,
-        };
-
-        const result = sendReducer(validSendStatusState, action);
-
-        expect(result.status).not.toStrictEqual(validSendStatusState.status);
-      });
-
-      it('should invalidate the send status when status is FAILED and use INLINE gas input mode', () => {
-        const validSendStatusState = {
-          ...initialState,
-          status: SEND_STATUSES.VALID,
-        };
-
-        const action = {
-          type: 'metamask/gas/BASIC_GAS_ESTIMATE_STATUS',
-          value: BASIC_ESTIMATE_STATES.FAILED,
-        };
-
-        const result = sendReducer(validSendStatusState, action);
-
-        expect(result.status).not.toStrictEqual(validSendStatusState.status);
       });
     });
   });
@@ -1113,6 +1089,9 @@ describe('Send Slice', () => {
           metamask: {
             blockGasLimit: '',
             selectedAddress: '',
+            provider: {
+              chainId: '0x1',
+            },
           },
           ...defaultSendAmountState.send,
           send: {
@@ -1160,6 +1139,9 @@ describe('Send Slice', () => {
         metamask: {
           blockGasLimit: '',
           selectedAddress: '',
+          provider: {
+            chainId: '0x1',
+          },
         },
         send: {
           account: {
@@ -1341,11 +1323,35 @@ describe('Send Slice', () => {
         nickname: '',
       };
 
-      it('should create an action to update recipient', async () => {
+      it('should create actions to update recipient and recalculate gas limit if the asset type is not set', async () => {
+        global.eth = {
+          getCode: sinon.stub(),
+        };
+
         const updateRecipientState = {
+          metamask: {
+            provider: {
+              chainId: '0x1',
+            },
+          },
           send: {
+            account: {
+              balance: '',
+            },
             asset: {
               type: '',
+            },
+            gas: {
+              gasPrice: '',
+            },
+            recipient: {
+              address: '',
+            },
+            amount: {
+              value: '',
+            },
+            draftTransaction: {
+              userInputHexData: '',
             },
           },
         };
@@ -1356,22 +1362,27 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        const expectedActionResult = [
-          {
-            type: 'send/updateRecipient',
-            payload: recipient,
-          },
-        ];
-
-        expect(actionResult).toHaveLength(1);
-        expect(actionResult).toStrictEqual(expectedActionResult);
+        expect(actionResult).toHaveLength(4);
+        expect(actionResult[0].type).toStrictEqual('send/updateRecipient');
+        expect(actionResult[1].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/pending',
+        );
+        expect(actionResult[2].type).toStrictEqual(
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[3].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
+        );
       });
 
-      it('should create actions to update recipient and recalculate gas limit if the asset is a token', async () => {
+      it('should create actions to reset recipient input and ens, calculate gas and then validate input', async () => {
         const tokenState = {
           metamask: {
             blockGasLimit: '',
             selectedAddress: '',
+            provider: {
+              chainId: '0x1',
+            },
           },
           send: {
             account: {
@@ -1433,6 +1444,13 @@ describe('Send Slice', () => {
               address: 'Address',
               nickname: 'NickName',
             },
+            gas: {
+              gasPrice: '0x1',
+            },
+            amount: {
+              value: '0x1',
+            },
+            draftTransaction: {},
           },
         };
 
@@ -1441,14 +1459,23 @@ describe('Send Slice', () => {
         await store.dispatch(resetRecipientInput());
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(4);
+        expect(actionResult).toHaveLength(7);
         expect(actionResult[0].type).toStrictEqual(
           'send/updateRecipientUserInput',
         );
         expect(actionResult[0].payload).toStrictEqual('');
         expect(actionResult[1].type).toStrictEqual('send/updateRecipient');
-        expect(actionResult[2].type).toStrictEqual('ENS/resetResolution');
+        expect(actionResult[2].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/pending',
+        );
         expect(actionResult[3].type).toStrictEqual(
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[4].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
+        );
+        expect(actionResult[5].type).toStrictEqual('ENS/resetEnsResolution');
+        expect(actionResult[6].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
       });

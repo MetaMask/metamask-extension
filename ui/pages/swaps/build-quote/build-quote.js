@@ -18,7 +18,7 @@ import DropdownSearchList from '../dropdown-search-list';
 import SlippageButtons from '../slippage-buttons';
 import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import ActionableMessage from '../actionable-message';
+import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 
 import {
   fetchQuotesAndSetQuoteState,
@@ -74,6 +74,7 @@ export default function BuildQuote({
   maxSlippage,
   selectedAccountAddress,
   isFeatureFlagLoaded,
+  tokenFromError,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -141,7 +142,9 @@ export default function BuildQuote({
   const toTokenIsNotDefault =
     selectedToToken?.address &&
     !isSwapsDefaultTokenAddress(selectedToToken?.address, chainId);
-  const occurances = Number(selectedToToken?.occurances || 0);
+  const occurrences = Number(
+    selectedToToken?.occurances || selectedToToken?.occurrences || 0,
+  );
   const {
     address: fromTokenAddress,
     symbol: fromTokenSymbol,
@@ -354,16 +357,21 @@ export default function BuildQuote({
 
   let tokenVerificationDescription = '';
   if (blockExplorerTokenLink) {
-    if (occurances === 1) {
+    if (occurrences === 1) {
       tokenVerificationDescription = t('verifyThisTokenOn', [
         <BlockExplorerLink key="block-explorer-link" />,
       ]);
-    } else if (occurances === 0) {
+    } else if (occurrences === 0) {
       tokenVerificationDescription = t('verifyThisUnconfirmedTokenOn', [
         <BlockExplorerLink key="block-explorer-link" />,
       ]);
     }
   }
+
+  const swapYourTokenBalance = t('swapYourTokenBalance', [
+    fromTokenString || '0',
+    fromTokenSymbol,
+  ]);
 
   return (
     <div className="build-quote">
@@ -404,27 +412,34 @@ export default function BuildQuote({
         />
         <div
           className={classnames('build-quote__balance-message', {
-            'build-quote__balance-message--error': balanceError,
+            'build-quote__balance-message--error':
+              balanceError || tokenFromError,
           })}
         >
-          {!balanceError &&
+          {!tokenFromError &&
+            !balanceError &&
             fromTokenSymbol &&
-            t('swapYourTokenBalance', [
-              fromTokenString || '0',
-              fromTokenSymbol,
-            ])}
-          {balanceError && fromTokenSymbol && (
+            swapYourTokenBalance}
+          {!tokenFromError && balanceError && fromTokenSymbol && (
             <div className="build-quite__insufficient-funds">
               <div className="build-quite__insufficient-funds-first">
                 {t('swapsNotEnoughForTx', [fromTokenSymbol])}
               </div>
               <div className="build-quite__insufficient-funds-second">
-                {t('swapYourTokenBalance', [
-                  fromTokenString || '0',
-                  fromTokenSymbol,
-                ])}
+                {swapYourTokenBalance}
               </div>
             </div>
+          )}
+          {tokenFromError && (
+            <>
+              <div className="build-quote__form-error">
+                {t('swapTooManyDecimalsError', [
+                  fromTokenSymbol,
+                  fromTokenDecimals,
+                ])}
+              </div>
+              <div>{swapYourTokenBalance}</div>
+            </>
           )}
         </div>
         <div className="build-quote__swap-arrows-row">
@@ -470,13 +485,13 @@ export default function BuildQuote({
           />
         </div>
         {toTokenIsNotDefault &&
-          (occurances < 2 ? (
+          (occurrences < 2 ? (
             <ActionableMessage
-              type={occurances === 1 ? 'warning' : 'danger'}
+              type={occurrences === 1 ? 'warning' : 'danger'}
               message={
                 <div className="build-quote__token-verification-warning-message">
                   <div className="build-quote__bold">
-                    {occurances === 1
+                    {occurrences === 1
                       ? t('swapTokenVerificationOnlyOneSource')
                       : t('swapTokenVerificationAddedManually')}
                   </div>
@@ -503,7 +518,7 @@ export default function BuildQuote({
                 className="build-quote__bold"
                 key="token-verification-bold-text"
               >
-                {t('swapTokenVerificationSources', [occurances])}
+                {t('swapTokenVerificationSources', [occurrences])}
               </span>
               {blockExplorerTokenLink && (
                 <>
@@ -558,12 +573,13 @@ export default function BuildQuote({
         }}
         submitText={t('swapReviewSwap')}
         disabled={
+          tokenFromError ||
           !isFeatureFlagLoaded ||
           !Number(inputValue) ||
           !selectedToToken?.address ||
           Number(maxSlippage) < 0 ||
           Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
-          (toTokenIsNotDefault && occurances < 2 && !verificationClicked)
+          (toTokenIsNotDefault && occurrences < 2 && !verificationClicked)
         }
         hideCancel
         showTermsOfService
@@ -580,4 +596,5 @@ BuildQuote.propTypes = {
   setMaxSlippage: PropTypes.func,
   selectedAccountAddress: PropTypes.string,
   isFeatureFlagLoaded: PropTypes.bool.isRequired,
+  tokenFromError: PropTypes.string,
 };
