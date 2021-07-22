@@ -34,6 +34,7 @@ import {
   fetchAndSetSwapsGasPriceInfo,
   fetchSwapsLiveness,
   getUseNewSwapsApi,
+  getFromToken,
 } from '../../ducks/swaps/swaps';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -70,6 +71,7 @@ import {
   fetchTopAssets,
   getSwapsTokensReceivedFromTxMeta,
   fetchAggregatorMetadata,
+  countDecimals,
 } from './swaps.util';
 import AwaitingSignatures from './awaiting-signatures';
 import AwaitingSwap from './awaiting-swap';
@@ -94,6 +96,7 @@ export default function Swap() {
   const [inputValue, setInputValue] = useState(fetchParams?.value || '');
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 3);
   const [isFeatureFlagLoaded, setIsFeatureFlagLoaded] = useState(false);
+  const [tokenFromError, setTokenFromError] = useState(null);
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -108,6 +111,7 @@ export default function Swap() {
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const useNewSwapsApi = useSelector(getUseNewSwapsApi);
+  const fromToken = useSelector(getFromToken);
 
   const {
     balance: ethBalance,
@@ -288,10 +292,15 @@ export default function Swap() {
 
                 const onInputChange = (newInputValue, balance) => {
                   setInputValue(newInputValue);
-                  dispatch(
-                    setBalanceError(
-                      new BigNumber(newInputValue || 0).gt(balance || 0),
-                    ),
+                  const balanceError = new BigNumber(newInputValue || 0).gt(
+                    balance || 0,
+                  );
+                  // "setBalanceError" is just a warning, a user can still click on the "Review Swap" button.
+                  dispatch(setBalanceError(balanceError));
+                  setTokenFromError(
+                    countDecimals(newInputValue) > fromToken.decimals
+                      ? 'tooManyDecimals'
+                      : null,
                   );
                 };
 
@@ -304,6 +313,7 @@ export default function Swap() {
                     selectedAccountAddress={selectedAccountAddress}
                     maxSlippage={maxSlippage}
                     isFeatureFlagLoaded={isFeatureFlagLoaded}
+                    tokenFromError={tokenFromError}
                   />
                 );
               }}
