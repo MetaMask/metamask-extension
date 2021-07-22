@@ -17,6 +17,7 @@ import { getTokenData, sumHexes } from '../../helpers/utils/transactions.util';
 
 import { conversionUtil } from '../../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from '../../selectors/custom-gas';
+import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 
 // Actions
 const createActionType = (action) => `metamask/confirm-transaction/${action}`;
@@ -283,8 +284,8 @@ export function setTransactionToConfirm(transactionId) {
 
         const tokenData = getTokenData(data);
         const tokens = getTokens(state);
-        const currentToken = tokens?.find(
-          ({ address }) => tokenAddress === address,
+        const currentToken = tokens?.find(({ address }) =>
+          isEqualCaseInsensitive(tokenAddress, address),
         );
 
         dispatch(

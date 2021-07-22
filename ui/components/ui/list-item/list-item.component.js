@@ -19,7 +19,6 @@ export default function ListItem({
     className,
     subtitle || children ? '' : 'list-item--single-content-row',
   );
-
   return (
     <div
       className={primaryClassName}

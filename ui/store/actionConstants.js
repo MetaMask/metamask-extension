@@ -47,7 +47,6 @@ export const SET_NEXT_NONCE = 'SET_NEXT_NONCE';
 // config screen
 export const SET_RPC_TARGET = 'SET_RPC_TARGET';
 export const SET_PROVIDER_TYPE = 'SET_PROVIDER_TYPE';
-export const UPDATE_TOKENS = 'UPDATE_TOKENS';
 export const SET_HARDWARE_WALLET_DEFAULT_HD_PATH =
   'SET_HARDWARE_WALLET_DEFAULT_HD_PATH';
 // loading overlay

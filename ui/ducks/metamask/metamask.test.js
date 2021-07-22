@@ -174,24 +174,6 @@ describe('MetaMask Reducers', () => {
     });
   });
 
-  it('updates tokens', () => {
-    const newTokens = {
-      address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
-      decimals: 18,
-      symbol: 'META',
-    };
-
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.UPDATE_TOKENS,
-        newTokens,
-      },
-    );
-
-    expect(state.tokens).toStrictEqual(newTokens);
-  });
-
   it('toggles account menu', () => {
     const state = reduceMetamask(
       {},

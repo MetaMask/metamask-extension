@@ -50,6 +50,10 @@ export function isDefaultMetaMaskChain(chainId) {
   return false;
 }
 
+export function isEqualCaseInsensitive(value1, value2) {
+  return value1?.toLowerCase() === value2?.toLowerCase();
+}
+
 export function valuesFor(obj) {
   if (!obj) {
     return [];

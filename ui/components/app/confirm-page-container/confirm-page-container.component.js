@@ -41,7 +41,6 @@ export default class ConfirmPageContainer extends Component {
     detailsComponent: PropTypes.node,
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
-    assetImage: PropTypes.string,
     warning: PropTypes.string,
     unapprovedTxCount: PropTypes.number,
     origin: PropTypes.string.isRequired,
@@ -95,7 +94,6 @@ export default class ConfirmPageContainer extends Component {
       identiconAddress,
       nonce,
       unapprovedTxCount,
-      assetImage,
       warning,
       totalTx,
       positionOfCurrentTx,
@@ -115,7 +113,6 @@ export default class ConfirmPageContainer extends Component {
       handleCloseEditGas,
       currentTransaction,
     } = this.props;
-    const renderAssetImage = contentComponent || !identiconAddress;
 
     return (
       <div className="page-container">
@@ -145,7 +142,6 @@ export default class ConfirmPageContainer extends Component {
               recipientAddress={toAddress}
               recipientEns={toEns}
               recipientNickname={toNickname}
-              assetImage={renderAssetImage ? assetImage : undefined}
             />
           )}
         </ConfirmPageContainerHeader>
@@ -162,7 +158,6 @@ export default class ConfirmPageContainer extends Component {
             errorKey={errorKey}
             identiconAddress={identiconAddress}
             nonce={nonce}
-            assetImage={assetImage}
             warning={warning}
             onCancelAll={onCancelAll}
             onCancel={onCancel}

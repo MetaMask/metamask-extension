@@ -1105,10 +1105,6 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        {
-          type: 'UPDATE_TOKENS',
-          newTokens: tokenDetails,
-        },
       ];
 
       await store.dispatch(
@@ -1118,38 +1114,6 @@ describe('Actions', () => {
           decimals: 18,
         }),
       );
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-
-    it('errors when addToken in background throws', async () => {
-      const store = mockStore();
-
-      const addTokenStub = sinon
-        .stub()
-        .callsFake((_, __, ___, ____, cb) => cb(new Error('error')));
-
-      background.getApi.returns({
-        addToken: addTokenStub,
-      });
-
-      actions._setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
-      ];
-
-      await expect(
-        store.dispatch(
-          actions.addToken({
-            address: '_',
-            symbol: '',
-            decimals: 0,
-          }),
-        ),
-      ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
     });

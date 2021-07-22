@@ -5,6 +5,7 @@ import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
 import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
 import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts';
 import { MINUTE } from '../../../shared/constants/time';
+import { isEqualCaseInsensitive } from '../../../ui/helpers/utils/util';
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = MINUTE * 3;
@@ -24,7 +25,9 @@ export default class DetectTokensController {
     preferences,
     network,
     keyringMemStore,
+    tokensController,
   } = {}) {
+    this.tokensController = tokensController;
     this.preferences = preferences;
     this.interval = interval;
     this.network = network;
@@ -48,7 +51,9 @@ export default class DetectTokensController {
       if (
         contracts[contractAddress].erc20 &&
         !this.tokenAddresses.includes(contractAddress.toLowerCase()) &&
-        !this.hiddenTokens.includes(contractAddress.toLowerCase())
+        !this.hiddenTokens.find((token) =>
+          isEqualCaseInsensitive(token.address, contractAddress),
+        )
       ) {
         tokensToDetect.push(contractAddress);
       }
@@ -64,17 +69,18 @@ export default class DetectTokensController {
       );
       return;
     }
-
-    tokensToDetect.forEach((tokenAddress, index) => {
-      const balance = result[index];
-      if (balance && !balance.isZero()) {
-        this._preferences.addToken(
-          tokenAddress,
-          contracts[tokenAddress].symbol,
-          contracts[tokenAddress].decimals,
-        );
-      }
-    });
+    await Promise.all(
+      tokensToDetect.map(async (tokenAddress, index) => {
+        const balance = result[index];
+        if (balance && !balance.isZero()) {
+          await this.tokensController.addToken(
+            tokenAddress,
+            contracts[tokenAddress].symbol,
+            contracts[tokenAddress].decimals,
+          );
+        }
+      }),
+    );
   }
 
   async _getTokenBalances(tokens) {
@@ -127,16 +133,16 @@ export default class DetectTokensController {
       return;
     }
     this._preferences = preferences;
-    const currentTokens = preferences.store.getState().tokens;
+    const currentTokens = this.tokensController.state.tokens;
     this.tokenAddresses = currentTokens
       ? currentTokens.map((token) => token.address)
       : [];
-    this.hiddenTokens = preferences.store.getState().hiddenTokens;
-    preferences.store.subscribe(({ tokens = [], hiddenTokens = [] }) => {
+    this.hiddenTokens = this.tokensController.state.ignoredTokens;
+    this.tokensController.subscribe(({ tokens = [], ignoredTokens = [] }) => {
       this.tokenAddresses = tokens.map((token) => {
         return token.address;
       });
-      this.hiddenTokens = hiddenTokens;
+      this.hiddenTokens = ignoredTokens;
     });
     preferences.store.subscribe(({ selectedAddress }) => {
       if (this.selectedAddress !== selectedAddress) {

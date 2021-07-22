@@ -46,7 +46,7 @@ import Home from './home.component';
 const mapStateToProps = (state) => {
   const { metamask, appState } = state;
   const {
-    suggestedTokens,
+    suggestedAssets,
     seedPhraseBackedUp,
     tokens,
     threeBoxSynced,
@@ -83,7 +83,7 @@ const mapStateToProps = (state) => {
 
   return {
     forgottenPassword,
-    suggestedTokens,
+    suggestedAssets,
     swapsEnabled,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     shouldShowSeedPhraseReminder:

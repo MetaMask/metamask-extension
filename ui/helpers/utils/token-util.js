@@ -81,8 +81,8 @@ async function getDecimals(tokenAddress) {
 }
 
 export async function getSymbolAndDecimals(tokenAddress, existingTokens = []) {
-  const existingToken = existingTokens.find(
-    ({ address }) => tokenAddress === address,
+  const existingToken = existingTokens.find(({ address }) =>
+    util.isEqualCaseInsensitive(tokenAddress, address),
   );
 
   if (existingToken) {

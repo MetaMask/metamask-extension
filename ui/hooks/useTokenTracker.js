@@ -3,6 +3,7 @@ import TokenTracker from '@metamask/eth-token-tracker';
 import { useSelector } from 'react-redux';
 import { getCurrentChainId, getSelectedAddress } from '../selectors';
 import { SECOND } from '../../shared/constants/time';
+import { isEqualCaseInsensitive } from '../helpers/utils/util';
 import { useEqualityCheck } from './useEqualityCheck';
 
 export function useTokenTracker(
@@ -26,10 +27,14 @@ export function useTokenTracker(
       // TODO: improve this pattern for adding this field when we improve support for
       // EIP721 tokens.
       const matchingTokensWithIsERC721Flag = matchingTokens.map((token) => {
-        const additionalTokenData = memoizedTokens.find(
-          (t) => t.address === token.address,
+        const additionalTokenData = memoizedTokens.find((t) =>
+          isEqualCaseInsensitive(t.address, token.address),
         );
-        return { ...token, isERC721: additionalTokenData?.isERC721 };
+        return {
+          ...token,
+          isERC721: additionalTokenData?.isERC721,
+          image: additionalTokenData?.image,
+        };
       });
       setTokensWithBalances(matchingTokensWithIsERC721Flag);
       setLoading(false);
@@ -98,7 +103,7 @@ export function useTokenTracker(
       return;
     }
 
-    if (memoizedTokens.length === 0) {
+    if (memoizedTokens?.length === 0) {
       // sets loading state to false and token list to empty
       updateBalances([]);
     }

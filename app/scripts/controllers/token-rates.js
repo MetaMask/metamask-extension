@@ -20,11 +20,11 @@ export default class TokenRatesController {
    *
    * @param {Object} [config] - Options to configure controller
    */
-  constructor({ preferences, getNativeCurrency } = {}) {
+  constructor({ tokensController, getNativeCurrency } = {}) {
     this.store = new ObservableStore();
     this.getNativeCurrency = getNativeCurrency;
-    this.tokens = preferences.getState().tokens;
-    preferences.subscribe(({ tokens = [] }) => {
+    this.tokens = tokensController.state.tokens;
+    tokensController.subscribe(({ tokens = [] }) => {
       this.tokens = tokens;
     });
   }

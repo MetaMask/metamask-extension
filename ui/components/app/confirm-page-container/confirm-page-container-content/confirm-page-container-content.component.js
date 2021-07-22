@@ -20,7 +20,6 @@ export default class ConfirmPageContainerContent extends Component {
     hideSubtitle: PropTypes.bool,
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
-    assetImage: PropTypes.string,
     subtitleComponent: PropTypes.node,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     titleComponent: PropTypes.node,
@@ -77,7 +76,6 @@ export default class ConfirmPageContainerContent extends Component {
       hideSubtitle,
       identiconAddress,
       nonce,
-      assetImage,
       detailsComponent,
       dataComponent,
       warning,
@@ -111,7 +109,6 @@ export default class ConfirmPageContainerContent extends Component {
           hideSubtitle={hideSubtitle}
           identiconAddress={identiconAddress}
           nonce={nonce}
-          assetImage={assetImage}
           origin={origin}
         />
         {this.renderContent()}

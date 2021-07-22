@@ -46,7 +46,7 @@ export default class Home extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
-    suggestedTokens: PropTypes.object,
+    suggestedAssets: PropTypes.array,
     unconfirmedTransactionsCount: PropTypes.number,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
@@ -84,7 +84,6 @@ export default class Home extends PureComponent {
   };
 
   state = {
-    mounted: false,
     canShowBlockageNotification: true,
   };
 
@@ -93,7 +92,7 @@ export default class Home extends PureComponent {
       firstPermissionsRequestId,
       history,
       isNotification,
-      suggestedTokens = {},
+      suggestedAssets = [],
       totalUnapprovedCount,
       unconfirmedTransactionsCount,
       haveSwapsQuotes,
@@ -101,8 +100,6 @@ export default class Home extends PureComponent {
       swapsFetchParams,
       pendingConfirmations,
     } = this.props;
-
-    this.setState({ mounted: true });
     if (isNotification && totalUnapprovedCount === 0) {
       global.platform.closeCurrentWindow();
     } else if (!isNotification && showAwaitingSwapScreen) {
@@ -115,7 +112,7 @@ export default class Home extends PureComponent {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
     } else if (unconfirmedTransactionsCount > 0) {
       history.push(CONFIRM_TRANSACTION_ROUTE);
-    } else if (Object.keys(suggestedTokens).length > 0) {
+    } else if (suggestedAssets.length > 0) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
     } else if (pendingConfirmations.length > 0) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
@@ -126,7 +123,7 @@ export default class Home extends PureComponent {
     {
       firstPermissionsRequestId,
       isNotification,
-      suggestedTokens,
+      suggestedAssets,
       totalUnapprovedCount,
       unconfirmedTransactionsCount,
       haveSwapsQuotes,
@@ -141,7 +138,7 @@ export default class Home extends PureComponent {
       } else if (
         firstPermissionsRequestId ||
         unconfirmedTransactionsCount > 0 ||
-        Object.keys(suggestedTokens).length > 0 ||
+        suggestedAssets.length > 0 ||
         (!isNotification &&
           (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
       ) {
