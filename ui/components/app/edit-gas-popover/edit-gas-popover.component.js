@@ -75,7 +75,7 @@ export default function EditGasPopover({
     hasGasErrors,
     gasErrors,
     onManualChange,
-  } = useGasFeeInputs(defaultEstimateToUse);
+  } = useGasFeeInputs(defaultEstimateToUse, transaction);
 
   /**
    * Temporary placeholder, this should be managed by the parent component but
@@ -120,6 +120,12 @@ export default function EditGasPopover({
         dispatch(createSpeedUpTransaction(transaction.id, newGasSettings));
         break;
       case EDIT_GAS_MODES.MODIFY_IN_PLACE:
+        // TODO:  This shouldn't be required by prevents the following error:
+        // Error: Invalid transaction params: specified gasPrice but also included maxFeePerGas, these cannot be mixed
+        if (process.env.SHOW_EIP_1559_UI) {
+          delete transaction.txParams.gasPrice;
+        }
+
         dispatch(
           updateTransaction({
             ...transaction,
