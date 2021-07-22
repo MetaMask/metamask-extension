@@ -2634,15 +2634,16 @@
     semver "^7.3.4"
     yargs "^16.2.0"
 
-"@lavamoat/lavapack@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@lavamoat/lavapack/-/lavapack-1.1.0.tgz#775b0f3fe855a76c35d7d91409269b27189b3de2"
-  integrity sha512-KhBBdcx4rH6LS1DwFfTFoHqAun9A4PDtIJNRXZHa1cXXbeoYyVDxQ4KA8+9E7mbICvJfUa1SpHx+v5cKwSl2dQ==
+"@lavamoat/lavapack@^1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@lavamoat/lavapack/-/lavapack-1.3.2.tgz#8c8e5f3cf6604a3046516ec9ac914426c6bf6c32"
+  integrity sha512-j4fWJnWID5UvXnGvDo8b0lIPshrPhFeff3NXTbyi2Z0lzMl+5ycBprrhlAYCayi+/SmQiAYgoNmZezoevVy3Lw==
   dependencies:
     JSONStream "^1.3.5"
     combine-source-map "^0.8.0"
     convert-source-map "^1.7.0"
     json-stable-stringify "^1.0.1"
+    lavamoat-core "^10.1.0"
     through2 "^4.0.2"
     umd "^3.0.3"
 
@@ -17229,6 +17230,17 @@ lavamoat-core@^10.0.1:
   version "10.0.1"
   resolved "https://registry.yarnpkg.com/lavamoat-core/-/lavamoat-core-10.0.1.tgz#155bb4a50ace2e624941f14ca87705b171f6bba9"
   integrity sha512-8I/DmRNQ3F8EAparNTR++EWMv4F0sZscKCUWt80NjuNF0mZ0aqDkK/EDsktrhjawY2C5Sq0zQ8eCrWGR7blU8Q==
+  dependencies:
+    fromentries "^1.2.0"
+    json-stable-stringify "^1.0.1"
+    lavamoat-tofu "^5.1.3"
+    merge-deep "^3.0.2"
+    resolve "^1.15.1"
+
+lavamoat-core@^10.1.0:
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/lavamoat-core/-/lavamoat-core-10.1.0.tgz#c4d600fb7a0de6ade84d351b4884c0f0b6c39045"
+  integrity sha512-1wRAqficRN1oV4m5LVV4zmpiqBaOFmHtN/j98qUMEWmGkdtN7+Vf5VTQ+XV+r4ehMjk3oc8ulhiXnrQ28EShVA==
   dependencies:
     fromentries "^1.2.0"
     json-stable-stringify "^1.0.1"
