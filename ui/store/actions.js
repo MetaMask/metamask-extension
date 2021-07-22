@@ -1,5 +1,6 @@
 import pify from 'pify';
 import log from 'loglevel';
+import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
 import getBuyEthUrl from '../../app/scripts/lib/buy-eth-url';
 import {
@@ -2712,6 +2713,19 @@ export function setLedgerLivePreference(value) {
     dispatch(showLoadingIndication());
     await promisifiedBackground.setLedgerLivePreference(value);
     dispatch(hideLoadingIndication());
+  };
+}
+
+export function captureSingleException(error) {
+  return async (dispatch, getState) => {
+    const { singleExceptions } = getState().appState;
+    if (!(error in singleExceptions)) {
+      dispatch({
+        type: actionConstants.CAPTURE_SINGLE_EXCEPTION,
+        value: error,
+      });
+      captureException(Error(error));
+    }
   };
 }
 

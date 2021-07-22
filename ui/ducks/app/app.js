@@ -50,6 +50,9 @@ export default function reduceApp(state = {}, action) {
     openMetaMaskTabs: {},
     currentWindowTab: {},
     showWhatsNewPopup: true,
+    singleExceptions: {
+      testKey: null,
+    },
     ...state,
   };
 
@@ -344,6 +347,15 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         showWhatsNewPopup: false,
+      };
+
+    case actionConstants.CAPTURE_SINGLE_EXCEPTION:
+      return {
+        ...appState,
+        singleExceptions: {
+          ...appState.singleExceptions,
+          [action.value]: null,
+        },
       };
 
     default:
