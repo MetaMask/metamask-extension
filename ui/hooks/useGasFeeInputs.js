@@ -9,6 +9,7 @@ import {
 } from '../../shared/modules/gas.utils';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import {
+  hexWEIToDecGWEI,
   decGWEIToHexWEI,
   decimalToHex,
 } from '../helpers/utils/conversions.util';
@@ -123,7 +124,7 @@ function getGasFeeEstimate(
  *  './useGasFeeEstimates'
  * ).GasEstimates} - gas fee input state and the GasFeeEstimates object
  */
-export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
+export function useGasFeeInputs(defaultEstimateToUse = 'medium', transaction) {
   // We need to know whether to show fiat conversions or not, so that we can
   // default our fiat values to empty strings if showing fiat is not wanted or
   // possible.
@@ -146,12 +147,28 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
   // This hook keeps track of a few pieces of transitional state. It is
   // transitional because it is only used to modify a transaction in the
   // metamask (background) state tree.
-  const [maxFeePerGas, setMaxFeePerGas] = useState(null);
-  const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(null);
-  const [gasPrice, setGasPrice] = useState(null);
-  const [gasLimit, setGasLimit] = useState(21000);
+  const [maxFeePerGas, setMaxFeePerGas] = useState(
+    transaction?.txParams?.maxFeePerGas
+      ? Number(hexWEIToDecGWEI(transaction.txParams.maxFeePerGas))
+      : null,
+  );
+  const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(
+    transaction?.txParams?.maxPriorityFeePerGas
+      ? Number(hexWEIToDecGWEI(transaction.txParams.maxPriorityFeePerGas))
+      : null,
+  );
+  const [gasPrice, setGasPrice] = useState(
+    transaction?.txParams?.gasPrice
+      ? Number(hexWEIToDecGWEI(transaction.txParams.gasPrice))
+      : null,
+  );
+  const [gasLimit, setGasLimit] = useState(
+    transaction?.txParams?.gasLimit
+      ? Number(hexWEIToDecGWEI(transaction.txParams.gasLimit))
+      : 21000,
+  );
   const [estimateToUse, setInternalEstimateToUse] = useState(
-    defaultEstimateToUse,
+    transaction ? null : defaultEstimateToUse,
   );
 
   // We need the gas estimates from the GasFeeController in the background.
