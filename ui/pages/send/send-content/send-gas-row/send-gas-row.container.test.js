@@ -8,12 +8,7 @@ import {
   setCustomGasLimit,
 } from '../../../../ducks/gas/gas.duck';
 
-import {
-  showGasButtonGroup,
-  setGasPrice,
-  setGasTotal,
-  setGasLimit,
-} from '../../../../ducks/send/send.duck';
+import { updateGasPrice, updateGasLimit } from '../../../../ducks/send';
 
 let mapDispatchToProps;
 let mergeProps;
@@ -26,9 +21,15 @@ jest.mock('react-redux', () => ({
   },
 }));
 
-jest.mock('../../../../selectors', () => ({
-  getSendMaxModeState: (s) => `mockMaxModeOn:${s}`,
-}));
+jest.mock('../../../../ducks/send', () => {
+  const original = jest.requireActual('../../../../ducks/send');
+  return {
+    ...original,
+    getSendMaxModeState: (s) => `mockMaxModeOn:${s}`,
+    updateGasPrice: jest.fn(),
+    updateGasLimit: jest.fn(),
+  };
+});
 
 jest.mock('../../send.utils.js', () => ({
   isBalanceSufficient: ({ amount, gasTotal, balance, conversionRate }) =>
@@ -39,13 +40,6 @@ jest.mock('../../send.utils.js', () => ({
 
 jest.mock('../../../../store/actions', () => ({
   showModal: jest.fn(),
-}));
-
-jest.mock('../../../../ducks/send/send.duck', () => ({
-  showGasButtonGroup: jest.fn(),
-  setGasPrice: jest.fn(),
-  setGasTotal: jest.fn(),
-  setGasLimit: jest.fn(),
 }));
 
 jest.mock('../../../../ducks/gas/gas.duck', () => ({
@@ -77,36 +71,21 @@ describe('send-gas-row container', () => {
       });
     });
 
-    describe('setGasPrice()', () => {
+    describe('updateGasPrice()', () => {
       it('should dispatch an action', () => {
-        mapDispatchToPropsObject.setGasPrice({
-          gasPrice: 'mockNewPrice',
-          gasLimit: 'mockLimit',
-        });
-        expect(dispatchSpy.calledThrice).toStrictEqual(true);
-        expect(setGasPrice).toHaveBeenCalled();
+        mapDispatchToPropsObject.updateGasPrice('mockNewPrice');
+        expect(dispatchSpy.calledTwice).toStrictEqual(true);
+        expect(updateGasPrice).toHaveBeenCalled();
         expect(setCustomGasPrice).toHaveBeenCalledWith('mockNewPrice');
-        expect(setGasTotal).toHaveBeenCalled();
-        expect(setGasTotal).toHaveBeenCalledWith('mockLimitmockNewPrice');
       });
     });
 
-    describe('setGasLimit()', () => {
+    describe('updateGasLimit()', () => {
       it('should dispatch an action', () => {
-        mapDispatchToPropsObject.setGasLimit('mockNewLimit', 'mockPrice');
-        expect(dispatchSpy.calledThrice).toStrictEqual(true);
-        expect(setGasLimit).toHaveBeenCalled();
+        mapDispatchToPropsObject.updateGasLimit('mockNewLimit');
+        expect(dispatchSpy.calledTwice).toStrictEqual(true);
+        expect(updateGasLimit).toHaveBeenCalled();
         expect(setCustomGasLimit).toHaveBeenCalledWith('mockNewLimit');
-        expect(setGasTotal).toHaveBeenCalled();
-        expect(setGasTotal).toHaveBeenCalledWith('mockNewLimitmockPrice');
-      });
-    });
-
-    describe('showGasButtonGroup()', () => {
-      it('should dispatch an action', () => {
-        mapDispatchToPropsObject.showGasButtonGroup();
-        expect(dispatchSpy.calledOnce).toStrictEqual(true);
-        expect(showGasButtonGroup).toHaveBeenCalled();
       });
     });
 
@@ -129,7 +108,7 @@ describe('send-gas-row container', () => {
         someOtherStateProp: 'baz',
       };
       const dispatchProps = {
-        setGasPrice: sinon.spy(),
+        updateGasPrice: sinon.spy(),
         someOtherDispatchProp: sinon.spy(),
       };
       const ownProps = { someOwnProp: 123 };
@@ -144,9 +123,11 @@ describe('send-gas-row container', () => {
       ).toStrictEqual('bar');
       expect(result.someOwnProp).toStrictEqual(123);
 
-      expect(dispatchProps.setGasPrice.callCount).toStrictEqual(0);
-      result.gasPriceButtonGroupProps.handleGasPriceSelection();
-      expect(dispatchProps.setGasPrice.callCount).toStrictEqual(1);
+      expect(dispatchProps.updateGasPrice.callCount).toStrictEqual(0);
+      result.gasPriceButtonGroupProps.handleGasPriceSelection({
+        gasPrice: undefined,
+      });
+      expect(dispatchProps.updateGasPrice.callCount).toStrictEqual(1);
 
       expect(dispatchProps.someOtherDispatchProp.callCount).toStrictEqual(0);
       result.someOtherDispatchProp();

@@ -31,7 +31,7 @@ import {
 } from '../../store/actions';
 import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
-import { getSwapsFeatureLiveness } from '../../ducks/swaps/swaps';
+import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -60,7 +60,7 @@ const mapStateToProps = (state) => {
   const accountBalance = getCurrentEthBalance(state);
   const { forgottenPassword, threeBoxLastUpdated } = appState;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
-  const swapsEnabled = getSwapsFeatureLiveness(state);
+  const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
 
   const envType = getEnvironmentType();

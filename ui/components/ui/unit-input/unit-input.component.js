@@ -1,7 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { removeLeadingZeroes } from '../../../pages/send/send.utils';
+
+function removeLeadingZeroes(str) {
+  return str.replace(/^0*(?=\d)/u, '');
+}
 
 /**
  * Component that attaches a suffix or unit of measurement trailing user input, ex. 'ETH'. Also
@@ -40,6 +43,18 @@ export default class UnitInput extends PureComponent {
 
   handleFocus = () => {
     this.unitInput.focus();
+  };
+
+  handleInputFocus = ({ target: { value } }) => {
+    if (value === '0') {
+      this.setState({ value: '' });
+    }
+  };
+
+  handleInputBlur = ({ target: { value } }) => {
+    if (value === '') {
+      this.setState({ value: '0' });
+    }
   };
 
   handleChange = (event) => {
@@ -85,6 +100,8 @@ export default class UnitInput extends PureComponent {
               value={value}
               placeholder={placeholder}
               onChange={this.handleChange}
+              onBlur={this.handleInputBlur}
+              onFocus={this.handleInputFocus}
               style={{ width: this.getInputWidth(value) }}
               ref={(ref) => {
                 this.unitInput = ref;

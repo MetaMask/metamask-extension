@@ -141,6 +141,7 @@ describe('TokenInput Component', () => {
             }}
             tokenExchangeRates={{ '0x1': 2 }}
             showFiat
+            currentCurrency="usd"
           />
         </Provider>,
       );
@@ -278,6 +279,7 @@ describe('TokenInput Component', () => {
             }}
             tokenExchangeRates={{ '0x1': 2 }}
             showFiat
+            currentCurrency="usd"
           />
         </Provider>,
       );

@@ -1,0 +1,35 @@
+.advanced-gas-controls {
+  &__row {
+    margin-bottom: 20px;
+  }
+
+  &__row-heading {
+    display: flex;
+  }
+
+  .info-tooltip {
+    display: inline-block;
+  }
+
+  &__row-heading-detail {
+    flex-grow: 1;
+    align-self: center;
+  }
+
+  .form-field__row--error .form-field__heading-title h6 {
+    color: $error-1;
+
+    & path {
+      fill: $error-1;
+    }
+  }
+
+  h6 {
+    padding-bottom: 6px;
+    margin-inline-end: 6px;
+  }
+
+  path {
+    fill: #dadada;
+  }
+}

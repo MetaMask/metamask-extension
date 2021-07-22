@@ -159,7 +159,7 @@ const contractExchangeRatesSelector = (state) =>
 
 const tokenDecimalsSelector = createSelector(
   tokenPropsSelector,
-  (tokenProps) => tokenProps && tokenProps.tokenDecimals,
+  (tokenProps) => tokenProps && tokenProps.decimals,
 );
 
 const tokenDataArgsSelector = createSelector(
@@ -223,9 +223,7 @@ export const transactionFeeSelector = function (state, txData) {
 
   // if the gas price from our infura endpoint is null or undefined
   // use the metaswap average price estimation as a fallback
-  let {
-    txParams: { gasPrice },
-  } = txData;
+  let { txParams: { gasPrice } = {} } = txData;
 
   if (!gasPrice) {
     gasPrice = getAveragePriceEstimateInHexWEI(state) || '0x0';

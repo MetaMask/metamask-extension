@@ -14,7 +14,10 @@ wget -O "${CHROME_BINARY}" -t 5 "${CHROME_BINARY_URL}"
 
 if [[ $(shasum -a 512 "${CHROME_BINARY}" | cut '--delimiter= ' -f1) != "${CHROME_BINARY_SHA512SUM}" ]]
 then
+  echo "Google Chrome binary checksum did not match."
   exit 1
+else
+  echo "Google Chrome binary checksum verified."
 fi
 
 (sudo dpkg -i "${CHROME_BINARY}" || sudo apt-get -fy install)

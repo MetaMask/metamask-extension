@@ -9,10 +9,10 @@ import {
 } from '../../../../ducks/gas/gas.duck';
 
 import {
-  hideGasButtonGroup,
-  setGasLimit,
-  setGasPrice,
-} from '../../../../ducks/send/send.duck';
+  useCustomGas,
+  updateGasLimit,
+  updateGasPrice,
+} from '../../../../ducks/send';
 
 let mapDispatchToProps;
 let mergeProps;
@@ -32,8 +32,6 @@ jest.mock('../../../../selectors', () => ({
     `mockRenderableBasicEstimateData:${Object.keys(s).length}`,
   getDefaultActiveButtonIndex: (a, b) => a + b,
   getCurrentEthBalance: (state) => state.metamask.balance || '0x0',
-  getSendToken: () => null,
-  getTokenBalance: (state) => state.send.tokenBalance || '0x0',
   getCustomGasPrice: (state) => state.gas.customData.price || '0x0',
   getCustomGasLimit: (state) => state.gas.customData.limit || '0x0',
   getCurrentCurrency: jest.fn().mockReturnValue('usd'),
@@ -51,17 +49,25 @@ jest.mock('../../../../store/actions', () => ({
   updateTransaction: jest.fn(),
 }));
 
+jest.mock('../../../../ducks/metamask/metamask.js', () => ({
+  updateTransactionGasFees: jest.fn(),
+}));
+
 jest.mock('../../../../ducks/gas/gas.duck', () => ({
   setCustomGasPrice: jest.fn(),
   setCustomGasLimit: jest.fn(),
   resetCustomData: jest.fn(),
 }));
 
-jest.mock('../../../../ducks/send/send.duck', () => ({
-  hideGasButtonGroup: jest.fn(),
-  setGasLimit: jest.fn(),
-  setGasPrice: jest.fn(),
-}));
+jest.mock('../../../../ducks/send', () => {
+  const { ASSET_TYPES } = jest.requireActual('../../../../ducks/send');
+  return {
+    useCustomGas: jest.fn(),
+    updateGasLimit: jest.fn(),
+    updateGasPrice: jest.fn(),
+    getSendAsset: jest.fn(() => ({ type: ASSET_TYPES.NATIVE })),
+  };
+});
 
 require('./gas-modal-page-container.container');
 
@@ -77,13 +83,14 @@ describe('gas-modal-page-container container', () => {
 
     afterEach(() => {
       dispatchSpy.resetHistory();
+      jest.clearAllMocks();
     });
 
-    describe('hideGasButtonGroup()', () => {
-      it('should dispatch a hideGasButtonGroup action', () => {
-        mapDispatchToPropsObject.hideGasButtonGroup();
+    describe('useCustomGas()', () => {
+      it('should dispatch a useCustomGas action', () => {
+        mapDispatchToPropsObject.useCustomGas();
         expect(dispatchSpy.calledOnce).toStrictEqual(true);
-        expect(hideGasButtonGroup).toHaveBeenCalled();
+        expect(useCustomGas).toHaveBeenCalled();
       });
     });
 
@@ -126,24 +133,13 @@ describe('gas-modal-page-container container', () => {
     });
 
     describe('setGasData()', () => {
-      it('should dispatch a setGasPrice and setGasLimit action with the correct props', () => {
+      it('should dispatch a updateGasPrice and updateGasLimit action with the correct props', () => {
         mapDispatchToPropsObject.setGasData('ffff', 'aaaa');
         expect(dispatchSpy.calledTwice).toStrictEqual(true);
-        expect(setGasPrice).toHaveBeenCalled();
-        expect(setGasLimit).toHaveBeenCalled();
-        expect(setGasLimit).toHaveBeenCalledWith('ffff');
-        expect(setGasPrice).toHaveBeenCalledWith('aaaa');
-      });
-    });
-
-    describe('updateConfirmTxGasAndCalculate()', () => {
-      it('should dispatch a updateGasAndCalculate action with the correct props', () => {
-        mapDispatchToPropsObject.updateConfirmTxGasAndCalculate('ffff', 'aaaa');
-        expect(dispatchSpy.callCount).toStrictEqual(3);
-        expect(setCustomGasPrice).toHaveBeenCalled();
-        expect(setCustomGasLimit).toHaveBeenCalled();
-        expect(setCustomGasLimit).toHaveBeenCalledWith('0xffff');
-        expect(setCustomGasPrice).toHaveBeenCalledWith('0xaaaa');
+        expect(updateGasPrice).toHaveBeenCalled();
+        expect(updateGasLimit).toHaveBeenCalled();
+        expect(updateGasLimit).toHaveBeenCalledWith('ffff');
+        expect(updateGasPrice).toHaveBeenCalledWith('aaaa');
       });
     });
   });
@@ -165,9 +161,9 @@ describe('gas-modal-page-container container', () => {
       };
       dispatchProps = {
         updateCustomGasPrice: sinon.spy(),
-        hideGasButtonGroup: sinon.spy(),
+        useCustomGas: sinon.spy(),
         setGasData: sinon.spy(),
-        updateConfirmTxGasAndCalculate: sinon.spy(),
+        updateTransactionGasFees: sinon.spy(),
         someOtherDispatchProp: sinon.spy(),
         createSpeedUpTransaction: sinon.spy(),
         hideSidebar: sinon.spy(),
@@ -190,20 +186,16 @@ describe('gas-modal-page-container container', () => {
       ).toStrictEqual('bar');
       expect(result.someOwnProp).toStrictEqual(123);
 
-      expect(
-        dispatchProps.updateConfirmTxGasAndCalculate.callCount,
-      ).toStrictEqual(0);
+      expect(dispatchProps.updateTransactionGasFees.callCount).toStrictEqual(0);
       expect(dispatchProps.setGasData.callCount).toStrictEqual(0);
-      expect(dispatchProps.hideGasButtonGroup.callCount).toStrictEqual(0);
+      expect(dispatchProps.useCustomGas.callCount).toStrictEqual(0);
       expect(dispatchProps.hideModal.callCount).toStrictEqual(0);
 
       result.onSubmit();
 
-      expect(
-        dispatchProps.updateConfirmTxGasAndCalculate.callCount,
-      ).toStrictEqual(1);
+      expect(dispatchProps.updateTransactionGasFees.callCount).toStrictEqual(1);
       expect(dispatchProps.setGasData.callCount).toStrictEqual(0);
-      expect(dispatchProps.hideGasButtonGroup.callCount).toStrictEqual(0);
+      expect(dispatchProps.useCustomGas.callCount).toStrictEqual(0);
       expect(dispatchProps.hideModal.callCount).toStrictEqual(1);
 
       expect(dispatchProps.updateCustomGasPrice.callCount).toStrictEqual(0);
@@ -234,24 +226,20 @@ describe('gas-modal-page-container container', () => {
       ).toStrictEqual('bar');
       expect(result.someOwnProp).toStrictEqual(123);
 
-      expect(
-        dispatchProps.updateConfirmTxGasAndCalculate.callCount,
-      ).toStrictEqual(0);
+      expect(dispatchProps.updateTransactionGasFees.callCount).toStrictEqual(0);
       expect(dispatchProps.setGasData.callCount).toStrictEqual(0);
-      expect(dispatchProps.hideGasButtonGroup.callCount).toStrictEqual(0);
+      expect(dispatchProps.useCustomGas.callCount).toStrictEqual(0);
       expect(dispatchProps.cancelAndClose.callCount).toStrictEqual(0);
 
       result.onSubmit('mockNewLimit', 'mockNewPrice');
 
-      expect(
-        dispatchProps.updateConfirmTxGasAndCalculate.callCount,
-      ).toStrictEqual(0);
+      expect(dispatchProps.updateTransactionGasFees.callCount).toStrictEqual(0);
       expect(dispatchProps.setGasData.callCount).toStrictEqual(1);
       expect(dispatchProps.setGasData.getCall(0).args).toStrictEqual([
         'mockNewLimit',
         'mockNewPrice',
       ]);
-      expect(dispatchProps.hideGasButtonGroup.callCount).toStrictEqual(1);
+      expect(dispatchProps.useCustomGas.callCount).toStrictEqual(1);
       expect(dispatchProps.cancelAndClose.callCount).toStrictEqual(1);
 
       expect(dispatchProps.updateCustomGasPrice.callCount).toStrictEqual(0);
@@ -274,11 +262,9 @@ describe('gas-modal-page-container container', () => {
 
       result.onSubmit();
 
-      expect(
-        dispatchProps.updateConfirmTxGasAndCalculate.callCount,
-      ).toStrictEqual(0);
+      expect(dispatchProps.updateTransactionGasFees.callCount).toStrictEqual(0);
       expect(dispatchProps.setGasData.callCount).toStrictEqual(0);
-      expect(dispatchProps.hideGasButtonGroup.callCount).toStrictEqual(0);
+      expect(dispatchProps.useCustomGas.callCount).toStrictEqual(0);
       expect(dispatchProps.cancelAndClose.callCount).toStrictEqual(1);
 
       expect(dispatchProps.createSpeedUpTransaction.callCount).toStrictEqual(1);

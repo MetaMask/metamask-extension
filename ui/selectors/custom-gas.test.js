@@ -1,4 +1,4 @@
-import { GAS_LIMITS } from '../../shared/constants/gas';
+import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../shared/constants/gas';
 import {
   getCustomGasLimit,
   getCustomGasPrice,
@@ -18,36 +18,68 @@ describe('custom-gas selectors', () => {
   describe('isCustomGasPriceSafe()', () => {
     it('should return true for gas.customData.price 0x77359400', () => {
       const mockState = {
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+          gasFeeEstimates: {
+            low: '1',
+          },
+          networkDetails: {
+            EIPS: {},
+          },
+        },
         gas: {
           customData: { price: '0x77359400' },
-          basicEstimates: { safeLow: 1 },
         },
       };
       expect(isCustomPriceSafe(mockState)).toStrictEqual(true);
     });
     it('should return true for gas.customData.price null', () => {
       const mockState = {
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+          gasFeeEstimates: {
+            low: '1',
+          },
+          networkDetails: {
+            EIPS: {},
+          },
+        },
         gas: {
           customData: { price: null },
-          basicEstimates: { safeLow: 1 },
         },
       };
       expect(isCustomPriceSafe(mockState)).toStrictEqual(true);
     });
     it('should return true gas.customData.price undefined', () => {
       const mockState = {
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+          gasFeeEstimates: {
+            low: '1',
+          },
+          networkDetails: {
+            EIPS: {},
+          },
+        },
         gas: {
           customData: { price: undefined },
-          basicEstimates: { safeLow: 1 },
         },
       };
       expect(isCustomPriceSafe(mockState)).toStrictEqual(true);
     });
     it('should return false gas.basicEstimates.safeLow undefined', () => {
       const mockState = {
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
+          gasFeeEstimates: {
+            low: undefined,
+          },
+          networkDetails: {
+            EIPS: {},
+          },
+        },
         gas: {
           customData: { price: '0x77359400' },
-          basicEstimates: { safeLow: undefined },
         },
       };
       expect(isCustomPriceSafe(mockState)).toStrictEqual(false);
@@ -57,78 +89,146 @@ describe('custom-gas selectors', () => {
   describe('isCustomPriceExcessive()', () => {
     it('should return false for gas.customData.price null', () => {
       const mockState = {
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+          gasFeeEstimates: {
+            high: '150',
+          },
+          networkDetails: {
+            EIPS: {},
+          },
+        },
         gas: {
           customData: { price: null },
-          basicEstimates: { fast: 150 },
         },
       };
       expect(isCustomPriceExcessive(mockState)).toStrictEqual(false);
     });
     it('should return false gas.basicEstimates.fast undefined', () => {
       const mockState = {
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+          gasFeeEstimates: {
+            high: undefined,
+          },
+          networkDetails: {
+            EIPS: {},
+          },
+        },
         gas: {
           customData: { price: '0x77359400' },
-          basicEstimates: { fast: undefined },
         },
       };
       expect(isCustomPriceExcessive(mockState)).toStrictEqual(false);
     });
     it('should return false gas.basicEstimates.price 0x205d0bae00 (139)', () => {
       const mockState = {
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+          gasFeeEstimates: {
+            high: '139',
+          },
+          networkDetails: {
+            EIPS: {},
+          },
+        },
         gas: {
           customData: { price: '0x205d0bae00' },
-          basicEstimates: { fast: 139 },
         },
       };
       expect(isCustomPriceExcessive(mockState)).toStrictEqual(false);
     });
     it('should return false gas.basicEstimates.price 0x1bf08eb000 (120)', () => {
       const mockState = {
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+          gasFeeEstimates: {
+            high: '139',
+          },
+          networkDetails: {
+            EIPS: {},
+          },
+        },
         gas: {
           customData: { price: '0x1bf08eb000' },
-          basicEstimates: { fast: 139 },
         },
       };
       expect(isCustomPriceExcessive(mockState)).toStrictEqual(false);
     });
     it('should return false gas.basicEstimates.price 0x28bed01600 (175)', () => {
       const mockState = {
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+          gasFeeEstimates: {
+            high: '139',
+          },
+          networkDetails: {
+            EIPS: {},
+          },
+        },
         gas: {
           customData: { price: '0x28bed01600' },
-          basicEstimates: { fast: 139 },
         },
       };
       expect(isCustomPriceExcessive(mockState)).toStrictEqual(false);
     });
     it('should return true gas.basicEstimates.price 0x30e4f9b400 (210)', () => {
       const mockState = {
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+          gasFeeEstimates: {
+            high: '139',
+          },
+          networkDetails: {
+            EIPS: {},
+          },
+        },
         gas: {
           customData: { price: '0x30e4f9b400' },
-          basicEstimates: { fast: 139 },
         },
       };
       expect(isCustomPriceExcessive(mockState)).toStrictEqual(true);
     });
     it('should return false gas.basicEstimates.price 0x28bed01600 (175) (checkSend=true)', () => {
       const mockState = {
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+          gasFeeEstimates: {
+            high: '139',
+          },
+          networkDetails: {
+            EIPS: {},
+          },
+        },
         send: {
-          gasPrice: '0x28bed0160',
+          gas: {
+            gasPrice: '0x28bed0160',
+          },
         },
         gas: {
           customData: { price: null },
-          basicEstimates: { fast: 139 },
         },
       };
       expect(isCustomPriceExcessive(mockState, true)).toStrictEqual(false);
     });
     it('should return true gas.basicEstimates.price 0x30e4f9b400 (210) (checkSend=true)', () => {
       const mockState = {
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+          gasFeeEstimates: {
+            high: '139',
+          },
+          networkDetails: {
+            EIPS: {},
+          },
+        },
         send: {
-          gasPrice: '0x30e4f9b400',
+          gas: {
+            gasPrice: '0x30e4f9b400',
+          },
         },
         gas: {
           customData: { price: null },
-          basicEstimates: { fast: 139 },
         },
       };
       expect(isCustomPriceExcessive(mockState, true)).toStrictEqual(true);
@@ -167,6 +267,15 @@ describe('custom-gas selectors', () => {
         ],
         mockState: {
           metamask: {
+            gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+            gasFeeEstimates: {
+              low: '2.5',
+              medium: '4',
+              high: '5',
+            },
+            networkDetails: {
+              EIPS: {},
+            },
             conversionRate: 255.71,
             currentCurrency: 'usd',
             preferences: {
@@ -177,19 +286,6 @@ describe('custom-gas selectors', () => {
               chainId: '0x1',
             },
           },
-          gas: {
-            basicEstimates: {
-              blockTime: 14.16326530612245,
-              safeLow: 2.5,
-              safeLowWait: 6.6,
-              average: 4,
-              avgWait: 5.3,
-              fast: 5,
-              fastWait: 3.3,
-              fastest: 10,
-              fastestWait: 0.5,
-            },
-          },
         },
       },
       {
@@ -215,6 +311,15 @@ describe('custom-gas selectors', () => {
         ],
         mockState: {
           metamask: {
+            gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+            gasFeeEstimates: {
+              low: '5',
+              medium: '7',
+              high: '10',
+            },
+            networkDetails: {
+              EIPS: {},
+            },
             conversionRate: 2557.1,
             currentCurrency: 'usd',
             preferences: {
@@ -226,19 +331,8 @@ describe('custom-gas selectors', () => {
             },
           },
           send: {
-            gasLimit: GAS_LIMITS.SIMPLE,
-          },
-          gas: {
-            basicEstimates: {
-              blockTime: 14.16326530612245,
-              safeLow: 5,
-              safeLowWait: 13.2,
-              average: 7,
-              avgWait: 10.1,
-              fast: 10,
-              fastWait: 6.6,
-              fastest: 20,
-              fastestWait: 1.0,
+            gas: {
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
           },
         },
@@ -266,6 +360,15 @@ describe('custom-gas selectors', () => {
         ],
         mockState: {
           metamask: {
+            gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+            gasFeeEstimates: {
+              low: '5',
+              medium: '7',
+              high: '10',
+            },
+            networkDetails: {
+              EIPS: {},
+            },
             conversionRate: 2557.1,
             currentCurrency: 'usd',
             preferences: {
@@ -277,19 +380,8 @@ describe('custom-gas selectors', () => {
             },
           },
           send: {
-            gasLimit: GAS_LIMITS.SIMPLE,
-          },
-          gas: {
-            basicEstimates: {
-              blockTime: 14.16326530612245,
-              safeLow: 5,
-              safeLowWait: 13.2,
-              average: 7,
-              avgWait: 10.1,
-              fast: 10,
-              fastWait: 6.6,
-              fastest: 20,
-              fastestWait: 1.0,
+            gas: {
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
           },
         },
@@ -317,6 +409,15 @@ describe('custom-gas selectors', () => {
         ],
         mockState: {
           metamask: {
+            gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+            gasFeeEstimates: {
+              low: '5',
+              medium: '7',
+              high: '10',
+            },
+            networkDetails: {
+              EIPS: {},
+            },
             conversionRate: 2557.1,
             currentCurrency: 'usd',
             preferences: {
@@ -328,13 +429,8 @@ describe('custom-gas selectors', () => {
             },
           },
           send: {
-            gasLimit: GAS_LIMITS.SIMPLE,
-          },
-          gas: {
-            basicEstimates: {
-              safeLow: 5,
-              average: 7,
-              fast: 10,
+            gas: {
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
           },
         },
@@ -362,6 +458,15 @@ describe('custom-gas selectors', () => {
         ],
         mockState: {
           metamask: {
+            gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+            gasFeeEstimates: {
+              low: '5',
+              medium: '7',
+              high: '10',
+            },
+            networkDetails: {
+              EIPS: {},
+            },
             conversionRate: 2557.1,
             currentCurrency: 'usd',
             preferences: {
@@ -373,13 +478,8 @@ describe('custom-gas selectors', () => {
             },
           },
           send: {
-            gasLimit: GAS_LIMITS.SIMPLE,
-          },
-          gas: {
-            basicEstimates: {
-              safeLow: 5,
-              average: 7,
-              fast: 10,
+            gas: {
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
           },
         },
@@ -423,6 +523,15 @@ describe('custom-gas selectors', () => {
         ],
         mockState: {
           metamask: {
+            gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+            gasFeeEstimates: {
+              low: '25',
+              medium: '30',
+              high: '50',
+            },
+            networkDetails: {
+              EIPS: {},
+            },
             conversionRate: 255.71,
             currentCurrency: 'usd',
             preferences: {
@@ -434,13 +543,8 @@ describe('custom-gas selectors', () => {
             },
           },
           send: {
-            gasLimit: GAS_LIMITS.SIMPLE,
-          },
-          gas: {
-            basicEstimates: {
-              safeLow: 25,
-              average: 30,
-              fast: 50,
+            gas: {
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
           },
         },
@@ -468,6 +572,15 @@ describe('custom-gas selectors', () => {
         ],
         mockState: {
           metamask: {
+            gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+            gasFeeEstimates: {
+              low: '50',
+              medium: '75',
+              high: '100',
+            },
+            networkDetails: {
+              EIPS: {},
+            },
             conversionRate: 2557.1,
             currentCurrency: 'usd',
             preferences: {
@@ -479,19 +592,8 @@ describe('custom-gas selectors', () => {
             },
           },
           send: {
-            gasLimit: GAS_LIMITS.SIMPLE,
-          },
-          gas: {
-            basicEstimates: {
-              blockTime: 14.16326530612245,
-              safeLow: 50,
-              safeLowWait: 13.2,
-              average: 75,
-              avgWait: 9.6,
-              fast: 100,
-              fastWait: 6.6,
-              fastest: 200,
-              fastestWait: 1.0,
+            gas: {
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
           },
         },
@@ -519,6 +621,15 @@ describe('custom-gas selectors', () => {
         ],
         mockState: {
           metamask: {
+            gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+            gasFeeEstimates: {
+              low: '50',
+              medium: '75',
+              high: '100',
+            },
+            networkDetails: {
+              EIPS: {},
+            },
             conversionRate: 2557.1,
             currentCurrency: 'usd',
             preferences: {
@@ -530,19 +641,8 @@ describe('custom-gas selectors', () => {
             },
           },
           send: {
-            gasLimit: GAS_LIMITS.SIMPLE,
-          },
-          gas: {
-            basicEstimates: {
-              blockTime: 14.16326530612245,
-              safeLow: 50,
-              safeLowWait: 13.2,
-              average: 75,
-              avgWait: 9.6,
-              fast: 100,
-              fastWait: 6.6,
-              fastest: 200,
-              fastestWait: 1.0,
+            gas: {
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
           },
         },
@@ -570,6 +670,15 @@ describe('custom-gas selectors', () => {
         ],
         mockState: {
           metamask: {
+            gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+            gasFeeEstimates: {
+              low: '50',
+              medium: '75',
+              high: '100',
+            },
+            networkDetails: {
+              EIPS: {},
+            },
             conversionRate: 2557.1,
             currentCurrency: 'usd',
             preferences: {
@@ -581,13 +690,8 @@ describe('custom-gas selectors', () => {
             },
           },
           send: {
-            gasLimit: GAS_LIMITS.SIMPLE,
-          },
-          gas: {
-            basicEstimates: {
-              safeLow: 50,
-              average: 75,
-              fast: 100,
+            gas: {
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
           },
         },
@@ -615,6 +719,15 @@ describe('custom-gas selectors', () => {
         ],
         mockState: {
           metamask: {
+            gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+            gasFeeEstimates: {
+              low: '50',
+              medium: '75',
+              high: '100',
+            },
+            networkDetails: {
+              EIPS: {},
+            },
             conversionRate: 2557.1,
             currentCurrency: 'usd',
             preferences: {
@@ -626,13 +739,8 @@ describe('custom-gas selectors', () => {
             },
           },
           send: {
-            gasLimit: GAS_LIMITS.SIMPLE,
-          },
-          gas: {
-            basicEstimates: {
-              safeLow: 50,
-              average: 75,
-              fast: 100,
+            gas: {
+              gasLimit: GAS_LIMITS.SIMPLE,
             },
           },
         },

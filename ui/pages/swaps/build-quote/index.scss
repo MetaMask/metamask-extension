@@ -87,6 +87,11 @@
         color: $Black-100;
       }
 
+      .build-quote__form-error:first-of-type {
+        font-weight: bold;
+        color: $Red-500;
+      }
+
       div:last-of-type {
         font-weight: normal;
         color: $Grey-500;

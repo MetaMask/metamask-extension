@@ -751,9 +751,6 @@
   "recents": {
     "message": "Naujausi"
   },
-  "recipientAddress": {
-    "message": "Gavėjo adresas"
-  },
   "recipientAddressPlaceholder": {
     "message": "Ieška, viešieji adresai (0x) arba ENS"
   },
