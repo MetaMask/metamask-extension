@@ -72,12 +72,45 @@ export default class TransactionStateManager extends EventEmitter {
    *  overwriting default keys of the TransactionMeta
    * @returns {TransactionMeta} the default txMeta object
    */
-  generateTxMeta(opts) {
+  generateTxMeta(opts = {}) {
     const netId = this.getNetwork();
     const chainId = this.getCurrentChainId();
     if (netId === 'loading') {
       throw new Error('MetaMask is having trouble connecting to the network');
     }
+
+    let dappSuggestedGasFees = null;
+
+    // If we are dealing with a transaction suggested by a dapp and not
+    // an internally created metamask transaction, we need to keep record of
+    // the originally submitted gasParams.
+    if (
+      opts.txParams &&
+      typeof opts.origin === 'string' &&
+      opts.origin !== 'metamask'
+    ) {
+      if (typeof opts.txParams.gasPrice !== 'undefined') {
+        dappSuggestedGasFees = {
+          gasPrice: opts.txParams.gasPrice,
+        };
+      } else if (
+        typeof opts.txParams.maxFeePerGas !== 'undefined' ||
+        typeof opts.txParams.maxPriorityFeePerGas !== 'undefined'
+      ) {
+        dappSuggestedGasFees = {
+          maxPriorityFeePerGas: opts.txParams.maxPriorityFeePerGas,
+          maxFeePerGas: opts.txParams.maxFeePerGas,
+        };
+      }
+
+      if (typeof opts.txParams.gas !== 'undefined') {
+        dappSuggestedGasFees = {
+          ...dappSuggestedGasFees,
+          gas: opts.txParams.gas,
+        };
+      }
+    }
+
     return {
       id: createId(),
       time: new Date().getTime(),
@@ -85,6 +118,7 @@ export default class TransactionStateManager extends EventEmitter {
       metamaskNetworkId: netId,
       chainId,
       loadingDefaults: true,
+      dappSuggestedGasFees,
       ...opts,
     };
   }

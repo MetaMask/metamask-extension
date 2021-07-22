@@ -2,14 +2,14 @@
   @include H7;
 
   min-height: 32px;
-  border: 1px solid $monzo;
-  color: $monzo;
-  background: lighten($monzo, 56%);
-  border-radius: 4px;
+  border: 1px solid $Red-300;
+  color: $ui-black;
+  background: $error-2;
+  border-radius: 8px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 8px 16px;
+  padding: 8px 10px;
 
   &__icon {
     margin-right: 8px;

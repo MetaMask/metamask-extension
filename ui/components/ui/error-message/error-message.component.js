@@ -12,7 +12,7 @@ const ErrorMessage = (props, context) => {
         alt=""
         className="error-message__icon"
       />
-      <div className="error-message__text">{`ALERT: ${error}`}</div>
+      <div className="error-message__text">{error}</div>
     </div>
   );
 };

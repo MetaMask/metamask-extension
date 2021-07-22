@@ -97,8 +97,14 @@
   "addTokens": {
     "message": "Add Tokens"
   },
+  "addressBookIcon": {
+    "message": "Address book icon"
+  },
   "advanced": {
     "message": "Advanced"
+  },
+  "advancedGasPriceTitle": {
+    "message": "Gas price"
   },
   "advancedOptions": {
     "message": "Advanced Options"
@@ -149,6 +155,9 @@
   },
   "amount": {
     "message": "Amount"
+  },
+  "amountGasFee": {
+    "message": "Amount + Gas Fee"
   },
   "amountWithColon": {
     "message": "Amount:"
@@ -223,7 +232,7 @@
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
   "backupApprovalNotice": {
-    "message": "Backup your Secret Recovery code to keep your wallet and funds secure."
+    "message": "Backup your Secret Recovery Phrase to keep your wallet and funds secure."
   },
   "backupNow": {
     "message": "Backup now"
@@ -253,14 +262,20 @@
   "browserNotSupported": {
     "message": "Your Browser is not supported..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "Build your contact list"
   },
-  "builtInCalifornia": {
-    "message": "MetaMask is designed and built in California."
+  "builtAroundTheWorld": {
+    "message": "MetaMask is designed and built around the world."
   },
   "buy": {
     "message": "Buy"
+  },
+  "buyWithTransak": {
+    "message": "Buy ETH with Transak"
+  },
+  "buyWithTransakDescription": {
+    "message": "Transak supports debit card and bank transfers (depending on location) in 59+ countries. ETH deposits into your MetaMask account."
   },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
@@ -276,6 +291,9 @@
   },
   "cancel": {
     "message": "Cancel"
+  },
+  "cancelPopoverTitle": {
+    "message": "Cancel transaction"
   },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
@@ -309,6 +327,9 @@
   },
   "confirmSecretBackupPhrase": {
     "message": "Confirm your Secret Backup Phrase"
+  },
+  "confirmSeedPhrase": {
+    "message": "Confirm Seed Phrase"
   },
   "confirmed": {
     "message": "Confirmed"
@@ -414,6 +435,9 @@
   "continue": {
     "message": "Continue"
   },
+  "continueToTransak": {
+    "message": "Continue to Transak"
+  },
   "continueToWyre": {
     "message": "Continue to Wyre"
   },
@@ -456,6 +480,9 @@
   "createAccount": {
     "message": "Create Account"
   },
+  "createNewWallet": {
+    "message": "Create a new wallet"
+  },
   "createPassword": {
     "message": "Create Password"
   },
@@ -491,6 +518,9 @@
   },
   "customToken": {
     "message": "Custom Token"
+  },
+  "data": {
+    "message": "Data"
   },
   "dataBackupFoundInfo": {
     "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
@@ -598,6 +628,79 @@
   },
   "editContact": {
     "message": "Edit Contact"
+  },
+  "editGasEducationButtonText": {
+    "message": "How should I choose?"
+  },
+  "editGasEducationHighExplanation": {
+    "message": "This is best for swaps or other time sensitive transactions. If a swap takes too long to process it will often fail and you may lose funds."
+  },
+  "editGasEducationLearnMoreLinkText": {
+    "message": "Learn more about customizing gas."
+  },
+  "editGasEducationLowExplanation": {
+    "message": "Low A lower gas fee should only be selected for transactions where processing time is less important. With a lower fee, it can be be hard to predict when (or if) your transaction with be successful."
+  },
+  "editGasEducationMediumExplanation": {
+    "message": "A medium gas fee is good for sending, withdrawing or other non-time sensitive but important transactions."
+  },
+  "editGasEducationModalIntro": {
+    "message": "The right gas amount to select depends on the type of transaction and how important it is."
+  },
+  "editGasEducationModalTitle": {
+    "message": "How to choose?"
+  },
+  "editGasHigh": {
+    "message": "High"
+  },
+  "editGasLimitOutOfBounds": {
+    "message": "Gas limit must be greater than 20999 and less than 7920027"
+  },
+  "editGasLimitTooltip": {
+    "message": "Gas limit is the maximum units of gas you are willing to use. Units of gas are a multiplier to “Max priority fee” and “Max fee”."
+  },
+  "editGasLow": {
+    "message": "Low"
+  },
+  "editGasMaxFeeHigh": {
+    "message": "Max fee is higher than necessary"
+  },
+  "editGasMaxFeeLow": {
+    "message": "Max fee too low for network conditions"
+  },
+  "editGasMaxFeeTooltip": {
+    "message": "The max fee is the most you’ll pay (base fee + priority fee)."
+  },
+  "editGasMaxPriorityFeeHigh": {
+    "message": "Max priority fee is higher than necessary. You may pay more than needed."
+  },
+  "editGasMaxPriorityFeeLow": {
+    "message": "Max priority fee too low for network conditions"
+  },
+  "editGasMaxPriorityFeeTooltip": {
+    "message": "Max priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction. You’ll most often pay your max setting"
+  },
+  "editGasMaxPriorityFeeZeroError": {
+    "message": "Max priority fee must be at least 1 GWEI"
+  },
+  "editGasMedium": {
+    "message": "Medium"
+  },
+  "editGasPriceTooltip": {
+    "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
+  },
+  "editGasTitle": {
+    "message": "Edit priority"
+  },
+  "editGasTooLow": {
+    "message": "Unknown processing time"
+  },
+  "editGasTooLowTooltip": {
+    "message": "Your max fee is low for current market conditions. We don’t know when (or if) your transaction will be processed."
+  },
+  "editGasTotalBannerSubtitle": {
+    "message": "Up to $1 ($2)",
+    "display": "$1 represents a fiat value"
   },
   "editNonceField": {
     "message": "Edit Nonce"
@@ -785,6 +888,19 @@
   },
   "functionType": {
     "message": "Function Type"
+  },
+  "gasDisplayAcknowledgeDappButtonText": {
+    "message": "Edit suggested gas fee"
+  },
+  "gasDisplayDappWarning": {
+    "message": "This gas fee has been suggested by $1. Overriding this may cause a problem with your transaction. Please reach out to $1 if you have questions.",
+    "description": "$1 represents the Dapp's origin"
+  },
+  "gasFee": {
+    "message": "Gas Fee"
+  },
+  "gasFeeEstimate": {
+    "message": "Estimate"
   },
   "gasLimit": {
     "message": "Gas Limit"
@@ -1070,8 +1186,18 @@
   "makeAnotherSwap": {
     "message": "Create a new swap"
   },
+  "makeSureNoOneWatching": {
+    "message": "Make sure no one is watching your screen",
+    "description": "Warning to users to be care while creating and saving their new seed phrase"
+  },
   "max": {
     "message": "Max"
+  },
+  "maxFee": {
+    "message": "Max fee"
+  },
+  "maxPriorityFee": {
+    "message": "Max priority fee"
   },
   "memo": {
     "message": "memo"
@@ -1367,6 +1493,9 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
+  "optional": {
+    "message": "Optional"
+  },
   "optionalBlockExplorerUrl": {
     "message": "Block Explorer URL (optional)"
   },
@@ -1390,6 +1519,12 @@
   },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
+  },
+  "passwordSetupDetails": {
+    "message": "This password will unlock your MetaMask wallet only on this device. MetaMask can not recover this password."
+  },
+  "passwordTermsWarning": {
+    "message": "I understand that MetaMask cannot recover this password for me. $1"
   },
   "passwordsDontMatch": {
     "message": "Passwords Don't Match"
@@ -1465,6 +1600,9 @@
   },
   "recipientAddressPlaceholder": {
     "message": "Search, public address (0x), or ENS"
+  },
+  "recommendedGasLabel": {
+    "message": "Recommended"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Start here"
@@ -1611,11 +1749,20 @@
   "secretPhrase": {
     "message": "Enter your secret phrase here to restore your vault."
   },
+  "secureWallet": {
+    "message": "Secure Wallet"
+  },
   "securityAndPrivacy": {
     "message": "Security & Privacy"
   },
   "securitySettingsDescription": {
     "message": "Privacy settings and wallet Secret Recovery Phrase"
+  },
+  "seedPhraseConfirm": {
+    "message": "Confirm Secret Recovery Phrase"
+  },
+  "seedPhraseEnterMissingWords": {
+    "message": "Confirm Secret Recovery Phrase"
   },
   "seedPhraseIntroSidebarBulletFour": {
     "message": "Write down and store in multiple secret places."
@@ -1661,6 +1808,12 @@
   },
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
+  },
+  "seedPhraseWriteDownDetails": {
+    "message": "Write down this 12-word Secret Recovery Phrase and save it in a place that you trust and only you can access."
+  },
+  "seedPhraseWriteDownHeader": {
+    "message": "Write down your Secret Recovery Phrase"
   },
   "selectAHigherGasFee": {
     "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
@@ -1720,6 +1873,9 @@
   },
   "settings": {
     "message": "Settings"
+  },
+  "show": {
+    "message": "Show"
   },
   "showAdvancedGasInline": {
     "message": "Advanced gas controls"
@@ -1783,6 +1939,15 @@
   },
   "speedUpCancellation": {
     "message": "Speed up this cancellation"
+  },
+  "speedUpExplanation": {
+    "message": "We’ve updated the gas fee based on current network conditions and have increased it by at least 10% (required by the network)."
+  },
+  "speedUpPopoverTitle": {
+    "message": "Speed up transaction"
+  },
+  "speedUpTooltipText": {
+    "message": "New gas fee"
   },
   "speedUpTransaction": {
     "message": "Speed up this transaction"
@@ -2198,6 +2363,9 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be 11 characters or fewer."
   },
+  "syncInProgress": {
+    "message": "Sync in progress"
+  },
   "syncWithMobile": {
     "message": "Sync with mobile"
   },
@@ -2289,6 +2457,28 @@
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
   },
+  "transactionDetailDappGasHeading": {
+    "message": "$1 suggested gas fee",
+    "description": "$1 represents a dapp origin"
+  },
+  "transactionDetailDappGasTooltip": {
+    "message": "This gas fee suggestion is using legacy gas estimation which may be inaccurate."
+  },
+  "transactionDetailGasHeading": {
+    "message": "Estimated gas fee"
+  },
+  "transactionDetailGasTooltipConversion": {
+    "message": "Learn more about gas fees"
+  },
+  "transactionDetailGasTooltipExplanation": {
+    "message": "Gas fees are set by the network and fluctuate based on network traffic and transaction complexity."
+  },
+  "transactionDetailGasTooltipIntro": {
+    "message": "Gas fees are paid to crypto miners who process transactions on the Ethereum network. MetaMask does not profit from gas fees."
+  },
+  "transactionDetailGasTotalSubtitle": {
+    "message": "Amount + gas fee"
+  },
   "transactionDropped": {
     "message": "Transaction dropped at $2."
   },
@@ -2303,6 +2493,15 @@
   },
   "transactionFee": {
     "message": "Transaction Fee"
+  },
+  "transactionHistoryBaseFee": {
+    "message": "Base fee (GWEI)"
+  },
+  "transactionHistoryEffectiveGasPrice": {
+    "message": "Effective gas price"
+  },
+  "transactionHistoryPriorityFee": {
+    "message": "Priority fee (GWEI)"
   },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with gas fee increased to $1 at $2"
@@ -2423,6 +2622,9 @@
   },
   "viewContact": {
     "message": "View Contact"
+  },
+  "viewFullTransactionDetails": {
+    "message": "View full transaction details"
   },
   "viewMore": {
     "message": "View More"

@@ -5,7 +5,7 @@ import {
   addCurrencies,
   conversionGTE,
   conversionUtil,
-} from '../../helpers/utils/conversion-util';
+} from '../../../shared/modules/conversion.utils';
 
 import {
   calcGasTotal,
@@ -14,7 +14,7 @@ import {
   isTokenBalanceSufficient,
 } from './send.utils';
 
-jest.mock('../../helpers/utils/conversion-util', () => ({
+jest.mock('../../../shared/modules/conversion.utils', () => ({
   addCurrencies: jest.fn((a, b) => {
     let [a1, b1] = [a, b];
     if (String(a).match(/^0x.+/u)) {

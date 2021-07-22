@@ -33,6 +33,7 @@ async function withFixtures(options, testSuite) {
   let segmentStub;
 
   let webDriver;
+  let failed = false;
   try {
     await ganacheServer.start(ganacheOptions);
     if (ganacheOptions?.concurrent) {
@@ -103,6 +104,7 @@ async function withFixtures(options, testSuite) {
       }
     }
   } catch (error) {
+    failed = true;
     if (webDriver) {
       try {
         await webDriver.verboseReportOnFailure(title);
@@ -112,26 +114,28 @@ async function withFixtures(options, testSuite) {
     }
     throw error;
   } finally {
-    await fixtureServer.stop();
-    await ganacheServer.quit();
-    if (ganacheOptions?.concurrent) {
-      await secondaryGanacheServer.quit();
-    }
-    if (webDriver) {
-      await webDriver.quit();
-    }
-    if (dappServer) {
-      await new Promise((resolve, reject) => {
-        dappServer.close((error) => {
-          if (error) {
-            return reject(error);
-          }
-          return resolve();
+    if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
+      await fixtureServer.stop();
+      await ganacheServer.quit();
+      if (ganacheOptions?.concurrent) {
+        await secondaryGanacheServer.quit();
+      }
+      if (webDriver) {
+        await webDriver.quit();
+      }
+      if (dappServer) {
+        await new Promise((resolve, reject) => {
+          dappServer.close((error) => {
+            if (error) {
+              return reject(error);
+            }
+            return resolve();
+          });
         });
-      });
-    }
-    if (segmentServer) {
-      await segmentServer.stop();
+      }
+      if (segmentServer) {
+        await segmentServer.stop();
+      }
     }
   }
 }

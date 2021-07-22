@@ -121,7 +121,7 @@ class SettingsPage extends PureComponent {
     } else if (initialBreadCrumbKey) {
       subheaderText = t(initialBreadCrumbKey);
     } else {
-      subheaderText = t(pathnameI18nKey || 'general');
+      subheaderText = t(pathnameI18nKey || 'contacts');
     }
 
     return (

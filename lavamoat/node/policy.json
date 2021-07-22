@@ -800,6 +800,26 @@
         "through2": true
       }
     },
+    "@lavamoat/lavapack": {
+      "builtin": {
+        "assert": true,
+        "buffer.Buffer.from": true,
+        "path.join": true,
+        "path.relative": true
+      },
+      "globals": {
+        "__dirname": true,
+        "process.cwd": true
+      },
+      "packages": {
+        "JSONStream": true,
+        "combine-source-map": true,
+        "convert-source-map": true,
+        "json-stable-stringify": true,
+        "through2": true,
+        "umd": true
+      }
+    },
     "@nodelib/fs.scandir": {
       "builtin": {
         "fs.lstat": true,
@@ -1070,6 +1090,13 @@
         "isobject": true,
         "mixin-deep": true,
         "pascalcase": true
+      }
+    },
+    "bify-module-groups": {
+      "packages": {
+        "pify": true,
+        "pump": true,
+        "through2": true
       }
     },
     "bl": {
@@ -2301,26 +2328,6 @@
         "strip-ansi": true,
         "stylelint": true,
         "through2": true
-      }
-    },
-    "gulp-terser-js": {
-      "builtin": {
-        "fs.readFileSync": true,
-        "path.basename": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "Buffer.from": true,
-        "console.error": true,
-        "console.log": true,
-        "process.stdout.columns": true
-      },
-      "packages": {
-        "plugin-error": true,
-        "source-map": true,
-        "terser": true,
-        "through2": true,
-        "vinyl-sourcemaps-apply": true
       }
     },
     "gulp-watch": {
@@ -3702,6 +3709,15 @@
         "extend-shallow": true
       }
     },
+    "squirrelly": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.resolve": true
+      }
+    },
     "static-eval": {
       "packages": {
         "escodegen": true
@@ -3921,9 +3937,19 @@
         "Buffer.from": true,
         "atob": true,
         "btoa": true,
-        "define": true
+        "console.log": true,
+        "console.warn": true,
+        "define": true,
+        "process.argv": true,
+        "process.exit": true,
+        "process.platform": true,
+        "process.stderr.write": true,
+        "process.stdin.on": true,
+        "process.stdin.resume": true,
+        "process.stdin.setEncoding": true
       },
       "packages": {
+        "acorn": true,
         "source-map": true
       }
     },

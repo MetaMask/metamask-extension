@@ -1,0 +1,98 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GasCustomizationModalContainer renders the component with initial props 1`] = `
+<div
+  class="page-container__header page-container__header--no-padding-bottom"
+  data-testid="page-container__header"
+>
+  <div
+    class="page-container__title"
+  >
+    Customize Gas
+  </div>
+  <div
+    class="page-container__subtitle"
+  >
+    Increasing fee may decrease processing times, but it is not guaranteed.
+  </div>
+  <a
+    class="button btn-link page-container__header-close-text"
+    role="button"
+    tabindex="0"
+  >
+    Close
+  </a>
+  <ul
+    class="page-container__tabs"
+  >
+    <li
+      class="tab page-container__tab tab--active"
+    >
+      <button>
+        Basic
+      </button>
+    </li>
+    <li
+      class="tab page-container__tab"
+    >
+      <button>
+        Advanced
+      </button>
+    </li>
+  </ul>
+</div>
+`;
+
+exports[`GasCustomizationModalContainer renders the component with initial props 2`] = `
+<div
+  class="gas-modal-content__info-row__send-info"
+  data-testid="gas-modal-content__info-row__send-info"
+>
+  <span
+    class="gas-modal-content__info-row__send-info__label"
+  >
+    Send Amount
+  </span>
+  <span
+    class="gas-modal-content__info-row__send-info__value"
+  >
+    0 ETH
+  </span>
+</div>
+`;
+
+exports[`GasCustomizationModalContainer renders the component with initial props 3`] = `
+<div
+  class="gas-modal-content__info-row__transaction-info"
+  data-testid="gas-modal-content__info-row__transaction-info"
+>
+  <span
+    class="gas-modal-content__info-row__transaction-info__label"
+  >
+    Transaction Fee
+  </span>
+  <span
+    class="gas-modal-content__info-row__transaction-info__value"
+  >
+    0 ETH
+  </span>
+</div>
+`;
+
+exports[`GasCustomizationModalContainer renders the component with initial props 4`] = `
+<div
+  class="gas-modal-content__info-row__total-info"
+  data-testid="gas-modal-content__info-row__total-info"
+>
+  <span
+    class="gas-modal-content__info-row__total-info__label"
+  >
+    New Total
+  </span>
+  <span
+    class="gas-modal-content__info-row__total-info__value"
+  >
+    0 ETH
+  </span>
+</div>
+`;

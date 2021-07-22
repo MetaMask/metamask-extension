@@ -154,7 +154,7 @@ module.exports = {
         'babel.config.js',
         'nyc.config.js',
         'stylelint.config.js',
-        'app/scripts/runLockdown.js',
+        'app/scripts/lockdown-run.js',
         'development/**/*.js',
         'test/e2e/**/*.js',
         'test/lib/wait-until-called.js',

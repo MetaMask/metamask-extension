@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "Nettleseren din støttes ikke ..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask ble bygget og designet i California."
-  },
   "buyWithWyre": {
     "message": "Kjøp ETH med Wyre"
   },

@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "আপনার ব্রাউজার সমর্থিত নয়..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask ক্যালিফোর্নিয়াতে ডিজাইন করা এবং নির্মিত।"
-  },
   "buyWithWyre": {
     "message": "Wyre দিয়ে ETH ক্রয় করুন"
   },
