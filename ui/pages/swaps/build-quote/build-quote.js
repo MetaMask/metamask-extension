@@ -74,6 +74,7 @@ export default function BuildQuote({
   maxSlippage,
   selectedAccountAddress,
   isFeatureFlagLoaded,
+  tokenFromError,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -367,6 +368,11 @@ export default function BuildQuote({
     }
   }
 
+  const swapYourTokenBalance = t('swapYourTokenBalance', [
+    fromTokenString || '0',
+    fromTokenSymbol,
+  ]);
+
   return (
     <div className="build-quote">
       <div className="build-quote__content">
@@ -406,27 +412,34 @@ export default function BuildQuote({
         />
         <div
           className={classnames('build-quote__balance-message', {
-            'build-quote__balance-message--error': balanceError,
+            'build-quote__balance-message--error':
+              balanceError || tokenFromError,
           })}
         >
-          {!balanceError &&
+          {!tokenFromError &&
+            !balanceError &&
             fromTokenSymbol &&
-            t('swapYourTokenBalance', [
-              fromTokenString || '0',
-              fromTokenSymbol,
-            ])}
-          {balanceError && fromTokenSymbol && (
+            swapYourTokenBalance}
+          {!tokenFromError && balanceError && fromTokenSymbol && (
             <div className="build-quite__insufficient-funds">
               <div className="build-quite__insufficient-funds-first">
                 {t('swapsNotEnoughForTx', [fromTokenSymbol])}
               </div>
               <div className="build-quite__insufficient-funds-second">
-                {t('swapYourTokenBalance', [
-                  fromTokenString || '0',
-                  fromTokenSymbol,
-                ])}
+                {swapYourTokenBalance}
               </div>
             </div>
+          )}
+          {tokenFromError && (
+            <>
+              <div className="build-quote__form-error">
+                {t('swapTooManyDecimalsError', [
+                  fromTokenSymbol,
+                  fromTokenDecimals,
+                ])}
+              </div>
+              <div>{swapYourTokenBalance}</div>
+            </>
           )}
         </div>
         <div className="build-quote__swap-arrows-row">
@@ -560,6 +573,7 @@ export default function BuildQuote({
         }}
         submitText={t('swapReviewSwap')}
         disabled={
+          tokenFromError ||
           !isFeatureFlagLoaded ||
           !Number(inputValue) ||
           !selectedToToken?.address ||
@@ -582,4 +596,5 @@ BuildQuote.propTypes = {
   setMaxSlippage: PropTypes.func,
   selectedAccountAddress: PropTypes.string,
   isFeatureFlagLoaded: PropTypes.bool.isRequired,
+  tokenFromError: PropTypes.string,
 };
