@@ -6,6 +6,8 @@ import ConfirmPageContainer, {
   ConfirmDetailRow,
 } from '../../components/app/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
+import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util';
+import { addHexes, hexToDecimal } from '../../helpers/utils/conversions.util';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
@@ -19,7 +21,7 @@ import {
 } from '../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
-import { hexToDecimal } from '../../helpers/utils/conversions.util';
+
 import AdvancedGasInputs from '../../components/app/gas-customization/advanced-gas-inputs';
 import TextField from '../../components/ui/text-field';
 import AdvancedGasControls from '../../components/app/advanced-gas-controls';
@@ -416,6 +418,17 @@ export default class ConfirmTransactionBase extends Component {
                     hideLabel
                   />
                 }
+                subText={t('editGasSubTextFee', [
+                  <UserPreferencedCurrencyDisplay
+                    key="gas-subtext"
+                    type={SECONDARY}
+                    value={getHexGasTotal({
+                      gasPrice: txData.txParams.maxFeePerGas,
+                      gasLimit: txData.txParams.gas,
+                    })}
+                    hideLabel
+                  />,
+                ])}
               />,
               <TransactionDetailItem
                 key="total-item"
@@ -435,6 +448,20 @@ export default class ConfirmTransactionBase extends Component {
                   />
                 }
                 subTitle={t('transactionDetailGasTotalSubtitle')}
+                subText={t('editGasSubTextAmount', [
+                  <UserPreferencedCurrencyDisplay
+                    key="gas-total-subtext"
+                    type={SECONDARY}
+                    value={addHexes(
+                      txData.txParams.value,
+                      getHexGasTotal({
+                        gasPrice: txData.txParams.maxFeePerGas,
+                        gasLimit: txData.txParams.gas,
+                      }),
+                    )}
+                    hideLabel
+                  />,
+                ])}
               />,
             ]}
           />

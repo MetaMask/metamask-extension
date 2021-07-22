@@ -689,6 +689,14 @@
   "editGasPriceTooltip": {
     "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
   },
+  "editGasSubTextAmount": {
+    "message": "Max amount: $1",
+    "description": "$1 represents a dollar amount"
+  },
+  "editGasSubTextFee": {
+    "message": "Max fee: $1",
+    "description": "$1 represents a dollar amount"
+  },
   "editGasTitle": {
     "message": "Edit priority"
   },
