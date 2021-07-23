@@ -97,6 +97,7 @@ const getBaseApi = function (
     case 'gasPrices':
       return `${baseUrl}/gasPrices`;
     case 'suggestedGasFees':
+      // We will probably use the hook "useGasFeeEstimates" instead of this.
       return `${GAS_API_BASE_URL}/networks/${chainIdDecimal}/suggestedGasFees`;
     case 'refreshTime':
       return `${baseUrl}/quoteRefreshRate`;
@@ -241,38 +242,6 @@ const SWAP_GAS_PRICE_VALIDATOR = [
     property: 'FastGasPrice',
     type: 'string',
     validator: isValidDecimalNumber,
-  },
-];
-
-const suggestedGasFeesValidator = (suggestedGasFees) => {
-  return (
-    suggestedGasFees &&
-    suggestedGasFees.suggestedMaxPriorityFeePerGas !== undefined &&
-    suggestedGasFees.suggestedMaxFeePerGas !== undefined &&
-    suggestedGasFees.minWaitTimeEstimate !== undefined &&
-    suggestedGasFees.maxWaitTimeEstimate !== undefined
-  );
-};
-
-const SWAP_EIP1559_GAS_PRICE_VALIDATOR = [
-  {
-    property: 'low',
-    type: 'object',
-    validator: suggestedGasFeesValidator,
-  },
-  {
-    property: 'medium',
-    type: 'object',
-    validator: suggestedGasFeesValidator,
-  },
-  {
-    property: 'high',
-    type: 'object',
-    validator: suggestedGasFeesValidator,
-  },
-  {
-    property: 'estimatedBaseFee',
-    type: 'number',
   },
 ];
 
@@ -449,6 +418,7 @@ export async function fetchSwapsFeatureFlags() {
     { method: 'GET' },
     { cacheRefreshTime: 600000 },
   );
+  // TODO: Remove this before merging the PR, it enables Rinkeby in Swaps.
   return {
     bsc: {
       mobile_active: false,
