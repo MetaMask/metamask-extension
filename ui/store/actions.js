@@ -2199,6 +2199,22 @@ export function setSwapsTxGasLimit(gasLimit) {
   };
 }
 
+export function setCustomSwapsTxMaxFeePerGas(maxFeePerGas) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsTxMaxFeePerGas(maxFeePerGas);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setCustomSwapsTxMaxFeePriorityPerGas(maxPriorityFeePerGas) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsTxMaxFeePriorityPerGas(
+      maxPriorityFeePerGas,
+    );
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function customSwapsGasParamsUpdated(gasLimit, gasPrice) {
   return async (dispatch) => {
     await promisifiedBackground.setSwapsTxGasPrice(gasPrice);
