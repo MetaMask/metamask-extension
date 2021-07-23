@@ -1,6 +1,8 @@
 import { addHexPrefix } from 'ethereumjs-util';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { findKey } from 'lodash';
+
 import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
 import {
@@ -90,19 +92,15 @@ function getMatchingEstimateFromGasFees(
   maxPriorityFeePerGas,
 ) {
   if (process.env.SHOW_EIP_1559_UI) {
-    let matchingGasFee = null;
-    ['low', 'medium', 'high'].forEach((estimateLevel) => {
-      if (
-        gasFeeEstimates?.[estimateLevel]?.suggestedMaxPriorityFeePerGas ===
-          maxPriorityFeePerGas &&
-        gasFeeEstimates?.[estimateLevel]?.suggestedMaxFeePerGas === maxFeePerGas
-      ) {
-        matchingGasFee = estimateLevel;
-      }
-    });
-    return matchingGasFee;
+    return (
+      findKey(
+        gasFeeEstimates,
+        (estimate) =>
+          estimate?.suggestedMaxPriorityFeePerGas === maxPriorityFeePerGas &&
+          estimate?.suggestedMaxFeePerGas === maxFeePerGas,
+      ) || null
+    );
   }
-
   return null;
 }
 
