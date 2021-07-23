@@ -9,7 +9,6 @@ import {
   UNSENDABLE_ASSET_ERROR_KEY,
 } from '../../../helpers/constants/error-keys';
 import SendAmountRow from './send-amount-row';
-import SendGasRow from './send-gas-row';
 import SendHexDataRow from './send-hex-data-row';
 import SendAssetRow from './send-asset-row';
 
@@ -57,7 +56,6 @@ export default class SendContent extends Component {
           {this.maybeRenderAddContact()}
           <SendAssetRow />
           <SendAmountRow />
-          {process.env.SHOW_EIP_1559_UI ? null : <SendGasRow />}
           {this.props.showHexData && <SendHexDataRow />}
         </div>
       </PageContainerContent>
