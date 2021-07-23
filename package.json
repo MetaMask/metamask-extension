@@ -231,6 +231,8 @@
     "@storybook/core": "^6.1.17",
     "@storybook/react": "^6.1.17",
     "@storybook/storybook-deployer": "^2.8.7",
+    "@swc/cli": "^0.1.46",
+    "@swc/core": "^1.2.66",
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^10.4.8",
     "@testing-library/react-hooks": "^3.2.1",
