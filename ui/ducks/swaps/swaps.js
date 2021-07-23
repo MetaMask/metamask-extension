@@ -65,7 +65,7 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
-import { isEIP1559Network } from '../metamask/metamask';
+import { isEIP1559Network, getGasFeeEstimates } from '../metamask/metamask';
 
 const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -620,6 +620,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const hardwareWalletUsed = isHardwareWallet(state);
+    const EIP1559NetworkEnabled = isEIP1559Network(state);
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
       useNewSwapsApi: false,
@@ -652,6 +653,13 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     }
 
     const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state);
+    // TODO: Make sure it works if EIP is not present.
+    const {
+      high: {
+        suggestedMaxFeePerGas: maxFeePerGas,
+        suggestedMaxPriorityFeePerGas: maxPriorityFeePerGas,
+      },
+    } = getGasFeeEstimates(state);
 
     const usedQuote = getUsedQuote(state);
     const usedTradeTxParams = usedQuote.trade;
@@ -672,7 +680,15 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
 
     const usedGasPrice = getUsedSwapsGasPrice(state);
     usedTradeTxParams.gas = maxGasLimit;
-    usedTradeTxParams.gasPrice = usedGasPrice;
+    if (EIP1559NetworkEnabled) {
+      usedTradeTxParams.maxFeePerGas = decGWEIToHexWEI(maxFeePerGas);
+      usedTradeTxParams.maxPriorityFeePerGas = decGWEIToHexWEI(
+        maxPriorityFeePerGas,
+      );
+      delete usedTradeTxParams.gasPrice;
+    } else {
+      usedTradeTxParams.gasPrice = usedGasPrice;
+    }
 
     const usdConversionRate = getUSDConversionRate(state);
     const destinationValue = calcTokenAmount(
@@ -686,7 +702,10 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       .plus(usedQuote.approvalNeeded?.gas || '0x0', 16)
       .toString(16);
     const gasEstimateTotalInUSD = getValueFromWeiHex({
-      value: calcGasTotal(totalGasLimitEstimate, usedGasPrice),
+      value: calcGasTotal(
+        totalGasLimitEstimate,
+        EIP1559NetworkEnabled ? decGWEIToHexWEI(maxFeePerGas) : usedGasPrice, // TODO: Make sure it's calculated corretcly.
+      ),
       toCurrency: 'usd',
       conversionRate: usdConversionRate,
       numberOfDecimals: 6,
@@ -748,6 +767,13 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     }
 
     if (approveTxParams) {
+      if (EIP1559NetworkEnabled) {
+        approveTxParams.maxFeePerGas = decGWEIToHexWEI(maxFeePerGas);
+        approveTxParams.maxPriorityFeePerGas = decGWEIToHexWEI(
+          maxPriorityFeePerGas,
+        );
+        delete approveTxParams.gasPrice;
+      }
       const approveTxMeta = await dispatch(
         addUnapprovedTransaction(
           { ...approveTxParams, amount: '0x0' },
