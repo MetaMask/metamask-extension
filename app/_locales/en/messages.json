@@ -689,6 +689,14 @@
   "editGasPriceTooltip": {
     "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
   },
+  "editGasSubTextAmount": {
+    "message": "Max amount: $1",
+    "description": "$1 represents a dollar amount"
+  },
+  "editGasSubTextFee": {
+    "message": "Max fee: $1",
+    "description": "$1 represents a dollar amount"
+  },
   "editGasTitle": {
     "message": "Edit priority"
   },
@@ -2306,6 +2314,10 @@
   "swapTokenVerificationSources": {
     "message": "Verified on $1 sources.",
     "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
+  },
+  "swapTooManyDecimalsError": {
+    "message": "$1 allows up to $2 decimals",
+    "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
   },
   "swapTransactionComplete": {
     "message": "Transaction complete"

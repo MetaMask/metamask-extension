@@ -132,6 +132,8 @@ const renderHookWithRouter = (cb, tokenAddress) => {
 };
 
 describe('useTransactionDisplayData', () => {
+  const dispatch = sinon.spy();
+
   beforeAll(() => {
     useSelector = sinon.stub(reactRedux, 'useSelector');
     useTokenFiatAmount = sinon.stub(
@@ -169,6 +171,7 @@ describe('useTransactionDisplayData', () => {
       }
       return null;
     });
+    sinon.stub(reactRedux, 'useDispatch').returns(dispatch);
   });
 
   afterAll(() => {

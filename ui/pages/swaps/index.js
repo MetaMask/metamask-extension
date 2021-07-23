@@ -34,6 +34,7 @@ import {
   fetchAndSetSwapsGasPriceInfo,
   fetchSwapsLiveness,
   getUseNewSwapsApi,
+  getFromToken,
 } from '../../ducks/swaps/swaps';
 import { isEIP1559Network } from '../../ducks/metamask/metamask';
 import {
@@ -71,6 +72,7 @@ import {
   fetchTopAssets,
   getSwapsTokensReceivedFromTxMeta,
   fetchAggregatorMetadata,
+  countDecimals,
 } from './swaps.util';
 import AwaitingSignatures from './awaiting-signatures';
 import AwaitingSwap from './awaiting-swap';
@@ -95,6 +97,7 @@ export default function Swap() {
   const [inputValue, setInputValue] = useState(fetchParams?.value || '');
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 3);
   const [isFeatureFlagLoaded, setIsFeatureFlagLoaded] = useState(false);
+  const [tokenFromError, setTokenFromError] = useState(null);
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -110,6 +113,8 @@ export default function Swap() {
   const isSwapsChain = useSelector(getIsSwapsChain);
   const useNewSwapsApi = useSelector(getUseNewSwapsApi);
   const EIP1559NetworkEnabled = useSelector(isEIP1559Network);
+  const fromToken = useSelector(getFromToken);
+
   useGasFeeEstimates(); // This will pre-load gas fees before going to the View Quote page.
 
   const {
@@ -299,10 +304,15 @@ export default function Swap() {
 
                 const onInputChange = (newInputValue, balance) => {
                   setInputValue(newInputValue);
-                  dispatch(
-                    setBalanceError(
-                      new BigNumber(newInputValue || 0).gt(balance || 0),
-                    ),
+                  const balanceError = new BigNumber(newInputValue || 0).gt(
+                    balance || 0,
+                  );
+                  // "setBalanceError" is just a warning, a user can still click on the "Review Swap" button.
+                  dispatch(setBalanceError(balanceError));
+                  setTokenFromError(
+                    countDecimals(newInputValue) > fromToken.decimals
+                      ? 'tooManyDecimals'
+                      : null,
                   );
                 };
 
@@ -315,6 +325,7 @@ export default function Swap() {
                     selectedAccountAddress={selectedAccountAddress}
                     maxSlippage={maxSlippage}
                     isFeatureFlagLoaded={isFeatureFlagLoaded}
+                    tokenFromError={tokenFromError}
                   />
                 );
               }}

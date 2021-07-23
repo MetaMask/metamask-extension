@@ -30,6 +30,7 @@ export const LOCK_METAMASK = 'LOCK_METAMASK';
 // error handling
 export const DISPLAY_WARNING = 'DISPLAY_WARNING';
 export const HIDE_WARNING = 'HIDE_WARNING';
+export const CAPTURE_SINGLE_EXCEPTION = 'CAPTURE_SINGLE_EXCEPTION';
 // accounts screen
 export const SHOW_ACCOUNT_DETAIL = 'SHOW_ACCOUNT_DETAIL';
 export const SHOW_ACCOUNTS_PAGE = 'SHOW_ACCOUNTS_PAGE';
