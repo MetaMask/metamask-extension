@@ -8,6 +8,7 @@ import {
   BSC_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
   POLYGON_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
 } from '../../../../shared/constants/network';
 import TransactionDetail from '../../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
@@ -30,6 +31,7 @@ export default function FeeCard({
   onQuotesClick,
   tokenConversionRate,
   chainId,
+  EIP1559NetworkEnabled,
 }) {
   const t = useContext(I18nContext);
 
@@ -50,6 +52,8 @@ export default function FeeCard({
         return t('networkNamePolygon');
       case LOCALHOST_CHAIN_ID:
         return t('networkNameTestnet');
+      case RINKEBY_CHAIN_ID:
+        return t('networkNameRinkeby');
       default:
         throw new Error('This network is not supported for token swaps');
     }
@@ -84,7 +88,7 @@ export default function FeeCard({
         </div>
       </div>
       <div className="fee-card__main">
-        {process.env.SHOW_EIP_1559_UI && (
+        {EIP1559NetworkEnabled && (
           <TransactionDetail
             rows={[
               <TransactionDetailItem
@@ -147,7 +151,7 @@ export default function FeeCard({
             ]}
           />
         )}
-        {!process.env.SHOW_EIP_1559_UI && (
+        {!EIP1559NetworkEnabled && (
           <div
             className="fee-card__row-header"
             data-testid="fee-card__row-header"
@@ -196,7 +200,7 @@ export default function FeeCard({
             </div>
           </div>
         )}
-        {!process.env.SHOW_EIP_1559_UI && (
+        {!EIP1559NetworkEnabled && (
           <div
             className="fee-card__row-header"
             onClick={() => onFeeCardMaxRowClick()}
@@ -279,4 +283,5 @@ FeeCard.propTypes = {
   numberOfQuotes: PropTypes.number.isRequired,
   tokenConversionRate: PropTypes.number,
   chainId: PropTypes.string.isRequired,
+  EIP1559NetworkEnabled: PropTypes.bool.isRequired,
 };

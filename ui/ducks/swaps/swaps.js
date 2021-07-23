@@ -65,6 +65,7 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
+import { isEIP1559Network } from '../metamask/metamask';
 
 const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -503,6 +504,7 @@ export const fetchQuotesAndSetQuoteState = (
 
     const hardwareWalletUsed = isHardwareWallet(state);
     const hardwareWalletType = getHardwareWalletType(state);
+    const EIP1559NetworkEnabled = isEIP1559Network(state);
     metaMetricsEvent({
       event: 'Quotes Requested',
       category: 'swaps',
@@ -544,7 +546,9 @@ export const fetchQuotesAndSetQuoteState = (
         ),
       );
 
-      const gasPriceFetchPromise = dispatch(fetchAndSetSwapsGasPriceInfo());
+      const gasPriceFetchPromise = EIP1559NetworkEnabled
+        ? null // For EIP 1559 we can get gas prices via "useGasFeeEstimates".
+        : dispatch(fetchAndSetSwapsGasPriceInfo());
 
       const [[fetchedQuotes, selectedAggId]] = await Promise.all([
         fetchAndSetQuotesPromise,

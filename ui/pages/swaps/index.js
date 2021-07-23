@@ -35,6 +35,7 @@ import {
   fetchSwapsLiveness,
   getUseNewSwapsApi,
 } from '../../ducks/swaps/swaps';
+import { isEIP1559Network } from '../../ducks/metamask/metamask';
 import {
   AWAITING_SIGNATURES_ROUTE,
   AWAITING_SWAP_ROUTE,
@@ -62,7 +63,7 @@ import {
 } from '../../store/actions';
 import { currentNetworkTxListSelector } from '../../selectors';
 import { useNewMetricEvent } from '../../hooks/useMetricEvent';
-
+import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import {
@@ -108,6 +109,8 @@ export default function Swap() {
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const useNewSwapsApi = useSelector(getUseNewSwapsApi);
+  const EIP1559NetworkEnabled = useSelector(isEIP1559Network);
+  useGasFeeEstimates(); // This will pre-load gas fees before going to the View Quote page.
 
   const {
     balance: ethBalance,
@@ -183,12 +186,20 @@ export default function Swap() {
           dispatch(setAggregatorMetadata(newAggregatorMetadata));
         },
       );
-      dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
+      if (!EIP1559NetworkEnabled) {
+        dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
+      }
       return () => {
         dispatch(prepareToLeaveSwaps());
       };
     }
-  }, [dispatch, chainId, isFeatureFlagLoaded, useNewSwapsApi]);
+  }, [
+    dispatch,
+    chainId,
+    isFeatureFlagLoaded,
+    useNewSwapsApi,
+    EIP1559NetworkEnabled,
+  ]);
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);

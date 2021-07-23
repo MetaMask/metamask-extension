@@ -26,6 +26,7 @@ import {
   hideModal,
   hideSidebar,
   updateTransaction,
+  customSwapsGasParamsUpdated,
 } from '../../../store/actions';
 
 export default function EditGasPopover({
@@ -128,6 +129,15 @@ export default function EditGasPopover({
             },
           }),
         );
+        break;
+      case EDIT_GAS_MODES.SWAPS:
+        // TODO: Update the logic below, so it will work correctly for Swaps.
+        // dispatch(
+        //   customSwapsGasParamsUpdated(
+        //     newGasSettings.gas,
+        //     newGasSettings.gasPrice,
+        //   ),
+        // );
         break;
       default:
         break;

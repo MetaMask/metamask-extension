@@ -9,6 +9,7 @@ import {
   ETHEREUM,
   POLYGON,
   BSC,
+  RINKEBY,
 } from '../../../shared/constants/swaps';
 import {
   isSwapsDefaultTokenAddress,
@@ -21,6 +22,7 @@ import {
   BSC_CHAIN_ID,
   POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -80,6 +82,7 @@ const getBaseApi = function (
   if (!baseUrl) {
     throw new Error(`Swaps API calls are disabled for chainId: ${chainId}`);
   }
+  const chainIdDecimal = chainId && parseInt(chainId, 16);
   switch (type) {
     case 'trade':
       return `${baseUrl}/trades?`;
@@ -93,6 +96,8 @@ const getBaseApi = function (
       return `${baseUrl}/aggregatorMetadata`;
     case 'gasPrices':
       return `${baseUrl}/gasPrices`;
+    case 'suggestedGasFees':
+      return `${GAS_API_BASE_URL}/networks/${chainIdDecimal}/suggestedGasFees`;
     case 'refreshTime':
       return `${baseUrl}/quoteRefreshRate`;
     default:
@@ -236,6 +241,38 @@ const SWAP_GAS_PRICE_VALIDATOR = [
     property: 'FastGasPrice',
     type: 'string',
     validator: isValidDecimalNumber,
+  },
+];
+
+const suggestedGasFeesValidator = (suggestedGasFees) => {
+  return (
+    suggestedGasFees &&
+    suggestedGasFees.suggestedMaxPriorityFeePerGas !== undefined &&
+    suggestedGasFees.suggestedMaxFeePerGas !== undefined &&
+    suggestedGasFees.minWaitTimeEstimate !== undefined &&
+    suggestedGasFees.maxWaitTimeEstimate !== undefined
+  );
+};
+
+const SWAP_EIP1559_GAS_PRICE_VALIDATOR = [
+  {
+    property: 'low',
+    type: 'object',
+    validator: suggestedGasFeesValidator,
+  },
+  {
+    property: 'medium',
+    type: 'object',
+    validator: suggestedGasFeesValidator,
+  },
+  {
+    property: 'high',
+    type: 'object',
+    validator: suggestedGasFeesValidator,
+  },
+  {
+    property: 'estimatedBaseFee',
+    type: 'number',
   },
 ];
 
@@ -412,6 +449,28 @@ export async function fetchSwapsFeatureFlags() {
     { method: 'GET' },
     { cacheRefreshTime: 600000 },
   );
+  return {
+    bsc: {
+      mobile_active: false,
+      extension_active: false,
+      fallback_to_v1: true,
+    },
+    ethereum: {
+      mobile_active: false,
+      extension_active: false,
+      fallback_to_v1: true,
+    },
+    polygon: {
+      mobile_active: false,
+      extension_active: true,
+      fallback_to_v1: false,
+    },
+    rinkeby: {
+      mobile_active: false,
+      extension_active: false,
+      fallback_to_v1: true,
+    },
+  };
   return response;
 }
 
@@ -786,6 +845,8 @@ export const getNetworkNameByChainId = (chainId) => {
       return BSC;
     case POLYGON_CHAIN_ID:
       return POLYGON;
+    case RINKEBY_CHAIN_ID:
+      return RINKEBY;
     default:
       return '';
   }

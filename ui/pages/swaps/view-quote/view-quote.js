@@ -10,6 +10,7 @@ import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { usePrevious } from '../../../hooks/usePrevious';
+import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import FeeCard from '../fee-card';
 import EditGasPopover from '../../../components/app/edit-gas-popover/edit-gas-popover.component';
@@ -42,7 +43,11 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
 } from '../../../selectors';
-import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getTokens,
+  isEIP1559Network,
+} from '../../../ducks/metamask/metamask';
 
 import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util';
 
@@ -69,6 +74,7 @@ import {
   decimalToHex,
   hexToDecimal,
   getValueFromWeiHex,
+  decGWEIToHexWEI,
 } from '../../../helpers/utils/conversions.util';
 import MainQuoteSummary from '../main-quote-summary';
 import { calcGasTotal } from '../../send/send.utils';
@@ -80,6 +86,7 @@ import {
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
+import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import ViewQuotePriceDifference from './view-quote-price-difference';
@@ -124,6 +131,7 @@ export default function ViewQuote() {
   const conversionRate = useSelector(conversionRateSelector);
   const currentCurrency = useSelector(getCurrentCurrency);
   const swapsTokens = useSelector(getTokens);
+  const EIP1559NetworkEnabled = useSelector(isEIP1559Network);
   const balanceError = useSelector(getBalanceError);
   const fetchParams = useSelector(getFetchParams);
   const approveTxParams = useSelector(getApproveTxParams);
@@ -135,6 +143,7 @@ export default function ViewQuote() {
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
+  const gasFeeInputs = useGasFeeInputs('high');
 
   const { isBestQuote } = usedQuote;
 
@@ -156,7 +165,19 @@ export default function ViewQuote() {
     : `0x${decimalToHex(usedQuote?.maxGas || 0)}`;
   const maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
 
-  const gasTotalInWeiHex = calcGasTotal(maxGasLimit, gasPrice);
+  // TODO: Use object destructing and use these values properly in this file.
+  const gasLimit = `0x${decimalToHex(gasFeeInputs?.gasLimit)}`;
+  const maxFeePerGas = decGWEIToHexWEI(gasFeeInputs.maxFeePerGas);
+  const maxPriorityFeePerGas = gasFeeInputs.maxPriorityFeePerGas;
+  const estimatedBaseFee = gasFeeInputs.gasFeeEstimates.estimatedBaseFee;
+  const expectedFeePerGas = decGWEIToHexWEI(
+    estimatedBaseFee + maxPriorityFeePerGas,
+  );
+
+  const gasTotalInWeiHex = calcGasTotal(
+    EIP1559NetworkEnabled ? gasLimit : maxGasLimit,
+    EIP1559NetworkEnabled ? maxFeePerGas : gasPrice,
+  );
 
   const { tokensWithBalances } = useTokenTracker(swapsTokens, true);
   const balanceToken =
@@ -187,7 +208,7 @@ export default function ViewQuote() {
   const renderablePopoverData = useMemo(() => {
     return quotesToRenderableData(
       quotes,
-      gasPrice,
+      EIP1559NetworkEnabled ? maxFeePerGas : gasPrice,
       conversionRate,
       currentCurrency,
       approveGas,
@@ -197,6 +218,8 @@ export default function ViewQuote() {
   }, [
     quotes,
     gasPrice,
+    maxFeePerGas,
+    EIP1559NetworkEnabled,
     conversionRate,
     currentCurrency,
     approveGas,
@@ -223,7 +246,7 @@ export default function ViewQuote() {
   const { feeInFiat, feeInEth } = getRenderableNetworkFeesForQuote({
     tradeGas: usedGasLimit,
     approveGas,
-    gasPrice,
+    gasPrice: EIP1559NetworkEnabled ? expectedFeePerGas : gasPrice,
     currentCurrency,
     conversionRate,
     tradeValue,
@@ -240,7 +263,7 @@ export default function ViewQuote() {
   } = getRenderableNetworkFeesForQuote({
     tradeGas: maxGasLimit,
     approveGas,
-    gasPrice,
+    gasPrice: EIP1559NetworkEnabled ? maxFeePerGas : gasPrice,
     currentCurrency,
     conversionRate,
     tradeValue,
@@ -457,7 +480,10 @@ export default function ViewQuote() {
   };
 
   const nonGasFeeIsPositive = new BigNumber(nonGasFee, 16).gt(0);
-  const approveGasTotal = calcGasTotal(approveGas || '0x0', gasPrice);
+  const approveGasTotal = calcGasTotal(
+    approveGas || '0x0',
+    EIP1559NetworkEnabled ? maxFeePerGas : gasPrice,
+  );
   const extraNetworkFeeTotalInHexWEI = new BigNumber(nonGasFee, 16)
     .plus(approveGasTotal, 16)
     .toString(16);
@@ -477,7 +503,7 @@ export default function ViewQuote() {
   }
 
   const onFeeCardMaxRowClick = () => {
-    process.env.SHOW_EIP_1559_UI
+    EIP1559NetworkEnabled
       ? setShowEditGasPopover(true)
       : dispatch(
           showModal({
@@ -617,12 +643,17 @@ export default function ViewQuote() {
           />
         )}
 
-        {showEditGasPopover && process.env.SHOW_EIP_1559_UI && (
+        {showEditGasPopover && EIP1559NetworkEnabled && (
           <EditGasPopover
-            popoverTitle={t('speedUpPopoverTitle')}
-            editGasDisplayProps={{ alwaysShowForm: true, type: 'speed-up' }}
+            popoverTitle={t('customGas')}
+            // editGasDisplayProps={{
+            //   alwaysShowForm: true,
+            // }}
+            defaultEstimateToUse="high"
+            mode={EDIT_GAS_MODES.SWAPS}
             confirmButtonText={t('submit')}
             onClose={onCloseEditGasPopover}
+            transaction={usedQuote.trade}
           />
         )}
 
@@ -695,6 +726,7 @@ export default function ViewQuote() {
                 : memoizedTokenConversionRates[destinationToken.address]
             }
             chainId={chainId}
+            EIP1559NetworkEnabled={EIP1559NetworkEnabled}
           />
         </div>
       </div>
@@ -716,8 +748,9 @@ export default function ViewQuote() {
           balanceError ||
           tokenBalanceUnavailable ||
           disableSubmissionDueToPriceWarning ||
-          gasPrice === null ||
-          gasPrice === undefined
+          (EIP1559NetworkEnabled && expectedFeePerGas === undefined) ||
+          (EIP1559NetworkEnabled &&
+            (gasPrice === null || gasPrice === undefined))
         }
         className={isShowingWarning && 'view-quote__thin-swaps-footer'}
         showTopBorder
