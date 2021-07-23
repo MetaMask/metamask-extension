@@ -210,14 +210,14 @@ export default function TransactionListItem({
           cancelDisabled={!cancelEnabled}
         />
       )}
-      {process.env.SHOW_EIP_1559_UI && showRetryEditGasPopover && (
+      {showRetryEditGasPopover && (
         <EditGasPopover
           onClose={closeRetryEditGasPopover}
           mode={EDIT_GAS_MODES.SPEED_UP}
           transaction={transactionGroup.primaryTransaction}
         />
       )}
-      {process.env.SHOW_EIP_1559_UI && showCancelEditGasPopover && (
+      {showCancelEditGasPopover && (
         <EditGasPopover
           onClose={closeCancelEditGasPopover}
           mode={EDIT_GAS_MODES.CANCEL}

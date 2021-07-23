@@ -31,7 +31,7 @@ export default class TransactionBreakdown extends PureComponent {
     baseFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     priorityFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     hexGasTotal: PropTypes.string,
-    supportsEIP1559: PropTypes.bool,
+    isEIP1559Transaction: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -54,7 +54,7 @@ export default class TransactionBreakdown extends PureComponent {
       baseFee,
       priorityFee,
       hexGasTotal,
-      supportsEIP1559,
+      isEIP1559Transaction,
     } = this.props;
     return (
       <div className={classnames('transaction-breakdown', className)}>
@@ -98,7 +98,7 @@ export default class TransactionBreakdown extends PureComponent {
             />
           </TransactionBreakdownRow>
         )}
-        {process.env.SHOW_EIP_1559_UI && supportsEIP1559 && (
+        {isEIP1559Transaction && (
           <TransactionBreakdownRow title={t('transactionHistoryBaseFee')}>
             {typeof baseFee === 'undefined' ? (
               '?'
@@ -115,7 +115,7 @@ export default class TransactionBreakdown extends PureComponent {
             )}
           </TransactionBreakdownRow>
         )}
-        {process.env.SHOW_EIP_1559_UI && supportsEIP1559 && (
+        {isEIP1559Transaction && (
           <TransactionBreakdownRow title={t('transactionHistoryPriorityFee')}>
             {typeof priorityFee === 'undefined' ? (
               '?'
@@ -132,7 +132,7 @@ export default class TransactionBreakdown extends PureComponent {
             )}
           </TransactionBreakdownRow>
         )}
-        {(!process.env.SHOW_EIP_1559_UI || !supportsEIP1559) && (
+        {!isEIP1559Transaction && (
           <TransactionBreakdownRow title={t('advancedGasPriceTitle')}>
             {typeof gasPrice === 'undefined' ? (
               '?'
@@ -148,7 +148,7 @@ export default class TransactionBreakdown extends PureComponent {
             )}
           </TransactionBreakdownRow>
         )}
-        {process.env.SHOW_EIP_1559_UI && supportsEIP1559 && (
+        {isEIP1559Transaction && (
           <TransactionBreakdownRow
             title={t('transactionHistoryEffectiveGasPrice')}
           >

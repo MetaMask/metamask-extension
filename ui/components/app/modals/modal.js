@@ -9,7 +9,6 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
 // Modal Components
-import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container';
 import SwapsGasCustomizationModal from '../../../pages/swaps/swaps-gas-customization-modal';
 import EditGasPopover from '../edit-gas-popover/edit-gas-popover.component';
 import DepositEtherModal from './deposit-ether-modal';
@@ -247,11 +246,7 @@ const MODALS = {
   },
 
   CUSTOMIZE_GAS: {
-    contents: process.env.SHOW_EIP_1559_UI ? (
-      <EditGasPopover />
-    ) : (
-      <ConfirmCustomizeGasModal />
-    ),
+    contents: <EditGasPopover />,
     mobileModalStyle: {
       width: '100vw',
       height: '100vh',

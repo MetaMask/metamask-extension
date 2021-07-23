@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
+import { isEIP1559Network } from '../../../ducks/metamask/metamask';
 import {
   GAS_ESTIMATE_TYPES,
   EDIT_GAS_MODES,
@@ -45,11 +46,12 @@ export default function EditGasPopover({
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
+  const networkSupports1559 = useSelector(isEIP1559Network);
 
   const shouldAnimate = useShouldAnimateGasEstimations();
 
   const showEducationButton =
-    mode === EDIT_GAS_MODES.MODIFY_IN_PLACE && process.env.SHOW_EIP_1559_UI;
+    mode === EDIT_GAS_MODES.MODIFY_IN_PLACE && networkSupports1559;
   const [showEducationContent, setShowEducationContent] = useState(false);
 
   const [warning] = useState(null);
