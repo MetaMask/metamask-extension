@@ -1326,6 +1326,7 @@ export function toggleSendMaxMode() {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.MAX));
       await dispatch(actions.updateAmountToMax());
     }
+    await dispatch(computeEstimatedGasLimit());
   };
 }
 
