@@ -5,7 +5,7 @@ import {
   getIsEthGasPriceFetched,
   getNoGasPriceFetched,
 } from '../../../selectors';
-
+import { isEIP1559Network } from '../../../ducks/metamask/metamask';
 import { getIsAssetSendable, getSendTo } from '../../../ducks/send';
 
 import * as actions from '../../../store/actions';
@@ -25,6 +25,7 @@ function mapStateToProps(state) {
     isEthGasPrice: getIsEthGasPriceFetched(state),
     noGasPrice: getNoGasPriceFetched(state),
     to,
+    isEIP1559Network: isEIP1559Network(state),
   };
 }
 

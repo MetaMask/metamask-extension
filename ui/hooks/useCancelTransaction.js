@@ -1,13 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useCallback, useState } from 'react';
-import { showModal, showSidebar } from '../store/actions';
 import { isBalanceSufficient } from '../pages/send/send.utils';
-import { getSelectedAccount, getIsMainnet } from '../selectors';
+import { getSelectedAccount } from '../selectors';
 import { getConversionRate } from '../ducks/metamask/metamask';
 
-import { setCustomGasLimit, setCustomGasPrice } from '../ducks/gas/gas.duck';
-import { GAS_LIMITS } from '../../shared/constants/gas';
-import { isLegacyTransaction } from '../../shared/modules/transaction.utils';
 import { getMaximumGasTotalInHexWei } from '../../shared/modules/gas.utils';
 import { useIncrementedGasFees } from './useIncrementedGasFees';
 
@@ -26,11 +22,8 @@ export function useCancelTransaction(transactionGroup) {
 
   const customGasSettings = useIncrementedGasFees(transactionGroup);
 
-  const dispatch = useDispatch();
   const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
-  const isMainnet = useSelector(getIsMainnet);
-  const hideBasic = !(isMainnet || process.env.IN_TEST);
 
   const [showCancelEditGasPopover, setShowCancelEditGasPopover] = useState(
     false,
@@ -38,53 +31,10 @@ export function useCancelTransaction(transactionGroup) {
 
   const closeCancelEditGasPopover = () => setShowCancelEditGasPopover(false);
 
-  const cancelTransaction = useCallback(
-    (event) => {
-      event.stopPropagation();
-      if (process.env.SHOW_EIP_1559_UI) {
-        return setShowCancelEditGasPopover(true);
-      }
-      if (isLegacyTransaction(primaryTransaction)) {
-        // To support the current process of cancelling or speeding up
-        // a transaction, we have to inform the custom gas state of the new
-        // gasPrice/gasLimit to start at.
-        dispatch(setCustomGasPrice(customGasSettings.gasPrice));
-        dispatch(setCustomGasLimit(GAS_LIMITS.SIMPLE));
-      }
-      const tx = {
-        ...primaryTransaction,
-        txParams: {
-          ...primaryTransaction.txParams,
-          gas: GAS_LIMITS.SIMPLE,
-          value: '0x0',
-        },
-      };
-      return dispatch(
-        showSidebar({
-          transitionName: 'sidebar-left',
-          type: 'customize-gas',
-          props: {
-            hideBasic,
-            transaction: tx,
-            onSubmit: (newGasSettings) => {
-              const userCustomizedGasTotal = getMaximumGasTotalInHexWei(
-                newGasSettings,
-              );
-              dispatch(
-                showModal({
-                  name: 'CANCEL_TRANSACTION',
-                  newGasFee: userCustomizedGasTotal,
-                  transactionId: primaryTransaction.id,
-                  customGasSettings: newGasSettings,
-                }),
-              );
-            },
-          },
-        }),
-      );
-    },
-    [dispatch, primaryTransaction, customGasSettings, hideBasic],
-  );
+  const cancelTransaction = useCallback((event) => {
+    event.stopPropagation();
+    return setShowCancelEditGasPopover(true);
+  }, []);
 
   const hasEnoughCancelGas =
     primaryTransaction.txParams &&
