@@ -1045,7 +1045,34 @@ describe('Send Slice', () => {
       };
 
       it('should create an action to update send amount', async () => {
-        const store = mockStore(defaultSendAmountState);
+        const sendState = {
+          metamask: {
+            blockGasLimit: '',
+            selectedAddress: '',
+            provider: {
+              chainId: '0x1',
+            },
+          },
+          ...defaultSendAmountState.send,
+          send: {
+            asset: {
+              details: {},
+            },
+            gas: {
+              gasPrice: '',
+            },
+            recipient: {
+              address: '',
+            },
+            amount: {
+              value: '',
+            },
+            draftTransaction: {
+              userInputHexData: '',
+            },
+          },
+        };
+        const store = mockStore(sendState);
 
         const newSendAmount = 'aNewSendAmount';
 
@@ -1053,35 +1080,73 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        const expectedActionResult = [
-          { type: 'send/updateSendAmount', payload: 'aNewSendAmount' },
-        ];
+        const expectedFirstActionResult = {
+          type: 'send/updateSendAmount',
+          payload: 'aNewSendAmount',
+        };
 
-        expect(actionResult).toStrictEqual(expectedActionResult);
+        expect(actionResult[0]).toStrictEqual(expectedFirstActionResult);
+        expect(actionResult[1].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/pending',
+        );
+        expect(actionResult[2].type).toStrictEqual(
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[3].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
+        );
       });
 
       it('should create an action to update send amount mode to `INPUT` when mode is `MAX`', async () => {
-        const maxModeSendState = {
+        const sendState = {
+          metamask: {
+            blockGasLimit: '',
+            selectedAddress: '',
+            provider: {
+              chainId: '0x1',
+            },
+          },
+          ...defaultSendAmountState.send,
           send: {
-            ...defaultSendAmountState.send,
+            asset: {
+              details: {},
+            },
+            gas: {
+              gasPrice: '',
+            },
+            recipient: {
+              address: '',
+            },
             amount: {
-              mode: AMOUNT_MODES.MAX,
+              value: '',
+            },
+            draftTransaction: {
+              userInputHexData: '',
             },
           },
         };
 
-        const store = mockStore(maxModeSendState);
+        const store = mockStore(sendState);
 
         await store.dispatch(updateSendAmount());
 
         const actionResult = store.getActions();
 
-        const expectedActionResult = [
-          { type: 'send/updateSendAmount', payload: undefined },
-          { type: 'send/updateAmountMode', payload: AMOUNT_MODES.INPUT },
-        ];
+        const expectedFirstActionResult = {
+          type: 'send/updateSendAmount',
+          payload: undefined,
+        };
 
-        expect(actionResult).toStrictEqual(expectedActionResult);
+        expect(actionResult[0]).toStrictEqual(expectedFirstActionResult);
+        expect(actionResult[1].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/pending',
+        );
+        expect(actionResult[2].type).toStrictEqual(
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[3].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
+        );
       });
 
       it('should create an action computeEstimateGasLimit and change states from pending to fulfilled with token asset types', async () => {
@@ -1511,8 +1576,27 @@ describe('Send Slice', () => {
       it('should create actions to toggle update max mode when send amount mode is not max', async () => {
         const sendMaxModeState = {
           send: {
+            asset: {
+              type: ASSET_TYPES.TOKEN,
+              details: {},
+            },
+            gas: {
+              gasPrice: '',
+            },
+            recipient: {
+              address: '',
+            },
             amount: {
               mode: '',
+              value: '',
+            },
+            draftTransaction: {
+              userInputHexData: '',
+            },
+          },
+          metamask: {
+            provider: {
+              chainId: RINKEBY_CHAIN_ID,
             },
           },
         };
@@ -1523,20 +1607,44 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        const expectedActionReslt = [
-          { type: 'send/updateAmountMode', payload: AMOUNT_MODES.MAX },
-          { type: 'send/updateAmountToMax', payload: undefined },
-        ];
-
-        expect(actionResult).toHaveLength(2);
-        expect(actionResult).toStrictEqual(expectedActionReslt);
+        expect(actionResult).toHaveLength(5);
+        expect(actionResult[0].type).toStrictEqual('send/updateAmountMode');
+        expect(actionResult[1].type).toStrictEqual('send/updateAmountToMax');
+        expect(actionResult[2].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/pending',
+        );
+        expect(actionResult[3].type).toStrictEqual(
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[4].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
+        );
       });
 
       it('should create actions to toggle off  max mode when send amount mode is max', async () => {
         const sendMaxModeState = {
           send: {
+            asset: {
+              type: ASSET_TYPES.TOKEN,
+              details: {},
+            },
+            gas: {
+              gasPrice: '',
+            },
+            recipient: {
+              address: '',
+            },
             amount: {
               mode: AMOUNT_MODES.MAX,
+              value: '',
+            },
+            draftTransaction: {
+              userInputHexData: '',
+            },
+          },
+          metamask: {
+            provider: {
+              chainId: RINKEBY_CHAIN_ID,
             },
           },
         };
@@ -1546,13 +1654,18 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        const expectedActionReslt = [
-          { type: 'send/updateAmountMode', payload: AMOUNT_MODES.INPUT },
-          { type: 'send/updateSendAmount', payload: '0x0' },
-        ];
-
-        expect(actionResult).toHaveLength(2);
-        expect(actionResult).toStrictEqual(expectedActionReslt);
+        expect(actionResult).toHaveLength(5);
+        expect(actionResult[0].type).toStrictEqual('send/updateAmountMode');
+        expect(actionResult[1].type).toStrictEqual('send/updateSendAmount');
+        expect(actionResult[2].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/pending',
+        );
+        expect(actionResult[3].type).toStrictEqual(
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[4].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
+        );
       });
     });
 
