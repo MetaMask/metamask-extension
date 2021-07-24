@@ -7,11 +7,7 @@
 
   &__title {
     flex-grow: 1;
-  }
-
-  &__title--dapp-suggested {
-    color: $secondary-1;
-    font-weight: bold;
+    word-break: break-word;
   }
 
   .info-tooltip {
