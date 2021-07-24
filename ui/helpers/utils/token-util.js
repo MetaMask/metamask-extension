@@ -73,7 +73,7 @@ async function getDecimals(tokenAddress) {
     const contractMetadataInfo = getContractMetadata(tokenAddress);
 
     if (contractMetadataInfo) {
-      decimals = contractMetadataInfo.decimals;
+      decimals = contractMetadataInfo.decimals?.toString();
     }
   }
 
