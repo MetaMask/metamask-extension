@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.8.3]
+### Uncategorized
+- Fix sending maximum of an ERC20 token ([#11594](https://github.com/MetaMask/metamask-extension/pull/11594))
+
 ## [9.8.2]
 ### Changed
 - [1156511545](https://github.com/MetaMask/metamask-extension/pull/11545): Allow MetaMask Swaps to support Polygon network
@@ -2344,7 +2348,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.8.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.8.3...HEAD
+[9.8.3]: https://github.com/MetaMask/metamask-extension/compare/v9.8.2...v9.8.3
 [9.8.2]: https://github.com/MetaMask/metamask-extension/compare/v9.8.1...v9.8.2
 [9.8.1]: https://github.com/MetaMask/metamask-extension/compare/v9.8.0...v9.8.1
 [9.8.0]: https://github.com/MetaMask/metamask-extension/compare/v9.7.1...v9.8.0
