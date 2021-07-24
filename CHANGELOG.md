@@ -7,23 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.8.3]
-### Uncategorized
-- Fix sending maximum of an ERC20 token ([#11594](https://github.com/MetaMask/metamask-extension/pull/11594))
+### Fixed
+- [#11594](https://github.com/MetaMask/metamask-extension/pull/11594): Fixed ERC20 token maximum send
 
 ## [9.8.2]
 ### Changed
-- [1156511545](https://github.com/MetaMask/metamask-extension/pull/11545): Allow MetaMask Swaps to support Polygon network
+- [#11545](https://github.com/MetaMask/metamask-extension/pull/11545): Allow MetaMask Swaps to support Polygon network
 
 ### Fixed
-- [11565](https://github.com/MetaMask/metamask-extension/pull/11565): Fix gas limit estimation for some tokens on custom networks
-- [11581](https://github.com/MetaMask/metamask-extension/pull/11581): Fixed bug that resulted in sends to some contracts being disabled.
+- [#11565](https://github.com/MetaMask/metamask-extension/pull/11565): Fix gas limit estimation for some tokens on custom networks
+- [#11581](https://github.com/MetaMask/metamask-extension/pull/11581): Fixed bug that resulted in sends to some contracts being disabled.
 
 ## [9.8.1]
 ### Changed
 - Adjusting transaction metrics values
 
 ### Fixed
-- [11538](https://github.com/MetaMask/metamask-extension/pull/11538): Fixed bug that prevented users from continuing to swap after going 'back' from the View Quote page of the swaps flow.
+- [#11538](https://github.com/MetaMask/metamask-extension/pull/11538): Fixed bug that prevented users from continuing to swap after going 'back' from the View Quote page of the swaps flow.
 
 ## [9.8.0]
 ### Added
