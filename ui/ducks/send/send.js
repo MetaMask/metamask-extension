@@ -1112,9 +1112,7 @@ export function updateSendAmount(amount) {
     if (state.send.amount.mode === AMOUNT_MODES.MAX) {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
     }
-    if (state.send.asset.type === ASSET_TYPES.TOKEN) {
-      await dispatch(computeEstimatedGasLimit());
-    }
+    await dispatch(computeEstimatedGasLimit());
   };
 }
 
@@ -1274,6 +1272,7 @@ export function toggleSendMaxMode() {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.MAX));
       await dispatch(actions.updateAmountToMax());
     }
+    await dispatch(computeEstimatedGasLimit());
   };
 }
 
