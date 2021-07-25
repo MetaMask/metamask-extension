@@ -465,6 +465,7 @@ export default class ConfirmTransactionBase extends Component {
               />,
             ]}
           />
+          {nonceField}
         </div>
       );
     }
