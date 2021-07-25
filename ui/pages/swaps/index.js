@@ -298,7 +298,8 @@ export default function Swap() {
                   // "setBalanceError" is just a warning, a user can still click on the "Review Swap" button.
                   dispatch(setBalanceError(balanceError));
                   setTokenFromError(
-                    countDecimals(newInputValue) > fromToken.decimals
+                    fromToken &&
+                      countDecimals(newInputValue) > fromToken.decimals
                       ? 'tooManyDecimals'
                       : null,
                   );
