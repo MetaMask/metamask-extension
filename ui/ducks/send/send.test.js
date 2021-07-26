@@ -1395,6 +1395,7 @@ describe('Send Slice', () => {
 
         const updateRecipientState = {
           metamask: {
+            addressBook: {},
             provider: {
               chainId: '0x1',
             },
@@ -1440,9 +1441,75 @@ describe('Send Slice', () => {
         );
       });
 
+      it('should update recipient nickname if the passed address exists in the addressBook state but no nickname param is provided', async () => {
+        global.eth = {
+          getCode: sinon.stub(),
+        };
+
+        const TEST_RECIPIENT_ADDRESS =
+          '0x0000000000000000000000000000000000000001';
+        const TEST_RECIPIENT_NAME = 'The 1 address';
+
+        const updateRecipientState = {
+          metamask: {
+            addressBook: {
+              '0x1': [
+                {
+                  address: TEST_RECIPIENT_ADDRESS,
+                  name: TEST_RECIPIENT_NAME,
+                },
+              ],
+            },
+            provider: {
+              chainId: '0x1',
+            },
+          },
+          send: {
+            account: {
+              balance: '',
+            },
+            asset: {
+              type: '',
+            },
+            gas: {
+              gasPrice: '',
+            },
+            recipient: {
+              address: '',
+            },
+            amount: {
+              value: '',
+            },
+            draftTransaction: {
+              userInputHexData: '',
+            },
+          },
+        };
+
+        const store = mockStore(updateRecipientState);
+
+        await store.dispatch(
+          updateRecipient({
+            address: '0x0000000000000000000000000000000000000001',
+            nickname: '',
+          }),
+        );
+
+        const actionResult = store.getActions();
+        expect(actionResult).toHaveLength(4);
+        expect(actionResult[0].type).toStrictEqual('send/updateRecipient');
+        expect(actionResult[0].payload.address).toStrictEqual(
+          TEST_RECIPIENT_ADDRESS,
+        );
+        expect(actionResult[0].payload.nickname).toStrictEqual(
+          TEST_RECIPIENT_NAME,
+        );
+      });
+
       it('should create actions to reset recipient input and ens, calculate gas and then validate input', async () => {
         const tokenState = {
           metamask: {
+            addressBook: {},
             blockGasLimit: '',
             selectedAddress: '',
             provider: {
@@ -1496,6 +1563,7 @@ describe('Send Slice', () => {
       it('should create actions to reset recipient input and ens then validates input', async () => {
         const updateRecipientState = {
           metamask: {
+            addressBook: {},
             provider: {
               chainId: '',
             },
