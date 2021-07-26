@@ -858,6 +858,7 @@ const slice = createSlice({
 
         if (
           isSendingToken &&
+          isValidHexAddress(recipient.userInput) &&
           (toChecksumAddress(recipient.userInput) in contractMap ||
             checkExistingAddresses(recipient.userInput, tokens))
         ) {
