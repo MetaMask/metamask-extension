@@ -745,6 +745,10 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: getHardwareWalletType(state),
     };
+    if (EIP1559NetworkEnabled) {
+      swapMetaData.max_fee_per_gas = maxFeePerGas;
+      swapMetaData.max_priority_fee_per_gas = maxPriorityFeePerGas;
+    }
 
     metaMetricsEvent({
       event: 'Swap Started',
