@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
+import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
 import {
   GAS_ESTIMATE_TYPES,
@@ -27,6 +28,7 @@ import {
   hideSidebar,
   updateTransaction,
 } from '../../../store/actions';
+import LoadingHeartBeat from '../../ui/loading-heartbeat';
 
 export default function EditGasPopover({
   popoverTitle = '',
@@ -40,6 +42,8 @@ export default function EditGasPopover({
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
+
+  const shouldAnimate = useShouldAnimateGasEstimations();
 
   const showEducationButton =
     mode === EDIT_GAS_MODES.MODIFY_IN_PLACE && process.env.SHOW_EIP_1559_UI;
@@ -181,45 +185,48 @@ export default function EditGasPopover({
         )
       }
     >
-      <div style={{ padding: '0 20px 20px 20px' }}>
+      <div style={{ padding: '0 20px 20px 20px', position: 'relative' }}>
         {showEducationContent ? (
           <EditGasDisplayEducation />
         ) : (
-          <EditGasDisplay
-            showEducationButton={showEducationButton}
-            warning={warning}
-            showAdvancedForm={showAdvancedForm}
-            setShowAdvancedForm={setShowAdvancedForm}
-            dappSuggestedGasFeeAcknowledged={dappSuggestedGasFeeAcknowledged}
-            setDappSuggestedGasFeeAcknowledged={
-              setDappSuggestedGasFeeAcknowledged
-            }
-            maxPriorityFeePerGas={maxPriorityFeePerGas}
-            setMaxPriorityFeePerGas={setMaxPriorityFeePerGas}
-            maxPriorityFeePerGasFiat={maxPriorityFeePerGasFiat}
-            maxFeePerGas={maxFeePerGas}
-            setMaxFeePerGas={setMaxFeePerGas}
-            maxFeePerGasFiat={maxFeePerGasFiat}
-            estimatedMaximumNative={estimatedMaximumNative}
-            isGasEstimatesLoading={isGasEstimatesLoading}
-            gasFeeEstimates={gasFeeEstimates}
-            gasEstimateType={gasEstimateType}
-            gasPrice={gasPrice}
-            setGasPrice={setGasPrice}
-            gasLimit={gasLimit}
-            setGasLimit={setGasLimit}
-            estimateToUse={estimateToUse}
-            setEstimateToUse={setEstimateToUse}
-            estimatedMinimumFiat={estimatedMinimumFiat}
-            estimatedMaximumFiat={estimatedMaximumFiat}
-            hasGasErrors={hasGasErrors}
-            onEducationClick={() => setShowEducationContent(true)}
-            mode={mode}
-            transaction={transaction}
-            gasErrors={gasErrors}
-            onManualChange={onManualChange}
-            {...editGasDisplayProps}
-          />
+          <>
+            <LoadingHeartBeat active={shouldAnimate} />
+            <EditGasDisplay
+              showEducationButton={showEducationButton}
+              warning={warning}
+              showAdvancedForm={showAdvancedForm}
+              setShowAdvancedForm={setShowAdvancedForm}
+              dappSuggestedGasFeeAcknowledged={dappSuggestedGasFeeAcknowledged}
+              setDappSuggestedGasFeeAcknowledged={
+                setDappSuggestedGasFeeAcknowledged
+              }
+              maxPriorityFeePerGas={maxPriorityFeePerGas}
+              setMaxPriorityFeePerGas={setMaxPriorityFeePerGas}
+              maxPriorityFeePerGasFiat={maxPriorityFeePerGasFiat}
+              maxFeePerGas={maxFeePerGas}
+              setMaxFeePerGas={setMaxFeePerGas}
+              maxFeePerGasFiat={maxFeePerGasFiat}
+              estimatedMaximumNative={estimatedMaximumNative}
+              isGasEstimatesLoading={isGasEstimatesLoading}
+              gasFeeEstimates={gasFeeEstimates}
+              gasEstimateType={gasEstimateType}
+              gasPrice={gasPrice}
+              setGasPrice={setGasPrice}
+              gasLimit={gasLimit}
+              setGasLimit={setGasLimit}
+              estimateToUse={estimateToUse}
+              setEstimateToUse={setEstimateToUse}
+              estimatedMinimumFiat={estimatedMinimumFiat}
+              estimatedMaximumFiat={estimatedMaximumFiat}
+              onEducationClick={() => setShowEducationContent(true)}
+              mode={mode}
+              transaction={transaction}
+              hasGasErrors={hasGasErrors}
+              gasErrors={gasErrors}
+              onManualChange={onManualChange}
+              {...editGasDisplayProps}
+            />
+          </>
         )}
       </div>
     </Popover>
