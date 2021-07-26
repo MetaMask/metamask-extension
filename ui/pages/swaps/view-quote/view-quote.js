@@ -23,7 +23,9 @@ import {
   setBalanceError,
   getQuotesLastFetched,
   getBalanceError,
-  getCustomSwapsGas,
+  getCustomSwapsGas, // Gas limit.
+  getCustomMaxFeePerGas,
+  getCustomMaxPriorityFeePerGas,
   getDestinationTokenInfo,
   getUsedSwapsGasPrice,
   getTopQuote,
@@ -75,6 +77,8 @@ import {
   hexToDecimal,
   getValueFromWeiHex,
   decGWEIToHexWEI,
+  hexWEIToDecGWEI,
+  addHexes,
 } from '../../../helpers/utils/conversions.util';
 import MainQuoteSummary from '../main-quote-summary';
 import { calcGasTotal } from '../../send/send.utils';
@@ -125,6 +129,8 @@ export default function ViewQuote() {
   // Select necessary data
   const gasPrice = useSelector(getUsedSwapsGasPrice);
   const customMaxGas = useSelector(getCustomSwapsGas);
+  const customMaxFeePerGas = useSelector(getCustomMaxFeePerGas);
+  const customMaxPriorityFeePerGas = useSelector(getCustomMaxPriorityFeePerGas);
   const tokenConversionRates = useSelector(getTokenExchangeRates);
   const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates);
   const { balance: ethBalance } = useSelector(getSelectedAccount);
@@ -143,7 +149,11 @@ export default function ViewQuote() {
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
-  const gasFeeInputs = useGasFeeInputs('high');
+  const {
+    maxFeePerGas: suggestedMaxFeePerGas,
+    maxPriorityFeePerGas: suggestedMaxPriorityFeePerGas,
+    gasFeeEstimates: { estimatedBaseFee },
+  } = useGasFeeInputs('high');
 
   const { isBestQuote } = usedQuote;
 
@@ -165,12 +175,17 @@ export default function ViewQuote() {
     : `0x${decimalToHex(usedQuote?.maxGas || 0)}`;
   const maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
 
-  // TODO: Use object destructing and use these values properly in this file.
-  const maxFeePerGas = decGWEIToHexWEI(gasFeeInputs.maxFeePerGas);
-  const maxPriorityFeePerGas = gasFeeInputs.maxPriorityFeePerGas;
-  const estimatedBaseFee = gasFeeInputs.gasFeeEstimates.estimatedBaseFee;
-  const baseAndPriorityFeePerGas = decGWEIToHexWEI(
-    estimatedBaseFee + maxPriorityFeePerGas,
+  // TODO: Make sure that this file will still work for non-EIP 1559 networks.
+  const maxFeePerGas =
+    customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
+  const maxPriorityFeePerGas =
+    customMaxPriorityFeePerGas ||
+    decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
+
+  // TODO: Verify that this is correct.
+  const baseAndPriorityFeePerGas = addHexes(
+    estimatedBaseFee,
+    maxPriorityFeePerGas,
   );
 
   const gasTotalInWeiHex = calcGasTotal(
@@ -645,9 +660,9 @@ export default function ViewQuote() {
         {showEditGasPopover && EIP1559NetworkEnabled && (
           <EditGasPopover
             popoverTitle={t('customGas')}
-            // editGasDisplayProps={{
-            //   alwaysShowForm: true,
-            // }}
+            editGasDisplayProps={{
+              alwaysShowForm: true,
+            }}
             defaultEstimateToUse="high"
             mode={EDIT_GAS_MODES.SWAPS}
             confirmButtonText={t('submit')}
@@ -726,6 +741,7 @@ export default function ViewQuote() {
             }
             chainId={chainId}
             EIP1559NetworkEnabled={EIP1559NetworkEnabled}
+            maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(maxPriorityFeePerGas)}
           />
         </div>
       </div>

@@ -32,6 +32,7 @@ export default function FeeCard({
   tokenConversionRate,
   chainId,
   EIP1559NetworkEnabled,
+  maxPriorityFeePerGasDecGWEI,
 }) {
   const t = useContext(I18nContext);
 
@@ -133,7 +134,11 @@ export default function FeeCard({
                 }
                 detailText={primaryFee.fee}
                 detailTotal={secondaryFee.fee}
-                subTitle={<GasTiming />}
+                subTitle={
+                  <GasTiming
+                    maxPriorityFeePerGas={maxPriorityFeePerGasDecGWEI}
+                  />
+                }
                 subText={
                   secondaryFee?.maxFee !== undefined && (
                     <>
@@ -284,4 +289,5 @@ FeeCard.propTypes = {
   tokenConversionRate: PropTypes.number,
   chainId: PropTypes.string.isRequired,
   EIP1559NetworkEnabled: PropTypes.bool.isRequired,
+  maxPriorityFeePerGasDecGWEI: PropTypes.string.isRequired,
 };
