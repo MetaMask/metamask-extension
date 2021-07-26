@@ -105,26 +105,20 @@ export default class DetectTokensController {
       return;
     }
 
-    const tokensAddressForBalance = [];
-    const tokensToDetect = {};
+    const tokensToDetect = [];
     this.web3.setProvider(this._network._provider);
-    console.log(
-      `isStatic: `,
-      Object.keys(this._tokenList.state.tokensChainsCache),
-    );
     const apiTokens = this._tokenList.state.tokenList;
     for (const tokenAddress in apiTokens) {
       if (
         !this.tokenAddresses.includes(tokenAddress.toLowerCase()) &&
         !this.hiddenTokens.includes(tokenAddress.toLowerCase())
       ) {
-        tokensAddressForBalance.push(tokenAddress);
-        tokensToDetect[tokenAddress] = apiTokens[tokenAddress];
+        tokensToDetect.push(tokenAddress.toLowerCase());
       }
     }
     let result;
     try {
-      result = await this._getTokenBalances(tokensAddressForBalance);
+      result = await this._getTokenBalances(tokensToDetect);
     } catch (error) {
       warn(
         `MetaMask - DetectTokensController single call balance fetch failed`,
@@ -133,13 +127,13 @@ export default class DetectTokensController {
       return;
     }
 
-    tokensAddressForBalance.forEach((tokenAddress, index) => {
+    tokensToDetect.forEach((tokenAddress, index) => {
       const balance = result[index];
       if (balance && !balance.isZero()) {
         this._preferences.addToken(
           tokenAddress,
-          tokensToDetect[tokenAddress].symbol,
-          tokensToDetect[tokenAddress].decimals,
+          apiTokens[tokenAddress].symbol,
+          apiTokens[tokenAddress].decimals,
         );
       }
     });

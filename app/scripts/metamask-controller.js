@@ -24,7 +24,7 @@ import {
   PhishingController,
   NotificationController,
   GasFeeController,
-  TokenListController
+  TokenListController,
 } from '@metamask/controllers';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
