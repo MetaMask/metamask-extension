@@ -418,29 +418,6 @@ export async function fetchSwapsFeatureFlags() {
     { method: 'GET' },
     { cacheRefreshTime: 600000 },
   );
-  // TODO: Remove this before merging the PR, it enables Rinkeby in Swaps.
-  return {
-    bsc: {
-      mobile_active: false,
-      extension_active: false,
-      fallback_to_v1: true,
-    },
-    ethereum: {
-      mobile_active: false,
-      extension_active: false,
-      fallback_to_v1: true,
-    },
-    polygon: {
-      mobile_active: false,
-      extension_active: true,
-      fallback_to_v1: false,
-    },
-    rinkeby: {
-      mobile_active: false,
-      extension_active: false,
-      fallback_to_v1: true,
-    },
-  };
   return response;
 }
 
@@ -830,8 +807,8 @@ export const getNetworkNameByChainId = (chainId) => {
  */
 export const getSwapsLivenessForNetwork = (swapsFeatureFlags = {}, chainId) => {
   const networkName = getNetworkNameByChainId(chainId);
-  // Use old APIs for testnet.
-  if (chainId === LOCALHOST_CHAIN_ID) {
+  // Use old APIs for testnet and Rinkeby.
+  if ([LOCALHOST_CHAIN_ID, RINKEBY_CHAIN_ID].includes(chainId)) {
     return {
       swapsFeatureIsLive: true,
       useNewSwapsApi: false,
