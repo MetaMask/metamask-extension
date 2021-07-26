@@ -1,15 +1,19 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
+import nock from 'nock';
 import { ObservableStore } from '@metamask/obs-store';
-import contracts from '@metamask/contract-metadata';
 import BigNumber from 'bignumber.js';
-
+import {
+  ControllerMessenger,
+  TokenListController,
+} from '@metamask/controllers';
 import { MAINNET, ROPSTEN } from '../../../shared/constants/network';
 import DetectTokensController from './detect-tokens';
 import NetworkController from './network';
 import PreferencesController from './preferences';
 
 describe('DetectTokensController', function () {
+  let tokenListController;
   const sandbox = sinon.createSandbox();
   let keyringMemStore, network, preferences, provider;
 
@@ -36,6 +40,85 @@ describe('DetectTokensController', function () {
     sandbox
       .stub(preferences, '_detectIsERC721')
       .returns(Promise.resolve(false));
+    nock('https://token-api.airswap-prod.codefi.network')
+      .get(`/tokens/1`)
+      .reply(200, [
+        {
+          address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+          symbol: 'SNX',
+          decimals: 18,
+          occurrences: 11,
+          aggregators: [
+            'paraswap',
+            'pmm',
+            'airswapLight',
+            'zeroEx',
+            'bancor',
+            'coinGecko',
+            'zapper',
+            'kleros',
+            'zerion',
+            'cmc',
+            'oneInch',
+          ],
+          name: 'Synthetix',
+          iconUrl: 'https://airswap-token-images.s3.amazonaws.com/SNX.png',
+        },
+        {
+          address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+          symbol: 'LINK',
+          decimals: 18,
+          occurrences: 11,
+          aggregators: [
+            'paraswap',
+            'pmm',
+            'airswapLight',
+            'zeroEx',
+            'bancor',
+            'coinGecko',
+            'zapper',
+            'kleros',
+            'zerion',
+            'cmc',
+            'oneInch',
+          ],
+          name: 'Chainlink',
+          iconUrl: 'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+        },
+        {
+          address: '0x1f573d6fb3f13d689ff844b4ce37794d79a7ff1c',
+          symbol: 'BNT',
+          decimals: 18,
+          occurrences: 11,
+          aggregators: [
+            'paraswap',
+            'pmm',
+            'airswapLight',
+            'zeroEx',
+            'bancor',
+            'coinGecko',
+            'zapper',
+            'kleros',
+            'zerion',
+            'cmc',
+            'oneInch',
+          ],
+          name: 'Bancor',
+          iconUrl: 'https://s3.amazonaws.com/airswap-token-images/BNT.png',
+        },
+      ])
+      .persist();
+    const tokenListMessenger = new ControllerMessenger().getRestricted({
+      name: 'TokenListController',
+    });
+    tokenListController = new TokenListController({
+      chainId: '1',
+      useStaticTokenList: false,
+      onNetworkStateChange: sinon.spy(),
+      onPreferencesStateChange: sinon.spy(),
+      messenger: tokenListMessenger,
+    });
+    await tokenListController.start();
   });
 
   after(function () {
@@ -56,6 +139,7 @@ describe('DetectTokensController', function () {
       preferences,
       network,
       keyringMemStore,
+      tokenList: tokenListController,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
@@ -79,6 +163,7 @@ describe('DetectTokensController', function () {
       preferences,
       network,
       keyringMemStore,
+      tokenList: tokenListController,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
@@ -96,17 +181,16 @@ describe('DetectTokensController', function () {
       preferences,
       network,
       keyringMemStore,
+      tokenList: tokenListController,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
 
-    const contractAddresses = Object.keys(contracts);
-    const erc20ContractAddresses = contractAddresses.filter(
-      (contractAddress) => contracts[contractAddress].erc20 === true,
-    );
+    const { tokenList } = tokenListController.state;
+    const erc20ContractAddresses = Object.keys(tokenList);
 
     const existingTokenAddress = erc20ContractAddresses[0];
-    const existingToken = contracts[existingTokenAddress];
+    const existingToken = tokenList[existingTokenAddress];
     await preferences.addToken(
       existingTokenAddress,
       existingToken.symbol,
@@ -144,17 +228,16 @@ describe('DetectTokensController', function () {
       preferences,
       network,
       keyringMemStore,
+      tokenList: tokenListController,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
 
-    const contractAddresses = Object.keys(contracts);
-    const erc20ContractAddresses = contractAddresses.filter(
-      (contractAddress) => contracts[contractAddress].erc20 === true,
-    );
+    const { tokenList } = tokenListController.state;
+    const erc20ContractAddresses = Object.keys(tokenList);
 
     const existingTokenAddress = erc20ContractAddresses[0];
-    const existingToken = contracts[existingTokenAddress];
+    const existingToken = tokenList[existingTokenAddress];
     await preferences.addToken(
       existingTokenAddress,
       existingToken.symbol,
@@ -162,9 +245,9 @@ describe('DetectTokensController', function () {
     );
 
     const tokenAddressToAdd = erc20ContractAddresses[1];
-    const tokenToAdd = contracts[tokenAddressToAdd];
+    const tokenToAdd = tokenList[tokenAddressToAdd];
 
-    const contractAddresssesToDetect = contractAddresses.filter(
+    const contractAddresssesToDetect = erc20ContractAddresses.filter(
       (address) => address !== existingTokenAddress,
     );
     const indexOfTokenToAdd = contractAddresssesToDetect.indexOf(
@@ -203,17 +286,16 @@ describe('DetectTokensController', function () {
       preferences,
       network,
       keyringMemStore,
+      tokenList: tokenListController,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
 
-    const contractAddresses = Object.keys(contracts);
-    const erc20ContractAddresses = contractAddresses.filter(
-      (contractAddress) => contracts[contractAddress].erc20 === true,
-    );
+    const { tokenList } = tokenListController.state;
+    const erc20ContractAddresses = Object.keys(tokenList);
 
     const existingTokenAddress = erc20ContractAddresses[0];
-    const existingToken = contracts[existingTokenAddress];
+    const existingToken = tokenList[existingTokenAddress];
     await preferences.addToken(
       existingTokenAddress,
       existingToken.symbol,
@@ -221,9 +303,9 @@ describe('DetectTokensController', function () {
     );
 
     const tokenAddressToAdd = erc20ContractAddresses[1];
-    const tokenToAdd = contracts[tokenAddressToAdd];
+    const tokenToAdd = tokenList[tokenAddressToAdd];
 
-    const contractAddresssesToDetect = contractAddresses.filter(
+    const contractAddresssesToDetect = erc20ContractAddresses.filter(
       (address) => address !== existingTokenAddress,
     );
     const indexOfTokenToAdd = contractAddresssesToDetect.indexOf(
@@ -261,6 +343,7 @@ describe('DetectTokensController', function () {
       preferences,
       network,
       keyringMemStore,
+      tokenList: tokenListController,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
@@ -277,6 +360,7 @@ describe('DetectTokensController', function () {
       preferences,
       network,
       keyringMemStore,
+      tokenList: tokenListController,
     });
     controller.isOpen = true;
     controller.selectedAddress = '0x0';
@@ -292,6 +376,7 @@ describe('DetectTokensController', function () {
       preferences,
       network,
       keyringMemStore,
+      tokenList: tokenListController,
     });
     controller.isOpen = true;
     controller.isUnlocked = false;

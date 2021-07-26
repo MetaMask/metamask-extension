@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import abi from 'human-standard-token-abi';
-import contractMap from '@metamask/contract-metadata';
 import BigNumber from 'bignumber.js';
 import { addHexPrefix, toChecksumAddress } from 'ethereumjs-util';
 import { debounce } from 'lodash';
@@ -39,6 +38,8 @@ import {
   getTargetAccount,
   getIsNonStandardEthChain,
   checkNetworkAndAccountSupports1559,
+  getUseStaticTokenList,
+  getTokenList,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -517,6 +518,8 @@ export const initializeSendState = createAsyncThunk(
       gasTotal: addHexPrefix(calcGasTotal(gasLimit, gasPrice)),
       gasEstimatePollToken,
       eip1559support,
+      useStaticTokenList: getUseStaticTokenList(state),
+      tokenAddressList: Object.keys(getTokenList(state)),
     };
   },
 );
@@ -986,7 +989,12 @@ const slice = createSlice({
         recipient.warning = null;
       } else {
         const isSendingToken = asset.type === ASSET_TYPES.TOKEN;
-        const { chainId, tokens } = action.payload;
+        const {
+          chainId,
+          tokens,
+          useStaticTokenList,
+          tokenAddressList,
+        } = action.payload;
         if (
           isBurnAddress(recipient.userInput) ||
           (!isValidHexAddress(recipient.userInput, {
@@ -1006,13 +1014,15 @@ const slice = createSlice({
           recipient.error = null;
         }
 
-        if (
-          isSendingToken &&
-          isValidHexAddress(recipient.userInput) &&
-          (toChecksumAddress(recipient.userInput) in contractMap ||
-            checkExistingAddresses(recipient.userInput, tokens))
-        ) {
-          recipient.warning = KNOWN_RECIPIENT_ADDRESS_WARNING;
+        if(isSendingToken && isValidHexAddress(recipient.userInput)) {
+          const userInput = useStaticTokenList
+          ? toChecksumAddress(recipient.userInput)
+          : recipient.userInput;
+          if(tokenAddressList.includes(userInput) || checkExistingAddresses(recipient.userInput, tokens)) {
+            recipient.warning = KNOWN_RECIPIENT_ADDRESS_WARNING;
+          } else {
+            recipient.warning = null;
+          }
         } else {
           recipient.warning = null;
         }
@@ -1210,6 +1220,8 @@ const slice = createSlice({
             payload: {
               chainId: action.payload.chainId,
               tokens: action.payload.tokens,
+              useStaticTokenList: action.payload.useStaticTokenList,
+              tokenAddressList: action.payload.tokenAddressList,
             },
           });
         }
@@ -1395,7 +1407,14 @@ export function updateRecipientUserInput(userInput) {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const tokens = getTokens(state);
-    debouncedValidateRecipientUserInput(dispatch, { chainId, tokens });
+    const useStaticTokenList = getUseStaticTokenList(state);
+    const tokenAddressList = Object.keys(getTokenList(state));
+    debouncedValidateRecipientUserInput(dispatch, {
+      chainId,
+      tokens,
+      useStaticTokenList,
+      tokenAddressList,
+    });
   };
 }
 

@@ -1,4 +1,3 @@
-import contractMap from '@metamask/contract-metadata';
 import {
   isValidHexAddress,
   toChecksumHexAddress,
@@ -18,11 +17,15 @@ function IconFactory(jazzicon) {
   this.cache = {};
 }
 
-IconFactory.prototype.iconForAddress = function (address, diameter) {
-  const addr = toChecksumHexAddress(address);
-
-  if (iconExistsFor(addr)) {
-    return imageElFor(addr);
+IconFactory.prototype.iconForAddress = function (
+  address,
+  diameter,
+  useStaticTokenList,
+  tokenList,
+) {
+  const addr = useStaticTokenList ? toChecksumHexAddress(address) : address;
+  if (iconExistsFor(addr, tokenList)) {
+    return imageElFor(addr, useStaticTokenList, tokenList);
   }
 
   return this.generateIdenticonSvg(address, diameter);
@@ -49,18 +52,19 @@ IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
 
 // util
 
-function iconExistsFor(address) {
+function iconExistsFor(address, tokenList) {
   return (
-    contractMap[address] &&
+    tokenList[address] &&
     isValidHexAddress(address, { allowNonPrefixed: false }) &&
-    contractMap[address].logo
+    tokenList[address].iconUrl
   );
 }
 
-function imageElFor(address) {
-  const contract = contractMap[address];
-  const fileName = contract.logo;
-  const path = `images/contract/${fileName}`;
+function imageElFor(address, useStaticTokenList, tokenList) {
+  const tokenMetadata = tokenList[address];
+  // console.log(tokenMetadata)
+  const fileName = tokenMetadata?.iconUrl;
+  const path = useStaticTokenList ? `images/contract/${fileName}` : fileName;
   const img = document.createElement('img');
   img.src = path;
   img.style.width = '100%';

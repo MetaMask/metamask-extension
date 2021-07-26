@@ -129,4 +129,60 @@ describe('Selectors', () => {
     const totalUnapprovedCount = selectors.getTotalUnapprovedCount(mockState);
     expect(totalUnapprovedCount).toStrictEqual(1);
   });
+
+  it('#getUseStaticTokenList', () => {
+    const useStaticTokenList = selectors.getUseStaticTokenList(mockState);
+    expect(useStaticTokenList).toStrictEqual(false);
+  });
+
+  it('#getTokenList', () => {
+    const tokenList = selectors.getTokenList(mockState);
+    expect(tokenList).toStrictEqual({
+      '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': {
+        address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+        symbol: 'WBTC',
+        decimals: 8,
+        name: 'Wrapped Bitcoin',
+        iconUrl: 'https://s3.amazonaws.com/airswap-token-images/WBTC.png',
+        aggregators: [
+          'airswapLight',
+          'bancor',
+          'cmc',
+          'coinGecko',
+          'kleros',
+          'oneInch',
+          'paraswap',
+          'pmm',
+          'totle',
+          'zapper',
+          'zerion',
+          'zeroEx',
+        ],
+        occurrences: 12,
+      },
+      '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': {
+        address: '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e',
+        symbol: 'YFI',
+        decimals: 18,
+        name: 'yearn.finance',
+        iconUrl:
+          'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e/logo.png',
+        aggregators: [
+          'airswapLight',
+          'bancor',
+          'cmc',
+          'coinGecko',
+          'kleros',
+          'oneInch',
+          'paraswap',
+          'pmm',
+          'totle',
+          'zapper',
+          'zerion',
+          'zeroEx',
+        ],
+        occurrences: 12,
+      },
+    });
+  });
 });

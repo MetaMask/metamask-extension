@@ -5,6 +5,7 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
   getIsMainnet,
   getRpcPrefsForCurrentProvider,
+  getTokenList,
 } from '../../selectors/selectors';
 import AddToken from './add-token.component';
 
@@ -25,6 +26,7 @@ const mapStateToProps = (state) => {
     showSearchTab: getIsMainnet(state) || process.env.IN_TEST === 'true',
     chainId,
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
+    tokenList: getTokenList(state),
   };
 };
 

@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import contractMap from '@metamask/contract-metadata';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 import Jazzicon from '../jazzicon';
@@ -23,6 +22,8 @@ export default class Identicon extends PureComponent {
     useBlockie: PropTypes.bool,
     alt: PropTypes.string,
     imageBorder: PropTypes.bool,
+    useStaticTokenList: PropTypes.bool,
+    tokenList: PropTypes.object,
   };
 
   static defaultProps = {
@@ -33,6 +34,7 @@ export default class Identicon extends PureComponent {
     image: undefined,
     useBlockie: false,
     alt: '',
+    tokenList: {},
   };
 
   renderImage() {
@@ -51,8 +53,14 @@ export default class Identicon extends PureComponent {
   }
 
   renderJazzicon() {
-    const { address, className, diameter, alt } = this.props;
-
+    const {
+      address,
+      className,
+      diameter,
+      alt,
+      useStaticTokenList,
+      tokenList,
+    } = this.props;
     return (
       <Jazzicon
         address={address}
@@ -60,6 +68,8 @@ export default class Identicon extends PureComponent {
         className={classnames('identicon', className)}
         style={getStyles(diameter)}
         alt={alt}
+        useStaticTokenList={useStaticTokenList}
+        tokenList={tokenList}
       />
     );
   }
@@ -78,16 +88,24 @@ export default class Identicon extends PureComponent {
   }
 
   render() {
-    const { address, image, useBlockie, addBorder, diameter } = this.props;
-
+    const {
+      address,
+      image,
+      useBlockie,
+      addBorder,
+      diameter,
+      useStaticTokenList,
+      tokenList,
+    } = this.props;
     if (image) {
       return this.renderImage();
     }
 
     if (address) {
-      const checksummedAddress = toChecksumHexAddress(address);
-
-      if (checksummedAddress && contractMap[checksummedAddress]?.logo) {
+      const tokenAddress = useStaticTokenList
+        ? toChecksumHexAddress(address)
+        : address;
+      if (tokenAddress && tokenList[tokenAddress]?.iconUrl) {
         return this.renderJazzicon();
       }
 

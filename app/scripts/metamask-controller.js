@@ -16,7 +16,6 @@ import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
-import contractMap from '@metamask/contract-metadata';
 import {
   AddressBookController,
   ApprovalController,
@@ -25,7 +24,7 @@ import {
   PhishingController,
   NotificationController,
   GasFeeController,
-  TokenListController
+  TokenListController,
 } from '@metamask/controllers';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
@@ -1290,6 +1289,9 @@ export default class MetamaskController extends EventEmitter {
       tokens,
     } = this.preferencesController.store.getState();
 
+    // TokeListController
+    const { tokenList } = this.tokenListController.state;
+
     // Filter ERC20 tokens
     const filteredAccountTokens = {};
     Object.keys(accountTokens).forEach((address) => {
@@ -1301,8 +1303,9 @@ export default class MetamaskController extends EventEmitter {
             ? accountTokens[address][chainId].filter(
                 ({ address: tokenAddress }) => {
                   const checksumAddress = toChecksumHexAddress(tokenAddress);
-                  return this.preferencesController.store.getState().useStaticTokenList && contractMap[checksumAddress]
-                    ? contractMap[checksumAddress].erc20
+                  return this.preferencesController.store.getState()
+                    .useStaticTokenList && tokenList[checksumAddress]
+                    ? tokenList[checksumAddress].erc20
                     : true;
                 },
               )

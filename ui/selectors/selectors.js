@@ -599,3 +599,21 @@ export function getShowRecoveryPhraseReminder(state) {
 
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
 }
+
+/**
+ * To get the useStaticTokenList flag which determines whether a static or dynamic token list is used
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUseStaticTokenList(state) {
+  return Boolean(state.metamask.useStaticTokenList);
+}
+
+/**
+ * To retrieve the tokenList produced by TokenListcontroller
+ * @param {*} state
+ * @returns {Object}
+ */
+export function getTokenList(state) {
+  return state.metamask.tokenList;
+}
