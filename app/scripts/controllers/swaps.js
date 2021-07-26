@@ -549,13 +549,14 @@ export default class SwapsController {
       } = gasFeeEstimates;
 
       usedGasPrice = addCurrencies(
-        customMaxPriorityFeePerGas || suggestedMaxPriorityFeePerGas,
-        estimatedBaseFee,
+        customMaxPriorityFeePerGas || // Is already in hex WEI.
+          decGWEIToHexWEI(suggestedMaxPriorityFeePerGas),
+        decGWEIToHexWEI(estimatedBaseFee),
         {
-          aBase: 10,
-          bBase: 10,
-          fromDenomination: 'GWEI',
-          toDenomination: 'WEI',
+          aBase: 16,
+          bBase: 16,
+          toNumericBase: 'hex',
+          numberOfDecimals: 6,
         },
       );
     } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
