@@ -182,11 +182,12 @@ export default function ViewQuote() {
     customMaxPriorityFeePerGas ||
     decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
 
+  let baseAndPriorityFeePerGas;
+
   // TODO: Verify that this is correct.
-  const baseAndPriorityFeePerGas = addHexes(
-    estimatedBaseFee,
-    maxPriorityFeePerGas,
-  );
+  if (EIP1559NetworkEnabled) {
+    baseAndPriorityFeePerGas = addHexes(estimatedBaseFee, maxPriorityFeePerGas);
+  }
 
   const gasTotalInWeiHex = calcGasTotal(
     maxGasLimit,
