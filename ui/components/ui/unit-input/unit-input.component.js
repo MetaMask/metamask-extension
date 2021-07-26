@@ -45,6 +45,18 @@ export default class UnitInput extends PureComponent {
     this.unitInput.focus();
   };
 
+  handleInputFocus = ({ target: { value } }) => {
+    if (value === '0') {
+      this.setState({ value: '' });
+    }
+  };
+
+  handleInputBlur = ({ target: { value } }) => {
+    if (value === '') {
+      this.setState({ value: '0' });
+    }
+  };
+
   handleChange = (event) => {
     const { value: userInput } = event.target;
     let value = userInput;
@@ -88,6 +100,8 @@ export default class UnitInput extends PureComponent {
               value={value}
               placeholder={placeholder}
               onChange={this.handleChange}
+              onBlur={this.handleInputBlur}
+              onFocus={this.handleInputFocus}
               style={{ width: this.getInputWidth(value) }}
               ref={(ref) => {
                 this.unitInput = ref;

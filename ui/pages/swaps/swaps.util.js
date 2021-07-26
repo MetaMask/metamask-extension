@@ -36,7 +36,7 @@ import {
   getValueFromWeiHex,
 } from '../../helpers/utils/conversions.util';
 
-import { subtractCurrencies } from '../../helpers/utils/conversion-util';
+import { subtractCurrencies } from '../../../shared/modules/conversion.utils';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import fetchWithCache from '../../helpers/utils/fetch-with-cache';
 
@@ -825,4 +825,13 @@ export const getSwapsLivenessForNetwork = (swapsFeatureFlags = {}, chainId) => {
     swapsFeatureIsLive: swapsFeatureFlags[networkName].fallback_to_v1,
     useNewSwapsApi: false,
   };
+};
+
+/**
+ * @param {number} value
+ * @returns number
+ */
+export const countDecimals = (value) => {
+  if (!value || Math.floor(value) === value) return 0;
+  return value.toString().split('.')[1]?.length || 0;
 };

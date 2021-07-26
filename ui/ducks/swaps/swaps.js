@@ -46,7 +46,7 @@ import {
   decGWEIToHexWEI,
   hexWEIToDecGWEI,
 } from '../../helpers/utils/conversions.util';
-import { conversionLessThan } from '../../helpers/utils/conversion-util';
+import { conversionLessThan } from '../../../shared/modules/conversion.utils';
 import { calcTokenAmount } from '../../helpers/utils/token-util';
 import {
   getSelectedAccount,

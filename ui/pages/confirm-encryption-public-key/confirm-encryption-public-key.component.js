@@ -7,7 +7,7 @@ import Identicon from '../../components/ui/identicon';
 
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { conversionUtil } from '../../helpers/utils/conversion-util';
+import { conversionUtil } from '../../../shared/modules/conversion.utils';
 
 export default class ConfirmEncryptionPublicKey extends Component {
   static contextTypes = {
@@ -31,10 +31,6 @@ export default class ConfirmEncryptionPublicKey extends Component {
     domainMetadata: PropTypes.object,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     nativeCurrency: PropTypes.string.isRequired,
-  };
-
-  state = {
-    fromAccount: this.props.fromAccount,
   };
 
   componentDidMount = () => {
@@ -92,7 +88,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
   };
 
   renderAccount = () => {
-    const { fromAccount } = this.state;
+    const { fromAccount } = this.props;
     const { t } = this.context;
 
     return (
@@ -109,11 +105,12 @@ export default class ConfirmEncryptionPublicKey extends Component {
   };
 
   renderBalance = () => {
-    const { conversionRate, nativeCurrency } = this.props;
-    const { t } = this.context;
     const {
+      conversionRate,
+      nativeCurrency,
       fromAccount: { balance },
-    } = this.state;
+    } = this.props;
+    const { t } = this.context;
 
     const nativeCurrencyBalance = conversionUtil(balance, {
       fromNumericBase: 'hex',
