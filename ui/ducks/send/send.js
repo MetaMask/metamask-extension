@@ -1112,9 +1112,7 @@ export function updateSendAmount(amount) {
     if (state.send.amount.mode === AMOUNT_MODES.MAX) {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
     }
-    if (state.send.asset.type === ASSET_TYPES.TOKEN) {
-      await dispatch(computeEstimatedGasLimit());
-    }
+    await dispatch(computeEstimatedGasLimit());
   };
 }
 
@@ -1211,6 +1209,10 @@ export function useMyAccountsForRecipientSearch() {
  * address results in hex data changing because the recipient address is
  * encoded in the data instead of being in the 'to' field. The to field in a
  * token send will always be the token contract address.
+ * If no nickname is provided, the address book state will be checked to see if
+ * a nickname for the passed address has already been saved. This ensures the
+ * (temporary) send state recipient nickname is consistent with the address book
+ * nickname which has already been persisted to state.
  * @param {Object} recipient - Recipient information
  * @param {string} recipient.address - hex address to send the transaction to
  * @param {string} [recipient.nickname] - Alias for the address to display
@@ -1218,8 +1220,16 @@ export function useMyAccountsForRecipientSearch() {
  * @returns {void}
  */
 export function updateRecipient({ address, nickname }) {
-  return async (dispatch) => {
-    await dispatch(actions.updateRecipient({ address, nickname }));
+  return async (dispatch, getState) => {
+    const state = getState();
+    const nicknameFromAddressBook =
+      getAddressBookEntry(state, address)?.name ?? '';
+    await dispatch(
+      actions.updateRecipient({
+        address,
+        nickname: nickname || nicknameFromAddressBook,
+      }),
+    );
     await dispatch(computeEstimatedGasLimit());
   };
 }
@@ -1274,6 +1284,7 @@ export function toggleSendMaxMode() {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.MAX));
       await dispatch(actions.updateAmountToMax());
     }
+    await dispatch(computeEstimatedGasLimit());
   };
 }
 

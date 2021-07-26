@@ -6,20 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.8.3]
+### Fixed
+- [#11594](https://github.com/MetaMask/metamask-extension/pull/11594): Fixed ERC20 token maximum send
+- [#11610](https://github.com/MetaMask/metamask-extension/pull/11610): Fixed nickname display upon pasting saved address in send flow
+
 ## [9.8.2]
 ### Changed
-- [1156511545](https://github.com/MetaMask/metamask-extension/pull/11545): Allow MetaMask Swaps to support Polygon network
+- [#11545](https://github.com/MetaMask/metamask-extension/pull/11545): Allow MetaMask Swaps to support Polygon network
 
 ### Fixed
-- [11565](https://github.com/MetaMask/metamask-extension/pull/11565): Fix gas limit estimation for some tokens on custom networks
-- [11581](https://github.com/MetaMask/metamask-extension/pull/11581): Fixed bug that resulted in sends to some contracts being disabled.
+- [#11565](https://github.com/MetaMask/metamask-extension/pull/11565): Fix gas limit estimation for some tokens on custom networks
+- [#11581](https://github.com/MetaMask/metamask-extension/pull/11581): Fixed bug that resulted in sends to some contracts being disabled.
 
 ## [9.8.1]
 ### Changed
 - Adjusting transaction metrics values
 
 ### Fixed
-- [11538](https://github.com/MetaMask/metamask-extension/pull/11538): Fixed bug that prevented users from continuing to swap after going 'back' from the View Quote page of the swaps flow.
+- [#11538](https://github.com/MetaMask/metamask-extension/pull/11538): Fixed bug that prevented users from continuing to swap after going 'back' from the View Quote page of the swaps flow.
 
 ## [9.8.0]
 ### Added
@@ -2344,7 +2349,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.8.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.8.3...HEAD
+[9.8.3]: https://github.com/MetaMask/metamask-extension/compare/v9.8.2...v9.8.3
 [9.8.2]: https://github.com/MetaMask/metamask-extension/compare/v9.8.1...v9.8.2
 [9.8.1]: https://github.com/MetaMask/metamask-extension/compare/v9.8.0...v9.8.1
 [9.8.0]: https://github.com/MetaMask/metamask-extension/compare/v9.7.1...v9.8.0
