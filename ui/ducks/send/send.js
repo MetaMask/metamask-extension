@@ -1516,10 +1516,18 @@ export function signTransaction() {
       // merge in the modified txParams. Once the transaction has been modified
       // we can send that to the background to update the transaction in state.
       const unapprovedTxs = getUnapprovedTxs(state);
+      // We only update the tx params that can be changed via the edit flow UX
+      const txParamsToUpdate = {
+        data: txParams.data,
+        from: txParams.from,
+        to: txParams.to,
+        value: txParams.value,
+        gas: txParams.gas,
+      };
       const unapprovedTx = unapprovedTxs[id];
       const editingTx = {
         ...unapprovedTx,
-        txParams: Object.assign(unapprovedTx.txParams, txParams),
+        txParams: Object.assign(unapprovedTx.txParams, txParamsToUpdate),
       };
       dispatch(updateTransaction(editingTx));
     } else if (asset.type === ASSET_TYPES.TOKEN) {
