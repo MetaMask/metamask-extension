@@ -8,6 +8,7 @@ import {
   POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
   RINKEBY_CHAIN_ID,
+  KOVAN_CHAIN_ID,
 } from '../../../shared/constants/network';
 import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
@@ -15,6 +16,7 @@ import {
   ETHEREUM,
   POLYGON,
   BSC,
+  RINKEBY,
 } from '../../../shared/constants/swaps';
 import {
   TOKENS,
@@ -394,8 +396,12 @@ describe('Swaps Util', () => {
       expect(getNetworkNameByChainId(POLYGON_CHAIN_ID)).toBe(POLYGON);
     });
 
+    it('returns "rinkeby" for Rinkeby chain ID', () => {
+      expect(getNetworkNameByChainId(RINKEBY_CHAIN_ID)).toBe(RINKEBY);
+    });
+
     it('returns an empty string for an unsupported network', () => {
-      expect(getNetworkNameByChainId(RINKEBY_CHAIN_ID)).toBe('');
+      expect(getNetworkNameByChainId(KOVAN_CHAIN_ID)).toBe('');
     });
   });
 
@@ -413,6 +419,19 @@ describe('Swaps Util', () => {
       ).toMatchObject(expectedSwapsLiveness);
     });
 
+    it('returns info that Swaps are enabled and cannot use API v2 for Rinkeby chain ID', () => {
+      const expectedSwapsLiveness = {
+        swapsFeatureIsLive: true,
+        useNewSwapsApi: false,
+      };
+      expect(
+        getSwapsLivenessForNetwork(
+          MOCKS.createFeatureFlagsResponse(),
+          RINKEBY_CHAIN_ID,
+        ),
+      ).toMatchObject(expectedSwapsLiveness);
+    });
+
     it('returns info that Swaps are disabled and cannot use API v2 if network name is not found', () => {
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: false,
@@ -421,7 +440,7 @@ describe('Swaps Util', () => {
       expect(
         getSwapsLivenessForNetwork(
           MOCKS.createFeatureFlagsResponse(),
-          RINKEBY_CHAIN_ID,
+          KOVAN_CHAIN_ID,
         ),
       ).toMatchObject(expectedSwapsLiveness);
     });

@@ -149,11 +149,8 @@ export default function ViewQuote() {
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
-  const {
-    maxFeePerGas: suggestedMaxFeePerGas,
-    maxPriorityFeePerGas: suggestedMaxPriorityFeePerGas,
-    gasFeeEstimates: { estimatedBaseFee },
-  } = useGasFeeInputs('high');
+
+  const gasFeeInputs = useGasFeeInputs('high');
 
   const { isBestQuote } = usedQuote;
 
@@ -175,17 +172,21 @@ export default function ViewQuote() {
     : `0x${decimalToHex(usedQuote?.maxGas || 0)}`;
   const maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
 
-  // TODO: Make sure that this file will still work for non-EIP 1559 networks.
-  const maxFeePerGas =
-    customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
-  const maxPriorityFeePerGas =
-    customMaxPriorityFeePerGas ||
-    decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
-
   let baseAndPriorityFeePerGas;
+  let maxFeePerGas;
+  let maxPriorityFeePerGas;
 
   // TODO: Verify that this is correct.
   if (EIP1559NetworkEnabled) {
+    const {
+      maxFeePerGas: suggestedMaxFeePerGas,
+      maxPriorityFeePerGas: suggestedMaxPriorityFeePerGas,
+      gasFeeEstimates: { estimatedBaseFee },
+    } = gasFeeInputs;
+    maxFeePerGas = customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
+    maxPriorityFeePerGas =
+      customMaxPriorityFeePerGas ||
+      decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
     baseAndPriorityFeePerGas = addHexes(estimatedBaseFee, maxPriorityFeePerGas);
   }
 
