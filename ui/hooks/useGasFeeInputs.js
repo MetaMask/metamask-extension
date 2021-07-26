@@ -90,18 +90,19 @@ function getMatchingEstimateFromGasFees(
   gasFeeEstimates,
   maxFeePerGas,
   maxPriorityFeePerGas,
+  gasPrice,
 ) {
-  if (process.env.SHOW_EIP_1559_UI) {
-    return (
-      findKey(
-        gasFeeEstimates,
-        (estimate) =>
+  return (
+    findKey(gasFeeEstimates, (estimate) => {
+      if (process.env.SHOW_EIP_1559_UI) {
+        return (
           estimate?.suggestedMaxPriorityFeePerGas === maxPriorityFeePerGas &&
-          estimate?.suggestedMaxFeePerGas === maxFeePerGas,
-      ) || null
-    );
-  }
-  return null;
+          estimate?.suggestedMaxFeePerGas === maxFeePerGas
+        );
+      }
+      return estimate?.gasPrice === gasPrice;
+    }) || null
+  );
 }
 
 /**
@@ -208,6 +209,7 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium', transaction) {
           gasFeeEstimates,
           maxFeePerGas,
           maxPriorityFeePerGas,
+          gasPrice,
         )
       : defaultEstimateToUse,
   );
