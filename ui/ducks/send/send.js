@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import abi from 'human-standard-token-abi';
 import contractMap from '@metamask/contract-metadata';
 import BigNumber from 'bignumber.js';
@@ -934,7 +934,6 @@ const slice = createSlice({
               TRANSACTION_ENVELOPE_TYPES.LEGACY;
         }
       }
-      console.log(current(state));
     },
     useDefaultGas: (state) => {
       // Show the default gas price/limit fields in the send page
