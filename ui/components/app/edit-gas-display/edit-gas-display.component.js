@@ -25,7 +25,6 @@ import { I18nContext } from '../../../contexts/i18n';
 
 export default function EditGasDisplay({
   mode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
-  alwaysShowForm = false,
   showEducationButton = false,
   onEducationClick,
   transaction,
@@ -58,6 +57,8 @@ export default function EditGasDisplay({
   onManualChange,
 }) {
   const t = useContext(I18nContext);
+
+  const alwaysShowForm = !estimateToUse || hasGasErrors || false;
 
   const requireDappAcknowledgement = Boolean(
     transaction?.dappSuggestedGasFees && !dappSuggestedGasFeeAcknowledged,
@@ -216,7 +217,6 @@ export default function EditGasDisplay({
 }
 
 EditGasDisplay.propTypes = {
-  alwaysShowForm: PropTypes.bool,
   mode: PropTypes.oneOf(Object.values(EDIT_GAS_MODES)),
   showEducationButton: PropTypes.bool,
   onEducationClick: PropTypes.func,
