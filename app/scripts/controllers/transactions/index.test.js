@@ -51,6 +51,8 @@ describe('Transaction Controller', function () {
       },
       networkStore: new ObservableStore(currentNetworkId),
       getEIP1559Compatibility: () => Promise.resolve(true),
+      getCurrentNetworkEIP1559Compatibility: () => Promise.resolve(true),
+      getCurrentAccountEIP1559Compatibility: () => true,
       txHistoryLimit: 10,
       blockTracker: blockTrackerStub,
       signTransaction: (ethTx) =>

@@ -401,8 +401,11 @@ export default class MetamaskController extends EventEmitter {
       getProviderConfig: this.networkController.getProviderConfig.bind(
         this.networkController,
       ),
-      getEIP1559Compatibility: this.networkController.getEIP1559Compatibility.bind(
+      getCurrentNetworkEIP1559Compatibility: this.networkController.getEIP1559Compatibility.bind(
         this.networkController,
+      ),
+      getCurrentAccountEIP1559Compatibility: this.getCurrentAccountEIP1559Compatibility.bind(
+        this,
       ),
       networkStore: this.networkController.networkStore,
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
@@ -2037,11 +2040,10 @@ export default class MetamaskController extends EventEmitter {
    * client utilities for EIP-1559
    * @returns {boolean} true if the keyring type supports EIP-1559
    */
-  getCurrentAccountEIP1559Compatibility() {
-    const selectedAddress = this.preferencesController.getSelectedAddress();
-    const keyring = this.keyringController.getKeyringForAccount(
-      selectedAddress,
-    );
+  getCurrentAccountEIP1559Compatibility(fromAddress) {
+    const address =
+      fromAddress || this.preferencesController.getSelectedAddress();
+    const keyring = this.keyringController.getKeyringForAccount(address);
     return (
       keyring.type !== KEYRING_TYPES.LEDGER &&
       keyring.type !== KEYRING_TYPES.TREZOR

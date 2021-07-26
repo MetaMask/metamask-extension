@@ -95,7 +95,10 @@ export default class TransactionController extends EventEmitter {
     this.networkStore = opts.networkStore || new ObservableStore({});
     this._getCurrentChainId = opts.getCurrentChainId;
     this.getProviderConfig = opts.getProviderConfig;
-    this.getEIP1559Compatibility = opts.getEIP1559Compatibility;
+    this._getCurrentNetworkEIP1559Compatibility =
+      opts.getCurrentNetworkEIP1559Compatibility;
+    this._getCurrentAccountEIP1559Compatibility =
+      opts.getCurrentAccountEIP1559Compatibility;
     this.preferencesStore = opts.preferencesStore || new ObservableStore({});
     this.provider = opts.provider;
     this.getPermittedAccounts = opts.getPermittedAccounts;
@@ -177,6 +180,14 @@ export default class TransactionController extends EventEmitter {
     return integerChainId;
   }
 
+  async getEIP1559Compatibility(fromAddress) {
+    const currentNetworkIsCompatible = await this._getCurrentNetworkEIP1559Compatibility();
+    const fromAccountIsCompatible = this._getCurrentAccountEIP1559Compatibility(
+      fromAddress,
+    );
+    return currentNetworkIsCompatible && fromAccountIsCompatible;
+  }
+
   /**
    * @ethereumjs/tx uses @ethereumjs/common as a configuration tool for
    * specifying which chain, network, hardfork and EIPs to support for
@@ -185,9 +196,9 @@ export default class TransactionController extends EventEmitter {
    * transaction type to use.
    * @returns {Common} common configuration object
    */
-  async getCommonConfiguration() {
+  async getCommonConfiguration(fromAddress) {
     const { type, nickname: name } = this.getProviderConfig();
-    const supportsEIP1559 = await this.getEIP1559Compatibility();
+    const supportsEIP1559 = await this.getEIP1559Compatibility(fromAddress);
 
     // This logic below will have to be updated each time a hardfork happens
     // that carries with it a new Transaction type. It is inconsequential for
@@ -739,7 +750,7 @@ export default class TransactionController extends EventEmitter {
     };
     // sign tx
     const fromAddress = txParams.from;
-    const common = await this.getCommonConfiguration();
+    const common = await this.getCommonConfiguration(txParams.from);
     const unsignedEthTx = TransactionFactory.fromTxData(txParams, { common });
     const signedEthTx = await this.signEthTx(unsignedEthTx, fromAddress);
 
