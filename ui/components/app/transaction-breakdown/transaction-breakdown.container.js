@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { getShouldShowFiat } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
+import { subtractHexes } from '../../../helpers/utils/conversions.util';
 import { sumHexes } from '../../../helpers/utils/transactions.util';
 import TransactionBreakdown from './transaction-breakdown.component';
 
@@ -9,13 +10,23 @@ const mapStateToProps = (state, ownProps) => {
   const { transaction, isTokenApprove } = ownProps;
   const {
     txParams: { gas, gasPrice, value } = {},
-    txReceipt: { gasUsed } = {},
+    txReceipt: { gasUsed, effectiveGasPrice } = {},
+    baseFeePerGas,
   } = transaction;
 
   const gasLimit = typeof gasUsed === 'string' ? gasUsed : gas;
 
+  const priorityFee =
+    effectiveGasPrice &&
+    baseFeePerGas &&
+    subtractHexes(effectiveGasPrice, baseFeePerGas);
+
+  const usedGasPrice = gasPrice || effectiveGasPrice;
   const hexGasTotal =
-    (gasLimit && gasPrice && getHexGasTotal({ gasLimit, gasPrice })) || '0x0';
+    (gasLimit &&
+      usedGasPrice &&
+      getHexGasTotal({ gasLimit, gasPrice: usedGasPrice })) ||
+    '0x0';
   const totalInHex = sumHexes(hexGasTotal, value);
 
   return {
@@ -26,6 +37,10 @@ const mapStateToProps = (state, ownProps) => {
     gasPrice,
     gasUsed,
     isTokenApprove,
+    effectiveGasPrice,
+    hexGasTotal,
+    priorityFee,
+    baseFee: baseFeePerGas,
   };
 };
 

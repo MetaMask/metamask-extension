@@ -4,7 +4,12 @@ import classnames from 'classnames';
 import CurrencyDisplay from '../../ui/currency-display';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import HexToDecimal from '../../ui/hex-to-decimal';
-import { GWEI, PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import {
+  GWEI,
+  PRIMARY,
+  SECONDARY,
+  ETH,
+} from '../../../helpers/constants/common';
 import TransactionBreakdownRow from './transaction-breakdown-row';
 
 export default class TransactionBreakdown extends PureComponent {
@@ -25,7 +30,7 @@ export default class TransactionBreakdown extends PureComponent {
     totalInHex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     baseFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     priorityFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    effectiveGasPrice: PropTypes.number,
+    hexGasTotal: PropTypes.string,
   };
 
   static defaultProps = {
@@ -47,7 +52,7 @@ export default class TransactionBreakdown extends PureComponent {
       isTokenApprove,
       baseFee,
       priorityFee,
-      effectiveGasPrice,
+      hexGasTotal,
     } = this.props;
     return (
       <div className={classnames('transaction-breakdown', className)}>
@@ -102,6 +107,7 @@ export default class TransactionBreakdown extends PureComponent {
                 currency={nativeCurrency}
                 denomination={GWEI}
                 value={baseFee}
+                numberOfDecimals={10}
                 hideLabel
               />
             )}
@@ -118,6 +124,7 @@ export default class TransactionBreakdown extends PureComponent {
                 currency={nativeCurrency}
                 denomination={GWEI}
                 value={priorityFee}
+                numberOfDecimals={10}
                 hideLabel
               />
             )}
@@ -142,16 +149,19 @@ export default class TransactionBreakdown extends PureComponent {
         <TransactionBreakdownRow
           title={t('transactionHistoryEffectiveGasPrice')}
         >
-          <UserPreferencedCurrencyDisplay
-            className="transaction-breakdown__value transaction-breakdown__value--effective-gas-price"
-            type={PRIMARY}
-            value={effectiveGasPrice}
+          <CurrencyDisplay
+            className="transaction-breakdown__value"
+            data-testid="transaction-breakdown__effective-gas-price"
+            currency={nativeCurrency}
+            denomination={ETH}
+            numberOfDecimals={6}
+            value={hexGasTotal}
           />
           {showFiat && (
             <UserPreferencedCurrencyDisplay
               className="transaction-breakdown__value"
               type={SECONDARY}
-              value={effectiveGasPrice}
+              value={hexGasTotal}
             />
           )}
         </TransactionBreakdownRow>
