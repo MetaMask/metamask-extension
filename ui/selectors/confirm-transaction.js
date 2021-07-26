@@ -253,10 +253,12 @@ export const transactionFeeSelector = function (state, txData) {
       } else {
         gasEstimationObject.maxFeePerGas =
           txData.txParams?.maxFeePerGas ??
-          decGWEIToHexWEI(gasFeeEstimates.medium.suggestedMaxFeePerGas);
+          decGWEIToHexWEI(gasFeeEstimates?.medium.suggestedMaxFeePerGas);
         gasEstimationObject.maxPriorityFeePerGas =
           txData.txParams?.maxPriorityFeePerGas ??
-          decGWEIToHexWEI(gasFeeEstimates.medium.suggestedMaxPriorityFeePerGas);
+          decGWEIToHexWEI(
+            gasFeeEstimates?.medium.suggestedMaxPriorityFeePerGas,
+          );
         gasEstimationObject.baseFeePerGas = decGWEIToHexWEI(
           gasFeeEstimates.estimatedBaseFee,
         );
