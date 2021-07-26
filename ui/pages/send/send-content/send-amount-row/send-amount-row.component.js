@@ -12,6 +12,7 @@ export default class SendAmountRow extends Component {
     inError: PropTypes.bool,
     asset: PropTypes.object,
     updateSendAmount: PropTypes.func,
+    computeEstimatedGasLimit: PropTypes.func,
   };
 
   static contextTypes = {
@@ -20,6 +21,7 @@ export default class SendAmountRow extends Component {
 
   handleChange = (newAmount) => {
     this.props.updateSendAmount(newAmount);
+    this.props.computeEstimatedGasLimit();
   };
 
   renderInput() {

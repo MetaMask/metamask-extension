@@ -4,6 +4,7 @@ import {
   getSendAmount,
   sendAmountIsInError,
   getSendAsset,
+  computeEstimatedGasLimit,
 } from '../../../../ducks/send';
 import SendAmountRow from './send-amount-row.component';
 
@@ -20,5 +21,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     updateSendAmount: (newAmount) => dispatch(updateSendAmount(newAmount)),
+    computeEstimatedGasLimit: () => dispatch(computeEstimatedGasLimit()),
   };
 }
