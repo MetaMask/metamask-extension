@@ -27,7 +27,11 @@ import {
   TRANSACTION_ENVELOPE_TYPES,
 } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
-import { GAS_LIMITS } from '../../../../shared/constants/gas';
+import {
+  GAS_LIMITS,
+  GAS_ESTIMATE_TYPES,
+} from '../../../../shared/constants/gas';
+import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
 import {
   HARDFORKS,
   MAINNET,
@@ -107,6 +111,7 @@ export default class TransactionController extends EventEmitter {
     this.inProcessOfSigning = new Set();
     this._trackMetaMetricsEvent = opts.trackMetaMetricsEvent;
     this._getParticipateInMetrics = opts.getParticipateInMetrics;
+    this._getEIP1559GasFeeEstimates = opts.getEIP1559GasFeeEstimates;
 
     this.memStore = new ObservableStore({});
     this.query = new EthQuery(this.provider);
@@ -400,7 +405,14 @@ export default class TransactionController extends EventEmitter {
    * @returns {Promise<object>} resolves with txMeta
    */
   async addTxGasDefaults(txMeta, getCodeResponse) {
-    const defaultGasPrice = await this._getDefaultGasPrice(txMeta);
+    const eip1559Compatibility = await this.getEIP1559Compatibility();
+
+    const {
+      gasPrice: defaultGasPrice,
+      maxFeePerGas: defaultMaxFeePerGas,
+      maxPriorityFeePerGas: defaultMaxPriorityFeePerGas,
+    } = await this._getDefaultGasFees(txMeta, eip1559Compatibility);
+
     const {
       gasLimit: defaultGasLimit,
       simulationFails,
@@ -411,6 +423,34 @@ export default class TransactionController extends EventEmitter {
     if (simulationFails) {
       txMeta.simulationFails = simulationFails;
     }
+
+    if (eip1559Compatibility) {
+      if (
+        txMeta.txParams.gasPrice &&
+        !txMeta.txParams.maxFeePerGas &&
+        !txMeta.txParams.maxPriorityFeePerGas
+      ) {
+        txMeta.txParams.maxFeePerGas = txMeta.txParams.gasPrice;
+        txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.gasPrice;
+      }
+
+      if (defaultMaxFeePerGas && !txMeta.txParams.maxFeePerGas) {
+        txMeta.txParams.maxFeePerGas = defaultMaxFeePerGas;
+      }
+
+      if (
+        defaultMaxPriorityFeePerGas &&
+        !txMeta.txParams.maxPriorityFeePerGas
+      ) {
+        txMeta.txParams.maxPriorityFeePerGas = defaultMaxPriorityFeePerGas;
+      }
+
+      delete txMeta.txParams.gasPrice;
+    } else {
+      delete txMeta.txParams.maxPriorityFeePerGas;
+      delete txMeta.txParams.maxFeePerGas;
+    }
+
     if (
       defaultGasPrice &&
       !txMeta.txParams.gasPrice &&
@@ -430,16 +470,51 @@ export default class TransactionController extends EventEmitter {
    * @param {Object} txMeta - The txMeta object
    * @returns {Promise<string|undefined>} The default gas price
    */
-  async _getDefaultGasPrice(txMeta) {
+  async _getDefaultGasFees(txMeta, eip1559Compatibility) {
     if (
-      txMeta.txParams.gasPrice ||
+      (!eip1559Compatibility && txMeta.txParams.gasPrice) ||
       (txMeta.txParams.maxFeePerGas && txMeta.txParams.maxPriorityFeePerGas)
     ) {
-      return undefined;
+      return {};
     }
+
+    try {
+      const {
+        gasFeeEstimates,
+        gasEstimateType,
+      } = await this._getEIP1559GasFeeEstimates();
+      if (
+        eip1559Compatibility &&
+        gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET
+      ) {
+        const {
+          medium: { suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas } = {},
+        } = gasFeeEstimates;
+
+        if (suggestedMaxPriorityFeePerGas && suggestedMaxFeePerGas) {
+          return {
+            maxFeePerGas: decGWEIToHexWEI(suggestedMaxFeePerGas),
+            maxPriorityFeePerGas: decGWEIToHexWEI(
+              suggestedMaxPriorityFeePerGas,
+            ),
+          };
+        }
+      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+        return {
+          gasPrice: decGWEIToHexWEI(gasFeeEstimates.medium),
+        };
+      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+        return {
+          gasPrice: decGWEIToHexWEI(gasFeeEstimates.gasPrice),
+        };
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
     const gasPrice = await this.query.gasPrice();
 
-    return addHexPrefix(gasPrice.toString(16));
+    return { gasPrice: addHexPrefix(gasPrice.toString(16)) };
   }
 
   /**
@@ -683,7 +758,7 @@ export default class TransactionController extends EventEmitter {
       this.txStateManager.setTxStatusApproved(txId);
       // get next nonce
       const txMeta = this.txStateManager.getTransaction(txId);
-      console.log(txMeta);
+
       const fromAddress = txMeta.txParams.from;
       // wait for a nonce
       let { customNonceValue } = txMeta;
