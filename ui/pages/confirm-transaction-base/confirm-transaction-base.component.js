@@ -800,6 +800,13 @@ export default class ConfirmTransactionBase extends Component {
       tryReverseResolveAddress(toAddress);
     }
 
+    /**
+     * Thismakes a request to get estimates and begin polling, keeping track of the poll
+     * token in component state.
+     * It then disconnects polling upon componentWillUnmount. If the hook is unmounted
+     * while waiting for `getGasFeeEstimatesAndStartPolling` to resolve, the `_isMounted`
+     * flag ensures that a call to disconnect happens after promise resolution.
+     */
     getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
       if (this._isMounted) {
         this.setState({ pollingToken });

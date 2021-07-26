@@ -698,8 +698,8 @@ const slice = createSlice({
      * field and send state, then updates the draft transaction.
      */
     calculateGasTotal: (state) => {
-      // use gasPrice as the multiplier if working with a LEGACY transaction
-      // otherwise use maxFeePerGas.
+      // use maxFeePerGas as the multiplier if working with a FEE_MARKET transaction
+      // otherwise use gasPrice
       if (state.transactionType === TRANSACTION_ENVELOPE_TYPES.FEE_MARKET) {
         state.gas.gasTotal = addHexPrefix(
           calcGasTotal(state.gas.gasLimit, state.gas.maxFeePerGas),
@@ -741,14 +741,15 @@ const slice = createSlice({
         );
         state.transactionType = TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
       } else {
-        // Until we remove the old UI we don't want to update gasPrice if the
-        // user has changed the field value. When receiving a new estimate the
-        // isAutomaticUpdate property will be on the payload (and set to true).
-        // If isAutomaticUpdate is true, then we check if the previous estimate
-        // was '0x0' or if the previous gasPrice equals the previous
-        // gasEstimate. if either of those cases are true then we update the
-        // gasPrice otherwise we skip it because it indicates the user has
-        // ejected from the estimates by modifying the field.
+        // Until we remove the old UI we don't want to automatically update
+        // gasPrice if the user has already manually changed the field value.
+        // When receiving a new estimate the isAutomaticUpdate property will be
+        // on the payload (and set to true). If isAutomaticUpdate is true,
+        // then we check if the previous estimate was '0x0' or if the previous
+        // gasPrice equals the previous gasEstimate. if either of those cases
+        // are true then we update the gasPrice otherwise we skip it because
+        // it indicates the user has ejected from the estimates by modifying
+        // the field.
         if (
           action.payload.isAutomaticUpdate !== true ||
           state.gas.gasPriceEstimate === '0x0' ||
