@@ -172,9 +172,9 @@ export default function ViewQuote() {
     : `0x${decimalToHex(usedQuote?.maxGas || 0)}`;
   const maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
 
-  let baseAndPriorityFeePerGas;
   let maxFeePerGas;
   let maxPriorityFeePerGas;
+  let baseAndPriorityFeePerGas;
 
   // TODO: Verify that this is correct.
   if (EIP1559NetworkEnabled) {
