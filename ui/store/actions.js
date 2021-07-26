@@ -2199,15 +2199,15 @@ export function setSwapsTxGasLimit(gasLimit) {
   };
 }
 
-export function setCustomSwapsTxMaxFeePerGas(maxFeePerGas) {
+export function updateCustomSwapsEIP1559GasParams({
+  gasLimit,
+  maxFeePerGas,
+  maxPriorityFeePerGas,
+}) {
   return async (dispatch) => {
+    // TODO:Why do we pass true as the 2nd param? It seems the fn only supports gasLimit.
+    await promisifiedBackground.setSwapsTxGasLimit(gasLimit, true);
     await promisifiedBackground.setSwapsTxMaxFeePerGas(maxFeePerGas);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function setCustomSwapsTxMaxFeePriorityPerGas(maxPriorityFeePerGas) {
-  return async (dispatch) => {
     await promisifiedBackground.setSwapsTxMaxFeePriorityPerGas(
       maxPriorityFeePerGas,
     );

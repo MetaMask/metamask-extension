@@ -26,7 +26,7 @@ import {
   hideModal,
   hideSidebar,
   updateTransaction,
-  customSwapsGasParamsUpdated,
+  updateCustomSwapsEIP1559GasParams,
 } from '../../../store/actions';
 
 export default function EditGasPopover({
@@ -132,13 +132,10 @@ export default function EditGasPopover({
         );
         break;
       case EDIT_GAS_MODES.SWAPS:
-        // TODO: Update the logic below, so it will work correctly for Swaps.
-        // dispatch(
-        //   customSwapsGasParamsUpdated(
-        //     newGasSettings.gas,
-        //     newGasSettings.gasPrice,
-        //   ),
-        // );
+        // This popover component should only be used for the "FEE_MARKET" type in Swaps.
+        if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+          dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
+        }
         break;
       default:
         break;

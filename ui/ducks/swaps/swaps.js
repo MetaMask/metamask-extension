@@ -243,6 +243,12 @@ export const getCustomSwapsGas = (state) =>
 export const getCustomSwapsGasPrice = (state) =>
   state.metamask.swapsState.customGasPrice;
 
+export const getCustomMaxFeePerGas = (state) =>
+  state.metamask.swapsState.customMaxFeePerGas;
+
+export const getCustomMaxPriorityFeePerGas = (state) =>
+  state.metamask.swapsState.customMaxPriorityFeePerGas;
+
 export const getFetchParams = (state) => state.metamask.swapsState.fetchParams;
 
 export const getQuotes = (state) => state.metamask.swapsState.quotes;
@@ -642,6 +648,8 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     }
 
     const customSwapsGas = getCustomSwapsGas(state);
+    const customMaxFeePerGas = getCustomMaxFeePerGas(state);
+    const customMaxPriorityFeePerGas = getCustomMaxPriorityFeePerGas(state);
     const fetchParams = getFetchParams(state);
     const { metaData, value: swapTokenValue, slippage } = fetchParams;
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
@@ -655,11 +663,13 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state);
     // TODO: Make sure it works if EIP is not present.
     const {
-      high: {
-        suggestedMaxFeePerGas: maxFeePerGas,
-        suggestedMaxPriorityFeePerGas: maxPriorityFeePerGas,
-      },
+      high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
     } = getGasFeeEstimates(state);
+    const maxFeePerGas =
+      customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
+    const maxPriorityFeePerGas =
+      customMaxPriorityFeePerGas ||
+      decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
 
     const usedQuote = getUsedQuote(state);
     const usedTradeTxParams = usedQuote.trade;
@@ -681,10 +691,8 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const usedGasPrice = getUsedSwapsGasPrice(state);
     usedTradeTxParams.gas = maxGasLimit;
     if (EIP1559NetworkEnabled) {
-      usedTradeTxParams.maxFeePerGas = decGWEIToHexWEI(maxFeePerGas);
-      usedTradeTxParams.maxPriorityFeePerGas = decGWEIToHexWEI(
-        maxPriorityFeePerGas,
-      );
+      usedTradeTxParams.maxFeePerGas = maxFeePerGas;
+      usedTradeTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
       delete usedTradeTxParams.gasPrice;
     } else {
       usedTradeTxParams.gasPrice = usedGasPrice;
@@ -704,7 +712,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const gasEstimateTotalInUSD = getValueFromWeiHex({
       value: calcGasTotal(
         totalGasLimitEstimate,
-        EIP1559NetworkEnabled ? decGWEIToHexWEI(maxFeePerGas) : usedGasPrice, // TODO: Make sure it's calculated corretcly.
+        EIP1559NetworkEnabled ? maxFeePerGas : usedGasPrice,
       ),
       toCurrency: 'usd',
       conversionRate: usdConversionRate,
@@ -768,10 +776,8 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
 
     if (approveTxParams) {
       if (EIP1559NetworkEnabled) {
-        approveTxParams.maxFeePerGas = decGWEIToHexWEI(maxFeePerGas);
-        approveTxParams.maxPriorityFeePerGas = decGWEIToHexWEI(
-          maxPriorityFeePerGas,
-        );
+        approveTxParams.maxFeePerGas = maxFeePerGas;
+        approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
         delete approveTxParams.gasPrice;
       }
       const approveTxMeta = await dispatch(
