@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [9.8.3]
 ### Fixed
 - [#11594](https://github.com/MetaMask/metamask-extension/pull/11594): Fixed ERC20 token maximum send
+- [#11610](https://github.com/MetaMask/metamask-extension/pull/11610): Fixed nickname display upon pasting saved address in send flow
 
 ## [9.8.2]
 ### Changed
