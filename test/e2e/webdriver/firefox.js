@@ -75,9 +75,7 @@ class FirefoxDriver {
     await this._driver.get('about:debugging#addons');
     return await this._driver
       .wait(
-        until.elementLocated(
-          By.xpath("//dl/div[contains(., 'Internal UUID')]/dd"),
-        ),
+        until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")),
         1000,
       )
       .getText();

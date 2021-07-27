@@ -1,6 +1,6 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { captureException } from '@sentry/browser';
 import Approve from '../../ui/icon/approve-icon.component';
 import Interaction from '../../ui/icon/interaction-icon.component';
 import Receive from '../../ui/icon/receive-icon.component';
@@ -12,6 +12,7 @@ import {
   TRANSACTION_GROUP_STATUSES,
   TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction';
+import { captureSingleException } from '../../../store/actions';
 
 const ICON_MAP = {
   [TRANSACTION_GROUP_CATEGORIES.APPROVAL]: Approve,
@@ -34,20 +35,21 @@ const COLOR_MAP = {
   [TRANSACTION_STATUSES.REJECTED]: FAIL_COLOR,
   [TRANSACTION_GROUP_STATUSES.CANCELLED]: FAIL_COLOR,
   [TRANSACTION_STATUSES.DROPPED]: FAIL_COLOR,
+  [TRANSACTION_STATUSES.SUBMITTED]: PENDING_COLOR,
 };
 
 export default function TransactionIcon({ status, category }) {
-  const color = COLOR_MAP[status] || OK_COLOR;
+  const dispatch = useDispatch();
 
+  const color = COLOR_MAP[status] || OK_COLOR;
   const Icon = ICON_MAP[category];
 
   if (!Icon) {
-    captureException(
-      Error(
+    dispatch(
+      captureSingleException(
         `The category prop passed to TransactionIcon is not supported. The prop is: ${category}`,
       ),
     );
-
     return <div className="transaction-icon__grey-circle" />;
   }
 
@@ -56,14 +58,6 @@ export default function TransactionIcon({ status, category }) {
 
 TransactionIcon.propTypes = {
   status: PropTypes.oneOf([
-    TRANSACTION_GROUP_CATEGORIES.APPROVAL,
-    TRANSACTION_GROUP_CATEGORIES.INTERACTION,
-    TRANSACTION_GROUP_CATEGORIES.SEND,
-    TRANSACTION_GROUP_CATEGORIES.SIGNATURE_REQUEST,
-    TRANSACTION_GROUP_CATEGORIES.RECEIVE,
-    TRANSACTION_GROUP_CATEGORIES.SWAP,
-  ]).isRequired,
-  category: PropTypes.oneOf([
     TRANSACTION_GROUP_STATUSES.PENDING,
     TRANSACTION_STATUSES.UNAPPROVED,
     TRANSACTION_STATUSES.APPROVED,
@@ -71,5 +65,15 @@ TransactionIcon.propTypes = {
     TRANSACTION_STATUSES.REJECTED,
     TRANSACTION_GROUP_STATUSES.CANCELLED,
     TRANSACTION_STATUSES.DROPPED,
+    TRANSACTION_STATUSES.CONFIRMED,
+    TRANSACTION_STATUSES.SUBMITTED,
+  ]).isRequired,
+  category: PropTypes.oneOf([
+    TRANSACTION_GROUP_CATEGORIES.APPROVAL,
+    TRANSACTION_GROUP_CATEGORIES.INTERACTION,
+    TRANSACTION_GROUP_CATEGORIES.SEND,
+    TRANSACTION_GROUP_CATEGORIES.SIGNATURE_REQUEST,
+    TRANSACTION_GROUP_CATEGORIES.RECEIVE,
+    TRANSACTION_GROUP_CATEGORIES.SWAP,
   ]).isRequired,
 };

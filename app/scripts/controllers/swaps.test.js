@@ -12,6 +12,7 @@ import {
 } from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
+import { SECOND } from '../../../shared/constants/time';
 import SwapsController, { utils } from './swaps';
 import { NETWORK_EVENTS } from './network';
 
@@ -33,6 +34,8 @@ const TEST_AGG_ID_5 = 'TEST_AGG_5';
 const TEST_AGG_ID_6 = 'TEST_AGG_6';
 const TEST_AGG_ID_BEST = 'TEST_AGG_BEST';
 const TEST_AGG_ID_APPROVAL = 'TEST_AGG_APPROVAL';
+
+const POLLING_TIMEOUT = SECOND * 1000;
 
 const MOCK_APPROVAL_NEEDED = {
   data:
@@ -125,13 +128,13 @@ const EMPTY_INIT_STATE = {
     topAggId: null,
     routeState: '',
     swapsFeatureIsLive: true,
+    useNewSwapsApi: false,
     swapsQuoteRefreshTime: 60000,
   },
 };
 
 const sandbox = sinon.createSandbox();
 const fetchTradesInfoStub = sandbox.stub();
-const fetchSwapsFeatureLivenessStub = sandbox.stub();
 const fetchSwapsQuoteRefreshTimeStub = sandbox.stub();
 const getCurrentChainIdStub = sandbox.stub();
 getCurrentChainIdStub.returns(MAINNET_CHAIN_ID);
@@ -147,7 +150,6 @@ describe('SwapsController', function () {
       getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
       tokenRatesStore: MOCK_TOKEN_RATES_STORE,
       fetchTradesInfo: fetchTradesInfoStub,
-      fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
       fetchSwapsQuoteRefreshTime: fetchSwapsQuoteRefreshTimeStub,
       getCurrentChainId: getCurrentChainIdStub,
     });
@@ -198,7 +200,6 @@ describe('SwapsController', function () {
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
-        fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
@@ -223,7 +224,6 @@ describe('SwapsController', function () {
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
-        fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
@@ -248,7 +248,6 @@ describe('SwapsController', function () {
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         tokenRatesStore: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
-        fetchSwapsFeatureLiveness: fetchSwapsFeatureLivenessStub,
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
@@ -655,6 +654,7 @@ describe('SwapsController', function () {
         const quotes = await swapsController.fetchAndSetQuotes(undefined);
         assert.strictEqual(quotes, null);
       });
+
       it('calls fetchTradesInfo with the given fetchParams and returns the correct quotes', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
         fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
@@ -692,15 +692,15 @@ describe('SwapsController', function () {
           metaMaskFeeInEth: '0.5050505050505050505',
           ethValueOfTokens: '50',
         });
-
         assert.strictEqual(
-          fetchTradesInfoStub.calledOnceWithExactly(
-            MOCK_FETCH_PARAMS,
-            MOCK_FETCH_METADATA,
-          ),
+          fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS, {
+            ...MOCK_FETCH_METADATA,
+            useNewSwapsApi: false,
+          }),
           true,
         );
       });
+
       it('performs the allowance check', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
         fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
@@ -836,7 +836,7 @@ describe('SwapsController', function () {
       it('clears polling timeout', function () {
         swapsController.pollingTimeout = setTimeout(
           () => assert.fail(),
-          1000000,
+          POLLING_TIMEOUT,
         );
         swapsController.resetSwapsState();
         assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
@@ -847,7 +847,7 @@ describe('SwapsController', function () {
       it('clears polling timeout', function () {
         swapsController.pollingTimeout = setTimeout(
           () => assert.fail(),
-          1000000,
+          POLLING_TIMEOUT,
         );
         swapsController.stopPollingForQuotes();
         assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
@@ -865,7 +865,7 @@ describe('SwapsController', function () {
       it('clears polling timeout', function () {
         swapsController.pollingTimeout = setTimeout(
           () => assert.fail(),
-          1000000,
+          POLLING_TIMEOUT,
         );
         swapsController.resetPostFetchState();
         assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
@@ -875,12 +875,14 @@ describe('SwapsController', function () {
         const tokens = 'test';
         const fetchParams = 'test';
         const swapsFeatureIsLive = false;
+        const useNewSwapsApi = false;
         const swapsQuoteRefreshTime = 0;
         swapsController.store.updateState({
           swapsState: {
             tokens,
             fetchParams,
             swapsFeatureIsLive,
+            useNewSwapsApi,
             swapsQuoteRefreshTime,
           },
         });

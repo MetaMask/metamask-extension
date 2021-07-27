@@ -1,4 +1,5 @@
 import Analytics from 'analytics-node';
+import { SECOND } from '../../../shared/constants/time';
 
 const isDevOrTestEnvironment = Boolean(
   process.env.METAMASK_DEBUG || process.env.IN_TEST,
@@ -21,7 +22,7 @@ const SEGMENT_FLUSH_AT =
 // deal with short lived sessions that happen faster than the interval
 // e.g confirmations. This is set to 5,000ms (5 seconds) arbitrarily with the
 // intent of having a value less than 10 seconds.
-const SEGMENT_FLUSH_INTERVAL = 5000;
+const SEGMENT_FLUSH_INTERVAL = SECOND * 5;
 
 /**
  * Creates a mock segment module for usage in test environments. This is used

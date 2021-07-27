@@ -15,10 +15,11 @@ import {
   getNumberOfAccounts,
   getNumberOfTokens,
 } from '../selectors/selectors';
-import { getSendToken } from '../selectors/send';
+import { getSendAsset, ASSET_TYPES } from '../ducks/send';
 import { txDataSelector } from '../selectors/confirm-transaction';
 import { getEnvironmentType } from '../../app/scripts/lib/util';
 import { trackMetaMetricsEvent } from '../store/actions';
+import { getNativeCurrency } from '../ducks/metamask/metamask';
 
 export const MetaMetricsContext = createContext(() => {
   captureException(
@@ -31,7 +32,8 @@ export const MetaMetricsContext = createContext(() => {
 export function MetaMetricsProvider({ children }) {
   const txData = useSelector(txDataSelector) || {};
   const environmentType = getEnvironmentType();
-  const activeCurrency = useSelector(getSendToken)?.symbol;
+  const activeAsset = useSelector(getSendAsset);
+  const nativeAssetSymbol = useSelector(getNativeCurrency);
   const accountType = useSelector(getAccountType);
   const confirmTransactionOrigin = txData.origin;
   const numberOfTokens = useSelector(getNumberOfTokens);
@@ -72,7 +74,10 @@ export function MetaMetricsProvider({ children }) {
             action: eventOpts.action,
             number_of_tokens: numberOfTokens,
             number_of_accounts: numberOfAccounts,
-            active_currency: activeCurrency,
+            active_currency:
+              activeAsset.type === ASSET_TYPES.NATIVE
+                ? nativeAssetSymbol
+                : activeAsset?.details?.symbol,
             account_type: accountType,
             is_new_visit: config.is_new_visit,
             // the properties coming from this key will not match our standards for
@@ -102,7 +107,8 @@ export function MetaMetricsProvider({ children }) {
       accountType,
       currentPath,
       confirmTransactionOrigin,
-      activeCurrency,
+      activeAsset,
+      nativeAssetSymbol,
       numberOfTokens,
       numberOfAccounts,
       environmentType,

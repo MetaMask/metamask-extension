@@ -7,7 +7,7 @@ import Identicon from '../../components/ui/identicon';
 
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { conversionUtil } from '../../helpers/utils/conversion-util';
+import { conversionUtil } from '../../../shared/modules/conversion.utils';
 
 export default class ConfirmEncryptionPublicKey extends Component {
   static contextTypes = {
@@ -30,10 +30,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
     txData: PropTypes.object,
     domainMetadata: PropTypes.object,
     mostRecentOverviewPage: PropTypes.string.isRequired,
-  };
-
-  state = {
-    fromAccount: this.props.fromAccount,
+    nativeCurrency: PropTypes.string.isRequired,
   };
 
   componentDidMount = () => {
@@ -91,7 +88,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
   };
 
   renderAccount = () => {
-    const { fromAccount } = this.state;
+    const { fromAccount } = this.props;
     const { t } = this.context;
 
     return (
@@ -108,13 +105,14 @@ export default class ConfirmEncryptionPublicKey extends Component {
   };
 
   renderBalance = () => {
-    const { conversionRate } = this.props;
-    const { t } = this.context;
     const {
+      conversionRate,
+      nativeCurrency,
       fromAccount: { balance },
-    } = this.state;
+    } = this.props;
+    const { t } = this.context;
 
-    const balanceInEther = conversionUtil(balance, {
+    const nativeCurrencyBalance = conversionUtil(balance, {
       fromNumericBase: 'hex',
       toNumericBase: 'dec',
       fromDenomination: 'WEI',
@@ -128,7 +126,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
           {`${t('balance')}:`}
         </div>
         <div className="request-encryption-public-key__balance-value">
-          {`${balanceInEther} ETH`}
+          {`${nativeCurrencyBalance} ${nativeCurrency}`}
         </div>
       </div>
     );

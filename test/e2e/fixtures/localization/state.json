@@ -46,6 +46,9 @@
         },
         "5": {
           "isShown": true
+        },
+        "6": {
+          "isShown": true
         }
       }
     },
@@ -111,7 +114,6 @@
       "knownMethodData": {},
       "lostIdentities": {},
       "metaMetricsId": null,
-      "metaMetricsSendCount": 0,
       "participateInMetaMetrics": false,
       "preferences": {
         "showFiatInTestnets": true,

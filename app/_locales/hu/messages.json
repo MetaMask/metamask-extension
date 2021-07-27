@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "Az ön böngészője nem támogatott..."
   },
-  "builtInCalifornia": {
-    "message": "A MetaMaskot Kaliforniában tervezték és hozták létre."
-  },
   "buyWithWyre": {
     "message": "Vásároljon ETH-t a Wyre-rel"
   },
@@ -746,9 +743,6 @@
   },
   "recents": {
     "message": "Legutóbbiak"
-  },
-  "recipientAddress": {
-    "message": "Címzett címe"
   },
   "recipientAddressPlaceholder": {
     "message": "Keresés, nyilvános cím (0x) vagy ENS"

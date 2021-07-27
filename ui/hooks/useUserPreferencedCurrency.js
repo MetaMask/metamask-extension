@@ -2,8 +2,10 @@ import { useSelector } from 'react-redux';
 import {
   getPreferences,
   getShouldShowFiat,
-  getNativeCurrency,
+  getCurrentCurrency,
 } from '../selectors';
+import { getNativeCurrency } from '../ducks/metamask/metamask';
+
 import { PRIMARY, SECONDARY, ETH } from '../helpers/constants/common';
 
 /**
@@ -37,6 +39,7 @@ export function useUserPreferencedCurrency(type, opts = {}) {
   const nativeCurrency = useSelector(getNativeCurrency);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const showFiat = useSelector(getShouldShowFiat);
+  const currentCurrency = useSelector(getCurrentCurrency);
 
   let currency, numberOfDecimals;
   if (
@@ -52,6 +55,7 @@ export function useUserPreferencedCurrency(type, opts = {}) {
     (type === PRIMARY && !useNativeCurrencyAsPrimaryCurrency)
   ) {
     // Display Fiat
+    currency = currentCurrency;
     numberOfDecimals = opts.numberOfDecimals || opts.fiatNumberOfDecimals || 2;
   }
 

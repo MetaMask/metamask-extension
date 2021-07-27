@@ -57,6 +57,9 @@
         },
         "5": {
           "isShown": true
+        },
+        "6": {
+          "isShown": true
         }
       }
     },
@@ -117,8 +120,7 @@
     },
     "MetaMetricsController": {
       "metaMetricsId": null,
-      "participateInMetaMetrics": false,
-      "metaMetricsSendCount": 0
+      "participateInMetaMetrics": false
     },
     "ThreeBoxController": {
       "threeBoxSyncingAllowed": true,

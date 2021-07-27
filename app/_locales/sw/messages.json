@@ -140,9 +140,6 @@
   "browserNotSupported": {
     "message": "Kivinjari chaku hakiwezeshwi..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask imeundwa na kutengenezwa California."
-  },
   "buyWithWyre": {
     "message": "Nunua ETH kwa kutumia Wyre"
   },
@@ -731,9 +728,6 @@
   },
   "recents": {
     "message": "Za hivi karibuni"
-  },
-  "recipientAddress": {
-    "message": "Anwani ya Mpokeaji"
   },
   "recipientAddressPlaceholder": {
     "message": "Tafuta, anwani za umma (0x), au ENS"

@@ -10,8 +10,6 @@ import {
   cancelTxs,
   updateAndApproveTx,
   showModal,
-  setMetaMetricsSendCount,
-  updateTransaction,
   getNextNonce,
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
@@ -22,7 +20,7 @@ import {
 } from '../../helpers/constants/error-keys';
 import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util';
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
-import { conversionGreaterThan } from '../../helpers/utils/conversion-util';
+import { conversionGreaterThan } from '../../../shared/modules/conversion.utils';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
 import {
@@ -32,14 +30,15 @@ import {
   getKnownMethodData,
   getMetaMaskAccounts,
   getUseNonceField,
-  getPreferences,
   transactionFeeSelector,
   getNoGasPriceFetched,
   getIsEthGasPriceFetched,
+  getShouldShowFiat,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { updateTransactionGasFees } from '../../ducks/metamask/metamask';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
@@ -65,7 +64,6 @@ const mapStateToProps = (state, ownProps) => {
     match: { params = {} },
   } = ownProps;
   const { id: paramsTransactionId } = params;
-  const { showFiatInTestnets } = getPreferences(state);
   const isMainnet = getIsMainnet(state);
   const { confirmTransaction, metamask } = state;
   const {
@@ -76,12 +74,11 @@ const mapStateToProps = (state, ownProps) => {
     assetImages,
     network,
     unapprovedTxs,
-    metaMetricsSendCount,
     nextNonce,
     provider: { chainId },
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
-  const { txParams = {}, lastGasPrice, id: transactionId, type } = txData;
+  const { txParams = {}, id: transactionId, type } = txData;
   const transaction =
     Object.values(unapprovedTxs).find(
       ({ id }) => id === (transactionId || Number(paramsTransactionId)),
@@ -110,7 +107,6 @@ const mapStateToProps = (state, ownProps) => {
   const addressBookObject = addressBook[checksummedAddress];
   const toEns = ensResolutionsByAddress[checksummedAddress] || '';
   const toNickname = addressBookObject ? addressBookObject.name : '';
-  const isTxReprice = Boolean(lastGasPrice);
   const transactionStatus = transaction ? transaction.status : '';
 
   const {
@@ -168,7 +164,6 @@ const mapStateToProps = (state, ownProps) => {
     tokenData,
     methodData,
     tokenProps,
-    isTxReprice,
     conversionRate,
     transactionStatus,
     nonce,
@@ -184,9 +179,8 @@ const mapStateToProps = (state, ownProps) => {
     useNonceField: getUseNonceField(state),
     customNonceValue,
     insufficientBalance,
-    hideSubtitle: !isMainnet && !showFiatInTestnets,
-    hideFiatConversion: !isMainnet && !showFiatInTestnets,
-    metaMetricsSendCount,
+    hideSubtitle: !getShouldShowFiat(state),
+    hideFiatConversion: !getShouldShowFiat(state),
     type,
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
@@ -219,9 +213,6 @@ export const mapDispatchToProps = (dispatch) => {
         }),
       );
     },
-    updateGasAndCalculate: (updatedTx) => {
-      return dispatch(updateTransaction(updatedTx));
-    },
     showRejectTransactionsConfirmationModal: ({
       onSubmit,
       unapprovedTxCount,
@@ -234,10 +225,12 @@ export const mapDispatchToProps = (dispatch) => {
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
     sendTransaction: (txData) =>
       dispatch(updateAndApproveTx(customNonceMerge(txData))),
-    setMetaMetricsSendCount: (val) => dispatch(setMetaMetricsSendCount(val)),
     getNextNonce: () => dispatch(getNextNonce()),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),
+    updateTransactionGasFees: (gasFees) => {
+      dispatch(updateTransactionGasFees({ ...gasFees, expectHexWei: true }));
+    },
   };
 };
 
@@ -293,7 +286,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
     cancelAllTransactions: dispatchCancelAllTransactions,
     showCustomizeGasModal: dispatchShowCustomizeGasModal,
-    updateGasAndCalculate: dispatchUpdateGasAndCalculate,
+    updateTransactionGasFees: dispatchUpdateTransactionGasFees,
     ...otherDispatchProps
   } = dispatchProps;
 
@@ -310,21 +303,17 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     showCustomizeGasModal: () =>
       dispatchShowCustomizeGasModal({
         txData,
-        onSubmit: (customGas) => dispatchUpdateGasAndCalculate(customGas),
+        onSubmit: (customGas) => dispatchUpdateTransactionGasFees(customGas),
         validate: validateEditGas,
       }),
     cancelAllTransactions: () =>
       dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),
     updateGasAndCalculate: ({ gasLimit, gasPrice }) => {
-      const updatedTx = {
-        ...txData,
-        txParams: {
-          ...txData.txParams,
-          gas: gasLimit,
-          gasPrice,
-        },
-      };
-      dispatchUpdateGasAndCalculate(updatedTx);
+      dispatchUpdateTransactionGasFees({
+        gasLimit,
+        gasPrice,
+        transaction: txData,
+      });
     },
   };
 };

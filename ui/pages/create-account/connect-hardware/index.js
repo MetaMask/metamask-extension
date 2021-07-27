@@ -10,6 +10,7 @@ import {
 } from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { SECOND } from '../../../../shared/constants/time';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
 
@@ -100,7 +101,7 @@ class ConnectHardwareForm extends Component {
     // Autohide the alert after 5 seconds
     setTimeout((_) => {
       this.props.hideAlert();
-    }, 5000);
+    }, SECOND * 5);
   }
 
   getPage = (device, page, hdPath) => {

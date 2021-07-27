@@ -1,11 +1,13 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { getNetworkDisplayName } from './util';
-import NetworkController from './network';
+import NetworkController, { NETWORK_EVENTS } from './network';
 
 describe('NetworkController', function () {
   describe('controller', function () {
     let networkController;
+    let getLatestBlockStub;
+    let setProviderTypeAndWait;
     const noop = () => undefined;
     const networkControllerProviderConfig = {
       getAccounts: noop,
@@ -13,7 +15,21 @@ describe('NetworkController', function () {
 
     beforeEach(function () {
       networkController = new NetworkController();
+      getLatestBlockStub = sinon
+        .stub(networkController, 'getLatestBlock')
+        .callsFake(() => Promise.resolve({}));
       networkController.setInfuraProjectId('foo');
+      setProviderTypeAndWait = () =>
+        new Promise((resolve) => {
+          networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
+            resolve();
+          });
+          networkController.setProviderType('mainnet');
+        });
+    });
+
+    afterEach(function () {
+      getLatestBlockStub.reset();
     });
 
     describe('#provider', function () {
@@ -65,6 +81,59 @@ describe('NetworkController', function () {
           spy.calledOnceWithExactly('loading'),
           'should have called with "loading" first',
         );
+      });
+    });
+
+    describe('#getEIP1559Compatibility', function () {
+      it('should return false when baseFeePerGas is not in the block header', async function () {
+        networkController.initializeProvider(networkControllerProviderConfig);
+        const supportsEIP1559 = await networkController.getEIP1559Compatibility();
+        assert.equal(supportsEIP1559, false);
+      });
+
+      it('should return true when baseFeePerGas is in block header', async function () {
+        networkController.initializeProvider(networkControllerProviderConfig);
+        getLatestBlockStub.callsFake(() =>
+          Promise.resolve({ baseFeePerGas: '0xa ' }),
+        );
+        const supportsEIP1559 = await networkController.getEIP1559Compatibility();
+        assert.equal(supportsEIP1559, true);
+      });
+
+      it('should store EIP1559 support in state to reduce calls to getLatestBlock', async function () {
+        networkController.initializeProvider(networkControllerProviderConfig);
+        getLatestBlockStub.callsFake(() =>
+          Promise.resolve({ baseFeePerGas: '0xa ' }),
+        );
+        await networkController.getEIP1559Compatibility();
+        const supportsEIP1559 = await networkController.getEIP1559Compatibility();
+        assert.equal(getLatestBlockStub.calledOnce, true);
+        assert.equal(supportsEIP1559, true);
+      });
+
+      it('should clear stored EIP1559 support when changing networks', async function () {
+        networkController.initializeProvider(networkControllerProviderConfig);
+        networkController.consoleThis = true;
+        getLatestBlockStub.callsFake(() =>
+          Promise.resolve({ baseFeePerGas: '0xa ' }),
+        );
+        await networkController.getEIP1559Compatibility();
+        assert.equal(
+          networkController.networkDetails.getState().EIPS[1559],
+          true,
+        );
+        getLatestBlockStub.callsFake(() => Promise.resolve({}));
+        await setProviderTypeAndWait('mainnet');
+        assert.equal(
+          networkController.networkDetails.getState().EIPS[1559],
+          undefined,
+        );
+        await networkController.getEIP1559Compatibility();
+        assert.equal(
+          networkController.networkDetails.getState().EIPS[1559],
+          false,
+        );
+        assert.equal(getLatestBlockStub.calledTwice, true);
       });
     });
   });

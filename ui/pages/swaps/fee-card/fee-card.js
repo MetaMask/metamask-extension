@@ -6,6 +6,7 @@ import {
   MAINNET_CHAIN_ID,
   BSC_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
+  POLYGON_CHAIN_ID,
 } from '../../../../shared/constants/network';
 
 export default function FeeCard({
@@ -38,6 +39,8 @@ export default function FeeCard({
         return t('networkNameEthereum');
       case BSC_CHAIN_ID:
         return t('networkNameBSC');
+      case POLYGON_CHAIN_ID:
+        return t('networkNamePolygon');
       case LOCALHOST_CHAIN_ID:
         return t('networkNameTestnet');
       default:
@@ -47,7 +50,10 @@ export default function FeeCard({
 
   return (
     <div className="fee-card">
-      <div className="fee-card__savings-and-quotes-header">
+      <div
+        className="fee-card__savings-and-quotes-header"
+        data-testid="fee-card__savings-and-quotes-header"
+      >
         <div className="fee-card__savings-and-quotes-row">
           {bestQuoteText && (
             <p className="fee-card__savings-text">{bestQuoteText}</p>
@@ -66,7 +72,10 @@ export default function FeeCard({
         </div>
       </div>
       <div className="fee-card__main">
-        <div className="fee-card__row-header">
+        <div
+          className="fee-card__row-header"
+          data-testid="fee-card__row-header"
+        >
           <div>
             <div className="fee-card__row-header-text--bold">
               {t('swapEstimatedNetworkFee')}

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import InfoIconInverted from '../icon/info-icon-inverted.component';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
+import { MILLISECOND } from '../../../../shared/constants/time';
 
 export default function Callout({
   severity,
@@ -29,7 +30,7 @@ export default function Callout({
     if (removed) {
       setTimeout(() => {
         dismiss();
-      }, 500);
+      }, MILLISECOND * 500);
     }
   }, [removed, dismiss]);
   return (
