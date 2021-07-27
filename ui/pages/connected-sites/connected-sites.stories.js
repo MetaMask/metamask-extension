@@ -1,9 +1,9 @@
 import React from 'react';
 
-import ConnectedSites from './';
+import ConnectedSites from '.';
 
 export default {
-  title: 'Confirmation Screens',
+  title: 'Connected Sites',
 };
 
 const PageSet = ({ children }) => {
