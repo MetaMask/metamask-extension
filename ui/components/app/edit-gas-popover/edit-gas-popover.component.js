@@ -51,7 +51,6 @@ export default function EditGasPopover({
 
   const [warning] = useState(null);
 
-  const [showAdvancedForm, setShowAdvancedForm] = useState(false);
   const [
     dappSuggestedGasFeeAcknowledged,
     setDappSuggestedGasFeeAcknowledged,
@@ -80,6 +79,10 @@ export default function EditGasPopover({
     gasErrors,
     onManualChange,
   } = useGasFeeInputs(defaultEstimateToUse, transaction);
+
+  const [showAdvancedForm, setShowAdvancedForm] = useState(
+    !estimateToUse || hasGasErrors,
+  );
 
   /**
    * Temporary placeholder, this should be managed by the parent component but

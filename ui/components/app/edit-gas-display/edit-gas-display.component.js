@@ -60,8 +60,6 @@ export default function EditGasDisplay({
 }) {
   const t = useContext(I18nContext);
 
-  const alwaysShowForm = !estimateToUse || hasGasErrors || false;
-
   const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
     transaction,
   );
@@ -178,7 +176,7 @@ export default function EditGasDisplay({
               onChange={setEstimateToUse}
             />
           )}
-        {!alwaysShowForm && !requireDappAcknowledgement && (
+        {!requireDappAcknowledgement && (
           <button
             className="edit-gas-display__advanced-button"
             onClick={() => setShowAdvancedForm(!showAdvancedForm)}
@@ -192,7 +190,7 @@ export default function EditGasDisplay({
           </button>
         )}
         {!requireDappAcknowledgement &&
-          (alwaysShowForm || showAdvancedForm) && (
+          (showAdvancedForm || showAdvancedForm) && (
             <AdvancedGasControls
               gasFeeEstimates={gasFeeEstimates}
               gasEstimateType={gasEstimateType}
