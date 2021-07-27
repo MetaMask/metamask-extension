@@ -39,6 +39,7 @@ export default function EditGasPopover({
   transaction,
   mode,
   onClose,
+  minimumGasLimit,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -80,7 +81,7 @@ export default function EditGasPopover({
     hasGasErrors,
     gasErrors,
     onManualChange,
-  } = useGasFeeInputs(defaultEstimateToUse, transaction);
+  } = useGasFeeInputs(defaultEstimateToUse, transaction, minimumGasLimit, mode);
 
   /**
    * Temporary placeholder, this should be managed by the parent component but
@@ -248,4 +249,5 @@ EditGasPopover.propTypes = {
   transaction: PropTypes.object,
   mode: PropTypes.oneOf(Object.values(EDIT_GAS_MODES)),
   defaultEstimateToUse: PropTypes.string,
+  minimumGasLimit: PropTypes.string,
 };
