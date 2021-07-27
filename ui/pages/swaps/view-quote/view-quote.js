@@ -176,7 +176,6 @@ export default function ViewQuote() {
   let maxPriorityFeePerGas;
   let baseAndPriorityFeePerGas;
 
-  // TODO: Verify that this is correct.
   if (EIP1559NetworkEnabled) {
     const {
       maxFeePerGas: suggestedMaxFeePerGas,
