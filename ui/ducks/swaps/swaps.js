@@ -661,15 +661,20 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     }
 
     const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state);
-    // TODO: Make sure it works if EIP is not present.
-    const {
-      high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
-    } = getGasFeeEstimates(state);
-    const maxFeePerGas =
-      customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
-    const maxPriorityFeePerGas =
-      customMaxPriorityFeePerGas ||
-      decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
+
+    let maxFeePerGas;
+    let maxPriorityFeePerGas;
+
+    if (EIP1559NetworkEnabled) {
+      const {
+        high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
+      } = getGasFeeEstimates(state);
+      maxFeePerGas =
+        customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
+      maxPriorityFeePerGas =
+        customMaxPriorityFeePerGas ||
+        decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
+    }
 
     const usedQuote = getUsedQuote(state);
     const usedTradeTxParams = usedQuote.trade;
