@@ -40,9 +40,6 @@
   "blockiesIdenticon": {
     "message": "Gebruik Blockies Identicon"
   },
-  "builtInCalifornia": {
-    "message": "MetaMask is ontworpen en gebouwd in Californië."
-  },
   "cancel": {
     "message": "Annuleer"
   },
@@ -271,9 +268,6 @@
   },
   "readdToken": {
     "message": "U kunt dit token in de toekomst weer toevoegen door naar \"Token toevoegen\" te gaan in het menu met accountopties."
-  },
-  "recipientAddress": {
-    "message": "Geadresseerde adres"
   },
   "reject": {
     "message": "Afwijzen"

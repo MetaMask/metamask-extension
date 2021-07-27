@@ -196,13 +196,16 @@ export default class TypedMessageManager extends EventEmitter {
           0,
           'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.',
         );
-        const { chainId } = data.domain;
+        let { chainId } = data.domain;
         if (chainId) {
           const activeChainId = parseInt(this._getCurrentChainId(), 16);
           assert.ok(
             !Number.isNaN(activeChainId),
             `Cannot sign messages for chainId "${chainId}", because MetaMask is switching networks.`,
           );
+          if (typeof chainId === 'string') {
+            chainId = parseInt(chainId, 16);
+          }
           assert.equal(
             chainId,
             activeChainId,

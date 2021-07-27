@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
+import { MINUTE } from '../../../shared/constants/time';
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -24,6 +25,8 @@ export default class AppStateController extends EventEmitter {
       connectedStatusPopoverHasBeenShown: true,
       defaultHomeActiveTabName: null,
       browserEnvironment: {},
+      recoveryPhraseReminderHasBeenShown: false,
+      recoveryPhraseReminderLastShown: new Date().getTime(),
       ...initState,
     });
     this.timer = null;
@@ -113,6 +116,27 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
+   * Record that the user has been shown the recovery phrase reminder
+   * @returns {void}
+   */
+  setRecoveryPhraseReminderHasBeenShown() {
+    this.store.updateState({
+      recoveryPhraseReminderHasBeenShown: true,
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has seen the recovery phrase reminder
+   * @param {number} lastShown - timestamp when user was last shown the reminder
+   * @returns {void}
+   */
+  setRecoveryPhraseReminderLastShown(lastShown) {
+    this.store.updateState({
+      recoveryPhraseReminderLastShown: lastShown,
+    });
+  }
+
+  /**
    * Sets the last active time to the current time
    * @returns {void}
    */
@@ -156,7 +180,7 @@ export default class AppStateController extends EventEmitter {
 
     this.timer = setTimeout(
       () => this.onInactiveTimeout(),
-      timeoutMinutes * 60 * 1000,
+      timeoutMinutes * MINUTE,
     );
   }
 

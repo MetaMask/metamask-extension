@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "Jūsu pārlūkprogramma netiek atbalstīta..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask ir izstrādāta un izveidota Kalifornijā."
-  },
   "buyWithWyre": {
     "message": "Pirkt ETH ar Wyre"
   },
@@ -749,9 +746,6 @@
   },
   "recents": {
     "message": "Nesenie"
-  },
-  "recipientAddress": {
-    "message": "Saņēmēja adrese"
   },
   "recipientAddressPlaceholder": {
     "message": "Meklēšana, publiskā adrese (0x) vai ENS"

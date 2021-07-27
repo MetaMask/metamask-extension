@@ -38,12 +38,13 @@ import {
   getTokenExchangeRates,
   getSwapsDefaultToken,
   getCurrentChainId,
-  getNativeCurrency,
   isHardwareWallet,
   getHardwareWalletType,
 } from '../../../selectors';
+import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
+
 import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util';
-import { getTokens } from '../../../ducks/metamask/metamask';
+
 import {
   safeRefetchQuotes,
   setCustomApproveTxData,
@@ -71,7 +72,7 @@ import {
 import MainQuoteSummary from '../main-quote-summary';
 import { calcGasTotal } from '../../send/send.utils';
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
-import ActionableMessage from '../actionable-message';
+import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
   quotesToRenderableData,
   getRenderableNetworkFeesForQuote,

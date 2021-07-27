@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
+import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import TransactionBreakdown from './transaction-breakdown.component';
 
 describe('TransactionBreakdown Component', () => {
@@ -11,7 +12,7 @@ describe('TransactionBreakdown Component', () => {
       status: TRANSACTION_STATUSES.CONFIRMED,
       txParams: {
         from: '0x1',
-        gas: '0x5208',
+        gas: GAS_LIMITS.SIMPLE,
         gasPrice: '0x3b9aca00',
         nonce: '0xa4',
         to: '0x2',

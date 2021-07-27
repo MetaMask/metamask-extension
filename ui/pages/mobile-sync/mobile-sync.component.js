@@ -7,11 +7,12 @@ import qrCode from 'qrcode-generator';
 
 import Button from '../../components/ui/button';
 import LoadingScreen from '../../components/ui/loading-screen';
+import { MINUTE, SECOND } from '../../../shared/constants/time';
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
-const KEYS_GENERATION_TIME = 30000;
-const IDLE_TIME = KEYS_GENERATION_TIME * 4;
+const KEYS_GENERATION_TIME = SECOND * 30;
+const IDLE_TIME = MINUTE * 2;
 
 export default class MobileSyncPage extends Component {
   static contextTypes = {
@@ -295,7 +296,7 @@ export default class MobileSyncPage extends Component {
     const { t } = this.context;
 
     if (syncing) {
-      return <LoadingScreen loadingMessage="Sync in progress" />;
+      return <LoadingScreen loadingMessage={t('syncInProgress')} />;
     }
 
     if (completed) {

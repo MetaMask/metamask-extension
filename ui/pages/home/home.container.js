@@ -14,6 +14,7 @@ import {
   getInfuraBlocked,
   getShowWhatsNewPopup,
   getSortedNotificationsToShow,
+  getShowRecoveryPhraseReminder,
 } from '../../selectors';
 
 import {
@@ -25,10 +26,12 @@ import {
   setDefaultHomeActiveTabName,
   setWeb3ShimUsageAlertDismissed,
   setAlertEnabledness,
+  setRecoveryPhraseReminderHasBeenShown,
+  setRecoveryPhraseReminderLastShown,
 } from '../../store/actions';
 import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
-import { getSwapsFeatureLiveness } from '../../ducks/swaps/swaps';
+import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -57,7 +60,7 @@ const mapStateToProps = (state) => {
   const accountBalance = getCurrentEthBalance(state);
   const { forgottenPassword, threeBoxLastUpdated } = appState;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
-  const swapsEnabled = getSwapsFeatureLiveness(state);
+  const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
 
   const envType = getEnvironmentType();
@@ -107,6 +110,8 @@ const mapStateToProps = (state) => {
     infuraBlocked: getInfuraBlocked(state),
     notificationsToShow: getSortedNotificationsToShow(state).length > 0,
     showWhatsNewPopup: getShowWhatsNewPopup(state),
+    showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
+    seedPhraseBackedUp,
   };
 };
 
@@ -132,6 +137,10 @@ const mapDispatchToProps = (dispatch) => ({
   disableWeb3ShimUsageAlert: () =>
     setAlertEnabledness(ALERT_TYPES.web3ShimUsage, false),
   hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
+  setRecoveryPhraseReminderHasBeenShown: () =>
+    dispatch(setRecoveryPhraseReminderHasBeenShown()),
+  setRecoveryPhraseReminderLastShown: (lastShown) =>
+    dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
 });
 
 export default compose(

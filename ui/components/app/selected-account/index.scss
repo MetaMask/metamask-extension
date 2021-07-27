@@ -26,6 +26,8 @@
     @include H7;
 
     color: #989a9b;
+    display: flex;
+    align-items: center;
   }
 
   &__clickable {
@@ -47,5 +49,11 @@
     &:active {
       background-color: #d9d7da;
     }
+  }
+
+  &__copy {
+    height: 13px;
+    display: inline-block;
+    margin-inline-start: 3px;
   }
 }
