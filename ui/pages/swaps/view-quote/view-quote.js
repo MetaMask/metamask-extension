@@ -663,13 +663,16 @@ export default function ViewQuote() {
           <EditGasPopover
             popoverTitle={t('customGas')}
             editGasDisplayProps={{
-              alwaysShowForm: true,
+              // All in HEX here.
+              minimumGasLimit: nonCustomMaxGasLimit,
+              customGasLimit: maxGasLimit,
+              customMaxFeePerGas: maxFeePerGas,
+              customMaxPriorityFeePerGas: maxPriorityFeePerGas,
             }}
             defaultEstimateToUse="high"
             mode={EDIT_GAS_MODES.SWAPS}
             confirmButtonText={t('submit')}
             onClose={onCloseEditGasPopover}
-            transaction={usedQuote.trade}
           />
         )}
 
