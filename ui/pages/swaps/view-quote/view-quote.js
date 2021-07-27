@@ -187,7 +187,10 @@ export default function ViewQuote() {
     maxPriorityFeePerGas =
       customMaxPriorityFeePerGas ||
       decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
-    baseAndPriorityFeePerGas = addHexes(estimatedBaseFee, maxPriorityFeePerGas);
+    baseAndPriorityFeePerGas = addHexes(
+      decGWEIToHexWEI(estimatedBaseFee),
+      maxPriorityFeePerGas,
+    );
   }
 
   const gasTotalInWeiHex = calcGasTotal(
@@ -662,13 +665,14 @@ export default function ViewQuote() {
         {showEditGasPopover && EIP1559NetworkEnabled && (
           <EditGasPopover
             popoverTitle={t('customGas')}
-            editGasDisplayProps={{
-              // All in HEX here.
-              minimumGasLimit: nonCustomMaxGasLimit,
-              customGasLimit: maxGasLimit,
-              customMaxFeePerGas: maxFeePerGas,
-              customMaxPriorityFeePerGas: maxPriorityFeePerGas,
+            transaction={{
+              txParams: {
+                maxFeePerGas,
+                maxPriorityFeePerGas,
+                gasLimit: maxGasLimit,
+              },
             }}
+            minimumGasLimit={usedGasLimit}
             defaultEstimateToUse="high"
             mode={EDIT_GAS_MODES.SWAPS}
             confirmButtonText={t('submit')}

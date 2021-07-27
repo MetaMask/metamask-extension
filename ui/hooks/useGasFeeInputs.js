@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { findKey } from 'lodash';
 
-import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
+import { GAS_ESTIMATE_TYPES, EDIT_GAS_MODES } from '../../shared/constants/gas';
 import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
 import {
   getMaximumGasTotalInHexWei,
@@ -14,6 +14,7 @@ import {
   hexWEIToDecGWEI,
   decGWEIToHexWEI,
   decimalToHex,
+  hexToDecimal,
 } from '../helpers/utils/conversions.util';
 import { getShouldShowFiat } from '../selectors';
 import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
@@ -150,7 +151,12 @@ function getMatchingEstimateFromGasFees(
  *  './useGasFeeEstimates'
  * ).GasEstimates} - gas fee input state and the GasFeeEstimates object
  */
-export function useGasFeeInputs(defaultEstimateToUse = 'medium', transaction) {
+export function useGasFeeInputs(
+  defaultEstimateToUse = 'medium',
+  transaction,
+  minimumGasLimit,
+  editGasMode,
+) {
   // We need to know whether to show fiat conversions or not, so that we can
   // default our fiat values to empty strings if showing fiat is not wanted or
   // possible.
@@ -200,7 +206,7 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium', transaction) {
   );
   const [gasLimit, setGasLimit] = useState(
     transaction?.txParams?.gasLimit
-      ? Number(hexWEIToDecGWEI(transaction.txParams.gasLimit))
+      ? hexToDecimal(transaction.txParams.gasLimit)
       : 21000,
   );
   const [estimateToUse, setInternalEstimateToUse] = useState(
@@ -255,9 +261,11 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium', transaction) {
   // conditionally set to the appropriate fields to compute the minimum
   // and maximum cost of a transaction given the current estimates or selected
   // gas fees.
+
   const gasSettings = {
     gasLimit: decimalToHex(gasLimit),
   };
+
   if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
     gasSettings.maxFeePerGas = decGWEIToHexWEI(maxFeePerGasToUse);
     gasSettings.maxPriorityFeePerGas = decGWEIToHexWEI(
@@ -274,8 +282,18 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium', transaction) {
 
   // The maximum amount this transaction will cost
   const maximumCostInHexWei = getMaximumGasTotalInHexWei(gasSettings);
+
+  // If in swaps, we want to calculate the minimum gas fee differently than the max
+  const minGasSettings = {};
+  if (editGasMode === EDIT_GAS_MODES.SWAPS) {
+    minGasSettings.gasLimit = decimalToHex(minimumGasLimit);
+  }
+
   // The minimum amount this transaction will cost's
-  const minimumCostInHexWei = getMinimumGasTotalInHexWei(gasSettings);
+  const minimumCostInHexWei = getMinimumGasTotalInHexWei({
+    ...gasSettings,
+    ...minGasSettings,
+  });
 
   // We need to display the estimated fiat currency impact of the
   // maxPriorityFeePerGas field to the user. This hook calculates that amount.
