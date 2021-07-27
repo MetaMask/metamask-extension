@@ -14,6 +14,7 @@ import {
   hexWEIToDecGWEI,
   decGWEIToHexWEI,
   decimalToHex,
+  hexToDecimal,
 } from '../helpers/utils/conversions.util';
 import { getShouldShowFiat } from '../selectors';
 import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
@@ -199,8 +200,8 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium', transaction) {
       : null,
   );
   const [gasLimit, setGasLimit] = useState(
-    transaction?.txParams?.gasLimit
-      ? Number(hexWEIToDecGWEI(transaction.txParams.gasLimit))
+    transaction?.txParams?.gas
+      ? Number(hexToDecimal(transaction.txParams.gas))
       : 21000,
   );
   const [estimateToUse, setInternalEstimateToUse] = useState(
