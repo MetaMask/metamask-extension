@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { useSelector } from 'react-redux';
 import {
   GAS_RECOMMENDATIONS,
   EDIT_GAS_MODES,
@@ -11,6 +12,8 @@ import { isEIP1559Network } from '../../../ducks/metamask/metamask';
 
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
+import { isEIP1559Network } from '../../../ducks/metamask/metamask';
+
 import {
   COLORS,
   TYPOGRAPHY,
@@ -62,6 +65,7 @@ export default function EditGasDisplay({
   onManualChange,
 }) {
   const t = useContext(I18nContext);
+  const supportsEIP1559 = useSelector(isEIP1559Network);
 
   const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
     transaction,
@@ -128,7 +132,11 @@ export default function EditGasDisplay({
               </Typography>,
             ])
           }
-          timing={<GasTiming maxPriorityFeePerGas={maxPriorityFeePerGas} />}
+          timing={
+            supportsEIP1559 && (
+              <GasTiming maxPriorityFeePerGas={maxPriorityFeePerGas} />
+            )
+          }
         />
         {requireDappAcknowledgement && (
           <Button
