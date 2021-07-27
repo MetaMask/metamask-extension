@@ -80,7 +80,7 @@ export default function EditGasPopover({
     hasGasErrors,
     gasErrors,
     onManualChange,
-  } = useGasFeeInputs(defaultEstimateToUse);
+  } = useGasFeeInputs(defaultEstimateToUse, transaction);
 
   /**
    * Temporary placeholder, this should be managed by the parent component but
