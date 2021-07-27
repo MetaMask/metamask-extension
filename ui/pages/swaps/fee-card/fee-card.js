@@ -13,6 +13,12 @@ import {
 import TransactionDetail from '../../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import GasTiming from '../../../components/app/gas-timing/gas-timing.component';
+import Typography from '../../../components/ui/typography';
+import {
+  COLORS,
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+} from '../../../helpers/constants/design-system';
 
 const GAS_FEES_LEARN_MORE_URL =
   'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
@@ -142,7 +148,15 @@ export default function FeeCard({
                 subText={
                   secondaryFee?.maxFee !== undefined && (
                     <>
-                      {`${t('maxFee')}: ${secondaryFee.maxFee}`}
+                      <Typography
+                        tag="span"
+                        fontWeight={FONT_WEIGHT.BOLD}
+                        color={COLORS.UI4}
+                        variant={TYPOGRAPHY.H7}
+                      >
+                        {t('maxFee')}
+                      </Typography>
+                      {`: ${secondaryFee.maxFee}`}
                       <span
                         className="fee-card__edit-link"
                         onClick={() => onFeeCardMaxRowClick()}
