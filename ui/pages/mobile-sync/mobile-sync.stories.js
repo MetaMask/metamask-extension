@@ -7,7 +7,7 @@ export default {
 };
 
 export const MobileSyncComponent = () => {
-  return <MobileSyncPage 
-    requestRevealSeedWords={action("Mobile Sync Requested")}
-  />;
+  return (
+    <MobileSyncPage requestRevealSeedWords={action('Mobile Sync Requested')} />
+  );
 };
