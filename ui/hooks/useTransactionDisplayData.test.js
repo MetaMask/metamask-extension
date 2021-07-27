@@ -7,11 +7,10 @@ import transactions from '../../test/data/transaction-data.json';
 import {
   getPreferences,
   getShouldShowFiat,
-  getNativeCurrency,
   getCurrentCurrency,
   getCurrentChainId,
 } from '../selectors';
-import { getTokens } from '../ducks/metamask/metamask';
+import { getTokens, getNativeCurrency } from '../ducks/metamask/metamask';
 import { getMessage } from '../helpers/utils/i18n-helper';
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
@@ -133,6 +132,8 @@ const renderHookWithRouter = (cb, tokenAddress) => {
 };
 
 describe('useTransactionDisplayData', () => {
+  const dispatch = sinon.spy();
+
   beforeAll(() => {
     useSelector = sinon.stub(reactRedux, 'useSelector');
     useTokenFiatAmount = sinon.stub(
@@ -170,6 +171,7 @@ describe('useTransactionDisplayData', () => {
       }
       return null;
     });
+    sinon.stub(reactRedux, 'useDispatch').returns(dispatch);
   });
 
   afterAll(() => {

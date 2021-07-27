@@ -104,7 +104,7 @@ export default class InfoTab extends PureComponent {
               </div>
             </div>
             <div className="info-tab__item">
-              <div className="info-tab__about">{t('builtInCalifornia')}</div>
+              <div className="info-tab__about">{t('builtAroundTheWorld')}</div>
             </div>
           </div>
           {this.renderInfoLinks()}

@@ -12,6 +12,7 @@ import Loading from '../../components/ui/loading-screen';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { getSendTo } from '../../ducks/send';
 
 function mapStateToProps(state) {
   const { metamask, appState } = state;
@@ -38,7 +39,7 @@ function mapStateToProps(state) {
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
     unapprovedTypedMessagesCount,
-    send: state.metamask.send,
+    sendTo: getSendTo(state),
     currentNetworkTxList: state.metamask.currentNetworkTxList,
   };
 }
@@ -68,9 +69,7 @@ class ConfirmTxScreen extends Component {
     history: PropTypes.object,
     identities: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
-    send: PropTypes.shape({
-      to: PropTypes.string,
-    }).isRequired,
+    sendTo: PropTypes.string,
   };
 
   getUnapprovedMessagesTotal() {
@@ -182,13 +181,13 @@ class ConfirmTxScreen extends Component {
       mostRecentOverviewPage,
       network,
       chainId,
-      send,
+      sendTo,
     } = this.props;
     const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network, chainId);
 
     if (
       unconfTxList.length === 0 &&
-      !send.to &&
+      !sendTo &&
       this.getUnapprovedMessagesTotal() === 0
     ) {
       history.push(mostRecentOverviewPage);
@@ -201,7 +200,7 @@ class ConfirmTxScreen extends Component {
       network,
       chainId,
       currentNetworkTxList,
-      send,
+      sendTo,
       history,
       match: { params: { id: transactionId } = {} },
       mostRecentOverviewPage,
@@ -241,7 +240,7 @@ class ConfirmTxScreen extends Component {
 
     if (
       unconfTxList.length === 0 &&
-      !send.to &&
+      !sendTo &&
       this.getUnapprovedMessagesTotal() === 0
     ) {
       this.props.history.push(mostRecentOverviewPage);

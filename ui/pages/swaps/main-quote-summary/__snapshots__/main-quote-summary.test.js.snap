@@ -3,6 +3,7 @@
 exports[`MainQuoteSummary renders the component with initial props 1`] = `
 <div
   class="main-quote-summary__source-row"
+  data-testid="main-quote-summary__source-row"
 >
   <span
     class="main-quote-summary__source-row-value"
@@ -65,6 +66,7 @@ exports[`MainQuoteSummary renders the component with initial props 3`] = `
 exports[`MainQuoteSummary renders the component with initial props 4`] = `
 <div
   class="main-quote-summary__exchange-rate-container"
+  data-testid="main-quote-summary__exchange-rate-container"
 >
   <div
     class="exchange-rate-display main-quote-summary__exchange-rate-display"

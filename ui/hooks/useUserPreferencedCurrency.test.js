@@ -1,7 +1,11 @@
 import { renderHook } from '@testing-library/react-hooks';
 import * as reactRedux from 'react-redux';
 import sinon from 'sinon';
-import { getPreferences, getShouldShowFiat } from '../selectors';
+import {
+  getCurrentCurrency,
+  getPreferences,
+  getShouldShowFiat,
+} from '../selectors';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
 
 const tests = [
@@ -24,12 +28,13 @@ const tests = [
       useNativeCurrencyAsPrimaryCurrency: false,
       nativeCurrency: 'ETH',
       showFiat: true,
+      currentCurrency: 'usd',
     },
     params: {
       type: 'PRIMARY',
     },
     result: {
-      currency: undefined,
+      currency: 'usd',
       numberOfDecimals: 2,
     },
   },
@@ -116,6 +121,8 @@ function getFakeUseSelector(state) {
       return state;
     } else if (selector === getShouldShowFiat) {
       return state.showFiat;
+    } else if (selector === getCurrentCurrency) {
+      return state.currentCurrency;
     }
     return state.nativeCurrency;
   };

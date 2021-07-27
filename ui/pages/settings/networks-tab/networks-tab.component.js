@@ -202,12 +202,12 @@ export default class NetworksTab extends PureComponent {
         {this.renderNetworksList()}
         {shouldRenderNetworkForm ? (
           <NetworkForm
-            rpcUrls={networksToRender.map((network) => network.rpcUrl)}
             setRpcTarget={setRpcTarget}
             editRpc={editRpc}
             networkName={label || (labelKey && t(labelKey)) || ''}
             rpcUrl={rpcUrl}
             chainId={chainId}
+            networksToRender={networksToRender}
             ticker={ticker}
             onClear={(shouldUpdateHistory = true) => {
               setNetworksTabAddMode(false);

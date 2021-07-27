@@ -5,30 +5,24 @@ import Dialog from '../../../../components/ui/dialog';
 import AddRecipient from './add-recipient.component';
 
 const propsMethodSpies = {
-  closeToDropdown: sinon.spy(),
-  openToDropdown: sinon.spy(),
-  updateGas: sinon.spy(),
-  updateSendTo: sinon.spy(),
-  updateSendToError: sinon.spy(),
-  updateSendToWarning: sinon.spy(),
+  updateRecipient: sinon.spy(),
+  useMyAccountsForRecipientSearch: sinon.spy(),
+  useContactListForRecipientSearch: sinon.spy(),
 };
 
 describe('AddRecipient Component', () => {
   let wrapper;
-  let instance;
 
   beforeEach(() => {
     wrapper = shallow(
       <AddRecipient
-        closeToDropdown={propsMethodSpies.closeToDropdown}
-        inError={false}
-        inWarning={false}
-        network="mockNetwork"
-        openToDropdown={propsMethodSpies.openToDropdown}
-        to="mockTo"
-        toAccounts={['mockAccount']}
-        toDropdownOpen={false}
-        updateGas={propsMethodSpies.updateGas}
+        userInput=""
+        recipient={{
+          address: '',
+          nickname: '',
+          error: '',
+          warning: '',
+        }}
         updateSendTo={propsMethodSpies.updateSendTo}
         updateSendToError={propsMethodSpies.updateSendToError}
         updateSendToWarning={propsMethodSpies.updateSendToWarning}
@@ -53,34 +47,12 @@ describe('AddRecipient Component', () => {
       />,
       { context: { t: (str) => `${str}_t` } },
     );
-    instance = wrapper.instance();
   });
 
   afterEach(() => {
-    propsMethodSpies.closeToDropdown.resetHistory();
-    propsMethodSpies.openToDropdown.resetHistory();
-    propsMethodSpies.updateSendTo.resetHistory();
-    propsMethodSpies.updateSendToError.resetHistory();
-    propsMethodSpies.updateSendToWarning.resetHistory();
-    propsMethodSpies.updateGas.resetHistory();
-  });
-
-  describe('selectRecipient', () => {
-    it('should call updateSendTo', () => {
-      expect(propsMethodSpies.updateSendTo.callCount).toStrictEqual(0);
-      instance.selectRecipient('mockTo2', 'mockNickname');
-      expect(propsMethodSpies.updateSendTo.callCount).toStrictEqual(1);
-      expect(propsMethodSpies.updateSendTo.getCall(0).args).toStrictEqual([
-        'mockTo2',
-        'mockNickname',
-      ]);
-    });
-
-    it('should call updateGas if there is no to error', () => {
-      expect(propsMethodSpies.updateGas.callCount).toStrictEqual(0);
-      instance.selectRecipient(false);
-      expect(propsMethodSpies.updateGas.callCount).toStrictEqual(1);
-    });
+    propsMethodSpies.updateRecipient.resetHistory();
+    propsMethodSpies.useMyAccountsForRecipientSearch.resetHistory();
+    propsMethodSpies.useContactListForRecipientSearch.resetHistory();
   });
 
   describe('render', () => {
@@ -104,6 +76,7 @@ describe('AddRecipient Component', () => {
 
     it('should render transfer', () => {
       wrapper.setProps({
+        isUsingMyAccountsForRecipientSearch: true,
         ownedAccounts: [
           { address: '0x123', name: '123' },
           { address: '0x124', name: '124' },
@@ -163,7 +136,7 @@ describe('AddRecipient Component', () => {
     it('should render error when query has no results', () => {
       wrapper.setProps({
         addressBook: [],
-        toError: 'bad',
+        ensError: 'bad',
         contacts: [],
         nonContacts: [],
       });
@@ -178,8 +151,7 @@ describe('AddRecipient Component', () => {
     it('should render error when query has ens does not resolve', () => {
       wrapper.setProps({
         addressBook: [],
-        toError: 'bad',
-        ensResolutionError: 'very bad',
+        ensError: 'very bad',
         contacts: [],
         nonContacts: [],
       });
@@ -187,20 +159,20 @@ describe('AddRecipient Component', () => {
       const dialog = wrapper.find(Dialog);
 
       expect(dialog.props().type).toStrictEqual('error');
-      expect(dialog.props().children).toStrictEqual('very bad');
+      expect(dialog.props().children).toStrictEqual('very bad_t');
       expect(dialog).toHaveLength(1);
     });
 
-    it('should not render error when ens resolved', () => {
+    it('should render error when ens resolved but ens error exists', () => {
       wrapper.setProps({
         addressBook: [],
-        toError: 'bad',
+        ensError: 'bad',
         ensResolution: '0x128',
       });
 
       const dialog = wrapper.find(Dialog);
 
-      expect(dialog).toHaveLength(0);
+      expect(dialog).toHaveLength(1);
     });
   });
 });

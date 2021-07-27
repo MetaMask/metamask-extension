@@ -9,7 +9,7 @@ import {
   addCurrencies,
   multiplyCurrencies,
   conversionGreaterThan,
-} from './conversion-util';
+} from '../../../shared/modules/conversion.utils';
 
 export function increaseLastGasPrice(lastGasPrice) {
   return addHexPrefix(

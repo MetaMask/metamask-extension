@@ -43,9 +43,6 @@
   "blockiesIdenticon": {
     "message": "Usar Blockies Identicon"
   },
-  "builtInCalifornia": {
-    "message": "MetaMask é desenhada e construída na California."
-  },
   "cancel": {
     "message": "Cancelar"
   },
@@ -281,9 +278,6 @@
   },
   "readdToken": {
     "message": "Pode adicionar este token de novo clicando na opção “Adicionar token” no menu de opções da sua conta."
-  },
-  "recipientAddress": {
-    "message": "Endereço do Destinatário"
   },
   "reject": {
     "message": "Rejeitar"

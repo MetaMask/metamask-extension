@@ -37,7 +37,6 @@ export default function reduceApp(state = {}, action) {
     warning: null,
     buyView: {},
     isMouseUser: false,
-    gasIsLoading: false,
     defaultHdPaths: {
       trezor: `m/44'/60'/0'/0`,
       ledger: `m/44'/60'/0'/0/0`,
@@ -51,6 +50,9 @@ export default function reduceApp(state = {}, action) {
     openMetaMaskTabs: {},
     currentWindowTab: {},
     showWhatsNewPopup: true,
+    singleExceptions: {
+      testKey: null,
+    },
     ...state,
   };
 
@@ -293,18 +295,6 @@ export default function reduceApp(state = {}, action) {
         isMouseUser: action.value,
       };
 
-    case actionConstants.GAS_LOADING_STARTED:
-      return {
-        ...appState,
-        gasIsLoading: true,
-      };
-
-    case actionConstants.GAS_LOADING_FINISHED:
-      return {
-        ...appState,
-        gasIsLoading: false,
-      };
-
     case actionConstants.SET_SELECTED_SETTINGS_RPC_URL:
       return {
         ...appState,
@@ -359,6 +349,15 @@ export default function reduceApp(state = {}, action) {
         showWhatsNewPopup: false,
       };
 
+    case actionConstants.CAPTURE_SINGLE_EXCEPTION:
+      return {
+        ...appState,
+        singleExceptions: {
+          ...appState.singleExceptions,
+          [action.value]: null,
+        },
+      };
+
     default:
       return appState;
   }
@@ -376,4 +375,9 @@ export function hideWhatsNewPopup() {
   return {
     type: actionConstants.HIDE_WHATS_NEW_POPUP,
   };
+}
+
+// Selectors
+export function getQrCodeData(state) {
+  return state.appState.qrCodeData;
 }

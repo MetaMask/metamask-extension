@@ -18,6 +18,8 @@ import {
   TRANSACTION_GROUP_CATEGORIES,
   TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction';
+import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+import EditGasPopover from '../edit-gas-popover';
 
 export default function TransactionListItem({
   transactionGroup,
@@ -32,10 +34,15 @@ export default function TransactionListItem({
     initialTransaction: { id },
     primaryTransaction: { err, status },
   } = transactionGroup;
-  const [cancelEnabled, cancelTransaction] = useCancelTransaction(
-    transactionGroup,
-  );
-  const retryTransaction = useRetryTransaction(transactionGroup);
+  const [
+    cancelEnabled,
+    { cancelTransaction, showCancelEditGasPopover, closeCancelEditGasPopover },
+  ] = useCancelTransaction(transactionGroup);
+  const {
+    retryTransaction,
+    showRetryEditGasPopover,
+    closeRetryEditGasPopover,
+  } = useRetryTransaction(transactionGroup);
   const shouldShowSpeedUp = useShouldShowSpeedUp(
     transactionGroup,
     isEarliestNonce,
@@ -201,6 +208,20 @@ export default function TransactionListItem({
           onCancel={cancelTransaction}
           showCancel={isPending && !hasCancelled}
           cancelDisabled={!cancelEnabled}
+        />
+      )}
+      {process.env.SHOW_EIP_1559_UI && showRetryEditGasPopover && (
+        <EditGasPopover
+          onClose={closeRetryEditGasPopover}
+          mode={EDIT_GAS_MODES.SPEED_UP}
+          transaction={transactionGroup.primaryTransaction}
+        />
+      )}
+      {process.env.SHOW_EIP_1559_UI && showCancelEditGasPopover && (
+        <EditGasPopover
+          onClose={closeCancelEditGasPopover}
+          mode={EDIT_GAS_MODES.CANCEL}
+          transaction={transactionGroup.primaryTransaction}
         />
       )}
     </>

@@ -14,6 +14,7 @@ export default class DepositEtherModal extends Component {
     isTestnet: PropTypes.bool.isRequired,
     isMainnet: PropTypes.bool.isRequired,
     toWyre: PropTypes.func.isRequired,
+    toTransak: PropTypes.func.isRequired,
     address: PropTypes.string.isRequired,
     toFaucet: PropTypes.func.isRequired,
     hideWarning: PropTypes.func.isRequired,
@@ -87,6 +88,7 @@ export default class DepositEtherModal extends Component {
     const {
       chainId,
       toWyre,
+      toTransak,
       address,
       toFaucet,
       isTestnet,
@@ -135,6 +137,31 @@ export default class DepositEtherModal extends Component {
                   },
                 });
                 toWyre(address);
+              },
+              hide: !isMainnet,
+            })}
+            {this.renderRow({
+              logo: (
+                <div
+                  className="deposit-ether-modal__logo"
+                  style={{
+                    backgroundImage: "url('./images/transak.svg')",
+                    height: '60px',
+                  }}
+                />
+              ),
+              title: this.context.t('buyWithTransak'),
+              text: this.context.t('buyWithTransakDescription'),
+              buttonLabel: this.context.t('continueToTransak'),
+              onButtonClick: () => {
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Accounts',
+                    action: 'Deposit Ether',
+                    name: 'Click buy Ether via Transak',
+                  },
+                });
+                toTransak(address);
               },
               hide: !isMainnet,
             })}

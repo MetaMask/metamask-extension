@@ -42,6 +42,5 @@ describe('BuildQuote', () => {
     expect(
       document.querySelector('.slippage-buttons__button-group'),
     ).toMatchSnapshot();
-    expect(document.querySelector('.swaps-footer')).toMatchSnapshot();
   });
 });

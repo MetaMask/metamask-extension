@@ -352,22 +352,4 @@ describe('App State', () => {
 
     expect(state.isMouseUser).toStrictEqual(true);
   });
-
-  it('sets gas loading', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.GAS_LOADING_STARTED,
-    });
-
-    expect(state.gasIsLoading).toStrictEqual(true);
-  });
-
-  it('unsets gas loading', () => {
-    const gasLoadingState = { gasIsLoading: true };
-    const oldState = { ...metamaskState, ...gasLoadingState };
-    const state = reduceApp(oldState, {
-      type: actions.GAS_LOADING_FINISHED,
-    });
-
-    expect(state.gasIsLoading).toStrictEqual(false);
-  });
 });

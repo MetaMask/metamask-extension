@@ -63,7 +63,7 @@
     cursor: pointer;
     position: relative;
     align-items: center;
-    width: 100%;
+    flex: 1;
     height: 60px;
 
     i {
@@ -128,12 +128,16 @@
     color: $Grey-500;
     min-height: 300px;
     position: relative;
-    z-index: 1;
+    z-index: 1002;
     background: white;
     border-radius: 6px;
     min-height: 194px;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    .searchable-item-list__item--add-token {
+      padding: 8px 0;
+    }
   }
 
   &__loading-item {

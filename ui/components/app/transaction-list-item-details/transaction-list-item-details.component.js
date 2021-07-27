@@ -10,6 +10,7 @@ import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import Copy from '../../ui/icon/copy-icon.component';
 import Popover from '../../ui/popover';
+import { SECOND } from '../../../../shared/constants/time';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 
 export default class TransactionListItemDetails extends PureComponent {
@@ -102,7 +103,7 @@ export default class TransactionListItemDetails extends PureComponent {
 
     this.setState({ justCopied: true }, () => {
       copyToClipboard(hash);
-      setTimeout(() => this.setState({ justCopied: false }), 1000);
+      setTimeout(() => this.setState({ justCopied: false }), SECOND);
     });
   };
 
