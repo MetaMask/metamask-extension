@@ -72,7 +72,7 @@ import {
 import MainQuoteSummary from '../main-quote-summary';
 import { calcGasTotal } from '../../send/send.utils';
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
-import ActionableMessage from '../actionable-message';
+import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
   quotesToRenderableData,
   getRenderableNetworkFeesForQuote,

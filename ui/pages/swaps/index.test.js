@@ -24,7 +24,7 @@ setBackgroundConnection({
 });
 
 describe('Swap', () => {
-  let tokensNock;
+  let featureFlagsNock;
 
   beforeEach(() => {
     nock(CONSTANTS.METASWAP_BASE_URL)
@@ -43,9 +43,13 @@ describe('Swap', () => {
       .get('/gasPrices')
       .reply(200, MOCKS.GAS_PRICES_GET_RESPONSE);
 
-    tokensNock = nock(CONSTANTS.METASWAP_BASE_URL)
+    nock(CONSTANTS.METASWAP_BASE_URL)
       .get('/tokens')
       .reply(200, MOCKS.TOKENS_GET_RESPONSE);
+
+    featureFlagsNock = nock(CONSTANTS.METASWAP_API_V2_BASE_URL)
+      .get('/featureFlags')
+      .reply(200, MOCKS.createFeatureFlagsResponse());
   });
 
   afterAll(() => {
@@ -55,7 +59,7 @@ describe('Swap', () => {
   it('renders the component with initial props', async () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const { container, getByText } = renderWithProvider(<Swap />, store);
-    await waitFor(() => expect(tokensNock.isDone()).toBe(true));
+    await waitFor(() => expect(featureFlagsNock.isDone()).toBe(true));
     expect(getByText('Swap')).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
     expect(container).toMatchSnapshot();

@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { select, text } from '@storybook/addon-knobs';
 import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import ApproveIcon from '../icon/approve-icon.component';
 import Identicon from '../identicon/identicon.component';
+import { ChipWithInput } from './chip-with-input';
 import Chip from '.';
 
 export default {
@@ -80,3 +81,13 @@ export const WithBothIcons = () => (
     }
   />
 );
+export const WithInput = () => {
+  const [inputValue, setInputValue] = useState('');
+  return (
+    <ChipWithInput
+      inputValue={inputValue}
+      setInputValue={setInputValue}
+      borderColor={select('borderColor', COLORS, COLORS.UI3)}
+    />
+  );
+};

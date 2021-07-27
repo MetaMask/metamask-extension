@@ -280,6 +280,7 @@ export default class NetworkForm extends PureComponent {
   }) {
     const { errors } = this.state;
     const { viewOnly } = this.props;
+    const errorMessage = errors[fieldKey]?.msg || '';
 
     return (
       <div className="networks-tab__network-form-row">
@@ -305,7 +306,7 @@ export default class NetworkForm extends PureComponent {
           margin="dense"
           value={value}
           disabled={viewOnly}
-          error={errors[fieldKey]}
+          error={errorMessage}
           autoFocus={autoFocus}
         />
       </div>
@@ -328,45 +329,91 @@ export default class NetworkForm extends PureComponent {
     });
   };
 
-  hasError = (errorKey, errorVal) => {
-    return this.state.errors[errorKey] === errorVal;
+  setErrorEmpty = (errorKey) => {
+    this.setState({
+      errors: {
+        ...this.state.errors,
+        [errorKey]: {
+          msg: '',
+          key: '',
+        },
+      },
+    });
   };
 
-  validateChainIdOnChange = (chainIdArg = '') => {
+  hasError = (errorKey, errorKeyVal) => {
+    return this.state.errors[errorKey]?.key === errorKeyVal;
+  };
+
+  hasErrors = () => {
+    const { errors } = this.state;
+    return Object.keys(errors).some((key) => {
+      const error = errors[key];
+      // Do not factor in duplicate chain id error for submission disabling
+      if (key === 'chainId' && error.key === 'chainIdExistsErrorMsg') {
+        return false;
+      }
+      return error.key && error.msg;
+    });
+  };
+
+  validateChainIdOnChange = (selfRpcUrl, chainIdArg = '') => {
+    const { t } = this.context;
     const { networksToRender } = this.props;
     const chainId = chainIdArg.trim();
+
+    let errorKey = '';
     let errorMessage = '';
     let radix = 10;
-    const hexChainId = chainId.startsWith('0x')
-      ? chainId
-      : `0x${decimalToHex(chainId)}`;
+    let hexChainId = chainId;
+
+    if (!hexChainId.startsWith('0x')) {
+      try {
+        hexChainId = `0x${decimalToHex(hexChainId)}`;
+      } catch (err) {
+        this.setErrorTo('chainId', {
+          key: 'invalidHexNumber',
+          msg: t('invalidHexNumber'),
+        });
+        return;
+      }
+    }
+
     const [matchingChainId] = networksToRender.filter(
-      (e) => e.chainId === hexChainId,
+      (e) => e.chainId === hexChainId && e.rpcUrl !== selfRpcUrl,
     );
 
     if (chainId === '') {
-      this.setErrorTo('chainId', '');
+      this.setErrorEmpty('chainId');
       return;
     } else if (matchingChainId) {
-      errorMessage = this.context.t('chainIdExistsErrorMsg', [
+      errorKey = 'chainIdExistsErrorMsg';
+      errorMessage = t('chainIdExistsErrorMsg', [
         matchingChainId.label ?? matchingChainId.labelKey,
       ]);
     } else if (chainId.startsWith('0x')) {
       radix = 16;
       if (!/^0x[0-9a-f]+$/iu.test(chainId)) {
-        errorMessage = this.context.t('invalidHexNumber');
+        errorKey = 'invalidHexNumber';
+        errorMessage = t('invalidHexNumber');
       } else if (!isPrefixedFormattedHexString(chainId)) {
-        errorMessage = this.context.t('invalidHexNumberLeadingZeros');
+        errorMessage = t('invalidHexNumberLeadingZeros');
       }
     } else if (!/^[0-9]+$/u.test(chainId)) {
-      errorMessage = this.context.t('invalidNumber');
+      errorKey = 'invalidNumber';
+      errorMessage = t('invalidNumber');
     } else if (chainId.startsWith('0')) {
-      errorMessage = this.context.t('invalidNumberLeadingZeros');
+      errorKey = 'invalidNumberLeadingZeros';
+      errorMessage = t('invalidNumberLeadingZeros');
     } else if (!isSafeChainId(parseInt(chainId, radix))) {
-      errorMessage = this.context.t('invalidChainIdTooBig');
+      errorKey = 'invalidChainIdTooBig';
+      errorMessage = t('invalidChainIdTooBig');
     }
 
-    this.setErrorTo('chainId', errorMessage);
+    this.setErrorTo('chainId', {
+      key: errorKey,
+      msg: errorMessage,
+    });
   };
 
   /**
@@ -381,6 +428,7 @@ export default class NetworkForm extends PureComponent {
    */
   validateChainIdOnSubmit = async (formChainId, parsedChainId, rpcUrl) => {
     const { t } = this.context;
+    let errorKey;
     let errorMessage;
     let endpointChainId;
     let providerError;
@@ -393,6 +441,7 @@ export default class NetworkForm extends PureComponent {
     }
 
     if (providerError || typeof endpointChainId !== 'string') {
+      errorKey = 'failedToFetchChainId';
       errorMessage = t('failedToFetchChainId');
     } else if (parsedChainId !== endpointChainId) {
       // Here, we are in an error state. The endpoint should always return a
@@ -410,6 +459,7 @@ export default class NetworkForm extends PureComponent {
         }
       }
 
+      errorKey = 'endpointReturnedDifferentChainId';
       errorMessage = t('endpointReturnedDifferentChainId', [
         endpointChainId.length <= 12
           ? endpointChainId
@@ -417,12 +467,15 @@ export default class NetworkForm extends PureComponent {
       ]);
     }
 
-    if (errorMessage) {
-      this.setErrorTo('chainId', errorMessage);
+    if (errorKey) {
+      this.setErrorTo('chainId', {
+        key: errorKey,
+        msg: errorMessage,
+      });
       return false;
     }
 
-    this.setErrorTo('chainId', '');
+    this.setErrorEmpty('chainId');
     return true;
   };
 
@@ -432,17 +485,25 @@ export default class NetworkForm extends PureComponent {
   };
 
   validateBlockExplorerURL = (url, stateKey) => {
+    const { t } = this.context;
     if (!validUrl.isWebUri(url) && url !== '') {
-      this.setErrorTo(
-        stateKey,
-        this.context.t(
-          this.isValidWhenAppended(url)
-            ? 'urlErrorMsg'
-            : 'invalidBlockExplorerURL',
-        ),
-      );
+      let errorKey;
+      let errorMessage;
+
+      if (this.isValidWhenAppended(url)) {
+        errorKey = 'urlErrorMsg';
+        errorMessage = t('urlErrorMsg');
+      } else {
+        errorKey = 'invalidBlockExplorerURL';
+        errorMessage = t('invalidBlockExplorerURL');
+      }
+
+      this.setErrorTo(stateKey, {
+        key: errorKey,
+        msg: errorMessage,
+      });
     } else {
-      this.setErrorTo(stateKey, '');
+      this.setErrorEmpty(stateKey);
     }
   };
 
@@ -451,28 +512,32 @@ export default class NetworkForm extends PureComponent {
     const { networksToRender } = this.props;
     const { chainId: stateChainId } = this.state;
     const isValidUrl = validUrl.isWebUri(url);
-    const chainIdFetchFailed = this.hasError(
-      'chainId',
-      t('failedToFetchChainId'),
-    );
+    const chainIdFetchFailed = this.hasError('chainId', 'failedToFetchChainId');
     const [matchingRPCUrl] = networksToRender.filter((e) => e.rpcUrl === url);
 
     if (!isValidUrl && url !== '') {
-      this.setErrorTo(
-        stateKey,
-        this.context.t(
-          this.isValidWhenAppended(url) ? 'urlErrorMsg' : 'invalidRPC',
-        ),
-      );
+      let errorKey;
+      let errorMessage;
+      if (this.isValidWhenAppended(url)) {
+        errorKey = 'urlErrorMsg';
+        errorMessage = t('urlErrorMsg');
+      } else {
+        errorKey = 'invalidRPC';
+        errorMessage = t('invalidRPC');
+      }
+      this.setErrorTo(stateKey, {
+        key: errorKey,
+        msg: errorMessage,
+      });
     } else if (matchingRPCUrl) {
-      this.setErrorTo(
-        stateKey,
-        this.context.t('urlExistsErrorMsg', [
+      this.setErrorTo(stateKey, {
+        key: 'urlExistsErrorMsg',
+        msg: t('urlExistsErrorMsg', [
           matchingRPCUrl.label ?? matchingRPCUrl.labelKey,
         ]),
-      );
+      });
     } else {
-      this.setErrorTo(stateKey, '');
+      this.setErrorEmpty(stateKey);
     }
 
     // Re-validate the chain id if it could not be found with previous rpc url
@@ -501,18 +566,16 @@ export default class NetworkForm extends PureComponent {
       chainId = '',
       ticker,
       blockExplorerUrl,
-      errors,
     } = this.state;
 
     const deletable =
       !networksTabIsInAddMode && !isCurrentRpcTarget && !viewOnly;
-
     const isSubmitDisabled =
+      this.hasErrors() ||
       this.isSubmitting() ||
       this.stateIsUnchanged() ||
       !rpcUrl ||
-      !chainId ||
-      Object.values(errors).some((x) => x);
+      !chainId;
 
     return (
       <div className="networks-tab__network-form">
@@ -535,7 +598,7 @@ export default class NetworkForm extends PureComponent {
           textFieldId: 'chainId',
           onChange: this.setStateWithValue(
             'chainId',
-            this.validateChainIdOnChange,
+            this.validateChainIdOnChange.bind(this, rpcUrl),
           ),
           value: chainId,
           tooltipText: viewOnly ? null : t('networkSettingsChainIdDescription'),

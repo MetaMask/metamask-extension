@@ -32,6 +32,15 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const selectedIdentity = useSelector(getSelectedIdentity);
   const { address } = selectedIdentity;
   const addressLink = getAccountLink(address, chainId, rpcPrefs);
+  const { blockExplorerUrl } = rpcPrefs;
+
+  const getBlockExplorerUrlHost = () => {
+    try {
+      return new URL(blockExplorerUrl)?.hostname;
+    } catch (err) {
+      return '';
+    }
+  };
 
   const openFullscreenEvent = useMetricEvent({
     eventOpts: {
@@ -67,6 +76,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   });
 
   const isRemovable = keyring.type !== 'HD Key Tree';
+  const blockExplorerUrlSubTitle = getBlockExplorerUrlHost();
 
   return (
     <Menu
@@ -106,9 +116,9 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
           onClose();
         }}
         subtitle={
-          rpcPrefs.blockExplorerUrl ? (
+          blockExplorerUrlSubTitle ? (
             <span className="account-options-menu__explorer-origin">
-              {rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/u)[1]}
+              {blockExplorerUrlSubTitle}
             </span>
           ) : null
         }

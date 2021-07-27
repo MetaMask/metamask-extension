@@ -27,10 +27,7 @@ exports[`SortList renders the component with initial props 1`] = `
           style="display: inline;"
           tabindex="0"
         >
-          <img
-            alt=""
-            src="images/mm-info-icon.svg"
-          />
+          &lt;InfoTooltipIcon /&gt;
         </div>
       </div>
     </div>
@@ -69,10 +66,7 @@ exports[`SortList renders the component with initial props 2`] = `
         style="display: inline;"
         tabindex="0"
       >
-        <img
-          alt=""
-          src="images/mm-info-icon.svg"
-        />
+        &lt;InfoTooltipIcon /&gt;
       </div>
     </div>
   </div>

@@ -16,7 +16,7 @@ const state = {
     "rpcUrl": "https://rawtestrpc.metamask.io/",
     "identities": {
       "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4": {
-        "name": "Account 1",
+        "name": "This is a Really Long Account Name",
         "address": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4"
       },
       "0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e": {
@@ -140,7 +140,6 @@ const state = {
       }
     },
     "participateInMetaMetrics": true,
-    "metaMetricsSendCount": 2,
     "nextNonce": 71,
     "connectedStatusPopoverHasBeenShown": true,
     "swapsWelcomeMessageHasBeenShown": true,
@@ -201,7 +200,16 @@ const state = {
     "unapprovedPersonalMsgCount": 0,
     "unapprovedDecryptMsgs": {},
     "unapprovedDecryptMsgCount": 0,
-    "unapprovedEncryptionPublicKeyMsgs": {},
+    "unapprovedEncryptionPublicKeyMsgs": {
+      "7786962153682822": {
+        "id": 7786962153682822,
+        "msgParams": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4",
+        "time": 1622687544054,
+        "status": "unapproved",
+        "type": "eth_getEncryptionPublicKey",
+        "origin": "https://metamask.github.io"
+      }
+    },
     "unapprovedEncryptionPublicKeyMsgCount": 0,
     "unapprovedTypedMessages": {},
     "unapprovedTypedMessagesCount": 0,

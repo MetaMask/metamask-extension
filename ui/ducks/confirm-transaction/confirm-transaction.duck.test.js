@@ -12,6 +12,7 @@ import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck'
 const initialState = {
   txData: {},
   tokenData: {},
+  tokenProps: {},
   fiatTransactionAmount: '',
   fiatTransactionFee: '',
   fiatTransactionTotal: '',
@@ -307,8 +308,8 @@ describe('Confirm Transaction Duck', () => {
           nonce: '',
           tokenData: {},
           tokenProps: {
-            tokenDecimals: '',
-            tokenSymbol: '',
+            decimals: '',
+            symbol: '',
           },
           txData: {
             ...txData,

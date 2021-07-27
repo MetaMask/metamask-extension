@@ -1,7 +1,7 @@
-import abi from 'human-standard-token-abi';
 import pify from 'pify';
 import log from 'loglevel';
-import { capitalize } from 'lodash';
+import { captureException } from '@sentry/browser';
+import { capitalize, isEqual } from 'lodash';
 import getBuyEthUrl from '../../app/scripts/lib/buy-eth-url';
 import {
   fetchLocale,
@@ -15,14 +15,18 @@ import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
+  getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
 } from '../selectors';
+import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
-import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
+import {
+  getUnconnectedAccountAlertEnabledness,
+  isEIP1559Network,
+} from '../ducks/metamask/metamask';
 import { LISTED_CONTRACT_ADDRESSES } from '../../shared/constants/tokens';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { clearSend } from '../ducks/send/send.duck';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -621,39 +625,10 @@ export function signTypedMsg(msgData) {
   };
 }
 
-export function signTx(txData) {
-  return async (dispatch) => {
-    dispatch(showLoadingIndication());
-    global.ethQuery.sendTransaction(txData, (err) => {
-      if (err) {
-        dispatch(displayWarning(err.message));
-      }
-    });
-    dispatch(hideLoadingIndication());
-    dispatch(showConfTxPage());
-  };
-}
-
 export function updateCustomNonce(value) {
   return {
     type: actionConstants.UPDATE_CUSTOM_NONCE,
     value,
-  };
-}
-
-export function signTokenTx(tokenAddress, toAddress, amount, txData) {
-  return async (dispatch) => {
-    dispatch(showLoadingIndication());
-
-    try {
-      const token = global.eth.contract(abi).at(tokenAddress);
-      token.transfer(toAddress, addHexPrefix(amount), txData);
-      dispatch(showConfTxPage());
-      dispatch(hideLoadingIndication());
-    } catch (error) {
-      dispatch(hideLoadingIndication());
-      dispatch(displayWarning(error.message));
-    }
   };
 }
 
@@ -721,7 +696,7 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
     return new Promise((resolve, reject) => {
       background.updateAndApproveTransaction(txData, (err) => {
         dispatch(updateTransactionParams(txData.id, txData.txParams));
-        dispatch(clearSend());
+        dispatch(resetSendState());
 
         if (err) {
           dispatch(txError(err));
@@ -737,7 +712,7 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(clearSend());
+        dispatch(resetSendState());
         dispatch(completedTx(txData.id));
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
@@ -907,7 +882,7 @@ export function cancelTx(txData, _showLoadingIndication = true) {
       .then(() => updateMetamaskStateFromBackground())
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => {
-        dispatch(clearSend());
+        dispatch(resetSendState());
         dispatch(completedTx(txData.id));
         dispatch(hideLoadingIndication());
         dispatch(closeCurrentNotificationWindow());
@@ -950,7 +925,7 @@ export function cancelTxs(txDataList) {
 
       const newState = await updateMetamaskStateFromBackground();
       dispatch(updateMetamaskState(newState));
-      dispatch(clearSend());
+      dispatch(resetSendState());
 
       txIds.forEach((id) => {
         dispatch(completedTx(id));
@@ -1038,19 +1013,72 @@ export function updateMetamaskState(newState) {
   return (dispatch, getState) => {
     const { metamask: currentState } = getState();
 
-    const { currentLocale, selectedAddress } = currentState;
+    const { currentLocale, selectedAddress, provider } = currentState;
     const {
       currentLocale: newLocale,
       selectedAddress: newSelectedAddress,
+      provider: newProvider,
     } = newState;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
       dispatch(updateCurrentLocale(newLocale));
     }
+
     if (selectedAddress !== newSelectedAddress) {
       dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
     }
 
+    const newAddressBook = newState.addressBook?.[newProvider?.chainId] ?? {};
+    const oldAddressBook = currentState.addressBook?.[provider?.chainId] ?? {};
+    const newAccounts = getMetaMaskAccounts({ metamask: newState });
+    const oldAccounts = getMetaMaskAccounts({ metamask: currentState });
+    const newSelectedAccount = newAccounts[newSelectedAddress];
+    const oldSelectedAccount = newAccounts[selectedAddress];
+    // dispatch an ACCOUNT_CHANGED for any account whose balance or other
+    // properties changed in this update
+    Object.entries(oldAccounts).forEach(([address, oldAccount]) => {
+      if (!isEqual(oldAccount, newAccounts[address])) {
+        dispatch({
+          type: actionConstants.ACCOUNT_CHANGED,
+          payload: { account: newAccounts[address] },
+        });
+      }
+    });
+    // Also emit an event for the selected account changing, either due to a
+    // property update or if the entire account changes.
+    if (isEqual(oldSelectedAccount, newSelectedAccount) === false) {
+      dispatch({
+        type: actionConstants.SELECTED_ACCOUNT_CHANGED,
+        payload: { account: newSelectedAccount },
+      });
+    }
+    // We need to keep track of changing address book entries
+    if (isEqual(oldAddressBook, newAddressBook) === false) {
+      dispatch({
+        type: actionConstants.ADDRESS_BOOK_UPDATED,
+        payload: { addressBook: newAddressBook },
+      });
+    }
+
+    // track when gasFeeEstimates change
+    if (
+      isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates) === false
+    ) {
+      dispatch({
+        type: actionConstants.GAS_FEE_ESTIMATES_UPDATED,
+        payload: {
+          gasFeeEstimates: newState.gasFeeEstimates,
+          gasEstimateType: newState.gasEstimateType,
+          isEIP1559Network: isEIP1559Network({ metamask: newState }),
+        },
+      });
+    }
+    if (provider.chainId !== newProvider.chainId) {
+      dispatch({
+        type: actionConstants.CHAIN_CHANGED,
+        payload: newProvider.chainId,
+      });
+    }
     dispatch({
       type: actionConstants.UPDATE_METAMASK_STATE,
       value: newState,
@@ -1141,6 +1169,7 @@ export function showAccountDetail(address) {
 
     try {
       await _setSelectedAddress(dispatch, address);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error.message));
       return;
@@ -1234,21 +1263,6 @@ export function addToken(
   };
 }
 
-export function updateTokenType(tokenAddress) {
-  return async (dispatch) => {
-    let token = {};
-    dispatch(showLoadingIndication());
-    try {
-      token = await promisifiedBackground.updateTokenType(tokenAddress);
-    } catch (error) {
-      log.error(error);
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-    return token;
-  };
-}
-
 export function removeToken(address) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
@@ -1327,7 +1341,7 @@ export function clearPendingTokens() {
   };
 }
 
-export function createCancelTransaction(txId, customGasPrice, customGasLimit) {
+export function createCancelTransaction(txId, customGasSettings) {
   log.debug('background.cancelTransaction');
   let newTxId;
 
@@ -1335,8 +1349,7 @@ export function createCancelTransaction(txId, customGasPrice, customGasLimit) {
     return new Promise((resolve, reject) => {
       background.createCancelTransaction(
         txId,
-        customGasPrice,
-        customGasLimit,
+        customGasSettings,
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -1356,7 +1369,7 @@ export function createCancelTransaction(txId, customGasPrice, customGasLimit) {
   };
 }
 
-export function createSpeedUpTransaction(txId, customGasPrice, customGasLimit) {
+export function createSpeedUpTransaction(txId, customGasSettings) {
   log.debug('background.createSpeedUpTransaction');
   let newTx;
 
@@ -1364,8 +1377,7 @@ export function createSpeedUpTransaction(txId, customGasPrice, customGasLimit) {
     return new Promise((resolve, reject) => {
       background.createSpeedUpTransaction(
         txId,
-        customGasPrice,
-        customGasLimit,
+        customGasSettings,
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -1384,16 +1396,14 @@ export function createSpeedUpTransaction(txId, customGasPrice, customGasLimit) {
   };
 }
 
-export function createRetryTransaction(txId, customGasPrice, customGasLimit) {
-  log.debug('background.createRetryTransaction');
+export function createRetryTransaction(txId, customGasSettings) {
   let newTx;
 
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       background.createSpeedUpTransaction(
         txId,
-        customGasPrice,
-        customGasLimit,
+        customGasSettings,
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -1672,9 +1682,16 @@ export function hideAlert() {
  * or null (used to clear the previous value)
  */
 export function qrCodeDetected(qrCodeData) {
-  return {
-    type: actionConstants.QR_CODE_DETECTED,
-    value: qrCodeData,
+  return async (dispatch) => {
+    await dispatch({
+      type: actionConstants.QR_CODE_DETECTED,
+      value: qrCodeData,
+    });
+
+    // If on the send page, the send slice will listen for the QR_CODE_DETECTED
+    // action and update its state. Address changes need to recompute gasLimit
+    // so we fire this method so that the send page gasLimit can be recomputed
+    dispatch(computeEstimatedGasLimit());
   };
 }
 
@@ -1822,8 +1839,8 @@ export function showSendTokenPage() {
 }
 
 export function buyEth(opts) {
-  return (dispatch) => {
-    const url = getBuyEthUrl(opts);
+  return async (dispatch) => {
+    const url = await getBuyEthUrl(opts);
     global.platform.openTab({ url });
     dispatch({
       type: actionConstants.BUY_ETH,
@@ -1983,27 +2000,6 @@ export function setParticipateInMetaMetrics(val) {
   };
 }
 
-export function setMetaMetricsSendCount(val) {
-  return (dispatch) => {
-    log.debug(`background.setMetaMetricsSendCount`);
-    return new Promise((resolve, reject) => {
-      background.setMetaMetricsSendCount(val, (err) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-
-        dispatch({
-          type: actionConstants.SET_METAMETRICS_SEND_COUNT,
-          value: val,
-        });
-        resolve(val);
-      });
-    });
-  };
-}
-
 export function setUseBlockie(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
@@ -2043,6 +2039,19 @@ export function setUsePhishDetect(val) {
     dispatch(showLoadingIndication());
     log.debug(`background.setUsePhishDetect`);
     background.setUsePhishDetect(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
+export function setUseStaticTokenList(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseStaticTokenList`);
+    background.setUseStaticTokenList(val, (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
@@ -2126,9 +2135,9 @@ export function setPendingTokens(pendingTokens) {
 
 // Swaps
 
-export function setSwapsLiveness(swapsFeatureIsLive) {
+export function setSwapsLiveness(swapsLiveness) {
   return async (dispatch) => {
-    await promisifiedBackground.setSwapsLiveness(swapsFeatureIsLive);
+    await promisifiedBackground.setSwapsLiveness(swapsLiveness);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2707,6 +2716,19 @@ export function setLedgerLivePreference(value) {
   };
 }
 
+export function captureSingleException(error) {
+  return async (dispatch, getState) => {
+    const { singleExceptions } = getState().appState;
+    if (!(error in singleExceptions)) {
+      dispatch({
+        type: actionConstants.CAPTURE_SINGLE_EXCEPTION,
+        value: error,
+      });
+      captureException(Error(error));
+    }
+  };
+}
+
 // Wrappers around promisifedBackground
 /**
  * The "actions" below are not actions nor action creators. They cannot use
@@ -2717,6 +2739,39 @@ export function setLedgerLivePreference(value) {
 
 export function estimateGas(params) {
   return promisifiedBackground.estimateGas(params);
+}
+
+export async function updateTokenType(tokenAddress) {
+  let token = {};
+  try {
+    token = await promisifiedBackground.updateTokenType(tokenAddress);
+  } catch (error) {
+    log.error(error);
+  }
+  return token;
+}
+
+/**
+ * initiates polling for gas fee estimates.
+ *
+ * @returns {string} a unique identify of the polling request that can be used
+ *  to remove that request from consideration of whether polling needs to
+ *  continue.
+ */
+export function getGasFeeEstimatesAndStartPolling() {
+  return promisifiedBackground.getGasFeeEstimatesAndStartPolling();
+}
+
+/**
+ * Informs the GasFeeController that a specific token is no longer requiring
+ * gas fee estimates. If all tokens unsubscribe the controller stops polling.
+ *
+ * @param {string} pollToken - Poll token received from calling
+ *  `getGasFeeEstimatesAndStartPolling`.
+ * @returns {void}
+ */
+export function disconnectGasFeeEstimatePoller(pollToken) {
+  return promisifiedBackground.disconnectGasFeeEstimatePoller(pollToken);
 }
 
 // MetaMetrics
