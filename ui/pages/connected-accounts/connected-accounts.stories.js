@@ -22,9 +22,9 @@ export const ConnectedAccountComponent = () => {
       connectedAccounts={account}
       activeTabOrigin="https://metamask.github.io"
       accountToConnect={identities}
-      connectAccount={action("Account Connected")}
-      removePermittedAccount={action("Account Removed")}
-      setSelectedAddress={action("Selected Address Changed")}
+      connectAccount={action('Account Connected')}
+      removePermittedAccount={action('Account Removed')}
+      setSelectedAddress={action('Selected Address Changed')}
     />
   );
 };
