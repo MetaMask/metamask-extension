@@ -116,6 +116,7 @@ export default class ConfirmTransactionBase extends Component {
     isEthGasPrice: PropTypes.bool,
     noGasPrice: PropTypes.bool,
     setDefaultHomeActiveTabName: PropTypes.func,
+    supportsEIP1599: PropTypes.bool,
   };
 
   state = {
@@ -303,6 +304,7 @@ export default class ConfirmTransactionBase extends Component {
       isEthGasPrice,
       noGasPrice,
       txData,
+      supportsEIP1599,
     } = this.props;
     const { t } = this.context;
 
@@ -453,11 +455,13 @@ export default class ConfirmTransactionBase extends Component {
                     />,
                   ])}
                   subTitle={
-                    <GasTiming
-                      maxPriorityFeePerGas={
-                        txData.txParams.maxPriorityFeePerGas
-                      }
-                    />
+                    supportsEIP1599 && (
+                      <GasTiming
+                        maxPriorityFeePerGas={
+                          txData.txParams.maxPriorityFeePerGas
+                        }
+                      />
+                    )
                   }
                 />,
                 <TransactionDetailItem
