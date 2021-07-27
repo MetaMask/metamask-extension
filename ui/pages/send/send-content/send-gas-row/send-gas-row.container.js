@@ -25,6 +25,7 @@ import {
 } from '../../../../ducks/gas/gas.duck';
 import { showModal } from '../../../../store/actions';
 import { hexToDecimal } from '../../../../helpers/utils/conversions.util';
+import { isEIP1559Network } from '../../../../ducks/metamask/metamask';
 import SendGasRow from './send-gas-row.component';
 
 export default connect(
@@ -62,6 +63,7 @@ function mapStateToProps(state) {
     gasPrice,
     gasLimit,
     insufficientBalance: getIsBalanceInsufficient(state),
+    isEIP1559Network: isEIP1559Network(state),
   };
 }
 
@@ -69,6 +71,8 @@ function mapDispatchToProps(dispatch) {
   return {
     showCustomizeGasModal: () =>
       dispatch(showModal({ name: 'CUSTOMIZE_GAS', hideBasic: true })),
+    showLegacyCustomizeGasModal: () =>
+      dispatch(showModal({ name: 'LEGACY_CUSTOMIZE_GAS', hideBasic: true })),
     updateGasPrice: (gasPrice) => {
       dispatch(updateGasPrice(gasPrice));
       dispatch(setCustomGasPrice(gasPrice));

@@ -14,7 +14,11 @@ import {
   getTokenValueParam,
 } from '../../helpers/utils/token-util';
 import { useTokenTracker } from '../../hooks/useTokenTracker';
-import { getTokens, getNativeCurrency } from '../../ducks/metamask/metamask';
+import {
+  getTokens,
+  getNativeCurrency,
+  isEIP1559Network,
+} from '../../ducks/metamask/metamask';
 import {
   transactionFeeSelector,
   txDataSelector,
@@ -49,6 +53,7 @@ export default function ConfirmApprove() {
   const useNonceField = useSelector(getUseNonceField);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
+  const onEIP1559Network = useSelector(isEIP1559Network);
 
   const transaction =
     currentNetworkTxList.find(
@@ -145,7 +150,9 @@ export default function ConfirmApprove() {
           showCustomizeGasModal={() =>
             dispatch(
               showModal({
-                name: 'CUSTOMIZE_GAS',
+                name: onEIP1559Network
+                  ? 'CUSTOMIZE_GAS'
+                  : 'LEGACY_CUSTOMIZE_GAS',
                 txData,
                 hideBasic,
               }),

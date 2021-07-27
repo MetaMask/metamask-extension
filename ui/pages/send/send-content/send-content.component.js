@@ -11,6 +11,7 @@ import {
 import SendAmountRow from './send-amount-row';
 import SendHexDataRow from './send-hex-data-row';
 import SendAssetRow from './send-asset-row';
+import SendGasRow from './send-gas-row';
 
 export default class SendContent extends Component {
   static contextTypes = {
@@ -28,6 +29,7 @@ export default class SendContent extends Component {
     gasIsExcessive: PropTypes.bool.isRequired,
     isEthGasPrice: PropTypes.bool,
     noGasPrice: PropTypes.bool,
+    isEIP1559Network: PropTypes.bool,
   };
 
   render() {
@@ -38,6 +40,7 @@ export default class SendContent extends Component {
       isEthGasPrice,
       noGasPrice,
       isAssetSendable,
+      isEIP1559Network,
     } = this.props;
 
     let gasError;
@@ -56,6 +59,7 @@ export default class SendContent extends Component {
           {this.maybeRenderAddContact()}
           <SendAssetRow />
           <SendAmountRow />
+          {!isEIP1559Network && <SendGasRow />}
           {this.props.showHexData && <SendHexDataRow />}
         </div>
       </PageContainerContent>

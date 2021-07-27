@@ -232,6 +232,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
       },
     ],
   };
+
   it('should display the correct gas price on the transaction', async function () {
     await withFixtures(
       {
@@ -293,18 +294,23 @@ describe('Send ETH from dapp using advanced gas controls', function () {
           windowHandles,
         );
         await driver.assertElementNotPresent({ text: 'Data', tag: 'li' });
-        const [gasPriceInput, gasLimitInput] = await driver.findElements(
-          '.advanced-gas-inputs__gas-edit-row__input',
-        );
-        await gasPriceInput.clear();
-        await driver.delay(50);
-        await gasPriceInput.fill('10');
-        await driver.delay(50);
-        await driver.delay(50);
-        await gasLimitInput.fill('');
-        await driver.delay(50);
-        await gasLimitInput.fill('25000');
+        await driver.clickElement({ text: 'Edit', tag: 'button' });
         await driver.delay(1000);
+        await driver.clickElement(
+          { text: 'Edit suggested gas fee', tag: 'button' },
+          10000,
+        );
+        await driver.delay(1000);
+        await driver.clickElement(
+          { text: 'Advanced Options', tag: 'button' },
+          10000,
+        );
+        await driver.delay(1000);
+        const inputs = await driver.findElements('input[type="number"]');
+        const gasPriceInput = inputs[1];
+        await gasPriceInput.fill('100');
+        await driver.delay(1000);
+        await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
         await driver.clickElement({ text: 'Confirm', tag: 'button' }, 10000);
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
@@ -327,9 +333,9 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await txValue.click();
         const gasPrice = await driver.waitForSelector({
           css: '[data-testid="transaction-breakdown__gas-price"]',
-          text: '10',
+          text: '100',
         });
-        assert.equal(await gasPrice.getText(), '10');
+        assert.equal(await gasPrice.getText(), '100');
       },
     );
   });

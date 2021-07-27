@@ -9,6 +9,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
 // Modal Components
+import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container';
 import SwapsGasCustomizationModal from '../../../pages/swaps/swaps-gas-customization-modal';
 import EditGasPopover from '../edit-gas-popover/edit-gas-popover.component';
 import DepositEtherModal from './deposit-ether-modal';
@@ -247,6 +248,35 @@ const MODALS = {
 
   CUSTOMIZE_GAS: {
     contents: <EditGasPopover />,
+    mobileModalStyle: {
+      width: '100vw',
+      height: '100vh',
+      top: '0',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+    },
+    laptopModalStyle: {
+      width: 'auto',
+      height: '0px',
+      top: '80px',
+      left: '0px',
+      transform: 'none',
+      margin: '0 auto',
+      position: 'relative',
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+    customOnHideOpts: {
+      action: resetCustomGasData,
+      args: [],
+    },
+  },
+
+  LEGACY_CUSTOMIZE_GAS: {
+    contents: <ConfirmCustomizeGasModal />,
     mobileModalStyle: {
       width: '100vw',
       height: '100vh',
