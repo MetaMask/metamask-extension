@@ -12,7 +12,6 @@ export const ConfirmTokenTransaction = () => {
   const { metamask, confirmTransaction } = state;
   const { currentCurrency } = metamask;
   const { fiatTransactionTotal } = confirmTransaction;
-  console.log('kresna', metamask);
   return (
     <ConfirmTokenTransactionBase
       currentCurrency={currentCurrency}
