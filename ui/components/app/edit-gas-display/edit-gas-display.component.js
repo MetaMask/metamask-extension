@@ -80,7 +80,7 @@ export default function EditGasDisplay({
           <div className="edit-gas-display__dapp-acknowledgement-warning">
             <ActionableMessage
               className="actionable-message--warning"
-              message={t('gasDisplayDappWarning', [transaction.dappOrigin])}
+              message={t('gasDisplayDappWarning', [transaction.origin])}
               iconFillColor="#f8c000"
               useIcon
             />
