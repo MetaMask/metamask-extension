@@ -149,13 +149,14 @@ export default class TransactionBreakdown extends PureComponent {
         <TransactionBreakdownRow
           title={t('transactionHistoryEffectiveGasPrice')}
         >
-          <CurrencyDisplay
+          <UserPreferencedCurrencyDisplay
             className="transaction-breakdown__value"
             data-testid="transaction-breakdown__effective-gas-price"
             currency={nativeCurrency}
             denomination={ETH}
             numberOfDecimals={6}
             value={hexGasTotal}
+            type={PRIMARY}
           />
           {showFiat && (
             <UserPreferencedCurrencyDisplay
