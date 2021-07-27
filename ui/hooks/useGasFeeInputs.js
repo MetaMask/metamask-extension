@@ -1,6 +1,8 @@
 import { addHexPrefix } from 'ethereumjs-util';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { findKey } from 'lodash';
+
 import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
 import {
@@ -9,8 +11,10 @@ import {
 } from '../../shared/modules/gas.utils';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import {
+  hexWEIToDecGWEI,
   decGWEIToHexWEI,
   decimalToHex,
+  hexToDecimal,
 } from '../helpers/utils/conversions.util';
 import { getShouldShowFiat } from '../selectors';
 import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
@@ -79,6 +83,30 @@ function getGasFeeEstimate(
 }
 
 /**
+ * This method tries to determine if any estimate level matches the
+ * current maxFeePerGas and maxPriorityFeePerGas values. If we find
+ * a match, we can pre-select a radio button in the RadioGroup
+ */
+function getMatchingEstimateFromGasFees(
+  gasFeeEstimates,
+  maxFeePerGas,
+  maxPriorityFeePerGas,
+  gasPrice,
+) {
+  return (
+    findKey(gasFeeEstimates, (estimate) => {
+      if (process.env.SHOW_EIP_1559_UI) {
+        return (
+          estimate?.suggestedMaxPriorityFeePerGas === maxPriorityFeePerGas &&
+          estimate?.suggestedMaxFeePerGas === maxFeePerGas
+        );
+      }
+      return estimate?.gasPrice === gasPrice;
+    }) || null
+  );
+}
+
+/**
  * @typedef {Object} GasFeeInputReturnType
  * @property {DecGweiString} [maxFeePerGas] - the maxFeePerGas input value.
  * @property {string} [maxFeePerGasFiat] - the maxFeePerGas converted to the
@@ -123,7 +151,7 @@ function getGasFeeEstimate(
  *  './useGasFeeEstimates'
  * ).GasEstimates} - gas fee input state and the GasFeeEstimates object
  */
-export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
+export function useGasFeeInputs(defaultEstimateToUse = 'medium', transaction) {
   // We need to know whether to show fiat conversions or not, so that we can
   // default our fiat values to empty strings if showing fiat is not wanted or
   // possible.
@@ -143,17 +171,6 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
     numberOfDecimals: fiatNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY);
 
-  // This hook keeps track of a few pieces of transitional state. It is
-  // transitional because it is only used to modify a transaction in the
-  // metamask (background) state tree.
-  const [maxFeePerGas, setMaxFeePerGas] = useState(null);
-  const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(null);
-  const [gasPrice, setGasPrice] = useState(null);
-  const [gasLimit, setGasLimit] = useState(21000);
-  const [estimateToUse, setInternalEstimateToUse] = useState(
-    defaultEstimateToUse,
-  );
-
   // We need the gas estimates from the GasFeeController in the background.
   // Calling this hooks initiates polling for new gas estimates and returns the
   // current estimate.
@@ -163,6 +180,40 @@ export function useGasFeeInputs(defaultEstimateToUse = 'medium') {
     isGasEstimatesLoading,
     estimatedGasFeeTimeBounds,
   } = useGasFeeEstimates();
+
+  // This hook keeps track of a few pieces of transitional state. It is
+  // transitional because it is only used to modify a transaction in the
+  // metamask (background) state tree.
+  const [maxFeePerGas, setMaxFeePerGas] = useState(
+    transaction?.txParams?.maxFeePerGas
+      ? Number(hexWEIToDecGWEI(transaction.txParams.maxFeePerGas))
+      : null,
+  );
+  const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(
+    transaction?.txParams?.maxPriorityFeePerGas
+      ? Number(hexWEIToDecGWEI(transaction.txParams.maxPriorityFeePerGas))
+      : null,
+  );
+  const [gasPrice, setGasPrice] = useState(
+    transaction?.txParams?.gasPrice
+      ? Number(hexWEIToDecGWEI(transaction.txParams.gasPrice))
+      : null,
+  );
+  const [gasLimit, setGasLimit] = useState(
+    transaction?.txParams?.gas
+      ? Number(hexToDecimal(transaction.txParams.gas))
+      : 21000,
+  );
+  const [estimateToUse, setInternalEstimateToUse] = useState(
+    transaction
+      ? getMatchingEstimateFromGasFees(
+          gasFeeEstimates,
+          maxFeePerGas,
+          maxPriorityFeePerGas,
+          gasPrice,
+        )
+      : defaultEstimateToUse,
+  );
 
   // When a user selects an estimate level, it will wipe out what they have
   // previously put in the inputs. This returns the inputs to the estimated
