@@ -14,6 +14,7 @@ import {
   FONT_WEIGHT,
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
+import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../../helpers/utils/confirm-tx.util';
 
 import InfoTooltip from '../../ui/info-tooltip';
 import TransactionTotalBanner from '../transaction-total-banner/transaction-total-banner.component';
@@ -61,8 +62,14 @@ export default function EditGasDisplay({
 
   const alwaysShowForm = !estimateToUse || hasGasErrors || false;
 
+  const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
+    transaction,
+  );
+
   const requireDappAcknowledgement = Boolean(
-    transaction?.dappSuggestedGasFees && !dappSuggestedGasFeeAcknowledged,
+    transaction?.dappSuggestedGasFees &&
+      !dappSuggestedGasFeeAcknowledged &&
+      dappSuggestedAndTxParamGasFeesAreTheSame,
   );
 
   return (
