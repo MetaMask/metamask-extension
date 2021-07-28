@@ -219,13 +219,15 @@ export default function EditGasDisplay({
             />
           )}
       </div>
-      {!requireDappAcknowledgement && showEducationButton && (
-        <div className="edit-gas-display__education">
-          <button onClick={onEducationClick}>
-            {t('editGasEducationButtonText')}
-          </button>
-        </div>
-      )}
+      {networkSupports1559 &&
+        !requireDappAcknowledgement &&
+        showEducationButton && (
+          <div className="edit-gas-display__education">
+            <button onClick={onEducationClick}>
+              {t('editGasEducationButtonText')}
+            </button>
+          </div>
+        )}
     </div>
   );
 }
