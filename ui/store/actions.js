@@ -2205,11 +2205,13 @@ export function updateCustomSwapsEIP1559GasParams({
   maxPriorityFeePerGas,
 }) {
   return async (dispatch) => {
-    await promisifiedBackground.setSwapsTxGasLimit(gasLimit);
-    await promisifiedBackground.setSwapsTxMaxFeePerGas(maxFeePerGas);
-    await promisifiedBackground.setSwapsTxMaxFeePriorityPerGas(
-      maxPriorityFeePerGas,
-    );
+    await Promise.all([
+      promisifiedBackground.setSwapsTxGasLimit(gasLimit),
+      promisifiedBackground.setSwapsTxMaxFeePerGas(maxFeePerGas),
+      promisifiedBackground.setSwapsTxMaxFeePriorityPerGas(
+        maxPriorityFeePerGas,
+      ),
+    ]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
