@@ -45,6 +45,11 @@
       "globals": {
         "XMLHttpRequest": true
       }
+    },
+    "storage": {
+      "globals": {
+        "localStorage": true
+      }
     }
   }
 }
