@@ -96,9 +96,6 @@ const getBaseApi = function (
       return `${baseUrl}/aggregatorMetadata`;
     case 'gasPrices':
       return `${baseUrl}/gasPrices`;
-    case 'suggestedGasFees':
-      // We will probably use the hook "useGasFeeEstimates" instead of this.
-      return `${GAS_API_BASE_URL}/networks/${chainIdDecimal}/suggestedGasFees`;
     case 'refreshTime':
       return `${baseUrl}/quoteRefreshRate`;
     default:
