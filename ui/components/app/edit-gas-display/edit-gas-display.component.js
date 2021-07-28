@@ -1,10 +1,13 @@
 import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {
   GAS_RECOMMENDATIONS,
   EDIT_GAS_MODES,
 } from '../../../../shared/constants/gas';
+
+import { isEIP1559Network } from '../../../ducks/metamask/metamask';
 
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -71,6 +74,8 @@ export default function EditGasDisplay({
       !dappSuggestedGasFeeAcknowledged &&
       dappSuggestedAndTxParamGasFeesAreTheSame,
   );
+
+  const networkSupports1559 = useSelector(isEIP1559Network);
 
   return (
     <div className="edit-gas-display">
@@ -151,7 +156,8 @@ export default function EditGasDisplay({
             </Typography>
           </div>
         )}
-        {!requireDappAcknowledgement &&
+        {networkSupports1559 &&
+          !requireDappAcknowledgement &&
           ![EDIT_GAS_MODES.SPEED_UP, EDIT_GAS_MODES.CANCEL].includes(mode) && (
             <RadioGroup
               name="gas-recommendation"

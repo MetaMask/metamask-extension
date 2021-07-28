@@ -1,7 +1,9 @@
 import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
+import { isEIP1559Network } from '../../../ducks/metamask/metamask';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { I18nContext } from '../../../contexts/i18n';
 
@@ -16,6 +18,8 @@ export default function GasTiming({ maxPriorityFeePerGas }) {
 
   const t = useContext(I18nContext);
 
+  const networkSupports1559 = useSelector(isEIP1559Network);
+
   // Shows "seconds" as unit of time if under SECOND_CUTOFF, otherwise "minutes"
   const toHumanReadableTime = (milliseconds = 1) => {
     const seconds = Math.ceil(milliseconds / 1000);
@@ -26,7 +30,8 @@ export default function GasTiming({ maxPriorityFeePerGas }) {
   };
 
   // Don't show anything if we don't have enough information
-  if (isGasEstimatesLoading) {
+  // or if the network doesn't support 1559
+  if (isGasEstimatesLoading || !networkSupports1559) {
     return null;
   }
 
