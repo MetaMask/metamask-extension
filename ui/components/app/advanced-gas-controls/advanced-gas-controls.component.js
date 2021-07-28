@@ -71,6 +71,7 @@ export default function AdvancedGasControls({
         onChange={setGasLimit}
         tooltipText={t('editGasLimitTooltip')}
         value={gasLimit}
+        allowDecimals={false}
         numeric
         autoFocus
       />

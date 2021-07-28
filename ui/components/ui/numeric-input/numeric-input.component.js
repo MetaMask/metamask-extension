@@ -5,11 +5,12 @@ import Typography from '../typography/typography';
 import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 export default function NumericInput({
-  detailText,
-  value,
+  detailText = '',
+  value = 0,
   onChange,
-  error,
-  autoFocus,
+  error = '',
+  autoFocus = false,
+  allowDecimals = true,
 }) {
   return (
     <div
@@ -18,7 +19,14 @@ export default function NumericInput({
       <input
         type="number"
         value={value}
-        onChange={(e) => onChange?.(parseInt(e.target.value, 10))}
+        onKeyDown={(e) => {
+          if (!allowDecimals && e.key === '.') {
+            e.preventDefault();
+          }
+        }}
+        onChange={(e) => {
+          onChange?.(parseFloat(e.target.value, 10));
+        }}
         min="0"
         autoFocus={autoFocus}
       />
@@ -37,12 +45,5 @@ NumericInput.propTypes = {
   onChange: PropTypes.func,
   error: PropTypes.string,
   autoFocus: PropTypes.bool,
-};
-
-NumericInput.defaultProps = {
-  value: 0,
-  detailText: '',
-  onChange: undefined,
-  error: '',
-  autoFocus: false,
+  allowDecimals: PropTypes.bool,
 };
