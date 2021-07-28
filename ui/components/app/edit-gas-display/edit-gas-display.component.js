@@ -56,6 +56,7 @@ export default function EditGasDisplay({
   warning,
   gasErrors,
   onManualChange,
+  minimumGasLimit,
 }) {
   const t = useContext(I18nContext);
 
@@ -203,6 +204,7 @@ export default function EditGasDisplay({
               maxFeeFiat={maxFeePerGasFiat}
               gasErrors={gasErrors}
               onManualChange={onManualChange}
+              minimumGasLimit={minimumGasLimit}
             />
           )}
       </div>
@@ -249,4 +251,5 @@ EditGasDisplay.propTypes = {
   transaction: PropTypes.object,
   gasErrors: PropTypes.object,
   onManualChange: PropTypes.func,
+  minimumGasLimit: PropTypes.number,
 };
