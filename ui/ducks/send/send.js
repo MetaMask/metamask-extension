@@ -350,7 +350,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     if (send.stage !== SEND_STAGES.EDIT) {
       const gasLimit = await estimateGasLimitForSend({
         gasPrice: send.gas.gasPrice,
-        blockGasLimit: metamask.blockGasLimit,
+        blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress: metamask.selectedAddress,
         sendToken: send.asset.details,
         to: send.recipient.address?.toLowerCase(),
@@ -425,7 +425,7 @@ export const initializeSendState = createAsyncThunk(
       // required gas. If this value isn't nullish, set it as the new gasLimit
       const estimatedGasLimit = await estimateGasLimitForSend({
         gasPrice: getGasPriceInHexWei(basicEstimates.average),
-        blockGasLimit: metamask.blockGasLimit,
+        blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress: fromAddress,
         sendToken: asset.details,
         to: recipient.address.toLowerCase(),
