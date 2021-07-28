@@ -189,27 +189,26 @@ export default function EditGasDisplay({
             )}
           </button>
         )}
-        {!requireDappAcknowledgement &&
-          (showAdvancedForm || showAdvancedForm) && (
-            <AdvancedGasControls
-              gasFeeEstimates={gasFeeEstimates}
-              gasEstimateType={gasEstimateType}
-              estimateToUse={estimateToUse}
-              isGasEstimatesLoading={isGasEstimatesLoading}
-              gasLimit={gasLimit}
-              setGasLimit={setGasLimit}
-              maxPriorityFee={maxPriorityFeePerGas}
-              setMaxPriorityFee={setMaxPriorityFeePerGas}
-              maxFee={maxFeePerGas}
-              setMaxFee={setMaxFeePerGas}
-              gasPrice={gasPrice}
-              setGasPrice={setGasPrice}
-              maxPriorityFeeFiat={maxPriorityFeePerGasFiat}
-              maxFeeFiat={maxFeePerGasFiat}
-              gasErrors={gasErrors}
-              onManualChange={onManualChange}
-            />
-          )}
+        {!requireDappAcknowledgement && showAdvancedForm && (
+          <AdvancedGasControls
+            gasFeeEstimates={gasFeeEstimates}
+            gasEstimateType={gasEstimateType}
+            estimateToUse={estimateToUse}
+            isGasEstimatesLoading={isGasEstimatesLoading}
+            gasLimit={gasLimit}
+            setGasLimit={setGasLimit}
+            maxPriorityFee={maxPriorityFeePerGas}
+            setMaxPriorityFee={setMaxPriorityFeePerGas}
+            maxFee={maxFeePerGas}
+            setMaxFee={setMaxFeePerGas}
+            gasPrice={gasPrice}
+            setGasPrice={setGasPrice}
+            maxPriorityFeeFiat={maxPriorityFeePerGasFiat}
+            maxFeeFiat={maxFeePerGasFiat}
+            gasErrors={gasErrors}
+            onManualChange={onManualChange}
+          />
+        )}
       </div>
       {!requireDappAcknowledgement && showEducationButton && (
         <div className="edit-gas-display__education">
