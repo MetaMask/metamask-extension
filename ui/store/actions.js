@@ -21,11 +21,15 @@ import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
+  getTokenList,
 } from '../selectors';
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
-import { LISTED_CONTRACT_ADDRESSES } from '../../shared/constants/tokens';
+import {
+  getUnconnectedAccountAlertEnabledness,
+  isEIP1559Network,
+} from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import * as actionConstants from './actionConstants';
 
@@ -2117,7 +2121,11 @@ export function setCurrentLocale(locale, messages) {
 }
 
 export function setPendingTokens(pendingTokens) {
-  const { customToken = {}, selectedTokens = {} } = pendingTokens;
+  const {
+    customToken = {},
+    selectedTokens = {},
+    tokenAddressList = {},
+  } = pendingTokens;
   const { address, symbol, decimals } = customToken;
   const tokens =
     address && symbol && decimals >= 0 <= 36
@@ -2131,7 +2139,7 @@ export function setPendingTokens(pendingTokens) {
       : selectedTokens;
 
   Object.keys(tokens).forEach((tokenAddress) => {
-    tokens[tokenAddress].unlisted = !LISTED_CONTRACT_ADDRESSES.includes(
+    tokens[tokenAddress].unlisted = !tokenAddressList.includes(
       tokenAddress.toLowerCase(),
     );
   });
@@ -2539,6 +2547,7 @@ export function loadingTokenParamsFinished() {
 
 export function getTokenParams(tokenAddress) {
   return (dispatch, getState) => {
+    const tokenList = getTokenList(getState());
     const existingTokens = getState().metamask.tokens;
     const existingToken = existingTokens.find(
       ({ address }) => tokenAddress === address,
@@ -2554,10 +2563,12 @@ export function getTokenParams(tokenAddress) {
     dispatch(loadingTokenParamsStarted());
     log.debug(`loadingTokenParams`);
 
-    return getSymbolAndDecimals(tokenAddress).then(({ symbol, decimals }) => {
-      dispatch(addToken(tokenAddress, symbol, Number(decimals)));
-      dispatch(loadingTokenParamsFinished());
-    });
+    return getSymbolAndDecimals(tokenAddress, tokenList).then(
+      ({ symbol, decimals }) => {
+        dispatch(addToken(tokenAddress, symbol, Number(decimals)));
+        dispatch(loadingTokenParamsFinished());
+      },
+    );
   };
 }
 
