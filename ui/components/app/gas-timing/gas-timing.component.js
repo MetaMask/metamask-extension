@@ -55,11 +55,11 @@ export default function GasTiming({ maxPriorityFeePerGas }) {
       Number(maxPriorityFeePerGas) < Number(high.suggestedMaxPriorityFeePerGas)
     ) {
       text = t('gasTimingPositive', [
-        toHumanReadableTime(medium.maxWaitTimeEstimate),
+        toHumanReadableTime(low.maxWaitTimeEstimate),
       ]);
     } else {
       text = t('gasTimingVeryPositive', [
-        toHumanReadableTime(high.maxWaitTimeEstimate),
+        toHumanReadableTime(high.minWaitTimeEstimate),
       ]);
     }
   } else {
