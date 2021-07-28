@@ -82,7 +82,6 @@ const getBaseApi = function (
   if (!baseUrl) {
     throw new Error(`Swaps API calls are disabled for chainId: ${chainId}`);
   }
-  const chainIdDecimal = chainId && parseInt(chainId, 16);
   switch (type) {
     case 'trade':
       return `${baseUrl}/trades?`;

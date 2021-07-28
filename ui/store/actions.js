@@ -2205,8 +2205,7 @@ export function updateCustomSwapsEIP1559GasParams({
   maxPriorityFeePerGas,
 }) {
   return async (dispatch) => {
-    // TODO:Why do we pass true as the 2nd param? It seems the fn only supports gasLimit.
-    await promisifiedBackground.setSwapsTxGasLimit(gasLimit, true);
+    await promisifiedBackground.setSwapsTxGasLimit(gasLimit);
     await promisifiedBackground.setSwapsTxMaxFeePerGas(maxFeePerGas);
     await promisifiedBackground.setSwapsTxMaxFeePriorityPerGas(
       maxPriorityFeePerGas,

@@ -150,6 +150,7 @@ export default function ViewQuote() {
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
 
+  // For Swaps we want to get 'high' estimations by default.
   const gasFeeInputs = useGasFeeInputs('high');
 
   const { isBestQuote } = usedQuote;
