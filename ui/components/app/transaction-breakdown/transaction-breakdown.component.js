@@ -31,6 +31,7 @@ export default class TransactionBreakdown extends PureComponent {
     baseFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     priorityFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     hexGasTotal: PropTypes.string,
+    supportsEIP1559: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -53,6 +54,7 @@ export default class TransactionBreakdown extends PureComponent {
       baseFee,
       priorityFee,
       hexGasTotal,
+      supportsEIP1559,
     } = this.props;
     return (
       <div className={classnames('transaction-breakdown', className)}>
@@ -96,7 +98,7 @@ export default class TransactionBreakdown extends PureComponent {
             />
           </TransactionBreakdownRow>
         )}
-        {process.env.SHOW_EIP_1559_UI && (
+        {process.env.SHOW_EIP_1559_UI && supportsEIP1559 && (
           <TransactionBreakdownRow title={t('transactionHistoryBaseFee')}>
             {typeof baseFee === 'undefined' ? (
               '?'
@@ -113,7 +115,7 @@ export default class TransactionBreakdown extends PureComponent {
             )}
           </TransactionBreakdownRow>
         )}
-        {process.env.SHOW_EIP_1559_UI && (
+        {process.env.SHOW_EIP_1559_UI && supportsEIP1559 && (
           <TransactionBreakdownRow title={t('transactionHistoryPriorityFee')}>
             {typeof priorityFee === 'undefined' ? (
               '?'
@@ -130,7 +132,7 @@ export default class TransactionBreakdown extends PureComponent {
             )}
           </TransactionBreakdownRow>
         )}
-        {!process.env.SHOW_EIP_1559_UI && (
+        {(!process.env.SHOW_EIP_1559_UI || !supportsEIP1559) && (
           <TransactionBreakdownRow title={t('advancedGasPriceTitle')}>
             {typeof gasPrice === 'undefined' ? (
               '?'
@@ -146,26 +148,28 @@ export default class TransactionBreakdown extends PureComponent {
             )}
           </TransactionBreakdownRow>
         )}
-        <TransactionBreakdownRow
-          title={t('transactionHistoryEffectiveGasPrice')}
-        >
-          <UserPreferencedCurrencyDisplay
-            className="transaction-breakdown__value"
-            data-testid="transaction-breakdown__effective-gas-price"
-            currency={nativeCurrency}
-            denomination={ETH}
-            numberOfDecimals={6}
-            value={hexGasTotal}
-            type={PRIMARY}
-          />
-          {showFiat && (
+        {process.env.SHOW_EIP_1559_UI && supportsEIP1559 && (
+          <TransactionBreakdownRow
+            title={t('transactionHistoryEffectiveGasPrice')}
+          >
             <UserPreferencedCurrencyDisplay
               className="transaction-breakdown__value"
-              type={SECONDARY}
+              data-testid="transaction-breakdown__effective-gas-price"
+              currency={nativeCurrency}
+              denomination={ETH}
+              numberOfDecimals={6}
               value={hexGasTotal}
+              type={PRIMARY}
             />
-          )}
-        </TransactionBreakdownRow>
+            {showFiat && (
+              <UserPreferencedCurrencyDisplay
+                className="transaction-breakdown__value"
+                type={SECONDARY}
+                value={hexGasTotal}
+              />
+            )}
+          </TransactionBreakdownRow>
+        )}
         <TransactionBreakdownRow title={t('total')}>
           <UserPreferencedCurrencyDisplay
             className="transaction-breakdown__value transaction-breakdown__value--eth-total"
