@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.8.4]
-### Uncategorized
-- Use current block gas limit as the limit passed eth_estimateGas ([#11658](https://github.com/MetaMask/metamask-extension/pull/11658))
-- Revert "Use current block gas limit as the limit passed eth_estimateGas (#11658)" ([#11658](https://github.com/MetaMask/metamask-extension/pull/11658))
-- Use current block gas limit as the limit passed eth_estimateGas ([#11658](https://github.com/MetaMask/metamask-extension/pull/11658))
+### Changed
+- [#11652](https://github.com/MetaMask/metamask-extension/pull/11652): Allow higher precision gas prices in send flow
+
+### Fixed
+- [#11658](https://github.com/MetaMask/metamask-extension/pull/11658): Fixed incorrect gas limit estimates for send transactions
 
 ## [9.8.3]
 ### Fixed
