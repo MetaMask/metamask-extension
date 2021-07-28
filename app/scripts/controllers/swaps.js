@@ -540,7 +540,7 @@ export default class SwapsController {
       gasEstimateType,
     } = await this._getEIP1559GasFeeEstimates();
 
-    let usedGasPrice;
+    let usedGasPrice = '0x0';
 
     if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
       const {
@@ -564,8 +564,6 @@ export default class SwapsController {
     } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
       usedGasPrice =
         customGasPrice || decGWEIToHexWEI(gasFeeEstimates.gasPrice);
-    } else {
-      usedGasPrice = '0x0';
     }
 
     let topAggId = null;
