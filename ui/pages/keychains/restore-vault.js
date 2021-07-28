@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { ethers } from 'ethers';
 import {
   createNewVaultAndRestore,
   unMarkPasswordForgotten,
@@ -9,6 +10,8 @@ import {
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import TextField from '../../components/ui/text-field';
 import Button from '../../components/ui/button';
+
+const { isValidMnemonic } = ethers.utils;
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -38,6 +41,7 @@ class RestoreVaultPage extends Component {
     (seedPhrase || '').trim().toLowerCase().match(/\w+/gu)?.join(' ') || '';
 
   handleSeedPhraseChange(seedPhrase) {
+    const { t } = this.context;
     let seedPhraseError = null;
 
     const wordCount = this.parseSeedPhrase(seedPhrase).split(/\s/u).length;
@@ -45,7 +49,9 @@ class RestoreVaultPage extends Component {
       seedPhrase &&
       (wordCount % 3 !== 0 || wordCount < 12 || wordCount > 24)
     ) {
-      seedPhraseError = this.context.t('seedPhraseReq');
+      seedPhraseError = t('seedPhraseReq');
+    } else if (!isValidMnemonic(seedPhrase)) {
+      seedPhraseError = t('invalidSeedPhrase');
     }
 
     this.setState({ seedPhrase, seedPhraseError });

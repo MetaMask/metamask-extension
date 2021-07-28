@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import extension from 'extensionizer';
 import { stripHexPrefix } from 'ethereumjs-util';
 import BN from 'bn.js';
@@ -73,39 +72,6 @@ const getPlatform = (_) => {
   }
   return PLATFORM_FIREFOX;
 };
-
-/**
- * Checks whether a given balance of ETH, represented as a hex string, is sufficient to pay a value plus a gas fee
- *
- * @param {Object} txParams - Contains data about a transaction
- * @param {string} txParams.gas - The gas for a transaction
- * @param {string} txParams.gasPrice - The price per gas for the transaction
- * @param {string} txParams.value - The value of ETH to send
- * @param {string} hexBalance - A balance of ETH represented as a hex string
- * @returns {boolean} Whether the balance is greater than or equal to the value plus the value of gas times gasPrice
- *
- */
-function sufficientBalance(txParams, hexBalance) {
-  // validate hexBalance is a hex string
-  assert.equal(
-    typeof hexBalance,
-    'string',
-    'sufficientBalance - hexBalance is not a hex string',
-  );
-  assert.equal(
-    hexBalance.slice(0, 2),
-    '0x',
-    'sufficientBalance - hexBalance is not a hex string',
-  );
-
-  const balance = hexToBn(hexBalance);
-  const value = hexToBn(txParams.value);
-  const gasLimit = hexToBn(txParams.gas);
-  const gasPrice = hexToBn(txParams.gasPrice);
-
-  const maxCost = value.add(gasLimit.mul(gasPrice));
-  return balance.gte(maxCost);
-}
 
 /**
  * Converts a hex string to a BN object
@@ -196,7 +162,6 @@ function getChainType(chainId) {
 export {
   getPlatform,
   getEnvironmentType,
-  sufficientBalance,
   hexToBn,
   BnMultiplyByFraction,
   checkForError,

@@ -15,7 +15,7 @@ import {
 } from '../../../shared/modules/hexstring-utils';
 import { NETWORK_EVENTS } from './network';
 
-const ERC721METADATA_INTERFACE_ID = '0x5b5e139f';
+const ERC721_INTERFACE_ID = '0x80ac58cd';
 
 export default class PreferencesController {
   /**
@@ -51,6 +51,7 @@ export default class PreferencesController {
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
+      useStaticTokenList: false,
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace
@@ -136,6 +137,16 @@ export default class PreferencesController {
    */
   setUsePhishDetect(val) {
     this.store.updateState({ usePhishDetect: val });
+  }
+
+  /**
+   * Setter for the `useStaticTokenList` property
+   *
+   * @param {boolean} val - Whether or not the user prefers to use the static token list or dynamic token list from the API
+   *
+   */
+  setUseStaticTokenList(val) {
+    this.store.updateState({ useStaticTokenList: val });
   }
 
   /**
@@ -803,7 +814,7 @@ export default class PreferencesController {
     );
 
     return await tokenContract
-      .supportsInterface(ERC721METADATA_INTERFACE_ID)
+      .supportsInterface(ERC721_INTERFACE_ID)
       .catch((error) => {
         console.log('error', error);
         log.debug(error);

@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import { ObservableStore } from '@metamask/obs-store';
 import { ethErrors } from 'eth-rpc-errors';
 import { typedSignatureHash, TYPED_MESSAGE_SCHEMA } from 'eth-sig-util';
@@ -177,7 +177,7 @@ export default class TypedMessageManager extends EventEmitter {
         break;
       case 'V3':
       case 'V4': {
-        assert.strictEqual(
+        assert.equal(
           typeof params.data,
           'string',
           '"params.data" must be a string.',
@@ -191,18 +191,21 @@ export default class TypedMessageManager extends EventEmitter {
           data.primaryType in data.types,
           `Primary type of "${data.primaryType}" has no type definition.`,
         );
-        assert.strictEqual(
+        assert.equal(
           validation.errors.length,
           0,
           'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.',
         );
-        const { chainId } = data.domain;
+        let { chainId } = data.domain;
         if (chainId) {
           const activeChainId = parseInt(this._getCurrentChainId(), 16);
           assert.ok(
             !Number.isNaN(activeChainId),
             `Cannot sign messages for chainId "${chainId}", because MetaMask is switching networks.`,
           );
+          if (typeof chainId === 'string') {
+            chainId = parseInt(chainId, 16);
+          }
           assert.equal(
             chainId,
             activeChainId,

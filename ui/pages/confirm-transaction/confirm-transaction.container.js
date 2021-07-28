@@ -6,7 +6,6 @@ import {
   clearConfirmTransaction,
 } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { isTokenMethodAction } from '../../helpers/utils/transactions.util';
-import { fetchBasicGasEstimates } from '../../ducks/gas/gas.duck';
 
 import {
   getContractMethodData,
@@ -54,7 +53,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setTransactionToConfirm(transactionId));
     },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    fetchBasicGasEstimates: () => dispatch(fetchBasicGasEstimates()),
     getContractMethodData: (data) => dispatch(getContractMethodData(data)),
     getTokenParams: (tokenAddress) => dispatch(getTokenParams(tokenAddress)),
     setDefaultHomeActiveTabName: (tabName) =>

@@ -25,7 +25,10 @@ workflows:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
-      - test-deps
+      - test-deps-audit
+      - test-deps-depcheck:
+          requires:
+            - prep-deps
       - validate-lavamoat-config:
           filters:
             branches:
@@ -313,7 +316,7 @@ jobs:
                 command: yarn auto-changelog validate --rc
 
 
-  test-deps:
+  test-deps-audit:
     executor: node-browsers
     steps:
       - checkout
@@ -322,6 +325,16 @@ jobs:
       - run:
           name: yarn audit
           command: .circleci/scripts/yarn-audit.sh
+
+  test-deps-depcheck:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: depcheck
+          command: yarn depcheck
 
   test-e2e-chrome:
     executor: node-browsers
@@ -343,7 +356,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome
+              yarn test:e2e:chrome --retries 2
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -370,7 +383,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:metrics
+              yarn test:e2e:chrome:metrics --retries 2
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -397,7 +410,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox
+              yarn test:e2e:firefox --retries 2
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -424,7 +437,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox:metrics
+              yarn test:e2e:firefox:metrics --retries 2
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -448,7 +461,7 @@ jobs:
           command: mv ./builds-test ./builds
       - run:
           name: Run page load benchmark
-          command: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json
+          command: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts

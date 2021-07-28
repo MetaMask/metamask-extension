@@ -57,7 +57,7 @@ export default class SendContent extends Component {
           {this.maybeRenderAddContact()}
           <SendAssetRow />
           <SendAmountRow />
-          <SendGasRow />
+          {process.env.SHOW_EIP_1559_UI ? null : <SendGasRow />}
           {this.props.showHexData && <SendHexDataRow />}
         </div>
       </PageContainerContent>

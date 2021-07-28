@@ -52,6 +52,10 @@
   "addContact": {
     "message": "連絡先の追加"
   },
+  "addCustomTokenByContractAddress": {
+    "message": "トークンを発見できませんか?アドレスをペーストすることで手動でトークンを追加することができます。トークン コントラクト アドレスは $1 にあります。",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
+  },
   "addEthereumChainConfirmationDescription": {
     "message": "これにより、このネットワークは MetaMask 内で使用できるようになります。"
   },
@@ -109,7 +113,7 @@
     "message": "アグリゲーター ネットワーク料金"
   },
   "alertDisableTooltip": {
-    "message": "\"設定 > 警告\" の設定で変更できます"
+    "message": "これは、[\"設定 > 警告\"] で変更できます"
   },
   "alertSettingsUnconnectedAccount": {
     "message": "選択した未接続のアカウントを使用して Web サイトをブラウズしています"
@@ -249,11 +253,8 @@
   "browserNotSupported": {
     "message": "ご使用のブラウザーはサポートされていません..."
   },
-  "builContactList": {
+  "buildContactList": {
     "message": "連絡先リストを作成する"
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask はカリフォルニアで設計および作成されました。"
   },
   "buy": {
     "message": "購入"
@@ -284,6 +285,9 @@
   },
   "chainIdDefinition": {
     "message": "このネットワークのトランザクションの署名に使用されるチェーン ID。"
+  },
+  "chainIdExistsErrorMsg": {
+    "message": "このチェーン ID は現在 $1 ネットワークで使用しています。"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "ハードウェア ウォレットに接続するには、MetaMask on Google Chrome を使用する必要があります。"
@@ -409,6 +413,9 @@
   },
   "continueToWyre": {
     "message": "Wyre に進む"
+  },
+  "contract": {
+    "message": "コントラクト"
   },
   "contractAddressError": {
     "message": "トークンのコントラクト アドレスにトークンを送信しています。これにより、これらのトークンが失われる可能性があります。"
@@ -624,7 +631,11 @@
     "message": "フィッシングにご注意ください!MetaMask の動作として、シークレット リカバリー フレーズを要求することは絶対にありません。"
   },
   "endOfFlowMessage6": {
-    "message": "シークレット リカバリー フレーズを再度バックアップする場合は、[設定] -> [セキュリティとプライバシー] にアクセスしてください。"
+    "message": "シークレット リカバリー フレーズを再度バックアップする場合は、[設定] -> [セキュリティ] でそれを見つけることができます。"
+  },
+  "endOfFlowMessage7": {
+    "message": "ご質問、または不審な点がある場合は、当社のサポート $1 までお問い合わせください。",
+    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask はシークレット リカバリー フレーズを復元できません。"
@@ -884,6 +895,16 @@
   },
   "importAccountSeedPhrase": {
     "message": "シークレット リカバリー フレーズを使用してアカウントをインポートする:"
+  },
+  "importAccountText": {
+    "message": "または $1",
+    "description": "$1 represents the text from `importAccountLinkText` as a link"
+  },
+  "importTokenQuestion": {
+    "message": "トークンをインポートしますか?"
+  },
+  "importTokenWarning": {
+    "message": "誰でも既存のトークンの偽バージョンを含めて、任意の名前でトークンを作成することができます。自己責任で追加およびトレードしてください。"
   },
   "importWallet": {
     "message": "ウォレットのインポート"
@@ -1287,6 +1308,22 @@
     "message": "これで、\"シード フレーズ\" は \"シークレット リカバリー フレーズ\" と呼ばれます。",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
+  "notifications6DescriptionOne": {
+    "message": "Chrome バージョン 91 以降は、レジャーのサポート (U2F) を可能にした API がハードウェア ウォレットをサポートしなくなります。MetaMask では、ユーザーがレジャー ライブのデスクトップ アプリを介して、レジャー デバイスに継続的に接続することができる新しいレジャー ライブのサポートを導入しました。",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionThree": {
+    "message": "MetaMask のレジャーのアカウントを使用する際は、新しいタブが開き、レジャー ライブのアプリを開くよう指示されます。アプリが開いたら、WebSocket 接続を MetaMask のアカウントに許可するよう指示されます。以上です。",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionTwo": {
+    "message": "[設定] > [詳細] > [レジャー ライブを使用] の順にクリックすることで、レジャー ライブのサポートを有効にすることができます。",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6Title": {
+    "message": "Chrome ユーザー向けのレジャーのサポートの更新",
+    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
+  },
   "ofTextNofM": {
     "message": "中の"
   },
@@ -1414,6 +1451,30 @@
   "recipientAddressPlaceholder": {
     "message": "検索、パブリック アドレス (0x)、または ENS"
   },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "ここから開始"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "OK"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "シークレット リカバリー フレーズは常に安全かつ秘密の場所に保管してください"
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "シークレット リカバリー フレーズのバックアップが必要ですか？"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "シークレット リカバリー フレーズは誰とも決して共有しないでください"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "MetaMask チームが、ユーザーのシークレット リカバリー フレーズを確認することは絶対にありません"
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "シークレット リカバリー フレーズは、ご利用のすべてのアカウントを制御します。"
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "資産を保護してください"
+  },
   "reject": {
     "message": "拒否"
   },
@@ -1540,6 +1601,42 @@
   },
   "securitySettingsDescription": {
     "message": "プライバシーの設定とシークレット リカバリー フレーズ"
+  },
+  "seedPhraseIntroSidebarBulletFour": {
+    "message": "書き留めて、複数の秘密の場所に保存します。"
+  },
+  "seedPhraseIntroSidebarBulletOne": {
+    "message": "パスワード マネージャーに保存する"
+  },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "セーフティ ボックスに保管する。"
+  },
+  "seedPhraseIntroSidebarBulletTwo": {
+    "message": "銀行の金庫に保管する。"
+  },
+  "seedPhraseIntroSidebarCopyOne": {
+    "message": "あなたのリカバリー フレーズは、ウォレットと資金への「マスターキー」です。"
+  },
+  "seedPhraseIntroSidebarCopyThree": {
+    "message": "誰かがあなたのリカバリー フレーズを尋ねてきたら、おそらくあなたを騙そうとしているのです。"
+  },
+  "seedPhraseIntroSidebarCopyTwo": {
+    "message": "MetaMask を共有しても、リカバリ フレーズは決して共有しないでください。"
+  },
+  "seedPhraseIntroSidebarTitleOne": {
+    "message": "リカバリー フレーズとは何ですか？"
+  },
+  "seedPhraseIntroSidebarTitleThree": {
+    "message": "リカバリーフレーズは共有すべきですか？"
+  },
+  "seedPhraseIntroSidebarTitleTwo": {
+    "message": "リカバリー フレーズはどのように保存すべきですか？"
+  },
+  "seedPhraseIntroTitle": {
+    "message": "ウォレットの保護"
+  },
+  "seedPhraseIntroTitleCopy": {
+    "message": "始める前に、この短いビデオを見て、リカバリー フレーズとウォレットを安全に保つ方法について確認してください。"
   },
   "seedPhrasePlaceholder": {
     "message": "単語ごとにスペースを 1 つ置いて分離します"
@@ -1893,6 +1990,15 @@
     "message": "約 $1% の価格差",
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
+  "swapPriceImpactTooltip": {
+    "message": "プライスインパクトとは、現在の市場価格と取引の約定時に受け取った金額の差のことです。プライスインパクトとは、流動性プールの大きさに対するあなたのトレードの大きさを表わす関数です。"
+  },
+  "swapPriceUnavailableDescription": {
+    "message": "市場価格のデータが不足しているため、プライスインパクトを測定できませんでした。スワップする前に、これから受領するトークンの額に問題がないか確認してください。"
+  },
+  "swapPriceUnavailableTitle": {
+    "message": "続行する前にレートを確認してください"
+  },
   "swapProcessing": {
     "message": "処理中"
   },
@@ -1993,6 +2099,9 @@
   "swapTokenToToken": {
     "message": "$1 を $2 にスワップ",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
+  },
+  "swapTokenVerificationAddedManually": {
+    "message": "このトークンは手動で追加されました。"
   },
   "swapTokenVerificationMessage": {
     "message": "常に $1 のトークン アドレスを確認してください。",
@@ -2261,7 +2370,7 @@
     "message": "URL には適切な HTTP/HTTPS プレフィックスが必要です。"
   },
   "urlExistsErrorMsg": {
-    "message": "URL はネットワークの既存のリストに既に存在します"
+    "message": "この URL は現在 $1 ネットワークで使用しています。"
   },
   "usePhishingDetection": {
     "message": "フィッシング検出を使用"
@@ -2281,6 +2390,10 @@
   },
   "verifyThisTokenOn": {
     "message": "このトークンを $1 で検証",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "verifyThisUnconfirmedTokenOn": {
+    "message": "このトークンを $1 で検証して、それがトレードしたいトークンであることを確認してください。",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAccount": {
