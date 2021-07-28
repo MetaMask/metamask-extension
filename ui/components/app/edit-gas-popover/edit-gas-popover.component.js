@@ -13,6 +13,7 @@ import {
 import {
   decGWEIToHexWEI,
   decimalToHex,
+  hexToDecimal,
 } from '../../../helpers/utils/conversions.util';
 
 import Popover from '../../ui/popover';
@@ -58,6 +59,8 @@ export default function EditGasPopover({
     dappSuggestedGasFeeAcknowledged,
     setDappSuggestedGasFeeAcknowledged,
   ] = useState(false);
+
+  const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
 
   const {
     maxPriorityFeePerGas,
@@ -232,6 +235,7 @@ export default function EditGasPopover({
               hasGasErrors={hasGasErrors}
               gasErrors={gasErrors}
               onManualChange={onManualChange}
+              minimumGasLimit={minimumGasLimitDec}
               {...editGasDisplayProps}
             />
           </>

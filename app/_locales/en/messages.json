@@ -654,7 +654,7 @@
     "message": "High"
   },
   "editGasLimitOutOfBounds": {
-    "message": "Gas limit must be greater than 20999 and less than 7920027"
+    "message": "Gas limit must be at least $1"
   },
   "editGasLimitTooltip": {
     "message": "Gas limit is the maximum units of gas you are willing to use. Units of gas are a multiplier to “Max priority fee” and “Max fee”."

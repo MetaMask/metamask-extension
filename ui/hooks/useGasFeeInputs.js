@@ -3,8 +3,15 @@ import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { findKey } from 'lodash';
 
-import { GAS_ESTIMATE_TYPES, EDIT_GAS_MODES } from '../../shared/constants/gas';
-import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
+import {
+  GAS_ESTIMATE_TYPES,
+  EDIT_GAS_MODES,
+  GAS_LIMITS,
+} from '../../shared/constants/gas';
+import {
+  multiplyCurrencies,
+  conversionLessThan,
+} from '../../shared/modules/conversion.utils';
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
@@ -347,7 +354,12 @@ export function useGasFeeInputs(
   const gasErrors = {};
   const gasWarnings = {};
 
-  if (gasLimit < 21000 || gasLimit > 7920027) {
+  const gasLimitTooLow = conversionLessThan(
+    { value: gasLimit, fromNumericBase: 'dec' },
+    { value: minimumGasLimit || GAS_LIMITS.SIMPLE, fromNumericBase: 'hex' },
+  );
+
+  if (gasLimitTooLow) {
     gasErrors.gasLimit = GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS;
   }
 
