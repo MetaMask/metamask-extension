@@ -809,13 +809,16 @@
       },
       "globals": {
         "__dirname": true,
-        "process.cwd": true
+        "process.cwd": true,
+        "setTimeout": true
       },
       "packages": {
         "JSONStream": true,
         "combine-source-map": true,
         "convert-source-map": true,
         "json-stable-stringify": true,
+        "lavamoat-core": true,
+        "readable-stream": true,
         "through2": true,
         "umd": true
       }
@@ -2720,6 +2723,7 @@
     "lavamoat-core": {
       "builtin": {
         "events": true,
+        "fs.existsSync": true,
         "fs.readFileSync": true,
         "module.createRequire": true,
         "module.createRequireFromPath": true,
