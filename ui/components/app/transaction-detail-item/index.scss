@@ -3,6 +3,7 @@
 
   &__row {
     display: flex;
+    grid-gap: 5px;
   }
 
   &__title {
@@ -13,10 +14,6 @@
   .info-tooltip {
     display: inline-block;
     margin-inline-start: 4px;
-  }
-
-  &__detail-text {
-    margin-inline-end: 20px !important;
   }
 
   &__total {

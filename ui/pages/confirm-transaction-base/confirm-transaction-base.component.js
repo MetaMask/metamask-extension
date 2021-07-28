@@ -301,6 +301,14 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const { t } = this.context;
 
+    const getRequestingOrigin = () => {
+      try {
+        return new URL(txData.origin)?.hostname;
+      } catch (err) {
+        return '';
+      }
+    };
+
     const notMainnetOrTest = !(isMainnet || process.env.IN_TEST);
     const gasPriceFetchFailure = isEthGasPrice || noGasPrice;
 
@@ -371,7 +379,9 @@ export default class ConfirmTransactionBase extends Component {
                 detailTitle={
                   txData.dappSuggestedGasFees ? (
                     <>
-                      {t('transactionDetailDappGasHeading', [txData.origin])}
+                      {t('transactionDetailDappGasHeading', [
+                        getRequestingOrigin(),
+                      ])}
                       <InfoTooltip
                         contentText={t('transactionDetailDappGasTooltip')}
                         position="top"
