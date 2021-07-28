@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
+import * as reactRedux from 'react-redux';
 import messages from '../../../../app/_locales/en/messages.json';
 
 import { getMessage } from '../../../helpers/utils/i18n-helper';
@@ -34,13 +35,14 @@ const MOCK_FEE_ESTIMATE = {
 };
 
 describe('Gas timing', () => {
-  let useI18nContext;
-
   beforeEach(() => {
-    useI18nContext = sinon.stub(i18nhooks, 'useI18nContext');
+    const useI18nContext = sinon.stub(i18nhooks, 'useI18nContext');
     useI18nContext.returns((key, variables) =>
       getMessage('en', messages, key, variables),
     );
+
+    const stub = sinon.stub(reactRedux, 'useSelector');
+    stub.callsFake(() => true);
   });
   afterEach(() => {
     sinon.restore();
