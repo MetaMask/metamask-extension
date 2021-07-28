@@ -303,5 +303,5 @@ FeeCard.propTypes = {
   tokenConversionRate: PropTypes.number,
   chainId: PropTypes.string.isRequired,
   EIP1559NetworkEnabled: PropTypes.bool.isRequired,
-  maxPriorityFeePerGasDecGWEI: PropTypes.string.isRequired,
+  maxPriorityFeePerGasDecGWEI: PropTypes.string,
 };

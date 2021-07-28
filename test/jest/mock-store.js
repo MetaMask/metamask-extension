@@ -217,7 +217,7 @@ export const createSwapsMockStore = () => {
         selectedAggId: 'TEST_AGG_2',
         customApproveTxData: '',
         errorKey: '',
-        topAggId: null,
+        topAggId: 'TEST_AGG_BEST',
         routeState: '',
         swapsFeatureIsLive: false,
         useNewSwapsApi: false,
