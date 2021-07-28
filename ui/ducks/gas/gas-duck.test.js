@@ -198,7 +198,7 @@ describe('Gas Duck', () => {
         {
           type: SET_BASIC_GAS_ESTIMATE_DATA,
           value: {
-            average: 0.0482,
+            average: 0.048199313,
           },
         },
       ]);

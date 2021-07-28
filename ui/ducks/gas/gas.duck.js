@@ -173,7 +173,7 @@ async function fetchEthGasPriceEstimates(state) {
   const gasPrice = await global.eth.gasPrice();
   const averageGasPriceInDecGWEI = getValueFromWeiHex({
     value: gasPrice.toString(16),
-    numberOfDecimals: 4,
+    numberOfDecimals: 9,
     toDenomination: 'GWEI',
   });
   const basicEstimates = {
