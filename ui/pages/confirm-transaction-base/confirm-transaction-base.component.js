@@ -447,6 +447,7 @@ export default class ConfirmTransactionBase extends Component {
                 subTitle={
                   <GasTiming
                     maxPriorityFeePerGas={txData.txParams.maxPriorityFeePerGas}
+                    maxFeePerGas={txData.txParams.maxFeePerGas}
                   />
                 }
               />,

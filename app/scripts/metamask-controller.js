@@ -1111,6 +1111,11 @@ export default class MetamaskController extends EventEmitter {
         this.gasFeeController.disconnectPoller,
         this.gasFeeController,
       ),
+
+      getGasFeeTimeEstimate: nodify(
+        this.gasFeeController.getTimeEstimate,
+        this.gasFeeController,
+      ),
     };
   }
 

@@ -13,7 +13,7 @@ import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
 
-export default function GasTiming({ maxPriorityFeePerGas }) {
+export default function GasTiming({ maxPriorityFeePerGas, maxFeePerGas }) {
   const {
     gasFeeEstimates,
     isGasEstimatesLoading,
@@ -64,9 +64,26 @@ export default function GasTiming({ maxPriorityFeePerGas }) {
     }
   } else {
     attitude = 'negative';
-    text = t('gasTimingNegative', [
-      toHumanReadableTime(low.maxWaitTimeEstimate),
-    ]);
+
+    // If the user has chosen a value less than our low estimate,
+    // calculate a potential wait time
+    if (
+      Number(maxPriorityFeePerGas) < Number(low.suggestedMaxPriorityFeePerGas)
+    ) {
+      const times =
+        /* gasFeeController.getTimeEstimate(maxPriorityFeePerGas, maxFeePerGas); */
+      if (!times || times === 'unknown' || times.upperTimeBound === 'unknown') {
+        text = t('unknown')
+      }
+      else {
+        text = t('gasTimingNegative', [toHumanReadableTime(value)]);
+      }
+    }
+    else {
+      text = t('gasTimingNegative', [
+        toHumanReadableTime(low.maxWaitTimeEstimate),
+      ]);
+    }
   }
 
   return (
@@ -83,4 +100,5 @@ export default function GasTiming({ maxPriorityFeePerGas }) {
 
 GasTiming.propTypes = {
   maxPriorityFeePerGas: PropTypes.string.isRequired,
+  maxFeePerGas: PropTypes.string.isRequired,
 };
