@@ -387,7 +387,9 @@ export default class ConfirmTransactionBase extends Component {
                   detailTitle={
                     txData.dappSuggestedGasFees ? (
                       <>
-                        {t('transactionDetailDappGasHeading', [getRequestingOrigin()])}
+                        {t('transactionDetailDappGasHeading', [
+                          getRequestingOrigin(),
+                        ])}
                         <InfoTooltip
                           contentText={t('transactionDetailDappGasTooltip')}
                           position="top"
