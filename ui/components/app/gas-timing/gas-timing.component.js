@@ -10,8 +10,6 @@ import { I18nContext } from '../../../contexts/i18n';
 import Typography from '../../ui/typography/typography';
 import {
   TYPOGRAPHY,
-  COLORS,
-  TEXT_ALIGN,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
@@ -21,7 +19,18 @@ import { getGasTimeEstimate } from '../../../store/actions';
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
 
-export default function GasTiming({ maxPriorityFeePerGas, maxFeePerGas }) {
+// Shows "seconds" as unit of time if under SECOND_CUTOFF, otherwise "minutes"
+const toHumanReadableTime = (milliseconds = 1, t) => {
+  const seconds = Math.ceil(milliseconds / 1000);
+  if (seconds <= SECOND_CUTOFF) {
+    return t('gasTimingSeconds', [seconds]);
+  }
+  return t('gasTimingMinutes', [Math.ceil(seconds / 60)]);
+};
+export default function GasTiming({
+  maxFeePerGas = 0,
+  maxPriorityFeePerGas = 0,
+}) {
   const {
     gasFeeEstimates,
     isGasEstimatesLoading,
@@ -59,15 +68,6 @@ export default function GasTiming({ maxPriorityFeePerGas, maxFeePerGas }) {
 
   const t = useContext(I18nContext);
 
-  // Shows "seconds" as unit of time if under SECOND_CUTOFF, otherwise "minutes"
-  const toHumanReadableTime = (milliseconds = 1) => {
-    const seconds = Math.ceil(milliseconds / 1000);
-    if (seconds <= SECOND_CUTOFF) {
-      return t('gasTimingSeconds', [seconds]);
-    }
-    return t('gasTimingMinutes', [Math.ceil(seconds / 60)]);
-  };
-
   // Don't show anything if we don't have enough information
   if (
     isGasEstimatesLoading ||
@@ -79,24 +79,25 @@ export default function GasTiming({ maxPriorityFeePerGas, maxFeePerGas }) {
   const { low, medium, high } = gasFeeEstimates;
 
   let text = '';
-  let attitude = '';
+  let attitude = 'positive';
+  let fontWeight = FONT_WEIGHT.NORMAL;
 
   // Anything medium or faster is positive
   if (
     Number(maxPriorityFeePerGas) >= Number(medium.suggestedMaxPriorityFeePerGas)
   ) {
-    attitude = 'positive';
-
     // High+ is very likely, medium is likely
     if (
       Number(maxPriorityFeePerGas) < Number(high.suggestedMaxPriorityFeePerGas)
     ) {
+      // Medium
       text = t('gasTimingPositive', [
-        toHumanReadableTime(low.maxWaitTimeEstimate),
+        toHumanReadableTime(low.maxWaitTimeEstimate, t),
       ]);
     } else {
+      // High
       text = t('gasTimingVeryPositive', [
-        toHumanReadableTime(high.minWaitTimeEstimate),
+        toHumanReadableTime(high.minWaitTimeEstimate, t),
       ]);
     }
   } else {
@@ -105,34 +106,31 @@ export default function GasTiming({ maxPriorityFeePerGas, maxFeePerGas }) {
     // If the user has chosen a value less than our low estimate,
     // calculate a potential wait time
     if (isUnknownLow) {
+      // If we didn't get any useful information, show the
+      // "unknown processing time" message
       if (
         !customEstimatedTime ||
         customEstimatedTime === 'unknown' ||
-        customEstimatedTime.upperTimeBound === 'unknown'
+        customEstimatedTime?.upperTimeBound === 'unknown'
       ) {
-        return (
-          <div className="edit-gas-display__error">
-            <Typography
-              color={COLORS.ERROR1}
-              variant={TYPOGRAPHY.H7}
-              align={TEXT_ALIGN.CENTER}
-              fontWeight={FONT_WEIGHT.BOLD}
-            >
-              {t('editGasTooLow')}{' '}
-              <InfoTooltip
-                position="top"
-                contentText={t('editGasTooLowTooltip')}
-              />
-            </Typography>
-          </div>
+        fontWeight = FONT_WEIGHT.BOLD;
+        text = (
+          <>
+            {t('editGasTooLow')}{' '}
+            <InfoTooltip
+              position="top"
+              contentText={t('editGasTooLowTooltip')}
+            />
+          </>
         );
+      } else {
+        text = t('gasTimingNegative', [
+          toHumanReadableTime(Number(customEstimatedTime?.upperTimeBound), t),
+        ]);
       }
-      text = t('gasTimingNegative', [
-        toHumanReadableTime(Number(customEstimatedTime.upperTimeBound)),
-      ]);
     } else {
       text = t('gasTimingNegative', [
-        toHumanReadableTime(low.maxWaitTimeEstimate),
+        toHumanReadableTime(low.maxWaitTimeEstimate, t),
       ]);
     }
   }
@@ -140,6 +138,7 @@ export default function GasTiming({ maxPriorityFeePerGas, maxFeePerGas }) {
   return (
     <Typography
       variant={TYPOGRAPHY.H7}
+      fontWeight={fontWeight}
       className={classNames('gas-timing', {
         [`gas-timing--${attitude}`]: attitude,
       })}

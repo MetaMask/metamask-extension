@@ -51,7 +51,6 @@ export default function EditGasDisplay({
   setEstimateToUse,
   estimatedMinimumFiat,
   estimatedMaximumFiat,
-  hasGasErrors,
   dappSuggestedGasFeeAcknowledged,
   setDappSuggestedGasFeeAcknowledged,
   showAdvancedForm,
@@ -128,12 +127,10 @@ export default function EditGasDisplay({
             ])
           }
           timing={
-            hasGasErrors === false && (
-              <GasTiming
-                maxFeePerGas={maxFeePerGas}
-                maxPriorityFeePerGas={maxPriorityFeePerGas}
-              />
-            )
+            <GasTiming
+              maxFeePerGas={maxFeePerGas}
+              maxPriorityFeePerGas={maxPriorityFeePerGas}
+            />
           }
         />
         {requireDappAcknowledgement && (
@@ -242,7 +239,6 @@ EditGasDisplay.propTypes = {
   setEstimateToUse: PropTypes.func,
   estimatedMinimumFiat: PropTypes.string,
   estimatedMaximumFiat: PropTypes.string,
-  hasGasErrors: PropTypes.boolean,
   dappSuggestedGasFeeAcknowledged: PropTypes.boolean,
   setDappSuggestedGasFeeAcknowledged: PropTypes.func,
   showAdvancedForm: PropTypes.bool,
