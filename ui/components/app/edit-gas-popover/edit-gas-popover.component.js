@@ -1,14 +1,11 @@
 import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-
 import { useDispatch, useSelector } from 'react-redux';
+import { isEIP1559Network } from '../../../ducks/metamask/metamask';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
-import {
-  GAS_ESTIMATE_TYPES,
-  EDIT_GAS_MODES,
-} from '../../../../shared/constants/gas';
+import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 
 import {
   decGWEIToHexWEI,
@@ -42,6 +39,7 @@ export default function EditGasPopover({
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
+  const supportsEIP1559 = useSelector(isEIP1559Network);
 
   const shouldAnimate = useShouldAnimateGasEstimations();
 
@@ -105,19 +103,20 @@ export default function EditGasPopover({
       closePopover();
     }
 
-    const newGasSettings =
-      gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET
-        ? {
-            gas: decimalToHex(gasLimit),
-            gasLimit: decimalToHex(gasLimit),
-            maxFeePerGas: decGWEIToHexWEI(maxFeePerGas),
-            maxPriorityFeePerGas: decGWEIToHexWEI(maxPriorityFeePerGas),
-          }
-        : {
-            gas: decimalToHex(gasLimit),
-            gasLimit: decimalToHex(gasLimit),
-            gasPrice: decGWEIToHexWEI(gasPrice),
-          };
+    const newGasSettings = supportsEIP1559
+      ? {
+          gas: decimalToHex(gasLimit),
+          gasLimit: decimalToHex(gasLimit),
+          maxFeePerGas: decGWEIToHexWEI(maxFeePerGas ?? gasPrice),
+          maxPriorityFeePerGas: decGWEIToHexWEI(
+            maxPriorityFeePerGas ?? maxFeePerGas ?? gasPrice,
+          ),
+        }
+      : {
+          gas: decimalToHex(gasLimit),
+          gasLimit: decimalToHex(gasLimit),
+          gasPrice: decGWEIToHexWEI(gasPrice),
+        };
 
     switch (mode) {
       case EDIT_GAS_MODES.CANCEL:
@@ -151,7 +150,7 @@ export default function EditGasPopover({
     gasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    gasEstimateType,
+    supportsEIP1559,
   ]);
 
   let title = t('editGasTitle');

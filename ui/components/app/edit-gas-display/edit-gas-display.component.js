@@ -221,6 +221,7 @@ export default function EditGasDisplay({
             maxFeeFiat={maxFeePerGasFiat}
             gasErrors={gasErrors}
             onManualChange={onManualChange}
+            networkSupportsEIP1559={supportsEIP1559}
           />
         )}
       </div>

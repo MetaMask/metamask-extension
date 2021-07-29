@@ -3,9 +3,11 @@ import { useSelector } from 'react-redux';
 import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
 import {
+  isEIP1559Network,
   getConversionRate,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
+
 import { ETH, PRIMARY } from '../helpers/constants/common';
 import { getCurrentCurrency, getShouldShowFiat } from '../selectors';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
@@ -71,7 +73,9 @@ const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
   estimatedGasFeeTimeBounds: {},
 };
 
-const generateUseSelectorRouter = () => (selector) => {
+const generateUseSelectorRouter = ({ isEIP1559NetworkResponse } = {}) => (
+  selector,
+) => {
   if (selector === getConversionRate) {
     return MOCK_ETH_USD_CONVERSION_RATE;
   }
@@ -83,6 +87,9 @@ const generateUseSelectorRouter = () => (selector) => {
   }
   if (selector === getShouldShowFiat) {
     return true;
+  }
+  if (selector === isEIP1559Network) {
+    return isEIP1559NetworkResponse;
   }
   return undefined;
 };
@@ -135,6 +142,9 @@ describe('useGasFeeInputs', () => {
     });
 
     it('updates values when user modifies gasPrice', () => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({ isEIP1559NetworkResponse: false }),
+      );
       const { result } = renderHook(() => useGasFeeInputs());
       expect(result.current.gasPrice).toBe(
         LEGACY_GAS_ESTIMATE_RETURN_VALUE.gasFeeEstimates.medium,
@@ -199,6 +209,9 @@ describe('useGasFeeInputs', () => {
     });
 
     it('updates values when user modifies maxFeePerGas', () => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({ isEIP1559NetworkResponse: true }),
+      );
       const { result } = renderHook(() => useGasFeeInputs());
       expect(result.current.maxFeePerGas).toBe(
         FEE_MARKET_ESTIMATE_RETURN_VALUE.gasFeeEstimates.medium

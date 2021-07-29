@@ -42,12 +42,14 @@ export function useGasFeeEstimates() {
   useSafeGasEstimatePolling();
 
   // We consider the gas estimate to be loading if the gasEstimateType is
-  // 'NONE' or if the current gasEstimateType does not match the type we expect
-  // for the current network. e.g, a ETH_GASPRICE estimate when on a network
-  // supporting EIP-1559.
+  // 'NONE' or if the current gasEstimateType cannot be supported by the current
+  // network
+  const isEIP1559TolerableEstimateType =
+    gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
+    gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE;
   const isGasEstimatesLoading =
     gasEstimateType === GAS_ESTIMATE_TYPES.NONE ||
-    (supportsEIP1559 && gasEstimateType !== GAS_ESTIMATE_TYPES.FEE_MARKET) ||
+    (supportsEIP1559 && !isEIP1559TolerableEstimateType) ||
     (!supportsEIP1559 && gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET);
 
   return {

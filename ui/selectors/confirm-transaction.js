@@ -14,6 +14,7 @@ import {
   getGasEstimateType,
   getGasFeeEstimates,
   getNativeCurrency,
+  isEIP1559Network,
 } from '../ducks/metamask/metamask';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../shared/constants/transaction';
 import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
@@ -228,44 +229,52 @@ export const transactionFeeSelector = function (state, txData) {
   const currentCurrency = currentCurrencySelector(state);
   const conversionRate = conversionRateSelector(state);
   const nativeCurrency = getNativeCurrency(state);
-  const gasFeeEstimates = getGasFeeEstimates(state);
+  const gasFeeEstimates = getGasFeeEstimates(state) || {};
   const gasEstimateType = getGasEstimateType(state);
+  const networkSupportsEIP1559 = isEIP1559Network(state);
 
   const gasEstimationObject = {
     gasLimit: txData.txParams?.gas ?? '0x0',
   };
 
-  switch (gasEstimateType) {
-    case GAS_ESTIMATE_TYPES.NONE:
-      gasEstimationObject.gasPrice = txData.txParams?.gasPrice ?? '0x0';
-      break;
-    case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
+  if (networkSupportsEIP1559) {
+    const { medium = {}, gasPrice = '0' } = gasFeeEstimates;
+    if (txData.txParams?.type === TRANSACTION_ENVELOPE_TYPES.LEGACY) {
       gasEstimationObject.gasPrice =
-        txData.txParams?.gasPrice ?? decGWEIToHexWEI(gasFeeEstimates.gasPrice);
-      break;
-    case GAS_ESTIMATE_TYPES.LEGACY:
-      gasEstimationObject.gasPrice =
-        txData.txParams?.gasPrice ?? getAveragePriceEstimateInHexWEI(state);
-      break;
-    case GAS_ESTIMATE_TYPES.FEE_MARKET:
-      if (txData.txParams?.type === TRANSACTION_ENVELOPE_TYPES.LEGACY) {
+        txData.txParams?.gasPrice ?? decGWEIToHexWEI(gasPrice);
+    } else {
+      const { suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas } = medium;
+      gasEstimationObject.maxFeePerGas =
+        txData.txParams?.maxFeePerGas ??
+        decGWEIToHexWEI(suggestedMaxFeePerGas || gasPrice);
+      gasEstimationObject.maxPriorityFeePerGas =
+        txData.txParams?.maxPriorityFeePerGas ??
+        ((suggestedMaxPriorityFeePerGas &&
+          decGWEIToHexWEI(suggestedMaxPriorityFeePerGas)) ||
+          gasEstimationObject.maxFeePerGas);
+      gasEstimationObject.baseFeePerGas = decGWEIToHexWEI(
+        gasFeeEstimates.estimatedBaseFee,
+      );
+    }
+  } else {
+    switch (gasEstimateType) {
+      case GAS_ESTIMATE_TYPES.NONE:
         gasEstimationObject.gasPrice = txData.txParams?.gasPrice ?? '0x0';
-      } else {
-        gasEstimationObject.maxFeePerGas =
-          txData.txParams?.maxFeePerGas ??
-          decGWEIToHexWEI(gasFeeEstimates?.medium.suggestedMaxFeePerGas);
-        gasEstimationObject.maxPriorityFeePerGas =
-          txData.txParams?.maxPriorityFeePerGas ??
-          decGWEIToHexWEI(
-            gasFeeEstimates?.medium.suggestedMaxPriorityFeePerGas,
-          );
-        gasEstimationObject.baseFeePerGas = decGWEIToHexWEI(
-          gasFeeEstimates.estimatedBaseFee,
-        );
-      }
-      break;
-    default:
-      break;
+        break;
+      case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
+        gasEstimationObject.gasPrice =
+          txData.txParams?.gasPrice ??
+          decGWEIToHexWEI(gasFeeEstimates.gasPrice);
+        break;
+      case GAS_ESTIMATE_TYPES.LEGACY:
+        gasEstimationObject.gasPrice =
+          txData.txParams?.gasPrice ?? getAveragePriceEstimateInHexWEI(state);
+        break;
+      case GAS_ESTIMATE_TYPES.FEE_MARKET:
+        break;
+      default:
+        break;
+    }
   }
 
   const { txParams: { value = '0x0' } = {} } = txData;
