@@ -150,9 +150,12 @@ export default function ViewQuote() {
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
 
-  // For Swaps we want to get 'high' estimations by default.
-  // TODO: Only do this for EIP-1559 networks or use it for non EIP-1559 in Swaps as well.
-  const gasFeeInputs = useGasFeeInputs('high');
+  let gasFeeInputs;
+  if (EIP1559Network) {
+    // For Swaps we want to get 'high' estimations by default.
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    gasFeeInputs = useGasFeeInputs('high');
+  }
 
   const { isBestQuote } = usedQuote;
 

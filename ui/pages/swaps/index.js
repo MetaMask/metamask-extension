@@ -115,10 +115,11 @@ export default function Swap() {
   const EIP1559Network = useSelector(isEIP1559Network);
   const fromToken = useSelector(getFromToken);
 
-  // This will pre-load gas fees before going to the View Quote page.
-  // TODO: Only run this for EIP-1559 (hooks shouldn't be called conditionally)
-  // or use it for non EIP-1559 networks in Swaps as well.
-  useGasFeeEstimates();
+  if (EIP1559Network) {
+    // This will pre-load gas fees before going to the View Quote page.
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useGasFeeEstimates();
+  }
 
   const {
     balance: ethBalance,
