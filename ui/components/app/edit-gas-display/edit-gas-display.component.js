@@ -61,8 +61,6 @@ export default function EditGasDisplay({
 }) {
   const t = useContext(I18nContext);
 
-  const alwaysShowForm = !estimateToUse || hasGasErrors || false;
-
   const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
     transaction,
   );
@@ -179,7 +177,7 @@ export default function EditGasDisplay({
               onChange={setEstimateToUse}
             />
           )}
-        {!alwaysShowForm && !requireDappAcknowledgement && (
+        {!requireDappAcknowledgement && (
           <button
             className="edit-gas-display__advanced-button"
             onClick={() => setShowAdvancedForm(!showAdvancedForm)}
@@ -192,28 +190,27 @@ export default function EditGasDisplay({
             )}
           </button>
         )}
-        {!requireDappAcknowledgement &&
-          (alwaysShowForm || showAdvancedForm) && (
-            <AdvancedGasControls
-              gasFeeEstimates={gasFeeEstimates}
-              gasEstimateType={gasEstimateType}
-              estimateToUse={estimateToUse}
-              isGasEstimatesLoading={isGasEstimatesLoading}
-              gasLimit={gasLimit}
-              setGasLimit={setGasLimit}
-              maxPriorityFee={maxPriorityFeePerGas}
-              setMaxPriorityFee={setMaxPriorityFeePerGas}
-              maxFee={maxFeePerGas}
-              setMaxFee={setMaxFeePerGas}
-              gasPrice={gasPrice}
-              setGasPrice={setGasPrice}
-              maxPriorityFeeFiat={maxPriorityFeePerGasFiat}
-              maxFeeFiat={maxFeePerGasFiat}
-              gasErrors={gasErrors}
-              onManualChange={onManualChange}
-              minimumGasLimit={minimumGasLimit}
-            />
-          )}
+        {!requireDappAcknowledgement && showAdvancedForm && (
+          <AdvancedGasControls
+            gasFeeEstimates={gasFeeEstimates}
+            gasEstimateType={gasEstimateType}
+            estimateToUse={estimateToUse}
+            isGasEstimatesLoading={isGasEstimatesLoading}
+            gasLimit={gasLimit}
+            setGasLimit={setGasLimit}
+            maxPriorityFee={maxPriorityFeePerGas}
+            setMaxPriorityFee={setMaxPriorityFeePerGas}
+            maxFee={maxFeePerGas}
+            setMaxFee={setMaxFeePerGas}
+            gasPrice={gasPrice}
+            setGasPrice={setGasPrice}
+            maxPriorityFeeFiat={maxPriorityFeePerGasFiat}
+            maxFeeFiat={maxFeePerGasFiat}
+            gasErrors={gasErrors}
+            onManualChange={onManualChange}
+            minimumGasLimit={minimumGasLimit}
+          />
+        )}
       </div>
       {!requireDappAcknowledgement && showEducationButton && (
         <div className="edit-gas-display__education">
