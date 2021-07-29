@@ -325,7 +325,6 @@ export default class TransactionController extends EventEmitter {
    * @returns {txMeta}
    */
   async addUnapprovedTransaction(txParams, origin) {
-    console.log(txParams, origin);
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams);
 
