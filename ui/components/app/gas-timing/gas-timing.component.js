@@ -43,7 +43,7 @@ export default function GasTiming({
   // We'll need to use the useEffect hook below to make a call to calculate
   // the time to show
   const isUnknownLow =
-    gasFeeEstimates.low &&
+    gasFeeEstimates?.low &&
     Number(maxPriorityFeePerGas) <
       Number(gasFeeEstimates.low.suggestedMaxPriorityFeePerGas);
 
