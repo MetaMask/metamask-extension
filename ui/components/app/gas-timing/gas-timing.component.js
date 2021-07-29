@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
 
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
+import { usePrevious } from '../../../hooks/usePrevious';
 import { I18nContext } from '../../../contexts/i18n';
 
 import Typography from '../../ui/typography/typography';
@@ -47,23 +48,36 @@ export default function GasTiming({
     Number(maxPriorityFeePerGas) <
       Number(gasFeeEstimates.low.suggestedMaxPriorityFeePerGas);
 
+  const previousMaxFeePerGas = usePrevious(maxFeePerGas);
+  const previousMaxPriorityFeePerGas = usePrevious(maxPriorityFeePerGas);
+  const previousIsUnknownLow = usePrevious(isUnknownLow);
+
   useEffect(() => {
     const priority = maxPriorityFeePerGas;
     const fee = maxFeePerGas;
 
-    if (isUnknownLow) {
+    if (
+      isUnknownLow ||
+      priority !== previousMaxPriorityFeePerGas ||
+      fee !== previousMaxFeePerGas
+    ) {
       getGasTimeEstimate(priority, fee).then((result) => {
         if (maxFeePerGas === fee && maxPriorityFeePerGas === priority) {
           setCustomEstimatedTime(result);
         }
       });
     }
+
+    if (isUnknownLow !== false && previousIsUnknownLow === true) {
+      setCustomEstimatedTime(null);
+    }
   }, [
     maxPriorityFeePerGas,
     maxFeePerGas,
     isUnknownLow,
-    customEstimatedTime,
-    gasFeeEstimates,
+    previousMaxFeePerGas,
+    previousMaxPriorityFeePerGas,
+    previousIsUnknownLow,
   ]);
 
   const t = useContext(I18nContext);
