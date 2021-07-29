@@ -137,7 +137,7 @@ export default function ViewQuote() {
   const conversionRate = useSelector(conversionRateSelector);
   const currentCurrency = useSelector(getCurrentCurrency);
   const swapsTokens = useSelector(getTokens);
-  const EIP1559NetworkEnabled = useSelector(isEIP1559Network);
+  const EIP1559Network = useSelector(isEIP1559Network);
   const balanceError = useSelector(getBalanceError);
   const fetchParams = useSelector(getFetchParams);
   const approveTxParams = useSelector(getApproveTxParams);
@@ -177,7 +177,7 @@ export default function ViewQuote() {
   let maxPriorityFeePerGas;
   let baseAndPriorityFeePerGas;
 
-  if (EIP1559NetworkEnabled) {
+  if (EIP1559Network) {
     const {
       maxFeePerGas: suggestedMaxFeePerGas,
       maxPriorityFeePerGas: suggestedMaxPriorityFeePerGas,
@@ -195,7 +195,7 @@ export default function ViewQuote() {
 
   const gasTotalInWeiHex = calcGasTotal(
     maxGasLimit,
-    EIP1559NetworkEnabled ? maxFeePerGas : gasPrice,
+    EIP1559Network ? maxFeePerGas : gasPrice,
   );
 
   const { tokensWithBalances } = useTokenTracker(swapsTokens, true);
@@ -227,7 +227,7 @@ export default function ViewQuote() {
   const renderablePopoverData = useMemo(() => {
     return quotesToRenderableData(
       quotes,
-      EIP1559NetworkEnabled ? baseAndPriorityFeePerGas : gasPrice,
+      EIP1559Network ? baseAndPriorityFeePerGas : gasPrice,
       conversionRate,
       currentCurrency,
       approveGas,
@@ -238,7 +238,7 @@ export default function ViewQuote() {
     quotes,
     gasPrice,
     baseAndPriorityFeePerGas,
-    EIP1559NetworkEnabled,
+    EIP1559Network,
     conversionRate,
     currentCurrency,
     approveGas,
@@ -265,7 +265,7 @@ export default function ViewQuote() {
   const { feeInFiat, feeInEth } = getRenderableNetworkFeesForQuote({
     tradeGas: usedGasLimit,
     approveGas,
-    gasPrice: EIP1559NetworkEnabled ? baseAndPriorityFeePerGas : gasPrice,
+    gasPrice: EIP1559Network ? baseAndPriorityFeePerGas : gasPrice,
     currentCurrency,
     conversionRate,
     tradeValue,
@@ -282,7 +282,7 @@ export default function ViewQuote() {
   } = getRenderableNetworkFeesForQuote({
     tradeGas: maxGasLimit,
     approveGas,
-    gasPrice: EIP1559NetworkEnabled ? maxFeePerGas : gasPrice,
+    gasPrice: EIP1559Network ? maxFeePerGas : gasPrice,
     currentCurrency,
     conversionRate,
     tradeValue,
@@ -501,7 +501,7 @@ export default function ViewQuote() {
   const nonGasFeeIsPositive = new BigNumber(nonGasFee, 16).gt(0);
   const approveGasTotal = calcGasTotal(
     approveGas || '0x0',
-    EIP1559NetworkEnabled ? maxFeePerGas : gasPrice,
+    EIP1559Network ? maxFeePerGas : gasPrice,
   );
   const extraNetworkFeeTotalInHexWEI = new BigNumber(nonGasFee, 16)
     .plus(approveGasTotal, 16)
@@ -522,7 +522,7 @@ export default function ViewQuote() {
   }
 
   const onFeeCardMaxRowClick = () => {
-    EIP1559NetworkEnabled
+    EIP1559Network
       ? setShowEditGasPopover(true)
       : dispatch(
           showModal({
@@ -662,7 +662,7 @@ export default function ViewQuote() {
           />
         )}
 
-        {showEditGasPopover && EIP1559NetworkEnabled && (
+        {showEditGasPopover && EIP1559Network && (
           <EditGasPopover
             popoverTitle={t('customGas')}
             transaction={{
@@ -749,7 +749,7 @@ export default function ViewQuote() {
                 : memoizedTokenConversionRates[destinationToken.address]
             }
             chainId={chainId}
-            EIP1559NetworkEnabled={EIP1559NetworkEnabled}
+            EIP1559Network={EIP1559Network}
             maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(maxPriorityFeePerGas)}
           />
         </div>
@@ -772,9 +772,8 @@ export default function ViewQuote() {
           balanceError ||
           tokenBalanceUnavailable ||
           disableSubmissionDueToPriceWarning ||
-          (EIP1559NetworkEnabled && baseAndPriorityFeePerGas === undefined) ||
-          (!EIP1559NetworkEnabled &&
-            (gasPrice === null || gasPrice === undefined))
+          (EIP1559Network && baseAndPriorityFeePerGas === undefined) ||
+          (!EIP1559Network && (gasPrice === null || gasPrice === undefined))
         }
         className={isShowingWarning && 'view-quote__thin-swaps-footer'}
         showTopBorder

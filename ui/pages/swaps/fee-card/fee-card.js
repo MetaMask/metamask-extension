@@ -37,7 +37,7 @@ export default function FeeCard({
   onQuotesClick,
   tokenConversionRate,
   chainId,
-  EIP1559NetworkEnabled,
+  EIP1559Network,
   maxPriorityFeePerGasDecGWEI,
 }) {
   const t = useContext(I18nContext);
@@ -95,7 +95,7 @@ export default function FeeCard({
         </div>
       </div>
       <div className="fee-card__main">
-        {EIP1559NetworkEnabled && (
+        {EIP1559Network && (
           <TransactionDetail
             rows={[
               <TransactionDetailItem
@@ -170,7 +170,7 @@ export default function FeeCard({
             ]}
           />
         )}
-        {!EIP1559NetworkEnabled && (
+        {!EIP1559Network && (
           <div
             className="fee-card__row-header"
             data-testid="fee-card__row-header"
@@ -219,7 +219,7 @@ export default function FeeCard({
             </div>
           </div>
         )}
-        {!EIP1559NetworkEnabled && (
+        {!EIP1559Network && (
           <div
             className="fee-card__row-header"
             onClick={() => onFeeCardMaxRowClick()}
@@ -302,6 +302,6 @@ FeeCard.propTypes = {
   numberOfQuotes: PropTypes.number.isRequired,
   tokenConversionRate: PropTypes.number,
   chainId: PropTypes.string.isRequired,
-  EIP1559NetworkEnabled: PropTypes.bool.isRequired,
+  EIP1559Network: PropTypes.bool.isRequired,
   maxPriorityFeePerGasDecGWEI: PropTypes.string,
 };

@@ -112,7 +112,7 @@ export default function Swap() {
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const useNewSwapsApi = useSelector(getUseNewSwapsApi);
-  const EIP1559NetworkEnabled = useSelector(isEIP1559Network);
+  const EIP1559Network = useSelector(isEIP1559Network);
   const fromToken = useSelector(getFromToken);
 
   useGasFeeEstimates(); // This will pre-load gas fees before going to the View Quote page.
@@ -191,20 +191,14 @@ export default function Swap() {
           dispatch(setAggregatorMetadata(newAggregatorMetadata));
         },
       );
-      if (!EIP1559NetworkEnabled) {
+      if (!EIP1559Network) {
         dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
       }
       return () => {
         dispatch(prepareToLeaveSwaps());
       };
     }
-  }, [
-    dispatch,
-    chainId,
-    isFeatureFlagLoaded,
-    useNewSwapsApi,
-    EIP1559NetworkEnabled,
-  ]);
+  }, [dispatch, chainId, isFeatureFlagLoaded, useNewSwapsApi, EIP1559Network]);
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);

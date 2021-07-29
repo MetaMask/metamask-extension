@@ -658,7 +658,7 @@ export function getSwapsTokensReceivedFromTxMeta(
   chainId,
 ) {
   const txReceipt = txMeta?.txReceipt;
-  const EIP1559NetworkEnabled = txMeta?.txReceipt?.type === '0x2';
+  const EIP1559Network = txMeta?.txReceipt?.type === '0x2';
   if (isSwapsDefaultTokenSymbol(tokenSymbol, chainId)) {
     if (
       !txReceipt ||
@@ -673,7 +673,7 @@ export function getSwapsTokensReceivedFromTxMeta(
     if (approvalTxMeta && approvalTxMeta.txReceipt) {
       approvalTxGasCost = calcGasTotal(
         approvalTxMeta.txReceipt.gasUsed,
-        EIP1559NetworkEnabled
+        EIP1559Network
           ? approvalTxMeta.txReceipt.effectiveGasPrice
           : approvalTxMeta.txParams.gasPrice,
       );
@@ -681,9 +681,7 @@ export function getSwapsTokensReceivedFromTxMeta(
 
     const gasCost = calcGasTotal(
       txReceipt.gasUsed,
-      EIP1559NetworkEnabled
-        ? txReceipt.effectiveGasPrice
-        : txMeta.txParams.gasPrice,
+      EIP1559Network ? txReceipt.effectiveGasPrice : txMeta.txParams.gasPrice,
     );
     const totalGasCost = new BigNumber(gasCost, 16)
       .plus(approvalTxGasCost, 16)

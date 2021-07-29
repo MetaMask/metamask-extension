@@ -510,7 +510,7 @@ export const fetchQuotesAndSetQuoteState = (
 
     const hardwareWalletUsed = isHardwareWallet(state);
     const hardwareWalletType = getHardwareWalletType(state);
-    const EIP1559NetworkEnabled = isEIP1559Network(state);
+    const EIP1559Network = isEIP1559Network(state);
     metaMetricsEvent({
       event: 'Quotes Requested',
       category: 'swaps',
@@ -552,7 +552,7 @@ export const fetchQuotesAndSetQuoteState = (
         ),
       );
 
-      const gasPriceFetchPromise = EIP1559NetworkEnabled
+      const gasPriceFetchPromise = EIP1559Network
         ? null // For EIP 1559 we can get gas prices via "useGasFeeEstimates".
         : dispatch(fetchAndSetSwapsGasPriceInfo());
 
@@ -626,7 +626,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const hardwareWalletUsed = isHardwareWallet(state);
-    const EIP1559NetworkEnabled = isEIP1559Network(state);
+    const EIP1559Network = isEIP1559Network(state);
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
       useNewSwapsApi: false,
@@ -665,7 +665,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     let maxFeePerGas;
     let maxPriorityFeePerGas;
 
-    if (EIP1559NetworkEnabled) {
+    if (EIP1559Network) {
       const {
         high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
       } = getGasFeeEstimates(state);
@@ -695,7 +695,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
 
     const usedGasPrice = getUsedSwapsGasPrice(state);
     usedTradeTxParams.gas = maxGasLimit;
-    if (EIP1559NetworkEnabled) {
+    if (EIP1559Network) {
       usedTradeTxParams.maxFeePerGas = maxFeePerGas;
       usedTradeTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
       delete usedTradeTxParams.gasPrice;
@@ -717,7 +717,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const gasEstimateTotalInUSD = getValueFromWeiHex({
       value: calcGasTotal(
         totalGasLimitEstimate,
-        EIP1559NetworkEnabled ? maxFeePerGas : usedGasPrice,
+        EIP1559Network ? maxFeePerGas : usedGasPrice,
       ),
       toCurrency: 'usd',
       conversionRate: usdConversionRate,
@@ -750,7 +750,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: getHardwareWalletType(state),
     };
-    if (EIP1559NetworkEnabled) {
+    if (EIP1559Network) {
       swapMetaData.max_fee_per_gas = maxFeePerGas;
       swapMetaData.max_priority_fee_per_gas = maxPriorityFeePerGas;
     }
@@ -784,7 +784,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     }
 
     if (approveTxParams) {
-      if (EIP1559NetworkEnabled) {
+      if (EIP1559Network) {
         approveTxParams.maxFeePerGas = maxFeePerGas;
         approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
         delete approveTxParams.gasPrice;
