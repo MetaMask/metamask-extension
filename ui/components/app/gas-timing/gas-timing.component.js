@@ -90,7 +90,7 @@ export default function GasTiming({
     return null;
   }
 
-  const { low, medium, high } = gasFeeEstimates;
+  const { low = {}, medium = {}, high = {} } = gasFeeEstimates;
 
   let text = '';
   let attitude = 'positive';
