@@ -2,6 +2,8 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
+import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+
 import messages from '../../../../app/_locales/en/messages.json';
 
 import { getMessage } from '../../../helpers/utils/i18n-helper';
@@ -34,10 +36,8 @@ const MOCK_FEE_ESTIMATE = {
 };
 
 describe('Gas timing', () => {
-  let useI18nContext;
-
   beforeEach(() => {
-    useI18nContext = sinon.stub(i18nhooks, 'useI18nContext');
+    const useI18nContext = sinon.stub(i18nhooks, 'useI18nContext');
     useI18nContext.returns((key, variables) =>
       getMessage('en', messages, key, variables),
     );
@@ -50,6 +50,7 @@ describe('Gas timing', () => {
     sinon.stub(useGasFeeEstimatesExport, 'useGasFeeEstimates').returns({
       isGasEstimatesLoading: true,
       gasFeeEstimates: null,
+      gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
     });
 
     const wrapper = shallow(<GasTiming />);
@@ -60,6 +61,7 @@ describe('Gas timing', () => {
     sinon.stub(useGasFeeEstimatesExport, 'useGasFeeEstimates').returns({
       isGasEstimatesLoading: false,
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
+      gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
     });
 
     const wrapper = shallow(<GasTiming maxPriorityFeePerGas={10} />);
@@ -70,6 +72,7 @@ describe('Gas timing', () => {
     sinon.stub(useGasFeeEstimatesExport, 'useGasFeeEstimates').returns({
       isGasEstimatesLoading: false,
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
+      gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
     });
 
     const wrapper = shallow(<GasTiming maxPriorityFeePerGas={8} />);
@@ -80,6 +83,7 @@ describe('Gas timing', () => {
     sinon.stub(useGasFeeEstimatesExport, 'useGasFeeEstimates').returns({
       isGasEstimatesLoading: false,
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
+      gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
     });
 
     const wrapper = shallow(<GasTiming maxPriorityFeePerGas={3} />);
