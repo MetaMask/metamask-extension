@@ -10,6 +10,11 @@ const state = {
   },
   "activeTab": {},
   "metamask": {
+    "networkDetails": {
+      "EIPS": {
+        "1559": true
+      },
+    },
     "isInitialized": true,
     "isUnlocked": true,
     "isAccountMenuOpen": false,
