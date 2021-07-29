@@ -97,7 +97,8 @@ function getMatchingEstimateFromGasFees(
     findKey(gasFeeEstimates, (estimate) => {
       if (process.env.SHOW_EIP_1559_UI) {
         return (
-          Number(estimate?.suggestedMaxPriorityFeePerGas) === Number(maxPriorityFeePerGas) &&
+          Number(estimate?.suggestedMaxPriorityFeePerGas) ===
+            Number(maxPriorityFeePerGas) &&
           Number(estimate?.suggestedMaxFeePerGas) === Number(maxFeePerGas)
         );
       }
