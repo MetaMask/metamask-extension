@@ -672,7 +672,7 @@ export default function ViewQuote() {
               txParams: {
                 maxFeePerGas,
                 maxPriorityFeePerGas,
-                gasLimit: maxGasLimit,
+                gas: maxGasLimit,
               },
             }}
             minimumGasLimit={usedGasLimit}

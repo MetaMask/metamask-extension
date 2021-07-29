@@ -212,8 +212,8 @@ export function useGasFeeInputs(
       : null,
   );
   const [gasLimit, setGasLimit] = useState(
-    transaction?.txParams?.gasLimit
-      ? hexToDecimal(transaction.txParams.gasLimit)
+    transaction?.txParams?.gas
+      ? Number(hexToDecimal(transaction.txParams.gas))
       : 21000,
   );
   const [estimateToUse, setInternalEstimateToUse] = useState(
