@@ -474,6 +474,7 @@ describe('Send Slice', () => {
               maxPriorityFeePerGas: '0x3b9aca00', // 1 GWEI
               gasLimit: '0x5208', // 21000
             },
+            eip1559support: true,
           };
 
           const action = {
@@ -524,6 +525,7 @@ describe('Send Slice', () => {
               maxPriorityFeePerGas: '0x3b9aca00', // 1 GWEI
               gasLimit: '0x5208', // 21000
             },
+            eip1559support: true,
           };
 
           const action = {

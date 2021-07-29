@@ -116,6 +116,7 @@ export default class ConfirmTransactionBase extends Component {
     isEthGasPrice: PropTypes.bool,
     noGasPrice: PropTypes.bool,
     setDefaultHomeActiveTabName: PropTypes.func,
+    supportsEIP1599: PropTypes.bool,
   };
 
   state = {
@@ -303,6 +304,7 @@ export default class ConfirmTransactionBase extends Component {
       isEthGasPrice,
       noGasPrice,
       txData,
+      supportsEIP1599,
     } = this.props;
     const { t } = this.context;
 
@@ -385,7 +387,9 @@ export default class ConfirmTransactionBase extends Component {
                   detailTitle={
                     txData.dappSuggestedGasFees ? (
                       <>
-                        {t('transactionDetailDappGasHeading', [getRequestingOrigin()])}
+                        {t('transactionDetailDappGasHeading', [
+                          getRequestingOrigin(),
+                        ])}
                         <InfoTooltip
                           contentText={t('transactionDetailDappGasTooltip')}
                           position="top"
@@ -453,11 +457,13 @@ export default class ConfirmTransactionBase extends Component {
                     />,
                   ])}
                   subTitle={
-                    <GasTiming
-                      maxPriorityFeePerGas={
-                        txData.txParams.maxPriorityFeePerGas
-                      }
-                    />
+                    supportsEIP1599 && (
+                      <GasTiming
+                        maxPriorityFeePerGas={
+                          txData.txParams.maxPriorityFeePerGas
+                        }
+                      />
+                    )
                   }
                 />,
                 <TransactionDetailItem
@@ -808,7 +814,7 @@ export default class ConfirmTransactionBase extends Component {
     }
 
     /**
-     * Thismakes a request to get estimates and begin polling, keeping track of the poll
+     * This makes a request to get estimates and begin polling, keeping track of the poll
      * token in component state.
      * It then disconnects polling upon componentWillUnmount. If the hook is unmounted
      * while waiting for `getGasFeeEstimatesAndStartPolling` to resolve, the `_isMounted`

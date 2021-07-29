@@ -73,6 +73,7 @@ import {
   getGasEstimateType,
   getTokens,
   getUnapprovedTxs,
+  isEIP1559Network,
 } from '../metamask/metamask';
 import { resetEnsResolution } from '../ens';
 import {
@@ -408,6 +409,7 @@ export const initializeSendState = createAsyncThunk(
     const state = thunkApi.getState();
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
+    const eip1559support = isEIP1559Network(state);
     const {
       send: { asset, stage, recipient, amount, draftTransaction },
       metamask,
@@ -505,6 +507,7 @@ export const initializeSendState = createAsyncThunk(
       gasLimit,
       gasTotal: addHexPrefix(calcGasTotal(gasLimit, gasPrice)),
       gasEstimatePollToken,
+      eip1559support,
     };
   },
 );
@@ -516,6 +519,8 @@ export const initialState = {
   status: SEND_STATUSES.VALID,
   // Determines type of transaction being sent, defaulted to 0x0 (legacy)
   transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+  // tracks whether the current network supports EIP 1559 transactions
+  eip1559support: false,
   account: {
     // from account address, defaults to selected account. will be the account
     // the original transaction was sent from in the case of the EDIT stage
@@ -910,28 +915,40 @@ const slice = createSlice({
         }
 
         // We need to make sure that we only include the right gas fee fields
-        // based on the type of transaction we are sending. We will also set
+        // based on the type of transaction the network supports. We will also set
         // the type param here. We must delete the opposite fields to avoid
         // stale data in txParams.
-        switch (state.transactionType) {
-          case TRANSACTION_ENVELOPE_TYPES.FEE_MARKET:
-            delete state.draftTransaction.txParams.gasPrice;
+        if (state.eip1559support) {
+          state.draftTransaction.txParams.type =
+            TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
 
-            state.draftTransaction.txParams.type =
-              TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
+          state.draftTransaction.txParams.maxFeePerGas = state.gas.maxFeePerGas;
+          state.draftTransaction.txParams.maxPriorityFeePerGas =
+            state.gas.maxPriorityFeePerGas;
+
+          if (
+            !state.draftTransaction.txParams.maxFeePerGas ||
+            state.draftTransaction.txParams.maxFeePerGas === '0x0'
+          ) {
+            state.draftTransaction.txParams.maxFeePerGas = state.gas.gasPrice;
+          }
+
+          if (
+            !state.draftTransaction.txParams.maxPriorityFeePerGas ||
+            state.draftTransaction.txParams.maxPriorityFeePerGas === '0x0'
+          ) {
             state.draftTransaction.txParams.maxPriorityFeePerGas =
-              state.gas.maxPriorityFeePerGas;
-            state.draftTransaction.txParams.maxFeePerGas =
-              state.gas.maxFeePerGas;
-            break;
-          case TRANSACTION_ENVELOPE_TYPES.LEGACY:
-          default:
-            delete state.draftTransaction.txParams.maxFeePerGas;
-            delete state.draftTransaction.txParams.maxPriorityFeePerGas;
+              state.draftTransaction.txParams.maxFeePerGas;
+          }
 
-            state.draftTransaction.txParams.gasPrice = state.gas.gasPrice;
-            state.draftTransaction.txParams.type =
-              TRANSACTION_ENVELOPE_TYPES.LEGACY;
+          delete state.draftTransaction.txParams.gasPrice;
+        } else {
+          delete state.draftTransaction.txParams.maxFeePerGas;
+          delete state.draftTransaction.txParams.maxPriorityFeePerGas;
+
+          state.draftTransaction.txParams.gasPrice = state.gas.gasPrice;
+          state.draftTransaction.txParams.type =
+            TRANSACTION_ENVELOPE_TYPES.LEGACY;
         }
       }
     },
@@ -1163,6 +1180,7 @@ const slice = createSlice({
       .addCase(initializeSendState.fulfilled, (state, action) => {
         // writes the computed initialized state values into the slice and then
         // calculates slice validity using the caseReducers.
+        state.eip1559support = action.payload.eip1559support;
         state.account.address = action.payload.address;
         state.account.balance = action.payload.nativeBalance;
         state.asset.balance = action.payload.assetBalance;

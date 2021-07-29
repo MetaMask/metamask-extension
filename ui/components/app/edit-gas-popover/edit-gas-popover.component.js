@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-
 import { useDispatch, useSelector } from 'react-redux';
+import { isEIP1559Network } from '../../../ducks/metamask/metamask';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
@@ -107,19 +107,20 @@ export default function EditGasPopover({
       closePopover();
     }
 
-    const newGasSettings =
-      gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET
-        ? {
-            gas: decimalToHex(gasLimit),
-            gasLimit: decimalToHex(gasLimit),
-            maxFeePerGas: decGWEIToHexWEI(maxFeePerGas),
-            maxPriorityFeePerGas: decGWEIToHexWEI(maxPriorityFeePerGas),
-          }
-        : {
-            gas: decimalToHex(gasLimit),
-            gasLimit: decimalToHex(gasLimit),
-            gasPrice: decGWEIToHexWEI(gasPrice),
-          };
+    const newGasSettings = networkSupports1559
+      ? {
+          gas: decimalToHex(gasLimit),
+          gasLimit: decimalToHex(gasLimit),
+          maxFeePerGas: decGWEIToHexWEI(maxFeePerGas ?? gasPrice),
+          maxPriorityFeePerGas: decGWEIToHexWEI(
+            maxPriorityFeePerGas ?? maxFeePerGas ?? gasPrice,
+          ),
+        }
+      : {
+          gas: decimalToHex(gasLimit),
+          gasLimit: decimalToHex(gasLimit),
+          gasPrice: decGWEIToHexWEI(gasPrice),
+        };
 
     switch (mode) {
       case EDIT_GAS_MODES.CANCEL:
@@ -153,7 +154,7 @@ export default function EditGasPopover({
     gasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    gasEstimateType,
+    networkSupports1559,
   ]);
 
   let title = t('editGasTitle');
