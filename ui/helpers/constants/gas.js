@@ -7,7 +7,7 @@ export const GAS_FORM_ERRORS = {
   MAX_FEE_HIGH_WARNING: 'editGasMaxFeeHigh',
 };
 
-export function getGasFormErrorText(type, t, { minimumGasLimit }) {
+export function getGasFormErrorText(type, t, { minimumGasLimit } = {}) {
   switch (type) {
     case GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS:
       return t('editGasLimitOutOfBounds', [minimumGasLimit]);
