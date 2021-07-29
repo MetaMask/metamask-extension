@@ -45,6 +45,7 @@ import {
   getValueFromWeiHex,
   decGWEIToHexWEI,
   hexWEIToDecGWEI,
+  addHexes,
 } from '../../helpers/utils/conversions.util';
 import { conversionLessThan } from '../../../shared/modules/conversion.utils';
 import { calcTokenAmount } from '../../helpers/utils/token-util';
@@ -664,16 +665,22 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
 
     let maxFeePerGas;
     let maxPriorityFeePerGas;
+    let baseAndPriorityFeePerGas;
 
     if (EIP1559Network) {
       const {
         high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
+        estimatedBaseFee = '0',
       } = getGasFeeEstimates(state);
       maxFeePerGas =
         customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
       maxPriorityFeePerGas =
         customMaxPriorityFeePerGas ||
         decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
+      baseAndPriorityFeePerGas = addHexes(
+        decGWEIToHexWEI(estimatedBaseFee),
+        maxPriorityFeePerGas,
+      );
     }
 
     const usedQuote = getUsedQuote(state);
@@ -717,7 +724,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const gasEstimateTotalInUSD = getValueFromWeiHex({
       value: calcGasTotal(
         totalGasLimitEstimate,
-        EIP1559Network ? maxFeePerGas : usedGasPrice,
+        EIP1559Network ? baseAndPriorityFeePerGas : usedGasPrice,
       ),
       toCurrency: 'usd',
       conversionRate: usdConversionRate,
@@ -753,6 +760,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     if (EIP1559Network) {
       swapMetaData.max_fee_per_gas = maxFeePerGas;
       swapMetaData.max_priority_fee_per_gas = maxPriorityFeePerGas;
+      swapMetaData.base_and_priority_fee_per_gas = baseAndPriorityFeePerGas;
     }
 
     metaMetricsEvent({

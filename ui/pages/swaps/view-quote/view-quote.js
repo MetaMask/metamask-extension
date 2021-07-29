@@ -505,7 +505,7 @@ export default function ViewQuote() {
   const nonGasFeeIsPositive = new BigNumber(nonGasFee, 16).gt(0);
   const approveGasTotal = calcGasTotal(
     approveGas || '0x0',
-    EIP1559Network ? maxFeePerGas : gasPrice,
+    EIP1559Network ? baseAndPriorityFeePerGas : gasPrice,
   );
   const extraNetworkFeeTotalInHexWEI = new BigNumber(nonGasFee, 16)
     .plus(approveGasTotal, 16)
