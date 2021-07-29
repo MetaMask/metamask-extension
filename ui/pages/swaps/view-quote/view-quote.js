@@ -151,6 +151,7 @@ export default function ViewQuote() {
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
 
   // For Swaps we want to get 'high' estimations by default.
+  // TODO: Only do this for EIP-1559 networks or use it for non EIP-1559 in Swaps as well.
   const gasFeeInputs = useGasFeeInputs('high');
 
   const { isBestQuote } = usedQuote;

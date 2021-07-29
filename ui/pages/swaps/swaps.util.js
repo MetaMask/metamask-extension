@@ -11,6 +11,7 @@ import {
   BSC,
   RINKEBY,
 } from '../../../shared/constants/swaps';
+import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
 import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
@@ -658,7 +659,8 @@ export function getSwapsTokensReceivedFromTxMeta(
   chainId,
 ) {
   const txReceipt = txMeta?.txReceipt;
-  const EIP1559Network = txMeta?.txReceipt?.type === '0x2';
+  const EIP1559Network =
+    txMeta?.txReceipt?.type === TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
   if (isSwapsDefaultTokenSymbol(tokenSymbol, chainId)) {
     if (
       !txReceipt ||
@@ -674,7 +676,7 @@ export function getSwapsTokensReceivedFromTxMeta(
       approvalTxGasCost = calcGasTotal(
         approvalTxMeta.txReceipt.gasUsed,
         EIP1559Network
-          ? approvalTxMeta.txReceipt.effectiveGasPrice
+          ? approvalTxMeta.txReceipt.effectiveGasPrice // Base fee + priority fee.
           : approvalTxMeta.txParams.gasPrice,
       );
     }
