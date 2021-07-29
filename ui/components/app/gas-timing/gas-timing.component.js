@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { isEIP1559Network } from '../../../ducks/metamask/metamask';
+import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { I18nContext } from '../../../contexts/i18n';
 
@@ -14,11 +14,13 @@ import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 const SECOND_CUTOFF = 90;
 
 export default function GasTiming({ maxPriorityFeePerGas }) {
-  const { gasFeeEstimates, isGasEstimatesLoading } = useGasFeeEstimates();
+  const {
+    gasFeeEstimates,
+    isGasEstimatesLoading,
+    gasEstimateType,
+  } = useGasFeeEstimates();
 
   const t = useContext(I18nContext);
-
-  const networkSupports1559 = useSelector(isEIP1559Network);
 
   // Shows "seconds" as unit of time if under SECOND_CUTOFF, otherwise "minutes"
   const toHumanReadableTime = (milliseconds = 1) => {
@@ -31,7 +33,10 @@ export default function GasTiming({ maxPriorityFeePerGas }) {
 
   // Don't show anything if we don't have enough information
   // or if the network doesn't support 1559
-  if (isGasEstimatesLoading || !networkSupports1559) {
+  if (
+    isGasEstimatesLoading ||
+    gasEstimateType !== GAS_ESTIMATE_TYPES.FEE_MARKET
+  ) {
     return null;
   }
 
