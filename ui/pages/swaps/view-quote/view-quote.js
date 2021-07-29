@@ -665,7 +665,6 @@ export default function ViewQuote() {
 
         {showEditGasPopover && EIP1559Network && (
           <EditGasPopover
-            popoverTitle={t('customGas')}
             transaction={{
               txParams: {
                 maxFeePerGas,
