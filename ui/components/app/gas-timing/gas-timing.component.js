@@ -32,7 +32,6 @@ export default function GasTiming({ maxPriorityFeePerGas }) {
   };
 
   // Don't show anything if we don't have enough information
-  // or if the network doesn't support 1559
   if (
     isGasEstimatesLoading ||
     gasEstimateType !== GAS_ESTIMATE_TYPES.FEE_MARKET
