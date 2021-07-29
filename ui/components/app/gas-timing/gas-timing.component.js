@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -8,7 +8,15 @@ import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { I18nContext } from '../../../contexts/i18n';
 
 import Typography from '../../ui/typography/typography';
-import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import {
+  TYPOGRAPHY,
+  COLORS,
+  TEXT_ALIGN,
+  FONT_WEIGHT,
+} from '../../../helpers/constants/design-system';
+import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
+
+import { getGasTimeEstimate } from '../../../store/actions';
 
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
@@ -19,6 +27,35 @@ export default function GasTiming({ maxPriorityFeePerGas, maxFeePerGas }) {
     isGasEstimatesLoading,
     gasEstimateType,
   } = useGasFeeEstimates();
+
+  const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
+
+  // If the user has chosen a value lower than the low gas fee estimate,
+  // We'll need to use the useEffect hook below to make a call to calculate
+  // the time to show
+  const isUnknownLow =
+    gasFeeEstimates.low &&
+    Number(maxPriorityFeePerGas) <
+      Number(gasFeeEstimates.low.suggestedMaxPriorityFeePerGas);
+
+  useEffect(() => {
+    const priority = maxPriorityFeePerGas;
+    const fee = maxFeePerGas;
+
+    if (isUnknownLow) {
+      getGasTimeEstimate(priority, fee).then((result) => {
+        if (maxFeePerGas === fee && maxPriorityFeePerGas === priority) {
+          setCustomEstimatedTime(result);
+        }
+      });
+    }
+  }, [
+    maxPriorityFeePerGas,
+    maxFeePerGas,
+    isUnknownLow,
+    customEstimatedTime,
+    gasFeeEstimates,
+  ]);
 
   const t = useContext(I18nContext);
 
@@ -67,19 +104,33 @@ export default function GasTiming({ maxPriorityFeePerGas, maxFeePerGas }) {
 
     // If the user has chosen a value less than our low estimate,
     // calculate a potential wait time
-    if (
-      Number(maxPriorityFeePerGas) < Number(low.suggestedMaxPriorityFeePerGas)
-    ) {
-      const times =
-        /* gasFeeController.getTimeEstimate(maxPriorityFeePerGas, maxFeePerGas); */
-      if (!times || times === 'unknown' || times.upperTimeBound === 'unknown') {
-        text = t('unknown')
+    if (isUnknownLow) {
+      if (
+        !customEstimatedTime ||
+        customEstimatedTime === 'unknown' ||
+        customEstimatedTime.upperTimeBound === 'unknown'
+      ) {
+        return (
+          <div className="edit-gas-display__error">
+            <Typography
+              color={COLORS.ERROR1}
+              variant={TYPOGRAPHY.H7}
+              align={TEXT_ALIGN.CENTER}
+              fontWeight={FONT_WEIGHT.BOLD}
+            >
+              {t('editGasTooLow')}{' '}
+              <InfoTooltip
+                position="top"
+                contentText={t('editGasTooLowTooltip')}
+              />
+            </Typography>
+          </div>
+        );
       }
-      else {
-        text = t('gasTimingNegative', [toHumanReadableTime(value)]);
-      }
-    }
-    else {
+      text = t('gasTimingNegative', [
+        toHumanReadableTime(Number(customEstimatedTime.upperTimeBound)),
+      ]);
+    } else {
       text = t('gasTimingNegative', [
         toHumanReadableTime(low.maxWaitTimeEstimate),
       ]);
