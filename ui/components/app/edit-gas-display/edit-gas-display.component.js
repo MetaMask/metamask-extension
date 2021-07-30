@@ -61,6 +61,7 @@ export default function EditGasDisplay({
   gasErrors,
   onManualChange,
   minimumGasLimit,
+  networkSupports1559,
 }) {
   const t = useContext(I18nContext);
 
@@ -113,9 +114,14 @@ export default function EditGasDisplay({
           </div>
         )}
         <TransactionTotalBanner
-          total={estimatedMinimumFiat}
+          total={
+            networkSupports1559
+              ? `~ ${estimatedMinimumFiat}`
+              : estimatedMaximumNative
+          }
           detail={
-            process.env.SHOW_EIP_1559_UI &&
+            networkSupports1559 &&
+            estimatedMaximumFiat !== undefined &&
             t('editGasTotalBannerSubtitle', [
               <Typography
                 fontWeight={FONT_WEIGHT.BOLD}
@@ -264,4 +270,5 @@ EditGasDisplay.propTypes = {
   gasErrors: PropTypes.object,
   onManualChange: PropTypes.func,
   minimumGasLimit: PropTypes.number,
+  networkSupports1559: PropTypes.boolean,
 };
