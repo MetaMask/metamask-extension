@@ -86,6 +86,7 @@ describe('FeeCard', () => {
     const props = createProps({
       EIP1559Network: true,
       maxPriorityFeePerGasDecGWEI: '3',
+      maxFeePerGasDecGWEI: '4',
     });
     const { getByText } = renderWithProvider(<FeeCard {...props} />, store);
     expect(getByText('Using the best quote')).toBeInTheDocument();

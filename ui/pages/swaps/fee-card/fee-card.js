@@ -39,6 +39,7 @@ export default function FeeCard({
   chainId,
   EIP1559Network,
   maxPriorityFeePerGasDecGWEI,
+  maxFeePerGasDecGWEI,
 }) {
   const t = useContext(I18nContext);
 
@@ -143,6 +144,7 @@ export default function FeeCard({
                 subTitle={
                   <GasTiming
                     maxPriorityFeePerGas={maxPriorityFeePerGasDecGWEI}
+                    maxFeePerGas={maxFeePerGasDecGWEI}
                   />
                 }
                 subText={
@@ -304,4 +306,5 @@ FeeCard.propTypes = {
   chainId: PropTypes.string.isRequired,
   EIP1559Network: PropTypes.bool.isRequired,
   maxPriorityFeePerGasDecGWEI: PropTypes.string,
+  maxFeePerGasDecGWEI: PropTypes.string,
 };
