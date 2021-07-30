@@ -2791,6 +2791,13 @@ export function disconnectGasFeeEstimatePoller(pollToken) {
   return promisifiedBackground.disconnectGasFeeEstimatePoller(pollToken);
 }
 
+export function getGasTimeEstimate(maxPriorityFeePerGas, maxFeePerGas) {
+  return promisifiedBackground.getGasTimeEstimate(
+    maxPriorityFeePerGas,
+    maxFeePerGas,
+  );
+}
+
 // MetaMetrics
 /**
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload

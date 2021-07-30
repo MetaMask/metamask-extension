@@ -235,7 +235,6 @@ export default function EditGasPopover({
               onEducationClick={() => setShowEducationContent(true)}
               mode={mode}
               transaction={transaction}
-              hasGasErrors={hasGasErrors}
               gasErrors={gasErrors}
               onManualChange={onManualChange}
               minimumGasLimit={minimumGasLimitDec}

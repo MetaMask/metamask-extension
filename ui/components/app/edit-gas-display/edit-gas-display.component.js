@@ -15,7 +15,6 @@ import {
   COLORS,
   TYPOGRAPHY,
   FONT_WEIGHT,
-  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../../helpers/utils/confirm-tx.util';
 
@@ -52,7 +51,6 @@ export default function EditGasDisplay({
   setEstimateToUse,
   estimatedMinimumFiat,
   estimatedMaximumFiat,
-  hasGasErrors,
   dappSuggestedGasFeeAcknowledged,
   setDappSuggestedGasFeeAcknowledged,
   showAdvancedForm,
@@ -134,7 +132,12 @@ export default function EditGasDisplay({
               </Typography>,
             ])
           }
-          timing={<GasTiming maxPriorityFeePerGas={maxPriorityFeePerGas} />}
+          timing={
+            <GasTiming
+              maxFeePerGas={maxFeePerGas}
+              maxPriorityFeePerGas={maxPriorityFeePerGas}
+            />
+          }
         />
         {requireDappAcknowledgement && (
           <Button
@@ -143,22 +146,6 @@ export default function EditGasDisplay({
           >
             {t('gasDisplayAcknowledgeDappButtonText')}
           </Button>
-        )}
-        {hasGasErrors && (
-          <div className="edit-gas-display__error">
-            <Typography
-              color={COLORS.ERROR1}
-              variant={TYPOGRAPHY.H7}
-              align={TEXT_ALIGN.CENTER}
-              fontWeight={FONT_WEIGHT.BOLD}
-            >
-              {t('editGasTooLow')}{' '}
-              <InfoTooltip
-                position="top"
-                contentText={t('editGasTooLowTooltip')}
-              />
-            </Typography>
-          </div>
         )}
         {networkSupports1559 &&
           !requireDappAcknowledgement &&
@@ -259,7 +246,6 @@ EditGasDisplay.propTypes = {
   setEstimateToUse: PropTypes.func,
   estimatedMinimumFiat: PropTypes.string,
   estimatedMaximumFiat: PropTypes.string,
-  hasGasErrors: PropTypes.boolean,
   dappSuggestedGasFeeAcknowledged: PropTypes.boolean,
   setDappSuggestedGasFeeAcknowledged: PropTypes.func,
   showAdvancedForm: PropTypes.bool,
