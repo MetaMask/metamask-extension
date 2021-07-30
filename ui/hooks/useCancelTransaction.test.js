@@ -52,16 +52,16 @@ describe('useCancelTransaction', function () {
         const { result } = renderHook(() =>
           useCancelTransaction(transactionGroup),
         );
-        expect(result.current[0]).toStrictEqual(false);
+        expect(result.current.hasEnoughCancelGas).toStrictEqual(false);
       });
       it(`should return a function that opens the gas sidebar onsubmit kicks off cancellation for id ${transactionId}`, function () {
         const { result } = renderHook(() =>
           useCancelTransaction(transactionGroup),
         );
-        expect(typeof result.current[1].cancelTransaction).toStrictEqual(
+        expect(typeof result.current.cancelTransaction).toStrictEqual(
           'function',
         );
-        result.current[1].cancelTransaction({
+        result.current.cancelTransaction({
           preventDefault: () => undefined,
           stopPropagation: () => undefined,
         });
@@ -130,16 +130,16 @@ describe('useCancelTransaction', function () {
         const { result } = renderHook(() =>
           useCancelTransaction(transactionGroup),
         );
-        expect(result.current[0]).toStrictEqual(true);
+        expect(result.current.hasEnoughCancelGas).toStrictEqual(true);
       });
       it(`should return a function that opens the gas sidebar onsubmit kicks off cancellation for id ${transactionId}`, function () {
         const { result } = renderHook(() =>
           useCancelTransaction(transactionGroup),
         );
-        expect(typeof result.current[1].cancelTransaction).toStrictEqual(
+        expect(typeof result.current.cancelTransaction).toStrictEqual(
           'function',
         );
-        result.current[1].cancelTransaction({
+        result.current.cancelTransaction({
           preventDefault: () => undefined,
           stopPropagation: () => undefined,
         });
