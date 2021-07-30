@@ -36,6 +36,7 @@ export function formatTxMetaForRpcResult(txMeta) {
   };
 
   if (maxFeePerGas && maxPriorityFeePerGas) {
+    formattedTxMeta.gasPrice = maxFeePerGas;
     formattedTxMeta.maxFeePerGas = maxFeePerGas;
     formattedTxMeta.maxPriorityFeePerGas = maxPriorityFeePerGas;
     formattedTxMeta.type = TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
