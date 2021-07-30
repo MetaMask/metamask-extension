@@ -33,7 +33,7 @@ export default function AdvancedGasControls({
   maxPriorityFeeFiat,
   maxFeeFiat,
   gasErrors,
-  minimumGasLimit = 21000,
+  minimumGasLimit,
 }) {
   const t = useContext(I18nContext);
 
