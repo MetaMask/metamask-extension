@@ -27,7 +27,7 @@ export function useRetryTransaction(transactionGroup) {
   const isMainnet = useSelector(getIsMainnet);
 
   const hideBasic = !(isMainnet || process.env.IN_TEST);
-  const customGasSettings = useIncrementedGasFees(transactionGroup);
+  const customRetryGasSettings = useIncrementedGasFees(transactionGroup);
   const trackMetricsEvent = useMetricEvent({
     eventOpts: {
       category: 'Navigation',
@@ -52,7 +52,7 @@ export function useRetryTransaction(transactionGroup) {
           // To support the current process of cancelling or speeding up
           // a transaction, we have to inform the custom gas state of the new
           // gasPrice to start at.
-          dispatch(setCustomGasPrice(customGasSettings.gasPrice));
+          dispatch(setCustomGasPrice(customRetryGasSettings.gasPrice));
           dispatch(setCustomGasLimit(primaryTransaction.txParams.gas));
         }
 
@@ -68,7 +68,7 @@ export function useRetryTransaction(transactionGroup) {
     [
       dispatch,
       trackMetricsEvent,
-      customGasSettings,
+      customRetryGasSettings,
       primaryTransaction,
       hideBasic,
     ],
@@ -78,5 +78,6 @@ export function useRetryTransaction(transactionGroup) {
     retryTransaction,
     showRetryEditGasPopover,
     closeRetryEditGasPopover,
+    customRetryGasSettings,
   };
 }

@@ -34,14 +34,18 @@ export default function TransactionListItem({
     initialTransaction: { id },
     primaryTransaction: { err, status },
   } = transactionGroup;
-  const [
+  const {
     cancelEnabled,
-    { cancelTransaction, showCancelEditGasPopover, closeCancelEditGasPopover },
-  ] = useCancelTransaction(transactionGroup);
+    cancelTransaction,
+    showCancelEditGasPopover,
+    closeCancelEditGasPopover,
+    customCancelGasSettings,
+  } = useCancelTransaction(transactionGroup);
   const {
     retryTransaction,
     showRetryEditGasPopover,
     closeRetryEditGasPopover,
+    customRetryGasSettings,
   } = useRetryTransaction(transactionGroup);
   const shouldShowSpeedUp = useShouldShowSpeedUp(
     transactionGroup,
@@ -214,14 +218,20 @@ export default function TransactionListItem({
         <EditGasPopover
           onClose={closeRetryEditGasPopover}
           mode={EDIT_GAS_MODES.SPEED_UP}
-          transaction={transactionGroup.primaryTransaction}
+          transaction={{
+            ...transactionGroup.primaryTransaction,
+            txParams: customRetryGasSettings,
+          }}
         />
       )}
       {process.env.SHOW_EIP_1559_UI && showCancelEditGasPopover && (
         <EditGasPopover
           onClose={closeCancelEditGasPopover}
           mode={EDIT_GAS_MODES.CANCEL}
-          transaction={transactionGroup.primaryTransaction}
+          transaction={{
+            ...transactionGroup.primaryTransaction,
+            txParams: customCancelGasSettings,
+          }}
         />
       )}
     </>

@@ -24,7 +24,7 @@ import { useIncrementedGasFees } from './useIncrementedGasFees';
 export function useCancelTransaction(transactionGroup) {
   const { primaryTransaction } = transactionGroup;
 
-  const customGasSettings = useIncrementedGasFees(transactionGroup);
+  const customCancelGasSettings = useIncrementedGasFees(transactionGroup);
 
   const dispatch = useDispatch();
   const selectedAccount = useSelector(getSelectedAccount);
@@ -48,7 +48,7 @@ export function useCancelTransaction(transactionGroup) {
         // To support the current process of cancelling or speeding up
         // a transaction, we have to inform the custom gas state of the new
         // gasPrice/gasLimit to start at.
-        dispatch(setCustomGasPrice(customGasSettings.gasPrice));
+        dispatch(setCustomGasPrice(customCancelGasSettings.gasPrice));
         dispatch(setCustomGasLimit(GAS_LIMITS.SIMPLE));
       }
       const tx = {
@@ -83,20 +83,23 @@ export function useCancelTransaction(transactionGroup) {
         }),
       );
     },
-    [dispatch, primaryTransaction, customGasSettings, hideBasic],
+    [dispatch, primaryTransaction, customCancelGasSettings, hideBasic],
   );
 
   const hasEnoughCancelGas =
     primaryTransaction.txParams &&
     isBalanceSufficient({
       amount: '0x0',
-      gasTotal: getMaximumGasTotalInHexWei(customGasSettings),
+      gasTotal: getMaximumGasTotalInHexWei(customCancelGasSettings),
       balance: selectedAccount.balance,
       conversionRate,
     });
 
-  return [
+  return {
     hasEnoughCancelGas,
-    { cancelTransaction, showCancelEditGasPopover, closeCancelEditGasPopover },
-  ];
+    customCancelGasSettings,
+    cancelTransaction,
+    showCancelEditGasPopover,
+    closeCancelEditGasPopover,
+  };
 }
