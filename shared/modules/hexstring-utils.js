@@ -18,10 +18,8 @@ export {
 };
 
 // modified from ethereum-cryptography
-const keccack256Constructor = createKeccakHash('keccak256');
-
 function keccak256(msg) {
-  const hash = keccack256Constructor();
+  const hash = createKeccakHash('keccak256');
   hash.update(msg);
   return Buffer.from(hash.digest());
 }
