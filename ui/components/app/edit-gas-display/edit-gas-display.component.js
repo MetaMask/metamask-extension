@@ -60,7 +60,6 @@ export default function EditGasDisplay({
   warning,
   gasErrors,
   onManualChange,
-  networkSupports1559,
 }) {
   const t = useContext(I18nContext);
   const supportsEIP1559 = useSelector(isEIP1559Network);
@@ -273,5 +272,4 @@ EditGasDisplay.propTypes = {
   transaction: PropTypes.object,
   gasErrors: PropTypes.object,
   onManualChange: PropTypes.func,
-  networkSupports1559: PropTypes.boolean,
 };

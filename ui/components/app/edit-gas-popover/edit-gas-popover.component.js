@@ -5,11 +5,7 @@ import { isEIP1559Network } from '../../../ducks/metamask/metamask';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
-import { isEIP1559Network } from '../../../ducks/metamask/metamask';
-import {
-  GAS_ESTIMATE_TYPES,
-  EDIT_GAS_MODES,
-} from '../../../../shared/constants/gas';
+import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 
 import {
   decGWEIToHexWEI,
@@ -230,7 +226,6 @@ export default function EditGasPopover({
               hasGasErrors={hasGasErrors}
               gasErrors={gasErrors}
               onManualChange={onManualChange}
-              networkSupports1559={networkSupports1559}
               {...editGasDisplayProps}
             />
           </>
