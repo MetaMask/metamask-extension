@@ -7,7 +7,7 @@ import { isValidDomainName } from '../../../../helpers/utils/util';
 import {
   isBurnAddress,
   isValidHexAddress,
-} from '../../../../../shared/modules/hexstring-utils';
+} from '../../../../../shared/modules/unsafe-hexstring-utils';
 
 export default class EnsInput extends Component {
   static contextTypes = {

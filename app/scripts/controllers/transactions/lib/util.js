@@ -4,7 +4,7 @@ import {
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_STATUSES,
 } from '../../../../../shared/constants/transaction';
-import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import { isValidHexAddress } from '../../../../../shared/modules/unsafe-hexstring-utils';
 
 const normalizers = {
   from: addHexPrefix,

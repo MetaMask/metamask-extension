@@ -10,7 +10,7 @@ import PageContainerFooter from '../../../../components/ui/page-container/page-c
 import {
   isBurnAddress,
   isValidHexAddress,
-} from '../../../../../shared/modules/hexstring-utils';
+} from '../../../../../shared/modules/unsafe-hexstring-utils';
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../send/send.constants';
 
 export default class AddContact extends PureComponent {

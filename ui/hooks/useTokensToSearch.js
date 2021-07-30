@@ -14,7 +14,7 @@ import { getConversionRate } from '../ducks/metamask/metamask';
 
 import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../shared/modules/unsafe-hexstring-utils';
 import { useEqualityCheck } from './useEqualityCheck';
 
 const tokenList = shuffle(

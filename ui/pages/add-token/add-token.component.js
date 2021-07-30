@@ -8,7 +8,7 @@ import TextField from '../../components/ui/text-field';
 import PageContainer from '../../components/ui/page-container';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
-import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
+import { isValidHexAddress } from '../../../shared/modules/unsafe-hexstring-utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography';
 import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';

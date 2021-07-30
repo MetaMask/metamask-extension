@@ -37,7 +37,7 @@ import {
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../shared/modules/unsafe-hexstring-utils';
 import { updateTransactionGasFees } from '../../ducks/metamask/metamask';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 

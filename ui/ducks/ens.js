@@ -25,7 +25,7 @@ import {
   BURN_ADDRESS,
   isBurnAddress,
   isValidHexAddress,
-} from '../../shared/modules/hexstring-utils';
+} from '../../shared/modules/unsafe-hexstring-utils';
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';

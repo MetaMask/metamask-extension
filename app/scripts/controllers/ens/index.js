@@ -2,7 +2,7 @@ import punycode from 'punycode/punycode';
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../shared/constants/network';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/modules/unsafe-hexstring-utils';
 import Ens from './ens';
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';

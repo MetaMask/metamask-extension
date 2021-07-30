@@ -26,7 +26,7 @@ import {
   isEIP1559Network,
 } from '../ducks/metamask/metamask';
 import { LISTED_CONTRACT_ADDRESSES } from '../../shared/constants/tokens';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../shared/modules/unsafe-hexstring-utils';
 import * as actionConstants from './actionConstants';
 
 let background = null;

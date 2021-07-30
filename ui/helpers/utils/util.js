@@ -12,7 +12,7 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../shared/modules/unsafe-hexstring-utils';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {

@@ -12,7 +12,7 @@ import { isPrefixedFormattedHexString } from '../../../shared/modules/network.ut
 import {
   isValidHexAddress,
   toChecksumHexAddress,
-} from '../../../shared/modules/hexstring-utils';
+} from '../../../shared/modules/unsafe-hexstring-utils';
 import { NETWORK_EVENTS } from './network';
 
 const ERC721_INTERFACE_ID = '0x80ac58cd';

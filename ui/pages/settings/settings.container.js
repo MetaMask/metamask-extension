@@ -8,7 +8,7 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
   isValidHexAddress,
   isBurnAddress,
-} from '../../../shared/modules/hexstring-utils';
+} from '../../../shared/modules/unsafe-hexstring-utils';
 
 import {
   ABOUT_US_ROUTE,

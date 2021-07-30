@@ -30,7 +30,7 @@ import {
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../shared/modules/unsafe-hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
 
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';

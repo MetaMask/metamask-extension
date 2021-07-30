@@ -5,7 +5,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 
 import Tooltip from '../../ui/tooltip';
 import CopyIcon from '../../ui/icon/copy-icon.component';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/modules/unsafe-hexstring-utils';
 import { SECOND } from '../../../../shared/constants/time';
 
 class SelectedAccount extends Component {

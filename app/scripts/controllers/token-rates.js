@@ -2,7 +2,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import { normalize as normalizeAddress } from 'eth-sig-util';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../shared/modules/unsafe-hexstring-utils';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
 
 const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);

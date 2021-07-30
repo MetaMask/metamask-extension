@@ -78,7 +78,7 @@ import { resetEnsResolution } from '../ens';
 import {
   isBurnAddress,
   isValidHexAddress,
-} from '../../../shared/modules/hexstring-utils';
+} from '../../../shared/modules/unsafe-hexstring-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
 import { ETH, GWEI } from '../../helpers/constants/common';
 

@@ -6,7 +6,7 @@ import log from 'loglevel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '../../../../components/ui/text-field';
 import { usePrevious } from '../../../../hooks/usePrevious';
-import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import { isValidHexAddress } from '../../../../../shared/modules/unsafe-hexstring-utils';
 import { fetchToken } from '../../swaps.util';
 import { getCurrentChainId } from '../../../../selectors/selectors';
 import { getUseNewSwapsApi } from '../../../../ducks/swaps/swaps';

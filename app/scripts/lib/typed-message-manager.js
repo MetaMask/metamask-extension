@@ -8,7 +8,7 @@ import jsonschema from 'jsonschema';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import createId from '../../../shared/modules/random-id';
-import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
+import { isValidHexAddress } from '../../../shared/modules/unsafe-hexstring-utils';
 
 /**
  * Represents, and contains data about, an 'eth_signTypedData' type signature request. These are created when a

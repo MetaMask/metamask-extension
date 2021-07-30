@@ -2,7 +2,7 @@ import contractMap from '@metamask/contract-metadata';
 import {
   isValidHexAddress,
   toChecksumHexAddress,
-} from '../../../shared/modules/hexstring-utils';
+} from '../../../shared/modules/unsafe-hexstring-utils';
 
 let iconFactory;
 

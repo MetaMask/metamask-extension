@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../../../shared/constants/transaction';
-import { BURN_ADDRESS } from '../../../../../shared/modules/hexstring-utils';
+import { BURN_ADDRESS } from '../../../../../shared/modules/unsafe-hexstring-utils';
 import * as txUtils from './util';
 
 describe('txUtils', function () {
