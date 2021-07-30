@@ -11,6 +11,7 @@ export default function NumericInput({
   error = '',
   autoFocus = false,
   allowDecimals = true,
+  min = 0,
 }) {
   return (
     <div
@@ -27,7 +28,7 @@ export default function NumericInput({
         onChange={(e) => {
           onChange?.(parseFloat(e.target.value, 10));
         }}
-        min="0"
+        min={min}
         autoFocus={autoFocus}
       />
       {detailText && (
@@ -46,4 +47,5 @@ NumericInput.propTypes = {
   error: PropTypes.string,
   autoFocus: PropTypes.bool,
   allowDecimals: PropTypes.bool,
+  min: PropTypes.number,
 };

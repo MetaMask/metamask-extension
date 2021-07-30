@@ -35,8 +35,8 @@ export default function AdvancedGasControls({
   maxPriorityFeeFiat,
   maxFeeFiat,
   gasErrors,
-  minimumGasLimit = 21000,
   networkSupportsEIP1559,
+  minimumGasLimit,
 }) {
   const t = useContext(I18nContext);
   const networkSupports1559 = useSelector(isEIP1559Network);
