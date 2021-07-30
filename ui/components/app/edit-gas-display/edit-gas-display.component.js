@@ -60,7 +60,6 @@ export default function EditGasDisplay({
   warning,
   gasErrors,
   onManualChange,
-  networkSupports1559,
 }) {
   const t = useContext(I18nContext);
 
@@ -267,5 +266,4 @@ EditGasDisplay.propTypes = {
   transaction: PropTypes.object,
   gasErrors: PropTypes.object,
   onManualChange: PropTypes.func,
-  networkSupports1559: PropTypes.boolean,
 };
