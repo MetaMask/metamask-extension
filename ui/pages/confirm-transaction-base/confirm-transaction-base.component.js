@@ -79,6 +79,11 @@ export default class ConfirmTransactionBase extends Component {
     actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
     dataComponent: PropTypes.node,
+    primaryTotalTextOverride: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.node,
+    ]),
+    secondaryTotalTextOverride: PropTypes.string,
     hideData: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
     identiconAddress: PropTypes.string,
@@ -257,6 +262,8 @@ export default class ConfirmTransactionBase extends Component {
 
   renderDetails() {
     const {
+      primaryTotalTextOverride,
+      secondaryTotalTextOverride,
       hexTransactionFee,
       hexTransactionTotal,
       useNonceField,
@@ -515,7 +522,7 @@ export default class ConfirmTransactionBase extends Component {
             />,
             <TransactionDetailItem
               key="total-item"
-              detailTitle={t('total')}
+              detailTitle={primaryTotalTextOverride || t('total')}
               detailText={
                 <UserPreferencedCurrencyDisplay
                   type={PRIMARY}
@@ -530,7 +537,10 @@ export default class ConfirmTransactionBase extends Component {
                   hideLabel
                 />
               }
-              subTitle={t('transactionDetailGasTotalSubtitle')}
+              subTitle={
+                secondaryTotalTextOverride ||
+                t('transactionDetailGasTotalSubtitle')
+              }
               subText={t('editGasSubTextAmount', [
                 <UserPreferencedCurrencyDisplay
                   key="gas-total-subtext"
