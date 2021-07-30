@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
-import { isEIP1559Network } from '../../../ducks/metamask/metamask';
 import {
   GAS_ESTIMATE_TYPES,
   EDIT_GAS_MODES,
@@ -46,7 +45,6 @@ export default function EditGasPopover({
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
-  const networkSupports1559 = useSelector(isEIP1559Network);
 
   const shouldAnimate = useShouldAnimateGasEstimations();
 
@@ -241,7 +239,6 @@ export default function EditGasPopover({
               gasErrors={gasErrors}
               onManualChange={onManualChange}
               minimumGasLimit={minimumGasLimitDec}
-              networkSupports1559={networkSupports1559}
               {...editGasDisplayProps}
             />
           </>
