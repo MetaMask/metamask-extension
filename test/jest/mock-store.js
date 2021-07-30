@@ -222,6 +222,12 @@ export const createSwapsMockStore = () => {
         swapsFeatureIsLive: false,
         useNewSwapsApi: false,
       },
+      useStaticTokenList: false,
+      tokenList: {
+        "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984": {"address":"0x1f9840a85d5af5bf1d1762f925bdaddc4201f984","symbol":"UNI","decimals":18,"name":"Uniswap","iconUrl":"https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984/logo.png","aggregators":["airswapLight","bancor","cmc","coinGecko","kleros","oneInch","paraswap","pmm","totle","zapper","zerion","zeroEx"],"occurrences":12},
+        "0x514910771af9ca656af840dff83e8264ecf986ca": {"address":"0x514910771af9ca656af840dff83e8264ecf986ca","symbol":"LINK","decimals":18,"name":"Chainlink","iconUrl":"https://s3.amazonaws.com/airswap-token-images/LINK.png","aggregators":["airswapLight","bancor","cmc","coinGecko","kleros","oneInch","paraswap","pmm","totle","zapper","zerion","zeroEx"],"occurrences":12},
+        "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2": {"address":"0x6b3595068778dd592e39a122f4f5a5cf09c90fe2","symbol":"SUSHI","decimals":18,"name":"SushiSwap","iconUrl":"https://assets.coingecko.com/coins/images/12271/thumb/512x512_Logo_no_chop.png?1606986688","aggregators":["bancor","cmc","coinGecko","kleros","oneInch","paraswap","pmm","totle","zapper","zerion","zeroEx"],"occurrences":11},
+      }
     },
     appState: {
       modal: {
