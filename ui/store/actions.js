@@ -2791,8 +2791,8 @@ export function disconnectGasFeeEstimatePoller(pollToken) {
   return promisifiedBackground.disconnectGasFeeEstimatePoller(pollToken);
 }
 
-export function getGasTimeEstimate(maxPriorityFeePerGas, maxFeePerGas) {
-  return promisifiedBackground.getGasTimeEstimate(
+export function getGasFeeTimeEstimate(maxPriorityFeePerGas, maxFeePerGas) {
+  return promisifiedBackground.getGasFeeTimeEstimate(
     maxPriorityFeePerGas,
     maxFeePerGas,
   );

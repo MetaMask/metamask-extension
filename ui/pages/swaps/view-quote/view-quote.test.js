@@ -46,6 +46,7 @@ setBackgroundConnection({
   setSwapsErrorKey: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest.fn(),
   updateTransaction: jest.fn(),
+  getGasFeeTimeEstimate: jest.fn(),
 });
 
 describe('ViewQuote', () => {

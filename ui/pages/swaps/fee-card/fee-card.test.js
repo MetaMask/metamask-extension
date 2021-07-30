@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 import {
   renderWithProvider,
   createSwapsMockStore,
+  setBackgroundConnection,
   MOCKS,
 } from '../../../../test/jest';
 import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
@@ -23,6 +24,10 @@ jest.mock('../../../hooks/useGasFeeEstimates', () => {
       };
     },
   };
+});
+
+setBackgroundConnection({
+  getGasFeeTimeEstimate: jest.fn(),
 });
 
 const createProps = (customProps = {}) => {
