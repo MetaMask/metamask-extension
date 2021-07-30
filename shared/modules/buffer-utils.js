@@ -1,4 +1,4 @@
-import { toBuffer as ethUtilToBuffer, isHexString } from 'ethereumjs-util';
+import { toBuffer as ethUtilToBuffer, isHexString } from './hexstring-utils';
 
 /**
  * Returns a buffer from the provided input, via ethereumjs-util.toBuffer but

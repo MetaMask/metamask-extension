@@ -5,7 +5,7 @@ import {
   addHexPrefix,
   toChecksumAddress,
   zeroAddress,
-} from 'ethereumjs-util';
+} from './hexstring-utils';
 
 export const BURN_ADDRESS = zeroAddress();
 

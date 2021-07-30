@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import qrCode from 'qrcode-generator';
 import { connect } from 'react-redux';
-import { isHexPrefixed } from 'ethereumjs-util';
 import ReadOnlyInput from '../readonly-input/readonly-input';
 import { toChecksumHexAddress } from '../../../../shared/modules/unsafe-hexstring-utils';
+import { isHexPrefixed } from '../../../../shared/modules/hexstring-utils';
 
 export default connect(mapStateToProps)(QrCodeView);
 

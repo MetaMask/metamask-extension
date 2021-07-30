@@ -3,7 +3,14 @@ import ENS from 'ethjs-ens';
 import log from 'loglevel';
 import networkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
-import { isHexString } from 'ethereumjs-util';
+import {
+  isHexString,
+  isValidHexAddress,
+} from '../../shared/modules/hexstring-utils';
+import {
+  BURN_ADDRESS,
+  isBurnAddress,
+} from '../../shared/modules/unsafe-hexstring-utils';
 
 import { getCurrentChainId } from '../selectors';
 import {
@@ -21,11 +28,6 @@ import {
 } from '../pages/send/send.constants';
 import { isValidDomainName } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
-import {
-  BURN_ADDRESS,
-  isBurnAddress,
-  isValidHexAddress,
-} from '../../shared/modules/unsafe-hexstring-utils';
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';

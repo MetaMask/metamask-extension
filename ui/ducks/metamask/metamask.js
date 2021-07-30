@@ -1,7 +1,10 @@
-import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import * as actionConstants from '../../store/actionConstants';
 import { ALERT_TYPES } from '../../../shared/constants/alerts';
 import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
+import {
+  addHexPrefix,
+  isHexString,
+} from '../../../shared/modules/hexstring-utils';
 import {
   accountsWithSendEtherInfoSelector,
   getAddressBook,

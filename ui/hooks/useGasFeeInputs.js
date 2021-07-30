@@ -1,4 +1,3 @@
-import { addHexPrefix } from 'ethereumjs-util';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { findKey } from 'lodash';
@@ -16,6 +15,7 @@ import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
 } from '../../shared/modules/gas.utils';
+import { addHexPrefix } from '../../shared/modules/hexstring-utils';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import {
   hexWEIToDecGWEI,

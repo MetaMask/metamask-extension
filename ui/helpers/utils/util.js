@@ -1,7 +1,6 @@
 import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
-import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
@@ -13,6 +12,7 @@ import {
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/unsafe-hexstring-utils';
+import { BN, stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -70,7 +70,7 @@ export function addressSummary(
   }
   let checked = toChecksumHexAddress(address);
   if (!includeHex) {
-    checked = ethUtil.stripHexPrefix(checked);
+    checked = stripHexPrefix(checked);
   }
   return checked
     ? `${checked.slice(0, firstSegLength)}...${checked.slice(
@@ -102,10 +102,10 @@ export function isOriginContractAddress(to, sendTokenAddress) {
 // Takes wei Hex, returns wei BN, even if input is null
 export function numericBalance(balance) {
   if (!balance) {
-    return new ethUtil.BN(0, 16);
+    return new BN(0, 16);
   }
-  const stripped = ethUtil.stripHexPrefix(balance);
-  return new ethUtil.BN(stripped, 16);
+  const stripped = stripHexPrefix(balance);
+  return new BN(stripped, 16);
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]

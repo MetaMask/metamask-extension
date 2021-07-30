@@ -1,4 +1,4 @@
-import { addHexPrefix } from 'ethereumjs-util';
+import { addHexPrefix } from '../modules/hexstring-utils';
 
 const TWENTY_ONE_THOUSAND = 21000;
 const ONE_HUNDRED_THOUSAND = 100000;

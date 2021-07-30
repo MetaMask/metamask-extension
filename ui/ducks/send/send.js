@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import abi from 'human-standard-token-abi';
 import contractMap from '@metamask/contract-metadata';
 import BigNumber from 'bignumber.js';
-import { addHexPrefix, toChecksumAddress } from 'ethereumjs-util';
 import { debounce } from 'lodash';
 import {
   conversionGreaterThan,
@@ -10,6 +9,10 @@ import {
   multiplyCurrencies,
   subtractCurrencies,
 } from '../../../shared/modules/conversion.utils';
+import {
+  addHexPrefix,
+  toChecksumAddress,
+} from '../../../shared/modules/hexstring-utils';
 import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   CONTRACT_ADDRESS_ERROR,

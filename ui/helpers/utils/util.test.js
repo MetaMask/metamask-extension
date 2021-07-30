@@ -1,4 +1,4 @@
-import { BN } from 'ethereumjs-util';
+import { BN } from '../../../shared/modules/hexstring-utils';
 import * as util from './util';
 
 describe('util', () => {
