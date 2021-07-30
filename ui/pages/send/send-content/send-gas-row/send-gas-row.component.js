@@ -11,7 +11,6 @@ export default class SendGasRow extends Component {
     gasFeeError: PropTypes.bool,
     gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
-    showCustomizeGasModal: PropTypes.func,
     showLegacyCustomizeGasModal: PropTypes.func,
     updateGasPrice: PropTypes.func,
     updateGasLimit: PropTypes.func,
@@ -23,7 +22,6 @@ export default class SendGasRow extends Component {
     gasLimit: PropTypes.string,
     insufficientBalance: PropTypes.bool,
     minimumGasLimit: PropTypes.string,
-    isEIP1559Network: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -33,11 +31,7 @@ export default class SendGasRow extends Component {
 
   renderAdvancedOptionsButton() {
     const { trackEvent } = this.context;
-    const {
-      showCustomizeGasModal,
-      isEIP1559Network,
-      showLegacyCustomizeGasModal,
-    } = this.props;
+    const { showLegacyCustomizeGasModal } = this.props;
     return (
       <div
         className="advanced-gas-options-btn"
@@ -46,11 +40,7 @@ export default class SendGasRow extends Component {
             category: 'Transactions',
             event: 'Clicked "Advanced Options"',
           });
-          if (isEIP1559Network) {
-            showCustomizeGasModal();
-          } else {
-            showLegacyCustomizeGasModal();
-          }
+          showLegacyCustomizeGasModal();
         }}
       >
         {this.context.t('advancedOptions')}
@@ -62,7 +52,6 @@ export default class SendGasRow extends Component {
     const {
       gasLoadingError,
       gasTotal,
-      showCustomizeGasModal,
       gasPriceButtonGroupProps,
       gasInputMode,
       resetGasButtons,
@@ -99,7 +88,6 @@ export default class SendGasRow extends Component {
         gasLoadingError={gasLoadingError}
         gasTotal={gasTotal}
         onReset={resetGasButtons}
-        onClick={showCustomizeGasModal}
       />
     );
     const advancedGasInputs = (
