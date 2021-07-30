@@ -39,7 +39,7 @@ import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
 
-log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
+log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
 
 const platform = new ExtensionPlatform();
 
@@ -126,7 +126,7 @@ async function initialize() {
   const initState = await loadStateFromPersistence();
   const initLangCode = await getFirstPreferredLangCode();
   await setupController(initState, initLangCode);
-  log.debug('MetaMask initialization complete.');
+  log.info('MetaMask initialization complete.');
 }
 
 //
