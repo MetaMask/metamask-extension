@@ -262,8 +262,6 @@ export default class ConfirmTransactionBase extends Component {
 
   renderDetails() {
     const {
-      primaryTotalTextOverride,
-      secondaryTotalTextOverride,
       hexTransactionFee,
       hexTransactionTotal,
       useNonceField,
@@ -272,6 +270,8 @@ export default class ConfirmTransactionBase extends Component {
       nextNonce,
       getNextNonce,
       txData,
+      primaryTotalTextOverride,
+      secondaryTotalTextOverride,
     } = this.props;
     const { t } = this.context;
 
@@ -282,9 +282,6 @@ export default class ConfirmTransactionBase extends Component {
         return '';
       }
     };
-
-    const notMainnetOrTest = !(isMainnet || process.env.IN_TEST);
-    const gasPriceFetchFailure = isEthGasPrice || noGasPrice;
 
     const nonceField = useNonceField ? (
       <div>
@@ -315,15 +312,6 @@ export default class ConfirmTransactionBase extends Component {
         </div>
       </div>
     ) : null;
-
-<<<<<<< HEAD
-    const showInlineControls = process.env.SHOW_EIP_1559_UI
-      ? advancedInlineGasShown
-      : advancedInlineGasShown || notMainnetOrTest || gasPriceFetchFailure;
-
-    const showGasEditButton = process.env.SHOW_EIP_1559_UI
-      ? !showInlineControls
-      : !(notMainnetOrTest || gasPriceFetchFailure);
 
     if (process.env.SHOW_EIP_1559_UI) {
       return (
@@ -410,7 +398,7 @@ export default class ConfirmTransactionBase extends Component {
               />,
               <TransactionDetailItem
                 key="total-item"
-                detailTitle={t('total')}
+                detailTitle={primaryTotalTextOverride || t('total')}
                 detailText={
                   <UserPreferencedCurrencyDisplay
                     type={PRIMARY}
@@ -425,7 +413,10 @@ export default class ConfirmTransactionBase extends Component {
                     hideLabel
                   />
                 }
-                subTitle={t('transactionDetailGasTotalSubtitle')}
+                subTitle={
+                  secondaryTotalTextOverride ||
+                  t('transactionDetailGasTotalSubtitle')
+                }
                 subText={t('editGasSubTextAmount', [
                   <UserPreferencedCurrencyDisplay
                     key="gas-total-subtext"
@@ -448,8 +439,6 @@ export default class ConfirmTransactionBase extends Component {
       );
     }
 
-=======
->>>>>>> 9a86d24fc (Remove flag from confirm transaction base)
     return (
       <div className="confirm-page-container-content__details">
         <TransactionDetail
@@ -522,7 +511,7 @@ export default class ConfirmTransactionBase extends Component {
             />,
             <TransactionDetailItem
               key="total-item"
-              detailTitle={primaryTotalTextOverride || t('total')}
+              detailTitle={t('total')}
               detailText={
                 <UserPreferencedCurrencyDisplay
                   type={PRIMARY}
@@ -537,10 +526,7 @@ export default class ConfirmTransactionBase extends Component {
                   hideLabel
                 />
               }
-              subTitle={
-                secondaryTotalTextOverride ||
-                t('transactionDetailGasTotalSubtitle')
-              }
+              subTitle={t('transactionDetailGasTotalSubtitle')}
               subText={t('editGasSubTextAmount', [
                 <UserPreferencedCurrencyDisplay
                   key="gas-total-subtext"
