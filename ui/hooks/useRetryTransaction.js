@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useMetricEvent } from './useMetricEvent';
+import { useIncrementedGasFees } from './useIncrementedGasFees';
 
 /**
  * @typedef {Object} RetryTransactionReturnValue
@@ -15,7 +16,9 @@ import { useMetricEvent } from './useMetricEvent';
  * @param {Object} transactionGroup - the transaction group
  * @return {RetryTransactionReturnValue}
  */
-export function useRetryTransaction() {
+
+export function useRetryTransaction(transactionGroup) {
+  const customRetryGasSettings = useIncrementedGasFees(transactionGroup);
   const trackMetricsEvent = useMetricEvent({
     eventOpts: {
       category: 'Navigation',
@@ -40,5 +43,6 @@ export function useRetryTransaction() {
     retryTransaction,
     showRetryEditGasPopover,
     closeRetryEditGasPopover,
+    customRetryGasSettings,
   };
 }
