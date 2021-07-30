@@ -397,6 +397,8 @@ export function useGasFeeInputs(
       ) {
         gasWarnings.maxPriorityFee =
           GAS_FORM_ERRORS.MAX_PRIORITY_FEE_HIGH_WARNING;
+      } else if (maxPriorityFeePerGasToUse >= maxFeePerGasToUse) {
+        gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
       }
 
       if (
