@@ -754,6 +754,7 @@ export default function ViewQuote() {
             chainId={chainId}
             EIP1559Network={EIP1559Network}
             maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(maxPriorityFeePerGas)}
+            maxFeePerGasDecGWEI={hexWEIToDecGWEI(maxFeePerGas)}
           />
         </div>
       </div>
