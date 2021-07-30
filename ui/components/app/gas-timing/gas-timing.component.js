@@ -8,6 +8,8 @@ import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { I18nContext } from '../../../contexts/i18n';
 
+import { hexWEIToDecGWEI } from '../../../helpers/utils/conversions.util';
+
 import Typography from '../../ui/typography/typography';
 import {
   TYPOGRAPHY,
@@ -58,10 +60,13 @@ export default function GasTiming({
 
     if (
       isUnknownLow ||
-      priority !== previousMaxPriorityFeePerGas ||
-      fee !== previousMaxFeePerGas
+      (priority && priority !== previousMaxPriorityFeePerGas) ||
+      (fee && fee !== previousMaxFeePerGas)
     ) {
-      getGasFeeTimeEstimate(priority, fee).then((result) => {
+      getGasFeeTimeEstimate(
+        hexWEIToDecGWEI(priority),
+        hexWEIToDecGWEI(fee),
+      ).then((result) => {
         if (maxFeePerGas === fee && maxPriorityFeePerGas === priority) {
           setCustomEstimatedTime(result);
         }
