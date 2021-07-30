@@ -451,6 +451,10 @@ export const initializeSendState = createAsyncThunk(
       gasPrice = getGasPriceInHexWei(
         gasFeeEstimates.medium.suggestedMaxFeePerGas,
       );
+    } else {
+      gasPrice = gasFeeEstimates.gasPrice
+        ? getRoundedGasPrice(gasFeeEstimates.gasPrice)
+        : '0x0';
     }
 
     // Set a basic gasLimit in the event that other estimation fails
