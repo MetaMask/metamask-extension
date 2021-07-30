@@ -8,7 +8,14 @@ import {
   intToBuffer,
 } from 'ethjs-util';
 
-export { BN };
+export {
+  BN,
+  isHexPrefixed,
+  isHexString,
+  padToEven,
+  stripHexPrefix,
+  intToBuffer,
+};
 
 // modified from ethereum-cryptography
 const keccack256Constructor = createKeccakHash('keccak256');
