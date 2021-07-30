@@ -20,7 +20,7 @@ import { useIncrementedGasFees } from './useIncrementedGasFees';
 export function useCancelTransaction(transactionGroup) {
   const { primaryTransaction } = transactionGroup;
 
-  const customGasSettings = useIncrementedGasFees(transactionGroup);
+  const customCancelGasSettings = useIncrementedGasFees(transactionGroup);
 
   const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
@@ -40,13 +40,16 @@ export function useCancelTransaction(transactionGroup) {
     primaryTransaction.txParams &&
     isBalanceSufficient({
       amount: '0x0',
-      gasTotal: getMaximumGasTotalInHexWei(customGasSettings),
+      gasTotal: getMaximumGasTotalInHexWei(customCancelGasSettings),
       balance: selectedAccount.balance,
       conversionRate,
     });
 
-  return [
+  return {
     hasEnoughCancelGas,
-    { cancelTransaction, showCancelEditGasPopover, closeCancelEditGasPopover },
-  ];
+    customCancelGasSettings,
+    cancelTransaction,
+    showCancelEditGasPopover,
+    closeCancelEditGasPopover,
+  };
 }
