@@ -5,7 +5,10 @@ import { isEIP1559Network } from '../../../ducks/metamask/metamask';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
-import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  TWENTY_ONE_THOUSAND,
+} from '../../../../shared/constants/gas';
 
 import {
   decGWEIToHexWEI,
@@ -37,7 +40,7 @@ export default function EditGasPopover({
   transaction,
   mode,
   onClose,
-  minimumGasLimit,
+  minimumGasLimit = `0x${decimalToHex(TWENTY_ONE_THOUSAND)}`,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
