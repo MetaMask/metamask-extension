@@ -15,7 +15,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 
-import { getGasTimeEstimate } from '../../../store/actions';
+import { getGasFeeTimeEstimate } from '../../../store/actions';
 
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
@@ -61,7 +61,7 @@ export default function GasTiming({
       priority !== previousMaxPriorityFeePerGas ||
       fee !== previousMaxFeePerGas
     ) {
-      getGasTimeEstimate(priority, fee).then((result) => {
+      getGasFeeTimeEstimate(priority, fee).then((result) => {
         if (maxFeePerGas === fee && maxPriorityFeePerGas === priority) {
           setCustomEstimatedTime(result);
         }
