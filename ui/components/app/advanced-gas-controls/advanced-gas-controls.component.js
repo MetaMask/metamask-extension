@@ -33,6 +33,7 @@ export default function AdvancedGasControls({
   maxPriorityFeeFiat,
   maxFeeFiat,
   gasErrors,
+  minimumGasLimit = 21000,
 }) {
   const t = useContext(I18nContext);
 
@@ -65,7 +66,7 @@ export default function AdvancedGasControls({
         titleText={t('gasLimit')}
         error={
           gasErrors?.gasLimit
-            ? getGasFormErrorText(gasErrors.gasLimit, t)
+            ? getGasFormErrorText(gasErrors.gasLimit, t, { minimumGasLimit })
             : null
         }
         onChange={setGasLimit}
@@ -231,4 +232,5 @@ AdvancedGasControls.propTypes = {
   maxPriorityFeeFiat: PropTypes.string,
   maxFeeFiat: PropTypes.string,
   gasErrors: PropTypes.object,
+  minimumGasLimit: PropTypes.number,
 };

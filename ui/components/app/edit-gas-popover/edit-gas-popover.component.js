@@ -13,6 +13,7 @@ import {
 import {
   decGWEIToHexWEI,
   decimalToHex,
+  hexToDecimal,
 } from '../../../helpers/utils/conversions.util';
 
 import Popover from '../../ui/popover';
@@ -27,6 +28,7 @@ import {
   hideModal,
   hideSidebar,
   updateTransaction,
+  updateCustomSwapsEIP1559GasParams,
 } from '../../../store/actions';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
 
@@ -38,6 +40,7 @@ export default function EditGasPopover({
   transaction,
   mode,
   onClose,
+  minimumGasLimit,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -55,6 +58,8 @@ export default function EditGasPopover({
     dappSuggestedGasFeeAcknowledged,
     setDappSuggestedGasFeeAcknowledged,
   ] = useState(false);
+
+  const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
 
   const {
     maxPriorityFeePerGas,
@@ -78,7 +83,7 @@ export default function EditGasPopover({
     hasGasErrors,
     gasErrors,
     onManualChange,
-  } = useGasFeeInputs(defaultEstimateToUse, transaction);
+  } = useGasFeeInputs(defaultEstimateToUse, transaction, minimumGasLimit, mode);
 
   const [showAdvancedForm, setShowAdvancedForm] = useState(
     !estimateToUse || hasGasErrors,
@@ -136,6 +141,12 @@ export default function EditGasPopover({
             },
           }),
         );
+        break;
+      case EDIT_GAS_MODES.SWAPS:
+        // This popover component should only be used for the "FEE_MARKET" type in Swaps.
+        if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+          dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
+        }
         break;
       default:
         break;
@@ -227,6 +238,7 @@ export default function EditGasPopover({
               hasGasErrors={hasGasErrors}
               gasErrors={gasErrors}
               onManualChange={onManualChange}
+              minimumGasLimit={minimumGasLimitDec}
               {...editGasDisplayProps}
             />
           </>
@@ -244,4 +256,5 @@ EditGasPopover.propTypes = {
   transaction: PropTypes.object,
   mode: PropTypes.oneOf(Object.values(EDIT_GAS_MODES)),
   defaultEstimateToUse: PropTypes.string,
+  minimumGasLimit: PropTypes.string,
 };

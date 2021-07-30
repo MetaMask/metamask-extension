@@ -21,6 +21,8 @@ setBackgroundConnection({
   setSwapsLiveness: jest.fn(() => true),
   setSwapsTokens: jest.fn(),
   setSwapsTxGasPrice: jest.fn(),
+  disconnectGasFeeEstimatePoller: jest.fn(),
+  getGasFeeEstimatesAndStartPolling: jest.fn(),
 });
 
 describe('Swap', () => {

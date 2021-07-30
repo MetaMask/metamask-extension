@@ -651,7 +651,7 @@
     "message": "High"
   },
   "editGasLimitOutOfBounds": {
-    "message": "Gas limit must be greater than 20999 and less than 7920027"
+    "message": "Gas limit must be at least $1"
   },
   "editGasLimitTooltip": {
     "message": "Gas limit is the maximum units of gas you are willing to use. Units of gas are a multiplier to “Max priority fee” and “Max fee”."
@@ -1336,6 +1336,9 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
+  },
+  "networkNameRinkeby": {
+    "message": "Rinkeby"
   },
   "networkNameTestnet": {
     "message": "Testnet"
@@ -2146,8 +2149,18 @@
     "message": "The swap of $1 to $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
+  "swapGasFeesDetails": {
+    "message": "Gas fees are estimated and will fluctuate based on network traffic and transaction complexity."
+  },
+  "swapGasFeesLearnMore": {
+    "message": "Learn more about gas fees"
+  },
   "swapGasFeesSplit": {
     "message": "Gas fees on the previous screen are split between these two transactions."
+  },
+  "swapGasFeesSummary": {
+    "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees.",
+    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapHighSlippageWarning": {
     "message": "Slippage amount is very high."

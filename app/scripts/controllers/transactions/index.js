@@ -1200,10 +1200,12 @@ export default class TransactionController extends EventEmitter {
           txMeta.chainId,
         );
 
-        const quoteVsExecutionRatio = `${new BigNumber(tokensReceived, 10)
-          .div(txMeta.swapMetaData.token_to_amount, 10)
-          .times(100)
-          .round(2)}%`;
+        const quoteVsExecutionRatio = tokensReceived
+          ? `${new BigNumber(tokensReceived, 10)
+              .div(txMeta.swapMetaData.token_to_amount, 10)
+              .times(100)
+              .round(2)}%`
+          : null;
 
         const estimatedVsUsedGasRatio = `${new BigNumber(
           txMeta.txReceipt.gasUsed,
