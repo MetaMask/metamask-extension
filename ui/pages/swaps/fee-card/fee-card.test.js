@@ -27,7 +27,7 @@ jest.mock('../../../hooks/useGasFeeEstimates', () => {
 });
 
 setBackgroundConnection({
-  getGasTimeEstimate: jest.fn(),
+  getGasFeeTimeEstimate: jest.fn(),
 });
 
 const createProps = (customProps = {}) => {
