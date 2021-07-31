@@ -28,11 +28,7 @@ import {
   addHexes,
 } from '../helpers/utils/conversions.util';
 import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
-import {
-  getShouldShowFiat,
-  getSelectedAccount,
-  txDataSelector,
-} from '../selectors';
+import { getShouldShowFiat, getSelectedAccount } from '../selectors';
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -175,7 +171,6 @@ export function useGasFeeInputs(
   editGasMode,
 ) {
   const { balance: ethBalance } = useSelector(getSelectedAccount);
-  const txData = useSelector(txDataSelector);
   const networkSupportsEIP1559 = useSelector(isEIP1559Network);
   // We need to know whether to show fiat conversions or not, so that we can
   // default our fiat values to empty strings if showing fiat is not wanted or
@@ -430,7 +425,7 @@ export function useGasFeeInputs(
 
   const minimumTxCostInHexWei = addHexes(
     minimumCostInHexWei,
-    txData?.txParams?.value,
+    transaction?.txParams?.value || '0x0',
   );
 
   const balanceError = conversionGreaterThan(

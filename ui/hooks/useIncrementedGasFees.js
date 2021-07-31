@@ -44,6 +44,7 @@ export function useIncrementedGasFees(transactionGroup) {
     // txParams object in this hook.
     const temporaryGasSettings = {
       gasLimit: primaryTransaction.txParams?.gas,
+      gas: primaryTransaction.txParams?.gas,
     };
     if (isEIP1559Transaction(primaryTransaction)) {
       const transactionMaxFeePerGas = primaryTransaction.txParams?.maxFeePerGas;
