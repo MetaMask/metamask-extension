@@ -247,11 +247,36 @@ const MODALS = {
   },
 
   CUSTOMIZE_GAS: {
-    contents: process.env.SHOW_EIP_1559_UI ? (
-      <EditGasPopover />
-    ) : (
-      <ConfirmCustomizeGasModal />
-    ),
+    contents: <EditGasPopover />,
+    mobileModalStyle: {
+      width: '100vw',
+      height: '100vh',
+      top: '0',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+    },
+    laptopModalStyle: {
+      width: 'auto',
+      height: '0px',
+      top: '80px',
+      left: '0px',
+      transform: 'none',
+      margin: '0 auto',
+      position: 'relative',
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+    customOnHideOpts: {
+      action: resetCustomGasData,
+      args: [],
+    },
+  },
+
+  LEGACY_CUSTOMIZE_GAS: {
+    contents: <ConfirmCustomizeGasModal />,
     mobileModalStyle: {
       width: '100vw',
       height: '100vh',

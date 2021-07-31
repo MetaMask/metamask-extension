@@ -156,9 +156,6 @@
   "amount": {
     "message": "Amount"
   },
-  "amountGasFee": {
-    "message": "Amount + Gas Fee"
-  },
   "amountWithColon": {
     "message": "Amount:"
   },

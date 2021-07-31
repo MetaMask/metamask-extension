@@ -162,9 +162,6 @@ export default class NetworkController extends EventEmitter {
    */
   async getEIP1559Compatibility() {
     const { EIPS } = this.networkDetails.getState();
-    if (process.env.SHOW_EIP_1559_UI === false) {
-      return false;
-    }
     if (EIPS[1559] !== undefined) {
       return EIPS[1559];
     }

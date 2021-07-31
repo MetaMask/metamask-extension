@@ -107,10 +107,11 @@ function getMatchingEstimateFromGasFees(
   maxFeePerGas,
   maxPriorityFeePerGas,
   gasPrice,
+  supportsEIP1559,
 ) {
   return (
     findKey(gasFeeEstimates, (estimate) => {
-      if (process.env.SHOW_EIP_1559_UI) {
+      if (supportsEIP1559) {
         return (
           Number(estimate?.suggestedMaxPriorityFeePerGas) ===
             Number(maxPriorityFeePerGas) &&
@@ -180,6 +181,7 @@ export function useGasFeeInputs(
   // default our fiat values to empty strings if showing fiat is not wanted or
   // possible.
   const showFiat = useSelector(getShouldShowFiat);
+  const supportsEIP1559 = useSelector(isEIP1559Network);
 
   // We need to know the current network's currency and its decimal precision
   // to calculate the amount to display to the user.
@@ -235,6 +237,7 @@ export function useGasFeeInputs(
           maxFeePerGas,
           maxPriorityFeePerGas,
           gasPrice,
+          supportsEIP1559,
         )
       : defaultEstimateToUse,
   );

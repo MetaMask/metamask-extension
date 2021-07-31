@@ -3,10 +3,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
 import transactions from '../../test/data/transaction-data.json';
 import { getConversionRate, getSelectedAccount } from '../selectors';
-import { showModal } from '../store/actions';
 import { increaseLastGasPrice } from '../helpers/utils/confirm-tx.util';
-import * as actionConstants from '../store/actionConstants';
-import { GAS_LIMITS } from '../../shared/constants/gas';
 import { useCancelTransaction } from './useCancelTransaction';
 
 describe('useCancelTransaction', function () {
@@ -61,42 +58,6 @@ describe('useCancelTransaction', function () {
         expect(typeof result.current[1].cancelTransaction).toStrictEqual(
           'function',
         );
-        result.current[1].cancelTransaction({
-          preventDefault: () => undefined,
-          stopPropagation: () => undefined,
-        });
-        const dispatchAction = dispatch.args;
-
-        // calls customize-gas sidebar
-        // also check type= customize-gas
-        expect(dispatchAction[dispatchAction.length - 1][0].type).toStrictEqual(
-          actionConstants.SIDEBAR_OPEN,
-        );
-
-        expect(
-          dispatchAction[dispatchAction.length - 1][0].value.props.transaction
-            .id,
-        ).toStrictEqual(transactionId);
-
-        // call onSubmit myself
-        dispatchAction[dispatchAction.length - 1][0].value.props.onSubmit({
-          gasLimit: GAS_LIMITS.SIMPLE,
-          gasPrice: '0x1',
-        });
-
-        expect(
-          dispatch.calledWith(
-            showModal({
-              name: 'CANCEL_TRANSACTION',
-              transactionId,
-              newGasFee: GAS_LIMITS.SIMPLE,
-              customGasSettings: {
-                gasPrice: '0x1',
-                gasLimit: GAS_LIMITS.SIMPLE,
-              },
-            }),
-          ),
-        ).toStrictEqual(true);
       });
     });
   });
@@ -132,45 +93,13 @@ describe('useCancelTransaction', function () {
         );
         expect(result.current[0]).toStrictEqual(true);
       });
-      it(`should return a function that opens the gas sidebar onsubmit kicks off cancellation for id ${transactionId}`, function () {
+      it(`should return a function that opens the gas popover onsubmit kicks off cancellation for id ${transactionId}`, function () {
         const { result } = renderHook(() =>
           useCancelTransaction(transactionGroup),
         );
         expect(typeof result.current[1].cancelTransaction).toStrictEqual(
           'function',
         );
-        result.current[1].cancelTransaction({
-          preventDefault: () => undefined,
-          stopPropagation: () => undefined,
-        });
-        const dispatchAction = dispatch.args;
-
-        expect(dispatchAction[dispatchAction.length - 1][0].type).toStrictEqual(
-          actionConstants.SIDEBAR_OPEN,
-        );
-        expect(
-          dispatchAction[dispatchAction.length - 1][0].value.props.transaction
-            .id,
-        ).toStrictEqual(transactionId);
-
-        dispatchAction[dispatchAction.length - 1][0].value.props.onSubmit({
-          gasLimit: GAS_LIMITS.SIMPLE,
-          gasPrice: '0x1',
-        });
-
-        expect(
-          dispatch.calledWith(
-            showModal({
-              name: 'CANCEL_TRANSACTION',
-              transactionId,
-              newGasFee: GAS_LIMITS.SIMPLE,
-              customGasSettings: {
-                gasPrice: '0x1',
-                gasLimit: GAS_LIMITS.SIMPLE,
-              },
-            }),
-          ),
-        ).toStrictEqual(true);
       });
     });
   });

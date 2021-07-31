@@ -42,12 +42,12 @@ export default function EditGasPopover({
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
-  const supportsEIP1559 = useSelector(isEIP1559Network);
+  const networkSupports1559 = useSelector(isEIP1559Network);
 
   const shouldAnimate = useShouldAnimateGasEstimations();
 
   const showEducationButton =
-    mode === EDIT_GAS_MODES.MODIFY_IN_PLACE && process.env.SHOW_EIP_1559_UI;
+    mode === EDIT_GAS_MODES.MODIFY_IN_PLACE && networkSupports1559;
   const [showEducationContent, setShowEducationContent] = useState(false);
 
   const [warning] = useState(null);
@@ -109,7 +109,7 @@ export default function EditGasPopover({
       closePopover();
     }
 
-    const newGasSettings = supportsEIP1559
+    const newGasSettings = networkSupports1559
       ? {
           gas: decimalToHex(gasLimit),
           gasLimit: decimalToHex(gasLimit),
@@ -144,7 +144,7 @@ export default function EditGasPopover({
         break;
       case EDIT_GAS_MODES.SWAPS:
         // This popover component should only be used for the "FEE_MARKET" type in Swaps.
-        if (supportsEIP1559) {
+        if (networkSupports1559) {
           dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
         }
         break;
@@ -162,7 +162,7 @@ export default function EditGasPopover({
     gasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    supportsEIP1559,
+    networkSupports1559,
   ]);
 
   let title = t('editGasTitle');
@@ -177,7 +177,6 @@ export default function EditGasPopover({
   }
 
   const footerButtonText = confirmButtonText || t('save');
-
   return (
     <Popover
       title={title}
@@ -205,7 +204,9 @@ export default function EditGasPopover({
           <EditGasDisplayEducation />
         ) : (
           <>
-            <LoadingHeartBeat active={shouldAnimate} />
+            {process.env.IN_TEST === 'true' ? null : (
+              <LoadingHeartBeat active={shouldAnimate} />
+            )}
             <EditGasDisplay
               showEducationButton={showEducationButton}
               warning={warning}

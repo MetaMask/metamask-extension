@@ -13,7 +13,9 @@ export default function TransactionDetail({ rows = [], onEdit }) {
 
   return (
     <div className="transaction-detail">
-      <LoadingHeartBeat active={shouldAnimate} />
+      {process.env.IN_TEST === 'true' ? null : (
+        <LoadingHeartBeat active={shouldAnimate} />
+      )}
       {onEdit && (
         <div className="transaction-detail-edit">
           <button onClick={onEdit}>{t('edit')}</button>
