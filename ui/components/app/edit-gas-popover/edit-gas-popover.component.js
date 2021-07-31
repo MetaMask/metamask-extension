@@ -5,10 +5,7 @@ import { isEIP1559Network } from '../../../ducks/metamask/metamask';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
-import {
-  EDIT_GAS_MODES,
-  GAS_LIMITS,
-} from '../../../../shared/constants/gas';
+import { EDIT_GAS_MODES, GAS_LIMITS } from '../../../../shared/constants/gas';
 
 import {
   decGWEIToHexWEI,
