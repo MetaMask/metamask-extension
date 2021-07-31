@@ -42,7 +42,8 @@ describe('Editing Confirm Transaction', function () {
         );
         await driver.fill('.unit-input__input', '2.2');
 
-        await driver.clickElement('.advanced-gas-options-btn');
+        await driver.clickElement({ text: 'Next', tag: 'button' });
+
         await driver.delay(regularDelayMs);
 
         // wait for gas modal to be visible

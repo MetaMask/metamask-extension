@@ -177,17 +177,6 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
         const inputValue = await inputAmount.getAttribute('value');
         assert.equal(inputValue, '1');
 
-        // Set the gas limit
-        await driver.clickElement('.advanced-gas-options-btn');
-
-        // wait for gas modal to be visible
-        const gasModal = await driver.findVisibleElement('span .modal');
-
-        await driver.clickElement({ text: 'Save', tag: 'button' });
-
-        // Wait for gas modal to be removed from DOM
-        await gasModal.waitForElementState('hidden');
-
         // Continue to next screen
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
