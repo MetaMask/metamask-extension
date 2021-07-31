@@ -904,9 +904,6 @@
   "gasEstimatesUnavailableWarning": {
     "message": "Our low, medium and high estimates are not available."
   },
-  "gasFee": {
-    "message": "Gas Fee"
-  },
   "gasFeeEstimate": {
     "message": "Estimate"
   },
