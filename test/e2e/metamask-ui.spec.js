@@ -792,13 +792,12 @@ describe('MetaMask', function () {
       await driver.clickElement('.confirm-approve-content__small-blue-text');
       await driver.delay(regularDelayMs);
 
-      // wait for gas modal to be visible
-      const gasModal = await driver.findVisibleElement('span .modal');
-      await driver.clickElement('.page-container__tab:nth-of-type(2)');
-      await driver.delay(regularDelayMs);
+      await driver.clickElement(
+        '.edit-gas-display__dapp-acknowledgement-button',
+      );
 
-      const [gasPriceInput, gasLimitInput] = await driver.findElements(
-        '.advanced-gas-inputs__gas-edit-row__input',
+      const [gasLimitInput, gasPriceInput] = await driver.findElements(
+        '.advanced-gas-controls input[type="number"]',
       );
 
       await gasPriceInput.fill('10');
@@ -808,10 +807,7 @@ describe('MetaMask', function () {
 
       await driver.delay(1000);
 
-      await driver.clickElement('.page-container__footer-button');
-
-      // wait for gas modal to be removed from DOM.
-      await gasModal.waitForElementState('hidden');
+      await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
 
       const gasFeeInEth = await driver.findElement(
         '.confirm-approve-content__transaction-details-content__secondary-fee',
