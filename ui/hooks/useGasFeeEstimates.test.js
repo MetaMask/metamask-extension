@@ -173,11 +173,11 @@ describe('useGasFeeEstimates', () => {
     });
   });
 
-  it('indicates that gas estimates are loading when gasEstimateType is not FEE_MARKET but network supports EIP-1559', () => {
+  it('indicates that gas estimates are loading when gasEstimateType is not FEE_MARKET or ETH_GASPRICE, but network supports EIP-1559', () => {
     useSelector.mockImplementation(
       generateUseSelectorRouter({
         isEIP1559Network: true,
-        gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
+        gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
         gasFeeEstimates: {
           gasPrice: '10',
         },
@@ -189,7 +189,7 @@ describe('useGasFeeEstimates', () => {
     } = renderHook(() => useGasFeeEstimates());
     expect(current).toMatchObject({
       gasFeeEstimates: { gasPrice: '10' },
-      gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
+      gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
       estimatedGasFeeTimeBounds: undefined,
       isGasEstimatesLoading: true,
     });

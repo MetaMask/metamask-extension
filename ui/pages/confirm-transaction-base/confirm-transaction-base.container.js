@@ -38,7 +38,10 @@ import {
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { updateTransactionGasFees } from '../../ducks/metamask/metamask';
+import {
+  updateTransactionGasFees,
+  isEIP1559Network,
+} from '../../ducks/metamask/metamask';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
@@ -65,6 +68,7 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
+  const supportsEIP1599 = isEIP1559Network(state);
   const { confirmTransaction, metamask } = state;
   const {
     ensResolutionsByAddress,
@@ -111,7 +115,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const {
     hexTransactionAmount,
-    hexTransactionFee,
+    hexMinimumTransactionFee,
+    hexMaximumTransactionFee,
     hexTransactionTotal,
   } = transactionFeeSelector(state, transaction);
 
@@ -158,7 +163,8 @@ const mapStateToProps = (state, ownProps) => {
     toName,
     toNickname,
     hexTransactionAmount,
-    hexTransactionFee,
+    hexMinimumTransactionFee,
+    hexMaximumTransactionFee,
     hexTransactionTotal,
     txData: fullTxData,
     tokenData,
@@ -187,6 +193,7 @@ const mapStateToProps = (state, ownProps) => {
     isMainnet,
     isEthGasPrice,
     noGasPrice,
+    supportsEIP1599,
   };
 };
 

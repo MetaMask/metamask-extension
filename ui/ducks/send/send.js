@@ -73,6 +73,7 @@ import {
   getGasEstimateType,
   getTokens,
   getUnapprovedTxs,
+  isEIP1559Network,
 } from '../metamask/metamask';
 import { resetEnsResolution } from '../ens';
 import {
@@ -81,6 +82,7 @@ import {
 } from '../../../shared/modules/hexstring-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
 import { ETH, GWEI } from '../../helpers/constants/common';
+import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
 
 // typedefs
 /**
@@ -91,7 +93,7 @@ const name = 'send';
 
 /**
  * The Stages that the send slice can be in
- * 1. UNINITIALIZED - The send state is idle, and hasn't yet fetched required
+ * 1. INACTIVE - The send state is idle, and hasn't yet fetched required
  *  data for gasPrice and gasLimit estimations, etc.
  * 2. ADD_RECIPIENT - The user is selecting which address to send an asset to
  * 3. DRAFT - The send form is shown for a transaction yet to be sent to the
@@ -407,6 +409,7 @@ export const initializeSendState = createAsyncThunk(
     const state = thunkApi.getState();
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
+    const eip1559support = isEIP1559Network(state);
     const {
       send: { asset, stage, recipient, amount, draftTransaction },
       metamask,
@@ -424,7 +427,10 @@ export const initializeSendState = createAsyncThunk(
     // selector and returns the account at the specified address.
     const account = getTargetAccount(state, fromAddress);
 
-    // Default gasPrice to 1 gwei if all estimation fails
+    // Default gasPrice to 1 gwei if all estimation fails, this is only used
+    // for gasLimit estimation and won't be set directly in state. Instead, we
+    // will return the gasFeeEstimates and gasEstimateType so that the reducer
+    // can set the appropriate gas fees in state.
     let gasPrice = '0x1';
     let gasEstimatePollToken = null;
 
@@ -434,6 +440,9 @@ export const initializeSendState = createAsyncThunk(
       metamask: { gasFeeEstimates, gasEstimateType },
     } = thunkApi.getState();
 
+    // Because we are only interested in getting a gasLimit estimation we only
+    // need to worry about gasPrice. So we use maxFeePerGas as gasPrice if we
+    // have a fee market estimation.
     if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
       gasPrice = getGasPriceInHexWei(gasFeeEstimates.medium);
     } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
@@ -442,6 +451,10 @@ export const initializeSendState = createAsyncThunk(
       gasPrice = getGasPriceInHexWei(
         gasFeeEstimates.medium.suggestedMaxFeePerGas,
       );
+    } else {
+      gasPrice = gasFeeEstimates.gasPrice
+        ? getRoundedGasPrice(gasFeeEstimates.gasPrice)
+        : '0x0';
     }
 
     // Set a basic gasLimit in the event that other estimation fails
@@ -493,19 +506,25 @@ export const initializeSendState = createAsyncThunk(
       assetBalance: balance,
       chainId: getCurrentChainId(state),
       tokens: getTokens(state),
-      gasPrice,
+      gasFeeEstimates,
+      gasEstimateType,
       gasLimit,
       gasTotal: addHexPrefix(calcGasTotal(gasLimit, gasPrice)),
       gasEstimatePollToken,
+      eip1559support,
     };
   },
 );
 
 export const initialState = {
   // which stage of the send flow is the user on
-  stage: SEND_STAGES.UNINITIALIZED,
+  stage: SEND_STAGES.INACTIVE,
   // status of the send slice, either VALID or INVALID
   status: SEND_STATUSES.VALID,
+  // Determines type of transaction being sent, defaulted to 0x0 (legacy)
+  transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+  // tracks whether the current network supports EIP 1559 transactions
+  eip1559support: false,
   account: {
     // from account address, defaults to selected account. will be the account
     // the original transaction was sent from in the case of the EDIT stage
@@ -524,6 +543,10 @@ export const initialState = {
     gasLimit: '0x0',
     // price in wei to pay per gas
     gasPrice: '0x0',
+    // maximum price in wei to pay per gas
+    maxFeePerGas: '0x0',
+    // maximum priority fee in wei to pay per gas
+    maxPriorityFeePerGas: '0x0',
     // expected price in wei necessary to pay per gas used for a transaction
     // to be included in a reasonable timeframe. Comes from GasFeeController.
     gasPriceEstimate: '0x0',
@@ -570,6 +593,7 @@ export const initialState = {
       value: '0x0',
       gas: '0x0',
       gasPrice: '0x0',
+      type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
     },
   },
   recipient: {
@@ -683,9 +707,17 @@ const slice = createSlice({
      * field and send state, then updates the draft transaction.
      */
     calculateGasTotal: (state) => {
-      state.gas.gasTotal = addHexPrefix(
-        calcGasTotal(state.gas.gasLimit, state.gas.gasPrice),
-      );
+      // use maxFeePerGas as the multiplier if working with a FEE_MARKET transaction
+      // otherwise use gasPrice
+      if (state.transactionType === TRANSACTION_ENVELOPE_TYPES.FEE_MARKET) {
+        state.gas.gasTotal = addHexPrefix(
+          calcGasTotal(state.gas.gasLimit, state.gas.maxFeePerGas),
+        );
+      } else {
+        state.gas.gasTotal = addHexPrefix(
+          calcGasTotal(state.gas.gasLimit, state.gas.gasPrice),
+        );
+      }
       if (
         state.amount.mode === AMOUNT_MODES.MAX &&
         state.asset.type === ASSET_TYPES.NATIVE
@@ -705,11 +737,85 @@ const slice = createSlice({
       slice.caseReducers.calculateGasTotal(state);
     },
     /**
-     * sets the provided gasPrice in state and then recomputes the gasTotal
+     * Sets the appropriate gas fees in state and determines and sets the
+     * appropriate transactionType based on gas fee fields received.
      */
-    updateGasPrice: (state, action) => {
-      state.gas.gasPrice = addHexPrefix(action.payload);
+    updateGasFees: (state, action) => {
+      if (
+        action.payload.transactionType === TRANSACTION_ENVELOPE_TYPES.FEE_MARKET
+      ) {
+        state.gas.maxFeePerGas = addHexPrefix(action.payload.maxFeePerGas);
+        state.gas.maxPriorityFeePerGas = addHexPrefix(
+          action.payload.maxPriorityFeePerGas,
+        );
+        state.transactionType = TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
+      } else {
+        // Until we remove the old UI we don't want to automatically update
+        // gasPrice if the user has already manually changed the field value.
+        // When receiving a new estimate the isAutomaticUpdate property will be
+        // on the payload (and set to true). If isAutomaticUpdate is true,
+        // then we check if the previous estimate was '0x0' or if the previous
+        // gasPrice equals the previous gasEstimate. if either of those cases
+        // are true then we update the gasPrice otherwise we skip it because
+        // it indicates the user has ejected from the estimates by modifying
+        // the field.
+        if (
+          action.payload.isAutomaticUpdate !== true ||
+          state.gas.gasPriceEstimate === '0x0' ||
+          state.gas.gasPrice === state.gas.gasPriceEstimate
+        ) {
+          state.gas.gasPrice = addHexPrefix(action.payload.gasPrice);
+        }
+        state.transactionType = TRANSACTION_ENVELOPE_TYPES.LEGACY;
+      }
       slice.caseReducers.calculateGasTotal(state);
+    },
+    /**
+     * Sets the appropriate gas fees in state after receiving new estimates.
+     */
+    updateGasFeeEstimates: (state, action) => {
+      const { gasFeeEstimates, gasEstimateType } = action.payload;
+      let gasPriceEstimate = '0x0';
+      switch (gasEstimateType) {
+        case GAS_ESTIMATE_TYPES.FEE_MARKET:
+          slice.caseReducers.updateGasFees(state, {
+            payload: {
+              transactionType: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+              maxFeePerGas: getGasPriceInHexWei(
+                gasFeeEstimates.medium.suggestedMaxFeePerGas,
+              ),
+              maxPriorityFeePerGas: getGasPriceInHexWei(
+                gasFeeEstimates.medium.suggestedMaxPriorityFeePerGas,
+              ),
+            },
+          });
+          break;
+        case GAS_ESTIMATE_TYPES.LEGACY:
+          gasPriceEstimate = getRoundedGasPrice(gasFeeEstimates.medium);
+          slice.caseReducers.updateGasFees(state, {
+            payload: {
+              gasPrice: gasPriceEstimate,
+              type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+              isAutomaticUpdate: true,
+            },
+          });
+          break;
+        case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
+          gasPriceEstimate = getRoundedGasPrice(gasFeeEstimates.gasPrice);
+          slice.caseReducers.updateGasFees(state, {
+            payload: {
+              gasPrice: getRoundedGasPrice(gasFeeEstimates.gasPrice),
+              type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+              isAutomaticUpdate: true,
+            },
+          });
+          break;
+        case GAS_ESTIMATE_TYPES.NONE:
+        default:
+          break;
+      }
+      // Record the latest gasPriceEstimate for future comparisons
+      state.gas.gasPriceEstimate = addHexPrefix(gasPriceEstimate);
     },
     /**
      * sets the amount mode to the provided value as long as it is one of the
@@ -778,9 +884,15 @@ const slice = createSlice({
       // We keep a copy of txParams in state that could be submitted to the
       // network if the form state is valid.
       if (state.status === SEND_STATUSES.VALID) {
+        // We don't/shouldn't modify the from address when editing an
+        // existing transaction.
         if (state.stage !== SEND_STAGES.EDIT) {
           state.draftTransaction.txParams.from = state.account.address;
         }
+
+        // gasLimit always needs to be set regardless of the asset being sent
+        // or the type of transaction.
+        state.draftTransaction.txParams.gas = state.gas.gasLimit;
         switch (state.asset.type) {
           case ASSET_TYPES.TOKEN:
             // When sending a token the to address is the contract address of
@@ -789,8 +901,6 @@ const slice = createSlice({
             // amount.
             state.draftTransaction.txParams.to = state.asset.details.address;
             state.draftTransaction.txParams.value = '0x0';
-            state.draftTransaction.txParams.gas = state.gas.gasLimit;
-            state.draftTransaction.txParams.gasPrice = state.gas.gasPrice;
             state.draftTransaction.txParams.data = generateTokenTransferData({
               toAddress: state.recipient.address,
               amount: state.amount.value,
@@ -804,10 +914,45 @@ const slice = createSlice({
             // populated with the user input provided in hex field.
             state.draftTransaction.txParams.to = state.recipient.address;
             state.draftTransaction.txParams.value = state.amount.value;
-            state.draftTransaction.txParams.gas = state.gas.gasLimit;
-            state.draftTransaction.txParams.gasPrice = state.gas.gasPrice;
             state.draftTransaction.txParams.data =
               state.draftTransaction.userInputHexData ?? undefined;
+        }
+
+        // We need to make sure that we only include the right gas fee fields
+        // based on the type of transaction the network supports. We will also set
+        // the type param here. We must delete the opposite fields to avoid
+        // stale data in txParams.
+        if (state.eip1559support) {
+          state.draftTransaction.txParams.type =
+            TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
+
+          state.draftTransaction.txParams.maxFeePerGas = state.gas.maxFeePerGas;
+          state.draftTransaction.txParams.maxPriorityFeePerGas =
+            state.gas.maxPriorityFeePerGas;
+
+          if (
+            !state.draftTransaction.txParams.maxFeePerGas ||
+            state.draftTransaction.txParams.maxFeePerGas === '0x0'
+          ) {
+            state.draftTransaction.txParams.maxFeePerGas = state.gas.gasPrice;
+          }
+
+          if (
+            !state.draftTransaction.txParams.maxPriorityFeePerGas ||
+            state.draftTransaction.txParams.maxPriorityFeePerGas === '0x0'
+          ) {
+            state.draftTransaction.txParams.maxPriorityFeePerGas =
+              state.draftTransaction.txParams.maxFeePerGas;
+          }
+
+          delete state.draftTransaction.txParams.gasPrice;
+        } else {
+          delete state.draftTransaction.txParams.maxFeePerGas;
+          delete state.draftTransaction.txParams.maxPriorityFeePerGas;
+
+          state.draftTransaction.txParams.gasPrice = state.gas.gasPrice;
+          state.draftTransaction.txParams.type =
+            TRANSACTION_ENVELOPE_TYPES.LEGACY;
         }
       }
     },
@@ -937,7 +1082,7 @@ const slice = createSlice({
         case state.asset.type === ASSET_TYPES.TOKEN &&
           state.asset.details === null:
         case state.stage === SEND_STAGES.ADD_RECIPIENT:
-        case state.stage === SEND_STAGES.UNINITIALIZED:
+        case state.stage === SEND_STAGES.INACTIVE:
         case state.gas.isGasEstimateLoading:
         case new BigNumber(state.gas.gasLimit, 16).lessThan(
           new BigNumber(state.gas.minimumGasLimit),
@@ -1039,17 +1184,23 @@ const slice = createSlice({
       .addCase(initializeSendState.fulfilled, (state, action) => {
         // writes the computed initialized state values into the slice and then
         // calculates slice validity using the caseReducers.
+        state.eip1559support = action.payload.eip1559support;
         state.account.address = action.payload.address;
         state.account.balance = action.payload.nativeBalance;
         state.asset.balance = action.payload.assetBalance;
         state.gas.gasLimit = action.payload.gasLimit;
-        state.gas.gasPrice = action.payload.gasPrice;
+        slice.caseReducers.updateGasFeeEstimates(state, {
+          payload: {
+            gasFeeEstimates: action.payload.gasFeeEstimates,
+            gasEstimateType: action.payload.gasEstimateType,
+          },
+        });
         state.gas.gasTotal = action.payload.gasTotal;
         state.gas.gasEstimatePollToken = action.payload.gasEstimatePollToken;
         if (action.payload.gasEstimatePollToken) {
           state.gas.isGasEstimateLoading = false;
         }
-        if (state.stage !== SEND_STAGES.UNINITIALIZED) {
+        if (state.stage !== SEND_STAGES.INACTIVE) {
           slice.caseReducers.validateRecipientUserInput(state, {
             payload: {
               chainId: action.payload.chainId,
@@ -1058,7 +1209,7 @@ const slice = createSlice({
           });
         }
         state.stage =
-          state.stage === SEND_STAGES.UNINITIALIZED
+          state.stage === SEND_STAGES.INACTIVE
             ? SEND_STAGES.ADD_RECIPIENT
             : state.stage;
         slice.caseReducers.validateAmountField(state);
@@ -1091,33 +1242,9 @@ const slice = createSlice({
       .addCase(GAS_FEE_ESTIMATES_UPDATED, (state, action) => {
         // When the gasFeeController updates its gas fee estimates we need to
         // update and validate state based on those new values
-        const { gasFeeEstimates, gasEstimateType } = action.payload;
-        let payload = null;
-        if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
-          payload = getGasPriceInHexWei(
-            gasFeeEstimates.medium.suggestedMaxFeePerGas,
-          );
-        } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
-          payload = getGasPriceInHexWei(gasFeeEstimates.medium);
-        } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
-          payload = getRoundedGasPrice(gasFeeEstimates.gasPrice);
-        }
-        // If a new gasPrice can be derived, and either the gasPriceEstimate
-        // was '0x0' or the gasPrice selected matches the previous estimate,
-        // update the gasPrice. This will ensure that we only update the
-        // gasPrice if the user is using our previous estimated value.
-        if (
-          payload &&
-          (state.gas.gasPriceEstimate === '0x0' ||
-            state.gas.gasPrice === state.gas.gasPriceEstimate)
-        ) {
-          slice.caseReducers.updateGasPrice(state, {
-            payload,
-          });
-        }
-
-        // Record the latest gasPriceEstimate for future comparisons
-        state.gas.gasPriceEstimate = payload ?? state.gas.gasPriceEstimate;
+        slice.caseReducers.updateGasFeeEstimates(state, {
+          payload: action.payload,
+        });
       });
   },
 });
@@ -1130,14 +1257,36 @@ const {
   useDefaultGas,
   useCustomGas,
   updateGasLimit,
-  updateGasPrice,
   validateRecipientUserInput,
   updateRecipientSearchMode,
 } = actions;
 
-export { useDefaultGas, useCustomGas, updateGasLimit, updateGasPrice };
+export { useDefaultGas, useCustomGas, updateGasLimit };
 
 // Action Creators
+
+/**
+ * This method is a temporary placeholder to support the old UI in both the
+ * gas modal and the send flow. Soon we won't need to modify gasPrice from the
+ * send flow based on user input, it'll just be a shallow copy of the current
+ * estimate. This method is necessary because the internal structure of this
+ * slice has been changed such that it is agnostic to transaction envelope
+ * type, and this method calls into the new structure in the appropriate way.
+ *
+ * @deprecated - don't extend the usage of this temporary method
+ * @param {string} gasPrice - new gas price in hex wei
+ * @returns {void}
+ */
+export function updateGasPrice(gasPrice) {
+  return (dispatch) => {
+    dispatch(
+      actions.updateGasFees({
+        gasPrice,
+        transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+      }),
+    );
+  };
+}
 
 export function resetSendState() {
   return async (dispatch, getState) => {
@@ -1587,7 +1736,7 @@ export function getSendErrors(state) {
 }
 
 export function isSendStateInitialized(state) {
-  return state[name].stage !== SEND_STAGES.UNINITIALIZED;
+  return state[name].stage !== SEND_STAGES.INACTIVE;
 }
 
 export function isSendFormInvalid(state) {

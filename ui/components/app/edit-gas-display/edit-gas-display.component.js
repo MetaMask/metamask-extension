@@ -7,10 +7,10 @@ import {
   EDIT_GAS_MODES,
 } from '../../../../shared/constants/gas';
 
-import { isEIP1559Network } from '../../../ducks/metamask/metamask';
-
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
+import { isEIP1559Network } from '../../../ducks/metamask/metamask';
+
 import {
   COLORS,
   TYPOGRAPHY,
@@ -63,6 +63,7 @@ export default function EditGasDisplay({
   balanceError,
 }) {
   const t = useContext(I18nContext);
+  const supportsEIP1559 = useSelector(isEIP1559Network);
 
   const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
     transaction,
@@ -220,6 +221,7 @@ export default function EditGasDisplay({
             gasErrors={gasErrors}
             onManualChange={onManualChange}
             minimumGasLimit={minimumGasLimit}
+            networkSupportsEIP1559={supportsEIP1559}
           />
         )}
       </div>
