@@ -221,10 +221,13 @@ export function useGasFeeInputs(
       : null,
   );
   const [gasLimit, setGasLimit] = useState(
-    transaction?.txParams?.gas
-      ? Number(hexToDecimal(transaction.txParams.gas))
-      : 21000,
+    Number(
+      hexToDecimal(
+        transaction?.txParams?.gas ? transaction.txParams.gas : minimumGasLimit,
+      ),
+    ),
   );
+
   const [estimateToUse, setInternalEstimateToUse] = useState(
     transaction
       ? getMatchingEstimateFromGasFees(
@@ -240,12 +243,16 @@ export function useGasFeeInputs(
   // When a user selects an estimate level, it will wipe out what they have
   // previously put in the inputs. This returns the inputs to the estimated
   // values at the level specified.
-  const setEstimateToUse = useCallback((estimateLevel) => {
-    setInternalEstimateToUse(estimateLevel);
-    setMaxFeePerGas(null);
-    setMaxPriorityFeePerGas(null);
-    setGasPrice(null);
-  }, []);
+  const setEstimateToUse = useCallback(
+    (estimateLevel) => {
+      setInternalEstimateToUse(estimateLevel);
+      setGasLimit(hexToDecimal(minimumGasLimit));
+      setMaxFeePerGas(null);
+      setMaxPriorityFeePerGas(null);
+      setGasPrice(null);
+    },
+    [minimumGasLimit],
+  );
 
   // We specify whether to use the estimate value by checking if the state
   // value has been set. The state value is only set by user input and is wiped
