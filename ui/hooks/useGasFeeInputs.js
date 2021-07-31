@@ -430,7 +430,7 @@ export function useGasFeeInputs(
 
   const minimumTxCostInHexWei = addHexes(
     minimumCostInHexWei,
-    txData?.txParams?.value,
+    transaction?.txParams?.value || '0x0',
   );
 
   const balanceError = conversionGreaterThan(
