@@ -103,6 +103,8 @@ function getMatchingEstimateFromGasFees(
   maxFeePerGas,
   maxPriorityFeePerGas,
   gasPrice,
+  gasLimit,
+  minimumGasLimit,
   supportsEIP1559,
 ) {
   return (
@@ -111,7 +113,8 @@ function getMatchingEstimateFromGasFees(
         return (
           Number(estimate?.suggestedMaxPriorityFeePerGas) ===
             Number(maxPriorityFeePerGas) &&
-          Number(estimate?.suggestedMaxFeePerGas) === Number(maxFeePerGas)
+          Number(estimate?.suggestedMaxFeePerGas) === Number(maxFeePerGas) && 
+          Number(gasLimit) === Number(minimumGasLimit)
         );
       }
       return estimate?.gasPrice === gasPrice;
@@ -235,6 +238,8 @@ export function useGasFeeInputs(
           maxFeePerGas,
           maxPriorityFeePerGas,
           gasPrice,
+          gasLimit,
+          hexToDecimal(minimumGasLimit),
           supportsEIP1559,
         )
       : defaultEstimateToUse,
