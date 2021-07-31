@@ -7,7 +7,7 @@ import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateG
 
 import {
   EDIT_GAS_MODES,
-  TWENTY_ONE_THOUSAND,
+  GAS_LIMITS,
 } from '../../../../shared/constants/gas';
 
 import {
@@ -40,7 +40,7 @@ export default function EditGasPopover({
   transaction,
   mode,
   onClose,
-  minimumGasLimit = `0x${decimalToHex(TWENTY_ONE_THOUSAND)}`,
+  minimumGasLimit = GAS_LIMITS.SIMPLE,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();

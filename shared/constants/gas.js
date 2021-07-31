@@ -1,6 +1,6 @@
 import { addHexPrefix } from 'ethereumjs-util';
 
-export const TWENTY_ONE_THOUSAND = 21000;
+const TWENTY_ONE_THOUSAND = 21000;
 const ONE_HUNDRED_THOUSAND = 100000;
 
 export const GAS_LIMITS = {
