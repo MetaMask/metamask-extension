@@ -223,7 +223,7 @@ export function useGasFeeInputs(
   const [gasLimit, setGasLimit] = useState(
     Number(
       hexToDecimal(
-        transaction?.txParams?.gas ? transaction.txParams.gas : minimumGasLimit,
+        transaction?.txParams?.gas ?? minimumGasLimit,
       ),
     ),
   );
