@@ -223,7 +223,7 @@ export default function TransactionListItem({
             txParams: {
               ...transactionGroup.primaryTransaction?.txParams,
               ...customRetryGasSettings,
-            }
+            },
           }}
         />
       )}
@@ -236,7 +236,7 @@ export default function TransactionListItem({
             txParams: {
               ...transactionGroup.primaryTransaction?.txParams,
               ...customCancelGasSettings,
-            }
+            },
           }}
         />
       )}
