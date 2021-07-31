@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SendRowWrapper from '../send-row-wrapper';
-import GasPriceButtonGroup from '../../../../components/app/gas-customization/gas-price-button-group';
 import AdvancedGasInputs from '../../../../components/app/gas-customization/advanced-gas-inputs';
 import { GAS_INPUT_MODES } from '../../../../ducks/send';
 import GasFeeDisplay from './gas-fee-display/gas-fee-display.component';
@@ -11,12 +10,9 @@ export default class SendGasRow extends Component {
     gasFeeError: PropTypes.bool,
     gasLoadingError: PropTypes.bool,
     gasTotal: PropTypes.string,
-    showLegacyCustomizeGasModal: PropTypes.func,
     updateGasPrice: PropTypes.func,
     updateGasLimit: PropTypes.func,
     gasInputMode: PropTypes.oneOf(Object.values(GAS_INPUT_MODES)),
-    gasPriceButtonGroupProps: PropTypes.object,
-    advancedInlineGasShown: PropTypes.bool,
     resetGasButtons: PropTypes.func,
     gasPrice: PropTypes.string,
     gasLimit: PropTypes.string,
@@ -29,30 +25,10 @@ export default class SendGasRow extends Component {
     trackEvent: PropTypes.func,
   };
 
-  renderAdvancedOptionsButton() {
-    const { trackEvent } = this.context;
-    const { showLegacyCustomizeGasModal } = this.props;
-    return (
-      <div
-        className="advanced-gas-options-btn"
-        onClick={() => {
-          trackEvent({
-            category: 'Transactions',
-            event: 'Clicked "Advanced Options"',
-          });
-          showLegacyCustomizeGasModal();
-        }}
-      >
-        {this.context.t('advancedOptions')}
-      </div>
-    );
-  }
-
   renderContent() {
     const {
       gasLoadingError,
       gasTotal,
-      gasPriceButtonGroupProps,
       gasInputMode,
       resetGasButtons,
       updateGasPrice,
@@ -62,27 +38,6 @@ export default class SendGasRow extends Component {
       insufficientBalance,
       minimumGasLimit,
     } = this.props;
-    const { trackEvent } = this.context;
-
-    const gasPriceButtonGroup = (
-      <div>
-        <GasPriceButtonGroup
-          className="gas-price-button-group--small"
-          showCheck={false}
-          {...gasPriceButtonGroupProps}
-          handleGasPriceSelection={async (opts) => {
-            trackEvent({
-              category: 'Transactions',
-              event: 'User Clicked Gas Estimate Button',
-              properties: {
-                gasEstimateType: opts.gasEstimateType.toLowerCase(),
-              },
-            });
-            await gasPriceButtonGroupProps.handleGasPriceSelection(opts);
-          }}
-        />
-      </div>
-    );
     const gasFeeDisplay = (
       <GasFeeDisplay
         gasLoadingError={gasLoadingError}
@@ -106,8 +61,6 @@ export default class SendGasRow extends Component {
     );
     // Tests should behave in same way as mainnet, but are using Localhost
     switch (gasInputMode) {
-      case GAS_INPUT_MODES.BASIC:
-        return gasPriceButtonGroup;
       case GAS_INPUT_MODES.INLINE:
         return advancedGasInputs;
       case GAS_INPUT_MODES.CUSTOM:
@@ -117,7 +70,7 @@ export default class SendGasRow extends Component {
   }
 
   render() {
-    const { gasFeeError, gasInputMode, advancedInlineGasShown } = this.props;
+    const { gasFeeError } = this.props;
 
     return (
       <>
@@ -128,9 +81,6 @@ export default class SendGasRow extends Component {
         >
           {this.renderContent()}
         </SendRowWrapper>
-        {gasInputMode === GAS_INPUT_MODES.BASIC || advancedInlineGasShown ? (
-          <SendRowWrapper>{this.renderAdvancedOptionsButton()}</SendRowWrapper>
-        ) : null}
       </>
     );
   }
