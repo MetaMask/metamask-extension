@@ -2,7 +2,6 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import SendRowWrapper from '../send-row-wrapper/send-row-wrapper.component';
-import GasPriceButtonGroup from '../../../../components/app/gas-customization/gas-price-button-group';
 import { GAS_INPUT_MODES } from '../../../../ducks/send';
 import SendGasRow from './send-gas-row.component';
 
@@ -79,42 +78,6 @@ describe('SendGasRow Component', () => {
       expect(propsMethodSpies.resetGasButtons.callCount).toStrictEqual(0);
       onReset();
       expect(propsMethodSpies.resetGasButtons.callCount).toStrictEqual(1);
-    });
-
-    it('should render the GasPriceButtonGroup if gasInputMode is BASIC', () => {
-      wrapper.setProps({ gasInputMode: GAS_INPUT_MODES.BASIC });
-      const rendered = wrapper.find(SendRowWrapper).first().childAt(0);
-      expect(wrapper.children()).toHaveLength(2);
-
-      const gasPriceButtonGroup = rendered.childAt(0);
-      expect(gasPriceButtonGroup.is(GasPriceButtonGroup)).toStrictEqual(true);
-      expect(
-        gasPriceButtonGroup.hasClass('gas-price-button-group--small'),
-      ).toStrictEqual(true);
-      expect(gasPriceButtonGroup.props().showCheck).toStrictEqual(false);
-      expect(
-        gasPriceButtonGroup.props().someGasPriceButtonGroupProp,
-      ).toStrictEqual('foo');
-      expect(
-        gasPriceButtonGroup.props().anotherGasPriceButtonGroupProp,
-      ).toStrictEqual('bar');
-    });
-
-    it('should render an advanced options button if gasInputMode is BASIC', () => {
-      wrapper.setProps({ gasInputMode: GAS_INPUT_MODES.BASIC });
-      const rendered = wrapper.find(SendRowWrapper).last();
-      expect(wrapper.children()).toHaveLength(2);
-
-      const advancedOptionsButton = rendered.childAt(0);
-      expect(advancedOptionsButton.text()).toStrictEqual('advancedOptions_t');
-
-      expect(
-        propsMethodSpies.showLegacyCustomizeGasModal.callCount,
-      ).toStrictEqual(0);
-      advancedOptionsButton.props().onClick();
-      expect(
-        propsMethodSpies.showLegacyCustomizeGasModal.callCount,
-      ).toStrictEqual(1);
     });
   });
 });
