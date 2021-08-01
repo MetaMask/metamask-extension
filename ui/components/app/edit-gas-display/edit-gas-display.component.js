@@ -9,8 +9,10 @@ import {
 
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
-import { isEIP1559Network } from '../../../ducks/metamask/metamask';
-import { getIsMainnet } from '../../../selectors';
+import {
+  getIsMainnet,
+  networkAndAccountSupports1559,
+} from '../../../selectors';
 
 import {
   COLORS,
@@ -64,8 +66,8 @@ export default function EditGasDisplay({
   balanceError,
 }) {
   const t = useContext(I18nContext);
-  const supportsEIP1559 = useSelector(isEIP1559Network);
   const isMainnet = useSelector(getIsMainnet);
+  const use1559 = useSelector(networkAndAccountSupports1559);
 
   const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
     transaction,
@@ -77,11 +79,10 @@ export default function EditGasDisplay({
       dappSuggestedAndTxParamGasFeesAreTheSame,
   );
 
-  const networkSupports1559 = useSelector(isEIP1559Network);
   const showTopError = balanceError;
 
   const showRadioButtons =
-    networkSupports1559 &&
+    use1559 &&
     !requireDappAcknowledgement &&
     ![EDIT_GAS_MODES.SPEED_UP, EDIT_GAS_MODES.CANCEL].includes(mode);
 
@@ -133,12 +134,12 @@ export default function EditGasDisplay({
         )}
         <TransactionTotalBanner
           total={
-            networkSupports1559 || isMainnet
+            use1559 || isMainnet
               ? `~ ${estimatedMinimumFiat}`
               : estimatedMaximumNative
           }
           detail={
-            networkSupports1559 &&
+            use1559 &&
             estimatedMaximumFiat !== undefined &&
             t('editGasTotalBannerSubtitle', [
               <Typography
@@ -168,7 +169,7 @@ export default function EditGasDisplay({
             {t('gasDisplayAcknowledgeDappButtonText')}
           </Button>
         )}
-        {showRadioButtons && (
+        {use1559 && showRadioButtons && (
           <RadioGroup
             name="gas-recommendation"
             options={[
@@ -225,19 +226,16 @@ export default function EditGasDisplay({
             gasErrors={gasErrors}
             onManualChange={onManualChange}
             minimumGasLimit={minimumGasLimit}
-            networkSupportsEIP1559={supportsEIP1559}
           />
         )}
       </div>
-      {networkSupports1559 &&
-        !requireDappAcknowledgement &&
-        showEducationButton && (
-          <div className="edit-gas-display__education">
-            <button onClick={onEducationClick}>
-              {t('editGasEducationButtonText')}
-            </button>
-          </div>
-        )}
+      {use1559 && !requireDappAcknowledgement && showEducationButton && (
+        <div className="edit-gas-display__education">
+          <button onClick={onEducationClick}>
+            {t('editGasEducationButtonText')}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
