@@ -10,6 +10,7 @@ import {
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
 import { isEIP1559Network } from '../../../ducks/metamask/metamask';
+import { getIsMainnet } from '../../../selectors';
 
 import {
   COLORS,
@@ -64,6 +65,7 @@ export default function EditGasDisplay({
 }) {
   const t = useContext(I18nContext);
   const supportsEIP1559 = useSelector(isEIP1559Network);
+  const isMainnet = useSelector(getIsMainnet);
 
   const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
     transaction,
@@ -126,7 +128,7 @@ export default function EditGasDisplay({
         )}
         <TransactionTotalBanner
           total={
-            networkSupports1559
+            networkSupports1559 || isMainnet
               ? `~ ${estimatedMinimumFiat}`
               : estimatedMaximumNative
           }
