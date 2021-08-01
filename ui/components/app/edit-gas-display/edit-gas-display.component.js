@@ -80,6 +80,11 @@ export default function EditGasDisplay({
   const networkSupports1559 = useSelector(isEIP1559Network);
   const showTopError = balanceError;
 
+  const showRadioButtons =
+    networkSupports1559 &&
+    !requireDappAcknowledgement &&
+    ![EDIT_GAS_MODES.SPEED_UP, EDIT_GAS_MODES.CANCEL].includes(mode);
+
   let errorKey;
   if (balanceError) {
     errorKey = 'insufficientFunds';
@@ -163,35 +168,32 @@ export default function EditGasDisplay({
             {t('gasDisplayAcknowledgeDappButtonText')}
           </Button>
         )}
-        {networkSupports1559 &&
-          !requireDappAcknowledgement &&
-          ![EDIT_GAS_MODES.SPEED_UP, EDIT_GAS_MODES.CANCEL].includes(mode) && (
-            <RadioGroup
-              name="gas-recommendation"
-              options={[
-                {
-                  value: GAS_RECOMMENDATIONS.LOW,
-                  label: t('editGasLow'),
-                  recommended: defaultEstimateToUse === GAS_RECOMMENDATIONS.LOW,
-                },
-                {
-                  value: GAS_RECOMMENDATIONS.MEDIUM,
-                  label: t('editGasMedium'),
-                  recommended:
-                    defaultEstimateToUse === GAS_RECOMMENDATIONS.MEDIUM,
-                },
-                {
-                  value: GAS_RECOMMENDATIONS.HIGH,
-                  label: t('editGasHigh'),
-                  recommended:
-                    defaultEstimateToUse === GAS_RECOMMENDATIONS.HIGH,
-                },
-              ]}
-              selectedValue={estimateToUse}
-              onChange={setEstimateToUse}
-            />
-          )}
-        {!requireDappAcknowledgement && (
+        {showRadioButtons && (
+          <RadioGroup
+            name="gas-recommendation"
+            options={[
+              {
+                value: GAS_RECOMMENDATIONS.LOW,
+                label: t('editGasLow'),
+                recommended: defaultEstimateToUse === GAS_RECOMMENDATIONS.LOW,
+              },
+              {
+                value: GAS_RECOMMENDATIONS.MEDIUM,
+                label: t('editGasMedium'),
+                recommended:
+                  defaultEstimateToUse === GAS_RECOMMENDATIONS.MEDIUM,
+              },
+              {
+                value: GAS_RECOMMENDATIONS.HIGH,
+                label: t('editGasHigh'),
+                recommended: defaultEstimateToUse === GAS_RECOMMENDATIONS.HIGH,
+              },
+            ]}
+            selectedValue={estimateToUse}
+            onChange={setEstimateToUse}
+          />
+        )}
+        {!requireDappAcknowledgement && showRadioButtons && (
           <button
             className="edit-gas-display__advanced-button"
             onClick={() => setShowAdvancedForm(!showAdvancedForm)}
