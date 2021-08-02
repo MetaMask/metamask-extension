@@ -121,6 +121,9 @@ describe('Send ETH from inside MetaMask using fast gas option', function () {
 
         const inputValue = await inputAmount.getAttribute('value');
         assert.equal(inputValue, '1');
+        
+        // Set the gas price
+        await driver.clickElement({ text: 'Fast', tag: 'button/div/div' });
 
         // Continue to next screen
         await driver.clickElement({ text: 'Next', tag: 'button' });
