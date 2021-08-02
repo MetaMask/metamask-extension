@@ -512,7 +512,7 @@ export const fetchQuotesAndSetQuoteState = (
 
     const hardwareWalletUsed = isHardwareWallet(state);
     const hardwareWalletType = getHardwareWalletType(state);
-    const EIP1559Network = checkNetworkAndAccountSupports1559(state);
+    const networkAndAccountSupportsEIP1559 = checkNetworkAndAccountSupports1559(state);
     metaMetricsEvent({
       event: 'Quotes Requested',
       category: 'swaps',
@@ -554,7 +554,7 @@ export const fetchQuotesAndSetQuoteState = (
         ),
       );
 
-      const gasPriceFetchPromise = EIP1559Network
+      const gasPriceFetchPromise = networkAndAccountSupportsEIP1559
         ? null // For EIP 1559 we can get gas prices via "useGasFeeEstimates".
         : dispatch(fetchAndSetSwapsGasPriceInfo());
 
@@ -628,7 +628,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const hardwareWalletUsed = isHardwareWallet(state);
-    const EIP1559Network = checkNetworkAndAccountSupports1559(state);
+    const networkAndAccountSupportsEIP1559 = checkNetworkAndAccountSupports1559(state);
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
       useNewSwapsApi: false,
@@ -668,7 +668,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     let maxPriorityFeePerGas;
     let baseAndPriorityFeePerGas;
 
-    if (EIP1559Network) {
+    if (networkAndAccountSupportsEIP1559) {
       const {
         high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
         estimatedBaseFee = '0',
@@ -703,7 +703,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
 
     const usedGasPrice = getUsedSwapsGasPrice(state);
     usedTradeTxParams.gas = maxGasLimit;
-    if (EIP1559Network) {
+    if (networkAndAccountSupportsEIP1559) {
       usedTradeTxParams.maxFeePerGas = maxFeePerGas;
       usedTradeTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
       delete usedTradeTxParams.gasPrice;
@@ -793,7 +793,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     }
 
     if (approveTxParams) {
-      if (EIP1559Network) {
+      if (networkAndAccountSupportsEIP1559) {
         approveTxParams.maxFeePerGas = maxFeePerGas;
         approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
         delete approveTxParams.gasPrice;
