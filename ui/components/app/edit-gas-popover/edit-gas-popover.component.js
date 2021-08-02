@@ -27,7 +27,7 @@ import {
   updateCustomSwapsEIP1559GasParams,
 } from '../../../store/actions';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
-import { networkAndAccountSupports1559 } from '../../../selectors';
+import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 
 export default function EditGasPopover({
   popoverTitle = '',
@@ -42,12 +42,14 @@ export default function EditGasPopover({
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
-  const use1559 = useSelector(networkAndAccountSupports1559);
+  const networkAndAccountSupport1559 = useSelector(
+    checkNetworkAndAccountSupports1559,
+  );
 
   const shouldAnimate = useShouldAnimateGasEstimations();
 
   const showEducationButton =
-    mode === EDIT_GAS_MODES.MODIFY_IN_PLACE && use1559;
+    mode === EDIT_GAS_MODES.MODIFY_IN_PLACE && networkAndAccountSupport1559;
   const [showEducationContent, setShowEducationContent] = useState(false);
 
   const [warning] = useState(null);
@@ -85,7 +87,7 @@ export default function EditGasPopover({
   } = useGasFeeInputs(defaultEstimateToUse, transaction, minimumGasLimit, mode);
 
   const [showAdvancedForm, setShowAdvancedForm] = useState(
-    !estimateToUse || hasGasErrors || !use1559,
+    !estimateToUse || hasGasErrors || !networkAndAccountSupport1559,
   );
 
   /**
@@ -109,7 +111,7 @@ export default function EditGasPopover({
       closePopover();
     }
 
-    const newGasSettings = use1559
+    const newGasSettings = networkAndAccountSupport1559
       ? {
           gas: decimalToHex(gasLimit),
           gasLimit: decimalToHex(gasLimit),
@@ -144,7 +146,7 @@ export default function EditGasPopover({
         break;
       case EDIT_GAS_MODES.SWAPS:
         // This popover component should only be used for the "FEE_MARKET" type in Swaps.
-        if (use1559) {
+        if (networkAndAccountSupport1559) {
           dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
         }
         break;
@@ -162,7 +164,7 @@ export default function EditGasPopover({
     gasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    use1559,
+    networkAndAccountSupport1559,
   ]);
 
   let title = t('editGasTitle');

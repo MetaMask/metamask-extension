@@ -15,7 +15,7 @@ import {
   GAS_RECOMMENDATIONS,
 } from '../../../../shared/constants/gas';
 import { getGasFormErrorText } from '../../../helpers/constants/gas';
-import { networkAndAccountSupports1559 } from '../../../selectors';
+import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 
 export default function AdvancedGasControls({
   estimateToUse,
@@ -36,11 +36,13 @@ export default function AdvancedGasControls({
   minimumGasLimit,
 }) {
   const t = useContext(I18nContext);
-  const use1559 = useSelector(networkAndAccountSupports1559);
+  const networkAndAccountSupport1559 = useSelector(
+    checkNetworkAndAccountSupports1559,
+  );
 
   const suggestedValues = {};
 
-  if (use1559) {
+  if (networkAndAccountSupport1559) {
     suggestedValues.maxFeePerGas =
       gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas ||
       gasFeeEstimates?.gasPrice;
@@ -61,7 +63,7 @@ export default function AdvancedGasControls({
   }
 
   const showFeeMarketFields =
-    use1559 &&
+    networkAndAccountSupport1559 &&
     (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
       gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE);
 
