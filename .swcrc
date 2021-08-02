@@ -13,6 +13,10 @@
       "topLevelAwait": false,
       "importMeta": false
     },
+    "paths": {
+      "assert": ["node_modules/assert"],
+      "events": ["node_modules/events"]
+    },
     "transform": null,
     "target": "es2016",
     "loose": false,
