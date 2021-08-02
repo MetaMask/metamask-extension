@@ -86,7 +86,7 @@ export function isEIP1559Account(state) {
   return !isHardwareWallet(state);
 }
 
-export function networkAndAccountSupports1559(state) {
+export function checkNetworkAndAccountSupports1559(state) {
   const networkSupports1559 = isEIP1559Network(state);
   const accountSupports1559 = isEIP1559Account(state);
 

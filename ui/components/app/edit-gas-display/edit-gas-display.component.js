@@ -12,7 +12,7 @@ import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
 import {
   getIsMainnet,
-  networkAndAccountSupports1559,
+  checkNetworkAndAccountSupports1559,
 } from '../../../selectors';
 
 import {
@@ -69,7 +69,9 @@ export default function EditGasDisplay({
 }) {
   const t = useContext(I18nContext);
   const isMainnet = useSelector(getIsMainnet);
-  const use1559 = useSelector(networkAndAccountSupports1559);
+  const networkAndAccountSupport1559 = useSelector(
+    checkNetworkAndAccountSupports1559,
+  );
 
   const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
     transaction,
@@ -83,7 +85,7 @@ export default function EditGasDisplay({
 
   const showTopError = balanceError || estimatesUnavailableWarning;
   const showRadioButtons =
-    use1559 &&
+    networkAndAccountSupport1559 &&
     gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET &&
     !requireDappAcknowledgement &&
     ![EDIT_GAS_MODES.SPEED_UP, EDIT_GAS_MODES.CANCEL].includes(mode);
@@ -138,12 +140,12 @@ export default function EditGasDisplay({
         )}
         <TransactionTotalBanner
           total={
-            use1559 || isMainnet
+            networkAndAccountSupport1559 || isMainnet
               ? `~ ${estimatedMinimumFiat}`
               : estimatedMaximumNative
           }
           detail={
-            use1559 &&
+            networkAndAccountSupport1559 &&
             estimatedMaximumFiat !== undefined &&
             t('editGasTotalBannerSubtitle', [
               <Typography
@@ -173,7 +175,7 @@ export default function EditGasDisplay({
             {t('gasDisplayAcknowledgeDappButtonText')}
           </Button>
         )}
-        {use1559 && showRadioButtons && (
+        {networkAndAccountSupport1559 && showRadioButtons && (
           <RadioGroup
             name="gas-recommendation"
             options={[
@@ -233,13 +235,15 @@ export default function EditGasDisplay({
           />
         )}
       </div>
-      {use1559 && !requireDappAcknowledgement && showEducationButton && (
-        <div className="edit-gas-display__education">
-          <button onClick={onEducationClick}>
-            {t('editGasEducationButtonText')}
-          </button>
-        </div>
-      )}
+      {networkAndAccountSupport1559 &&
+        !requireDappAcknowledgement &&
+        showEducationButton && (
+          <div className="edit-gas-display__education">
+            <button onClick={onEducationClick}>
+              {t('editGasEducationButtonText')}
+            </button>
+          </div>
+        )}
     </div>
   );
 }
