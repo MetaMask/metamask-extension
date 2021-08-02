@@ -563,6 +563,7 @@ describe('MetaMask', function () {
 
     it('transitions to the confirm screen', async function () {
       // Continue to next screen
+      await driver.delay(largeDelayMs);
       await driver.clickElement({ text: 'Next', tag: 'button' });
       await driver.delay(regularDelayMs);
     });
@@ -659,7 +660,7 @@ describe('MetaMask', function () {
 
     it('customizes gas', async function () {
       await driver.clickElement({ text: 'Edit', tag: 'button' });
-      await driver.delay(regularDelayMs);
+      await driver.delay(largeDelayMs);
       await driver.clickElement(
         { text: 'Edit suggested gas fee', tag: 'button' },
         10000,
@@ -779,6 +780,11 @@ describe('MetaMask', function () {
 
     it('customizes gas', async function () {
       await driver.clickElement('.confirm-approve-content__small-blue-text');
+      await driver.delay(regularDelayMs);
+      await driver.clickElement(
+        { text: 'Edit suggested gas fee', tag: 'button' },
+        10000,
+      );
       await driver.delay(regularDelayMs);
 
       const [gasLimitInput, gasPriceInput] = await driver.findElements(
