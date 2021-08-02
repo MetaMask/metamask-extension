@@ -429,13 +429,19 @@ export function useGasFeeInputs(
     (estimateLevel) => {
       setInternalEstimateToUse(estimateLevel);
       if (gasErrors.gasLimit === GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS) {
-        setGasLimit(hexToDecimal(transaction?.txParams?.gas));
+        const transactionGasLimit = hexToDecimal(transaction?.txParams?.gas);
+        const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
+        setGasLimit(
+          transactionGasLimit > minimumGasLimitDec
+            ? transactionGasLimit
+            : minimumGasLimitDec,
+        );
       }
       setMaxFeePerGas(null);
       setMaxPriorityFeePerGas(null);
       setGasPrice(null);
     },
-    [gasErrors.gasLimit, transaction],
+    [minimumGasLimit, gasErrors.gasLimit, transaction],
   );
 
   return {
