@@ -37,7 +37,7 @@ export default function FeeCard({
   onQuotesClick,
   tokenConversionRate,
   chainId,
-  EIP1559Network,
+  networkAndAccountSupports1559,
   maxPriorityFeePerGasDecGWEI,
   maxFeePerGasDecGWEI,
 }) {
@@ -96,7 +96,7 @@ export default function FeeCard({
         </div>
       </div>
       <div className="fee-card__main">
-        {EIP1559Network && (
+        {networkAndAccountSupports1559 && (
           <TransactionDetail
             rows={[
               <TransactionDetailItem
@@ -172,7 +172,7 @@ export default function FeeCard({
             ]}
           />
         )}
-        {!EIP1559Network && (
+        {!networkAndAccountSupports1559 && (
           <div
             className="fee-card__row-header"
             data-testid="fee-card__row-header"
@@ -221,7 +221,7 @@ export default function FeeCard({
             </div>
           </div>
         )}
-        {!EIP1559Network && (
+        {!networkAndAccountSupports1559 && (
           <div
             className="fee-card__row-header"
             onClick={() => onFeeCardMaxRowClick()}
@@ -304,7 +304,7 @@ FeeCard.propTypes = {
   numberOfQuotes: PropTypes.number.isRequired,
   tokenConversionRate: PropTypes.number,
   chainId: PropTypes.string.isRequired,
-  EIP1559Network: PropTypes.bool.isRequired,
+  networkAndAccountSupports1559: PropTypes.bool.isRequired,
   maxPriorityFeePerGasDecGWEI: PropTypes.string,
   maxFeePerGasDecGWEI: PropTypes.string,
 };

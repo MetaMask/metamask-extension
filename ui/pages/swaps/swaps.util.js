@@ -659,7 +659,7 @@ export function getSwapsTokensReceivedFromTxMeta(
   chainId,
 ) {
   const txReceipt = txMeta?.txReceipt;
-  const EIP1559Network =
+  const networkAndAccountSupports1559 =
     txMeta?.txReceipt?.type === TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
   if (isSwapsDefaultTokenSymbol(tokenSymbol, chainId)) {
     if (
@@ -675,7 +675,7 @@ export function getSwapsTokensReceivedFromTxMeta(
     if (approvalTxMeta && approvalTxMeta.txReceipt) {
       approvalTxGasCost = calcGasTotal(
         approvalTxMeta.txReceipt.gasUsed,
-        EIP1559Network
+        networkAndAccountSupports1559
           ? approvalTxMeta.txReceipt.effectiveGasPrice // Base fee + priority fee.
           : approvalTxMeta.txParams.gasPrice,
       );
@@ -683,7 +683,9 @@ export function getSwapsTokensReceivedFromTxMeta(
 
     const gasCost = calcGasTotal(
       txReceipt.gasUsed,
-      EIP1559Network ? txReceipt.effectiveGasPrice : txMeta.txParams.gasPrice,
+      networkAndAccountSupports1559
+        ? txReceipt.effectiveGasPrice
+        : txMeta.txParams.gasPrice,
     );
     const totalGasCost = new BigNumber(gasCost, 16)
       .plus(approvalTxGasCost, 16)

@@ -1085,8 +1085,18 @@ describe('Send Slice', () => {
             gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
             gasFeeEstimates: {},
             networkDetails: {
-              EIPS: {},
+              EIPS: {
+                1559: true,
+              },
             },
+            selectedAddress: '0xAddress',
+            identities: { '0xAddress': { address: '0xAddress' } },
+            keyrings: [
+              {
+                type: 'HD Key Tree',
+                accounts: ['0xAddress'],
+              },
+            ],
             accounts: {
               '0xAddress': {
                 address: '0xAddress',
@@ -1098,13 +1108,11 @@ describe('Send Slice', () => {
                 '0xAddress': '0x0',
               },
             },
-            selectedAddress: '0xAddress',
             provider: {
               chainId: '0x4',
             },
           },
           send: initialState,
-
           gas: {
             basicEstimateStatus: 'LOADING',
             basicEstimatesStatus: {

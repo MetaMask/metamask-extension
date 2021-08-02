@@ -4,8 +4,8 @@ import {
   getEstimatedGasFeeTimeBounds,
   getGasEstimateType,
   getGasFeeEstimates,
-  isEIP1559Network,
 } from '../ducks/metamask/metamask';
+import { checkNetworkAndAccountSupports1559 } from '../selectors';
 import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
 
 /**
@@ -35,7 +35,9 @@ import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
  * @returns {GasFeeEstimates} - GasFeeEstimates object
  */
 export function useGasFeeEstimates() {
-  const supportsEIP1559 = useSelector(isEIP1559Network);
+  const networkAndAccountSupports1559 = useSelector(
+    checkNetworkAndAccountSupports1559,
+  );
   const gasEstimateType = useSelector(getGasEstimateType);
   const gasFeeEstimates = useSelector(getGasFeeEstimates);
   const estimatedGasFeeTimeBounds = useSelector(getEstimatedGasFeeTimeBounds);
@@ -49,8 +51,9 @@ export function useGasFeeEstimates() {
     gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE;
   const isGasEstimatesLoading =
     gasEstimateType === GAS_ESTIMATE_TYPES.NONE ||
-    (supportsEIP1559 && !isEIP1559TolerableEstimateType) ||
-    (!supportsEIP1559 && gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET);
+    (networkAndAccountSupports1559 && !isEIP1559TolerableEstimateType) ||
+    (!networkAndAccountSupports1559 &&
+      gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET);
 
   return {
     gasFeeEstimates,
