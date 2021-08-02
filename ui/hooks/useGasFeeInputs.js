@@ -167,7 +167,7 @@ function getMatchingEstimateFromGasFees(
 export function useGasFeeInputs(
   defaultEstimateToUse = 'medium',
   transaction,
-  minimumGasLimit,
+  minimumGasLimit = '0x5208',
   editGasMode,
 ) {
   const { balance: ethBalance } = useSelector(getSelectedAccount);
@@ -221,11 +221,7 @@ export function useGasFeeInputs(
       : null,
   );
   const [gasLimit, setGasLimit] = useState(
-    Number(
-      hexToDecimal(
-        transaction?.txParams?.gas ?? minimumGasLimit,
-      ),
-    ),
+    Number(hexToDecimal(transaction?.txParams?.gas ?? minimumGasLimit)),
   );
 
   const [estimateToUse, setInternalEstimateToUse] = useState(
@@ -238,20 +234,6 @@ export function useGasFeeInputs(
           supportsEIP1559,
         )
       : defaultEstimateToUse,
-  );
-
-  // When a user selects an estimate level, it will wipe out what they have
-  // previously put in the inputs. This returns the inputs to the estimated
-  // values at the level specified.
-  const setEstimateToUse = useCallback(
-    (estimateLevel) => {
-      setInternalEstimateToUse(estimateLevel);
-      setGasLimit(hexToDecimal(minimumGasLimit));
-      setMaxFeePerGas(null);
-      setMaxPriorityFeePerGas(null);
-      setGasPrice(null);
-    },
-    [minimumGasLimit],
   );
 
   // We specify whether to use the estimate value by checking if the state
@@ -438,6 +420,22 @@ export function useGasFeeInputs(
   const balanceError = conversionGreaterThan(
     { value: minimumTxCostInHexWei, fromNumericBase: 'hex' },
     { value: ethBalance, fromNumericBase: 'hex' },
+  );
+
+  // When a user selects an estimate level, it will wipe out what they have
+  // previously put in the inputs. This returns the inputs to the estimated
+  // values at the level specified.
+  const setEstimateToUse = useCallback(
+    (estimateLevel) => {
+      setInternalEstimateToUse(estimateLevel);
+      if (gasErrors.gasLimit === GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS) {
+        setGasLimit(hexToDecimal(transaction?.txParams?.gas));
+      }
+      setMaxFeePerGas(null);
+      setMaxPriorityFeePerGas(null);
+      setGasPrice(null);
+    },
+    [gasErrors.gasLimit, transaction],
   );
 
   return {
