@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import {
   GAS_RECOMMENDATIONS,
   EDIT_GAS_MODES,
+  GAS_ESTIMATE_TYPES,
 } from '../../../../shared/constants/gas';
 
 import Button from '../../ui/button';
@@ -62,6 +63,7 @@ export default function EditGasDisplay({
   onManualChange,
   minimumGasLimit,
   balanceError,
+  estimatesUnavailableWarning,
 }) {
   const t = useContext(I18nContext);
   const supportsEIP1559 = useSelector(isEIP1559Network);
@@ -78,16 +80,19 @@ export default function EditGasDisplay({
   );
 
   const networkSupports1559 = useSelector(isEIP1559Network);
-  const showTopError = balanceError;
+  const showTopError = balanceError || estimatesUnavailableWarning;
 
   const showRadioButtons =
     networkSupports1559 &&
+    gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET &&
     !requireDappAcknowledgement &&
     ![EDIT_GAS_MODES.SPEED_UP, EDIT_GAS_MODES.CANCEL].includes(mode);
 
   let errorKey;
   if (balanceError) {
     errorKey = 'insufficientFunds';
+  } else if (estimatesUnavailableWarning) {
+    errorKey = 'gasEstimatesUnavailableWarning';
   }
 
   return (
@@ -275,4 +280,5 @@ EditGasDisplay.propTypes = {
   onManualChange: PropTypes.func,
   minimumGasLimit: PropTypes.number,
   balanceError: PropTypes.bool,
+  estimatesUnavailableWarning: PropTypes.bool,
 };

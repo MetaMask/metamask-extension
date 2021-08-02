@@ -901,6 +901,9 @@
     "message": "This gas fee has been suggested by $1. Overriding this may cause a problem with your transaction. Please reach out to $1 if you have questions.",
     "description": "$1 represents the Dapp's origin"
   },
+  "gasEstimatesUnavailableWarning": {
+    "message": "Our low, medium and high estimates are not available."
+  },
   "gasFee": {
     "message": "Gas Fee"
   },

@@ -349,6 +349,8 @@ export function useGasFeeInputs(
     },
   );
 
+  let estimatesUnavailableWarning = null;
+
   // Separating errors from warnings so we can know which value problems
   // are blocking or simply useful information for the users
   const gasErrors = {};
@@ -397,6 +399,13 @@ export function useGasFeeInputs(
             HIGH_FEE_WARNING_MULTIPLIER
       ) {
         gasWarnings.maxFee = GAS_FORM_ERRORS.MAX_FEE_HIGH_WARNING;
+      }
+      break;
+    case GAS_ESTIMATE_TYPES.LEGACY:
+    case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
+    case GAS_ESTIMATE_TYPES.NONE:
+      if (networkSupportsEIP1559) {
+        estimatesUnavailableWarning = true;
       }
       break;
     default:
@@ -477,5 +486,6 @@ export function useGasFeeInputs(
       setMaxPriorityFeePerGas(maxPriorityFeePerGasToUse);
     },
     balanceError,
+    estimatesUnavailableWarning,
   };
 }
