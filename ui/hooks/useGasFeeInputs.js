@@ -384,6 +384,8 @@ export function useGasFeeInputs(
           gasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas
       ) {
         gasErrors.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW;
+      } else if (maxPriorityFeePerGasToUse >= maxFeePerGasToUse) {
+        gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
       } else if (
         gasFeeEstimates?.high &&
         maxPriorityFeePerGasToUse >
@@ -419,8 +421,8 @@ export function useGasFeeInputs(
   // and errors into one object for easier use within the UI.  This object should have
   // no effect on whether or not the user can submit the form
   const errorsAndWarnings = {
-    ...gasErrors,
     ...gasWarnings,
+    ...gasErrors,
   };
 
   const minimumTxCostInHexWei = addHexes(

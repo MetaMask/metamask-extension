@@ -5,6 +5,7 @@ export const GAS_FORM_ERRORS = {
   MAX_PRIORITY_FEE_ZERO: 'editGasMaxPriorityFeeZeroError',
   MAX_PRIORITY_FEE_HIGH_WARNING: 'editGasMaxPriorityFeeHigh',
   MAX_FEE_HIGH_WARNING: 'editGasMaxFeeHigh',
+  MAX_FEE_IMBALANCE: 'editGasMaxFeeImbalance',
 };
 
 export function getGasFormErrorText(type, t, { minimumGasLimit } = {}) {
@@ -21,6 +22,8 @@ export function getGasFormErrorText(type, t, { minimumGasLimit } = {}) {
       return t('editGasMaxPriorityFeeHigh');
     case GAS_FORM_ERRORS.MAX_FEE_HIGH_WARNING:
       return t('editGasMaxFeeHigh');
+    case GAS_FORM_ERRORS.MAX_FEE_IMBALANCE:
+      return t('editGasMaxFeePriorityImbalance');
     default:
       return '';
   }

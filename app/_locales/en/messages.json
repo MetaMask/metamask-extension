@@ -662,6 +662,9 @@
   "editGasMaxFeeLow": {
     "message": "Max fee too low for network conditions"
   },
+  "editGasMaxFeePriorityImbalance": {
+    "message": "Max fee cannot be lower than max priority fee"
+  },
   "editGasMaxFeeTooltip": {
     "message": "The max fee is the most you’ll pay (base fee + priority fee)."
   },
