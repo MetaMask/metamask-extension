@@ -15,6 +15,7 @@ import {
   getIsSwapsChain,
   isHardwareWallet,
   getHardwareWalletType,
+  checkNetworkAndAccountSupports1559,
 } from '../../selectors/selectors';
 import {
   getQuotes,
@@ -36,7 +37,6 @@ import {
   getUseNewSwapsApi,
   getFromToken,
 } from '../../ducks/swaps/swaps';
-import { isEIP1559Network } from '../../ducks/metamask/metamask';
 import {
   AWAITING_SIGNATURES_ROUTE,
   AWAITING_SWAP_ROUTE,
@@ -112,10 +112,12 @@ export default function Swap() {
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const useNewSwapsApi = useSelector(getUseNewSwapsApi);
-  const EIP1559Network = useSelector(isEIP1559Network);
+  const networkAndAccountSupportsEIP1559 = useSelector(
+    checkNetworkAndAccountSupports1559,
+  );
   const fromToken = useSelector(getFromToken);
 
-  if (EIP1559Network) {
+  if (networkAndAccountSupportsEIP1559) {
     // This will pre-load gas fees before going to the View Quote page.
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useGasFeeEstimates();
@@ -195,14 +197,20 @@ export default function Swap() {
           dispatch(setAggregatorMetadata(newAggregatorMetadata));
         },
       );
-      if (!EIP1559Network) {
+      if (!networkAndAccountSupportsEIP1559) {
         dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
       }
       return () => {
         dispatch(prepareToLeaveSwaps());
       };
     }
-  }, [dispatch, chainId, isFeatureFlagLoaded, useNewSwapsApi, EIP1559Network]);
+  }, [
+    dispatch,
+    chainId,
+    isFeatureFlagLoaded,
+    useNewSwapsApi,
+    networkAndAccountSupportsEIP1559,
+  ]);
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
