@@ -167,7 +167,7 @@ function getMatchingEstimateFromGasFees(
 export function useGasFeeInputs(
   defaultEstimateToUse = 'medium',
   transaction,
-  minimumGasLimit,
+  minimumGasLimit = '0x5208',
   editGasMode,
 ) {
   const { balance: ethBalance } = useSelector(getSelectedAccount);
@@ -221,10 +221,9 @@ export function useGasFeeInputs(
       : null,
   );
   const [gasLimit, setGasLimit] = useState(
-    transaction?.txParams?.gas
-      ? Number(hexToDecimal(transaction.txParams.gas))
-      : 21000,
+    Number(hexToDecimal(transaction?.txParams?.gas ?? minimumGasLimit)),
   );
+
   const [estimateToUse, setInternalEstimateToUse] = useState(
     transaction
       ? getMatchingEstimateFromGasFees(
@@ -236,16 +235,6 @@ export function useGasFeeInputs(
         )
       : defaultEstimateToUse,
   );
-
-  // When a user selects an estimate level, it will wipe out what they have
-  // previously put in the inputs. This returns the inputs to the estimated
-  // values at the level specified.
-  const setEstimateToUse = useCallback((estimateLevel) => {
-    setInternalEstimateToUse(estimateLevel);
-    setMaxFeePerGas(null);
-    setMaxPriorityFeePerGas(null);
-    setGasPrice(null);
-  }, []);
 
   // We specify whether to use the estimate value by checking if the state
   // value has been set. The state value is only set by user input and is wiped
@@ -433,6 +422,28 @@ export function useGasFeeInputs(
   const balanceError = conversionGreaterThan(
     { value: minimumTxCostInHexWei, fromNumericBase: 'hex' },
     { value: ethBalance, fromNumericBase: 'hex' },
+  );
+
+  // When a user selects an estimate level, it will wipe out what they have
+  // previously put in the inputs. This returns the inputs to the estimated
+  // values at the level specified.
+  const setEstimateToUse = useCallback(
+    (estimateLevel) => {
+      setInternalEstimateToUse(estimateLevel);
+      if (gasErrors.gasLimit === GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS) {
+        const transactionGasLimit = hexToDecimal(transaction?.txParams?.gas);
+        const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
+        setGasLimit(
+          transactionGasLimit > minimumGasLimitDec
+            ? transactionGasLimit
+            : minimumGasLimitDec,
+        );
+      }
+      setMaxFeePerGas(null);
+      setMaxPriorityFeePerGas(null);
+      setGasPrice(null);
+    },
+    [minimumGasLimit, gasErrors.gasLimit, transaction],
   );
 
   return {

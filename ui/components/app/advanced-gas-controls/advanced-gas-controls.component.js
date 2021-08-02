@@ -75,7 +75,10 @@ export default function AdvancedGasControls({
             ? getGasFormErrorText(gasErrors.gasLimit, t, { minimumGasLimit })
             : null
         }
-        onChange={setGasLimit}
+        onChange={(value) => {
+          onManualChange?.();
+          setGasLimit(value);
+        }}
         tooltipText={t('editGasLimitTooltip')}
         value={gasLimit}
         allowDecimals={false}
