@@ -45,15 +45,16 @@ export default function AdvancedGasControls({
 
   if (networkSupportsEIP1559) {
     suggestedValues.maxFeePerGas =
-      gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas ||
-      gasFeeEstimates?.gasPrice;
+      gasFeeEstimates?.[estimateToUse || DEFAULT_ESTIMATES_LEVEL]
+        ?.suggestedMaxFeePerGas || gasFeeEstimates?.gasPrice;
     suggestedValues.maxPriorityFeePerGas =
-      gasFeeEstimates?.[estimateToUse]?.suggestedMaxPriorityFeePerGas ||
-      suggestedValues.maxFeePerGas;
+      gasFeeEstimates?.[estimateToUse || DEFAULT_ESTIMATES_LEVEL]
+        ?.suggestedMaxPriorityFeePerGas || suggestedValues.maxFeePerGas;
   } else {
     switch (gasEstimateType) {
       case GAS_ESTIMATE_TYPES.LEGACY:
-        suggestedValues.gasPrice = gasFeeEstimates?.[estimateToUse];
+        suggestedValues.gasPrice =
+          gasFeeEstimates?.[estimateToUse || DEFAULT_ESTIMATES_LEVEL];
         break;
       case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
         suggestedValues.gasPrice = gasFeeEstimates?.gasPrice;
@@ -113,10 +114,7 @@ export default function AdvancedGasControls({
                     color={COLORS.UI4}
                     variant={TYPOGRAPHY.H8}
                   >
-                    {
-                      gasFeeEstimates?.[DEFAULT_ESTIMATES_LEVEL]
-                        ?.suggestedMaxPriorityFeePerGas
-                    }
+                    {suggestedValues.maxPriorityFeePerGas}
                   </Typography>
                 </>
               )
@@ -154,10 +152,7 @@ export default function AdvancedGasControls({
                     color={COLORS.UI4}
                     variant={TYPOGRAPHY.H8}
                   >
-                    {
-                      gasFeeEstimates?.[DEFAULT_ESTIMATES_LEVEL]
-                        ?.suggestedMaxFeePerGas
-                    }
+                    {suggestedValues.maxFeePerGas}
                   </Typography>
                 </>
               )
