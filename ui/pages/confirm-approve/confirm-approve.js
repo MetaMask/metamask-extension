@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import ConfirmTransactionBase from '../confirm-transaction-base';
+import { EDIT_GAS_MODES } from '../../../shared/constants/gas';
 import {
   showModal,
   updateCustomNonce,
@@ -14,11 +15,7 @@ import {
   getTokenValueParam,
 } from '../../helpers/utils/token-util';
 import { useTokenTracker } from '../../hooks/useTokenTracker';
-import {
-  getTokens,
-  getNativeCurrency,
-  isEIP1559Network,
-} from '../../ducks/metamask/metamask';
+import { getTokens, getNativeCurrency } from '../../ducks/metamask/metamask';
 import {
   transactionFeeSelector,
   txDataSelector,
@@ -27,13 +24,13 @@ import {
   getUseNonceField,
   getCustomNonceValue,
   getNextSuggestedNonce,
-  getNoGasPriceFetched,
-  getIsEthGasPriceFetched,
-  getIsMainnet,
 } from '../../selectors';
+
+import { useApproveTransaction } from '../../hooks/useApproveTransaction';
 
 import { currentNetworkTxListSelector } from '../../selectors/transactions';
 import Loading from '../../components/ui/loading-screen';
+import EditGasPopover from '../../components/app/edit-gas-popover/edit-gas-popover.component';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
@@ -53,7 +50,6 @@ export default function ConfirmApprove() {
   const useNonceField = useSelector(getUseNonceField);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
-  const onEIP1559Network = useSelector(isEIP1559Network);
 
   const transaction =
     currentNetworkTxList.find(
@@ -82,6 +78,12 @@ export default function ConfirmApprove() {
   const [customPermissionAmount, setCustomPermissionAmount] = useState('');
 
   const previousTokenAmount = useRef(tokenAmount);
+
+  const {
+    approveTransaction,
+    showCustomizeGasPopover,
+    closeCustomizeGasPopover,
+  } = useApproveTransaction();
 
   useEffect(() => {
     if (customPermissionAmount && previousTokenAmount.current !== tokenAmount) {
@@ -113,7 +115,6 @@ export default function ConfirmApprove() {
   const formattedOrigin = origin
     ? origin[0].toUpperCase() + origin.slice(1)
     : '';
-  const txData = transaction;
 
   const { icon: siteImage = '' } = domainMetadata[origin] || {};
 
@@ -124,11 +125,7 @@ export default function ConfirmApprove() {
   const customData = customPermissionAmount
     ? getCustomTxParamsData(data, { customPermissionAmount, decimals })
     : null;
-  const isEthGasPrice = useSelector(getIsEthGasPriceFetched);
-  const noGasPrice = useSelector(getNoGasPriceFetched);
-  const isMainnet = useSelector(getIsMainnet);
-  const hideBasic =
-    isEthGasPrice || noGasPrice || !(isMainnet || process.env.IN_TEST);
+
   return tokenSymbol === undefined ? (
     <Loading />
   ) : (
@@ -138,85 +135,84 @@ export default function ConfirmApprove() {
       showAccountInHeader
       title={tokensText}
       contentComponent={
-        <ConfirmApproveContent
-          decimals={decimals}
-          siteImage={siteImage}
-          setCustomAmount={setCustomPermissionAmount}
-          customTokenAmount={String(customPermissionAmount)}
-          tokenAmount={tokenAmount}
-          origin={formattedOrigin}
-          tokenSymbol={tokenSymbol}
-          tokenBalance={tokenBalance}
-          showCustomizeGasModal={() =>
-            dispatch(
-              showModal({
-                name: onEIP1559Network
-                  ? 'CUSTOMIZE_GAS'
-                  : 'LEGACY_CUSTOMIZE_GAS',
-                txData,
-                hideBasic,
-              }),
-            )
-          }
-          showEditApprovalPermissionModal={({
-            /* eslint-disable no-shadow */
-            customTokenAmount,
-            decimals,
-            origin,
-            setCustomAmount,
-            tokenAmount,
-            tokenBalance,
-            tokenSymbol,
-            /* eslint-enable no-shadow */
-          }) =>
-            dispatch(
-              showModal({
-                name: 'EDIT_APPROVAL_PERMISSION',
-                customTokenAmount,
-                decimals,
-                origin,
-                setCustomAmount,
-                tokenAmount,
-                tokenBalance,
-                tokenSymbol,
-              }),
-            )
-          }
-          data={customData || data}
-          toAddress={toAddress}
-          currentCurrency={currentCurrency}
-          nativeCurrency={nativeCurrency}
-          ethTransactionTotal={ethTransactionTotal}
-          fiatTransactionTotal={fiatTransactionTotal}
-          useNonceField={useNonceField}
-          nextNonce={nextNonce}
-          customNonceValue={customNonceValue}
-          updateCustomNonce={(value) => {
-            dispatch(updateCustomNonce(value));
-          }}
-          getNextNonce={() => dispatch(getNextNonce())}
-          showCustomizeNonceModal={({
-            /* eslint-disable no-shadow */
-            useNonceField,
-            nextNonce,
-            customNonceValue,
-            updateCustomNonce,
-            getNextNonce,
-            /* eslint-disable no-shadow */
-          }) =>
-            dispatch(
-              showModal({
-                name: 'CUSTOMIZE_NONCE',
-                useNonceField,
-                nextNonce,
-                customNonceValue,
-                updateCustomNonce,
-                getNextNonce,
-              }),
-            )
-          }
-          warning={submitWarning}
-        />
+        <>
+          <ConfirmApproveContent
+            decimals={decimals}
+            siteImage={siteImage}
+            setCustomAmount={setCustomPermissionAmount}
+            customTokenAmount={String(customPermissionAmount)}
+            tokenAmount={tokenAmount}
+            origin={formattedOrigin}
+            tokenSymbol={tokenSymbol}
+            tokenBalance={tokenBalance}
+            showCustomizeGasModal={approveTransaction}
+            showEditApprovalPermissionModal={({
+              /* eslint-disable no-shadow */
+              customTokenAmount,
+              decimals,
+              origin,
+              setCustomAmount,
+              tokenAmount,
+              tokenBalance,
+              tokenSymbol,
+              /* eslint-enable no-shadow */
+            }) =>
+              dispatch(
+                showModal({
+                  name: 'EDIT_APPROVAL_PERMISSION',
+                  customTokenAmount,
+                  decimals,
+                  origin,
+                  setCustomAmount,
+                  tokenAmount,
+                  tokenBalance,
+                  tokenSymbol,
+                }),
+              )
+            }
+            data={customData || data}
+            toAddress={toAddress}
+            currentCurrency={currentCurrency}
+            nativeCurrency={nativeCurrency}
+            ethTransactionTotal={ethTransactionTotal}
+            fiatTransactionTotal={fiatTransactionTotal}
+            useNonceField={useNonceField}
+            nextNonce={nextNonce}
+            customNonceValue={customNonceValue}
+            updateCustomNonce={(value) => {
+              dispatch(updateCustomNonce(value));
+            }}
+            getNextNonce={() => dispatch(getNextNonce())}
+            showCustomizeNonceModal={({
+              /* eslint-disable no-shadow */
+              useNonceField,
+              nextNonce,
+              customNonceValue,
+              updateCustomNonce,
+              getNextNonce,
+              /* eslint-disable no-shadow */
+            }) =>
+              dispatch(
+                showModal({
+                  name: 'CUSTOMIZE_NONCE',
+                  useNonceField,
+                  nextNonce,
+                  customNonceValue,
+                  updateCustomNonce,
+                  getNextNonce,
+                }),
+              )
+            }
+            warning={submitWarning}
+          />
+          {showCustomizeGasPopover && (
+            <EditGasPopover
+              onClose={closeCustomizeGasPopover}
+              mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
+              transaction={transaction}
+            />
+          )}
+        </>
       }
       hideSenderToRecipient
       customTxParamsData={customData}
