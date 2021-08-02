@@ -236,6 +236,7 @@ export function useGasFeeInputs(
         )
       : defaultEstimateToUse,
   );
+  const [hasManualEditOccured, setHasManualEditOccured] = useState(false);
 
   // When a user selects an estimate level, it will wipe out what they have
   // previously put in the inputs. This returns the inputs to the estimated
@@ -245,33 +246,58 @@ export function useGasFeeInputs(
     setMaxFeePerGas(null);
     setMaxPriorityFeePerGas(null);
     setGasPrice(null);
+    setHasManualEditOccured(false);
   }, []);
+
+  const { originalGasFeeEstimates = {}, txParams = {} } = transaction || {};
+
+  const orginalEstimatesMatchCurrentParams =
+    (txParams.gasPrice &&
+      originalGasFeeEstimates.gasPrice === txParams.gasPrice) ||
+    (txParams.maxFeePerGas &&
+      originalGasFeeEstimates.maxFeePerGas === txParams.maxFeePerGas &&
+      txParams.maxPriorityFeePerGas &&
+      originalGasFeeEstimates.maxPriorityFeePerGas ===
+        txParams.maxPriorityFeePerGas);
+
+  // We only want to auto-update gas fee params if the user has not previously saved
+  // a manual edit, and if not manual edit has occured in the current open session of
+  // the edit gas popover.
+  const useUpdatedEstimates =
+    orginalEstimatesMatchCurrentParams && !hasManualEditOccured;
 
   // We specify whether to use the estimate value by checking if the state
   // value has been set. The state value is only set by user input and is wiped
   // when the user selects an estimate. Default here is '0' to avoid bignumber
   // errors in later calculations for nullish values.
   const maxFeePerGasToUse =
-    maxFeePerGas ??
-    getGasFeeEstimate(
-      'suggestedMaxFeePerGas',
-      gasFeeEstimates,
-      gasEstimateType,
-      estimateToUse,
-    );
+    maxFeePerGas && !useUpdatedEstimates
+      ? maxFeePerGas
+      : getGasFeeEstimate(
+          'suggestedMaxFeePerGas',
+          gasFeeEstimates,
+          gasEstimateType,
+          estimateToUse || 'medium',
+        );
 
   const maxPriorityFeePerGasToUse =
-    maxPriorityFeePerGas ??
-    getGasFeeEstimate(
-      'suggestedMaxPriorityFeePerGas',
-      gasFeeEstimates,
-      gasEstimateType,
-      estimateToUse,
-    );
+    maxPriorityFeePerGas && !useUpdatedEstimates
+      ? maxPriorityFeePerGas
+      : getGasFeeEstimate(
+          'suggestedMaxPriorityFeePerGas',
+          gasFeeEstimates,
+          gasEstimateType,
+          estimateToUse || 'medium',
+        );
 
   const gasPriceToUse =
-    gasPrice ??
-    getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse);
+    gasPrice && !useUpdatedEstimates
+      ? gasPrice
+      : getGasPriceEstimate(
+          gasFeeEstimates,
+          gasEstimateType,
+          estimateToUse || 'medium',
+        );
 
   // We have two helper methods that take an object that can have either
   // gasPrice OR the EIP-1559 fields on it, plus gasLimit. This object is
@@ -462,6 +488,7 @@ export function useGasFeeInputs(
       setGasLimit(gasLimit);
       setMaxFeePerGas(maxFeePerGasToUse);
       setMaxPriorityFeePerGas(maxPriorityFeePerGasToUse);
+      setHasManualEditOccured(true);
     },
     balanceError,
   };

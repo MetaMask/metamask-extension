@@ -109,20 +109,22 @@ export default function EditGasPopover({
       closePopover();
     }
 
-    const newGasSettings = networkSupports1559
+    const newGasFees = networkSupports1559
       ? {
-          gas: decimalToHex(gasLimit),
-          gasLimit: decimalToHex(gasLimit),
           maxFeePerGas: decGWEIToHexWEI(maxFeePerGas ?? gasPrice),
           maxPriorityFeePerGas: decGWEIToHexWEI(
             maxPriorityFeePerGas ?? maxFeePerGas ?? gasPrice,
           ),
         }
       : {
-          gas: decimalToHex(gasLimit),
-          gasLimit: decimalToHex(gasLimit),
           gasPrice: decGWEIToHexWEI(gasPrice),
         };
+
+    const newGasSettings = {
+      gas: decimalToHex(gasLimit),
+      gasLimit: decimalToHex(gasLimit),
+      ...newGasFees,
+    };
 
     switch (mode) {
       case EDIT_GAS_MODES.CANCEL:
@@ -139,6 +141,12 @@ export default function EditGasPopover({
               ...transaction.txParams,
               ...newGasSettings,
             },
+            // If we are setting the gas fee params using remotely fetched estimates, then we update
+            // our record of gas fee params to compare our txParams to in the future. This will allow
+            // us to accurately track whether the user has manually modified gas params.
+            originalGasFeeEstimates: estimateToUse
+              ? newGasFees
+              : transaction.originalGasFeeEstimates,
           }),
         );
         break;
@@ -163,6 +171,7 @@ export default function EditGasPopover({
     maxFeePerGas,
     maxPriorityFeePerGas,
     networkSupports1559,
+    estimateToUse,
   ]);
 
   let title = t('editGasTitle');

@@ -422,6 +422,8 @@ export default class TransactionController extends EventEmitter {
       txMeta.simulationFails = simulationFails;
     }
 
+    const originalGasFeeEstimates = {};
+
     if (eip1559Compatibility) {
       // If the dapp has suggested a gas price, but no maxFeePerGas or maxPriorityFeePerGas
       //  then we set maxFeePerGas and maxPriorityFeePerGas to the suggested gasPrice.
@@ -437,6 +439,7 @@ export default class TransactionController extends EventEmitter {
           // If the dapp has not set the gasPrice or the maxFeePerGas, then we set maxFeePerGas
           // with the one returned by the gasFeeController, if that is available.
           txMeta.txParams.maxFeePerGas = defaultMaxFeePerGas;
+          originalGasFeeEstimates.maxFeePerGas = defaultMaxFeePerGas;
         }
 
         if (
@@ -446,6 +449,7 @@ export default class TransactionController extends EventEmitter {
           // If the dapp has not set the gasPrice or the maxPriorityFeePerGas, then we set maxPriorityFeePerGas
           // with the one returned by the gasFeeController, if that is available.
           txMeta.txParams.maxPriorityFeePerGas = defaultMaxPriorityFeePerGas;
+          originalGasFeeEstimates.maxPriorityFeePerGas = defaultMaxPriorityFeePerGas;
         }
 
         if (defaultGasPrice && !txMeta.txParams.maxFeePerGas) {
@@ -489,11 +493,17 @@ export default class TransactionController extends EventEmitter {
       !txMeta.txParams.maxFeePerGas
     ) {
       txMeta.txParams.gasPrice = defaultGasPrice;
+      originalGasFeeEstimates.gasPrice = txMeta.txParams.gasPrice;
     }
 
     if (defaultGasLimit && !txMeta.txParams.gas) {
       txMeta.txParams.gas = defaultGasLimit;
     }
+
+    // We keep track of the gas fee parameters which were most recently set from the remotely fetched estimates.
+    // This will allow us to accurately track whether the user has manually modified gas params.
+    txMeta.originalGasFeeEstimates = originalGasFeeEstimates;
+
     return txMeta;
   }
 
