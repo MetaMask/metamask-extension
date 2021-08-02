@@ -1085,7 +1085,9 @@ describe('Send Slice', () => {
             gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
             gasFeeEstimates: {},
             networkDetails: {
-              EIPS: {},
+              EIPS: {
+                1559: true,
+              },
             },
             accounts: {
               '0xAddress': {
