@@ -187,7 +187,7 @@ export default class TransactionController extends EventEmitter {
 
   async getEIP1559Compatibility(fromAddress) {
     const currentNetworkIsCompatible = await this._getCurrentNetworkEIP1559Compatibility();
-    const fromAccountIsCompatible = this._getCurrentAccountEIP1559Compatibility(
+    const fromAccountIsCompatible = await this._getCurrentAccountEIP1559Compatibility(
       fromAddress,
     );
     return currentNetworkIsCompatible && fromAccountIsCompatible;
@@ -506,7 +506,9 @@ export default class TransactionController extends EventEmitter {
   async _getDefaultGasFees(txMeta, eip1559Compatibility) {
     if (
       (!eip1559Compatibility && txMeta.txParams.gasPrice) ||
-      (txMeta.txParams.maxFeePerGas && txMeta.txParams.maxPriorityFeePerGas)
+      (eip1559Compatibility &&
+        txMeta.txParams.maxFeePerGas &&
+        txMeta.txParams.maxPriorityFeePerGas)
     ) {
       return {};
     }
@@ -857,8 +859,8 @@ export default class TransactionController extends EventEmitter {
       ? TRANSACTION_ENVELOPE_TYPES.FEE_MARKET
       : TRANSACTION_ENVELOPE_TYPES.LEGACY;
     const txParams = {
-      type,
       ...txMeta.txParams,
+      type,
       chainId,
       gasLimit: txMeta.txParams.gas,
     };

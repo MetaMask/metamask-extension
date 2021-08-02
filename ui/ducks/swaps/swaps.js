@@ -57,6 +57,7 @@ import {
   getCurrentChainId,
   isHardwareWallet,
   getHardwareWalletType,
+  checkNetworkAndAccountSupports1559,
 } from '../../selectors';
 import {
   ERROR_FETCHING_QUOTES,
@@ -66,7 +67,7 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
-import { isEIP1559Network, getGasFeeEstimates } from '../metamask/metamask';
+import { getGasFeeEstimates } from '../metamask/metamask';
 
 const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -511,7 +512,7 @@ export const fetchQuotesAndSetQuoteState = (
 
     const hardwareWalletUsed = isHardwareWallet(state);
     const hardwareWalletType = getHardwareWalletType(state);
-    const EIP1559Network = isEIP1559Network(state);
+    const EIP1559Network = checkNetworkAndAccountSupports1559(state);
     metaMetricsEvent({
       event: 'Quotes Requested',
       category: 'swaps',
@@ -627,7 +628,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const hardwareWalletUsed = isHardwareWallet(state);
-    const EIP1559Network = isEIP1559Network(state);
+    const EIP1559Network = checkNetworkAndAccountSupports1559(state);
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
       useNewSwapsApi: false,

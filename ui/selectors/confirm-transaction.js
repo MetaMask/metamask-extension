@@ -14,7 +14,6 @@ import {
   getGasEstimateType,
   getGasFeeEstimates,
   getNativeCurrency,
-  isEIP1559Network,
 } from '../ducks/metamask/metamask';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../shared/constants/transaction';
 import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
@@ -25,6 +24,7 @@ import {
 } from '../../shared/modules/gas.utils';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
+import { checkNetworkAndAccountSupports1559 } from '.';
 
 const unapprovedTxsSelector = (state) => state.metamask.unapprovedTxs;
 const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
@@ -231,13 +231,15 @@ export const transactionFeeSelector = function (state, txData) {
   const nativeCurrency = getNativeCurrency(state);
   const gasFeeEstimates = getGasFeeEstimates(state) || {};
   const gasEstimateType = getGasEstimateType(state);
-  const networkSupportsEIP1559 = isEIP1559Network(state);
+  const networkAndAccountSupportsEIP1559 = checkNetworkAndAccountSupports1559(
+    state,
+  );
 
   const gasEstimationObject = {
     gasLimit: txData.txParams?.gas ?? '0x0',
   };
 
-  if (networkSupportsEIP1559) {
+  if (networkAndAccountSupportsEIP1559) {
     const { medium = {}, gasPrice = '0' } = gasFeeEstimates;
     if (txData.txParams?.type === TRANSACTION_ENVELOPE_TYPES.LEGACY) {
       gasEstimationObject.gasPrice =

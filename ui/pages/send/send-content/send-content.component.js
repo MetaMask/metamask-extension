@@ -29,7 +29,7 @@ export default class SendContent extends Component {
     gasIsExcessive: PropTypes.bool.isRequired,
     isEthGasPrice: PropTypes.bool,
     noGasPrice: PropTypes.bool,
-    isEIP1559Network: PropTypes.bool,
+    networkAndAccountSupports1559: PropTypes.bool,
   };
 
   render() {
@@ -40,7 +40,7 @@ export default class SendContent extends Component {
       isEthGasPrice,
       noGasPrice,
       isAssetSendable,
-      isEIP1559Network,
+      networkAndAccountSupports1559,
     } = this.props;
 
     let gasError;
@@ -59,7 +59,7 @@ export default class SendContent extends Component {
           {this.maybeRenderAddContact()}
           <SendAssetRow />
           <SendAmountRow />
-          {!isEIP1559Network && <SendGasRow />}
+          {!networkAndAccountSupports1559 && <SendGasRow />}
           {this.props.showHexData && <SendHexDataRow />}
         </div>
       </PageContainerContent>
