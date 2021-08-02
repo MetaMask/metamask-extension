@@ -600,6 +600,18 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
     });
 
+    it('customizes gas', async function () {
+      await driver.clickElement({ text: 'Edit', tag: 'button' });
+      await driver.delay(largeDelayMs);
+      const inputs = await driver.findElements('input[type="number"]');
+      const gasLimitInput = inputs[0];
+      const gasPriceInput = inputs[1];
+      await gasLimitInput.fill('100000');
+      await gasPriceInput.fill('100');
+      await driver.delay(1000);
+      await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
+    });
+
     it('submits the transaction', async function () {
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
       await driver.delay(regularDelayMs);
