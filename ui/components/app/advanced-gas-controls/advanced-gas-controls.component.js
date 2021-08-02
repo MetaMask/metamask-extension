@@ -17,8 +17,6 @@ import {
 } from '../../../../shared/constants/gas';
 import { getGasFormErrorText } from '../../../helpers/constants/gas';
 
-const DEFAULT_ESTIMATES_LEVEL = 'medium';
-
 export default function AdvancedGasControls({
   estimateToUse,
   gasFeeEstimates,
@@ -97,30 +95,6 @@ export default function AdvancedGasControls({
             value={maxPriorityFee}
             detailText={maxPriorityFeeFiat}
             numeric
-            titleDetail={
-              suggestedValues.maxPriorityFeePerGas && (
-                <>
-                  <Typography
-                    tag="span"
-                    color={COLORS.UI4}
-                    variant={TYPOGRAPHY.H8}
-                    fontWeight={FONT_WEIGHT.BOLD}
-                  >
-                    {t('gasFeeEstimate')}:
-                  </Typography>{' '}
-                  <Typography
-                    tag="span"
-                    color={COLORS.UI4}
-                    variant={TYPOGRAPHY.H8}
-                  >
-                    {
-                      gasFeeEstimates?.[DEFAULT_ESTIMATES_LEVEL]
-                        ?.suggestedMaxPriorityFeePerGas
-                    }
-                  </Typography>
-                </>
-              )
-            }
             error={
               gasErrors?.maxPriorityFee
                 ? getGasFormErrorText(gasErrors.maxPriorityFee, t)
@@ -138,30 +112,6 @@ export default function AdvancedGasControls({
             value={maxFee}
             numeric
             detailText={maxFeeFiat}
-            titleDetail={
-              suggestedValues.maxFeePerGas && (
-                <>
-                  <Typography
-                    tag="span"
-                    color={COLORS.UI4}
-                    variant={TYPOGRAPHY.H8}
-                    fontWeight={FONT_WEIGHT.BOLD}
-                  >
-                    {t('gasFeeEstimate')}:
-                  </Typography>{' '}
-                  <Typography
-                    tag="span"
-                    color={COLORS.UI4}
-                    variant={TYPOGRAPHY.H8}
-                  >
-                    {
-                      gasFeeEstimates?.[DEFAULT_ESTIMATES_LEVEL]
-                        ?.suggestedMaxFeePerGas
-                    }
-                  </Typography>
-                </>
-              )
-            }
             error={
               gasErrors?.maxFee
                 ? getGasFormErrorText(gasErrors.maxFee, t)
