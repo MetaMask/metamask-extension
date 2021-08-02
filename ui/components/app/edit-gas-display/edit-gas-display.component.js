@@ -175,7 +175,7 @@ export default function EditGasDisplay({
             {t('gasDisplayAcknowledgeDappButtonText')}
           </Button>
         )}
-        {networkAndAccountSupport1559 && showRadioButtons && (
+        {showRadioButtons && (
           <RadioGroup
             name="gas-recommendation"
             options={[
