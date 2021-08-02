@@ -10,6 +10,7 @@ import GasFeeDisplay from './gas-fee-display/gas-fee-display.component';
 
 const propsMethodSpies = {
   showCustomizeGasModal: sinon.spy(),
+  showLegacyCustomizeGasModal: sinon.spy(),
   resetGasButtons: sinon.spy(),
 };
 
@@ -27,6 +28,9 @@ describe('SendGasRow Component', () => {
           gasTotal="mockGasTotal"
           gasInputMode={GAS_INPUT_MODES.CUSTOM}
           showCustomizeGasModal={propsMethodSpies.showCustomizeGasModal}
+          showLegacyCustomizeGasModal={
+            propsMethodSpies.showLegacyCustomizeGasModal
+          }
           resetGasButtons={propsMethodSpies.resetGasButtons}
           gasPriceButtonGroupProps={{
             someGasPriceButtonGroupProp: 'foo',
@@ -104,9 +108,13 @@ describe('SendGasRow Component', () => {
       const advancedOptionsButton = rendered.childAt(0);
       expect(advancedOptionsButton.text()).toStrictEqual('advancedOptions_t');
 
-      expect(propsMethodSpies.showCustomizeGasModal.callCount).toStrictEqual(0);
+      expect(
+        propsMethodSpies.showLegacyCustomizeGasModal.callCount,
+      ).toStrictEqual(0);
       advancedOptionsButton.props().onClick();
-      expect(propsMethodSpies.showCustomizeGasModal.callCount).toStrictEqual(1);
+      expect(
+        propsMethodSpies.showLegacyCustomizeGasModal.callCount,
+      ).toStrictEqual(1);
     });
   });
 });

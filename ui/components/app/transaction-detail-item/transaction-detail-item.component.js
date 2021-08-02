@@ -22,14 +22,14 @@ export default function TransactionDetailItem({
         <Typography
           color={detailTitleColor}
           fontWeight={FONT_WEIGHT.BOLD}
-          variant={TYPOGRAPHY.H6}
+          variant={TYPOGRAPHY.H7}
           className="transaction-detail-item__title"
         >
           {detailTitle}
         </Typography>
         {detailText && (
           <Typography
-            variant={TYPOGRAPHY.H6}
+            variant={TYPOGRAPHY.H7}
             className="transaction-detail-item__detail-text"
             color={COLORS.UI4}
           >
@@ -39,14 +39,16 @@ export default function TransactionDetailItem({
         <Typography
           color={COLORS.BLACK}
           fontWeight={FONT_WEIGHT.BOLD}
-          variant={TYPOGRAPHY.H6}
+          variant={TYPOGRAPHY.H7}
           className="transaction-detail-item__total"
         >
           {detailTotal}
         </Typography>
       </div>
       <div className="transaction-detail-item__row">
-        {subTitle && (
+        {React.isValidElement(subTitle) ? (
+          <div className="transaction-detail-item__subtitle">{subTitle}</div>
+        ) : (
           <Typography
             variant={TYPOGRAPHY.H7}
             className="transaction-detail-item__subtitle"
@@ -55,7 +57,12 @@ export default function TransactionDetailItem({
             {subTitle}
           </Typography>
         )}
-        <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4}>
+
+        <Typography
+          variant={TYPOGRAPHY.H7}
+          color={COLORS.UI4}
+          className="transaction-detail-item__subtext"
+        >
           {subText}
         </Typography>
       </div>

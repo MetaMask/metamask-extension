@@ -246,6 +246,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
               onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
               value={this.state.seedPhrase}
               placeholder={t('seedPhrasePlaceholder')}
+              autoComplete="off"
             />
           ) : (
             <TextField
@@ -254,6 +255,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
               onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
               value={this.state.seedPhrase}
               placeholder={t('seedPhrasePlaceholderPaste')}
+              autoComplete="off"
             />
           )}
           {seedPhraseError && <span className="error">{seedPhraseError}</span>}
@@ -301,7 +303,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
             this.handleConfirmPasswordChange(event.target.value)
           }
           error={confirmPasswordError}
-          autoComplete="confirm-password"
+          autoComplete="new-password"
           margin="normal"
           largeLabel
         />

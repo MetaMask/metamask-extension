@@ -6,7 +6,11 @@ import { mapValues, cloneDeep } from 'lodash';
 import abi from 'human-standard-token-abi';
 import { calcTokenAmount } from '../../../ui/helpers/utils/token-util';
 import { calcGasTotal } from '../../../ui/pages/send/send.utils';
-import { conversionUtil } from '../../../shared/modules/conversion.utils';
+import {
+  conversionUtil,
+  decGWEIToHexWEI,
+  addCurrencies,
+} from '../../../shared/modules/conversion.utils';
 import {
   DEFAULT_ERC20_APPROVE_GAS,
   QUOTES_EXPIRED_ERROR,
@@ -14,6 +18,7 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../shared/constants/swaps';
+import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
 
 import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils';
 
@@ -66,6 +71,8 @@ const initialState = {
     quotesLastFetched: null,
     customMaxGas: '',
     customGasPrice: null,
+    customMaxFeePerGas: null,
+    customMaxPriorityFeePerGas: null,
     selectedAggId: null,
     customApproveTxData: '',
     errorKey: '',
@@ -87,6 +94,7 @@ export default class SwapsController {
     fetchTradesInfo = defaultFetchTradesInfo,
     fetchSwapsQuoteRefreshTime = defaultFetchSwapsQuoteRefreshTime,
     getCurrentChainId,
+    getEIP1559GasFeeEstimates,
   }) {
     this.store = new ObservableStore({
       swapsState: { ...initialState.swapsState },
@@ -95,6 +103,7 @@ export default class SwapsController {
     this._fetchTradesInfo = fetchTradesInfo;
     this._fetchSwapsQuoteRefreshTime = fetchSwapsQuoteRefreshTime;
     this._getCurrentChainId = getCurrentChainId;
+    this._getEIP1559GasFeeEstimates = getEIP1559GasFeeEstimates;
 
     this.getBufferedGasLimit = getBufferedGasLimit;
     this.tokenRatesStore = tokenRatesStore;
@@ -440,6 +449,23 @@ export default class SwapsController {
     });
   }
 
+  setSwapsTxMaxFeePerGas(maxFeePerGas) {
+    const { swapsState } = this.store.getState();
+    this.store.updateState({
+      swapsState: { ...swapsState, customMaxFeePerGas: maxFeePerGas },
+    });
+  }
+
+  setSwapsTxMaxFeePriorityPerGas(maxPriorityFeePerGas) {
+    const { swapsState } = this.store.getState();
+    this.store.updateState({
+      swapsState: {
+        ...swapsState,
+        customMaxPriorityFeePerGas: maxPriorityFeePerGas,
+      },
+    });
+  }
+
   setSwapsTxGasLimit(gasLimit) {
     const { swapsState } = this.store.getState();
     this.store.updateState({
@@ -494,16 +520,11 @@ export default class SwapsController {
     clearTimeout(this.pollingTimeout);
   }
 
-  async _getEthersGasPrice() {
-    const ethersGasPrice = await this.ethersProvider.getGasPrice();
-    return ethersGasPrice.toHexString();
-  }
-
   async _findTopQuoteAndCalculateSavings(quotes = {}) {
     const tokenConversionRates = this.tokenRatesStore.getState()
       .contractExchangeRates;
     const {
-      swapsState: { customGasPrice },
+      swapsState: { customGasPrice, customMaxPriorityFeePerGas },
     } = this.store.getState();
     const chainId = this._getCurrentChainId();
 
@@ -514,7 +535,36 @@ export default class SwapsController {
 
     const newQuotes = cloneDeep(quotes);
 
-    const usedGasPrice = customGasPrice || (await this._getEthersGasPrice());
+    const {
+      gasFeeEstimates,
+      gasEstimateType,
+    } = await this._getEIP1559GasFeeEstimates();
+
+    let usedGasPrice = '0x0';
+
+    if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+      const {
+        high: { suggestedMaxPriorityFeePerGas },
+        estimatedBaseFee,
+      } = gasFeeEstimates;
+
+      usedGasPrice = addCurrencies(
+        customMaxPriorityFeePerGas || // Is already in hex WEI.
+          decGWEIToHexWEI(suggestedMaxPriorityFeePerGas),
+        decGWEIToHexWEI(estimatedBaseFee),
+        {
+          aBase: 16,
+          bBase: 16,
+          toNumericBase: 'hex',
+          numberOfDecimals: 6,
+        },
+      );
+    } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+      usedGasPrice = customGasPrice || decGWEIToHexWEI(gasFeeEstimates.high);
+    } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+      usedGasPrice =
+        customGasPrice || decGWEIToHexWEI(gasFeeEstimates.gasPrice);
+    }
 
     let topAggId = null;
     let overallValueOfBestQuoteForSorting = null;

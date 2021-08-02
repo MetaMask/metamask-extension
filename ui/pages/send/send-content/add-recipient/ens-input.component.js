@@ -37,16 +37,17 @@ export default class EnsInput extends Component {
 
   onPaste = (event) => {
     event.clipboardData.items[0].getAsString((text) => {
+      const input = text.trim();
       if (
-        !isBurnAddress(text) &&
-        isValidHexAddress(text, { mixedCaseUseChecksum: true })
+        !isBurnAddress(input) &&
+        isValidHexAddress(input, { mixedCaseUseChecksum: true })
       ) {
-        this.props.onPaste(text);
+        this.props.onPaste(input);
       }
     });
   };
 
-  onChange = (e) => {
+  onChange = ({ target: { value } }) => {
     const {
       onValidAddressTyped,
       internalSearch,
@@ -54,7 +55,7 @@ export default class EnsInput extends Component {
       lookupEnsName,
       resetEnsResolution,
     } = this.props;
-    const input = e.target.value;
+    const input = value.trim();
 
     onChange(input);
     if (internalSearch) {

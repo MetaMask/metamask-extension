@@ -268,6 +268,15 @@ const toNegative = (n, options = {}) => {
   return multiplyCurrencies(n, -1, options);
 };
 
+function decGWEIToHexWEI(decGWEI) {
+  return conversionUtil(decGWEI, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'hex',
+    fromDenomination: 'GWEI',
+    toDenomination: 'WEI',
+  });
+}
+
 export {
   conversionUtil,
   addCurrencies,
@@ -279,4 +288,5 @@ export {
   conversionMax,
   toNegative,
   subtractCurrencies,
+  decGWEIToHexWEI,
 };

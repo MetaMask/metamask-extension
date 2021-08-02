@@ -156,9 +156,6 @@
   "amount": {
     "message": "Amount"
   },
-  "amountGasFee": {
-    "message": "Amount + Gas Fee"
-  },
   "amountWithColon": {
     "message": "Amount:"
   },
@@ -635,9 +632,6 @@
   "editGasEducationHighExplanation": {
     "message": "This is best for swaps or other time sensitive transactions. If a swap takes too long to process it will often fail and you may lose funds."
   },
-  "editGasEducationLearnMoreLinkText": {
-    "message": "Learn more about customizing gas."
-  },
   "editGasEducationLowExplanation": {
     "message": "Low A lower gas fee should only be selected for transactions where processing time is less important. With a lower fee, it can be be hard to predict when (or if) your transaction with be successful."
   },
@@ -654,7 +648,7 @@
     "message": "High"
   },
   "editGasLimitOutOfBounds": {
-    "message": "Gas limit must be greater than 20999 and less than 7920027"
+    "message": "Gas limit must be at least $1"
   },
   "editGasLimitTooltip": {
     "message": "Gas limit is the maximum units of gas you are willing to use. Units of gas are a multiplier to “Max priority fee” and “Max fee”."
@@ -667,6 +661,9 @@
   },
   "editGasMaxFeeLow": {
     "message": "Max fee too low for network conditions"
+  },
+  "editGasMaxFeePriorityImbalance": {
+    "message": "Max fee cannot be lower than max priority fee"
   },
   "editGasMaxFeeTooltip": {
     "message": "The max fee is the most you’ll pay (base fee + priority fee)."
@@ -688,6 +685,14 @@
   },
   "editGasPriceTooltip": {
     "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
+  },
+  "editGasSubTextAmount": {
+    "message": "Max amount: $1",
+    "description": "$1 represents a dollar amount"
+  },
+  "editGasSubTextFee": {
+    "message": "Max fee: $1",
+    "description": "$1 represents a dollar amount"
   },
   "editGasTitle": {
     "message": "Edit priority"
@@ -893,7 +898,7 @@
     "message": "Edit suggested gas fee"
   },
   "gasDisplayDappWarning": {
-    "message": "This gas fee has been suggested by $1. It’s using legacy gas estimation which may be inaccurate. However, editing this gas fee may cause a problem with your transaction. Please reach out to $1 if you have questions.",
+    "message": "This gas fee has been suggested by $1. Overriding this may cause a problem with your transaction. Please reach out to $1 if you have questions.",
     "description": "$1 represents the Dapp's origin"
   },
   "gasFee": {
@@ -932,6 +937,26 @@
   },
   "gasPriceInfoTooltipContent": {
     "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
+  },
+  "gasTimingMinutes": {
+    "message": "$1 minutes",
+    "description": "$1 represents a number of minutes"
+  },
+  "gasTimingNegative": {
+    "message": "Maybe in $1",
+    "description": "$1 represents an amount of time"
+  },
+  "gasTimingPositive": {
+    "message": "Likely in < $1",
+    "description": "$1 represents an amount of time"
+  },
+  "gasTimingSeconds": {
+    "message": "$1 seconds",
+    "description": "$1 represents a number of seconds"
+  },
+  "gasTimingVeryPositive": {
+    "message": "Very likely in < $1",
+    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gas Used"
@@ -1311,6 +1336,9 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
+  },
+  "networkNameRinkeby": {
+    "message": "Rinkeby"
   },
   "networkNameTestnet": {
     "message": "Testnet"
@@ -2121,8 +2149,18 @@
     "message": "The swap of $1 to $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
+  "swapGasFeesDetails": {
+    "message": "Gas fees are estimated and will fluctuate based on network traffic and transaction complexity."
+  },
+  "swapGasFeesLearnMore": {
+    "message": "Learn more about gas fees"
+  },
   "swapGasFeesSplit": {
     "message": "Gas fees on the previous screen are split between these two transactions."
+  },
+  "swapGasFeesSummary": {
+    "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees.",
+    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapHighSlippageWarning": {
     "message": "Slippage amount is very high."
@@ -2293,6 +2331,10 @@
   "swapTokenVerificationSources": {
     "message": "Verified on $1 sources.",
     "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
+  },
+  "swapTooManyDecimalsError": {
+    "message": "$1 allows up to $2 decimals",
+    "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
   },
   "swapTransactionComplete": {
     "message": "Transaction complete"

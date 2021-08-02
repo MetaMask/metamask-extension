@@ -3,24 +3,17 @@
 
   &__row {
     display: flex;
+    grid-gap: 5px;
   }
 
   &__title {
     flex-grow: 1;
-  }
-
-  &__title--dapp-suggested {
-    color: $secondary-1;
-    font-weight: bold;
+    word-break: break-word;
   }
 
   .info-tooltip {
     display: inline-block;
     margin-inline-start: 4px;
-  }
-
-  &__detail-text {
-    margin-inline-end: 20px !important;
   }
 
   &__total {
@@ -30,5 +23,13 @@
 
   &__subtitle {
     flex-grow: 1;
+  }
+
+  &__subtext {
+    text-align: end;
+  }
+
+  .currency-display-component {
+    display: inline;
   }
 }

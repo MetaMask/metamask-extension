@@ -67,8 +67,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    showCustomizeGasModal: () =>
-      dispatch(showModal({ name: 'CUSTOMIZE_GAS', hideBasic: true })),
+    showLegacyCustomizeGasModal: () =>
+      dispatch(showModal({ name: 'LEGACY_CUSTOMIZE_GAS', hideBasic: true })),
     updateGasPrice: (gasPrice) => {
       dispatch(updateGasPrice(gasPrice));
       dispatch(setCustomGasPrice(gasPrice));

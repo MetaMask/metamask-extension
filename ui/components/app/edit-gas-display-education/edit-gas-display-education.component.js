@@ -47,16 +47,6 @@ export default function EditGasDisplayEducation() {
       <Typography tag="p" color={COLORS.UI4} variant={TYPOGRAPHY.H6}>
         {t('editGasEducationLowExplanation')}
       </Typography>
-      <Typography tag="p" variant={TYPOGRAPHY.H6}>
-        <a
-          style={{ color: COLORS.PRIMARY1 }}
-          href=""
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t('editGasEducationLearnMoreLinkText')}
-        </a>
-      </Typography>
     </div>
   );
 }

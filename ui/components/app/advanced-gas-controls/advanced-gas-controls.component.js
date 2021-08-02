@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
+import { isEIP1559Network } from '../../../ducks/metamask/metamask';
 import { I18nContext } from '../../../contexts/i18n';
 import Typography from '../../ui/typography/typography';
 import {
@@ -33,31 +35,38 @@ export default function AdvancedGasControls({
   maxPriorityFeeFiat,
   maxFeeFiat,
   gasErrors,
+  networkSupportsEIP1559,
+  minimumGasLimit,
 }) {
   const t = useContext(I18nContext);
+  const networkSupports1559 = useSelector(isEIP1559Network);
 
   const suggestedValues = {};
 
-  switch (gasEstimateType) {
-    case GAS_ESTIMATE_TYPES.FEE_MARKET:
-      suggestedValues.maxPriorityFeePerGas =
-        gasFeeEstimates?.[estimateToUse]?.suggestedMaxPriorityFeePerGas;
-      suggestedValues.maxFeePerGas =
-        gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas;
-      break;
-    case GAS_ESTIMATE_TYPES.LEGACY:
-      suggestedValues.gasPrice = gasFeeEstimates?.[estimateToUse];
-      break;
-    case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
-      suggestedValues.gasPrice = gasFeeEstimates?.gasPrice;
-      break;
-    default:
-      break;
+  if (networkSupportsEIP1559) {
+    suggestedValues.maxFeePerGas =
+      gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas ||
+      gasFeeEstimates?.gasPrice;
+    suggestedValues.maxPriorityFeePerGas =
+      gasFeeEstimates?.[estimateToUse]?.suggestedMaxPriorityFeePerGas ||
+      suggestedValues.maxFeePerGas;
+  } else {
+    switch (gasEstimateType) {
+      case GAS_ESTIMATE_TYPES.LEGACY:
+        suggestedValues.gasPrice = gasFeeEstimates?.[estimateToUse];
+        break;
+      case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
+        suggestedValues.gasPrice = gasFeeEstimates?.gasPrice;
+        break;
+      default:
+        break;
+    }
   }
 
   const showFeeMarketFields =
-    process.env.SHOW_EIP_1559_UI &&
-    gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET;
+    networkSupports1559 &&
+    (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
+      gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE);
 
   return (
     <div className="advanced-gas-controls">
@@ -65,12 +74,13 @@ export default function AdvancedGasControls({
         titleText={t('gasLimit')}
         error={
           gasErrors?.gasLimit
-            ? getGasFormErrorText(gasErrors.gasLimit, t)
+            ? getGasFormErrorText(gasErrors.gasLimit, t, { minimumGasLimit })
             : null
         }
         onChange={setGasLimit}
         tooltipText={t('editGasLimitTooltip')}
         value={gasLimit}
+        allowDecimals={false}
         numeric
         autoFocus
       />
@@ -81,8 +91,8 @@ export default function AdvancedGasControls({
             titleUnit="(GWEI)"
             tooltipText={t('editGasMaxPriorityFeeTooltip')}
             onChange={(value) => {
-              setMaxPriorityFee(value);
               onManualChange?.();
+              setMaxPriorityFee(value);
             }}
             value={maxPriorityFee}
             detailText={maxPriorityFeeFiat}
@@ -122,8 +132,8 @@ export default function AdvancedGasControls({
             titleUnit="(GWEI)"
             tooltipText={t('editGasMaxFeeTooltip')}
             onChange={(value) => {
-              setMaxFee(value);
               onManualChange?.();
+              setMaxFee(value);
             }}
             value={maxFee}
             numeric
@@ -165,8 +175,8 @@ export default function AdvancedGasControls({
             titleText={t('advancedGasPriceTitle')}
             titleUnit="(GWEI)"
             onChange={(value) => {
-              setGasPrice(value);
               onManualChange?.();
+              setGasPrice(value);
             }}
             tooltipText={t('editGasPriceTooltip')}
             value={gasPrice}
@@ -230,4 +240,6 @@ AdvancedGasControls.propTypes = {
   maxPriorityFeeFiat: PropTypes.string,
   maxFeeFiat: PropTypes.string,
   gasErrors: PropTypes.object,
+  minimumGasLimit: PropTypes.number,
+  networkSupportsEIP1559: PropTypes.object,
 };

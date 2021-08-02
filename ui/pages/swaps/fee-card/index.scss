@@ -21,8 +21,8 @@
     border-top-right-radius: 8px;
     border-top-left-radius: 8px;
     border-bottom: 0;
-    padding-left: 8px;
-    padding-right: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
   }
 
   &__savings-text {
@@ -141,9 +141,16 @@
     margin-right: 4px;
   }
 
-  &__link {
+  &__link,
+  &__link:hover {
     color: $Blue-500;
     cursor: pointer;
+  }
+
+  &__edit-link {
+    color: $Blue-500;
+    cursor: pointer;
+    padding-left: 6px;
   }
 
   &__total-box {

@@ -1,5 +1,6 @@
 import pify from 'pify';
 import log from 'loglevel';
+import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
 import getBuyEthUrl from '../../app/scripts/lib/buy-eth-url';
 import {
@@ -2198,6 +2199,23 @@ export function setSwapsTxGasLimit(gasLimit) {
   };
 }
 
+export function updateCustomSwapsEIP1559GasParams({
+  gasLimit,
+  maxFeePerGas,
+  maxPriorityFeePerGas,
+}) {
+  return async (dispatch) => {
+    await Promise.all([
+      promisifiedBackground.setSwapsTxGasLimit(gasLimit),
+      promisifiedBackground.setSwapsTxMaxFeePerGas(maxFeePerGas),
+      promisifiedBackground.setSwapsTxMaxFeePriorityPerGas(
+        maxPriorityFeePerGas,
+      ),
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function customSwapsGasParamsUpdated(gasLimit, gasPrice) {
   return async (dispatch) => {
     await promisifiedBackground.setSwapsTxGasPrice(gasPrice);
@@ -2715,6 +2733,19 @@ export function setLedgerLivePreference(value) {
   };
 }
 
+export function captureSingleException(error) {
+  return async (dispatch, getState) => {
+    const { singleExceptions } = getState().appState;
+    if (!(error in singleExceptions)) {
+      dispatch({
+        type: actionConstants.CAPTURE_SINGLE_EXCEPTION,
+        value: error,
+      });
+      captureException(Error(error));
+    }
+  };
+}
+
 // Wrappers around promisifedBackground
 /**
  * The "actions" below are not actions nor action creators. They cannot use
@@ -2758,6 +2789,13 @@ export function getGasFeeEstimatesAndStartPolling() {
  */
 export function disconnectGasFeeEstimatePoller(pollToken) {
   return promisifiedBackground.disconnectGasFeeEstimatePoller(pollToken);
+}
+
+export function getGasFeeTimeEstimate(maxPriorityFeePerGas, maxFeePerGas) {
+  return promisifiedBackground.getGasFeeTimeEstimate(
+    maxPriorityFeePerGas,
+    maxFeePerGas,
+  );
 }
 
 // MetaMetrics
