@@ -107,11 +107,11 @@ function getMatchingEstimateFromGasFees(
   maxFeePerGas,
   maxPriorityFeePerGas,
   gasPrice,
-  supportsEIP1559,
+  networkAndAccountSupports1559,
 ) {
   return (
     findKey(gasFeeEstimates, (estimate) => {
-      if (supportsEIP1559) {
+      if (networkAndAccountSupports1559) {
         return (
           Number(estimate?.suggestedMaxPriorityFeePerGas) ===
             Number(maxPriorityFeePerGas) &&
@@ -175,14 +175,13 @@ export function useGasFeeInputs(
   editGasMode,
 ) {
   const { balance: ethBalance } = useSelector(getSelectedAccount);
-  const networkSupportsEIP1559 = useSelector(
+  const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
   // We need to know whether to show fiat conversions or not, so that we can
   // default our fiat values to empty strings if showing fiat is not wanted or
   // possible.
   const showFiat = useSelector(getShouldShowFiat);
-  const supportsEIP1559 = useSelector(checkNetworkAndAccountSupports1559);
 
   // We need to know the current network's currency and its decimal precision
   // to calculate the amount to display to the user.
@@ -237,7 +236,7 @@ export function useGasFeeInputs(
           maxFeePerGas,
           maxPriorityFeePerGas,
           gasPrice,
-          supportsEIP1559,
+          networkAndAccountSupports1559,
         )
       : defaultEstimateToUse,
   );
@@ -277,7 +276,7 @@ export function useGasFeeInputs(
   const gasSettings = {
     gasLimit: decimalToHex(gasLimit),
   };
-  if (networkSupportsEIP1559) {
+  if (networkAndAccountSupports1559) {
     gasSettings.maxFeePerGas = maxFeePerGasToUse
       ? decGWEIToHexWEI(maxFeePerGasToUse)
       : decGWEIToHexWEI(gasPriceToUse || '0');
