@@ -68,10 +68,10 @@ describe('Editing Confirm Transaction', function () {
           '.currency-display-component__text',
         );
         const editedTransactionAmount = editedTransactionAmounts[0];
-        assert.equal(await editedTransactionAmount.getText(), '0.0008');
+        assert.equal(await editedTransactionAmount.getText(), '2.2');
 
         const editedTransactionFee = editedTransactionAmounts[1];
-        assert.equal(await editedTransactionFee.getText(), '2.2');
+        assert.equal(await editedTransactionFee.getText(), '0.0008');
 
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
