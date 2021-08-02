@@ -409,7 +409,7 @@ export function useGasFeeInputs(
     case GAS_ESTIMATE_TYPES.LEGACY:
     case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
     case GAS_ESTIMATE_TYPES.NONE:
-      if (networkSupportsEIP1559) {
+      if (networkAndAccountSupports1559) {
         estimatesUnavailableWarning = true;
       }
       break;
