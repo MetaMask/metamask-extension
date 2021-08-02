@@ -82,6 +82,7 @@ export default function EditGasPopover({
     gasErrors,
     onManualChange,
     balanceError,
+    estimatesUnavailableWarning,
   } = useGasFeeInputs(defaultEstimateToUse, transaction, minimumGasLimit, mode);
 
   const [showAdvancedForm, setShowAdvancedForm] = useState(
@@ -241,6 +242,7 @@ export default function EditGasPopover({
               onManualChange={onManualChange}
               minimumGasLimit={minimumGasLimitDec}
               balanceError={balanceError}
+              estimatesUnavailableWarning={estimatesUnavailableWarning}
               {...editGasDisplayProps}
             />
           </>
