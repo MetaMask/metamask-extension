@@ -3,18 +3,19 @@ import { useSelector } from 'react-redux';
 import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
 import {
-  isEIP1559Network,
   getConversionRate,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
-
-import { ETH, PRIMARY } from '../helpers/constants/common';
 import {
+  checkNetworkAndAccountSupports1559,
   getCurrentCurrency,
   getShouldShowFiat,
   txDataSelector,
   getSelectedAccount,
 } from '../selectors';
+
+import { ETH, PRIMARY } from '../helpers/constants/common';
+
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 import { useGasFeeInputs } from './useGasFeeInputs';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -104,9 +105,9 @@ const HIGH_FEE_MARKET_ESTIMATE_RETURN_VALUE = {
   estimatedGasFeeTimeBounds: {},
 };
 
-const generateUseSelectorRouter = ({ isEIP1559NetworkResponse } = {}) => (
-  selector,
-) => {
+const generateUseSelectorRouter = ({
+  checkNetworkAndAccountSupports1559Response,
+} = {}) => (selector) => {
   if (selector === getConversionRate) {
     return MOCK_ETH_USD_CONVERSION_RATE;
   }
@@ -131,8 +132,8 @@ const generateUseSelectorRouter = ({ isEIP1559NetworkResponse } = {}) => (
       balance: '0x440aa47cc2556',
     };
   }
-  if (selector === isEIP1559Network) {
-    return isEIP1559NetworkResponse;
+  if (selector === checkNetworkAndAccountSupports1559) {
+    return checkNetworkAndAccountSupports1559Response;
   }
   return undefined;
 };
@@ -186,7 +187,9 @@ describe('useGasFeeInputs', () => {
 
     it('updates values when user modifies gasPrice', () => {
       useSelector.mockImplementation(
-        generateUseSelectorRouter({ isEIP1559NetworkResponse: false }),
+        generateUseSelectorRouter({
+          checkNetworkAndAccountSupports1559Response: false,
+        }),
       );
       const { result } = renderHook(() => useGasFeeInputs());
       expect(result.current.gasPrice).toBe(
@@ -253,7 +256,9 @@ describe('useGasFeeInputs', () => {
 
     it('updates values when user modifies maxFeePerGas', () => {
       useSelector.mockImplementation(
-        generateUseSelectorRouter({ isEIP1559NetworkResponse: true }),
+        generateUseSelectorRouter({
+          checkNetworkAndAccountSupports1559Response: true,
+        }),
       );
       const { result } = renderHook(() => useGasFeeInputs());
       expect(result.current.maxFeePerGas).toBe(
@@ -311,7 +316,9 @@ describe('useGasFeeInputs', () => {
         () => HIGH_FEE_MARKET_ESTIMATE_RETURN_VALUE,
       );
       useSelector.mockImplementation(
-        generateUseSelectorRouter({ isEIP1559NetworkResponse: true }),
+        generateUseSelectorRouter({
+          checkNetworkAndAccountSupports1559Response: true,
+        }),
       );
     });
 

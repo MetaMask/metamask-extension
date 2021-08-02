@@ -21,10 +21,7 @@ import {
 } from '../selectors';
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
-import {
-  getUnconnectedAccountAlertEnabledness,
-  isEIP1559Network,
-} from '../ducks/metamask/metamask';
+import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { LISTED_CONTRACT_ADDRESSES } from '../../shared/constants/tokens';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import * as actionConstants from './actionConstants';
@@ -1069,7 +1066,6 @@ export function updateMetamaskState(newState) {
         payload: {
           gasFeeEstimates: newState.gasFeeEstimates,
           gasEstimateType: newState.gasEstimateType,
-          isEIP1559Network: isEIP1559Network({ metamask: newState }),
         },
       });
     }
