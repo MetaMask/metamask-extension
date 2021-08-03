@@ -357,6 +357,11 @@ export function useGasFeeInputs(
     currency: primaryCurrency,
   });
 
+  const [estimatedMinimumNative] = useCurrencyDisplay(minimumCostInHexWei, {
+    numberOfDecimals: primaryNumberOfDecimals,
+    currency: primaryCurrency,
+  });
+
   // We also need to display our closest estimate of the low end of estimation
   // in fiat.
   const [, { value: estimatedMinimumFiat }] = useCurrencyDisplay(
@@ -493,6 +498,7 @@ export function useGasFeeInputs(
     estimatedMinimumFiat: showFiat ? estimatedMinimumFiat : '',
     estimatedMaximumFiat: showFiat ? maxFeePerGasFiat : '',
     estimatedMaximumNative,
+    estimatedMinimumNative,
     isGasEstimatesLoading,
     gasFeeEstimates,
     gasEstimateType,
