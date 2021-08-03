@@ -2313,6 +2313,16 @@ export default class MetamaskController extends EventEmitter {
 
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
+
+    // log all rpc requests
+    console.log("Adding middleware to log RPC requests.");
+    engine.push(function (req, res, next, end) {
+      console.log("Intercepted RPC request from " + req.origin + ":");
+      //log.info(`RPC (${opts.origin}):`, req, '->', res);
+      console.log(req);
+      next();
+    });
+
     // append tabId to each request if it exists
     if (tabId) {
       engine.push(createTabIdMiddleware({ tabId }));
