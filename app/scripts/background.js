@@ -330,9 +330,9 @@ function setupController(initState, initLangCode) {
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
-
         endOfStream(portStream, () => {
           popupIsOpen = false;
+          controller.onPopUpClose();
           controller.isClientOpen = isClientOpenStatus();
         });
       }

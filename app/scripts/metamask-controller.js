@@ -2973,11 +2973,21 @@ export default class MetamaskController extends EventEmitter {
    * @param {boolean} open
    */
   set isClientOpen(open) {
+    if (!open) {
+      onPopUpClose();
+    }
     this._isClientOpen = open;
     this.detectTokensController.isOpen = open;
   }
   /* eslint-enable accessor-pairs */
 
+  onPopUpClose() {
+    try {
+      this.gasFeeController.stopPolling();
+    } catch (error) {
+      console.error(error);
+    }
+  }
   /**
    * Adds a domain to the PhishingController safelist
    * @param {string} hostname - the domain to safelist
