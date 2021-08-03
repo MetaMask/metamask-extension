@@ -3,17 +3,8 @@
     margin-bottom: 20px;
   }
 
-  &__row-heading {
-    display: flex;
-  }
-
   .info-tooltip {
     display: inline-block;
-  }
-
-  &__row-heading-detail {
-    flex-grow: 1;
-    align-self: center;
   }
 
   .form-field__row--error .form-field__heading-title h6 {
