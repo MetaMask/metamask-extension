@@ -2969,18 +2969,21 @@ export default class MetamaskController extends EventEmitter {
   /* eslint-disable accessor-pairs */
   /**
    * A method for recording whether the MetaMask user interface is open or not.
-   * @private
    * @param {boolean} open
    */
   set isClientOpen(open) {
     if (!open) {
-      onPopUpClose();
+      this.onPopUpClose();
     }
     this._isClientOpen = open;
     this.detectTokensController.isOpen = open;
   }
   /* eslint-enable accessor-pairs */
 
+  /**
+   * A method that is called by the background when a popUp closes.
+   * Currently used to stop polling in the gasFeeController.
+   */
   onPopUpClose() {
     try {
       this.gasFeeController.stopPolling();
@@ -2988,6 +2991,7 @@ export default class MetamaskController extends EventEmitter {
       console.error(error);
     }
   }
+
   /**
    * Adds a domain to the PhishingController safelist
    * @param {string} hostname - the domain to safelist
