@@ -156,6 +156,11 @@ export default function AdvancedGasControls({
                 </>
               )
             }
+            error={
+              gasErrors?.gasPrice
+                ? getGasFormErrorText(gasErrors.gasPrice, t)
+                : null
+            }
           />
         </>
       )}
