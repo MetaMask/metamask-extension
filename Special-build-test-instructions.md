@@ -52,3 +52,13 @@ Alternatively, you could add a different build of firefox (e.g. firefox nightly)
 - got to about:debugging#/runtime/this-firefox
 - Click "Load Temporary Add-on..."
 - Select the metamask-firefox-10.0.0.zip file you downloaded in the first step above
+
+## Video Walkthrough
+
+A 90 seconds video walk through of the above process is available here:
+
+Chrome:
+https://user-images.githubusercontent.com/7499938/128045635-259484bd-5976-4b1c-86b0-3eca491d5ed4.mp4
+
+Firefox:
+https://user-images.githubusercontent.com/7499938/128045644-2a9c9748-c5f6-4861-a098-8a54d9c16404.mp4
