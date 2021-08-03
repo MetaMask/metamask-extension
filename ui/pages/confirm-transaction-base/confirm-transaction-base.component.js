@@ -385,7 +385,9 @@ export default class ConfirmTransactionBase extends Component {
                       key="gas-subtext"
                       type={SECONDARY}
                       value={getHexGasTotal({
-                        gasPrice: txData.txParams.maxFeePerGas,
+                        gasPrice:
+                          txData.txParams.maxFeePerGas ??
+                          txData.txParams.gasPrice,
                         gasLimit: txData.txParams.gas,
                       })}
                       hideLabel
@@ -430,7 +432,9 @@ export default class ConfirmTransactionBase extends Component {
                       value={addHexes(
                         txData.txParams.value,
                         getHexGasTotal({
-                          gasPrice: txData.txParams.maxFeePerGas,
+                          gasPrice:
+                            txData.txParams.maxFeePerGas ??
+                            txData.txParams.gasPrice,
                           gasLimit: txData.txParams.gas,
                         }),
                       )}
