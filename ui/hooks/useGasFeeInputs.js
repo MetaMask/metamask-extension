@@ -1,8 +1,7 @@
 import { addHexPrefix } from 'ethereumjs-util';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { findKey } from 'lodash';
-
+import { findKey, isEqual } from 'lodash';
 import {
   GAS_ESTIMATE_TYPES,
   EDIT_GAS_MODES,
@@ -220,6 +219,9 @@ export function useGasFeeInputs(
       ? Number(hexWEIToDecGWEI(transaction.txParams.maxPriorityFeePerGas))
       : null,
   );
+  const [gasPriceHasBeenManuallySet, setGasPriceHasBeenManuallySet] = useState(
+    false,
+  );
   const [gasPrice, setGasPrice] = useState(
     transaction?.txParams?.gasPrice
       ? Number(hexWEIToDecGWEI(transaction.txParams.gasPrice))
@@ -263,9 +265,20 @@ export function useGasFeeInputs(
       estimateToUse,
     );
 
+  const [initialGasPriceEstimates] = useState(gasFeeEstimates);
+  const gasPriceEstimatesHaveNotChanged = isEqual(
+    initialGasPriceEstimates,
+    gasFeeEstimates,
+  );
   const gasPriceToUse =
-    gasPrice ??
-    getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse);
+    gasPrice !== null &&
+    (gasPriceHasBeenManuallySet || gasPriceEstimatesHaveNotChanged)
+      ? gasPrice
+      : getGasPriceEstimate(
+          gasFeeEstimates,
+          gasEstimateType,
+          estimateToUse || defaultEstimateToUse,
+        );
 
   // We have two helper methods that take an object that can have either
   // gasPrice OR the EIP-1559 fields on it, plus gasLimit. This object is
@@ -456,6 +469,7 @@ export function useGasFeeInputs(
       setMaxFeePerGas(null);
       setMaxPriorityFeePerGas(null);
       setGasPrice(null);
+      setGasPriceHasBeenManuallySet(false);
     },
     [minimumGasLimit, gasErrors.gasLimit, transaction],
   );
@@ -489,6 +503,7 @@ export function useGasFeeInputs(
       setGasLimit(gasLimit);
       setMaxFeePerGas(maxFeePerGasToUse);
       setMaxPriorityFeePerGas(maxPriorityFeePerGasToUse);
+      setGasPriceHasBeenManuallySet(true);
     },
     balanceError,
     estimatesUnavailableWarning,
