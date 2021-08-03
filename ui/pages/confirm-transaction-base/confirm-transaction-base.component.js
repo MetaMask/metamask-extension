@@ -331,7 +331,6 @@ export default class ConfirmTransactionBase extends Component {
                     <InfoTooltip
                       contentText={t('transactionDetailDappGasTooltip')}
                       position="top"
-                      iconFillColor="#f66a0a"
                     >
                       <i className="fa fa-info-circle" />
                     </InfoTooltip>
@@ -379,17 +378,21 @@ export default class ConfirmTransactionBase extends Component {
                   hideLabel
                 />
               }
-              subText={t('editGasSubTextFee', [
-                <UserPreferencedCurrencyDisplay
-                  key="gas-subtext"
-                  type={SECONDARY}
-                  value={getHexGasTotal({
-                    gasPrice: txData.txParams.maxFeePerGas,
-                    gasLimit: txData.txParams.gas,
-                  })}
-                  hideLabel
-                />,
-              ])}
+              subText={
+                <strong>
+                  {t('editGasSubTextFee', [
+                    <UserPreferencedCurrencyDisplay
+                      key="gas-subtext"
+                      type={SECONDARY}
+                      value={getHexGasTotal({
+                        gasPrice: txData.txParams.maxFeePerGas,
+                        gasLimit: txData.txParams.gas,
+                      })}
+                      hideLabel
+                    />,
+                  ])}
+                </strong>
+              }
               subTitle={
                 <GasTiming
                   maxPriorityFeePerGas={txData.txParams.maxPriorityFeePerGas}
@@ -418,20 +421,24 @@ export default class ConfirmTransactionBase extends Component {
                 secondaryTotalTextOverride ||
                 t('transactionDetailGasTotalSubtitle')
               }
-              subText={t('editGasSubTextAmount', [
-                <UserPreferencedCurrencyDisplay
-                  key="gas-total-subtext"
-                  type={SECONDARY}
-                  value={addHexes(
-                    txData.txParams.value,
-                    getHexGasTotal({
-                      gasPrice: txData.txParams.maxFeePerGas,
-                      gasLimit: txData.txParams.gas,
-                    }),
-                  )}
-                  hideLabel
-                />,
-              ])}
+              subText={
+                <strong>
+                  {t('editGasSubTextAmount', [
+                    <UserPreferencedCurrencyDisplay
+                      key="gas-total-subtext"
+                      type={SECONDARY}
+                      value={addHexes(
+                        txData.txParams.value,
+                        getHexGasTotal({
+                          gasPrice: txData.txParams.maxFeePerGas,
+                          gasLimit: txData.txParams.gas,
+                        }),
+                      )}
+                      hideLabel
+                    />,
+                  ])}
+                </strong>
+              }
             />,
           ]}
         />
