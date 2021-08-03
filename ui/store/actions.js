@@ -26,10 +26,6 @@ import {
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
-import {
-  getUnconnectedAccountAlertEnabledness,
-  isEIP1559Network,
-} from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import * as actionConstants from './actionConstants';
 
