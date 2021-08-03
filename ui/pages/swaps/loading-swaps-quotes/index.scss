@@ -107,11 +107,16 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      background: $ui-black;
     }
 
     img {
       width: 74px;
       height: 30px;
+    }
+
+    span {
+      color: $ui-white;
     }
   }
 
