@@ -3,6 +3,12 @@
     height: 12px;
     width: 12px;
   }
+
+  &__tooltip-container {
+    svg {
+      position: static;
+    }
+  }
 }
 
 .tippy-popper[x-placement^=top] .tippy-tooltip-info-theme [x-arrow],
