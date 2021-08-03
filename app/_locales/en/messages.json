@@ -683,6 +683,9 @@
   "editGasMedium": {
     "message": "Medium"
   },
+  "editGasPriceTooLow": {
+    "message": "Gas price must be greater than 0"
+  },
   "editGasPriceTooltip": {
     "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
   },
