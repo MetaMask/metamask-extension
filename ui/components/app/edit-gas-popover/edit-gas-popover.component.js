@@ -69,6 +69,7 @@ export default function EditGasPopover({
     setMaxFeePerGas,
     maxFeePerGasFiat,
     estimatedMaximumNative,
+    estimatedMinimumNative,
     isGasEstimatesLoading,
     gasFeeEstimates,
     gasEstimateType,
@@ -226,6 +227,7 @@ export default function EditGasPopover({
               setMaxFeePerGas={setMaxFeePerGas}
               maxFeePerGasFiat={maxFeePerGasFiat}
               estimatedMaximumNative={estimatedMaximumNative}
+              estimatedMinimumNative={estimatedMinimumNative}
               isGasEstimatesLoading={isGasEstimatesLoading}
               gasFeeEstimates={gasFeeEstimates}
               gasEstimateType={gasEstimateType}

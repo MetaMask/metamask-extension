@@ -45,6 +45,7 @@ export default function EditGasDisplay({
   setMaxFeePerGas,
   maxFeePerGasFiat,
   estimatedMaximumNative,
+  estimatedMinimumNative,
   isGasEstimatesLoading,
   gasFeeEstimates,
   gasEstimateType,
@@ -140,9 +141,9 @@ export default function EditGasDisplay({
         )}
         <TransactionTotalBanner
           total={
-            networkAndAccountSupport1559 || isMainnet
+            (networkAndAccountSupport1559 || isMainnet) && estimatedMinimumFiat
               ? `~ ${estimatedMinimumFiat}`
-              : estimatedMaximumNative
+              : estimatedMinimumNative
           }
           detail={
             networkAndAccountSupport1559 &&
@@ -260,6 +261,7 @@ EditGasDisplay.propTypes = {
   setMaxFeePerGas: PropTypes.func,
   maxFeePerGasFiat: PropTypes.string,
   estimatedMaximumNative: PropTypes.string,
+  estimatedMinimumNative: PropTypes.string,
   isGasEstimatesLoading: PropTypes.boolean,
   gasFeeEstimates: PropTypes.object,
   gasEstimateType: PropTypes.string,
