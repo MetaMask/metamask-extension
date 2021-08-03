@@ -412,7 +412,7 @@ export function useGasFeeInputs(
       if (networkAndAccountSupports1559) {
         estimatesUnavailableWarning = true;
       }
-      if (gasPriceToUse === '' || gasPriceToUse < 1) {
+      if (gasPriceToUse === '' || gasPriceToUse === 0) {
         gasErrors.gasPrice = GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW;
       }
       break;
