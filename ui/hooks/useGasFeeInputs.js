@@ -366,7 +366,7 @@ export function useGasFeeInputs(
     { value: minimumGasLimit || GAS_LIMITS.SIMPLE, fromNumericBase: 'hex' },
   );
 
-  if (gasLimitTooLow || gasLimit === '') {
+  if (gasLimitTooLow) {
     gasErrors.gasLimit = GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS;
   }
 
@@ -412,7 +412,7 @@ export function useGasFeeInputs(
       if (networkAndAccountSupports1559) {
         estimatesUnavailableWarning = true;
       }
-      if (gasPriceToUse === '' || gasPriceToUse === 0) {
+      if (gasPriceToUse <= 0) {
         gasErrors.gasPrice = GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW;
       }
       break;
