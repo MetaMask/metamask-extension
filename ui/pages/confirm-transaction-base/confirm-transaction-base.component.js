@@ -19,7 +19,6 @@ import {
 } from '../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
-
 import TextField from '../../components/ui/text-field';
 import {
   TRANSACTION_TYPES,
@@ -27,6 +26,7 @@ import {
 } from '../../../shared/constants/transaction';
 import { getTransactionTypeTitle } from '../../helpers/utils/transactions.util';
 import { toBuffer } from '../../../shared/modules/buffer-utils';
+import { hexWEIToDecGWEI } from '../../helpers/utils/conversions.util';
 
 import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
@@ -397,8 +397,8 @@ export default class ConfirmTransactionBase extends Component {
               }
               subTitle={
                 <GasTiming
-                  maxPriorityFeePerGas={txData.txParams.maxPriorityFeePerGas}
-                  maxFeePerGas={txData.txParams.maxFeePerGas}
+                  maxPriorityFeePerGas={hexWEIToDecGWEI(txData.txParams.maxPriorityFeePerGas)}
+                  maxFeePerGas={hexWEIToDecGWEI(txData.txParams.maxFeePerGas)}
                 />
               }
             />,
