@@ -135,27 +135,6 @@ export default function AdvancedGasControls({
             tooltipText={t('editGasPriceTooltip')}
             value={gasPrice}
             numeric
-            titleDetail={
-              suggestedValues.gasPrice && (
-                <>
-                  <Typography
-                    tag="span"
-                    color={COLORS.UI4}
-                    variant={TYPOGRAPHY.H8}
-                    fontWeight={FONT_WEIGHT.BOLD}
-                  >
-                    {t('gasFeeEstimate')}:
-                  </Typography>{' '}
-                  <Typography
-                    tag="span"
-                    color={COLORS.UI4}
-                    variant={TYPOGRAPHY.H8}
-                  >
-                    {suggestedValues.gasPrice}
-                  </Typography>
-                </>
-              )
-            }
             error={
               gasErrors?.gasPrice
                 ? getGasFormErrorText(gasErrors.gasPrice, t)
