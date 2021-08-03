@@ -168,6 +168,6 @@ export default function GasTiming({
 }
 
 GasTiming.propTypes = {
-  maxPriorityFeePerGas: PropTypes.string.isRequired,
-  maxFeePerGas: PropTypes.string.isRequired,
+  maxPriorityFeePerGas: PropTypes.string,
+  maxFeePerGas: PropTypes.string,
 };
