@@ -34,7 +34,12 @@ import {
   fetchAndSetSwapsGasPriceInfo,
   fetchSwapsLiveness,
   getUseNewSwapsApi,
+  getFromToken,
 } from '../../ducks/swaps/swaps';
+import {
+  checkNetworkAndAccountSupports1559,
+  currentNetworkTxListSelector,
+} from '../../selectors';
 import {
   AWAITING_SIGNATURES_ROUTE,
   AWAITING_SWAP_ROUTE,
@@ -60,9 +65,9 @@ import {
   setBackgroundSwapRouteState,
   setSwapsErrorKey,
 } from '../../store/actions';
-import { currentNetworkTxListSelector } from '../../selectors';
-import { useNewMetricEvent } from '../../hooks/useMetricEvent';
 
+import { useNewMetricEvent } from '../../hooks/useMetricEvent';
+import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import {
@@ -70,6 +75,7 @@ import {
   fetchTopAssets,
   getSwapsTokensReceivedFromTxMeta,
   fetchAggregatorMetadata,
+  countDecimals,
 } from './swaps.util';
 import AwaitingSignatures from './awaiting-signatures';
 import AwaitingSwap from './awaiting-swap';
@@ -94,6 +100,7 @@ export default function Swap() {
   const [inputValue, setInputValue] = useState(fetchParams?.value || '');
   const [maxSlippage, setMaxSlippage] = useState(fetchParams?.slippage || 3);
   const [isFeatureFlagLoaded, setIsFeatureFlagLoaded] = useState(false);
+  const [tokenFromError, setTokenFromError] = useState(null);
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -108,6 +115,16 @@ export default function Swap() {
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const useNewSwapsApi = useSelector(getUseNewSwapsApi);
+  const networkAndAccountSupports1559 = useSelector(
+    checkNetworkAndAccountSupports1559,
+  );
+  const fromToken = useSelector(getFromToken);
+
+  if (networkAndAccountSupports1559) {
+    // This will pre-load gas fees before going to the View Quote page.
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useGasFeeEstimates();
+  }
 
   const {
     balance: ethBalance,
@@ -183,12 +200,20 @@ export default function Swap() {
           dispatch(setAggregatorMetadata(newAggregatorMetadata));
         },
       );
-      dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
+      if (!networkAndAccountSupports1559) {
+        dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
+      }
       return () => {
         dispatch(prepareToLeaveSwaps());
       };
     }
-  }, [dispatch, chainId, isFeatureFlagLoaded, useNewSwapsApi]);
+  }, [
+    dispatch,
+    chainId,
+    isFeatureFlagLoaded,
+    useNewSwapsApi,
+    networkAndAccountSupports1559,
+  ]);
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
@@ -288,10 +313,16 @@ export default function Swap() {
 
                 const onInputChange = (newInputValue, balance) => {
                   setInputValue(newInputValue);
-                  dispatch(
-                    setBalanceError(
-                      new BigNumber(newInputValue || 0).gt(balance || 0),
-                    ),
+                  const balanceError = new BigNumber(newInputValue || 0).gt(
+                    balance || 0,
+                  );
+                  // "setBalanceError" is just a warning, a user can still click on the "Review Swap" button.
+                  dispatch(setBalanceError(balanceError));
+                  setTokenFromError(
+                    fromToken &&
+                      countDecimals(newInputValue) > fromToken.decimals
+                      ? 'tooManyDecimals'
+                      : null,
                   );
                 };
 
@@ -304,6 +335,7 @@ export default function Swap() {
                     selectedAccountAddress={selectedAccountAddress}
                     maxSlippage={maxSlippage}
                     isFeatureFlagLoaded={isFeatureFlagLoaded}
+                    tokenFromError={tokenFromError}
                   />
                 );
               }}

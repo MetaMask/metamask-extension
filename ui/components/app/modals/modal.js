@@ -245,7 +245,7 @@ const MODALS = {
     },
   },
 
-  CUSTOMIZE_GAS: {
+  LEGACY_CUSTOMIZE_GAS: {
     contents: <ConfirmCustomizeGasModal />,
     mobileModalStyle: {
       width: '100vw',

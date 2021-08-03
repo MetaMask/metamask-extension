@@ -130,9 +130,10 @@ export default function AwaitingSwap({
     { blockExplorerUrl: baseNetworkUrl },
   );
 
-  const isCustomBlockExplorerUrl =
+  const isCustomBlockExplorerUrl = Boolean(
     SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ||
-    rpcPrefs.blockExplorerUrl;
+      rpcPrefs.blockExplorerUrl,
+  );
 
   let headerText;
   let statusImage;

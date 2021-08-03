@@ -126,15 +126,6 @@ describe('Metamask Import UI', function () {
         );
         await driver.fill('.unit-input__input', '1');
 
-        // Set the gas limit
-        await driver.clickElement('.advanced-gas-options-btn');
-
-        // wait for gas modal to be visible
-        const gasModal = await driver.findVisibleElement('span .modal');
-        await driver.clickElement({ text: 'Save', tag: 'button' });
-        // wait for gas modal to be removed from DOM
-        await gasModal.waitForElementState('hidden');
-
         // Continue to next screen
         await driver.clickElement({ text: 'Next', tag: 'button' });
 

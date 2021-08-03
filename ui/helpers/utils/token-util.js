@@ -1,8 +1,11 @@
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
 import contractMap from '@metamask/contract-metadata';
+import {
+  conversionUtil,
+  multiplyCurrencies,
+} from '../../../shared/modules/conversion.utils';
 import * as util from './util';
-import { conversionUtil, multiplyCurrencies } from './conversion-util';
 import { formatCurrency } from './confirm-tx.util';
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
@@ -70,7 +73,7 @@ async function getDecimals(tokenAddress) {
     const contractMetadataInfo = getContractMetadata(tokenAddress);
 
     if (contractMetadataInfo) {
-      decimals = contractMetadataInfo.decimals;
+      decimals = contractMetadataInfo.decimals?.toString();
     }
   }
 

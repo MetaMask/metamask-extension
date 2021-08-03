@@ -9,7 +9,9 @@ import {
   ETHEREUM,
   POLYGON,
   BSC,
+  RINKEBY,
 } from '../../../shared/constants/swaps';
+import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
 import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
@@ -21,6 +23,7 @@ import {
   BSC_CHAIN_ID,
   POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -36,7 +39,7 @@ import {
   getValueFromWeiHex,
 } from '../../helpers/utils/conversions.util';
 
-import { subtractCurrencies } from '../../helpers/utils/conversion-util';
+import { subtractCurrencies } from '../../../shared/modules/conversion.utils';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import fetchWithCache from '../../helpers/utils/fetch-with-cache';
 
@@ -656,6 +659,8 @@ export function getSwapsTokensReceivedFromTxMeta(
   chainId,
 ) {
   const txReceipt = txMeta?.txReceipt;
+  const networkAndAccountSupports1559 =
+    txMeta?.txReceipt?.type === TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
   if (isSwapsDefaultTokenSymbol(tokenSymbol, chainId)) {
     if (
       !txReceipt ||
@@ -670,11 +675,18 @@ export function getSwapsTokensReceivedFromTxMeta(
     if (approvalTxMeta && approvalTxMeta.txReceipt) {
       approvalTxGasCost = calcGasTotal(
         approvalTxMeta.txReceipt.gasUsed,
-        approvalTxMeta.txParams.gasPrice,
+        networkAndAccountSupports1559
+          ? approvalTxMeta.txReceipt.effectiveGasPrice // Base fee + priority fee.
+          : approvalTxMeta.txParams.gasPrice,
       );
     }
 
-    const gasCost = calcGasTotal(txReceipt.gasUsed, txMeta.txParams.gasPrice);
+    const gasCost = calcGasTotal(
+      txReceipt.gasUsed,
+      networkAndAccountSupports1559
+        ? txReceipt.effectiveGasPrice
+        : txMeta.txParams.gasPrice,
+    );
     const totalGasCost = new BigNumber(gasCost, 16)
       .plus(approvalTxGasCost, 16)
       .toString(16);
@@ -786,6 +798,8 @@ export const getNetworkNameByChainId = (chainId) => {
       return BSC;
     case POLYGON_CHAIN_ID:
       return POLYGON;
+    case RINKEBY_CHAIN_ID:
+      return RINKEBY;
     default:
       return '';
   }
@@ -799,8 +813,8 @@ export const getNetworkNameByChainId = (chainId) => {
  */
 export const getSwapsLivenessForNetwork = (swapsFeatureFlags = {}, chainId) => {
   const networkName = getNetworkNameByChainId(chainId);
-  // Use old APIs for testnet.
-  if (chainId === LOCALHOST_CHAIN_ID) {
+  // Use old APIs for testnet and Rinkeby.
+  if ([LOCALHOST_CHAIN_ID, RINKEBY_CHAIN_ID].includes(chainId)) {
     return {
       swapsFeatureIsLive: true,
       useNewSwapsApi: false,
@@ -825,4 +839,13 @@ export const getSwapsLivenessForNetwork = (swapsFeatureFlags = {}, chainId) => {
     swapsFeatureIsLive: swapsFeatureFlags[networkName].fallback_to_v1,
     useNewSwapsApi: false,
   };
+};
+
+/**
+ * @param {number} value
+ * @returns number
+ */
+export const countDecimals = (value) => {
+  if (!value || Math.floor(value) === value) return 0;
+  return value.toString().split('.')[1]?.length || 0;
 };

@@ -10,19 +10,11 @@ import {
   cancelTxs,
   updateAndApproveTx,
   showModal,
-  updateTransaction,
   getNextNonce,
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
-import {
-  INSUFFICIENT_FUNDS_ERROR_KEY,
-  GAS_LIMIT_TOO_LOW_ERROR_KEY,
-} from '../../helpers/constants/error-keys';
-import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util';
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
-import { conversionGreaterThan } from '../../helpers/utils/conversion-util';
-import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
 import {
   getAdvancedInlineGasShown,
@@ -35,10 +27,12 @@ import {
   getNoGasPriceFetched,
   getIsEthGasPriceFetched,
   getShouldShowFiat,
+  checkNetworkAndAccountSupports1559,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { updateTransactionGasFees } from '../../ducks/metamask/metamask';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
@@ -65,6 +59,7 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
+  const supportsEIP1599 = checkNetworkAndAccountSupports1559(state);
   const { confirmTransaction, metamask } = state;
   const {
     ensResolutionsByAddress,
@@ -78,7 +73,7 @@ const mapStateToProps = (state, ownProps) => {
     provider: { chainId },
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
-  const { txParams = {}, lastGasPrice, id: transactionId, type } = txData;
+  const { txParams = {}, id: transactionId, type } = txData;
   const transaction =
     Object.values(unapprovedTxs).find(
       ({ id }) => id === (transactionId || Number(paramsTransactionId)),
@@ -107,12 +102,12 @@ const mapStateToProps = (state, ownProps) => {
   const addressBookObject = addressBook[checksummedAddress];
   const toEns = ensResolutionsByAddress[checksummedAddress] || '';
   const toNickname = addressBookObject ? addressBookObject.name : '';
-  const isTxReprice = Boolean(lastGasPrice);
   const transactionStatus = transaction ? transaction.status : '';
 
   const {
     hexTransactionAmount,
-    hexTransactionFee,
+    hexMinimumTransactionFee,
+    hexMaximumTransactionFee,
     hexTransactionTotal,
   } = transactionFeeSelector(state, transaction);
 
@@ -159,13 +154,13 @@ const mapStateToProps = (state, ownProps) => {
     toName,
     toNickname,
     hexTransactionAmount,
-    hexTransactionFee,
+    hexMinimumTransactionFee,
+    hexMaximumTransactionFee,
     hexTransactionTotal,
     txData: fullTxData,
     tokenData,
     methodData,
     tokenProps,
-    isTxReprice,
     conversionRate,
     transactionStatus,
     nonce,
@@ -189,6 +184,7 @@ const mapStateToProps = (state, ownProps) => {
     isMainnet,
     isEthGasPrice,
     noGasPrice,
+    supportsEIP1599,
   };
 };
 
@@ -205,19 +201,6 @@ export const mapDispatchToProps = (dispatch) => {
     showTransactionConfirmedModal: ({ onSubmit }) => {
       return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }));
     },
-    showCustomizeGasModal: ({ txData, onSubmit, validate }) => {
-      return dispatch(
-        showModal({
-          name: 'CUSTOMIZE_GAS',
-          txData,
-          onSubmit,
-          validate,
-        }),
-      );
-    },
-    updateGasAndCalculate: (updatedTx) => {
-      return dispatch(updateTransaction(updatedTx));
-    },
     showRejectTransactionsConfirmationModal: ({
       onSubmit,
       unapprovedTxCount,
@@ -233,93 +216,33 @@ export const mapDispatchToProps = (dispatch) => {
     getNextNonce: () => dispatch(getNextNonce()),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),
-  };
-};
-
-const getValidateEditGas = ({ balance, conversionRate, txData }) => {
-  const { txParams: { value: amount } = {} } = txData;
-
-  return ({ gasLimit, gasPrice }) => {
-    const gasTotal = getHexGasTotal({ gasLimit, gasPrice });
-    const hasSufficientBalance = isBalanceSufficient({
-      amount,
-      gasTotal,
-      balance,
-      conversionRate,
-    });
-
-    if (!hasSufficientBalance) {
-      return {
-        valid: false,
-        errorKey: INSUFFICIENT_FUNDS_ERROR_KEY,
-      };
-    }
-
-    const gasLimitTooLow =
-      gasLimit &&
-      conversionGreaterThan(
-        {
-          value: MIN_GAS_LIMIT_DEC,
-          fromNumericBase: 'dec',
-          conversionRate,
-        },
-        {
-          value: gasLimit,
-          fromNumericBase: 'hex',
-        },
-      );
-
-    if (gasLimitTooLow) {
-      return {
-        valid: false,
-        errorKey: GAS_LIMIT_TOO_LOW_ERROR_KEY,
-      };
-    }
-
-    return {
-      valid: true,
-    };
+    updateTransactionGasFees: (gasFees) => {
+      dispatch(updateTransactionGasFees({ ...gasFees, expectHexWei: true }));
+    },
   };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { balance, conversionRate, txData, unapprovedTxs } = stateProps;
+  const { txData, unapprovedTxs } = stateProps;
 
   const {
     cancelAllTransactions: dispatchCancelAllTransactions,
-    showCustomizeGasModal: dispatchShowCustomizeGasModal,
-    updateGasAndCalculate: dispatchUpdateGasAndCalculate,
+    updateTransactionGasFees: dispatchUpdateTransactionGasFees,
     ...otherDispatchProps
   } = dispatchProps;
-
-  const validateEditGas = getValidateEditGas({
-    balance,
-    conversionRate,
-    txData,
-  });
 
   return {
     ...stateProps,
     ...otherDispatchProps,
     ...ownProps,
-    showCustomizeGasModal: () =>
-      dispatchShowCustomizeGasModal({
-        txData,
-        onSubmit: (customGas) => dispatchUpdateGasAndCalculate(customGas),
-        validate: validateEditGas,
-      }),
     cancelAllTransactions: () =>
       dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),
     updateGasAndCalculate: ({ gasLimit, gasPrice }) => {
-      const updatedTx = {
-        ...txData,
-        txParams: {
-          ...txData.txParams,
-          gas: gasLimit,
-          gasPrice,
-        },
-      };
-      dispatchUpdateGasAndCalculate(updatedTx);
+      dispatchUpdateTransactionGasFees({
+        gasLimit,
+        gasPrice,
+        transaction: txData,
+      });
     },
   };
 };

@@ -1,0 +1,36 @@
+.transaction-detail {
+  position: relative;
+
+  .transaction-detail-edit {
+    text-align: end;
+    padding-top: 20px;
+
+    button {
+      @include H7;
+
+      color: $primary-1;
+      background: transparent;
+      border: 0;
+      padding-inline-end: 0;
+      text-transform: uppercase;
+    }
+  }
+
+  &-rows &-item:first-child {
+    padding-top: 0;
+  }
+
+  &-item {
+    padding: 20px 0;
+    border-bottom: 1px solid $ui-3;
+
+    &:first-child {
+      padding-top: 0;
+    }
+
+    &:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+  }
+}

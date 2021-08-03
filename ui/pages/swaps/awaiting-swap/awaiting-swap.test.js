@@ -11,7 +11,7 @@ const createProps = (customProps = {}) => {
   return {
     swapComplete: false,
     txHash: 'txHash',
-    tokensReceived: 'tokensReceived',
+    tokensReceived: 'tokens received:',
     submittingSwap: true,
     inputValue: 5,
     maxSlippage: 3,
@@ -32,6 +32,18 @@ describe('AwaitingSwap', () => {
     expect(
       document.querySelector('.awaiting-swap__main-descrption'),
     ).toMatchSnapshot();
-    expect(document.querySelector('.swaps-footer')).toMatchSnapshot();
+    expect(getByText('View in activity')).toBeInTheDocument();
+  });
+
+  it('renders the component with for completed swap', () => {
+    const store = configureMockStore()(createSwapsMockStore());
+    const { getByText } = renderWithProvider(
+      <AwaitingSwap {...createProps({ swapComplete: true })} />,
+      store,
+    );
+    expect(getByText('Transaction complete')).toBeInTheDocument();
+    expect(getByText('tokens received: ETH')).toBeInTheDocument();
+    expect(getByText('View at etherscan.io')).toBeInTheDocument();
+    expect(getByText('Create a new swap')).toBeInTheDocument();
   });
 });
