@@ -3,12 +3,6 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import { I18nContext } from '../../../contexts/i18n';
-import Typography from '../../ui/typography/typography';
-import {
-  FONT_WEIGHT,
-  TYPOGRAPHY,
-  COLORS,
-} from '../../../helpers/constants/design-system';
 import FormField from '../../ui/form-field';
 import {
   GAS_ESTIMATE_TYPES,
