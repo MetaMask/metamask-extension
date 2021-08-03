@@ -271,12 +271,13 @@ export function useGasFeeInputs(
     gasFeeEstimates,
   );
   const gasPriceToUse =
-    gasPrice && (gasPriceHasBeenManuallySet || gasPriceEstimatesHaveNotChanged)
+    gasPrice !== null &&
+    (gasPriceHasBeenManuallySet || gasPriceEstimatesHaveNotChanged)
       ? gasPrice
       : getGasPriceEstimate(
           gasFeeEstimates,
           gasEstimateType,
-          estimateToUse || 'medium',
+          estimateToUse || defaultEstimateToUse,
         );
 
   // We have two helper methods that take an object that can have either
