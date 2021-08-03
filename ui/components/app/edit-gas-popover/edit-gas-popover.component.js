@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEIP1559Network } from '../../../ducks/metamask/metamask';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
@@ -28,6 +27,7 @@ import {
   updateCustomSwapsEIP1559GasParams,
 } from '../../../store/actions';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
+import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 
 export default function EditGasPopover({
   popoverTitle = '',
@@ -42,12 +42,14 @@ export default function EditGasPopover({
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
-  const networkSupports1559 = useSelector(isEIP1559Network);
+  const networkAndAccountSupport1559 = useSelector(
+    checkNetworkAndAccountSupports1559,
+  );
 
   const shouldAnimate = useShouldAnimateGasEstimations();
 
   const showEducationButton =
-    mode === EDIT_GAS_MODES.MODIFY_IN_PLACE && networkSupports1559;
+    mode === EDIT_GAS_MODES.MODIFY_IN_PLACE && networkAndAccountSupport1559;
   const [showEducationContent, setShowEducationContent] = useState(false);
 
   const [warning] = useState(null);
@@ -67,6 +69,7 @@ export default function EditGasPopover({
     setMaxFeePerGas,
     maxFeePerGasFiat,
     estimatedMaximumNative,
+    estimatedMinimumNative,
     isGasEstimatesLoading,
     gasFeeEstimates,
     gasEstimateType,
@@ -82,10 +85,11 @@ export default function EditGasPopover({
     gasErrors,
     onManualChange,
     balanceError,
+    estimatesUnavailableWarning,
   } = useGasFeeInputs(defaultEstimateToUse, transaction, minimumGasLimit, mode);
 
   const [showAdvancedForm, setShowAdvancedForm] = useState(
-    !estimateToUse || hasGasErrors,
+    !estimateToUse || hasGasErrors || !networkAndAccountSupport1559,
   );
 
   /**
@@ -109,7 +113,7 @@ export default function EditGasPopover({
       closePopover();
     }
 
-    const newGasSettings = networkSupports1559
+    const newGasSettings = networkAndAccountSupport1559
       ? {
           gas: decimalToHex(gasLimit),
           gasLimit: decimalToHex(gasLimit),
@@ -144,7 +148,7 @@ export default function EditGasPopover({
         break;
       case EDIT_GAS_MODES.SWAPS:
         // This popover component should only be used for the "FEE_MARKET" type in Swaps.
-        if (networkSupports1559) {
+        if (networkAndAccountSupport1559) {
           dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
         }
         break;
@@ -162,7 +166,7 @@ export default function EditGasPopover({
     gasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    networkSupports1559,
+    networkAndAccountSupport1559,
   ]);
 
   let title = t('editGasTitle');
@@ -223,6 +227,7 @@ export default function EditGasPopover({
               setMaxFeePerGas={setMaxFeePerGas}
               maxFeePerGasFiat={maxFeePerGasFiat}
               estimatedMaximumNative={estimatedMaximumNative}
+              estimatedMinimumNative={estimatedMinimumNative}
               isGasEstimatesLoading={isGasEstimatesLoading}
               gasFeeEstimates={gasFeeEstimates}
               gasEstimateType={gasEstimateType}
@@ -241,6 +246,7 @@ export default function EditGasPopover({
               onManualChange={onManualChange}
               minimumGasLimit={minimumGasLimitDec}
               balanceError={balanceError}
+              estimatesUnavailableWarning={estimatesUnavailableWarning}
               {...editGasDisplayProps}
             />
           </>

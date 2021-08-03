@@ -633,7 +633,7 @@
     "message": "This is best for swaps or other time sensitive transactions. If a swap takes too long to process it will often fail and you may lose funds."
   },
   "editGasEducationLowExplanation": {
-    "message": "Low A lower gas fee should only be selected for transactions where processing time is less important. With a lower fee, it can be be hard to predict when (or if) your transaction with be successful."
+    "message": "A lower gas fee should only be selected for transactions where processing time is less important. With a lower fee, it can be be hard to predict when (or if) your transaction with be successful."
   },
   "editGasEducationMediumExplanation": {
     "message": "A medium gas fee is good for sending, withdrawing or other non-time sensitive but important transactions."
@@ -682,6 +682,9 @@
   },
   "editGasMedium": {
     "message": "Medium"
+  },
+  "editGasPriceTooLow": {
+    "message": "Gas price must be greater than 0"
   },
   "editGasPriceTooltip": {
     "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
@@ -901,11 +904,8 @@
     "message": "This gas fee has been suggested by $1. Overriding this may cause a problem with your transaction. Please reach out to $1 if you have questions.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Gas Fee"
-  },
-  "gasFeeEstimate": {
-    "message": "Estimate"
+  "gasEstimatesUnavailableWarning": {
+    "message": "Our low, medium and high estimates are not available."
   },
   "gasLimit": {
     "message": "Gas Limit"

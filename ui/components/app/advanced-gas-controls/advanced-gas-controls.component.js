@@ -2,22 +2,14 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
-import { isEIP1559Network } from '../../../ducks/metamask/metamask';
 import { I18nContext } from '../../../contexts/i18n';
-import Typography from '../../ui/typography/typography';
-import {
-  FONT_WEIGHT,
-  TYPOGRAPHY,
-  COLORS,
-} from '../../../helpers/constants/design-system';
 import FormField from '../../ui/form-field';
 import {
   GAS_ESTIMATE_TYPES,
   GAS_RECOMMENDATIONS,
 } from '../../../../shared/constants/gas';
 import { getGasFormErrorText } from '../../../helpers/constants/gas';
-
-const DEFAULT_ESTIMATES_LEVEL = 'medium';
+import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 
 export default function AdvancedGasControls({
   estimateToUse,
@@ -35,15 +27,16 @@ export default function AdvancedGasControls({
   maxPriorityFeeFiat,
   maxFeeFiat,
   gasErrors,
-  networkSupportsEIP1559,
   minimumGasLimit,
 }) {
   const t = useContext(I18nContext);
-  const networkSupports1559 = useSelector(isEIP1559Network);
+  const networkAndAccountSupport1559 = useSelector(
+    checkNetworkAndAccountSupports1559,
+  );
 
   const suggestedValues = {};
 
-  if (networkSupportsEIP1559) {
+  if (networkAndAccountSupport1559) {
     suggestedValues.maxFeePerGas =
       gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas ||
       gasFeeEstimates?.gasPrice;
@@ -64,7 +57,7 @@ export default function AdvancedGasControls({
   }
 
   const showFeeMarketFields =
-    networkSupports1559 &&
+    networkAndAccountSupport1559 &&
     (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
       gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE);
 
@@ -77,7 +70,10 @@ export default function AdvancedGasControls({
             ? getGasFormErrorText(gasErrors.gasLimit, t, { minimumGasLimit })
             : null
         }
-        onChange={setGasLimit}
+        onChange={(value) => {
+          onManualChange?.();
+          setGasLimit(value);
+        }}
         tooltipText={t('editGasLimitTooltip')}
         value={gasLimit}
         allowDecimals={false}
@@ -97,30 +93,6 @@ export default function AdvancedGasControls({
             value={maxPriorityFee}
             detailText={maxPriorityFeeFiat}
             numeric
-            titleDetail={
-              suggestedValues.maxPriorityFeePerGas && (
-                <>
-                  <Typography
-                    tag="span"
-                    color={COLORS.UI4}
-                    variant={TYPOGRAPHY.H8}
-                    fontWeight={FONT_WEIGHT.BOLD}
-                  >
-                    {t('gasFeeEstimate')}:
-                  </Typography>{' '}
-                  <Typography
-                    tag="span"
-                    color={COLORS.UI4}
-                    variant={TYPOGRAPHY.H8}
-                  >
-                    {
-                      gasFeeEstimates?.[DEFAULT_ESTIMATES_LEVEL]
-                        ?.suggestedMaxPriorityFeePerGas
-                    }
-                  </Typography>
-                </>
-              )
-            }
             error={
               gasErrors?.maxPriorityFee
                 ? getGasFormErrorText(gasErrors.maxPriorityFee, t)
@@ -138,30 +110,6 @@ export default function AdvancedGasControls({
             value={maxFee}
             numeric
             detailText={maxFeeFiat}
-            titleDetail={
-              suggestedValues.maxFeePerGas && (
-                <>
-                  <Typography
-                    tag="span"
-                    color={COLORS.UI4}
-                    variant={TYPOGRAPHY.H8}
-                    fontWeight={FONT_WEIGHT.BOLD}
-                  >
-                    {t('gasFeeEstimate')}:
-                  </Typography>{' '}
-                  <Typography
-                    tag="span"
-                    color={COLORS.UI4}
-                    variant={TYPOGRAPHY.H8}
-                  >
-                    {
-                      gasFeeEstimates?.[DEFAULT_ESTIMATES_LEVEL]
-                        ?.suggestedMaxFeePerGas
-                    }
-                  </Typography>
-                </>
-              )
-            }
             error={
               gasErrors?.maxFee
                 ? getGasFormErrorText(gasErrors.maxFee, t)
@@ -181,26 +129,10 @@ export default function AdvancedGasControls({
             tooltipText={t('editGasPriceTooltip')}
             value={gasPrice}
             numeric
-            titleDetail={
-              suggestedValues.gasPrice && (
-                <>
-                  <Typography
-                    tag="span"
-                    color={COLORS.UI4}
-                    variant={TYPOGRAPHY.H8}
-                    fontWeight={FONT_WEIGHT.BOLD}
-                  >
-                    {t('gasFeeEstimate')}:
-                  </Typography>{' '}
-                  <Typography
-                    tag="span"
-                    color={COLORS.UI4}
-                    variant={TYPOGRAPHY.H8}
-                  >
-                    {suggestedValues.gasPrice}
-                  </Typography>
-                </>
-              )
+            error={
+              gasErrors?.gasPrice
+                ? getGasFormErrorText(gasErrors.gasPrice, t)
+                : null
             }
           />
         </>
@@ -241,5 +173,4 @@ AdvancedGasControls.propTypes = {
   maxFeeFiat: PropTypes.string,
   gasErrors: PropTypes.object,
   minimumGasLimit: PropTypes.number,
-  networkSupportsEIP1559: PropTypes.object,
 };

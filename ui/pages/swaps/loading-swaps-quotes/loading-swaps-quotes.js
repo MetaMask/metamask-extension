@@ -220,7 +220,7 @@ export default function LoadingSwapsQuotes({
                 key={`aggregator-logo-${aggName}`}
               >
                 <AggregatorLogo
-                  aggregatorName={aggName}
+                  name={aggregatorMetadata[aggName]?.title}
                   icon={aggregatorMetadata[aggName]?.icon}
                   color={aggregatorMetadata[aggName]?.color}
                 />
@@ -245,6 +245,7 @@ LoadingSwapsQuotes.propTypes = {
   onDone: PropTypes.func.isRequired,
   aggregatorMetadata: PropTypes.objectOf(
     PropTypes.shape({
+      title: PropTypes.string,
       color: PropTypes.string,
       icon: PropTypes.string,
     }),

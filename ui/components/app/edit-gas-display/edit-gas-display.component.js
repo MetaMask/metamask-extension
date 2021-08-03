@@ -5,12 +5,15 @@ import PropTypes from 'prop-types';
 import {
   GAS_RECOMMENDATIONS,
   EDIT_GAS_MODES,
+  GAS_ESTIMATE_TYPES,
 } from '../../../../shared/constants/gas';
 
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
-import { isEIP1559Network } from '../../../ducks/metamask/metamask';
-import { getIsMainnet } from '../../../selectors';
+import {
+  getIsMainnet,
+  checkNetworkAndAccountSupports1559,
+} from '../../../selectors';
 
 import {
   COLORS,
@@ -42,6 +45,7 @@ export default function EditGasDisplay({
   setMaxFeePerGas,
   maxFeePerGasFiat,
   estimatedMaximumNative,
+  estimatedMinimumNative,
   isGasEstimatesLoading,
   gasFeeEstimates,
   gasEstimateType,
@@ -62,10 +66,13 @@ export default function EditGasDisplay({
   onManualChange,
   minimumGasLimit,
   balanceError,
+  estimatesUnavailableWarning,
 }) {
   const t = useContext(I18nContext);
-  const supportsEIP1559 = useSelector(isEIP1559Network);
   const isMainnet = useSelector(getIsMainnet);
+  const networkAndAccountSupport1559 = useSelector(
+    checkNetworkAndAccountSupports1559,
+  );
 
   const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
     transaction,
@@ -77,17 +84,18 @@ export default function EditGasDisplay({
       dappSuggestedAndTxParamGasFeesAreTheSame,
   );
 
-  const networkSupports1559 = useSelector(isEIP1559Network);
-  const showTopError = balanceError;
-
+  const showTopError = balanceError || estimatesUnavailableWarning;
   const showRadioButtons =
-    networkSupports1559 &&
+    networkAndAccountSupport1559 &&
+    gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET &&
     !requireDappAcknowledgement &&
     ![EDIT_GAS_MODES.SPEED_UP, EDIT_GAS_MODES.CANCEL].includes(mode);
 
   let errorKey;
   if (balanceError) {
     errorKey = 'insufficientFunds';
+  } else if (estimatesUnavailableWarning) {
+    errorKey = 'gasEstimatesUnavailableWarning';
   }
 
   return (
@@ -133,12 +141,12 @@ export default function EditGasDisplay({
         )}
         <TransactionTotalBanner
           total={
-            networkSupports1559 || isMainnet
+            (networkAndAccountSupport1559 || isMainnet) && estimatedMinimumFiat
               ? `~ ${estimatedMinimumFiat}`
-              : estimatedMaximumNative
+              : estimatedMinimumNative
           }
           detail={
-            networkSupports1559 &&
+            networkAndAccountSupport1559 &&
             estimatedMaximumFiat !== undefined &&
             t('editGasTotalBannerSubtitle', [
               <Typography
@@ -225,11 +233,10 @@ export default function EditGasDisplay({
             gasErrors={gasErrors}
             onManualChange={onManualChange}
             minimumGasLimit={minimumGasLimit}
-            networkSupportsEIP1559={supportsEIP1559}
           />
         )}
       </div>
-      {networkSupports1559 &&
+      {networkAndAccountSupport1559 &&
         !requireDappAcknowledgement &&
         showEducationButton && (
           <div className="edit-gas-display__education">
@@ -254,6 +261,7 @@ EditGasDisplay.propTypes = {
   setMaxFeePerGas: PropTypes.func,
   maxFeePerGasFiat: PropTypes.string,
   estimatedMaximumNative: PropTypes.string,
+  estimatedMinimumNative: PropTypes.string,
   isGasEstimatesLoading: PropTypes.boolean,
   gasFeeEstimates: PropTypes.object,
   gasEstimateType: PropTypes.string,
@@ -275,4 +283,5 @@ EditGasDisplay.propTypes = {
   onManualChange: PropTypes.func,
   minimumGasLimit: PropTypes.number,
   balanceError: PropTypes.bool,
+  estimatesUnavailableWarning: PropTypes.bool,
 };

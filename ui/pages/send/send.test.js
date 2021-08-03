@@ -48,6 +48,13 @@ const baseStore = {
       medium: '1',
       fast: '2',
     },
+    selectedAddress: '0x0',
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: ['0x0'],
+      },
+    ],
     networkDetails: {
       EIPS: {},
     },
@@ -72,7 +79,7 @@ const baseStore = {
     accounts: {
       '0x0': { balance: '0x0', address: '0x0' },
     },
-    identities: { '0x0': {} },
+    identities: { '0x0': { address: '0x0' } },
   },
 };
 

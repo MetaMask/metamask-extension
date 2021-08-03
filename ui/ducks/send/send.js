@@ -38,6 +38,7 @@ import {
   getSelectedAddress,
   getTargetAccount,
   getIsNonStandardEthChain,
+  checkNetworkAndAccountSupports1559,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -73,8 +74,8 @@ import {
   getGasEstimateType,
   getTokens,
   getUnapprovedTxs,
-  isEIP1559Network,
 } from '../metamask/metamask';
+
 import { resetEnsResolution } from '../ens';
 import {
   isBurnAddress,
@@ -409,7 +410,7 @@ export const initializeSendState = createAsyncThunk(
     const state = thunkApi.getState();
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
-    const eip1559support = isEIP1559Network(state);
+    const eip1559support = checkNetworkAndAccountSupports1559(state);
     const {
       send: { asset, stage, recipient, amount, draftTransaction },
       metamask,

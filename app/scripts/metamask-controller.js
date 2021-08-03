@@ -2059,10 +2059,10 @@ export default class MetamaskController extends EventEmitter {
    * client utilities for EIP-1559
    * @returns {boolean} true if the keyring type supports EIP-1559
    */
-  getCurrentAccountEIP1559Compatibility(fromAddress) {
+  async getCurrentAccountEIP1559Compatibility(fromAddress) {
     const address =
       fromAddress || this.preferencesController.getSelectedAddress();
-    const keyring = this.keyringController.getKeyringForAccount(address);
+    const keyring = await this.keyringController.getKeyringForAccount(address);
     return (
       keyring.type !== KEYRING_TYPES.LEDGER &&
       keyring.type !== KEYRING_TYPES.TREZOR

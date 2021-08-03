@@ -27,14 +27,12 @@ import {
   getNoGasPriceFetched,
   getIsEthGasPriceFetched,
   getShouldShowFiat,
+  checkNetworkAndAccountSupports1559,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import {
-  updateTransactionGasFees,
-  isEIP1559Network,
-} from '../../ducks/metamask/metamask';
+import { updateTransactionGasFees } from '../../ducks/metamask/metamask';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
@@ -61,7 +59,7 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
-  const supportsEIP1599 = isEIP1559Network(state);
+  const supportsEIP1599 = checkNetworkAndAccountSupports1559(state);
   const { confirmTransaction, metamask } = state;
   const {
     ensResolutionsByAddress,

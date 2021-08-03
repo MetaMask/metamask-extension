@@ -58,7 +58,7 @@ const createProps = (customProps = {}) => {
     onQuotesClick: jest.fn(),
     tokenConversionRate: 0.015,
     chainId: MAINNET_CHAIN_ID,
-    EIP1559Network: false,
+    networkAndAccountSupports1559: false,
     ...customProps,
   };
 };
@@ -89,7 +89,7 @@ describe('FeeCard', () => {
   it('renders the component with EIP-1559 enabled', () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const props = createProps({
-      EIP1559Network: true,
+      networkAndAccountSupports1559: true,
       maxPriorityFeePerGasDecGWEI: '3',
       maxFeePerGasDecGWEI: '4',
     });

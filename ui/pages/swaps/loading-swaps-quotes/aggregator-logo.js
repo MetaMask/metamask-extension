@@ -10,22 +10,31 @@ function hexToRGB(hex, alpha) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-export default function AggregatorLogo({ icon, color }) {
+export default function AggregatorLogo({ name, icon, color }) {
   return (
     <div className="loading-swaps-quotes__logo">
-      <div
-        style={{
-          background: color,
-          boxShadow: `0px 4px 20px ${hexToRGB(color, 0.25)}`,
-        }}
-      >
-        <img src={icon} alt="" />
-      </div>
+      {icon && color ? (
+        <div
+          style={{
+            background: color,
+            boxShadow: `0px 4px 20px ${hexToRGB(color, 0.25)}`,
+          }}
+        >
+          <img src={icon} alt="" />
+        </div>
+      ) : (
+        name && (
+          <div>
+            <span>{name}</span>
+          </div>
+        )
+      )}
     </div>
   );
 }
 
 AggregatorLogo.propTypes = {
-  icon: PropTypes.string.isRequired,
-  color: PropTypes.string.isRequired,
+  name: PropTypes.string,
+  icon: PropTypes.string,
+  color: PropTypes.string,
 };

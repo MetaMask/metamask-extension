@@ -25,7 +25,7 @@ export default function NumericInput({
           }
         }}
         onChange={(e) => {
-          onChange?.(parseFloat(e.target.value, 10));
+          onChange?.(parseFloat(e.target.value || 0, 10));
         }}
         min="0"
         autoFocus={autoFocus}

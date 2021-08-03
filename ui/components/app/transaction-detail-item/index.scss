@@ -14,6 +14,10 @@
   .info-tooltip {
     display: inline-block;
     margin-inline-start: 4px;
+
+    path {
+      fill: $ui-3;
+    }
   }
 
   &__total {
