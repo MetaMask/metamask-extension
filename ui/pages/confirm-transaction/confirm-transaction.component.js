@@ -57,6 +57,13 @@ export default class ConfirmTransaction extends Component {
     this.state = {};
   }
 
+  _beforeUnload = () => {
+    this._isMounted = false;
+    if (this.state.pollingToken) {
+      disconnectGasFeeEstimatePoller(this.state.pollingToken);
+    }
+  };
+
   componentDidMount() {
     this._isMounted = true;
     const {
@@ -80,6 +87,8 @@ export default class ConfirmTransaction extends Component {
       }
     });
 
+    window.addEventListener('beforeunload', this._beforeUnload);
+
     if (!totalUnapprovedCount && !sendTo) {
       history.replace(mostRecentOverviewPage);
       return;
@@ -96,10 +105,8 @@ export default class ConfirmTransaction extends Component {
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
-    if (this.state.pollingToken) {
-      disconnectGasFeeEstimatePoller(this.state.pollingToken);
-    }
+    this._beforeUnload();
+    window.removeEventListener('beforeunload', this._beforeUnload);
   }
 
   componentDidUpdate(prevProps) {

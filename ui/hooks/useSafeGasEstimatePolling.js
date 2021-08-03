@@ -16,6 +16,14 @@ export function useSafeGasEstimatePolling() {
   useEffect(() => {
     let active = true;
     let pollToken;
+
+    const cleanup = () => {
+      active = false;
+      if (pollToken) {
+        disconnectGasFeeEstimatePoller(pollToken);
+      }
+    };
+
     getGasFeeEstimatesAndStartPolling().then((newPollToken) => {
       if (active) {
         pollToken = newPollToken;
@@ -23,11 +31,12 @@ export function useSafeGasEstimatePolling() {
         disconnectGasFeeEstimatePoller(newPollToken);
       }
     });
+
+    window.addEventListener('beforeunload', cleanup);
+
     return () => {
-      active = false;
-      if (pollToken) {
-        disconnectGasFeeEstimatePoller(pollToken);
-      }
+      cleanup();
+      window.removeEventListener('beforeunload', cleanup);
     };
   }, []);
 }

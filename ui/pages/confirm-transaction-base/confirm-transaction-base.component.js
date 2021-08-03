@@ -674,10 +674,18 @@ export default class ConfirmTransactionBase extends Component {
     cancelTransaction({ id });
   };
 
+  _beforeUnloadForGasPolling = () => {
+    this._isMounted = false;
+    if (this.state.pollingToken) {
+      disconnectGasFeeEstimatePoller(this.state.pollingToken);
+    }
+  };
+
   _removeBeforeUnload = () => {
     if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
       window.removeEventListener('beforeunload', this._beforeUnload);
     }
+    window.removeEventListener('beforeunload', this._beforeUnloadForGasPolling);
   };
 
   componentDidMount() {
@@ -723,13 +731,11 @@ export default class ConfirmTransactionBase extends Component {
         disconnectGasFeeEstimatePoller(pollingToken);
       }
     });
+    window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
-    if (this.state.pollingToken) {
-      disconnectGasFeeEstimatePoller(this.state.pollingToken);
-    }
+    this._beforeUnloadForGasPolling();
     this._removeBeforeUnload();
   }
 

@@ -57,13 +57,18 @@ export default class GasModalPageContainer extends Component {
         disconnectGasFeeEstimatePoller(pollingToken);
       }
     });
+    window.addEventListener('beforeunload', this._beforeUnload);
   }
 
-  componentWillUnmount() {
+  _beforeUnload = () => {
     this._isMounted = false;
     if (this.state.pollingToken) {
       disconnectGasFeeEstimatePoller(this.state.pollingToken);
     }
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this._beforeUnload);
   }
 
   renderBasicTabContent(gasPriceButtonGroupProps) {
