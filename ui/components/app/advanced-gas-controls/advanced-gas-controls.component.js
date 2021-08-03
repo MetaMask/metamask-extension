@@ -3,12 +3,6 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import { I18nContext } from '../../../contexts/i18n';
-import Typography from '../../ui/typography/typography';
-import {
-  FONT_WEIGHT,
-  TYPOGRAPHY,
-  COLORS,
-} from '../../../helpers/constants/design-system';
 import FormField from '../../ui/form-field';
 import {
   GAS_ESTIMATE_TYPES,
@@ -135,27 +129,6 @@ export default function AdvancedGasControls({
             tooltipText={t('editGasPriceTooltip')}
             value={gasPrice}
             numeric
-            titleDetail={
-              suggestedValues.gasPrice && (
-                <>
-                  <Typography
-                    tag="span"
-                    color={COLORS.UI4}
-                    variant={TYPOGRAPHY.H8}
-                    fontWeight={FONT_WEIGHT.BOLD}
-                  >
-                    {t('gasFeeEstimate')}:
-                  </Typography>{' '}
-                  <Typography
-                    tag="span"
-                    color={COLORS.UI4}
-                    variant={TYPOGRAPHY.H8}
-                  >
-                    {suggestedValues.gasPrice}
-                  </Typography>
-                </>
-              )
-            }
             error={
               gasErrors?.gasPrice
                 ? getGasFormErrorText(gasErrors.gasPrice, t)
