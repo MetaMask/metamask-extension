@@ -40,6 +40,10 @@
 
   &__column-radio {
     margin-inline-end: 1px;
+
+    input {
+      cursor: pointer;
+    }
   }
 
   &__column-radio,
