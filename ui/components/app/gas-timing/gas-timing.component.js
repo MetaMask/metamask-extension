@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import BigNumber from 'bignumber.js';
 
 import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
 
@@ -61,7 +62,11 @@ export default function GasTiming({
       (priority && priority !== previousMaxPriorityFeePerGas) ||
       (fee && fee !== previousMaxFeePerGas)
     ) {
-      getGasFeeTimeEstimate(priority, fee).then((result) => {
+      // getGasFeeTimeEstimate requires parameters in string format
+      getGasFeeTimeEstimate(
+        new BigNumber(priority).toString(10),
+        new BigNumber(fee).toString(10),
+      ).then((result) => {
         if (maxFeePerGas === fee && maxPriorityFeePerGas === priority) {
           setCustomEstimatedTime(result);
         }
