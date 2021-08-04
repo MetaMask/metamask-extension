@@ -71,7 +71,6 @@ export default function EditGasPopover({
     estimatedMaximumNative,
     estimatedMinimumNative,
     isGasEstimatesLoading,
-    gasFeeEstimates,
     gasEstimateType,
     gasPrice,
     setGasPrice,
@@ -229,7 +228,6 @@ export default function EditGasPopover({
               estimatedMaximumNative={estimatedMaximumNative}
               estimatedMinimumNative={estimatedMinimumNative}
               isGasEstimatesLoading={isGasEstimatesLoading}
-              gasFeeEstimates={gasFeeEstimates}
               gasEstimateType={gasEstimateType}
               gasPrice={gasPrice}
               setGasPrice={setGasPrice}
