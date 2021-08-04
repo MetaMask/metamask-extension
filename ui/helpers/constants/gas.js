@@ -2,7 +2,7 @@ export const GAS_FORM_ERRORS = {
   GAS_LIMIT_OUT_OF_BOUNDS: 'editGasLimitOutOfBounds',
   MAX_PRIORITY_FEE_TOO_LOW: 'editGasMaxPriorityFeeLow',
   MAX_FEE_TOO_LOW: 'editGasMaxFeeLow',
-  MAX_PRIORITY_FEE_ZERO: 'editGasMaxPriorityFeeZeroError',
+  MAX_PRIORITY_FEE_BELOW_MINIMUM: 'editGasMaxPriorityFeeBelowMinimum',
   MAX_PRIORITY_FEE_HIGH_WARNING: 'editGasMaxPriorityFeeHigh',
   MAX_FEE_HIGH_WARNING: 'editGasMaxFeeHigh',
   MAX_FEE_IMBALANCE: 'editGasMaxFeeImbalance',
