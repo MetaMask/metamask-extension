@@ -1935,6 +1935,9 @@
   "showPrivateKeys": {
     "message": "Show Private Keys"
   },
+  "showRecommendations": {
+    "message": "Show Recommendations"
+  },
   "showSeedPhrase": {
     "message": "Show Secret Recovery Phrase"
   },

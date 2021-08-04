@@ -21,6 +21,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getShouldShowFiat,
   getSelectedAccount,
+  getAdvancedInlineGasShown,
 } from '../selectors';
 
 import {
@@ -249,8 +250,18 @@ export function useGasFeeInputs(
     Number(hexToDecimal(transaction?.txParams?.gas ?? minimumGasLimit)),
   );
 
+  const userPrefersAdvancedGas = useSelector(getAdvancedInlineGasShown);
+  const dontDefaultToAnEstimateLevel =
+    userPrefersAdvancedGas &&
+    transaction?.txParams?.maxPriorityFeePerGas &&
+    transaction?.txParams?.gasPrice;
+
+  const initialEstimateToUse = transaction
+    ? initialMatchingEstimateLevel
+    : defaultEstimateToUse;
+
   const [estimateToUse, setInternalEstimateToUse] = useState(
-    transaction ? initialMatchingEstimateLevel : defaultEstimateToUse,
+    dontDefaultToAnEstimateLevel ? null : initialEstimateToUse,
   );
 
   // We specify whether to use the estimate value by checking if the state
