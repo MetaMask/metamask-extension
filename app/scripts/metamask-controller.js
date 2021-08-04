@@ -2972,19 +2972,16 @@ export default class MetamaskController extends EventEmitter {
    * @param {boolean} open
    */
   set isClientOpen(open) {
-    if (!open) {
-      this.onPopUpClose();
-    }
     this._isClientOpen = open;
     this.detectTokensController.isOpen = open;
   }
   /* eslint-enable accessor-pairs */
 
   /**
-   * A method that is called by the background when a popUp closes.
+   * A method that is called by the background when all instances of metamask are closed.
    * Currently used to stop polling in the gasFeeController.
    */
-  onPopUpClose() {
+  onClientClosed() {
     try {
       this.gasFeeController.stopPolling();
     } catch (error) {

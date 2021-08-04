@@ -299,8 +299,16 @@ function setupController(initState, initLangCode) {
       popupIsOpen ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
       notificationIsOpen
-    );
-  };
+      );
+    };
+
+    const checkAndSetClientOpenStatus = () => {
+      const isClientOpen = isClientOpenStatus()
+      controller.isClientOpen = isClientOpen;
+      if (!isClientOpen) {
+        controller.onClientClosed();
+      }
+    };
 
   /**
    * A runtime.Port object, as provided by the browser:
@@ -332,8 +340,7 @@ function setupController(initState, initLangCode) {
         popupIsOpen = true;
         endOfStream(portStream, () => {
           popupIsOpen = false;
-          controller.onPopUpClose();
-          controller.isClientOpen = isClientOpenStatus();
+          checkAndSetClientOpenStatus();
         });
       }
 
@@ -352,7 +359,7 @@ function setupController(initState, initLangCode) {
 
         endOfStream(portStream, () => {
           delete openMetamaskTabsIDs[tabId];
-          controller.isClientOpen = isClientOpenStatus();
+          checkAndSetClientOpenStatus();
         });
       }
     } else {
