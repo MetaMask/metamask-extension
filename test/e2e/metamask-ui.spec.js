@@ -503,7 +503,7 @@ describe('MetaMask', function () {
 
     it('clicks on the Import tokens button', async function () {
       await driver.clickElement(`[data-testid="home__asset-tab"]`);
-      await driver.clickElement({ text: 'Import tokens', tag: 'button' });
+      await driver.clickElement({ text: 'Import tokens', tag: 'a' });
       await driver.delay(regularDelayMs);
     });
 
