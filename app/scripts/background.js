@@ -299,16 +299,16 @@ function setupController(initState, initLangCode) {
       popupIsOpen ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
       notificationIsOpen
-      );
-    };
+    );
+  };
 
-    const checkAndSetClientOpenStatus = () => {
-      const isClientOpen = isClientOpenStatus()
-      controller.isClientOpen = isClientOpen;
-      if (!isClientOpen) {
-        controller.onClientClosed();
-      }
-    };
+  const checkAndSetClientOpenStatus = () => {
+    const isClientOpen = isClientOpenStatus();
+    controller.isClientOpen = isClientOpen;
+    if (!isClientOpen) {
+      controller.onClientClosed();
+    }
+  };
 
   /**
    * A runtime.Port object, as provided by the browser:
