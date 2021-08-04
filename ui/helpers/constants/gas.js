@@ -17,8 +17,8 @@ export function getGasFormErrorText(type, t, { minimumGasLimit } = {}) {
       return t('editGasMaxPriorityFeeLow');
     case GAS_FORM_ERRORS.MAX_FEE_TOO_LOW:
       return t('editGasMaxFeeLow');
-    case GAS_FORM_ERRORS.MAX_PRIORITY_FEE_ZERO:
-      return t('editGasMaxPriorityFeeZeroError');
+    case GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM:
+      return t('editGasMaxPriorityFeeBelowMinimum');
     case GAS_FORM_ERRORS.MAX_PRIORITY_FEE_HIGH_WARNING:
       return t('editGasMaxPriorityFeeHigh');
     case GAS_FORM_ERRORS.MAX_FEE_HIGH_WARNING:
