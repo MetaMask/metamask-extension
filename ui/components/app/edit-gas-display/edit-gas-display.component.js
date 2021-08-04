@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -13,6 +13,7 @@ import Typography from '../../ui/typography/typography';
 import {
   getIsMainnet,
   checkNetworkAndAccountSupports1559,
+  getAdvancedInlineGasShown,
 } from '../../../selectors';
 
 import {
@@ -58,19 +59,28 @@ export default function EditGasDisplay({
   estimatedMaximumFiat,
   dappSuggestedGasFeeAcknowledged,
   setDappSuggestedGasFeeAcknowledged,
-  showAdvancedForm,
-  setShowAdvancedForm,
   warning,
   gasErrors,
   onManualChange,
   minimumGasLimit,
   balanceError,
   estimatesUnavailableWarning,
+  hasGasErrors,
 }) {
   const t = useContext(I18nContext);
   const isMainnet = useSelector(getIsMainnet);
   const networkAndAccountSupport1559 = useSelector(
     checkNetworkAndAccountSupports1559,
+  );
+  const showAdvancedInlineGasIfPossible = useSelector(
+    getAdvancedInlineGasShown,
+  );
+
+  const [showAdvancedForm, setShowAdvancedForm] = useState(
+    !estimateToUse || hasGasErrors || !networkAndAccountSupport1559,
+  );
+  const [hideRadioButtons, setHideRadioButtons] = useState(
+    showAdvancedInlineGasIfPossible,
   );
 
   const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
@@ -175,7 +185,22 @@ export default function EditGasDisplay({
             {t('gasDisplayAcknowledgeDappButtonText')}
           </Button>
         )}
-        {showRadioButtons && (
+        {!requireDappAcknowledgement &&
+          showRadioButtons &&
+          showAdvancedInlineGasIfPossible && (
+            <button
+              className="edit-gas-display__advanced-button"
+              onClick={() => setHideRadioButtons(!hideRadioButtons)}
+            >
+              {t('lowMediumHighOptions')}{' '}
+              {hideRadioButtons ? (
+                <i className="fa fa-caret-down"></i>
+              ) : (
+                <i className="fa fa-caret-up"></i>
+              )}
+            </button>
+          )}
+        {showRadioButtons && !hideRadioButtons && (
           <RadioGroup
             name="gas-recommendation"
             options={[
@@ -200,7 +225,7 @@ export default function EditGasDisplay({
             onChange={setEstimateToUse}
           />
         )}
-        {!requireDappAcknowledgement && showRadioButtons && (
+        {!requireDappAcknowledgement && showRadioButtons && !showAdvancedInlineGasIfPossible && (
           <button
             className="edit-gas-display__advanced-button"
             onClick={() => setShowAdvancedForm(!showAdvancedForm)}
@@ -213,7 +238,7 @@ export default function EditGasDisplay({
             )}
           </button>
         )}
-        {!requireDappAcknowledgement && showAdvancedForm && (
+        {!requireDappAcknowledgement && (showAdvancedForm || showAdvancedInlineGasIfPossible) && (
           <AdvancedGasControls
             gasEstimateType={gasEstimateType}
             isGasEstimatesLoading={isGasEstimatesLoading}
@@ -271,8 +296,6 @@ EditGasDisplay.propTypes = {
   estimatedMaximumFiat: PropTypes.string,
   dappSuggestedGasFeeAcknowledged: PropTypes.bool,
   setDappSuggestedGasFeeAcknowledged: PropTypes.func,
-  showAdvancedForm: PropTypes.bool,
-  setShowAdvancedForm: PropTypes.func,
   warning: PropTypes.string,
   transaction: PropTypes.object,
   gasErrors: PropTypes.object,
@@ -280,4 +303,5 @@ EditGasDisplay.propTypes = {
   minimumGasLimit: PropTypes.number,
   balanceError: PropTypes.bool,
   estimatesUnavailableWarning: PropTypes.bool,
+  hasGasErrors: PropTypes.bool,
 };
