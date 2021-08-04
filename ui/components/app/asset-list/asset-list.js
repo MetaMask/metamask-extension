@@ -16,8 +16,18 @@ import {
 } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
+import Typography from '../../ui/typography/typography';
+import Box from '../../ui/box/box';
+import {
+  COLORS,
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+  JUSTIFY_CONTENT,
+} from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const AssetList = ({ onClickAsset }) => {
+  const t = useI18nContext();
   const history = useHistory();
   const selectedAccountBalance = useSelector(
     (state) => getCurrentAccountWithSendEtherInfo(state).balance,
@@ -85,12 +95,23 @@ const AssetList = ({ onClickAsset }) => {
           selectTokenEvent();
         }}
       />
-      <AddTokenButton
-        onClick={() => {
-          history.push(ADD_TOKEN_ROUTE);
-          addTokenEvent();
-        }}
-      />
+      <Box marginTop={4}>
+        <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
+          <Typography
+            color={COLORS.UI4}
+            variant={TYPOGRAPHY.H6}
+            fontWeight={FONT_WEIGHT.NORMAL}
+          >
+            {t('missingToken')}
+          </Typography>
+        </Box>
+        <AddTokenButton
+          onClick={() => {
+            history.push(ADD_TOKEN_ROUTE);
+            addTokenEvent();
+          }}
+        />
+      </Box>
     </>
   );
 };

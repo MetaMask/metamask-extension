@@ -1,6 +1,7 @@
 .add-token-button {
-  &__button {
-    max-width: 200px;
-    margin: 16px auto;
+  & &__button {
+    @include H6;
+
+    display: inline;
   }
 }
