@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
@@ -47,11 +47,17 @@ export default function SendTransactionScreen() {
   });
 
   const dispatch = useDispatch();
+
+  const cleanup = useCallback(() => {
+    dispatch(resetSendState());
+  }, [dispatch]);
+
   useEffect(() => {
     if (chainId !== undefined) {
       dispatch(initializeSendState());
+      window.addEventListener('beforeunload', cleanup);
     }
-  }, [chainId, dispatch]);
+  }, [chainId, dispatch, cleanup]);
 
   useEffect(() => {
     if (location.search === '?scan=true') {
@@ -64,19 +70,12 @@ export default function SendTransactionScreen() {
     }
   }, [location, dispatch]);
 
-  const cleanup = () => {
-    dispatch(resetSendState())
-  };
-
   useEffect(() => {
-    window.addEventListener('beforeunload', cleanup);
-
     return () => {
       dispatch(resetSendState());
-      window.removeEventListener('beforeunload', cleanup)
+      window.removeEventListener('beforeunload', cleanup);
     };
-  }, [dispatch]);
-
+  }, [dispatch, cleanup]);
 
   let content;
 

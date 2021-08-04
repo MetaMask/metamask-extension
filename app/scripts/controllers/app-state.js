@@ -200,20 +200,17 @@ export default class AppStateController extends EventEmitter {
    * @returns {void}
    */
   addPollingToken(pollingToken, pollingTokenType) {
+    const prevState = this.store.getState()[pollingTokenType];
     this.store.updateState({
-      [pollingTokenType]: [
-        ...this.store.getState()[pollingTokenType],
-        pollingToken,
-      ],
+      [pollingTokenType]: [...prevState, pollingToken],
     });
   }
 
   removePollingToken(pollingToken, pollingTokenType) {
+    const prevState = this.store.getState()[pollingTokenType];
     this.store.updateState({
       [pollingTokenType]: [
-        ...this.store
-          .getState()
-          [pollingTokenType].filter((token) => token !== pollingToken),
+        ...prevState.filter((token) => token !== pollingToken),
       ],
     });
   }

@@ -18,7 +18,6 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
-  POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
 import { SECOND } from '../../shared/constants/time';
 import migrations from './migrations';
@@ -303,7 +302,7 @@ function setupController(initState, initLangCode) {
     );
   };
 
-  const disconnectGasPollingForEnvironmentTypeOrAll = (isClientOpen, environmentType) => {
+  const onCloseEnvironmentInstances = (isClientOpen, environmentType) => {
     // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling
     if (isClientOpen === false) {
       controller.onClientClosed();
@@ -353,7 +352,7 @@ function setupController(initState, initLangCode) {
           popupIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
-          disconnectGasPollingForEnvironmentTypeOrAll(isClientOpen, ENVIRONMENT_TYPE_POPUP);
+          onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_POPUP);
         });
       }
 
@@ -364,7 +363,9 @@ function setupController(initState, initLangCode) {
           notificationIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
-          disconnectGasPollingForEnvironmentTypeOrAll(isClientOpen, ENVIRONMENT_TYPE_NOTIFICATION,
+          onCloseEnvironmentInstances(
+            isClientOpen,
+            ENVIRONMENT_TYPE_NOTIFICATION,
           );
         });
       }
@@ -377,7 +378,9 @@ function setupController(initState, initLangCode) {
           delete openMetamaskTabsIDs[tabId];
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
-          disconnectGasPollingForEnvironmentTypeOrAll(isClientOpen, ENVIRONMENT_TYPE_FULLSCREEN,
+          onCloseEnvironmentInstances(
+            isClientOpen,
+            ENVIRONMENT_TYPE_FULLSCREEN,
           );
         });
       }

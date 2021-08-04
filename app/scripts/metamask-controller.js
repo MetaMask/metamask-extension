@@ -32,6 +32,7 @@ import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
+import { POLLING_TOKEN_ENVIRONMENT_TYPES } from '../../shared/constants/app';
 
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import ComposableObservableStore from './lib/ComposableObservableStore';
@@ -3000,20 +3001,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   onEnvironmentTypeClosed(environmentType) {
-    const tokensToDisconnect = this.appStateController.store.getState()[
+    const pollingTokensToDisconnect = this.appStateController.store.getState()[
       POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType]
     ];
-    tokensToDisconnect.forEach((token) => {
-      controller.disconnectAndRemovePollingToken(
-        token,
-        POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType],
-      );
+    pollingTokensToDisconnect.forEach((pollingToken) => {
+      this.gasFeeController.disconnectPoller(pollingToken);
+      this.appStateController.removePollingToken(pollingToken, environmentType);
     });
-  }
-
-  disconnectAndRemovePollingToken(pollingToken, environmentType) {
-    this.gasFeeController.disconnectPoller(pollingToken);
-    this.appStateController.removePollingToken(pollingToken, environmentType);
   }
 
   /**
