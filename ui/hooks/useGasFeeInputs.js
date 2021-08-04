@@ -414,6 +414,17 @@ export function useGasFeeInputs(
     gasErrors.gasLimit = GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS;
   }
 
+  // This ensures these are applied when the api fails to return a fee market type
+  // It is okay if these errors get overwritten below, as those overwrites can only
+  // happen when the estimate api is live.
+  if (networkAndAccountSupports1559) {
+    if (maxPriorityFeePerGasToUse <= 0) {
+      gasErrors.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
+    } else if (maxPriorityFeePerGasToUse >= maxFeePerGasToUse) {
+      gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
+    }
+  }
+
   switch (gasEstimateType) {
     case GAS_ESTIMATE_TYPES.FEE_MARKET:
       if (maxPriorityFeePerGasToUse <= 0) {
