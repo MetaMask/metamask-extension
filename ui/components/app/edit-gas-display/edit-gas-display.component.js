@@ -47,7 +47,6 @@ export default function EditGasDisplay({
   estimatedMaximumNative,
   estimatedMinimumNative,
   isGasEstimatesLoading,
-  gasFeeEstimates,
   gasEstimateType,
   gasPrice,
   setGasPrice,
@@ -216,9 +215,7 @@ export default function EditGasDisplay({
         )}
         {!requireDappAcknowledgement && showAdvancedForm && (
           <AdvancedGasControls
-            gasFeeEstimates={gasFeeEstimates}
             gasEstimateType={gasEstimateType}
-            estimateToUse={estimateToUse}
             isGasEstimatesLoading={isGasEstimatesLoading}
             gasLimit={gasLimit}
             setGasLimit={setGasLimit}
@@ -263,7 +260,6 @@ EditGasDisplay.propTypes = {
   estimatedMaximumNative: PropTypes.string,
   estimatedMinimumNative: PropTypes.string,
   isGasEstimatesLoading: PropTypes.bool,
-  gasFeeEstimates: PropTypes.object,
   gasEstimateType: PropTypes.string,
   gasPrice: PropTypes.string,
   setGasPrice: PropTypes.func,
