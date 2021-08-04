@@ -4,6 +4,7 @@ import availableCurrencies from '../../../helpers/constants/available-conversion
 import Dropdown from '../../../components/ui/dropdown';
 import ToggleButton from '../../../components/ui/toggle-button';
 import locales from '../../../../app/_locales/index.json';
+import RadioButton from '../../../components/ui/radio-button';
 
 const sortedCurrencies = availableCurrencies.sort((a, b) => {
   return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());
@@ -169,8 +170,7 @@ export default class SettingsTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <div className="settings-tab__radio-buttons">
               <div className="settings-tab__radio-button">
-                <input
-                  type="radio"
+                <RadioButton
                   id="native-primary-currency"
                   onChange={() =>
                     setUseNativeCurrencyAsPrimaryCurrencyPreference(true)
@@ -185,8 +185,7 @@ export default class SettingsTab extends PureComponent {
                 </label>
               </div>
               <div className="settings-tab__radio-button">
-                <input
-                  type="radio"
+                <RadioButton
                   id="fiat-primary-currency"
                   onChange={() =>
                     setUseNativeCurrencyAsPrimaryCurrencyPreference(false)

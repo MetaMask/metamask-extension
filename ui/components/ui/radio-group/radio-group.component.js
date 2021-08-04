@@ -8,6 +8,7 @@ import {
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
+import RadioButton from '../radio-button';
 
 function Connector({ isFirst, isLast }) {
   if (isFirst) {
@@ -56,7 +57,7 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
                 </Typography>
               )}
               <div className="radio-group__column-radio">
-                <input
+                <RadioButton
                   type="radio"
                   name={name}
                   checked={checked}
