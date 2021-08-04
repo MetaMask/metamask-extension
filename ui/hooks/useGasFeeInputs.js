@@ -206,41 +206,51 @@ export function useGasFeeInputs(
     estimatedGasFeeTimeBounds,
   } = useGasFeeEstimates();
 
+  const [initialMaxFeePerGas] = useState(
+    Number(hexWEIToDecGWEI(transaction?.txParams?.maxFeePerGas)),
+  );
+  const [initialMaxPriorityFeePerGas] = useState(
+    Number(hexWEIToDecGWEI(transaction?.txParams?.maxPriorityFeePerGas)),
+  );
+  const [initialGasPrice] = useState(
+    Number(hexWEIToDecGWEI(transaction?.txParams?.gasPrice)),
+  );
+
+  const [initialMatchingEstimateLevel] = useState(
+    getMatchingEstimateFromGasFees(
+      gasFeeEstimates,
+      initialMaxFeePerGas,
+      initialMaxPriorityFeePerGas,
+      initialGasPrice,
+      networkAndAccountSupports1559,
+    ),
+  );
+
   // This hook keeps track of a few pieces of transitional state. It is
   // transitional because it is only used to modify a transaction in the
   // metamask (background) state tree.
   const [maxFeePerGas, setMaxFeePerGas] = useState(
-    transaction?.txParams?.maxFeePerGas
-      ? Number(hexWEIToDecGWEI(transaction.txParams.maxFeePerGas))
+    initialMaxFeePerGas && !initialMatchingEstimateLevel
+      ? initialMaxFeePerGas
       : null,
   );
   const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(
-    transaction?.txParams?.maxPriorityFeePerGas
-      ? Number(hexWEIToDecGWEI(transaction.txParams.maxPriorityFeePerGas))
+    initialMaxPriorityFeePerGas && !initialMatchingEstimateLevel
+      ? initialMaxPriorityFeePerGas
       : null,
   );
   const [gasPriceHasBeenManuallySet, setGasPriceHasBeenManuallySet] = useState(
     false,
   );
   const [gasPrice, setGasPrice] = useState(
-    transaction?.txParams?.gasPrice
-      ? Number(hexWEIToDecGWEI(transaction.txParams.gasPrice))
-      : null,
+    initialGasPrice && !initialMatchingEstimateLevel ? initialGasPrice : null,
   );
   const [gasLimit, setGasLimit] = useState(
     Number(hexToDecimal(transaction?.txParams?.gas ?? minimumGasLimit)),
   );
 
   const [estimateToUse, setInternalEstimateToUse] = useState(
-    transaction
-      ? getMatchingEstimateFromGasFees(
-          gasFeeEstimates,
-          maxFeePerGas,
-          maxPriorityFeePerGas,
-          gasPrice,
-          networkAndAccountSupports1559,
-        )
-      : defaultEstimateToUse,
+    transaction ? initialMatchingEstimateLevel : defaultEstimateToUse,
   );
 
   // We specify whether to use the estimate value by checking if the state
