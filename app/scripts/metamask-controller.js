@@ -32,6 +32,7 @@ import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
+import { POLLING_TOKEN_ENVIRONMENT_TYPES } from '../../shared/constants/app';
 
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import ComposableObservableStore from './lib/ComposableObservableStore';
@@ -1129,6 +1130,16 @@ export default class MetamaskController extends EventEmitter {
       getGasFeeTimeEstimate: nodeify(
         this.gasFeeController.getTimeEstimate,
         this.gasFeeController,
+      ),
+
+      addPollingTokenToAppState: nodeify(
+        this.appStateController.addPollingToken,
+        this.appStateController,
+      ),
+
+      removePollingTokenFromAppState: nodeify(
+        this.appStateController.removePollingToken,
+        this.appStateController,
       ),
     };
   }
@@ -2969,7 +2980,6 @@ export default class MetamaskController extends EventEmitter {
   /* eslint-disable accessor-pairs */
   /**
    * A method for recording whether the MetaMask user interface is open or not.
-   * @private
    * @param {boolean} open
    */
   set isClientOpen(open) {
@@ -2977,6 +2987,38 @@ export default class MetamaskController extends EventEmitter {
     this.detectTokensController.isOpen = open;
   }
   /* eslint-enable accessor-pairs */
+
+  /**
+   * A method that is called by the background when all instances of metamask are closed.
+   * Currently used to stop polling in the gasFeeController.
+   */
+  onClientClosed() {
+    try {
+      this.gasFeeController.stopPolling();
+      this.appStateController.clearPollingTokens();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  /**
+   * A method that is called by the background when a particular environment type is closed (fullscreen, popup, notification).
+   * Currently used to stop polling in the gasFeeController for only that environement type
+   */
+  onEnvironmentTypeClosed(environmentType) {
+    const appStatePollingTokenType =
+      POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType];
+    const pollingTokensToDisconnect = this.appStateController.store.getState()[
+      appStatePollingTokenType
+    ];
+    pollingTokensToDisconnect.forEach((pollingToken) => {
+      this.gasFeeController.disconnectPoller(pollingToken);
+      this.appStateController.removePollingToken(
+        pollingToken,
+        appStatePollingTokenType,
+      );
+    });
+  }
 
   /**
    * Adds a domain to the PhishingController safelist

@@ -10,7 +10,10 @@ import {
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import { getSymbolAndDecimals } from '../helpers/utils/token-util';
 import switchDirection from '../helpers/utils/switch-direction';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  POLLING_TOKEN_ENVIRONMENT_TYPES,
+} from '../../shared/constants/app';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
@@ -2785,6 +2788,20 @@ export function getGasFeeEstimatesAndStartPolling() {
  */
 export function disconnectGasFeeEstimatePoller(pollToken) {
   return promisifiedBackground.disconnectGasFeeEstimatePoller(pollToken);
+}
+
+export async function addPollingTokenToAppState(pollingToken) {
+  return promisifiedBackground.addPollingTokenToAppState(
+    pollingToken,
+    POLLING_TOKEN_ENVIRONMENT_TYPES[getEnvironmentType()],
+  );
+}
+
+export async function removePollingTokenFromAppState(pollingToken) {
+  return promisifiedBackground.removePollingTokenFromAppState(
+    pollingToken,
+    POLLING_TOKEN_ENVIRONMENT_TYPES[getEnvironmentType()],
+  );
 }
 
 export function getGasFeeTimeEstimate(maxPriorityFeePerGas, maxFeePerGas) {
