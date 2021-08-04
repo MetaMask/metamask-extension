@@ -30,7 +30,6 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
                 <input
                   type="radio"
                   name={name}
-                  defaultChecked={checked}
                   checked={checked}
                   value={option.value}
                   onChange={() => onChange?.(option.value)}
