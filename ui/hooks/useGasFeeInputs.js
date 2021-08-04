@@ -208,10 +208,15 @@ export function useGasFeeInputs(
   } = useGasFeeEstimates();
 
   const [initialMaxFeePerGas] = useState(
-    Number(hexWEIToDecGWEI(transaction?.txParams?.maxFeePerGas)),
+    networkAndAccountSupports1559 && !transaction?.txParams?.maxFeePerGas
+      ? Number(hexWEIToDecGWEI(transaction?.txParams?.gasPrice))
+      : Number(hexWEIToDecGWEI(transaction?.txParams?.maxFeePerGas)),
   );
   const [initialMaxPriorityFeePerGas] = useState(
-    Number(hexWEIToDecGWEI(transaction?.txParams?.maxPriorityFeePerGas)),
+    networkAndAccountSupports1559 &&
+      !transaction?.txParams?.maxPriorityFeePerGas
+      ? initialMaxFeePerGas
+      : Number(hexWEIToDecGWEI(transaction?.txParams?.maxPriorityFeePerGas)),
   );
   const [initialGasPrice] = useState(
     Number(hexWEIToDecGWEI(transaction?.txParams?.gasPrice)),
