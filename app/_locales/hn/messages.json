@@ -8,9 +8,6 @@
   "accountName": {
     "message": "खाते का नाम"
   },
-  "addToken": {
-    "message": "टोकन जोड़ें"
-  },
   "addTokens": {
     "message": "टोकनों को जोड़ें"
   },
