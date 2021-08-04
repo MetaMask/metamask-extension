@@ -50,6 +50,8 @@ import {
   showLoadingIndication,
   updateTokenType,
   updateTransaction,
+  addPollingTokenToAppState,
+  removePollingTokenFromAppState,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -84,7 +86,6 @@ import {
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
 import { ETH, GWEI } from '../../helpers/constants/common';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
-
 // typedefs
 /**
  * @typedef {import('@reduxjs/toolkit').PayloadAction} PayloadAction
@@ -437,6 +438,9 @@ export const initializeSendState = createAsyncThunk(
 
     // Instruct the background process that polling for gas prices should begin
     gasEstimatePollToken = await getGasFeeEstimatesAndStartPolling();
+
+    addPollingTokenToAppState(gasEstimatePollToken);
+
     const {
       metamask: { gasFeeEstimates, gasEstimateType },
     } = thunkApi.getState();
@@ -1298,6 +1302,7 @@ export function resetSendState() {
       await disconnectGasFeeEstimatePoller(
         state[name].gas.gasEstimatePollToken,
       );
+      removePollingTokenFromAppState(state[name].gas.gasEstimatePollToken);
     }
   };
 }
