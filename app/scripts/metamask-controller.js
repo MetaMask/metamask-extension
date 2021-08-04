@@ -3001,15 +3001,21 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  /**
+   * A method that is called by the background when a particular environment type is closed (fullscreen, popup, notification).
+   * Currently used to stop polling in the gasFeeController for only that environement type
+   */
   onEnvironmentTypeClosed(environmentType) {
+    const appStatePollingTokenType =
+      POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType];
     const pollingTokensToDisconnect = this.appStateController.store.getState()[
-      POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType]
+      appStatePollingTokenType
     ];
     pollingTokensToDisconnect.forEach((pollingToken) => {
       this.gasFeeController.disconnectPoller(pollingToken);
       this.appStateController.removePollingToken(
         pollingToken,
-        POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType],
+        appStatePollingTokenType,
       );
     });
   }

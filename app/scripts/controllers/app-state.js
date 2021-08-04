@@ -206,6 +206,10 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
+  /**
+   * removes a pollingToken for a given environmentType
+   * @returns {void}
+   */
   removePollingToken(pollingToken, pollingTokenType) {
     const prevState = this.store.getState()[pollingTokenType];
     this.store.updateState({
@@ -213,6 +217,10 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
+  /**
+   * clears all pollingTokens
+   * @returns {void}
+   */
   clearPollingTokens() {
     this.store.updateState({
       popupGasPollTokens: [],
