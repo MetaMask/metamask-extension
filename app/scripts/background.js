@@ -303,9 +303,7 @@ function setupController(initState, initLangCode) {
     );
   };
 
-  const setClientOpenStatusAndDisconnectGasPolling = (environmentType) => {
-    const isClientOpen = isClientOpenStatus();
-    controller.isClientOpen = isClientOpen;
+  const disconnectGasPollingForEnvironmentTypeOrAll = (isClientOpen, environmentType) => {
     // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling
     if (isClientOpen === false) {
       controller.onClientClosed();
@@ -319,15 +317,7 @@ function setupController(initState, initLangCode) {
       ) {
         return;
       }
-      const tokensToDisconnect = controller.appStateController.store.getState()[
-        POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType]
-      ];
-      tokensToDisconnect.forEach((token) => {
-        controller.disconnectAndRemovePollingToken(
-          token,
-          POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType],
-        );
-      });
+      controller.onEnvironmentTypeClosed(environmentType);
     }
   };
 
@@ -361,7 +351,9 @@ function setupController(initState, initLangCode) {
         popupIsOpen = true;
         endOfStream(portStream, () => {
           popupIsOpen = false;
-          setClientOpenStatusAndDisconnectGasPolling(ENVIRONMENT_TYPE_POPUP);
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          disconnectGasPollingForEnvironmentTypeOrAll(isClientOpen, ENVIRONMENT_TYPE_POPUP);
         });
       }
 
@@ -370,8 +362,9 @@ function setupController(initState, initLangCode) {
 
         endOfStream(portStream, () => {
           notificationIsOpen = false;
-          setClientOpenStatusAndDisconnectGasPolling(
-            ENVIRONMENT_TYPE_NOTIFICATION,
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          disconnectGasPollingForEnvironmentTypeOrAll(isClientOpen, ENVIRONMENT_TYPE_NOTIFICATION,
           );
         });
       }
@@ -382,8 +375,9 @@ function setupController(initState, initLangCode) {
 
         endOfStream(portStream, () => {
           delete openMetamaskTabsIDs[tabId];
-          setClientOpenStatusAndDisconnectGasPolling(
-            ENVIRONMENT_TYPE_FULLSCREEN,
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          disconnectGasPollingForEnvironmentTypeOrAll(isClientOpen, ENVIRONMENT_TYPE_FULLSCREEN,
           );
         });
       }

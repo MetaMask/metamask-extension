@@ -2999,6 +2999,18 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  onEnvironmentTypeClosed(environmentType) {
+    const tokensToDisconnect = this.appStateController.store.getState()[
+      POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType]
+    ];
+    tokensToDisconnect.forEach((token) => {
+      controller.disconnectAndRemovePollingToken(
+        token,
+        POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType],
+      );
+    });
+  }
+
   disconnectAndRemovePollingToken(pollingToken, environmentType) {
     this.gasFeeController.disconnectPoller(pollingToken);
     this.appStateController.removePollingToken(pollingToken, environmentType);
