@@ -390,8 +390,9 @@ export function useGasFeeInputs(
 
   switch (gasEstimateType) {
     case GAS_ESTIMATE_TYPES.FEE_MARKET:
-      if (maxPriorityFeePerGasToUse < 1) {
-        gasErrors.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_ZERO;
+      if (maxPriorityFeePerGasToUse <= 0) {
+        gasErrors.maxPriorityFee =
+          GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
       } else if (
         !isGasEstimatesLoading &&
         maxPriorityFeePerGasToUse <
