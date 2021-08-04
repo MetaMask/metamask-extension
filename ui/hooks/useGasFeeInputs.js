@@ -409,6 +409,13 @@ export function useGasFeeInputs(
     gasErrors.gasLimit = GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS;
   }
 
+  if (networkAndAccountSupports1559 && (maxPriorityFeePerGasToUse <= 0)) {
+    gasErrors.maxPriorityFee =
+      GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
+  } else if (networkAndAccountSupports1559 && (maxPriorityFeePerGasToUse >= maxFeePerGasToUse)) {
+    gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
+  }
+
   switch (gasEstimateType) {
     case GAS_ESTIMATE_TYPES.FEE_MARKET:
       if (maxPriorityFeePerGasToUse <= 0) {
