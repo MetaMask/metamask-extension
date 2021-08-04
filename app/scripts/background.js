@@ -349,7 +349,7 @@ function setupController(initState, initLangCode) {
 
         endOfStream(portStream, () => {
           notificationIsOpen = false;
-          controller.isClientOpen = isClientOpenStatus();
+          checkAndSetClientOpenStatus();
         });
       }
 
