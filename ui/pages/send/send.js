@@ -64,11 +64,19 @@ export default function SendTransactionScreen() {
     }
   }, [location, dispatch]);
 
+  const cleanup = () => {
+    dispatch(resetSendState())
+  };
+
   useEffect(() => {
+    window.addEventListener('beforeunload', cleanup);
+
     return () => {
       dispatch(resetSendState());
+      window.removeEventListener('beforeunload', cleanup)
     };
   }, [dispatch]);
+
 
   let content;
 
