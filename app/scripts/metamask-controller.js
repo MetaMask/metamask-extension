@@ -2995,6 +2995,7 @@ export default class MetamaskController extends EventEmitter {
   onClientClosed() {
     try {
       this.gasFeeController.stopPolling();
+      this.appStateController.clearPollingTokens();
     } catch (error) {
       console.error(error);
     }
@@ -3006,7 +3007,10 @@ export default class MetamaskController extends EventEmitter {
     ];
     pollingTokensToDisconnect.forEach((pollingToken) => {
       this.gasFeeController.disconnectPoller(pollingToken);
-      this.appStateController.removePollingToken(pollingToken, environmentType);
+      this.appStateController.removePollingToken(
+        pollingToken,
+        POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType],
+      );
     });
   }
 

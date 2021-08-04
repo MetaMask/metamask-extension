@@ -209,9 +209,15 @@ export default class AppStateController extends EventEmitter {
   removePollingToken(pollingToken, pollingTokenType) {
     const prevState = this.store.getState()[pollingTokenType];
     this.store.updateState({
-      [pollingTokenType]: [
-        ...prevState.filter((token) => token !== pollingToken),
-      ],
+      [pollingTokenType]: prevState.filter((token) => token !== pollingToken),
+    });
+  }
+
+  clearPollingTokens() {
+    this.store.updateState({
+      popupGasPollTokens: [],
+      notificationGasPollTokens: [],
+      fullScreenGasPollTokens: [],
     });
   }
 }
