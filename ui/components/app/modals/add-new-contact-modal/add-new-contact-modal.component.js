@@ -2,16 +2,14 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
 import { isValidAddress } from 'ethereumjs-util';
+import { providers } from 'ethers';
 import Identicon from '../../../ui/identicon';
 import TextField from '../../../ui/text-field';
 import { isValidDomainName } from '../../../../helpers/utils/util';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
-import {
-  isBurnAddress,
-  isValidHexAddress,
-} from '../../../../../shared/modules/hexstring-utils';
+import { isBurnAddress } from '../../../../../shared/modules/hexstring-utils';
 
 const environmentType = getEnvironmentType();
 const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
@@ -28,8 +26,6 @@ export default class AddNewContactModal extends PureComponent {
   state = {
     newName: '',
     ethAddress: '',
-    ensAddress: '',
-    error: '',
     ethAddressError: '',
     memo: '',
   };
@@ -39,41 +35,33 @@ export default class AddNewContactModal extends PureComponent {
     this.dValidate = debounce(this.validate, 1000);
   }
 
-  onAddressChange = (e) => {
+  validate = async (e) => {
     const { t } = this.context;
-    const ethAddress = e.target.value;
+    const ethAddress = e.target.value.trim();
+    const validEthAddress = isValidAddress(ethAddress);
+    const validEnsAddress =
+      isValidDomainName(ethAddress) && /\.eth$/u.test(ethAddress);
 
-    if (
-      ethAddress &&
-      isValidHexAddress(ethAddress, { mixedCaseUseChecksum: true })
-    ) {
+    if (validEthAddress) {
       if (isBurnAddress(ethAddress)) {
-        this.setState({
-          ethAddress,
-          ethAddressError: t('burnAddress'),
-        });
+        this.setState({ ethAddressError: t('burnAddress'), ethAddress });
       } else {
         this.setState({
           ethAddress,
           ethAddressError: '',
         });
       }
-    } else {
+    } else if (validEnsAddress) {
+      const provider = new providers.Web3Provider(global.ethereumProvider);
+      const ensHexAddress = await provider.resolveName(ethAddress);
+      const newName = this.state.newName || ethAddress;
       this.setState({
-        ethAddress,
-        ethAddressError: t('invalidAddress'),
+        ethAddressError: '',
+        ethAddress: ensHexAddress,
+        newName,
       });
-    }
-  };
-
-  validate = (address) => {
-    const valid = isValidAddress(address);
-    const validEnsAddress = isValidDomainName(address);
-
-    if (valid || validEnsAddress || address === '') {
-      this.setState({ error: '', ethAddress: address });
     } else {
-      this.setState({ error: 'Invalid Address' });
+      this.setState({ ethAddressError: t('invalidAddress'), ethAddress });
     }
   };
 
@@ -83,7 +71,7 @@ export default class AddNewContactModal extends PureComponent {
       <TextField
         type="text"
         value={this.state.ethAddress}
-        onChange={this.onAddressChange}
+        onChange={this.validate}
         placeholder={isFullScreen ? t('addAnEthereumAddress') : ''}
         fullWidth
         margin="dense"
@@ -95,7 +83,7 @@ export default class AddNewContactModal extends PureComponent {
     const { t } = this.context;
     const { addToAddressBook } = this.props;
 
-    const errorToRender = this.state.ethAddressError || this.state.error;
+    const errorToRender = this.state.ethAddressError;
 
     return (
       <div className="settings-page__content-row address-book__add-contact">
@@ -151,10 +139,10 @@ export default class AddNewContactModal extends PureComponent {
         </div>
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
-          disabled={Boolean(this.state.error || this.state.ethAddress < 1)}
+          disabled={Boolean(errorToRender)}
           onSubmit={async () => {
             await addToAddressBook(
-              this.state.ensAddress || this.state.ethAddress,
+              this.state.ethAddress,
               this.state.newName,
               this.state.memo,
             );
