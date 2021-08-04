@@ -433,8 +433,9 @@ export function useGasFeeInputs(
       }
 
       if (
-        !isGasEstimatesLoading &&
-        maxFeePerGasToUse < gasFeeEstimates?.low?.suggestedMaxFeePerGas
+        (!isGasEstimatesLoading &&
+          maxFeePerGasToUse < gasFeeEstimates?.low?.suggestedMaxFeePerGas) ||
+        maxFeePerGasToUse <= 0
       ) {
         gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_TOO_LOW;
       } else if (
