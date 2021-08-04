@@ -28,6 +28,8 @@ import {
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
+  addPollingTokenToAppState,
+  removePollingTokenFromAppState,
 } from '../../store/actions';
 import ConfTx from './conf-tx';
 
@@ -61,6 +63,7 @@ export default class ConfirmTransaction extends Component {
     this._isMounted = false;
     if (this.state.pollingToken) {
       disconnectGasFeeEstimatePoller(this.state.pollingToken);
+      removePollingTokenFromAppState(this.state.pollingToken);
     }
   };
 
@@ -82,8 +85,10 @@ export default class ConfirmTransaction extends Component {
     getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
       if (this._isMounted) {
         this.setState({ pollingToken });
+        addPollingTokenToAppState(pollingToken);
       } else {
         disconnectGasFeeEstimatePoller(pollingToken);
+        removePollingTokenFromAppState(pollingToken);
       }
     });
 

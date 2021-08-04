@@ -37,6 +37,8 @@ import { COLORS } from '../../helpers/constants/design-system';
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
+  addPollingTokenToAppState,
+  removePollingTokenFromAppState,
 } from '../../store/actions';
 
 export default class ConfirmTransactionBase extends Component {
@@ -678,6 +680,7 @@ export default class ConfirmTransactionBase extends Component {
     this._isMounted = false;
     if (this.state.pollingToken) {
       disconnectGasFeeEstimatePoller(this.state.pollingToken);
+      removePollingTokenFromAppState(this.state.pollingToken);
     }
   };
 
@@ -726,9 +729,11 @@ export default class ConfirmTransactionBase extends Component {
      */
     getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
       if (this._isMounted) {
+        addPollingTokenToAppState(pollingToken);
         this.setState({ pollingToken });
       } else {
         disconnectGasFeeEstimatePoller(pollingToken);
+        removePollingTokenFromAppState(this.state.pollingToken);
       }
     });
     window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);

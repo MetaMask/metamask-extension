@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
+  addPollingTokenToAppState,
+  removePollingTokenFromAppState,
 } from '../store/actions';
 
 /**
@@ -21,14 +23,17 @@ export function useSafeGasEstimatePolling() {
       active = false;
       if (pollToken) {
         disconnectGasFeeEstimatePoller(pollToken);
+        removePollingTokenFromAppState(pollToken);
       }
     };
 
     getGasFeeEstimatesAndStartPolling().then((newPollToken) => {
       if (active) {
         pollToken = newPollToken;
+        addPollingTokenToAppState(pollToken);
       } else {
         disconnectGasFeeEstimatePoller(newPollToken);
+        removePollingTokenFromAppState(pollToken);
       }
     });
 

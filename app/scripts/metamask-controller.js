@@ -1130,6 +1130,16 @@ export default class MetamaskController extends EventEmitter {
         this.gasFeeController.getTimeEstimate,
         this.gasFeeController,
       ),
+
+      addPollingTokenToAppState: nodeify(
+        this.appStateController.addPollingToken,
+        this.appStateController,
+      ),
+
+      removePollingTokenFromAppState: nodeify(
+        this.appStateController.removePollingToken,
+        this.appStateController,
+      ),
     };
   }
 
@@ -2987,6 +2997,11 @@ export default class MetamaskController extends EventEmitter {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  disconnectAndRemovePollingToken(pollingToken, environmentType) {
+    this.gasFeeController.disconnectPoller(pollingToken);
+    this.appStateController.removePollingToken(pollingToken, environmentType);
   }
 
   /**

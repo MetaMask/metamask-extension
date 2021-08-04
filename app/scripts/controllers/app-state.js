@@ -25,6 +25,9 @@ export default class AppStateController extends EventEmitter {
       connectedStatusPopoverHasBeenShown: true,
       defaultHomeActiveTabName: null,
       browserEnvironment: {},
+      popupGasPollTokens: [],
+      notificationGasPollTokens: [],
+      fullScreenGasPollTokens: [],
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
       ...initState,
@@ -190,5 +193,36 @@ export default class AppStateController extends EventEmitter {
    */
   setBrowserEnvironment(os, browser) {
     this.store.updateState({ browserEnvironment: { os, browser } });
+  }
+
+  /**
+   * Adds a pollingToken for a given environmentType
+   * @returns {void}
+   */
+  addPollingToken(pollingToken, pollingTokenType) {
+    this.store.updateState({
+      [pollingTokenType]: [
+        ...this.store.getState()[pollingTokenType],
+        pollingToken,
+      ],
+    });
+  }
+
+  removePollingToken(pollingToken, pollingTokenType) {
+    this.store.updateState({
+      [pollingTokenType]: [
+        ...this.store
+          .getState()
+          [pollingTokenType].filter((token) => token !== pollingToken),
+      ],
+    });
+  }
+
+  clearPollingTokens() {
+    this.store.updateState({
+      fullScreenGasPollTokens: [],
+      popupGasPollTokens: [],
+      notificationGasPollTokens: [],
+    });
   }
 }

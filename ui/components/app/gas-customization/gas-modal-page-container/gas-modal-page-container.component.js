@@ -5,6 +5,8 @@ import { Tabs, Tab } from '../../../ui/tabs';
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
+  addPollingTokenToAppState,
+  removePollingTokenFromAppState,
 } from '../../../../store/actions';
 import AdvancedTabContent from './advanced-tab-content';
 import BasicTabContent from './basic-tab-content';
@@ -52,9 +54,11 @@ export default class GasModalPageContainer extends Component {
     this._isMounted = true;
     getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
       if (this._isMounted) {
+        addPollingTokenToAppState(pollingToken);
         this.setState({ pollingToken });
       } else {
         disconnectGasFeeEstimatePoller(pollingToken);
+        removePollingTokenFromAppState(pollingToken);
       }
     });
     window.addEventListener('beforeunload', this._beforeUnload);
@@ -64,6 +68,7 @@ export default class GasModalPageContainer extends Component {
     this._isMounted = false;
     if (this.state.pollingToken) {
       disconnectGasFeeEstimatePoller(this.state.pollingToken);
+      removePollingTokenFromAppState(this.state.pollingToken);
     }
   };
 
