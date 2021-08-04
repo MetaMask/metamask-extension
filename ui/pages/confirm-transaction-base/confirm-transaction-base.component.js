@@ -5,7 +5,11 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
 import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util';
-import { addHexes, hexToDecimal } from '../../helpers/utils/conversions.util';
+import {
+  addHexes,
+  hexToDecimal,
+  hexWEIToDecGWEI,
+} from '../../helpers/utils/conversions.util';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
@@ -19,7 +23,6 @@ import {
 } from '../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
-
 import TextField from '../../components/ui/text-field';
 import {
   TRANSACTION_TYPES,
@@ -397,8 +400,10 @@ export default class ConfirmTransactionBase extends Component {
               }
               subTitle={
                 <GasTiming
-                  maxPriorityFeePerGas={txData.txParams.maxPriorityFeePerGas}
-                  maxFeePerGas={txData.txParams.maxFeePerGas}
+                  maxPriorityFeePerGas={hexWEIToDecGWEI(
+                    txData.txParams.maxPriorityFeePerGas,
+                  )}
+                  maxFeePerGas={hexWEIToDecGWEI(txData.txParams.maxFeePerGas)}
                 />
               }
             />,
