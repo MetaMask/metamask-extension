@@ -130,7 +130,7 @@ export default class AddNewContactModal extends PureComponent {
               {t('memo')}
             </div>
             <textarea
-              className="add-new-contact-modal__textarea"
+              className="add-new-contact-modal__textarea MuiInputBase-input::placeholder"
               value={this.state.memo}
               onChange={(e) => this.setState({ memo: e.target.value })}
               placeholder={isFullScreen ? t('addMemo') : ''}
