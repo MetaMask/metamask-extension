@@ -217,12 +217,4 @@ export default class AppStateController extends EventEmitter {
       ],
     });
   }
-
-  clearPollingTokens() {
-    this.store.updateState({
-      fullScreenGasPollTokens: [],
-      popupGasPollTokens: [],
-      notificationGasPollTokens: [],
-    });
-  }
 }
