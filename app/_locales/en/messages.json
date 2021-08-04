@@ -2539,11 +2539,11 @@
   "transactionHistoryBaseFee": {
     "message": "Base fee (GWEI)"
   },
-  "transactionHistoryEffectiveGasPrice": {
-    "message": "Effective gas price"
-  },
   "transactionHistoryPriorityFee": {
     "message": "Priority fee (GWEI)"
+  },
+  "transactionHistoryTotalGasFee": {
+    "message": "Total Gas Fee"
   },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with gas fee increased to $1 at $2"
