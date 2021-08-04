@@ -16,6 +16,8 @@ import { useGasFeeEstimates } from './useGasFeeEstimates';
 jest.mock('../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest.fn(),
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
 }));
 
 jest.mock('react-redux', () => {
