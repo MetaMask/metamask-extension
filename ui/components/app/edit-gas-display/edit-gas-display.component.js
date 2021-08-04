@@ -94,7 +94,7 @@ export default function EditGasDisplay({
   );
 
   const showTopError = balanceError || estimatesUnavailableWarning;
-  const showRadioButtons =
+  const radioButtonsEnabled =
     networkAndAccountSupport1559 &&
     gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET &&
     !requireDappAcknowledgement &&
@@ -186,13 +186,13 @@ export default function EditGasDisplay({
           </Button>
         )}
         {!requireDappAcknowledgement &&
-          showRadioButtons &&
+          radioButtonsEnabled &&
           showAdvancedInlineGasIfPossible && (
             <button
               className="edit-gas-display__advanced-button"
               onClick={() => setHideRadioButtons(!hideRadioButtons)}
             >
-              {t('lowMediumHighOptions')}{' '}
+              {t('showRecommendations')}{' '}
               {hideRadioButtons ? (
                 <i className="fa fa-caret-down"></i>
               ) : (
@@ -200,7 +200,7 @@ export default function EditGasDisplay({
               )}
             </button>
           )}
-        {showRadioButtons && !hideRadioButtons && (
+        {radioButtonsEnabled && !hideRadioButtons && (
           <RadioGroup
             name="gas-recommendation"
             options={[
@@ -225,7 +225,7 @@ export default function EditGasDisplay({
             onChange={setEstimateToUse}
           />
         )}
-        {!requireDappAcknowledgement && showRadioButtons && !showAdvancedInlineGasIfPossible && (
+        {!requireDappAcknowledgement && radioButtonsEnabled && !showAdvancedInlineGasIfPossible && (
           <button
             className="edit-gas-display__advanced-button"
             onClick={() => setShowAdvancedForm(!showAdvancedForm)}

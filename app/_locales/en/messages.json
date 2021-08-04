@@ -1205,8 +1205,8 @@
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
   },
-  "lowMediumHighOptions": {
-    "message": "Low, medium and high options"
+  "showRecommendations": {
+    "message": "Show Recommendations"
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
