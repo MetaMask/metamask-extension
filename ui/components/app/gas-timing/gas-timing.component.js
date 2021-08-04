@@ -61,11 +61,14 @@ export default function GasTiming({
       (priority && priority !== previousMaxPriorityFeePerGas) ||
       (fee && fee !== previousMaxFeePerGas)
     ) {
-      getGasFeeTimeEstimate(priority, fee).then((result) => {
-        if (maxFeePerGas === fee && maxPriorityFeePerGas === priority) {
-          setCustomEstimatedTime(result);
-        }
-      });
+      // getGasFeeTimeEstimate requires parameters in string format
+      getGasFeeTimeEstimate(priority.toString(), fee.toString()).then(
+        (result) => {
+          if (maxFeePerGas === fee && maxPriorityFeePerGas === priority) {
+            setCustomEstimatedTime(result);
+          }
+        },
+      );
     }
 
     if (isUnknownLow !== false && previousIsUnknownLow === true) {
