@@ -68,6 +68,7 @@ export default class GasModalPageContainer extends Component {
   };
 
   componentWillUnmount() {
+    this._beforeUnload();
     window.removeEventListener('beforeunload', this._beforeUnload);
   }
 
