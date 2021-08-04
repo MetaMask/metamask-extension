@@ -78,7 +78,7 @@ describe('Add existing token using search', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement({ text: 'Import tokens', tag: 'button' });
+        await driver.clickElement({ text: 'Import tokens', tag: 'link' });
         await driver.fill('#search-tokens', 'BAT');
         await driver.clickElement({ text: 'BAT', tag: 'span' });
         await driver.clickElement({ text: 'Next', tag: 'button' });
