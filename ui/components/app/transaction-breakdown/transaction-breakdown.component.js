@@ -143,6 +143,7 @@ export default class TransactionBreakdown extends PureComponent {
                 currency={nativeCurrency}
                 denomination={GWEI}
                 value={gasPrice}
+                numberOfDecimals={9}
                 hideLabel
               />
             )}
