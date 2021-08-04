@@ -149,9 +149,7 @@ export default class TransactionBreakdown extends PureComponent {
           </TransactionBreakdownRow>
         )}
         {isEIP1559Transaction && (
-          <TransactionBreakdownRow
-            title={t('transactionHistoryEffectiveGasPrice')}
-          >
+          <TransactionBreakdownRow title={t('transactionHistoryTotalGasFee')}>
             <UserPreferencedCurrencyDisplay
               className="transaction-breakdown__value"
               data-testid="transaction-breakdown__effective-gas-price"
