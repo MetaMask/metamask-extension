@@ -225,38 +225,41 @@ export default function EditGasDisplay({
             onChange={setEstimateToUse}
           />
         )}
-        {!requireDappAcknowledgement && radioButtonsEnabled && !showAdvancedInlineGasIfPossible && (
-          <button
-            className="edit-gas-display__advanced-button"
-            onClick={() => setShowAdvancedForm(!showAdvancedForm)}
-          >
-            {t('advancedOptions')}{' '}
-            {showAdvancedForm ? (
-              <i className="fa fa-caret-up"></i>
-            ) : (
-              <i className="fa fa-caret-down"></i>
-            )}
-          </button>
-        )}
-        {!requireDappAcknowledgement && (showAdvancedForm || showAdvancedInlineGasIfPossible) && (
-          <AdvancedGasControls
-            gasEstimateType={gasEstimateType}
-            isGasEstimatesLoading={isGasEstimatesLoading}
-            gasLimit={gasLimit}
-            setGasLimit={setGasLimit}
-            maxPriorityFee={maxPriorityFeePerGas}
-            setMaxPriorityFee={setMaxPriorityFeePerGas}
-            maxFee={maxFeePerGas}
-            setMaxFee={setMaxFeePerGas}
-            gasPrice={gasPrice}
-            setGasPrice={setGasPrice}
-            maxPriorityFeeFiat={maxPriorityFeePerGasFiat}
-            maxFeeFiat={maxFeePerGasFiat}
-            gasErrors={gasErrors}
-            onManualChange={onManualChange}
-            minimumGasLimit={minimumGasLimit}
-          />
-        )}
+        {!requireDappAcknowledgement &&
+          radioButtonsEnabled &&
+          !showAdvancedInlineGasIfPossible && (
+            <button
+              className="edit-gas-display__advanced-button"
+              onClick={() => setShowAdvancedForm(!showAdvancedForm)}
+            >
+              {t('advancedOptions')}{' '}
+              {showAdvancedForm ? (
+                <i className="fa fa-caret-up"></i>
+              ) : (
+                <i className="fa fa-caret-down"></i>
+              )}
+            </button>
+          )}
+        {!requireDappAcknowledgement &&
+          (showAdvancedForm || showAdvancedInlineGasIfPossible) && (
+            <AdvancedGasControls
+              gasEstimateType={gasEstimateType}
+              isGasEstimatesLoading={isGasEstimatesLoading}
+              gasLimit={gasLimit}
+              setGasLimit={setGasLimit}
+              maxPriorityFee={maxPriorityFeePerGas}
+              setMaxPriorityFee={setMaxPriorityFeePerGas}
+              maxFee={maxFeePerGas}
+              setMaxFee={setMaxFeePerGas}
+              gasPrice={gasPrice}
+              setGasPrice={setGasPrice}
+              maxPriorityFeeFiat={maxPriorityFeePerGasFiat}
+              maxFeeFiat={maxFeePerGasFiat}
+              gasErrors={gasErrors}
+              onManualChange={onManualChange}
+              minimumGasLimit={minimumGasLimit}
+            />
+          )}
       </div>
       {networkAndAccountSupport1559 &&
         !requireDappAcknowledgement &&
