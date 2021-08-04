@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import AddTokenButton from '../add-token-button';
+import ImportTokenLink from '../import-token-link';
 import TokenList from '../token-list';
 import { ADD_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import AssetListItem from '../asset-list-item';
@@ -105,7 +105,7 @@ const AssetList = ({ onClickAsset }) => {
             {t('missingToken')}
           </Typography>
         </Box>
-        <AddTokenButton
+        <ImportTokenLink
           onClick={() => {
             history.push(ADD_TOKEN_ROUTE);
             addTokenEvent();
