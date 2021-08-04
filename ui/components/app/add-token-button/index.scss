@@ -1,0 +1,7 @@
+.add-token-button {
+  & &__button {
+    @include H6;
+
+    display: inline;
+  }
+}
