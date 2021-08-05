@@ -90,11 +90,12 @@ function getGasFeeEstimate(
   gasFeeEstimates,
   gasEstimateType,
   estimateToUse,
+  fallback = '0',
 ) {
   if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
-    return gasFeeEstimates?.[estimateToUse]?.[field] ?? '0';
+    return gasFeeEstimates?.[estimateToUse]?.[field] ?? String(fallback);
   }
-  return '0';
+  return String(fallback);
 }
 
 /**
@@ -280,6 +281,7 @@ export function useGasFeeInputs(
       gasFeeEstimates,
       gasEstimateType,
       estimateToUse,
+      initialMaxFeePerGas,
     );
 
   const maxPriorityFeePerGasToUse =
@@ -289,6 +291,7 @@ export function useGasFeeInputs(
       gasFeeEstimates,
       gasEstimateType,
       estimateToUse,
+      initialMaxPriorityFeePerGas,
     );
 
   const [initialGasPriceEstimates] = useState(gasFeeEstimates);
