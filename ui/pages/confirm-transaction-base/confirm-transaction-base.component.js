@@ -107,6 +107,7 @@ export default class ConfirmTransactionBase extends Component {
     setDefaultHomeActiveTabName: PropTypes.func,
     primaryTotalTextOverride: PropTypes.string,
     secondaryTotalTextOverride: PropTypes.string,
+    gasIsLoading: PropTypes.bool,
   };
 
   state = {
@@ -772,6 +773,7 @@ export default class ConfirmTransactionBase extends Component {
       hideSenderToRecipient,
       showAccountInHeader,
       txData,
+      gasIsLoading,
     } = this.props;
     const {
       submitting,
@@ -838,7 +840,7 @@ export default class ConfirmTransactionBase extends Component {
         lastTx={lastTx}
         ofText={ofText}
         requestsWaitingText={requestsWaitingText}
-        disabled={!valid || submitting}
+        disabled={!valid || submitting || gasIsLoading}
         onEdit={() => this.handleEdit()}
         onCancelAll={() => this.handleCancelAll()}
         onCancel={() => this.handleCancel()}

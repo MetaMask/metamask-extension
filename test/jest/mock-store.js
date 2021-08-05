@@ -234,6 +234,7 @@ export const createSwapsMockStore = () => {
           },
         },
       },
+      gasLoadingAnimationIsShowing: false,
     },
   };
 };

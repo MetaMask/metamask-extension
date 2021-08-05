@@ -32,7 +32,11 @@ import {
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { updateTransactionGasFees } from '../../ducks/metamask/metamask';
+import {
+  updateTransactionGasFees,
+  getIsGasEstimatesLoading,
+} from '../../ducks/metamask/metamask';
+import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
@@ -60,6 +64,10 @@ const mapStateToProps = (state, ownProps) => {
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
   const supportsEIP1599 = checkNetworkAndAccountSupports1559(state);
+
+  const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
+  const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
+
   const { confirmTransaction, metamask } = state;
   const {
     ensResolutionsByAddress,
@@ -185,6 +193,7 @@ const mapStateToProps = (state, ownProps) => {
     isEthGasPrice,
     noGasPrice,
     supportsEIP1599,
+    gasIsLoading: isGasEstimatesLoading || gasLoadingAnimationIsShowing,
   };
 };
 

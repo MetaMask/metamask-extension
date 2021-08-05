@@ -53,6 +53,7 @@ export default function reduceApp(state = {}, action) {
     singleExceptions: {
       testKey: null,
     },
+    gasLoadingAnimationIsShowing: false,
     ...state,
   };
 
@@ -358,6 +359,12 @@ export default function reduceApp(state = {}, action) {
         },
       };
 
+    case actionConstants.TOGGLE_GAS_LOADING_ANIMATION:
+      return {
+        ...appState,
+        gasLoadingAnimationIsShowing: action.value,
+      };
+
     default:
       return appState;
   }
@@ -377,7 +384,15 @@ export function hideWhatsNewPopup() {
   };
 }
 
+export function toggleGasLoadingAnimation(value) {
+  return { type: actionConstants.TOGGLE_GAS_LOADING_ANIMATION, value };
+}
+
 // Selectors
 export function getQrCodeData(state) {
   return state.appState.qrCodeData;
+}
+
+export function getGasLoadingAnimationIsShowing(state) {
+  return state.appState.gasLoadingAnimationIsShowing;
 }
