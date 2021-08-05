@@ -4,7 +4,9 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
+import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util';
 import {
+  addHexes,
   hexToDecimal,
   hexWEIToDecGWEI,
 } from '../../helpers/utils/conversions.util';
@@ -280,6 +282,7 @@ export default class ConfirmTransactionBase extends Component {
       getNextNonce,
       txData,
       useNativeCurrencyAsPrimaryCurrency,
+      hexMaximumTransactionFee,
     } = this.props;
     const { t } = this.context;
 
@@ -289,6 +292,31 @@ export default class ConfirmTransactionBase extends Component {
       } catch (err) {
         return '';
       }
+    };
+
+    const renderTotalMaxAmount = () => {
+      if (
+        primaryTotalTextOverride === undefined &&
+        secondaryTotalTextOverride === undefined
+      ) {
+        return (
+          <UserPreferencedCurrencyDisplay
+            type={PRIMARY}
+            value={addHexes(
+              txData.txParams.value,
+              getHexGasTotal({
+                gasPrice:
+                  txData.txParams.maxFeePerGas ?? txData.txParams.gasPrice,
+                gasLimit: txData.txParams.gas,
+              }),
+            )}
+            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+          />
+        );
+      }
+      return useNativeCurrencyAsPrimaryCurrency
+        ? primaryTotalTextOverride
+        : secondaryTotalTextOverride;
     };
 
     const renderTotalDetailTotal = () => {
@@ -427,7 +455,7 @@ export default class ConfirmTransactionBase extends Component {
                 <UserPreferencedCurrencyDisplay
                   key="editGasSubTextFeeAmount"
                   type={PRIMARY}
-                  value={hexMinimumTransactionFee}
+                  value={hexMaximumTransactionFee}
                   hideLabel={!useNativeCurrencyAsPrimaryCurrency}
                 />,
               ])}
@@ -450,7 +478,7 @@ export default class ConfirmTransactionBase extends Component {
                 <b key="editGasSubTextAmountLabel">
                   {t('editGasSubTextAmountLabel')}
                 </b>,
-                renderTotalDetailTotal(),
+                renderTotalMaxAmount(),
               ])}
             />,
           ]}
