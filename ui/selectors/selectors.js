@@ -82,8 +82,9 @@ export function getCurrentKeyring(state) {
 }
 
 export function isEIP1559Account(state) {
-  // Neither hardware wallet supports 1559 at this time
-  return !isHardwareWallet(state);
+  // Only Ledger supports 1559 at this times
+  const currentKeyring = getCurrentKeyring(state);
+  return currentKeyring && currentKeyring.type !== 'Trezor Hardware';
 }
 
 export function checkNetworkAndAccountSupports1559(state) {
