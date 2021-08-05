@@ -438,6 +438,8 @@ export function useGasFeeInputs(
       if (bnLessThanEqualTo(maxPriorityFeePerGasToUse, 0)) {
         gasErrors.maxPriorityFee =
           GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
+      } else if (bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)) {
+        gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
       } else if (
         !isGasEstimatesLoading &&
         bnLessThan(
@@ -446,8 +448,6 @@ export function useGasFeeInputs(
         )
       ) {
         gasWarnings.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW;
-      } else if (bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)) {
-        gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
       } else if (
         gasFeeEstimates?.high &&
         bnGreaterThan(
@@ -467,7 +467,7 @@ export function useGasFeeInputs(
           gasFeeEstimates?.low?.suggestedMaxFeePerGas,
         )
       ) {
-        gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_TOO_LOW;
+        gasWarnings.maxFee = GAS_FORM_ERRORS.MAX_FEE_TOO_LOW;
       } else if (
         gasFeeEstimates?.high &&
         bnGreaterThan(
