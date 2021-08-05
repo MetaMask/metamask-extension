@@ -7,10 +7,14 @@
   opacity: 0;
   background: #fff;
   display: none;
+  pointer-events: none;
 
   &--active {
     display: block;
-    animation: heartbeat 2s ease-in-out;
+    animation-name: heartbeat;
+    animation-duration: 2s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
   }
 }
 

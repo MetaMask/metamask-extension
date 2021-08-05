@@ -1,24 +1,26 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+
+import { getIsGasEstimatesLoading } from '../../../ducks/metamask/metamask';
 
 import { I18nContext } from '../../../contexts/i18n';
-import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
 
 export default function TransactionDetail({ rows = [], onEdit }) {
   const t = useContext(I18nContext);
-  const shouldAnimate = useShouldAnimateGasEstimations();
+  const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
 
   return (
     <div className="transaction-detail">
-      {process.env.IN_TEST === 'true' ? null : (
-        <LoadingHeartBeat active={shouldAnimate} />
-      )}
+      {process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />}
       {onEdit && (
         <div className="transaction-detail-edit">
-          <button onClick={onEdit}>{t('edit')}</button>
+          <button onClick={onEdit} disabled={isGasEstimatesLoading}>
+            {t('edit')}
+          </button>
         </div>
       )}
       <div className="transaction-detail-rows">{rows}</div>

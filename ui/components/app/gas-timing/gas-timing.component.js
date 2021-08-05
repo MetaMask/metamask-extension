@@ -1,13 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 
 import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
 
-import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { I18nContext } from '../../../contexts/i18n';
+
+import {
+  getGasEstimateType,
+  getGasFeeEstimates,
+  getIsGasEstimatesLoading,
+} from '../../../ducks/metamask/metamask';
 
 import Typography from '../../ui/typography/typography';
 import {
@@ -33,11 +39,9 @@ export default function GasTiming({
   maxFeePerGas = 0,
   maxPriorityFeePerGas = 0,
 }) {
-  const {
-    gasFeeEstimates,
-    isGasEstimatesLoading,
-    gasEstimateType,
-  } = useGasFeeEstimates();
+  const gasEstimateType = useSelector(getGasEstimateType);
+  const gasFeeEstimates = useSelector(getGasFeeEstimates);
+  const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
 
   const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
 
