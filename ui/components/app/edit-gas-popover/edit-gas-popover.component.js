@@ -190,7 +190,7 @@ export default function EditGasPopover({
             <Button
               type="primary"
               onClick={onSubmit}
-              disabled={hasGasErrors || isGasEstimatesLoading || balanceError}
+              disabled={isGasEstimatesLoading || balanceError}
             >
               {footerButtonText}
             </Button>
