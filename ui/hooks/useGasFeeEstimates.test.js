@@ -5,12 +5,14 @@ import createRandomId from '../../shared/modules/random-id';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
+  getIsGasEstimatesLoading,
 } from '../ducks/metamask/metamask';
 import { checkNetworkAndAccountSupports1559 } from '../selectors';
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
 } from '../store/actions';
+
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 
 jest.mock('../store/actions', () => ({
@@ -37,6 +39,7 @@ const DEFAULT_OPTS = {
     medium: '20',
     high: '30',
   },
+  isGasEstimatesLoading: true,
 };
 
 const generateUseSelectorRouter = (opts = DEFAULT_OPTS) => (selector) => {
@@ -51,6 +54,9 @@ const generateUseSelectorRouter = (opts = DEFAULT_OPTS) => (selector) => {
   }
   if (selector === getGasFeeEstimates) {
     return opts.gasFeeEstimates ?? DEFAULT_OPTS.gasFeeEstimates;
+  }
+  if (selector === getIsGasEstimatesLoading) {
+    return opts.isGasEstimatesLoading ?? DEFAULT_OPTS.isGasEstimatesLoading;
   }
   return undefined;
 };
@@ -68,15 +74,16 @@ describe('useGasFeeEstimates', () => {
     disconnectGasFeeEstimatePoller.mockImplementation((token) => {
       tokens = tokens.filter((tkn) => tkn !== token);
     });
-    useSelector.mockImplementation(generateUseSelectorRouter());
   });
 
   it('registers with the controller', () => {
+    useSelector.mockImplementation(generateUseSelectorRouter());
     renderHook(() => useGasFeeEstimates());
     expect(tokens).toHaveLength(1);
   });
 
   it('clears token with the controller on unmount', async () => {
+    useSelector.mockImplementation(generateUseSelectorRouter());
     renderHook(() => useGasFeeEstimates());
     expect(tokens).toHaveLength(1);
     const expectedToken = tokens[0];
@@ -87,6 +94,11 @@ describe('useGasFeeEstimates', () => {
   });
 
   it('works with LEGACY gas prices', () => {
+    useSelector.mockImplementation(
+      generateUseSelectorRouter({
+        isGasEstimatesLoading: false,
+      }),
+    );
     const {
       result: { current },
     } = renderHook(() => useGasFeeEstimates());
@@ -104,6 +116,7 @@ describe('useGasFeeEstimates', () => {
       generateUseSelectorRouter({
         gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
         gasFeeEstimates,
+        isGasEstimatesLoading: false,
       }),
     );
 
@@ -145,6 +158,7 @@ describe('useGasFeeEstimates', () => {
         checkNetworkAndAccountSupports1559: true,
         gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
         gasFeeEstimates,
+        isGasEstimatesLoading: false,
       }),
     );
 

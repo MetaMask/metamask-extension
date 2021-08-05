@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
-import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
+import { getGasLoadingAnimationIsShowing } from '../../../ducks/app/app';
 
 import { EDIT_GAS_MODES, GAS_LIMITS } from '../../../../shared/constants/gas';
 
@@ -45,8 +45,9 @@ export default function EditGasPopover({
   const networkAndAccountSupport1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
-
-  const shouldAnimate = useShouldAnimateGasEstimations();
+  const gasLoadingAnimationIsShowing = useSelector(
+    getGasLoadingAnimationIsShowing,
+  );
 
   const showEducationButton =
     (mode === EDIT_GAS_MODES.MODIFY_IN_PLACE ||
@@ -192,7 +193,12 @@ export default function EditGasPopover({
             <Button
               type="primary"
               onClick={onSubmit}
-              disabled={hasGasErrors || isGasEstimatesLoading || balanceError}
+              disabled={
+                hasGasErrors ||
+                isGasEstimatesLoading ||
+                balanceError ||
+                gasLoadingAnimationIsShowing
+              }
             >
               {footerButtonText}
             </Button>
@@ -205,9 +211,7 @@ export default function EditGasPopover({
           <EditGasDisplayEducation />
         ) : (
           <>
-            {process.env.IN_TEST === 'true' ? null : (
-              <LoadingHeartBeat active={shouldAnimate} />
-            )}
+            {process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />}
             <EditGasDisplay
               showEducationButton={showEducationButton}
               warning={warning}

@@ -7,6 +7,8 @@ import FormField from '../../ui/form-field';
 import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
 import { getGasFormErrorText } from '../../../helpers/constants/gas';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+import { getIsGasEstimatesLoading } from '../../../ducks/metamask/metamask';
+import { getGasLoadingAnimationIsShowing } from '../../../ducks/app/app';
 
 export default function AdvancedGasControls({
   gasEstimateType,
@@ -28,6 +30,12 @@ export default function AdvancedGasControls({
   const networkAndAccountSupport1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
+  const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
+  const isGasLoadingAnimationIsShowing = useSelector(
+    getGasLoadingAnimationIsShowing,
+  );
+  const disableFormFields =
+    isGasEstimatesLoading || isGasLoadingAnimationIsShowing;
 
   const showFeeMarketFields =
     networkAndAccountSupport1559 &&
@@ -71,6 +79,7 @@ export default function AdvancedGasControls({
                 ? getGasFormErrorText(gasErrors.maxPriorityFee, t)
                 : null
             }
+            disabled={disableFormFields}
           />
           <FormField
             titleText={t('maxFee')}
@@ -88,6 +97,7 @@ export default function AdvancedGasControls({
                 ? getGasFormErrorText(gasErrors.maxFee, t)
                 : null
             }
+            disabled={disableFormFields}
           />
         </>
       ) : (
@@ -107,6 +117,7 @@ export default function AdvancedGasControls({
                 ? getGasFormErrorText(gasErrors.gasPrice, t)
                 : null
             }
+            disabled={disableFormFields}
           />
         </>
       )}

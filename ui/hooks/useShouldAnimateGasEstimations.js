@@ -1,10 +1,20 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 
+import {
+  getGasLoadingAnimationIsShowing,
+  toggleGasLoadingAnimation,
+} from '../ducks/app/app';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 
 export function useShouldAnimateGasEstimations() {
   const { isGasEstimatesLoading, gasFeeEstimates } = useGasFeeEstimates();
+  const dispatch = useDispatch();
+
+  const isGasLoadingAnimationActive = useSelector(
+    getGasLoadingAnimationIsShowing,
+  );
 
   // Do the animation only when gas prices have changed...
   const lastGasEstimates = useRef(gasFeeEstimates);
@@ -24,5 +34,17 @@ export function useShouldAnimateGasEstimations() {
   const showLoadingAnimation =
     isGasEstimatesLoading || (gasEstimatesChanged && !gasJustLoaded);
 
-  return showLoadingAnimation;
+  useEffect(() => {
+    if (
+      isGasLoadingAnimationActive === false &&
+      showLoadingAnimation === true
+    ) {
+      dispatch(toggleGasLoadingAnimation(true));
+
+      setTimeout(() => {
+        console.log('Killing the toggleGasLoadingAnimation to false');
+        dispatch(toggleGasLoadingAnimation(false));
+      }, 2000);
+    }
+  }, [dispatch, isGasLoadingAnimationActive, showLoadingAnimation]);
 }
