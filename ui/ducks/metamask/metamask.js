@@ -320,10 +320,5 @@ export function getIsGasEstimatesLoading(state) {
     (!networkAndAccountSupports1559 &&
       gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET);
 
-  console.log('isGasEstimatesLoading ? ', isGasEstimatesLoading, Date.now());
-  if (isGasEstimatesLoading) {
-    console.info('isGasEstimatesLoading TRUE!');
-  }
-
   return isGasEstimatesLoading;
 }
