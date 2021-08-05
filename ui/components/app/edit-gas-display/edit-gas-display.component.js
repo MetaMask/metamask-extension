@@ -77,7 +77,7 @@ export default function EditGasDisplay({
   );
 
   const [showAdvancedForm, setShowAdvancedForm] = useState(
-    !estimateToUse || hasGasErrors || !networkAndAccountSupport1559,
+    !estimateToUse || !networkAndAccountSupport1559,
   );
   const [hideRadioButtons, setHideRadioButtons] = useState(
     showAdvancedInlineGasIfPossible,
@@ -241,7 +241,9 @@ export default function EditGasDisplay({
             </button>
           )}
         {!requireDappAcknowledgement &&
-          (showAdvancedForm || showAdvancedInlineGasIfPossible) && (
+          (showAdvancedForm ||
+            hasGasErrors ||
+            showAdvancedInlineGasIfPossible) && (
             <AdvancedGasControls
               gasEstimateType={gasEstimateType}
               isGasEstimatesLoading={isGasEstimatesLoading}
