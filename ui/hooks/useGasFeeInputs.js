@@ -93,9 +93,9 @@ function getGasFeeEstimate(
   fallback = '0',
 ) {
   if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
-    return gasFeeEstimates?.[estimateToUse]?.[field] ?? fallback;
+    return gasFeeEstimates?.[estimateToUse]?.[field] ?? String(fallback);
   }
-  return fallback;
+  return String(fallback);
 }
 
 /**
