@@ -171,10 +171,12 @@ export default class SettingsTab extends PureComponent {
             <div className="settings-tab__radio-buttons">
               <div className="settings-tab__radio-button">
                 <RadioButton
+                  name="preferred-currency"
                   id="native-primary-currency"
                   onChange={() =>
                     setUseNativeCurrencyAsPrimaryCurrencyPreference(true)
                   }
+                  value="native"
                   checked={Boolean(useNativeCurrencyAsPrimaryCurrency)}
                 />
                 <label
@@ -186,10 +188,12 @@ export default class SettingsTab extends PureComponent {
               </div>
               <div className="settings-tab__radio-button">
                 <RadioButton
+                  name="preferred-currency"
                   id="fiat-primary-currency"
                   onChange={() =>
                     setUseNativeCurrencyAsPrimaryCurrencyPreference(false)
                   }
+                  value="fiat"
                   checked={!useNativeCurrencyAsPrimaryCurrency}
                 />
                 <label
