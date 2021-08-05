@@ -467,7 +467,7 @@ export function useGasFeeInputs(
           gasFeeEstimates?.low?.suggestedMaxFeePerGas,
         )
       ) {
-        gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_TOO_LOW;
+        gasWarnings.maxFee = GAS_FORM_ERRORS.MAX_FEE_TOO_LOW;
       } else if (
         gasFeeEstimates?.high &&
         bnGreaterThan(
