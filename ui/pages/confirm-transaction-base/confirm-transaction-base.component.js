@@ -420,16 +420,17 @@ export default class ConfirmTransactionBase extends Component {
                   hideLabel={!useNativeCurrencyAsPrimaryCurrency}
                 />
               }
-              subText={
-                <div>
-                  <b>{t('editGasSubTextFee', [null])}</b>
-                  <UserPreferencedCurrencyDisplay
-                    type={PRIMARY}
-                    value={hexMinimumTransactionFee}
-                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                  />
-                </div>
-              }
+              subText={t('editGasSubTextFee', [
+                <b key="editGasSubTextFeeLabel">
+                  {t('editGasSubTextFeeLabel')}
+                </b>,
+                <UserPreferencedCurrencyDisplay
+                  key="editGasSubTextFeeAmount"
+                  type={PRIMARY}
+                  value={hexMinimumTransactionFee}
+                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                />,
+              ])}
               subTitle={
                 <GasTiming
                   maxPriorityFeePerGas={hexWEIToDecGWEI(
@@ -445,14 +446,12 @@ export default class ConfirmTransactionBase extends Component {
               detailText={renderTotalDetailText()}
               detailTotal={renderTotalDetailTotal()}
               subTitle={t('transactionDetailGasTotalSubtitle')}
-              subText={
-                <div>
-                  <span>
-                    <b>{t('editGasSubTextAmount', [null])}</b>
-                  </span>
-                  <span>{renderTotalDetailTotal()}</span>
-                </div>
-              }
+              subText={t('editGasSubTextAmount', [
+                <b key="editGasSubTextAmountLabel">
+                  {t('editGasSubTextAmountLabel')}
+                </b>,
+                renderTotalDetailTotal(),
+              ])}
             />,
           ]}
         />
