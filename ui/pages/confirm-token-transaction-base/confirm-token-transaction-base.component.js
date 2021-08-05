@@ -88,7 +88,7 @@ export default function ConfirmTokenTransactionBase({
         )
       }
       primaryTotalTextOverride={`${tokensText} + ${ethTransactionTotal} ${nativeCurrency}`}
-      primaryTotalTextOverrideMaxAmount= {`${tokensText} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`}
+      primaryTotalTextOverrideMaxAmount={`${tokensText} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`}
       secondaryTotalTextOverride={secondaryTotalTextOverride}
     />
   );
@@ -106,4 +106,5 @@ ConfirmTokenTransactionBase.propTypes = {
   currentCurrency: PropTypes.string,
   onEdit: PropTypes.func,
   nativeCurrency: PropTypes.string,
+  ethTransactionTotalMaxAmount: PropTypes.string,
 };

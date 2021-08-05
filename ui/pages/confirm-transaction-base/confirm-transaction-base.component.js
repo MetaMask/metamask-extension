@@ -108,6 +108,7 @@ export default class ConfirmTransactionBase extends Component {
     primaryTotalTextOverride: PropTypes.string,
     secondaryTotalTextOverride: PropTypes.string,
     gasIsLoading: PropTypes.bool,
+    primaryTotalTextOverrideMaxAmount: PropTypes.string,
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
   };
 
