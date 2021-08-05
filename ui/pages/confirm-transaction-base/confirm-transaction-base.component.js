@@ -283,6 +283,7 @@ export default class ConfirmTransactionBase extends Component {
       txData,
       useNativeCurrencyAsPrimaryCurrency,
       hexMaximumTransactionFee,
+      primaryTotalTextOverrideMaxAmount,
     } = this.props;
     const { t } = this.context;
 
@@ -296,9 +297,10 @@ export default class ConfirmTransactionBase extends Component {
 
     const renderTotalMaxAmount = () => {
       if (
-        primaryTotalTextOverride === undefined &&
+        primaryTotalTextOverrideMaxAmount === undefined &&
         secondaryTotalTextOverride === undefined
       ) {
+        // Native Send
         return (
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
@@ -314,8 +316,10 @@ export default class ConfirmTransactionBase extends Component {
           />
         );
       }
+
+      // Token send
       return useNativeCurrencyAsPrimaryCurrency
-        ? primaryTotalTextOverride
+        ? primaryTotalTextOverrideMaxAmount
         : secondaryTotalTextOverride;
     };
 

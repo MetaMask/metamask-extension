@@ -20,6 +20,7 @@ export default function ConfirmTokenTransactionBase({
   tokenSymbol,
   fiatTransactionTotal,
   ethTransactionTotal,
+  ethTransactionTotalMaxAmount,
   contractExchangeRate,
   conversionRate,
   currentCurrency,
@@ -87,6 +88,7 @@ export default function ConfirmTokenTransactionBase({
         )
       }
       primaryTotalTextOverride={`${tokensText} + ${ethTransactionTotal} ${nativeCurrency}`}
+      primaryTotalTextOverrideMaxAmount= {`${tokensText} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`}
       secondaryTotalTextOverride={secondaryTotalTextOverride}
     />
   );
