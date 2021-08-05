@@ -21,7 +21,12 @@ const mapStateToProps = (state, ownProps) => {
   const { id: paramsTransactionId } = params;
   const {
     confirmTransaction,
-    metamask: { currentCurrency, conversionRate, currentNetworkTxList },
+    metamask: {
+      currentCurrency,
+      conversionRate,
+      currentNetworkTxList,
+      nativeCurrency,
+    },
   } = state;
 
   const {
@@ -61,6 +66,7 @@ const mapStateToProps = (state, ownProps) => {
     contractExchangeRate,
     fiatTransactionTotal,
     ethTransactionTotal,
+    nativeCurrency,
   };
 };
 

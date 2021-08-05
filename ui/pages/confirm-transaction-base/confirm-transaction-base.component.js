@@ -4,9 +4,7 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
-import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util';
 import {
-  addHexes,
   hexToDecimal,
   hexWEIToDecGWEI,
 } from '../../helpers/utils/conversions.util';
@@ -108,6 +106,7 @@ export default class ConfirmTransactionBase extends Component {
     primaryTotalTextOverride: PropTypes.string,
     secondaryTotalTextOverride: PropTypes.string,
     gasIsLoading: PropTypes.bool,
+    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
   };
 
   state = {
@@ -280,6 +279,7 @@ export default class ConfirmTransactionBase extends Component {
       nextNonce,
       getNextNonce,
       txData,
+      useNativeCurrencyAsPrimaryCurrency,
     } = this.props;
     const { t } = this.context;
 
@@ -289,6 +289,42 @@ export default class ConfirmTransactionBase extends Component {
       } catch (err) {
         return '';
       }
+    };
+
+    const renderTotalDetailTotal = () => {
+      if (
+        primaryTotalTextOverride === undefined &&
+        secondaryTotalTextOverride === undefined
+      ) {
+        return (
+          <UserPreferencedCurrencyDisplay
+            type={PRIMARY}
+            value={hexTransactionTotal}
+            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+          />
+        );
+      }
+      return useNativeCurrencyAsPrimaryCurrency
+        ? primaryTotalTextOverride
+        : secondaryTotalTextOverride;
+    };
+
+    const renderTotalDetailText = () => {
+      if (
+        primaryTotalTextOverride === undefined &&
+        secondaryTotalTextOverride === undefined
+      ) {
+        return (
+          <UserPreferencedCurrencyDisplay
+            type={SECONDARY}
+            value={hexTransactionTotal}
+            hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+          />
+        );
+      }
+      return useNativeCurrencyAsPrimaryCurrency
+        ? secondaryTotalTextOverride
+        : primaryTotalTextOverride;
     };
 
     const nonceField = useNonceField ? (
@@ -372,34 +408,27 @@ export default class ConfirmTransactionBase extends Component {
               }
               detailText={
                 <UserPreferencedCurrencyDisplay
-                  type={PRIMARY}
+                  type={SECONDARY}
                   value={hexMinimumTransactionFee}
-                  hideLabel={false}
+                  hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
                 />
               }
               detailTotal={
                 <UserPreferencedCurrencyDisplay
-                  type={SECONDARY}
+                  type={PRIMARY}
                   value={hexMinimumTransactionFee}
-                  hideLabel
+                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
                 />
               }
               subText={
-                <strong>
-                  {t('editGasSubTextFee', [
-                    <UserPreferencedCurrencyDisplay
-                      key="gas-subtext"
-                      type={SECONDARY}
-                      value={getHexGasTotal({
-                        gasPrice:
-                          txData.txParams.maxFeePerGas ??
-                          txData.txParams.gasPrice,
-                        gasLimit: txData.txParams.gas,
-                      })}
-                      hideLabel
-                    />,
-                  ])}
-                </strong>
+                <div>
+                  <b>{t('editGasSubTextFee', [null])}</b>
+                  <UserPreferencedCurrencyDisplay
+                    type={PRIMARY}
+                    value={hexMinimumTransactionFee}
+                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                  />
+                </div>
               }
               subTitle={
                 <GasTiming
@@ -412,44 +441,17 @@ export default class ConfirmTransactionBase extends Component {
             />,
             <TransactionDetailItem
               key="total-item"
-              detailTitle={primaryTotalTextOverride || t('total')}
-              detailText={
-                <UserPreferencedCurrencyDisplay
-                  type={PRIMARY}
-                  value={hexTransactionTotal}
-                  hideLabel={false}
-                />
-              }
-              detailTotal={
-                <UserPreferencedCurrencyDisplay
-                  type={SECONDARY}
-                  value={hexTransactionTotal}
-                  hideLabel
-                />
-              }
-              subTitle={
-                secondaryTotalTextOverride ||
-                t('transactionDetailGasTotalSubtitle')
-              }
+              detailTitle={t('total')}
+              detailText={renderTotalDetailText()}
+              detailTotal={renderTotalDetailTotal()}
+              subTitle={t('transactionDetailGasTotalSubtitle')}
               subText={
-                <strong>
-                  {t('editGasSubTextAmount', [
-                    <UserPreferencedCurrencyDisplay
-                      key="gas-total-subtext"
-                      type={SECONDARY}
-                      value={addHexes(
-                        txData.txParams.value,
-                        getHexGasTotal({
-                          gasPrice:
-                            txData.txParams.maxFeePerGas ??
-                            txData.txParams.gasPrice,
-                          gasLimit: txData.txParams.gas,
-                        }),
-                      )}
-                      hideLabel
-                    />,
-                  ])}
-                </strong>
+                <div>
+                  <span>
+                    <b>{t('editGasSubTextAmount', [null])}</b>
+                  </span>
+                  <span>{renderTotalDetailTotal()}</span>
+                </div>
               }
             />,
           ]}

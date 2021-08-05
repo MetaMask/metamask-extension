@@ -23,6 +23,7 @@ export default function ConfirmTokenTransactionBase({
   contractExchangeRate,
   conversionRate,
   currentCurrency,
+  nativeCurrency,
   onEdit,
 }) {
   const t = useContext(I18nContext);
@@ -85,13 +86,7 @@ export default function ConfirmTokenTransactionBase({
           />
         )
       }
-      primaryTotalTextOverride={
-        <div>
-          <span>{`${tokensText} + `}</span>
-          <img src="./images/eth.svg" height="18" alt="" />
-          <span>{ethTransactionTotal}</span>
-        </div>
-      }
+      primaryTotalTextOverride={`${tokensText} + ${ethTransactionTotal} ${nativeCurrency}`}
       secondaryTotalTextOverride={secondaryTotalTextOverride}
     />
   );
@@ -108,4 +103,5 @@ ConfirmTokenTransactionBase.propTypes = {
   conversionRate: PropTypes.number,
   currentCurrency: PropTypes.string,
   onEdit: PropTypes.func,
+  nativeCurrency: PropTypes.string,
 };
