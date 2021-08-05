@@ -49,7 +49,9 @@ export default function EditGasPopover({
   const shouldAnimate = useShouldAnimateGasEstimations();
 
   const showEducationButton =
-    mode === EDIT_GAS_MODES.MODIFY_IN_PLACE && networkAndAccountSupport1559;
+    (mode === EDIT_GAS_MODES.MODIFY_IN_PLACE ||
+      mode === EDIT_GAS_MODES.SWAPS) &&
+    networkAndAccountSupport1559;
   const [showEducationContent, setShowEducationContent] = useState(false);
 
   const [warning] = useState(null);
