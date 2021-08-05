@@ -357,19 +357,19 @@ export function bnLessThan(a, b) {
   if (a === null || a === undefined || b === null || b === undefined) {
     return null;
   }
-  return new BigNumber(a, 10).lt(b);
+  return new BigNumber(a, 10).lt(b, 10);
 }
 
 export function bnGreaterThanEqualTo(a, b) {
   if (a === null || a === undefined || b === null || b === undefined) {
     return null;
   }
-  return new BigNumber(a, 10).gte(b);
+  return new BigNumber(a, 10).gte(b, 10);
 }
 
 export function bnLessThanEqualTo(a, b) {
   if (a === null || a === undefined || b === null || b === undefined) {
     return null;
   }
-  return new BigNumber(a, 10).lte(b);
+  return new BigNumber(a, 10).lte(b, 10);
 }
