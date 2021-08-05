@@ -34,7 +34,6 @@ import {
 import {
   bnGreaterThan,
   bnLessThan,
-  bnGreaterThanEqualTo,
   bnLessThanEqualTo,
 } from '../helpers/utils/util';
 import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
@@ -429,9 +428,7 @@ export function useGasFeeInputs(
   if (networkAndAccountSupports1559) {
     if (bnLessThanEqualTo(maxPriorityFeePerGasToUse, 0)) {
       gasErrors.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
-    } else if (
-      bnGreaterThanEqualTo(maxPriorityFeePerGasToUse, maxFeePerGasToUse)
-    ) {
+    } else if (bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)) {
       gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
     }
   }
@@ -449,9 +446,7 @@ export function useGasFeeInputs(
         )
       ) {
         gasWarnings.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW;
-      } else if (
-        bnGreaterThanEqualTo(maxPriorityFeePerGasToUse, maxFeePerGasToUse)
-      ) {
+      } else if (bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)) {
         gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
       } else if (
         gasFeeEstimates?.high &&
