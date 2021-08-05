@@ -118,6 +118,7 @@ const mapStateToProps = (state, ownProps) => {
     hexMinimumTransactionFee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
+    gasEstimationObject,
   } = transactionFeeSelector(state, transaction);
 
   if (transaction && transaction.simulationFails) {
@@ -196,6 +197,8 @@ const mapStateToProps = (state, ownProps) => {
     supportsEIP1599,
     gasIsLoading: isGasEstimatesLoading || gasLoadingAnimationIsShowing,
     useNativeCurrencyAsPrimaryCurrency,
+    maxFeePerGas: gasEstimationObject.maxFeePerGas,
+    maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
   };
 };
 

@@ -4,7 +4,6 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
-import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util';
 import {
   addHexes,
   hexToDecimal,
@@ -110,6 +109,8 @@ export default class ConfirmTransactionBase extends Component {
     gasIsLoading: PropTypes.bool,
     primaryTotalTextOverrideMaxAmount: PropTypes.string,
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
+    maxFeePerGas: PropTypes.string,
+    maxPriorityFeePerGas: PropTypes.string,
   };
 
   state = {
@@ -275,6 +276,7 @@ export default class ConfirmTransactionBase extends Component {
       primaryTotalTextOverride,
       secondaryTotalTextOverride,
       hexMinimumTransactionFee,
+      hexMaximumTransactionFee,
       hexTransactionTotal,
       useNonceField,
       customNonceValue,
@@ -283,8 +285,9 @@ export default class ConfirmTransactionBase extends Component {
       getNextNonce,
       txData,
       useNativeCurrencyAsPrimaryCurrency,
-      hexMaximumTransactionFee,
       primaryTotalTextOverrideMaxAmount,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
     } = this.props;
     const { t } = this.context;
 
@@ -305,14 +308,7 @@ export default class ConfirmTransactionBase extends Component {
         return (
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
-            value={addHexes(
-              txData.txParams.value,
-              getHexGasTotal({
-                gasPrice:
-                  txData.txParams.maxFeePerGas ?? txData.txParams.gasPrice,
-                gasLimit: txData.txParams.gas,
-              }),
-            )}
+            value={addHexes(txData.txParams.value, hexMaximumTransactionFee)}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
         );
@@ -467,9 +463,12 @@ export default class ConfirmTransactionBase extends Component {
               subTitle={
                 <GasTiming
                   maxPriorityFeePerGas={hexWEIToDecGWEI(
-                    txData.txParams.maxPriorityFeePerGas,
+                    maxPriorityFeePerGas ||
+                      txData.txParams.maxPriorityFeePerGas,
                   )}
-                  maxFeePerGas={hexWEIToDecGWEI(txData.txParams.maxFeePerGas)}
+                  maxFeePerGas={hexWEIToDecGWEI(
+                    maxFeePerGas || txData.txParams.maxFeePerGas,
+                  )}
                 />
               }
             />,
@@ -611,11 +610,27 @@ export default class ConfirmTransactionBase extends Component {
       history,
       mostRecentOverviewPage,
       updateCustomNonce,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
     } = this.props;
     const { submitting } = this.state;
 
     if (submitting) {
       return;
+    }
+
+    if (maxFeePerGas) {
+      txData.txParams = {
+        ...txData.txParams,
+        maxFeePerGas,
+      };
+    }
+
+    if (maxPriorityFeePerGas) {
+      txData.txParams = {
+        ...txData.txParams,
+        maxPriorityFeePerGas,
+      };
     }
 
     this.setState(

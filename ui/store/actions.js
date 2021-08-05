@@ -2215,6 +2215,13 @@ export function updateCustomSwapsEIP1559GasParams({
   };
 }
 
+export function updateSwapsUserFeeLevel(swapsCustomUserFeeLevel) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsUserFeeLevel(swapsCustomUserFeeLevel);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function customSwapsGasParamsUpdated(gasLimit, gasPrice) {
   return async (dispatch) => {
     await promisifiedBackground.setSwapsTxGasPrice(gasPrice);

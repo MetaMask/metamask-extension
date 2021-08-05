@@ -251,6 +251,9 @@ export const getCustomMaxFeePerGas = (state) =>
 export const getCustomMaxPriorityFeePerGas = (state) =>
   state.metamask.swapsState.customMaxPriorityFeePerGas;
 
+export const getSwapsUserFeeLevel = (state) =>
+  state.metamask.swapsState.swapsUserFeeLevel;
+
 export const getFetchParams = (state) => state.metamask.swapsState.fetchParams;
 
 export const getQuotes = (state) => state.metamask.swapsState.quotes;

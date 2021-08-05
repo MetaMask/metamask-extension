@@ -26,6 +26,7 @@ import {
   getCustomSwapsGas, // Gas limit.
   getCustomMaxFeePerGas,
   getCustomMaxPriorityFeePerGas,
+  getSwapsUserFeeLevel,
   getDestinationTokenInfo,
   getUsedSwapsGasPrice,
   getTopQuote,
@@ -128,6 +129,7 @@ export default function ViewQuote() {
   const customMaxGas = useSelector(getCustomSwapsGas);
   const customMaxFeePerGas = useSelector(getCustomMaxFeePerGas);
   const customMaxPriorityFeePerGas = useSelector(getCustomMaxPriorityFeePerGas);
+  const swapsUserFeeLevel = useSelector(getSwapsUserFeeLevel);
   const tokenConversionRates = useSelector(getTokenExchangeRates);
   const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates);
   const { balance: ethBalance } = useSelector(getSelectedAccount);
@@ -153,7 +155,9 @@ export default function ViewQuote() {
   if (networkAndAccountSupports1559) {
     // For Swaps we want to get 'high' estimations by default.
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    gasFeeInputs = useGasFeeInputs('high');
+    gasFeeInputs = useGasFeeInputs('high', {
+      userFeeLevel: swapsUserFeeLevel || 'high',
+    });
   }
 
   const { isBestQuote } = usedQuote;
@@ -670,6 +674,7 @@ export default function ViewQuote() {
         {showEditGasPopover && networkAndAccountSupports1559 && (
           <EditGasPopover
             transaction={{
+              userFeeLevel: swapsUserFeeLevel || 'high',
               txParams: {
                 maxFeePerGas,
                 maxPriorityFeePerGas,
