@@ -133,6 +133,7 @@ const EMPTY_INIT_STATE = {
     swapsFeatureIsLive: true,
     useNewSwapsApi: false,
     swapsQuoteRefreshTime: 60000,
+    swapsUserFeeLevel: '',
   },
 };
 
@@ -150,7 +151,7 @@ const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
   };
 });
 
-describe('SwapsController', function () {
+describe.only('SwapsController', function () {
   let provider;
 
   const getSwapsController = () => {
