@@ -816,6 +816,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
         updateTransaction(
           {
             ...approveTxMeta,
+            estimatedBaseFee: decGWEIToHexWEI(estimatedBaseFee),
             type: TRANSACTION_TYPES.SWAP_APPROVAL,
             sourceTokenSymbol: sourceTokenInfo.symbol,
           },
@@ -855,6 +856,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       updateTransaction(
         {
           ...tradeTxMeta,
+          estimatedBaseFee: decGWEIToHexWEI(estimatedBaseFee),
           sourceTokenSymbol: sourceTokenInfo.symbol,
           destinationTokenSymbol: destinationTokenInfo.symbol,
           type: TRANSACTION_TYPES.SWAP,
