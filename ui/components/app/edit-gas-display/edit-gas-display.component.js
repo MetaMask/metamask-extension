@@ -112,7 +112,7 @@ export default function EditGasDisplay({
   return (
     <div className="edit-gas-display">
       <div className="edit-gas-display__content">
-        {warning && (
+        {warning && !isGasEstimatesLoading && (
           <div className="edit-gas-display__warning">
             <ActionableMessage
               className="actionable-message--warning"
@@ -120,12 +120,12 @@ export default function EditGasDisplay({
             />
           </div>
         )}
-        {showTopError && (
+        {showTopError && !isGasEstimatesLoading && (
           <div className="edit-gas-display__warning">
             <ErrorMessage errorKey={errorKey} />
           </div>
         )}
-        {requireDappAcknowledgement && (
+        {requireDappAcknowledgement && !isGasEstimatesLoading && (
           <div className="edit-gas-display__dapp-acknowledgement-warning">
             <ActionableMessage
               className="actionable-message--warning"

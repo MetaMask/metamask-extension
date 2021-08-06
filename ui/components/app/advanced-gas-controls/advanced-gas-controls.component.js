@@ -40,7 +40,8 @@ export default function AdvancedGasControls({
   const showFeeMarketFields =
     networkAndAccountSupport1559 &&
     (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
-      gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE);
+      gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE ||
+      isGasEstimatesLoading);
 
   return (
     <div className="advanced-gas-controls">
