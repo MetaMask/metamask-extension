@@ -25,6 +25,7 @@ import {
   hideSidebar,
   updateTransaction,
   updateCustomSwapsEIP1559GasParams,
+  updateSwapsUserFeeLevel,
 } from '../../../store/actions';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
@@ -126,6 +127,15 @@ export default function EditGasPopover({
           gasPrice: decGWEIToHexWEI(gasPrice),
         };
 
+    const updatedTxMeta = {
+      ...transaction,
+      userFeeLevel: estimateToUse || 'custom',
+      txParams: {
+        ...transaction.txParams,
+        ...newGasSettings,
+      },
+    };
+
     switch (mode) {
       case EDIT_GAS_MODES.CANCEL:
         dispatch(createCancelTransaction(transaction.id, newGasSettings));
@@ -134,19 +144,12 @@ export default function EditGasPopover({
         dispatch(createSpeedUpTransaction(transaction.id, newGasSettings));
         break;
       case EDIT_GAS_MODES.MODIFY_IN_PLACE:
-        dispatch(
-          updateTransaction({
-            ...transaction,
-            txParams: {
-              ...transaction.txParams,
-              ...newGasSettings,
-            },
-          }),
-        );
+        dispatch(updateTransaction(updatedTxMeta));
         break;
       case EDIT_GAS_MODES.SWAPS:
         // This popover component should only be used for the "FEE_MARKET" type in Swaps.
         if (networkAndAccountSupport1559) {
+          dispatch(updateSwapsUserFeeLevel(estimateToUse || 'custom'));
           dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
         }
         break;
@@ -165,6 +168,7 @@ export default function EditGasPopover({
     maxFeePerGas,
     maxPriorityFeePerGas,
     networkAndAccountSupport1559,
+    estimateToUse,
   ]);
 
   let title = t('editGasTitle');

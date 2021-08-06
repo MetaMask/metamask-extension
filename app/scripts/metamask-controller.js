@@ -1089,6 +1089,10 @@ export default class MetamaskController extends EventEmitter {
         swapsController.setSwapsLiveness,
         swapsController,
       ),
+      setSwapsUserFeeLevel: nodeify(
+        swapsController.setSwapsUserFeeLevel,
+        swapsController,
+      ),
 
       // MetaMetrics
       trackMetaMetricsEvent: nodeify(

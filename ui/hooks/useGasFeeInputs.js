@@ -1,7 +1,7 @@
 import { addHexPrefix } from 'ethereumjs-util';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { findKey, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import {
   GAS_ESTIMATE_TYPES,
   EDIT_GAS_MODES,
@@ -104,32 +104,6 @@ function getGasFeeEstimate(
 }
 
 /**
- * This method tries to determine if any estimate level matches the
- * current maxFeePerGas and maxPriorityFeePerGas values. If we find
- * a match, we can pre-select a radio button in the RadioGroup
- */
-function getMatchingEstimateFromGasFees(
-  gasFeeEstimates,
-  maxFeePerGas,
-  maxPriorityFeePerGas,
-  gasPrice,
-  networkAndAccountSupports1559,
-) {
-  return (
-    findKey(gasFeeEstimates, (estimate) => {
-      if (networkAndAccountSupports1559) {
-        return (
-          Number(estimate?.suggestedMaxPriorityFeePerGas) ===
-            Number(maxPriorityFeePerGas) &&
-          Number(estimate?.suggestedMaxFeePerGas) === Number(maxFeePerGas)
-        );
-      }
-      return estimate?.gasPrice === gasPrice;
-    }) || null
-  );
-}
-
-/**
  * @typedef {Object} GasFeeInputReturnType
  * @property {DecGweiString} [maxFeePerGas] - the maxFeePerGas input value.
  * @property {string} [maxFeePerGasFiat] - the maxFeePerGas converted to the
@@ -229,33 +203,30 @@ export function useGasFeeInputs(
   );
 
   const [initialMatchingEstimateLevel] = useState(
-    getMatchingEstimateFromGasFees(
-      gasFeeEstimates,
-      initialMaxFeePerGas,
-      initialMaxPriorityFeePerGas,
-      initialGasPrice,
-      networkAndAccountSupports1559,
-    ),
+    transaction?.userFeeLevel || null,
   );
+  const initialFeeParamsAreCustom =
+    initialMatchingEstimateLevel === 'custom' ||
+    initialMatchingEstimateLevel === null;
 
   // This hook keeps track of a few pieces of transitional state. It is
   // transitional because it is only used to modify a transaction in the
   // metamask (background) state tree.
   const [maxFeePerGas, setMaxFeePerGas] = useState(
-    initialMaxFeePerGas && !initialMatchingEstimateLevel
+    initialMaxFeePerGas && initialFeeParamsAreCustom
       ? initialMaxFeePerGas
       : null,
   );
   const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(
-    initialMaxPriorityFeePerGas && !initialMatchingEstimateLevel
+    initialMaxPriorityFeePerGas && initialFeeParamsAreCustom
       ? initialMaxPriorityFeePerGas
       : null,
   );
   const [gasPriceHasBeenManuallySet, setGasPriceHasBeenManuallySet] = useState(
-    false,
+    initialMatchingEstimateLevel === 'custom',
   );
   const [gasPrice, setGasPrice] = useState(
-    initialGasPrice && !initialMatchingEstimateLevel ? initialGasPrice : null,
+    initialGasPrice && initialFeeParamsAreCustom ? initialGasPrice : null,
   );
   const [gasLimit, setGasLimit] = useState(
     Number(hexToDecimal(transaction?.txParams?.gas ?? minimumGasLimit)),
@@ -265,7 +236,7 @@ export function useGasFeeInputs(
   const dontDefaultToAnEstimateLevel =
     userPrefersAdvancedGas &&
     transaction?.txParams?.maxPriorityFeePerGas &&
-    transaction?.txParams?.gasPrice;
+    transaction?.txParams?.maxFeePerGas;
 
   const initialEstimateToUse = transaction
     ? initialMatchingEstimateLevel
@@ -514,28 +485,28 @@ export function useGasFeeInputs(
     { value: ethBalance, fromNumericBase: 'hex' },
   );
 
+  const handleGasLimitOutOfBoundError = useCallback(() => {
+    if (gasErrors.gasLimit === GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS) {
+      const transactionGasLimitDec = hexToDecimal(transaction?.txParams?.gas);
+      const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
+      setGasLimit(
+        transactionGasLimitDec > minimumGasLimitDec
+          ? transactionGasLimitDec
+          : minimumGasLimitDec,
+      );
+    }
+  }, [minimumGasLimit, gasErrors.gasLimit, transaction]);
   // When a user selects an estimate level, it will wipe out what they have
   // previously put in the inputs. This returns the inputs to the estimated
   // values at the level specified.
-  const setEstimateToUse = useCallback(
-    (estimateLevel) => {
-      setInternalEstimateToUse(estimateLevel);
-      if (gasErrors.gasLimit === GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS) {
-        const transactionGasLimit = hexToDecimal(transaction?.txParams?.gas);
-        const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
-        setGasLimit(
-          transactionGasLimit > minimumGasLimitDec
-            ? transactionGasLimit
-            : minimumGasLimitDec,
-        );
-      }
-      setMaxFeePerGas(null);
-      setMaxPriorityFeePerGas(null);
-      setGasPrice(null);
-      setGasPriceHasBeenManuallySet(false);
-    },
-    [minimumGasLimit, gasErrors.gasLimit, transaction],
-  );
+  const setEstimateToUse = (estimateLevel) => {
+    setInternalEstimateToUse(estimateLevel);
+    handleGasLimitOutOfBoundError();
+    setMaxFeePerGas(null);
+    setMaxPriorityFeePerGas(null);
+    setGasPrice(null);
+    setGasPriceHasBeenManuallySet(false);
+  };
 
   return {
     maxFeePerGas: maxFeePerGasToUse,
@@ -561,7 +532,8 @@ export function useGasFeeInputs(
     gasErrors: errorsAndWarnings,
     hasGasErrors: hasBlockingGasErrors,
     onManualChange: () => {
-      setEstimateToUse(null);
+      setInternalEstimateToUse('custom');
+      handleGasLimitOutOfBoundError();
       // Restore existing values
       setGasPrice(gasPriceToUse);
       setGasLimit(gasLimit);

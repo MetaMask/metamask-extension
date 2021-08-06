@@ -73,6 +73,7 @@ const initialState = {
     customGasPrice: null,
     customMaxFeePerGas: null,
     customMaxPriorityFeePerGas: null,
+    swapsUserFeeLevel: '',
     selectedAggId: null,
     customApproveTxData: '',
     errorKey: '',
@@ -453,6 +454,13 @@ export default class SwapsController {
     const { swapsState } = this.store.getState();
     this.store.updateState({
       swapsState: { ...swapsState, customMaxFeePerGas: maxFeePerGas },
+    });
+  }
+
+  setSwapsUserFeeLevel(swapsUserFeeLevel) {
+    const { swapsState } = this.store.getState();
+    this.store.updateState({
+      swapsState: { ...swapsState, swapsUserFeeLevel },
     });
   }
 

@@ -172,7 +172,7 @@ export function addHexes(aHexWEI, bHexWEI) {
 }
 
 export function subtractHexes(aHexWEI, bHexWEI) {
-  return addCurrencies(aHexWEI, bHexWEI, {
+  return subtractCurrencies(aHexWEI, bHexWEI, {
     aBase: 16,
     bBase: 16,
     toNumericBase: 'hex',
