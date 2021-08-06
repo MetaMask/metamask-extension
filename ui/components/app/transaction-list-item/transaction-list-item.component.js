@@ -220,6 +220,7 @@ export default function TransactionListItem({
           mode={EDIT_GAS_MODES.SPEED_UP}
           transaction={{
             ...transactionGroup.primaryTransaction,
+            userFeeLevel: 'custom',
             txParams: {
               ...transactionGroup.primaryTransaction?.txParams,
               ...customRetryGasSettings,
@@ -233,6 +234,7 @@ export default function TransactionListItem({
           mode={EDIT_GAS_MODES.CANCEL}
           transaction={{
             ...transactionGroup.primaryTransaction,
+            userFeeLevel: 'custom',
             txParams: {
               ...transactionGroup.primaryTransaction?.txParams,
               ...customCancelGasSettings,

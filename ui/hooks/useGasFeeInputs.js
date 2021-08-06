@@ -223,7 +223,7 @@ export function useGasFeeInputs(
       : null,
   );
   const [gasPriceHasBeenManuallySet, setGasPriceHasBeenManuallySet] = useState(
-    false,
+    initialMatchingEstimateLevel === 'custom',
   );
   const [gasPrice, setGasPrice] = useState(
     initialGasPrice && initialFeeParamsAreCustom ? initialGasPrice : null,
