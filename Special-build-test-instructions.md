@@ -4,8 +4,8 @@
 
 Our RC builds are automatically posted here as we update the RC: https://github.com/MetaMask/metamask-extension/pull/11731
 
-- [Most Recent Chrome Download](https://322382-42009758-gh.circle-artifacts.com/0/builds/metamask-chrome-10.0.0.zip)
-- [Most Recent Firefox download](https://322382-42009758-gh.circle-artifacts.com/0/builds/metamask-firefox-10.0.0.zip)
+- [Most Recent Chrome Download](https://322850-42009758-gh.circle-artifacts.com/0/builds/metamask-chrome-10.0.0.zip)
+- [Most Recent Firefox download](https://322850-42009758-gh.circle-artifacts.com/0/builds/metamask-firefox-10.0.0.zip)
 
 ## Chrome specific instructions
 
