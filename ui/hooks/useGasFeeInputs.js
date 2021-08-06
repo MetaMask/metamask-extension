@@ -236,7 +236,7 @@ export function useGasFeeInputs(
   const dontDefaultToAnEstimateLevel =
     userPrefersAdvancedGas &&
     transaction?.txParams?.maxPriorityFeePerGas &&
-    transaction?.txParams?.maxFee;
+    transaction?.txParams?.maxFeePerGas;
 
   const initialEstimateToUse = transaction
     ? initialMatchingEstimateLevel
