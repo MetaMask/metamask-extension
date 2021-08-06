@@ -118,6 +118,7 @@ const mapStateToProps = (state, ownProps) => {
     hexMinimumTransactionFee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
+    gasEstimationObject,
   } = transactionFeeSelector(state, transaction);
 
   if (transaction && transaction.simulationFails) {
@@ -152,8 +153,9 @@ const mapStateToProps = (state, ownProps) => {
   }
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);
-  const noGasPrice = getNoGasPriceFetched(state);
+  const noGasPrice = !supportsEIP1599 && getNoGasPriceFetched(state);
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
+
   return {
     balance,
     fromAddress,
@@ -196,6 +198,8 @@ const mapStateToProps = (state, ownProps) => {
     supportsEIP1599,
     gasIsLoading: isGasEstimatesLoading || gasLoadingAnimationIsShowing,
     useNativeCurrencyAsPrimaryCurrency,
+    maxFeePerGas: gasEstimationObject.maxFeePerGas,
+    maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
   };
 };
 
