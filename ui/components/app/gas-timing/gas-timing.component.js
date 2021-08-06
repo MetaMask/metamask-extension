@@ -92,7 +92,7 @@ export default function GasTiming({
     previousIsUnknownLow,
   ]);
 
-  const unknownProcessingTimeText = () => (
+  const unknownProcessingTimeText = (
     <>
       {t('editGasTooLow')}{' '}
       <InfoTooltip position="top" contentText={t('editGasTooLowTooltip')} />
@@ -109,7 +109,7 @@ export default function GasTiming({
         fontWeight={FONT_WEIGHT.BOLD}
         className={classNames('gas-timing', 'gas-timing--negative')}
       >
-        {unknownProcessingTimeText()}
+        {unknownProcessingTimeText}
       </Typography>
     );
   }
@@ -160,7 +160,7 @@ export default function GasTiming({
         customEstimatedTime?.upperTimeBound === 'unknown'
       ) {
         fontWeight = FONT_WEIGHT.BOLD;
-        text = unknownProcessingTimeText();
+        text = unknownProcessingTimeText;
       } else {
         text = t('gasTimingNegative', [
           toHumanReadableTime(Number(customEstimatedTime?.upperTimeBound), t),
