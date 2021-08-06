@@ -61,6 +61,7 @@ export default function EditGasDisplay({
   setDappSuggestedGasFeeAcknowledged,
   warning,
   gasErrors,
+  gasWarnings,
   onManualChange,
   minimumGasLimit,
   balanceError,
@@ -173,10 +174,13 @@ export default function EditGasDisplay({
             ])
           }
           timing={
-            <GasTiming
-              maxFeePerGas={maxFeePerGas}
-              maxPriorityFeePerGas={maxPriorityFeePerGas}
-            />
+            hasGasErrors === false && (
+              <GasTiming
+                maxFeePerGas={maxFeePerGas}
+                maxPriorityFeePerGas={maxPriorityFeePerGas}
+                gasWarnings={gasWarnings}
+              />
+            )
           }
         />
         {requireDappAcknowledgement && (
@@ -306,6 +310,7 @@ EditGasDisplay.propTypes = {
   warning: PropTypes.string,
   transaction: PropTypes.object,
   gasErrors: PropTypes.object,
+  gasWarnings: PropTypes.object,
   onManualChange: PropTypes.func,
   minimumGasLimit: PropTypes.number,
   balanceError: PropTypes.bool,
