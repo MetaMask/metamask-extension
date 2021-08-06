@@ -696,7 +696,7 @@ export default class TransactionController extends EventEmitter {
   async createCancelTransaction(
     originalTxId,
     customGasSettings,
-    { estimatedBaseFee },
+    { estimatedBaseFee } = {},
   ) {
     const originalTxMeta = this.txStateManager.getTransaction(originalTxId);
     const { txParams } = originalTxMeta;
@@ -749,7 +749,7 @@ export default class TransactionController extends EventEmitter {
   async createSpeedUpTransaction(
     originalTxId,
     customGasSettings,
-    { estimatedBaseFee },
+    { estimatedBaseFee } = {},
   ) {
     const originalTxMeta = this.txStateManager.getTransaction(originalTxId);
     const { txParams } = originalTxMeta;
