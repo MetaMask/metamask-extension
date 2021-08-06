@@ -78,7 +78,7 @@ export default function EditGasDisplay({
 
   const [showAdvancedForm, setShowAdvancedForm] = useState(
     !estimateToUse ||
-      !estimateToUse === 'custom' ||
+      estimateToUse === 'custom' ||
       !networkAndAccountSupport1559,
   );
   const [hideRadioButtons, setHideRadioButtons] = useState(
