@@ -633,7 +633,7 @@
     "message": "This is best for swaps or other time sensitive transactions. If a swap takes too long to process it will often fail and you may lose funds."
   },
   "editGasEducationLowExplanation": {
-    "message": "A lower gas fee should only be selected for transactions where processing time is less important. With a lower fee, it can be be hard to predict when (or if) your transaction with be successful."
+    "message": "A lower gas fee should only be selected for transactions where processing time is less important. With a lower fee, it can be hard to predict when (or if) your transaction will be successful."
   },
   "editGasEducationMediumExplanation": {
     "message": "A medium gas fee is good for sending, withdrawing or other non-time sensitive but important transactions."
