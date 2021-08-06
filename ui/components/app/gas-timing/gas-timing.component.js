@@ -53,9 +53,8 @@ export default function GasTiming({
   // the time to show
   const isUnknownLow =
     gasFeeEstimates?.low &&
-    (Number(maxPriorityFeePerGas) <
-      Number(gasFeeEstimates.low.suggestedMaxPriorityFeePerGas) ||
-      Number(maxFeePerGas) < Number(gasFeeEstimates.low.suggestedMaxFeePerGas));
+    Number(maxPriorityFeePerGas) <
+      Number(gasFeeEstimates.low.suggestedMaxPriorityFeePerGas);
 
   const previousMaxFeePerGas = usePrevious(maxFeePerGas);
   const previousMaxPriorityFeePerGas = usePrevious(maxPriorityFeePerGas);
