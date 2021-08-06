@@ -151,7 +151,7 @@ const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
   };
 });
 
-describe.only('SwapsController', function () {
+describe('SwapsController', function () {
   let provider;
 
   const getSwapsController = () => {

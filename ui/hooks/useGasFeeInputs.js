@@ -203,7 +203,7 @@ export function useGasFeeInputs(
   );
 
   const [initialMatchingEstimateLevel] = useState(
-    transaction.userFeeLevel || null,
+    transaction?.userFeeLevel || null,
   );
   const initialFeeParamsAreCustom =
     initialMatchingEstimateLevel === 'custom' ||
