@@ -12,6 +12,8 @@ import {
   getTokenAddressParam,
   getTokenValueParam,
 } from '../../helpers/utils/token-util';
+import { hexWEIToDecETH } from '../../helpers/utils/conversions.util';
+import { getHexGasTotal } from '../../helpers/utils/confirm-tx.util';
 import ConfirmTokenTransactionBase from './confirm-token-transaction-base.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -21,15 +23,29 @@ const mapStateToProps = (state, ownProps) => {
   const { id: paramsTransactionId } = params;
   const {
     confirmTransaction,
-    metamask: { currentCurrency, conversionRate, currentNetworkTxList },
+    metamask: {
+      currentCurrency,
+      conversionRate,
+      currentNetworkTxList,
+      nativeCurrency,
+    },
   } = state;
 
   const {
     txData: {
       id: transactionId,
-      txParams: { to: tokenAddress, data } = {},
+      txParams: { to: tokenAddress, data, maxFeePerGas, gasPrice, gas } = {},
     } = {},
   } = confirmTransaction;
+
+  const ethTransactionTotalMaxAmount = Number(
+    hexWEIToDecETH(
+      getHexGasTotal({
+        gasPrice: maxFeePerGas ?? gasPrice,
+        gasLimit: gas,
+      }),
+    ),
+  ).toFixed(6);
 
   const transaction =
     currentNetworkTxList.find(
@@ -61,6 +77,8 @@ const mapStateToProps = (state, ownProps) => {
     contractExchangeRate,
     fiatTransactionTotal,
     ethTransactionTotal,
+    ethTransactionTotalMaxAmount,
+    nativeCurrency,
   };
 };
 
