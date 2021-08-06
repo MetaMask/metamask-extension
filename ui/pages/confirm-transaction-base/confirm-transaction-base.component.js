@@ -111,6 +111,7 @@ export default class ConfirmTransactionBase extends Component {
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
     maxFeePerGas: PropTypes.string,
     maxPriorityFeePerGas: PropTypes.string,
+    baseFeePerGas: PropTypes.string,
   };
 
   state = {
@@ -612,11 +613,16 @@ export default class ConfirmTransactionBase extends Component {
       updateCustomNonce,
       maxFeePerGas,
       maxPriorityFeePerGas,
+      baseFeePerGas,
     } = this.props;
     const { submitting } = this.state;
 
     if (submitting) {
       return;
+    }
+
+    if (baseFeePerGas) {
+      txData.estimatedBaseFee = baseFeePerGas;
     }
 
     if (maxFeePerGas) {

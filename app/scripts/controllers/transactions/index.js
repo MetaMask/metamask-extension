@@ -693,7 +693,11 @@ export default class TransactionController extends EventEmitter {
    *  params instead of allowing this method to generate them
    * @returns {txMeta}
    */
-  async createCancelTransaction(originalTxId, customGasSettings) {
+  async createCancelTransaction(
+    originalTxId,
+    customGasSettings,
+    { estimatedBaseFee } = {},
+  ) {
     const originalTxMeta = this.txStateManager.getTransaction(originalTxId);
     const { txParams } = originalTxMeta;
     const { from, nonce } = txParams;
@@ -723,6 +727,10 @@ export default class TransactionController extends EventEmitter {
       type: TRANSACTION_TYPES.CANCEL,
     });
 
+    if (estimatedBaseFee) {
+      newTxMeta.estimatedBaseFee = estimatedBaseFee;
+    }
+
     this.addTransaction(newTxMeta);
     await this.approveTransaction(newTxMeta.id);
     return newTxMeta;
@@ -738,7 +746,11 @@ export default class TransactionController extends EventEmitter {
    *  params instead of allowing this method to generate them
    * @returns {txMeta}
    */
-  async createSpeedUpTransaction(originalTxId, customGasSettings) {
+  async createSpeedUpTransaction(
+    originalTxId,
+    customGasSettings,
+    { estimatedBaseFee } = {},
+  ) {
     const originalTxMeta = this.txStateManager.getTransaction(originalTxId);
     const { txParams } = originalTxMeta;
 
@@ -757,6 +769,10 @@ export default class TransactionController extends EventEmitter {
       status: TRANSACTION_STATUSES.APPROVED,
       type: TRANSACTION_TYPES.RETRY,
     });
+
+    if (estimatedBaseFee) {
+      newTxMeta.estimatedBaseFee = estimatedBaseFee;
+    }
 
     this.addTransaction(newTxMeta);
     await this.approveTransaction(newTxMeta.id);
