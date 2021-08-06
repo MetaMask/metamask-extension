@@ -251,12 +251,13 @@ export const transactionFeeSelector = function (state, txData) {
         suggestedMaxFeePerGas,
       } = selectedGasEstimates;
       gasEstimationObject.maxFeePerGas =
-        txData.userFeeLevel === 'custom' && txData.txParams?.maxFeePerGas
+        txData.txParams?.maxFeePerGas &&
+        (txData.userFeeLevel === 'custom' || !suggestedMaxFeePerGas)
           ? txData.txParams?.maxFeePerGas
           : decGWEIToHexWEI(suggestedMaxFeePerGas || gasPrice);
       gasEstimationObject.maxPriorityFeePerGas =
-        txData.userFeeLevel === 'custom' &&
-        txData.txParams?.maxPriorityFeePerGas
+        txData.txParams?.maxPriorityFeePerGas &&
+        (txData.userFeeLevel === 'custom' || !suggestedMaxPriorityFeePerGas)
           ? txData.txParams?.maxPriorityFeePerGas
           : (suggestedMaxPriorityFeePerGas &&
               decGWEIToHexWEI(suggestedMaxPriorityFeePerGas)) ||

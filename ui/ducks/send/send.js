@@ -1516,10 +1516,6 @@ export function signTransaction() {
       amount: { value },
       eip1559support,
     } = state[name];
-
-    const txParamsToSend = { ...txParams };
-    delete txParamsToSend.maxFeePerGas;
-    delete txParamsToSend.maxPriorityFeePerGas;
     if (stage === SEND_STAGES.EDIT) {
       // When dealing with the edit flow there is already a transaction in
       // state that we must update, this branch is responsible for that logic.
@@ -1529,18 +1525,18 @@ export function signTransaction() {
       const unapprovedTxs = getUnapprovedTxs(state);
       // We only update the tx params that can be changed via the edit flow UX
       const eip1559OnlyTxParamsToUpdate = {
-        data: txParamsToSend.data,
-        from: txParamsToSend.from,
-        to: txParamsToSend.to,
-        value: txParamsToSend.value,
-        gas: txParamsToSend.gas,
+        data: txParams.data,
+        from: txParams.from,
+        to: txParams.to,
+        value: txParams.value,
+        gas: txParams.gas,
       };
       const unapprovedTx = unapprovedTxs[id];
       const editingTx = {
         ...unapprovedTx,
         txParams: Object.assign(
           unapprovedTx.txParams,
-          eip1559support ? eip1559OnlyTxParamsToUpdate : txParamsToSend,
+          eip1559support ? eip1559OnlyTxParamsToUpdate : txParams,
         ),
       };
       dispatch(updateTransaction(editingTx));
@@ -1553,7 +1549,7 @@ export function signTransaction() {
       try {
         const token = global.eth.contract(abi).at(asset.details.address);
         token.transfer(address, value, {
-          ...txParamsToSend,
+          ...txParams,
           to: undefined,
           data: undefined,
         });
@@ -1567,7 +1563,7 @@ export function signTransaction() {
       // When sending a native asset we use the ethQuery.sendTransaction method
       // which will result in the transaction being added to background state
       // and a subsequent confirmation will be queued.
-      global.ethQuery.sendTransaction(txParamsToSend, (err) => {
+      global.ethQuery.sendTransaction(txParams, (err) => {
         if (err) {
           dispatch(displayWarning(err.message));
         }

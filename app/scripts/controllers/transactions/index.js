@@ -442,6 +442,8 @@ export default class TransactionController extends EventEmitter {
           !txMeta.txParams.maxPriorityFeePerGas
         ) {
           txMeta.userFeeLevel = 'medium';
+        } else if (txMeta.origin === 'metamask') {
+          txMeta.userFeeLevel = 'medium';
         } else {
           txMeta.userFeeLevel = 'custom';
         }

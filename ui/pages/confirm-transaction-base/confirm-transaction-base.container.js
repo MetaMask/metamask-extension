@@ -153,8 +153,9 @@ const mapStateToProps = (state, ownProps) => {
   }
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);
-  const noGasPrice = getNoGasPriceFetched(state);
+  const noGasPrice = !supportsEIP1599 && getNoGasPriceFetched(state);
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
+
   return {
     balance,
     fromAddress,
