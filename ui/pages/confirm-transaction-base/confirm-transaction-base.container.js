@@ -28,6 +28,7 @@ import {
   getIsEthGasPriceFetched,
   getShouldShowFiat,
   checkNetworkAndAccountSupports1559,
+  getPreferences,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
@@ -152,7 +153,7 @@ const mapStateToProps = (state, ownProps) => {
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);
   const noGasPrice = getNoGasPriceFetched(state);
-
+  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
   return {
     balance,
     fromAddress,
@@ -194,6 +195,7 @@ const mapStateToProps = (state, ownProps) => {
     noGasPrice,
     supportsEIP1599,
     gasIsLoading: isGasEstimatesLoading || gasLoadingAnimationIsShowing,
+    useNativeCurrencyAsPrimaryCurrency,
   };
 };
 

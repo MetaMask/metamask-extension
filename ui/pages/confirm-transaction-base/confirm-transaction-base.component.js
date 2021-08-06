@@ -108,6 +108,8 @@ export default class ConfirmTransactionBase extends Component {
     primaryTotalTextOverride: PropTypes.string,
     secondaryTotalTextOverride: PropTypes.string,
     gasIsLoading: PropTypes.bool,
+    primaryTotalTextOverrideMaxAmount: PropTypes.string,
+    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
   };
 
   state = {
@@ -280,6 +282,9 @@ export default class ConfirmTransactionBase extends Component {
       nextNonce,
       getNextNonce,
       txData,
+      useNativeCurrencyAsPrimaryCurrency,
+      hexMaximumTransactionFee,
+      primaryTotalTextOverrideMaxAmount,
     } = this.props;
     const { t } = this.context;
 
@@ -289,6 +294,70 @@ export default class ConfirmTransactionBase extends Component {
       } catch (err) {
         return '';
       }
+    };
+
+    const renderTotalMaxAmount = () => {
+      if (
+        primaryTotalTextOverrideMaxAmount === undefined &&
+        secondaryTotalTextOverride === undefined
+      ) {
+        // Native Send
+        return (
+          <UserPreferencedCurrencyDisplay
+            type={PRIMARY}
+            value={addHexes(
+              txData.txParams.value,
+              getHexGasTotal({
+                gasPrice:
+                  txData.txParams.maxFeePerGas ?? txData.txParams.gasPrice,
+                gasLimit: txData.txParams.gas,
+              }),
+            )}
+            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+          />
+        );
+      }
+
+      // Token send
+      return useNativeCurrencyAsPrimaryCurrency
+        ? primaryTotalTextOverrideMaxAmount
+        : secondaryTotalTextOverride;
+    };
+
+    const renderTotalDetailTotal = () => {
+      if (
+        primaryTotalTextOverride === undefined &&
+        secondaryTotalTextOverride === undefined
+      ) {
+        return (
+          <UserPreferencedCurrencyDisplay
+            type={PRIMARY}
+            value={hexTransactionTotal}
+            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+          />
+        );
+      }
+      return useNativeCurrencyAsPrimaryCurrency
+        ? primaryTotalTextOverride
+        : secondaryTotalTextOverride;
+    };
+
+    const renderTotalDetailText = () => {
+      if (
+        primaryTotalTextOverride === undefined &&
+        secondaryTotalTextOverride === undefined
+      ) {
+        return (
+          <UserPreferencedCurrencyDisplay
+            type={SECONDARY}
+            value={hexTransactionTotal}
+            hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+          />
+        );
+      }
+      return useNativeCurrencyAsPrimaryCurrency
+        ? secondaryTotalTextOverride
+        : primaryTotalTextOverride;
     };
 
     const nonceField = useNonceField ? (
@@ -372,35 +441,29 @@ export default class ConfirmTransactionBase extends Component {
               }
               detailText={
                 <UserPreferencedCurrencyDisplay
-                  type={PRIMARY}
+                  type={SECONDARY}
                   value={hexMinimumTransactionFee}
-                  hideLabel={false}
+                  hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
                 />
               }
               detailTotal={
                 <UserPreferencedCurrencyDisplay
-                  type={SECONDARY}
+                  type={PRIMARY}
                   value={hexMinimumTransactionFee}
-                  hideLabel
+                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
                 />
               }
-              subText={
-                <strong>
-                  {t('editGasSubTextFee', [
-                    <UserPreferencedCurrencyDisplay
-                      key="gas-subtext"
-                      type={SECONDARY}
-                      value={getHexGasTotal({
-                        gasPrice:
-                          txData.txParams.maxFeePerGas ??
-                          txData.txParams.gasPrice,
-                        gasLimit: txData.txParams.gas,
-                      })}
-                      hideLabel
-                    />,
-                  ])}
-                </strong>
-              }
+              subText={t('editGasSubTextFee', [
+                <b key="editGasSubTextFeeLabel">
+                  {t('editGasSubTextFeeLabel')}
+                </b>,
+                <UserPreferencedCurrencyDisplay
+                  key="editGasSubTextFeeAmount"
+                  type={PRIMARY}
+                  value={hexMaximumTransactionFee}
+                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                />,
+              ])}
               subTitle={
                 <GasTiming
                   maxPriorityFeePerGas={hexWEIToDecGWEI(
@@ -412,45 +475,16 @@ export default class ConfirmTransactionBase extends Component {
             />,
             <TransactionDetailItem
               key="total-item"
-              detailTitle={primaryTotalTextOverride || t('total')}
-              detailText={
-                <UserPreferencedCurrencyDisplay
-                  type={PRIMARY}
-                  value={hexTransactionTotal}
-                  hideLabel={false}
-                />
-              }
-              detailTotal={
-                <UserPreferencedCurrencyDisplay
-                  type={SECONDARY}
-                  value={hexTransactionTotal}
-                  hideLabel
-                />
-              }
-              subTitle={
-                secondaryTotalTextOverride ||
-                t('transactionDetailGasTotalSubtitle')
-              }
-              subText={
-                <strong>
-                  {t('editGasSubTextAmount', [
-                    <UserPreferencedCurrencyDisplay
-                      key="gas-total-subtext"
-                      type={SECONDARY}
-                      value={addHexes(
-                        txData.txParams.value,
-                        getHexGasTotal({
-                          gasPrice:
-                            txData.txParams.maxFeePerGas ??
-                            txData.txParams.gasPrice,
-                          gasLimit: txData.txParams.gas,
-                        }),
-                      )}
-                      hideLabel
-                    />,
-                  ])}
-                </strong>
-              }
+              detailTitle={t('total')}
+              detailText={renderTotalDetailText()}
+              detailTotal={renderTotalDetailTotal()}
+              subTitle={t('transactionDetailGasTotalSubtitle')}
+              subText={t('editGasSubTextAmount', [
+                <b key="editGasSubTextAmountLabel">
+                  {t('editGasSubTextAmountLabel')}
+                </b>,
+                renderTotalMaxAmount(),
+              ])}
             />,
           ]}
         />

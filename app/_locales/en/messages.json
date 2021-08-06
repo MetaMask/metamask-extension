@@ -690,11 +690,19 @@
     "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
   },
   "editGasSubTextAmount": {
-    "message": "Max amount: $1",
-    "description": "$1 represents a dollar amount"
+    "message": "$1 $2",
+    "description": "$1 will be passed the editGasSubTextAmountLabel and $2 will be passed the amount in either cryptocurrency or fiat"
+  },
+  "editGasSubTextAmountLabel": {
+    "message": "Max amount:",
+    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
   },
   "editGasSubTextFee": {
-    "message": "Max fee: $1",
+    "message": "$1 $2",
+    "description": "$1 will be passed the editGasSubTextFeeLabel and $2 will be passed the fee amount in either cryptocurrency or fiat"
+  },
+  "editGasSubTextFeeLabel": {
+    "message": "Max fee:",
     "description": "$1 represents a dollar amount"
   },
   "editGasTitle": {
