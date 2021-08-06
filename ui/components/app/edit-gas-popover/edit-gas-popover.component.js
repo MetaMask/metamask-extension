@@ -89,6 +89,7 @@ export default function EditGasPopover({
     onManualChange,
     balanceError,
     estimatesUnavailableWarning,
+    estimatedBaseFee,
   } = useGasFeeInputs(defaultEstimateToUse, transaction, minimumGasLimit, mode);
 
   /**
@@ -138,10 +139,18 @@ export default function EditGasPopover({
 
     switch (mode) {
       case EDIT_GAS_MODES.CANCEL:
-        dispatch(createCancelTransaction(transaction.id, newGasSettings));
+        dispatch(
+          createCancelTransaction(transaction.id, newGasSettings, {
+            estimatedBaseFee,
+          }),
+        );
         break;
       case EDIT_GAS_MODES.SPEED_UP:
-        dispatch(createSpeedUpTransaction(transaction.id, newGasSettings));
+        dispatch(
+          createSpeedUpTransaction(transaction.id, newGasSettings, {
+            estimatedBaseFee,
+          }),
+        );
         break;
       case EDIT_GAS_MODES.MODIFY_IN_PLACE:
         dispatch(updateTransaction(updatedTxMeta));
@@ -169,6 +178,7 @@ export default function EditGasPopover({
     maxPriorityFeePerGas,
     networkAndAccountSupport1559,
     estimateToUse,
+    estimatedBaseFee,
   ]);
 
   let title = t('editGasTitle');

@@ -1340,7 +1340,11 @@ export function clearPendingTokens() {
   };
 }
 
-export function createCancelTransaction(txId, customGasSettings) {
+export function createCancelTransaction(
+  txId,
+  customGasSettings,
+  newTxMetaProps,
+) {
   log.debug('background.cancelTransaction');
   let newTxId;
 
@@ -1349,6 +1353,7 @@ export function createCancelTransaction(txId, customGasSettings) {
       background.createCancelTransaction(
         txId,
         customGasSettings,
+        newTxMetaProps,
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -1368,7 +1373,11 @@ export function createCancelTransaction(txId, customGasSettings) {
   };
 }
 
-export function createSpeedUpTransaction(txId, customGasSettings) {
+export function createSpeedUpTransaction(
+  txId,
+  customGasSettings,
+  newTxMetaProps,
+) {
   log.debug('background.createSpeedUpTransaction');
   let newTx;
 
@@ -1377,6 +1386,7 @@ export function createSpeedUpTransaction(txId, customGasSettings) {
       background.createSpeedUpTransaction(
         txId,
         customGasSettings,
+        newTxMetaProps,
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));

@@ -200,6 +200,7 @@ const mapStateToProps = (state, ownProps) => {
     useNativeCurrencyAsPrimaryCurrency,
     maxFeePerGas: gasEstimationObject.maxFeePerGas,
     maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
+    baseFeePerGas: gasEstimationObject.baseFeePerGas,
   };
 };
 

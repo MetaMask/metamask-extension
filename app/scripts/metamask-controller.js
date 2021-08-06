@@ -2099,10 +2099,15 @@ export default class MetamaskController extends EventEmitter {
    *  instead of allowing this method to generate them
    * @returns {Object} MetaMask state
    */
-  async createCancelTransaction(originalTxId, customGasSettings) {
+  async createCancelTransaction(
+    originalTxId,
+    customGasSettings,
+    newTxMetaProps,
+  ) {
     await this.txController.createCancelTransaction(
       originalTxId,
       customGasSettings,
+      newTxMetaProps,
     );
     const state = await this.getState();
     return state;
@@ -2119,10 +2124,15 @@ export default class MetamaskController extends EventEmitter {
    *  instead of allowing this method to generate them
    * @returns {Object} MetaMask state
    */
-  async createSpeedUpTransaction(originalTxId, customGasSettings) {
+  async createSpeedUpTransaction(
+    originalTxId,
+    customGasSettings,
+    newTxMetaProps,
+  ) {
     await this.txController.createSpeedUpTransaction(
       originalTxId,
       customGasSettings,
+      newTxMetaProps,
     );
     const state = await this.getState();
     return state;
