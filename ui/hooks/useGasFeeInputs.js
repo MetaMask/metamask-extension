@@ -487,11 +487,11 @@ export function useGasFeeInputs(
 
   const handleGasLimitOutOfBoundError = useCallback(() => {
     if (gasErrors.gasLimit === GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS) {
-      const transactionGasLimit = hexToDecimal(transaction?.txParams?.gas);
+      const transactionGasLimitDec = hexToDecimal(transaction?.txParams?.gas);
       const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
       setGasLimit(
-        transactionGasLimit > minimumGasLimitDec
-          ? transactionGasLimit
+        transactionGasLimitDec > minimumGasLimitDec
+          ? transactionGasLimitDec
           : minimumGasLimitDec,
       );
     }

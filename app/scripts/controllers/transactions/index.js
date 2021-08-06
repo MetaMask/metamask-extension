@@ -436,13 +436,12 @@ export default class TransactionController extends EventEmitter {
         txMeta.userFeeLevel = 'custom';
       } else {
         if (
-          defaultMaxFeePerGas &&
+          (defaultMaxFeePerGas &&
           defaultMaxPriorityFeePerGas &&
           !txMeta.txParams.maxFeePerGas &&
-          !txMeta.txParams.maxPriorityFeePerGas
+          !txMeta.txParams.maxPriorityFeePerGas)
+          || txMeta.origin === 'metamask'
         ) {
-          txMeta.userFeeLevel = 'medium';
-        } else if (txMeta.origin === 'metamask') {
           txMeta.userFeeLevel = 'medium';
         } else {
           txMeta.userFeeLevel = 'custom';
