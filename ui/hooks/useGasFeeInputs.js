@@ -531,6 +531,7 @@ export function useGasFeeInputs(
     estimatedGasFeeTimeBounds,
     gasErrors: errorsAndWarnings,
     hasGasErrors: hasBlockingGasErrors,
+    gasWarnings,
     onManualChange: () => {
       setInternalEstimateToUse('custom');
       handleGasLimitOutOfBoundError();

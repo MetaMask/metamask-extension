@@ -86,6 +86,7 @@ export default function EditGasPopover({
     estimatedMaximumFiat,
     hasGasErrors,
     gasErrors,
+    gasWarnings,
     onManualChange,
     balanceError,
     estimatesUnavailableWarning,
@@ -245,6 +246,7 @@ export default function EditGasPopover({
               mode={mode}
               transaction={transaction}
               gasErrors={gasErrors}
+              gasWarnings={gasWarnings}
               onManualChange={onManualChange}
               minimumGasLimit={minimumGasLimitDec}
               balanceError={balanceError}
