@@ -2499,7 +2499,7 @@
     "message": "transaction"
   },
   "transactionCancelAttempted": {
-    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+    "message": "Transaction cancel attempted with estimated gas fee of $1 at $2"
   },
   "transactionCancelSuccess": {
     "message": "Transaction successfully cancelled at $2"
@@ -2557,10 +2557,10 @@
     "message": "Total Gas Fee"
   },
   "transactionResubmitted": {
-    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+    "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
   },
   "transactionSubmitted": {
-    "message": "Transaction submitted with gas fee of $1 at $2."
+    "message": "Transaction submitted with estimated gas fee of $1 at $2."
   },
   "transactionUpdated": {
     "message": "Transaction updated at $2."
