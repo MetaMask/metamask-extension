@@ -57,6 +57,7 @@ export function getActivities(transaction, isFirstTransaction = false) {
     history = [],
     txParams: {
       gas: paramsGasLimit,
+      gasPrice: paramsGasPrice,
       maxPriorityFeePerGas: paramsMaxPriorityFeePerGas,
     },
     txReceipt: { status } = {},
@@ -120,7 +121,7 @@ export function getActivities(transaction, isFirstTransaction = false) {
                 cachedGasLimit === '0x0' && cachedGasPrice === '0x0'
                   ? getHexGasTotal({
                       gasLimit: paramsGasLimit,
-                      gasPrice: paramsEip1559Price,
+                      gasPrice: paramsEip1559Price || paramsGasPrice,
                     })
                   : getHexGasTotal({
                       gasLimit: cachedGasLimit,
@@ -170,7 +171,7 @@ export function getActivities(transaction, isFirstTransaction = false) {
               if (path === GAS_LIMIT_PATH) {
                 cachedGasLimit = value;
               } else if (path === GAS_PRICE_PATH) {
-                cachedGasPrice = base?.txParams?.gasPrice;
+                cachedGasPrice = value;
               } else if (path === ESTIMATE_BASE_FEE_PATH) {
                 cachedGasPrice = paramsEip1559Price || base?.txParams?.gasPrice;
                 lastEvent.value = getHexGasTotal({
