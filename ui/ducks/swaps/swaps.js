@@ -674,19 +674,21 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     let maxFeePerGas;
     let maxPriorityFeePerGas;
     let baseAndPriorityFeePerGas;
+    let decEstimatedBaseFee;
 
     if (networkAndAccountSupports1559) {
       const {
         high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
         estimatedBaseFee = '0',
       } = getGasFeeEstimates(state);
+      decEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee);
       maxFeePerGas =
         customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
       maxPriorityFeePerGas =
         customMaxPriorityFeePerGas ||
         decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
       baseAndPriorityFeePerGas = addHexes(
-        decGWEIToHexWEI(estimatedBaseFee),
+        decEstimatedBaseFee,
         maxPriorityFeePerGas,
       );
     }
@@ -816,6 +818,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
         updateTransaction(
           {
             ...approveTxMeta,
+            estimatedBaseFee: decEstimatedBaseFee,
             type: TRANSACTION_TYPES.SWAP_APPROVAL,
             sourceTokenSymbol: sourceTokenInfo.symbol,
           },
@@ -855,6 +858,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       updateTransaction(
         {
           ...tradeTxMeta,
+          estimatedBaseFee: decEstimatedBaseFee,
           sourceTokenSymbol: sourceTokenInfo.symbol,
           destinationTokenSymbol: destinationTokenInfo.symbol,
           type: TRANSACTION_TYPES.SWAP,

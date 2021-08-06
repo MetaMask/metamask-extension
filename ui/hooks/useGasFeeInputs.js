@@ -544,5 +544,6 @@ export function useGasFeeInputs(
     },
     balanceError,
     estimatesUnavailableWarning,
+    estimatedBaseFee: gasSettings.baseFeePerGas,
   };
 }
