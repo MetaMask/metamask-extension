@@ -485,28 +485,28 @@ export function useGasFeeInputs(
     { value: ethBalance, fromNumericBase: 'hex' },
   );
 
+  const handleGasLimitOutOfBoundError = useCallback(() => {
+    if (gasErrors.gasLimit === GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS) {
+      const transactionGasLimit = hexToDecimal(transaction?.txParams?.gas);
+      const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
+      setGasLimit(
+        transactionGasLimit > minimumGasLimitDec
+          ? transactionGasLimit
+          : minimumGasLimitDec,
+      );
+    }
+  }, [minimumGasLimit, gasErrors.gasLimit, transaction]);
   // When a user selects an estimate level, it will wipe out what they have
   // previously put in the inputs. This returns the inputs to the estimated
   // values at the level specified.
-  const setEstimateToUse = useCallback(
-    (estimateLevel) => {
-      setInternalEstimateToUse(estimateLevel);
-      if (gasErrors.gasLimit === GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS) {
-        const transactionGasLimit = hexToDecimal(transaction?.txParams?.gas);
-        const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
-        setGasLimit(
-          transactionGasLimit > minimumGasLimitDec
-            ? transactionGasLimit
-            : minimumGasLimitDec,
-        );
-      }
-      setMaxFeePerGas(null);
-      setMaxPriorityFeePerGas(null);
-      setGasPrice(null);
-      setGasPriceHasBeenManuallySet(false);
-    },
-    [minimumGasLimit, gasErrors.gasLimit, transaction],
-  );
+  const setEstimateToUse = (estimateLevel) => {
+    setInternalEstimateToUse(estimateLevel);
+    handleGasLimitOutOfBoundError();
+    setMaxFeePerGas(null);
+    setMaxPriorityFeePerGas(null);
+    setGasPrice(null);
+    setGasPriceHasBeenManuallySet(false);
+  };
 
   return {
     maxFeePerGas: maxFeePerGasToUse,
@@ -532,7 +532,8 @@ export function useGasFeeInputs(
     gasErrors: errorsAndWarnings,
     hasGasErrors: hasBlockingGasErrors,
     onManualChange: () => {
-      setEstimateToUse('custom');
+      setInternalEstimateToUse('custom');
+      handleGasLimitOutOfBoundError();
       // Restore existing values
       setGasPrice(gasPriceToUse);
       setGasLimit(gasLimit);
