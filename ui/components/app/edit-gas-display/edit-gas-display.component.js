@@ -173,10 +173,12 @@ export default function EditGasDisplay({
             ])
           }
           timing={
-            <GasTiming
-              maxFeePerGas={maxFeePerGas}
-              maxPriorityFeePerGas={maxPriorityFeePerGas}
-            />
+            hasGasErrors === false && (
+              <GasTiming
+                maxFeePerGas={maxFeePerGas}
+                maxPriorityFeePerGas={maxPriorityFeePerGas}
+              />
+            )
           }
         />
         {requireDappAcknowledgement && (
