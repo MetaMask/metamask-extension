@@ -9,7 +9,6 @@ import {
   nonceSortedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
   nonceSortedCompletedTransactionsSelector,
-  submittedPendingTransactionsSelector,
 } from './transactions';
 
 describe('Transaction Selectors', () => {
@@ -321,13 +320,6 @@ describe('Transaction Selectors', () => {
       ];
 
       expect(nonceSortedCompletedTransactionsSelector(state)).toStrictEqual(
-        expectedResult,
-      );
-    });
-
-    it('submittedPendingTransactionsSelector', () => {
-      const expectedResult = [submittedTx];
-      expect(submittedPendingTransactionsSelector(state)).toStrictEqual(
         expectedResult,
       );
     });

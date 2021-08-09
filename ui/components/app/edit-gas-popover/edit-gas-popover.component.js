@@ -22,7 +22,6 @@ import {
   createCancelTransaction,
   createSpeedUpTransaction,
   hideModal,
-  hideSidebar,
   updateTransaction,
   updateCustomSwapsEIP1559GasParams,
   updateSwapsUserFeeLevel,
@@ -42,7 +41,6 @@ export default function EditGasPopover({
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
   const networkAndAccountSupport1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
@@ -102,12 +100,10 @@ export default function EditGasPopover({
   const closePopover = useCallback(() => {
     if (onClose) {
       onClose();
-    } else if (showSidebar) {
-      dispatch(hideSidebar());
     } else {
       dispatch(hideModal());
     }
-  }, [showSidebar, onClose, dispatch]);
+  }, [onClose, dispatch]);
 
   const onSubmit = useCallback(() => {
     if (!transaction || !mode) {

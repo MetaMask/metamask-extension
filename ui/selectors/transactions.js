@@ -344,11 +344,3 @@ export const nonceSortedCompletedTransactionsSelector = createSelector(
       )
       .reverse(),
 );
-
-export const submittedPendingTransactionsSelector = createSelector(
-  transactionsSelector,
-  (transactions = []) =>
-    transactions.filter(
-      (transaction) => transaction.status === TRANSACTION_STATUSES.SUBMITTED,
-    ),
-);

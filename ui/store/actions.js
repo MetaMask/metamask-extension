@@ -1655,23 +1655,6 @@ export function closeCurrentNotificationWindow() {
   };
 }
 
-export function showSidebar({ transitionName, type, props }) {
-  return {
-    type: actionConstants.SIDEBAR_OPEN,
-    value: {
-      transitionName,
-      type,
-      props,
-    },
-  };
-}
-
-export function hideSidebar() {
-  return {
-    type: actionConstants.SIDEBAR_CLOSE,
-  };
-}
-
 export function showAlert(msg) {
   return {
     type: actionConstants.ALERT_OPEN,
