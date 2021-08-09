@@ -309,6 +309,7 @@ export default class ConfirmTransactionBase extends Component {
         return (
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
+            key="total-max-amount"
             value={addHexes(txData.txParams.value, hexMaximumTransactionFee)}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
@@ -329,6 +330,7 @@ export default class ConfirmTransactionBase extends Component {
         return (
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
+            key="total-detail-value"
             value={hexTransactionTotal}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
@@ -347,6 +349,7 @@ export default class ConfirmTransactionBase extends Component {
         return (
           <UserPreferencedCurrencyDisplay
             type={SECONDARY}
+            key="total-detail-text"
             value={hexTransactionTotal}
             hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
           />
