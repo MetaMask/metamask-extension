@@ -47,9 +47,6 @@
   "addToAddressBookModalPlaceholder": {
     "message": "π.χ. John D."
   },
-  "addTokens": {
-    "message": "Προσθήκη Token"
-  },
   "advanced": {
     "message": "Σύνθετες"
   },
@@ -534,7 +531,7 @@
   "letsGoSetUp": {
     "message": "Ναι, ας το εγκαταστήσουμε!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Θέλετε να προσθέσετε αυτά τα token;"
   },
   "links": {

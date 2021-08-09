@@ -47,9 +47,6 @@
   "addToAddressBookModalPlaceholder": {
     "message": "exempelvis John D."
   },
-  "addTokens": {
-    "message": "Lägg till tokens"
-  },
   "advanced": {
     "message": "Avancerat"
   },
@@ -527,7 +524,7 @@
   "letsGoSetUp": {
     "message": "Ja, kör igång!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Vill du lägga till dessa tokens?"
   },
   "links": {

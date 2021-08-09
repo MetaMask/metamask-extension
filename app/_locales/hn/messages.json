@@ -8,9 +8,6 @@
   "accountName": {
     "message": "खाते का नाम"
   },
-  "addTokens": {
-    "message": "टोकनों को जोड़ें"
-  },
   "amount": {
     "message": "राशि"
   },
@@ -191,7 +188,7 @@
   "kovan": {
     "message": "कोवान टेस्ट नेटवर्क"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "क्या आप इन टोकनों को जोड़ना चाहते हैं?"
   },
   "loading": {

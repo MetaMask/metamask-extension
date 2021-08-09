@@ -47,9 +47,6 @@
   "addToAddressBookModalPlaceholder": {
     "message": "piemēram, Džons D."
   },
-  "addTokens": {
-    "message": "Pievienot marķierus"
-  },
   "advanced": {
     "message": "Papildu"
   },
@@ -533,7 +530,7 @@
   "letsGoSetUp": {
     "message": "Jā, sāksim iestatīšanu!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Vai vēlaties pievienot šos marķierus?"
   },
   "links": {

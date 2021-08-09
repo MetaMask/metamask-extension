@@ -47,9 +47,6 @@
   "addToAddressBookModalPlaceholder": {
     "message": "pvz., John D."
   },
-  "addTokens": {
-    "message": "Pridėti žetonų"
-  },
   "advanced": {
     "message": "Išplėstiniai"
   },
@@ -537,7 +534,7 @@
   "letsGoSetUp": {
     "message": "Taip, pradėkime!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Ar norėtumėte pridėti šiuos žetonus?"
   },
   "links": {

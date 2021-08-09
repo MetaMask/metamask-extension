@@ -26,9 +26,6 @@
   "addSuggestedTokens": {
     "message": "Ajoute Token Yo Sikjere W"
   },
-  "addTokens": {
-    "message": "Ajoute Token"
-  },
   "amount": {
     "message": "Kantite lajan"
   },
@@ -308,7 +305,7 @@
   "ledgerAccountRestriction": {
     "message": "Ou bezwen sèvi ak dènye kont ou anvan ou ka ajoute yon nouvo."
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Èske ou ta renmen ajoute sa nan tokens?"
   },
   "links": {

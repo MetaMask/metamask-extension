@@ -47,9 +47,6 @@
   "addToAddressBookModalPlaceholder": {
     "message": "npr. Jaka N."
   },
-  "addTokens": {
-    "message": "Dodaj žetone"
-  },
   "advanced": {
     "message": "Napredno"
   },
@@ -531,7 +528,7 @@
   "letsGoSetUp": {
     "message": "Lotimo se nastavitev!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Želite dodati te žetone?"
   },
   "links": {

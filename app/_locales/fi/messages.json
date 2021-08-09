@@ -47,9 +47,6 @@
   "addToAddressBookModalPlaceholder": {
     "message": "esim. Jukka E."
   },
-  "addTokens": {
-    "message": "Lisää poletteja"
-  },
   "advanced": {
     "message": "Lisäasetukset"
   },
@@ -537,7 +534,7 @@
   "letsGoSetUp": {
     "message": "Kyllä, valmistaudutaan!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Haluaisitko lisätä nämä poletit?"
   },
   "links": {

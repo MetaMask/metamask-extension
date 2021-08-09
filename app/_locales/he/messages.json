@@ -47,9 +47,6 @@
   "addToAddressBookModalPlaceholder": {
     "message": "למשל ג'ון ד'"
   },
-  "addTokens": {
-    "message": "הוסף סמלים"
-  },
   "advanced": {
     "message": "מתקדם"
   },
@@ -537,7 +534,7 @@
   "letsGoSetUp": {
     "message": "כן, בוא נתקין!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "האם ברצונך להוסיף טוקנים אלה?"
   },
   "links": {

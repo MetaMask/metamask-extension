@@ -8,9 +8,6 @@
   "accountName": {
     "message": "Nome da Conta"
   },
-  "addTokens": {
-    "message": "Adicionar Tokens"
-  },
   "amount": {
     "message": "Valor"
   },
@@ -191,7 +188,7 @@
   "kovan": {
     "message": "Rede de Teste Kovan"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Gostaria de adicionar estes tokens?"
   },
   "loading": {

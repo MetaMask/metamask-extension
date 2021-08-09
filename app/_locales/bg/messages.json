@@ -47,9 +47,6 @@
   "addToAddressBookModalPlaceholder": {
     "message": "напр. Джон Д."
   },
-  "addTokens": {
-    "message": "Добавяне на жетони"
-  },
   "advanced": {
     "message": "Разширени"
   },
@@ -533,7 +530,7 @@
   "letsGoSetUp": {
     "message": "Да, нека да настроим нещата!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Искате ли да добавите тези жетони?"
   },
   "links": {

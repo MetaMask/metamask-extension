@@ -47,9 +47,6 @@
   "addToAddressBookModalPlaceholder": {
     "message": "npr. Ivan M."
   },
-  "addTokens": {
-    "message": "Dodaj tokene"
-  },
   "advanced": {
     "message": "Napredno"
   },
@@ -533,7 +530,7 @@
   "letsGoSetUp": {
     "message": "Da, obavimo postavljanje!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Želite li dodati ove tokene?"
   },
   "links": {

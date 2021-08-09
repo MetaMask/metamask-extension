@@ -44,9 +44,6 @@
   "addToAddressBookModalPlaceholder": {
     "message": "z.B. Max M."
   },
-  "addTokens": {
-    "message": "Token hinzufügen"
-  },
   "advanced": {
     "message": "Erweitert"
   },
@@ -525,7 +522,7 @@
   "letsGoSetUp": {
     "message": "Ja, legen wir los!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Möchtest du diese Token hinzufügen?"
   },
   "loadMore": {

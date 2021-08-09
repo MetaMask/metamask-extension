@@ -47,9 +47,6 @@
   "addToAddressBookModalPlaceholder": {
     "message": "k.m John D."
   },
-  "addTokens": {
-    "message": "Ongeza Vianzio"
-  },
   "advanced": {
     "message": "Mipangilio ya kina"
   },
@@ -524,7 +521,7 @@
   "letsGoSetUp": {
     "message": "Ndiyo, hebu tuweke mipangilio!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Je, ungependa kuongeza vianzio hivi?"
   },
   "links": {

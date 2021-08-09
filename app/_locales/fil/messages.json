@@ -44,9 +44,6 @@
   "addToAddressBookModalPlaceholder": {
     "message": "hal. Juan D."
   },
-  "addTokens": {
-    "message": "Magdagdag ng Mga Token"
-  },
   "advancedOptions": {
     "message": "Mga Advanced na Opsyon"
   },
@@ -487,7 +484,7 @@
   "letsGoSetUp": {
     "message": "Oo, i-set up natin ito!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Gusto mo bang idagdag ang mga token na ito?"
   },
   "links": {

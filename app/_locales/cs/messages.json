@@ -8,9 +8,6 @@
   "accountName": {
     "message": "Název účtu"
   },
-  "addTokens": {
-    "message": "Přidat tokeny"
-  },
   "amount": {
     "message": "Částka"
   },
@@ -211,7 +208,7 @@
   "learnMore": {
     "message": "Zjistěte více."
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
   "links": {

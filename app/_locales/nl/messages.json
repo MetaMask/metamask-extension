@@ -5,9 +5,6 @@
   "accountName": {
     "message": "Accountnaam"
   },
-  "addTokens": {
-    "message": "Tokens toevoegen"
-  },
   "amount": {
     "message": "Bedrag"
   },
@@ -185,7 +182,7 @@
   "kovan": {
     "message": "Kovan-testnetwerk"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Wil je deze tokens toevoegen?"
   },
   "loading": {

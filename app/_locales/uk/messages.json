@@ -47,9 +47,6 @@
   "addToAddressBookModalPlaceholder": {
     "message": "Напр.: Джон Д."
   },
-  "addTokens": {
-    "message": "Додати токени"
-  },
   "advanced": {
     "message": "Розширені"
   },
@@ -537,7 +534,7 @@
   "letsGoSetUp": {
     "message": "Так, давайте налаштуємо!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Ви б хотіли додати ці токени?"
   },
   "links": {

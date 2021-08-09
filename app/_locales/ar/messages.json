@@ -47,9 +47,6 @@
   "addToAddressBookModalPlaceholder": {
     "message": "مثلا جون دي"
   },
-  "addTokens": {
-    "message": "إضافة عملات رمزية"
-  },
   "advanced": {
     "message": "إعدادات متقدمة"
   },
@@ -533,7 +530,7 @@
   "letsGoSetUp": {
     "message": "نعم، دعنا نبدأ التثبيت!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "هل ترغب في إضافة هذه الرموز؟"
   },
   "links": {

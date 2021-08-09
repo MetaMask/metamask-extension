@@ -47,9 +47,6 @@
   "addToAddressBookModalPlaceholder": {
     "message": "pl. John D."
   },
-  "addTokens": {
-    "message": "Érmék hozzáadása"
-  },
   "advanced": {
     "message": "Speciális"
   },
@@ -533,7 +530,7 @@
   "letsGoSetUp": {
     "message": "Igen, hozzuk létre!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Hozzá szeretné adni ezeket az érméket?"
   },
   "links": {

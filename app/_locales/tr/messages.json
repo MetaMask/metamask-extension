@@ -8,9 +8,6 @@
   "accountName": {
     "message": "Hesap İsmi"
   },
-  "addTokens": {
-    "message": "Jetonlar ekle"
-  },
   "amount": {
     "message": "Tutar"
   },
@@ -218,7 +215,7 @@
   "learnMore": {
     "message": "Daha fazla bilgi."
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Bu jetonlara adres eklemek ister misiniz?"
   },
   "links": {
