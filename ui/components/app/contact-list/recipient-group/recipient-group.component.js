@@ -17,6 +17,12 @@ export default function RecipientGroup({
   if (!items || !items.length) {
     return null;
   }
+  const ellipsis = (text, first = 24) => {
+    if (text.length > first) {
+      return `${text.slice(0, first)}...`;
+    }
+    return text;
+  };
 
   return (
     <div
@@ -49,7 +55,7 @@ export default function RecipientGroup({
             data-testid="recipient"
           >
             <div className="send__select-recipient-wrapper__group-item__title">
-              {name || ellipsify(address)}
+              {ellipsis(name) || ellipsify(address)}
             </div>
             {name && (
               <div className="send__select-recipient-wrapper__group-item__subtitle">

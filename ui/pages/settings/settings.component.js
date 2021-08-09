@@ -2,6 +2,9 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route, matchPath } from 'react-router-dom';
 import classnames from 'classnames';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../shared/constants/app';
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { ellipsify } from '../send/send.utils';
 import TabBar from '../../components/app/tab-bar';
 import {
   ALERTS_ROUTE,
@@ -88,11 +91,26 @@ class SettingsPage extends PureComponent {
   renderTitle() {
     const { t } = this.context;
     const { isPopup, pathnameI18nKey, addressName } = this.props;
-
     let titleText;
+    const maxStringLength = 24;
+    const environmentType = getEnvironmentType();
+    const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
+    const isLongString = addressName.length < maxStringLength;
+    const ellipsis = (text, maxLength = 6) => {
+      if (text.length > maxLength) {
+        return `${text.slice(0, maxLength)}...`;
+      }
+      return text;
+    };
 
     if (isPopup && addressName) {
-      titleText = addressName;
+      if (isLongString && isFullScreen) {
+        titleText = ellipsify(addressName);
+      } else if (isFullScreen) {
+        titleText = addressName;
+      } else {
+        titleText = ellipsis(addressName);
+      }
     } else if (pathnameI18nKey && isPopup) {
       titleText = t(pathnameI18nKey);
     } else {
@@ -115,7 +133,8 @@ class SettingsPage extends PureComponent {
       history,
       initialBreadCrumbKey,
     } = this.props;
-
+    const maxStringLength = 6;
+    const isLongtitle = addressName.length > maxStringLength;
     let subheaderText;
 
     if (isPopup && isAddressEntryPage) {
@@ -148,7 +167,7 @@ class SettingsPage extends PureComponent {
           {isAddressEntryPage && (
             <div className="settings-page__subheader--break">
               <span>{' > '}</span>
-              {addressName}
+              {isLongtitle ? ellipsify(addressName) : addressName}
             </div>
           )}
         </div>

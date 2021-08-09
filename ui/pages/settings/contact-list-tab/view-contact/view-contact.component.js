@@ -47,7 +47,7 @@ function ViewContact({
               <Identicon address={address} diameter={60} />
             </div>
             <div className="address-book__header__column">
-              <p className="address-book__header__name">{name}</p>
+              <div className="address-book__header__name">{name}</div>
               <Button
                 className="button btn-secondary address-book__header__button"
                 type="secondary"
