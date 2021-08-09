@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 
 import { addTokens, clearPendingTokens } from '../../store/actions';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import ConfirmAddToken from './confirm-add-token.component';
+import ConfirmImportToken from './confirm-import-token.component';
 
 const mapStateToProps = (state) => {
   const {
@@ -21,4 +21,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConfirmAddToken);
+export default connect(mapStateToProps, mapDispatchToProps)(ConfirmImportToken);

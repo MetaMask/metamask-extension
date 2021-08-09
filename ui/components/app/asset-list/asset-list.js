@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import ImportTokenLink from '../import-token-link';
 import TokenList from '../token-list';
-import { ADD_TOKEN_ROUTE } from '../../../helpers/constants/routes';
+import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import AssetListItem from '../asset-list-item';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useMetricEvent } from '../../../hooks/useMetricEvent';
@@ -107,7 +107,7 @@ const AssetList = ({ onClickAsset }) => {
         </Box>
         <ImportTokenLink
           onClick={() => {
-            history.push(ADD_TOKEN_ROUTE);
+            history.push(IMPORT_TOKEN_ROUTE);
             addTokenEvent();
           }}
         />

@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ASSET_ROUTE, ADD_TOKEN_ROUTE } from '../../helpers/constants/routes';
+import {
+  ASSET_ROUTE,
+  IMPORT_TOKEN_ROUTE,
+} from '../../helpers/constants/routes';
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
 
-export default class ConfirmAddToken extends Component {
+export default class ConfirmImportToken extends Component {
   static contextTypes = {
     t: PropTypes.func,
     trackEvent: PropTypes.func,
@@ -44,42 +47,42 @@ export default class ConfirmAddToken extends Component {
       <div className="page-container">
         <div className="page-container__header">
           <div className="page-container__title">
-            {this.context.t('addTokens')}
+            {this.context.t('importTokensCamelCase')}
           </div>
           <div className="page-container__subtitle">
-            {this.context.t('likeToAddTokens')}
+            {this.context.t('likeToImportTokens')}
           </div>
         </div>
         <div className="page-container__content">
-          <div className="confirm-add-token">
-            <div className="confirm-add-token__header">
-              <div className="confirm-add-token__token">
+          <div className="confirm-import-token">
+            <div className="confirm-import-token__header">
+              <div className="confirm-import-token__token">
                 {this.context.t('token')}
               </div>
-              <div className="confirm-add-token__balance">
+              <div className="confirm-import-token__balance">
                 {this.context.t('balance')}
               </div>
             </div>
-            <div className="confirm-add-token__token-list">
+            <div className="confirm-import-token__token-list">
               {Object.entries(pendingTokens).map(([address, token]) => {
                 const { name, symbol } = token;
 
                 return (
                   <div
-                    className="confirm-add-token__token-list-item"
+                    className="confirm-import-token__token-list-item"
                     key={address}
                   >
-                    <div className="confirm-add-token__token confirm-add-token__data">
+                    <div className="confirm-import-token__token confirm-import-token__data">
                       <Identicon
-                        className="confirm-add-token__token-icon"
+                        className="confirm-import-token__token-icon"
                         diameter={48}
                         address={address}
                       />
-                      <div className="confirm-add-token__name">
+                      <div className="confirm-import-token__name">
                         {this.getTokenName(name, symbol)}
                       </div>
                     </div>
-                    <div className="confirm-add-token__balance">
+                    <div className="confirm-import-token__balance">
                       <TokenBalance token={token} />
                     </div>
                   </div>
@@ -94,7 +97,7 @@ export default class ConfirmAddToken extends Component {
               type="default"
               large
               className="page-container__footer-button"
-              onClick={() => history.push(ADD_TOKEN_ROUTE)}
+              onClick={() => history.push(IMPORT_TOKEN_ROUTE)}
             >
               {this.context.t('back')}
             </Button>
@@ -128,7 +131,7 @@ export default class ConfirmAddToken extends Component {
                 });
               }}
             >
-              {this.context.t('addTokens')}
+              {this.context.t('importTokensCamelCase')}
             </Button>
           </footer>
         </div>

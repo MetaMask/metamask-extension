@@ -17,8 +17,8 @@ import PermissionsConnect from '../permissions-connect';
 import RestoreVaultPage from '../keychains/restore-vault';
 import RevealSeedConfirmation from '../keychains/reveal-seed';
 import MobileSyncPage from '../mobile-sync';
-import AddTokenPage from '../add-token';
-import ConfirmAddTokenPage from '../confirm-add-token';
+import ImportTokenPage from '../import-token';
+import ConfirmImportTokenPage from '../confirm-import-token';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
 import CreateAccountPage from '../create-account';
 import Loading from '../../components/ui/loading-screen';
@@ -33,10 +33,9 @@ import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
 
 import {
-  ADD_TOKEN_ROUTE,
+  IMPORT_TOKEN_ROUTE,
   ASSET_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-  CONFIRM_ADD_TOKEN_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONNECT_ROUTE,
   DEFAULT_ROUTE,
@@ -53,6 +52,7 @@ import {
   UNLOCK_ROUTE,
   BUILD_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
+  CONFIRM_IMPORT_TOKEN_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -146,10 +146,14 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated path={SWAPS_ROUTE} component={Swaps} />
-        <Authenticated path={ADD_TOKEN_ROUTE} component={AddTokenPage} exact />
         <Authenticated
-          path={CONFIRM_ADD_TOKEN_ROUTE}
-          component={ConfirmAddTokenPage}
+          path={IMPORT_TOKEN_ROUTE}
+          component={ImportTokenPage}
+          exact
+        />
+        <Authenticated
+          path={CONFIRM_IMPORT_TOKEN_ROUTE}
+          component={ConfirmImportTokenPage}
           exact
         />
         <Authenticated

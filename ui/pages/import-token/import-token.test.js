@@ -3,9 +3,9 @@ import { Provider } from 'react-redux';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import { mountWithRouter } from '../../../test/lib/render-helpers';
-import AddToken from './add-token.container';
+import ImportToken from './import-token.container';
 
-describe('Add Token', () => {
+describe('Import Token', () => {
   let wrapper;
 
   const state = {
@@ -29,11 +29,11 @@ describe('Add Token', () => {
     tokenList: {},
   };
 
-  describe('Add Token', () => {
+  describe('Import Token', () => {
     beforeAll(() => {
       wrapper = mountWithRouter(
         <Provider store={store}>
-          <AddToken.WrappedComponent {...props} />
+          <ImportToken.WrappedComponent {...props} />
         </Provider>,
         store,
       );
@@ -60,7 +60,7 @@ describe('Add Token', () => {
 
       customAddress.simulate('change', event);
       expect(
-        wrapper.find('AddToken').instance().state.customAddress,
+        wrapper.find('ImportToken').instance().state.customAddress,
       ).toStrictEqual(tokenAddress);
     });
 
@@ -71,7 +71,7 @@ describe('Add Token', () => {
       customAddress.last().simulate('change', event);
 
       expect(
-        wrapper.find('AddToken').instance().state.customSymbol,
+        wrapper.find('ImportToken').instance().state.customSymbol,
       ).toStrictEqual(tokenSymbol);
     });
 
@@ -82,7 +82,7 @@ describe('Add Token', () => {
       customAddress.last().simulate('change', event);
 
       expect(
-        wrapper.find('AddToken').instance().state.customDecimals,
+        wrapper.find('ImportToken').instance().state.customDecimals,
       ).toStrictEqual(Number(tokenPrecision));
     });
 
@@ -95,7 +95,7 @@ describe('Add Token', () => {
       expect(props.setPendingTokens.calledOnce).toStrictEqual(true);
       expect(props.history.push.calledOnce).toStrictEqual(true);
       expect(props.history.push.getCall(0).args[0]).toStrictEqual(
-        '/confirm-add-token',
+        '/confirm-import-token',
       );
     });
 
