@@ -47,6 +47,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "exempelvis John D."
   },
+  "addToken": {
+    "message": "Lägg till token"
+  },
   "addTokens": {
     "message": "Lägg till tokens"
   },

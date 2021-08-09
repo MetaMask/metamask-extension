@@ -88,6 +88,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "напр., Джон Д."
   },
+  "addToken": {
+    "message": "Добавить токен"
+  },
   "addTokens": {
     "message": "Добавить токены"
   },
