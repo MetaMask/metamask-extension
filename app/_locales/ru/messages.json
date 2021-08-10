@@ -1691,9 +1691,6 @@
   "sendTokens": {
     "message": "Отправить токены"
   },
-  "sentEther": {
-    "message": "отправленный Ether"
-  },
   "separateEachWord": {
     "message": "Отделяйте каждое слово одним пробелом"
   },

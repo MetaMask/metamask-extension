@@ -1691,9 +1691,6 @@
   "sendTokens": {
     "message": "Enviar tokens"
   },
-  "sentEther": {
-    "message": "enviar ether"
-  },
   "separateEachWord": {
     "message": "Separar cada palabra con un solo espacio"
   },

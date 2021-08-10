@@ -886,9 +886,6 @@
   "sendTokens": {
     "message": "שלח טוקנים"
   },
-  "sentEther": {
-    "message": "את'ר שנשלח"
-  },
   "separateEachWord": {
     "message": "יש להפריד כל מילה עם רווח יחיד"
   },

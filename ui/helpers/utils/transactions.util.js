@@ -212,7 +212,7 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     }
     case TRANSACTION_TYPES.SENT_ETHER:
     case TRANSACTION_TYPES.SENDING_NATIVE_ASSET: {
-      return t('sendingAsset', [nativeCurrency]);
+      return t('sendingNativeAsset', [nativeCurrency]);
     }
     case TRANSACTION_TYPES.CONTRACT_INTERACTION: {
       return t('contractInteraction');

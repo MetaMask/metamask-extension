@@ -1371,9 +1371,6 @@
   "sendTokens": {
     "message": "Invia Tokens"
   },
-  "sentEther": {
-    "message": "ether inviati"
-  },
   "separateEachWord": {
     "message": "Separa ogni parola con un solo spazio"
   },

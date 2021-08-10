@@ -892,9 +892,6 @@
   "sendTokens": {
     "message": "Надіслати токени"
   },
-  "sentEther": {
-    "message": "надісланий ефір"
-  },
   "separateEachWord": {
     "message": "Відділіть кожне слово одним пробілом"
   },

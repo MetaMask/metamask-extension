@@ -555,9 +555,6 @@
   "sendTokens": {
     "message": "Voye Tokens"
   },
-  "sentEther": {
-    "message": "Voye ether"
-  },
   "separateEachWord": {
     "message": "Separe chak mo ak yon sèl espas"
   },

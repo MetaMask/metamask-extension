@@ -1691,9 +1691,6 @@
   "sendTokens": {
     "message": "Gửi token"
   },
-  "sentEther": {
-    "message": "đã gửi ether"
-  },
   "separateEachWord": {
     "message": "Phân tách mỗi từ bằng một dấu cách"
   },

@@ -882,9 +882,6 @@
   "sendTokens": {
     "message": "Saada lube"
   },
-  "sentEther": {
-    "message": "saadetud eeter"
-  },
   "separateEachWord": {
     "message": "Eraldage iga sõna ühe tühikuga"
   },
