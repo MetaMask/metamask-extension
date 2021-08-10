@@ -3,8 +3,9 @@
   grid-template-columns: 30% minmax(30%, 1fr) 30%;
   column-gap: 5px;
   padding: 0 8px;
-  border-bottom: 1px solid $Grey-100;
+  border-bottom:3px solid $secondary-dark;
   height: 64px;
+  background-color: $primary-dark;
 
   .menu-bar__account-options {
     background: none;

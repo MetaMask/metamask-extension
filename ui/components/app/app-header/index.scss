@@ -1,6 +1,6 @@
 .app-header {
   align-items: center;
-  background: $Grey-000;
+  background: #1b1b1b;
   position: relative;
   z-index: $header-z-index;
   display: flex;
@@ -23,7 +23,7 @@
         position: absolute;
         width: 100%;
         height: 32px;
-        background: $Grey-000;
+        background: #1b1b1b;
         bottom: -32px;
       }
     }

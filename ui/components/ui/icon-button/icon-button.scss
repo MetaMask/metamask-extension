@@ -9,7 +9,7 @@
 
   font-size: 13px;
   cursor: pointer;
-  color: $Blue-500;
+  color: $secondary-dark;
 
   &__circle {
     display: flex;
@@ -17,14 +17,22 @@
     align-items: center;
     height: 36px;
     width: 36px;
-    background: #037dd6;
+    background: $success-3;
     border-radius: 18px;
     margin-top: 6px;
     margin-bottom: 5px;
+  }
+
+  &__circle:hover {
+    background: $secondary-dark-hover;
   }
 
   &--disabled {
     opacity: 0.3;
     cursor: auto;
   }
+}
+
+.icon-button:hover {
+  color: $secondary-dark-hover;
 }

@@ -14,7 +14,7 @@
 
     width: 100%;
     font-weight: 500;
-    color: $black;
+    color: $secondary-dark;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -25,7 +25,7 @@
   &__address {
     @include H7;
 
-    color: #989a9b;
+    color: #aeb0b1;
     display: flex;
     align-items: center;
   }
@@ -43,11 +43,7 @@
     background-color: unset;
 
     &:hover {
-      background-color: $Grey-000;
-    }
-
-    &:active {
-      background-color: #d9d7da;
+      background-color: $primary-dark-hover;
     }
   }
 

@@ -9,10 +9,11 @@
     background-color: unset;
     font-size: unset;
     color: unset;
+    background-color: #24292e;
   }
 
   &--active {
     color: $black;
-    border-bottom: 2px solid $primary-blue;
+    border-bottom: 2px solid $secondary-dark;
   }
 }

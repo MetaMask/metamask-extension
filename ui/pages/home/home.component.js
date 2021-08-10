@@ -401,7 +401,7 @@ export default class Home extends PureComponent {
                 <TransactionList />
               </Tab>
             </Tabs>
-            <div className="home__support">
+            {/* <div className="home__support">
               {t('needHelp', [
                 <a
                   href="https://support.metamask.io"
@@ -412,7 +412,7 @@ export default class Home extends PureComponent {
                   {t('needHelpLinkText')}
                 </a>,
               ])}
-            </div>
+            </div> */}
           </div>
 
           {this.renderNotifications()}

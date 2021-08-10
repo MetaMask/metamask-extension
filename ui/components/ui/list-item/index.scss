@@ -2,14 +2,11 @@
   width: 100%;
   min-height: 86px;
   margin: 0;
-  background: #fff;
   padding: 24px 16px;
 
   @include Paragraph;
 
-  border-top: 1px solid $mercury;
-  border-bottom: 1px solid $mercury;
-  color: $Black-100;
+  border-bottom: 3px solid $secondary-dark;
   display: grid;
   grid-template-columns: 0fr repeat(11, 1fr);
   grid-template-areas:
@@ -21,7 +18,7 @@
 
   &:hover,
   &:focus-within {
-    background-color: $Grey-000;
+    background-color: $primary-dark-hover;
   }
 
   &__icon {
@@ -39,7 +36,7 @@
 
   &__heading {
     @include H5;
-
+    color: $secondary-dark;
     grid-area: head;
     position: relative;
     display: flex;
@@ -67,7 +64,7 @@
     @include H7;
 
     grid-area: sub;
-    color: $Grey-500;
+    color: $secondary-dark;
     margin-top: 4px;
     // all direct descendants should be truncated with ellipses
     // allows flexibility in consuming components to use h3/other tag

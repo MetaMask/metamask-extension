@@ -20,7 +20,6 @@ export default function AddTokenButton() {
     <div className="add-token-button">
       <Button
         className="add-token-button__button"
-        type="secondary"
         rounded
         onClick={() => {
           history.push(ADD_TOKEN_ROUTE);

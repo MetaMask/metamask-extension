@@ -101,13 +101,18 @@ $ui-white: #fff;
 $ui-1: #f2f3f4;
 $ui-2: #d6d9dc;
 $ui-3: #bbc0c5;
-$ui-4: #6a737d;
+$ui-4: #66ffa6;
 
 $mainnet: #29b6af;
 $ropsten: #ff4a8d;
 $kovan: #9064ff;
 $rinkeby: #f6c343;
 $goerli: #3099f2;
+
+$primary-dark: #263238;
+$secondary-dark: #66ffa6;
+$primary-dark-hover: #4f5b62;
+$secondary-dark-hover: $Green-600;
 
 $color-map: (
   'ui-1': $ui-1,

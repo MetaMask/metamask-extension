@@ -7,7 +7,7 @@
     ::-webkit-scrollbar-thumb {
       -webkit-border-radius: 10px;
       border-radius: 10px;
-      background: #c4c4c4;
+      background: #252525;
     }
 
     display: flex;
@@ -17,14 +17,14 @@
     max-height: 94vh;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
-    background: white;
+    background: $primary-dark;
   }
 
   &-header {
     display: flex;
     padding: 24px 24px 16px;
     flex-direction: column;
-    background: white;
+    background: $primary-dark;
     position: relative;
     border-radius: 10px;
 

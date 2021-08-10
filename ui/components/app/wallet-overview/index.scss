@@ -56,7 +56,7 @@
   &__primary-balance {
     @include H2;
 
-    color: $black;
+    color: $secondary-dark;
     width: 100%;
     justify-content: center;
   }
@@ -79,7 +79,7 @@
   &__secondary-balance {
     @include Paragraph;
 
-    color: $Grey-400;
+    color: $secondary-dark;
   }
 
   &__button {
@@ -96,7 +96,7 @@
     align-items: center;
     height: 36px;
     width: 36px;
-    background: #037dd6;
+    background: $success-3;
     border-radius: 18px;
     margin-top: 6px;
   }
@@ -117,7 +117,7 @@
   &__primary-balance {
     @include H2;
 
-    color: $black;
+    color: #fff;
     width: 100%;
     justify-content: center;
   }
@@ -125,7 +125,7 @@
   &__secondary-balance {
     @include H5;
 
-    color: $Grey-400;
+    color: #fff;
   }
 
   &__button {

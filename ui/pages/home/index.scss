@@ -13,6 +13,7 @@
   }
 
   &__balance-wrapper {
+    background-color: $primary-dark;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -30,12 +31,12 @@
     @include H6;
 
     flex-grow: 1;
-    color: $Grey-500;
+    color: #fff;
     font-weight: 500;
   }
 
   &__main-view &__tab--active {
-    color: $Blue-500;
+    color: #23b962;
   }
 
   &__main-view &__tab button {
