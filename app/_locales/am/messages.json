@@ -47,6 +47,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "ለምሳሌ፡ ጆን ዲ."
   },
+  "addToken": {
+    "message": "ተለዋጭ ስም አክል"
+  },
   "advanced": {
     "message": "የላቀ"
   },

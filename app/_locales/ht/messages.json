@@ -26,6 +26,9 @@
   "addSuggestedTokens": {
     "message": "Ajoute Token Yo Sikjere W"
   },
+  "addToken": {
+    "message": "Ajoute Token"
+  },
   "amount": {
     "message": "Kantite lajan"
   },

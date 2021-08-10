@@ -47,6 +47,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "p. ex. John D."
   },
+  "addToken": {
+    "message": "Afegir Fitxa"
+  },
   "advanced": {
     "message": "Configuració avançada"
   },

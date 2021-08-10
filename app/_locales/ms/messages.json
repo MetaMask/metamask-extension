@@ -47,6 +47,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "cth. John D."
   },
+  "addToken": {
+    "message": "Tambah Token"
+  },
   "advanced": {
     "message": "Lanjutan"
   },

@@ -47,6 +47,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "Напр.: Джон Д."
   },
+  "addToken": {
+    "message": "Додати токен"
+  },
   "advanced": {
     "message": "Розширені"
   },

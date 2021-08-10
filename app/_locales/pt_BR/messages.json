@@ -88,6 +88,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "por ex., John D."
   },
+  "addToken": {
+    "message": "Adicionar token"
+  },
   "advanced": {
     "message": "Avançadas"
   },

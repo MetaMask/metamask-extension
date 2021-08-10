@@ -8,6 +8,9 @@
   "accountName": {
     "message": "Název účtu"
   },
+  "addToken": {
+    "message": "Přidat token"
+  },
   "amount": {
     "message": "Částka"
   },

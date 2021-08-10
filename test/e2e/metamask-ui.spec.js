@@ -520,7 +520,7 @@ describe('MetaMask', function () {
       await driver.clickElement({ text: 'Next', tag: 'button' });
       await driver.delay(regularDelayMs);
 
-      await driver.clickElement({ text: 'Add Tokens', tag: 'button' });
+      await driver.clickElement({ text: 'Import Tokens', tag: 'button' });
       await driver.delay(regularDelayMs);
     });
 

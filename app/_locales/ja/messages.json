@@ -88,6 +88,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "たとえば、John D."
   },
+  "addToken": {
+    "message": "トークンの追加"
+  },
   "advanced": {
     "message": "詳細"
   },

@@ -47,6 +47,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "npr. Ivan M."
   },
+  "addToken": {
+    "message": "Dodaj token"
+  },
   "advanced": {
     "message": "Napredno"
   },

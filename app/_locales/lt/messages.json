@@ -47,6 +47,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "pvz., John D."
   },
+  "addToken": {
+    "message": "Pridėti žetoną"
+  },
   "advanced": {
     "message": "Išplėstiniai"
   },

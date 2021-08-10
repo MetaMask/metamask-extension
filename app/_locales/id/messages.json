@@ -88,6 +88,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "contoh: John D."
   },
+  "addToken": {
+    "message": "Tambahkan Token"
+  },
   "advanced": {
     "message": "Tingkat Lanjut"
   },

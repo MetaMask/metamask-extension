@@ -11,6 +11,9 @@
   "accountName": {
     "message": "ชื่อบัญชี"
   },
+  "addToken": {
+    "message": "เพิ่มโทเค็น"
+  },
   "amount": {
     "message": "จำนวน"
   },

@@ -8,6 +8,9 @@
   "accountName": {
     "message": "Hesap İsmi"
   },
+  "addToken": {
+    "message": "Jeton ekle"
+  },
   "amount": {
     "message": "Tutar"
   },

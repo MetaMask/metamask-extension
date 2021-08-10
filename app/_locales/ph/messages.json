@@ -88,6 +88,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "hal. John D."
   },
+  "addToken": {
+    "message": "Magdagdag ng Token"
+  },
   "advanced": {
     "message": "Advanced"
   },

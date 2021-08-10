@@ -47,6 +47,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "مثلًا. John D."
   },
+  "addToken": {
+    "message": "یک رمز یاب اضافه کنید"
+  },
   "advanced": {
     "message": "پیشرفته"
   },

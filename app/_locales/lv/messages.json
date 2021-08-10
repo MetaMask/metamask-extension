@@ -47,6 +47,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "piemēram, Džons D."
   },
+  "addToken": {
+    "message": "Pievienot žetonu"
+  },
   "advanced": {
     "message": "Papildu"
   },

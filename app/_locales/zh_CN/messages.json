@@ -61,6 +61,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "如：John D."
   },
+  "addToken": {
+    "message": "添加代币"
+  },
   "advanced": {
     "message": "高级"
   },

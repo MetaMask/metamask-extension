@@ -47,6 +47,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "npr. John D."
   },
+  "addToken": {
+    "message": "Dodaj token"
+  },
   "advanced": {
     "message": "Напредне опције"
   },

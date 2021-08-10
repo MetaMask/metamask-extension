@@ -47,6 +47,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "napr. Ján D."
   },
+  "addToken": {
+    "message": "Přidat token"
+  },
   "advanced": {
     "message": "Rozšírené"
   },

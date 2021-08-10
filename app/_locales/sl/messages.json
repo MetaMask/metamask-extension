@@ -47,6 +47,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "npr. Jaka N."
   },
+  "addToken": {
+    "message": "Dodaj žeton"
+  },
   "advanced": {
     "message": "Napredno"
   },

@@ -88,6 +88,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "जैसे जॉन डी."
   },
+  "addToken": {
+    "message": "टोकन जोड़ें"
+  },
   "advanced": {
     "message": "उन्नत"
   },

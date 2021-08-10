@@ -11,6 +11,9 @@
   "accountName": {
     "message": "கணக்கின் பெயர்"
   },
+  "addToken": {
+    "message": "டோக்கனைச் சேர்"
+  },
   "advanced": {
     "message": "மேம்பட்டவை"
   },

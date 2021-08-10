@@ -8,6 +8,9 @@
   "accountName": {
     "message": "खाते का नाम"
   },
+  "addToken": {
+    "message": "टोकन जोड़ें"
+  },
   "amount": {
     "message": "राशि"
   },

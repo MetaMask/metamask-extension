@@ -47,6 +47,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "যেমন জন.ডি."
   },
+  "addToken": {
+    "message": "টোকেন যোগ করুন"
+  },
   "advanced": {
     "message": "উন্নত"
   },

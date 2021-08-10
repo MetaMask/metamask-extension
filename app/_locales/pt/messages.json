@@ -8,6 +8,9 @@
   "accountName": {
     "message": "Nome da Conta"
   },
+  "addToken": {
+    "message": "Adicionar Token"
+  },
   "amount": {
     "message": "Valor"
   },

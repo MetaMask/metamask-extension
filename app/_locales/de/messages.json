@@ -44,6 +44,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "z.B. Max M."
   },
+  "addToken": {
+    "message": "Token hinzufügen"
+  },
   "advanced": {
     "message": "Erweitert"
   },

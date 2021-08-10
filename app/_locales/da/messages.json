@@ -47,6 +47,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "f.eks. John D."
   },
+  "addToken": {
+    "message": "Tilføj Polet"
+  },
   "advanced": {
     "message": "Avanceret"
   },

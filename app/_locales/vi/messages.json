@@ -88,6 +88,9 @@
   "addToAddressBookModalPlaceholder": {
     "message": "ví dụ: John D."
   },
+  "addToken": {
+    "message": "Thêm token"
+  },
   "advanced": {
     "message": "Nâng cao"
   },
