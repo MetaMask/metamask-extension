@@ -112,6 +112,7 @@ export default class ConfirmTransactionBase extends Component {
     maxFeePerGas: PropTypes.string,
     maxPriorityFeePerGas: PropTypes.string,
     baseFeePerGas: PropTypes.string,
+    isMainnet: PropTypes.bool,
   };
 
   state = {
@@ -289,6 +290,7 @@ export default class ConfirmTransactionBase extends Component {
       primaryTotalTextOverrideMaxAmount,
       maxFeePerGas,
       maxPriorityFeePerGas,
+      isMainnet,
     } = this.props;
     const { t } = this.context;
 
@@ -416,7 +418,11 @@ export default class ConfirmTransactionBase extends Component {
                     <InfoTooltip
                       contentText={
                         <>
-                          <p>{t('transactionDetailGasTooltipIntro')}</p>
+                          <p>
+                            {t('transactionDetailGasTooltipIntro', [
+                              isMainnet ? t('networkNameEthereum') : '',
+                            ])}
+                          </p>
                           <p>{t('transactionDetailGasTooltipExplanation')}</p>
                           <p>
                             <a
