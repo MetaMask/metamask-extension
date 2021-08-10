@@ -1940,6 +1940,9 @@
   "sendTokens": {
     "message": "Send Tokens"
   },
+  "sendingAsset": {
+    "message": "Sending $1"
+  },
   "sentEther": {
     "message": "sent ether"
   },

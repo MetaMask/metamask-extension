@@ -198,7 +198,7 @@ export function getStatusKey(transaction) {
  * @param {TRANSACTION_TYPES[keyof TRANSACTION_TYPES]} type - The transaction type constant
  * @returns {string} The transaction category title
  */
-export function getTransactionTypeTitle(t, type) {
+export function getTransactionTypeTitle(t, type, currency = 'ETH') {
   switch (type) {
     case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER: {
       return t('transfer');
@@ -210,7 +210,7 @@ export function getTransactionTypeTitle(t, type) {
       return t('approve');
     }
     case TRANSACTION_TYPES.SENT_ETHER: {
-      return t('sentEther');
+      return t('sendingAsset', [currency]);
     }
     case TRANSACTION_TYPES.CONTRACT_INTERACTION: {
       return t('contractInteraction');
