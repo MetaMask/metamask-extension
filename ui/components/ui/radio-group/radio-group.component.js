@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { I18nContext } from '../../../contexts/i18n';
 import Typography from '../typography/typography';
 import {
@@ -11,21 +12,30 @@ import {
 export default function RadioGroup({ options, name, selectedValue, onChange }) {
   const t = useContext(I18nContext);
 
+  const hasRecommendation = Boolean(
+    options.find((option) => option.recommended),
+  );
+
   return (
-    <div className="radio-group">
+    <div
+      className={classNames('radio-group', {
+        'radio-group--has-recommendation': hasRecommendation,
+      })}
+    >
       {options.map((option) => {
         const checked = option.value === selectedValue;
         return (
           <div className="radio-group__column" key={`${name}-${option.value}`}>
             <label>
-              <Typography
-                color={COLORS.SUCCESS3}
-                className="radio-group__column-recommended"
-                variant={TYPOGRAPHY.H7}
-              >
-                {option.recommended ? t('recommendedGasLabel') : ''}
-              </Typography>
-
+              {hasRecommendation && (
+                <Typography
+                  color={COLORS.SUCCESS3}
+                  className="radio-group__column-recommended"
+                  variant={TYPOGRAPHY.H7}
+                >
+                  {option.recommended ? t('recommendedGasLabel') : ''}
+                </Typography>
+              )}
               <div className="radio-group__column-radio">
                 <input
                   type="radio"
