@@ -4,7 +4,7 @@ import {
   conversionUtil,
   addCurrencies,
   subtractCurrencies,
-} from './conversion-util';
+} from '../../../shared/modules/conversion.utils';
 import { formatCurrency } from './confirm-tx.util';
 
 export function bnToHex(inputBn) {
@@ -164,6 +164,15 @@ export function hexWEIToDecETH(hexWEI) {
 
 export function addHexes(aHexWEI, bHexWEI) {
   return addCurrencies(aHexWEI, bHexWEI, {
+    aBase: 16,
+    bBase: 16,
+    toNumericBase: 'hex',
+    numberOfDecimals: 6,
+  });
+}
+
+export function subtractHexes(aHexWEI, bHexWEI) {
+  return subtractCurrencies(aHexWEI, bHexWEI, {
     aBase: 16,
     bBase: 16,
     toNumericBase: 'hex',

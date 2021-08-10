@@ -59,10 +59,15 @@ const mapStateToProps = (state) => {
 
   const customGasTotal = calcGasTotal(customGasLimit, customGasPrice);
 
-  const swapsGasPriceEstimates = getSwapGasPriceEstimateData(state);
+  const gasEstimates = getSwapGasPriceEstimateData(state);
+  const gasEstimatesInNewFormat = {
+    low: gasEstimates.safeLow,
+    medium: gasEstimates.average,
+    high: gasEstimates.fast,
+  };
 
   const { averageEstimateData, fastEstimateData } = getRenderableGasButtonData(
-    swapsGasPriceEstimates,
+    gasEstimatesInNewFormat,
     customGasLimit,
     true,
     conversionRate,

@@ -8,6 +8,7 @@ import { initialState, SEND_STAGES } from '../../ducks/send';
 import { ensInitialState } from '../../ducks/ens';
 import { renderWithProvider } from '../../../test/jest';
 import { RINKEBY_CHAIN_ID } from '../../../shared/constants/network';
+import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
 import Send from './send';
 
 const middleware = [thunk];
@@ -37,12 +38,26 @@ const baseStore = {
   send: initialState,
   ENS: ensInitialState,
   gas: {
-    basicEstimateStatus: 'READY',
-    basicEstimates: { slow: '0x0', average: '0x1', fast: '0x2' },
     customData: { limit: null, price: null },
   },
   history: { mostRecentOverviewPage: 'activity' },
   metamask: {
+    gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+    gasFeeEstimates: {
+      low: '0',
+      medium: '1',
+      fast: '2',
+    },
+    selectedAddress: '0x0',
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: ['0x0'],
+      },
+    ],
+    networkDetails: {
+      EIPS: {},
+    },
     tokens: [],
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: false,
@@ -64,7 +79,7 @@ const baseStore = {
     accounts: {
       '0x0': { balance: '0x0', address: '0x0' },
     },
-    identities: { '0x0': {} },
+    identities: { '0x0': { address: '0x0' } },
   },
 };
 
@@ -82,12 +97,6 @@ describe('Send Page', () => {
           expect.objectContaining({
             type: 'send/initializeSendState/pending',
           }),
-          expect.objectContaining({
-            type: 'metamask/gas/BASIC_GAS_ESTIMATE_STATUS',
-          }),
-          expect.objectContaining({
-            type: 'metamask/gas/SET_ESTIMATE_SOURCE',
-          }),
         ]),
       );
     });
@@ -104,12 +113,6 @@ describe('Send Page', () => {
           }),
           expect.objectContaining({
             type: 'send/initializeSendState/pending',
-          }),
-          expect.objectContaining({
-            type: 'metamask/gas/BASIC_GAS_ESTIMATE_STATUS',
-          }),
-          expect.objectContaining({
-            type: 'metamask/gas/SET_ESTIMATE_SOURCE',
           }),
           expect.objectContaining({
             type: 'UI_MODAL_OPEN',

@@ -18,6 +18,8 @@ import {
   TRANSACTION_GROUP_CATEGORIES,
   TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction';
+import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+import EditGasPopover from '../edit-gas-popover';
 
 export default function TransactionListItem({
   transactionGroup,
@@ -32,10 +34,19 @@ export default function TransactionListItem({
     initialTransaction: { id },
     primaryTransaction: { err, status },
   } = transactionGroup;
-  const [cancelEnabled, cancelTransaction] = useCancelTransaction(
-    transactionGroup,
-  );
-  const retryTransaction = useRetryTransaction(transactionGroup);
+  const {
+    hasEnoughCancelGas,
+    cancelTransaction,
+    showCancelEditGasPopover,
+    closeCancelEditGasPopover,
+    customCancelGasSettings,
+  } = useCancelTransaction(transactionGroup);
+  const {
+    retryTransaction,
+    showRetryEditGasPopover,
+    closeRetryEditGasPopover,
+    customRetryGasSettings,
+  } = useRetryTransaction(transactionGroup);
   const shouldShowSpeedUp = useShouldShowSpeedUp(
     transactionGroup,
     isEarliestNonce,
@@ -85,7 +96,7 @@ export default function TransactionListItem({
         onClick={cancelTransaction}
         rounded
         className="transaction-list-item__header-button"
-        disabled={!cancelEnabled}
+        disabled={!hasEnoughCancelGas}
       >
         {t('cancel')}
       </Button>
@@ -94,7 +105,7 @@ export default function TransactionListItem({
       return null;
     }
 
-    return cancelEnabled ? (
+    return hasEnoughCancelGas ? (
       btn
     ) : (
       <Tooltip title={t('notEnoughGas')} position="bottom">
@@ -105,7 +116,7 @@ export default function TransactionListItem({
     isPending,
     t,
     isUnapproved,
-    cancelEnabled,
+    hasEnoughCancelGas,
     cancelTransaction,
     hasCancelled,
   ]);
@@ -200,7 +211,35 @@ export default function TransactionListItem({
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
           showCancel={isPending && !hasCancelled}
-          cancelDisabled={!cancelEnabled}
+          cancelDisabled={!hasEnoughCancelGas}
+        />
+      )}
+      {showRetryEditGasPopover && (
+        <EditGasPopover
+          onClose={closeRetryEditGasPopover}
+          mode={EDIT_GAS_MODES.SPEED_UP}
+          transaction={{
+            ...transactionGroup.primaryTransaction,
+            userFeeLevel: 'custom',
+            txParams: {
+              ...transactionGroup.primaryTransaction?.txParams,
+              ...customRetryGasSettings,
+            },
+          }}
+        />
+      )}
+      {showCancelEditGasPopover && (
+        <EditGasPopover
+          onClose={closeCancelEditGasPopover}
+          mode={EDIT_GAS_MODES.CANCEL}
+          transaction={{
+            ...transactionGroup.primaryTransaction,
+            userFeeLevel: 'custom',
+            txParams: {
+              ...transactionGroup.primaryTransaction?.txParams,
+              ...customCancelGasSettings,
+            },
+          }}
         />
       )}
     </>

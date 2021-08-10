@@ -61,6 +61,7 @@ export default class ButtonGroup extends PureComponent {
                   index === this.state.activeButtonIndex,
               },
             )}
+            data-testid={`button-group__button${index}`}
             onClick={() => {
               this.handleButtonClick(index);
               child.props.onClick?.();

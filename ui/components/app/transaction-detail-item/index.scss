@@ -1,0 +1,39 @@
+.transaction-detail-item {
+  color: $ui-4;
+
+  &__row {
+    display: flex;
+    grid-gap: 5px;
+  }
+
+  &__title {
+    flex-grow: 1;
+    word-break: break-word;
+  }
+
+  .info-tooltip {
+    display: inline-block;
+    margin-inline-start: 4px;
+
+    path {
+      fill: $ui-3;
+    }
+  }
+
+  &__total {
+    font-weight: bold;
+    color: $ui-black;
+  }
+
+  &__subtitle {
+    flex-grow: 1;
+  }
+
+  &__subtext {
+    text-align: end;
+  }
+
+  .currency-display-component {
+    display: inline;
+  }
+}

@@ -8,6 +8,7 @@ import {
   POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
   RINKEBY_CHAIN_ID,
+  KOVAN_CHAIN_ID,
 } from '../../../shared/constants/network';
 import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
@@ -15,6 +16,7 @@ import {
   ETHEREUM,
   POLYGON,
   BSC,
+  RINKEBY,
 } from '../../../shared/constants/swaps';
 import {
   TOKENS,
@@ -31,6 +33,7 @@ import {
   isContractAddressValid,
   getNetworkNameByChainId,
   getSwapsLivenessForNetwork,
+  countDecimals,
 } from './swaps.util';
 
 jest.mock('../../helpers/utils/storage-helpers.js', () => ({
@@ -393,8 +396,12 @@ describe('Swaps Util', () => {
       expect(getNetworkNameByChainId(POLYGON_CHAIN_ID)).toBe(POLYGON);
     });
 
+    it('returns "rinkeby" for Rinkeby chain ID', () => {
+      expect(getNetworkNameByChainId(RINKEBY_CHAIN_ID)).toBe(RINKEBY);
+    });
+
     it('returns an empty string for an unsupported network', () => {
-      expect(getNetworkNameByChainId(RINKEBY_CHAIN_ID)).toBe('');
+      expect(getNetworkNameByChainId(KOVAN_CHAIN_ID)).toBe('');
     });
   });
 
@@ -412,6 +419,19 @@ describe('Swaps Util', () => {
       ).toMatchObject(expectedSwapsLiveness);
     });
 
+    it('returns info that Swaps are enabled and cannot use API v2 for Rinkeby chain ID', () => {
+      const expectedSwapsLiveness = {
+        swapsFeatureIsLive: true,
+        useNewSwapsApi: false,
+      };
+      expect(
+        getSwapsLivenessForNetwork(
+          MOCKS.createFeatureFlagsResponse(),
+          RINKEBY_CHAIN_ID,
+        ),
+      ).toMatchObject(expectedSwapsLiveness);
+    });
+
     it('returns info that Swaps are disabled and cannot use API v2 if network name is not found', () => {
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: false,
@@ -420,7 +440,7 @@ describe('Swaps Util', () => {
       expect(
         getSwapsLivenessForNetwork(
           MOCKS.createFeatureFlagsResponse(),
-          RINKEBY_CHAIN_ID,
+          KOVAN_CHAIN_ID,
         ),
       ).toMatchObject(expectedSwapsLiveness);
     });
@@ -448,6 +468,28 @@ describe('Swaps Util', () => {
       expect(
         getSwapsLivenessForNetwork(swapsFeatureFlags, MAINNET_CHAIN_ID),
       ).toMatchObject(expectedSwapsLiveness);
+    });
+  });
+
+  describe('countDecimals', () => {
+    it('returns 0 decimals for an undefined value', () => {
+      expect(countDecimals()).toBe(0);
+    });
+
+    it('returns 0 decimals for number: 1', () => {
+      expect(countDecimals(1)).toBe(0);
+    });
+
+    it('returns 1 decimals for number: 1.1', () => {
+      expect(countDecimals(1.1)).toBe(1);
+    });
+
+    it('returns 3 decimals for number: 1.123', () => {
+      expect(countDecimals(1.123)).toBe(3);
+    });
+
+    it('returns 9 decimals for number: 1.123456789', () => {
+      expect(countDecimals(1.123456789)).toBe(9);
     });
   });
 });

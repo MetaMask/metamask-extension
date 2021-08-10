@@ -1,17 +1,24 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { addHexPrefix } from '../../../lib/util';
-import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction';
+import {
+  TRANSACTION_ENVELOPE_TYPES,
+  TRANSACTION_STATUSES,
+} from '../../../../../shared/constants/transaction';
+import { isEIP1559Transaction } from '../../../../../shared/modules/transaction.utils';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
 
 const normalizers = {
-  from: (from) => addHexPrefix(from),
+  from: addHexPrefix,
   to: (to, lowerCase) =>
     lowerCase ? addHexPrefix(to).toLowerCase() : addHexPrefix(to),
-  nonce: (nonce) => addHexPrefix(nonce),
-  value: (value) => addHexPrefix(value),
-  data: (data) => addHexPrefix(data),
-  gas: (gas) => addHexPrefix(gas),
-  gasPrice: (gasPrice) => addHexPrefix(gasPrice),
+  nonce: addHexPrefix,
+  value: addHexPrefix,
+  data: addHexPrefix,
+  gas: addHexPrefix,
+  gasPrice: addHexPrefix,
+  maxFeePerGas: addHexPrefix,
+  maxPriorityFeePerGas: addHexPrefix,
+  type: addHexPrefix,
 };
 
 export function normalizeAndValidateTxParams(txParams, lowerCase = true) {
@@ -39,11 +46,84 @@ export function normalizeTxParams(txParams, lowerCase = true) {
 }
 
 /**
+ * Given two fields, ensure that the second field is not included in txParams,
+ * and if it is throw an invalidParams error.
+ * @param {Object} txParams - the transaction parameters object
+ * @param {string} fieldBeingValidated - the current field being validated
+ * @param {string} mutuallyExclusiveField - the field to ensure is not provided
+ * @throws {ethErrors.rpc.invalidParams} - throws if mutuallyExclusiveField is
+ *  present in txParams.
+ */
+function ensureMutuallyExclusiveFieldsNotProvided(
+  txParams,
+  fieldBeingValidated,
+  mutuallyExclusiveField,
+) {
+  if (typeof txParams[mutuallyExclusiveField] !== 'undefined') {
+    throw ethErrors.rpc.invalidParams(
+      `Invalid transaction params: specified ${fieldBeingValidated} but also included ${mutuallyExclusiveField}, these cannot be mixed`,
+    );
+  }
+}
+
+/**
+ * Ensures that the provided value for field is a string, throws an
+ * invalidParams error if field is not a string.
+ * @param {Object} txParams - the transaction parameters object
+ * @param {string} field - the current field being validated
+ * @throws {ethErrors.rpc.invalidParams} - throws if field is not a string
+ */
+function ensureFieldIsString(txParams, field) {
+  if (typeof txParams[field] !== 'string') {
+    throw ethErrors.rpc.invalidParams(
+      `Invalid transaction params: ${field} is not a string. got: (${txParams[field]})`,
+    );
+  }
+}
+
+/**
+ * Ensures that the provided txParams has the proper 'type' specified for the
+ * given field, if it is provided. If types do not match throws an
+ * invalidParams error.
+ * @param {Object} txParams - the transaction parameters object
+ * @param {'gasPrice' | 'maxFeePerGas' | 'maxPriorityFeePerGas'} field - the
+ *  current field being validated
+ * @throws {ethErrors.rpc.invalidParams} - throws if type does not match the
+ *  expectations for provided field.
+ */
+function ensureProperTransactionEnvelopeTypeProvided(txParams, field) {
+  switch (field) {
+    case 'maxFeePerGas':
+    case 'maxPriorityFeePerGas':
+      if (
+        txParams.type &&
+        txParams.type !== TRANSACTION_ENVELOPE_TYPES.FEE_MARKET
+      ) {
+        throw ethErrors.rpc.invalidParams(
+          `Invalid transaction envelope type: specified type "${txParams.type}" but including maxFeePerGas and maxPriorityFeePerGas requires type: "${TRANSACTION_ENVELOPE_TYPES.FEE_MARKET}"`,
+        );
+      }
+      break;
+    case 'gasPrice':
+    default:
+      if (
+        txParams.type &&
+        txParams.type === TRANSACTION_ENVELOPE_TYPES.FEE_MARKET
+      ) {
+        throw ethErrors.rpc.invalidParams(
+          `Invalid transaction envelope type: specified type "${txParams.type}" but included a gasPrice instead of maxFeePerGas and maxPriorityFeePerGas`,
+        );
+      }
+  }
+}
+
+/**
  * Validates the given tx parameters
  * @param {Object} txParams - the tx params
+ * @param {boolean} eip1559Compatibility - whether or not the current network supports EIP-1559 transactions
  * @throws {Error} if the tx params contains invalid fields
  */
-export function validateTxParams(txParams) {
+export function validateTxParams(txParams, eip1559Compatibility = true) {
   if (!txParams || typeof txParams !== 'object' || Array.isArray(txParams)) {
     throw ethErrors.rpc.invalidParams(
       'Invalid transaction params: must be an object.',
@@ -52,6 +132,11 @@ export function validateTxParams(txParams) {
   if (!txParams.to && !txParams.data) {
     throw ethErrors.rpc.invalidParams(
       'Invalid transaction params: must specify "data" for contract deployments, or "to" (and optionally "data") for all other types of transactions.',
+    );
+  }
+  if (isEIP1559Transaction({ txParams }) && !eip1559Compatibility) {
+    throw ethErrors.rpc.invalidParams(
+      'Invalid transaction params: params specify an EIP-1559 transaction but the current network does not support EIP-1559',
     );
   }
 
@@ -64,12 +149,43 @@ export function validateTxParams(txParams) {
       case 'to':
         validateRecipient(txParams);
         break;
+      case 'gasPrice':
+        ensureProperTransactionEnvelopeTypeProvided(txParams, 'gasPrice');
+        ensureMutuallyExclusiveFieldsNotProvided(
+          txParams,
+          'gasPrice',
+          'maxFeePerGas',
+        );
+        ensureMutuallyExclusiveFieldsNotProvided(
+          txParams,
+          'gasPrice',
+          'maxPriorityFeePerGas',
+        );
+        ensureFieldIsString(txParams, 'gasPrice');
+        break;
+      case 'maxFeePerGas':
+        ensureProperTransactionEnvelopeTypeProvided(txParams, 'maxFeePerGas');
+        ensureMutuallyExclusiveFieldsNotProvided(
+          txParams,
+          'maxFeePerGas',
+          'gasPrice',
+        );
+        ensureFieldIsString(txParams, 'maxFeePerGas');
+        break;
+      case 'maxPriorityFeePerGas':
+        ensureProperTransactionEnvelopeTypeProvided(
+          txParams,
+          'maxPriorityFeePerGas',
+        );
+        ensureMutuallyExclusiveFieldsNotProvided(
+          txParams,
+          'maxPriorityFeePerGas',
+          'gasPrice',
+        );
+        ensureFieldIsString(txParams, 'maxPriorityFeePerGas');
+        break;
       case 'value':
-        if (typeof value !== 'string') {
-          throw ethErrors.rpc.invalidParams(
-            `Invalid transaction params: ${key} is not a string. got: (${value})`,
-          );
-        }
+        ensureFieldIsString(txParams, 'value');
         if (value.toString().includes('-')) {
           throw ethErrors.rpc.invalidParams(
             `Invalid transaction value "${value}": not a positive number.`,
@@ -90,11 +206,7 @@ export function validateTxParams(txParams) {
         }
         break;
       default:
-        if (typeof value !== 'string') {
-          throw ethErrors.rpc.invalidParams(
-            `Invalid transaction params: ${key} is not a string. got: (${value})`,
-          );
-        }
+        ensureFieldIsString(txParams, key);
     }
   });
 }

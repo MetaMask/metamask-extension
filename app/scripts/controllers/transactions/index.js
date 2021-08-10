@@ -1,10 +1,11 @@
 import EventEmitter from 'safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
-import Transaction from 'ethereumjs-tx';
 import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
 import EthQuery from 'ethjs-query';
 import { ethErrors } from 'eth-rpc-errors';
 import abi from 'human-standard-token-abi';
+import Common from '@ethereumjs/common';
+import { TransactionFactory } from '@ethereumjs/tx';
 import { ethers } from 'ethers';
 import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
@@ -23,10 +24,20 @@ import { hexWEIToDecGWEI } from '../../../../ui/helpers/utils/conversions.util';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
+  TRANSACTION_ENVELOPE_TYPES,
 } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
-import { GAS_LIMITS } from '../../../../shared/constants/gas';
-import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../../shared/constants/network';
+import {
+  GAS_LIMITS,
+  GAS_ESTIMATE_TYPES,
+} from '../../../../shared/constants/gas';
+import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
+import {
+  HARDFORKS,
+  MAINNET,
+  NETWORK_TYPE_RPC,
+  CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
+} from '../../../../shared/constants/network';
 import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
@@ -44,6 +55,16 @@ export const TRANSACTION_EVENTS = {
   REJECTED: 'Transaction Rejected',
   SUBMITTED: 'Transaction Submitted',
 };
+
+/**
+ * @typedef {Object} CustomGasSettings
+ * @property {string} [gas] - The gas limit to use for the transaction
+ * @property {string} [gasPrice] - The gasPrice to use for a legacy transaction
+ * @property {string} [maxFeePerGas] - The maximum amount to pay per gas on a
+ *  EIP-1559 transaction
+ * @property {string} [maxPriorityFeePerGas] - The maximum amount of paid fee
+ *  to be distributed to miner in an EIP-1559 transaction
+ */
 
 /**
   Transaction Controller is an aggregate of sub-controllers and trackers
@@ -65,7 +86,7 @@ export const TRANSACTION_EVENTS = {
   @param {Object} opts.networkStore - an observable store for network number
   @param {Object} opts.blockTracker - An instance of eth-blocktracker
   @param {Object} opts.provider - A network provider.
-  @param {Function} opts.signTransaction - function the signs an ethereumjs-tx
+  @param {Function} opts.signTransaction - function the signs an @ethereumjs/tx
   @param {Object} opts.getPermittedAccounts - get accounts that an origin has permissions for
   @param {Function} opts.signTransaction - ethTx signer that returns a rawTx
   @param {number} [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
@@ -77,6 +98,11 @@ export default class TransactionController extends EventEmitter {
     super();
     this.networkStore = opts.networkStore || new ObservableStore({});
     this._getCurrentChainId = opts.getCurrentChainId;
+    this.getProviderConfig = opts.getProviderConfig;
+    this._getCurrentNetworkEIP1559Compatibility =
+      opts.getCurrentNetworkEIP1559Compatibility;
+    this._getCurrentAccountEIP1559Compatibility =
+      opts.getCurrentAccountEIP1559Compatibility;
     this.preferencesStore = opts.preferencesStore || new ObservableStore({});
     this.provider = opts.provider;
     this.getPermittedAccounts = opts.getPermittedAccounts;
@@ -85,6 +111,7 @@ export default class TransactionController extends EventEmitter {
     this.inProcessOfSigning = new Set();
     this._trackMetaMetricsEvent = opts.trackMetaMetricsEvent;
     this._getParticipateInMetrics = opts.getParticipateInMetrics;
+    this._getEIP1559GasFeeEstimates = opts.getEIP1559GasFeeEstimates;
 
     this.memStore = new ObservableStore({});
     this.query = new EthQuery(this.provider);
@@ -156,6 +183,66 @@ export default class TransactionController extends EventEmitter {
       return 0;
     }
     return integerChainId;
+  }
+
+  async getEIP1559Compatibility(fromAddress) {
+    const currentNetworkIsCompatible = await this._getCurrentNetworkEIP1559Compatibility();
+    const fromAccountIsCompatible = await this._getCurrentAccountEIP1559Compatibility(
+      fromAddress,
+    );
+    return currentNetworkIsCompatible && fromAccountIsCompatible;
+  }
+
+  /**
+   * @ethereumjs/tx uses @ethereumjs/common as a configuration tool for
+   * specifying which chain, network, hardfork and EIPs to support for
+   * a transaction. By referencing this configuration, and analyzing the fields
+   * specified in txParams, @ethereumjs/tx is able to determine which EIP-2718
+   * transaction type to use.
+   * @returns {Common} common configuration object
+   */
+  async getCommonConfiguration(fromAddress) {
+    const { type, nickname: name } = this.getProviderConfig();
+    const supportsEIP1559 = await this.getEIP1559Compatibility(fromAddress);
+
+    // This logic below will have to be updated each time a hardfork happens
+    // that carries with it a new Transaction type. It is inconsequential for
+    // hardforks that do not include new types.
+    const hardfork = supportsEIP1559 ? HARDFORKS.LONDON : HARDFORKS.BERLIN;
+
+    // type will be one of our default network names or 'rpc'. the default
+    // network names are sufficient configuration, simply pass the name as the
+    // chain argument in the constructor.
+    if (type !== NETWORK_TYPE_RPC) {
+      return new Common({
+        chain: type,
+        hardfork,
+      });
+    }
+
+    // For 'rpc' we need to use the same basic configuration as mainnet,
+    // since we only support EVM compatible chains, and then override the
+    // name, chainId and networkId properties. This is done using the
+    // `forCustomChain` static method on the Common class.
+    const chainId = parseInt(this._getCurrentChainId(), 16);
+    const networkId = this.networkStore.getState();
+
+    const customChainParams = {
+      name,
+      chainId,
+      // It is improbable for a transaction to be signed while the network
+      // is loading for two reasons.
+      // 1. Pending, unconfirmed transactions are wiped on network change
+      // 2. The UI is unusable (loading indicator) when network is loading.
+      // setting the networkId to 0 is for type safety and to explicity lead
+      // the transaction to failing if a user is able to get to this branch
+      // on a custom network that requires valid network id. I have not ran
+      // into this limitation on any network I have attempted, even when
+      // hardcoding networkId to 'loading'.
+      networkId: networkId === 'loading' ? 0 : parseInt(networkId, 10),
+    };
+
+    return Common.forCustomChain(MAINNET, customChainParams, hardfork);
   }
 
   /**
@@ -240,8 +327,9 @@ export default class TransactionController extends EventEmitter {
   async addUnapprovedTransaction(txParams, origin) {
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams);
+    const eip1559Compatibility = await this.getEIP1559Compatibility();
 
-    txUtils.validateTxParams(normalizedTxParams);
+    txUtils.validateTxParams(normalizedTxParams, eip1559Compatibility);
 
     /**
     `generateTxMeta` adds the default txMeta properties to the passed object.
@@ -251,6 +339,7 @@ export default class TransactionController extends EventEmitter {
     */
     let txMeta = this.txStateManager.generateTxMeta({
       txParams: normalizedTxParams,
+      origin,
     });
 
     if (origin === 'metamask') {
@@ -273,8 +362,6 @@ export default class TransactionController extends EventEmitter {
         throw ethErrors.provider.unauthorized({ data: { origin } });
       }
     }
-
-    txMeta.origin = origin;
 
     const { type, getCodeResponse } = await this._determineTransactionType(
       txParams,
@@ -318,7 +405,13 @@ export default class TransactionController extends EventEmitter {
    * @returns {Promise<object>} resolves with txMeta
    */
   async addTxGasDefaults(txMeta, getCodeResponse) {
-    const defaultGasPrice = await this._getDefaultGasPrice(txMeta);
+    const eip1559Compatibility = await this.getEIP1559Compatibility();
+
+    const {
+      gasPrice: defaultGasPrice,
+      maxFeePerGas: defaultMaxFeePerGas,
+      maxPriorityFeePerGas: defaultMaxPriorityFeePerGas,
+    } = await this._getDefaultGasFees(txMeta, eip1559Compatibility);
     const {
       gasLimit: defaultGasLimit,
       simulationFails,
@@ -329,9 +422,89 @@ export default class TransactionController extends EventEmitter {
     if (simulationFails) {
       txMeta.simulationFails = simulationFails;
     }
-    if (defaultGasPrice && !txMeta.txParams.gasPrice) {
+
+    if (eip1559Compatibility) {
+      // If the dapp has suggested a gas price, but no maxFeePerGas or maxPriorityFeePerGas
+      //  then we set maxFeePerGas and maxPriorityFeePerGas to the suggested gasPrice.
+      if (
+        txMeta.txParams.gasPrice &&
+        !txMeta.txParams.maxFeePerGas &&
+        !txMeta.txParams.maxPriorityFeePerGas
+      ) {
+        txMeta.txParams.maxFeePerGas = txMeta.txParams.gasPrice;
+        txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.gasPrice;
+        txMeta.userFeeLevel = 'custom';
+      } else {
+        if (
+          (defaultMaxFeePerGas &&
+            defaultMaxPriorityFeePerGas &&
+            !txMeta.txParams.maxFeePerGas &&
+            !txMeta.txParams.maxPriorityFeePerGas) ||
+          txMeta.origin === 'metamask'
+        ) {
+          txMeta.userFeeLevel = 'medium';
+        } else {
+          txMeta.userFeeLevel = 'custom';
+        }
+
+        if (defaultMaxFeePerGas && !txMeta.txParams.maxFeePerGas) {
+          // If the dapp has not set the gasPrice or the maxFeePerGas, then we set maxFeePerGas
+          // with the one returned by the gasFeeController, if that is available.
+          txMeta.txParams.maxFeePerGas = defaultMaxFeePerGas;
+        }
+
+        if (
+          defaultMaxPriorityFeePerGas &&
+          !txMeta.txParams.maxPriorityFeePerGas
+        ) {
+          // If the dapp has not set the gasPrice or the maxPriorityFeePerGas, then we set maxPriorityFeePerGas
+          // with the one returned by the gasFeeController, if that is available.
+          txMeta.txParams.maxPriorityFeePerGas = defaultMaxPriorityFeePerGas;
+        }
+
+        if (defaultGasPrice && !txMeta.txParams.maxFeePerGas) {
+          // If the dapp has not set the gasPrice or the maxFeePerGas, and no maxFeePerGas is available
+          // from the gasFeeController, then we set maxFeePerGas to the defaultGasPrice, assuming it is
+          // available.
+          txMeta.txParams.maxFeePerGas = defaultGasPrice;
+        }
+
+        if (
+          txMeta.txParams.maxFeePerGas &&
+          !txMeta.txParams.maxPriorityFeePerGas
+        ) {
+          // If the dapp has not set the gasPrice or the maxPriorityFeePerGas, and no maxPriorityFeePerGas is
+          // available from the gasFeeController, then we set maxPriorityFeePerGas to
+          // txMeta.txParams.maxFeePerGas, which will either be the gasPrice from the controller, the maxFeePerGas
+          // set by the dapp, or the maxFeePerGas from the controller.
+          txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.maxFeePerGas;
+        }
+      }
+
+      // We remove the gasPrice param entirely when on an eip1559 compatible network
+
+      delete txMeta.txParams.gasPrice;
+    } else {
+      // We ensure that maxFeePerGas and maxPriorityFeePerGas are not in the transaction params
+      // when not on a EIP1559 compatible network
+
+      delete txMeta.txParams.maxPriorityFeePerGas;
+      delete txMeta.txParams.maxFeePerGas;
+    }
+
+    // If we have gotten to this point, and none of gasPrice, maxPriorityFeePerGas or maxFeePerGas are
+    // set on txParams, it means that either we are on a non-EIP1559 network and the dapp didn't suggest
+    // a gas price, or we are on an EIP1559 network, and none of gasPrice, maxPriorityFeePerGas or maxFeePerGas
+    // were available from either the dapp or the network.
+    if (
+      defaultGasPrice &&
+      !txMeta.txParams.gasPrice &&
+      !txMeta.txParams.maxPriorityFeePerGas &&
+      !txMeta.txParams.maxFeePerGas
+    ) {
       txMeta.txParams.gasPrice = defaultGasPrice;
     }
+
     if (defaultGasLimit && !txMeta.txParams.gas) {
       txMeta.txParams.gas = defaultGasLimit;
     }
@@ -339,17 +512,61 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-   * Gets default gas price, or returns `undefined` if gas price is already set
+   * Gets default gas fees, or returns `undefined` if gas fees are already set
    * @param {Object} txMeta - The txMeta object
    * @returns {Promise<string|undefined>} The default gas price
    */
-  async _getDefaultGasPrice(txMeta) {
-    if (txMeta.txParams.gasPrice) {
-      return undefined;
+  async _getDefaultGasFees(txMeta, eip1559Compatibility) {
+    if (
+      (!eip1559Compatibility && txMeta.txParams.gasPrice) ||
+      (eip1559Compatibility &&
+        txMeta.txParams.maxFeePerGas &&
+        txMeta.txParams.maxPriorityFeePerGas)
+    ) {
+      return {};
     }
+
+    try {
+      const {
+        gasFeeEstimates,
+        gasEstimateType,
+      } = await this._getEIP1559GasFeeEstimates();
+      if (
+        eip1559Compatibility &&
+        gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET
+      ) {
+        const {
+          medium: { suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas } = {},
+        } = gasFeeEstimates;
+
+        if (suggestedMaxPriorityFeePerGas && suggestedMaxFeePerGas) {
+          return {
+            maxFeePerGas: decGWEIToHexWEI(suggestedMaxFeePerGas),
+            maxPriorityFeePerGas: decGWEIToHexWEI(
+              suggestedMaxPriorityFeePerGas,
+            ),
+          };
+        }
+      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+        // The LEGACY type includes low, medium and high estimates of
+        // gas price values.
+        return {
+          gasPrice: decGWEIToHexWEI(gasFeeEstimates.medium),
+        };
+      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+        // The ETH_GASPRICE type just includes a single gas price property,
+        // which we can assume was retrieved from eth_gasPrice
+        return {
+          gasPrice: decGWEIToHexWEI(gasFeeEstimates.gasPrice),
+        };
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
     const gasPrice = await this.query.gasPrice();
 
-    return addHexPrefix(gasPrice.toString(16));
+    return { gasPrice: gasPrice && addHexPrefix(gasPrice.toString(16)) };
   }
 
   /**
@@ -403,35 +620,116 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
+   * Given a TransactionMeta object, generate new gas params such that if the
+   * transaction was an EIP1559 transaction, it only has EIP1559 gas fields,
+   * otherwise it only has gasPrice. Will use whatever custom values are
+   * specified in customGasSettings, or falls back to incrementing by a percent
+   * which is defined by specifying a numerator. 11 is a 10% bump, 12 would be
+   * a 20% bump, and so on.
+   * @param {import(
+   *  '../../../../shared/constants/transaction'
+   * ).TransactionMeta} originalTxMeta - Original transaction to use as base
+   * @param {CustomGasSettings} [customGasSettings] - overrides for the gas
+   *  fields to use instead of the multiplier
+   * @param {number} [incrementNumerator] - Numerator from which to generate a
+   *  percentage bump of gas price. E.g 11 would be a 10% bump over base.
+   * @returns {{ newGasParams: CustomGasSettings, previousGasParams: CustomGasSettings }}
+   */
+  generateNewGasParams(
+    originalTxMeta,
+    customGasSettings = {},
+    incrementNumerator = 11,
+  ) {
+    const { txParams } = originalTxMeta;
+    const previousGasParams = {};
+    const newGasParams = {};
+    if (customGasSettings.gasLimit) {
+      newGasParams.gas = customGasSettings?.gas ?? GAS_LIMITS.SIMPLE;
+    }
+
+    if (isEIP1559Transaction(originalTxMeta)) {
+      previousGasParams.maxFeePerGas = txParams.maxFeePerGas;
+      previousGasParams.maxPriorityFeePerGas = txParams.maxPriorityFeePerGas;
+      newGasParams.maxFeePerGas =
+        customGasSettings?.maxFeePerGas ||
+        bnToHex(
+          BnMultiplyByFraction(
+            hexToBn(txParams.maxFeePerGas),
+            incrementNumerator,
+            10,
+          ),
+        );
+      newGasParams.maxPriorityFeePerGas =
+        customGasSettings?.maxPriorityFeePerGas ||
+        bnToHex(
+          BnMultiplyByFraction(
+            hexToBn(txParams.maxPriorityFeePerGas),
+            incrementNumerator,
+            10,
+          ),
+        );
+    } else {
+      previousGasParams.gasPrice = txParams.gasPrice;
+      newGasParams.gasPrice =
+        customGasSettings?.gasPrice ||
+        bnToHex(
+          BnMultiplyByFraction(
+            hexToBn(txParams.gasPrice),
+            incrementNumerator,
+            10,
+          ),
+        );
+    }
+
+    return { previousGasParams, newGasParams };
+  }
+
+  /**
    * Creates a new approved transaction to attempt to cancel a previously submitted transaction. The
    * new transaction contains the same nonce as the previous, is a basic ETH transfer of 0x value to
    * the sender's address, and has a higher gasPrice than that of the previous transaction.
    * @param {number} originalTxId - the id of the txMeta that you want to attempt to cancel
-   * @param {string} [customGasPrice] - the hex value to use for the cancel transaction
+   * @param {CustomGasSettings} [customGasSettings] - overrides to use for gas
+   *  params instead of allowing this method to generate them
    * @returns {txMeta}
    */
-  async createCancelTransaction(originalTxId, customGasPrice, customGasLimit) {
+  async createCancelTransaction(
+    originalTxId,
+    customGasSettings,
+    { estimatedBaseFee } = {},
+  ) {
     const originalTxMeta = this.txStateManager.getTransaction(originalTxId);
     const { txParams } = originalTxMeta;
-    const { gasPrice: lastGasPrice, from, nonce } = txParams;
+    const { from, nonce } = txParams;
 
-    const newGasPrice =
-      customGasPrice ||
-      bnToHex(BnMultiplyByFraction(hexToBn(lastGasPrice), 11, 10));
+    const { previousGasParams, newGasParams } = this.generateNewGasParams(
+      originalTxMeta,
+      {
+        ...customGasSettings,
+        // We want to override the previous transactions gasLimit because it
+        // will now be a simple send instead of whatever it was before such
+        // as a token transfer or contract call.
+        gasLimit: customGasSettings.gasLimit || GAS_LIMITS.SIMPLE,
+      },
+    );
+
     const newTxMeta = this.txStateManager.generateTxMeta({
       txParams: {
         from,
         to: from,
         nonce,
-        gas: customGasLimit || GAS_LIMITS.SIMPLE,
         value: '0x0',
-        gasPrice: newGasPrice,
+        ...newGasParams,
       },
-      lastGasPrice,
+      previousGasParams,
       loadingDefaults: false,
       status: TRANSACTION_STATUSES.APPROVED,
       type: TRANSACTION_TYPES.CANCEL,
     });
+
+    if (estimatedBaseFee) {
+      newTxMeta.estimatedBaseFee = estimatedBaseFee;
+    }
 
     this.addTransaction(newTxMeta);
     await this.approveTransaction(newTxMeta.id);
@@ -444,32 +742,36 @@ export default class TransactionController extends EventEmitter {
    * the same gas limit and a 10% higher gas price, though it is possible to set a custom value for
    * each instead.
    * @param {number} originalTxId - the id of the txMeta that you want to speed up
-   * @param {string} [customGasPrice] - The new custom gas price, in hex
-   * @param {string} [customGasLimit] - The new custom gas limt, in hex
+   * @param {CustomGasSettings} [customGasSettings] - overrides to use for gas
+   *  params instead of allowing this method to generate them
    * @returns {txMeta}
    */
-  async createSpeedUpTransaction(originalTxId, customGasPrice, customGasLimit) {
+  async createSpeedUpTransaction(
+    originalTxId,
+    customGasSettings,
+    { estimatedBaseFee } = {},
+  ) {
     const originalTxMeta = this.txStateManager.getTransaction(originalTxId);
     const { txParams } = originalTxMeta;
-    const { gasPrice: lastGasPrice } = txParams;
 
-    const newGasPrice =
-      customGasPrice ||
-      bnToHex(BnMultiplyByFraction(hexToBn(lastGasPrice), 11, 10));
+    const { previousGasParams, newGasParams } = this.generateNewGasParams(
+      originalTxMeta,
+      customGasSettings,
+    );
 
     const newTxMeta = this.txStateManager.generateTxMeta({
       txParams: {
         ...txParams,
-        gasPrice: newGasPrice,
+        ...newGasParams,
       },
-      lastGasPrice,
+      previousGasParams,
       loadingDefaults: false,
       status: TRANSACTION_STATUSES.APPROVED,
       type: TRANSACTION_TYPES.RETRY,
     });
 
-    if (customGasLimit) {
-      newTxMeta.txParams.gas = customGasLimit;
+    if (estimatedBaseFee) {
+      newTxMeta.estimatedBaseFee = estimatedBaseFee;
     }
 
     this.addTransaction(newTxMeta);
@@ -524,15 +826,16 @@ export default class TransactionController extends EventEmitter {
       this.txStateManager.setTxStatusApproved(txId);
       // get next nonce
       const txMeta = this.txStateManager.getTransaction(txId);
+
       const fromAddress = txMeta.txParams.from;
       // wait for a nonce
       let { customNonceValue } = txMeta;
       customNonceValue = Number(customNonceValue);
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress);
       // add nonce to txParams
-      // if txMeta has lastGasPrice then it is a retry at same nonce with higher
-      // gas price transaction and their for the nonce should not be calculated
-      const nonce = txMeta.lastGasPrice
+      // if txMeta has previousGasParams then it is a retry at same nonce with
+      // higher gas settings and therefor the nonce should not be recalculated
+      const nonce = txMeta.previousGasParams
         ? txMeta.txParams.nonce
         : nonceLock.nextNonce;
       const customOrNonce =
@@ -581,17 +884,26 @@ export default class TransactionController extends EventEmitter {
     const txMeta = this.txStateManager.getTransaction(txId);
     // add network/chain id
     const chainId = this.getChainId();
-    const txParams = { ...txMeta.txParams, chainId };
+    const type = isEIP1559Transaction(txMeta)
+      ? TRANSACTION_ENVELOPE_TYPES.FEE_MARKET
+      : TRANSACTION_ENVELOPE_TYPES.LEGACY;
+    const txParams = {
+      ...txMeta.txParams,
+      type,
+      chainId,
+      gasLimit: txMeta.txParams.gas,
+    };
     // sign tx
     const fromAddress = txParams.from;
-    const ethTx = new Transaction(txParams);
-    await this.signEthTx(ethTx, fromAddress);
+    const common = await this.getCommonConfiguration(txParams.from);
+    const unsignedEthTx = TransactionFactory.fromTxData(txParams, { common });
+    const signedEthTx = await this.signEthTx(unsignedEthTx, fromAddress);
 
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation
-    txMeta.r = bufferToHex(ethTx.r);
-    txMeta.s = bufferToHex(ethTx.s);
-    txMeta.v = bufferToHex(ethTx.v);
+    txMeta.r = bufferToHex(signedEthTx.r);
+    txMeta.s = bufferToHex(signedEthTx.s);
+    txMeta.v = bufferToHex(signedEthTx.v);
 
     this.txStateManager.updateTransaction(
       txMeta,
@@ -600,7 +912,7 @@ export default class TransactionController extends EventEmitter {
 
     // set state to signed
     this.txStateManager.setTxStatusSigned(txMeta.id);
-    const rawTx = bufferToHex(ethTx.serialize());
+    const rawTx = bufferToHex(signedEthTx.serialize());
     return rawTx;
   }
 
@@ -645,7 +957,7 @@ export default class TransactionController extends EventEmitter {
    * @param {number} txId - The tx's ID
    * @returns {Promise<void>}
    */
-  async confirmTransaction(txId, txReceipt) {
+  async confirmTransaction(txId, txReceipt, baseFeePerGas) {
     // get the txReceipt before marking the transaction confirmed
     // to ensure the receipt is gotten before the ui revives the tx
     const txMeta = this.txStateManager.getTransaction(txId);
@@ -666,6 +978,11 @@ export default class TransactionController extends EventEmitter {
         ...txReceipt,
         gasUsed,
       };
+
+      if (baseFeePerGas) {
+        txMeta.baseFeePerGas = baseFeePerGas;
+      }
+
       this.txStateManager.setTxStatusConfirmed(txId);
       this._markNonceDuplicatesDropped(txId);
 
@@ -844,8 +1161,10 @@ export default class TransactionController extends EventEmitter {
     this.pendingTxTracker.on('tx:failed', (txId, error) => {
       this._failTransaction(txId, error);
     });
-    this.pendingTxTracker.on('tx:confirmed', (txId, transactionReceipt) =>
-      this.confirmTransaction(txId, transactionReceipt),
+    this.pendingTxTracker.on(
+      'tx:confirmed',
+      (txId, transactionReceipt, baseFeePerGas) =>
+        this.confirmTransaction(txId, transactionReceipt, baseFeePerGas),
     );
     this.pendingTxTracker.on('tx:dropped', (txId) => {
       this._dropTransaction(txId);
@@ -1026,10 +1345,12 @@ export default class TransactionController extends EventEmitter {
           txMeta.chainId,
         );
 
-        const quoteVsExecutionRatio = `${new BigNumber(tokensReceived, 10)
-          .div(txMeta.swapMetaData.token_to_amount, 10)
-          .times(100)
-          .round(2)}%`;
+        const quoteVsExecutionRatio = tokensReceived
+          ? `${new BigNumber(tokensReceived, 10)
+              .div(txMeta.swapMetaData.token_to_amount, 10)
+              .times(100)
+              .round(2)}%`
+          : null;
 
         const estimatedVsUsedGasRatio = `${new BigNumber(
           txMeta.txReceipt.gasUsed,

@@ -52,7 +52,10 @@ export default function MainQuoteSummary({
     <div className="main-quote-summary">
       <div className="main-quote-summary__details">
         <div className="main-quote-summary__quote-details-top">
-          <div className="main-quote-summary__source-row">
+          <div
+            className="main-quote-summary__source-row"
+            data-testid="main-quote-summary__source-row"
+          >
             <span
               className="main-quote-summary__source-row-value"
               title={formatSwapsValueForDisplay(sourceAmount)}
@@ -107,7 +110,10 @@ export default function MainQuoteSummary({
             </Tooltip>
           </div>
         </div>
-        <div className="main-quote-summary__exchange-rate-container">
+        <div
+          className="main-quote-summary__exchange-rate-container"
+          data-testid="main-quote-summary__exchange-rate-container"
+        >
           <ExchangeRateDisplay
             primaryTokenValue={sourceValue}
             primaryTokenDecimals={sourceDecimals}

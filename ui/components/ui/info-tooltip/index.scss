@@ -1,7 +1,13 @@
 .info-tooltip {
-  img {
+  svg {
     height: 12px;
     width: 12px;
+  }
+
+  &__tooltip-container {
+    svg {
+      position: static;
+    }
   }
 }
 
@@ -41,6 +47,18 @@
 
       text-align: left;
       color: $Grey-500;
+
+      a {
+        color: $primary-1;
+      }
+
+      p {
+        margin-bottom: 12px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
     }
   }
 

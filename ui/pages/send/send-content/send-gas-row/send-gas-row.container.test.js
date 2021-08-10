@@ -60,12 +60,12 @@ describe('send-gas-row container', () => {
       mapDispatchToPropsObject = mapDispatchToProps(dispatchSpy);
     });
 
-    describe('showCustomizeGasModal()', () => {
+    describe('showLegacyCustomizeGasModal()', () => {
       it('should dispatch an action', () => {
-        mapDispatchToPropsObject.showCustomizeGasModal();
+        mapDispatchToPropsObject.showLegacyCustomizeGasModal();
         expect(dispatchSpy.calledOnce).toStrictEqual(true);
         expect(showModal).toHaveBeenCalledWith({
-          name: 'CUSTOMIZE_GAS',
+          name: 'LEGACY_CUSTOMIZE_GAS',
           hideBasic: true,
         });
       });

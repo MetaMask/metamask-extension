@@ -30,6 +30,9 @@ describe('preferences controller', function () {
     network.initializeProvider(networkControllerProviderConfig);
     provider = network.getProviderAndBlockTracker().provider;
 
+    sandbox
+      .stub(network, 'getLatestBlock')
+      .callsFake(() => Promise.resolve({}));
     sandbox.stub(network, 'getCurrentChainId').callsFake(() => currentChainId);
     sandbox
       .stub(network, 'getProviderConfig')
@@ -863,6 +866,24 @@ describe('preferences controller', function () {
       assert.equal(
         preferencesController.store.getState().usePhishDetect,
         false,
+      );
+    });
+  });
+  describe('setUseStaticTokenList', function () {
+    it('should default to false', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.useStaticTokenList, false);
+    });
+
+    it('should set the useStaticTokenList property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().useStaticTokenList,
+        false,
+      );
+      preferencesController.setUseStaticTokenList(true);
+      assert.equal(
+        preferencesController.store.getState().useStaticTokenList,
+        true,
       );
     });
   });

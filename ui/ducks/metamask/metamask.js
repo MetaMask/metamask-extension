@@ -1,10 +1,16 @@
+import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import * as actionConstants from '../../store/actionConstants';
 import { ALERT_TYPES } from '../../../shared/constants/alerts';
 import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
 import {
   accountsWithSendEtherInfoSelector,
+  checkNetworkAndAccountSupports1559,
   getAddressBook,
 } from '../../selectors';
+import { updateTransaction } from '../../store/actions';
+import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
+import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
+import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -198,6 +204,47 @@ export default function reduceMetamask(state = {}, action) {
   }
 }
 
+const toHexWei = (value, expectHexWei) => {
+  return addHexPrefix(expectHexWei ? value : decGWEIToHexWEI(value));
+};
+
+// Action Creators
+export function updateTransactionGasFees({
+  gasPrice,
+  gasLimit,
+  maxPriorityFeePerGas,
+  maxFeePerGas,
+  transaction,
+  expectHexWei = false,
+}) {
+  return async (dispatch) => {
+    const txParamsCopy = { ...transaction.txParams, gas: gasLimit };
+    if (gasPrice) {
+      dispatch(
+        setCustomGasPrice(toHexWei(txParamsCopy.gasPrice, expectHexWei)),
+      );
+      txParamsCopy.gasPrice = toHexWei(gasPrice, expectHexWei);
+    } else if (maxFeePerGas && maxPriorityFeePerGas) {
+      txParamsCopy.maxFeePerGas = toHexWei(maxFeePerGas, expectHexWei);
+      txParamsCopy.maxPriorityFeePerGas = addHexPrefix(
+        decGWEIToHexWEI(maxPriorityFeePerGas),
+      );
+    }
+    const updatedTx = {
+      ...transaction,
+      txParams: txParamsCopy,
+    };
+
+    const customGasLimit = isHexString(addHexPrefix(gasLimit))
+      ? addHexPrefix(gasLimit)
+      : addHexPrefix(gasLimit.toString(16));
+    dispatch(setCustomGasLimit(customGasLimit));
+    await dispatch(updateTransaction(updatedTx));
+  };
+}
+
+// Selectors
+
 export const getCurrentLocale = (state) => state.metamask.currentLocale;
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
@@ -237,4 +284,41 @@ export function getSendToAccounts(state) {
 
 export function getUnapprovedTxs(state) {
   return state.metamask.unapprovedTxs;
+}
+
+export function isEIP1559Network(state) {
+  return state.metamask.networkDetails?.EIPS[1559] === true;
+}
+
+export function getGasEstimateType(state) {
+  return state.metamask.gasEstimateType;
+}
+
+export function getGasFeeEstimates(state) {
+  return state.metamask.gasFeeEstimates;
+}
+
+export function getEstimatedGasFeeTimeBounds(state) {
+  return state.metamask.estimatedGasFeeTimeBounds;
+}
+
+export function getIsGasEstimatesLoading(state) {
+  const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
+    state,
+  );
+  const gasEstimateType = getGasEstimateType(state);
+
+  // We consider the gas estimate to be loading if the gasEstimateType is
+  // 'NONE' or if the current gasEstimateType cannot be supported by the current
+  // network
+  const isEIP1559TolerableEstimateType =
+    gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
+    gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE;
+  const isGasEstimatesLoading =
+    gasEstimateType === GAS_ESTIMATE_TYPES.NONE ||
+    (networkAndAccountSupports1559 && !isEIP1559TolerableEstimateType) ||
+    (!networkAndAccountSupports1559 &&
+      gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET);
+
+  return isGasEstimatesLoading;
 }

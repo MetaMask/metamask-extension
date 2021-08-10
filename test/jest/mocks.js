@@ -79,3 +79,27 @@ export const createFeatureFlagsResponse = () => {
     },
   };
 };
+
+export const createGasFeeEstimatesForFeeMarket = () => {
+  return {
+    low: {
+      minWaitTimeEstimate: 180000,
+      maxWaitTimeEstimate: 300000,
+      suggestedMaxPriorityFeePerGas: '3',
+      suggestedMaxFeePerGas: '53',
+    },
+    medium: {
+      minWaitTimeEstimate: 15000,
+      maxWaitTimeEstimate: 60000,
+      suggestedMaxPriorityFeePerGas: '7',
+      suggestedMaxFeePerGas: '70',
+    },
+    high: {
+      minWaitTimeEstimate: 0,
+      maxWaitTimeEstimate: 15000,
+      suggestedMaxPriorityFeePerGas: '10',
+      suggestedMaxFeePerGas: '100',
+    },
+    estimatedBaseFee: '50',
+  };
+};

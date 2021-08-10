@@ -1,22 +1,24 @@
 import React from 'react';
 import sinon from 'sinon';
 import { shallowWithContext } from '../../../../../test/lib/render-helpers';
+import { getGasFeeEstimatesAndStartPolling } from '../../../../store/actions';
 
 import PageContainer from '../../../ui/page-container';
 
 import { Tab } from '../../../ui/tabs';
 import GasModalPageContainer from './gas-modal-page-container.component';
 
-const mockBasicGasEstimates = {
-  average: '20',
-};
+jest.mock('../../../../store/actions', () => ({
+  disconnectGasFeeEstimatePoller: jest.fn(),
+  getGasFeeEstimatesAndStartPolling: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve()),
+  addPollingTokenToAppState: jest.fn(),
+}));
 
 const propsMethodSpies = {
   cancelAndClose: sinon.spy(),
   onSubmit: sinon.spy(),
-  fetchBasicGasEstimates: sinon
-    .stub()
-    .returns(Promise.resolve(mockBasicGasEstimates)),
 };
 
 const mockGasPriceButtonGroupProps = {
@@ -67,7 +69,6 @@ describe('GasModalPageContainer Component', () => {
       <GasModalPageContainer
         cancelAndClose={propsMethodSpies.cancelAndClose}
         onSubmit={propsMethodSpies.onSubmit}
-        fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
         updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
         updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
         gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}
@@ -83,18 +84,15 @@ describe('GasModalPageContainer Component', () => {
 
   afterEach(() => {
     propsMethodSpies.cancelAndClose.resetHistory();
+    jest.clearAllMocks();
   });
 
   describe('componentDidMount', () => {
-    it('should call props.fetchBasicGasEstimates', () => {
-      propsMethodSpies.fetchBasicGasEstimates.resetHistory();
-      expect(propsMethodSpies.fetchBasicGasEstimates.callCount).toStrictEqual(
-        0,
-      );
+    it('should call getGasFeeEstimatesAndStartPolling', () => {
+      jest.clearAllMocks();
+      expect(getGasFeeEstimatesAndStartPolling).not.toHaveBeenCalled();
       wrapper.instance().componentDidMount();
-      expect(propsMethodSpies.fetchBasicGasEstimates.callCount).toStrictEqual(
-        1,
-      );
+      expect(getGasFeeEstimatesAndStartPolling).toHaveBeenCalled();
     });
   });
 
@@ -120,20 +118,18 @@ describe('GasModalPageContainer Component', () => {
     });
 
     it('should pass the correct renderTabs property to PageContainer', () => {
-      sinon.stub(GP, 'renderTabs').returns('mockTabs');
+      jest
+        .spyOn(GasModalPageContainer.prototype, 'renderTabs')
+        .mockImplementation(() => 'mockTabs');
       const renderTabsWrapperTester = shallowWithContext(
-        <GasModalPageContainer
-          fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
-          fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
-          customPriceIsExcessive={false}
-        />,
+        <GasModalPageContainer customPriceIsExcessive={false} />,
         { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
       );
       const { tabsComponent } = renderTabsWrapperTester
         .find(PageContainer)
         .props();
       expect(tabsComponent).toStrictEqual('mockTabs');
-      GasModalPageContainer.prototype.renderTabs.restore();
+      GasModalPageContainer.prototype.renderTabs.mockClear();
     });
   });
 
@@ -195,7 +191,6 @@ describe('GasModalPageContainer Component', () => {
         <GasModalPageContainer
           cancelAndClose={propsMethodSpies.cancelAndClose}
           onSubmit={propsMethodSpies.onSubmit}
-          fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
           updateCustomGasPrice={() => 'mockupdateCustomGasPrice'}
           updateCustomGasLimit={() => 'mockupdateCustomGasLimit'}
           gasPriceButtonGroupProps={mockGasPriceButtonGroupProps}

@@ -20,9 +20,12 @@ export default function ConfirmTokenTransactionBase({
   tokenSymbol,
   fiatTransactionTotal,
   ethTransactionTotal,
+  ethTransactionTotalMaxAmount,
   contractExchangeRate,
   conversionRate,
   currentCurrency,
+  nativeCurrency,
+  onEdit,
 }) {
   const t = useContext(I18nContext);
 
@@ -69,6 +72,7 @@ export default function ConfirmTokenTransactionBase({
   return (
     <ConfirmTransactionBase
       toAddress={toAddress}
+      onEdit={onEdit}
       identiconAddress={tokenAddress}
       title={tokensText}
       subtitleComponent={
@@ -83,13 +87,8 @@ export default function ConfirmTokenTransactionBase({
           />
         )
       }
-      primaryTotalTextOverride={
-        <div>
-          <span>{`${tokensText} + `}</span>
-          <img src="./images/eth.svg" height="18" alt="" />
-          <span>{ethTransactionTotal}</span>
-        </div>
-      }
+      primaryTotalTextOverride={`${tokensText} + ${ethTransactionTotal} ${nativeCurrency}`}
+      primaryTotalTextOverrideMaxAmount={`${tokensText} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`}
       secondaryTotalTextOverride={secondaryTotalTextOverride}
     />
   );
@@ -105,4 +104,7 @@ ConfirmTokenTransactionBase.propTypes = {
   contractExchangeRate: PropTypes.number,
   conversionRate: PropTypes.number,
   currentCurrency: PropTypes.string,
+  onEdit: PropTypes.func,
+  nativeCurrency: PropTypes.string,
+  ethTransactionTotalMaxAmount: PropTypes.string,
 };

@@ -143,9 +143,6 @@
   "browserNotSupported": {
     "message": "Selaintasi ei tueta..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask on suunniteltu ja koottu Kaliforniassa."
-  },
   "buyWithWyre": {
     "message": "Osta ETH:ta Wyrella"
   },

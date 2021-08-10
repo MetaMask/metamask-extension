@@ -9,9 +9,9 @@ import {
   UNSENDABLE_ASSET_ERROR_KEY,
 } from '../../../helpers/constants/error-keys';
 import SendAmountRow from './send-amount-row';
-import SendGasRow from './send-gas-row';
 import SendHexDataRow from './send-hex-data-row';
 import SendAssetRow from './send-asset-row';
+import SendGasRow from './send-gas-row';
 
 export default class SendContent extends Component {
   static contextTypes = {
@@ -29,6 +29,7 @@ export default class SendContent extends Component {
     gasIsExcessive: PropTypes.bool.isRequired,
     isEthGasPrice: PropTypes.bool,
     noGasPrice: PropTypes.bool,
+    networkAndAccountSupports1559: PropTypes.bool,
   };
 
   render() {
@@ -39,6 +40,7 @@ export default class SendContent extends Component {
       isEthGasPrice,
       noGasPrice,
       isAssetSendable,
+      networkAndAccountSupports1559,
     } = this.props;
 
     let gasError;
@@ -57,7 +59,7 @@ export default class SendContent extends Component {
           {this.maybeRenderAddContact()}
           <SendAssetRow />
           <SendAmountRow />
-          <SendGasRow />
+          {!networkAndAccountSupports1559 && <SendGasRow />}
           {this.props.showHexData && <SendHexDataRow />}
         </div>
       </PageContainerContent>

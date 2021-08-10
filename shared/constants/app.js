@@ -30,3 +30,9 @@ export const MESSAGE_TYPE = {
   ADD_ETHEREUM_CHAIN: 'wallet_addEthereumChain',
   SWITCH_ETHEREUM_CHAIN: 'wallet_switchEthereumChain',
 };
+
+export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
+  [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',
+  [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',
+  [ENVIRONMENT_TYPE_FULLSCREEN]: 'fullScreenGasPollTokens',
+};

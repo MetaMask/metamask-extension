@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import Identicon from '../../../../components/ui/identicon';
 import UrlIcon from '../../../../components/ui/url-icon';
 import Button from '../../../../components/ui/button';
-import ActionableMessage from '../../actionable-message';
+import ActionableMessage from '../../../../components/ui/actionable-message/actionable-message';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   getCurrentChainId,

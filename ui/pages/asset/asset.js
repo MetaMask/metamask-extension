@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
 import { getTokens } from '../../ducks/metamask/metamask';
@@ -13,6 +13,11 @@ const Asset = () => {
   const { asset } = useParams();
 
   const token = tokens.find(({ address }) => address === asset);
+
+  useEffect(() => {
+    const el = document.querySelector('.app');
+    el.scroll(0, 0);
+  }, []);
 
   let content;
   if (token) {

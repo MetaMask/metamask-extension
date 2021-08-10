@@ -12,6 +12,7 @@ import {
   getTokenAddressParam,
   getTokenValueParam,
 } from '../../helpers/utils/token-util';
+import { hexWEIToDecETH } from '../../helpers/utils/conversions.util';
 import ConfirmTokenTransactionBase from './confirm-token-transaction-base.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -21,7 +22,12 @@ const mapStateToProps = (state, ownProps) => {
   const { id: paramsTransactionId } = params;
   const {
     confirmTransaction,
-    metamask: { currentCurrency, conversionRate, currentNetworkTxList },
+    metamask: {
+      currentCurrency,
+      conversionRate,
+      currentNetworkTxList,
+      nativeCurrency,
+    },
   } = state;
 
   const {
@@ -36,13 +42,18 @@ const mapStateToProps = (state, ownProps) => {
       ({ id }) => id === (Number(paramsTransactionId) || transactionId),
     ) || {};
 
-  const { ethTransactionTotal, fiatTransactionTotal } = transactionFeeSelector(
-    state,
-    transaction,
-  );
+  const {
+    ethTransactionTotal,
+    fiatTransactionTotal,
+    hexMaximumTransactionFee,
+  } = transactionFeeSelector(state, transaction);
   const tokens = getTokens(state);
   const currentToken = tokens?.find(({ address }) => tokenAddress === address);
   const { decimals, symbol: tokenSymbol } = currentToken || {};
+
+  const ethTransactionTotalMaxAmount = Number(
+    hexWEIToDecETH(hexMaximumTransactionFee),
+  ).toFixed(6);
 
   const tokenData = getTokenData(data);
   const tokenValue = getTokenValueParam(tokenData);
@@ -61,6 +72,8 @@ const mapStateToProps = (state, ownProps) => {
     contractExchangeRate,
     fiatTransactionTotal,
     ethTransactionTotal,
+    ethTransactionTotalMaxAmount,
+    nativeCurrency,
   };
 };
 
