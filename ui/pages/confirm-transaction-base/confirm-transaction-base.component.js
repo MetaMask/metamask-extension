@@ -42,6 +42,7 @@ import {
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
 } from '../../store/actions';
+import { isLegacyTransaction } from '../../../shared/modules/transaction.utils';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -390,6 +391,13 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     ) : null;
 
+    const dappTransactionHeader = t('transactionDetailDappGasHeading', [
+      getRequestingOrigin(),
+    ]);
+    const isLegacy = isLegacyTransaction(txData);
+    const didDappSuggestFees = txData.dappSuggestedGasFees;
+    const showDappHeaderWarning = didDappSuggestFees && isLegacy;
+
     return (
       <div className="confirm-page-container-content__details">
         <TransactionDetail
@@ -398,11 +406,9 @@ export default class ConfirmTransactionBase extends Component {
             <TransactionDetailItem
               key="gas-item"
               detailTitle={
-                txData.dappSuggestedGasFees ? (
+                showDappHeaderWarning ? (
                   <>
-                    {t('transactionDetailDappGasHeading', [
-                      getRequestingOrigin(),
-                    ])}
+                    {dappTransactionHeader}
                     <InfoTooltip
                       contentText={t('transactionDetailDappGasTooltip')}
                       position="top"
@@ -412,7 +418,9 @@ export default class ConfirmTransactionBase extends Component {
                   </>
                 ) : (
                   <>
-                    {t('transactionDetailGasHeading')}
+                    {didDappSuggestFees
+                      ? dappTransactionHeader
+                      : t('transactionDetailGasHeading')}
                     <InfoTooltip
                       contentText={
                         <>
@@ -437,7 +445,7 @@ export default class ConfirmTransactionBase extends Component {
                 )
               }
               detailTitleColor={
-                txData.dappSuggestedGasFees ? COLORS.SECONDARY1 : COLORS.BLACK
+                showDappHeaderWarning ? COLORS.SECONDARY1 : COLORS.BLACK
               }
               detailText={
                 <UserPreferencedCurrencyDisplay
