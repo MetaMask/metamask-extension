@@ -584,7 +584,8 @@ export default class TransactionController extends EventEmitter {
       return {};
     } else if (
       txMeta.txParams.to &&
-      txMeta.type === TRANSACTION_TYPES.SENDING_NATIVE_ASSET &&
+      (txMeta.type === TRANSACTION_TYPES.SENDING_NATIVE_ASSET ||
+        txMeta.type === TRANSACTION_TYPES.SENT_ETHER) &&
       chainType !== 'custom'
     ) {
       // if there's data in the params, but there's no contract code, it's not a valid transaction
