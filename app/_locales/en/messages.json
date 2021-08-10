@@ -1943,9 +1943,6 @@
   "sendingAsset": {
     "message": "Sending $1"
   },
-  "sentEther": {
-    "message": "sent ether"
-  },
   "separateEachWord": {
     "message": "Separate each word with a single space"
   },
