@@ -24,12 +24,36 @@ export default class DetectTokensController {
     network,
     keyringMemStore,
     tokenList,
+    tokensController,
   } = {}) {
+    this.tokensController = tokensController;
     this.preferences = preferences;
     this.interval = interval;
     this.network = network;
     this.keyringMemStore = keyringMemStore;
     this.tokenList = tokenList;
+    this.selectedAddress = this.preferences?.store.getState().selectedAddress;
+    this.tokenAddresses = this.tokensController?.state.tokens.map((token) => {
+      return token.address;
+    });
+    this.hiddenTokens = this.tokensController?.state.ignoredTokens;
+
+    preferences?.store.subscribe(({ selectedAddress, useTokenDetection }) => {
+      if (
+        this.selectedAddress !== selectedAddress ||
+        this.useTokenDetection !== useTokenDetection
+      ) {
+        this.selectedAddress = selectedAddress;
+        this.useTokenDetection = useTokenDetection;
+        this.restartTokenDetection();
+      }
+    });
+    tokensController?.subscribe(({ tokens = [], ignoredTokens = [] }) => {
+      this.tokenAddresses = tokens.map((token) => {
+        return token.address;
+      });
+      this.hiddenTokens = ignoredTokens;
+    });
   }
 
   async _getTokenBalances(tokens) {
@@ -91,8 +115,14 @@ export default class DetectTokensController {
       await Promise.all(
         tokensSlice.map(async (tokenAddress, index) => {
           const balance = result[index];
-          if (balance && !balance.isZero()) {
-            await this._preferences.addToken(
+          let ignored;
+          if (this.hiddenTokens.length) {
+            ignored = this.hiddenTokens.find((ignoredTokenAddress) =>
+              isEqualCaseInsensitive(ignoredTokenAddress, tokenAddress),
+            );
+          }
+          if (balance && !balance.isZero() && ignored === undefined) {
+            await this.tokensController.addToken(
               tokenAddress,
               tokenList[tokenAddress].symbol,
               tokenList[tokenAddress].decimals,
@@ -128,38 +158,6 @@ export default class DetectTokensController {
     this._handle = setInterval(() => {
       this.detectNewTokens();
     }, interval);
-  }
-
-  /**
-   * In setter when selectedAddress is changed, detectNewTokens and restart polling
-   * @type {Object}
-   */
-  set preferences(preferences) {
-    if (!preferences) {
-      return;
-    }
-    this._preferences = preferences;
-    const currentTokens = preferences.store.getState().tokens;
-    this.tokenAddresses = currentTokens
-      ? currentTokens.map((token) => token.address)
-      : [];
-    this.hiddenTokens = preferences.store.getState().hiddenTokens;
-    preferences.store.subscribe(({ tokens = [], hiddenTokens = [] }) => {
-      this.tokenAddresses = tokens.map((token) => {
-        return token.address;
-      });
-      this.hiddenTokens = hiddenTokens;
-    });
-    preferences.store.subscribe(({ selectedAddress, useTokenDetection }) => {
-      if (
-        this.selectedAddress !== selectedAddress ||
-        this.useTokenDetection !== useTokenDetection
-      ) {
-        this.selectedAddress = selectedAddress;
-        this.useTokenDetection = useTokenDetection;
-        this.restartTokenDetection();
-      }
-    });
   }
 
   /**
