@@ -38,7 +38,7 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
               <div className="radio-group__column-line"></div>
               <div className="radio-group__column-horizontal-line"></div>
               <Typography
-                color={COLORS.UI4}
+                color={checked ? COLORS.BLACK : COLORS.UI4}
                 fontWeight={FONT_WEIGHT.BOLD}
                 variant={TYPOGRAPHY.H7}
                 className="radio-group__column-label"
