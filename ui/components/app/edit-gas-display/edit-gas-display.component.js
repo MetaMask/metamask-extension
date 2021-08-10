@@ -312,7 +312,7 @@ EditGasDisplay.propTypes = {
   gasErrors: PropTypes.object,
   gasWarnings: PropTypes.object,
   onManualChange: PropTypes.func,
-  minimumGasLimit: PropTypes.number,
+  minimumGasLimit: PropTypes.string,
   balanceError: PropTypes.bool,
   estimatesUnavailableWarning: PropTypes.bool,
   hasGasErrors: PropTypes.bool,
