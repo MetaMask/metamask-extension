@@ -22,7 +22,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
     },
   },
   1: {
-    type: TRANSACTION_TYPES.SENT_ETHER,
+    type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
     id: 1,
     chainId: MAINNET_CHAIN_ID,
     txParams: {
@@ -30,7 +30,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
     },
   },
   2: {
-    type: TRANSACTION_TYPES.SENT_ETHER,
+    type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
     id: 2,
     chainId: KOVAN_CHAIN_ID,
     txParams: {
@@ -38,7 +38,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
     },
   },
   3: {
-    type: TRANSACTION_TYPES.SENT_ETHER,
+    type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
     id: 3,
     chainId: RINKEBY_CHAIN_ID,
     txParams: {
@@ -46,7 +46,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
     },
   },
   4: {
-    type: TRANSACTION_TYPES.SENT_ETHER,
+    type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
     id: 4,
     chainId: RINKEBY_CHAIN_ID,
     txParams: {
@@ -54,7 +54,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
     },
   },
   5: {
-    type: TRANSACTION_TYPES.SENT_ETHER,
+    type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
     id: 5,
     chainId: MAINNET_CHAIN_ID,
     txParams: {
@@ -62,7 +62,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
     },
   },
   6: {
-    type: TRANSACTION_TYPES.SENT_ETHER,
+    type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
     id: 6,
     chainId: KOVAN_CHAIN_ID,
     txParams: {
@@ -70,7 +70,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
     },
   },
   7: {
-    type: TRANSACTION_TYPES.SENT_ETHER,
+    type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
     id: 7,
     chainId: RINKEBY_CHAIN_ID,
     txParams: {
@@ -78,7 +78,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
     },
   },
   8: {
-    type: TRANSACTION_TYPES.SENT_ETHER,
+    type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
     id: 8,
     chainId: RINKEBY_CHAIN_ID,
     txParams: {
@@ -86,7 +86,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
     },
   },
   9: {
-    type: TRANSACTION_TYPES.SENT_ETHER,
+    type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
     id: 9,
     chainId: RINKEBY_CHAIN_ID,
     status: TRANSACTION_STATUSES.UNAPPROVED,
@@ -169,7 +169,7 @@ describe('migration #59', function () {
               ...ERRONEOUS_TRANSACTION_STATE['0'],
               id: 11,
               chainId: GOERLI_CHAIN_ID,
-              type: TRANSACTION_TYPES.SENT_ETHER,
+              type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
             },
           },
         },
@@ -200,7 +200,7 @@ describe('migration #59', function () {
             11: {
               ...ERRONEOUS_TRANSACTION_STATE['0'],
               id: 11,
-              type: TRANSACTION_TYPES.SENT_ETHER,
+              type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
             },
           },
         },
@@ -250,7 +250,7 @@ describe('migration #59', function () {
               ...ERRONEOUS_TRANSACTION_STATE_RETRY['0'],
               id: 11,
               chainId: GOERLI_CHAIN_ID,
-              type: TRANSACTION_TYPES.SENT_ETHER,
+              type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
             },
           },
         },
@@ -281,7 +281,7 @@ describe('migration #59', function () {
             11: {
               ...ERRONEOUS_TRANSACTION_STATE_RETRY['0'],
               id: 11,
-              type: TRANSACTION_TYPES.SENT_ETHER,
+              type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
             },
           },
         },

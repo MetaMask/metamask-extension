@@ -716,7 +716,7 @@ describe('Transaction Controller', function () {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: 'sentEther',
+        type: 'sendingNativeAsset',
         transaction_envelope_type: 'legacy',
         origin: 'metamask',
         chainId: currentChainId,
@@ -1239,7 +1239,7 @@ describe('Transaction Controller', function () {
         data: '',
       });
       assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.SENT_ETHER,
+        type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
         getCodeResponse: null,
       });
     });
@@ -1285,7 +1285,7 @@ describe('Transaction Controller', function () {
         data: '0xabd',
       });
       assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.SENT_ETHER,
+        type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
         getCodeResponse: '0x',
       });
     });
@@ -1296,7 +1296,7 @@ describe('Transaction Controller', function () {
         data: '0xabd',
       });
       assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.SENT_ETHER,
+        type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
         getCodeResponse: null,
       });
     });
@@ -1499,7 +1499,7 @@ describe('Transaction Controller', function () {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: 'sentEther',
+        type: 'sendingNativeAsset',
         origin: 'metamask',
         chainId: currentChainId,
         time: 1624408066355,
@@ -1513,7 +1513,7 @@ describe('Transaction Controller', function () {
           network: '42',
           referrer: 'metamask',
           source: 'user',
-          type: 'sentEther',
+          type: 'sendingNativeAsset',
         },
         sensitiveProperties: {
           gas_price: '2',
@@ -1546,7 +1546,7 @@ describe('Transaction Controller', function () {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: 'sentEther',
+        type: 'sendingNativeAsset',
         origin: 'other',
         chainId: currentChainId,
         time: 1624408066355,
@@ -1560,7 +1560,7 @@ describe('Transaction Controller', function () {
           network: '42',
           referrer: 'other',
           source: 'dapp',
-          type: 'sentEther',
+          type: 'sendingNativeAsset',
         },
         sensitiveProperties: {
           gas_price: '2',
@@ -1593,7 +1593,7 @@ describe('Transaction Controller', function () {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: 'sentEther',
+        type: 'sendingNativeAsset',
         origin: 'other',
         chainId: currentChainId,
         time: 1624408066355,
@@ -1606,7 +1606,7 @@ describe('Transaction Controller', function () {
           network: '42',
           referrer: 'other',
           source: 'dapp',
-          type: 'sentEther',
+          type: 'sendingNativeAsset',
           chain_id: '0x2a',
         },
         sensitiveProperties: {
@@ -1647,7 +1647,7 @@ describe('Transaction Controller', function () {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: 'sentEther',
+        type: 'sendingNativeAsset',
         origin: 'other',
         chainId: currentChainId,
         time: 1624408066355,
@@ -1661,7 +1661,7 @@ describe('Transaction Controller', function () {
           network: '42',
           referrer: 'other',
           source: 'dapp',
-          type: 'sentEther',
+          type: 'sendingNativeAsset',
         },
         sensitiveProperties: {
           baz: 3.0,

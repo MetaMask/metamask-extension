@@ -25,12 +25,12 @@ describe('migration #53', function () {
           transactions: [
             {
               type: TRANSACTION_TYPES.CANCEL,
-              transactionCategory: TRANSACTION_TYPES.SENT_ETHER,
+              transactionCategory: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
               txParams: { foo: 'bar' },
             },
             {
               type: 'standard',
-              transactionCategory: TRANSACTION_TYPES.SENT_ETHER,
+              transactionCategory: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
               txParams: { foo: 'bar' },
             },
             {
@@ -40,7 +40,7 @@ describe('migration #53', function () {
             },
             {
               type: TRANSACTION_TYPES.RETRY,
-              transactionCategory: TRANSACTION_TYPES.SENT_ETHER,
+              transactionCategory: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
               txParams: { foo: 'bar' },
             },
           ],
@@ -64,7 +64,10 @@ describe('migration #53', function () {
       TransactionController: {
         transactions: [
           { type: TRANSACTION_TYPES.CANCEL, txParams: { foo: 'bar' } },
-          { type: TRANSACTION_TYPES.SENT_ETHER, txParams: { foo: 'bar' } },
+          {
+            type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
+            txParams: { foo: 'bar' },
+          },
           {
             type: TRANSACTION_TYPES.CONTRACT_INTERACTION,
             txParams: { foo: 'bar' },

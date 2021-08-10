@@ -196,9 +196,10 @@ export function getStatusKey(transaction) {
  * This will throw an error if the transaction category is unrecognized and no default is provided.
  * @param {function} t - The translation function
  * @param {TRANSACTION_TYPES[keyof TRANSACTION_TYPES]} type - The transaction type constant
+ * @param {string} nativeCurrency - The native currency of the currently selected network
  * @returns {string} The transaction category title
  */
-export function getTransactionTypeTitle(t, type, currency = 'ETH') {
+export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
   switch (type) {
     case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER: {
       return t('transfer');
@@ -209,8 +210,8 @@ export function getTransactionTypeTitle(t, type, currency = 'ETH') {
     case TRANSACTION_TYPES.TOKEN_METHOD_APPROVE: {
       return t('approve');
     }
-    case TRANSACTION_TYPES.SENT_ETHER: {
-      return t('sendingAsset', [currency]);
+    case TRANSACTION_TYPES.SENDING_NATIVE_ASSET: {
+      return t('sendingAsset', [nativeCurrency]);
     }
     case TRANSACTION_TYPES.CONTRACT_INTERACTION: {
       return t('contractInteraction');

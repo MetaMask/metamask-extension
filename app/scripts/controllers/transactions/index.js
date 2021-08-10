@@ -584,7 +584,7 @@ export default class TransactionController extends EventEmitter {
       return {};
     } else if (
       txMeta.txParams.to &&
-      txMeta.type === TRANSACTION_TYPES.SENT_ETHER &&
+      txMeta.type === TRANSACTION_TYPES.SENDING_NATIVE_ASSET &&
       chainType !== 'custom'
     ) {
       // if there's data in the params, but there's no contract code, it's not a valid transaction
@@ -1191,7 +1191,7 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-   * @typedef { 'transfer' | 'approve' | 'transferfrom' | 'contractInteraction'| 'sentEther' } InferrableTransactionTypes
+   * @typedef { 'transfer' | 'approve' | 'transferfrom' | 'contractInteraction'| 'sendingNativeAsset' } InferrableTransactionTypes
    */
 
   /**
@@ -1245,7 +1245,7 @@ export default class TransactionController extends EventEmitter {
       const codeIsEmpty = !code || code === '0x' || code === '0x0';
 
       result = codeIsEmpty
-        ? TRANSACTION_TYPES.SENT_ETHER
+        ? TRANSACTION_TYPES.SENDING_NATIVE_ASSET
         : TRANSACTION_TYPES.CONTRACT_INTERACTION;
     }
 

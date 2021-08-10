@@ -14,7 +14,7 @@ export const txMetaStub = {
       metamaskNetworkId: '4',
       status: TRANSACTION_STATUSES.UNAPPROVED,
       time: 1572395156620,
-      type: TRANSACTION_TYPES.SENT_ETHER,
+      type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
       txParams: {
         from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
         gas: GAS_LIMITS.SIMPLE,
@@ -195,7 +195,7 @@ export const txMetaStub = {
   status: TRANSACTION_STATUSES.SUBMITTED,
   submittedTime: 1572395158570,
   time: 1572395156620,
-  type: TRANSACTION_TYPES.SENT_ETHER,
+  type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
   txParams: {
     from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
     gas: GAS_LIMITS.SIMPLE,

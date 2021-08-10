@@ -150,7 +150,7 @@
             "gasPrice": "0x363fe1da00"
           },
           "origin": "metamask",
-          "type": "sentEther",
+          "type": "sendingNativeAsset",
           "history": [],
           "nonceDetails": {
             "params": {
