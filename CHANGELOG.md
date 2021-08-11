@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.0.1]
-### Uncategorized
-- Fix Sentry release configuration ([#11813](https://github.com/MetaMask/metamask-extension/pull/11813))
+### Fixed
+- [#11813](https://github.com/MetaMask/metamask-extension/pull/11813): Fix error reporting version configuration
 
 ## [10.0.0]
 ### Added
