@@ -107,6 +107,8 @@ describe('DetectTokensController', function () {
           iconUrl: 'https://s3.amazonaws.com/airswap-token-images/BNT.png',
         },
       ])
+      .get(`/tokens/3`)
+      .reply(200, { error: 'ChainId 3 is not supported' })
       .persist();
     const tokenListMessenger = new ControllerMessenger().getRestricted({
       name: 'TokenListController',
@@ -159,6 +161,17 @@ describe('DetectTokensController', function () {
   it('should not check tokens while on test network', async function () {
     sandbox.useFakeTimers();
     network.setProviderType(ROPSTEN);
+    const tokenListMessengerRopsten = new ControllerMessenger().getRestricted({
+      name: 'TokenListController',
+    });
+    tokenListController = new TokenListController({
+      chainId: '3',
+      useStaticTokenList: false,
+      onNetworkStateChange: sinon.spy(),
+      onPreferencesStateChange: sinon.spy(),
+      messenger: tokenListMessengerRopsten,
+    });
+    await tokenListController.start();
     const controller = new DetectTokensController({
       preferences,
       network,

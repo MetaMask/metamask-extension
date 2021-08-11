@@ -1,7 +1,6 @@
 import Web3 from 'web3';
 import { warn } from 'loglevel';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
-import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
 import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts';
 import { MINUTE } from '../../../shared/constants/time';
 
@@ -53,11 +52,7 @@ export default class DetectTokensController {
     if (!this.isActive) {
       return;
     }
-    console.log(this._tokenList.state.tokenList);
-    if (
-      this._network.store.getState().provider.chainId !== MAINNET_CHAIN_ID &&
-      this._network.store.getState().provider.chainId !== '0x38'
-    ) {
+    if (Object.keys(this._tokenList.state.tokenList).length <= 0) {
       return;
     }
 
@@ -144,7 +139,7 @@ export default class DetectTokensController {
     });
     preferences.store.subscribe(({ selectedAddress, useStaticTokenList }) => {
       if (
-        this.selectedAddress !== selectedAddress &&
+        this.selectedAddress !== selectedAddress ||
         this.useStaticTokenList !== useStaticTokenList
       ) {
         this.selectedAddress = selectedAddress;
