@@ -25,7 +25,7 @@
 
     &:hover,
     &:focus {
-      border-color: rgba($malibu-blue, 0.5);
+      border-color: $secondary-dark;
     }
 
     &--selected {

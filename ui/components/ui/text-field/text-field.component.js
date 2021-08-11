@@ -7,7 +7,7 @@ const inputLabelBase = {
   transform: 'none',
   transition: 'none',
   position: 'initial',
-  color: '#5b5b5b',
+  color: '#66ffa6',
 };
 
 const styles = {
@@ -19,7 +19,7 @@ const styles = {
       color: '#aeaeae',
     },
     'fontWeight': '400',
-    'color': '#aeaeae',
+    'color': '#66ffa6',
   },
   materialFocused: {},
   materialUnderline: {
@@ -49,7 +49,7 @@ const styles = {
   // Non-material styles
   formLabel: {
     '&$formLabelFocused': {
-      color: '#5b5b5b',
+      color: '#66ffa6',
     },
     '&$materialError': {
       color: '#5b5b5b',
@@ -61,14 +61,15 @@ const styles = {
     'label + &': {
       marginTop: '9px',
     },
-    'border': '1px solid #BBC0C5',
+    'color': 'white',
+    'border': '2px solid #66ffa6',
     'height': '48px',
     'borderRadius': '6px',
     'padding': '0 16px',
     'display': 'flex',
     'alignItems': 'center',
     '&$inputFocused': {
-      border: '1px solid #2f9ae0',
+      border: '3px solid #66ffa6',
     },
   },
   largeInputLabel: {
