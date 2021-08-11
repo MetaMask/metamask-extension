@@ -714,10 +714,6 @@
   "editGasTooLowTooltip": {
     "message": "Your max fee or max priority fee may be low for current market conditions. We don't know when (or if) your transaction will be processed. "
   },
-  "editGasTotalBannerSubtitle": {
-    "message": "Up to $1 ($2)",
-    "display": "$1 represents a fiat value"
-  },
   "editNonceField": {
     "message": "Edit Nonce"
   },
