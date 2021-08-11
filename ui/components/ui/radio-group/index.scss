@@ -1,8 +1,12 @@
 .radio-group {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: 100px;
+  grid-template-rows: 60px;
   width: 300px;
+
+  &--has-recommendation {
+    grid-template-rows: 100px;
+  }
 
   label {
     cursor: pointer;
