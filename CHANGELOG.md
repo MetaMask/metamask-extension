@@ -6,6 +6,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.0.0]
+### Added
+- [#11694](https://github.com/MetaMask/metamask-extension/pull/11694): Add support for EIP-1559 transactions
+- [#11625](https://github.com/MetaMask/metamask-extension/pull/11625): Added new tokens to MetaMask's default list
+- [#11401](https://github.com/MetaMask/metamask-extension/pull/11401): Add Skylink support to ENS resolver
+- [#11387](https://github.com/MetaMask/metamask-extension/pull/11387): Call Wyre’s API via our backend to generate Wyre’s Checkout URL
+- [#11376](https://github.com/MetaMask/metamask-extension/pull/11376): Add support for fiat on-ramp via Transak
+- [#11460](https://github.com/MetaMask/metamask-extension/pull/11460): Adding copy icon to home screen account address
+
+### Changed
+- [#11631](https://github.com/MetaMask/metamask-extension/pull/11631): Trimming leading spaces entered into the recipient field of send flow
+- [#11608](https://github.com/MetaMask/metamask-extension/pull/11608): Ensure correct warning is shown when entering invalid addresses in the send flow
+- [#11587](https://github.com/MetaMask/metamask-extension/pull/11587): Render error if user attempts to enter more decimals than a token supports in swaps build-quote fields
+- [#11521](https://github.com/MetaMask/metamask-extension/pull/11521): Stylistic update to error messages shown on the confirm screen
+- [#11537](https://github.com/MetaMask/metamask-extension/pull/11537): Ensure error is shown when user enters non-numeric input in network form chainId field
+- [#11526](https://github.com/MetaMask/metamask-extension/pull/11526): Create different label for Gas Price with GWEI included
+- [#11495](https://github.com/MetaMask/metamask-extension/pull/11495): Ensure prevention of sending any/all ERC721 tokens
+- [#11459](https://github.com/MetaMask/metamask-extension/pull/11459): Remove leading zero when clicking amount input on send screen
+- [#11379](https://github.com/MetaMask/metamask-extension/pull/11379): Stop displaying cursor as pointer on boarded network name in add network confirmation
+- [#11386](https://github.com/MetaMask/metamask-extension/pull/11386): Take user to top of the screen/transaction-list after clicking assets with many transactions
+- [#11356](https://github.com/MetaMask/metamask-extension/pull/11356): Fix position of home notifications to bottom of the screen
+- [#11338](https://github.com/MetaMask/metamask-extension/pull/11338): Updating "Secret Recovery code" text to "Secret Recovery Phrase" in backup notification
+- [#11322](https://github.com/MetaMask/metamask-extension/pull/11322): Make send screen MAX button accessible via keyboard
+- [#11285](https://github.com/MetaMask/metamask-extension/pull/11285): Updating "MetaMask designed and built" message 🌎
+
+### Fixed
+- [#11586](https://github.com/MetaMask/metamask-extension/pull/11586): Fix display of warning when entering an invalid seed phrase on the import screen
+- [#11294](https://github.com/MetaMask/metamask-extension/pull/11294): Ensure tokens symbols in asset list can be seen even when token amount is very long
+- [#11335](https://github.com/MetaMask/metamask-extension/pull/11335): Add missing "Back" button back to send token flow
+- [#11331](https://github.com/MetaMask/metamask-extension/pull/11331): Fix layout but in approval confirmation screen
+- [#11512](https://github.com/MetaMask/metamask-extension/pull/11512): Stylistic fixes on account, token and address book components
+- [#11606](https://github.com/MetaMask/metamask-extension/pull/11606): Prevent error upon clicking "Back" from the view quote screen of the swaps flow
+
+
 ## [9.8.4]
 ### Changed
 - [#11652](https://github.com/MetaMask/metamask-extension/pull/11652): Allow higher precision gas prices in send flow
@@ -2361,7 +2395,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v9.8.4...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.0.0...HEAD
+[10.0.0]: https://github.com/MetaMask/metamask-extension/compare/v9.8.4...v10.0.0
 [9.8.4]: https://github.com/MetaMask/metamask-extension/compare/v9.8.3...v9.8.4
 [9.8.3]: https://github.com/MetaMask/metamask-extension/compare/v9.8.2...v9.8.3
 [9.8.2]: https://github.com/MetaMask/metamask-extension/compare/v9.8.1...v9.8.2
