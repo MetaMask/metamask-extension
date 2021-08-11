@@ -6,7 +6,7 @@
     "message": "Version, support center, and contact info"
   },
   "acceleratingATransaction": {
-    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
+    "message": "* Accelerating a transaction increases its chances of being processed by the network faster, but it is not always guaranteed."
   },
   "acceptTermsOfUse": {
     "message": "I have read and agree to the $1",
@@ -23,7 +23,7 @@
     "message": "Account"
   },
   "accountDetails": {
-    "message": "Account details"
+    "message": "Account Details"
   },
   "accountName": {
     "message": "Account Name"
@@ -32,7 +32,7 @@
     "message": "Account Options"
   },
   "accountSelectionRequired": {
-    "message": "You need to select an account!"
+    "message": "Please select an account."
   },
   "active": {
     "message": "Active"
@@ -53,7 +53,7 @@
     "message": "Add contact"
   },
   "addCustomTokenByContractAddress": {
-    "message": "Can’t find a token? You can manually add any token by pasting its address. Token contract addresses can be found on $1.",
+    "message": "Can’t find a token? Manually add a token by pasting its address. Token contract addresses can be found on $1.",
     "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "addEthereumChainConfirmationDescription": {
@@ -110,7 +110,7 @@
     "message": "Advanced Options"
   },
   "advancedSettingsDescription": {
-    "message": "Access developer features, download State Logs, Reset Account, setup testnets and custom RPC"
+    "message": "Access developer features, Download State Logs, Reset Account, Setup Testnets and Add Custom RPC's"
   },
   "affirmAgree": {
     "message": "I Agree"
@@ -125,13 +125,13 @@
     "message": "Browsing a website with an unconnected account selected"
   },
   "alertSettingsUnconnectedAccountDescription": {
-    "message": "This alert is shown in the popup when you are browsing a connected web3 site, but the currently selected account is not connected."
+    "message": "When you are on a connected web3 site, but your selected account is not connected to that site."
   },
   "alertSettingsWeb3ShimUsage": {
     "message": "When a website tries to use the removed window.web3 API"
   },
   "alertSettingsWeb3ShimUsageDescription": {
-    "message": "This alert is shown in the popup when you are browsing a site that tries to use the removed window.web3 API, and may be broken as a result."
+    "message": "When you are browsing a site that tries to use the removed window.web3 API, and may be broken as a result."
   },
   "alerts": {
     "message": "Alerts"
@@ -199,7 +199,7 @@
     "message": "Attempt to Cancel?"
   },
   "attemptToCancelDescription": {
-    "message": "Submitting this attempt does not guarantee your original transaction will be cancelled. If the cancellation attempt is successful, you will be charged the transaction fee above."
+    "message": "Submitting this does not guarantee your original transaction will be cancelled. If this cancellation attempt is successful, you will be charged the fee above."
   },
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
@@ -226,7 +226,7 @@
     "message": "Back to All"
   },
   "backupApprovalInfo": {
-    "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
+    "message": "This Secret Recovery Phrase is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
   "backupApprovalNotice": {
     "message": "Backup your Secret Recovery Phrase to keep your wallet and funds secure."
@@ -323,7 +323,7 @@
     "message": "Confirm password"
   },
   "confirmSecretBackupPhrase": {
-    "message": "Confirm your Secret Backup Phrase"
+    "message": "Confirm your Secret Recovery Phrase"
   },
   "confirmSeedPhrase": {
     "message": "Confirm Seed Phrase"
@@ -594,10 +594,10 @@
     "message": "Dismiss"
   },
   "dismissReminderDescriptionField": {
-    "message": "Turn this on to dismiss the recovery phrase backup reminder message. We highly recommend that you back up your Secret Recovery Phrase to avoid loss of funds"
+    "message": "Turn this on to dismiss the Secret Recovery Phrase reminder message. We highly recommend that you back up your Secret Recovery Phrase to avoid loss of funds"
   },
   "dismissReminderField": {
-    "message": "Dismiss recovery phrase backup reminder"
+    "message": "Dismiss Secret Recovery Phrase Reminder"
   },
   "domain": {
     "message": "Domain"
@@ -612,7 +612,7 @@
     "message": "Download Google Chrome"
   },
   "downloadSecretBackup": {
-    "message": "Download this Secret Backup Phrase and keep it stored safely on an external encrypted hard drive or storage medium."
+    "message": "Download this Secret Recovery Phrase and keep it stored safely on an external encrypted hard drive or storage medium."
   },
   "downloadStateLogs": {
     "message": "Download State Logs"
@@ -633,7 +633,7 @@
     "message": "This is best for swaps or other time sensitive transactions. If a swap takes too long to process it will often fail and you may lose funds."
   },
   "editGasEducationLowExplanation": {
-    "message": "A lower gas fee should only be selected for transactions where processing time is less important. With a lower fee, it can be hard to predict when (or if) your transaction will be successful."
+    "message": "A lower fee should only be used when processing time is less important. Lower fees make it hard predict when (or if) your transaction will be successful."
   },
   "editGasEducationMediumExplanation": {
     "message": "A medium gas fee is good for sending, withdrawing or other non-time sensitive but important transactions."
@@ -706,7 +706,7 @@
     "description": "$1 represents a dollar amount"
   },
   "editGasTitle": {
-    "message": "Edit priority"
+    "message": "Edit Fee"
   },
   "editGasTooLow": {
     "message": "Unknown processing time"
@@ -902,10 +902,10 @@
     "message": "Function Type"
   },
   "gasDisplayAcknowledgeDappButtonText": {
-    "message": "Edit suggested gas fee"
+    "message": "Edit Fee"
   },
   "gasDisplayDappWarning": {
-    "message": "This gas fee has been suggested by $1. Overriding this may cause a problem with your transaction. Please reach out to $1 if you have questions.",
+    "message": "$1 suggested this fee. Edit to use MetaMask’s recommended fee based on the latest block.",
     "description": "$1 represents the Dapp's origin"
   },
   "gasEstimatesUnavailableWarning": {
@@ -1770,16 +1770,16 @@
     "message": "Search Tokens"
   },
   "secretBackupPhrase": {
-    "message": "Secret Backup Phrase"
+    "message": "Secret Recovery Phrase"
   },
   "secretBackupPhraseDescription": {
-    "message": "Your secret backup phrase makes it easy to back up and restore your account."
+    "message": "Your Secret Recovery Phrase makes it easy to back up and restore your account."
   },
   "secretBackupPhraseWarning": {
-    "message": "WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Ether forever."
+    "message": "WARNING: Never disclose your Secret Recovery Phrase. Anyone with this phrase can take your Ether forever."
   },
   "secretPhrase": {
-    "message": "Enter your secret phrase here to restore your vault."
+    "message": "Enter your Secret Recovery Phrase here to restore your vault."
   },
   "secureWallet": {
     "message": "Secure Wallet"
@@ -1809,28 +1809,28 @@
     "message": "Store in a bank vault."
   },
   "seedPhraseIntroSidebarCopyOne": {
-    "message": "Your recovery phrase is the “master key” to your wallet and funds."
+    "message": "Your Secret Recovery Phrase is the “master key” to your wallet and funds."
   },
   "seedPhraseIntroSidebarCopyThree": {
-    "message": "If someone asks for your recovery phrase, they are most likely trying to scam you."
+    "message": "If someone asks for your Secret Recovery Phrase, they are trying to scam you."
   },
   "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Never, ever share your recovery phrase, even with MetaMask!"
+    "message": "Never, ever share your Secret Recovery Phrase, even with MetaMask!"
   },
   "seedPhraseIntroSidebarTitleOne": {
-    "message": "What is a recovery phrase?"
+    "message": "What is a Secret Recovery Phrase?"
   },
   "seedPhraseIntroSidebarTitleThree": {
-    "message": "Should I share my recovery phrase?"
+    "message": "Should I share my Secret Recovery Phrase?"
   },
   "seedPhraseIntroSidebarTitleTwo": {
-    "message": "How do I save my recovery phrase?"
+    "message": "How do I save my Secret Recovery Phrase?"
   },
   "seedPhraseIntroTitle": {
     "message": "Secure your wallet"
   },
   "seedPhraseIntroTitleCopy": {
-    "message": "Before getting started, watch this short video to learn about your recovery phrase and how to keep your wallet safe."
+    "message": "Before getting started, watch this short video to learn about your Secret Recovery Phrase and how to keep your wallet safe."
   },
   "seedPhrasePlaceholder": {
     "message": "Separate each word with a single space"
@@ -1842,13 +1842,13 @@
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
   },
   "seedPhraseWriteDownDetails": {
-    "message": "Write down this 12-word Secret Recovery Phrase and save it in a place that you trust and only you can access."
+    "message": "Write down this Secret Recovery Phrase and store it in a place that only you can access."
   },
   "seedPhraseWriteDownHeader": {
     "message": "Write down your Secret Recovery Phrase"
   },
   "selectAHigherGasFee": {
-    "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
+    "message": "Select a higher fee to accelerate the processing of your transaction.*"
   },
   "selectAccounts": {
     "message": "Select account(s)"
@@ -1910,10 +1910,10 @@
     "message": "Show"
   },
   "showAdvancedGasInline": {
-    "message": "Advanced gas controls"
+    "message": "Advanced Fee Controls"
   },
   "showAdvancedGasInlineDescription": {
-    "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
+    "message": "Select this to show transaction fee and gas limit controls on the send and confirm screens."
   },
   "showFiatConversionInTestnets": {
     "message": "Show Conversion on Testnets"
@@ -1934,7 +1934,7 @@
     "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
   },
   "showPermissions": {
-    "message": "Show permissions"
+    "message": "Show Permissions"
   },
   "showPrivateKeys": {
     "message": "Show Private Keys"
@@ -2507,11 +2507,11 @@
     "message": "Transaction created with a value of $1 at $2."
   },
   "transactionDetailDappGasHeading": {
-    "message": "$1 suggested gas fee",
+    "message": "$1 suggested this fee",
     "description": "$1 represents a dapp origin"
   },
   "transactionDetailDappGasTooltip": {
-    "message": "This gas fee suggestion is using legacy gas estimation which may be inaccurate."
+    "message": "Edit to use MetaMask’s recommended fee based on the latest block."
   },
   "transactionDetailGasHeading": {
     "message": "Estimated gas fee"
