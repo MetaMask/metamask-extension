@@ -32,51 +32,6 @@ export default class DetectTokensController {
     this.tokenList = tokenList;
   }
 
-  /**
-   * For each token in @metamask/contract-metadata, find check selectedAddress balance.
-   *
-  async detectNewTokens() {
-    if (!this.isActive) {
-      return;
-    }
-    if (this._network.store.getState().provider.chainId !== MAINNET_CHAIN_ID) {
-      return;
-    }
-    const tokensToDetect = [];
-    this.web3.setProvider(this._network._provider);
-    for (const contractAddress in contracts) {
-      if (
-        contracts[contractAddress].erc20 &&
-        !this.tokenAddresses.includes(contractAddress.toLowerCase()) &&
-        !this.hiddenTokens.includes(contractAddress.toLowerCase())
-      ) {
-        tokensToDetect.push(contractAddress);
-      }
-    }
-
-    let result;
-    try {
-      result = await this._getTokenBalances(tokensToDetect);
-    } catch (error) {
-      warn(
-        `MetaMask - DetectTokensController single call balance fetch failed`,
-        error,
-      );
-      return;
-    }
-
-    tokensToDetect.forEach((tokenAddress, index) => {
-      const balance = result[index];
-      if (balance && !balance.isZero()) {
-        this._preferences.addToken(
-          tokenAddress,
-          contracts[tokenAddress].symbol,
-          contracts[tokenAddress].decimals,
-        );
-      }
-    });
-  }*/
-
   async _getTokenBalances(tokens) {
     const ethContract = this.web3.eth
       .contract(SINGLE_CALL_BALANCES_ABI)
@@ -98,54 +53,7 @@ export default class DetectTokensController {
     if (!this.isActive) {
       return;
     }
-    if (
-      this._network.store.getState().provider.chainId !== MAINNET_CHAIN_ID &&
-      this._network.store.getState().provider.chainId !== '0x38'
-    ) {
-      return;
-    }
-
-    const tokensToDetect = [];
-    this.web3.setProvider(this._network._provider);
-    const apiTokens = this._tokenList.state.tokenList;
-    for (const tokenAddress in apiTokens) {
-      if (
-        !this.tokenAddresses.includes(tokenAddress.toLowerCase()) &&
-        !this.hiddenTokens.includes(tokenAddress.toLowerCase())
-      ) {
-        tokensToDetect.push(tokenAddress.toLowerCase());
-      }
-    }
-    let result;
-    try {
-      result = await this._getTokenBalances(tokensToDetect);
-    } catch (error) {
-      warn(
-        `MetaMask - DetectTokensController single call balance fetch failed`,
-        error,
-      );
-      return;
-    }
-
-    tokensToDetect.forEach((tokenAddress, index) => {
-      const balance = result[index];
-      if (balance && !balance.isZero()) {
-        this._preferences.addToken(
-          tokenAddress,
-          apiTokens[tokenAddress].symbol,
-          apiTokens[tokenAddress].decimals,
-        );
-      }
-    });
-  }
-
-  /**
-   * For each token in tokenlist ptovided by the TokenListController, find check selectedAddress balance.
-   */
-  async detectNewTokens() {
-    if (!this.isActive) {
-      return;
-    }
+    console.log(this._tokenList.state.tokenList);
     if (
       this._network.store.getState().provider.chainId !== MAINNET_CHAIN_ID &&
       this._network.store.getState().provider.chainId !== '0x38'
@@ -274,16 +182,6 @@ export default class DetectTokensController {
         }
       }
     });
-  }
-
-  /**
-   * @type {Object}
-   */
-  set tokenList(tokenList) {
-    if (!tokenList) {
-      return;
-    }
-    this._tokenList = tokenList;
   }
 
   /**

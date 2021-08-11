@@ -42,7 +42,6 @@ async function getDecimalsFromContract(tokenAddress) {
 
 function getTokenMetadata(tokenAddress, tokenList) {
   const casedTokenList = Object.keys(tokenList).reduce((acc, base) => {
-    console.log(base);
     return {
       ...acc,
       [base.toLowerCase()]: tokenList[base],
@@ -79,21 +78,7 @@ async function getDecimals(tokenAddress, tokenList) {
   return decimals;
 }
 
-export async function getSymbolAndDecimals(
-  tokenAddress,
-  tokenList /* existingTokens = [],*/,
-) {
-  // const existingToken = existingTokens.find(
-  //   ({ address }) => tokenAddress === address,
-  // );
-
-  // if (existingToken) {
-  //   return {
-  //     symbol: existingToken.symbol,
-  //     decimals: existingToken.decimals,
-  //   };
-  // }
-
+export async function getSymbolAndDecimals(tokenAddress, tokenList) {
   let symbol, decimals;
 
   try {

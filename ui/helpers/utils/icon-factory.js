@@ -62,7 +62,6 @@ function iconExistsFor(address, tokenList) {
 
 function imageElFor(address, useStaticTokenList, tokenList) {
   const tokenMetadata = tokenList[address];
-  // console.log(tokenMetadata)
   const fileName = tokenMetadata?.iconUrl;
   const path = useStaticTokenList ? `images/contract/${fileName}` : fileName;
   const img = document.createElement('img');
