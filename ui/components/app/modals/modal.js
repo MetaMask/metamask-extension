@@ -33,9 +33,9 @@ import CustomizeNonceModal from './customize-nonce';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
-  border: '1px solid #CCCFD1',
+  border: '1px solid #66ffa6',
   borderRadius: '8px',
-  backgroundColor: '#FFFFFF',
+  backgroundColor: '#263238',
   boxShadow: '0 2px 22px 0 rgba(0,0,0,0.2)',
 };
 

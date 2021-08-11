@@ -80,17 +80,15 @@ $warning-light-orange: #f8b588;
 }
 
 .btn-danger {
-  color: $Red-500;
-  border: 1px solid $hover-red;
-  background-color: $white;
+  color: $white;
+  background-color: $error-1;
 
   &:hover {
-    border-color: $Red-500;
+    background-color: $error-3;
   }
 
   &:active {
-    background: $Red-000;
-    border-color: $Red-500;
+    background: $Red-700;
   }
 
   &--disabled,
@@ -124,12 +122,11 @@ $warning-light-orange: #f8b588;
 }
 
 .btn-default {
-  color: black;
-  border: 1px solid $secondary-dark;
+  color: $white;
+  background-color: $Grey-700;
 
   &:hover {
-    border-color: $secondary-dark-hover;
-    background-color: $secondary-dark-hover;
+    background-color: $Grey-500;
   }
 
   &:active {
@@ -252,7 +249,7 @@ input[type="submit"][disabled] {
   }
 
   &.btn-default {
-    border: 1px solid $secondary-dark;
+    background-color: $secondary-dark;
 
     &--disabled,
     &[disabled] {
@@ -261,7 +258,6 @@ input[type="submit"][disabled] {
     }
 
     &:hover {
-      border: 1px solid $hover-default;
       background-color: $hover-default;
     }
 

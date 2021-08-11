@@ -4,10 +4,10 @@
   top: 58px;
   width: 320px;
   border-radius: 4px;
-  background: rgba($black, 0.8);
+  background: $ui-black;
   box-shadow: rgba($black, 0.15) 0 2px 2px 2px;
   min-width: 150px;
-  color: $white;
+  color: $secondary-dark;
 
   @media screen and (max-width: 575px) {
     right: calc(((100vw - 100%) / 2) + 8px);
@@ -100,11 +100,16 @@
   &__lock-button {
     @include H7;
 
-    border: 1px solid $dusty-gray;
+    border: 2px solid $secondary-dark;
     background-color: transparent;
-    color: $white;
+    color: $secondary-dark;
     border-radius: 4px;
     padding: 3.5px 24px;
+
+    &:hover {
+      border: 2px solid $secondary-dark-hover;
+      color: $secondary-dark-hover;
+    }
   }
 
   &__item-icon {
@@ -220,7 +225,7 @@
   &__name {
     @include H4;
 
-    color: $white;
+    color: $secondary-dark;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -230,7 +235,7 @@
   &__balance {
     @include H6;
 
-    color: $dusty-gray;
+    color: $secondary-dark;
   }
 
   &__action {

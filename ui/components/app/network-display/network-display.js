@@ -40,7 +40,7 @@ export default function NetworkDisplay({
 
   return (
     <Chip
-      borderColor={outline ? COLORS.UI3 : COLORS.TRANSPARENT}
+      borderColor={outline ? COLORS.UI4 : COLORS.TRANSPARENT}
       onClick={onClick}
       leftIcon={
         <LoadingIndicator

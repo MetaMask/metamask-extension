@@ -8,10 +8,15 @@
   background-color: $primary-dark;
 
   .menu-bar__account-options {
+    color: $secondary-dark;
     background: none;
     font-size: inherit;
     padding: 0 8px 0 5px;
     place-self: center end;
+  }
+
+  .menu-bar__account-options:hover {
+    color: $secondary-dark-hover;
   }
 
   .selected-account {

@@ -157,7 +157,7 @@ class NetworkDropdown extends Component {
           <span
             className="network-name-item"
             style={{
-              color: isCurrentRpcTarget ? '#ffffff' : '#9b9b9b',
+              color: isCurrentRpcTarget ? '#66ffa6' : '#28a745',
             }}
           >
             {nickname || rpcUrl}

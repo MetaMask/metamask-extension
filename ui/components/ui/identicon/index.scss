@@ -17,7 +17,11 @@
     border-style: solid;
     border-radius: 50%;
     border-width: 2px;
-    border-color: $primary-blue;
+    border-color: $secondary-dark;
+  }
+
+  &__address-wrapper:hover {
+    border-color: $secondary-dark-hover;
   }
 
   &__image-border {

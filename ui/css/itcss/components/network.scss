@@ -72,7 +72,7 @@
 
 .network-name-item {
   flex: 1;
-  color: $dusty-gray;
+  color: $secondary-dark !important;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -145,7 +145,7 @@
 
   min-height: 36px;
   width: 265px;
-  color: $dusty-gray;
+  color: $secondary-dark !important;
 }
 
 .network-caret {
