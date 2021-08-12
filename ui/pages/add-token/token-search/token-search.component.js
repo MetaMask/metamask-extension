@@ -45,7 +45,11 @@ export default class TokenSearch extends Component {
     this.setState({ searchQuery });
     const fuseSearchResult = this.tokenSearchFuse.search(searchQuery);
     const addressSearchResult = this.tokenList.filter((token) => {
-      return token.address.toLowerCase() === searchQuery.toLowerCase();
+      return (
+        token.address &&
+        searchQuery &&
+        token.address.toLowerCase() === searchQuery.toLowerCase()
+      );
     });
     const results = [...addressSearchResult, ...fuseSearchResult];
     this.props.onSearch({ searchQuery, results });

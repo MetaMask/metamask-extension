@@ -246,7 +246,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.store,
       ),
       messenger: tokenListMessenger,
-      state: initState.tokenListController,
+      state: initState.TokenListController,
     });
 
     this.phishingController = new PhishingController();
