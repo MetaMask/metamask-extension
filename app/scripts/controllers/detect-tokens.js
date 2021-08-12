@@ -58,8 +58,8 @@ export default class DetectTokensController {
 
     const tokensToDetect = [];
     this.web3.setProvider(this._network._provider);
-    const apiTokens = this._tokenList.state.tokenList;
-    for (const tokenAddress in apiTokens) {
+    const { tokenList } = this._tokenList.state;
+    for (const tokenAddress in tokenList) {
       if (
         !this.tokenAddresses.includes(tokenAddress.toLowerCase()) &&
         !this.hiddenTokens.includes(tokenAddress.toLowerCase())
@@ -83,8 +83,8 @@ export default class DetectTokensController {
       if (balance && !balance.isZero()) {
         this._preferences.addToken(
           tokenAddress,
-          apiTokens[tokenAddress].symbol,
-          apiTokens[tokenAddress].decimals,
+          tokenList[tokenAddress].symbol,
+          tokenList[tokenAddress].decimals,
         );
       }
     });
