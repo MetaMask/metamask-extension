@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.0.1]
+### Fixed
+- [#11813](https://github.com/MetaMask/metamask-extension/pull/11813): Fix error reporting version configuration
+
 ## [10.0.0]
 ### Added
 - [#11694](https://github.com/MetaMask/metamask-extension/pull/11694): Add support for EIP-1559 transactions
@@ -2395,7 +2399,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.0.1...HEAD
+[10.0.1]: https://github.com/MetaMask/metamask-extension/compare/v10.0.0...v10.0.1
 [10.0.0]: https://github.com/MetaMask/metamask-extension/compare/v9.8.4...v10.0.0
 [9.8.4]: https://github.com/MetaMask/metamask-extension/compare/v9.8.3...v9.8.4
 [9.8.3]: https://github.com/MetaMask/metamask-extension/compare/v9.8.2...v9.8.3
