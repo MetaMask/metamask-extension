@@ -42,7 +42,6 @@ export function useShouldAnimateGasEstimations() {
       dispatch(toggleGasLoadingAnimation(true));
 
       setTimeout(() => {
-        console.log('Killing the toggleGasLoadingAnimation to false');
         dispatch(toggleGasLoadingAnimation(false));
       }, 2000);
     }
