@@ -2731,9 +2731,9 @@
   integrity sha512-QZj6Y1nmSs9BHufBS1GSuPX5TVFa5gbtMhEo/KRuSdKyY43OdlbBKuyT36/l5p30krlzfMX8bN0MAWqw3g0Bog==
 
 "@metamask/controllers@^14.0.2":
-  version "14.1.0"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-14.1.0.tgz#c318f1733944faf54b6c883b5db64aadb3dbbbb8"
-  integrity sha512-hJTg1Q66RQkxZprT3QJPkP+HkRJd8j6QH2Vc2BWnqW7quOCBwODFH6X2F1vKyBdsCVWKbk7U8JU2GBmmSp0ocg==
+  version "14.2.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-14.2.0.tgz#bed161ac3523fd525be79b0e557b132e2e2526e4"
+  integrity sha512-1Is1OJByDJo5GOKt02TiCCGhYlclcAT2IeoiqhSL6fTUT4Qc+2xwgjx42XeE7bzKIDwXpxafpHViCkO3d6IIdA==
   dependencies:
     "@ethereumjs/common" "^2.3.1"
     "@ethereumjs/tx" "^3.2.1"
@@ -25922,9 +25922,9 @@ tar@6.0.2:
     yallist "^4.0.0"
 
 tar@^4:
-  version "4.4.16"
-  resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.16.tgz#4a48b3c025e77d9d0c788f038a09b91c594d326d"
-  integrity sha512-gOVUT/KWPkGFZQmCRDVFNUWBl7niIo/PRR7lzrIqtZpit+st54lGROuVjc6zEQM9FhH+dJfQIl+9F0k8GNXg5g==
+  version "4.4.17"
+  resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.17.tgz#44be5e3fa8353ee1d11db3b1401561223a5c3985"
+  integrity sha512-q7OwXq6NTdcYIa+k58nEMV3j1euhDhGCs/VRw9ymx/PbH0jtIM2+VTgDE/BW3rbLkrBUXs5fzEKgic5oUciu7g==
   dependencies:
     chownr "^1.1.4"
     fs-minipass "^1.2.7"
