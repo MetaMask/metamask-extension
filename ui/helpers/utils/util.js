@@ -16,6 +16,9 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
+  if (!date) {
+    return '';
+  }
   return DateTime.fromMillis(date).toFormat(format);
 }
 
@@ -24,6 +27,9 @@ export function formatDateWithYearContext(
   formatThisYear = 'MMM d',
   fallback = 'MMM d, y',
 ) {
+  if (!date) {
+    return '';
+  }
   const dateTime = DateTime.fromMillis(date);
   const now = DateTime.local();
   return dateTime.toFormat(
