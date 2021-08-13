@@ -80,7 +80,7 @@ export function useTransactionDisplayData(transactionGroup) {
 
   const primaryValue = primaryTransaction.txParams?.value;
   let prefix = '-';
-  const date = formatDateWithYearContext(initialTransaction.time || 0);
+  const date = formatDateWithYearContext(initialTransaction.time);
   let subtitle;
   let subtitleContainsOrigin = false;
   let recipientAddress = to;
