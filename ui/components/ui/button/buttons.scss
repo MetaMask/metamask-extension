@@ -148,13 +148,12 @@ $warning-light-orange: #f8b588;
 
   &:active {
     background: $Green-600;
-    border-color: $Green-600;
   }
 
   &--disabled,
   &[disabled] {
-    border-color: $hover-secondary;
-    background-color: $hover-secondary;
+    background-color: $secondary-dark;
+    opacity: 0.5;
   }
 }
 

@@ -6,7 +6,7 @@
   &__search {
     > div {
       border: none;
-      border-bottom: 1px solid $Grey-100;
+      border-bottom: 1px solid $secondary-dark;
       border-radius: 0;
       height: 55px;
       font-size: 12px;
@@ -14,7 +14,7 @@
       input {
         @include H6;
 
-        color: $Grey-500;
+        color: white;
         line-height: 100%;
 
         &::-webkit-input-placeholder {
@@ -54,7 +54,7 @@
     padding: 8px 12px;
     box-sizing: border-box;
     cursor: pointer;
-    border-top: 1px solid $Grey-100;
+    border-top: 1px solid $secondary-dark;
     position: relative;
     min-height: 50px;
 
@@ -68,7 +68,7 @@
 
     &:hover,
     &:focus {
-      background: $Grey-000;
+      background: $primary-dark-hover;
     }
 
     &--selected {
@@ -194,7 +194,7 @@
 
   &__list-container {
     z-index: 1002;
-    background: white;
+    background: $ui-black;
   }
 
   &__search {

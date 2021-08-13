@@ -6,20 +6,11 @@
   &__button {
     font-size: $font-size-h5;
     color: $tundora;
-    border-style: solid;
-    border-color: $alto;
-    border-width: 1px 1px 1px;
-    border-left: 0;
     flex: 1;
     padding: 12px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
-    &:first-child {
-      border-left: 1px solid $alto;
-      border-radius: 4px 0 0 4px;
-    }
 
     &:last-child {
       border-radius: 0 4px 4px 0;
@@ -40,9 +31,8 @@
   .radio-button {
     @include H7;
 
-    color: $Grey-700;
-    border: 1px solid $Grey-100;
-    background: $white;
+    color: $secondary-dark;
+    background: $ui-black;
     border-radius: 25px;
     height: 25px;
     margin-right: 8px;
@@ -50,15 +40,14 @@
     padding: 0;
 
     &--active {
-      background: $Blue-500;
-      color: white;
+      background: $secondary-dark;
+      color: black;
       border: none;
     }
 
     &--danger {
-      border: 1px solid $Red-500;
-      color: $Red-500;
-      background: $white;
+      color: black;
+      background: $Red-500;
     }
 
     &:hover {
@@ -67,8 +56,7 @@
   }
 
   .radio-button--active.radio-button--danger {
-    border: 1px solid $Red-500;
-    color: white;
+    color: black;
     background: $Red-500;
   }
 }

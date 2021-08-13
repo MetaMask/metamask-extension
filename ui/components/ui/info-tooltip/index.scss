@@ -34,8 +34,8 @@
 .tippy-tooltip {
   &#{&}-info-theme,
   &#{&}-wideInfo-theme {
-    background: white;
-    color: black;
+    background: $ui-black;
+    color: $secondary-dark;
     box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
     border-radius: 8px;
     max-width: 203px;
@@ -46,7 +46,7 @@
       @include H7;
 
       text-align: left;
-      color: $Grey-500;
+      color: $secondary-dark;
 
       a {
         color: $primary-1;

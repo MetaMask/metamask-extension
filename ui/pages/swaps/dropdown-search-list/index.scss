@@ -10,7 +10,7 @@
   &__token-container {
     margin: 0;
     min-height: auto;
-    border: 1px solid #d6d9dc;
+    border: 1px solid $secondary-dark;
     box-sizing: border-box;
     box-shadow: none;
     border-radius: 6px;
@@ -40,18 +40,18 @@
     transition: 200ms ease-in-out;
     border-radius: 6px;
     box-shadow: none;
-    border: 1px solid #d6d9dc;
+    border: 1px solid $secondary-dark;
     height: 60px;
 
     &:hover {
-      background: $Grey-000;
+      background-color: $primary-dark-hover;
     }
   }
 
   &__caret {
     position: absolute;
     right: 16px;
-    color: $Grey-200;
+    color: $secondary-dark;
   }
 
   &__selector-closed {
@@ -83,7 +83,7 @@
   &__closed-primary-label {
     @include H4;
 
-    color: $Black-100;
+    color: $secondary-dark;
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -92,14 +92,13 @@
 
   &__search-list--open {
     box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
-    border: 1px solid $Grey-100;
   }
 
   &__default-dropdown-icon {
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: $Grey-200;
+    background: $secondary-dark;
     flex: 0 1 auto;
   }
 
@@ -118,7 +117,7 @@
   }
 
   &__select-default {
-    color: $Grey-200;
+    color: $secondary-dark;
   }
 
   &__placeholder {

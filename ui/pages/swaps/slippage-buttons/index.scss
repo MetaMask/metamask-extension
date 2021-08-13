@@ -40,7 +40,7 @@
     @include H6;
 
     margin-right: 4px;
-    color: black;
+    color: $secondary-dark;
     font-weight: 900;
   }
 
@@ -71,30 +71,30 @@
       border: none;
       width: 64px;
       text-align: center;
-      background: $Blue-500;
-      color: white;
+      background: $secondary-dark;
+      color: black;
       font-weight: inherit;
 
       &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-        color: white;
+        color: $Grey-300;
       }
 
       &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-        color: white;
+        color: $Grey-300;
         opacity: 1;
       }
 
       &::-moz-placeholder { /* Mozilla Firefox 19+ */
-        color: white;
+        color: $Grey-300;
         opacity: 1;
       }
 
       &:-ms-input-placeholder { /* Internet Explorer 10-11 */
-        color: white;
+        color: $Grey-300;
       }
 
       &::-ms-input-placeholder { /* Microsoft Edge */
-        color: white;
+        color: $Grey-300;
       }
 
       &::placeholder { /* Most modern browsers support this now. */

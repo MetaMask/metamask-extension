@@ -42,7 +42,7 @@
     @include H5;
 
     font-weight: bold;
-    color: $Black-100;
+    color: $secondary-dark;
     margin-top: 3px;
   }
 
@@ -67,7 +67,7 @@
   &__max-button {
     @include H7;
 
-    color: $Blue-500;
+    color: $secondary-dark;
     cursor: pointer;
   }
 
@@ -75,7 +75,7 @@
     @include H7;
 
     width: 100%;
-    color: $Grey-500;
+    color: $secondary-dark;
     margin-top: 4px;
     display: flex;
     flex-flow: column;
@@ -84,7 +84,7 @@
     &--error {
       div:first-of-type {
         font-weight: bold;
-        color: $Black-100;
+        color: $secondary-dark;
       }
 
       .build-quote__form-error:first-of-type {

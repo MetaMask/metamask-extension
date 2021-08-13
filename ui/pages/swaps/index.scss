@@ -35,8 +35,8 @@
 
     @media screen and (min-width: 576px) {
       width: 460px;
-      background: white;
-      border: 1px solid $Grey-100;
+      background: $primary-dark;
+      border: 1px solid $secondary-dark;
       box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
       border-radius: 8px;
       height: 620px;
@@ -66,7 +66,7 @@
     @include H5;
 
     font-weight: bold;
-    color: $Black-100;
+    color: $secondary-dark;
     margin-top: -5px;
   }
 
@@ -77,7 +77,7 @@
     align-items: center;
     padding-top: 0;
     padding-bottom: 16px;
-    background: $Grey-000;
+    background: $ui-black;
     width: 100%;
     position: relative;
 
@@ -91,7 +91,7 @@
   &__header-cancel {
     @include H7;
 
-    color: $Blue-500;
+    color: $secondary-dark;
     cursor: pointer;
     position: absolute;
     right: 24px;
