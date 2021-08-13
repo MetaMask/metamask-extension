@@ -30,6 +30,7 @@ import {
 import {
   PluginController,
   ExternalResourceController,
+  WorkerController,
 } from '@mm-snap/controllers';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
@@ -381,9 +382,31 @@ export default class MetamaskController extends EventEmitter {
       initState.PermissionsMetadata,
     );
 
+    this.workerController = new WorkerController({
+      setupPluginProvider: this.setupWorkerPluginProvider.bind(this),
+      workerUrl: WORKER_BLOB_URL,
+    });
+
+    const pluginControllerMessenger = controllerMessenger.getRestricted({
+      name: 'PluginController',
+    });
+
     this.pluginController = new PluginController({
-      setupWorkerPluginProvider: this.setupWorkerPluginProvider.bind(this),
-      closeAllConnections: this.removeAllConnections.bind(this),
+      terminateAllPlugins: this.workerController.terminateAllPlugins.bind(
+        this.workerController,
+      ),
+      terminatePlugin: this.workerController.terminatePlugin.bind(
+        this.workerController,
+      ),
+      executePlugin: this.workerController.executePlugin.bind(
+        this.workerController,
+      ),
+      getRpcMessageHandler: this.workerController.getRpcMessageHandler.bind(
+        this.workerController,
+      ),
+      removeAllPermissionsFor: this.permissionsController.removeAllPermissionsFor.bind(
+        this.permissionsController,
+      ),
       getPermissions: this.permissionsController.getPermissions.bind(
         this.permissionsController,
       ),
@@ -393,16 +416,10 @@ export default class MetamaskController extends EventEmitter {
       requestPermissions: this.permissionsController.requestPermissions.bind(
         this.permissionsController,
       ),
-      removeAllPermissionsFor: this.permissionsController.removeAllPermissionsFor.bind(
-        this.permissionsController,
-      ),
-      getAppKeyForDomain: this.keyringController.exportAppKeyForAddress.bind(
-        this.keyringController,
-      ),
-      workerUrl: WORKER_BLOB_URL,
-      initState: initState.PluginController,
+      closeAllConnections: this.removeAllConnections.bind(this),
+      state: initState.PluginController,
+      messenger: pluginControllerMessenger,
     });
-
     this.permissionsController.initializePermissions(
       initState.PermissionsController,
       getRestrictedMethods,
