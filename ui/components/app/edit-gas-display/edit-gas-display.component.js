@@ -100,8 +100,7 @@ export default function EditGasDisplay({
   const radioButtonsEnabled =
     networkAndAccountSupport1559 &&
     gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET &&
-    !requireDappAcknowledgement &&
-    ![EDIT_GAS_MODES.SPEED_UP, EDIT_GAS_MODES.CANCEL].includes(mode);
+    !requireDappAcknowledgement;
 
   let errorKey;
   if (balanceError) {
