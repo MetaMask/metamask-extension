@@ -5,7 +5,7 @@
     position: relative;
     display: flex;
     justify-content: center;
-    background-color: $Grey-000;
+    background-color: $primary-dark;
     border-bottom: none;
     padding: 14px 0 3px 0;
 
@@ -17,7 +17,7 @@
 
     .page-container__header-close-text {
       @include H5;
-
+      color: $secondary-dark;
       position: absolute;
       right: 1rem;
       width: min-content;
@@ -38,8 +38,8 @@
     margin: 0;
     padding: 0.5rem;
     flex: 0 0 auto;
-    background-color: $Grey-000;
-    border-bottom: 1px solid $alto;
+    background-color: $primary-dark;
+    border-bottom: 1px solid $secondary-dark;
   }
 
   &__select-recipient-wrapper {
@@ -162,14 +162,12 @@
     flex: 1 1 auto;
     width: 0;
     align-items: center;
-    background: $white;
+    background: $ui-black;
     border-radius: 0.5rem;
     padding: 0.75rem 0.5rem;
-    border: 1px solid $Grey-100;
-    transition: border-color 150ms ease-in-out;
 
-    &:focus-within {
-      border-color: $Grey-500;
+    &:focus {
+      border-color: 2px solid $secondary-dark;
     }
 
     &__status-icon {
@@ -191,14 +189,15 @@
 
     &__input {
       @include H6;
-
+      color: white;
+      background-color: $ui-black;
       flex: 1 1 auto;
       width: 0;
       border: 0;
       outline: none;
 
       &::placeholder {
-        color: $Grey-200;
+        color: $Grey-400;
       }
     }
 

@@ -64,8 +64,8 @@
     &--warning {
       @include H7;
 
-      background-color: #fefae8;
-      border: 1px solid #ffd33d;
+      background-color: $ui-black;
+      border: 1px solid $secondary-dark;
       border-radius: 5px;
       box-sizing: border-box;
       padding: 12px;
@@ -85,7 +85,7 @@
   &__network-form-label-text {
     @include H6;
 
-    color: #000;
+    color: $secondary-dark;
   }
 
   &__network-form-label-tooltip {
@@ -171,7 +171,7 @@
     @include Paragraph;
 
     margin-left: 11px;
-    color: #6a737d;
+    color: $Green-500;
     width: 70%;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -213,12 +213,13 @@
 
   &__networks-list-name--selected {
     font-weight: bold;
-    color: #000;
+    color: $secondary-dark;
   }
 
   &__networks-list-name--disabled {
     font-weight: 300;
-    color: #cdcdcd;
+    color: $secondary-dark;
+    opacity: 0.5;
   }
 }
 

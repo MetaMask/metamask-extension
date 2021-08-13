@@ -11,6 +11,9 @@ const inputLabelBase = {
 };
 
 const styles = {
+  input: {
+    color: 'white',
+  },
   materialLabel: {
     '&$materialFocused': {
       color: '#66ffa6',

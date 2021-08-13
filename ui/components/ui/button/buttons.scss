@@ -38,38 +38,33 @@ $warning-light-orange: #f8b588;
 }
 
 .btn-secondary {
-  color: $Blue-500;
-  border: 1px solid $hover-secondary;
-  background-color: $white;
+  color: black;
+  background-color: $secondary-dark;
 
   &:hover {
-    border-color: $Blue-500;
+    background-color: $secondary-dark-hover;
   }
 
   &:active {
-    background: $Blue-000;
-    border-color: $Blue-500;
+    background: $Green-600;
   }
 
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: $hover-secondary;
   }
 }
 
 .btn-warning {
-  color: $Orange-500;
-  border: 1px solid $hover-orange;
-  background-color: $white;
+  color: $white;
+  background-color: $Orange-400;
 
   &:hover {
-    border-color: $Orange-500;
+    background-color: $Orange-500;
   }
 
   &:active {
-    background: $Orange-000;
-    border-color: $Orange-500;
+    background: $Orange-600;
   }
 
   &--disabled,
