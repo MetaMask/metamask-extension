@@ -44,7 +44,7 @@ describe('Settings Tab', () => {
   });
 
   it('sets fiat primary currency', () => {
-    const selectFiat = wrapper.find('#fiat-primary-currency');
+    const selectFiat = wrapper.find('#fiat-primary-currency').first();
 
     selectFiat.simulate('change');
     expect(
