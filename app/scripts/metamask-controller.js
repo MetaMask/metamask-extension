@@ -94,7 +94,7 @@ export const METAMASK_CONTROLLER_EVENTS = {
 const KEYRING_TYPES = {
   LEDGER: 'Ledger Hardware',
   TREZOR: 'Trezor Hardware',
-}
+};
 
 const RESOURCE_KEYS = {
   ASSETS: 'snaps:resources:assets',
