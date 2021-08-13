@@ -373,7 +373,7 @@ export default function BuildQuote({
 
   const swapYourTokenBalance = t('swapYourTokenBalance', [
     fromTokenString || '0',
-    fromTokenSymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol || '',
+    fromTokenSymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.symbol || '',
   ]);
 
   return (
