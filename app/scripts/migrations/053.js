@@ -23,23 +23,27 @@ function transformState(state) {
     state?.IncomingTransactionsController?.incomingTransactions;
   if (Array.isArray(transactions)) {
     transactions.forEach((transaction) => {
-      if (
-        transaction.type !== TRANSACTION_TYPES.RETRY &&
-        transaction.type !== TRANSACTION_TYPES.CANCEL
-      ) {
-        transaction.type = transaction.transactionCategory;
+      if (transaction) {
+        if (
+          transaction.type !== TRANSACTION_TYPES.RETRY &&
+          transaction.type !== TRANSACTION_TYPES.CANCEL
+        ) {
+          transaction.type = transaction.transactionCategory;
+        }
+        delete transaction.transactionCategory;
       }
-      delete transaction.transactionCategory;
     });
   }
   if (incomingTransactions) {
     const incomingTransactionsEntries = Object.entries(incomingTransactions);
     incomingTransactionsEntries.forEach(([key, transaction]) => {
-      delete transaction.transactionCategory;
-      state.IncomingTransactionsController.incomingTransactions[key] = {
-        ...transaction,
-        type: TRANSACTION_TYPES.INCOMING,
-      };
+      if (transaction) {
+        delete transaction.transactionCategory;
+        state.IncomingTransactionsController.incomingTransactions[key] = {
+          ...transaction,
+          type: TRANSACTION_TYPES.INCOMING,
+        };
+      }
     });
   }
   return state;
