@@ -19,11 +19,11 @@ const FILSNAP_PERMISSION_NAMES = Object.keys(
 const getFilsnapPermission = (method) => {
   return {
     '@context': ['https://github.com/MetaMask/rpc-cap'],
-    invoker: FILSNAP_NAME,
-    parentCapability: method,
-    id: nanoid(),
-    date: new Date(),
-    caveats: [],
+    'invoker': FILSNAP_NAME,
+    'parentCapability': method,
+    'id': nanoid(),
+    'date': new Date(),
+    'caveats': [],
   };
 };
 
