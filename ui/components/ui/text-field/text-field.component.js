@@ -13,7 +13,7 @@ const inputLabelBase = {
 const styles = {
   materialLabel: {
     '&$materialFocused': {
-      color: '#aeaeae',
+      color: '#66ffa6',
     },
     '&$materialError': {
       color: '#aeaeae',
@@ -24,7 +24,7 @@ const styles = {
   materialFocused: {},
   materialUnderline: {
     '&:after': {
-      borderBottom: `2px solid rgb(3, 125, 214)`,
+      borderBottom: `2px solid #66ffa6`,
     },
   },
   materialError: {},

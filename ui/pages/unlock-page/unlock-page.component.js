@@ -109,7 +109,7 @@ export default class UnlockPage extends Component {
 
   renderSubmitButton() {
     const style = {
-      backgroundColor: '#037dd6',
+      backgroundColor: '#66ffa6',
       color: 'white',
       marginTop: '20px',
       height: '60px',
@@ -177,7 +177,7 @@ export default class UnlockPage extends Component {
               </button>,
             ])}
           </div>
-          <div className="unlock-page__support">
+          {/* <div className="unlock-page__support">
             {t('needHelp', [
               <a
                 href="https://support.metamask.io"
@@ -188,7 +188,7 @@ export default class UnlockPage extends Component {
                 {t('needHelpLinkText')}
               </a>,
             ])}
-          </div>
+          </div> */}
         </div>
       </div>
     );

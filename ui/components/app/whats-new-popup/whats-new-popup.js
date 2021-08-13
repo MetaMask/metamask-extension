@@ -13,7 +13,7 @@ import { updateViewedNotifications } from '../../../store/actions';
 import { getTranslatedUINoficiations } from '../../../../shared/notifications';
 import { getSortedNotificationsToShow } from '../../../selectors';
 import { BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes';
-import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import { TYPOGRAPHY, COLORS } from '../../../helpers/constants/design-system';
 
 function getActionFunctionById(id, history) {
   const actionFunctions = {
@@ -46,7 +46,9 @@ function getActionFunctionById(id, history) {
 const renderDescription = (description) => {
   if (!Array.isArray(description)) {
     return (
-      <Typography variant={TYPOGRAPHY.Paragraph}>{description}</Typography>
+      <Typography variant={TYPOGRAPHY.Paragraph} color={COLORS.UI4}>
+        {description}
+      </Typography>
     );
   }
 
@@ -59,6 +61,7 @@ const renderDescription = (description) => {
             key={`item-${index}`}
             variant={TYPOGRAPHY.Paragraph}
             boxProps={{ marginBottom: isLast ? 0 : 2 }}
+            color={COLORS.UI4}
           >
             {piece}
           </Typography>
