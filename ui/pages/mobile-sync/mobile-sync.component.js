@@ -28,6 +28,7 @@ export default class MobileSyncPage extends Component {
     requestRevealSeedWords: PropTypes.func.isRequired,
     exportAccounts: PropTypes.func.isRequired,
     keyrings: PropTypes.array,
+    hideWarning: PropTypes.func.isRequired,
   };
 
   state = {
@@ -277,6 +278,9 @@ export default class MobileSyncPage extends Component {
   }
 
   componentWillUnmount() {
+    if (this.state.error) {
+      this.props.hideWarning();
+    }
     this.clearTimeouts();
     this.disconnectWebsockets();
   }
