@@ -1,6 +1,6 @@
 .asset {
   &__container {
-    background-color: white;
+    background-color: $primary-dark;
   }
 
   &__overview {
@@ -19,8 +19,12 @@
 .asset-breadcrumb {
   @include H6;
 
-  color: $Black-100;
+  color: $secondary-dark;
   background-color: inherit;
+
+  &:hover {
+    color: $secondary-dark-hover;
+  }
 
   &__chevron {
     font-size: $font-size-paragraph;
@@ -35,9 +39,13 @@
 .asset-options {
   &__button {
     font-size: $font-size-paragraph;
-    color: $Black-100;
+    color: $secondary-dark;
     background-color: inherit;
     padding: 2px 0 2px 8px;
+
+    &:hover {
+      color: $secondary-dark-hover;
+    }
   }
 
   &__icon {

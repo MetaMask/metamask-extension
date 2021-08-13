@@ -11,7 +11,7 @@
   &__header {
     display: flex;
     flex-flow: column;
-    border-bottom: 1px solid $geyser;
+    border-bottom: 1px solid $secondary-dark;
     padding: 16px;
     flex: 0 0 auto;
     position: relative;
@@ -22,7 +22,7 @@
   }
 
   &__header-close {
-    color: $tundora;
+    color: $secondary-dark;
     position: absolute;
     top: 16px;
     right: 16px;
