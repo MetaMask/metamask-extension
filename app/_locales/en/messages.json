@@ -714,6 +714,9 @@
   "editGasTooLowTooltip": {
     "message": "Your max fee or max priority fee may be low for current market conditions. We don't know when (or if) your transaction will be processed. "
   },
+  "editGasTooLowWarningTooltip": {
+    "message": "This lowers your maximum fee but if network traffic increases your transaction may be delayed or fail."
+  },
   "editNonceField": {
     "message": "Edit Nonce"
   },
