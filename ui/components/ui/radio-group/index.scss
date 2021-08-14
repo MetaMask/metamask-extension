@@ -1,8 +1,8 @@
 .radio-group {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 33% 33% 33%;
   grid-template-rows: 60px;
-  width: 300px;
+  width: 100%;
 
   &--has-recommendation {
     grid-template-rows: 100px;
