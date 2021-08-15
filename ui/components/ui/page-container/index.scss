@@ -53,7 +53,7 @@
     display: flex;
     flex-flow: column;
     justify-content: center;
-    border-top: 1px solid $geyser;
+    border-top: 1px solid $secondary-dark;
     flex: 0 0 auto;
 
     footer {
@@ -188,7 +188,6 @@
   .page-container {
     height: 100%;
     width: 100%;
-    background-color: $white;
     border-radius: 0;
     flex: 1;
     overflow-y: auto;
