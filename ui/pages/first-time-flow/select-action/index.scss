@@ -15,7 +15,7 @@
 
     text-align: center;
     margin-top: 65px;
-    color: black;
+    color: $secondary-dark;
   }
 
   &__select-buttons {
@@ -58,7 +58,7 @@
   &__button-text-big {
     @include H4;
 
-    color: #000;
+    color: $secondary-dark;
     margin-top: 12px;
     text-align: center;
   }
@@ -66,7 +66,7 @@
   &__button-text-small {
     @include H6;
 
-    color: #7a7a7b;
+    color: $secondary-dark;
     margin-top: 10px;
     text-align: center;
   }

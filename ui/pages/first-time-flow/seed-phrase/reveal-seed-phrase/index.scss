@@ -11,9 +11,8 @@
     position: relative;
     display: flex;
     justify-content: center;
-    border: 1px solid #cdcdcd;
     border-radius: 6px;
-    background-color: $white;
+    background-color: $ui-black;
     padding: 18px;
     margin-top: 36px;
     max-width: 350px;
@@ -36,7 +35,7 @@
     bottom: 0;
     height: 100%;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: #24292ecf;
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
@@ -48,7 +47,7 @@
   &__reveal-button {
     @include H7;
 
-    color: $white;
+    color: $secondary-dark;
     font-weight: 500;
     text-transform: uppercase;
     margin-top: 8px;

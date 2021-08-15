@@ -604,10 +604,8 @@
     @include H7;
 
     width: 100%;
-    border: 1px solid $alto;
-    border-radius: 4px;
-    background-color: $white;
-    color: $tundora;
+    background-color: $ui-black;
+    color: $secondary-dark;
     position: relative;
 
     &__close-area {
@@ -648,10 +646,6 @@
       flex-flow: row nowrap;
       align-items: center;
       padding: 8px 8px;
-
-      &:hover {
-        background-color: rgba($alto, 0.2);
-      }
     }
 
     &__caret {
@@ -668,12 +662,6 @@
 
       &:hover {
         background-color: rgba($alto, 0.2);
-      }
-    }
-
-    &__asset-icon {
-      .identicon {
-        border: 1px solid $alto;
       }
     }
 
@@ -727,7 +715,6 @@
     }
 
     &__input-wrapper {
-      border: 1px solid $alto;
       border-radius: 4px;
       height: 100%;
 

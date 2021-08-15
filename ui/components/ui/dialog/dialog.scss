@@ -7,19 +7,17 @@
   border-radius: 8px;
 
   &--message {
-    border-color: $Blue-200;
-    color: $Blue-600;
-    background-color: $Blue-000;
+    color: black;
+    background-color: $secondary-dark;
   }
 
   &--error {
-    border-color: $Red-300;
-    color: $Red-600;
-    background-color: $Red-000;
+    font-weight: bold;
+    color: black;
+    background-color: $Red-300;
   }
 
   &--warning {
-    border-color: $Orange-300;
     color: $Orange-600;
     background-color: $Orange-000;
   }

@@ -11,7 +11,7 @@
     flex-direction: column;
     margin-left: 26.26%;
     margin-right: 28%;
-    color: black;
+    color: $secondary-dark;
 
     @media screen and (max-width: 575px) {
       justify-content: center;
@@ -35,7 +35,7 @@
     margin-top: 25px;
 
     .fa-bar-chart {
-      color: #c4c4c4;
+      color: $secondary-dark;
     }
   }
 
@@ -93,7 +93,7 @@
 
   &__bottom-text {
     margin-top: 10px;
-    color: #9a9a9a;
+    color: $secondary-dark;
   }
 
   &__content {

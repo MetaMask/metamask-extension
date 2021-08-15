@@ -26,7 +26,7 @@
     }
 
     &--selected {
-      color: $white;
+      text-decoration: line-through;
     }
 
     &--dragging {
@@ -71,9 +71,8 @@
     flex-flow: row wrap;
     min-height: 161px;
     max-width: 575px;
-    border: 1px solid #cdcdcd;
     border-radius: 6px;
-    background-color: $white;
+    background-color: $ui-black;
     margin: 24px 0 36px;
     padding: 12px;
 

@@ -55,7 +55,7 @@ const styles = {
       color: '#66ffa6',
     },
     '&$materialError': {
-      color: '#5b5b5b',
+      color: '#f44336',
     },
   },
   formLabelFocused: {},
