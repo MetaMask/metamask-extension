@@ -3,7 +3,7 @@
 
 .new-account {
   width: 375px;
-  background-color: #fff;
+  background-color: $primary-dark;
   box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
   z-index: 25;
   height: unset;
@@ -72,7 +72,7 @@
   &__input-label {
     @include Paragraph;
 
-    color: $scorpion;
+    color: $secondary-dark;
     align-self: flex-start;
   }
 
@@ -81,10 +81,10 @@
 
     height: 54px;
     width: 315.84px;
-    border: 1px solid $geyser;
+    border: 1px solid $secondary-dark;
     border-radius: 4px;
-    background-color: $white;
-    color: $scorpion;
+    background-color: $ui-black;
+    color: $secondary-dark;
     margin-top: 15px;
     padding: 0 20px;
   }

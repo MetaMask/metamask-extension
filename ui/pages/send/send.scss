@@ -57,7 +57,7 @@
         @extend %row-nowrap;
 
         padding: 1rem;
-        border-bottom: 1px solid $alto;
+        border-bottom: 1px solid $secondary-dark;
         border-radius: 0;
         align-items: center;
         justify-content: flex-start;
@@ -98,13 +98,13 @@
     &__group-label {
       @include H8;
 
-      background-color: $Grey-000;
-      color: $Grey-600;
+      background-color: $primary-dark;
+      color: $secondary-dark;
       padding: 0.5rem 1rem;
-      border-bottom: 1px solid $alto;
+      border-bottom: 2px solid $secondary-dark;
 
       &:first-of-type {
-        border-top: 1px solid $alto;
+        // border-top: 1px solid $alto;
       }
     }
 
@@ -114,11 +114,11 @@
 
       padding: 0.75rem 1rem;
       align-items: center;
-      border-bottom: 1px solid $alto;
+      border-bottom: 2px solid $secondary-dark;
       cursor: pointer;
 
       &:hover {
-        background-color: rgba($alto, 0.2);
+        background-color: $primary-dark-hover;
       }
 
       .identicon {
@@ -136,13 +136,13 @@
       &__title {
         @include H6;
 
-        color: $black;
+        color: $secondary-dark;
       }
 
       &__subtitle {
         @include H8;
 
-        color: $Grey-500;
+        color: $secondary-dark;
       }
     }
 
@@ -247,12 +247,14 @@
       @include H6;
 
       @extend %ellipsify;
+
+      color: $secondary-dark
     }
 
     &__subtitle {
       @include H7;
 
-      color: $Grey-500;
+      color: $secondary-dark;
       margin-top: 0.25rem;
     }
   }

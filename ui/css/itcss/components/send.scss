@@ -572,21 +572,21 @@
     min-width: 0;
 
     .currency-display {
-      color: $tundora;
+      color: $secondary-dark;
 
       &__currency-symbol {
-        color: $tundora;
+        color: $secondary-dark;
       }
 
       &__converted-value,
       &__converted-currency {
-        color: $tundora;
+        color: $secondary-dark;
       }
     }
 
     .account-list-item {
       &__account-secondary-balance {
-        color: $tundora;
+        color: $secondary-dark;
       }
     }
   }
@@ -594,7 +594,7 @@
   &__form-label {
     @include Paragraph;
 
-    color: $scorpion;
+    color: $secondary-dark;
     width: 95px;
     flex: 0 0 auto;
   }
@@ -777,8 +777,6 @@
       width: 56px;
       height: 20px;
       position: absolute;
-      border: 1px solid #b0d7f2;
-      border-radius: 6px;
       cursor: pointer;
       top: 0;
       left: 0;
@@ -787,8 +785,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #2f9ae0;
-      background: #fff;
+      color: black;
+      background: $secondary-dark;
+
+      &:hover {
+        background-color: $secondary-dark-hover;
+      }
 
       &__disabled {
         color: #b0d7f2;

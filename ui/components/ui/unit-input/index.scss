@@ -5,9 +5,7 @@
   flex-flow: row nowrap;
   align-items: center;
   min-height: 54px;
-  border: 1px solid #dedede;
-  border-radius: 4px;
-  background-color: #fff;
+  background-color: $ui-black;
   color: #4d4d4d;
   padding: 8px 10px;
   position: relative;
@@ -37,7 +35,8 @@
   &__input {
     @include Paragraph;
 
-    color: #4d4d4d;
+    color: $secondary-dark;
+    background-color: transparent;
     border: none;
     max-width: 15ch;
     overflow: hidden;
@@ -57,7 +56,7 @@
 
   &__suffix {
     @include Paragraph;
-
+    color: $secondary-dark;
     margin-left: 3px;
   }
 

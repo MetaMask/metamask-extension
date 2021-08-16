@@ -46,7 +46,7 @@
     flex: 2 1 0;
     width: 92%;
     max-height: max-content;
-    border: 1px solid #d0d5da;
+    border: 3px solid $secondary-dark;
     box-sizing: border-box;
     border-radius: 8px;
     margin-top: 8px;
@@ -79,6 +79,8 @@
   }
 
   &__list-check-box {
+    color: $secondary-dark;
+    background-color: $ui-black;
     margin-right: 16px;
 
     i {
@@ -100,7 +102,6 @@
     display: flex;
     align-items: center;
     padding: 16px;
-    border-bottom: 1px solid #d2d8dd;
     justify-content: space-between;
 
     &:last-of-type {
@@ -108,7 +109,7 @@
     }
 
     &:hover {
-      background: $Grey-000;
+      background: $primary-dark-hover;
       cursor: pointer;
     }
 
@@ -122,7 +123,7 @@
     &__label {
       @include H6;
 
-      color: $Black-100;
+      color: $secondary-dark;
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
@@ -131,7 +132,7 @@
     &__balance {
       @include H7;
 
-      color: $Grey-500;
+      color: $secondary-dark;
     }
 
     &__last-connected {
@@ -169,7 +170,6 @@
     padding-top: 16px;
     padding-bottom: 16px;
     margin-top: 8px;
-    border-top: 1px solid #d6d9dc;
 
     @media screen and (min-width: 576px) {
       border-top: none;
@@ -180,7 +180,6 @@
     }
 
     .btn-default {
-      background: white;
       margin-left: 16px;
     }
 

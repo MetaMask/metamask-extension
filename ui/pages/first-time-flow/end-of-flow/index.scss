@@ -29,6 +29,7 @@
   &__text-3 {
     margin-top: 2px;
     margin-bottom: 2px;
+    color: $secondary-dark;
 
     @media screen and (max-width: $break-small) {
       @include H6;

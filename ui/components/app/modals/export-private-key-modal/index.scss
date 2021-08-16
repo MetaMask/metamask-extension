@@ -27,8 +27,6 @@
   &__password-label,
   &__password--error {
     @include H6;
-
-    color: $scorpion;
     margin-bottom: 10px;
   }
 
@@ -39,10 +37,17 @@
 
   &__password-input {
     @include Paragraph;
-
+    color: $secondary-dark;
+    background-color: $ui-black;
+    border: 2px solid $ui-black;
     padding: 10px 0 13px 17px;
     width: 291px;
     height: 44px;
+    border-radius: 0.5rem;
+
+    &:hover, &:focus{
+      border: 2px solid $secondary-dark;
+    }
   }
 
   &__password::-webkit-input-placeholder {
@@ -53,9 +58,9 @@
     @include H7;
 
     border-radius: 8px;
-    background-color: #fff6f6;
+    background-color: $error-1;
     font-weight: 500;
-    color: $crimson;
+    color: white;
     width: 292px;
     padding: 9px 15px;
     margin-top: 18px;
@@ -71,7 +76,8 @@
   &__password-display-textarea {
     @include Paragraph;
 
-    color: $crimson;
+    color: $secondary-dark;
+    background-color: $ui-black;
     border: none;
     height: 75px;
     width: 100%;
@@ -101,7 +107,7 @@
   & .ellip-address-wrapper {
     display: flex;
     justify-content: center;
-    border: 1px solid $alto;
+    border: 1px solid $secondary-dark;
     padding: 5px 10px;
     margin-top: 7px;
     width: 286px;
