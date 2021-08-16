@@ -210,9 +210,9 @@ export default function EditGasPopover({
               onClick={onSubmit}
               disabled={
                 hasGasErrors ||
-                isGasEstimatesLoading ||
                 balanceError ||
-                gasLoadingAnimationIsShowing
+                ((isGasEstimatesLoading || gasLoadingAnimationIsShowing) &&
+                  !estimateToUse === 'custom')
               }
             >
               {footerButtonText}

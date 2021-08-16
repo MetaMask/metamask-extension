@@ -155,6 +155,7 @@ const mapStateToProps = (state, ownProps) => {
   const isEthGasPrice = getIsEthGasPriceFetched(state);
   const noGasPrice = !supportsEIP1599 && getNoGasPriceFetched(state);
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
+  const gasFeeIsCustom = fullTxData.userFeeLevel === 'custom';
 
   return {
     balance,
@@ -201,6 +202,7 @@ const mapStateToProps = (state, ownProps) => {
     maxFeePerGas: gasEstimationObject.maxFeePerGas,
     maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
+    gasFeeIsCustom,
   };
 };
 
