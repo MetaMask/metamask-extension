@@ -44,6 +44,9 @@ import {
   removePollingTokenFromAppState,
 } from '../../store/actions';
 
+const renderHeartBeatIfNotInTest = () =>
+  process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
+
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -448,7 +451,7 @@ export default class ConfirmTransactionBase extends Component {
               }
               detailText={
                 <div className="confirm-page-container-content__currency-container">
-                  {process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />}
+                  {renderHeartBeatIfNotInTest()}
                   <UserPreferencedCurrencyDisplay
                     type={SECONDARY}
                     value={hexMinimumTransactionFee}
@@ -458,7 +461,7 @@ export default class ConfirmTransactionBase extends Component {
               }
               detailTotal={
                 <div className="confirm-page-container-content__currency-container">
-                  {process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />}
+                  {renderHeartBeatIfNotInTest()}
                   <UserPreferencedCurrencyDisplay
                     type={PRIMARY}
                     value={hexMinimumTransactionFee}
@@ -474,7 +477,7 @@ export default class ConfirmTransactionBase extends Component {
                   key="editGasSubTextFeeValue"
                   className="confirm-page-container-content__currency-container"
                 >
-                  {process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />}
+                  {renderHeartBeatIfNotInTest()}
                   <UserPreferencedCurrencyDisplay
                     key="editGasSubTextFeeAmount"
                     type={PRIMARY}
