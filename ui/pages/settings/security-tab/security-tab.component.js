@@ -19,6 +19,8 @@ export default class SecurityTab extends PureComponent {
     setShowIncomingTransactionsFeatureFlag: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
     usePhishDetect: PropTypes.bool.isRequired,
+    useStaticTokenList: PropTypes.bool.isRequired,
+    setUseStaticTokenList: PropTypes.func.isRequired,
   };
 
   renderSeedWords() {
@@ -141,6 +143,32 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  renderTokenDetectionToggle() {
+    const { t } = this.context;
+    const { useStaticTokenList, setUseStaticTokenList } = this.props;
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{t('useStaticTokenList')}</span>
+          <div className="settings-page__content-description">
+            {t('useStaticTokenListDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={useStaticTokenList}
+              onToggle={(value) => setUseStaticTokenList(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const { warning } = this.props;
 
@@ -151,6 +179,7 @@ export default class SecurityTab extends PureComponent {
         {this.renderIncomingTransactionsOptIn()}
         {this.renderPhishingDetectionToggle()}
         {this.renderMetaMetricsOptIn()}
+        {this.renderTokenDetectionToggle()}
       </div>
     );
   }
