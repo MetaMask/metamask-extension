@@ -188,7 +188,7 @@ export default function ConfirmationPage() {
           <NetworkDisplay
             colored={false}
             indicatorSize={SIZES.XS}
-            labelProps={{ color: COLORS.BLACK }}
+            labelProps={{ color: COLORS.UI4 }}
           />
         </Box>
         <Box justifyContent="center" padding={[1, 4, 4]}>
