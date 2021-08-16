@@ -2221,6 +2221,15 @@ export function updateSwapsUserFeeLevel(swapsCustomUserFeeLevel) {
   };
 }
 
+export function setSwapsQuotesPollingLimitEnabled(quotesPollingLimitEnabled) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsQuotesPollingLimitEnabled(
+      quotesPollingLimitEnabled,
+    );
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function customSwapsGasParamsUpdated(gasLimit, gasPrice) {
   return async (dispatch) => {
     await promisifiedBackground.setSwapsTxGasPrice(gasPrice);

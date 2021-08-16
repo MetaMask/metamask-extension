@@ -56,6 +56,7 @@ import {
   setCustomApproveTxData,
   setSwapsErrorKey,
   showModal,
+  setSwapsQuotesPollingLimitEnabled,
 } from '../../../store/actions';
 import {
   ASSET_ROUTE,
@@ -652,6 +653,10 @@ export default function ViewQuote() {
   const onCloseEditGasPopover = () => {
     setShowEditGasPopover(false);
   };
+
+  useEffect(() => {
+    dispatch(setSwapsQuotesPollingLimitEnabled(true));
+  }, [dispatch]);
 
   return (
     <div className="view-quote">

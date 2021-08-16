@@ -64,6 +64,7 @@ function calculateGasEstimateWithRefund(
 const initialState = {
   swapsState: {
     quotes: {},
+    quotesPollingLimitEnabled: false,
     fetchParams: null,
     tokens: null,
     tradeTxId: null,
@@ -177,7 +178,7 @@ export default class SwapsController {
   ) {
     const { chainId } = fetchParamsMetaData;
     const {
-      swapsState: { useNewSwapsApi },
+      swapsState: { useNewSwapsApi, quotesPollingLimitEnabled },
     } = this.store.getState();
 
     if (!fetchParams) {
@@ -292,9 +293,12 @@ export default class SwapsController {
       },
     });
 
-    // We only want to do up to a maximum of three requests from polling.
-    this.pollCount += 1;
-    if (this.pollCount < POLL_COUNT_LIMIT + 1) {
+    if (quotesPollingLimitEnabled) {
+      // We only want to do up to a maximum of three requests from polling.
+      this.pollCount += 1;
+    }
+
+    if (!quotesPollingLimitEnabled || this.pollCount < POLL_COUNT_LIMIT + 1) {
       this.pollForNewQuotes();
     } else {
       this.resetPostFetchState();
@@ -466,6 +470,13 @@ export default class SwapsController {
     const { swapsState } = this.store.getState();
     this.store.updateState({
       swapsState: { ...swapsState, swapsUserFeeLevel },
+    });
+  }
+
+  setSwapsQuotesPollingLimitEnabled(quotesPollingLimitEnabled) {
+    const { swapsState } = this.store.getState();
+    this.store.updateState({
+      swapsState: { ...swapsState, quotesPollingLimitEnabled },
     });
   }
 

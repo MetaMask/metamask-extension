@@ -26,6 +26,7 @@ const createProps = (customProps = {}) => {
 
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
+  clearSwapsQuotes: jest.fn(),
 });
 
 describe('BuildQuote', () => {

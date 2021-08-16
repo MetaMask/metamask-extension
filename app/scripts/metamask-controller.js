@@ -1131,6 +1131,10 @@ export default class MetamaskController extends EventEmitter {
         swapsController.setSwapsUserFeeLevel,
         swapsController,
       ),
+      setSwapsQuotesPollingLimitEnabled: nodeify(
+        swapsController.setSwapsQuotesPollingLimitEnabled,
+        swapsController,
+      ),
 
       // MetaMetrics
       trackMetaMetricsEvent: nodeify(

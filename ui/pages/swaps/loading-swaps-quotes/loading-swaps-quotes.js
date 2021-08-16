@@ -19,27 +19,6 @@ import Mascot from '../../../components/ui/mascot';
 import SwapsFooter from '../swaps-footer';
 import BackgroundAnimation from './background-animation';
 
-// These locations reference where we want the top-left corner of the logo div to appear in relation to the
-// centre point of the fox
-const AGGREGATOR_LOCATIONS = [
-  { x: -125, y: -75 },
-  { x: 30, y: -75 },
-  { x: -145, y: 0 },
-  { x: 50, y: 0 },
-  { x: -135, y: 46 },
-  { x: 40, y: 46 },
-];
-
-function getRandomLocations(numberOfLocations) {
-  const randomLocations = shuffle(AGGREGATOR_LOCATIONS);
-  if (numberOfLocations <= AGGREGATOR_LOCATIONS.length) {
-    return randomLocations.slice(0, numberOfLocations);
-  }
-  const numberOfExtraLocations =
-    numberOfLocations - AGGREGATOR_LOCATIONS.length;
-  return [...randomLocations, ...getRandomLocations(numberOfExtraLocations)];
-}
-
 export default function LoadingSwapsQuotes({
   aggregatorMetadata,
   loadingComplete,

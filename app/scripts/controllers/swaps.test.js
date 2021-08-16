@@ -116,6 +116,7 @@ function getMockNetworkController() {
 const EMPTY_INIT_STATE = {
   swapsState: {
     quotes: {},
+    quotesPollingLimitEnabled: false,
     fetchParams: null,
     tokens: null,
     tradeTxId: null,
