@@ -33,6 +33,7 @@ import { toBuffer } from '../../../shared/modules/buffer-utils';
 import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
+import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 
 import { COLORS } from '../../helpers/constants/design-system';
@@ -42,6 +43,9 @@ import {
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
 } from '../../store/actions';
+
+const renderHeartBeatIfNotInTest = () =>
+  process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -439,29 +443,41 @@ export default class ConfirmTransactionBase extends Component {
                 txData.dappSuggestedGasFees ? COLORS.SECONDARY1 : COLORS.BLACK
               }
               detailText={
-                <UserPreferencedCurrencyDisplay
-                  type={SECONDARY}
-                  value={hexMinimumTransactionFee}
-                  hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-                />
+                <div className="confirm-page-container-content__currency-container">
+                  {renderHeartBeatIfNotInTest()}
+                  <UserPreferencedCurrencyDisplay
+                    type={SECONDARY}
+                    value={hexMinimumTransactionFee}
+                    hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                  />
+                </div>
               }
               detailTotal={
-                <UserPreferencedCurrencyDisplay
-                  type={PRIMARY}
-                  value={hexMinimumTransactionFee}
-                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                />
+                <div className="confirm-page-container-content__currency-container">
+                  {renderHeartBeatIfNotInTest()}
+                  <UserPreferencedCurrencyDisplay
+                    type={PRIMARY}
+                    value={hexMinimumTransactionFee}
+                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                  />
+                </div>
               }
               subText={t('editGasSubTextFee', [
                 <b key="editGasSubTextFeeLabel">
                   {t('editGasSubTextFeeLabel')}
                 </b>,
-                <UserPreferencedCurrencyDisplay
-                  key="editGasSubTextFeeAmount"
-                  type={PRIMARY}
-                  value={hexMaximumTransactionFee}
-                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                />,
+                <div
+                  key="editGasSubTextFeeValue"
+                  className="confirm-page-container-content__currency-container"
+                >
+                  {renderHeartBeatIfNotInTest()}
+                  <UserPreferencedCurrencyDisplay
+                    key="editGasSubTextFeeAmount"
+                    type={PRIMARY}
+                    value={hexMaximumTransactionFee}
+                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                  />
+                </div>,
               ])}
               subTitle={
                 <GasTiming

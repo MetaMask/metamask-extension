@@ -19,9 +19,7 @@
 }
 
 @keyframes heartbeat {
-  0% { opacity: 0; }
-  25% { opacity: 1; }
-  50% { opacity: 0.5; }
-  75% { opacity: 1; }
-  100% { opacity: 0; }
+  0% { opacity: 0.2; }
+  50% { opacity: 1; }
+  100% { opacity: 0.2; }
 }
