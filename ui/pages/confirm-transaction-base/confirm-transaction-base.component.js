@@ -448,9 +448,7 @@ export default class ConfirmTransactionBase extends Component {
               }
               detailText={
                 <div className="confirm-page-container-content__currency-container">
-                  {process.env.IN_TEST === 'true' ? null : (
-                    <LoadingHeartBeat ttt />
-                  )}
+                  {process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />}
                   <UserPreferencedCurrencyDisplay
                     type={SECONDARY}
                     value={hexMinimumTransactionFee}
