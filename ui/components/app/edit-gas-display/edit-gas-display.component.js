@@ -269,6 +269,7 @@ export default function EditGasDisplay({
               gasErrors={gasErrors}
               onManualChange={onManualChange}
               minimumGasLimit={minimumGasLimit}
+              estimateToUse={estimateToUse}
             />
           )}
       </div>

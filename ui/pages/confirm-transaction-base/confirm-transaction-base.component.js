@@ -113,6 +113,7 @@ export default class ConfirmTransactionBase extends Component {
     maxPriorityFeePerGas: PropTypes.string,
     baseFeePerGas: PropTypes.string,
     isMainnet: PropTypes.bool,
+    gasFeeIsCustom: PropTypes.bool,
   };
 
   state = {
@@ -197,6 +198,7 @@ export default class ConfirmTransactionBase extends Component {
       txData: { simulationFails, txParams: { value: amount } = {} } = {},
       customGas,
       noGasPrice,
+      gasFeeIsCustom,
     } = this.props;
 
     const insufficientBalance =
@@ -231,7 +233,7 @@ export default class ConfirmTransactionBase extends Component {
       };
     }
 
-    if (noGasPrice) {
+    if (noGasPrice && !gasFeeIsCustom) {
       return {
         valid: false,
         errorKey: GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
@@ -838,6 +840,7 @@ export default class ConfirmTransactionBase extends Component {
       showAccountInHeader,
       txData,
       gasIsLoading,
+      gasFeeIsCustom,
     } = this.props;
     const {
       submitting,
@@ -904,7 +907,7 @@ export default class ConfirmTransactionBase extends Component {
         lastTx={lastTx}
         ofText={ofText}
         requestsWaitingText={requestsWaitingText}
-        disabled={!valid || submitting || gasIsLoading}
+        disabled={!valid || submitting || (gasIsLoading && !gasFeeIsCustom)}
         onEdit={() => this.handleEdit()}
         onCancelAll={() => this.handleCancelAll()}
         onCancel={() => this.handleCancel()}
