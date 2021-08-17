@@ -252,6 +252,7 @@ export default function EditGasDisplay({
         {!requireDappAcknowledgement &&
           (showAdvancedForm ||
             hasGasErrors ||
+            estimatesUnavailableWarning ||
             showAdvancedInlineGasIfPossible) && (
             <AdvancedGasControls
               gasEstimateType={gasEstimateType}
