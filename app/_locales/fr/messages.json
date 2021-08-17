@@ -649,7 +649,7 @@
     "message": "Pour interagir avec des applications décentralisées à l'aide de MetaMask, vous avez besoin d'Ether dans votre portefeuille."
   },
   "needHelp": {
-    "description": "$1 représente le `needHelpLinkText`, le texte qui va dans le lien d'aide",
+    "description": "$1 represents `needHelpLinkText`, the text which goes in the help link",
     "message": "Besoin d'aide ? Contactez $1"
   },
   "needHelpLinkText": {
@@ -966,7 +966,7 @@
     "message": "Envoyer le montant"
   },
   "sendSpecifiedTokens": {
-    "description": "Symbole du jeton spécifié",
+    "description": "Symbol of the specified token",
     "message": "Envoyez $1"
   },
   "sendTokens": {
