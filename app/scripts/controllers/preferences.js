@@ -816,7 +816,6 @@ export default class PreferencesController {
     return await tokenContract
       .supportsInterface(ERC721_INTERFACE_ID)
       .catch((error) => {
-        console.log('error', error);
         log.debug(error);
         return false;
       });
