@@ -10,7 +10,10 @@ import {
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import { getSymbolAndDecimals } from '../helpers/utils/token-util';
 import switchDirection from '../helpers/utils/switch-direction';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  POLLING_TOKEN_ENVIRONMENT_TYPES,
+} from '../../shared/constants/app';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
@@ -21,10 +24,7 @@ import {
 } from '../selectors';
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
-import {
-  getUnconnectedAccountAlertEnabledness,
-  isEIP1559Network,
-} from '../ducks/metamask/metamask';
+import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { LISTED_CONTRACT_ADDRESSES } from '../../shared/constants/tokens';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import * as actionConstants from './actionConstants';
@@ -1069,7 +1069,6 @@ export function updateMetamaskState(newState) {
         payload: {
           gasFeeEstimates: newState.gasFeeEstimates,
           gasEstimateType: newState.gasEstimateType,
-          isEIP1559Network: isEIP1559Network({ metamask: newState }),
         },
       });
     }
@@ -1341,7 +1340,11 @@ export function clearPendingTokens() {
   };
 }
 
-export function createCancelTransaction(txId, customGasSettings) {
+export function createCancelTransaction(
+  txId,
+  customGasSettings,
+  newTxMetaProps,
+) {
   log.debug('background.cancelTransaction');
   let newTxId;
 
@@ -1350,6 +1353,7 @@ export function createCancelTransaction(txId, customGasSettings) {
       background.createCancelTransaction(
         txId,
         customGasSettings,
+        newTxMetaProps,
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -1369,7 +1373,11 @@ export function createCancelTransaction(txId, customGasSettings) {
   };
 }
 
-export function createSpeedUpTransaction(txId, customGasSettings) {
+export function createSpeedUpTransaction(
+  txId,
+  customGasSettings,
+  newTxMetaProps,
+) {
   log.debug('background.createSpeedUpTransaction');
   let newTx;
 
@@ -1378,6 +1386,7 @@ export function createSpeedUpTransaction(txId, customGasSettings) {
       background.createSpeedUpTransaction(
         txId,
         customGasSettings,
+        newTxMetaProps,
         (err, newState) => {
           if (err) {
             dispatch(displayWarning(err.message));
@@ -2199,6 +2208,30 @@ export function setSwapsTxGasLimit(gasLimit) {
   };
 }
 
+export function updateCustomSwapsEIP1559GasParams({
+  gasLimit,
+  maxFeePerGas,
+  maxPriorityFeePerGas,
+}) {
+  return async (dispatch) => {
+    await Promise.all([
+      promisifiedBackground.setSwapsTxGasLimit(gasLimit),
+      promisifiedBackground.setSwapsTxMaxFeePerGas(maxFeePerGas),
+      promisifiedBackground.setSwapsTxMaxFeePriorityPerGas(
+        maxPriorityFeePerGas,
+      ),
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function updateSwapsUserFeeLevel(swapsCustomUserFeeLevel) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsUserFeeLevel(swapsCustomUserFeeLevel);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function customSwapsGasParamsUpdated(gasLimit, gasPrice) {
   return async (dispatch) => {
     await promisifiedBackground.setSwapsTxGasPrice(gasPrice);
@@ -2772,6 +2805,27 @@ export function getGasFeeEstimatesAndStartPolling() {
  */
 export function disconnectGasFeeEstimatePoller(pollToken) {
   return promisifiedBackground.disconnectGasFeeEstimatePoller(pollToken);
+}
+
+export async function addPollingTokenToAppState(pollingToken) {
+  return promisifiedBackground.addPollingTokenToAppState(
+    pollingToken,
+    POLLING_TOKEN_ENVIRONMENT_TYPES[getEnvironmentType()],
+  );
+}
+
+export async function removePollingTokenFromAppState(pollingToken) {
+  return promisifiedBackground.removePollingTokenFromAppState(
+    pollingToken,
+    POLLING_TOKEN_ENVIRONMENT_TYPES[getEnvironmentType()],
+  );
+}
+
+export function getGasFeeTimeEstimate(maxPriorityFeePerGas, maxFeePerGas) {
+  return promisifiedBackground.getGasFeeTimeEstimate(
+    maxPriorityFeePerGas,
+    maxFeePerGas,
+  );
 }
 
 // MetaMetrics

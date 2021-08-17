@@ -27,6 +27,8 @@ export default function FormField({
   detailText,
   autoFocus,
   password,
+  allowDecimals,
+  disabled,
 }) {
   return (
     <div
@@ -79,6 +81,8 @@ export default function FormField({
             value={value}
             detailText={detailText}
             autoFocus={autoFocus}
+            allowDecimals={allowDecimals}
+            disabled={disabled}
           />
         ) : (
           <input
@@ -89,6 +93,7 @@ export default function FormField({
             value={value}
             type={password ? 'password' : 'text'}
             autoFocus={autoFocus}
+            disabled={disabled}
           />
         )}
         {error && (
@@ -117,6 +122,8 @@ FormField.propTypes = {
   autoFocus: PropTypes.bool,
   numeric: PropTypes.bool,
   password: PropTypes.bool,
+  allowDecimals: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
 FormField.defaultProps = {
@@ -131,4 +138,6 @@ FormField.defaultProps = {
   autoFocus: false,
   numeric: false,
   password: false,
+  allowDecimals: true,
+  disabled: false,
 };

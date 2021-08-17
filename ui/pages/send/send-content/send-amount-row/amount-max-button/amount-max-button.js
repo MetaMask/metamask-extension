@@ -1,7 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBasicGasEstimateLoadingStatus } from '../../../../../selectors';
 import {
   getSendMaxModeState,
   isSendFormInvalid,
@@ -11,7 +10,6 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useMetricEvent } from '../../../../../hooks/useMetricEvent';
 
 export default function AmountMaxButton() {
-  const buttonDataLoading = useSelector(getBasicGasEstimateLoadingStatus);
   const isDraftTransactionInvalid = useSelector(isSendFormInvalid);
   const maxModeOn = useSelector(getSendMaxModeState);
   const dispatch = useDispatch();
@@ -29,9 +27,7 @@ export default function AmountMaxButton() {
     dispatch(toggleSendMaxMode());
   };
 
-  const disabled = process.env.SHOW_EIP_1559_UI
-    ? isDraftTransactionInvalid
-    : buttonDataLoading || isDraftTransactionInvalid;
+  const disabled = isDraftTransactionInvalid;
 
   return (
     <button

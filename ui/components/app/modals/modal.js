@@ -11,7 +11,6 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 // Modal Components
 import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container';
 import SwapsGasCustomizationModal from '../../../pages/swaps/swaps-gas-customization-modal';
-import EditGasPopover from '../edit-gas-popover/edit-gas-popover.component';
 import DepositEtherModal from './deposit-ether-modal';
 import AccountDetailsModal from './account-details-modal';
 import ExportPrivateKeyModal from './export-private-key-modal';
@@ -246,12 +245,8 @@ const MODALS = {
     },
   },
 
-  CUSTOMIZE_GAS: {
-    contents: process.env.SHOW_EIP_1559_UI ? (
-      <EditGasPopover />
-    ) : (
-      <ConfirmCustomizeGasModal />
-    ),
+  LEGACY_CUSTOMIZE_GAS: {
+    contents: <ConfirmCustomizeGasModal />,
     mobileModalStyle: {
       width: '100vw',
       height: '100vh',

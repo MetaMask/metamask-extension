@@ -27,6 +27,7 @@ import { DAY } from '../../shared/constants/time';
 import {
   getNativeCurrency,
   getConversionRate,
+  isEIP1559Network,
 } from '../ducks/metamask/metamask';
 
 /**
@@ -78,6 +79,18 @@ export function getCurrentKeyring(state) {
   });
 
   return keyring;
+}
+
+export function isEIP1559Account(state) {
+  // Neither hardware wallet supports 1559 at this time
+  return !isHardwareWallet(state);
+}
+
+export function checkNetworkAndAccountSupports1559(state) {
+  const networkSupports1559 = isEIP1559Network(state);
+  const accountSupports1559 = isEIP1559Account(state);
+
+  return networkSupports1559 && accountSupports1559;
 }
 
 /**
