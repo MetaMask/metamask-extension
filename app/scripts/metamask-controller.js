@@ -30,7 +30,6 @@ import {
 import {
   PluginController,
   ExternalResourceController,
-  WebWorkerExecutionEnvironmentService,
 } from '@mm-snap/controllers';
 import { IframeExecutionEnvironmentService } from '@mm-snap/iframe-execution-environment-service';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
