@@ -456,7 +456,10 @@ export function useGasFeeInputs(
       if (networkAndAccountSupports1559) {
         estimatesUnavailableWarning = true;
       }
-      if (bnLessThanEqualTo(gasPriceToUse, 0)) {
+      if (
+        (!networkAndAccountSupports1559 || transaction?.txParams?.gasPrice) &&
+        bnLessThanEqualTo(gasPriceToUse, 0)
+      ) {
         gasErrors.gasPrice = GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW;
       }
       break;
