@@ -132,11 +132,17 @@ export default function EditGasPopover({
           gasPrice: decGWEIToHexWEI(gasPrice),
         };
 
+    const cleanTransactionParams = { ...transaction.txParams };
+
+    if (networkAndAccountSupport1559) {
+      delete cleanTransactionParams.gasPrice;
+    }
+
     const updatedTxMeta = {
       ...transaction,
       userFeeLevel: estimateToUse || 'custom',
       txParams: {
-        ...transaction.txParams,
+        ...cleanTransactionParams,
         ...newGasSettings,
       },
     };
