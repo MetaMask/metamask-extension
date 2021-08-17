@@ -97,7 +97,7 @@ export default function EditGasDisplay({
       dappSuggestedAndTxParamGasFeesAreTheSame,
   );
 
-  const showTopError = balanceError || estimatesUnavailableWarning;
+  const showTopError = (balanceError || estimatesUnavailableWarning) && (!isGasEstimatesLoading || txParamsHaveBeenCustomized);
   const radioButtonsEnabled =
     networkAndAccountSupport1559 &&
     gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET &&
@@ -121,7 +121,7 @@ export default function EditGasDisplay({
             />
           </div>
         )}
-        {showTopError && !isGasEstimatesLoading && (
+        {showTopError && (
           <div className="edit-gas-display__warning">
             <ErrorMessage errorKey={errorKey} />
           </div>
