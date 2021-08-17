@@ -26,9 +26,8 @@
   }
 
   &__btn-wrapper {
-    flex: 1;
-    flex-direction: row;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
   }
 
   &__connect-btn {
@@ -46,12 +45,11 @@
     border: 1px solid #e5e5e5;
     height: 100px;
     width: 150px;
-    flex: 1;
-    display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 5px;
     padding: 0;
+    margin-top: 15px;
 
     &__img {
       width: 95px;
@@ -61,15 +59,6 @@
   &__btn.selected {
     border-color: #00a8ee;
     width: 149px;
-  }
-
-  &__btn:first-child {
-    margin-right: 15px;
-    margin-left: 20px;
-  }
-
-  &__btn:last-child {
-    margin-right: 20px;
   }
 
   &__hdPath {

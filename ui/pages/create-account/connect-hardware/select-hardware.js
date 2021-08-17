@@ -25,6 +25,23 @@ export default class SelectHardware extends Component {
     return null;
   };
 
+  renderConnectToBitBox02Button() {
+    return (
+      <button
+        className={classnames('hw-connect__btn', {
+          selected: this.state.selectedDevice === 'bitbox02',
+        })}
+        onClick={(_) => this.setState({ selectedDevice: 'bitbox02' })}
+      >
+        <img
+          className="hw-connect__btn__img"
+          src="images/bitbox02-logo.svg"
+          alt="BitBox02"
+        />
+      </button>
+    );
+  }
+
   renderConnectToTrezorButton() {
     return (
       <button
@@ -63,6 +80,7 @@ export default class SelectHardware extends Component {
     return (
       <>
         <div className="hw-connect__btn-wrapper">
+          {this.renderConnectToBitBox02Button()}
           {this.renderConnectToLedgerButton()}
           {this.renderConnectToTrezorButton()}
         </div>
@@ -125,6 +143,8 @@ export default class SelectHardware extends Component {
 
   renderTutorialsteps() {
     switch (this.state.selectedDevice) {
+      case 'bitbox02':
+        return this.renderBitBox02TutorialSteps();
       case 'ledger':
         return this.renderLedgerTutorialSteps();
       case 'trezor':
@@ -132,6 +152,46 @@ export default class SelectHardware extends Component {
       default:
         return '';
     }
+  }
+
+  renderBitBox02TutorialSteps() {
+    const steps = [
+      {
+        asset: 'plug-in-wallet',
+        dimensions: { width: '225px', height: '75px' },
+        title: this.context.t('step1BitBox02Wallet'),
+        message: this.context.t('step1BitBox02WalletMsg', [
+          <a
+            className="hw-connect__msg-link"
+            href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+            rel="noopener noreferrer"
+            target="_blank"
+            key="bitbox02-support-link"
+          >
+            {this.context.t('hardwareWalletSupportLinkConversion')}
+          </a>,
+        ]),
+      },
+    ];
+
+    return (
+      <div className="hw-tutorial">
+        {steps.map((step, index) => (
+          <div className="hw-connect" key={index}>
+            <h3 className="hw-connect__title">{step.title}</h3>
+            <p className="hw-connect__msg">{step.message}</p>
+            {step.asset && (
+              <img
+                className="hw-connect__step-asset"
+                src={`images/${step.asset}.svg`}
+                {...step.dimensions}
+                alt=""
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    );
   }
 
   renderLedgerTutorialSteps() {

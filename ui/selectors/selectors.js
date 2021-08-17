@@ -87,9 +87,13 @@ export function getCurrentKeyring(state) {
 }
 
 export function isEIP1559Account(state) {
-  // Trezor does not support 1559 at this time
+  // Trezor amd BitBox02 do not support 1559 at this time
   const currentKeyring = getCurrentKeyring(state);
-  return currentKeyring && currentKeyring.type !== KEYRING_TYPES.TREZOR;
+  return (
+    currentKeyring &&
+    currentKeyring.type !== KEYRING_TYPES.BITBOX02 &&
+    currentKeyring.type !== KEYRING_TYPES.TREZOR
+  );
 }
 
 export function checkNetworkAndAccountSupports1559(state) {

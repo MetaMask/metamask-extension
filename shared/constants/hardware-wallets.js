@@ -4,6 +4,7 @@
  * case accounts managed by a hardware wallet.
  */
 export const KEYRING_TYPES = {
+  BITBOX02: 'BitBox02 Hardware',
   LEDGER: 'Ledger Hardware',
   TREZOR: 'Trezor Hardware',
 };

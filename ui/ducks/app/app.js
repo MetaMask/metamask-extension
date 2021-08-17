@@ -32,6 +32,7 @@ export default function reduceApp(state = {}, action) {
     buyView: {},
     isMouseUser: false,
     defaultHdPaths: {
+      bitbox02: `m/44'/60'/0'/0`,
       trezor: `m/44'/60'/0'/0`,
       ledger: `m/44'/60'/0'/0/0`,
     },

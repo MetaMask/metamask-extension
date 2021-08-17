@@ -40,6 +40,7 @@ import { MILLISECOND } from '../../shared/constants/time';
 import { POLLING_TOKEN_ENVIRONMENT_TYPES } from '../../shared/constants/app';
 
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
+import * as bitbox02Keyring from './eth-bitbox02-keyring';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -357,7 +358,11 @@ export default class MetamaskController extends EventEmitter {
       await opts.openPopup();
     });
 
-    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring];
+    const additionalKeyrings = [
+      bitbox02Keyring.BitBox02Keyring,
+      TrezorKeyring,
+      LedgerBridgeKeyring,
+    ];
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -1393,6 +1398,7 @@ export default class MetamaskController extends EventEmitter {
       simpleKeyPair: simpleKeyPairAccounts
         .filter((item, pos) => simpleKeyPairAccounts.indexOf(item) === pos)
         .map((address) => toChecksumHexAddress(address)),
+      bitbox02: [],
       ledger: [],
       trezor: [],
     };
@@ -1489,6 +1495,9 @@ export default class MetamaskController extends EventEmitter {
   async getKeyringForDevice(deviceName, hdPath = null) {
     let keyringName = null;
     switch (deviceName) {
+      case 'bitbox02':
+        keyringName = bitbox02Keyring.BitBox02Keyring.type;
+        break;
       case 'trezor':
         keyringName = TrezorKeyring.type;
         break;
@@ -1516,7 +1525,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Fetch account list from a trezor device.
+   * Fetch account list from a hardware device.
    *
    * @returns [] accounts
    */
@@ -1971,6 +1980,14 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.keyringController.getKeyringForAccount(address);
 
     switch (keyring.type) {
+      case KEYRING_TYPES.BITBOX02: {
+        return new Promise((_, reject) => {
+          reject(
+            new Error('BitBox02 does not support eth_getEncryptionPublicKey.'),
+          );
+        });
+      }
+
       case KEYRING_TYPES.LEDGER: {
         return new Promise((_, reject) => {
           reject(
@@ -2120,8 +2137,8 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Method to return a boolean if the keyring for the currently selected
-   * account is a ledger or trezor keyring.
-   * TODO: remove this method when Ledger and Trezor release their supported
+   * account is a bitbox02 or ledger or trezor keyring.
+   * TODO: remove this method when BitBox02 and Trezor release their supported
    * client utilities for EIP-1559
    * @returns {boolean} true if the keyring type supports EIP-1559
    */
@@ -2129,7 +2146,10 @@ export default class MetamaskController extends EventEmitter {
     const address =
       fromAddress || this.preferencesController.getSelectedAddress();
     const keyring = await this.keyringController.getKeyringForAccount(address);
-    return keyring.type !== KEYRING_TYPES.TREZOR;
+    return (
+      keyring.type !== KEYRING_TYPES.BITBOX02 &&
+      keyring.type !== KEYRING_TYPES.TREZOR
+    );
   }
 
   //=============================================================================

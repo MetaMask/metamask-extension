@@ -397,10 +397,10 @@ export function forgetDevice(deviceName) {
 
 export function connectHardware(deviceName, page, hdPath) {
   log.debug(`background.connectHardware`, deviceName, page, hdPath);
+  const renderedName =
+    deviceName === 'bitbox02' ? 'BitBox02' : capitalize(deviceName);
   return async (dispatch) => {
-    dispatch(
-      showLoadingIndication(`Looking for your ${capitalize(deviceName)}...`),
-    );
+    dispatch(showLoadingIndication(`Looking for your ${renderedName}...`));
 
     let accounts;
     try {

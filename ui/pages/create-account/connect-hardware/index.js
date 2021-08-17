@@ -51,7 +51,7 @@ class ConnectHardwareForm extends Component {
   }
 
   async checkIfUnlocked() {
-    for (const device of ['trezor', 'ledger']) {
+    for (const device of ['bitbox02', 'trezor', 'ledger']) {
       const path = this.props.defaultHdPaths[device];
       const unlocked = await this.props.checkHardwareStatus(device, path);
       if (unlocked) {

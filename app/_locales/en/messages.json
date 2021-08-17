@@ -2085,6 +2085,13 @@
   "statusNotConnected": {
     "message": "Not connected"
   },
+  "step1BitBox02Wallet": {
+    "message": "Plug in BitBox02 wallet"
+  },
+  "step1BitBox02WalletMsg": {
+    "message": "Connect your wallet directly to your computer. For more on using your hardware wallet device, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
   "step1LedgerWallet": {
     "message": "Download Ledger app"
   },
