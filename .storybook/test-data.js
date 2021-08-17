@@ -10,6 +10,11 @@ const state = {
   },
   "activeTab": {},
   "metamask": {
+    "networkDetails": {
+      "EIPS": {
+        "1559": true
+      },
+    },
     "isInitialized": true,
     "isUnlocked": true,
     "isAccountMenuOpen": false,
@@ -269,7 +274,7 @@ const state = {
       }
     },
     "assetImages": {
-      "0xaD6D458402F60fD3Bd25163575031ACDce07538D": "./images/logo.png"
+      "0xaD6D458402F60fD3Bd25163575031ACDce07538D": "./sai.svg"
     },
     "hiddenTokens": [],
     "suggestedTokens": {},

@@ -36,7 +36,7 @@ const metamaskrc = require('rc')('metamask', {
 });
 
 const { streamFlatMap } = require('../stream-flat-map.js');
-const baseManifest = require('../../app/manifest/_base.json');
+const { version } = require('../../package.json');
 const {
   createTask,
   composeParallel,
@@ -522,15 +522,12 @@ function getEnvironmentVariables({ devMode, testing }) {
   return {
     METAMASK_DEBUG: devMode,
     METAMASK_ENVIRONMENT: environment,
-    METAMASK_VERSION: baseManifest.version,
+    METAMASK_VERSION: version,
     NODE_ENV: devMode ? 'development' : 'production',
     IN_TEST: testing ? 'true' : false,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
     PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
     CONF: devMode ? metamaskrc : {},
-    SHOW_EIP_1559_UI:
-      process.env.SHOW_EIP_1559_UI === '1' ||
-      metamaskrc.SHOW_EIP_1559_UI === '1',
     SENTRY_DSN: process.env.SENTRY_DSN,
     SENTRY_DSN_DEV: metamaskrc.SENTRY_DSN_DEV,
     INFURA_PROJECT_ID: testing

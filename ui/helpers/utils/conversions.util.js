@@ -171,6 +171,15 @@ export function addHexes(aHexWEI, bHexWEI) {
   });
 }
 
+export function subtractHexes(aHexWEI, bHexWEI) {
+  return subtractCurrencies(aHexWEI, bHexWEI, {
+    aBase: 16,
+    bBase: 16,
+    toNumericBase: 'hex',
+    numberOfDecimals: 6,
+  });
+}
+
 export function sumHexWEIs(hexWEIs) {
   return hexWEIs.filter(Boolean).reduce(addHexes);
 }

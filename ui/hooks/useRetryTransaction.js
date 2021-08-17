@@ -1,10 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
-
 import { useCallback, useState } from 'react';
-import { showSidebar } from '../store/actions';
-import { setCustomGasLimit, setCustomGasPrice } from '../ducks/gas/gas.duck';
-import { getIsMainnet } from '../selectors';
-import { isLegacyTransaction } from '../../shared/modules/transaction.utils';
 import { useMetricEvent } from './useMetricEvent';
 import { useIncrementedGasFees } from './useIncrementedGasFees';
 
@@ -22,12 +16,9 @@ import { useIncrementedGasFees } from './useIncrementedGasFees';
  * @param {Object} transactionGroup - the transaction group
  * @return {RetryTransactionReturnValue}
  */
-export function useRetryTransaction(transactionGroup) {
-  const { primaryTransaction } = transactionGroup;
-  const isMainnet = useSelector(getIsMainnet);
 
-  const hideBasic = !(isMainnet || process.env.IN_TEST);
-  const customGasSettings = useIncrementedGasFees(transactionGroup);
+export function useRetryTransaction(transactionGroup) {
+  const customRetryGasSettings = useIncrementedGasFees(transactionGroup);
   const trackMetricsEvent = useMetricEvent({
     eventOpts: {
       category: 'Navigation',
@@ -35,7 +26,6 @@ export function useRetryTransaction(transactionGroup) {
       name: 'Clicked "Speed Up"',
     },
   });
-  const dispatch = useDispatch();
   const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
 
   const closeRetryEditGasPopover = () => setShowRetryEditGasPopover(false);
@@ -43,40 +33,16 @@ export function useRetryTransaction(transactionGroup) {
   const retryTransaction = useCallback(
     async (event) => {
       event.stopPropagation();
-
+      setShowRetryEditGasPopover(true);
       trackMetricsEvent();
-      if (process.env.SHOW_EIP_1559_UI) {
-        setShowRetryEditGasPopover(true);
-      } else {
-        if (isLegacyTransaction(primaryTransaction)) {
-          // To support the current process of cancelling or speeding up
-          // a transaction, we have to inform the custom gas state of the new
-          // gasPrice to start at.
-          dispatch(setCustomGasPrice(customGasSettings.gasPrice));
-          dispatch(setCustomGasLimit(primaryTransaction.txParams.gas));
-        }
-
-        dispatch(
-          showSidebar({
-            transitionName: 'sidebar-left',
-            type: 'customize-gas',
-            props: { transaction: primaryTransaction, hideBasic },
-          }),
-        );
-      }
     },
-    [
-      dispatch,
-      trackMetricsEvent,
-      customGasSettings,
-      primaryTransaction,
-      hideBasic,
-    ],
+    [trackMetricsEvent],
   );
 
   return {
     retryTransaction,
     showRetryEditGasPopover,
     closeRetryEditGasPopover,
+    customRetryGasSettings,
   };
 }

@@ -33,6 +33,7 @@ describe('network utils', function () {
         blockNumber: null,
         from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
         gas: '0x7b0d',
+        gasPrice: '0x77359400',
         hash:
           '0x4bcb6cd6b182209585f8ad140260ddb35c81a575dd40f508d9767e652a9f60e7',
         input: '0x',

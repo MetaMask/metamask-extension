@@ -1,5 +1,6 @@
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
+import { sumHexes } from '../../../helpers/utils/transactions.util';
 
 import {
   // event constants
@@ -22,6 +23,7 @@ import {
 const STATUS_PATH = '/status';
 const GAS_PRICE_PATH = '/txParams/gasPrice';
 const GAS_LIMIT_PATH = '/txParams/gas';
+const ESTIMATE_BASE_FEE_PATH = '/estimatedBaseFee';
 
 // op constants
 const REPLACE_OP = 'replace';
@@ -53,11 +55,20 @@ export function getActivities(transaction, isFirstTransaction = false) {
     metamaskNetworkId,
     hash,
     history = [],
-    txParams: { gas: paramsGasLimit, gasPrice: paramsGasPrice },
-    xReceipt: { status } = {},
+    txParams: {
+      gas: paramsGasLimit,
+      gasPrice: paramsGasPrice,
+      maxPriorityFeePerGas: paramsMaxPriorityFeePerGas,
+    },
+    txReceipt: { status } = {},
     type,
+    estimatedBaseFee: paramsEstimatedBaseFee,
   } = transaction;
 
+  const paramsEip1559Price =
+    paramsEstimatedBaseFee &&
+    paramsMaxPriorityFeePerGas &&
+    sumHexes(paramsEstimatedBaseFee, paramsMaxPriorityFeePerGas);
   let cachedGasLimit = '0x0';
   let cachedGasPrice = '0x0';
 
@@ -66,13 +77,19 @@ export function getActivities(transaction, isFirstTransaction = false) {
     if (index === 0 && !Array.isArray(base) && base.txParams) {
       const {
         time: timestamp,
-        txParams: { value, gas = '0x0', gasPrice = '0x0' } = {},
+        estimatedBaseFee,
+        txParams: { value, gas = '0x0', gasPrice, maxPriorityFeePerGas } = {},
       } = base;
+
+      const eip1559Price =
+        estimatedBaseFee &&
+        maxPriorityFeePerGas &&
+        sumHexes(estimatedBaseFee, maxPriorityFeePerGas);
       // The cached gas limit and gas price are used to display the gas fee in the activity log. We
       // need to cache these values because the status update history events don't provide us with
       // the latest gas limit and gas price.
       cachedGasLimit = gas;
-      cachedGasPrice = gasPrice;
+      cachedGasPrice = eip1559Price || gasPrice || '0x0';
 
       if (isFirstTransaction) {
         return acc.concat({
@@ -95,14 +112,16 @@ export function getActivities(transaction, isFirstTransaction = false) {
         // timestamp, the first sub-entry in a history entry should.
         const timestamp = entryTimestamp || (base[0] && base[0].timestamp);
 
-        if (path in eventPathsHash && op === REPLACE_OP) {
+        const isAddBaseFee = path === ESTIMATE_BASE_FEE_PATH && op === 'add';
+
+        if ((path in eventPathsHash && op === REPLACE_OP) || isAddBaseFee) {
           switch (path) {
             case STATUS_PATH: {
               const gasFee =
                 cachedGasLimit === '0x0' && cachedGasPrice === '0x0'
                   ? getHexGasTotal({
                       gasLimit: paramsGasLimit,
-                      gasPrice: paramsGasPrice,
+                      gasPrice: paramsEip1559Price || paramsGasPrice,
                     })
                   : getHexGasTotal({
                       gasLimit: cachedGasLimit,
@@ -144,7 +163,8 @@ export function getActivities(transaction, isFirstTransaction = false) {
             // previously submitted event. These events happen when the gas limit and gas price is
             // changed at the confirm screen.
             case GAS_PRICE_PATH:
-            case GAS_LIMIT_PATH: {
+            case GAS_LIMIT_PATH:
+            case ESTIMATE_BASE_FEE_PATH: {
               const lastEvent = events[events.length - 1] || {};
               const { lastEventKey } = lastEvent;
 
@@ -152,6 +172,12 @@ export function getActivities(transaction, isFirstTransaction = false) {
                 cachedGasLimit = value;
               } else if (path === GAS_PRICE_PATH) {
                 cachedGasPrice = value;
+              } else if (path === ESTIMATE_BASE_FEE_PATH) {
+                cachedGasPrice = paramsEip1559Price || base?.txParams?.gasPrice;
+                lastEvent.value = getHexGasTotal({
+                  gasLimit: paramsGasLimit,
+                  gasPrice: cachedGasPrice,
+                });
               }
 
               if (
