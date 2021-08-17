@@ -25,7 +25,7 @@ export default function AdvancedGasControls({
   maxFeeFiat,
   gasErrors,
   minimumGasLimit,
-  estimateToUse,
+  txParamsHaveBeenCustomized,
 }) {
   const t = useContext(I18nContext);
   const networkAndAccountSupport1559 = useSelector(
@@ -36,7 +36,7 @@ export default function AdvancedGasControls({
     getGasLoadingAnimationIsShowing,
   );
   const disableFormFields =
-    estimateToUse !== 'custom' &&
+    !txParamsHaveBeenCustomized &&
     (isGasEstimatesLoading || isGasLoadingAnimationIsShowing);
 
   const showFeeMarketFields =
@@ -143,5 +143,5 @@ AdvancedGasControls.propTypes = {
   maxFeeFiat: PropTypes.string,
   gasErrors: PropTypes.object,
   minimumGasLimit: PropTypes.string,
-  estimateToUse: PropTypes.bool,
+  txParamsHaveBeenCustomized: PropTypes.bool,
 };

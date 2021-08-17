@@ -67,6 +67,7 @@ export default function EditGasDisplay({
   balanceError,
   estimatesUnavailableWarning,
   hasGasErrors,
+  txParamsHaveBeenCustomized,
 }) {
   const t = useContext(I18nContext);
   const isMainnet = useSelector(getIsMainnet);
@@ -269,7 +270,7 @@ export default function EditGasDisplay({
               gasErrors={gasErrors}
               onManualChange={onManualChange}
               minimumGasLimit={minimumGasLimit}
-              estimateToUse={estimateToUse}
+              txParamsHaveBeenCustomized={txParamsHaveBeenCustomized}
             />
           )}
       </div>
@@ -320,4 +321,5 @@ EditGasDisplay.propTypes = {
   balanceError: PropTypes.bool,
   estimatesUnavailableWarning: PropTypes.bool,
   hasGasErrors: PropTypes.bool,
+  txParamsHaveBeenCustomized: PropTypes.bool,
 };

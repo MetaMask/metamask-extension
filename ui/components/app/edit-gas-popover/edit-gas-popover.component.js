@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 import { getGasLoadingAnimationIsShowing } from '../../../ducks/app/app';
-
+import {
+  txParamsAreDappSuggested,
+} from '../../../../shared/modules/transaction.utils';
 import { EDIT_GAS_MODES, GAS_LIMITS } from '../../../../shared/constants/gas';
 
 import {
@@ -92,6 +94,8 @@ export default function EditGasPopover({
     estimatesUnavailableWarning,
     estimatedBaseFee,
   } = useGasFeeInputs(defaultEstimateToUse, transaction, minimumGasLimit, mode);
+
+  const txParamsHaveBeenCustomized = estimateToUse === 'custom' || txParamsAreDappSuggested(transaction)
 
   /**
    * Temporary placeholder, this should be managed by the parent component but
@@ -212,7 +216,7 @@ export default function EditGasPopover({
                 hasGasErrors ||
                 balanceError ||
                 ((isGasEstimatesLoading || gasLoadingAnimationIsShowing) &&
-                  !estimateToUse === 'custom')
+                  !txParamsHaveBeenCustomized)
               }
             >
               {footerButtonText}
@@ -262,6 +266,7 @@ export default function EditGasPopover({
               balanceError={balanceError}
               estimatesUnavailableWarning={estimatesUnavailableWarning}
               hasGasErrors={hasGasErrors}
+              txParamsHaveBeenCustomized={txParamsHaveBeenCustomized}
               {...editGasDisplayProps}
             />
           </>
