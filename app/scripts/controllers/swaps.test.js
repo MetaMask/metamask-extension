@@ -13,6 +13,7 @@ import {
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { SECOND } from '../../../shared/constants/time';
+import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
 import SwapsController, { utils } from './swaps';
 import { NETWORK_EVENTS } from './network';
 
@@ -120,7 +121,9 @@ const EMPTY_INIT_STATE = {
     tradeTxId: null,
     approveTxId: null,
     quotesLastFetched: null,
+    customMaxFeePerGas: null,
     customMaxGas: '',
+    customMaxPriorityFeePerGas: null,
     customGasPrice: null,
     selectedAggId: null,
     customApproveTxData: '',
@@ -130,6 +133,7 @@ const EMPTY_INIT_STATE = {
     swapsFeatureIsLive: true,
     useNewSwapsApi: false,
     swapsQuoteRefreshTime: 60000,
+    swapsUserFeeLevel: '',
   },
 };
 
@@ -138,6 +142,14 @@ const fetchTradesInfoStub = sandbox.stub();
 const fetchSwapsQuoteRefreshTimeStub = sandbox.stub();
 const getCurrentChainIdStub = sandbox.stub();
 getCurrentChainIdStub.returns(MAINNET_CHAIN_ID);
+const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
+  return {
+    gasFeeEstimates: {
+      high: '150',
+    },
+    gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+  };
+});
 
 describe('SwapsController', function () {
   let provider;
@@ -152,6 +164,7 @@ describe('SwapsController', function () {
       fetchTradesInfo: fetchTradesInfoStub,
       fetchSwapsQuoteRefreshTime: fetchSwapsQuoteRefreshTimeStub,
       getCurrentChainId: getCurrentChainIdStub,
+      getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
     });
   };
 
@@ -687,8 +700,8 @@ describe('SwapsController', function () {
             total: '5.4949494949494949495',
             medianMetaMaskFee: '0.44444444444444444444',
           },
-          ethFee: '33554432',
-          overallValueOfQuote: '-33554382',
+          ethFee: '5.033165',
+          overallValueOfQuote: '44.966835',
           metaMaskFeeInEth: '0.5050505050505050505',
           ethValueOfTokens: '50',
         });

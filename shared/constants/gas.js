@@ -37,4 +37,5 @@ export const EDIT_GAS_MODES = {
   SPEED_UP: 'speed-up',
   CANCEL: 'cancel',
   MODIFY_IN_PLACE: 'modify-in-place',
+  SWAPS: 'swaps',
 };

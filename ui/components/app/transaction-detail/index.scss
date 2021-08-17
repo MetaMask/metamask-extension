@@ -1,4 +1,6 @@
 .transaction-detail {
+  position: relative;
+
   .transaction-detail-edit {
     text-align: end;
     padding-top: 20px;
@@ -21,6 +23,10 @@
   &-item {
     padding: 20px 0;
     border-bottom: 1px solid $ui-3;
+
+    &:first-child {
+      padding-top: 0;
+    }
 
     &:last-child {
       padding-bottom: 0;

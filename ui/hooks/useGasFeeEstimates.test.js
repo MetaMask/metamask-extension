@@ -5,17 +5,21 @@ import createRandomId from '../../shared/modules/random-id';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
-  isEIP1559Network,
+  getIsGasEstimatesLoading,
 } from '../ducks/metamask/metamask';
+import { checkNetworkAndAccountSupports1559 } from '../selectors';
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
 } from '../store/actions';
+
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 
 jest.mock('../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest.fn(),
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
 }));
 
 jest.mock('react-redux', () => {
@@ -28,24 +32,31 @@ jest.mock('react-redux', () => {
 });
 
 const DEFAULT_OPTS = {
-  isEIP1559Network: false,
+  checkNetworkAndAccountSupports1559: false,
   gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
   gasFeeEstimates: {
     low: '10',
     medium: '20',
     high: '30',
   },
+  isGasEstimatesLoading: true,
 };
 
 const generateUseSelectorRouter = (opts = DEFAULT_OPTS) => (selector) => {
-  if (selector === isEIP1559Network) {
-    return opts.isEIP1559Network ?? DEFAULT_OPTS.isEIP1559Network;
+  if (selector === checkNetworkAndAccountSupports1559) {
+    return (
+      opts.checkNetworkAndAccountSupports1559 ??
+      DEFAULT_OPTS.checkNetworkAndAccountSupports1559
+    );
   }
   if (selector === getGasEstimateType) {
     return opts.gasEstimateType ?? DEFAULT_OPTS.gasEstimateType;
   }
   if (selector === getGasFeeEstimates) {
     return opts.gasFeeEstimates ?? DEFAULT_OPTS.gasFeeEstimates;
+  }
+  if (selector === getIsGasEstimatesLoading) {
+    return opts.isGasEstimatesLoading ?? DEFAULT_OPTS.isGasEstimatesLoading;
   }
   return undefined;
 };
@@ -63,15 +74,16 @@ describe('useGasFeeEstimates', () => {
     disconnectGasFeeEstimatePoller.mockImplementation((token) => {
       tokens = tokens.filter((tkn) => tkn !== token);
     });
-    useSelector.mockImplementation(generateUseSelectorRouter());
   });
 
   it('registers with the controller', () => {
+    useSelector.mockImplementation(generateUseSelectorRouter());
     renderHook(() => useGasFeeEstimates());
     expect(tokens).toHaveLength(1);
   });
 
   it('clears token with the controller on unmount', async () => {
+    useSelector.mockImplementation(generateUseSelectorRouter());
     renderHook(() => useGasFeeEstimates());
     expect(tokens).toHaveLength(1);
     const expectedToken = tokens[0];
@@ -82,6 +94,11 @@ describe('useGasFeeEstimates', () => {
   });
 
   it('works with LEGACY gas prices', () => {
+    useSelector.mockImplementation(
+      generateUseSelectorRouter({
+        isGasEstimatesLoading: false,
+      }),
+    );
     const {
       result: { current },
     } = renderHook(() => useGasFeeEstimates());
@@ -99,6 +116,7 @@ describe('useGasFeeEstimates', () => {
       generateUseSelectorRouter({
         gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
         gasFeeEstimates,
+        isGasEstimatesLoading: false,
       }),
     );
 
@@ -137,9 +155,10 @@ describe('useGasFeeEstimates', () => {
     };
     useSelector.mockImplementation(
       generateUseSelectorRouter({
-        isEIP1559Network: true,
+        checkNetworkAndAccountSupports1559: true,
         gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
         gasFeeEstimates,
+        isGasEstimatesLoading: false,
       }),
     );
 
@@ -173,11 +192,11 @@ describe('useGasFeeEstimates', () => {
     });
   });
 
-  it('indicates that gas estimates are loading when gasEstimateType is not FEE_MARKET but network supports EIP-1559', () => {
+  it('indicates that gas estimates are loading when gasEstimateType is not FEE_MARKET or ETH_GASPRICE, but network supports EIP-1559', () => {
     useSelector.mockImplementation(
       generateUseSelectorRouter({
-        isEIP1559Network: true,
-        gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
+        checkNetworkAndAccountSupports1559: true,
+        gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
         gasFeeEstimates: {
           gasPrice: '10',
         },
@@ -189,7 +208,7 @@ describe('useGasFeeEstimates', () => {
     } = renderHook(() => useGasFeeEstimates());
     expect(current).toMatchObject({
       gasFeeEstimates: { gasPrice: '10' },
-      gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
+      gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
       estimatedGasFeeTimeBounds: undefined,
       isGasEstimatesLoading: true,
     });
@@ -219,7 +238,7 @@ describe('useGasFeeEstimates', () => {
     };
     useSelector.mockImplementation(
       generateUseSelectorRouter({
-        isEIP1559Network: false,
+        checkNetworkAndAccountSupports1559: false,
         gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
         gasFeeEstimates,
       }),

@@ -52,7 +52,10 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../../shared/modules/swaps.utils';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
+import {
+  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+} from '../../../../shared/constants/swaps';
 
 import { resetSwapsPostFetchState, removeToken } from '../../../store/actions';
 import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util';
@@ -370,7 +373,7 @@ export default function BuildQuote({
 
   const swapYourTokenBalance = t('swapYourTokenBalance', [
     fromTokenString || '0',
-    fromTokenSymbol,
+    fromTokenSymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.symbol || '',
   ]);
 
   return (

@@ -11,10 +11,15 @@
 
   &--negative {
     color: $error-1;
+    font-weight: bold;
   }
 
   .info-tooltip {
     display: inline-block;
     margin-inline-start: 4px;
+
+    path {
+      fill: $error-1;
+    }
   }
 }

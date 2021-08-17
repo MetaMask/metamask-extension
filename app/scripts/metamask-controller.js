@@ -32,6 +32,7 @@ import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
+import { POLLING_TOKEN_ENVIRONMENT_TYPES } from '../../shared/constants/app';
 
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import ComposableObservableStore from './lib/ComposableObservableStore';
@@ -401,8 +402,11 @@ export default class MetamaskController extends EventEmitter {
       getProviderConfig: this.networkController.getProviderConfig.bind(
         this.networkController,
       ),
-      getEIP1559Compatibility: this.networkController.getEIP1559Compatibility.bind(
+      getCurrentNetworkEIP1559Compatibility: this.networkController.getEIP1559Compatibility.bind(
         this.networkController,
+      ),
+      getCurrentAccountEIP1559Compatibility: this.getCurrentAccountEIP1559Compatibility.bind(
+        this,
       ),
       networkStore: this.networkController.networkStore,
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
@@ -420,6 +424,9 @@ export default class MetamaskController extends EventEmitter {
       ),
       getParticipateInMetrics: () =>
         this.metaMetricsController.state.participateInMetaMetrics,
+      getEIP1559GasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
+        this.gasFeeController,
+      ),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -494,6 +501,9 @@ export default class MetamaskController extends EventEmitter {
       tokenRatesStore: this.tokenRatesController.store,
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
+      ),
+      getEIP1559GasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
+        this.gasFeeController,
       ),
     });
 
@@ -1039,6 +1049,14 @@ export default class MetamaskController extends EventEmitter {
         swapsController.setSwapsTxGasLimit,
         swapsController,
       ),
+      setSwapsTxMaxFeePerGas: nodeify(
+        swapsController.setSwapsTxMaxFeePerGas,
+        swapsController,
+      ),
+      setSwapsTxMaxFeePriorityPerGas: nodeify(
+        swapsController.setSwapsTxMaxFeePriorityPerGas,
+        swapsController,
+      ),
       safeRefetchQuotes: nodeify(
         swapsController.safeRefetchQuotes,
         swapsController,
@@ -1069,6 +1087,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       setSwapsLiveness: nodeify(
         swapsController.setSwapsLiveness,
+        swapsController,
+      ),
+      setSwapsUserFeeLevel: nodeify(
+        swapsController.setSwapsUserFeeLevel,
         swapsController,
       ),
 
@@ -1107,6 +1129,21 @@ export default class MetamaskController extends EventEmitter {
       disconnectGasFeeEstimatePoller: nodeify(
         this.gasFeeController.disconnectPoller,
         this.gasFeeController,
+      ),
+
+      getGasFeeTimeEstimate: nodeify(
+        this.gasFeeController.getTimeEstimate,
+        this.gasFeeController,
+      ),
+
+      addPollingTokenToAppState: nodeify(
+        this.appStateController.addPollingToken,
+        this.appStateController,
+      ),
+
+      removePollingTokenFromAppState: nodeify(
+        this.appStateController.removePollingToken,
+        this.appStateController,
       ),
     };
   }
@@ -2037,11 +2074,10 @@ export default class MetamaskController extends EventEmitter {
    * client utilities for EIP-1559
    * @returns {boolean} true if the keyring type supports EIP-1559
    */
-  getCurrentAccountEIP1559Compatibility() {
-    const selectedAddress = this.preferencesController.getSelectedAddress();
-    const keyring = this.keyringController.getKeyringForAccount(
-      selectedAddress,
-    );
+  async getCurrentAccountEIP1559Compatibility(fromAddress) {
+    const address =
+      fromAddress || this.preferencesController.getSelectedAddress();
+    const keyring = await this.keyringController.getKeyringForAccount(address);
     return (
       keyring.type !== KEYRING_TYPES.LEDGER &&
       keyring.type !== KEYRING_TYPES.TREZOR
@@ -2063,10 +2099,15 @@ export default class MetamaskController extends EventEmitter {
    *  instead of allowing this method to generate them
    * @returns {Object} MetaMask state
    */
-  async createCancelTransaction(originalTxId, customGasSettings) {
+  async createCancelTransaction(
+    originalTxId,
+    customGasSettings,
+    newTxMetaProps,
+  ) {
     await this.txController.createCancelTransaction(
       originalTxId,
       customGasSettings,
+      newTxMetaProps,
     );
     const state = await this.getState();
     return state;
@@ -2083,10 +2124,15 @@ export default class MetamaskController extends EventEmitter {
    *  instead of allowing this method to generate them
    * @returns {Object} MetaMask state
    */
-  async createSpeedUpTransaction(originalTxId, customGasSettings) {
+  async createSpeedUpTransaction(
+    originalTxId,
+    customGasSettings,
+    newTxMetaProps,
+  ) {
     await this.txController.createSpeedUpTransaction(
       originalTxId,
       customGasSettings,
+      newTxMetaProps,
     );
     const state = await this.getState();
     return state;
@@ -2948,7 +2994,6 @@ export default class MetamaskController extends EventEmitter {
   /* eslint-disable accessor-pairs */
   /**
    * A method for recording whether the MetaMask user interface is open or not.
-   * @private
    * @param {boolean} open
    */
   set isClientOpen(open) {
@@ -2956,6 +3001,38 @@ export default class MetamaskController extends EventEmitter {
     this.detectTokensController.isOpen = open;
   }
   /* eslint-enable accessor-pairs */
+
+  /**
+   * A method that is called by the background when all instances of metamask are closed.
+   * Currently used to stop polling in the gasFeeController.
+   */
+  onClientClosed() {
+    try {
+      this.gasFeeController.stopPolling();
+      this.appStateController.clearPollingTokens();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  /**
+   * A method that is called by the background when a particular environment type is closed (fullscreen, popup, notification).
+   * Currently used to stop polling in the gasFeeController for only that environement type
+   */
+  onEnvironmentTypeClosed(environmentType) {
+    const appStatePollingTokenType =
+      POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType];
+    const pollingTokensToDisconnect = this.appStateController.store.getState()[
+      appStatePollingTokenType
+    ];
+    pollingTokensToDisconnect.forEach((pollingToken) => {
+      this.gasFeeController.disconnectPoller(pollingToken);
+      this.appStateController.removePollingToken(
+        pollingToken,
+        appStatePollingTokenType,
+      );
+    });
+  }
 
   /**
    * Adds a domain to the PhishingController safelist

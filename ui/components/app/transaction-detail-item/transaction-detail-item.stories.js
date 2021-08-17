@@ -21,7 +21,7 @@ export const basic = () => {
         }
         detailText="16565.30"
         detailTotal="0.0089 ETH"
-        subTitle={<GasTiming text="Very likely in < 15 seconds" />}
+        subTitle={<GasTiming maxPriorityFeePerGas="1" />}
         subText={
           <>
             From <strong>$16565 - $19000</strong>

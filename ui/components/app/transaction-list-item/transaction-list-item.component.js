@@ -34,14 +34,18 @@ export default function TransactionListItem({
     initialTransaction: { id },
     primaryTransaction: { err, status },
   } = transactionGroup;
-  const [
-    cancelEnabled,
-    { cancelTransaction, showCancelEditGasPopover, closeCancelEditGasPopover },
-  ] = useCancelTransaction(transactionGroup);
+  const {
+    hasEnoughCancelGas,
+    cancelTransaction,
+    showCancelEditGasPopover,
+    closeCancelEditGasPopover,
+    customCancelGasSettings,
+  } = useCancelTransaction(transactionGroup);
   const {
     retryTransaction,
     showRetryEditGasPopover,
     closeRetryEditGasPopover,
+    customRetryGasSettings,
   } = useRetryTransaction(transactionGroup);
   const shouldShowSpeedUp = useShouldShowSpeedUp(
     transactionGroup,
@@ -92,7 +96,7 @@ export default function TransactionListItem({
         onClick={cancelTransaction}
         rounded
         className="transaction-list-item__header-button"
-        disabled={!cancelEnabled}
+        disabled={!hasEnoughCancelGas}
       >
         {t('cancel')}
       </Button>
@@ -101,7 +105,7 @@ export default function TransactionListItem({
       return null;
     }
 
-    return cancelEnabled ? (
+    return hasEnoughCancelGas ? (
       btn
     ) : (
       <Tooltip title={t('notEnoughGas')} position="bottom">
@@ -112,7 +116,7 @@ export default function TransactionListItem({
     isPending,
     t,
     isUnapproved,
-    cancelEnabled,
+    hasEnoughCancelGas,
     cancelTransaction,
     hasCancelled,
   ]);
@@ -207,21 +211,35 @@ export default function TransactionListItem({
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
           showCancel={isPending && !hasCancelled}
-          cancelDisabled={!cancelEnabled}
+          cancelDisabled={!hasEnoughCancelGas}
         />
       )}
-      {process.env.SHOW_EIP_1559_UI && showRetryEditGasPopover && (
+      {showRetryEditGasPopover && (
         <EditGasPopover
           onClose={closeRetryEditGasPopover}
           mode={EDIT_GAS_MODES.SPEED_UP}
-          transaction={transactionGroup.primaryTransaction}
+          transaction={{
+            ...transactionGroup.primaryTransaction,
+            userFeeLevel: 'custom',
+            txParams: {
+              ...transactionGroup.primaryTransaction?.txParams,
+              ...customRetryGasSettings,
+            },
+          }}
         />
       )}
-      {process.env.SHOW_EIP_1559_UI && showCancelEditGasPopover && (
+      {showCancelEditGasPopover && (
         <EditGasPopover
           onClose={closeCancelEditGasPopover}
           mode={EDIT_GAS_MODES.CANCEL}
-          transaction={transactionGroup.primaryTransaction}
+          transaction={{
+            ...transactionGroup.primaryTransaction,
+            userFeeLevel: 'custom',
+            txParams: {
+              ...transactionGroup.primaryTransaction?.txParams,
+              ...customCancelGasSettings,
+            },
+          }}
         />
       )}
     </>

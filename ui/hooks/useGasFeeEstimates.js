@@ -1,20 +1,11 @@
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import {
   getEstimatedGasFeeTimeBounds,
   getGasEstimateType,
   getGasFeeEstimates,
-  isEIP1559Network,
+  getIsGasEstimatesLoading,
 } from '../ducks/metamask/metamask';
-import {
-  disconnectGasFeeEstimatePoller,
-  getGasFeeEstimatesAndStartPolling,
-} from '../store/actions';
-
-/**
- * @typedef {keyof typeof GAS_ESTIMATE_TYPES} GasEstimateTypes
- */
+import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
 
 /**
  * @typedef {object} GasEstimates
@@ -39,36 +30,11 @@ import {
  * @returns {GasFeeEstimates} - GasFeeEstimates object
  */
 export function useGasFeeEstimates() {
-  const supportsEIP1559 = useSelector(isEIP1559Network);
   const gasEstimateType = useSelector(getGasEstimateType);
   const gasFeeEstimates = useSelector(getGasFeeEstimates);
   const estimatedGasFeeTimeBounds = useSelector(getEstimatedGasFeeTimeBounds);
-  useEffect(() => {
-    let active = true;
-    let pollToken;
-    getGasFeeEstimatesAndStartPolling().then((newPollToken) => {
-      if (active) {
-        pollToken = newPollToken;
-      } else {
-        disconnectGasFeeEstimatePoller(newPollToken);
-      }
-    });
-    return () => {
-      active = false;
-      if (pollToken) {
-        disconnectGasFeeEstimatePoller(pollToken);
-      }
-    };
-  }, []);
-
-  // We consider the gas estimate to be loading if the gasEstimateType is
-  // 'NONE' or if the current gasEstimateType does not match the type we expect
-  // for the current network. e.g, a ETH_GASPRICE estimate when on a network
-  // supporting EIP-1559.
-  const isGasEstimatesLoading =
-    gasEstimateType === GAS_ESTIMATE_TYPES.NONE ||
-    (supportsEIP1559 && gasEstimateType !== GAS_ESTIMATE_TYPES.FEE_MARKET) ||
-    (!supportsEIP1559 && gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET);
+  const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
+  useSafeGasEstimatePolling();
 
   return {
     gasFeeEstimates,

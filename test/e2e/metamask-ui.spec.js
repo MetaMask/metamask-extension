@@ -487,23 +487,17 @@ describe('MetaMask', function () {
       const popup = windowHandles[2];
       await driver.switchToWindow(popup);
       await driver.delay(regularDelayMs);
+      await driver.clickElement({ text: 'Edit', tag: 'button' }, 10000);
 
-      await driver.clickElement('.confirm-detail-row__header-text--edit');
-      await driver.delay(regularDelayMs);
+      const inputs = await driver.findElements('input[type="number"]');
+      const gasLimitInput = inputs[0];
+      const gasPriceInput = inputs[1];
+      await gasLimitInput.fill('4700000');
+      await gasPriceInput.fill('20');
+      await driver.delay(1000);
+      await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
+      await driver.clickElement({ text: 'Confirm', tag: 'button' }, 10000);
 
-      await driver.clickElement({ text: 'Advanced', tag: 'button' });
-      await driver.delay(tinyDelayMs);
-
-      const [gasPriceInput, gasLimitInput] = await driver.findElements(
-        '.advanced-gas-inputs__gas-edit-row__input',
-      );
-      assert(gasPriceInput.getAttribute('value'), 20);
-      assert(gasLimitInput.getAttribute('value'), 4700000);
-
-      await driver.clickElement({ text: 'Save', tag: 'button' });
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement({ text: 'Confirm', tag: 'button' });
       await driver.delay(regularDelayMs);
 
       await driver.switchToWindow(dapp);
@@ -567,19 +561,9 @@ describe('MetaMask', function () {
       driver.fill('.unit-input__input', '1');
     });
 
-    it('opens customize gas modal and saves options to continue', async function () {
-      await driver.clickElement('.advanced-gas-options-btn');
-
-      // wait for gas modal to be visible
-      const gasModal = await driver.findVisibleElement('span .modal');
-      await driver.findElement('.page-container__title');
-      await driver.clickElement({ text: 'Save', tag: 'button' });
-      // wait for gas modal to be removed from DOM.
-      await gasModal.waitForElementState('hidden');
-    });
-
     it('transitions to the confirm screen', async function () {
       // Continue to next screen
+      await driver.delay(largeDelayMs);
       await driver.clickElement({ text: 'Next', tag: 'button' });
       await driver.delay(regularDelayMs);
     });
@@ -614,6 +598,18 @@ describe('MetaMask', function () {
 
       await driver.clickElement({ text: 'Details', tag: 'button' });
       await driver.delay(regularDelayMs);
+    });
+
+    it('customizes gas', async function () {
+      await driver.clickElement({ text: 'Edit', tag: 'button' });
+      await driver.delay(largeDelayMs);
+      const inputs = await driver.findElements('input[type="number"]');
+      const gasLimitInput = inputs[0];
+      const gasPriceInput = inputs[1];
+      await gasLimitInput.fill('100000');
+      await gasPriceInput.fill('100');
+      await driver.delay(1000);
+      await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
     });
 
     it('submits the transaction', async function () {
@@ -675,35 +671,21 @@ describe('MetaMask', function () {
     });
 
     it('customizes gas', async function () {
-      // Set the gas limit
-      await driver.clickElement('.confirm-detail-row__header-text--edit');
-      await driver.delay(regularDelayMs);
-      // wait for gas modal to be visible
-      const gasModal = await driver.findVisibleElement('span .modal');
-      await driver.clickElement('.page-container__tab:nth-of-type(2)');
-      await driver.delay(regularDelayMs);
-
-      const [gasPriceInput, gasLimitInput] = await driver.findElements(
-        '.advanced-gas-inputs__gas-edit-row__input',
+      await driver.clickElement({ text: 'Edit', tag: 'button' });
+      await driver.delay(largeDelayMs);
+      await driver.clickElement(
+        { text: 'Edit suggested gas fee', tag: 'button' },
+        10000,
       );
-
-      await gasPriceInput.fill('10');
-      await driver.delay(50);
-
-      await gasLimitInput.fill('60000');
-
       await driver.delay(1000);
-
-      await driver.clickElement('.page-container__footer-button');
-
-      // wait for gas modal to be removed from DOM.
-      await gasModal.waitForElementState('hidden');
-
-      const gasFeeInputs = await driver.findElements(
-        '.confirm-detail-row__primary',
-      );
-      const renderedGasFee = await gasFeeInputs[0].getText();
-      assert.equal(renderedGasFee, '0.0006');
+      const inputs = await driver.findElements('input[type="number"]');
+      const gasLimitInput = inputs[0];
+      const gasPriceInput = inputs[1];
+      await gasLimitInput.fill('60000');
+      await gasPriceInput.fill('10');
+      await driver.delay(1000);
+      await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
+      await driver.findElement({ tag: 'span', text: '0.0006' });
     });
 
     it('submits the transaction', async function () {
@@ -811,14 +793,14 @@ describe('MetaMask', function () {
     it('customizes gas', async function () {
       await driver.clickElement('.confirm-approve-content__small-blue-text');
       await driver.delay(regularDelayMs);
-
-      // wait for gas modal to be visible
-      const gasModal = await driver.findVisibleElement('span .modal');
-      await driver.clickElement('.page-container__tab:nth-of-type(2)');
+      await driver.clickElement(
+        { text: 'Edit suggested gas fee', tag: 'button' },
+        10000,
+      );
       await driver.delay(regularDelayMs);
 
-      const [gasPriceInput, gasLimitInput] = await driver.findElements(
-        '.advanced-gas-inputs__gas-edit-row__input',
+      const [gasLimitInput, gasPriceInput] = await driver.findElements(
+        'input[type="number"]',
       );
 
       await gasPriceInput.fill('10');
@@ -828,10 +810,7 @@ describe('MetaMask', function () {
 
       await driver.delay(1000);
 
-      await driver.clickElement('.page-container__footer-button');
-
-      // wait for gas modal to be removed from DOM.
-      await gasModal.waitForElementState('hidden');
+      await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
 
       const gasFeeInEth = await driver.findElement(
         '.confirm-approve-content__transaction-details-content__secondary-fee',
