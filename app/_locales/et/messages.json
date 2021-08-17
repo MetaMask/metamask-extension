@@ -575,9 +575,6 @@
   "metamaskVersion": {
     "message": "MetaMaski versioon"
   },
-  "mobileSyncText": {
-    "message": "Sisestage parool, et saaksime teid tuvastada!"
-  },
   "mustSelectOne": {
     "message": "Peate valima vähemalt 1 loa."
   },

@@ -557,9 +557,6 @@
   "metamaskVersion": {
     "message": "Verzia MetaMask"
   },
-  "mobileSyncText": {
-    "message": "Zadajte svoje heslo a potvrďte, že ste to vy!"
-  },
   "mustSelectOne": {
     "message": "Musíte zvolit aspoň 1 token."
   },

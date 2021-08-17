@@ -585,9 +585,6 @@
   "metamaskVersion": {
     "message": "MetaMask-versio"
   },
-  "mobileSyncText": {
-    "message": "Vahvista henkilöllisyytesi antamalla salasanasi!"
-  },
   "mustSelectOne": {
     "message": "Valittava vähintään 1 poletti."
   },

@@ -569,9 +569,6 @@
   "metamaskDescription": {
     "message": "Som forbinder dig til Ethereum og de decentraliserede internet."
   },
-  "mobileSyncText": {
-    "message": "Indtast din adgangskode for at bekræfte, at det er dig!"
-  },
   "mustSelectOne": {
     "message": "Skal vælge mindst 1 token."
   },

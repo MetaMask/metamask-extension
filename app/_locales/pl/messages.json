@@ -582,9 +582,6 @@
   "metamaskVersion": {
     "message": "Wersja MetaMask"
   },
-  "mobileSyncText": {
-    "message": "Wpisz hasło, aby potwierdzić, że to Ty!"
-  },
   "mustSelectOne": {
     "message": "Należy wybrać co najmniej 1 token."
   },
