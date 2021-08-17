@@ -30,8 +30,8 @@ import {
 import {
   PluginController,
   ExternalResourceController,
-  WebWorkerExecutionEnvironmentService,
 } from '@mm-snap/controllers';
+import { IframeExecutionEnvironmentService } from '@mm-snap/iframe-execution-environment-service';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
@@ -79,7 +79,6 @@ import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
-import { WORKER_BLOB_URL } from './lib/worker-blob';
 import { FILSNAP_NAME, setupFilsnap } from './lib/filsnap';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -375,9 +374,11 @@ export default class MetamaskController extends EventEmitter {
       initState.PermissionsMetadata,
     );
 
-    this.workerController = new WebWorkerExecutionEnvironmentService({
+    this.workerController = new IframeExecutionEnvironmentService({
       setupPluginProvider: this.setupPluginProvider.bind(this),
-      workerUrl: WORKER_BLOB_URL,
+      iframeUrl: new URL(
+        'https://metamask.github.io/iframe-execution-environment/',
+      ),
     });
 
     const pluginControllerMessenger = controllerMessenger.getRestricted({
