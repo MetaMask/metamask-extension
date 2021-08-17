@@ -2884,15 +2884,6 @@
     once "^1.4.0"
     readable-stream "^2.3.3"
 
-"@metamask/object-multiplex@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@metamask/object-multiplex/-/object-multiplex-1.2.0.tgz#38fc15c142f61939391e1b9a8eed679696c7e4f4"
-  integrity sha512-hksV602d3NWE2Q30Mf2Np1WfVKaGqfJRy9vpHAmelbaD0OkDt06/0KQkRR6UVYdMbTbkuEu8xN5JDUU80inGwQ==
-  dependencies:
-    end-of-stream "^1.4.4"
-    once "^1.4.0"
-    readable-stream "^2.3.3"
-
 "@metamask/obs-store@^5.0.0":
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/obs-store/-/obs-store-5.0.0.tgz#cf2213874c62186a8a4c80f0c402af62a0a877a9"
@@ -2909,14 +2900,6 @@
   dependencies:
     "@metamask/safe-event-emitter" "^2.0.0"
     readable-stream "^2.2.2"
-    through2 "^2.0.3"
-
-"@metamask/obs-store@^7.0.0":
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/obs-store/-/obs-store-7.0.0.tgz#6cae5f28306bb3e83a381bc9ae22682316095bd3"
-  integrity sha512-Tr61Uu9CGXkCg5CZwOYRMQERd+y6fbtrtLd/PzDTPHO5UJpmSbU+7MPcQK7d1DwZCOCeCIvhmZSUCvYliC8uGw==
-  dependencies:
-    "@metamask/safe-event-emitter" "^2.0.0"
     through2 "^2.0.3"
 
 "@metamask/post-message-stream@4.0.0", "@metamask/post-message-stream@^4.0.0":
@@ -2988,23 +2971,6 @@
     nanoid "^3.1.20"
     pump "^3.0.0"
 
-"@mm-snap/iframe-execution-environment-service@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@mm-snap/iframe-execution-environment-service/-/iframe-execution-environment-service-0.0.6.tgz#f3084c11deed028399831aea0028e081a2e2581e"
-  integrity sha512-3JHEzvSw2kp/fQUgrf4RfuzFtGQx5lzWz+GPdxdj/kdb0NwZtHhBBYFAD3sxCZtlawOAEEhTGl297e2fPHD7ug==
-  dependencies:
-    "@metamask/object-multiplex" "^1.2.0"
-    "@metamask/obs-store" "^7.0.0"
-    "@metamask/post-message-stream" "^4.0.0"
-    "@mm-snap/controllers" "^0.0.6"
-    "@mm-snap/types" "^0.0.6"
-    "@mm-snap/workers" "^0.0.6"
-    json-rpc-engine "^6.1.0"
-    json-rpc-middleware-stream "^3.0.0"
-    nanoid "^3.1.23"
-    pump "^3.0.0"
-    stream "^0.0.2"
-
 "@mm-snap/rpc-methods@^0.0.6":
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/@mm-snap/rpc-methods/-/rpc-methods-0.0.6.tgz#aba61e3731b7f7649dc0bc8df0d0628f601cd496"
@@ -3013,11 +2979,6 @@
     "@metamask/key-tree" "^2.0.1"
     "@mm-snap/controllers" "^0.0.6"
     eth-rpc-errors "^4.0.2"
-
-"@mm-snap/types@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@mm-snap/types/-/types-0.0.6.tgz#9306d4ebee0561f5b0868178a54eb99440aedefb"
-  integrity sha512-xdcA+fMMC+lLAlG9gezwohcz6x3GQe7hAFxjigRtAIStGlbWrAGvkIXFeWwUfnGUiMjyf7eO4KE2o1Iu5x4PZg==
 
 "@mm-snap/workers@^0.0.6":
   version "0.0.6"
@@ -10194,11 +10155,6 @@ elliptic@6.5.3, elliptic@6.5.4, elliptic@=3.0.3, elliptic@^6.0.0, elliptic@^6.4.
     inherits "^2.0.4"
     minimalistic-assert "^1.0.1"
     minimalistic-crypto-utils "^1.0.1"
-
-emitter-component@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/emitter-component/-/emitter-component-1.1.1.tgz#065e2dbed6959bf470679edabeaf7981d1003ab6"
-  integrity sha1-Bl4tvtaVm/RwZ57avq95gdEAOrY=
 
 emittery@^0.7.1:
   version "0.7.2"
@@ -25408,13 +25364,6 @@ stream-to-pull-stream@^1.7.1, stream-to-pull-stream@^1.7.2, stream-to-pull-strea
   dependencies:
     looper "^3.0.0"
     pull-stream "^3.2.3"
-
-stream@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/stream/-/stream-0.0.2.tgz#7f5363f057f6592c5595f00bc80a27f5cec1f0ef"
-  integrity sha1-f1Nj8Ff2WSxVlfALyAon9c7B8O8=
-  dependencies:
-    emitter-component "^1.1.1"
 
 streamsearch@0.1.2:
   version "0.1.2"

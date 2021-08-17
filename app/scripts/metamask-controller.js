@@ -32,6 +32,7 @@ import {
   ExternalResourceController,
   WebWorkerExecutionEnvironmentService,
 } from '@mm-snap/controllers';
+import { IframeExecutionEnvironmentService } from '@mm-snap/iframe-execution-environment-service';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
@@ -382,9 +383,11 @@ export default class MetamaskController extends EventEmitter {
       initState.PermissionsMetadata,
     );
 
-    this.workerController = new WebWorkerExecutionEnvironmentService({
+    this.workerController = new IframeExecutionEnvironmentService({
       setupPluginProvider: this.setupPluginProvider.bind(this),
-      workerUrl: WORKER_BLOB_URL,
+      iframeUrl: new URL(
+        'https://metamask.github.io/iframe-execution-environment/',
+      ),
     });
 
     const pluginControllerMessenger = controllerMessenger.getRestricted({
