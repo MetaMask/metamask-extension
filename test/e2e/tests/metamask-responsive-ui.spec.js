@@ -173,14 +173,6 @@ describe('Metamask Responsive UI', function () {
         const inputValue = await inputAmount.getAttribute('value');
         assert.equal(inputValue, '1');
 
-        // opens and closes the gas modal
-        await driver.clickElement('.advanced-gas-options-btn');
-        // wait for gas modal to be visible
-        const gasModal = await driver.findVisibleElement('span .modal');
-        await driver.clickElement('.page-container__header-close-text');
-        // wait for gas modal to be removed from dom
-        await gasModal.waitForElementState('hidden');
-
         // confirming transcation
         await driver.clickElement({ text: 'Next', tag: 'button' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });

@@ -4,6 +4,7 @@ import {
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_STATUSES,
 } from '../../../../../shared/constants/transaction';
+import { isEIP1559Transaction } from '../../../../../shared/modules/transaction.utils';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
 
 const normalizers = {
@@ -119,9 +120,10 @@ function ensureProperTransactionEnvelopeTypeProvided(txParams, field) {
 /**
  * Validates the given tx parameters
  * @param {Object} txParams - the tx params
+ * @param {boolean} eip1559Compatibility - whether or not the current network supports EIP-1559 transactions
  * @throws {Error} if the tx params contains invalid fields
  */
-export function validateTxParams(txParams) {
+export function validateTxParams(txParams, eip1559Compatibility = true) {
   if (!txParams || typeof txParams !== 'object' || Array.isArray(txParams)) {
     throw ethErrors.rpc.invalidParams(
       'Invalid transaction params: must be an object.',
@@ -130,6 +132,11 @@ export function validateTxParams(txParams) {
   if (!txParams.to && !txParams.data) {
     throw ethErrors.rpc.invalidParams(
       'Invalid transaction params: must specify "data" for contract deployments, or "to" (and optionally "data") for all other types of transactions.',
+    );
+  }
+  if (isEIP1559Transaction({ txParams }) && !eip1559Compatibility) {
+    throw ethErrors.rpc.invalidParams(
+      'Invalid transaction params: params specify an EIP-1559 transaction but the current network does not support EIP-1559',
     );
   }
 

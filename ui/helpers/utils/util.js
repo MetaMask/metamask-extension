@@ -16,6 +16,9 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
+  if (!date) {
+    return '';
+  }
   return DateTime.fromMillis(date).toFormat(format);
 }
 
@@ -24,6 +27,9 @@ export function formatDateWithYearContext(
   formatThisYear = 'MMM d',
   fallback = 'MMM d, y',
 ) {
+  if (!date) {
+    return '';
+  }
   const dateTime = DateTime.fromMillis(date);
   const now = DateTime.local();
   return dateTime.toFormat(
@@ -344,4 +350,32 @@ export function constructTxParams({
     txParams.to = to;
   }
   return addHexPrefixToObjectValues(txParams);
+}
+
+export function bnGreaterThan(a, b) {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return null;
+  }
+  return new BigNumber(a, 10).gt(b, 10);
+}
+
+export function bnLessThan(a, b) {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return null;
+  }
+  return new BigNumber(a, 10).lt(b, 10);
+}
+
+export function bnGreaterThanEqualTo(a, b) {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return null;
+  }
+  return new BigNumber(a, 10).gte(b, 10);
+}
+
+export function bnLessThanEqualTo(a, b) {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return null;
+  }
+  return new BigNumber(a, 10).lte(b, 10);
 }

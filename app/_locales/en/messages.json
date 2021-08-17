@@ -156,9 +156,6 @@
   "amount": {
     "message": "Amount"
   },
-  "amountGasFee": {
-    "message": "Amount + Gas Fee"
-  },
   "amountWithColon": {
     "message": "Amount:"
   },
@@ -635,11 +632,8 @@
   "editGasEducationHighExplanation": {
     "message": "This is best for swaps or other time sensitive transactions. If a swap takes too long to process it will often fail and you may lose funds."
   },
-  "editGasEducationLearnMoreLinkText": {
-    "message": "Learn more about customizing gas."
-  },
   "editGasEducationLowExplanation": {
-    "message": "Low A lower gas fee should only be selected for transactions where processing time is less important. With a lower fee, it can be be hard to predict when (or if) your transaction with be successful."
+    "message": "A lower gas fee should only be selected for transactions where processing time is less important. With a lower fee, it can be hard to predict when (or if) your transaction will be successful."
   },
   "editGasEducationMediumExplanation": {
     "message": "A medium gas fee is good for sending, withdrawing or other non-time sensitive but important transactions."
@@ -654,7 +648,7 @@
     "message": "High"
   },
   "editGasLimitOutOfBounds": {
-    "message": "Gas limit must be greater than 20999 and less than 7920027"
+    "message": "Gas limit must be at least $1"
   },
   "editGasLimitTooltip": {
     "message": "Gas limit is the maximum units of gas you are willing to use. Units of gas are a multiplier to “Max priority fee” and “Max fee”."
@@ -668,33 +662,47 @@
   "editGasMaxFeeLow": {
     "message": "Max fee too low for network conditions"
   },
+  "editGasMaxFeePriorityImbalance": {
+    "message": "Max fee cannot be lower than max priority fee"
+  },
   "editGasMaxFeeTooltip": {
     "message": "The max fee is the most you’ll pay (base fee + priority fee)."
+  },
+  "editGasMaxPriorityFeeBelowMinimum": {
+    "message": "Max priority fee must be greater than 0 GWEI"
   },
   "editGasMaxPriorityFeeHigh": {
     "message": "Max priority fee is higher than necessary. You may pay more than needed."
   },
   "editGasMaxPriorityFeeLow": {
-    "message": "Max priority fee too low for network conditions"
+    "message": "Max priority fee extremely low for network conditions"
   },
   "editGasMaxPriorityFeeTooltip": {
     "message": "Max priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction. You’ll most often pay your max setting"
   },
-  "editGasMaxPriorityFeeZeroError": {
-    "message": "Max priority fee must be at least 1 GWEI"
-  },
   "editGasMedium": {
     "message": "Medium"
+  },
+  "editGasPriceTooLow": {
+    "message": "Gas price must be greater than 0"
   },
   "editGasPriceTooltip": {
     "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
   },
   "editGasSubTextAmount": {
-    "message": "Max amount: $1",
-    "description": "$1 represents a dollar amount"
+    "message": "$1 $2",
+    "description": "$1 will be passed the editGasSubTextAmountLabel and $2 will be passed the amount in either cryptocurrency or fiat"
+  },
+  "editGasSubTextAmountLabel": {
+    "message": "Max amount:",
+    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
   },
   "editGasSubTextFee": {
-    "message": "Max fee: $1",
+    "message": "$1 $2",
+    "description": "$1 will be passed the editGasSubTextFeeLabel and $2 will be passed the fee amount in either cryptocurrency or fiat"
+  },
+  "editGasSubTextFeeLabel": {
+    "message": "Max fee:",
     "description": "$1 represents a dollar amount"
   },
   "editGasTitle": {
@@ -704,11 +712,10 @@
     "message": "Unknown processing time"
   },
   "editGasTooLowTooltip": {
-    "message": "Your max fee is low for current market conditions. We don’t know when (or if) your transaction will be processed."
+    "message": "Your max fee or max priority fee may be low for current market conditions. We don't know when (or if) your transaction will be processed. "
   },
-  "editGasTotalBannerSubtitle": {
-    "message": "Up to $1 ($2)",
-    "display": "$1 represents a fiat value"
+  "editGasTooLowWarningTooltip": {
+    "message": "This lowers your maximum fee but if network traffic increases your transaction may be delayed or fail."
   },
   "editNonceField": {
     "message": "Edit Nonce"
@@ -904,11 +911,8 @@
     "message": "This gas fee has been suggested by $1. Overriding this may cause a problem with your transaction. Please reach out to $1 if you have questions.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Gas Fee"
-  },
-  "gasFeeEstimate": {
-    "message": "Estimate"
+  "gasEstimatesUnavailableWarning": {
+    "message": "Our low, medium and high estimates are not available."
   },
   "gasLimit": {
     "message": "Gas Limit"
@@ -1339,6 +1343,9 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
+  },
+  "networkNameRinkeby": {
+    "message": "Rinkeby"
   },
   "networkNameTestnet": {
     "message": "Testnet"
@@ -1935,6 +1942,9 @@
   "showPrivateKeys": {
     "message": "Show Private Keys"
   },
+  "showRecommendations": {
+    "message": "Show Recommendations"
+  },
   "showSeedPhrase": {
     "message": "Show Secret Recovery Phrase"
   },
@@ -2149,8 +2159,18 @@
     "message": "The swap of $1 to $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
+  "swapGasFeesDetails": {
+    "message": "Gas fees are estimated and will fluctuate based on network traffic and transaction complexity."
+  },
+  "swapGasFeesLearnMore": {
+    "message": "Learn more about gas fees"
+  },
   "swapGasFeesSplit": {
     "message": "Gas fees on the previous screen are split between these two transactions."
+  },
+  "swapGasFeesSummary": {
+    "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees.",
+    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapHighSlippageWarning": {
     "message": "Slippage amount is very high."
@@ -2478,7 +2498,7 @@
     "message": "transaction"
   },
   "transactionCancelAttempted": {
-    "message": "Transaction cancel attempted with gas fee of $1 at $2"
+    "message": "Transaction cancel attempted with estimated gas fee of $1 at $2"
   },
   "transactionCancelSuccess": {
     "message": "Transaction successfully cancelled at $2"
@@ -2506,7 +2526,7 @@
     "message": "Gas fees are set by the network and fluctuate based on network traffic and transaction complexity."
   },
   "transactionDetailGasTooltipIntro": {
-    "message": "Gas fees are paid to crypto miners who process transactions on the Ethereum network. MetaMask does not profit from gas fees."
+    "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees."
   },
   "transactionDetailGasTotalSubtitle": {
     "message": "Amount + gas fee"
@@ -2529,17 +2549,17 @@
   "transactionHistoryBaseFee": {
     "message": "Base fee (GWEI)"
   },
-  "transactionHistoryEffectiveGasPrice": {
-    "message": "Effective gas price"
-  },
   "transactionHistoryPriorityFee": {
     "message": "Priority fee (GWEI)"
   },
+  "transactionHistoryTotalGasFee": {
+    "message": "Total Gas Fee"
+  },
   "transactionResubmitted": {
-    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+    "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
   },
   "transactionSubmitted": {
-    "message": "Transaction submitted with gas fee of $1 at $2."
+    "message": "Transaction submitted with estimated gas fee of $1 at $2."
   },
   "transactionUpdated": {
     "message": "Transaction updated at $2."

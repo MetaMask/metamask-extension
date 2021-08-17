@@ -1,6 +1,6 @@
 import nock from 'nock';
 
-import { MOCKS } from '../../../test/jest';
+import { MOCKS, createSwapsMockStore } from '../../../test/jest';
 import { setSwapsLiveness } from '../../store/actions';
 import { setStorageItem } from '../../helpers/utils/storage-helpers';
 import * as swaps from './swaps';
@@ -162,6 +162,84 @@ describe('Ducks - Swaps', () => {
       expect(mockDispatch).toHaveBeenCalledTimes(2);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
+    });
+  });
+
+  describe('getCustomSwapsGas', () => {
+    it('returns "customMaxGas"', () => {
+      const state = createSwapsMockStore();
+      const customMaxGas = '29000';
+      state.metamask.swapsState.customMaxGas = customMaxGas;
+      expect(swaps.getCustomSwapsGas(state)).toBe(customMaxGas);
+    });
+  });
+
+  describe('getCustomMaxFeePerGas', () => {
+    it('returns "customMaxFeePerGas"', () => {
+      const state = createSwapsMockStore();
+      const customMaxFeePerGas = '20';
+      state.metamask.swapsState.customMaxFeePerGas = customMaxFeePerGas;
+      expect(swaps.getCustomMaxFeePerGas(state)).toBe(customMaxFeePerGas);
+    });
+  });
+
+  describe('getCustomMaxPriorityFeePerGas', () => {
+    it('returns "customMaxPriorityFeePerGas"', () => {
+      const state = createSwapsMockStore();
+      const customMaxPriorityFeePerGas = '3';
+      state.metamask.swapsState.customMaxPriorityFeePerGas = customMaxPriorityFeePerGas;
+      expect(swaps.getCustomMaxPriorityFeePerGas(state)).toBe(
+        customMaxPriorityFeePerGas,
+      );
+    });
+  });
+
+  describe('getSwapsFeatureIsLive', () => {
+    it('returns true for "swapsFeatureIsLive"', () => {
+      const state = createSwapsMockStore();
+      const swapsFeatureIsLive = true;
+      state.metamask.swapsState.swapsFeatureIsLive = swapsFeatureIsLive;
+      expect(swaps.getSwapsFeatureIsLive(state)).toBe(swapsFeatureIsLive);
+    });
+
+    it('returns false for "swapsFeatureIsLive"', () => {
+      const state = createSwapsMockStore();
+      const swapsFeatureIsLive = false;
+      state.metamask.swapsState.swapsFeatureIsLive = swapsFeatureIsLive;
+      expect(swaps.getSwapsFeatureIsLive(state)).toBe(swapsFeatureIsLive);
+    });
+  });
+
+  describe('getUseNewSwapsApi', () => {
+    it('returns true for "useNewSwapsApi"', () => {
+      const state = createSwapsMockStore();
+      const useNewSwapsApi = true;
+      state.metamask.swapsState.useNewSwapsApi = useNewSwapsApi;
+      expect(swaps.getUseNewSwapsApi(state)).toBe(useNewSwapsApi);
+    });
+
+    it('returns false for "useNewSwapsApi"', () => {
+      const state = createSwapsMockStore();
+      const useNewSwapsApi = false;
+      state.metamask.swapsState.useNewSwapsApi = useNewSwapsApi;
+      expect(swaps.getUseNewSwapsApi(state)).toBe(useNewSwapsApi);
+    });
+  });
+
+  describe('getUsedQuote', () => {
+    it('returns selected quote', () => {
+      const state = createSwapsMockStore();
+      expect(swaps.getUsedQuote(state)).toMatchObject(
+        state.metamask.swapsState.quotes.TEST_AGG_2,
+      );
+    });
+
+    it('returns best quote', () => {
+      const state = createSwapsMockStore();
+      state.metamask.swapsState.selectedAggId = null;
+      expect(swaps.getUsedQuote(state)).toMatchObject(
+        state.metamask.swapsState.quotes.TEST_AGG_BEST,
+      );
     });
   });
 });
