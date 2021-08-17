@@ -8,7 +8,6 @@ import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
 import { getGasFormErrorText } from '../../../helpers/constants/gas';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { getIsGasEstimatesLoading } from '../../../ducks/metamask/metamask';
-import { getGasLoadingAnimationIsShowing } from '../../../ducks/app/app';
 
 export default function AdvancedGasControls({
   gasEstimateType,
@@ -31,9 +30,6 @@ export default function AdvancedGasControls({
     checkNetworkAndAccountSupports1559,
   );
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
-  const isGasLoadingAnimationIsShowing = useSelector(
-    getGasLoadingAnimationIsShowing,
-  );
 
   const showFeeMarketFields =
     networkAndAccountSupport1559 &&
@@ -136,5 +132,4 @@ AdvancedGasControls.propTypes = {
   maxFeeFiat: PropTypes.string,
   gasErrors: PropTypes.object,
   minimumGasLimit: PropTypes.string,
-  txParamsHaveBeenCustomized: PropTypes.bool,
 };
