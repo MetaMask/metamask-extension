@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.0.2]
+### Uncategorized
+- Improve flashing behaviour for loading gas estimates (on confirm screen) ([#11852](https://github.com/MetaMask/metamask-extension/pull/11852))
+- Allow editing custom gas while estimate is loading ([#11853](https://github.com/MetaMask/metamask-extension/pull/11853))
+- Add low/medium/high gas recommendations to the speedup/cancel gas popovers ([#11818](https://github.com/MetaMask/metamask-extension/pull/11818))
+- Return an empty string when date is not provided [Date display utils] ([#11831](https://github.com/MetaMask/metamask-extension/pull/11831))
+- Fix Insufficient number of substitutions for key "swapYourTokenBalance" ([#11833](https://github.com/MetaMask/metamask-extension/pull/11833))
+- Remove unwanted console.log from codebase ([#11820](https://github.com/MetaMask/metamask-extension/pull/11820))
+
 ## [10.0.1]
 ### Fixed
 - [#11813](https://github.com/MetaMask/metamask-extension/pull/11813): Fix error reporting version configuration
@@ -2399,7 +2408,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.0.2...HEAD
+[10.0.2]: https://github.com/MetaMask/metamask-extension/compare/v10.0.1...v10.0.2
 [10.0.1]: https://github.com/MetaMask/metamask-extension/compare/v10.0.0...v10.0.1
 [10.0.0]: https://github.com/MetaMask/metamask-extension/compare/v9.8.4...v10.0.0
 [9.8.4]: https://github.com/MetaMask/metamask-extension/compare/v9.8.3...v9.8.4
