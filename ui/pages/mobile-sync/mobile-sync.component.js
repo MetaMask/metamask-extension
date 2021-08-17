@@ -321,7 +321,7 @@ export default class MobileSyncPage extends Component {
 
     return screen === PASSWORD_PROMPT_SCREEN ? (
       <div>
-        {this.renderWarning(this.context.t('mobileSyncText'))}
+        {this.renderWarning(this.context.t('mobileSyncWarning'))}
         <div className="reveal-seed__content">
           {this.renderPasswordPromptContent()}
         </div>
