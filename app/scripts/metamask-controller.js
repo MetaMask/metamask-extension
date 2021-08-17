@@ -30,6 +30,7 @@ import {
 import {
   PluginController,
   ExternalResourceController,
+  WebWorkerExecutionEnvironmentService,
 } from '@mm-snap/controllers';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
@@ -374,9 +375,31 @@ export default class MetamaskController extends EventEmitter {
       initState.PermissionsMetadata,
     );
 
+    this.workerController = new WebWorkerExecutionEnvironmentService({
+      setupPluginProvider: this.setupPluginProvider.bind(this),
+      workerUrl: WORKER_BLOB_URL,
+    });
+
+    const pluginControllerMessenger = controllerMessenger.getRestricted({
+      name: 'PluginController',
+    });
+
     this.pluginController = new PluginController({
-      setupWorkerPluginProvider: this.setupWorkerPluginProvider.bind(this),
-      closeAllConnections: this.removeAllConnections.bind(this),
+      terminateAllPlugins: this.workerController.terminateAllPlugins.bind(
+        this.workerController,
+      ),
+      terminatePlugin: this.workerController.terminatePlugin.bind(
+        this.workerController,
+      ),
+      executePlugin: this.workerController.executePlugin.bind(
+        this.workerController,
+      ),
+      getRpcMessageHandler: this.workerController.getRpcMessageHandler.bind(
+        this.workerController,
+      ),
+      removeAllPermissionsFor: this.permissionsController.removeAllPermissionsFor.bind(
+        this.permissionsController,
+      ),
       getPermissions: this.permissionsController.getPermissions.bind(
         this.permissionsController,
       ),
@@ -386,16 +409,10 @@ export default class MetamaskController extends EventEmitter {
       requestPermissions: this.permissionsController.requestPermissions.bind(
         this.permissionsController,
       ),
-      removeAllPermissionsFor: this.permissionsController.removeAllPermissionsFor.bind(
-        this.permissionsController,
-      ),
-      getAppKeyForDomain: this.keyringController.exportAppKeyForAddress.bind(
-        this.keyringController,
-      ),
-      workerUrl: WORKER_BLOB_URL,
-      initState: initState.PluginController,
+      closeAllConnections: this.removeAllConnections.bind(this),
+      state: initState.PluginController,
+      messenger: pluginControllerMessenger,
     });
-
     this.permissionsController.initializePermissions(
       initState.PermissionsController,
       getRestrictedMethods,
@@ -603,7 +620,7 @@ export default class MetamaskController extends EventEmitter {
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       // snaps
-      PluginController: this.pluginController.store,
+      PluginController: this.pluginController,
       AssetsController: this.assetsController.store,
     });
 
@@ -640,7 +657,7 @@ export default class MetamaskController extends EventEmitter {
         TokenListController: this.tokenListController,
         // snaps
         AssetsController: this.assetsController.store,
-        PluginController: this.pluginController.memStore,
+        PluginController: this.pluginController,
       },
       controllerMessenger: this.controllerMessenger,
     });
@@ -2485,10 +2502,10 @@ export default class MetamaskController extends EventEmitter {
   /**
    * For plugins running in workers.
    */
-  setupWorkerPluginProvider(senderUrl, connectionStream, _workerId) {
+  setupPluginProvider(pluginName, connectionStream) {
     const sender = {
-      hostname: senderUrl.hostname,
-      url: senderUrl.url || senderUrl.hostname,
+      hostname: pluginName,
+      url: pluginName,
     };
     this.setupUntrustedCommunication(connectionStream, sender, true);
   }
