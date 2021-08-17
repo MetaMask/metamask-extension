@@ -25,7 +25,6 @@ export default function AdvancedGasControls({
   maxFeeFiat,
   gasErrors,
   minimumGasLimit,
-  txParamsHaveBeenCustomized,
 }) {
   const t = useContext(I18nContext);
   const networkAndAccountSupport1559 = useSelector(
@@ -35,9 +34,6 @@ export default function AdvancedGasControls({
   const isGasLoadingAnimationIsShowing = useSelector(
     getGasLoadingAnimationIsShowing,
   );
-  const disableFormFields =
-    !txParamsHaveBeenCustomized &&
-    (isGasEstimatesLoading || isGasLoadingAnimationIsShowing);
 
   const showFeeMarketFields =
     networkAndAccountSupport1559 &&
@@ -82,7 +78,6 @@ export default function AdvancedGasControls({
                 ? getGasFormErrorText(gasErrors.maxPriorityFee, t)
                 : null
             }
-            disabled={disableFormFields}
           />
           <FormField
             titleText={t('maxFee')}
@@ -100,7 +95,6 @@ export default function AdvancedGasControls({
                 ? getGasFormErrorText(gasErrors.maxFee, t)
                 : null
             }
-            disabled={disableFormFields}
           />
         </>
       ) : (
@@ -120,7 +114,6 @@ export default function AdvancedGasControls({
                 ? getGasFormErrorText(gasErrors.gasPrice, t)
                 : null
             }
-            disabled={disableFormFields}
           />
         </>
       )}
