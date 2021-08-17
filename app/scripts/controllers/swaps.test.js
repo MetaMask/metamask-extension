@@ -915,6 +915,7 @@ describe('SwapsController', function () {
           fetchParams,
           swapsFeatureIsLive,
           swapsQuoteRefreshTime,
+          swapsQuotePrefetchingRefreshTime,
         });
       });
     });
