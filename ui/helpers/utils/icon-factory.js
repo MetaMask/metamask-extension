@@ -23,7 +23,8 @@ IconFactory.prototype.iconForAddress = function (
   useStaticTokenList,
   tokenList,
 ) {
-  const addr = useStaticTokenList ? toChecksumHexAddress(address) : address;
+  // token from dynamic api list is fetched when useStaticTokenList is true
+  const addr = useStaticTokenList ? address : toChecksumHexAddress(address);
   if (iconExistsFor(addr, tokenList)) {
     return imageElFor(addr, useStaticTokenList, tokenList);
   }
@@ -63,7 +64,8 @@ function iconExistsFor(address, tokenList) {
 function imageElFor(address, useStaticTokenList, tokenList) {
   const tokenMetadata = tokenList[address];
   const fileName = tokenMetadata?.iconUrl;
-  const path = useStaticTokenList ? `images/contract/${fileName}` : fileName;
+  // token from dynamic api list is fetched when useStaticTokenList is true
+  const path = useStaticTokenList ? fileName : `images/contract/${fileName}`;
   const img = document.createElement('img');
   img.src = path;
   img.style.width = '100%';

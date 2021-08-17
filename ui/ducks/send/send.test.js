@@ -628,7 +628,7 @@ describe('Send Slice', () => {
           payload: {
             chainId: '',
             tokens: [],
-            useStaticTokenList: false,
+            useStaticTokenList: true,
             tokenAddressList: [],
           },
         };
@@ -651,7 +651,7 @@ describe('Send Slice', () => {
           payload: {
             chainId: '0x55',
             tokens: [],
-            useStaticTokenList: false,
+            useStaticTokenList: true,
             tokenAddressList: [],
           },
         };
@@ -675,7 +675,7 @@ describe('Send Slice', () => {
           payload: {
             chainId: '',
             tokens: [],
-            useStaticTokenList: false,
+            useStaticTokenList: true,
             tokenAddressList: [],
           },
         };
@@ -704,7 +704,7 @@ describe('Send Slice', () => {
           payload: {
             chainId: '0x4',
             tokens: [],
-            useStaticTokenList: false,
+            useStaticTokenList: true,
             tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
           },
         };
@@ -1119,7 +1119,7 @@ describe('Send Slice', () => {
             provider: {
               chainId: '0x4',
             },
-            useStaticTokenList: false,
+            useStaticTokenList: true,
             tokenList: {
               0x514910771af9ca656af840dff83e8264ecf986ca: {
                 address: '0x514910771af9ca656af840dff83e8264ecf986ca',
@@ -1518,7 +1518,7 @@ describe('Send Slice', () => {
             chainId: '',
           },
           tokens: [],
-          useStaticTokenList: false,
+          useStaticTokenList: true,
           tokenList: {
             '0x514910771af9ca656af840dff83e8264ecf986ca': {
               address: '0x514910771af9ca656af840dff83e8264ecf986ca',
@@ -1571,7 +1571,7 @@ describe('Send Slice', () => {
         expect(store.getActions()[1].payload).toStrictEqual({
           chainId: '',
           tokens: [],
-          useStaticTokenList: false,
+          useStaticTokenList: true,
           tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
         });
       });
@@ -1797,7 +1797,7 @@ describe('Send Slice', () => {
               chainId: '',
             },
             tokens: [],
-            useStaticTokenList: false,
+            useStaticTokenList: true,
             tokenList: {
               0x514910771af9ca656af840dff83e8264ecf986ca: {
                 address: '0x514910771af9ca656af840dff83e8264ecf986ca',

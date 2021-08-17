@@ -51,7 +51,11 @@ export default class PreferencesController {
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
-      useStaticTokenList: false,
+
+      // contradictory to the name the useStaticTokenList
+      // set to true means the dynamic list from the API is being used
+      // set to false will be using the static list from contract-metadata
+      useStaticTokenList: true,
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace

@@ -39,9 +39,10 @@ export function getRenderableTokenData(
   useStatictokenList,
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
+  // token from dynamic api list is fetched when useStaticTokenList is true
   const tokenAddress = useStatictokenList
-    ? toChecksumHexAddress(address)
-    : address;
+    ? address
+    : toChecksumHexAddress(address);
   const formattedFiat =
     getTokenFiatAmount(
       isSwapsDefaultTokenSymbol(symbol, chainId)
@@ -93,9 +94,10 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
   const tokenList = useSelector(getTokenList);
   const useStatictokenList = useSelector(getUseStaticTokenList);
   // TODO: replace contract-metadata with list from state and introduce shuffle to tokenlist
+  // token from dynamic api list is fetched when useStaticTokenList is true
   const shuffledTokenList = useStatictokenList
-    ? shuffledContractMap
-    : Object.values(tokenList);
+    ? Object.values(tokenList)
+    : shuffledContractMap;
   const memoizedTopTokens = useEqualityCheck(topTokens);
   const memoizedUsersToken = useEqualityCheck(usersTokens);
 

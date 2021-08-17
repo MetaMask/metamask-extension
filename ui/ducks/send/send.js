@@ -1015,9 +1015,10 @@ const slice = createSlice({
         }
 
         if (isSendingToken && isValidHexAddress(recipient.userInput)) {
+          // token from dynamic api list is fetched when useStaticTokenList is true
           const userInput = useStaticTokenList
-            ? toChecksumAddress(recipient.userInput)
-            : recipient.userInput;
+            ? recipient.userInput
+            : toChecksumAddress(recipient.userInput);
           if (
             tokenAddressList.includes(userInput) ||
             checkExistingAddresses(recipient.userInput, tokens)

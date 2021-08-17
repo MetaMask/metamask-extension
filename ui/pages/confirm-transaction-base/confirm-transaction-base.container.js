@@ -106,13 +106,13 @@ const mapStateToProps = (state, ownProps) => {
   const tokenList = getTokenList(state);
   const useStaticTokenList = getUseStaticTokenList(state);
   const casedTokenList = useStaticTokenList
-    ? Object.keys(tokenList).reduce((acc, base) => {
+    ? tokenList
+    : Object.keys(tokenList).reduce((acc, base) => {
         return {
           ...acc,
           [base.toLowerCase()]: tokenList[base],
         };
-      }, {})
-    : tokenList;
+      }, {});
   const toName =
     identities[toAddress]?.name ||
     casedTokenList[toAddress]?.name ||

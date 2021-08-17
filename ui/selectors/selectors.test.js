@@ -132,7 +132,7 @@ describe('Selectors', () => {
 
   it('#getUseStaticTokenList', () => {
     const useStaticTokenList = selectors.getUseStaticTokenList(mockState);
-    expect(useStaticTokenList).toStrictEqual(false);
+    expect(useStaticTokenList).toStrictEqual(true);
   });
 
   it('#getTokenList', () => {

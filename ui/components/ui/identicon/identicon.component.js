@@ -102,9 +102,10 @@ export default class Identicon extends PureComponent {
     }
 
     if (address) {
+      // token from dynamic api list is fetched when useStaticTokenList is true
       const tokenAddress = useStaticTokenList
-        ? toChecksumHexAddress(address)
-        : address;
+        ? address
+        : toChecksumHexAddress(address);
       if (tokenAddress && tokenList[tokenAddress]?.iconUrl) {
         return this.renderJazzicon();
       }
