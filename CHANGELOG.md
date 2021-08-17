@@ -7,13 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.0.2]
-### Uncategorized
-- Improve flashing behaviour for loading gas estimates (on confirm screen) ([#11852](https://github.com/MetaMask/metamask-extension/pull/11852))
-- Allow editing custom gas while estimate is loading ([#11853](https://github.com/MetaMask/metamask-extension/pull/11853))
-- Add low/medium/high gas recommendations to the speedup/cancel gas popovers ([#11818](https://github.com/MetaMask/metamask-extension/pull/11818))
-- Return an empty string when date is not provided [Date display utils] ([#11831](https://github.com/MetaMask/metamask-extension/pull/11831))
-- Fix Insufficient number of substitutions for key "swapYourTokenBalance" ([#11833](https://github.com/MetaMask/metamask-extension/pull/11833))
-- Remove unwanted console.log from codebase ([#11820](https://github.com/MetaMask/metamask-extension/pull/11820))
+### Added
+- [#11818](https://github.com/MetaMask/metamask-extension/pull/11818): Add gas recommendation options to cancel and speed up popovers
+
+### Changed
+- [#11853](https://github.com/MetaMask/metamask-extension/pull/11853): Allow editing custom gas while estimate is loading
+
+### Fixed
+- [#11852](https://github.com/MetaMask/metamask-extension/pull/11852): Improve flashing behavior for loading gas estimates (Confirmation Screen)
 
 ## [10.0.1]
 ### Fixed
