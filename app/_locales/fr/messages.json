@@ -35,6 +35,12 @@
   "addAlias": {
     "message": "Ajouter un alias"
   },
+  "addContact": {
+    "message": "Ajouter un contact"
+  },
+  "addFriendsAndAddresses": {
+    "message": "Ajoutez des amis et des adresses de confiance"
+  },
   "addNetwork": {
     "message": "Ajouter un réseau"
   },
@@ -65,16 +71,37 @@
   "advancedSettingsDescription": {
     "message": "Accédez aux fonctionnalités pour les développeurs, téléchargez State Logs, réinitialisez votre compte, configurez testnets et personnalisez RPC"
   },
+  "alertDisableTooltip": {
+    "message": "Cela peut être modifié dans \"Paramètres > Alertes\""
+  },
+  "alertSettingsUnconnectedAccount": {
+    "message": "Lors de la navigation sur un site web avec un compte non connecté sélectionné"
+  },
+  "alertSettingsUnconnectedAccountDescription": {
+    "message": "Cette alerte s'affiche dans le popup lorsque vous naviguez sur un site web3 connecté, mais que le compte actuellement sélectionné n'est pas connecté."
+  },
+  "alertSettingsWeb3ShimUsage": {
+    "message": "Lorsqu'un site web tente d'utiliser l'API supprimée window.web3"
+  },
+  "alertSettingsWeb3ShimUsageDescription": {
+    "message": "Cette alerte s'affiche dans le popup lorsque vous naviguez sur un site qui tente d'utiliser l'API supprimée window.web3, et peut être cassée en conséquence."
+  },
+  "alerts": {
+    "message": "Alertes"
+  },
+  "alertsSettingsDescription": {
+    "message": "Activer ou désactiver chaque alerte"
+  },
   "amount": {
     "message": "Montant"
   },
   "appDescription": {
-    "message": "Extension Ethereum pour navigateur",
-    "description": "The description of the application"
+    "description": "The description of the application",
+    "message": "Extension Ethereum pour navigateur"
   },
   "appName": {
-    "message": "MetaMask",
-    "description": "The name of the application"
+    "description": "The name of the application",
+    "message": "MetaMask"
   },
   "approve": {
     "message": "Approuver"
@@ -128,14 +155,20 @@
     "message": "Général"
   },
   "blockExplorerView": {
-    "message": "Afficher le compte à $1",
-    "description": "$1 replaced by URL for custom block explorer"
+    "description": "$1 replaced by URL for custom block explorer",
+    "message": "Afficher le compte à $1"
   },
   "blockiesIdenticon": {
     "message": "Utiliser les Identicon Blockies"
   },
   "browserNotSupported": {
     "message": "Votre navigateur internet n'est pas supporté..."
+  },
+  "buildContactList": {
+    "message": "Créez votre liste de contacts"
+  },
+  "builtAroundTheWorld": {
+    "message": "MetaMask est conçu et construit dans le monde entier."
   },
   "buyWithWyre": {
     "message": "Acheter ETH avec Wyre"
@@ -154,6 +187,9 @@
   },
   "chainId": {
     "message": "ID de chaîne"
+  },
+  "chainIdDefinition": {
+    "message": "L'ID de la chaîne utilisée pour signer les transactions de ce réseau."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Pour connecter votre portefeuille hardware, vous devez utiliser MetaMask pour Google Chrome."
@@ -202,6 +238,9 @@
   },
   "connectingToRopsten": {
     "message": "Connexion au réseau de test Ropsten"
+  },
+  "contactUs": {
+    "message": "Contactez-nous"
   },
   "continueToWyre": {
     "message": "Continuer vers Wyre"
@@ -293,6 +332,15 @@
   "directDepositEtherExplainer": {
     "message": "Si vous avez déjà de l'Ether, le moyen le plus rapide d'obtenir des Ether dans votre nouveau portefeuille est par dépôt direct."
   },
+  "dismiss": {
+    "message": "Ignorer"
+  },
+  "dismissReminderDescriptionField": {
+    "message": "Activez cette option pour ignorer le message de rappel de sauvegarde de la phrase de récupération. Nous vous recommandons vivement de sauvegarder votre phrase de récupération secrète pour éviter toute perte de fonds."
+  },
+  "dismissReminderField": {
+    "message": "Ignorer le rappel de sauvegarde de la phrase de récupération."
+  },
   "done": {
     "message": "Terminé"
   },
@@ -378,12 +426,12 @@
     "message": "Rapide"
   },
   "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
+    "description": "Exchange type",
+    "message": "FIAT"
   },
   "fileImportFail": {
-    "message": "L'importation de fichier ne fonctionne pas? Cliquez ici!",
-    "description": "Helps user import their account from a JSON file"
+    "description": "Helps user import their account from a JSON file",
+    "message": "L'importation de fichier ne fonctionne pas? Cliquez ici!"
   },
   "forbiddenIpfsGateway": {
     "message": "IPFS Gateway Interdite: veuillez spécifier une gateway CID"
@@ -428,8 +476,8 @@
     "message": "Obtenir des Ether"
   },
   "getEtherFromFaucet": {
-    "message": "Obtenir de l'Ether d'une faucet pour $1",
-    "description": "Displays network name for Ether faucet"
+    "description": "Displays network name for Ether faucet",
+    "message": "Obtenir de l'Ether d'une faucet pour $1"
   },
   "getStarted": {
     "message": "Démarrer"
@@ -450,8 +498,8 @@
     "message": "Selectionnez le portefeuille hardware que vous voulez utiliser avec MetaMask"
   },
   "here": {
-    "message": "ici",
-    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)",
+    "message": "ici"
   },
   "hexData": {
     "message": "Data Hex"
@@ -462,12 +510,15 @@
   "hideTokenPrompt": {
     "message": "Masquer le jeton?"
   },
+  "hideZeroBalanceTokens": {
+    "message": "Cacher les jetons sans balance"
+  },
   "history": {
     "message": "Historique"
   },
   "import": {
-    "message": "Importer",
-    "description": "Button to import an account from a selected file"
+    "description": "Button to import an account from a selected file",
+    "message": "Importer"
   },
   "importAccount": {
     "message": "Importer un compte"
@@ -482,8 +533,8 @@
     "message": "Importer le portefeuille"
   },
   "imported": {
-    "message": "Importé",
-    "description": "status showing that an account has been fully loaded into the keyring"
+    "description": "status showing that an account has been fully loaded into the keyring",
+    "message": "Importé"
   },
   "initialTransactionConfirmed": {
     "message": "Votre transaction initiale a été confirmée par le réseau. Cliquez sur OK pour retourner à l'écran précédent."
@@ -519,8 +570,8 @@
     "message": "Entrez l'URL de la gateway CID IPFS à utiliser pour résoudre les contenus ENS."
   },
   "jsonFile": {
-    "message": "Fichier JSON",
-    "description": "format for importing an account"
+    "description": "format for importing an account",
+    "message": "Fichier JSON"
   },
   "knownAddressRecipient": {
     "message": "Adresse contractuelle connue."
@@ -533,6 +584,21 @@
   },
   "ledgerAccountRestriction": {
     "message": "Vous devez d'abord utiliser le dernier compte que vous avez créé avant de pouvoir en créer un autre."
+  },
+  "ledgerLiveAdvancedSetting": {
+    "message": "Utiliser le Ledger Live"
+  },
+  "ledgerLiveAdvancedSettingDescription": {
+    "message": "Le nouveau pont Ledger Live vous permet d'utiliser plus facilement votre Ledger. Disponible uniquement dans Chrome."
+  },
+  "ledgerLiveApp": {
+    "message": "Application Ledger Live"
+  },
+  "ledgerLocked": {
+    "message": "Impossible de se connecter au dispositif Ledger. Veuillez vous assurer que votre appareil est déverrouillé et que l'application Ethereum est ouverte."
+  },
+  "ledgerTimeout": {
+    "message": "Ledger Live met trop de temps à répondre ou la connexion est interrompue. Assurez-vous que l'application Ledger Live est ouverte et que votre appareil est déverrouillé."
   },
   "letsGoSetUp": {
     "message": "Oui, passons à la configuration !"
@@ -582,9 +648,16 @@
   "needEtherInWallet": {
     "message": "Pour interagir avec des applications décentralisées à l'aide de MetaMask, vous avez besoin d'Ether dans votre portefeuille."
   },
+  "needHelp": {
+    "description": "$1 représente le `needHelpLinkText`, le texte qui va dans le lien d'aide",
+    "message": "Besoin d'aide ? Contactez $1"
+  },
+  "needHelpLinkText": {
+    "message": "Support MetaMask"
+  },
   "needImportFile": {
-    "message": "Vous devez sélectionner un fichier à importer.",
-    "description": "User is important an account and needs to add a file to continue"
+    "description": "User is important an account and needs to add a file to continue",
+    "message": "Vous devez sélectionner un fichier à importer."
   },
   "negativeETH": {
     "message": "Vous ne pouvez envoyer des montants négatifs d'ETH."
@@ -608,8 +681,8 @@
     "message": "Nouvelle adresse détectée ! Cliquez ici pour ajouter à votre carnet d'adresses."
   },
   "newAccountNumberName": {
-    "message": "Compte $1",
-    "description": "Default name of next account to be created on create account screen"
+    "description": "Default name of next account to be created on create account screen",
+    "message": "Compte $1"
   },
   "newContact": {
     "message": "Nouveau contact"
@@ -653,6 +726,18 @@
   "noWebcamFoundTitle": {
     "message": "Webcam introuvable"
   },
+  "nonce": {
+    "message": "Nonce"
+  },
+  "nonceField": {
+    "message": "Personnaliser le nonce de transaction"
+  },
+  "nonceFieldDescription": {
+    "message": "Activez cette option pour modifier le nonce (numéro de transaction) sur les écrans de confirmation. Il s'agit d'une fonction avancée, à utiliser avec précaution."
+  },
+  "nonceFieldHeading": {
+    "message": "Nonce personnalisé"
+  },
   "notEnoughGas": {
     "message": "Pas assez d'essence"
   },
@@ -664,6 +749,9 @@
   },
   "on": {
     "message": "Activé"
+  },
+  "onlyAddTrustedNetworks": {
+    "message": "Un fournisseur de réseau malveillant peut mentir sur l'état de la blockchain et enregistrer l'activité de votre réseau. N'ajoutez que des réseaux personnalisés auxquels vous faites confiance."
   },
   "optionalBlockExplorerUrl": {
     "message": "URL de l'explorateur de blocs (facultatif)"
@@ -693,8 +781,8 @@
     "message": "Les mots de passe ne correspondent pas"
   },
   "pastePrivateKey": {
-    "message": "Collez votre clé privée ici:",
-    "description": "For importing an account from a private key"
+    "description": "For importing an account from a private key",
+    "message": "Collez votre clé privée ici:"
   },
   "pending": {
     "message": "En attente"
@@ -715,8 +803,8 @@
     "message": "Politique de Confidentialité"
   },
   "privateKey": {
-    "message": "Clé privée",
-    "description": "select this type of file to use to import an account"
+    "description": "select this type of file to use to import an account",
+    "message": "Clé privée"
   },
   "privateKeyWarning": {
     "message": "Avertissement: Ne divulguez jamais cette clé, quiconque avec vos clés privées peut voler tous les actifs de votre compte."
@@ -770,19 +858,19 @@
     "message": "Obligatoire"
   },
   "reset": {
-    "message": "Reinitialiser"
+    "message": "Réinitialiser"
   },
   "resetAccount": {
-    "message": "Reinitialiser le compte"
+    "message": "Réinitialiser le compte"
   },
   "resetAccountDescription": {
-    "message": "Reinitialiser votre compte va effacer votre historique de transactions."
+    "message": "Réinitialiser votre compte effacera votre historique de transactions."
   },
   "restore": {
     "message": "Restaurer"
   },
   "restoreAccountWithSeed": {
-    "message": "Restaurer votre compte avec une phrase Seed."
+    "message": "Restaurez votre compte avec une phrase Seed."
   },
   "revealSeedWords": {
     "message": "Révéler les mots Seed"
@@ -854,10 +942,10 @@
     "message": "Choisissez des frais d'essence plus élevés pour accélérer le traitement de votre transaction*."
   },
   "selectAnAccount": {
-    "message": "Selectionner un compte"
+    "message": "Sélectionner un compte"
   },
   "selectAnAccountHelp": {
-    "message": "Selectionner le compte à afficher dans MetaMask"
+    "message": "Sélectionner le compte à afficher dans MetaMask"
   },
   "selectEachPhrase": {
     "message": "Veuillez sélectionner chaque phrase afin de vous assurer qu'elle est correcte."
@@ -866,16 +954,20 @@
     "message": "Selectioner le \"Path HD\""
   },
   "selectPathHelp": {
-    "message": "Si vos comptes Ledger n'apparaissent pas ci-dessous, essayez de selectionner le path \"Legacy (MEW / MyCrypto)\""
+    "message": "Si vos comptes Ledger n'apparaissent pas ci-dessous, essayez de sélectionner le path \"Legacy (MEW / MyCrypto)\""
   },
   "selectType": {
-    "message": "Selectionner le type"
+    "message": "Sélectionner le type"
   },
   "send": {
     "message": "Envoyer"
   },
   "sendAmount": {
     "message": "Envoyer le montant"
+  },
+  "sendSpecifiedTokens": {
+    "description": "Symbole du jeton spécifié",
+    "message": "Envoyez $1"
   },
   "sendTokens": {
     "message": "Envoyer des jetons"
@@ -905,7 +997,13 @@
     "message": "Afficher les données Hex"
   },
   "showHexDataDescription": {
-    "message": "Selectionner ici pour afficher le champs de données hex dans l'écran d'envoi"
+    "message": "Sélectionnez ici pour afficher le champs de données hex dans l'écran d'envoi"
+  },
+  "showIncomingTransactions": {
+    "message": "Afficher les transactions entrantes"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Sélectionnez cette option pour utiliser Etherscan afin d'afficher les transactions entrantes dans la liste des transactions."
   },
   "showPrivateKeys": {
     "message": "Afficher les clés privées"
@@ -958,8 +1056,29 @@
   "supportCenter": {
     "message": "Visitez notre centre d'aide"
   },
-  "switchNetworks": {
+  "switchEthereumChainConfirmationDescription": {
+    "message": "Le réseau sélectionné dans MetaMask sera remplacé par un réseau précédemment ajouté :"
+  },
+  "switchEthereumChainConfirmationTitle": {
+    "message": "Autoriser ce site à changer le réseau ?"
+  },
+  "switchLedgerPaths": {
+    "message": "Changez les chemins du Ledger"
+  },
+  "switchLedgerPathsText": {
+    "message": "Sélectionnez le chemin du Ledger pour afficher les autres comptes"
+  },
+  "switchNetwork": {
     "message": "Changer de réseau"
+  },
+  "switchNetworks": {
+    "message": "Changer de réseaux"
+  },
+  "switchToThisAccount": {
+    "message": "Passer à ce compte"
+  },
+  "switchingNetworksCancelsPendingConfirmations": {
+    "message": "Le changement de réseau annulera toutes les confirmations en attente"
   },
   "symbol": {
     "message": "Symbole"
@@ -987,6 +1106,15 @@
   },
   "syncWithMobileTitle": {
     "message": "Synchroniser avec le mobile"
+  },
+  "syncWithThreeBox": {
+    "message": "Synchroniser les données avec 3Box (expérimentale)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Activez cette fonction pour que vos paramètres soient sauvegardés avec 3Box. Cette fonction est actuellement expérimentale ; utilisez-la à vos propres risques."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box a été désactivé en raison d'une erreur lors de la synchronisation initiale"
   },
   "terms": {
     "message": "Conditions d'Utilisation"
@@ -1061,8 +1189,8 @@
     "message": "Transfert Depuis"
   },
   "troubleTokenBalances": {
-    "message": "Nous avons eu du mal à charger votre balance de jetons, vous pouvez la consulter ici :",
-    "description": "Followed by a link (here) to view token balances"
+    "description": "Followed by a link (here) to view token balances",
+    "message": "Nous avons eu du mal à charger votre balance de jetons, vous pouvez la consulter ici :"
   },
   "tryAgain": {
     "message": "Essayez à nouveau"
@@ -1102,6 +1230,12 @@
   },
   "urlErrorMsg": {
     "message": "Les URLs requièrent un préfixe HTTP/HTTPS approprié."
+  },
+  "usePhishingDetection": {
+    "message": "Utiliser la détection du phishing"
+  },
+  "usePhishingDetectionDescription": {
+    "message": "Afficher un avertissement pour les domaines de phishing ciblant les utilisateurs d'Ethereum"
   },
   "usedByClients": {
     "message": "Utilisé par une variété de clients différents"
