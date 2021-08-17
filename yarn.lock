@@ -2906,7 +2906,7 @@
     readable-stream "^2.2.2"
     through2 "^2.0.3"
 
-"@metamask/post-message-stream@^4.0.0":
+"@metamask/post-message-stream@4.0.0", "@metamask/post-message-stream@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/post-message-stream/-/post-message-stream-4.0.0.tgz#72f120e562346ca86ccc9b3684023ad44265f0df"
   integrity sha512-r0JcoWXNuHycProx8ClxiIElJY/GVb/0/WWXTMsZu7qDejLo52VNXlwfydCdVjbMXeoT2nK1Yt3d5gjmHy5BWw==
@@ -2941,40 +2941,53 @@
   resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-4.0.1.tgz#fbc66069687f0502ebb4c6ac0fa7c9862ea6563c"
   integrity sha512-FN2Rz7ctY7Blx3iK6AmZmZEU+TkvEcpYvvebUmqZyOrmjh/DsYKVxfRicVAbyK9mDkeJ18Gx8r7swwFFR4rSgA==
 
-"@mm-snap/controllers@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@mm-snap/controllers/-/controllers-0.0.5.tgz#4a8aebbfeac3d7db2f633dd0b41ebee4daf34b8b"
-  integrity sha512-r6affFrTodO/jkRu05rp8RhuGRvsfzKaj45ngdHkNNISfXxOXQXaOLP/q2Uyn6Q/8NMsS8ACQTSAGa5D8zbleg==
+"@mm-snap/controllers@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@mm-snap/controllers/-/controllers-0.0.6.tgz#f49d40f52c24120734216e86515d56fc373da198"
+  integrity sha512-KnjVfI+21pBxOc7hXrdZDSfSSybzAa5+0EUAnaUA2V8E+CwsGf2OIO0vhKdXuvbvQcUytqQhtxyvPk4Qelv+ZA==
   dependencies:
+    "@metamask/controllers" "^14.2.0"
     "@metamask/object-multiplex" "^1.1.0"
     "@metamask/obs-store" "^6.0.2"
+    "@metamask/post-message-stream" "4.0.0"
     "@metamask/safe-event-emitter" "^2.0.0"
-    "@mm-snap/post-message-stream" "^0.0.5"
-    "@mm-snap/workers" "^0.0.5"
+    "@mm-snap/workers" "^0.0.6"
     eth-rpc-errors "^4.0.2"
+    json-rpc-engine "^6.1.0"
+    json-rpc-middleware-stream "^3.0.0"
     nanoid "^3.1.20"
     pump "^3.0.0"
 
-"@mm-snap/post-message-stream@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@mm-snap/post-message-stream/-/post-message-stream-0.0.5.tgz#e54d32246877f54ab987e16a88e53006bb19b80c"
-  integrity sha512-n/BE2HiNosk45VRnUBcxLjxq21ZqwWcpbtbqPzxxPT2eP7lj58t+NlI4jdhoq+b/C7jHxmSYjcfjgnxXgAB4Og==
+"@mm-snap/controllers@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@mm-snap/controllers/-/controllers-0.0.7.tgz#50fea7982fd96ecb9d57b51357396fc43c055a85"
+  integrity sha512-UAbcLT61fGdl6WReazEASeArVBQAua5M+7HCWo2FpzcjWi0o1F01kzF7we6U25vkib6lESIopVkcnug75N7J4g==
   dependencies:
-    readable-stream "2.3.3"
+    "@metamask/controllers" "^14.2.0"
+    "@metamask/object-multiplex" "^1.1.0"
+    "@metamask/obs-store" "^6.0.2"
+    "@metamask/post-message-stream" "4.0.0"
+    "@metamask/safe-event-emitter" "^2.0.0"
+    "@mm-snap/workers" "^0.0.6"
+    eth-rpc-errors "^4.0.2"
+    json-rpc-engine "^6.1.0"
+    json-rpc-middleware-stream "^3.0.0"
+    nanoid "^3.1.20"
+    pump "^3.0.0"
 
-"@mm-snap/rpc-methods@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@mm-snap/rpc-methods/-/rpc-methods-0.0.5.tgz#d75971bf85af22b21f77423c6c846f5926f9a854"
-  integrity sha512-zlaAdpCehiMjwxGvZJZbnM16TfBhLeLz0JM1t91CMFwLbj8LncadVINd6RiFmAZOIrFyA1kdPTDqTUuMHhBhgg==
+"@mm-snap/rpc-methods@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@mm-snap/rpc-methods/-/rpc-methods-0.0.6.tgz#aba61e3731b7f7649dc0bc8df0d0628f601cd496"
+  integrity sha512-FbPzbasWX31XRrvgfQ45v248XqsdvzRa8/Q7sPGkDpZiPPzJowWb+GU1Iuku/E5Fwe8dvL+FzzIIRa850WKYtw==
   dependencies:
     "@metamask/key-tree" "^2.0.1"
-    "@mm-snap/controllers" "^0.0.5"
+    "@mm-snap/controllers" "^0.0.6"
     eth-rpc-errors "^4.0.2"
 
-"@mm-snap/workers@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@mm-snap/workers/-/workers-0.0.5.tgz#640622cb7f67d150313f509d297444a5bf11f2d2"
-  integrity sha512-ueDu6uibO3RvAJZ+NdfWlyFUjAf7PAsSkBseMr34eSuNs8sG9h02+aFX/w6R3UJfUKdAg31V3WVhHFf/XeosGg==
+"@mm-snap/workers@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@mm-snap/workers/-/workers-0.0.6.tgz#cb464c6681bb2dcbade11928b9a548846c3a6802"
+  integrity sha512-cJrxad6kW4/yb1QsKWSbbPLLs5QqXUsh4iR1DX4dTG6d1NIuEmeNeJBb6Eq53leHh1qTc5Smv3ldSAtWk20meg==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
