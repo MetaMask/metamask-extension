@@ -290,7 +290,7 @@ class ImportToken extends Component {
               className="import-token__link"
               rel="noopener noreferrer"
               target="_blank"
-              href=" https://metamask.zendesk.com/hc/en-us/articles/4403988839451"
+              href="https://metamask.zendesk.com/hc/en-us/articles/4403988839451"
             >
               {this.context.t('learnScamRisk')}
             </Button>,
