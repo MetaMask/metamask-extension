@@ -36,15 +36,18 @@ export default class EnsInput extends Component {
   }
 
   onPaste = (event) => {
-    event.clipboardData.items[0].getAsString((text) => {
-      const input = text.trim();
-      if (
-        !isBurnAddress(input) &&
-        isValidHexAddress(input, { mixedCaseUseChecksum: true })
-      ) {
-        this.props.onPaste(input);
-      }
-    });
+    if (event.clipboardData.items?.length) {
+      const clipboardItem = event.clipboardData.items[0];
+      clipboardItem?.getAsString((text) => {
+        const input = text.trim();
+        if (
+          !isBurnAddress(input) &&
+          isValidHexAddress(input, { mixedCaseUseChecksum: true })
+        ) {
+          this.props.onPaste(input);
+        }
+      });
+    }
   };
 
   onChange = ({ target: { value } }) => {
