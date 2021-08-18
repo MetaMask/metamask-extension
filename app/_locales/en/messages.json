@@ -2813,8 +2813,5 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
-  },
-  "importTokensCamelCase": {
-    "message": "Import Tokens"
   }
 }
