@@ -44,6 +44,10 @@ const copyTargets = [
     dest: `loading.html`,
   },
   {
+    src: `./app/trezor-usb-permissions.html`,
+    dest: `trezor-usb-permissions.html`,
+  },
+  {
     src: `./node_modules/globalthis/dist/browser.js`,
     dest: `globalthis.js`,
   },
