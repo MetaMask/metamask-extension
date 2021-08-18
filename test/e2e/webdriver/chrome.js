@@ -6,7 +6,7 @@ const chrome = require('selenium-webdriver/chrome');
  */
 class ChromeDriver {
   static async build({ responsive, port }) {
-    const args = [`load-extension=dist/chrome`];
+    const args = ['load-extension=dist/chrome', '--no-sandbox'];
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs');
     }

@@ -4,11 +4,11 @@ set -e
 set -u
 set -o pipefail
 
-CHROME_VERSION='79.0.3945.117-1'
+CHROME_VERSION='87.0.4280.88-1'
 CHROME_BINARY="google-chrome-stable_${CHROME_VERSION}_amd64.deb"
-CHROME_BINARY_URL="http://mirror.cs.uchicago.edu/google-chrome/pool/main/g/google-chrome-stable/${CHROME_BINARY}"
+CHROME_BINARY_URL="https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/${CHROME_BINARY}"
 
-CHROME_BINARY_SHA512SUM='2d4f76202219a40e560477d79023fa4a847187a086278924a9d916dcd5fbefafdcf7dfd8879fae907b8276b244e71a3b8a1b00a88dee87b18738ce31134a6713'
+CHROME_BINARY_SHA512SUM='19eea1d1be171cab60ce5135572da9388b4b72e313118478b53f65c0bf2293733809282736b98ef828a208b7426e5191258f8c666cba7510b8bf5c92d0010a47'
 
 wget -O "${CHROME_BINARY}" -t 5 "${CHROME_BINARY_URL}"
 
