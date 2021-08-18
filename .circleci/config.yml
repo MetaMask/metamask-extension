@@ -17,13 +17,13 @@ executors:
 workflows:
   test_and_release:
     jobs:
-      # - create_release_pull_request:
-      #     requires:
-      #       - prep-deps
-      #     filters:
-      #       branches:
-      #         only:
-      #           - /^Version-v(\d+)[.](\d+)[.](\d+)/
+      - create_release_pull_request:
+          requires:
+            - prep-deps
+          filters:
+            branches:
+              only:
+                - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
       - test-deps-audit
       - test-deps-depcheck:
@@ -45,9 +45,9 @@ workflows:
       - prep-build-test-metrics:
           requires:
             - prep-deps
-      # - prep-build-storybook:
-      #     requires:
-      #       - prep-deps
+      - prep-build-storybook:
+          requires:
+            - prep-deps
       - test-lint:
           requires:
             - prep-deps
@@ -61,15 +61,15 @@ workflows:
       - test-e2e-chrome:
           requires:
             - prep-build-test
-      # - test-e2e-firefox:
-      #     requires:
-      #       - prep-build-test
+      - test-e2e-firefox:
+          requires:
+            - prep-build-test
       - test-e2e-chrome-metrics:
           requires:
             - prep-build-test-metrics
-      # - test-e2e-firefox-metrics:
-      #     requires:
-      #       - prep-build-test-metrics
+      - test-e2e-firefox-metrics:
+          requires:
+            - prep-build-test-metrics
       - test-unit:
           requires:
             - prep-deps
@@ -79,10 +79,10 @@ workflows:
       - validate-source-maps:
           requires:
             - prep-build
-      # - test-mozilla-lint:
-      #     requires:
-      #       - prep-deps
-      #       - prep-build
+      - test-mozilla-lint:
+          requires:
+            - prep-deps
+            - prep-build
       - all-tests-pass:
           requires:
             - validate-lavamoat-config
@@ -93,11 +93,11 @@ workflows:
             - test-unit
             - test-unit-global
             - validate-source-maps
-            # - test-mozilla-lint
+            - test-mozilla-lint
             - test-e2e-chrome
-            # - test-e2e-firefox
+            - test-e2e-firefox
             - test-e2e-chrome-metrics
-            # - test-e2e-firefox-metrics
+            - test-e2e-firefox-metrics
       - benchmark:
           requires:
             - prep-build-test
@@ -105,7 +105,7 @@ workflows:
           requires:
             - prep-deps
             - prep-build
-            # - prep-build-storybook
+            - prep-build-storybook
             - benchmark
             - all-tests-pass
       - job-publish-release:
@@ -116,32 +116,32 @@ workflows:
             - prep-deps
             - prep-build
             - all-tests-pass
-      # - job-publish-storybook:
-      #     filters:
-      #       branches:
-      #         only: develop
-      #     requires:
-      #       - prep-build-storybook
+      - job-publish-storybook:
+          filters:
+            branches:
+              only: develop
+          requires:
+            - prep-build-storybook
 
 jobs:
-  # create_release_pull_request:
-  #   executor: node-browsers
-  #   steps:
-  #     - checkout
-  #     - attach_workspace:
-  #         at: .
-  #     - run:
-  #         name: Bump manifest version
-  #         command: .circleci/scripts/release-bump-manifest-version.sh
-  #     - run:
-  #         name: Update changelog
-  #         command: yarn update-changelog --rc
-  #     - run:
-  #         name: Commit changes
-  #         command: .circleci/scripts/release-commit-version-bump.sh
-  #     - run:
-  #         name: Create GitHub Pull Request for version
-  #         command: .circleci/scripts/release-create-release-pr.sh
+  create_release_pull_request:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Bump manifest version
+          command: .circleci/scripts/release-bump-manifest-version.sh
+      - run:
+          name: Update changelog
+          command: yarn update-changelog --rc
+      - run:
+          name: Commit changes
+          command: .circleci/scripts/release-commit-version-bump.sh
+      - run:
+          name: Create GitHub Pull Request for version
+          command: .circleci/scripts/release-create-release-pr.sh
 
   prep-deps:
     executor: node-browsers
@@ -243,19 +243,19 @@ jobs:
             - dist-test-metrics
             - builds-test-metrics
 
-  # prep-build-storybook:
-  #   executor: node-browsers
-  #   steps:
-  #     - checkout
-  #     - attach_workspace:
-  #         at: .
-  #     - run:
-  #         name: Build Storybook
-  #         command: yarn storybook:build
-  #     - persist_to_workspace:
-  #         root: .
-  #         paths:
-  #           - storybook-build
+  prep-build-storybook:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build Storybook
+          command: yarn storybook:build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - storybook-build
 
   test-lint:
     executor: node-browsers
@@ -390,59 +390,59 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
 
-  # test-e2e-firefox:
-  #   executor: node-browsers
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Install Firefox
-  #         command: ./.circleci/scripts/firefox-install.sh
-  #     - attach_workspace:
-  #         at: .
-  #     - run:
-  #         name: Move test build to dist
-  #         command: mv ./dist-test ./dist
-  #     - run:
-  #         name: Move test zips to builds
-  #         command: mv ./builds-test ./builds
-  #     - run:
-  #         name: test:e2e:firefox
-  #         command: |
-  #           if .circleci/scripts/test-run-e2e.sh
-  #           then
-  #             yarn test:e2e:firefox --retries 2
-  #           fi
-  #         no_output_timeout: 20m
-  #     - store_artifacts:
-  #         path: test-artifacts
-  #         destination: test-artifacts
+  test-e2e-firefox:
+    executor: node-browsers
+    steps:
+      - checkout
+      - run:
+          name: Install Firefox
+          command: ./.circleci/scripts/firefox-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
+          name: test:e2e:firefox
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:firefox --retries 2
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
 
-  # test-e2e-firefox-metrics:
-  #   executor: node-browsers
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Install Firefox
-  #         command: ./.circleci/scripts/firefox-install.sh
-  #     - attach_workspace:
-  #         at: .
-  #     - run:
-  #         name: Move test build to dist
-  #         command: mv ./dist-test-metrics ./dist
-  #     - run:
-  #         name: Move test zips to builds
-  #         command: mv ./builds-test-metrics ./builds
-  #     - run:
-  #         name: test:e2e:firefox:metrics
-  #         command: |
-  #           if .circleci/scripts/test-run-e2e.sh
-  #           then
-  #             yarn test:e2e:firefox:metrics --retries 2
-  #           fi
-  #         no_output_timeout: 20m
-  #     - store_artifacts:
-  #         path: test-artifacts
-  #         destination: test-artifacts
+  test-e2e-firefox-metrics:
+    executor: node-browsers
+    steps:
+      - checkout
+      - run:
+          name: Install Firefox
+          command: ./.circleci/scripts/firefox-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-metrics ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-metrics ./builds
+      - run:
+          name: test:e2e:firefox:metrics
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:firefox:metrics --retries 2
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
 
   benchmark:
     executor: node-browsers-medium-plus
@@ -503,12 +503,12 @@ jobs:
       - store_artifacts:
           path: build-artifacts
           destination: build-artifacts
-      # - store_artifacts:
-      #     path: storybook-build
-      #     destination: storybook
-      # - run:
-      #     name: build:announce
-      #     command: ./development/metamaskbot-build-announce.js
+      - store_artifacts:
+          path: storybook-build
+          destination: storybook
+      - run:
+          name: build:announce
+          command: ./development/metamaskbot-build-announce.js
 
   job-publish-release:
     executor: node-browsers
@@ -519,25 +519,25 @@ jobs:
       - run:
           name: sentry sourcemaps upload
           command: SENTRY_ORG=metamask SENTRY_PROJECT=metamask yarn sentry:publish
-  #     - run:
-  #         name: Create GitHub release
-  #         command: |
-  #           .circleci/scripts/release-create-gh-release.sh
+      - run:
+          name: Create GitHub release
+          command: |
+            .circleci/scripts/release-create-gh-release.sh
 
-  # job-publish-storybook:
-  #   executor: node-browsers
-  #   steps:
-  #     - add_ssh_keys:
-  #         fingerprints:
-  #           - "3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8"
-  #     - checkout
-  #     - attach_workspace:
-  #         at: .
-  #     - run:
-  #         name: storybook:deploy
-  #         command: |
-  #           git remote add storybook git@github.com:MetaMask/metamask-storybook.git
-  #           yarn storybook:deploy
+  job-publish-storybook:
+    executor: node-browsers
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8"
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: storybook:deploy
+          command: |
+            git remote add storybook git@github.com:MetaMask/metamask-storybook.git
+            yarn storybook:deploy
 
   test-unit:
     executor: node-browsers
@@ -577,15 +577,15 @@ jobs:
           name: Validate source maps
           command: yarn validate-source-maps
 
-  # test-mozilla-lint:
-  #   executor: node-browsers
-  #   steps:
-  #     - checkout
-  #     - attach_workspace:
-  #         at: .
-  #     - run:
-  #         name: test:mozilla-lint
-  #         command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
+  test-mozilla-lint:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: test:mozilla-lint
+          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
 
   all-tests-pass:
     executor: node-browsers
