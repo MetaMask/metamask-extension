@@ -317,7 +317,7 @@ export default class MobileSyncPage extends Component {
 
     return screen === PASSWORD_PROMPT_SCREEN ? (
       <div>
-        {this.renderWarning(this.context.t('mobileSyncText'))}
+        {this.renderWarning(this.context.t('mobileSyncWarning'))}
         <div className="reveal-seed__content">
           {this.renderPasswordPromptContent()}
         </div>
@@ -404,7 +404,10 @@ export default class MobileSyncPage extends Component {
     const { password } = this.state;
 
     return (
-      <div className="new-account-import-form__buttons" style={{ padding: 30 }}>
+      <div
+        className="new-account-import-form__buttons"
+        style={{ padding: 30, marginTop: 0 }}
+      >
         <Button
           type="default"
           large

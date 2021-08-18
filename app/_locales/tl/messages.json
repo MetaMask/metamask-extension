@@ -960,9 +960,6 @@
   "metametricsOptInDescription": {
     "message": "Gustong kunin ng MetaMask ang data ng paggamit para mas maunawaan kung paano ginagamit ng mga user namin ang extension. Gagamitin ang data na ito para patuloy na mapahusay ang kakayahang magamit at karanasan ng user sa paggamit ng produkto namin at Ethereum ecosystem."
   },
-  "mobileSyncText": {
-    "message": "Pakilagay ang iyong password para makumpirmang ikaw nga ito!"
-  },
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token lang."
   },

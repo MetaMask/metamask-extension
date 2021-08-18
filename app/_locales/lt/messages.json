@@ -585,9 +585,6 @@
   "metamaskVersion": {
     "message": "„MetaMask“ versija"
   },
-  "mobileSyncText": {
-    "message": "Įveskite savo slaptažodį, kad patvirtintumėte, jog tai tikrai jūs!"
-  },
   "mustSelectOne": {
     "message": "Turite pasirinkti bent 1 žetoną."
   },

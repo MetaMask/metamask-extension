@@ -67,6 +67,7 @@ export default function EditGasDisplay({
   balanceError,
   estimatesUnavailableWarning,
   hasGasErrors,
+  txParamsHaveBeenCustomized,
 }) {
   const t = useContext(I18nContext);
   const isMainnet = useSelector(getIsMainnet);
@@ -96,12 +97,13 @@ export default function EditGasDisplay({
       dappSuggestedAndTxParamGasFeesAreTheSame,
   );
 
-  const showTopError = balanceError || estimatesUnavailableWarning;
+  const showTopError =
+    (balanceError || estimatesUnavailableWarning) &&
+    (!isGasEstimatesLoading || txParamsHaveBeenCustomized);
   const radioButtonsEnabled =
     networkAndAccountSupport1559 &&
     gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET &&
-    !requireDappAcknowledgement &&
-    ![EDIT_GAS_MODES.SPEED_UP, EDIT_GAS_MODES.CANCEL].includes(mode);
+    !requireDappAcknowledgement;
 
   let errorKey;
   if (balanceError) {
@@ -121,7 +123,7 @@ export default function EditGasDisplay({
             />
           </div>
         )}
-        {showTopError && !isGasEstimatesLoading && (
+        {showTopError && (
           <div className="edit-gas-display__warning">
             <ErrorMessage errorKey={errorKey} />
           </div>
@@ -249,6 +251,7 @@ export default function EditGasDisplay({
         {!requireDappAcknowledgement &&
           (showAdvancedForm ||
             hasGasErrors ||
+            estimatesUnavailableWarning ||
             showAdvancedInlineGasIfPossible) && (
             <AdvancedGasControls
               gasEstimateType={gasEstimateType}
@@ -316,4 +319,5 @@ EditGasDisplay.propTypes = {
   balanceError: PropTypes.bool,
   estimatesUnavailableWarning: PropTypes.bool,
   hasGasErrors: PropTypes.bool,
+  txParamsHaveBeenCustomized: PropTypes.bool,
 };

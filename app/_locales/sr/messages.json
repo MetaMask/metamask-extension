@@ -576,9 +576,6 @@
   "metamaskVersion": {
     "message": "MetaMask verzija"
   },
-  "mobileSyncText": {
-    "message": "Molimo vas unesite šifru kako biste potvrdili da ste to vi!"
-  },
   "mustSelectOne": {
     "message": "Morate izabrati najmanje 1 token."
   },

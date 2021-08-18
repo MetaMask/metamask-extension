@@ -578,9 +578,6 @@
   "metamaskVersion": {
     "message": "إصدار MetaMask "
   },
-  "mobileSyncText": {
-    "message": "يرجى إدخال كلمة مرورك لتأكيد هويتك!"
-  },
   "mustSelectOne": {
     "message": "يجب تحديد عملة رمزية واحدة على الأقل."
   },

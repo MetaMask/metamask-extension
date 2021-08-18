@@ -1127,9 +1127,6 @@
     "message": "네트워크 세부 정보 검증",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
-  "mobileSyncText": {
-    "message": "암호를 입력하여 본인임을 인증하세요."
-  },
   "mustSelectOne": {
     "message": "토큰을 1개 이상 선택해야 합니다."
   },

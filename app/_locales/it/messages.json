@@ -966,9 +966,6 @@
   "metametricsOptInDescription": {
     "message": "MetaMask vorrebbe raccogliere dati di utilizzo per capire meglio come gli utenti interagiscono con l'estensione. Questi dati verranno usati continuamente per migliorare l'usabilità e l'esperienza utente dei nostri prodotti e dell'ecosistema Ethereum."
   },
-  "mobileSyncText": {
-    "message": "Per favore inserisci la password per confermare che sei te!"
-  },
   "mustSelectOne": {
     "message": "Devi selezionare almeno un token."
   },

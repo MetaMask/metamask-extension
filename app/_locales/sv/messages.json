@@ -569,9 +569,6 @@
   "metamaskVersion": {
     "message": "MetaMask-version"
   },
-  "mobileSyncText": {
-    "message": "Var vänlig ange ditt lösenord för att bekräfta att det är du!"
-  },
   "mustSelectOne": {
     "message": "Minst 1 token måste väljas."
   },

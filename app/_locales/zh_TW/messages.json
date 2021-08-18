@@ -591,9 +591,6 @@
   "metamaskVersion": {
     "message": "MetaMask 版本"
   },
-  "mobileSyncText": {
-    "message": "請輸入密碼確認身份！"
-  },
   "mustSelectOne": {
     "message": "必須選擇至少 1 代幣"
   },

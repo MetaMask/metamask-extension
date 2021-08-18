@@ -581,9 +581,6 @@
   "metamaskVersion": {
     "message": "Версия на MetaMask"
   },
-  "mobileSyncText": {
-    "message": "Моля, въведете вашата парола, за да потвърдите, че сте вие!"
-  },
   "mustSelectOne": {
     "message": "Трябва да изберете поне 1 жетон."
   },
