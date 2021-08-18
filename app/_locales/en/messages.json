@@ -2514,7 +2514,7 @@
     "description": "$1 represents a dapp origin"
   },
   "transactionDetailDappGasTooltip": {
-    "message": "This gas fee suggestion is using legacy gas estimation which may be inaccurate."
+    "message": "Edit to use MetaMask's recommended gas fee based on the latest block."
   },
   "transactionDetailGasHeading": {
     "message": "Estimated gas fee"
