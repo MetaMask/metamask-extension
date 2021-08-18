@@ -14,9 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#11853](https://github.com/MetaMask/metamask-extension/pull/11853): Allow editing custom gas while estimate is loading
 - [#11862](https://github.com/MetaMask/metamask-extension/pull/11862): Increase saliency of mobile sync warning text
 - [#11872](https://github.com/MetaMask/metamask-extension/pull/11872): Default gas limit in edit gas popover to 0 when estimates are unavailable
+- [#11873](https://github.com/MetaMask/metamask-extension/pull/11873): Update copy on tooltip shown when dapp suggests gas fees
 
 ### Fixed
 - [#11852](https://github.com/MetaMask/metamask-extension/pull/11852): Improve flashing behavior for loading gas estimates (Confirmation Screen)
+- [#11874](https://github.com/MetaMask/metamask-extension/pull/11874): Fixes Trezor pairing integration
 
 ## [10.0.1]
 ### Fixed
