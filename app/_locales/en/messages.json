@@ -1297,8 +1297,8 @@
     "message": "verify the network details",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
-  "mobileSyncText": {
-    "message": "Please enter your password to confirm it's you!"
+  "mobileSyncWarning": {
+    "message": "⚠️ Proceeding will display a secret QR code that allows access to your accounts. Do not share it with anyone. Support staff will never ask your for it."
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."

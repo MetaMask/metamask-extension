@@ -565,9 +565,6 @@
   "metamaskVersion": {
     "message": "Versi MetaMask"
   },
-  "mobileSyncText": {
-    "message": "Sila masukkan kata laluan anda untuk mengesahkan ini memang anda!"
-  },
   "mustSelectOne": {
     "message": "Mesti memilih sekurang-kurangnya 1 token."
   },
