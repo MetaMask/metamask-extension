@@ -1127,9 +1127,6 @@
     "message": "verifikasi detail jaringan",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
-  "mobileSyncText": {
-    "message": "Masukkan kata sandi Anda untuk memastikan ini adalah Anda!"
-  },
   "mustSelectOne": {
     "message": "Harus memilih sekurangnya 1 token."
   },

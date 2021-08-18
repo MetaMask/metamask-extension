@@ -578,9 +578,6 @@
   "metamaskVersion": {
     "message": "Inačica usluge MetaMask"
   },
-  "mobileSyncText": {
-    "message": "Upišite svoju lozinku kako biste potvrdili da ste to vi!"
-  },
   "mustSelectOne": {
     "message": "Mora se odabrati barem jedan token."
   },

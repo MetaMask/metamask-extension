@@ -1127,9 +1127,6 @@
     "message": "ネットワークの詳細を確認します",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
-  "mobileSyncText": {
-    "message": "本人であることを確認するためにパスワードを入力してください!"
-  },
   "mustSelectOne": {
     "message": "トークンを 1 つ以上選択する必要があります。"
   },

@@ -1127,9 +1127,6 @@
     "message": "verifique los detalles de la red",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
-  "mobileSyncText": {
-    "message": "Escriba su contraseña para confirmar que es usted."
-  },
   "mustSelectOne": {
     "message": "Debe seleccionar al menos 1 token."
   },

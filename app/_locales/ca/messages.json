@@ -569,9 +569,6 @@
   "metamaskVersion": {
     "message": "Versió MetaMask"
   },
-  "mobileSyncText": {
-    "message": "Si us plau, introdueix la teva contrasenya per confirmar que ets tu!"
-  },
   "mustSelectOne": {
     "message": "Has de seleccionar "
   },
