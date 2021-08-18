@@ -408,7 +408,10 @@ export default class MobileSyncPage extends Component {
     const { password } = this.state;
 
     return (
-      <div className="new-account-import-form__buttons" style={{ padding: 30 }}>
+      <div
+        className="new-account-import-form__buttons"
+        style={{ padding: 30, marginTop: 0 }}
+      >
         <Button
           type="default"
           large
