@@ -5,6 +5,7 @@ import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   METASWAP_CHAINID_API_HOST_MAP,
   ALLOWED_CONTRACT_ADDRESSES,
+  SWAPS_WRAPPED_TOKENS_ADDRESSES,
   ETHEREUM,
   POLYGON,
   BSC,
@@ -264,6 +265,19 @@ function validateData(validators, object, urlUsed) {
   });
 }
 
+export const shouldEnableDirectWrapping = (
+  chainId,
+  sourceToken,
+  destinationToken,
+) => {
+  const wrappedToken = SWAPS_WRAPPED_TOKENS_ADDRESSES[chainId];
+  const nativeToken = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.address;
+  return (
+    (sourceToken === wrappedToken && destinationToken === nativeToken) ||
+    (sourceToken === nativeToken && destinationToken === wrappedToken)
+  );
+};
+
 export async function fetchTradesInfo(
   {
     slippage,
@@ -287,6 +301,9 @@ export async function fetchTradesInfo(
 
   if (exchangeList) {
     urlParams.exchangeList = exchangeList;
+  }
+  if (shouldEnableDirectWrapping(chainId, sourceToken, destinationToken)) {
+    urlParams.enableDirectWrapping = true;
   }
 
   const queryString = new URLSearchParams(urlParams).toString();
@@ -625,6 +642,8 @@ export function quotesToRenderableData(
       renderedSlippage = 0;
     } else if (aggType === 'DEX') {
       liquiditySourceKey = 'swapDecentralizedExchange';
+    } else if (aggType === 'CONTRACT') {
+      liquiditySourceKey = 'swapDirectContract';
     } else {
       liquiditySourceKey = 'swapUnknown';
     }

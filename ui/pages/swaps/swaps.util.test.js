@@ -10,6 +10,7 @@ import {
 } from '../../../shared/constants/network';
 import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   WETH_CONTRACT_ADDRESS,
   WBNB_CONTRACT_ADDRESS,
   WMATIC_CONTRACT_ADDRESS,
@@ -34,6 +35,7 @@ import {
   getNetworkNameByChainId,
   getSwapsLivenessForNetwork,
   countDecimals,
+  shouldEnableDirectWrapping,
 } from './swaps.util';
 
 jest.mock('../../helpers/utils/storage-helpers.js', () => ({
@@ -406,6 +408,116 @@ describe('Swaps Util', () => {
 
     it('returns 9 decimals for number: 1.123456789', () => {
       expect(countDecimals(1.123456789)).toBe(9);
+    });
+  });
+
+  describe('shouldEnableDirectWrapping', () => {
+    const randomTokenAddress = '0x881d40237659c251811cec9c364ef91234567890';
+
+    it('returns true if swapping from ETH to WETH', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          MAINNET_CHAIN_ID,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[MAINNET_CHAIN_ID]?.address,
+          WETH_CONTRACT_ADDRESS,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true if swapping from WETH to ETH', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          MAINNET_CHAIN_ID,
+          WETH_CONTRACT_ADDRESS,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[MAINNET_CHAIN_ID]?.address,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false if swapping from ETH to a non-WETH token', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          MAINNET_CHAIN_ID,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[MAINNET_CHAIN_ID]?.address,
+          randomTokenAddress,
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true if swapping from BNB to WBNB', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          BSC_CHAIN_ID,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[BSC_CHAIN_ID]?.address,
+          WBNB_CONTRACT_ADDRESS,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true if swapping from WBNB to BNB', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          BSC_CHAIN_ID,
+          WBNB_CONTRACT_ADDRESS,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[BSC_CHAIN_ID]?.address,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false if swapping from BNB to a non-WBNB token', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          BSC_CHAIN_ID,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[BSC_CHAIN_ID]?.address,
+          randomTokenAddress,
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true if swapping from MATIC to WMATIC', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          POLYGON_CHAIN_ID,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[POLYGON_CHAIN_ID]?.address,
+          WMATIC_CONTRACT_ADDRESS,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true if swapping from WMATIC to MATIC', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          POLYGON_CHAIN_ID,
+          WMATIC_CONTRACT_ADDRESS,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[POLYGON_CHAIN_ID]?.address,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false if swapping from MATIC to a non-WMATIC token', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          POLYGON_CHAIN_ID,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[POLYGON_CHAIN_ID]?.address,
+          randomTokenAddress,
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false if a source token is undefined', () => {
+      expect(
+        shouldEnableDirectWrapping(
+          MAINNET_CHAIN_ID,
+          undefined,
+          WETH_CONTRACT_ADDRESS,
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false if a destination token is undefined', () => {
+      expect(
+        shouldEnableDirectWrapping(MAINNET_CHAIN_ID, WETH_CONTRACT_ADDRESS),
+      ).toBe(false);
     });
   });
 });
