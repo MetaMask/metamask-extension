@@ -229,7 +229,7 @@ export function useGasFeeInputs(
     initialGasPrice && initialFeeParamsAreCustom ? initialGasPrice : null,
   );
   const [gasLimit, setGasLimit] = useState(
-    Number(hexToDecimal(transaction?.txParams?.gas ?? minimumGasLimit)),
+    Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
   );
 
   const userPrefersAdvancedGas = useSelector(getAdvancedInlineGasShown);
