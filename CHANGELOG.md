@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - [#11853](https://github.com/MetaMask/metamask-extension/pull/11853): Allow editing custom gas while estimate is loading
+- [#11862](https://github.com/MetaMask/metamask-extension/pull/11862): Increase saliency of mobile sync warning text
 
 ### Fixed
 - [#11852](https://github.com/MetaMask/metamask-extension/pull/11852): Improve flashing behavior for loading gas estimates (Confirmation Screen)
