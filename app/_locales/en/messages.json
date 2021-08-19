@@ -2697,10 +2697,10 @@
     "message": "Display a warning for phishing domains targeting Ethereum users"
   },
   "useStaticTokenList": {
-    "message": "Token detection"
+    "message": "Use Token Detection"
   },
   "useStaticTokenListDescription": {
-    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to pull data from those those services."
+    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn this off if you don’t want MetaMask to pull data from those those services."
   },
   "usedByClients": {
     "message": "Used by a variety of different clients"
