@@ -450,6 +450,7 @@ export default function BuildQuote({
           {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
             <div
               className="build-quote__max-button"
+              data-testid="build-quote__max-button"
               onClick={() =>
                 onInputChange(fromTokenBalance || '0', fromTokenBalance)
               }
