@@ -630,16 +630,16 @@
     "message": "How should I choose?"
   },
   "editGasEducationHighExplanation": {
-    "message": "This is best for swaps or other time sensitive transactions. If a swap takes too long to process it will often fail and you may lose funds."
+    "message": "This is best for time sensitive transactions (like Swaps) as it increases the likelihood of a successful transaction. If a Swap takes too long to process it may fail and result in losing some of your gas fee."
   },
   "editGasEducationLowExplanation": {
-    "message": "A lower gas fee should only be selected for transactions where processing time is less important. With a lower fee, it can be hard to predict when (or if) your transaction will be successful."
+    "message": "A lower gas fee should only be used when processing time is less important. Lower fees make it hard predict when (or if) your transaction will be successful."
   },
   "editGasEducationMediumExplanation": {
-    "message": "A medium gas fee is good for sending, withdrawing or other non-time sensitive but important transactions."
+    "message": "A medium gas fee is good for sending, withdrawing or other non-time sensitive transactions. This setting will most often result in a successful transaction."
   },
   "editGasEducationModalIntro": {
-    "message": "The right gas amount to select depends on the type of transaction and how important it is."
+    "message": "Selecting the right gas fee depends on the type of transaction and how important it is to you."
   },
   "editGasEducationModalTitle": {
     "message": "How to choose?"
@@ -675,7 +675,7 @@
     "message": "Max priority fee is higher than necessary. You may pay more than needed."
   },
   "editGasMaxPriorityFeeLow": {
-    "message": "Max priority fee extremely low for network conditions"
+    "message": "Max priority fee is low for current network conditions"
   },
   "editGasMaxPriorityFeeTooltip": {
     "message": "Max priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction. You’ll most often pay your max setting"
