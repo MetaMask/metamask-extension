@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Добавяне на мрежа"
   },
-  "addRecipient": {
-    "message": "Добавете получател"
-  },
   "addSuggestedTokens": {
     "message": "Добавете препоръчани жетони"
   },

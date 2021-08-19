@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "Добавить сеть"
   },
-  "addRecipient": {
-    "message": "Добавить получателя"
-  },
   "addSuggestedTokens": {
     "message": "Добавить предложенные токены"
   },

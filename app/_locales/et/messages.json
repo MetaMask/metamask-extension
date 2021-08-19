@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Lisage võrk"
   },
-  "addRecipient": {
-    "message": "Lisa saaja"
-  },
   "addSuggestedTokens": {
     "message": "Lisa soovitatud lube"
   },

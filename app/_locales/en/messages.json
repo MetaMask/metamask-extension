@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "Add Network"
   },
-  "addRecipient": {
-    "message": "Add Recipient"
-  },
   "addSuggestedTokens": {
     "message": "Add Suggested Tokens"
   },
@@ -1896,6 +1893,9 @@
   "sendSpecifiedTokens": {
     "message": "Send $1",
     "description": "Symbol of the specified token"
+  },
+  "sendTo": {
+    "message": "Send to"
   },
   "sendTokens": {
     "message": "Send Tokens"

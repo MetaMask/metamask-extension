@@ -35,9 +35,6 @@
   "addNetwork": {
     "message": "Magdagdag ng Network"
   },
-  "addRecipient": {
-    "message": "Magdagdag ng Recipient"
-  },
   "addSuggestedTokens": {
     "message": "Magdagdag ng Mga Iminungkahing Token"
   },

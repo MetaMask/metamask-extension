@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Pievienot tīklu"
   },
-  "addRecipient": {
-    "message": "Pievienot saņēmēju"
-  },
   "addSuggestedTokens": {
     "message": "Pievienot ieteiktos marķierus"
   },
