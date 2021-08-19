@@ -100,7 +100,7 @@ export function checkNetworkAndAccountSupports1559(state) {
  */
 export function isHardwareWallet(state) {
   const keyring = getCurrentKeyring(state);
-  return keyring.type.includes('Hardware');
+  return Boolean(keyring?.type?.includes('Hardware'));
 }
 
 /**
@@ -110,7 +110,7 @@ export function isHardwareWallet(state) {
  */
 export function getHardwareWalletType(state) {
   const keyring = getCurrentKeyring(state);
-  return keyring.type.includes('Hardware') ? keyring.type : undefined;
+  return isHardwareWallet(state) ? keyring.type : undefined;
 }
 
 export function getAccountType(state) {
