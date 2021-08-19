@@ -2862,3 +2862,8 @@ export async function setUnconnectedAccountAlertShown(origin) {
 export async function setWeb3ShimUsageAlertDismissed(origin) {
   await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
 }
+
+// DetectTokenController
+export async function detectNewTokens() {
+  return promisifiedBackground.detectNewTokens();
+}

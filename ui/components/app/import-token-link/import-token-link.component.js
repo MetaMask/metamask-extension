@@ -6,6 +6,7 @@ import { ADD_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import Button from '../../ui/button';
 import Box from '../../ui/box/box';
 import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
+import { detectNewTokens } from '../../../store/actions';
 
 export default function ImportTokenLink() {
   const addTokenEvent = useMetricEvent({
@@ -20,6 +21,14 @@ export default function ImportTokenLink() {
 
   return (
     <Box className="import-token-link" textAlign={TEXT_ALIGN.CENTER}>
+      <Button
+        className="import-token-link__link"
+        type="link"
+        onClick={() => detectNewTokens()}
+      >
+        {t('refreshList')}
+      </Button>
+      {' or '}
       <Button
         className="import-token-link__link"
         type="link"
