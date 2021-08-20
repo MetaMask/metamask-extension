@@ -66,7 +66,12 @@ export async function setupFilsnap(permissionsController, pluginController) {
 
   // Start filsnap
   if (!pluginController.isRunning(FILSNAP_NAME)) {
-    await pluginController.startPlugin(FILSNAP_NAME);
+    try {
+      await pluginController.startPlugin(FILSNAP_NAME);
+    } catch (error) {
+      // eslint-disable-next-line no-alert
+      window.alert(error.message);
+    }
   }
 }
 

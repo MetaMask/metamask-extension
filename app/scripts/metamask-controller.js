@@ -1267,7 +1267,12 @@ export default class MetamaskController extends EventEmitter {
         if (pluginController.isRunning(FILSNAP_NAME)) {
           pluginController.stopPlugin(FILSNAP_NAME);
         } else {
-          await pluginController.startPlugin(FILSNAP_NAME);
+          try {
+            await pluginController.startPlugin(FILSNAP_NAME);
+          } catch (error) {
+            // eslint-disable-next-line no-alert
+            window.alert(error.message);
+          }
         }
       }),
     };

@@ -2988,10 +2988,10 @@
     nanoid "^3.1.20"
     pump "^3.0.0"
 
-"@mm-snap/iframe-execution-environment-service@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@mm-snap/iframe-execution-environment-service/-/iframe-execution-environment-service-0.0.6.tgz#f3084c11deed028399831aea0028e081a2e2581e"
-  integrity sha512-3JHEzvSw2kp/fQUgrf4RfuzFtGQx5lzWz+GPdxdj/kdb0NwZtHhBBYFAD3sxCZtlawOAEEhTGl297e2fPHD7ug==
+"@mm-snap/iframe-execution-environment-service@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@mm-snap/iframe-execution-environment-service/-/iframe-execution-environment-service-0.0.8.tgz#79a4deca80df6350a02b68c50d5275ea4bbd9835"
+  integrity sha512-Pekke59X2Y9m9Xet8vjTHhYveQyw7wICE8K9ykOrWLP9DZihIpZlbJ909X4iAgumZxb6uHn8ZPdaTYzOV44H4w==
   dependencies:
     "@metamask/object-multiplex" "^1.2.0"
     "@metamask/obs-store" "^7.0.0"
@@ -26056,9 +26056,9 @@ tar@6.0.2:
     yallist "^4.0.0"
 
 tar@^4:
-  version "4.4.17"
-  resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.17.tgz#44be5e3fa8353ee1d11db3b1401561223a5c3985"
-  integrity sha512-q7OwXq6NTdcYIa+k58nEMV3j1euhDhGCs/VRw9ymx/PbH0jtIM2+VTgDE/BW3rbLkrBUXs5fzEKgic5oUciu7g==
+  version "4.4.19"
+  resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.19.tgz#2e4d7263df26f2b914dee10c825ab132123742f3"
+  integrity sha512-a20gEsvHnWe0ygBY8JbxoM4w3SJdhc7ZAuxkLqh+nvNQN2IOt0B5lLgM490X5Hl8FF0dl0tOf2ewFYAlIFgzVA==
   dependencies:
     chownr "^1.1.4"
     fs-minipass "^1.2.7"
