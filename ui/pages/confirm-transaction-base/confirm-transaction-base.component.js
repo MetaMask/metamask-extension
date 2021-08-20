@@ -9,6 +9,7 @@ import {
   hexToDecimal,
   hexWEIToDecGWEI,
 } from '../../helpers/utils/conversions.util';
+import { getURLHostName } from '../../helpers/utils/util';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
@@ -300,14 +301,6 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const { t } = this.context;
 
-    const getRequestingOrigin = () => {
-      try {
-        return new URL(txData.origin)?.hostname;
-      } catch (err) {
-        return '';
-      }
-    };
-
     const renderTotalMaxAmount = () => {
       if (
         primaryTotalTextOverrideMaxAmount === undefined &&
@@ -409,7 +402,7 @@ export default class ConfirmTransactionBase extends Component {
                 txData.dappSuggestedGasFees ? (
                   <>
                     {t('transactionDetailDappGasHeading', [
-                      getRequestingOrigin(),
+                      getURLHostName(txData?.origin),
                     ])}
                     <InfoTooltip
                       contentText={t('transactionDetailDappGasTooltip')}
