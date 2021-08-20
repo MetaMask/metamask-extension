@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Lägg till nätverk"
   },
-  "addRecipient": {
-    "message": "Lägg till mottagare"
-  },
   "addSuggestedTokens": {
     "message": "Lägg till föreslagna tokens"
   },

@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Lisää verkko"
   },
-  "addRecipient": {
-    "message": "Lisää vastaanottaja"
-  },
   "addSuggestedTokens": {
     "message": "Lisää ehdotetut käyttötunnukset"
   },

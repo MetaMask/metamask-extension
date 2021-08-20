@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Dodaj omrežje"
   },
-  "addRecipient": {
-    "message": "Dodaj prejemnika"
-  },
   "addSuggestedTokens": {
     "message": "Dodaj priporočene žetone"
   },

@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Afegir Xarxa"
   },
-  "addRecipient": {
-    "message": "Afegeix un recipient"
-  },
   "addSuggestedTokens": {
     "message": "Afegir Fitxes Suggerides"
   },

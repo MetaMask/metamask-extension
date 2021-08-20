@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Tambah Rangkaian"
   },
-  "addRecipient": {
-    "message": "Tambah Penerima"
-  },
   "addSuggestedTokens": {
     "message": "Tambah Token yang Disyorkan"
   },

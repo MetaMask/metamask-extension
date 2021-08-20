@@ -41,9 +41,6 @@
   "addNetwork": {
     "message": "新增網路"
   },
-  "addRecipient": {
-    "message": "新增接收人"
-  },
   "addSuggestedTokens": {
     "message": "加入建議的代幣"
   },

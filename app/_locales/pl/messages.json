@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Dodaj sieć"
   },
-  "addRecipient": {
-    "message": "Dodaj odbiorcę"
-  },
   "addSuggestedTokens": {
     "message": "Dodaj sugerowane tokeny."
   },
