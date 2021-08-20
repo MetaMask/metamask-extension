@@ -1,4 +1,5 @@
 import nanoid from 'nanoid';
+import extension from 'extensionizer';
 
 const fs = require('fs');
 const FILSNAP_MANIFEST = require('../../vendor/filsnap/filsnap-manifest.json');
@@ -69,8 +70,12 @@ export async function setupFilsnap(permissionsController, pluginController) {
     try {
       await pluginController.startPlugin(FILSNAP_NAME);
     } catch (error) {
-      // eslint-disable-next-line no-alert
-      window.alert(error.message);
+      extension.notifications.create(FILSNAP_NAME, {
+        type: 'basic',
+        title: error.message,
+        iconUrl: extension.extension.getURL('../../images/icon-64.png'),
+        message: error.message,
+      });
     }
   }
 }

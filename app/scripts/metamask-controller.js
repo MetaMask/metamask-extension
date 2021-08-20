@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import extension from 'extensionizer';
 import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
@@ -1270,8 +1271,12 @@ export default class MetamaskController extends EventEmitter {
           try {
             await pluginController.startPlugin(FILSNAP_NAME);
           } catch (error) {
-            // eslint-disable-next-line no-alert
-            window.alert(error.message);
+            extension.notifications.create(FILSNAP_NAME, {
+              type: 'basic',
+              title: error.message,
+              iconUrl: extension.extension.getURL('../../images/icon-64.png'),
+              message: error.message,
+            });
           }
         }
       }),
