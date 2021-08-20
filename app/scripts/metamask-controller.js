@@ -793,7 +793,9 @@ export default class MetamaskController extends EventEmitter {
    * Reinstalls filsnap.
    */
   async reinstallFilsnap() {
-    this.pluginController.removePlugin(FILSNAP_NAME);
+    if (this.pluginController.has(FILSNAP_NAME)) {
+      this.pluginController.removePlugin(FILSNAP_NAME);
+    }
     this.assetsController.deleteResourcesFor(FILSNAP_NAME);
     await this.setupFilsnap(this.permissionsController, this.pluginController);
   }
