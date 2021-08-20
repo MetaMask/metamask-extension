@@ -34,6 +34,7 @@ import {
   getTopAssets,
   getFetchParams,
   getQuotes,
+  setReviewSwapClickedTimestamp,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -427,10 +428,14 @@ export default function BuildQuote({
         ),
       );
     };
-    dispatch(clearSwapsQuotes());
-    if (!isReviewSwapButtonDisabled) {
-      fetchQuotesWithoutRedirecting();
-    }
+    // Delay fetching quotes until a user is done typing an input value.
+    const timeoutId = setTimeout(() => {
+      dispatch(clearSwapsQuotes());
+      if (!isReviewSwapButtonDisabled) {
+        fetchQuotesWithoutRedirecting();
+      }
+    }, 1000);
+    return () => clearTimeout(timeoutId);
   }, [
     dispatch,
     history,
@@ -634,6 +639,7 @@ export default function BuildQuote({
       </div>
       <SwapsFooter
         onSubmit={async () => {
+          dispatch(setReviewSwapClickedTimestamp(Date.now()));
           if (areQuotesPresent) {
             // If there are prefetched quotes already, go directly to the View Quote page.
             history.push(VIEW_QUOTE_ROUTE);

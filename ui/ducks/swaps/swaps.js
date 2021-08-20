@@ -86,6 +86,7 @@ const initialState = {
   fetchingQuotes: false,
   fromToken: null,
   quotesFetchStartTime: null,
+  reviewSwapClickedTimestamp: null,
   topAssets: {},
   toToken: null,
   customGas: {
@@ -129,6 +130,9 @@ const slice = createSlice({
     },
     setQuotesFetchStartTime: (state, action) => {
       state.quotesFetchStartTime = action.payload;
+    },
+    setReviewSwapClickedTimestamp: (state, action) => {
+      state.reviewSwapClickedTimestamp = action.payload;
     },
     setTopAssets: (state, action) => {
       state.topAssets = action.payload;
@@ -182,6 +186,9 @@ export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes;
 
 export const getQuotesFetchStartTime = (state) =>
   state.swaps.quotesFetchStartTime;
+
+export const getReviewSwapClickedTimestamp = (state) =>
+  state.swaps.reviewSwapClickedTimestamp;
 
 export const getSwapsCustomizationModalPrice = (state) =>
   state.swaps.customGas.price;
@@ -326,6 +333,7 @@ const {
   setFetchingQuotes,
   setFromToken,
   setQuotesFetchStartTime,
+  setReviewSwapClickedTimestamp,
   setTopAssets,
   setToToken,
   swapCustomGasModalPriceEdited,
@@ -341,6 +349,7 @@ export {
   setFetchingQuotes,
   setFromToken as setSwapsFromToken,
   setQuotesFetchStartTime as setSwapQuotesFetchStartTime,
+  setReviewSwapClickedTimestamp,
   setTopAssets,
   setToToken as setSwapToToken,
   swapCustomGasModalPriceEdited,
