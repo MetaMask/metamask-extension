@@ -33,6 +33,7 @@ import { toBuffer } from '../../../shared/modules/buffer-utils';
 import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
+import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 
 import { COLORS } from '../../helpers/constants/design-system';
@@ -42,6 +43,9 @@ import {
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
 } from '../../store/actions';
+
+const renderHeartBeatIfNotInTest = () =>
+  process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -112,6 +116,8 @@ export default class ConfirmTransactionBase extends Component {
     maxFeePerGas: PropTypes.string,
     maxPriorityFeePerGas: PropTypes.string,
     baseFeePerGas: PropTypes.string,
+    isMainnet: PropTypes.bool,
+    gasFeeIsCustom: PropTypes.bool,
   };
 
   state = {
@@ -196,6 +202,7 @@ export default class ConfirmTransactionBase extends Component {
       txData: { simulationFails, txParams: { value: amount } = {} } = {},
       customGas,
       noGasPrice,
+      gasFeeIsCustom,
     } = this.props;
 
     const insufficientBalance =
@@ -230,7 +237,7 @@ export default class ConfirmTransactionBase extends Component {
       };
     }
 
-    if (noGasPrice) {
+    if (noGasPrice && !gasFeeIsCustom) {
       return {
         valid: false,
         errorKey: GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
@@ -289,6 +296,7 @@ export default class ConfirmTransactionBase extends Component {
       primaryTotalTextOverrideMaxAmount,
       maxFeePerGas,
       maxPriorityFeePerGas,
+      isMainnet,
     } = this.props;
     const { t } = this.context;
 
@@ -416,7 +424,11 @@ export default class ConfirmTransactionBase extends Component {
                     <InfoTooltip
                       contentText={
                         <>
-                          <p>{t('transactionDetailGasTooltipIntro')}</p>
+                          <p>
+                            {t('transactionDetailGasTooltipIntro', [
+                              isMainnet ? t('networkNameEthereum') : '',
+                            ])}
+                          </p>
                           <p>{t('transactionDetailGasTooltipExplanation')}</p>
                           <p>
                             <a
@@ -440,29 +452,41 @@ export default class ConfirmTransactionBase extends Component {
                 txData.dappSuggestedGasFees ? COLORS.SECONDARY1 : COLORS.BLACK
               }
               detailText={
-                <UserPreferencedCurrencyDisplay
-                  type={SECONDARY}
-                  value={hexMinimumTransactionFee}
-                  hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-                />
+                <div className="confirm-page-container-content__currency-container">
+                  {renderHeartBeatIfNotInTest()}
+                  <UserPreferencedCurrencyDisplay
+                    type={SECONDARY}
+                    value={hexMinimumTransactionFee}
+                    hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                  />
+                </div>
               }
               detailTotal={
-                <UserPreferencedCurrencyDisplay
-                  type={PRIMARY}
-                  value={hexMinimumTransactionFee}
-                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                />
+                <div className="confirm-page-container-content__currency-container">
+                  {renderHeartBeatIfNotInTest()}
+                  <UserPreferencedCurrencyDisplay
+                    type={PRIMARY}
+                    value={hexMinimumTransactionFee}
+                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                  />
+                </div>
               }
               subText={t('editGasSubTextFee', [
                 <b key="editGasSubTextFeeLabel">
                   {t('editGasSubTextFeeLabel')}
                 </b>,
-                <UserPreferencedCurrencyDisplay
-                  key="editGasSubTextFeeAmount"
-                  type={PRIMARY}
-                  value={hexMaximumTransactionFee}
-                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                />,
+                <div
+                  key="editGasSubTextFeeValue"
+                  className="confirm-page-container-content__currency-container"
+                >
+                  {renderHeartBeatIfNotInTest()}
+                  <UserPreferencedCurrencyDisplay
+                    key="editGasSubTextFeeAmount"
+                    type={PRIMARY}
+                    value={hexMaximumTransactionFee}
+                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                  />
+                </div>,
               ])}
               subTitle={
                 <GasTiming
@@ -832,6 +856,7 @@ export default class ConfirmTransactionBase extends Component {
       showAccountInHeader,
       txData,
       gasIsLoading,
+      gasFeeIsCustom,
     } = this.props;
     const {
       submitting,
@@ -898,7 +923,7 @@ export default class ConfirmTransactionBase extends Component {
         lastTx={lastTx}
         ofText={ofText}
         requestsWaitingText={requestsWaitingText}
-        disabled={!valid || submitting || gasIsLoading}
+        disabled={!valid || submitting || (gasIsLoading && !gasFeeIsCustom)}
         onEdit={() => this.handleEdit()}
         onCancelAll={() => this.handleCancelAll()}
         onCancel={() => this.handleCancel()}

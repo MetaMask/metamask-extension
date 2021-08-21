@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.0.2]
+### Added
+- [#11818](https://github.com/MetaMask/metamask-extension/pull/11818): Add gas recommendation options to cancel and speed up popovers
+
+### Changed
+- [#11853](https://github.com/MetaMask/metamask-extension/pull/11853): Allow editing custom gas while estimate is loading
+- [#11862](https://github.com/MetaMask/metamask-extension/pull/11862): Increase saliency of mobile sync warning text
+- [#11872](https://github.com/MetaMask/metamask-extension/pull/11872): Default gas limit in edit gas popover to 0 when estimates are unavailable
+- [#11873](https://github.com/MetaMask/metamask-extension/pull/11873): Update copy on tooltip shown when dapp suggests gas fees
+
+### Fixed
+- [#11852](https://github.com/MetaMask/metamask-extension/pull/11852): Improve flashing behavior for loading gas estimates (Confirmation Screen)
+- [#11874](https://github.com/MetaMask/metamask-extension/pull/11874): Fixes Trezor pairing integration
+
 ## [10.0.1]
 ### Fixed
 - [#11813](https://github.com/MetaMask/metamask-extension/pull/11813): Fix error reporting version configuration
@@ -2399,7 +2413,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.0.2...HEAD
+[10.0.2]: https://github.com/MetaMask/metamask-extension/compare/v10.0.1...v10.0.2
 [10.0.1]: https://github.com/MetaMask/metamask-extension/compare/v10.0.0...v10.0.1
 [10.0.0]: https://github.com/MetaMask/metamask-extension/compare/v9.8.4...v10.0.0
 [9.8.4]: https://github.com/MetaMask/metamask-extension/compare/v9.8.3...v9.8.4

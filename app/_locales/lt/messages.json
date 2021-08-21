@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Pridėti tinklą"
   },
-  "addRecipient": {
-    "message": "Pridėti gavėją"
-  },
   "addSuggestedTokens": {
     "message": "Pridėti siūlomų žetonų"
   },
@@ -584,9 +581,6 @@
   },
   "metamaskVersion": {
     "message": "„MetaMask“ versija"
-  },
-  "mobileSyncText": {
-    "message": "Įveskite savo slaptažodį, kad patvirtintumėte, jog tai tikrai jūs!"
   },
   "mustSelectOne": {
     "message": "Turite pasirinkti bent 1 žetoną."

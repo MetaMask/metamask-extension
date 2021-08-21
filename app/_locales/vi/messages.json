@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "Thêm mạng"
   },
-  "addRecipient": {
-    "message": "Thêm người nhận"
-  },
   "addSuggestedTokens": {
     "message": "Thêm token được đề xuất"
   },
@@ -1126,9 +1123,6 @@
   "mismatchedChainLinkText": {
     "message": "xác minh thông tin về mạng",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mobileSyncText": {
-    "message": "Vui lòng nhập mật khẩu để xác nhận đây là bạn!"
   },
   "mustSelectOne": {
     "message": "Phải chọn ít nhất 1 token."

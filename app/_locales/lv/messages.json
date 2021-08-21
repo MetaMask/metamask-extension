@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Pievienot tīklu"
   },
-  "addRecipient": {
-    "message": "Pievienot saņēmēju"
-  },
   "addSuggestedTokens": {
     "message": "Pievienot ieteiktos marķierus"
   },
@@ -580,9 +577,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMask versija"
-  },
-  "mobileSyncText": {
-    "message": "Lūdzu, ievadiet paroli, lai apstiprinātu, ka tas esat jūs."
   },
   "mustSelectOne": {
     "message": "Jāatlasa vismaz 1 marķieris."

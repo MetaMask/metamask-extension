@@ -35,9 +35,6 @@
   "addNetwork": {
     "message": "Magdagdag ng Network"
   },
-  "addRecipient": {
-    "message": "Magdagdag ng Recipient"
-  },
   "addSuggestedTokens": {
     "message": "Magdagdag ng Mga Iminungkahing Token"
   },
@@ -522,9 +519,6 @@
   },
   "metamaskVersion": {
     "message": "Bersyon ng MetaMask"
-  },
-  "mobileSyncText": {
-    "message": "Pakilagay ang iyong password para kumpirmahing ikaw ito!"
   },
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token."

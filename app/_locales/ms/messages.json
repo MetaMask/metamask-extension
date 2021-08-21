@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Tambah Rangkaian"
   },
-  "addRecipient": {
-    "message": "Tambah Penerima"
-  },
   "addSuggestedTokens": {
     "message": "Tambah Token yang Disyorkan"
   },
@@ -564,9 +561,6 @@
   },
   "metamaskVersion": {
     "message": "Versi MetaMask"
-  },
-  "mobileSyncText": {
-    "message": "Sila masukkan kata laluan anda untuk mengesahkan ini memang anda!"
   },
   "mustSelectOne": {
     "message": "Mesti memilih sekurang-kurangnya 1 token."

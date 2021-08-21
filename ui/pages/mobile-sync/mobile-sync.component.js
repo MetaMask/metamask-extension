@@ -28,6 +28,7 @@ export default class MobileSyncPage extends Component {
     requestRevealSeedWords: PropTypes.func.isRequired,
     exportAccounts: PropTypes.func.isRequired,
     keyrings: PropTypes.array,
+    hideWarning: PropTypes.func.isRequired,
   };
 
   state = {
@@ -277,6 +278,9 @@ export default class MobileSyncPage extends Component {
   }
 
   componentWillUnmount() {
+    if (this.state.error) {
+      this.props.hideWarning();
+    }
     this.clearTimeouts();
     this.disconnectWebsockets();
   }
@@ -317,7 +321,7 @@ export default class MobileSyncPage extends Component {
 
     return screen === PASSWORD_PROMPT_SCREEN ? (
       <div>
-        {this.renderWarning(this.context.t('mobileSyncText'))}
+        {this.renderWarning(this.context.t('mobileSyncWarning'))}
         <div className="reveal-seed__content">
           {this.renderPasswordPromptContent()}
         </div>
@@ -404,7 +408,10 @@ export default class MobileSyncPage extends Component {
     const { password } = this.state;
 
     return (
-      <div className="new-account-import-form__buttons" style={{ padding: 30 }}>
+      <div
+        className="new-account-import-form__buttons"
+        style={{ padding: 30, marginTop: 0 }}
+      >
         <Button
           type="default"
           large

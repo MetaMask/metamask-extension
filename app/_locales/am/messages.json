@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "አውታረ መረብ አክል"
   },
-  "addRecipient": {
-    "message": "ተቀባይ አክል"
-  },
   "addSuggestedTokens": {
     "message": "የተጠቆሙ ተለዋጭ ስሞችን አክል"
   },
@@ -581,9 +578,6 @@
   },
   "metamaskVersion": {
     "message": "የ MetaMask ስሪት"
-  },
-  "mobileSyncText": {
-    "message": "እርስዎ መሆንዎትን ለማረጋገጥ እባከዎ የይለፍ ቃልዎን ያስገቡ!"
   },
   "mustSelectOne": {
     "message": "ቢያንስ 1 ተለዋጭ ስም መምረጥ አለብዎ።"

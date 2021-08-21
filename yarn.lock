@@ -2731,9 +2731,9 @@
   integrity sha512-QZj6Y1nmSs9BHufBS1GSuPX5TVFa5gbtMhEo/KRuSdKyY43OdlbBKuyT36/l5p30krlzfMX8bN0MAWqw3g0Bog==
 
 "@metamask/controllers@^14.0.2":
-  version "14.1.0"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-14.1.0.tgz#c318f1733944faf54b6c883b5db64aadb3dbbbb8"
-  integrity sha512-hJTg1Q66RQkxZprT3QJPkP+HkRJd8j6QH2Vc2BWnqW7quOCBwODFH6X2F1vKyBdsCVWKbk7U8JU2GBmmSp0ocg==
+  version "14.2.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-14.2.0.tgz#bed161ac3523fd525be79b0e557b132e2e2526e4"
+  integrity sha512-1Is1OJByDJo5GOKt02TiCCGhYlclcAT2IeoiqhSL6fTUT4Qc+2xwgjx42XeE7bzKIDwXpxafpHViCkO3d6IIdA==
   dependencies:
     "@ethereumjs/common" "^2.3.1"
     "@ethereumjs/tx" "^3.2.1"

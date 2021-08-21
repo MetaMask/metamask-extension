@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Legg til nettverk"
   },
-  "addRecipient": {
-    "message": "Legg til mottaker "
-  },
   "addSuggestedTokens": {
     "message": "Legg til foreslåtte tokener "
   },
@@ -571,9 +568,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMask-versjon "
-  },
-  "mobileSyncText": {
-    "message": "Vennligst skriv inn passordet ditt for å bekrefte at det er deg!"
   },
   "mustSelectOne": {
     "message": "Må velge minst 1 token. "

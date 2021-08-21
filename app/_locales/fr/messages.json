@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Ajouter un réseau"
   },
-  "addRecipient": {
-    "message": "Ajouter destinataire"
-  },
   "addSuggestedTokens": {
     "message": "Ajouter les jetons suggérés"
   },
@@ -570,9 +567,6 @@
   "metamaskVersion": {
     "message": "Version de MetaMask"
   },
-  "mobileSyncText": {
-    "message": "Veuillez entrer votre mot de passe pour confirmer que c'est bien vous !"
-  },
   "mustSelectOne": {
     "message": "Vous devez selectionner au moins 1 jeton."
   },
@@ -660,7 +654,7 @@
     "message": "de"
   },
   "off": {
-    "message": "Déconnecté"
+    "message": "Désactivé"
   },
   "on": {
     "message": "Activé"

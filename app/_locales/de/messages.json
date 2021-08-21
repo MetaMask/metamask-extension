@@ -35,9 +35,6 @@
   "addNetwork": {
     "message": "Netzwerk hinzufügen"
   },
-  "addRecipient": {
-    "message": "Empfänger hinzufügen"
-  },
   "addSuggestedTokens": {
     "message": "Vorgeschlagene Token hinzufügen"
   },
@@ -563,9 +560,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMask-Version"
-  },
-  "mobileSyncText": {
-    "message": "Bitte geben Sie Ihr Passwort ein, um Ihre Identität zu verifizieren!"
   },
   "mustSelectOne": {
     "message": "Du musst mindestens 1 Token auswählen."

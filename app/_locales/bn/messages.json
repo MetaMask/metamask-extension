@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "নেটওয়ার্ক যোগ করুন"
   },
-  "addRecipient": {
-    "message": "প্রাপক যোগ করুন"
-  },
   "addSuggestedTokens": {
     "message": "প্রস্তাবিত টোকেনগুলি যোগ করুন"
   },
@@ -584,9 +581,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMask সংস্করণ"
-  },
-  "mobileSyncText": {
-    "message": "এটি যে আপনি তা নিশ্চিত করতে অনুগ্রহ করে আপনার পাসওয়ার্ড লিখুন!"
   },
   "mustSelectOne": {
     "message": "অবশ্যই অন্তত 1টি টোকেন নির্বাচন করতে হবে।"

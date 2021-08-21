@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "اضافه شبکه"
   },
-  "addRecipient": {
-    "message": "اضافه کردن دریافت کننده"
-  },
   "addSuggestedTokens": {
     "message": "اضافه رمزیاب های پیشنهاد شده"
   },
@@ -584,9 +581,6 @@
   },
   "metamaskVersion": {
     "message": "نسخه MetaMask"
-  },
-  "mobileSyncText": {
-    "message": "لطفًا رمز عبور را وارد نمایید تا تأیید شود که خود شما هستید!"
   },
   "mustSelectOne": {
     "message": "باید حداقل 1 رمزیاب را انتخاب کنید."

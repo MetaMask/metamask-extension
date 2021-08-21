@@ -74,13 +74,21 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   return { dev, test, testDev, prod };
 
   function createTasksForBuildJsExtension({ taskPrefix, devMode, testing }) {
-    const standardEntryPoints = ['background', 'ui', 'phishing-detect'];
+    const standardEntryPoints = [
+      'background',
+      'ui',
+      'phishing-detect',
+      'content-script',
+    ];
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
-        entryFiles: standardEntryPoints.map(
-          (label) => `./app/scripts/${label}.js`,
-        ),
+        entryFiles: standardEntryPoints.map((label) => {
+          if (label === 'content-script') {
+            return './app/vendor/trezor/content-script.js';
+          }
+          return `./app/scripts/${label}.js`;
+        }),
         devMode,
         testing,
         browserPlatforms,
@@ -275,6 +283,15 @@ function createFactoredBuild({
           }
           case 'background': {
             renderHtmlFile('background', groupSet, commonSet, browserPlatforms);
+            break;
+          }
+          case 'content-script': {
+            renderHtmlFile(
+              'trezor-usb-permissions',
+              groupSet,
+              commonSet,
+              browserPlatforms,
+            );
             break;
           }
           default: {

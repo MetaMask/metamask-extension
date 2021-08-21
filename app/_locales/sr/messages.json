@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Dodajte mrežu"
   },
-  "addRecipient": {
-    "message": "Dodaj primaoca"
-  },
   "addSuggestedTokens": {
     "message": "Dodajte sugerisane tokene"
   },
@@ -575,9 +572,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMask verzija"
-  },
-  "mobileSyncText": {
-    "message": "Molimo vas unesite šifru kako biste potvrdili da ste to vi!"
   },
   "mustSelectOne": {
     "message": "Morate izabrati najmanje 1 token."

@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Додати мережу"
   },
-  "addRecipient": {
-    "message": "Додати отримувача"
-  },
   "addSuggestedTokens": {
     "message": "Додати рекомендовані токени"
   },
@@ -584,9 +581,6 @@
   },
   "metamaskVersion": {
     "message": "Версія MetaMask"
-  },
-  "mobileSyncText": {
-    "message": "Введіть пароль, щоб підтвердити свою особу!"
   },
   "mustSelectOne": {
     "message": "Слід вибрати хоча б 1 токен."

@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Adăugați rețea"
   },
-  "addRecipient": {
-    "message": "Adăugați destinatarul"
-  },
   "addSuggestedTokens": {
     "message": "Adăugați indicativele sugerate"
   },
@@ -571,9 +568,6 @@
   },
   "metamaskVersion": {
     "message": "Versiune MetaMask"
-  },
-  "mobileSyncText": {
-    "message": "Vă rugăm introduceți parola pentru a vă confirma identitatea!"
   },
   "mustSelectOne": {
     "message": "Trebuie să selectați cel puțin 1 simbol."

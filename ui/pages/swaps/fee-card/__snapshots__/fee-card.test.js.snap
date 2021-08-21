@@ -52,7 +52,7 @@ exports[`FeeCard renders the component with EIP-1559 enabled 2`] = `
         class="fee-card__info-tooltip-container"
       >
         <div
-          aria-describedby="tippy-tooltip-6"
+          aria-describedby="tippy-tooltip-7"
           class="info-tooltip__tooltip-container"
           data-original-title="null"
           data-tooltipped=""

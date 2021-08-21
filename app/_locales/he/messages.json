@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "הוסף/י רשת"
   },
-  "addRecipient": {
-    "message": "הוסף נמען"
-  },
   "addSuggestedTokens": {
     "message": "הוסף/י אסימונים מוצעים"
   },
@@ -581,9 +578,6 @@
   },
   "metamaskVersion": {
     "message": "גרסת MetaMask"
-  },
-  "mobileSyncText": {
-    "message": "נא להזין את הססמה שלך כדי לאשר שזה/זו אכן את/ה!"
   },
   "mustSelectOne": {
     "message": "חובה לבחור לפחות אסימון אחד."
