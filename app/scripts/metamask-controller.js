@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import extension from 'extensionizer';
 import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
@@ -817,7 +818,9 @@ export default class MetamaskController extends EventEmitter {
    * Reinstalls filsnap.
    */
   async reinstallFilsnap() {
-    this.pluginController.removePlugin(FILSNAP_NAME);
+    if (this.pluginController.has(FILSNAP_NAME)) {
+      this.pluginController.removePlugin(FILSNAP_NAME);
+    }
     this.assetsController.deleteResourcesFor(FILSNAP_NAME);
     await this.setupFilsnap(this.permissionsController, this.pluginController);
   }
@@ -1303,7 +1306,16 @@ export default class MetamaskController extends EventEmitter {
         if (pluginController.isRunning(FILSNAP_NAME)) {
           pluginController.stopPlugin(FILSNAP_NAME);
         } else {
-          await pluginController.startPlugin(FILSNAP_NAME);
+          try {
+            await pluginController.startPlugin(FILSNAP_NAME);
+          } catch (error) {
+            extension.notifications.create(FILSNAP_NAME, {
+              type: 'basic',
+              title: error.message,
+              iconUrl: extension.extension.getURL('../../images/icon-64.png'),
+              message: error.message,
+            });
+          }
         }
       }),
     };
