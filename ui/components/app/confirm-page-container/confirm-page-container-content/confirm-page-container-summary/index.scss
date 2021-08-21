@@ -1,6 +1,6 @@
 .confirm-page-container-summary {
   padding: 16px 24px 0;
-  background-color: #f9fafa;
+  background-color: $primary-dark;
   height: 133px;
   box-sizing: border-box;
 
@@ -19,9 +19,9 @@
     @include H7;
 
     text-transform: uppercase;
-    color: $oslo-gray;
+    color: $secondary-dark;
     padding: 3px 8px;
-    border: 1px solid $oslo-gray;
+    border: 1px solid $secondary-dark;
     border-radius: 4px;
     display: inline-block;
   }
@@ -57,6 +57,6 @@
   }
 
   &--border {
-    border-bottom: 1px solid $geyser;
+    border-bottom: 1px solid $secondary-dark;
   }
 }

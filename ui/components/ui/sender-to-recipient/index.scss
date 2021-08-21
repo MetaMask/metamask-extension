@@ -7,7 +7,7 @@
   flex: 0 0 auto;
 
   &--default {
-    border-bottom: 1px solid $geyser;
+    border-bottom: 1px solid $secondary-dark;
     height: 42px;
 
     .sender-to-recipient {
@@ -57,9 +57,8 @@
       }
 
       &__arrow-circle {
-        background: $white;
+        background: $secondary-dark;
         padding: 5px;
-        border: 1px solid $geyser;
         border-radius: 20px;
         height: 32px;
         width: 32px;

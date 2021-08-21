@@ -25,7 +25,8 @@
   &__data-box {
     @include H7;
 
-    background-color: #f9fafa;
+    background-color: $ui-black;
+    color: $secondary-dark;
     padding: 12px;
     margin-bottom: 16px;
     word-wrap: break-word;
@@ -34,7 +35,7 @@
 
     &-label {
       @include H7;
-
+      color: $secondary-dark;
       text-transform: uppercase;
       padding: 8px 0 12px;
     }
