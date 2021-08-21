@@ -8,11 +8,11 @@
   border-radius: 100px;
 
   &:hover {
-    background-color: #f2f3f4;
+    background-color: $ui-black;
   }
 
   &:active {
-    background-color: #ededed;
+    background-color: $ui-black
   }
 
   &__inner-circle {
@@ -53,7 +53,7 @@
   &__text {
     @include H8;
 
-    color: $Grey-500;
+    color: $secondary-dark;
     margin-left: 6px;
     white-space: nowrap;
   }
