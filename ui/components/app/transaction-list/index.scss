@@ -13,8 +13,8 @@
     @include H6;
 
     flex: 0 0 auto;
-    color: $Grey-400;
-    border-bottom: 1px solid $Grey-100;
+    color: $secondary-dark;
+    border-bottom: 3px solid $secondary-dark;
     padding: 8px 0 8px 20px;
 
     @media screen and (max-width: $break-small) {
@@ -41,7 +41,7 @@
     grid-row-start: 2;
     display: flex;
     justify-content: center;
-    color: $silver;
+    color: $secondary-dark;
   }
 
   &__view-more {

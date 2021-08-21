@@ -36,7 +36,7 @@
 
         &--recipient {
           padding-left: 30px;
-          border-left: 1px solid $geyser;
+          border-left: 1px solid $secondary-dark;
 
           &-with-address {
             cursor: pointer;
@@ -107,7 +107,7 @@
         background: $white;
         cursor: pointer;
         min-width: 0;
-        color: $dusty-gray;
+        color: $secondary-dark;
       }
 
       &__tooltip-wrapper {
@@ -162,7 +162,7 @@
         padding: 6px;
         cursor: pointer;
         min-width: 0;
-        color: $dusty-gray;
+        color: $secondary-dark;
       }
 
       &__tooltip-wrapper {

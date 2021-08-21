@@ -1,13 +1,13 @@
 .transaction-breakdown-row {
   @include H7;
 
-  color: $scorpion;
+  color: $secondary-dark;
   display: flex;
   justify-content: space-between;
   padding: 8px 0;
 
   &:not(:last-child) {
-    border-bottom: 1px solid #d8d8d8;
+    border-bottom: 1px solid $secondary-dark;
   }
 
   &__title {

@@ -1,6 +1,6 @@
 .transaction-list-item {
   &__primary-currency {
-    color: $Black-100;
+    color: $secondary-dark;
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -9,15 +9,15 @@
     @include H7;
 
     margin-top: 4px;
-    color: $Grey-500;
+    color: $secondary-dark;
   }
 
   & &--unconfirmed {
-    color: $Grey-500;
+    color: $secondary-dark;
   }
 
   &--unconfirmed &__primary-currency {
-    color: $Grey-500;
+    color: $secondary-dark;
   }
 
   &__pending-actions {

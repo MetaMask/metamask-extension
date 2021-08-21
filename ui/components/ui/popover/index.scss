@@ -61,6 +61,11 @@
       background: none;
       font-size: inherit;
       padding: 0;
+      color: $secondary-dark;
+
+      &:hover {
+        color: $secondary-dark-hover;
+      }
     }
 
     i {
