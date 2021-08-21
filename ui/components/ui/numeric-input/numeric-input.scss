@@ -1,5 +1,4 @@
 .numeric-input {
-  border: 1px solid $ui-3;
   position: relative;
   border-radius: 6px;
 
@@ -12,6 +11,12 @@
     border: 0;
     padding: 10px;
     border-radius: 6px;
+    color: white;
+    background-color: $ui-black;
+    border: 1px solid $secondary-dark;
+    &:focus {
+      border: 2px solid $secondary-dark;
+    }
 
     /* ensures the increment/decrement arrows always display */
     &::-webkit-inner-spin-button,

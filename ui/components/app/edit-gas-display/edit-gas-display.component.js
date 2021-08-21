@@ -139,7 +139,7 @@ export default function EditGasDisplay({
         {mode === EDIT_GAS_MODES.SPEED_UP && (
           <div className="edit-gas-display__top-tooltip">
             <Typography
-              color={COLORS.BLACK}
+              color={COLORS.UI4}
               variant={TYPOGRAPHY.H8}
               fontWeight={FONT_WEIGHT.BOLD}
             >
