@@ -1044,6 +1044,9 @@
   "importAccount": {
     "message": "Import Account"
   },
+  "importAccountError": {
+    "message": "Error importing account."
+  },
   "importAccountLinkText": {
     "message": "import using Secret Recovery Phrase"
   },
