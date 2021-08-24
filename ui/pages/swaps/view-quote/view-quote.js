@@ -107,6 +107,7 @@ export default function ViewQuote() {
   const [warningHidden, setWarningHidden] = useState(false);
   const [originalApproveAmount, setOriginalApproveAmount] = useState(null);
   const [showEditGasPopover, setShowEditGasPopover] = useState(false);
+  const [currentTimestamp] = useState(Date.now());
 
   const [
     acknowledgedPriceDifference,
@@ -438,15 +439,14 @@ export default function ViewQuote() {
     },
   });
 
-  // TODO: fix this, so it will not refresh the component all the time thanks to Date.now().
-  // const viewQuotePageLoadedEvent = useNewMetricEvent({
-  //   event: 'View Quote Page Loaded',
-  //   category: 'swaps',
-  //   sensitiveProperties: {
-  //     ...eventObjectBase,
-  //     response_time: Date.now() - reviewSwapClickedTimestamp,
-  //   },
-  // });
+  const viewQuotePageLoadedEvent = useNewMetricEvent({
+    event: 'View Quote Page Loaded',
+    category: 'swaps',
+    sensitiveProperties: {
+      ...eventObjectBase,
+      response_time: currentTimestamp - reviewSwapClickedTimestamp,
+    },
+  });
 
   useEffect(() => {
     if (
@@ -665,10 +665,9 @@ export default function ViewQuote() {
   useEffect(() => {
     dispatch(setSwapsQuotesPollingLimitEnabled(true));
     if (reviewSwapClickedTimestamp) {
-      // TODO: Fix this, so it will not go inside this useEffect all the time, but just once.
-      // viewQuotePageLoadedEvent();
+      viewQuotePageLoadedEvent();
     }
-  }, [dispatch, reviewSwapClickedTimestamp]);
+  }, [dispatch, viewQuotePageLoadedEvent, reviewSwapClickedTimestamp]);
 
   return (
     <div className="view-quote">
