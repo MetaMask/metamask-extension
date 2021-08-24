@@ -1295,32 +1295,8 @@ export default class MetamaskController extends EventEmitter {
       tokens,
     } = this.preferencesController.store.getState();
 
-    // TokeListController
-    const { tokenList } = this.tokenListController.state;
-
-    // Filter ERC20 tokens
-    const filteredAccountTokens = {};
-    Object.keys(accountTokens).forEach((address) => {
-      const checksummedAddress = toChecksumHexAddress(address);
-      filteredAccountTokens[checksummedAddress] = {};
-      Object.keys(accountTokens[address]).forEach((chainId) => {
-        filteredAccountTokens[checksummedAddress][chainId] =
-          chainId === MAINNET_CHAIN_ID
-            ? accountTokens[address][chainId].filter(
-                ({ address: tokenAddress }) => {
-                  const checksumAddress = toChecksumHexAddress(tokenAddress);
-                  return !this.preferencesController.store.getState()
-                    .useStaticTokenList && tokenList[checksumAddress]
-                    ? tokenList[checksumAddress].erc20
-                    : true;
-                },
-              )
-            : accountTokens[address][chainId];
-      });
-    });
-
     const preferences = {
-      accountTokens: filteredAccountTokens,
+      accountTokens,
       currentLocale,
       frequentRpcList,
       identities,
