@@ -258,6 +258,8 @@ export default function Swap() {
   }, [dispatch]);
 
   useEffect(() => {
+    // If there is a swapsErrorKey and reviewSwapClicked is false, there was an error in silent quotes prefetching
+    // and we don't want to show the error page in that case, because another API call for quotes can be successful.
     if (swapsErrorKey && !isSwapsErrorRoute && reviewSwapClicked) {
       history.push(SWAPS_ERROR_ROUTE);
     }

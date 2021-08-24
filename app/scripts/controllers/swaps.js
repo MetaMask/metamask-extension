@@ -159,6 +159,7 @@ export default class SwapsController {
         quotesPollingLimitEnabled,
       },
     } = this.store.getState();
+    // swapsQuoteRefreshTime is used on the View Quote page, swapsQuotePrefetchingRefreshTime is used on the Build Quote page.
     const quotesRefreshRateInMs = quotesPollingLimitEnabled
       ? swapsQuoteRefreshTime
       : swapsQuotePrefetchingRefreshTime;
@@ -301,7 +302,8 @@ export default class SwapsController {
     });
 
     if (quotesPollingLimitEnabled) {
-      // We only want to do up to a maximum of three requests from polling.
+      // We only want to do up to a maximum of three requests from polling if polling limit is enabled.
+      // Otherwise we won't increase pollCount, so polling will run without a limit.
       this.pollCount += 1;
     }
 

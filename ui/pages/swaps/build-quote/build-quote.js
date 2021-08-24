@@ -419,10 +419,11 @@ export default function BuildQuote({
     Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
     (toTokenIsNotDefault && occurrences < 2 && !verificationClicked);
 
+  // It's triggered every time there is a change in form values (token from, token to, amount and slippage).
   useEffect(() => {
     dispatch(clearSwapsQuotes());
     dispatch(stopPollingForQuotes());
-    const fetchQuotesWithoutRedirecting = async () => {
+    const prefetchQuotesWithoutRedirecting = async () => {
       const pageRedirectionDisabled = true;
       await dispatch(
         fetchQuotesAndSetQuoteState(
@@ -434,11 +435,13 @@ export default function BuildQuote({
         ),
       );
     };
-    // Delay fetching quotes until a user is done typing an input value.
+    // Delay fetching quotes until a user is done typing an input value. If they type a new char in less than a second,
+    // we will cancel previous setTimeout call and start running a new one.
     timeoutIdForQuotesPrefetching = setTimeout(() => {
       timeoutIdForQuotesPrefetching = null;
       if (!isReviewSwapButtonDisabled) {
-        fetchQuotesWithoutRedirecting();
+        // Only do quotes prefetching if the Review Swap button is enabled.
+        prefetchQuotesWithoutRedirecting();
       }
     }, 1000);
     return () => clearTimeout(timeoutIdForQuotesPrefetching);
@@ -645,6 +648,7 @@ export default function BuildQuote({
       </div>
       <SwapsFooter
         onSubmit={async () => {
+          // We need this to know how long it took to go from clicking on the Review Swap button to rendered View Quote page.
           dispatch(setReviewSwapClickedTimestamp(Date.now()));
           // In case that quotes prefetching is waiting to be executed, but hasn't started yet,
           // we want to cancel it and fetch quotes from here.

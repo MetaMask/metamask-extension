@@ -474,6 +474,8 @@ export const fetchQuotesAndSetQuoteState = (
       decimals: toTokenDecimals,
       iconUrl: toTokenIconUrl,
     } = selectedToToken;
+    // pageRedirectionDisabled is true if quotes prefetching is active (a user is on the Build Quote page).
+    // In that case we just want to silently prefetch quotes without redirecting to the quotes loading page.
     if (!pageRedirectionDisabled) {
       await dispatch(setBackgroundSwapRouteState('loading'));
       history.push(LOADING_QUOTES_ROUTE);

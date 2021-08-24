@@ -107,6 +107,7 @@ export default function ViewQuote() {
   const [warningHidden, setWarningHidden] = useState(false);
   const [originalApproveAmount, setOriginalApproveAmount] = useState(null);
   const [showEditGasPopover, setShowEditGasPopover] = useState(false);
+  // We need to have currentTimestamp in state, otherwise it would change with each rerender.
   const [currentTimestamp] = useState(Date.now());
 
   const [
@@ -663,6 +664,7 @@ export default function ViewQuote() {
   };
 
   useEffect(() => {
+    // Thanks to the next line we will only do quotes polling 3 times before showing a Quote Timeout modal.
     dispatch(setSwapsQuotesPollingLimitEnabled(true));
     if (reviewSwapClickedTimestamp) {
       viewQuotePageLoadedEvent();
