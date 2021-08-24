@@ -1,5 +1,10 @@
 .transaction-detail-item {
+  padding: 20px 0;
   color: $ui-4;
+
+  &--thin-bottom {
+    padding-bottom: 12px;
+  }
 
   &__row {
     display: flex;
@@ -35,5 +40,20 @@
 
   .currency-display-component {
     display: inline;
+  }
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+    border-top: 1px solid $ui-3;
+  }
+
+  &--standard-bottom {
+    &:last-child {
+      padding-bottom: 20px;
+    }
   }
 }

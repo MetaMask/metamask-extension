@@ -4,11 +4,14 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
+import { GAS_LIMITS } from '../../../shared/constants/gas';
+
 import {
   addHexes,
   hexToDecimal,
   hexWEIToDecGWEI,
 } from '../../helpers/utils/conversions.util';
+import AdvancedGasControls from '../../components/app/advanced-gas-controls/advanced-gas-controls.component';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
@@ -118,6 +121,9 @@ export default class ConfirmTransactionBase extends Component {
     baseFeePerGas: PropTypes.string,
     isMainnet: PropTypes.bool,
     gasFeeIsCustom: PropTypes.bool,
+    advancedInlineGasShown: PropTypes.bool,
+    gasLimit: PropTypes.string,
+    gasPrice: PropTypes.string,
   };
 
   state = {
@@ -297,6 +303,7 @@ export default class ConfirmTransactionBase extends Component {
       maxFeePerGas,
       maxPriorityFeePerGas,
       isMainnet,
+      advancedInlineGasShown,
     } = this.props;
     const { t } = this.context;
 
@@ -405,6 +412,11 @@ export default class ConfirmTransactionBase extends Component {
           rows={[
             <TransactionDetailItem
               key="gas-item"
+              className={
+                advancedInlineGasShown
+                  ? 'transaction-detail-item--thin-bottom'
+                  : ''
+              }
               detailTitle={
                 txData.dappSuggestedGasFees ? (
                   <>
@@ -472,20 +484,28 @@ export default class ConfirmTransactionBase extends Component {
                 </div>
               }
               subText={t('editGasSubTextFee', [
-                <b key="editGasSubTextFeeLabel">
-                  {t('editGasSubTextFeeLabel')}
-                </b>,
                 <div
-                  key="editGasSubTextFeeValue"
-                  className="confirm-page-container-content__currency-container"
+                  className="confirm-page-container-content__sub-text-container"
+                  key="editGasSubTextFee"
                 >
-                  {renderHeartBeatIfNotInTest()}
-                  <UserPreferencedCurrencyDisplay
-                    key="editGasSubTextFeeAmount"
-                    type={PRIMARY}
-                    value={hexMaximumTransactionFee}
-                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                  />
+                  <div
+                    className="confirm-page-container-content__small-fee-label"
+                    key="editGasSubTextFeeLabel"
+                  >
+                    {t('editGasSubTextFeeLabel')}
+                  </div>
+                  <div
+                    key="editGasSubTextFeeValue"
+                    className="confirm-page-container-content__currency-container"
+                  >
+                    {renderHeartBeatIfNotInTest()}
+                    <UserPreferencedCurrencyDisplay
+                      key="editGasSubTextFeeAmount"
+                      type={PRIMARY}
+                      value={hexMaximumTransactionFee}
+                      hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                    />
+                  </div>
                 </div>,
               ])}
               subTitle={
@@ -500,6 +520,13 @@ export default class ConfirmTransactionBase extends Component {
                 />
               }
             />,
+            advancedInlineGasShown ? (
+              <AdvancedGasControls
+                transaction={txData}
+                minimumGasLimitHex={GAS_LIMITS.SIMPLE}
+                className="advanced-gas-controls--wide-bottom"
+              />
+            ) : null,
             <TransactionDetailItem
               key="total-item"
               detailTitle={t('total')}
@@ -512,6 +539,11 @@ export default class ConfirmTransactionBase extends Component {
                 </b>,
                 renderTotalMaxAmount(),
               ])}
+              className={
+                advancedInlineGasShown
+                  ? 'transaction-detail-item--standard-bottom'
+                  : ''
+              }
             />,
           ]}
         />
@@ -640,6 +672,8 @@ export default class ConfirmTransactionBase extends Component {
       updateCustomNonce,
       maxFeePerGas,
       maxPriorityFeePerGas,
+      gasLimit,
+      gasPrice,
       baseFeePerGas,
     } = this.props;
     const { submitting } = this.state;
@@ -663,6 +697,20 @@ export default class ConfirmTransactionBase extends Component {
       txData.txParams = {
         ...txData.txParams,
         maxPriorityFeePerGas,
+      };
+    }
+
+    if (gasLimit) {
+      txData.txParams = {
+        ...txData.txParams,
+        gas: gasLimit,
+      };
+    }
+
+    if (gasPrice) {
+      txData.txParams = {
+        ...txData.txParams,
+        gas: gasPrice,
       };
     }
 

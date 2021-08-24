@@ -13,7 +13,6 @@ import Typography from '../../ui/typography/typography';
 import {
   getIsMainnet,
   checkNetworkAndAccountSupports1559,
-  getAdvancedInlineGasShown,
 } from '../../../selectors';
 
 import {
@@ -40,19 +39,11 @@ export default function EditGasDisplay({
   transaction,
   defaultEstimateToUse,
   maxPriorityFeePerGas,
-  setMaxPriorityFeePerGas,
-  maxPriorityFeePerGasFiat,
   maxFeePerGas,
-  setMaxFeePerGas,
-  maxFeePerGasFiat,
   estimatedMaximumNative,
   estimatedMinimumNative,
   isGasEstimatesLoading,
   gasEstimateType,
-  gasPrice,
-  setGasPrice,
-  gasLimit,
-  setGasLimit,
   estimateToUse,
   setEstimateToUse,
   estimatedMinimumFiat,
@@ -60,31 +51,23 @@ export default function EditGasDisplay({
   dappSuggestedGasFeeAcknowledged,
   setDappSuggestedGasFeeAcknowledged,
   warning,
-  gasErrors,
   gasWarnings,
-  onManualChange,
-  minimumGasLimit,
   balanceError,
   estimatesUnavailableWarning,
   hasGasErrors,
   txParamsHaveBeenCustomized,
+  minimumGasLimitHex,
 }) {
   const t = useContext(I18nContext);
   const isMainnet = useSelector(getIsMainnet);
   const networkAndAccountSupport1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
-  const showAdvancedInlineGasIfPossible = useSelector(
-    getAdvancedInlineGasShown,
-  );
 
   const [showAdvancedForm, setShowAdvancedForm] = useState(
     !estimateToUse ||
       estimateToUse === 'custom' ||
       !networkAndAccountSupport1559,
-  );
-  const [hideRadioButtons, setHideRadioButtons] = useState(
-    showAdvancedInlineGasIfPossible,
   );
 
   const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
@@ -197,22 +180,7 @@ export default function EditGasDisplay({
             {t('gasDisplayAcknowledgeDappButtonText')}
           </Button>
         )}
-        {!requireDappAcknowledgement &&
-          radioButtonsEnabled &&
-          showAdvancedInlineGasIfPossible && (
-            <button
-              className="edit-gas-display__advanced-button"
-              onClick={() => setHideRadioButtons(!hideRadioButtons)}
-            >
-              {t('showRecommendations')}{' '}
-              {hideRadioButtons ? (
-                <i className="fa fa-caret-down"></i>
-              ) : (
-                <i className="fa fa-caret-up"></i>
-              )}
-            </button>
-          )}
-        {radioButtonsEnabled && !hideRadioButtons && (
+        {radioButtonsEnabled && (
           <RadioGroup
             name="gas-recommendation"
             options={[
@@ -237,42 +205,26 @@ export default function EditGasDisplay({
             onChange={setEstimateToUse}
           />
         )}
+        {!requireDappAcknowledgement && radioButtonsEnabled && (
+          <button
+            className="edit-gas-display__advanced-button"
+            onClick={() => setShowAdvancedForm(!showAdvancedForm)}
+          >
+            {t('advancedOptions')}{' '}
+            {showAdvancedForm ? (
+              <i className="fa fa-caret-up"></i>
+            ) : (
+              <i className="fa fa-caret-down"></i>
+            )}
+          </button>
+        )}
         {!requireDappAcknowledgement &&
-          radioButtonsEnabled &&
-          !showAdvancedInlineGasIfPossible && (
-            <button
-              className="edit-gas-display__advanced-button"
-              onClick={() => setShowAdvancedForm(!showAdvancedForm)}
-            >
-              {t('advancedOptions')}{' '}
-              {showAdvancedForm ? (
-                <i className="fa fa-caret-up"></i>
-              ) : (
-                <i className="fa fa-caret-down"></i>
-              )}
-            </button>
-          )}
-        {!requireDappAcknowledgement &&
-          (showAdvancedForm ||
-            hasGasErrors ||
-            estimatesUnavailableWarning ||
-            showAdvancedInlineGasIfPossible) && (
+          (showAdvancedForm || hasGasErrors || estimatesUnavailableWarning) && (
             <AdvancedGasControls
-              gasEstimateType={gasEstimateType}
-              isGasEstimatesLoading={isGasEstimatesLoading}
-              gasLimit={gasLimit}
-              setGasLimit={setGasLimit}
-              maxPriorityFee={maxPriorityFeePerGas}
-              setMaxPriorityFee={setMaxPriorityFeePerGas}
-              maxFee={maxFeePerGas}
-              setMaxFee={setMaxFeePerGas}
-              gasPrice={gasPrice}
-              setGasPrice={setGasPrice}
-              maxPriorityFeeFiat={maxPriorityFeePerGasFiat}
-              maxFeeFiat={maxFeePerGasFiat}
-              gasErrors={gasErrors}
-              onManualChange={onManualChange}
-              minimumGasLimit={minimumGasLimit}
+              defaultEstimateToUse={defaultEstimateToUse}
+              transaction={transaction}
+              mode={mode}
+              minimumGasLimitHex={minimumGasLimitHex}
             />
           )}
       </div>
@@ -295,19 +247,11 @@ EditGasDisplay.propTypes = {
   onEducationClick: PropTypes.func,
   defaultEstimateToUse: PropTypes.oneOf(Object.values(GAS_RECOMMENDATIONS)),
   maxPriorityFeePerGas: PropTypes.string,
-  setMaxPriorityFeePerGas: PropTypes.func,
-  maxPriorityFeePerGasFiat: PropTypes.string,
   maxFeePerGas: PropTypes.string,
-  setMaxFeePerGas: PropTypes.func,
-  maxFeePerGasFiat: PropTypes.string,
   estimatedMaximumNative: PropTypes.string,
   estimatedMinimumNative: PropTypes.string,
   isGasEstimatesLoading: PropTypes.bool,
   gasEstimateType: PropTypes.string,
-  gasPrice: PropTypes.string,
-  setGasPrice: PropTypes.func,
-  gasLimit: PropTypes.number,
-  setGasLimit: PropTypes.func,
   estimateToUse: PropTypes.string,
   setEstimateToUse: PropTypes.func,
   estimatedMinimumFiat: PropTypes.string,
@@ -316,10 +260,8 @@ EditGasDisplay.propTypes = {
   setDappSuggestedGasFeeAcknowledged: PropTypes.func,
   warning: PropTypes.string,
   transaction: PropTypes.object,
-  gasErrors: PropTypes.object,
   gasWarnings: PropTypes.object,
-  onManualChange: PropTypes.func,
-  minimumGasLimit: PropTypes.string,
+  minimumGasLimitHex: PropTypes.string,
   balanceError: PropTypes.bool,
   estimatesUnavailableWarning: PropTypes.bool,
   hasGasErrors: PropTypes.bool,

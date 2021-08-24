@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 import Typography from '../../ui/typography/typography';
 import {
@@ -15,9 +16,10 @@ export default function TransactionDetailItem({
   detailTotal = '',
   subTitle = '',
   subText = '',
+  className = '',
 }) {
   return (
-    <div className="transaction-detail-item">
+    <div className={classnames('transaction-detail-item', className)}>
       <div className="transaction-detail-item__row">
         <Typography
           color={detailTitleColor}
@@ -77,4 +79,5 @@ TransactionDetailItem.propTypes = {
   detailTotal: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   subTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   subText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  className: PropTypes.string,
 };
