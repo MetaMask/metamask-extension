@@ -88,6 +88,8 @@ const fuseSearchKeys = [
 
 const MAX_ALLOWED_SLIPPAGE = 15;
 
+let timeoutIdForQuotesPrefetching;
+
 export default function BuildQuote({
   inputValue,
   onInputChange,
@@ -108,10 +110,6 @@ export default function BuildQuote({
     undefined,
   );
   const [verificationClicked, setVerificationClicked] = useState(false);
-  const [
-    timeoutIdForQuotesPrefetching,
-    setTimeoutIdForQuotesPrefetching,
-  ] = useState(null);
 
   const balanceError = useSelector(getBalanceError);
   const fetchParams = useSelector(getFetchParams);
@@ -437,14 +435,13 @@ export default function BuildQuote({
       );
     };
     // Delay fetching quotes until a user is done typing an input value.
-    const timeoutId = setTimeout(() => {
-      setTimeoutIdForQuotesPrefetching(null);
+    timeoutIdForQuotesPrefetching = setTimeout(() => {
+      timeoutIdForQuotesPrefetching = null;
       if (!isReviewSwapButtonDisabled) {
         fetchQuotesWithoutRedirecting();
       }
     }, 1000);
-    setTimeoutIdForQuotesPrefetching(timeoutId);
-    return () => clearTimeout(timeoutId);
+    return () => clearTimeout(timeoutIdForQuotesPrefetching);
   }, [
     dispatch,
     history,
