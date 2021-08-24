@@ -204,7 +204,7 @@ export default class TypedMessageManager extends EventEmitter {
             `Cannot sign messages for chainId "${chainId}", because MetaMask is switching networks.`,
           );
           if (typeof chainId === 'string') {
-            chainId = parseInt(chainId, 16);
+            chainId = parseInt(chainId, chainId.startsWith('0x') ? 16 : 10);
           }
           assert.equal(
             chainId,
