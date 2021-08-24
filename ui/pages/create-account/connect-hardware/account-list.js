@@ -7,6 +7,8 @@ import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
 import Popover from '../../../components/ui/popover';
 
+import { getURLHostName } from '../../../helpers/utils/util';
+
 class AccountList extends Component {
   state = {
     showPopover: false,
@@ -143,9 +145,7 @@ class AccountList extends Component {
                     properties: {
                       actions: 'Hardware Connect',
                       link_type: 'Account Tracker',
-                      block_explorer_domain: accountLink
-                        ? new URL(accountLink)?.hostname
-                        : '',
+                      block_explorer_domain: getURLHostName(accountLink),
                     },
                   });
                   global.platform.openTab({

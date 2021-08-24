@@ -379,3 +379,19 @@ export function bnLessThanEqualTo(a, b) {
   }
   return new BigNumber(a, 10).lte(b, 10);
 }
+
+export function getURL(url) {
+  try {
+    return new URL(url);
+  } catch (err) {
+    return '';
+  }
+}
+
+export function getURLHost(url) {
+  return getURL(url)?.host || '';
+}
+
+export function getURLHostName(url) {
+  return getURL(url)?.hostname || '';
+}
