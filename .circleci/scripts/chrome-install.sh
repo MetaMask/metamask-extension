@@ -24,6 +24,6 @@ fi
 
 rm -rf "${CHROME_BINARY}"
 
-sudo sed -i 's|HERE/chrome"|HERE/chrome" --disable-setuid-sandbox --no-sandbox|g' "/opt/google/chrome/google-chrome"
+sudo sed -i 's|HERE/chrome"|HERE/chrome" --disable-setuid-sandbox --no-sandbox --disable-dev-shm-usage|g' "/opt/google/chrome/google-chrome"
 
 printf '%s\n' "CHROME ${CHROME_VERSION} configured"
