@@ -11,6 +11,7 @@ class ChromeDriver {
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
+      '--remote-debugging-port=9222',
     ];
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs');
