@@ -384,7 +384,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
  */
 function getRoundedGasPrice(gasPriceEstimate) {
   const gasPriceInDecGwei = conversionUtil(gasPriceEstimate, {
-    numberOfDecimals: 4,
+    numberOfDecimals: 9,
     toDenomination: GWEI,
     fromNumericBase: 'dec',
     toNumericBase: 'dec',
