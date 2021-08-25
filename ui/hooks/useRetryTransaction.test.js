@@ -8,7 +8,7 @@ import * as metricEventHook from './useMetricEvent';
 import { useRetryTransaction } from './useRetryTransaction';
 
 jest.mock('./useGasFeeEstimates', () => ({
-  useGasFeeEstimates: jest.fn(),
+  useGasFeeEstimates: jest.fn().mockImplementation(() => Promise.resolve({})),
 }));
 
 describe('useRetryTransaction', () => {
