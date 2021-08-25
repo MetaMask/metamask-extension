@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.0.3]
-### Uncategorized
-- Temporarily Disabling Mobile Sync ([#11931](https://github.com/MetaMask/metamask-extension/pull/11931))
-- Updating decimal precision to 9 (getRoundedGasPrice) ([#11930](https://github.com/MetaMask/metamask-extension/pull/11930))
-- Fix issue with chainId comparison in sign typed message param validation ([#11900](https://github.com/MetaMask/metamask-extension/pull/11900))
+### Changed
+- [#11931](https://github.com/MetaMask/metamask-extension/pull/11931): Temporarily Disabling Mobile Sync
+
+### Fixed
+- [#11900](https://github.com/MetaMask/metamask-extension/pull/11900): Fixing chainId comparison issue (sign typed message param validation)
+- [#11930](https://github.com/MetaMask/metamask-extension/pull/11930): Using 9 decimal places of precision in gas price
 
 ## [10.0.2]
 ### Added
