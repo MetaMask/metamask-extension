@@ -118,6 +118,7 @@
     },
     "@ethersproject/abstract-provider": {
       "packages": {
+        "@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "@ethersproject/logger": true,
         "@ethersproject/properties": true
@@ -183,7 +184,8 @@
         "@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "@ethersproject/logger": true,
-        "@ethersproject/properties": true
+        "@ethersproject/properties": true,
+        "@ethersproject/transactions": true
       }
     },
     "@ethersproject/hash": {
@@ -262,6 +264,7 @@
         "clearTimeout": true,
         "console.log": true,
         "console.warn": true,
+        "name": true,
         "setInterval": true,
         "setTimeout": true
       },
@@ -501,6 +504,7 @@
         "ethereumjs-tx": true,
         "ethereumjs-util": true,
         "ethereumjs-wallet": true,
+        "ethers": true,
         "ethjs-query": true,
         "ethjs-unit": true,
         "ethjs-util": true,
@@ -4560,6 +4564,7 @@
         "setTimeout": true
       },
       "packages": {
+        "@ethereumjs/tx": true,
         "async": true,
         "backoff": true,
         "browser-resolve": true,
