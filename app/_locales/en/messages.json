@@ -2418,6 +2418,9 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be 11 characters or fewer."
   },
+  "syncFailed": {
+    "message": "Sync failed"
+  },
   "syncInProgress": {
     "message": "Sync in progress"
   },
