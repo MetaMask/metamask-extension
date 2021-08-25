@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.0.3]
+### Uncategorized
+- Temporarily Disabling Mobile Sync ([#11931](https://github.com/MetaMask/metamask-extension/pull/11931))
+- Updating decimal precision to 9 (getRoundedGasPrice) ([#11930](https://github.com/MetaMask/metamask-extension/pull/11930))
+- Fix issue with chainId comparison in sign typed message param validation ([#11900](https://github.com/MetaMask/metamask-extension/pull/11900))
+
 ## [10.0.2]
 ### Added
 - [#11818](https://github.com/MetaMask/metamask-extension/pull/11818): Add gas recommendation options to cancel and speed up popovers
@@ -2413,7 +2419,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.0.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.0.3...HEAD
+[10.0.3]: https://github.com/MetaMask/metamask-extension/compare/v10.0.2...v10.0.3
 [10.0.2]: https://github.com/MetaMask/metamask-extension/compare/v10.0.1...v10.0.2
 [10.0.1]: https://github.com/MetaMask/metamask-extension/compare/v10.0.0...v10.0.1
 [10.0.0]: https://github.com/MetaMask/metamask-extension/compare/v9.8.4...v10.0.0
