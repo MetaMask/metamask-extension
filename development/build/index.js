@@ -28,12 +28,17 @@ require('@babel/preset-react');
 require('@babel/core');
 
 const browserPlatforms = ['firefox', 'chrome', 'brave', 'opera'];
+const shouldIncludeLockdown = !process.argv.includes('--omit-lockdown');
 
 defineAllTasks();
 detectAndRunEntryTask();
 
 function defineAllTasks() {
-  const staticTasks = createStaticAssetTasks({ livereload, browserPlatforms });
+  const staticTasks = createStaticAssetTasks({
+    livereload,
+    browserPlatforms,
+    shouldIncludeLockdown,
+  });
   const manifestTasks = createManifestTasks({ browserPlatforms });
   const styleTasks = createStyleTasks({ livereload });
   const scriptTasks = createScriptTasks({ livereload, browserPlatforms });
