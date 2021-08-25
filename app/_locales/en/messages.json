@@ -1298,7 +1298,7 @@
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
   "mobileSyncWarning": {
-    "message": "This feature has been temporarily disabled, if you are trying to sync with MetaMask mobile, please use your Secret Recovery Phrase instead for now. As usual, never share it with anyone."
+    "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet’s secret phrase to then import your wallet into mobile."
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
