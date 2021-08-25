@@ -10,6 +10,7 @@ class ChromeDriver {
       'load-extension=dist/chrome',
       '--no-sandbox',
       '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
     ];
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs');
