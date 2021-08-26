@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [10.0.3]
 ### Changed
 - [#11931](https://github.com/MetaMask/metamask-extension/pull/11931): Temporarily Disabling Mobile Sync
+- [#11936](https://github.com/MetaMask/metamask-extension/pull/11936): Use higher gas fees when attempting to speedup or cancel a transaction
 
 ### Fixed
 - [#11900](https://github.com/MetaMask/metamask-extension/pull/11900): Fixing chainId comparison issue (sign typed message param validation)
