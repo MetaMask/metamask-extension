@@ -73,8 +73,14 @@ async function main() {
     process.env.E2E_LEAVE_RUNNING = 'true';
   }
 
+  const mochaArgs = ['mocha', '--no-timeouts', e2eTestPath];
+  const [executable, args] =
+    process.env.CI === 'true'
+      ? ['xvfb-run', ['-e', '/dev/stderr', '-a', 'yarn', ...mochaArgs]]
+      : ['yarn', mochaArgs];
+
   await retry(retries, async () => {
-    await runInShell('yarn', ['mocha', '--no-timeouts', e2eTestPath]);
+    await runInShell(executable, args);
   });
 }
 
