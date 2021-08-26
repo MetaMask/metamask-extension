@@ -356,7 +356,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome --retries 2
+              ENABLE_CHROME_LOGGING=true yarn test:e2e:chrome --retries 2
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -383,7 +383,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:metrics --retries 2
+              ENABLE_CHROME_LOGGING=true yarn test:e2e:chrome:metrics --retries 2
             fi
           no_output_timeout: 20m
       - store_artifacts:
