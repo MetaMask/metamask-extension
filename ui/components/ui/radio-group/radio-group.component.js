@@ -26,7 +26,7 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
         const checked = option.value === selectedValue;
         return (
           <div className="radio-group__column" key={`${name}-${option.value}`}>
-            <label>
+            <label className="radio-group__column-inner">
               {hasRecommendation && (
                 <Typography
                   color={COLORS.SUCCESS3}

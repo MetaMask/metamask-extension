@@ -20,11 +20,24 @@
     height: 20px;
   }
 
+  &__column-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__column-line,
+  &__column-horizontal-line,
+  &__column-radio,
+  &__column-label {
+    flex: 1 1 auto;
+  }
+
   &__column-line {
     width: 1px;
     height: 5px;
     background-color: $ui-2;
-    margin: 0 auto;
+    flex: 1 1 auto;
   }
 
   &__column-horizontal-line {
@@ -34,19 +47,27 @@
   }
 
   &__column:first-child &__column-horizontal-line {
-    width: 50px;
-    margin-left: 49%;
+    width: 50%;
+    align-self: flex-end;
+
+    @-moz-document url-prefix() {
+      width: calc(50% + 0.5px);
+    }
   }
 
   &__column:last-child &__column-horizontal-line {
-    width: 50%;
+    width: calc(50% + 1px);
+    align-self: flex-start;
+
+    @-moz-document url-prefix() {
+      width: calc(50% + 0.5px);
+    }
   }
 
   &__column-radio {
-    margin-inline-end: 1px;
-
     input {
       cursor: pointer;
+      margin: 0;
     }
   }
 
