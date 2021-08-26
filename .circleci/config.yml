@@ -352,6 +352,15 @@ jobs:
           name: Move test zips to builds
           command: mv ./builds-test ./builds
       - run:
+          name: Install dbus
+          command: |
+            sudo apt-get update
+            sudo apt-get install dbus
+      - run:
+          name: Start dbus
+          command: dbus-launch
+          background: true
+      - run:
           name: test:e2e:chrome
           command: |
             if .circleci/scripts/test-run-e2e.sh
