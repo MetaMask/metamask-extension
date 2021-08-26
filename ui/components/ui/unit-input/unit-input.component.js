@@ -106,6 +106,7 @@ export default class UnitInput extends PureComponent {
               ref={(ref) => {
                 this.unitInput = ref;
               }}
+              autoFocus
             />
             {suffix && <div className="unit-input__suffix">{suffix}</div>}
           </div>

@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "네트워크 추가"
   },
-  "addRecipient": {
-    "message": "수신인 추가"
-  },
   "addSuggestedTokens": {
     "message": "추천 토큰 추가"
   },

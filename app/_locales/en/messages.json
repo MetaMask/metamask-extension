@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "Add Network"
   },
-  "addRecipient": {
-    "message": "Add Recipient"
-  },
   "addSuggestedTokens": {
     "message": "Add Suggested Tokens"
   },
@@ -323,10 +320,10 @@
     "message": "Confirm password"
   },
   "confirmSecretBackupPhrase": {
-    "message": "Confirm your Secret Backup Phrase"
+    "message": "Confirm your Secret Recovery Phrase"
   },
   "confirmSeedPhrase": {
-    "message": "Confirm Seed Phrase"
+    "message": "Confirm Secret Recovery Phrase"
   },
   "confirmed": {
     "message": "Confirmed"
@@ -594,10 +591,10 @@
     "message": "Dismiss"
   },
   "dismissReminderDescriptionField": {
-    "message": "Turn this on to dismiss the recovery phrase backup reminder message. We highly recommend that you back up your Secret Recovery Phrase to avoid loss of funds"
+    "message": "Turn this on to dismiss the Secret Recovery Phrase backup reminder message. We highly recommend that you back up your Secret Recovery Phrase to avoid loss of funds"
   },
   "dismissReminderField": {
-    "message": "Dismiss recovery phrase backup reminder"
+    "message": "Dismiss Secret Recovery Phrase backup reminder"
   },
   "domain": {
     "message": "Domain"
@@ -612,7 +609,7 @@
     "message": "Download Google Chrome"
   },
   "downloadSecretBackup": {
-    "message": "Download this Secret Backup Phrase and keep it stored safely on an external encrypted hard drive or storage medium."
+    "message": "Download this Secret Recovery Phrase and keep it stored safely on an external encrypted hard drive or storage medium."
   },
   "downloadStateLogs": {
     "message": "Download State Logs"
@@ -630,16 +627,16 @@
     "message": "How should I choose?"
   },
   "editGasEducationHighExplanation": {
-    "message": "This is best for swaps or other time sensitive transactions. If a swap takes too long to process it will often fail and you may lose funds."
+    "message": "This is best for time sensitive transactions (like Swaps) as it increases the likelihood of a successful transaction. If a Swap takes too long to process it may fail and result in losing some of your gas fee."
   },
   "editGasEducationLowExplanation": {
-    "message": "A lower gas fee should only be selected for transactions where processing time is less important. With a lower fee, it can be hard to predict when (or if) your transaction will be successful."
+    "message": "A lower gas fee should only be used when processing time is less important. Lower fees make it hard predict when (or if) your transaction will be successful."
   },
   "editGasEducationMediumExplanation": {
-    "message": "A medium gas fee is good for sending, withdrawing or other non-time sensitive but important transactions."
+    "message": "A medium gas fee is good for sending, withdrawing or other non-time sensitive transactions. This setting will most often result in a successful transaction."
   },
   "editGasEducationModalIntro": {
-    "message": "The right gas amount to select depends on the type of transaction and how important it is."
+    "message": "Selecting the right gas fee depends on the type of transaction and how important it is to you."
   },
   "editGasEducationModalTitle": {
     "message": "How to choose?"
@@ -675,7 +672,7 @@
     "message": "Max priority fee is higher than necessary. You may pay more than needed."
   },
   "editGasMaxPriorityFeeLow": {
-    "message": "Max priority fee extremely low for network conditions"
+    "message": "Max priority fee is low for current network conditions"
   },
   "editGasMaxPriorityFeeTooltip": {
     "message": "Max priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction. You’ll most often pay your max setting"
@@ -714,9 +711,8 @@
   "editGasTooLowTooltip": {
     "message": "Your max fee or max priority fee may be low for current market conditions. We don't know when (or if) your transaction will be processed. "
   },
-  "editGasTotalBannerSubtitle": {
-    "message": "Up to $1 ($2)",
-    "display": "$1 represents a fiat value"
+  "editGasTooLowWarningTooltip": {
+    "message": "This lowers your maximum fee but if network traffic increases your transaction may be delayed or fail."
   },
   "editNonceField": {
     "message": "Edit Nonce"
@@ -1048,6 +1044,9 @@
   "importAccount": {
     "message": "Import Account"
   },
+  "importAccountError": {
+    "message": "Error importing account."
+  },
   "importAccountLinkText": {
     "message": "import using Secret Recovery Phrase"
   },
@@ -1221,7 +1220,7 @@
   },
   "makeSureNoOneWatching": {
     "message": "Make sure no one is watching your screen",
-    "description": "Warning to users to be care while creating and saving their new seed phrase"
+    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "max": {
     "message": "Max"
@@ -1774,13 +1773,13 @@
     "message": "Search Tokens"
   },
   "secretBackupPhrase": {
-    "message": "Secret Backup Phrase"
+    "message": "Secret Recovery Phrase"
   },
   "secretBackupPhraseDescription": {
-    "message": "Your secret backup phrase makes it easy to back up and restore your account."
+    "message": "Your Secret Recovery Phrase makes it easy to back up and restore your account."
   },
   "secretBackupPhraseWarning": {
-    "message": "WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Ether forever."
+    "message": "WARNING: Never disclose your Secret Recovery Phrase. Anyone with this phrase can take your Ether forever."
   },
   "secretPhrase": {
     "message": "Enter your secret phrase here to restore your vault."
@@ -1813,28 +1812,28 @@
     "message": "Store in a bank vault."
   },
   "seedPhraseIntroSidebarCopyOne": {
-    "message": "Your recovery phrase is the “master key” to your wallet and funds."
+    "message": "Your Secret Recovery Phrase is the “master key” to your wallet and funds."
   },
   "seedPhraseIntroSidebarCopyThree": {
-    "message": "If someone asks for your recovery phrase, they are most likely trying to scam you."
+    "message": "If someone asks for your Secret Recovery Phrase, they are most likely trying to scam you."
   },
   "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Never, ever share your recovery phrase, even with MetaMask!"
+    "message": "Never, ever share your Secret Recovery Phrase, even with MetaMask!"
   },
   "seedPhraseIntroSidebarTitleOne": {
-    "message": "What is a recovery phrase?"
+    "message": "What is a Secret Recovery Phrase?"
   },
   "seedPhraseIntroSidebarTitleThree": {
-    "message": "Should I share my recovery phrase?"
+    "message": "Should I share my Secret Recovery Phrase?"
   },
   "seedPhraseIntroSidebarTitleTwo": {
-    "message": "How do I save my recovery phrase?"
+    "message": "How do I save my Secret Recovery Phrase?"
   },
   "seedPhraseIntroTitle": {
     "message": "Secure your wallet"
   },
   "seedPhraseIntroTitleCopy": {
-    "message": "Before getting started, watch this short video to learn about your recovery phrase and how to keep your wallet safe."
+    "message": "Before getting started, watch this short video to learn about your Secret Recovery Phrase and how to keep your wallet safe."
   },
   "seedPhrasePlaceholder": {
     "message": "Separate each word with a single space"
@@ -1897,6 +1896,9 @@
   "sendSpecifiedTokens": {
     "message": "Send $1",
     "description": "Symbol of the specified token"
+  },
+  "sendTo": {
+    "message": "Send to"
   },
   "sendTokens": {
     "message": "Send Tokens"
@@ -2416,6 +2418,9 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be 11 characters or fewer."
   },
+  "syncFailed": {
+    "message": "Sync failed"
+  },
   "syncInProgress": {
     "message": "Sync in progress"
   },
@@ -2527,7 +2532,7 @@
     "message": "Gas fees are set by the network and fluctuate based on network traffic and transaction complexity."
   },
   "transactionDetailGasTooltipIntro": {
-    "message": "Gas fees are paid to crypto miners who process transactions on the Ethereum network. MetaMask does not profit from gas fees."
+    "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees."
   },
   "transactionDetailGasTotalSubtitle": {
     "message": "Amount + gas fee"

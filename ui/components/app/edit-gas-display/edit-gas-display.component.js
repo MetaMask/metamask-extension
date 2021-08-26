@@ -161,19 +161,23 @@ export default function EditGasDisplay({
           }
           detail={
             networkAndAccountSupport1559 &&
-            estimatedMaximumFiat !== undefined &&
-            t('editGasTotalBannerSubtitle', [
-              <Typography
-                fontWeight={FONT_WEIGHT.BOLD}
-                tag="span"
-                key="secondary"
-              >
-                {estimatedMaximumFiat}
-              </Typography>,
-              <Typography tag="span" key="primary">
-                {estimatedMaximumNative}
-              </Typography>,
-            ])
+            estimatedMaximumFiat !== undefined && (
+              <>
+                <Typography
+                  tag="span"
+                  key="label"
+                  fontWeight={FONT_WEIGHT.BOLD}
+                >
+                  {t('editGasSubTextFeeLabel')}
+                </Typography>
+                <Typography tag="span" key="secondary">
+                  {estimatedMaximumFiat}
+                </Typography>
+                <Typography tag="span" key="primary">
+                  {`(${estimatedMaximumNative})`}
+                </Typography>
+              </>
+            )
           }
           timing={
             hasGasErrors === false && (
@@ -315,7 +319,7 @@ EditGasDisplay.propTypes = {
   gasErrors: PropTypes.object,
   gasWarnings: PropTypes.object,
   onManualChange: PropTypes.func,
-  minimumGasLimit: PropTypes.number,
+  minimumGasLimit: PropTypes.string,
   balanceError: PropTypes.bool,
   estimatesUnavailableWarning: PropTypes.bool,
   hasGasErrors: PropTypes.bool,

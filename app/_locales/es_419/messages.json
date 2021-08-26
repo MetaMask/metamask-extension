@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "Agregar red"
   },
-  "addRecipient": {
-    "message": "Agregar destinatario"
-  },
   "addSuggestedTokens": {
     "message": "Agregar tokens sugeridos"
   },

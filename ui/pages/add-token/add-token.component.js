@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
-import { checkExistingAddresses } from '../../helpers/utils/util';
+import {
+  checkExistingAddresses,
+  getURLHostName,
+} from '../../helpers/utils/util';
 import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import { CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes';
 import TextField from '../../components/ui/text-field';
@@ -262,7 +265,7 @@ class AddToken extends Component {
       { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },
     );
     const blockExplorerLabel = rpcPrefs?.blockExplorerUrl
-      ? new URL(blockExplorerTokenLink).hostname
+      ? getURLHostName(blockExplorerTokenLink)
       : this.context.t('etherscan');
 
     return (

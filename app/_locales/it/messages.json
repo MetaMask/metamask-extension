@@ -52,9 +52,6 @@
   "addNetwork": {
     "message": "Aggiungi Rete"
   },
-  "addRecipient": {
-    "message": "Aggiungi destinatario"
-  },
   "addSuggestedTokens": {
     "message": "Aggiungi Token Suggeriti"
   },

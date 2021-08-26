@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "Thêm mạng"
   },
-  "addRecipient": {
-    "message": "Thêm người nhận"
-  },
   "addSuggestedTokens": {
     "message": "Thêm token được đề xuất"
   },

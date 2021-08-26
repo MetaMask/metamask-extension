@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Pridėti tinklą"
   },
-  "addRecipient": {
-    "message": "Pridėti gavėją"
-  },
   "addSuggestedTokens": {
     "message": "Pridėti siūlomų žetonų"
   },

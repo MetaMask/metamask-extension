@@ -9,6 +9,7 @@ import {
   hexToDecimal,
   hexWEIToDecGWEI,
 } from '../../helpers/utils/conversions.util';
+import { getURLHostName } from '../../helpers/utils/util';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
@@ -116,6 +117,7 @@ export default class ConfirmTransactionBase extends Component {
     maxFeePerGas: PropTypes.string,
     maxPriorityFeePerGas: PropTypes.string,
     baseFeePerGas: PropTypes.string,
+    isMainnet: PropTypes.bool,
     gasFeeIsCustom: PropTypes.bool,
   };
 
@@ -295,16 +297,9 @@ export default class ConfirmTransactionBase extends Component {
       primaryTotalTextOverrideMaxAmount,
       maxFeePerGas,
       maxPriorityFeePerGas,
+      isMainnet,
     } = this.props;
     const { t } = this.context;
-
-    const getRequestingOrigin = () => {
-      try {
-        return new URL(txData.origin)?.hostname;
-      } catch (err) {
-        return '';
-      }
-    };
 
     const renderTotalMaxAmount = () => {
       if (
@@ -315,6 +310,7 @@ export default class ConfirmTransactionBase extends Component {
         return (
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
+            key="total-max-amount"
             value={addHexes(txData.txParams.value, hexMaximumTransactionFee)}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
@@ -335,6 +331,7 @@ export default class ConfirmTransactionBase extends Component {
         return (
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
+            key="total-detail-value"
             value={hexTransactionTotal}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
@@ -353,6 +350,7 @@ export default class ConfirmTransactionBase extends Component {
         return (
           <UserPreferencedCurrencyDisplay
             type={SECONDARY}
+            key="total-detail-text"
             value={hexTransactionTotal}
             hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
           />
@@ -404,7 +402,7 @@ export default class ConfirmTransactionBase extends Component {
                 txData.dappSuggestedGasFees ? (
                   <>
                     {t('transactionDetailDappGasHeading', [
-                      getRequestingOrigin(),
+                      getURLHostName(txData?.origin),
                     ])}
                     <InfoTooltip
                       contentText={t('transactionDetailDappGasTooltip')}
@@ -419,7 +417,11 @@ export default class ConfirmTransactionBase extends Component {
                     <InfoTooltip
                       contentText={
                         <>
-                          <p>{t('transactionDetailGasTooltipIntro')}</p>
+                          <p>
+                            {t('transactionDetailGasTooltipIntro', [
+                              isMainnet ? t('networkNameEthereum') : '',
+                            ])}
+                          </p>
                           <p>{t('transactionDetailGasTooltipExplanation')}</p>
                           <p>
                             <a

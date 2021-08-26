@@ -6,6 +6,7 @@ import AccountModalContainer from '../account-modal-container';
 import QrView from '../../../ui/qr-code';
 import EditableLabel from '../../../ui/editable-label';
 import Button from '../../../ui/button';
+import { getURLHostName } from '../../../../helpers/utils/util';
 
 export default class AccountDetailsModal extends Component {
   static propTypes = {
@@ -70,9 +71,7 @@ export default class AccountDetailsModal extends Component {
               properties: {
                 link_type: 'Account Tracker',
                 action: 'Account Details Modal',
-                block_explorer_domain: accountLink
-                  ? new URL(accountLink)?.hostname
-                  : '',
+                block_explorer_domain: getURLHostName(accountLink),
               },
             });
             global.platform.openTab({

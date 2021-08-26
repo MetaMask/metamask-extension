@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Dodaj mrežu"
   },
-  "addRecipient": {
-    "message": "Dodaj primatelja"
-  },
   "addSuggestedTokens": {
     "message": "Dodaj predložene tokene"
   },
