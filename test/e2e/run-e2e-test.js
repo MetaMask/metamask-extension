@@ -1,9 +1,20 @@
 const { promises: fs } = require('fs');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
-const { runInShell } = require('../../development/lib/run-command');
+const { runCommand, runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { retry } = require('../../development/lib/retry');
+
+async function startDbus() {
+  const lines = await runCommand('dbus-launch');
+  lines.forEach((line) => {
+    const [name, value] = line.split('=', 2);
+    process.env[name] = value;
+  });
+  console.log(
+    `Started dbus-launch in process ${process.env.DBUS_SESSION_BUS_PID}`,
+  );
+}
 
 async function main() {
   const { argv } = yargs(hideBin(process.argv))
@@ -72,6 +83,8 @@ async function main() {
   if (leaveRunning) {
     process.env.E2E_LEAVE_RUNNING = 'true';
   }
+
+  startDbus();
 
   const mochaArgs = ['mocha', '--no-timeouts', e2eTestPath];
   const [executable, args] =

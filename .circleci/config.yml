@@ -357,9 +357,6 @@ jobs:
             sudo apt-get update
             sudo apt-get install dbus-x11
       - run:
-          name: Start dbus
-          command: dbus-launch
-      - run:
           name: test:e2e:chrome
           command: |
             if .circleci/scripts/test-run-e2e.sh
