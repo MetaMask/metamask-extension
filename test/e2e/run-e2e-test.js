@@ -76,7 +76,17 @@ async function main() {
   const mochaArgs = ['mocha', '--no-timeouts', e2eTestPath];
   const [executable, args] =
     process.env.CI === 'true'
-      ? ['xvfb-run', ['-e', '/dev/stderr', '-a', 'yarn', ...mochaArgs]]
+      ? [
+          'xvfb-run',
+          '-a',
+          '--server-args',
+          '-screen 0 1280x800x24 -ac -nolisten tcp -dpi 96 +extension RANDR',
+          '-e',
+          '/dev/stderr',
+          '-a',
+          'yarn',
+          ...mochaArgs,
+        ]
       : ['yarn', mochaArgs];
 
   await retry(retries, async () => {
