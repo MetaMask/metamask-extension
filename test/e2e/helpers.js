@@ -4,11 +4,10 @@ const createStaticServer = require('../../development/create-static-server');
 const {
   createSegmentServer,
 } = require('../../development/lib/create-segment-server');
-const { runCommand } = require('../../development/lib/run-command');
-const { retry } = require('../../development/lib/retry');
 const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
 const { buildWebDriver } = require('./webdriver');
+const { ensureXServerIsRunning } = require('./x-server');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -17,16 +16,6 @@ const xLargeDelayMs = largeDelayMs * 2;
 const xxLargeDelayMs = xLargeDelayMs * 2;
 
 const dappPort = 8080;
-
-function ensureXServerRunning() {
-  retry(
-    3,
-    { delay: 2000, rejectionMessage: 'X server does not seem to be running?!' },
-    () => {
-      return runCommand('xset', ['q'], { stdio: 'ignore' });
-    },
-  );
-}
 
 async function withFixtures(options, testSuite) {
   const {
@@ -96,7 +85,7 @@ async function withFixtures(options, testSuite) {
       await segmentServer.start(9090);
     }
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      await ensureXServerRunning();
+      await ensureXServerIsRunning();
     }
     const { driver } = await buildWebDriver(driverOptions);
     webDriver = driver;
