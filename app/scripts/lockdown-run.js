@@ -14,7 +14,7 @@ try {
   // caught and logged here so that the contentscript still gets injected.
   // This affects Firefox v56 and Waterfox Classic.
   console.error('Lockdown failed:', error);
-  if (globalThis.sentry?.captureException) {
+  if (globalThis.sentry && globalThis.sentry.captureException) {
     globalThis.sentry.captureException(error);
   }
 }
@@ -39,8 +39,9 @@ try {
    * Exercise caution.
    *
    * See inline comments for implementation details.
+   *
+   * We write this function in IIFE format to avoid polluting global scope.
    */
-  // IIFE to avoid polluting global scope.
   (function protectIntrinsics() {
     const globalProperties = new Set([
       // This grabs every enumerable property on globalThis.
@@ -92,7 +93,7 @@ try {
   })();
 } catch (error) {
   console.error('Protecting intrinsics failed:', error);
-  if (globalThis.sentry?.captureException) {
+  if (globalThis.sentry && globalThis.sentry.captureException) {
     globalThis.sentry.captureException(error);
   }
 }
