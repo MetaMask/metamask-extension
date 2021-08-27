@@ -12,24 +12,20 @@ try {
   // If the `lockdown` call throws an exception, it interferes with the
   // contentscript injection on some versions of Firefox. The error is
   // caught and logged here so that the contentscript still gets injected.
-  // This affects Firefox v56 and Waterfox Classic
+  // This affects Firefox v56 and Waterfox Classic.
   console.error('Lockdown failed:', error);
   captureError(error);
 }
 
-const enumerableIntrinsics = new Set(globalThis.__ENUMERABLE_INTRINSICS);
-delete globalThis.__ENUMERABLE_INTRINSICS;
-
 // Make all "object" and "function" own properties of globalThis
-// non-configurable and non-writable.
-// `lockdown` does not do this by default.
+// non-configurable and non-writable, and harden most functions and objects
+// not hardened by `lockdown`.
 try {
-  // Skip doing it in test environments.
   if (
     typeof process === 'undefined' ||
     (process.env.IN_TEST !== 'true' && process.env.METAMASK_ENV !== 'test')
   ) {
-    protectIntrinsics(globalThis, 'Promise');
+    protectIntrinsics();
   }
 } catch (error) {
   console.error('Protecting intrinsics failed:', error);
@@ -37,6 +33,7 @@ try {
 }
 
 /**
+ * Logs an error to Sentry.
  *
  * @param {Error} error - The error to log.
  */
@@ -47,13 +44,27 @@ function captureError(error) {
 }
 
 /**
- * Makes all
+ * `lockdown` only hardens the properties enumerated by the
+ * universalPropertyNames constant specified in 'ses/src/whitelist'. This
+ * function hardens other intrinsics that we may rely on, and prevents any
+ * intrinsic from being overwritten (if possible).
+ * 
+ * It is critical that this function runs at the right time during
+ * initialization, which should always be immediately after `lockdown` has been
+ * called. At the time of writing, the modifications this function makes to the
+ * runtime environment appear to be non-breaking, but that could change with
+ * the addition of dependencies, or the order of our scripts in our HTML files.
+ * Exercise caution.
+ * 
+ * See inline comments for implementation details.
  */
 function protectIntrinsics() {
   const globalProperties = new Set([
+    // This grabs every enumerable property on globalThis.
     ...Object.keys(globalThis),
     // universalPropertyNames is a constant added by lockdown to global scope
     // at the time of writing, it is initialized in 'ses/src/whitelist'.
+    // These properties tend to be non-enumerable.
     ...Object.keys(universalPropertyNames),
   ]);
 
@@ -69,6 +80,8 @@ function protectIntrinsics() {
       Boolean(value) &&
       (typeof value === 'object' || typeof value === 'function')
     ) {
+      // First, if the property on globalThis is configurable, make it
+      // non-configurable and non-writable.
       if (descriptor.configurable) {
         Object.defineProperty(globalThis, propertyName, {
           ...descriptor,
@@ -77,19 +90,33 @@ function protectIntrinsics() {
         });
       }
 
-      const hardenIgnoreList = new Set(['protectIntrinsics']);
+      const hardenIgnoreList = new Set([
+        // The browser won't let us freeze these, not that we'd want to.
+        'frames',
+        'parent',
+        'top',
 
+        // The browser also won't let us freeze these.
+        'localStorage',
+        'sessionStorage',
+
+        // This function.
+        'protectIntrinsics',
+      ]);
+
+      // Second, if the value of the property can be hardened and isn't
+      // hardened by `lockdown`, harden the value.
       if (
-        // enumerableIntrinsics.has(propertyName) &&
+        value !== globalThis && // We neither can nor want to freeze this.
         !(propertyName in universalPropertyNames) &&
-        // !hasAccessor(descriptor) &&
-        !('set' in descriptor) &&
         !hardenIgnoreList.has(propertyName)
       ) {
         try {
           harden(value);
         } catch (error) {
-          console.log('Failed to harden:', propertyName, error);
+          // We should have enumerated everything in advance.
+          console.error(`Failed to harden property "${propertyName}".`, error);
+          captureError(error);
         }
       }
     }

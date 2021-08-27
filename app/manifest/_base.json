@@ -31,7 +31,6 @@
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "js": [
-        "collect-intrinsics.js",
         "disable-console.js",
         "globalthis.js",
         "lockdown-install.js",

@@ -52,10 +52,6 @@ const copyTargets = [
     dest: `lockdown-install.js`,
   },
   {
-    src: `./app/scripts/collect-intrinsics.js`,
-    dest: `collect-intrinsics.js`,
-  },
-  {
     src: `./app/scripts/lockdown-run.js`,
     dest: `lockdown-run.js`,
   },
