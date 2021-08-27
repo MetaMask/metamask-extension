@@ -21,12 +21,7 @@ try {
 // non-configurable and non-writable, and harden most functions and objects
 // not hardened by `lockdown`.
 try {
-  if (
-    typeof process === 'undefined' ||
-    (process.env.IN_TEST !== 'true' && process.env.METAMASK_ENV !== 'test')
-  ) {
-    protectIntrinsics();
-  }
+  protectIntrinsics();
 } catch (error) {
   console.error('Protecting intrinsics failed:', error);
   captureError(error);
