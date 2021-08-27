@@ -129,21 +129,19 @@ try {
         globalThis,
         propertyName,
       );
-      const value = globalThis[propertyName];
 
-      if (
-        descriptor &&
-        Boolean(value) &&
-        (typeof value === 'object' || typeof value === 'function')
-      ) {
+      if (descriptor && descriptor.configurable) {
         // If the property on globalThis is configurable, make it
         // non-configurable. If it has no accessor properties, also make it
         // non-writable.
-        if (descriptor.configurable) {
+        if (hasAccessor(descriptor)) {
           Object.defineProperty(globalThis, propertyName, {
-            ...descriptor,
             configurable: false,
-            ...(hasAccessor(descriptor) ? {} : { writable: false }),
+          });
+        } else {
+          Object.defineProperty(globalThis, propertyName, {
+            configurable: false,
+            writable: false,
           });
         }
       }

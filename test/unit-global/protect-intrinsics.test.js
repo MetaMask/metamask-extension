@@ -69,15 +69,20 @@ const universalPropertyNames = {
   StaticModuleRecord: 'StaticModuleRecord',
 };
 
-describe('non-modifiable intrinsics', function () {
-  const globalProperties = new Set([
-    // TODO: Also include the named platform globals
-    // This grabs every enumerable property on globalThis.
-    // ...Object.keys(globalThis),
+// These are Agoric inventions, and we don't care about them.
+const ignoreList = new Set(['HandledPromise', 'StaticModuleRecord']);
 
-    // Added to global scope by ses/dist/lockdown.cjs.
-    ...Object.keys(universalPropertyNames),
-  ]);
+describe('non-modifiable intrinsics', function () {
+  const globalProperties = new Set(
+    [
+      // TODO: Also include the named platform globals
+      // This grabs every enumerable property on globalThis.
+      // ...Object.keys(globalThis),
+
+      // Added to global scope by ses/dist/lockdown.cjs.
+      ...Object.keys(universalPropertyNames),
+    ].filter((propertyName) => !ignoreList.has(propertyName)),
+  );
 
   globalProperties.forEach((propertyName) => {
     it(`intrinsic globalThis["${propertyName}"]`, function () {
@@ -85,40 +90,39 @@ describe('non-modifiable intrinsics', function () {
         globalThis,
         propertyName,
       );
-      const value = globalThis[propertyName];
 
-      if (
-        descriptor &&
-        Boolean(value) &&
-        (typeof value === 'object' || typeof value === 'function')
-      ) {
-        if (propertyName in universalPropertyNames) {
-          assert.equal(
-            descriptor.configurable,
-            false,
-            `universal property globalThis["${propertyName}"] should be non-configurable`,
-          );
+      assert.ok(
+        descriptor,
+        `globalThis["${propertyName}"] should have a descriptor`,
+      );
 
-          assert.equal(
-            descriptor.writable,
-            false,
-            `universal property globalThis["${propertyName}"] should be non-writable`,
-          );
+      // As long as Object.isFrozen is the true Object.isFrozen, the object
+      // it is called with cannot lie about being frozen.
+      assert.equal(
+        Object.isFrozen(globalThis[propertyName]),
+        true,
+        `value of universal property globalThis["${propertyName}"] should be frozen`,
+      );
 
-          // As long as Object.isFrozen is the true Object.isFrozen, the object
-          // it is called with cannot lie about being frozen.
-          assert.equal(
-            Object.isFrozen(value),
-            true,
-            `value of universal property globalThis["${propertyName}"] should be frozen`,
-          );
-        } else {
-          assert.equal(
-            descriptor.configurable,
-            false,
-            `globalThis["${propertyName}"] should be non-configurable`,
-          );
-        }
+      // The writability of properties with accessors cannot be modified.
+      if ('set' in descriptor || 'get' in descriptor) {
+        assert.equal(
+          descriptor.configurable,
+          false,
+          `globalThis["${propertyName}"] should be non-configurable`,
+        );
+      } else {
+        assert.equal(
+          descriptor.configurable,
+          false,
+          `globalThis["${propertyName}"] should be non-configurable`,
+        );
+
+        assert.equal(
+          descriptor.writable,
+          false,
+          `globalThis["${propertyName}"] should be non-writable`,
+        );
       }
     });
   });
