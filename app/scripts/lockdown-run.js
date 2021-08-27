@@ -45,83 +45,20 @@ try {
    * We write this function in IIFE format to avoid polluting global scope.
    */
   (function protectIntrinsics() {
-    // TODO: Figure out how to import this object from ses/src/whitelist.js
-    // These are a.k.a. the "named intrinsics".
-    const universalPropertyNames = {
-      // *** Function Properties of the Global Object
+    const namedIntrinsics = Reflect.ownKeys(new Compartment().globalThis);
 
-      isFinite: 'isFinite',
-      isNaN: 'isNaN',
-      parseFloat: 'parseFloat',
-      parseInt: 'parseInt',
-
-      decodeURI: 'decodeURI',
-      decodeURIComponent: 'decodeURIComponent',
-      encodeURI: 'encodeURI',
-      encodeURIComponent: 'encodeURIComponent',
-
-      // *** Constructor Properties of the Global Object
-
-      Array: 'Array',
-      ArrayBuffer: 'ArrayBuffer',
-      BigInt: 'BigInt',
-      BigInt64Array: 'BigInt64Array',
-      BigUint64Array: 'BigUint64Array',
-      Boolean: 'Boolean',
-      DataView: 'DataView',
-      EvalError: 'EvalError',
-      Float32Array: 'Float32Array',
-      Float64Array: 'Float64Array',
-      Int8Array: 'Int8Array',
-      Int16Array: 'Int16Array',
-      Int32Array: 'Int32Array',
-      Map: 'Map',
-      Number: 'Number',
-      Object: 'Object',
-      Promise: 'Promise',
-      Proxy: 'Proxy',
-      RangeError: 'RangeError',
-      ReferenceError: 'ReferenceError',
-      Set: 'Set',
-      String: 'String',
-      Symbol: 'Symbol',
-      SyntaxError: 'SyntaxError',
-      TypeError: 'TypeError',
-      Uint8Array: 'Uint8Array',
-      Uint8ClampedArray: 'Uint8ClampedArray',
-      Uint16Array: 'Uint16Array',
-      Uint32Array: 'Uint32Array',
-      URIError: 'URIError',
-      WeakMap: 'WeakMap',
-      WeakSet: 'WeakSet',
-
-      // *** Other Properties of the Global Object
-
-      JSON: 'JSON',
-      Reflect: 'Reflect',
-
-      // *** Annex B
-
-      escape: 'escape',
-      unescape: 'unescape',
-
-      // ESNext
-
-      lockdown: 'lockdown',
-      harden: 'harden',
-      HandledPromise: 'HandledPromise', // TODO: Until Promise.delegate (see below).
-      StaticModuleRecord: 'StaticModuleRecord',
-    };
+    // These named intrinsics are not automatically hardened by `lockdown`
+    const shouldHardenManually = new Set(['eval', 'Function']);
 
     const globalProperties = new Set([
-      // TODO: Also include the named platform globals
-      // This grabs every enumerable property on globalThis.
-      // ...Object.keys(globalThis),
-
       // universalPropertyNames is a constant added by lockdown to global scope
       // at the time of writing, it is initialized in 'ses/src/whitelist'.
       // These properties tend to be non-enumerable.
-      ...Object.keys(universalPropertyNames),
+      ...namedIntrinsics,
+
+      // TODO: Also include the named platform globals
+      // This grabs every enumerable property on globalThis.
+      // ...Object.keys(globalThis),
     ]);
 
     globalProperties.forEach((propertyName) => {
@@ -130,19 +67,25 @@ try {
         propertyName,
       );
 
-      if (descriptor && descriptor.configurable) {
-        // If the property on globalThis is configurable, make it
-        // non-configurable. If it has no accessor properties, also make it
-        // non-writable.
-        if (hasAccessor(descriptor)) {
-          Object.defineProperty(globalThis, propertyName, {
-            configurable: false,
-          });
-        } else {
-          Object.defineProperty(globalThis, propertyName, {
-            configurable: false,
-            writable: false,
-          });
+      if (descriptor) {
+        if (descriptor.configurable) {
+          // If the property on globalThis is configurable, make it
+          // non-configurable. If it has no accessor properties, also make it
+          // non-writable.
+          if (hasAccessor(descriptor)) {
+            Object.defineProperty(globalThis, propertyName, {
+              configurable: false,
+            });
+          } else {
+            Object.defineProperty(globalThis, propertyName, {
+              configurable: false,
+              writable: false,
+            });
+          }
+        }
+
+        if (shouldHardenManually.has(propertyName)) {
+          harden(globalThis[propertyName]);
         }
       }
     });
