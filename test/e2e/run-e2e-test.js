@@ -92,9 +92,9 @@ async function main() {
       ? [
           'xvfb-run',
           [
+            '-n 99',
             '--server-args',
-            '-screen 0 1280x1024x24 -ac -nolisten tcp -dpi 96 +extension RANDR',
-            '-a',
+            '-screen 0 1280x1024x24',
             'yarn',
             ...mochaArgs,
           ],
