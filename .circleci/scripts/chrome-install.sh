@@ -24,6 +24,4 @@ fi
 
 rm -rf "${CHROME_BINARY}"
 
-sudo sed -i 's|HERE/chrome"|HERE/chrome"|g' "/opt/google/chrome/google-chrome"
-
 printf '%s\n' "CHROME ${CHROME_VERSION} configured"
