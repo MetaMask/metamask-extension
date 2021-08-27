@@ -1,5 +1,3 @@
-const { setTimeout } = require('timers/promises');
-
 /**
  * Run the given function, retrying it upon failure until reaching the
  * specified number of retries.
@@ -31,7 +29,9 @@ async function retry(...args) {
     } finally {
       attempts += 1;
       if (options.delay > 0) {
-        await setTimeout(options.delay);
+        await new Promise((resolve) => {
+          setTimeout(options.delay, resolve);
+        });
       }
     }
   }
