@@ -45,23 +45,22 @@ export default class AccountImportSubview extends Component {
           <div className="page-container__subtitle">
             {t('importAccountMsg')}
             <span
-              style={{
-                cursor: 'pointer',
-                textDecoration: 'underline',
-              }}
+              className="new-account-info-link"
               onClick={() => {
                 global.platform.openTab({
                   url:
                     'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
                 });
               }}
-            ></span>
+            >
+              {t('here')}
+            </span>
           </div>
         </div>
         <div className="new-account-import-form">
           <div className="new-account-import-form__select-section">
             <div className="new-account-import-form__select-label">
-              {this.context.t('selectType')}
+              {t('selectType')}
             </div>
             <Dropdown
               className="new-account-import-form__select"
