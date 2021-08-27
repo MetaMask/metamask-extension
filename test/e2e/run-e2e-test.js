@@ -73,9 +73,6 @@ async function main() {
     process.env.E2E_LEAVE_RUNNING = 'true';
   }
 
-  console.log(
-    `Running \`yarn mocha --no-timeouts "${e2eTestPath}"\` with ${retries} retries...`,
-  );
   await retry(retries, () => {
     return runInShell('yarn', ['mocha', '--no-timeouts', e2eTestPath]);
   });

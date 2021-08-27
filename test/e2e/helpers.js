@@ -23,7 +23,6 @@ function ensureXServerRunning() {
     3,
     { delay: 2000, rejectionMessage: 'X server does not seem to be running?!' },
     () => {
-      console.log('Checking to see if X server is still running...');
       return runCommand('xset', ['q'], { stdio: 'ignore' });
     },
   );
