@@ -4,6 +4,8 @@ executors:
   node-browsers:
     docker:
       - image: circleci/node:14-browsers
+        environment:
+          DBUS_SESSION_BUS_ADDRESS: /dev/null
   node-browsers-medium-plus:
     docker:
       - image: circleci/node:14-browsers
