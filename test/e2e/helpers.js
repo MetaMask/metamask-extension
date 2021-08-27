@@ -4,6 +4,7 @@ const createStaticServer = require('../../development/create-static-server');
 const {
   createSegmentServer,
 } = require('../../development/lib/create-segment-server');
+const { runInShell } = require('../../development/lib/run-command');
 const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
 const { buildWebDriver } = require('./webdriver');
@@ -82,6 +83,14 @@ async function withFixtures(options, testSuite) {
         response.end();
       });
       await segmentServer.start(9090);
+    }
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
+      console.log('Checking to see if X server is still running...');
+      try {
+        await runInShell('xset', ['q']);
+      } catch {
+        throw new Error('X server does not seem to be running?!');
+      }
     }
     const { driver } = await buildWebDriver(driverOptions);
     webDriver = driver;

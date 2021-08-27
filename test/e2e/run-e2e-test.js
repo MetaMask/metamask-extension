@@ -1,7 +1,7 @@
 const { promises: fs } = require('fs');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
-const { runCommand, runInShell } = require('../../development/lib/run-command');
+const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { retry } = require('../../development/lib/retry');
 
@@ -73,15 +73,11 @@ async function main() {
     process.env.E2E_LEAVE_RUNNING = 'true';
   }
 
-  console.log('Checking to see if X server is running...');
-  try {
-    await runInShell('xset', ['q']);
-  } catch {
-    throw new Error('X server does not seem to be running?!');
-  }
-
-  await retry(retries, async () => {
-    await runInShell('yarn', ['mocha', '--no-timeouts', e2eTestPath]);
+  console.log(
+    `Running \`yarn mocha --no-timeouts "${e2eTestPath}"\` with ${retries} retries...`,
+  );
+  await retry(retries, () => {
+    return runInShell('yarn', ['mocha', '--no-timeouts', e2eTestPath]);
   });
 }
 
