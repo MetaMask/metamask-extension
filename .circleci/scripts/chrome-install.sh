@@ -27,6 +27,3 @@ rm -rf "${CHROME_BINARY}"
 sudo sed -i 's|HERE/chrome"|HERE/chrome"|g' "/opt/google/chrome/google-chrome"
 
 printf '%s\n' "CHROME ${CHROME_VERSION} configured"
-
-# Set '/tmp/.X11-unix' to root to silence warning when running xvfb-run
-sudo chown root:root /tmp/.X11-unix
