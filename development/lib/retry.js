@@ -21,6 +21,12 @@ async function retry(...args) {
 
   let attempts = 0;
   while (attempts <= retries) {
+    if (attempts > 0 && options.delay > 0) {
+      await new Promise((resolve) => {
+        setTimeout(resolve, options.delay);
+      });
+    }
+
     try {
       await functionToRetry();
       return;
@@ -28,13 +34,9 @@ async function retry(...args) {
       console.error(error);
     } finally {
       attempts += 1;
-      if (options.delay > 0) {
-        await new Promise((resolve) => {
-          setTimeout(resolve, options.delay);
-        });
-      }
     }
   }
+
   throw new Error(options.rejectionMessage);
 }
 
