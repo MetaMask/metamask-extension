@@ -30,7 +30,7 @@ async function retry(...args) {
       attempts += 1;
       if (options.delay > 0) {
         await new Promise((resolve) => {
-          setTimeout(options.delay, resolve);
+          setTimeout(resolve, options.delay);
         });
       }
     }
