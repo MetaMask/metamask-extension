@@ -84,25 +84,10 @@ async function main() {
     process.env.E2E_LEAVE_RUNNING = 'true';
   }
 
-  startDbus();
-
-  const mochaArgs = ['mocha', '--no-timeouts', e2eTestPath];
-  const [executable, args] =
-    process.env.CI === 'true'
-      ? [
-          'xvfb-run',
-          [
-            '-n 99',
-            '--server-args',
-            '-screen 0 1280x1024x24',
-            'yarn',
-            ...mochaArgs,
-          ],
-        ]
-      : ['yarn', mochaArgs];
+  //startDbus();
 
   await retry(retries, async () => {
-    await runInShell(executable, args);
+    await runInShell('yarn', ['mocha', '--no-timeouts', e2eTestPath]);
   });
 }
 
