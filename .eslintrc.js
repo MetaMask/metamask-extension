@@ -154,6 +154,7 @@ module.exports = {
         'babel.config.js',
         'nyc.config.js',
         'stylelint.config.js',
+        'app/scripts/collect-intrinsics.js',
         'app/scripts/lockdown-run.js',
         'development/**/*.js',
         'test/e2e/**/*.js',
@@ -164,6 +165,13 @@ module.exports = {
       ],
       parserOptions: {
         sourceType: 'script',
+      },
+    },
+    {
+      files: ['app/scripts/lockdown-run.js'],
+      globals: {
+        harden: 'readonly',
+        universalPropertyNames: 'readonly',
       },
     },
   ],

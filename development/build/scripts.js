@@ -23,6 +23,17 @@ const Sqrl = require('squirrelly');
 const lavaPack = require('@lavamoat/lavapack');
 const terser = require('terser');
 
+const replaceNodeFetch = function (_file) {
+  return through(function (buf, _enc, next) {
+    this.push(
+      buf
+        .toString('utf8')
+        .replace(/require\(['"`]node-fetch['"`]\)/gu, '(globalThis.fetch)'),
+    );
+    next();
+  });
+};
+
 const bifyModuleGroups = require('bify-module-groups');
 
 const metamaskrc = require('rc')('metamask', {
@@ -371,6 +382,7 @@ function createBuildConfiguration() {
     // non-standard bify options
     manualExternal: [],
     manualIgnore: [],
+    manualExclude: [],
   };
   return { label, bundlerOpts, events };
 }
@@ -386,6 +398,8 @@ function setupBundlerDefaults(
     transform: [
       // transpile top-level code
       babelify,
+      // replace node-fetch
+      [replaceNodeFetch, { global: true }],
       // inline `fs.readFileSync` files
       brfs,
     ],
@@ -394,6 +408,8 @@ function setupBundlerDefaults(
     // for sourcemaps
     debug: true,
   });
+
+  bundlerOpts.manualExclude.push('node-fetch');
 
   // ensure react-devtools are not included in non-dev builds
   if (!devMode) {
@@ -490,6 +506,7 @@ async function bundleIt(buildConfiguration) {
   // manually apply non-standard options
   bundler.external(bundlerOpts.manualExternal);
   bundler.ignore(bundlerOpts.manualIgnore);
+  bundlerOpts.manualExclude.forEach((pkg) => bundler.exclude(pkg));
   // output build logs to terminal
   bundler.on('log', log);
   // forward update event (used by watchify)
