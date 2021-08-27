@@ -167,13 +167,9 @@ module.exports = {
       },
     },
     {
-      files: [
-        'app/scripts/lockdown-run.js',
-        'test/unit-global/protect-intrinsics.test.js',
-      ],
+      files: ['app/scripts/lockdown-run.js'],
       globals: {
         harden: 'readonly',
-        universalPropertyNames: 'readonly',
       },
     },
   ],

@@ -15,7 +15,9 @@ try {
   // This affects Firefox v56 and Waterfox Classic.
   console.error('Lockdown failed:', error);
   if (globalThis.sentry && globalThis.sentry.captureException) {
-    globalThis.sentry.captureException(error);
+    globalThis.sentry.captureException(
+      new Error(`Lockdown failed: ${error.message}`),
+    );
   }
 }
 
@@ -43,9 +45,79 @@ try {
    * We write this function in IIFE format to avoid polluting global scope.
    */
   (function protectIntrinsics() {
+    // TODO: Figure out how to import this object from ses/src/whitelist.js
+    // These are a.k.a. the "named intrinsics".
+    const universalPropertyNames = {
+      // *** Function Properties of the Global Object
+
+      isFinite: 'isFinite',
+      isNaN: 'isNaN',
+      parseFloat: 'parseFloat',
+      parseInt: 'parseInt',
+
+      decodeURI: 'decodeURI',
+      decodeURIComponent: 'decodeURIComponent',
+      encodeURI: 'encodeURI',
+      encodeURIComponent: 'encodeURIComponent',
+
+      // *** Constructor Properties of the Global Object
+
+      Array: 'Array',
+      ArrayBuffer: 'ArrayBuffer',
+      BigInt: 'BigInt',
+      BigInt64Array: 'BigInt64Array',
+      BigUint64Array: 'BigUint64Array',
+      Boolean: 'Boolean',
+      DataView: 'DataView',
+      EvalError: 'EvalError',
+      Float32Array: 'Float32Array',
+      Float64Array: 'Float64Array',
+      Int8Array: 'Int8Array',
+      Int16Array: 'Int16Array',
+      Int32Array: 'Int32Array',
+      Map: 'Map',
+      Number: 'Number',
+      Object: 'Object',
+      Promise: 'Promise',
+      Proxy: 'Proxy',
+      RangeError: 'RangeError',
+      ReferenceError: 'ReferenceError',
+      Set: 'Set',
+      String: 'String',
+      Symbol: 'Symbol',
+      SyntaxError: 'SyntaxError',
+      TypeError: 'TypeError',
+      Uint8Array: 'Uint8Array',
+      Uint8ClampedArray: 'Uint8ClampedArray',
+      Uint16Array: 'Uint16Array',
+      Uint32Array: 'Uint32Array',
+      URIError: 'URIError',
+      WeakMap: 'WeakMap',
+      WeakSet: 'WeakSet',
+
+      // *** Other Properties of the Global Object
+
+      JSON: 'JSON',
+      Reflect: 'Reflect',
+
+      // *** Annex B
+
+      escape: 'escape',
+      unescape: 'unescape',
+
+      // ESNext
+
+      lockdown: 'lockdown',
+      harden: 'harden',
+      HandledPromise: 'HandledPromise', // TODO: Until Promise.delegate (see below).
+      StaticModuleRecord: 'StaticModuleRecord',
+    };
+
     const globalProperties = new Set([
+      // TODO: Also include the named platform globals
       // This grabs every enumerable property on globalThis.
-      ...Object.keys(globalThis),
+      // ...Object.keys(globalThis),
+
       // universalPropertyNames is a constant added by lockdown to global scope
       // at the time of writing, it is initialized in 'ses/src/whitelist'.
       // These properties tend to be non-enumerable.
@@ -94,6 +166,8 @@ try {
 } catch (error) {
   console.error('Protecting intrinsics failed:', error);
   if (globalThis.sentry && globalThis.sentry.captureException) {
-    globalThis.sentry.captureException(error);
+    globalThis.sentry.captureException(
+      new Error(`Protecting intrinsics failed: ${error.message}`),
+    );
   }
 }
