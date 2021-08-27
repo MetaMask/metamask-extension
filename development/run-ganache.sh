@@ -4,7 +4,9 @@ set -e
 set -u
 set -o pipefail
 
-ganache_cli="$(yarn bin)/ganache-cli"
+# Notice that you can add additional parameters with $@
+# example `./run-ganache --db /tmp/my-persistance`.
+ganache_cli="$(yarn bin)/ganache-cli $@"
 seed_phrase="${GANACHE_SEED_PHRASE:-phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent}"
 
 _term () {
