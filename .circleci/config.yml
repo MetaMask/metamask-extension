@@ -361,7 +361,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              ENABLE_CHROME_LOGGING=true yarn test:e2e:chrome --retries 2
+              yarn test:e2e:chrome --retries 2
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -388,7 +388,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              ENABLE_CHROME_LOGGING=true yarn test:e2e:chrome:metrics --retries 2
+              yarn test:e2e:chrome:metrics --retries 2
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -466,7 +466,7 @@ jobs:
           command: mv ./builds-test ./builds
       - run:
           name: Run page load benchmark
-          command: ENABLE_CHROME_LOGGING=true xvfb-run -e /dev/stderr -a yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2
+          command: xvfb-run -e /dev/stderr -a yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
