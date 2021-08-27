@@ -187,25 +187,6 @@ describe('MetaMask', function () {
     });
   });
 
-  describe('Show account information', function () {
-    it('shows the QR code for the account', async function () {
-      await driver.clickElement('[data-testid="account-options-menu-button"]');
-      await driver.clickElement(
-        '[data-testid="account-options-menu__account-details"]',
-      );
-      await driver.findVisibleElement('.qr-code__wrapper');
-      await driver.delay(regularDelayMs);
-
-      // wait for permission modal to be visible.
-      const permissionModal = await driver.findVisibleElement('span .modal');
-      await driver.clickElement('.account-modal__close');
-
-      // wait for permission modal to be removed from DOM.
-      await permissionModal.waitForElementState('hidden');
-      await driver.delay(regularDelayMs);
-    });
-  });
-
   describe('Import Secret Recovery Phrase', function () {
     it('logs out of the vault', async function () {
       await driver.clickElement('.account-menu__icon');
