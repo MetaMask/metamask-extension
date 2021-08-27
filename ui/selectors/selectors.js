@@ -8,6 +8,7 @@ import {
   NETWORK_TYPE_RPC,
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
 } from '../../shared/constants/network';
+import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
 
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
@@ -84,7 +85,7 @@ export function getCurrentKeyring(state) {
 export function isEIP1559Account(state) {
   // Trezor does not support 1559 at this time
   const currentKeyring = getCurrentKeyring(state);
-  return currentKeyring && currentKeyring.type !== 'Trezor Hardware';
+  return currentKeyring && currentKeyring.type !== KEYRING_TYPES.TREZOR;
 }
 
 export function checkNetworkAndAccountSupports1559(state) {
