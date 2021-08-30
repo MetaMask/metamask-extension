@@ -137,6 +137,10 @@ function getCopyTargets(shouldIncludeLockdown) {
       src: require.resolve('@lavamoat/lavapack/src/runtime-cjs.js'),
       dest: `runtime-cjs.js`,
     },
+    {
+      src: `./app/phishing.html`,
+      dest: `phishing.html`,
+    },
   ];
 
   const languageTags = new Set();
