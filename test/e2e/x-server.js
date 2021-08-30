@@ -9,7 +9,7 @@ function ensureXServerIsRunning() {
       rejectionMessage: 'X server does not seem to be running?!',
     },
     () => {
-      return runCommand('xset', ['q'], { stdio: 'ignore' });
+      return runCommand('xset', ['q']);
     },
   );
 }

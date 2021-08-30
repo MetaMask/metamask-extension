@@ -15,7 +15,7 @@ const spawn = require('cross-spawn');
  * @param {Array<string>} [args] - The arguments to pass to the command
  * @returns {Array<string>} Lines of output received via STDOUT
  */
-async function runCommand(command, args, options = {}) {
+async function runCommand(command, args) {
   const output = [];
   let mostRecentError;
   let errorSignal;
@@ -23,10 +23,7 @@ async function runCommand(command, args, options = {}) {
   const internalError = new Error('Internal');
   try {
     await new Promise((resolve, reject) => {
-      const childProcess = spawn(command, args, {
-        encoding: 'utf8',
-        ...options,
-      });
+      const childProcess = spawn(command, args, { encoding: 'utf8' });
       childProcess.stdout.setEncoding('utf8');
       childProcess.stderr.setEncoding('utf8');
 
@@ -91,7 +88,7 @@ async function runCommand(command, args, options = {}) {
  * @param {string} command - The command to run
  * @param {Array<string>} [args] - The arguments to pass to the command
  */
-async function runInShell(command, args, options = {}) {
+async function runInShell(command, args) {
   let errorSignal;
   let errorCode;
   const internalError = new Error('Internal');
@@ -100,7 +97,6 @@ async function runInShell(command, args, options = {}) {
       const childProcess = spawn(command, args, {
         encoding: 'utf8',
         stdio: 'inherit',
-        ...options,
       });
 
       childProcess.once('exit', (code, signal) => {
