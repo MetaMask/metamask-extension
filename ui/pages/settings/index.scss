@@ -21,6 +21,13 @@
       @include H3;
 
       flex: 1 0 auto;
+
+      @media screen and (max-width: 575px) {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        max-width: 250px;
+      }
     }
   }
 
