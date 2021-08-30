@@ -65,6 +65,12 @@ describe('Transaction Controller', function () {
       getParticipateInMetrics: () => false,
       trackMetaMetricsEvent: () => undefined,
       getEIP1559GasFeeEstimates: () => undefined,
+      getTransactionMetricsTraits: () => {
+        return {
+          number_of_accounts: 3,
+          number_of_tokens: 2,
+        };
+      },
     });
     txController.nonceTracker.getNonceLock = () =>
       Promise.resolve({ nextNonce: 0, releaseLock: noop });
@@ -1514,6 +1520,8 @@ describe('Transaction Controller', function () {
           referrer: 'metamask',
           source: 'user',
           type: 'sentEther',
+          number_of_accounts: 3,
+          number_of_tokens: 2,
         },
         sensitiveProperties: {
           gas_price: '2',
@@ -1561,6 +1569,8 @@ describe('Transaction Controller', function () {
           referrer: 'other',
           source: 'dapp',
           type: 'sentEther',
+          number_of_accounts: 3,
+          number_of_tokens: 2,
         },
         sensitiveProperties: {
           gas_price: '2',
@@ -1608,6 +1618,8 @@ describe('Transaction Controller', function () {
           source: 'dapp',
           type: 'sentEther',
           chain_id: '0x2a',
+          number_of_accounts: 3,
+          number_of_tokens: 2,
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -1662,6 +1674,8 @@ describe('Transaction Controller', function () {
           referrer: 'other',
           source: 'dapp',
           type: 'sentEther',
+          number_of_accounts: 3,
+          number_of_tokens: 2,
         },
         sensitiveProperties: {
           baz: 3.0,

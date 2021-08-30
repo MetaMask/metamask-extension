@@ -427,6 +427,7 @@ export default class MetamaskController extends EventEmitter {
       getEIP1559GasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
         this.gasFeeController,
       ),
+      getTransactionMetricsTraits: this.getTransactionMetricsTraits.bind(this),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -2151,6 +2152,16 @@ export default class MetamaskController extends EventEmitter {
         },
       );
     });
+  }
+
+  getTransactionMetricsTraits() {
+    const { accounts, tokens } = this.getState();
+    const numberOfAccounts = Object.keys(accounts).length;
+    const numberOfTokens = tokens?.length || 0;
+    return {
+      number_of_tokens: numberOfTokens,
+      number_of_accounts: numberOfAccounts,
+    };
   }
 
   //=============================================================================

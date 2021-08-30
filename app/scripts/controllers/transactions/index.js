@@ -112,6 +112,7 @@ export default class TransactionController extends EventEmitter {
     this._trackMetaMetricsEvent = opts.trackMetaMetricsEvent;
     this._getParticipateInMetrics = opts.getParticipateInMetrics;
     this._getEIP1559GasFeeEstimates = opts.getEIP1559GasFeeEstimates;
+    this._getTransactionMetricsTraits = opts.getTransactionMetricsTraits;
 
     this.memStore = new ObservableStore({});
     this.query = new EthQuery(this.provider);
@@ -1408,6 +1409,7 @@ export default class TransactionController extends EventEmitter {
     }
 
     const gasParamsInGwei = this._getGasValuesInGWEI(gasParams);
+    const userTraits = this._getTransactionMetricsTraits();
 
     this._trackMetaMetricsEvent({
       event,
@@ -1418,6 +1420,7 @@ export default class TransactionController extends EventEmitter {
         source,
         network,
         type,
+        ...userTraits,
       },
       sensitiveProperties: {
         status,
