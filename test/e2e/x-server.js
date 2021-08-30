@@ -3,8 +3,11 @@ const { retry } = require('../../development/lib/retry');
 
 function ensureXServerIsRunning() {
   return retry(
-    3,
-    { delay: 2000, rejectionMessage: 'X server does not seem to be running?!' },
+    {
+      retries: 3,
+      delay: 2000,
+      rejectionMessage: 'X server does not seem to be running?!',
+    },
     () => {
       return runCommand('xset', ['q'], { stdio: 'ignore' });
     },

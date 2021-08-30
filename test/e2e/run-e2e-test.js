@@ -73,7 +73,7 @@ async function main() {
     process.env.E2E_LEAVE_RUNNING = 'true';
   }
 
-  await retry(retries, async () => {
+  await retry({ retries }, async () => {
     await runInShell('yarn', ['mocha', '--no-timeouts', e2eTestPath]);
   });
 }

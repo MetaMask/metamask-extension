@@ -63,7 +63,7 @@ async function profilePageLoad(pages, numSamples, retries) {
     const runResults = [];
     for (let i = 0; i < numSamples; i += 1) {
       let result;
-      await retry(retries, async () => {
+      await retry({ retries }, async () => {
         result = await measurePage(pageName);
       });
       runResults.push(result);
