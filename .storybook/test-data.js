@@ -8,7 +8,13 @@ const state = {
   "unconnectedAccount": {
     "state": "CLOSED"
   },
-  "activeTab": {},
+  "activeTab": {
+    "id": 113,
+    "title": "E2E Test Dapp",
+    "origin": "https://metamask.github.io",
+    "protocol": "https:",
+    "url": "https://metamask.github.io/test-dapp/"
+  },
   "metamask": {
     "networkDetails": {
       "EIPS": {
@@ -547,7 +553,7 @@ const state = {
       }
     ],
     "permissionsHistory": {
-      "https://app.uniswap.org": {
+      "https://metamask.github.io": {
         "eth_accounts": {
           "lastApproved": 1620710693213,
           "accounts": {
