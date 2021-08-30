@@ -562,6 +562,12 @@ const state = {
         "icon": "https://metamask.github.io/test-dapp/metamask-fox.svg",
         "lastUpdated": 1620723443380,
         "host": "metamask.github.io"
+      },
+      "https://app.uniswap.org": {
+        "name": "Uniswap",
+        "icon": "./UNI.png",
+        "lastUpdated": 1620723443380,
+        "host": "app.uniswap.org"
       }
     },
     "threeBoxSyncingAllowed": false,
