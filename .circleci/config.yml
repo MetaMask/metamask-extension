@@ -356,7 +356,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              ENABLE_CHROME_LOGGING=true yarn test:e2e:chrome --retries 2
+              yarn test:e2e:chrome --retries 2
             fi
           no_output_timeout: 20m
       - store_artifacts:
