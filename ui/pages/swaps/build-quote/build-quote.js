@@ -81,6 +81,7 @@ export default function BuildQuote({
   selectedAccountAddress,
   isFeatureFlagLoaded,
   tokenFromError,
+  shuffledTokensList,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -145,6 +146,7 @@ export default function BuildQuote({
   const tokensToSearch = useTokensToSearch({
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
+    shuffledTokensList,
   });
   const selectedToToken =
     tokensToSearch.find(({ address }) => address === toToken?.address) ||
@@ -605,4 +607,5 @@ BuildQuote.propTypes = {
   selectedAccountAddress: PropTypes.string,
   isFeatureFlagLoaded: PropTypes.bool.isRequired,
   tokenFromError: PropTypes.string,
+  shuffledTokensList: PropTypes.array,
 };

@@ -40,7 +40,7 @@ describe('DetectTokensController', function () {
     sandbox
       .stub(preferences, '_detectIsERC721')
       .returns(Promise.resolve(false));
-    nock('https://token-api.airswap-prod.codefi.network')
+    nock('https://token-api.metaswap.codefi.network')
       .get(`/tokens/1`)
       .reply(200, [
         {

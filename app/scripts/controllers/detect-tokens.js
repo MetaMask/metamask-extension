@@ -67,27 +67,35 @@ export default class DetectTokensController {
         tokensToDetect.push(tokenAddress.toLowerCase());
       }
     }
-    let result;
-    try {
-      result = await this._getTokenBalances(tokensToDetect);
-    } catch (error) {
-      warn(
-        `MetaMask - DetectTokensController single call balance fetch failed`,
-        error,
-      );
-      return;
-    }
-
-    tokensToDetect.forEach((tokenAddress, index) => {
-      const balance = result[index];
-      if (balance && !balance.isZero()) {
-        this._preferences.addToken(
-          tokenAddress,
-          tokenList[tokenAddress].symbol,
-          tokenList[tokenAddress].decimals,
+    const sliceOfTokensToDetect = [];
+    sliceOfTokensToDetect[0] = tokensToDetect.slice(0, 1000);
+    sliceOfTokensToDetect[1] = tokensToDetect.slice(
+      1000,
+      tokensToDetect.length - 1,
+    );
+    for (const tokensSlice of sliceOfTokensToDetect) {
+      let result;
+      try {
+        result = await this._getTokenBalances(tokensSlice);
+      } catch (error) {
+        warn(
+          `MetaMask - DetectTokensController single call balance fetch failed`,
+          error,
         );
+        return;
       }
-    });
+
+      tokensSlice.forEach((tokenAddress, index) => {
+        const balance = result[index];
+        if (balance && !balance.isZero()) {
+          this._preferences.addToken(
+            tokenAddress,
+            tokenList[tokenAddress].symbol,
+            tokenList[tokenAddress].decimals,
+          );
+        }
+      });
+    }
   }
 
   /**

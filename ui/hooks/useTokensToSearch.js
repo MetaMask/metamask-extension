@@ -85,7 +85,11 @@ export function getRenderableTokenData(
   };
 }
 
-export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
+export function useTokensToSearch({
+  usersTokens = [],
+  topTokens = {},
+  shuffledTokensList,
+}) {
   const chainId = useSelector(getCurrentChainId);
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -93,10 +97,9 @@ export function useTokensToSearch({ usersTokens = [], topTokens = {} }) {
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const tokenList = useSelector(getTokenList);
   const useStatictokenList = useSelector(getUseStaticTokenList);
-  // TODO: replace contract-metadata with list from state and introduce shuffle to tokenlist
   // token from dynamic api list is fetched when useStaticTokenList is true
   const shuffledTokenList = useStatictokenList
-    ? Object.values(tokenList)
+    ? shuffledTokensList
     : shuffledContractMap;
   const memoizedTopTokens = useEqualityCheck(topTokens);
   const memoizedUsersToken = useEqualityCheck(usersTokens);
