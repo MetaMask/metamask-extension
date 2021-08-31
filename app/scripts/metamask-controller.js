@@ -410,7 +410,7 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
-    const pluginControllerMessenger = controllerMessenger.getRestricted({
+    const pluginControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PluginController',
     });
 
