@@ -435,9 +435,13 @@ function setupController(initState, initLangCode) {
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.approvalController.subscribe(updateBadge);
   controller.appStateController.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+    updateBadge,
+  );
+
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.APPROVAL_STATE_CHANGE,
     updateBadge,
   );
 
