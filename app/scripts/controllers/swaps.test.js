@@ -132,6 +132,7 @@ const EMPTY_INIT_STATE = {
     routeState: '',
     swapsFeatureIsLive: true,
     useNewSwapsApi: false,
+    swapsFeatureFlags: {},
     swapsQuoteRefreshTime: 60000,
     swapsUserFeeLevel: '',
   },
@@ -889,6 +890,7 @@ describe('SwapsController', function () {
         const fetchParams = 'test';
         const swapsFeatureIsLive = false;
         const useNewSwapsApi = false;
+        const swapsFeatureFlags = {};
         const swapsQuoteRefreshTime = 0;
         swapsController.store.updateState({
           swapsState: {
@@ -896,6 +898,7 @@ describe('SwapsController', function () {
             fetchParams,
             swapsFeatureIsLive,
             useNewSwapsApi,
+            swapsFeatureFlags,
             swapsQuoteRefreshTime,
           },
         });

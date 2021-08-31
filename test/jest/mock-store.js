@@ -21,6 +21,11 @@ export const createSwapsMockStore = () => {
       fromToken: 'ETH',
     },
     metamask: {
+      networkDetails: {
+        EIPS: {
+          1559: false,
+        },
+      },
       provider: {
         chainId: MAINNET_CHAIN_ID,
       },
@@ -96,6 +101,12 @@ export const createSwapsMockStore = () => {
         },
       ],
       swapsState: {
+        swapsFeatureFlags: {
+          smart_transactions: {
+            mobile_active: true,
+            extension_active: true,
+          },
+        },
         quotes: {
           TEST_AGG_1: {
             trade: {

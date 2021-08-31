@@ -2151,6 +2151,13 @@ export function setSwapsLiveness(swapsLiveness) {
   };
 }
 
+export function setSwapsFeatureFlags(featureFlags) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsFeatureFlags(featureFlags);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function fetchAndSetQuotes(fetchParams, fetchParamsMetaData) {
   return async (dispatch) => {
     const [

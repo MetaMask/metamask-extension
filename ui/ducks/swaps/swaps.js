@@ -21,6 +21,7 @@ import {
   updateTransaction,
   resetBackgroundSwapsState,
   setSwapsLiveness,
+  setSwapsFeatureFlags,
   setSelectedQuoteAggId,
   setSwapsTxGasLimit,
   cancelTx,
@@ -67,7 +68,7 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
-import { getGasFeeEstimates } from '../metamask/metamask';
+import { getGasFeeEstimates, isEIP1559Network } from '../metamask/metamask';
 
 const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -233,6 +234,19 @@ export const getSwapsFeatureIsLive = (state) =>
 export const getUseNewSwapsApi = (state) =>
   state.metamask.swapsState.useNewSwapsApi;
 
+export const getSmartTransactionsEnabled = (state) => {
+  const hardwareWalletUsed = isHardwareWallet(state);
+  const EIP1559NetworkUsed = isEIP1559Network(state);
+  const smartTransactionsfeatureFlagEnabled =
+    state.metamask.swapsState?.swapsFeatureFlags?.smart_transactions
+      ?.extension_active;
+  return Boolean(
+    EIP1559NetworkUsed &&
+      !hardwareWalletUsed &&
+      smartTransactionsfeatureFlagEnabled,
+  );
+};
+
 export const getSwapsQuoteRefreshTime = (state) =>
   state.metamask.swapsState.swapsQuoteRefreshTime;
 
@@ -387,7 +401,7 @@ export const fetchAndSetSwapsGasPriceInfo = () => {
   };
 };
 
-export const fetchSwapsLiveness = () => {
+export const fetchSwapsLivenessAndFeatureFlags = () => {
   return async (dispatch, getState) => {
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
@@ -395,12 +409,16 @@ export const fetchSwapsLiveness = () => {
     };
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
+      await dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
         swapsFeatureFlags,
         getCurrentChainId(getState()),
       );
     } catch (error) {
-      log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
+      log.error(
+        'Failed to fetch Swaps feature flags and Swaps liveness, defaulting to false.',
+        error,
+      );
     }
     await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
     return swapsLivenessForNetwork;

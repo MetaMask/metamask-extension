@@ -1086,6 +1086,10 @@ export default class MetamaskController extends EventEmitter {
         swapsController.setSwapsLiveness,
         swapsController,
       ),
+      setSwapsFeatureFlags: nodeify(
+        swapsController.setSwapsFeatureFlags,
+        swapsController,
+      ),
       setSwapsUserFeeLevel: nodeify(
         swapsController.setSwapsUserFeeLevel,
         swapsController,

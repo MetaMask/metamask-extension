@@ -32,7 +32,7 @@ import {
   getSwapsFeatureIsLive,
   prepareToLeaveSwaps,
   fetchAndSetSwapsGasPriceInfo,
-  fetchSwapsLiveness,
+  fetchSwapsLivenessAndFeatureFlags,
   getUseNewSwapsApi,
   getFromToken,
 } from '../../ducks/swaps/swaps';
@@ -240,11 +240,11 @@ export default function Swap() {
   });
 
   useEffect(() => {
-    const fetchSwapsLivenessWrapper = async () => {
-      await dispatch(fetchSwapsLiveness());
+    const fetchSwapsLivenessAndFeatureFlagsWrapper = async () => {
+      await dispatch(fetchSwapsLivenessAndFeatureFlags());
       setIsFeatureFlagLoaded(true);
     };
-    fetchSwapsLivenessWrapper();
+    fetchSwapsLivenessAndFeatureFlagsWrapper();
     return () => {
       exitEventRef.current();
     };

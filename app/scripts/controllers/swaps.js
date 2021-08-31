@@ -82,6 +82,7 @@ const initialState = {
     swapsFeatureIsLive: true,
     useNewSwapsApi: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
+    swapsFeatureFlags: {},
   },
 };
 
@@ -501,6 +502,13 @@ export default class SwapsController {
     });
   }
 
+  setSwapsFeatureFlags(swapsFeatureFlags) {
+    const { swapsState } = this.store.getState();
+    this.store.updateState({
+      swapsState: { ...swapsState, swapsFeatureFlags },
+    });
+  }
+
   resetPostFetchState() {
     const { swapsState } = this.store.getState();
     this.store.updateState({
@@ -511,6 +519,7 @@ export default class SwapsController {
         swapsFeatureIsLive: swapsState.swapsFeatureIsLive,
         useNewSwapsApi: swapsState.useNewSwapsApi,
         swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
+        swapsFeatureFlags: swapsState.swapsFeatureFlags,
       },
     });
     clearTimeout(this.pollingTimeout);

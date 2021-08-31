@@ -1,12 +1,13 @@
 import nock from 'nock';
 
 import { MOCKS, createSwapsMockStore } from '../../../test/jest';
-import { setSwapsLiveness } from '../../store/actions';
+import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
 import { setStorageItem } from '../../helpers/utils/storage-helpers';
 import * as swaps from './swaps';
 
 jest.mock('../../store/actions.js', () => ({
   setSwapsLiveness: jest.fn(),
+  setSwapsFeatureFlags: jest.fn(),
 }));
 
 const providerState = {
@@ -23,7 +24,7 @@ describe('Ducks - Swaps', () => {
     nock.cleanAll();
   });
 
-  describe('fetchSwapsLiveness', () => {
+  describe('fetchSwapsLivenessAndFeatureFlags', () => {
     const cleanFeatureFlagApiCache = () => {
       setStorageItem(
         'cachedFetch:https://api2.metaswap.codefi.network/featureFlags',
@@ -67,13 +68,14 @@ describe('Ducks - Swaps', () => {
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
       });
-      const swapsLiveness = await swaps.fetchSwapsLiveness()(
+      const swapsLiveness = await swaps.fetchSwapsLivenessAndFeatureFlags()(
         mockDispatch,
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(2);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
+      expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
 
@@ -88,13 +90,14 @@ describe('Ducks - Swaps', () => {
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
       });
-      const swapsLiveness = await swaps.fetchSwapsLiveness()(
+      const swapsLiveness = await swaps.fetchSwapsLivenessAndFeatureFlags()(
         mockDispatch,
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(2);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
+      expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
 
@@ -110,13 +113,14 @@ describe('Ducks - Swaps', () => {
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
       });
-      const swapsLiveness = await swaps.fetchSwapsLiveness()(
+      const swapsLiveness = await swaps.fetchSwapsLivenessAndFeatureFlags()(
         mockDispatch,
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(2);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
+      expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
 
@@ -129,7 +133,7 @@ describe('Ducks - Swaps', () => {
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         replyWithError: true,
       });
-      const swapsLiveness = await swaps.fetchSwapsLiveness()(
+      const swapsLiveness = await swaps.fetchSwapsLivenessAndFeatureFlags()(
         mockDispatch,
         createGetState(),
       );
@@ -149,18 +153,22 @@ describe('Ducks - Swaps', () => {
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
       });
-      await swaps.fetchSwapsLiveness()(mockDispatch, createGetState());
+      await swaps.fetchSwapsLivenessAndFeatureFlags()(
+        mockDispatch,
+        createGetState(),
+      );
       expect(featureFlagApiNock.isDone()).toBe(true);
       const featureFlagApiNock2 = mockFeatureFlagsApiResponse({
         featureFlagsResponse,
       });
-      const swapsLiveness = await swaps.fetchSwapsLiveness()(
+      const swapsLiveness = await swaps.fetchSwapsLivenessAndFeatureFlags()(
         mockDispatch,
         createGetState(),
       );
       expect(featureFlagApiNock2.isDone()).toBe(false); // Second API call wasn't made, cache was used instead.
-      expect(mockDispatch).toHaveBeenCalledTimes(2);
+      expect(mockDispatch).toHaveBeenCalledTimes(4);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
+      expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
   });
@@ -240,6 +248,38 @@ describe('Ducks - Swaps', () => {
       expect(swaps.getUsedQuote(state)).toMatchObject(
         state.metamask.swapsState.quotes.TEST_AGG_BEST,
       );
+    });
+  });
+
+  describe('getSmartTransactionsEnabled', () => {
+    it('returns true if feature flag is enabled, not a HW and is EIP-1559', () => {
+      const state = createSwapsMockStore();
+      state.metamask.networkDetails.EIPS[1559] = true;
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(true);
+    });
+
+    it('returns false if feature flag is disabled, not a HW and is EIP-1559', () => {
+      const state = createSwapsMockStore();
+      state.metamask.swapsState.swapsFeatureFlags.smart_transactions.extension_active = false;
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
+    });
+
+    it('returns false if feature flag is enabled, is a HW and is EIP-1559', () => {
+      const state = createSwapsMockStore();
+      state.metamask.networkDetails.EIPS[1559] = true;
+      state.metamask.keyrings[0].type = 'Trezor Hardware';
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
+    });
+
+    it('returns false if feature flag is enabled, not a HW and is not EIP-1559', () => {
+      const state = createSwapsMockStore();
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
+    });
+
+    it('returns false if feature flag is missing', () => {
+      const state = createSwapsMockStore();
+      state.metamask.swapsState.swapsFeatureFlags = {};
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
   });
 });
