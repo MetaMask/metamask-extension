@@ -1,7 +1,7 @@
 import { ethErrors, errorCodes } from 'eth-rpc-errors';
 import deepFreeze from 'deep-freeze-strict';
 
-import { ApprovalController } from '@metamask/controllers';
+import { ApprovalController, ControllerMessenger } from '@metamask/controllers';
 
 import _getRestrictedMethods from '../../app/scripts/controllers/permissions/restrictedMethods';
 
@@ -62,6 +62,14 @@ const getRestrictedMethods = (permController) => {
   };
 };
 
+function getRestrictedMessenger() {
+  const controllerMessenger = new ControllerMessenger();
+  const messenger = controllerMessenger.getRestricted({
+    name: 'ApprovalController',
+  });
+  return messenger;
+}
+
 /**
  * Gets default mock constructor options for a permissions controller.
  *
@@ -71,6 +79,7 @@ export function getPermControllerOpts() {
   return {
     approvals: new ApprovalController({
       showApprovalRequest: noop,
+      messenger: getRestrictedMessenger(),
     }),
     getKeyringAccounts: async () => [...keyringAccounts],
     getUnlockPromise: () => Promise.resolve(),

@@ -138,8 +138,12 @@ export default class MetamaskController extends EventEmitter {
 
     // next, we will initialize the controllers
     // controller initialization order matters
+    const approvalControllerMessenger = controllerMessenger.getRestricted({
+      name: 'ApprovalController',
+    });
 
     this.approvalController = new ApprovalController({
+      messenger: approvalControllerMessenger,
       showApprovalRequest: opts.showUserConfirmation,
     });
 
@@ -1106,7 +1110,7 @@ export default class MetamaskController extends EventEmitter {
 
       // approval controller
       resolvePendingApproval: nodeify(
-        approvalController.resolve,
+        approvalController.accept,
         approvalController,
       ),
       rejectPendingApproval: nodeify(
