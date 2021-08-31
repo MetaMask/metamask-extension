@@ -43,7 +43,7 @@
     display: flex;
     flex-flow: row nowrap;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       display: none;
     }
   }
@@ -70,7 +70,7 @@
     align-items: center;
     padding: 16px 0;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       height: 69px;
       position: relative;
       text-align: center;
@@ -80,7 +80,7 @@
   &__sub-header-text {
     @include H4;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       @include H5;
 
       width: 100%;
@@ -90,7 +90,7 @@
   &__back-button {
     display: none;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       display: block;
       background-image: url('/images/caret-left-black.svg');
       width: 18px;
@@ -127,14 +127,14 @@
       flex-direction: column;
       flex: 1 1 auto;
 
-      @media screen and (min-width: 576px) {
+      @media screen and (min-width: $break-large) {
         flex: 0 0 40%;
         max-width: 210px;
         padding-top: 8px;
       }
 
       .tab-bar__tab {
-        @media screen and (min-width: 576px) {
+        @media screen and (min-width: $break-large) {
           padding: 16px 24px 0;
         }
       }
@@ -146,7 +146,7 @@
       display: flex;
       flex-flow: column;
 
-      @media screen and (max-width: 575px) {
+      @media screen and (max-width: $break-small) {
         display: none;
       }
     }
@@ -155,7 +155,7 @@
   &__body {
     padding: 12px 24px;
 
-    @media screen and (min-width: 576px) {
+    @media screen and (min-width: $break-large) {
       padding: 12px;
     }
   }
@@ -173,7 +173,7 @@
     flex-direction: column;
     margin-bottom: 20px;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       height: initial;
       padding: 5px 0;
     }
@@ -204,7 +204,7 @@
     display: flex;
     flex-direction: column;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       max-width: 100%;
       width: 100%;
     }
@@ -233,13 +233,13 @@
     .settings-page {
       &__content {
         &__tabs {
-          @media screen and (max-width: 575px) {
+          @media screen and (max-width: $break-small) {
             display: none;
           }
         }
 
         &__modules {
-          @media screen and (max-width: 575px) {
+          @media screen and (max-width: $break-small) {
             display: block;
           }
         }

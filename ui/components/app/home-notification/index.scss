@@ -8,7 +8,7 @@
   min-height: 116px;
   padding: 16px;
 
-  @media screen and (min-width: 576px) {
+  @media screen and (min-width: $break-large) {
     min-width: 472px;
   }
 
@@ -44,7 +44,7 @@
     flex-direction: row;
     align-items: center;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       width: 160px;
     }
   }
@@ -78,7 +78,7 @@
     width: 155px;
     padding: 0;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       width: 135px;
     }
 
@@ -103,7 +103,7 @@
     padding: 0;
     margin-left: 4px;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       width: 135px;
     }
 

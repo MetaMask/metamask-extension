@@ -8,12 +8,12 @@
   width: 100%;
   flex: 0 0 auto;
 
-  @media screen and (max-width: 575px) {
+  @media screen and (max-width: $break-small) {
     padding: 1rem;
     z-index: $mobile-header-z-index;
   }
 
-  @media screen and (min-width: 576px) {
+  @media screen and (min-width: $break-large) {
     height: 75px;
     justify-content: center;
 
@@ -50,11 +50,11 @@
     flex-flow: row nowrap;
     width: 100%;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       height: 100%;
     }
 
-    @media screen and (min-width: 576px) {
+    @media screen and (min-width: $break-large) {
       width: 85vw;
     }
 
