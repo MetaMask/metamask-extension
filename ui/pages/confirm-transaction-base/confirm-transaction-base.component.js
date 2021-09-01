@@ -9,7 +9,6 @@ import {
   hexToDecimal,
   hexWEIToDecGWEI,
 } from '../../helpers/utils/conversions.util';
-import { getURLHostName } from '../../helpers/utils/util';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
@@ -37,13 +36,19 @@ import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 
-import { COLORS } from '../../helpers/constants/design-system';
+import {
+  COLORS,
+  FONT_STYLE,
+  TYPOGRAPHY,
+} from '../../helpers/constants/design-system';
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
 } from '../../store/actions';
+
+import Typography from '../../components/ui/typography/typography';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
@@ -401,9 +406,7 @@ export default class ConfirmTransactionBase extends Component {
               detailTitle={
                 txData.dappSuggestedGasFees ? (
                   <>
-                    {t('transactionDetailDappGasHeading', [
-                      getURLHostName(txData?.origin),
-                    ])}
+                    {t('transactionDetailGasHeading')}
                     <InfoTooltip
                       contentText={t('transactionDetailDappGasTooltip')}
                       position="top"
@@ -441,9 +444,7 @@ export default class ConfirmTransactionBase extends Component {
                   </>
                 )
               }
-              detailTitleColor={
-                txData.dappSuggestedGasFees ? COLORS.SECONDARY1 : COLORS.BLACK
-              }
+              detailTitleColor={COLORS.BLACK}
               detailText={
                 <div className="confirm-page-container-content__currency-container">
                   {renderHeartBeatIfNotInTest()}
@@ -482,15 +483,28 @@ export default class ConfirmTransactionBase extends Component {
                 </div>,
               ])}
               subTitle={
-                <GasTiming
-                  maxPriorityFeePerGas={hexWEIToDecGWEI(
-                    maxPriorityFeePerGas ||
-                      txData.txParams.maxPriorityFeePerGas,
+                <>
+                  {txData.dappSuggestedGasFees ? (
+                    <Typography
+                      variant={TYPOGRAPHY.H7}
+                      fontStyle={FONT_STYLE.ITALIC}
+                      color={COLORS.GRAY}
+                    >
+                      {t('transactionDetailDappGasMoreInfo')}
+                    </Typography>
+                  ) : (
+                    ''
                   )}
-                  maxFeePerGas={hexWEIToDecGWEI(
-                    maxFeePerGas || txData.txParams.maxFeePerGas,
-                  )}
-                />
+                  <GasTiming
+                    maxPriorityFeePerGas={hexWEIToDecGWEI(
+                      maxPriorityFeePerGas ||
+                        txData.txParams.maxPriorityFeePerGas,
+                    )}
+                    maxFeePerGas={hexWEIToDecGWEI(
+                      maxFeePerGas || txData.txParams.maxFeePerGas,
+                    )}
+                  />
+                </>
               }
             />,
             <TransactionDetailItem
