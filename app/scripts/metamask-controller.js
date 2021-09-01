@@ -138,6 +138,7 @@ export default class MetamaskController extends EventEmitter {
     this.store = new ComposableObservableStore({
       state: initState,
       controllerMessenger: this.controllerMessenger,
+      persist: true, // apply getPersistentState to updates
     });
 
     // external connections by origin
@@ -398,6 +399,7 @@ export default class MetamaskController extends EventEmitter {
       name: 'PluginController',
     });
 
+    console.log('initState', initState);
     this.pluginController = new PluginController({
       terminateAllPlugins: this.workerController.terminateAllPlugins.bind(
         this.workerController,
@@ -702,6 +704,8 @@ export default class MetamaskController extends EventEmitter {
 
     // Run filsnap
     this.setupFilsnap(this.permissionsController, this.pluginController);
+
+    this.pluginController.runExistingPlugins();
 
     // Setup some background hooks
     global.clearPermissions = () =>

@@ -3007,18 +3007,19 @@
     nanoid "^3.1.20"
     pump "^3.0.0"
 
-"@mm-snap/controllers@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@mm-snap/controllers/-/controllers-0.0.7.tgz#50fea7982fd96ecb9d57b51357396fc43c055a85"
-  integrity sha512-UAbcLT61fGdl6WReazEASeArVBQAua5M+7HCWo2FpzcjWi0o1F01kzF7we6U25vkib6lESIopVkcnug75N7J4g==
+"@mm-snap/controllers@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@mm-snap/controllers/-/controllers-0.0.9.tgz#d346ec219962f8beb4503bc61e629725f2501a36"
+  integrity sha512-+XeaNSBsDUyFha74X6YZjFA6yU5XbbhX24bGUn209cRcrm3+Bb1oHj8GYM/bBjCk9p+l3d967h4gIPA/rN0lOw==
   dependencies:
-    "@metamask/controllers" "^14.2.0"
+    "@metamask/controllers" "^15.0.0"
     "@metamask/object-multiplex" "^1.1.0"
     "@metamask/obs-store" "^6.0.2"
     "@metamask/post-message-stream" "4.0.0"
     "@metamask/safe-event-emitter" "^2.0.0"
     "@mm-snap/workers" "^0.0.6"
     eth-rpc-errors "^4.0.2"
+    immer "^8.0.4"
     json-rpc-engine "^6.1.0"
     json-rpc-middleware-stream "^3.0.0"
     nanoid "^3.1.20"
@@ -14540,6 +14541,11 @@ immer@^8.0.0, immer@^8.0.1:
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/immer/-/immer-8.0.1.tgz#9c73db683e2b3975c424fb0572af5889877ae656"
   integrity sha512-aqXhGP7//Gui2+UrEtvxZxSquQVXTpZ7KDxfCcKAF3Vysvw0CViVaW9RZ1j1xlIYqaaaipBoqdqeibkc18PNvA==
+
+immer@^8.0.4:
+  version "8.0.4"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-8.0.4.tgz#3a21605a4e2dded852fb2afd208ad50969737b7a"
+  integrity sha512-jMfL18P+/6P6epANRvRk6q8t+3gGhqsJ9EuJ25AXE+9bNTYtssvzeYbEd0mXRYWCmmXSIbnlpz6vd6iJlmGGGQ==
 
 import-cwd@^2.0.0:
   version "2.1.0"
