@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Lisage võrk"
   },
-  "addRecipient": {
-    "message": "Lisa saaja"
-  },
   "addSuggestedTokens": {
     "message": "Lisa soovitatud lube"
   },
@@ -574,9 +571,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMaski versioon"
-  },
-  "mobileSyncText": {
-    "message": "Sisestage parool, et saaksime teid tuvastada!"
   },
   "mustSelectOne": {
     "message": "Peate valima vähemalt 1 loa."

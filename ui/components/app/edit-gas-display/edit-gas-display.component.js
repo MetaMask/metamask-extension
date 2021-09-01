@@ -67,6 +67,7 @@ export default function EditGasDisplay({
   balanceError,
   estimatesUnavailableWarning,
   hasGasErrors,
+  txParamsHaveBeenCustomized,
 }) {
   const t = useContext(I18nContext);
   const isMainnet = useSelector(getIsMainnet);
@@ -96,12 +97,13 @@ export default function EditGasDisplay({
       dappSuggestedAndTxParamGasFeesAreTheSame,
   );
 
-  const showTopError = balanceError || estimatesUnavailableWarning;
+  const showTopError =
+    (balanceError || estimatesUnavailableWarning) &&
+    (!isGasEstimatesLoading || txParamsHaveBeenCustomized);
   const radioButtonsEnabled =
     networkAndAccountSupport1559 &&
     gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET &&
-    !requireDappAcknowledgement &&
-    ![EDIT_GAS_MODES.SPEED_UP, EDIT_GAS_MODES.CANCEL].includes(mode);
+    !requireDappAcknowledgement;
 
   let errorKey;
   if (balanceError) {
@@ -121,7 +123,7 @@ export default function EditGasDisplay({
             />
           </div>
         )}
-        {showTopError && !isGasEstimatesLoading && (
+        {showTopError && (
           <div className="edit-gas-display__warning">
             <ErrorMessage errorKey={errorKey} />
           </div>
@@ -159,19 +161,23 @@ export default function EditGasDisplay({
           }
           detail={
             networkAndAccountSupport1559 &&
-            estimatedMaximumFiat !== undefined &&
-            t('editGasTotalBannerSubtitle', [
-              <Typography
-                fontWeight={FONT_WEIGHT.BOLD}
-                tag="span"
-                key="secondary"
-              >
-                {estimatedMaximumFiat}
-              </Typography>,
-              <Typography tag="span" key="primary">
-                {estimatedMaximumNative}
-              </Typography>,
-            ])
+            estimatedMaximumFiat !== undefined && (
+              <>
+                <Typography
+                  tag="span"
+                  key="label"
+                  fontWeight={FONT_WEIGHT.BOLD}
+                >
+                  {t('editGasSubTextFeeLabel')}
+                </Typography>
+                <Typography tag="span" key="secondary">
+                  {estimatedMaximumFiat}
+                </Typography>
+                <Typography tag="span" key="primary">
+                  {`(${estimatedMaximumNative})`}
+                </Typography>
+              </>
+            )
           }
           timing={
             hasGasErrors === false && (
@@ -249,6 +255,7 @@ export default function EditGasDisplay({
         {!requireDappAcknowledgement &&
           (showAdvancedForm ||
             hasGasErrors ||
+            estimatesUnavailableWarning ||
             showAdvancedInlineGasIfPossible) && (
             <AdvancedGasControls
               gasEstimateType={gasEstimateType}
@@ -316,4 +323,5 @@ EditGasDisplay.propTypes = {
   balanceError: PropTypes.bool,
   estimatesUnavailableWarning: PropTypes.bool,
   hasGasErrors: PropTypes.bool,
+  txParamsHaveBeenCustomized: PropTypes.bool,
 };

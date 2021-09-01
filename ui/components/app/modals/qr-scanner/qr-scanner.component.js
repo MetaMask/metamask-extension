@@ -7,6 +7,7 @@ import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app
 import { SECOND } from '../../../../../shared/constants/time';
 import Spinner from '../../../ui/spinner';
 import WebcamUtils from '../../../../helpers/utils/webcam-utils';
+import { getURL } from '../../../../helpers/utils/util';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component';
 
 const READY_STATE = {
@@ -68,8 +69,8 @@ export default class QrScanner extends Component {
         !environmentReady &&
         getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN
       ) {
-        const currentUrl = new URL(window.location.href);
-        const currentHash = currentUrl.hash;
+        const currentUrl = getURL(window.location.href);
+        const currentHash = currentUrl?.hash;
         const currentRoute = currentHash ? currentHash.substring(1) : null;
         global.platform.openExtensionInBrowser(currentRoute);
       }

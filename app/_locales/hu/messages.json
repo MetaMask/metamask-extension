@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Hálózat hozzáadása"
   },
-  "addRecipient": {
-    "message": "Címzett hozzáadása"
-  },
   "addSuggestedTokens": {
     "message": "Javasolt tokenek hozzáadása"
   },
@@ -577,9 +574,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMask verzió"
-  },
-  "mobileSyncText": {
-    "message": "Kérünk írd be jelszavad, hogy igazold kiléted!"
   },
   "mustSelectOne": {
     "message": "Legalább 1 tokent ki kell választania."

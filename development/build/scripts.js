@@ -38,7 +38,7 @@ const metamaskrc = require('rc')('metamask', {
 });
 
 const { streamFlatMap } = require('../stream-flat-map.js');
-const baseManifest = require('../../app/manifest/_base.json');
+const { version } = require('../../package.json');
 const {
   createTask,
   composeParallel,
@@ -76,13 +76,16 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   return { dev, test, testDev, prod };
 
   function createTasksForBuildJsExtension({ taskPrefix, devMode, testing }) {
-    const standardEntryPoints = ['background', 'ui', 'phishing-detect'];
+    const standardEntryPoints = ['background', 'ui', 'content-script'];
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
-        entryFiles: standardEntryPoints.map(
-          (label) => `./app/scripts/${label}.js`,
-        ),
+        entryFiles: standardEntryPoints.map((label) => {
+          if (label === 'content-script') {
+            return './app/vendor/trezor/content-script.js';
+          }
+          return `./app/scripts/${label}.js`;
+        }),
         devMode,
         testing,
         browserPlatforms,
@@ -108,6 +111,11 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       createTaskForBundleSentry({ devMode }),
     );
 
+    const phishingDetectSubtask = createTask(
+      `${taskPrefix}:phishing-detect`,
+      createTaskForBundlePhishingDetect({ devMode }),
+    );
+
     // task for initiating browser livereload
     const initiateLiveReload = async () => {
       if (devMode) {
@@ -130,6 +138,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       contentscriptSubtask,
       disableConsoleSubtask,
       installSentrySubtask,
+      phishingDetectSubtask,
     ].map((subtask) => runInChildProcess(subtask));
     // make a parent task that runs each task in a child thread
     return composeParallel(initiateLiveReload, ...allSubtasks);
@@ -148,6 +157,17 @@ function createScriptTasks({ browserPlatforms, livereload }) {
 
   function createTaskForBundleSentry({ devMode }) {
     const label = 'sentry-install';
+    return createNormalBundle({
+      label,
+      entryFilepath: `./app/scripts/${label}.js`,
+      destFilepath: `${label}.js`,
+      devMode,
+      browserPlatforms,
+    });
+  }
+
+  function createTaskForBundlePhishingDetect({ devMode }) {
+    const label = 'phishing-detect';
     return createNormalBundle({
       label,
       entryFilepath: `./app/scripts/${label}.js`,
@@ -292,12 +312,17 @@ function createFactoredBuild({
             renderHtmlFile('home', groupSet, commonSet, browserPlatforms);
             break;
           }
-          case 'phishing-detect': {
-            renderHtmlFile('phishing', groupSet, commonSet, browserPlatforms);
-            break;
-          }
           case 'background': {
             renderHtmlFile('background', groupSet, commonSet, browserPlatforms);
+            break;
+          }
+          case 'content-script': {
+            renderHtmlFile(
+              'trezor-usb-permissions',
+              groupSet,
+              commonSet,
+              browserPlatforms,
+            );
             break;
           }
           default: {
@@ -545,7 +570,7 @@ function getEnvironmentVariables({ devMode, testing }) {
   return {
     METAMASK_DEBUG: devMode,
     METAMASK_ENVIRONMENT: environment,
-    METAMASK_VERSION: baseManifest.version,
+    METAMASK_VERSION: version,
     NODE_ENV: devMode ? 'development' : 'production',
     IN_TEST: testing ? 'true' : false,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',

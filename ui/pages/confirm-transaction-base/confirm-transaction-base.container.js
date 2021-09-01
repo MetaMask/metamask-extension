@@ -31,7 +31,10 @@ import {
   getPreferences,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
+import {
+  transactionMatchesNetwork,
+  txParamsAreDappSuggested,
+} from '../../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
   updateTransactionGasFees,
@@ -155,6 +158,9 @@ const mapStateToProps = (state, ownProps) => {
   const isEthGasPrice = getIsEthGasPriceFetched(state);
   const noGasPrice = !supportsEIP1599 && getNoGasPriceFetched(state);
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
+  const gasFeeIsCustom =
+    fullTxData.userFeeLevel === 'custom' ||
+    txParamsAreDappSuggested(fullTxData);
 
   return {
     balance,
@@ -201,6 +207,7 @@ const mapStateToProps = (state, ownProps) => {
     maxFeePerGas: gasEstimationObject.maxFeePerGas,
     maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
+    gasFeeIsCustom,
   };
 };
 

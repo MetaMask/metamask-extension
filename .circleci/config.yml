@@ -304,7 +304,7 @@ jobs:
           steps:
             - run:
                 name: Validate changelog
-                command: yarn auto-changelog validate
+                command: yarn lint:changelog
       - when:
           condition:
             matches:
@@ -313,7 +313,7 @@ jobs:
           steps:
             - run:
                 name: Validate release candidate changelog
-                command: yarn auto-changelog validate --rc
+                command: yarn lint:changelog:rc
 
 
   test-deps-audit:

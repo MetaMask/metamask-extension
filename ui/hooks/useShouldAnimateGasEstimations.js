@@ -40,9 +40,15 @@ export function useShouldAnimateGasEstimations() {
       showLoadingAnimation === true
     ) {
       dispatch(toggleGasLoadingAnimation(true));
+    }
+  }, [dispatch, isGasLoadingAnimationActive, showLoadingAnimation]);
 
+  useEffect(() => {
+    if (
+      isGasLoadingAnimationActive === true &&
+      showLoadingAnimation === false
+    ) {
       setTimeout(() => {
-        console.log('Killing the toggleGasLoadingAnimation to false');
         dispatch(toggleGasLoadingAnimation(false));
       }, 2000);
     }

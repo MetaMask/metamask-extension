@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Dodaj sieć"
   },
-  "addRecipient": {
-    "message": "Dodaj odbiorcę"
-  },
   "addSuggestedTokens": {
     "message": "Dodaj sugerowane tokeny."
   },
@@ -581,9 +578,6 @@
   },
   "metamaskVersion": {
     "message": "Wersja MetaMask"
-  },
-  "mobileSyncText": {
-    "message": "Wpisz hasło, aby potwierdzić, że to Ty!"
   },
   "mustSelectOne": {
     "message": "Należy wybrać co najmniej 1 token."

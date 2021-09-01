@@ -43,6 +43,7 @@ import {
   hexToDecimal,
 } from '../../../helpers/utils/conversions.util';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
+import { getURLHostName } from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
@@ -52,7 +53,10 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../../shared/modules/swaps.utils';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
+import {
+  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+} from '../../../../shared/constants/swaps';
 
 import { resetSwapsPostFetchState, removeToken } from '../../../store/actions';
 import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util';
@@ -238,7 +242,7 @@ export default function BuildQuote({
   );
 
   const blockExplorerLabel = rpcPrefs.blockExplorerUrl
-    ? new URL(blockExplorerTokenLink).hostname
+    ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
   const blockExplorerLinkClickedEvent = useNewMetricEvent({
@@ -247,9 +251,7 @@ export default function BuildQuote({
     properties: {
       link_type: 'Token Tracker',
       action: 'Swaps Confirmation',
-      block_explorer_domain: blockExplorerTokenLink
-        ? new URL(blockExplorerTokenLink)?.hostname
-        : '',
+      block_explorer_domain: getURLHostName(blockExplorerTokenLink),
     },
   });
 
@@ -370,7 +372,7 @@ export default function BuildQuote({
 
   const swapYourTokenBalance = t('swapYourTokenBalance', [
     fromTokenString || '0',
-    fromTokenSymbol,
+    fromTokenSymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.symbol || '',
   ]);
 
   return (

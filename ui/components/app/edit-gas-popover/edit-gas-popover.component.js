@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
 import { getGasLoadingAnimationIsShowing } from '../../../ducks/app/app';
-
+import { txParamsAreDappSuggested } from '../../../../shared/modules/transaction.utils';
 import { EDIT_GAS_MODES, GAS_LIMITS } from '../../../../shared/constants/gas';
 
 import {
@@ -93,6 +93,9 @@ export default function EditGasPopover({
     estimatedBaseFee,
   } = useGasFeeInputs(defaultEstimateToUse, transaction, minimumGasLimit, mode);
 
+  const txParamsHaveBeenCustomized =
+    estimateToUse === 'custom' || txParamsAreDappSuggested(transaction);
+
   /**
    * Temporary placeholder, this should be managed by the parent component but
    * we will be extracting this component from the hard to maintain modal/
@@ -129,11 +132,17 @@ export default function EditGasPopover({
           gasPrice: decGWEIToHexWEI(gasPrice),
         };
 
+    const cleanTransactionParams = { ...transaction.txParams };
+
+    if (networkAndAccountSupport1559) {
+      delete cleanTransactionParams.gasPrice;
+    }
+
     const updatedTxMeta = {
       ...transaction,
       userFeeLevel: estimateToUse || 'custom',
       txParams: {
-        ...transaction.txParams,
+        ...cleanTransactionParams,
         ...newGasSettings,
       },
     };
@@ -210,9 +219,9 @@ export default function EditGasPopover({
               onClick={onSubmit}
               disabled={
                 hasGasErrors ||
-                isGasEstimatesLoading ||
                 balanceError ||
-                gasLoadingAnimationIsShowing
+                ((isGasEstimatesLoading || gasLoadingAnimationIsShowing) &&
+                  !txParamsHaveBeenCustomized)
               }
             >
               {footerButtonText}
@@ -262,6 +271,7 @@ export default function EditGasPopover({
               balanceError={balanceError}
               estimatesUnavailableWarning={estimatesUnavailableWarning}
               hasGasErrors={hasGasErrors}
+              txParamsHaveBeenCustomized={txParamsHaveBeenCustomized}
               {...editGasDisplayProps}
             />
           </>
