@@ -7,7 +7,7 @@ executors:
   node-browsers-medium-plus:
     docker:
       - image: circleci/node:14-browsers
-    resource_class: medium+
+    resource_class: xlarge
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   shellcheck:
