@@ -36,7 +36,11 @@ import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 
-import { COLORS, FONT_STYLE, TYPOGRAPHY } from '../../helpers/constants/design-system';
+import {
+  COLORS,
+  FONT_STYLE,
+  TYPOGRAPHY,
+} from '../../helpers/constants/design-system';
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
@@ -481,7 +485,11 @@ export default class ConfirmTransactionBase extends Component {
               subTitle={
                 <>
                   {txData.dappSuggestedGasFees ? (
-                    <Typography variant={TYPOGRAPHY.H7} fontStyle={FONT_STYLE.ITALIC} color={COLORS.GRAY}>
+                    <Typography
+                      variant={TYPOGRAPHY.H7}
+                      fontStyle={FONT_STYLE.ITALIC}
+                      color={COLORS.GRAY}
+                    >
                       {t('transactionDetailDappGasMoreInfo')}
                     </Typography>
                   ) : (
