@@ -22,15 +22,22 @@ const PageSet = ({ children }) => {
   useEffect(() => {
     const pendingTokens = { ...pendingTokensState };
     pendingTokens['0x33f90dee07c6e8b9682dd20f73e6c358b2ed0f03'].symbol = symbol;
-    store.dispatch(updateMetamaskState({ pendingTokens }));
+    const newState = Object.assign(state.metamask, { pendingTokens })
+    store.dispatch(
+      updateMetamaskState(newState),
+    );
   }, [symbol, pendingTokensState]);
 
   return children;
 };
 
 export const AddToken = () => {
-  store.dispatch(updateMetamaskState({ pendingTokens: tokens }));
-  return (
+  const state = store.getState();  
+  const newState = Object.assign(state.metamask, { pendingTokens: tokens })
+  store.dispatch(
+    updateMetamaskState(newState),
+  );
+return (
     <PageSet>
       <ConfirmAddToken history={history} />
     </PageSet>

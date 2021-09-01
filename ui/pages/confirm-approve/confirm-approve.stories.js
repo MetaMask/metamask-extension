@@ -26,27 +26,30 @@ const PageSet = ({ children }) => {
     'Icon URL',
     'https://metamask.github.io/test-dapp/metamask-fox.svg',
   );
-
+  const state = store.getState();
   const currentNetworkTxList = useSelector(currentNetworkTxListSelector);
   const transaction = currentNetworkTxList.find(({ id }) => id === txId);
 
   useEffect(() => {
     transaction.origin = origin;
+    const newState = Object.assign(state.metamask, { currentNetworkTxList: [transaction] })
     store.dispatch(
-      updateMetamaskState({ currentNetworkTxList: [transaction] }),
+      updateMetamaskState(newState),
     );
+
   }, [origin, transaction]);
 
   useEffect(() => {
+    const newState = Object.assign(state.metamask, { domainMetadata: {
+      [origin]: {
+        icon: domainIconUrl,
+      },
+    }})
     store.dispatch(
-      updateMetamaskState({
-        domainMetadata: {
-          [origin]: {
-            icon: domainIconUrl,
-          },
-        },
-      }),
+      updateMetamaskState(newState),
     );
+
+    
   }, [domainIconUrl, origin]);
 
   const params = useParams();
@@ -55,10 +58,11 @@ const PageSet = ({ children }) => {
 };
 
 export const ApproveTokens = () => {
+  const state = store.getState()
+  const newState = Object.assign(state.metamask, { domainMetadata })
   store.dispatch(
-    updateMetamaskState({ currentNetworkTxList: [currentNetworkTxListSample] }),
+    updateMetamaskState(newState),
   );
-  store.dispatch(updateMetamaskState({ domainMetadata }));
   return (
     <PageSet>
       <ConfirmApprove />
