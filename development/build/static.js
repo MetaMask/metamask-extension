@@ -122,11 +122,15 @@ function getCopyTargets(shouldIncludeLockdown) {
       dest: `globalthis.js`,
     },
     {
-      src: `./node_modules/ses/dist/lockdown.cjs`,
+      src: shouldIncludeLockdown
+        ? `./node_modules/ses/dist/lockdown.umd.min.js`
+        : EMPTY_JS_FILE,
       dest: `lockdown-install.js`,
     },
     {
-      src: `./app/scripts/lockdown-run.js`,
+      src: shouldIncludeLockdown
+        ? `./app/scripts/lockdown-run.js`
+        : EMPTY_JS_FILE,
       dest: `lockdown-run.js`,
     },
     {
@@ -139,6 +143,10 @@ function getCopyTargets(shouldIncludeLockdown) {
       src: require.resolve('@lavamoat/lavapack/src/runtime.js'),
       dest: `runtime-lavamoat.js`,
     },
+    {
+      src: `./app/phishing.html`,
+      dest: `phishing.html`,
+    }
   ];
 
   const languageTags = new Set();
