@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Tilføj netværk"
   },
-  "addRecipient": {
-    "message": "Tilføj modtager"
-  },
   "addSuggestedTokens": {
     "message": "Tilføj foreslåede tokens"
   },

@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "Tambahkan Jaringan"
   },
-  "addRecipient": {
-    "message": "Tambahkan Penerima"
-  },
   "addSuggestedTokens": {
     "message": "Tambahkan Token yang Disarankan"
   },

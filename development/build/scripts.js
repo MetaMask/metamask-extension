@@ -74,12 +74,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   return { dev, test, testDev, prod };
 
   function createTasksForBuildJsExtension({ taskPrefix, devMode, testing }) {
-    const standardEntryPoints = [
-      'background',
-      'ui',
-      'phishing-detect',
-      'content-script',
-    ];
+    const standardEntryPoints = ['background', 'ui', 'content-script'];
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
@@ -114,6 +109,11 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       createTaskForBundleSentry({ devMode }),
     );
 
+    const phishingDetectSubtask = createTask(
+      `${taskPrefix}:phishing-detect`,
+      createTaskForBundlePhishingDetect({ devMode }),
+    );
+
     // task for initiating browser livereload
     const initiateLiveReload = async () => {
       if (devMode) {
@@ -136,6 +136,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       contentscriptSubtask,
       disableConsoleSubtask,
       installSentrySubtask,
+      phishingDetectSubtask,
     ].map((subtask) => runInChildProcess(subtask));
     // make a parent task that runs each task in a child thread
     return composeParallel(initiateLiveReload, ...allSubtasks);
@@ -154,6 +155,17 @@ function createScriptTasks({ browserPlatforms, livereload }) {
 
   function createTaskForBundleSentry({ devMode }) {
     const label = 'sentry-install';
+    return createNormalBundle({
+      label,
+      entryFilepath: `./app/scripts/${label}.js`,
+      destFilepath: `${label}.js`,
+      devMode,
+      browserPlatforms,
+    });
+  }
+
+  function createTaskForBundlePhishingDetect({ devMode }) {
+    const label = 'phishing-detect';
     return createNormalBundle({
       label,
       entryFilepath: `./app/scripts/${label}.js`,
@@ -275,10 +287,6 @@ function createFactoredBuild({
               browserPlatforms,
             );
             renderHtmlFile('home', groupSet, commonSet, browserPlatforms);
-            break;
-          }
-          case 'phishing-detect': {
-            renderHtmlFile('phishing', groupSet, commonSet, browserPlatforms);
             break;
           }
           case 'background': {

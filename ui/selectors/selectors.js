@@ -8,6 +8,7 @@ import {
   NETWORK_TYPE_RPC,
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
 } from '../../shared/constants/network';
+import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
 
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
@@ -82,8 +83,9 @@ export function getCurrentKeyring(state) {
 }
 
 export function isEIP1559Account(state) {
-  // Neither hardware wallet supports 1559 at this time
-  return !isHardwareWallet(state);
+  // Trezor does not support 1559 at this time
+  const currentKeyring = getCurrentKeyring(state);
+  return currentKeyring && currentKeyring.type !== KEYRING_TYPES.TREZOR;
 }
 
 export function checkNetworkAndAccountSupports1559(state) {
@@ -100,7 +102,7 @@ export function checkNetworkAndAccountSupports1559(state) {
  */
 export function isHardwareWallet(state) {
   const keyring = getCurrentKeyring(state);
-  return keyring.type.includes('Hardware');
+  return Boolean(keyring?.type?.includes('Hardware'));
 }
 
 /**
@@ -110,7 +112,7 @@ export function isHardwareWallet(state) {
  */
 export function getHardwareWalletType(state) {
   const keyring = getCurrentKeyring(state);
-  return keyring.type.includes('Hardware') ? keyring.type : undefined;
+  return isHardwareWallet(state) ? keyring.type : undefined;
 }
 
 export function getAccountType(state) {

@@ -6,6 +6,7 @@ const createStaticServer = require('../../development/create-static-server');
 const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
+const { ensureXServerIsRunning } = require('./x-server');
 
 const ganacheServer = new Ganache();
 const dappPort = 8080;
@@ -39,6 +40,9 @@ describe('MetaMask', function () {
       dappServer.on('listening', resolve);
       dappServer.on('error', reject);
     });
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
+      await ensureXServerIsRunning();
+    }
     const result = await buildWebDriver();
     driver = result.driver;
     await driver.navigate();
@@ -184,25 +188,6 @@ describe('MetaMask', function () {
       await driver.clickElement('[data-testid="popover-close"]');
 
       await popover.waitForElementState('hidden');
-    });
-  });
-
-  describe('Show account information', function () {
-    it('shows the QR code for the account', async function () {
-      await driver.clickElement('[data-testid="account-options-menu-button"]');
-      await driver.clickElement(
-        '[data-testid="account-options-menu__account-details"]',
-      );
-      await driver.findVisibleElement('.qr-code__wrapper');
-      await driver.delay(regularDelayMs);
-
-      // wait for permission modal to be visible.
-      const permissionModal = await driver.findVisibleElement('span .modal');
-      await driver.clickElement('.account-modal__close');
-
-      // wait for permission modal to be removed from DOM.
-      await permissionModal.waitForElementState('hidden');
-      await driver.delay(regularDelayMs);
     });
   });
 

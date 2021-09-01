@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Ajouter un réseau"
   },
-  "addRecipient": {
-    "message": "Ajouter destinataire"
-  },
   "addSuggestedTokens": {
     "message": "Ajouter les jetons suggérés"
   },

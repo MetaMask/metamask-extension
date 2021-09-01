@@ -35,9 +35,6 @@
   "addNetwork": {
     "message": "Netzwerk hinzufügen"
   },
-  "addRecipient": {
-    "message": "Empfänger hinzufügen"
-  },
   "addSuggestedTokens": {
     "message": "Vorgeschlagene Token hinzufügen"
   },

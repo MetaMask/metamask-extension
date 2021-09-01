@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "नेटवर्क जोड़ें"
   },
-  "addRecipient": {
-    "message": "प्राप्तकर्ता को जोड़ें"
-  },
   "addSuggestedTokens": {
     "message": "सुझाए गए टोकन जोड़ें"
   },

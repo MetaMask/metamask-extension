@@ -21,7 +21,7 @@ jest.mock('react-router-dom', () => {
 
 describe('SendHeader Component', () => {
   describe('Title', () => {
-    it('should render "Add Recipient" for INACTIVE or ADD_RECIPIENT stages', () => {
+    it('should render "Send to" for INACTIVE or ADD_RECIPIENT stages', () => {
       const { getByText, rerender } = renderWithProvider(
         <SendHeader />,
         configureMockStore(middleware)({
@@ -30,7 +30,7 @@ describe('SendHeader Component', () => {
           history: { mostRecentOverviewPage: 'activity' },
         }),
       );
-      expect(getByText('Add Recipient')).toBeTruthy();
+      expect(getByText('Send to')).toBeTruthy();
       rerender(
         <SendHeader />,
         configureMockStore(middleware)({
@@ -39,7 +39,7 @@ describe('SendHeader Component', () => {
           history: { mostRecentOverviewPage: 'activity' },
         }),
       );
-      expect(getByText('Add Recipient')).toBeTruthy();
+      expect(getByText('Send to')).toBeTruthy();
     });
 
     it('should render "Send" for DRAFT stage when asset type is NATIVE', () => {

@@ -7,6 +7,7 @@ const {
 const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
 const { buildWebDriver } = require('./webdriver');
+const { ensureXServerIsRunning } = require('./x-server');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -82,6 +83,9 @@ async function withFixtures(options, testSuite) {
         response.end();
       });
       await segmentServer.start(9090);
+    }
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
+      await ensureXServerIsRunning();
     }
     const { driver } = await buildWebDriver(driverOptions);
     webDriver = driver;

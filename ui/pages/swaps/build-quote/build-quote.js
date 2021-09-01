@@ -43,6 +43,7 @@ import {
   hexToDecimal,
 } from '../../../helpers/utils/conversions.util';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
+import { getURLHostName } from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
@@ -241,7 +242,7 @@ export default function BuildQuote({
   );
 
   const blockExplorerLabel = rpcPrefs.blockExplorerUrl
-    ? new URL(blockExplorerTokenLink).hostname
+    ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
   const blockExplorerLinkClickedEvent = useNewMetricEvent({
@@ -250,9 +251,7 @@ export default function BuildQuote({
     properties: {
       link_type: 'Token Tracker',
       action: 'Swaps Confirmation',
-      block_explorer_domain: blockExplorerTokenLink
-        ? new URL(blockExplorerTokenLink)?.hostname
-        : '',
+      block_explorer_domain: getURLHostName(blockExplorerTokenLink),
     },
   });
 

@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಸೇರಿಸಿ"
   },
-  "addRecipient": {
-    "message": "ಸ್ವೀಕೃತಿದಾರರನ್ನು ಸೇರಿಸಿ"
-  },
   "addSuggestedTokens": {
     "message": "ಸೂಚಿಸಲಾದ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
   },

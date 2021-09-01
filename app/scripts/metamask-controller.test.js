@@ -109,6 +109,7 @@ describe('MetaMaskController', function () {
   const noop = () => undefined;
 
   before(async function () {
+    globalThis.AbortController = window.AbortController;
     await ganacheServer.start();
   });
 
@@ -157,6 +158,7 @@ describe('MetaMaskController', function () {
 
   after(async function () {
     await ganacheServer.quit();
+    delete globalThis.AbortController;
   });
 
   describe('#getAccounts', function () {

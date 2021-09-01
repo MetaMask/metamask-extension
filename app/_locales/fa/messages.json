@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "اضافه شبکه"
   },
-  "addRecipient": {
-    "message": "اضافه کردن دریافت کننده"
-  },
   "addSuggestedTokens": {
     "message": "اضافه رمزیاب های پیشنهاد شده"
   },

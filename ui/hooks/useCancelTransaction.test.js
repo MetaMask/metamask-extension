@@ -6,6 +6,14 @@ import { getConversionRate, getSelectedAccount } from '../selectors';
 import { increaseLastGasPrice } from '../helpers/utils/confirm-tx.util';
 import { useCancelTransaction } from './useCancelTransaction';
 
+jest.mock('../store/actions', () => ({
+  disconnectGasFeeEstimatePoller: jest.fn(),
+  getGasFeeEstimatesAndStartPolling: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve()),
+  addPollingTokenToAppState: jest.fn(),
+}));
+
 describe('useCancelTransaction', function () {
   let useSelector;
   const dispatch = sinon.spy();
