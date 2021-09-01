@@ -1,0 +1,23 @@
+.smart-transaction-status {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+
+  &__content {
+    flex-flow: column;
+  }
+
+  div {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__support-link {
+    color: $Blue-500;
+    margin-top: 24px;
+    cursor: pointer;
+  }
+}

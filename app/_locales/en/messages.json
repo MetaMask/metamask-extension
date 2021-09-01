@@ -2012,6 +2012,25 @@
   "spendLimitTooLarge": {
     "message": "Spend limit too large"
   },
+  "stFailure": {
+    "message": "Transaction failed"
+  },
+  "stFailureDescription": {
+    "message": "Transaction failures happen and we are here to help. If this issue persists, you can reach our customer support at $1 for further assistance.",
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stPending": {
+    "message": "Transaction is pending"
+  },
+  "stPendingDescription": {
+    "message": "Your transaction is being processed."
+  },
+  "stSuccess": {
+    "message": "Success"
+  },
+  "stSuccessDescription": {
+    "message": "Transaction was completed successfully."
+  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },

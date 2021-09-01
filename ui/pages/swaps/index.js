@@ -43,6 +43,7 @@ import {
 import {
   AWAITING_SIGNATURES_ROUTE,
   AWAITING_SWAP_ROUTE,
+  SMART_TRANSACTION_STATUS_ROUTE,
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
   LOADING_QUOTES_ROUTE,
@@ -78,6 +79,7 @@ import {
   countDecimals,
 } from './swaps.util';
 import AwaitingSignatures from './awaiting-signatures';
+import SmartTransactionStatus from './smart-transaction-status';
 import AwaitingSwap from './awaiting-swap';
 import LoadingQuote from './loading-swaps-quotes';
 import BuildQuote from './build-quote';
@@ -422,6 +424,13 @@ export default function Swap() {
               exact
               render={() => {
                 return <AwaitingSignatures />;
+              }}
+            />
+            <Route
+              path={SMART_TRANSACTION_STATUS_ROUTE}
+              exact
+              render={() => {
+                return <SmartTransactionStatus />;
               }}
             />
             <Route
