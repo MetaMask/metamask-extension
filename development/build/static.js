@@ -146,7 +146,7 @@ function getCopyTargets(shouldIncludeLockdown) {
     {
       src: `./app/phishing.html`,
       dest: `phishing.html`,
-    }
+    },
   ];
 
   const languageTags = new Set();
