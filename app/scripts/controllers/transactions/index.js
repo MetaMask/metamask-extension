@@ -369,10 +369,12 @@ export default class TransactionController extends EventEmitter {
     txMeta.type = type;
 
     // ensure value
-    txMeta.txParams.value = txMeta.txParams.value
-      ? addHexPrefix(txMeta.txParams.value)
-      : '0x0';
-
+    if (txMeta.txParams.value && txMeta.txParams.value !== '0x') {
+      txMeta.txParams.value = addHexPrefix(txMeta.txParams.value);
+    } else {
+      txMeta.txParams.value = '0x0';
+    }
+    
     this.addTransaction(txMeta);
     this.emit('newUnapprovedTx', txMeta);
 
