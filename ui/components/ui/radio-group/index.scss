@@ -33,34 +33,32 @@
     flex: 1 1 auto;
   }
 
-  &__column-line {
+  &__column-start-connector {
+    width: calc(50% + 0.5px);
+    height: 6px;
+    border-left: 1px solid $ui-2;
+    border-bottom: 1px solid $ui-2;
+    align-self: flex-end;
+  }
+
+  &__column-end-connector {
+    width: calc(50% + 0.5px);
+    height: 6px;
+    border-right: 1px solid $ui-2;
+    border-bottom: 1px solid $ui-2;
+    align-self: flex-start;
+  }
+
+  &__column-vertical-line {
     width: 1px;
     height: 5px;
-    background-color: $ui-2;
+    border-left: 1px solid $ui-2;
   }
 
   &__column-horizontal-line {
     height: 1px;
-    background-color: $ui-2;
+    border-bottom: 1px solid $ui-2;
     width: 100%;
-  }
-
-  &__column:first-child &__column-horizontal-line {
-    width: 50%;
-    align-self: flex-end;
-
-    @-moz-document url-prefix() {
-      width: calc(50% + 0.5px);
-    }
-  }
-
-  &__column:last-child &__column-horizontal-line {
-    width: calc(50% + 1px);
-    align-self: flex-start;
-
-    @-moz-document url-prefix() {
-      width: calc(50% + 0.5px);
-    }
   }
 
   &__column-radio {
