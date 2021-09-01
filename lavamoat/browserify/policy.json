@@ -173,7 +173,6 @@
     },
     "@ethersproject/contracts": {
       "globals": {
-        "name": true,
         "setTimeout": true
       },
       "packages": {
@@ -478,10 +477,12 @@
     },
     "@metamask/controllers": {
       "globals": {
+        "AbortController": true,
         "Headers": true,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
+        "console.log": true,
         "fetch": true,
         "setInterval": true,
         "setTimeout": true
@@ -4574,7 +4575,6 @@
         "eth-json-rpc-infura": true,
         "eth-json-rpc-middleware": true,
         "eth-sig-util": true,
-        "ethereumjs-tx": true,
         "ethereumjs-util": true,
         "events": true,
         "json-stable-stringify": true,
