@@ -2515,9 +2515,8 @@
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
   },
-  "transactionDetailDappGasHeading": {
-    "message": "$1 suggested gas fee",
-    "description": "$1 represents a dapp origin"
+  "transactionDetailDappGasMoreInfo": {
+    "message": "Site suggested"
   },
   "transactionDetailDappGasTooltip": {
     "message": "Edit to use MetaMask's recommended gas fee based on the latest block."

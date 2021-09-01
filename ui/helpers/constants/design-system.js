@@ -10,6 +10,7 @@ export const COLORS = {
   UI3: 'ui-3',
   UI4: 'ui-4',
   BLACK: 'black',
+  GRAY: 'gray',
   WHITE: 'white',
   PRIMARY1: 'primary-1',
   PRIMARY2: 'primary-2',
@@ -154,6 +155,12 @@ export const FONT_WEIGHT = {
   700: 700,
   800: 800,
   900: 900,
+};
+
+export const FONT_STYLE = {
+  ITALIC: 'italic',
+  NORMAL: 'normal',
+  OBLIQUE: 'oblique',
 };
 
 export const SEVERITIES = {
