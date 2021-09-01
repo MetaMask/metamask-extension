@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.1.0]
-### Uncategorized
-- Using a normal bundle instead of a factored bundle for phishing-detect (build sys) ([#11972](https://github.com/MetaMask/metamask-extension/pull/11972))
-- 1559 ledger ([#11951](https://github.com/MetaMask/metamask-extension/pull/11951))
+### Added
+- [#11951](https://github.com/MetaMask/metamask-extension/pull/11951): Adding EIP-1559 support for Ledger hardware
+
+### Fixed
+- [#11972](https://github.com/MetaMask/metamask-extension/pull/11972): Fixing "continue at your own risk" button (Phishing alert page)
 
 ## [10.0.3]
 ### Changed
