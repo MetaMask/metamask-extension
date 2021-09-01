@@ -85,59 +85,59 @@ module.exports = function createStaticAssetTasks({
 function getCopyTargets(shouldIncludeLockdown) {
   const allCopyTargets = [
     {
-        src: `./app/_locales/`,
-        dest: `_locales`,
+      src: `./app/_locales/`,
+      dest: `_locales`,
     },
     {
-        src: `./app/images/`,
-        dest: `images`,
+      src: `./app/images/`,
+      dest: `images`,
     },
     {
-        src: `./node_modules/@metamask/contract-metadata/images/`,
-        dest: `images/contract`,
+      src: `./node_modules/@metamask/contract-metadata/images/`,
+      dest: `images/contract`,
     },
     {
-        src: `./app/fonts/`,
-        dest: `fonts`,
+      src: `./app/fonts/`,
+      dest: `fonts`,
     },
     {
-        src: `./app/vendor/`,
-        dest: `vendor`,
+      src: `./app/vendor/`,
+      dest: `vendor`,
     },
     {
-        src: `./node_modules/@fortawesome/fontawesome-free/webfonts/`,
-        dest: `fonts/fontawesome`,
+      src: `./node_modules/@fortawesome/fontawesome-free/webfonts/`,
+      dest: `fonts/fontawesome`,
     },
     {
-        src: `./ui/css/output/`,
-        pattern: `*.css`,
-        dest: ``,
+      src: `./ui/css/output/`,
+      pattern: `*.css`,
+      dest: ``,
     },
     {
-        src: `./app/loading.html`,
-        dest: `loading.html`,
+      src: `./app/loading.html`,
+      dest: `loading.html`,
     },
     {
-        src: `./node_modules/globalthis/dist/browser.js`,
-        dest: `globalthis.js`,
+      src: `./node_modules/globalthis/dist/browser.js`,
+      dest: `globalthis.js`,
     },
     {
-        src: `./node_modules/ses/dist/lockdown.cjs`,
-        dest: `lockdown-install.js`,
+      src: `./node_modules/ses/dist/lockdown.cjs`,
+      dest: `lockdown-install.js`,
     },
     {
-        src: `./app/scripts/lockdown-run.js`,
-        dest: `lockdown-run.js`,
+      src: `./app/scripts/lockdown-run.js`,
+      dest: `lockdown-run.js`,
     },
     {
-        // eslint-disable-next-line node/no-extraneous-require
-        src: require.resolve('@lavamoat/lavapack/src/runtime-cjs.js'),
-        dest: `runtime-cjs.js`,
+      // eslint-disable-next-line node/no-extraneous-require
+      src: require.resolve('@lavamoat/lavapack/src/runtime-cjs.js'),
+      dest: `runtime-cjs.js`,
     },
     {
-        // eslint-disable-next-line node/no-extraneous-require
-        src: require.resolve('@lavamoat/lavapack/src/runtime.js'),
-        dest: `runtime-lavamoat.js`,
+      // eslint-disable-next-line node/no-extraneous-require
+      src: require.resolve('@lavamoat/lavapack/src/runtime.js'),
+      dest: `runtime-lavamoat.js`,
     },
   ];
 
