@@ -38,6 +38,7 @@ const expectedResults = [
     isPending: false,
     displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
     isSubmitted: false,
+    primaryWarning: undefined,
   },
   {
     title: 'Send',
@@ -51,6 +52,7 @@ const expectedResults = [
     secondaryCurrency: '-2 ETH',
     isPending: false,
     displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+    primaryWarning: undefined,
   },
   {
     title: 'Send',
@@ -64,6 +66,7 @@ const expectedResults = [
     secondaryCurrency: '-2 ETH',
     isPending: false,
     displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+    primaryWarning: undefined,
   },
   {
     title: 'Receive',
@@ -77,6 +80,7 @@ const expectedResults = [
     secondaryCurrency: '18.75 ETH',
     isPending: false,
     displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+    primaryWarning: undefined,
   },
   {
     title: 'Receive',
@@ -90,6 +94,7 @@ const expectedResults = [
     secondaryCurrency: '0 ETH',
     isPending: false,
     displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+    primaryWarning: undefined,
   },
   {
     title: 'Receive',
@@ -103,6 +108,7 @@ const expectedResults = [
     secondaryCurrency: '1 ETH',
     isPending: false,
     displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+    primaryWarning: undefined,
   },
   {
     title: 'Swap ETH to ABC',
@@ -116,6 +122,7 @@ const expectedResults = [
     secondaryCurrency: undefined,
     isPending: false,
     displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+    primaryWarning: undefined,
   },
 ];
 
