@@ -52,7 +52,7 @@ export default class DetectTokensController {
     if (!this.isActive) {
       return;
     }
-    if (Object.keys(this._tokenList.state.tokenList).length <= 0) {
+    if (Object.keys(this._tokenList.state.tokenList).length === 0) {
       return;
     }
 
@@ -145,13 +145,13 @@ export default class DetectTokensController {
       });
       this.hiddenTokens = hiddenTokens;
     });
-    preferences.store.subscribe(({ selectedAddress, useStaticTokenList }) => {
+    preferences.store.subscribe(({ selectedAddress, useTokenDetection }) => {
       if (
         this.selectedAddress !== selectedAddress ||
-        this.useStaticTokenList !== useStaticTokenList
+        this.useTokenDetection !== useTokenDetection
       ) {
         this.selectedAddress = selectedAddress;
-        this.useStaticTokenList = useStaticTokenList;
+        this.useTokenDetection = useTokenDetection;
         this.restartTokenDetection();
       }
     });

@@ -2056,11 +2056,11 @@ export function setUsePhishDetect(val) {
   };
 }
 
-export function setUseStaticTokenList(val) {
+export function setUseTokenDetection(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.setUseStaticTokenList`);
-    background.setUseStaticTokenList(val, (err) => {
+    log.debug(`background.setUseTokenDetection`);
+    background.setUseTokenDetection(val, (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));

@@ -22,7 +22,7 @@ export default class Identicon extends PureComponent {
     useBlockie: PropTypes.bool,
     alt: PropTypes.string,
     imageBorder: PropTypes.bool,
-    useStaticTokenList: PropTypes.bool,
+    useTokenDetection: PropTypes.bool,
     tokenList: PropTypes.object,
   };
 
@@ -58,7 +58,7 @@ export default class Identicon extends PureComponent {
       className,
       diameter,
       alt,
-      useStaticTokenList,
+      useTokenDetection,
       tokenList,
     } = this.props;
     return (
@@ -68,7 +68,7 @@ export default class Identicon extends PureComponent {
         className={classnames('identicon', className)}
         style={getStyles(diameter)}
         alt={alt}
-        useStaticTokenList={useStaticTokenList}
+        useTokenDetection={useTokenDetection}
         tokenList={tokenList}
       />
     );
@@ -94,7 +94,7 @@ export default class Identicon extends PureComponent {
       useBlockie,
       addBorder,
       diameter,
-      useStaticTokenList,
+      useTokenDetection,
       tokenList,
     } = this.props;
     if (image) {
@@ -102,8 +102,8 @@ export default class Identicon extends PureComponent {
     }
 
     if (address) {
-      // token from dynamic api list is fetched when useStaticTokenList is true
-      const tokenAddress = useStaticTokenList
+      // token from dynamic api list is fetched when useTokenDetection is true
+      const tokenAddress = useTokenDetection
         ? address
         : toChecksumHexAddress(address);
       if (tokenAddress && tokenList[tokenAddress]?.iconUrl) {

@@ -20,13 +20,13 @@ function IconFactory(jazzicon) {
 IconFactory.prototype.iconForAddress = function (
   address,
   diameter,
-  useStaticTokenList,
+  useTokenDetection,
   tokenList,
 ) {
-  // token from dynamic api list is fetched when useStaticTokenList is true
-  const addr = useStaticTokenList ? address : toChecksumHexAddress(address);
+  // token from dynamic api list is fetched when useTokenDetection is true
+  const addr = useTokenDetection ? address : toChecksumHexAddress(address);
   if (iconExistsFor(addr, tokenList)) {
-    return imageElFor(addr, useStaticTokenList, tokenList);
+    return imageElFor(addr, useTokenDetection, tokenList);
   }
 
   return this.generateIdenticonSvg(address, diameter);
@@ -61,11 +61,11 @@ function iconExistsFor(address, tokenList) {
   );
 }
 
-function imageElFor(address, useStaticTokenList, tokenList) {
+function imageElFor(address, useTokenDetection, tokenList) {
   const tokenMetadata = tokenList[address];
   const fileName = tokenMetadata?.iconUrl;
-  // token from dynamic api list is fetched when useStaticTokenList is true
-  const path = useStaticTokenList ? fileName : `images/contract/${fileName}`;
+  // token from dynamic api list is fetched when useTokenDetection is true
+  const path = useTokenDetection ? fileName : `images/contract/${fileName}`;
   const img = document.createElement('img');
   img.src = path;
   img.style.width = '100%';

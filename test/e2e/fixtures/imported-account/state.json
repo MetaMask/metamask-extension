@@ -479,7 +479,7 @@
       "useBlockie": false,
       "useNonceField": false,
       "usePhishDetect": true,
-      "useStaticTokenList": true
+      "useTokenDetection": true
     },
     "config": {},
     "firstTimeInfo": {

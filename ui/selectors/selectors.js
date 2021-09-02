@@ -601,12 +601,12 @@ export function getShowRecoveryPhraseReminder(state) {
 }
 
 /**
- * To get the useStaticTokenList flag which determines whether a static or dynamic token list is used
+ * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
  * @param {*} state
  * @returns Boolean
  */
-export function getUseStaticTokenList(state) {
-  return Boolean(state.metamask.useStaticTokenList);
+export function getUseTokenDetection(state) {
+  return Boolean(state.metamask.useTokenDetection);
 }
 
 /**

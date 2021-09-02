@@ -869,20 +869,20 @@ describe('preferences controller', function () {
       );
     });
   });
-  describe('setUseStaticTokenList', function () {
+  describe('setUseTokenDetection', function () {
     it('should default to false', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.useStaticTokenList, true);
+      assert.equal(state.useTokenDetection, true);
     });
 
-    it('should set the useStaticTokenList property in state', function () {
+    it('should set the useTokenDetection property in state', function () {
       assert.equal(
-        preferencesController.store.getState().useStaticTokenList,
+        preferencesController.store.getState().useTokenDetection,
         true,
       );
-      preferencesController.setUseStaticTokenList(false);
+      preferencesController.setUseTokenDetection(false);
       assert.equal(
-        preferencesController.store.getState().useStaticTokenList,
+        preferencesController.store.getState().useTokenDetection,
         false,
       );
     });

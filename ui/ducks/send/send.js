@@ -38,7 +38,7 @@ import {
   getTargetAccount,
   getIsNonStandardEthChain,
   checkNetworkAndAccountSupports1559,
-  getUseStaticTokenList,
+  getUseTokenDetection,
   getTokenList,
 } from '../../selectors';
 import {
@@ -518,7 +518,7 @@ export const initializeSendState = createAsyncThunk(
       gasTotal: addHexPrefix(calcGasTotal(gasLimit, gasPrice)),
       gasEstimatePollToken,
       eip1559support,
-      useStaticTokenList: getUseStaticTokenList(state),
+      useTokenDetection: getUseTokenDetection(state),
       tokenAddressList: Object.keys(getTokenList(state)),
     };
   },
@@ -992,7 +992,7 @@ const slice = createSlice({
         const {
           chainId,
           tokens,
-          useStaticTokenList,
+          useTokenDetection,
           tokenAddressList,
         } = action.payload;
         if (
@@ -1015,13 +1015,13 @@ const slice = createSlice({
         }
 
         if (isSendingToken && isValidHexAddress(recipient.userInput)) {
-          // token from dynamic api list is fetched when useStaticTokenList is true
-          const userInput = useStaticTokenList
+          // token from dynamic api list is fetched when useTokenDetection is true
+          const userInput = useTokenDetection
             ? recipient.userInput
             : toChecksumAddress(recipient.userInput);
           if (
             tokenAddressList.includes(userInput) ||
-            checkExistingAddresses(recipient.userInput, tokens)
+            checkExistingAddresses(userInput, tokens)
           ) {
             recipient.warning = KNOWN_RECIPIENT_ADDRESS_WARNING;
           } else {
@@ -1224,7 +1224,7 @@ const slice = createSlice({
             payload: {
               chainId: action.payload.chainId,
               tokens: action.payload.tokens,
-              useStaticTokenList: action.payload.useStaticTokenList,
+              useTokenDetection: action.payload.useTokenDetection,
               tokenAddressList: action.payload.tokenAddressList,
             },
           });
@@ -1411,12 +1411,12 @@ export function updateRecipientUserInput(userInput) {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const tokens = getTokens(state);
-    const useStaticTokenList = getUseStaticTokenList(state);
+    const useTokenDetection = getUseTokenDetection(state);
     const tokenAddressList = Object.keys(getTokenList(state));
     debouncedValidateRecipientUserInput(dispatch, {
       chainId,
       tokens,
-      useStaticTokenList,
+      useTokenDetection,
       tokenAddressList,
     });
   };

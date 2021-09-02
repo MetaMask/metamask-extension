@@ -29,7 +29,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getPreferences,
   getAccountType,
-  getUseStaticTokenList,
+  getUseTokenDetection,
   getTokenList,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
@@ -104,8 +104,8 @@ const mapStateToProps = (state, ownProps) => {
   const toAddress = propsToAddress || txParamsToAddress;
 
   const tokenList = getTokenList(state);
-  const useStaticTokenList = getUseStaticTokenList(state);
-  const casedTokenList = useStaticTokenList
+  const useTokenDetection = getUseTokenDetection(state);
+  const casedTokenList = useTokenDetection
     ? tokenList
     : Object.keys(tokenList).reduce((acc, base) => {
         return {

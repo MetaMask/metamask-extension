@@ -222,7 +222,7 @@ export const createSwapsMockStore = () => {
         swapsFeatureIsLive: false,
         useNewSwapsApi: false,
       },
-      useStaticTokenList: true,
+      useTokenDetection: true,
       tokenList: {
         '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',

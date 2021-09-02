@@ -130,9 +130,9 @@ describe('Selectors', () => {
     expect(totalUnapprovedCount).toStrictEqual(1);
   });
 
-  it('#getUseStaticTokenList', () => {
-    const useStaticTokenList = selectors.getUseStaticTokenList(mockState);
-    expect(useStaticTokenList).toStrictEqual(true);
+  it('#getUseTokenDetection', () => {
+    const useTokenDetection = selectors.getUseTokenDetection(mockState);
+    expect(useTokenDetection).toStrictEqual(true);
   });
 
   it('#getTokenList', () => {

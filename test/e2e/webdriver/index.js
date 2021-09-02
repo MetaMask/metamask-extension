@@ -73,7 +73,6 @@ async function setupFetchMocking(driver) {
       return { cancel: true };
     }
     function clone(obj) {
-      console.log(`clone`);
       return JSON.parse(JSON.stringify(obj));
     }
   }

@@ -9,7 +9,7 @@ import {
   getCurrentCurrency,
   getSwapsDefaultToken,
   getCurrentChainId,
-  getUseStaticTokenList,
+  getUseTokenDetection,
   getTokenList,
 } from '../selectors';
 import { getConversionRate } from '../ducks/metamask/metamask';
@@ -36,11 +36,11 @@ export function getRenderableTokenData(
   currentCurrency,
   chainId,
   tokenList,
-  useStatictokenList,
+  useTokenDetection,
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
-  // token from dynamic api list is fetched when useStaticTokenList is true
-  const tokenAddress = useStatictokenList
+  // token from dynamic api list is fetched when useTokenDetection is true
+  const tokenAddress = useTokenDetection
     ? address
     : toChecksumHexAddress(address);
   const formattedFiat =
@@ -96,9 +96,9 @@ export function useTokensToSearch({
   const currentCurrency = useSelector(getCurrentCurrency);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const tokenList = useSelector(getTokenList);
-  const useStatictokenList = useSelector(getUseStaticTokenList);
-  // token from dynamic api list is fetched when useStaticTokenList is true
-  const shuffledTokenList = useStatictokenList
+  const useTokenDetection = useSelector(getUseTokenDetection);
+  // token from dynamic api list is fetched when useTokenDetection is true
+  const shuffledTokenList = useTokenDetection
     ? shuffledTokensList
     : shuffledContractMap;
   const memoizedTopTokens = useEqualityCheck(topTokens);
@@ -111,7 +111,7 @@ export function useTokensToSearch({
     currentCurrency,
     chainId,
     tokenList,
-    useStatictokenList,
+    useTokenDetection,
   );
   const memoizedDefaultToken = useEqualityCheck(defaultToken);
 
@@ -152,7 +152,7 @@ export function useTokensToSearch({
         currentCurrency,
         chainId,
         tokenList,
-        useStatictokenList,
+        useTokenDetection,
       );
       if (
         isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
@@ -188,6 +188,6 @@ export function useTokensToSearch({
     memoizedTopTokens,
     chainId,
     tokenList,
-    useStatictokenList,
+    useTokenDetection,
   ]);
 }
