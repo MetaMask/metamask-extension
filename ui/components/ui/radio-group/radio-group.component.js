@@ -9,6 +9,25 @@ import {
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 
+function Connector({ isFirst, isLast }) {
+  if (isFirst) {
+    return <div className="radio-group__column-start-connector" />;
+  } else if (isLast) {
+    return <div className="radio-group__column-end-connector" />;
+  }
+  return (
+    <>
+      <div className="radio-group__column-vertical-line" />
+      <div className="radio-group__column-horizontal-line" />
+    </>
+  );
+}
+
+Connector.propTypes = {
+  isFirst: PropTypes.boolean,
+  isLast: PropTypes.boolean,
+};
+
 export default function RadioGroup({ options, name, selectedValue, onChange }) {
   const t = useContext(I18nContext);
 
@@ -22,11 +41,11 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
         'radio-group--has-recommendation': hasRecommendation,
       })}
     >
-      {options.map((option) => {
+      {options.map((option, index) => {
         const checked = option.value === selectedValue;
         return (
           <div className="radio-group__column" key={`${name}-${option.value}`}>
-            <label>
+            <label className="radio-group__column-inner">
               {hasRecommendation && (
                 <Typography
                   color={COLORS.SUCCESS3}
@@ -45,8 +64,10 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
                   onChange={() => onChange?.(option.value)}
                 />
               </div>
-              <div className="radio-group__column-line"></div>
-              <div className="radio-group__column-horizontal-line"></div>
+              <Connector
+                isFirst={index === 0}
+                isLast={index === options.length - 1}
+              />
               <Typography
                 color={checked ? COLORS.BLACK : COLORS.UI4}
                 fontWeight={FONT_WEIGHT.BOLD}
