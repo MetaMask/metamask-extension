@@ -74,6 +74,7 @@ export function useTransactionDisplayData(transactionGroup) {
       getKnownMethodData(state, initialTransaction?.txParams?.data),
     ) || {};
 
+  const { warning: primaryWarning } = primaryTransaction
   const displayedStatusKey = getStatusKey(primaryTransaction);
   const isPending = displayedStatusKey in PENDING_STATUS_HASH;
   const isSubmitted = displayedStatusKey === TRANSACTION_STATUSES.SUBMITTED;
@@ -265,5 +266,6 @@ export function useTransactionDisplayData(transactionGroup) {
     displayedStatusKey,
     isPending,
     isSubmitted,
+    primaryWarning,
   };
 }

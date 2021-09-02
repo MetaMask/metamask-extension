@@ -64,6 +64,7 @@ export default function TransactionListItem({
     displayedStatusKey,
     isPending,
     senderAddress,
+    primaryWarning,
   } = useTransactionDisplayData(transactionGroup);
 
   const isSignatureReq =
@@ -193,6 +194,7 @@ export default function TransactionListItem({
         }
       >
         <div className="transaction-list-item__pending-actions">
+          {primaryWarning && `⚠ ${primaryWarning.error}`}
           {speedUpButton}
           {cancelButton}
         </div>
