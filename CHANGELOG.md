@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#11951](https://github.com/MetaMask/metamask-extension/pull/11951): Adding EIP-1559 support for Ledger hardware
 
 ### Fixed
+- [#11951](https://github.com/MetaMask/metamask-extension/pull/11951): Fixing contract deployments using Ledger hardware
 - [#11972](https://github.com/MetaMask/metamask-extension/pull/11972): Fixing "continue at your own risk" button (Phishing alert page)
 
 ## [10.0.3]
