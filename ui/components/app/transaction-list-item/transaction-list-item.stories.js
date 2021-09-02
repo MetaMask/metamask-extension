@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { text } from '@storybook/addon-knobs';
-import TransactionListItem from './token-list-item.component';
+import TransactionListItem from './transaction-list-item.component';
 
 export default {
   title: 'TransactionListItem',
@@ -10,6 +10,38 @@ export default {
 const addressFixture = '0xe206e3DCa498258f1B7EEc1c640B5AEE7BB88Fd0'
 
 // modified from .storybook/test-data.js
+/**
+ * An object representing a transaction, in whatever state it is in.
+ * @typedef {Object} TransactionMeta
+ *
+ * @property {string} [blockNumber] - The block number this transaction was
+ *  included in. Currently only present on incoming transactions!
+ * @property {number} id - An internally unique tx identifier.
+ * @property {number} time - Time the transaction was first suggested, in unix
+ *  epoch time (ms).
+ * @property {TransactionTypeString} type - The type of transaction this txMeta
+ *  represents.
+ * @property {TransactionStatusString} status - The current status of the
+ *  transaction.
+ * @property {string} metamaskNetworkId - The transaction's network ID, used
+ *  for EIP-155 compliance.
+ * @property {boolean} loadingDefaults - TODO: Document
+ * @property {TxParams} txParams - The transaction params as passed to the
+ *  network provider.
+ * @property {Object[]} history - A history of mutations to this
+ *  TransactionMeta object.
+ * @property {string} origin - A string representing the interface that
+ *  suggested the transaction.
+ * @property {Object} nonceDetails - A metadata object containing information
+ *  used to derive the suggested nonce, useful for debugging nonce issues.
+ * @property {string} rawTx - A hex string of the final signed transaction,
+ *  ready to submit to the network.
+ * @property {string} hash - A hex string of the transaction hash, used to
+ *  identify the transaction on the network.
+ * @property {number} [submittedTime] - The time the transaction was submitted to
+ *  the network, in Unix epoch time (ms).
+ * @property {TxError} [err] - The error encountered during the transaction
+ */
 const txFixture = {
   "id": 3111025347726181,
   "time": 1620710815484,
@@ -64,14 +96,17 @@ const txFixture = {
   }
 }
 
-
-// * @property {string} nonce - The nonce that the transactions within this transactionGroup share.
-// * @property {Object[]} transactions - An array of transaction (txMeta) objects.
-// * @property {Object} initialTransaction - The transaction (txMeta) with the lowest "time".
-// * @property {Object} primaryTransaction - Either the latest transaction or the confirmed
-// * transaction.
-// * @property {boolean} hasRetried - True if a transaction in the group was a retry transaction.
-// * @property {boolean} hasCancelled - True if a transaction in the group was a cancel transaction.
+/**
+ * Contains transactions and properties associated with those transactions of the same nonce.
+ * @typedef {Object} transactionGroup
+ * @property {string} nonce - The nonce that the transactions within this transactionGroup share.
+ * @property {Object[]} transactions - An array of transaction (txMeta) objects.
+ * @property {Object} initialTransaction - The transaction (txMeta) with the lowest "time".
+ * @property {Object} primaryTransaction - Either the latest transaction or the confirmed
+ * transaction.
+ * @property {boolean} hasRetried - True if a transaction in the group was a retry transaction.
+ * @property {boolean} hasCancelled - True if a transaction in the group was a cancel transaction.
+*/
 const txGroupFixture = {
   transactions: [
     txFixture,
