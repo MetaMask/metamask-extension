@@ -114,6 +114,7 @@ export default class MetamaskController extends EventEmitter {
     this.store = new ComposableObservableStore({
       state: initState,
       controllerMessenger: this.controllerMessenger,
+      persist: true,
     });
 
     // external connections by origin
