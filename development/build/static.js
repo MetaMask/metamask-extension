@@ -9,7 +9,6 @@ const { createTask, composeSeries } = require('./task');
 
 const EMPTY_JS_FILE = './development/empty.js';
 
-
 module.exports = function createStaticAssetTasks({
   livereload,
   browserPlatforms,
