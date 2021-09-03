@@ -39,6 +39,10 @@
       @include H3;
 
       margin-left: 24px;
+      max-width: 8em;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
   }
 
@@ -258,6 +262,10 @@
     @media screen and (max-width: 576px) {
       top: 16px;
       right: 60px;
+
+      &--hidden {
+        display: none;
+      }
     }
   }
 }
