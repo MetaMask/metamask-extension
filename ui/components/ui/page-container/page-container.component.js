@@ -93,7 +93,7 @@ export default class PageContainer extends PureComponent {
       let { children } = tabsComponent.props;
       children = children.filter(Boolean);
       if (children[activeTabIndex]?.key === 'custom-tab') {
-        return 'Add Custom Token';
+        return this.context.t('addCustomToken');
       }
     }
     return null;
