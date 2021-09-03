@@ -24,7 +24,7 @@ const PageSet = ({ children }) => {
     pendingTokens['0x33f90dee07c6e8b9682dd20f73e6c358b2ed0f03'].symbol = symbol;
     const newState = Object.assign(state.metamask, { pendingTokens });
     store.dispatch(updateMetamaskState(newState));
-  }, [symbol, pendingTokensState]);
+  }, [symbol, pendingTokensState, state.metamask]);
 
   return children;
 };

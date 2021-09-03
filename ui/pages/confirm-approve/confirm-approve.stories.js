@@ -7,9 +7,7 @@ import { updateMetamaskState } from '../../store/actions';
 import { currentNetworkTxListSelector } from '../../selectors/transactions';
 import { store } from '../../../.storybook/preview';
 
-import {
-  domainMetadata,
-} from '../../../.storybook/initial-states/approval-screens/token-approval';
+import { domainMetadata } from '../../../.storybook/initial-states/approval-screens/token-approval';
 import ConfirmApprove from '.';
 
 export default {
@@ -35,7 +33,7 @@ const PageSet = ({ children }) => {
       currentNetworkTxList: [transaction],
     });
     store.dispatch(updateMetamaskState(newState));
-  }, [origin, transaction]);
+  }, [origin, transaction, state.metamask]);
 
   useEffect(() => {
     const newState = Object.assign(state.metamask, {
@@ -46,7 +44,7 @@ const PageSet = ({ children }) => {
       },
     });
     store.dispatch(updateMetamaskState(newState));
-  }, [domainIconUrl, origin]);
+  }, [domainIconUrl, origin, state.metamask]);
 
   const params = useParams();
   params.id = txId;
