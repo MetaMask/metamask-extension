@@ -129,12 +129,7 @@ module.exports = {
       },
     },
     {
-      files: [
-        'ui/**/*.test.js',
-        'ui/__mocks__/*.js',
-        'shared/**/*.test.js',
-        'test/jest/*.js',
-      ],
+      files: ['ui/**/*.test.js', 'ui/__mocks__/*.js', 'shared/**/*.test.js'],
       extends: ['@metamask/eslint-config-jest'],
       rules: {
         'jest/no-restricted-matchers': 'off',
