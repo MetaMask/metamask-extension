@@ -117,7 +117,7 @@ describe('DetectTokensController', function () {
     });
     tokenListController = new TokenListController({
       chainId: '1',
-      useTokenDetection: true,
+      useStaticTokenList: false,
       onNetworkStateChange: sinon.spy(),
       onPreferencesStateChange: sinon.spy(),
       messenger: tokenListMessenger,
@@ -169,7 +169,7 @@ describe('DetectTokensController', function () {
     });
     tokenListController = new TokenListController({
       chainId: '3',
-      useTokenDetection: true,
+      useStaticTokenList: false,
       onNetworkStateChange: sinon.spy(),
       onPreferencesStateChange: sinon.spy(),
       messenger: tokenListMessengerRopsten,

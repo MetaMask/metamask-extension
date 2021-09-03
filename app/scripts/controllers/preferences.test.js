@@ -870,7 +870,7 @@ describe('preferences controller', function () {
     });
   });
   describe('setUseTokenDetection', function () {
-    it('should default to false', function () {
+    it('should default to true', function () {
       const state = preferencesController.store.getState();
       assert.equal(state.useTokenDetection, true);
     });
