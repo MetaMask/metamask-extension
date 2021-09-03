@@ -1,60 +1,58 @@
 import React from 'react';
-import { shallowWithContext } from '../../../../test/lib/render-helpers';
-import RecipientGroup from './recipient-group';
+import { within } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import { renderWithProvider } from '../../../../test/jest/rendering';
 import ContactList from '.';
 
 describe('Contact List', () => {
-  describe('given searchForContacts', () => {
-    it('sorts contacts by name within each letter group', () => {
-      const contacts = {
-        Al: { name: 'Al', address: '0x0' },
-        aa: { name: 'aa', address: '0x1' },
-        Az: { name: 'Az', address: '0x2' },
-        Bl: { name: 'Bl', address: '0x3' },
-        ba: { name: 'ba', address: '0x4' },
-        Bz: { name: 'Bz', address: '0x5' },
-        Ccc: { name: 'Ccc', address: '0x6' },
-      };
-      const searchForContacts = () => {
-        return Object.values(contacts);
-      };
-      const selectRecipient = () => null;
-      const selectedAddress = null;
+  const store = configureMockStore([])({ metamask: {} });
 
-      const wrapper = shallowWithContext(
+  describe('given searchForContacts', () => {
+    const selectRecipient = () => null;
+    const selectedAddress = null;
+
+    it('sorts contacts by name within each letter group', () => {
+      const { getAllByTestId } = renderWithProvider(
         <ContactList
-          searchForContacts={searchForContacts}
+          searchForContacts={() => {
+            return [
+              {
+                name: 'Al',
+                address: '0x0000000000000000000000000000000000000000',
+              },
+              {
+                name: 'aa',
+                address: '0x0000000000000000000000000000000000000001',
+              },
+              {
+                name: 'Az',
+                address: '0x0000000000000000000000000000000000000002',
+              },
+              {
+                name: 'bbb',
+                address: '0x0000000000000000000000000000000000000003',
+              },
+            ];
+          }}
           selectRecipient={selectRecipient}
           selectedAddress={selectedAddress}
         />,
+        store,
       );
 
-      expect(wrapper).toMatchElement(
-        <div className="send__select-recipient-wrapper__list">
-          <RecipientGroup
-            key="A-contact-group"
-            label="A"
-            items={[contacts.aa, contacts.Al, contacts.Az]}
-            onSelect={selectRecipient}
-            selectedAddress={selectedAddress}
-          />
-          <RecipientGroup
-            key="B-contact-group"
-            label="B"
-            items={[contacts.ba, contacts.Bl, contacts.Bz]}
-            onSelect={selectRecipient}
-            selectedAddress={selectedAddress}
-          />
-          <RecipientGroup
-            key="C-contact-group"
-            label="C"
-            items={[contacts.Ccc]}
-            onSelect={selectRecipient}
-            selectedAddress={selectedAddress}
-          />
-        </div>,
-        { ignoreProps: false },
+      const recipientGroups = getAllByTestId('recipient-group');
+      expect(within(recipientGroups[0]).getByText('A')).toBeInTheDocument();
+      const recipientsInA = within(recipientGroups[0]).getAllByTestId(
+        'recipient',
       );
+      expect(recipientsInA[0]).toHaveTextContent('aa0x0000...0001');
+      expect(recipientsInA[1]).toHaveTextContent('Al0x0000...0000');
+      expect(recipientsInA[2]).toHaveTextContent('Az0x0000...0002');
+      expect(within(recipientGroups[1]).getByText('B')).toBeInTheDocument();
+      const recipientsInB = within(recipientGroups[1]).getAllByTestId(
+        'recipient',
+      );
+      expect(recipientsInB[0]).toHaveTextContent('bbb0x0000...0003');
     });
   });
 });
