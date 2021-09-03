@@ -2730,15 +2730,16 @@
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.29.0.tgz#4ca86a2f03d4dad4350d09216a7fe92f9dd21c8e"
   integrity sha512-wxsC0ZCyhPKqThvmsL8+2zVWGWPqofSo8HNtOuOnQM9oGbXX9294imJ3T+A/Lov8fkX4jAWZOeNV0uR80zkNtA==
 
-"@metamask/controllers@^15.0.0":
-  version "15.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-15.0.0.tgz#b7e816e12e02debaf32f7bab5f8d612cbd7a5170"
-  integrity sha512-vYVwDVctxdmBRBYDzPfpab3GoVtePykaMKfOdgD+OT8Cz8tlDrEIRc5+DZhr6HembWg8LkNfw9Gh5lKfAFSGLg==
+"@metamask/controllers@^15.0.2":
+  version "15.0.2"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-15.0.2.tgz#b4012a8bf28bd2c8dbb3c96f4d934d6cf1bb778c"
+  integrity sha512-MPxfZ2OOTzEa5lUzDsSkINtlTDU4q4udjpBNM5Dq1yCnLKIuPKzYC5nl/rA88Ssr9Hs6babCtMbnUpbbjQjLOg==
   dependencies:
     "@ethereumjs/common" "^2.3.1"
     "@ethereumjs/tx" "^3.2.1"
     "@metamask/contract-metadata" "^1.29.0"
     "@types/uuid" "^8.3.0"
+    abort-controller "^3.0.0"
     async-mutex "^0.2.6"
     babel-runtime "^6.26.0"
     eth-ens-namehash "^2.0.8"
@@ -4641,11 +4642,6 @@ abort-controller@^3.0.0:
   integrity sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==
   dependencies:
     event-target-shim "^5.0.0"
-
-abortcontroller-polyfill@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/abortcontroller-polyfill/-/abortcontroller-polyfill-1.4.0.tgz#0d5eb58e522a461774af8086414f68e1dda7a6c4"
-  integrity sha512-3ZFfCRfDzx3GFjO6RAkYx81lPGpUS20ISxux9gLxuKnqafNcFQo59+IoZqpO2WvQlyc287B62HDnDdNYRmlvWA==
 
 abstract-leveldown@0.12.3:
   version "0.12.3"
