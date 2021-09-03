@@ -49,7 +49,7 @@ describe('Stores custom RPC history', function () {
         await chainIdInput.sendKeys(chainId.toString());
 
         await driver.clickElement('.network-form__footer .btn-secondary');
-        await driver.findElement({ text: networkName, tag: 'div' });
+        await driver.findElement({ text: networkName, tag: 'span' });
       },
     );
   });

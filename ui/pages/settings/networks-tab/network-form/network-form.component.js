@@ -41,7 +41,7 @@ export default class NetworkForm extends PureComponent {
     blockExplorerUrl: PropTypes.string,
     rpcPrefs: PropTypes.object,
     networksToRender: PropTypes.array,
-    isFullScreen: PropTypes.bool,
+    onAddNetwork: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -165,7 +165,7 @@ export default class NetworkForm extends PureComponent {
         rpcUrl: propsRpcUrl,
         editRpc,
         rpcPrefs = {},
-        onClear,
+        onAddNetwork,
         networksTabIsInAddMode,
       } = this.props;
       const {
@@ -200,7 +200,7 @@ export default class NetworkForm extends PureComponent {
       }
 
       if (networksTabIsInAddMode) {
-        onClear();
+        onAddNetwork();
       }
     } catch (error) {
       this.setState({
@@ -211,9 +211,9 @@ export default class NetworkForm extends PureComponent {
   };
 
   onCancel = () => {
-    const { isFullScreen, networksTabIsInAddMode, onClear } = this.props;
+    const { networksTabIsInAddMode, onClear } = this.props;
 
-    if (networksTabIsInAddMode || !isFullScreen) {
+    if (networksTabIsInAddMode) {
       onClear();
     } else {
       this.resetForm();
