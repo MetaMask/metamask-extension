@@ -24,10 +24,7 @@ export default function RecipientGroup({
       data-testid="recipient-group"
     >
       {label && (
-        <div
-          className="send__select-recipient-wrapper__group-label"
-          data-testid="recipient-group-label"
-        >
+        <div className="send__select-recipient-wrapper__group-label">
           {label}
         </div>
       )}
