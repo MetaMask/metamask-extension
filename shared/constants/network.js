@@ -48,11 +48,13 @@ export const GOERLI_RPC_URL = getRpcUrl('goerli');
 export const ETH_SYMBOL = 'ETH';
 export const WETH_SYMBOL = 'WETH';
 export const TEST_ETH_SYMBOL = 'TESTETH';
+export const BCH_SYMBOL = 'BCH';
 export const BNB_SYMBOL = 'BNB';
 export const MATIC_SYMBOL = 'MATIC';
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
 export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
+export const BCH_TOKEN_IMAGE_URL = './images/bch_logo.svg';
 export const BNB_TOKEN_IMAGE_URL = './images/bnb.png';
 export const MATIC_TOKEN_IMAGE_URL = './images/matic-token.png';
 
@@ -122,6 +124,7 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [ETH_SYMBOL]: ETH_TOKEN_IMAGE_URL,
   [TEST_ETH_SYMBOL]: TEST_ETH_TOKEN_IMAGE_URL,
   [BNB_SYMBOL]: BNB_TOKEN_IMAGE_URL,
+  [BCH_SYMBOL]: BCH_TOKEN_IMAGE_URL,
 };
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
