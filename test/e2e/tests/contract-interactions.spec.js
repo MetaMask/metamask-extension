@@ -42,6 +42,7 @@ describe('Deploy contract and call contract methods', function () {
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         console.log(`await driver.waitUntilXWindowHandles(3);`);
         await driver.waitUntilXWindowHandles(3);
+        await driver.delay(5000);
         console.log(`windowHandles = await driver.getAllWindowHandles();`);
         windowHandles = await driver.getAllWindowHandles();
         extension = windowHandles[0];
@@ -130,7 +131,6 @@ describe('Deploy contract and call contract methods', function () {
         console.log(`await driver.waitUntilXWindowHandles(3);`);
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
-        console.log(`await driver.switchToWindowWithTitle(`);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -162,6 +162,7 @@ describe('Deploy contract and call contract methods', function () {
         await driver.clickElement('#withdrawButton');
         console.log(`await driver.waitUntilXWindowHandles(3);`);
         await driver.waitUntilXWindowHandles(3);
+        await driver.delay(5000);
         console.log(`windowHandles = await driver.getAllWindowHandles();`);
         windowHandles = await driver.getAllWindowHandles();
         console.log(`await driver.switchToWindowWithTitle(`);
