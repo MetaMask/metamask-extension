@@ -185,18 +185,18 @@ export default function SlippageButtons({
                 </Button>
               </ButtonGroup>
             </div>
-            <Box
-              marginTop={2}
-              display={DISPLAY.FLEX}
-              justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-            >
-              <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
+            <Box marginTop={2} display={DISPLAY.FLEX}>
+              <Box
+                display={DISPLAY.FLEX}
+                alignItems={ALIGN_ITEMS.CENTER}
+                paddingRight={3}
+              >
                 <Typography
                   variant={TYPOGRAPHY.H6}
                   boxProps={{ paddingRight: 2 }}
                   fontWeight={FONT_WEIGHT.BOLD}
                 >
-                  {t('smartTransactions')}
+                  {t('smartTransaction')}
                 </Typography>
                 <InfoTooltip
                   position="top"

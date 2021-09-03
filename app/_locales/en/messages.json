@@ -1972,8 +1972,8 @@
   "slow": {
     "message": "Slow"
   },
-  "smartTransactions": {
-    "message": "Smart Transactions"
+  "smartTransaction": {
+    "message": "Smart transaction"
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
