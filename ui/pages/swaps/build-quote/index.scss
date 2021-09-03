@@ -171,5 +171,26 @@
   /* Prevents the swaps "Swap to" field from overflowing */
   .dropdown-input-pair__to .dropdown-search-list {
     width: 100%;
+  }  
+}
+
+.smart-transactions-popover {
+  flex-direction: column;
+  &__footer {
+    flex-direction: column;
+    flex: 1;
+    align-items: center;
+
+    button {
+      border-radius: 50px;
+    }
+
+    a {
+      @include H6;
+
+      padding-top: 8px;
+      color: $Blue-500;
+      cursor: pointer;
+    }
   }
 }

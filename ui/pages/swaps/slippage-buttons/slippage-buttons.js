@@ -11,7 +11,6 @@ import Typography from '../../../components/ui/typography';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
-  JUSTIFY_CONTENT,
   ALIGN_ITEMS,
   DISPLAY,
 } from '../../../helpers/constants/design-system';

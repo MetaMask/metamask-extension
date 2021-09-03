@@ -19,7 +19,16 @@ import SlippageButtons from '../slippage-buttons';
 import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import Popover from '../../../components/ui/popover';
+import Button from '../../../components/ui/button';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
+import Box from '../../../components/ui/box';
+import Typography from '../../../components/ui/typography';
+import {
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+  ALIGN_ITEMS,
+  DISPLAY,
+} from '../../../helpers/constants/design-system';
 
 import {
   fetchQuotesAndSetQuoteState,
@@ -120,9 +129,15 @@ export default function BuildQuote({
     return !smartTransactionsStatus?.optInPopoverDisplayed;
   });
 
-  const onCloseSmartTransactionsOptInPopover = () => {
+  const onCloseSmartTransactionsOptInPopover = (e) => {
+    e?.preventDefault();
     setShowSmartTransactionsOptInPopover(false);
     setSmartTransactionsStatus({ optInPopoverDisplayed: true });
+  };
+
+  const onEnableSmartTransactionsClick = () => {
+    setShowSmartTransactionsOptInPopover(false);
+    setSmartTransactionsStatus({ optInPopoverDisplayed: true, active: true });
   };
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
@@ -399,10 +414,38 @@ export default function BuildQuote({
       <div className="build-quote__content">
         {showSmartTransactionsOptInPopover && (
           <Popover
-            title="Smart Transactions Opt In"
+            title={t('smartTransactionsAreHere')}
             onClose={onCloseSmartTransactionsOptInPopover}
+            footer={
+              <Box
+                display={DISPLAY.FLEX}
+                className="smart-transactions-popover__footer"
+              >
+                <Button type="primary" onClick={onEnableSmartTransactionsClick}>
+                  {t('enableSmartTransactions')}
+                </Button>
+                <a href="#" onClick={onCloseSmartTransactionsOptInPopover}>
+                  {t('noThanks')}
+                </a>
+              </Box>
+            }
           >
-            <div>Content of popover</div>
+            <Box
+              padding={6}
+              display={DISPLAY.FLEX}
+              className="smart-transactions-popover"
+            >
+              <img
+                src="./images/logo/metamask-logo-horizontal.svg"
+                alt={t('swapSwapSwitch')}
+              />
+              <Typography variant={TYPOGRAPHY.H6} fontWeight={FONT_WEIGHT.BOLD}>
+                {t('smartTransactionsDescription')}
+              </Typography>
+              <Typography variant={TYPOGRAPHY.H8}>
+                {t('smartTransactionsDescription2')}
+              </Typography>
+            </Box>
           </Popover>
         )}
         <div className="build-quote__dropdown-input-pair-header">
