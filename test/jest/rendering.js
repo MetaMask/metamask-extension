@@ -44,10 +44,10 @@ export function renderWithProvider(component, store) {
     );
     return store ? (
       <Provider store={store}>
-        <WithoutStore></WithoutStore>
+        <WithoutStore />
       </Provider>
     ) : (
-      <WithoutStore></WithoutStore>
+      <WithoutStore />
     );
   };
 
