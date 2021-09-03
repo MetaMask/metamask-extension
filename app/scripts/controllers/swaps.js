@@ -83,6 +83,10 @@ const initialState = {
     useNewSwapsApi: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsFeatureFlags: {},
+    smartTransactionsStatus: {
+      active: false,
+      optInPopoverDisplayed: false,
+    },
   },
 };
 
@@ -462,6 +466,24 @@ export default class SwapsController {
     const { swapsState } = this.store.getState();
     this.store.updateState({
       swapsState: { ...swapsState, swapsUserFeeLevel },
+    });
+  }
+
+  setSmartTransactionsStatus(smartTransactionsStatus) {
+    const { swapsState } = this.store.getState();
+    const prevSmartTransactionsStatus = swapsState.smartTransactionsStatus;
+    const {
+      active = prevSmartTransactionsStatus.active,
+      optInPopoverDisplayed = prevSmartTransactionsStatus.optInPopoverDisplayed,
+    } = smartTransactionsStatus;
+    this.store.updateState({
+      swapsState: {
+        ...swapsState,
+        smartTransactionsStatus: {
+          active,
+          optInPopoverDisplayed,
+        },
+      },
     });
   }
 

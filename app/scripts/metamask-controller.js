@@ -1022,7 +1022,7 @@ export default class MetamaskController extends EventEmitter {
         permissionsController,
       ),
 
-      // swaps
+      // Swaps
       fetchAndSetQuotes: nodeify(
         swapsController.fetchAndSetQuotes,
         swapsController,
@@ -1092,6 +1092,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       setSwapsUserFeeLevel: nodeify(
         swapsController.setSwapsUserFeeLevel,
+        swapsController,
+      ),
+      setSmartTransactionsStatus: nodeify(
+        swapsController.setSmartTransactionsStatus,
         swapsController,
       ),
 

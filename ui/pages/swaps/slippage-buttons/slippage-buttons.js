@@ -5,11 +5,23 @@ import { I18nContext } from '../../../contexts/i18n';
 import ButtonGroup from '../../../components/ui/button-group';
 import Button from '../../../components/ui/button';
 import InfoTooltip from '../../../components/ui/info-tooltip';
+import ToggleButton from '../../../components/ui/toggle-button';
+import Box from '../../../components/ui/box';
+import Typography from '../../../components/ui/typography';
+import {
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+  JUSTIFY_CONTENT,
+  ALIGN_ITEMS,
+  DISPLAY,
+} from '../../../helpers/constants/design-system';
 
 export default function SlippageButtons({
   onSelect,
   maxAllowedSlippage,
   currentSlippage,
+  smartTransactionsStatus,
+  setSmartTransactionsStatus,
 }) {
   const t = useContext(I18nContext);
   const [customValue, setCustomValue] = useState(() => {
@@ -88,88 +100,119 @@ export default function SlippageButtons({
       </button>
       <div className="slippage-buttons__content">
         {open && (
-          <div className="slippage-buttons__dropdown-content">
-            <div className="slippage-buttons__buttons-prefix">
-              <div className="slippage-buttons__prefix-text">
-                {t('swapsMaxSlippage')}
+          <>
+            <div className="slippage-buttons__dropdown-content">
+              <div className="slippage-buttons__buttons-prefix">
+                <div className="slippage-buttons__prefix-text">
+                  {t('swapsMaxSlippage')}
+                </div>
+                <InfoTooltip
+                  position="top"
+                  contentText={t('swapAdvancedSlippageInfo')}
+                />
               </div>
-              <InfoTooltip
-                position="top"
-                contentText={t('swapAdvancedSlippageInfo')}
-              />
-            </div>
-            <ButtonGroup
-              defaultActiveButtonIndex={
-                activeButtonIndex === 2 && !customValue ? 1 : activeButtonIndex
-              }
-              variant="radiogroup"
-              newActiveButtonIndex={activeButtonIndex}
-              className={classnames(
-                'button-group',
-                'slippage-buttons__button-group',
-              )}
-            >
-              <Button
-                onClick={() => {
-                  setCustomValue('');
-                  setEnteringCustomValue(false);
-                  setActiveButtonIndex(0);
-                  onSelect(2);
-                }}
-              >
-                2%
-              </Button>
-              <Button
-                onClick={() => {
-                  setCustomValue('');
-                  setEnteringCustomValue(false);
-                  setActiveButtonIndex(1);
-                  onSelect(3);
-                }}
-              >
-                3%
-              </Button>
-              <Button
+              <ButtonGroup
+                defaultActiveButtonIndex={
+                  activeButtonIndex === 2 && !customValue
+                    ? 1
+                    : activeButtonIndex
+                }
+                variant="radiogroup"
+                newActiveButtonIndex={activeButtonIndex}
                 className={classnames(
-                  'slippage-buttons__button-group-custom-button',
-                  {
-                    'radio-button--danger': errorText,
-                  },
+                  'button-group',
+                  'slippage-buttons__button-group',
                 )}
-                onClick={() => {
-                  setActiveButtonIndex(2);
-                  setEnteringCustomValue(true);
-                }}
               >
-                {enteringCustomValue ? (
-                  <div
-                    className={classnames('slippage-buttons__custom-input', {
-                      'slippage-buttons__custom-input--danger': errorText,
-                    })}
-                  >
-                    <input
-                      onChange={(event) => {
-                        setCustomValue(event.target.value);
-                        onSelect(Number(event.target.value));
-                      }}
-                      type="number"
-                      step="0.1"
-                      ref={setInputRef}
-                      onBlur={() => {
-                        setEnteringCustomValue(false);
-                      }}
-                      value={customValue || ''}
-                    />
-                  </div>
-                ) : (
-                  customValueText
-                )}
-                {(customValue || enteringCustomValue) && (
-                  <div className="slippage-buttons__percentage-suffix">%</div>
-                )}
-              </Button>
-            </ButtonGroup>
-          </div>
+                <Button
+                  onClick={() => {
+                    setCustomValue('');
+                    setEnteringCustomValue(false);
+                    setActiveButtonIndex(0);
+                    onSelect(2);
+                  }}
+                >
+                  2%
+                </Button>
+                <Button
+                  onClick={() => {
+                    setCustomValue('');
+                    setEnteringCustomValue(false);
+                    setActiveButtonIndex(1);
+                    onSelect(3);
+                  }}
+                >
+                  3%
+                </Button>
+                <Button
+                  className={classnames(
+                    'slippage-buttons__button-group-custom-button',
+                    {
+                      'radio-button--danger': errorText,
+                    },
+                  )}
+                  onClick={() => {
+                    setActiveButtonIndex(2);
+                    setEnteringCustomValue(true);
+                  }}
+                >
+                  {enteringCustomValue ? (
+                    <div
+                      className={classnames('slippage-buttons__custom-input', {
+                        'slippage-buttons__custom-input--danger': errorText,
+                      })}
+                    >
+                      <input
+                        onChange={(event) => {
+                          setCustomValue(event.target.value);
+                          onSelect(Number(event.target.value));
+                        }}
+                        type="number"
+                        step="0.1"
+                        ref={setInputRef}
+                        onBlur={() => {
+                          setEnteringCustomValue(false);
+                        }}
+                        value={customValue || ''}
+                      />
+                    </div>
+                  ) : (
+                    customValueText
+                  )}
+                  {(customValue || enteringCustomValue) && (
+                    <div className="slippage-buttons__percentage-suffix">%</div>
+                  )}
+                </Button>
+              </ButtonGroup>
+            </div>
+            <Box
+              marginTop={2}
+              display={DISPLAY.FLEX}
+              justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            >
+              <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
+                <Typography
+                  variant={TYPOGRAPHY.H6}
+                  boxProps={{ paddingRight: 2 }}
+                  fontWeight={FONT_WEIGHT.BOLD}
+                >
+                  {t('smartTransactions')}
+                </Typography>
+                <InfoTooltip
+                  position="top"
+                  contentText={t('swapAdvancedSlippageInfo')}
+                />
+              </Box>
+              <ToggleButton
+                value={smartTransactionsStatus?.active}
+                onToggle={(value) =>
+                  setSmartTransactionsStatus({ active: !value })
+                }
+                offLabel={t('off')}
+                onLabel={t('on')}
+              />
+            </Box>
+          </>
         )}
         {errorText && (
           <div className="slippage-buttons__error-text">{errorText}</div>
@@ -183,4 +226,6 @@ SlippageButtons.propTypes = {
   onSelect: PropTypes.func.isRequired,
   maxAllowedSlippage: PropTypes.number.isRequired,
   currentSlippage: PropTypes.number,
+  smartTransactionsStatus: PropTypes.object,
+  setSmartTransactionsStatus: PropTypes.func,
 };

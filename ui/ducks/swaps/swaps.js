@@ -270,6 +270,9 @@ export const getSwapsUserFeeLevel = (state) =>
 
 export const getFetchParams = (state) => state.metamask.swapsState.fetchParams;
 
+export const getSmartTransactionsStatus = (state) =>
+  state.metamask.swapsState.smartTransactionsStatus;
+
 export const getQuotes = (state) => state.metamask.swapsState.quotes;
 
 export const getQuotesLastFetched = (state) =>

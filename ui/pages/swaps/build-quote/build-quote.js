@@ -18,6 +18,7 @@ import DropdownSearchList from '../dropdown-search-list';
 import SlippageButtons from '../slippage-buttons';
 import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
 import InfoTooltip from '../../../components/ui/info-tooltip';
+import Popover from '../../../components/ui/popover';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 
 import {
@@ -29,6 +30,7 @@ import {
   getBalanceError,
   getTopAssets,
   getFetchParams,
+  getSmartTransactionsStatus,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -58,7 +60,11 @@ import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
 } from '../../../../shared/constants/swaps';
 
-import { resetSwapsPostFetchState, removeToken } from '../../../store/actions';
+import {
+  resetSwapsPostFetchState,
+  removeToken,
+  setSmartTransactionsStatus,
+} from '../../../store/actions';
 import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 
@@ -104,7 +110,20 @@ export default function BuildQuote({
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
+  const smartTransactionsStatus = useSelector(getSmartTransactionsStatus);
   const currentCurrency = useSelector(getCurrentCurrency);
+
+  const [
+    showSmartTransactionsOptInPopover,
+    setShowSmartTransactionsOptInPopover,
+  ] = useState(() => {
+    return !smartTransactionsStatus?.optInPopoverDisplayed;
+  });
+
+  const onCloseSmartTransactionsOptInPopover = () => {
+    setShowSmartTransactionsOptInPopover(false);
+    setSmartTransactionsStatus({ optInPopoverDisplayed: true });
+  };
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
     sourceTokenInfo?.symbol,
@@ -378,6 +397,14 @@ export default function BuildQuote({
   return (
     <div className="build-quote">
       <div className="build-quote__content">
+        {showSmartTransactionsOptInPopover && (
+          <Popover
+            title="Smart Transactions Opt In"
+            onClose={onCloseSmartTransactionsOptInPopover}
+          >
+            <div>Content of popover</div>
+          </Popover>
+        )}
         <div className="build-quote__dropdown-input-pair-header">
           <div className="build-quote__input-label">{t('swapSwapFrom')}</div>
           {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
@@ -559,6 +586,8 @@ export default function BuildQuote({
             }}
             maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
             currentSlippage={maxSlippage}
+            smartTransactionsStatus={smartTransactionsStatus}
+            setSmartTransactionsStatus={setSmartTransactionsStatus}
           />
         </div>
       </div>
