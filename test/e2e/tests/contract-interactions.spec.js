@@ -26,7 +26,9 @@ describe('Deploy contract and call contract methods', function () {
       async ({ driver }) => {
         console.log(`await driver.navigate();`);
         await driver.navigate();
-        console.log(`await driver.fill('#password', 'correct horse battery staple');`);
+        console.log(
+          `await driver.fill('#password', 'correct horse battery staple');`,
+        );
         await driver.fill('#password', 'correct horse battery staple');
         console.log(`await driver.press('#password', driver.Key.ENTER);`);
         await driver.press('#password', driver.Key.ENTER);
@@ -34,7 +36,9 @@ describe('Deploy contract and call contract methods', function () {
         // connects the dapp
         console.log(`await driver.openNewPage('http://127.0.0.1:8080/');`);
         await driver.openNewPage('http://127.0.0.1:8080/');
-        console.log(`await driver.clickElement({ text: 'Connect', tag: 'button' });`);
+        console.log(
+          `await driver.clickElement({ text: 'Connect', tag: 'button' });`,
+        );
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         console.log(`await driver.waitUntilXWindowHandles(3);`);
         await driver.waitUntilXWindowHandles(3);
@@ -51,9 +55,13 @@ describe('Deploy contract and call contract methods', function () {
         );
         console.log(`await driver.switchToWindow(popup);`);
         await driver.switchToWindow(popup);
-        console.log(`await driver.clickElement({ text: 'Next', tag: 'button' });`);
+        console.log(
+          `await driver.clickElement({ text: 'Next', tag: 'button' });`,
+        );
         await driver.clickElement({ text: 'Next', tag: 'button' });
-        console.log(`await driver.clickElement({ text: 'Connect', tag: 'button' });`);
+        console.log(
+          `await driver.clickElement({ text: 'Connect', tag: 'button' });`,
+        );
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         console.log(`await driver.waitUntilXWindowHandles(2);`);
         await driver.waitUntilXWindowHandles(2);
@@ -67,13 +75,21 @@ describe('Deploy contract and call contract methods', function () {
         // displays the contract creation data
         console.log(`await driver.switchToWindow(extension);`);
         await driver.switchToWindow(extension);
-        console.log(`await driver.clickElement('[data-testid="home__activity-tab"]');`);
+        console.log(
+          `await driver.clickElement('[data-testid="home__activity-tab"]');`,
+        );
         await driver.clickElement('[data-testid="home__activity-tab"]');
-        console.log(`await driver.clickElement({ text: 'Contract Deployment', tag: 'h2' });`);
+        console.log(
+          `await driver.clickElement({ text: 'Contract Deployment', tag: 'h2' });`,
+        );
         await driver.clickElement({ text: 'Contract Deployment', tag: 'h2' });
-        console.log(`await driver.clickElement({ text: 'Data', tag: 'button' });`);
+        console.log(
+          `await driver.clickElement({ text: 'Data', tag: 'button' });`,
+        );
         await driver.clickElement({ text: 'Data', tag: 'button' });
-        console.log(`await driver.findElement({ text: '127.0.0.1', tag: 'div' });`);
+        console.log(
+          `await driver.findElement({ text: '127.0.0.1', tag: 'div' });`,
+        );
         await driver.findElement({ text: '127.0.0.1', tag: 'div' });
         console.log(`const confirmDataDiv = await driver.findElement(`);
         const confirmDataDiv = await driver.findElement(
@@ -86,16 +102,22 @@ describe('Deploy contract and call contract methods', function () {
         assert.ok(confirmDataText.includes('675'));
 
         // confirms a deploy contract transaction
-        console.log(`await driver.clickElement({ text: 'Details', tag: 'button' });`);
+        console.log(
+          `await driver.clickElement({ text: 'Details', tag: 'button' });`,
+        );
         await driver.clickElement({ text: 'Details', tag: 'button' });
-        console.log(`await driver.clickElement({ text: 'Confirm', tag: 'button' });`);
+        console.log(
+          `await driver.clickElement({ text: 'Confirm', tag: 'button' });`,
+        );
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         console.log(`await driver.waitForSelector(`);
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
         );
-        console.log(`const completedTx = await driver.findElement('.list-item__title');`);
+        console.log(
+          `const completedTx = await driver.findElement('.list-item__title');`,
+        );
         const completedTx = await driver.findElement('.list-item__title');
         const completedTxText = await completedTx.getText();
         assert.equal(completedTxText, 'Contract Deployment');
@@ -113,7 +135,9 @@ describe('Deploy contract and call contract methods', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        console.log(`await driver.clickElement({ text: 'Confirm', tag: 'button' });`);
+        console.log(
+          `await driver.clickElement({ text: 'Confirm', tag: 'button' });`,
+        );
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         console.log(`await driver.switchToWindow(extension);`);
         await driver.switchToWindow(extension);
@@ -146,7 +170,9 @@ describe('Deploy contract and call contract methods', function () {
           windowHandles,
         );
         await driver.delay(regularDelayMs);
-        console.log(`await driver.clickElement({ text: 'Confirm', tag: 'button' });`);
+        console.log(
+          `await driver.clickElement({ text: 'Confirm', tag: 'button' });`,
+        );
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         console.log(`await driver.switchToWindow(extension);`);
         await driver.switchToWindow(extension);
