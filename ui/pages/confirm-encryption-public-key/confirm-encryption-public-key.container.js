@@ -25,13 +25,13 @@ function mapStateToProps(state) {
   } = state;
 
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
-  
+
   const txData = unconfirmedTransactions[0];
-  
-  console.log(txData)
+
+  console.log(txData);
   const { msgParams: from } = txData;
   const fromAccount = getTargetAccountWithSendEtherInfo(state, from);
-  console.log(fromAccount)
+  console.log(fromAccount);
   return {
     txData,
     domainMetadata,

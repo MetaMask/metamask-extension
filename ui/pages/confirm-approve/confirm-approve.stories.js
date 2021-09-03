@@ -8,7 +8,6 @@ import { currentNetworkTxListSelector } from '../../selectors/transactions';
 import { store } from '../../../.storybook/preview';
 
 import {
-  currentNetworkTxListSample,
   domainMetadata,
 } from '../../../.storybook/initial-states/approval-screens/token-approval';
 import ConfirmApprove from '.';
@@ -32,24 +31,21 @@ const PageSet = ({ children }) => {
 
   useEffect(() => {
     transaction.origin = origin;
-    const newState = Object.assign(state.metamask, { currentNetworkTxList: [transaction] })
-    store.dispatch(
-      updateMetamaskState(newState),
-    );
-
+    const newState = Object.assign(state.metamask, {
+      currentNetworkTxList: [transaction],
+    });
+    store.dispatch(updateMetamaskState(newState));
   }, [origin, transaction]);
 
   useEffect(() => {
-    const newState = Object.assign(state.metamask, { domainMetadata: {
-      [origin]: {
-        icon: domainIconUrl,
+    const newState = Object.assign(state.metamask, {
+      domainMetadata: {
+        [origin]: {
+          icon: domainIconUrl,
+        },
       },
-    }})
-    store.dispatch(
-      updateMetamaskState(newState),
-    );
-
-    
+    });
+    store.dispatch(updateMetamaskState(newState));
   }, [domainIconUrl, origin]);
 
   const params = useParams();
@@ -58,11 +54,9 @@ const PageSet = ({ children }) => {
 };
 
 export const ApproveTokens = () => {
-  const state = store.getState()
-  const newState = Object.assign(state.metamask, { domainMetadata })
-  store.dispatch(
-    updateMetamaskState(newState),
-  );
+  const state = store.getState();
+  const newState = Object.assign(state.metamask, { domainMetadata });
+  store.dispatch(updateMetamaskState(newState));
   return (
     <PageSet>
       <ConfirmApprove />

@@ -25,12 +25,10 @@ const PageSet = ({ children }) => {
   useEffect(() => {
     unapprovedEncryptionPublicKeyMsgs['7786962153682822'].msgParams =
       account.address;
-    const state = store.getState();
-    const newState = Object.assign(state.metamask, { unapprovedEncryptionPublicKeyMsgs })
-    store.dispatch(
-      updateMetamaskState(newState),
-    );
-
+    const newState = Object.assign(state.metamask, {
+      unapprovedEncryptionPublicKeyMsgs,
+    });
+    store.dispatch(updateMetamaskState(newState));
   }, [account, unapprovedEncryptionPublicKeyMsgs]);
 
   return children;

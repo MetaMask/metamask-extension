@@ -21,19 +21,19 @@ const PageSet = ({ children }) => {
     suggestedTokensState[
       '0x6b175474e89094c44da98b954eedeac495271d0f'
     ].symbol = symbol;
-    const newState = Object.assign(state.metamask, { suggestedTokens: suggestedTokensState })
-    store.dispatch(
-      updateMetamaskState(newState),
-    );
+    const newState = Object.assign(state.metamask, {
+      suggestedTokens: suggestedTokensState,
+    });
+    store.dispatch(updateMetamaskState(newState));
   }, [symbol, suggestedTokensState]);
   useEffect(() => {
     suggestedTokensState[
       '0x6b175474e89094c44da98b954eedeac495271d0f'
     ].image = image;
-    const newState = Object.assign(state.metamask, { suggestedTokens: suggestedTokensState })
-    store.dispatch(
-      updateMetamaskState(newState),
-    );
+    const newState = Object.assign(state.metamask, {
+      suggestedTokens: suggestedTokensState,
+    });
+    store.dispatch(updateMetamaskState(newState));
   }, [image, suggestedTokensState]);
 
   return children;
@@ -41,10 +41,10 @@ const PageSet = ({ children }) => {
 
 export const AddSuggestedToken = () => {
   const state = store.getState();
-  const newState = Object.assign(state.metamask, { suggestedTokens: suggestedTokens })
-  store.dispatch(
-    updateMetamaskState(newState),
-  );
+  const newState = Object.assign(state.metamask, {
+    suggestedTokens,
+  });
+  store.dispatch(updateMetamaskState(newState));
 
   return (
     <PageSet>
