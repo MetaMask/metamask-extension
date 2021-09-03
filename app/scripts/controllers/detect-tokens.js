@@ -3,6 +3,7 @@ import { warn } from 'loglevel';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
 import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts';
 import { MINUTE } from '../../../shared/constants/time';
+import { isEqualCaseInsensitive } from '../../../ui/helpers/utils/util';
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = MINUTE * 3;
@@ -61,8 +62,12 @@ export default class DetectTokensController {
     const { tokenList } = this._tokenList.state;
     for (const tokenAddress in tokenList) {
       if (
-        !this.tokenAddresses.includes(tokenAddress.toLowerCase()) &&
-        !this.hiddenTokens.includes(tokenAddress.toLowerCase())
+        !this.tokenAddresses.find((address) =>
+          isEqualCaseInsensitive(address, tokenAddress),
+        ) &&
+        !this.hiddenTokens.find((address) =>
+          isEqualCaseInsensitive(address, tokenAddress),
+        )
       ) {
         tokensToDetect.push(tokenAddress.toLowerCase());
       }
