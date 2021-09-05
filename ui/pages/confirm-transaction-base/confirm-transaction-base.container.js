@@ -29,12 +29,14 @@ import {
   getShouldShowFiat,
   checkNetworkAndAccountSupports1559,
   getPreferences,
+  getAccountType,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
   transactionMatchesNetwork,
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
+import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
   updateTransactionGasFees,
@@ -161,6 +163,7 @@ const mapStateToProps = (state, ownProps) => {
   const gasFeeIsCustom =
     fullTxData.userFeeLevel === 'custom' ||
     txParamsAreDappSuggested(fullTxData);
+  const isLedgerAccount = getAccountType(state) === KEYRING_TYPES.LEDGER;
 
   return {
     balance,
@@ -208,6 +211,7 @@ const mapStateToProps = (state, ownProps) => {
     maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
     gasFeeIsCustom,
+    isLedgerAccount,
   };
 };
 

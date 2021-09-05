@@ -1179,6 +1179,18 @@
   "ledgerLiveApp": {
     "message": "Ledger Live App"
   },
+  "ledgerLiveDialogHeader": {
+    "message": "Prior to clicking confirm:"
+  },
+  "ledgerLiveDialogStepOne": {
+    "message": "Enable Use Ledger Live under Settings > Advanced"
+  },
+  "ledgerLiveDialogStepThree": {
+    "message": "Plug in your Ledger device and select the Ethereum app"
+  },
+  "ledgerLiveDialogStepTwo": {
+    "message": "Open and unlock Ledger Live App"
+  },
   "ledgerLocked": {
     "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
   },

@@ -35,6 +35,7 @@ import TransactionDetailItem from '../../components/app/transaction-detail-item/
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
+import Dialog from '../../components/ui/dialog';
 
 import {
   COLORS,
@@ -124,6 +125,7 @@ export default class ConfirmTransactionBase extends Component {
     baseFeePerGas: PropTypes.string,
     isMainnet: PropTypes.bool,
     gasFeeIsCustom: PropTypes.bool,
+    isLedgerAccount: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -303,6 +305,7 @@ export default class ConfirmTransactionBase extends Component {
       maxFeePerGas,
       maxPriorityFeePerGas,
       isMainnet,
+      isLedgerAccount,
     } = this.props;
     const { t } = this.context;
 
@@ -392,6 +395,29 @@ export default class ConfirmTransactionBase extends Component {
               value={customNonceValue || ''}
             />
           </div>
+        </div>
+      </div>
+    ) : null;
+
+    const ledgerInstructionField = isLedgerAccount ? (
+      <div>
+        <div className="confirm-detail-row">
+          <Dialog type="message">
+            <div className="ledger-live-dialog">
+              <span className="ledger-live-dialog--step">
+                {t('ledgerLiveDialogHeader')}
+              </span>
+              <span className="ledger-live-dialog--step">
+                {`- ${t('ledgerLiveDialogStepOne')}`}
+              </span>
+              <span className="ledger-live-dialog--step">
+                {`- ${t('ledgerLiveDialogStepTwo')}`}
+              </span>
+              <span className="ledger-live-dialog--step">
+                {`- ${t('ledgerLiveDialogStepThree')}`}
+              </span>
+            </div>
+          </Dialog>
         </div>
       </div>
     ) : null;
@@ -523,6 +549,7 @@ export default class ConfirmTransactionBase extends Component {
           ]}
         />
         {nonceField}
+        {ledgerInstructionField}
       </div>
     );
   }
