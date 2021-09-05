@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { PageContainerFooter } from '../../ui/page-container';
 import EditGasPopover from '../edit-gas-popover';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+import { getAddressBookEntry } from '../../../selectors';
+import * as actions from '../../../store/actions';
+import Dialog from '../../ui/dialog';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
   ConfirmPageContainerNavigation,
 } from '.';
 
-export default class ConfirmPageContainer extends Component {
+class ConfirmPageContainer extends Component {
   static contextTypes = {
     t: PropTypes.func,
   };
@@ -66,7 +70,28 @@ export default class ConfirmPageContainer extends Component {
     handleCloseEditGas: PropTypes.func,
     // Gas Popover
     currentTransaction: PropTypes.object.isRequired,
+    showAddToAddressBookModal: PropTypes.func,
+    contact: PropTypes.object,
   };
+
+  maybeRenderAddContact() {
+    const { t } = this.context;
+    const { showAddToAddressBookModal, toAddress, contact = {} } = this.props;
+
+    if (contact.name || toAddress === undefined) {
+      return null;
+    }
+
+    return (
+      <Dialog
+        type="message"
+        className="send__dialog"
+        onClick={() => showAddToAddressBookModal()}
+      >
+        {t('newAccountDetectedDialogMessage')}
+      </Dialog>
+    );
+  }
 
   render() {
     const {
@@ -149,6 +174,7 @@ export default class ConfirmPageContainer extends Component {
             />
           )}
         </ConfirmPageContainerHeader>
+        <div>{this.maybeRenderAddContact()}</div>
         {contentComponent || (
           <ConfirmPageContainerContent
             action={action}
@@ -203,3 +229,42 @@ export default class ConfirmPageContainer extends Component {
     );
   }
 }
+
+function mapStateToProps(state, ownProps) {
+  const to = ownProps.toAddress;
+
+  const contact = getAddressBookEntry(state, to);
+  return {
+    contact,
+    toName: contact && contact.name ? contact.name : ownProps.toName,
+    to,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    showAddToAddressBookModal: (recipient) =>
+      dispatch(
+        actions.showModal({
+          name: 'ADD_TO_ADDRESSBOOK',
+          recipient,
+        }),
+      ),
+  };
+}
+
+function mergeProps(stateProps, dispatchProps, ownProps) {
+  const { to, ...restStateProps } = stateProps;
+  return {
+    ...ownProps,
+    ...restStateProps,
+    showAddToAddressBookModal: () =>
+      dispatchProps.showAddToAddressBookModal(to),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps,
+)(ConfirmPageContainer);
