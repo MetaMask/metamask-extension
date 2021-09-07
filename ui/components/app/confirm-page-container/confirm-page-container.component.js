@@ -71,25 +71,6 @@ export default class ConfirmPageContainer extends Component {
     contact: PropTypes.object,
   };
 
-  maybeRenderAddContact() {
-    const { t } = this.context;
-    const { showAddToAddressBookModal, toAddress, contact = {} } = this.props;
-
-    if (contact.name || toAddress === undefined) {
-      return null;
-    }
-
-    return (
-      <Dialog
-        type="message"
-        className="send__dialog"
-        onClick={() => showAddToAddressBookModal()}
-      >
-        {t('newAccountDetectedDialogMessage')}
-      </Dialog>
-    );
-  }
-
   render() {
     const {
       showEdit,
@@ -136,8 +117,13 @@ export default class ConfirmPageContainer extends Component {
       editingGas,
       handleCloseEditGas,
       currentTransaction,
+      showAddToAddressBookModal,
+      contact = {},
     } = this.props;
     const renderAssetImage = contentComponent || !identiconAddress;
+
+    const showAddToAddressDialog =
+      contact.name === undefined && toAddress !== undefined;
 
     return (
       <div className="page-container">
@@ -171,7 +157,17 @@ export default class ConfirmPageContainer extends Component {
             />
           )}
         </ConfirmPageContainerHeader>
-        <div>{this.maybeRenderAddContact()}</div>
+        <div>
+          {showAddToAddressDialog && (
+            <Dialog
+              type="message"
+              className="send__dialog"
+              onClick={() => showAddToAddressBookModal()}
+            >
+              {this.context.t('newAccountDetectedDialogMessage')}
+            </Dialog>
+          )}
+        </div>
         {contentComponent || (
           <ConfirmPageContainerContent
             action={action}
