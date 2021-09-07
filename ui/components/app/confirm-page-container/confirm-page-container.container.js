@@ -9,7 +9,7 @@ function mapStateToProps(state, ownProps) {
   const contact = getAddressBookEntry(state, to);
   return {
     contact,
-    toName: contact && contact.name ? contact.name : ownProps.toName,
+    toName: contact?.name || ownProps.name,
     to,
   };
 }
