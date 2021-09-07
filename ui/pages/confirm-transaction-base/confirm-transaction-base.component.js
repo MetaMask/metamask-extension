@@ -40,6 +40,7 @@ import Dialog from '../../components/ui/dialog';
 import {
   COLORS,
   FONT_STYLE,
+  FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../helpers/constants/design-system';
 import {
@@ -404,18 +405,38 @@ export default class ConfirmTransactionBase extends Component {
         <div className="confirm-detail-row">
           <Dialog type="message">
             <div className="ledger-live-dialog">
-              <span className="ledger-live-dialog--step">
+              <Typography
+                boxProps={{ margin: 0 }}
+                color={COLORS.PRIMARY3}
+                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TYPOGRAPHY.H7}
+              >
                 {t('ledgerLiveDialogHeader')}
-              </span>
-              <span className="ledger-live-dialog--step">
+              </Typography>
+              <Typography
+                boxProps={{ margin: 0 }}
+                color={COLORS.PRIMARY3}
+                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TYPOGRAPHY.H7}
+              >
                 {`- ${t('ledgerLiveDialogStepOne')}`}
-              </span>
-              <span className="ledger-live-dialog--step">
+              </Typography>
+              <Typography
+                boxProps={{ margin: 0 }}
+                color={COLORS.PRIMARY3}
+                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TYPOGRAPHY.H7}
+              >
                 {`- ${t('ledgerLiveDialogStepTwo')}`}
-              </span>
-              <span className="ledger-live-dialog--step">
+              </Typography>
+              <Typography
+                boxProps={{ margin: 0 }}
+                color={COLORS.PRIMARY3}
+                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TYPOGRAPHY.H7}
+              >
                 {`- ${t('ledgerLiveDialogStepThree')}`}
-              </span>
+              </Typography>
             </div>
           </Dialog>
         </div>
