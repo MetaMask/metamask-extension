@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { select } from '@storybook/addon-knobs';
 
-import { store } from '../../../.storybook/preview';
+import { store, getNewState } from '../../../.storybook/preview';
 import { updateMetamaskState } from '../../store/actions';
 import ConfirmEncryptionPublicKey from '.';
 
@@ -25,11 +25,14 @@ const PageSet = ({ children }) => {
   useEffect(() => {
     unapprovedEncryptionPublicKeyMsgs['7786962153682822'].msgParams =
       account.address;
-    const newState = Object.assign(state.metamask, {
-      unapprovedEncryptionPublicKeyMsgs,
-    });
-    store.dispatch(updateMetamaskState(newState));
-  }, [account, unapprovedEncryptionPublicKeyMsgs]);
+    store.dispatch(
+      updateMetamaskState(
+        getNewState(state.metamask, {
+          unapprovedEncryptionPublicKeyMsgs,
+        }),
+      ),
+    );
+  }, [account, unapprovedEncryptionPublicKeyMsgs, state.metamask]);
 
   return children;
 };

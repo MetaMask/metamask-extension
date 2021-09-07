@@ -28,10 +28,10 @@ function mapStateToProps(state) {
 
   const txData = unconfirmedTransactions[0];
 
-  console.log(txData);
   const { msgParams: from } = txData;
+
   const fromAccount = getTargetAccountWithSendEtherInfo(state, from);
-  console.log(fromAccount);
+
   return {
     txData,
     domainMetadata,

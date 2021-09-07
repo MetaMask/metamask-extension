@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { updateMetamaskState } from '../../store/actions';
 import { currentNetworkTxListSelector } from '../../selectors/transactions';
-import { store } from '../../../.storybook/preview';
+import { store, getNewState } from '../../../.storybook/preview';
 
 import { domainMetadata } from '../../../.storybook/initial-states/approval-screens/token-approval';
 import ConfirmApprove from '.';
@@ -29,21 +29,27 @@ const PageSet = ({ children }) => {
 
   useEffect(() => {
     transaction.origin = origin;
-    const newState = Object.assign(state.metamask, {
-      currentNetworkTxList: [transaction],
-    });
-    store.dispatch(updateMetamaskState(newState));
+    store.dispatch(
+      updateMetamaskState(
+        getNewState(state.metamask, {
+          currentNetworkTxList: [transaction],
+        }),
+      ),
+    );
   }, [origin, transaction, state.metamask]);
 
   useEffect(() => {
-    const newState = Object.assign(state.metamask, {
-      domainMetadata: {
-        [origin]: {
-          icon: domainIconUrl,
-        },
-      },
-    });
-    store.dispatch(updateMetamaskState(newState));
+    store.dispatch(
+      updateMetamaskState(
+        getNewState(state.metamask, {
+          domainMetadata: {
+            [origin]: {
+              icon: domainIconUrl,
+            },
+          },
+        }),
+      ),
+    );
   }, [domainIconUrl, origin, state.metamask]);
 
   const params = useParams();
@@ -53,8 +59,13 @@ const PageSet = ({ children }) => {
 
 export const ApproveTokens = () => {
   const state = store.getState();
-  const newState = Object.assign(state.metamask, { domainMetadata });
-  store.dispatch(updateMetamaskState(newState));
+  store.dispatch(
+    updateMetamaskState(
+      getNewState(state.metamask, {
+        domainMetadata,
+      }),
+    ),
+  );
   return (
     <PageSet>
       <ConfirmApprove />
