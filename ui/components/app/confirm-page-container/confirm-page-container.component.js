@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { PageContainerFooter } from '../../ui/page-container';
 import EditGasPopover from '../edit-gas-popover';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
-import { getAddressBookEntry } from '../../../selectors';
-import * as actions from '../../../store/actions';
 import Dialog from '../../ui/dialog';
 import {
   ConfirmPageContainerHeader,
@@ -14,7 +11,7 @@ import {
   ConfirmPageContainerNavigation,
 } from '.';
 
-class ConfirmPageContainer extends Component {
+export default class ConfirmPageContainer extends Component {
   static contextTypes = {
     t: PropTypes.func,
   };
@@ -229,42 +226,3 @@ class ConfirmPageContainer extends Component {
     );
   }
 }
-
-function mapStateToProps(state, ownProps) {
-  const to = ownProps.toAddress;
-
-  const contact = getAddressBookEntry(state, to);
-  return {
-    contact,
-    toName: contact && contact.name ? contact.name : ownProps.toName,
-    to,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    showAddToAddressBookModal: (recipient) =>
-      dispatch(
-        actions.showModal({
-          name: 'ADD_TO_ADDRESSBOOK',
-          recipient,
-        }),
-      ),
-  };
-}
-
-function mergeProps(stateProps, dispatchProps, ownProps) {
-  const { to, ...restStateProps } = stateProps;
-  return {
-    ...ownProps,
-    ...restStateProps,
-    showAddToAddressBookModal: () =>
-      dispatchProps.showAddToAddressBookModal(to),
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
-)(ConfirmPageContainer);
