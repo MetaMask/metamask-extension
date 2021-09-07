@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import UrlIcon from '../../../components/ui/url-icon';
-import { addressSummary } from '../../../helpers/utils/util';
+import { addressSummary, getURLHostName } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import Typography from '../../../components/ui/typography';
@@ -256,7 +256,7 @@ export default class ConfirmApproveContent extends Component {
           <UrlIcon
             className="confirm-approve-content__identicon"
             fallbackClassName="confirm-approve-content__identicon"
-            name={origin ? new URL(origin).hostname : ''}
+            name={getURLHostName(origin)}
             url={siteImage}
           />
         </div>

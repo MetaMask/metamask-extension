@@ -126,7 +126,6 @@ export default function GasTiming({
 
   let text = '';
   let attitude = 'positive';
-  let fontWeight = FONT_WEIGHT.NORMAL;
 
   // Anything medium or faster is positive
   if (
@@ -159,7 +158,6 @@ export default function GasTiming({
         customEstimatedTime === 'unknown' ||
         customEstimatedTime?.upperTimeBound === 'unknown'
       ) {
-        fontWeight = FONT_WEIGHT.BOLD;
         text = unknownProcessingTimeText;
       } else {
         text = t('gasTimingNegative', [
@@ -167,16 +165,23 @@ export default function GasTiming({
         ]);
       }
     } else {
-      text = t('gasTimingNegative', [
-        toHumanReadableTime(low.maxWaitTimeEstimate, t),
-      ]);
+      text = (
+        <>
+          {t('gasTimingNegative', [
+            toHumanReadableTime(low.maxWaitTimeEstimate, t),
+          ])}
+          <InfoTooltip
+            position="top"
+            contentText={t('editGasTooLowWarningTooltip')}
+          />
+        </>
+      );
     }
   }
 
   return (
     <Typography
       variant={TYPOGRAPHY.H7}
-      fontWeight={fontWeight}
       className={classNames('gas-timing', {
         [`gas-timing--${attitude}`]: attitude,
       })}

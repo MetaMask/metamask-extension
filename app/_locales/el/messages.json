@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Προσθήκη Δικτύου"
   },
-  "addRecipient": {
-    "message": "Προσθήκη Παραλήπτη"
-  },
   "addSuggestedTokens": {
     "message": "Προσθέστε τα Προτεινόμενα Tokens"
   },

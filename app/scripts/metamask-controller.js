@@ -76,6 +76,8 @@ export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
   UPDATE_BADGE: 'updateBadge',
+  // TODO: Add this and similar enums to @metamask/controllers and export them
+  APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
 };
 
 export default class MetamaskController extends EventEmitter {
@@ -106,12 +108,13 @@ export default class MetamaskController extends EventEmitter {
     this.getRequestAccountTabIds = opts.getRequestAccountTabIds;
     this.getOpenMetamaskTabsIds = opts.getOpenMetamaskTabsIds;
 
-    const controllerMessenger = new ControllerMessenger();
+    this.controllerMessenger = new ControllerMessenger();
 
     // observable state store
     this.store = new ComposableObservableStore({
       state: initState,
-      controllerMessenger,
+      controllerMessenger: this.controllerMessenger,
+      persist: true,
     });
 
     // external connections by origin
@@ -131,6 +134,9 @@ export default class MetamaskController extends EventEmitter {
     // controller initialization order matters
 
     this.approvalController = new ApprovalController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'ApprovalController',
+      }),
       showApprovalRequest: opts.showUserConfirmation,
     });
 
@@ -169,7 +175,7 @@ export default class MetamaskController extends EventEmitter {
       initState: initState.MetaMetricsController,
     });
 
-    const gasFeeMessenger = controllerMessenger.getRestricted({
+    const gasFeeMessenger = this.controllerMessenger.getRestricted({
       name: 'GasFeeController',
     });
 
@@ -210,7 +216,7 @@ export default class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
     });
 
-    const currencyRateMessenger = controllerMessenger.getRestricted({
+    const currencyRateMessenger = this.controllerMessenger.getRestricted({
       name: 'CurrencyRateController',
     });
     this.currencyRateController = new CurrencyRateController({
@@ -219,7 +225,7 @@ export default class MetamaskController extends EventEmitter {
       state: initState.CurrencyController,
     });
 
-    const tokenListMessenger = controllerMessenger.getRestricted({
+    const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
     });
     this.tokenListController = new TokenListController({
@@ -569,7 +575,7 @@ export default class MetamaskController extends EventEmitter {
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
       },
-      controllerMessenger,
+      controllerMessenger: this.controllerMessenger,
     });
     this.memStore.subscribe(this.sendUpdate.bind(this));
 
@@ -1097,7 +1103,7 @@ export default class MetamaskController extends EventEmitter {
 
       // approval controller
       resolvePendingApproval: nodeify(
-        approvalController.resolve,
+        approvalController.accept,
         approvalController,
       ),
       rejectPendingApproval: nodeify(

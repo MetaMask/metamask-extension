@@ -8,7 +8,13 @@ const state = {
   "unconnectedAccount": {
     "state": "CLOSED"
   },
-  "activeTab": {},
+  "activeTab": {
+    "id": 113,
+    "title": "E2E Test Dapp",
+    "origin": "https://metamask.github.io",
+    "protocol": "https:",
+    "url": "https://metamask.github.io/test-dapp/"
+  },
   "metamask": {
     "networkDetails": {
       "EIPS": {
@@ -34,8 +40,8 @@ const state = {
       }
     },
     "unapprovedTxs": {
-      "7786962153682822": {
-        "id": 7786962153682822,
+      "3111025347726181": {
+        "id": 3111025347726181,
         "time": 1620710815484,
         "status": "unapproved",
         "metamaskNetworkId": "3",
@@ -43,7 +49,7 @@ const state = {
         "loadingDefaults": false,
         "txParams": {
           "from": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4",
-          "to": "0xad6d458402f60fd3bd25163575031acdce07538d",
+          "to": "0xaD6D458402F60fD3Bd25163575031ACDce07538D",
           "value": "0x0",
           "data": "0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000",
           "gas": "0xcb28",
@@ -62,7 +68,7 @@ const state = {
             "loadingDefaults": true,
             "txParams": {
               "from": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4",
-              "to": "0xad6d458402f60fd3bd25163575031acdce07538d",
+              "to": "0xaD6D458402F60fD3Bd25163575031ACDce07538D",
               "value": "0x0",
               "data": "0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000",
               "gas": "0xcb28",
@@ -95,11 +101,11 @@ const state = {
       }
     },
     "contractExchangeRates": {
-      "0xad6d458402f60fd3bd25163575031acdce07538d": 0
+      "0xaD6D458402F60fD3Bd25163575031ACDce07538D": 0
     },
     "tokens": [
       {
-        "address": "0xad6d458402f60fd3bd25163575031acdce07538d",
+        "address": "0xaD6D458402F60fD3Bd25163575031ACDce07538D",
         "symbol": "DAI",
         "decimals": 18
       }
@@ -122,7 +128,7 @@ const state = {
       "ensResolution": null,
       "ensResolutionError": "",
       "token": {
-        "address": "0xad6d458402f60fd3bd25163575031acdce07538d",
+        "address": "0xaD6D458402F60fD3Bd25163575031ACDce07538D",
         "symbol": "DAI",
         "decimals": 18
       }
@@ -259,7 +265,7 @@ const state = {
         ],
         "0x3": [
           {
-            "address": "0xad6d458402f60fd3bd25163575031acdce07538d",
+            "address": "0xaD6D458402F60fD3Bd25163575031ACDce07538D",
             "symbol": "DAI",
             "decimals": 18
           }
@@ -274,7 +280,7 @@ const state = {
       }
     },
     "assetImages": {
-      "0xad6d458402f60fd3bd25163575031acdce07538d": "./images/logo.png"
+      "0xaD6D458402F60fD3Bd25163575031ACDce07538D": "./sai.svg"
     },
     "hiddenTokens": [],
     "suggestedTokens": {},
@@ -547,7 +553,7 @@ const state = {
       }
     ],
     "permissionsHistory": {
-      "https://app.uniswap.org": {
+      "https://metamask.github.io": {
         "eth_accounts": {
           "lastApproved": 1620710693213,
           "accounts": {
@@ -562,6 +568,12 @@ const state = {
         "icon": "https://metamask.github.io/test-dapp/metamask-fox.svg",
         "lastUpdated": 1620723443380,
         "host": "metamask.github.io"
+      },
+      "https://app.uniswap.org": {
+        "name": "Uniswap",
+        "icon": "./UNI.png",
+        "lastUpdated": 1620723443380,
+        "host": "app.uniswap.org"
       }
     },
     "threeBoxSyncingAllowed": false,
@@ -652,14 +664,14 @@ const state = {
       "chainId": "0x3",
       "loadingDefaults": false,
       "txParams": {
-        "from": "0x983211ce699ea5ab57cc528086154b6db1ad8e55",
-        "to": "0xad6d458402f60fd3bd25163575031acdce07538d",
+        "from": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4",
+        "to": "0xaD6D458402F60fD3Bd25163575031ACDce07538D",
         "value": "0x0",
         "data": "0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170",
         "gas": "0xea60",
         "gasPrice": "0x4a817c800"
       },
-      "type": "standard",
+      "type": "transfer",
       "origin": "https://metamask.github.io",
       "transactionCategory": "approve",
       "history": [
@@ -672,7 +684,7 @@ const state = {
           "loadingDefaults": true,
           "txParams": {
             "from": "0x983211ce699ea5ab57cc528086154b6db1ad8e55",
-            "to": "0xad6d458402f60fd3bd25163575031acdce07538d",
+            "to": "0xaD6D458402F60fD3Bd25163575031ACDce07538D",
             "value": "0x0",
             "data": "0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170",
             "gas": "0xea60",

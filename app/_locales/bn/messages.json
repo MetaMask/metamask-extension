@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "নেটওয়ার্ক যোগ করুন"
   },
-  "addRecipient": {
-    "message": "প্রাপক যোগ করুন"
-  },
   "addSuggestedTokens": {
     "message": "প্রস্তাবিত টোকেনগুলি যোগ করুন"
   },

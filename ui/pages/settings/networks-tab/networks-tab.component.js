@@ -7,6 +7,7 @@ import LockIcon from '../../../components/ui/lock-icon';
 import {
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
+  DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
 import ColorIndicator from '../../../components/ui/color-indicator';
 import { COLORS, SIZES } from '../../../helpers/constants/design-system';
@@ -212,9 +213,12 @@ export default class NetworksTab extends PureComponent {
             onClear={(shouldUpdateHistory = true) => {
               setNetworksTabAddMode(false);
               setSelectedSettingsRpcUrl('');
-              if (shouldUpdateHistory && !isFullScreen) {
+              if (shouldUpdateHistory) {
                 history.push(NETWORKS_ROUTE);
               }
+            }}
+            onAddNetwork={() => {
+              history.push(DEFAULT_ROUTE);
             }}
             showConfirmDeleteNetworkModal={showConfirmDeleteNetworkModal}
             viewOnly={viewOnly}

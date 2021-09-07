@@ -1,11 +1,7 @@
-.new-account-import-disclaimer {
-  @include H7;
-
-  width: 120%;
-  background-color: #f4f9fc;
-  display: inline-block;
-  align-items: center;
-  padding: 20px 30px 20px;
+.new-account-info-link {
+  cursor: pointer;
+  text-decoration: underline;
+  color: $primary-blue;
 }
 
 .new-account-import-form {

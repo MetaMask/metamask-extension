@@ -136,6 +136,10 @@
       &__title {
         @include H6;
 
+        max-width: 20em;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
         color: $black;
       }
 

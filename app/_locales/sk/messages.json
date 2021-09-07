@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Pridať sieť"
   },
-  "addRecipient": {
-    "message": "Pridať príjemcu"
-  },
   "addSuggestedTokens": {
     "message": "Pridať navrhované tokeny"
   },

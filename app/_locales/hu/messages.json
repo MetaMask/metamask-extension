@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Hálózat hozzáadása"
   },
-  "addRecipient": {
-    "message": "Címzett hozzáadása"
-  },
   "addSuggestedTokens": {
     "message": "Javasolt tokenek hozzáadása"
   },

@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "ネットワークの追加"
   },
-  "addRecipient": {
-    "message": "受信者の追加"
-  },
   "addSuggestedTokens": {
     "message": "推奨されたトークンの追加"
   },

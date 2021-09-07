@@ -28,6 +28,7 @@ export default class MobileSyncPage extends Component {
     requestRevealSeedWords: PropTypes.func.isRequired,
     exportAccounts: PropTypes.func.isRequired,
     keyrings: PropTypes.array,
+    hideWarning: PropTypes.func.isRequired,
   };
 
   state = {
@@ -200,9 +201,9 @@ export default class MobileSyncPage extends Component {
           sendByPost: false, // true to send via post
           storeInHistory: false,
         },
-        (status, response) => {
+        (status, _response) => {
           if (status.error) {
-            reject(response);
+            reject(status.errorData);
           } else {
             resolve();
           }
@@ -224,6 +225,7 @@ export default class MobileSyncPage extends Component {
       preferences,
       transactions,
     } = await this.props.fetchInfoToSync();
+    const { t } = this.context;
 
     const allDataStr = JSON.stringify({
       accounts,
@@ -244,7 +246,7 @@ export default class MobileSyncPage extends Component {
         await this.sendMessage(chunks[i], i + 1, totalChunks);
       }
     } catch (e) {
-      this.props.displayWarning('Sync failed :(');
+      this.props.displayWarning(`${t('syncFailed')} :(`);
       this.setState({ syncing: false });
       this.syncing = false;
       this.notifyError(e.toString());
@@ -265,9 +267,9 @@ export default class MobileSyncPage extends Component {
           sendByPost: false, // true to send via post
           storeInHistory: false,
         },
-        (status, response) => {
+        (status, _response) => {
           if (status.error) {
-            reject(response);
+            reject(status.errorData);
           } else {
             resolve();
           }
@@ -277,6 +279,9 @@ export default class MobileSyncPage extends Component {
   }
 
   componentWillUnmount() {
+    if (this.state.error) {
+      this.props.hideWarning();
+    }
     this.clearTimeouts();
     this.disconnectWebsockets();
   }

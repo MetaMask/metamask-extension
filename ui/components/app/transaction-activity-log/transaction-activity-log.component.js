@@ -7,7 +7,7 @@ import {
   getEthConversionFromWeiHex,
   getValueFromWeiHex,
 } from '../../../helpers/utils/conversions.util';
-import { formatDate } from '../../../helpers/utils/util';
+import { formatDate, getURLHostName } from '../../../helpers/utils/util';
 import TransactionActivityLogIcon from './transaction-activity-log-icon';
 import { CONFIRMED_STATUS } from './transaction-activity-log.constants';
 
@@ -41,9 +41,7 @@ export default class TransactionActivityLog extends PureComponent {
       properties: {
         link_type: 'Transaction Block Explorer',
         action: 'Activity Details',
-        block_explorer_domain: etherscanUrl
-          ? new URL(etherscanUrl)?.hostname
-          : '',
+        block_explorer_domain: getURLHostName(etherscanUrl),
       },
     });
 

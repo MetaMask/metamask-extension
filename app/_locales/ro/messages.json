@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Adăugați rețea"
   },
-  "addRecipient": {
-    "message": "Adăugați destinatarul"
-  },
   "addSuggestedTokens": {
     "message": "Adăugați indicativele sugerate"
   },
