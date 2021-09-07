@@ -29,6 +29,7 @@ import {
 } from '@metamask/controllers';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
+import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
@@ -75,16 +76,6 @@ export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
   UPDATE_BADGE: 'updateBadge',
-};
-
-/**
- * Accounts can be instantiated from simple, HD or the two hardware wallet
- * keyring types. Both simple and HD are treated as default but we do special
- * case accounts managed by a hardware wallet.
- */
-const KEYRING_TYPES = {
-  LEDGER: 'Ledger Hardware',
-  TREZOR: 'Trezor Hardware',
 };
 
 export default class MetamaskController extends EventEmitter {
@@ -2078,10 +2069,7 @@ export default class MetamaskController extends EventEmitter {
     const address =
       fromAddress || this.preferencesController.getSelectedAddress();
     const keyring = await this.keyringController.getKeyringForAccount(address);
-    return (
-      keyring.type !== KEYRING_TYPES.LEDGER &&
-      keyring.type !== KEYRING_TYPES.TREZOR
-    );
+    return keyring.type !== KEYRING_TYPES.TREZOR;
   }
 
   //=============================================================================
