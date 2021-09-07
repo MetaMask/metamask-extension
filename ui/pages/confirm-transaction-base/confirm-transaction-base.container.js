@@ -37,6 +37,8 @@ import {
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
 import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
+import { getPlatform } from '../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
   updateTransactionGasFees,
@@ -164,6 +166,7 @@ const mapStateToProps = (state, ownProps) => {
     fullTxData.userFeeLevel === 'custom' ||
     txParamsAreDappSuggested(fullTxData);
   const isLedgerAccount = getAccountType(state) === KEYRING_TYPES.LEDGER;
+  const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
   return {
     balance,
@@ -212,6 +215,7 @@ const mapStateToProps = (state, ownProps) => {
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
     gasFeeIsCustom,
     isLedgerAccount,
+    isFirefox,
   };
 };
 

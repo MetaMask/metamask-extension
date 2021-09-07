@@ -127,6 +127,7 @@ export default class ConfirmTransactionBase extends Component {
     isMainnet: PropTypes.bool,
     gasFeeIsCustom: PropTypes.bool,
     isLedgerAccount: PropTypes.bool.isRequired,
+    isFirefox: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -307,6 +308,7 @@ export default class ConfirmTransactionBase extends Component {
       maxPriorityFeePerGas,
       isMainnet,
       isLedgerAccount,
+      isFirefox,
     } = this.props;
     const { t } = this.context;
 
@@ -413,14 +415,16 @@ export default class ConfirmTransactionBase extends Component {
               >
                 {t('ledgerLiveDialogHeader')}
               </Typography>
-              <Typography
-                boxProps={{ margin: 0 }}
-                color={COLORS.PRIMARY3}
-                fontWeight={FONT_WEIGHT.BOLD}
-                variant={TYPOGRAPHY.H7}
-              >
-                {`- ${t('ledgerLiveDialogStepOne')}`}
-              </Typography>
+              {!isFirefox && (
+                <Typography
+                  boxProps={{ margin: 0 }}
+                  color={COLORS.PRIMARY3}
+                  fontWeight={FONT_WEIGHT.BOLD}
+                  variant={TYPOGRAPHY.H7}
+                >
+                  {`- ${t('ledgerLiveDialogStepOne')}`}
+                </Typography>
+              )}
               <Typography
                 boxProps={{ margin: 0 }}
                 color={COLORS.PRIMARY3}
