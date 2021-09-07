@@ -94,6 +94,10 @@ export const METAMASK_CONTROLLER_EVENTS = {
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
 };
 
+const RESOURCE_KEYS = {
+  ASSETS: 'snaps:resources:assets',
+};
+
 export default class MetamaskController extends EventEmitter {
   /**
    * @constructor
