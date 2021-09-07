@@ -723,6 +723,9 @@
   "editPermission": {
     "message": "Edit Permission"
   },
+  "enableSmartTransactions": {
+    "message": "Enable smart transactions"
+  },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
     "description": "$1 is the web3 site name"
@@ -1974,6 +1977,15 @@
   },
   "smartTransaction": {
     "message": "Smart transaction"
+  },
+  "smartTransactionsAreHere": {
+    "message": "Smart transactions are here!"
+  },
+  "smartTransactionsDescription": {
+    "message": "Smart transactions use MetaMask smart contracts to simulate transactions before submitting in order to..."
+  },
+  "smartTransactionsDescription2": {
+    "message": "Enabiling allows MetaMask to simulate transactions, proacitivley cancel bad transactions and sign MetaMask Swaps transactions for you. You can opt-out in advanced settings any time. Learn more."
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."

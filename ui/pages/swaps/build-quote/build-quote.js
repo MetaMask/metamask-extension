@@ -23,12 +23,7 @@ import Button from '../../../components/ui/button';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
-import {
-  TYPOGRAPHY,
-  FONT_WEIGHT,
-  ALIGN_ITEMS,
-  DISPLAY,
-} from '../../../helpers/constants/design-system';
+import { TYPOGRAPHY, DISPLAY } from '../../../helpers/constants/design-system';
 
 import {
   fetchQuotesAndSetQuoteState,
@@ -439,7 +434,7 @@ export default function BuildQuote({
                 src="./images/logo/metamask-logo-horizontal.svg"
                 alt={t('swapSwapSwitch')}
               />
-              <Typography variant={TYPOGRAPHY.H6} fontWeight={FONT_WEIGHT.BOLD}>
+              <Typography variant={TYPOGRAPHY.H6}>
                 {t('smartTransactionsDescription')}
               </Typography>
               <Typography variant={TYPOGRAPHY.H8}>
