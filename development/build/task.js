@@ -22,7 +22,7 @@ async function runTask(taskName, { skipStats } = {}) {
   }
   if (!skipStats) {
     setupTaskDisplay(taskEvents);
-    console.log(`running task "${taskName}"...`);
+    console.log(`Running task "${taskName}"...`);
   }
   try {
     await tasks[taskName]();

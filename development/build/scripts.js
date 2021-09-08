@@ -504,9 +504,9 @@ async function bundleIt(buildConfiguration) {
   // forward update event (used by watchify)
   bundler.on('update', () => performBundle());
 
-  console.log(`bundle start: "${label}"`);
+  console.log(`Bundle start: "${label}"`);
   await performBundle();
-  console.log(`bundle end: "${label}"`);
+  console.log(`Bundle end: "${label}"`);
 
   async function performBundle() {
     // this pipeline is created for every bundle
