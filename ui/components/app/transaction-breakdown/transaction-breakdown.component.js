@@ -26,6 +26,7 @@ export default class TransactionBreakdown extends PureComponent {
     isTokenApprove: PropTypes.bool,
     gas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    maxFeePerGas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasUsed: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     totalInHex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     baseFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -43,6 +44,7 @@ export default class TransactionBreakdown extends PureComponent {
     const {
       gas,
       gasPrice,
+      maxFeePerGas,
       primaryCurrency,
       className,
       nonce,
@@ -105,7 +107,6 @@ export default class TransactionBreakdown extends PureComponent {
             ) : (
               <CurrencyDisplay
                 className="transaction-breakdown__value"
-                data-testid="transaction-breakdown__base-fee"
                 currency={nativeCurrency}
                 denomination={GWEI}
                 value={baseFee}
@@ -122,7 +123,6 @@ export default class TransactionBreakdown extends PureComponent {
             ) : (
               <CurrencyDisplay
                 className="transaction-breakdown__value"
-                data-testid="transaction-breakdown__priority-fee"
                 currency={nativeCurrency}
                 denomination={GWEI}
                 value={priorityFee}
@@ -139,7 +139,6 @@ export default class TransactionBreakdown extends PureComponent {
             ) : (
               <CurrencyDisplay
                 className="transaction-breakdown__value"
-                data-testid="transaction-breakdown__gas-price"
                 currency={nativeCurrency}
                 denomination={GWEI}
                 value={gasPrice}
@@ -153,7 +152,6 @@ export default class TransactionBreakdown extends PureComponent {
           <TransactionBreakdownRow title={t('transactionHistoryTotalGasFee')}>
             <UserPreferencedCurrencyDisplay
               className="transaction-breakdown__value"
-              data-testid="transaction-breakdown__effective-gas-price"
               currency={nativeCurrency}
               denomination={ETH}
               numberOfDecimals={6}
@@ -165,6 +163,25 @@ export default class TransactionBreakdown extends PureComponent {
                 className="transaction-breakdown__value"
                 type={SECONDARY}
                 value={hexGasTotal}
+              />
+            )}
+          </TransactionBreakdownRow>
+        )}
+        {isEIP1559Transaction && (
+          <TransactionBreakdownRow title={t('transactionHistoryMaxFeePerGas')}>
+            <UserPreferencedCurrencyDisplay
+              className="transaction-breakdown__value"
+              currency={nativeCurrency}
+              denomination={ETH}
+              numberOfDecimals={9}
+              value={maxFeePerGas}
+              type={PRIMARY}
+            />
+            {showFiat && (
+              <UserPreferencedCurrencyDisplay
+                className="transaction-breakdown__value"
+                type={SECONDARY}
+                value={maxFeePerGas}
               />
             )}
           </TransactionBreakdownRow>
