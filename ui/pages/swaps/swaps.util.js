@@ -10,6 +10,10 @@ import {
   POLYGON,
   BSC,
   RINKEBY,
+  SWAPS_API_V2_BASE_URL,
+  SWAPS_DEV_API_V2_BASE_URL,
+  GAS_API_BASE_URL,
+  GAS_DEV_API_BASE_URL,
 } from '../../../shared/constants/swaps';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
 import {
@@ -51,25 +55,27 @@ const TOKEN_TRANSFER_LOG_TOPIC_HASH =
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 
-const SWAPS_API_V2_BASE_URL = 'https://api2.metaswap.codefi.network';
-const GAS_API_BASE_URL = 'https://gas-api.metaswap.codefi.network';
-
 /**
  * @param {string} type Type of an API call, e.g. "tokens"
  * @param {string} chainId
  * @returns string
  */
 const getBaseUrlForNewSwapsApi = (type, chainId) => {
+  const useDevApis = process.env.SWAPS_USE_DEV_APIS;
+  const v2ApiBaseUrl = useDevApis
+    ? SWAPS_DEV_API_V2_BASE_URL
+    : SWAPS_API_V2_BASE_URL;
+  const gasApiBaseUrl = useDevApis ? GAS_DEV_API_BASE_URL : GAS_API_BASE_URL;
   const noNetworkSpecificTypes = ['refreshTime']; // These types don't need network info in the URL.
   if (noNetworkSpecificTypes.includes(type)) {
-    return SWAPS_API_V2_BASE_URL;
+    return v2ApiBaseUrl;
   }
   const chainIdDecimal = chainId && parseInt(chainId, 16);
   const gasApiTypes = ['gasPrices'];
   if (gasApiTypes.includes(type)) {
-    return `${GAS_API_BASE_URL}/networks/${chainIdDecimal}`; // Gas calculations are in its own repo.
+    return `${gasApiBaseUrl}/networks/${chainIdDecimal}`; // Gas calculations are in its own repo.
   }
-  return `${SWAPS_API_V2_BASE_URL}/networks/${chainIdDecimal}`;
+  return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
 const getBaseApi = function (
@@ -410,8 +416,11 @@ export async function fetchTopAssets(chainId, useNewSwapsApi) {
 }
 
 export async function fetchSwapsFeatureFlags() {
+  const v2ApiBaseUrl = process.env.SWAPS_USE_DEV_APIS
+    ? SWAPS_DEV_API_V2_BASE_URL
+    : SWAPS_API_V2_BASE_URL;
   const response = await fetchWithCache(
-    `${SWAPS_API_V2_BASE_URL}/featureFlags`,
+    `${v2ApiBaseUrl}/featureFlags`,
     { method: 'GET' },
     { cacheRefreshTime: 600000 },
   );
