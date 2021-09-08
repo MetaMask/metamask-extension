@@ -3,6 +3,7 @@ import { getKnownMethodData } from '../selectors/selectors';
 import {
   getStatusKey,
   getTransactionTypeTitle,
+  sumHexes,
 } from '../helpers/utils/transactions.util';
 import { camelCaseToCapitalize } from '../helpers/utils/common.util';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
@@ -23,6 +24,7 @@ import {
   TRANSACTION_STATUSES,
 } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
+import { getHexGasTotal } from '../helpers/utils/confirm-tx.util';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -78,12 +80,32 @@ export function useTransactionDisplayData(transactionGroup) {
   const isPending = displayedStatusKey in PENDING_STATUS_HASH;
   const isSubmitted = displayedStatusKey === TRANSACTION_STATUSES.SUBMITTED;
 
-  const primaryValue = primaryTransaction.txParams?.value;
   let prefix = '-';
   const date = formatDateWithYearContext(initialTransaction.time);
   let subtitle;
   let subtitleContainsOrigin = false;
   let recipientAddress = to;
+
+  const {
+    txParams: { gas, gasPrice, value } = {},
+    txReceipt: { gasUsed, effectiveGasPrice } = {},
+  } = primaryTransaction;
+
+  const gasLimit = typeof gasUsed === 'string' ? gasUsed : gas;
+
+  // To calculate the total cost of the transaction, we use gasPrice if it is in the txParam,
+  // which will only be the case on non-EIP1559 networks. If it is not in the params, we can
+  // use the effectiveGasPrice from the receipt, which will ultimately represent to true cost
+  // of the transaction. Either of these are used the same way with gasLimit to calculate total
+  // cost. effectiveGasPrice will be available on the txReciept for all EIP1559 networks
+  const usedGasPrice = gasPrice || effectiveGasPrice;
+  const hexGasTotal =
+    (gasLimit &&
+      usedGasPrice &&
+      getHexGasTotal({ gasLimit, gasPrice: usedGasPrice })) ||
+    '0x0';
+
+  const totalInHex = sumHexes(hexGasTotal, value);
 
   // This value is used to determine whether we should look inside txParams.data
   // to pull out and render token related information
@@ -233,14 +255,14 @@ export function useTransactionDisplayData(transactionGroup) {
   const primaryCurrencyPreferences = useUserPreferencedCurrency(PRIMARY);
   const secondaryCurrencyPreferences = useUserPreferencedCurrency(SECONDARY);
 
-  const [primaryCurrency] = useCurrencyDisplay(primaryValue, {
+  const [primaryCurrency] = useCurrencyDisplay(totalInHex, {
     prefix,
     displayValue: primaryDisplayValue,
     suffix: primarySuffix,
     ...primaryCurrencyPreferences,
   });
 
-  const [secondaryCurrency] = useCurrencyDisplay(primaryValue, {
+  const [secondaryCurrency] = useCurrencyDisplay(totalInHex, {
     prefix,
     displayValue: secondaryDisplayValue,
     hideLabel: isTokenCategory || Boolean(swapTokenValue),
