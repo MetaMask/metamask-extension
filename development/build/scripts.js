@@ -549,7 +549,7 @@ function getEnvironmentVariables({ devMode, testing }) {
     METAMASK_DEBUG: devMode,
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,
-    METAMASK_BUILD_TYPE: process.env.BUILD_TYPE || 'main',
+    METAMASK_BUILD_TYPE: process.env.BUILD_TYPE,
     NODE_ENV: devMode ? 'development' : 'production',
     IN_TEST: testing ? 'true' : false,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',

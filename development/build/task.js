@@ -5,7 +5,6 @@ const tasks = {};
 const taskEvents = new EventEmitter();
 
 module.exports = {
-  detectAndRunEntryTask,
   tasks,
   taskEvents,
   createTask,
@@ -16,17 +15,6 @@ module.exports = {
 };
 
 const { setupTaskDisplay } = require('./display');
-
-function detectAndRunEntryTask() {
-  // get requested task name and execute
-  const taskName = process.argv[2];
-  if (!taskName) {
-    throw new Error(`MetaMask build: No task name specified`);
-  }
-  const skipStats = process.argv.includes('--skip-stats');
-
-  runTask(taskName, { skipStats });
-}
 
 async function runTask(taskName, { skipStats } = {}) {
   if (!(taskName in tasks)) {

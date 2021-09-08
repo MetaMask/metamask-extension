@@ -4,12 +4,13 @@
 // run any task with "yarn build ${taskName}"
 //
 const livereload = require('gulp-livereload');
+const minimist = require('minimist');
 const { version } = require('../../package.json');
 const {
   createTask,
   composeSeries,
   composeParallel,
-  detectAndRunEntryTask,
+  runTask,
 } = require('./task');
 const createManifestTasks = require('./manifest');
 const createScriptTasks = require('./scripts');
@@ -29,26 +30,38 @@ require('@babel/preset-env');
 require('@babel/preset-react');
 require('@babel/core');
 
-const browserPlatforms = ['firefox', 'chrome', 'brave', 'opera'];
-const shouldIncludeLockdown = !process.argv.includes('--omit-lockdown');
+defineTasksAndBuild();
 
-defineAllTasks();
-detectAndRunEntryTask();
+function defineTasksAndBuild() {
+  const {
+    betaVersion,
+    entryTask,
+    isBeta,
+    shouldIncludeLockdown,
+    skipStats,
+  } = parseArgv();
 
-function defineAllTasks() {
-  const IS_BETA = process.env.BUILD_TYPE === 'beta';
-  const BETA_VERSIONS_MAP = getNextBetaVersionMap(version, browserPlatforms);
+  const browserPlatforms = ['firefox', 'chrome', 'brave', 'opera'];
+
+  let betaVersionsMap;
+  if (isBeta) {
+    betaVersionsMap = getNextBetaVersionMap(
+      version,
+      betaVersion,
+      browserPlatforms,
+    );
+  }
 
   const staticTasks = createStaticAssetTasks({
     livereload,
     browserPlatforms,
     shouldIncludeLockdown,
-    isBeta: IS_BETA,
+    isBeta,
   });
   const manifestTasks = createManifestTasks({
     browserPlatforms,
-    isBeta: IS_BETA,
-    betaVersionsMap: BETA_VERSIONS_MAP,
+    betaVersionsMap,
+    isBeta,
   });
   const styleTasks = createStyleTasks({ livereload });
   const scriptTasks = createScriptTasks({
@@ -59,8 +72,8 @@ function defineAllTasks() {
   const { clean, reload, zip } = createEtcTasks({
     livereload,
     browserPlatforms,
-    isBeta: IS_BETA,
-    betaVersionsMap: BETA_VERSIONS_MAP,
+    betaVersionsMap,
+    isBeta,
   });
 
   // build for development (livereload)
@@ -117,4 +130,53 @@ function defineAllTasks() {
 
   // special build for minimal CI testing
   createTask('styles', styleTasks.prod);
+
+  // Finally, start the build process by running the entry task.
+  runTask(entryTask, { skipStats });
+}
+
+function parseArgv() {
+  const NamedArgs = {
+    BetaVersion: 'beta-version',
+    BuildType: 'build-type',
+    OmitLockdown: 'omit-lockdown',
+    SkipStats: 'skip-stats',
+  };
+
+  const entryTask = process.argv[2];
+  if (!entryTask) {
+    throw new Error(`MetaMask build: No entry task specified`);
+  }
+  // if (entryTask.startsWith('-')) {
+  if (!(/^\w/u).test(entryTask)) {
+    throw new Error(`MetaMask build: invalid entry task: ${entryTask}`);
+  }
+
+  const argv = minimist(process.argv.slice(3), {
+    boolean: [NamedArgs.OmitLockdown, NamedArgs.SkipStats],
+    string: [NamedArgs.BuildType],
+    default: {
+      [NamedArgs.BetaVersion]: 0,
+      [NamedArgs.BuildType]: 'main',
+      [NamedArgs.OmitLockdown]: false,
+      [NamedArgs.SkipStats]: false,
+    },
+  });
+
+  // Arguments that are too difficult to pass around as values are set as
+  // environment variables.
+  process.env.BUILD_TYPE = argv[NamedArgs.BuildType];
+
+  const betaVersion = argv[NamedArgs.BetaVersion];
+  if (!Number.isInteger(betaVersion) || betaVersion < 0) {
+    throw new Error(`MetaMask build: Invalid beta version: ${betaVersion}`);
+  }
+
+  return {
+    betaVersion: String(betaVersion),
+    entryTask,
+    isBeta: argv[NamedArgs.BuildType] === 'beta',
+    shouldIncludeLockdown: argv[NamedArgs.OmitLockdown],
+    skipStats: argv[NamedArgs.SkipStats],
+  };
 }

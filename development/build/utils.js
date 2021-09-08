@@ -1,8 +1,8 @@
-// Returns an object with browser as key and next version of beta
-// as the value.  Ex: { firefox: '9.6.0.beta0', chrome: '9.6.0.1' }
-function getNextBetaVersionMap(currentVersion, platforms) {
-  // `yarn beta 3` would create version 9.x.x.3
-  const [, premajor = '0'] = process.argv.slice(2);
+/**
+ * @returns {Object} An object with browser as key and next version of beta
+ * as the value.  E.g. { firefox: '9.6.0.beta0', chrome: '9.6.0.1' }
+ */
+function getNextBetaVersionMap(currentVersion, betaVersion, platforms) {
   const [major, minor] = currentVersion.split('.');
 
   return platforms.reduce((platformMap, platform) => {
@@ -14,7 +14,7 @@ function getNextBetaVersionMap(currentVersion, platforms) {
       // This isn't typically used
       0,
       // The beta number
-      `${platform === 'firefox' ? 'beta' : ''}${premajor}`,
+      `${platform === 'firefox' ? 'beta' : ''}${betaVersion}`,
     ].join('.');
     return platformMap;
   }, {});
