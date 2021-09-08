@@ -31,7 +31,7 @@ export default class MetaFoxLogo extends PureComponent {
           src={
             useDark
               ? getBuildSpecificAsset('metafoxLogoHorizontalDark')
-              : '/images/logo/metamask-logo-horizontal.svg'
+              : './images/logo/metamask-logo-horizontal.svg'
           }
           className={classnames(
             'app-header__metafox-logo',
@@ -41,7 +41,7 @@ export default class MetaFoxLogo extends PureComponent {
         />
         <img
           {...iconProps}
-          src="/images/logo/metamask-fox.svg"
+          src="./images/logo/metamask-fox.svg"
           className={classnames(
             'app-header__metafox-logo',
             'app-header__metafox-logo--icon',
