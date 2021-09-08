@@ -17,10 +17,15 @@ Here follows basic usage information for the build system.
 Usage: yarn build <entry-task> [options]
 
 Commands:
-  yarn build prod       Create a production-ready build
-  yarn build dev        Create a build for local development
-  yarn build test       Create a build for running e2e tests
-  yarn build testDev    ?
+  yarn build prod       Create an optimized build for production environments.
+
+  yarn build dev        Create an unoptimized, live-reloaded build for local
+                        development.
+
+  yarn build test       Create an optimized build for running e2e tests.
+
+  yarn build testDev    Create an unoptimized, live-reloaded build for running
+                        e2e tests.
 
 Options:
   --beta-version     If the build type is "beta", the beta version number.
