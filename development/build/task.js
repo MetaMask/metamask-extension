@@ -55,22 +55,20 @@ function runInChildProcess(task) {
       `MetaMask build: runInChildProcess unable to identify task name`,
     );
   }
+
   return instrumentForTaskStats(taskName, async () => {
     let childProcess;
-    // don't run subprocesses in lavamoat for dev mode if main process not run in lavamoat
-    if (
-      process.env.npm_lifecycle_event === 'build:dev' ||
-      (taskName.includes('scripts:core:dev') &&
-        !process.argv[0].includes('lavamoat'))
-    ) {
-      childProcess = spawn('yarn', ['build:dev', taskName, '--skip-stats'], {
-        env: process.env,
-      });
-    } else {
+    // don't run subprocesses in lavamoat if main process not run in lavamoat
+    if (process.env.IS_LAVAMOAT === 'true') {
       childProcess = spawn('yarn', ['build', taskName, '--skip-stats'], {
         env: process.env,
       });
+    } else {
+      childProcess = spawn('yarn', ['build:dev', taskName, '--skip-stats'], {
+        env: process.env,
+      });
     }
+
     // forward logs to main process
     // skip the first stdout event (announcing the process command)
     childProcess.stdout.once('data', () => {
@@ -78,9 +76,11 @@ function runInChildProcess(task) {
         process.stdout.write(`${taskName}: ${data}`),
       );
     });
+
     childProcess.stderr.on('data', (data) =>
       process.stderr.write(`${taskName}: ${data}`),
     );
+
     // await end of process
     await new Promise((resolve, reject) => {
       childProcess.once('exit', (errCode) => {

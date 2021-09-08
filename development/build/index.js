@@ -148,7 +148,7 @@ function parseArgv() {
     throw new Error(`MetaMask build: No entry task specified`);
   }
   // if (entryTask.startsWith('-')) {
-  if (!(/^\w/u).test(entryTask)) {
+  if (!/^\w/u.test(entryTask)) {
     throw new Error(`MetaMask build: invalid entry task: ${entryTask}`);
   }
 
@@ -163,14 +163,17 @@ function parseArgv() {
     },
   });
 
-  // Arguments that are too difficult to pass around as values are set as
-  // environment variables.
-  process.env.BUILD_TYPE = argv[NamedArgs.BuildType];
-
   const betaVersion = argv[NamedArgs.BetaVersion];
   if (!Number.isInteger(betaVersion) || betaVersion < 0) {
     throw new Error(`MetaMask build: Invalid beta version: ${betaVersion}`);
   }
+
+  // Arguments that are used throughout or deeply within the build system are
+  // set as environment variables.
+  setImmutableProperties(process.env, [
+    ['BUILD_TYPE', argv[NamedArgs.BuildType]],
+    ['IS_LAVAMOAT', String(process.argv[0].includes('lavamoat'))],
+  ]);
 
   return {
     betaVersion: String(betaVersion),
@@ -179,4 +182,23 @@ function parseArgv() {
     shouldIncludeLockdown: argv[NamedArgs.OmitLockdown],
     skipStats: argv[NamedArgs.SkipStats],
   };
+}
+
+function setImmutableProperties(object, keyValueTuples) {
+  const descriptors = {
+    enumerable: true,
+    configurable: false,
+    writable: false,
+  };
+
+  Object.defineProperties(
+    object,
+    keyValueTuples.reduce((propertyMap, [key, value]) => {
+      propertyMap[key] = {
+        value,
+        ...descriptors,
+      };
+      return propertyMap;
+    }, {}),
+  );
 }
