@@ -150,7 +150,10 @@ function parseArgv() {
   if (!entryTask) {
     throw new Error('MetaMask build: No entry task specified.');
   }
-  if (!/^\w+$/iu.test(entryTask)) {
+
+  // The entry task should never be prefixed with '-' or '--', so that is easily
+  // distinguishable from other arguments.
+  if (entryTask.startsWith('-')) {
     throw new Error(`MetaMask build: invalid entry task: ${entryTask}`);
   }
 
