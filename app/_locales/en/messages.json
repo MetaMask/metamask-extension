@@ -2564,10 +2564,13 @@
     "message": "Transaction Fee"
   },
   "transactionHistoryBaseFee": {
-    "message": "Base fee (GWEI)"
+    "message": "Base Fee (GWEI)"
+  },
+  "transactionHistoryMaxFeePerGas": {
+    "message": "Max Fee Per Gas"
   },
   "transactionHistoryPriorityFee": {
-    "message": "Priority fee (GWEI)"
+    "message": "Priority Fee (GWEI)"
   },
   "transactionHistoryTotalGasFee": {
     "message": "Total Gas Fee"
