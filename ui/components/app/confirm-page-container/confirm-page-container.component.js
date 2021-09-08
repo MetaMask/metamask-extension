@@ -4,6 +4,7 @@ import SenderToRecipient from '../../ui/sender-to-recipient';
 import { PageContainerFooter } from '../../ui/page-container';
 import EditGasPopover from '../edit-gas-popover';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+import Dialog from '../../ui/dialog';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -66,6 +67,8 @@ export default class ConfirmPageContainer extends Component {
     handleCloseEditGas: PropTypes.func,
     // Gas Popover
     currentTransaction: PropTypes.object.isRequired,
+    showAddToAddressBookModal: PropTypes.func,
+    contact: PropTypes.object,
   };
 
   render() {
@@ -114,8 +117,13 @@ export default class ConfirmPageContainer extends Component {
       editingGas,
       handleCloseEditGas,
       currentTransaction,
+      showAddToAddressBookModal,
+      contact = {},
     } = this.props;
     const renderAssetImage = contentComponent || !identiconAddress;
+
+    const showAddToAddressDialog =
+      contact.name === undefined && toAddress !== undefined;
 
     return (
       <div className="page-container">
@@ -149,6 +157,17 @@ export default class ConfirmPageContainer extends Component {
             />
           )}
         </ConfirmPageContainerHeader>
+        <div>
+          {showAddToAddressDialog && (
+            <Dialog
+              type="message"
+              className="send__dialog"
+              onClick={() => showAddToAddressBookModal()}
+            >
+              {this.context.t('newAccountDetectedDialogMessage')}
+            </Dialog>
+          )}
+        </div>
         {contentComponent || (
           <ConfirmPageContainerContent
             action={action}
