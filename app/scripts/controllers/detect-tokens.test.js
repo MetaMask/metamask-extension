@@ -22,9 +22,7 @@ describe('DetectTokensController', function () {
   const networkControllerProviderConfig = {
     getAccounts: noop,
   };
-  before(function () {
-    globalThis.AbortController = window.AbortController;
-  });
+
   beforeEach(async function () {
     keyringMemStore = new ObservableStore({ isUnlocked: false });
     network = new NetworkController();
@@ -127,7 +125,6 @@ describe('DetectTokensController', function () {
 
   after(function () {
     sandbox.restore();
-    delete globalThis.AbortController;
   });
 
   it('should poll on correct interval', async function () {
