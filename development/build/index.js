@@ -30,9 +30,9 @@ require('@babel/preset-env');
 require('@babel/preset-react');
 require('@babel/core');
 
-defineTasksAndBuild();
+defineAndRunBuildTasks();
 
-function defineTasksAndBuild() {
+function defineAndRunBuildTasks() {
   const {
     betaVersion,
     entryTask,
