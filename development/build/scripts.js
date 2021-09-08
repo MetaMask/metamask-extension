@@ -36,7 +36,7 @@ const metamaskrc = require('rc')('metamask', {
 });
 
 const { streamFlatMap } = require('../stream-flat-map.js');
-const packageJSON = require('../../package.json');
+const { version } = require('../../package.json');
 
 const {
   createTask,
@@ -548,7 +548,7 @@ function getEnvironmentVariables({ devMode, testing }) {
   return {
     METAMASK_DEBUG: devMode,
     METAMASK_ENVIRONMENT: environment,
-    METAMASK_VERSION: packageJSON.version,
+    METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: process.env.BUILD_TYPE || 'main',
     NODE_ENV: devMode ? 'development' : 'production',
     IN_TEST: testing ? 'true' : false,

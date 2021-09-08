@@ -20,7 +20,7 @@ export function isBeta() {
 // the current metamask version (i.e. main, beta, etc.)
 export function getBuildSpecificAsset(assetName) {
   const buildType = process.env.METAMASK_BUILD_TYPE;
-  if (!assetList[buildType] || !assetList[buildType][assetName]) {
+  if (!assetList[buildType]?.[assetName]) {
     console.warn(
       `Cannot find asset for build ${buildType}: ${assetName}, returning main build asset`,
     );

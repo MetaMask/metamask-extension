@@ -43,10 +43,9 @@ function createEtcTasks({
 
 function createZipTask(platform, betaVersion) {
   return async () => {
-    let path = `metamask-${platform}-${version}`;
-    if (betaVersion) {
-      path = `metamask-BETA-${platform}-${betaVersion}`;
-    }
+    const path = betaVersion
+      ? `metamask-BETA-${platform}-${betaVersion}`
+      : `metamask-${platform}-${version}`;
     await pump(
       gulp.src(`dist/${platform}/**`),
       gulpZip(`${path}.zip`),
