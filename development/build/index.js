@@ -145,10 +145,9 @@ function parseArgv() {
 
   const entryTask = process.argv[2];
   if (!entryTask) {
-    throw new Error(`MetaMask build: No entry task specified`);
+    throw new Error('MetaMask build: No entry task specified.');
   }
-  // if (entryTask.startsWith('-')) {
-  if (!/^\w/u.test(entryTask)) {
+  if (!/^\w+$/iu.test(entryTask)) {
     throw new Error(`MetaMask build: invalid entry task: ${entryTask}`);
   }
 
