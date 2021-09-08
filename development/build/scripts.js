@@ -572,6 +572,7 @@ function getEnvironmentVariables({ devMode, testing }) {
       environment === 'production'
         ? process.env.SEGMENT_PROD_LEGACY_WRITE_KEY
         : metamaskrc.SEGMENT_LEGACY_WRITE_KEY,
+    SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
   };
 }
 
