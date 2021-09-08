@@ -146,18 +146,7 @@ function parseArgv() {
     SkipStats: 'skip-stats',
   };
 
-  const entryTask = process.argv[2];
-  if (!entryTask) {
-    throw new Error('MetaMask build: No entry task specified.');
-  }
-
-  // The entry task should never be prefixed with '-' or '--', so that is easily
-  // distinguishable from other arguments.
-  if (entryTask.startsWith('-')) {
-    throw new Error(`MetaMask build: invalid entry task: ${entryTask}`);
-  }
-
-  const argv = minimist(process.argv.slice(3), {
+  const argv = minimist(process.argv.slice(2), {
     boolean: [NamedArgs.OmitLockdown, NamedArgs.SkipStats],
     string: [NamedArgs.BuildType],
     default: {
@@ -167,6 +156,23 @@ function parseArgv() {
       [NamedArgs.SkipStats]: false,
     },
   });
+
+  if (argv._.length !== 1) {
+    throw new Error(
+      `Metamask build: Expected a single positional argument. Received: ${argv._.length}`,
+    );
+  }
+
+  const entryTask = argv._[0];
+  if (!entryTask) {
+    throw new Error('MetaMask build: No entry task specified.');
+  }
+
+  // The entry task should never be prefixed with '-' or '--', so that is easily
+  // distinguishable from other arguments.
+  if (entryTask.startsWith('-')) {
+    throw new Error(`MetaMask build: invalid entry task: ${entryTask}`);
+  }
 
   const betaVersion = argv[NamedArgs.BetaVersion];
   if (!Number.isInteger(betaVersion) || betaVersion < 0) {
