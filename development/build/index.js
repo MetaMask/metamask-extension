@@ -58,12 +58,15 @@ function defineAndRunBuildTasks() {
     shouldIncludeLockdown,
     isBeta,
   });
+
   const manifestTasks = createManifestTasks({
     browserPlatforms,
     betaVersionsMap,
     isBeta,
   });
+
   const styleTasks = createStyleTasks({ livereload });
+
   const scriptTasks = createScriptTasks({
     livereload,
     browserPlatforms,
