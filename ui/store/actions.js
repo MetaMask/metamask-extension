@@ -1636,6 +1636,7 @@ export function showModal(payload) {
     payload,
   };
 }
+// comment
 
 export function hideModal(payload) {
   return {
@@ -1652,23 +1653,6 @@ export function closeCurrentNotificationWindow() {
     ) {
       global.platform.closeCurrentWindow();
     }
-  };
-}
-
-export function showSidebar({ transitionName, type, props }) {
-  return {
-    type: actionConstants.SIDEBAR_OPEN,
-    value: {
-      transitionName,
-      type,
-      props,
-    },
-  };
-}
-
-export function hideSidebar() {
-  return {
-    type: actionConstants.SIDEBAR_CLOSE,
   };
 }
 
