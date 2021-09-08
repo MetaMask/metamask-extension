@@ -284,7 +284,7 @@ export default class Routes extends Component {
           [`os-${os}`]: os,
           [`browser-${browser}`]: browser,
           'mouse-user-styles': isMouseUser,
-          beta: isBeta(),
+          'beta': isBeta(),
         })}
         dir={textDirection}
         onClick={() => setMouseUserState(true)}
