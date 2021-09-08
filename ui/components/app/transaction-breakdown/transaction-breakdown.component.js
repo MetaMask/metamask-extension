@@ -107,6 +107,7 @@ export default class TransactionBreakdown extends PureComponent {
             ) : (
               <CurrencyDisplay
                 className="transaction-breakdown__value"
+                data-testid="transaction-breakdown__base-fee"
                 currency={nativeCurrency}
                 denomination={GWEI}
                 value={baseFee}
@@ -123,6 +124,7 @@ export default class TransactionBreakdown extends PureComponent {
             ) : (
               <CurrencyDisplay
                 className="transaction-breakdown__value"
+                data-testid="transaction-breakdown__priority-fee"
                 currency={nativeCurrency}
                 denomination={GWEI}
                 value={priorityFee}
@@ -139,6 +141,7 @@ export default class TransactionBreakdown extends PureComponent {
             ) : (
               <CurrencyDisplay
                 className="transaction-breakdown__value"
+                data-testid="transaction-breakdown__gas-price"
                 currency={nativeCurrency}
                 denomination={GWEI}
                 value={gasPrice}
@@ -152,6 +155,7 @@ export default class TransactionBreakdown extends PureComponent {
           <TransactionBreakdownRow title={t('transactionHistoryTotalGasFee')}>
             <UserPreferencedCurrencyDisplay
               className="transaction-breakdown__value"
+              data-testid="transaction-breakdown__effective-gas-price"
               currency={nativeCurrency}
               denomination={ETH}
               numberOfDecimals={6}
