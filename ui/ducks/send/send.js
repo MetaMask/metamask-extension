@@ -1015,7 +1015,9 @@ const slice = createSlice({
         }
 
         if (isSendingToken && isValidHexAddress(recipient.userInput)) {
-          // token from dynamic api list is fetched when useTokenDetection is true
+          // When useTokenDetection flag is true the tokenList contains tokens with non-checksum address from the dynamic token service api,
+          // When useTokenDetection flag is false the tokenList contains tokens with checksum addresses from contract-metadata.
+          // So the flag indicates whether the address of tokens currently on the tokenList is checksum or not.
           const userInput = useTokenDetection
             ? recipient.userInput
             : toChecksumAddress(recipient.userInput);

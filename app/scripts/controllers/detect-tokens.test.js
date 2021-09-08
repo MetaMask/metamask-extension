@@ -263,14 +263,14 @@ describe('DetectTokensController', function () {
     const tokenAddressToAdd = erc20ContractAddresses[1];
     const tokenToAdd = tokenList[tokenAddressToAdd];
 
-    const contractAddresssesToDetect = erc20ContractAddresses.filter(
+    const contractAddressesToDetect = erc20ContractAddresses.filter(
       (address) => address !== existingTokenAddress,
     );
-    const indexOfTokenToAdd = contractAddresssesToDetect.indexOf(
+    const indexOfTokenToAdd = contractAddressesToDetect.indexOf(
       tokenAddressToAdd,
     );
 
-    const balances = new Array(contractAddresssesToDetect.length);
+    const balances = new Array(contractAddressesToDetect.length);
     balances[indexOfTokenToAdd] = new BigNumber(10);
 
     sandbox
@@ -321,14 +321,14 @@ describe('DetectTokensController', function () {
     const tokenAddressToAdd = erc20ContractAddresses[1];
     const tokenToAdd = tokenList[tokenAddressToAdd];
 
-    const contractAddresssesToDetect = erc20ContractAddresses.filter(
+    const contractAddressesToDetect = erc20ContractAddresses.filter(
       (address) => address !== existingTokenAddress,
     );
-    const indexOfTokenToAdd = contractAddresssesToDetect.indexOf(
+    const indexOfTokenToAdd = contractAddressesToDetect.indexOf(
       tokenAddressToAdd,
     );
 
-    const balances = new Array(contractAddresssesToDetect.length);
+    const balances = new Array(contractAddressesToDetect.length);
     balances[indexOfTokenToAdd] = new BigNumber(10);
 
     sandbox

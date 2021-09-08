@@ -19,7 +19,6 @@ import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { useEqualityCheck } from './useEqualityCheck';
 
-// TODO: replace contract-metadata with list from state
 const shuffledContractMap = shuffle(
   Object.entries(contractMap)
     .map(([address, tokenData]) => ({
