@@ -779,7 +779,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       sensitiveProperties: swapMetaData,
     });
 
-    if (!isContractAddressValid(usedTradeTxParams.to, swapMetaData, chainId)) {
+    if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
       captureMessage('Invalid contract address', {
         extra: {
           token_from: swapMetaData.token_from,

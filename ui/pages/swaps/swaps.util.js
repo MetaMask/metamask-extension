@@ -4,8 +4,8 @@ import abi from 'human-standard-token-abi';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   METASWAP_CHAINID_API_HOST_MAP,
-  SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
-  ETH_WETH_CONTRACT_ADDRESS,
+  ALLOWED_CONTRACT_ADDRESSES,
+  SWAPS_WRAPPED_TOKENS_ADDRESSES,
   ETHEREUM,
   POLYGON,
   BSC,
@@ -21,8 +21,6 @@ import {
   isSwapsDefaultTokenSymbol,
 } from '../../../shared/modules/swaps.utils';
 import {
-  ETH_SYMBOL,
-  WETH_SYMBOL,
   MAINNET_CHAIN_ID,
   BSC_CHAIN_ID,
   POLYGON_CHAIN_ID,
@@ -267,6 +265,19 @@ function validateData(validators, object, urlUsed) {
   });
 }
 
+export const shouldEnableDirectWrapping = (
+  chainId,
+  sourceToken,
+  destinationToken,
+) => {
+  const wrappedToken = SWAPS_WRAPPED_TOKENS_ADDRESSES[chainId];
+  const nativeToken = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.address;
+  return (
+    (sourceToken === wrappedToken && destinationToken === nativeToken) ||
+    (sourceToken === nativeToken && destinationToken === wrappedToken)
+  );
+};
+
 export async function fetchTradesInfo(
   {
     slippage,
@@ -290,6 +301,9 @@ export async function fetchTradesInfo(
 
   if (exchangeList) {
     urlParams.exchangeList = exchangeList;
+  }
+  if (shouldEnableDirectWrapping(chainId, sourceToken, destinationToken)) {
+    urlParams.enableDirectWrapping = true;
   }
 
   const queryString = new URLSearchParams(urlParams).toString();
@@ -628,6 +642,8 @@ export function quotesToRenderableData(
       renderedSlippage = 0;
     } else if (aggType === 'DEX') {
       liquiditySourceKey = 'swapDecentralizedExchange';
+    } else if (aggType === 'CONTRACT') {
+      liquiditySourceKey = 'swapDirectContract';
     } else {
       liquiditySourceKey = 'swapUnknown';
     }
@@ -769,29 +785,16 @@ export function formatSwapsValueForDisplay(destinationAmount) {
  */
 export const isContractAddressValid = (
   contractAddress,
-  swapMetaData,
   chainId = MAINNET_CHAIN_ID,
 ) => {
-  const contractAddressForChainId = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId];
-  if (!contractAddress || !contractAddressForChainId) {
+  if (!contractAddress || !ALLOWED_CONTRACT_ADDRESSES[chainId]) {
     return false;
   }
-  if (
-    (swapMetaData.token_from === ETH_SYMBOL &&
-      swapMetaData.token_to === WETH_SYMBOL) ||
-    (swapMetaData.token_from === WETH_SYMBOL &&
-      swapMetaData.token_to === ETH_SYMBOL)
-  ) {
+  return ALLOWED_CONTRACT_ADDRESSES[chainId].some(
     // Sometimes we get a contract address with a few upper-case chars and since addresses are
-    // case-insensitive, we compare uppercase versions for validity.
-    return (
-      contractAddress.toUpperCase() ===
-        ETH_WETH_CONTRACT_ADDRESS.toUpperCase() ||
-      contractAddressForChainId.toUpperCase() === contractAddress.toUpperCase()
-    );
-  }
-  return (
-    contractAddressForChainId.toUpperCase() === contractAddress.toUpperCase()
+    // case-insensitive, we compare lowercase versions for validity.
+    (allowedContractAddress) =>
+      contractAddress.toLowerCase() === allowedContractAddress.toLowerCase(),
   );
 };
 

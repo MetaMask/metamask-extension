@@ -59,7 +59,11 @@ import {
 } from '../../../../shared/constants/swaps';
 
 import { resetSwapsPostFetchState, removeToken } from '../../../store/actions';
-import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util';
+import {
+  fetchTokenPrice,
+  fetchTokenBalance,
+  shouldEnableDirectWrapping,
+} from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 
 const fuseSearchKeys = [
@@ -375,6 +379,12 @@ export default function BuildQuote({
     fromTokenSymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.symbol || '',
   ]);
 
+  const isDirectWrappingEnabled = shouldEnableDirectWrapping(
+    chainId,
+    fromTokenAddress,
+    selectedToToken.address,
+  );
+
   return (
     <div className="build-quote">
       <div className="build-quote__content">
@@ -552,15 +562,17 @@ export default function BuildQuote({
               )}
             </div>
           ))}
-        <div className="build-quote__slippage-buttons-container">
-          <SlippageButtons
-            onSelect={(newSlippage) => {
-              setMaxSlippage(newSlippage);
-            }}
-            maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
-            currentSlippage={maxSlippage}
-          />
-        </div>
+        {!isDirectWrappingEnabled && (
+          <div className="build-quote__slippage-buttons-container">
+            <SlippageButtons
+              onSelect={(newSlippage) => {
+                setMaxSlippage(newSlippage);
+              }}
+              maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
+              currentSlippage={maxSlippage}
+            />
+          </div>
+        )}
       </div>
       <SwapsFooter
         onSubmit={() => {
