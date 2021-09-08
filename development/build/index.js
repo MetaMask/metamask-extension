@@ -159,7 +159,7 @@ function parseArgv() {
 
   if (argv._.length !== 1) {
     throw new Error(
-      `Metamask build: Expected a single positional argument. Received: ${argv._.length}`,
+      `Metamask build: Expected a single positional argument, but received "${argv._.length}" arguments.`,
     );
   }
 
@@ -171,12 +171,12 @@ function parseArgv() {
   // The entry task should never be prefixed with '-' or '--', so that is easily
   // distinguishable from other arguments.
   if (entryTask.startsWith('-')) {
-    throw new Error(`MetaMask build: invalid entry task: ${entryTask}`);
+    throw new Error(`MetaMask build: invalid entry task: "${entryTask}"`);
   }
 
   const betaVersion = argv[NamedArgs.BetaVersion];
   if (!Number.isInteger(betaVersion) || betaVersion < 0) {
-    throw new Error(`MetaMask build: Invalid beta version: ${betaVersion}`);
+    throw new Error(`MetaMask build: Invalid beta version: "${betaVersion}"`);
   }
 
   // Arguments that are used throughout or deeply within the build system are

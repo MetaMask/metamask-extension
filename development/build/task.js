@@ -87,7 +87,7 @@ function runInChildProcess(task) {
         if (errCode !== 0) {
           reject(
             new Error(
-              `MetaMask build: runInChildProcess for task "${taskName}" encountered an error ${errCode}`,
+              `MetaMask build: runInChildProcess for task "${taskName}" encountered an error "${errCode}".`,
             ),
           );
           return;
