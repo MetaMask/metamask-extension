@@ -1,5 +1,8 @@
 import { strict as assert } from 'assert';
-import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
+import {
+  TRANSACTION_STATUSES,
+  TRANSACTION_TYPES,
+} from '../../../../shared/constants/transaction';
 import { formatTxMetaForRpcResult } from './util';
 
 describe('network utils', function () {
@@ -16,7 +19,7 @@ describe('network utils', function () {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: 'sendingNativeAsset',
+        type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
         origin: 'other',
         chainId: '0x3',
         time: 1624408066355,
@@ -63,7 +66,7 @@ describe('network utils', function () {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: 'sendingNativeAsset',
+        type: TRANSACTION_TYPES.SENDING_NATIVE_ASSET,
         origin: 'other',
         chainId: '0x3',
         time: 1624408066355,
