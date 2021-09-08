@@ -12,7 +12,6 @@
     "start": "yarn build:dev dev",
     "start:lavamoat": "yarn build dev",
     "dist": "yarn build prod",
-    "beta": "yarn build prod --build-type beta",
     "build": "lavamoat development/build/index.js",
     "build:dev": "node development/build/index.js",
     "start:test": "yarn build testDev",
