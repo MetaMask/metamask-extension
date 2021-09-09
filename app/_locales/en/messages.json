@@ -1073,7 +1073,7 @@
     "message": " Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts "
   },
   "importAccountSeedPhrase": {
-    "message": "Import an account with Secret Recovery Phrase"
+    "message": "Import a wallet with Secret Recovery Phrase"
   },
   "importAccountText": {
     "message": "or $1",
@@ -1819,7 +1819,7 @@
     "message": "WARNING: Never disclose your Secret Recovery Phrase. Anyone with this phrase can take your Ether forever."
   },
   "secretPhrase": {
-    "message": "Enter your secret phrase here to restore your vault."
+    "message": "Only the first account on this wallet will auto load. After completing this process, to add additional accounts, click the drop down menu, then select Create Account."
   },
   "secureWallet": {
     "message": "Secure Wallet"
