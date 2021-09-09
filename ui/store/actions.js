@@ -9,6 +9,7 @@ import {
 } from '../helpers/utils/i18n-helper';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import { getSymbolAndDecimals } from '../helpers/utils/token-util';
+import { isEqualCaseInsensitive } from '../helpers/utils/util';
 import switchDirection from '../helpers/utils/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -2120,7 +2121,7 @@ export function setPendingTokens(pendingTokens) {
   const {
     customToken = {},
     selectedTokens = {},
-    tokenAddressList = {},
+    tokenAddressList = [],
   } = pendingTokens;
   const { address, symbol, decimals } = customToken;
   const tokens =
@@ -2135,8 +2136,8 @@ export function setPendingTokens(pendingTokens) {
       : selectedTokens;
 
   Object.keys(tokens).forEach((tokenAddress) => {
-    tokens[tokenAddress].unlisted = !tokenAddressList.includes(
-      tokenAddress.toLowerCase(),
+    tokens[tokenAddress].unlisted = !tokenAddressList.find((addr) =>
+      isEqualCaseInsensitive(addr, tokenAddress),
     );
   });
 
