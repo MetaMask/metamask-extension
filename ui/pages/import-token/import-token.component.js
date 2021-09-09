@@ -162,7 +162,7 @@ class ImportToken extends Component {
       decimals,
     };
 
-    setPendingTokens({ customToken, selectedTokens });
+    setPendingTokens({ customToken, selectedTokens, tokenAddressList });
     history.push(CONFIRM_IMPORT_TOKEN_ROUTE);
   }
 
