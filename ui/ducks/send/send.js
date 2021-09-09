@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
-import { addHexPrefix, toChecksumAddress } from 'ethereumjs-util';
+import { addHexPrefix } from 'ethereumjs-util';
 import { debounce } from 'lodash';
 import {
   conversionGreaterThan,
@@ -72,6 +72,7 @@ import {
   isDefaultMetaMaskChain,
   isOriginContractAddress,
   isValidDomainName,
+  isEqualCaseInsensitive,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
@@ -989,12 +990,7 @@ const slice = createSlice({
         recipient.warning = null;
       } else {
         const isSendingToken = asset.type === ASSET_TYPES.TOKEN;
-        const {
-          chainId,
-          tokens,
-          useTokenDetection,
-          tokenAddressList,
-        } = action.payload;
+        const { chainId, tokens, tokenAddressList } = action.payload;
         if (
           isBurnAddress(recipient.userInput) ||
           (!isValidHexAddress(recipient.userInput, {
@@ -1013,20 +1009,17 @@ const slice = createSlice({
         } else {
           recipient.error = null;
         }
-        recipient.warning = null;
-        if (isSendingToken && isValidHexAddress(recipient.userInput)) {
-          // When useTokenDetection flag is true the tokenList contains tokens with non-checksum address from the dynamic token service api,
-          // When useTokenDetection flag is false the tokenList contains tokens with checksum addresses from contract-metadata.
-          // So the flag indicates whether the address of tokens currently on the tokenList is checksum or not.
-          const userInput = useTokenDetection
-            ? recipient.userInput
-            : toChecksumAddress(recipient.userInput);
-          if (
-            tokenAddressList.includes(userInput) ||
-            checkExistingAddresses(userInput, tokens)
-          ) {
-            recipient.warning = KNOWN_RECIPIENT_ADDRESS_WARNING;
-          }
+        if (
+          isSendingToken &&
+          isValidHexAddress(recipient.userInput) &&
+          (tokenAddressList.find((address) =>
+            isEqualCaseInsensitive(address, recipient.userInput),
+          ) ||
+            checkExistingAddresses(recipient.userInput, tokens))
+        ) {
+          recipient.warning = KNOWN_RECIPIENT_ADDRESS_WARNING;
+        } else {
+          recipient.warning = null;
         }
       }
     },

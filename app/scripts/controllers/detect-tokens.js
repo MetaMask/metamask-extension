@@ -70,7 +70,7 @@ export default class DetectTokensController {
           isEqualCaseInsensitive(address, tokenAddress),
         )
       ) {
-        tokensToDetect.push(tokenAddress.toLowerCase());
+        tokensToDetect.push(tokenAddress);
       }
     }
     const sliceOfTokensToDetect = [];
