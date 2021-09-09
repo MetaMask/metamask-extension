@@ -10,11 +10,7 @@ const { createTask, composeSeries } = require('./task');
 
 module.exports = createManifestTasks;
 
-function createManifestTasks({
-  browserPlatforms,
-  isBeta = false,
-  betaVersionsMap = {},
-}) {
+function createManifestTasks({ betaVersionsMap, browserPlatforms, isBeta }) {
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {
     return Promise.all(
@@ -114,6 +110,10 @@ async function writeJson(obj, file) {
 }
 
 function getBetaModifications(platform, betaVersionsMap) {
+  if (!betaVersionsMap || typeof betaVersionsMap !== 'object') {
+    throw new Error('MetaMask build: Expected object beta versions map.');
+  }
+
   const betaVersion = betaVersionsMap[platform];
 
   return {
