@@ -58,7 +58,8 @@ function runInChildProcess(task, { buildType, isLavaMoat }) {
 
   return instrumentForTaskStats(taskName, async () => {
     let childProcess;
-    // don't run subprocesses in lavamoat if main process not run in lavamoat
+    // Use the same build type for subprocesses, and only run them in LavaMoat
+    // if the parent process also ran in LavaMoat.
     if (isLavaMoat) {
       childProcess = spawn(
         'yarn',
