@@ -3,6 +3,7 @@ import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer';
+import { renderWithProvider } from '../../../../test/jest';
 import SendFooter from './send-footer.component';
 
 describe('SendFooter Component', () => {
@@ -36,6 +37,7 @@ describe('SendFooter Component', () => {
         to="mockTo"
         toAccounts={['mockAccount']}
         sendErrors={{}}
+        sendStage="DRAFT"
         gasEstimateType="BASIC"
         mostRecentOverviewPage="mostRecentOverviewPage"
       />,
@@ -145,6 +147,23 @@ describe('SendFooter Component', () => {
       expect(SendFooter.prototype.onCancel.callCount).toStrictEqual(0);
       onCancel();
       expect(SendFooter.prototype.onCancel.callCount).toStrictEqual(1);
+    });
+  });
+
+  describe('Cancel Button', () => {
+    const renderFooter = (props) =>
+      renderWithProvider(
+        <SendFooter sendErrors={{}} sendStage="DRAFT" {...props} />,
+      );
+
+    it('has a cancel button in footer', () => {
+      const { getByText } = renderFooter();
+      expect(getByText('Cancel')).toBeTruthy();
+    });
+
+    it('has label changed to Reject in editing stage', () => {
+      const { getByText } = renderFooter({ sendStage: 'EDIT' });
+      expect(getByText('Reject')).toBeTruthy();
     });
   });
 });

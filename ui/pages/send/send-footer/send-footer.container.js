@@ -7,6 +7,7 @@ import {
 import {
   resetSendState,
   getGasPrice,
+  getSendStage,
   getSendTo,
   getSendErrors,
   isSendFormInvalid,
@@ -43,6 +44,7 @@ function mapStateToProps(state) {
     disabled: isSendFormInvalid(state),
     to: getSendTo(state),
     toAccounts: getSendToAccounts(state),
+    sendStage: getSendStage(state),
     sendErrors: getSendErrors(state),
     gasEstimateType,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),

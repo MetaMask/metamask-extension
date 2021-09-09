@@ -24,6 +24,7 @@ jest.mock('../../../ducks/send', () => ({
   getGasPrice: (s) => `mockGasPrice:${s}`,
   getSendTo: (s) => `mockTo:${s}`,
   getSendErrors: (s) => `mockSendErrors:${s}`,
+  getSendStage: (s) => `mockStage:${s}`,
   resetSendState: jest.fn(),
   signTransaction: jest.fn(),
 }));
