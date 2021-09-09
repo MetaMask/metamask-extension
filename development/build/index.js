@@ -160,7 +160,7 @@ function parseArgv() {
     string: [NamedArgs.BuildType],
     default: {
       [NamedArgs.BetaVersion]: 0,
-      [NamedArgs.BuildType]: BuildTypes.Main,
+      [NamedArgs.BuildType]: BuildTypes.main,
       [NamedArgs.OmitLockdown]: false,
       [NamedArgs.SkipStats]: false,
     },
