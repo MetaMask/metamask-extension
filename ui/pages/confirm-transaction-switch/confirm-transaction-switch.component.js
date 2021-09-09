@@ -32,7 +32,7 @@ export default class ConfirmTransactionSwitch extends Component {
     }
 
     if (
-      type === TRANSACTION_TYPES.SENDING_NATIVE_ASSET ||
+      type === TRANSACTION_TYPES.SIMPLE_SEND ||
       type === TRANSACTION_TYPES.SENT_ETHER
     ) {
       const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SEND_ETHER_PATH}`;

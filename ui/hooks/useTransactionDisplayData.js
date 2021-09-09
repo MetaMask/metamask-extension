@@ -223,7 +223,7 @@ export function useTransactionDisplayData(transactionGroup) {
     recipientAddress = getTokenAddressParam(tokenData);
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (
-    type === TRANSACTION_TYPES.SENDING_NATIVE_ASSET ||
+    type === TRANSACTION_TYPES.SIMPLE_SEND ||
     type === TRANSACTION_TYPES.SENT_ETHER
   ) {
     category = TRANSACTION_GROUP_CATEGORIES.SEND;

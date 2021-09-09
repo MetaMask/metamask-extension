@@ -584,7 +584,7 @@ export default class TransactionController extends EventEmitter {
       return {};
     } else if (
       txMeta.txParams.to &&
-      (txMeta.type === TRANSACTION_TYPES.SENDING_NATIVE_ASSET ||
+      (txMeta.type === TRANSACTION_TYPES.SIMPLE_SEND ||
         txMeta.type === TRANSACTION_TYPES.SENT_ETHER) &&
       chainType !== 'custom'
     ) {
@@ -1246,7 +1246,7 @@ export default class TransactionController extends EventEmitter {
       const codeIsEmpty = !code || code === '0x' || code === '0x0';
 
       result = codeIsEmpty
-        ? TRANSACTION_TYPES.SENDING_NATIVE_ASSET
+        ? TRANSACTION_TYPES.SIMPLE_SEND
         : TRANSACTION_TYPES.CONTRACT_INTERACTION;
     }
 
