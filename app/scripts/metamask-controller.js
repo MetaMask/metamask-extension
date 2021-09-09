@@ -16,7 +16,6 @@ import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
-import contractMap from '@metamask/contract-metadata';
 import {
   AddressBookController,
   ApprovalController,
@@ -238,8 +237,8 @@ export default class MetamaskController extends EventEmitter {
     });
     this.tokenListController = new TokenListController({
       chainId: hexToDecimal(this.networkController.getCurrentChainId()),
-      useStaticTokenList: this.preferencesController.store.getState()
-        .useStaticTokenList,
+      useStaticTokenList: !this.preferencesController.store.getState()
+        .useTokenDetection,
       onNetworkStateChange: (cb) =>
         this.networkController.store.subscribe((networkState) => {
           const modifiedNetworkState = {
@@ -251,11 +250,17 @@ export default class MetamaskController extends EventEmitter {
           };
           return cb(modifiedNetworkState);
         }),
-      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
-        this.preferencesController.store,
-      ),
+      onPreferencesStateChange: (cb) =>
+        this.preferencesController.store.subscribe((preferencesState) => {
+          const modifiedPreferencesState = {
+            ...preferencesState,
+            useStaticTokenList: !this.preferencesController.store.getState()
+              .useTokenDetection,
+          };
+          return cb(modifiedPreferencesState);
+        }),
       messenger: tokenListMessenger,
-      state: initState.tokenListController,
+      state: initState.TokenListController,
     });
 
     this.phishingController = new PhishingController();
@@ -372,6 +377,7 @@ export default class MetamaskController extends EventEmitter {
       preferences: this.preferencesController,
       network: this.networkController,
       keyringMemStore: this.keyringController.memStore,
+      tokenList: this.tokenListController,
     });
 
     this.addressBookController = new AddressBookController(
@@ -775,8 +781,8 @@ export default class MetamaskController extends EventEmitter {
       setUseBlockie: this.setUseBlockie.bind(this),
       setUseNonceField: this.setUseNonceField.bind(this),
       setUsePhishDetect: this.setUsePhishDetect.bind(this),
-      setUseStaticTokenList: nodeify(
-        this.preferencesController.setUseStaticTokenList,
+      setUseTokenDetection: nodeify(
+        this.preferencesController.setUseTokenDetection,
         this.preferencesController,
       ),
       setIpfsGateway: this.setIpfsGateway.bind(this),
@@ -1297,28 +1303,8 @@ export default class MetamaskController extends EventEmitter {
       tokens,
     } = this.preferencesController.store.getState();
 
-    // Filter ERC20 tokens
-    const filteredAccountTokens = {};
-    Object.keys(accountTokens).forEach((address) => {
-      const checksummedAddress = toChecksumHexAddress(address);
-      filteredAccountTokens[checksummedAddress] = {};
-      Object.keys(accountTokens[address]).forEach((chainId) => {
-        filteredAccountTokens[checksummedAddress][chainId] =
-          chainId === MAINNET_CHAIN_ID
-            ? accountTokens[address][chainId].filter(
-                ({ address: tokenAddress }) => {
-                  const checksumAddress = toChecksumHexAddress(tokenAddress);
-                  return contractMap[checksumAddress]
-                    ? contractMap[checksumAddress].erc20
-                    : true;
-                },
-              )
-            : accountTokens[address][chainId];
-      });
-    });
-
     const preferences = {
-      accountTokens: filteredAccountTokens,
+      accountTokens,
       currentLocale,
       frequentRpcList,
       identities,

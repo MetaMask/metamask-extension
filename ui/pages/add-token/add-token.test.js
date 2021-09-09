@@ -26,6 +26,7 @@ describe('Add Token', () => {
     identities: {},
     mostRecentOverviewPage: '/',
     showSearchTab: true,
+    tokenList: {},
   };
 
   describe('Add Token', () => {

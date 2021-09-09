@@ -40,6 +40,11 @@ class AddToken extends Component {
     mostRecentOverviewPage: PropTypes.string.isRequired,
     chainId: PropTypes.string,
     rpcPrefs: PropTypes.object,
+    tokenList: PropTypes.object,
+  };
+
+  static defaultProps = {
+    tokenList: {},
   };
 
   state = {
@@ -140,7 +145,10 @@ class AddToken extends Component {
       return;
     }
 
-    const { setPendingTokens, history } = this.props;
+    const { setPendingTokens, history, tokenList } = this.props;
+    const tokenAddressList = Object.keys(tokenList).map((address) =>
+      address.toLowerCase(),
+    );
     const {
       customAddress: address,
       customSymbol: symbol,
@@ -154,12 +162,16 @@ class AddToken extends Component {
       decimals,
     };
 
-    setPendingTokens({ customToken, selectedTokens });
+    setPendingTokens({ customToken, selectedTokens, tokenAddressList });
     history.push(CONFIRM_ADD_TOKEN_ROUTE);
   }
 
   async attemptToAutoFillTokenParams(address) {
-    const { symbol = '', decimals } = await this.tokenInfoGetter(address);
+    const { tokenList } = this.props;
+    const { symbol = '', decimals } = await this.tokenInfoGetter(
+      address,
+      tokenList,
+    );
 
     const symbolAutoFilled = Boolean(symbol);
     const decimalAutoFilled = Boolean(decimals);
@@ -358,8 +370,8 @@ class AddToken extends Component {
   }
 
   renderSearchToken() {
+    const { tokenList } = this.props;
     const { tokenSelectorError, selectedTokens, searchResults } = this.state;
-
     return (
       <div className="add-token__search-token">
         <TokenSearch
@@ -367,6 +379,7 @@ class AddToken extends Component {
             this.setState({ searchResults: results })
           }
           error={tokenSelectorError}
+          tokenList={tokenList}
         />
         <div className="add-token__token-list">
           <TokenList

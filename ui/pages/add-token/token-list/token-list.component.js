@@ -14,6 +14,7 @@ export default class TokenList extends Component {
     results: PropTypes.array,
     selectedTokens: PropTypes.object,
     onToggleToken: PropTypes.func,
+    useTokenDetection: PropTypes.bool,
   };
 
   render() {
@@ -22,6 +23,7 @@ export default class TokenList extends Component {
       selectedTokens = {},
       onToggleToken,
       tokens = [],
+      useTokenDetection,
     } = this.props;
 
     return results.length === 0 ? (
@@ -35,13 +37,17 @@ export default class TokenList extends Component {
           {Array(6)
             .fill(undefined)
             .map((_, i) => {
-              const { logo, symbol, name, address } = results[i] || {};
+              const { iconUrl, symbol, name, address } = results[i] || {};
+              // token from dynamic api list is fetched when useTokenDetection is true
+              const iconPath = useTokenDetection
+                ? iconUrl
+                : `images/contract/${iconUrl}`;
               const tokenAlreadyAdded = checkExistingAddresses(address, tokens);
               const onClick = () =>
                 !tokenAlreadyAdded && onToggleToken(results[i]);
 
               return (
-                Boolean(logo || symbol || name) && (
+                Boolean(iconUrl || symbol || name) && (
                   <div
                     className={classnames('token-list__token', {
                       'token-list__token--selected': selectedTokens[address],
@@ -55,7 +61,7 @@ export default class TokenList extends Component {
                     <div
                       className="token-list__token-icon"
                       style={{
-                        backgroundImage: logo && `url(images/contract/${logo})`,
+                        backgroundImage: iconUrl && `url(${iconPath})`,
                       }}
                     />
                     <div className="token-list__token-data">

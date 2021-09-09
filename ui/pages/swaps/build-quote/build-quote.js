@@ -36,6 +36,8 @@ import {
   getCurrentCurrency,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
+  getUseTokenDetection,
+  getTokenList,
 } from '../../../selectors';
 
 import {
@@ -83,6 +85,7 @@ export default function BuildQuote({
   selectedAccountAddress,
   isFeatureFlagLoaded,
   tokenFromError,
+  shuffledTokensList,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -105,6 +108,8 @@ export default function BuildQuote({
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const tokenList = useSelector(getTokenList);
+  const useTokenDetection = useSelector(getUseTokenDetection);
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -138,11 +143,14 @@ export default function BuildQuote({
     conversionRate,
     currentCurrency,
     chainId,
+    tokenList,
+    useTokenDetection,
   );
 
   const tokensToSearch = useTokensToSearch({
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
+    shuffledTokensList,
   });
   const selectedToToken =
     tokensToSearch.find(({ address }) => address === toToken?.address) ||
@@ -611,4 +619,5 @@ BuildQuote.propTypes = {
   selectedAccountAddress: PropTypes.string,
   isFeatureFlagLoaded: PropTypes.bool.isRequired,
   tokenFromError: PropTypes.string,
+  shuffledTokensList: PropTypes.array,
 };

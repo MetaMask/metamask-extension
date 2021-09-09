@@ -869,21 +869,21 @@ describe('preferences controller', function () {
       );
     });
   });
-  describe('setUseStaticTokenList', function () {
-    it('should default to false', function () {
+  describe('setUseTokenDetection', function () {
+    it('should default to true', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.useStaticTokenList, false);
+      assert.equal(state.useTokenDetection, true);
     });
 
-    it('should set the useStaticTokenList property in state', function () {
+    it('should set the useTokenDetection property in state', function () {
       assert.equal(
-        preferencesController.store.getState().useStaticTokenList,
-        false,
-      );
-      preferencesController.setUseStaticTokenList(true);
-      assert.equal(
-        preferencesController.store.getState().useStaticTokenList,
+        preferencesController.store.getState().useTokenDetection,
         true,
+      );
+      preferencesController.setUseTokenDetection(false);
+      assert.equal(
+        preferencesController.store.getState().useTokenDetection,
+        false,
       );
     });
   });

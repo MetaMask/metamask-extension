@@ -1,26 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import contractMap from '@metamask/contract-metadata';
 import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '../../../components/ui/text-field';
-
-const contractList = Object.entries(contractMap)
-  .map(([address, tokenData]) => ({ ...tokenData, address }))
-  .filter((tokenData) => Boolean(tokenData.erc20));
-
-const fuse = new Fuse(contractList, {
-  shouldSort: true,
-  threshold: 0.45,
-  location: 0,
-  distance: 100,
-  maxPatternLength: 32,
-  minMatchCharLength: 1,
-  keys: [
-    { name: 'name', weight: 0.5 },
-    { name: 'symbol', weight: 0.5 },
-  ],
-});
+import { isEqualCaseInsensitive } from '../../../helpers/utils/util';
 
 export default class TokenSearch extends Component {
   static contextTypes = {
@@ -34,17 +17,40 @@ export default class TokenSearch extends Component {
   static propTypes = {
     onSearch: PropTypes.func,
     error: PropTypes.string,
+    tokenList: PropTypes.object,
   };
 
   state = {
     searchQuery: '',
   };
 
+  constructor(props) {
+    super(props);
+    const { tokenList } = this.props;
+    this.tokenList = Object.values(tokenList);
+    this.tokenSearchFuse = new Fuse(this.tokenList, {
+      shouldSort: true,
+      threshold: 0.45,
+      location: 0,
+      distance: 100,
+      maxPatternLength: 32,
+      minMatchCharLength: 1,
+      keys: [
+        { name: 'name', weight: 0.5 },
+        { name: 'symbol', weight: 0.5 },
+      ],
+    });
+  }
+
   handleSearch(searchQuery) {
     this.setState({ searchQuery });
-    const fuseSearchResult = fuse.search(searchQuery);
-    const addressSearchResult = contractList.filter((token) => {
-      return token.address.toLowerCase() === searchQuery.toLowerCase();
+    const fuseSearchResult = this.tokenSearchFuse.search(searchQuery);
+    const addressSearchResult = this.tokenList.filter((token) => {
+      return (
+        token.address &&
+        searchQuery &&
+        isEqualCaseInsensitive(token.address, searchQuery)
+      );
     });
     const results = [...addressSearchResult, ...fuseSearchResult];
     this.props.onSearch({ searchQuery, results });

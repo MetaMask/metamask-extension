@@ -51,7 +51,10 @@ export default class PreferencesController {
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
-      useStaticTokenList: false,
+
+      // set to true means the dynamic list from the API is being used
+      // set to false will be using the static list from contract-metadata
+      useTokenDetection: true,
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace
@@ -140,13 +143,13 @@ export default class PreferencesController {
   }
 
   /**
-   * Setter for the `useStaticTokenList` property
+   * Setter for the `useTokenDetection` property
    *
    * @param {boolean} val - Whether or not the user prefers to use the static token list or dynamic token list from the API
    *
    */
-  setUseStaticTokenList(val) {
-    this.store.updateState({ useStaticTokenList: val });
+  setUseTokenDetection(val) {
+    this.store.updateState({ useTokenDetection: val });
   }
 
   /**

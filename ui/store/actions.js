@@ -9,6 +9,7 @@ import {
 } from '../helpers/utils/i18n-helper';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import { getSymbolAndDecimals } from '../helpers/utils/token-util';
+import { isEqualCaseInsensitive } from '../helpers/utils/util';
 import switchDirection from '../helpers/utils/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -21,11 +22,11 @@ import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
+  getTokenList,
 } from '../selectors';
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
-import { LISTED_CONTRACT_ADDRESSES } from '../../shared/constants/tokens';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import * as actionConstants from './actionConstants';
 
@@ -2039,11 +2040,11 @@ export function setUsePhishDetect(val) {
   };
 }
 
-export function setUseStaticTokenList(val) {
+export function setUseTokenDetection(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.setUseStaticTokenList`);
-    background.setUseStaticTokenList(val, (err) => {
+    log.debug(`background.setUseTokenDetection`);
+    background.setUseTokenDetection(val, (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
@@ -2100,7 +2101,11 @@ export function setCurrentLocale(locale, messages) {
 }
 
 export function setPendingTokens(pendingTokens) {
-  const { customToken = {}, selectedTokens = {} } = pendingTokens;
+  const {
+    customToken = {},
+    selectedTokens = {},
+    tokenAddressList = [],
+  } = pendingTokens;
   const { address, symbol, decimals } = customToken;
   const tokens =
     address && symbol && decimals >= 0 <= 36
@@ -2114,8 +2119,8 @@ export function setPendingTokens(pendingTokens) {
       : selectedTokens;
 
   Object.keys(tokens).forEach((tokenAddress) => {
-    tokens[tokenAddress].unlisted = !LISTED_CONTRACT_ADDRESSES.includes(
-      tokenAddress.toLowerCase(),
+    tokens[tokenAddress].unlisted = !tokenAddressList.find((addr) =>
+      isEqualCaseInsensitive(addr, tokenAddress),
     );
   });
 
@@ -2522,6 +2527,7 @@ export function loadingTokenParamsFinished() {
 
 export function getTokenParams(tokenAddress) {
   return (dispatch, getState) => {
+    const tokenList = getTokenList(getState());
     const existingTokens = getState().metamask.tokens;
     const existingToken = existingTokens.find(
       ({ address }) => tokenAddress === address,
@@ -2537,10 +2543,12 @@ export function getTokenParams(tokenAddress) {
     dispatch(loadingTokenParamsStarted());
     log.debug(`loadingTokenParams`);
 
-    return getSymbolAndDecimals(tokenAddress).then(({ symbol, decimals }) => {
-      dispatch(addToken(tokenAddress, symbol, Number(decimals)));
-      dispatch(loadingTokenParamsFinished());
-    });
+    return getSymbolAndDecimals(tokenAddress, tokenList).then(
+      ({ symbol, decimals }) => {
+        dispatch(addToken(tokenAddress, symbol, Number(decimals)));
+        dispatch(loadingTokenParamsFinished());
+      },
+    );
   };
 }
 
