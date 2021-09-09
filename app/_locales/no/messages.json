@@ -270,7 +270,7 @@
     "message": "Desimaler må være minst 0, og ikke flere enn 36."
   },
   "defaultNetwork": {
-    "message": "Standardnettverket for Ether-transaksjoner er Main Net."
+    "message": "Standardnettverket for Ether-transaksjoner er Mainnet."
   },
   "delete": {
     "message": "Slett"

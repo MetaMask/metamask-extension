@@ -270,7 +270,7 @@
     "message": "Decimalni broj mora biti najmanje 0, a ne veći od 36."
   },
   "defaultNetwork": {
-    "message": "Podrazumevana mreža za Ether transakcije je Main Net."
+    "message": "Podrazumevana mreža za Ether transakcije je Mainnet."
   },
   "delete": {
     "message": "Избриши"

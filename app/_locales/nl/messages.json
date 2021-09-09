@@ -80,7 +80,7 @@
     "message": "Decimalen moeten minimaal 0 en niet meer dan 36 zijn."
   },
   "defaultNetwork": {
-    "message": "Het standaardnetwerk voor Ether-transacties is Main Net."
+    "message": "Het standaardnetwerk voor Ether-transacties is Mainnet."
   },
   "depositEther": {
     "message": "Stort Ether"
@@ -201,7 +201,7 @@
     "message": "Uitloggen"
   },
   "mainnet": {
-    "message": "Main Netwerk"
+    "message": "Mainnetwerk"
   },
   "message": {
     "message": "Bericht"

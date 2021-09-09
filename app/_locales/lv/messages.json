@@ -273,7 +273,7 @@
     "message": "Daļskaitļiem jābūt diapazonā no 0 līdz 36."
   },
   "defaultNetwork": {
-    "message": "Galvenais Ether darījumu tīkls ir Main Net."
+    "message": "Galvenais Ether darījumu tīkls ir Mainnet."
   },
   "delete": {
     "message": "Dzēst"

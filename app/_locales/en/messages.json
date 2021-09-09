@@ -565,7 +565,7 @@
     "message": "Decrypt request"
   },
   "defaultNetwork": {
-    "message": "The default network for Ether transactions is Main Net."
+    "message": "The default network for Ether transactions is Mainnet."
   },
   "delete": {
     "message": "Delete"

@@ -516,7 +516,7 @@
     "message": "Расшифровать запрос"
   },
   "defaultNetwork": {
-    "message": "Сетью по умолчанию для транзакций Ether является Main Net."
+    "message": "Сетью по умолчанию для транзакций Ether является Mainnet."
   },
   "delete": {
     "message": "Удалить"
