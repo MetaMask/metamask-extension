@@ -53,13 +53,14 @@ export default class DetectTokensController {
     if (!this.isActive) {
       return;
     }
-    if (Object.keys(this._tokenList.state.tokenList).length === 0) {
+
+    const { tokenList } = this._tokenList.state;
+    if (Object.keys(tokenList).length === 0) {
       return;
     }
 
     const tokensToDetect = [];
     this.web3.setProvider(this._network._provider);
-    const { tokenList } = this._tokenList.state;
     for (const tokenAddress in tokenList) {
       if (
         !this.tokenAddresses.find((address) =>
@@ -73,10 +74,9 @@ export default class DetectTokensController {
       }
     }
     const sliceOfTokensToDetect = [];
-    sliceOfTokensToDetect[0] = tokensToDetect.slice(0, 1000);
-    sliceOfTokensToDetect[1] = tokensToDetect.slice(
-      1000,
-      tokensToDetect.length - 1,
+    sliceOfTokensToDetect.push(tokensToDetect.slice(0, 1000));
+    sliceOfTokensToDetect.push(
+      tokensToDetect.slice(1000, tokensToDetect.length - 1),
     );
     for (const tokensSlice of sliceOfTokensToDetect) {
       let result;
@@ -89,17 +89,18 @@ export default class DetectTokensController {
         );
         return;
       }
-
-      tokensSlice.forEach((tokenAddress, index) => {
-        const balance = result[index];
-        if (balance && !balance.isZero()) {
-          this._preferences.addToken(
-            tokenAddress,
-            tokenList[tokenAddress].symbol,
-            tokenList[tokenAddress].decimals,
-          );
-        }
-      });
+      await Promise.all(
+        tokensSlice.map(async (tokenAddress, index) => {
+          const balance = result[index];
+          if (balance && !balance.isZero()) {
+            await this._preferences.addToken(
+              tokenAddress,
+              tokenList[tokenAddress].symbol,
+              tokenList[tokenAddress].decimals,
+            );
+          }
+        }),
+      );
     }
   }
 

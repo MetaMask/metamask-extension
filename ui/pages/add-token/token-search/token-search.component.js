@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '../../../components/ui/text-field';
+import { isEqualCaseInsensitive } from '../../../helpers/utils/util';
 
 export default class TokenSearch extends Component {
   static contextTypes = {
@@ -48,7 +49,7 @@ export default class TokenSearch extends Component {
       return (
         token.address &&
         searchQuery &&
-        token.address.toLowerCase() === searchQuery.toLowerCase()
+        isEqualCaseInsensitive(token.address, searchQuery)
       );
     });
     const results = [...addressSearchResult, ...fuseSearchResult];

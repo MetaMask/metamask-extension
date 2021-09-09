@@ -43,6 +43,10 @@ class AddToken extends Component {
     tokenList: PropTypes.object,
   };
 
+  static defaultProps = {
+    tokenList: {},
+  };
+
   state = {
     customAddress: '',
     customSymbol: '',
@@ -366,7 +370,7 @@ class AddToken extends Component {
   }
 
   renderSearchToken() {
-    const { tokenList = {} } = this.props;
+    const { tokenList } = this.props;
     const { tokenSelectorError, selectedTokens, searchResults } = this.state;
     return (
       <div className="add-token__search-token">
