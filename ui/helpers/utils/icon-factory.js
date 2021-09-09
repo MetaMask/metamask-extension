@@ -67,6 +67,9 @@ function imageElFor(address, useTokenDetection, tokenList) {
   const tokenMetadata = tokenList[address];
   const fileName = tokenMetadata?.iconUrl;
   // token from dynamic api list is fetched when useTokenDetection is true
+  // In the static list, the iconUrl will be holding only a filename for the image, 
+  // the corresponding images will be available in the `images/contract/` location when the contract-metadata package was added to the extension
+  //  so that it can be accessed using the filename in iconUrl.
   const path = useTokenDetection ? fileName : `images/contract/${fileName}`;
   const img = document.createElement('img');
   img.src = path;
