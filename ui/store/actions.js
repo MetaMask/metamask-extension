@@ -1636,7 +1636,6 @@ export function showModal(payload) {
     payload,
   };
 }
-// comment
 
 export function hideModal(payload) {
   return {
