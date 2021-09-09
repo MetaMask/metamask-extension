@@ -2,9 +2,6 @@ export const GO_HOME = 'GO_HOME';
 // modal state
 export const MODAL_OPEN = 'UI_MODAL_OPEN';
 export const MODAL_CLOSE = 'UI_MODAL_CLOSE';
-// sidebar state
-export const SIDEBAR_OPEN = 'UI_SIDEBAR_OPEN';
-export const SIDEBAR_CLOSE = 'UI_SIDEBAR_CLOSE';
 // alert state
 export const ALERT_OPEN = 'UI_ALERT_OPEN';
 export const ALERT_CLOSE = 'UI_ALERT_CLOSE';

@@ -8,7 +8,6 @@ import FirstTimeFlow from '../first-time-flow';
 import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
-import Sidebar from '../../components/app/sidebars';
 import Home from '../home';
 import Settings from '../settings';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
@@ -62,7 +61,6 @@ import {
 } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { isBeta } from '../../helpers/utils/build-types';
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import ConfirmationPage from '../confirmation';
 
 export default class Routes extends Component {
@@ -76,15 +74,12 @@ export default class Routes extends Component {
     isNetworkLoading: PropTypes.bool,
     provider: PropTypes.object,
     frequentRpcListDetail: PropTypes.array,
-    sidebar: PropTypes.object,
     alertOpen: PropTypes.bool,
-    hideSidebar: PropTypes.func,
     isUnlocked: PropTypes.bool,
     setLastActiveTime: PropTypes.func,
     history: PropTypes.object,
     location: PropTypes.object,
     lockMetaMask: PropTypes.func,
-    submittedPendingTransactions: PropTypes.array,
     isMouseUser: PropTypes.bool,
     setMouseUserState: PropTypes.func,
     providerId: PropTypes.string,
@@ -273,8 +268,6 @@ export default class Routes extends Component {
       provider,
       frequentRpcListDetail,
       setMouseUserState,
-      sidebar,
-      submittedPendingTransactions,
       isMouseUser,
       prepareToLeaveSwaps,
       browserEnvironment,
@@ -283,21 +276,6 @@ export default class Routes extends Component {
       loadingMessage || isNetworkLoading
         ? this.getConnectingLabel(loadingMessage)
         : null;
-
-    const {
-      isOpen: sidebarIsOpen,
-      transitionName: sidebarTransitionName,
-      type: sidebarType,
-      props,
-    } = sidebar;
-    const { transaction: sidebarTransaction } = props || {};
-
-    const sidebarShouldClose =
-      sidebarTransaction &&
-      !sidebarTransaction.status === TRANSACTION_STATUSES.FAILED &&
-      !submittedPendingTransactions.find(
-        ({ id }) => id === sidebarTransaction.id,
-      );
 
     const { os, browser } = browserEnvironment;
     return (
@@ -333,14 +311,6 @@ export default class Routes extends Component {
             }
           />
         )}
-        <Sidebar
-          sidebarOpen={sidebarIsOpen}
-          sidebarShouldClose={sidebarShouldClose}
-          hideSidebar={this.props.hideSidebar}
-          transitionName={sidebarTransitionName}
-          type={sidebarType}
-          sidebarProps={sidebar.props}
-        />
         <NetworkDropdown
           provider={provider}
           frequentRpcListDetail={frequentRpcListDetail}
