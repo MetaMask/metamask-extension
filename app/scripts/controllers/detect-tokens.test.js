@@ -9,6 +9,7 @@ import {
   TokensController,
 } from '@metamask/controllers';
 import { MAINNET, ROPSTEN } from '../../../shared/constants/network';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
 import NetworkController from './network';
 import PreferencesController from './preferences';
@@ -224,7 +225,7 @@ describe('DetectTokensController', function () {
     );
 
     const tokenAddressToSkip = erc20ContractAddresses[1];
-    const tokenToSkip = contracts[tokenAddressToSkip];
+    const tokenToSkip = tokenList[tokenAddressToSkip];
     await tokensController.addToken(
       tokenAddressToSkip,
       tokenToSkip.symbol,
@@ -244,7 +245,7 @@ describe('DetectTokensController', function () {
 
     assert.deepEqual(tokensController.state.tokens, [
       {
-        address: existingTokenAddress,
+        address: toChecksumHexAddress(existingTokenAddress),
         decimals: existingToken.decimals,
         symbol: existingToken.symbol,
         image: undefined,
@@ -304,14 +305,14 @@ describe('DetectTokensController', function () {
     await controller.detectNewTokens();
     assert.deepEqual(tokensController.state.tokens, [
       {
-        address: existingTokenAddress,
+        address: toChecksumHexAddress(existingTokenAddress),
         decimals: existingToken.decimals,
         symbol: existingToken.symbol,
         isERC721: false,
         image: undefined,
       },
       {
-        address: tokenAddressToAdd,
+        address: toChecksumHexAddress(tokenAddressToAdd),
         decimals: tokenToAdd.decimals,
         symbol: tokenToAdd.symbol,
         image: undefined,
@@ -365,14 +366,14 @@ describe('DetectTokensController', function () {
 
     assert.deepEqual(tokensController.state.tokens, [
       {
-        address: existingTokenAddress,
+        address: toChecksumHexAddress(existingTokenAddress),
         decimals: existingToken.decimals,
         symbol: existingToken.symbol,
         image: undefined,
         isERC721: false,
       },
       {
-        address: tokenAddressToAdd,
+        address: toChecksumHexAddress(tokenAddressToAdd),
         decimals: tokenToAdd.decimals,
         symbol: tokenToAdd.symbol,
         image: undefined,

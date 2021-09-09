@@ -1322,7 +1322,10 @@ export default class MetamaskController extends EventEmitter {
       frequentRpcList,
       identities,
       selectedAddress,
+      useTokenDetection,
     } = this.preferencesController.store.getState();
+
+    const { tokenList } = this.tokenListController.state;
 
     const preferences = {
       currentLocale,
@@ -1345,11 +1348,10 @@ export default class MetamaskController extends EventEmitter {
           checksummedAccountAddress
         ].filter((asset) => {
           if (asset.isERC721 === undefined) {
-            const checksumAddress = toChecksumHexAddress(asset.address);
-            if (
-              contractMap[checksumAddress] !== undefined &&
-              contractMap[checksumAddress].erc20
-            ) {
+            const address = useTokenDetection
+              ? asset.address
+              : toChecksumHexAddress(asset.address);
+            if (tokenList[address] !== undefined && tokenList[address].erc20) {
               return true;
             }
           } else if (asset.isERC721 === false) {

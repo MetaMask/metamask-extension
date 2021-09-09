@@ -28,7 +28,6 @@ import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { isEqualCaseInsensitive } from '../helpers/utils/util';
 import * as actionConstants from './actionConstants';
 
 let background = null;
