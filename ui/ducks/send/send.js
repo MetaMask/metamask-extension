@@ -1013,7 +1013,7 @@ const slice = createSlice({
         } else {
           recipient.error = null;
         }
-
+        recipient.warning = null;
         if (isSendingToken && isValidHexAddress(recipient.userInput)) {
           // When useTokenDetection flag is true the tokenList contains tokens with non-checksum address from the dynamic token service api,
           // When useTokenDetection flag is false the tokenList contains tokens with checksum addresses from contract-metadata.
@@ -1026,11 +1026,7 @@ const slice = createSlice({
             checkExistingAddresses(userInput, tokens)
           ) {
             recipient.warning = KNOWN_RECIPIENT_ADDRESS_WARNING;
-          } else {
-            recipient.warning = null;
           }
-        } else {
-          recipient.warning = null;
         }
       }
     },
