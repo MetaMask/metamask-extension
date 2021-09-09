@@ -35,8 +35,10 @@ defineAndRunBuildTasks();
 function defineAndRunBuildTasks() {
   const {
     betaVersion,
+    buildType,
     entryTask,
     isBeta,
+    isLavaMoat,
     shouldIncludeLockdown,
     skipStats,
   } = parseArgv();
@@ -68,8 +70,10 @@ function defineAndRunBuildTasks() {
   const styleTasks = createStyleTasks({ livereload });
 
   const scriptTasks = createScriptTasks({
-    livereload,
     browserPlatforms,
+    buildType,
+    isLavaMoat,
+    livereload,
   });
 
   const { clean, reload, zip } = createEtcTasks({
@@ -146,12 +150,17 @@ function parseArgv() {
     SkipStats: 'skip-stats',
   };
 
+  const BuildTypes = {
+    beta: 'beta',
+    main: 'main',
+  };
+
   const argv = minimist(process.argv.slice(2), {
     boolean: [NamedArgs.OmitLockdown, NamedArgs.SkipStats],
     string: [NamedArgs.BuildType],
     default: {
       [NamedArgs.BetaVersion]: 0,
-      [NamedArgs.BuildType]: 'main',
+      [NamedArgs.BuildType]: BuildTypes.Main,
       [NamedArgs.OmitLockdown]: false,
       [NamedArgs.SkipStats]: false,
     },
@@ -179,37 +188,18 @@ function parseArgv() {
     throw new Error(`MetaMask build: Invalid beta version: "${betaVersion}"`);
   }
 
-  // Arguments that are used throughout or deeply within the build system are
-  // set as environment variables.
-  setImmutableProperties(process.env, [
-    ['BUILD_TYPE', argv[NamedArgs.BuildType]],
-    ['IS_LAVAMOAT', String(process.argv[0].includes('lavamoat'))],
-  ]);
+  const buildType = argv[NamedArgs.BuildType];
+  if (!(buildType in BuildTypes)) {
+    throw new Error(`MetaMask build: Invalid build type: "${buildType}"`);
+  }
 
   return {
     betaVersion: String(betaVersion),
+    buildType,
     entryTask,
     isBeta: argv[NamedArgs.BuildType] === 'beta',
+    isLavaMoat: process.argv[0].includes('lavamoat'),
     shouldIncludeLockdown: argv[NamedArgs.OmitLockdown],
     skipStats: argv[NamedArgs.SkipStats],
   };
-}
-
-function setImmutableProperties(object, keyValueTuples) {
-  const descriptors = {
-    enumerable: true,
-    configurable: false,
-    writable: false,
-  };
-
-  Object.defineProperties(
-    object,
-    keyValueTuples.reduce((propertyMap, [key, value]) => {
-      propertyMap[key] = {
-        value,
-        ...descriptors,
-      };
-      return propertyMap;
-    }, {}),
-  );
 }

@@ -48,7 +48,7 @@ function createTask(taskName, taskFn) {
   return task;
 }
 
-function runInChildProcess(task) {
+function runInChildProcess(task, { buildType, isLavaMoat }) {
   const taskName = typeof task === 'string' ? task : task.taskName;
   if (!taskName) {
     throw new Error(
@@ -59,14 +59,22 @@ function runInChildProcess(task) {
   return instrumentForTaskStats(taskName, async () => {
     let childProcess;
     // don't run subprocesses in lavamoat if main process not run in lavamoat
-    if (process.env.IS_LAVAMOAT === 'true') {
-      childProcess = spawn('yarn', ['build', taskName, '--skip-stats'], {
-        env: process.env,
-      });
+    if (isLavaMoat) {
+      childProcess = spawn(
+        'yarn',
+        ['build', taskName, '--build-type', buildType, '--skip-stats'],
+        {
+          env: process.env,
+        },
+      );
     } else {
-      childProcess = spawn('yarn', ['build:dev', taskName, '--skip-stats'], {
-        env: process.env,
-      });
+      childProcess = spawn(
+        'yarn',
+        ['build:dev', taskName, '--build-type', buildType, '--skip-stats'],
+        {
+          env: process.env,
+        },
+      );
     }
 
     // forward logs to main process
