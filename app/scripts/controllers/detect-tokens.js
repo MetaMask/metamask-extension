@@ -47,7 +47,7 @@ export default class DetectTokensController {
   }
 
   /**
-   * For each token in tokenlist ptovided by the TokenListController, find check selectedAddress balance.
+   * For each token in the tokenlist provided by the TokenListController, check selectedAddress balance.
    */
   async detectNewTokens() {
     if (!this.isActive) {
