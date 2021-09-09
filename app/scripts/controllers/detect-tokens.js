@@ -73,11 +73,10 @@ export default class DetectTokensController {
         tokensToDetect.push(tokenAddress);
       }
     }
-    const sliceOfTokensToDetect = [];
-    sliceOfTokensToDetect.push(tokensToDetect.slice(0, 1000));
-    sliceOfTokensToDetect.push(
+    const sliceOfTokensToDetect = [
+      tokensToDetect.slice(0, 1000),
       tokensToDetect.slice(1000, tokensToDetect.length - 1),
-    );
+    ];
     for (const tokensSlice of sliceOfTokensToDetect) {
       let result;
       try {
