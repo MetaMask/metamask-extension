@@ -177,12 +177,6 @@ function parseArgv() {
     throw new Error('MetaMask build: No entry task specified.');
   }
 
-  // The entry task should never be prefixed with '-' or '--', so that is easily
-  // distinguishable from other arguments.
-  if (entryTask.startsWith('-')) {
-    throw new Error(`MetaMask build: invalid entry task: "${entryTask}"`);
-  }
-
   const betaVersion = argv[NamedArgs.BetaVersion];
   if (!Number.isInteger(betaVersion) || betaVersion < 0) {
     throw new Error(`MetaMask build: Invalid beta version: "${betaVersion}"`);
