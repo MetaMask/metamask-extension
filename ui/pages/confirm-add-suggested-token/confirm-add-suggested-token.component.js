@@ -61,6 +61,30 @@ export default class ConfirmAddSuggestedToken extends Component {
     const hasTokenDuplicates = this.checkTokenDuplicates(pendingTokens, tokens);
     const reusesName = this.checkNameReuse(pendingTokens, tokens);
 
+    const addTokens = async () => {
+      const tokenEntries = Object.entries(pendingTokens);
+      for(let tokenEntry of tokenEntries) {
+        const [key, token] = tokenEntry;
+        await addToken(token);
+      }
+
+      removeSuggestedTokens()
+      .then(() => {
+        this.context.trackEvent({
+          event: 'Token Added',
+          category: 'Wallet',
+          sensitiveProperties: {
+            token_symbol: pendingToken.symbol,
+            token_contract_address: pendingToken.address,
+            token_decimal_precision: pendingToken.decimals,
+            unlisted: pendingToken.unlisted,
+            source: 'dapp',
+          },
+        });
+      })
+      .then(() => history.push(mostRecentOverviewPage));      
+    }
+
     return (
       <div className="page-container">
         <div className="page-container__header">
@@ -137,24 +161,7 @@ export default class ConfirmAddSuggestedToken extends Component {
               large
               className="page-container__footer-button"
               disabled={pendingTokens.length === 0}
-              onClick={() => {
-                addToken(pendingToken)
-                  .then(() => removeSuggestedTokens())
-                  .then(() => {
-                    this.context.trackEvent({
-                      event: 'Token Added',
-                      category: 'Wallet',
-                      sensitiveProperties: {
-                        token_symbol: pendingToken.symbol,
-                        token_contract_address: pendingToken.address,
-                        token_decimal_precision: pendingToken.decimals,
-                        unlisted: pendingToken.unlisted,
-                        source: 'dapp',
-                      },
-                    });
-                  })
-                  .then(() => history.push(mostRecentOverviewPage));
-              }}
+              onClick={() => addTokens()}
             >
               {this.context.t('addToken')}
             </Button>
