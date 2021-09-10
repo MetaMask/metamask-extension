@@ -1,4 +1,5 @@
 const spawn = require('cross-spawn');
+const shellwords = require('shellwords');
 
 /**
  * Run a command to completion using the system shell.
@@ -58,15 +59,20 @@ async function runCommand(command, args) {
     if (error === internalError) {
       let errorMessage;
       if (errorCode !== null && errorSignal !== null) {
-        errorMessage = `Terminated by signal '${errorSignal}'; exited with code '${errorCode}'`;
+        errorMessage = `terminated by signal '${errorSignal}'; exited with code '${errorCode}'`;
       } else if (errorSignal !== null) {
-        errorMessage = `Terminaled by signal '${errorSignal}'`;
+        errorMessage = `terminated by signal '${errorSignal}'`;
       } else if (errorCode === null) {
-        errorMessage = 'Exited with no code or signal';
+        errorMessage = 'exited with no code or signal';
       } else {
-        errorMessage = `Exited with code '${errorCode}'`;
+        errorMessage = `exited with code '${errorCode}'`;
       }
-      const improvedError = new Error(errorMessage);
+      const commandAsString = [command, ...args]
+        .map((arg) => shellwords.escape(arg))
+        .join(' ');
+      const improvedError = new Error(
+        `Command \`${commandAsString}\` ${errorMessage}`,
+      );
       if (mostRecentError) {
         improvedError.cause = mostRecentError;
       }
@@ -117,15 +123,20 @@ async function runInShell(command, args) {
     if (error === internalError) {
       let errorMessage;
       if (errorCode !== null && errorSignal !== null) {
-        errorMessage = `Terminated by signal '${errorSignal}'; exited with code '${errorCode}'`;
+        errorMessage = `terminated by signal '${errorSignal}'; exited with code '${errorCode}'`;
       } else if (errorSignal !== null) {
-        errorMessage = `Terminaled by signal '${errorSignal}'`;
+        errorMessage = `terminaled by signal '${errorSignal}'`;
       } else if (errorCode === null) {
-        errorMessage = 'Exited with no code or signal';
+        errorMessage = 'exited with no code or signal';
       } else {
-        errorMessage = `Exited with code '${errorCode}'`;
+        errorMessage = `exited with code '${errorCode}'`;
       }
-      const improvedError = new Error(errorMessage);
+      const commandAsString = [command, ...args]
+        .map((arg) => shellwords.escape(arg))
+        .join(' ');
+      const improvedError = new Error(
+        `Command \`${commandAsString}\` ${errorMessage}`,
+      );
       throw improvedError;
     }
   }
