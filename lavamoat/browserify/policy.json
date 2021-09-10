@@ -737,17 +737,6 @@
         "setTimeout": true
       }
     },
-    "abortcontroller-polyfill": {
-      "globals": {
-        "DOMException": true,
-        "Event": true,
-        "console.log": true,
-        "console.warn": true,
-        "define": true,
-        "document": true,
-        "setTimeout": true
-      }
-    },
     "abstract-leveldown": {
       "packages": {
         "is-buffer": true,
