@@ -56,7 +56,7 @@ function getHighestIncrementedFee(originalFee, currentEstimate) {
  * ).CustomGasSettings} - Gas settings for cancellations/speed ups
  */
 export function useIncrementedGasFees(transactionGroup) {
-  const { primaryTransaction } = transactionGroup;
+  const { primaryTransaction = {} } = transactionGroup;
 
   const { gasFeeEstimates = {} } = useGasFeeEstimates();
 
