@@ -88,6 +88,361 @@
         }
       ]
     },
+    "TokenListController": {
+      "tokenList": {
+        "0xbbbbca6a901c926f240b89eacb641d8aec7aeafd": {
+          "address": "0xbbbbca6a901c926f240b89eacb641d8aec7aeafd",
+          "symbol": "LRC",
+          "decimals": 18,
+          "name": "Loopring",
+          "iconUrl": "https://airswap-token-images.s3.amazonaws.com/LRC.png",
+          "aggregators": [
+            "airswapLight",
+            "bancor",
+            "cmc",
+            "coinGecko",
+            "kleros",
+            "oneInch",
+            "paraswap",
+            "pmm",
+            "totle",
+            "zapper",
+            "zerion",
+            "zeroEx"
+          ],
+          "occurrences": 12
+        },
+        "0x04fa0d235c4abf4bcf4787af4cf447de572ef828": {
+          "address": "0x04fa0d235c4abf4bcf4787af4cf447de572ef828",
+          "symbol": "UMA",
+          "decimals": 18,
+          "name": "UMA",
+          "iconUrl": "https://assets.coingecko.com/coins/images/10951/thumb/UMA.png?1586307916",
+          "aggregators": [
+            "bancor",
+            "cmc",
+            "coinGecko",
+            "kleros",
+            "oneInch",
+            "paraswap",
+            "pmm",
+            "totle",
+            "zapper",
+            "zerion",
+            "zeroEx"
+          ],
+          "occurrences": 11
+        },
+        "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2": {
+          "address": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
+          "symbol": "SUSHI",
+          "decimals": 18,
+          "name": "SushiSwap",
+          "iconUrl": "https://assets.coingecko.com/coins/images/12271/thumb/512x512_Logo_no_chop.png?1606986688",
+          "aggregators": [
+            "bancor",
+            "cmc",
+            "coinGecko",
+            "kleros",
+            "oneInch",
+            "paraswap",
+            "pmm",
+            "totle",
+            "zapper",
+            "zerion",
+            "zeroEx"
+          ],
+          "occurrences": 11
+        },
+        "0xd533a949740bb3306d119cc777fa900ba034cd52": {
+          "address": "0xd533a949740bb3306d119cc777fa900ba034cd52",
+          "symbol": "CRV",
+          "decimals": 18,
+          "name": "Curve DAO Token",
+          "iconUrl": "https://assets.coingecko.com/coins/images/12124/thumb/Curve.png?1597369484",
+          "aggregators": [
+            "bancor",
+            "cmc",
+            "coinGecko",
+            "kleros",
+            "oneInch",
+            "paraswap",
+            "pmm",
+            "totle",
+            "zapper",
+            "zerion",
+            "zeroEx"
+          ],
+          "occurrences": 11
+        },
+        "0xc00e94cb662c3520282e6f5717214004a7f26888": {
+          "address": "0xc00e94cb662c3520282e6f5717214004a7f26888",
+          "symbol": "COMP",
+          "decimals": 18,
+          "name": "Compound",
+          "iconUrl": "https://assets.coingecko.com/coins/images/10775/thumb/COMP.png?1592625425",
+          "aggregators": [
+            "bancor",
+            "cmc",
+            "coinGecko",
+            "kleros",
+            "oneInch",
+            "paraswap",
+            "pmm",
+            "totle",
+            "zapper",
+            "zerion",
+            "zeroEx"
+          ],
+          "occurrences": 11
+        },
+        "0xba100000625a3754423978a60c9317c58a424e3d": {
+          "address": "0xba100000625a3754423978a60c9317c58a424e3d",
+          "symbol": "BAL",
+          "decimals": 18,
+          "name": "Balancer",
+          "iconUrl": "https://assets.coingecko.com/coins/images/11683/thumb/Balancer.png?1592792958",
+          "aggregators": [
+            "bancor",
+            "cmc",
+            "coinGecko",
+            "kleros",
+            "oneInch",
+            "paraswap",
+            "pmm",
+            "totle",
+            "zapper",
+            "zerion",
+            "zeroEx"
+          ],
+          "occurrences": 11
+        },
+        "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0": {
+          "address": "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
+          "symbol": "MATIC",
+          "decimals": 18,
+          "name": "Polygon",
+          "iconUrl": "https://raw.githubusercontent.com/MetaMask/eth-contract-metadata/master/images/matic-network-logo.svg",
+          "aggregators": [
+            "airswapLight",
+            "bancor",
+            "coinGecko",
+            "kleros",
+            "oneInch",
+            "paraswap",
+            "pmm",
+            "totle",
+            "zapper",
+            "zerion",
+            "zeroEx"
+          ],
+          "occurrences": 11
+        },
+        "0x0d8775f648430679a709e98d2b0cb6250d2887ef": {
+          "address": "0x0d8775f648430679a709e98d2b0cb6250d2887ef",
+          "symbol": "BAT",
+          "decimals": 18,
+          "name": "Basic Attention Tok",
+          "iconUrl": "https://s3.amazonaws.com/airswap-token-images/BAT.png",
+          "aggregators": [
+            "airswapLight",
+            "bancor",
+            "coinGecko",
+            "kleros",
+            "oneInch",
+            "paraswap",
+            "pmm",
+            "totle",
+            "zapper",
+            "zerion",
+            "zeroEx"
+          ],
+          "occurrences": 11
+        }
+      },
+      "tokensChainsCache": {
+        "1": {
+          "timestamp": 1628769574961,
+          "data": [
+            {
+              "address": "0xbbbbca6a901c926f240b89eacb641d8aec7aeafd",
+              "symbol": "LRC",
+              "decimals": 18,
+              "name": "Loopring",
+              "iconUrl": "https://airswap-token-images.s3.amazonaws.com/LRC.png",
+              "aggregators": [
+                "airswapLight",
+                "bancor",
+                "cmc",
+                "coinGecko",
+                "kleros",
+                "oneInch",
+                "paraswap",
+                "pmm",
+                "totle",
+                "zapper",
+                "zerion",
+                "zeroEx"
+              ],
+              "occurrences": 12
+            },
+            {
+              "address": "0x04fa0d235c4abf4bcf4787af4cf447de572ef828",
+              "symbol": "UMA",
+              "decimals": 18,
+              "name": "UMA",
+              "iconUrl": "https://assets.coingecko.com/coins/images/10951/thumb/UMA.png?1586307916",
+              "aggregators": [
+                "bancor",
+                "cmc",
+                "coinGecko",
+                "kleros",
+                "oneInch",
+                "paraswap",
+                "pmm",
+                "totle",
+                "zapper",
+                "zerion",
+                "zeroEx"
+              ],
+              "occurrences": 11
+            },
+            {
+              "address": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
+              "symbol": "SUSHI",
+              "decimals": 18,
+              "name": "SushiSwap",
+              "iconUrl": "https://assets.coingecko.com/coins/images/12271/thumb/512x512_Logo_no_chop.png?1606986688",
+              "aggregators": [
+                "bancor",
+                "cmc",
+                "coinGecko",
+                "kleros",
+                "oneInch",
+                "paraswap",
+                "pmm",
+                "totle",
+                "zapper",
+                "zerion",
+                "zeroEx"
+              ],
+              "occurrences": 11
+            },
+            {
+              "address": "0xd533a949740bb3306d119cc777fa900ba034cd52",
+              "symbol": "CRV",
+              "decimals": 18,
+              "name": "Curve DAO Token",
+              "iconUrl": "https://assets.coingecko.com/coins/images/12124/thumb/Curve.png?1597369484",
+              "aggregators": [
+                "bancor",
+                "cmc",
+                "coinGecko",
+                "kleros",
+                "oneInch",
+                "paraswap",
+                "pmm",
+                "totle",
+                "zapper",
+                "zerion",
+                "zeroEx"
+              ],
+              "occurrences": 11
+            },
+            {
+              "address": "0xc00e94cb662c3520282e6f5717214004a7f26888",
+              "symbol": "COMP",
+              "decimals": 18,
+              "name": "Compound",
+              "iconUrl": "https://assets.coingecko.com/coins/images/10775/thumb/COMP.png?1592625425",
+              "aggregators": [
+                "bancor",
+                "cmc",
+                "coinGecko",
+                "kleros",
+                "oneInch",
+                "paraswap",
+                "pmm",
+                "totle",
+                "zapper",
+                "zerion",
+                "zeroEx"
+              ],
+              "occurrences": 11
+            },
+            {
+              "address": "0xba100000625a3754423978a60c9317c58a424e3d",
+              "symbol": "BAL",
+              "decimals": 18,
+              "name": "Balancer",
+              "iconUrl": "https://assets.coingecko.com/coins/images/11683/thumb/Balancer.png?1592792958",
+              "aggregators": [
+                "bancor",
+                "cmc",
+                "coinGecko",
+                "kleros",
+                "oneInch",
+                "paraswap",
+                "pmm",
+                "totle",
+                "zapper",
+                "zerion",
+                "zeroEx"
+              ],
+              "occurrences": 11
+            },
+            {
+              "address": "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
+              "symbol": "MATIC",
+              "decimals": 18,
+              "name": "Polygon",
+              "iconUrl": "https://raw.githubusercontent.com/MetaMask/eth-contract-metadata/master/images/matic-network-logo.svg",
+              "aggregators": [
+                "airswapLight",
+                "bancor",
+                "coinGecko",
+                "kleros",
+                "oneInch",
+                "paraswap",
+                "pmm",
+                "totle",
+                "zapper",
+                "zerion",
+                "zeroEx"
+              ],
+              "occurrences": 11
+            },
+            {
+              "address": "0x0d8775f648430679a709e98d2b0cb6250d2887ef",
+              "symbol": "BAT",
+              "decimals": 18,
+              "name": "Basic Attention Tok",
+              "iconUrl": "https://s3.amazonaws.com/airswap-token-images/BAT.png",
+              "aggregators": [
+                "airswapLight",
+                "bancor",
+                "coinGecko",
+                "kleros",
+                "oneInch",
+                "paraswap",
+                "pmm",
+                "totle",
+                "zapper",
+                "zerion",
+                "zeroEx"
+              ],
+              "occurrences": 11
+            }
+          ]
+        },
+        "3": {
+          "timestamp": 1628769543620
+        },
+        "1337": {
+          "timestamp": 1628769513476
+        }
+      }
+    },
     "PreferencesController": {
       "accountTokens": {
         "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
@@ -97,6 +452,7 @@
       },
       "assetImages": {},
       "completedOnboarding": true,
+      "dismissSeedBackUpReminder": true,
       "currentLocale": "en",
       "featureFlags": {
         "showIncomingTransactions": true,
@@ -123,7 +479,8 @@
       "tokens": [],
       "useBlockie": false,
       "useNonceField": false,
-      "usePhishDetect": true
+      "usePhishDetect": true,
+      "useTokenDetection": true
     },
     "config": {},
     "firstTimeInfo": {

@@ -5,12 +5,9 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { updateMetamaskState } from '../../store/actions';
 import { currentNetworkTxListSelector } from '../../selectors/transactions';
-import { store } from '../../../.storybook/preview';
+import { store, getNewState } from '../../../.storybook/preview';
 
-import {
-  currentNetworkTxListSample,
-  domainMetadata,
-} from '../../../.storybook/initial-states/approval-screens/token-approval';
+import { domainMetadata } from '../../../.storybook/initial-states/approval-screens/token-approval';
 import ConfirmApprove from '.';
 
 export default {
@@ -26,28 +23,34 @@ const PageSet = ({ children }) => {
     'Icon URL',
     'https://metamask.github.io/test-dapp/metamask-fox.svg',
   );
-
+  const state = store.getState();
   const currentNetworkTxList = useSelector(currentNetworkTxListSelector);
   const transaction = currentNetworkTxList.find(({ id }) => id === txId);
 
   useEffect(() => {
     transaction.origin = origin;
     store.dispatch(
-      updateMetamaskState({ currentNetworkTxList: [transaction] }),
+      updateMetamaskState(
+        getNewState(state.metamask, {
+          currentNetworkTxList: [transaction],
+        }),
+      ),
     );
-  }, [origin, transaction]);
+  }, [origin, transaction, state.metamask]);
 
   useEffect(() => {
     store.dispatch(
-      updateMetamaskState({
-        domainMetadata: {
-          [origin]: {
-            icon: domainIconUrl,
+      updateMetamaskState(
+        getNewState(state.metamask, {
+          domainMetadata: {
+            [origin]: {
+              icon: domainIconUrl,
+            },
           },
-        },
-      }),
+        }),
+      ),
     );
-  }, [domainIconUrl, origin]);
+  }, [domainIconUrl, origin, state.metamask]);
 
   const params = useParams();
   params.id = txId;
@@ -55,10 +58,14 @@ const PageSet = ({ children }) => {
 };
 
 export const ApproveTokens = () => {
+  const state = store.getState();
   store.dispatch(
-    updateMetamaskState({ currentNetworkTxList: [currentNetworkTxListSample] }),
+    updateMetamaskState(
+      getNewState(state.metamask, {
+        domainMetadata,
+      }),
+    ),
   );
-  store.dispatch(updateMetamaskState({ domainMetadata }));
   return (
     <PageSet>
       <ConfirmApprove />

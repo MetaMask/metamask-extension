@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Afegir Fitxa"
   },
-  "addTokens": {
-    "message": "Afegeix tokens"
-  },
   "advanced": {
     "message": "Configuració avançada"
   },
@@ -270,7 +267,7 @@
     "message": "Els decimals han de ser al menys 0, i no més de 36."
   },
   "defaultNetwork": {
-    "message": "La xarxa per defecte per a les transaccions Ether és Main Net."
+    "message": "La xarxa per defecte per a les transaccions Ether és Mainnet."
   },
   "delete": {
     "message": "Suprimeix"
@@ -527,7 +524,7 @@
   "letsGoSetUp": {
     "message": "Sí, posem-nos en marxa!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "T'agradaria afegir aquestes fitxes?"
   },
   "links": {

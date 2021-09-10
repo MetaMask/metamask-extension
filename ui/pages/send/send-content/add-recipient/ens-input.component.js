@@ -128,6 +128,7 @@ export default class EnsInput extends Component {
                 placeholder={t('recipientAddressPlaceholder')}
                 onChange={this.onChange}
                 onPaste={this.onPaste}
+                spellCheck="false"
                 value={selectedAddress || userInput}
                 autoFocus
                 data-testid="ens-input"

@@ -4,6 +4,7 @@ import SenderToRecipient from '../../ui/sender-to-recipient';
 import { PageContainerFooter } from '../../ui/page-container';
 import EditGasPopover from '../edit-gas-popover';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+import Dialog from '../../ui/dialog';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -41,7 +42,6 @@ export default class ConfirmPageContainer extends Component {
     detailsComponent: PropTypes.node,
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
-    assetImage: PropTypes.string,
     warning: PropTypes.string,
     unapprovedTxCount: PropTypes.number,
     origin: PropTypes.string.isRequired,
@@ -66,6 +66,8 @@ export default class ConfirmPageContainer extends Component {
     handleCloseEditGas: PropTypes.func,
     // Gas Popover
     currentTransaction: PropTypes.object.isRequired,
+    showAddToAddressBookModal: PropTypes.func,
+    contact: PropTypes.object,
   };
 
   render() {
@@ -95,7 +97,6 @@ export default class ConfirmPageContainer extends Component {
       identiconAddress,
       nonce,
       unapprovedTxCount,
-      assetImage,
       warning,
       totalTx,
       positionOfCurrentTx,
@@ -114,8 +115,12 @@ export default class ConfirmPageContainer extends Component {
       editingGas,
       handleCloseEditGas,
       currentTransaction,
+      showAddToAddressBookModal,
+      contact = {},
     } = this.props;
-    const renderAssetImage = contentComponent || !identiconAddress;
+
+    const showAddToAddressDialog =
+      contact.name === undefined && toAddress !== undefined;
 
     return (
       <div className="page-container">
@@ -145,10 +150,20 @@ export default class ConfirmPageContainer extends Component {
               recipientAddress={toAddress}
               recipientEns={toEns}
               recipientNickname={toNickname}
-              assetImage={renderAssetImage ? assetImage : undefined}
             />
           )}
         </ConfirmPageContainerHeader>
+        <div>
+          {showAddToAddressDialog && (
+            <Dialog
+              type="message"
+              className="send__dialog"
+              onClick={() => showAddToAddressBookModal()}
+            >
+              {this.context.t('newAccountDetectedDialogMessage')}
+            </Dialog>
+          )}
+        </div>
         {contentComponent || (
           <ConfirmPageContainerContent
             action={action}
@@ -162,7 +177,6 @@ export default class ConfirmPageContainer extends Component {
             errorKey={errorKey}
             identiconAddress={identiconAddress}
             nonce={nonce}
-            assetImage={assetImage}
             warning={warning}
             onCancelAll={onCancelAll}
             onCancel={onCancel}

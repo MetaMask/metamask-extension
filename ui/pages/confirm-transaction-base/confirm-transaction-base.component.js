@@ -35,10 +35,12 @@ import TransactionDetailItem from '../../components/app/transaction-detail-item/
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
+import Dialog from '../../components/ui/dialog';
 
 import {
   COLORS,
   FONT_STYLE,
+  FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../helpers/constants/design-system';
 import {
@@ -79,7 +81,6 @@ export default class ConfirmTransactionBase extends Component {
     useNonceField: PropTypes.bool,
     customNonceValue: PropTypes.string,
     updateCustomNonce: PropTypes.func,
-    assetImage: PropTypes.string,
     sendTransaction: PropTypes.func,
     showTransactionConfirmedModal: PropTypes.func,
     showRejectTransactionsConfirmationModal: PropTypes.func,
@@ -124,6 +125,8 @@ export default class ConfirmTransactionBase extends Component {
     baseFeePerGas: PropTypes.string,
     isMainnet: PropTypes.bool,
     gasFeeIsCustom: PropTypes.bool,
+    isLedgerAccount: PropTypes.bool.isRequired,
+    isFirefox: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -303,6 +306,8 @@ export default class ConfirmTransactionBase extends Component {
       maxFeePerGas,
       maxPriorityFeePerGas,
       isMainnet,
+      isLedgerAccount,
+      isFirefox,
     } = this.props;
     const { t } = this.context;
 
@@ -392,6 +397,51 @@ export default class ConfirmTransactionBase extends Component {
               value={customNonceValue || ''}
             />
           </div>
+        </div>
+      </div>
+    ) : null;
+
+    const ledgerInstructionField = isLedgerAccount ? (
+      <div>
+        <div className="confirm-detail-row">
+          <Dialog type="message">
+            <div className="ledger-live-dialog">
+              <Typography
+                boxProps={{ margin: 0 }}
+                color={COLORS.PRIMARY3}
+                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TYPOGRAPHY.H7}
+              >
+                {t('ledgerLiveDialogHeader')}
+              </Typography>
+              {!isFirefox && (
+                <Typography
+                  boxProps={{ margin: 0 }}
+                  color={COLORS.PRIMARY3}
+                  fontWeight={FONT_WEIGHT.BOLD}
+                  variant={TYPOGRAPHY.H7}
+                >
+                  {`- ${t('ledgerLiveDialogStepOne')}`}
+                </Typography>
+              )}
+              <Typography
+                boxProps={{ margin: 0 }}
+                color={COLORS.PRIMARY3}
+                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TYPOGRAPHY.H7}
+              >
+                {`- ${t('ledgerLiveDialogStepTwo')}`}
+              </Typography>
+              <Typography
+                boxProps={{ margin: 0 }}
+                color={COLORS.PRIMARY3}
+                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TYPOGRAPHY.H7}
+              >
+                {`- ${t('ledgerLiveDialogStepThree')}`}
+              </Typography>
+            </div>
+          </Dialog>
         </div>
       </div>
     ) : null;
@@ -523,6 +573,7 @@ export default class ConfirmTransactionBase extends Component {
           ]}
         />
         {nonceField}
+        {ledgerInstructionField}
       </div>
     );
   }
@@ -856,7 +907,6 @@ export default class ConfirmTransactionBase extends Component {
       onEdit,
       nonce,
       customNonceValue,
-      assetImage,
       unapprovedTxCount,
       type,
       hideSenderToRecipient,
@@ -915,7 +965,6 @@ export default class ConfirmTransactionBase extends Component {
         contentComponent={contentComponent}
         nonce={customNonceValue || nonce}
         unapprovedTxCount={unapprovedTxCount}
-        assetImage={assetImage}
         identiconAddress={identiconAddress}
         errorMessage={submitError}
         errorKey={errorKey}

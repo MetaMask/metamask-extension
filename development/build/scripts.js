@@ -39,6 +39,7 @@ const metamaskrc = require('rc')('metamask', {
 
 const { streamFlatMap } = require('../stream-flat-map.js');
 const { version } = require('../../package.json');
+
 const {
   createTask,
   composeParallel,
@@ -48,7 +49,12 @@ const {
 
 module.exports = createScriptTasks;
 
-function createScriptTasks({ browserPlatforms, livereload }) {
+function createScriptTasks({
+  browserPlatforms,
+  buildType,
+  isLavaMoat,
+  livereload,
+}) {
   // internal tasks
   const core = {
     // dev tasks (live reload)
@@ -80,15 +86,16 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
+        browserPlatforms,
+        buildType,
+        devMode,
         entryFiles: standardEntryPoints.map((label) => {
           if (label === 'content-script') {
             return './app/vendor/trezor/content-script.js';
           }
           return `./app/scripts/${label}.js`;
         }),
-        devMode,
         testing,
-        browserPlatforms,
       }),
     );
 
@@ -139,7 +146,7 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       disableConsoleSubtask,
       installSentrySubtask,
       phishingDetectSubtask,
-    ].map((subtask) => runInChildProcess(subtask));
+    ].map((subtask) => runInChildProcess(subtask, { buildType, isLavaMoat }));
     // make a parent task that runs each task in a child thread
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
@@ -147,33 +154,36 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   function createTaskForBundleDisableConsole({ devMode }) {
     const label = 'disable-console';
     return createNormalBundle({
-      label,
-      entryFilepath: `./app/scripts/${label}.js`,
+      browserPlatforms,
+      buildType,
       destFilepath: `${label}.js`,
       devMode,
-      browserPlatforms,
+      entryFilepath: `./app/scripts/${label}.js`,
+      label,
     });
   }
 
   function createTaskForBundleSentry({ devMode }) {
     const label = 'sentry-install';
     return createNormalBundle({
-      label,
-      entryFilepath: `./app/scripts/${label}.js`,
+      browserPlatforms,
+      buildType,
       destFilepath: `${label}.js`,
       devMode,
-      browserPlatforms,
+      entryFilepath: `./app/scripts/${label}.js`,
+      label,
     });
   }
 
   function createTaskForBundlePhishingDetect({ devMode }) {
     const label = 'phishing-detect';
     return createNormalBundle({
-      label,
-      entryFilepath: `./app/scripts/${label}.js`,
+      buildType,
+      browserPlatforms,
       destFilepath: `${label}.js`,
       devMode,
-      browserPlatforms,
+      entryFilepath: `./app/scripts/${label}.js`,
+      label,
     });
   }
 
@@ -183,30 +193,33 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     const contentscript = 'contentscript';
     return composeSeries(
       createNormalBundle({
-        label: inpage,
-        entryFilepath: `./app/scripts/${inpage}.js`,
+        buildType,
+        browserPlatforms,
         destFilepath: `${inpage}.js`,
         devMode,
+        entryFilepath: `./app/scripts/${inpage}.js`,
+        label: inpage,
         testing,
-        browserPlatforms,
       }),
       createNormalBundle({
-        label: contentscript,
-        entryFilepath: `./app/scripts/${contentscript}.js`,
+        buildType,
+        browserPlatforms,
         destFilepath: `${contentscript}.js`,
         devMode,
+        entryFilepath: `./app/scripts/${contentscript}.js`,
+        label: contentscript,
         testing,
-        browserPlatforms,
       }),
     );
   }
 }
 
 function createFactoredBuild({
-  entryFiles,
-  devMode,
-  testing,
   browserPlatforms,
+  buildType,
+  devMode,
+  entryFiles,
+  testing,
 }) {
   return async function () {
     // create bundler setup and apply defaults
@@ -218,7 +231,7 @@ function createFactoredBuild({
     const reloadOnChange = Boolean(devMode);
     const minify = Boolean(devMode) === false;
 
-    const envVars = getEnvironmentVariables({ devMode, testing });
+    const envVars = getEnvironmentVariables({ buildType, devMode, testing });
     setupBundlerDefaults(buildConfiguration, {
       devMode,
       envVars,
@@ -337,14 +350,15 @@ function createFactoredBuild({
 }
 
 function createNormalBundle({
-  label,
+  browserPlatforms,
+  buildType,
   destFilepath,
+  devMode,
   entryFilepath,
   extraEntries = [],
+  label,
   modulesToExpose,
-  devMode,
   testing,
-  browserPlatforms,
 }) {
   return async function () {
     // create bundler setup and apply defaults
@@ -356,7 +370,7 @@ function createNormalBundle({
     const reloadOnChange = Boolean(devMode);
     const minify = Boolean(devMode) === false;
 
-    const envVars = getEnvironmentVariables({ devMode, testing });
+    const envVars = getEnvironmentVariables({ buildType, devMode, testing });
     setupBundlerDefaults(buildConfiguration, {
       devMode,
       envVars,
@@ -526,9 +540,9 @@ async function bundleIt(buildConfiguration) {
   // forward update event (used by watchify)
   bundler.on('update', () => performBundle());
 
-  console.log(`bundle start: "${label}"`);
+  console.log(`Bundle start: "${label}"`);
   await performBundle();
-  console.log(`bundle end: "${label}"`);
+  console.log(`Bundle end: "${label}"`);
 
   async function performBundle() {
     // this pipeline is created for every bundle
@@ -562,7 +576,7 @@ async function bundleIt(buildConfiguration) {
   }
 }
 
-function getEnvironmentVariables({ devMode, testing }) {
+function getEnvironmentVariables({ buildType, devMode, testing }) {
   const environment = getEnvironment({ devMode, testing });
   if (environment === 'production' && !process.env.SENTRY_DSN) {
     throw new Error('Missing SENTRY_DSN environment variable');
@@ -571,6 +585,7 @@ function getEnvironmentVariables({ devMode, testing }) {
     METAMASK_DEBUG: devMode,
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,
+    METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? 'development' : 'production',
     IN_TEST: testing ? 'true' : false,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
@@ -595,6 +610,7 @@ function getEnvironmentVariables({ devMode, testing }) {
       environment === 'production'
         ? process.env.SEGMENT_PROD_LEGACY_WRITE_KEY
         : metamaskrc.SEGMENT_LEGACY_WRITE_KEY,
+    SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
   };
 }
 

@@ -45,6 +45,7 @@ const state = {
         "time": 1620710815484,
         "status": "unapproved",
         "metamaskNetworkId": "3",
+        "msgParams": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4",
         "chainId": "0x3",
         "loadingDefaults": false,
         "txParams": {
@@ -186,7 +187,501 @@ const state = {
     },
     "currentBlockGasLimit": "0x793af4",
     "currentNetworkTxList": [
-      
+      {
+        "chainId": "0x38",
+        "dappSuggestedGasFees": null,
+        "firstRetryBlockNumber": "0x9c2686",
+        "hash": "0xf45e7a751adfc0fbadccc972816baf33eb34543e52ace51f0f8d0d7f357afdc6",
+        "history": [
+          {
+            "chainId": "0x38",
+            "dappSuggestedGasFees": null,
+            "id": 2360388496987298,
+            "loadingDefaults": true,
+            "metamaskNetworkId": "56",
+            "origin": "metamask",
+            "status": "unapproved",
+            "time": 1629582710520,
+            "txParams": {
+              "data": "0xa9059cbb0000000000000000000000004ef2d5a1d056e7c9e8bcdbf2bd9ac0df749a1c2900000000000000000000000000000000000000000000000029a2241af62c0000",
+              "from": "0x17f62b1b2407c41c43e14da0699d6b4b0a521548",
+              "gas": "0x2eb27",
+              "gasPrice": "0x12a05f200",
+              "to": "0x2e8c05582176fa93b4590382e8290c73deb82176",
+              "type": "0x0",
+              "value": "0x0"
+            },
+            "type": "transfer"
+          },
+          [
+            {
+              "note": "Added new unapproved transaction.",
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "timestamp": 1629582710530,
+              "value": false
+            }
+          ],
+          [
+            {
+              "note": "txStateManager: setting status to approved",
+              "op": "replace",
+              "path": "/status",
+              "timestamp": 1629582711218,
+              "value": "approved"
+            }
+          ],
+          [
+            {
+              "note": "transactions#approveTransaction",
+              "op": "add",
+              "path": "/txParams/nonce",
+              "timestamp": 1629582711220,
+              "value": "0x15b"
+            },
+            {
+              "op": "add",
+              "path": "/nonceDetails",
+              "value": {
+                "local": {
+                  "details": {
+                    "highest": 347,
+                    "startPoint": 347
+                  },
+                  "name": "local",
+                  "nonce": 347
+                },
+                "network": {
+                  "details": {
+                    "baseCount": 347,
+                    "blockNumber": "0x9c2682"
+                  },
+                  "name": "network",
+                  "nonce": 347
+                },
+                "params": {
+                  "highestLocallyConfirmed": 327,
+                  "highestSuggested": 347,
+                  "nextNetworkNonce": 347
+                }
+              }
+            }
+          ],
+          [
+            {
+              "note": "transactions#signTransaction: add r, s, v values",
+              "op": "add",
+              "path": "/r",
+              "timestamp": 1629582711236,
+              "value": "0x90a4dfb0646eef9815454d0ab543b5844acb8772101084565155c93ecce8ed69"
+            },
+            {
+              "op": "add",
+              "path": "/s",
+              "value": "0x7fd317c727025490f282c7990b8518a7dab7521b1ada1cb639f887966bc078df"
+            },
+            {
+              "op": "add",
+              "path": "/v",
+              "value": "0x93"
+            }
+          ],
+          [
+            {
+              "note": "txStateManager: setting status to signed",
+              "op": "replace",
+              "path": "/status",
+              "timestamp": 1629582711236,
+              "value": "signed"
+            }
+          ],
+          [
+            {
+              "note": "transactions#publishTransaction",
+              "op": "add",
+              "path": "/rawTx",
+              "timestamp": 1629582711237,
+              "value": "0xf8ad82015b85012a05f2008302eb27942e8c05582176fa93b4590382e8290c73deb8217680b844a9059cbb0000000000000000000000004ef2d5a1d056e7c9e8bcdbf2bd9ac0df749a1c2900000000000000000000000000000000000000000000000029a2241af62c00008193a090a4dfb0646eef9815454d0ab543b5844acb8772101084565155c93ecce8ed69a07fd317c727025490f282c7990b8518a7dab7521b1ada1cb639f887966bc078df"
+            }
+          ],
+          [
+            {
+              "note": "transactions#setTxHash",
+              "op": "add",
+              "path": "/hash",
+              "timestamp": 1629582711336,
+              "value": "0xf45e7a751adfc0fbadccc972816baf33eb34543e52ace51f0f8d0d7f357afdc6"
+            }
+          ],
+          [
+            {
+              "note": "txStateManager - add submitted time stamp",
+              "op": "add",
+              "path": "/submittedTime",
+              "timestamp": 1629582711337,
+              "value": 1629582711337
+            }
+          ],
+          [
+            {
+              "note": "txStateManager: setting status to submitted",
+              "op": "replace",
+              "path": "/status",
+              "timestamp": 1629582711338,
+              "value": "submitted"
+            }
+          ],
+          [
+            {
+              "note": "transactions/pending-tx-tracker#event: tx:block-update",
+              "op": "add",
+              "path": "/firstRetryBlockNumber",
+              "timestamp": 1629582711878,
+              "value": "0x9c2686"
+            }
+          ],
+          [
+            {
+              "note": "txStateManager: setting status to confirmed",
+              "op": "replace",
+              "path": "/status",
+              "timestamp": 1629582721178,
+              "value": "confirmed"
+            },
+            {
+              "op": "add",
+              "path": "/txReceipt",
+              "value": {
+                "blockHash": "0x30bf5dfa12e460a5d121267c00ba3047a14ba286e0c4fe75fa979010f527cba0",
+                "blockNumber": "9c2688",
+                "contractAddress": null,
+                "cumulativeGasUsed": "19a4942",
+                "from": "0x17f62b1b2407c41c43e14da0699d6b4b0a521548",
+                "gasUsed": "1f21a",
+                "logs": [
+                  {
+                    "address": "0x2e8c05582176fa93b4590382e8290c73deb82176",
+                    "blockHash": "0x30bf5dfa12e460a5d121267c00ba3047a14ba286e0c4fe75fa979010f527cba0",
+                    "blockNumber": "9c2688",
+                    "data": "0x00000000000000000000000000000000000000000000000028426c213d688000",
+                    "logIndex": "245",
+                    "removed": false,
+                    "topics": [
+                      "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                      "0x00000000000000000000000017f62b1b2407c41c43e14da0699d6b4b0a521548",
+                      "0x0000000000000000000000004ef2d5a1d056e7c9e8bcdbf2bd9ac0df749a1c29"
+                    ],
+                    "transactionHash": "0xf45e7a751adfc0fbadccc972816baf33eb34543e52ace51f0f8d0d7f357afdc6",
+                    "transactionIndex": "ae"
+                  },
+                  {
+                    "address": "0x2e8c05582176fa93b4590382e8290c73deb82176",
+                    "blockHash": "0x30bf5dfa12e460a5d121267c00ba3047a14ba286e0c4fe75fa979010f527cba0",
+                    "blockNumber": "9c2688",
+                    "data": "0x000000000000000000000000000000000000000000000000006a94d74f430000",
+                    "logIndex": "246",
+                    "removed": false,
+                    "topics": [
+                      "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                      "0x00000000000000000000000017f62b1b2407c41c43e14da0699d6b4b0a521548",
+                      "0x000000000000000000000000c825413863f677a2012bb8db3a5e4a18bbf29e56"
+                    ],
+                    "transactionHash": "0xf45e7a751adfc0fbadccc972816baf33eb34543e52ace51f0f8d0d7f357afdc6",
+                    "transactionIndex": "ae"
+                  },
+                  {
+                    "address": "0x2e8c05582176fa93b4590382e8290c73deb82176",
+                    "blockHash": "0x30bf5dfa12e460a5d121267c00ba3047a14ba286e0c4fe75fa979010f527cba0",
+                    "blockNumber": "9c2688",
+                    "data": "0x000000000000000000000000000000000000000000000000001ff973cafa8000",
+                    "logIndex": "247",
+                    "removed": false,
+                    "topics": [
+                      "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                      "0x00000000000000000000000017f62b1b2407c41c43e14da0699d6b4b0a521548",
+                      "0x0000000000000000000000004ef2d5a1d056e7c9e8bcdbf2bd9ac0df749a1c29"
+                    ],
+                    "transactionHash": "0xf45e7a751adfc0fbadccc972816baf33eb34543e52ace51f0f8d0d7f357afdc6",
+                    "transactionIndex": "ae"
+                  }
+                ],
+                "logsBloom": "0x20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000100000000000020000000000000000000000000000000008000000000080000000000000000000000000000000000000000040000000000000000000000040000000000200000010000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000200000000000000000000800000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000",
+                "status": "0x1",
+                "to": "0x2e8c05582176fa93b4590382e8290c73deb82176",
+                "transactionHash": "0xf45e7a751adfc0fbadccc972816baf33eb34543e52ace51f0f8d0d7f357afdc6",
+                "transactionIndex": "ae",
+                "type": "0x0"
+              }
+            }
+          ],
+          [
+            {
+              "note": "transactions#confirmTransaction - add txReceipt",
+              "op": "replace",
+              "path": "/txReceipt/transactionIndex",
+              "timestamp": 1629582721183,
+              "value": "ae"
+            },
+            {
+              "op": "replace",
+              "path": "/txReceipt/logs/2/logIndex",
+              "value": "247"
+            },
+            {
+              "op": "replace",
+              "path": "/txReceipt/logs/2/transactionIndex",
+              "value": "ae"
+            },
+            {
+              "op": "replace",
+              "path": "/txReceipt/logs/2/blockNumber",
+              "value": "9c2688"
+            },
+            {
+              "op": "replace",
+              "path": "/txReceipt/logs/1/logIndex",
+              "value": "246"
+            },
+            {
+              "op": "replace",
+              "path": "/txReceipt/logs/1/transactionIndex",
+              "value": "ae"
+            },
+            {
+              "op": "replace",
+              "path": "/txReceipt/logs/1/blockNumber",
+              "value": "9c2688"
+            },
+            {
+              "op": "replace",
+              "path": "/txReceipt/logs/0/logIndex",
+              "value": "245"
+            },
+            {
+              "op": "replace",
+              "path": "/txReceipt/logs/0/transactionIndex",
+              "value": "ae"
+            },
+            {
+              "op": "replace",
+              "path": "/txReceipt/logs/0/blockNumber",
+              "value": "9c2688"
+            },
+            {
+              "op": "replace",
+              "path": "/txReceipt/cumulativeGasUsed",
+              "value": "19a4942"
+            },
+            {
+              "op": "replace",
+              "path": "/txReceipt/blockNumber",
+              "value": "9c2688"
+            }
+          ]
+        ],
+        "id": 7900715443136469,
+        "loadingDefaults": false,
+        "metamaskNetworkId": "56",
+        "nonceDetails": {
+          "local": {
+            "details": {
+              "highest": 347,
+              "startPoint": 347
+            },
+            "name": "local",
+            "nonce": 347
+          },
+          "network": {
+            "details": {
+              "baseCount": 347,
+              "blockNumber": "0x9c2682"
+            },
+            "name": "network",
+            "nonce": 347
+          },
+          "params": {
+            "highestLocallyConfirmed": 327,
+            "highestSuggested": 347,
+            "nextNetworkNonce": 347
+          }
+        },
+        "origin": "metamask",
+        "r": "0x90a4dfb0646eef9815454d0ab543b5844acb8772101084565155c93ecce8ed69",
+        "rawTx": "0xf8ad82015b85012a05f2008302eb27942e8c05582176fa93b4590382e8290c73deb8217680b844a9059cbb0000000000000000000000004ef2d5a1d056e7c9e8bcdbf2bd9ac0df749a1c2900000000000000000000000000000000000000000000000029a2241af62c00008193a090a4dfb0646eef9815454d0ab543b5844acb8772101084565155c93ecce8ed69a07fd317c727025490f282c7990b8518a7dab7521b1ada1cb639f887966bc078df",
+        "s": "0x7fd317c727025490f282c7990b8518a7dab7521b1ada1cb639f887966bc078df",
+        "status": "confirmed",
+        "submittedTime": 1629582711337,
+        "time": 1629582710520,
+        "txParams": {
+          "data": "0xa9059cbb0000000000000000000000004ef2d5a1d056e7c9e8bcdbf2bd9ac0df749a1c2900000000000000000000000000000000000000000000000029a2241af62c0000",
+          "from": "0x17f62b1b2407c41c43e14da0699d6b4b0a521548",
+          "gas": "0x2eb27",
+          "gasPrice": "0x12a05f200",
+          "nonce": "0x15b",
+          "to": "0x2e8c05582176fa93b4590382e8290c73deb82176",
+          "type": "0x0",
+          "value": "0x0"
+        },
+        "txReceipt": {
+          "blockHash": "0x30bf5dfa12e460a5d121267c00ba3047a14ba286e0c4fe75fa979010f527cba0",
+          "blockNumber": {
+            "length": 1,
+            "negative": 0,
+            "red": null,
+            "words": [
+              10233480,
+              null
+            ]
+          },
+          "contractAddress": null,
+          "cumulativeGasUsed": {
+            "length": 1,
+            "negative": 0,
+            "red": null,
+            "words": [
+              26888514,
+              null
+            ]
+          },
+          "from": "0x17f62b1b2407c41c43e14da0699d6b4b0a521548",
+          "gasUsed": "1f21a",
+          "logs": [
+            {
+              "address": "0x2e8c05582176fa93b4590382e8290c73deb82176",
+              "blockHash": "0x30bf5dfa12e460a5d121267c00ba3047a14ba286e0c4fe75fa979010f527cba0",
+              "blockNumber": {
+                "length": 1,
+                "negative": 0,
+                "red": null,
+                "words": [
+                  10233480,
+                  null
+                ]
+              },
+              "data": "0x00000000000000000000000000000000000000000000000028426c213d688000",
+              "logIndex": {
+                "length": 1,
+                "negative": 0,
+                "red": null,
+                "words": [
+                  581,
+                  null
+                ]
+              },
+              "removed": false,
+              "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                "0x00000000000000000000000017f62b1b2407c41c43e14da0699d6b4b0a521548",
+                "0x0000000000000000000000004ef2d5a1d056e7c9e8bcdbf2bd9ac0df749a1c29"
+              ],
+              "transactionHash": "0xf45e7a751adfc0fbadccc972816baf33eb34543e52ace51f0f8d0d7f357afdc6",
+              "transactionIndex": {
+                "length": 1,
+                "negative": 0,
+                "red": null,
+                "words": [
+                  174,
+                  null
+                ]
+              }
+            },
+            {
+              "address": "0x2e8c05582176fa93b4590382e8290c73deb82176",
+              "blockHash": "0x30bf5dfa12e460a5d121267c00ba3047a14ba286e0c4fe75fa979010f527cba0",
+              "blockNumber": {
+                "length": 1,
+                "negative": 0,
+                "red": null,
+                "words": [
+                  10233480,
+                  null
+                ]
+              },
+              "data": "0x000000000000000000000000000000000000000000000000006a94d74f430000",
+              "logIndex": {
+                "length": 1,
+                "negative": 0,
+                "red": null,
+                "words": [
+                  582,
+                  null
+                ]
+              },
+              "removed": false,
+              "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                "0x00000000000000000000000017f62b1b2407c41c43e14da0699d6b4b0a521548",
+                "0x000000000000000000000000c825413863f677a2012bb8db3a5e4a18bbf29e56"
+              ],
+              "transactionHash": "0xf45e7a751adfc0fbadccc972816baf33eb34543e52ace51f0f8d0d7f357afdc6",
+              "transactionIndex": {
+                "length": 1,
+                "negative": 0,
+                "red": null,
+                "words": [
+                  174,
+                  null
+                ]
+              }
+            },
+            {
+              "address": "0x2e8c05582176fa93b4590382e8290c73deb82176",
+              "blockHash": "0x30bf5dfa12e460a5d121267c00ba3047a14ba286e0c4fe75fa979010f527cba0",
+              "blockNumber": {
+                "length": 1,
+                "negative": 0,
+                "red": null,
+                "words": [
+                  10233480,
+                  null
+                ]
+              },
+              "data": "0x000000000000000000000000000000000000000000000000001ff973cafa8000",
+              "logIndex": {
+                "length": 1,
+                "negative": 0,
+                "red": null,
+                "words": [
+                  583,
+                  null
+                ]
+              },
+              "removed": false,
+              "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                "0x00000000000000000000000017f62b1b2407c41c43e14da0699d6b4b0a521548",
+                "0x0000000000000000000000004ef2d5a1d056e7c9e8bcdbf2bd9ac0df749a1c29"
+              ],
+              "transactionHash": "0xf45e7a751adfc0fbadccc972816baf33eb34543e52ace51f0f8d0d7f357afdc6",
+              "transactionIndex": {
+                "length": 1,
+                "negative": 0,
+                "red": null,
+                "words": [
+                  174,
+                  null
+                ]
+              }
+            }
+          ],
+          "logsBloom": "0x20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000100000000000020000000000000000000000000000000008000000000080000000000000000000000000000000000000000040000000000000000000000040000000000200000010000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000200000000000000000000800000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000",
+          "status": "0x1",
+          "to": "0x2e8c05582176fa93b4590382e8290c73deb82176",
+          "transactionHash": "0xf45e7a751adfc0fbadccc972816baf33eb34543e52ace51f0f8d0d7f357afdc6",
+          "transactionIndex": {
+            "length": 1,
+            "negative": 0,
+            "red": null,
+            "words": [
+              174,
+              null
+            ]
+          },
+          "type": "0x0"
+        },
+        "type": "transfer",
+        "v": "0x93"
+      }
     ],
     "cachedBalances": {
       "1": {
@@ -283,7 +778,7 @@ const state = {
       "0xaD6D458402F60fD3Bd25163575031ACDce07538D": "./sai.svg"
     },
     "hiddenTokens": [],
-    "suggestedTokens": {},
+    "suggestedAssets": [],
     "useNonceField": false,
     "usePhishDetect": true,
     "lostIdentities": {},
@@ -653,7 +1148,12 @@ const state = {
   "send": {
     "toDropdownOpen": false,
     "gasButtonGroupShown": true,
-    "errors": {}
+    "errors": {},
+    "asset": {
+      "type": "NATIVE",
+      "balance": "0x0",
+      "details": null
+    },
   },
   "confirmTransaction": {
     "txData": {

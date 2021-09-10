@@ -2,9 +2,6 @@
  * @file The entry point for the web extension singleton process.
  */
 
-// polyfills
-import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
-
 import endOfStream from 'end-of-stream';
 import pump from 'pump';
 import debounce from 'debounce-stream';

@@ -6,6 +6,7 @@ import TokenBalance from '../../../../components/ui/token-balance';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
 import { ERC20, PRIMARY } from '../../../../helpers/constants/common';
 import { ASSET_TYPES } from '../../../../ducks/send';
+import { isEqualCaseInsensitive } from '../../../../helpers/utils/util';
 
 export default class SendAssetRow extends Component {
   static propTypes = {
@@ -14,10 +15,10 @@ export default class SendAssetRow extends Component {
         address: PropTypes.string,
         decimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         symbol: PropTypes.string,
+        image: PropTypes.string,
       }),
     ).isRequired,
     accounts: PropTypes.object.isRequired,
-    assetImages: PropTypes.object,
     selectedAddress: PropTypes.string.isRequired,
     sendAssetAddress: PropTypes.string,
     updateSendAsset: PropTypes.func.isRequired,
@@ -85,8 +86,8 @@ export default class SendAssetRow extends Component {
 
   renderSendToken() {
     const { sendAssetAddress } = this.props;
-    const token = this.props.tokens.find(
-      ({ address }) => address === sendAssetAddress,
+    const token = this.props.tokens.find(({ address }) =>
+      isEqualCaseInsensitive(address, sendAssetAddress),
     );
     return (
       <div
@@ -168,9 +169,8 @@ export default class SendAssetRow extends Component {
   }
 
   renderAsset(token, insideDropdown = false) {
-    const { address, symbol } = token;
+    const { address, symbol, image } = token;
     const { t } = this.context;
-    const { assetImages } = this.props;
 
     return (
       <div
@@ -179,11 +179,7 @@ export default class SendAssetRow extends Component {
         onClick={() => this.selectToken(ASSET_TYPES.TOKEN, token)}
       >
         <div className="send-v2__asset-dropdown__asset-icon">
-          <Identicon
-            address={address}
-            diameter={36}
-            image={assetImages[address]}
-          />
+          <Identicon address={address} diameter={36} image={image} />
         </div>
         <div className="send-v2__asset-dropdown__asset-data">
           <div className="send-v2__asset-dropdown__symbol">{symbol}</div>

@@ -4,12 +4,16 @@ import abi from 'human-standard-token-abi';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   METASWAP_CHAINID_API_HOST_MAP,
-  SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
-  ETH_WETH_CONTRACT_ADDRESS,
+  ALLOWED_CONTRACT_ADDRESSES,
+  SWAPS_WRAPPED_TOKENS_ADDRESSES,
   ETHEREUM,
   POLYGON,
   BSC,
   RINKEBY,
+  SWAPS_API_V2_BASE_URL,
+  SWAPS_DEV_API_V2_BASE_URL,
+  GAS_API_BASE_URL,
+  GAS_DEV_API_BASE_URL,
 } from '../../../shared/constants/swaps';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
 import {
@@ -17,8 +21,6 @@ import {
   isSwapsDefaultTokenSymbol,
 } from '../../../shared/modules/swaps.utils';
 import {
-  ETH_SYMBOL,
-  WETH_SYMBOL,
   MAINNET_CHAIN_ID,
   BSC_CHAIN_ID,
   POLYGON_CHAIN_ID,
@@ -51,25 +53,27 @@ const TOKEN_TRANSFER_LOG_TOPIC_HASH =
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 
-const SWAPS_API_V2_BASE_URL = 'https://api2.metaswap.codefi.network';
-const GAS_API_BASE_URL = 'https://gas-api.metaswap.codefi.network';
-
 /**
  * @param {string} type Type of an API call, e.g. "tokens"
  * @param {string} chainId
  * @returns string
  */
 const getBaseUrlForNewSwapsApi = (type, chainId) => {
+  const useDevApis = process.env.SWAPS_USE_DEV_APIS;
+  const v2ApiBaseUrl = useDevApis
+    ? SWAPS_DEV_API_V2_BASE_URL
+    : SWAPS_API_V2_BASE_URL;
+  const gasApiBaseUrl = useDevApis ? GAS_DEV_API_BASE_URL : GAS_API_BASE_URL;
   const noNetworkSpecificTypes = ['refreshTime']; // These types don't need network info in the URL.
   if (noNetworkSpecificTypes.includes(type)) {
-    return SWAPS_API_V2_BASE_URL;
+    return v2ApiBaseUrl;
   }
   const chainIdDecimal = chainId && parseInt(chainId, 16);
   const gasApiTypes = ['gasPrices'];
   if (gasApiTypes.includes(type)) {
-    return `${GAS_API_BASE_URL}/networks/${chainIdDecimal}`; // Gas calculations are in its own repo.
+    return `${gasApiBaseUrl}/networks/${chainIdDecimal}`; // Gas calculations are in its own repo.
   }
-  return `${SWAPS_API_V2_BASE_URL}/networks/${chainIdDecimal}`;
+  return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
 const getBaseApi = function (
@@ -261,6 +265,19 @@ function validateData(validators, object, urlUsed) {
   });
 }
 
+export const shouldEnableDirectWrapping = (
+  chainId,
+  sourceToken,
+  destinationToken,
+) => {
+  const wrappedToken = SWAPS_WRAPPED_TOKENS_ADDRESSES[chainId];
+  const nativeToken = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.address;
+  return (
+    (sourceToken === wrappedToken && destinationToken === nativeToken) ||
+    (sourceToken === nativeToken && destinationToken === wrappedToken)
+  );
+};
+
 export async function fetchTradesInfo(
   {
     slippage,
@@ -284,6 +301,9 @@ export async function fetchTradesInfo(
 
   if (exchangeList) {
     urlParams.exchangeList = exchangeList;
+  }
+  if (shouldEnableDirectWrapping(chainId, sourceToken, destinationToken)) {
+    urlParams.enableDirectWrapping = true;
   }
 
   const queryString = new URLSearchParams(urlParams).toString();
@@ -410,8 +430,11 @@ export async function fetchTopAssets(chainId, useNewSwapsApi) {
 }
 
 export async function fetchSwapsFeatureFlags() {
+  const v2ApiBaseUrl = process.env.SWAPS_USE_DEV_APIS
+    ? SWAPS_DEV_API_V2_BASE_URL
+    : SWAPS_API_V2_BASE_URL;
   const response = await fetchWithCache(
-    `${SWAPS_API_V2_BASE_URL}/featureFlags`,
+    `${v2ApiBaseUrl}/featureFlags`,
     { method: 'GET' },
     { cacheRefreshTime: 600000 },
   );
@@ -619,6 +642,8 @@ export function quotesToRenderableData(
       renderedSlippage = 0;
     } else if (aggType === 'DEX') {
       liquiditySourceKey = 'swapDecentralizedExchange';
+    } else if (aggType === 'CONTRACT') {
+      liquiditySourceKey = 'swapDirectContract';
     } else {
       liquiditySourceKey = 'swapUnknown';
     }
@@ -760,29 +785,16 @@ export function formatSwapsValueForDisplay(destinationAmount) {
  */
 export const isContractAddressValid = (
   contractAddress,
-  swapMetaData,
   chainId = MAINNET_CHAIN_ID,
 ) => {
-  const contractAddressForChainId = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId];
-  if (!contractAddress || !contractAddressForChainId) {
+  if (!contractAddress || !ALLOWED_CONTRACT_ADDRESSES[chainId]) {
     return false;
   }
-  if (
-    (swapMetaData.token_from === ETH_SYMBOL &&
-      swapMetaData.token_to === WETH_SYMBOL) ||
-    (swapMetaData.token_from === WETH_SYMBOL &&
-      swapMetaData.token_to === ETH_SYMBOL)
-  ) {
+  return ALLOWED_CONTRACT_ADDRESSES[chainId].some(
     // Sometimes we get a contract address with a few upper-case chars and since addresses are
-    // case-insensitive, we compare uppercase versions for validity.
-    return (
-      contractAddress.toUpperCase() ===
-        ETH_WETH_CONTRACT_ADDRESS.toUpperCase() ||
-      contractAddressForChainId.toUpperCase() === contractAddress.toUpperCase()
-    );
-  }
-  return (
-    contractAddressForChainId.toUpperCase() === contractAddress.toUpperCase()
+    // case-insensitive, we compare lowercase versions for validity.
+    (allowedContractAddress) =>
+      contractAddress.toLowerCase() === allowedContractAddress.toLowerCase(),
   );
 };
 
