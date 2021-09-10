@@ -153,7 +153,13 @@ describe('SendFooter Component', () => {
   describe('Cancel Button', () => {
     const renderFooter = (props) =>
       renderWithProvider(
-        <SendFooter sendErrors={{}} sendStage="DRAFT" {...props} />,
+        <SendFooter
+          disabled
+          mostRecentOverviewPage="mostRecentOverviewPage"
+          sendErrors={{}}
+          sendStage="DRAFT"
+          {...props}
+        />,
       );
 
     it('has a cancel button in footer', () => {
