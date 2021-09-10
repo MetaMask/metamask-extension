@@ -36,7 +36,10 @@ import {
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
-import { DEVICE_NAMES, KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
+import {
+  DEVICE_NAMES,
+  KEYRING_TYPES,
+} from '../../shared/constants/hardware-wallets';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
@@ -863,6 +866,14 @@ export default class MetamaskController extends EventEmitter {
         this.qrHardwareKeyring.cancelReadCryptoHDKey,
         this.qrHardwareKeyring,
       ),
+      submitQRHardwareSignature: nodeify(
+        this.qrHardwareKeyring.submitSignature,
+        this.qrHardwareKeyring,
+      ),
+      cancelQRHardwareSignRequest: nodeify(
+        this.qrHardwareKeyring.cancelSignRequest,
+        this.qrHardwareKeyring,
+      ),
 
       // mobile
       fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
@@ -1643,13 +1654,12 @@ export default class MetamaskController extends EventEmitter {
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
         let label;
-        if(deviceName === DEVICE_NAMES.QR) {
+        if (deviceName === DEVICE_NAMES.QR) {
           const keyringName = keyring.getName();
           label = `${keyringName[0].toUpperCase()}${keyringName.slice(1)} ${
             parseInt(index, 10) + 1
           } ${hdPathDescription || ''}`.trim();
-        }
-        else {
+        } else {
           label = `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${
             parseInt(index, 10) + 1
           } ${hdPathDescription || ''}`.trim();

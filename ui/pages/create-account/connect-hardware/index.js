@@ -11,7 +11,10 @@ import {
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { SECOND } from '../../../../shared/constants/time';
-import { DEVICE_NAMES, LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
+import {
+  DEVICE_NAMES,
+  LEDGER_TRANSPORT_TYPES,
+} from '../../../../shared/constants/hardware-wallets';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
 
@@ -277,6 +280,7 @@ class ConnectHardwareForm extends Component {
 
     return (
       <AccountList
+        isQRHardwareDevice={this.state.device === 'qr-hardware'}
         onPathChange={this.onPathChange}
         selectedPath={this.props.defaultHdPaths[this.state.device]}
         device={this.state.device}

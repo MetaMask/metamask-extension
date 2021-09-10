@@ -2,7 +2,10 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Button from '../../../components/ui/button';
-import { DEVICE_NAMES, LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
+import {
+  DEVICE_NAMES,
+  LEDGER_TRANSPORT_TYPES,
+} from '../../../../shared/constants/hardware-wallets';
 
 export default class SelectHardware extends Component {
   static contextTypes = {

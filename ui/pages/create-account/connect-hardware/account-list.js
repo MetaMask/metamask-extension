@@ -69,18 +69,20 @@ class AccountList extends Component {
         <h3 className="hw-connect__hdPath__title">
           {this.context.t('selectAnAccount')}
         </h3>
-        <p className="hw-connect__msg">
-          {this.context.t('selectAnAccountHelp')}
-          {this.context.t('selectAnAccountHelpDirections', [
-            <button
-              className="hw-connect__msg-link"
-              onClick={() => this.setState({ showPopover: true })}
-              key="account-help"
-            >
-              {this.context.t('hardwareWalletSupportLinkConversion')}
-            </button>,
-          ])}
-        </p>
+        {!this.props.isQRHardwareDevice && (
+          <p className="hw-connect__msg">
+            {this.context.t('selectAnAccountHelp')}
+            {this.context.t('selectAnAccountHelpDirections', [
+              <button
+                className="hw-connect__msg-link"
+                onClick={() => this.setState({ showPopover: true })}
+                key="account-help"
+              >
+                {this.context.t('hardwareWalletSupportLinkConversion')}
+              </button>,
+            ])}
+          </p>
+        )}
       </div>
     );
   }
@@ -295,6 +297,7 @@ AccountList.propTypes = {
   onCancel: PropTypes.func,
   onAccountRestriction: PropTypes.func,
   hdPaths: PropTypes.array.isRequired,
+  isQRHardwareDevice: PropTypes.bool.isRequired,
 };
 
 AccountList.contextTypes = {
