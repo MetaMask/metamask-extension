@@ -402,7 +402,7 @@
     "message": "You have 1 account connected to this site."
   },
   "connectedAccountsEmptyDescription": {
-    "message": "MetaMask is not connected this site. To connect to a web3 site, find the connect button on their site."
+    "message": "MetaMask is not connected to this site. Find and click the web3 connect button on the page."
   },
   "connectedSites": {
     "message": "Connected sites"
