@@ -130,9 +130,7 @@ export default class ConfirmAddSuggestedToken extends Component {
               className="page-container__footer-button"
               onClick={async () => {
                 await Promise.all(
-                  suggestedAssets.map(async ({ id }) => {
-                    await rejectWatchAsset(id);
-                  }),
+                  suggestedAssets.map(async ({ id }) => rejectWatchAsset(id)),
                 );
                 history.push(mostRecentOverviewPage);
               }}

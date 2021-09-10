@@ -106,7 +106,7 @@ const TokenOverview = ({ className, token }) => {
                 dispatch(
                   setSwapsFromToken({
                     ...token,
-                    iconUrl: token?.image,
+                    iconUrl: token.image,
                     balance,
                     string: balanceToRender,
                   }),

@@ -112,22 +112,19 @@ export default class DetectTokensController {
         );
         return;
       }
+
+      const tokensWithBalance = tokensSlice.filter((_, index) => {
+        const balance = result[index];
+        return balance && !balance.isZero();
+      });
+
       await Promise.all(
-        tokensSlice.map(async (tokenAddress, index) => {
-          const balance = result[index];
-          let ignored;
-          if (this.hiddenTokens.length) {
-            ignored = this.hiddenTokens.find((ignoredTokenAddress) =>
-              isEqualCaseInsensitive(ignoredTokenAddress, tokenAddress),
-            );
-          }
-          if (balance && !balance.isZero() && ignored === undefined) {
-            await this.tokensController.addToken(
-              tokenAddress,
-              tokenList[tokenAddress].symbol,
-              tokenList[tokenAddress].decimals,
-            );
-          }
+        tokensWithBalance.map((tokenAddress) => {
+          return this.tokensController.addToken(
+            tokenAddress,
+            tokenList[tokenAddress].symbol,
+            tokenList[tokenAddress].decimals,
+          );
         }),
       );
     }
