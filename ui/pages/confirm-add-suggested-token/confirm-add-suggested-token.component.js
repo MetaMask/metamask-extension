@@ -143,7 +143,7 @@ export default class ConfirmAddSuggestedToken extends Component {
               className="page-container__footer-button"
               disabled={suggestedAssets.length === 0}
               onClick={async () => {
-                await Promise.All(
+                await Promise.all(
                   suggestedAssets.map(async ({ asset, id }) => {
                     await acceptWatchAsset(id);
                     this.context.trackEvent({
@@ -190,9 +190,11 @@ export default class ConfirmAddSuggestedToken extends Component {
    */
   checkNameReuse(suggestedAssets, tokens) {
     const duplicates = suggestedAssets.filter(({ asset }) => {
-      const dupes = tokens
-        .filter((old) => old.symbol === asset.symbol)
-        .filter((old) => !isEqualCaseInsensitive(old.address, asset.address));
+      const dupes = tokens.filter(
+        (old) =>
+          old.symbol === asset.symbol &&
+          !isEqualCaseInsensitive(old.address, asset.address),
+      );
       return dupes.length > 0;
     });
     return duplicates.length > 0;
