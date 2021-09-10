@@ -1085,6 +1085,9 @@
   "importTokenWarning": {
     "message": "Anyone can create a token with any name, including fake versions of existing tokens. Add and trade at your own risk!"
   },
+  "importTokens": {
+    "message": "import tokens"
+  },
   "importWallet": {
     "message": "Import wallet"
   },
@@ -1328,8 +1331,11 @@
     "message": "verify the network details",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
+  "missingToken": {
+    "message": "Don't see your token?"
+  },
   "mobileSyncWarning": {
-    "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet’s secret phrase to then import your wallet into mobile."
+    "message": "⚠️ Proceeding will display a secret QR code that allows access to your accounts. Do not share it with anyone. Support staff will never ask you for it."
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
@@ -1699,6 +1705,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protect your funds"
+  },
+  "refreshList": {
+    "message": "Refresh list"
   },
   "reject": {
     "message": "Reject"

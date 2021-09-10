@@ -4,8 +4,11 @@ import { useMetricEvent } from '../../../hooks/useMetricEvent';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ADD_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import Button from '../../ui/button';
+import Box from '../../ui/box/box';
+import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
+import { detectNewTokens } from '../../../store/actions';
 
-export default function AddTokenButton() {
+export default function ImportTokenLink() {
   const addTokenEvent = useMetricEvent({
     eventOpts: {
       category: 'Navigation',
@@ -17,18 +20,25 @@ export default function AddTokenButton() {
   const history = useHistory();
 
   return (
-    <div className="add-token-button">
+    <Box className="import-token-link" textAlign={TEXT_ALIGN.CENTER}>
       <Button
-        className="add-token-button__button"
-        type="secondary"
-        rounded
+        className="import-token-link__link"
+        type="link"
+        onClick={() => detectNewTokens()}
+      >
+        {t('refreshList')}
+      </Button>
+      {' or '}
+      <Button
+        className="import-token-link__link"
+        type="link"
         onClick={() => {
           history.push(ADD_TOKEN_ROUTE);
           addTokenEvent();
         }}
       >
-        {t('addToken')}
+        {t('importTokens')}
       </Button>
-    </div>
+    </Box>
   );
 }

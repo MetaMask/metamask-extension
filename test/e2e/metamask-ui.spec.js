@@ -501,9 +501,9 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs);
     });
 
-    it('clicks on the Add Token button', async function () {
+    it('clicks on the import tokens button', async function () {
       await driver.clickElement(`[data-testid="home__asset-tab"]`);
-      await driver.clickElement({ text: 'Add Token', tag: 'button' });
+      await driver.clickElement({ text: 'import tokens', tag: 'a' });
       await driver.delay(regularDelayMs);
     });
 

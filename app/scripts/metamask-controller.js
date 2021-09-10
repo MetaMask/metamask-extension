@@ -1179,6 +1179,12 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController.removePollingToken,
         this.appStateController,
       ),
+
+      // DetectTokenController
+      detectNewTokens: nodeify(
+        this.detectTokensController.detectNewTokens,
+        this.detectTokensController,
+      ),
     };
   }
 
