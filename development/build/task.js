@@ -48,7 +48,10 @@ function createTask(taskName, taskFn) {
   return task;
 }
 
-function runInChildProcess(task, { buildType, isLavaMoat }) {
+function runInChildProcess(
+  task,
+  { buildType, isLavaMoat, shouldLintFenceFiles },
+) {
   const taskName = typeof task === 'string' ? task : task.taskName;
   if (!taskName) {
     throw new Error(
@@ -63,7 +66,15 @@ function runInChildProcess(task, { buildType, isLavaMoat }) {
     if (isLavaMoat) {
       childProcess = spawn(
         'yarn',
-        ['build', taskName, '--build-type', buildType, '--skip-stats'],
+        [
+          'build',
+          taskName,
+          '--build-type',
+          buildType,
+          '--lint-fence-files',
+          shouldLintFenceFiles,
+          '--skip-stats',
+        ],
         {
           env: process.env,
         },
@@ -71,7 +82,15 @@ function runInChildProcess(task, { buildType, isLavaMoat }) {
     } else {
       childProcess = spawn(
         'yarn',
-        ['build:dev', taskName, '--build-type', buildType, '--skip-stats'],
+        [
+          'build:dev',
+          taskName,
+          '--build-type',
+          buildType,
+          '--lint-fence-files',
+          shouldLintFenceFiles,
+          '--skip-stats',
+        ],
         {
           env: process.env,
         },

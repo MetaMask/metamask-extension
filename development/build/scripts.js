@@ -55,6 +55,7 @@ function createScriptTasks({
   buildType,
   isLavaMoat,
   livereload,
+  shouldLintFenceFiles,
 }) {
   // internal tasks
   const core = {
@@ -97,6 +98,7 @@ function createScriptTasks({
           return `./app/scripts/${label}.js`;
         }),
         testing,
+        shouldLintFenceFiles,
       }),
     );
 
@@ -151,6 +153,7 @@ function createScriptTasks({
       runInChildProcess(subtask, {
         buildType,
         isLavaMoat,
+        shouldLintFenceFiles,
       }),
     );
     // make a parent task that runs each task in a child thread
@@ -166,6 +169,7 @@ function createScriptTasks({
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
       label,
+      shouldLintFenceFiles,
     });
   }
 
@@ -178,6 +182,7 @@ function createScriptTasks({
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
       label,
+      shouldLintFenceFiles,
     });
   }
 
@@ -190,6 +195,7 @@ function createScriptTasks({
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
       label,
+      shouldLintFenceFiles,
     });
   }
 
@@ -206,6 +212,7 @@ function createScriptTasks({
         entryFilepath: `./app/scripts/${inpage}.js`,
         label: inpage,
         testing,
+        shouldLintFenceFiles,
       }),
       createNormalBundle({
         buildType,
@@ -215,6 +222,7 @@ function createScriptTasks({
         entryFilepath: `./app/scripts/${contentscript}.js`,
         label: contentscript,
         testing,
+        shouldLintFenceFiles,
       }),
     );
   }
@@ -226,6 +234,7 @@ function createFactoredBuild({
   devMode,
   entryFiles,
   testing,
+  shouldLintFenceFiles,
 }) {
   return async function () {
     // create bundler setup and apply defaults
@@ -244,6 +253,7 @@ function createFactoredBuild({
       envVars,
       minify,
       reloadOnChange,
+      shouldLintFenceFiles,
     });
 
     // set bundle entries
@@ -344,6 +354,7 @@ function createNormalBundle({
   extraEntries = [],
   label,
   modulesToExpose,
+  shouldLintFenceFiles,
   testing,
 }) {
   return async function () {
@@ -363,6 +374,7 @@ function createNormalBundle({
       envVars,
       minify,
       reloadOnChange,
+      shouldLintFenceFiles,
     });
 
     // set bundle entries
@@ -409,7 +421,7 @@ function createBuildConfiguration() {
 
 function setupBundlerDefaults(
   buildConfiguration,
-  { buildType, devMode, envVars, minify, reloadOnChange },
+  { buildType, devMode, envVars, minify, reloadOnChange, shouldLintFenceFiles },
 ) {
   const { bundlerOpts } = buildConfiguration;
 
@@ -417,7 +429,7 @@ function setupBundlerDefaults(
     // Source transforms
     transform: [
       // Remove code that should be excluded from builds of the current type
-      createRemoveFencedCodeTransform(buildType),
+      createRemoveFencedCodeTransform(buildType, shouldLintFenceFiles),
       // Transpile top-level code
       babelify,
       // Inline `fs.readFileSync` files
