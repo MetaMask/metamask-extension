@@ -62,27 +62,22 @@ export default class ConfirmAddSuggestedToken extends Component {
     const reusesName = this.checkNameReuse(pendingTokens, tokens);
 
     const addTokens = async () => {
-      const tokenEntries = Object.entries(pendingTokens);
-      for (const tokenEntry of tokenEntries) {
-        const [, token] = tokenEntry;
-        await addToken(token);
-      }
-
-      removeSuggestedTokens()
-        .then(() => {
-          this.context.trackEvent({
-            event: 'Token Added',
-            category: 'Wallet',
-            sensitiveProperties: {
-              token_symbol: pendingToken.symbol,
-              token_contract_address: pendingToken.address,
-              token_decimal_precision: pendingToken.decimals,
-              unlisted: pendingToken.unlisted,
-              source: 'dapp',
-            },
-          });
-        })
-        .then(() => history.push(mostRecentOverviewPage));
+      await Promise.all(
+        Object.values(pendingTokens).map((token) => addToken(token)),
+      );
+      await removeSuggestedTokens();
+      this.context.trackEvent({
+        event: 'Token Added',
+        category: 'Wallet',
+        sensitiveProperties: {
+          token_symbol: pendingToken.symbol,
+          token_contract_address: pendingToken.address,
+          token_decimal_precision: pendingToken.decimals,
+          unlisted: pendingToken.unlisted,
+          source: 'dapp',
+        },
+      });
+      history.push(mostRecentOverviewPage);
     };
 
     return (
