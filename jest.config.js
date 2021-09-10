@@ -1,8 +1,20 @@
 module.exports = {
-  restoreMocks: true,
-  coverageDirectory: 'jest-coverage/',
-  collectCoverageFrom: ['<rootDir>/ui/**/*.js', '<rootDir>/shared/**/*.js'],
-  coveragePathIgnorePatterns: ['.stories.js', '.snap'],
+  collectCoverage: true,
+  coverageDirectory: 'jest-coverage',
+  coverageReporters: ['text', 'html'],
+  collectCoverageFrom: [
+    '<rootDir>/development/build/transforms/**/*.js',
+    // '<rootDir>/shared/**/*.js',
+    // '<rootDir>/ui/**/*.js',
+  ],
+  coveragePathIgnorePatterns: [
+    '/node_modules/',
+    // "development"
+    './development/build/utils.js',
+    // "ui"
+    '.stories.js',
+    '.snap',
+  ],
   coverageThreshold: {
     global: {
       branches: 35,
@@ -11,10 +23,25 @@ module.exports = {
       statements: 43,
     },
   },
-  setupFiles: ['./test/setup.js', './test/env.js'],
-  setupFilesAfterEnv: ['./test/jest/setup.js'],
-  testMatch: [
-    '<rootDir>/ui/**/?(*.)+(test).js',
-    '<rootDir>/shared/**/?(*.)+(test).js',
+  projects: [
+    {
+      displayName: 'development',
+      resetMocks: true,
+      restoreMocks: true,
+      testEnvironment: 'node',
+      testMatch: ['<rootDir>/development/build/transforms/?(*.)+(test).js'],
+    },
+    // {
+    //   displayName: 'ui',
+    //   // TODO: enable resetMocks
+    //   // resetMocks: true,
+    //   restoreMocks: true,
+    //   setupFiles: ['./test/setup.js', './test/env.js'],
+    //   setupFilesAfterEnv: ['./test/jest/setup.js'],
+    //   testMatch: [
+    //     '<rootDir>/ui/**/?(*.)+(test).js',
+    //     '<rootDir>/shared/**/?(*.)+(test).js',
+    //   ],
+    // },
   ],
 };

@@ -1,72 +1,65 @@
 const path = require('path');
-const pump = require('pump');
 const through = require('through2');
 const { PassThrough } = require('readable-stream');
 const { BuildTypes } = require('../utils');
+
+/**
+ * @typedef {import('readable-stream').Duplex} Duplex
+ */
 
 module.exports = {
   createRemoveFencedCodeTransform,
   removeFencedCode,
 };
 
-/*
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-AssetsController: this.assetsController.store,
-PluginController: this.pluginController,
-///: END:ONLY_INCLUDE_IN
- */
-
 /**
- *
  * @param {string} buildType - The type of the current build.
+ * @returns {(fileName: string) => Duplex} The transform function.
  */
 function createRemoveFencedCodeTransform(buildType) {
   if (!(buildType in BuildTypes)) {
     throw new Error(
-      `Metamask build: Code fencing transform received unrecognized build type: "${buildType}"`,
+      `Metamask build: Code fencing transform received unrecognized build type "${buildType}".`,
     );
   }
 
-  // The transform is function that receives a file as an argument, and returns
-  // duplex stream that applies the transform logic by operating on the file
-  // contents as a buffer with a particular encoding (in our case always utf8).
-  // "next" is called at the end of the transform operation to inform browserify
-  // that it can continue to the next transform.
+  // Browserify transforms are functions that receive a file name and return a
+  // duplex stream. The stream receives the file contents piecemeal in the form
+  // of Buffers.
+  // To apply our code fencing transform, we concatenate all buffers and convert
+  // them to a single string, then apply the actual transform function on that
+  // string.
+  /**
+   * @returns {Duplex}
+   */
   return function removeFencedCodeTransform(fileName) {
     if (!['.js', '.cjs', '.mjs'].includes(path.extname(fileName))) {
       return new PassThrough();
     }
 
-    let allBuffers = [];
+    const fileBuffers = [];
 
-    return pump(
+    return through(
       // Concatenate all buffers for the current file into a single buffer.
-      through(
-        function (partialBuffer, _encoding, next) {
-          allBuffers.push(partialBuffer);
-          next();
-        },
-        function (end) {
-          this.push(Buffer.concat(allBuffers));
-          allBuffers = null;
-          end();
-        },
-      ),
-      // Apply the transform
-      through(function (fileBuffer, _encoding, next) {
-        this.push(
-          removeFencedCode(fileName, buildType, fileBuffer.toString('utf8')),
-        );
-        next();
-      }),
-      // Handle errors from either through stream
-      (error) => {
-        if (error) {
-          console.error(
-            `"removeFencedCodeTransform" encountered an error: ${error.message}`,
-          );
-          throw error;
+      function (fileBuffer, encoding, next) {
+        if (!Buffer.isBuffer(fileBuffer)) {
+          throw new Error(`Expected a Buffer but received "${encoding}".`);
         }
+
+        fileBuffers.push(fileBuffer);
+        next();
+      },
+      // Apply the transform
+      function (end) {
+        this.push(
+          removeFencedCode(
+            fileName,
+            buildType,
+            Buffer.concat(fileBuffers).toString('utf8'),
+          ),
+        );
+
+        end();
       },
     );
   };
@@ -105,13 +98,21 @@ const fenceSentinelRegex = /^\s*\/\/\/:/u;
 // - TERMINUS:COMMAND
 const directiveParsingRegex = /^([A-Z]+):([A-Z_]+)(?:\(([\w,]+)\))?$/u;
 
+/*
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+AssetsController: this.assetsController.store,
+PluginController: this.pluginController,
+///: END:ONLY_INCLUDE_IN
+ */
+
 /**
- * @param {string} fileContents - The contents of the current file.
- * @returns
+ * @param {string} fileName - The name of the file being transformed.
+ * @param {string} typeOfCurrentBuild - The type of the current build process.
+ * @param {string} fileContents - The contents of the file being transformed.
+ * @returns {string} The transformed file contents.
  */
 function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
   const matchedLines = [...fileContents.matchAll(linesWithFenceRegex)];
-  // console.log('MATCHED LINES', matchedLines)
 
   // If we didn't match any lines, return the unmodified file contents.
   if (matchedLines.length === 0) {
@@ -159,6 +160,7 @@ function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
       );
     }
 
+    // The first element of a RegEx match array is the input
     const [, terminus, command, parameters] = directiveMatches;
 
     if (!(terminus in DirectiveTerminuses)) {
@@ -197,14 +199,22 @@ function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
     throw new Error(
       getInvalidFenceStructureMessage(
         fileName,
-        `A valid fence consists of a "BEGIN" and "END" directive pair, but the file contains an uneven number of directives.`,
+        `A valid fence consists of two fence lines, but the file contains an uneven number of fence lines.`,
       ),
     );
   }
 
+  // The below for-loop iterates over the parsed fence directives and performs
+  // the following work:
+  // - Ensures that the array of parsed directives consist of valid directive
+  //   pairs, as specified in the README
+  // - For each directive pair, determines whether their fenced lines should be
+  //   removed for the current build, and if so, stores the indices we will use
+  //   to splice the file content string.
+
   const splicingIndices = [];
+  let shouldSplice = false;
   let currentCommand;
-  let shouldRemove = false;
 
   for (let i = 0; i < parsedDirectives.length; i++) {
     const { line, indices, terminus, command, parameters } = parsedDirectives[
@@ -226,9 +236,9 @@ function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
       CommandValidators[command](parameters, fileName);
 
       if (parameters.includes(typeOfCurrentBuild)) {
-        shouldRemove = false;
+        shouldSplice = false;
       } else {
-        shouldRemove = true;
+        shouldSplice = true;
         // Add start index of BEGIN directive line to splicing indices
         splicingIndices.push(indices[0]);
       }
@@ -253,39 +263,62 @@ function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
         );
       }
 
-      if (shouldRemove) {
+      if (shouldSplice) {
         // Add end index of END directive line to splicing indices
         splicingIndices.push(indices[1]);
       }
     }
   }
 
+  // This indicates that the present build type should include all fenced code,
+  // and so we just returned the unmodified file contents.
+  if (splicingIndices.length === 0) {
+    return fileContents;
+  }
+
+  /* istanbul ignore next: should be impossible */
+  if (splicingIndices.length % 2 !== 0) {
+    throw new Error(
+      `MetaMask build: Internal error while transforming file "${fileName}":\nCollected an uneven number of splicing indices: "${splicingIndices.length}"`,
+    );
+  }
+
   return multiSplice(fileContents, splicingIndices);
 }
 
 /**
+ * Returns a copy of the given string, without the character ranges specified
+ * by the splicing indices array.
+ *
+ * The splicing indices must be a non-empty, even-length array of non-negative
+ * integers, specifying the character ranges to remove from the given string, as
+ * follows: [ start, end, start, end, start, end, ... ]
  *
  * @param {string} string - The string to splice.
- * @param {number[]} splicingIndices - Indices to splice.
+ * @param {number[]} splicingIndices - Indices to splice at.
  * @returns {string} The spliced string.
  */
 function multiSplice(string, splicingIndices) {
-  const parts = [];
+  const retainedParts = [];
 
   // Get the first part to be included
   // The substring() call returns an empty string if splicingIndices[0] is 0,
   // which is exactly what we want in that case.
-  parts.push(string.substring(0, splicingIndices[0]));
+  retainedParts.push(string.substring(0, splicingIndices[0]));
 
-  // This loop gets us all the parts that should be included except the first
-  // and the last
+  // This loop gets us all parts of the string that should be retained, except
+  // the first and the last
   for (let i = 2; i < splicingIndices.length; i += 2) {
-    parts.push(string.substring(splicingIndices[i - 1], splicingIndices[i]));
+    retainedParts.push(
+      string.substring(splicingIndices[i - 1], splicingIndices[i]),
+    );
   }
 
   // Get the last part to be included
-  parts.push(string.substring(splicingIndices[splicingIndices.length - 1]));
-  return parts.join('');
+  retainedParts.push(
+    string.substring(splicingIndices[splicingIndices.length - 1]),
+  );
+  return retainedParts.join('');
 }
 
 /**
