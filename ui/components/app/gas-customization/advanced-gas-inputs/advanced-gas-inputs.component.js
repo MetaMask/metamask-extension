@@ -52,22 +52,32 @@ export default class AdvancedGasInputs extends Component {
     }
   }
 
-  onChangeGasLimit = (e) => {
-    this.setState({ gasLimit: e.target.value });
-    this.changeGasLimit({ target: { value: e.target.value } });
+  onChangeGasLimit = ({ target: { value } }) => {
+    const newGasLimit = Number(value);
+    if (isNaN(newGasLimit) || newGasLimit < 0) {
+      this.setState({ gasLimit: this.state.gasLimit });
+      return;
+    }
+    this.setState({ gasLimit: newGasLimit });
+    this.changeGasLimit(newGasLimit);
   };
 
-  changeGasLimit = (e) => {
-    this.props.updateCustomGasLimit(Number(e.target.value));
+  changeGasLimit = (newGasLimit) => {
+    this.props.updateCustomGasLimit(newGasLimit);
   };
 
-  onChangeGasPrice = (e) => {
-    this.setState({ gasPrice: e.target.value });
-    this.changeGasPrice({ target: { value: e.target.value } });
+  onChangeGasPrice = ({ target: { value } }) => {
+    const newGasPrice = Number(value);
+    if (isNaN(newGasPrice) || newGasPrice < 0) {
+      this.setState({ gasPrice: this.state.gasPrice });
+      return;
+    }
+    this.setState({ gasPrice: newGasPrice });
+    this.changeGasPrice(newGasPrice);
   };
 
-  changeGasPrice = (e) => {
-    this.props.updateCustomGasPrice(Number(e.target.value));
+  changeGasPrice = (newGasPrice) => {
+    this.props.updateCustomGasPrice(newGasPrice);
   };
 
   gasPriceError({
