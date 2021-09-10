@@ -74,7 +74,7 @@ export default class ConfirmAddSuggestedToken extends Component {
             {this.context.t('addSuggestedTokens')}
           </div>
           <div className="page-container__subtitle">
-            {this.context.t('likeToAddTokens')}
+            {this.context.t('likeToImportTokens')}
           </div>
           {hasTokenDuplicates ? (
             <div className="warning">{this.context.t('knownTokenWarning')}</div>
@@ -86,34 +86,34 @@ export default class ConfirmAddSuggestedToken extends Component {
           ) : null}
         </div>
         <div className="page-container__content">
-          <div className="confirm-add-token">
-            <div className="confirm-add-token__header">
-              <div className="confirm-add-token__token">
+          <div className="confirm-import-token">
+            <div className="confirm-import-token__header">
+              <div className="confirm-import-token__token">
                 {this.context.t('token')}
               </div>
-              <div className="confirm-add-token__balance">
+              <div className="confirm-import-token__balance">
                 {this.context.t('balance')}
               </div>
             </div>
-            <div className="confirm-add-token__token-list">
+            <div className="confirm-import-token__token-list">
               {suggestedAssets.map(({ asset }) => {
                 return (
                   <div
-                    className="confirm-add-token__token-list-item"
+                    className="confirm-import-token__token-list-item"
                     key={asset.address}
                   >
-                    <div className="confirm-add-token__token confirm-add-token__data">
+                    <div className="confirm-import-token__token confirm-import-token__data">
                       <Identicon
-                        className="confirm-add-token__token-icon"
+                        className="confirm-import-token__token-icon"
                         diameter={48}
                         address={asset.address}
                         image={asset.image}
                       />
-                      <div className="confirm-add-token__name">
+                      <div className="confirm-import-token__name">
                         {this.getTokenName(asset.name, asset.symbol)}
                       </div>
                     </div>
-                    <div className="confirm-add-token__balance">
+                    <div className="confirm-import-token__balance">
                       <TokenBalance token={asset} />
                     </div>
                   </div>

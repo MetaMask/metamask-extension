@@ -6,7 +6,7 @@ import {
   getURLHostName,
 } from '../../helpers/utils/util';
 import { tokenInfoGetter } from '../../helpers/utils/token-util';
-import { CONFIRM_ADD_TOKEN_ROUTE } from '../../helpers/constants/routes';
+import { CONFIRM_IMPORT_TOKEN_ROUTE } from '../../helpers/constants/routes';
 import TextField from '../../components/ui/text-field';
 import PageContainer from '../../components/ui/page-container';
 import { Tabs, Tab } from '../../components/ui/tabs';
@@ -24,7 +24,7 @@ const emptyAddr = '0x0000000000000000000000000000000000000000';
 const MIN_DECIMAL_VALUE = 0;
 const MAX_DECIMAL_VALUE = 36;
 
-class AddToken extends Component {
+class ImportToken extends Component {
   static contextTypes = {
     t: PropTypes.func,
   };
@@ -163,7 +163,7 @@ class AddToken extends Component {
     };
 
     setPendingTokens({ customToken, selectedTokens, tokenAddressList });
-    history.push(CONFIRM_ADD_TOKEN_ROUTE);
+    history.push(CONFIRM_IMPORT_TOKEN_ROUTE);
   }
 
   async attemptToAutoFillTokenParams(address) {
@@ -281,7 +281,25 @@ class AddToken extends Component {
       : this.context.t('etherscan');
 
     return (
-      <div className="add-token__custom-token-form">
+      <div className="import-token__custom-token-form">
+        <ActionableMessage
+          message={this.context.t('fakeTokenWarning', [
+            <Button
+              type="link"
+              key="import-token-fake-token-warning"
+              className="import-token__link"
+              rel="noopener noreferrer"
+              target="_blank"
+              href="https://metamask.zendesk.com/hc/en-us/articles/4403988839451"
+            >
+              {this.context.t('learnScamRisk')}
+            </Button>,
+          ])}
+          type="warning"
+          withRightButton
+          useIcon
+          iconFillColor="#f8c000"
+        />
         <TextField
           id="custom-address"
           label={this.context.t('tokenContractAddress')}
@@ -296,13 +314,13 @@ class AddToken extends Component {
         <TextField
           id="custom-symbol"
           label={
-            <div className="add-token__custom-symbol__label-wrapper">
-              <span className="add-token__custom-symbol__label">
+            <div className="import-token__custom-symbol__label-wrapper">
+              <span className="import-token__custom-symbol__label">
                 {this.context.t('tokenSymbol')}
               </span>
               {symbolAutoFilled && !forceEditSymbol && (
                 <div
-                  className="add-token__custom-symbol__edit"
+                  className="import-token__custom-symbol__edit"
                   onClick={() => this.setState({ forceEditSymbol: true })}
                 >
                   {this.context.t('edit')}
@@ -348,8 +366,8 @@ class AddToken extends Component {
                   {this.context.t('verifyThisTokenDecimalOn', [
                     <Button
                       type="link"
-                      key="add-token-verify-token-decimal"
-                      className="add-token__link"
+                      key="import-token-verify-token-decimal"
+                      className="import-token__link"
                       rel="noopener noreferrer"
                       target="_blank"
                       href={blockExplorerTokenLink}
@@ -362,7 +380,7 @@ class AddToken extends Component {
             }
             type="warning"
             withRightButton
-            className="add-token__decimal-warning"
+            className="import-token__decimal-warning"
           />
         )}
       </div>
@@ -373,7 +391,7 @@ class AddToken extends Component {
     const { tokenList } = this.props;
     const { tokenSelectorError, selectedTokens, searchResults } = this.state;
     return (
-      <div className="add-token__search-token">
+      <div className="import-token__search-token">
         <TokenSearch
           onSearch={({ results = [] }) =>
             this.setState({ searchResults: results })
@@ -381,7 +399,7 @@ class AddToken extends Component {
           error={tokenSelectorError}
           tokenList={tokenList}
         />
-        <div className="add-token__token-list">
+        <div className="import-token__token-list">
           <TokenList
             results={searchResults}
             selectedTokens={selectedTokens}
@@ -417,11 +435,12 @@ class AddToken extends Component {
 
     return (
       <PageContainer
-        title={this.context.t('addTokens')}
+        title={this.context.t('importTokensCamelCase')}
         tabsComponent={this.renderTabs()}
         onSubmit={() => this.handleNext()}
+        hideCancel
         disabled={Boolean(this.hasError()) || !this.hasSelected()}
-        onCancel={() => {
+        onClose={() => {
           clearPendingTokens();
           history.push(mostRecentOverviewPage);
         }}
@@ -430,4 +449,4 @@ class AddToken extends Component {
   }
 }
 
-export default AddToken;
+export default ImportToken;

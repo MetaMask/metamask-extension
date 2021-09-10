@@ -52,6 +52,9 @@
   "addContact": {
     "message": "Add contact"
   },
+  "addCustomToken": {
+    "message": "Add Custom Token"
+  },
   "addCustomTokenByContractAddress": {
     "message": "Can’t find a token? You can manually add any token by pasting its address. Token contract addresses can be found on $1.",
     "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
@@ -90,9 +93,6 @@
   },
   "addToken": {
     "message": "Add Token"
-  },
-  "addTokens": {
-    "message": "Add Tokens"
   },
   "addressBookIcon": {
     "message": "Address book icon"
@@ -884,6 +884,9 @@
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
   },
+  "fakeTokenWarning": {
+    "message": "Anyone can create a token, including creating fake versions of existing tokens. Learn more about $1"
+  },
   "fast": {
     "message": "Fast"
   },
@@ -1088,6 +1091,9 @@
   "importTokens": {
     "message": "import tokens"
   },
+  "importTokensCamelCase": {
+    "message": "Import Tokens"
+  },
   "importWallet": {
     "message": "Import wallet"
   },
@@ -1189,6 +1195,9 @@
   "learnMore": {
     "message": "Learn more"
   },
+  "learnScamRisk": {
+    "message": "scams and security risks."
+  },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
   },
@@ -1222,8 +1231,8 @@
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"
   },
-  "likeToAddTokens": {
-    "message": "Would you like to add these tokens?"
+  "likeToImportTokens": {
+    "message": "Would you like to import these tokens?"
   },
   "links": {
     "message": "Links"
@@ -1668,7 +1677,7 @@
     "message": "Queued"
   },
   "readdToken": {
-    "message": "You can add this token back in the future by going to “Add token” in your accounts options menu."
+    "message": "You can add this token back in the future by going to “Import token” in your accounts options menu."
   },
   "receive": {
     "message": "Receive"

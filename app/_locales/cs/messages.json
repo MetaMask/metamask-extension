@@ -11,9 +11,6 @@
   "addToken": {
     "message": "Přidat token"
   },
-  "addTokens": {
-    "message": "Přidat tokeny"
-  },
   "amount": {
     "message": "Částka"
   },
@@ -214,7 +211,7 @@
   "learnMore": {
     "message": "Zjistěte více."
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
   "links": {

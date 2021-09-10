@@ -50,9 +50,6 @@
   "addToken": {
     "message": "ተለዋጭ ስም አክል"
   },
-  "addTokens": {
-    "message": "ተለዋጭ ስሞችን አክል"
-  },
   "advanced": {
     "message": "የላቀ"
   },
@@ -540,7 +537,7 @@
   "letsGoSetUp": {
     "message": "አዎ፣ እናደራጅ!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "እነዚህን ተለዋጭ ስሞች ለማከል ይፈልጋሉ?"
   },
   "links": {

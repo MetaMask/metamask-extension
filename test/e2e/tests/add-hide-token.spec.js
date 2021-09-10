@@ -83,7 +83,7 @@ describe('Add existing token using search', function () {
         await driver.fill('#search-tokens', 'BAT');
         await driver.clickElement({ text: 'BAT', tag: 'span' });
         await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Add Tokens', tag: 'button' });
+        await driver.clickElement({ text: 'Import Tokens', tag: 'button' });
 
         await driver.waitForSelector({
           css: '.token-overview__primary-balance',

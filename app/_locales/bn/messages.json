@@ -50,9 +50,6 @@
   "addToken": {
     "message": "টোকেন যোগ করুন"
   },
-  "addTokens": {
-    "message": "টোকেনগুলি যোগ করুন"
-  },
   "advanced": {
     "message": "উন্নত"
   },
@@ -540,7 +537,7 @@
   "letsGoSetUp": {
     "message": "হ্যাঁ, তাহলে সেট আপ করে নেওয়া যাক!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "আপনি কি এই টোকেনগুলি যোগ করতে চান?"
   },
   "links": {

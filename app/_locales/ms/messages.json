@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Tambah Token"
   },
-  "addTokens": {
-    "message": "Tambah Token"
-  },
   "advanced": {
     "message": "Lanjutan"
   },
@@ -526,7 +523,7 @@
   "letsGoSetUp": {
     "message": "Ya, mari sediakannya!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Adakah anda ingin menambah token ini?"
   },
   "links": {

@@ -7,7 +7,7 @@ import {
   getRpcPrefsForCurrentProvider,
   getTokenList,
 } from '../../selectors/selectors';
-import AddToken from './add-token.component';
+import ImportToken from './import-token.component';
 
 const mapStateToProps = (state) => {
   const {
@@ -37,4 +37,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddToken);
+export default connect(mapStateToProps, mapDispatchToProps)(ImportToken);

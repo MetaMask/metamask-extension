@@ -50,9 +50,6 @@
   "addToken": {
     "message": "یک رمز یاب اضافه کنید"
   },
-  "addTokens": {
-    "message": "اضافه رمزیاب ها"
-  },
   "advanced": {
     "message": "پیشرفته"
   },
@@ -540,7 +537,7 @@
   "letsGoSetUp": {
     "message": "بلی، درست شد!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "آیا میخواهید این رمزیاب ها را اضافه نمایید؟"
   },
   "links": {
