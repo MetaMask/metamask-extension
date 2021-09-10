@@ -4,9 +4,11 @@ import { useMetricEvent } from '../../../hooks/useMetricEvent';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import Button from '../../ui/button';
+import Box from '../../ui/box/box';
+import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
 import { detectNewTokens } from '../../../store/actions';
 
-export default function AddTokenButton() {
+export default function ImportTokenLink() {
   const addTokenEvent = useMetricEvent({
     eventOpts: {
       category: 'Navigation',
@@ -18,7 +20,7 @@ export default function AddTokenButton() {
   const history = useHistory();
 
   return (
-    <div className="add-token-button">
+    <Box className="import-token-link" textAlign={TEXT_ALIGN.CENTER}>
       <Button
         className="import-token-link__link"
         type="link"
@@ -35,8 +37,8 @@ export default function AddTokenButton() {
           addTokenEvent();
         }}
       >
-        {t('addToken')}
+        {t('importTokens')}
       </Button>
-    </div>
+    </Box>
   );
 }
