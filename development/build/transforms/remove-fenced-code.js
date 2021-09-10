@@ -4,7 +4,7 @@ const { PassThrough } = require('readable-stream');
 const { BuildTypes } = require('../utils');
 
 module.exports = {
-  createCodeFencingTransform,
+  createRemoveFencedCodeTransform,
   removeFencedCode,
 };
 
@@ -19,7 +19,7 @@ PluginController: this.pluginController,
  *
  * @param {string} buildType - The type of the current build.
  */
-function createCodeFencingTransform(buildType) {
+function createRemoveFencedCodeTransform(buildType) {
   if (!(buildType in BuildTypes)) {
     throw new Error(
       `Metamask build: Code fencing transform received unrecognized build type: "${buildType}"`,

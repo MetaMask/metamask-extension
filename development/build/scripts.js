@@ -44,7 +44,7 @@ const {
   composeSeries,
   runInChildProcess,
 } = require('./task');
-const { createCodeFencingTransform } = require('./transforms/code-fencing');
+const { createRemoveFencedCodeTransform } = require('./transforms/remove-fenced-code');
 
 module.exports = createScriptTasks;
 
@@ -410,7 +410,7 @@ function setupBundlerDefaults(
     // Source transforms
     transform: [
       // Remove code that should be excluded from builds of the current type
-      createCodeFencingTransform(buildType),
+      createRemoveFencedCodeTransform(buildType),
       // Transpile top-level code
       babelify,
       // Inline `fs.readFileSync` files
