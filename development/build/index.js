@@ -17,7 +17,7 @@ const createScriptTasks = require('./scripts');
 const createStyleTasks = require('./styles');
 const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
-const { getNextBetaVersionMap } = require('./utils');
+const { BuildTypes, getNextBetaVersionMap } = require('./utils');
 
 // packages required dynamically via browserify configuration in dependencies
 require('loose-envify');
@@ -150,11 +150,6 @@ function parseArgv() {
     SkipStats: 'skip-stats',
   };
 
-  const BuildTypes = {
-    beta: 'beta',
-    main: 'main',
-  };
-
   const argv = minimist(process.argv.slice(2), {
     boolean: [NamedArgs.OmitLockdown, NamedArgs.SkipStats],
     string: [NamedArgs.BuildType],
@@ -191,7 +186,7 @@ function parseArgv() {
     betaVersion: String(betaVersion),
     buildType,
     entryTask,
-    isBeta: argv[NamedArgs.BuildType] === 'beta',
+    isBeta: argv[NamedArgs.BuildType] === BuildTypes.beta,
     isLavaMoat: process.argv[0].includes('lavamoat'),
     shouldIncludeLockdown: argv[NamedArgs.OmitLockdown],
     skipStats: argv[NamedArgs.SkipStats],
