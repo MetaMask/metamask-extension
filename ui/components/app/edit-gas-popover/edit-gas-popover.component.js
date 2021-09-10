@@ -28,6 +28,7 @@ import {
 } from '../../../store/actions';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+import { useIncrementedGasFees } from '../../../hooks/useIncrementedGasFees';
 
 export default function EditGasPopover({
   popoverTitle = '',
@@ -62,6 +63,17 @@ export default function EditGasPopover({
   ] = useState(false);
 
   const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
+
+  if (mode === EDIT_GAS_MODES.SPEED_UP || mode === EDIT_GAS_MODES.CANCEL) {
+    transaction = {
+      ...transaction.primaryTransaction,
+      userFeeLevel: 'custom',
+      txParams: {
+        ...transaction.primaryTransaction?.txParams,
+        ...useIncrementedGasFees(transaction),
+      },
+    };
+  }
 
   const {
     maxPriorityFeePerGas,
