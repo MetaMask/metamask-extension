@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-
 import Jazzicon from '../jazzicon';
 import BlockieIdenticon from './blockieIdenticon';
 
@@ -103,9 +101,9 @@ export default class Identicon extends PureComponent {
 
     if (address) {
       // token from dynamic api list is fetched when useTokenDetection is true
-      const tokenAddress = useTokenDetection
-        ? address
-        : toChecksumHexAddress(address);
+      // And since the token.address from allTokens is checksumaddress
+      // tokenAddress have to be changed to lowercase when we are using dynamic list
+      const tokenAddress = useTokenDetection ? address.toLowerCase() : address;
       if (tokenAddress && tokenList[tokenAddress]?.iconUrl) {
         return this.renderJazzicon();
       }
