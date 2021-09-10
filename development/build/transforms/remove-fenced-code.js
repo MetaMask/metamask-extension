@@ -1,4 +1,5 @@
 const path = require('path');
+const pump = require('pump');
 const through = require('through2');
 const { PassThrough } = require('readable-stream');
 const { BuildTypes } = require('../utils');
@@ -31,17 +32,43 @@ function createRemoveFencedCodeTransform(buildType) {
   // contents as a buffer with a particular encoding (in our case always utf8).
   // "next" is called at the end of the transform operation to inform browserify
   // that it can continue to the next transform.
-  return function (fileName) {
+  return function removeFencedCodeTransform(fileName) {
     if (!['.js', '.cjs', '.mjs'].includes(path.extname(fileName))) {
       return new PassThrough();
     }
 
-    return through(function (fileBuffer, _encoding, next) {
-      this.push(
-        removeFencedCode(fileName, buildType, fileBuffer.toString('utf8')),
-      );
-      next();
-    });
+    let allBuffers = [];
+
+    return pump(
+      // Concatenate all buffers for the current file into a single buffer.
+      through(
+        function (partialBuffer, _encoding, next) {
+          allBuffers.push(partialBuffer);
+          next();
+        },
+        function (end) {
+          this.push(Buffer.concat(allBuffers));
+          allBuffers = null;
+          end();
+        },
+      ),
+      // Apply the transform
+      through(function (fileBuffer, _encoding, next) {
+        this.push(
+          removeFencedCode(fileName, buildType, fileBuffer.toString('utf8')),
+        );
+        next();
+      }),
+      // Handle errors from either through stream
+      (error) => {
+        if (error) {
+          console.error(
+            `"removeFencedCodeTransform" encountered an error: ${error.message}`,
+          );
+          throw error;
+        }
+      },
+    );
   };
 }
 
@@ -73,6 +100,9 @@ const linesWithFenceRegex = /^.*\/\/\/:.*$/gmu;
 const fenceSentinelRegex = /^\s*\/\/\/:/u;
 
 // Breaks a fence directive into its constituent components
+// At this stage of parsing, we are looking for one of:
+// - TERMINUS:COMMAND(PARAMS)
+// - TERMINUS:COMMAND
 const directiveParsingRegex = /^([A-Z]+):([A-Z_]+)(?:\(([\w,]+)\))?$/u;
 
 /**

@@ -44,7 +44,9 @@ const {
   composeSeries,
   runInChildProcess,
 } = require('./task');
-const { createRemoveFencedCodeTransform } = require('./transforms/remove-fenced-code');
+const {
+  createRemoveFencedCodeTransform,
+} = require('./transforms/remove-fenced-code');
 
 module.exports = createScriptTasks;
 
