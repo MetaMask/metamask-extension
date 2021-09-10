@@ -11,7 +11,10 @@ import {
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { SECOND } from '../../../../shared/constants/time';
-import { DEVICE_NAMES, LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
+import {
+  DEVICE_NAMES,
+  LEDGER_TRANSPORT_TYPES,
+} from '../../../../shared/constants/hardware-wallets';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
 

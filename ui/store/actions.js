@@ -2948,3 +2948,14 @@ export function cancelReadQRHardwareCryptoHDKey() {
     await promisifiedBackground.cancelReadQRHardwareCryptoHDKey();
   };
 }
+
+export async function submitQRHardwareSignature(requestId, cbor) {
+  await promisifiedBackground.submitQRHardwareSignature(requestId, cbor);
+}
+
+export function cancelQRHardwareSignRequest() {
+  return async (dispatch) => {
+    dispatch(hideLoadingIndication());
+    await promisifiedBackground.cancelQRHardwareSignRequest();
+  };
+}

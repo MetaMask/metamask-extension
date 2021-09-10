@@ -128,7 +128,7 @@ const BaseReader = ({ handleCancel, handleSuccess }) => {
         handleSuccess(result).catch(setError);
       }
     } catch (e) {
-      setError(e);
+      setError(new Error('unknownQrCode'));
     }
   };
 

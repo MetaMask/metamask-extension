@@ -105,6 +105,7 @@
     "@ethereumjs/tx": "^3.2.1",
     "@formatjs/intl-relativetimeformat": "^5.2.6",
     "@fortawesome/fontawesome-free": "^5.13.0",
+    "@keystonehq/bc-ur-registry-eth": "^0.6.8",
     "@keystonehq/metamask-airgapped-keyring": "0.1.0",
     "@material-ui/core": "^4.11.0",
     "@metamask/contract-metadata": "^1.28.0",
@@ -182,6 +183,7 @@
     "pump": "^3.0.0",
     "punycode": "^2.1.1",
     "qrcode-generator": "1.4.1",
+    "qrcode.react": "^1.0.1",
     "react": "^16.12.0",
     "react-dnd": "^3.0.2",
     "react-dnd-html5-backend": "^7.4.4",
@@ -208,6 +210,7 @@
     "swappable-obj-proxy": "^1.1.0",
     "textarea-caret": "^3.0.1",
     "unicode-confusables": "^0.1.1",
+    "uuid": "^8.3.2",
     "valid-url": "^1.0.9",
     "web3": "^0.20.7",
     "web3-stream-provider": "^4.0.0"

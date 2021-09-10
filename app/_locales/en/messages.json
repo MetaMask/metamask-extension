@@ -1,4 +1,19 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Cancel Transaction"
+  },
+  "QRHardwareSignRequestDescription": {
+    "message": "After your QR wallet has signed the transaction, click on 'Get Signature' to receive the signature"
+  },
+  "QRHardwareSignRequestGetSignature": {
+    "message": "Get Signature"
+  },
+  "QRHardwareSignRequestSubtitle": {
+    "message": "Scan with your QR wallet"
+  },
+  "QRHardwareSignRequestTitle": {
+    "message": "Request Signature"
+  },
   "QRHardwareWalletImporterTitle": {
     "message": "Import QR Wallet"
   },

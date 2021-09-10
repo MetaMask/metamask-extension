@@ -91,6 +91,7 @@ export default class Home extends PureComponent {
     seedPhraseBackedUp: PropTypes.bool.isRequired,
     newNetworkAdded: PropTypes.string,
     setNewNetworkAdded: PropTypes.func.isRequired,
+    hasQRHardwareSignRequest: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -111,10 +112,14 @@ export default class Home extends PureComponent {
       showAwaitingSwapScreen,
       swapsFetchParams,
       pendingConfirmations,
+      hasQRHardwareSignRequest,
     } = this.props;
 
     // eslint-disable-next-line react/no-unused-state
     this.setState({ mounted: true });
+    if (hasQRHardwareSignRequest) {
+      return;
+    }
     if (isNotification && totalUnapprovedCount === 0) {
       global.platform.closeCurrentWindow();
     } else if (!isNotification && showAwaitingSwapScreen) {
@@ -169,9 +174,20 @@ export default class Home extends PureComponent {
       showRestorePrompt,
       threeBoxLastUpdated,
       threeBoxSynced,
+      hasQRHardwareSignRequest,
+      isNotification,
+      totalUnapprovedCount,
     } = this.props;
 
     if (!prevState.closing && this.state.closing) {
+      global.platform.closeCurrentWindow();
+    }
+
+    if (
+      !hasQRHardwareSignRequest &&
+      isNotification &&
+      totalUnapprovedCount === 0
+    ) {
       global.platform.closeCurrentWindow();
     }
 

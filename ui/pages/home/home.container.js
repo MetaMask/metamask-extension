@@ -58,6 +58,7 @@ const mapStateToProps = (state) => {
     defaultHomeActiveTabName,
     swapsState,
     dismissSeedBackUpReminder,
+    qrHardware,
   } = metamask;
   const accountBalance = getCurrentEthBalance(state);
   const { forgottenPassword, threeBoxLastUpdated } = appState;
@@ -82,6 +83,10 @@ const mapStateToProps = (state) => {
     activeTabHasPermissions(state) &&
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
       WEB3_SHIM_USAGE_ALERT_STATES.RECORDED;
+
+  const hasQRHardwareSignRequest = Boolean(
+    qrHardware && qrHardware.sign && qrHardware.sign.request,
+  );
 
   return {
     forgottenPassword,
@@ -115,6 +120,7 @@ const mapStateToProps = (state) => {
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     seedPhraseBackedUp,
     newNetworkAdded: getNewNetworkAdded(state),
+    hasQRHardwareSignRequest,
   };
 };
 
