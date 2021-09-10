@@ -282,12 +282,15 @@ class ConnectHardwareForm extends Component {
   }
 
   renderContent() {
+    const param = new URLSearchParams(this.props.location.search);
+    const isQRCodeOpen = param.get('qrcode') === 'on';
     if (!this.state.accounts.length) {
       return (
         <SelectHardware
           connectToHardwareWallet={this.connectToHardwareWallet}
           browserSupported={this.state.browserSupported}
           ledgerTransportType={this.props.ledgerTransportType}
+          isQRCodeOpen={isQRCodeOpen}
         />
       );
     }
@@ -339,6 +342,7 @@ ConnectHardwareForm.propTypes = {
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
   ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
+  location: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({

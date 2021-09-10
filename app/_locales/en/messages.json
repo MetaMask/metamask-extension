@@ -1,4 +1,19 @@
 {
+  "QRHardwareWalletImporterTitle": {
+    "message": "Import QR Wallet"
+  },
+  "QRHardwareWalletSteps1Description": {
+    "message": "Connect an airgapped hardware wallet that communicates through QR-codes."
+  },
+  "QRHardwareWalletSteps1Title": {
+    "message": "QR-based HW Wallet"
+  },
+  "QRHardwareWalletSteps2Description": {
+    "message": "Officially supported airgapped hardware wallets include:"
+  },
+  "QRHardwareWalletSteps3Description": {
+    "message": "More wallet integrations are currently underway."
+  },
   "about": {
     "message": "About"
   },
@@ -126,6 +141,9 @@
   },
   "aggregatorFeeCost": {
     "message": "Aggregator network fee"
+  },
+  "airgapVault": {
+    "message": "AirGap Vault"
   },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
@@ -1276,6 +1294,9 @@
     "message": "JSON File",
     "description": "format for importing an account"
   },
+  "keystone": {
+    "message": "Keystone"
+  },
   "knownAddressRecipient": {
     "message": "Known contract address."
   },
@@ -1613,6 +1634,9 @@
   },
   "nfts": {
     "message": "NFTs"
+  },
+  "ngrave": {
+    "message": "Ngrave"
   },
   "noAccountsFound": {
     "message": "No accounts found for the given search query"

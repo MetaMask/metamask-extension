@@ -13,6 +13,7 @@ export default class SelectHardware extends Component {
     connectToHardwareWallet: PropTypes.func.isRequired,
     browserSupported: PropTypes.bool.isRequired,
     ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
+    isQRCodeOpen: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -77,6 +78,23 @@ export default class SelectHardware extends Component {
     );
   }
 
+  renderConnectToQRButton() {
+    return (
+      <button
+        className={classnames('hw-connect__btn-large', {
+          selected: this.state.selectedDevice === 'QR Hardware',
+        })}
+        onClick={(_) => this.setState({ selectedDevice: 'QR Hardware' })}
+      >
+        <img
+          className="hw-connect__btn-large__img"
+          src="images/qrcode-wallet-logo.svg"
+          alt="QRCode"
+        />
+      </button>
+    );
+  }
+
   renderButtons() {
     return (
       <>
@@ -90,6 +108,11 @@ export default class SelectHardware extends Component {
         >
           {this.renderConnectToLatticeButton()}
         </div>
+        {this.props.isQRCodeOpen && (
+          <div className="hw-connect__btn-wrapper--qr">
+            {this.renderConnectToQRButton()}
+          </div>
+        )}
       </>
     );
   }
@@ -155,6 +178,8 @@ export default class SelectHardware extends Component {
         return this.renderTrezorTutorialSteps();
       case 'lattice':
         return this.renderLatticeTutorialSteps();
+      case 'QR Hardware':
+        return this.renderQRHardwareWalletSteps();
       default:
         return '';
     }
@@ -281,6 +306,85 @@ export default class SelectHardware extends Component {
         {steps.map((step, index) => (
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>
+            <p className="hw-connect__msg">{step.message}</p>
+            {step.asset && (
+              <img
+                className="hw-connect__step-asset"
+                src={`images/${step.asset}.svg`}
+                {...step.dimensions}
+                alt=""
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  renderQRHardwareWalletSteps() {
+    const steps = [];
+    steps.push({
+      title: this.context.t('QRHardwareWalletSteps1Title'),
+      message: this.context.t('QRHardwareWalletSteps1Description'),
+    });
+
+    steps.push({
+      message: this.context.t('QRHardwareWalletSteps2Description'),
+    });
+
+    steps.push({
+      message: (
+        <a
+          className="hw-connect__msg-link"
+          href="https://www.keyst.one/"
+          rel="noopener noreferrer"
+          target="_blank"
+          key="keystone-support-link"
+        >
+          {this.context.t('keystone')}
+        </a>
+      ),
+    });
+
+    steps.push({
+      message: (
+        <a
+          className="hw-connect__msg-link"
+          href="https://www.ngrave.io/"
+          rel="noopener noreferrer"
+          target="_blank"
+          key="keystone-support-link"
+        >
+          {this.context.t('ngrave')}
+        </a>
+      ),
+    });
+
+    steps.push({
+      message: (
+        <a
+          className="hw-connect__msg-link"
+          href="https://airgap.it/"
+          rel="noopener noreferrer"
+          target="_blank"
+          key="keystone-support-link"
+        >
+          {this.context.t('airgapVault')}
+        </a>
+      ),
+    });
+
+    steps.push({
+      asset: 'qrcode-wallet-demo',
+      dimensions: { width: '225px', height: '75px' },
+      message: this.context.t('QRHardwareWalletSteps3Description'),
+    });
+
+    return (
+      <div className="hw-tutorial">
+        {steps.map((step, index) => (
+          <div className="hw-connect" key={index}>
+            {step.title && <h3 className="hw-connect__title">{step.title}</h3>}
             <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
               <img
