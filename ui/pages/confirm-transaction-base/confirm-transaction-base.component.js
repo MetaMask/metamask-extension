@@ -81,7 +81,6 @@ export default class ConfirmTransactionBase extends Component {
     useNonceField: PropTypes.bool,
     customNonceValue: PropTypes.string,
     updateCustomNonce: PropTypes.func,
-    assetImage: PropTypes.string,
     sendTransaction: PropTypes.func,
     showTransactionConfirmedModal: PropTypes.func,
     showRejectTransactionsConfirmationModal: PropTypes.func,
@@ -908,7 +907,6 @@ export default class ConfirmTransactionBase extends Component {
       onEdit,
       nonce,
       customNonceValue,
-      assetImage,
       unapprovedTxCount,
       type,
       hideSenderToRecipient,
@@ -967,7 +965,6 @@ export default class ConfirmTransactionBase extends Component {
         contentComponent={contentComponent}
         nonce={customNonceValue || nonce}
         unapprovedTxCount={unapprovedTxCount}
-        assetImage={assetImage}
         identiconAddress={identiconAddress}
         errorMessage={submitError}
         errorKey={errorKey}

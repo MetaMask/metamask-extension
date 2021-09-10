@@ -27,6 +27,7 @@ describe('Hide token', function () {
           css: '.asset-list-item__token-button',
           text: '0 TST',
         });
+        await driver.clickElement('.popover-header__button');
 
         let assets = await driver.findElements('.asset-list-item');
         assert.equal(assets.length, 2);

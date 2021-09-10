@@ -1122,10 +1122,9 @@ export function lockMetamask() {
   };
 }
 
-async function _setSelectedAddress(dispatch, address) {
+async function _setSelectedAddress(address) {
   log.debug(`background.setSelectedAddress`);
-  const tokens = await promisifiedBackground.setSelectedAddress(address);
-  dispatch(updateTokens(tokens));
+  await promisifiedBackground.setSelectedAddress(address);
 }
 
 export function setSelectedAddress(address) {
@@ -1133,7 +1132,7 @@ export function setSelectedAddress(address) {
     dispatch(showLoadingIndication());
     log.debug(`background.setSelectedAddress`);
     try {
-      await _setSelectedAddress(dispatch, address);
+      await _setSelectedAddress(address);
     } catch (error) {
       dispatch(displayWarning(error.message));
       return;
@@ -1168,7 +1167,7 @@ export function showAccountDetail(address) {
       !currentTabIsConnectedToNextAddress;
 
     try {
-      await _setSelectedAddress(dispatch, address);
+      await _setSelectedAddress(address);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error.message));
@@ -1241,43 +1240,37 @@ export function addToken(
   image,
   dontShowLoadingIndicator,
 ) {
-  return (dispatch) => {
+  return async (dispatch) => {
     if (!address) {
       throw new Error('MetaMask - Cannot add token without address');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
-    return new Promise((resolve, reject) => {
-      background.addToken(address, symbol, decimals, image, (err, tokens) => {
-        dispatch(hideLoadingIndication());
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        dispatch(updateTokens(tokens));
-        resolve(tokens);
-      });
-    });
+    try {
+      await promisifiedBackground.addToken(address, symbol, decimals, image);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
 export function removeToken(address) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
-    return new Promise((resolve, reject) => {
-      background.removeToken(address, (err, tokens) => {
-        dispatch(hideLoadingIndication());
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        dispatch(updateTokens(tokens));
-        resolve(tokens);
-      });
-    });
+    try {
+      await promisifiedBackground.removeToken(address);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
@@ -1298,40 +1291,41 @@ export function addTokens(tokens) {
   };
 }
 
-export function removeSuggestedTokens() {
-  return (dispatch) => {
+export function rejectWatchAsset(suggestedAssetID) {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
-    return new Promise((resolve) => {
-      background.removeSuggestedTokens((err, suggestedTokens) => {
-        dispatch(hideLoadingIndication());
-        if (err) {
-          dispatch(displayWarning(err.message));
-        }
-        dispatch(clearPendingTokens());
-        if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-          global.platform.closeCurrentWindow();
-          return;
-        }
-        resolve(suggestedTokens);
-      });
-    })
-      .then(() => updateMetamaskStateFromBackground())
-      .then((suggestedTokens) =>
-        dispatch(updateMetamaskState({ ...suggestedTokens })),
-      );
+    try {
+      await promisifiedBackground.rejectWatchAsset(suggestedAssetID);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+    dispatch(closeCurrentNotificationWindow());
+  };
+}
+
+export function acceptWatchAsset(suggestedAssetID) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    try {
+      await promisifiedBackground.acceptWatchAsset(suggestedAssetID);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+    dispatch(closeCurrentNotificationWindow());
   };
 }
 
 export function addKnownMethodData(fourBytePrefix, methodData) {
   return () => {
     background.addKnownMethodData(fourBytePrefix, methodData);
-  };
-}
-
-export function updateTokens(newTokens) {
-  return {
-    type: actionConstants.UPDATE_TOKENS,
-    newTokens,
   };
 }
 
@@ -2529,8 +2523,8 @@ export function getTokenParams(tokenAddress) {
   return (dispatch, getState) => {
     const tokenList = getTokenList(getState());
     const existingTokens = getState().metamask.tokens;
-    const existingToken = existingTokens.find(
-      ({ address }) => tokenAddress === address,
+    const existingToken = existingTokens.find(({ address }) =>
+      isEqualCaseInsensitive(tokenAddress, address),
     );
 
     if (existingToken) {
