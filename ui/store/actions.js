@@ -2901,3 +2901,15 @@ export async function setWeb3ShimUsageAlertDismissed(origin) {
 export async function detectNewTokens() {
   return promisifiedBackground.detectNewTokens();
 }
+
+// QR Hardware Wallets
+export async function submitQRHardwareCryptoHDKey(cbor) {
+  await promisifiedBackground.submitQRHardwareCryptoHDKey(cbor);
+}
+
+export function cancelReadQRHardwareCryptoHDKey() {
+  return async (dispatch) => {
+    dispatch(hideLoadingIndication());
+    await promisifiedBackground.cancelReadQRHardwareCryptoHDKey();
+  };
+}

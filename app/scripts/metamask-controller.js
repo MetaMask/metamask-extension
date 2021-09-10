@@ -14,6 +14,7 @@ import { stripHexPrefix } from 'ethereumjs-util';
 import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
+import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
 import {
@@ -228,6 +229,8 @@ export default class MetamaskController extends EventEmitter {
       },
     });
 
+    this.qrHardwareKeyring = new QRHardwareKeyring();
+
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
       isUnlocked: this.isUnlocked.bind(this),
@@ -235,6 +238,7 @@ export default class MetamaskController extends EventEmitter {
       onInactiveTimeout: () => this.setLocked(),
       showUnlockRequest: opts.showUserConfirmation,
       preferencesStore: this.preferencesController.store,
+      qrHardwareStore: this.qrHardwareKeyring.getMemStore(),
     });
 
     const currencyRateMessenger = this.controllerMessenger.getRestricted({
@@ -366,11 +370,15 @@ export default class MetamaskController extends EventEmitter {
       initState: initState.OnboardingController,
     });
 
+    const additionalKeyrings = [
+      TrezorKeyring,
+      LedgerBridgeKeyring,
+      QRHardwareKeyring,
+    ];
     this.tokensController.hub.on('pendingSuggestedAsset', async () => {
       await opts.openPopup();
     });
 
-    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring];
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -844,6 +852,16 @@ export default class MetamaskController extends EventEmitter {
       setLedgerTransportPreference: nodeify(
         this.setLedgerTransportPreference,
         this,
+      ),
+
+      // qr hardware devices
+      submitQRHardwareCryptoHDKey: nodeify(
+        this.qrHardwareKeyring.submitCryptoHDKey,
+        this.qrHardwareKeyring,
+      ),
+      cancelReadQRHardwareCryptoHDKey: nodeify(
+        this.qrHardwareKeyring.cancelReadCryptoHDKey,
+        this.qrHardwareKeyring,
       ),
 
       // mobile
@@ -1528,6 +1546,9 @@ export default class MetamaskController extends EventEmitter {
         break;
       case 'ledger':
         keyringName = LedgerBridgeKeyring.type;
+        break;
+      case 'QR Hardware':
+        keyringName = QRHardwareKeyring.type;
         break;
       default:
         throw new Error(
