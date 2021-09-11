@@ -14,7 +14,7 @@ module.exports = {
 
 /**
  * @param {string} buildType - The type of the current build.
- * @returns {(fileName: string) => Duplex} The transform function.
+ * @returns {(filePath: string) => Duplex} The transform function.
  */
 function createRemoveFencedCodeTransform(buildType) {
   if (!(buildType in BuildTypes)) {
@@ -32,8 +32,8 @@ function createRemoveFencedCodeTransform(buildType) {
   /**
    * @returns {Duplex}
    */
-  return function removeFencedCodeTransform(fileName) {
-    if (!['.js', '.cjs', '.mjs'].includes(path.extname(fileName))) {
+  return function removeFencedCodeTransform(filePath) {
+    if (!['.js', '.cjs', '.mjs'].includes(path.extname(filePath))) {
       return new PassThrough();
     }
 
@@ -45,11 +45,12 @@ function createRemoveFencedCodeTransform(buildType) {
         fileBuffers.push(fileBuffer);
         next();
       },
+
       // Apply the transform
       function (end) {
         this.push(
           removeFencedCode(
-            fileName,
+            filePath,
             buildType,
             Buffer.concat(fileBuffers).toString('utf8'),
           ),
@@ -71,11 +72,11 @@ const DirectiveCommands = {
 };
 
 const CommandValidators = {
-  [DirectiveCommands.ONLY_INCLUDE_IN]: (params, fileName) => {
+  [DirectiveCommands.ONLY_INCLUDE_IN]: (params, filePath) => {
     params.forEach((param) => {
       if (!(param in BuildTypes)) {
         throw new Error(
-          `Invalid code fence parameters in file "${fileName}" for command "${DirectiveCommands.ONLY_INCLUDE_IN}": "${param}" is not a valid build type.`,
+          `Invalid code fence parameters in file "${filePath}" for command "${DirectiveCommands.ONLY_INCLUDE_IN}": "${param}" is not a valid build type.`,
         );
       }
     });
@@ -102,12 +103,12 @@ PluginController: this.pluginController,
  */
 
 /**
- * @param {string} fileName - The name of the file being transformed.
+ * @param {string} filePath - The path to the file being transformed.
  * @param {string} typeOfCurrentBuild - The type of the current build process.
  * @param {string} fileContents - The contents of the file being transformed.
  * @returns {string} The transformed file contents.
  */
-function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
+function removeFencedCode(filePath, typeOfCurrentBuild, fileContents) {
   const matchedLines = [...fileContents.matchAll(linesWithFenceRegex)];
 
   // If we didn't match any lines, return the unmodified file contents.
@@ -122,7 +123,7 @@ function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
     if (!fenceSentinelRegex.test(line)) {
       throw new Error(
         getInvalidFenceLineMessage(
-          fileName,
+          filePath,
           line,
           `Fence sentinel may only appear at the start of a line, optionally preceded by whitespace.`,
         ),
@@ -138,7 +139,7 @@ function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
     if (!/^ \w\w+/u.test(unfencedLine)) {
       throw new Error(
         getInvalidFenceLineMessage(
-          fileName,
+          filePath,
           line,
           `Fence sentinel must be followed by a single space and an alphabetical string of two or more characters.`,
         ),
@@ -149,7 +150,7 @@ function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
     if (!directiveMatches) {
       throw new Error(
         getInvalidFenceLineMessage(
-          fileName,
+          filePath,
           line,
           `Failed to parse fence directive.`,
         ),
@@ -162,7 +163,7 @@ function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
     if (!(terminus in DirectiveTerminuses)) {
       throw new Error(
         getInvalidFenceLineMessage(
-          fileName,
+          filePath,
           line,
           `Line contains invalid directive terminus "${terminus}".`,
         ),
@@ -171,7 +172,7 @@ function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
     if (!(command in DirectiveCommands)) {
       throw new Error(
         getInvalidFenceLineMessage(
-          fileName,
+          filePath,
           line,
           `Line contains invalid directive command "${command}".`,
         ),
@@ -194,7 +195,7 @@ function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
   if (parsedDirectives.length % 2 !== 0) {
     throw new Error(
       getInvalidFenceStructureMessage(
-        fileName,
+        filePath,
         `A valid fence consists of two fence lines, but the file contains an uneven number of fence lines.`,
       ),
     );
@@ -220,7 +221,7 @@ function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
       if (terminus !== DirectiveTerminuses.BEGIN) {
         throw new Error(
           getInvalidFencePairMessage(
-            fileName,
+            filePath,
             line,
             `The first directive of a pair must be a "BEGIN" directive.`,
           ),
@@ -229,7 +230,7 @@ function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
 
       currentCommand = command;
       // Throws an error if the command parameters are invalid
-      CommandValidators[command](parameters, fileName);
+      CommandValidators[command](parameters, filePath);
 
       if (parameters.includes(typeOfCurrentBuild)) {
         shouldSplice = false;
@@ -242,7 +243,7 @@ function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
       if (terminus !== DirectiveTerminuses.END) {
         throw new Error(
           getInvalidFencePairMessage(
-            fileName,
+            filePath,
             line,
             `The second directive of a pair must be an "END" directive.`,
           ),
@@ -253,7 +254,7 @@ function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
       if (command !== currentCommand) {
         throw new Error(
           getInvalidFencePairMessage(
-            fileName,
+            filePath,
             line,
             `Expected "END" directive to have command "${currentCommand}" but found "${command}".`,
           ),
@@ -276,7 +277,7 @@ function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
   /* istanbul ignore next: should be impossible */
   if (splicingIndices.length % 2 !== 0) {
     throw new Error(
-      `MetaMask build: Internal error while transforming file "${fileName}":\nCollected an uneven number of splicing indices: "${splicingIndices.length}"`,
+      `MetaMask build: Internal error while transforming file "${filePath}":\nCollected an uneven number of splicing indices: "${splicingIndices.length}"`,
     );
   }
 
@@ -319,30 +320,30 @@ function multiSplice(string, splicingIndices) {
 }
 
 /**
- * @param {string} fileName - The name of the file with the error.
+ * @param {string} filePath - The path to the file that caused the error.
  * @param {string} line - The contents of the line with the error.
  * @param {string} details - An explanation of the error.
  * @returns The error message.
  */
-function getInvalidFenceLineMessage(fileName, line, details) {
-  return `Invalid fence line in file "${fileName}": "${line}":\n${details}`;
+function getInvalidFenceLineMessage(filePath, line, details) {
+  return `Invalid fence line in file "${filePath}": "${line}":\n${details}`;
 }
 
 /**
- * @param {string} fileName - The name of the file with the error.
+ * @param {string} filePath - The path to the file that caused the error.
  * @param {string} details - An explanation of the error.
  * @returns The error message.
  */
-function getInvalidFenceStructureMessage(fileName, details) {
-  return `Invalid fence structure in file "${fileName}":\n${details}`;
+function getInvalidFenceStructureMessage(filePath, details) {
+  return `Invalid fence structure in file "${filePath}":\n${details}`;
 }
 
 /**
- * @param {string} fileName - The name of the file with the error.
+ * @param {string} filePath - The path to the file that caused the error.
  * @param {string} line - The contents of the line with the error.
  * @param {string} details - An explanation of the error.
  * @returns The error message.
  */
-function getInvalidFencePairMessage(fileName, line, details) {
-  return `Invalid fence pair in file "${fileName}" due to line "${line}":\n${details}`;
+function getInvalidFencePairMessage(filePath, line, details) {
+  return `Invalid fence pair in file "${filePath}" due to line "${line}":\n${details}`;
 }
