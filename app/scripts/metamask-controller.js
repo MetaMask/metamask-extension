@@ -1354,10 +1354,13 @@ export default class MetamaskController extends EventEmitter {
           checksummedAccountAddress
         ].filter((asset) => {
           if (asset.isERC721 === undefined) {
+            // since the token.address from allTokens is checksumaddress
+            // asset.address have to be changed to lowercase when we are using dynamic list
             const address = useTokenDetection
-              ? asset.address
-              : toChecksumHexAddress(asset.address);
-            if (tokenList[address] !== undefined && tokenList[address].erc20) {
+              ? asset.address.toLowerCase()
+              : asset.address;
+            // the tokenList will be holding only erc20 tokens
+            if (tokenList[address] !== undefined) {
               return true;
             }
           } else if (asset.isERC721 === false) {
