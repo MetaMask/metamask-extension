@@ -4,6 +4,11 @@ const {
   createRemoveFencedCodeTransform,
   removeFencedCode,
 } = require('./remove-fenced-code');
+const transformUtils = require('./utils');
+
+jest.mock('./utils', () => ({
+  lintTransformedFile: jest.fn(),
+}));
 
 // The test data is just strings. We get it from a function at the end of this
 // file because it takes up a lot of lines and is very distracting.
@@ -17,13 +22,19 @@ Conditionally_Included
 
 describe('build/transforms/remove-fenced-code', () => {
   describe('createRemoveFencedCodeTransform', () => {
+    const { lintTransformedFile: lintTransformedFileMock } = transformUtils;
+
+    beforeEach(() => {
+      lintTransformedFileMock.mockImplementation(() => Promise.resolve());
+    });
+
     it('rejects invalid build types', () => {
       expect(() => createRemoveFencedCodeTransform('foobar')).toThrow(
         /received unrecognized build type "foobar".$/u,
       );
     });
 
-    it('does not modify files with ignored file extensions', async () => {
+    it('returns a PassThrough stream for files with ignored extensions', async () => {
       const fileContent = '"Valid JSON content"\n';
       const stream = createRemoveFencedCodeTransform('main')('file.json');
       let streamOutput = '';
@@ -60,8 +71,7 @@ describe('build/transforms/remove-fenced-code', () => {
           resolve();
         });
 
-        stream.write(fileContent);
-        setTimeout(() => stream.end());
+        stream.end(fileContent);
       });
     });
 
@@ -92,6 +102,47 @@ describe('build/transforms/remove-fenced-code', () => {
         setTimeout(() => stream.end());
       });
     });
+
+    it('handles file with fences that is unmodified by the transform', async () => {
+      const fileContent = getMinimalFencedCode('main');
+
+      const stream = createRemoveFencedCodeTransform('main')('file.js');
+      let streamOutput = '';
+
+      await new Promise((resolve) => {
+        stream.on('data', (data) => {
+          streamOutput = streamOutput.concat(data.toString('utf8'));
+        });
+
+        stream.on('end', () => {
+          expect(streamOutput).toStrictEqual(fileContent);
+          resolve();
+        });
+
+        stream.end(fileContent);
+      });
+    });
+
+    it('handles transformed file lint failure', async () => {
+      lintTransformedFileMock.mockImplementationOnce(() =>
+        Promise.reject(new Error('lint failure')),
+      );
+
+      const filePrefix = '// A comment\n';
+      const fileContent = filePrefix.concat(getMinimalFencedCode());
+
+      const stream = createRemoveFencedCodeTransform('main')('file.js');
+
+      await new Promise((resolve) => {
+        stream.on('error', (error) => {
+          expect(error).toStrictEqual(new Error('lint failure'));
+          expect(stream.destroyed).toStrictEqual(true);
+          resolve();
+        });
+
+        stream.end(fileContent);
+      });
+    });
   });
 
   describe('removeFencedCode', () => {
@@ -112,7 +163,7 @@ describe('build/transforms/remove-fenced-code', () => {
         const minimalInput = getMinimalFencedCode(buildType);
         expect(
           removeFencedCode(mockFileName, buildType, minimalInput),
-        ).toStrictEqual(minimalInput);
+        ).toStrictEqual([minimalInput, false]);
       });
 
       it(`does not modify file without fences for build type "${buildType}"`, () => {
@@ -122,7 +173,7 @@ describe('build/transforms/remove-fenced-code', () => {
             buildType,
             testData.validInputs.withoutFences,
           ),
-        ).toStrictEqual(testData.validInputs.withoutFences);
+        ).toStrictEqual([testData.validInputs.withoutFences, false]);
       });
     });
 
@@ -453,7 +504,8 @@ Always_Included
     },
 
     validOutputs: {
-      beta: `
+      beta: [
+        `
 ///: BEGIN:ONLY_INCLUDE_IN(flask,beta)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
@@ -476,10 +528,12 @@ Always_Included
 Always_Included
 
 `,
+        true,
+      ],
     },
   };
 
-  data.validOutputs.flask = data.validInputs.withFences;
-  data.validOutputs.main = data.validInputs.withoutFences;
+  data.validOutputs.flask = [data.validInputs.withFences, false];
+  data.validOutputs.main = [data.validInputs.withoutFences, true];
   return deepFreeze(data);
 }

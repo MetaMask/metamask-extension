@@ -2,6 +2,7 @@ const path = require('path');
 const through = require('through2');
 const { PassThrough } = require('readable-stream');
 const { BuildTypes } = require('../utils');
+const { lintTransformedFile } = require('./utils');
 
 /**
  * @typedef {import('readable-stream').Duplex} Duplex
@@ -40,23 +41,35 @@ function createRemoveFencedCodeTransform(buildType) {
     const fileBuffers = [];
 
     return through(
-      // Concatenate all buffers for the current file into a single buffer.
+      // This function is called whenever data is written to the stream.
+      // It concatenates all buffers for the current file into a single buffer.
       function (fileBuffer, _encoding, next) {
         fileBuffers.push(fileBuffer);
         next();
       },
 
-      // Apply the transform
+      // This "flush" function is called when all data has been written to the
+      // stream, immediately before the "end" event is emitted.
+      // It applies the transform to the concatenated file contents.
       function (end) {
-        this.push(
-          removeFencedCode(
-            filePath,
-            buildType,
-            Buffer.concat(fileBuffers).toString('utf8'),
-          ),
+        const [fileContent, didModify] = removeFencedCode(
+          filePath,
+          buildType,
+          Buffer.concat(fileBuffers).toString('utf8'),
         );
 
-        end();
+        const _end = () => {
+          this.push(fileContent);
+          end();
+        };
+
+        if (didModify) {
+          lintTransformedFile(fileContent, filePath)
+            .then(_end)
+            .catch((error) => this.destroy(error));
+        } else {
+          _end();
+        }
       },
     );
   };
@@ -105,15 +118,16 @@ PluginController: this.pluginController,
 /**
  * @param {string} filePath - The path to the file being transformed.
  * @param {string} typeOfCurrentBuild - The type of the current build process.
- * @param {string} fileContents - The contents of the file being transformed.
- * @returns {string} The transformed file contents.
+ * @param {string} fileContent - The contents of the file being transformed.
+ * @returns {[string, modified]} A tuple of the post-transform file contents and
+ * a boolean indicating whether they were modified.
  */
-function removeFencedCode(filePath, typeOfCurrentBuild, fileContents) {
-  const matchedLines = [...fileContents.matchAll(linesWithFenceRegex)];
+function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
+  const matchedLines = [...fileContent.matchAll(linesWithFenceRegex)];
 
   // If we didn't match any lines, return the unmodified file contents.
   if (matchedLines.length === 0) {
-    return fileContents;
+    return [fileContent, false];
   }
 
   // Parse fence lines
@@ -271,7 +285,7 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContents) {
   // This indicates that the present build type should include all fenced code,
   // and so we just returned the unmodified file contents.
   if (splicingIndices.length === 0) {
-    return fileContents;
+    return [fileContent, false];
   }
 
   /* istanbul ignore next: should be impossible */
@@ -281,7 +295,7 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContents) {
     );
   }
 
-  return multiSplice(fileContents, splicingIndices);
+  return [multiSplice(fileContent, splicingIndices), true];
 }
 
 /**
