@@ -52,9 +52,6 @@
   "addNetwork": {
     "message": "添加网络"
   },
-  "addRecipient": {
-    "message": "添加接收方"
-  },
   "addSuggestedTokens": {
     "message": "添加推荐代币"
   },
@@ -65,9 +62,6 @@
     "message": "如：John D."
   },
   "addToken": {
-    "message": "添加代币"
-  },
-  "addTokens": {
     "message": "添加代币"
   },
   "advanced": {
@@ -875,7 +869,7 @@
   "letsGoSetUp": {
     "message": "第一次，立即开始设置！"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "您想添加这些代币吗？"
   },
   "links": {
@@ -962,9 +956,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask 希望收集使用数据，以更好地了解我们的用户如何与扩展进行互动。这些数据将被用于持续改进我们产品和 Ethereum 生态系统的可用性和用户体验。"
-  },
-  "mobileSyncText": {
-    "message": "请输入密码确认个人身份！"
   },
   "mustSelectOne": {
     "message": "至少选择 1 种代币。"

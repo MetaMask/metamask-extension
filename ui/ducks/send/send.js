@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import abi from 'human-standard-token-abi';
-import contractMap from '@metamask/contract-metadata';
 import BigNumber from 'bignumber.js';
-import { addHexPrefix, toChecksumAddress } from 'ethereumjs-util';
+import { addHexPrefix } from 'ethereumjs-util';
 import { debounce } from 'lodash';
 import {
   conversionGreaterThan,
@@ -39,6 +38,8 @@ import {
   getTargetAccount,
   getIsNonStandardEthChain,
   checkNetworkAndAccountSupports1559,
+  getUseTokenDetection,
+  getTokenList,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -50,6 +51,8 @@ import {
   showLoadingIndication,
   updateTokenType,
   updateTransaction,
+  addPollingTokenToAppState,
+  removePollingTokenFromAppState,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -69,6 +72,7 @@ import {
   isDefaultMetaMaskChain,
   isOriginContractAddress,
   isValidDomainName,
+  isEqualCaseInsensitive,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
@@ -84,7 +88,6 @@ import {
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
 import { ETH, GWEI } from '../../helpers/constants/common';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
-
 // typedefs
 /**
  * @typedef {import('@reduxjs/toolkit').PayloadAction} PayloadAction
@@ -383,7 +386,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
  */
 function getRoundedGasPrice(gasPriceEstimate) {
   const gasPriceInDecGwei = conversionUtil(gasPriceEstimate, {
-    numberOfDecimals: 4,
+    numberOfDecimals: 9,
     toDenomination: GWEI,
     fromNumericBase: 'dec',
     toNumericBase: 'dec',
@@ -437,6 +440,9 @@ export const initializeSendState = createAsyncThunk(
 
     // Instruct the background process that polling for gas prices should begin
     gasEstimatePollToken = await getGasFeeEstimatesAndStartPolling();
+
+    addPollingTokenToAppState(gasEstimatePollToken);
+
     const {
       metamask: { gasFeeEstimates, gasEstimateType },
     } = thunkApi.getState();
@@ -513,6 +519,8 @@ export const initializeSendState = createAsyncThunk(
       gasTotal: addHexPrefix(calcGasTotal(gasLimit, gasPrice)),
       gasEstimatePollToken,
       eip1559support,
+      useTokenDetection: getUseTokenDetection(state),
+      tokenAddressList: Object.keys(getTokenList(state)),
     };
   },
 );
@@ -982,7 +990,7 @@ const slice = createSlice({
         recipient.warning = null;
       } else {
         const isSendingToken = asset.type === ASSET_TYPES.TOKEN;
-        const { chainId, tokens } = action.payload;
+        const { chainId, tokens, tokenAddressList } = action.payload;
         if (
           isBurnAddress(recipient.userInput) ||
           (!isValidHexAddress(recipient.userInput, {
@@ -1001,11 +1009,12 @@ const slice = createSlice({
         } else {
           recipient.error = null;
         }
-
         if (
           isSendingToken &&
           isValidHexAddress(recipient.userInput) &&
-          (toChecksumAddress(recipient.userInput) in contractMap ||
+          (tokenAddressList.find((address) =>
+            isEqualCaseInsensitive(address, recipient.userInput),
+          ) ||
             checkExistingAddresses(recipient.userInput, tokens))
         ) {
           recipient.warning = KNOWN_RECIPIENT_ADDRESS_WARNING;
@@ -1206,6 +1215,8 @@ const slice = createSlice({
             payload: {
               chainId: action.payload.chainId,
               tokens: action.payload.tokens,
+              useTokenDetection: action.payload.useTokenDetection,
+              tokenAddressList: action.payload.tokenAddressList,
             },
           });
         }
@@ -1298,6 +1309,7 @@ export function resetSendState() {
       await disconnectGasFeeEstimatePoller(
         state[name].gas.gasEstimatePollToken,
       );
+      removePollingTokenFromAppState(state[name].gas.gasEstimatePollToken);
     }
   };
 }
@@ -1390,7 +1402,14 @@ export function updateRecipientUserInput(userInput) {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const tokens = getTokens(state);
-    debouncedValidateRecipientUserInput(dispatch, { chainId, tokens });
+    const useTokenDetection = getUseTokenDetection(state);
+    const tokenAddressList = Object.keys(getTokenList(state));
+    debouncedValidateRecipientUserInput(dispatch, {
+      chainId,
+      tokens,
+      useTokenDetection,
+      tokenAddressList,
+    });
   };
 }
 

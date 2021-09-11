@@ -6,6 +6,14 @@ import { getConversionRate, getSelectedAccount } from '../selectors';
 import { increaseLastGasPrice } from '../helpers/utils/confirm-tx.util';
 import { useCancelTransaction } from './useCancelTransaction';
 
+jest.mock('../store/actions', () => ({
+  disconnectGasFeeEstimatePoller: jest.fn(),
+  getGasFeeEstimatesAndStartPolling: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve()),
+  addPollingTokenToAppState: jest.fn(),
+}));
+
 describe('useCancelTransaction', function () {
   let useSelector;
   const dispatch = sinon.spy();
@@ -51,7 +59,7 @@ describe('useCancelTransaction', function () {
         );
         expect(result.current.hasEnoughCancelGas).toStrictEqual(false);
       });
-      it(`should return a function that opens the gas sidebar onsubmit kicks off cancellation for id ${transactionId}`, function () {
+      it(`should return a function that kicks off cancellation for id ${transactionId}`, function () {
         const { result } = renderHook(() =>
           useCancelTransaction(transactionGroup),
         );

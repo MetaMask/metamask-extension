@@ -1069,6 +1069,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addToken: addTokenStub,
+        getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
       actions._setBackgroundConnection(background.getApi());
@@ -1098,17 +1099,18 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addToken: addTokenStub,
+        getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
       actions._setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
         {
-          type: 'UPDATE_TOKENS',
-          newTokens: tokenDetails,
+          type: 'UPDATE_METAMASK_STATE',
+          value: baseMockState,
         },
+        { type: 'HIDE_LOADING_INDICATION' },
       ];
 
       await store.dispatch(
@@ -1118,38 +1120,6 @@ describe('Actions', () => {
           decimals: 18,
         }),
       );
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-
-    it('errors when addToken in background throws', async () => {
-      const store = mockStore();
-
-      const addTokenStub = sinon
-        .stub()
-        .callsFake((_, __, ___, ____, cb) => cb(new Error('error')));
-
-      background.getApi.returns({
-        addToken: addTokenStub,
-      });
-
-      actions._setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
-      ];
-
-      await expect(
-        store.dispatch(
-          actions.addToken({
-            address: '_',
-            symbol: '',
-            decimals: 0,
-          }),
-        ),
-      ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
@@ -1167,6 +1137,7 @@ describe('Actions', () => {
 
       background.getApi.returns({
         removeToken: removeTokenStub,
+        getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
       actions._setBackgroundConnection(background.getApi());
@@ -1175,24 +1146,27 @@ describe('Actions', () => {
       expect(removeTokenStub.callCount).toStrictEqual(1);
     });
 
-    it('errors when removeToken in background fails', async () => {
+    it('should display warning when removeToken in background fails', async () => {
       const store = mockStore();
 
       background.getApi.returns({
         removeToken: sinon.stub().callsFake((_, cb) => cb(new Error('error'))),
+        getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
       actions._setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
+        {
+          type: 'UPDATE_METAMASK_STATE',
+          value: baseMockState,
+        },
+        { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await expect(store.dispatch(actions.removeToken())).rejects.toThrow(
-        'error',
-      );
+      await store.dispatch(actions.removeToken());
 
       expect(store.getActions()).toStrictEqual(expectedActions);
     });

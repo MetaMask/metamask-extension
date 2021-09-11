@@ -133,6 +133,7 @@ const EMPTY_INIT_STATE = {
     swapsFeatureIsLive: true,
     useNewSwapsApi: false,
     swapsQuoteRefreshTime: 60000,
+    swapsUserFeeLevel: '',
   },
 };
 

@@ -8,7 +8,6 @@ import Button from '../../../ui/button';
 function mapStateToProps(state) {
   return {
     token: state.appState.modal.modalState.props.token,
-    assetImages: state.metamask.assetImages,
   };
 }
 
@@ -31,19 +30,18 @@ class HideTokenConfirmationModal extends Component {
   static propTypes = {
     hideToken: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
-    assetImages: PropTypes.object.isRequired,
     token: PropTypes.shape({
       symbol: PropTypes.string,
       address: PropTypes.string,
+      image: PropTypes.string,
     }),
   };
 
   state = {};
 
   render() {
-    const { token, hideToken, hideModal, assetImages } = this.props;
-    const { symbol, address } = token;
-    const image = assetImages[address];
+    const { token, hideToken, hideModal } = this.props;
+    const { symbol, address, image } = token;
 
     return (
       <div className="hide-token-confirmation">

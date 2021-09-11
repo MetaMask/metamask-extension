@@ -12,6 +12,7 @@ import Copy from '../../ui/icon/copy-icon.component';
 import Popover from '../../ui/popover';
 import { SECOND } from '../../../../shared/constants/time';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import { getURLHostName } from '../../../helpers/utils/util';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -65,9 +66,7 @@ export default class TransactionListItemDetails extends PureComponent {
       properties: {
         link_type: 'Transaction Block Explorer',
         action: 'Transaction Details',
-        block_explorer_domain: blockExplorerLink
-          ? new URL(blockExplorerLink)?.hostname
-          : '',
+        block_explorer_domain: getURLHostName(blockExplorerLink),
       },
     });
 

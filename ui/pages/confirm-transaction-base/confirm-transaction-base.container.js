@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-import contractMap from '@metamask/contract-metadata';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 
 import {
@@ -28,19 +27,26 @@ import {
   getIsEthGasPriceFetched,
   getShouldShowFiat,
   checkNetworkAndAccountSupports1559,
+  getPreferences,
+  getAccountType,
+  getUseTokenDetection,
+  getTokenList,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
+import {
+  transactionMatchesNetwork,
+  txParamsAreDappSuggested,
+} from '../../../shared/modules/transaction.utils';
+import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
+import { getPlatform } from '../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { updateTransactionGasFees } from '../../ducks/metamask/metamask';
+import {
+  updateTransactionGasFees,
+  getIsGasEstimatesLoading,
+} from '../../ducks/metamask/metamask';
+import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
-
-const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
-  return {
-    ...acc,
-    [base.toLowerCase()]: contractMap[base],
-  };
-}, {});
 
 let customNonceValue = '';
 const customNonceMerge = (txData) =>
@@ -60,13 +66,16 @@ const mapStateToProps = (state, ownProps) => {
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
   const supportsEIP1599 = checkNetworkAndAccountSupports1559(state);
+
+  const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
+  const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
+
   const { confirmTransaction, metamask } = state;
   const {
     ensResolutionsByAddress,
     conversionRate,
     identities,
     addressBook,
-    assetImages,
     network,
     unapprovedTxs,
     nextNonce,
@@ -87,15 +96,24 @@ const mapStateToProps = (state, ownProps) => {
     data,
   } = (transaction && transaction.txParams) || txParams;
   const accounts = getMetaMaskAccounts(state);
-  const assetImage = assetImages[txParamsToAddress];
 
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
   const toAddress = propsToAddress || txParamsToAddress;
 
+  const tokenList = getTokenList(state);
+  const useTokenDetection = getUseTokenDetection(state);
+  const casedTokenList = useTokenDetection
+    ? tokenList
+    : Object.keys(tokenList).reduce((acc, base) => {
+        return {
+          ...acc,
+          [base.toLowerCase()]: tokenList[base],
+        };
+      }, {});
   const toName =
     identities[toAddress]?.name ||
-    casedContractMap[toAddress]?.name ||
+    casedTokenList[toAddress]?.name ||
     shortenAddress(toChecksumHexAddress(toAddress));
 
   const checksummedAddress = toChecksumHexAddress(toAddress);
@@ -109,6 +127,7 @@ const mapStateToProps = (state, ownProps) => {
     hexMinimumTransactionFee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
+    gasEstimationObject,
   } = transactionFeeSelector(state, transaction);
 
   if (transaction && transaction.simulationFails) {
@@ -143,7 +162,13 @@ const mapStateToProps = (state, ownProps) => {
   }
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);
-  const noGasPrice = getNoGasPriceFetched(state);
+  const noGasPrice = !supportsEIP1599 && getNoGasPriceFetched(state);
+  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
+  const gasFeeIsCustom =
+    fullTxData.userFeeLevel === 'custom' ||
+    txParamsAreDappSuggested(fullTxData);
+  const isLedgerAccount = getAccountType(state) === KEYRING_TYPES.LEDGER;
+  const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
   return {
     balance,
@@ -164,7 +189,6 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
     transactionStatus,
     nonce,
-    assetImage,
     unapprovedTxs,
     unapprovedTxCount,
     currentNetworkUnapprovedTxs,
@@ -185,6 +209,14 @@ const mapStateToProps = (state, ownProps) => {
     isEthGasPrice,
     noGasPrice,
     supportsEIP1599,
+    gasIsLoading: isGasEstimatesLoading || gasLoadingAnimationIsShowing,
+    useNativeCurrencyAsPrimaryCurrency,
+    maxFeePerGas: gasEstimationObject.maxFeePerGas,
+    maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
+    baseFeePerGas: gasEstimationObject.baseFeePerGas,
+    gasFeeIsCustom,
+    isLedgerAccount,
+    isFirefox,
   };
 };
 

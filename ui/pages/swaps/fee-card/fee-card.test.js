@@ -1,6 +1,14 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { useSelector } from 'react-redux';
+
+import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+import {
+  getGasEstimateType,
+  getGasFeeEstimates,
+  getIsGasEstimatesLoading,
+} from '../../../ducks/metamask/metamask';
 
 import {
   renderWithProvider,
@@ -13,21 +21,34 @@ import FeeCard from '.';
 
 const middleware = [thunk];
 
-jest.mock('../../../hooks/useGasFeeEstimates', () => {
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual('react-redux');
+
   return {
-    useGasFeeEstimates: () => {
-      return {
-        gasFeeEstimates: MOCKS.createGasFeeEstimatesForFeeMarket(),
-        gasEstimateType: 'fee-market',
-        estimatedGasFeeTimeBounds: undefined,
-        isGasEstimatesLoading: false,
-      };
-    },
+    ...actual,
+    useSelector: jest.fn(),
   };
 });
 
+const generateUseSelectorRouter = () => (selector) => {
+  if (selector === checkNetworkAndAccountSupports1559) {
+    return true;
+  }
+  if (selector === getGasEstimateType) {
+    return 'fee-market';
+  }
+  if (selector === getGasFeeEstimates) {
+    return MOCKS.createGasFeeEstimatesForFeeMarket();
+  }
+  if (selector === getIsGasEstimatesLoading) {
+    return false;
+  }
+  return undefined;
+};
+
 setBackgroundConnection({
   getGasFeeTimeEstimate: jest.fn(),
+  getGasFeeEstimatesAndStartPolling: jest.fn(),
 });
 
 const createProps = (customProps = {}) => {
@@ -65,6 +86,7 @@ const createProps = (customProps = {}) => {
 
 describe('FeeCard', () => {
   it('renders the component with initial props', () => {
+    useSelector.mockImplementation(generateUseSelectorRouter());
     const props = createProps();
     const { getByText } = renderWithProvider(<FeeCard {...props} />);
     expect(getByText('Using the best quote')).toBeInTheDocument();

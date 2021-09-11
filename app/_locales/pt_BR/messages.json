@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "Adicionar rede"
   },
-  "addRecipient": {
-    "message": "Adicionar destinatário"
-  },
   "addSuggestedTokens": {
     "message": "Adicionar tokens sugeridos"
   },
@@ -93,9 +90,6 @@
   },
   "addToken": {
     "message": "Adicionar token"
-  },
-  "addTokens": {
-    "message": "Adicionar tokens"
   },
   "advanced": {
     "message": "Avançadas"
@@ -1028,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "Sim, vamos fazer a configuração!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Você gostaria de adicionar esses tokens?"
   },
   "links": {
@@ -1126,9 +1120,6 @@
   "mismatchedChainLinkText": {
     "message": "Verifique os detalhes da rede",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mobileSyncText": {
-    "message": "Informe sua senha para confirmar que é você mesmo!"
   },
   "mustSelectOne": {
     "message": "Selecione pelo menos 1 token."

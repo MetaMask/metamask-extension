@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Dodaj mrežu"
   },
-  "addRecipient": {
-    "message": "Dodaj primatelja"
-  },
   "addSuggestedTokens": {
     "message": "Dodaj predložene tokene"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "Dodaj token"
-  },
-  "addTokens": {
-    "message": "Dodaj tokene"
   },
   "advanced": {
     "message": "Napredno"
@@ -539,7 +533,7 @@
   "letsGoSetUp": {
     "message": "Da, obavimo postavljanje!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Želite li dodati ove tokene?"
   },
   "links": {
@@ -577,9 +571,6 @@
   },
   "metamaskVersion": {
     "message": "Inačica usluge MetaMask"
-  },
-  "mobileSyncText": {
-    "message": "Upišite svoju lozinku kako biste potvrdili da ste to vi!"
   },
   "mustSelectOne": {
     "message": "Mora se odabrati barem jedan token."

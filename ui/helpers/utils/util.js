@@ -16,6 +16,9 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
+  if (!date) {
+    return '';
+  }
   return DateTime.fromMillis(date).toFormat(format);
 }
 
@@ -24,6 +27,9 @@ export function formatDateWithYearContext(
   formatThisYear = 'MMM d',
   fallback = 'MMM d, y',
 ) {
+  if (!date) {
+    return '';
+  }
   const dateTime = DateTime.fromMillis(date);
   const now = DateTime.local();
   return dateTime.toFormat(
@@ -48,6 +54,12 @@ export function isDefaultMetaMaskChain(chainId) {
   }
 
   return false;
+}
+
+// Both inputs should be strings. This method is currently used to compare tokenAddress hex strings.
+export function isEqualCaseInsensitive(value1, value2) {
+  if (typeof value1 !== 'string' || typeof value2 !== 'string') return false;
+  return value1.toLowerCase() === value2.toLowerCase();
 }
 
 export function valuesFor(obj) {
@@ -344,4 +356,48 @@ export function constructTxParams({
     txParams.to = to;
   }
   return addHexPrefixToObjectValues(txParams);
+}
+
+export function bnGreaterThan(a, b) {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return null;
+  }
+  return new BigNumber(a, 10).gt(b, 10);
+}
+
+export function bnLessThan(a, b) {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return null;
+  }
+  return new BigNumber(a, 10).lt(b, 10);
+}
+
+export function bnGreaterThanEqualTo(a, b) {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return null;
+  }
+  return new BigNumber(a, 10).gte(b, 10);
+}
+
+export function bnLessThanEqualTo(a, b) {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return null;
+  }
+  return new BigNumber(a, 10).lte(b, 10);
+}
+
+export function getURL(url) {
+  try {
+    return new URL(url);
+  } catch (err) {
+    return '';
+  }
+}
+
+export function getURLHost(url) {
+  return getURL(url)?.host || '';
+}
+
+export function getURLHostName(url) {
+  return getURL(url)?.hostname || '';
 }

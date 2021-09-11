@@ -323,7 +323,12 @@ describe('useGasFeeInputs', () => {
     });
 
     it('should return true', () => {
-      const { result } = renderHook(() => useGasFeeInputs());
+      const { result } = renderHook(() =>
+        useGasFeeInputs(null, {
+          userFeeLevel: 'medium',
+          txParams: { gas: '0x5208' },
+        }),
+      );
       expect(result.current.balanceError).toBe(true);
     });
   });

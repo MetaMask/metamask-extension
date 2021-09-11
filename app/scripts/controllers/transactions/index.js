@@ -433,7 +433,20 @@ export default class TransactionController extends EventEmitter {
       ) {
         txMeta.txParams.maxFeePerGas = txMeta.txParams.gasPrice;
         txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.gasPrice;
+        txMeta.userFeeLevel = 'custom';
       } else {
+        if (
+          (defaultMaxFeePerGas &&
+            defaultMaxPriorityFeePerGas &&
+            !txMeta.txParams.maxFeePerGas &&
+            !txMeta.txParams.maxPriorityFeePerGas) ||
+          txMeta.origin === 'metamask'
+        ) {
+          txMeta.userFeeLevel = 'medium';
+        } else {
+          txMeta.userFeeLevel = 'custom';
+        }
+
         if (defaultMaxFeePerGas && !txMeta.txParams.maxFeePerGas) {
           // If the dapp has not set the gasPrice or the maxFeePerGas, then we set maxFeePerGas
           // with the one returned by the gasFeeController, if that is available.
@@ -680,7 +693,11 @@ export default class TransactionController extends EventEmitter {
    *  params instead of allowing this method to generate them
    * @returns {txMeta}
    */
-  async createCancelTransaction(originalTxId, customGasSettings) {
+  async createCancelTransaction(
+    originalTxId,
+    customGasSettings,
+    { estimatedBaseFee } = {},
+  ) {
     const originalTxMeta = this.txStateManager.getTransaction(originalTxId);
     const { txParams } = originalTxMeta;
     const { from, nonce } = txParams;
@@ -710,6 +727,10 @@ export default class TransactionController extends EventEmitter {
       type: TRANSACTION_TYPES.CANCEL,
     });
 
+    if (estimatedBaseFee) {
+      newTxMeta.estimatedBaseFee = estimatedBaseFee;
+    }
+
     this.addTransaction(newTxMeta);
     await this.approveTransaction(newTxMeta.id);
     return newTxMeta;
@@ -725,7 +746,11 @@ export default class TransactionController extends EventEmitter {
    *  params instead of allowing this method to generate them
    * @returns {txMeta}
    */
-  async createSpeedUpTransaction(originalTxId, customGasSettings) {
+  async createSpeedUpTransaction(
+    originalTxId,
+    customGasSettings,
+    { estimatedBaseFee } = {},
+  ) {
     const originalTxMeta = this.txStateManager.getTransaction(originalTxId);
     const { txParams } = originalTxMeta;
 
@@ -744,6 +769,10 @@ export default class TransactionController extends EventEmitter {
       status: TRANSACTION_STATUSES.APPROVED,
       type: TRANSACTION_TYPES.RETRY,
     });
+
+    if (estimatedBaseFee) {
+      newTxMeta.estimatedBaseFee = estimatedBaseFee;
+    }
 
     this.addTransaction(newTxMeta);
     await this.approveTransaction(newTxMeta.id);
@@ -1354,6 +1383,10 @@ export default class TransactionController extends EventEmitter {
    * @param {Object} extraParams - optional props and values to include in sensitiveProperties
    */
   _trackTransactionMetricsEvent(txMeta, event, extraParams = {}) {
+    if (!txMeta) {
+      return;
+    }
+
     const {
       type,
       time,

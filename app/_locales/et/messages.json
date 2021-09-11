@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Lisage võrk"
   },
-  "addRecipient": {
-    "message": "Lisa saaja"
-  },
   "addSuggestedTokens": {
     "message": "Lisa soovitatud lube"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "Lisage luba"
-  },
-  "addTokens": {
-    "message": "Lisa lube"
   },
   "advanced": {
     "message": "Täpsemad"
@@ -539,7 +533,7 @@
   "letsGoSetUp": {
     "message": "Jah, hakkame pihta!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Kas soovite need load lisada?"
   },
   "links": {
@@ -574,9 +568,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMaski versioon"
-  },
-  "mobileSyncText": {
-    "message": "Sisestage parool, et saaksime teid tuvastada!"
   },
   "mustSelectOne": {
     "message": "Peate valima vähemalt 1 loa."

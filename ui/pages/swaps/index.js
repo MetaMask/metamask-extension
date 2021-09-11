@@ -8,6 +8,7 @@ import {
   Redirect,
 } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
+import { shuffle } from 'lodash';
 import { I18nContext } from '../../contexts/i18n';
 import {
   getSelectedAccount,
@@ -15,6 +16,7 @@ import {
   getIsSwapsChain,
   isHardwareWallet,
   getHardwareWalletType,
+  getTokenList,
 } from '../../selectors/selectors';
 import {
   getQuotes,
@@ -119,6 +121,8 @@ export default function Swap() {
     checkNetworkAndAccountSupports1559,
   );
   const fromToken = useSelector(getFromToken);
+  const tokenList = useSelector(getTokenList);
+  const listTokenValues = shuffle(Object.values(tokenList));
 
   if (networkAndAccountSupports1559) {
     // This will pre-load gas fees before going to the View Quote page.
@@ -336,6 +340,7 @@ export default function Swap() {
                     maxSlippage={maxSlippage}
                     isFeatureFlagLoaded={isFeatureFlagLoaded}
                     tokenFromError={tokenFromError}
+                    shuffledTokensList={listTokenValues}
                   />
                 );
               }}

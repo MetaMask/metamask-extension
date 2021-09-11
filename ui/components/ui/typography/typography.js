@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {
   COLORS,
   FONT_WEIGHT,
+  FONT_STYLE,
   TEXT_ALIGN,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
@@ -18,6 +19,7 @@ export default function Typography({
   tag,
   children,
   fontWeight = 'normal',
+  fontStyle = 'normal',
   align,
   boxProps = {},
 }) {
@@ -26,6 +28,7 @@ export default function Typography({
     className,
     `typography--${variant}`,
     `typography--weight-${fontWeight}`,
+    `typography--style-${fontStyle}`,
     {
       [`typography--align-${align}`]: Boolean(align),
       [`typography--color-${color}`]: Boolean(color),
@@ -61,6 +64,7 @@ Typography.propTypes = {
     ...Box.propTypes,
   }),
   fontWeight: PropTypes.oneOf(Object.values(FONT_WEIGHT)),
+  fontStyle: PropTypes.oneOf(Object.values(FONT_STYLE)),
   tag: PropTypes.oneOf([
     'p',
     'h1',
@@ -73,5 +77,6 @@ Typography.propTypes = {
     'div',
     'dt',
     'dd',
+    'i',
   ]),
 };

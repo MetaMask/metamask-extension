@@ -1,4 +1,3 @@
-import contractMap from '@metamask/contract-metadata';
 import {
   isValidHexAddress,
   toChecksumHexAddress,
@@ -18,11 +17,18 @@ function IconFactory(jazzicon) {
   this.cache = {};
 }
 
-IconFactory.prototype.iconForAddress = function (address, diameter) {
-  const addr = toChecksumHexAddress(address);
-
-  if (iconExistsFor(addr)) {
-    return imageElFor(addr);
+IconFactory.prototype.iconForAddress = function (
+  address,
+  diameter,
+  useTokenDetection,
+  tokenList,
+) {
+  // When useTokenDetection flag is true the tokenList contains tokens with non-checksum address from the dynamic token service api,
+  // When useTokenDetection flag is false the tokenList contains tokens with checksum addresses from contract-metadata.
+  // So the flag indicates whether the address of tokens currently on the tokenList is checksum or not.
+  const addr = useTokenDetection ? address : toChecksumHexAddress(address);
+  if (iconExistsFor(addr, tokenList)) {
+    return imageElFor(addr, useTokenDetection, tokenList);
   }
 
   return this.generateIdenticonSvg(address, diameter);
@@ -49,18 +55,22 @@ IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
 
 // util
 
-function iconExistsFor(address) {
+function iconExistsFor(address, tokenList) {
   return (
-    contractMap[address] &&
+    tokenList[address] &&
     isValidHexAddress(address, { allowNonPrefixed: false }) &&
-    contractMap[address].logo
+    tokenList[address].iconUrl
   );
 }
 
-function imageElFor(address) {
-  const contract = contractMap[address];
-  const fileName = contract.logo;
-  const path = `images/contract/${fileName}`;
+function imageElFor(address, useTokenDetection, tokenList) {
+  const tokenMetadata = tokenList[address];
+  const fileName = tokenMetadata?.iconUrl;
+  // token from dynamic api list is fetched when useTokenDetection is true
+  // In the static list, the iconUrl will be holding only a filename for the image,
+  // the corresponding images will be available in the `images/contract/` location when the contract-metadata package was added to the extension
+  //  so that it can be accessed using the filename in iconUrl.
+  const path = useTokenDetection ? fileName : `images/contract/${fileName}`;
   const img = document.createElement('img');
   img.src = path;
   img.style.width = '100%';

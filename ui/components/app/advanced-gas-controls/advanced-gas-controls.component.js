@@ -4,16 +4,12 @@ import { useSelector } from 'react-redux';
 
 import { I18nContext } from '../../../contexts/i18n';
 import FormField from '../../ui/form-field';
-import {
-  GAS_ESTIMATE_TYPES,
-  GAS_RECOMMENDATIONS,
-} from '../../../../shared/constants/gas';
+import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
 import { getGasFormErrorText } from '../../../helpers/constants/gas';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+import { getIsGasEstimatesLoading } from '../../../ducks/metamask/metamask';
 
 export default function AdvancedGasControls({
-  estimateToUse,
-  gasFeeEstimates,
   gasEstimateType,
   maxPriorityFee,
   maxFee,
@@ -33,33 +29,13 @@ export default function AdvancedGasControls({
   const networkAndAccountSupport1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
-
-  const suggestedValues = {};
-
-  if (networkAndAccountSupport1559) {
-    suggestedValues.maxFeePerGas =
-      gasFeeEstimates?.[estimateToUse]?.suggestedMaxFeePerGas ||
-      gasFeeEstimates?.gasPrice;
-    suggestedValues.maxPriorityFeePerGas =
-      gasFeeEstimates?.[estimateToUse]?.suggestedMaxPriorityFeePerGas ||
-      suggestedValues.maxFeePerGas;
-  } else {
-    switch (gasEstimateType) {
-      case GAS_ESTIMATE_TYPES.LEGACY:
-        suggestedValues.gasPrice = gasFeeEstimates?.[estimateToUse];
-        break;
-      case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
-        suggestedValues.gasPrice = gasFeeEstimates?.gasPrice;
-        break;
-      default:
-        break;
-    }
-  }
+  const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
 
   const showFeeMarketFields =
     networkAndAccountSupport1559 &&
     (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
-      gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE);
+      gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE ||
+      isGasEstimatesLoading);
 
   return (
     <div className="advanced-gas-controls">
@@ -142,23 +118,6 @@ export default function AdvancedGasControls({
 }
 
 AdvancedGasControls.propTypes = {
-  estimateToUse: PropTypes.oneOf(Object.values(GAS_RECOMMENDATIONS)),
-  gasFeeEstimates: PropTypes.oneOf([
-    PropTypes.shape({
-      gasPrice: PropTypes.string,
-    }),
-    PropTypes.shape({
-      low: PropTypes.string,
-      medium: PropTypes.string,
-      high: PropTypes.string,
-    }),
-    PropTypes.shape({
-      low: PropTypes.object,
-      medium: PropTypes.object,
-      high: PropTypes.object,
-      estimatedBaseFee: PropTypes.string,
-    }),
-  ]),
   gasEstimateType: PropTypes.oneOf(Object.values(GAS_ESTIMATE_TYPES)),
   setMaxPriorityFee: PropTypes.func,
   setMaxFee: PropTypes.func,
@@ -172,5 +131,5 @@ AdvancedGasControls.propTypes = {
   maxPriorityFeeFiat: PropTypes.string,
   maxFeeFiat: PropTypes.string,
   gasErrors: PropTypes.object,
-  minimumGasLimit: PropTypes.number,
+  minimumGasLimit: PropTypes.string,
 };

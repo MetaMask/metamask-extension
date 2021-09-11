@@ -4,11 +4,13 @@ import { ALERT_TYPES } from '../../../shared/constants/alerts';
 import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
 import {
   accountsWithSendEtherInfoSelector,
+  checkNetworkAndAccountSupports1559,
   getAddressBook,
 } from '../../selectors';
 import { updateTransaction } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
+import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -20,7 +22,6 @@ export default function reduceMetamask(state = {}, action) {
     frequentRpcList: [],
     addressBook: [],
     contractExchangeRates: {},
-    tokens: [],
     pendingTokens: {},
     customNonceValue: '',
     useBlockie: false,
@@ -86,12 +87,6 @@ export default function reduceMetamask(state = {}, action) {
       const identities = { ...metamaskState.identities, ...id };
       return Object.assign(metamaskState, { identities });
     }
-
-    case actionConstants.UPDATE_TOKENS:
-      return {
-        ...metamaskState,
-        tokens: action.newTokens,
-      };
 
     case actionConstants.UPDATE_CUSTOM_NONCE:
       return {
@@ -298,4 +293,25 @@ export function getGasFeeEstimates(state) {
 
 export function getEstimatedGasFeeTimeBounds(state) {
   return state.metamask.estimatedGasFeeTimeBounds;
+}
+
+export function getIsGasEstimatesLoading(state) {
+  const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
+    state,
+  );
+  const gasEstimateType = getGasEstimateType(state);
+
+  // We consider the gas estimate to be loading if the gasEstimateType is
+  // 'NONE' or if the current gasEstimateType cannot be supported by the current
+  // network
+  const isEIP1559TolerableEstimateType =
+    gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
+    gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE;
+  const isGasEstimatesLoading =
+    gasEstimateType === GAS_ESTIMATE_TYPES.NONE ||
+    (networkAndAccountSupports1559 && !isEIP1559TolerableEstimateType) ||
+    (!networkAndAccountSupports1559 &&
+      gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET);
+
+  return isGasEstimatesLoading;
 }

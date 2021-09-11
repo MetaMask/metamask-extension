@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "Добавить сеть"
   },
-  "addRecipient": {
-    "message": "Добавить получателя"
-  },
   "addSuggestedTokens": {
     "message": "Добавить предложенные токены"
   },
@@ -93,9 +90,6 @@
   },
   "addToken": {
     "message": "Добавить токен"
-  },
-  "addTokens": {
-    "message": "Добавить токены"
   },
   "advanced": {
     "message": "Дополнительно"
@@ -519,7 +513,7 @@
     "message": "Расшифровать запрос"
   },
   "defaultNetwork": {
-    "message": "Сетью по умолчанию для транзакций Ether является Main Net."
+    "message": "Сетью по умолчанию для транзакций Ether является Mainnet."
   },
   "delete": {
     "message": "Удалить"
@@ -1028,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "Да, давайте настроим!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Вы хотели бы добавить эти токены?"
   },
   "links": {
@@ -1126,9 +1120,6 @@
   "mismatchedChainLinkText": {
     "message": "проверить сведения о сети",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mobileSyncText": {
-    "message": "Введите свой пароль, чтобы подтвердить ваш личность!"
   },
   "mustSelectOne": {
     "message": "Необходимо выбрать хотя бы 1 токен."
@@ -1558,7 +1549,7 @@
     "message": "Новый URL RPC"
   },
   "save": {
-    "message": "«»Сохранить"
+    "message": "Сохранить"
   },
   "saveAsCsvFile": {
     "message": "Сохранить как файл CSV"

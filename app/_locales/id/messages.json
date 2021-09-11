@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "Tambahkan Jaringan"
   },
-  "addRecipient": {
-    "message": "Tambahkan Penerima"
-  },
   "addSuggestedTokens": {
     "message": "Tambahkan Token yang Disarankan"
   },
@@ -92,9 +89,6 @@
     "message": "contoh: John D."
   },
   "addToken": {
-    "message": "Tambahkan Token"
-  },
-  "addTokens": {
     "message": "Tambahkan Token"
   },
   "advanced": {
@@ -1028,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "Ya, mari siap-siap!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Apakah Anda ingin menambahkan token ini?"
   },
   "links": {
@@ -1126,9 +1120,6 @@
   "mismatchedChainLinkText": {
     "message": "verifikasi detail jaringan",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mobileSyncText": {
-    "message": "Masukkan kata sandi Anda untuk memastikan ini adalah Anda!"
   },
   "mustSelectOne": {
     "message": "Harus memilih sekurangnya 1 token."

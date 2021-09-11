@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "नेटवर्क जोड़ें"
   },
-  "addRecipient": {
-    "message": "प्राप्तकर्ता को जोड़ें"
-  },
   "addSuggestedTokens": {
     "message": "सुझाए गए टोकन जोड़ें"
   },
@@ -92,9 +89,6 @@
     "message": "जैसे जॉन डी."
   },
   "addToken": {
-    "message": "टोकन जोड़ें"
-  },
-  "addTokens": {
     "message": "टोकन जोड़ें"
   },
   "advanced": {
@@ -519,7 +513,7 @@
     "message": "अनुरोध डिक्रिप्ट करें"
   },
   "defaultNetwork": {
-    "message": "Ether के लेनदेन के लिए डिफ़ॉल्ट नेटवर्क Main Net है।"
+    "message": "Ether के लेनदेन के लिए डिफ़ॉल्ट नेटवर्क Mainnet है।"
   },
   "delete": {
     "message": "हटाएँ"
@@ -1028,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "हाँ, आइए सेट करते हैं!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "क्या आप इन टोकन को जोड़ना चाहते हैं?"
   },
   "links": {
@@ -1126,9 +1120,6 @@
   "mismatchedChainLinkText": {
     "message": "नेटवर्क विवरण सत्यापित करें",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
-  "mobileSyncText": {
-    "message": "कृपया यह पुष्टि करने के लिए अपना पासवर्ड दर्ज करें कि यह आप ही हैं!"
   },
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन का चयन करना चाहिए।"

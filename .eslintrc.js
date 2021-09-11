@@ -166,6 +166,16 @@ module.exports = {
         sourceType: 'script',
       },
     },
+    {
+      files: [
+        'app/scripts/lockdown-run.js',
+        'test/unit-global/protect-intrinsics.test.js',
+      ],
+      globals: {
+        harden: 'readonly',
+        Compartment: 'readonly',
+      },
+    },
   ],
 
   settings: {

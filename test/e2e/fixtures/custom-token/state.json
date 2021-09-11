@@ -1,150 +1,165 @@
 {
   "data": {
+    "AlertController": {
+      "alertEnabledness": {
+        "unconnectedAccount": true,
+        "web3ShimUsage": true
+      },
+      "unconnectedAccountAlertShownOrigins": {},
+      "web3ShimUsageOrigins": {}
+    },
     "AppStateController": {
-      "mkrMigrationReminderTimestamp": null
+      "connectedStatusPopoverHasBeenShown": true,
+      "defaultHomeActiveTabName": null,
+      "recoveryPhraseReminderHasBeenShown": true,
+      "recoveryPhraseReminderLastShown": 1627317428214
     },
     "CachedBalancesController": {
       "cachedBalances": {
-        "4": {}
+        "0x4": {
+          "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": "0x0"
+        }
       }
     },
     "CurrencyController": {
-      "conversionDate": 1575697244.188,
-      "conversionRate": 149.61,
+      "conversionDate": 1626907353.891,
+      "conversionRate": 1968.5,
       "currentCurrency": "usd",
-      "nativeCurrency": "ETH"
+      "nativeCurrency": "ETH",
+      "pendingCurrentCurrency": null,
+      "pendingNativeCurrency": null,
+      "usdConversionRate": 1968.5
     },
     "IncomingTransactionsController": {
       "incomingTransactions": {},
-      "incomingTxLastFetchedBlocksByNetwork": {
-        "goerli": null,
-        "kovan": null,
-        "mainnet": null,
-        "rinkeby": 5570536
+      "incomingTxLastFetchedBlockByChainId": {
+        "0x1": null,
+        "0x2a": null,
+        "0x3": null,
+        "0x4": 8977934,
+        "0x5": null
       }
     },
     "KeyringController": {
       "vault": "{\"data\":\"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT\",\"iv\":\"FbeHDAW5afeWNORfNJBR0Q==\",\"salt\":\"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8=\"}"
     },
+    "MetaMetricsController": {
+      "metaMetricsId": "0xff3e952b9f5a27ffcab42b0b4abf689e77dcc1f9f441871dc962d622b089fb51",
+      "participateInMetaMetrics": true
+    },
     "NetworkController": {
       "network": "1337",
+      "networkDetails": {
+        "EIPS": {}
+      },
+      "previousProviderStore": {
+        "chainId": "0x4",
+        "ticker": "ETH",
+        "type": "rinkeby"
+      },
       "provider": {
-        "nickname": "Localhost 8545",
-        "rpcUrl": "http://localhost:8545",
         "chainId": "0x539",
+        "nickname": "Localhost 8545",
+        "rpcPrefs": {},
+        "rpcUrl": "http://localhost:8545",
         "ticker": "ETH",
         "type": "rpc"
       }
     },
     "NotificationController": {
-      "notifications": {
-        "1": {
-          "isShown": true
-        },
-        "3": {
-          "isShown": true
-        },
-        "5": {
-          "isShown": true
-        },
-        "6": {
-          "isShown": true
-        }
-      }
+      "notifications": {}
     },
     "OnboardingController": {
       "onboardingTabs": {},
-      "seedPhraseBackedUp": false
+      "seedPhraseBackedUp": true
     },
-    "PermissionsMetadata": {
-      "domainMetadata": {
-        "metamask.github.io": {
-          "icon": null,
-          "name": "M E T A M A S K M E S H T E S T"
-        }
-      },
-      "permissionsHistory": {},
-      "permissionsLog": [
-        {
-          "id": 746677923,
-          "method": "eth_accounts",
-          "methodType": "restricted",
-          "origin": "metamask.github.io",
-          "request": {
-            "id": 746677923,
-            "jsonrpc": "2.0",
-            "method": "eth_accounts",
-            "origin": "metamask.github.io",
-            "params": []
-          },
-          "requestTime": 1575697241368,
-          "response": {
-            "id": 746677923,
-            "jsonrpc": "2.0",
-            "result": []
-          },
-          "responseTime": 1575697241370,
-          "success": true
-        }
-      ]
+    "PermissionsController": {
+      "domains": {},
+      "permissionsDescriptions": {},
+      "permissionsRequests": []
     },
     "PreferencesController": {
-      "accountTokens": {
-        "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-          "0x539": [
-            {
-              "address": "0x86002be4cdd922de1ccb831582bf99284b99ac12",
-              "symbol": "TST",
-              "decimals": 4
-            }
-          ],
-          "rinkeby": [],
-          "ropsten": []
-        }
-      },
-      "assetImages": {},
       "completedOnboarding": true,
       "currentLocale": "en",
+      "dismissSeedBackUpReminder": true,
       "featureFlags": {
-        "showIncomingTransactions": true,
-        "transactionTime": false
+        "showIncomingTransactions": true
       },
-      "firstTimeFlowType": "create",
+      "firstTimeFlowType": "import",
       "forgottenPassword": false,
-      "frequentRpcListDetail": [],
+      "frequentRpcListDetail": [
+        {
+          "chainId": "0x539",
+          "nickname": "Localhost 8545",
+          "rpcPrefs": {},
+          "rpcUrl": "http://localhost:8545",
+          "ticker": "ETH"
+        }
+      ],
       "identities": {
         "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
           "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+          "lastSelected": 1626907346643,
           "name": "Account 1"
         }
       },
+      "infuraBlocked": false,
+      "ipfsGateway": "dweb.link",
       "knownMethodData": {},
       "lostIdentities": {},
-      "metaMetricsId": null,
-      "participateInMetaMetrics": false,
       "preferences": {
+        "hideZeroBalanceTokens": false,
+        "showFiatInTestnets": false,
         "useNativeCurrencyAsPrimaryCurrency": true
       },
       "selectedAddress": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
-      "suggestedTokens": {},
+      "useBlockie": false,
+      "useLedgerLive": false,
+      "useNonceField": false,
+      "usePhishDetect": true,
+      "useStaticTokenList": false
+    },
+    "TokenListController": {
+      "tokenList": {},
+      "tokensChainsCache": {}
+    },
+    "TokensController": {
+      "allTokens": {
+        "0x539": {
+          "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": [
+            {
+              "address": "0x86002be4cdd922de1ccb831582bf99284b99ac12",
+              "decimals": 4,
+              "image": null,
+              "isERC721": false,
+              "symbol": "TST"
+            }
+          ]
+        }
+      },
+      "ignoredTokens": [],
+      "suggestedAssets": [],
+      "allIgnoredTokens": {},
       "tokens": [
         {
           "address": "0x86002be4cdd922de1ccb831582bf99284b99ac12",
-          "symbol": "TST",
-          "decimals": 4
+          "decimals": 4,
+          "image": null,
+          "isERC721": false,
+          "symbol": "TST"
         }
-      ],
-      "useBlockie": false,
-      "useNonceField": false,
-      "usePhishDetect": true
+      ]
+    },
+    "TransactionController": {
+      "transactions": {}
     },
     "config": {},
     "firstTimeInfo": {
-      "date": 1575697234195,
-      "version": "7.7.0"
+      "date": 1626907328205,
+      "version": "9.8.1"
     }
   },
   "meta": {
-    "version": 40
+    "version": 63
   }
 }

@@ -11,6 +11,7 @@ export default function NumericInput({
   error = '',
   autoFocus = false,
   allowDecimals = true,
+  disabled = false,
 }) {
   return (
     <div
@@ -29,6 +30,7 @@ export default function NumericInput({
         }}
         min="0"
         autoFocus={autoFocus}
+        disabled={disabled}
       />
       {detailText && (
         <Typography color={COLORS.UI4} variant={TYPOGRAPHY.H7} tag="span">
@@ -40,10 +42,11 @@ export default function NumericInput({
 }
 
 NumericInput.propTypes = {
-  value: PropTypes.number,
+  value: PropTypes.oneOf([PropTypes.number, PropTypes.string]),
   detailText: PropTypes.string,
   onChange: PropTypes.func,
   error: PropTypes.string,
   autoFocus: PropTypes.bool,
   allowDecimals: PropTypes.bool,
+  disabled: PropTypes.bool,
 };

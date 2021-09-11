@@ -1,10 +1,9 @@
 import Web3 from 'web3';
-import contracts from '@metamask/contract-metadata';
 import { warn } from 'loglevel';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
-import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
 import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts';
 import { MINUTE } from '../../../shared/constants/time';
+import { isEqualCaseInsensitive } from '../../../ui/helpers/utils/util';
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = MINUTE * 3;
@@ -24,56 +23,36 @@ export default class DetectTokensController {
     preferences,
     network,
     keyringMemStore,
+    tokenList,
+    tokensController,
   } = {}) {
+    this.tokensController = tokensController;
     this.preferences = preferences;
     this.interval = interval;
     this.network = network;
     this.keyringMemStore = keyringMemStore;
-  }
+    this.tokenList = tokenList;
+    this.selectedAddress = this.preferences?.store.getState().selectedAddress;
+    this.tokenAddresses = this.tokensController?.state.tokens.map((token) => {
+      return token.address;
+    });
+    this.hiddenTokens = this.tokensController?.state.ignoredTokens;
 
-  /**
-   * For each token in @metamask/contract-metadata, find check selectedAddress balance.
-   */
-  async detectNewTokens() {
-    if (!this.isActive) {
-      return;
-    }
-    if (this._network.store.getState().provider.chainId !== MAINNET_CHAIN_ID) {
-      return;
-    }
-
-    const tokensToDetect = [];
-    this.web3.setProvider(this._network._provider);
-    for (const contractAddress in contracts) {
+    preferences?.store.subscribe(({ selectedAddress, useTokenDetection }) => {
       if (
-        contracts[contractAddress].erc20 &&
-        !this.tokenAddresses.includes(contractAddress.toLowerCase()) &&
-        !this.hiddenTokens.includes(contractAddress.toLowerCase())
+        this.selectedAddress !== selectedAddress ||
+        this.useTokenDetection !== useTokenDetection
       ) {
-        tokensToDetect.push(contractAddress);
+        this.selectedAddress = selectedAddress;
+        this.useTokenDetection = useTokenDetection;
+        this.restartTokenDetection();
       }
-    }
-
-    let result;
-    try {
-      result = await this._getTokenBalances(tokensToDetect);
-    } catch (error) {
-      warn(
-        `MetaMask - DetectTokensController single call balance fetch failed`,
-        error,
-      );
-      return;
-    }
-
-    tokensToDetect.forEach((tokenAddress, index) => {
-      const balance = result[index];
-      if (balance && !balance.isZero()) {
-        this._preferences.addToken(
-          tokenAddress,
-          contracts[tokenAddress].symbol,
-          contracts[tokenAddress].decimals,
-        );
-      }
+    });
+    tokensController?.subscribe(({ tokens = [], ignoredTokens = [] }) => {
+      this.tokenAddresses = tokens.map((token) => {
+        return token.address;
+      });
+      this.hiddenTokens = ignoredTokens;
     });
   }
 
@@ -89,6 +68,66 @@ export default class DetectTokensController {
         return resolve(result);
       });
     });
+  }
+
+  /**
+   * For each token in the tokenlist provided by the TokenListController, check selectedAddress balance.
+   */
+  async detectNewTokens() {
+    if (!this.isActive) {
+      return;
+    }
+
+    const { tokenList } = this._tokenList.state;
+    if (Object.keys(tokenList).length === 0) {
+      return;
+    }
+
+    const tokensToDetect = [];
+    this.web3.setProvider(this._network._provider);
+    for (const tokenAddress in tokenList) {
+      if (
+        !this.tokenAddresses.find((address) =>
+          isEqualCaseInsensitive(address, tokenAddress),
+        ) &&
+        !this.hiddenTokens.find((address) =>
+          isEqualCaseInsensitive(address, tokenAddress),
+        )
+      ) {
+        tokensToDetect.push(tokenAddress);
+      }
+    }
+    const sliceOfTokensToDetect = [
+      tokensToDetect.slice(0, 1000),
+      tokensToDetect.slice(1000, tokensToDetect.length - 1),
+    ];
+    for (const tokensSlice of sliceOfTokensToDetect) {
+      let result;
+      try {
+        result = await this._getTokenBalances(tokensSlice);
+      } catch (error) {
+        warn(
+          `MetaMask - DetectTokensController single call balance fetch failed`,
+          error,
+        );
+        return;
+      }
+
+      const tokensWithBalance = tokensSlice.filter((_, index) => {
+        const balance = result[index];
+        return balance && !balance.isZero();
+      });
+
+      await Promise.all(
+        tokensWithBalance.map((tokenAddress) => {
+          return this.tokensController.addToken(
+            tokenAddress,
+            tokenList[tokenAddress].symbol,
+            tokenList[tokenAddress].decimals,
+          );
+        }),
+      );
+    }
   }
 
   /**
@@ -119,34 +158,6 @@ export default class DetectTokensController {
   }
 
   /**
-   * In setter when selectedAddress is changed, detectNewTokens and restart polling
-   * @type {Object}
-   */
-  set preferences(preferences) {
-    if (!preferences) {
-      return;
-    }
-    this._preferences = preferences;
-    const currentTokens = preferences.store.getState().tokens;
-    this.tokenAddresses = currentTokens
-      ? currentTokens.map((token) => token.address)
-      : [];
-    this.hiddenTokens = preferences.store.getState().hiddenTokens;
-    preferences.store.subscribe(({ tokens = [], hiddenTokens = [] }) => {
-      this.tokenAddresses = tokens.map((token) => {
-        return token.address;
-      });
-      this.hiddenTokens = hiddenTokens;
-    });
-    preferences.store.subscribe(({ selectedAddress }) => {
-      if (this.selectedAddress !== selectedAddress) {
-        this.selectedAddress = selectedAddress;
-        this.restartTokenDetection();
-      }
-    });
-  }
-
-  /**
    * @type {Object}
    */
   set network(network) {
@@ -174,6 +185,16 @@ export default class DetectTokensController {
         }
       }
     });
+  }
+
+  /**
+   * @type {Object}
+   */
+  set tokenList(tokenList) {
+    if (!tokenList) {
+      return;
+    }
+    this._tokenList = tokenList;
   }
 
   /**

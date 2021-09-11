@@ -1,16 +1,11 @@
 import { useSelector } from 'react-redux';
-import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import {
   getEstimatedGasFeeTimeBounds,
   getGasEstimateType,
   getGasFeeEstimates,
+  getIsGasEstimatesLoading,
 } from '../ducks/metamask/metamask';
-import { checkNetworkAndAccountSupports1559 } from '../selectors';
 import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
-
-/**
- * @typedef {keyof typeof GAS_ESTIMATE_TYPES} GasEstimateTypes
- */
 
 /**
  * @typedef {object} GasEstimates
@@ -35,25 +30,11 @@ import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
  * @returns {GasFeeEstimates} - GasFeeEstimates object
  */
 export function useGasFeeEstimates() {
-  const networkAndAccountSupports1559 = useSelector(
-    checkNetworkAndAccountSupports1559,
-  );
   const gasEstimateType = useSelector(getGasEstimateType);
   const gasFeeEstimates = useSelector(getGasFeeEstimates);
   const estimatedGasFeeTimeBounds = useSelector(getEstimatedGasFeeTimeBounds);
+  const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
   useSafeGasEstimatePolling();
-
-  // We consider the gas estimate to be loading if the gasEstimateType is
-  // 'NONE' or if the current gasEstimateType cannot be supported by the current
-  // network
-  const isEIP1559TolerableEstimateType =
-    gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
-    gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE;
-  const isGasEstimatesLoading =
-    gasEstimateType === GAS_ESTIMATE_TYPES.NONE ||
-    (networkAndAccountSupports1559 && !isEIP1559TolerableEstimateType) ||
-    (!networkAndAccountSupports1559 &&
-      gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET);
 
   return {
     gasFeeEstimates,

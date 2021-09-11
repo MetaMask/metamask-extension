@@ -251,6 +251,9 @@ export const getCustomMaxFeePerGas = (state) =>
 export const getCustomMaxPriorityFeePerGas = (state) =>
   state.metamask.swapsState.customMaxPriorityFeePerGas;
 
+export const getSwapsUserFeeLevel = (state) =>
+  state.metamask.swapsState.swapsUserFeeLevel;
+
 export const getFetchParams = (state) => state.metamask.swapsState.fetchParams;
 
 export const getQuotes = (state) => state.metamask.swapsState.quotes;
@@ -671,19 +674,21 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     let maxFeePerGas;
     let maxPriorityFeePerGas;
     let baseAndPriorityFeePerGas;
+    let decEstimatedBaseFee;
 
     if (networkAndAccountSupports1559) {
       const {
         high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
         estimatedBaseFee = '0',
       } = getGasFeeEstimates(state);
+      decEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee);
       maxFeePerGas =
         customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
       maxPriorityFeePerGas =
         customMaxPriorityFeePerGas ||
         decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
       baseAndPriorityFeePerGas = addHexes(
-        decGWEIToHexWEI(estimatedBaseFee),
+        decEstimatedBaseFee,
         maxPriorityFeePerGas,
       );
     }
@@ -774,7 +779,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       sensitiveProperties: swapMetaData,
     });
 
-    if (!isContractAddressValid(usedTradeTxParams.to, swapMetaData, chainId)) {
+    if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
       captureMessage('Invalid contract address', {
         extra: {
           token_from: swapMetaData.token_from,
@@ -813,6 +818,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
         updateTransaction(
           {
             ...approveTxMeta,
+            estimatedBaseFee: decEstimatedBaseFee,
             type: TRANSACTION_TYPES.SWAP_APPROVAL,
             sourceTokenSymbol: sourceTokenInfo.symbol,
           },
@@ -852,6 +858,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       updateTransaction(
         {
           ...tradeTxMeta,
+          estimatedBaseFee: decEstimatedBaseFee,
           sourceTokenSymbol: sourceTokenInfo.symbol,
           destinationTokenSymbol: destinationTokenInfo.symbol,
           type: TRANSACTION_TYPES.SWAP,

@@ -2,9 +2,6 @@
  * @file The entry point for the web extension singleton process.
  */
 
-// polyfills
-import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
-
 import endOfStream from 'end-of-stream';
 import pump from 'pump';
 import debounce from 'debounce-stream';
@@ -302,6 +299,24 @@ function setupController(initState, initLangCode) {
     );
   };
 
+  const onCloseEnvironmentInstances = (isClientOpen, environmentType) => {
+    // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling
+    if (isClientOpen === false) {
+      controller.onClientClosed();
+      // otherwise we want to only remove the polling tokens for the environment type that has closed
+    } else {
+      // in the case of fullscreen environment a user might have multiple tabs open so we don't want to disconnect all of
+      // its corresponding polling tokens unless all tabs are closed.
+      if (
+        environmentType === ENVIRONMENT_TYPE_FULLSCREEN &&
+        Boolean(Object.keys(openMetamaskTabsIDs).length)
+      ) {
+        return;
+      }
+      controller.onEnvironmentTypeClosed(environmentType);
+    }
+  };
+
   /**
    * A runtime.Port object, as provided by the browser:
    * @see https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/runtime/Port
@@ -330,10 +345,11 @@ function setupController(initState, initLangCode) {
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
-
         endOfStream(portStream, () => {
           popupIsOpen = false;
-          controller.isClientOpen = isClientOpenStatus();
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_POPUP);
         });
       }
 
@@ -342,7 +358,12 @@ function setupController(initState, initLangCode) {
 
         endOfStream(portStream, () => {
           notificationIsOpen = false;
-          controller.isClientOpen = isClientOpenStatus();
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(
+            isClientOpen,
+            ENVIRONMENT_TYPE_NOTIFICATION,
+          );
         });
       }
 
@@ -352,7 +373,12 @@ function setupController(initState, initLangCode) {
 
         endOfStream(portStream, () => {
           delete openMetamaskTabsIDs[tabId];
-          controller.isClientOpen = isClientOpenStatus();
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(
+            isClientOpen,
+            ENVIRONMENT_TYPE_FULLSCREEN,
+          );
         });
       }
     } else {
@@ -406,9 +432,13 @@ function setupController(initState, initLangCode) {
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.approvalController.subscribe(updateBadge);
   controller.appStateController.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+    updateBadge,
+  );
+
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.APPROVAL_STATE_CHANGE,
     updateBadge,
   );
 

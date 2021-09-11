@@ -6,6 +6,7 @@ const createStaticServer = require('../../development/create-static-server');
 const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
+const { ensureXServerIsRunning } = require('./x-server');
 
 const ganacheServer = new Ganache();
 const dappPort = 8080;
@@ -39,6 +40,9 @@ describe('MetaMask', function () {
       dappServer.on('listening', resolve);
       dappServer.on('error', reject);
     });
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
+      await ensureXServerIsRunning();
+    }
     const result = await buildWebDriver();
     driver = result.driver;
     await driver.navigate();
@@ -184,25 +188,6 @@ describe('MetaMask', function () {
       await driver.clickElement('[data-testid="popover-close"]');
 
       await popover.waitForElementState('hidden');
-    });
-  });
-
-  describe('Show account information', function () {
-    it('shows the QR code for the account', async function () {
-      await driver.clickElement('[data-testid="account-options-menu-button"]');
-      await driver.clickElement(
-        '[data-testid="account-options-menu__account-details"]',
-      );
-      await driver.findVisibleElement('.qr-code__wrapper');
-      await driver.delay(regularDelayMs);
-
-      // wait for permission modal to be visible.
-      const permissionModal = await driver.findVisibleElement('span .modal');
-      await driver.clickElement('.account-modal__close');
-
-      // wait for permission modal to be removed from DOM.
-      await permissionModal.waitForElementState('hidden');
-      await driver.delay(regularDelayMs);
     });
   });
 
@@ -516,9 +501,9 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs);
     });
 
-    it('clicks on the Add Token button', async function () {
+    it('clicks on the import tokens button', async function () {
       await driver.clickElement(`[data-testid="home__asset-tab"]`);
-      await driver.clickElement({ text: 'Add Token', tag: 'button' });
+      await driver.clickElement({ text: 'import tokens', tag: 'a' });
       await driver.delay(regularDelayMs);
     });
 
@@ -532,10 +517,10 @@ describe('MetaMask', function () {
       await driver.fill('#custom-address', tokenAddress);
       await driver.delay(regularDelayMs);
 
-      await driver.clickElement({ text: 'Next', tag: 'button' });
+      await driver.clickElement({ text: 'Add Custom Token', tag: 'button' });
       await driver.delay(regularDelayMs);
 
-      await driver.clickElement({ text: 'Add Tokens', tag: 'button' });
+      await driver.clickElement({ text: 'Import Tokens', tag: 'button' });
       await driver.delay(regularDelayMs);
     });
 

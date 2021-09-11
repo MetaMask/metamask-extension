@@ -11,9 +11,6 @@
   "addToken": {
     "message": "Jeton ekle"
   },
-  "addTokens": {
-    "message": "Jetonlar ekle"
-  },
   "amount": {
     "message": "Tutar"
   },
@@ -104,7 +101,7 @@
     "message": "Ondalıklar en azından 0 olmalı ve 36'dan büyük olmamalı."
   },
   "defaultNetwork": {
-    "message": "Ether işlemleri için varsayılan ağ Main Net."
+    "message": "Ether işlemleri için varsayılan ağ Mainnet."
   },
   "depositEther": {
     "message": "Ether yatır"
@@ -221,7 +218,7 @@
   "learnMore": {
     "message": "Daha fazla bilgi."
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Bu jetonlara adres eklemek ister misiniz?"
   },
   "links": {
@@ -322,7 +319,7 @@
     "message": "Gelecekte Bu jetonu hesap seçenekleri menüsünde “Jeton ekle”'ye giderek geri ekleyebilirsiniz."
   },
   "reject": {
-    "message": "Reddetmek"
+    "message": "Reddet"
   },
   "rejected": {
     "message": "Rededildi"
