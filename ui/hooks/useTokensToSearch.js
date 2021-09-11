@@ -16,7 +16,6 @@ import { getConversionRate } from '../ducks/metamask/metamask';
 
 import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { useEqualityCheck } from './useEqualityCheck';
 
 const shuffledContractMap = shuffle(
@@ -39,9 +38,9 @@ export function getRenderableTokenData(
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
   // token from dynamic api list is fetched when useTokenDetection is true
-  const tokenAddress = useTokenDetection
-    ? address
-    : toChecksumHexAddress(address);
+  // And since the token.address from allTokens is checksumaddress
+  // token Address have to be changed to lowercase when we are using dynamic list
+  const tokenAddress = useTokenDetection ? address?.toLowerCase() : address;
   const formattedFiat =
     getTokenFiatAmount(
       isSwapsDefaultTokenSymbol(symbol, chainId)
