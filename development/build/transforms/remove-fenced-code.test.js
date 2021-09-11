@@ -1,24 +1,102 @@
+const deepFreeze = require('deep-freeze-strict');
 const { BuildTypes } = require('../utils');
 const {
   createRemoveFencedCodeTransform,
   removeFencedCode,
 } = require('./remove-fenced-code');
 
+// The test data is just strings. We get it from a function at the end of this
+// file because it takes up a lot of lines and is very distracting.
 const testData = getTestData();
 
-const getMinimalInputTemplate = (params = 'flask') => `
-///: BEGIN:ONLY_INCLUDE_IN(${params})
+const getMinimalFencedCode = (params = 'flask') =>
+  `///: BEGIN:ONLY_INCLUDE_IN(${params})
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
 `;
 
-const fenceSentinelRegex = /^\/\/\/:/mu;
-const fenceSentinelAndTerminusRegex = /^\/\/\/: \w+/mu;
-
 describe('build/transforms/remove-fenced-code', () => {
-  const mockFileName = 'file.js';
+  describe('createRemoveFencedCodeTransform', () => {
+    it('rejects invalid build types', () => {
+      expect(() => createRemoveFencedCodeTransform('foobar')).toThrow(
+        /received unrecognized build type "foobar".$/u,
+      );
+    });
+
+    it('does not modify files with ignored file extensions', async () => {
+      const fileContent = '"Valid JSON content"\n';
+      const stream = createRemoveFencedCodeTransform('main')('file.json');
+      let streamOutput = '';
+
+      await new Promise((resolve) => {
+        stream.on('data', (data) => {
+          streamOutput = streamOutput.concat(data.toString('utf8'));
+        });
+
+        stream.on('end', () => {
+          expect(streamOutput).toStrictEqual(fileContent);
+          resolve();
+        });
+
+        stream.write(Buffer.from(fileContent));
+        setTimeout(() => stream.end());
+      });
+    });
+
+    it('transforms a file read as a single chunk', async () => {
+      const filePrefix = '// A comment\n';
+      const fileContent = filePrefix.concat(getMinimalFencedCode());
+
+      const stream = createRemoveFencedCodeTransform('main')('file.js');
+      let streamOutput = '';
+
+      await new Promise((resolve) => {
+        stream.on('data', (data) => {
+          streamOutput = streamOutput.concat(data.toString('utf8'));
+        });
+
+        stream.on('end', () => {
+          expect(streamOutput).toStrictEqual(filePrefix);
+          resolve();
+        });
+
+        stream.write(fileContent);
+        setTimeout(() => stream.end());
+      });
+    });
+
+    it('transforms a file read as multiple chunks', async () => {
+      const filePrefix = '// A comment\n';
+      const chunks = filePrefix
+        .concat(getMinimalFencedCode())
+        .split('\n')
+        .map((line) => `${line}\n`);
+      // Because split is weird, the array has an extra element that's just a
+      // newline, and we don't want that.
+      chunks.pop();
+
+      const stream = createRemoveFencedCodeTransform('main')('file.js');
+      let streamOutput = '';
+
+      await new Promise((resolve) => {
+        stream.on('data', (data) => {
+          streamOutput = streamOutput.concat(data.toString('utf8'));
+        });
+
+        stream.on('end', () => {
+          expect(streamOutput).toStrictEqual(filePrefix);
+          resolve();
+        });
+
+        chunks.forEach((chunk) => stream.write(chunk));
+        setTimeout(() => stream.end());
+      });
+    });
+  });
 
   describe('removeFencedCode', () => {
+    const mockFileName = 'file.js';
+
     // Valid inputs
     Object.keys(BuildTypes).forEach((buildType) => {
       it(`transforms file with fences for build type "${buildType}"`, () => {
@@ -29,6 +107,12 @@ describe('build/transforms/remove-fenced-code', () => {
             testData.validInputs.withFences,
           ),
         ).toStrictEqual(testData.validOutputs[buildType]);
+
+        // Ensure that the minimal input template is in fact valid
+        const minimalInput = getMinimalFencedCode(buildType);
+        expect(
+          removeFencedCode(mockFileName, buildType, minimalInput),
+        ).toStrictEqual(minimalInput);
       });
 
       it(`does not modify file without fences for build type "${buildType}"`, () => {
@@ -44,6 +128,8 @@ describe('build/transforms/remove-fenced-code', () => {
 
     // Invalid inputs
     it('rejects sentinels preceded by non-whitespace', () => {
+      // Matches the sentinel component of the first line beginning with "///:"
+      const fenceSentinelRegex = /^\/\/\/:/mu;
       const replacements = ['a ///:', '2 ///:', '_ ///:'];
 
       replacements.forEach((replacement) => {
@@ -51,7 +137,7 @@ describe('build/transforms/remove-fenced-code', () => {
           removeFencedCode(
             mockFileName,
             BuildTypes.flask,
-            getMinimalInputTemplate().replace(fenceSentinelRegex, replacement),
+            getMinimalFencedCode().replace(fenceSentinelRegex, replacement),
           ),
         ).toThrow(
           /Fence sentinel may only appear at the start of a line, optionally preceded by whitespace.$/u,
@@ -60,6 +146,10 @@ describe('build/transforms/remove-fenced-code', () => {
     });
 
     it('rejects sentinels not followed by a single space and a multi-character alphabetical string', () => {
+      // Matches the sentinel and terminus component of the first line
+      // beginning with "///: TERMINUS"
+      const fenceSentinelAndTerminusRegex = /^\/\/\/: \w+/mu;
+
       const replacements = [
         '///:BEGIN',
         '///:XBEGIN',
@@ -75,7 +165,7 @@ describe('build/transforms/remove-fenced-code', () => {
           removeFencedCode(
             mockFileName,
             BuildTypes.flask,
-            getMinimalInputTemplate().replace(
+            getMinimalFencedCode().replace(
               fenceSentinelAndTerminusRegex,
               replacement,
             ),
@@ -86,52 +176,226 @@ describe('build/transforms/remove-fenced-code', () => {
       });
     });
 
-    it('rejects malformed directives', () => {
-      expect(true).not.toBe(false);
-      // const replacements = [
-      //   '///:BEGIN',
-      //   '///:XBEGIN',
-      //   '///:_BEGIN',
-      //   '///:B',
-      //   '///:_',
-      //   '///: ',
-      //   '///:',
-      // ];
+    it('rejects malformed BEGIN directives', () => {
+      // This is the first line of the minimal input template
+      const directiveString = '///: BEGIN:ONLY_INCLUDE_IN(flask)';
 
-      // replacements.forEach((replacement) => {
-      //   expect(() =>
-      //     removeFencedCode(
-      //       mockFileName,
-      //       BuildTypes.flask,
-      //       getMinimalInputTemplate().replace(
-      //         fenceSentinelAndTerminusRegex,
-      //         replacement,
-      //       ),
-      //     ),
-      //   ).toThrow(
-      //     /Fence sentinel must be followed by a single space and an alphabetical string of two or more characters.$/u,
-      //   );
-      // });
+      const replacements = [
+        // Invalid terminus
+        '///: BE_GIN:ONLY_INCLUDE_IN(flask)',
+        '///: BE6IN:ONLY_INCLUDE_IN(flask)',
+        '///: BEGIN7:ONLY_INCLUDE_IN(flask)',
+        '///: BeGIN:ONLY_INCLUDE_IN(flask)',
+        '///: BE3:ONLY_INCLUDE_IN(flask)',
+        '///: BEG-IN:ONLY_INCLUDE_IN(flask)',
+        '///: BEG N:ONLY_INCLUDE_IN(flask)',
+
+        // Invalid commands
+        '///: BEGIN:ONLY-INCLUDE_IN(flask)',
+        '///: BEGIN:ONLY_INCLUDE:IN(flask)',
+        '///: BEGIN:ONL6_INCLUDE_IN(flask)',
+        '///: BEGIN:ONLY_IN@LUDE_IN(flask)',
+        '///: BEGIN:ONLy_INCLUDE_IN(flask)',
+        '///: BEGIN:ONLY INCLUDE_IN(flask)',
+
+        // Invalid parameters
+        '///: BEGIN:ONLY_INCLUDE_IN[flask]',
+        '///: BEGIN:ONLY_INCLUDE_IN()',
+        '///: BEGIN:ONLY_INCLUDE_IN( )',
+        '///: BEGIN:ONLY_INCLUDE_IN[flask)',
+        '///: BEGIN:ONLY_INCLUDE_IN(flask.main)',
+        '///: BEGIN:ONLY_INCLUDE_IN(flask,@)',
+        '///: BEGIN:ONLY_INCLUDE_IN(fla k)',
+      ];
+
+      replacements.forEach((replacement) => {
+        expect(() =>
+          removeFencedCode(
+            mockFileName,
+            BuildTypes.flask,
+            getMinimalFencedCode().replace(directiveString, replacement),
+          ),
+        ).toThrow(
+          new RegExp(
+            `${replacement.replace(
+              /([()[\]])/gu,
+              '\\$1',
+            )}":\nFailed to parse fence directive.$`,
+            'u',
+          ),
+        );
+      });
     });
 
-    it.todo('rejects files with uneven number of fence lines');
-    it.todo('rejects invalid terminuses');
-    it.todo('rejects invalid commands');
-    it.todo('rejects invalid command parameters');
-    it.todo('rejects directive pairs with wrong terminus order');
+    it('rejects malformed END directives', () => {
+      // This is the last line of the minimal input template
+      const directiveString = '///: END:ONLY_INCLUDE_IN';
+
+      const replacements = [
+        // Invalid terminus
+        '///: ENx:ONLY_INCLUDE_IN',
+        '///: EN3:ONLY_INCLUDE_IN',
+        '///: EN_:ONLY_INCLUDE_IN',
+        '///: EN :ONLY_INCLUDE_IN',
+        '///: EN::ONLY_INCLUDE_IN',
+
+        // Invalid commands
+        '///: END:ONLY-INCLUDE_IN',
+        '///: END::ONLY_INCLUDE_IN',
+        '///: END:ONLY_INCLUDE:IN',
+        '///: END:ONL6_INCLUDE_IN',
+        '///: END:ONLY_IN@LUDE_IN',
+        '///: END:ONLy_INCLUDE_IN',
+        '///: END:ONLY INCLUDE_IN',
+      ];
+
+      replacements.forEach((replacement) => {
+        expect(() =>
+          removeFencedCode(
+            mockFileName,
+            BuildTypes.flask,
+            getMinimalFencedCode().replace(directiveString, replacement),
+          ),
+        ).toThrow(
+          new RegExp(
+            `${replacement}":\nFailed to parse fence directive.$`,
+            'u',
+          ),
+        );
+      });
+    });
+
+    it('rejects files with uneven number of fence lines', () => {
+      const additions = [
+        '///: BEGIN:ONLY_INCLUDE_IN(flask)',
+        '///: END:ONLY_INCLUDE_IN',
+      ];
+      additions.forEach((addition) => {
+        expect(() =>
+          removeFencedCode(
+            mockFileName,
+            BuildTypes.flask,
+            getMinimalFencedCode().concat(addition),
+          ),
+        ).toThrow(
+          /A valid fence consists of two fence lines, but the file contains an uneven number of fence lines.$/u,
+        );
+      });
+    });
+
+    it('rejects invalid terminuses', () => {
+      const testCases = [
+        ['BEGIN', ['KAPLAR', 'FLASK', 'FOO']],
+        ['END', ['KAPLAR', 'FOO', 'BAR']],
+      ];
+
+      testCases.forEach(([validTerminus, replacements]) => {
+        replacements.forEach((replacement) => {
+          expect(() =>
+            removeFencedCode(
+              mockFileName,
+              BuildTypes.flask,
+              getMinimalFencedCode().replace(validTerminus, replacement),
+            ),
+          ).toThrow(
+            new RegExp(
+              `Line contains invalid directive terminus "${replacement}".$`,
+              'u',
+            ),
+          );
+        });
+      });
+    });
+
+    it('rejects invalid commands', () => {
+      const testCases = [
+        [/ONLY_INCLUDE_IN\(/mu, ['ONLY_KEEP_IN(', 'FLASK(', 'FOO(']],
+        [/ONLY_INCLUDE_IN$/mu, ['ONLY_KEEP_IN', 'FLASK', 'FOO']],
+      ];
+
+      testCases.forEach(([validCommand, replacements]) => {
+        replacements.forEach((replacement) => {
+          expect(() =>
+            removeFencedCode(
+              mockFileName,
+              BuildTypes.flask,
+              getMinimalFencedCode().replace(validCommand, replacement),
+            ),
+          ).toThrow(
+            new RegExp(
+              `Line contains invalid directive command "${replacement.replace(
+                '(',
+                '',
+              )}".$`,
+              'u',
+            ),
+          );
+        });
+      });
+    });
+
+    it('rejects invalid command parameters', () => {
+      const testCases = [
+        ['bar', ['bar', 'flask,bar', 'flask,beta,main,bar']],
+        ['Foo', ['Foo', 'flask,Foo', 'flask,beta,main,Foo']],
+        ['b3ta', ['b3ta', 'flask,b3ta', 'flask,beta,main,b3ta']],
+        ['bEta', ['bEta', 'flask,bEta', 'flask,beta,main,bEta']],
+      ];
+
+      testCases.forEach(([invalidParam, replacements]) => {
+        replacements.forEach((replacement) => {
+          expect(() =>
+            removeFencedCode(
+              mockFileName,
+              BuildTypes.flask,
+              getMinimalFencedCode(replacement),
+            ),
+          ).toThrow(
+            new RegExp(`"${invalidParam}" is not a valid build type.$`, 'u'),
+          );
+        });
+      });
+    });
+
+    it('rejects directive pairs with wrong terminus order', () => {
+      // We need more than one directive pair for this test
+      const input = getMinimalFencedCode().concat(getMinimalFencedCode('beta'));
+
+      const expectedBeginError =
+        'The first directive of a pair must be a "BEGIN" directive.';
+      const expectedEndError =
+        'The second directive of a pair must be an "END" directive.';
+      const testCases = [
+        [
+          'BEGIN:ONLY_INCLUDE_IN(flask)',
+          'END:ONLY_INCLUDE_IN',
+          expectedBeginError,
+        ],
+        [
+          /END:ONLY_INCLUDE_IN/mu,
+          'BEGIN:ONLY_INCLUDE_IN(main)',
+          expectedEndError,
+        ],
+        [
+          'BEGIN:ONLY_INCLUDE_IN(beta)',
+          'END:ONLY_INCLUDE_IN',
+          expectedBeginError,
+        ],
+      ];
+
+      testCases.forEach(([target, replacement, expectedError]) => {
+        expect(() =>
+          removeFencedCode(
+            mockFileName,
+            BuildTypes.flask,
+            input.replace(target, replacement),
+          ),
+        ).toThrow(expectedError);
+      });
+    });
+
+    // We can't do this until there's more than one command
     it.todo('rejects directive pairs with mismatched commands');
-  });
-
-  describe('createRemoveFencedCodeTransform', () => {
-    it.todo('transforms a file read as a single buffer');
-    it.todo('transforms a file read as multiple buffers');
-    // ^with fences split across buffers
-
-    it('rejects invalid build types', () => {
-      expect(() => createRemoveFencedCodeTransform('foobar')).toThrow(
-        /received unrecognized build type "foobar".$/u,
-      );
-    });
   });
 });
 
@@ -217,5 +481,5 @@ Always_Included
 
   data.validOutputs.flask = data.validInputs.withFences;
   data.validOutputs.main = data.validInputs.withoutFences;
-  return data;
+  return deepFreeze(data);
 }

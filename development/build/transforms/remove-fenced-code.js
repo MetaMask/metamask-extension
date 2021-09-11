@@ -41,11 +41,7 @@ function createRemoveFencedCodeTransform(buildType) {
 
     return through(
       // Concatenate all buffers for the current file into a single buffer.
-      function (fileBuffer, encoding, next) {
-        if (!Buffer.isBuffer(fileBuffer)) {
-          throw new Error(`Expected a Buffer but received "${encoding}".`);
-        }
-
+      function (fileBuffer, _encoding, next) {
         fileBuffers.push(fileBuffer);
         next();
       },
@@ -253,6 +249,7 @@ function removeFencedCode(fileName, typeOfCurrentBuild, fileContents) {
         );
       }
 
+      /* istanbul ignore next: impossible until there's more than one command */
       if (command !== currentCommand) {
         throw new Error(
           getInvalidFencePairMessage(
