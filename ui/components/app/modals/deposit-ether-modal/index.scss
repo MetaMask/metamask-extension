@@ -109,7 +109,7 @@
       padding-bottom: 20px;
       align-self: flex-start;
 
-      @media screen and (min-width: $break-small) {
+      @media screen and (min-width: $break-large) {
         width: 15rem;
       }
 
@@ -128,7 +128,7 @@
       display: flex;
       justify-content: flex-end;
 
-      @media screen and (min-width: $break-small) {
+      @media screen and (min-width: $break-large) {
         min-width: 300px;
       }
     }

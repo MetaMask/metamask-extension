@@ -20,7 +20,7 @@
       pointer-events: none;
     }
 
-    @media screen and (max-width: $break-large) {
+    @media screen and (max-width: $break-small) {
       overflow-y: auto;
       max-height: 420px;
     }
