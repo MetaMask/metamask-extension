@@ -53,8 +53,25 @@ module.exports = {
     'prefer-object-spread': 'error',
     'require-atomic-updates': 'off',
 
-    // The "/:" marker is for our "///:" code fences
-    'spaced-comment': ['error', 'always', { markers: ['/:'] }],
+    // This is the same as our default config, but for the noted exceptions
+    'spaced-comment': [
+      'error',
+      'always',
+      {
+        markers: [
+          'global',
+          'globals',
+          'eslint',
+          'eslint-disable',
+          '*package',
+          '!',
+          ',',
+          // Local additions
+          '/:', // This is for our code fences 
+        ],
+        exceptions: ['=', '-'],
+      },
+    ],
 
     'import/no-unassigned-import': 'off',
 
