@@ -1,7 +1,6 @@
 const path = require('path');
 const { PassThrough, Transform } = require('stream');
 const { BuildTypes } = require('../utils');
-const { lintTransformedFile } = require('./utils');
 
 module.exports = {
   createRemoveFencedCodeTransform,
@@ -13,18 +12,13 @@ class RemoveFencedCodeTransform extends Transform {
    * A transform stream that calls {@link removeFencedCode} on the complete
    * string contents of the file read by Browserify.
    *
-   * Optionally lints the file, if the file was modified.
-   *
    * @param {string} filePath - The path to the file being transformed.
    * @param {string} buildType - The type of the current build process.env.
-   * @param {boolean} shouldLintTransformedFiles - Whether the transformed file
-   * should be linted.
    */
-  constructor(filePath, buildType, shouldLintTransformedFiles) {
+  constructor(filePath, buildType) {
     super();
     this.filePath = filePath;
     this.buildType = buildType;
-    this.shouldLintTransformedFiles = shouldLintTransformedFiles;
     this._fileBuffers = [];
   }
 
@@ -39,24 +33,14 @@ class RemoveFencedCodeTransform extends Transform {
   // stream, immediately before the "end" event is emitted.
   // It applies the transform to the concatenated file contents.
   _flush(end) {
-    const [fileContent, didModify] = removeFencedCode(
+    const [fileContent] = removeFencedCode(
       this.filePath,
       this.buildType,
       Buffer.concat(this._fileBuffers).toString('utf8'),
     );
 
-    const pushAndEnd = () => {
-      this.push(fileContent);
-      end();
-    };
-
-    if (this.shouldLintTransformedFiles && didModify) {
-      lintTransformedFile(fileContent, this.filePath)
-        .then(pushAndEnd)
-        .catch((error) => end(error));
-    } else {
-      pushAndEnd();
-    }
+    this.push(fileContent);
+    end();
   }
 }
 
@@ -71,19 +55,10 @@ class RemoveFencedCodeTransform extends Transform {
  * For details on how the transform mutates source files, see
  * {@link removeFencedCode} and the documentation.
  *
- * If specified (and by default), the transform will call ESLint on the text
- * contents of any file that it modifies. The transform will error if such a
- * file is ignored by ESLint, since linting is our first defense against making
- * un-syntactic modifications to files using code fences.
- *
  * @param {string} buildType - The type of the current build.
- * @param {boolean} shouldLintTransformedFiles - Whether to lint transformed files.
  * @returns {(filePath: string) => Transform} The transform function.
  */
-function createRemoveFencedCodeTransform(
-  buildType,
-  shouldLintTransformedFiles = true,
-) {
+function createRemoveFencedCodeTransform(buildType) {
   if (!(buildType in BuildTypes)) {
     throw new Error(
       `Metamask build: Code fencing transform received unrecognized build type "${buildType}".`,
@@ -104,11 +79,7 @@ function createRemoveFencedCodeTransform(
       return new PassThrough();
     }
 
-    return new RemoveFencedCodeTransform(
-      filePath,
-      buildType,
-      shouldLintTransformedFiles,
-    );
+    return new RemoveFencedCodeTransform(filePath, buildType);
   };
 }
 
