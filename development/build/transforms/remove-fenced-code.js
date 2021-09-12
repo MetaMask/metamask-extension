@@ -15,9 +15,13 @@ module.exports = {
 
 /**
  * @param {string} buildType - The type of the current build.
+ * @param {boolean} shouldLintTransformedFiles - Whether to lint transformed files.
  * @returns {(filePath: string) => Duplex} The transform function.
  */
-function createRemoveFencedCodeTransform(buildType) {
+function createRemoveFencedCodeTransform(
+  buildType,
+  shouldLintTransformedFiles = true,
+) {
   if (!(buildType in BuildTypes)) {
     throw new Error(
       `Metamask build: Code fencing transform received unrecognized build type "${buildType}".`,
@@ -63,7 +67,7 @@ function createRemoveFencedCodeTransform(buildType) {
           end();
         };
 
-        if (didModify) {
+        if (shouldLintTransformedFiles && didModify) {
           lintTransformedFile(fileContent, filePath)
             .then(_end)
             .catch((error) => this.destroy(error));

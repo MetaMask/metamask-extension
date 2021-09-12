@@ -123,6 +123,28 @@ describe('build/transforms/remove-fenced-code', () => {
       });
     });
 
+    it('skips linting for transformed file if shouldLintTransformedFiles is false', async () => {
+      const filePrefix = '// A comment\n';
+      const fileContent = filePrefix.concat(getMinimalFencedCode());
+
+      const stream = createRemoveFencedCodeTransform('main', false)('file.js');
+      let streamOutput = '';
+
+      await new Promise((resolve) => {
+        stream.on('data', (data) => {
+          streamOutput = streamOutput.concat(data.toString('utf8'));
+        });
+
+        stream.on('end', () => {
+          expect(streamOutput).toStrictEqual(filePrefix);
+          expect(lintTransformedFileMock).not.toHaveBeenCalled();
+          resolve();
+        });
+
+        stream.end(fileContent);
+      });
+    });
+
     it('handles transformed file lint failure', async () => {
       lintTransformedFileMock.mockImplementationOnce(() =>
         Promise.reject(new Error('lint failure')),
