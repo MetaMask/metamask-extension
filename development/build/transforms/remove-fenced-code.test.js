@@ -4,6 +4,11 @@ const {
   createRemoveFencedCodeTransform,
   removeFencedCode,
 } = require('./remove-fenced-code');
+const transformUtils = require('./utils');
+
+jest.mock('./utils', () => ({
+  lintTransformedFile: jest.fn(),
+}));
 
 // The test data is just strings. We get it from a function at the end of this
 // file because it takes up a lot of lines and is very distracting.
@@ -17,7 +22,12 @@ Conditionally_Included
 
 describe('build/transforms/remove-fenced-code', () => {
   describe('createRemoveFencedCodeTransform', () => {
+    const { lintTransformedFile: lintTransformedFileMock } = transformUtils;
     const mockJsFileName = 'file.js';
+
+    beforeEach(() => {
+      lintTransformedFileMock.mockImplementation(() => Promise.resolve());
+    });
 
     it('rejects invalid build types', () => {
       expect(() => createRemoveFencedCodeTransform('foobar')).toThrow(
@@ -37,6 +47,7 @@ describe('build/transforms/remove-fenced-code', () => {
 
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(fileContent);
+          expect(lintTransformedFileMock).not.toHaveBeenCalled();
           resolve();
         });
 
@@ -59,6 +70,11 @@ describe('build/transforms/remove-fenced-code', () => {
 
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(filePrefix);
+          expect(lintTransformedFileMock).toHaveBeenCalledTimes(1);
+          expect(lintTransformedFileMock).toHaveBeenCalledWith(
+            filePrefix,
+            mockJsFileName,
+          );
           resolve();
         });
 
@@ -86,6 +102,11 @@ describe('build/transforms/remove-fenced-code', () => {
 
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(filePrefix);
+          expect(lintTransformedFileMock).toHaveBeenCalledTimes(1);
+          expect(lintTransformedFileMock).toHaveBeenCalledWith(
+            filePrefix,
+            mockJsFileName,
+          );
           resolve();
         });
 
@@ -107,6 +128,57 @@ describe('build/transforms/remove-fenced-code', () => {
 
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(fileContent);
+          expect(lintTransformedFileMock).not.toHaveBeenCalled();
+          resolve();
+        });
+
+        stream.end(fileContent);
+      });
+    });
+
+    it('skips linting for transformed file if shouldLintTransformedFiles is false', async () => {
+      const filePrefix = '// A comment\n';
+      const fileContent = filePrefix.concat(getMinimalFencedCode());
+
+      const stream = createRemoveFencedCodeTransform(
+        'main',
+        false,
+      )(mockJsFileName);
+      let streamOutput = '';
+
+      await new Promise((resolve) => {
+        stream.on('data', (data) => {
+          streamOutput = streamOutput.concat(data.toString('utf8'));
+        });
+
+        stream.on('end', () => {
+          expect(streamOutput).toStrictEqual(filePrefix);
+          expect(lintTransformedFileMock).not.toHaveBeenCalled();
+          resolve();
+        });
+
+        stream.end(fileContent);
+      });
+    });
+
+    it('handles transformed file lint failure', async () => {
+      lintTransformedFileMock.mockImplementationOnce(() =>
+        Promise.reject(new Error('lint failure')),
+      );
+
+      const filePrefix = '// A comment\n';
+      const fileContent = filePrefix.concat(getMinimalFencedCode());
+
+      const stream = createRemoveFencedCodeTransform('main')(mockJsFileName);
+
+      await new Promise((resolve) => {
+        stream.on('error', (error) => {
+          expect(error).toStrictEqual(new Error('lint failure'));
+          expect(lintTransformedFileMock).toHaveBeenCalledTimes(1);
+          expect(lintTransformedFileMock).toHaveBeenCalledWith(
+            filePrefix,
+            mockJsFileName,
+          );
           resolve();
         });
 
