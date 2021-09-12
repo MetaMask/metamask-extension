@@ -1,22 +1,58 @@
 const path = require('path');
-const through = require('through2');
-const { PassThrough } = require('readable-stream');
+const { PassThrough, Transform } = require('stream');
 const { BuildTypes } = require('../utils');
 const { lintTransformedFile } = require('./utils');
-
-/**
- * @typedef {import('readable-stream').Duplex} Duplex
- */
 
 module.exports = {
   createRemoveFencedCodeTransform,
   removeFencedCode,
 };
 
+class RemoveFencedCodeTransform extends Transform {
+  constructor(filePath, buildType, shouldLintTransformedFiles) {
+    super();
+    this.filePath = filePath;
+    this.buildType = buildType;
+    this.shouldLintTransformedFiles = shouldLintTransformedFiles;
+    this._fileBuffers = [];
+  }
+
+  // This function is called whenever data is written to the stream.
+  // It concatenates all buffers for the current file into a single buffer.
+  _transform(buffer, _encoding, next) {
+    this._fileBuffers.push(buffer);
+    next();
+  }
+
+  // "flush" is called when all data has been written to the
+  // stream, immediately before the "end" event is emitted.
+  // It applies the transform to the concatenated file contents.
+  _flush(end) {
+    const [fileContent, didModify] = removeFencedCode(
+      this.filePath,
+      this.buildType,
+      Buffer.concat(this._fileBuffers).toString('utf8'),
+    );
+
+    const pushAndEnd = () => {
+      this.push(fileContent);
+      end();
+    };
+
+    if (this.shouldLintTransformedFiles && didModify) {
+      lintTransformedFile(fileContent, this.filePath)
+        .then(pushAndEnd)
+        .catch((error) => end(error));
+    } else {
+      pushAndEnd();
+    }
+  }
+}
+
 /**
  * @param {string} buildType - The type of the current build.
  * @param {boolean} shouldLintTransformedFiles - Whether to lint transformed files.
- * @returns {(filePath: string) => Duplex} The transform function.
+ * @returns {(filePath: string) => Transform} The transform function.
  */
 function createRemoveFencedCodeTransform(
   buildType,
@@ -35,46 +71,17 @@ function createRemoveFencedCodeTransform(
   // them to a single string, then apply the actual transform function on that
   // string.
   /**
-   * @returns {Duplex}
+   * @returns {Transform}
    */
   return function removeFencedCodeTransform(filePath) {
     if (!['.js', '.cjs', '.mjs'].includes(path.extname(filePath))) {
       return new PassThrough();
     }
 
-    const fileBuffers = [];
-
-    return through(
-      // This function is called whenever data is written to the stream.
-      // It concatenates all buffers for the current file into a single buffer.
-      function (fileBuffer, _encoding, next) {
-        fileBuffers.push(fileBuffer);
-        next();
-      },
-
-      // This "flush" function is called when all data has been written to the
-      // stream, immediately before the "end" event is emitted.
-      // It applies the transform to the concatenated file contents.
-      function (end) {
-        const [fileContent, didModify] = removeFencedCode(
-          filePath,
-          buildType,
-          Buffer.concat(fileBuffers).toString('utf8'),
-        );
-
-        const _end = () => {
-          this.push(fileContent);
-          end();
-        };
-
-        if (shouldLintTransformedFiles && didModify) {
-          lintTransformedFile(fileContent, filePath)
-            .then(_end)
-            .catch((error) => this.destroy(error));
-        } else {
-          _end();
-        }
-      },
+    return new RemoveFencedCodeTransform(
+      filePath,
+      buildType,
+      shouldLintTransformedFiles,
     );
   };
 }

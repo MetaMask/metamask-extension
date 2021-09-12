@@ -158,7 +158,6 @@ describe('build/transforms/remove-fenced-code', () => {
       await new Promise((resolve) => {
         stream.on('error', (error) => {
           expect(error).toStrictEqual(new Error('lint failure'));
-          expect(stream.destroyed).toStrictEqual(true);
           resolve();
         });
 
