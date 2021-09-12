@@ -53,6 +53,9 @@ module.exports = {
     'prefer-object-spread': 'error',
     'require-atomic-updates': 'off',
 
+    // The "/:" marker is for our "///:" code fences
+    'spaced-comment': ['error', 'always', { markers: ['/:'] }],
+
     'import/no-unassigned-import': 'off',
 
     'no-invalid-this': 'off',
