@@ -190,6 +190,13 @@ function parseArgv() {
     throw new Error(`MetaMask build: Invalid build type: "${buildType}"`);
   }
 
+  // Manually default this to `false` for dev builds only.
+  const shouldLintFenceFiles = process.argv.includes(
+    `--${NamedArgs.LintFenceFiles}`,
+  )
+    ? argv[NamedArgs.LintFenceFiles]
+    : !entryTask.startsWith('dev');
+
   return {
     betaVersion: String(betaVersion),
     buildType,
@@ -197,7 +204,7 @@ function parseArgv() {
     isBeta: argv[NamedArgs.BuildType] === BuildTypes.beta,
     isLavaMoat: process.argv[0].includes('lavamoat'),
     shouldIncludeLockdown: argv[NamedArgs.OmitLockdown],
-    shouldLintFenceFiles: argv[NamedArgs.LintFenceFiles],
+    shouldLintFenceFiles,
     skipStats: argv[NamedArgs.SkipStats],
   };
 }
