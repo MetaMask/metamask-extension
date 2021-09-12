@@ -87,10 +87,10 @@ describe('build/transforms/remove-fenced-code', () => {
       const chunks = filePrefix
         .concat(getMinimalFencedCode())
         .split('\n')
+        // The final element in the split array is the empty string, which is
+        // useful for calling .join, but undesirable here.
+        .filter((line) => line !== '')
         .map((line) => `${line}\n`);
-      // Because split is weird, the array has an extra element that's just a
-      // newline, and we don't want that.
-      chunks.pop();
 
       const stream = createRemoveFencedCodeTransform('main')(mockJsFileName);
       let streamOutput = '';
@@ -220,6 +220,35 @@ describe('build/transforms/remove-fenced-code', () => {
     });
 
     // Invalid inputs
+    it('rejects empty fences', () => {
+      const jsComment = '// A comment\n';
+
+      const emptyFence = getMinimalFencedCode()
+        .split('\n')
+        .filter((line) => line.startsWith('///:'))
+        .map((line) => `${line}\n`)
+        .join('');
+
+      const emptyFenceWithPrefix = jsComment.concat(emptyFence);
+      const emptyFenceWithSuffix = emptyFence.concat(jsComment);
+      const emptyFenceSurrounded = emptyFenceWithPrefix.concat(jsComment);
+
+      const inputs = [
+        emptyFence,
+        emptyFenceWithPrefix,
+        emptyFenceWithSuffix,
+        emptyFenceSurrounded,
+      ];
+
+      inputs.forEach((input) => {
+        expect(() =>
+          removeFencedCode(mockFileName, BuildTypes.flask, input),
+        ).toThrow(
+          `MetaMask build: Empty fence found in file "${mockFileName}":\n${emptyFence}`,
+        );
+      });
+    });
+
     it('rejects sentinels preceded by non-whitespace', () => {
       // Matches the sentinel component of the first line beginning with "///:"
       const fenceSentinelRegex = /^\/\/\/:/mu;

@@ -195,7 +195,7 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
 
     // Store the start and end indices of each line
     // Increment the end index by 1 to including the trailing newline when
-    // performing string operations
+    // performing string operations.
     const indices = [matchArray.index, matchArray.index + line.length + 1];
 
     const unfencedLine = line.replace(fenceSentinelRegex, '');
@@ -321,6 +321,16 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
             line,
             `Expected "END" directive to have command "${currentCommand}" but found "${command}".`,
           ),
+        );
+      }
+
+      // Forbid empty fences
+      const { line: previousLine, indices: previousIndices } = parsedDirectives[
+        i - 1
+      ];
+      if (fileContent.substring(previousIndices[1], indices[0]).trim() === '') {
+        throw new Error(
+          `MetaMask build: Empty fence found in file "${filePath}":\n${previousLine}\n${line}\n`,
         );
       }
 
