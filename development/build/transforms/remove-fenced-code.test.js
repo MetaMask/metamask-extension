@@ -23,6 +23,7 @@ Conditionally_Included
 describe('build/transforms/remove-fenced-code', () => {
   describe('createRemoveFencedCodeTransform', () => {
     const { lintTransformedFile: lintTransformedFileMock } = transformUtils;
+    const mockJsFileName = 'file.js';
 
     beforeEach(() => {
       lintTransformedFileMock.mockImplementation(() => Promise.resolve());
@@ -46,6 +47,7 @@ describe('build/transforms/remove-fenced-code', () => {
 
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(fileContent);
+          expect(lintTransformedFileMock).not.toHaveBeenCalled();
           resolve();
         });
 
@@ -58,7 +60,7 @@ describe('build/transforms/remove-fenced-code', () => {
       const filePrefix = '// A comment\n';
       const fileContent = filePrefix.concat(getMinimalFencedCode());
 
-      const stream = createRemoveFencedCodeTransform('main')('file.js');
+      const stream = createRemoveFencedCodeTransform('main')(mockJsFileName);
       let streamOutput = '';
 
       await new Promise((resolve) => {
@@ -68,6 +70,11 @@ describe('build/transforms/remove-fenced-code', () => {
 
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(filePrefix);
+          expect(lintTransformedFileMock).toHaveBeenCalledTimes(1);
+          expect(lintTransformedFileMock).toHaveBeenCalledWith(
+            filePrefix,
+            mockJsFileName,
+          );
           resolve();
         });
 
@@ -85,7 +92,7 @@ describe('build/transforms/remove-fenced-code', () => {
       // newline, and we don't want that.
       chunks.pop();
 
-      const stream = createRemoveFencedCodeTransform('main')('file.js');
+      const stream = createRemoveFencedCodeTransform('main')(mockJsFileName);
       let streamOutput = '';
 
       await new Promise((resolve) => {
@@ -95,6 +102,11 @@ describe('build/transforms/remove-fenced-code', () => {
 
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(filePrefix);
+          expect(lintTransformedFileMock).toHaveBeenCalledTimes(1);
+          expect(lintTransformedFileMock).toHaveBeenCalledWith(
+            filePrefix,
+            mockJsFileName,
+          );
           resolve();
         });
 
@@ -106,7 +118,7 @@ describe('build/transforms/remove-fenced-code', () => {
     it('handles file with fences that is unmodified by the transform', async () => {
       const fileContent = getMinimalFencedCode('main');
 
-      const stream = createRemoveFencedCodeTransform('main')('file.js');
+      const stream = createRemoveFencedCodeTransform('main')(mockJsFileName);
       let streamOutput = '';
 
       await new Promise((resolve) => {
@@ -116,6 +128,7 @@ describe('build/transforms/remove-fenced-code', () => {
 
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(fileContent);
+          expect(lintTransformedFileMock).not.toHaveBeenCalled();
           resolve();
         });
 
@@ -127,7 +140,10 @@ describe('build/transforms/remove-fenced-code', () => {
       const filePrefix = '// A comment\n';
       const fileContent = filePrefix.concat(getMinimalFencedCode());
 
-      const stream = createRemoveFencedCodeTransform('main', false)('file.js');
+      const stream = createRemoveFencedCodeTransform(
+        'main',
+        false,
+      )(mockJsFileName);
       let streamOutput = '';
 
       await new Promise((resolve) => {
@@ -153,11 +169,16 @@ describe('build/transforms/remove-fenced-code', () => {
       const filePrefix = '// A comment\n';
       const fileContent = filePrefix.concat(getMinimalFencedCode());
 
-      const stream = createRemoveFencedCodeTransform('main')('file.js');
+      const stream = createRemoveFencedCodeTransform('main')(mockJsFileName);
 
       await new Promise((resolve) => {
         stream.on('error', (error) => {
           expect(error).toStrictEqual(new Error('lint failure'));
+          expect(lintTransformedFileMock).toHaveBeenCalledTimes(1);
+          expect(lintTransformedFileMock).toHaveBeenCalledWith(
+            filePrefix,
+            mockJsFileName,
+          );
           resolve();
         });
 
