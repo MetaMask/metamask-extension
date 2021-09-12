@@ -9,6 +9,17 @@ module.exports = {
 };
 
 class RemoveFencedCodeTransform extends Transform {
+  /**
+   * A transform stream that calls {@link removeFencedCode} on the complete
+   * string contents of the file read by Browserify.
+   *
+   * Optionally lints the file, if the file was modified.
+   *
+   * @param {string} filePath - The path to the file being transformed.
+   * @param {string} buildType - The type of the current build process.env.
+   * @param {boolean} shouldLintTransformedFiles - Whether the transformed file
+   * should be linted.
+   */
   constructor(filePath, buildType, shouldLintTransformedFiles) {
     super();
     this.filePath = filePath;
@@ -50,6 +61,21 @@ class RemoveFencedCodeTransform extends Transform {
 }
 
 /**
+ * A factory for a Browserify transform that removes fenced code from all
+ * JavaScript source files. The transform is applied to files with the following
+ * extensions:
+ *   - `.js`
+ *   - `.cjs`
+ *   - `.mjs`
+ *
+ * For details on how the transform mutates source files, see
+ * {@link removeFencedCode} and the documentation.
+ *
+ * If specified (and by default), the transform will call ESLint on the text
+ * contents of any file that it modifies. The transform will error if such a
+ * file is ignored by ESLint, since linting is our first defense against making
+ * un-syntactic modifications to files using code fences.
+ *
  * @param {string} buildType - The type of the current build.
  * @param {boolean} shouldLintTransformedFiles - Whether to lint transformed files.
  * @returns {(filePath: string) => Transform} The transform function.
@@ -119,14 +145,26 @@ const fenceSentinelRegex = /^\s*\/\/\/:/u;
 // - TERMINUS:COMMAND
 const directiveParsingRegex = /^([A-Z]+):([A-Z_]+)(?:\(([\w,]+)\))?$/u;
 
-/*
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-AssetsController: this.assetsController.store,
-PluginController: this.pluginController,
-///: END:ONLY_INCLUDE_IN
- */
-
 /**
+ * Removes fenced code from the given JavaScript source string. "Fenced code"
+ * includes the entire fence lines, including their trailing newlines, and the
+ * lines that they surround.
+ *
+ * A valid fence consists of two well-formed fence lines, separated by one or
+ * more lines that should be excluded. The first line must contain a `BEGIN`
+ * directive, and the second most contain an `END` directive. Both directives
+ * must specify the same command.
+ *
+ * Here's an example of a valid fence:
+ *
+ * ```javascript
+ *   ///: BEGIN:ONLY_INCLUDE_IN(flask)
+ *   console.log('I am Flask.');
+ *   ///: END:ONLY_INCLUDE_IN
+ * ```
+ *
+ * For details, please see the documentation.
+ *
  * @param {string} filePath - The path to the file being transformed.
  * @param {string} typeOfCurrentBuild - The type of the current build process.
  * @param {string} fileContent - The contents of the file being transformed.
@@ -228,8 +266,8 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
 
   // The below for-loop iterates over the parsed fence directives and performs
   // the following work:
-  // - Ensures that the array of parsed directives consist of valid directive
-  //   pairs, as specified in the README
+  // - Ensures that the array of parsed directives consists of valid directive
+  //   pairs, as specified in the documentation.
   // - For each directive pair, determines whether their fenced lines should be
   //   removed for the current build, and if so, stores the indices we will use
   //   to splice the file content string.
@@ -315,33 +353,38 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
  *
  * The splicing indices must be a non-empty, even-length array of non-negative
  * integers, specifying the character ranges to remove from the given string, as
- * follows: [ start, end, start, end, start, end, ... ]
+ * follows:
  *
- * @param {string} string - The string to splice.
+ * `[ start, end, start, end, start, end, ... ]`
+ *
+ * @param {string} toSplice - The string to splice.
  * @param {number[]} splicingIndices - Indices to splice at.
  * @returns {string} The spliced string.
  */
-function multiSplice(string, splicingIndices) {
-  const retainedParts = [];
+function multiSplice(toSplice, splicingIndices) {
+  const retainedSubstrings = [];
 
   // Get the first part to be included
   // The substring() call returns an empty string if splicingIndices[0] is 0,
   // which is exactly what we want in that case.
-  retainedParts.push(string.substring(0, splicingIndices[0]));
+  retainedSubstrings.push(toSplice.substring(0, splicingIndices[0]));
 
   // This loop gets us all parts of the string that should be retained, except
-  // the first and the last
-  for (let i = 2; i < splicingIndices.length; i += 2) {
-    retainedParts.push(
-      string.substring(splicingIndices[i - 1], splicingIndices[i]),
+  // the first and the last.
+  // It iterates over all "end" indices of the array except the last one, and
+  // pushes the substring between each "end" index and the next "begin" index
+  // the the array of retained substrings.
+  for (let i = 1; i < splicingIndices.length; i += 2) {
+    retainedSubstrings.push(
+      toSplice.substring(splicingIndices[i], splicingIndices[i + 1]),
     );
   }
 
   // Get the last part to be included
-  retainedParts.push(
-    string.substring(splicingIndices[splicingIndices.length - 1]),
+  retainedSubstrings.push(
+    toSplice.substring(splicingIndices[splicingIndices.length - 1]),
   );
-  return retainedParts.join('');
+  return retainedSubstrings.join('');
 }
 
 /**
