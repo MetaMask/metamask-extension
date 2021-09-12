@@ -299,6 +299,14 @@ describe('build/transforms/remove-fenced-code', () => {
         '///: BEGIN:ONLY_INCLUDE_IN(flask.main)',
         '///: BEGIN:ONLY_INCLUDE_IN(flask,@)',
         '///: BEGIN:ONLY_INCLUDE_IN(fla k)',
+
+        // Stuff after the directive
+        '///: BEGIN:ONLY_INCLUDE_IN(flask) A',
+        '///: BEGIN:ONLY_INCLUDE_IN(flask) 9',
+        '///: BEGIN:ONLY_INCLUDE_IN(flask)A',
+        '///: BEGIN:ONLY_INCLUDE_IN(flask)9',
+        '///: BEGIN:ONLY_INCLUDE_IN(flask)_',
+        '///: BEGIN:ONLY_INCLUDE_IN(flask))',
       ];
 
       replacements.forEach((replacement) => {
@@ -340,6 +348,11 @@ describe('build/transforms/remove-fenced-code', () => {
         '///: END:ONLY_IN@LUDE_IN',
         '///: END:ONLy_INCLUDE_IN',
         '///: END:ONLY INCLUDE_IN',
+
+        // Stuff after the directive
+        '///: END:ONLY_INCLUDE_IN A',
+        '///: END:ONLY_INCLUDE_IN 9',
+        '///: END:ONLY_INCLUDE_IN _',
       ];
 
       replacements.forEach((replacement) => {
