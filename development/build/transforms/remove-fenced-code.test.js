@@ -244,7 +244,7 @@ describe('build/transforms/remove-fenced-code', () => {
         expect(() =>
           removeFencedCode(mockFileName, BuildTypes.flask, input),
         ).toThrow(
-          `MetaMask build: Empty fence found in file "${mockFileName}":\n${emptyFence}`,
+          `Empty fence found in file "${mockFileName}":\n${emptyFence}`,
         );
       });
     });
@@ -321,6 +321,9 @@ describe('build/transforms/remove-fenced-code', () => {
         '///: BEGIN:ONLY INCLUDE_IN(flask)',
 
         // Invalid parameters
+        '///: BEGIN:ONLY_INCLUDE_IN(,flask)',
+        '///: BEGIN:ONLY_INCLUDE_IN(flask,)',
+        '///: BEGIN:ONLY_INCLUDE_IN(flask,,main)',
         '///: BEGIN:ONLY_INCLUDE_IN[flask]',
         '///: BEGIN:ONLY_INCLUDE_IN()',
         '///: BEGIN:ONLY_INCLUDE_IN( )',
@@ -490,6 +493,15 @@ describe('build/transforms/remove-fenced-code', () => {
           );
         });
       });
+
+      // Should fail for empty params
+      expect(() =>
+        removeFencedCode(
+          mockFileName,
+          BuildTypes.flask,
+          getMinimalFencedCode('').replace('()', ''),
+        ),
+      ).toThrow(/No params specified.$/u);
     });
 
     it('rejects directive pairs with wrong terminus order', () => {

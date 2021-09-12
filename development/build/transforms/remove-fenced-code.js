@@ -123,10 +123,24 @@ const DirectiveCommands = {
 
 const CommandValidators = {
   [DirectiveCommands.ONLY_INCLUDE_IN]: (params, filePath) => {
+    if (!params || params.length === 0) {
+      throw new Error(
+        getInvalidParamsMessage(
+          filePath,
+          DirectiveCommands.ONLY_INCLUDE_IN,
+          `No params specified.`,
+        ),
+      );
+    }
+
     params.forEach((param) => {
       if (!(param in BuildTypes)) {
         throw new Error(
-          `Invalid code fence parameters in file "${filePath}" for command "${DirectiveCommands.ONLY_INCLUDE_IN}": "${param}" is not a valid build type.`,
+          getInvalidParamsMessage(
+            filePath,
+            DirectiveCommands.ONLY_INCLUDE_IN,
+            `"${param}" is not a valid build type.`,
+          ),
         );
       }
     });
@@ -143,7 +157,7 @@ const fenceSentinelRegex = /^\s*\/\/\/:/u;
 // At this stage of parsing, we are looking for one of:
 // - TERMINUS:COMMAND(PARAMS)
 // - TERMINUS:COMMAND
-const directiveParsingRegex = /^([A-Z]+):([A-Z_]+)(?:\(([\w,]+)\))?$/u;
+const directiveParsingRegex = /^([A-Z]+):([A-Z_]+)(?:\(((?:\w+,)*\w+)\))?$/u;
 
 /**
  * Removes fenced code from the given JavaScript source string. "Fenced code"
@@ -330,7 +344,7 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
       ];
       if (fileContent.substring(previousIndices[1], indices[0]).trim() === '') {
         throw new Error(
-          `MetaMask build: Empty fence found in file "${filePath}":\n${previousLine}\n${line}\n`,
+          `Empty fence found in file "${filePath}":\n${previousLine}\n${line}\n`,
         );
       }
 
@@ -350,7 +364,7 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
   /* istanbul ignore next: should be impossible */
   if (splicingIndices.length % 2 !== 0) {
     throw new Error(
-      `MetaMask build: Internal error while transforming file "${filePath}":\nCollected an uneven number of splicing indices: "${splicingIndices.length}"`,
+      `Internal error while transforming file "${filePath}":\nCollected an uneven number of splicing indices: "${splicingIndices.length}"`,
     );
   }
 
@@ -424,4 +438,8 @@ function getInvalidFenceStructureMessage(filePath, details) {
  */
 function getInvalidFencePairMessage(filePath, line, details) {
   return `Invalid fence pair in file "${filePath}" due to line "${line}":\n${details}`;
+}
+
+function getInvalidParamsMessage(filePath, command, details) {
+  return `Invalid code fence parameters in file "${filePath}" for command "${command}":\n${details}`;
 }
