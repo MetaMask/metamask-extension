@@ -67,7 +67,7 @@ module.exports = {
           '!',
           ',',
           // Local additions
-          '/:', // This is for our code fences 
+          '/:', // This is for our code fences
         ],
         exceptions: ['=', '-'],
       },
