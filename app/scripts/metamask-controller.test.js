@@ -91,7 +91,6 @@ const MetaMaskController = proxyquire('./metamask-controller', {
 
 const currentNetworkId = '42';
 const DEFAULT_LABEL = 'Account 1';
-const DEFAULT_LABEL_2 = 'Account 2';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -360,7 +359,7 @@ describe('MetaMaskController', function () {
       });
     });
 
-    it('should restore any consecutive accounts with balances', async function () {
+    it('should restore any consecutive accounts with balances without extra zero balance accounts', async function () {
       sandbox.stub(metamaskController, 'getBalance');
       metamaskController.getBalance.withArgs(TEST_ADDRESS).callsFake(() => {
         return Promise.resolve('0x14ced5122ce0a000');
@@ -386,7 +385,6 @@ describe('MetaMaskController', function () {
       delete identities[TEST_ADDRESS].lastSelected;
       assert.deepEqual(identities, {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
-        [TEST_ADDRESS_2]: { address: TEST_ADDRESS_2, name: DEFAULT_LABEL_2 },
       });
     });
   });
