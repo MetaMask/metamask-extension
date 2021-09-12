@@ -60,6 +60,6 @@ async function lintTransformedFile(content, filePath) {
     }, '');
 
   throw new Error(
-    `MetaMask build: Lint errors found in transformed file "${filePath}":\n\n${errorsString}`,
+    `MetaMask build: Lint errors encountered for transformed file "${filePath}":\n\n${errorsString}`,
   );
 }
