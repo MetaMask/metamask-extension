@@ -345,7 +345,7 @@ describe('build/transforms/remove-fenced-code', () => {
             getMinimalFencedCode().concat(addition),
           ),
         ).toThrow(
-          /A valid fence consists of two fence lines, but the file contains an uneven number of fence lines.$/u,
+          /A valid fence consists of two fence lines, but the file contains an uneven number, "3", of fence lines.$/u,
         );
       });
     });

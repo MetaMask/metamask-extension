@@ -2,7 +2,7 @@ const path = require('path');
 const { PassThrough, Transform } = require('stream');
 const { BuildTypes } = require('../utils');
 
-const hasOwnProperty = (obj, key) => Reflect.hasOwnProperty(obj, key);
+const hasOwnProperty = (obj, key) => Reflect.hasOwnProperty.call(obj, key);
 
 module.exports = {
   createRemoveFencedCodeTransform,
@@ -246,7 +246,7 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
     throw new Error(
       getInvalidFenceStructureMessage(
         filePath,
-        `A valid fence consists of two fence lines, but the file contains an uneven number of fence lines.`,
+        `A valid fence consists of two fence lines, but the file contains an uneven number, "${parsedDirectives.length}", of fence lines.`,
       ),
     );
   }
@@ -413,6 +413,13 @@ function getInvalidFencePairMessage(filePath, line, details) {
   return `Invalid fence pair in file "${filePath}" due to line "${line}":\n${details}`;
 }
 
+/**
+ * @param {string} filePath - The path to the file that caused the error.
+ * @param {string} command - The command of the directive with the invalid
+ * parameters.
+ * @param {string} details - An explanation of the error.
+ * @returns The error message.
+ */
 function getInvalidParamsMessage(filePath, command, details) {
   return `Invalid code fence parameters in file "${filePath}" for command "${command}":\n${details}`;
 }
