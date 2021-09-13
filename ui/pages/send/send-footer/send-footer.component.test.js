@@ -1,7 +1,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
-import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../helpers/constants/routes';
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer';
 import { renderWithProvider } from '../../../../test/jest';
 import SendFooter from './send-footer.component';
@@ -11,6 +14,7 @@ describe('SendFooter Component', () => {
 
   const propsMethodSpies = {
     addToAddressBookIfNew: sinon.spy(),
+    cancelTx: sinon.spy(),
     resetSendState: sinon.spy(),
     sign: sinon.spy(),
     update: sinon.spy(),
@@ -21,17 +25,14 @@ describe('SendFooter Component', () => {
   };
   const MOCK_EVENT = { preventDefault: () => undefined };
 
-  beforeAll(() => {
-    sinon.spy(SendFooter.prototype, 'onCancel');
-    sinon.spy(SendFooter.prototype, 'onSubmit');
-  });
-
-  beforeEach(() => {
-    wrapper = shallow(
+  const renderShallow = (props) => {
+    return shallow(
       <SendFooter
         addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
         resetSendState={propsMethodSpies.resetSendState}
+        cancelTx={propsMethodSpies.cancelTx}
         disabled
+        draftTransactionID="ID"
         history={historySpies}
         sign={propsMethodSpies.sign}
         to="mockTo"
@@ -40,13 +41,24 @@ describe('SendFooter Component', () => {
         sendStage="DRAFT"
         gasEstimateType="BASIC"
         mostRecentOverviewPage="mostRecentOverviewPage"
+        {...props}
       />,
       { context: { t: (str) => str, metricsEvent: () => ({}) } },
     );
+  };
+
+  beforeAll(() => {
+    sinon.spy(SendFooter.prototype, 'onCancel');
+    sinon.spy(SendFooter.prototype, 'onSubmit');
+  });
+
+  beforeEach(() => {
+    wrapper = renderShallow();
   });
 
   afterEach(() => {
     propsMethodSpies.resetSendState.resetHistory();
+    propsMethodSpies.cancelTx.resetHistory();
     propsMethodSpies.addToAddressBookIfNew.resetHistory();
     propsMethodSpies.resetSendState.resetHistory();
     propsMethodSpies.sign.resetHistory();
@@ -61,10 +73,19 @@ describe('SendFooter Component', () => {
   });
 
   describe('onCancel', () => {
-    it('should call resetSendState', () => {
+    it('should call resetSendState and cancelTx', () => {
       expect(propsMethodSpies.resetSendState.callCount).toStrictEqual(0);
       wrapper.instance().onCancel();
       expect(propsMethodSpies.resetSendState.callCount).toStrictEqual(1);
+    });
+
+    it('should call cancelTx', () => {
+      expect(propsMethodSpies.cancelTx.callCount).toStrictEqual(0);
+      wrapper.instance().onCancel();
+      expect(propsMethodSpies.cancelTx.callCount).toStrictEqual(1);
+      expect(propsMethodSpies.cancelTx.getCall(0).args[0]?.id).toStrictEqual(
+        'ID',
+      );
     });
 
     it('should call history.push', () => {
@@ -74,6 +95,14 @@ describe('SendFooter Component', () => {
       expect(historySpies.push.getCall(0).args[0]).toStrictEqual(
         'mostRecentOverviewPage',
       );
+    });
+
+    it('should call history.push with DEFAULT_ROUTE in  edit stage', () => {
+      wrapper = renderShallow({ sendStage: 'EDIT' });
+      expect(historySpies.push.callCount).toStrictEqual(0);
+      wrapper.instance().onCancel();
+      expect(historySpies.push.callCount).toStrictEqual(1);
+      expect(historySpies.push.getCall(0).args[0]).toStrictEqual(DEFAULT_ROUTE);
     });
   });
 
@@ -109,7 +138,9 @@ describe('SendFooter Component', () => {
           addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
           amount="mockAmount"
           resetSendState={propsMethodSpies.resetSendState}
+          cancelTx={propsMethodSpies.cancelTx}
           disabled
+          draftTransactionID="ID"
           editingTransactionId="mockEditingTransactionId"
           errors={{}}
           from={{ address: 'mockAddress', balance: 'mockBalance' }}
@@ -156,6 +187,7 @@ describe('SendFooter Component', () => {
         <SendFooter
           disabled
           mostRecentOverviewPage="mostRecentOverviewPage"
+          draftTransactionID="ID"
           sendErrors={{}}
           sendStage="DRAFT"
           {...props}
