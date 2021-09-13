@@ -4,20 +4,20 @@ import EthQuery from 'ethjs-query';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 
 /**
-
-  Event emitter utility class for tracking the transactions as they<br>
-  go from a pending state to a confirmed (mined in a block) state<br>
-<br>
-  As well as continues broadcast while in the pending state
-<br>
-@param {Object} config - non optional configuration object consists of:
-    @param {Object} config.provider - A network provider.
-    @param {Object} config.nonceTracker - see nonce tracker
-    @param {Function} config.getPendingTransactions - a function for getting an array of transactions,
-    @param {Function} config.publishTransaction - a async function for publishing raw transactions,
-
-@class
-*/
+ *
+ * Event emitter utility class for tracking the transactions as they<br>
+ * go from a pending state to a confirmed (mined in a block) state<br>
+ * <br>
+ * As well as continues broadcast while in the pending state
+ * <br>
+ *
+ * @param {Object} config - non optional configuration object consists of:
+ * @param {Object} config.provider - A network provider.
+ * @param {Object} config.nonceTracker - see nonce tracker
+ * @param {Function} config.getPendingTransactions - a function for getting an array of transactions,
+ * @param {Function} config.publishTransaction - a async function for publishing raw transactions,
+ * @class
+ */
 
 export default class PendingTransactionTracker extends EventEmitter {
   /**
@@ -33,7 +33,7 @@ export default class PendingTransactionTracker extends EventEmitter {
    * A map of transaction hashes to the number of blocks we've seen
    * since first considering it dropped
    *
-   * @type {Map<String, number>}
+   * @type {Map<string, number>}
    */
   droppedBlocksBufferByHash = new Map();
 
@@ -49,8 +49,8 @@ export default class PendingTransactionTracker extends EventEmitter {
   }
 
   /**
-    checks the network for signed txs and releases the nonce global lock if it is
-  */
+   * checks the network for signed txs and releases the nonce global lock if it is
+   */
   async updatePendingTxs() {
     // in order to keep the nonceTracker accurate we block it while updating pending transactions
     const nonceGlobalLock = await this.nonceTracker.getGlobalLock();
@@ -70,8 +70,9 @@ export default class PendingTransactionTracker extends EventEmitter {
 
   /**
    * Resubmits each pending transaction
+   *
    * @param {string} blockNumber - the latest block number in hex
-   * @emits tx:warning
+   * @fires tx:warning
    * @returns {Promise<void>}
    */
   async resubmitPendingTxs(blockNumber) {
@@ -119,8 +120,8 @@ export default class PendingTransactionTracker extends EventEmitter {
    * @param {Object} txMeta - the transaction metadata
    * @param {string} latestBlockNumber - the latest block number in hex
    * @returns {Promise<string|undefined>} the tx hash if retried
-   * @emits tx:block-update
-   * @emits tx:retry
+   * @fires tx:block-update
+   * @fires tx:retry
    * @private
    */
   async _resubmitTx(txMeta, latestBlockNumber) {
@@ -156,12 +157,13 @@ export default class PendingTransactionTracker extends EventEmitter {
 
   /**
    * Query the network to see if the given {@code txMeta} has been included in a block
+   *
    * @param {Object} txMeta - the transaction metadata
    * @returns {Promise<void>}
-   * @emits tx:confirmed
-   * @emits tx:dropped
-   * @emits tx:failed
-   * @emits tx:warning
+   * @fires tx:confirmed
+   * @fires tx:dropped
+   * @fires tx:failed
+   * @fires tx:warning
    * @private
    */
   async _checkPendingTx(txMeta) {
@@ -249,6 +251,7 @@ export default class PendingTransactionTracker extends EventEmitter {
 
   /**
    * Checks whether the nonce in the given {@code txMeta} is correct against the local set of transactions
+   *
    * @param {Object} txMeta - the transaction metadata
    * @returns {Promise<boolean>}
    * @private

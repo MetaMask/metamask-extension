@@ -46,17 +46,20 @@ const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
 
 /**
  * Opaque string type representing a decimal (base 10) number in GWEI
+ *
  * @typedef {`${number}`} DecGweiString
  */
 
 /**
  * String value representing the active estimate level to use
+ *
  * @typedef {'low' | 'medium' | 'high'} EstimateLevel
  */
 
 /**
  * Pulls out gasPrice estimate from either of the two gasPrice estimation
  * sources, based on the gasEstimateType and current estimateToUse.
+ *
  * @param {{import(
  *   '@metamask/controllers'
  * ).GasFeeState['gasFeeEstimates']}} gasFeeEstimates - estimates returned from
@@ -65,7 +68,7 @@ const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
  *  './useGasFeeEstimates'
  * ).GasEstimates} gasEstimateType - type of estimate returned from controller
  * @param {EstimateLevel} estimateToUse - current estimate level to use
- * @returns {[DecGweiString]} - gasPrice estimate to use or null
+ * @returns {[DecGweiString]} gasPrice estimate to use or null
  */
 function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {
   if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
@@ -79,6 +82,7 @@ function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {
 /**
  * Pulls out gas fee estimate from the estimates returned from controller,
  * based on the gasEstimateType and current estimateToUse.
+ *
  * @param {'maxFeePerGas' | 'maxPriorityFeePerGas'} field - field to select
  * @param {{import(
  *   '@metamask/controllers'
@@ -88,7 +92,8 @@ function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {
  *  './useGasFeeEstimates'
  * ).GasEstimates} gasEstimateType - type of estimate returned from controller
  * @param {EstimateLevel} estimateToUse - current estimate level to use
- * @returns {[DecGweiString]} - gas fee estimate to use or null
+ * @param fallback
+ * @returns {[DecGweiString]} gas fee estimate to use or null
  */
 function getGasFeeEstimate(
   field,
@@ -142,11 +147,15 @@ function getGasFeeEstimate(
  * Uses gasFeeEstimates and state to keep track of user gas fee inputs.
  * Will update the gas fee state when estimates update if the user has not yet
  * modified the fields.
+ *
  * @param {EstimateLevel} defaultEstimateToUse - which estimate
  *  level to default the 'estimateToUse' state variable to.
+ * @param transaction
+ * @param minimumGasLimit
+ * @param editGasMode
  * @returns {GasFeeInputReturnType & import(
  *  './useGasFeeEstimates'
- * ).GasEstimates} - gas fee input state and the GasFeeEstimates object
+ * ).GasEstimates} Gas fee input state and the GasFeeEstimates object
  */
 export function useGasFeeInputs(
   defaultEstimateToUse = 'medium',

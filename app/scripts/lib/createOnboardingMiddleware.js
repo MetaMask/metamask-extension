@@ -3,6 +3,7 @@ import extension from 'extensionizer';
 
 /**
  * Returns a middleware that intercepts `wallet_registerOnboarding` messages
+ *
  * @param {{ location: string, registerOnboarding: Function }} opts - The middleware options
  * @returns {(req: any, res: any, next: Function, end: Function) => void}
  */

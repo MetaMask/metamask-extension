@@ -11,7 +11,7 @@
  * @param {string} args.rejectionMessage - The message for the rejected promise
  * this function will return in the event of failure. (Default: "Retry limit
  * reached")
- * @param {function} functionToRetry - The function that is run and tested for
+ * @param {Function} functionToRetry - The function that is run and tested for
  * failure.
  * @returns {Promise<null | Error>} a promise that either resolves to null if
  * the function is successful or is rejected with rejectionMessage otherwise.

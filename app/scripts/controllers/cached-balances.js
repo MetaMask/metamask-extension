@@ -34,6 +34,7 @@ export default class CachedBalancesController {
    * if balances in the passed accounts are truthy.
    *
    * @param {Object} obj - The the recently updated accounts object for the current chain
+   * @param obj.accounts
    * @returns {Promise<void>}
    */
   async updateCachedBalances({ accounts }) {
@@ -80,7 +81,6 @@ export default class CachedBalancesController {
    * selections.
    *
    * @private
-   *
    */
   _registerUpdates() {
     const update = this.updateCachedBalances.bind(this);

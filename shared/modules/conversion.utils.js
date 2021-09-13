@@ -1,4 +1,5 @@
-/* Currency Conversion Utility
+/**
+ * Currency Conversion Utility
  * This utility function can be used for converting currency related values within metamask.
  * The caller should be able to pass it a value, along with information about the value's
  * numeric base, denomination and currency, and the desired numeric base, denomination and
@@ -59,16 +60,19 @@ const isValidBase = (base) => {
 
 /**
  * Defines the base type of numeric value
+ *
  * @typedef {('hex' | 'dec' | 'BN')} NumericBase
  */
 
 /**
  * Defines which type of denomination a value is in
+ *
  * @typedef {('WEI' | 'GWEI' | 'ETH')} EthDenomination
  */
 
 /**
  * Utility method to convert a value between denominations, formats and currencies.
+ *
  * @param {Object} input
  * @param {string | BigNumber} input.value
  * @param {NumericBase} input.fromNumericBase

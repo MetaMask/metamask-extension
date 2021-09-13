@@ -5,6 +5,7 @@ import { SECOND } from '../../shared/constants/time';
  * Evaluates whether the transaction is eligible to be sped up, and registers
  * an effect to check the logic again after the transaction has surpassed 5 seconds
  * of queue time.
+ *
  * @param {Object} transactionGroup - the transaction group to check against
  * @param {boolean} isEarliestNonce - Whether this group is currently the earliest nonce
  */

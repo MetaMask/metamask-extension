@@ -29,6 +29,7 @@ export function normalizeAndValidateTxParams(txParams, lowerCase = true) {
 
 /**
  * Normalizes the given txParams
+ *
  * @param {Object} txParams - The transaction params
  * @param {boolean} [lowerCase] - Whether to lowercase the 'to' address.
  * Default: true
@@ -48,6 +49,7 @@ export function normalizeTxParams(txParams, lowerCase = true) {
 /**
  * Given two fields, ensure that the second field is not included in txParams,
  * and if it is throw an invalidParams error.
+ *
  * @param {Object} txParams - the transaction parameters object
  * @param {string} fieldBeingValidated - the current field being validated
  * @param {string} mutuallyExclusiveField - the field to ensure is not provided
@@ -69,6 +71,7 @@ function ensureMutuallyExclusiveFieldsNotProvided(
 /**
  * Ensures that the provided value for field is a string, throws an
  * invalidParams error if field is not a string.
+ *
  * @param {Object} txParams - the transaction parameters object
  * @param {string} field - the current field being validated
  * @throws {ethErrors.rpc.invalidParams} - throws if field is not a string
@@ -85,6 +88,7 @@ function ensureFieldIsString(txParams, field) {
  * Ensures that the provided txParams has the proper 'type' specified for the
  * given field, if it is provided. If types do not match throws an
  * invalidParams error.
+ *
  * @param {Object} txParams - the transaction parameters object
  * @param {'gasPrice' | 'maxFeePerGas' | 'maxPriorityFeePerGas'} field - the
  *  current field being validated
@@ -119,6 +123,7 @@ function ensureProperTransactionEnvelopeTypeProvided(txParams, field) {
 
 /**
  * Validates the given tx parameters
+ *
  * @param {Object} txParams - the tx params
  * @param {boolean} eip1559Compatibility - whether or not the current network supports EIP-1559 transactions
  * @throws {Error} if the tx params contains invalid fields
@@ -213,6 +218,7 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
 
 /**
  * Validates the {@code from} field in the given tx params
+ *
  * @param {Object} txParams
  * @throws {Error} if the from address isn't valid
  */
@@ -229,6 +235,7 @@ export function validateFrom(txParams) {
 
 /**
  * Validates the {@code to} field in the given tx params
+ *
  * @param {Object} txParams - the tx params
  * @returns {Object} the tx params
  * @throws {Error} if the recipient is invalid OR there isn't tx data
@@ -251,6 +258,7 @@ export function validateRecipient(txParams) {
 
 /**
  * Returns a list of final states
+ *
  * @returns {string[]} the states that can be considered final states
  */
 export function getFinalStates() {

@@ -41,6 +41,7 @@ import {
  *
  * This will be used for all cases where this state key is accessed only for that
  * purpose.
+ *
  * @param {Object} state - redux state object
  */
 export function isNetworkLoading(state) {
@@ -101,8 +102,9 @@ export function checkNetworkAndAccountSupports1559(state) {
 
 /**
  * Checks if the current wallet is a hardware wallet.
+ *
  * @param {Object} state
- * @returns {Boolean}
+ * @returns {boolean}
  */
 export function isHardwareWallet(state) {
   const keyring = getCurrentKeyring(state);
@@ -111,8 +113,9 @@ export function isHardwareWallet(state) {
 
 /**
  * Get a HW wallet type, e.g. "Ledger Hardware"
+ *
  * @param {Object} state
- * @returns {String|undefined}
+ * @returns {string | undefined}
  */
 export function getHardwareWalletType(state) {
   const keyring = getCurrentKeyring(state);
@@ -140,6 +143,7 @@ export function getAccountType(state) {
  * instead use chainId in most situations. There are a limited number of
  * use cases to use this method still, such as when comparing transaction
  * metadata that predates the switch to using chainId.
+ *
  * @deprecated - use getCurrentChainId instead
  * @param {Object} state - redux state object
  */
@@ -542,6 +546,7 @@ export function getShowWhatsNewPopup(state) {
 
 /**
  * Get an object of notification IDs and if they are allowed or not.
+ *
  * @param {Object} state
  * @returns {Object}
  */
@@ -601,6 +606,7 @@ export function getShowRecoveryPhraseReminder(state) {
 
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
+ *
  * @param {*} state
  * @returns Boolean
  */
@@ -610,6 +616,7 @@ export function getUseTokenDetection(state) {
 
 /**
  * To retrieve the tokenList produced by TokenListcontroller
+ *
  * @param {*} state
  * @returns {Object}
  */

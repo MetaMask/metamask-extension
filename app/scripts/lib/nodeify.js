@@ -12,7 +12,6 @@ const callbackNoop = function (err) {
  *
  * @param {Function} fn - The function to handle as a callback
  * @param {Object} context - The context in which the fn is to be called, most often a this reference
- *
  */
 export default function nodeify(fn, context) {
   return function (...args) {

@@ -23,9 +23,9 @@ export function useMetricEvent(config = {}, overrides = {}) {
  * track a metametrics event using segment
  * e.g metricsEvent({ event: 'Unlocked MetaMask', category: 'Navigation' })
  *
- * @param {UIMetricsEventPayload}  payload - payload of the event to track
+ * @param {UIMetricsEventPayload} payload - payload of the event to track
  * @param {MetaMetricsEventOptions} options - options for handling/routing event
- * @return {() => Promise<void>} function to execute the tracking event
+ * @returns {() => Promise<void>} function to execute the tracking event
  */
 export function useNewMetricEvent(payload, options) {
   const memoizedPayload = useEqualityCheck(payload);

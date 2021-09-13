@@ -187,6 +187,9 @@ export default class ConfirmAddSuggestedToken extends Component {
    * - Share a symbol with an existing `tokens` member.
    * - Does not share an address with that same `tokens` member.
    * This should be flagged as possibly deceptive or confusing.
+   *
+   * @param suggestedAssets
+   * @param tokens
    */
   checkNameReuse(suggestedAssets, tokens) {
     const duplicates = suggestedAssets.filter(({ asset }) => {

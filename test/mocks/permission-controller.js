@@ -212,6 +212,7 @@ const CAVEATS = {
 const PERMS = {
   /**
    * The argument to approvePermissionsRequest
+   *
    * @param {string} id - The rpc-cap permissions request id.
    * @param {Object} permissions - The approved permissions, request-formatted.
    */

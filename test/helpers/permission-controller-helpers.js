@@ -22,7 +22,7 @@ export function grantPermissions(permController, origin, permissions) {
  * function, so we don't have to worry about its internals.
  *
  * @param {PermissionsController} permController - The permissions controller.
- * @return {Function} A convenient wrapper for the requestUserApproval function.
+ * @returns {Function} A convenient wrapper for the requestUserApproval function.
  */
 export function getRequestUserApprovalHelper(permController) {
   /**

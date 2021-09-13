@@ -13,7 +13,6 @@ const seedPhraseVerifier = {
    * @param {Array} createdAccounts - The accounts to restore
    * @param {string} seedWords - The seed words to verify
    * @returns {Promise<void>} Promises undefined
-   *
    */
   async verifyAccounts(createdAccounts, seedWords) {
     if (!createdAccounts || createdAccounts.length < 1) {

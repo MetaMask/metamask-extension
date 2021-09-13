@@ -18,6 +18,7 @@ function defaultOnError(error) {
 
 /**
  * This function handles requests for the mock Segment server
+ *
  * @typedef {(request: IncomingMessage, response: ServerResponse, metricEvents: Array<Object>) => void} MockSegmentRequestHandler
  */
 
@@ -27,7 +28,7 @@ function defaultOnError(error) {
  * to every request. The only function this serves is to spy on requests sent to
  * this server, and to parse the request payloads as Segment batch events.
  *
- * @param {MockSegmentRequestHandler} onRequest- A callback for each request the server receives.
+ * @param {MockSegmentRequestHandler} onRequest - A callback for each request the server receives.
  * @param {(error: Error) => void} [onError] - A callback for server error events
  */
 function createSegmentServer(onRequest, onError = defaultOnError) {

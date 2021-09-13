@@ -121,6 +121,7 @@ export class PermissionsController {
 
   /**
    * Request {@code eth_accounts} permissions
+   *
    * @param {string} origin - The requesting origin
    * @returns {Promise<string>} The permissions request ID
    */
@@ -602,6 +603,7 @@ export class PermissionsController {
 
   /**
    * Replaces the existing domain metadata with the passed-in object.
+   *
    * @param {Object} newMetadataState - The new metadata to set.
    */
   _setDomainMetadata(newMetadataState) {
@@ -675,7 +677,7 @@ export class PermissionsController {
    * A convenience method for retrieving a login object
    * or creating a new one if needed.
    *
-   * @param {string} origin - The origin string representing the domain.
+   * @param restoredState
    */
   _initializePermissions(restoredState) {
     // these permission requests are almost certainly stale

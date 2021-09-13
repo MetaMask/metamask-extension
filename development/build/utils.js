@@ -1,4 +1,7 @@
 /**
+ * @param currentVersion
+ * @param betaVersion
+ * @param platforms
  * @returns {Object} An object with browser as key and next version of beta
  * as the value.  E.g. { firefox: '9.6.0.beta0', chrome: '9.6.0.1' }
  */

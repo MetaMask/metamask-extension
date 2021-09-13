@@ -19,6 +19,8 @@ export default class TokenRatesController {
    * Creates a TokenRatesController
    *
    * @param {Object} [config] - Options to configure controller
+   * @param config.tokensController
+   * @param config.getNativeCurrency
    */
   constructor({ tokensController, getNativeCurrency } = {}) {
     this.store = new ObservableStore();

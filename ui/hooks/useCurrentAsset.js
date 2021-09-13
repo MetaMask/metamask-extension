@@ -14,6 +14,7 @@ import {
  * Will return the default token object for the current chain when the
  * user is viewing either the primary, unfiltered, activity list or the
  * default token asset page.
+ *
  * @returns {import('./useTokenDisplayValue').Token}
  */
 export function useCurrentAsset() {

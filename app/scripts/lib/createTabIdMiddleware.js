@@ -1,5 +1,6 @@
 /**
  * Returns a middleware that appends the DApp TabId to the request
+ *
  * @param {{ tabId: number }} opts - The middleware options
  * @returns {Function}
  */

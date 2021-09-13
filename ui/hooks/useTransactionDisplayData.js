@@ -36,15 +36,15 @@ import { useCurrentAsset } from './useCurrentAsset';
 
 /**
  * @typedef {Object} TransactionDisplayData
- * @property {string} title                  - primary description of the transaction
- * @property {string} subtitle               - supporting text describing the transaction
- * @property {bool}   subtitleContainsOrigin - true if the subtitle includes the origin of the tx
- * @property {string} category               - the transaction category
- * @property {string} primaryCurrency        - the currency string to display in the primary position
- * @property {string} [secondaryCurrency]    - the currency string to display in the secondary position
- * @property {string} status                 - the status of the transaction
- * @property {string} senderAddress          - the Ethereum address of the sender
- * @property {string} recipientAddress       - the Ethereum address of the recipient
+ * @property {string} title - primary description of the transaction
+ * @property {string} subtitle - supporting text describing the transaction
+ * @property {bool} subtitleContainsOrigin - true if the subtitle includes the origin of the tx
+ * @property {string} category - the transaction category
+ * @property {string} primaryCurrency - the currency string to display in the primary position
+ * @property {string} [secondaryCurrency] - the currency string to display in the secondary position
+ * @property {string} status - the status of the transaction
+ * @property {string} senderAddress - the Ethereum address of the sender
+ * @property {string} recipientAddress - the Ethereum address of the recipient
  */
 
 /**
@@ -54,8 +54,9 @@ import { useCurrentAsset } from './useCurrentAsset';
  * state access required to take a transactionGroup and derive from it a shape
  * of data that can power all views related to a transaction. Presently the main
  * case is for shared logic between transaction-list-item and transaction-detail-view
+ *
  * @param {Object} transactionGroup - group of transactions
- * @return {TransactionDisplayData}
+ * @returns {TransactionDisplayData}
  */
 export function useTransactionDisplayData(transactionGroup) {
   // To determine which primary currency to display for swaps transactions we need to be aware

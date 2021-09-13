@@ -14,6 +14,7 @@ const missingSubstitutionErrors = {};
 
 /**
  * Returns a localized message for the given key
+ *
  * @param {string} localeCode - The code for the current locale
  * @param {Object} localeMessages - The map of messages for the current locale
  * @param {string} key - The message key

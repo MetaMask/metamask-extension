@@ -19,7 +19,6 @@ import { cloneDeep } from 'lodash';
  * @param {Object} obj - The object for which a 'structure' will be returned. Usually a plain object and not a class.
  * @returns {Object} The "mapped" version of a deep clone of the passed object, with each non-object property value
  * replaced with the javascript type of that value.
- *
  */
 export default function getObjStructure(obj) {
   const structure = cloneDeep(obj);

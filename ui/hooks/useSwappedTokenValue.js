@@ -24,6 +24,7 @@ import { useTokenFiatAmount } from './useTokenFiatAmount';
  * the swap. In that circumstance we would want to show the primaryCurrency in the
  * activity list that is most relevant for that token (- 1000 DAI, for example, when
  * swapping DAI for ETH).
+ *
  * @param {import('../selectors').transactionGroup} transactionGroup - Group of transactions by nonce
  * @param {import('./useTokenDisplayValue').Token} currentAsset - The current asset the user is looking at
  * @returns {SwappedTokenValue}

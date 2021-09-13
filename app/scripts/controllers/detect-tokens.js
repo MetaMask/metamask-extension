@@ -17,6 +17,12 @@ export default class DetectTokensController {
    * Creates a DetectTokensController
    *
    * @param {Object} [config] - Options to configure controller
+   * @param config.interval
+   * @param config.preferences
+   * @param config.network
+   * @param config.keyringMemStore
+   * @param config.tokenList
+   * @param config.tokensController
    */
   constructor({
     interval = DEFAULT_INTERVAL,
@@ -145,7 +151,7 @@ export default class DetectTokensController {
 
   /* eslint-disable accessor-pairs */
   /**
-   * @type {Number}
+   * @type {number}
    */
   set interval(interval) {
     this._handle && clearInterval(this._handle);
@@ -170,6 +176,7 @@ export default class DetectTokensController {
 
   /**
    * In setter when isUnlocked is updated to true, detectNewTokens and restart polling
+   *
    * @type {Object}
    */
   set keyringMemStore(keyringMemStore) {
@@ -199,6 +206,7 @@ export default class DetectTokensController {
 
   /**
    * Internal isActive state
+   *
    * @type {Object}
    */
   get isActive() {

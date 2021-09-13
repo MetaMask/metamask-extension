@@ -57,6 +57,7 @@ const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP);
 /**
  * Returns the current page if it matches out route map, as well as the origin
  * if there is a confirmation that was triggered by a dapp
+ *
  * @returns {{
  *  page?: MetaMetricsPageObject
  *  referrer?: MetaMetricsReferrerObject

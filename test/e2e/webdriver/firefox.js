@@ -8,6 +8,7 @@ const { version } = require('../../../package.json');
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
  * will be created as random directories inside this.
+ *
  * @type {string}
  */
 const TEMP_PROFILE_PATH_PREFIX = path.join(os.tmpdir(), 'MetaMask-Fx-Profile');
@@ -18,7 +19,10 @@ const TEMP_PROFILE_PATH_PREFIX = path.join(os.tmpdir(), 'MetaMask-Fx-Profile');
 class FirefoxDriver {
   /**
    * Builds a {@link FirefoxDriver} instance
+   *
    * @param {Object} options - the options for the build
+   * @param options.responsive
+   * @param options.port
    * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
   static async build({ responsive, port }) {
@@ -51,7 +55,7 @@ class FirefoxDriver {
   }
 
   /**
-   * @constructor
+   * @class
    * @param {!ThenableWebDriver} driver - a {@code WebDriver} instance
    */
   constructor(driver) {
@@ -60,6 +64,7 @@ class FirefoxDriver {
 
   /**
    * Installs the extension at the given path
+   *
    * @param {string} addonPath - the path to the unpacked extension or XPI
    * @returns {Promise<string>} the extension ID
    */
@@ -69,6 +74,7 @@ class FirefoxDriver {
 
   /**
    * Returns the Internal UUID for the given extension
+   *
    * @returns {Promise<string>} the Internal UUID for the given extension
    */
   async getInternalId() {

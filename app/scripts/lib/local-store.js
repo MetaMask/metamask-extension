@@ -7,7 +7,7 @@ import { checkForError } from './util';
  */
 export default class ExtensionStore {
   /**
-   * @constructor
+   * @class
    */
   constructor() {
     this.isSupported = Boolean(extension.storage.local);
@@ -18,6 +18,7 @@ export default class ExtensionStore {
 
   /**
    * Returns all of the keys currently saved
+   *
    * @returns {Promise<*>}
    */
   async get() {
@@ -35,6 +36,7 @@ export default class ExtensionStore {
 
   /**
    * Sets the key in local state
+   *
    * @param {Object} state - The state to set
    * @returns {Promise<void>}
    */
@@ -44,6 +46,7 @@ export default class ExtensionStore {
 
   /**
    * Returns all of the keys currently saved
+   *
    * @private
    * @returns {Object} the key-value map from local storage
    */
@@ -63,6 +66,7 @@ export default class ExtensionStore {
 
   /**
    * Sets the key in local state
+   *
    * @param {Object} obj - The key to set
    * @returns {Promise<void>}
    * @private
@@ -84,6 +88,7 @@ export default class ExtensionStore {
 
 /**
  * Returns whether or not the given object contains no keys
+ *
  * @param {Object} obj - The object to check
  * @returns {boolean}
  */

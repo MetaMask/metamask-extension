@@ -15,6 +15,7 @@ import { getFinalStates, normalizeAndValidateTxParams } from './lib/util';
 
 /**
  * TransactionStatuses reimported from the shared transaction constants file
+ *
  * @typedef {import(
  *  '../../../../shared/constants/transaction'
  * ).TransactionStatusString} TransactionStatusString
@@ -40,6 +41,7 @@ import { getFinalStates, normalizeAndValidateTxParams } from './lib/util';
  * TransactionStateManager is responsible for the state of a transaction and
  * storing the transaction. It also has some convenience methods for finding
  * subsets of transactions.
+ *
  * @param {Object} opts
  * @param {TransactionState} [opts.initState={ transactions: {} }] - initial
  *  transactions list keyed by id
@@ -196,6 +198,7 @@ export default class TransactionStateManager extends EventEmitter {
    * is in its final state.
    * it will also add the key `history` to the txMeta with the snap shot of
    * the original object
+   *
    * @param {TransactionMeta} txMeta - The TransactionMeta object to add.
    * @returns {TransactionMeta} The same TransactionMeta, but with validated
    *  txParams and transaction history.
@@ -274,6 +277,7 @@ export default class TransactionStateManager extends EventEmitter {
 
   /**
    * updates the txMeta in the list and adds a history entry
+   *
    * @param {Object} txMeta - the txMeta to update
    * @param {string} [note] - a note about the update for history
    */
@@ -307,6 +311,7 @@ export default class TransactionStateManager extends EventEmitter {
    * SearchCriteria can search in any key in TxParams or the base
    * TransactionMeta. This type represents any key on either of those two
    * types.
+   *
    * @typedef {TxParams[keyof TxParams] | TransactionMeta[keyof TransactionMeta]} SearchableKeys
    */
 
@@ -314,6 +319,7 @@ export default class TransactionStateManager extends EventEmitter {
    * Predicates can either be strict values, which is shorthand for using
    * strict equality, or a method that receives he value of the specified key
    * and returns a boolean.
+   *
    * @typedef {(v: unknown) => boolean | unknown} FilterPredicate
    */
 
@@ -336,7 +342,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {TransactionMeta[]} [opts.initialList] - If provided the filtering
    *  will occur on the provided list. By default this will be the full list
    *  from state sorted by time ASC.
-   * @param {boolean} [opts.filterToCurrentNetwork=true] - Filter transaction
+   * @param {boolean} [opts.filterToCurrentNetwork] - Filter transaction
    *  list to only those that occurred on the current chain or network.
    *  Defaults to true.
    * @param {number} [opts.limit] - limit the number of transactions returned
@@ -576,27 +582,28 @@ export default class TransactionStateManager extends EventEmitter {
    * Updates a transaction's status in state, and then emits events that are
    * subscribed to elsewhere. See below for best guesses on where and how these
    * events are received.
+   *
    * @param {number} txId - the TransactionMeta Id
    * @param {TransactionStatusString} status - the status to set on the
    *  TransactionMeta
-   * @emits txMeta.id:txMeta.status - every time a transaction's status changes
+   * @fires txMeta.id:txMeta.status - every time a transaction's status changes
    *  we emit the change passing along the id. This does not appear to be used
    *  outside of this file, which only listens to this to unsubscribe listeners
    *  of :rejected and :signed statuses when the inverse status changes. Likely
    *  safe to drop.
-   * @emits tx:status-update - every time a transaction's status changes we
+   * @fires tx:status-update - every time a transaction's status changes we
    *  emit this event and pass txId and status. This event is subscribed to in
    *  the TransactionController and re-broadcast by the TransactionController.
    *  It is used internally within the TransactionController to try and update
    *  pending transactions on each new block (from blockTracker). It's also
    *  subscribed to in metamask-controller to display a browser notification on
    *  confirmed or failed transactions.
-   * @emits txMeta.id:finished - When a transaction moves to a finished state
+   * @fires txMeta.id:finished - When a transaction moves to a finished state
    *  this event is emitted, which is used in the TransactionController to pass
    *  along details of the transaction to the dapp that suggested them. This
    *  pattern is replicated across all of the message managers and can likely
    *  be supplemented or replaced by the ApprovalController.
-   * @emits updateBadge - When the number of transactions changes in state,
+   * @fires updateBadge - When the number of transactions changes in state,
    *  the badge in the browser extension bar should be updated to reflect the
    *  number of pending transactions. This particular emit doesn't appear to
    *  bubble up anywhere that is actually used. TransactionController emits

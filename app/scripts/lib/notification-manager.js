@@ -3,14 +3,12 @@ import ExtensionPlatform from '../platforms/extension';
 const NOTIFICATION_HEIGHT = 620;
 const NOTIFICATION_WIDTH = 360;
 
+/**
+ * A collection of methods for controlling the showing and hiding of the notification popup.
+ *
+ * @class
+ */
 export default class NotificationManager {
-  /**
-   * A collection of methods for controlling the showing and hiding of the notification popup.
-   *
-   * @typedef {Object} NotificationManager
-   *
-   */
-
   constructor() {
     this.platform = new ExtensionPlatform();
   }
@@ -67,8 +65,6 @@ export default class NotificationManager {
    * type 'popup')
    *
    * @private
-   * @param {Function} cb - A node style callback that to which the found notification window will be passed.
-   *
    */
   async _getPopup() {
     const windows = await this.platform.getAllWindows();
@@ -80,7 +76,6 @@ export default class NotificationManager {
    *
    * @private
    * @param {Array} windows - An array of objects containing data about the open MetaMask extension windows.
-   *
    */
   _getPopupIn(windows) {
     return windows

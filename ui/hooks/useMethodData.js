@@ -13,8 +13,9 @@ import { getKnownMethodData } from '../selectors/selectors';
  * if the data is in the store and returning it directly. While using this hook
  * in multiple places in a tree for the same data will create extra event ticks and
  * hit the action more frequently, it should only ever result in a single store update
+ *
  * @param {string} data - the transaction data to find method data for
- * @return {Object} contract method data
+ * @returns {Object} contract method data
  */
 export function useMethodData(data) {
   const dispatch = useDispatch();
