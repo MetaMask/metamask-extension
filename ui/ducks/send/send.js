@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import abi from 'human-standard-token-abi';
-import contractMap from '@metamask/contract-metadata';
 import BigNumber from 'bignumber.js';
-import { addHexPrefix, toChecksumAddress } from 'ethereumjs-util';
+import { addHexPrefix } from 'ethereumjs-util';
 import { debounce } from 'lodash';
 import {
   conversionGreaterThan,
@@ -39,6 +38,8 @@ import {
   getTargetAccount,
   getIsNonStandardEthChain,
   checkNetworkAndAccountSupports1559,
+  getUseTokenDetection,
+  getTokenList,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -71,6 +72,7 @@ import {
   isDefaultMetaMaskChain,
   isOriginContractAddress,
   isValidDomainName,
+  isEqualCaseInsensitive,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
@@ -517,6 +519,8 @@ export const initializeSendState = createAsyncThunk(
       gasTotal: addHexPrefix(calcGasTotal(gasLimit, gasPrice)),
       gasEstimatePollToken,
       eip1559support,
+      useTokenDetection: getUseTokenDetection(state),
+      tokenAddressList: Object.keys(getTokenList(state)),
     };
   },
 );
@@ -986,7 +990,7 @@ const slice = createSlice({
         recipient.warning = null;
       } else {
         const isSendingToken = asset.type === ASSET_TYPES.TOKEN;
-        const { chainId, tokens } = action.payload;
+        const { chainId, tokens, tokenAddressList } = action.payload;
         if (
           isBurnAddress(recipient.userInput) ||
           (!isValidHexAddress(recipient.userInput, {
@@ -1005,11 +1009,12 @@ const slice = createSlice({
         } else {
           recipient.error = null;
         }
-
         if (
           isSendingToken &&
           isValidHexAddress(recipient.userInput) &&
-          (toChecksumAddress(recipient.userInput) in contractMap ||
+          (tokenAddressList.find((address) =>
+            isEqualCaseInsensitive(address, recipient.userInput),
+          ) ||
             checkExistingAddresses(recipient.userInput, tokens))
         ) {
           recipient.warning = KNOWN_RECIPIENT_ADDRESS_WARNING;
@@ -1210,6 +1215,8 @@ const slice = createSlice({
             payload: {
               chainId: action.payload.chainId,
               tokens: action.payload.tokens,
+              useTokenDetection: action.payload.useTokenDetection,
+              tokenAddressList: action.payload.tokenAddressList,
             },
           });
         }
@@ -1395,7 +1402,14 @@ export function updateRecipientUserInput(userInput) {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const tokens = getTokens(state);
-    debouncedValidateRecipientUserInput(dispatch, { chainId, tokens });
+    const useTokenDetection = getUseTokenDetection(state);
+    const tokenAddressList = Object.keys(getTokenList(state));
+    debouncedValidateRecipientUserInput(dispatch, {
+      chainId,
+      tokens,
+      useTokenDetection,
+      tokenAddressList,
+    });
   };
 }
 

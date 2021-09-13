@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Добавяне на жетон"
   },
-  "addTokens": {
-    "message": "Добавяне на жетони"
-  },
   "advanced": {
     "message": "Разширени"
   },
@@ -273,7 +270,7 @@
     "message": "Десетичните знаци трябва да бъдат най-малко 0 и не повече от 36."
   },
   "defaultNetwork": {
-    "message": "Мрежата по подразбиране за Ether транзакции е Main Net."
+    "message": "Мрежата по подразбиране за Ether транзакции е Mainnet."
   },
   "delete": {
     "message": "Изтриване"
@@ -536,7 +533,7 @@
   "letsGoSetUp": {
     "message": "Да, нека да настроим нещата!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Искате ли да добавите тези жетони?"
   },
   "links": {

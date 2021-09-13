@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Lisää tietue"
   },
-  "addTokens": {
-    "message": "Lisää poletteja"
-  },
   "advanced": {
     "message": "Lisäasetukset"
   },
@@ -273,7 +270,7 @@
     "message": "Desimaalien on oltava vähintään 0 ja korkeintaan 36."
   },
   "defaultNetwork": {
-    "message": "Oletusverkko Ether-tapahtumille on Main Net."
+    "message": "Oletusverkko Ether-tapahtumille on Mainnet."
   },
   "delete": {
     "message": "Poista"
@@ -540,7 +537,7 @@
   "letsGoSetUp": {
     "message": "Kyllä, valmistaudutaan!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Haluaisitko lisätä nämä poletit?"
   },
   "links": {

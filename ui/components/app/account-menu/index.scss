@@ -127,7 +127,7 @@
     overflow-y: auto;
     position: relative;
     max-height: 256px;
-    scrollbar-width: none;
+    scrollbar-width: auto;
 
     &::-webkit-scrollbar {
       display: none;
