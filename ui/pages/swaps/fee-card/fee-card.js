@@ -82,17 +82,19 @@ export default function FeeCard({
           {bestQuoteText && (
             <p className="fee-card__savings-text">{bestQuoteText}</p>
           )}
-          <div
-            className="fee-card__quote-link-container"
-            onClick={onQuotesClick}
-          >
-            <p className="fee-card__quote-link-text">
-              {t('swapNQuotes', [numberOfQuotes])}
-            </p>
-            <div className="fee-card__caret-right">
-              <i className="fa fa-angle-up" />
+          {numberOfQuotes > 1 && (
+            <div
+              className="fee-card__quote-link-container"
+              onClick={onQuotesClick}
+            >
+              <p className="fee-card__quote-link-text">
+                {t('swapNQuotes', [numberOfQuotes])}
+              </p>
+              <div className="fee-card__caret-right">
+                <i className="fa fa-angle-up" />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
       <div className="fee-card__main">

@@ -10,7 +10,7 @@ import TransactionBreakdown from './transaction-breakdown.component';
 const mapStateToProps = (state, ownProps) => {
   const { transaction, isTokenApprove } = ownProps;
   const {
-    txParams: { gas, gasPrice, value } = {},
+    txParams: { gas, gasPrice, maxFeePerGas, value } = {},
     txReceipt: { gasUsed, effectiveGasPrice } = {},
     baseFeePerGas,
   } = transaction;
@@ -41,6 +41,7 @@ const mapStateToProps = (state, ownProps) => {
     totalInHex,
     gas,
     gasPrice,
+    maxFeePerGas,
     gasUsed,
     isTokenApprove,
     hexGasTotal,

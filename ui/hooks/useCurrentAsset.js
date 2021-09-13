@@ -3,6 +3,7 @@ import { useRouteMatch } from 'react-router-dom';
 import { getTokens } from '../ducks/metamask/metamask';
 import { getCurrentChainId } from '../selectors';
 import { ASSET_ROUTE } from '../helpers/constants/routes';
+import { isEqualCaseInsensitive } from '../helpers/utils/util';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   ETH_SWAPS_TOKEN_OBJECT,
@@ -26,7 +27,10 @@ export function useCurrentAsset() {
   const tokenAddress = match?.params?.asset;
   const knownTokens = useSelector(getTokens);
   const token =
-    tokenAddress && knownTokens.find(({ address }) => address === tokenAddress);
+    tokenAddress &&
+    knownTokens.find(({ address }) =>
+      isEqualCaseInsensitive(address, tokenAddress),
+    );
   const chainId = useSelector(getCurrentChainId);
 
   return (

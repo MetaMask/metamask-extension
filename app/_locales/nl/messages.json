@@ -8,9 +8,6 @@
   "addToken": {
     "message": "Voeg token toe"
   },
-  "addTokens": {
-    "message": "Tokens toevoegen"
-  },
   "amount": {
     "message": "Bedrag"
   },
@@ -80,7 +77,7 @@
     "message": "Decimalen moeten minimaal 0 en niet meer dan 36 zijn."
   },
   "defaultNetwork": {
-    "message": "Het standaardnetwerk voor Ether-transacties is Main Net."
+    "message": "Het standaardnetwerk voor Ether-transacties is Mainnet."
   },
   "depositEther": {
     "message": "Stort Ether"
@@ -188,7 +185,7 @@
   "kovan": {
     "message": "Kovan-testnetwerk"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Wil je deze tokens toevoegen?"
   },
   "loading": {
@@ -201,7 +198,7 @@
     "message": "Uitloggen"
   },
   "mainnet": {
-    "message": "Main Netwerk"
+    "message": "Mainnetwerk"
   },
   "message": {
     "message": "Bericht"
