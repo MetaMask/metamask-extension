@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Додати токен"
   },
-  "addTokens": {
-    "message": "Додати токени"
-  },
   "advanced": {
     "message": "Розширені"
   },
@@ -273,7 +270,7 @@
     "message": "Кількість розрядів після коми: від 0 до 36."
   },
   "defaultNetwork": {
-    "message": "Мережа для транзакцій з Ether за замовчуванням - Main Net."
+    "message": "Мережа для транзакцій з Ether за замовчуванням - Mainnet."
   },
   "delete": {
     "message": "Видалити"
@@ -540,7 +537,7 @@
   "letsGoSetUp": {
     "message": "Так, давайте налаштуємо!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Ви б хотіли додати ці токени?"
   },
   "links": {

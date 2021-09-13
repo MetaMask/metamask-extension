@@ -50,9 +50,6 @@
   "addToken": {
     "message": "یک رمز یاب اضافه کنید"
   },
-  "addTokens": {
-    "message": "اضافه رمزیاب ها"
-  },
   "advanced": {
     "message": "پیشرفته"
   },
@@ -273,7 +270,7 @@
     "message": "اعشاریه ها باید حد اقل 0، و بیشتر از 36 نباشند."
   },
   "defaultNetwork": {
-    "message": "شبکه خودکار برای معاملات Ether عبارت است از Main Net."
+    "message": "شبکه خودکار برای معاملات Ether عبارت است از Mainnet."
   },
   "delete": {
     "message": "حذف"
@@ -540,7 +537,7 @@
   "letsGoSetUp": {
     "message": "بلی، درست شد!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "آیا میخواهید این رمزیاب ها را اضافه نمایید؟"
   },
   "links": {

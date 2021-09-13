@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Ajouter un jeton"
   },
-  "addTokens": {
-    "message": "Ajouter des jetons"
-  },
   "advanced": {
     "message": "Paramètres avancés"
   },
@@ -534,7 +531,7 @@
   "letsGoSetUp": {
     "message": "Oui, passons à la configuration !"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Souhaitez-vous ajouter ces jetons ?"
   },
   "links": {

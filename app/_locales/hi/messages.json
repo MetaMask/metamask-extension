@@ -91,9 +91,6 @@
   "addToken": {
     "message": "टोकन जोड़ें"
   },
-  "addTokens": {
-    "message": "टोकन जोड़ें"
-  },
   "advanced": {
     "message": "उन्नत"
   },
@@ -516,7 +513,7 @@
     "message": "अनुरोध डिक्रिप्ट करें"
   },
   "defaultNetwork": {
-    "message": "Ether के लेनदेन के लिए डिफ़ॉल्ट नेटवर्क Main Net है।"
+    "message": "Ether के लेनदेन के लिए डिफ़ॉल्ट नेटवर्क Mainnet है।"
   },
   "delete": {
     "message": "हटाएँ"
@@ -1025,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "हाँ, आइए सेट करते हैं!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "क्या आप इन टोकन को जोड़ना चाहते हैं?"
   },
   "links": {
