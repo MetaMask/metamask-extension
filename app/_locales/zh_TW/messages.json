@@ -53,9 +53,6 @@
   "addToken": {
     "message": "加入代幣"
   },
-  "addTokens": {
-    "message": "加入代幣"
-  },
   "advanced": {
     "message": "進階"
   },
@@ -549,7 +546,7 @@
   "letsGoSetUp": {
     "message": "好，我們開始吧！"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "確定要加入代幣？"
   },
   "links": {
