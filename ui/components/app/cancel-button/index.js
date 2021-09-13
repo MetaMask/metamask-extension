@@ -1,1 +1,1 @@
-export { default } from './cancel-button.component';
+export { default } from './cancel-button';
