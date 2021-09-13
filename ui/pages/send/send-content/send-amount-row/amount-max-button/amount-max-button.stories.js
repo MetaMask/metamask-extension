@@ -38,7 +38,7 @@ export const AmountMaxButtonComponent = () => {
   useEffect(() => {
     store.dispatch(updateAmountMode(maxModeOn));
   }, [store, maxModeOn]);
-  
+
   return (
     <Provider store={store}>
       <AmountMaxButton />
