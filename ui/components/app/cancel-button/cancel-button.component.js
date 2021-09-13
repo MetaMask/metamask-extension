@@ -47,7 +47,11 @@ export default function CancelButton({
   return hasEnoughCancelGas ? (
     btn
   ) : (
-    <Tooltip title={t('notEnoughGas')} position="bottom">
+    <Tooltip
+      title={t('notEnoughGas')}
+      data-testid="not-enough-gas__tooltip"
+      position="bottom"
+    >
       <div>{btn}</div>
     </Tooltip>
   );
