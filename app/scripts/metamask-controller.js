@@ -1134,6 +1134,10 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController.trackPage,
         metaMetricsController,
       ),
+      trackMetaMetricsTrait: nodeify(
+        metaMetricsController.trackTrait,
+        metaMetricsController,
+      ),
 
       // approval controller
       resolvePendingApproval: nodeify(
@@ -3092,5 +3096,20 @@ export default class MetamaskController extends EventEmitter {
    */
   setLocked() {
     return this.keyringController.setLocked();
+  }
+
+  /*
+   * Wrapped token methods
+   */
+
+  async addToken(address, symbol, decimals, image) {
+    await this.tokensController.addToken(address, symbol, decimals, image);
+    const { allTokens } = this.tokensController.state;
+    this.trackMetaMetricsTrait({ number_of_tokens: allTokens.length })
+  }
+
+  async removeToken(address) {
+    await this.tokensController.removeToken(address);
+    const { allTokens } = this.tokensController.state;
   }
 }
