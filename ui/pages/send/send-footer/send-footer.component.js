@@ -39,8 +39,10 @@ export default class SendFooter extends Component {
       resetSendState,
       sendStage,
     } = this.props;
+
     if (draftTransactionID) cancelTx({ id: draftTransactionID });
     resetSendState();
+
     const nextRoute =
       sendStage === SEND_STAGES.EDIT ? DEFAULT_ROUTE : mostRecentOverviewPage;
     history.push(nextRoute);
