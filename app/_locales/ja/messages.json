@@ -91,9 +91,6 @@
   "addToken": {
     "message": "トークンの追加"
   },
-  "addTokens": {
-    "message": "トークンの追加"
-  },
   "advanced": {
     "message": "詳細"
   },
@@ -1025,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "さあセットアップしましょう!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "これらのトークンを追加しますか?"
   },
   "links": {

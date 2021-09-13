@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Dodaj token"
   },
-  "addTokens": {
-    "message": "Dodaj tokeny"
-  },
   "advanced": {
     "message": "Zaawansowane"
   },
@@ -273,7 +270,7 @@
     "message": "Liczb po przecinku musi być co najmniej 0 i nie więcej niż 36."
   },
   "defaultNetwork": {
-    "message": "Domyślna sieć dla Eteru to Main Net."
+    "message": "Domyślna sieć dla Eteru to Mainnet."
   },
   "delete": {
     "message": "Usuń"
@@ -540,7 +537,7 @@
   "letsGoSetUp": {
     "message": "Tak, zacznijmy od początku!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Czy chcesz dodać te tokeny?"
   },
   "links": {

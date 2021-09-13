@@ -2731,9 +2731,9 @@
   integrity sha512-wxsC0ZCyhPKqThvmsL8+2zVWGWPqofSo8HNtOuOnQM9oGbXX9294imJ3T+A/Lov8fkX4jAWZOeNV0uR80zkNtA==
 
 "@metamask/controllers@^15.0.2":
-  version "15.0.2"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-15.0.2.tgz#b4012a8bf28bd2c8dbb3c96f4d934d6cf1bb778c"
-  integrity sha512-MPxfZ2OOTzEa5lUzDsSkINtlTDU4q4udjpBNM5Dq1yCnLKIuPKzYC5nl/rA88Ssr9Hs6babCtMbnUpbbjQjLOg==
+  version "15.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-15.1.0.tgz#f480e7bdfb8c4a31ea8b21214b919478df507cab"
+  integrity sha512-LCz23ZsJRD9SYWPYdSthP5SLKI40XJaVflUOF4VxDnaEA9DKmCVI3Y9TzjJITT3cRIQXD6Z5fEIGBRrZHXkufQ==
   dependencies:
     "@ethereumjs/common" "^2.3.1"
     "@ethereumjs/tx" "^3.2.1"
@@ -2757,7 +2757,7 @@
     ethjs-util "^0.1.6"
     human-standard-collectible-abi "^1.0.2"
     human-standard-token-abi "^2.0.0"
-    immer "^8.0.1"
+    immer "^9.0.6"
     isomorphic-fetch "^3.0.0"
     jsonschema "^1.2.4"
     nanoid "^3.1.12"
@@ -2856,10 +2856,10 @@
     color "^0.11.3"
     mersenne-twister "^1.1.0"
 
-"@metamask/logo@^2.5.0":
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/@metamask/logo/-/logo-2.5.0.tgz#4d35bf9e427db66c0030d81b8faa0f5162d17f7a"
-  integrity sha512-SBgWhcbKj0+efpFVAHf5Jh7URGMhH3Os06sgmERui+dvgXMEIBrt2aEeGRXe1aKKRSOhruazHknpdLdqyEvNjA==
+"@metamask/logo@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@metamask/logo/-/logo-3.0.1.tgz#9c0758d9abc56345c5e4ed01cac22a6d2d452793"
+  integrity sha512-EV1BqyUI/GX1X9pTIydBRZ94c7Zx4Vlsl6V/zIOqk8Zw9mhlLG46lRQSBCq8syCvuGeKVMj/1LYsf/sNVf/SsA==
   dependencies:
     gl-mat4 "1.1.4"
     gl-vec3 "1.0.3"
@@ -5768,6 +5768,13 @@ axios@^0.19.2, axios@^0.21.1:
   dependencies:
     follow-redirects "^1.10.0"
 
+axios@^0.21.2:
+  version "0.21.4"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
+  integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
+  dependencies:
+    follow-redirects "^1.14.0"
+
 babel-code-frame@^6.16.0, babel-code-frame@^6.22.0, babel-code-frame@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-code-frame/-/babel-code-frame-6.26.0.tgz#63fd43f7dc1e3bb7ce35947db8fe369a3f58c74b"
@@ -7964,17 +7971,16 @@ chrome-trace-event@^1.0.2:
   dependencies:
     tslib "^1.9.0"
 
-chromedriver@^87.0.1:
-  version "87.0.7"
-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-87.0.7.tgz#74041e02ff7f633e91b98eb707e2476f713dc4ca"
-  integrity sha512-7J7iN2rJuSDsKb9BUUMewJt07PuTlZYd809D10dUCT1rjMD3i2jUw7dum9RxdC1xO3aFwMd8TwZ5NR82T+S+Dg==
+chromedriver@^93.0.1:
+  version "93.0.1"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-93.0.1.tgz#3ed1f7baa98a754fc1788c42ac8e4bb1ab27db32"
+  integrity sha512-KDzbW34CvQLF5aTkm3b5VdlTrvdIt4wEpCzT2p4XJIQWQZEPco5pNce7Lu9UqZQGkhQ4mpZt4Ky6NKVyIS2N8A==
   dependencies:
     "@testim/chrome-version" "^1.0.7"
-    axios "^0.21.1"
+    axios "^0.21.2"
     del "^6.0.0"
     extract-zip "^2.0.1"
     https-proxy-agent "^5.0.0"
-    mkdirp "^1.0.4"
     proxy-from-env "^1.1.0"
     tcp-port-used "^1.0.1"
 
@@ -12620,6 +12626,11 @@ follow-redirects@^1.10.0:
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.1.tgz#5f69b813376cee4fd0474a3aba835df04ab763b7"
   integrity sha512-SSG5xmZh1mkPGyKzjZP8zLjltIfpW32Y5QpdNJyjcfGxK3qo3NDDkZOZSFiGn1A6SclQxY9GzEwAHQ3dmYRWpg==
 
+follow-redirects@^1.14.0:
+  version "1.14.3"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.3.tgz#6ada78118d8d24caee595595accdc0ac6abd022e"
+  integrity sha512-3MkHxknWMUtb23apkgz/83fDoe+y+qr0TdgacGIA7bew+QLBo3vdgEN2xEsuXNivpFy4CyDhBBZnNZOtalmenw==
+
 for-each@^0.3.3, for-each@~0.3.3:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/for-each/-/for-each-0.3.3.tgz#69b447e88a0a5d32c3e7084f3f1710034b21376e"
@@ -14403,6 +14414,11 @@ immer@^8.0.0, immer@^8.0.1:
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/immer/-/immer-8.0.1.tgz#9c73db683e2b3975c424fb0572af5889877ae656"
   integrity sha512-aqXhGP7//Gui2+UrEtvxZxSquQVXTpZ7KDxfCcKAF3Vysvw0CViVaW9RZ1j1xlIYqaaaipBoqdqeibkc18PNvA==
+
+immer@^9.0.6:
+  version "9.0.6"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-9.0.6.tgz#7a96bf2674d06c8143e327cbf73539388ddf1a73"
+  integrity sha512-G95ivKpy+EvVAnAab4fVa4YGYn24J1SpEktnJX7JJ45Bd7xqME/SCplFzYFmTbrkwZbQ4xJK1xMTUYBkN6pWsQ==
 
 import-cwd@^2.0.0:
   version "2.1.0"
@@ -16926,9 +16942,9 @@ jss@^10.0.3, jss@^10.3.0:
     object.assign "^4.1.2"
 
 jszip@^3.2.2:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/jszip/-/jszip-3.5.0.tgz#b4fd1f368245346658e781fec9675802489e15f6"
-  integrity sha512-WRtu7TPCmYePR1nazfrtuF216cIVon/3GWOvHS9QR5bIwSbnxtdpma6un3jyGGNhHsKCSzn5Ypk+EkDRvTGiFA==
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/jszip/-/jszip-3.7.1.tgz#bd63401221c15625a1228c556ca8a68da6fda3d9"
+  integrity sha512-ghL0tz1XG9ZEmRMcEN2vt7xabrDdqHHeykgARpmZ0BiIctWxM47Vt63ZO2dnp4QYt/xJVLLy5Zv1l/xRdh2byg==
   dependencies:
     lie "~3.3.0"
     pako "~1.0.2"

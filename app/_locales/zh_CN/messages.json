@@ -64,9 +64,6 @@
   "addToken": {
     "message": "添加代币"
   },
-  "addTokens": {
-    "message": "添加代币"
-  },
   "advanced": {
     "message": "高级"
   },
@@ -872,7 +869,7 @@
   "letsGoSetUp": {
     "message": "第一次，立即开始设置！"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "您想添加这些代币吗？"
   },
   "links": {

@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Dodaj token"
   },
-  "addTokens": {
-    "message": "Dodaj tokene"
-  },
   "advanced": {
     "message": "Напредне опције"
   },
@@ -270,7 +267,7 @@
     "message": "Decimalni broj mora biti najmanje 0, a ne veći od 36."
   },
   "defaultNetwork": {
-    "message": "Podrazumevana mreža za Ether transakcije je Main Net."
+    "message": "Podrazumevana mreža za Ether transakcije je Mainnet."
   },
   "delete": {
     "message": "Избриши"
@@ -537,7 +534,7 @@
   "letsGoSetUp": {
     "message": "Da, hajde da sve podesimo!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Želite li da dodate ove tokene?"
   },
   "links": {

@@ -91,9 +91,6 @@
   "addToken": {
     "message": "Thêm token"
   },
-  "addTokens": {
-    "message": "Thêm token"
-  },
   "advanced": {
     "message": "Nâng cao"
   },
@@ -1025,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "Có, hãy thiết lập!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Bạn có muốn thêm những token này không?"
   },
   "links": {

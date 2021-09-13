@@ -13,7 +13,6 @@ const ConfirmPageContainerSummary = (props) => {
     className,
     identiconAddress,
     nonce,
-    assetImage,
     origin,
   } = props;
 
@@ -36,7 +35,6 @@ const ConfirmPageContainerSummary = (props) => {
             className="confirm-page-container-summary__identicon"
             diameter={36}
             address={identiconAddress}
-            image={assetImage}
           />
         )}
         <div className="confirm-page-container-summary__title-text">
@@ -61,7 +59,6 @@ ConfirmPageContainerSummary.propTypes = {
   className: PropTypes.string,
   identiconAddress: PropTypes.string,
   nonce: PropTypes.string,
-  assetImage: PropTypes.string,
   origin: PropTypes.string.isRequired,
 };
 

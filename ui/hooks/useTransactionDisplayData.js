@@ -8,10 +8,12 @@ import { camelCaseToCapitalize } from '../helpers/utils/common.util';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import { getTokenAddressParam } from '../helpers/utils/token-util';
 import {
+  isEqualCaseInsensitive,
   formatDateWithYearContext,
   shortenAddress,
   stripHttpSchemes,
 } from '../helpers/utils/util';
+
 import {
   PENDING_STATUS_HASH,
   TOKEN_CATEGORY_HASH,
@@ -97,7 +99,9 @@ export function useTransactionDisplayData(transactionGroup) {
   // hook to return null
   const token =
     isTokenCategory &&
-    knownTokens.find(({ address }) => address === recipientAddress);
+    knownTokens.find(({ address }) =>
+      isEqualCaseInsensitive(address, recipientAddress),
+    );
   const tokenData = useTokenData(
     initialTransaction?.txParams?.data,
     isTokenCategory,
