@@ -28,7 +28,7 @@ import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
  * GasFeeController that it is done requiring new gas estimates. Also checks
  * the returned gas estimate for validity on the current network.
  *
- * @returns {GasFeeEstimates} - GasFeeEstimates object
+ * @returns {GasFeeEstimates} GasFeeEstimates object
  */
 export function useGasFeeEstimates() {
   const gasEstimateType = useSelector(getGasEstimateType);

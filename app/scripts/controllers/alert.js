@@ -35,7 +35,6 @@ const defaultState = {
  */
 export default class AlertController {
   /**
-   * @constructor
    * @param {AlertControllerOptions} [opts] - Controller configuration parameters
    */
   constructor(opts = {}) {
@@ -73,6 +72,7 @@ export default class AlertController {
 
   /**
    * Sets the "switch to connected" alert as shown for the given origin
+   *
    * @param {string} origin - The origin the alert has been shown for
    */
   setUnconnectedAccountAlertShown(origin) {

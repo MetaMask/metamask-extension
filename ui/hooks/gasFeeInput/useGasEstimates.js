@@ -33,11 +33,23 @@ import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
  *  current network transaction volume increases. Expressed in the network's native currency.
  * @property {string} [estimatedMinimumNative] - the maximum amount estimated to be paid if the
  *  current network transaction volume increases. Expressed in the network's native currency.
- * @property {string} [estimatedMinimumNative] - the maximum amount estimated to be paid if the
- *  current network transaction volume increases. Expressed in the network's native currency.
  * @property {HexWeiString} [estimatedBaseFee] - estimatedBaseFee from fee-market gasFeeEstimates
  *  in HexWei.
  * @property {HexWeiString} [minimumCostInHexWei] - the minimum amount this transaction will cost.
+ */
+
+/**
+ * @param options
+ * @param options.editGasMode
+ * @param options.gasEstimateType
+ * @param options.gasFeeEstimates
+ * @param options.gasLimit
+ * @param options.gasPrice
+ * @param options.maxFeePerGas
+ * @param options.maxPriorityFeePerGas
+ * @param options.minimumGasLimit
+ * @param options.transaction
+ * @returns {GasEstimatesReturnType} The gas estimates.
  */
 export function useGasEstimates({
   editGasMode,

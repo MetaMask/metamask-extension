@@ -825,6 +825,13 @@
         "console.log": true
       }
     },
+    "@es-joy/jsdoccomment": {
+      "packages": {
+        "comment-parser": true,
+        "esquery": true,
+        "jsdoc-type-pratt-parser": true
+      }
+    },
     "@eslint/eslintrc": {
       "builtin": {
         "assert": true,
@@ -2010,6 +2017,19 @@
         "typescript": true
       }
     },
+    "eslint-plugin-jsdoc": {
+      "packages": {
+        "@es-joy/jsdoccomment": true,
+        "comment-parser": true,
+        "debug": true,
+        "eslint": true,
+        "jsdoc-type-pratt-parser": true,
+        "lodash": true,
+        "regextras": true,
+        "semver": true,
+        "spdx-expression-parse": true
+      }
+    },
     "eslint-plugin-node": {
       "builtin": {
         "fs.readFileSync": true,
@@ -3052,6 +3072,11 @@
         "esprima": true
       }
     },
+    "jsdoc-type-pratt-parser": {
+      "globals": {
+        "define": true
+      }
+    },
     "jsesc": {
       "globals": {
         "Buffer.isBuffer": true
@@ -4076,6 +4101,11 @@
         "unicode-match-property-value-ecmascript": true
       }
     },
+    "regextras": {
+      "globals": {
+        "define": true
+      }
+    },
     "regjsgen": {
       "globals": {
         "define": true
@@ -4461,6 +4491,10 @@
         "console.log": true,
         "process.argv.slice": true,
         "process.exit": true
+      },
+      "packages": {
+        "spdx-exceptions": true,
+        "spdx-license-ids": true
       }
     },
     "specificity": {

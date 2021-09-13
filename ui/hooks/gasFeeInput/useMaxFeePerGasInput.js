@@ -30,8 +30,18 @@ const getMaxFeePerGasFromTransaction = (transaction) => {
  *  update the maxFeePerGas.
  * @property {string} [maxFeePerGasFiat] - the maxFeePerGas converted to the
  *  user's preferred currency.
- * @property {(DecGweiString) => void} setMaxFeePerGas - state setter
- *  method to update the setMaxFeePerGas.
+ */
+
+/**
+ * @param options
+ * @param options.supportsEIP1559V2
+ * @param options.estimateToUse
+ * @param options.gasEstimateType
+ * @param options.gasFeeEstimates
+ * @param options.gasLimit
+ * @param options.gasPrice
+ * @param options.transaction
+ * @returns {MaxFeePerGasInputReturnType}
  */
 export function useMaxFeePerGasInput({
   estimateToUse,

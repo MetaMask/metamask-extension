@@ -3629,11 +3629,6 @@
         "lower-case": true
       }
     },
-    "no-case": {
-      "packages": {
-        "lower-case": true
-      }
-    },
     "node-forge": {
       "globals": {
         "Blob": true,

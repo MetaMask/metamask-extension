@@ -382,6 +382,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
  * duck (here) we would use getGasPriceInHexWei to get back to hexWei. Now that
  * we receive a GWEI estimate from the controller, we still need to do this
  * weird conversion to get the proper rounding.
+ *
  * @param {T} gasPriceEstimate
  * @returns
  */
@@ -631,6 +632,9 @@ const slice = createSlice({
     /**
      * update current amount.value in state and run post update validation of
      * the amount field and the send state. Recomputes the draftTransaction
+     *
+     * @param state
+     * @param action
      */
     updateSendAmount: (state, action) => {
       state.amount.value = addHexPrefix(action.payload);
@@ -650,6 +654,8 @@ const slice = createSlice({
      * computes the maximum amount of asset that can be sent and then calls
      * the updateSendAmount action above with the computed value, which will
      * revalidate the field and form and recomputes the draftTransaction
+     *
+     * @param state
      */
     updateAmountToMax: (state) => {
       let amount = '0x0';
@@ -684,6 +690,9 @@ const slice = createSlice({
      * native asset. When sending ERC20 assets, this is unnecessary because the
      * hex data used in the transaction will be that for interacting with the
      * ERC20 contract
+     *
+     * @param state
+     * @param action
      */
     updateUserInputHexData: (state, action) => {
       state.draftTransaction.userInputHexData = action.payload;
@@ -696,6 +705,9 @@ const slice = createSlice({
      * then pulling the details of the previously submitted transaction from
      * the action payload. It also computes a new draftTransaction that will be
      * used when updating the transaction in the provider
+     *
+     * @param state
+     * @param action
      */
     editTransaction: (state, action) => {
       state.stage = SEND_STAGES.EDIT;
@@ -717,6 +729,8 @@ const slice = createSlice({
      * sending the native token. ERC20 assets max amount is unaffected by
      * gasTotal so does not need to be recomputed. Finally, validates the gas
      * field and send state, then updates the draft transaction.
+     *
+     * @param state
      */
     calculateGasTotal: (state) => {
       // use maxFeePerGas as the multiplier if working with a FEE_MARKET transaction
@@ -743,6 +757,9 @@ const slice = createSlice({
     },
     /**
      * sets the provided gasLimit in state and then recomputes the gasTotal.
+     *
+     * @param state
+     * @param action
      */
     updateGasLimit: (state, action) => {
       state.gas.gasLimit = addHexPrefix(action.payload);
@@ -751,6 +768,9 @@ const slice = createSlice({
     /**
      * Sets the appropriate gas fees in state and determines and sets the
      * appropriate transactionType based on gas fee fields received.
+     *
+     * @param state
+     * @param action
      */
     updateGasFees: (state, action) => {
       if (
@@ -784,6 +804,9 @@ const slice = createSlice({
     },
     /**
      * Sets the appropriate gas fees in state after receiving new estimates.
+     *
+     * @param state
+     * @param action
      */
     updateGasFeeEstimates: (state, action) => {
       const { gasFeeEstimates, gasEstimateType } = action.payload;
@@ -832,6 +855,9 @@ const slice = createSlice({
     /**
      * sets the amount mode to the provided value as long as it is one of the
      * supported modes (MAX|INPUT)
+     *
+     * @param state
+     * @param action
      */
     updateAmountMode: (state, action) => {
       if (Object.values(AMOUNT_MODES).includes(action.payload)) {
@@ -1290,7 +1316,6 @@ export { useDefaultGas, useCustomGas, updateGasLimit };
  *
  * @deprecated - don't extend the usage of this temporary method
  * @param {string} gasPrice - new gas price in hex wei
- * @returns {void}
  */
 export function updateGasPrice(gasPrice) {
   return (dispatch) => {
@@ -1320,8 +1345,8 @@ export function resetSendState() {
  * Updates the amount the user intends to send and performs side effects.
  * 1. If the current mode is MAX change to INPUT
  * 2. If sending a token, recompute the gasLimit estimate
+ *
  * @param {string} amount - hex string representing value
- * @returns {void}
  */
 export function updateSendAmount(amount) {
   return async (dispatch, getState) => {
@@ -1335,17 +1360,23 @@ export function updateSendAmount(amount) {
 }
 
 /**
+ * Defines the shape for the details input parameter for updateSendAsset
+ *
+ * @typedef {Object} TokenDetails
+ * @property {string} address - The contract address for the ERC20 token.
+ * @property {string} decimals - The number of token decimals.
+ * @property {string} symbol - The asset symbol to display.
+ */
+
+/**
  * updates the asset to send to one of NATIVE or TOKEN and ensures that the
  * asset balance is set. If sending a TOKEN also updates the asset details
  * object with the appropriate ERC20 details including address, symbol and
  * decimals.
+ *
  * @param {Object} payload - action payload
  * @param {string} payload.type - type of asset to send
- * @param {Object} [payload.details] - ERC20 details if sending TOKEN asset
- * @param {string} [payload.details.address] - contract address for ERC20
- * @param {string} [payload.details.decimals] - Number of token decimals
- * @param {string} [payload.details.symbol] - asset symbol to display
- * @returns {void}
+ * @param {TokenDetails} [payload.details] - ERC20 details if sending TOKEN asset
  */
 export function updateSendAsset({ type, details }) {
   return async (dispatch, getState) => {
@@ -1396,8 +1427,8 @@ const debouncedValidateRecipientUserInput = debounce((dispatch, payload) => {
  * Once the field is updated, the field will be validated using a debounced
  * version of the validateRecipientUserInput action. This way validation only
  * occurs once the user has stopped typing.
+ *
  * @param {string} userInput - the value that the user is typing into the field
- * @returns {void}
  */
 export function updateRecipientUserInput(userInput) {
   return async (dispatch, getState) => {
@@ -1438,11 +1469,11 @@ export function useMyAccountsForRecipientSearch() {
  * a nickname for the passed address has already been saved. This ensures the
  * (temporary) send state recipient nickname is consistent with the address book
  * nickname which has already been persisted to state.
+ *
  * @param {Object} recipient - Recipient information
  * @param {string} recipient.address - hex address to send the transaction to
  * @param {string} [recipient.nickname] - Alias for the address to display
  *  to the user
- * @returns {void}
  */
 export function updateRecipient({ address, nickname }) {
   return async (dispatch, getState) => {
@@ -1460,8 +1491,7 @@ export function updateRecipient({ address, nickname }) {
 }
 
 /**
- * Clears out the recipient user input, ENS resolution and recipient validation
- * @returns {void}
+ * Clears out the recipient user input, ENS resolution and recipient validation.
  */
 export function resetRecipientInput() {
   return async (dispatch) => {
@@ -1479,8 +1509,8 @@ export function resetRecipientInput() {
  * recomputing estimated gasLimit. When sending a ERC20 asset this is not done
  * because the data sent in the transaction will be determined by the asset,
  * recipient and value, NOT what the user has supplied.
- * @param {string} hexData - hex encoded string representing transaction data
- * @returns {void}
+ *
+ * @param {string} hexData - hex encoded string representing transaction data.
  */
 export function updateSendHexData(hexData) {
   return async (dispatch, getState) => {
@@ -1497,7 +1527,6 @@ export function updateSendHexData(hexData) {
  * As a result, the amount.value will change to either '0x0' when moving from
  * MAX to INPUT, or to the maximum allowable amount based on current asset when
  * moving from INPUT to MAX.
- * @returns {void}
  */
 export function toggleSendMaxMode() {
   return async (dispatch, getState) => {
@@ -1520,7 +1549,6 @@ export function toggleSendMaxMode() {
  * will create the transaction in state (by way of the various global provider
  * constructs) which will eventually (and fairly quickly from user perspective)
  * result in a confirmation window being displayed for the transaction.
- * @returns {void}
  */
 export function signTransaction() {
   return async (dispatch, getState) => {

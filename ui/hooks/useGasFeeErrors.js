@@ -160,6 +160,21 @@ const getBalanceError = (minimumCostInHexWei, transaction, ethBalance) => {
  * @property {boolean} [estimatesUnavailableWarning] - true if supportsEIP1559 is true and
  * estimate is not of type fee-market.
  */
+
+/**
+ * @param options
+ * @param options.transaction
+ * @param options.gasEstimateType
+ * @param options.gasFeeEstimates
+ * @param options.gasLimit
+ * @param options.gasPriceToUse
+ * @param options.isGasEstimatesLoading
+ * @param options.maxPriorityFeePerGasToUse
+ * @param options.maxFeePerGasToUse
+ * @param options.minimumCostInHexWei
+ * @param options.minimumGasLimit
+ * @returns {GasFeeErrorsReturnType}
+ */
 export function useGasFeeErrors({
   transaction,
   gasEstimateType,

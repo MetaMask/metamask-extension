@@ -14,7 +14,6 @@ import EventEmitter from 'events';
 
 export default class Migrator extends EventEmitter {
   /**
-   * @constructor
    * @param {MigratorOptions} opts
    */
   constructor(opts = {}) {
@@ -71,6 +70,7 @@ export default class Migrator extends EventEmitter {
      *
      * A migration is considered "pending" if it has a higher
      * version number than the current version.
+     *
      * @param {Migration} migration
      * @returns {boolean}
      */
@@ -81,6 +81,7 @@ export default class Migrator extends EventEmitter {
 
   /**
    * Returns the initial state for the migrator
+   *
    * @param {Object} [data] - The data for the initial state
    * @returns {{meta: {version: number}, data: any}}
    */

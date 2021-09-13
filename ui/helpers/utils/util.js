@@ -45,6 +45,7 @@ export function formatDateWithYearContext(
 }
 /**
  * Determines if the provided chainId is a default MetaMask chain
+ *
  * @param {string} chainId - chainId to check
  */
 export function isDefaultMetaMaskChain(chainId) {
@@ -341,6 +342,8 @@ export function toPrecisionWithoutTrailingZeros(n, precision) {
 /**
  * Given and object where all values are strings, returns the same object with all values
  * now prefixed with '0x'
+ *
+ * @param obj
  */
 export function addHexPrefixToObjectValues(obj) {
   return Object.keys(obj).reduce((newObj, key) => {
@@ -352,12 +355,14 @@ export function addHexPrefixToObjectValues(obj) {
  * Given the standard set of information about a transaction, returns a transaction properly formatted for
  * publishing via JSON RPC and web3
  *
- * @param {boolean} [sendToken] - Indicates whether or not the transaciton is a token transaction
- * @param {string} data - A hex string containing the data to include in the transaction
- * @param {string} to - A hex address of the tx recipient address
- * @param {string} from - A hex address of the tx sender address
- * @param {string} gas - A hex representation of the gas value for the transaction
- * @param {string} gasPrice - A hex representation of the gas price for the transaction
+ * @param {object} options
+ * @param {boolean} [options.sendToken] - Indicates whether or not the transaciton is a token transaction
+ * @param {string} options.data - A hex string containing the data to include in the transaction
+ * @param {string} options.to - A hex address of the tx recipient address
+ * @param options.amount
+ * @param {string} options.from - A hex address of the tx sender address
+ * @param {string} options.gas - A hex representation of the gas value for the transaction
+ * @param {string} options.gasPrice - A hex representation of the gas price for the transaction
  * @returns {Object} An object ready for submission to the blockchain, with all values appropriately hex prefixed
  */
 export function constructTxParams({

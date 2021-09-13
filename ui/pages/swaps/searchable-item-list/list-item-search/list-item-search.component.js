@@ -31,7 +31,8 @@ export default function ListItemSearch({
 
   /**
    * Search a custom token for import based on a contract address.
-   * @param {String} contractAddress
+   *
+   * @param {string} contractAddress
    */
   const handleSearchTokenForImport = async (contractAddress) => {
     setSearchQuery(contractAddress);

@@ -8,14 +8,10 @@ export const NOTIFICATION_MANAGER_EVENTS = {
   POPUP_CLOSED: 'onPopupClosed',
 };
 
+/**
+ * A collection of methods for controlling the showing and hiding of the notification popup.
+ */
 export default class NotificationManager extends EventEmitter {
-  /**
-   * A collection of methods for controlling the showing and hiding of the notification popup.
-   *
-   * @typedef {Object} NotificationManager
-   *
-   */
-
   constructor() {
     super();
     this.platform = new ExtensionPlatform();
@@ -94,8 +90,6 @@ export default class NotificationManager extends EventEmitter {
    * type 'popup')
    *
    * @private
-   * @param {Function} cb - A node style callback that to which the found notification window will be passed.
-   *
    */
   async _getPopup() {
     const windows = await this.platform.getAllWindows();
@@ -107,7 +101,6 @@ export default class NotificationManager extends EventEmitter {
    *
    * @private
    * @param {Array} windows - An array of objects containing data about the open MetaMask extension windows.
-   *
    */
   _getPopupIn(windows) {
     return windows
