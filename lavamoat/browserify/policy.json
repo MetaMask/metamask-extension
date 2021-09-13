@@ -477,6 +477,7 @@
     },
     "@metamask/controllers": {
       "globals": {
+        "AbortController": true,
         "Headers": true,
         "clearInterval": true,
         "clearTimeout": true,
@@ -490,7 +491,6 @@
         "@ethereumjs/common": true,
         "@ethereumjs/tx": true,
         "@metamask/contract-metadata": true,
-        "abort-controller": true,
         "async-mutex": true,
         "await-semaphore": true,
         "buffer": true,
@@ -734,6 +734,17 @@
         "document.getElementById": true,
         "navigator.mediaDevices.enumerateDevices": true,
         "navigator.mediaDevices.getUserMedia": true,
+        "setTimeout": true
+      }
+    },
+    "abortcontroller-polyfill": {
+      "globals": {
+        "DOMException": true,
+        "Event": true,
+        "console.log": true,
+        "console.warn": true,
+        "define": true,
+        "document": true,
         "setTimeout": true
       }
     },
