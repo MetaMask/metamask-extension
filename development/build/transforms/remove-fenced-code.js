@@ -2,6 +2,8 @@ const path = require('path');
 const { PassThrough, Transform } = require('stream');
 const { BuildTypes } = require('../utils');
 
+const hasOwnProperty = (obj, key) => Reflect.hasOwnProperty(obj, key);
+
 module.exports = {
   createRemoveFencedCodeTransform,
   removeFencedCode,
@@ -59,7 +61,7 @@ class RemoveFencedCodeTransform extends Transform {
  * @returns {(filePath: string) => Transform} The transform function.
  */
 function createRemoveFencedCodeTransform(buildType) {
-  if (!(buildType in BuildTypes)) {
+  if (!hasOwnProperty(BuildTypes, buildType)) {
     throw new Error(
       `Metamask build: Code fencing transform received unrecognized build type "${buildType}".`,
     );
@@ -105,7 +107,7 @@ const CommandValidators = {
     }
 
     params.forEach((param) => {
-      if (!(param in BuildTypes)) {
+      if (!hasOwnProperty(BuildTypes, param)) {
         throw new Error(
           getInvalidParamsMessage(
             filePath,
@@ -208,7 +210,7 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
     // The first element of a RegEx match array is the input
     const [, terminus, command, parameters] = directiveMatches;
 
-    if (!(terminus in DirectiveTerminuses)) {
+    if (!hasOwnProperty(DirectiveTerminuses, terminus)) {
       throw new Error(
         getInvalidFenceLineMessage(
           filePath,
@@ -217,7 +219,7 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
         ),
       );
     }
-    if (!(command in DirectiveCommands)) {
+    if (!hasOwnProperty(DirectiveCommands, command)) {
       throw new Error(
         getInvalidFenceLineMessage(
           filePath,
