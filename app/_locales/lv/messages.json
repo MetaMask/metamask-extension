@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Pievienot žetonu"
   },
-  "addTokens": {
-    "message": "Pievienot marķierus"
-  },
   "advanced": {
     "message": "Papildu"
   },
@@ -273,7 +270,7 @@
     "message": "Daļskaitļiem jābūt diapazonā no 0 līdz 36."
   },
   "defaultNetwork": {
-    "message": "Galvenais Ether darījumu tīkls ir Main Net."
+    "message": "Galvenais Ether darījumu tīkls ir Mainnet."
   },
   "delete": {
     "message": "Dzēst"
@@ -536,7 +533,7 @@
   "letsGoSetUp": {
     "message": "Jā, sāksim iestatīšanu!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Vai vēlaties pievienot šos marķierus?"
   },
   "links": {

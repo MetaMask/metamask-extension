@@ -50,9 +50,6 @@
   "addToken": {
     "message": "ಟೋಕನ್ ಸೇರಿಸಿ"
   },
-  "addTokens": {
-    "message": "ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
-  },
   "advanced": {
     "message": "ಸುಧಾರಿತ"
   },
@@ -540,7 +537,7 @@
   "letsGoSetUp": {
     "message": "ಹೌದು, ಹೊಂದಿಸೋಣ!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "ನೀವು ಈ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಲು ಬಯಸುತ್ತೀರಾ?"
   },
   "links": {

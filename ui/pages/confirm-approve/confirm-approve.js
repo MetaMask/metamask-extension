@@ -31,6 +31,7 @@ import { useApproveTransaction } from '../../hooks/useApproveTransaction';
 import { currentNetworkTxListSelector } from '../../selectors/transactions';
 import Loading from '../../components/ui/loading-screen';
 import EditGasPopover from '../../components/app/edit-gas-popover/edit-gas-popover.component';
+import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
@@ -60,7 +61,9 @@ export default function ConfirmApprove() {
   );
 
   const currentToken = (tokens &&
-    tokens.find(({ address }) => tokenAddress === address)) || {
+    tokens.find(({ address }) =>
+      isEqualCaseInsensitive(tokenAddress, address),
+    )) || {
     address: tokenAddress,
   };
 

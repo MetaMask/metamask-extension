@@ -226,7 +226,7 @@
   &__footer {
     display: flex;
     flex-flow: row nowrap;
-    margin: 0.75rem 0;
+    padding: 0.75rem 0;
 
     @media screen and (max-width: 575px) {
       width: 93%;

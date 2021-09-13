@@ -5,11 +5,17 @@ const del = require('del');
 const pify = require('pify');
 const pump = pify(require('pump'));
 const { version } = require('../../package.json');
+
 const { createTask, composeParallel } = require('./task');
 
 module.exports = createEtcTasks;
 
-function createEtcTasks({ browserPlatforms, livereload }) {
+function createEtcTasks({
+  betaVersionsMap,
+  browserPlatforms,
+  isBeta,
+  livereload,
+}) {
   const clean = createTask('clean', async function clean() {
     await del(['./dist/*']);
     await Promise.all(
@@ -27,18 +33,23 @@ function createEtcTasks({ browserPlatforms, livereload }) {
   const zip = createTask(
     'zip',
     composeParallel(
-      ...browserPlatforms.map((platform) => createZipTask(platform)),
+      ...browserPlatforms.map((platform) =>
+        createZipTask(platform, isBeta ? betaVersionsMap[platform] : undefined),
+      ),
     ),
   );
 
   return { clean, reload, zip };
 }
 
-function createZipTask(target) {
+function createZipTask(platform, betaVersion) {
   return async () => {
+    const path = betaVersion
+      ? `metamask-BETA-${platform}-${betaVersion}`
+      : `metamask-${platform}-${version}`;
     await pump(
-      gulp.src(`dist/${target}/**`),
-      gulpZip(`metamask-${target}-${version}.zip`),
+      gulp.src(`dist/${platform}/**`),
+      gulpZip(`${path}.zip`),
       gulp.dest('builds'),
     );
   };

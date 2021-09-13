@@ -28,6 +28,8 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 
 Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
 
+See the [build system readme](./development/build/README.md) for build system usage information.
+
 ## Contributing
 
 ### Development builds
