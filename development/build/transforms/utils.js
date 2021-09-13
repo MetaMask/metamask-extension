@@ -1,7 +1,11 @@
 const { ESLint } = require('eslint');
 const eslintrc = require('../../../.eslintrc.js');
 
-// This is a singleton
+/**
+ * The singleton ESLint instance.
+ *
+ * @type {ESLint}
+ */
 let eslintInstance;
 
 // Only initialize the ESLint instance if necessary
