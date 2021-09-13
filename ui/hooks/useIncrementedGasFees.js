@@ -59,6 +59,7 @@ export function useIncrementedGasFees(transactionGroup) {
   const { primaryTransaction } = transactionGroup;
 
   const { gasFeeEstimates = {} } = useGasFeeEstimates();
+
   // We memoize this value so that it can be relied upon in other hooks.
   const customGasSettings = useMemo(() => {
     // This hook is called indiscriminantly on all transactions appearing in

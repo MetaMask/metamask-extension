@@ -63,7 +63,6 @@ export default function EditGasPopover({
   ] = useState(false);
 
   const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
-
   const updatedCustomGasSettings = useIncrementedGasFees(transaction);
 
   let updatedTransaction = transaction;
