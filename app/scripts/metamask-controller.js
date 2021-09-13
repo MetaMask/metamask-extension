@@ -474,7 +474,6 @@ export default class MetamaskController extends EventEmitter {
         this.platform.showTransactionNotification(txMeta, rpcPrefs);
 
         const { txReceipt } = txMeta;
-        const metamaskState = await this.getState();
 
         if (txReceipt && txReceipt.status === '0x0') {
           this.metaMetricsController.trackEvent(
@@ -484,8 +483,6 @@ export default class MetamaskController extends EventEmitter {
               properties: {
                 action: 'Transactions',
                 errorMessage: txMeta.simulationFails?.reason,
-                numberOfTokens: metamaskState.tokens.length,
-                numberOfAccounts: Object.keys(metamaskState.accounts).length,
               },
             },
             {

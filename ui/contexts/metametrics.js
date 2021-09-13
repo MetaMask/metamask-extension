@@ -10,11 +10,7 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { captureException } from '@sentry/browser';
 
-import {
-  getAccountType,
-  getNumberOfAccounts,
-  getNumberOfTokens,
-} from '../selectors/selectors';
+import { getAccountType } from '../selectors/selectors';
 import { getSendAsset, ASSET_TYPES } from '../ducks/send';
 import { txDataSelector } from '../selectors/confirm-transaction';
 import { getEnvironmentType } from '../../app/scripts/lib/util';
@@ -36,8 +32,6 @@ export function MetaMetricsProvider({ children }) {
   const nativeAssetSymbol = useSelector(getNativeCurrency);
   const accountType = useSelector(getAccountType);
   const confirmTransactionOrigin = txData.origin;
-  const numberOfTokens = useSelector(getNumberOfTokens);
-  const numberOfAccounts = useSelector(getNumberOfAccounts);
   const history = useHistory();
   const [state, setState] = useState(() => ({
     currentPath: new URL(window.location.href).pathname,
@@ -72,8 +66,6 @@ export function MetaMetricsProvider({ children }) {
           category: eventOpts.category,
           properties: {
             action: eventOpts.action,
-            number_of_tokens: numberOfTokens,
-            number_of_accounts: numberOfAccounts,
             active_currency:
               activeAsset.type === ASSET_TYPES.NATIVE
                 ? nativeAssetSymbol
@@ -109,8 +101,6 @@ export function MetaMetricsProvider({ children }) {
       confirmTransactionOrigin,
       activeAsset,
       nativeAssetSymbol,
-      numberOfTokens,
-      numberOfAccounts,
       environmentType,
     ],
   );
