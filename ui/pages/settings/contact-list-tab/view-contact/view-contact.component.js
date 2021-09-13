@@ -46,6 +46,7 @@ function ViewContact({
             onClick={() => {
               history.push(`${editRoute}/${address}`);
             }}
+            rounded
           >
             {t('edit')}
           </Button>

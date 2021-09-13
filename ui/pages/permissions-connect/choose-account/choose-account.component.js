@@ -224,7 +224,8 @@ export default class ChooseAccount extends Component {
           <div className="permissions-connect-choose-account__bottom-buttons">
             <Button
               onClick={() => cancelPermissionsRequest(permissionsRequestId)}
-              type="default"
+              type="secondary"
+              rounded
             >
               {t('cancel')}
             </Button>
@@ -232,6 +233,7 @@ export default class ChooseAccount extends Component {
               onClick={() => selectAccounts(selectedAccounts)}
               type="primary"
               disabled={selectedAccounts.size === 0}
+              rounded
             >
               {t('next')}
             </Button>

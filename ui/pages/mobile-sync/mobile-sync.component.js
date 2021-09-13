@@ -411,19 +411,21 @@ export default class MobileSyncPage extends Component {
         style={{ padding: 30, marginTop: 0 }}
       >
         <Button
-          type="default"
+          type="secondary"
           large
           className="new-account-create-form__button"
           onClick={() => this.goBack()}
+          rounded
         >
           {t('cancel')}
         </Button>
         <Button
-          type="secondary"
+          type="primary"
           large
           className="new-account-create-form__button"
           onClick={(event) => this.handleSubmit(event)}
           disabled={password === ''}
+          rounded
         >
           {t('next')}
         </Button>

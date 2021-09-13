@@ -624,21 +624,23 @@ export default class NetworkForm extends PureComponent {
           {!viewOnly && (
             <>
               {deletable && (
-                <Button type="danger" onClick={this.onDelete}>
+                <Button type="danger" onClick={this.onDelete} rounded>
                   {t('delete')}
                 </Button>
               )}
               <Button
-                type="default"
+                type="secondary"
                 onClick={this.onCancel}
                 disabled={this.stateIsUnchanged()}
+                rounded
               >
                 {t('cancel')}
               </Button>
               <Button
-                type="secondary"
+                type="primary"
                 disabled={isSubmitDisabled}
                 onClick={this.onSubmit}
+                rounded
               >
                 {t('save')}
               </Button>
