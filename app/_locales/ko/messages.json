@@ -91,9 +91,6 @@
   "addToken": {
     "message": "토큰 추가"
   },
-  "addTokens": {
-    "message": "토큰 추가"
-  },
   "advanced": {
     "message": "고급"
   },
@@ -1025,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "설정을 시작하죠!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "이 토큰을 추가하시겠어요?"
   },
   "links": {

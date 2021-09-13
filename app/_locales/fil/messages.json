@@ -47,9 +47,6 @@
   "addToken": {
     "message": "Magdagdag ng Token"
   },
-  "addTokens": {
-    "message": "Magdagdag ng Mga Token"
-  },
   "advancedOptions": {
     "message": "Mga Advanced na Opsyon"
   },
@@ -249,7 +246,7 @@
     "message": "Ang mga decimal ay hindi dapat bumaba sa 0, at hindi lumampas sa 36."
   },
   "defaultNetwork": {
-    "message": "Ang default na network para sa mga transaksyon ng Ether ay Main Net."
+    "message": "Ang default na network para sa mga transaksyon ng Ether ay Mainnet."
   },
   "delete": {
     "message": "I-delete"
@@ -490,7 +487,7 @@
   "letsGoSetUp": {
     "message": "Oo, i-set up natin ito!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Gusto mo bang idagdag ang mga token na ito?"
   },
   "links": {

@@ -19,6 +19,7 @@ const createProps = (customProps = {}) => {
     maxSlippage: 15,
     selectedAccountAddress: 'selectedAccountAddress',
     isFeatureFlagLoaded: false,
+    shuffledTokensList: [],
     ...customProps,
   };
 };

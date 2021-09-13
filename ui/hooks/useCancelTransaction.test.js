@@ -59,7 +59,7 @@ describe('useCancelTransaction', function () {
         );
         expect(result.current.hasEnoughCancelGas).toStrictEqual(false);
       });
-      it(`should return a function that opens the gas sidebar onsubmit kicks off cancellation for id ${transactionId}`, function () {
+      it(`should return a function that kicks off cancellation for id ${transactionId}`, function () {
         const { result } = renderHook(() =>
           useCancelTransaction(transactionGroup),
         );

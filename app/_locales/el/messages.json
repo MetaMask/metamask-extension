@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Προσθήκη Token"
   },
-  "addTokens": {
-    "message": "Προσθήκη Token"
-  },
   "advanced": {
     "message": "Σύνθετες"
   },
@@ -270,7 +267,7 @@
     "message": "Τα δεκαδικά πρέπει να είναι τουλάχιστον 0 και όχι πάνω από 36."
   },
   "defaultNetwork": {
-    "message": "Το προεπιλεγμένο δίκτυο για συναλλαγές Ether είναι το Main Net."
+    "message": "Το προεπιλεγμένο δίκτυο για συναλλαγές Ether είναι το Mainnet."
   },
   "delete": {
     "message": "Διαγραφή"
@@ -537,7 +534,7 @@
   "letsGoSetUp": {
     "message": "Ναι, ας το εγκαταστήσουμε!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Θέλετε να προσθέσετε αυτά τα token;"
   },
   "links": {

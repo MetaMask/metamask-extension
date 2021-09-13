@@ -47,9 +47,6 @@
   "addToken": {
     "message": "Token hinzufügen"
   },
-  "addTokens": {
-    "message": "Token hinzufügen"
-  },
   "advanced": {
     "message": "Erweitert"
   },
@@ -192,7 +189,7 @@
     "message": " Verbinde zum Kovan Testnetzwerk"
   },
   "connectingToMainnet": {
-    "message": "Verbinde zum Ethereum Main Net"
+    "message": "Verbinde zum Ethereum Mainnet"
   },
   "connectingToRinkeby": {
     "message": " Verbinde zum Rinkeby Testnetzwerk"
@@ -264,7 +261,7 @@
     "message": "Die Dezimalangabe muss mindestens 0 und nicht höher als 36 sein."
   },
   "defaultNetwork": {
-    "message": "Das Standardnetzwerk für Ether Transaktionen ist das Main Net."
+    "message": "Das Standardnetzwerk für Ether Transaktionen ist das Mainnet."
   },
   "delete": {
     "message": "Löschen"
@@ -528,7 +525,7 @@
   "letsGoSetUp": {
     "message": "Ja, legen wir los!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Möchtest du diese Token hinzufügen?"
   },
   "loadMore": {
@@ -544,7 +541,7 @@
     "message": "Ausloggen"
   },
   "mainnet": {
-    "message": "Ethereum Main Net"
+    "message": "Ethereum Mainnet"
   },
   "memo": {
     "message": " Memo"

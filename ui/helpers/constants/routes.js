@@ -17,8 +17,8 @@ const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
 const REVEAL_SEED_ROUTE = '/seed';
 const MOBILE_SYNC_ROUTE = '/mobile-sync';
 const RESTORE_VAULT_ROUTE = '/restore-vault';
-const ADD_TOKEN_ROUTE = '/add-token';
-const CONFIRM_ADD_TOKEN_ROUTE = '/confirm-add-token';
+const IMPORT_TOKEN_ROUTE = '/import-token';
+const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 const NEW_ACCOUNT_ROUTE = '/new-account';
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import';
@@ -85,8 +85,8 @@ const PATH_NAME_MAP = {
   [REVEAL_SEED_ROUTE]: 'Reveal Secret Recovery Phrase Page',
   [MOBILE_SYNC_ROUTE]: 'Sync With Mobile Page',
   [RESTORE_VAULT_ROUTE]: 'Restore Vault Page',
-  [ADD_TOKEN_ROUTE]: 'Add Token Page',
-  [CONFIRM_ADD_TOKEN_ROUTE]: 'Confirm Add Token Page',
+  [IMPORT_TOKEN_ROUTE]: 'Import Token Page',
+  [CONFIRM_IMPORT_TOKEN_ROUTE]: 'Confirm Import Token Page',
   [CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE]: 'Confirm Add Suggested Token Page',
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
   [IMPORT_ACCOUNT_ROUTE]: 'Import Account Page',
@@ -143,8 +143,8 @@ export {
   REVEAL_SEED_ROUTE,
   MOBILE_SYNC_ROUTE,
   RESTORE_VAULT_ROUTE,
-  ADD_TOKEN_ROUTE,
-  CONFIRM_ADD_TOKEN_ROUTE,
+  IMPORT_TOKEN_ROUTE,
+  CONFIRM_IMPORT_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,

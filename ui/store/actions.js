@@ -9,6 +9,7 @@ import {
 } from '../helpers/utils/i18n-helper';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import { getSymbolAndDecimals } from '../helpers/utils/token-util';
+import { isEqualCaseInsensitive } from '../helpers/utils/util';
 import switchDirection from '../helpers/utils/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -21,11 +22,11 @@ import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
+  getTokenList,
 } from '../selectors';
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
-import { LISTED_CONTRACT_ADDRESSES } from '../../shared/constants/tokens';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import * as actionConstants from './actionConstants';
 
@@ -1121,10 +1122,9 @@ export function lockMetamask() {
   };
 }
 
-async function _setSelectedAddress(dispatch, address) {
+async function _setSelectedAddress(address) {
   log.debug(`background.setSelectedAddress`);
-  const tokens = await promisifiedBackground.setSelectedAddress(address);
-  dispatch(updateTokens(tokens));
+  await promisifiedBackground.setSelectedAddress(address);
 }
 
 export function setSelectedAddress(address) {
@@ -1132,7 +1132,7 @@ export function setSelectedAddress(address) {
     dispatch(showLoadingIndication());
     log.debug(`background.setSelectedAddress`);
     try {
-      await _setSelectedAddress(dispatch, address);
+      await _setSelectedAddress(address);
     } catch (error) {
       dispatch(displayWarning(error.message));
       return;
@@ -1167,7 +1167,7 @@ export function showAccountDetail(address) {
       !currentTabIsConnectedToNextAddress;
 
     try {
-      await _setSelectedAddress(dispatch, address);
+      await _setSelectedAddress(address);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error.message));
@@ -1240,43 +1240,37 @@ export function addToken(
   image,
   dontShowLoadingIndicator,
 ) {
-  return (dispatch) => {
+  return async (dispatch) => {
     if (!address) {
       throw new Error('MetaMask - Cannot add token without address');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
-    return new Promise((resolve, reject) => {
-      background.addToken(address, symbol, decimals, image, (err, tokens) => {
-        dispatch(hideLoadingIndication());
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        dispatch(updateTokens(tokens));
-        resolve(tokens);
-      });
-    });
+    try {
+      await promisifiedBackground.addToken(address, symbol, decimals, image);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
 export function removeToken(address) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
-    return new Promise((resolve, reject) => {
-      background.removeToken(address, (err, tokens) => {
-        dispatch(hideLoadingIndication());
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        dispatch(updateTokens(tokens));
-        resolve(tokens);
-      });
-    });
+    try {
+      await promisifiedBackground.removeToken(address);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
@@ -1297,40 +1291,41 @@ export function addTokens(tokens) {
   };
 }
 
-export function removeSuggestedTokens() {
-  return (dispatch) => {
+export function rejectWatchAsset(suggestedAssetID) {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
-    return new Promise((resolve) => {
-      background.removeSuggestedTokens((err, suggestedTokens) => {
-        dispatch(hideLoadingIndication());
-        if (err) {
-          dispatch(displayWarning(err.message));
-        }
-        dispatch(clearPendingTokens());
-        if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-          global.platform.closeCurrentWindow();
-          return;
-        }
-        resolve(suggestedTokens);
-      });
-    })
-      .then(() => updateMetamaskStateFromBackground())
-      .then((suggestedTokens) =>
-        dispatch(updateMetamaskState({ ...suggestedTokens })),
-      );
+    try {
+      await promisifiedBackground.rejectWatchAsset(suggestedAssetID);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+    dispatch(closeCurrentNotificationWindow());
+  };
+}
+
+export function acceptWatchAsset(suggestedAssetID) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    try {
+      await promisifiedBackground.acceptWatchAsset(suggestedAssetID);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+    dispatch(closeCurrentNotificationWindow());
   };
 }
 
 export function addKnownMethodData(fourBytePrefix, methodData) {
   return () => {
     background.addKnownMethodData(fourBytePrefix, methodData);
-  };
-}
-
-export function updateTokens(newTokens) {
-  return {
-    type: actionConstants.UPDATE_TOKENS,
-    newTokens,
   };
 }
 
@@ -1652,23 +1647,6 @@ export function closeCurrentNotificationWindow() {
     ) {
       global.platform.closeCurrentWindow();
     }
-  };
-}
-
-export function showSidebar({ transitionName, type, props }) {
-  return {
-    type: actionConstants.SIDEBAR_OPEN,
-    value: {
-      transitionName,
-      type,
-      props,
-    },
-  };
-}
-
-export function hideSidebar() {
-  return {
-    type: actionConstants.SIDEBAR_CLOSE,
   };
 }
 
@@ -2056,11 +2034,11 @@ export function setUsePhishDetect(val) {
   };
 }
 
-export function setUseStaticTokenList(val) {
+export function setUseTokenDetection(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.setUseStaticTokenList`);
-    background.setUseStaticTokenList(val, (err) => {
+    log.debug(`background.setUseTokenDetection`);
+    background.setUseTokenDetection(val, (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
@@ -2117,7 +2095,11 @@ export function setCurrentLocale(locale, messages) {
 }
 
 export function setPendingTokens(pendingTokens) {
-  const { customToken = {}, selectedTokens = {} } = pendingTokens;
+  const {
+    customToken = {},
+    selectedTokens = {},
+    tokenAddressList = [],
+  } = pendingTokens;
   const { address, symbol, decimals } = customToken;
   const tokens =
     address && symbol && decimals >= 0 <= 36
@@ -2131,8 +2113,8 @@ export function setPendingTokens(pendingTokens) {
       : selectedTokens;
 
   Object.keys(tokens).forEach((tokenAddress) => {
-    tokens[tokenAddress].unlisted = !LISTED_CONTRACT_ADDRESSES.includes(
-      tokenAddress.toLowerCase(),
+    tokens[tokenAddress].unlisted = !tokenAddressList.find((addr) =>
+      isEqualCaseInsensitive(addr, tokenAddress),
     );
   });
 
@@ -2539,9 +2521,10 @@ export function loadingTokenParamsFinished() {
 
 export function getTokenParams(tokenAddress) {
   return (dispatch, getState) => {
+    const tokenList = getTokenList(getState());
     const existingTokens = getState().metamask.tokens;
-    const existingToken = existingTokens.find(
-      ({ address }) => tokenAddress === address,
+    const existingToken = existingTokens.find(({ address }) =>
+      isEqualCaseInsensitive(tokenAddress, address),
     );
 
     if (existingToken) {
@@ -2554,10 +2537,12 @@ export function getTokenParams(tokenAddress) {
     dispatch(loadingTokenParamsStarted());
     log.debug(`loadingTokenParams`);
 
-    return getSymbolAndDecimals(tokenAddress).then(({ symbol, decimals }) => {
-      dispatch(addToken(tokenAddress, symbol, Number(decimals)));
-      dispatch(loadingTokenParamsFinished());
-    });
+    return getSymbolAndDecimals(tokenAddress, tokenList).then(
+      ({ symbol, decimals }) => {
+        dispatch(addToken(tokenAddress, symbol, Number(decimals)));
+        dispatch(loadingTokenParamsFinished());
+      },
+    );
   };
 }
 
@@ -2870,4 +2855,9 @@ export async function setUnconnectedAccountAlertShown(origin) {
 
 export async function setWeb3ShimUsageAlertDismissed(origin) {
   await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
+}
+
+// DetectTokenController
+export async function detectNewTokens() {
+  return promisifiedBackground.detectNewTokens();
 }
