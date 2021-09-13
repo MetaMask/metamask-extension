@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Token hozzáadása"
   },
-  "addTokens": {
-    "message": "Érmék hozzáadása"
-  },
   "advanced": {
     "message": "Speciális"
   },
@@ -273,7 +270,7 @@
     "message": "A tizedesjegyek száma 0 és 36 között legyen . "
   },
   "defaultNetwork": {
-    "message": "Az Ether tranzakciók alapértelmezett hálózata a Main Net."
+    "message": "Az Ether tranzakciók alapértelmezett hálózata a Mainnet."
   },
   "delete": {
     "message": "Törlés"
@@ -536,7 +533,7 @@
   "letsGoSetUp": {
     "message": "Igen, hozzuk létre!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Hozzá szeretné adni ezeket az érméket?"
   },
   "links": {

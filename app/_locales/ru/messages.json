@@ -91,9 +91,6 @@
   "addToken": {
     "message": "Добавить токен"
   },
-  "addTokens": {
-    "message": "Добавить токены"
-  },
   "advanced": {
     "message": "Дополнительно"
   },
@@ -516,7 +513,7 @@
     "message": "Расшифровать запрос"
   },
   "defaultNetwork": {
-    "message": "Сетью по умолчанию для транзакций Ether является Main Net."
+    "message": "Сетью по умолчанию для транзакций Ether является Mainnet."
   },
   "delete": {
     "message": "Удалить"
@@ -1025,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "Да, давайте настроим!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Вы хотели бы добавить эти токены?"
   },
   "links": {
@@ -1552,7 +1549,7 @@
     "message": "Новый URL RPC"
   },
   "save": {
-    "message": "«»Сохранить"
+    "message": "Сохранить"
   },
   "saveAsCsvFile": {
     "message": "Сохранить как файл CSV"

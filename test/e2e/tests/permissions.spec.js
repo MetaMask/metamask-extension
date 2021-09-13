@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures, xxLargeDelayMs } = require('../helpers');
+const { withFixtures, xxLargeDelayMs, xLargeDelayMs } = require('../helpers');
 
 describe('Permissions', function () {
   it('sets permissions and connect to Dapp', async function () {
@@ -62,7 +62,7 @@ describe('Permissions', function () {
           text: 'Connected sites',
           tag: 'h2',
         });
-
+        await driver.delay(xLargeDelayMs);
         const domains = await driver.findClickableElements(
           '.connected-sites-list__domain-name',
         );

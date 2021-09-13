@@ -91,9 +91,6 @@
   "addToken": {
     "message": "Tambahkan Token"
   },
-  "addTokens": {
-    "message": "Tambahkan Token"
-  },
   "advanced": {
     "message": "Tingkat Lanjut"
   },
@@ -1025,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "Ya, mari siap-siap!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Apakah Anda ingin menambahkan token ini?"
   },
   "links": {

@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Ongeza Kianzio"
   },
-  "addTokens": {
-    "message": "Ongeza Vianzio"
-  },
   "advanced": {
     "message": "Mipangilio ya kina"
   },
@@ -267,7 +264,7 @@
     "message": "Desimali zinapaswa kuwa angalau 0, na si zaidi ya 36."
   },
   "defaultNetwork": {
-    "message": "Mtandao chaguomsingi wa miamala ya Ether ni Main Net."
+    "message": "Mtandao chaguomsingi wa miamala ya Ether ni Mainnet."
   },
   "delete": {
     "message": "Futa"
@@ -527,7 +524,7 @@
   "letsGoSetUp": {
     "message": "Ndiyo, hebu tuweke mipangilio!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Je, ungependa kuongeza vianzio hivi?"
   },
   "links": {
