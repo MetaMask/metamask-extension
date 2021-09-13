@@ -73,7 +73,7 @@ describe('SendFooter Component', () => {
   });
 
   describe('onCancel', () => {
-    it('should call resetSendState and cancelTx', () => {
+    it('should call resetSendState', () => {
       expect(propsMethodSpies.resetSendState.callCount).toStrictEqual(0);
       wrapper.instance().onCancel();
       expect(propsMethodSpies.resetSendState.callCount).toStrictEqual(1);

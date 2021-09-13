@@ -2469,7 +2469,6 @@ describe('Send Slice', () => {
               draftTransaction: {
                 ...initialState.draftTransaction,
                 id: 'ID',
-                userInputHexData: '0x0',
               },
             },
           }),
