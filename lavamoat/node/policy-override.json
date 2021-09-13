@@ -28,6 +28,12 @@
       "globals": {
         "Buffer": true
       }
+    },
+    "eslint": {
+      "builtin": {
+        "fs.writeFile": false,
+        "fs.writeFileSync": false
+      }
     }
   }
 }
