@@ -24,8 +24,9 @@ import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils'
 
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
-  fetchSwapsRefreshRates as defaultFetchSwapsRefreshRates,
+  getBaseApi,
 } from '../../../ui/pages/swaps/swaps.util';
+import fetchWithCache from '../../../ui/helpers/utils/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
 import { NETWORK_EVENTS } from './network';
 
@@ -91,7 +92,6 @@ export default class SwapsController {
     getProviderConfig,
     tokenRatesStore,
     fetchTradesInfo = defaultFetchTradesInfo,
-    fetchSwapsRefreshRates = defaultFetchSwapsRefreshRates,
     getCurrentChainId,
     getEIP1559GasFeeEstimates,
   }) {
@@ -100,7 +100,6 @@ export default class SwapsController {
     });
 
     this._fetchTradesInfo = fetchTradesInfo;
-    this._fetchSwapsRefreshRates = fetchSwapsRefreshRates;
     this._getCurrentChainId = getCurrentChainId;
     this._getEIP1559GasFeeEstimates = getEIP1559GasFeeEstimates;
 
@@ -122,13 +121,36 @@ export default class SwapsController {
     });
   }
 
+  async fetchSwapsRefreshRates(chainId, useNewSwapsApi) {
+    const response = await fetchWithCache(
+      getBaseApi('network', chainId, useNewSwapsApi),
+      { method: 'GET' },
+      { cacheRefreshTime: 600000 },
+    );
+    const { refreshRates } = response || {};
+    if (
+      !refreshRates ||
+      typeof refreshRates.quotes !== 'number' ||
+      typeof refreshRates.quotesPrefetching !== 'number'
+    ) {
+      throw new Error(
+        `MetaMask - invalid response for refreshRates: ${response}`,
+      );
+    }
+    // We presently use milliseconds in the UI.
+    return {
+      quotes: refreshRates.quotes * 1000,
+      quotesPrefetching: refreshRates.quotesPrefetching * 1000,
+    };
+  }
+
   // Sets the refresh rate for quote updates from the MetaSwap API
   async _setSwapsRefreshRates() {
     const chainId = this._getCurrentChainId();
     const { swapsState } = this.store.getState();
     let swapsRefreshRates;
     try {
-      swapsRefreshRates = await this._fetchSwapsRefreshRates(
+      swapsRefreshRates = await this.fetchSwapsRefreshRates(
         chainId,
         swapsState.useNewSwapsApi,
       );

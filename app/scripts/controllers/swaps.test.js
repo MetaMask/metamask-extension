@@ -141,7 +141,6 @@ const EMPTY_INIT_STATE = {
 
 const sandbox = sinon.createSandbox();
 const fetchTradesInfoStub = sandbox.stub();
-const fetchSwapsRefreshRatesStub = sandbox.stub();
 const getCurrentChainIdStub = sandbox.stub();
 getCurrentChainIdStub.returns(MAINNET_CHAIN_ID);
 const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
@@ -164,7 +163,6 @@ describe('SwapsController', function () {
       getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
       tokenRatesStore: MOCK_TOKEN_RATES_STORE,
       fetchTradesInfo: fetchTradesInfoStub,
-      fetchSwapsRefreshRates: fetchSwapsRefreshRatesStub,
       getCurrentChainId: getCurrentChainIdStub,
       getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
     });
@@ -672,7 +670,6 @@ describe('SwapsController', function () {
 
       it('calls fetchTradesInfo with the given fetchParams and returns the correct quotes', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
-        fetchSwapsRefreshRatesStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         sandbox
@@ -718,7 +715,6 @@ describe('SwapsController', function () {
 
       it('performs the allowance check', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
-        fetchSwapsRefreshRatesStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         const allowanceStub = sandbox
@@ -742,7 +738,6 @@ describe('SwapsController', function () {
 
       it('gets the gas limit if approval is required', async function () {
         fetchTradesInfoStub.resolves(MOCK_QUOTES_APPROVAL_REQUIRED);
-        fetchSwapsRefreshRatesStub.resolves(getMockQuoteRefreshTime());
 
         // Ensure approval is required
         sandbox
@@ -768,7 +763,6 @@ describe('SwapsController', function () {
 
       it('marks the best quote', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
-        fetchSwapsRefreshRatesStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         sandbox
@@ -799,7 +793,6 @@ describe('SwapsController', function () {
         };
         const quotes = { ...getMockQuotes(), [bestAggId]: bestQuote };
         fetchTradesInfoStub.resolves(quotes);
-        fetchSwapsRefreshRatesStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         sandbox
@@ -817,7 +810,6 @@ describe('SwapsController', function () {
 
       it('does not mark as best quote if no conversion rate exists for destination token', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
-        fetchSwapsRefreshRatesStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         sandbox
@@ -1393,8 +1385,4 @@ function getTopQuoteAndSavingsBaseExpectedResults() {
       ethValueOfTokens: '1.9305',
     },
   };
-}
-
-function getMockQuoteRefreshTime() {
-  return 45000;
 }

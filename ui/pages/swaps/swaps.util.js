@@ -76,7 +76,7 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
-const getBaseApi = function (
+export const getBaseApi = function (
   type,
   chainId = MAINNET_CHAIN_ID,
   useNewSwapsApi = false,
@@ -441,29 +441,6 @@ export async function fetchSwapsFeatureFlags() {
     { cacheRefreshTime: 600000 },
   );
   return response;
-}
-
-export async function fetchSwapsRefreshRates(chainId, useNewSwapsApi) {
-  const response = await fetchWithCache(
-    getBaseApi('network', chainId, useNewSwapsApi),
-    { method: 'GET' },
-    { cacheRefreshTime: 600000 },
-  );
-  const { refreshRates } = response || {};
-  if (
-    !refreshRates ||
-    typeof refreshRates.quotes !== 'number' ||
-    typeof refreshRates.quotesPrefetching !== 'number'
-  ) {
-    throw new Error(
-      `MetaMask - invalid response for refreshRates: ${response}`,
-    );
-  }
-  // We presently use milliseconds in the UI.
-  return {
-    quotes: refreshRates.quotes * 1000,
-    quotesPrefetching: refreshRates.quotesPrefetching * 1000,
-  };
 }
 
 export async function fetchTokenPrice(address) {
