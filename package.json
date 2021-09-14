@@ -235,7 +235,6 @@
     "@storybook/api": "^6.1.7",
     "@storybook/components": "^6.1.7",
     "@storybook/core": "^6.1.17",
-    "@storybook/csf": "^0.0.1",
     "@storybook/react": "^6.1.17",
     "@storybook/storybook-deployer": "^2.8.7",
     "@testing-library/jest-dom": "^5.11.10",

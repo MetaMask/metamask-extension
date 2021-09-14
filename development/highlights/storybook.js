@@ -2,7 +2,6 @@ const path = require('path');
 const { promisify } = require('util');
 const exec = promisify(require('child_process').exec);
 const dependencyTree = require('dependency-tree');
-const { toId: storybookFilenameToId } = require('@storybook/csf');
 
 const cwd = process.cwd();
 const resolutionCache = {};
@@ -18,10 +17,13 @@ module.exports = {
 async function getHighlightAnnouncement({ changedFiles, artifactBase }) {
   const highlights = await getHighlights({ changedFiles });
   if (!highlights.length) return null;
-  let announcement = '##### storybook';
-  announcement += highlights
+  const highlightsBody = highlights
     .map((entry) => `\n- [${entry}](${urlForStoryFile(entry, artifactBase)})`)
     .join('');
+  const announcement = `<details>
+    <summary>storybook:</summary>
+    ${highlightsBody}
+  </details>\n\n`;
   return announcement;
 }
 
@@ -61,6 +63,24 @@ async function getLocalDependencyList(filename) {
 }
 
 function urlForStoryFile(filename, artifactBase) {
-  const storyId = storybookFilenameToId(filename);
+  const storyId = sanitize(filename);
   return `${artifactBase}/storybook/index.html?path=/story/${storyId}`;
+}
+
+/**
+ * Remove punctuation and illegal characters from a story ID.
+ * See:
+ * https://gist.github.com/davidjrice/9d2af51100e41c6c4b4a
+ * https://github.com/ComponentDriven/csf/blame/7ac941eee85816a4c567ca85460731acb5360f50/src/index.ts
+ */
+function sanitize(string) {
+  return (
+    string
+      .toLowerCase()
+      // eslint-disable-next-line no-useless-escape
+      .replace(/[ ’–—―′¿'`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/giu, '-')
+      .replace(/-+/gu, '-')
+      .replace(/^-+/u, '')
+      .replace(/-+$/u, '')
+  );
 }
