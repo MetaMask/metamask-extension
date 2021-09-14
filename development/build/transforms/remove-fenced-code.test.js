@@ -207,6 +207,7 @@ describe('build/transforms/remove-fenced-code', () => {
         '///:B',
         '///:_',
         '///: ',
+        '///: B',
         '///:',
       ];
 

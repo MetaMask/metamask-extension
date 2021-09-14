@@ -370,7 +370,7 @@ function multiSplice(toSplice, splicingIndices) {
   // the first and the last.
   // It iterates over all "end" indices of the array except the last one, and
   // pushes the substring between each "end" index and the next "begin" index
-  // the the array of retained substrings.
+  // to the array of retained substrings.
   for (let i = 1; i < splicingIndices.length; i += 2) {
     retainedSubstrings.push(
       toSplice.substring(splicingIndices[i], splicingIndices[i + 1]),
