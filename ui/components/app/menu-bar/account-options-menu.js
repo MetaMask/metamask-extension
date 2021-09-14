@@ -36,6 +36,8 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const { blockExplorerUrl } = rpcPrefs;
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
 
+  const blockExplorerViewAction = 'Account';
+
   const openFullscreenEvent = useMetricEvent({
     eventOpts: {
       category: 'Navigation',
@@ -117,7 +119,9 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         }
         iconClassName="fas fa-external-link-alt"
       >
-        {rpcPrefs.blockExplorerUrl ? t('viewinExplorer') : t('viewOnEtherscan')}
+        {rpcPrefs.blockExplorerUrl
+          ? t('viewinExplorer', [blockExplorerViewAction])
+          : t('viewOnEtherscan', [blockExplorerViewAction])}
       </MenuItem>
       <MenuItem
         data-testid="account-options-menu__connected-sites"

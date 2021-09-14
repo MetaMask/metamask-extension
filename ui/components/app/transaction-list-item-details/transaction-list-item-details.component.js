@@ -139,6 +139,8 @@ export default class TransactionListItemDetails extends PureComponent {
     } = transactionGroup;
     const { hash } = transaction;
 
+    const blockExplorerViewAction = 'Transaction';
+
     return (
       <Popover title={title} onClose={onClose}>
         <div className="transaction-list-item-details">
@@ -181,8 +183,11 @@ export default class TransactionListItemDetails extends PureComponent {
                 containerClassName="transaction-list-item-details__header-button-tooltip-container"
                 title={
                   blockExplorerUrl
-                    ? t('viewOnCustomBlockExplorer', [blockExplorerUrl])
-                    : t('viewOnEtherscan')
+                    ? t('viewOnCustomBlockExplorer', [
+                        blockExplorerViewAction,
+                        blockExplorerUrl,
+                      ])
+                    : t('viewOnEtherscan', [blockExplorerViewAction])
                 }
               >
                 <Button

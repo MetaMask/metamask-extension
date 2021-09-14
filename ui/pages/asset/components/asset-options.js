@@ -18,6 +18,7 @@ const AssetOptions = ({
   );
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
 
+  const blockExplorerViewAction = 'Asset';
   return (
     <>
       <button
@@ -50,7 +51,9 @@ const AssetOptions = ({
               onClickBlockExplorer();
             }}
           >
-            {isEthNetwork ? t('viewOnEtherscan') : t('viewinExplorer')}
+            {isEthNetwork
+              ? t('viewOnEtherscan', [blockExplorerViewAction])
+              : t('viewinExplorer', [blockExplorerViewAction])}
           </MenuItem>
           {isNativeAsset ? null : (
             <MenuItem
