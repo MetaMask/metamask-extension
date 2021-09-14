@@ -63,7 +63,7 @@ class RemoveFencedCodeTransform extends Transform {
 function createRemoveFencedCodeTransform(buildType) {
   if (!hasOwnProperty(BuildTypes, buildType)) {
     throw new Error(
-      `Metamask build: Code fencing transform received unrecognized build type "${buildType}".`,
+      `Code fencing transform received unrecognized build type "${buildType}".`,
     );
   }
 
