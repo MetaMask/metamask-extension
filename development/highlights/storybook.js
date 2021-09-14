@@ -2,7 +2,7 @@ const path = require('path');
 const { promisify } = require('util');
 const exec = promisify(require('child_process').exec);
 const dependencyTree = require('dependency-tree');
-const { toId: storybookFilenameToId } = require('@storybook/router/utils');
+const { toId: storybookFilenameToId } = require('@storybook/csf');
 
 const cwd = process.cwd();
 const resolutionCache = {};
