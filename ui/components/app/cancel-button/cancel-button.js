@@ -13,12 +13,12 @@ import { getSelectedAccount } from '../../../selectors';
 
 export default function CancelButton({
   cancelTransaction,
-  transactionGroup,
+  transactionGroup: { primaryTransaction },
   detailsModal,
 }) {
   const t = useI18nContext();
 
-  const customCancelGasSettings = useIncrementedGasFees(transactionGroup);
+  const customCancelGasSettings = useIncrementedGasFees(primaryTransaction);
 
   const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
