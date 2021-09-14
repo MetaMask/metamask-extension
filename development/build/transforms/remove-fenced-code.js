@@ -120,10 +120,13 @@ const CommandValidators = {
   },
 };
 
-// Matches lines starting with "///:", optionally preceded by whitespace
-const linesWithFenceRegex = /^\s*\/\/\/:.*$/gmu;
+// Matches lines starting with "///:", and any preceding whitespace, except
+// newlines. We except newlines to avoid eating blank lines preceding a fenced
+// line.
+// Double-negative RegEx credit: https://stackoverflow.com/a/3469155
+const linesWithFenceRegex = /^[^\S\r\n]*\/\/\/:.*$/gmu;
 
-// Matches the first "///:" in a string
+// Matches the first "///:" in a string, and any preceding whitespace
 const fenceSentinelRegex = /^\s*\/\/\/:/u;
 
 // Breaks a fence directive into its constituent components
@@ -170,6 +173,7 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
   const parsedDirectives = matchedLines.map((matchArray) => {
     const line = matchArray[0];
 
+    /* istanbul ignore next: should be impossible */
     if (!fenceSentinelRegex.test(line)) {
       throw new Error(
         getInvalidFenceLineMessage(
@@ -185,8 +189,8 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
     // performing string operations.
     const indices = [matchArray.index, matchArray.index + line.length + 1];
 
-    const unfencedLine = line.replace(fenceSentinelRegex, '');
-    if (!/^ \w\w+/u.test(unfencedLine)) {
+    const lineWithoutSentinel = line.replace(fenceSentinelRegex, '');
+    if (!/^ \w\w+/u.test(lineWithoutSentinel)) {
       throw new Error(
         getInvalidFenceLineMessage(
           filePath,
@@ -196,7 +200,10 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
       );
     }
 
-    const directiveMatches = unfencedLine.trim().match(directiveParsingRegex);
+    const directiveMatches = lineWithoutSentinel
+      .trim()
+      .match(directiveParsingRegex);
+
     if (!directiveMatches) {
       throw new Error(
         getInvalidFenceLineMessage(
@@ -371,10 +378,12 @@ function multiSplice(toSplice, splicingIndices) {
   // It iterates over all "end" indices of the array except the last one, and
   // pushes the substring between each "end" index and the next "begin" index
   // to the array of retained substrings.
-  for (let i = 1; i < splicingIndices.length; i += 2) {
-    retainedSubstrings.push(
-      toSplice.substring(splicingIndices[i], splicingIndices[i + 1]),
-    );
+  if (splicingIndices.length > 2) {
+    for (let i = 1; i < splicingIndices.length; i += 2) {
+      retainedSubstrings.push(
+        toSplice.substring(splicingIndices[i], splicingIndices[i + 1]),
+      );
+    }
   }
 
   // Get the last part to be included

@@ -147,6 +147,50 @@ describe('build/transforms/remove-fenced-code', () => {
       });
     });
 
+    // This is an edge case for the splicing function
+    it('transforms file with two fence lines', () => {
+      expect(
+        removeFencedCode(
+          mockFileName,
+          BuildTypes.flask,
+          getMinimalFencedCode('main'),
+        ),
+      ).toStrictEqual(['', true]);
+    });
+
+    it('ignores sentinels preceded by non-whitespace', () => {
+      const validBeginDirective = '///: BEGIN:ONLY_INCLUDE_IN(flask)\n';
+      const ignoredLines = [
+        `a ${validBeginDirective}`,
+        `2 ${validBeginDirective}`,
+        `@ ${validBeginDirective}`,
+      ];
+
+      ignoredLines.forEach((ignoredLine) => {
+        // These inputs will be transformed
+        expect(
+          removeFencedCode(
+            mockFileName,
+            BuildTypes.flask,
+            getMinimalFencedCode('main').concat(ignoredLine),
+          ),
+        ).toStrictEqual([ignoredLine, true]);
+
+        const modifiedInputWithoutFences = testData.validInputs.withoutFences.concat(
+          ignoredLine,
+        );
+
+        // These inputs will not be transformed
+        expect(
+          removeFencedCode(
+            mockFileName,
+            BuildTypes.flask,
+            modifiedInputWithoutFences,
+          ),
+        ).toStrictEqual([modifiedInputWithoutFences, false]);
+      });
+    });
+
     // Invalid inputs
     it('rejects empty fences', () => {
       const jsComment = '// A comment\n';
@@ -173,24 +217,6 @@ describe('build/transforms/remove-fenced-code', () => {
           removeFencedCode(mockFileName, BuildTypes.flask, input),
         ).toThrow(
           `Empty fence found in file "${mockFileName}":\n${emptyFence}`,
-        );
-      });
-    });
-
-    it('rejects sentinels preceded by non-whitespace', () => {
-      // Matches the sentinel component of the first line beginning with "///:"
-      const fenceSentinelRegex = /^\/\/\/:/mu;
-      const replacements = ['a ///:', '2 ///:', '_ ///:'];
-
-      replacements.forEach((replacement) => {
-        expect(() =>
-          removeFencedCode(
-            mockFileName,
-            BuildTypes.flask,
-            getMinimalFencedCode().replace(fenceSentinelRegex, replacement),
-          ),
-        ).toThrow(
-          /Fence sentinel may only appear at the start of a line, optionally preceded by whitespace.$/u,
         );
       });
     });
