@@ -143,7 +143,6 @@ export default class PageContainer extends PureComponent {
             onSubmit={onSubmit}
             submitText={tabSubmitText || submitText}
             disabled={disabled}
-            submitButtonType="primary"
           />
         </div>
       </div>

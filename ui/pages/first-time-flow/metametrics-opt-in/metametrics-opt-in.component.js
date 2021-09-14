@@ -166,7 +166,6 @@ export default class MetaMetricsOptIn extends Component {
                 }
               }}
               submitText={t('affirmAgree')}
-              submitButtonType="primary"
               disabled={false}
             />
             <div className="metametrics-opt-in__bottom-text">
