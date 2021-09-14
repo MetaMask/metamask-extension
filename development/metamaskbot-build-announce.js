@@ -206,10 +206,14 @@ async function start() {
     console.log(`No results for ${summaryPlatform} found; skipping benchmark`);
   }
 
-  const highlights = await getHighlights();
-  if (highlights) {
-    const highlightsBody = `### highlights:\n${highlights}\n`;
-    commentBody += highlightsBody;
+  try {
+    const highlights = await getHighlights();
+    if (highlights) {
+      const highlightsBody = `### highlights:\n${highlights}\n`;
+      commentBody += highlightsBody;
+    }
+  } catch (error) {
+    console.error(`Error constructing highlight results: '${error}'`);
   }
 
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody });
