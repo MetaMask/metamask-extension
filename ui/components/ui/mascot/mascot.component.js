@@ -17,6 +17,7 @@ const directionTargetGenerator = ({ top, left, height, width }) => {
   };
 };
 
+// 🦊 🦊 🦊 🦊 🦊
 export default class Mascot extends Component {
   static propTypes = {
     animationEventEmitter: PropTypes.object.isRequired,
