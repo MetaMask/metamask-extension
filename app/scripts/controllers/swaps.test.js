@@ -134,13 +134,14 @@ const EMPTY_INIT_STATE = {
     swapsFeatureIsLive: true,
     useNewSwapsApi: false,
     swapsQuoteRefreshTime: 60000,
+    swapsQuotePrefetchingRefreshTime: 60000,
     swapsUserFeeLevel: '',
   },
 };
 
 const sandbox = sinon.createSandbox();
 const fetchTradesInfoStub = sandbox.stub();
-const fetchSwapsQuoteRefreshTimeStub = sandbox.stub();
+const fetchSwapsRefreshRatesStub = sandbox.stub();
 const getCurrentChainIdStub = sandbox.stub();
 getCurrentChainIdStub.returns(MAINNET_CHAIN_ID);
 const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
@@ -163,7 +164,7 @@ describe('SwapsController', function () {
       getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
       tokenRatesStore: MOCK_TOKEN_RATES_STORE,
       fetchTradesInfo: fetchTradesInfoStub,
-      fetchSwapsQuoteRefreshTime: fetchSwapsQuoteRefreshTimeStub,
+      fetchSwapsRefreshRates: fetchSwapsRefreshRatesStub,
       getCurrentChainId: getCurrentChainIdStub,
       getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
     });
@@ -671,7 +672,7 @@ describe('SwapsController', function () {
 
       it('calls fetchTradesInfo with the given fetchParams and returns the correct quotes', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
-        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
+        fetchSwapsRefreshRatesStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         sandbox
@@ -717,7 +718,7 @@ describe('SwapsController', function () {
 
       it('performs the allowance check', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
-        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
+        fetchSwapsRefreshRatesStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         const allowanceStub = sandbox
@@ -741,7 +742,7 @@ describe('SwapsController', function () {
 
       it('gets the gas limit if approval is required', async function () {
         fetchTradesInfoStub.resolves(MOCK_QUOTES_APPROVAL_REQUIRED);
-        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
+        fetchSwapsRefreshRatesStub.resolves(getMockQuoteRefreshTime());
 
         // Ensure approval is required
         sandbox
@@ -767,7 +768,7 @@ describe('SwapsController', function () {
 
       it('marks the best quote', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
-        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
+        fetchSwapsRefreshRatesStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         sandbox
@@ -798,7 +799,7 @@ describe('SwapsController', function () {
         };
         const quotes = { ...getMockQuotes(), [bestAggId]: bestQuote };
         fetchTradesInfoStub.resolves(quotes);
-        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
+        fetchSwapsRefreshRatesStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         sandbox
@@ -816,7 +817,7 @@ describe('SwapsController', function () {
 
       it('does not mark as best quote if no conversion rate exists for destination token', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
-        fetchSwapsQuoteRefreshTimeStub.resolves(getMockQuoteRefreshTime());
+        fetchSwapsRefreshRatesStub.resolves(getMockQuoteRefreshTime());
 
         // Make it so approval is not required
         sandbox
@@ -844,6 +845,8 @@ describe('SwapsController', function () {
           ...EMPTY_INIT_STATE.swapsState,
           tokens: old.tokens,
           swapsQuoteRefreshTime: old.swapsQuoteRefreshTime,
+          swapsQuotePrefetchingRefreshTime:
+            old.swapsQuotePrefetchingRefreshTime,
         });
       });
 
@@ -891,6 +894,7 @@ describe('SwapsController', function () {
         const swapsFeatureIsLive = false;
         const useNewSwapsApi = false;
         const swapsQuoteRefreshTime = 0;
+        const swapsQuotePrefetchingRefreshTime = 0;
         swapsController.store.updateState({
           swapsState: {
             tokens,
@@ -898,6 +902,7 @@ describe('SwapsController', function () {
             swapsFeatureIsLive,
             useNewSwapsApi,
             swapsQuoteRefreshTime,
+            swapsQuotePrefetchingRefreshTime,
           },
         });
 

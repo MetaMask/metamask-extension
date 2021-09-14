@@ -236,6 +236,9 @@ export const getUseNewSwapsApi = (state) =>
 export const getSwapsQuoteRefreshTime = (state) =>
   state.metamask.swapsState.swapsQuoteRefreshTime;
 
+export const getSwapsQuotePrefetchingRefreshTime = (state) =>
+  state.metamask.swapsState.swapsQuotePrefetchingRefreshTime;
+
 export const getBackgroundSwapRouteState = (state) =>
   state.metamask.swapsState.routeState;
 

@@ -24,7 +24,7 @@ import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils'
 
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
-  fetchSwapsQuoteRefreshTime as defaultFetchSwapsQuoteRefreshTime,
+  fetchSwapsRefreshRates as defaultFetchSwapsRefreshRates,
 } from '../../../ui/pages/swaps/swaps.util';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
 import { NETWORK_EVENTS } from './network';
@@ -39,10 +39,6 @@ const POLL_COUNT_LIMIT = 3;
 // If for any reason the MetaSwap API fails to provide a refresh time,
 // provide a reasonable fallback to avoid further errors
 const FALLBACK_QUOTE_REFRESH_TIME = MINUTE;
-
-// This is the amount of time to wait, after successfully fetching quotes
-// and their gas estimates, before fetching for new quotes
-const QUOTE_POLLING_DIFFERENCE_INTERVAL = SECOND * 10;
 
 function calculateGasEstimateWithRefund(
   maxGas = MAX_GAS_LIMIT,
@@ -83,6 +79,7 @@ const initialState = {
     swapsFeatureIsLive: true,
     useNewSwapsApi: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
+    swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
   },
 };
 
@@ -94,7 +91,7 @@ export default class SwapsController {
     getProviderConfig,
     tokenRatesStore,
     fetchTradesInfo = defaultFetchTradesInfo,
-    fetchSwapsQuoteRefreshTime = defaultFetchSwapsQuoteRefreshTime,
+    fetchSwapsRefreshRates = defaultFetchSwapsRefreshRates,
     getCurrentChainId,
     getEIP1559GasFeeEstimates,
   }) {
@@ -103,7 +100,7 @@ export default class SwapsController {
     });
 
     this._fetchTradesInfo = fetchTradesInfo;
-    this._fetchSwapsQuoteRefreshTime = fetchSwapsQuoteRefreshTime;
+    this._fetchSwapsRefreshRates = fetchSwapsRefreshRates;
     this._getCurrentChainId = getCurrentChainId;
     this._getEIP1559GasFeeEstimates = getEIP1559GasFeeEstimates;
 
@@ -126,25 +123,27 @@ export default class SwapsController {
   }
 
   // Sets the refresh rate for quote updates from the MetaSwap API
-  async _setSwapsQuoteRefreshTime() {
+  async _setSwapsRefreshRates() {
     const chainId = this._getCurrentChainId();
     const { swapsState } = this.store.getState();
-
-    // Default to fallback time unless API returns valid response
-    let swapsQuoteRefreshTime = FALLBACK_QUOTE_REFRESH_TIME;
+    let swapsRefreshRates;
     try {
-      swapsQuoteRefreshTime = await this._fetchSwapsQuoteRefreshTime(
+      swapsRefreshRates = await this._fetchSwapsRefreshRates(
         chainId,
         swapsState.useNewSwapsApi,
       );
     } catch (e) {
       console.error('Request for swaps quote refresh time failed: ', e);
     }
-
     const { swapsState: latestSwapsState } = this.store.getState();
-
     this.store.updateState({
-      swapsState: { ...latestSwapsState, swapsQuoteRefreshTime },
+      swapsState: {
+        ...latestSwapsState,
+        swapsQuoteRefreshTime:
+          swapsRefreshRates?.quotes || FALLBACK_QUOTE_REFRESH_TIME,
+        swapsQuotePrefetchingRefreshTime:
+          swapsRefreshRates?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME,
+      },
     });
   }
 
@@ -154,9 +153,15 @@ export default class SwapsController {
   // Note: we stop polling after 3 requests, until new quotes are explicitly asked for. The logic that enforces that maximum is in the body of fetchAndSetQuotes
   pollForNewQuotes() {
     const {
-      swapsState: { swapsQuoteRefreshTime },
+      swapsState: {
+        swapsQuoteRefreshTime,
+        swapsQuotePrefetchingRefreshTime,
+        quotesPollingLimitEnabled,
+      },
     } = this.store.getState();
-
+    const quotesRefreshRateInMs = quotesPollingLimitEnabled
+      ? swapsQuoteRefreshTime
+      : swapsQuotePrefetchingRefreshTime;
     this.pollingTimeout = setTimeout(() => {
       const { swapsState } = this.store.getState();
       this.fetchAndSetQuotes(
@@ -164,7 +169,7 @@ export default class SwapsController {
         swapsState.fetchParams?.metaData,
         true,
       );
-    }, swapsQuoteRefreshTime - QUOTE_POLLING_DIFFERENCE_INTERVAL);
+    }, quotesRefreshRateInMs);
   }
 
   stopPollingForQuotes() {
@@ -204,7 +209,7 @@ export default class SwapsController {
         ...fetchParamsMetaData,
         useNewSwapsApi,
       }),
-      this._setSwapsQuoteRefreshTime(),
+      this._setSwapsRefreshRates(),
     ]);
 
     newQuotes = mapValues(newQuotes, (quote) => ({
@@ -527,6 +532,8 @@ export default class SwapsController {
         swapsFeatureIsLive: swapsState.swapsFeatureIsLive,
         useNewSwapsApi: swapsState.useNewSwapsApi,
         swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
+        swapsQuotePrefetchingRefreshTime:
+          swapsState.swapsQuotePrefetchingRefreshTime,
       },
     });
     clearTimeout(this.pollingTimeout);
@@ -539,6 +546,8 @@ export default class SwapsController {
         ...initialState.swapsState,
         tokens: swapsState.tokens,
         swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
+        swapsQuotePrefetchingRefreshTime:
+          swapsState.swapsQuotePrefetchingRefreshTime,
       },
     });
     clearTimeout(this.pollingTimeout);
