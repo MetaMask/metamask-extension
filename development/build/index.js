@@ -195,7 +195,7 @@ function parseArgv() {
     `--${NamedArgs.LintFenceFiles}`,
   )
     ? argv[NamedArgs.LintFenceFiles]
-    : !entryTask.startsWith('dev');
+    : !/dev/iu.test(entryTask);
 
   return {
     betaVersion: String(betaVersion),

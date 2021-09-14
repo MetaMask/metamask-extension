@@ -15,12 +15,12 @@ class RemoveFencedCodeTransform extends Transform {
    * A transform stream that calls {@link removeFencedCode} on the complete
    * string contents of the file read by Browserify.
    *
-   * Optionally lints the file, if the file was modified.
+   * Optionally lints the file if it was modified.
    *
    * @param {string} filePath - The path to the file being transformed.
    * @param {string} buildType - The type of the current build process.
-   * @param {boolean} shouldLintTransformedFiles - Whether the transformed file
-   * should be linted.
+   * @param {boolean} shouldLintTransformedFiles - Whether the file should be
+   * linted if modified by the transform.
    */
   constructor(filePath, buildType, shouldLintTransformedFiles) {
     super();
@@ -75,8 +75,8 @@ class RemoveFencedCodeTransform extends Transform {
  *
  * If specified (and by default), the transform will call ESLint on the text
  * contents of any file that it modifies. The transform will error if such a
- * file is ignored by ESLint, since linting is our first defense against making
- * un-syntactic modifications to files using code fences.
+ * file is ignored by ESLint, since linting is our first line of defense against
+ * making un-syntactic modifications to files using code fences.
  *
  * @param {string} buildType - The type of the current build.
  * @param {boolean} shouldLintTransformedFiles - Whether to lint transformed files.

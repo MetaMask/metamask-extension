@@ -8,8 +8,7 @@ const eslintrc = require('../../../.eslintrc.js');
  */
 let eslintInstance;
 
-// Only initialize the ESLint instance if necessary
-// This also makes it easier to test this module
+// We only need a single ESLint instance, and we only initialize it if necessary
 const initializeESLint = () => {
   if (!eslintInstance) {
     eslintInstance = new ESLint({ baseConfig: eslintrc, useEslintrc: false });
