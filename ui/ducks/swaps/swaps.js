@@ -467,23 +467,6 @@ export const fetchQuotesAndSetQuoteState = (
 
     const contractExchangeRates = getTokenExchangeRates(state);
 
-    let destinationTokenAddedForSwap = false;
-    if (
-      toTokenAddress &&
-      toTokenSymbol !== swapsDefaultToken.symbol &&
-      contractExchangeRates[toTokenAddress] === undefined
-    ) {
-      destinationTokenAddedForSwap = true;
-      await dispatch(
-        addToken(
-          toTokenAddress,
-          toTokenSymbol,
-          toTokenDecimals,
-          toTokenIconUrl,
-          true,
-        ),
-      );
-    }
     if (
       fromTokenAddress &&
       fromTokenSymbol !== swapsDefaultToken.symbol &&
@@ -546,7 +529,7 @@ export const fetchQuotesAndSetQuoteState = (
             destinationToken: toTokenAddress,
             value: inputValue,
             fromAddress: selectedAccount.address,
-            destinationTokenAddedForSwap,
+            destinationTokenAddedForSwap: false,
             balanceError,
             sourceDecimals: fromTokenDecimals,
           },
