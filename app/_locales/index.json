@@ -11,7 +11,7 @@
   { "code": "en", "name": "English" },
   { "code": "es", "name": "Español" },
   { "code": "es_419", "name": "Español (Latin America)" },
-   { "code": "es", "name": "Euskara" },
+  { "code": "eu", "name": "Euskara" },
   { "code": "et", "name": "Estonian" },
   { "code": "fa", "name": "فارسی" },
   { "code": "fi", "name": "Suomi" },

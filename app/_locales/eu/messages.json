@@ -1,0 +1,2469 @@
+{
+  "about": {
+    "message": "Honi buruz" 
+  }, 
+  "aboutSettingsDescription": {
+    "message": "Bertsioa, zerbitzu teknikoko zentroa eta harremanetarako informazioa"
+  },
+  "acceleratingATransaction": {
+    "message": "* transakzio bat bizkortzeko gas-prezio altuagoa erabiltzeak sarean azkarrago prozesatzeko aukerak areagotzen ditu, baina hori ez da beti bermatzen."
+  },
+  "acceptTermsOfUse": {
+    "message": "Irakurri dut eta ados nago $1-rekin",
+    "description": "$1 is the `terms` message"
+  },
+  "accessAndSpendNotice": {
+    "message": "$1 gehieneko zenbatekora sar daiteke eta gasta dezake",
+    "description": "$1 is the url of the site requesting ability to spend"
+  },
+  "accessingYourCamera": {
+    "message": "Kamerara sartzen…"
+  },
+  "account": {
+    "message": "Kontua"
+  },
+  "accountDetails": {
+    "message": "Kontuaren xehetasunak"
+  },
+  "accountName": {
+    "message": "Kontuaren izena"
+  },
+  "accountOptions": {
+    "message": "Kontuaren aukerak"
+  },
+  "accountSelectionRequired": {
+    "message": "Kontu bat aukeratu behar duzu"
+  },
+  "active": {
+    "message": "Aktiboa"
+  },
+  "activity": {
+    "message": "Ekintzak"
+  },
+  "activityLog": {
+    "message": "Ekintzen erregistroa"
+  },
+  "addAcquiredTokens": {
+    "message": "MetaMask-en lortutako tokenak gehitu"
+  },
+  "addAlias": {
+    "message": "Aliasa gehitu"
+  },
+  "addContact": {
+    "message": "Kontaktua gehitu"
+  },
+  "addCustomTokenByContractAddress": {
+    "message": "Ez duzu token bat aurkitzen? Edozein token gehi dezakezu zure helbidea kopiatzen baduzu. Tokeneko kontratuaren helbidea $1-n aurki dezakezu.",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
+  },
+  "addEthereumChainConfirmationDescription": {
+    "message": "Horri esker, sarea MetaMasken erabili ahal izango da."
+  },
+  "addEthereumChainConfirmationRisks": {
+    "message": "MetaMaskek ez ditu sare pertsonalizatuak egiaztatzen."
+  },
+  "addEthereumChainConfirmationRisksLearnMore": {
+    "message": "Jaso $1 buruzko informazio gehiago.",
+    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
+  },
+  "addEthereumChainConfirmationRisksLearnMoreLink": {
+    "message": "Sarearen iruzurrak eta segurtasun-arriskuak",
+    "description": "Link text for the 'addEthereumChainConfirmationRisksLearnMore' translation key"
+  },
+  "addEthereumChainConfirmationTitle": {
+    "message": "Gune honi sare bat gehitzen utzi?"
+  },
+  "addFriendsAndAddresses": {
+    "message": "Gehitu lagunak eta konfiantzazko helbideak"
+  },
+  "addNetwork": {
+    "message": "Sarea gehitu"
+  },
+  "addSuggestedTokens": {
+    "message": "Gehitu iradokitako tokenak"
+  },
+  "addToAddressBook": {
+    "message": "Helbide-liburuxkari gehitu"
+  },
+  "addToAddressBookModalPlaceholder": {
+    "message": "adib., John D."
+  },
+  "addToken": {
+    "message": "Gehitu tokena"
+  },
+  "addTokens": {
+    "message": "Gehitu tokenak"
+  },
+  "advanced": {
+    "message": "Aurreratua"
+  },
+  "advancedOptions": {
+    "message": "Aukera aurreratuak"
+  },
+  "advancedSettingsDescription": {
+    "message": "Garatzaileentzako baliabideak eskuratzea, egoera-erregistroak deskargatzea, kontua berrezartzea, proba-sareak konfiguratzea eta RPC pertsonalizatua."
+  },
+  "affirmAgree": {
+    "message": "Onartzen dut"
+  },
+  "aggregatorFeeCost": {
+    "message": "Agregatzaile-sarearen kuota"
+  },
+  "alertDisableTooltip": {
+    "message": "Hau hemen aldatu daiteke \"Konfigurazioa > Alertak\""
+  },
+  "alertSettingsUnconnectedAccount": {
+    "message": "Webgune bat arakatzen, hautatutako kontu konektatu gabe batekin"
+  },
+  "alertSettingsUnconnectedAccountDescription": {
+    "message": "Alerta hori sortzen ari den leihoan agertzen da konektatutako Web3 gune bat arakatzen duenean, baina hautatutako kontua ez dago konektatuta."
+  },
+  "alertSettingsWeb3ShimUsage": {
+    "message": "Webgune bat ezabatu zen window.web3-ko APIa erabiltzen saiatzen denean"
+  },
+  "alertSettingsWeb3ShimUsageDescription": {
+    "message": "Alerta hori sortzen ari den leihoan agertzen da ezabatu zen window.web3-ko APIa erabiltzen saiatzen den eta agian funtzionatzen ez duen gune bat arakatzen duenean."
+  },
+  "alerts": {
+    "message": "Alertak"
+  },
+  "alertsSettingsDescription": {
+    "message": "Alerta bakoitza gaitu edo desgaitu"
+  },
+  "allowExternalExtensionTo": {
+    "message": "Kanpoko luzapen horrek honako hau egin dezan ahalbidetzea:"
+  },
+  "allowOriginSpendToken": {
+    "message": "Onartzen duzu $1 zure $2 gastatzea baimentzen duzu?",
+    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
+  },
+  "allowThisSiteTo": {
+    "message": "Leku honek honako hau egin dezan ahalbidetzea:"
+  },
+  "allowWithdrawAndSpend": {
+    "message": "$1 kentzea eta zenbateko honetara arte gastatzea baimentzea:",
+    "description": "The url of the site that requested permission to 'withdraw and spend'"
+  },
+  "amount": {
+    "message": "Zenbatekoa"
+  },
+  "amountWithColon": {
+    "message": "Zenbatekoa:"
+  },
+  "appDescription": {
+    "message": "Ethereumen zorro bat esploratzailean",
+    "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "approvalAndAggregatorTxFeeCost": {
+    "message": "Agregatzaile-sarearen kuota eta onarpena"
+  },
+  "approvalTxGasCost": {
+    "message": "Gas kostua onespen-transakzio bakoitzeko"
+  },
+  "approve": {
+    "message": "Gastuen muga onartzea"
+  },
+  "approveButtonText": {
+    "message": "Onartu"
+  },
+  "approveSpendLimit": {
+    "message": "$1-ko gastuen muga onartzea",
+    "description": "The token symbol that is being approved"
+  },
+  "approved": {
+    "message": "Onartua"
+  },
+  "asset": {
+    "message": "Aktiboa"
+  },
+  "assetOptions": {
+    "message": "Aktiboen aukerak"
+  },
+  "assets": {
+    "message": "Aktiboak"
+  },
+  "attemptToCancel": {
+    "message": "Bertan behera uzten saiatu?"
+  },
+  "attemptToCancelDescription": {
+    "message": "Saiakera hau bidaltzeak ez du bermatzen jatorrizko transakzioa ezeztatuko denik. Ezerezteko ahalegina behar bezala osatzen bada, aurreko transakzio-kuota kobratuko zaizu."
+  },
+  "attemptingConnect": {
+    "message": "Bloke-katera konektatzen saiatzen."
+  },
+  "attributions": {
+    "message": "Atribuzioak"
+  },
+  "authorizedPermissions": {
+    "message": "Honako baimen hauek baimendu dituzu"
+  },
+  "autoLockTimeLimit": {
+    "message": "Blokeo automatikoa duen tenporizadorea (minutuak)"
+  },
+  "autoLockTimeLimitDescription": {
+    "message": "Aktibitaterik gabeko denbora MetaMask blokeatu baino minutu batzuk lehenago ezarri."
+  },
+  "average": {
+    "message": "Batezbesteko"
+  },
+  "back": {
+    "message": "Itzuli"
+  },
+  "backToAll": {
+    "message": "Itzuli guztietara"
+  },
+  "backupApprovalInfo": {
+    "message": "Kode sekretu hori beharrezkoa da zorroa berreskuratzeko baldin eta gailua galtzen baduzu, pasahitza ahazten baduzu, MetaMask berriz instalatu behar baduzu edo beste gailu batean sartu nahi baduzu."
+  },
+  "backupApprovalNotice": {
+    "message": "Sortu berreskuratze-kodearen segurtasun-kopia bat, funtsak eta zorroa babestuta edukitzeko."
+  },
+  "backupNow": {
+    "message": "Sortu segurtasun-kopia orain"
+  },
+  "balance": {
+    "message": "Saldoa"
+  },
+  "balanceOutdated": {
+    "message": "Baliteke saldoa deseguneratuta egotea"
+  },
+  "basic": {
+    "message": "Oinarrizkoa"
+  },
+  "blockExplorerUrl": {
+    "message": "Bloke-arakatzailearen URL helbidea"
+  },
+  "blockExplorerUrlDefinition": {
+    "message": "Sare honetako blokeen arakatzaile gisa erabiltzen den URL helbidea."
+  },
+  "blockExplorerView": {
+    "message": "Ikusi kontua $1-n",
+    "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockiesIdenticon": {
+    "message": "Erabili Blockies Identicon"
+  },
+  "browserNotSupported": {
+    "message": "Esploratzailea ez da bateragarria..."
+  },
+  "buildContactList": {
+    "message": "Sortu kontaktuen zerrenda"
+  },
+  "buy": {
+    "message": "Erosi"
+  },
+  "buyWithWyre": {
+    "message": "Erosi ETH Wyre-rekin"
+  },
+  "buyWithWyreDescription": {
+    "message": "Wyreri esker, zordunketa-txartel bat erabil dezakezu ETH zure MetaMask kontuan zuzenean sartzeko."
+  },
+  "bytes": {
+    "message": "Bytes"
+  },
+  "canToggleInSettings": {
+    "message": "Jakinarazpen hau berriz aktiba dezakezu hemendik: Konfigurazioa -> Alertak."
+  },
+  "cancel": {
+    "message": "Ezeztatu"
+  },
+  "cancellationGasFee": {
+    "message": "Gas kuota, ezerezteagatik"
+  },
+  "cancelled": {
+    "message": "Ezeztatuta"
+  },
+  "chainId": {
+    "message": "Katearen identifikatzailea"
+  },
+  "chainIdDefinition": {
+    "message": "Sare honetan transakzioak sinatzeko erabiltzen den kate-identifikatzailea."
+  },
+  "chainIdExistsErrorMsg": {
+    "message": "Une honetan, $1 sarea kate-identifikatzaile hori erabiltzen ari da."
+  },
+  "chromeRequiredForHardwareWallets": {
+    "message": "MetaMask erabili behar duzu Google Chromen, hardware zorrora konektatu ahal izateko."
+  },
+  "clickToRevealSeed": {
+    "message": "Egin klik hemen hitz sekretuak adierazteko"
+  },
+  "close": {
+    "message": "Itxi"
+  },
+  "confirm": {
+    "message": "Baieztatu"
+  },
+  "confirmPassword": {
+    "message": "Baieztatu pasahitza"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "Babes esaldi sekretua berrestea"
+  },
+  "confirmed": {
+    "message": "Baieztatuta"
+  },
+  "confusableUnicode": {
+    "message": "“$1” eta“$2” antzekoak dira."
+  },
+  "confusableZeroWidthUnicode": {
+    "message": "Zero zabalerako karaktere bat aurkitu da."
+  },
+  "confusingEnsDomain": {
+    "message": "ENS izenaren antzeko beste karaktere batekin nahas daitekeen karaktere bat hauteman da. Egiaztatu ENS izena, iruzurrik ez egiteko."
+  },
+  "congratulations": {
+    "message": "Zorionak"
+  },
+  "connect": {
+    "message": "Konektatu"
+  },
+  "connectAccountOrCreate": {
+    "message": "Kontua konektatu edo berria sortu"
+  },
+  "connectHardwareWallet": {
+    "message": "Hardware-zorroa konektatzea"
+  },
+  "connectManually": {
+    "message": "Eskuz konektatu egungo gunera"
+  },
+  "connectTo": {
+    "message": "Konektatu $1-ra",
+    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
+  },
+  "connectToAll": {
+    "message": "$1 guztietara konektatu",
+    "description": "$1 will be replaced by the translation of connectToAllAccounts"
+  },
+  "connectToAllAccounts": {
+    "message": "kontuak",
+    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
+  },
+  "connectToMultiple": {
+    "message": "$1-ra konektatu",
+    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
+  },
+  "connectToMultipleNumberOfAccounts": {
+    "message": "$1 kontuak",
+    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
+  },
+  "connectWithMetaMask": {
+    "message": "MetaMaskekin konektatu"
+  },
+  "connectedAccountsDescriptionPlural": {
+    "message": "Gune honetara $1 kotu dituzu.",
+    "description": "$1 is the number of accounts"
+  },
+  "connectedAccountsDescriptionSingular": {
+    "message": "Gune honetara konektatutako kontu bat duzu."
+  },
+  "connectedAccountsEmptyDescription": {
+    "message": "MetaMask ez dago leku honetara konektatuta. Web3 gune batera konektatzeko, bilatu konexio-botoia zure gunean."
+  },
+  "connectedSites": {
+    "message": "Konektatutako guneak"
+  },
+  "connectedSitesDescription": {
+    "message": "$1 leku hauetara konektatuta dago. Zure kontuaren helbidea ikus dezakete.",
+    "description": "$1 is the account name"
+  },
+  "connectedSitesEmptyDescription": {
+    "message": "$1 ez dago inora konektatuta.",
+    "description": "$1 is the account name"
+  },
+  "connecting": {
+    "message": "Konexioa ezartzen..."
+  },
+  "connectingTo": {
+    "message": "$1-era konexioa ezartzen"
+  },
+  "connectingToGoerli": {
+    "message": "Goerli proba-sarerako konexioa ezartzen"
+  },
+  "connectingToKovan": {
+    "message": "Kovan proba-sarerako konexioa ezartzen"
+  },
+  "connectingToMainnet": {
+    "message": "Ethereum sare publiko nagusira proba-sarerako konexioa ezartzen"
+  },
+  "connectingToRinkeby": {
+    "message": "Rinkeby proba-sarerako konexioa ezartzen"
+  },
+  "connectingToRopsten": {
+    "message": "Ropsten proba-sarerako konexioa ezartzen"
+  },
+  "contactUs": {
+    "message": "Kontaktatu"
+  },
+  "contacts": {
+    "message": "Kontaktuak"
+  },
+  "contactsSettingsDescription": {
+    "message": "Agregar, editar, quitar y administrar sus contactos"
+  },
+  "continue": {
+    "message": "Jarraitu"
+  },
+  "continueToWyre": {
+    "message": "Wyre-ra jarraitu"
+  },
+  "contract": {
+    "message": "Kontratua"
+  },
+  "contractAddressError": {
+    "message": "Tokenak bidaltzen ari zara tokeneko kontratu helbidera. Honek tokenak galtzea eragin dezake."
+  },
+  "contractDeployment": {
+    "message": "Kontratua inplementatzea"
+  },
+  "contractInteraction": {
+    "message": "Kontratuarekiko elkarreragina"
+  },
+  "copiedExclamation": {
+    "message": "Kopiatuta!"
+  },
+  "copiedTransactionId": {
+    "message": "Transakzioaren id-a kopiatuta"
+  },
+  "copyAddress": {
+    "message": "Kopiatu helbidea arbean"
+  },
+  "copyPrivateKey": {
+    "message": "Hori da zure gako pribatua (egin klik kopiatzeko)"
+  },
+  "copyToClipboard": {
+    "message": "Kopiatu arbelera"
+  },
+  "copyTransactionId": {
+    "message": "Transakzioaren id-a kopiatu"
+  },
+  "create": {
+    "message": "Sortu"
+  },
+  "createAWallet": {
+    "message": "Sortu diru-zorroa"
+  },
+  "createAccount": {
+    "message": "Sortu kontua"
+  },
+  "createPassword": {
+    "message": "Sortu pasahitza"
+  },
+  "currencyConversion": {
+    "message": "Txanponen trukaketa"
+  },
+  "currencySymbol": {
+    "message": "Txanponaren ikurra"
+  },
+  "currencySymbolDefinition": {
+    "message": "Sare honetako txanponarako erakusten den ikurra."
+  },
+  "currentAccountNotConnected": {
+    "message": "Oraingo kontua ez dago konektatuta"
+  },
+  "currentExtension": {
+    "message": "Oraingo orriaren luzapena"
+  },
+  "currentLanguage": {
+    "message": "Oraingo hizkuntza"
+  },
+  "customGas": {
+    "message": "Gas-a pertsonizatu"
+  },
+  "customGasSubTitle": {
+    "message": "Kuota handitzeak prozesatze-denborak murriztu ditzake, baina ez dago bermatuta."
+  },
+  "customRPC": {
+    "message": "RPC pertsonizatua"
+  },
+  "customSpendLimit": {
+    "message": "Gastuen muga pertsonizatua"
+  },
+  "customToken": {
+    "message": "Token pertsonizatua"
+  },
+  "dataBackupFoundInfo": {
+    "message": "MetaMasken aurreko instalazio batean kontuko datu batzuen segurtasun-kopiak sortu ziren. Horrek konfigurazioak, kontaktuak eta tokenak izan ditzake. Datu horiek berreskuratu nahiko zenituzke orain?"
+  },
+  "decimal": {
+    "message": "Tokenaren hamartarrak"
+  },
+  "decimalsMustZerotoTen": {
+    "message": "Hamartarrek 0 izan behar dute gutxienez, eta ez 36 baino gehiago."
+  },
+  "decrypt": {
+    "message": "Deszifratu"
+  },
+  "decryptCopy": {
+    "message": "Kopiatu mezu zifratua"
+  },
+  "decryptInlineError": {
+    "message": "Mezu hori ezin da deszifratu, hau da errorea: $1",
+    "description": "$1 is error message"
+  },
+  "decryptMessageNotice": {
+    "message": "$1-k mezu hau irakurri nahiko luke ekintza osatzeko",
+    "description": "$1 is the web3 site name"
+  },
+  "decryptMetamask": {
+    "message": "Mezua deszifratu"
+  },
+  "decryptRequest": {
+    "message": "Eskaera deszifratu"
+  },
+  "defaultNetwork": {
+    "message": "ether-en transakzioetarako sare lehenetsia sare nagusia da."
+  },
+  "delete": {
+    "message": "Ezabatu"
+  },
+  "deleteAccount": {
+    "message": "Kontua ezabatu"
+  },
+  "deleteNetwork": {
+    "message": "Sarea ezabatu?"
+  },
+  "deleteNetworkDescription": {
+    "message": "Ziur zaude sare hau ezabatu nahi duzula?"
+  },
+  "depositEther": {
+    "message": "Ether-ak sartu"
+  },
+  "details": {
+    "message": "Xehetasunak"
+  },
+  "directDepositEther": {
+    "message": "Ether-rak zuzenean sartu"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Ether batzuk badauzka, zorro berrian edukitzeko modurik azkarrena zuzenean sartzea da."
+  },
+  "disconnect": {
+    "message": "Deskonektatu"
+  },
+  "disconnectAllAccounts": {
+    "message": "Kontu guztietatik deskonektatu"
+  },
+  "disconnectAllAccountsConfirmationDescription": {
+    "message": "Ziur zaude deskonektatu nahi duzula? Gunearen funtzionaltasuna gal daiteke."
+  },
+  "disconnectPrompt": {
+    "message": "Deskonektatu $1"
+  },
+  "disconnectThisAccount": {
+    "message": "Deskonektatu kontu hau"
+  },
+  "dismiss": {
+    "message": "Utzi"
+  },
+  "dismissReminderDescriptionField": {
+    "message": "Aktibatu aukera hau berreskuratzeko esaldiaren babes-oroigarria alde batera uzteko. Berreskuratzeko esaldi sekretua errespetatzea gomendatzen dizugu, funtsak gal ez daitezen."
+  },
+  "dismissReminderField": {
+    "message": "Ez ikusiarena egin berreskuratzeko esaldiaren babes-oroigarriari"
+  },
+  "domain": {
+    "message": "Domeinua"
+  },
+  "done": {
+    "message": "Eginda"
+  },
+  "dontShowThisAgain": {
+    "message": "Ez erakutsi berriro"
+  },
+  "downloadGoogleChrome": {
+    "message": "Deskargatu Google Chrome"
+  },
+  "downloadSecretBackup": {
+    "message": "Descargue esta frase secreta de respaldo y guárdela en un medio de almacenamiento o disco duro externo cifrado."
+  },
+  "downloadStateLogs": {
+    "message": "Deskargatu egoera-erregistroak"
+  },
+  "dropped": {
+    "message": "Abandonatuta"
+  },
+  "edit": {
+    "message": "Editatu"
+  },
+  "editContact": {
+    "message": "Editar kontaktua"
+  },
+  "editNonceField": {
+    "message": "Editatu nonce"
+  },
+  "editNonceMessage": {
+    "message": "Funtzio aurreratua da hau, kontuz erabili."
+  },
+  "editPermission": {
+    "message": "Editatu baimena"
+  },
+  "encryptionPublicKeyNotice": {
+    "message": "$1-k zure zifratze-gako publikoa nahiko luke. Onartzean, webgune honek mezu zifratuak idatz ditzake zuretzat.",
+    "description": "$1 is the web3 site name"
+  },
+  "encryptionPublicKeyRequest": {
+    "message": "Eskatu zifratze-gako publikoa"
+  },
+  "endOfFlowMessage1": {
+    "message": "Proba gainditu duzu. Garrantzitsua da berreskuratzeko esaldi sekretua leku seguru batean gordetzea."
+  },
+  "endOfFlowMessage10": {
+    "message": "Dena prest"
+  },
+  "endOfFlowMessage2": {
+    "message": "Biltegiratze segururako iradokizunak"
+  },
+  "endOfFlowMessage3": {
+    "message": "Gorde segurtasun-kopia bat hainbat lekutan."
+  },
+  "endOfFlowMessage4": {
+    "message": "Esaldia ez partekatu inorekin."
+  },
+  "endOfFlowMessage5": {
+    "message": "Kontuz phishing-arekin. MetaMaskek ez dizu inoiz eskatuko errekuperatzeko esaldi sekretua aurretik esan gabe."
+  },
+  "endOfFlowMessage6": {
+    "message": "Berreskuratzeko esaldi sekretuaren segurtasun-kopia bat berriro sortu behar baduzu, Konfigurazioa -> Segurtasuna atalean aurki dezakezu."
+  },
+  "endOfFlowMessage7": {
+    "message": "Galdera edo mugimendu susmagarririk baduzu, jakinarazi $1 zerbitzu teknikoari.",
+    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
+  },
+  "endOfFlowMessage8": {
+    "message": "MetaMaskek ezin du berreskuratu berreskuratzeko esaldi sekretua."
+  },
+  "endOfFlowMessage9": {
+    "message": "Eskuratu informazio gehiago."
+  },
+  "endpointReturnedDifferentChainId": {
+    "message": "Konexio-puntuak kate desberdin bat itzuli du: $1",
+    "description": "$1 is the return value of eth_chainId from an RPC endpoint"
+  },
+  "ensNotFoundOnCurrentNetwork": {
+    "message": "ENS izena ez dago oraingo sarean. Saiatu Ethereumen sare nagusira aldatzen."
+  },
+  "ensRegistrationError": {
+    "message": "Errorea ENS izenaren erregistroan"
+  },
+  "enterAnAlias": {
+    "message": "Ezizen bat idaztzi"
+  },
+  "enterMaxSpendLimit": {
+    "message": "Idatzi gastuen gehieneko muga"
+  },
+  "enterPassword": {
+    "message": "Idatzi pasahitza"
+  },
+  "enterPasswordContinue": {
+    "message": "Idatzi pasahitza jarraitzeko"
+  },
+  "errorCode": {
+    "message": "Kodea: $1",
+    "description": "Displayed error code for debugging purposes. $1 is the error code"
+  },
+  "errorDetails": {
+    "message": "Errorearen xehetasunak",
+    "description": "Title for collapsible section that displays error details for debugging purposes"
+  },
+  "errorMessage": {
+    "message": "Mezua: $1",
+    "description": "Displayed error message for debugging purposes. $1 is the error message"
+  },
+  "errorName": {
+    "message": "Kodea: $1",
+    "description": "Displayed error name for debugging purposes. $1 is the error name"
+  },
+  "errorPageMessage": {
+    "message": "Berriro kargatu orria berriro saiatzeko edo $1 zerbitzu tekinoarekin harremanetan ipini.",
+    "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
+  },
+  "errorPagePopupMessage": {
+    "message": "Berriro saiatzeko itxi lehioa eta ireki berriro edo $1 zerbitzu tekinoarekin harremanetan ipini..",
+    "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
+  },
+  "errorPageTitle": {
+    "message": "MetaMaskek akats bat aurkitu du.",
+    "description": "Title of generic error page"
+  },
+  "errorStack": {
+    "message": "Pila:",
+    "description": "Title for error stack, which is displayed for debugging purposes"
+  },
+  "estimatedProcessingTimes": {
+    "message": "Kalkulatutako prozesatze-denborak"
+  },
+  "ethGasPriceFetchWarning": {
+    "message": "Babes-gasaren prezioa erakusten da, gas nagusiaren prezioa kalkulatzeko zerbitzua ez baitago erabilgarri une honetan."
+  },
+  "eth_accounts": {
+    "message": "Ikusi baimendutako kontuen helbideak (beharrezkoa)",
+    "description": "The description for the `eth_accounts` permission"
+  },
+  "ethereumPublicAddress": {
+    "message": "Ethereumeko helbide publikoa"
+  },
+  "etherscan": {
+    "message": "Etherscan"
+  },
+  "etherscanView": {
+    "message": "Ikusi kontua Etherscan-en"
+  },
+  "expandView": {
+    "message": "Ikusmena zabaldu"
+  },
+  "exportPrivateKey": {
+    "message": "Gako pribatua esportatu"
+  },
+  "externalExtension": {
+    "message": "Kanpoko hedapena"
+  },
+  "extraApprovalGas": {
+    "message": "+$1 gas onartzeagatik",
+    "description": "Expresses an additional gas amount the user will have to pay, on top of some other displayed amount. $1 is a decimal amount of gas"
+  },
+  "failed": {
+    "message": "Erroreekin"
+  },
+  "failedToFetchChainId": {
+    "message": "Ezin izan da kate-zenbakia hartu. RPCren URL helbidea zuzena da?"
+  },
+  "failureMessage": {
+    "message": "Errore bat gertatu da eta ezin da  ekintza burutu."
+  },
+  "fast": {
+    "message": "Azkarra"
+  },
+  "fastest": {
+    "message": "Azkarrena"
+  },
+  "feeAssociatedRequest": {
+    "message": "Eskaera honek kuota bat du lotuta."
+  },
+  "fiat": {
+    "message": "Fiduciaria",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "Ez al dabil artxiboaren inportazioa? Egin klik hemen.",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "forbiddenIpfsGateway": {
+    "message": "IPFS debekatuaren lotura-atea: zehaztu CIDen lotura-ate bat"
+  },
+  "forgetDevice": {
+    "message": "Gailu hau ahaztu"
+  },
+  "from": {
+    "message": "Noren"
+  },
+  "fromAddress": {
+    "message": "Noren: $1",
+    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
+  },
+  "functionApprove": {
+    "message": "Funtzioa: Aprobar"
+  },
+  "functionType": {
+    "message": "Funtzio mota"
+  },
+  "gasLimit": {
+    "message": "Gasaren muga"
+  },
+  "gasLimitInfoTooltipContent": {
+    "message": "Gasaren muga gastatzeko prest dagoen gas unitateen gehienezko kopurua da."
+  },
+  "gasLimitTooLow": {
+    "message": "Gasaren muga 21 000 baino gutxiago izan behar da"
+  },
+  "gasLimitTooLowWithDynamicFee": {
+    "message": "Gasaren muga gutxienez $1 izan behar da",
+    "description": "$1 is the custom gas limit, in decimal."
+  },
+  "gasPrice": {
+    "message": "Gasaren balioa(GWEI)"
+  },
+  "gasPriceExcessive": {
+    "message": "Gas kuota altuegia da. JSaiatu zenbatekoa murrizten."
+  },
+  "gasPriceExcessiveInput": {
+    "message": "Gasaren prezioa gehiegizkoa da"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Gasaren prezioa oso baxua da"
+  },
+  "gasPriceFetchFailed": {
+    "message": "Akats bat gertatu da gasaren prezioa kalkulatzean, sareko akats baten ondorioz."
+  },
+  "gasPriceInfoTooltipContent": {
+    "message": "Gasaren prezioak zehazten du zenbat ethers ordaintzeko prest zuden gas-unitate bakoitzeko."
+  },
+  "gasUsed": {
+    "message": "Erabilitako gas-a"
+  },
+  "gdprMessage": {
+    "message": "Datu horiek erantsiak dira eta, beraz, anonimoak dira 2016/679 (EB) Datuak Babesteko Erregelamendu Orokorraren helburuetarako. Gure segurtasun-jardunbideei buruzko informazio gehiago nahi izanez gero, kontsultatu $1.",
+    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
+  },
+  "gdprMessagePrivacyPolicy": {
+    "message": "Pribatutasun politika hemen",
+    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
+  },
+  "general": {
+    "message": "Orokorra"
+  },
+  "generalSettingsDescription": {
+    "message": "Moneta bihurtu, moneta nagusia, hizkuntza, Blockies Identicon"
+  },
+  "getEther": {
+    "message": "etherrak lortu"
+  },
+  "getEtherFromFaucet": {
+    "message": "Lortu faucet baten ether-a $1-rako",
+    "description": "Displays network name for Ether faucet"
+  },
+  "getStarted": {
+    "message": "Hasi"
+  },
+  "goerli": {
+    "message": "Goerli proba-sarea"
+  },
+  "happyToSeeYou": {
+    "message": "Pozten gara zu ikusteaz."
+  },
+  "hardware": {
+    "message": "Hardwarea"
+  },
+  "hardwareWalletConnected": {
+    "message": "Hardware-zorroa konektatuta"
+  },
+  "hardwareWalletLegacyDescription": {
+    "message": "(legacy)",
+    "description": "Text representing the MEW path"
+  },
+  "hardwareWalletSupportLinkConversion": {
+    "message": "Klik egin hemen"
+  },
+  "hardwareWallets": {
+    "message": "Hardware zorro bat konektatatu"
+  },
+  "hardwareWalletsMsg": {
+    "message": "Aukeratu MetaMaskekin erabili nahi duzun hardware-zorroa."
+  },
+  "here": {
+    "message": "hemen",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hexData": {
+    "message": "Datu hexadezimalak"
+  },
+  "hide": {
+    "message": "Ezkutatu"
+  },
+  "hideTokenPrompt": {
+    "message": "Ezkutatu token-a?"
+  },
+  "hideTokenSymbol": {
+    "message": "Ezkutatu $1",
+    "description": "$1 is the symbol for a token (e.g. 'DAI')"
+  },
+  "hideZeroBalanceTokens": {
+    "message": "Ezkutatu tokenak saldorik gabe"
+  },
+  "history": {
+    "message": "Historia"
+  },
+  "import": {
+    "message": "Inportatu",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Inportatu ckontua"
+  },
+  "importAccountLinkText": {
+    "message": "Inportatu berreskuratzeko esaldi sekretuarekin"
+  },
+  "importAccountMsg": {
+    "message": " Inportatutako kontuak ez dira MetaMasken jatorrizko kontua berreskuratzeko esaldi sekretuarekin lotuko. Inportatutako kontuei buruzko informazio gehiago "
+  },
+  "importAccountSeedPhrase": {
+    "message": "Inportatu kontu bat berreskuratzeko esaldi sekretuarekin"
+  },
+  "importAccountText": {
+    "message": "edo $1",
+    "description": "$1 represents the text from `importAccountLinkText` as a link"
+  },
+  "importTokenQuestion": {
+    "message": "Inportatu nahi duzu token-a?"
+  },
+  "importTokenWarning": {
+    "message": "Pertsona orok edozein izen duen token bat sor dezake, baita dauden tokenen bertsio faltsuak ere. Egizu transakzioak zure arriskupean!"
+  },
+  "importWallet": {
+    "message": "Inportatu diru-zorroa"
+  },
+  "importYourExisting": {
+    "message": "Dagoen zorroa inportatu berreskuratze-esaldi sekretu batekin"
+  },
+  "imported": {
+    "message": "Inportatzen",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "infuraBlockedNotification": {
+    "message": "Mask ezin izan da bloke-katearen hostera konektatu. Berrikusi arrazoi posibleak$1.",
+    "description": "$1 is a clickable link with with text defined by the 'here' key"
+  },
+  "initialTransactionConfirmed": {
+    "message": "Sareak hasierako transakzioa berretsi du. Egin klik Onartu botoian itzultzeko."
+  },
+  "insufficientBalance": {
+    "message": "Diru nahikorik ez."
+  },
+  "insufficientFunds": {
+    "message": "Funts nahikorik ez."
+  },
+  "insufficientTokens": {
+    "message": "Token nahikorik ez."
+  },
+  "invalidAddress": {
+    "message": "Helbidea ez da zuzena"
+  },
+  "invalidAddressRecipient": {
+    "message": "Hartzailearen helbidea ez dz zuzena"
+  },
+  "invalidAddressRecipientNotEthNetwork": {
+    "message": "Ez da ETH sarea; Konfiguratu letra xehez"
+  },
+  "invalidBlockExplorerURL": {
+    "message": "Bloke-arakatzailearen URL helbidea ez da balioduna"
+  },
+  "invalidChainIdTooBig": {
+    "message": "Katearen identifikatzailea ez da balioduna. Kate identifikatzailea handiegia da."
+  },
+  "invalidCustomNetworkAlertContent1": {
+    "message": "Berriro zehaztu behar da “$1” sare birtualerako katearen id-a  .",
+    "description": "$1 is the name/identifier of the network."
+  },
+  "invalidCustomNetworkAlertContent2": {
+    "message": "Asmo txarreko edo akastuneko sare-hornitzaileengandik babesteko, orain kate berdina behar da sare pertsonalizatu guztietarako."
+  },
+  "invalidCustomNetworkAlertContent3": {
+    "message": "Joan Konfigurazioa > Sarea eta zehaztu katearen izena. Sare ezagunenen kate-ereduak aurki ditzakezu hemen: $1.",
+    "description": "$1 is a link to https://chainid.network"
+  },
+  "invalidCustomNetworkAlertTitle": {
+    "message": "Sare pertsonalizatua ez da balioduna"
+  },
+  "invalidHexNumber": {
+    "message": "Zenbaki hexadezimal baliogabea."
+  },
+  "invalidHexNumberLeadingZeros": {
+    "message": "Zenbaki hexadezimal baliogabea. Kendu hasierako zero guztiak."
+  },
+  "invalidIpfsGateway": {
+    "message": "IPFSren lotura-atea ez da balioduna: balioak URL helbide baliodun bat izan behar du"
+  },
+  "invalidNumber": {
+    "message": "Zenbakia ez da balioduna. Idatzi zenbaki hamartar bat edo zenbaki hexadezimal bat \"0x\" aurrizkiarekin."
+  },
+  "invalidNumberLeadingZeros": {
+    "message": "Zenbakia ez da balioduna. Kendu hasierako zero guztiak."
+  },
+  "invalidRPC": {
+    "message": "RPCren URL helbidea ez da balioduna"
+  },
+  "invalidSeedPhrase": {
+    "message": "Berreskuratzeko esaldi sekretua ez da baliozkoa"
+  },
+  "ipfsGateway": {
+    "message": "IPFSren lotura-atea"
+  },
+  "ipfsGatewayDescription": {
+    "message": "Idatzi IPFS CIDen lotura-ateko URL helbidea, ENS edukiaren ebazpena erabiltzeko."
+  },
+  "jsonFile": {
+    "message": "JSON artxiboa",
+    "description": "format for importing an account"
+  },
+  "knownAddressRecipient": {
+    "message": "Kontratuaren helbide ezaguna."
+  },
+  "knownTokenWarning": {
+    "message": "Ekintza honek karteran zerrendatuta dauden tokenak editatuko ditu, zu engainatzeko erabil daitezkeenak. Onartu soilik ziur bazaude token hauek adierazi nahi dutena aldatu nahi duzula."
+  },
+  "kovan": {
+    "message": "Proba sarea Kovan"
+  },
+  "lastConnected": {
+    "message": "Azken konexioa"
+  },
+  "learnMore": {
+    "message": "Informazio gehiago"
+  },
+  "ledgerAccountRestriction": {
+    "message": "Zure azken kontua erabili behar duzu berri bat gehitu aurretik."
+  },
+  "ledgerLiveAdvancedSetting": {
+    "message": "Erabili Ledger Live"
+  },
+  "ledgerLiveAdvancedSettingDescription": {
+    "message": "Ledger Live zubi berriak Ledger modu errazagoan erabiltzeko aukera ematen dio. Google Chromen eskuragarri dago."
+  },
+  "ledgerLiveApp": {
+    "message": "Ledger Live aplikazioa"
+  },
+  "ledgerLocked": {
+    "message": "Ezin izan da Ledger gailuarekin konexioa ezarri. Ziurtatu gailua desblokeatuta dagoela eta Ethereumen aplikazioa irekita dagoela."
+  },
+  "ledgerTimeout": {
+    "message": "Ledger Livek denbora asko behar izan zuen erantzuteko, edo konexioaren itxaronaldia gainditu zen. Ziurtatu Ledger Liven aplikazioa irekita dagoela eta zure gailua desblokeatuta dagoela."
+  },
+  "letsGoSetUp": {
+    "message": "Bai, konfigurazioa ezarriko dugu."
+  },
+  "likeToAddTokens": {
+    "message": "Gustatuko litzaizuke token hauek gehitzea?"
+  },
+  "links": {
+    "message": "Loturak"
+  },
+  "loadMore": {
+    "message": "Gehiago kargatu"
+  },
+  "loading": {
+    "message": "Kargatzen..."
+  },
+  "loadingTokens": {
+    "message": "Tokenak kargatzen..."
+  },
+  "localhost": {
+    "message": "Host local 8545"
+  },
+  "lock": {
+    "message": "Blokeatu"
+  },
+  "lockTimeTooGreat": {
+    "message": "Blokeo denbora luzeegia da"
+  },
+  "mainnet": {
+    "message": "Ethereum-eko sare nagusia"
+  },
+  "makeAnotherSwap": {
+    "message": "Truke berri bat sortu"
+  },
+  "max": {
+    "message": "Max."
+  },
+  "memo": {
+    "message": "memorandum"
+  },
+  "memorizePhrase": {
+    "message": "Buruz ikasi esaldi hau."
+  },
+  "message": {
+    "message": "Mezua"
+  },
+  "metaMaskConnectStatusParagraphOne": {
+    "message": "Orain, MetaMaskeko zure kontuaren konexioen gaineko kontrol handiagoa du."
+  },
+  "metaMaskConnectStatusParagraphThree": {
+    "message": "Egin klik bertan konektatutako kontuak administratzeko."
+  },
+  "metaMaskConnectStatusParagraphTwo": {
+    "message": "Konexioaren egoeraren botoiak erakusten du bisitatzen duzun webgunea orain hautatutako kontura konektatuta dagoela."
+  },
+  "metamaskDescription": {
+    "message": "Ethereumera eta Web deszentralizatura konektatuz."
+  },
+  "metamaskSwapsOfflineDescription": {
+    "message": "MetaMask Swaps mantentze lanetan ari da. Egiaztatu geroago."
+  },
+  "metamaskVersion": {
+    "message": "MetaMask bertsioa"
+  },
+  "metametricsCommitmentsAllowOptOut": {
+    "message": "Konfigurazioaren bidez parte ez hartzeko aukera eman beti"
+  },
+  "metametricsCommitmentsBoldNever": {
+    "message": "Inoiz ez",
+    "description": "This string is localized separately from some of the commitments so that we can bold it"
+  },
+  "metametricsCommitmentsIntro": {
+    "message": "MetaMask…"
+  },
+  "metametricsCommitmentsNeverCollectIP": {
+    "message": "$1 IP helbide osoa bilduko du",
+    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
+  },
+  "metametricsCommitmentsNeverCollectKeysEtc": {
+    "message": "$1 gakoak, helbideak, transakzioak, saldoak, hash-ak edo beste edozein informazio pertsonal bilduko ditu ",
+    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
+  },
+  "metametricsCommitmentsNeverSellDataForProfit": {
+    "message": "$1 datuak ez ditu salduko. Sekula ez!",
+    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
+  },
+  "metametricsCommitmentsSendAnonymizedEvents": {
+    "message": "Orri-bisten eta klik anonimoen ekitaldiak bidali"
+  },
+  "metametricsHelpImproveMetaMask": {
+    "message": "Lagun iezaguzu MetaMask hobetzen"
+  },
+  "metametricsOptInDescription": {
+    "message": "MetaMaskek erabilera-datuak bildu nahiko lituzke erabiltzaileek hedapenarekin nola elkarreragiten duten hobeto ulertzeko. Datu horiek gure produktuaren eta Ethereumeko ekosistemaren erabilgarritasuna eta erabiltzaile-esperientzia etengabe hobetzeko erabiliko dira."
+  },
+  "mismatchedChain": {
+    "message": "Kate-identifikatzaile horren sarearen xehetasunak ez datoz bat gure erregistroekin. Jarraitu aurretik, honako hau gomendatzen dizugu: $1.",
+    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
+  },
+  "mismatchedChainLinkText": {
+    "message": "Egiaztatu sarearen xehetasunak",
+    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
+  },
+  "mustSelectOne": {
+    "message": "Gutxienez token bat aukeratu behar duzu."
+  },
+  "myAccounts": {
+    "message": "Nire kontuak"
+  },
+  "name": {
+    "message": "Izena"
+  },
+  "needEtherInWallet": {
+    "message": "MetaMask bidez deszentralizatutako aplikazioekin elkarreragiteko, ether-ak beharko dituzu zorroan."
+  },
+  "needHelp": {
+    "message": "Laguntza behar duzu? Komunika zaitez honekin: $1",
+    "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
+  },
+  "needHelpLinkText": {
+    "message": "MetaMask laguntza"
+  },
+  "needImportFile": {
+    "message": "Fitxategi bat aukeratu behar duzu inportaziorako.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "negativeETH": {
+    "message": "Ezin da ETHren kopuru negatiborik bidali."
+  },
+  "networkDetails": {
+    "message": "Sarearen xehetasunak"
+  },
+  "networkName": {
+    "message": "Sarearen izena"
+  },
+  "networkNameBSC": {
+    "message": "BSC"
+  },
+  "networkNameDefinition": {
+    "message": "Sare horri lotutako izena."
+  },
+  "networkNameEthereum": {
+    "message": "Ethereum"
+  },
+  "networkNameTestnet": {
+    "message": "Proba sarea"
+  },
+  "networkSettingsChainIdDescription": {
+    "message": "Katearen id. erabiltzen da transakzioak sinatzeko. Sarea itzultzen duen katearen identitatearekin bat etorri behar du. Zenbaki hamartar bat edo zenbaki hexadezimal bat idatz dezake \"0X\" aurrizkiarekin, baina zenbakia hamartarrez agertuko da."
+  },
+  "networkSettingsDescription": {
+    "message": "RPC sare pertsonalizatuak gehitu eta editatu"
+  },
+  "networkURL": {
+    "message": "Sare horretara sartzeko erabili zen URL helbidea."
+  },
+  "networkURLDefinition": {
+    "message": "Sare horretara sartzeko erabili den URL helbidea."
+  },
+  "networks": {
+    "message": "Sareak"
+  },
+  "nevermind": {
+    "message": "Ez da garrantzitsua"
+  },
+  "newAccount": {
+    "message": "Kontu berria"
+  },
+  "newAccountDetectedDialogMessage": {
+    "message": "Helbide berri bat detektatu da. Egin klik hemen helbide-liburuxkari gehitzeko."
+  },
+  "newAccountNumberName": {
+    "message": "Kontua $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContact": {
+    "message": "Kontaktu berria"
+  },
+  "newContract": {
+    "message": "Kontratu berria"
+  },
+  "newNetwork": {
+    "message": "Sare berria"
+  },
+  "newPassword": {
+    "message": "Pasahitz berria (gutxienez 8 karaktere)"
+  },
+  "newToMetaMask": {
+    "message": "Berria zara MetaMasken?"
+  },
+  "newTotal": {
+    "message": "Guztira berria"
+  },
+  "newTransactionFee": {
+    "message": "Transakzio berriaren kuota"
+  },
+  "next": {
+    "message": "Hurrengoa"
+  },
+  "nextNonceWarning": {
+    "message": "$1 Goiko nonce-a proposatutako nonce-a baino andiagoa da.",
+    "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "noAccountsFound": {
+    "message": "Ez dago bilaketa zehatzeko kontsultarako konturik"
+  },
+  "noAddressForName": {
+    "message": "Ez da helbiderik ezarri izen honetarako."
+  },
+  "noAlreadyHaveSeed": {
+    "message": "Ez, badut esaldi sekretu bat berreskuratzeko."
+  },
+  "noConversionRateAvailable": {
+    "message": "Ez dago bihurketa-tasa erabilgarririk"
+  },
+  "noThanks": {
+    "message": "Ez, eskerrik asko"
+  },
+  "noTransactions": {
+    "message": "Ez duzu ransakziorik"
+  },
+  "noWebcamFound": {
+    "message": "Ez da aurkitu web kamera. Saiatu berriro."
+  },
+  "noWebcamFoundTitle": {
+    "message": "Ez da aurkitu web kamera"
+  },
+  "nonce": {
+    "message": "Nonce"
+  },
+  "nonceField": {
+    "message": "Transakzio nonce-a pertsonalizatu"
+  },
+  "nonceFieldDescription": {
+    "message": "Aktiba ezazu aukera hau berrespen-pantailetan NONCE (transakzio-zenbakia) aldatzeko. Funtzio aurreratua da, kontuz erabili."
+  },
+  "nonceFieldHeading": {
+    "message": "Nonce pertsonalizatua"
+  },
+  "notCurrentAccount": {
+    "message": "Hau da kontu zuzena? Oraingo zorroan hautatutako kontuaren desberdina da"
+  },
+  "notEnoughGas": {
+    "message": "Ez dago gas nahiko"
+  },
+  "notifications1Description": {
+    "message": "MetaMasken aplikazio mugikorraren erabiltzaileek orain tokenak trukatu ditzakete beren zorro mugikorrean. Eskaneatu QR kodea aplikazio mugikorra lortzeko eta trukatzen hasi.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
+  },
+  "notifications1Title": {
+    "message": "Gailu mugikorren trukea hemen dago!",
+    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
+  },
+  "notifications3ActionText": {
+    "message": "Gehiago irakurri",
+    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
+  },
+  "notifications3Description": {
+    "message": "Egunean izan MetaMasken segurtasun-praktika onenak eta jaso itzazu MetaMasken zerbitzu tekniko ofizialaren segurtasunari buruzko azken aholkuak.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
+  },
+  "notifications3Title": {
+    "message": "Babestuta egon",
+    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
+  },
+  "notifications4ActionText": {
+    "message": "Hasi trukea",
+    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
+  },
+  "notifications4Description": {
+    "message": "Lortu preziorik onenak zure karteraren barruko token-trukeetan. MetaMaskek orain elkartruke deszentralizatuko hainbat agregatzailerekin eta merkatu sortzaile profesionalekin lotzen du Binance Smart Chainen.",
+    "description": "Description of a notification in the 'See What's New' popup."
+  },
+  "notifications4Title": {
+    "message": "Trukatu Binance Smart Chain-en",
+    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
+  },
+  "notifications5Description": {
+    "message": "Zure \"berreskuratzeko esaldia\" orain  \"berreskuratzeko esaldi sekretua.\" da",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
+  },
+  "notifications6DescriptionOne": {
+    "message": "Chromeren 91. bertsiotik aurrera, Ledgerrentzat (U2F) gure euskarria gaitzen zuen API ez da hardware zorroekin bateragarria. MetaMaskek Ledger Liverako euskarri berri bat inplementatu du, Ledger Live mahaigaineko aplikazioaren bidez zure Ledger gailura konektatzen jarrai dezazun.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionThree": {
+    "message": "Ledgerren zure kontuarekin MetaMask bidez interakzioan ari zarenean, beste erlaitz bat irekiko zaizu eta Ledger Live aplikazioa irekitzeko eskatuko zaizu. Aplikazioa irekitzen denean, MetaMask kontuarekin WebSocket konexioa ezartzeko baimena emateko eskatuko zaizu. Hori da dena!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6DescriptionTwo": {
+    "message": "Live Ledger-erako euskarria gaitzeko, egin klik Konfigurazioa > Aurreratua > Erabili Ledger Live. ",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
+  },
+  "notifications6Title": {
+    "message": "Ledger-erako Chrome-ren erabiltzaileentzako euskarria eguneratzea",
+    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
+  },
+  "ofTextNofM": {
+    "message": "noren"
+  },
+  "off": {
+    "message": "Desaktibatuta"
+  },
+  "offlineForMaintenance": {
+    "message": "Mantentze-lanegatik konexiorik gabe"
+  },
+  "ok": {
+    "message": "Onartu"
+  },
+  "on": {
+    "message": "Aktibatuta"
+  },
+  "onboardingReturnNotice": {
+    "message": "\"$1\" erlaitz hau itxiko du eta $2-ra joango da",
+    "description": "Return the user to the site that initiated onboarding"
+  },
+  "onlyAddTrustedNetworks": {
+    "message": "Asmo txarreko sarearen hornitzaile batek gezurra esan dezake bloke-katearen egoerari buruz eta bere sare-jarduera erregistratu. Gehitu konfiantzazko sare pertsonalizatuak bakarrik."
+  },
+  "onlyAvailableOnMainnet": {
+    "message": "Sare nagusian bakarrik dago eskuragarri"
+  },
+  "onlyConnectTrust": {
+    "message": "Konektatu konfiantzazko lekuekin bakarrik."
+  },
+  "optionalBlockExplorerUrl": {
+    "message": "Bloke-arakatzailearen URL helbidea (aukerakoa)"
+  },
+  "optionalCurrencySymbol": {
+    "message": "Txanponaren sinboloa (aukerakoa)"
+  },
+  "origin": {
+    "message": "Jatorria"
+  },
+  "parameters": {
+    "message": "Parametroak"
+  },
+  "participateInMetaMetrics": {
+    "message": "MetaMetrics-en parte hartu"
+  },
+  "participateInMetaMetricsDescription": {
+    "message": "Metrics-en parte hartu MetaMask hobetzen laguntzeko"
+  },
+  "password": {
+    "message": "pasahitza"
+  },
+  "passwordNotLongEnough": {
+    "message": "Pasahitza ez da behar bezain luzea"
+  },
+  "passwordsDontMatch": {
+    "message": "Pasahitzak ez datoz bat"
+  },
+  "pastePrivateKey": {
+    "message": "Itsatsi hemen gako pribatuko katea:",
+    "description": "For importing an account from a private key"
+  },
+  "pending": {
+    "message": "Egiteke"
+  },
+  "permissionCheckedIconDescription": {
+    "message": "Baimen hori onartu duzu"
+  },
+  "permissionUncheckedIconDescription": {
+    "message": "Baimen hori ez duzu onartu"
+  },
+  "permissions": {
+    "message": "Baimenak"
+  },
+  "personalAddressDetected": {
+    "message": "Helbide pertsonal bat detektatu da. Sartu tokeneko kontratuaren helbidean."
+  },
+  "plusXMore": {
+    "message": "+ $1 gehiago",
+    "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "prev": {
+    "message": "Aurre."
+  },
+  "primaryCurrencySetting": {
+    "message": "Txanpon nagusia"
+  },
+  "primaryCurrencySettingDescription": {
+    "message": "Aukeratu Natiboa, katearen jatorrizko monetan balioak erakusteari lehentasuna emateko (adib., ETH). Hautatu Fidudarioa, hautatutako moneta fiduziarioan balioak erakusteari lehentasuna emateko."
+  },
+  "privacyMsg": {
+    "message": "Pribatutasun-politika"
+  },
+  "privateKey": {
+    "message": "Gako pribatu",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Oharra: ez azaldu gako hau. Bere gako pribatuak dituen edonork bere kontutik lapurtu ditzake zure aktiboak."
+  },
+  "privateNetwork": {
+    "message": "Sare pribatua"
+  },
+  "proposedApprovalLimit": {
+    "message": "Proposatutako onarpen-muga"
+  },
+  "provide": {
+    "message": "Eman"
+  },
+  "publicAddress": {
+    "message": "Helbide publikoa"
+  },
+  "queue": {
+    "message": "Ilara"
+  },
+  "queued": {
+    "message": "Ilaran"
+  },
+  "readdToken": {
+    "message": "Etorkizunean token hori gehitu dezakezu berriro kontuetako aukeren menuan \"erantsi token-a\" ataletik."
+  },
+  "receive": {
+    "message": "Jaso"
+  },
+  "recents": {
+    "message": "Azkenak"
+  },
+  "recipientAddressPlaceholder": {
+    "message": "Bilaketa, helbide publikoa (0x) edo ENS"
+  },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "Hasi hemen"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "Ulertuta"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "Gorde beti berreskuratzeko esaldi sekretua leku seguru eta sekretu batean."
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "Zure berreskuratze-esaldi sekretuaren segurtasun-kopia bat sortu behar duzu berriro?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "Ez dator bat zure errekuperazio esaldi sekretuarekin."
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "MetaMasken taldeak ez dizu inoiz eskatuko zure errekuperazio esaldi sekretua."
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "Berreskuratzeko esaldi sekretuaren bidez, kontu guztiak kontrolatzen dira.."
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "Babestu zure funtsak."
+  },
+  "reject": {
+    "message": "Ukatu"
+  },
+  "rejectAll": {
+    "message": "Ukatu dena"
+  },
+  "rejectTxsDescription": {
+    "message": "Lote batean $1 transakzio ukatzeko zorian zaude."
+  },
+  "rejectTxsN": {
+    "message": "Ukatu $1 transakzio"
+  },
+  "rejected": {
+    "message": "Ukatu"
+  },
+  "remindMeLater": {
+    "message": "Aurrerago gogoratu"
+  },
+  "remove": {
+    "message": "Kendu"
+  },
+  "removeAccount": {
+    "message": "Kendu kontua"
+  },
+  "removeAccountDescription": {
+    "message": "Kontu hau zorrotik kenduko da. Jarraitu aurretik, ziurtatu berreskuratze-esaldi sekretua edo inportatutako kontu honen gako pribatua duzula. Berriz ere kontuak inportatu edo sor ditzakezu kontuaren zerrenda zabaltzen "
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "Berresteko zain dauden eskaerak"
+  },
+  "required": {
+    "message": "Eskatutakoa"
+  },
+  "reset": {
+    "message": "Berrezarri"
+  },
+  "resetAccount": {
+    "message": "Berrezarri kontua"
+  },
+  "resetAccountDescription": {
+    "message": "Kontua berrezartzeak transakzioen historia ezabatuko du. Horrek ez ditu kontuetako saldoak aldatuko, eta ez zaizu eskatuko berreskuratze-esaldi sekretua berriro idazteko."
+  },
+  "restore": {
+    "message": "Berrezarri"
+  },
+  "restoreAccountWithSeed": {
+    "message": "Kontua Berrezarri berreskuratzeko esaldi sekretuarekin"
+  },
+  "restoreWalletPreferences": {
+    "message": "$1-ko datuen segurtasun-kopia bat aurkitu da. Zorroko lehentasunak leheneratu nahi dituzu?",
+    "description": "$1 is the date at which the data was backed up"
+  },
+  "retryTransaction": {
+    "message": "Berriz saiatu transakzioa egiten"
+  },
+  "reusedTokenNameWarning": {
+    "message": "Token batek, erakusten zaion beste token baten ikur bat berrerabiltzen du. Hau nahasgarria edo engainagarria izan daiteke."
+  },
+  "revealSeedWords": {
+    "message": "Berreskuratzeko esaldi sekretua errebelatzea"
+  },
+  "revealSeedWordsDescription": {
+    "message": "Inoiz esploratzailea edo ekipoa aldatzen baduzu, berreskuratzeko esaldi sekretu hau beharko du kontuetara sartzeko. Gorde ezazu leku seguru eta sekretu batean."
+  },
+  "revealSeedWordsTitle": {
+    "message": "Berreskuratzeko esaldi sekretua"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Hitz hauek zure kontu guztiak lapurtzeko erabil daitezke."
+  },
+  "revealSeedWordsWarningTitle": {
+    "message": "Esaldi hau ez partekatu inorekin."
+  },
+  "rinkeby": {
+    "message": "Rinkeby proba-sarea"
+  },
+  "ropsten": {
+    "message": "Ropsten proba-sarea"
+  },
+  "rpcUrl": {
+    "message": "RPC-ren URL berria"
+  },
+  "save": {
+    "message": "Gorde"
+  },
+  "saveAsCsvFile": {
+    "message": "Gorde CSV fitxategi gisa"
+  },
+  "scanInstructions": {
+    "message": "Jarri QR kodea kameraren aurrean"
+  },
+  "scanQrCode": {
+    "message": "Eskaneatu QR kodea"
+  },
+  "scrollDown": {
+    "message": "Beherantz mugitu"
+  },
+  "search": {
+    "message": "Bilatu"
+  },
+  "searchAccounts": {
+    "message": "Kontuak bilatu"
+  },
+  "searchResults": {
+    "message": "Bilaketaren emaitza"
+  },
+  "searchTokens": {
+    "message": "Bilatu tokenak"
+  },
+  "secretBackupPhrase": {
+    "message": "Babes-esaldi sekretua"
+  },
+  "secretBackupPhraseDescription": {
+    "message": "Babes-esaldi sekretuak segurtasun-kopia bat sortzea eta kontua lehengoratzea errazten du."
+  },
+  "secretBackupPhraseWarning": {
+    "message": "Oharra: ez adierazi zure babes-esaldia. Esaldi hau duen edonork ostu diezazkizuke etherrak."
+  },
+  "secretPhrase": {
+    "message": "Sartu zure esaldi sekretua hemen berreskuratzeko"
+  },
+  "securityAndPrivacy": {
+    "message": "Segurtasuna eta pribatutasuna"
+  },
+  "securitySettingsDescription": {
+    "message": "Pribatutasuna konfiguratzea eta zorroa berreskuratzeko esaldi sekretua"
+  },
+  "seedPhraseIntroSidebarBulletFour": {
+    "message": "Idatzi eta gorde leku sekretu batzuetan."
+  },
+  "seedPhraseIntroSidebarBulletOne": {
+    "message": "Gorde pasahitzen administratzaile batean"
+  },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "Gorde ezazu kutxa gotor batean."
+  },
+  "seedPhraseIntroSidebarBulletTwo": {
+    "message": "Gorde ezazu banku-ganga batean."
+  },
+  "seedPhraseIntroSidebarCopyOne": {
+    "message": "Berreskuratzeko esaldi sekretua zorroaren eta funtsen \"giltza nagusia\" da."
+  },
+  "seedPhraseIntroSidebarCopyThree": {
+    "message": "Norbaitek bere errekuperazio-esaldia eskatzen badizu, baliteke iruzur egiteko asmoa izatea."
+  },
+  "seedPhraseIntroSidebarCopyTwo": {
+    "message": "Ez partekatu inoiz zure errekuperazio esaldi sekretua, ezta MetaMaskekin ere"
+  },
+  "seedPhraseIntroSidebarTitleOne": {
+    "message": "Zer da berreskuratzeko esaldi bat?"
+  },
+  "seedPhraseIntroSidebarTitleThree": {
+    "message": "Nire errekuperazio-esaldia partekatu beharko nuke?"
+  },
+  "seedPhraseIntroSidebarTitleTwo": {
+    "message": "Nola gordeko dut nire errekuperazio-esaldia?"
+  },
+  "seedPhraseIntroTitle": {
+    "message": "Zorroa babestu"
+  },
+  "seedPhraseIntroTitleCopy": {
+    "message": "Hasteko, begiratu bideo labur hau, berreskuratzeko esaldiari buruz eta diru-zorroa seguru mantentzeko moduari buruz ikasteko."
+  },
+  "seedPhrasePlaceholder": {
+    "message": "Bereizi hitz bakoitza espazio bakar batekin"
+  },
+  "seedPhrasePlaceholderPaste": {
+    "message": "Errekuperazio-esaldi sekretua itsatsi arbean"
+  },
+  "seedPhraseReq": {
+    "message": "Berreskuratzeko esaldi sekretuek 12, 15, 18, 21 edo 24 hitz dituzte"
+  },
+  "selectAHigherGasFee": {
+    "message": "Hautatu gas-kuota altuago bat transakzioaren prozesamendua azkartzeko.*"
+  },
+  "selectAccounts": {
+    "message": "Aukeratu kontuak"
+  },
+  "selectAll": {
+    "message": "Dena aukeratu"
+  },
+  "selectAnAccount": {
+    "message": "Kontu bat aukeratu"
+  },
+  "selectAnAccountAlreadyConnected": {
+    "message": "Kontu hau MetaMaskera konektatuta dago."
+  },
+  "selectAnAccountHelp": {
+    "message": "Aukeratu kontu bat MetaMasken ikusteko."
+  },
+  "selectAnAccountHelpDirections": {
+    "message": "Ez duzu zure kontua ikusten? $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
+  "selectEachPhrase": {
+    "message": "Hautatu esaldi bakoitza zuzena dela bermatzeko."
+  },
+  "selectHdPath": {
+    "message": "Aukeratu disko gogorrean sartzeko bidea"
+  },
+  "selectPathHelp": {
+    "message": "Jarraian Ledgerren dauden kontuak ikusten ez badituzu, saia zaitez \"Legacy (MEW / MyCrypto)\" bide aldatzen"
+  },
+  "selectType": {
+    "message": "Aukeratu mota"
+  },
+  "selectingAllWillAllow": {
+    "message": "Dena aukeratzeak aukera emango du gune honek egungo kontu guztiak ikusteko. Ziurtatu leku hau konfiantzazkoa dela."
+  },
+  "send": {
+    "message": "Bidali"
+  },
+  "sendAmount": {
+    "message": "Bidali zenbatekoa"
+  },
+  "sendSpecifiedTokens": {
+    "message": "Bidali $1",
+    "description": "Symbol of the specified token"
+  },
+  "sendTokens": {
+    "message": "Bidali tokenak"
+  },
+  "sentEther": {
+    "message": "Bidali etherrak"
+  },
+  "separateEachWord": {
+    "message": "Bereizi hitz bakoitza espazio bakar batekin"
+  },
+  "settings": {
+    "message": "Konfigurazioa"
+  },
+  "showAdvancedGasInline": {
+    "message": "Gas kontrol aurreratuak"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "Aukeratu aukera hau gasaren prezioa erakusteko eta kontrolak zuzenean mugatzeko bidalketa- eta berrespen-pantailetan."
+  },
+  "showFiatConversionInTestnets": {
+    "message": "Erakutsi proba-sare konbertsioa"
+  },
+  "showFiatConversionInTestnetsDescription": {
+    "message": "Hautatu aukera hau proba-sareetan bihurketa fiduziarioa erakusteko"
+  },
+  "showHexData": {
+    "message": "Erakutsi datu hexadezimalak"
+  },
+  "showHexDataDescription": {
+    "message": "Hautatu aukera hau bidalketa-pantailan datu hexadezimalen eremua erakusteko"
+  },
+  "showIncomingTransactions": {
+    "message": "Erakutsi sartzen diren transakzioak"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Hautatu aukera hau Etherscan erabiltzeko, transakzioen zerrendan sartzen diren transakzioak erakusteko"
+  },
+  "showPermissions": {
+    "message": "Erakutsi baimenak"
+  },
+  "showPrivateKeys": {
+    "message": "Erakutsi gako pribatuak"
+  },
+  "showSeedPhrase": {
+    "message": "Erakutsi berreskuratzeko esaldi sekretua"
+  },
+  "sigRequest": {
+    "message": "Sinadura-eskaera"
+  },
+  "sign": {
+    "message": "Sinatu"
+  },
+  "signNotice": {
+    "message": "Mezu hau sinatzeak albo-ondorio arriskutsuak izan ditzake. Sinatu zure kontu osoarekin konfiantza osoa duzun guneetako mezuak bakarrik. Metodo arriskutsu hau etorkizuneko bertsio batean kenduko da. "
+  },
+  "signatureRequest": {
+    "message": "Sinatzeko eskaera"
+  },
+  "signatureRequest1": {
+    "message": "Mezua"
+  },
+  "signed": {
+    "message": "Sinatuta"
+  },
+  "slow": {
+    "message": "Motel"
+  },
+  "somethingWentWrong": {
+    "message": "Sentitzen dugu, akats bat gertatu da."
+  },
+  "speedUp": {
+    "message": "Bizkortu"
+  },
+  "speedUpCancellation": {
+    "message": "Bizkortu eeztatze hau"
+  },
+  "speedUpTransaction": {
+    "message": "Bizkortu transakzio hau"
+  },
+  "spendLimitAmount": {
+    "message": "Gastuen mugaren zenbatekoa"
+  },
+  "spendLimitInsufficient": {
+    "message": "Gastuen muga ez da nahikoa"
+  },
+  "spendLimitInvalid": {
+    "message": "Gastuen mugak ez du balio, zenbaki positiboa izan behar du"
+  },
+  "spendLimitPermission": {
+    "message": "Gastuen mugako baimena"
+  },
+  "spendLimitRequestedBy": {
+    "message": "$1 eskatutako gastuen muga",
+    "description": "Origin of the site requesting the spend limit"
+  },
+  "spendLimitTooLarge": {
+    "message": "Gastuen muga handiegia da"
+  },
+  "stateLogError": {
+    "message": "Errorea egoera-erregistroak berreskuratzean."
+  },
+  "stateLogFileName": {
+    "message": "MetaMask egoeraren erregistroak"
+  },
+  "stateLogs": {
+    "message": "Egoera-erregistroak"
+  },
+  "stateLogsDescription": {
+    "message": "Egoera-erregistroek kontu publikoen helbideak eta bidalitako transakzioak jasotzen dituzte."
+  },
+  "statusConnected": {
+    "message": "Konektatuta"
+  },
+  "statusNotConnected": {
+    "message": "Konektatu gabe"
+  },
+  "step1LedgerWallet": {
+    "message": "Deskargatu Ledgerren aplikazioa"
+  },
+  "step1LedgerWalletMsg": {
+    "message": "Deskargatu eta konfiguratu aplikazioa eta sartu pasahitza $1 desblokeatzeko.",
+    "description": "$1 represents the `ledgerLiveApp` localization value"
+  },
+  "step1TrezorWallet": {
+    "message": "Trezor zorroa konektatu"
+  },
+  "step1TrezorWalletMsg": {
+    "message": "Konektatu zorroa zuzenean ekipoari. Hardware-zorroaren gailuaren erabilerari buruzko informazio gehiago nahi izanez gero, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
+  "step2LedgerWallet": {
+    "message": "Ledger zorroa konektatu"
+  },
+  "step2LedgerWalletMsg": {
+    "message": "Zure Ledger desblokeatu eta Ethereum aplikazioa ireki. Hardware-zorroaren gailuaren erabilerari buruzko informazio gehiago nahi izanez gero, $1.",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
+  "storePhrase": {
+    "message": "Gorde esaldi hau 1Password bezalako pasahitzen administratzaile batean. "
+  },
+  "submit": {
+    "message": "Bidali"
+  },
+  "submitted": {
+    "message": "Bidalita"
+  },
+  "support": {
+    "message": "Laguntza teknikoa"
+  },
+  "supportCenter": {
+    "message": "Bisitatu gure laguntza-tekniko zentroa"
+  },
+  "swap": {
+    "message": "Trukatu"
+  },
+  "swapAdvancedSlippageInfo": {
+    "message": "Prezioa aldatzen bada eskaera egiten den unetik baieztatzen den arte, \"Desfasea\" esaten zaio. Trukea automatikoki ezeztatuko da desfaseak \"Max slippage\" konfigurazioan ezarritakoa gainditzen badu (gehieneko desfasea)."
+  },
+  "swapAggregator": {
+    "message": "Agregatzailea"
+  },
+  "swapAllowSwappingOf": {
+    "message": "Onartu $1-ren trukaketa",
+    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
+  },
+  "swapAmountReceived": {
+    "message": "Bermatutako zenbatekoa"
+  },
+  "swapAmountReceivedInfo": {
+    "message": "Jasoko duen gutxieneko zenbatekoari dagokio. Gehiago jaso dezake desfasearen arabera."
+  },
+  "swapApproval": {
+    "message": "Onartu $1 trukatzeko",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
+  },
+  "swapApproveNeedMoreTokens": {
+    "message": "$1 gehiago behar duzu trukaketa $2 osatzeko",
+    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
+  },
+  "swapBetterQuoteAvailable": {
+    "message": "Kotizazio hobeago dago"
+  },
+  "swapBuildQuotePlaceHolderText": {
+    "message": "Ez dago $1 tokenak erabilgarririk",
+    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
+  },
+  "swapCheckingQuote": {
+    "message": "$1 egiaztatzen",
+    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
+  },
+  "swapConfirmWithHwWallet": {
+    "message": "Baieztatu hardware-zorroarekin"
+  },
+  "swapContractDataDisabledErrorDescription": {
+    "message": "Ethereumek bere Ledgerren duen aplikazioan, jo ezazu \"Konfigurazioa\" eta gaitu kontratuaren datuak. Ondoren, saiatu berriz trukatzen."
+  },
+  "swapContractDataDisabledErrorTitle": {
+    "message": "Ez diren kontratuaren datuak gaitu zure Ledgerren"
+  },
+  "swapCustom": {
+    "message": "Pertsonalizatua"
+  },
+  "swapDecentralizedExchange": {
+    "message": "Truke deszentralizatua"
+  },
+  "swapEditLimit": {
+    "message": "Editatu muga"
+  },
+  "swapEnableDescription": {
+    "message": "Ekintza hau nahitaezkoa da, eta baimena ematen dio MetaMaski bere $1 trukatzeko.",
+    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
+  },
+  "swapEstimatedNetworkFee": {
+    "message": "Kalkulatutako sare-kuota"
+  },
+  "swapEstimatedNetworkFeeSummary": {
+    "message": "“$1” izatea espero dugun benetako kuota da. Kopuru zehatza sarearen baldintzen araberakoa da.",
+    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
+  },
+  "swapEstimatedNetworkFees": {
+    "message": "Kalkulatutako sare-kuotak"
+  },
+  "swapEstimatedNetworkFeesInfo": {
+    "message": "Trukea osatzeko erabiliko den sare-kuotaren estimazio bat. Benetako kopurua alda daiteke sarearen baldintzen arabera."
+  },
+  "swapFailedErrorDescriptionWithSupportLink": {
+    "message": "Akatsak gerta daitezke transakzioetan, eta laguntzeko gaude hemen. Arazoak aurrera jarraitzen badu, jakinarazi gure euskarriarekin bezeroari $1 zenbakira, laguntza gehigarria jasotzeko..",
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "swapFailedErrorTitle": {
+    "message": "Error al canjear"
+  },
+  "swapFetchingQuotesErrorDescription": {
+    "message": "Errore bat gertatu da. Saiatu berriro, edo, erroreak jarraitzen badu, jarri harremanetan gurekin."
+  },
+  "swapFetchingQuotesErrorTitle": {
+    "message": "Errorea kotizazioak atzematean"
+  },
+  "swapFetchingTokens": {
+    "message": "Tokenak jasotzen…"
+  },
+  "swapFinalizing": {
+    "message": "Amaitzen…"
+  },
+  "swapFromTo": {
+    "message": "Trukaketa $1-tik $2-ra",
+    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
+  },
+  "swapGasFeesSplit": {
+    "message": "Aurreko pantailako gas-kuotak bi transakzio horien artean banatzen dira."
+  },
+  "swapHighSlippageWarning": {
+    "message": "Desfasea oso handia da."
+  },
+  "swapLowSlippageError": {
+    "message": "Baliteke transakzioak akatsak izatea, gehieneko desfasea txikiegia da."
+  },
+  "swapMaxNetworkFeeInfo": {
+    "message": "“$1” gastatuko duen gehienekoa da. Sarea bolatila denean, handia izan daiteke.",
+    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
+  },
+  "swapMaxNetworkFees": {
+    "message": "Sarearen gehieneko kuota"
+  },
+  "swapMaxSlippage": {
+    "message": "Gehieneko desfasea"
+  },
+  "swapMetaMaskFee": {
+    "message": "MetaMask kuota"
+  },
+  "swapMetaMaskFeeDescription": {
+    "message": "Preziorik onena bilatzen dugu likidazio iturri garrantzitsuenetan, denbora guztian. Kotizazio horri automatikoki % 1eko $1 gehitzen zaio.",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+  },
+  "swapNQuotes": {
+    "message": "$1 kotizazioak",
+    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
+  },
+  "swapNetworkFeeSummary": {
+    "message": "Sare-kuotak trukearen prozesamendu-kostua eta $1 sareko biltegiratzea estaltzen ditu. MetaMaskek ez du etekinik ateratzen kuota horretatik."
+  },
+  "swapNewQuoteIn": {
+    "message": "Kotizazio berriak $1",
+    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
+  },
+  "swapOnceTransactionHasProcess": {
+    "message": "Transakzio hori prozesatu ondoren, zure $1 gehituko zaio kontuari.",
+    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
+  },
+  "swapPriceDifference": {
+    "message": "Trukatuko duzu $1 $2 (~$3) honegatik $4 $5 (~$6).",
+    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
+  },
+  "swapPriceDifferenceTitle": {
+    "message": "Prezio-aldea ~$1 %",
+    "description": "$1 is a number (ex: 1.23) that represents the price difference."
+  },
+  "swapPriceImpactTooltip": {
+    "message": "Prezioaren gaineko eragina merkatuaren egungo prezioaren eta transakzioa gauzatzean jasotako zenbatekoaren arteko aldea da. Prezioaren gaineko inpaktua haren transakzioak likidezia-funtsaren neurriarekiko duen tamainaren funtzio bat da."
+  },
+  "swapPriceUnavailableDescription": {
+    "message": "Ezin izan zen prezioaren gaineko eragina zehaztu, merkatuko prezioen daturik ez zegoelako. Trukea egin aurretik, baieztatu ados zaudela jasotzear duzun tokens kopuruarekin."
+  },
+  "swapPriceUnavailableTitle": {
+    "message": "Jarraitu aurretik, egiaztatu zure tasa"
+  },
+  "swapProcessing": {
+    "message": "Prozesamendua"
+  },
+  "swapQuoteDetails": {
+    "message": "Kotizazio-xehetasunak"
+  },
+  "swapQuoteDetailsSlippageInfo": {
+    "message": "Prezioa aldatzen bada eskaera egiten den unetik baieztatzen den arte,\"desfasea\" esaten zaio. Trukea automatikoki ezeztatuko da desfaseak\"desfasearen tolerantzia\" konfigurazioan ezarritakoa gainditzen badu."
+  },
+  "swapQuoteIncludesRate": {
+    "message": "Kotizazioak %1eko MetaMask kuota barne hartzen du",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+  },
+  "swapQuoteNofN": {
+    "message": "Kotizazioa $1-tik $2-ra",
+    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
+  },
+  "swapQuoteSource": {
+    "message": "Kotizazio iturria"
+  },
+  "swapQuotesAreRefreshed": {
+    "message": "Kotizazioak maiz eguneratzen dira merkatuaren egungo baldintzak islatzeko."
+  },
+  "swapQuotesExpiredErrorDescription": {
+    "message": "Eska itzazu kotizazio berriak, kosturik berrienak izateko."
+  },
+  "swapQuotesExpiredErrorTitle": {
+    "message": "Kotizazioen itxaronaldia"
+  },
+  "swapQuotesNotAvailableErrorDescription": {
+    "message": "Saiatu zenbateko edo desfasearen konfigurazioa doitzen eta saiatu berriro."
+  },
+  "swapQuotesNotAvailableErrorTitle": {
+    "message": "Ez dago kotizazio erabilgarririk"
+  },
+  "swapRate": {
+    "message": "Tarifa"
+  },
+  "swapReceiving": {
+    "message": "Jasotzen"
+  },
+  "swapReceivingInfoTooltip": {
+    "message": "Balio estimatu bat da. Kopuru zehatza desfasearen araberakoa da."
+  },
+  "swapRequestForQuotation": {
+    "message": "Kotizazio-eskaera"
+  },
+  "swapReviewSwap": {
+    "message": "Berrikusi trukea"
+  },
+  "swapSearchForAToken": {
+    "message": "Bilatu tokena"
+  },
+  "swapSelect": {
+    "message": "Aukeratu"
+  },
+  "swapSelectAQuote": {
+    "message": "Aukeratu kotizazioa"
+  },
+  "swapSelectAToken": {
+    "message": "Aukeratu token bat"
+  },
+  "swapSelectQuotePopoverDescription": {
+    "message": "Jarraian, likidezia-iturri desberdinetatik bildutako kotizazio guztiak erakusten dira."
+  },
+  "swapSlippageNegative": {
+    "message": "Desfaseak zero edo handiagoa izan behar du"
+  },
+  "swapSource": {
+    "message": "Likidezia-iturria"
+  },
+  "swapSourceInfo": {
+    "message": "Hainbat likidezia-iturri bilatzen ditugu (merkatu sortzaile profesionalak, agregatzaileak eta truke-guneak) tarifa onenak eta sare-kuota baxuenak lortzeko."
+  },
+  "swapSwapFrom": {
+    "message": "Trukatu nondik"
+  },
+  "swapSwapSwitch": {
+    "message": "Intercambiar de y a tokens"
+  },
+  "swapSwapTo": {
+    "message": "Trukatu nora"
+  },
+  "swapThisWillAllowApprove": {
+    "message": "Honek S1 trukea ahalbidetuko du."
+  },
+  "swapToConfirmWithHwWallet": {
+    "message": "Baieztatu hardware-zorroarekin"
+  },
+  "swapTokenAvailable": {
+    "message": "Zure $1 kontura gehitu da.",
+    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
+  },
+  "swapTokenBalanceUnavailable": {
+    "message": "Zure $1 saldoa ezin izan da berreskuratu",
+    "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
+  },
+  "swapTokenToToken": {
+    "message": "Trukatu $1-tik $2-ra",
+    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
+  },
+  "swapTokenVerificationAddedManually": {
+    "message": "Token hau eskuz gehitu zen."
+  },
+  "swapTokenVerificationMessage": {
+    "message": "Berretsi beti tokenaren helbidea hemen: $1.",
+    "description": "Points the user to Etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"Etherscan\" followed by an info icon that shows more info on hover."
+  },
+  "swapTokenVerificationOnlyOneSource": {
+    "message": "Solo se verificó en una fuente."
+  },
+  "swapTokenVerificationSources": {
+    "message": "Egiaztatu $1 iturritan.",
+    "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
+  },
+  "swapTransactionComplete": {
+    "message": "Transakzio osoa"
+  },
+  "swapTwoTransactions": {
+    "message": "2 transakzioa"
+  },
+  "swapUnknown": {
+    "message": "Ezezaguna"
+  },
+  "swapUsingBestQuote": {
+    "message": "Kotizazio onenaren erabilera"
+  },
+  "swapVerifyTokenExplanation": {
+    "message": "Hainbat tokenek izen eta sinbolo bera erabil dezakete. Begiratu $1 bilatzen duzun tokena hau dela egiaztatzeko.",
+    "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
+  },
+  "swapYourTokenBalance": {
+    "message": "$1 $2 trukerako eskuragarri",
+    "description": "Tells the user how much of a token they have in their balance. $1 is a decimal number amount of tokens, and $2 is a token symbol"
+  },
+  "swapZeroSlippage": {
+    "message": "0 % desfasea"
+  },
+  "swapsAdvancedOptions": {
+    "message": "Aukera aurreratuak"
+  },
+  "swapsExcessiveSlippageWarning": {
+    "message": "Desfasearen zenbatekoa oso altua da, eta, beraz, konbertsio-tasa kaltegarria izango du. Jaitsi desfase-tolerantzia %15etik beherako balio batera."
+  },
+  "swapsMaxSlippage": {
+    "message": "Desfase-tolerantzia"
+  },
+  "swapsNotEnoughForTx": {
+    "message": "Ez dago $1 nahikoa transakzio hau osatzeko",
+    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
+  },
+  "swapsViewInActivity": {
+    "message": "Aktibitatea ikusi"
+  },
+  "switchEthereumChainConfirmationDescription": {
+    "message": "Honek aldatu egingo du MetaMasken hautatutako sarea, aurretik gehitutako sare batengatik.:"
+  },
+  "switchEthereumChainConfirmationTitle": {
+    "message": "Sarea aldatzen uzten dizu?"
+  },
+  "switchLedgerPaths": {
+    "message": "Ledgerrera sartzeko ibilbideak aldatzea"
+  },
+  "switchLedgerPathsText": {
+    "message": "Aukeratu Ledgerrera sartzeko bidea beste kontu batzuk ikusteko"
+  },
+  "switchNetwork": {
+    "message": "Sarea aldatu"
+  },
+  "switchNetworks": {
+    "message": "Sareak aldatu"
+  },
+  "switchToThisAccount": {
+    "message": "Aldatu kontu honetara"
+  },
+  "switchingNetworksCancelsPendingConfirmations": {
+    "message": "Sarez aldatzeak ezeztatu gabe dauden baieztapen guztiak ezeztatuko ditu"
+  },
+  "symbol": {
+    "message": "Ikurra"
+  },
+  "symbolBetweenZeroTwelve": {
+    "message": "Sinboloak 11 karaktere edo gutxiago izan behar ditu."
+  },
+  "syncWithMobile": {
+    "message": "Sinkronizatu gailu mugikorrarekin"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "Ziurtatu inork ez duela zure pantaila ikusten kode hau eskaneatzen duenean"
+  },
+  "syncWithMobileComplete": {
+    "message": "Datuak behar bezala sinkronizatu dira. Gozatu MetaMasken aplikazio mugikorraz!"
+  },
+  "syncWithMobileDesc": {
+    "message": "Zure kontuak eta informazioa sinkronizatu ditzakezu gailu mugikorrarekin. Ireki MetaMasken aplikazio mugikorra, joan\"konfiguraziora\" eta sakatu\"sinkronizatu esploratzailearen luzapenetik\""
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "MetaMask aplikazio mugikorra lehen aldiz ireki berri baduzu, jarraitu telefonoan agertzen diren urratsak."
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "MetaMask aplikazio mugikorrarekin eskaneatu kode hau"
+  },
+  "syncWithMobileTitle": {
+    "message": "Sinkronizatu gailu mugikorrarekin"
+  },
+  "syncWithThreeBox": {
+    "message": "Sinkronizatu datuak 3Box sistemarekin (esperimentala)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Aktibatu aukera hau 3Box konfigurazioaren segurtasun-kopia bat sortzeko. Gaur egun, funtzio hau esperimentala da. Erabili zeure arriskupean."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box desgaitu zen errore baten ondorioz hasierako sinkronizazioan"
+  },
+  "terms": {
+    "message": "Erabilera-terminoak"
+  },
+  "termsOfService": {
+    "message": "Zerbitzuaren terminoak"
+  },
+  "testFaucet": {
+    "message": "Probatu faucet"
+  },
+  "thisWillCreate": {
+    "message": "Horrek diru-zorro bat eta berreskuratzeko esaldi sekretu bat sortuko ditu."
+  },
+  "tips": {
+    "message": "Iradokizunak"
+  },
+  "to": {
+    "message": "Noretzat"
+  },
+  "toAddress": {
+    "message": "Noretzat: $1",
+    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
+  },
+  "toWithColon": {
+    "message": "Noretzat:"
+  },
+  "token": {
+    "message": "Tokena"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Tokena gehitu da."
+  },
+  "tokenContractAddress": {
+    "message": "Token kontratuaren helbidea"
+  },
+  "tokenDecimalFetchFailed": {
+    "message": "Token dezimalak behar dira."
+  },
+  "tokenSymbol": {
+    "message": "Tokenaren ikurra"
+  },
+  "tooltipApproveButton": {
+    "message": "Ulertzen dut"
+  },
+  "total": {
+    "message": "Guztira"
+  },
+  "transaction": {
+    "message": "transakzio"
+  },
+  "transactionCancelAttempted": {
+    "message": "Transakzioa ezeztatzeko ahalegina egin zen $1eko gas-kuotarekin $2an"
+  },
+  "transactionCancelSuccess": {
+    "message": "$2-n ezeztatu da transakzioa"
+  },
+  "transactionConfirmed": {
+    "message": "$2-ko salerosketa berretsi da."
+  },
+  "transactionCreated": {
+    "message": "Transakzioa $1eko balioarekin sortu da $2an."
+  },
+  "transactionDropped": {
+    "message": "Transakzioa $2tan utzi da."
+  },
+  "transactionError": {
+    "message": "Transakzio-errorea. Kontratu-kodean sortutako salbuespena."
+  },
+  "transactionErrorNoContract": {
+    "message": "Funtzio bati kontraturik gabeko helbide batean deitu nahian."
+  },
+  "transactionErrored": {
+    "message": "Transakzioak errore bat aurkitu du."
+  },
+  "transactionFee": {
+    "message": "Transakzio-kuota"
+  },
+  "transactionResubmitted": {
+    "message": "ransakzio birbidalia, gas-kuota $1era handituta $2tan"
+  },
+  "transactionSubmitted": {
+    "message": "Bidalitako transakzioa $1eko gas-kuotarekin $2tan."
+  },
+  "transactionUpdated": {
+    "message": "Transakzioa $2-an eguneratu da."
+  },
+  "transfer": {
+    "message": "Tranferitu"
+  },
+  "transferBetweenAccounts": {
+    "message": "Transferitu nire kontuen artean"
+  },
+  "transferFrom": {
+    "message": "Transferitu hemendik:"
+  },
+  "troubleConnectingToWallet": {
+    "message": "Arazoak izan genituen zure $1-a konektatzean. Saiatu $2 berrikusten eta saiatu berriro.",
+    "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
+  },
+  "troubleTokenBalances": {
+    "message": "Arazoak izan ditugu token saldoak kargatzean. Ikus ditzakezu ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "trustSiteApprovePermission": {
+    "message": "Leku hau konfiantzazkoa da? Baimen hori ematean, baimena ematen du $1ek zure $2 kentzeko eta zure transakzioak automatizatzeko.",
+    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
+  },
+  "tryAgain": {
+    "message": "Saiatu berriro"
+  },
+  "typePassword": {
+    "message": "Idatzi MetaMask pasahitza"
+  },
+  "unapproved": {
+    "message": "Ez da onartu"
+  },
+  "units": {
+    "message": "Unitateak"
+  },
+  "unknown": {
+    "message": "Ezezaguna"
+  },
+  "unknownCameraError": {
+    "message": "Errorea kameran sartzen saiatzean. Saiatu berriro…"
+  },
+  "unknownCameraErrorTitle": {
+    "message": "Sentitzen dugu, errore bat gertatu da…"
+  },
+  "unknownNetwork": {
+    "message": "Sare pribatu ezezaguna"
+  },
+  "unknownQrCode": {
+    "message": "Errorea: ezin izan da QR kode hori identifikatu"
+  },
+  "unlimited": {
+    "message": "mugagabe"
+  },
+  "unlock": {
+    "message": "Desblokeatu"
+  },
+  "unlockMessage": {
+    "message": "Webgune deszentralizatua zain dago"
+  },
+  "unrecognizedChain": {
+    "message": "Sare hori ez da pertsonalizatua. Jarraitu aurretik, $1 gomendatzen dizugu.",
+    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
+  },
+  "unrecognizedChainLinkText": {
+    "message": "Egiaztatu sarearen xehetasunak",
+    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
+  },
+  "updatedWithDate": {
+    "message": "$1 eguneratua"
+  },
+  "urlErrorMsg": {
+    "message": "URL helbideek http/https aurrizki izan behar dute."
+  },
+  "urlExistsErrorMsg": {
+    "message": "Une honetan, $1 sarea URL helbide hau erabiltzen ari da."
+  },
+  "usePhishingDetection": {
+    "message": "Phishing detekzioa erabili"
+  },
+  "usePhishingDetectionDescription": {
+    "message": "Ethereumeko erabiltzaileei zuzendutako phishing domeinuei buruzko ohartarazpena egin"
+  },
+  "usedByClients": {
+    "message": "Hainbat bezerok erabiltzen dute"
+  },
+  "userName": {
+    "message": "Erabiltzailearen izena"
+  },
+  "verifyThisTokenDecimalOn": {
+    "message": "Tokeneko hamartarrak $1 atalean aurki daitezke.",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "verifyThisTokenOn": {
+    "message": "Egiaztatu token hau $1 atalean",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "verifyThisUnconfirmedTokenOn": {
+    "message": "Egiaztatu token hau $1 atalean, eta ziurtatu hori dela transakzioa egiteko erabili nahi duzun tokena.",
+    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "viewAccount": {
+    "message": "Ikusi kontua"
+  },
+  "viewAllDetails": {
+    "message": "Xehetasun guztiak ikusi"
+  },
+  "viewContact": {
+    "message": "Ikusi kontaktua"
+  },
+  "viewMore": {
+    "message": "Gehiago ikusi"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "Ikusi $1"
+  },
+  "viewOnEtherscan": {
+    "message": "Ikusi Etherscan"
+  },
+  "viewinExplorer": {
+    "message": "Ikusi esploratzailean"
+  },
+  "visitWebSite": {
+    "message": "Bisitatu gure webgunea"
+  },
+  "walletConnectionGuide": {
+    "message": "Hardware zorroa konektatzeko gure gida"
+  },
+  "walletSeed": {
+    "message": "Berreskuratzeko esaldi sekretua"
+  },
+  "walletSeedRestore": {
+    "message": "Zorroa berreskuratzeko esaldia sekretua"
+  },
+  "web3ShimUsageNotification": {
+    "message": "Dirudienez, gaur egungo webguneak ezabatu zen window.web3-ko APIa erabiltzen saiatu da. Guneak funtzionatzen ez badu, egin klik $1 telefonoan informazio gehiago lortzeko.",
+    "description": "$1 is a clickable link."
+  },
+  "welcome": {
+    "message": "Ongi etorri MetaMaskera"
+  },
+  "welcomeBack": {
+    "message": "Kaixo berriro"
+  },
+  "whatsNew": {
+    "message": "Berriak",
+    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
+  },
+  "whatsThis": {
+    "message": "Zer da hau?"
+  },
+  "writePhrase": {
+    "message": "Idatzi esaldi hau paper batean eta gorde leku seguru batean. Segurtasun handiagoa nahi baduzu, idatzi paper batzuetan eta gorde bi edo hiru lekutan."
+  },
+  "xOfY": {
+    "message": "$1-tik $2-ra",
+    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
+  },
+  "xOfYPending": {
+    "message": "$1-tik $2-ra Eeiteke daude",
+    "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
+  },
+  "yesLetsTry": {
+    "message": "Bai, saia gaitezen"
+  },
+  "youNeedToAllowCameraAccess": {
+    "message": "Kamerara sartzen utzi behar duzu funtzio hori erabiltzeko."
+  },
+  "youSign": {
+    "message": "Sinatuta dago"
+  },
+  "yourPrivateSeedPhrase": {
+    "message": "Berreskuratze pribatuari buruzko esaldi sekretua"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Gasaren prezioari buruzko sarrerarik ez dago transakzioa bizkortzean"
+  }
+}
