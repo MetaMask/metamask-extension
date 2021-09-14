@@ -438,14 +438,15 @@ export default function ViewQuote() {
     },
   });
 
-  const viewQuotePageLoadedEvent = useNewMetricEvent({
-    event: 'View Quote Page Loaded',
-    category: 'swaps',
-    sensitiveProperties: {
-      ...eventObjectBase,
-      response_time: Date.now() - reviewSwapClickedTimestamp,
-    },
-  });
+  // TODO: fix this, so it will not refresh the component all the time thanks to Date.now().
+  // const viewQuotePageLoadedEvent = useNewMetricEvent({
+  //   event: 'View Quote Page Loaded',
+  //   category: 'swaps',
+  //   sensitiveProperties: {
+  //     ...eventObjectBase,
+  //     response_time: Date.now() - reviewSwapClickedTimestamp,
+  //   },
+  // });
 
   useEffect(() => {
     if (
@@ -664,9 +665,10 @@ export default function ViewQuote() {
   useEffect(() => {
     dispatch(setSwapsQuotesPollingLimitEnabled(true));
     if (reviewSwapClickedTimestamp) {
-      viewQuotePageLoadedEvent();
+      // TODO: Fix this, so it will not go inside this useEffect all the time, but just once.
+      // viewQuotePageLoadedEvent();
     }
-  }, [dispatch, viewQuotePageLoadedEvent, reviewSwapClickedTimestamp]);
+  }, [dispatch, reviewSwapClickedTimestamp]);
 
   return (
     <div className="view-quote">

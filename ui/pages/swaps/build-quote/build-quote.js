@@ -71,6 +71,7 @@ import {
   removeToken,
   setBackgroundSwapRouteState,
   clearSwapsQuotes,
+  stopPollingForQuotes,
 } from '../../../store/actions';
 import {
   fetchTokenPrice,
@@ -107,6 +108,10 @@ export default function BuildQuote({
     undefined,
   );
   const [verificationClicked, setVerificationClicked] = useState(false);
+  const [
+    timeoutIdForQuotesPrefetching,
+    setTimeoutIdForQuotesPrefetching,
+  ] = useState(null);
 
   const balanceError = useSelector(getBalanceError);
   const fetchParams = useSelector(getFetchParams);
@@ -362,6 +367,7 @@ export default function BuildQuote({
 
   useEffect(() => {
     dispatch(resetSwapsPostFetchState());
+    dispatch(setReviewSwapClickedTimestamp());
   }, [dispatch]);
 
   const BlockExplorerLink = () => {
@@ -416,25 +422,28 @@ export default function BuildQuote({
     (toTokenIsNotDefault && occurrences < 2 && !verificationClicked);
 
   useEffect(() => {
+    dispatch(clearSwapsQuotes());
+    dispatch(stopPollingForQuotes());
     const fetchQuotesWithoutRedirecting = async () => {
-      const noLoadingQuotesPage = true;
+      const pageRedirectionDisabled = true;
       await dispatch(
         fetchQuotesAndSetQuoteState(
           history,
           inputValue,
           maxSlippage,
           metaMetricsEvent,
-          noLoadingQuotesPage,
+          pageRedirectionDisabled,
         ),
       );
     };
     // Delay fetching quotes until a user is done typing an input value.
     const timeoutId = setTimeout(() => {
-      dispatch(clearSwapsQuotes());
+      setTimeoutIdForQuotesPrefetching(null);
       if (!isReviewSwapButtonDisabled) {
         fetchQuotesWithoutRedirecting();
       }
     }, 1000);
+    setTimeoutIdForQuotesPrefetching(timeoutId);
     return () => clearTimeout(timeoutId);
   }, [
     dispatch,
@@ -640,7 +649,19 @@ export default function BuildQuote({
       <SwapsFooter
         onSubmit={async () => {
           dispatch(setReviewSwapClickedTimestamp(Date.now()));
-          if (areQuotesPresent) {
+          // In case that quotes prefetching is waiting to be executed, but hasn't started yet,
+          // we want to cancel it and fetch quotes from here.
+          if (timeoutIdForQuotesPrefetching) {
+            clearTimeout(timeoutIdForQuotesPrefetching);
+            dispatch(
+              fetchQuotesAndSetQuoteState(
+                history,
+                inputValue,
+                maxSlippage,
+                metaMetricsEvent,
+              ),
+            );
+          } else if (areQuotesPresent) {
             // If there are prefetched quotes already, go directly to the View Quote page.
             history.push(VIEW_QUOTE_ROUTE);
           } else {

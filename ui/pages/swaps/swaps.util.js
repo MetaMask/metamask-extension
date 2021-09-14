@@ -456,7 +456,7 @@ export async function fetchSwapsRefreshRates(chainId, useNewSwapsApi) {
     typeof refreshRates.quotesPrefetching !== 'number'
   ) {
     throw new Error(
-      `MetaMask - refreshTime provided invalid response: ${response}`,
+      `MetaMask - invalid response for refreshRates: ${response}`,
     );
   }
   // We presently use milliseconds in the UI.

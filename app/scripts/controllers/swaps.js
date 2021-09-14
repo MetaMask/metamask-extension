@@ -173,7 +173,9 @@ export default class SwapsController {
   }
 
   stopPollingForQuotes() {
-    clearTimeout(this.pollingTimeout);
+    if (this.pollingTimeout) {
+      clearTimeout(this.pollingTimeout);
+    }
   }
 
   async fetchAndSetQuotes(

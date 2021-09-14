@@ -424,7 +424,7 @@ export const fetchQuotesAndSetQuoteState = (
   inputValue,
   maxSlippage,
   metaMetricsEvent,
-  noLoadingQuotesPage,
+  pageRedirectionDisabled,
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
@@ -474,7 +474,7 @@ export const fetchQuotesAndSetQuoteState = (
       decimals: toTokenDecimals,
       iconUrl: toTokenIconUrl,
     } = selectedToToken;
-    if (!noLoadingQuotesPage) {
+    if (!pageRedirectionDisabled) {
       await dispatch(setBackgroundSwapRouteState('loading'));
       history.push(LOADING_QUOTES_ROUTE);
     }
