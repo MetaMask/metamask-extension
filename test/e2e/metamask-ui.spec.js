@@ -40,7 +40,10 @@ describe('MetaMask', function () {
       dappServer.on('listening', resolve);
       dappServer.on('error', reject);
     });
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
+    if (
+      process.env.SELENIUM_BROWSER === 'chrome' &&
+      process.env.CI === 'true'
+    ) {
       await ensureXServerIsRunning();
     }
     const result = await buildWebDriver();
