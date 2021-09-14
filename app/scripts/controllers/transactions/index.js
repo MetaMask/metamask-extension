@@ -1383,6 +1383,10 @@ export default class TransactionController extends EventEmitter {
    * @param {Object} extraParams - optional props and values to include in sensitiveProperties
    */
   _trackTransactionMetricsEvent(txMeta, event, extraParams = {}) {
+    if (!txMeta) {
+      return;
+    }
+
     const {
       type,
       time,

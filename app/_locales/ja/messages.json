@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "ネットワークの追加"
   },
-  "addRecipient": {
-    "message": "受信者の追加"
-  },
   "addSuggestedTokens": {
     "message": "推奨されたトークンの追加"
   },
@@ -92,9 +89,6 @@
     "message": "たとえば、John D."
   },
   "addToken": {
-    "message": "トークンの追加"
-  },
-  "addTokens": {
     "message": "トークンの追加"
   },
   "advanced": {
@@ -1028,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "さあセットアップしましょう!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "これらのトークンを追加しますか?"
   },
   "links": {

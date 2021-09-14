@@ -36,6 +36,8 @@ import {
   getCurrentCurrency,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
+  getUseTokenDetection,
+  getTokenList,
 } from '../../../selectors';
 
 import {
@@ -43,6 +45,7 @@ import {
   hexToDecimal,
 } from '../../../helpers/utils/conversions.util';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
+import { getURLHostName } from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
@@ -58,7 +61,11 @@ import {
 } from '../../../../shared/constants/swaps';
 
 import { resetSwapsPostFetchState, removeToken } from '../../../store/actions';
-import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util';
+import {
+  fetchTokenPrice,
+  fetchTokenBalance,
+  shouldEnableDirectWrapping,
+} from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 
 const fuseSearchKeys = [
@@ -78,6 +85,7 @@ export default function BuildQuote({
   selectedAccountAddress,
   isFeatureFlagLoaded,
   tokenFromError,
+  shuffledTokensList,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -100,6 +108,8 @@ export default function BuildQuote({
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const tokenList = useSelector(getTokenList);
+  const useTokenDetection = useSelector(getUseTokenDetection);
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -133,11 +143,14 @@ export default function BuildQuote({
     conversionRate,
     currentCurrency,
     chainId,
+    tokenList,
+    useTokenDetection,
   );
 
   const tokensToSearch = useTokensToSearch({
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
+    shuffledTokensList,
   });
   const selectedToToken =
     tokensToSearch.find(({ address }) => address === toToken?.address) ||
@@ -241,7 +254,7 @@ export default function BuildQuote({
   );
 
   const blockExplorerLabel = rpcPrefs.blockExplorerUrl
-    ? new URL(blockExplorerTokenLink).hostname
+    ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
   const blockExplorerLinkClickedEvent = useNewMetricEvent({
@@ -250,9 +263,7 @@ export default function BuildQuote({
     properties: {
       link_type: 'Token Tracker',
       action: 'Swaps Confirmation',
-      block_explorer_domain: blockExplorerTokenLink
-        ? new URL(blockExplorerTokenLink)?.hostname
-        : '',
+      block_explorer_domain: getURLHostName(blockExplorerTokenLink),
     },
   });
 
@@ -375,6 +386,12 @@ export default function BuildQuote({
     fromTokenString || '0',
     fromTokenSymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.symbol || '',
   ]);
+
+  const isDirectWrappingEnabled = shouldEnableDirectWrapping(
+    chainId,
+    fromTokenAddress,
+    selectedToToken.address,
+  );
 
   return (
     <div className="build-quote">
@@ -553,15 +570,17 @@ export default function BuildQuote({
               )}
             </div>
           ))}
-        <div className="build-quote__slippage-buttons-container">
-          <SlippageButtons
-            onSelect={(newSlippage) => {
-              setMaxSlippage(newSlippage);
-            }}
-            maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
-            currentSlippage={maxSlippage}
-          />
-        </div>
+        {!isDirectWrappingEnabled && (
+          <div className="build-quote__slippage-buttons-container">
+            <SlippageButtons
+              onSelect={(newSlippage) => {
+                setMaxSlippage(newSlippage);
+              }}
+              maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
+              currentSlippage={maxSlippage}
+            />
+          </div>
+        )}
       </div>
       <SwapsFooter
         onSubmit={() => {
@@ -600,4 +619,5 @@ BuildQuote.propTypes = {
   selectedAccountAddress: PropTypes.string,
   isFeatureFlagLoaded: PropTypes.bool.isRequired,
   tokenFromError: PropTypes.string,
+  shuffledTokensList: PropTypes.array,
 };

@@ -56,6 +56,12 @@ export function isDefaultMetaMaskChain(chainId) {
   return false;
 }
 
+// Both inputs should be strings. This method is currently used to compare tokenAddress hex strings.
+export function isEqualCaseInsensitive(value1, value2) {
+  if (typeof value1 !== 'string' || typeof value2 !== 'string') return false;
+  return value1.toLowerCase() === value2.toLowerCase();
+}
+
 export function valuesFor(obj) {
   if (!obj) {
     return [];
@@ -378,4 +384,20 @@ export function bnLessThanEqualTo(a, b) {
     return null;
   }
   return new BigNumber(a, 10).lte(b, 10);
+}
+
+export function getURL(url) {
+  try {
+    return new URL(url);
+  } catch (err) {
+    return '';
+  }
+}
+
+export function getURLHost(url) {
+  return getURL(url)?.host || '';
+}
+
+export function getURLHostName(url) {
+  return getURL(url)?.hostname || '';
 }

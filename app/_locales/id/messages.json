@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "Tambahkan Jaringan"
   },
-  "addRecipient": {
-    "message": "Tambahkan Penerima"
-  },
   "addSuggestedTokens": {
     "message": "Tambahkan Token yang Disarankan"
   },
@@ -92,9 +89,6 @@
     "message": "contoh: John D."
   },
   "addToken": {
-    "message": "Tambahkan Token"
-  },
-  "addTokens": {
     "message": "Tambahkan Token"
   },
   "advanced": {
@@ -1028,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "Ya, mari siap-siap!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Apakah Anda ingin menambahkan token ini?"
   },
   "links": {

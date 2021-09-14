@@ -35,14 +35,22 @@ import TransactionDetailItem from '../../components/app/transaction-detail-item/
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
+import Dialog from '../../components/ui/dialog';
 
-import { COLORS } from '../../helpers/constants/design-system';
+import {
+  COLORS,
+  FONT_STYLE,
+  FONT_WEIGHT,
+  TYPOGRAPHY,
+} from '../../helpers/constants/design-system';
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
 } from '../../store/actions';
+
+import Typography from '../../components/ui/typography/typography';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
@@ -73,7 +81,6 @@ export default class ConfirmTransactionBase extends Component {
     useNonceField: PropTypes.bool,
     customNonceValue: PropTypes.string,
     updateCustomNonce: PropTypes.func,
-    assetImage: PropTypes.string,
     sendTransaction: PropTypes.func,
     showTransactionConfirmedModal: PropTypes.func,
     showRejectTransactionsConfirmationModal: PropTypes.func,
@@ -116,7 +123,10 @@ export default class ConfirmTransactionBase extends Component {
     maxFeePerGas: PropTypes.string,
     maxPriorityFeePerGas: PropTypes.string,
     baseFeePerGas: PropTypes.string,
+    isMainnet: PropTypes.bool,
     gasFeeIsCustom: PropTypes.bool,
+    isLedgerAccount: PropTypes.bool.isRequired,
+    isFirefox: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -295,16 +305,11 @@ export default class ConfirmTransactionBase extends Component {
       primaryTotalTextOverrideMaxAmount,
       maxFeePerGas,
       maxPriorityFeePerGas,
+      isMainnet,
+      isLedgerAccount,
+      isFirefox,
     } = this.props;
     const { t } = this.context;
-
-    const getRequestingOrigin = () => {
-      try {
-        return new URL(txData.origin)?.hostname;
-      } catch (err) {
-        return '';
-      }
-    };
 
     const renderTotalMaxAmount = () => {
       if (
@@ -315,6 +320,7 @@ export default class ConfirmTransactionBase extends Component {
         return (
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
+            key="total-max-amount"
             value={addHexes(txData.txParams.value, hexMaximumTransactionFee)}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
@@ -335,6 +341,7 @@ export default class ConfirmTransactionBase extends Component {
         return (
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
+            key="total-detail-value"
             value={hexTransactionTotal}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
@@ -353,6 +360,7 @@ export default class ConfirmTransactionBase extends Component {
         return (
           <UserPreferencedCurrencyDisplay
             type={SECONDARY}
+            key="total-detail-text"
             value={hexTransactionTotal}
             hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
           />
@@ -393,6 +401,51 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     ) : null;
 
+    const ledgerInstructionField = isLedgerAccount ? (
+      <div>
+        <div className="confirm-detail-row">
+          <Dialog type="message">
+            <div className="ledger-live-dialog">
+              <Typography
+                boxProps={{ margin: 0 }}
+                color={COLORS.PRIMARY3}
+                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TYPOGRAPHY.H7}
+              >
+                {t('ledgerLiveDialogHeader')}
+              </Typography>
+              {!isFirefox && (
+                <Typography
+                  boxProps={{ margin: 0 }}
+                  color={COLORS.PRIMARY3}
+                  fontWeight={FONT_WEIGHT.BOLD}
+                  variant={TYPOGRAPHY.H7}
+                >
+                  {`- ${t('ledgerLiveDialogStepOne')}`}
+                </Typography>
+              )}
+              <Typography
+                boxProps={{ margin: 0 }}
+                color={COLORS.PRIMARY3}
+                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TYPOGRAPHY.H7}
+              >
+                {`- ${t('ledgerLiveDialogStepTwo')}`}
+              </Typography>
+              <Typography
+                boxProps={{ margin: 0 }}
+                color={COLORS.PRIMARY3}
+                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TYPOGRAPHY.H7}
+              >
+                {`- ${t('ledgerLiveDialogStepThree')}`}
+              </Typography>
+            </div>
+          </Dialog>
+        </div>
+      </div>
+    ) : null;
+
     return (
       <div className="confirm-page-container-content__details">
         <TransactionDetail
@@ -403,9 +456,7 @@ export default class ConfirmTransactionBase extends Component {
               detailTitle={
                 txData.dappSuggestedGasFees ? (
                   <>
-                    {t('transactionDetailDappGasHeading', [
-                      getRequestingOrigin(),
-                    ])}
+                    {t('transactionDetailGasHeading')}
                     <InfoTooltip
                       contentText={t('transactionDetailDappGasTooltip')}
                       position="top"
@@ -419,7 +470,11 @@ export default class ConfirmTransactionBase extends Component {
                     <InfoTooltip
                       contentText={
                         <>
-                          <p>{t('transactionDetailGasTooltipIntro')}</p>
+                          <p>
+                            {t('transactionDetailGasTooltipIntro', [
+                              isMainnet ? t('networkNameEthereum') : '',
+                            ])}
+                          </p>
                           <p>{t('transactionDetailGasTooltipExplanation')}</p>
                           <p>
                             <a
@@ -439,9 +494,7 @@ export default class ConfirmTransactionBase extends Component {
                   </>
                 )
               }
-              detailTitleColor={
-                txData.dappSuggestedGasFees ? COLORS.SECONDARY1 : COLORS.BLACK
-              }
+              detailTitleColor={COLORS.BLACK}
               detailText={
                 <div className="confirm-page-container-content__currency-container">
                   {renderHeartBeatIfNotInTest()}
@@ -480,15 +533,28 @@ export default class ConfirmTransactionBase extends Component {
                 </div>,
               ])}
               subTitle={
-                <GasTiming
-                  maxPriorityFeePerGas={hexWEIToDecGWEI(
-                    maxPriorityFeePerGas ||
-                      txData.txParams.maxPriorityFeePerGas,
+                <>
+                  {txData.dappSuggestedGasFees ? (
+                    <Typography
+                      variant={TYPOGRAPHY.H7}
+                      fontStyle={FONT_STYLE.ITALIC}
+                      color={COLORS.GRAY}
+                    >
+                      {t('transactionDetailDappGasMoreInfo')}
+                    </Typography>
+                  ) : (
+                    ''
                   )}
-                  maxFeePerGas={hexWEIToDecGWEI(
-                    maxFeePerGas || txData.txParams.maxFeePerGas,
-                  )}
-                />
+                  <GasTiming
+                    maxPriorityFeePerGas={hexWEIToDecGWEI(
+                      maxPriorityFeePerGas ||
+                        txData.txParams.maxPriorityFeePerGas,
+                    )}
+                    maxFeePerGas={hexWEIToDecGWEI(
+                      maxFeePerGas || txData.txParams.maxFeePerGas,
+                    )}
+                  />
+                </>
               }
             />,
             <TransactionDetailItem
@@ -507,6 +573,7 @@ export default class ConfirmTransactionBase extends Component {
           ]}
         />
         {nonceField}
+        {ledgerInstructionField}
       </div>
     );
   }
@@ -840,7 +907,6 @@ export default class ConfirmTransactionBase extends Component {
       onEdit,
       nonce,
       customNonceValue,
-      assetImage,
       unapprovedTxCount,
       type,
       hideSenderToRecipient,
@@ -899,7 +965,6 @@ export default class ConfirmTransactionBase extends Component {
         contentComponent={contentComponent}
         nonce={customNonceValue || nonce}
         unapprovedTxCount={unapprovedTxCount}
-        assetImage={assetImage}
         identiconAddress={identiconAddress}
         errorMessage={submitError}
         errorKey={errorKey}
