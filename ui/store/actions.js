@@ -2161,6 +2161,13 @@ export function setSwapsTokens(tokens) {
   };
 }
 
+export function clearSwapsQuotes() {
+  return async (dispatch) => {
+    await promisifiedBackground.clearSwapsQuotes();
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function resetBackgroundSwapsState() {
   return async (dispatch) => {
     const id = await promisifiedBackground.resetSwapsState();

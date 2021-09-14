@@ -19,6 +19,10 @@ import SlippageButtons from '../slippage-buttons';
 import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
+import {
+  VIEW_QUOTE_ROUTE,
+  LOADING_QUOTES_ROUTE,
+} from '../../../helpers/constants/routes';
 
 import {
   fetchQuotesAndSetQuoteState,
@@ -29,6 +33,7 @@ import {
   getBalanceError,
   getTopAssets,
   getFetchParams,
+  getQuotes,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -60,7 +65,12 @@ import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
 } from '../../../../shared/constants/swaps';
 
-import { resetSwapsPostFetchState, removeToken } from '../../../store/actions';
+import {
+  resetSwapsPostFetchState,
+  removeToken,
+  setBackgroundSwapRouteState,
+  clearSwapsQuotes,
+} from '../../../store/actions';
 import {
   fetchTokenPrice,
   fetchTokenBalance,
@@ -110,6 +120,8 @@ export default function BuildQuote({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const tokenList = useSelector(getTokenList);
   const useTokenDetection = useSelector(getUseTokenDetection);
+  const quotes = useSelector(getQuotes, isEqual);
+  const areQuotesPresent = Object.keys(quotes).length > 0;
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -168,6 +180,7 @@ export default function BuildQuote({
     decimals: fromTokenDecimals,
     balance: rawFromTokenBalance,
   } = selectedFromToken || {};
+  const { address: toTokenAddress } = selectedToToken || {};
 
   const fromTokenBalance =
     rawFromTokenBalance &&
@@ -392,6 +405,42 @@ export default function BuildQuote({
     fromTokenAddress,
     selectedToToken.address,
   );
+  const isReviewSwapButtonDisabled =
+    tokenFromError ||
+    !isFeatureFlagLoaded ||
+    !Number(inputValue) ||
+    !selectedToToken?.address ||
+    Number(maxSlippage) < 0 ||
+    Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
+    (toTokenIsNotDefault && occurrences < 2 && !verificationClicked);
+
+  useEffect(() => {
+    const fetchQuotesWithoutRedirecting = async () => {
+      const noLoadingQuotesPage = true;
+      await dispatch(
+        fetchQuotesAndSetQuoteState(
+          history,
+          inputValue,
+          maxSlippage,
+          metaMetricsEvent,
+          noLoadingQuotesPage,
+        ),
+      );
+    };
+    dispatch(clearSwapsQuotes());
+    if (!isReviewSwapButtonDisabled) {
+      fetchQuotesWithoutRedirecting();
+    }
+  }, [
+    dispatch,
+    history,
+    maxSlippage,
+    metaMetricsEvent,
+    isReviewSwapButtonDisabled,
+    inputValue,
+    fromTokenAddress,
+    toTokenAddress,
+  ]);
 
   return (
     <div className="build-quote">
@@ -583,26 +632,18 @@ export default function BuildQuote({
         )}
       </div>
       <SwapsFooter
-        onSubmit={() => {
-          dispatch(
-            fetchQuotesAndSetQuoteState(
-              history,
-              inputValue,
-              maxSlippage,
-              metaMetricsEvent,
-            ),
-          );
+        onSubmit={async () => {
+          if (areQuotesPresent) {
+            // If there are prefetched quotes already, go directly to the View Quote page.
+            history.push(VIEW_QUOTE_ROUTE);
+          } else {
+            // If the "Review Swap" button was clicked while quotes are being fetched, go to the Loading Quotes page.
+            await dispatch(setBackgroundSwapRouteState('loading'));
+            history.push(LOADING_QUOTES_ROUTE);
+          }
         }}
         submitText={t('swapReviewSwap')}
-        disabled={
-          tokenFromError ||
-          !isFeatureFlagLoaded ||
-          !Number(inputValue) ||
-          !selectedToToken?.address ||
-          Number(maxSlippage) < 0 ||
-          Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
-          (toTokenIsNotDefault && occurrences < 2 && !verificationClicked)
-        }
+        disabled={isReviewSwapButtonDisabled}
         hideCancel
         showTermsOfService
       />

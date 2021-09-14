@@ -1073,6 +1073,10 @@ export default class MetamaskController extends EventEmitter {
         swapsController,
       ),
       setSwapsTokens: nodeify(swapsController.setSwapsTokens, swapsController),
+      clearSwapsQuotes: nodeify(
+        swapsController.clearSwapsQuotes,
+        swapsController,
+      ),
       setApproveTxId: nodeify(swapsController.setApproveTxId, swapsController),
       setTradeTxId: nodeify(swapsController.setTradeTxId, swapsController),
       setSwapsTxGasPrice: nodeify(

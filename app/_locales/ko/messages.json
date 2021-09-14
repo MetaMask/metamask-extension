@@ -1870,10 +1870,6 @@
     "message": "$1와(과) 일치하는 토큰이 없습니다.",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "$1 확인 중",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "하드웨어 지갑으로 확인합니다."
   },
@@ -1924,9 +1920,6 @@
   },
   "swapFetchingTokens": {
     "message": "토큰 가져오는 중..."
-  },
-  "swapFinalizing": {
-    "message": "마무리 중..."
   },
   "swapFromTo": {
     "message": "$1을(를) $2(으)로 스왑",

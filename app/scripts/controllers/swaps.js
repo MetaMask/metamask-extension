@@ -148,7 +148,7 @@ export default class SwapsController {
   }
 
   // Once quotes are fetched, we poll for new ones to keep the quotes up to date. Market and aggregator contract conditions can change fast enough
-  // that quotes will no longer be available after 1 or 2 minutes. When fetchAndSetQuotes is first called it, receives fetch that parameters are stored in
+  // that quotes will no longer be available after 1 or 2 minutes. When fetchAndSetQuotes is first called, it receives fetch parameters that are stored in
   // state. These stored parameters are used on subsequent calls made during polling.
   // Note: we stop polling after 3 requests, until new quotes are explicitly asked for. The logic that enforces that maximum is in the body of fetchAndSetQuotes
   pollForNewQuotes() {
@@ -320,6 +320,11 @@ export default class SwapsController {
   setSwapsTokens(tokens) {
     const { swapsState } = this.store.getState();
     this.store.updateState({ swapsState: { ...swapsState, tokens } });
+  }
+
+  clearSwapsQuotes() {
+    const { swapsState } = this.store.getState();
+    this.store.updateState({ swapsState: { ...swapsState, quotes: {} } });
   }
 
   setSwapsErrorKey(errorKey) {

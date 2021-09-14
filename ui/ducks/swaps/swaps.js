@@ -412,6 +412,7 @@ export const fetchQuotesAndSetQuoteState = (
   inputValue,
   maxSlippage,
   metaMetricsEvent,
+  noLoadingQuotesPage,
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
@@ -461,8 +462,10 @@ export const fetchQuotesAndSetQuoteState = (
       decimals: toTokenDecimals,
       iconUrl: toTokenIconUrl,
     } = selectedToToken;
-    await dispatch(setBackgroundSwapRouteState('loading'));
-    history.push(LOADING_QUOTES_ROUTE);
+    if (!noLoadingQuotesPage) {
+      await dispatch(setBackgroundSwapRouteState('loading'));
+      history.push(LOADING_QUOTES_ROUTE);
+    }
     dispatch(setFetchingQuotes(true));
 
     const contractExchangeRates = getTokenExchangeRates(state);
