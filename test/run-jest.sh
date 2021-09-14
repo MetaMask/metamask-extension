@@ -13,6 +13,6 @@ yarn 'jest' '--config=./development/jest.config.js' "$@" & PIDS[1]=$!
 
 # This ensures that this shell exists with a non-zero code if any of the
 # subshells we waited for did
-for pid in ${PIDS[*]}; do
+for pid in "${PIDS[@]}"; do
     wait "$pid"
 done
