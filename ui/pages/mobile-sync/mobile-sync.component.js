@@ -408,7 +408,7 @@ export default class MobileSyncPage extends Component {
     return (
       <div
         className="new-account-import-form__buttons"
-        style={{ padding: 30, marginTop: 0 }}
+        style={{ padding: '30px 15px 30px 15px', marginTop: 0 }}
       >
         <Button
           type="secondary"
