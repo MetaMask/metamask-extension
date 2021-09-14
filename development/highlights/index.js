@@ -7,7 +7,7 @@ module.exports = { getHighlights };
 async function getHighlights() {
   let highlights = '';
   const changedFiles = await getChangedFiles({ target: 'develop' });
-  const announcement = storybook.getHighlightAnnouncement({ changedFiles });
+  const announcement = await storybook.getHighlightAnnouncement({ changedFiles });
   if (announcement) {
     highlights += announcement;
   }
