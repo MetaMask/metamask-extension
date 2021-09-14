@@ -44,6 +44,9 @@ const {
   composeSeries,
   runInChildProcess,
 } = require('./task');
+const {
+  createRemoveFencedCodeTransform,
+} = require('./transforms/remove-fenced-code');
 
 module.exports = createScriptTasks;
 
@@ -144,7 +147,12 @@ function createScriptTasks({
       disableConsoleSubtask,
       installSentrySubtask,
       phishingDetectSubtask,
-    ].map((subtask) => runInChildProcess(subtask, { buildType, isLavaMoat }));
+    ].map((subtask) =>
+      runInChildProcess(subtask, {
+        buildType,
+        isLavaMoat,
+      }),
+    );
     // make a parent task that runs each task in a child thread
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
@@ -231,10 +239,11 @@ function createFactoredBuild({
 
     const envVars = getEnvironmentVariables({ buildType, devMode, testing });
     setupBundlerDefaults(buildConfiguration, {
+      buildType,
       devMode,
       envVars,
-      reloadOnChange,
       minify,
+      reloadOnChange,
     });
 
     // set bundle entries
@@ -349,10 +358,11 @@ function createNormalBundle({
 
     const envVars = getEnvironmentVariables({ buildType, devMode, testing });
     setupBundlerDefaults(buildConfiguration, {
+      buildType,
       devMode,
       envVars,
-      reloadOnChange,
       minify,
+      reloadOnChange,
     });
 
     // set bundle entries
@@ -399,35 +409,37 @@ function createBuildConfiguration() {
 
 function setupBundlerDefaults(
   buildConfiguration,
-  { devMode, envVars, reloadOnChange, minify },
+  { buildType, devMode, envVars, minify, reloadOnChange },
 ) {
   const { bundlerOpts } = buildConfiguration;
 
   Object.assign(bundlerOpts, {
-    // source transforms
+    // Source transforms
     transform: [
-      // transpile top-level code
+      // Remove code that should be excluded from builds of the current type
+      createRemoveFencedCodeTransform(buildType),
+      // Transpile top-level code
       babelify,
-      // inline `fs.readFileSync` files
+      // Inline `fs.readFileSync` files
       brfs,
     ],
-    // use entryFilepath for moduleIds, easier to determine origin file
+    // Use entryFilepath for moduleIds, easier to determine origin file
     fullPaths: devMode,
-    // for sourcemaps
+    // For sourcemaps
     debug: true,
   });
 
-  // ensure react-devtools are not included in non-dev builds
+  // Ensure react-devtools are not included in non-dev builds
   if (!devMode) {
     bundlerOpts.manualIgnore.push('react-devtools');
   }
 
-  // inject environment variables via node-style `process.env`
+  // Inject environment variables via node-style `process.env`
   if (envVars) {
     bundlerOpts.transform.push([envify(envVars), { global: true }]);
   }
 
-  // setup reload on change
+  // Setup reload on change
   if (reloadOnChange) {
     setupReloadOnChange(buildConfiguration);
   }
@@ -436,21 +448,21 @@ function setupBundlerDefaults(
     setupMinification(buildConfiguration);
   }
 
-  // setup source maps
+  // Setup source maps
   setupSourcemaps(buildConfiguration, { devMode });
 }
 
 function setupReloadOnChange({ bundlerOpts, events }) {
-  // add plugin to options
+  // Add plugin to options
   Object.assign(bundlerOpts, {
     plugin: [...bundlerOpts.plugin, watchify],
-    // required by watchify
+    // Required by watchify
     cache: {},
     packageCache: {},
   });
-  // instrument pipeline
+  // Instrument pipeline
   events.on('configurePipeline', ({ bundleStream }) => {
-    // handle build error to avoid breaking build process
+    // Handle build error to avoid breaking build process
     // (eg on syntax error)
     bundleStream.on('error', (err) => {
       gracefulError(err);
