@@ -1,4 +1,5 @@
 module.exports = {
+  displayName: '/ui, /shared',
   collectCoverageFrom: ['<rootDir>/ui/**/*.js', '<rootDir>/shared/**/*.js'],
   coverageDirectory: './jest-coverage/main',
   coveragePathIgnorePatterns: ['.stories.js', '.snap'],

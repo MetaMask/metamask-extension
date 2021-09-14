@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: 'development',
+  displayName: '/development',
   collectCoverageFrom: ['<rootDir>/**/*.js'],
   coverageDirectory: '../jest-coverage/development/',
   coverageReporters: ['json', 'lcov', 'text', 'clover'],
