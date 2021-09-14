@@ -68,10 +68,10 @@ export default function EditGasPopover({
   let updatedTransaction = transaction;
   if (mode === EDIT_GAS_MODES.SPEED_UP || mode === EDIT_GAS_MODES.CANCEL) {
     updatedTransaction = {
-      ...transaction.primaryTransaction,
+      ...transaction,
       userFeeLevel: 'custom',
       txParams: {
-        ...transaction.primaryTransaction?.txParams,
+        ...transaction.txParams,
         ...updatedCustomGasSettings,
       },
     };

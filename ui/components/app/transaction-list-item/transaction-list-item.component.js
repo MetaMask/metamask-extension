@@ -193,7 +193,7 @@ export default function TransactionListItem({
           {speedUpButton}
           {showCancelButton && (
             <CancelButton
-              transactionGroup={transactionGroup}
+              transaction={transactionGroup.primaryTransaction}
               cancelTransaction={cancelTransaction}
             />
           )}
@@ -219,14 +219,14 @@ export default function TransactionListItem({
         <EditGasPopover
           onClose={() => setShowRetryEditGasPopover(false)}
           mode={EDIT_GAS_MODES.SPEED_UP}
-          transaction={transactionGroup}
+          transaction={transactionGroup.primaryTransaction}
         />
       )}
       {showCancelEditGasPopover && (
         <EditGasPopover
           onClose={() => setShowCancelEditGasPopover(false)}
           mode={EDIT_GAS_MODES.CANCEL}
-          transaction={transactionGroup}
+          transaction={transactionGroup.primaryTransaction}
         />
       )}
     </>

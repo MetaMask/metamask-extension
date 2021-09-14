@@ -156,7 +156,7 @@ export default class TransactionListItemDetails extends PureComponent {
               )}
               {showCancel && (
                 <CancelButton
-                  transactionGroup={transactionGroup}
+                  transaction={transaction}
                   cancelTransaction={this.handleCancel}
                   detailsModal
                 />
