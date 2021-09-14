@@ -4,7 +4,7 @@ const storybook = require('./storybook.js');
 
 module.exports = { getHighlights };
 
-async function getHighlights() {
+async function getHighlights({ artifactBase }) {
   let highlights = '';
   const changedFiles = await getChangedFiles({ target: 'develop' });
   console.log(`detected changed files vs develop:`);
@@ -13,6 +13,7 @@ async function getHighlights() {
   }
   const announcement = await storybook.getHighlightAnnouncement({
     changedFiles,
+    artifactBase,
   });
   if (announcement) {
     highlights += announcement;

@@ -207,7 +207,7 @@ async function start() {
   }
 
   try {
-    const highlights = await getHighlights();
+    const highlights = await getHighlights({ artifactBase: BUILD_LINK_BASE });
     if (highlights) {
       const highlightsBody = `### highlights:\n${highlights}\n`;
       commentBody += highlightsBody;

@@ -2,6 +2,7 @@ const path = require('path');
 const { promisify } = require('util');
 const exec = promisify(require('child_process').exec);
 const dependencyTree = require('dependency-tree');
+const { toId: storybookFilenameToId } = require('@storybook/router/utils');
 
 const cwd = process.cwd();
 const resolutionCache = {};
@@ -14,11 +15,13 @@ module.exports = {
   getHighlightAnnouncement,
 };
 
-async function getHighlightAnnouncement({ changedFiles }) {
+async function getHighlightAnnouncement({ changedFiles, artifactBase }) {
   const highlights = await getHighlights({ changedFiles });
   if (!highlights.length) return null;
   let announcement = '##### storybook';
-  announcement += highlights.map((entry) => `\n- ${entry}`);
+  announcement += highlights
+    .map((entry) => `\n- [${entry}](${urlForStoryFile(entry, artifactBase)})`)
+    .join('');
   return announcement;
 }
 
@@ -55,4 +58,9 @@ async function getLocalDependencyList(filename) {
     })
     .map((entry) => path.relative(cwd, entry));
   return list;
+}
+
+function urlForStoryFile(filename, artifactBase) {
+  const storyId = storybookFilenameToId(filename);
+  return `${artifactBase}/storybook/index.html?path=/story/${storyId}`;
 }
