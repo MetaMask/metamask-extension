@@ -121,7 +121,7 @@ const CommandValidators = {
 };
 
 // Matches lines starting with "///:", optionally preceded by whitespace
-const linesWithFenceRegex = /^.*\/\/\/:.*$/gmu;
+const linesWithFenceRegex = /^\s*\/\/\/:.*$/gmu;
 
 // Matches the first "///:" in a string
 const fenceSentinelRegex = /^\s*\/\/\/:/u;
