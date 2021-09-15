@@ -1,83 +1,100 @@
-# MetaMask Filecoin Developer Preview
+# MetaMask Browser Extension
 
-## Hey, we're hiring JavaScript Engineers! [Apply Here](https://boards.greenhouse.io/consensys/jobs/2572388).
+Hey! We are hiring JavaScript Engineers! [Apply here](https://boards.greenhouse.io/consensys/jobs/2572388)!
+---
 
-Welcome to the MetaMask Filecoin Developer Preview.
-This is a special distribution of the MetaMask extension intended for developers only.
-It uses a prototype of the [MetaMask Snaps plugin system](https://medium.com/metamask/introducing-the-next-evolution-of-the-web3-wallet-4abdf801a4ee) to include a preinstalled version of a Filecoin plugin, called a _snap_.
+You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://metamask.zendesk.com/hc/en-us).
 
 For [general questions](https://community.metamask.io/c/learn/26), [feature requests](https://community.metamask.io/c/feature-requests-ideas/13), or [developer questions](https://community.metamask.io/c/developer-questions/11), visit our [Community Forum](https://community.metamask.io/).
 
-For the latest version, please see [Releases](https://github.com/MetaMask/metamask-extension/releases).
-Builds can be installed using [these instructions](./docs/add-to-chrome.md).
-We recommend creating a new browser profile where you install the Filecoin developer preview.
-This distribution of the MetaMask extension may not receive all features and bug fixes added to the official, browser store distribution.
+MetaMask supports Firefox, Google Chrome, and Chromium-based browsers. We recommend using the latest available browser version.
 
-## Usage
+For up to the minute news, follow our [Twitter](https://twitter.com/metamask) or [Medium](https://medium.com/metamask) pages.
 
-The Filecoin Developer Preview only supports the preinstalled Filecoin snap, and can only be used on Chromium browsers.
-You can try it out with [this dapp](https://metamask.github.io/filsnap).
+To learn how to develop MetaMask-compatible applications, visit our [Developer Docs](https://metamask.github.io/metamask-docs/).
 
-The Filecoin snap (a.k.a. `filsnap`) runs within a [Secure EcmaScript](https://github.com/endojs/endo/tree/master/packages/ses) Compartment inside a [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API).
-The snap can be toggled on and off and reinstalled via the Filecoin dropdown in the main MetaMask menu bar.
+To learn how to contribute to the MetaMask project itself, visit our [Internal Docs](https://github.com/MetaMask/metamask-extension/tree/develop/docs).
 
-The snap _manages its own Filecoin keys_ generated from the user's MetaMask seed phrase according to the BIP-32 and SLIP-44 standards.
-The snap cannot access the user's seed phrase or any keys other than Filecoin.
+## Building locally
 
-To communicate with dapps, the snap extends its own RPC API to sites that connect to it, allowing websites to check the balance of the user's Filecoin address, and send transactions.
-It's the dapp's responsibility to display the user's FIL balance, send and receive transactions and messages, etc.
-There is no UI representation of FIL in MetaMask at this prototype stage.
+- Install [Node.js](https://nodejs.org) version 14
+    - If you are using [nvm](https://github.com/creationix/nvm#installation) (recommended) running `nvm use` will automatically choose the right node version for you.
+- Install [Yarn](https://yarnpkg.com/en/docs/install)
+- Install dependencies: `yarn setup` (not the usual install command)
+- Copy the `.metamaskrc.dist` file to `.metamaskrc`
+    - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura Project ID](https://infura.io/docs).
+    - If debugging MetaMetrics, you'll need to add a value for `SEGMENT_WRITE_KEY` [Segment write key](https://segment.com/docs/connections/find-writekey/).
+- Build the project to the `./dist/` folder with `yarn dist`.
 
-To understand how to connect to and talk to the snap, see the [source code](https://github.com/MetaMask/filsnap/blob/00db7483afb686545aefe00d244d5eedca78918d/packages/adapter/src/index.ts/#L46-L53) of the [example dapp](https://metamask.github.io/filsnap).
+Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
 
-In short, to connect to the snap, you make the following call over MetaMask's `window.ethereum` API:
+See the [build system readme](./development/build/README.md) for build system usage information.
 
-```javascript
-await window.ethereum.request({
-  method: "wallet_enable",
-  params: [{
-    filsnap: {}
-  }]
-});
+## Contributing
+
+### Development builds
+
+To start a development build (e.g. with logging and file watching) run `yarn start`.
+
+To start the [React DevTools](https://github.com/facebook/react-devtools) and [Redux DevTools Extension](http://extension.remotedev.io)
+  alongside the app, use `yarn start:dev`.
+  - React DevTools will open in a separate window; no browser extension is required
+  - Redux DevTools will need to be installed as a browser extension. Open the Redux Remote Devtools to access Redux state logs. This can be done by either right clicking within the web browser to bring up the context menu, expanding the Redux DevTools panel and clicking Open Remote DevTools OR clicking the Redux DevTools extension icon and clicking Open Remote DevTools.
+    - You will also need to check the "Use custom (local) server" checkbox in the Remote DevTools Settings, using the default server configuration (host `localhost`, port `8000`, secure connection checkbox unchecked)
+
+### Running Unit Tests and Linting
+
+Run unit tests and the linter with `yarn test`.
+
+To run just unit tests, run `yarn test:unit`. To run unit tests continuously with a file watcher, run `yarn watch`.
+
+You can run the linter by itself with `yarn lint`, and you can automatically fix some lint problems with `yarn lint:fix`. You can also run these two commands just on your local changes to save time with `yarn lint:changed` and `yarn lint:changed:fix` respectively.
+
+### Running E2E Tests
+
+Our e2e test suite can be run on either Firefox or Chrome. In either case, start by creating a test build by running `yarn build:test`.
+
+Firefox e2e tests can be run with `yarn test:e2e:firefox`.
+
+Chrome e2e tests can be run with `yarn test:e2e:chrome`, but they will only work if you have Chrome v79 installed. Update the `chromedriver` package to a version matching your local Chrome installation to run e2e tests on newer Chrome versions.
+
+### Changing dependencies
+
+Whenever you change dependencies (adding, removing, or updating, either in `package.json` or `yarn.lock`), there are various files that must be kept up-to-date.
+
+* `yarn.lock`:
+  * Run `yarn setup` again after your changes to ensure `yarn.lock` has been properly updated.
+* The `allow-scripts` configuration in `package.json`
+  * Run `yarn allow-scripts auto` to update the `allow-scripts` configuration automatically. This config determines whether the package's install/postinstall scripts are allowed to run. Review each new package to determine whether the install script needs to run or not, testing if necessary.
+  * Unfortunately, `yarn allow-scripts auto` will behave inconsistently on different platforms. macOS and Windows users may see extraneous changes relating to optional dependencies.
+* The LavaMoat auto-generated policy in `lavamoat/node/policy.json`
+  * Run `yarn lavamoat:auto` to re-generate this policy file. Review the changes to determine whether the access granted to each package seems appropriate.
+  * Unfortunately, `yarn lavamoat:auto` will behave inconsistently on different platforms. macOS and Windows users may see extraneous changes relating to optional dependencies.
+
+## Architecture
+
+[![Architecture Diagram](./docs/architecture.png)][1]
+
+## Development
+
+```bash
+yarn
+yarn start
 ```
 
-If that call succeeds, you can communicate with the plugin as follows:
+## Build for Publishing
 
-```javascript
-await window.ethereum.request({
-  method: "wallet_invokePlugin",
-  params: ['filsnap', {
-    method: 'fil_getBalance',
-  }]
-});
+```bash
+yarn dist
 ```
 
-For a list of available methods, see [here](https://github.com/MetaMask/filsnap/blob/00db7483afb686545aefe00d244d5eedca78918d/packages/snap/src/snap.ts/#L41-L67).
+## Other Docs
 
-Note that some methods take parameters, for example:
+- [How to add custom build to Chrome](./docs/add-to-chrome.md)
+- [How to add custom build to Firefox](./docs/add-to-firefox.md)
+- [How to add a new translation to MetaMask](./docs/translating-guide.md)
+- [Publishing Guide](./docs/publishing.md)
+- [How to use the TREZOR emulator](./docs/trezor-emulator.md)
+- [How to generate a visualization of this repository's development](./development/gource-viz.sh)
 
-```javascript
-const mesage = // Your message
-
-await window.ethereum.request({
-  method: "wallet_invokePlugin",
-  params: ['filsnap', {
-    method: 'fil_signMessage',
-    params: { message }
-  }]
-});
-```
-
-For related repositories and documentation, please see:
-
-- [The Filecoin snap](https://github.com/MetaMask/filsnap/tree/master/packages/snap)
-- [The prototype Snaps system](https://github.com/MetaMask/snaps-skunkworks)
-
-> Kudos to our friends at [NodeFactory](https://github.com/NodeFactoryIo) for the original implementation of the Filecoin snap and dapp.
-
-## About MetaMask
-
-You can find the latest version of MetaMask on [our official website](https://metamask.io/).
-We do not offer customer support for the Filecoin Developer Preview, but please open an issue if anything is amiss.
-
-For the regular MetaMask extension repository, go [here](https://github.com/MetaMask/metamask-extension).
+[1]: http://www.nomnoml.com/#view/%5B%3Cactor%3Euser%5D%0A%0A%5Bmetamask-ui%7C%0A%20%20%20%5Btools%7C%0A%20%20%20%20%20react%0A%20%20%20%20%20redux%0A%20%20%20%20%20thunk%0A%20%20%20%20%20ethUtils%0A%20%20%20%20%20jazzicon%0A%20%20%20%5D%0A%20%20%20%5Bcomponents%7C%0A%20%20%20%20%20app%0A%20%20%20%20%20account-detail%0A%20%20%20%20%20accounts%0A%20%20%20%20%20locked-screen%0A%20%20%20%20%20restore-vault%0A%20%20%20%20%20identicon%0A%20%20%20%20%20config%0A%20%20%20%20%20info%0A%20%20%20%5D%0A%20%20%20%5Breducers%7C%0A%20%20%20%20%20app%0A%20%20%20%20%20metamask%0A%20%20%20%20%20identities%0A%20%20%20%5D%0A%20%20%20%5Bactions%7C%0A%20%20%20%20%20%5BbackgroundConnection%5D%0A%20%20%20%5D%0A%20%20%20%5Bcomponents%5D%3A-%3E%5Bactions%5D%0A%20%20%20%5Bactions%5D%3A-%3E%5Breducers%5D%0A%20%20%20%5Breducers%5D%3A-%3E%5Bcomponents%5D%0A%5D%0A%0A%5Bweb%20dapp%7C%0A%20%20%5Bui%20code%5D%0A%20%20%5Bweb3%5D%0A%20%20%5Bmetamask-inpage%5D%0A%20%20%0A%20%20%5B%3Cactor%3Eui%20developer%5D%0A%20%20%5Bui%20developer%5D-%3E%5Bui%20code%5D%0A%20%20%5Bui%20code%5D%3C-%3E%5Bweb3%5D%0A%20%20%5Bweb3%5D%3C-%3E%5Bmetamask-inpage%5D%0A%5D%0A%0A%5Bmetamask-background%7C%0A%20%20%5Bprovider-engine%5D%0A%20%20%5Bhooked%20wallet%20subprovider%5D%0A%20%20%5Bid%20store%5D%0A%20%20%0A%20%20%5Bprovider-engine%5D%3C-%3E%5Bhooked%20wallet%20subprovider%5D%0A%20%20%5Bhooked%20wallet%20subprovider%5D%3C-%3E%5Bid%20store%5D%0A%20%20%5Bconfig%20manager%7C%0A%20%20%20%20%5Brpc%20configuration%5D%0A%20%20%20%20%5Bencrypted%20keys%5D%0A%20%20%20%20%5Bwallet%20nicknames%5D%0A%20%20%5D%0A%20%20%0A%20%20%5Bprovider-engine%5D%3C-%5Bconfig%20manager%5D%0A%20%20%5Bid%20store%5D%3C-%3E%5Bconfig%20manager%5D%0A%5D%0A%0A%5Buser%5D%3C-%3E%5Bmetamask-ui%5D%0A%0A%5Buser%5D%3C%3A--%3A%3E%5Bweb%20dapp%5D%0A%0A%5Bmetamask-contentscript%7C%0A%20%20%5Bplugin%20restart%20detector%5D%0A%20%20%5Brpc%20passthrough%5D%0A%5D%0A%0A%5Brpc%20%7C%0A%20%20%5Bethereum%20blockchain%20%7C%0A%20%20%20%20%5Bcontracts%5D%0A%20%20%20%20%5Baccounts%5D%0A%20%20%5D%0A%5D%0A%0A%5Bweb%20dapp%5D%3C%3A--%3A%3E%5Bmetamask-contentscript%5D%0A%5Bmetamask-contentscript%5D%3C-%3E%5Bmetamask-background%5D%0A%5Bmetamask-background%5D%3C-%3E%5Bmetamask-ui%5D%0A%5Bmetamask-background%5D%3C-%3E%5Brpc%5D%0A

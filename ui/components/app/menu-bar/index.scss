@@ -13,16 +13,6 @@
     place-self: center end;
   }
 
-  &__filsnap-menu-button {
-    height: 20px;
-    width: 20px;
-    background: none;
-    font-size: inherit;
-    padding: 0;
-    background-color: #fff;
-    place-self: center end;
-  }
-
   .selected-account {
     grid-column: 2 / span 1;
     place-self: center stretch;

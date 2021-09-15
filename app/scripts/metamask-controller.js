@@ -1,5 +1,4 @@
 import EventEmitter from 'events';
-import extension from 'extensionizer';
 import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
@@ -84,7 +83,6 @@ import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
-import { FILSNAP_NAME, setupFilsnap } from './lib/filsnap';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -118,7 +116,6 @@ export default class MetamaskController extends EventEmitter {
     const initState = opts.initState || {};
     const version = this.platform.getVersion();
     this.recordFirstTimeInfo(initState);
-    this.setupFilsnap = opts.setupFilsnap || setupFilsnap;
 
     // this keeps track of how many "controllerStream" connections are open
     // the only thing that uses controller connections are open metamask UI instances
@@ -724,9 +721,6 @@ export default class MetamaskController extends EventEmitter {
     // TODO:LegacyProvider: Delete
     this.publicConfigStore = this.createPublicConfigStore();
 
-    // Run filsnap
-    this.setupFilsnap(this.permissionsController, this.pluginController);
-
     // Setup some background hooks
     global.clearPermissions = () =>
       this.permissionsController.clearPermissions();
@@ -819,17 +813,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Reinstalls filsnap.
-   */
-  async reinstallFilsnap() {
-    if (this.pluginController.has(FILSNAP_NAME)) {
-      this.pluginController.removePlugin(FILSNAP_NAME);
-    }
-    this.assetsController.deleteResourcesFor(FILSNAP_NAME);
-    await this.setupFilsnap(this.permissionsController, this.pluginController);
-  }
-
-  /**
    * Gets relevant state for the provider of an external origin.
    *
    * @param {string} origin - The origin to get the provider state for.
@@ -898,7 +881,6 @@ export default class MetamaskController extends EventEmitter {
       networkController,
       onboardingController,
       permissionsController,
-      pluginController,
       preferencesController,
       swapsController,
       threeBoxController,
@@ -1302,26 +1284,6 @@ export default class MetamaskController extends EventEmitter {
         this.detectTokensController.detectNewTokens,
         this.detectTokensController,
       ),
-
-      // Plugins
-      reinstallFilsnap: nodeify(this.reinstallFilsnap, this),
-
-      toggleFilsnap: nodeify(async () => {
-        if (pluginController.isRunning(FILSNAP_NAME)) {
-          pluginController.stopPlugin(FILSNAP_NAME);
-        } else {
-          try {
-            await pluginController.startPlugin(FILSNAP_NAME);
-          } catch (error) {
-            extension.notifications.create(FILSNAP_NAME, {
-              type: 'basic',
-              title: error.message,
-              iconUrl: extension.extension.getURL('../../images/icon-64.png'),
-              message: error.message,
-            });
-          }
-        }
-      }),
     };
   }
 
@@ -1356,7 +1318,6 @@ export default class MetamaskController extends EventEmitter {
         const addresses = await this.keyringController.getAccounts();
         this.preferencesController.setAddresses(addresses);
         this.selectFirstIdentity();
-        await this.reinstallFilsnap();
       }
       return vault;
     } finally {
@@ -1390,9 +1351,6 @@ export default class MetamaskController extends EventEmitter {
 
       // clear unapproved transactions
       this.txController.txStateManager.clearUnapprovedTxs();
-
-      // reinstall filsnap
-      await this.reinstallFilsnap();
 
       // create new vault
       const vault = await keyringController.createNewVaultAndRestore(
