@@ -1870,10 +1870,6 @@
     "message": "Нет доступных токенов соответствующих $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "Проверка $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "Подтвердить с помощью аппаратного кошелька"
   },
@@ -1924,9 +1920,6 @@
   },
   "swapFetchingTokens": {
     "message": "Получение токенов..."
-  },
-  "swapFinalizing": {
-    "message": "Завершение..."
   },
   "swapFromTo": {
     "message": "Своп $1 на $2",

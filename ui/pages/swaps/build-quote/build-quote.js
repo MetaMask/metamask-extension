@@ -19,6 +19,10 @@ import SlippageButtons from '../slippage-buttons';
 import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
+import {
+  VIEW_QUOTE_ROUTE,
+  LOADING_QUOTES_ROUTE,
+} from '../../../helpers/constants/routes';
 
 import {
   fetchQuotesAndSetQuoteState,
@@ -29,6 +33,8 @@ import {
   getBalanceError,
   getTopAssets,
   getFetchParams,
+  getQuotes,
+  setReviewSwapClickedTimestamp,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -60,7 +66,13 @@ import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
 } from '../../../../shared/constants/swaps';
 
-import { resetSwapsPostFetchState, removeToken } from '../../../store/actions';
+import {
+  resetSwapsPostFetchState,
+  removeToken,
+  setBackgroundSwapRouteState,
+  clearSwapsQuotes,
+  stopPollingForQuotes,
+} from '../../../store/actions';
 import {
   fetchTokenPrice,
   fetchTokenBalance,
@@ -75,6 +87,8 @@ const fuseSearchKeys = [
 ];
 
 const MAX_ALLOWED_SLIPPAGE = 15;
+
+let timeoutIdForQuotesPrefetching;
 
 export default function BuildQuote({
   inputValue,
@@ -110,6 +124,8 @@ export default function BuildQuote({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const tokenList = useSelector(getTokenList);
   const useTokenDetection = useSelector(getUseTokenDetection);
+  const quotes = useSelector(getQuotes, isEqual);
+  const areQuotesPresent = Object.keys(quotes).length > 0;
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -168,6 +184,7 @@ export default function BuildQuote({
     decimals: fromTokenDecimals,
     balance: rawFromTokenBalance,
   } = selectedFromToken || {};
+  const { address: toTokenAddress } = selectedToToken || {};
 
   const fromTokenBalance =
     rawFromTokenBalance &&
@@ -348,6 +365,7 @@ export default function BuildQuote({
 
   useEffect(() => {
     dispatch(resetSwapsPostFetchState());
+    dispatch(setReviewSwapClickedTimestamp());
   }, [dispatch]);
 
   const BlockExplorerLink = () => {
@@ -392,6 +410,51 @@ export default function BuildQuote({
     fromTokenAddress,
     selectedToToken.address,
   );
+  const isReviewSwapButtonDisabled =
+    tokenFromError ||
+    !isFeatureFlagLoaded ||
+    !Number(inputValue) ||
+    !selectedToToken?.address ||
+    Number(maxSlippage) < 0 ||
+    Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
+    (toTokenIsNotDefault && occurrences < 2 && !verificationClicked);
+
+  // It's triggered every time there is a change in form values (token from, token to, amount and slippage).
+  useEffect(() => {
+    dispatch(clearSwapsQuotes());
+    dispatch(stopPollingForQuotes());
+    const prefetchQuotesWithoutRedirecting = async () => {
+      const pageRedirectionDisabled = true;
+      await dispatch(
+        fetchQuotesAndSetQuoteState(
+          history,
+          inputValue,
+          maxSlippage,
+          metaMetricsEvent,
+          pageRedirectionDisabled,
+        ),
+      );
+    };
+    // Delay fetching quotes until a user is done typing an input value. If they type a new char in less than a second,
+    // we will cancel previous setTimeout call and start running a new one.
+    timeoutIdForQuotesPrefetching = setTimeout(() => {
+      timeoutIdForQuotesPrefetching = null;
+      if (!isReviewSwapButtonDisabled) {
+        // Only do quotes prefetching if the Review Swap button is enabled.
+        prefetchQuotesWithoutRedirecting();
+      }
+    }, 1000);
+    return () => clearTimeout(timeoutIdForQuotesPrefetching);
+  }, [
+    dispatch,
+    history,
+    maxSlippage,
+    metaMetricsEvent,
+    isReviewSwapButtonDisabled,
+    inputValue,
+    fromTokenAddress,
+    toTokenAddress,
+  ]);
 
   return (
     <div className="build-quote">
@@ -401,6 +464,7 @@ export default function BuildQuote({
           {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
             <div
               className="build-quote__max-button"
+              data-testid="build-quote__max-button"
               onClick={() =>
                 onInputChange(fromTokenBalance || '0', fromTokenBalance)
               }
@@ -583,26 +647,32 @@ export default function BuildQuote({
         )}
       </div>
       <SwapsFooter
-        onSubmit={() => {
-          dispatch(
-            fetchQuotesAndSetQuoteState(
-              history,
-              inputValue,
-              maxSlippage,
-              metaMetricsEvent,
-            ),
-          );
+        onSubmit={async () => {
+          // We need this to know how long it took to go from clicking on the Review Swap button to rendered View Quote page.
+          dispatch(setReviewSwapClickedTimestamp(Date.now()));
+          // In case that quotes prefetching is waiting to be executed, but hasn't started yet,
+          // we want to cancel it and fetch quotes from here.
+          if (timeoutIdForQuotesPrefetching) {
+            clearTimeout(timeoutIdForQuotesPrefetching);
+            dispatch(
+              fetchQuotesAndSetQuoteState(
+                history,
+                inputValue,
+                maxSlippage,
+                metaMetricsEvent,
+              ),
+            );
+          } else if (areQuotesPresent) {
+            // If there are prefetched quotes already, go directly to the View Quote page.
+            history.push(VIEW_QUOTE_ROUTE);
+          } else {
+            // If the "Review Swap" button was clicked while quotes are being fetched, go to the Loading Quotes page.
+            await dispatch(setBackgroundSwapRouteState('loading'));
+            history.push(LOADING_QUOTES_ROUTE);
+          }
         }}
         submitText={t('swapReviewSwap')}
-        disabled={
-          tokenFromError ||
-          !isFeatureFlagLoaded ||
-          !Number(inputValue) ||
-          !selectedToToken?.address ||
-          Number(maxSlippage) < 0 ||
-          Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
-          (toTokenIsNotDefault && occurrences < 2 && !verificationClicked)
-        }
+        disabled={isReviewSwapButtonDisabled}
         hideCancel
         showTermsOfService
       />

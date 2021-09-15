@@ -1516,10 +1516,6 @@
     "message": "没有匹配的代币符合 $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "正在检查 $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapCustom": {
     "message": "自定义"
   },
@@ -1557,9 +1553,6 @@
   },
   "swapFetchingTokens": {
     "message": "获取代币中……"
-  },
-  "swapFinalizing": {
-    "message": "确定中……"
   },
   "swapLowSlippageError": {
     "message": "交易可能失败，最大滑点过低。"

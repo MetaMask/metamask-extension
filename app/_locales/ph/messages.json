@@ -1870,10 +1870,6 @@
     "message": "Walang available na token na tumutugma sa $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "Sinusuri ang $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "Kumpirmahin ang iyong hardware wallet"
   },
@@ -1924,9 +1920,6 @@
   },
   "swapFetchingTokens": {
     "message": "Kinukuha ang mga token..."
-  },
-  "swapFinalizing": {
-    "message": "Isinasapinal..."
   },
   "swapFromTo": {
     "message": "Ang pag-swap ng $1 sa $2",
