@@ -6,6 +6,7 @@ import SendFooter from './send-footer.component';
 
 export default {
   title: 'SendFooter',
+  id: __filename,
 };
 
 export const SendFooterComponent = () => {

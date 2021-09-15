@@ -5,6 +5,7 @@ import TransactionDetailItem from '.';
 
 export default {
   title: 'Transaction Detail Item',
+  id: __filename,
 };
 
 export const basic = () => {

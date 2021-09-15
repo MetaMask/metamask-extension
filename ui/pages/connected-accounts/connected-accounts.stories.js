@@ -4,6 +4,7 @@ import ConnectedAccounts from './connected-accounts.component';
 
 export default {
   title: 'Connected Accounts',
+  id: __filename,
 };
 
 const account = [

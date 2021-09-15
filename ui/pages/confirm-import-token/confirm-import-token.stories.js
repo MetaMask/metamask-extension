@@ -10,6 +10,7 @@ import ConfirmAddToken from '.';
 
 export default {
   title: 'Confirmation Screens',
+  id: __filename,
 };
 
 const history = createBrowserHistory();

@@ -8,6 +8,7 @@ import ConfirmDeployContract from '.';
 
 export default {
   title: 'Confirmation Screens',
+  id: __filename,
 };
 
 // transaction ID
