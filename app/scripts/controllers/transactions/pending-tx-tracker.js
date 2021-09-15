@@ -15,7 +15,7 @@ import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
  * @param {Object} config.provider - A network provider.
  * @param {Object} config.nonceTracker - see nonce tracker
  * @param {Function} config.getPendingTransactions - a function for getting an array of transactions,
- * @param {Function} config.publishTransaction - a async function for publishing raw transactions,
+ * @param {Function} config.publishTransaction - An async function for publishing raw transactions,
  * @class
  */
 

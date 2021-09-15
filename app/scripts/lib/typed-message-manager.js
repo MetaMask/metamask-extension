@@ -31,8 +31,8 @@ export default class TypedMessageManager extends EventEmitter {
   /**
    * Controller in charge of managing - storing, adding, removing, updating - TypedMessage.
    *
-   * @param options0
-   * @param options0.getCurrentChainId
+   * @param options
+   * @param options.getCurrentChainId
    */
   constructor({ getCurrentChainId }) {
     super();
