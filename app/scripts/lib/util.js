@@ -53,10 +53,9 @@ const getEnvironmentType = (url = window.location.href) =>
 /**
  * Returns the platform (browser) where the extension is running.
  *
- * @param _
  * @returns {string} the platform ENUM
  */
-const getPlatform = (_) => {
+const getPlatform = () => {
   const ua = window.navigator.userAgent;
   if (ua.search('Firefox') === -1) {
     if (window && window.chrome && window.chrome.ipcRenderer) {
