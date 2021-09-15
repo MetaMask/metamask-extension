@@ -53,7 +53,7 @@ export function normalizeTxParams(txParams, lowerCase = true) {
  * @param {Object} txParams - the transaction parameters object
  * @param {string} fieldBeingValidated - the current field being validated
  * @param {string} mutuallyExclusiveField - the field to ensure is not provided
- * @throws {ethErrors.rpc.invalidParams} - throws if mutuallyExclusiveField is
+ * @throws {ethErrors.rpc.invalidParams} Throws if mutuallyExclusiveField is
  *  present in txParams.
  */
 function ensureMutuallyExclusiveFieldsNotProvided(
@@ -74,7 +74,7 @@ function ensureMutuallyExclusiveFieldsNotProvided(
  *
  * @param {Object} txParams - the transaction parameters object
  * @param {string} field - the current field being validated
- * @throws {ethErrors.rpc.invalidParams} - throws if field is not a string
+ * @throws {ethErrors.rpc.invalidParams} Throws if field is not a string
  */
 function ensureFieldIsString(txParams, field) {
   if (typeof txParams[field] !== 'string') {
@@ -92,7 +92,7 @@ function ensureFieldIsString(txParams, field) {
  * @param {Object} txParams - the transaction parameters object
  * @param {'gasPrice' | 'maxFeePerGas' | 'maxPriorityFeePerGas'} field - the
  *  current field being validated
- * @throws {ethErrors.rpc.invalidParams} - throws if type does not match the
+ * @throws {ethErrors.rpc.invalidParams} Throws if type does not match the
  *  expectations for provided field.
  */
 function ensureProperTransactionEnvelopeTypeProvided(txParams, field) {

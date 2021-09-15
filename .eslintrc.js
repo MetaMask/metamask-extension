@@ -117,7 +117,7 @@ module.exports = {
     'jsdoc/require-hyphen-before-param-description': [
       'error',
       'always',
-      { tags: { returns: 'never' } },
+      { tags: { returns: 'never', template: 'always', throws: 'never' } },
     ],
     'jsdoc/require-param-name': 'error',
     'jsdoc/require-param': ['error', { unnamedRootBase: ['options'] }],
