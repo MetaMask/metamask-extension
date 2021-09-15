@@ -72,6 +72,9 @@ function urlForStoryFile(filename, artifactBase) {
  * See:
  * https://gist.github.com/davidjrice/9d2af51100e41c6c4b4a
  * https://github.com/ComponentDriven/csf/blame/7ac941eee85816a4c567ca85460731acb5360f50/src/index.ts
+ *
+ * @param {string} string - The string to sanitize.
+ * @returns The sanitized string.
  */
 function sanitize(string) {
   return (
