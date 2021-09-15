@@ -11,7 +11,6 @@ import { MESSAGE_TYPE } from './app';
  * @property {'approve'} TOKEN_METHOD_APPROVE - A token transaction requesting an
  *  allowance of the token to spend on behalf of the user
  * @property {'incoming'} INCOMING - An incoming (deposit) transaction
- * @property {'sentEther'} SENT_ETHER - A transaction sending ether to a recipient (LEGACY - replaced by sendingNativeAsset)
  * @property {'simpleSend'} SIMPLE_SEND - A transaction sending a network's native asset to a recipient
  * @property {'contractInteraction'} CONTRACT_INTERACTION - A transaction that is
  *  interacting with a smart contract's methods that we have not treated as a special
@@ -49,7 +48,6 @@ export const TRANSACTION_TYPES = {
   TOKEN_METHOD_TRANSFER_FROM: 'transferfrom',
   TOKEN_METHOD_APPROVE: 'approve',
   INCOMING: 'incoming',
-  SENT_ETHER: 'sentEther',
   SIMPLE_SEND: 'simpleSend',
   CONTRACT_INTERACTION: 'contractInteraction',
   DEPLOY_CONTRACT: 'contractDeployment',

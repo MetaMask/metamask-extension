@@ -3,6 +3,8 @@ import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
 import migration64 from './064';
 
+const SENT_ETHER = 'sentEther'; // the legacy transaction type being replaced in this migration with TRANSACTION_TYPES.SIMPLE_SEND
+
 describe('migration #64', function () {
   it('should update the version metadata', async function () {
     const oldStorage = {
@@ -98,7 +100,7 @@ describe('migration #64', function () {
           '0x4d8543f12afd3795b94d723dcd0e20bfc3740e1af668e5e90a0c5ec49f36ba12',
       },
       1: {
-        type: TRANSACTION_TYPES.SENT_ETHER,
+        type: SENT_ETHER,
         id: 1,
         chainId: MAINNET_CHAIN_ID,
         txParams: {
@@ -123,7 +125,7 @@ describe('migration #64', function () {
               gas: '0x31413',
               value: '0x0',
             },
-            type: TRANSACTION_TYPES.SENT_ETHER,
+            type: SENT_ETHER,
           },
           [
             {
@@ -212,7 +214,7 @@ describe('migration #64', function () {
           },
           type: '0x2',
         },
-        type: TRANSACTION_TYPES.SENT_ETHER,
+        type: SENT_ETHER,
         history: [
           {
             chainId: '0x4',

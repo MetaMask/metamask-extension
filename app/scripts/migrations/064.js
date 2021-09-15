@@ -3,6 +3,8 @@ import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
 
 const version = 64;
 
+const SENT_ETHER = 'sentEther'; // the legacy transaction type being replaced in this migration with TRANSACTION_TYPES.SIMPLE_SEND
+
 /**
  * Removes metaMetricsSendCount from MetaMetrics controller
  */
@@ -22,12 +24,12 @@ function transformState(state) {
   const transactions = state?.TransactionController?.transactions;
   if (isPlainObject(transactions)) {
     for (const tx of Object.values(transactions)) {
-      if (tx.type === TRANSACTION_TYPES.SENT_ETHER) {
+      if (tx.type === SENT_ETHER) {
         tx.type = TRANSACTION_TYPES.SIMPLE_SEND;
       }
       if (tx.history) {
         tx.history.map((txEvent) => {
-          if (txEvent.type && txEvent.type === TRANSACTION_TYPES.SENT_ETHER) {
+          if (txEvent.type && txEvent.type === SENT_ETHER) {
             txEvent.type = TRANSACTION_TYPES.SIMPLE_SEND;
           }
           return txEvent;
