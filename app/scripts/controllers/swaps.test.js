@@ -4,7 +4,6 @@ import sinon from 'sinon';
 import { ethers } from 'ethers';
 import { mapValues } from 'lodash';
 import BigNumber from 'bignumber.js';
-import { ObservableStore } from '@metamask/obs-store';
 import {
   ROPSTEN_NETWORK_ID,
   MAINNET_NETWORK_ID,
@@ -83,12 +82,12 @@ const MOCK_FETCH_METADATA = {
   chainId: MAINNET_CHAIN_ID,
 };
 
-const MOCK_TOKEN_RATES_STORE = new ObservableStore({
+const MOCK_TOKEN_RATES_STORE = {
   contractExchangeRates: {
     '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
     '0x1111111111111111111111111111111111111111': 0.1,
   },
-});
+};
 
 const MOCK_GET_PROVIDER_CONFIG = () => ({ type: 'FAKE_NETWORK' });
 
@@ -816,9 +815,9 @@ describe('SwapsController', function () {
           .stub(swapsController, '_getERC20Allowance')
           .resolves(ethers.BigNumber.from(1));
 
-        swapsController.tokenRatesStore.updateState({
+        swapsController.tokenRatesStore = {
           contractExchangeRates: {},
-        });
+        };
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
           MOCK_FETCH_METADATA,
