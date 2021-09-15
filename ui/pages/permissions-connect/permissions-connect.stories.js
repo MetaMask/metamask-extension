@@ -7,6 +7,7 @@ import ChooseAccount from './choose-account';
 
 export default {
   title: 'Permissions Connect',
+  id: __filename,
 };
 
 export const ChooseAccountComponent = () => {

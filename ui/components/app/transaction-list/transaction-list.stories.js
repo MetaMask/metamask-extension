@@ -4,6 +4,7 @@ import TransactionList from '.';
 
 export default {
   title: 'Transaction List',
+  id: __filename,
 };
 
 const PageSet = ({ children }) => {

@@ -4,6 +4,7 @@ import AdvancedTab from './advanced-tab.component';
 
 export default {
   title: 'AdvancedTab',
+  id: __filename,
 };
 
 export const AdvancedTabComponent = () => {

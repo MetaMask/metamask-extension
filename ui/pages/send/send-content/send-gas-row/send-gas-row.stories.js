@@ -15,6 +15,7 @@ const store = configureStore(testData);
 
 export default {
   title: 'SendGasRow',
+  id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
