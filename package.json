@@ -27,7 +27,7 @@
     "test:unit": "mocha --exit --require test/env.js --require test/setup.js --recursive './app/**/*.test.js'",
     "test:unit:global": "mocha --exit --require test/env.js --require test/setup.js --recursive test/unit-global/*.test.js",
     "test:unit:jest": "./test/run-jest.sh",
-    "test:unit:lax": "mocha --exit --require test/env.js --require test/setup.js --ignore './app/scripts/controllers/permissions/*.test.js' --recursive './app/**/*.test.js'",
+    "test:unit:lax": "mocha --exit --require test/env.js --require test/setup.js --ignore './app/scripts/controllers/permissions/*.test.js' --ignore './app/scripts/migrations/*.test.js' --recursive './app/**/*.test.js'",
     "test:unit:strict": "mocha --exit --require test/env.js --require test/setup.js --recursive './app/scripts/controllers/permissions/*.test.js'",
     "test:unit:path": "mocha --exit --require test/env.js --require test/setup.js --recursive",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
