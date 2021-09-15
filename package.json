@@ -25,7 +25,6 @@
     "forwarder": "node ./development/static-server.js ./node_modules/@metamask/forwarder/dist/ --port 9010",
     "dapp-forwarder": "concurrently -k -n forwarder,dapp -p '[{time}][{name}]' 'yarn forwarder' 'yarn dapp'",
     "test:unit": "mocha --exit --require test/env.js --require test/setup.js --recursive './app/**/*.test.js'",
-    "test:unit:debug": "yarn test:unit --inspect-brk",
     "test:unit:global": "mocha --exit --require test/env.js --require test/setup.js --recursive test/unit-global/*.test.js",
     "test:unit:jest": "jest",
     "test:unit:jest:watch": "jest --watch",
