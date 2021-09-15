@@ -21,7 +21,7 @@ async function getHighlightAnnouncement({ changedFiles, artifactBase }) {
     .map((entry) => `\n- [${entry}](${urlForStoryFile(entry, artifactBase)})`)
     .join('');
   const announcement = `<details>
-    <summary>storybook:</summary>
+    <summary>storybook</summary>
     ${highlightsBody}
   </details>\n\n`;
   return announcement;
