@@ -555,7 +555,7 @@ async function bundleIt(buildConfiguration) {
 
 function getEnvironmentVariables({ buildType, devMode, testing }) {
   const environment = getEnvironment({ devMode, testing });
-  if (environment?.includes('production') && !process.env.SENTRY_DSN) {
+  if (environment === 'production' && !process.env.SENTRY_DSN) {
     throw new Error('Missing SENTRY_DSN environment variable');
   }
   return {
