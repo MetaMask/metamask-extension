@@ -22,13 +22,12 @@ export default function MenuBar() {
     },
   });
   const history = useHistory();
-  const origin = useSelector(getOriginOfCurrentTab);
-
   const [
     accountOptionsButtonElement,
     setAccountOptionsButtonElement,
   ] = useState(null);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
+  const origin = useSelector(getOriginOfCurrentTab);
 
   const showStatus =
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
