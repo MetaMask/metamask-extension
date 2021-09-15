@@ -1688,9 +1688,6 @@
   "sendTokens": {
     "message": "टोकन भेजें"
   },
-  "sentEther": {
-    "message": "Ether भेजा गया"
-  },
   "separateEachWord": {
     "message": "प्रत्येक शब्द को एक रिक्ति से अलग करें"
   },

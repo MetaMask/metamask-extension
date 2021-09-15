@@ -873,9 +873,6 @@
   "sendTokens": {
     "message": "Skicka tokens"
   },
-  "sentEther": {
-    "message": "skickat ether"
-  },
   "separateEachWord": {
     "message": "Lägg in ett mellanslag mellan varje ord"
   },

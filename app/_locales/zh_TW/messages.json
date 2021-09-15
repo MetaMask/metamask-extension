@@ -877,9 +877,6 @@
   "sendTokens": {
     "message": "發送代幣"
   },
-  "sentEther": {
-    "message": "發送以太幣"
-  },
   "separateEachWord": {
     "message": "單詞之間請以空白間隔"
   },

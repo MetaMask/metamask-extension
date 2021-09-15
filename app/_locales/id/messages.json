@@ -1688,9 +1688,6 @@
   "sendTokens": {
     "message": "Kirim Token"
   },
-  "sentEther": {
-    "message": "ether terkirim"
-  },
   "separateEachWord": {
     "message": "Pisahkan setiap kata dengan satu spasi"
   },

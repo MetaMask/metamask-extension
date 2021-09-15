@@ -1362,9 +1362,6 @@
   "sendTokens": {
     "message": "发送代币"
   },
-  "sentEther": {
-    "message": "发送 Ether"
-  },
   "separateEachWord": {
     "message": "用空格分隔每个单词"
   },

@@ -127,6 +127,7 @@ export default class ConfirmTransactionBase extends Component {
     gasFeeIsCustom: PropTypes.bool,
     isLedgerAccount: PropTypes.bool.isRequired,
     isFirefox: PropTypes.bool.isRequired,
+    nativeCurrency: PropTypes.string,
   };
 
   state = {
@@ -914,6 +915,7 @@ export default class ConfirmTransactionBase extends Component {
       txData,
       gasIsLoading,
       gasFeeIsCustom,
+      nativeCurrency,
     } = this.props;
     const {
       submitting,
@@ -940,7 +942,7 @@ export default class ConfirmTransactionBase extends Component {
     let functionType = getMethodName(name);
     if (!functionType) {
       if (type) {
-        functionType = getTransactionTypeTitle(t, type);
+        functionType = getTransactionTypeTitle(t, type, nativeCurrency);
       } else {
         functionType = t('contractInteraction');
       }

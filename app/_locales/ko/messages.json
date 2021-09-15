@@ -1688,9 +1688,6 @@
   "sendTokens": {
     "message": "토큰 보내기"
   },
-  "sentEther": {
-    "message": "Ether 보냄"
-  },
   "separateEachWord": {
     "message": "공백 한 칸으로 각 단어를 구분하세요."
   },
