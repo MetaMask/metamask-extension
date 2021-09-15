@@ -63,6 +63,14 @@ setBackgroundConnection({
   getGasFeeEstimatesAndStartPolling: jest.fn(),
 });
 
+jest.mock('react', () => {
+  const originReact = jest.requireActual('react');
+  return {
+    ...originReact,
+    useLayoutEffect: jest.fn(),
+  };
+});
+
 const generateUseSelectorRouter = (opts) => (selector) => {
   if (selector === getConversionRate) {
     return 1;
