@@ -555,7 +555,7 @@ async function bundleIt(buildConfiguration) {
 
 function getEnvironmentVariables({ buildType, devMode, testing }) {
   const environment = getEnvironment({ devMode, testing });
-  if (environment.includes('production') && !process.env.SENTRY_DSN) {
+  if (environment?.includes('production') && !process.env.SENTRY_DSN) {
     throw new Error('Missing SENTRY_DSN environment variable');
   }
   return {
@@ -579,14 +579,12 @@ function getEnvironmentVariables({ buildType, devMode, testing }) {
     // the value of SEGMENT_WRITE_KEY that we envify is undefined then no events will be tracked
     // in the build. This is intentional so that developers can contribute to MetaMask without
     // inflating event volume.
-    SEGMENT_WRITE_KEY:
-      environment === 'production'
-        ? process.env.SEGMENT_PROD_WRITE_KEY
-        : metamaskrc.SEGMENT_WRITE_KEY,
-    SEGMENT_LEGACY_WRITE_KEY:
-      environment === 'production'
-        ? process.env.SEGMENT_PROD_LEGACY_WRITE_KEY
-        : metamaskrc.SEGMENT_LEGACY_WRITE_KEY,
+    SEGMENT_WRITE_KEY: environment?.includes('production')
+      ? process.env.SEGMENT_PROD_WRITE_KEY
+      : metamaskrc.SEGMENT_WRITE_KEY,
+    SEGMENT_LEGACY_WRITE_KEY: environment?.includes('production')
+      ? process.env.SEGMENT_PROD_LEGACY_WRITE_KEY
+      : metamaskrc.SEGMENT_LEGACY_WRITE_KEY,
     SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
   };
 }
@@ -598,7 +596,7 @@ function getEnvironment({ devMode, testing }) {
   } else if (testing) {
     return 'testing';
   } else if (process.env.CIRCLE_BRANCH === 'master') {
-    return 'filecoin-production';
+    return 'production';
   } else if (
     /^Version-v(\d+)[.](\d+)[.](\d+)/u.test(process.env.CIRCLE_BRANCH)
   ) {

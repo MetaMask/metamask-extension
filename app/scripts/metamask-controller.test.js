@@ -137,7 +137,6 @@ describe('MetaMaskController', function () {
       },
       extension: ExtensionizerMock,
       infuraProjectId: 'foo',
-      setupFilsnap: () => Promise.resolve(),
     });
 
     // add sinon method spies

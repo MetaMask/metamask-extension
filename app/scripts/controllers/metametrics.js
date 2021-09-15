@@ -56,8 +56,9 @@ export default class MetaMetricsController {
     this.chainId = getCurrentChainId();
     this.network = getNetworkIdentifier();
     this.locale = prefState.currentLocale.replace('_', '-');
-    this.version =
-      environment === 'production' ? version : `${version}-${environment}`;
+    this.version = environment?.includes('production')
+      ? version
+      : `${version}-${environment}`;
 
     this.store = new ObservableStore({
       participateInMetaMetrics: null,
