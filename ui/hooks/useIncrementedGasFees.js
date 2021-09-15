@@ -66,8 +66,8 @@ export function useIncrementedGasFees(transaction) {
     // do not have txParams. This is why we use optional chaining on the
     // txParams object in this hook.
     const temporaryGasSettings = {
-      gasLimit: transaction?.txParams?.gas,
-      gas: transaction?.txParams?.gas,
+      gasLimit: transaction.txParams?.gas,
+      gas: transaction.txParams?.gas,
     };
 
     const suggestedMaxFeePerGas =
@@ -76,9 +76,9 @@ export function useIncrementedGasFees(transaction) {
       gasFeeEstimates?.medium?.suggestedMaxPriorityFeePerGas ?? '0';
 
     if (isEIP1559Transaction(transaction)) {
-      const transactionMaxFeePerGas = transaction?.txParams?.maxFeePerGas;
+      const transactionMaxFeePerGas = transaction.txParams?.maxFeePerGas;
       const transactionMaxPriorityFeePerGas =
-        transaction?.txParams?.maxPriorityFeePerGas;
+        transaction.txParams?.maxPriorityFeePerGas;
 
       temporaryGasSettings.maxFeePerGas =
         transactionMaxFeePerGas === undefined ||
@@ -97,7 +97,7 @@ export function useIncrementedGasFees(transaction) {
               suggestedMaxPriorityFeePerGas,
             );
     } else {
-      const transactionGasPrice = transaction?.txParams?.gasPrice;
+      const transactionGasPrice = transaction.txParams?.gasPrice;
       temporaryGasSettings.gasPrice =
         transactionGasPrice === undefined || transactionGasPrice.startsWith('-')
           ? '0x0'
