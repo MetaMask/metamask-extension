@@ -99,15 +99,7 @@ async function withFixtures(options, testSuite) {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       const errors = await driver.checkBrowserForConsoleErrors(driver);
       if (errors.length) {
-        // TODO:snaps what's going on here?
-        const errorReports = [];
-        errors.forEach((err) => {
-          // Irrelevant sentry error
-          if (!err.message?.includes('minified code')) {
-            errorReports.push(err.message);
-          }
-        });
-
+        const errorReports = errors.map((err) => err.message);
         const errorMessage = `Errors found in browser console:\n${errorReports.join(
           '\n',
         )}`;

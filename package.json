@@ -115,7 +115,6 @@
     "@mm-snap/controllers": "^0.0.7",
     "@mm-snap/iframe-execution-environment-service": "^0.0.8",
     "@mm-snap/rpc-methods": "^0.0.6",
-    "@mm-snap/workers": "^0.0.6",
     "@popperjs/core": "^2.4.0",
     "@reduxjs/toolkit": "^1.5.0",
     "@sentry/browser": "^5.26.0",

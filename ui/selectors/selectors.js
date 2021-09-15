@@ -620,9 +620,3 @@ export function getUseTokenDetection(state) {
 export function getTokenList(state) {
   return state.metamask.tokenList;
 }
-
-// Filsnap
-
-export function isFilsnapRunning(state) {
-  return Boolean(state.metamask.plugins?.filsnap?.isRunning);
-}
