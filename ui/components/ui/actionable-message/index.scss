@@ -17,6 +17,10 @@
     justify-content: normal;
   }
 
+  &--with-icon.actionable-message--with-right-button {
+    padding-left: 32px;
+  }
+
   svg {
     width: 16px;
     height: 16px;

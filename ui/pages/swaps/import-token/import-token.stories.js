@@ -4,6 +4,7 @@ import ImportToken from './import-token';
 
 export default {
   title: 'Import Token',
+  id: __filename,
 };
 
 export const ImportTokenComponent = () => {

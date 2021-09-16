@@ -4,6 +4,7 @@ import NewAccountCreateForm from './new-account.component';
 
 export default {
   title: 'New Account',
+  id: __filename,
 };
 
 export const NewAccountComponent = () => {

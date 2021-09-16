@@ -224,6 +224,7 @@ export default class MobileSyncPage extends Component {
       network,
       preferences,
       transactions,
+      tokens,
     } = await this.props.fetchInfoToSync();
     const { t } = this.context;
 
@@ -232,6 +233,7 @@ export default class MobileSyncPage extends Component {
       network,
       preferences,
       transactions,
+      tokens,
       udata: {
         pwd: this.state.password,
         seed: this.state.seedWords,

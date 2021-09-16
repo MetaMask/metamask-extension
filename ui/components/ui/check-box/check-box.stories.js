@@ -9,6 +9,7 @@ import CheckBox, {
 
 export default {
   title: 'Check Box',
+  id: __filename,
 };
 
 const checkboxOptions = {

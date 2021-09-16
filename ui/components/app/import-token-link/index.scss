@@ -1,0 +1,8 @@
+.import-token-link {
+  & &__link {
+    @include H6;
+
+    display: inline;
+    padding: 0 0 16px;
+  }
+}

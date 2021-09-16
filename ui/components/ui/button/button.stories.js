@@ -5,6 +5,7 @@ import Button from '.';
 
 export default {
   title: 'Button',
+  id: __filename,
 };
 
 export const primaryType = () => (
