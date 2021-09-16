@@ -456,6 +456,8 @@ export default class MetamaskController extends EventEmitter {
       state: initState.PluginController,
       messenger: pluginControllerMessenger,
     });
+    this._setupSnapGlobals();
+
     this.permissionsController.initializePermissions(
       initState.PermissionsController,
       getRestrictedMethods,
@@ -732,17 +734,29 @@ export default class MetamaskController extends EventEmitter {
 
     // TODO:LegacyProvider: Delete
     this.publicConfigStore = this.createPublicConfigStore();
+  }
 
-    // Setup some background hooks
-    global.clearPermissions = () =>
-      this.permissionsController.clearPermissions();
-    global.clearPlugins = () => {
-      this.pluginController.clearState();
-      this.assetsController.clearResources();
-    };
-    global.clearPermsAndPlugins = () => {
-      global.clearPermissions();
-      global.clearPlugins();
+  /**
+   * Temporary constructor helper: Set up global snap functions for dev purposes
+   * TODO:snaps Remove.
+   */
+  _setupSnapGlobals() {
+    globalThis.snaps = {
+      clearPermissions: () => this.permissionsController.clearPermissions(),
+      clearPlugins: () => this.pluginController.clearState(),
+      clearPermsAndPlugins: () => {
+        this.permissionsController.clearPermissions();
+        this.pluginController.clearState();
+      },
+      hasPlugin: (...args) => this.pluginController.has(args),
+      isPluginRunning: (...args) => this.pluginController.isRunning(args),
+      removePlugin: (...args) => this.pluginController.removePlugin(args),
+      runExistingPlugins: () => this.pluginController.runExistingPlugins(),
+      startInlinePlugin: () => this.pluginController.runInlinePlugin(),
+      stopInlinePlugin: () => this.pluginController.removeInlinePlugin(),
+      startPlugin: (...args) => this.pluginController.startPlugin(args),
+      stopPlugin: (...args) => this.pluginController.stopPlugin(args),
+      getState: () => this.pluginController.state,
     };
   }
 
