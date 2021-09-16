@@ -852,9 +852,6 @@
   "sendTokens": {
     "message": "Odeslat tokeny"
   },
-  "sentEther": {
-    "message": "poslaný ether"
-  },
   "separateEachWord": {
     "message": "Každé slovo oddeľte jednou medzerou"
   },

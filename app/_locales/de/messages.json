@@ -858,9 +858,6 @@
   "sendTokens": {
     "message": "Token senden"
   },
-  "sentEther": {
-    "message": "Ether senden"
-  },
   "separateEachWord": {
     "message": "Trennen Sie die Wörter mit einem einzelnen Leerzeichen voneinander"
   },

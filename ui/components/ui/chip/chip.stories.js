@@ -10,6 +10,7 @@ import Chip from '.';
 
 export default {
   title: 'Chip',
+  id: __filename,
 };
 
 export const Plain = ({

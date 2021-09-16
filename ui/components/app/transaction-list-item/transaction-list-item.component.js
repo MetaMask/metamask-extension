@@ -5,10 +5,7 @@ import { useHistory } from 'react-router-dom';
 import ListItem from '../../ui/list-item';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useCancelTransaction } from '../../../hooks/useCancelTransaction';
-import { useRetryTransaction } from '../../../hooks/useRetryTransaction';
-import Button from '../../ui/button';
-import Tooltip from '../../ui/tooltip';
+
 import TransactionListItemDetails from '../transaction-list-item-details';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
@@ -20,6 +17,9 @@ import {
 } from '../../../../shared/constants/transaction';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import EditGasPopover from '../edit-gas-popover';
+import { useMetricEvent } from '../../../hooks/useMetricEvent';
+import Button from '../../ui/button';
+import CancelButton from '../cancel-button';
 
 export default function TransactionListItem({
   transactionGroup,
@@ -29,24 +29,50 @@ export default function TransactionListItem({
   const history = useHistory();
   const { hasCancelled } = transactionGroup;
   const [showDetails, setShowDetails] = useState(false);
+  const [showCancelEditGasPopover, setShowCancelEditGasPopover] = useState(
+    false,
+  );
+  const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
 
   const {
     initialTransaction: { id },
     primaryTransaction: { err, status },
   } = transactionGroup;
-  const {
-    hasEnoughCancelGas,
-    cancelTransaction,
-    showCancelEditGasPopover,
-    closeCancelEditGasPopover,
-    customCancelGasSettings,
-  } = useCancelTransaction(transactionGroup);
-  const {
-    retryTransaction,
-    showRetryEditGasPopover,
-    closeRetryEditGasPopover,
-    customRetryGasSettings,
-  } = useRetryTransaction(transactionGroup);
+
+  const speedUpMetricsEvent = useMetricEvent({
+    eventOpts: {
+      category: 'Navigation',
+      action: 'Activity Log',
+      name: 'Clicked "Speed Up"',
+    },
+  });
+
+  const cancelMetricsEvent = useMetricEvent({
+    eventOpts: {
+      category: 'Navigation',
+      action: 'Activity Log',
+      name: 'Clicked "Cancel"',
+    },
+  });
+
+  const retryTransaction = useCallback(
+    async (event) => {
+      event.stopPropagation();
+      setShowRetryEditGasPopover(true);
+      speedUpMetricsEvent();
+    },
+    [speedUpMetricsEvent],
+  );
+
+  const cancelTransaction = useCallback(
+    (event) => {
+      event.stopPropagation();
+      setShowCancelEditGasPopover(true);
+      cancelMetricsEvent();
+    },
+    [cancelMetricsEvent],
+  );
+
   const shouldShowSpeedUp = useShouldShowSpeedUp(
     transactionGroup,
     isEarliestNonce,
@@ -90,37 +116,6 @@ export default function TransactionListItem({
     setShowDetails((prev) => !prev);
   }, [isUnapproved, history, id]);
 
-  const cancelButton = useMemo(() => {
-    const btn = (
-      <Button
-        onClick={cancelTransaction}
-        rounded
-        className="transaction-list-item__header-button"
-        disabled={!hasEnoughCancelGas}
-      >
-        {t('cancel')}
-      </Button>
-    );
-    if (hasCancelled || !isPending || isUnapproved) {
-      return null;
-    }
-
-    return hasEnoughCancelGas ? (
-      btn
-    ) : (
-      <Tooltip title={t('notEnoughGas')} position="bottom">
-        <div>{btn}</div>
-      </Tooltip>
-    );
-  }, [
-    isPending,
-    t,
-    isUnapproved,
-    hasEnoughCancelGas,
-    cancelTransaction,
-    hasCancelled,
-  ]);
-
   const speedUpButton = useMemo(() => {
     if (!shouldShowSpeedUp || !isPending || isUnapproved) {
       return null;
@@ -140,10 +135,12 @@ export default function TransactionListItem({
     isUnapproved,
     t,
     isPending,
-    retryTransaction,
     hasCancelled,
+    retryTransaction,
     cancelTransaction,
   ]);
+
+  const showCancelButton = !hasCancelled && isPending && !isUnapproved;
 
   return (
     <>
@@ -194,7 +191,12 @@ export default function TransactionListItem({
       >
         <div className="transaction-list-item__pending-actions">
           {speedUpButton}
-          {cancelButton}
+          {showCancelButton && (
+            <CancelButton
+              transaction={transactionGroup.primaryTransaction}
+              cancelTransaction={cancelTransaction}
+            />
+          )}
         </div>
       </ListItem>
       {showDetails && (
@@ -211,35 +213,20 @@ export default function TransactionListItem({
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
           showCancel={isPending && !hasCancelled}
-          cancelDisabled={!hasEnoughCancelGas}
         />
       )}
       {showRetryEditGasPopover && (
         <EditGasPopover
-          onClose={closeRetryEditGasPopover}
+          onClose={() => setShowRetryEditGasPopover(false)}
           mode={EDIT_GAS_MODES.SPEED_UP}
-          transaction={{
-            ...transactionGroup.primaryTransaction,
-            userFeeLevel: 'custom',
-            txParams: {
-              ...transactionGroup.primaryTransaction?.txParams,
-              ...customRetryGasSettings,
-            },
-          }}
+          transaction={transactionGroup.primaryTransaction}
         />
       )}
       {showCancelEditGasPopover && (
         <EditGasPopover
-          onClose={closeCancelEditGasPopover}
+          onClose={() => setShowCancelEditGasPopover(false)}
           mode={EDIT_GAS_MODES.CANCEL}
-          transaction={{
-            ...transactionGroup.primaryTransaction,
-            userFeeLevel: 'custom',
-            txParams: {
-              ...transactionGroup.primaryTransaction?.txParams,
-              ...customCancelGasSettings,
-            },
-          }}
+          transaction={transactionGroup.primaryTransaction}
         />
       )}
     </>

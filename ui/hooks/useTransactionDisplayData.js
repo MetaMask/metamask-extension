@@ -222,7 +222,7 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('sendSpecifiedTokens', [token?.symbol || t('token')]);
     recipientAddress = getTokenAddressParam(tokenData);
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
-  } else if (type === TRANSACTION_TYPES.SENT_ETHER) {
+  } else if (type === TRANSACTION_TYPES.SIMPLE_SEND) {
     category = TRANSACTION_GROUP_CATEGORIES.SEND;
     title = t('send');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);

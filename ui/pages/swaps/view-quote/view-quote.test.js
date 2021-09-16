@@ -47,6 +47,7 @@ setBackgroundConnection({
   getGasFeeEstimatesAndStartPolling: jest.fn(),
   updateTransaction: jest.fn(),
   getGasFeeTimeEstimate: jest.fn(),
+  setSwapsQuotesPollingLimitEnabled: jest.fn(),
 });
 
 describe('ViewQuote', () => {

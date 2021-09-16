@@ -3,6 +3,7 @@ import EditGasPopover from '.';
 
 export default {
   title: 'Edit Gas Display Popover',
+  id: __filename,
 };
 
 export const basic = () => {

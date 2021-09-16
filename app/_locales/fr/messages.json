@@ -871,9 +871,6 @@
   "sendTokens": {
     "message": "Envoyer des jetons"
   },
-  "sentEther": {
-    "message": "Ether envoyé"
-  },
   "separateEachWord": {
     "message": "Separez chaque mot avec un espace simple"
   },

@@ -38,7 +38,7 @@
       color: $primary-1;
     }
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       font-size: 0.9rem;
     }
   }

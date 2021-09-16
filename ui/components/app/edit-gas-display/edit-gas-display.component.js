@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -70,6 +70,8 @@ export default function EditGasDisplay({
   txParamsHaveBeenCustomized,
 }) {
   const t = useContext(I18nContext);
+  const scrollRef = useRef(null);
+
   const isMainnet = useSelector(getIsMainnet);
   const networkAndAccountSupport1559 = useSelector(
     checkNetworkAndAccountSupports1559,
@@ -86,6 +88,12 @@ export default function EditGasDisplay({
   const [hideRadioButtons, setHideRadioButtons] = useState(
     showAdvancedInlineGasIfPossible,
   );
+
+  useLayoutEffect(() => {
+    if (showAdvancedForm && scrollRef.current) {
+      scrollRef.current.scrollIntoView();
+    }
+  }, [showAdvancedForm]);
 
   const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
     transaction,
@@ -285,6 +293,7 @@ export default function EditGasDisplay({
             </button>
           </div>
         )}
+      <div ref={scrollRef} className="edit-gas-display__scroll-bottom" />
     </div>
   );
 }
