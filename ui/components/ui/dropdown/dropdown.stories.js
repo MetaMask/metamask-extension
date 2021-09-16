@@ -8,20 +8,19 @@ export default {
   id: __filename,
 };
 
-const unnamedOptions = [...Array(10).keys()].map((index) => {
-  return { value: `option${index}` };
-});
+const unnamedOptions = [...Array(10).keys()].map((index) => ({
+  value: `option${index}`,
+}));
 
-const namedOptions = unnamedOptions.map((option, index) => {
-  return { ...option, name: `Option ${index}` };
-});
+const namedOptions = unnamedOptions.map((option, index) => ({
+  ...option,
+  name: `Option ${index}`,
+}));
 
-const namedOptionsWithVeryLongNames = unnamedOptions.map((option, index) => {
-  return {
-    ...option,
-    name: `Option ${index} with a very${', very'.repeat(index)} long name`,
-  };
-});
+const namedOptionsWithVeryLongNames = unnamedOptions.map((option, index) => ({
+  ...option,
+  name: `Option ${index} with a very${', very'.repeat(index)} long name`,
+}));
 
 export const simple = () => (
   <Dropdown

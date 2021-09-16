@@ -14,11 +14,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    lockMetamask: () => dispatch(lockMetamask()),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  lockMetamask: () => dispatch(lockMetamask()),
+});
 
 export default compose(
   withRouter,

@@ -169,12 +169,11 @@ export default class AccountMenu extends Component {
 
       const simpleAddress = identity.address.substring(2).toLowerCase();
 
-      const keyring = keyrings.find((kr) => {
-        return (
+      const keyring = keyrings.find(
+        (kr) =>
           kr.accounts.includes(simpleAddress) ||
-          kr.accounts.includes(identity.address)
-        );
-      });
+          kr.accounts.includes(identity.address),
+      );
       const addressDomains = addressConnectedDomainMap[identity.address] || {};
       const iconAndNameForOpenDomain = addressDomains[originOfCurrentTab];
 

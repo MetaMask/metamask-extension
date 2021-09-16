@@ -47,18 +47,16 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setTransactionToConfirm: (transactionId) => {
-      dispatch(setTransactionToConfirm(transactionId));
-    },
-    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    getContractMethodData: (data) => dispatch(getContractMethodData(data)),
-    getTokenParams: (tokenAddress) => dispatch(getTokenParams(tokenAddress)),
-    setDefaultHomeActiveTabName: (tabName) =>
-      dispatch(setDefaultHomeActiveTabName(tabName)),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  setTransactionToConfirm: (transactionId) => {
+    dispatch(setTransactionToConfirm(transactionId));
+  },
+  clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
+  getContractMethodData: (data) => dispatch(getContractMethodData(data)),
+  getTokenParams: (tokenAddress) => dispatch(getTokenParams(tokenAddress)),
+  setDefaultHomeActiveTabName: (tabName) =>
+    dispatch(setDefaultHomeActiveTabName(tabName)),
+});
 
 export default compose(
   withRouter,

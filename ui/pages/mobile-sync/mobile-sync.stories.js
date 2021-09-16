@@ -7,8 +7,6 @@ export default {
   id: __filename,
 };
 
-export const MobileSyncComponent = () => {
-  return (
-    <MobileSyncPage requestRevealSeedWords={action('Mobile Sync Requested')} />
-  );
-};
+export const MobileSyncComponent = () => (
+  <MobileSyncPage requestRevealSeedWords={action('Mobile Sync Requested')} />
+);

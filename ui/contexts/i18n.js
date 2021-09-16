@@ -15,11 +15,12 @@ export const I18nProvider = (props) => {
   const current = useSelector(getCurrentLocaleMessages);
   const en = useSelector(getEnLocaleMessages);
 
-  const t = useMemo(() => {
-    return (key, ...args) =>
+  const t = useMemo(
+    () => (key, ...args) =>
       getMessage(currentLocale, current, key, ...args) ||
-      getMessage(currentLocale, en, key, ...args);
-  }, [currentLocale, current, en]);
+      getMessage(currentLocale, en, key, ...args),
+    [currentLocale, current, en],
+  );
 
   return (
     <I18nContext.Provider value={t}>{props.children}</I18nContext.Provider>

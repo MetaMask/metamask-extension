@@ -40,14 +40,13 @@ function transformState(state) {
     const reverseTxList = transactions.reverse();
     let stripping = true;
     while (reverseTxList.length > 40 && stripping) {
-      const txIndex = reverseTxList.findIndex((txMeta) => {
-        return (
+      const txIndex = reverseTxList.findIndex(
+        (txMeta) =>
           txMeta.status === TRANSACTION_STATUSES.FAILED ||
           txMeta.status === TRANSACTION_STATUSES.REJECTED ||
           txMeta.status === TRANSACTION_STATUSES.CONFIRMED ||
-          txMeta.status === TRANSACTION_STATUSES.DROPPED
-        );
-      });
+          txMeta.status === TRANSACTION_STATUSES.DROPPED,
+      );
       if (txIndex < 0) {
         stripping = false;
       } else {

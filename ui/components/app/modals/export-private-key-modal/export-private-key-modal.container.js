@@ -28,12 +28,11 @@ function mapStateToPropsFactory() {
 
 function mapDispatchToProps(dispatch) {
   return {
-    exportAccount: (password, address) => {
-      return dispatch(exportAccount(password, address)).then((res) => {
+    exportAccount: (password, address) =>
+      dispatch(exportAccount(password, address)).then((res) => {
         dispatch(hideWarning());
         return res;
-      });
-    },
+      }),
     showAccountDetailModal: () =>
       dispatch(showModal({ name: 'ACCOUNT_DETAILS' })),
     hideModal: () => dispatch(hideModal()),

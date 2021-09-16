@@ -60,46 +60,42 @@ export const TOKENS_GET_RESPONSE = [
   },
 ];
 
-export const createFeatureFlagsResponse = () => {
-  return {
-    bsc: {
-      mobile_active: false,
-      extension_active: true,
-      fallback_to_v1: true,
-    },
-    ethereum: {
-      mobile_active: false,
-      extension_active: true,
-      fallback_to_v1: true,
-    },
-    polygon: {
-      mobile_active: false,
-      extension_active: true,
-      fallback_to_v1: false,
-    },
-  };
-};
+export const createFeatureFlagsResponse = () => ({
+  bsc: {
+    mobile_active: false,
+    extension_active: true,
+    fallback_to_v1: true,
+  },
+  ethereum: {
+    mobile_active: false,
+    extension_active: true,
+    fallback_to_v1: true,
+  },
+  polygon: {
+    mobile_active: false,
+    extension_active: true,
+    fallback_to_v1: false,
+  },
+});
 
-export const createGasFeeEstimatesForFeeMarket = () => {
-  return {
-    low: {
-      minWaitTimeEstimate: 180000,
-      maxWaitTimeEstimate: 300000,
-      suggestedMaxPriorityFeePerGas: '3',
-      suggestedMaxFeePerGas: '53',
-    },
-    medium: {
-      minWaitTimeEstimate: 15000,
-      maxWaitTimeEstimate: 60000,
-      suggestedMaxPriorityFeePerGas: '7',
-      suggestedMaxFeePerGas: '70',
-    },
-    high: {
-      minWaitTimeEstimate: 0,
-      maxWaitTimeEstimate: 15000,
-      suggestedMaxPriorityFeePerGas: '10',
-      suggestedMaxFeePerGas: '100',
-    },
-    estimatedBaseFee: '50',
-  };
-};
+export const createGasFeeEstimatesForFeeMarket = () => ({
+  low: {
+    minWaitTimeEstimate: 180000,
+    maxWaitTimeEstimate: 300000,
+    suggestedMaxPriorityFeePerGas: '3',
+    suggestedMaxFeePerGas: '53',
+  },
+  medium: {
+    minWaitTimeEstimate: 15000,
+    maxWaitTimeEstimate: 60000,
+    suggestedMaxPriorityFeePerGas: '7',
+    suggestedMaxFeePerGas: '70',
+  },
+  high: {
+    minWaitTimeEstimate: 0,
+    maxWaitTimeEstimate: 15000,
+    suggestedMaxPriorityFeePerGas: '10',
+    suggestedMaxFeePerGas: '100',
+  },
+  estimatedBaseFee: '50',
+});

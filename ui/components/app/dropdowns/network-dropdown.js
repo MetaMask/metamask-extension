@@ -60,15 +60,14 @@ function mapDispatchToProps(dispatch) {
     displayInvalidCustomNetworkAlert: (networkName) => {
       dispatch(displayInvalidCustomNetworkAlert(networkName));
     },
-    showConfirmDeleteNetworkModal: ({ target, onConfirm }) => {
-      return dispatch(
+    showConfirmDeleteNetworkModal: ({ target, onConfirm }) =>
+      dispatch(
         actions.showModal({
           name: 'CONFIRM_DELETE_NETWORK',
           target,
           onConfirm,
         }),
-      );
-    },
+      ),
   };
 }
 

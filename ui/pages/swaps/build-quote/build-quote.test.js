@@ -11,19 +11,17 @@ import {
 import BuildQuote from '.';
 
 const middleware = [thunk];
-const createProps = (customProps = {}) => {
-  return {
-    inputValue: '5',
-    onInputChange: jest.fn(),
-    ethBalance: '0x8',
-    setMaxSlippage: jest.fn(),
-    maxSlippage: 15,
-    selectedAccountAddress: 'selectedAccountAddress',
-    isFeatureFlagLoaded: false,
-    shuffledTokensList: [],
-    ...customProps,
-  };
-};
+const createProps = (customProps = {}) => ({
+  inputValue: '5',
+  onInputChange: jest.fn(),
+  ethBalance: '0x8',
+  setMaxSlippage: jest.fn(),
+  maxSlippage: 15,
+  selectedAccountAddress: 'selectedAccountAddress',
+  isFeatureFlagLoaded: false,
+  shuffledTokensList: [],
+  ...customProps,
+});
 
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),

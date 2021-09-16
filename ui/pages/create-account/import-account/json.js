@@ -159,23 +159,19 @@ JsonImportSubview.propTypes = {
   mostRecentOverviewPage: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  return {
-    error: state.appState.warning,
-    firstAddress: Object.keys(getMetaMaskAccounts(state))[0],
-    mostRecentOverviewPage: getMostRecentOverviewPage(state),
-  };
-};
+const mapStateToProps = (state) => ({
+  error: state.appState.warning,
+  firstAddress: Object.keys(getMetaMaskAccounts(state))[0],
+  mostRecentOverviewPage: getMostRecentOverviewPage(state),
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    displayWarning: (warning) => dispatch(actions.displayWarning(warning)),
-    importNewJsonAccount: (options) =>
-      dispatch(actions.importNewAccount('JSON File', options)),
-    setSelectedAddress: (address) =>
-      dispatch(actions.setSelectedAddress(address)),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  displayWarning: (warning) => dispatch(actions.displayWarning(warning)),
+  importNewJsonAccount: (options) =>
+    dispatch(actions.importNewAccount('JSON File', options)),
+  setSelectedAddress: (address) =>
+    dispatch(actions.setSelectedAddress(address)),
+});
 
 JsonImportSubview.contextTypes = {
   t: PropTypes.func,

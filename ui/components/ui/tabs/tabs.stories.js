@@ -16,20 +16,16 @@ function renderTab(id) {
   );
 }
 
-export const twoTabs = () => {
-  return <Tabs>{['A', 'B'].map(renderTab)}</Tabs>;
-};
+export const twoTabs = () => <Tabs>{['A', 'B'].map(renderTab)}</Tabs>;
 
-export const manyTabs = () => {
-  return <Tabs>{['A', 'B', 'C', 'D', 'E'].map(renderTab)}</Tabs>;
-};
+export const manyTabs = () => (
+  <Tabs>{['A', 'B', 'C', 'D', 'E'].map(renderTab)}</Tabs>
+);
 
-export const singleTab = () => {
-  return (
-    <Tabs>
-      <Tab name={text('Name', 'Single A')}>
-        {text('Contents', 'Contents of tab')}
-      </Tab>
-    </Tabs>
-  );
-};
+export const singleTab = () => (
+  <Tabs>
+    <Tab name={text('Name', 'Single A')}>
+      {text('Contents', 'Contents of tab')}
+    </Tab>
+  </Tabs>
+);

@@ -5,23 +5,19 @@ import Dropdown from '../../../components/ui/dropdown';
 import ToggleButton from '../../../components/ui/toggle-button';
 import locales from '../../../../app/_locales/index.json';
 
-const sortedCurrencies = availableCurrencies.sort((a, b) => {
-  return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());
-});
+const sortedCurrencies = availableCurrencies.sort((a, b) =>
+  a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase()),
+);
 
-const currencyOptions = sortedCurrencies.map(({ code, name }) => {
-  return {
-    name: `${code.toUpperCase()} - ${name}`,
-    value: code,
-  };
-});
+const currencyOptions = sortedCurrencies.map(({ code, name }) => ({
+  name: `${code.toUpperCase()} - ${name}`,
+  value: code,
+}));
 
-const localeOptions = locales.map((locale) => {
-  return {
-    name: `${locale.name}`,
-    value: locale.code,
-  };
-});
+const localeOptions = locales.map((locale) => ({
+  name: `${locale.name}`,
+  value: locale.code,
+}));
 
 export default class SettingsTab extends PureComponent {
   static contextTypes = {

@@ -5,17 +5,13 @@ import { setFirstTimeFlowType } from '../../../store/actions';
 import { getFirstTimeFlowTypeRoute } from '../../../selectors';
 import Welcome from './select-action.component';
 
-const mapStateToProps = (state) => {
-  return {
-    nextRoute: getFirstTimeFlowTypeRoute(state),
-  };
-};
+const mapStateToProps = (state) => ({
+  nextRoute: getFirstTimeFlowTypeRoute(state),
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setFirstTimeFlowType: (type) => dispatch(setFirstTimeFlowType(type)),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  setFirstTimeFlowType: (type) => dispatch(setFirstTimeFlowType(type)),
+});
 
 export default compose(
   withRouter,

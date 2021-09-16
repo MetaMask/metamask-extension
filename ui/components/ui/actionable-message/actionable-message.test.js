@@ -3,12 +3,10 @@ import React from 'react';
 import { renderWithProvider } from '../../../../test/jest';
 import ActionableMessage from '.';
 
-const createProps = (customProps = {}) => {
-  return {
-    message: 'I am an actionable message!',
-    ...customProps,
-  };
-};
+const createProps = (customProps = {}) => ({
+  message: 'I am an actionable message!',
+  ...customProps,
+});
 
 describe('ActionableMessage', () => {
   it('renders the component with initial props', () => {

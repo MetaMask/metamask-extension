@@ -63,14 +63,12 @@ export default class ContactList extends PureComponent {
 
     const letters = Object.keys(unsortedContactsByLetter).sort();
 
-    const sortedContactGroups = letters.map((letter) => {
-      return [
-        letter,
-        sortBy(unsortedContactsByLetter[letter], (contact) => {
-          return contact.name.toLowerCase();
-        }),
-      ];
-    });
+    const sortedContactGroups = letters.map((letter) => [
+      letter,
+      sortBy(unsortedContactsByLetter[letter], (contact) =>
+        contact.name.toLowerCase(),
+      ),
+    ]);
 
     return sortedContactGroups.map(([letter, groupItems]) => (
       <RecipientGroup

@@ -53,9 +53,7 @@ const baseChange = {
 };
 
 // Utility function for checking base types
-const isValidBase = (base) => {
-  return Number.isInteger(base) && base > 1;
-};
+const isValidBase = (base) => Number.isInteger(base) && base > 1;
 
 /**
  * Defines the base type of numeric value
@@ -264,9 +262,7 @@ const conversionLTE = ({ ...firstProps }, { ...secondProps }) => {
   return firstValue.lessThanOrEqualTo(secondValue);
 };
 
-const toNegative = (n, options = {}) => {
-  return multiplyCurrencies(n, -1, options);
-};
+const toNegative = (n, options = {}) => multiplyCurrencies(n, -1, options);
 
 function decGWEIToHexWEI(decGWEI) {
   return conversionUtil(decGWEI, {

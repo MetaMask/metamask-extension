@@ -25,12 +25,11 @@ const {
 
 let clock;
 
-const initPermLog = () => {
-  return new PermissionsLogController({
+const initPermLog = () =>
+  new PermissionsLogController({
     store: new ObservableStore(),
     restrictedMethods: RESTRICTED_METHODS,
   });
-};
 
 const mockNext = (handler) => {
   if (handler) {

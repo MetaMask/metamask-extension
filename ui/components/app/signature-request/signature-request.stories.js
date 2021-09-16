@@ -13,26 +13,24 @@ export default {
   id: __filename,
 };
 
-export const FirstLook = () => {
-  return (
-    <div style={containerStyle}>
-      <SignatureRequest
-        txData={{
-          msgParams: {
-            data: JSON.stringify({
-              domain: {
-                name: 'happydapp.website',
-              },
-              message: {
-                string: 'haay wuurl',
-                number: 42,
-              },
-            }),
-            origin: 'https://happydapp.website/governance?futarchy=true',
-          },
-        }}
-        fromAccount={primaryIdentity}
-      />
-    </div>
-  );
-};
+export const FirstLook = () => (
+  <div style={containerStyle}>
+    <SignatureRequest
+      txData={{
+        msgParams: {
+          data: JSON.stringify({
+            domain: {
+              name: 'happydapp.website',
+            },
+            message: {
+              string: 'haay wuurl',
+              number: 42,
+            },
+          }),
+          origin: 'https://happydapp.website/governance?futarchy=true',
+        },
+      }}
+      fromAccount={primaryIdentity}
+    />
+  </div>
+);

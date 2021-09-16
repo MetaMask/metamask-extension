@@ -5,12 +5,10 @@ import {
 } from '../../../../store/actions';
 import ConfirmSeedPhrase from './confirm-seed-phrase.component';
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setSeedPhraseBackedUp: (seedPhraseBackupState) =>
-      dispatch(setSeedPhraseBackedUp(seedPhraseBackupState)),
-    initializeThreeBox: () => dispatch(initializeThreeBox()),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  setSeedPhraseBackedUp: (seedPhraseBackupState) =>
+    dispatch(setSeedPhraseBackedUp(seedPhraseBackupState)),
+  initializeThreeBox: () => dispatch(initializeThreeBox()),
+});
 
 export default connect(null, mapDispatchToProps)(ConfirmSeedPhrase);

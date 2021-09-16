@@ -45,11 +45,8 @@ export const unapprovedTypedMessagesSelector = (state) =>
 export const selectedAddressTxListSelector = createSelector(
   getSelectedAddress,
   currentNetworkTxListSelector,
-  (selectedAddress, transactions = []) => {
-    return transactions.filter(
-      ({ txParams }) => txParams.from === selectedAddress,
-    );
-  },
+  (selectedAddress, transactions = []) =>
+    transactions.filter(({ txParams }) => txParams.from === selectedAddress),
 );
 
 export const unapprovedMessagesSelector = createSelector(
@@ -84,9 +81,8 @@ export const unapprovedMessagesSelector = createSelector(
 export const transactionSubSelector = createSelector(
   unapprovedMessagesSelector,
   incomingTxListSelector,
-  (unapprovedMessages = [], incomingTxList = []) => {
-    return unapprovedMessages.concat(incomingTxList);
-  },
+  (unapprovedMessages = [], incomingTxList = []) =>
+    unapprovedMessages.concat(incomingTxList),
 );
 
 export const transactionsSelector = createSelector(

@@ -12,8 +12,8 @@ module.exports = createManifestTasks;
 
 function createManifestTasks({ betaVersionsMap, browserPlatforms, isBeta }) {
   // merge base manifest with per-platform manifests
-  const prepPlatforms = async () => {
-    return Promise.all(
+  const prepPlatforms = async () =>
+    Promise.all(
       browserPlatforms.map(async (platform) => {
         const platformModifications = await readJson(
           path.join(
@@ -37,7 +37,6 @@ function createManifestTasks({ betaVersionsMap, browserPlatforms, isBeta }) {
         await writeJson(result, path.join(dir, 'manifest.json'));
       }),
     );
-  };
 
   // dev: add perms
   const envDev = createTaskForModifyManifestForEnvironment((manifest) => {
@@ -81,8 +80,8 @@ function createManifestTasks({ betaVersionsMap, browserPlatforms, isBeta }) {
 
   // helper for modifying each platform's manifest.json in place
   function createTaskForModifyManifestForEnvironment(transformFn) {
-    return () => {
-      return Promise.all(
+    return () =>
+      Promise.all(
         browserPlatforms.map(async (platform) => {
           const manifestPath = path.join(
             '.',
@@ -95,7 +94,6 @@ function createManifestTasks({ betaVersionsMap, browserPlatforms, isBeta }) {
           await writeJson(manifest, manifestPath);
         }),
       );
-    };
   }
 }
 

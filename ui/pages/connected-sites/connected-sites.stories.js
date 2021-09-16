@@ -7,14 +7,10 @@ export default {
   id: __filename,
 };
 
-const PageSet = ({ children }) => {
-  return children;
-};
+const PageSet = ({ children }) => children;
 
-export const ConnectedSitesComponent = () => {
-  return (
-    <PageSet>
-      <ConnectedSites />
-    </PageSet>
-  );
-};
+export const ConnectedSitesComponent = () => (
+  <PageSet>
+    <ConnectedSites />
+  </PageSet>
+);

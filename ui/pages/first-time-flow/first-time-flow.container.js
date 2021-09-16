@@ -32,16 +32,13 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    createNewAccount: (password) =>
-      dispatch(createNewVaultAndGetSeedPhrase(password)),
-    createNewAccountFromSeed: (password, seedPhrase) => {
-      return dispatch(createNewVaultAndRestore(password, seedPhrase));
-    },
-    unlockAccount: (password) => dispatch(unlockAndGetSeedPhrase(password)),
-    verifySeedPhrase: () => verifySeedPhrase(),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  createNewAccount: (password) =>
+    dispatch(createNewVaultAndGetSeedPhrase(password)),
+  createNewAccountFromSeed: (password, seedPhrase) =>
+    dispatch(createNewVaultAndRestore(password, seedPhrase)),
+  unlockAccount: (password) => dispatch(unlockAndGetSeedPhrase(password)),
+  verifySeedPhrase: () => verifySeedPhrase(),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(FirstTimeFlow);

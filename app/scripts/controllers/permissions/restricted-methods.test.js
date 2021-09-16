@@ -30,9 +30,7 @@ describe('restricted methods', function () {
 
     it('should handle missing identity for first account when sorting', async function () {
       const restrictedMethods = getRestrictedMethods({
-        getIdentities: () => {
-          return { '0x7e57e2': {} };
-        },
+        getIdentities: () => ({ '0x7e57e2': {} }),
         getKeyringAccounts: async () => ['0x7e57e2', '0x7e57e3'],
       });
       const ethAccountsMethod = pify(restrictedMethods.eth_accounts.method);
@@ -49,9 +47,7 @@ describe('restricted methods', function () {
 
     it('should handle missing identity for second account when sorting', async function () {
       const restrictedMethods = getRestrictedMethods({
-        getIdentities: () => {
-          return { '0x7e57e3': {} };
-        },
+        getIdentities: () => ({ '0x7e57e3': {} }),
         getKeyringAccounts: async () => ['0x7e57e2', '0x7e57e3'],
       });
       const ethAccountsMethod = pify(restrictedMethods.eth_accounts.method);
@@ -69,12 +65,11 @@ describe('restricted methods', function () {
     it('should return accounts in keyring order when none are selected', async function () {
       const keyringAccounts = ['0x7e57e2', '0x7e57e3', '0x7e57e4', '0x7e57e5'];
       const restrictedMethods = getRestrictedMethods({
-        getIdentities: () => {
-          return keyringAccounts.reduce((identities, address) => {
+        getIdentities: () =>
+          keyringAccounts.reduce((identities, address) => {
             identities[address] = {};
             return identities;
-          }, {});
-        },
+          }, {}),
         getKeyringAccounts: async () => [...keyringAccounts],
       });
       const ethAccountsMethod = pify(restrictedMethods.eth_accounts.method);
@@ -91,12 +86,11 @@ describe('restricted methods', function () {
     it('should return accounts in keyring order when all have same last selected time', async function () {
       const keyringAccounts = ['0x7e57e2', '0x7e57e3', '0x7e57e4', '0x7e57e5'];
       const restrictedMethods = getRestrictedMethods({
-        getIdentities: () => {
-          return keyringAccounts.reduce((identities, address) => {
+        getIdentities: () =>
+          keyringAccounts.reduce((identities, address) => {
             identities[address] = { lastSelected: 1000 };
             return identities;
-          }, {});
-        },
+          }, {}),
         getKeyringAccounts: async () => [...keyringAccounts],
       });
       const ethAccountsMethod = pify(restrictedMethods.eth_accounts.method);
@@ -114,12 +108,11 @@ describe('restricted methods', function () {
       const keyringAccounts = ['0x7e57e2', '0x7e57e3', '0x7e57e4', '0x7e57e5'];
       const expectedResult = keyringAccounts.slice().reverse();
       const restrictedMethods = getRestrictedMethods({
-        getIdentities: () => {
-          return keyringAccounts.reduce((identities, address, index) => {
+        getIdentities: () =>
+          keyringAccounts.reduce((identities, address, index) => {
             identities[address] = { lastSelected: index * 1000 };
             return identities;
-          }, {});
-        },
+          }, {}),
         getKeyringAccounts: async () => [...keyringAccounts],
       });
       const ethAccountsMethod = pify(restrictedMethods.eth_accounts.method);
@@ -149,15 +142,13 @@ describe('restricted methods', function () {
         '0x7e57e6',
       ];
       const restrictedMethods = getRestrictedMethods({
-        getIdentities: () => {
-          return {
-            '0x7e57e2': { lastSelected: 1000 },
-            '0x7e57e3': {},
-            '0x7e57e4': { lastSelected: 2000 },
-            '0x7e57e5': {},
-            '0x7e57e6': {},
-          };
-        },
+        getIdentities: () => ({
+          '0x7e57e2': { lastSelected: 1000 },
+          '0x7e57e3': {},
+          '0x7e57e4': { lastSelected: 2000 },
+          '0x7e57e5': {},
+          '0x7e57e6': {},
+        }),
         getKeyringAccounts: async () => [...keyringAccounts],
       });
       const ethAccountsMethod = pify(restrictedMethods.eth_accounts.method);

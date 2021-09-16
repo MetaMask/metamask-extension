@@ -8,10 +8,10 @@ export default {
   id: __filename,
 };
 
-export const ImportWithSeedPhraseComponent = () => {
-  return <ImportWithSeedPhrase onSubmit={action('Seed Phrase Imported')} />;
-};
+export const ImportWithSeedPhraseComponent = () => (
+  <ImportWithSeedPhrase onSubmit={action('Seed Phrase Imported')} />
+);
 
-export const NewAccountComponent = () => {
-  return <NewAccount onSubmit={action('New Account Created')} />;
-};
+export const NewAccountComponent = () => (
+  <NewAccount onSubmit={action('New Account Created')} />
+);

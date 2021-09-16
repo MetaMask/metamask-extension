@@ -185,11 +185,12 @@ export default function Swap() {
     fetchParams,
     isAwaitingSwapRoute,
   ]);
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       clearTemporaryTokenRef.current();
-    };
-  }, []);
+    },
+    [],
+  );
 
   // eslint-disable-next-line
   useEffect(() => {
@@ -390,8 +391,8 @@ export default function Swap() {
               flag={swapsEnabled}
               path={LOADING_QUOTES_ROUTE}
               exact
-              render={() => {
-                return aggregatorMetadata ? (
+              render={() =>
+                aggregatorMetadata ? (
                   <LoadingQuote
                     loadingComplete={
                       !fetchingQuotes && Boolean(Object.values(quotes).length)
@@ -412,32 +413,30 @@ export default function Swap() {
                   />
                 ) : (
                   <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />
-                );
-              }}
+                )
+              }
             />
             <Route
               path={SWAPS_MAINTENANCE_ROUTE}
               exact
-              render={() => {
-                return swapsEnabled === false ? (
+              render={() =>
+                swapsEnabled === false ? (
                   <AwaitingSwap errorKey={OFFLINE_FOR_MAINTENANCE} />
                 ) : (
                   <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />
-                );
-              }}
+                )
+              }
             />
             <Route
               path={AWAITING_SIGNATURES_ROUTE}
               exact
-              render={() => {
-                return <AwaitingSignatures />;
-              }}
+              render={() => <AwaitingSignatures />}
             />
             <Route
               path={AWAITING_SWAP_ROUTE}
               exact
-              render={() => {
-                return routeState === 'awaiting' || tradeTxData ? (
+              render={() =>
+                routeState === 'awaiting' || tradeTxData ? (
                   <AwaitingSwap
                     swapComplete={tradeConfirmed}
                     txHash={tradeTxData?.hash}
@@ -450,8 +449,8 @@ export default function Swap() {
                   />
                 ) : (
                   <Redirect to={{ pathname: DEFAULT_ROUTE }} />
-                );
-              }}
+                )
+              }
             />
           </Switch>
         </div>

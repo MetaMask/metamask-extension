@@ -3,12 +3,10 @@ import React from 'react';
 import { renderWithProvider } from '../../../../test/jest';
 import QuotesBackdrop from './quote-backdrop';
 
-const createProps = (customProps = {}) => {
-  return {
-    withTopTab: false,
-    ...customProps,
-  };
-};
+const createProps = (customProps = {}) => ({
+  withTopTab: false,
+  ...customProps,
+});
 
 describe('QuotesBackdrop', () => {
   it('renders the component with initial props', () => {

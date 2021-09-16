@@ -3,8 +3,8 @@ const path = require('path');
 
 const serveHandler = require('serve-handler');
 
-const createStaticServer = (rootDirectory) => {
-  return http.createServer((request, response) => {
+const createStaticServer = (rootDirectory) =>
+  http.createServer((request, response) => {
     if (request.url.startsWith('/node_modules/')) {
       request.url = request.url.substr(14);
       return serveHandler(request, response, {
@@ -17,6 +17,5 @@ const createStaticServer = (rootDirectory) => {
       public: rootDirectory,
     });
   });
-};
 
 module.exports = createStaticServer;

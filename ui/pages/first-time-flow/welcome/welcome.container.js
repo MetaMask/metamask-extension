@@ -13,11 +13,9 @@ const mapStateToProps = ({ metamask }) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    closeWelcomeScreen: () => dispatch(closeWelcomeScreen()),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  closeWelcomeScreen: () => dispatch(closeWelcomeScreen()),
+});
 
 export default compose(
   withRouter,

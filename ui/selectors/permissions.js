@@ -237,11 +237,11 @@ export function getPermissionsForActiveTab(state) {
   const { activeTab, metamask } = state;
   const { domains = {} } = metamask;
 
-  return domains[activeTab.origin]?.permissions?.map(({ parentCapability }) => {
-    return {
+  return domains[activeTab.origin]?.permissions?.map(
+    ({ parentCapability }) => ({
       key: parentCapability,
-    };
-  });
+    }),
+  );
 }
 
 export function activeTabHasPermissions(state) {

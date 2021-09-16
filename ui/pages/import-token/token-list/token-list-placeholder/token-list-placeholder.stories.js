@@ -6,6 +6,4 @@ export default {
   id: __filename,
 };
 
-export const TokenListPlaceholderComponent = () => {
-  return <TokenListPlaceholder />;
-};
+export const TokenListPlaceholderComponent = () => <TokenListPlaceholder />;

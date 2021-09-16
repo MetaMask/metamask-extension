@@ -236,27 +236,29 @@ export default function ViewQuote() {
     calcTokenAmount(approveValue, selectedFromToken.decimals).toFixed(9);
   const approveGas = approveTxParams?.gas;
 
-  const renderablePopoverData = useMemo(() => {
-    return quotesToRenderableData(
+  const renderablePopoverData = useMemo(
+    () =>
+      quotesToRenderableData(
+        quotes,
+        networkAndAccountSupports1559 ? baseAndPriorityFeePerGas : gasPrice,
+        conversionRate,
+        currentCurrency,
+        approveGas,
+        memoizedTokenConversionRates,
+        chainId,
+      ),
+    [
       quotes,
-      networkAndAccountSupports1559 ? baseAndPriorityFeePerGas : gasPrice,
+      gasPrice,
+      baseAndPriorityFeePerGas,
+      networkAndAccountSupports1559,
       conversionRate,
       currentCurrency,
       approveGas,
       memoizedTokenConversionRates,
       chainId,
-    );
-  }, [
-    quotes,
-    gasPrice,
-    baseAndPriorityFeePerGas,
-    networkAndAccountSupports1559,
-    conversionRate,
-    currentCurrency,
-    approveGas,
-    memoizedTokenConversionRates,
-    chainId,
-  ]);
+    ],
+  );
 
   const renderableDataForUsedQuote = renderablePopoverData.find(
     (renderablePopoverDatum) =>

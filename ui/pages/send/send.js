@@ -70,12 +70,13 @@ export default function SendTransactionScreen() {
     }
   }, [location, dispatch]);
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       dispatch(resetSendState());
       window.removeEventListener('beforeunload', cleanup);
-    };
-  }, [dispatch, cleanup]);
+    },
+    [dispatch, cleanup],
+  );
 
   let content;
 

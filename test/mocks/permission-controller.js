@@ -34,33 +34,30 @@ const keyringAccounts = deepFreeze([
   '0xcc74c7a59194e5d9268476955650d1e285be703c',
 ]);
 
-const getIdentities = () => {
-  return keyringAccounts.reduce((identities, address, index) => {
+const getIdentities = () =>
+  keyringAccounts.reduce((identities, address, index) => {
     identities[address] = { address, name: `Account ${index}` };
     return identities;
   }, {});
-};
 
 // perm controller initialization helper
-const getRestrictedMethods = (permController) => {
-  return {
-    // the actual, production restricted methods
-    ..._getRestrictedMethods(permController),
+const getRestrictedMethods = (permController) => ({
+  // the actual, production restricted methods
+  ..._getRestrictedMethods(permController),
 
-    // our own dummy method for testing
-    test_method: {
-      description: `This method is only for testing.`,
-      method: (req, res, __, end) => {
-        if (req.params[0]) {
-          res.result = 1;
-        } else {
-          res.result = 0;
-        }
-        end();
-      },
+  // our own dummy method for testing
+  test_method: {
+    description: `This method is only for testing.`,
+    method: (req, res, __, end) => {
+      if (req.params[0]) {
+        res.result = 1;
+      } else {
+        res.result = 0;
+      }
+      end();
     },
-  };
-};
+  },
+});
 
 /**
  * Gets default mock constructor options for a permissions controller.
@@ -80,12 +77,10 @@ export function getPermControllerOpts() {
     notifyDomain: noop,
     notifyAllDomains: noop,
     preferences: {
-      getState: () => {
-        return {
-          identities: getIdentities(),
-          selectedAddress: keyringAccounts[0],
-        };
-      },
+      getState: () => ({
+        identities: getIdentities(),
+        selectedAddress: keyringAccounts[0],
+      }),
       subscribe: noop,
     },
     showPermissionRequest: noop,
@@ -103,8 +98,8 @@ export function getPermControllerOpts() {
  */
 export function getPermissionsMiddleware(permController, origin, extensionId) {
   const middleware = permController.createMiddleware({ origin, extensionId });
-  return (req, res = {}, next = noop, end) => {
-    return new Promise((resolve, reject) => {
+  return (req, res = {}, next = noop, end) =>
+    new Promise((resolve, reject) => {
       // eslint-disable-next-line no-param-reassign
       end = end || _end;
 
@@ -119,7 +114,6 @@ export function getPermissionsMiddleware(permController, origin, extensionId) {
         }
       }
     });
-  };
 }
 
 /**
@@ -189,20 +183,18 @@ const CAVEATS = {
    * @param {Array<string>} accounts - The accounts for the caveat
    * @returns {Object} An eth_accounts exposedAccounts caveats
    */
-  eth_accounts: (accounts) => {
-    return [
-      {
-        type: CAVEAT_TYPES.limitResponseLength,
-        value: 1,
-        name: CAVEAT_NAMES.primaryAccountOnly,
-      },
-      {
-        type: CAVEAT_TYPES.filterResponse,
-        value: accounts,
-        name: CAVEAT_NAMES.exposedAccounts,
-      },
-    ];
-  },
+  eth_accounts: (accounts) => [
+    {
+      type: CAVEAT_TYPES.limitResponseLength,
+      value: 1,
+      name: CAVEAT_NAMES.primaryAccountOnly,
+    },
+    {
+      type: CAVEAT_TYPES.filterResponse,
+      value: accounts,
+      name: CAVEAT_NAMES.exposedAccounts,
+    },
+  ],
 };
 
 /**
@@ -215,12 +207,10 @@ const PERMS = {
    * @param {string} id - The rpc-cap permissions request id.
    * @param {Object} permissions - The approved permissions, request-formatted.
    */
-  approvedRequest: (id, permissions = {}) => {
-    return {
-      permissions: { ...permissions },
-      metadata: { id },
-    };
-  },
+  approvedRequest: (id, permissions = {}) => ({
+    permissions: { ...permissions },
+    metadata: { id },
+  }),
 
   /**
    * Requested permissions objects, as passed to wallet_requestPermissions.
@@ -229,23 +219,17 @@ const PERMS = {
     /**
      * @returns {Object} A permissions request object with eth_accounts
      */
-    eth_accounts: () => {
-      return { eth_accounts: {} };
-    },
+    eth_accounts: () => ({ eth_accounts: {} }),
 
     /**
      * @returns {Object} A permissions request object with test_method
      */
-    test_method: () => {
-      return { test_method: {} };
-    },
+    test_method: () => ({ test_method: {} }),
 
     /**
      * @returns {Object} A permissions request object with does_not_exist
      */
-    does_not_exist: () => {
-      return { does_not_exist: {} };
-    },
+    does_not_exist: () => ({ does_not_exist: {} }),
   },
 
   /**
@@ -256,22 +240,18 @@ const PERMS = {
      * @param {Array<string>} accounts - The accounts for the eth_accounts permission caveat
      * @returns {Object} A finalized permissions request object with eth_accounts and its caveat
      */
-    eth_accounts: (accounts) => {
-      return {
-        eth_accounts: {
-          caveats: CAVEATS.eth_accounts(accounts),
-        },
-      };
-    },
+    eth_accounts: (accounts) => ({
+      eth_accounts: {
+        caveats: CAVEATS.eth_accounts(accounts),
+      },
+    }),
 
     /**
      * @returns {Object} A finalized permissions request object with test_method
      */
-    test_method: () => {
-      return {
-        test_method: {},
-      };
-    },
+    test_method: () => ({
+      test_method: {},
+    }),
   },
 
   /**
@@ -284,21 +264,17 @@ const PERMS = {
      * @param {Array<string>} accounts - The accounts for the eth_accounts permission caveat
      * @returns {Object} A granted permissions object with eth_accounts and its caveat
      */
-    eth_accounts: (accounts) => {
-      return {
-        parentCapability: PERM_NAMES.eth_accounts,
-        caveats: CAVEATS.eth_accounts(accounts),
-      };
-    },
+    eth_accounts: (accounts) => ({
+      parentCapability: PERM_NAMES.eth_accounts,
+      caveats: CAVEATS.eth_accounts(accounts),
+    }),
 
     /**
      * @returns {Object} A granted permissions object with test_method
      */
-    test_method: () => {
-      return {
-        parentCapability: PERM_NAMES.test_method,
-      };
-    },
+    test_method: () => ({
+      parentCapability: PERM_NAMES.test_method,
+    }),
   },
 };
 
@@ -316,145 +292,105 @@ export const getters = deepFreeze({
    */
   ERRORS: {
     validatePermittedAccounts: {
-      invalidParam: () => {
-        return {
-          name: 'Error',
-          message: 'Must provide non-empty array of account(s).',
-        };
-      },
+      invalidParam: () => ({
+        name: 'Error',
+        message: 'Must provide non-empty array of account(s).',
+      }),
 
-      nonKeyringAccount: (account) => {
-        return {
-          name: 'Error',
-          message: `Unknown account: ${account}`,
-        };
-      },
+      nonKeyringAccount: (account) => ({
+        name: 'Error',
+        message: `Unknown account: ${account}`,
+      }),
     },
 
     finalizePermissionsRequest: {
-      grantEthAcountsFailure: (origin) => {
-        return {
-          // name: 'EthereumRpcError',
-          message: `Failed to add 'eth_accounts' to '${origin}'.`,
-          code: errorCodes.rpc.internal,
-        };
-      },
+      grantEthAcountsFailure: (origin) => ({
+        // name: 'EthereumRpcError',
+        message: `Failed to add 'eth_accounts' to '${origin}'.`,
+        code: errorCodes.rpc.internal,
+      }),
     },
 
     addPermittedAccount: {
-      alreadyPermitted: () => {
-        return {
-          message: 'Account is already permitted for origin',
-        };
-      },
-      invalidOrigin: () => {
-        return {
-          message: 'Unrecognized domain',
-        };
-      },
-      noEthAccountsPermission: () => {
-        return {
-          message: `Origin does not have 'eth_accounts' permission`,
-        };
-      },
+      alreadyPermitted: () => ({
+        message: 'Account is already permitted for origin',
+      }),
+      invalidOrigin: () => ({
+        message: 'Unrecognized domain',
+      }),
+      noEthAccountsPermission: () => ({
+        message: `Origin does not have 'eth_accounts' permission`,
+      }),
     },
 
     removePermittedAccount: {
-      notPermitted: () => {
-        return {
-          message: 'Account is not permitted for origin',
-        };
-      },
-      invalidOrigin: () => {
-        return {
-          message: 'Unrecognized domain',
-        };
-      },
-      noEthAccountsPermission: () => {
-        return {
-          message: `Origin does not have 'eth_accounts' permission`,
-        };
-      },
+      notPermitted: () => ({
+        message: 'Account is not permitted for origin',
+      }),
+      invalidOrigin: () => ({
+        message: 'Unrecognized domain',
+      }),
+      noEthAccountsPermission: () => ({
+        message: `Origin does not have 'eth_accounts' permission`,
+      }),
     },
 
     _handleAccountSelected: {
-      invalidParams: () => {
-        return {
-          name: 'Error',
-          message: 'Selected account should be a non-empty string.',
-        };
-      },
+      invalidParams: () => ({
+        name: 'Error',
+        message: 'Selected account should be a non-empty string.',
+      }),
     },
 
     approvePermissionsRequest: {
-      noPermsRequested: () => {
-        return {
-          message: 'Must request at least one permission.',
-        };
-      },
+      noPermsRequested: () => ({
+        message: 'Must request at least one permission.',
+      }),
     },
 
     rejectPermissionsRequest: {
-      rejection: () => {
-        return {
-          message: ethErrors.provider.userRejectedRequest().message,
-        };
-      },
-      methodNotFound: (methodName) => {
-        return {
-          message: `The method '${methodName}' does not exist / is not available.`,
-        };
-      },
+      rejection: () => ({
+        message: ethErrors.provider.userRejectedRequest().message,
+      }),
+      methodNotFound: (methodName) => ({
+        message: `The method '${methodName}' does not exist / is not available.`,
+      }),
     },
 
     createMiddleware: {
-      badOrigin: () => {
-        return {
-          message: 'Must provide non-empty string origin.',
-        };
-      },
+      badOrigin: () => ({
+        message: 'Must provide non-empty string origin.',
+      }),
     },
 
     rpcCap: {
-      unauthorized: () => {
-        return {
-          code: 4100,
-        };
-      },
+      unauthorized: () => ({
+        code: 4100,
+      }),
     },
 
     pendingApprovals: {
-      duplicateOriginOrId: (id, origin) => {
-        return {
-          message: `Pending approval with id '${id}' or origin '${origin}' already exists.`,
-        };
-      },
-      requestAlreadyPending: (origin) => {
-        return {
-          message: `Request of type 'wallet_requestPermissions' already pending for origin ${origin}. Please wait.`,
-        };
-      },
+      duplicateOriginOrId: (id, origin) => ({
+        message: `Pending approval with id '${id}' or origin '${origin}' already exists.`,
+      }),
+      requestAlreadyPending: (origin) => ({
+        message: `Request of type 'wallet_requestPermissions' already pending for origin ${origin}. Please wait.`,
+      }),
     },
 
     eth_requestAccounts: {
-      requestAlreadyPending: () => {
-        return {
-          message: 'Already processing eth_requestAccounts. Please wait.',
-        };
-      },
+      requestAlreadyPending: () => ({
+        message: 'Already processing eth_requestAccounts. Please wait.',
+      }),
     },
 
     notifyAccountsChanged: {
-      invalidOrigin: (origin) => {
-        return {
-          message: `Invalid origin: '${origin}'`,
-        };
-      },
-      invalidAccounts: () => {
-        return {
-          message: 'Invalid accounts',
-        };
-      },
+      invalidOrigin: (origin) => ({
+        message: `Invalid origin: '${origin}'`,
+      }),
+      invalidAccounts: () => ({
+        message: 'Invalid accounts',
+      }),
     },
   },
 
@@ -467,12 +403,10 @@ export const getters = deepFreeze({
      *
      * @returns {Object} An accountsChanged notification with an empty array as its result
      */
-    removedAccounts: () => {
-      return {
-        method: NOTIFICATION_NAMES.accountsChanged,
-        params: [],
-      };
-    },
+    removedAccounts: () => ({
+      method: NOTIFICATION_NAMES.accountsChanged,
+      params: [],
+    }),
 
     /**
      * Gets a new accounts notification.
@@ -480,12 +414,10 @@ export const getters = deepFreeze({
      * @param {Array<string>} accounts - The accounts added to the notification.
      * @returns {Object} An accountsChanged notification with the given accounts as its result
      */
-    newAccounts: (accounts) => {
-      return {
-        method: NOTIFICATION_NAMES.accountsChanged,
-        params: accounts,
-      };
-    },
+    newAccounts: (accounts) => ({
+      method: NOTIFICATION_NAMES.accountsChanged,
+      params: accounts,
+    }),
   },
 
   /**
@@ -519,13 +451,11 @@ export const getters = deepFreeze({
      * @param {string} origin - The origin of the request
      * @returns {Object} An RPC request object
      */
-    eth_accounts: (origin) => {
-      return {
-        origin,
-        method: 'eth_accounts',
-        params: [],
-      };
-    },
+    eth_accounts: (origin) => ({
+      origin,
+      method: 'eth_accounts',
+      params: [],
+    }),
 
     /**
      * Gets a test_method RPC request object.
@@ -534,13 +464,11 @@ export const getters = deepFreeze({
      * @param {boolean} param - The request param
      * @returns {Object} An RPC request object
      */
-    test_method: (origin, param = false) => {
-      return {
-        origin,
-        method: 'test_method',
-        params: [param],
-      };
-    },
+    test_method: (origin, param = false) => ({
+      origin,
+      method: 'test_method',
+      params: [param],
+    }),
 
     /**
      * Gets an eth_requestAccounts RPC request object.
@@ -548,13 +476,11 @@ export const getters = deepFreeze({
      * @param {string} origin - The origin of the request
      * @returns {Object} An RPC request object
      */
-    eth_requestAccounts: (origin) => {
-      return {
-        origin,
-        method: 'eth_requestAccounts',
-        params: [],
-      };
-    },
+    eth_requestAccounts: (origin) => ({
+      origin,
+      method: 'eth_requestAccounts',
+      params: [],
+    }),
 
     /**
      * Gets a wallet_requestPermissions RPC request object,
@@ -564,13 +490,11 @@ export const getters = deepFreeze({
      * @param {string} permissionName - The name of the permission to request
      * @returns {Object} An RPC request object
      */
-    requestPermission: (origin, permissionName) => {
-      return {
-        origin,
-        method: 'wallet_requestPermissions',
-        params: [PERMS.requests[permissionName]()],
-      };
-    },
+    requestPermission: (origin, permissionName) => ({
+      origin,
+      method: 'wallet_requestPermissions',
+      params: [PERMS.requests[permissionName]()],
+    }),
 
     /**
      * Gets a wallet_requestPermissions RPC request object,
@@ -580,13 +504,11 @@ export const getters = deepFreeze({
      * @param {Object} permissions - A permission request object
      * @returns {Object} An RPC request object
      */
-    requestPermissions: (origin, permissions = {}) => {
-      return {
-        origin,
-        method: 'wallet_requestPermissions',
-        params: [permissions],
-      };
-    },
+    requestPermissions: (origin, permissions = {}) => ({
+      origin,
+      method: 'wallet_requestPermissions',
+      params: [permissions],
+    }),
 
     /**
      * Gets a metamask_sendDomainMetadata RPC request object.
@@ -596,16 +518,14 @@ export const getters = deepFreeze({
      * @param {Array<any>} [args] - Any other data for the request's domainMetadata
      * @returns {Object} An RPC request object
      */
-    metamask_sendDomainMetadata: (origin, name, ...args) => {
-      return {
-        origin,
-        method: 'metamask_sendDomainMetadata',
-        params: {
-          ...args,
-          name,
-        },
-      };
-    },
+    metamask_sendDomainMetadata: (origin, name, ...args) => ({
+      origin,
+      method: 'metamask_sendDomainMetadata',
+      params: {
+        ...args,
+        name,
+      },
+    }),
   },
 });
 

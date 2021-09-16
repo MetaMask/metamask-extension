@@ -29,20 +29,18 @@ const {
   EXTRA_ACCOUNT,
 } = constants;
 
-const initNotifications = () => {
-  return Object.values(DOMAINS).reduce((acc, domain) => {
+const initNotifications = () =>
+  Object.values(DOMAINS).reduce((acc, domain) => {
     acc[domain.origin] = [];
     return acc;
   }, {});
-};
 
-const initPermController = (notifications = initNotifications()) => {
-  return new PermissionsController({
+const initPermController = (notifications = initNotifications()) =>
+  new PermissionsController({
     ...getPermControllerOpts(),
     notifyDomain: getNotifyDomain(notifications),
     notifyAllDomains: getNotifyAllDomains(notifications),
   });
-};
 
 describe('permissions controller', function () {
   describe('constructor', function () {

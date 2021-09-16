@@ -32,21 +32,23 @@ module.exports = function createStaticAssetTasks({
   const prod = createTask(
     'static:prod',
     composeSeries(
-      ...targets.map((target) => {
-        return async function copyStaticAssets() {
-          await performCopy(target);
-        };
-      }),
+      ...targets.map(
+        (target) =>
+          async function copyStaticAssets() {
+            await performCopy(target);
+          },
+      ),
     ),
   );
   const dev = createTask(
     'static:dev',
     composeSeries(
-      ...copyTargetsDev.map((target) => {
-        return async function copyStaticAssets() {
-          await setupLiveCopy(target);
-        };
-      }),
+      ...copyTargetsDev.map(
+        (target) =>
+          async function copyStaticAssets() {
+            await setupLiveCopy(target);
+          },
+      ),
     ),
   );
 

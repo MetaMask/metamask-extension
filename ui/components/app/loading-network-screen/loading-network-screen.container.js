@@ -23,16 +23,14 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setProviderType: (type) => {
-      dispatch(actions.setProviderType(type));
-    },
-    rollbackToPreviousProvider: () =>
-      dispatch(actions.rollbackToPreviousProvider()),
-    showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  setProviderType: (type) => {
+    dispatch(actions.setProviderType(type));
+  },
+  rollbackToPreviousProvider: () =>
+    dispatch(actions.rollbackToPreviousProvider()),
+  showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
+});
 
 export default connect(
   mapStateToProps,

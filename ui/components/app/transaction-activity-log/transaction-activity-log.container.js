@@ -15,13 +15,11 @@ import {
 const matchesEventKey = (matchEventKey) => ({ eventKey }) =>
   eventKey === matchEventKey;
 
-const mapStateToProps = (state) => {
-  return {
-    conversionRate: conversionRateSelector(state),
-    nativeCurrency: getNativeCurrency(state),
-    rpcPrefs: getRpcPrefsForCurrentProvider(state),
-  };
-};
+const mapStateToProps = (state) => ({
+  conversionRate: conversionRateSelector(state),
+  nativeCurrency: getNativeCurrency(state),
+  rpcPrefs: getRpcPrefsForCurrentProvider(state),
+});
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {

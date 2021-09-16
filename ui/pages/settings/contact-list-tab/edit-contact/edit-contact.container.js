@@ -38,16 +38,14 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addToAddressBook: (recipient, nickname, memo) =>
-      dispatch(addToAddressBook(recipient, nickname, memo)),
-    removeFromAddressBook: (chainId, addressToRemove) =>
-      dispatch(removeFromAddressBook(chainId, addressToRemove)),
-    setAccountLabel: (address, label) =>
-      dispatch(setAccountLabel(address, label)),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  addToAddressBook: (recipient, nickname, memo) =>
+    dispatch(addToAddressBook(recipient, nickname, memo)),
+  removeFromAddressBook: (chainId, addressToRemove) =>
+    dispatch(removeFromAddressBook(chainId, addressToRemove)),
+  setAccountLabel: (address, label) =>
+    dispatch(setAccountLabel(address, label)),
+});
 
 export default compose(
   withRouter,

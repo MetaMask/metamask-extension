@@ -17,14 +17,12 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    rejectWatchAsset: (suggestedAssetID) =>
-      dispatch(rejectWatchAsset(suggestedAssetID)),
-    acceptWatchAsset: (suggestedAssetID) =>
-      dispatch(acceptWatchAsset(suggestedAssetID)),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  rejectWatchAsset: (suggestedAssetID) =>
+    dispatch(rejectWatchAsset(suggestedAssetID)),
+  acceptWatchAsset: (suggestedAssetID) =>
+    dispatch(acceptWatchAsset(suggestedAssetID)),
+});
 
 export default compose(
   withRouter,

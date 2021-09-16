@@ -18,13 +18,11 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
-    hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
-    toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
+  hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
+  toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
+});
 
 export default compose(
   withRouter,

@@ -6,9 +6,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const Confusable = ({ input }) => {
   const t = useI18nContext();
-  const confusableData = useMemo(() => {
-    return confusables(input);
-  }, [input]);
+  const confusableData = useMemo(() => confusables(input), [input]);
 
   return confusableData.map(({ point, similarTo }, index) => {
     const zeroWidth = similarTo === '';

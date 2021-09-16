@@ -10,11 +10,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    hideModal: () => dispatch(hideModal()),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  hideModal: () => dispatch(hideModal()),
+});
 
 export default function withModalProps(Component) {
   return connect(mapStateToProps, mapDispatchToProps)(Component);

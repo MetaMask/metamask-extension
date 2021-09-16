@@ -11,14 +11,13 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     hideModal: () => dispatch(actions.hideModal()),
-    createAccount: (newAccountName) => {
-      return dispatch(actions.addNewAccount()).then((newAccountAddress) => {
+    createAccount: (newAccountName) =>
+      dispatch(actions.addNewAccount()).then((newAccountAddress) => {
         if (newAccountName) {
           dispatch(actions.setAccountLabel(newAccountAddress, newAccountName));
         }
         return newAccountAddress;
-      });
-    },
+      }),
   };
 }
 
@@ -29,11 +28,10 @@ function mergeProps(stateProps, dispatchProps) {
   return {
     ...stateProps,
     ...dispatchProps,
-    onSave: (newAccountName) => {
-      return createAccount(newAccountName).then((newAccountAddress) =>
+    onSave: (newAccountName) =>
+      createAccount(newAccountName).then((newAccountAddress) =>
         onCreateNewAccount(newAccountAddress),
-      );
-    },
+      ),
   };
 }
 

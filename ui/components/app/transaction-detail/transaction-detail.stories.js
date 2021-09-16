@@ -43,18 +43,14 @@ const rows = [
   />,
 ];
 
-export const basic = () => {
-  return (
-    <div style={{ width: '400px' }}>
-      <TransactionDetail rows={rows} />
-    </div>
-  );
-};
+export const basic = () => (
+  <div style={{ width: '400px' }}>
+    <TransactionDetail rows={rows} />
+  </div>
+);
 
-export const editable = () => {
-  return (
-    <div style={{ width: '400px' }}>
-      <TransactionDetail rows={rows} onEdit={() => console.log('Edit!')} />
-    </div>
-  );
-};
+export const editable = () => (
+  <div style={{ width: '400px' }}>
+    <TransactionDetail rows={rows} onEdit={() => console.log('Edit!')} />
+  </div>
+);

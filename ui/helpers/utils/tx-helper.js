@@ -55,9 +55,7 @@ export default function txHelper(
   log.debug(`tx helper found ${typedValues.length} unsigned typed messages`);
   allValues = allValues.concat(typedValues);
 
-  allValues = allValues.sort((a, b) => {
-    return a.time - b.time;
-  });
+  allValues = allValues.sort((a, b) => a.time - b.time);
 
   return allValues;
 }

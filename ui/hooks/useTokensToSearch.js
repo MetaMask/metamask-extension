@@ -167,9 +167,8 @@ export function useTokensToSearch({
     });
 
     tokensToSearchBuckets.owned = tokensToSearchBuckets.owned.sort(
-      ({ rawFiat }, { rawFiat: secondRawFiat }) => {
-        return new BigNumber(rawFiat || 0).gt(secondRawFiat || 0) ? -1 : 1;
-      },
+      ({ rawFiat }, { rawFiat: secondRawFiat }) =>
+        new BigNumber(rawFiat || 0).gt(secondRawFiat || 0) ? -1 : 1,
     );
     tokensToSearchBuckets.top = tokensToSearchBuckets.top.filter(Boolean);
     return [

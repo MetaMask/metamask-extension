@@ -6,6 +6,4 @@ export default {
   id: __filename,
 };
 
-export const WelcomeComponent = () => {
-  return <Welcome />;
-};
+export const WelcomeComponent = () => <Welcome />;

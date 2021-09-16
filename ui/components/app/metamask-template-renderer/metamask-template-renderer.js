@@ -97,6 +97,6 @@ MetaMaskTemplateRenderer.propTypes = {
   sections: ValidChildren,
 };
 
-export default memo(MetaMaskTemplateRenderer, (prevProps, nextProps) => {
-  return isEqual(prevProps.sections, nextProps.sections);
-});
+export default memo(MetaMaskTemplateRenderer, (prevProps, nextProps) =>
+  isEqual(prevProps.sections, nextProps.sections),
+);

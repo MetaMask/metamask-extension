@@ -14,26 +14,24 @@ describe('Contact List', () => {
     it('sorts contacts by name within each letter group', () => {
       const { getAllByTestId } = renderWithProvider(
         <ContactList
-          searchForContacts={() => {
-            return [
-              {
-                name: 'Al',
-                address: '0x0000000000000000000000000000000000000000',
-              },
-              {
-                name: 'aa',
-                address: '0x0000000000000000000000000000000000000001',
-              },
-              {
-                name: 'Az',
-                address: '0x0000000000000000000000000000000000000002',
-              },
-              {
-                name: 'bbb',
-                address: '0x0000000000000000000000000000000000000003',
-              },
-            ];
-          }}
+          searchForContacts={() => [
+            {
+              name: 'Al',
+              address: '0x0000000000000000000000000000000000000000',
+            },
+            {
+              name: 'aa',
+              address: '0x0000000000000000000000000000000000000001',
+            },
+            {
+              name: 'Az',
+              address: '0x0000000000000000000000000000000000000002',
+            },
+            {
+              name: 'bbb',
+              address: '0x0000000000000000000000000000000000000003',
+            },
+          ]}
           selectRecipient={selectRecipient}
           selectedAddress={selectedAddress}
         />,

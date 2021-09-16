@@ -7,17 +7,15 @@ import {
 } from '../../../../test/jest';
 import AwaitingSwap from '.';
 
-const createProps = (customProps = {}) => {
-  return {
-    swapComplete: false,
-    txHash: 'txHash',
-    tokensReceived: 'tokens received:',
-    submittingSwap: true,
-    inputValue: 5,
-    maxSlippage: 3,
-    ...customProps,
-  };
-};
+const createProps = (customProps = {}) => ({
+  swapComplete: false,
+  txHash: 'txHash',
+  tokensReceived: 'tokens received:',
+  submittingSwap: true,
+  inputValue: 5,
+  maxSlippage: 3,
+  ...customProps,
+});
 
 describe('AwaitingSwap', () => {
   it('renders the component with initial props', () => {

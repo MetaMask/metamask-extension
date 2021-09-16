@@ -172,14 +172,10 @@ describe('PendingTransactionTracker', function () {
           getTransactionReceipt: sinon.stub(),
         },
         nonceTracker: {
-          getGlobalLock: async () => {
-            return { releaseLock: () => undefined };
-          },
+          getGlobalLock: async () => ({ releaseLock: () => undefined }),
         },
         getPendingTransactions: () => txList,
-        getCompletedTransactions: () => {
-          return [];
-        },
+        getCompletedTransactions: () => [],
         publishTransaction: () => undefined,
         confirmTransaction: () => undefined,
       });

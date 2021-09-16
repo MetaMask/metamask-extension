@@ -4,11 +4,9 @@ import withModalProps from '../../../../helpers/higher-order-components/with-mod
 import { delRpcTarget } from '../../../../store/actions';
 import ConfirmDeleteNetwork from './confirm-delete-network.component';
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    delRpcTarget: (target) => dispatch(delRpcTarget(target)),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  delRpcTarget: (target) => dispatch(delRpcTarget(target)),
+});
 
 export default compose(
   withModalProps,

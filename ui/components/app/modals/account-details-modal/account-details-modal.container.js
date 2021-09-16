@@ -7,23 +7,19 @@ import {
 } from '../../../../selectors';
 import AccountDetailsModal from './account-details-modal.component';
 
-const mapStateToProps = (state) => {
-  return {
-    chainId: getCurrentChainId(state),
-    selectedIdentity: getSelectedIdentity(state),
-    keyrings: state.metamask.keyrings,
-    rpcPrefs: getRpcPrefsForCurrentProvider(state),
-  };
-};
+const mapStateToProps = (state) => ({
+  chainId: getCurrentChainId(state),
+  selectedIdentity: getSelectedIdentity(state),
+  keyrings: state.metamask.keyrings,
+  rpcPrefs: getRpcPrefsForCurrentProvider(state),
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    showExportPrivateKeyModal: () =>
-      dispatch(showModal({ name: 'EXPORT_PRIVATE_KEY' })),
-    setAccountLabel: (address, label) =>
-      dispatch(setAccountLabel(address, label)),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  showExportPrivateKeyModal: () =>
+    dispatch(showModal({ name: 'EXPORT_PRIVATE_KEY' })),
+  setAccountLabel: (address, label) =>
+    dispatch(setAccountLabel(address, label)),
+});
 
 export default connect(
   mapStateToProps,

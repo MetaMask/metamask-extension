@@ -7,17 +7,15 @@ import {
 } from '../../../../test/jest';
 import CountdownTimer from '.';
 
-const createProps = (customProps = {}) => {
-  return {
-    timeStarted: 1,
-    timeOnly: true,
-    timerBase: 5,
-    warningTime: '0:30',
-    labelKey: 'swapNewQuoteIn',
-    infoTooltipLabelKey: 'swapQuotesAreRefreshed',
-    ...customProps,
-  };
-};
+const createProps = (customProps = {}) => ({
+  timeStarted: 1,
+  timeOnly: true,
+  timerBase: 5,
+  warningTime: '0:30',
+  labelKey: 'swapNewQuoteIn',
+  infoTooltipLabelKey: 'swapQuotesAreRefreshed',
+  ...customProps,
+});
 
 describe('CountdownTimer', () => {
   it('renders the component with initial props', () => {

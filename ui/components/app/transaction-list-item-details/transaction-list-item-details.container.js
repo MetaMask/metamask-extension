@@ -19,9 +19,9 @@ const mapStateToProps = (state, ownProps) => {
   const addressBook = getAddressBook(state);
 
   const getNickName = (address) => {
-    const entry = addressBook.find((contact) => {
-      return address.toLowerCase() === contact.address.toLowerCase();
-    });
+    const entry = addressBook.find(
+      (contact) => address.toLowerCase() === contact.address.toLowerCase(),
+    );
     return (entry && entry.name) || '';
   };
   const rpcPrefs = getRpcPrefsForCurrentProvider(state);
@@ -34,13 +34,10 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    tryReverseResolveAddress: (address) => {
-      return dispatch(tryReverseResolveAddress(address));
-    },
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  tryReverseResolveAddress: (address) =>
+    dispatch(tryReverseResolveAddress(address)),
+});
 
 export default connect(
   mapStateToProps,

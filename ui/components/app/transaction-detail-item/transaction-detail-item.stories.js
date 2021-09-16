@@ -8,27 +8,25 @@ export default {
   id: __filename,
 };
 
-export const basic = () => {
-  return (
-    <div style={{ width: '400px' }}>
-      <TransactionDetailItem
-        detailTitle={
-          <>
-            <strong>Estimated gas fee</strong>
-            <InfoTooltip contentText="This is the tooltip text" position="top">
-              <i className="fa fa-info-circle" />
-            </InfoTooltip>
-          </>
-        }
-        detailText="16565.30"
-        detailTotal="0.0089 ETH"
-        subTitle={<GasTiming maxPriorityFeePerGas="1" />}
-        subText={
-          <>
-            From <strong>$16565 - $19000</strong>
-          </>
-        }
-      />
-    </div>
-  );
-};
+export const basic = () => (
+  <div style={{ width: '400px' }}>
+    <TransactionDetailItem
+      detailTitle={
+        <>
+          <strong>Estimated gas fee</strong>
+          <InfoTooltip contentText="This is the tooltip text" position="top">
+            <i className="fa fa-info-circle" />
+          </InfoTooltip>
+        </>
+      }
+      detailText="16565.30"
+      detailTotal="0.0089 ETH"
+      subTitle={<GasTiming maxPriorityFeePerGas="1" />}
+      subText={
+        <>
+          From <strong>$16565 - $19000</strong>
+        </>
+      }
+    />
+  </div>
+);

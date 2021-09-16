@@ -11,11 +11,12 @@ import * as en from '../../app/_locales/en/messages.json';
 export const I18nProvider = (props) => {
   const { currentLocale, current, en: eng } = props;
 
-  const t = useMemo(() => {
-    return (key, ...args) =>
+  const t = useMemo(
+    () => (key, ...args) =>
       getMessage(currentLocale, current, key, ...args) ||
-      getMessage(currentLocale, eng, key, ...args);
-  }, [currentLocale, current, eng]);
+      getMessage(currentLocale, eng, key, ...args),
+    [currentLocale, current, eng],
+  );
 
   return (
     <I18nContext.Provider value={t}>{props.children}</I18nContext.Provider>

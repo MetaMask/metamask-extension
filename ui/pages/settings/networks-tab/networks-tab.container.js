@@ -34,17 +34,15 @@ const mapStateToProps = (state, ownProps) => {
   const { frequentRpcListDetail, provider } = state.metamask;
   const { networksTabSelectedRpcUrl, networksTabIsInAddMode } = state.appState;
 
-  const frequentRpcNetworkListDetails = frequentRpcListDetail.map((rpc) => {
-    return {
-      label: rpc.nickname,
-      iconColor: '#6A737D',
-      providerType: NETWORK_TYPE_RPC,
-      rpcUrl: rpc.rpcUrl,
-      chainId: rpc.chainId,
-      ticker: rpc.ticker,
-      blockExplorerUrl: rpc.rpcPrefs?.blockExplorerUrl || '',
-    };
-  });
+  const frequentRpcNetworkListDetails = frequentRpcListDetail.map((rpc) => ({
+    label: rpc.nickname,
+    iconColor: '#6A737D',
+    providerType: NETWORK_TYPE_RPC,
+    rpcUrl: rpc.rpcUrl,
+    chainId: rpc.chainId,
+    ticker: rpc.ticker,
+    blockExplorerUrl: rpc.rpcPrefs?.blockExplorerUrl || '',
+  }));
 
   const networksToRender = [
     ...defaultNetworks,
@@ -59,13 +57,12 @@ const mapStateToProps = (state, ownProps) => {
   let networkDefaultedToProvider = false;
   if (!networkIsSelected && !networksTabIsInAddMode) {
     selectedNetwork =
-      networksToRender.find((network) => {
-        return (
+      networksToRender.find(
+        (network) =>
           network.rpcUrl === provider.rpcUrl ||
           (network.providerType !== NETWORK_TYPE_RPC &&
-            network.providerType === provider.type)
-        );
-      }) || {};
+            network.providerType === provider.type),
+      ) || {};
     networkDefaultedToProvider = true;
   }
 
@@ -82,30 +79,21 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setSelectedSettingsRpcUrl: (newRpcUrl) =>
-      dispatch(setSelectedSettingsRpcUrl(newRpcUrl)),
-    setRpcTarget: (newRpc, chainId, ticker, nickname, rpcPrefs) => {
-      return dispatch(
-        updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, rpcPrefs),
-      );
-    },
-    showConfirmDeleteNetworkModal: ({ target, onConfirm }) => {
-      return dispatch(
-        showModal({ name: 'CONFIRM_DELETE_NETWORK', target, onConfirm }),
-      );
-    },
-    displayWarning: (warning) => dispatch(displayWarning(warning)),
-    setNetworksTabAddMode: (isInAddMode) =>
-      dispatch(setNetworksTabAddMode(isInAddMode)),
-    editRpc: (oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs) => {
-      return dispatch(
-        editRpc(oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs),
-      );
-    },
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  setSelectedSettingsRpcUrl: (newRpcUrl) =>
+    dispatch(setSelectedSettingsRpcUrl(newRpcUrl)),
+  setRpcTarget: (newRpc, chainId, ticker, nickname, rpcPrefs) =>
+    dispatch(
+      updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, rpcPrefs),
+    ),
+  showConfirmDeleteNetworkModal: ({ target, onConfirm }) =>
+    dispatch(showModal({ name: 'CONFIRM_DELETE_NETWORK', target, onConfirm })),
+  displayWarning: (warning) => dispatch(displayWarning(warning)),
+  setNetworksTabAddMode: (isInAddMode) =>
+    dispatch(setNetworksTabAddMode(isInAddMode)),
+  editRpc: (oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs) =>
+    dispatch(editRpc(oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs)),
+});
 
 export default compose(
   withRouter,

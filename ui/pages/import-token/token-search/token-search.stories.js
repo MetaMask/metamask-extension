@@ -6,6 +6,4 @@ export default {
   id: __filename,
 };
 
-export const TokenSearchComponent = () => {
-  return <TokenSearch />;
-};
+export const TokenSearchComponent = () => <TokenSearch />;

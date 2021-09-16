@@ -7,15 +7,13 @@ import {
 } from '../../../../test/jest';
 import DropdownSearchList from '.';
 
-const createProps = (customProps = {}) => {
-  return {
-    startingItem: {
-      iconUrl: 'iconUrl',
-      symbol: 'symbol',
-    },
-    ...customProps,
-  };
-};
+const createProps = (customProps = {}) => ({
+  startingItem: {
+    iconUrl: 'iconUrl',
+    symbol: 'symbol',
+  },
+  ...customProps,
+});
 
 describe('DropdownSearchList', () => {
   it('renders the component with initial props', () => {

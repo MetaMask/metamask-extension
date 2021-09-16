@@ -14,31 +14,25 @@ jest.mock('../../../components/ui/info-tooltip/info-tooltip-icon', () => () =>
   '<InfoTooltipIcon />',
 );
 
-jest.mock('../../../hooks/useGasFeeInputs', () => {
-  return {
-    useGasFeeInputs: () => {
-      return {
-        maxFeePerGas: 16,
-        maxPriorityFeePerGas: 3,
-        gasFeeEstimates: MOCKS.createGasFeeEstimatesForFeeMarket(),
-      };
-    },
-  };
-});
+jest.mock('../../../hooks/useGasFeeInputs', () => ({
+  useGasFeeInputs: () => ({
+    maxFeePerGas: 16,
+    maxPriorityFeePerGas: 3,
+    gasFeeEstimates: MOCKS.createGasFeeEstimatesForFeeMarket(),
+  }),
+}));
 
 const middleware = [thunk];
-const createProps = (customProps = {}) => {
-  return {
-    inputValue: '5',
-    onInputChange: jest.fn(),
-    ethBalance: '6 ETH',
-    setMaxSlippage: jest.fn(),
-    maxSlippage: 15,
-    selectedAccountAddress: 'selectedAccountAddress',
-    isFeatureFlagLoaded: false,
-    ...customProps,
-  };
-};
+const createProps = (customProps = {}) => ({
+  inputValue: '5',
+  onInputChange: jest.fn(),
+  ethBalance: '6 ETH',
+  setMaxSlippage: jest.fn(),
+  maxSlippage: 15,
+  selectedAccountAddress: 'selectedAccountAddress',
+  isFeatureFlagLoaded: false,
+  ...customProps,
+});
 
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),

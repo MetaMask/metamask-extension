@@ -52,6 +52,7 @@ module.exports = {
     'default-param-last': 'off',
     'prefer-object-spread': 'error',
     'require-atomic-updates': 'off',
+    'arrow-body-style': 1,
 
     // This is the same as our default config, but for the noted exceptions
     'spaced-comment': [

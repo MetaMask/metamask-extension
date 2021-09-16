@@ -219,11 +219,10 @@ export default class MetamaskController extends EventEmitter {
         const chainId = this.networkController.getCurrentChainId();
         return process.env.IN_TEST || chainId === MAINNET_CHAIN_ID;
       },
-      getChainId: () => {
-        return process.env.IN_TEST
+      getChainId: () =>
+        process.env.IN_TEST
           ? MAINNET_CHAIN_ID
-          : this.networkController.getCurrentChainId();
-      },
+          : this.networkController.getCurrentChainId(),
     });
 
     this.appStateController = new AppStateController({
@@ -1796,10 +1795,10 @@ export default class MetamaskController extends EventEmitter {
     // and removes the metamaskId for signing
     return this.messageManager
       .approveMessage(msgParams)
-      .then((cleanMsgParams) => {
+      .then((cleanMsgParams) =>
         // signs the message
-        return this.keyringController.signMessage(cleanMsgParams);
-      })
+        this.keyringController.signMessage(cleanMsgParams),
+      )
       .then((rawSig) => {
         // tells the listener that the message has been signed
         // and can be returned to the dapp
@@ -1859,10 +1858,10 @@ export default class MetamaskController extends EventEmitter {
     // and removes the metamaskId for signing
     return this.personalMessageManager
       .approveMessage(msgParams)
-      .then((cleanMsgParams) => {
+      .then((cleanMsgParams) =>
         // signs the message
-        return this.keyringController.signPersonalMessage(cleanMsgParams);
-      })
+        this.keyringController.signPersonalMessage(cleanMsgParams),
+      )
       .then((rawSig) => {
         // tells the listener that the message has been signed
         // and can be returned to the dapp
@@ -2207,8 +2206,8 @@ export default class MetamaskController extends EventEmitter {
   }
 
   estimateGas(estimateGasParams) {
-    return new Promise((resolve, reject) => {
-      return this.txController.txGasUtil.query.estimateGas(
+    return new Promise((resolve, reject) =>
+      this.txController.txGasUtil.query.estimateGas(
         estimateGasParams,
         (err, res) => {
           if (err) {
@@ -2217,8 +2216,8 @@ export default class MetamaskController extends EventEmitter {
 
           return resolve(res.toString(16));
         },
-      );
-    });
+      ),
+    );
   }
 
   //=============================================================================
@@ -2656,15 +2655,13 @@ export default class MetamaskController extends EventEmitter {
    * Notifies all connections that the extension is unlocked.
    */
   _onUnlock() {
-    this.notifyAllConnections((origin) => {
-      return {
-        method: NOTIFICATION_NAMES.unlockStateChanged,
-        params: {
-          isUnlocked: true,
-          accounts: this.permissionsController.getAccounts(origin),
-        },
-      };
-    });
+    this.notifyAllConnections((origin) => ({
+      method: NOTIFICATION_NAMES.unlockStateChanged,
+      params: {
+        isUnlocked: true,
+        accounts: this.permissionsController.getAccounts(origin),
+      },
+    }));
     this.emit('unlock');
   }
 

@@ -290,9 +290,8 @@ export function checkExistingAddresses(address, list = []) {
     return false;
   }
 
-  const matchesAddress = (obj) => {
-    return obj.address.toLowerCase() === address.toLowerCase();
-  };
+  const matchesAddress = (obj) =>
+    obj.address.toLowerCase() === address.toLowerCase();
 
   return list.some(matchesAddress);
 }
@@ -317,9 +316,10 @@ export function toPrecisionWithoutTrailingZeros(n, precision) {
  * now prefixed with '0x'
  */
 export function addHexPrefixToObjectValues(obj) {
-  return Object.keys(obj).reduce((newObj, key) => {
-    return { ...newObj, [key]: addHexPrefix(obj[key]) };
-  }, {});
+  return Object.keys(obj).reduce(
+    (newObj, key) => ({ ...newObj, [key]: addHexPrefix(obj[key]) }),
+    {},
+  );
 }
 
 /**

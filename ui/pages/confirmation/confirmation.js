@@ -129,11 +129,13 @@ export default function ConfirmationPage() {
   // Generating templatedValues is potentially expensive, and if done on every render
   // will result in a new object. Avoiding calling this generation unnecessarily will
   // improve performance and prevent unnecessary draws.
-  const templatedValues = useMemo(() => {
-    return pendingConfirmation
-      ? getTemplateValues(pendingConfirmation, t, dispatch)
-      : {};
-  }, [pendingConfirmation, t, dispatch]);
+  const templatedValues = useMemo(
+    () =>
+      pendingConfirmation
+        ? getTemplateValues(pendingConfirmation, t, dispatch)
+        : {},
+    [pendingConfirmation, t, dispatch],
+  );
 
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user

@@ -95,21 +95,19 @@ export default class ConfirmDecryptMessage extends Component {
     setTimeout(() => this.setState({ hasCopied: false }), SECOND * 3);
   };
 
-  renderHeader = () => {
-    return (
-      <div className="request-decrypt-message__header">
-        <div className="request-decrypt-message__header-background" />
+  renderHeader = () => (
+    <div className="request-decrypt-message__header">
+      <div className="request-decrypt-message__header-background" />
 
-        <div className="request-decrypt-message__header__text">
-          {this.context.t('decryptRequest')}
-        </div>
-
-        <div className="request-decrypt-message__header__tip-container">
-          <div className="request-decrypt-message__header__tip" />
-        </div>
+      <div className="request-decrypt-message__header__text">
+        {this.context.t('decryptRequest')}
       </div>
-    );
-  };
+
+      <div className="request-decrypt-message__header__tip-container">
+        <div className="request-decrypt-message__header__tip" />
+      </div>
+    </div>
+  );
 
   renderAccount = () => {
     const { fromAccount } = this.state;
@@ -165,15 +163,13 @@ export default class ConfirmDecryptMessage extends Component {
     );
   };
 
-  renderAccountInfo = () => {
-    return (
-      <div className="request-decrypt-message__account-info">
-        {this.renderAccount()}
-        {this.renderRequestIcon()}
-        {this.renderBalance()}
-      </div>
-    );
-  };
+  renderAccountInfo = () => (
+    <div className="request-decrypt-message__account-info">
+      {this.renderAccount()}
+      {this.renderRequestIcon()}
+      {this.renderBalance()}
+    </div>
+  );
 
   renderBody = () => {
     const { decryptMessageInline, domainMetadata, txData } = this.props;
@@ -339,13 +335,11 @@ export default class ConfirmDecryptMessage extends Component {
     );
   };
 
-  render = () => {
-    return (
-      <div className="request-decrypt-message__container">
-        {this.renderHeader()}
-        {this.renderBody()}
-        {this.renderFooter()}
-      </div>
-    );
-  };
+  render = () => (
+    <div className="request-decrypt-message__container">
+      {this.renderHeader()}
+      {this.renderBody()}
+      {this.renderFooter()}
+    </div>
+  );
 }

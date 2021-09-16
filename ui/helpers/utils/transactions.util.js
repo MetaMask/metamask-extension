@@ -150,13 +150,13 @@ export async function isSmartContractAddress(address) {
 }
 
 export function sumHexes(...args) {
-  const total = args.reduce((acc, hexAmount) => {
-    return addCurrencies(acc, hexAmount, {
+  const total = args.reduce((acc, hexAmount) =>
+    addCurrencies(acc, hexAmount, {
       toNumericBase: 'hex',
       aBase: 16,
       bBase: 16,
-    });
-  });
+    }),
+  );
 
   return addHexPrefix(total);
 }

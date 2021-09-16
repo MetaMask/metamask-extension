@@ -105,12 +105,13 @@ const mapStateToProps = (state, ownProps) => {
   const useTokenDetection = getUseTokenDetection(state);
   const casedTokenList = useTokenDetection
     ? tokenList
-    : Object.keys(tokenList).reduce((acc, base) => {
-        return {
+    : Object.keys(tokenList).reduce(
+        (acc, base) => ({
           ...acc,
           [base.toLowerCase()]: tokenList[base],
-        };
-      }, {});
+        }),
+        {},
+      );
   const toName =
     identities[toAddress]?.name ||
     casedTokenList[toAddress]?.name ||
@@ -220,39 +221,31 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const mapDispatchToProps = (dispatch) => {
-  return {
-    tryReverseResolveAddress: (address) => {
-      return dispatch(tryReverseResolveAddress(address));
-    },
-    updateCustomNonce: (value) => {
-      customNonceValue = value;
-      dispatch(updateCustomNonce(value));
-    },
-    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    showTransactionConfirmedModal: ({ onSubmit }) => {
-      return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }));
-    },
-    showRejectTransactionsConfirmationModal: ({
-      onSubmit,
-      unapprovedTxCount,
-    }) => {
-      return dispatch(
-        showModal({ name: 'REJECT_TRANSACTIONS', onSubmit, unapprovedTxCount }),
-      );
-    },
-    cancelTransaction: ({ id }) => dispatch(cancelTx({ id })),
-    cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
-    sendTransaction: (txData) =>
-      dispatch(updateAndApproveTx(customNonceMerge(txData))),
-    getNextNonce: () => dispatch(getNextNonce()),
-    setDefaultHomeActiveTabName: (tabName) =>
-      dispatch(setDefaultHomeActiveTabName(tabName)),
-    updateTransactionGasFees: (gasFees) => {
-      dispatch(updateTransactionGasFees({ ...gasFees, expectHexWei: true }));
-    },
-  };
-};
+export const mapDispatchToProps = (dispatch) => ({
+  tryReverseResolveAddress: (address) =>
+    dispatch(tryReverseResolveAddress(address)),
+  updateCustomNonce: (value) => {
+    customNonceValue = value;
+    dispatch(updateCustomNonce(value));
+  },
+  clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
+  showTransactionConfirmedModal: ({ onSubmit }) =>
+    dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit })),
+  showRejectTransactionsConfirmationModal: ({ onSubmit, unapprovedTxCount }) =>
+    dispatch(
+      showModal({ name: 'REJECT_TRANSACTIONS', onSubmit, unapprovedTxCount }),
+    ),
+  cancelTransaction: ({ id }) => dispatch(cancelTx({ id })),
+  cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
+  sendTransaction: (txData) =>
+    dispatch(updateAndApproveTx(customNonceMerge(txData))),
+  getNextNonce: () => dispatch(getNextNonce()),
+  setDefaultHomeActiveTabName: (tabName) =>
+    dispatch(setDefaultHomeActiveTabName(tabName)),
+  updateTransactionGasFees: (gasFees) => {
+    dispatch(updateTransactionGasFees({ ...gasFees, expectHexWei: true }));
+  },
+});
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { txData, unapprovedTxs } = stateProps;

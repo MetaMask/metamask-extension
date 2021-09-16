@@ -19,10 +19,8 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setCompletedOnboarding: () => dispatch(setCompletedOnboarding()),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  setCompletedOnboarding: () => dispatch(setCompletedOnboarding()),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(EndOfFlow);

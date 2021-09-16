@@ -44,9 +44,7 @@ function transformState(state) {
       // has history: migrate
       const newHistory = migrateFromSnapshotsToDiffs(txMeta.history)
         // remove empty diffs
-        .filter((entry) => {
-          return !Array.isArray(entry) || entry.length > 0;
-        });
+        .filter((entry) => !Array.isArray(entry) || entry.length > 0);
       txMeta.history = newHistory;
       return txMeta;
     });

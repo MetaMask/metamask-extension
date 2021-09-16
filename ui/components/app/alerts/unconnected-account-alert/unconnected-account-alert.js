@@ -37,11 +37,10 @@ const UnconnectedAccountAlert = () => {
   const selectedAddress = useSelector(getSelectedAddress);
   const [dontShowThisAgain, setDontShowThisAgain] = useState(false);
 
-  const onClose = async () => {
-    return dontShowThisAgain
+  const onClose = async () =>
+    dontShowThisAgain
       ? await dispatch(dismissAndDisableAlert())
       : dispatch(dismissAlert());
-  };
 
   const footer = (
     <>

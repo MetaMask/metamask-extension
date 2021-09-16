@@ -8,9 +8,7 @@ function ensureXServerIsRunning() {
       delay: 2000,
       rejectionMessage: 'X server does not seem to be running?!',
     },
-    () => {
-      return runCommand('xset', ['q']);
-    },
+    () => runCommand('xset', ['q']),
   );
 }
 

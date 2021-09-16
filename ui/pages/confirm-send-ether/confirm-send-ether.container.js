@@ -15,15 +15,13 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    editTransaction: async (txData) => {
-      const { id } = txData;
-      await dispatch(editTransaction(ASSET_TYPES.NATIVE, id.toString()));
-      dispatch(clearConfirmTransaction());
-    },
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  editTransaction: async (txData) => {
+    const { id } = txData;
+    await dispatch(editTransaction(ASSET_TYPES.NATIVE, id.toString()));
+    dispatch(clearConfirmTransaction());
+  },
+});
 
 export default compose(
   withRouter,

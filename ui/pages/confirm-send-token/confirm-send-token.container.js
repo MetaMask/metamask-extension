@@ -15,23 +15,21 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    editTransaction: ({ txData, tokenData, tokenProps: assetDetails }) => {
-      const { id } = txData;
-      dispatch(
-        editTransaction(
-          ASSET_TYPES.TOKEN,
-          id.toString(),
-          tokenData,
-          assetDetails,
-        ),
-      );
-      dispatch(clearConfirmTransaction());
-      dispatch(showSendTokenPage());
-    },
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  editTransaction: ({ txData, tokenData, tokenProps: assetDetails }) => {
+    const { id } = txData;
+    dispatch(
+      editTransaction(
+        ASSET_TYPES.TOKEN,
+        id.toString(),
+        tokenData,
+        assetDetails,
+      ),
+    );
+    dispatch(clearConfirmTransaction());
+    dispatch(showSendTokenPage());
+  },
+});
 
 export default compose(
   withRouter,

@@ -8,17 +8,15 @@ export default {
   id: __filename,
 };
 
-export const SendContentComponent = () => {
-  return (
-    <SendContent
-      showHexData={boolean('Show Hex Data', false)}
-      isOwnedAccount={boolean('Is In Address Book', true)}
-      noGasPrice={boolean('No Gas Price', false)}
-      isEthGasPrice={boolean('Backup Gas Price', false)}
-      gasIsExcessive={boolean('Gas Is Excessive', false)}
-      // Get error and warning message from messages.json
-      error={text('Error', 'connecting')}
-      warning={text('Warning', 'connecting')}
-    />
-  );
-};
+export const SendContentComponent = () => (
+  <SendContent
+    showHexData={boolean('Show Hex Data', false)}
+    isOwnedAccount={boolean('Is In Address Book', true)}
+    noGasPrice={boolean('No Gas Price', false)}
+    isEthGasPrice={boolean('Backup Gas Price', false)}
+    gasIsExcessive={boolean('Gas Is Excessive', false)}
+    // Get error and warning message from messages.json
+    error={text('Error', 'connecting')}
+    warning={text('Warning', 'connecting')}
+  />
+);

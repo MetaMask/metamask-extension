@@ -71,21 +71,19 @@ export default class ConfirmEncryptionPublicKey extends Component {
     }
   };
 
-  renderHeader = () => {
-    return (
-      <div className="request-encryption-public-key__header">
-        <div className="request-encryption-public-key__header-background" />
+  renderHeader = () => (
+    <div className="request-encryption-public-key__header">
+      <div className="request-encryption-public-key__header-background" />
 
-        <div className="request-encryption-public-key__header__text">
-          {this.context.t('encryptionPublicKeyRequest')}
-        </div>
-
-        <div className="request-encryption-public-key__header__tip-container">
-          <div className="request-encryption-public-key__header__tip" />
-        </div>
+      <div className="request-encryption-public-key__header__text">
+        {this.context.t('encryptionPublicKeyRequest')}
       </div>
-    );
-  };
+
+      <div className="request-encryption-public-key__header__tip-container">
+        <div className="request-encryption-public-key__header__tip" />
+      </div>
+    </div>
+  );
 
   renderAccount = () => {
     const { fromAccount } = this.props;
@@ -142,15 +140,13 @@ export default class ConfirmEncryptionPublicKey extends Component {
     );
   };
 
-  renderAccountInfo = () => {
-    return (
-      <div className="request-encryption-public-key__account-info">
-        {this.renderAccount()}
-        {this.renderRequestIcon()}
-        {this.renderBalance()}
-      </div>
-    );
-  };
+  renderAccountInfo = () => (
+    <div className="request-encryption-public-key__account-info">
+      {this.renderAccount()}
+      {this.renderRequestIcon()}
+      {this.renderBalance()}
+    </div>
+  );
 
   renderBody = () => {
     const { domainMetadata, txData } = this.props;
@@ -242,13 +238,11 @@ export default class ConfirmEncryptionPublicKey extends Component {
     );
   };
 
-  render = () => {
-    return (
-      <div className="request-encryption-public-key__container">
-        {this.renderHeader()}
-        {this.renderBody()}
-        {this.renderFooter()}
-      </div>
-    );
-  };
+  render = () => (
+    <div className="request-encryption-public-key__container">
+      {this.renderHeader()}
+      {this.renderBody()}
+      {this.renderFooter()}
+    </div>
+  );
 }

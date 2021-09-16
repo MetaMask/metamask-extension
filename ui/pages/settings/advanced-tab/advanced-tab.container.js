@@ -48,40 +48,30 @@ export const mapStateToProps = (state) => {
   };
 };
 
-export const mapDispatchToProps = (dispatch) => {
-  return {
-    setHexDataFeatureFlag: (shouldShow) =>
-      dispatch(setFeatureFlag('sendHexData', shouldShow)),
-    displayWarning: (warning) => dispatch(displayWarning(warning)),
-    showResetAccountConfirmationModal: () =>
-      dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
-    setAdvancedInlineGasFeatureFlag: (shouldShow) =>
-      dispatch(setFeatureFlag('advancedInlineGas', shouldShow)),
-    setUseNonceField: (value) => dispatch(setUseNonceField(value)),
-    setShowFiatConversionOnTestnetsPreference: (value) => {
-      return dispatch(setShowFiatConversionOnTestnetsPreference(value));
-    },
-    setAutoLockTimeLimit: (value) => {
-      return dispatch(setAutoLockTimeLimit(value));
-    },
-    setThreeBoxSyncingPermission: (newThreeBoxSyncingState) => {
-      if (newThreeBoxSyncingState) {
-        dispatch(turnThreeBoxSyncingOnAndInitialize());
-      } else {
-        dispatch(setThreeBoxSyncingPermission(newThreeBoxSyncingState));
-      }
-    },
-    setIpfsGateway: (value) => {
-      return dispatch(setIpfsGateway(value));
-    },
-    setLedgerLivePreference: (value) => {
-      return dispatch(setLedgerLivePreference(value));
-    },
-    setDismissSeedBackUpReminder: (value) => {
-      return dispatch(setDismissSeedBackUpReminder(value));
-    },
-  };
-};
+export const mapDispatchToProps = (dispatch) => ({
+  setHexDataFeatureFlag: (shouldShow) =>
+    dispatch(setFeatureFlag('sendHexData', shouldShow)),
+  displayWarning: (warning) => dispatch(displayWarning(warning)),
+  showResetAccountConfirmationModal: () =>
+    dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
+  setAdvancedInlineGasFeatureFlag: (shouldShow) =>
+    dispatch(setFeatureFlag('advancedInlineGas', shouldShow)),
+  setUseNonceField: (value) => dispatch(setUseNonceField(value)),
+  setShowFiatConversionOnTestnetsPreference: (value) =>
+    dispatch(setShowFiatConversionOnTestnetsPreference(value)),
+  setAutoLockTimeLimit: (value) => dispatch(setAutoLockTimeLimit(value)),
+  setThreeBoxSyncingPermission: (newThreeBoxSyncingState) => {
+    if (newThreeBoxSyncingState) {
+      dispatch(turnThreeBoxSyncingOnAndInitialize());
+    } else {
+      dispatch(setThreeBoxSyncingPermission(newThreeBoxSyncingState));
+    }
+  },
+  setIpfsGateway: (value) => dispatch(setIpfsGateway(value)),
+  setLedgerLivePreference: (value) => dispatch(setLedgerLivePreference(value)),
+  setDismissSeedBackUpReminder: (value) =>
+    dispatch(setDismissSeedBackUpReminder(value)),
+});
 
 export default compose(
   withRouter,

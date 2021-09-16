@@ -51,38 +51,33 @@ setBackgroundConnection({
   getGasFeeEstimatesAndStartPolling: jest.fn(),
 });
 
-const createProps = (customProps = {}) => {
-  return {
-    primaryFee: {
-      fee: '0.0441 ETH',
-      maxFee: '0.04851 ETH',
-    },
-    secondaryFee: {
-      fee: '$101.98',
-      maxFee: '$112.17',
-    },
-    hideTokenApprovalRow: false,
-    onFeeCardMaxRowClick: jest.fn(),
-    tokenApprovalTextComponent: (
-      <span
-        key="swaps-view-quote-approve-symbol-1"
-        className="view-quote__bold"
-      >
-        ABC
-      </span>
-    ),
-    tokenApprovalSourceTokenSymbol: 'ABC',
-    onTokenApprovalClick: jest.fn(),
-    metaMaskFee: '0.875',
-    isBestQuote: true,
-    numberOfQuotes: 6,
-    onQuotesClick: jest.fn(),
-    tokenConversionRate: 0.015,
-    chainId: MAINNET_CHAIN_ID,
-    networkAndAccountSupports1559: false,
-    ...customProps,
-  };
-};
+const createProps = (customProps = {}) => ({
+  primaryFee: {
+    fee: '0.0441 ETH',
+    maxFee: '0.04851 ETH',
+  },
+  secondaryFee: {
+    fee: '$101.98',
+    maxFee: '$112.17',
+  },
+  hideTokenApprovalRow: false,
+  onFeeCardMaxRowClick: jest.fn(),
+  tokenApprovalTextComponent: (
+    <span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">
+      ABC
+    </span>
+  ),
+  tokenApprovalSourceTokenSymbol: 'ABC',
+  onTokenApprovalClick: jest.fn(),
+  metaMaskFee: '0.875',
+  isBestQuote: true,
+  numberOfQuotes: 6,
+  onQuotesClick: jest.fn(),
+  tokenConversionRate: 0.015,
+  chainId: MAINNET_CHAIN_ID,
+  networkAndAccountSupports1559: false,
+  ...customProps,
+});
 
 describe('FeeCard', () => {
   it('renders the component with initial props', () => {

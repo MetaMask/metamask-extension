@@ -357,66 +357,54 @@ export {
   swapCustomGasModalClosed,
 };
 
-export const navigateBackToBuildQuote = (history) => {
-  return async (dispatch) => {
-    // TODO: Ensure any fetch in progress is cancelled
-    await dispatch(setBackgroundSwapRouteState(''));
-    dispatch(navigatedBackToBuildQuote());
-    history.push(BUILD_QUOTE_ROUTE);
-  };
+export const navigateBackToBuildQuote = (history) => async (dispatch) => {
+  // TODO: Ensure any fetch in progress is cancelled
+  await dispatch(setBackgroundSwapRouteState(''));
+  dispatch(navigatedBackToBuildQuote());
+  history.push(BUILD_QUOTE_ROUTE);
 };
 
-export const prepareForRetryGetQuotes = () => {
-  return async (dispatch) => {
-    // TODO: Ensure any fetch in progress is cancelled
-    await dispatch(resetSwapsPostFetchState());
-    dispatch(retriedGetQuotes());
-  };
+export const prepareForRetryGetQuotes = () => async (dispatch) => {
+  // TODO: Ensure any fetch in progress is cancelled
+  await dispatch(resetSwapsPostFetchState());
+  dispatch(retriedGetQuotes());
 };
 
-export const prepareToLeaveSwaps = () => {
-  return async (dispatch) => {
-    dispatch(clearSwapsState());
-    await dispatch(resetBackgroundSwapsState());
-  };
+export const prepareToLeaveSwaps = () => async (dispatch) => {
+  dispatch(clearSwapsState());
+  await dispatch(resetBackgroundSwapsState());
 };
 
-export const swapsQuoteSelected = (aggId) => {
-  return (dispatch) => {
-    dispatch(swapCustomGasModalLimitEdited(null));
-    dispatch(setSelectedQuoteAggId(aggId));
-    dispatch(setSwapsTxGasLimit(''));
-  };
+export const swapsQuoteSelected = (aggId) => (dispatch) => {
+  dispatch(swapCustomGasModalLimitEdited(null));
+  dispatch(setSelectedQuoteAggId(aggId));
+  dispatch(setSwapsTxGasLimit(''));
 };
 
-export const fetchAndSetSwapsGasPriceInfo = () => {
-  return async (dispatch) => {
-    const basicEstimates = await dispatch(fetchMetaSwapsGasPriceEstimates());
+export const fetchAndSetSwapsGasPriceInfo = () => async (dispatch) => {
+  const basicEstimates = await dispatch(fetchMetaSwapsGasPriceEstimates());
 
-    if (basicEstimates?.fast) {
-      dispatch(setSwapsTxGasPrice(decGWEIToHexWEI(basicEstimates.fast)));
-    }
-  };
+  if (basicEstimates?.fast) {
+    dispatch(setSwapsTxGasPrice(decGWEIToHexWEI(basicEstimates.fast)));
+  }
 };
 
-export const fetchSwapsLiveness = () => {
-  return async (dispatch, getState) => {
-    let swapsLivenessForNetwork = {
-      swapsFeatureIsLive: false,
-      useNewSwapsApi: false,
-    };
-    try {
-      const swapsFeatureFlags = await fetchSwapsFeatureFlags();
-      swapsLivenessForNetwork = getSwapsLivenessForNetwork(
-        swapsFeatureFlags,
-        getCurrentChainId(getState()),
-      );
-    } catch (error) {
-      log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
-    }
-    await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
-    return swapsLivenessForNetwork;
+export const fetchSwapsLiveness = () => async (dispatch, getState) => {
+  let swapsLivenessForNetwork = {
+    swapsFeatureIsLive: false,
+    useNewSwapsApi: false,
   };
+  try {
+    const swapsFeatureFlags = await fetchSwapsFeatureFlags();
+    swapsLivenessForNetwork = getSwapsLivenessForNetwork(
+      swapsFeatureFlags,
+      getCurrentChainId(getState()),
+    );
+  } catch (error) {
+    log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
+  }
+  await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
+  return swapsLivenessForNetwork;
 };
 
 export const fetchQuotesAndSetQuoteState = (
@@ -425,488 +413,482 @@ export const fetchQuotesAndSetQuoteState = (
   maxSlippage,
   metaMetricsEvent,
   pageRedirectionDisabled,
-) => {
-  return async (dispatch, getState) => {
-    const state = getState();
-    const chainId = getCurrentChainId(state);
-    let swapsLivenessForNetwork = {
-      swapsFeatureIsLive: false,
-      useNewSwapsApi: false,
-    };
-    try {
-      const swapsFeatureFlags = await fetchSwapsFeatureFlags();
-      swapsLivenessForNetwork = getSwapsLivenessForNetwork(
-        swapsFeatureFlags,
-        chainId,
-      );
-    } catch (error) {
-      log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
-    }
-    await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
-
-    if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
-      await history.push(SWAPS_MAINTENANCE_ROUTE);
-      return;
-    }
-
-    const fetchParams = getFetchParams(state);
-    const selectedAccount = getSelectedAccount(state);
-    const balanceError = getBalanceError(state);
-    const swapsDefaultToken = getSwapsDefaultToken(state);
-    const fetchParamsFromToken =
-      fetchParams?.metaData?.sourceTokenInfo?.symbol ===
-      swapsDefaultToken.symbol
-        ? swapsDefaultToken
-        : fetchParams?.metaData?.sourceTokenInfo;
-    const selectedFromToken = getFromToken(state) || fetchParamsFromToken || {};
-    const selectedToToken =
-      getToToken(state) || fetchParams?.metaData?.destinationTokenInfo || {};
-    const {
-      address: fromTokenAddress,
-      symbol: fromTokenSymbol,
-      decimals: fromTokenDecimals,
-      iconUrl: fromTokenIconUrl,
-      balance: fromTokenBalance,
-    } = selectedFromToken;
-    const {
-      address: toTokenAddress,
-      symbol: toTokenSymbol,
-      decimals: toTokenDecimals,
-      iconUrl: toTokenIconUrl,
-    } = selectedToToken;
-    // pageRedirectionDisabled is true if quotes prefetching is active (a user is on the Build Quote page).
-    // In that case we just want to silently prefetch quotes without redirecting to the quotes loading page.
-    if (!pageRedirectionDisabled) {
-      await dispatch(setBackgroundSwapRouteState('loading'));
-      history.push(LOADING_QUOTES_ROUTE);
-    }
-    dispatch(setFetchingQuotes(true));
-
-    const contractExchangeRates = getTokenExchangeRates(state);
-
-    let destinationTokenAddedForSwap = false;
-    if (
-      toTokenAddress &&
-      toTokenSymbol !== swapsDefaultToken.symbol &&
-      contractExchangeRates[toTokenAddress] === undefined
-    ) {
-      destinationTokenAddedForSwap = true;
-      await dispatch(
-        addToken(
-          toTokenAddress,
-          toTokenSymbol,
-          toTokenDecimals,
-          toTokenIconUrl,
-          true,
-        ),
-      );
-    }
-    if (
-      fromTokenAddress &&
-      fromTokenSymbol !== swapsDefaultToken.symbol &&
-      !contractExchangeRates[fromTokenAddress] &&
-      fromTokenBalance &&
-      new BigNumber(fromTokenBalance, 16).gt(0)
-    ) {
-      dispatch(
-        addToken(
-          fromTokenAddress,
-          fromTokenSymbol,
-          fromTokenDecimals,
-          fromTokenIconUrl,
-          true,
-        ),
-      );
-    }
-
-    const swapsTokens = getSwapsTokens(state);
-
-    const sourceTokenInfo =
-      swapsTokens?.find(({ address }) => address === fromTokenAddress) ||
-      selectedFromToken;
-    const destinationTokenInfo =
-      swapsTokens?.find(({ address }) => address === toTokenAddress) ||
-      selectedToToken;
-
-    dispatch(setFromToken(selectedFromToken));
-
-    const hardwareWalletUsed = isHardwareWallet(state);
-    const hardwareWalletType = getHardwareWalletType(state);
-    const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
-      state,
-    );
-    metaMetricsEvent({
-      event: 'Quotes Requested',
-      category: 'swaps',
-      sensitiveProperties: {
-        token_from: fromTokenSymbol,
-        token_from_amount: String(inputValue),
-        token_to: toTokenSymbol,
-        request_type: balanceError ? 'Quote' : 'Order',
-        slippage: maxSlippage,
-        custom_slippage: maxSlippage !== 2,
-        is_hardware_wallet: hardwareWalletUsed,
-        hardware_wallet_type: hardwareWalletType,
-        anonymizedData: true,
-      },
-    });
-
-    try {
-      const fetchStartTime = Date.now();
-      dispatch(setQuotesFetchStartTime(fetchStartTime));
-
-      const fetchAndSetQuotesPromise = dispatch(
-        fetchAndSetQuotes(
-          {
-            slippage: maxSlippage,
-            sourceToken: fromTokenAddress,
-            destinationToken: toTokenAddress,
-            value: inputValue,
-            fromAddress: selectedAccount.address,
-            destinationTokenAddedForSwap,
-            balanceError,
-            sourceDecimals: fromTokenDecimals,
-          },
-          {
-            sourceTokenInfo,
-            destinationTokenInfo,
-            accountBalance: selectedAccount.balance,
-            chainId,
-          },
-        ),
-      );
-
-      const gasPriceFetchPromise = networkAndAccountSupports1559
-        ? null // For EIP 1559 we can get gas prices via "useGasFeeEstimates".
-        : dispatch(fetchAndSetSwapsGasPriceInfo());
-
-      const [[fetchedQuotes, selectedAggId]] = await Promise.all([
-        fetchAndSetQuotesPromise,
-        gasPriceFetchPromise,
-      ]);
-
-      if (Object.values(fetchedQuotes)?.length === 0) {
-        metaMetricsEvent({
-          event: 'No Quotes Available',
-          category: 'swaps',
-          sensitiveProperties: {
-            token_from: fromTokenSymbol,
-            token_from_amount: String(inputValue),
-            token_to: toTokenSymbol,
-            request_type: balanceError ? 'Quote' : 'Order',
-            slippage: maxSlippage,
-            custom_slippage: maxSlippage !== 2,
-            is_hardware_wallet: hardwareWalletUsed,
-            hardware_wallet_type: hardwareWalletType,
-          },
-        });
-        dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
-      } else {
-        const newSelectedQuote = fetchedQuotes[selectedAggId];
-
-        metaMetricsEvent({
-          event: 'Quotes Received',
-          category: 'swaps',
-          sensitiveProperties: {
-            token_from: fromTokenSymbol,
-            token_from_amount: String(inputValue),
-            token_to: toTokenSymbol,
-            token_to_amount: calcTokenAmount(
-              newSelectedQuote.destinationAmount,
-              newSelectedQuote.decimals || 18,
-            ),
-            request_type: balanceError ? 'Quote' : 'Order',
-            slippage: maxSlippage,
-            custom_slippage: maxSlippage !== 2,
-            response_time: Date.now() - fetchStartTime,
-            best_quote_source: newSelectedQuote.aggregator,
-            available_quotes: Object.values(fetchedQuotes)?.length,
-            is_hardware_wallet: hardwareWalletUsed,
-            hardware_wallet_type: hardwareWalletType,
-            anonymizedData: true,
-          },
-        });
-
-        dispatch(setInitialGasEstimate(selectedAggId));
-      }
-    } catch (e) {
-      // A newer swap request is running, so simply bail and let the newer request respond
-      if (e.message === SWAPS_FETCH_ORDER_CONFLICT) {
-        log.debug(`Swap fetch order conflict detected; ignoring older request`);
-        return;
-      }
-      // TODO: Check for any errors we should expect to occur in production, and report others to Sentry
-      log.error(`Error fetching quotes: `, e);
-
-      dispatch(setSwapsErrorKey(ERROR_FETCHING_QUOTES));
-    }
-
-    dispatch(setFetchingQuotes(false));
+) => async (dispatch, getState) => {
+  const state = getState();
+  const chainId = getCurrentChainId(state);
+  let swapsLivenessForNetwork = {
+    swapsFeatureIsLive: false,
+    useNewSwapsApi: false,
   };
-};
-
-export const signAndSendTransactions = (history, metaMetricsEvent) => {
-  return async (dispatch, getState) => {
-    const state = getState();
-    const chainId = getCurrentChainId(state);
-    const hardwareWalletUsed = isHardwareWallet(state);
-    const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
-      state,
+  try {
+    const swapsFeatureFlags = await fetchSwapsFeatureFlags();
+    swapsLivenessForNetwork = getSwapsLivenessForNetwork(
+      swapsFeatureFlags,
+      chainId,
     );
-    let swapsLivenessForNetwork = {
-      swapsFeatureIsLive: false,
-      useNewSwapsApi: false,
-    };
-    try {
-      const swapsFeatureFlags = await fetchSwapsFeatureFlags();
-      swapsLivenessForNetwork = getSwapsLivenessForNetwork(
-        swapsFeatureFlags,
-        chainId,
-      );
-    } catch (error) {
-      log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
-    }
-    await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
+  } catch (error) {
+    log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
+  }
+  await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
 
-    if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
-      await history.push(SWAPS_MAINTENANCE_ROUTE);
-      return;
-    }
+  if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
+    await history.push(SWAPS_MAINTENANCE_ROUTE);
+    return;
+  }
 
-    const customSwapsGas = getCustomSwapsGas(state);
-    const customMaxFeePerGas = getCustomMaxFeePerGas(state);
-    const customMaxPriorityFeePerGas = getCustomMaxPriorityFeePerGas(state);
-    const fetchParams = getFetchParams(state);
-    const { metaData, value: swapTokenValue, slippage } = fetchParams;
-    const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
-    await dispatch(setBackgroundSwapRouteState('awaiting'));
-    await dispatch(stopPollingForQuotes());
+  const fetchParams = getFetchParams(state);
+  const selectedAccount = getSelectedAccount(state);
+  const balanceError = getBalanceError(state);
+  const swapsDefaultToken = getSwapsDefaultToken(state);
+  const fetchParamsFromToken =
+    fetchParams?.metaData?.sourceTokenInfo?.symbol === swapsDefaultToken.symbol
+      ? swapsDefaultToken
+      : fetchParams?.metaData?.sourceTokenInfo;
+  const selectedFromToken = getFromToken(state) || fetchParamsFromToken || {};
+  const selectedToToken =
+    getToToken(state) || fetchParams?.metaData?.destinationTokenInfo || {};
+  const {
+    address: fromTokenAddress,
+    symbol: fromTokenSymbol,
+    decimals: fromTokenDecimals,
+    iconUrl: fromTokenIconUrl,
+    balance: fromTokenBalance,
+  } = selectedFromToken;
+  const {
+    address: toTokenAddress,
+    symbol: toTokenSymbol,
+    decimals: toTokenDecimals,
+    iconUrl: toTokenIconUrl,
+  } = selectedToToken;
+  // pageRedirectionDisabled is true if quotes prefetching is active (a user is on the Build Quote page).
+  // In that case we just want to silently prefetch quotes without redirecting to the quotes loading page.
+  if (!pageRedirectionDisabled) {
+    await dispatch(setBackgroundSwapRouteState('loading'));
+    history.push(LOADING_QUOTES_ROUTE);
+  }
+  dispatch(setFetchingQuotes(true));
 
-    if (!hardwareWalletUsed) {
-      history.push(AWAITING_SWAP_ROUTE);
-    }
+  const contractExchangeRates = getTokenExchangeRates(state);
 
-    const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state);
-
-    let maxFeePerGas;
-    let maxPriorityFeePerGas;
-    let baseAndPriorityFeePerGas;
-    let decEstimatedBaseFee;
-
-    if (networkAndAccountSupports1559) {
-      const {
-        high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
-        estimatedBaseFee = '0',
-      } = getGasFeeEstimates(state);
-      decEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee);
-      maxFeePerGas =
-        customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
-      maxPriorityFeePerGas =
-        customMaxPriorityFeePerGas ||
-        decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
-      baseAndPriorityFeePerGas = addHexes(
-        decEstimatedBaseFee,
-        maxPriorityFeePerGas,
-      );
-    }
-
-    const usedQuote = getUsedQuote(state);
-    const usedTradeTxParams = usedQuote.trade;
-
-    const estimatedGasLimit = new BigNumber(
-      usedQuote?.gasEstimate || `0x0`,
-      16,
-    );
-    const estimatedGasLimitWithMultiplier = estimatedGasLimit
-      .times(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER, 10)
-      .round(0)
-      .toString(16);
-    const maxGasLimit =
-      customSwapsGas ||
-      (usedQuote?.gasEstimate
-        ? estimatedGasLimitWithMultiplier
-        : `0x${decimalToHex(usedQuote?.maxGas || 0)}`);
-
-    const usedGasPrice = getUsedSwapsGasPrice(state);
-    usedTradeTxParams.gas = maxGasLimit;
-    if (networkAndAccountSupports1559) {
-      usedTradeTxParams.maxFeePerGas = maxFeePerGas;
-      usedTradeTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
-      delete usedTradeTxParams.gasPrice;
-    } else {
-      usedTradeTxParams.gasPrice = usedGasPrice;
-    }
-
-    const usdConversionRate = getUSDConversionRate(state);
-    const destinationValue = calcTokenAmount(
-      usedQuote.destinationAmount,
-      destinationTokenInfo.decimals || 18,
-    ).toPrecision(8);
-    const usedGasLimitEstimate =
-      usedQuote?.gasEstimateWithRefund ||
-      `0x${decimalToHex(usedQuote?.averageGas || 0)}`;
-    const totalGasLimitEstimate = new BigNumber(usedGasLimitEstimate, 16)
-      .plus(usedQuote.approvalNeeded?.gas || '0x0', 16)
-      .toString(16);
-    const gasEstimateTotalInUSD = getValueFromWeiHex({
-      value: calcGasTotal(
-        totalGasLimitEstimate,
-        networkAndAccountSupports1559 ? baseAndPriorityFeePerGas : usedGasPrice,
+  let destinationTokenAddedForSwap = false;
+  if (
+    toTokenAddress &&
+    toTokenSymbol !== swapsDefaultToken.symbol &&
+    contractExchangeRates[toTokenAddress] === undefined
+  ) {
+    destinationTokenAddedForSwap = true;
+    await dispatch(
+      addToken(
+        toTokenAddress,
+        toTokenSymbol,
+        toTokenDecimals,
+        toTokenIconUrl,
+        true,
       ),
-      toCurrency: 'usd',
-      conversionRate: usdConversionRate,
-      numberOfDecimals: 6,
-    });
+    );
+  }
+  if (
+    fromTokenAddress &&
+    fromTokenSymbol !== swapsDefaultToken.symbol &&
+    !contractExchangeRates[fromTokenAddress] &&
+    fromTokenBalance &&
+    new BigNumber(fromTokenBalance, 16).gt(0)
+  ) {
+    dispatch(
+      addToken(
+        fromTokenAddress,
+        fromTokenSymbol,
+        fromTokenDecimals,
+        fromTokenIconUrl,
+        true,
+      ),
+    );
+  }
 
-    const swapMetaData = {
-      token_from: sourceTokenInfo.symbol,
-      token_from_amount: String(swapTokenValue),
-      token_to: destinationTokenInfo.symbol,
-      token_to_amount: destinationValue,
-      slippage,
-      custom_slippage: slippage !== 2,
-      best_quote_source: getTopQuote(state)?.aggregator,
-      available_quotes: getQuotes(state)?.length,
-      other_quote_selected:
-        usedQuote.aggregator !== getTopQuote(state)?.aggregator,
-      other_quote_selected_source:
-        usedQuote.aggregator === getTopQuote(state)?.aggregator
-          ? ''
-          : usedQuote.aggregator,
-      gas_fees: gasEstimateTotalInUSD,
-      estimated_gas: estimatedGasLimit.toString(10),
-      suggested_gas_price: fastGasEstimate,
-      used_gas_price: hexWEIToDecGWEI(usedGasPrice),
-      average_savings: usedQuote.savings?.total,
-      performance_savings: usedQuote.savings?.performance,
-      fee_savings: usedQuote.savings?.fee,
-      median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
+  const swapsTokens = getSwapsTokens(state);
+
+  const sourceTokenInfo =
+    swapsTokens?.find(({ address }) => address === fromTokenAddress) ||
+    selectedFromToken;
+  const destinationTokenInfo =
+    swapsTokens?.find(({ address }) => address === toTokenAddress) ||
+    selectedToToken;
+
+  dispatch(setFromToken(selectedFromToken));
+
+  const hardwareWalletUsed = isHardwareWallet(state);
+  const hardwareWalletType = getHardwareWalletType(state);
+  const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
+    state,
+  );
+  metaMetricsEvent({
+    event: 'Quotes Requested',
+    category: 'swaps',
+    sensitiveProperties: {
+      token_from: fromTokenSymbol,
+      token_from_amount: String(inputValue),
+      token_to: toTokenSymbol,
+      request_type: balanceError ? 'Quote' : 'Order',
+      slippage: maxSlippage,
+      custom_slippage: maxSlippage !== 2,
       is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: getHardwareWalletType(state),
-    };
-    if (networkAndAccountSupports1559) {
-      swapMetaData.max_fee_per_gas = maxFeePerGas;
-      swapMetaData.max_priority_fee_per_gas = maxPriorityFeePerGas;
-      swapMetaData.base_and_priority_fee_per_gas = baseAndPriorityFeePerGas;
-    }
+      hardware_wallet_type: hardwareWalletType,
+      anonymizedData: true,
+    },
+  });
 
-    metaMetricsEvent({
-      event: 'Swap Started',
-      category: 'swaps',
-      sensitiveProperties: swapMetaData,
-    });
+  try {
+    const fetchStartTime = Date.now();
+    dispatch(setQuotesFetchStartTime(fetchStartTime));
 
-    if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
-      captureMessage('Invalid contract address', {
-        extra: {
-          token_from: swapMetaData.token_from,
-          token_to: swapMetaData.token_to,
-          contract_address: usedTradeTxParams.to,
+    const fetchAndSetQuotesPromise = dispatch(
+      fetchAndSetQuotes(
+        {
+          slippage: maxSlippage,
+          sourceToken: fromTokenAddress,
+          destinationToken: toTokenAddress,
+          value: inputValue,
+          fromAddress: selectedAccount.address,
+          destinationTokenAddedForSwap,
+          balanceError,
+          sourceDecimals: fromTokenDecimals,
+        },
+        {
+          sourceTokenInfo,
+          destinationTokenInfo,
+          accountBalance: selectedAccount.balance,
+          chainId,
+        },
+      ),
+    );
+
+    const gasPriceFetchPromise = networkAndAccountSupports1559
+      ? null // For EIP 1559 we can get gas prices via "useGasFeeEstimates".
+      : dispatch(fetchAndSetSwapsGasPriceInfo());
+
+    const [[fetchedQuotes, selectedAggId]] = await Promise.all([
+      fetchAndSetQuotesPromise,
+      gasPriceFetchPromise,
+    ]);
+
+    if (Object.values(fetchedQuotes)?.length === 0) {
+      metaMetricsEvent({
+        event: 'No Quotes Available',
+        category: 'swaps',
+        sensitiveProperties: {
+          token_from: fromTokenSymbol,
+          token_from_amount: String(inputValue),
+          token_to: toTokenSymbol,
+          request_type: balanceError ? 'Quote' : 'Order',
+          slippage: maxSlippage,
+          custom_slippage: maxSlippage !== 2,
+          is_hardware_wallet: hardwareWalletUsed,
+          hardware_wallet_type: hardwareWalletType,
         },
       });
-      await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-      history.push(SWAPS_ERROR_ROUTE);
+      dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
+    } else {
+      const newSelectedQuote = fetchedQuotes[selectedAggId];
+
+      metaMetricsEvent({
+        event: 'Quotes Received',
+        category: 'swaps',
+        sensitiveProperties: {
+          token_from: fromTokenSymbol,
+          token_from_amount: String(inputValue),
+          token_to: toTokenSymbol,
+          token_to_amount: calcTokenAmount(
+            newSelectedQuote.destinationAmount,
+            newSelectedQuote.decimals || 18,
+          ),
+          request_type: balanceError ? 'Quote' : 'Order',
+          slippage: maxSlippage,
+          custom_slippage: maxSlippage !== 2,
+          response_time: Date.now() - fetchStartTime,
+          best_quote_source: newSelectedQuote.aggregator,
+          available_quotes: Object.values(fetchedQuotes)?.length,
+          is_hardware_wallet: hardwareWalletUsed,
+          hardware_wallet_type: hardwareWalletType,
+          anonymizedData: true,
+        },
+      });
+
+      dispatch(setInitialGasEstimate(selectedAggId));
+    }
+  } catch (e) {
+    // A newer swap request is running, so simply bail and let the newer request respond
+    if (e.message === SWAPS_FETCH_ORDER_CONFLICT) {
+      log.debug(`Swap fetch order conflict detected; ignoring older request`);
       return;
     }
+    // TODO: Check for any errors we should expect to occur in production, and report others to Sentry
+    log.error(`Error fetching quotes: `, e);
 
-    let finalApproveTxMeta;
-    const approveTxParams = getApproveTxParams(state);
+    dispatch(setSwapsErrorKey(ERROR_FETCHING_QUOTES));
+  }
 
-    // For hardware wallets we go to the Awaiting Signatures page first and only after a user
-    // completes 1 or 2 confirmations, we redirect to the Awaiting Swap page.
-    if (hardwareWalletUsed) {
-      history.push(AWAITING_SIGNATURES_ROUTE);
-    }
+  dispatch(setFetchingQuotes(false));
+};
 
-    if (approveTxParams) {
-      if (networkAndAccountSupports1559) {
-        approveTxParams.maxFeePerGas = maxFeePerGas;
-        approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
-        delete approveTxParams.gasPrice;
-      }
-      const approveTxMeta = await dispatch(
-        addUnapprovedTransaction(
-          { ...approveTxParams, amount: '0x0' },
-          'metamask',
-        ),
-      );
-      await dispatch(setApproveTxId(approveTxMeta.id));
-      finalApproveTxMeta = await dispatch(
-        updateTransaction(
-          {
-            ...approveTxMeta,
-            estimatedBaseFee: decEstimatedBaseFee,
-            type: TRANSACTION_TYPES.SWAP_APPROVAL,
-            sourceTokenSymbol: sourceTokenInfo.symbol,
-          },
-          true,
-        ),
-      );
-      try {
-        await dispatch(updateAndApproveTx(finalApproveTxMeta, true));
-      } catch (e) {
-        await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-        history.push(SWAPS_ERROR_ROUTE);
-        return;
-      }
-    }
-
-    const tradeTxMeta = await dispatch(
-      addUnapprovedTransaction(usedTradeTxParams, 'metamask'),
+export const signAndSendTransactions = (history, metaMetricsEvent) => async (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const chainId = getCurrentChainId(state);
+  const hardwareWalletUsed = isHardwareWallet(state);
+  const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
+    state,
+  );
+  let swapsLivenessForNetwork = {
+    swapsFeatureIsLive: false,
+    useNewSwapsApi: false,
+  };
+  try {
+    const swapsFeatureFlags = await fetchSwapsFeatureFlags();
+    swapsLivenessForNetwork = getSwapsLivenessForNetwork(
+      swapsFeatureFlags,
+      chainId,
     );
-    dispatch(setTradeTxId(tradeTxMeta.id));
+  } catch (error) {
+    log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
+  }
+  await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
 
-    // The simulationFails property is added during the transaction controllers
-    // addUnapprovedTransaction call if the estimateGas call fails. In cases
-    // when no approval is required, this indicates that the swap will likely
-    // fail. There was an earlier estimateGas call made by the swaps controller,
-    // but it is possible that external conditions have change since then, and
-    // a previously succeeding estimate gas call could now fail. By checking for
-    // the `simulationFails` property here, we can reduce the number of swap
-    // transactions that get published to the blockchain only to fail and thereby
-    // waste the user's funds on gas.
-    if (!approveTxParams && tradeTxMeta.simulationFails) {
-      await dispatch(cancelTx(tradeTxMeta, false));
-      await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-      history.push(SWAPS_ERROR_ROUTE);
-      return;
+  if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
+    await history.push(SWAPS_MAINTENANCE_ROUTE);
+    return;
+  }
+
+  const customSwapsGas = getCustomSwapsGas(state);
+  const customMaxFeePerGas = getCustomMaxFeePerGas(state);
+  const customMaxPriorityFeePerGas = getCustomMaxPriorityFeePerGas(state);
+  const fetchParams = getFetchParams(state);
+  const { metaData, value: swapTokenValue, slippage } = fetchParams;
+  const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
+  await dispatch(setBackgroundSwapRouteState('awaiting'));
+  await dispatch(stopPollingForQuotes());
+
+  if (!hardwareWalletUsed) {
+    history.push(AWAITING_SWAP_ROUTE);
+  }
+
+  const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state);
+
+  let maxFeePerGas;
+  let maxPriorityFeePerGas;
+  let baseAndPriorityFeePerGas;
+  let decEstimatedBaseFee;
+
+  if (networkAndAccountSupports1559) {
+    const {
+      high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
+      estimatedBaseFee = '0',
+    } = getGasFeeEstimates(state);
+    decEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee);
+    maxFeePerGas = customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
+    maxPriorityFeePerGas =
+      customMaxPriorityFeePerGas ||
+      decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
+    baseAndPriorityFeePerGas = addHexes(
+      decEstimatedBaseFee,
+      maxPriorityFeePerGas,
+    );
+  }
+
+  const usedQuote = getUsedQuote(state);
+  const usedTradeTxParams = usedQuote.trade;
+
+  const estimatedGasLimit = new BigNumber(usedQuote?.gasEstimate || `0x0`, 16);
+  const estimatedGasLimitWithMultiplier = estimatedGasLimit
+    .times(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER, 10)
+    .round(0)
+    .toString(16);
+  const maxGasLimit =
+    customSwapsGas ||
+    (usedQuote?.gasEstimate
+      ? estimatedGasLimitWithMultiplier
+      : `0x${decimalToHex(usedQuote?.maxGas || 0)}`);
+
+  const usedGasPrice = getUsedSwapsGasPrice(state);
+  usedTradeTxParams.gas = maxGasLimit;
+  if (networkAndAccountSupports1559) {
+    usedTradeTxParams.maxFeePerGas = maxFeePerGas;
+    usedTradeTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
+    delete usedTradeTxParams.gasPrice;
+  } else {
+    usedTradeTxParams.gasPrice = usedGasPrice;
+  }
+
+  const usdConversionRate = getUSDConversionRate(state);
+  const destinationValue = calcTokenAmount(
+    usedQuote.destinationAmount,
+    destinationTokenInfo.decimals || 18,
+  ).toPrecision(8);
+  const usedGasLimitEstimate =
+    usedQuote?.gasEstimateWithRefund ||
+    `0x${decimalToHex(usedQuote?.averageGas || 0)}`;
+  const totalGasLimitEstimate = new BigNumber(usedGasLimitEstimate, 16)
+    .plus(usedQuote.approvalNeeded?.gas || '0x0', 16)
+    .toString(16);
+  const gasEstimateTotalInUSD = getValueFromWeiHex({
+    value: calcGasTotal(
+      totalGasLimitEstimate,
+      networkAndAccountSupports1559 ? baseAndPriorityFeePerGas : usedGasPrice,
+    ),
+    toCurrency: 'usd',
+    conversionRate: usdConversionRate,
+    numberOfDecimals: 6,
+  });
+
+  const swapMetaData = {
+    token_from: sourceTokenInfo.symbol,
+    token_from_amount: String(swapTokenValue),
+    token_to: destinationTokenInfo.symbol,
+    token_to_amount: destinationValue,
+    slippage,
+    custom_slippage: slippage !== 2,
+    best_quote_source: getTopQuote(state)?.aggregator,
+    available_quotes: getQuotes(state)?.length,
+    other_quote_selected:
+      usedQuote.aggregator !== getTopQuote(state)?.aggregator,
+    other_quote_selected_source:
+      usedQuote.aggregator === getTopQuote(state)?.aggregator
+        ? ''
+        : usedQuote.aggregator,
+    gas_fees: gasEstimateTotalInUSD,
+    estimated_gas: estimatedGasLimit.toString(10),
+    suggested_gas_price: fastGasEstimate,
+    used_gas_price: hexWEIToDecGWEI(usedGasPrice),
+    average_savings: usedQuote.savings?.total,
+    performance_savings: usedQuote.savings?.performance,
+    fee_savings: usedQuote.savings?.fee,
+    median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
+    is_hardware_wallet: hardwareWalletUsed,
+    hardware_wallet_type: getHardwareWalletType(state),
+  };
+  if (networkAndAccountSupports1559) {
+    swapMetaData.max_fee_per_gas = maxFeePerGas;
+    swapMetaData.max_priority_fee_per_gas = maxPriorityFeePerGas;
+    swapMetaData.base_and_priority_fee_per_gas = baseAndPriorityFeePerGas;
+  }
+
+  metaMetricsEvent({
+    event: 'Swap Started',
+    category: 'swaps',
+    sensitiveProperties: swapMetaData,
+  });
+
+  if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
+    captureMessage('Invalid contract address', {
+      extra: {
+        token_from: swapMetaData.token_from,
+        token_to: swapMetaData.token_to,
+        contract_address: usedTradeTxParams.to,
+      },
+    });
+    await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
+    history.push(SWAPS_ERROR_ROUTE);
+    return;
+  }
+
+  let finalApproveTxMeta;
+  const approveTxParams = getApproveTxParams(state);
+
+  // For hardware wallets we go to the Awaiting Signatures page first and only after a user
+  // completes 1 or 2 confirmations, we redirect to the Awaiting Swap page.
+  if (hardwareWalletUsed) {
+    history.push(AWAITING_SIGNATURES_ROUTE);
+  }
+
+  if (approveTxParams) {
+    if (networkAndAccountSupports1559) {
+      approveTxParams.maxFeePerGas = maxFeePerGas;
+      approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
+      delete approveTxParams.gasPrice;
     }
-    const finalTradeTxMeta = await dispatch(
+    const approveTxMeta = await dispatch(
+      addUnapprovedTransaction(
+        { ...approveTxParams, amount: '0x0' },
+        'metamask',
+      ),
+    );
+    await dispatch(setApproveTxId(approveTxMeta.id));
+    finalApproveTxMeta = await dispatch(
       updateTransaction(
         {
-          ...tradeTxMeta,
+          ...approveTxMeta,
           estimatedBaseFee: decEstimatedBaseFee,
+          type: TRANSACTION_TYPES.SWAP_APPROVAL,
           sourceTokenSymbol: sourceTokenInfo.symbol,
-          destinationTokenSymbol: destinationTokenInfo.symbol,
-          type: TRANSACTION_TYPES.SWAP,
-          destinationTokenDecimals: destinationTokenInfo.decimals,
-          destinationTokenAddress: destinationTokenInfo.address,
-          swapMetaData,
-          swapTokenValue,
-          approvalTxId: finalApproveTxMeta?.id,
         },
         true,
       ),
     );
     try {
-      await dispatch(updateAndApproveTx(finalTradeTxMeta, true));
+      await dispatch(updateAndApproveTx(finalApproveTxMeta, true));
     } catch (e) {
-      const errorKey = e.message.includes('EthAppPleaseEnableContractData')
-        ? CONTRACT_DATA_DISABLED_ERROR
-        : SWAP_FAILED_ERROR;
-      await dispatch(setSwapsErrorKey(errorKey));
+      await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
       history.push(SWAPS_ERROR_ROUTE);
       return;
     }
+  }
 
-    // Only after a user confirms swapping on a hardware wallet (second `updateAndApproveTx` call above),
-    // we redirect to the Awaiting Swap page.
-    if (hardwareWalletUsed) {
-      history.push(AWAITING_SWAP_ROUTE);
-    }
+  const tradeTxMeta = await dispatch(
+    addUnapprovedTransaction(usedTradeTxParams, 'metamask'),
+  );
+  dispatch(setTradeTxId(tradeTxMeta.id));
 
-    await forceUpdateMetamaskState(dispatch);
-  };
+  // The simulationFails property is added during the transaction controllers
+  // addUnapprovedTransaction call if the estimateGas call fails. In cases
+  // when no approval is required, this indicates that the swap will likely
+  // fail. There was an earlier estimateGas call made by the swaps controller,
+  // but it is possible that external conditions have change since then, and
+  // a previously succeeding estimate gas call could now fail. By checking for
+  // the `simulationFails` property here, we can reduce the number of swap
+  // transactions that get published to the blockchain only to fail and thereby
+  // waste the user's funds on gas.
+  if (!approveTxParams && tradeTxMeta.simulationFails) {
+    await dispatch(cancelTx(tradeTxMeta, false));
+    await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
+    history.push(SWAPS_ERROR_ROUTE);
+    return;
+  }
+  const finalTradeTxMeta = await dispatch(
+    updateTransaction(
+      {
+        ...tradeTxMeta,
+        estimatedBaseFee: decEstimatedBaseFee,
+        sourceTokenSymbol: sourceTokenInfo.symbol,
+        destinationTokenSymbol: destinationTokenInfo.symbol,
+        type: TRANSACTION_TYPES.SWAP,
+        destinationTokenDecimals: destinationTokenInfo.decimals,
+        destinationTokenAddress: destinationTokenInfo.address,
+        swapMetaData,
+        swapTokenValue,
+        approvalTxId: finalApproveTxMeta?.id,
+      },
+      true,
+    ),
+  );
+  try {
+    await dispatch(updateAndApproveTx(finalTradeTxMeta, true));
+  } catch (e) {
+    const errorKey = e.message.includes('EthAppPleaseEnableContractData')
+      ? CONTRACT_DATA_DISABLED_ERROR
+      : SWAP_FAILED_ERROR;
+    await dispatch(setSwapsErrorKey(errorKey));
+    history.push(SWAPS_ERROR_ROUTE);
+    return;
+  }
+
+  // Only after a user confirms swapping on a hardware wallet (second `updateAndApproveTx` call above),
+  // we redirect to the Awaiting Swap page.
+  if (hardwareWalletUsed) {
+    history.push(AWAITING_SWAP_ROUTE);
+  }
+
+  await forceUpdateMetamaskState(dispatch);
 };
 
 export function fetchMetaSwapsGasPriceEstimates() {

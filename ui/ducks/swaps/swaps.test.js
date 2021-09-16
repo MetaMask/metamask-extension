@@ -51,11 +51,9 @@ describe('Ducks - Swaps', () => {
       return apiNock.reply(200, featureFlagsResponse);
     };
 
-    const createGetState = () => {
-      return () => ({
-        metamask: { provider: { ...providerState } },
-      });
-    };
+    const createGetState = () => () => ({
+      metamask: { provider: { ...providerState } },
+    });
 
     it('checks that Swaps for ETH are enabled and can use new API', async () => {
       const mockDispatch = jest.fn();

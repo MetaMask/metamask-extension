@@ -76,12 +76,11 @@ export function getCurrentKeyring(state) {
 
   const simpleAddress = stripHexPrefix(identity.address).toLowerCase();
 
-  const keyring = state.metamask.keyrings.find((kr) => {
-    return (
+  const keyring = state.metamask.keyrings.find(
+    (kr) =>
       kr.accounts.includes(simpleAddress) ||
-      kr.accounts.includes(identity.address)
-    );
-  });
+      kr.accounts.includes(identity.address),
+  );
 
   return keyring;
 }
@@ -292,11 +291,9 @@ export function accountsWithSendEtherInfoSelector(state) {
   const accounts = getMetaMaskAccounts(state);
   const identities = getMetaMaskIdentities(state);
 
-  const accountsWithSendEtherInfo = Object.entries(identities).map(
-    ([key, identity]) => {
-      return { ...identity, ...accounts[key] };
-    },
-  );
+  const accountsWithSendEtherInfo = Object.entries(
+    identities,
+  ).map(([key, identity]) => ({ ...identity, ...accounts[key] }));
 
   return accountsWithSendEtherInfo;
 }

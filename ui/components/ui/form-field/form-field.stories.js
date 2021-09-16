@@ -51,6 +51,6 @@ export const FormFieldWithTitleDetail = () => {
   );
 };
 
-export const FormFieldWithError = () => {
-  return <Plain titleText="Title" error="Incorrect Format" />;
-};
+export const FormFieldWithError = () => (
+  <Plain titleText="Title" error="Incorrect Format" />
+);

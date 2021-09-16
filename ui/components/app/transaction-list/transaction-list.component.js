@@ -26,15 +26,10 @@ const PAGE_INCREMENT = 10;
 const getTransactionGroupRecipientAddressFilter = (
   recipientAddress,
   chainId,
-) => {
-  return ({ initialTransaction: { txParams } }) => {
-    return (
-      isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
-      (txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId] &&
-        txParams.data.match(recipientAddress.slice(2)))
-    );
-  };
-};
+) => ({ initialTransaction: { txParams } }) =>
+  isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
+  (txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId] &&
+    txParams.data.match(recipientAddress.slice(2)));
 
 const tokenTransactionFilter = ({
   initialTransaction: { type, destinationTokenSymbol, sourceTokenSymbol },

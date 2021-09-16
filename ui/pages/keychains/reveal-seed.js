@@ -185,17 +185,13 @@ RevealSeedPage.contextTypes = {
   t: PropTypes.func,
 };
 
-const mapStateToProps = (state) => {
-  return {
-    mostRecentOverviewPage: getMostRecentOverviewPage(state),
-  };
-};
+const mapStateToProps = (state) => ({
+  mostRecentOverviewPage: getMostRecentOverviewPage(state),
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    requestRevealSeedWords: (password) =>
-      dispatch(requestRevealSeedWords(password)),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  requestRevealSeedWords: (password) =>
+    dispatch(requestRevealSeedWords(password)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(RevealSeedPage);

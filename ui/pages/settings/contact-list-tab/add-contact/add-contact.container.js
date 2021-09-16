@@ -14,23 +14,19 @@ import {
 } from '../../../../ducks/ens';
 import AddContact from './add-contact.component';
 
-const mapStateToProps = (state) => {
-  return {
-    qrCodeData: getQrCodeData(state),
-    ensError: getEnsError(state),
-    ensResolution: getEnsResolution(state),
-  };
-};
+const mapStateToProps = (state) => ({
+  qrCodeData: getQrCodeData(state),
+  ensError: getEnsError(state),
+  ensResolution: getEnsResolution(state),
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addToAddressBook: (recipient, nickname) =>
-      dispatch(addToAddressBook(recipient, nickname)),
-    scanQrCode: () => dispatch(showQrScanner()),
-    qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
-    resetEnsResolution: () => dispatch(resetEnsResolution()),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  addToAddressBook: (recipient, nickname) =>
+    dispatch(addToAddressBook(recipient, nickname)),
+  scanQrCode: () => dispatch(showQrScanner()),
+  qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
+  resetEnsResolution: () => dispatch(resetEnsResolution()),
+});
 
 export default compose(
   withRouter,

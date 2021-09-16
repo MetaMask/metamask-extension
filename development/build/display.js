@@ -115,9 +115,9 @@ function getSymbolNormal(value) {
     7 / 8,
     1,
   ];
-  const rounded = possibleValues.reduce((prev, curr) => {
-    return Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev;
-  });
+  const rounded = possibleValues.reduce((prev, curr) =>
+    Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev,
+  );
 
   if (rounded === 0) {
     return SYMBOLS.Empty;
@@ -143,9 +143,9 @@ function getSymbolNormal(value) {
 function getSymbolNormalRight(value) {
   // round to closest supported value (not much :/)
   const possibleValues = [0, 1 / 2, 7 / 8, 1];
-  const rounded = possibleValues.reduce((prev, curr) => {
-    return Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev;
-  });
+  const rounded = possibleValues.reduce((prev, curr) =>
+    Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev,
+  );
 
   if (rounded === 0) {
     return SYMBOLS.Full;

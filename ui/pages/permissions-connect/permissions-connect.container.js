@@ -98,25 +98,22 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    approvePermissionsRequest: (request, accounts) =>
-      dispatch(approvePermissionsRequest(request, accounts)),
-    rejectPermissionsRequest: (requestId) =>
-      dispatch(rejectPermissionsRequest(requestId)),
-    showNewAccountModal: ({ onCreateNewAccount, newAccountNumber }) => {
-      return dispatch(
-        showModal({
-          name: 'NEW_ACCOUNT',
-          onCreateNewAccount,
-          newAccountNumber,
-        }),
-      );
-    },
-    getRequestAccountTabIds: () => dispatch(getRequestAccountTabIds()),
-    getCurrentWindowTab: () => dispatch(getCurrentWindowTab()),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  approvePermissionsRequest: (request, accounts) =>
+    dispatch(approvePermissionsRequest(request, accounts)),
+  rejectPermissionsRequest: (requestId) =>
+    dispatch(rejectPermissionsRequest(requestId)),
+  showNewAccountModal: ({ onCreateNewAccount, newAccountNumber }) =>
+    dispatch(
+      showModal({
+        name: 'NEW_ACCOUNT',
+        onCreateNewAccount,
+        newAccountNumber,
+      }),
+    ),
+  getRequestAccountTabIds: () => dispatch(getRequestAccountTabIds()),
+  getCurrentWindowTab: () => dispatch(getCurrentWindowTab()),
+});
 
 const PermissionApprovalContainer = connect(
   mapStateToProps,

@@ -62,18 +62,16 @@ export default function SeedPhraseIntro() {
                 type="video/webm"
                 src="./images/videos/recovery-onboarding/video.webm"
               />
-              {Object.keys(subtitles).map((key) => {
-                return (
-                  <track
-                    default
-                    srcLang={key}
-                    label={subtitles[key]}
-                    key={`${key}-subtitles`}
-                    kind="subtitles"
-                    src={`./images/videos/recovery-onboarding/subtitles/${key}.vtt`}
-                  />
-                );
-              })}
+              {Object.keys(subtitles).map((key) => (
+                <track
+                  default
+                  srcLang={key}
+                  label={subtitles[key]}
+                  key={`${key}-subtitles`}
+                  kind="subtitles"
+                  src={`./images/videos/recovery-onboarding/subtitles/${key}.vtt`}
+                />
+              ))}
             </video>
           </Box>
           <Box width={BLOCK_SIZES.ONE_THIRD}>

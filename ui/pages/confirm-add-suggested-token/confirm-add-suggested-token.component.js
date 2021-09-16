@@ -96,29 +96,27 @@ export default class ConfirmAddSuggestedToken extends Component {
               </div>
             </div>
             <div className="confirm-import-token__token-list">
-              {suggestedAssets.map(({ asset }) => {
-                return (
-                  <div
-                    className="confirm-import-token__token-list-item"
-                    key={asset.address}
-                  >
-                    <div className="confirm-import-token__token confirm-import-token__data">
-                      <Identicon
-                        className="confirm-import-token__token-icon"
-                        diameter={48}
-                        address={asset.address}
-                        image={asset.image}
-                      />
-                      <div className="confirm-import-token__name">
-                        {this.getTokenName(asset.name, asset.symbol)}
-                      </div>
-                    </div>
-                    <div className="confirm-import-token__balance">
-                      <TokenBalance token={asset} />
+              {suggestedAssets.map(({ asset }) => (
+                <div
+                  className="confirm-import-token__token-list-item"
+                  key={asset.address}
+                >
+                  <div className="confirm-import-token__token confirm-import-token__data">
+                    <Identicon
+                      className="confirm-import-token__token-icon"
+                      diameter={48}
+                      address={asset.address}
+                      image={asset.image}
+                    />
+                    <div className="confirm-import-token__name">
+                      {this.getTokenName(asset.name, asset.symbol)}
                     </div>
                   </div>
-                );
-              })}
+                  <div className="confirm-import-token__balance">
+                    <TokenBalance token={asset} />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -175,9 +173,7 @@ export default class ConfirmAddSuggestedToken extends Component {
       asset.address.toUpperCase(),
     );
     const existing = tokens.map((token) => token.address.toUpperCase());
-    const dupes = pending.filter((proposed) => {
-      return existing.includes(proposed);
-    });
+    const dupes = pending.filter((proposed) => existing.includes(proposed));
 
     return dupes.length > 0;
   }

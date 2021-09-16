@@ -147,25 +147,23 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    cancelAndClose: () => {
-      dispatch(swapCustomGasModalClosed());
-      dispatch(hideModal());
-    },
-    onSubmit: async (gasLimit, gasPrice) => {
-      await dispatch(customSwapsGasParamsUpdated(gasLimit, gasPrice));
-      dispatch(swapCustomGasModalClosed());
-      dispatch(hideModal());
-    },
-    setSwapsCustomizationModalPrice: (newPrice) => {
-      dispatch(swapCustomGasModalPriceEdited(newPrice));
-    },
-    setSwapsCustomizationModalLimit: (newLimit) => {
-      dispatch(swapCustomGasModalLimitEdited(newLimit));
-    },
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  cancelAndClose: () => {
+    dispatch(swapCustomGasModalClosed());
+    dispatch(hideModal());
+  },
+  onSubmit: async (gasLimit, gasPrice) => {
+    await dispatch(customSwapsGasParamsUpdated(gasLimit, gasPrice));
+    dispatch(swapCustomGasModalClosed());
+    dispatch(hideModal());
+  },
+  setSwapsCustomizationModalPrice: (newPrice) => {
+    dispatch(swapCustomGasModalPriceEdited(newPrice));
+  },
+  setSwapsCustomizationModalLimit: (newLimit) => {
+    dispatch(swapCustomGasModalLimitEdited(newLimit));
+  },
+});
 
 export default connect(
   mapStateToProps,

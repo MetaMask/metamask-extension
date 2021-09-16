@@ -299,16 +299,14 @@ export default class Home extends PureComponent {
         onClose={setConnectedStatusPopoverHasBeenShown}
         className="home__connected-status-popover"
         showArrow
-        CustomBackground={({ onClose }) => {
-          return (
-            <div
-              className="home__connected-status-popover-bg-container"
-              onClick={onClose}
-            >
-              <div className="home__connected-status-popover-bg" />
-            </div>
-          );
-        }}
+        CustomBackground={({ onClose }) => (
+          <div
+            className="home__connected-status-popover-bg-container"
+            onClick={onClose}
+          >
+            <div className="home__connected-status-popover-bg" />
+          </div>
+        )}
         footer={
           <>
             <a href={LEARN_MORE_URL} target="_blank" rel="noopener noreferrer">

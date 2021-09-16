@@ -7,14 +7,10 @@ export default {
   id: __filename,
 };
 
-const PageSet = ({ children }) => {
-  return children;
-};
+const PageSet = ({ children }) => children;
 
-export const TxList = () => {
-  return (
-    <PageSet>
-      <TransactionList />
-    </PageSet>
-  );
-};
+export const TxList = () => (
+  <PageSet>
+    <TransactionList />
+  </PageSet>
+);

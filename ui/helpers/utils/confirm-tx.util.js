@@ -39,25 +39,25 @@ export function getHexGasTotal({ gasLimit, gasPrice }) {
 }
 
 export function addEth(...args) {
-  return args.reduce((acc, ethAmount) => {
-    return addCurrencies(acc, ethAmount, {
+  return args.reduce((acc, ethAmount) =>
+    addCurrencies(acc, ethAmount, {
       toNumericBase: 'dec',
       numberOfDecimals: 6,
       aBase: 10,
       bBase: 10,
-    });
-  });
+    }),
+  );
 }
 
 export function addFiat(...args) {
-  return args.reduce((acc, fiatAmount) => {
-    return addCurrencies(acc, fiatAmount, {
+  return args.reduce((acc, fiatAmount) =>
+    addCurrencies(acc, fiatAmount, {
       toNumericBase: 'dec',
       numberOfDecimals: 2,
       aBase: 10,
       bBase: 10,
-    });
-  });
+    }),
+  );
 }
 
 export function getValueFromWeiHex({

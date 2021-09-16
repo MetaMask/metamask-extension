@@ -326,39 +326,31 @@ const mapStateToProps = (state) => ({
   useLedgerLive: state.metamask.useLedgerLive,
 });
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setHardwareWalletDefaultHdPath: ({ device, path }) => {
-      return dispatch(actions.setHardwareWalletDefaultHdPath({ device, path }));
-    },
-    connectHardware: (deviceName, page, hdPath) => {
-      return dispatch(actions.connectHardware(deviceName, page, hdPath));
-    },
-    checkHardwareStatus: (deviceName, hdPath) => {
-      return dispatch(actions.checkHardwareStatus(deviceName, hdPath));
-    },
-    forgetDevice: (deviceName) => {
-      return dispatch(actions.forgetDevice(deviceName));
-    },
-    unlockHardwareWalletAccounts: (
-      indexes,
-      deviceName,
-      hdPath,
-      hdPathDescription,
-    ) => {
-      return dispatch(
-        actions.unlockHardwareWalletAccounts(
-          indexes,
-          deviceName,
-          hdPath,
-          hdPathDescription,
-        ),
-      );
-    },
-    showAlert: (msg) => dispatch(actions.showAlert(msg)),
-    hideAlert: () => dispatch(actions.hideAlert()),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  setHardwareWalletDefaultHdPath: ({ device, path }) =>
+    dispatch(actions.setHardwareWalletDefaultHdPath({ device, path })),
+  connectHardware: (deviceName, page, hdPath) =>
+    dispatch(actions.connectHardware(deviceName, page, hdPath)),
+  checkHardwareStatus: (deviceName, hdPath) =>
+    dispatch(actions.checkHardwareStatus(deviceName, hdPath)),
+  forgetDevice: (deviceName) => dispatch(actions.forgetDevice(deviceName)),
+  unlockHardwareWalletAccounts: (
+    indexes,
+    deviceName,
+    hdPath,
+    hdPathDescription,
+  ) =>
+    dispatch(
+      actions.unlockHardwareWalletAccounts(
+        indexes,
+        deviceName,
+        hdPath,
+        hdPathDescription,
+      ),
+    ),
+  showAlert: (msg) => dispatch(actions.showAlert(msg)),
+  hideAlert: () => dispatch(actions.hideAlert()),
+});
 
 ConnectHardwareForm.contextTypes = {
   t: PropTypes.func,

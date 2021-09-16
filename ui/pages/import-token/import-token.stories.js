@@ -8,6 +8,6 @@ export default {
   id: __filename,
 };
 
-export const ImportTokenComponent = () => {
-  return <ImportToken showSearchTab={boolean('Show Search Tab', false)} />;
-};
+export const ImportTokenComponent = () => (
+  <ImportToken showSearchTab={boolean('Show Search Tab', false)} />
+);

@@ -34,9 +34,7 @@ export default class AccountDetailsModal extends Component {
     } = this.props;
     const { name, address } = selectedIdentity;
 
-    const keyring = keyrings.find((kr) => {
-      return kr.accounts.includes(address);
-    });
+    const keyring = keyrings.find((kr) => kr.accounts.includes(address));
 
     let exportPrivateKeyFeatureEnabled = true;
     // This feature is disabled for hardware wallets

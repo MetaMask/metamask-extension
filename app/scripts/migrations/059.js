@@ -30,18 +30,16 @@ function transformState(state) {
   if (isPlainObject(transactions)) {
     const nonceNetworkGroupedObject = groupBy(
       Object.values(transactions),
-      (tx) => {
-        return `${tx.txParams?.nonce}-${tx.chainId ?? tx.metamaskNetworkId}`;
-      },
+      (tx) => `${tx.txParams?.nonce}-${tx.chainId ?? tx.metamaskNetworkId}`,
     );
 
-    const withoutOrphans = pickBy(nonceNetworkGroupedObject, (group) => {
-      return group.some(
+    const withoutOrphans = pickBy(nonceNetworkGroupedObject, (group) =>
+      group.some(
         (tx) =>
           tx.type !== TRANSACTION_TYPES.CANCEL &&
           tx.type !== TRANSACTION_TYPES.RETRY,
-      );
-    });
+      ),
+    );
     state.TransactionController.transactions = keyBy(
       concat(...Object.values(withoutOrphans)),
       (tx) => tx.id,

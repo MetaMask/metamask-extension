@@ -358,11 +358,9 @@ export default class TransactionStateManager extends EventEmitter {
     // with the provided value". To conform this object to be only methods, we
     // mapValues (lodash) such that every value on the object is a method that
     // returns a boolean.
-    const predicateMethods = mapValues(searchCriteria, (predicate) => {
-      return typeof predicate === 'function'
-        ? predicate
-        : (v) => v === predicate;
-    });
+    const predicateMethods = mapValues(searchCriteria, (predicate) =>
+      typeof predicate === 'function' ? predicate : (v) => v === predicate,
+    );
 
     // If an initial list is provided we need to change it back into an object
     // first, so that it matches the shape of our state. This is done by the

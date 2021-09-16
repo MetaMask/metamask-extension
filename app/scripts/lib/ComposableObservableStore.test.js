@@ -42,9 +42,7 @@ class ExampleController extends BaseControllerV2 {
   }
 
   updateBar(contents) {
-    this.update(() => {
-      return { bar: contents };
-    });
+    this.update(() => ({ bar: contents }));
   }
 }
 

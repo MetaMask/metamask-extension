@@ -6,6 +6,4 @@ export default {
   id: __filename,
 };
 
-export const EndOfFlowComponent = () => {
-  return <EndOfFlowScreen />;
-};
+export const EndOfFlowComponent = () => <EndOfFlowScreen />;

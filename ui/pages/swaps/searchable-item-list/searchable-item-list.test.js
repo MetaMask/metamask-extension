@@ -7,37 +7,35 @@ import {
 } from '../../../../test/jest';
 import SearchableItemList from '.';
 
-const createProps = (customProps = {}) => {
-  return {
-    defaultToAll: true,
-    listTitle: 'listTitle',
-    itemsToSearch: [
-      {
-        iconUrl: 'iconUrl',
-        selected: true,
-        primaryLabel: 'primaryLabel',
-        secondaryLabel: 'secondaryLabel',
-        rightPrimaryLabel: 'rightPrimaryLabel',
-        rightSecondaryLabel: 'rightSecondaryLabel',
-      },
-    ],
-    fuseSearchKeys: [
-      {
-        name: 'name',
-        weight: 0.499,
-      },
-      {
-        name: 'symbol',
-        weight: 0.499,
-      },
-      {
-        name: 'address',
-        weight: 0.002,
-      },
-    ],
-    ...customProps,
-  };
-};
+const createProps = (customProps = {}) => ({
+  defaultToAll: true,
+  listTitle: 'listTitle',
+  itemsToSearch: [
+    {
+      iconUrl: 'iconUrl',
+      selected: true,
+      primaryLabel: 'primaryLabel',
+      secondaryLabel: 'secondaryLabel',
+      rightPrimaryLabel: 'rightPrimaryLabel',
+      rightSecondaryLabel: 'rightSecondaryLabel',
+    },
+  ],
+  fuseSearchKeys: [
+    {
+      name: 'name',
+      weight: 0.499,
+    },
+    {
+      name: 'symbol',
+      weight: 0.499,
+    },
+    {
+      name: 'address',
+      weight: 0.002,
+    },
+  ],
+  ...customProps,
+});
 
 describe('SearchableItemList', () => {
   it('renders the component with initial props', () => {

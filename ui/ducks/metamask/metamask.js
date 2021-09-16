@@ -197,9 +197,8 @@ export default function reduceMetamask(state = {}, action) {
   }
 }
 
-const toHexWei = (value, expectHexWei) => {
-  return addHexPrefix(expectHexWei ? value : decGWEIToHexWEI(value));
-};
+const toHexWei = (value, expectHexWei) =>
+  addHexPrefix(expectHexWei ? value : decGWEIToHexWEI(value));
 
 // Action Creators
 export function updateTransactionGasFees({

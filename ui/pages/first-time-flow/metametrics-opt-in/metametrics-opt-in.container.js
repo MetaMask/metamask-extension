@@ -19,11 +19,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setParticipateInMetaMetrics: (val) =>
-      dispatch(setParticipateInMetaMetrics(val)),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  setParticipateInMetaMetrics: (val) =>
+    dispatch(setParticipateInMetaMetrics(val)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(MetaMetricsOptIn);

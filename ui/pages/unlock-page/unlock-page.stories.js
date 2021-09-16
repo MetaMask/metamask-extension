@@ -7,15 +7,13 @@ export default {
   id: __filename,
 };
 
-export const UnlockPageComponent = () => {
-  return (
-    <UnlockPage
-      onSubmit={action('Login')}
-      forceUpdateMetamaskState={() => ({
-        participateInMetaMetrics: true,
-      })}
-      showOptInModal={() => null}
-      history={{}}
-    />
-  );
-};
+export const UnlockPageComponent = () => (
+  <UnlockPage
+    onSubmit={action('Login')}
+    forceUpdateMetamaskState={() => ({
+      participateInMetaMetrics: true,
+    })}
+    showOptInModal={() => null}
+    history={{}}
+  />
+);

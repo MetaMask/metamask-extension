@@ -49,27 +49,33 @@ export default function SortList({
   // If there is no selected sort column, then quotes that are not the best quotes should be in random order, after the first in the list
   // If the sort column is 'quoteSource', sort alphabetically by 'quoteSource'
   // Otherwise, sort in either ascending or descending numerical order on the selected column
-  const sortedRows = useMemo(() => {
-    return [...quoteDataRows].sort((rowDataA, rowDataB) => {
-      if (sortColumn === null && rowDataA.isBestQuote) {
-        return -1;
-      } else if (sortColumn === null && rowDataB.isBestQuote) {
-        return 1;
-      } else if (sortColumn === null) {
-        // Here, the last character in the destinationTokenValue is used as a source of randomness for sorting
-        const aHex = new BigNumber(rowDataA.destinationTokenValue).toString(16);
-        const bHex = new BigNumber(rowDataB.destinationTokenValue).toString(16);
-        return aHex[aHex.length - 1] < bHex[bHex.length - 1] ? -1 : 1;
-      } else if (sortColumn === 'quoteSource') {
-        return rowDataA[sortColumn] > rowDataB[sortColumn]
+  const sortedRows = useMemo(
+    () =>
+      [...quoteDataRows].sort((rowDataA, rowDataB) => {
+        if (sortColumn === null && rowDataA.isBestQuote) {
+          return -1;
+        } else if (sortColumn === null && rowDataB.isBestQuote) {
+          return 1;
+        } else if (sortColumn === null) {
+          // Here, the last character in the destinationTokenValue is used as a source of randomness for sorting
+          const aHex = new BigNumber(rowDataA.destinationTokenValue).toString(
+            16,
+          );
+          const bHex = new BigNumber(rowDataB.destinationTokenValue).toString(
+            16,
+          );
+          return aHex[aHex.length - 1] < bHex[bHex.length - 1] ? -1 : 1;
+        } else if (sortColumn === 'quoteSource') {
+          return rowDataA[sortColumn] > rowDataB[sortColumn]
+            ? sortDirection * -1
+            : sortDirection;
+        }
+        return new BigNumber(rowDataA[sortColumn]).gt(rowDataB[sortColumn])
           ? sortDirection * -1
           : sortDirection;
-      }
-      return new BigNumber(rowDataA[sortColumn]).gt(rowDataB[sortColumn])
-        ? sortDirection * -1
-        : sortDirection;
-    });
-  }, [quoteDataRows, sortColumn, sortDirection]);
+      }),
+    [quoteDataRows, sortColumn, sortDirection],
+  );
   const selectedRow = sortedRows.findIndex(
     ({ aggId }) => selectedAggId === aggId,
   );

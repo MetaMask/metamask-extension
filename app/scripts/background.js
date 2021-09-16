@@ -212,12 +212,8 @@ function setupController(initState, initLangCode) {
     // platform specific api
     platform,
     extension,
-    getRequestAccountTabIds: () => {
-      return requestAccountTabIds;
-    },
-    getOpenMetamaskTabsIds: () => {
-      return openMetamaskTabsIDs;
-    },
+    getRequestAccountTabIds: () => requestAccountTabIds,
+    getOpenMetamaskTabsIds: () => openMetamaskTabsIDs,
   });
 
   setupEnsIpfsResolver({
@@ -291,13 +287,10 @@ function setupController(initState, initLangCode) {
 
   const metamaskBlockedPorts = ['trezor-connect'];
 
-  const isClientOpenStatus = () => {
-    return (
-      popupIsOpen ||
-      Boolean(Object.keys(openMetamaskTabsIDs).length) ||
-      notificationIsOpen
-    );
-  };
+  const isClientOpenStatus = () =>
+    popupIsOpen ||
+    Boolean(Object.keys(openMetamaskTabsIDs).length) ||
+    notificationIsOpen;
 
   const onCloseEnvironmentInstances = (isClientOpen, environmentType) => {
     // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling

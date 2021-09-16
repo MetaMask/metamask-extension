@@ -33,9 +33,9 @@ export default class DetectTokensController {
     this.keyringMemStore = keyringMemStore;
     this.tokenList = tokenList;
     this.selectedAddress = this.preferences?.store.getState().selectedAddress;
-    this.tokenAddresses = this.tokensController?.state.tokens.map((token) => {
-      return token.address;
-    });
+    this.tokenAddresses = this.tokensController?.state.tokens.map(
+      (token) => token.address,
+    );
     this.hiddenTokens = this.tokensController?.state.ignoredTokens;
 
     preferences?.store.subscribe(({ selectedAddress, useTokenDetection }) => {
@@ -49,9 +49,7 @@ export default class DetectTokensController {
       }
     });
     tokensController?.subscribe(({ tokens = [], ignoredTokens = [] }) => {
-      this.tokenAddresses = tokens.map((token) => {
-        return token.address;
-      });
+      this.tokenAddresses = tokens.map((token) => token.address);
       this.hiddenTokens = ignoredTokens;
     });
   }
@@ -119,13 +117,13 @@ export default class DetectTokensController {
       });
 
       await Promise.all(
-        tokensWithBalance.map((tokenAddress) => {
-          return this.tokensController.addToken(
+        tokensWithBalance.map((tokenAddress) =>
+          this.tokensController.addToken(
             tokenAddress,
             tokenList[tokenAddress].symbol,
             tokenList[tokenAddress].decimals,
-          );
-        }),
+          ),
+        ),
       );
     }
   }

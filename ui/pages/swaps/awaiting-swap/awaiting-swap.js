@@ -234,21 +234,19 @@ export default function AwaitingSwap({
     );
   }
 
-  const MakeAnotherSwap = () => {
-    return (
-      <Box marginBottom={3}>
-        <a
-          href="#"
-          onClick={() => {
-            makeAnotherSwapEvent();
-            dispatch(navigateBackToBuildQuote(history));
-          }}
-        >
-          {t('makeAnotherSwap')}
-        </a>
-      </Box>
-    );
-  };
+  const MakeAnotherSwap = () => (
+    <Box marginBottom={3}>
+      <a
+        href="#"
+        onClick={() => {
+          makeAnotherSwapEvent();
+          dispatch(navigateBackToBuildQuote(history));
+        }}
+      >
+        {t('makeAnotherSwap')}
+      </a>
+    </Box>
+  );
 
   useEffect(() => {
     if (errorKey) {

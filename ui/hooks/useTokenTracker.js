@@ -81,9 +81,7 @@ export function useTokenTracker(
   // is the only dependency here, which itself has no dependencies and will
   // never update. The lack of dependencies that change is what confirms
   // that this effect only runs on mount/unmount
-  useEffect(() => {
-    return teardownTracker;
-  }, [teardownTracker]);
+  useEffect(() => teardownTracker, [teardownTracker]);
 
   // Effect to set loading state and initialize tracker when values change
   useEffect(() => {

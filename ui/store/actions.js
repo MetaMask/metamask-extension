@@ -64,19 +64,20 @@ export function tryUnlockMetamask(password) {
         dispatch(unlockSucceeded());
         return forceUpdateMetamaskState(dispatch);
       })
-      .then(() => {
-        return new Promise((resolve, reject) => {
-          background.verifySeedPhrase((err) => {
-            if (err) {
-              dispatch(displayWarning(err.message));
-              reject(err);
-              return;
-            }
+      .then(
+        () =>
+          new Promise((resolve, reject) => {
+            background.verifySeedPhrase((err) => {
+              if (err) {
+                dispatch(displayWarning(err.message));
+                reject(err);
+                return;
+              }
 
-            resolve();
-          });
-        });
-      })
+              resolve();
+            });
+          }),
+      )
       .then(() => {
         dispatch(hideLoadingIndication());
       })
@@ -223,8 +224,8 @@ export function requestRevealSeedWords(password) {
 }
 
 export function tryReverseResolveAddress(address) {
-  return () => {
-    return new Promise((resolve) => {
+  return () =>
+    new Promise((resolve) => {
       background.tryReverseResolveAddress(address, (err) => {
         if (err) {
           log.error(err);
@@ -232,7 +233,6 @@ export function tryReverseResolveAddress(address) {
         resolve();
       });
     });
-  };
 }
 
 export function fetchInfoToSync() {
@@ -678,8 +678,8 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
 export function addUnapprovedTransaction(txParams, origin) {
   log.debug('background.addUnapprovedTransaction');
 
-  return () => {
-    return new Promise((resolve, reject) => {
+  return () =>
+    new Promise((resolve, reject) => {
       background.addUnapprovedTransaction(txParams, origin, (err, txMeta) => {
         if (err) {
           reject(err);
@@ -688,7 +688,6 @@ export function addUnapprovedTransaction(txParams, origin) {
         resolve(txMeta);
       });
     });
-  };
 }
 
 export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
@@ -944,15 +943,15 @@ export function cancelTxs(txDataList) {
 export function markPasswordForgotten() {
   return async (dispatch) => {
     try {
-      await new Promise((resolve, reject) => {
-        return background.markPasswordForgotten((error) => {
+      await new Promise((resolve, reject) =>
+        background.markPasswordForgotten((error) => {
           if (error) {
             reject(error);
             return;
           }
           resolve();
-        });
-      });
+        }),
+      );
     } finally {
       // TODO: handle errors
       dispatch(hideLoadingIndication());
@@ -963,14 +962,13 @@ export function markPasswordForgotten() {
 }
 
 export function unMarkPasswordForgotten() {
-  return (dispatch) => {
-    return new Promise((resolve) => {
+  return (dispatch) =>
+    new Promise((resolve) => {
       background.unMarkPasswordForgotten(() => {
         dispatch(forgotPassword(false));
         resolve();
       });
     }).then(() => forceUpdateMetamaskState(dispatch));
-  };
 }
 
 export function forgotPassword(forgotPasswordState = true) {
@@ -1086,8 +1084,8 @@ export function updateMetamaskState(newState) {
   };
 }
 
-const backgroundSetLocked = () => {
-  return new Promise((resolve, reject) => {
+const backgroundSetLocked = () =>
+  new Promise((resolve, reject) => {
     background.setLocked((error) => {
       if (error) {
         reject(error);
@@ -1096,7 +1094,6 @@ const backgroundSetLocked = () => {
       resolve();
     });
   });
-};
 
 export function lockMetamask() {
   log.debug(`background.setLocked`);
@@ -1343,8 +1340,8 @@ export function createCancelTransaction(
   log.debug('background.cancelTransaction');
   let newTxId;
 
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
+  return (dispatch) =>
+    new Promise((resolve, reject) => {
       background.createCancelTransaction(
         txId,
         customGasSettings,
@@ -1365,7 +1362,6 @@ export function createCancelTransaction(
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => newTxId);
-  };
 }
 
 export function createSpeedUpTransaction(
@@ -1376,8 +1372,8 @@ export function createSpeedUpTransaction(
   log.debug('background.createSpeedUpTransaction');
   let newTx;
 
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
+  return (dispatch) =>
+    new Promise((resolve, reject) => {
       background.createSpeedUpTransaction(
         txId,
         customGasSettings,
@@ -1397,14 +1393,13 @@ export function createSpeedUpTransaction(
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => newTx);
-  };
 }
 
 export function createRetryTransaction(txId, customGasSettings) {
   let newTx;
 
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
+  return (dispatch) =>
+    new Promise((resolve, reject) => {
       background.createSpeedUpTransaction(
         txId,
         customGasSettings,
@@ -1423,7 +1418,6 @@ export function createRetryTransaction(txId, customGasSettings) {
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
       .then(() => newTx);
-  };
 }
 
 //
@@ -2326,8 +2320,8 @@ export function approvePermissionsRequest(request, accounts) {
  * @param {string} requestId - The id of the request to be rejected
  */
 export function rejectPermissionsRequest(requestId) {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
+  return (dispatch) =>
+    new Promise((resolve, reject) => {
       background.rejectPermissionsRequest(requestId, (err) => {
         if (err) {
           dispatch(displayWarning(err.message));
@@ -2337,7 +2331,6 @@ export function rejectPermissionsRequest(requestId) {
         forceUpdateMetamaskState(dispatch).then(resolve).catch(reject);
       });
     });
-  };
 }
 
 /**
@@ -2579,8 +2572,8 @@ export function setSeedPhraseBackedUp(seedPhraseBackupState) {
 }
 
 export function initializeThreeBox() {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
+  return (dispatch) =>
+    new Promise((resolve, reject) => {
       background.initializeThreeBox((err) => {
         if (err) {
           dispatch(displayWarning(err.message));
@@ -2590,12 +2583,11 @@ export function initializeThreeBox() {
         resolve();
       });
     });
-  };
 }
 
 export function setShowRestorePromptToFalse() {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
+  return (dispatch) =>
+    new Promise((resolve, reject) => {
       background.setShowRestorePromptToFalse((err) => {
         if (err) {
           dispatch(displayWarning(err.message));
@@ -2605,12 +2597,11 @@ export function setShowRestorePromptToFalse() {
         resolve();
       });
     });
-  };
 }
 
 export function turnThreeBoxSyncingOn() {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
+  return (dispatch) =>
+    new Promise((resolve, reject) => {
       background.turnThreeBoxSyncingOn((err) => {
         if (err) {
           dispatch(displayWarning(err.message));
@@ -2620,12 +2611,11 @@ export function turnThreeBoxSyncingOn() {
         resolve();
       });
     });
-  };
 }
 
 export function restoreFromThreeBox(accountAddress) {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
+  return (dispatch) =>
+    new Promise((resolve, reject) => {
       background.restoreFromThreeBox(accountAddress, (err) => {
         if (err) {
           dispatch(displayWarning(err.message));
@@ -2635,12 +2625,11 @@ export function restoreFromThreeBox(accountAddress) {
         resolve();
       });
     });
-  };
 }
 
 export function getThreeBoxLastUpdated() {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
+  return (dispatch) =>
+    new Promise((resolve, reject) => {
       background.getThreeBoxLastUpdated((err, lastUpdated) => {
         if (err) {
           dispatch(displayWarning(err.message));
@@ -2650,12 +2639,11 @@ export function getThreeBoxLastUpdated() {
         resolve(lastUpdated);
       });
     });
-  };
 }
 
 export function setThreeBoxSyncingPermission(threeBoxSyncingAllowed) {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
+  return (dispatch) =>
+    new Promise((resolve, reject) => {
       background.setThreeBoxSyncingPermission(threeBoxSyncingAllowed, (err) => {
         if (err) {
           dispatch(displayWarning(err.message));
@@ -2665,7 +2653,6 @@ export function setThreeBoxSyncingPermission(threeBoxSyncingAllowed) {
         resolve();
       });
     });
-  };
 }
 
 export function turnThreeBoxSyncingOnAndInitialize() {

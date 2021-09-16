@@ -48,26 +48,24 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getOpenMetamaskTabsIds: () => dispatch(getOpenMetamaskTabsIds()),
-    disconnectAccount: (domainKey, address) => {
-      dispatch(removePermittedAccount(domainKey, address));
-    },
-    disconnectAllAccounts: (domainKey, domain) => {
-      const permissionMethodNames = domain.permissions.map(
-        ({ parentCapability }) => parentCapability,
-      );
-      dispatch(
-        removePermissionsFor({
-          [domainKey]: permissionMethodNames,
-        }),
-      );
-    },
-    requestAccountsPermissionWithId: (origin) =>
-      dispatch(requestAccountsPermissionWithId(origin)),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  getOpenMetamaskTabsIds: () => dispatch(getOpenMetamaskTabsIds()),
+  disconnectAccount: (domainKey, address) => {
+    dispatch(removePermittedAccount(domainKey, address));
+  },
+  disconnectAllAccounts: (domainKey, domain) => {
+    const permissionMethodNames = domain.permissions.map(
+      ({ parentCapability }) => parentCapability,
+    );
+    dispatch(
+      removePermissionsFor({
+        [domainKey]: permissionMethodNames,
+      }),
+    );
+  },
+  requestAccountsPermissionWithId: (origin) =>
+    dispatch(requestAccountsPermissionWithId(origin)),
+});
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {

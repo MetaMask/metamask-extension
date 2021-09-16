@@ -19,19 +19,17 @@ const { CAVEATS, ERRORS, PERMS, RPC_REQUESTS } = getters;
 
 const { ACCOUNTS, DOMAINS, PERM_NAMES } = constants;
 
-const initPermController = () => {
-  return new PermissionsController({
+const initPermController = () =>
+  new PermissionsController({
     ...getPermControllerOpts(),
   });
-};
 
 const createApprovalSpies = (permController) => {
   sinon.spy(permController.approvals, '_add');
 };
 
-const getNextApprovalId = (permController) => {
-  return permController.approvals._approvals.keys().next().value;
-};
+const getNextApprovalId = (permController) =>
+  permController.approvals._approvals.keys().next().value;
 
 const validatePermission = (perm, name, origin, caveats) => {
   assert.equal(

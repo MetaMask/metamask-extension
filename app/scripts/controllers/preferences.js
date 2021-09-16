@@ -73,9 +73,7 @@ export default class PreferencesController {
 
     this._subscribeToInfuraAvailability();
 
-    global.setPreference = (key, value) => {
-      return this.setFeatureFlag(key, value);
-    };
+    global.setPreference = (key, value) => this.setFeatureFlag(key, value);
   }
   // PUBLIC METHODS
 
@@ -336,9 +334,9 @@ export default class PreferencesController {
    */
   async updateRpc(newRpcDetails) {
     const rpcList = this.getFrequentRpcListDetail();
-    const index = rpcList.findIndex((element) => {
-      return element.rpcUrl === newRpcDetails.rpcUrl;
-    });
+    const index = rpcList.findIndex(
+      (element) => element.rpcUrl === newRpcDetails.rpcUrl,
+    );
     if (index > -1) {
       const rpcDetail = rpcList[index];
       const updatedRpc = { ...rpcDetail, ...newRpcDetails };
@@ -419,9 +417,7 @@ export default class PreferencesController {
   ) {
     const rpcList = this.getFrequentRpcListDetail();
 
-    const index = rpcList.findIndex((element) => {
-      return element.rpcUrl === rpcUrl;
-    });
+    const index = rpcList.findIndex((element) => element.rpcUrl === rpcUrl);
     if (index !== -1) {
       rpcList.splice(index, 1);
     }
@@ -443,9 +439,7 @@ export default class PreferencesController {
    */
   removeFromFrequentRpcList(url) {
     const rpcList = this.getFrequentRpcListDetail();
-    const index = rpcList.findIndex((element) => {
-      return element.rpcUrl === url;
-    });
+    const index = rpcList.findIndex((element) => element.rpcUrl === url);
     if (index !== -1) {
       rpcList.splice(index, 1);
     }

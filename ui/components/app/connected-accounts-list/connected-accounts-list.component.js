@@ -139,26 +139,24 @@ export default class ConnectedAccountsList extends PureComponent {
       <>
         <main className="connected-accounts-list">
           {this.renderUnconnectedAccount()}
-          {connectedAccounts.map(({ address, name }, index) => {
-            return (
-              <ConnectedAccountsListItem
-                key={address}
-                address={address}
-                name={`${name} (…${address.substr(-4, 4)})`}
-                status={index === 0 ? t('active') : null}
-                options={
-                  shouldRenderListOptions
-                    ? this.renderListItemOptions(address)
-                    : null
-                }
-                action={
-                  address === selectedAddress
-                    ? null
-                    : this.renderListItemAction(address)
-                }
-              />
-            );
-          })}
+          {connectedAccounts.map(({ address, name }, index) => (
+            <ConnectedAccountsListItem
+              key={address}
+              address={address}
+              name={`${name} (…${address.substr(-4, 4)})`}
+              status={index === 0 ? t('active') : null}
+              options={
+                shouldRenderListOptions
+                  ? this.renderListItemOptions(address)
+                  : null
+              }
+              action={
+                address === selectedAddress
+                  ? null
+                  : this.renderListItemAction(address)
+              }
+            />
+          ))}
         </main>
       </>
     );

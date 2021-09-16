@@ -19,14 +19,14 @@ export default function UserPreferencedCurrencyDisplay({
     fiatNumberOfDecimals,
     numberOfDecimals: propsNumberOfDecimals,
   });
-  const prefixComponent = useMemo(() => {
-    return (
+  const prefixComponent = useMemo(
+    () =>
       currency === ETH &&
       showEthLogo && (
         <img src="./images/eth.svg" height={ethLogoHeight} alt="" />
-      )
-    );
-  }, [currency, showEthLogo, ethLogoHeight]);
+      ),
+    [currency, showEthLogo, ethLogoHeight],
+  );
 
   return (
     <CurrencyDisplay

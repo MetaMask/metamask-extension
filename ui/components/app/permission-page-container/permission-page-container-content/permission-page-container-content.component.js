@@ -87,13 +87,11 @@ export default class PermissionPageContainerContent extends PureComponent {
         wrapperClassName="permission-approval-container__bold-title-elements"
         html={
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {selectedIdentities.slice(0, 6).map((identity, index) => {
-              return (
-                <div key={`tooltip-identity-${index}`}>
-                  {this.getAccountDescriptor(identity)}
-                </div>
-              );
-            })}
+            {selectedIdentities.slice(0, 6).map((identity, index) => (
+              <div key={`tooltip-identity-${index}`}>
+                {this.getAccountDescriptor(identity)}
+              </div>
+            ))}
             {selectedIdentities.length > 6
               ? t('plusXMore', [selectedIdentities.length - 6])
               : null}

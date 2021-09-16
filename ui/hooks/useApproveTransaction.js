@@ -14,9 +14,10 @@ export function useApproveTransaction() {
 
   const closeCustomizeGasPopover = () => setShowCustomizeGasPopover(false);
 
-  const approveTransaction = useCallback(() => {
-    return setShowCustomizeGasPopover(true);
-  }, []);
+  const approveTransaction = useCallback(
+    () => setShowCustomizeGasPopover(true),
+    [],
+  );
 
   return {
     approveTransaction,

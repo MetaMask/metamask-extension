@@ -73,9 +73,9 @@ export default class ExtensionPlatform {
   }
 
   closeCurrentWindow() {
-    return extension.windows.getCurrent((windowDetails) => {
-      return extension.windows.remove(windowDetails.id);
-    });
+    return extension.windows.getCurrent((windowDetails) =>
+      extension.windows.remove(windowDetails.id),
+    );
   }
 
   getVersion() {

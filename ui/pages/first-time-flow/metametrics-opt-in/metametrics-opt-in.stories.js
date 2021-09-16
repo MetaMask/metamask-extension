@@ -7,10 +7,8 @@ export default {
   id: __filename,
 };
 
-export const MetaMetricsOptInComponent = () => {
-  return (
-    <MetaMetricsOptIn
-      setParticipateInMetaMetrics={action('Participating in MetaMetrics')}
-    />
-  );
-};
+export const MetaMetricsOptInComponent = () => (
+  <MetaMetricsOptIn
+    setParticipateInMetaMetrics={action('Participating in MetaMetrics')}
+  />
+);

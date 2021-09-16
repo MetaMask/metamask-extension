@@ -4,11 +4,9 @@ import withModalProps from '../../../../helpers/higher-order-components/with-mod
 import { resetAccount } from '../../../../store/actions';
 import ConfirmResetAccount from './confirm-reset-account.component';
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    resetAccount: () => dispatch(resetAccount()),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  resetAccount: () => dispatch(resetAccount()),
+});
 
 export default compose(
   withModalProps,

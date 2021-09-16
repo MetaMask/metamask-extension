@@ -376,15 +376,14 @@ export async function fetchTokens(chainId, useNewSwapsApi) {
   );
   const filteredTokens = [
     SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId],
-    ...tokens.filter((token) => {
-      return (
+    ...tokens.filter(
+      (token) =>
         validateData(TOKEN_VALIDATORS, token, tokensUrl) &&
         !(
           isSwapsDefaultTokenSymbol(token.symbol, chainId) ||
           isSwapsDefaultTokenAddress(token.address, chainId)
-        )
-      );
-    }),
+        ),
+    ),
   ];
   return filteredTokens;
 }

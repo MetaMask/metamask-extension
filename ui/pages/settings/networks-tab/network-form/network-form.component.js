@@ -313,11 +313,9 @@ export default class NetworkForm extends PureComponent {
     );
   }
 
-  setStateWithValue = (stateKey, validator) => {
-    return (e) => {
-      validator?.(e.target.value, stateKey);
-      this.setState({ [stateKey]: e.target.value });
-    };
+  setStateWithValue = (stateKey, validator) => (e) => {
+    validator?.(e.target.value, stateKey);
+    this.setState({ [stateKey]: e.target.value });
   };
 
   setErrorTo = (errorKey, errorVal) => {
@@ -341,9 +339,8 @@ export default class NetworkForm extends PureComponent {
     });
   };
 
-  hasError = (errorKey, errorKeyVal) => {
-    return this.state.errors[errorKey]?.key === errorKeyVal;
-  };
+  hasError = (errorKey, errorKeyVal) =>
+    this.state.errors[errorKey]?.key === errorKeyVal;
 
   hasErrors = () => {
     const { errors } = this.state;

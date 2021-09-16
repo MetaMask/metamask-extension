@@ -140,9 +140,9 @@ describe('useTransactionDisplayData', () => {
       useTokenFiatAmountHooks,
       'useTokenFiatAmount',
     );
-    useTokenFiatAmount.returns((tokenAddress) => {
-      return tokenAddress ? '1 TST' : undefined;
-    });
+    useTokenFiatAmount.returns((tokenAddress) =>
+      tokenAddress ? '1 TST' : undefined,
+    );
     useI18nContext = sinon.stub(i18nhooks, 'useI18nContext');
     useI18nContext.returns((key, variables) =>
       getMessage('en', messages, key, variables),

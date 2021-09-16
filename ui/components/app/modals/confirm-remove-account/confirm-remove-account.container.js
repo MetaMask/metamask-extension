@@ -8,18 +8,14 @@ import {
 import { removeAccount } from '../../../../store/actions';
 import ConfirmRemoveAccount from './confirm-remove-account.component';
 
-const mapStateToProps = (state) => {
-  return {
-    chainId: getCurrentChainId(state),
-    rpcPrefs: getRpcPrefsForCurrentProvider(state),
-  };
-};
+const mapStateToProps = (state) => ({
+  chainId: getCurrentChainId(state),
+  rpcPrefs: getRpcPrefsForCurrentProvider(state),
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    removeAccount: (address) => dispatch(removeAccount(address)),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  removeAccount: (address) => dispatch(removeAccount(address)),
+});
 
 export default compose(
   withModalProps,

@@ -6,6 +6,4 @@ export default {
   id: __filename,
 };
 
-export const AwaitingSignaturesComponent = () => {
-  return <AwaitingSignatures />;
-};
+export const AwaitingSignaturesComponent = () => <AwaitingSignatures />;

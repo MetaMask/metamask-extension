@@ -6,14 +6,10 @@ export default {
   id: __filename,
 };
 
-const PageSet = ({ children }) => {
-  return children;
-};
+const PageSet = ({ children }) => children;
 
-export const SendToken = () => {
-  return (
-    <PageSet>
-      <ConfirmSendToken />
-    </PageSet>
-  );
-};
+export const SendToken = () => (
+  <PageSet>
+    <ConfirmSendToken />
+  </PageSet>
+);

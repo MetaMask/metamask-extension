@@ -38,10 +38,8 @@ const PageSet = ({ children }) => {
   return children;
 };
 
-export const ConfirmEncryption = () => {
-  return (
-    <PageSet>
-      <ConfirmEncryptionPublicKey />
-    </PageSet>
-  );
-};
+export const ConfirmEncryption = () => (
+  <PageSet>
+    <ConfirmEncryptionPublicKey />
+  </PageSet>
+);

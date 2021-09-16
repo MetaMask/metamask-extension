@@ -6,10 +6,8 @@ export default {
   id: __filename,
 };
 
-export const basic = () => {
-  return (
-    <div style={{ width: '600px' }}>
-      <EditGasDisplayEducation />
-    </div>
-  );
-};
+export const basic = () => (
+  <div style={{ width: '600px' }}>
+    <EditGasDisplayEducation />
+  </div>
+);

@@ -84,10 +84,11 @@ export default class NotificationManager {
    */
   _getPopupIn(windows) {
     return windows
-      ? windows.find((win) => {
-          // Returns notification popup
-          return win && win.type === 'popup' && win.id === this._popupId;
-        })
+      ? windows.find(
+          (win) =>
+            // Returns notification popup
+            win && win.type === 'popup' && win.id === this._popupId,
+        )
       : null;
   }
 }

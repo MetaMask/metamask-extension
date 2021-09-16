@@ -7,10 +7,8 @@ export default {
   id: __filename,
 };
 
-export const simple = () => {
-  return (
-    <div style={{ width: '600px' }}>
-      <AdvancedGasControls />
-    </div>
-  );
-};
+export const simple = () => (
+  <div style={{ width: '600px' }}>
+    <AdvancedGasControls />
+  </div>
+);

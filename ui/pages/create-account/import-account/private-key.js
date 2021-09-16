@@ -146,9 +146,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    importNewAccount: (strategy, [privateKey]) => {
-      return dispatch(actions.importNewAccount(strategy, [privateKey]));
-    },
+    importNewAccount: (strategy, [privateKey]) =>
+      dispatch(actions.importNewAccount(strategy, [privateKey])),
     displayWarning: (message) =>
       dispatch(actions.displayWarning(message || null)),
     setSelectedAddress: (address) =>

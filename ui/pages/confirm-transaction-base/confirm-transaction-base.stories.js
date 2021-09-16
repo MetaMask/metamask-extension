@@ -7,14 +7,10 @@ export default {
   id: __filename,
 };
 
-const PageSet = ({ children }) => {
-  return children;
-};
+const PageSet = ({ children }) => children;
 
-export const ConfirmTransactionBaseComponent = () => {
-  return (
-    <PageSet>
-      <ConfirmTransactionBase />
-    </PageSet>
-  );
-};
+export const ConfirmTransactionBaseComponent = () => (
+  <PageSet>
+    <ConfirmTransactionBase />
+  </PageSet>
+);

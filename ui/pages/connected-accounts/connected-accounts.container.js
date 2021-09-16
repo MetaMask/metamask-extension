@@ -33,15 +33,13 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addPermittedAccount: (origin, address) =>
-      dispatch(addPermittedAccount(origin, address)),
-    removePermittedAccount: (origin, address) =>
-      dispatch(removePermittedAccount(origin, address)),
-    setSelectedAddress: (address) => dispatch(setSelectedAddress(address)),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  addPermittedAccount: (origin, address) =>
+    dispatch(addPermittedAccount(origin, address)),
+  removePermittedAccount: (origin, address) =>
+    dispatch(removePermittedAccount(origin, address)),
+  setSelectedAddress: (address) => dispatch(setSelectedAddress(address)),
+});
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { activeTabOrigin } = stateProps;

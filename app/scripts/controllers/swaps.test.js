@@ -99,11 +99,9 @@ const MOCK_GET_BUFFERED_GAS_LIMIT = async () => ({
 function getMockNetworkController() {
   return {
     store: {
-      getState: () => {
-        return {
-          network: ROPSTEN_NETWORK_ID,
-        };
-      },
+      getState: () => ({
+        network: ROPSTEN_NETWORK_ID,
+      }),
     },
     on: sinon
       .stub()
@@ -142,20 +140,18 @@ const sandbox = sinon.createSandbox();
 const fetchTradesInfoStub = sandbox.stub();
 const getCurrentChainIdStub = sandbox.stub();
 getCurrentChainIdStub.returns(MAINNET_CHAIN_ID);
-const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
-  return {
-    gasFeeEstimates: {
-      high: '150',
-    },
-    gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
-  };
-});
+const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => ({
+  gasFeeEstimates: {
+    high: '150',
+  },
+  gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+}));
 
 describe('SwapsController', function () {
   let provider;
 
-  const getSwapsController = () => {
-    return new SwapsController({
+  const getSwapsController = () =>
+    new SwapsController({
       getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
       networkController: getMockNetworkController(),
       provider,
@@ -165,7 +161,6 @@ describe('SwapsController', function () {
       getCurrentChainId: getCurrentChainIdStub,
       getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
     });
-  };
 
   before(function () {
     const providerResultStub = {

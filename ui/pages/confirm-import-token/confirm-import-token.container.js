@@ -14,11 +14,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addTokens: (tokens) => dispatch(addTokens(tokens)),
-    clearPendingTokens: () => dispatch(clearPendingTokens()),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  addTokens: (tokens) => dispatch(addTokens(tokens)),
+  clearPendingTokens: () => dispatch(clearPendingTokens()),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConfirmImportToken);

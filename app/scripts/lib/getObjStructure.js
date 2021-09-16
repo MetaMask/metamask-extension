@@ -23,9 +23,9 @@ import { cloneDeep } from 'lodash';
  */
 export default function getObjStructure(obj) {
   const structure = cloneDeep(obj);
-  return deepMap(structure, (value) => {
-    return value === null ? 'null' : typeof value;
-  });
+  return deepMap(structure, (value) =>
+    value === null ? 'null' : typeof value,
+  );
 }
 
 /**

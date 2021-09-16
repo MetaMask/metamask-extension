@@ -97,47 +97,41 @@ const {
 
 export { dismissAlert, switchedToUnconnectedAccount };
 
-export const dismissAndDisableAlert = () => {
-  return async (dispatch) => {
-    try {
-      await dispatch(disableAlertRequested());
-      await setAlertEnabledness(name, false);
-      await dispatch(disableAlertSucceeded());
-    } catch (error) {
-      console.error(error);
-      captureException(error);
-      await dispatch(disableAlertFailed());
-    }
-  };
+export const dismissAndDisableAlert = () => async (dispatch) => {
+  try {
+    await dispatch(disableAlertRequested());
+    await setAlertEnabledness(name, false);
+    await dispatch(disableAlertSucceeded());
+  } catch (error) {
+    console.error(error);
+    captureException(error);
+    await dispatch(disableAlertFailed());
+  }
 };
 
-export const switchToAccount = (address) => {
-  return async (dispatch) => {
-    try {
-      await dispatch(switchAccountRequested());
-      await dispatch(setSelectedAddress(address));
-      await dispatch(switchAccountSucceeded());
-    } catch (error) {
-      console.error(error);
-      captureException(error);
-      await dispatch(switchAccountFailed());
-    }
-  };
+export const switchToAccount = (address) => async (dispatch) => {
+  try {
+    await dispatch(switchAccountRequested());
+    await dispatch(setSelectedAddress(address));
+    await dispatch(switchAccountSucceeded());
+  } catch (error) {
+    console.error(error);
+    captureException(error);
+    await dispatch(switchAccountFailed());
+  }
 };
 
-export const connectAccount = () => {
-  return async (dispatch, getState) => {
-    const state = getState();
-    const selectedAddress = getSelectedAddress(state);
-    const origin = getOriginOfCurrentTab(state);
-    try {
-      await dispatch(connectAccountRequested());
-      await dispatch(addPermittedAccount(origin, selectedAddress));
-      await dispatch(connectAccountSucceeded());
-    } catch (error) {
-      console.error(error);
-      captureException(error);
-      await dispatch(connectAccountFailed());
-    }
-  };
+export const connectAccount = () => async (dispatch, getState) => {
+  const state = getState();
+  const selectedAddress = getSelectedAddress(state);
+  const origin = getOriginOfCurrentTab(state);
+  try {
+    await dispatch(connectAccountRequested());
+    await dispatch(addPermittedAccount(origin, selectedAddress));
+    await dispatch(connectAccountSucceeded());
+  } catch (error) {
+    console.error(error);
+    captureException(error);
+    await dispatch(connectAccountFailed());
+  }
 };

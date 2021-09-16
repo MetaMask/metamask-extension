@@ -30,16 +30,14 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setParticipateInMetaMetrics: (val) =>
-      dispatch(setParticipateInMetaMetrics(val)),
-    setShowIncomingTransactionsFeatureFlag: (shouldShow) =>
-      dispatch(setFeatureFlag('showIncomingTransactions', shouldShow)),
-    setUsePhishDetect: (val) => dispatch(setUsePhishDetect(val)),
-    setUseTokenDetection: (val) => dispatch(setUseTokenDetection(val)),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  setParticipateInMetaMetrics: (val) =>
+    dispatch(setParticipateInMetaMetrics(val)),
+  setShowIncomingTransactionsFeatureFlag: (shouldShow) =>
+    dispatch(setFeatureFlag('showIncomingTransactions', shouldShow)),
+  setUsePhishDetect: (val) => dispatch(setUsePhishDetect(val)),
+  setUseTokenDetection: (val) => dispatch(setUseTokenDetection(val)),
+});
 
 export default compose(
   withRouter,

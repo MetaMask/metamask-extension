@@ -127,20 +127,18 @@ const tokensToSearch = tokens.map((token) => ({
   rightSecondaryLabel: `$${(Math.random() * 1000).toFixed(2)}`,
 }));
 
-export const TokenSearchDropdown = () => {
-  return (
-    <div style={{ height: '82vh', width: '357px' }}>
-      <DropdownSearchList
-        startingItem={tokensToSearch[0]}
-        itemsToSearch={tokensToSearch}
-        searchPlaceholderText="Search for a token"
-        fuseSearchKeys={[
-          { name: 'name', weight: 0.5 },
-          { name: 'symbol', weight: 0.5 },
-        ]}
-        maxListItems={tokensToSearch.length}
-        defaultToAll
-      />
-    </div>
-  );
-};
+export const TokenSearchDropdown = () => (
+  <div style={{ height: '82vh', width: '357px' }}>
+    <DropdownSearchList
+      startingItem={tokensToSearch[0]}
+      itemsToSearch={tokensToSearch}
+      searchPlaceholderText="Search for a token"
+      fuseSearchKeys={[
+        { name: 'name', weight: 0.5 },
+        { name: 'symbol', weight: 0.5 },
+      ]}
+      maxListItems={tokensToSearch.length}
+      defaultToAll
+    />
+  </div>
+);

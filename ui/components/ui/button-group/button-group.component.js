@@ -43,8 +43,9 @@ export default class ButtonGroup extends PureComponent {
   renderButtons() {
     const { children, disabled, variant } = this.props;
 
-    return React.Children.map(children, (child, index) => {
-      return (
+    return React.Children.map(
+      children,
+      (child, index) =>
         child && (
           <button
             role={variant === 'radiogroup' ? 'radio' : undefined}
@@ -71,9 +72,8 @@ export default class ButtonGroup extends PureComponent {
           >
             {child.props.children}
           </button>
-        )
-      );
-    });
+        ),
+    );
   }
 
   render() {

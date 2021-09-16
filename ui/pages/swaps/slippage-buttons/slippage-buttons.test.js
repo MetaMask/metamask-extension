@@ -3,14 +3,12 @@ import React from 'react';
 import { renderWithProvider } from '../../../../test/jest';
 import SlippageButtons from '.';
 
-const createProps = (customProps = {}) => {
-  return {
-    onSelect: jest.fn(),
-    maxAllowedSlippage: 15,
-    currentSlippage: 3,
-    ...customProps,
-  };
-};
+const createProps = (customProps = {}) => ({
+  onSelect: jest.fn(),
+  maxAllowedSlippage: 15,
+  currentSlippage: 3,
+  ...customProps,
+});
 
 describe('SlippageButtons', () => {
   it('renders the component with initial props', () => {

@@ -6,6 +6,4 @@ export default {
   id: __filename,
 };
 
-export const AccountListItemComponent = () => {
-  return <AccountListItem />;
-};
+export const AccountListItemComponent = () => <AccountListItem />;

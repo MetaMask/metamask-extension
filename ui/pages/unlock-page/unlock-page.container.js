@@ -25,16 +25,14 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    forgotPassword: () => dispatch(forgotPassword()),
-    tryUnlockMetamask: (password) => dispatch(tryUnlockMetamask(password)),
-    markPasswordForgotten: () => dispatch(markPasswordForgotten()),
-    forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
-    showOptInModal: () =>
-      dispatch(showModal({ name: 'METAMETRICS_OPT_IN_MODAL' })),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  forgotPassword: () => dispatch(forgotPassword()),
+  tryUnlockMetamask: (password) => dispatch(tryUnlockMetamask(password)),
+  markPasswordForgotten: () => dispatch(markPasswordForgotten()),
+  forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
+  showOptInModal: () =>
+    dispatch(showModal({ name: 'METAMETRICS_OPT_IN_MODAL' })),
+});
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {

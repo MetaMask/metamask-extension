@@ -368,24 +368,22 @@ export default function BuildQuote({
     dispatch(setReviewSwapClickedTimestamp());
   }, [dispatch]);
 
-  const BlockExplorerLink = () => {
-    return (
-      <a
-        className="build-quote__token-etherscan-link build-quote__underline"
-        key="build-quote-etherscan-link"
-        onClick={() => {
-          blockExplorerLinkClickedEvent();
-          global.platform.openTab({
-            url: blockExplorerTokenLink,
-          });
-        }}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {blockExplorerLabel}
-      </a>
-    );
-  };
+  const BlockExplorerLink = () => (
+    <a
+      className="build-quote__token-etherscan-link build-quote__underline"
+      key="build-quote-etherscan-link"
+      onClick={() => {
+        blockExplorerLinkClickedEvent();
+        global.platform.openTab({
+          url: blockExplorerTokenLink,
+        });
+      }}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {blockExplorerLabel}
+    </a>
+  );
 
   let tokenVerificationDescription = '';
   if (blockExplorerTokenLink) {

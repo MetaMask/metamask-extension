@@ -7,6 +7,6 @@ export default {
   id: __filename,
 };
 
-export const NewAccountComponent = () => {
-  return <NewAccountCreateForm createAccount={action('Account Created')} />;
-};
+export const NewAccountComponent = () => (
+  <NewAccountCreateForm createAccount={action('Account Created')} />
+);

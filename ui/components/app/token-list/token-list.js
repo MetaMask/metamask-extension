@@ -41,9 +41,9 @@ export default function TokenList({ onTokenClick }) {
 
   return (
     <div>
-      {tokensWithBalances.map((tokenData, index) => {
-        return <TokenCell key={index} {...tokenData} onClick={onTokenClick} />;
-      })}
+      {tokensWithBalances.map((tokenData, index) => (
+        <TokenCell key={index} {...tokenData} onClick={onTokenClick} />
+      ))}
     </div>
   );
 }

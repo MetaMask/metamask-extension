@@ -6,26 +6,20 @@ export default {
   id: __filename,
 };
 
-export const basic = () => {
-  return (
-    <div style={{ width: '600px' }}>
-      <EditGasPopover />
-    </div>
-  );
-};
+export const basic = () => (
+  <div style={{ width: '600px' }}>
+    <EditGasPopover />
+  </div>
+);
 
-export const basicWithDifferentButtonText = () => {
-  return (
-    <div style={{ width: '600px' }}>
-      <EditGasPopover confirmButtonText="Custom Value" />
-    </div>
-  );
-};
+export const basicWithDifferentButtonText = () => (
+  <div style={{ width: '600px' }}>
+    <EditGasPopover confirmButtonText="Custom Value" />
+  </div>
+);
 
-export const educationalContentFlow = () => {
-  return (
-    <div style={{ width: '600px' }}>
-      <EditGasPopover editGasDisplayProps={{ showEducationButton: true }} />
-    </div>
-  );
-};
+export const educationalContentFlow = () => (
+  <div style={{ width: '600px' }}>
+    <EditGasPopover editGasDisplayProps={{ showEducationButton: true }} />
+  </div>
+);

@@ -275,9 +275,7 @@ function insert(list, value, target, removeOld) {
   }
 
   if (removeOld) {
-    nextList = nextList.filter((seed, i) => {
-      return seed !== value || i === target;
-    });
+    nextList = nextList.filter((seed, i) => seed !== value || i === target);
   }
 
   return nextList;

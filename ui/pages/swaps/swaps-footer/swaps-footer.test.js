@@ -3,16 +3,14 @@ import React from 'react';
 import { renderWithProvider } from '../../../../test/jest';
 import SwapsFooter from '.';
 
-const createProps = (customProps = {}) => {
-  return {
-    onCancel: jest.fn(),
-    onSubmit: jest.fn(),
-    submitText: 'submitText',
-    disabled: false,
-    showTermsOfService: true,
-    ...customProps,
-  };
-};
+const createProps = (customProps = {}) => ({
+  onCancel: jest.fn(),
+  onSubmit: jest.fn(),
+  submitText: 'submitText',
+  disabled: false,
+  showTermsOfService: true,
+  ...customProps,
+});
 
 describe('SwapsFooter', () => {
   it('renders the component with initial props', () => {

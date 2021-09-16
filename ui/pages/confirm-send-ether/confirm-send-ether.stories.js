@@ -48,10 +48,8 @@ const PageSet = ({ children }) => {
   return children;
 };
 
-export const SendEther = () => {
-  return (
-    <PageSet>
-      <ConfirmSendEther />
-    </PageSet>
-  );
-};
+export const SendEther = () => (
+  <PageSet>
+    <ConfirmSendEther />
+  </PageSet>
+);

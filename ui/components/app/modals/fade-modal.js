@@ -167,9 +167,7 @@ class FadeModal extends Component {
     }
   };
 
-  hasHidden = () => {
-    return this.state.hidden;
-  };
+  hasHidden = () => this.state.hidden;
 
   render() {
     if (this.state.hidden) {

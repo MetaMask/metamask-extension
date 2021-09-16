@@ -45,13 +45,12 @@ export default class TokenSearch extends Component {
   handleSearch(searchQuery) {
     this.setState({ searchQuery });
     const fuseSearchResult = this.tokenSearchFuse.search(searchQuery);
-    const addressSearchResult = this.tokenList.filter((token) => {
-      return (
+    const addressSearchResult = this.tokenList.filter(
+      (token) =>
         token.address &&
         searchQuery &&
-        isEqualCaseInsensitive(token.address, searchQuery)
-      );
-    });
+        isEqualCaseInsensitive(token.address, searchQuery),
+    );
     const results = [...addressSearchResult, ...fuseSearchResult];
     this.props.onSearch({ searchQuery, results });
   }

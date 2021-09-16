@@ -16,17 +16,14 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    createAccount: (newAccountName) => {
-      return dispatch(actions.addNewAccount()).then((newAccountAddress) => {
-        if (newAccountName) {
-          dispatch(actions.setAccountLabel(newAccountAddress, newAccountName));
-        }
-      });
-    },
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  createAccount: (newAccountName) =>
+    dispatch(actions.addNewAccount()).then((newAccountAddress) => {
+      if (newAccountName) {
+        dispatch(actions.setAccountLabel(newAccountAddress, newAccountName));
+      }
+    }),
+});
 
 export default connect(
   mapStateToProps,

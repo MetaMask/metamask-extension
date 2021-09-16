@@ -49,10 +49,8 @@ const PageSet = ({ children }) => {
   return children;
 };
 
-export const DeployContract = () => {
-  return (
-    <PageSet>
-      <ConfirmDeployContract />
-    </PageSet>
-  );
-};
+export const DeployContract = () => (
+  <PageSet>
+    <ConfirmDeployContract />
+  </PageSet>
+);

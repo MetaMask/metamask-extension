@@ -7,11 +7,9 @@ import {
 } from '../../../../test/jest';
 import DropdownInputPair from '.';
 
-const createProps = (customProps = {}) => {
-  return {
-    ...customProps,
-  };
-};
+const createProps = (customProps = {}) => ({
+  ...customProps,
+});
 
 describe('DropdownInputPair', () => {
   it('renders the component with initial props', () => {

@@ -216,12 +216,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(updateGasLimit(newLimit));
       dispatch(updateGasPrice(newPrice));
     },
-    createRetryTransaction: (txId, customGasSettings) => {
-      return dispatch(createRetryTransaction(txId, customGasSettings));
-    },
-    createSpeedUpTransaction: (txId, customGasSettings) => {
-      return dispatch(createSpeedUpTransaction(txId, customGasSettings));
-    },
+    createRetryTransaction: (txId, customGasSettings) =>
+      dispatch(createRetryTransaction(txId, customGasSettings)),
+    createSpeedUpTransaction: (txId, customGasSettings) =>
+      dispatch(createSpeedUpTransaction(txId, customGasSettings)),
   };
 };
 

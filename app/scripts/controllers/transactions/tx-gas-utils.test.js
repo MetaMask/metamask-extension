@@ -12,9 +12,7 @@ describe('txUtils', function () {
       new Proxy(
         {},
         {
-          get: () => {
-            return () => undefined;
-          },
+          get: () => () => undefined,
         },
       ),
     );

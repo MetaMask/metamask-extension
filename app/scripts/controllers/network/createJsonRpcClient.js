@@ -10,9 +10,8 @@ import { SECOND } from '../../../../shared/constants/time';
 
 const inTest = process.env.IN_TEST === 'true';
 const blockTrackerOpts = inTest ? { pollingInterval: SECOND } : {};
-const getTestMiddlewares = () => {
-  return inTest ? [createEstimateGasDelayTestMiddleware()] : [];
-};
+const getTestMiddlewares = () =>
+  inTest ? [createEstimateGasDelayTestMiddleware()] : [];
 
 export default function createJsonRpcClient({ rpcUrl, chainId }) {
   const fetchMiddleware = createFetchMiddleware({ rpcUrl });

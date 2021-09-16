@@ -72,21 +72,19 @@ export default class SignatureRequestOriginal extends Component {
     }
   };
 
-  renderHeader = () => {
-    return (
-      <div className="request-signature__header">
-        <div className="request-signature__header-background" />
+  renderHeader = () => (
+    <div className="request-signature__header">
+      <div className="request-signature__header-background" />
 
-        <div className="request-signature__header__text">
-          {this.context.t('sigRequest')}
-        </div>
-
-        <div className="request-signature__header__tip-container">
-          <div className="request-signature__header__tip" />
-        </div>
+      <div className="request-signature__header__text">
+        {this.context.t('sigRequest')}
       </div>
-    );
-  };
+
+      <div className="request-signature__header__tip-container">
+        <div className="request-signature__header__tip" />
+      </div>
+    </div>
+  );
 
   renderAccount = () => {
     const { fromAccount } = this.state;
@@ -140,15 +138,13 @@ export default class SignatureRequestOriginal extends Component {
     );
   };
 
-  renderAccountInfo = () => {
-    return (
-      <div className="request-signature__account-info">
-        {this.renderAccount()}
-        {this.renderRequestIcon()}
-        {this.renderBalance()}
-      </div>
-    );
-  };
+  renderAccountInfo = () => (
+    <div className="request-signature__account-info">
+      {this.renderAccount()}
+      {this.renderRequestIcon()}
+      {this.renderBalance()}
+    </div>
+  );
 
   renderOriginInfo = () => {
     const { txData, domainMetadata } = this.props;
@@ -334,13 +330,11 @@ export default class SignatureRequestOriginal extends Component {
     );
   };
 
-  render = () => {
-    return (
-      <div className="request-signature__container">
-        {this.renderHeader()}
-        {this.renderBody()}
-        {this.renderFooter()}
-      </div>
-    );
-  };
+  render = () => (
+    <div className="request-signature__container">
+      {this.renderHeader()}
+      {this.renderBody()}
+      {this.renderFooter()}
+    </div>
+  );
 }
