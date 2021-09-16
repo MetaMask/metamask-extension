@@ -58,13 +58,14 @@ export default class AddToAddressBookModal extends Component {
           />
         </div>
         <div className="add-to-address-book-modal__footer">
-          <Button type="secondary" onClick={this.props.hideModal}>
+          <Button type="secondary" onClick={this.props.hideModal} rounded>
             {t('cancel')}
           </Button>
           <Button
             type="primary"
             onClick={this.onSave}
             disabled={!this.state.alias}
+            rounded
           >
             {t('save')}
           </Button>

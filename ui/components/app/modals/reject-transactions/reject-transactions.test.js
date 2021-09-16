@@ -26,7 +26,7 @@ describe('Reject Transactions Model', () => {
 
   it('hides modal when cancel button is clicked', () => {
     const cancelButton = wrapper.find(
-      '.btn-default.modal-container__footer-button',
+      '.btn-secondary.modal-container__footer-button',
     );
     cancelButton.simulate('click');
 
@@ -35,7 +35,7 @@ describe('Reject Transactions Model', () => {
 
   it('onSubmit is called and hides modal when reject all clicked', async () => {
     const rejectAllButton = wrapper.find(
-      '.btn-secondary.modal-container__footer-button',
+      '.btn-primary.modal-container__footer-button',
     );
     rejectAllButton.simulate('click');
 

@@ -49,6 +49,7 @@ const HomeNotification = ({
             type="primary"
             className="home-notification__accept-button"
             onClick={onAccept}
+            rounded
           >
             {acceptText}
           </Button>
@@ -60,6 +61,7 @@ const HomeNotification = ({
             // Some onIgnore handlers use the checkboxState to determine whether
             // to disable the notification
             onClick={() => onIgnore(checkboxState)}
+            rounded
           >
             {ignoreText}
           </Button>

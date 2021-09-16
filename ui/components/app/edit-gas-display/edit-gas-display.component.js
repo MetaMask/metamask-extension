@@ -201,6 +201,7 @@ export default function EditGasDisplay({
           <Button
             className="edit-gas-display__dapp-acknowledgement-button"
             onClick={() => setDappSuggestedGasFeeAcknowledged(true)}
+            rounded
           >
             {t('gasDisplayAcknowledgeDappButtonText')}
           </Button>

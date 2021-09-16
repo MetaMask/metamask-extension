@@ -237,6 +237,7 @@ class AccountList extends Component {
         <Button
           onClick={() => this.setState({ showPopover: false })}
           type="secondary"
+          rounded
         >
           {this.context.t('cancel')}
         </Button>
@@ -246,6 +247,7 @@ class AccountList extends Component {
             this.setState({ showPopover: false });
           }}
           type="primary"
+          rounded
         >
           {this.context.t('save')}
         </Button>

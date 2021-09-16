@@ -32,7 +32,7 @@ export default function ImportToken({
         {t('cancel')}
       </Button>
       <Button
-        type="confirm"
+        type="primary"
         className="page-container__footer-button"
         onClick={onImportTokenClick}
         rounded

@@ -100,7 +100,7 @@ describe('MetaMask', function () {
     });
 
     it('clicks the "No thanks" option on the metametrics opt-in screen', async function () {
-      await driver.clickElement('.btn-default');
+      await driver.clickElement('.btn-secondary');
       await driver.delay(largeDelayMs);
     });
 

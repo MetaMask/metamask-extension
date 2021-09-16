@@ -36,6 +36,7 @@ const InvalidCustomNetworkAlert = ({ history }) => {
           onClick={onClose}
           type="secondary"
           className="invalid-custom-network-alert__footer-row-button"
+          rounded
         >
           {t('dismiss')}
         </Button>
@@ -47,6 +48,7 @@ const InvalidCustomNetworkAlert = ({ history }) => {
           }}
           type="primary"
           className="invalid-custom-network-alert__footer-row-button"
+          rounded
         >
           {t('settings')}
         </Button>

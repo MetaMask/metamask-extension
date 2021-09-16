@@ -132,10 +132,14 @@ export default class ConnectedSites extends Component {
         footer={
           <>
             <div className="connected-sites__footer-row">
-              <Button type="secondary" onClick={this.clearPendingDisconnect}>
+              <Button
+                type="secondary"
+                onClick={this.clearPendingDisconnect}
+                rounded
+              >
                 {t('cancel')}
               </Button>
-              <Button type="primary" onClick={this.disconnectAccount}>
+              <Button type="primary" onClick={this.disconnectAccount} rounded>
                 {t('disconnect')}
               </Button>
             </div>

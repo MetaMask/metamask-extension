@@ -78,6 +78,7 @@ export default class SelectHardware extends Component {
         className="hw-connect__connect-btn"
         onClick={this.connect}
         disabled={!this.state.selectedDevice}
+        rounded
       >
         {this.context.t('continue')}
       </Button>
@@ -103,6 +104,7 @@ export default class SelectHardware extends Component {
               url: 'https://google.com/chrome',
             })
           }
+          rounded
         >
           {this.context.t('downloadGoogleChrome')}
         </Button>

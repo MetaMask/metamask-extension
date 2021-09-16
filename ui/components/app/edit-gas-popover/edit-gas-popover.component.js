@@ -238,6 +238,7 @@ export default function EditGasPopover({
                 ((isGasEstimatesLoading || gasLoadingAnimationIsShowing) &&
                   !txParamsHaveBeenCustomized)
               }
+              rounded
             >
               {footerButtonText}
             </Button>
