@@ -127,6 +127,7 @@ export default class ConfirmTransactionBase extends Component {
     gasFeeIsCustom: PropTypes.bool,
     isLedgerAccount: PropTypes.bool.isRequired,
     isFirefox: PropTypes.bool.isRequired,
+    nativeCurrency: PropTypes.string,
   };
 
   state = {
@@ -401,45 +402,37 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     ) : null;
 
+    const renderLedgerLiveStep = (text, show = true) => {
+      return (
+        show && (
+          <Typography
+            boxProps={{ margin: 0 }}
+            color={COLORS.PRIMARY3}
+            fontWeight={FONT_WEIGHT.BOLD}
+            variant={TYPOGRAPHY.H7}
+          >
+            {text}
+          </Typography>
+        )
+      );
+    };
+
     const ledgerInstructionField = isLedgerAccount ? (
       <div>
         <div className="confirm-detail-row">
           <Dialog type="message">
             <div className="ledger-live-dialog">
-              <Typography
-                boxProps={{ margin: 0 }}
-                color={COLORS.PRIMARY3}
-                fontWeight={FONT_WEIGHT.BOLD}
-                variant={TYPOGRAPHY.H7}
-              >
-                {t('ledgerLiveDialogHeader')}
-              </Typography>
-              {!isFirefox && (
-                <Typography
-                  boxProps={{ margin: 0 }}
-                  color={COLORS.PRIMARY3}
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  variant={TYPOGRAPHY.H7}
-                >
-                  {`- ${t('ledgerLiveDialogStepOne')}`}
-                </Typography>
+              {renderLedgerLiveStep(t('ledgerLiveDialogHeader'))}
+              {renderLedgerLiveStep(
+                `- ${t('ledgerLiveDialogStepOne')}`,
+                !isFirefox,
               )}
-              <Typography
-                boxProps={{ margin: 0 }}
-                color={COLORS.PRIMARY3}
-                fontWeight={FONT_WEIGHT.BOLD}
-                variant={TYPOGRAPHY.H7}
-              >
-                {`- ${t('ledgerLiveDialogStepTwo')}`}
-              </Typography>
-              <Typography
-                boxProps={{ margin: 0 }}
-                color={COLORS.PRIMARY3}
-                fontWeight={FONT_WEIGHT.BOLD}
-                variant={TYPOGRAPHY.H7}
-              >
-                {`- ${t('ledgerLiveDialogStepThree')}`}
-              </Typography>
+              {renderLedgerLiveStep(`- ${t('ledgerLiveDialogStepTwo')}`)}
+              {renderLedgerLiveStep(`- ${t('ledgerLiveDialogStepThree')}`)}
+              {renderLedgerLiveStep(
+                `- ${t('ledgerLiveDialogStepFour')}`,
+                Boolean(txData.txParams?.data),
+              )}
             </div>
           </Dialog>
         </div>
@@ -914,6 +907,7 @@ export default class ConfirmTransactionBase extends Component {
       txData,
       gasIsLoading,
       gasFeeIsCustom,
+      nativeCurrency,
     } = this.props;
     const {
       submitting,
@@ -940,7 +934,7 @@ export default class ConfirmTransactionBase extends Component {
     let functionType = getMethodName(name);
     if (!functionType) {
       if (type) {
-        functionType = getTransactionTypeTitle(t, type);
+        functionType = getTransactionTypeTitle(t, type, nativeCurrency);
       } else {
         functionType = t('contractInteraction');
       }

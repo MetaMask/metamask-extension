@@ -100,40 +100,32 @@ export default class TransactionBreakdown extends PureComponent {
             />
           </TransactionBreakdownRow>
         )}
-        {isEIP1559Transaction && (
+        {isEIP1559Transaction && typeof baseFee !== 'undefined' ? (
           <TransactionBreakdownRow title={t('transactionHistoryBaseFee')}>
-            {typeof baseFee === 'undefined' ? (
-              '?'
-            ) : (
-              <CurrencyDisplay
-                className="transaction-breakdown__value"
-                data-testid="transaction-breakdown__base-fee"
-                currency={nativeCurrency}
-                denomination={GWEI}
-                value={baseFee}
-                numberOfDecimals={10}
-                hideLabel
-              />
-            )}
+            <CurrencyDisplay
+              className="transaction-breakdown__value"
+              data-testid="transaction-breakdown__base-fee"
+              currency={nativeCurrency}
+              denomination={GWEI}
+              value={baseFee}
+              numberOfDecimals={10}
+              hideLabel
+            />
           </TransactionBreakdownRow>
-        )}
-        {isEIP1559Transaction && (
+        ) : null}
+        {isEIP1559Transaction && typeof priorityFee !== 'undefined' ? (
           <TransactionBreakdownRow title={t('transactionHistoryPriorityFee')}>
-            {typeof priorityFee === 'undefined' ? (
-              '?'
-            ) : (
-              <CurrencyDisplay
-                className="transaction-breakdown__value"
-                data-testid="transaction-breakdown__priority-fee"
-                currency={nativeCurrency}
-                denomination={GWEI}
-                value={priorityFee}
-                numberOfDecimals={10}
-                hideLabel
-              />
-            )}
+            <CurrencyDisplay
+              className="transaction-breakdown__value"
+              data-testid="transaction-breakdown__priority-fee"
+              currency={nativeCurrency}
+              denomination={GWEI}
+              value={priorityFee}
+              numberOfDecimals={10}
+              hideLabel
+            />
           </TransactionBreakdownRow>
-        )}
+        ) : null}
         {!isEIP1559Transaction && (
           <TransactionBreakdownRow title={t('advancedGasPriceTitle')}>
             {typeof gasPrice === 'undefined' ? (

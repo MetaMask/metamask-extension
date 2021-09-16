@@ -7,6 +7,7 @@ import SelectQuotePopover from '.';
 
 export default {
   title: 'SelectQuotePopover',
+  id: __filename,
 };
 
 export const Default = () => {

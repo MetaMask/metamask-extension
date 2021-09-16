@@ -5,6 +5,7 @@ import Tabs from './tabs.component';
 
 export default {
   title: 'Tabs',
+  id: __filename,
 };
 
 function renderTab(id) {

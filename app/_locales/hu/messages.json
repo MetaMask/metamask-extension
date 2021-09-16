@@ -882,9 +882,6 @@
   "sendTokens": {
     "message": "Token küldése"
   },
-  "sentEther": {
-    "message": "elküldött ether"
-  },
   "separateEachWord": {
     "message": "Minden egyes szavat szóközzel válasszon el"
   },

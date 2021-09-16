@@ -4,6 +4,7 @@ import SlippageButtons from '.';
 
 export default {
   title: 'SlippageButtons',
+  id: __filename,
 };
 
 export const Default = () => (

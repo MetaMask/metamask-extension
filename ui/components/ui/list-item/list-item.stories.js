@@ -11,6 +11,7 @@ import ListItem from './list-item.component';
 
 export default {
   title: 'ListItem',
+  id: __filename,
 };
 
 function Currencies({ primary, secondary }) {

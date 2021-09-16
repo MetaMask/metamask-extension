@@ -20,6 +20,13 @@ function getNextBetaVersionMap(currentVersion, betaVersion, platforms) {
   }, {});
 }
 
+const BuildTypes = {
+  beta: 'beta',
+  flask: 'flask',
+  main: 'main',
+};
+
 module.exports = {
+  BuildTypes,
   getNextBetaVersionMap,
 };

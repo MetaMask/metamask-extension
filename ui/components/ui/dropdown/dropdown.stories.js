@@ -5,6 +5,7 @@ import Dropdown from '.';
 
 export default {
   title: 'Dropdown',
+  id: __filename,
 };
 
 const unnamedOptions = [...Array(10).keys()].map((index) => {

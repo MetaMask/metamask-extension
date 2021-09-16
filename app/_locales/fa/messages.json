@@ -889,9 +889,6 @@
   "sendTokens": {
     "message": "رمزیاب ها را ارسال کنید"
   },
-  "sentEther": {
-    "message": "ایتر ارسال شد"
-  },
   "separateEachWord": {
     "message": "هر کلمه را با یک فاصله واحد جدا سازید"
   },

@@ -866,9 +866,6 @@
   "sendTokens": {
     "message": "Hantar Token"
   },
-  "sentEther": {
-    "message": "menghantar ether"
-  },
   "separateEachWord": {
     "message": "Pisahkan setiap perkataan dengan ruang tunggal"
   },

@@ -889,9 +889,6 @@
   "sendTokens": {
     "message": "Siųsti žetonus"
   },
-  "sentEther": {
-    "message": "siųsti eterių"
-  },
   "separateEachWord": {
     "message": "Kiekvieną žodį atskirkite viengubu tarpu"
   },

@@ -11,6 +11,7 @@ import Callout from './callout';
 
 export default {
   title: 'Callout',
+  id: __filename,
 };
 
 export const persistentCallout = () => (
