@@ -19,6 +19,7 @@ describe('AdvancedTab Component', () => {
         setLedgerLivePreference={() => undefined}
         setDismissSeedBackUpReminder={() => undefined}
         dismissSeedBackUpReminder={false}
+        useTokenDetection={false}
       />,
       {
         context: {

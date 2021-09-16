@@ -577,6 +577,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderStateLogs()}
         {this.renderMobileSync()}
         {this.renderResetAccount()}
+        {this.renderTokenDetectionToggle()}
         {this.renderAdvancedGasInputInline()}
         {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}
@@ -586,7 +587,6 @@ export default class AdvancedTab extends PureComponent {
         {this.renderIpfsGatewayControl()}
         {this.renderLedgerLiveControl()}
         {this.renderDismissSeedBackupReminderControl()}
-        {this.renderTokenDetectionToggle()}
       </div>
     );
   }
