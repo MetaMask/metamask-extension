@@ -4,11 +4,13 @@ set -e
 set -u
 set -o pipefail
 
-CHROME_VERSION='87.0.4280.88-1'
+# To get the latest version, see <https://www.ubuntuupdates.org/ppa/google_chrome?dist=stable>
+CHROME_VERSION='93.0.4577.63-1'
 CHROME_BINARY="google-chrome-stable_${CHROME_VERSION}_amd64.deb"
 CHROME_BINARY_URL="https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/${CHROME_BINARY}"
 
-CHROME_BINARY_SHA512SUM='19eea1d1be171cab60ce5135572da9388b4b72e313118478b53f65c0bf2293733809282736b98ef828a208b7426e5191258f8c666cba7510b8bf5c92d0010a47'
+# To retrieve this checksum, run the `wget` and `shasum` commands below
+CHROME_BINARY_SHA512SUM='4102ba417b41820da68b7e8e12018ed2268f30e0210f8f227aeeabf6bd9265dd95ad206993d5626ac1c70a07185fd3ed4eef8a71ee2f5b0770015302c0d26f58'
 
 wget -O "${CHROME_BINARY}" -t 5 "${CHROME_BINARY_URL}"
 

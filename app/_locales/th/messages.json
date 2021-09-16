@@ -14,9 +14,6 @@
   "addToken": {
     "message": "เพิ่มโทเค็น"
   },
-  "addTokens": {
-    "message": "เพิ่มหลายโทเค็น"
-  },
   "amount": {
     "message": "จำนวน"
   },
@@ -122,7 +119,7 @@
     "message": "จำนวนต้องมากกว่า 0 และไม่เกิน 36"
   },
   "defaultNetwork": {
-    "message": "ค่าเริ่มต้นของเครือข่ายสำหรับทำรายการธุรกรรมอีเธอร์คือ Main Net"
+    "message": "ค่าเริ่มต้นของเครือข่ายสำหรับทำรายการธุรกรรมอีเธอร์คือ Mainnet"
   },
   "delete": {
     "message": "ลบ"
@@ -269,7 +266,7 @@
   "learnMore": {
     "message": "เรียนรู้เพิ่มเติม"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "คุณต้องการเพิ่มโทเค็นเหล่านี้หรือไม่?"
   },
   "loading": {
@@ -282,7 +279,7 @@
     "message": "ออกจากระบบ"
   },
   "mainnet": {
-    "message": "เครือข่าย Main Net"
+    "message": "เครือข่าย Mainnet"
   },
   "message": {
     "message": "ข้อความ"

@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Lisage luba"
   },
-  "addTokens": {
-    "message": "Lisa lube"
-  },
   "advanced": {
     "message": "Täpsemad"
   },
@@ -536,7 +533,7 @@
   "letsGoSetUp": {
     "message": "Jah, hakkame pihta!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Kas soovite need load lisada?"
   },
   "links": {
@@ -881,9 +878,6 @@
   },
   "sendTokens": {
     "message": "Saada lube"
-  },
-  "sentEther": {
-    "message": "saadetud eeter"
   },
   "separateEachWord": {
     "message": "Eraldage iga sõna ühe tühikuga"

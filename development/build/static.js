@@ -13,15 +13,26 @@ module.exports = function createStaticAssetTasks({
   livereload,
   browserPlatforms,
   shouldIncludeLockdown = true,
+  isBeta,
 }) {
   const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
     shouldIncludeLockdown,
   );
 
+  const copyTargetsBeta = [
+    ...copyTargetsProd,
+    {
+      src: './app/build-types/beta/',
+      dest: `images`,
+    },
+  ];
+
+  const targets = isBeta ? copyTargetsBeta : copyTargetsProd;
+
   const prod = createTask(
     'static:prod',
     composeSeries(
-      ...copyTargetsProd.map((target) => {
+      ...targets.map((target) => {
         return async function copyStaticAssets() {
           await performCopy(target);
         };

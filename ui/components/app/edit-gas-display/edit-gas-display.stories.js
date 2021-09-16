@@ -3,6 +3,7 @@ import EditGasDisplay from '.';
 
 export default {
   title: 'Edit Gas Display',
+  id: __filename,
 };
 
 export const basic = () => {

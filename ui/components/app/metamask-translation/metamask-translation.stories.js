@@ -6,6 +6,7 @@ import MetaMaskTranslation from './metamask-translation';
 
 export default {
   title: 'MetaMaskTranslation',
+  id: __filename,
 };
 
 const { keysWithSubstitution, keysWithoutSubstitution } = groupBy(

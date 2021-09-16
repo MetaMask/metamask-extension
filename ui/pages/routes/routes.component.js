@@ -8,7 +8,6 @@ import FirstTimeFlow from '../first-time-flow';
 import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
-import Sidebar from '../../components/app/sidebars';
 import Home from '../home';
 import Settings from '../settings';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
@@ -18,8 +17,8 @@ import PermissionsConnect from '../permissions-connect';
 import RestoreVaultPage from '../keychains/restore-vault';
 import RevealSeedConfirmation from '../keychains/reveal-seed';
 import MobileSyncPage from '../mobile-sync';
-import AddTokenPage from '../add-token';
-import ConfirmAddTokenPage from '../confirm-add-token';
+import ImportTokenPage from '../import-token';
+import ConfirmImportTokenPage from '../confirm-import-token';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
 import CreateAccountPage from '../create-account';
 import Loading from '../../components/ui/loading-screen';
@@ -34,10 +33,9 @@ import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
 
 import {
-  ADD_TOKEN_ROUTE,
+  IMPORT_TOKEN_ROUTE,
   ASSET_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-  CONFIRM_ADD_TOKEN_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONNECT_ROUTE,
   DEFAULT_ROUTE,
@@ -54,6 +52,7 @@ import {
   UNLOCK_ROUTE,
   BUILD_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
+  CONFIRM_IMPORT_TOKEN_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -61,7 +60,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { isBeta } from '../../helpers/utils/build-types';
 import ConfirmationPage from '../confirmation';
 
 export default class Routes extends Component {
@@ -75,15 +74,12 @@ export default class Routes extends Component {
     isNetworkLoading: PropTypes.bool,
     provider: PropTypes.object,
     frequentRpcListDetail: PropTypes.array,
-    sidebar: PropTypes.object,
     alertOpen: PropTypes.bool,
-    hideSidebar: PropTypes.func,
     isUnlocked: PropTypes.bool,
     setLastActiveTime: PropTypes.func,
     history: PropTypes.object,
     location: PropTypes.object,
     lockMetaMask: PropTypes.func,
-    submittedPendingTransactions: PropTypes.array,
     isMouseUser: PropTypes.bool,
     setMouseUserState: PropTypes.func,
     providerId: PropTypes.string,
@@ -150,10 +146,14 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated path={SWAPS_ROUTE} component={Swaps} />
-        <Authenticated path={ADD_TOKEN_ROUTE} component={AddTokenPage} exact />
         <Authenticated
-          path={CONFIRM_ADD_TOKEN_ROUTE}
-          component={ConfirmAddTokenPage}
+          path={IMPORT_TOKEN_ROUTE}
+          component={ImportTokenPage}
+          exact
+        />
+        <Authenticated
+          path={CONFIRM_IMPORT_TOKEN_ROUTE}
+          component={ConfirmImportTokenPage}
           exact
         />
         <Authenticated
@@ -272,8 +272,6 @@ export default class Routes extends Component {
       provider,
       frequentRpcListDetail,
       setMouseUserState,
-      sidebar,
-      submittedPendingTransactions,
       isMouseUser,
       prepareToLeaveSwaps,
       browserEnvironment,
@@ -283,21 +281,6 @@ export default class Routes extends Component {
         ? this.getConnectingLabel(loadingMessage)
         : null;
 
-    const {
-      isOpen: sidebarIsOpen,
-      transitionName: sidebarTransitionName,
-      type: sidebarType,
-      props,
-    } = sidebar;
-    const { transaction: sidebarTransaction } = props || {};
-
-    const sidebarShouldClose =
-      sidebarTransaction &&
-      !sidebarTransaction.status === TRANSACTION_STATUSES.FAILED &&
-      !submittedPendingTransactions.find(
-        ({ id }) => id === sidebarTransaction.id,
-      );
-
     const { os, browser } = browserEnvironment;
     return (
       <div
@@ -305,6 +288,7 @@ export default class Routes extends Component {
           [`os-${os}`]: os,
           [`browser-${browser}`]: browser,
           'mouse-user-styles': isMouseUser,
+          'beta': isBeta(),
         })}
         dir={textDirection}
         onClick={() => setMouseUserState(true)}
@@ -331,14 +315,6 @@ export default class Routes extends Component {
             }
           />
         )}
-        <Sidebar
-          sidebarOpen={sidebarIsOpen}
-          sidebarShouldClose={sidebarShouldClose}
-          hideSidebar={this.props.hideSidebar}
-          transitionName={sidebarTransitionName}
-          type={sidebarType}
-          sidebarProps={sidebar.props}
-        />
         <NetworkDropdown
           provider={provider}
           frequentRpcListDetail={frequentRpcListDetail}

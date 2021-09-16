@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getAddressBookEntry } from '../../../selectors';
+import { getAccountsWithLabels, getAddressBookEntry } from '../../../selectors';
 import * as actions from '../../../store/actions';
 import ConfirmPageContainer from './confirm-page-container.component';
 
@@ -9,7 +9,10 @@ function mapStateToProps(state, ownProps) {
   const contact = getAddressBookEntry(state, to);
   return {
     contact,
-    toName: contact?.name || ownProps.name,
+    toName: contact?.name || ownProps.toName,
+    isOwnedAccount: getAccountsWithLabels(state)
+      .map((accountWithLabel) => accountWithLabel.address)
+      .includes(to),
     to,
   };
 }
