@@ -880,9 +880,6 @@
   "sendTokens": {
     "message": "Pošalji tokene"
   },
-  "sentEther": {
-    "message": "ether je poslat"
-  },
   "separateEachWord": {
     "message": "Razdvojite svaku reč jednim mestom razmaka"
   },

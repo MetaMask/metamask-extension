@@ -886,9 +886,6 @@
   "sendTokens": {
     "message": "ተለዋጭ ስሞችን ላክ"
   },
-  "sentEther": {
-    "message": "የተላከ ether"
-  },
   "separateEachWord": {
     "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"
   },

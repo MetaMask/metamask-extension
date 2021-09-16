@@ -16,7 +16,7 @@
     margin-top: 8px;
     opacity: 0.5;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       width: 60%;
     }
   }

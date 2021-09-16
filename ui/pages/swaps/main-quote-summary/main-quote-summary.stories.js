@@ -4,6 +4,7 @@ import MainQuoteSummary from './main-quote-summary';
 
 export default {
   title: 'MainQuoteSummary',
+  id: __filename,
 };
 
 export const BestQuote = () => {

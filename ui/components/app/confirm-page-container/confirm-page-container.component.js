@@ -68,6 +68,7 @@ export default class ConfirmPageContainer extends Component {
     currentTransaction: PropTypes.object.isRequired,
     showAddToAddressBookModal: PropTypes.func,
     contact: PropTypes.object,
+    isOwnedAccount: PropTypes.bool,
   };
 
   render() {
@@ -117,10 +118,11 @@ export default class ConfirmPageContainer extends Component {
       currentTransaction,
       showAddToAddressBookModal,
       contact = {},
+      isOwnedAccount,
     } = this.props;
 
     const showAddToAddressDialog =
-      contact.name === undefined && toAddress !== undefined;
+      !contact.name && toAddress && !isOwnedAccount && !hideSenderToRecipient;
 
     return (
       <div className="page-container">

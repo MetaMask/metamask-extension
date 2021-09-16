@@ -127,6 +127,7 @@ const tokensToSearch = tokens.map((token) => ({
 
 export default {
   title: 'BuildQuote',
+  id: __filename,
 };
 
 export const Default = () => {
