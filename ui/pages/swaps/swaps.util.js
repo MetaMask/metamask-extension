@@ -53,6 +53,8 @@ const TOKEN_TRANSFER_LOG_TOPIC_HASH =
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 
+const clientIdHeader = { 'X-Client-Id': 'extension' };
+
 /**
  * @param {string} type Type of an API call, e.g. "tokens"
  * @param {string} chainId
@@ -314,7 +316,7 @@ export async function fetchTradesInfo(
   )}${queryString}`;
   const tradesResponse = await fetchWithCache(
     tradeURL,
-    { method: 'GET' },
+    { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: 0, timeout: SECOND * 15 },
   );
   const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
@@ -359,7 +361,7 @@ export async function fetchToken(contractAddress, chainId, useNewSwapsApi) {
   const tokenUrl = getBaseApi('token', chainId, useNewSwapsApi);
   const token = await fetchWithCache(
     `${tokenUrl}?address=${contractAddress}`,
-    { method: 'GET' },
+    { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
   );
   return token;
@@ -369,7 +371,7 @@ export async function fetchTokens(chainId, useNewSwapsApi) {
   const tokensUrl = getBaseApi('tokens', chainId, useNewSwapsApi);
   const tokens = await fetchWithCache(
     tokensUrl,
-    { method: 'GET' },
+    { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
   );
   const filteredTokens = [
@@ -395,7 +397,7 @@ export async function fetchAggregatorMetadata(chainId, useNewSwapsApi) {
   );
   const aggregators = await fetchWithCache(
     aggregatorMetadataUrl,
-    { method: 'GET' },
+    { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
   );
   const filteredAggregators = {};
@@ -417,7 +419,7 @@ export async function fetchTopAssets(chainId, useNewSwapsApi) {
   const topAssetsUrl = getBaseApi('topAssets', chainId, useNewSwapsApi);
   const response = await fetchWithCache(
     topAssetsUrl,
-    { method: 'GET' },
+    { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
   );
   const topAssetsMap = response.reduce((_topAssetsMap, asset, index) => {
@@ -435,7 +437,7 @@ export async function fetchSwapsFeatureFlags() {
     : SWAPS_API_V2_BASE_URL;
   const response = await fetchWithCache(
     `${v2ApiBaseUrl}/featureFlags`,
-    { method: 'GET' },
+    { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: 600000 },
   );
   return response;
@@ -444,7 +446,7 @@ export async function fetchSwapsFeatureFlags() {
 export async function fetchSwapsQuoteRefreshTime(chainId, useNewSwapsApi) {
   const response = await fetchWithCache(
     getBaseApi('refreshTime', chainId, useNewSwapsApi),
-    { method: 'GET' },
+    { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: 600000 },
   );
 
@@ -479,10 +481,11 @@ export async function fetchTokenBalance(address, userAddress) {
 }
 
 export async function fetchSwapsGasPrices(chainId, useNewSwapsApi) {
+  console.log('fetch gas prices');
   const gasPricesUrl = getBaseApi('gasPrices', chainId, useNewSwapsApi);
   const response = await fetchWithCache(
     gasPricesUrl,
-    { method: 'GET' },
+    { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: 30000 },
   );
   const responseIsValid = validateData(
