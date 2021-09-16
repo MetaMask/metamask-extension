@@ -262,7 +262,7 @@ describe('preferences controller', function () {
       preferencesController.setUseTokenDetection(true);
       assert.equal(
         preferencesController.store.getState().useTokenDetection,
-        false,
+        true,
       );
     });
   });
