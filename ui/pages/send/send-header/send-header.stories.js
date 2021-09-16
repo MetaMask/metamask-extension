@@ -16,7 +16,7 @@ import SendHeader from './send-header.component';
 
 export default {
   title: 'SendHeader',
-  id: __filename
+  id: __filename,
 };
 
 export const SendHeaderComponent = () => {
