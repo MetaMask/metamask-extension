@@ -20,6 +20,7 @@ import SettingsPage from './settings.component';
 
 export default {
   title: 'SettingPage',
+  id: __filename,
   decorators: [
     (story) => (
       <MemoryRouter initialEntries={['/settings/general']}>
