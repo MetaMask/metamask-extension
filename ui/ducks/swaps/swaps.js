@@ -86,6 +86,7 @@ const initialState = {
   fetchingQuotes: false,
   fromToken: null,
   quotesFetchStartTime: null,
+  reviewSwapClickedTimestamp: null,
   topAssets: {},
   toToken: null,
   customGas: {
@@ -129,6 +130,9 @@ const slice = createSlice({
     },
     setQuotesFetchStartTime: (state, action) => {
       state.quotesFetchStartTime = action.payload;
+    },
+    setReviewSwapClickedTimestamp: (state, action) => {
+      state.reviewSwapClickedTimestamp = action.payload;
     },
     setTopAssets: (state, action) => {
       state.topAssets = action.payload;
@@ -183,6 +187,9 @@ export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes;
 export const getQuotesFetchStartTime = (state) =>
   state.swaps.quotesFetchStartTime;
 
+export const getReviewSwapClickedTimestamp = (state) =>
+  state.swaps.reviewSwapClickedTimestamp;
+
 export const getSwapsCustomizationModalPrice = (state) =>
   state.swaps.customGas.price;
 
@@ -235,6 +242,9 @@ export const getUseNewSwapsApi = (state) =>
 
 export const getSwapsQuoteRefreshTime = (state) =>
   state.metamask.swapsState.swapsQuoteRefreshTime;
+
+export const getSwapsQuotePrefetchingRefreshTime = (state) =>
+  state.metamask.swapsState.swapsQuotePrefetchingRefreshTime;
 
 export const getBackgroundSwapRouteState = (state) =>
   state.metamask.swapsState.routeState;
@@ -323,6 +333,7 @@ const {
   setFetchingQuotes,
   setFromToken,
   setQuotesFetchStartTime,
+  setReviewSwapClickedTimestamp,
   setTopAssets,
   setToToken,
   swapCustomGasModalPriceEdited,
@@ -338,6 +349,7 @@ export {
   setFetchingQuotes,
   setFromToken as setSwapsFromToken,
   setQuotesFetchStartTime as setSwapQuotesFetchStartTime,
+  setReviewSwapClickedTimestamp,
   setTopAssets,
   setToToken as setSwapToToken,
   swapCustomGasModalPriceEdited,
@@ -412,6 +424,7 @@ export const fetchQuotesAndSetQuoteState = (
   inputValue,
   maxSlippage,
   metaMetricsEvent,
+  pageRedirectionDisabled,
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
@@ -461,8 +474,12 @@ export const fetchQuotesAndSetQuoteState = (
       decimals: toTokenDecimals,
       iconUrl: toTokenIconUrl,
     } = selectedToToken;
-    await dispatch(setBackgroundSwapRouteState('loading'));
-    history.push(LOADING_QUOTES_ROUTE);
+    // pageRedirectionDisabled is true if quotes prefetching is active (a user is on the Build Quote page).
+    // In that case we just want to silently prefetch quotes without redirecting to the quotes loading page.
+    if (!pageRedirectionDisabled) {
+      await dispatch(setBackgroundSwapRouteState('loading'));
+      history.push(LOADING_QUOTES_ROUTE);
+    }
     dispatch(setFetchingQuotes(true));
 
     const contractExchangeRates = getTokenExchangeRates(state);

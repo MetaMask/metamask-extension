@@ -114,6 +114,7 @@ const tokens = [
 
 export default {
   title: 'DropdownInputPair',
+  id: __filename,
 };
 
 const tokensToSearch = tokens.map((token) => ({

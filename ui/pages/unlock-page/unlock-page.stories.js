@@ -4,6 +4,7 @@ import UnlockPage from './unlock-page.component';
 
 export default {
   title: 'UnlockPage',
+  id: __filename,
 };
 
 export const UnlockPageComponent = () => {

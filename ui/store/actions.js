@@ -2161,6 +2161,13 @@ export function setSwapsTokens(tokens) {
   };
 }
 
+export function clearSwapsQuotes() {
+  return async (dispatch) => {
+    await promisifiedBackground.clearSwapsQuotes();
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function resetBackgroundSwapsState() {
   return async (dispatch) => {
     const id = await promisifiedBackground.resetSwapsState();
@@ -2210,6 +2217,15 @@ export function updateCustomSwapsEIP1559GasParams({
 export function updateSwapsUserFeeLevel(swapsCustomUserFeeLevel) {
   return async (dispatch) => {
     await promisifiedBackground.setSwapsUserFeeLevel(swapsCustomUserFeeLevel);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setSwapsQuotesPollingLimitEnabled(quotesPollingLimitEnabled) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsQuotesPollingLimitEnabled(
+      quotesPollingLimitEnabled,
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }

@@ -885,9 +885,6 @@
   "sendTokens": {
     "message": "Изпращане на жетони"
   },
-  "sentEther": {
-    "message": "изпратен етер"
-  },
   "separateEachWord": {
     "message": "Отделете всяка дума с интервал"
   },

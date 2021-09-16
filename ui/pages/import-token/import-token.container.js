@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 import { setPendingTokens, clearPendingTokens } from '../../store/actions';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
-  getIsMainnet,
   getRpcPrefsForCurrentProvider,
-  getTokenList,
+  getIsMainnet,
 } from '../../selectors/selectors';
 import ImportToken from './import-token.component';
 
@@ -16,17 +15,25 @@ const mapStateToProps = (state) => {
       tokens,
       pendingTokens,
       provider: { chainId },
+      useTokenDetection,
+      tokenList,
     },
   } = state;
+  const showSearchTabCustomNetwork =
+    useTokenDetection && Boolean(Object.keys(tokenList).length);
+  const showSearchTab =
+    getIsMainnet(state) ||
+    showSearchTabCustomNetwork ||
+    process.env.IN_TEST === 'true';
   return {
     identities,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     tokens,
     pendingTokens,
-    showSearchTab: getIsMainnet(state) || process.env.IN_TEST === 'true',
+    showSearchTab,
     chainId,
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
-    tokenList: getTokenList(state),
+    tokenList,
   };
 };
 

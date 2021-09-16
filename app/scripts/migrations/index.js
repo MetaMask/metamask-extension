@@ -67,6 +67,7 @@ import m060 from './060';
 import m061 from './061';
 import m062 from './062';
 import m063 from './063';
+import m064 from './064';
 
 const migrations = [
   m002,
@@ -131,6 +132,7 @@ const migrations = [
   m061,
   m062,
   m063,
+  m064,
 ];
 
 export default migrations;

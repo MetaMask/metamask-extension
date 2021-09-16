@@ -9,11 +9,11 @@
   min-width: 150px;
   color: $white;
 
-  @media screen and (max-width: 575px) {
+  @media screen and (max-width: $break-small) {
     right: calc(((100vw - 100%) / 2) + 8px);
   }
 
-  @media screen and (min-width: 576px) {
+  @media screen and (min-width: $break-large) {
     right: calc((100vw - 85vw) / 2);
   }
 
@@ -33,7 +33,7 @@
     position: relative;
     z-index: 201;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       padding: 14px;
     }
 
@@ -133,7 +133,7 @@
       display: none;
     }
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       max-height: 228px;
     }
 
@@ -168,7 +168,7 @@
     padding: 16px 14px;
     flex: 0 0 auto;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       padding: 12px 14px;
     }
 

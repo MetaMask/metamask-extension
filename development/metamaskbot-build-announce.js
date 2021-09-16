@@ -4,6 +4,7 @@ const path = require('path');
 const fetch = require('node-fetch');
 const glob = require('fast-glob');
 const VERSION = require('../dist/chrome/manifest.json').version; // eslint-disable-line import/no-unresolved
+const { getHighlights } = require('./highlights');
 
 start().catch(console.error);
 
@@ -98,7 +99,7 @@ async function start() {
     .map((row) => `<li>${row}</li>`)
     .join('\n')}</ul>`;
   const exposedContent = `Builds ready [${SHORT_SHA1}]`;
-  const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>`;
+  const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>\n\n`;
 
   const benchmarkResults = {};
   for (const platform of platforms) {
@@ -124,7 +125,7 @@ async function start() {
 
   const summaryPlatform = 'chrome';
   const summaryPage = 'home';
-  let commentBody;
+  let commentBody = artifactsBody;
   if (benchmarkResults[summaryPlatform]) {
     try {
       const summaryPageLoad = Math.round(
@@ -196,15 +197,23 @@ async function start() {
         .join('')}</tr></thead>`;
       const benchmarkTableBody = `<tbody>${tableRows.join('')}</tbody>`;
       const benchmarkTable = `<table>${benchmarkTableHeader}${benchmarkTableBody}</table>`;
-      const benchmarkBody = `<details><summary>${benchmarkSummary}</summary>${benchmarkTable}</details>`;
-      commentBody = `${artifactsBody}${benchmarkBody}`;
+      const benchmarkBody = `<details><summary>${benchmarkSummary}</summary>${benchmarkTable}</details>\n\n`;
+      commentBody += `${benchmarkBody}`;
     } catch (error) {
       console.error(`Error constructing benchmark results: '${error}'`);
-      commentBody = artifactsBody;
     }
   } else {
     console.log(`No results for ${summaryPlatform} found; skipping benchmark`);
-    commentBody = artifactsBody;
+  }
+
+  try {
+    const highlights = await getHighlights({ artifactBase: BUILD_LINK_BASE });
+    if (highlights) {
+      const highlightsBody = `### highlights:\n${highlights}\n`;
+      commentBody += highlightsBody;
+    }
+  } catch (error) {
+    console.error(`Error constructing highlight results: '${error}'`);
   }
 
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody });

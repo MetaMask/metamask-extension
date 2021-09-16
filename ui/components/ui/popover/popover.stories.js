@@ -16,6 +16,7 @@ const mainWrapperStyle = {
 
 export default {
   title: 'Popover',
+  id: __filename,
 };
 
 export const approve = () => (

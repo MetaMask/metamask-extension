@@ -5,6 +5,7 @@ import NewAccount from './new-account';
 
 export default {
   title: 'Create Password',
+  id: __filename,
 };
 
 export const ImportWithSeedPhraseComponent = () => {

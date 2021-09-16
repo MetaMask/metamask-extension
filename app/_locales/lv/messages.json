@@ -885,9 +885,6 @@
   "sendTokens": {
     "message": "Nosūtīt marķierus"
   },
-  "sentEther": {
-    "message": "nosūtītie ether"
-  },
   "separateEachWord": {
     "message": "Atdaliet katru vārdu ar vienu atstarpi"
   },
