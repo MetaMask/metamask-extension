@@ -143,12 +143,13 @@ class RevealSeedPage extends Component {
     return (
       <div className="page-container__footer">
         <Button
-          type="default"
+          type="secondary"
           large
-          className="page-container__footer-button"
+          className="page-container__footer-single-button"
           onClick={() =>
             this.props.history.push(this.props.mostRecentOverviewPage)
           }
+          rounded
         >
           {this.context.t('close')}
         </Button>

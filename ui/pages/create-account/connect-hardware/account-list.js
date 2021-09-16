@@ -194,10 +194,11 @@ class AccountList extends Component {
     return (
       <div className="new-external-account-form__buttons">
         <Button
-          type="default"
+          type="secondary"
           large
           className="new-external-account-form__button"
           onClick={this.props.onCancel.bind(this)}
+          rounded
         >
           {this.context.t('cancel')}
         </Button>
@@ -211,6 +212,7 @@ class AccountList extends Component {
             this.props.device,
             this.props.selectedPath,
           )}
+          rounded
         >
           {this.context.t('unlock')}
         </Button>

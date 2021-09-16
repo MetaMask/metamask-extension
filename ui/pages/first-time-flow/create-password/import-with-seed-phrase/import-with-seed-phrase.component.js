@@ -340,6 +340,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
           submit
           className="first-time-flow__button"
           disabled={!this.isValid() || !termsChecked}
+          rounded
         >
           {t('import')}
         </Button>

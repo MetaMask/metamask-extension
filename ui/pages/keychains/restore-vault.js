@@ -238,10 +238,11 @@ class RestoreVaultPage extends Component {
               largeLabel
             />
             <Button
-              type="first-time"
+              type="primary"
               className="first-time-flow__button"
               onClick={() => !disabled && this.onClick()}
               disabled={disabled}
+              rounded
             >
               {this.context.t('restore')}
             </Button>

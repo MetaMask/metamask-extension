@@ -439,10 +439,11 @@ export default class MobileSyncPage extends Component {
     return (
       <div className="page-container__footer" style={{ padding: 30 }}>
         <Button
-          type="default"
+          type="secondary"
           large
           className="page-container__footer-button"
           onClick={() => this.goBack()}
+          rounded
         >
           {t('close')}
         </Button>

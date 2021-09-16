@@ -120,6 +120,7 @@ export default class EndOfFlowScreen extends PureComponent {
           type="primary"
           className="first-time-flow__button"
           onClick={this.onComplete}
+          rounded
         >
           {t('endOfFlowMessage10')}
         </Button>

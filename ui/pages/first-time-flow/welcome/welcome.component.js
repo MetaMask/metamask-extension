@@ -58,6 +58,7 @@ export default class Welcome extends PureComponent {
             type="primary"
             className="first-time-flow__button"
             onClick={this.handleContinue}
+            rounded
           >
             {t('getStarted')}
           </Button>

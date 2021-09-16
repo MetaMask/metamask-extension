@@ -71,11 +71,12 @@ export default class LoadingNetworkScreen extends PureComponent {
         <span>{this.context.t('somethingWentWrong')}</span>
         <div className="loading-overlay__error-buttons">
           <Button
-            type="default"
+            type="secondary"
             onClick={() => {
               window.clearTimeout(this.cancelCallTimeout);
               showNetworkDropdown();
             }}
+            rounded
           >
             {this.context.t('switchNetworks')}
           </Button>
@@ -91,6 +92,7 @@ export default class LoadingNetworkScreen extends PureComponent {
                 this.props.cancelTime || SECOND * 15,
               );
             }}
+            rounded
           >
             {this.context.t('tryAgain')}
           </Button>
