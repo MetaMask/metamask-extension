@@ -209,7 +209,7 @@ describe('Stores custom RPC history', function () {
         );
 
         await driver.clickElement(
-          '.button.btn-danger.modal-container__footer-button',
+          '.button.btn-danger-primary.modal-container__footer-button',
         );
 
         // wait for confirm delete modal to be removed from DOM.
