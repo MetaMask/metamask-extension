@@ -11,6 +11,7 @@ const store = configureStore(testData);
 
 export default {
   title: 'SendAssetRow',
+  id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
