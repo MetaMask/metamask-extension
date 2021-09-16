@@ -52,6 +52,13 @@ commands inside the parameter parentheses:
 ///: BEGIN:ONLY_INCLUDE_IN(beta,flask)
 ```
 
+### Gotchas
+
+By default, the transform will invoke ESLint on files that are modified by the transform.
+This is our first line of defense against creating unsyntactic code using code fences, and the transform will error if linting fails.
+(Live reloading will continue to work if enabled.)
+To toggle this behavior via build system arguments, see [the build system readme](../README.md).
+
 ### Code Fencing Syntax
 
 > In the specification, angle brackets, `< >`, indicate required tokens, while

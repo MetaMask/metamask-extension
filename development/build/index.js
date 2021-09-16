@@ -40,6 +40,7 @@ function defineAndRunBuildTasks() {
     isBeta,
     isLavaMoat,
     shouldIncludeLockdown,
+    shouldLintFenceFiles,
     skipStats,
   } = parseArgv();
 
@@ -74,6 +75,7 @@ function defineAndRunBuildTasks() {
     buildType,
     isLavaMoat,
     livereload,
+    shouldLintFenceFiles,
   });
 
   const { clean, reload, zip } = createEtcTasks({
@@ -146,16 +148,22 @@ function parseArgv() {
   const NamedArgs = {
     BetaVersion: 'beta-version',
     BuildType: 'build-type',
+    LintFenceFiles: 'lint-fence-files',
     OmitLockdown: 'omit-lockdown',
     SkipStats: 'skip-stats',
   };
 
   const argv = minimist(process.argv.slice(2), {
-    boolean: [NamedArgs.OmitLockdown, NamedArgs.SkipStats],
+    boolean: [
+      NamedArgs.LintFenceFiles,
+      NamedArgs.OmitLockdown,
+      NamedArgs.SkipStats,
+    ],
     string: [NamedArgs.BuildType],
     default: {
       [NamedArgs.BetaVersion]: 0,
       [NamedArgs.BuildType]: BuildTypes.main,
+      [NamedArgs.LintFenceFiles]: true,
       [NamedArgs.OmitLockdown]: false,
       [NamedArgs.SkipStats]: false,
     },
@@ -182,6 +190,13 @@ function parseArgv() {
     throw new Error(`MetaMask build: Invalid build type: "${buildType}"`);
   }
 
+  // Manually default this to `false` for dev builds only.
+  const shouldLintFenceFiles = process.argv.includes(
+    `--${NamedArgs.LintFenceFiles}`,
+  )
+    ? argv[NamedArgs.LintFenceFiles]
+    : !/dev/iu.test(entryTask);
+
   return {
     betaVersion: String(betaVersion),
     buildType,
@@ -189,6 +204,7 @@ function parseArgv() {
     isBeta: argv[NamedArgs.BuildType] === BuildTypes.beta,
     isLavaMoat: process.argv[0].includes('lavamoat'),
     shouldIncludeLockdown: argv[NamedArgs.OmitLockdown],
+    shouldLintFenceFiles,
     skipStats: argv[NamedArgs.SkipStats],
   };
 }
