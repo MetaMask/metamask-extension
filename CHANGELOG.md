@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.1.1]
+### Uncategorized
+- bump @metamask/controllers to v16.0.0 ([#12133](https://github.com/MetaMask/metamask-extension/pull/12133))
+- Fix gas api overcalling ([#12069](https://github.com/MetaMask/metamask-extension/pull/12069))
+
 ## [10.1.0]
 ### Added
 - [#11951](https://github.com/MetaMask/metamask-extension/pull/11951): Adding EIP-1559 support for Ledger hardware
@@ -2431,7 +2436,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.1.1...HEAD
+[10.1.1]: https://github.com/MetaMask/metamask-extension/compare/v10.1.0...v10.1.1
 [10.1.0]: https://github.com/MetaMask/metamask-extension/compare/v10.0.3...v10.1.0
 [10.0.3]: https://github.com/MetaMask/metamask-extension/compare/v10.0.2...v10.0.3
 [10.0.2]: https://github.com/MetaMask/metamask-extension/compare/v10.0.1...v10.0.2
