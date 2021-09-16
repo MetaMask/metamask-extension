@@ -247,6 +247,13 @@
     }
   }
 
+  & &__link {
+    @include H6;
+
+    display: inline;
+    padding-left: 0;
+  }
+
   .toggle-button {
     /*rtl:ignore*/
     direction: ltr;
