@@ -867,9 +867,6 @@
   "sendTokens": {
     "message": "Enviar Fitxes"
   },
-  "sentEther": {
-    "message": "envia ether"
-  },
   "separateEachWord": {
     "message": "Separa cada paraula amb un sol espai"
   },

@@ -212,6 +212,7 @@ export const createSwapsMockStore = () => {
         approveTxId: null,
         quotesLastFetched: 1519211809934,
         swapsQuoteRefreshTime: 60000,
+        swapsQuotePrefetchingRefreshTime: 60000,
         customMaxGas: '',
         customGasPrice: null,
         selectedAggId: 'TEST_AGG_2',

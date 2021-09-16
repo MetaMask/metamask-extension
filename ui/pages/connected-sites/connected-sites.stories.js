@@ -4,6 +4,7 @@ import ConnectedSites from '.';
 
 export default {
   title: 'Connected Sites',
+  id: __filename,
 };
 
 const PageSet = ({ children }) => {

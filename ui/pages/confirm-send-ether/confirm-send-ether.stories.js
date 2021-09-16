@@ -7,6 +7,7 @@ import ConfirmSendEther from '.';
 
 export default {
   title: 'Confirmation Screens',
+  id: __filename,
 };
 
 // transaction id for redux dispatcher

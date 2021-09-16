@@ -1213,6 +1213,9 @@
   "ledgerLiveDialogHeader": {
     "message": "Prior to clicking confirm:"
   },
+  "ledgerLiveDialogStepFour": {
+    "message": "Enable smart contract data on your Ledger device"
+  },
   "ledgerLiveDialogStepOne": {
     "message": "Enable Use Ledger Live under Settings > Advanced"
   },
@@ -1958,8 +1961,9 @@
   "sendTokens": {
     "message": "Send Tokens"
   },
-  "sentEther": {
-    "message": "sent ether"
+  "sendingNativeAsset": {
+    "message": "Sending $1",
+    "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
   "separateEachWord": {
     "message": "Separate each word with a single space"
@@ -2155,10 +2159,6 @@
     "message": "No tokens available matching $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "Checking $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "Confirm with your hardware wallet"
   },
@@ -2204,6 +2204,9 @@
   "swapFailedErrorTitle": {
     "message": "Swap failed"
   },
+  "swapFetchingQuotes": {
+    "message": "Fetching quotes"
+  },
   "swapFetchingQuotesErrorDescription": {
     "message": "Hmmm... something went wrong. Try again, or if errors persist, contact customer support."
   },
@@ -2212,9 +2215,6 @@
   },
   "swapFetchingTokens": {
     "message": "Fetching tokens..."
-  },
-  "swapFinalizing": {
-    "message": "Finalizing..."
   },
   "swapFromTo": {
     "message": "The swap of $1 to $2",
