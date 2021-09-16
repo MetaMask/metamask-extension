@@ -98,7 +98,6 @@ SenderAddress.propTypes = {
 
 function RecipientWithAddress({
   checksummedRecipientAddress,
-  assetImage,
   onRecipientClick,
   addressOnly,
   recipientNickname,
@@ -135,11 +134,7 @@ function RecipientWithAddress({
     >
       {!addressOnly && (
         <div className="sender-to-recipient__sender-icon">
-          <Identicon
-            address={checksummedRecipientAddress}
-            diameter={24}
-            image={assetImage}
-          />
+          <Identicon address={checksummedRecipientAddress} diameter={24} />
         </div>
       )}
       <Tooltip
@@ -170,7 +165,6 @@ RecipientWithAddress.propTypes = {
   recipientEns: PropTypes.string,
   recipientNickname: PropTypes.string,
   addressOnly: PropTypes.bool,
-  assetImage: PropTypes.string,
   onRecipientClick: PropTypes.func,
 };
 
@@ -195,7 +189,6 @@ Arrow.propTypes = {
 export default function SenderToRecipient({
   senderAddress,
   addressOnly,
-  assetImage,
   senderName,
   recipientNickname,
   recipientName,
@@ -223,7 +216,6 @@ export default function SenderToRecipient({
       <Arrow variant={variant} />
       {recipientAddress ? (
         <RecipientWithAddress
-          assetImage={assetImage}
           checksummedRecipientAddress={checksummedRecipientAddress}
           onRecipientClick={onRecipientClick}
           addressOnly={addressOnly}
@@ -255,7 +247,6 @@ SenderToRecipient.propTypes = {
   recipientNickname: PropTypes.string,
   variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT]),
   addressOnly: PropTypes.bool,
-  assetImage: PropTypes.string,
   onRecipientClick: PropTypes.func,
   onSenderClick: PropTypes.func,
   warnUserOnAccountMismatch: PropTypes.bool,

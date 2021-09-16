@@ -53,6 +53,26 @@ module.exports = {
     'prefer-object-spread': 'error',
     'require-atomic-updates': 'off',
 
+    // This is the same as our default config, but for the noted exceptions
+    'spaced-comment': [
+      'error',
+      'always',
+      {
+        markers: [
+          'global',
+          'globals',
+          'eslint',
+          'eslint-disable',
+          '*package',
+          '!',
+          ',',
+          // Local additions
+          '/:', // This is for our code fences
+        ],
+        exceptions: ['=', '-'],
+      },
+    ],
+
     'import/no-unassigned-import': 'off',
 
     'no-invalid-this': 'off',
@@ -112,6 +132,7 @@ module.exports = {
         'ui/**/*.test.js',
         'ui/__mocks__/*.js',
         'shared/**/*.test.js',
+        'development/**/*.test.js',
       ],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
@@ -129,7 +150,12 @@ module.exports = {
       },
     },
     {
-      files: ['ui/**/*.test.js', 'ui/__mocks__/*.js', 'shared/**/*.test.js'],
+      files: [
+        'ui/**/*.test.js',
+        'ui/__mocks__/*.js',
+        'shared/**/*.test.js',
+        'development/**/*.test.js',
+      ],
       extends: ['@metamask/eslint-config-jest'],
       rules: {
         'jest/no-restricted-matchers': 'off',
