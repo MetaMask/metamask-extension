@@ -12,6 +12,7 @@ const store = configureStore(testData);
 
 export default {
   title: 'SendAmountRow',
+  id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
@@ -19,7 +20,6 @@ export const SendAmountComponent = () => {
   const { metamask } = store.getState();
   const { tokens } = metamask;
 
-  console.log('tokens', store.getState());
   const asset = {
     type: ASSET_TYPES.NATIVE,
     details: {
