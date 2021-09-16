@@ -16,6 +16,7 @@ import SendHeader from './send-header.component';
 
 export default {
   title: 'SendHeader',
+  id: __filename
 };
 
 export const SendHeaderComponent = () => {
@@ -24,7 +25,6 @@ export const SendHeaderComponent = () => {
   );
   const state = store.getState();
   const { send } = state;
-  // console.log('state', state);
   const asset =
     select('Asset', [ASSET_TYPES.NATIVE, ASSET_TYPES.TOKEN]) || send.asset;
 
