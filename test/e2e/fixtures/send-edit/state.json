@@ -130,6 +130,23 @@
       "transactions": {
         "4046084157914634": {
           "chainId": "0x539",
+          "primaryTransaction": {
+            "chainId": "0x539",
+            "id": 4046084157914634,
+            "loadingDefaults": true,
+            "metamaskNetworkId": "1337",
+            "origin": "metamask",
+            "status": "unapproved",
+            "time": 1617228030067,
+            "txParams": {
+              "from": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+              "gas": "0x61a8",
+              "gasPrice": "0x2540be400",
+              "to": "0x2f318C334780961FB129D2a6c30D0763d9a5C970",
+              "value": "0xde0b6b3a7640000"
+            },
+            "type": "sentEther"
+          },
           "history": [
             {
               "chainId": "0x539",
@@ -146,7 +163,7 @@
                 "to": "0x2f318C334780961FB129D2a6c30D0763d9a5C970",
                 "value": "0xde0b6b3a7640000"
               },
-              "type": "sentEther"
+              "type": "simpleSend"
             },
             [
               {
@@ -171,7 +188,7 @@
             "to": "0x2f318C334780961FB129D2a6c30D0763d9a5C970",
             "value": "0xde0b6b3a7640000"
           },
-          "type": "sentEther"
+          "type": "simpleSend"
         }
       }
     },

@@ -14,9 +14,6 @@
   "addToken": {
     "message": "டோக்கனைச் சேர்"
   },
-  "addTokens": {
-    "message": "டோக்கன்களைச் சேர்"
-  },
   "advanced": {
     "message": "மேம்பட்டவை"
   },
@@ -251,7 +248,7 @@
   "learnMore": {
     "message": "மேலும் அறிக"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "இந்த டோக்கன்களைச் சேர்க்க விரும்புகிறீர்களா?"
   },
   "links": {

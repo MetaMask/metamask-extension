@@ -22,7 +22,6 @@ export default function reduceMetamask(state = {}, action) {
     frequentRpcList: [],
     addressBook: [],
     contractExchangeRates: {},
-    tokens: [],
     pendingTokens: {},
     customNonceValue: '',
     useBlockie: false,
@@ -88,12 +87,6 @@ export default function reduceMetamask(state = {}, action) {
       const identities = { ...metamaskState.identities, ...id };
       return Object.assign(metamaskState, { identities });
     }
-
-    case actionConstants.UPDATE_TOKENS:
-      return {
-        ...metamaskState,
-        tokens: action.newTokens,
-      };
 
     case actionConstants.UPDATE_CUSTOM_NONCE:
       return {
