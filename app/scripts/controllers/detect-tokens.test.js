@@ -1,17 +1,23 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
+import nock from 'nock';
 import { ObservableStore } from '@metamask/obs-store';
-import contracts from '@metamask/contract-metadata';
 import BigNumber from 'bignumber.js';
-
+import {
+  ControllerMessenger,
+  TokenListController,
+  TokensController,
+} from '@metamask/controllers';
 import { MAINNET, ROPSTEN } from '../../../shared/constants/network';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
 import NetworkController from './network';
 import PreferencesController from './preferences';
 
 describe('DetectTokensController', function () {
+  let tokenListController;
   const sandbox = sinon.createSandbox();
-  let keyringMemStore, network, preferences, provider;
+  let keyringMemStore, network, preferences, provider, tokensController;
 
   const noop = () => undefined;
 
@@ -26,6 +32,12 @@ describe('DetectTokensController', function () {
     network.initializeProvider(networkControllerProviderConfig);
     provider = network.getProviderAndBlockTracker().provider;
     preferences = new PreferencesController({ network, provider });
+    tokensController = new TokensController({
+      onPreferencesStateChange: preferences.store.subscribe.bind(
+        preferences.store,
+      ),
+      onNetworkStateChange: network.store.subscribe.bind(network.store),
+    });
     preferences.setAddresses([
       '0x7e57e2',
       '0xbc86727e770de68b1060c91f6bb6945c73e10388',
@@ -34,8 +46,92 @@ describe('DetectTokensController', function () {
       .stub(network, 'getLatestBlock')
       .callsFake(() => Promise.resolve({}));
     sandbox
-      .stub(preferences, '_detectIsERC721')
+      .stub(tokensController, '_instantiateNewEthersProvider')
+      .returns(null);
+    sandbox
+      .stub(tokensController, '_detectIsERC721')
       .returns(Promise.resolve(false));
+    nock('https://token-api.metaswap.codefi.network')
+      .get(`/tokens/1`)
+      .reply(200, [
+        {
+          address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+          symbol: 'SNX',
+          decimals: 18,
+          occurrences: 11,
+          aggregators: [
+            'paraswap',
+            'pmm',
+            'airswapLight',
+            'zeroEx',
+            'bancor',
+            'coinGecko',
+            'zapper',
+            'kleros',
+            'zerion',
+            'cmc',
+            'oneInch',
+          ],
+          name: 'Synthetix',
+          iconUrl: 'https://airswap-token-images.s3.amazonaws.com/SNX.png',
+        },
+        {
+          address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+          symbol: 'LINK',
+          decimals: 18,
+          occurrences: 11,
+          aggregators: [
+            'paraswap',
+            'pmm',
+            'airswapLight',
+            'zeroEx',
+            'bancor',
+            'coinGecko',
+            'zapper',
+            'kleros',
+            'zerion',
+            'cmc',
+            'oneInch',
+          ],
+          name: 'Chainlink',
+          iconUrl: 'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+        },
+        {
+          address: '0x1f573d6fb3f13d689ff844b4ce37794d79a7ff1c',
+          symbol: 'BNT',
+          decimals: 18,
+          occurrences: 11,
+          aggregators: [
+            'paraswap',
+            'pmm',
+            'airswapLight',
+            'zeroEx',
+            'bancor',
+            'coinGecko',
+            'zapper',
+            'kleros',
+            'zerion',
+            'cmc',
+            'oneInch',
+          ],
+          name: 'Bancor',
+          iconUrl: 'https://s3.amazonaws.com/airswap-token-images/BNT.png',
+        },
+      ])
+      .get(`/tokens/3`)
+      .reply(200, { error: 'ChainId 3 is not supported' })
+      .persist();
+    const tokenListMessenger = new ControllerMessenger().getRestricted({
+      name: 'TokenListController',
+    });
+    tokenListController = new TokenListController({
+      chainId: '1',
+      useStaticTokenList: false,
+      onNetworkStateChange: sinon.spy(),
+      onPreferencesStateChange: sinon.spy(),
+      messenger: tokenListMessenger,
+    });
+    await tokenListController.start();
   });
 
   after(function () {
@@ -56,6 +152,8 @@ describe('DetectTokensController', function () {
       preferences,
       network,
       keyringMemStore,
+      tokenList: tokenListController,
+      tokensController,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
@@ -75,10 +173,23 @@ describe('DetectTokensController', function () {
   it('should not check tokens while on test network', async function () {
     sandbox.useFakeTimers();
     network.setProviderType(ROPSTEN);
+    const tokenListMessengerRopsten = new ControllerMessenger().getRestricted({
+      name: 'TokenListController',
+    });
+    tokenListController = new TokenListController({
+      chainId: '3',
+      useStaticTokenList: false,
+      onNetworkStateChange: sinon.spy(),
+      onPreferencesStateChange: sinon.spy(),
+      messenger: tokenListMessengerRopsten,
+    });
+    await tokenListController.start();
     const controller = new DetectTokensController({
       preferences,
       network,
       keyringMemStore,
+      tokenList: tokenListController,
+      tokensController,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
@@ -96,24 +207,30 @@ describe('DetectTokensController', function () {
       preferences,
       network,
       keyringMemStore,
+      tokenList: tokenListController,
+      tokensController,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
 
-    const contractAddresses = Object.keys(contracts);
-    const erc20ContractAddresses = contractAddresses.filter(
-      (contractAddress) => contracts[contractAddress].erc20 === true,
-    );
+    const { tokenList } = tokenListController.state;
+    const erc20ContractAddresses = Object.keys(tokenList);
 
     const existingTokenAddress = erc20ContractAddresses[0];
-    const existingToken = contracts[existingTokenAddress];
-    await preferences.addToken(
+    const existingToken = tokenList[existingTokenAddress];
+    await tokensController.addToken(
       existingTokenAddress,
       existingToken.symbol,
       existingToken.decimals,
     );
 
     const tokenAddressToSkip = erc20ContractAddresses[1];
+    const tokenToSkip = tokenList[tokenAddressToSkip];
+    await tokensController.addToken(
+      tokenAddressToSkip,
+      tokenToSkip.symbol,
+      tokenToSkip.decimals,
+    );
 
     sandbox
       .stub(controller, '_getTokenBalances')
@@ -123,15 +240,15 @@ describe('DetectTokensController', function () {
         ),
       );
 
-    await preferences.removeToken(tokenAddressToSkip);
-
+    await tokensController.removeAndIgnoreToken(tokenAddressToSkip);
     await controller.detectNewTokens();
 
-    assert.deepEqual(preferences.store.getState().tokens, [
+    assert.deepEqual(tokensController.state.tokens, [
       {
-        address: existingTokenAddress.toLowerCase(),
+        address: toChecksumHexAddress(existingTokenAddress),
         decimals: existingToken.decimals,
         symbol: existingToken.symbol,
+        image: undefined,
         isERC721: false,
       },
     ]);
@@ -144,34 +261,34 @@ describe('DetectTokensController', function () {
       preferences,
       network,
       keyringMemStore,
+      tokenList: tokenListController,
+      tokensController,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
 
-    const contractAddresses = Object.keys(contracts);
-    const erc20ContractAddresses = contractAddresses.filter(
-      (contractAddress) => contracts[contractAddress].erc20 === true,
-    );
+    const { tokenList } = tokenListController.state;
+    const erc20ContractAddresses = Object.keys(tokenList);
 
     const existingTokenAddress = erc20ContractAddresses[0];
-    const existingToken = contracts[existingTokenAddress];
-    await preferences.addToken(
+    const existingToken = tokenList[existingTokenAddress];
+    await tokensController.addToken(
       existingTokenAddress,
       existingToken.symbol,
       existingToken.decimals,
     );
 
     const tokenAddressToAdd = erc20ContractAddresses[1];
-    const tokenToAdd = contracts[tokenAddressToAdd];
+    const tokenToAdd = tokenList[tokenAddressToAdd];
 
-    const contractAddresssesToDetect = contractAddresses.filter(
+    const contractAddressesToDetect = erc20ContractAddresses.filter(
       (address) => address !== existingTokenAddress,
     );
-    const indexOfTokenToAdd = contractAddresssesToDetect.indexOf(
+    const indexOfTokenToAdd = contractAddressesToDetect.indexOf(
       tokenAddressToAdd,
     );
+    const balances = new Array(contractAddressesToDetect.length);
 
-    const balances = new Array(contractAddresssesToDetect.length);
     balances[indexOfTokenToAdd] = new BigNumber(10);
 
     sandbox
@@ -179,18 +296,19 @@ describe('DetectTokensController', function () {
       .returns(Promise.resolve(balances));
 
     await controller.detectNewTokens();
-
-    assert.deepEqual(preferences.store.getState().tokens, [
+    assert.deepEqual(tokensController.state.tokens, [
       {
-        address: existingTokenAddress.toLowerCase(),
+        address: toChecksumHexAddress(existingTokenAddress),
         decimals: existingToken.decimals,
         symbol: existingToken.symbol,
         isERC721: false,
+        image: undefined,
       },
       {
-        address: tokenAddressToAdd.toLowerCase(),
+        address: toChecksumHexAddress(tokenAddressToAdd),
         decimals: tokenToAdd.decimals,
         symbol: tokenToAdd.symbol,
+        image: undefined,
         isERC721: false,
       },
     ]);
@@ -203,34 +321,34 @@ describe('DetectTokensController', function () {
       preferences,
       network,
       keyringMemStore,
+      tokenList: tokenListController,
+      tokensController,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
 
-    const contractAddresses = Object.keys(contracts);
-    const erc20ContractAddresses = contractAddresses.filter(
-      (contractAddress) => contracts[contractAddress].erc20 === true,
-    );
+    const { tokenList } = tokenListController.state;
+    const erc20ContractAddresses = Object.keys(tokenList);
 
     const existingTokenAddress = erc20ContractAddresses[0];
-    const existingToken = contracts[existingTokenAddress];
-    await preferences.addToken(
+    const existingToken = tokenList[existingTokenAddress];
+    await tokensController.addToken(
       existingTokenAddress,
       existingToken.symbol,
       existingToken.decimals,
     );
 
     const tokenAddressToAdd = erc20ContractAddresses[1];
-    const tokenToAdd = contracts[tokenAddressToAdd];
+    const tokenToAdd = tokenList[tokenAddressToAdd];
 
-    const contractAddresssesToDetect = contractAddresses.filter(
+    const contractAddressesToDetect = erc20ContractAddresses.filter(
       (address) => address !== existingTokenAddress,
     );
-    const indexOfTokenToAdd = contractAddresssesToDetect.indexOf(
+    const indexOfTokenToAdd = contractAddressesToDetect.indexOf(
       tokenAddressToAdd,
     );
 
-    const balances = new Array(contractAddresssesToDetect.length);
+    const balances = new Array(contractAddressesToDetect.length);
     balances[indexOfTokenToAdd] = new BigNumber(10);
 
     sandbox
@@ -239,17 +357,19 @@ describe('DetectTokensController', function () {
 
     await controller.detectNewTokens();
 
-    assert.deepEqual(preferences.store.getState().tokens, [
+    assert.deepEqual(tokensController.state.tokens, [
       {
-        address: existingTokenAddress.toLowerCase(),
+        address: toChecksumHexAddress(existingTokenAddress),
         decimals: existingToken.decimals,
         symbol: existingToken.symbol,
+        image: undefined,
         isERC721: false,
       },
       {
-        address: tokenAddressToAdd.toLowerCase(),
+        address: toChecksumHexAddress(tokenAddressToAdd),
         decimals: tokenToAdd.decimals,
         symbol: tokenToAdd.symbol,
+        image: undefined,
         isERC721: false,
       },
     ]);
@@ -261,6 +381,8 @@ describe('DetectTokensController', function () {
       preferences,
       network,
       keyringMemStore,
+      tokenList: tokenListController,
+      tokensController,
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
@@ -277,6 +399,8 @@ describe('DetectTokensController', function () {
       preferences,
       network,
       keyringMemStore,
+      tokenList: tokenListController,
+      tokensController,
     });
     controller.isOpen = true;
     controller.selectedAddress = '0x0';
@@ -292,6 +416,8 @@ describe('DetectTokensController', function () {
       preferences,
       network,
       keyringMemStore,
+      tokenList: tokenListController,
+      tokensController,
     });
     controller.isOpen = true;
     controller.isUnlocked = false;
@@ -307,6 +433,7 @@ describe('DetectTokensController', function () {
       preferences,
       network,
       keyringMemStore,
+      tokensController,
     });
     // trigger state update from preferences controller
     await preferences.setSelectedAddress(

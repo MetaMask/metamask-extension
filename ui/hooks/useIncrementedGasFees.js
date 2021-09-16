@@ -50,14 +50,12 @@ function getHighestIncrementedFee(originalFee, currentEstimate) {
  * discarded by the network to avoid DoS attacks. This hook returns an object
  * that either has gasPrice or maxFeePerGas/maxPriorityFeePerGas specified. In
  * addition the gasLimit will also be included.
- * @param {} transactionGroup
+ * @param {} transaction
  * @returns {import(
  *   '../../app/scripts/controllers/transactions'
  * ).CustomGasSettings} - Gas settings for cancellations/speed ups
  */
-export function useIncrementedGasFees(transactionGroup) {
-  const { primaryTransaction } = transactionGroup;
-
+export function useIncrementedGasFees(transaction) {
   const { gasFeeEstimates = {} } = useGasFeeEstimates();
 
   // We memoize this value so that it can be relied upon in other hooks.
@@ -68,8 +66,8 @@ export function useIncrementedGasFees(transactionGroup) {
     // do not have txParams. This is why we use optional chaining on the
     // txParams object in this hook.
     const temporaryGasSettings = {
-      gasLimit: primaryTransaction.txParams?.gas,
-      gas: primaryTransaction.txParams?.gas,
+      gasLimit: transaction.txParams?.gas,
+      gas: transaction.txParams?.gas,
     };
 
     const suggestedMaxFeePerGas =
@@ -77,10 +75,10 @@ export function useIncrementedGasFees(transactionGroup) {
     const suggestedMaxPriorityFeePerGas =
       gasFeeEstimates?.medium?.suggestedMaxPriorityFeePerGas ?? '0';
 
-    if (isEIP1559Transaction(primaryTransaction)) {
-      const transactionMaxFeePerGas = primaryTransaction.txParams?.maxFeePerGas;
+    if (isEIP1559Transaction(transaction)) {
+      const transactionMaxFeePerGas = transaction.txParams?.maxFeePerGas;
       const transactionMaxPriorityFeePerGas =
-        primaryTransaction.txParams?.maxPriorityFeePerGas;
+        transaction.txParams?.maxPriorityFeePerGas;
 
       temporaryGasSettings.maxFeePerGas =
         transactionMaxFeePerGas === undefined ||
@@ -99,7 +97,7 @@ export function useIncrementedGasFees(transactionGroup) {
               suggestedMaxPriorityFeePerGas,
             );
     } else {
-      const transactionGasPrice = primaryTransaction.txParams?.gasPrice;
+      const transactionGasPrice = transaction.txParams?.gasPrice;
       temporaryGasSettings.gasPrice =
         transactionGasPrice === undefined || transactionGasPrice.startsWith('-')
           ? '0x0'
@@ -109,7 +107,7 @@ export function useIncrementedGasFees(transactionGroup) {
             );
     }
     return temporaryGasSettings;
-  }, [primaryTransaction, gasFeeEstimates]);
+  }, [transaction, gasFeeEstimates]);
 
   return customGasSettings;
 }

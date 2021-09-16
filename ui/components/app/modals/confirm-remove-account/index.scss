@@ -48,7 +48,7 @@
       }
     }
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       &__name {
         width: 90px;
       }

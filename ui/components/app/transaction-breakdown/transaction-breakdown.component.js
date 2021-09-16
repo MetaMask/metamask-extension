@@ -26,6 +26,7 @@ export default class TransactionBreakdown extends PureComponent {
     isTokenApprove: PropTypes.bool,
     gas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    maxFeePerGas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasUsed: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     totalInHex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     baseFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -43,6 +44,7 @@ export default class TransactionBreakdown extends PureComponent {
     const {
       gas,
       gasPrice,
+      maxFeePerGas,
       primaryCurrency,
       className,
       nonce,
@@ -98,40 +100,32 @@ export default class TransactionBreakdown extends PureComponent {
             />
           </TransactionBreakdownRow>
         )}
-        {isEIP1559Transaction && (
+        {isEIP1559Transaction && typeof baseFee !== 'undefined' ? (
           <TransactionBreakdownRow title={t('transactionHistoryBaseFee')}>
-            {typeof baseFee === 'undefined' ? (
-              '?'
-            ) : (
-              <CurrencyDisplay
-                className="transaction-breakdown__value"
-                data-testid="transaction-breakdown__base-fee"
-                currency={nativeCurrency}
-                denomination={GWEI}
-                value={baseFee}
-                numberOfDecimals={10}
-                hideLabel
-              />
-            )}
+            <CurrencyDisplay
+              className="transaction-breakdown__value"
+              data-testid="transaction-breakdown__base-fee"
+              currency={nativeCurrency}
+              denomination={GWEI}
+              value={baseFee}
+              numberOfDecimals={10}
+              hideLabel
+            />
           </TransactionBreakdownRow>
-        )}
-        {isEIP1559Transaction && (
+        ) : null}
+        {isEIP1559Transaction && typeof priorityFee !== 'undefined' ? (
           <TransactionBreakdownRow title={t('transactionHistoryPriorityFee')}>
-            {typeof priorityFee === 'undefined' ? (
-              '?'
-            ) : (
-              <CurrencyDisplay
-                className="transaction-breakdown__value"
-                data-testid="transaction-breakdown__priority-fee"
-                currency={nativeCurrency}
-                denomination={GWEI}
-                value={priorityFee}
-                numberOfDecimals={10}
-                hideLabel
-              />
-            )}
+            <CurrencyDisplay
+              className="transaction-breakdown__value"
+              data-testid="transaction-breakdown__priority-fee"
+              currency={nativeCurrency}
+              denomination={GWEI}
+              value={priorityFee}
+              numberOfDecimals={10}
+              hideLabel
+            />
           </TransactionBreakdownRow>
-        )}
+        ) : null}
         {!isEIP1559Transaction && (
           <TransactionBreakdownRow title={t('advancedGasPriceTitle')}>
             {typeof gasPrice === 'undefined' ? (
@@ -165,6 +159,25 @@ export default class TransactionBreakdown extends PureComponent {
                 className="transaction-breakdown__value"
                 type={SECONDARY}
                 value={hexGasTotal}
+              />
+            )}
+          </TransactionBreakdownRow>
+        )}
+        {isEIP1559Transaction && (
+          <TransactionBreakdownRow title={t('transactionHistoryMaxFeePerGas')}>
+            <UserPreferencedCurrencyDisplay
+              className="transaction-breakdown__value"
+              currency={nativeCurrency}
+              denomination={ETH}
+              numberOfDecimals={9}
+              value={maxFeePerGas}
+              type={PRIMARY}
+            />
+            {showFiat && (
+              <UserPreferencedCurrencyDisplay
+                className="transaction-breakdown__value"
+                type={SECONDARY}
+                value={maxFeePerGas}
               />
             )}
           </TransactionBreakdownRow>

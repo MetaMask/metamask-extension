@@ -103,15 +103,22 @@ const state = {
         },
       },
     },
+    addresses: [
+      {
+        address: '0x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
+        name: 'DAI',
+        isEns: false,
+      },
+      {
+        address: '1x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
+        name: 'ETH',
+        isEns: true,
+      },
+    ],
     contractExchangeRates: {
       '0xaD6D458402F60fD3Bd25163575031ACDce07538D': 0,
     },
     tokens: [
-      {
-        address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-        symbol: 'DAI',
-        decimals: 18,
-      },
       {
         address: '0xaD6D458402F60fD3Bd25163575031ACDce07538A',
         symbol: 'DAA',
