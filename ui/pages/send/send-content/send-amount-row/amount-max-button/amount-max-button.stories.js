@@ -14,6 +14,7 @@ import AmountMaxButton from './amount-max-button';
 
 export default {
   title: 'AmountMaxButton',
+  id: __filename,
 };
 
 export const AmountMaxButtonComponent = () => {
@@ -30,8 +31,7 @@ export const AmountMaxButtonComponent = () => {
     select('Max Mode On', [AMOUNT_MODES.MAX, AMOUNT_MODES.INPUT]) ||
     send.amount.mode;
 
-  console.log('state', isDraftTransactionInvalid);
-  useEffect(() => {
+    useEffect(() => {
     store.dispatch(updateSendStatus(isDraftTransactionInvalid));
   }, [isDraftTransactionInvalid, store]);
 
