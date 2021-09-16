@@ -4,7 +4,7 @@ import SendHexDataRow from './send-hex-data-row.component';
 
 export default {
   title: 'SendHexDataRow',
-  id: __filename
+  id: __filename,
 };
 
 export const SendHexDataRowComponent = () => {
