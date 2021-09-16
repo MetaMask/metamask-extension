@@ -886,9 +886,6 @@
   "sendTokens": {
     "message": "Lähetä tietueita"
   },
-  "sentEther": {
-    "message": "lähetä etheriä"
-  },
   "separateEachWord": {
     "message": "Erottele sanat toisistaan yhdellä välilyönnillä"
   },

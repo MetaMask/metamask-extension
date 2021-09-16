@@ -883,9 +883,6 @@
   "sendTokens": {
     "message": "Wyślij tokeny"
   },
-  "sentEther": {
-    "message": "wyślij eter"
-  },
   "separateEachWord": {
     "message": "Oddziel słowa pojedynczą spacją"
   },

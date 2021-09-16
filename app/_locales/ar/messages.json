@@ -882,9 +882,6 @@
   "sendTokens": {
     "message": "إرسال عملات رمزية"
   },
-  "sentEther": {
-    "message": "أرسل عملة إيثير"
-  },
   "separateEachWord": {
     "message": "افصل كل كلمة بمسافة واحدة"
   },

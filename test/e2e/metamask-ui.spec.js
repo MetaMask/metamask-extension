@@ -40,7 +40,10 @@ describe('MetaMask', function () {
       dappServer.on('listening', resolve);
       dappServer.on('error', reject);
     });
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
+    if (
+      process.env.SELENIUM_BROWSER === 'chrome' &&
+      process.env.CI === 'true'
+    ) {
       await ensureXServerIsRunning();
     }
     const result = await buildWebDriver();
@@ -238,7 +241,7 @@ describe('MetaMask', function () {
     });
   });
 
-  describe('Navigate transactions', function () {
+  describe('Add a custom token from a dapp', function () {
     let windowHandles;
     let extension;
     let popup;
@@ -275,201 +278,11 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
     });
 
-    it('adds multiple transactions', async function () {
-      const send3eth = await driver.findClickableElement({
-        text: 'Send',
-        tag: 'button',
-      });
-      await send3eth.click();
-      await driver.delay(largeDelayMs);
-
-      const contractDeployment = await driver.findClickableElement({
-        text: 'Deploy Contract',
-        tag: 'button',
-      });
-      await contractDeployment.click();
-      await driver.delay(largeDelayMs);
-
-      await send3eth.click();
-      await driver.delay(largeDelayMs);
-      await contractDeployment.click();
-      await driver.delay(largeDelayMs);
-
-      await driver.switchToWindow(extension);
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement('[data-testid="home__activity-tab"]');
-      await driver.clickElement('.transaction-list-item');
-      await driver.delay(largeDelayMs);
-    });
-
-    it('navigates the transactions', async function () {
-      await driver.clickElement('[data-testid="next-page"]');
-      let navigationElement = await driver.findElement(
-        '.confirm-page-container-navigation',
-      );
-      let navigationText = await navigationElement.getText();
-      assert.equal(
-        navigationText.includes('2'),
-        true,
-        'changed transaction right',
-      );
-
-      await driver.clickElement('[data-testid="next-page"]');
-      navigationElement = await driver.findElement(
-        '.confirm-page-container-navigation',
-      );
-      navigationText = await navigationElement.getText();
-      assert.equal(
-        navigationText.includes('3'),
-        true,
-        'changed transaction right',
-      );
-
-      await driver.clickElement('[data-testid="next-page"]');
-      navigationElement = await driver.findElement(
-        '.confirm-page-container-navigation',
-      );
-      navigationText = await navigationElement.getText();
-      assert.equal(
-        navigationText.includes('4'),
-        true,
-        'changed transaction right',
-      );
-
-      await driver.clickElement('[data-testid="first-page"]');
-      navigationElement = await driver.findElement(
-        '.confirm-page-container-navigation',
-      );
-      navigationText = await navigationElement.getText();
-      assert.equal(
-        navigationText.includes('1'),
-        true,
-        'navigate to first transaction',
-      );
-
-      await driver.clickElement('[data-testid="last-page"]');
-      navigationElement = await driver.findElement(
-        '.confirm-page-container-navigation',
-      );
-      navigationText = await navigationElement.getText();
-      assert.equal(
-        navigationText.split('4').length,
-        3,
-        'navigate to last transaction',
-      );
-
-      await driver.clickElement('[data-testid="previous-page"]');
-      navigationElement = await driver.findElement(
-        '.confirm-page-container-navigation',
-      );
-      navigationText = await navigationElement.getText();
-      assert.equal(
-        navigationText.includes('3'),
-        true,
-        'changed transaction left',
-      );
-
-      await driver.clickElement('[data-testid="previous-page"]');
-      navigationElement = await driver.findElement(
-        '.confirm-page-container-navigation',
-      );
-      navigationText = await navigationElement.getText();
-      assert.equal(
-        navigationText.includes('2'),
-        true,
-        'changed transaction left',
-      );
-    });
-
-    it('adds a transaction while confirm screen is in focus', async function () {
-      let navigationElement = await driver.findElement(
-        '.confirm-page-container-navigation',
-      );
-      let navigationText = await navigationElement.getText();
-      assert.equal(
-        navigationText.includes('2'),
-        true,
-        'second transaction in focus',
-      );
-
-      await driver.switchToWindow(dapp);
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement({ text: 'Send', tag: 'button' });
-      await driver.delay(regularDelayMs);
-
-      await driver.switchToWindow(extension);
-      await driver.delay(regularDelayMs);
-
-      navigationElement = await driver.findElement(
-        '.confirm-page-container-navigation',
-      );
-      navigationText = await navigationElement.getText();
-      assert.equal(
-        navigationText.includes('2'),
-        true,
-        'correct (same) transaction in focus',
-      );
-    });
-
-    it('rejects a transaction', async function () {
-      await driver.delay(tinyDelayMs);
-      await driver.clickElement({ text: 'Reject', tag: 'button' });
-      await driver.delay(largeDelayMs * 2);
-
-      const navigationElement = await driver.findElement(
-        '.confirm-page-container-navigation',
-      );
-      await driver.delay(tinyDelayMs);
-      const navigationText = await navigationElement.getText();
-      assert.equal(navigationText.includes('4'), true, 'transaction rejected');
-    });
-
-    it('confirms a transaction', async function () {
-      await driver.delay(tinyDelayMs / 2);
-      await driver.clickElement({ text: 'Confirm', tag: 'button' });
-      await driver.delay(regularDelayMs);
-
-      const navigationElement = await driver.findElement(
-        '.confirm-page-container-navigation',
-      );
-      await driver.delay(tinyDelayMs / 2);
-      const navigationText = await navigationElement.getText();
-      await driver.delay(tinyDelayMs / 2);
-      assert.equal(navigationText.includes('3'), true, 'transaction confirmed');
-    });
-
-    it('rejects the rest of the transactions', async function () {
-      await driver.clickElement({ text: 'Reject 3', tag: 'a' });
-      await driver.delay(regularDelayMs);
-
-      await driver.clickElement({ text: 'Reject All', tag: 'button' });
-      await driver.delay(largeDelayMs * 2);
-
-      await driver.wait(async () => {
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        return confirmedTxes.length === 1;
-      }, 10000);
-    });
-  });
-
-  describe('Add a custom token from a dapp', function () {
     it('creates a new token', async function () {
-      let windowHandles = await driver.getAllWindowHandles();
-      const extension = windowHandles[0];
-      const dapp = windowHandles[1];
-      await driver.delay(regularDelayMs * 2);
-
-      await driver.switchToWindow(dapp);
-      await driver.delay(regularDelayMs * 2);
-
       await driver.clickElement({ text: 'Create Token', tag: 'button' });
       windowHandles = await driver.waitUntilXWindowHandles(3);
 
-      const popup = windowHandles[2];
+      popup = windowHandles[2];
       await driver.switchToWindow(popup);
       await driver.delay(regularDelayMs);
       await driver.clickElement({ text: 'Edit', tag: 'button' }, 10000);

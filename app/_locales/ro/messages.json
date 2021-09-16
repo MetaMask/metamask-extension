@@ -876,9 +876,6 @@
   "sendTokens": {
     "message": "Trimiteți indicative"
   },
-  "sentEther": {
-    "message": "trimiteți ether"
-  },
   "separateEachWord": {
     "message": "Despărțiți fiecare cuvânt cu un spațiu"
   },

@@ -867,9 +867,6 @@
   "sendTokens": {
     "message": "Send tokens"
   },
-  "sentEther": {
-    "message": "sendte ether"
-  },
   "separateEachWord": {
     "message": "Separer hvert ord med et enkelt mellemrum"
   },

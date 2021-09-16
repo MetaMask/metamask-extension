@@ -12,6 +12,10 @@ module.exports = {
     './i18n-party-addon/register.js',
   ],
   webpackFinal: async (config) => {
+    config.context = process.cwd()
+    config.node = {
+      __filename: true
+    }
     config.module.strictExportPresence = true;
     config.module.rules.push({
       test: /\.scss$/,
