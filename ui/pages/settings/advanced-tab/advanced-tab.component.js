@@ -40,8 +40,8 @@ export default class AdvancedTab extends PureComponent {
     setLedgerLivePreference: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
-    useTokenDetection: PropTypes.bool.isRequired,
-    setUseTokenDetection: PropTypes.func.isRequired,
+    useTokenDetection: PropTypes.bool,
+    setUseTokenDetection: PropTypes.func,
   };
 
   state = {
