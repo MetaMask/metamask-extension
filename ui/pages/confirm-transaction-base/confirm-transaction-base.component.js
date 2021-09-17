@@ -36,10 +36,10 @@ import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 import Dialog from '../../components/ui/dialog';
+import Typography from '../../components/ui/typography/typography';
 
 import {
   COLORS,
-  FONT_STYLE,
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../helpers/constants/design-system';
@@ -303,7 +303,6 @@ export default class ConfirmTransactionBase extends Component {
       primaryTotalTextOverrideMaxAmount,
       maxFeePerGas,
       maxPriorityFeePerGas,
-      isMainnet,
       isLedgerAccount,
       isFirefox,
     } = this.props;
