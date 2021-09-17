@@ -31,7 +31,9 @@ describe('ViewOnEtherScanLink', () => {
         })}
       />,
     );
-    expect(getByText('View Swap at custom-blockchain.explorer')).toBeInTheDocument();
+    expect(
+      getByText('View Swap at custom-blockchain.explorer'),
+    ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });
