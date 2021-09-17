@@ -29,7 +29,16 @@ export default class ExperimentalTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={useTokenDetection}
-              onToggle={(value) => setUseTokenDetection(!value)}
+              onToggle={(value) => {
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Settings',
+                    action: 'Token Detection',
+                    name: 'Token Detection',
+                  },
+                });
+                setUseTokenDetection(!value);
+              }}
               offLabel={t('off')}
               onLabel={t('on')}
             />
