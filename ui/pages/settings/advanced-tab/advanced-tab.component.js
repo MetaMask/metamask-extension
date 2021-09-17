@@ -541,18 +541,6 @@ export default class AdvancedTab extends PureComponent {
           <div className="settings-page__content-description">
             {t('useTokenDetectionDescription')}
           </div>
-          <div className="settings-page__content-description">
-            {t('useTokenDetectionAdvanced')}
-            <Button
-              type="link"
-              className="settings-page__link"
-              rel="noopener noreferrer"
-              target="_blank"
-              href="https://community.metamask.io/"
-            >
-              {t('here')}
-            </Button>
-          </div>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">

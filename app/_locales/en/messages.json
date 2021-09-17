@@ -2717,9 +2717,6 @@
   "useTokenDetection": {
     "message": "Use Token Detection"
   },
-  "useTokenDetectionAdvanced": {
-    "message": "Experimental feature: Send feedback "
-  },
   "useTokenDetectionDescription": {
     "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services."
   },
