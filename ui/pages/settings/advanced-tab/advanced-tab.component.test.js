@@ -19,8 +19,6 @@ describe('AdvancedTab Component', () => {
         setLedgerLivePreference={() => undefined}
         setDismissSeedBackUpReminder={() => undefined}
         dismissSeedBackUpReminder={false}
-        useTokenDetection={false}
-        setUseTokenDetection={() => undefined}
       />,
       {
         context: {
@@ -29,7 +27,7 @@ describe('AdvancedTab Component', () => {
       },
     );
 
-    expect(root.find('.settings-page__content-row')).toHaveLength(13);
+    expect(root.find('.settings-page__content-row')).toHaveLength(12);
   });
 
   it('should update autoLockTimeLimit', () => {
@@ -47,8 +45,6 @@ describe('AdvancedTab Component', () => {
         setLedgerLivePreference={() => undefined}
         setDismissSeedBackUpReminder={() => undefined}
         dismissSeedBackUpReminder={false}
-        useTokenDetection={false}
-        setUseTokenDetection={() => undefined}
       />,
       {
         context: {
@@ -57,7 +53,7 @@ describe('AdvancedTab Component', () => {
       },
     );
 
-    const autoTimeout = root.find('.settings-page__content-row').at(8);
+    const autoTimeout = root.find('.settings-page__content-row').at(7);
     const textField = autoTimeout.find(TextField);
 
     textField.props().onChange({ target: { value: 1440 } });

@@ -13,7 +13,6 @@ import {
   setIpfsGateway,
   setLedgerLivePreference,
   setDismissSeedBackUpReminder,
-  setUseTokenDetection,
 } from '../../../store/actions';
 import { getPreferences } from '../../../selectors';
 import AdvancedTab from './advanced-tab.component';
@@ -31,7 +30,6 @@ export const mapStateToProps = (state) => {
     ipfsGateway,
     useLedgerLive,
     dismissSeedBackUpReminder,
-    useTokenDetection,
   } = metamask;
   const { showFiatInTestnets, autoLockTimeLimit } = getPreferences(state);
 
@@ -47,7 +45,6 @@ export const mapStateToProps = (state) => {
     ipfsGateway,
     useLedgerLive,
     dismissSeedBackUpReminder,
-    useTokenDetection,
   };
 };
 
@@ -83,7 +80,6 @@ export const mapDispatchToProps = (dispatch) => {
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
     },
-    setUseTokenDetection: (val) => dispatch(setUseTokenDetection(val)),
   };
 };
 

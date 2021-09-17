@@ -865,6 +865,12 @@
   "expandView": {
     "message": "Expand view"
   },
+  "experimental": {
+    "message": "Experimental"
+  },
+  "experimentalSettingsDescription": {
+    "message": "Token detection & more"
+  },
   "exportPrivateKey": {
     "message": "Export Private Key"
   },

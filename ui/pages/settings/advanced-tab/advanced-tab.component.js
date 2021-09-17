@@ -40,8 +40,6 @@ export default class AdvancedTab extends PureComponent {
     setLedgerLivePreference: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
-    useTokenDetection: PropTypes.bool,
-    setUseTokenDetection: PropTypes.func,
   };
 
   state = {
@@ -530,32 +528,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderTokenDetectionToggle() {
-    const { t } = this.context;
-    const { useTokenDetection, setUseTokenDetection } = this.props;
-
-    return (
-      <div className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{t('useTokenDetection')}</span>
-          <div className="settings-page__content-description">
-            {t('useTokenDetectionDescription')}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={useTokenDetection}
-              onToggle={(value) => setUseTokenDetection(!value)}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   render() {
     const { warning } = this.props;
 
@@ -565,7 +537,6 @@ export default class AdvancedTab extends PureComponent {
         {this.renderStateLogs()}
         {this.renderMobileSync()}
         {this.renderResetAccount()}
-        {this.renderTokenDetectionToggle()}
         {this.renderAdvancedGasInputInline()}
         {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}
