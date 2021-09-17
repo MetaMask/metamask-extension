@@ -1,5 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { addHexPrefix } from '../../../lib/util';
+import { addHexPrefix, fixHexValue } from '../../../lib/util';
 import {
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_STATUSES,
@@ -12,7 +12,7 @@ const normalizers = {
   to: (to, lowerCase) =>
     lowerCase ? addHexPrefix(to).toLowerCase() : addHexPrefix(to),
   nonce: addHexPrefix,
-  value: addHexPrefix,
+  value: fixHexValue,
   data: addHexPrefix,
   gas: addHexPrefix,
   gasPrice: addHexPrefix,
