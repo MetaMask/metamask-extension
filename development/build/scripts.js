@@ -594,9 +594,7 @@ function getEnvironmentVariables({ buildType, devMode, testing }) {
     CONF: devMode ? metamaskrc : {},
     SENTRY_DSN: process.env.SENTRY_DSN,
     SENTRY_DSN_DEV: metamaskrc.SENTRY_DSN_DEV,
-    INFURA_PROJECT_ID: testing
-      ? '00000000000000000000000000000000'
-      : metamaskrc.INFURA_PROJECT_ID,
+    INFURA_PROJECT_ID: metamaskrc.INFURA_PROJECT_ID,
     SEGMENT_HOST: metamaskrc.SEGMENT_HOST,
     // When we're in the 'production' environment we will use a specific key only set in CI
     // Otherwise we'll use the key from .metamaskrc or from the environment variable. If

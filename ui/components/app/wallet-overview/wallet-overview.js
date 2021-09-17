@@ -4,7 +4,10 @@ import classnames from 'classnames';
 
 const WalletOverview = ({ balance, buttons, className, icon }) => {
   return (
-    <div className={classnames('wallet-overview', className)}>
+    <div
+      className={classnames('wallet-overview', className)}
+      data-testid="wallet-overview"
+    >
       <div className="wallet-overview__balance">
         {icon}
         {balance}

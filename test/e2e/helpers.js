@@ -15,14 +15,14 @@ const largeDelayMs = regularDelayMs * 2;
 
 const dappPort = 8080;
 
-async function withFixtures(options, testSuite) {
+async function withFixtures(options, testSuite, context) {
   const {
     dapp,
     fixtures,
     ganacheOptions,
     driverOptions,
     mockSegment,
-    title,
+    title = context.test.title,
     failOnConsoleError = true,
     dappPath = undefined,
   } = options;

@@ -80,6 +80,7 @@ export default function NetworkDisplay({
         variant: TYPOGRAPHY.H7,
         ...labelProps,
       }}
+      data-testid="current-network"
     />
   );
 }

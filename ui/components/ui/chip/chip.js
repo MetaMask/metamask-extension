@@ -14,6 +14,7 @@ export default function Chip({
   leftIcon,
   rightIcon,
   onClick,
+  ...rest
 }) {
   const onKeyPress = (event) => {
     if (event.key === 'Enter' && onClick) {
@@ -34,6 +35,7 @@ export default function Chip({
       })}
       role={isInteractive ? 'button' : undefined}
       tabIndex={isInteractive ? 0 : undefined}
+      {...rest}
     >
       {leftIcon && <div className="chip__left-icon">{leftIcon}</div>}
       {children ?? (
