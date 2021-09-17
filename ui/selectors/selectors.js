@@ -547,8 +547,7 @@ export function getShowWhatsNewPopup(state) {
  */
 function getAllowedNotificationIds(state) {
   const currentKeyring = getCurrentKeyring(state);
-  const currentKeyringIsLedger =
-    currentKeyring && currentKeyring.type === KEYRING_TYPES.LEDGER;
+  const currentKeyringIsLedger = currentKeyring?.type === KEYRING_TYPES.LEDGER;
 
   return {
     1: true,
