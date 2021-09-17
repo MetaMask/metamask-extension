@@ -466,7 +466,6 @@ export async function fetchTokenBalance(address, userAddress) {
 }
 
 export async function fetchSwapsGasPrices(chainId, useNewSwapsApi) {
-  console.log('fetch gas prices');
   const gasPricesUrl = getBaseApi('gasPrices', chainId, useNewSwapsApi);
   const response = await fetchWithCache(
     gasPricesUrl,
