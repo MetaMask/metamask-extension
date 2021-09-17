@@ -2,7 +2,10 @@ import React from 'react';
 import { text, boolean, number } from '@storybook/addon-knobs';
 import Identicon from './identicon.component';
 
-export default { title: 'Identicon' };
+export default {
+  title: 'Identicon',
+  id: __filename,
+};
 
 const diameterOptions = {
   range: true,

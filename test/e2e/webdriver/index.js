@@ -52,6 +52,12 @@ async function setupFetchMocking(driver) {
         if (url.match(/featureFlags$/u)) {
           return { json: async () => clone(mockResponses.swaps.featureFlags) };
         }
+      } else if (
+        url.match(/^https:\/\/(token-api\.airswap-prod\.codefi\.network)/u)
+      ) {
+        if (url.match(/tokens\/1337$/u)) {
+          return { json: async () => clone(mockResponses.tokenList) };
+        }
       }
       return window.origFetch(...args);
     };

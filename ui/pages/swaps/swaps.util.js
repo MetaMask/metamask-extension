@@ -78,7 +78,7 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
-const getBaseApi = function (
+export const getBaseApi = function (
   type,
   chainId = MAINNET_CHAIN_ID,
   useNewSwapsApi = false,
@@ -86,6 +86,7 @@ const getBaseApi = function (
   const baseUrl = useNewSwapsApi
     ? getBaseUrlForNewSwapsApi(type, chainId)
     : METASWAP_CHAINID_API_HOST_MAP[chainId];
+  const chainIdDecimal = chainId && parseInt(chainId, 16);
   if (!baseUrl) {
     throw new Error(`Swaps API calls are disabled for chainId: ${chainId}`);
   }
@@ -102,8 +103,9 @@ const getBaseApi = function (
       return `${baseUrl}/aggregatorMetadata`;
     case 'gasPrices':
       return `${baseUrl}/gasPrices`;
-    case 'refreshTime':
-      return `${baseUrl}/quoteRefreshRate`;
+    case 'network':
+      // Only use v2 for this endpoint.
+      return `${SWAPS_API_V2_BASE_URL}/networks/${chainIdDecimal}`;
     default:
       throw new Error('getBaseApi requires an api call type');
   }
@@ -441,23 +443,6 @@ export async function fetchSwapsFeatureFlags() {
     { cacheRefreshTime: 600000 },
   );
   return response;
-}
-
-export async function fetchSwapsQuoteRefreshTime(chainId, useNewSwapsApi) {
-  const response = await fetchWithCache(
-    getBaseApi('refreshTime', chainId, useNewSwapsApi),
-    { method: 'GET', headers: clientIdHeader },
-    { cacheRefreshTime: 600000 },
-  );
-
-  // We presently use milliseconds in the UI
-  if (typeof response?.seconds === 'number' && response.seconds > 0) {
-    return response.seconds * 1000;
-  }
-
-  throw new Error(
-    `MetaMask - refreshTime provided invalid response: ${response}`,
-  );
 }
 
 export async function fetchTokenPrice(address) {

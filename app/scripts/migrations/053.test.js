@@ -2,6 +2,8 @@ import { strict as assert } from 'assert';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
 import migration53 from './053';
 
+const SENT_ETHER = 'sentEther'; // a legacy transaction type replaced now by TRANSACTION_TYPES.SIMPLE_SEND
+
 describe('migration #53', function () {
   it('should update the version metadata', async function () {
     const oldStorage = {
@@ -25,12 +27,12 @@ describe('migration #53', function () {
           transactions: [
             {
               type: TRANSACTION_TYPES.CANCEL,
-              transactionCategory: TRANSACTION_TYPES.SENT_ETHER,
+              transactionCategory: SENT_ETHER,
               txParams: { foo: 'bar' },
             },
             {
               type: 'standard',
-              transactionCategory: TRANSACTION_TYPES.SENT_ETHER,
+              transactionCategory: SENT_ETHER,
               txParams: { foo: 'bar' },
             },
             {
@@ -40,7 +42,7 @@ describe('migration #53', function () {
             },
             {
               type: TRANSACTION_TYPES.RETRY,
-              transactionCategory: TRANSACTION_TYPES.SENT_ETHER,
+              transactionCategory: SENT_ETHER,
               txParams: { foo: 'bar' },
             },
           ],
@@ -64,7 +66,10 @@ describe('migration #53', function () {
       TransactionController: {
         transactions: [
           { type: TRANSACTION_TYPES.CANCEL, txParams: { foo: 'bar' } },
-          { type: TRANSACTION_TYPES.SENT_ETHER, txParams: { foo: 'bar' } },
+          {
+            type: SENT_ETHER,
+            txParams: { foo: 'bar' },
+          },
           {
             type: TRANSACTION_TYPES.CONTRACT_INTERACTION,
             txParams: { foo: 'bar' },

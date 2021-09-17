@@ -3,6 +3,7 @@ import RadioGroup from '.';
 
 export default {
   title: 'RadioGroup',
+  id: __filename,
 };
 
 export const radioGroup = () => {
