@@ -51,6 +51,7 @@ import sendReducer, {
   getSendAmount,
   getIsBalanceInsufficient,
   getSendMaxModeState,
+  getDraftTransactionID,
   sendAmountIsInError,
   getSendHexData,
   getSendTo,
@@ -2457,6 +2458,21 @@ describe('Send Slice', () => {
             },
           }),
         ).toBe(true);
+      });
+
+      it('has a selector to get the draft transaction ID', () => {
+        expect(getDraftTransactionID({ send: initialState })).toBeNull();
+        expect(
+          getDraftTransactionID({
+            send: {
+              ...initialState,
+              draftTransaction: {
+                ...initialState.draftTransaction,
+                id: 'ID',
+              },
+            },
+          }),
+        ).toBe('ID');
       });
 
       it('has a selector to get the user entered hex data', () => {

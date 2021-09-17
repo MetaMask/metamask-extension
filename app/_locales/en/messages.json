@@ -305,6 +305,9 @@
   "cancel": {
     "message": "Cancel"
   },
+  "cancelEdit": {
+    "message": "Cancel Edit"
+  },
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
   },
