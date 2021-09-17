@@ -31,7 +31,7 @@ export const AmountMaxButtonComponent = () => {
     select('Max Mode On', [AMOUNT_MODES.MAX, AMOUNT_MODES.INPUT]) ||
     send.amount.mode;
 
-    useEffect(() => {
+  useEffect(() => {
     store.dispatch(updateSendStatus(isDraftTransactionInvalid));
   }, [isDraftTransactionInvalid, store]);
 
