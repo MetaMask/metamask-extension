@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { setUseTokenDetection } from '../../../store/actions';
 import { getUseTokenDetection } from '../../../selectors';
-import ExperimantalTab from './experimental-tab.component';
+import ExperimentalTab from './experimental-tab.component';
 
 const mapStateToProps = (state) => {
   return {
@@ -20,4 +20,4 @@ const mapDispatchToProps = (dispatch) => {
 export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-)(ExperimantalTab);
+)(ExperimentalTab);

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import ToggleButton from '../../../components/ui/toggle-button';
 
-export default class ExperimantalTab extends PureComponent {
+export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,

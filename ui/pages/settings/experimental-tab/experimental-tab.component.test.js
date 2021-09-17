@@ -1,9 +1,9 @@
 import React from 'react';
 import sinon from 'sinon';
 import { mount } from 'enzyme';
-import ExperimantalTab from './experimental-tab.container';
+import ExperimentalTab from './experimental-tab.container';
 
-describe('Experimantal Tab', () => {
+describe('Experimental Tab', () => {
   let wrapper;
 
   const props = {
@@ -12,7 +12,7 @@ describe('Experimantal Tab', () => {
   };
 
   beforeEach(() => {
-    wrapper = mount(<ExperimantalTab.WrappedComponent {...props} />, {
+    wrapper = mount(<ExperimentalTab.WrappedComponent {...props} />, {
       context: {
         t: (str) => str,
         metricsEvent: () => undefined,
