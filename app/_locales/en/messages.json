@@ -748,6 +748,9 @@
   "editPermission": {
     "message": "Edit Permission"
   },
+  "enableFromSettings": {
+    "message": " Enable it from Settings."
+  },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
     "description": "$1 is the web3 site name"
@@ -2569,6 +2572,9 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Token decimal required."
+  },
+  "tokenDetectionAnnouncement": {
+    "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"
   },
   "tokenSymbol": {
     "message": "Token Symbol"

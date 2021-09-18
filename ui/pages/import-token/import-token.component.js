@@ -6,7 +6,10 @@ import {
   getURLHostName,
 } from '../../helpers/utils/util';
 import { tokenInfoGetter } from '../../helpers/utils/token-util';
-import { CONFIRM_IMPORT_TOKEN_ROUTE } from '../../helpers/constants/routes';
+import {
+  CONFIRM_IMPORT_TOKEN_ROUTE,
+  EXPERIMENTAL_ROUTE,
+} from '../../helpers/constants/routes';
 import TextField from '../../components/ui/text-field';
 import PageContainer from '../../components/ui/page-container';
 import { Tabs, Tab } from '../../components/ui/tabs';
@@ -388,10 +391,27 @@ class ImportToken extends Component {
   }
 
   renderSearchToken() {
-    const { tokenList } = this.props;
+    const { tokenList, history } = this.props;
     const { tokenSelectorError, selectedTokens, searchResults } = this.state;
     return (
       <div className="import-token__search-token">
+        <ActionableMessage
+          message={this.context.t('tokenDetectionAnnouncement', [
+            <Button
+              type="link"
+              key="token-detection-announcement"
+              className="import-token__link"
+              onClick={() => history.push(EXPERIMENTAL_ROUTE)}
+            >
+              {this.context.t('enableFromSettings')}
+            </Button>,
+          ])}
+          type={false}
+          withRightButton
+          useIcon
+          iconFillColor="#037DD6"
+          className="import-token__token-detection-announcement"
+        />
         <TokenSearch
           onSearch={({ results = [] }) =>
             this.setState({ searchResults: results })
