@@ -123,7 +123,7 @@ export default class ConfirmTransactionBase extends Component {
     maxPriorityFeePerGas: PropTypes.string,
     baseFeePerGas: PropTypes.string,
     gasFeeIsCustom: PropTypes.bool,
-    isLedgerAccount: PropTypes.bool.isRequired,
+    showLedgerSteps: PropTypes.bool.isRequired,
     isFirefox: PropTypes.bool.isRequired,
   };
 
@@ -303,7 +303,7 @@ export default class ConfirmTransactionBase extends Component {
       primaryTotalTextOverrideMaxAmount,
       maxFeePerGas,
       maxPriorityFeePerGas,
-      isLedgerAccount,
+      showLedgerSteps,
       isFirefox,
     } = this.props;
     const { t } = this.context;
@@ -418,7 +418,7 @@ export default class ConfirmTransactionBase extends Component {
       );
     };
 
-    const ledgerInstructionField = isLedgerAccount ? (
+    const ledgerInstructionField = showLedgerSteps ? (
       <div>
         <div className="confirm-detail-row">
           <Dialog type="message">
@@ -428,7 +428,10 @@ export default class ConfirmTransactionBase extends Component {
                 `- ${t('ledgerLiveDialogStepOne')}`,
                 !isFirefox,
               )}
-              {renderLedgerLiveStep(`- ${t('ledgerLiveDialogStepTwo')}`)}
+              {renderLedgerLiveStep(
+                `- ${t('ledgerLiveDialogStepTwo')}`,
+                !isFirefox,
+              )}
               {renderLedgerLiveStep(`- ${t('ledgerLiveDialogStepThree')}`)}
               {renderLedgerLiveStep(
                 `- ${t('ledgerLiveDialogStepFour')}`,
