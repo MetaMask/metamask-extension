@@ -427,7 +427,10 @@ export default class ConfirmTransactionBase extends Component {
                 `- ${t('ledgerLiveDialogStepOne')}`,
                 !isFirefox,
               )}
-              {renderLedgerLiveStep(`- ${t('ledgerLiveDialogStepTwo')}`)}
+              {renderLedgerLiveStep(
+                `- ${t('ledgerLiveDialogStepTwo')}`,
+                !isFirefox,
+              )}
               {renderLedgerLiveStep(`- ${t('ledgerLiveDialogStepThree')}`)}
               {renderLedgerLiveStep(
                 `- ${t('ledgerLiveDialogStepFour')}`,
