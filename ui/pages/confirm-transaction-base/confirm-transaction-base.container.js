@@ -28,7 +28,7 @@ import {
   getShouldShowFiat,
   checkNetworkAndAccountSupports1559,
   getPreferences,
-  getAccountType,
+  getHardwareWalletType,
   getUseTokenDetection,
   getTokenList,
 } from '../../selectors';
@@ -168,7 +168,7 @@ const mapStateToProps = (state, ownProps) => {
   const gasFeeIsCustom =
     fullTxData.userFeeLevel === 'custom' ||
     txParamsAreDappSuggested(fullTxData);
-  const isLedgerAccount = getAccountType(state) === KEYRING_TYPES.LEDGER;
+  const showLedgerSteps = getHardwareWalletType(state) === KEYRING_TYPES.LEDGER;
   const isFirefox = getPlatform() === PLATFORM_FIREFOX;
   const nativeCurrency = getNativeCurrency(state);
 
@@ -217,7 +217,7 @@ const mapStateToProps = (state, ownProps) => {
     maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
     gasFeeIsCustom,
-    isLedgerAccount,
+    showLedgerSteps,
     isFirefox,
     nativeCurrency,
   };
