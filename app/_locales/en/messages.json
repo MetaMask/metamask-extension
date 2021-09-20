@@ -871,6 +871,12 @@
   "expandView": {
     "message": "Expand view"
   },
+  "experimental": {
+    "message": "Experimental"
+  },
+  "experimentalSettingsDescription": {
+    "message": "Token detection & more"
+  },
   "exportPrivateKey": {
     "message": "Export Private Key"
   },
@@ -2733,7 +2739,7 @@
     "message": "Use Token Detection"
   },
   "useTokenDetectionDescription": {
-    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn this off if you don’t want MetaMask to pull data from those those services."
+    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services."
   },
   "usedByClients": {
     "message": "Used by a variety of different clients"
