@@ -182,10 +182,12 @@ export default class TransactionListItemDetails extends PureComponent {
                 title={
                   blockExplorerUrl
                     ? t('viewOnCustomBlockExplorer', [
-                      t('blockExplorerTransactionAction'),
+                        t('blockExplorerTransactionAction'),
                         blockExplorerUrl,
                       ])
-                    : t('viewOnEtherscan', [t('blockExplorerTransactionAction')])
+                    : t('viewOnEtherscan', [
+                        t('blockExplorerTransactionAction'),
+                      ])
                 }
               >
                 <Button

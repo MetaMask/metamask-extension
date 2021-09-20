@@ -259,6 +259,18 @@
   "betaWelcome": {
     "message": "Welcome to MetaMask Beta"
   },
+  "blockExplorerAccountAction": {
+    "message": "Account"
+  },
+  "blockExplorerAseetAction": {
+    "message": "Asset"
+  },
+  "blockExplorerSwapAction": {
+    "message": "Swap"
+  },
+  "blockExplorerTransactionAction": {
+    "message": "Transaction"
+  },
   "blockExplorerUrl": {
     "message": "Block Explorer URL"
   },
@@ -2792,18 +2804,6 @@
     "message": "View $1 in Explorer",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
-  "blockExplorerSwapAction": {
-    "message": "Swap"
-  },
-  "blockExplorerAccountAction": {
-    "message": "Account"
-  },  
-  "blockExplorerTransactionAction": {
-    "message": "Transaction"
-  },    
-  "blockExplorerAseetAction": {
-    "message": "Asset"
-  },    
   "visitWebSite": {
     "message": "Visit our web site"
   },

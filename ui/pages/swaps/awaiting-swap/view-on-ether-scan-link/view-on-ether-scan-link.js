@@ -35,7 +35,7 @@ export default function ViewOnEtherScanLink({
     >
       {isCustomBlockExplorerUrl
         ? t('viewOnCustomBlockExplorer', [
-          t('blockExplorerSwapAction'),
+            t('blockExplorerSwapAction'),
             getURLHostName(blockExplorerUrl),
           ])
         : t('viewOnEtherscan', [t('blockExplorerSwapAction')])}
