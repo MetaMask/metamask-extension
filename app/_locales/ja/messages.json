@@ -1337,9 +1337,6 @@
   "onlyAddTrustedNetworks": {
     "message": "悪意のあるネットワーク プロバイダは、ブロックチェーンの状態を偽り、お客様のネットワーク行動を記録することがあります。信頼するカスタム ネットワークのみを追加してください。"
   },
-  "onlyAvailableOnMainnet": {
-    "message": "メインネットのみで使用可能"
-  },
   "onlyConnectTrust": {
     "message": "信頼するサイトにのみ接続します。"
   },
