@@ -546,13 +546,17 @@ export function getShowWhatsNewPopup(state) {
  * @returns {Object}
  */
 function getAllowedNotificationIds(state) {
+  const currentKeyring = getCurrentKeyring(state);
+  const currentKeyringIsLedger = currentKeyring?.type === KEYRING_TYPES.LEDGER;
+
   return {
     1: true,
     2: true,
     3: true,
     4: getCurrentChainId(state) === BSC_CHAIN_ID,
     5: true,
-    6: true,
+    6: currentKeyringIsLedger,
+    7: currentKeyringIsLedger,
   };
 }
 

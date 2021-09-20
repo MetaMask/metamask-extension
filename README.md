@@ -36,7 +36,7 @@ See the [build system readme](./development/build/README.md) for build system us
 
 To start a development build (e.g. with logging and file watching) run `yarn start`.
 
-To start the [React DevTools](https://github.com/facebook/react-devtools) and [Redux DevTools Extension](http://extension.remotedev.io)
+To start the [React DevTools](https://github.com/facebook/react-devtools) and [Redux DevTools Extension](https://github.com/reduxjs/redux-devtools/tree/main/extension)
   alongside the app, use `yarn start:dev`.
   - React DevTools will open in a separate window; no browser extension is required
   - Redux DevTools will need to be installed as a browser extension. Open the Redux Remote Devtools to access Redux state logs. This can be done by either right clicking within the web browser to bring up the context menu, expanding the Redux DevTools panel and clicking Open Remote DevTools OR clicking the Redux DevTools extension icon and clicking Open Remote DevTools.

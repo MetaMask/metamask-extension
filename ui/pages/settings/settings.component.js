@@ -15,6 +15,7 @@ import {
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
+  EXPERIMENTAL_ROUTE,
 } from '../../helpers/constants/routes';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
@@ -23,6 +24,7 @@ import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
+import ExperimentalTab from './experimental-tab';
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -192,6 +194,11 @@ class SettingsPage extends PureComponent {
             key: NETWORKS_ROUTE,
           },
           {
+            content: t('experimental'),
+            description: t('experimentalSettingsDescription'),
+            key: EXPERIMENTAL_ROUTE,
+          },
+          {
             content: t('about'),
             description: t('aboutSettingsDescription'),
             key: ABOUT_US_ROUTE,
@@ -217,6 +224,7 @@ class SettingsPage extends PureComponent {
         <Route exact path={ALERTS_ROUTE} component={AlertsTab} />
         <Route path={NETWORKS_ROUTE} component={NetworksTab} />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
+        <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
         <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
         <Route
