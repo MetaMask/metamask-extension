@@ -34,8 +34,6 @@ export default class AccountDetailsModal extends Component {
     } = this.props;
     const { name, address } = selectedIdentity;
 
-    const blockExplorerViewAction = 'Account';
-
     const keyring = keyrings.find((kr) => {
       return kr.accounts.includes(address);
     });
@@ -85,7 +83,7 @@ export default class AccountDetailsModal extends Component {
             ? this.context.t('blockExplorerView', [
                 rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/u)[1],
               ])
-            : this.context.t('viewOnEtherscan', [blockExplorerViewAction])}
+            : this.context.t('viewOnEtherscan', [this.context.t('blockExplorerAccountAction')])}
         </Button>
 
         {exportPrivateKeyFeatureEnabled ? (

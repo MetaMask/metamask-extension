@@ -12,8 +12,6 @@ export default function ViewOnEtherScanLink({
 }) {
   const t = useContext(I18nContext);
 
-  const blockExplorerViewAction = 'Swap';
-
   const blockExplorerLinkClickedEvent = useNewMetricEvent({
     category: 'Swaps',
     event: 'Clicked Block Explorer Link',
@@ -37,10 +35,10 @@ export default function ViewOnEtherScanLink({
     >
       {isCustomBlockExplorerUrl
         ? t('viewOnCustomBlockExplorer', [
-            blockExplorerViewAction,
+          t('blockExplorerSwapAction'),
             getURLHostName(blockExplorerUrl),
           ])
-        : t('viewOnEtherscan', [blockExplorerViewAction])}
+        : t('viewOnEtherscan', [t('blockExplorerSwapAction')])}
     </div>
   );
 }
