@@ -146,8 +146,8 @@ const fixHexValue = (str) => {
     return prefixed;
   }
 
-  // Else return 0x0 for all non valid hex values
-  return '0x0';
+  // if we get here, throw invalid hex value detected error
+  throw (`Invalid hex value ${str} detected.`);
 };
 
 /**
