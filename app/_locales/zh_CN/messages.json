@@ -1084,9 +1084,6 @@
     "message": "“$1”会关闭此标签，直接回到 $2",
     "description": "Return the user to the site that initiated onboarding"
   },
-  "onlyAvailableOnMainnet": {
-    "message": "仅在主网（mainnet）上提供"
-  },
   "onlyConnectTrust": {
     "message": "只连接您信任的网站。"
   },

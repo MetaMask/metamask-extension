@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures, regularDelayMs, xxLargeDelayMs } = require('../helpers');
+const { withFixtures } = require('../helpers');
 
 describe('MetaMask', function () {
   it('provider should inform dapp when switching networks', async function () {
@@ -25,9 +25,14 @@ describe('MetaMask', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.openNewPage('http://127.0.0.1:8080/');
-        const networkDiv = await driver.findElement('#network');
-        const chainIdDiv = await driver.findElement('#chainId');
-        await driver.delay(xxLargeDelayMs);
+        const networkDiv = await driver.waitForSelector({
+          css: '#network',
+          text: '1337',
+        });
+        const chainIdDiv = await driver.waitForSelector({
+          css: '#chainId',
+          text: '0x539',
+        });
         assert.equal(await networkDiv.getText(), '1337');
         assert.equal(await chainIdDiv.getText(), '0x539');
 
@@ -36,11 +41,16 @@ describe('MetaMask', function () {
 
         await driver.clickElement('.network-display');
         await driver.clickElement({ text: 'Ropsten', tag: 'span' });
-        await driver.delay(regularDelayMs);
 
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-        const switchedNetworkDiv = await driver.findElement('#network');
-        const switchedChainIdDiv = await driver.findElement('#chainId');
+        const switchedNetworkDiv = await driver.waitForSelector({
+          css: '#network',
+          text: '3',
+        });
+        const switchedChainIdDiv = await driver.waitForSelector({
+          css: '#chainId',
+          text: '0x3',
+        });
         const accountsDiv = await driver.findElement('#accounts');
 
         assert.equal(await switchedNetworkDiv.getText(), '3');

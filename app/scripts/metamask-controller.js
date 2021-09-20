@@ -1303,6 +1303,12 @@ export default class MetamaskController extends EventEmitter {
         );
       }
 
+      // remove extra zero balance account potentially created from seeking ahead
+      if (accounts.length > 1 && lastBalance === '0x0') {
+        await this.removeAccount(accounts[accounts.length - 1]);
+        accounts = await keyringController.getAccounts();
+      }
+
       // set new identities
       this.preferencesController.setAddresses(accounts);
       this.selectFirstIdentity();
