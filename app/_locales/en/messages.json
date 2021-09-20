@@ -520,6 +520,9 @@
   "currentLanguage": {
     "message": "Current Language"
   },
+  "currentlyUnavailable": {
+    "message": "Unavailable on this network"
+  },
   "customGas": {
     "message": "Customize Gas"
   },
@@ -1591,9 +1594,6 @@
   },
   "onlyAddTrustedNetworks": {
     "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
-  },
-  "onlyAvailableOnMainnet": {
-    "message": "Only available on mainnet"
   },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."

@@ -1337,9 +1337,6 @@
   "onlyAddTrustedNetworks": {
     "message": "Magagawa ng nakakapinsalang network provider na magsinungaling tungkol sa status ng blockchain at itala ang aktibidad ng iyong network. Magdagdag lang ng mga custom na network na pinagkakatiwalaan mo."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Available lang sa mainnet"
-  },
   "onlyConnectTrust": {
     "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo."
   },
