@@ -2781,13 +2781,16 @@
     "message": "View More"
   },
   "viewOnCustomBlockExplorer": {
-    "message": "View $1 at $2"
+    "message": "View $1 at $2",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
   },
   "viewOnEtherscan": {
-    "message": "View $1 on Etherscan"
+    "message": "View $1 on Etherscan",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "viewinExplorer": {
-    "message": "View $1 in Explorer"
+    "message": "View $1 in Explorer",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "visitWebSite": {
     "message": "Visit our web site"
