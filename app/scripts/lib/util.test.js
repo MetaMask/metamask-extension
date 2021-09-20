@@ -7,7 +7,7 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_BACKGROUND,
 } from '../../../shared/constants/app';
-import { getEnvironmentType } from './util';
+import { fixHexValue, getEnvironmentType } from './util';
 
 describe('app utils', function () {
   describe('getEnvironmentType', function () {
@@ -149,6 +149,9 @@ describe('app utils', function () {
         false,
         'should return false',
       );
+
+      assert.equal(fixHexValue('0x0'), '0x0', 'Idempotent if hex is value');
+      assert.throws(fixHexValue('0x'), 'Invalid hex value 0x detected.');
     });
   });
 });
