@@ -521,7 +521,7 @@
     "message": "Current Language"
   },
   "currentlyUnavailable": {
-    "message": "Currently unavailable"
+    "message": "Unavailable on this network"
   },
   "customGas": {
     "message": "Customize Gas"
