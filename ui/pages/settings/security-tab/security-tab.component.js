@@ -19,8 +19,6 @@ export default class SecurityTab extends PureComponent {
     setShowIncomingTransactionsFeatureFlag: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
     usePhishDetect: PropTypes.bool.isRequired,
-    useTokenDetection: PropTypes.bool.isRequired,
-    setUseTokenDetection: PropTypes.func.isRequired,
   };
 
   renderSeedWords() {
@@ -143,32 +141,6 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  renderTokenDetectionToggle() {
-    const { t } = this.context;
-    const { useTokenDetection, setUseTokenDetection } = this.props;
-
-    return (
-      <div className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{t('useTokenDetection')}</span>
-          <div className="settings-page__content-description">
-            {t('useTokenDetectionDescription')}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={useTokenDetection}
-              onToggle={(value) => setUseTokenDetection(!value)}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   render() {
     const { warning } = this.props;
 
@@ -179,7 +151,6 @@ export default class SecurityTab extends PureComponent {
         {this.renderIncomingTransactionsOptIn()}
         {this.renderPhishingDetectionToggle()}
         {this.renderMetaMetricsOptIn()}
-        {this.renderTokenDetectionToggle()}
       </div>
     );
   }

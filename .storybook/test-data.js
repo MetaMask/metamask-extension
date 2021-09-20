@@ -103,6 +103,12 @@ const state = {
         },
       },
     },
+    recipient: {
+      address: '0x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
+      nickname: 'John Doe',
+      error: '',
+      warning: '',
+    },
     addresses: [
       {
         address: '0x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
@@ -358,6 +364,15 @@ const state = {
               path: '/firstRetryBlockNumber',
               timestamp: 1629582711878,
               value: '0x9c2686',
+            },
+          ],
+          [
+            {
+              note: 'txStateManager: setting status to confirmed',
+              op: 'replace',
+              path: '/status',
+              timestamp: 1629582721178,
+              value: 'confirmed',
             },
           ],
           [

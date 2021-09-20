@@ -103,6 +103,18 @@ describe('SendHeader Component', () => {
       expect(getByText('Cancel')).toBeTruthy();
     });
 
+    it('has button label changed to Cancel Edit in editing stage', () => {
+      const { getByText } = renderWithProvider(
+        <SendHeader />,
+        configureMockStore(middleware)({
+          send: { ...initialState, stage: SEND_STAGES.EDIT },
+          gas: { basicEstimateStatus: 'LOADING' },
+          history: { mostRecentOverviewPage: 'activity' },
+        }),
+      );
+      expect(getByText('Cancel Edit')).toBeTruthy();
+    });
+
     it('resets send state when clicked', () => {
       const store = configureMockStore(middleware)({
         send: initialState,
