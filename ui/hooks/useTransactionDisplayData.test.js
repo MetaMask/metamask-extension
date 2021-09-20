@@ -30,7 +30,7 @@ const expectedResults = [
     category: TRANSACTION_GROUP_CATEGORIES.SEND,
     subtitle: 'To: 0xffe5...1a97',
     subtitleContainsOrigin: false,
-    date: 'May 12, 2020',
+    date: 'May 13, 2020',
     primaryCurrency: '-1 ETH',
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
