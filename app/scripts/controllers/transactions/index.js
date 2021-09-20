@@ -136,6 +136,8 @@ export default class TransactionController extends EventEmitter {
       getConfirmedTransactions: this.txStateManager.getConfirmedTransactions.bind(
         this.txStateManager,
       ),
+      getExternalPendingTransactions: opts.getExternalPendingTransactions,
+      getExternalConfirmedTransactions: opts.getExternalConfirmedTransactions,
     });
 
     this.pendingTxTracker = new PendingTransactionTracker({
@@ -873,6 +875,60 @@ export default class TransactionController extends EventEmitter {
     } finally {
       this.inProcessOfSigning.delete(txId);
     }
+  }
+
+  async approveExternalTransaction(txParams) {
+    let rawTx;
+    // TODO: Account for this for external transactions
+    // if (this.inProcessOfSigning.has(txId)) {
+    //   return;
+    // }
+    this.inProcessOfSigning.add(txId);
+    let nonceLock;
+    try {
+      const fromAddress = txParams.from;
+      nonceLock = await this.nonceTracker.getNonceLock(fromAddress);
+      // TODO: handle cancels, speedups, replacements here?
+      const nonce = nonceLock.nextNonce;
+
+      txParams.nonce = addHexPrefix(nonce.toString(16));
+     
+      rawTx = await this.signExternalTransactionTransaction(txParams);
+      nonceLock.releaseLock();
+    } catch (err) {
+      log.error(err2);
+      // must set transaction to submitted/failed before releasing lock
+      if (nonceLock) {
+        nonceLock.releaseLock();
+      }
+      // continue with error chain
+      throw err;
+    } finally {
+      // this.inProcessOfSigning.delete(txId);
+    }
+    return rawTx;
+  }
+
+  async signExternalTransaction(txParams) {
+    // add network/chain id
+    const chainId = this.getChainId();
+    const type = isEIP1559Transaction({ txParams })
+      ? TRANSACTION_ENVELOPE_TYPES.FEE_MARKET
+      : TRANSACTION_ENVELOPE_TYPES.LEGACY;
+    const txParams = {
+      ...txMeta.txParams,
+      type,
+      chainId,
+      gasLimit: txMeta.txParams.gas,
+    };
+    // sign tx
+    const fromAddress = txParams.from;
+    const common = await this.getCommonConfiguration(fromAddress);
+    const unsignedEthTx = TransactionFactory.fromTxData(txParams, { common });
+    const signedEthTx = await this.signEthTx(unsignedEthTx, fromAddress);
+
+    const rawTx = bufferToHex(signedEthTx.serialize());
+    return rawTx;
   }
 
   /**
