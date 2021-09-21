@@ -1,18 +1,18 @@
 import sinon from 'sinon';
 import migration61 from './061';
 
-describe('migration #61', function () {
+describe('migration #61', () => {
   let dateStub;
 
-  beforeEach(function () {
+  beforeEach(() => {
     dateStub = sinon.stub(Date.prototype, 'getTime').returns(1621580400000);
   });
 
-  afterEach(function () {
+  afterEach(() => {
     dateStub.restore();
   });
 
-  it('should update the version metadata', async function () {
+  it('should update the version metadata', async () => {
     const oldStorage = {
       meta: {
         version: 60,
@@ -26,7 +26,7 @@ describe('migration #61', function () {
     });
   });
 
-  it('should set recoveryPhraseReminderHasBeenShown to false and recoveryPhraseReminderLastShown to the current time', async function () {
+  it('should set recoveryPhraseReminderHasBeenShown to false and recoveryPhraseReminderLastShown to the current time', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -46,7 +46,7 @@ describe('migration #61', function () {
     });
   });
 
-  it('should initialize AppStateController if it does not exist', async function () {
+  it('should initialize AppStateController if it does not exist', async () => {
     const oldStorage = {
       meta: {},
       data: {
