@@ -29,6 +29,7 @@ import {
 } from '../../../store/actions';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+import { useIncrementedGasFees } from '../../../hooks/useIncrementedGasFees';
 
 export default function EditGasPopover({
   popoverTitle = '',
@@ -64,6 +65,19 @@ export default function EditGasPopover({
   ] = useState(false);
 
   const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
+  const updatedCustomGasSettings = useIncrementedGasFees(transaction);
+
+  let updatedTransaction = transaction;
+  if (mode === EDIT_GAS_MODES.SPEED_UP || mode === EDIT_GAS_MODES.CANCEL) {
+    updatedTransaction = {
+      ...transaction,
+      userFeeLevel: 'custom',
+      txParams: {
+        ...transaction.txParams,
+        ...updatedCustomGasSettings,
+      },
+    };
+  }
 
   const {
     maxPriorityFeePerGas,
@@ -91,10 +105,15 @@ export default function EditGasPopover({
     balanceError,
     estimatesUnavailableWarning,
     estimatedBaseFee,
-  } = useGasFeeInputs(defaultEstimateToUse, transaction, minimumGasLimit, mode);
+  } = useGasFeeInputs(
+    defaultEstimateToUse,
+    updatedTransaction,
+    minimumGasLimit,
+    mode,
+  );
 
   const txParamsHaveBeenCustomized =
-    estimateToUse === 'custom' || txParamsAreDappSuggested(transaction);
+    estimateToUse === 'custom' || txParamsAreDappSuggested(updatedTransaction);
 
   /**
    * Temporary placeholder, this should be managed by the parent component but
@@ -113,7 +132,7 @@ export default function EditGasPopover({
   }, [showSidebar, onClose, dispatch]);
 
   const onSubmit = useCallback(() => {
-    if (!transaction || !mode) {
+    if (!updatedTransaction || !mode) {
       closePopover();
     }
 
@@ -132,14 +151,14 @@ export default function EditGasPopover({
           gasPrice: decGWEIToHexWEI(gasPrice),
         };
 
-    const cleanTransactionParams = { ...transaction.txParams };
+    const cleanTransactionParams = { ...updatedTransaction.txParams };
 
     if (networkAndAccountSupport1559) {
       delete cleanTransactionParams.gasPrice;
     }
 
     const updatedTxMeta = {
-      ...transaction,
+      ...updatedTransaction,
       userFeeLevel: estimateToUse || 'custom',
       txParams: {
         ...cleanTransactionParams,
@@ -150,14 +169,14 @@ export default function EditGasPopover({
     switch (mode) {
       case EDIT_GAS_MODES.CANCEL:
         dispatch(
-          createCancelTransaction(transaction.id, newGasSettings, {
+          createCancelTransaction(updatedTransaction.id, newGasSettings, {
             estimatedBaseFee,
           }),
         );
         break;
       case EDIT_GAS_MODES.SPEED_UP:
         dispatch(
-          createSpeedUpTransaction(transaction.id, newGasSettings, {
+          createSpeedUpTransaction(updatedTransaction.id, newGasSettings, {
             estimatedBaseFee,
           }),
         );
@@ -178,7 +197,7 @@ export default function EditGasPopover({
 
     closePopover();
   }, [
-    transaction,
+    updatedTransaction,
     mode,
     dispatch,
     closePopover,
@@ -263,7 +282,7 @@ export default function EditGasPopover({
               estimatedMaximumFiat={estimatedMaximumFiat}
               onEducationClick={() => setShowEducationContent(true)}
               mode={mode}
-              transaction={transaction}
+              transaction={updatedTransaction}
               gasErrors={gasErrors}
               gasWarnings={gasWarnings}
               onManualChange={onManualChange}

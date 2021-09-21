@@ -35,8 +35,14 @@ import TransactionDetailItem from '../../components/app/transaction-detail-item/
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
+import Dialog from '../../components/ui/dialog';
+import Typography from '../../components/ui/typography/typography';
 
-import { COLORS } from '../../helpers/constants/design-system';
+import {
+  COLORS,
+  FONT_WEIGHT,
+  TYPOGRAPHY,
+} from '../../helpers/constants/design-system';
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
@@ -117,6 +123,8 @@ export default class ConfirmTransactionBase extends Component {
     maxPriorityFeePerGas: PropTypes.string,
     baseFeePerGas: PropTypes.string,
     gasFeeIsCustom: PropTypes.bool,
+    showLedgerSteps: PropTypes.bool.isRequired,
+    isFirefox: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -295,6 +303,8 @@ export default class ConfirmTransactionBase extends Component {
       primaryTotalTextOverrideMaxAmount,
       maxFeePerGas,
       maxPriorityFeePerGas,
+      showLedgerSteps,
+      isFirefox,
     } = this.props;
     const { t } = this.context;
 
@@ -389,6 +399,46 @@ export default class ConfirmTransactionBase extends Component {
               value={customNonceValue || ''}
             />
           </div>
+        </div>
+      </div>
+    ) : null;
+
+    const renderLedgerLiveStep = (text, show = true) => {
+      return (
+        show && (
+          <Typography
+            boxProps={{ margin: 0 }}
+            color={COLORS.PRIMARY3}
+            fontWeight={FONT_WEIGHT.BOLD}
+            variant={TYPOGRAPHY.H7}
+          >
+            {text}
+          </Typography>
+        )
+      );
+    };
+
+    const ledgerInstructionField = showLedgerSteps ? (
+      <div>
+        <div className="confirm-detail-row">
+          <Dialog type="message">
+            <div className="ledger-live-dialog">
+              {renderLedgerLiveStep(t('ledgerLiveDialogHeader'))}
+              {renderLedgerLiveStep(
+                `- ${t('ledgerLiveDialogStepOne')}`,
+                !isFirefox,
+              )}
+              {renderLedgerLiveStep(
+                `- ${t('ledgerLiveDialogStepTwo')}`,
+                !isFirefox,
+              )}
+              {renderLedgerLiveStep(`- ${t('ledgerLiveDialogStepThree')}`)}
+              {renderLedgerLiveStep(
+                `- ${t('ledgerLiveDialogStepFour')}`,
+                Boolean(txData.txParams?.data),
+              )}
+            </div>
+          </Dialog>
         </div>
       </div>
     ) : null;
@@ -507,6 +557,7 @@ export default class ConfirmTransactionBase extends Component {
           ]}
         />
         {nonceField}
+        {ledgerInstructionField}
       </div>
     );
   }
