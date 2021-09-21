@@ -133,7 +133,7 @@
   &__open-to-dropdown {
     max-height: 194px;
 
-    @media screen and (min-width: 576px) {
+    @media screen and (min-width: $break-large) {
       max-height: 276px;
     }
   }

@@ -4,6 +4,7 @@ import AdvancedGasControls from '.';
 
 export default {
   title: 'Advanced Gas Controls',
+  id: __filename,
 };
 
 export const simple = () => {

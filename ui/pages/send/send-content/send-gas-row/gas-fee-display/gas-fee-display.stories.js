@@ -5,6 +5,7 @@ import GasFeeDisplay from './gas-fee-display.component';
 
 export default {
   title: 'GasFeeDisplay',
+  id: __filename,
 };
 
 export const GasFeeDisplayComponent = () => {

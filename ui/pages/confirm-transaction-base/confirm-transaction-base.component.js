@@ -35,10 +35,12 @@ import TransactionDetailItem from '../../components/app/transaction-detail-item/
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
+import Dialog from '../../components/ui/dialog';
 
 import {
   COLORS,
   FONT_STYLE,
+  FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../helpers/constants/design-system';
 import {
@@ -79,7 +81,6 @@ export default class ConfirmTransactionBase extends Component {
     useNonceField: PropTypes.bool,
     customNonceValue: PropTypes.string,
     updateCustomNonce: PropTypes.func,
-    assetImage: PropTypes.string,
     sendTransaction: PropTypes.func,
     showTransactionConfirmedModal: PropTypes.func,
     showRejectTransactionsConfirmationModal: PropTypes.func,
@@ -124,6 +125,9 @@ export default class ConfirmTransactionBase extends Component {
     baseFeePerGas: PropTypes.string,
     isMainnet: PropTypes.bool,
     gasFeeIsCustom: PropTypes.bool,
+    showLedgerSteps: PropTypes.bool.isRequired,
+    isFirefox: PropTypes.bool.isRequired,
+    nativeCurrency: PropTypes.string,
   };
 
   state = {
@@ -303,6 +307,8 @@ export default class ConfirmTransactionBase extends Component {
       maxFeePerGas,
       maxPriorityFeePerGas,
       isMainnet,
+      showLedgerSteps,
+      isFirefox,
     } = this.props;
     const { t } = this.context;
 
@@ -392,6 +398,46 @@ export default class ConfirmTransactionBase extends Component {
               value={customNonceValue || ''}
             />
           </div>
+        </div>
+      </div>
+    ) : null;
+
+    const renderLedgerLiveStep = (text, show = true) => {
+      return (
+        show && (
+          <Typography
+            boxProps={{ margin: 0 }}
+            color={COLORS.PRIMARY3}
+            fontWeight={FONT_WEIGHT.BOLD}
+            variant={TYPOGRAPHY.H7}
+          >
+            {text}
+          </Typography>
+        )
+      );
+    };
+
+    const ledgerInstructionField = showLedgerSteps ? (
+      <div>
+        <div className="confirm-detail-row">
+          <Dialog type="message">
+            <div className="ledger-live-dialog">
+              {renderLedgerLiveStep(t('ledgerLiveDialogHeader'))}
+              {renderLedgerLiveStep(
+                `- ${t('ledgerLiveDialogStepOne')}`,
+                !isFirefox,
+              )}
+              {renderLedgerLiveStep(
+                `- ${t('ledgerLiveDialogStepTwo')}`,
+                !isFirefox,
+              )}
+              {renderLedgerLiveStep(`- ${t('ledgerLiveDialogStepThree')}`)}
+              {renderLedgerLiveStep(
+                `- ${t('ledgerLiveDialogStepFour')}`,
+                Boolean(txData.txParams?.data),
+              )}
+            </div>
+          </Dialog>
         </div>
       </div>
     ) : null;
@@ -523,6 +569,7 @@ export default class ConfirmTransactionBase extends Component {
           ]}
         />
         {nonceField}
+        {ledgerInstructionField}
       </div>
     );
   }
@@ -856,7 +903,6 @@ export default class ConfirmTransactionBase extends Component {
       onEdit,
       nonce,
       customNonceValue,
-      assetImage,
       unapprovedTxCount,
       type,
       hideSenderToRecipient,
@@ -864,6 +910,7 @@ export default class ConfirmTransactionBase extends Component {
       txData,
       gasIsLoading,
       gasFeeIsCustom,
+      nativeCurrency,
     } = this.props;
     const {
       submitting,
@@ -890,7 +937,7 @@ export default class ConfirmTransactionBase extends Component {
     let functionType = getMethodName(name);
     if (!functionType) {
       if (type) {
-        functionType = getTransactionTypeTitle(t, type);
+        functionType = getTransactionTypeTitle(t, type, nativeCurrency);
       } else {
         functionType = t('contractInteraction');
       }
@@ -915,7 +962,6 @@ export default class ConfirmTransactionBase extends Component {
         contentComponent={contentComponent}
         nonce={customNonceValue || nonce}
         unapprovedTxCount={unapprovedTxCount}
-        assetImage={assetImage}
         identiconAddress={identiconAddress}
         errorMessage={submitError}
         errorKey={errorKey}

@@ -4,6 +4,7 @@ import { Menu, MenuItem } from '.';
 
 export default {
   title: 'Menu',
+  id: __filename,
 };
 
 export const Basic = () => {

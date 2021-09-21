@@ -21,7 +21,6 @@ export default function TokenCell({
   const t = useI18nContext();
 
   const formattedFiat = useTokenFiatAmount(address, string, symbol);
-
   const warning = balanceError ? (
     <span>
       {t('troubleTokenBalances')}

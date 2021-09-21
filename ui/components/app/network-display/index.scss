@@ -35,6 +35,11 @@
     background-color: lighten($dodger-blue, 35%);
   }
 
+  &.chip {
+    margin: 0;
+    max-width: 100%;
+  }
+
   & .chip__label {
     overflow: hidden;
     text-overflow: ellipsis;

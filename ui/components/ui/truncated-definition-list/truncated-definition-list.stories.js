@@ -5,6 +5,7 @@ import TruncatedDefinitionList from './truncated-definition-list';
 
 export default {
   title: 'Truncated Definition List',
+  id: __filename,
 };
 
 const basic = {

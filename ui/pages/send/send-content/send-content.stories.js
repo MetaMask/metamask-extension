@@ -5,6 +5,7 @@ import SendContent from './send-content.component';
 
 export default {
   title: 'SendContent',
+  id: __filename,
 };
 
 export const SendContentComponent = () => {

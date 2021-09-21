@@ -3,6 +3,7 @@ import TextField from '.';
 
 export default {
   title: 'TextField',
+  id: __filename,
 };
 
 export const text = () => <TextField label="Text" type="text" />;

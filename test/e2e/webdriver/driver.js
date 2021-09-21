@@ -275,16 +275,25 @@ class Driver {
     throw new Error('waitUntilXWindowHandles timed out polling window handles');
   }
 
-  async switchToWindowWithTitle(title, windowHandles) {
+  async switchToWindowWithTitle(
+    title,
+    windowHandles,
+    delayStep = 1000,
+    timeout = 5000,
+  ) {
+    let timeElapsed = 0;
     // eslint-disable-next-line no-param-reassign
     windowHandles = windowHandles || (await this.driver.getAllWindowHandles());
-
-    for (const handle of windowHandles) {
-      await this.driver.switchTo().window(handle);
-      const handleTitle = await this.driver.getTitle();
-      if (handleTitle === title) {
-        return handle;
+    while (timeElapsed <= timeout) {
+      for (const handle of windowHandles) {
+        await this.driver.switchTo().window(handle);
+        const handleTitle = await this.driver.getTitle();
+        if (handleTitle === title) {
+          return handle;
+        }
       }
+      await this.delay(delayStep);
+      timeElapsed += delayStep;
     }
 
     throw new Error(`No window with title: ${title}`);
