@@ -1337,9 +1337,6 @@
   "onlyAddTrustedNetworks": {
     "message": "Um provedor de rede mal-intencionado pode mentir sobre o estado do blockchain e gravar a atividade da sua rede. Adicione somente as redes em que você confia."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Disponível somente na mainnet"
-  },
   "onlyConnectTrust": {
     "message": "Conecte-se somente com sites em quem você confia."
   },

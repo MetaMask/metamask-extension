@@ -1,5 +1,4 @@
 module.exports = {
-  displayName: '/ui, /shared',
   collectCoverageFrom: ['<rootDir>/ui/**/*.js', '<rootDir>/shared/**/*.js'],
   coverageDirectory: './jest-coverage/main',
   coveragePathIgnorePatterns: ['.stories.js', '.snap'],
@@ -17,6 +16,10 @@ module.exports = {
   restoreMocks: true,
   setupFiles: ['<rootDir>/test/setup.js', '<rootDir>/test/env.js'],
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
-  testMatch: ['<rootDir>/ui/**/*.test.js', '<rootDir>/shared/**/*.test.js'],
+  testMatch: [
+    '<rootDir>/ui/**/*.test.js',
+    '<rootDir>/shared/**/*.test.js',
+    '<rootDir>/app/scripts/migrations/*.test.js',
+  ],
   testTimeout: 2500,
 };

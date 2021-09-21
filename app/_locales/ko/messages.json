@@ -1337,9 +1337,6 @@
   "onlyAddTrustedNetworks": {
     "message": "악성 네트워크 공급업체는 블록체인 상태를 거짓으로 보고하고 네트워크 활동을 기록할 수 있습니다. 신뢰하는 맞춤형 네트워크만 추가하세요."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "메인넷에서만 사용 가능"
-  },
   "onlyConnectTrust": {
     "message": "신뢰하는 사이트만 연결하세요."
   },

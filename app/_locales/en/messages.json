@@ -520,6 +520,9 @@
   "currentLanguage": {
     "message": "Current Language"
   },
+  "currentlyUnavailable": {
+    "message": "Unavailable on this network"
+  },
   "customGas": {
     "message": "Customize Gas"
   },
@@ -745,6 +748,9 @@
   "editPermission": {
     "message": "Edit Permission"
   },
+  "enableFromSettings": {
+    "message": " Enable it from Settings."
+  },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
     "description": "$1 is the web3 site name"
@@ -867,6 +873,12 @@
   },
   "expandView": {
     "message": "Expand view"
+  },
+  "experimental": {
+    "message": "Experimental"
+  },
+  "experimentalSettingsDescription": {
+    "message": "Token detection & more"
   },
   "exportPrivateKey": {
     "message": "Export Private Key"
@@ -1591,9 +1603,6 @@
   },
   "onlyAddTrustedNetworks": {
     "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
-  },
-  "onlyAvailableOnMainnet": {
-    "message": "Only available on mainnet"
   },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
@@ -2564,6 +2573,9 @@
   "tokenDecimalFetchFailed": {
     "message": "Token decimal required."
   },
+  "tokenDetectionAnnouncement": {
+    "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"
+  },
   "tokenSymbol": {
     "message": "Token Symbol"
   },
@@ -2733,7 +2745,7 @@
     "message": "Use Token Detection"
   },
   "useTokenDetectionDescription": {
-    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn this off if you don’t want MetaMask to pull data from those those services."
+    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services."
   },
   "usedByClients": {
     "message": "Used by a variety of different clients"
