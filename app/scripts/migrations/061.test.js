@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import migration61 from './061';
 
@@ -22,7 +21,7 @@ describe('migration #61', function () {
     };
 
     const newStorage = await migration61.migrate(oldStorage);
-    assert.deepEqual(newStorage.meta, {
+    expect(newStorage.meta).toStrictEqual({
       version: 61,
     });
   });
@@ -38,7 +37,7 @@ describe('migration #61', function () {
     };
 
     const newStorage = await migration61.migrate(oldStorage);
-    assert.deepEqual(newStorage.data, {
+    expect(newStorage.data).toStrictEqual({
       AppStateController: {
         recoveryPhraseReminderHasBeenShown: false,
         recoveryPhraseReminderLastShown: 1621580400000,
@@ -56,7 +55,7 @@ describe('migration #61', function () {
     };
 
     const newStorage = await migration61.migrate(oldStorage);
-    assert.deepEqual(newStorage.data, {
+    expect(newStorage.data).toStrictEqual({
       existingProperty: 'foo',
       AppStateController: {
         recoveryPhraseReminderHasBeenShown: false,

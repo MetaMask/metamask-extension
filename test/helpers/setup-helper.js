@@ -4,6 +4,8 @@ import Adapter from 'enzyme-adapter-react-16';
 import log from 'loglevel';
 import { JSDOM } from 'jsdom';
 
+process.env.IN_TEST = true;
+
 nock.disableNetConnect();
 nock.enableNetConnect('localhost');
 
