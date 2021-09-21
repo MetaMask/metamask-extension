@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "नेटवर्क जोड़ें"
   },
-  "addRecipient": {
-    "message": "प्राप्तकर्ता को जोड़ें"
-  },
   "addSuggestedTokens": {
     "message": "सुझाए गए टोकन जोड़ें"
   },
@@ -92,9 +89,6 @@
     "message": "जैसे जॉन डी."
   },
   "addToken": {
-    "message": "टोकन जोड़ें"
-  },
-  "addTokens": {
     "message": "टोकन जोड़ें"
   },
   "advanced": {
@@ -519,7 +513,7 @@
     "message": "अनुरोध डिक्रिप्ट करें"
   },
   "defaultNetwork": {
-    "message": "Ether के लेनदेन के लिए डिफ़ॉल्ट नेटवर्क Main Net है।"
+    "message": "Ether के लेनदेन के लिए डिफ़ॉल्ट नेटवर्क Mainnet है।"
   },
   "delete": {
     "message": "हटाएँ"
@@ -1028,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "हाँ, आइए सेट करते हैं!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "क्या आप इन टोकन को जोड़ना चाहते हैं?"
   },
   "links": {
@@ -1342,9 +1336,6 @@
   },
   "onlyAddTrustedNetworks": {
     "message": "एक दुर्भावनापूर्ण नेटवर्क प्रदाता ब्लॉकचेन की स्थिति के बारे में झूठ बोल सकता है और आपकी नेटवर्क गतिविधि को रिकॉर्ड कर सकता है। केवल उन कस्टम नेटवर्क को जोड़ें, जिन पर आप भरोसा करते हैं।"
-  },
-  "onlyAvailableOnMainnet": {
-    "message": "केवल मेननेट पर उपलब्ध है"
   },
   "onlyConnectTrust": {
     "message": "केवल उन साइटों से कनेक्ट करें, जिन पर आप भरोसा करते हैं।"
@@ -1694,9 +1685,6 @@
   "sendTokens": {
     "message": "टोकन भेजें"
   },
-  "sentEther": {
-    "message": "Ether भेजा गया"
-  },
   "separateEachWord": {
     "message": "प्रत्येक शब्द को एक रिक्ति से अलग करें"
   },
@@ -1876,10 +1864,6 @@
     "message": "$1 के मिलान वाले कोई भी टोकन उपलब्ध नहीं हैं",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "$1 की जाँच की जा रही है",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "अपने हार्डवेयर वॉलेट से पुष्टि करें"
   },
@@ -1930,9 +1914,6 @@
   },
   "swapFetchingTokens": {
     "message": "टोकन प्राप्त किए जा रहे हैं..."
-  },
-  "swapFinalizing": {
-    "message": "अंतिम रूप दिया जा रहा है..."
   },
   "swapFromTo": {
     "message": "$1 से $2 का स्वैप",

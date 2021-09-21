@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Tilføj netværk"
   },
-  "addRecipient": {
-    "message": "Tilføj modtager"
-  },
   "addSuggestedTokens": {
     "message": "Tilføj foreslåede tokens"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "Tilføj Polet"
-  },
-  "addTokens": {
-    "message": "Tilføj tokens"
   },
   "advanced": {
     "message": "Avanceret"
@@ -276,7 +270,7 @@
     "message": "Decimaler skal være mindst 0 og højst 36."
   },
   "defaultNetwork": {
-    "message": "Standardnetværket for Ether-transaktioner er Main Net."
+    "message": "Standardnetværket for Ether-transaktioner er Mainnet."
   },
   "delete": {
     "message": "Slet"
@@ -536,7 +530,7 @@
   "letsGoSetUp": {
     "message": "Ja, lad os komme i gang!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Ønsker du at tilføje disse tokens?"
   },
   "loadMore": {
@@ -872,9 +866,6 @@
   },
   "sendTokens": {
     "message": "Send tokens"
-  },
-  "sentEther": {
-    "message": "sendte ether"
   },
   "separateEachWord": {
     "message": "Separer hvert ord med et enkelt mellemrum"

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
 import Modal from '../../modal';
-import { addressSummary } from '../../../../helpers/utils/util';
+import { addressSummary, getURLHostName } from '../../../../helpers/utils/util';
 import Identicon from '../../../ui/identicon';
 
 export default class ConfirmRemoveAccount extends Component {
@@ -66,9 +66,7 @@ export default class ConfirmRemoveAccount extends Component {
                 properties: {
                   link_type: 'Account Tracker',
                   action: 'Remove Account',
-                  block_explorer_domain: accountLink
-                    ? new URL(accountLink)?.hostname
-                    : '',
+                  block_explorer_domain: getURLHostName(accountLink),
                 },
               });
               global.platform.openTab({

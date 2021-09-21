@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Προσθήκη Δικτύου"
   },
-  "addRecipient": {
-    "message": "Προσθήκη Παραλήπτη"
-  },
   "addSuggestedTokens": {
     "message": "Προσθέστε τα Προτεινόμενα Tokens"
   },
@@ -51,9 +48,6 @@
     "message": "π.χ. John D."
   },
   "addToken": {
-    "message": "Προσθήκη Token"
-  },
-  "addTokens": {
     "message": "Προσθήκη Token"
   },
   "advanced": {
@@ -273,7 +267,7 @@
     "message": "Τα δεκαδικά πρέπει να είναι τουλάχιστον 0 και όχι πάνω από 36."
   },
   "defaultNetwork": {
-    "message": "Το προεπιλεγμένο δίκτυο για συναλλαγές Ether είναι το Main Net."
+    "message": "Το προεπιλεγμένο δίκτυο για συναλλαγές Ether είναι το Mainnet."
   },
   "delete": {
     "message": "Διαγραφή"
@@ -540,7 +534,7 @@
   "letsGoSetUp": {
     "message": "Ναι, ας το εγκαταστήσουμε!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Θέλετε να προσθέσετε αυτά τα token;"
   },
   "links": {
@@ -891,9 +885,6 @@
   },
   "sendTokens": {
     "message": "Στείλτε Tokens"
-  },
-  "sentEther": {
-    "message": "απεσταλμένα ether"
   },
   "separateEachWord": {
     "message": "Διαχωρίστε κάθε λέξη με ένα μόνο κενό"

@@ -41,9 +41,6 @@
   "addNetwork": {
     "message": "新增網路"
   },
-  "addRecipient": {
-    "message": "新增接收人"
-  },
   "addSuggestedTokens": {
     "message": "加入建議的代幣"
   },
@@ -54,9 +51,6 @@
     "message": "如 John D。"
   },
   "addToken": {
-    "message": "加入代幣"
-  },
-  "addTokens": {
     "message": "加入代幣"
   },
   "advanced": {
@@ -552,7 +546,7 @@
   "letsGoSetUp": {
     "message": "好，我們開始吧！"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "確定要加入代幣？"
   },
   "links": {
@@ -882,9 +876,6 @@
   },
   "sendTokens": {
     "message": "發送代幣"
-  },
-  "sentEther": {
-    "message": "發送以太幣"
   },
   "separateEachWord": {
     "message": "單詞之間請以空白間隔"

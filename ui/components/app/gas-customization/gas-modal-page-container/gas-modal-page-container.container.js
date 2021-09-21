@@ -4,7 +4,6 @@ import {
   hideModal,
   createRetryTransaction,
   createSpeedUpTransaction,
-  hideSidebar,
 } from '../../../../store/actions';
 import {
   setCustomGasPrice,
@@ -223,7 +222,6 @@ const mapDispatchToProps = (dispatch) => {
     createSpeedUpTransaction: (txId, customGasSettings) => {
       return dispatch(createSpeedUpTransaction(txId, customGasSettings));
     },
-    hideSidebar: () => dispatch(hideSidebar()),
   };
 };
 
@@ -246,7 +244,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     createSpeedUpTransaction: dispatchCreateSpeedUpTransaction,
     createRetryTransaction: dispatchCreateRetryTransaction,
     updateTransactionGasFees: dispatchUpdateTransactionGasFees,
-    hideSidebar: dispatchHideSidebar,
     cancelAndClose: dispatchCancelAndClose,
     hideModal: dispatchHideModal,
     ...otherDispatchProps
@@ -258,7 +255,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     onSubmit: (gasLimit, gasPrice) => {
       if (ownProps.onSubmit) {
-        dispatchHideSidebar();
         dispatchCancelAndClose();
         ownProps.onSubmit({ gasLimit, gasPrice });
         return;
@@ -274,11 +270,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dispatchCancelAndClose();
       } else if (isSpeedUp) {
         dispatchCreateSpeedUpTransaction(txId, { gasPrice, gasLimit });
-        dispatchHideSidebar();
         dispatchCancelAndClose();
       } else if (isRetry) {
         dispatchCreateRetryTransaction(txId, { gasPrice, gasLimit });
-        dispatchHideSidebar();
         dispatchCancelAndClose();
       } else {
         dispatchSetGasData(gasLimit, gasPrice);
@@ -293,9 +287,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     },
     cancelAndClose: () => {
       dispatchCancelAndClose();
-      if (isSpeedUp || isRetry) {
-        dispatchHideSidebar();
-      }
     },
     disableSave:
       insufficientBalance ||

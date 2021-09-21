@@ -38,6 +38,7 @@ class PrivateKeyImportView extends Component {
       setSelectedAddress,
       firstAddress,
     } = this.props;
+    const { t } = this.context;
 
     importNewAccount('Private Key', [privateKey])
       .then(({ selectedAddress }) => {
@@ -52,7 +53,7 @@ class PrivateKeyImportView extends Component {
           history.push(mostRecentOverviewPage);
           displayWarning(null);
         } else {
-          displayWarning('Error importing account.');
+          displayWarning(t('importAccountError'));
           this.context.metricsEvent({
             eventOpts: {
               category: 'Accounts',

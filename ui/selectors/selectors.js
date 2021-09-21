@@ -15,7 +15,11 @@ import {
   ALLOWED_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import { shortenAddress, getAccountByAddress } from '../helpers/utils/util';
+import {
+  shortenAddress,
+  getAccountByAddress,
+  isEqualCaseInsensitive,
+} from '../helpers/utils/util';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -102,7 +106,7 @@ export function checkNetworkAndAccountSupports1559(state) {
  */
 export function isHardwareWallet(state) {
   const keyring = getCurrentKeyring(state);
-  return keyring.type.includes('Hardware');
+  return Boolean(keyring?.type?.includes('Hardware'));
 }
 
 /**
@@ -112,7 +116,7 @@ export function isHardwareWallet(state) {
  */
 export function getHardwareWalletType(state) {
   const keyring = getCurrentKeyring(state);
-  return keyring.type.includes('Hardware') ? keyring.type : undefined;
+  return isHardwareWallet(state) ? keyring.type : undefined;
 }
 
 export function getAccountType(state) {
@@ -262,11 +266,6 @@ export function getTargetAccount(state, targetAddress) {
 export const getTokenExchangeRates = (state) =>
   state.metamask.contractExchangeRates;
 
-export function getAssetImages(state) {
-  const assetImages = state.metamask.assetImages || {};
-  return assetImages;
-}
-
 export function getAddressBook(state) {
   const chainId = getCurrentChainId(state);
   if (!state.metamask.addressBook[chainId]) {
@@ -277,8 +276,8 @@ export function getAddressBook(state) {
 
 export function getAddressBookEntry(state, address) {
   const addressBook = getAddressBook(state);
-  const entry = addressBook.find(
-    (contact) => contact.address === toChecksumHexAddress(address),
+  const entry = addressBook.find((contact) =>
+    isEqualCaseInsensitive(contact.address, toChecksumHexAddress(address)),
   );
   return entry;
 }
@@ -355,7 +354,7 @@ export function getTotalUnapprovedCount(state) {
     unapprovedTypedMessagesCount +
     getUnapprovedTxCount(state) +
     pendingApprovalCount +
-    getSuggestedTokenCount(state)
+    getSuggestedAssetCount(state)
   );
 }
 
@@ -376,9 +375,9 @@ export function getUnapprovedTemplatedConfirmations(state) {
   );
 }
 
-function getSuggestedTokenCount(state) {
-  const { suggestedTokens = {} } = state.metamask;
-  return Object.keys(suggestedTokens).length;
+function getSuggestedAssetCount(state) {
+  const { suggestedAssets = [] } = state.metamask;
+  return suggestedAssets.length;
 }
 
 export function getIsMainnet(state) {
@@ -602,4 +601,22 @@ export function getShowRecoveryPhraseReminder(state) {
   const frequency = recoveryPhraseReminderHasBeenShown ? DAY * 90 : DAY * 2;
 
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
+}
+
+/**
+ * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUseTokenDetection(state) {
+  return Boolean(state.metamask.useTokenDetection);
+}
+
+/**
+ * To retrieve the tokenList produced by TokenListcontroller
+ * @param {*} state
+ * @returns {Object}
+ */
+export function getTokenList(state) {
+  return state.metamask.tokenList;
 }

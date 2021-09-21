@@ -131,5 +131,5 @@ AdvancedGasControls.propTypes = {
   maxPriorityFeeFiat: PropTypes.string,
   maxFeeFiat: PropTypes.string,
   gasErrors: PropTypes.object,
-  minimumGasLimit: PropTypes.number,
+  minimumGasLimit: PropTypes.string,
 };

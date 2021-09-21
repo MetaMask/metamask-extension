@@ -27,11 +27,18 @@
   &__description {
     text-align: center;
 
-    div {
+    p {
       @include Paragraph;
+
+      text-align: start;
+      margin-bottom: 22px;
     }
 
-    @media screen and (max-width: 575px) {
+    a {
+      color: $primary-1;
+    }
+
+    @media screen and (max-width: $break-small) {
       font-size: 0.9rem;
     }
   }

@@ -124,11 +124,11 @@ describe('Send Page', () => {
     });
   });
 
-  describe('Add Recipient Flow', () => {
-    it('should render the header with Add Recipient displayed', () => {
+  describe('Send Flow', () => {
+    it('should render the header with Send to displayed', () => {
       const store = configureMockStore(middleware)(baseStore);
       const { getByText } = renderWithProvider(<Send />, store);
-      expect(getByText('Add Recipient')).toBeTruthy();
+      expect(getByText('Send to')).toBeTruthy();
     });
 
     it('should render the EnsInput field', () => {
@@ -146,7 +146,7 @@ describe('Send Page', () => {
     });
   });
 
-  describe('Send and Edit Flow', () => {
+  describe('Send and Edit Flow (draft)', () => {
     it('should render the header with Send displayed', () => {
       const store = configureMockStore(middleware)({
         ...baseStore,

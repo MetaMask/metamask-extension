@@ -102,9 +102,10 @@ class JsonImportSubview extends Component {
       setSelectedAddress,
     } = this.props;
     const { fileContents } = this.state;
+    const { t } = this.context;
 
     if (!fileContents) {
-      const message = this.context.t('needImportFile');
+      const message = t('needImportFile');
       displayWarning(message);
       return;
     }
@@ -124,7 +125,7 @@ class JsonImportSubview extends Component {
           });
           displayWarning(null);
         } else {
-          displayWarning('Error importing account.');
+          displayWarning(t('importAccountError'));
           this.context.metricsEvent({
             eventOpts: {
               category: 'Accounts',

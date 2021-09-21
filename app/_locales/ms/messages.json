@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Tambah Rangkaian"
   },
-  "addRecipient": {
-    "message": "Tambah Penerima"
-  },
   "addSuggestedTokens": {
     "message": "Tambah Token yang Disyorkan"
   },
@@ -51,9 +48,6 @@
     "message": "cth. John D."
   },
   "addToken": {
-    "message": "Tambah Token"
-  },
-  "addTokens": {
     "message": "Tambah Token"
   },
   "advanced": {
@@ -529,7 +523,7 @@
   "letsGoSetUp": {
     "message": "Ya, mari sediakannya!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Adakah anda ingin menambah token ini?"
   },
   "links": {
@@ -871,9 +865,6 @@
   },
   "sendTokens": {
     "message": "Hantar Token"
-  },
-  "sentEther": {
-    "message": "menghantar ether"
   },
   "separateEachWord": {
     "message": "Pisahkan setiap perkataan dengan ruang tunggal"

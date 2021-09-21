@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಸೇರಿಸಿ"
   },
-  "addRecipient": {
-    "message": "ಸ್ವೀಕೃತಿದಾರರನ್ನು ಸೇರಿಸಿ"
-  },
   "addSuggestedTokens": {
     "message": "ಸೂಚಿಸಲಾದ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "ಟೋಕನ್ ಸೇರಿಸಿ"
-  },
-  "addTokens": {
-    "message": "ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
   },
   "advanced": {
     "message": "ಸುಧಾರಿತ"
@@ -543,7 +537,7 @@
   "letsGoSetUp": {
     "message": "ಹೌದು, ಹೊಂದಿಸೋಣ!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "ನೀವು ಈ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಲು ಬಯಸುತ್ತೀರಾ?"
   },
   "links": {
@@ -894,9 +888,6 @@
   },
   "sendTokens": {
     "message": "ಟೋಕನ್‌ಗಳನ್ನು ಕಳುಹಿಸಿ"
-  },
-  "sentEther": {
-    "message": "ಕಳುಹಿಸಲಾದ ಎಥರ್"
   },
   "separateEachWord": {
     "message": "ಒಂದು ಸ್ಪೇಸ್ ಮೂಲಕ ಪ್ರತಿ ಪದವನ್ನು ಬೇರ್ಪಡಿಸಿ"

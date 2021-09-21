@@ -28,7 +28,7 @@ export default function SendHeader() {
   let title = asset.type === ASSET_TYPES.NATIVE ? t('send') : t('sendTokens');
 
   if (stage === SEND_STAGES.ADD_RECIPIENT || stage === SEND_STAGES.INACTIVE) {
-    title = t('addRecipient');
+    title = t('sendTo');
   } else if (stage === SEND_STAGES.EDIT) {
     title = t('edit');
   }
@@ -38,7 +38,9 @@ export default function SendHeader() {
       className="send__header"
       onClose={onClose}
       title={title}
-      headerCloseText={t('cancel')}
+      headerCloseText={
+        stage === SEND_STAGES.EDIT ? t('cancelEdit') : t('cancel')
+      }
     />
   );
 }

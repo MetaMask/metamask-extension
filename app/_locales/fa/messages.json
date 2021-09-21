@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "اضافه شبکه"
   },
-  "addRecipient": {
-    "message": "اضافه کردن دریافت کننده"
-  },
   "addSuggestedTokens": {
     "message": "اضافه رمزیاب های پیشنهاد شده"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "یک رمز یاب اضافه کنید"
-  },
-  "addTokens": {
-    "message": "اضافه رمزیاب ها"
   },
   "advanced": {
     "message": "پیشرفته"
@@ -276,7 +270,7 @@
     "message": "اعشاریه ها باید حد اقل 0، و بیشتر از 36 نباشند."
   },
   "defaultNetwork": {
-    "message": "شبکه خودکار برای معاملات Ether عبارت است از Main Net."
+    "message": "شبکه خودکار برای معاملات Ether عبارت است از Mainnet."
   },
   "delete": {
     "message": "حذف"
@@ -543,7 +537,7 @@
   "letsGoSetUp": {
     "message": "بلی، درست شد!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "آیا میخواهید این رمزیاب ها را اضافه نمایید؟"
   },
   "links": {
@@ -894,9 +888,6 @@
   },
   "sendTokens": {
     "message": "رمزیاب ها را ارسال کنید"
-  },
-  "sentEther": {
-    "message": "ایتر ارسال شد"
   },
   "separateEachWord": {
     "message": "هر کلمه را با یک فاصله واحد جدا سازید"
