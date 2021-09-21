@@ -151,7 +151,7 @@ describe('app utils', function () {
       );
 
       assert.equal(fixHexValue('0x0'), '0x0', 'Idempotent if hex is value');
-      assert.throws(fixHexValue('0x'), 'Invalid hex value 0x detected.');
+      assert.throws(() => fixHexValue('0x'), 'Error: Invalid hex value 0x detected.');
     });
   });
 });
