@@ -17469,12 +17469,13 @@ lavamoat-viz@^6.0.9:
     serve-handler "^6.1.3"
     yargs "^16.0.0"
 
-lavamoat@^5.3.3:
-  version "5.3.3"
-  resolved "https://registry.yarnpkg.com/lavamoat/-/lavamoat-5.3.3.tgz#65ddd3bd2737c24336d8488eee24d24caaeb709e"
-  integrity sha512-xATNGQSEsBzR7wA/wfzDQjhd7Hpm80X0bsIXEgkFvzr2yNuudG3p/k2bHVZiZ69YX5j2pXWL1wRi+O9+MeFAZw==
+lavamoat@^5.3.4:
+  version "5.3.4"
+  resolved "https://registry.yarnpkg.com/lavamoat/-/lavamoat-5.3.4.tgz#cf0778a5fc8b2bc14bce79d46dc730df3d8c21ad"
+  integrity sha512-0p7B8+6Hs/WGlkBaVQl6RGdAlYd0pL6eFTh6/Oc3kdyi4wVc2Fz5vFOJqrZi8XkvjMuCLln7udYbiCapr74yZQ==
   dependencies:
     "@babel/code-frame" "^7.10.4"
+    "@babel/highlight" "^7.10.4"
     bindings "^1.5.0"
     htmlescape "^1.1.1"
     json-stable-stringify "^1.0.1"
