@@ -1,7 +1,7 @@
 import migration60 from './060';
 
-describe('migration #60', function () {
-  it('should update the version metadata', async function () {
+describe('migration #60', () => {
+  it('should update the version metadata', async () => {
     const oldStorage = {
       meta: {
         version: 59,
@@ -15,7 +15,7 @@ describe('migration #60', function () {
     });
   });
 
-  it('prunes the support notification', async function () {
+  it('prunes the support notification', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -62,7 +62,7 @@ describe('migration #60', function () {
     });
   });
 
-  it('does not modify state when the support notification does not exist', async function () {
+  it('does not modify state when the support notification does not exist', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -99,7 +99,7 @@ describe('migration #60', function () {
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
-  it('does not modify state when NotificationsController is undefined', async function () {
+  it('does not modify state when NotificationsController is undefined', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -112,7 +112,7 @@ describe('migration #60', function () {
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
-  it('does not modify state when notifications are undefined', async function () {
+  it('does not modify state when notifications are undefined', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -126,7 +126,7 @@ describe('migration #60', function () {
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
-  it('does not modify state when notifications are not an object', async function () {
+  it('does not modify state when notifications are not an object', async () => {
     const oldStorage = {
       meta: {},
       data: {
