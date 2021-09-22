@@ -1,10 +1,11 @@
 diff --git a/node_modules/abort-controller/browser.js b/node_modules/abort-controller/browser.js
-index b0c5ec3..2bda88e 100644
+index b0c5ec3..9d514c3 100644
 --- a/node_modules/abort-controller/browser.js
 +++ b/node_modules/abort-controller/browser.js
-@@ -9,5 +9,3 @@ const { AbortController, AbortSignal } =
+@@ -8,6 +8,4 @@ const { AbortController, AbortSignal } =
+     /* otherwise */ undefined
  /*eslint-enable @mysticatea/prettier */
  
- module.exports = AbortController
+-module.exports = AbortController
 -module.exports.AbortSignal = AbortSignal
--module.exports.default = AbortController
+ module.exports.default = AbortController
