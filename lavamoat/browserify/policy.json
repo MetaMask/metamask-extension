@@ -407,6 +407,7 @@
     },
     "@material-ui/core": {
       "globals": {
+        "Image": true,
         "_formatMuiErrorMessage": true,
         "addEventListener": true,
         "clearInterval": true,
@@ -416,8 +417,13 @@
         "document": true,
         "getComputedStyle": true,
         "getSelection": true,
+        "innerHeight": true,
+        "innerWidth": true,
+        "matchMedia": true,
+        "navigator": true,
         "performance.now": true,
         "removeEventListener": true,
+        "requestAnimationFrame": true,
         "setInterval": true,
         "setTimeout": true
       },
@@ -427,6 +433,8 @@
         "@material-ui/system": true,
         "@material-ui/utils": true,
         "clsx": true,
+        "hoist-non-react-statics": true,
+        "popper.js": true,
         "prop-types": true,
         "react": true,
         "react-dom": true,
@@ -735,11 +743,6 @@
         "navigator.mediaDevices.enumerateDevices": true,
         "navigator.mediaDevices.getUserMedia": true,
         "setTimeout": true
-      }
-    },
-    "abort-controller": {
-      "globals": {
-        "AbortController": true
       }
     },
     "abstract-leveldown": {
@@ -3500,7 +3503,7 @@
         "getComputedStyle": true,
         "innerHeight": true,
         "innerWidth": true,
-        "navigator.userAgent": true,
+        "navigator": true,
         "requestAnimationFrame": true,
         "setTimeout": true
       }
