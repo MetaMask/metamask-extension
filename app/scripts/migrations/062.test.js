@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import migration62 from './062';
 
 describe('migration #62', function () {
@@ -11,7 +10,7 @@ describe('migration #62', function () {
     };
 
     const newStorage = await migration62.migrate(oldStorage);
-    assert.deepEqual(newStorage.meta, {
+    expect(newStorage.meta).toStrictEqual({
       version: 62,
     });
   });
@@ -29,7 +28,7 @@ describe('migration #62', function () {
     };
 
     const newStorage = await migration62.migrate(oldStorage);
-    assert.deepStrictEqual(newStorage.data, {
+    expect(newStorage.data).toStrictEqual({
       MetaMetricsController: {
         bar: 'baz',
       },
@@ -50,7 +49,7 @@ describe('migration #62', function () {
     };
 
     const newStorage = await migration62.migrate(oldStorage);
-    assert.deepStrictEqual(newStorage.data, {
+    expect(newStorage.data).toStrictEqual({
       MetaMetricsController: {
         bar: 'baz',
       },
@@ -70,7 +69,7 @@ describe('migration #62', function () {
     };
 
     const newStorage = await migration62.migrate(oldStorage);
-    assert.deepStrictEqual(newStorage.data, {
+    expect(newStorage.data).toStrictEqual({
       MetaMetricsController: {
         bar: 'baz',
       },

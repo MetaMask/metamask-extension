@@ -623,7 +623,7 @@ export default class MetamaskController extends EventEmitter {
     });
     this.memStore.subscribe(this.sendUpdate.bind(this));
 
-    const password = process.env.CONF?.password;
+    const password = process.env.CONF?.PASSWORD;
     if (
       password &&
       !this.isUnlocked() &&
