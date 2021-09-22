@@ -36,6 +36,7 @@ import {
   swapsQuoteSelected,
   getSwapsQuoteRefreshTime,
   getReviewSwapClickedTimestamp,
+  getSmartTransactionsOptInStatus,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -155,6 +156,9 @@ export default function ViewQuote() {
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
 
   let gasFeeInputs;
   if (networkAndAccountSupports1559) {
@@ -779,6 +783,7 @@ export default function ViewQuote() {
             networkAndAccountSupports1559={networkAndAccountSupports1559}
             maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(maxPriorityFeePerGas)}
             maxFeePerGasDecGWEI={hexWEIToDecGWEI(maxFeePerGas)}
+            smartTransactionsOptInStatus={smartTransactionsOptInStatus}
           />
         </div>
       </div>
