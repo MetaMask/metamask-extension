@@ -886,9 +886,6 @@
   "sendTokens": {
     "message": "Στείλτε Tokens"
   },
-  "sentEther": {
-    "message": "απεσταλμένα ether"
-  },
   "separateEachWord": {
     "message": "Διαχωρίστε κάθε λέξη με ένα μόνο κενό"
   },

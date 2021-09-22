@@ -871,9 +871,6 @@
   "sendTokens": {
     "message": "Envoyer des jetons"
   },
-  "sentEther": {
-    "message": "Ether envoyé"
-  },
   "separateEachWord": {
     "message": "Separez chaque mot avec un espace simple"
   },
@@ -1107,7 +1104,7 @@
     "message": "Voir contact"
   },
   "viewOnCustomBlockExplorer": {
-    "message": "Afficher à $1"
+    "message": "Afficher sur $1"
   },
   "viewOnEtherscan": {
     "message": "Voir sur Etherscan"

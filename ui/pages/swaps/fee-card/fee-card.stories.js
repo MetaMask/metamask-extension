@@ -15,6 +15,7 @@ const containerStyle = {
 
 export default {
   title: 'FeeCard',
+  id: __filename,
 };
 
 export const WithAllProps = () => {

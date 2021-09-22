@@ -20,6 +20,7 @@ const store = configureStore(testData);
 
 export default {
   title: 'Swap',
+  id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 

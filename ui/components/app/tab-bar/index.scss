@@ -19,7 +19,7 @@
     background-color: unset;
     text-align: start;
 
-    @media screen and (min-width: 576px) {
+    @media screen and (min-width: $break-large) {
       &:hover {
         opacity: 0.4;
       }
@@ -29,7 +29,7 @@
       }
     }
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       @include H4;
 
       padding: 24px;
@@ -44,7 +44,7 @@
       &__description {
         display: none;
 
-        @media screen and (max-width: 575px) {
+        @media screen and (max-width: $break-small) {
           @include H6;
 
           display: block;
@@ -58,7 +58,7 @@
     &__caret {
       display: none;
 
-      @media screen and (max-width: 575px) {
+      @media screen and (max-width: $break-small) {
         display: block;
         background-image: url('/images/caret-right.svg');
         width: 36px;

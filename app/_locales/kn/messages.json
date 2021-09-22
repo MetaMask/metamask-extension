@@ -889,9 +889,6 @@
   "sendTokens": {
     "message": "ಟೋಕನ್‌ಗಳನ್ನು ಕಳುಹಿಸಿ"
   },
-  "sentEther": {
-    "message": "ಕಳುಹಿಸಲಾದ ಎಥರ್"
-  },
   "separateEachWord": {
     "message": "ಒಂದು ಸ್ಪೇಸ್ ಮೂಲಕ ಪ್ರತಿ ಪದವನ್ನು ಬೇರ್ಪಡಿಸಿ"
   },

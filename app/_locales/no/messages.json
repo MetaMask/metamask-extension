@@ -870,9 +870,6 @@
   "sendTokens": {
     "message": "Send tokener"
   },
-  "sentEther": {
-    "message": "sendt ether"
-  },
   "separateEachWord": {
     "message": "Del hvert ord med et enkelt mellomrom "
   },

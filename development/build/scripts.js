@@ -46,6 +46,9 @@ const {
   composeSeries,
   runInChildProcess,
 } = require('./task');
+const {
+  createRemoveFencedCodeTransform,
+} = require('./transforms/remove-fenced-code');
 
 module.exports = createScriptTasks;
 
@@ -54,6 +57,7 @@ function createScriptTasks({
   buildType,
   isLavaMoat,
   livereload,
+  shouldLintFenceFiles,
 }) {
   // internal tasks
   const core = {
@@ -96,6 +100,7 @@ function createScriptTasks({
           return `./app/scripts/${label}.js`;
         }),
         testing,
+        shouldLintFenceFiles,
       }),
     );
 
@@ -146,7 +151,13 @@ function createScriptTasks({
       disableConsoleSubtask,
       installSentrySubtask,
       phishingDetectSubtask,
-    ].map((subtask) => runInChildProcess(subtask, { buildType, isLavaMoat }));
+    ].map((subtask) =>
+      runInChildProcess(subtask, {
+        buildType,
+        isLavaMoat,
+        shouldLintFenceFiles,
+      }),
+    );
     // make a parent task that runs each task in a child thread
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
@@ -160,6 +171,7 @@ function createScriptTasks({
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
       label,
+      shouldLintFenceFiles,
     });
   }
 
@@ -172,6 +184,7 @@ function createScriptTasks({
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
       label,
+      shouldLintFenceFiles,
     });
   }
 
@@ -184,6 +197,7 @@ function createScriptTasks({
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
       label,
+      shouldLintFenceFiles,
     });
   }
 
@@ -200,6 +214,7 @@ function createScriptTasks({
         entryFilepath: `./app/scripts/${inpage}.js`,
         label: inpage,
         testing,
+        shouldLintFenceFiles,
       }),
       createNormalBundle({
         buildType,
@@ -209,6 +224,7 @@ function createScriptTasks({
         entryFilepath: `./app/scripts/${contentscript}.js`,
         label: contentscript,
         testing,
+        shouldLintFenceFiles,
       }),
     );
   }
@@ -220,6 +236,7 @@ function createFactoredBuild({
   devMode,
   entryFiles,
   testing,
+  shouldLintFenceFiles,
 }) {
   return async function () {
     // create bundler setup and apply defaults
@@ -234,10 +251,12 @@ function createFactoredBuild({
 
     const envVars = getEnvironmentVariables({ buildType, devMode, testing });
     setupBundlerDefaults(buildConfiguration, {
+      buildType,
       devMode,
       envVars,
-      reloadOnChange,
       minify,
+      reloadOnChange,
+      shouldLintFenceFiles,
     });
 
     // set bundle entries
@@ -359,6 +378,7 @@ function createNormalBundle({
   extraEntries = [],
   label,
   modulesToExpose,
+  shouldLintFenceFiles,
   testing,
 }) {
   return async function () {
@@ -373,10 +393,12 @@ function createNormalBundle({
 
     const envVars = getEnvironmentVariables({ buildType, devMode, testing });
     setupBundlerDefaults(buildConfiguration, {
+      buildType,
       devMode,
       envVars,
-      reloadOnChange,
       minify,
+      reloadOnChange,
+      shouldLintFenceFiles,
     });
 
     // set bundle entries
@@ -423,35 +445,37 @@ function createBuildConfiguration() {
 
 function setupBundlerDefaults(
   buildConfiguration,
-  { devMode, envVars, reloadOnChange, minify },
+  { buildType, devMode, envVars, minify, reloadOnChange, shouldLintFenceFiles },
 ) {
   const { bundlerOpts } = buildConfiguration;
 
   Object.assign(bundlerOpts, {
-    // source transforms
+    // Source transforms
     transform: [
-      // transpile top-level code
+      // Remove code that should be excluded from builds of the current type
+      createRemoveFencedCodeTransform(buildType, shouldLintFenceFiles),
+      // Transpile top-level code
       babelify,
-      // inline `fs.readFileSync` files
+      // Inline `fs.readFileSync` files
       brfs,
     ],
-    // use entryFilepath for moduleIds, easier to determine origin file
+    // Use entryFilepath for moduleIds, easier to determine origin file
     fullPaths: devMode,
-    // for sourcemaps
+    // For sourcemaps
     debug: true,
   });
 
-  // ensure react-devtools are not included in non-dev builds
+  // Ensure react-devtools are not included in non-dev builds
   if (!devMode) {
     bundlerOpts.manualIgnore.push('react-devtools');
   }
 
-  // inject environment variables via node-style `process.env`
+  // Inject environment variables via node-style `process.env`
   if (envVars) {
     bundlerOpts.transform.push([envify(envVars), { global: true }]);
   }
 
-  // setup reload on change
+  // Setup reload on change
   if (reloadOnChange) {
     setupReloadOnChange(buildConfiguration);
   }
@@ -460,21 +484,21 @@ function setupBundlerDefaults(
     setupMinification(buildConfiguration);
   }
 
-  // setup source maps
+  // Setup source maps
   setupSourcemaps(buildConfiguration, { devMode });
 }
 
 function setupReloadOnChange({ bundlerOpts, events }) {
-  // add plugin to options
+  // Add plugin to options
   Object.assign(bundlerOpts, {
     plugin: [...bundlerOpts.plugin, watchify],
-    // required by watchify
+    // Required by watchify
     cache: {},
     packageCache: {},
   });
-  // instrument pipeline
+  // Instrument pipeline
   events.on('configurePipeline', ({ bundleStream }) => {
-    // handle build error to avoid breaking build process
+    // Handle build error to avoid breaking build process
     // (eg on syntax error)
     bundleStream.on('error', (err) => {
       gracefulError(err);

@@ -874,9 +874,6 @@
   "sendTokens": {
     "message": "Pošlji žetone"
   },
-  "sentEther": {
-    "message": "poslani ether"
-  },
   "separateEachWord": {
     "message": "Vsako besedo ločite z enim presledkom"
   },

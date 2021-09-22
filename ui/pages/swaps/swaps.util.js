@@ -53,6 +53,8 @@ const TOKEN_TRANSFER_LOG_TOPIC_HASH =
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 
+const clientIdHeader = { 'X-Client-Id': 'extension' };
+
 /**
  * @param {string} type Type of an API call, e.g. "tokens"
  * @param {string} chainId
@@ -76,7 +78,7 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
-const getBaseApi = function (
+export const getBaseApi = function (
   type,
   chainId = MAINNET_CHAIN_ID,
   useNewSwapsApi = false,
@@ -84,6 +86,7 @@ const getBaseApi = function (
   const baseUrl = useNewSwapsApi
     ? getBaseUrlForNewSwapsApi(type, chainId)
     : METASWAP_CHAINID_API_HOST_MAP[chainId];
+  const chainIdDecimal = chainId && parseInt(chainId, 16);
   if (!baseUrl) {
     throw new Error(`Swaps API calls are disabled for chainId: ${chainId}`);
   }
@@ -100,8 +103,9 @@ const getBaseApi = function (
       return `${baseUrl}/aggregatorMetadata`;
     case 'gasPrices':
       return `${baseUrl}/gasPrices`;
-    case 'refreshTime':
-      return `${baseUrl}/quoteRefreshRate`;
+    case 'network':
+      // Only use v2 for this endpoint.
+      return `${SWAPS_API_V2_BASE_URL}/networks/${chainIdDecimal}`;
     default:
       throw new Error('getBaseApi requires an api call type');
   }
@@ -314,7 +318,7 @@ export async function fetchTradesInfo(
   )}${queryString}`;
   const tradesResponse = await fetchWithCache(
     tradeURL,
-    { method: 'GET' },
+    { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: 0, timeout: SECOND * 15 },
   );
   const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
@@ -359,7 +363,7 @@ export async function fetchToken(contractAddress, chainId, useNewSwapsApi) {
   const tokenUrl = getBaseApi('token', chainId, useNewSwapsApi);
   const token = await fetchWithCache(
     `${tokenUrl}?address=${contractAddress}`,
-    { method: 'GET' },
+    { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
   );
   return token;
@@ -369,7 +373,7 @@ export async function fetchTokens(chainId, useNewSwapsApi) {
   const tokensUrl = getBaseApi('tokens', chainId, useNewSwapsApi);
   const tokens = await fetchWithCache(
     tokensUrl,
-    { method: 'GET' },
+    { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
   );
   const filteredTokens = [
@@ -395,7 +399,7 @@ export async function fetchAggregatorMetadata(chainId, useNewSwapsApi) {
   );
   const aggregators = await fetchWithCache(
     aggregatorMetadataUrl,
-    { method: 'GET' },
+    { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
   );
   const filteredAggregators = {};
@@ -417,7 +421,7 @@ export async function fetchTopAssets(chainId, useNewSwapsApi) {
   const topAssetsUrl = getBaseApi('topAssets', chainId, useNewSwapsApi);
   const response = await fetchWithCache(
     topAssetsUrl,
-    { method: 'GET' },
+    { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
   );
   const topAssetsMap = response.reduce((_topAssetsMap, asset, index) => {
@@ -435,27 +439,10 @@ export async function fetchSwapsFeatureFlags() {
     : SWAPS_API_V2_BASE_URL;
   const response = await fetchWithCache(
     `${v2ApiBaseUrl}/featureFlags`,
-    { method: 'GET' },
+    { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: 600000 },
   );
   return response;
-}
-
-export async function fetchSwapsQuoteRefreshTime(chainId, useNewSwapsApi) {
-  const response = await fetchWithCache(
-    getBaseApi('refreshTime', chainId, useNewSwapsApi),
-    { method: 'GET' },
-    { cacheRefreshTime: 600000 },
-  );
-
-  // We presently use milliseconds in the UI
-  if (typeof response?.seconds === 'number' && response.seconds > 0) {
-    return response.seconds * 1000;
-  }
-
-  throw new Error(
-    `MetaMask - refreshTime provided invalid response: ${response}`,
-  );
 }
 
 export async function fetchTokenPrice(address) {
@@ -482,7 +469,7 @@ export async function fetchSwapsGasPrices(chainId, useNewSwapsApi) {
   const gasPricesUrl = getBaseApi('gasPrices', chainId, useNewSwapsApi);
   const response = await fetchWithCache(
     gasPricesUrl,
-    { method: 'GET' },
+    { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: 30000 },
   );
   const responseIsValid = validateData(

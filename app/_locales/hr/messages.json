@@ -882,9 +882,6 @@
   "sendTokens": {
     "message": "Pošalji tokene"
   },
-  "sentEther": {
-    "message": "pošalji ether"
-  },
   "separateEachWord": {
     "message": "Odvojite pojedinačne riječi jednim razmakom"
   },

@@ -114,6 +114,7 @@ const tokens = [
 
 export default {
   title: 'DropdownSearchList',
+  id: __filename,
 };
 
 const tokensToSearch = tokens.map((token) => ({

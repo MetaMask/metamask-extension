@@ -35,6 +35,7 @@ import {
   getBackgroundSwapRouteState,
   swapsQuoteSelected,
   getSwapsQuoteRefreshTime,
+  getReviewSwapClickedTimestamp,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -56,6 +57,7 @@ import {
   setCustomApproveTxData,
   setSwapsErrorKey,
   showModal,
+  setSwapsQuotesPollingLimitEnabled,
 } from '../../../store/actions';
 import {
   ASSET_ROUTE,
@@ -105,6 +107,8 @@ export default function ViewQuote() {
   const [warningHidden, setWarningHidden] = useState(false);
   const [originalApproveAmount, setOriginalApproveAmount] = useState(null);
   const [showEditGasPopover, setShowEditGasPopover] = useState(false);
+  // We need to have currentTimestamp in state, otherwise it would change with each rerender.
+  const [currentTimestamp] = useState(Date.now());
 
   const [
     acknowledgedPriceDifference,
@@ -150,6 +154,7 @@ export default function ViewQuote() {
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
+  const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
 
   let gasFeeInputs;
   if (networkAndAccountSupports1559) {
@@ -371,6 +376,9 @@ export default function ViewQuote() {
   const showInsufficientWarning =
     (balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden;
 
+  const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const hardwareWalletType = useSelector(getHardwareWalletType);
+
   const numberOfQuotes = Object.values(quotes).length;
   const bestQuoteReviewedEventSent = useRef();
   const eventObjectBase = {
@@ -384,10 +392,10 @@ export default function ViewQuote() {
     response_time: fetchParams?.responseTime,
     best_quote_source: topQuote?.aggregator,
     available_quotes: numberOfQuotes,
+    is_hardware_wallet: hardwareWalletUsed,
+    hardware_wallet_type: hardwareWalletType,
   };
 
-  const hardwareWalletUsed = useSelector(isHardwareWallet);
-  const hardwareWalletType = useSelector(getHardwareWalletType);
   const allAvailableQuotesOpened = useNewMetricEvent({
     event: 'All Available Quotes Opened',
     category: 'swaps',
@@ -398,8 +406,6 @@ export default function ViewQuote() {
         usedQuote?.aggregator === topQuote?.aggregator
           ? null
           : usedQuote?.aggregator,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
     },
   });
   const quoteDetailsOpened = useNewMetricEvent({
@@ -412,8 +418,6 @@ export default function ViewQuote() {
         usedQuote?.aggregator === topQuote?.aggregator
           ? null
           : usedQuote?.aggregator,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
     },
   });
   const editSpendLimitOpened = useNewMetricEvent({
@@ -424,8 +428,6 @@ export default function ViewQuote() {
       custom_spend_limit_set: originalApproveAmount === approveAmount,
       custom_spend_limit_amount:
         originalApproveAmount === approveAmount ? null : approveAmount,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
     },
   });
 
@@ -435,10 +437,18 @@ export default function ViewQuote() {
     sensitiveProperties: {
       ...eventObjectBase,
       network_fees: feeInFiat,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
     },
   });
+
+  const viewQuotePageLoadedEvent = useNewMetricEvent({
+    event: 'View Quote Page Loaded',
+    category: 'swaps',
+    sensitiveProperties: {
+      ...eventObjectBase,
+      response_time: currentTimestamp - reviewSwapClickedTimestamp,
+    },
+  });
+
   useEffect(() => {
     if (
       !bestQuoteReviewedEventSent.current &&
@@ -652,6 +662,14 @@ export default function ViewQuote() {
   const onCloseEditGasPopover = () => {
     setShowEditGasPopover(false);
   };
+
+  useEffect(() => {
+    // Thanks to the next line we will only do quotes polling 3 times before showing a Quote Timeout modal.
+    dispatch(setSwapsQuotesPollingLimitEnabled(true));
+    if (reviewSwapClickedTimestamp) {
+      viewQuotePageLoadedEvent();
+    }
+  }, [dispatch, viewQuotePageLoadedEvent, reviewSwapClickedTimestamp]);
 
   return (
     <div className="view-quote">

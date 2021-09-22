@@ -9,6 +9,7 @@ import TransactionBreakdown from '../transaction-breakdown';
 import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import Copy from '../../ui/icon/copy-icon.component';
+import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 import { SECOND } from '../../../../shared/constants/time';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
@@ -32,7 +33,6 @@ export default class TransactionListItemDetails extends PureComponent {
     showSpeedUp: PropTypes.bool,
     showRetry: PropTypes.bool,
     isEarliestNonce: PropTypes.bool,
-    cancelDisabled: PropTypes.bool,
     primaryCurrency: PropTypes.string,
     transactionGroup: PropTypes.object,
     title: PropTypes.string.isRequired,
@@ -114,38 +114,6 @@ export default class TransactionListItemDetails extends PureComponent {
     }
   }
 
-  renderCancel() {
-    const { t } = this.context;
-    const { showCancel, cancelDisabled } = this.props;
-
-    if (!showCancel) {
-      return null;
-    }
-
-    return cancelDisabled ? (
-      <Tooltip title={t('notEnoughGas')} position="bottom">
-        <div>
-          <Button
-            type="raised"
-            onClick={this.handleCancel}
-            className="transaction-list-item-details__header-button"
-            disabled
-          >
-            {t('cancel')}
-          </Button>
-        </div>
-      </Tooltip>
-    ) : (
-      <Button
-        type="raised"
-        onClick={this.handleCancel}
-        className="transaction-list-item-details__header-button"
-      >
-        {t('cancel')}
-      </Button>
-    );
-  }
-
   render() {
     const { t } = this.context;
     const { justCopied } = this.state;
@@ -163,6 +131,7 @@ export default class TransactionListItemDetails extends PureComponent {
       title,
       onClose,
       recipientNickname,
+      showCancel,
     } = this.props;
     const {
       primaryTransaction: transaction,
@@ -185,7 +154,13 @@ export default class TransactionListItemDetails extends PureComponent {
                   {t('speedUp')}
                 </Button>
               )}
-              {this.renderCancel()}
+              {showCancel && (
+                <CancelButton
+                  transaction={transaction}
+                  cancelTransaction={this.handleCancel}
+                  detailsModal
+                />
+              )}
               <Tooltip
                 wrapperClassName="transaction-list-item-details__header-button"
                 containerClassName="transaction-list-item-details__header-button-tooltip-container"

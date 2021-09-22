@@ -1337,9 +1337,6 @@
   "onlyAddTrustedNetworks": {
     "message": "Penyedia jaringan jahat dapat berbohong tentang status blockchain dan merekam aktivitas jaringan Anda. Hanya tambahkan jaringan kustom yang Anda percayai."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Hanya tersedia di mainnet"
-  },
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai."
   },
@@ -1688,9 +1685,6 @@
   "sendTokens": {
     "message": "Kirim Token"
   },
-  "sentEther": {
-    "message": "ether terkirim"
-  },
   "separateEachWord": {
     "message": "Pisahkan setiap kata dengan satu spasi"
   },
@@ -1870,10 +1864,6 @@
     "message": "Tidak ada token yang cocok yang tersedia $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "Memeriksa $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "Konfirmasikan dengan dompet perangkat keras Anda"
   },
@@ -1924,9 +1914,6 @@
   },
   "swapFetchingTokens": {
     "message": "Mengambil token..."
-  },
-  "swapFinalizing": {
-    "message": "Menyelesaikan..."
   },
   "swapFromTo": {
     "message": "Penukaran dari $1 ke $2",

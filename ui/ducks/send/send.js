@@ -1736,6 +1736,10 @@ export function getSendHexData(state) {
   return state[name].draftTransaction.userInputHexData;
 }
 
+export function getDraftTransactionID(state) {
+  return state[name].draftTransaction.id;
+}
+
 export function sendAmountIsInError(state) {
   return Boolean(state[name].amount.error);
 }
