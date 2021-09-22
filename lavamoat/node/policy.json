@@ -804,6 +804,7 @@
       "builtin": {
         "assert": true,
         "buffer.Buffer.from": true,
+        "fs.readFileSync": true,
         "path.join": true,
         "path.relative": true
       },
@@ -2687,37 +2688,27 @@
     },
     "lavamoat-browserify": {
       "builtin": {
-        "assert": true,
         "fs.existsSync": true,
         "fs.mkdirSync": true,
         "fs.readFileSync": true,
         "fs.writeFileSync": true,
         "path.dirname": true,
         "path.extname": true,
-        "path.join": true,
-        "path.relative": true,
         "path.resolve": true,
         "util.callbackify": true
       },
       "globals": {
-        "__MODULE_CONTENT__": true,
-        "__dirname": true,
         "console.warn": true,
         "process.cwd": true
       },
       "packages": {
-        "JSONStream": true,
-        "combine-source-map": true,
+        "@lavamoat/lavapack": true,
         "concat-stream": true,
-        "convert-source-map": true,
         "duplexify": true,
         "json-stable-stringify": true,
         "lavamoat-core": true,
-        "offset-sourcemap-lines": true,
         "readable-stream": true,
-        "safe-buffer": true,
-        "through2": true,
-        "umd": true
+        "through2": true
       }
     },
     "lavamoat-core": {
@@ -3083,11 +3074,6 @@
       "packages": {
         "for-own": true,
         "make-iterator": true
-      }
-    },
-    "offset-sourcemap-lines": {
-      "packages": {
-        "source-map": true
       }
     },
     "once": {
