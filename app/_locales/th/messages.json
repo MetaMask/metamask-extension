@@ -14,9 +14,6 @@
   "addToken": {
     "message": "เพิ่มโทเค็น"
   },
-  "addTokens": {
-    "message": "เพิ่มหลายโทเค็น"
-  },
   "amount": {
     "message": "จำนวน"
   },
@@ -269,7 +266,7 @@
   "learnMore": {
     "message": "เรียนรู้เพิ่มเติม"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "คุณต้องการเพิ่มโทเค็นเหล่านี้หรือไม่?"
   },
   "loading": {

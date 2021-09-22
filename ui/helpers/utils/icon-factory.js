@@ -1,7 +1,4 @@
-import {
-  isValidHexAddress,
-  toChecksumHexAddress,
-} from '../../../shared/modules/hexstring-utils';
+import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 
 let iconFactory;
 
@@ -26,7 +23,9 @@ IconFactory.prototype.iconForAddress = function (
   // When useTokenDetection flag is true the tokenList contains tokens with non-checksum address from the dynamic token service api,
   // When useTokenDetection flag is false the tokenList contains tokens with checksum addresses from contract-metadata.
   // So the flag indicates whether the address of tokens currently on the tokenList is checksum or not.
-  const addr = useTokenDetection ? address : toChecksumHexAddress(address);
+  // And since the token.address from allTokens is checksumaddress
+  // tokenAddress have to be changed to lowercase when we are using dynamic list
+  const addr = useTokenDetection ? address.toLowerCase() : address;
   if (iconExistsFor(addr, tokenList)) {
     return imageElFor(addr, useTokenDetection, tokenList);
   }

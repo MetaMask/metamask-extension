@@ -5,7 +5,7 @@
   display: flex;
   justify-content: center;
 
-  @media screen and (min-width: 576px) {
+  @media screen and (min-width: $break-large) {
     margin: 0;
   }
 

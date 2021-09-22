@@ -11,9 +11,6 @@
   "addToken": {
     "message": "Jeton ekle"
   },
-  "addTokens": {
-    "message": "Jetonlar ekle"
-  },
   "amount": {
     "message": "Tutar"
   },
@@ -221,7 +218,7 @@
   "learnMore": {
     "message": "Daha fazla bilgi."
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Bu jetonlara adres eklemek ister misiniz?"
   },
   "links": {

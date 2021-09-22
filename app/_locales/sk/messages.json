@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Přidat token"
   },
-  "addTokens": {
-    "message": "Přidat tokeny"
-  },
   "advanced": {
     "message": "Rozšírené"
   },
@@ -524,7 +521,7 @@
   "letsGoSetUp": {
     "message": "Áno, poďme to nastaviť!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
   "links": {
@@ -854,9 +851,6 @@
   },
   "sendTokens": {
     "message": "Odeslat tokeny"
-  },
-  "sentEther": {
-    "message": "poslaný ether"
   },
   "separateEachWord": {
     "message": "Každé slovo oddeľte jednou medzerou"

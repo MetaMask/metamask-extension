@@ -5,6 +5,7 @@ const ASSET_ROUTE = '/asset';
 const SETTINGS_ROUTE = '/settings';
 const GENERAL_ROUTE = '/settings/general';
 const ADVANCED_ROUTE = '/settings/advanced';
+const EXPERIMENTAL_ROUTE = '/settings/experimental';
 const SECURITY_ROUTE = '/settings/security';
 const ABOUT_US_ROUTE = '/settings/about-us';
 const ALERTS_ROUTE = '/settings/alerts';
@@ -17,8 +18,8 @@ const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
 const REVEAL_SEED_ROUTE = '/seed';
 const MOBILE_SYNC_ROUTE = '/mobile-sync';
 const RESTORE_VAULT_ROUTE = '/restore-vault';
-const ADD_TOKEN_ROUTE = '/add-token';
-const CONFIRM_ADD_TOKEN_ROUTE = '/confirm-add-token';
+const IMPORT_TOKEN_ROUTE = '/import-token';
+const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 const NEW_ACCOUNT_ROUTE = '/new-account';
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import';
@@ -73,6 +74,7 @@ const PATH_NAME_MAP = {
   [SETTINGS_ROUTE]: 'Settings Page',
   [GENERAL_ROUTE]: 'General Settings Page',
   [ADVANCED_ROUTE]: 'Advanced Settings Page',
+  [EXPERIMENTAL_ROUTE]: 'Experimental Settings Page',
   [SECURITY_ROUTE]: 'Security Settings Page',
   [ABOUT_US_ROUTE]: 'About Us Page',
   [ALERTS_ROUTE]: 'Alerts Settings Page',
@@ -85,8 +87,8 @@ const PATH_NAME_MAP = {
   [REVEAL_SEED_ROUTE]: 'Reveal Secret Recovery Phrase Page',
   [MOBILE_SYNC_ROUTE]: 'Sync With Mobile Page',
   [RESTORE_VAULT_ROUTE]: 'Restore Vault Page',
-  [ADD_TOKEN_ROUTE]: 'Add Token Page',
-  [CONFIRM_ADD_TOKEN_ROUTE]: 'Confirm Add Token Page',
+  [IMPORT_TOKEN_ROUTE]: 'Import Token Page',
+  [CONFIRM_IMPORT_TOKEN_ROUTE]: 'Confirm Import Token Page',
   [CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE]: 'Confirm Add Suggested Token Page',
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
   [IMPORT_ACCOUNT_ROUTE]: 'Import Account Page',
@@ -143,8 +145,8 @@ export {
   REVEAL_SEED_ROUTE,
   MOBILE_SYNC_ROUTE,
   RESTORE_VAULT_ROUTE,
-  ADD_TOKEN_ROUTE,
-  CONFIRM_ADD_TOKEN_ROUTE,
+  IMPORT_TOKEN_ROUTE,
+  CONFIRM_IMPORT_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
@@ -172,6 +174,7 @@ export {
   CONFIRMATION_V_NEXT_ROUTE,
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
   ADVANCED_ROUTE,
+  EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
   ABOUT_US_ROUTE,

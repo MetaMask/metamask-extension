@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Dodaj token"
   },
-  "addTokens": {
-    "message": "Dodaj tokeny"
-  },
   "advanced": {
     "message": "Zaawansowane"
   },
@@ -540,7 +537,7 @@
   "letsGoSetUp": {
     "message": "Tak, zacznijmy od początku!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Czy chcesz dodać te tokeny?"
   },
   "links": {
@@ -885,9 +882,6 @@
   },
   "sendTokens": {
     "message": "Wyślij tokeny"
-  },
-  "sentEther": {
-    "message": "wyślij eter"
   },
   "separateEachWord": {
     "message": "Oddziel słowa pojedynczą spacją"

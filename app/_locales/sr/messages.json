@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Dodaj token"
   },
-  "addTokens": {
-    "message": "Dodaj tokene"
-  },
   "advanced": {
     "message": "Напредне опције"
   },
@@ -537,7 +534,7 @@
   "letsGoSetUp": {
     "message": "Da, hajde da sve podesimo!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Želite li da dodate ove tokene?"
   },
   "links": {
@@ -882,9 +879,6 @@
   },
   "sendTokens": {
     "message": "Pošalji tokene"
-  },
-  "sentEther": {
-    "message": "ether je poslat"
   },
   "separateEachWord": {
     "message": "Razdvojite svaku reč jednim mestom razmaka"

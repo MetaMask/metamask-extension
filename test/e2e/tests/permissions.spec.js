@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures, xxLargeDelayMs, xLargeDelayMs } = require('../helpers');
+const { withFixtures } = require('../helpers');
 
 describe('Permissions', function () {
   it('sets permissions and connect to Dapp', async function () {
@@ -34,7 +34,6 @@ describe('Permissions', function () {
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
-        await driver.delay(xxLargeDelayMs);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -62,7 +61,10 @@ describe('Permissions', function () {
           text: 'Connected sites',
           tag: 'h2',
         });
-        await driver.delay(xLargeDelayMs);
+        await driver.waitForSelector({
+          css: '.connected-sites-list__domain-name',
+          text: '127.0.0.1:8080',
+        });
         const domains = await driver.findClickableElements(
           '.connected-sites-list__domain-name',
         );
@@ -76,9 +78,10 @@ describe('Permissions', function () {
           tag: 'button',
         });
 
-        const getAccountsResult = await driver.findElement(
-          '#getAccountsResult',
-        );
+        const getAccountsResult = await driver.waitForSelector({
+          css: '#getAccountsResult',
+          text: publicAddress,
+        });
         assert.equal(
           (await getAccountsResult.getText()).toLowerCase(),
           publicAddress.toLowerCase(),

@@ -16,7 +16,6 @@ import { getConversionRate } from '../ducks/metamask/metamask';
 
 import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { useEqualityCheck } from './useEqualityCheck';
 
 const shuffledContractMap = shuffle(
@@ -39,9 +38,9 @@ export function getRenderableTokenData(
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
   // token from dynamic api list is fetched when useTokenDetection is true
-  const tokenAddress = useTokenDetection
-    ? address
-    : toChecksumHexAddress(address);
+  // And since the token.address from allTokens is checksumaddress
+  // token Address have to be changed to lowercase when we are using dynamic list
+  const tokenAddress = useTokenDetection ? address?.toLowerCase() : address;
   const formattedFiat =
     getTokenFiatAmount(
       isSwapsDefaultTokenSymbol(symbol, chainId)
@@ -67,7 +66,8 @@ export function getRenderableTokenData(
   const usedIconUrl =
     iconUrl ||
     (tokenList[tokenAddress] &&
-      `images/contract/${tokenList[tokenAddress].iconUrl}`);
+      `images/contract/${tokenList[tokenAddress].iconUrl}`) ||
+    token?.image;
   return {
     ...token,
     primaryLabel: symbol,
@@ -128,7 +128,7 @@ export function useTokensToSearch({
   const memoizedTokensToSearch = useEqualityCheck(tokensToSearch);
   return useMemo(() => {
     const usersTokensAddressMap = memoizedUsersToken.reduce(
-      (acc, token) => ({ ...acc, [token.address]: token }),
+      (acc, token) => ({ ...acc, [token.address.toLowerCase()]: token }),
       {},
     );
 
@@ -140,12 +140,12 @@ export function useTokensToSearch({
 
     const memoizedSwapsAndUserTokensWithoutDuplicities = uniqBy(
       [...memoizedTokensToSearch, ...memoizedUsersToken],
-      'address',
+      (token) => token.address.toLowerCase(),
     );
 
     memoizedSwapsAndUserTokensWithoutDuplicities.forEach((token) => {
       const renderableDataToken = getRenderableTokenData(
-        { ...usersTokensAddressMap[token.address], ...token },
+        { ...usersTokensAddressMap[token.address.toLowerCase()], ...token },
         tokenConversionRates,
         conversionRate,
         currentCurrency,
@@ -155,12 +155,12 @@ export function useTokensToSearch({
       );
       if (
         isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
-        usersTokensAddressMap[token.address]
+        usersTokensAddressMap[token.address.toLowerCase()]
       ) {
         tokensToSearchBuckets.owned.push(renderableDataToken);
-      } else if (memoizedTopTokens[token.address]) {
+      } else if (memoizedTopTokens[token.address.toLowerCase()]) {
         tokensToSearchBuckets.top[
-          memoizedTopTokens[token.address].index
+          memoizedTopTokens[token.address.toLowerCase()].index
         ] = renderableDataToken;
       } else {
         tokensToSearchBuckets.others.push(renderableDataToken);

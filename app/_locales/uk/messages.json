@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Додати токен"
   },
-  "addTokens": {
-    "message": "Додати токени"
-  },
   "advanced": {
     "message": "Розширені"
   },
@@ -540,7 +537,7 @@
   "letsGoSetUp": {
     "message": "Так, давайте налаштуємо!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Ви б хотіли додати ці токени?"
   },
   "links": {
@@ -891,9 +888,6 @@
   },
   "sendTokens": {
     "message": "Надіслати токени"
-  },
-  "sentEther": {
-    "message": "надісланий ефір"
   },
   "separateEachWord": {
     "message": "Відділіть кожне слово одним пробілом"

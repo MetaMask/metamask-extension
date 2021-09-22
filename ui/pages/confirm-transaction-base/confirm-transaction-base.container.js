@@ -28,7 +28,7 @@ import {
   getShouldShowFiat,
   checkNetworkAndAccountSupports1559,
   getPreferences,
-  getAccountType,
+  getHardwareWalletType,
   getUseTokenDetection,
   getTokenList,
 } from '../../selectors';
@@ -44,6 +44,7 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
   updateTransactionGasFees,
   getIsGasEstimatesLoading,
+  getNativeCurrency,
 } from '../../ducks/metamask/metamask';
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
@@ -76,7 +77,6 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
     identities,
     addressBook,
-    assetImages,
     network,
     unapprovedTxs,
     nextNonce,
@@ -97,7 +97,6 @@ const mapStateToProps = (state, ownProps) => {
     data,
   } = (transaction && transaction.txParams) || txParams;
   const accounts = getMetaMaskAccounts(state);
-  const assetImage = assetImages[txParamsToAddress];
 
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
@@ -169,8 +168,9 @@ const mapStateToProps = (state, ownProps) => {
   const gasFeeIsCustom =
     fullTxData.userFeeLevel === 'custom' ||
     txParamsAreDappSuggested(fullTxData);
-  const isLedgerAccount = getAccountType(state) === KEYRING_TYPES.LEDGER;
+  const showLedgerSteps = getHardwareWalletType(state) === KEYRING_TYPES.LEDGER;
   const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+  const nativeCurrency = getNativeCurrency(state);
 
   return {
     balance,
@@ -191,7 +191,6 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
     transactionStatus,
     nonce,
-    assetImage,
     unapprovedTxs,
     unapprovedTxCount,
     currentNetworkUnapprovedTxs,
@@ -218,8 +217,9 @@ const mapStateToProps = (state, ownProps) => {
     maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
     gasFeeIsCustom,
-    isLedgerAccount,
+    showLedgerSteps,
     isFirefox,
+    nativeCurrency,
   };
 };
 
