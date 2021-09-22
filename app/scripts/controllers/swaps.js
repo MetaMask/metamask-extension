@@ -509,24 +509,6 @@ export default class SwapsController {
     });
   }
 
-  setSmartTransactionsStatus(smartTransactionsStatus) {
-    const { swapsState } = this.store.getState();
-    const prevSmartTransactionsStatus = swapsState.smartTransactionsStatus;
-    const {
-      active = prevSmartTransactionsStatus.active,
-      optInPopoverDisplayed = prevSmartTransactionsStatus.optInPopoverDisplayed,
-    } = smartTransactionsStatus;
-    this.store.updateState({
-      swapsState: {
-        ...swapsState,
-        smartTransactionsStatus: {
-          active,
-          optInPopoverDisplayed,
-        },
-      },
-    });
-  }
-
   setSwapsQuotesPollingLimitEnabled(quotesPollingLimitEnabled) {
     const { swapsState } = this.store.getState();
     this.store.updateState({

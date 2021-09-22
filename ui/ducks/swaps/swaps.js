@@ -280,9 +280,6 @@ export const getSwapsUserFeeLevel = (state) =>
 
 export const getFetchParams = (state) => state.metamask.swapsState.fetchParams;
 
-export const getSmartTransactionsStatus = (state) =>
-  state.metamask.swapsState.smartTransactionsStatus;
-
 export const getQuotes = (state) => state.metamask.swapsState.quotes;
 
 export const getQuotesLastFetched = (state) =>
@@ -334,6 +331,10 @@ export const getApproveTxParams = (state) => {
 
   const gasPrice = getUsedSwapsGasPrice(state);
   return { ...approvalNeeded, gasPrice, data };
+};
+
+export const getSmartTransactionsOptInStatus = (state) => {
+  return state.metamask.userOptIn;
 };
 
 // Actions / action-creators

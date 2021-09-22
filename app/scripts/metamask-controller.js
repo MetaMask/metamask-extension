@@ -28,6 +28,7 @@ import {
   TokensController,
   TokenRatesController,
 } from '@metamask/controllers';
+import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -545,6 +546,11 @@ export default class MetamaskController extends EventEmitter {
         this.gasFeeController,
       ),
     });
+    this.smartTransactionsController = new SmartTransactionsController({
+      onNetworkStateChange: this.networkController.store.subscribe.bind(
+        this.networkController.store,
+      ),
+    });
 
     // ensure accountTracker updates balances after network change
     this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
@@ -584,6 +590,7 @@ export default class MetamaskController extends EventEmitter {
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
+      SmartTransactionsController: this.smartTransactionsController,
     });
 
     this.memStore = new ComposableObservableStore({
@@ -618,6 +625,7 @@ export default class MetamaskController extends EventEmitter {
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
+        SmartTransactionsController: this.smartTransactionsController,
       },
       controllerMessenger: this.controllerMessenger,
     });
@@ -799,6 +807,7 @@ export default class MetamaskController extends EventEmitter {
       threeBoxController,
       txController,
       tokensController,
+      smartTransactionsController,
     } = this;
 
     return {
@@ -1147,12 +1156,27 @@ export default class MetamaskController extends EventEmitter {
         swapsController.setSwapsUserFeeLevel,
         swapsController,
       ),
-      setSmartTransactionsStatus: nodeify(
-        swapsController.setSmartTransactionsStatus,
-      ),
       setSwapsQuotesPollingLimitEnabled: nodeify(
         swapsController.setSwapsQuotesPollingLimitEnabled,
         swapsController,
+      ),
+
+      // Smart Transactions
+      setSmartTransactionsOptInStatus: nodeify(
+        smartTransactionsController.setOptInState,
+        smartTransactionsController,
+      ),
+      getUnsignedTransactionsAndEstimates: nodeify(
+        smartTransactionsController.getUnsignedTransactionsAndEstimates,
+        smartTransactionsController,
+      ),
+      cancelSmartTransaction: nodeify(
+        smartTransactionsController.cancelSmartTransaction,
+        smartTransactionsController,
+      ),
+      fetchSmartTransactionsStatus: nodeify(
+        smartTransactionsController.fetchSmartTransactionsStatus,
+        smartTransactionsController,
       ),
 
       // MetaMetrics

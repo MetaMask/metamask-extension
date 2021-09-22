@@ -2880,8 +2880,8 @@ export async function setWeb3ShimUsageAlertDismissed(origin) {
   await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
 }
 
-export async function setSmartTransactionsStatus(status) {
-  await promisifiedBackground.setSmartTransactionsStatus(status);
+export async function setSmartTransactionsOptInStatus(optInState) {
+  await promisifiedBackground.setSmartTransactionsOptInStatus(optInState);
 }
 
 // DetectTokenController

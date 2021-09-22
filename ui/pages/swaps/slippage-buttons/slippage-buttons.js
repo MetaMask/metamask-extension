@@ -19,8 +19,8 @@ export default function SlippageButtons({
   onSelect,
   maxAllowedSlippage,
   currentSlippage,
-  smartTransactionsStatus,
-  setSmartTransactionsStatus,
+  smartTransactionsOptInStatus,
+  setSmartTransactionsOptInStatus,
 }) {
   const t = useContext(I18nContext);
   const [customValue, setCustomValue] = useState(() => {
@@ -203,10 +203,10 @@ export default function SlippageButtons({
                 />
               </Box>
               <ToggleButton
-                value={smartTransactionsStatus?.active}
-                onToggle={(value) =>
-                  setSmartTransactionsStatus({ active: !value })
-                }
+                value={smartTransactionsOptInStatus}
+                onToggle={(value) => {
+                  setSmartTransactionsOptInStatus(!value);
+                }}
                 offLabel={t('off')}
                 onLabel={t('on')}
               />
@@ -225,6 +225,6 @@ SlippageButtons.propTypes = {
   onSelect: PropTypes.func.isRequired,
   maxAllowedSlippage: PropTypes.number.isRequired,
   currentSlippage: PropTypes.number,
-  smartTransactionsStatus: PropTypes.object,
-  setSmartTransactionsStatus: PropTypes.func,
+  smartTransactionsOptInStatus: PropTypes.object,
+  setSmartTransactionsOptInStatus: PropTypes.func,
 };

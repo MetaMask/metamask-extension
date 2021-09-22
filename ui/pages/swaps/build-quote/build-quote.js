@@ -38,9 +38,9 @@ import {
   getBalanceError,
   getTopAssets,
   getFetchParams,
-  getSmartTransactionsStatus,
   getQuotes,
   setReviewSwapClickedTimestamp,
+  getSmartTransactionsOptInStatus,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -78,7 +78,7 @@ import {
   setBackgroundSwapRouteState,
   clearSwapsQuotes,
   stopPollingForQuotes,
-  setSmartTransactionsStatus,
+  setSmartTransactionsOptInStatus,
 } from '../../../store/actions';
 import {
   fetchTokenPrice,
@@ -136,25 +136,29 @@ export default function BuildQuote({
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
-  const smartTransactionsStatus = useSelector(getSmartTransactionsStatus);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
+  const smartTransactionsOptInPopoverDisplayed =
+    smartTransactionsOptInStatus !== undefined;
   const currentCurrency = useSelector(getCurrentCurrency);
 
   const [
     showSmartTransactionsOptInPopover,
     setShowSmartTransactionsOptInPopover,
   ] = useState(() => {
-    return !smartTransactionsStatus?.optInPopoverDisplayed;
+    return !smartTransactionsOptInPopoverDisplayed;
   });
 
   const onCloseSmartTransactionsOptInPopover = (e) => {
     e?.preventDefault();
+    setSmartTransactionsOptInStatus(false);
     setShowSmartTransactionsOptInPopover(false);
-    setSmartTransactionsStatus({ optInPopoverDisplayed: true });
   };
 
   const onEnableSmartTransactionsClick = () => {
+    setSmartTransactionsOptInStatus(true);
     setShowSmartTransactionsOptInPopover(false);
-    setSmartTransactionsStatus({ optInPopoverDisplayed: true, active: true });
   };
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
@@ -704,8 +708,8 @@ export default function BuildQuote({
               }}
               maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
               currentSlippage={maxSlippage}
-              smartTransactionsStatus={smartTransactionsStatus}
-              setSmartTransactionsStatus={setSmartTransactionsStatus}
+              smartTransactionsOptInStatus={smartTransactionsOptInStatus}
+              setSmartTransactionsOptInStatus={setSmartTransactionsOptInStatus}
             />
           </div>
         )}
