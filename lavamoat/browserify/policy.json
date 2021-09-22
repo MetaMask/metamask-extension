@@ -745,6 +745,11 @@
         "setTimeout": true
       }
     },
+    "abort-controller": {
+      "globals": {
+        "AbortController": true
+      }
+    },
     "abstract-leveldown": {
       "packages": {
         "is-buffer": true,
