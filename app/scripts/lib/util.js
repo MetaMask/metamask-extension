@@ -147,7 +147,7 @@ const fixHexValue = (str) => {
   }
 
   // if we get here, throw invalid hex value detected error
-  throw new Error(`Invalid hex value ${str} detected.`);
+  throw ethErrors.rpc.invalidParams(`Invalid hex value ${str} detected.`);
 };
 
 /**
