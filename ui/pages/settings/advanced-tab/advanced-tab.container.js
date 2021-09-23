@@ -32,7 +32,11 @@ export const mapStateToProps = (state) => {
     useLedgerLive,
     dismissSeedBackUpReminder,
   } = metamask;
-  const { showFiatInTestnets, showTestNetworks, autoLockTimeLimit } = getPreferences(state);
+  const {
+    showFiatInTestnets,
+    showTestNetworks,
+    autoLockTimeLimit,
+  } = getPreferences(state);
 
   return {
     warning,

@@ -16,6 +16,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 
 import ColorIndicator from '../../ui/color-indicator';
 import { COLORS, SIZES } from '../../../helpers/constants/design-system';
+import { getShouldShowTestNetworks } from '../../../selectors';
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
@@ -37,6 +38,7 @@ const DROP_DOWN_MENU_ITEM_STYLE = {
 function mapStateToProps(state) {
   return {
     provider: state.metamask.provider,
+    shouldShowTestNetworks: getShouldShowTestNetworks(state),
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
   };
@@ -91,6 +93,7 @@ class NetworkDropdown extends Component {
     setNetworksTabAddMode: PropTypes.func.isRequired,
     setSelectedSettingsRpcUrl: PropTypes.func.isRequired,
     frequentRpcListDetail: PropTypes.array.isRequired,
+    shouldShowTestNetworks: PropTypes.bool,
     networkDropdownOpen: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired,
     displayInvalidCustomNetworkAlert: PropTypes.func.isRequired,
@@ -195,6 +198,8 @@ class NetworkDropdown extends Component {
       name = this.context.t('rinkeby');
     } else if (providerName === 'goerli') {
       name = this.context.t('goerli');
+    } else if (providerName === 'localhost') {
+      name = this.context.t('localhost');
     } else {
       name = provider.nickname || this.context.t('unknownNetwork');
     }
@@ -241,6 +246,7 @@ class NetworkDropdown extends Component {
       provider: { rpcUrl: activeNetwork },
       setNetworksTabAddMode,
       setSelectedSettingsRpcUrl,
+      shouldShowTestNetworks,
     } = this.props;
     const rpcListDetail = this.props.frequentRpcListDetail;
     const isOpen = this.props.networkDropdownOpen;
@@ -282,10 +288,15 @@ class NetworkDropdown extends Component {
           </div>
         </div>
         {this.renderNetworkEntry('mainnet')}
-        {this.renderNetworkEntry('ropsten')}
-        {this.renderNetworkEntry('kovan')}
-        {this.renderNetworkEntry('rinkeby')}
-        {this.renderNetworkEntry('goerli')}
+        {shouldShowTestNetworks && (
+          <>
+            {this.renderNetworkEntry('ropsten')}
+            {this.renderNetworkEntry('kovan')}
+            {this.renderNetworkEntry('rinkeby')}
+            {this.renderNetworkEntry('goerli')}
+            {this.renderNetworkEntry('localhost')}
+          </>
+        )}
 
         {this.renderCustomRpcList(rpcListDetail, this.props.provider)}
         <DropdownMenuItem
