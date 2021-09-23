@@ -1894,13 +1894,13 @@
     "message": "Store in a bank vault."
   },
   "seedPhraseIntroSidebarCopyOne": {
-    "message": "Your Secret Recovery Phrase is the “master key” to your wallet and funds."
+    "message": "Your Secret Recovery Phrase is a 12-word phrase that is the “master key” to your wallet and your funds"
   },
   "seedPhraseIntroSidebarCopyThree": {
-    "message": "If someone asks for your Secret Recovery Phrase, they are most likely trying to scam you."
+    "message": "If someone asks for your recovery phrase they are likely trying to scam you and steal your wallet funds"
   },
   "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Never, ever share your Secret Recovery Phrase, even with MetaMask!"
+    "message": "Never, ever share your Secret Recovery Phrase, not even with MetaMask!"
   },
   "seedPhraseIntroSidebarTitleOne": {
     "message": "What is a Secret Recovery Phrase?"
@@ -1916,6 +1916,12 @@
   },
   "seedPhraseIntroTitleCopy": {
     "message": "Before getting started, watch this short video to learn about your Secret Recovery Phrase and how to keep your wallet safe."
+  },
+  "seedPhraseIntroRecommendedButtonCopy":{
+    "message": "Secure my wallet (recommended)"
+  },
+  "seedPhraseIntroNotRecommendedButtonCopy":{
+    "message": "Remind me later (not recommended)"
   },
   "seedPhrasePlaceholder": {
     "message": "Separate each word with a single space"

@@ -1,0 +1,24 @@
+.secure-your-wallet {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  max-width: 1000px;
+  &__details {
+    max-width: 550px;
+  }
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 200px;
+    padding: 32px;
+  }
+
+  &__list {
+    list-style: disc inside;
+    & li {
+      font-size: 18px;
+    }
+  }
+}
