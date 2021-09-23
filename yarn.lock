@@ -2639,10 +2639,10 @@
     semver "^7.3.4"
     yargs "^16.2.0"
 
-"@lavamoat/lavapack@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@lavamoat/lavapack/-/lavapack-2.0.1.tgz#b682a8fad7dfb698b5b8075662ed14693d4cfa35"
-  integrity sha512-fIARqzs0aNLmSByEpdGTO51jffbcA6JOcLspD3E08sC36vyNqIC7KF3SNSms8j0Kymr6ExYpfJhgN1pxeq4Npw==
+"@lavamoat/lavapack@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@lavamoat/lavapack/-/lavapack-2.0.2.tgz#8c00dddcb6e6420778868007f49dc542cb6d61e4"
+  integrity sha512-lVgu8ZRhfDFUcN2XEj1LDdbjF5YRMTIhXif8rrlsC3ZAf/OyoYK4IRBzLI/3CrTIut8P/exBqF9+PxxL0HHkhg==
   dependencies:
     JSONStream "^1.3.5"
     combine-source-map "^0.8.0"
@@ -17399,14 +17399,14 @@ latest-version@^5.0.0:
   dependencies:
     package-json "^6.3.0"
 
-lavamoat-browserify@^14.0.0:
-  version "14.0.0"
-  resolved "https://registry.yarnpkg.com/lavamoat-browserify/-/lavamoat-browserify-14.0.0.tgz#8a973a7bb0f4112a4d76150832e424c2e89c7a79"
-  integrity sha512-Q5vDSZy885fTOQXDd7pfDEtB0fOWZ10ssW+8IHr++L1HhSDbdcjeFe0tHERwZZUk6aO+6C4COeLbbXl9KYw+iA==
+lavamoat-browserify@^14.0.1:
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/lavamoat-browserify/-/lavamoat-browserify-14.0.1.tgz#c1d524cef29bbd96a980acc2b079fa0f79498360"
+  integrity sha512-WNH+QkXtpwAo9ENelTrtIB/5tuqislnNryPG1Awyvatm9LjIJkVW8jt3fJwFkoP+AuPdG3C29rnUo9DmH8aWXQ==
   dependencies:
+    "@lavamoat/lavapack" "^2.0.2"
     JSONStream "^1.3.5"
     clone "^2.1.2"
-    combine-source-map "^0.8.0"
     concat-stream "^2.0.0"
     duplexify "^4.1.1"
     json-stable-stringify "^1.0.1"
