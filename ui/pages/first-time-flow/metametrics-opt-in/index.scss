@@ -28,7 +28,8 @@
     @include H1;
 
     position: relative;
-    margin-top: 20px;
+    margin: 20px 0;
+    text-align: center;
   }
 
   &__body-graphic {
@@ -58,6 +59,8 @@
   &__row {
     display: flex;
     margin-top: 8px;
+    margin-top: 30px;
+    align-items: baseline;
 
     .fa-check {
       margin-right: 12px;
@@ -74,15 +77,15 @@
     font-weight: bold;
   }
 
-  &__break-row {
-    margin-top: 30px;
-  }
-
   &__body {
     position: relative;
     display: flex;
     max-width: 730px;
     flex-direction: column;
+
+    p {
+      text-align: center;
+    }
   }
 
   &__body-text {
@@ -92,7 +95,8 @@
   }
 
   &__bottom-text {
-    margin-top: 10px;
+    margin: 24px 0;
+    text-align: center;
     color: #9a9a9a;
   }
 
