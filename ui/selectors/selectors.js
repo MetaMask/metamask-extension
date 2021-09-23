@@ -414,6 +414,13 @@ export function getPreferences({ metamask }) {
   return metamask.preferences;
 }
 
+export function getShouldShowTestNetworks(state) {
+  const isMainNet = getIsMainnet(state);
+  const conversionRate = getConversionRate(state);
+  const { showTestNetworks } = getPreferences(state);
+  return Boolean((isMainNet || showTestNetworks) && conversionRate);    
+}
+
 export function getShouldShowFiat(state) {
   const isMainNet = getIsMainnet(state);
   const conversionRate = getConversionRate(state);

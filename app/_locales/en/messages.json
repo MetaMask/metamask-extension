@@ -2055,6 +2055,12 @@
   "showAdvancedGasInlineDescription": {
     "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
   },
+  "showTestnetNetworks" : {
+    "message": "Test networks"
+  },
+  "showTestnetNetworksDescription" : {
+    "message": "Select this to show test networks in network list"
+  },  
   "showFiatConversionInTestnets": {
     "message": "Show Conversion on Testnets"
   },
