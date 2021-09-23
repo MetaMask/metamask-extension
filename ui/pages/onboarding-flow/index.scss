@@ -1,0 +1,21 @@
+@import 'recovery-phrase/index.scss';
+@import 'create-password/index.scss';
+@import 'secure-your-wallet/index.scss';
+
+.onboarding-flow {
+  width: 100%;
+  background-color: $white;
+  display: flex;
+  justify-content: center;
+
+  &__wrapper {
+    margin: 40px 0 20px 0;
+    padding: 32px;
+    border: 1px solid $Grey-100;
+    border-radius: 20px;
+  }
+
+  .progressbar {
+    margin: 32px 0;
+  }
+}
