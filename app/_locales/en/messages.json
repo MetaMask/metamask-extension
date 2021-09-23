@@ -260,16 +260,20 @@
     "message": "Welcome to MetaMask Beta"
   },
   "blockExplorerAccountAction": {
-    "message": "Account"
+    "message": "Account",
+    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
   },
   "blockExplorerAssetAction": {
-    "message": "Asset"
+    "message": "Asset",
+    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Asset in Explorer"
   },
   "blockExplorerSwapAction": {
-    "message": "Swap"
+    "message": "Swap",
+    "description": "This is used with viewOnEtherscan e.g View Swap on Etherscan"
   },
   "blockExplorerTransactionAction": {
-    "message": "Transaction"
+    "message": "Transaction",
+    "description": "This is used with viewOnCustomBlockExplorer and viewOnEtherscan e.g View Transaction on Etherscan"
   },
   "blockExplorerUrl": {
     "message": "Block Explorer URL"
