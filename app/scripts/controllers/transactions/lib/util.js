@@ -1,5 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { addHexPrefix, fixHexValue } from '../../../lib/util';
+import { addHexPrefix } from '../../../lib/util';
 import {
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_STATUSES,
@@ -12,7 +12,7 @@ const normalizers = {
   to: (to, lowerCase) =>
     lowerCase ? addHexPrefix(to).toLowerCase() : addHexPrefix(to),
   nonce: addHexPrefix,
-  value: fixHexValue,
+  value: addHexPrefix,
   data: addHexPrefix,
   gas: addHexPrefix,
   gasPrice: addHexPrefix,
@@ -195,6 +195,12 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
         if (value.toString().includes('.')) {
           throw ethErrors.rpc.invalidParams(
             `Invalid transaction value of "${value}": number must be in wei.`,
+          );
+        }
+
+        if (!value.match(/^0x[a-fA-F0-9]+$/u)) {
+          throw ethErrors.rpc.invalidParams(
+            `Invalid transaction value of "${value}: not an hex string.`,
           );
         }
         break;

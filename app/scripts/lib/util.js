@@ -139,17 +139,6 @@ const addHexPrefix = (str) => {
   return `0x${str}`;
 };
 
-const fixHexValue = (str) => {
-  const prefixed = addHexPrefix(str);
-  // if it's a valid hex return it immediately
-  if (prefixed.match(/^-?0x[a-fA-F0-9]+$/u)) {
-    return prefixed;
-  }
-
-  // if we get here, throw invalid hex value detected error
-  throw ethErrors.rpc.invalidParams(`Invalid hex value ${str} detected.`);
-};
-
 /**
  * Converts a BN object to a hex string with a '0x' prefix
  *
@@ -177,7 +166,6 @@ export {
   BnMultiplyByFraction,
   checkForError,
   addHexPrefix,
-  fixHexValue,
   bnToHex,
   getChainType,
 };
