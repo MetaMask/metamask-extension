@@ -1,7 +1,7 @@
 import migration58 from './058';
 
-describe('migration #58', function () {
-  it('should update the version metadata', async function () {
+describe('migration #58', () => {
+  it('should update the version metadata', async () => {
     const oldStorage = {
       meta: {
         version: 57,
@@ -15,8 +15,8 @@ describe('migration #58', function () {
     });
   });
 
-  describe('deleting swapsWelcomeMessageHasBeenShown', function () {
-    it('should delete the swapsWelcomeMessageHasBeenShown property', async function () {
+  describe('deleting swapsWelcomeMessageHasBeenShown', () => {
+    it('should delete the swapsWelcomeMessageHasBeenShown property', async () => {
       const oldStorage = {
         meta: {},
         data: {
@@ -31,7 +31,7 @@ describe('migration #58', function () {
       expect(newStorage.data.AppStateController).toStrictEqual({ bar: 'baz' });
     });
 
-    it('should not modify state if the AppStateController does not exist', async function () {
+    it('should not modify state if the AppStateController does not exist', async () => {
       const oldStorage = {
         meta: {},
         data: {

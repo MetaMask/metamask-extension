@@ -122,8 +122,8 @@ const ERRONEOUS_TRANSACTION_STATE_MIXED = {
   },
 };
 
-describe('migration #59', function () {
-  it('should update the version metadata', async function () {
+describe('migration #59', () => {
+  it('should update the version metadata', async () => {
     const oldStorage = {
       meta: {
         version: 58,
@@ -137,7 +137,7 @@ describe('migration #59', function () {
     });
   });
 
-  it('should drop orphaned cancel transactions', async function () {
+  it('should drop orphaned cancel transactions', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -159,7 +159,7 @@ describe('migration #59', function () {
     });
   });
 
-  it('should drop orphaned cancel transactions even if a nonce exists on another network that is confirmed', async function () {
+  it('should drop orphaned cancel transactions even if a nonce exists on another network that is confirmed', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -191,7 +191,7 @@ describe('migration #59', function () {
     });
   });
 
-  it('should not drop cancel transactions with matching non cancel or retry in same network and nonce', async function () {
+  it('should not drop cancel transactions with matching non cancel or retry in same network and nonce', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -218,7 +218,7 @@ describe('migration #59', function () {
     });
   });
 
-  it('should drop orphaned retry transactions', async function () {
+  it('should drop orphaned retry transactions', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -240,7 +240,7 @@ describe('migration #59', function () {
     });
   });
 
-  it('should drop orphaned retry transactions even if a nonce exists on another network that is confirmed', async function () {
+  it('should drop orphaned retry transactions even if a nonce exists on another network that is confirmed', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -272,7 +272,7 @@ describe('migration #59', function () {
     });
   });
 
-  it('should not drop retry transactions with matching non cancel or retry in same network and nonce', async function () {
+  it('should not drop retry transactions with matching non cancel or retry in same network and nonce', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -299,7 +299,7 @@ describe('migration #59', function () {
     });
   });
 
-  it('should drop all orphaned retry and cancel transactions', async function () {
+  it('should drop all orphaned retry and cancel transactions', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -324,7 +324,7 @@ describe('migration #59', function () {
     });
   });
 
-  it('should do nothing if transactions state does not exist', async function () {
+  it('should do nothing if transactions state does not exist', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -342,7 +342,7 @@ describe('migration #59', function () {
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
-  it('should do nothing if transactions state is empty', async function () {
+  it('should do nothing if transactions state is empty', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -358,7 +358,7 @@ describe('migration #59', function () {
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
-  it('should do nothing if transactions state is not an object', async function () {
+  it('should do nothing if transactions state is not an object', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -374,7 +374,7 @@ describe('migration #59', function () {
     expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
-  it('should do nothing if state is empty', async function () {
+  it('should do nothing if state is empty', async () => {
     const oldStorage = {
       meta: {},
       data: {},

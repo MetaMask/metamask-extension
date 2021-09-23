@@ -66,7 +66,8 @@ export function getRenderableTokenData(
   const usedIconUrl =
     iconUrl ||
     (tokenList[tokenAddress] &&
-      `images/contract/${tokenList[tokenAddress].iconUrl}`);
+      `images/contract/${tokenList[tokenAddress].iconUrl}`) ||
+    token?.image;
   return {
     ...token,
     primaryLabel: symbol,
@@ -127,7 +128,7 @@ export function useTokensToSearch({
   const memoizedTokensToSearch = useEqualityCheck(tokensToSearch);
   return useMemo(() => {
     const usersTokensAddressMap = memoizedUsersToken.reduce(
-      (acc, token) => ({ ...acc, [token.address]: token }),
+      (acc, token) => ({ ...acc, [token.address.toLowerCase()]: token }),
       {},
     );
 
@@ -139,12 +140,12 @@ export function useTokensToSearch({
 
     const memoizedSwapsAndUserTokensWithoutDuplicities = uniqBy(
       [...memoizedTokensToSearch, ...memoizedUsersToken],
-      'address',
+      (token) => token.address.toLowerCase(),
     );
 
     memoizedSwapsAndUserTokensWithoutDuplicities.forEach((token) => {
       const renderableDataToken = getRenderableTokenData(
-        { ...usersTokensAddressMap[token.address], ...token },
+        { ...usersTokensAddressMap[token.address.toLowerCase()], ...token },
         tokenConversionRates,
         conversionRate,
         currentCurrency,
@@ -154,12 +155,12 @@ export function useTokensToSearch({
       );
       if (
         isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
-        usersTokensAddressMap[token.address]
+        usersTokensAddressMap[token.address.toLowerCase()]
       ) {
         tokensToSearchBuckets.owned.push(renderableDataToken);
-      } else if (memoizedTopTokens[token.address]) {
+      } else if (memoizedTopTokens[token.address.toLowerCase()]) {
         tokensToSearchBuckets.top[
-          memoizedTopTokens[token.address].index
+          memoizedTopTokens[token.address.toLowerCase()].index
         ] = renderableDataToken;
       } else {
         tokensToSearchBuckets.others.push(renderableDataToken);
