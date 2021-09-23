@@ -33,7 +33,11 @@ export const mapStateToProps = (state) => {
     ledgerTransportType,
     dismissSeedBackUpReminder,
   } = metamask;
-  const { showFiatInTestnets, showTestNetworks, autoLockTimeLimit } = getPreferences(state);
+  const {
+    showFiatInTestnets,
+    showTestNetworks,
+    autoLockTimeLimit,
+  } = getPreferences(state);
 
   const userHasALedgerAccount = doesUserHaveALedgerAccount(state);
 
