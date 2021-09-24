@@ -22,7 +22,7 @@
 
       flex: 1 0 auto;
 
-      @media screen and (max-width: 575px) {
+      @media screen and (max-width: $break-small) {
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
@@ -106,6 +106,10 @@
         transform: rotate(180deg);
       }
     }
+  }
+
+  &__close-button {
+    margin-left: auto;
   }
 
   &__close-button::after {
