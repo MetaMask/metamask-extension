@@ -69,6 +69,7 @@
   },
   "resolutions": {
     "**/regenerator-runtime": "^0.13.7",
+    "**/caniuse-lite": "1.0.30001260",
     "**/configstore/dot-prop": "^5.1.1",
     "**/ethers/elliptic": "^6.5.4",
     "**/knex/minimist": "^1.2.5",
