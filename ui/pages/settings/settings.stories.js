@@ -44,10 +44,6 @@ const ROUTES_TO_I18N_KEYS = {
   [SECURITY_ROUTE]: 'securityAndPrivacy',
 };
 
-global.platform = {
-  getVersion: () => 'V3.14.159',
-};
-
 const Settings = ({ history }) => {
   const { location } = history;
   const pathname =
