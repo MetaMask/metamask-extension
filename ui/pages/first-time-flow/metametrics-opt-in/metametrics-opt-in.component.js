@@ -36,7 +36,11 @@ export default class MetaMetricsOptIn extends Component {
             {t('metametricsTitle')}
           </div>
           <div className="metametrics-opt-in__body">
-            <p>{t('metametricsOptInDescription2')}</p>
+            <p>
+              <span>{t('metametricsOptInDescription2')}</span>
+              <br />
+              <span>{t('metametricsOptInDescription3')}</span>
+            </p>
 
             <ul className="metametrics-opt-in__committments">
               <li className="metametrics-opt-in__row">
@@ -55,7 +59,7 @@ export default class MetaMetricsOptIn extends Component {
                 <i className="fa fa-times" />
                 <div className="metametrics-opt-in__row-description">
                   {t('metametricsCommitmentsNeverCollectKeysEtc', [
-                    <span>{t('metametricsCommitmentsBoldNever')}</span>,
+                    t('metametricsCommitmentsBoldNever'),
                   ])}
                 </div>
               </li>
@@ -63,7 +67,7 @@ export default class MetaMetricsOptIn extends Component {
                 <i className="fa fa-times" />
                 <div className="metametrics-opt-in__row-description">
                   {t('metametricsCommitmentsNeverCollectIP', [
-                    <span>{t('metametricsCommitmentsBoldNever')}</span>,
+                    t('metametricsCommitmentsBoldNever'),
                   ])}
                 </div>
               </li>
@@ -71,7 +75,7 @@ export default class MetaMetricsOptIn extends Component {
                 <i className="fa fa-times" />
                 <div className="metametrics-opt-in__row-description">
                   {t('metametricsCommitmentsNeverSellDataForProfit', [
-                    <span>{t('metametricsCommitmentsBoldNever')}</span>,
+                    t('metametricsCommitmentsBoldNever'),
                   ])}
                 </div>
               </li>

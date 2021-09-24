@@ -109,24 +109,25 @@
 
     @media screen and (max-width: $break-small) {
       margin-top: 10px;
-      justify-content: center;
       margin-left: 2%;
       max-height: 520px;
     }
 
     .page-container__footer {
       border-top: none;
-      max-width: 535px;
       margin-bottom: 15px;
 
       button {
         height: 44px;
         min-height: 44px;
         margin-right: 16px;
+        min-width: 200px;
+        width: auto;
       }
 
       footer {
         padding: 0;
+        justify-content: space-between;
       }
     }
   }
