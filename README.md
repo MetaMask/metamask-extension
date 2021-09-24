@@ -42,6 +42,8 @@ To start the [React DevTools](https://github.com/facebook/react-devtools) and [R
   - Redux DevTools will need to be installed as a browser extension. Open the Redux Remote Devtools to access Redux state logs. This can be done by either right clicking within the web browser to bring up the context menu, expanding the Redux DevTools panel and clicking Open Remote DevTools OR clicking the Redux DevTools extension icon and clicking Open Remote DevTools.
     - You will also need to check the "Use custom (local) server" checkbox in the Remote DevTools Settings, using the default server configuration (host `localhost`, port `8000`, secure connection checkbox unchecked)
 
+[Test site](https://metamask.github.io/test-dapp/) can be used to execute different user flows.
+
 ### Running Unit Tests and Linting
 
 Run unit tests and the linter with `yarn test`.
