@@ -196,6 +196,38 @@ describe('TransactionAlerts', () => {
         ).not.toBeInTheDocument();
       });
     });
+
+    describe('if isNetworkBusy from useGasFeeContext is truthy', () => {
+      it('informs the user that the network is busy', () => {
+        const { getByText } = render({
+          useGasFeeContextValue: {
+            supportsEIP1559V2: true,
+            isNetworkBusy: true,
+          },
+        });
+        expect(
+          getByText(
+            'Network is busy. Gas prices are high and estimates are less accurate.',
+          ),
+        ).toBeInTheDocument();
+      });
+    });
+
+    describe('if isNetworkBusy from useGasFeeContext is falsy', () => {
+      it('does not inform the user that the network is busy', () => {
+        const { queryByText } = render({
+          useGasFeeContextValue: {
+            supportsEIP1559V2: true,
+            isNetworkBusy: false,
+          },
+        });
+        expect(
+          queryByText(
+            'Network is busy. Gas prices are high and estimates are less accurate.',
+          ),
+        ).not.toBeInTheDocument();
+      });
+    });
   });
 
   describe('when supportsEIP1559V2 from useGasFeeContext is falsy', () => {
@@ -251,6 +283,22 @@ describe('TransactionAlerts', () => {
         expect(
           queryByText(
             'Future transactions will queue after this one. This price was last seen was some time ago.',
+          ),
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    describe('if isNetworkBusy from useGasFeeContext is truthy', () => {
+      it('does not inform the user that the network is busy', () => {
+        const { queryByText } = render({
+          useGasFeeContextValue: {
+            supportsEIP1559V2: false,
+            isNetworkBusy: true,
+          },
+        });
+        expect(
+          queryByText(
+            'Network is busy. Gas prices are high and estimates are less accurate.',
           ),
         ).not.toBeInTheDocument();
       });

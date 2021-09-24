@@ -3,6 +3,7 @@ import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
   getBlockGasLimit,
   getConversionRate,
+  getIsNetworkBusy,
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
@@ -412,6 +413,32 @@ describe('MetaMask Reducers', () => {
           },
         }),
       ).toStrictEqual(false);
+    });
+  });
+
+  describe('getIsNetworkBusy', () => {
+    it('should return true if state.metamask.gasFeeEstimates.networkCongestion is over the "busy" threshold', () => {
+      expect(
+        getIsNetworkBusy({
+          metamask: { gasFeeEstimates: { networkCongestion: 0.67 } },
+        }),
+      ).toBe(true);
+    });
+
+    it('should return true if state.metamask.gasFeeEstimates.networkCongestion is right at the "busy" threshold', () => {
+      expect(
+        getIsNetworkBusy({
+          metamask: { gasFeeEstimates: { networkCongestion: 0.66 } },
+        }),
+      ).toBe(true);
+    });
+
+    it('should return false if state.metamask.gasFeeEstimates.networkCongestion is not over the "busy" threshold', () => {
+      expect(
+        getIsNetworkBusy({
+          metamask: { gasFeeEstimates: { networkCongestion: 0.65 } },
+        }),
+      ).toBe(false);
     });
   });
 });

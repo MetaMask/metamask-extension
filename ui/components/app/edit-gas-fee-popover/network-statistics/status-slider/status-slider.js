@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { NETWORK_CONGESTION_THRESHOLDS } from '../../../../../../shared/constants/gas';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import I18nValue from '../../../../ui/i18n-value';
 import { NetworkStabilityTooltip } from '../tooltips';
@@ -24,24 +25,24 @@ const determineStatusInfo = (givenNetworkCongestion) => {
   const color = GRADIENT_COLORS[colorIndex];
   const sliderTickValue = colorIndex * 10;
 
-  if (networkCongestion <= 0.33) {
-    return {
-      statusLabel: 'notBusy',
-      tooltipLabel: 'lowLowercase',
-      color,
-      sliderTickValue,
-    };
-  } else if (networkCongestion > 0.66) {
+  if (networkCongestion >= NETWORK_CONGESTION_THRESHOLDS.BUSY) {
     return {
       statusLabel: 'busy',
       tooltipLabel: 'highLowercase',
       color,
       sliderTickValue,
     };
+  } else if (networkCongestion >= NETWORK_CONGESTION_THRESHOLDS.STABLE) {
+    return {
+      statusLabel: 'stable',
+      tooltipLabel: 'stableLowercase',
+      color,
+      sliderTickValue,
+    };
   }
   return {
-    statusLabel: 'stable',
-    tooltipLabel: 'stableLowercase',
+    statusLabel: 'notBusy',
+    tooltipLabel: 'lowLowercase',
     color,
     sliderTickValue,
   };

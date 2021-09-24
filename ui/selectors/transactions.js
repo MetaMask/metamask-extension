@@ -10,8 +10,11 @@ import {
   TRANSACTION_TYPES,
 } from '../../shared/constants/transaction';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
-import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
-import { getSelectedAddress } from '.';
+import {
+  getCurrentChainId,
+  deprecatedGetCurrentNetworkId,
+  getSelectedAddress,
+} from './selectors';
 
 export const incomingTxListSelector = (state) => {
   const { showIncomingTransactions } = state.metamask.featureFlags;
