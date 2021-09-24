@@ -1120,15 +1120,6 @@
   "viewContact": {
     "message": "عرض جهة الاتصال"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "عرض في $1"
-  },
-  "viewOnEtherscan": {
-    "message": "عرضه على Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "عرض في متصفح Explorer"
-  },
   "visitWebSite": {
     "message": "قم بزيارة موقعنا على الإنترنت"
   },

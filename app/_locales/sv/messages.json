@@ -1102,15 +1102,6 @@
   "viewContact": {
     "message": "Visa kontakt"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Visa vid $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Visa på Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Visa i Utforskaren"
-  },
   "visitWebSite": {
     "message": "Besök vår hemsida"
   },
