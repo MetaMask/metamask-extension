@@ -4,9 +4,9 @@ import { Redirect } from 'react-router-dom';
 import {
   DEFAULT_ROUTE,
   LOCK_ROUTE,
-  INITIALIZE_END_OF_FLOW_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_GET_STARTED_ROUTE,
-  INITIALIZE_UNLOCK_ROUTE,
+  ONBOARDING_UNLOCK_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -26,7 +26,7 @@ export default function OnboardingFlowSwitch() {
   }
 
   if (seedPhraseBackedUp !== null) {
-    return <Redirect to={{ pathname: INITIALIZE_END_OF_FLOW_ROUTE }} />;
+    return <Redirect to={{ pathname: ONBOARDING_COMPLETION_ROUTE }} />;
   }
 
   if (isUnlocked) {
@@ -37,5 +37,5 @@ export default function OnboardingFlowSwitch() {
     return <Redirect to={{ pathname: ONBOARDING_GET_STARTED_ROUTE }} />;
   }
 
-  return <Redirect to={{ pathname: INITIALIZE_UNLOCK_ROUTE }} />;
+  return <Redirect to={{ pathname: ONBOARDING_UNLOCK_ROUTE }} />;
 }

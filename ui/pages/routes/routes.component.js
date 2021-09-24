@@ -53,7 +53,7 @@ import {
   BUILD_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
-  ONBOARDING_ROUTE,
+  // ONBOARDING_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -63,7 +63,7 @@ import {
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { isBeta } from '../../helpers/utils/build-types';
 import ConfirmationPage from '../confirmation';
-import OnboardingFlow from '../onboarding-flow/onboarding-flow';
+// import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -119,13 +119,12 @@ export default class Routes extends Component {
 
     const routes = (
       <Switch>
-
-        {/*FOR DEV PURPOSES!*/}
-        <Route path={DEFAULT_ROUTE} component={OnboardingFlow} />
-        {/*FOR DEV PURPOSES!*/}
+        {/* FOR DEV PURPOSES!*/}
+        {/* <Route path={DEFAULT_ROUTE} component={OnboardingFlow} /> */}
+        {/* FOR DEV PURPOSES!*/}
 
         <Route path={LOCK_ROUTE} component={Lock} exact />
-        {/* <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} /> */}
+        <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
         <Initialized
           path={RESTORE_VAULT_ROUTE}
@@ -178,7 +177,7 @@ export default class Routes extends Component {
           component={PermissionsConnect}
         />
         <Authenticated path={`${ASSET_ROUTE}/:asset`} component={Asset} />
-        <Authenticated path={DEFAULT_ROUTE} component={FirstTimeFlow} />
+        <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
     );
 
@@ -232,7 +231,7 @@ export default class Routes extends Component {
 
     const isInitializing = Boolean(
       matchPath(location.pathname, {
-        path: ONBOARDING_ROUTE,
+        path: INITIALIZE_ROUTE,
         exact: false,
       }),
     );
