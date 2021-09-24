@@ -133,6 +133,7 @@ module.exports = {
         'ui/__mocks__/*.js',
         'shared/**/*.test.js',
         'development/**/*.test.js',
+        'app/scripts/migrations/*.test.js',
       ],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
@@ -155,6 +156,7 @@ module.exports = {
         'ui/__mocks__/*.js',
         'shared/**/*.test.js',
         'development/**/*.test.js',
+        'app/scripts/migrations/*.test.js',
       ],
       extends: ['@metamask/eslint-config-jest'],
       rules: {
