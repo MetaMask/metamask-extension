@@ -1123,15 +1123,6 @@
   "viewContact": {
     "message": "Преглед на контакта"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Преглед на $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Преглед на Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Преглед в Explorer"
-  },
   "visitWebSite": {
     "message": "Посетете нашият уеб сайт"
   },

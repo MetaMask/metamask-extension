@@ -1124,15 +1124,6 @@
   "viewContact": {
     "message": "ዕውቂያን ይመልከቱ"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "በ $1ይመልከቱ"
-  },
-  "viewOnEtherscan": {
-    "message": "በ Etherscan ላይ ይመልከቱ"
-  },
-  "viewinExplorer": {
-    "message": "በኤክስፕሎረር ተመልከት"
-  },
   "visitWebSite": {
     "message": "ድረ ገጻችንን ይጎብኙ"
   },

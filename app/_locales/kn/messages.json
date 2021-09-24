@@ -1127,15 +1127,6 @@
   "viewContact": {
     "message": "ಸಂಪರ್ಕವನ್ನು ವೀಕ್ಷಿಸಿ"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "$1 ನಲ್ಲಿ ವೀಕ್ಷಿಸಿ"
-  },
-  "viewOnEtherscan": {
-    "message": "ಎಥೆರ್‌ಸ್ಕ್ಯಾನ್‌ನಲ್ಲಿ ವೀಕ್ಷಿಸಿ"
-  },
-  "viewinExplorer": {
-    "message": "ಎಕ್ಸ್‌ಪ್ಲೋರರ್‌ನಲ್ಲಿ ವೀಕ್ಷಿಸಿ"
-  },
   "visitWebSite": {
     "message": "ನಮ್ಮ ವೆಬ್ ಸೈಟ್ ಅನ್ನು ಭೇಟಿ ಮಾಡಿ"
   },
