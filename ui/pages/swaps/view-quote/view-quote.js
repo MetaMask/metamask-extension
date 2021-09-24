@@ -37,6 +37,7 @@ import {
   getSwapsQuoteRefreshTime,
   getReviewSwapClickedTimestamp,
   getSmartTransactionsOptInStatus,
+  getUnsignedTransactionsAndEstimates,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -59,6 +60,7 @@ import {
   setSwapsErrorKey,
   showModal,
   setSwapsQuotesPollingLimitEnabled,
+  fetchUnsignedTransactionsAndEstimates,
 } from '../../../store/actions';
 import {
   ASSET_ROUTE,
@@ -159,6 +161,29 @@ export default function ViewQuote() {
   const smartTransactionsOptInStatus = useSelector(
     getSmartTransactionsOptInStatus,
   );
+  const unsignedTransactionsAndEstimates = useSelector(
+    getUnsignedTransactionsAndEstimates,
+  );
+  const unsignedTransaction = usedQuote.trade;
+
+  useEffect(() => {
+    dispatch(
+      fetchUnsignedTransactionsAndEstimates({
+        data: unsignedTransaction.data,
+        from: unsignedTransaction.from,
+        value: unsignedTransaction.value,
+        gas: unsignedTransaction.gas,
+        to: unsignedTransaction.to,
+      }),
+    );
+  }, [
+    dispatch,
+    unsignedTransaction.data,
+    unsignedTransaction.from,
+    unsignedTransaction.value,
+    unsignedTransaction.gas,
+    unsignedTransaction.to,
+  ]);
 
   let gasFeeInputs;
   if (networkAndAccountSupports1559) {

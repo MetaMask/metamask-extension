@@ -87,6 +87,18 @@ export default function reduceApp(state = {}, action) {
         qrCodeData: action.value,
       };
 
+    case actionConstants.SET_UNSIGNED_TRANSACTIONS_AND_ESTIMATES:
+      return {
+        ...appState,
+        unsignedTransactionsAndEstimates: action.payload,
+      };
+
+    case actionConstants.SET_SMART_TRANSACTIONS_STATUS:
+      return {
+        ...appState,
+        smartTransactionsStatus: action.payload,
+      };
+
     // modal methods:
     case actionConstants.MODAL_OPEN: {
       const { name, ...modalProps } = action.payload;

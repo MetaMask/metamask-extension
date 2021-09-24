@@ -2880,8 +2880,51 @@ export async function setWeb3ShimUsageAlertDismissed(origin) {
   await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
 }
 
+// Smart Transactions Controller
 export async function setSmartTransactionsOptInStatus(optInState) {
   await promisifiedBackground.setSmartTransactionsOptInStatus(optInState);
+}
+export function fetchUnsignedTransactionsAndEstimates(unsignedTransaction) {
+  return async (dispatch) => {
+    try {
+      const unsignedTransactionsAndEstimates = await promisifiedBackground.getUnsignedTransactionsAndEstimates(
+        unsignedTransaction,
+      );
+      dispatch({
+        type: actionConstants.SET_UNSIGNED_TRANSACTIONS_AND_ESTIMATES,
+        payload: unsignedTransactionsAndEstimates,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+}
+export async function submitSignedTransactions(
+  signedTransactions,
+  signedCanceledTransactions,
+) {
+  await promisifiedBackground.submitSignedTransactions(
+    signedTransactions,
+    signedCanceledTransactions,
+  );
+}
+export function fetchSmartTransactionsStatus(uuids) {
+  return async (dispatch) => {
+    try {
+      const smartTransactionsStatus = await promisifiedBackground.fetchSmartTransactionsStatus(
+        uuids,
+      );
+      dispatch({
+        type: actionConstants.SET_SMART_TRANSACTIONS_STATUS,
+        payload: smartTransactionsStatus,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+}
+export async function cancelSmartTransaction(uuid) {
+  await promisifiedBackground.cancelSmartTransaction(uuid);
 }
 
 // DetectTokenController

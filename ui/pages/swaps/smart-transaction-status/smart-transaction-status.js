@@ -7,6 +7,7 @@ import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {
   getFetchParams,
   prepareToLeaveSwaps,
+  getSmartTransactionsStatus,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
@@ -25,8 +26,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import SwapSuccessIcon from '../awaiting-swap/swap-success-icon';
 import SwapFailureIcon from '../awaiting-swap/swap-failure-icon';
+import { fetchSmartTransactionsStatus } from '../../../store/actions';
+import { SECOND } from '../../../../shared/constants/time';
 
 import SwapsFooter from '../swaps-footer';
+
+const SMART_TRANSACTIONS_STATUS_INTERVAL = SECOND * 10; // Poll every 10 seconds.
 
 export default function SmartTransactionStatus() {
   const t = useContext(I18nContext);
@@ -37,7 +42,9 @@ export default function SmartTransactionStatus() {
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = true;
-  const [status] = useState('PENDING'); // TODO: Load status from Redux instead.
+  const [uuid] = useState('uuid1'); // TODO: Load status from Redux instead.
+  const smartTransactionsStatus = useSelector(getSmartTransactionsStatus);
+  const smartTransactionStatus = smartTransactionsStatus?.[0]?.status || {};
 
   const stStatusPageLoadedEvent = useNewMetricEvent({
     event: 'ST Status Page Loaded',
@@ -55,19 +62,38 @@ export default function SmartTransactionStatus() {
     category: 'swaps',
   });
 
+  const isSmartTransactionPending =
+    !smartTransactionStatus.minedTx ||
+    (smartTransactionStatus.minedTx === 'not_mined' &&
+      smartTransactionStatus.cancellationReason === 'not_cancelled');
+
   useEffect(() => {
     stStatusPageLoadedEvent();
+    const intervalId = setInterval(() => {
+      if (isSmartTransactionPending) {
+        dispatch(fetchSmartTransactionsStatus([uuid]));
+      } else {
+        clearInterval(intervalId);
+      }
+    }, SMART_TRANSACTIONS_STATUS_INTERVAL);
+    // if (isSmartTransactionPending) {
+    //   dispatch(fetchSmartTransactionsStatus([uuid]));
+    // }
+    return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch, isSmartTransactionPending]);
 
   let headerText = t('stPending');
   let description = t('stPendingDescription');
   let icon = <PulseLoader />;
-  if (status === 'SUCCESS') {
+  if (smartTransactionStatus.minedTx === 'success') {
     headerText = t('stSuccess');
     description = t('stSuccessDescription');
     icon = <SwapSuccessIcon />;
-  } else if (status === 'FAILURE') {
+  } else if (
+    smartTransactionStatus.cancellationReason &&
+    smartTransactionStatus.cancellationReason !== 'not_cancelled'
+  ) {
     headerText = t('stFailure');
     description = t('stFailureDescription', [
       <a
@@ -110,7 +136,7 @@ export default function SmartTransactionStatus() {
           // the `inputValue` local state in `pages/swaps/index.js`
           history.push(DEFAULT_ROUTE);
         }}
-        submitText={status === 'PENDING' ? t('cancel') : t('close')}
+        submitText={isSmartTransactionPending ? t('cancel') : t('close')}
         hideCancel
       />
     </div>

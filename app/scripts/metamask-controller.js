@@ -1170,12 +1170,16 @@ export default class MetamaskController extends EventEmitter {
         smartTransactionsController.getUnsignedTransactionsAndEstimates,
         smartTransactionsController,
       ),
-      cancelSmartTransaction: nodeify(
-        smartTransactionsController.cancelSmartTransaction,
+      submitSignedTransactions: nodeify(
+        smartTransactionsController.submitSignedTransactions,
         smartTransactionsController,
       ),
       fetchSmartTransactionsStatus: nodeify(
         smartTransactionsController.fetchSmartTransactionsStatus,
+        smartTransactionsController,
+      ),
+      cancelSmartTransaction: nodeify(
+        smartTransactionsController.cancelSmartTransaction,
         smartTransactionsController,
       ),
 

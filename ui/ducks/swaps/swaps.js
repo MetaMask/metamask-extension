@@ -336,6 +336,12 @@ export const getApproveTxParams = (state) => {
 export const getSmartTransactionsOptInStatus = (state) => {
   return state.metamask.userOptIn;
 };
+export const getUnsignedTransactionsAndEstimates = (state) => {
+  return state.appState.unsignedTransactionsAndEstimates;
+};
+export const getSmartTransactionsStatus = (state) => {
+  return state.appState.smartTransactionsStatus;
+};
 
 // Actions / action-creators
 
