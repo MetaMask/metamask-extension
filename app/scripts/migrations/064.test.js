@@ -1,12 +1,11 @@
-import { strict as assert } from 'assert';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
 import migration64 from './064';
 
 const SENT_ETHER = 'sentEther'; // the legacy transaction type being replaced in this migration with TRANSACTION_TYPES.SIMPLE_SEND
 
-describe('migration #64', function () {
-  it('should update the version metadata', async function () {
+describe('migration #64', () => {
+  it('should update the version metadata', async () => {
     const oldStorage = {
       meta: {
         version: 63,
@@ -15,12 +14,12 @@ describe('migration #64', function () {
     };
 
     const newStorage = await migration64.migrate(oldStorage);
-    assert.deepEqual(newStorage.meta, {
+    expect(newStorage.meta).toStrictEqual({
       version: 64,
     });
   });
 
-  it('should do nothing if transactions state does not exist', async function () {
+  it('should do nothing if transactions state does not exist', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -35,10 +34,10 @@ describe('migration #64', function () {
     };
 
     const newStorage = await migration64.migrate(oldStorage);
-    assert.deepEqual(oldStorage.data, newStorage.data);
+    expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
-  it('should do nothing if transactions state is empty', async function () {
+  it('should do nothing if transactions state is empty', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -51,10 +50,10 @@ describe('migration #64', function () {
     };
 
     const newStorage = await migration64.migrate(oldStorage);
-    assert.deepEqual(oldStorage.data, newStorage.data);
+    expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
-  it('should do nothing if transactions state is not an object', async function () {
+  it('should do nothing if transactions state is not an object', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -67,20 +66,20 @@ describe('migration #64', function () {
     };
 
     const newStorage = await migration64.migrate(oldStorage);
-    assert.deepEqual(oldStorage.data, newStorage.data);
+    expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
-  it('should do nothing if state is empty', async function () {
+  it('should do nothing if state is empty', async () => {
     const oldStorage = {
       meta: {},
       data: {},
     };
 
     const newStorage = await migration64.migrate(oldStorage);
-    assert.deepEqual(oldStorage.data, newStorage.data);
+    expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
-  it('should change action type of "sentEther" to "simpleSend" for any transactions and transaction history events in transactionsController.transactions', async function () {
+  it('should change action type of "sentEther" to "simpleSend" for any transactions and transaction history events in transactionsController.transactions', async () => {
     const OLD_TRANSACTION_STATE = {
       1462177651588364: {
         type: TRANSACTION_TYPES.CANCEL,
@@ -464,6 +463,6 @@ describe('migration #64', function () {
 
     const newStorage = await migration64.migrate(oldStorage);
 
-    assert.deepEqual(expectedStorage.data, newStorage.data);
+    expect(expectedStorage.data).toStrictEqual(newStorage.data);
   });
 });

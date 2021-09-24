@@ -1,8 +1,7 @@
-import { strict as assert } from 'assert';
 import migration63 from './063';
 
-describe('migration #63', function () {
-  it('should update the version metadata', async function () {
+describe('migration #63', () => {
+  it('should update the version metadata', async () => {
     const oldStorage = {
       meta: {
         version: 62,
@@ -11,12 +10,12 @@ describe('migration #63', function () {
     };
 
     const newStorage = await migration63.migrate(oldStorage);
-    assert.deepEqual(newStorage.meta, {
+    expect(newStorage.meta).toStrictEqual({
       version: 63,
     });
   });
 
-  it('should move accountTokens data from PreferencesController to TokensController allTokens field and rotate structure from [accountAddress][chainId] to [chainId][accountAddress]', async function () {
+  it('should move accountTokens data from PreferencesController to TokensController allTokens field and rotate structure from [accountAddress][chainId] to [chainId][accountAddress]', async () => {
     const oldAccountTokens = {
       '0x00000000000': {
         '0x1': [
@@ -155,7 +154,7 @@ describe('migration #63', function () {
     };
 
     const newStorage = await migration63.migrate(oldStorage);
-    assert.deepStrictEqual(newStorage.data, {
+    expect(newStorage.data).toStrictEqual({
       TokensController: {
         allTokens: expectedTokens,
         allIgnoredTokens: {},
@@ -167,7 +166,7 @@ describe('migration #63', function () {
     });
   });
 
-  it('should move accountHiddenTokens data from PreferencesController to TokensController allIgnoredTokens field and rotate structure from [accountAddress][chainId] to [chainId][accountAddress]', async function () {
+  it('should move accountHiddenTokens data from PreferencesController to TokensController allIgnoredTokens field and rotate structure from [accountAddress][chainId] to [chainId][accountAddress]', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -193,7 +192,7 @@ describe('migration #63', function () {
     };
 
     const newStorage = await migration63.migrate(oldStorage);
-    assert.deepStrictEqual(newStorage.data, {
+    expect(newStorage.data).toStrictEqual({
       TokensController: {
         allTokens: {},
         allIgnoredTokens: {
@@ -219,7 +218,7 @@ describe('migration #63', function () {
     });
   });
 
-  it('should should remove all token related state from the preferences controller', async function () {
+  it('should should remove all token related state from the preferences controller', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -237,7 +236,7 @@ describe('migration #63', function () {
     };
 
     const newStorage = await migration63.migrate(oldStorage);
-    assert.deepStrictEqual(newStorage.data, {
+    expect(newStorage.data).toStrictEqual({
       PreferencesController: {
         completedOnboarding: true,
         dismissSeedBackUpReminder: false,
