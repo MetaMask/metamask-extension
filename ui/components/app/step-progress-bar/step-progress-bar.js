@@ -14,7 +14,7 @@ const stages = {
 export default function StepProgressBar({ stage = 'PASSWORD_CREATE' }) {
   const t = useI18nContext();
   return (
-    <Box margin={4}>
+    <Box>
       <ul className="progressbar">
         <li
           className={classnames({
