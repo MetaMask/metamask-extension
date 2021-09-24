@@ -129,10 +129,6 @@
     max-height: 256px;
     scrollbar-width: auto;
 
-    &::-webkit-scrollbar {
-      display: none;
-    }
-
     @media screen and (max-width: $break-small) {
       max-height: 228px;
     }
