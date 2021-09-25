@@ -75,12 +75,13 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   renderBalance = () => {
-    const { conversionRate, nativeCurrency } = this.props;
     const {
+      conversionRate,
+      nativeCurrency,
       fromAccount: { balance },
-    } = this.state;
+    } = this.props;
 
-    const balanceInBaseAsset = conversionUtil(balance, {
+    const nativeCurrencyBalance = conversionUtil(balance, {
       fromNumericBase: 'hex',
       toNumericBase: 'dec',
       fromDenomination: 'WEI',
@@ -94,7 +95,7 @@ export default class SignatureRequestOriginal extends Component {
           {`${this.context.t('balance')}:`}
         </div>
         <div className="request-signature__balance-value">
-          {`${balanceInBaseAsset} ${nativeCurrency}`}
+          {`${nativeCurrencyBalance} ${nativeCurrency}`}
         </div>
       </div>
     );
