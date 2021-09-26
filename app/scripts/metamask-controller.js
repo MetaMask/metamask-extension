@@ -1589,7 +1589,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async forgetDevice(deviceName) {
     const keyring = await this.getKeyringForDevice(deviceName);
-    keyring.forgetDevice();
+    this.keyringController.forgetKeyring(keyring);
     return true;
   }
 
