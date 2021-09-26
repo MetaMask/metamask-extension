@@ -1,58 +1,27 @@
 import React, { Component } from 'react';
-import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import ContactList from '../../../components/app/contact-list';
-import { showModal } from '../../../store/actions';
 import { CONTACT_VIEW_ROUTE } from '../../../helpers/constants/routes';
+import AddNewContactModal from '../../../components/app/modals/add-new-contact-modal/add-new-contact-modal.component';
 import EditContact from './edit-contact';
 import AddContact from './add-contact';
 import ViewContact from './view-contact';
 
-AddContactButton.propTypes = {
-  label: PropTypes.string,
-};
-
-RenderAddContactLink.propTypes = {
-  label: PropTypes.string,
-};
-
-function RenderAddContactLink(props) {
-  const { label } = props;
-  const dispatch = useDispatch();
-
-  return (
-    <div>
-      <button
-        className="address-book__link"
-        onClick={(e) => {
-          e.preventDefault();
-          dispatch(showModal({ name: 'ADD_NEW_CONTACT' }));
-        }}
-      >
-        + {label}
-      </button>
-    </div>
-  );
-}
-
-function AddContactButton(props) {
-  const { label } = props;
-  const dispatch = useDispatch();
-
-  return (
-    <button
-      className="address-book-add-button__button button btn-secondary btn--rounded"
-      onClick={(e) => {
-        e.preventDefault();
-        dispatch(showModal({ name: 'ADD_NEW_CONTACT' }));
-      }}
-    >
-      {label}
-    </button>
-  );
-}
-
 export default class ContactListTab extends Component {
+  constructor() {
+    super();
+    this.state = { isAddNewContactModalOpen: false };
+    this.setIsAddNewContactModalOpen = this.setIsAddNewContactModalOpen.bind(
+      this,
+    );
+  }
+
+  setIsAddNewContactModalOpen(isOpen) {
+    this.setState({
+      isAddNewContactModalOpen: isOpen,
+    });
+  }
+
   static contextTypes = {
     t: PropTypes.func,
   };
@@ -96,7 +65,15 @@ export default class ContactListTab extends Component {
           <p className="address-book__sub-title">
             {t('addFriendsAndAddresses')}
           </p>
-          <RenderAddContactLink label={t('addContact')} />
+          <button
+            className="address-book__link"
+            onClick={(e) => {
+              e.preventDefault();
+              this.setIsAddNewContactModalOpen(true);
+            }}
+          >
+            + {t('addContact')}
+          </button>
         </div>
       </div>
     );
@@ -136,7 +113,17 @@ export default class ContactListTab extends Component {
     const { hideAddressBook } = this.props;
 
     if (!hideAddressBook) {
-      return <div className="address-book">{this.renderAddresses()}</div>;
+      return (
+        <>
+          {this.state.isAddNewContactModalOpen ? (
+            <AddNewContactModal
+              setIsAddNewContactModalOpen={this.setIsAddNewContactModalOpen}
+            />
+          ) : (
+            <div className="address-book">{this.renderAddresses()}</div>
+          )}
+        </>
+      );
     }
     return null;
   }
@@ -147,7 +134,15 @@ export default class ContactListTab extends Component {
         {this.renderAddressBookContent()}
         {this.renderContactContent()}
         <div className="address-book-add-button">
-          <AddContactButton label={this.context.t('addContact')} />
+          <button
+            className="address-book-add-button__button button btn-secondary btn--rounded"
+            onClick={(e) => {
+              e.preventDefault();
+              this.setIsAddNewContactModalOpen(true);
+            }}
+          >
+            {this.context.t('addContact')}
+          </button>
         </div>
       </div>
     );

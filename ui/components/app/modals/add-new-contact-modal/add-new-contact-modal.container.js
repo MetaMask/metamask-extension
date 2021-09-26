@@ -1,19 +1,11 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { addToAddressBook, hideModal } from '../../../../store/actions';
-import { getQrCodeData } from '../../../../ducks/app/app';
+import { addToAddressBook } from '../../../../store/actions';
 import AddNewContactModal from './add-new-contact-modal.component';
-
-const mapStateToProps = (state) => {
-  return {
-    qrCodeData: getQrCodeData(state),
-  };
-};
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    hideModal: () => dispatch(hideModal()),
     addToAddressBook: (recipient, nickname, memo) =>
       dispatch(addToAddressBook(recipient, nickname, memo)),
   };
@@ -21,5 +13,5 @@ const mapDispatchToProps = (dispatch) => {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(mapDispatchToProps),
 )(AddNewContactModal);
