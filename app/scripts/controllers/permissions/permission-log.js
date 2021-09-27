@@ -1,11 +1,10 @@
+import { ObservableStore } from '@metamask/obs-store';
 import stringify from 'fast-safe-stringify';
-import { CAVEAT_NAMES } from '../../../../shared/constants/permissions';
+import { CaveatTypes } from '../../../../shared/constants/permissions';
 import {
-  HISTORY_STORE_KEY,
   LOG_IGNORE_METHODS,
   LOG_LIMIT,
   LOG_METHOD_TYPES,
-  LOG_STORE_KEY,
   WALLET_PREFIX,
 } from './enums';
 
@@ -13,51 +12,59 @@ import {
  * Controller with middleware for logging requests and responses to restricted
  * and permissions-related methods.
  */
-export default class PermissionsLogController {
-  constructor({ restrictedMethods, store }) {
+export default class PermissionLogController {
+  /**
+   * @param {{ restrictedMethods: Set<string>, initState: Record<string, unknown> }} options - Options bag.
+   */
+  constructor({ restrictedMethods, initState }) {
     this.restrictedMethods = restrictedMethods;
-    this.store = store;
+    this.store = new ObservableStore({
+      permissionHistory: {},
+      permissionActivityLog: [],
+      ...initState,
+    });
   }
 
   /**
-   * Get the activity log.
+   * Get the restricted method activity log.
    *
    * @returns {Array<Object>} The activity log.
    */
   getActivityLog() {
-    return this.store.getState()[LOG_STORE_KEY] || [];
+    return this.store.getState().permissionActivityLog;
   }
 
   /**
-   * Update the activity log.
+   * Update the restricted method activity log.
    *
    * @param {Array<Object>} logs - The new activity log array.
    */
   updateActivityLog(logs) {
-    this.store.updateState({ [LOG_STORE_KEY]: logs });
+    this.store.updateState({ permissionActivityLog: logs });
   }
 
   /**
-   * Get the permissions history log.
+   * Get the permission history log.
    *
    * @returns {Object} The permissions history log.
    */
   getHistory() {
-    return this.store.getState()[HISTORY_STORE_KEY] || {};
+    return this.store.getState().permissionHistory;
   }
 
   /**
-   * Update the permissions history log.
+   * Update the permission history log.
    *
    * @param {Object} history - The new permissions history log object.
    */
   updateHistory(history) {
-    this.store.updateState({ [HISTORY_STORE_KEY]: history });
+    this.store.updateState({ permissionHistory: history });
   }
 
   /**
    * Updates the exposed account history for the given origin.
    * Sets the 'last seen' time to Date.now() for the given accounts.
+   * Does **not** update the 'lastApproved' time for the permission itself.
    * Returns if the accounts array is empty.
    *
    * @param {string} origin - The origin that the accounts are exposed to.
@@ -96,7 +103,7 @@ export default class PermissionsLogController {
       // we only log certain methods
       if (
         !LOG_IGNORE_METHODS.includes(method) &&
-        (isInternal || this.restrictedMethods.includes(method))
+        (isInternal || this.restrictedMethods.has(method))
       ) {
         activityEntry = this.logRequest(req, isInternal);
 
@@ -341,7 +348,7 @@ export default class PermissionsLogController {
     const accounts = new Set();
     for (const caveat of perm.caveats) {
       if (
-        caveat.name === CAVEAT_NAMES.exposedAccounts &&
+        caveat.type === CaveatTypes.restrictReturnedAccounts &&
         Array.isArray(caveat.value)
       ) {
         for (const value of caveat.value) {

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import SiteIcon from '../../../components/ui/site-icon';
 import { I18nContext } from '../../../contexts/i18n';
 
-export default function PermissionsRedirect({ domainMetadata }) {
+export default function PermissionsRedirect({ subjectMetadata }) {
   const t = useContext(I18nContext);
 
   return (
@@ -12,8 +12,8 @@ export default function PermissionsRedirect({ domainMetadata }) {
         {t('connecting')}
         <div className="permissions-redirect__icons">
           <SiteIcon
-            icon={domainMetadata.icon}
-            name={domainMetadata.name}
+            icon={subjectMetadata.iconUrl}
+            name={subjectMetadata.name}
             size={64}
           />
           <div className="permissions-redirect__center-icon">
@@ -47,10 +47,9 @@ export default function PermissionsRedirect({ domainMetadata }) {
 }
 
 PermissionsRedirect.propTypes = {
-  domainMetadata: PropTypes.shape({
+  subjectMetadata: PropTypes.shape({
     extensionId: PropTypes.string,
-    icon: PropTypes.string,
-    host: PropTypes.string.isRequired,
+    iconUrl: PropTypes.string,
     name: PropTypes.string.isRequired,
     origin: PropTypes.string.isRequired,
   }),
