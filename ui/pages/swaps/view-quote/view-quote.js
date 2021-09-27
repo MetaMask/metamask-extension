@@ -61,6 +61,7 @@ import {
   showModal,
   setSwapsQuotesPollingLimitEnabled,
   fetchUnsignedTransactionsAndEstimates,
+  signAndSendSmartTransaction,
 } from '../../../store/actions';
 import {
   ASSET_ROUTE,
@@ -68,6 +69,7 @@ import {
   DEFAULT_ROUTE,
   SWAPS_ERROR_ROUTE,
   AWAITING_SWAP_ROUTE,
+  SMART_TRANSACTION_STATUS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getTokenData } from '../../../helpers/utils/transactions.util';
 import {
@@ -816,7 +818,17 @@ export default function ViewQuote() {
         onSubmit={() => {
           setSubmitClicked(true);
           if (!balanceError) {
-            dispatch(signAndSendTransactions(history, metaMetricsEvent));
+            if (smartTransactionsOptInStatus) {
+              dispatch(
+                signAndSendSmartTransaction({
+                  unsignedTransaction,
+                  unsignedTransactionsAndEstimates,
+                }),
+              );
+              history.push(SMART_TRANSACTION_STATUS_ROUTE);
+            } else {
+              dispatch(signAndSendTransactions(history, metaMetricsEvent));
+            }
           } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
             history.push(DEFAULT_ROUTE);
           } else {

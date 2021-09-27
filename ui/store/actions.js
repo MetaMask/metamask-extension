@@ -2884,6 +2884,7 @@ export async function setWeb3ShimUsageAlertDismissed(origin) {
 export async function setSmartTransactionsOptInStatus(optInState) {
   await promisifiedBackground.setSmartTransactionsOptInStatus(optInState);
 }
+
 export function fetchUnsignedTransactionsAndEstimates(unsignedTransaction) {
   return async (dispatch) => {
     try {
@@ -2899,15 +2900,47 @@ export function fetchUnsignedTransactionsAndEstimates(unsignedTransaction) {
     }
   };
 }
-export async function submitSignedTransactions(
-  signedTransactions,
-  signedCanceledTransactions,
-) {
-  await promisifiedBackground.submitSignedTransactions(
-    signedTransactions,
-    signedCanceledTransactions,
+
+const createSignedTransactions = (unsignedTransaction, fees) => {
+  const unsignedTransactionsWithFees = fees.map((fee) => {
+    return {
+      ...unsignedTransaction,
+      ...fee,
+    };
+  });
+  // TODO: Call a fn to sign every transaction with fees.
+  const signedTransactions = unsignedTransactionsWithFees;
+  return signedTransactions;
+};
+
+export function signAndSendSmartTransaction({
+  unsignedTransaction,
+  unsignedTransactionsAndEstimates,
+}) {
+  const signedTransactions = createSignedTransactions(
+    unsignedTransaction,
+    unsignedTransactionsAndEstimates.fees,
   );
+  const signedCanceledTransactions = createSignedTransactions(
+    unsignedTransaction,
+    unsignedTransactionsAndEstimates.cancelFees,
+  );
+  return async (dispatch) => {
+    try {
+      const response = await promisifiedBackground.submitSignedTransactions(
+        signedTransactions,
+        signedCanceledTransactions,
+      ); // Returns e.g.: { uuid: 'dP23W7c2kt4FK9TmXOkz1UM2F20' }
+      dispatch({
+        type: actionConstants.SET_LATEST_SMART_TRANSACTION_UUID,
+        payload: response,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
 }
+
 export function fetchSmartTransactionsStatus(uuids) {
   return async (dispatch) => {
     try {
@@ -2923,6 +2956,7 @@ export function fetchSmartTransactionsStatus(uuids) {
     }
   };
 }
+
 export async function cancelSmartTransaction(uuid) {
   await promisifiedBackground.cancelSmartTransaction(uuid);
 }
