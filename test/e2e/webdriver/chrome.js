@@ -19,9 +19,7 @@ class ChromeDriver {
     // Enables Chrome logging. Default: enabled
     // Especially useful for discovering why Chrome has crashed, but can also
     // be useful for revealing console errors (from the page or background).
-    if (
-      process.env.ENABLE_CHROME_LOGGING !== 'false'
-    ) {
+    if (process.env.ENABLE_CHROME_LOGGING !== 'false') {
       service.setStdio('inherit').enableChromeLogging();
     }
     if (port) {
