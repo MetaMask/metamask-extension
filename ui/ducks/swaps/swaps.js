@@ -342,6 +342,9 @@ export const getUnsignedTransactionsAndEstimates = (state) => {
 export const getSmartTransactionsStatus = (state) => {
   return state.appState.smartTransactionsStatus;
 };
+export const getLatestSmartTransactionUuid = (state) => {
+  return state.appState.latestSmartTransactionUuid;
+};
 
 // Actions / action-creators
 

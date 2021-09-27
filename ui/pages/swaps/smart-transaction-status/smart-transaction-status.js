@@ -8,6 +8,7 @@ import {
   getFetchParams,
   prepareToLeaveSwaps,
   getSmartTransactionsStatus,
+  getLatestSmartTransactionUuid,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
@@ -42,8 +43,8 @@ export default function SmartTransactionStatus() {
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = true;
-  const [uuid] = useState('uuid1'); // TODO: Load status from Redux instead.
   const smartTransactionsStatus = useSelector(getSmartTransactionsStatus);
+  const latestSmartTransactionUuid = useSelector(getLatestSmartTransactionUuid);
   const smartTransactionStatus = smartTransactionsStatus?.[0]?.status || {};
 
   const stStatusPageLoadedEvent = useNewMetricEvent({
@@ -71,7 +72,7 @@ export default function SmartTransactionStatus() {
     stStatusPageLoadedEvent();
     const intervalId = setInterval(() => {
       if (isSmartTransactionPending) {
-        dispatch(fetchSmartTransactionsStatus([uuid]));
+        dispatch(fetchSmartTransactionsStatus([latestSmartTransactionUuid]));
       } else {
         clearInterval(intervalId);
       }

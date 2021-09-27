@@ -93,6 +93,12 @@ export default function reduceApp(state = {}, action) {
         unsignedTransactionsAndEstimates: action.payload,
       };
 
+    case actionConstants.SET_LATEST_SMART_TRANSACTION_UUID:
+      return {
+        ...appState,
+        latestSmartTransactionUuid: action.payload?.uuid,
+      };
+
     case actionConstants.SET_SMART_TRANSACTIONS_STATUS:
       return {
         ...appState,
