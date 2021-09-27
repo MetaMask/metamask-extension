@@ -1632,6 +1632,9 @@
   "optionalCurrencySymbol": {
     "message": "Currency Symbol (optional)"
   },
+  "or": {
+    "message": "or"
+  },
   "origin": {
     "message": "Origin"
   },

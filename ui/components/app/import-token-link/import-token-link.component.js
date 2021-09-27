@@ -23,15 +23,17 @@ export default function ImportTokenLink({ isMainnet }) {
   return (
     <Box className="import-token-link" textAlign={TEXT_ALIGN.CENTER}>
       {isMainnet && (
-        <Button
-          className="import-token-link__link"
-          type="link"
-          onClick={() => detectNewTokens()}
-        >
-          {t('refreshList')}
-        </Button>
+        <>
+          <Button
+            className="import-token-link__link"
+            type="link"
+            onClick={() => detectNewTokens()}
+          >
+            {t('refreshList')}
+          </Button>
+          {t('or')}
+        </>
       )}
-      {isMainnet && ' or '}
       <Button
         className="import-token-link__link"
         type="link"
