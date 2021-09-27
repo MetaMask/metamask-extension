@@ -41,6 +41,7 @@ export default function FeeCard({
   maxPriorityFeePerGasDecGWEI,
   maxFeePerGasDecGWEI,
   smartTransactionsOptInStatus,
+  smartTransactionsEnabled,
 }) {
   const t = useContext(I18nContext);
 
@@ -162,7 +163,8 @@ export default function FeeCard({
                         {t('maxFee')}
                       </Typography>
                       {`: ${secondaryFee.maxFee}`}
-                      {!smartTransactionsOptInStatus && (
+                      {(!smartTransactionsEnabled ||
+                        !smartTransactionsOptInStatus) && (
                         <span
                           className="fee-card__edit-link"
                           onClick={() => onFeeCardMaxRowClick()}
@@ -313,4 +315,5 @@ FeeCard.propTypes = {
   maxPriorityFeePerGasDecGWEI: PropTypes.string,
   maxFeePerGasDecGWEI: PropTypes.string,
   smartTransactionsOptInStatus: PropTypes.bool,
+  smartTransactionsEnabled: PropTypes.bool,
 };

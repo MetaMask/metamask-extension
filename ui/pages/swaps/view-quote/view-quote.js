@@ -38,6 +38,7 @@ import {
   getReviewSwapClickedTimestamp,
   getSmartTransactionsOptInStatus,
   getUnsignedTransactionsAndEstimates,
+  getSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -163,23 +164,28 @@ export default function ViewQuote() {
   const smartTransactionsOptInStatus = useSelector(
     getSmartTransactionsOptInStatus,
   );
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const unsignedTransactionsAndEstimates = useSelector(
     getUnsignedTransactionsAndEstimates,
   );
   const unsignedTransaction = usedQuote.trade;
 
   useEffect(() => {
-    dispatch(
-      fetchUnsignedTransactionsAndEstimates({
-        data: unsignedTransaction.data,
-        from: unsignedTransaction.from,
-        value: unsignedTransaction.value,
-        gas: unsignedTransaction.gas,
-        to: unsignedTransaction.to,
-      }),
-    );
+    if (smartTransactionsEnabled && smartTransactionsOptInStatus) {
+      dispatch(
+        fetchUnsignedTransactionsAndEstimates({
+          data: unsignedTransaction.data,
+          from: unsignedTransaction.from,
+          value: unsignedTransaction.value,
+          gas: unsignedTransaction.gas,
+          to: unsignedTransaction.to,
+        }),
+      );
+    }
   }, [
     dispatch,
+    smartTransactionsEnabled,
+    smartTransactionsOptInStatus,
     unsignedTransaction.data,
     unsignedTransaction.from,
     unsignedTransaction.value,
@@ -810,6 +816,7 @@ export default function ViewQuote() {
             networkAndAccountSupports1559={networkAndAccountSupports1559}
             maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(maxPriorityFeePerGas)}
             maxFeePerGasDecGWEI={hexWEIToDecGWEI(maxFeePerGas)}
+            smartTransactionsEnabled={smartTransactionsEnabled}
             smartTransactionsOptInStatus={smartTransactionsOptInStatus}
           />
         </div>
@@ -818,7 +825,7 @@ export default function ViewQuote() {
         onSubmit={() => {
           setSubmitClicked(true);
           if (!balanceError) {
-            if (smartTransactionsOptInStatus) {
+            if (smartTransactionsEnabled && smartTransactionsOptInStatus) {
               dispatch(
                 signAndSendSmartTransaction({
                   unsignedTransaction,

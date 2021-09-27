@@ -19,6 +19,7 @@ export default function SlippageButtons({
   onSelect,
   maxAllowedSlippage,
   currentSlippage,
+  smartTransactionsEnabled,
   smartTransactionsOptInStatus,
   setSmartTransactionsOptInStatus,
 }) {
@@ -184,33 +185,35 @@ export default function SlippageButtons({
                 </Button>
               </ButtonGroup>
             </div>
-            <Box marginTop={2} display={DISPLAY.FLEX}>
-              <Box
-                display={DISPLAY.FLEX}
-                alignItems={ALIGN_ITEMS.CENTER}
-                paddingRight={3}
-              >
-                <Typography
-                  variant={TYPOGRAPHY.H6}
-                  boxProps={{ paddingRight: 2 }}
-                  fontWeight={FONT_WEIGHT.BOLD}
+            {smartTransactionsEnabled && (
+              <Box marginTop={2} display={DISPLAY.FLEX}>
+                <Box
+                  display={DISPLAY.FLEX}
+                  alignItems={ALIGN_ITEMS.CENTER}
+                  paddingRight={3}
                 >
-                  {t('smartTransaction')}
-                </Typography>
-                <InfoTooltip
-                  position="top"
-                  contentText={t('swapAdvancedSlippageInfo')}
+                  <Typography
+                    variant={TYPOGRAPHY.H6}
+                    boxProps={{ paddingRight: 2 }}
+                    fontWeight={FONT_WEIGHT.BOLD}
+                  >
+                    {t('smartTransaction')}
+                  </Typography>
+                  <InfoTooltip
+                    position="top"
+                    contentText={t('swapAdvancedSlippageInfo')}
+                  />
+                </Box>
+                <ToggleButton
+                  value={smartTransactionsOptInStatus}
+                  onToggle={(value) => {
+                    setSmartTransactionsOptInStatus(!value);
+                  }}
+                  offLabel={t('off')}
+                  onLabel={t('on')}
                 />
               </Box>
-              <ToggleButton
-                value={smartTransactionsOptInStatus}
-                onToggle={(value) => {
-                  setSmartTransactionsOptInStatus(!value);
-                }}
-                offLabel={t('off')}
-                onLabel={t('on')}
-              />
-            </Box>
+            )}
           </>
         )}
         {errorText && (
@@ -225,6 +228,7 @@ SlippageButtons.propTypes = {
   onSelect: PropTypes.func.isRequired,
   maxAllowedSlippage: PropTypes.number.isRequired,
   currentSlippage: PropTypes.number,
+  smartTransactionsEnabled: PropTypes.bool.isRequired,
   smartTransactionsOptInStatus: PropTypes.object,
   setSmartTransactionsOptInStatus: PropTypes.func,
 };

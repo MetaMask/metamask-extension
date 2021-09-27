@@ -41,6 +41,7 @@ import {
   getQuotes,
   setReviewSwapClickedTimestamp,
   getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -139,6 +140,7 @@ export default function BuildQuote({
   const smartTransactionsOptInStatus = useSelector(
     getSmartTransactionsOptInStatus,
   );
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const smartTransactionsOptInPopoverDisplayed =
     smartTransactionsOptInStatus !== undefined;
   const currentCurrency = useSelector(getCurrentCurrency);
@@ -147,7 +149,7 @@ export default function BuildQuote({
     showSmartTransactionsOptInPopover,
     setShowSmartTransactionsOptInPopover,
   ] = useState(() => {
-    return !smartTransactionsOptInPopoverDisplayed;
+    return smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
   });
 
   const onCloseSmartTransactionsOptInPopover = (e) => {
@@ -708,6 +710,7 @@ export default function BuildQuote({
               }}
               maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
               currentSlippage={maxSlippage}
+              smartTransactionsEnabled={smartTransactionsEnabled}
               smartTransactionsOptInStatus={smartTransactionsOptInStatus}
               setSmartTransactionsOptInStatus={setSmartTransactionsOptInStatus}
             />
