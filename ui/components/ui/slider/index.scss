@@ -2,7 +2,8 @@
   display: inline-block;
   width: 100%;
 
-  &__heading, &__footer {
+  &__heading,
+  &__footer {
     display: flex;
     justify-content: space-between;
   }
@@ -35,6 +36,7 @@
     background: none;
     font-size: 12px;
     color: $Blue-500;
+
     &:focus {
       outline: none;
     }
