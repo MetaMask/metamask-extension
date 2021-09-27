@@ -2386,15 +2386,6 @@
   "viewMore": {
     "message": "Посмотреть больше"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Посмотреть на $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Посмотреть на Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Проводник в проводнике"
-  },
   "visitWebSite": {
     "message": "Посетите наш веб-сайт"
   },

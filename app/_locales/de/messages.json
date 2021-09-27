@@ -1087,15 +1087,6 @@
   "viewContact": {
     "message": "Kontakt anzeigen"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Für $1 ansehen"
-  },
-  "viewOnEtherscan": {
-    "message": "Auf Etherscan ansehen"
-  },
-  "viewinExplorer": {
-    "message": "Im Explorer anzeigen"
-  },
   "visitWebSite": {
     "message": "Gehe zu unserer Webseite"
   },

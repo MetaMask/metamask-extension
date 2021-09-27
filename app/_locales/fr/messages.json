@@ -1103,15 +1103,6 @@
   "viewContact": {
     "message": "Voir contact"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Afficher sur $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Voir sur Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Afficher dans Explorer"
-  },
   "visitWebSite": {
     "message": "Visitez notre site web"
   },
