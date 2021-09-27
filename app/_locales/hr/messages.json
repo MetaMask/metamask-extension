@@ -1117,15 +1117,6 @@
   "viewContact": {
     "message": "Prikaži kontakt"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Prikaži u $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Prikaži na Etherscanu"
-  },
-  "viewinExplorer": {
-    "message": "Prikaži u Exploreru"
-  },
   "visitWebSite": {
     "message": "Posjetite naše mrežno mjesto"
   },

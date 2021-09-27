@@ -1121,15 +1121,6 @@
   "viewContact": {
     "message": "Εμφάνιση Επαφής"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Προβολή σε $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Προβολή στο Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Προβολή στον Εξερευνητή"
-  },
   "visitWebSite": {
     "message": "Επισκεφθείτε τον ιστότοπό μας"
   },

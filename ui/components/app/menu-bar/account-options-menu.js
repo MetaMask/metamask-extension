@@ -117,7 +117,9 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         }
         iconClassName="fas fa-external-link-alt"
       >
-        {rpcPrefs.blockExplorerUrl ? t('viewinExplorer') : t('viewOnEtherscan')}
+        {rpcPrefs.blockExplorerUrl
+          ? t('viewinExplorer', [t('blockExplorerAccountAction')])
+          : t('viewOnEtherscan', [t('blockExplorerAccountAction')])}
       </MenuItem>
       <MenuItem
         data-testid="account-options-menu__connected-sites"

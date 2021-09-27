@@ -1021,15 +1021,6 @@
   "viewContact": {
     "message": "Tingnan ang Contact"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Tingnan sa $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Tingnan sa Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Tingnan sa Explorer"
-  },
   "visitWebSite": {
     "message": "Bisitahin ang aming web site"
   },

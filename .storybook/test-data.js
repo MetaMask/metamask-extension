@@ -1,5 +1,3 @@
-import { TRANSACTION_STATUSES } from '../shared/constants/transaction';
-
 const state = {
   invalidCustomNetwork: {
     state: 'CLOSED',
@@ -20,6 +18,24 @@ const state = {
       EIPS: {
         1559: true,
       },
+    },
+    gasFeeEstimates: '0x5208',
+    swapsState: {
+      quotes: {},
+      fetchParams: null,
+      tokens: null,
+      tradeTxId: null,
+      approveTxId: null,
+      quotesLastFetched: null,
+      customMaxGas: '',
+      customGasPrice: null,
+      selectedAggId: null,
+      customApproveTxData: '',
+      errorKey: '',
+      topAggId: null,
+      routeState: '',
+      swapsFeatureIsLive: false,
+      swapsQuoteRefreshTime: 60000,
     },
     isInitialized: true,
     isUnlocked: true,
@@ -103,24 +119,6 @@ const state = {
         },
       },
     },
-    recipient: {
-      address: '0x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
-      nickname: 'John Doe',
-      error: '',
-      warning: '',
-    },
-    addresses: [
-      {
-        address: '0x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
-        name: 'DAI',
-        isEns: false,
-      },
-      {
-        address: '1x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
-        name: 'ETH',
-        isEns: true,
-      },
-    ],
     contractExchangeRates: {
       '0xaD6D458402F60fD3Bd25163575031ACDce07538D': 0,
     },
@@ -1164,6 +1162,10 @@ const state = {
       type: 'NATIVE',
       balance: '0x0',
       details: null,
+    },
+    amount: '3782dace9d900000',
+    gas: {
+      price: null,
     },
   },
   confirmTransaction: {

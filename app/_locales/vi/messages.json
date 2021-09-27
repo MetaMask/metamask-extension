@@ -2386,15 +2386,6 @@
   "viewMore": {
     "message": "Xem thêm"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Xem tại $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Xem trên Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Xem trên trình khám phá"
-  },
   "visitWebSite": {
     "message": "Truy cập trang web của chúng tôi"
   },

@@ -1101,15 +1101,6 @@
   "viewContact": {
     "message": "Lihat Kenalan"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Lihat pada $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Lihat di Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Lihat di Explorer"
-  },
   "visitWebSite": {
     "message": "Kunjungi laman web kami"
   },

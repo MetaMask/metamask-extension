@@ -1121,15 +1121,6 @@
   "viewContact": {
     "message": "הצג איש קשר"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "הצג ב- $1"
-  },
-  "viewOnEtherscan": {
-    "message": "הצג ב-Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "הצג באקספלורר"
-  },
   "visitWebSite": {
     "message": "בקר/י באתר שלנו"
   },

@@ -1947,15 +1947,6 @@
   "viewContact": {
     "message": "Visualizza contatto"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Vedi su $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Vedi su Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Vista in Explorer"
-  },
   "visitWebSite": {
     "message": "Visita il nostro sito web"
   },
