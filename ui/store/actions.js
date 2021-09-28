@@ -397,13 +397,22 @@ export function forgetDevice(deviceName) {
 
 export function connectHardware(deviceName, page, hdPath) {
   log.debug(`background.connectHardware`, deviceName, page, hdPath);
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch(
       showLoadingIndication(`Looking for your ${capitalize(deviceName)}...`),
     );
 
     let accounts;
     try {
+      const browserSupportsHid = 'hid' in window.navigator;
+      const { useLedgerLive } = getState().metamask;
+
+      if (browserSupportsHid && deviceName === 'ledger' && !useLedgerLive) {
+        await window.navigator.hid.requestDevice({
+          filters: [{ vendorId: '0x2c97' }],
+        });
+      }
+
       accounts = await promisifiedBackground.connectHardware(
         deviceName,
         page,
