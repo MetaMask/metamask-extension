@@ -12,7 +12,10 @@ function generate_sourcemap() {
   cp "dist/chrome/${module_name}.js" "${temp_dir}/"
   cp "dist/sourcemaps/${module_name}.js.map" "${temp_dir}/"
   printf '//# sourceMappingURL=%s.js.map' "${module_name}" >> "${temp_dir}/${module_name}.js"
-  yarn source-map-explorer "${temp_dir}/${module_name}.js" "${temp_dir}/${module_name}.js.map" --html "build-artifacts/source-map-explorer/${module_name}.html"
+  yarn source-map-explorer \
+    "${temp_dir}/${module_name}.js" \
+    "${temp_dir}/${module_name}.js.map" \
+    --html "build-artifacts/source-map-explorer/${module_name}.html"
 }
 
 function main() {

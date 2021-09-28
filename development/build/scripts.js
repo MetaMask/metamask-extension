@@ -246,8 +246,7 @@ function createFactoredBuild({
 
     // devMode options
     const reloadOnChange = Boolean(devMode);
-    // const minify = Boolean(devMode) === false;
-    const minify = false;
+    const minify = Boolean(devMode) === false;
 
     const envVars = getEnvironmentVariables({ buildType, devMode, testing });
     setupBundlerDefaults(buildConfiguration, {
