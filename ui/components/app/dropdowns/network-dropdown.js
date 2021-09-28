@@ -113,14 +113,11 @@ class NetworkDropdown extends Component {
   }
 
   renderAddCustomButton() {
+    const { openFullscreenEvent } = this.props;
     const style = {
-      // position: "absolute",
-      // width: "311px",
-      // height: "167px",      
-      //top: "56px",       
       width: "75%",
-      left: "40px",      
-      color: 'white',     
+      left: "40px",
+      color: 'white',
       background: "rgba(0, 0, 0, 0.75)",
       "border-radius": "20px",
       "text-transform": "none",
@@ -129,11 +126,15 @@ class NetworkDropdown extends Component {
     return (
       <Button
         type="submit"
-        style={style}        
+        style={style}
         fullWidth
         variant="contained"
         size="large"
-        // onClick={this.handleSubmit}
+        onClick={
+          () => {
+            global.platform.openExtensionInBrowser("settings/networks");
+          }
+        }
         disableRipple
       >
         {this.context.t('addNetwork')}
