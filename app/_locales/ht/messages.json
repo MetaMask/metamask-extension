@@ -29,9 +29,6 @@
   "addToken": {
     "message": "Ajoute Token"
   },
-  "addTokens": {
-    "message": "Ajoute Token"
-  },
   "amount": {
     "message": "Kantite lajan"
   },
@@ -311,7 +308,7 @@
   "ledgerAccountRestriction": {
     "message": "Ou bezwen sèvi ak dènye kont ou anvan ou ka ajoute yon nouvo."
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Èske ou ta renmen ajoute sa nan tokens?"
   },
   "links": {
@@ -555,9 +552,6 @@
   "sendTokens": {
     "message": "Voye Tokens"
   },
-  "sentEther": {
-    "message": "Voye ether"
-  },
   "separateEachWord": {
     "message": "Separe chak mo ak yon sèl espas"
   },
@@ -693,9 +687,6 @@
   },
   "viewAccount": {
     "message": "Wè Kont"
-  },
-  "viewOnEtherscan": {
-    "message": "Wè sou Etherscan"
   },
   "visitWebSite": {
     "message": "Vizite sit entènèt nou an"

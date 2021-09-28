@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Legg til token "
   },
-  "addTokens": {
-    "message": "Legg til sjetonger"
-  },
   "advanced": {
     "message": "Avansert"
   },
@@ -270,7 +267,7 @@
     "message": "Desimaler må være minst 0, og ikke flere enn 36."
   },
   "defaultNetwork": {
-    "message": "Standardnettverket for Ether-transaksjoner er Main Net."
+    "message": "Standardnettverket for Ether-transaksjoner er Mainnet."
   },
   "delete": {
     "message": "Slett"
@@ -527,7 +524,7 @@
   "letsGoSetUp": {
     "message": "Ja, la oss komme i gang!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Ønsker du å legge til disse tokenene"
   },
   "links": {
@@ -873,9 +870,6 @@
   "sendTokens": {
     "message": "Send tokener"
   },
-  "sentEther": {
-    "message": "sendt ether"
-  },
   "separateEachWord": {
     "message": "Del hvert ord med et enkelt mellomrom "
   },
@@ -1107,15 +1101,6 @@
   },
   "viewContact": {
     "message": "Se kontrakt"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Vis ved $1 "
-  },
-  "viewOnEtherscan": {
-    "message": "Vis på Etherscan "
-  },
-  "viewinExplorer": {
-    "message": "Se i Explorer"
   },
   "visitWebSite": {
     "message": "Besøk nettsiden vår "

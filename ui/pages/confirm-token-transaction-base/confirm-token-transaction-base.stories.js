@@ -4,6 +4,7 @@ import ConfirmTokenTransactionBase from './confirm-token-transaction-base.compon
 
 export default {
   title: 'Confirmation Screens',
+  id: __filename,
 };
 
 const state = store.getState();

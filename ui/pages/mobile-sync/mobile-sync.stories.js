@@ -4,6 +4,7 @@ import MobileSyncPage from './mobile-sync.component';
 
 export default {
   title: 'Mobile Sync',
+  id: __filename,
 };
 
 export const MobileSyncComponent = () => {

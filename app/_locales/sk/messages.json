@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Přidat token"
   },
-  "addTokens": {
-    "message": "Přidat tokeny"
-  },
   "advanced": {
     "message": "Rozšírené"
   },
@@ -267,7 +264,7 @@
     "message": "Desetinných míst musí být od 0 do 36."
   },
   "defaultNetwork": {
-    "message": "Výchozí síť pro Etherové transakce je Main Net."
+    "message": "Výchozí síť pro Etherové transakce je Mainnet."
   },
   "delete": {
     "message": "Odstrániť"
@@ -524,7 +521,7 @@
   "letsGoSetUp": {
     "message": "Áno, poďme to nastaviť!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
   "links": {
@@ -855,9 +852,6 @@
   "sendTokens": {
     "message": "Odeslat tokeny"
   },
-  "sentEther": {
-    "message": "poslaný ether"
-  },
   "separateEachWord": {
     "message": "Každé slovo oddeľte jednou medzerou"
   },
@@ -1089,15 +1083,6 @@
   },
   "viewContact": {
     "message": "Zobraziť kontakt"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Zobraziť na $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Zobraziť na Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Zobraziť v Exploreri"
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"

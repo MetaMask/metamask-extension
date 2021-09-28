@@ -50,9 +50,6 @@
   "addToken": {
     "message": "إضافة عملة رمزية"
   },
-  "addTokens": {
-    "message": "إضافة عملات رمزية"
-  },
   "advanced": {
     "message": "إعدادات متقدمة"
   },
@@ -536,7 +533,7 @@
   "letsGoSetUp": {
     "message": "نعم، دعنا نبدأ التثبيت!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "هل ترغب في إضافة هذه الرموز؟"
   },
   "links": {
@@ -885,9 +882,6 @@
   "sendTokens": {
     "message": "إرسال عملات رمزية"
   },
-  "sentEther": {
-    "message": "أرسل عملة إيثير"
-  },
   "separateEachWord": {
     "message": "افصل كل كلمة بمسافة واحدة"
   },
@@ -1125,15 +1119,6 @@
   },
   "viewContact": {
     "message": "عرض جهة الاتصال"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "عرض في $1"
-  },
-  "viewOnEtherscan": {
-    "message": "عرضه على Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "عرض في متصفح Explorer"
   },
   "visitWebSite": {
     "message": "قم بزيارة موقعنا على الإنترنت"

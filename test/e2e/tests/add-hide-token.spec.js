@@ -27,6 +27,7 @@ describe('Hide token', function () {
           css: '.asset-list-item__token-button',
           text: '0 TST',
         });
+        await driver.clickElement('.popover-header__button');
 
         let assets = await driver.findElements('.asset-list-item');
         assert.equal(assets.length, 2);
@@ -78,11 +79,11 @@ describe('Add existing token using search', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement({ text: 'Add Token', tag: 'button' });
+        await driver.clickElement({ text: 'import tokens', tag: 'a' });
         await driver.fill('#search-tokens', 'BAT');
         await driver.clickElement({ text: 'BAT', tag: 'span' });
         await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Add Tokens', tag: 'button' });
+        await driver.clickElement({ text: 'Import Tokens', tag: 'button' });
 
         await driver.waitForSelector({
           css: '.token-overview__primary-balance',

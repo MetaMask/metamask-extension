@@ -8,6 +8,7 @@ import {
   Redirect,
 } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
+import { shuffle } from 'lodash';
 import { I18nContext } from '../../contexts/i18n';
 import {
   getSelectedAccount,
@@ -15,6 +16,7 @@ import {
   getIsSwapsChain,
   isHardwareWallet,
   getHardwareWalletType,
+  getTokenList,
 } from '../../selectors/selectors';
 import {
   getQuotes,
@@ -35,6 +37,7 @@ import {
   fetchSwapsLiveness,
   getUseNewSwapsApi,
   getFromToken,
+  getReviewSwapClickedTimestamp,
 } from '../../ducks/swaps/swaps';
 import {
   checkNetworkAndAccountSupports1559,
@@ -119,6 +122,10 @@ export default function Swap() {
     checkNetworkAndAccountSupports1559,
   );
   const fromToken = useSelector(getFromToken);
+  const tokenList = useSelector(getTokenList);
+  const listTokenValues = shuffle(Object.values(tokenList));
+  const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
+  const reviewSwapClicked = Boolean(reviewSwapClickedTimestamp);
 
   if (networkAndAccountSupports1559) {
     // This will pre-load gas fees before going to the View Quote page.
@@ -251,10 +258,12 @@ export default function Swap() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (swapsErrorKey && !isSwapsErrorRoute) {
+    // If there is a swapsErrorKey and reviewSwapClicked is false, there was an error in silent quotes prefetching
+    // and we don't want to show the error page in that case, because another API call for quotes can be successful.
+    if (swapsErrorKey && !isSwapsErrorRoute && reviewSwapClicked) {
       history.push(SWAPS_ERROR_ROUTE);
     }
-  }, [history, swapsErrorKey, isSwapsErrorRoute]);
+  }, [history, swapsErrorKey, isSwapsErrorRoute, reviewSwapClicked]);
 
   const beforeUnloadEventAddedRef = useRef();
   useEffect(() => {
@@ -336,6 +345,7 @@ export default function Swap() {
                     maxSlippage={maxSlippage}
                     isFeatureFlagLoaded={isFeatureFlagLoaded}
                     tokenFromError={tokenFromError}
+                    shuffledTokensList={listTokenValues}
                   />
                 );
               }}
@@ -388,7 +398,6 @@ export default function Swap() {
                     }
                     onDone={async () => {
                       await dispatch(setBackgroundSwapRouteState(''));
-
                       if (
                         swapsErrorKey === ERROR_FETCHING_QUOTES ||
                         swapsErrorKey === QUOTES_NOT_AVAILABLE_ERROR

@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Lisää tietue"
   },
-  "addTokens": {
-    "message": "Lisää poletteja"
-  },
   "advanced": {
     "message": "Lisäasetukset"
   },
@@ -273,7 +270,7 @@
     "message": "Desimaalien on oltava vähintään 0 ja korkeintaan 36."
   },
   "defaultNetwork": {
-    "message": "Oletusverkko Ether-tapahtumille on Main Net."
+    "message": "Oletusverkko Ether-tapahtumille on Mainnet."
   },
   "delete": {
     "message": "Poista"
@@ -540,7 +537,7 @@
   "letsGoSetUp": {
     "message": "Kyllä, valmistaudutaan!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Haluaisitko lisätä nämä poletit?"
   },
   "links": {
@@ -889,9 +886,6 @@
   "sendTokens": {
     "message": "Lähetä tietueita"
   },
-  "sentEther": {
-    "message": "lähetä etheriä"
-  },
   "separateEachWord": {
     "message": "Erottele sanat toisistaan yhdellä välilyönnillä"
   },
@@ -1129,15 +1123,6 @@
   },
   "viewContact": {
     "message": "Näytä yhteyshenkilö"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Tarkastele kohdassa $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Näytä Etherscanissa"
-  },
-  "viewinExplorer": {
-    "message": "Tarkastele Explorerissa"
   },
   "visitWebSite": {
     "message": "Vieraile verkkosivustollamme"

@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Adăugare simbol"
   },
-  "addTokens": {
-    "message": "Adăugați token-uri"
-  },
   "advanced": {
     "message": "Avansate"
   },
@@ -273,7 +270,7 @@
     "message": "Zecimalele trebuie să fie cel puțin 0, dar nu peste 36."
   },
   "defaultNetwork": {
-    "message": "Rețeaua implicită pentru tranzacțiile cu Ether este Main Net."
+    "message": "Rețeaua implicită pentru tranzacțiile cu Ether este Mainnet."
   },
   "delete": {
     "message": "Șterge"
@@ -530,7 +527,7 @@
   "letsGoSetUp": {
     "message": "Da, hai să configurăm!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Adăugați aceste indicative?"
   },
   "links": {
@@ -879,9 +876,6 @@
   "sendTokens": {
     "message": "Trimiteți indicative"
   },
-  "sentEther": {
-    "message": "trimiteți ether"
-  },
   "separateEachWord": {
     "message": "Despărțiți fiecare cuvânt cu un spațiu"
   },
@@ -1113,15 +1107,6 @@
   },
   "viewContact": {
     "message": "Vizualizare contact"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Vizualizați la $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Vizualizați pe Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Vizualizare în Explorator"
   },
   "visitWebSite": {
     "message": "Accesați site-ul nostru"

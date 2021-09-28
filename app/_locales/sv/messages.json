@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Lägg till token"
   },
-  "addTokens": {
-    "message": "Lägg till tokens"
-  },
   "advanced": {
     "message": "Avancerat"
   },
@@ -267,7 +264,7 @@
     "message": "Decimalerna måste vara minst 0 och inte över 36."
   },
   "defaultNetwork": {
-    "message": "Standardnätverket för Ether-transaktioner är Main Net."
+    "message": "Standardnätverket för Ether-transaktioner är Mainnet."
   },
   "delete": {
     "message": "Radera"
@@ -530,7 +527,7 @@
   "letsGoSetUp": {
     "message": "Ja, kör igång!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Vill du lägga till dessa tokens?"
   },
   "links": {
@@ -876,9 +873,6 @@
   "sendTokens": {
     "message": "Skicka tokens"
   },
-  "sentEther": {
-    "message": "skickat ether"
-  },
   "separateEachWord": {
     "message": "Lägg in ett mellanslag mellan varje ord"
   },
@@ -1107,15 +1101,6 @@
   },
   "viewContact": {
     "message": "Visa kontakt"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Visa vid $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Visa på Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Visa i Utforskaren"
   },
   "visitWebSite": {
     "message": "Besök vår hemsida"

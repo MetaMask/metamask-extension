@@ -38,7 +38,9 @@ export default function SendHeader() {
       className="send__header"
       onClose={onClose}
       title={title}
-      headerCloseText={t('cancel')}
+      headerCloseText={
+        stage === SEND_STAGES.EDIT ? t('cancelEdit') : t('cancel')
+      }
     />
   );
 }

@@ -64,9 +64,6 @@
   "addToken": {
     "message": "添加代币"
   },
-  "addTokens": {
-    "message": "添加代币"
-  },
   "advanced": {
     "message": "高级"
   },
@@ -872,7 +869,7 @@
   "letsGoSetUp": {
     "message": "第一次，立即开始设置！"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "您想添加这些代币吗？"
   },
   "links": {
@@ -1086,9 +1083,6 @@
   "onboardingReturnNotice": {
     "message": "“$1”会关闭此标签，直接回到 $2",
     "description": "Return the user to the site that initiated onboarding"
-  },
-  "onlyAvailableOnMainnet": {
-    "message": "仅在主网（mainnet）上提供"
   },
   "onlyConnectTrust": {
     "message": "只连接您信任的网站。"
@@ -1365,9 +1359,6 @@
   "sendTokens": {
     "message": "发送代币"
   },
-  "sentEther": {
-    "message": "发送 Ether"
-  },
   "separateEachWord": {
     "message": "用空格分隔每个单词"
   },
@@ -1519,10 +1510,6 @@
     "message": "没有匹配的代币符合 $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "正在检查 $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapCustom": {
     "message": "自定义"
   },
@@ -1560,9 +1547,6 @@
   },
   "swapFetchingTokens": {
     "message": "获取代币中……"
-  },
-  "swapFinalizing": {
-    "message": "确定中……"
   },
   "swapLowSlippageError": {
     "message": "交易可能失败，最大滑点过低。"
@@ -1939,15 +1923,6 @@
   },
   "viewContact": {
     "message": "查看联系人"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "在 $1 查看"
-  },
-  "viewOnEtherscan": {
-    "message": "在 Etherscan（以太坊浏览器）上查看"
-  },
-  "viewinExplorer": {
-    "message": "在浏览器中查看"
   },
   "visitWebSite": {
     "message": "访问我们的网站"

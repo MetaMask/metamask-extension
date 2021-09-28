@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Lisage luba"
   },
-  "addTokens": {
-    "message": "Lisa lube"
-  },
   "advanced": {
     "message": "Täpsemad"
   },
@@ -536,7 +533,7 @@
   "letsGoSetUp": {
     "message": "Jah, hakkame pihta!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Kas soovite need load lisada?"
   },
   "links": {
@@ -882,9 +879,6 @@
   "sendTokens": {
     "message": "Saada lube"
   },
-  "sentEther": {
-    "message": "saadetud eeter"
-  },
   "separateEachWord": {
     "message": "Eraldage iga sõna ühe tühikuga"
   },
@@ -1122,15 +1116,6 @@
   },
   "viewContact": {
     "message": "Kuva kontakt"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Vaata $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Kuva Etherscanil"
-  },
-  "viewinExplorer": {
-    "message": "Kuva Exploreris"
   },
   "visitWebSite": {
     "message": "Külastage meie veebilehte"

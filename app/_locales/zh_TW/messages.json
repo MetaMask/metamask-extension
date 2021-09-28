@@ -53,9 +53,6 @@
   "addToken": {
     "message": "加入代幣"
   },
-  "addTokens": {
-    "message": "加入代幣"
-  },
   "advanced": {
     "message": "進階"
   },
@@ -549,7 +546,7 @@
   "letsGoSetUp": {
     "message": "好，我們開始吧！"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "確定要加入代幣？"
   },
   "links": {
@@ -880,9 +877,6 @@
   "sendTokens": {
     "message": "發送代幣"
   },
-  "sentEther": {
-    "message": "發送以太幣"
-  },
   "separateEachWord": {
     "message": "單詞之間請以空白間隔"
   },
@@ -1120,15 +1114,6 @@
   },
   "viewContact": {
     "message": "觀看聯絡資訊"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "在 $1 瀏覽"
-  },
-  "viewOnEtherscan": {
-    "message": "在 Etherscan 上瀏覽"
-  },
-  "viewinExplorer": {
-    "message": "在 Explorer 上瀏覽"
   },
   "visitWebSite": {
     "message": "造訪我們的網站"

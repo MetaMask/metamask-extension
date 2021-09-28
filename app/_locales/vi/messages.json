@@ -91,9 +91,6 @@
   "addToken": {
     "message": "Thêm token"
   },
-  "addTokens": {
-    "message": "Thêm token"
-  },
   "advanced": {
     "message": "Nâng cao"
   },
@@ -1025,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "Có, hãy thiết lập!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Bạn có muốn thêm những token này không?"
   },
   "links": {
@@ -1339,9 +1336,6 @@
   },
   "onlyAddTrustedNetworks": {
     "message": "Một nhà cung cấp mạng độc hại có thể nói dối về trạng thái của chuỗi khối và ghi lại hoạt động của bạn trên mạng. Chỉ thêm các mạng tùy chỉnh mà bạn tin tưởng."
-  },
-  "onlyAvailableOnMainnet": {
-    "message": "Chỉ có trên mạng chính thức"
   },
   "onlyConnectTrust": {
     "message": "Chỉ kết nối với các trang web mà bạn tin tưởng."
@@ -1691,9 +1685,6 @@
   "sendTokens": {
     "message": "Gửi token"
   },
-  "sentEther": {
-    "message": "đã gửi ether"
-  },
   "separateEachWord": {
     "message": "Phân tách mỗi từ bằng một dấu cách"
   },
@@ -1873,10 +1864,6 @@
     "message": "Không có token nào khớp với $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "Đang kiểm tra $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "Xác nhận ví cứng của bạn"
   },
@@ -1927,9 +1914,6 @@
   },
   "swapFetchingTokens": {
     "message": "Đang tìm nạp token..."
-  },
-  "swapFinalizing": {
-    "message": "Đang hoàn tất..."
   },
   "swapFromTo": {
     "message": "Giao dịch hoán đổi $1 sang $2",
@@ -2401,15 +2385,6 @@
   },
   "viewMore": {
     "message": "Xem thêm"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Xem tại $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Xem trên Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Xem trên trình khám phá"
   },
   "visitWebSite": {
     "message": "Truy cập trang web của chúng tôi"

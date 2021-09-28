@@ -521,7 +521,7 @@ export default class TransactionStateManager extends EventEmitter {
 
     const txMeta = this.getTransaction(txId);
     txMeta.err = {
-      message: error.toString(),
+      message: error.message?.toString() || error.toString(),
       rpc: error.value,
       stack: error.stack,
     };

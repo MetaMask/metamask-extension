@@ -52,6 +52,9 @@
   "addContact": {
     "message": "Add contact"
   },
+  "addCustomToken": {
+    "message": "Add Custom Token"
+  },
   "addCustomTokenByContractAddress": {
     "message": "Can’t find a token? You can manually add any token by pasting its address. Token contract addresses can be found on $1.",
     "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
@@ -90,9 +93,6 @@
   },
   "addToken": {
     "message": "Add Token"
-  },
-  "addTokens": {
-    "message": "Add Tokens"
   },
   "addressBookIcon": {
     "message": "Address book icon"
@@ -240,6 +240,41 @@
   "basic": {
     "message": "Basic"
   },
+  "betaMetamaskDescription": {
+    "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
+  },
+  "betaMetamaskDescriptionExplanation": {
+    "message": "Use this version to test upcoming features before they’re released. Your use and feedback helps us build the best version of MetaMask possible. Your use of MetaMask Beta is subject to our standard $1 as well as our $2. As a Beta, there may be an increased risk of bugs. By proceeding, you accept and acknowledge these risks, as well as those risks found in our Terms and Beta Terms.",
+    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
+  },
+  "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
+    "message": "Supplemental Beta Terms"
+  },
+  "betaMetamaskDescriptionExplanationTermsLinkText": {
+    "message": "Terms"
+  },
+  "betaMetamaskVersion": {
+    "message": "MetaMask Beta Version"
+  },
+  "betaWelcome": {
+    "message": "Welcome to MetaMask Beta"
+  },
+  "blockExplorerAccountAction": {
+    "message": "Account",
+    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
+  },
+  "blockExplorerAssetAction": {
+    "message": "Asset",
+    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Asset in Explorer"
+  },
+  "blockExplorerSwapAction": {
+    "message": "Swap",
+    "description": "This is used with viewOnEtherscan e.g View Swap on Etherscan"
+  },
+  "blockExplorerTransactionAction": {
+    "message": "Transaction",
+    "description": "This is used with viewOnCustomBlockExplorer and viewOnEtherscan e.g View Transaction on Etherscan"
+  },
   "blockExplorerUrl": {
     "message": "Block Explorer URL"
   },
@@ -285,6 +320,9 @@
   },
   "cancel": {
     "message": "Cancel"
+  },
+  "cancelEdit": {
+    "message": "Cancel Edit"
   },
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
@@ -498,6 +536,9 @@
   "currentLanguage": {
     "message": "Current Language"
   },
+  "currentlyUnavailable": {
+    "message": "Unavailable on this network"
+  },
   "customGas": {
     "message": "Customize Gas"
   },
@@ -546,7 +587,7 @@
     "message": "Decrypt request"
   },
   "defaultNetwork": {
-    "message": "The default network for Ether transactions is Main Net."
+    "message": "The default network for Ether transactions is Mainnet."
   },
   "delete": {
     "message": "Delete"
@@ -723,6 +764,9 @@
   "editPermission": {
     "message": "Edit Permission"
   },
+  "enableFromSettings": {
+    "message": " Enable it from Settings."
+  },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
     "description": "$1 is the web3 site name"
@@ -846,6 +890,12 @@
   "expandView": {
     "message": "Expand view"
   },
+  "experimental": {
+    "message": "Experimental"
+  },
+  "experimentalSettingsDescription": {
+    "message": "Token detection & more"
+  },
   "exportPrivateKey": {
     "message": "Export Private Key"
   },
@@ -864,6 +914,9 @@
   },
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
+  },
+  "fakeTokenWarning": {
+    "message": "Anyone can create a token, including creating fake versions of existing tokens. Learn more about $1"
   },
   "fast": {
     "message": "Fast"
@@ -1054,7 +1107,7 @@
     "message": " Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts "
   },
   "importAccountSeedPhrase": {
-    "message": "Import an account with Secret Recovery Phrase"
+    "message": "Import a wallet with Secret Recovery Phrase"
   },
   "importAccountText": {
     "message": "or $1",
@@ -1065,6 +1118,12 @@
   },
   "importTokenWarning": {
     "message": "Anyone can create a token with any name, including fake versions of existing tokens. Add and trade at your own risk!"
+  },
+  "importTokens": {
+    "message": "import tokens"
+  },
+  "importTokensCamelCase": {
+    "message": "Import Tokens"
   },
   "importWallet": {
     "message": "Import wallet"
@@ -1167,6 +1226,9 @@
   "learnMore": {
     "message": "Learn more"
   },
+  "learnScamRisk": {
+    "message": "scams and security risks."
+  },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
   },
@@ -1181,6 +1243,9 @@
   },
   "ledgerLiveDialogHeader": {
     "message": "Prior to clicking confirm:"
+  },
+  "ledgerLiveDialogStepFour": {
+    "message": "Enable smart contract data on your Ledger device"
   },
   "ledgerLiveDialogStepOne": {
     "message": "Enable Use Ledger Live under Settings > Advanced"
@@ -1200,8 +1265,8 @@
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"
   },
-  "likeToAddTokens": {
-    "message": "Would you like to add these tokens?"
+  "likeToImportTokens": {
+    "message": "Would you like to import these tokens?"
   },
   "links": {
     "message": "Links"
@@ -1309,8 +1374,11 @@
     "message": "verify the network details",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
+  "missingToken": {
+    "message": "Don't see your token?"
+  },
   "mobileSyncWarning": {
-    "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet’s secret phrase to then import your wallet into mobile."
+    "message": "⚠️ Proceeding will display a secret QR code that allows access to your accounts. Do not share it with anyone. Support staff will never ask you for it."
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
@@ -1328,8 +1396,14 @@
     "message": "Need help? Contact $1",
     "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
   },
+  "needHelpFeedback": {
+    "message": "Share your Feedback"
+  },
   "needHelpLinkText": {
     "message": "MetaMask Support"
+  },
+  "needHelpSubmitTicket": {
+    "message": "Submit a Ticket"
   },
   "needImportFile": {
     "message": "You must select a file to import.",
@@ -1512,6 +1586,18 @@
     "message": "Ledger Support Update for Chrome Users",
     "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
   },
+  "notifications7DescriptionOne": {
+    "message": "MetaMask v10.1.0 included new support for EIP-1559 transactions when using Ledger devices.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
+  },
+  "notifications7DescriptionTwo": {
+    "message": "To complete transactions on Ethereum Mainnet, make sure your Ledger device has the latest firmware.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
+  },
+  "notifications7Title": {
+    "message": "Ledger firmware update",
+    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
+  },
   "ofTextNofM": {
     "message": "of"
   },
@@ -1534,9 +1620,6 @@
   "onlyAddTrustedNetworks": {
     "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Only available on mainnet"
-  },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
@@ -1548,6 +1631,9 @@
   },
   "optionalCurrencySymbol": {
     "message": "Currency Symbol (optional)"
+  },
+  "or": {
+    "message": "or"
   },
   "origin": {
     "message": "Origin"
@@ -1637,7 +1723,7 @@
     "message": "Queued"
   },
   "readdToken": {
-    "message": "You can add this token back in the future by going to “Add token” in your accounts options menu."
+    "message": "You can add this token back in the future by going to “Import token” in your accounts options menu."
   },
   "receive": {
     "message": "Receive"
@@ -1674,6 +1760,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protect your funds"
+  },
+  "refreshList": {
+    "message": "Refresh list"
   },
   "reject": {
     "message": "Reject"
@@ -1794,7 +1883,7 @@
     "message": "WARNING: Never disclose your Secret Recovery Phrase. Anyone with this phrase can take your Ether forever."
   },
   "secretPhrase": {
-    "message": "Enter your secret phrase here to restore your vault."
+    "message": "Only the first account on this wallet will auto load. After completing this process, to add additional accounts, click the drop down menu, then select Create Account."
   },
   "secureWallet": {
     "message": "Secure Wallet"
@@ -1915,8 +2004,9 @@
   "sendTokens": {
     "message": "Send Tokens"
   },
-  "sentEther": {
-    "message": "sent ether"
+  "sendingNativeAsset": {
+    "message": "Sending $1",
+    "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
   "separateEachWord": {
     "message": "Separate each word with a single space"
@@ -2112,10 +2202,6 @@
     "message": "No tokens available matching $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "Checking $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "Confirm with your hardware wallet"
   },
@@ -2130,6 +2216,9 @@
   },
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
+  },
+  "swapDirectContract": {
+    "message": "Direct contract"
   },
   "swapEditLimit": {
     "message": "Edit limit"
@@ -2158,6 +2247,9 @@
   "swapFailedErrorTitle": {
     "message": "Swap failed"
   },
+  "swapFetchingQuotes": {
+    "message": "Fetching quotes"
+  },
   "swapFetchingQuotesErrorDescription": {
     "message": "Hmmm... something went wrong. Try again, or if errors persist, contact customer support."
   },
@@ -2166,9 +2258,6 @@
   },
   "swapFetchingTokens": {
     "message": "Fetching tokens..."
-  },
-  "swapFinalizing": {
-    "message": "Finalizing..."
   },
   "swapFromTo": {
     "message": "The swap of $1 to $2",
@@ -2503,6 +2592,9 @@
   "tokenDecimalFetchFailed": {
     "message": "Token decimal required."
   },
+  "tokenDetectionAnnouncement": {
+    "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"
+  },
   "tokenSymbol": {
     "message": "Token Symbol"
   },
@@ -2564,10 +2656,13 @@
     "message": "Transaction Fee"
   },
   "transactionHistoryBaseFee": {
-    "message": "Base fee (GWEI)"
+    "message": "Base Fee (GWEI)"
+  },
+  "transactionHistoryMaxFeePerGas": {
+    "message": "Max Fee Per Gas"
   },
   "transactionHistoryPriorityFee": {
-    "message": "Priority fee (GWEI)"
+    "message": "Priority Fee (GWEI)"
   },
   "transactionHistoryTotalGasFee": {
     "message": "Total Gas Fee"
@@ -2665,6 +2760,12 @@
   "usePhishingDetectionDescription": {
     "message": "Display a warning for phishing domains targeting Ethereum users"
   },
+  "useTokenDetection": {
+    "message": "Use Token Detection"
+  },
+  "useTokenDetectionDescription": {
+    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services."
+  },
   "usedByClients": {
     "message": "Used by a variety of different clients"
   },
@@ -2699,13 +2800,16 @@
     "message": "View More"
   },
   "viewOnCustomBlockExplorer": {
-    "message": "View at $1"
+    "message": "View $1 at $2",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
   },
   "viewOnEtherscan": {
-    "message": "View on Etherscan"
+    "message": "View $1 on Etherscan",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "viewinExplorer": {
-    "message": "View in Explorer"
+    "message": "View $1 in Explorer",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "visitWebSite": {
     "message": "Visit our web site"

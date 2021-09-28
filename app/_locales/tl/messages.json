@@ -64,9 +64,6 @@
   "addToken": {
     "message": "Magdagdag ng Token"
   },
-  "addTokens": {
-    "message": "Magdagdag ng Mga Token"
-  },
   "advanced": {
     "message": "Advanced"
   },
@@ -438,7 +435,7 @@
     "message": "I-decrypt ang request"
   },
   "defaultNetwork": {
-    "message": "Ang default na network para sa mga transaksyon ng Ether ay ang Main Net."
+    "message": "Ang default na network para sa mga transaksyon ng Ether ay ang Mainnet."
   },
   "delete": {
     "message": "I-delete"
@@ -869,7 +866,7 @@
   "letsGoSetUp": {
     "message": "Sige, simulan na nating mag-set up!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Gusto mo bang idagdag ang mga token na ito?"
   },
   "links": {
@@ -1083,9 +1080,6 @@
   "onboardingReturnNotice": {
     "message": "Isasara ng \"$1\" ang tab na ito at ididirekta ka pabalik sa $2",
     "description": "Return the user to the site that initiated onboarding"
-  },
-  "onlyAvailableOnMainnet": {
-    "message": "Available lang sa mainnet"
   },
   "onlyConnectTrust": {
     "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo."
@@ -1362,9 +1356,6 @@
   "sendTokens": {
     "message": "Magpadala ng Mga Token"
   },
-  "sentEther": {
-    "message": "nagpadala ng ether"
-  },
   "separateEachWord": {
     "message": "Paghiwa-hiwalayin ang bawat salita gamit ang espasyo"
   },
@@ -1513,10 +1504,6 @@
     "message": "Walang available na token na tumutugma sa $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "Sinusuri ang $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapCustom": {
     "message": "custom"
   },
@@ -1554,9 +1541,6 @@
   },
   "swapFetchingTokens": {
     "message": "Kinukuha ang mga token..."
-  },
-  "swapFinalizing": {
-    "message": "Isinasapinal..."
   },
   "swapLowSlippageError": {
     "message": "Maaaring hindi magtagumpay ang transaksyon, masyadong mababa ang max na slippage."
@@ -1915,15 +1899,6 @@
   },
   "viewContact": {
     "message": "Tingnan ang Contact"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Tingnan sa $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Tingnan sa Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Tingnan sa Explorer"
   },
   "visitWebSite": {
     "message": "Bisitahin ang aming website"

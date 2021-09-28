@@ -50,9 +50,6 @@
   "addToken": {
     "message": "ಟೋಕನ್ ಸೇರಿಸಿ"
   },
-  "addTokens": {
-    "message": "ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
-  },
   "advanced": {
     "message": "ಸುಧಾರಿತ"
   },
@@ -540,7 +537,7 @@
   "letsGoSetUp": {
     "message": "ಹೌದು, ಹೊಂದಿಸೋಣ!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "ನೀವು ಈ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಲು ಬಯಸುತ್ತೀರಾ?"
   },
   "links": {
@@ -892,9 +889,6 @@
   "sendTokens": {
     "message": "ಟೋಕನ್‌ಗಳನ್ನು ಕಳುಹಿಸಿ"
   },
-  "sentEther": {
-    "message": "ಕಳುಹಿಸಲಾದ ಎಥರ್"
-  },
   "separateEachWord": {
     "message": "ಒಂದು ಸ್ಪೇಸ್ ಮೂಲಕ ಪ್ರತಿ ಪದವನ್ನು ಬೇರ್ಪಡಿಸಿ"
   },
@@ -1132,15 +1126,6 @@
   },
   "viewContact": {
     "message": "ಸಂಪರ್ಕವನ್ನು ವೀಕ್ಷಿಸಿ"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "$1 ನಲ್ಲಿ ವೀಕ್ಷಿಸಿ"
-  },
-  "viewOnEtherscan": {
-    "message": "ಎಥೆರ್‌ಸ್ಕ್ಯಾನ್‌ನಲ್ಲಿ ವೀಕ್ಷಿಸಿ"
-  },
-  "viewinExplorer": {
-    "message": "ಎಕ್ಸ್‌ಪ್ಲೋರರ್‌ನಲ್ಲಿ ವೀಕ್ಷಿಸಿ"
   },
   "visitWebSite": {
     "message": "ನಮ್ಮ ವೆಬ್ ಸೈಟ್ ಅನ್ನು ಭೇಟಿ ಮಾಡಿ"

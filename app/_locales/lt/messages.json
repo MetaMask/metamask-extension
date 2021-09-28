@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Pridėti žetoną"
   },
-  "addTokens": {
-    "message": "Pridėti žetonų"
-  },
   "advanced": {
     "message": "Išplėstiniai"
   },
@@ -540,7 +537,7 @@
   "letsGoSetUp": {
     "message": "Taip, pradėkime!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Ar norėtumėte pridėti šiuos žetonus?"
   },
   "links": {
@@ -892,9 +889,6 @@
   "sendTokens": {
     "message": "Siųsti žetonus"
   },
-  "sentEther": {
-    "message": "siųsti eterių"
-  },
   "separateEachWord": {
     "message": "Kiekvieną žodį atskirkite viengubu tarpu"
   },
@@ -1132,15 +1126,6 @@
   },
   "viewContact": {
     "message": "Peržiūrėti kontaktą"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Peržiūrėti $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Peržiūrėti „Etherscan“"
-  },
-  "viewinExplorer": {
-    "message": "Peržiūrėti naršyklėje"
   },
   "visitWebSite": {
     "message": "Apsilankykite mūsų svetainėje"

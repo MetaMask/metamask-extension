@@ -91,9 +91,6 @@
   "addToken": {
     "message": "トークンの追加"
   },
-  "addTokens": {
-    "message": "トークンの追加"
-  },
   "advanced": {
     "message": "詳細"
   },
@@ -1025,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "さあセットアップしましょう!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "これらのトークンを追加しますか?"
   },
   "links": {
@@ -1339,9 +1336,6 @@
   },
   "onlyAddTrustedNetworks": {
     "message": "悪意のあるネットワーク プロバイダは、ブロックチェーンの状態を偽り、お客様のネットワーク行動を記録することがあります。信頼するカスタム ネットワークのみを追加してください。"
-  },
-  "onlyAvailableOnMainnet": {
-    "message": "メインネットのみで使用可能"
   },
   "onlyConnectTrust": {
     "message": "信頼するサイトにのみ接続します。"
@@ -1691,9 +1685,6 @@
   "sendTokens": {
     "message": "トークンの送信"
   },
-  "sentEther": {
-    "message": "Ether の送金"
-  },
   "separateEachWord": {
     "message": "単語ごとにスペースを 1 つ置いて分離します"
   },
@@ -1873,10 +1864,6 @@
     "message": "$1 と一致するトークンがありません",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "$1 をチェック中",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "ハードウェア ウォレットで確認する"
   },
@@ -1927,9 +1914,6 @@
   },
   "swapFetchingTokens": {
     "message": "トークンを取り出し中..."
-  },
-  "swapFinalizing": {
-    "message": "終了中..."
   },
   "swapFromTo": {
     "message": "$1 から $2 のスワップ",
@@ -2401,15 +2385,6 @@
   },
   "viewMore": {
     "message": "詳細を表示"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "$1 に表示"
-  },
-  "viewOnEtherscan": {
-    "message": "Etherscan で表示"
-  },
-  "viewinExplorer": {
-    "message": "Explorer で表示"
   },
   "visitWebSite": {
     "message": "当社の Web サイトにアクセス"

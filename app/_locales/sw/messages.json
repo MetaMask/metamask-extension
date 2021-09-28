@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Ongeza Kianzio"
   },
-  "addTokens": {
-    "message": "Ongeza Vianzio"
-  },
   "advanced": {
     "message": "Mipangilio ya kina"
   },
@@ -267,7 +264,7 @@
     "message": "Desimali zinapaswa kuwa angalau 0, na si zaidi ya 36."
   },
   "defaultNetwork": {
-    "message": "Mtandao chaguomsingi wa miamala ya Ether ni Main Net."
+    "message": "Mtandao chaguomsingi wa miamala ya Ether ni Mainnet."
   },
   "delete": {
     "message": "Futa"
@@ -527,7 +524,7 @@
   "letsGoSetUp": {
     "message": "Ndiyo, hebu tuweke mipangilio!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Je, ungependa kuongeza vianzio hivi?"
   },
   "links": {
@@ -870,9 +867,6 @@
   "sendTokens": {
     "message": "Tuma Vianzio"
   },
-  "sentEther": {
-    "message": "ether iliyotumwa"
-  },
   "separateEachWord": {
     "message": "Tenganisha kila neno kwa nafasi moja"
   },
@@ -1110,15 +1104,6 @@
   },
   "viewContact": {
     "message": "Tazama Mawasiliano"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Tazama kwenye $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Tazama kwenye Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Tazama kwenye Explorer"
   },
   "visitWebSite": {
     "message": "Tembelea Tovuti yetu"

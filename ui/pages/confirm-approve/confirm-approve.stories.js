@@ -12,6 +12,7 @@ import ConfirmApprove from '.';
 
 export default {
   title: 'Confirmation Screens',
+  id: __filename,
 };
 
 // transaction ID, maps to entry in state.metamask.currentNetworkTxList

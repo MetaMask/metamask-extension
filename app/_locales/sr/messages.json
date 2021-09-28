@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Dodaj token"
   },
-  "addTokens": {
-    "message": "Dodaj tokene"
-  },
   "advanced": {
     "message": "Напредне опције"
   },
@@ -270,7 +267,7 @@
     "message": "Decimalni broj mora biti najmanje 0, a ne veći od 36."
   },
   "defaultNetwork": {
-    "message": "Podrazumevana mreža za Ether transakcije je Main Net."
+    "message": "Podrazumevana mreža za Ether transakcije je Mainnet."
   },
   "delete": {
     "message": "Избриши"
@@ -537,7 +534,7 @@
   "letsGoSetUp": {
     "message": "Da, hajde da sve podesimo!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Želite li da dodate ove tokene?"
   },
   "links": {
@@ -883,9 +880,6 @@
   "sendTokens": {
     "message": "Pošalji tokene"
   },
-  "sentEther": {
-    "message": "ether je poslat"
-  },
   "separateEachWord": {
     "message": "Razdvojite svaku reč jednim mestom razmaka"
   },
@@ -1117,15 +1111,6 @@
   },
   "viewContact": {
     "message": "Pogledaj kontakt"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Pogledaj na $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Pogledaj na Etherscan-u"
-  },
-  "viewinExplorer": {
-    "message": "Pogledati u Explorer-u"
   },
   "visitWebSite": {
     "message": "Posetite našu veb lokaciju"

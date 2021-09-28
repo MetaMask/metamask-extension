@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Dodaj token"
   },
-  "addTokens": {
-    "message": "Dodaj tokene"
-  },
   "advanced": {
     "message": "Napredno"
   },
@@ -536,7 +533,7 @@
   "letsGoSetUp": {
     "message": "Da, obavimo postavljanje!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Želite li dodati ove tokene?"
   },
   "links": {
@@ -885,9 +882,6 @@
   "sendTokens": {
     "message": "Pošalji tokene"
   },
-  "sentEther": {
-    "message": "pošalji ether"
-  },
   "separateEachWord": {
     "message": "Odvojite pojedinačne riječi jednim razmakom"
   },
@@ -1122,15 +1116,6 @@
   },
   "viewContact": {
     "message": "Prikaži kontakt"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Prikaži u $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Prikaži na Etherscanu"
-  },
-  "viewinExplorer": {
-    "message": "Prikaži u Exploreru"
   },
   "visitWebSite": {
     "message": "Posjetite naše mrežno mjesto"
