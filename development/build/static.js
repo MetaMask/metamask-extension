@@ -6,6 +6,7 @@ const glob = require('fast-glob');
 const locales = require('../../app/_locales/index.json');
 
 const { createTask, composeSeries } = require('./task');
+const { BuildTypes } = require('./utils');
 
 const EMPTY_JS_FILE = './development/empty.js';
 
@@ -13,26 +14,30 @@ module.exports = function createStaticAssetTasks({
   livereload,
   browserPlatforms,
   shouldIncludeLockdown = true,
-  isBeta,
+  buildType,
 }) {
   const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
     shouldIncludeLockdown,
   );
 
-  const copyTargetsBeta = [
-    ...copyTargetsProd,
-    {
-      src: './app/build-types/beta/',
-      dest: `images`,
-    },
-  ];
+  const additionalBuildTargets = {
+    [BuildTypes.beta]: [
+      {
+        src: './app/build-types/beta/',
+        dest: `images`,
+      },
+    ],
+  };
 
-  const targets = isBeta ? copyTargetsBeta : copyTargetsProd;
+  if (Object.keys(additionalBuildTargets).includes(buildType)) {
+    copyTargetsProd.push(...additionalBuildTargets[buildType]);
+    copyTargetsDev.push(...additionalBuildTargets[buildType]);
+  }
 
   const prod = createTask(
     'static:prod',
     composeSeries(
-      ...targets.map((target) => {
+      ...copyTargetsProd.map((target) => {
         return async function copyStaticAssets() {
           await performCopy(target);
         };
