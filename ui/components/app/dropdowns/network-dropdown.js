@@ -5,14 +5,8 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
-import {
-  NETWORKS_ROUTE,
-  NETWORKS_FORM_ROUTE,
-} from '../../../helpers/constants/routes';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../../shared/modules/network.utils';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 
 import ColorIndicator from '../../ui/color-indicator';
 import { COLORS, SIZES } from '../../../helpers/constants/design-system';
@@ -123,14 +117,11 @@ class NetworkDropdown extends Component {
   }
 
   renderAddCustomButton() {
+    const { openFullscreenEvent } = this.props;
     const style = {
-      // position: "absolute",
-      // width: "311px",
-      // height: "167px",      
-      //top: "56px",       
       width: "75%",
-      left: "40px",      
-      color: 'white',     
+      left: "40px",
+      color: 'white',
       background: "rgba(0, 0, 0, 0.75)",
       "border-radius": "20px",
       "text-transform": "none",
@@ -139,11 +130,15 @@ class NetworkDropdown extends Component {
     return (
       <Button
         type="submit"
-        style={style}        
+        style={style}
         fullWidth
         variant="contained"
         size="large"
-        // onClick={this.handleSubmit}
+        onClick={
+          () => {
+            global.platform.openExtensionInBrowser("settings/networks");
+          }
+        }
         disableRipple
       >
         {this.context.t('addNetwork')}
