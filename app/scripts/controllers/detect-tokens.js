@@ -32,6 +32,7 @@ export default class DetectTokensController {
     this.network = network;
     this.keyringMemStore = keyringMemStore;
     this.tokenList = tokenList;
+    this.useTokenDetection = this.preferences?.store.getState().useTokenDetection;
     this.selectedAddress = this.preferences?.store.getState().selectedAddress;
     this.tokenAddresses = this.tokensController?.state.tokens.map((token) => {
       return token.address;
@@ -79,7 +80,9 @@ export default class DetectTokensController {
     }
 
     const { tokenList } = this._tokenList.state;
-    if (Object.keys(tokenList).length === 0) {
+    console.log(!this.useTokenDetection || Object.keys(tokenList).length === 0);
+    if (!this.useTokenDetection || Object.keys(tokenList).length === 0) {
+      console.log(`this.useTokenDetection: ${this.useTokenDetection}`);
       return;
     }
 
