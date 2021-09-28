@@ -5,16 +5,14 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
-import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../../shared/modules/network.utils';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 
 import ColorIndicator from '../../ui/color-indicator';
 import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 import { getShouldShowTestNetworks } from '../../../selectors';
 import { Dropdown, DropdownMenuItem } from './dropdown';
+import { Button } from '@material-ui/core';
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [
@@ -112,6 +110,35 @@ class NetworkDropdown extends Component {
       },
     });
     setProviderType(newProviderType);
+  }
+
+  renderAddCustomButton() {
+    const style = {
+      // position: "absolute",
+      // width: "311px",
+      // height: "167px",      
+      //top: "56px",       
+      width: "75%",
+      left: "40px",      
+      color: 'white',     
+      background: "rgba(0, 0, 0, 0.75)",
+      "border-radius": "20px",
+      "text-transform": "none",
+    };
+
+    return (
+      <Button
+        type="submit"
+        style={style}        
+        fullWidth
+        variant="contained"
+        size="large"
+        // onClick={this.handleSubmit}
+        disableRipple
+      >
+        {this.context.t('addNetwork')}
+      </Button>
+    );
   }
 
   renderCustomRpcList(rpcListDetail, provider) {
@@ -281,6 +308,7 @@ class NetworkDropdown extends Component {
           </div>
         </div>
         {this.renderNetworkEntry('mainnet')}
+        {this.renderCustomRpcList(rpcListDetail, this.props.provider)}
         {shouldShowTestNetworks && (
           <>
             {this.renderNetworkEntry('ropsten')}
@@ -289,41 +317,8 @@ class NetworkDropdown extends Component {
             {this.renderNetworkEntry('goerli')}
             {this.renderNetworkEntry('localhost')}
           </>
-        )}
-
-        {this.renderCustomRpcList(rpcListDetail, this.props.provider)}
-        <DropdownMenuItem
-          closeMenu={() => this.props.hideNetworkDropdown()}
-          onClick={() => {
-            if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
-              history.push(ADD_NETWORK_ROUTE);
-            } else {
-              global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
-            }
-            setSelectedSettingsRpcUrl('');
-          }}
-          style={DROP_DOWN_MENU_ITEM_STYLE}
-        >
-          {activeNetwork === 'custom' ? (
-            <i className="fa fa-check" />
-          ) : (
-            <div className="network-check__transparent">✓</div>
-          )}
-          <ColorIndicator
-            type={ColorIndicator.TYPES.FILLED}
-            color={COLORS.TRANSPARENT}
-            borderColor={COLORS.UI2}
-            size={SIZES.LG}
-          />
-          <span
-            className="network-name-item"
-            style={{
-              color: activeNetwork === 'custom' ? '#ffffff' : '#9b9b9b',
-            }}
-          >
-            {this.context.t('customRPC')}
-          </span>
-        </DropdownMenuItem>
+        )}                
+        {this.renderAddCustomButton()}
       </Dropdown>
     );
   }
