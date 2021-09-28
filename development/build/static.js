@@ -20,21 +20,24 @@ module.exports = function createStaticAssetTasks({
     shouldIncludeLockdown,
   );
 
-  const copyTargetsBeta = [
-    ...copyTargetsProd,
-    {
-      src: './app/build-types/beta/',
-      dest: `images`,
-    },
-  ];
+  const additionalBuildTargets = {
+    [BuildTypes.beta]: [
+      {
+        src: './app/build-types/beta/',
+        dest: `images`,
+      },
+    ],
+  };
 
-  const targets =
-    buildType === BuildTypes.beta ? copyTargetsBeta : copyTargetsProd;
+  if (Object.keys(additionalBuildTargets).includes(buildType)) {
+    copyTargetsProd.push(...additionalBuildTargets[buildType]);
+    copyTargetsDev.push(...additionalBuildTargets[buildType]);
+  }
 
   const prod = createTask(
     'static:prod',
     composeSeries(
-      ...targets.map((target) => {
+      ...copyTargetsProd.map((target) => {
         return async function copyStaticAssets() {
           await performCopy(target);
         };
