@@ -6,10 +6,9 @@ const WelcomeFooter = () => {
 
   return (
     <>
-      <div className="welcome-page__header">{t('welcome')}</div>
+      <div className="welcome-page__header">{t('welcomeToMetaMask')}</div>
       <div className="welcome-page__description">
-        <p>{t('metamaskDescription')}</p>
-        <p>{t('happyToSeeYou')}</p>
+        <p>{t('welcomeToMetaMaskIntro')}</p>
       </div>
     </>
   );

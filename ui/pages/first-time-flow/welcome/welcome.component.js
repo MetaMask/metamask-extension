@@ -6,6 +6,7 @@ import Button from '../../../components/ui/button';
 import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_SELECT_ACTION_ROUTE,
+  INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
 } from '../../../helpers/constants/routes';
 import { isBeta } from '../../../helpers/utils/build-types';
 import WelcomeFooter from './welcome-footer.component';
@@ -15,6 +16,7 @@ export default class Welcome extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     participateInMetaMetrics: PropTypes.bool,
+    setFirstTimeFlowType: PropTypes.func,
     welcomeScreenSeen: PropTypes.bool,
   };
 
@@ -38,8 +40,14 @@ export default class Welcome extends PureComponent {
     }
   }
 
-  handleContinue = () => {
-    this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE);
+  handleCreate = () => {
+    this.props.setFirstTimeFlowType('create');
+    this.props.history.push(INITIALIZE_METAMETRICS_OPT_IN_ROUTE);
+  };
+
+  handleImport = () => {
+    this.props.setFirstTimeFlowType('import');
+    this.props.history.push(INITIALIZE_METAMETRICS_OPT_IN_ROUTE);
   };
 
   render() {
@@ -48,19 +56,32 @@ export default class Welcome extends PureComponent {
     return (
       <div className="welcome-page__wrapper">
         <div className="welcome-page">
+          {isBeta() ? <BetaWelcomeFooter /> : <WelcomeFooter />}
           <Mascot
             animationEventEmitter={this.animationEventEmitter}
             width="125"
             height="125"
           />
-          {isBeta() ? <BetaWelcomeFooter /> : <WelcomeFooter />}
-          <Button
-            type="primary"
-            className="first-time-flow__button"
-            onClick={this.handleContinue}
-          >
-            {t('getStarted')}
-          </Button>
+          <ul>
+            <li>
+              <Button
+                type="primary"
+                className="first-time-flow__button"
+                onClick={this.handleCreate}
+              >
+                {t('onboardingCreateWallet')}
+              </Button>
+            </li>
+            <li>
+              <Button
+                type="primary"
+                className="first-time-flow__button"
+                onClick={this.handleImport}
+              >
+                {t('onboardingImportWallet')}
+              </Button>
+            </li>
+          </ul>
         </div>
       </div>
     );
