@@ -1337,9 +1337,6 @@
   "onlyAddTrustedNetworks": {
     "message": "Một nhà cung cấp mạng độc hại có thể nói dối về trạng thái của chuỗi khối và ghi lại hoạt động của bạn trên mạng. Chỉ thêm các mạng tùy chỉnh mà bạn tin tưởng."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Chỉ có trên mạng chính thức"
-  },
   "onlyConnectTrust": {
     "message": "Chỉ kết nối với các trang web mà bạn tin tưởng."
   },
@@ -2388,15 +2385,6 @@
   },
   "viewMore": {
     "message": "Xem thêm"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Xem tại $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Xem trên Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Xem trên trình khám phá"
   },
   "visitWebSite": {
     "message": "Truy cập trang web của chúng tôi"

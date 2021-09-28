@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.1.1]
+### Added
+- [#12020](https://github.com/MetaMask/metamask-extension/pull/12020): Adds instructions for ledger live users on transaction confirm screen
+- [#12144](https://github.com/MetaMask/metamask-extension/pull/12144): Add What's New notification about ledger EIP-1559 support and firmware updates
+
+### Fixed
+- [#12069](https://github.com/MetaMask/metamask-extension/pull/12069): Fixes bug where suggestedGasFee api is called excessively. 
+
 ## [10.1.0]
 ### Added
 - [#11951](https://github.com/MetaMask/metamask-extension/pull/11951): Adding EIP-1559 support for Ledger hardware
@@ -2431,7 +2439,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.1.1...HEAD
+[10.1.1]: https://github.com/MetaMask/metamask-extension/compare/v10.1.0...v10.1.1
 [10.1.0]: https://github.com/MetaMask/metamask-extension/compare/v10.0.3...v10.1.0
 [10.0.3]: https://github.com/MetaMask/metamask-extension/compare/v10.0.2...v10.0.3
 [10.0.2]: https://github.com/MetaMask/metamask-extension/compare/v10.0.1...v10.0.2

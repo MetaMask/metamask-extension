@@ -623,7 +623,7 @@ export default class MetamaskController extends EventEmitter {
     });
     this.memStore.subscribe(this.sendUpdate.bind(this));
 
-    const password = process.env.CONF?.password;
+    const password = process.env.CONF?.PASSWORD;
     if (
       password &&
       !this.isUnlocked() &&
@@ -1301,6 +1301,12 @@ export default class MetamaskController extends EventEmitter {
           accounts[accounts.length - 1],
           ethQuery,
         );
+      }
+
+      // remove extra zero balance account potentially created from seeking ahead
+      if (accounts.length > 1 && lastBalance === '0x0') {
+        await this.removeAccount(accounts[accounts.length - 1]);
+        accounts = await keyringController.getAccounts();
       }
 
       // set new identities

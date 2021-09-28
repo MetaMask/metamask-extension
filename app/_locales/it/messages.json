@@ -1090,9 +1090,6 @@
   "onlyAddTrustedNetworks": {
     "message": "Una rete malevola può mentire sullo stato della blockchain e registrare le tue azioni. Aggiungi solo reti fidate."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Disponibile solo nella rete principale"
-  },
   "onlyConnectTrust": {
     "message": "Connettiti solo con siti di cui ti fidi."
   },
@@ -1949,15 +1946,6 @@
   },
   "viewContact": {
     "message": "Visualizza contatto"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Vedi su $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Vedi su Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Vista in Explorer"
   },
   "visitWebSite": {
     "message": "Visita il nostro sito web"

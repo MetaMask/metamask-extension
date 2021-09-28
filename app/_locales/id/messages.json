@@ -1337,9 +1337,6 @@
   "onlyAddTrustedNetworks": {
     "message": "Penyedia jaringan jahat dapat berbohong tentang status blockchain dan merekam aktivitas jaringan Anda. Hanya tambahkan jaringan kustom yang Anda percayai."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Hanya tersedia di mainnet"
-  },
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai."
   },
@@ -2388,15 +2385,6 @@
   },
   "viewMore": {
     "message": "Lihat Selengkapnya"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Lihat di $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Lihat di Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Lihat di Explorer"
   },
   "visitWebSite": {
     "message": "Kunjungi situs web kami"

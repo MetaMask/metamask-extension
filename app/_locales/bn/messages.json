@@ -1127,15 +1127,6 @@
   "viewContact": {
     "message": "পরিচিতি দেখুন"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "$1 এ দেখুন"
-  },
-  "viewOnEtherscan": {
-    "message": "Etherscan দেখুন"
-  },
-  "viewinExplorer": {
-    "message": "এক্সপ্লোরারে দেখুন"
-  },
   "visitWebSite": {
     "message": "আমাদের ওয়েবসাইট দেখুন"
   },

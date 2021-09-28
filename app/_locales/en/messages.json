@@ -259,6 +259,22 @@
   "betaWelcome": {
     "message": "Welcome to MetaMask Beta"
   },
+  "blockExplorerAccountAction": {
+    "message": "Account",
+    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
+  },
+  "blockExplorerAssetAction": {
+    "message": "Asset",
+    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Asset in Explorer"
+  },
+  "blockExplorerSwapAction": {
+    "message": "Swap",
+    "description": "This is used with viewOnEtherscan e.g View Swap on Etherscan"
+  },
+  "blockExplorerTransactionAction": {
+    "message": "Transaction",
+    "description": "This is used with viewOnCustomBlockExplorer and viewOnEtherscan e.g View Transaction on Etherscan"
+  },
   "blockExplorerUrl": {
     "message": "Block Explorer URL"
   },
@@ -304,6 +320,9 @@
   },
   "cancel": {
     "message": "Cancel"
+  },
+  "cancelEdit": {
+    "message": "Cancel Edit"
   },
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
@@ -516,6 +535,9 @@
   },
   "currentLanguage": {
     "message": "Current Language"
+  },
+  "currentlyUnavailable": {
+    "message": "Unavailable on this network"
   },
   "customGas": {
     "message": "Customize Gas"
@@ -742,6 +764,9 @@
   "editPermission": {
     "message": "Edit Permission"
   },
+  "enableFromSettings": {
+    "message": " Enable it from Settings."
+  },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
     "description": "$1 is the web3 site name"
@@ -864,6 +889,12 @@
   },
   "expandView": {
     "message": "Expand view"
+  },
+  "experimental": {
+    "message": "Experimental"
+  },
+  "experimentalSettingsDescription": {
+    "message": "Token detection & more"
   },
   "exportPrivateKey": {
     "message": "Export Private Key"
@@ -1555,6 +1586,18 @@
     "message": "Ledger Support Update for Chrome Users",
     "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
   },
+  "notifications7DescriptionOne": {
+    "message": "MetaMask v10.1.0 included new support for EIP-1559 transactions when using Ledger devices.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
+  },
+  "notifications7DescriptionTwo": {
+    "message": "To complete transactions on Ethereum Mainnet, make sure your Ledger device has the latest firmware.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
+  },
+  "notifications7Title": {
+    "message": "Ledger firmware update",
+    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
+  },
   "ofTextNofM": {
     "message": "of"
   },
@@ -1577,9 +1620,6 @@
   "onlyAddTrustedNetworks": {
     "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Only available on mainnet"
-  },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
@@ -1591,6 +1631,9 @@
   },
   "optionalCurrencySymbol": {
     "message": "Currency Symbol (optional)"
+  },
+  "or": {
+    "message": "or"
   },
   "origin": {
     "message": "Origin"
@@ -2549,6 +2592,9 @@
   "tokenDecimalFetchFailed": {
     "message": "Token decimal required."
   },
+  "tokenDetectionAnnouncement": {
+    "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"
+  },
   "tokenSymbol": {
     "message": "Token Symbol"
   },
@@ -2718,7 +2764,7 @@
     "message": "Use Token Detection"
   },
   "useTokenDetectionDescription": {
-    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn this off if you don’t want MetaMask to pull data from those those services."
+    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services."
   },
   "usedByClients": {
     "message": "Used by a variety of different clients"
@@ -2754,13 +2800,16 @@
     "message": "View More"
   },
   "viewOnCustomBlockExplorer": {
-    "message": "View at $1"
+    "message": "View $1 at $2",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
   },
   "viewOnEtherscan": {
-    "message": "View on Etherscan"
+    "message": "View $1 on Etherscan",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "viewinExplorer": {
-    "message": "View in Explorer"
+    "message": "View $1 in Explorer",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "visitWebSite": {
     "message": "Visit our web site"

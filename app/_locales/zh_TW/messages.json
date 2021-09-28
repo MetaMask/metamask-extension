@@ -1115,15 +1115,6 @@
   "viewContact": {
     "message": "觀看聯絡資訊"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "在 $1 瀏覽"
-  },
-  "viewOnEtherscan": {
-    "message": "在 Etherscan 上瀏覽"
-  },
-  "viewinExplorer": {
-    "message": "在 Explorer 上瀏覽"
-  },
   "visitWebSite": {
     "message": "造訪我們的網站"
   },

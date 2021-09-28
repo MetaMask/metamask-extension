@@ -1081,9 +1081,6 @@
     "message": "Isasara ng \"$1\" ang tab na ito at ididirekta ka pabalik sa $2",
     "description": "Return the user to the site that initiated onboarding"
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Available lang sa mainnet"
-  },
   "onlyConnectTrust": {
     "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo."
   },
@@ -1902,15 +1899,6 @@
   },
   "viewContact": {
     "message": "Tingnan ang Contact"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Tingnan sa $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Tingnan sa Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Tingnan sa Explorer"
   },
   "visitWebSite": {
     "message": "Bisitahin ang aming website"

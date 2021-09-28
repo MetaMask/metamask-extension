@@ -51,9 +51,12 @@ describe('Deploy contract and call contract methods', function () {
         await driver.clickElement('#deployButton');
 
         // displays the contract creation data
-        await driver.switchToWindow(extension);
-        await driver.clickElement('[data-testid="home__activity-tab"]');
-        await driver.clickElement({ text: 'Contract Deployment', tag: 'h2' });
+        await driver.waitUntilXWindowHandles(3);
+        windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
         await driver.clickElement({ text: 'Data', tag: 'button' });
         await driver.findElement({ text: '127.0.0.1', tag: 'div' });
         const confirmDataDiv = await driver.findElement(
@@ -68,6 +71,9 @@ describe('Deploy contract and call contract methods', function () {
         // confirms a deploy contract transaction
         await driver.clickElement({ text: 'Details', tag: 'button' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.waitUntilXWindowHandles(2);
+        await driver.switchToWindow(extension);
+        await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
@@ -80,13 +86,13 @@ describe('Deploy contract and call contract methods', function () {
         await driver.switchToWindow(dapp);
         await driver.clickElement('#depositButton');
         await driver.waitUntilXWindowHandles(3);
-
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
         );
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(2)',
@@ -110,6 +116,7 @@ describe('Deploy contract and call contract methods', function () {
           windowHandles,
         );
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(3)',

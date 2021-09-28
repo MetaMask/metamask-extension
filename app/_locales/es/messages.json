@@ -1337,9 +1337,6 @@
   "onlyAddTrustedNetworks": {
     "message": "Un proveedor de red malintencionado puede mentir sobre el estado de la cadena de bloques y registrar su actividad de red. Agregue solo redes personalizadas de confianza."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Solo disponible en la red principal"
-  },
   "onlyConnectTrust": {
     "message": "Conéctese solo con sitios de confianza."
   },
@@ -2388,15 +2385,6 @@
   },
   "viewMore": {
     "message": "Ver más"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Ver en $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Ver en Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Ver en el explorador"
   },
   "visitWebSite": {
     "message": "Visite nuestro sitio web"
