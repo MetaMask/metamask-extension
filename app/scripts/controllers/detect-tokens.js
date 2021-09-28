@@ -33,7 +33,6 @@ export default class DetectTokensController {
     this.network = network;
     this.keyringMemStore = keyringMemStore;
     this.tokenList = tokenList;
-    this.useTokenDetection = this.preferences?.store.getState().useTokenDetection;
     this.selectedAddress = this.preferences?.store.getState().selectedAddress;
     this.tokenAddresses = this.tokensController?.state.tokens.map((token) => {
       return token.address;
