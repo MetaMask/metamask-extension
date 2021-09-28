@@ -7,13 +7,14 @@ const pump = pify(require('pump'));
 const { version } = require('../../package.json');
 
 const { createTask, composeParallel } = require('./task');
+const { BuildTypes } = require('./utils');
 
 module.exports = createEtcTasks;
 
 function createEtcTasks({
   betaVersionsMap,
   browserPlatforms,
-  isBeta,
+  buildType,
   livereload,
 }) {
   const clean = createTask('clean', async function clean() {
@@ -34,7 +35,10 @@ function createEtcTasks({
     'zip',
     composeParallel(
       ...browserPlatforms.map((platform) =>
-        createZipTask(platform, isBeta ? betaVersionsMap[platform] : undefined),
+        createZipTask(
+          platform,
+          buildType === BuildTypes.beta ? betaVersionsMap[platform] : undefined,
+        ),
       ),
     ),
   );
