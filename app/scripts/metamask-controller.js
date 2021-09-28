@@ -32,6 +32,7 @@ import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
+  SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
@@ -75,8 +76,6 @@ import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
-
-const EXTENSION_CLIENT_ID = 'extension'
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -203,7 +202,7 @@ export default class MetamaskController extends EventEmitter {
     this.gasFeeController = new GasFeeController({
       interval: 10000,
       messenger: gasFeeMessenger,
-      clientId: EXTENSION_CLIENT_ID,
+      clientId: SWAPS_CLIENT_ID,
       getProvider: () =>
         this.networkController.getProviderAndBlockTracker().provider,
       onNetworkStateChange: this.networkController.on.bind(
