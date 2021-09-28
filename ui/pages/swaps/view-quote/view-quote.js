@@ -84,6 +84,7 @@ import {
   getValueFromWeiHex,
   decGWEIToHexWEI,
   hexWEIToDecGWEI,
+  decWEIToHexWEI,
   addHexes,
 } from '../../../helpers/utils/conversions.util';
 import MainQuoteSummary from '../main-quote-summary';
@@ -226,6 +227,7 @@ export default function ViewQuote() {
   let maxPriorityFeePerGas;
   let baseAndPriorityFeePerGas;
 
+  // EIP-1559 gas fees.
   if (networkAndAccountSupports1559) {
     const {
       maxFeePerGas: suggestedMaxFeePerGas,
@@ -242,10 +244,20 @@ export default function ViewQuote() {
     );
   }
 
-  const gasTotalInWeiHex = calcGasTotal(
-    maxGasLimit,
-    networkAndAccountSupports1559 ? maxFeePerGas : gasPrice,
-  );
+  // Smart Transactions gas fees.
+  if (
+    smartTransactionsEnabled &&
+    smartTransactionsOptInStatus &&
+    unsignedTransactionsAndEstimates
+  ) {
+    const maxFeePerGasDecWEI =
+      unsignedTransactionsAndEstimates.fees[
+        unsignedTransactionsAndEstimates.fees.length - 1
+      ]?.maxFeePerGas;
+    maxFeePerGas = decWEIToHexWEI(maxFeePerGasDecWEI);
+  }
+
+  const gasTotalInWeiHex = calcGasTotal(maxGasLimit, maxFeePerGas || gasPrice);
 
   const { tokensWithBalances } = useTokenTracker(swapsTokens, true);
   const balanceToken =
@@ -333,7 +345,7 @@ export default function ViewQuote() {
   } = getRenderableNetworkFeesForQuote({
     tradeGas: maxGasLimit,
     approveGas,
-    gasPrice: networkAndAccountSupports1559 ? maxFeePerGas : gasPrice,
+    gasPrice: maxFeePerGas || gasPrice,
     currentCurrency,
     conversionRate,
     tradeValue,
