@@ -4,6 +4,7 @@ import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
 import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts';
 import { MINUTE } from '../../../shared/constants/time';
 import { isEqualCaseInsensitive } from '../../../ui/helpers/utils/util';
+import { MAINNET_CHAIN_ID } from '../../../shared/constants/network';
 
 // By default, poll every 3 minutes
 const DEFAULT_INTERVAL = MINUTE * 3;
@@ -80,9 +81,10 @@ export default class DetectTokensController {
     }
 
     const { tokenList } = this._tokenList.state;
-    console.log(!this.useTokenDetection || Object.keys(tokenList).length === 0);
-    if (!this.useTokenDetection || Object.keys(tokenList).length === 0) {
-      console.log(`this.useTokenDetection: ${this.useTokenDetection}`);
+    // since the token detection is currently enabled only on Mainnet
+    // we can use the chainId check to ensure token detection is not triggered for any other network
+    // but once the balance check contract for other networks are deploayed and ready to use, we need to update this check.
+    if (this._network.store.getState().provider.chainId !== MAINNET_CHAIN_ID) {
       return;
     }
 
