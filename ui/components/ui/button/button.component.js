@@ -31,7 +31,6 @@ const Button = ({
   large,
   children,
   icon,
-  rounded,
   className,
   ...buttonProps
 }) => {
@@ -58,9 +57,9 @@ const Button = ({
     <Tag
       className={classnames(
         'button',
+        CLASSNAME_ROUNDED,
         typeHash[type] || CLASSNAME_DEFAULT,
         large && CLASSNAME_LARGE,
-        rounded && CLASSNAME_ROUNDED,
         className,
       )}
       {...buttonProps}
@@ -75,7 +74,6 @@ Button.propTypes = {
   type: PropTypes.string,
   submit: PropTypes.bool,
   large: PropTypes.bool,
-  rounded: PropTypes.bool,
   className: PropTypes.string,
   children: PropTypes.node,
   icon: PropTypes.node,
