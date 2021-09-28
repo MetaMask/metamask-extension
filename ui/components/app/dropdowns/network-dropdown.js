@@ -18,6 +18,7 @@ import ColorIndicator from '../../ui/color-indicator';
 import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 import { getShouldShowTestNetworks } from '../../../selectors';
 import { Dropdown, DropdownMenuItem } from './dropdown';
+import { Button } from '@material-ui/core';
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [
@@ -119,6 +120,35 @@ class NetworkDropdown extends Component {
       },
     });
     setProviderType(newProviderType);
+  }
+
+  renderAddCustomButton() {
+    const style = {
+      // position: "absolute",
+      // width: "311px",
+      // height: "167px",      
+      //top: "56px",       
+      width: "75%",
+      left: "40px",      
+      color: 'white',     
+      background: "rgba(0, 0, 0, 0.75)",
+      "border-radius": "20px",
+      "text-transform": "none",
+    };
+
+    return (
+      <Button
+        type="submit"
+        style={style}        
+        fullWidth
+        variant="contained"
+        size="large"
+        // onClick={this.handleSubmit}
+        disableRipple
+      >
+        {this.context.t('addNetwork')}
+      </Button>
+    );
   }
 
   renderCustomRpcList(rpcListDetail, provider) {
@@ -299,39 +329,7 @@ class NetworkDropdown extends Component {
         )}
 
         {this.renderCustomRpcList(rpcListDetail, this.props.provider)}
-        <DropdownMenuItem
-          closeMenu={() => this.props.hideNetworkDropdown()}
-          onClick={() => {
-            this.props.history.push(
-              getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN
-                ? NETWORKS_ROUTE
-                : NETWORKS_FORM_ROUTE,
-            );
-            setSelectedSettingsRpcUrl('');
-            setNetworksTabAddMode(true);
-          }}
-          style={DROP_DOWN_MENU_ITEM_STYLE}
-        >
-          {activeNetwork === 'custom' ? (
-            <i className="fa fa-check" />
-          ) : (
-            <div className="network-check__transparent">✓</div>
-          )}
-          <ColorIndicator
-            type={ColorIndicator.TYPES.FILLED}
-            color={COLORS.TRANSPARENT}
-            borderColor={COLORS.UI2}
-            size={SIZES.LG}
-          />
-          <span
-            className="network-name-item"
-            style={{
-              color: activeNetwork === 'custom' ? '#ffffff' : '#9b9b9b',
-            }}
-          >
-            {this.context.t('customRPC')}
-          </span>
-        </DropdownMenuItem>
+        {this.renderAddCustomButton()}
       </Dropdown>
     );
   }
