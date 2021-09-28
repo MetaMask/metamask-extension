@@ -191,7 +191,6 @@ export default class ConfirmSeedPhrase extends PureComponent {
           className="first-time-flow__button"
           onClick={this.handleSubmit}
           disabled={!this.isValid()}
-          rounded
         >
           {t('confirm')}
         </Button>

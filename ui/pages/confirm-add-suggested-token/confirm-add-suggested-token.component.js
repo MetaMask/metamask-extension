@@ -134,7 +134,6 @@ export default class ConfirmAddSuggestedToken extends Component {
                 );
                 history.push(mostRecentOverviewPage);
               }}
-              rounded
             >
               {this.context.t('cancel')}
             </Button>
@@ -162,7 +161,6 @@ export default class ConfirmAddSuggestedToken extends Component {
                 );
                 history.push(mostRecentOverviewPage);
               }}
-              rounded
             >
               {this.context.t('addToken')}
             </Button>

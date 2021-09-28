@@ -215,7 +215,6 @@ export default class ConfirmEncryptionPublicKey extends Component {
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }}
-          rounded
         >
           {this.context.t('cancel')}
         </Button>
@@ -236,7 +235,6 @@ export default class ConfirmEncryptionPublicKey extends Component {
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }}
-          rounded
         >
           {t('provide')}
         </Button>

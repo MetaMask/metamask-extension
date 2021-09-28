@@ -120,7 +120,6 @@ class RevealSeedPage extends Component {
             onClick={() =>
               this.props.history.push(this.props.mostRecentOverviewPage)
             }
-            rounded
           >
             {this.context.t('cancel')}
           </Button>
@@ -130,7 +129,6 @@ class RevealSeedPage extends Component {
             className="page-container__footer-button"
             onClick={(event) => this.handleSubmit(event)}
             disabled={this.state.password === ''}
-            rounded
           >
             {this.context.t('next')}
           </Button>
@@ -149,7 +147,6 @@ class RevealSeedPage extends Component {
           onClick={() =>
             this.props.history.push(this.props.mostRecentOverviewPage)
           }
-          rounded
         >
           {this.context.t('close')}
         </Button>

@@ -64,7 +64,6 @@ export default class SelectAction extends PureComponent {
                   type="primary"
                   className="first-time-flow__button"
                   onClick={this.handleImport}
-                  rounded
                 >
                   {t('importWallet')}
                 </Button>
@@ -85,7 +84,6 @@ export default class SelectAction extends PureComponent {
                   type="primary"
                   className="first-time-flow__button"
                   onClick={this.handleCreate}
-                  rounded
                 >
                   {t('createAWallet')}
                 </Button>

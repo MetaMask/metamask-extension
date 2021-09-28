@@ -415,7 +415,6 @@ export default class MobileSyncPage extends Component {
           large
           className="new-account-create-form__button"
           onClick={() => this.goBack()}
-          rounded
         >
           {t('cancel')}
         </Button>
@@ -425,7 +424,6 @@ export default class MobileSyncPage extends Component {
           className="new-account-create-form__button"
           onClick={(event) => this.handleSubmit(event)}
           disabled={password === ''}
-          rounded
         >
           {t('next')}
         </Button>
@@ -443,7 +441,6 @@ export default class MobileSyncPage extends Component {
           large
           className="page-container__footer-button"
           onClick={() => this.goBack()}
-          rounded
         >
           {t('close')}
         </Button>

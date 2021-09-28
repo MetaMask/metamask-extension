@@ -33,7 +33,6 @@ export default function CancelButton({
   const btn = (
     <Button
       onClick={cancelTransaction}
-      rounded
       type="secondary"
       className={classnames({
         'transaction-list-item__header-button': !detailsModal,

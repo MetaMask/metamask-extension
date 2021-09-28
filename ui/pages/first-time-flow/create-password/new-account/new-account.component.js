@@ -233,7 +233,6 @@ export default class NewAccount extends PureComponent {
             className="first-time-flow__button"
             disabled={!this.isValid() || !termsChecked}
             onClick={this.handleCreate}
-            rounded
           >
             {t('create')}
           </Button>

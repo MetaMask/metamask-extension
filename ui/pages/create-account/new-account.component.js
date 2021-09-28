@@ -64,7 +64,6 @@ export default class NewAccountCreateForm extends Component {
               large
               className="new-account-create-form__button"
               onClick={() => history.push(mostRecentOverviewPage)}
-              rounded
             >
               {this.context.t('cancel')}
             </Button>
@@ -73,7 +72,6 @@ export default class NewAccountCreateForm extends Component {
               large
               className="new-account-create-form__button"
               onClick={createClick}
-              rounded
             >
               {this.context.t('create')}
             </Button>

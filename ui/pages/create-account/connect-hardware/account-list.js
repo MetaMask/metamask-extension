@@ -198,7 +198,6 @@ class AccountList extends Component {
           large
           className="new-external-account-form__button"
           onClick={this.props.onCancel.bind(this)}
-          rounded
         >
           {this.context.t('cancel')}
         </Button>
@@ -212,7 +211,6 @@ class AccountList extends Component {
             this.props.device,
             this.props.selectedPath,
           )}
-          rounded
         >
           {this.context.t('unlock')}
         </Button>
@@ -239,7 +237,6 @@ class AccountList extends Component {
         <Button
           onClick={() => this.setState({ showPopover: false })}
           type="secondary"
-          rounded
         >
           {this.context.t('cancel')}
         </Button>
@@ -249,7 +246,6 @@ class AccountList extends Component {
             this.setState({ showPopover: false });
           }}
           type="primary"
-          rounded
         >
           {this.context.t('save')}
         </Button>

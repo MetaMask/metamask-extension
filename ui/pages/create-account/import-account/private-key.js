@@ -112,7 +112,6 @@ class PrivateKeyImportView extends Component {
               displayWarning(null);
               history.push(mostRecentOverviewPage);
             }}
-            rounded
           >
             {this.context.t('cancel')}
           </Button>
@@ -122,7 +121,6 @@ class PrivateKeyImportView extends Component {
             className="new-account-create-form__button"
             onClick={() => this.createNewKeychain()}
             disabled={this.state.isEmpty}
-            rounded
           >
             {this.context.t('import')}
           </Button>

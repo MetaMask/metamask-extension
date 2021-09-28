@@ -76,7 +76,6 @@ export default class LoadingNetworkScreen extends PureComponent {
               window.clearTimeout(this.cancelCallTimeout);
               showNetworkDropdown();
             }}
-            rounded
           >
             {this.context.t('switchNetworks')}
           </Button>
@@ -92,7 +91,6 @@ export default class LoadingNetworkScreen extends PureComponent {
                 this.props.cancelTime || SECOND * 15,
               );
             }}
-            rounded
           >
             {this.context.t('tryAgain')}
           </Button>

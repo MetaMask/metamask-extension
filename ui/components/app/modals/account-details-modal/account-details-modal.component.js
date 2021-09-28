@@ -78,7 +78,6 @@ export default class AccountDetailsModal extends Component {
               url: accountLink,
             });
           }}
-          rounded
         >
           {rpcPrefs.blockExplorerUrl
             ? this.context.t('blockExplorerView', [
@@ -94,7 +93,6 @@ export default class AccountDetailsModal extends Component {
             type="secondary"
             className="account-details-modal__button"
             onClick={() => showExportPrivateKeyModal()}
-            rounded
           >
             {this.context.t('exportPrivateKey')}
           </Button>

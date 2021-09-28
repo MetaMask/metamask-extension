@@ -317,7 +317,6 @@ export default class Home extends PureComponent {
             <Button
               type="primary"
               onClick={setConnectedStatusPopoverHasBeenShown}
-              rounded
             >
               {t('dismiss')}
             </Button>

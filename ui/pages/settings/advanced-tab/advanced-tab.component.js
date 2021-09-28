@@ -70,7 +70,6 @@ export default class AdvancedTab extends PureComponent {
                 event.preventDefault();
                 history.push(MOBILE_SYNC_ROUTE);
               }}
-              rounded
             >
               {t('syncWithMobile')}
             </Button>
@@ -109,7 +108,6 @@ export default class AdvancedTab extends PureComponent {
                   }
                 });
               }}
-              rounded
             >
               {t('downloadStateLogs')}
             </Button>
@@ -151,7 +149,6 @@ export default class AdvancedTab extends PureComponent {
                 });
                 showResetAccountConfirmationModal();
               }}
-              rounded
             >
               {t('resetAccount')}
             </Button>
@@ -337,7 +334,6 @@ export default class AdvancedTab extends PureComponent {
               onClick={() => {
                 setAutoLockTimeLimit(this.state.autoLockTimeLimit);
               }}
-              rounded
             >
               {t('save')}
             </Button>
@@ -491,7 +487,6 @@ export default class AdvancedTab extends PureComponent {
               onClick={() => {
                 this.handleIpfsGatewaySave();
               }}
-              rounded
             >
               {t('save')}
             </Button>

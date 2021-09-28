@@ -306,7 +306,6 @@ export default class SignatureRequestOriginal extends Component {
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }}
-          rounded
         >
           {this.context.t('cancel')}
         </Button>
@@ -328,7 +327,6 @@ export default class SignatureRequestOriginal extends Component {
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }}
-          rounded
         >
           {this.context.t('sign')}
         </Button>

@@ -63,7 +63,6 @@ export default class Modal extends PureComponent {
                 type={cancelType}
                 onClick={onCancel}
                 className="modal-container__footer-button"
-                rounded
               >
                 {cancelText}
               </Button>
@@ -73,7 +72,6 @@ export default class Modal extends PureComponent {
               onClick={onSubmit}
               disabled={submitDisabled}
               className="modal-container__footer-button"
-              rounded
             >
               {submitText}
             </Button>

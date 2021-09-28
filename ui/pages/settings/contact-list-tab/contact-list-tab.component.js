@@ -80,7 +80,6 @@ export default class ContactListTab extends Component {
               viewingContact || editingContact,
           })}
           type="secondary"
-          rounded
           onClick={() => {
             history.push(CONTACT_ADD_ROUTE);
           }}

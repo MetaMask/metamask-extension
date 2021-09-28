@@ -75,7 +75,6 @@ export default class DepositEtherModal extends Component {
               className="deposit-ether-modal__deposit-button"
               large
               onClick={onButtonClick}
-              rounded
             >
               {buttonLabel}
             </Button>

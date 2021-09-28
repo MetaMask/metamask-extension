@@ -60,7 +60,6 @@ const SelectQuotePopover = ({
         type="secondary"
         className="page-container__footer-button select-quote-popover__button"
         onClick={onClose}
-        rounded
       >
         {t('close')}
       </Button>
@@ -69,7 +68,6 @@ const SelectQuotePopover = ({
         type="primary"
         className="page-container__footer-button select-quote-popover__button"
         onClick={onSubmitClick}
-        rounded
       >
         {t('swapSelect')}
       </Button>

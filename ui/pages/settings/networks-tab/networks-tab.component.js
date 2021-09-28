@@ -62,7 +62,6 @@ export default class NetworksTab extends PureComponent {
               setSelectedSettingsRpcUrl('');
               setNetworksTabAddMode(true);
             }}
-            rounded
           >
             {this.context.t('addNetwork')}
           </Button>
@@ -258,7 +257,6 @@ export default class NetworksTab extends PureComponent {
                   setNetworksTabAddMode(true);
                   history.push(NETWORKS_FORM_ROUTE);
                 }}
-                rounded
               >
                 {this.context.t('addNetwork')}
               </Button>

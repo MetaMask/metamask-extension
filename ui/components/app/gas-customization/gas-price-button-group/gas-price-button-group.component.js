@@ -100,7 +100,6 @@ export default class GasPriceButtonGroup extends Component {
           })
         }
         key={`gas-price-button-${index}`}
-        rounded
       >
         {this.renderButtonContent(
           renderableGasInfo,

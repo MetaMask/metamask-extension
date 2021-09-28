@@ -312,7 +312,6 @@ export default class ConfirmDecryptMessage extends Component {
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }}
-          rounded
         >
           {t('cancel')}
         </Button>
@@ -333,7 +332,6 @@ export default class ConfirmDecryptMessage extends Component {
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }}
-          rounded
         >
           {t('decrypt')}
         </Button>

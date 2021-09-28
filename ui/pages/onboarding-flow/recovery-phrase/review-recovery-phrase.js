@@ -92,7 +92,6 @@ export default function RecoveryPhrase({ seedPhrase }) {
               {copied ? t('copiedExclamation') : t('copyToClipboard')}
             </Button>
             <Button
-              rounded
               type="primary"
               className="recovery-phrase__footer--button"
               onClick={() => {
@@ -104,7 +103,6 @@ export default function RecoveryPhrase({ seedPhrase }) {
           </div>
         ) : (
           <Button
-            rounded
             type="primary"
             className="recovery-phrase__footer--button"
             onClick={() => {

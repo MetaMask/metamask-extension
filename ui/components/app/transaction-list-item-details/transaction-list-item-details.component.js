@@ -148,7 +148,6 @@ export default class TransactionListItemDetails extends PureComponent {
               {showSpeedUp && (
                 <Button
                   type="primary"
-                  rounded
                   onClick={this.handleRetry}
                   className="transaction-list-item-details__header-button-rounded-button"
                 >

@@ -242,7 +242,6 @@ class RestoreVaultPage extends Component {
               className="first-time-flow__button"
               onClick={() => !disabled && this.onClick()}
               disabled={disabled}
-              rounded
             >
               {this.context.t('restore')}
             </Button>

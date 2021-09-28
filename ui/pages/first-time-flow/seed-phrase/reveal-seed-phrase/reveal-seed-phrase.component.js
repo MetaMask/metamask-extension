@@ -179,7 +179,6 @@ export default class RevealSeedPhrase extends PureComponent {
             type="secondary"
             className="first-time-flow__button"
             onClick={this.handleSkip}
-            rounded
           >
             {t('remindMeLater')}
           </Button>
@@ -188,7 +187,6 @@ export default class RevealSeedPhrase extends PureComponent {
             className="first-time-flow__button"
             onClick={this.handleNext}
             disabled={!isShowingSeedPhrase}
-            rounded
           >
             {t('next')}
           </Button>

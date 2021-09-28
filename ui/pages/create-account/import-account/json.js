@@ -61,7 +61,6 @@ class JsonImportSubview extends Component {
             large
             className="new-account-create-form__button"
             onClick={() => history.push(mostRecentOverviewPage)}
-            rounded
           >
             {this.context.t('cancel')}
           </Button>
@@ -71,7 +70,6 @@ class JsonImportSubview extends Component {
             className="new-account-create-form__button"
             onClick={() => this.createNewKeychain()}
             disabled={!enabled}
-            rounded
           >
             {this.context.t('import')}
           </Button>

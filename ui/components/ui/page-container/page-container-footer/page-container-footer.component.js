@@ -52,7 +52,6 @@ export default class PageContainerFooter extends Component {
               )}
               onClick={(e) => onCancel(e)}
               data-testid="page-container-footer-cancel"
-              rounded
             >
               {cancelText || this.context.t('cancel')}
             </Button>
@@ -68,7 +67,6 @@ export default class PageContainerFooter extends Component {
             disabled={disabled}
             onClick={(e) => onSubmit(e)}
             data-testid="page-container-footer-next"
-            rounded
           >
             {submitText || this.context.t('next')}
           </Button>

@@ -98,7 +98,6 @@ export default class ConfirmImportToken extends Component {
               large
               className="page-container__footer-button"
               onClick={() => history.push(IMPORT_TOKEN_ROUTE)}
-              rounded
             >
               {this.context.t('back')}
             </Button>
@@ -131,7 +130,6 @@ export default class ConfirmImportToken extends Component {
                   }
                 });
               }}
-              rounded
             >
               {this.context.t('importTokensCamelCase')}
             </Button>

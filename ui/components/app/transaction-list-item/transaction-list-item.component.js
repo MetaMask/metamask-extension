@@ -123,7 +123,6 @@ export default function TransactionListItem({
     return (
       <Button
         type="primary"
-        rounded
         onClick={hasCancelled ? cancelTransaction : retryTransaction}
         style={hasCancelled ? { width: 'auto' } : null}
       >

@@ -46,7 +46,6 @@ export default class SecurityTab extends PureComponent {
                 });
                 history.push(REVEAL_SEED_ROUTE);
               }}
-              rounded
             >
               {t('revealSeedWords')}
             </Button>
