@@ -94,6 +94,7 @@ import ActionableMessage from '../../../components/ui/actionable-message/actiona
 import {
   quotesToRenderableData,
   getRenderableNetworkFeesForQuote,
+  getEstimatedFeeForSmartTransaction,
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
@@ -323,7 +324,7 @@ export default function ViewQuote() {
     sourceTokenIconUrl,
   } = renderableDataForUsedQuote;
 
-  const { feeInFiat, feeInEth } = getRenderableNetworkFeesForQuote({
+  let { feeInFiat, feeInEth } = getRenderableNetworkFeesForQuote({
     tradeGas: usedGasLimit,
     approveGas,
     gasPrice: networkAndAccountSupports1559
@@ -337,6 +338,20 @@ export default function ViewQuote() {
     chainId,
     nativeCurrencySymbol,
   });
+
+  if (
+    smartTransactionsEnabled &&
+    smartTransactionsOptInStatus &&
+    unsignedTransactionsAndEstimates
+  ) {
+    ({ feeInFiat, feeInEth } = getEstimatedFeeForSmartTransaction({
+      chainId,
+      currentCurrency,
+      conversionRate,
+      nativeCurrencySymbol,
+      estimatedFeeInWeiDec: unsignedTransactionsAndEstimates.feeEstimate,
+    }));
+  }
 
   const {
     feeInFiat: maxFeeInFiat,

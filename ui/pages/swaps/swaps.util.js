@@ -495,6 +495,34 @@ export async function fetchSwapsGasPrices(chainId, useNewSwapsApi) {
   };
 }
 
+export const getEstimatedFeeForSmartTransaction = ({
+  chainId,
+  currentCurrency,
+  conversionRate,
+  nativeCurrencySymbol,
+  estimatedFeeInWeiDec,
+}) => {
+  const estimatedFeeInWeiHex = decimalToHex(estimatedFeeInWeiDec);
+  const ethFee = getValueFromWeiHex({
+    value: estimatedFeeInWeiHex,
+    toDenomination: 'ETH',
+    numberOfDecimals: 5,
+  });
+  const rawNetworkFees = getValueFromWeiHex({
+    value: estimatedFeeInWeiHex,
+    toCurrency: currentCurrency,
+    conversionRate,
+    numberOfDecimals: 2,
+  });
+  const formattedNetworkFee = formatCurrency(rawNetworkFees, currentCurrency);
+  const chainCurrencySymbolToUse =
+    nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
+  return {
+    feeInFiat: formattedNetworkFee,
+    feeInEth: `${ethFee} ${chainCurrencySymbolToUse}`,
+  };
+};
+
 export function getRenderableNetworkFeesForQuote({
   tradeGas,
   approveGas,
