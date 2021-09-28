@@ -32,7 +32,9 @@
       }
     },
     "networkDetails": {
-      "EIPS": { "1559": true }
+      "EIPS": {
+        "1559": true
+      }
     },
     "cachedBalances": {},
     "incomingTransactions": {},
