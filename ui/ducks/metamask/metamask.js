@@ -279,6 +279,10 @@ export function getUnapprovedTxs(state) {
   return state.metamask.unapprovedTxs;
 }
 
+export function isNotEIP1559Network(state) {
+  return state.metamask.networkDetails?.EIPS[1559] === false;
+}
+
 export function isEIP1559Network(state) {
   return state.metamask.networkDetails?.EIPS[1559] === true;
 }
