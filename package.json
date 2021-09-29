@@ -65,7 +65,7 @@
     "update-changelog": "auto-changelog update",
     "generate:migration": "./development/generate-migration.sh",
     "lavamoat:build:auto": "lavamoat ./development/build/index.js --writeAutoPolicy",
-    "lavamoat:build:debug": "lavamoat ./development/build/index.js --writeAutoPolicyDebug",
+    "lavamoat:debug:build": "lavamoat ./development/build/index.js --writeAutoPolicyDebug",
     "lavamoat:background:auto": "WRITE_AUTO_POLICY=1 yarn build prod",
     "lavamoat:auto": "yarn lavamoat:build:auto && yarn lavamoat:background:auto"
   },

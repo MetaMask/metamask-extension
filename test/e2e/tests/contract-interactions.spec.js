@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const { withFixtures, regularDelayMs } = require('../helpers');
 
 describe('Deploy contract and call contract methods', function () {
   let windowHandles;
@@ -91,6 +91,7 @@ describe('Deploy contract and call contract methods', function () {
           'MetaMask Notification',
           windowHandles,
         );
+        await driver.delay(regularDelayMs);
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
