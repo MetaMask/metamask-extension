@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { PLUGIN_PREFIX } from '@mm-snap/controllers';
+import { PLUGIN_PREFIX } from '@metamask/snap-controllers';
 import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
 import CheckBox from '../../../ui/check-box';
