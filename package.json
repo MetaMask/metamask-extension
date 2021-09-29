@@ -65,7 +65,7 @@
     "update-changelog": "auto-changelog update",
     "generate:migration": "./development/generate-migration.sh",
     "lavamoat:auto": "lavamoat ./development/build/index.js --writeAutoPolicy",
-    "lavamoat:debug": "lavamoat ./development/build/index.js --writeAutoPolicyDebug"
+    "lavamoat:debug:build": "lavamoat ./development/build/index.js --writeAutoPolicyDebug"
   },
   "resolutions": {
     "**/regenerator-runtime": "^0.13.7",
