@@ -1,7 +1,7 @@
 import {
   restrictedMethods as restrictedPluginMethods,
   selectHooks,
-} from '@mm-snap/rpc-methods';
+} from '@metamask/rpc-methods';
 
 /**
  * @typedef RestrictedMethodHooks
