@@ -80,11 +80,6 @@ export default class DetectTokensController {
     }
 
     const { tokenList } = this._tokenList.state;
-    console.log(
-      this._network.store.getState().provider.chainId !== MAINNET_CHAIN_ID,
-    );
-    console.log(!this.useTokenDetection);
-    console.log(Object.keys(tokenList).length);
     // since the token detection is currently enabled only on Mainnet
     // we can use the chainId check to ensure token detection is not triggered for any other network
     // but once the balance check contract for other networks are deploayed and ready to use, we need to update this check.
