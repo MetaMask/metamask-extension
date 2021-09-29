@@ -594,7 +594,6 @@ export default class SwapsController {
     this.store.updateState({
       swapsState: {
         ...initialState.swapsState,
-        tokens: swapsState.tokens,
         swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
         swapsQuotePrefetchingRefreshTime:
           swapsState.swapsQuotePrefetchingRefreshTime,
