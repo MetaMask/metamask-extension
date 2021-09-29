@@ -7,10 +7,11 @@ const { version } = require('../../package.json');
 const betaManifestModifications = require('../../app/manifest/_beta_modifications.json');
 
 const { createTask, composeSeries } = require('./task');
+const { BuildTypes } = require('./utils');
 
 module.exports = createManifestTasks;
 
-function createManifestTasks({ betaVersionsMap, browserPlatforms, isBeta }) {
+function createManifestTasks({ betaVersionsMap, browserPlatforms, buildType }) {
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {
     return Promise.all(
@@ -28,7 +29,7 @@ function createManifestTasks({ betaVersionsMap, browserPlatforms, isBeta }) {
         const result = merge(
           cloneDeep(baseManifest),
           platformModifications,
-          isBeta
+          buildType === BuildTypes.beta
             ? getBetaModifications(platform, betaVersionsMap)
             : { version },
         );

@@ -65,7 +65,7 @@
     "update-changelog": "auto-changelog update",
     "generate:migration": "./development/generate-migration.sh",
     "lavamoat:auto": "lavamoat ./development/build/index.js --writeAutoPolicy",
-    "lavamoat:debug": "lavamoat ./development/build/index.js --writeAutoPolicyDebug"
+    "lavamoat:debug:build": "lavamoat ./development/build/index.js --writeAutoPolicyDebug"
   },
   "resolutions": {
     "**/regenerator-runtime": "^0.13.7",
@@ -287,7 +287,7 @@
     "jest": "^26.6.3",
     "jsdom": "^11.2.0",
     "koa": "^2.7.0",
-    "lavamoat": "^5.3.1",
+    "lavamoat": "^5.3.4",
     "lavamoat-viz": "^6.0.9",
     "lockfile-lint": "^4.0.0",
     "loose-envify": "^1.4.0",

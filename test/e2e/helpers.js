@@ -130,7 +130,7 @@ async function withFixtures(options, testSuite) {
       if (webDriver) {
         await webDriver.quit();
       }
-      if (dappServer) {
+      if (dappServer && dappServer.listening) {
         await new Promise((resolve, reject) => {
           dappServer.close((error) => {
             if (error) {
