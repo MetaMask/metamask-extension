@@ -2862,6 +2862,11 @@
         "js-tokens": true
       }
     },
+    "lru-cache": {
+      "packages": {
+        "yallist": true
+      }
+    },
     "lru-queue": {
       "packages": {
         "es5-ext": true
@@ -3724,6 +3729,9 @@
       "globals": {
         "console": true,
         "process": true
+      },
+      "packages": {
+        "lru-cache": true
       }
     },
     "set-value": {
