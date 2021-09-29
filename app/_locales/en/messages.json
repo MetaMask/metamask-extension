@@ -1210,6 +1210,9 @@
   "ipfsGatewayDescription": {
     "message": "Enter the URL of the IPFS CID gateway to use for ENS content resolution."
   },
+  "jsDeliver": {
+    "message": "jsDeliver"
+  },
   "jsonFile": {
     "message": "JSON File",
     "description": "format for importing an account"
@@ -1620,6 +1623,14 @@
     "message": "\"$1\" will close this tab and direct back to $2",
     "description": "Return the user to the site that initiated onboarding"
   },
+  "onboardingShowIncomingTransactionsDescription": {
+    "message": "Showing incoming transactions in your wallet relies on communication with $1. Etherscan will have access to your Ethereum address and your IP address. View $2.",
+    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
+  },
+  "onboardingUsePhishingDetectionDescription": {
+    "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
+    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
+  },
   "onlyAddTrustedNetworks": {
     "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
   },
@@ -2019,6 +2030,12 @@
   },
   "separateEachWord": {
     "message": "Separate each word with a single space"
+  },
+  "setAdvancedPrivacySettings": {
+    "message": "Set advanced privacy settings"
+  },
+  "setAdvancedPrivacySettingsDetails": {
+    "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
   },
   "settings": {
     "message": "Settings"
@@ -2717,6 +2734,9 @@
   },
   "tryAgain": {
     "message": "Try again"
+  },
+  "turnOnTokenDetection": {
+    "message": "Turn on Token Detection"
   },
   "typePassword": {
     "message": "Type your MetaMask password"
