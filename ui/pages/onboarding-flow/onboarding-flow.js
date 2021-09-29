@@ -26,7 +26,7 @@ import { getFirstTimeFlowTypeRoute } from '../../selectors';
 import Button from '../../components/ui/button';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
-import NewAccount from './new-account/new-account';
+import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
 import SecureYourWallet from './secure-your-wallet/secure-your-wallet';
 import ConfirmRecoveryPhrase from './recovery-phrase/confirm-recovery-phrase';
@@ -91,7 +91,7 @@ export default function OnboardingFlow() {
           <Route
             path={ONBOARDING_CREATE_PASSWORD_ROUTE}
             render={(routeProps) => (
-              <NewAccount
+              <CreatePassword
                 {...routeProps}
                 createNewAccount={handleCreateNewAccount}
               />
