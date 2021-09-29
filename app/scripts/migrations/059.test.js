@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { cloneDeep } from 'lodash';
 import {
   KOVAN_CHAIN_ID,
@@ -123,8 +122,8 @@ const ERRONEOUS_TRANSACTION_STATE_MIXED = {
   },
 };
 
-describe('migration #59', function () {
-  it('should update the version metadata', async function () {
+describe('migration #59', () => {
+  it('should update the version metadata', async () => {
     const oldStorage = {
       meta: {
         version: 58,
@@ -133,12 +132,12 @@ describe('migration #59', function () {
     };
 
     const newStorage = await migration59.migrate(oldStorage);
-    assert.deepEqual(newStorage.meta, {
+    expect(newStorage.meta).toStrictEqual({
       version: 59,
     });
   });
 
-  it('should drop orphaned cancel transactions', async function () {
+  it('should drop orphaned cancel transactions', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -152,7 +151,7 @@ describe('migration #59', function () {
     const newStorage = await migration59.migrate(oldStorage);
     const EXPECTED = cloneDeep(ERRONEOUS_TRANSACTION_STATE);
     delete EXPECTED['0'];
-    assert.deepEqual(newStorage.data, {
+    expect(newStorage.data).toStrictEqual({
       TransactionController: {
         transactions: EXPECTED,
       },
@@ -160,7 +159,7 @@ describe('migration #59', function () {
     });
   });
 
-  it('should drop orphaned cancel transactions even if a nonce exists on another network that is confirmed', async function () {
+  it('should drop orphaned cancel transactions even if a nonce exists on another network that is confirmed', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -184,7 +183,7 @@ describe('migration #59', function () {
       oldStorage.data.TransactionController.transactions,
     );
     delete EXPECTED['0'];
-    assert.deepEqual(newStorage.data, {
+    expect(newStorage.data).toStrictEqual({
       TransactionController: {
         transactions: EXPECTED,
       },
@@ -192,7 +191,7 @@ describe('migration #59', function () {
     });
   });
 
-  it('should not drop cancel transactions with matching non cancel or retry in same network and nonce', async function () {
+  it('should not drop cancel transactions with matching non cancel or retry in same network and nonce', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -211,7 +210,7 @@ describe('migration #59', function () {
     };
 
     const newStorage = await migration59.migrate(oldStorage);
-    assert.deepEqual(newStorage.data, {
+    expect(newStorage.data).toStrictEqual({
       TransactionController: {
         transactions: oldStorage.data.TransactionController.transactions,
       },
@@ -219,7 +218,7 @@ describe('migration #59', function () {
     });
   });
 
-  it('should drop orphaned retry transactions', async function () {
+  it('should drop orphaned retry transactions', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -233,7 +232,7 @@ describe('migration #59', function () {
     const newStorage = await migration59.migrate(oldStorage);
     const EXPECTED = cloneDeep(ERRONEOUS_TRANSACTION_STATE_RETRY);
     delete EXPECTED['0'];
-    assert.deepEqual(newStorage.data, {
+    expect(newStorage.data).toStrictEqual({
       TransactionController: {
         transactions: EXPECTED,
       },
@@ -241,7 +240,7 @@ describe('migration #59', function () {
     });
   });
 
-  it('should drop orphaned retry transactions even if a nonce exists on another network that is confirmed', async function () {
+  it('should drop orphaned retry transactions even if a nonce exists on another network that is confirmed', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -265,7 +264,7 @@ describe('migration #59', function () {
       oldStorage.data.TransactionController.transactions,
     );
     delete EXPECTED['0'];
-    assert.deepEqual(newStorage.data, {
+    expect(newStorage.data).toStrictEqual({
       TransactionController: {
         transactions: EXPECTED,
       },
@@ -273,7 +272,7 @@ describe('migration #59', function () {
     });
   });
 
-  it('should not drop retry transactions with matching non cancel or retry in same network and nonce', async function () {
+  it('should not drop retry transactions with matching non cancel or retry in same network and nonce', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -292,7 +291,7 @@ describe('migration #59', function () {
     };
 
     const newStorage = await migration59.migrate(oldStorage);
-    assert.deepEqual(newStorage.data, {
+    expect(newStorage.data).toStrictEqual({
       TransactionController: {
         transactions: oldStorage.data.TransactionController.transactions,
       },
@@ -300,7 +299,7 @@ describe('migration #59', function () {
     });
   });
 
-  it('should drop all orphaned retry and cancel transactions', async function () {
+  it('should drop all orphaned retry and cancel transactions', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -317,7 +316,7 @@ describe('migration #59', function () {
     // transactions we expect to be missing.
     const EXPECTED = cloneDeep(ERRONEOUS_TRANSACTION_STATE);
     delete EXPECTED['0'];
-    assert.deepEqual(newStorage.data, {
+    expect(newStorage.data).toStrictEqual({
       TransactionController: {
         transactions: EXPECTED,
       },
@@ -325,7 +324,7 @@ describe('migration #59', function () {
     });
   });
 
-  it('should do nothing if transactions state does not exist', async function () {
+  it('should do nothing if transactions state does not exist', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -340,10 +339,10 @@ describe('migration #59', function () {
     };
 
     const newStorage = await migration59.migrate(oldStorage);
-    assert.deepEqual(oldStorage.data, newStorage.data);
+    expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
-  it('should do nothing if transactions state is empty', async function () {
+  it('should do nothing if transactions state is empty', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -356,10 +355,10 @@ describe('migration #59', function () {
     };
 
     const newStorage = await migration59.migrate(oldStorage);
-    assert.deepEqual(oldStorage.data, newStorage.data);
+    expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
-  it('should do nothing if transactions state is not an object', async function () {
+  it('should do nothing if transactions state is not an object', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -372,16 +371,16 @@ describe('migration #59', function () {
     };
 
     const newStorage = await migration59.migrate(oldStorage);
-    assert.deepEqual(oldStorage.data, newStorage.data);
+    expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
-  it('should do nothing if state is empty', async function () {
+  it('should do nothing if state is empty', async () => {
     const oldStorage = {
       meta: {},
       data: {},
     };
 
     const newStorage = await migration59.migrate(oldStorage);
-    assert.deepEqual(oldStorage.data, newStorage.data);
+    expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 });

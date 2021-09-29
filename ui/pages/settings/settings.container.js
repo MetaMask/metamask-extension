@@ -23,6 +23,7 @@ import {
   NETWORKS_ROUTE,
   SECURITY_ROUTE,
   SETTINGS_ROUTE,
+  EXPERIMENTAL_ROUTE,
 } from '../../helpers/constants/routes';
 import Settings from './settings.component';
 
@@ -38,6 +39,7 @@ const ROUTES_TO_I18N_KEYS = {
   [NETWORKS_ROUTE]: 'networks',
   [NETWORKS_FORM_ROUTE]: 'networks',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
+  [EXPERIMENTAL_ROUTE]: 'experimental',
 };
 
 const mapStateToProps = (state, ownProps) => {

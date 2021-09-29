@@ -1,5 +1,3 @@
-import { TRANSACTION_STATUSES } from '../shared/constants/transaction';
-
 const state = {
   invalidCustomNetwork: {
     state: 'CLOSED',
@@ -20,6 +18,24 @@ const state = {
       EIPS: {
         1559: true,
       },
+    },
+    gasFeeEstimates: '0x5208',
+    swapsState: {
+      quotes: {},
+      fetchParams: null,
+      tokens: null,
+      tradeTxId: null,
+      approveTxId: null,
+      quotesLastFetched: null,
+      customMaxGas: '',
+      customGasPrice: null,
+      selectedAggId: null,
+      customApproveTxData: '',
+      errorKey: '',
+      topAggId: null,
+      routeState: '',
+      swapsFeatureIsLive: false,
+      swapsQuoteRefreshTime: 60000,
     },
     isInitialized: true,
     isUnlocked: true,
@@ -103,18 +119,6 @@ const state = {
         },
       },
     },
-    addresses: [
-      {
-        address: '0x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
-        name: 'DAI',
-        isEns: false,
-      },
-      {
-        address: '1x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
-        name: 'ETH',
-        isEns: true,
-      },
-    ],
     contractExchangeRates: {
       '0xaD6D458402F60fD3Bd25163575031ACDce07538D': 0,
     },
@@ -358,6 +362,15 @@ const state = {
               path: '/firstRetryBlockNumber',
               timestamp: 1629582711878,
               value: '0x9c2686',
+            },
+          ],
+          [
+            {
+              note: 'txStateManager: setting status to confirmed',
+              op: 'replace',
+              path: '/status',
+              timestamp: 1629582721178,
+              value: 'confirmed',
             },
           ],
           [
