@@ -37,6 +37,7 @@ import {
   bnLessThanEqualTo,
 } from '../helpers/utils/util';
 import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
+import { isLegacyTransaction } from '../helpers/utils/transactions.util';
 
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
@@ -155,9 +156,9 @@ export function useGasFeeInputs(
   editGasMode,
 ) {
   const { balance: ethBalance } = useSelector(getSelectedAccount);
-  const networkAndAccountSupports1559 = useSelector(
-    checkNetworkAndAccountSupports1559,
-  );
+  const support1559 =
+    useSelector(checkNetworkAndAccountSupports1559) &&
+    !isLegacyTransaction(transaction.txParams);
   // We need to know whether to show fiat conversions or not, so that we can
   // default our fiat values to empty strings if showing fiat is not wanted or
   // possible.
@@ -188,13 +189,12 @@ export function useGasFeeInputs(
   } = useGasFeeEstimates();
 
   const [initialMaxFeePerGas] = useState(
-    networkAndAccountSupports1559 && !transaction?.txParams?.maxFeePerGas
+    support1559 && !transaction?.txParams?.maxFeePerGas
       ? Number(hexWEIToDecGWEI(transaction?.txParams?.gasPrice))
       : Number(hexWEIToDecGWEI(transaction?.txParams?.maxFeePerGas)),
   );
   const [initialMaxPriorityFeePerGas] = useState(
-    networkAndAccountSupports1559 &&
-      !transaction?.txParams?.maxPriorityFeePerGas
+    support1559 && !transaction?.txParams?.maxPriorityFeePerGas
       ? initialMaxFeePerGas
       : Number(hexWEIToDecGWEI(transaction?.txParams?.maxPriorityFeePerGas)),
   );
@@ -294,7 +294,7 @@ export function useGasFeeInputs(
   const gasSettings = {
     gasLimit: decimalToHex(gasLimit),
   };
-  if (networkAndAccountSupports1559) {
+  if (support1559) {
     gasSettings.maxFeePerGas = maxFeePerGasToUse
       ? decGWEIToHexWEI(maxFeePerGasToUse)
       : decGWEIToHexWEI(gasPriceToUse || '0');
@@ -396,7 +396,7 @@ export function useGasFeeInputs(
   // This ensures these are applied when the api fails to return a fee market type
   // It is okay if these errors get overwritten below, as those overwrites can only
   // happen when the estimate api is live.
-  if (networkAndAccountSupports1559) {
+  if (support1559) {
     if (bnLessThanEqualTo(maxPriorityFeePerGasToUse, 0)) {
       gasErrors.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
     } else if (bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)) {
@@ -453,11 +453,11 @@ export function useGasFeeInputs(
     case GAS_ESTIMATE_TYPES.LEGACY:
     case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
     case GAS_ESTIMATE_TYPES.NONE:
-      if (networkAndAccountSupports1559) {
+      if (support1559) {
         estimatesUnavailableWarning = true;
       }
       if (
-        (!networkAndAccountSupports1559 || transaction?.txParams?.gasPrice) &&
+        (!support1559 || transaction?.txParams?.gasPrice) &&
         bnLessThanEqualTo(gasPriceToUse, 0)
       ) {
         gasErrors.gasPrice = GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW;

@@ -22,6 +22,7 @@ import {
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../../helpers/utils/confirm-tx.util';
+import { isLegacyTransaction as isLegacyTr } from '../../../helpers/utils/transactions.util';
 
 import InfoTooltip from '../../ui/info-tooltip';
 import ErrorMessage from '../../ui/error-message';
@@ -73,17 +74,15 @@ export default function EditGasDisplay({
   const scrollRef = useRef(null);
 
   const isMainnet = useSelector(getIsMainnet);
-  const networkAndAccountSupport1559 = useSelector(
-    checkNetworkAndAccountSupports1559,
-  );
+  const isLegacyTransaction = isLegacyTr(transaction.txParams);
+  const support1559 =
+    useSelector(checkNetworkAndAccountSupports1559) && !isLegacyTransaction;
   const showAdvancedInlineGasIfPossible = useSelector(
     getAdvancedInlineGasShown,
   );
 
   const [showAdvancedForm, setShowAdvancedForm] = useState(
-    !estimateToUse ||
-      estimateToUse === 'custom' ||
-      !networkAndAccountSupport1559,
+    !estimateToUse || estimateToUse === 'custom' || !support1559,
   );
   const [hideRadioButtons, setHideRadioButtons] = useState(
     showAdvancedInlineGasIfPossible,
@@ -109,7 +108,7 @@ export default function EditGasDisplay({
     (balanceError || estimatesUnavailableWarning) &&
     (!isGasEstimatesLoading || txParamsHaveBeenCustomized);
   const radioButtonsEnabled =
-    networkAndAccountSupport1559 &&
+    support1559 &&
     gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET &&
     !requireDappAcknowledgement;
 
@@ -163,12 +162,12 @@ export default function EditGasDisplay({
         )}
         <TransactionTotalBanner
           total={
-            (networkAndAccountSupport1559 || isMainnet) && estimatedMinimumFiat
+            (support1559 || isMainnet) && estimatedMinimumFiat
               ? `~ ${estimatedMinimumFiat}`
               : estimatedMinimumNative
           }
           detail={
-            networkAndAccountSupport1559 &&
+            support1559 &&
             estimatedMaximumFiat !== undefined && (
               <>
                 <Typography
@@ -188,7 +187,8 @@ export default function EditGasDisplay({
             )
           }
           timing={
-            hasGasErrors === false && (
+            hasGasErrors === false &&
+            !isLegacyTransaction && (
               <GasTiming
                 maxFeePerGas={maxFeePerGas}
                 maxPriorityFeePerGas={maxPriorityFeePerGas}
@@ -281,18 +281,17 @@ export default function EditGasDisplay({
               gasErrors={gasErrors}
               onManualChange={onManualChange}
               minimumGasLimit={minimumGasLimit}
+              support1559={support1559}
             />
           )}
       </div>
-      {networkAndAccountSupport1559 &&
-        !requireDappAcknowledgement &&
-        showEducationButton && (
-          <div className="edit-gas-display__education">
-            <button onClick={onEducationClick}>
-              {t('editGasEducationButtonText')}
-            </button>
-          </div>
-        )}
+      {support1559 && !requireDappAcknowledgement && showEducationButton && (
+        <div className="edit-gas-display__education">
+          <button onClick={onEducationClick}>
+            {t('editGasEducationButtonText')}
+          </button>
+        </div>
+      )}
       <div ref={scrollRef} className="edit-gas-display__scroll-bottom" />
     </div>
   );

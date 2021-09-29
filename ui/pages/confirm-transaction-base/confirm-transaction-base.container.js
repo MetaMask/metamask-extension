@@ -47,6 +47,7 @@ import {
   getNativeCurrency,
 } from '../../ducks/metamask/metamask';
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
+import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
@@ -66,7 +67,6 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
-  const supportsEIP1599 = checkNetworkAndAccountSupports1559(state);
 
   const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
@@ -122,6 +122,8 @@ const mapStateToProps = (state, ownProps) => {
   const toEns = ensResolutionsByAddress[checksummedAddress] || '';
   const toNickname = addressBookObject ? addressBookObject.name : '';
   const transactionStatus = transaction ? transaction.status : '';
+  const supportsEIP1599 =
+    checkNetworkAndAccountSupports1559(state) && !isLegacyTransaction(txParams);
 
   const {
     hexTransactionAmount,

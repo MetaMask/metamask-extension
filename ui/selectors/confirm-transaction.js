@@ -8,7 +8,10 @@ import {
   addFiat,
   addEth,
 } from '../helpers/utils/confirm-tx.util';
-import { sumHexes } from '../helpers/utils/transactions.util';
+import {
+  isLegacyTransaction as isLegacyTr,
+  sumHexes,
+} from '../helpers/utils/transactions.util';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import {
   getGasEstimateType,
@@ -236,16 +239,18 @@ export const transactionFeeSelector = function (state, txData) {
   const conversionRate = conversionRateSelector(state);
   const nativeCurrency = getNativeCurrency(state);
   const gasFeeEstimates = getGasFeeEstimates(state) || {};
-  const gasEstimateType = getGasEstimateType(state);
-  const networkAndAccountSupportsEIP1559 = checkNetworkAndAccountSupports1559(
-    state,
-  );
+  const isLegacyTransaction = isLegacyTr(txData.txParams);
+  const gasEstimateType = isLegacyTransaction
+    ? GAS_ESTIMATE_TYPES.LEGACY
+    : getGasEstimateType(state);
+  const support1559 =
+    checkNetworkAndAccountSupports1559(state) && !isLegacyTransaction;
 
   const gasEstimationObject = {
     gasLimit: txData.txParams?.gas ?? '0x0',
   };
 
-  if (networkAndAccountSupportsEIP1559) {
+  if (support1559) {
     const { gasPrice = '0' } = gasFeeEstimates;
     const selectedGasEstimates = gasFeeEstimates[txData.userFeeLevel] || {};
     if (txData.txParams?.type === TRANSACTION_ENVELOPE_TYPES.LEGACY) {

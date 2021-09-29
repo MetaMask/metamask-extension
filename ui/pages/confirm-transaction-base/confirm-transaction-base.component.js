@@ -27,7 +27,10 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
-import { getTransactionTypeTitle } from '../../helpers/utils/transactions.util';
+import {
+  getTransactionTypeTitle,
+  isLegacyTransaction,
+} from '../../helpers/utils/transactions.util';
 import { toBuffer } from '../../../shared/modules/buffer-utils';
 
 import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
@@ -541,15 +544,17 @@ export default class ConfirmTransactionBase extends Component {
                   ) : (
                     ''
                   )}
-                  <GasTiming
-                    maxPriorityFeePerGas={hexWEIToDecGWEI(
-                      maxPriorityFeePerGas ||
-                        txData.txParams.maxPriorityFeePerGas,
-                    )}
-                    maxFeePerGas={hexWEIToDecGWEI(
-                      maxFeePerGas || txData.txParams.maxFeePerGas,
-                    )}
-                  />
+                  {!isLegacyTransaction(txData.txParams) && (
+                    <GasTiming
+                      maxPriorityFeePerGas={hexWEIToDecGWEI(
+                        maxPriorityFeePerGas ||
+                          txData.txParams.maxPriorityFeePerGas,
+                      )}
+                      maxFeePerGas={hexWEIToDecGWEI(
+                        maxFeePerGas || txData.txParams.maxFeePerGas,
+                      )}
+                    />
+                  )}
                 </>
               }
             />,
