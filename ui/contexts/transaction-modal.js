@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { TRANSACTION_TYPES } from '../../shared/constants/transaction';
 import { getMethodName } from '../helpers/utils/metrics';
 import { useGasFeeContext } from './gasFee';
-import { useMetaMetricsContext } from './metametrics';
+import { MetaMetricsContext } from './metametrics';
 
 export const TransactionModalContext = createContext({});
 
@@ -15,7 +15,7 @@ export const TransactionModalContextProvider = ({
   captureEventEnabled = true,
 }) => {
   const [openModals, setOpenModals] = useState([]);
-  const metricsEvent = useMetaMetricsContext();
+  const metricsEvent = useContext(MetaMetricsContext);
   const { transaction: { origin } = {} } = useGasFeeContext();
 
   const captureEvent = () => {
