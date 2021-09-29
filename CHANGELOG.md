@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- [#12245](https://github.com/MetaMask/metamask-extension/pull/12245): Display ONE token image for default currency on ONE
+
 ## [10.1.1]
 ### Added
 - [#12020](https://github.com/MetaMask/metamask-extension/pull/12020): Adds instructions for ledger live users on transaction confirm screen
