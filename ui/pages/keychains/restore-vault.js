@@ -44,13 +44,14 @@ class RestoreVaultPage extends Component {
     const { t } = this.context;
     let seedPhraseError = null;
 
-    const wordCount = this.parseSeedPhrase(seedPhrase).split(/\s/u).length;
+    const parseSeedPhrase = this.parseSeedPhrase(seedPhrase);
+    const wordCount = parseSeedPhrase.split(/\s/u).length;
     if (
-      seedPhrase &&
+      parseSeedPhrase &&
       (wordCount % 3 !== 0 || wordCount < 12 || wordCount > 24)
     ) {
       seedPhraseError = t('seedPhraseReq');
-    } else if (!isValidMnemonic(seedPhrase)) {
+    } else if (!isValidMnemonic(parseSeedPhrase)) {
       seedPhraseError = t('invalidSeedPhrase');
     }
 
