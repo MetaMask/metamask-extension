@@ -2,7 +2,6 @@ import testData from '../test-data';
 
 const initialState = { send: testData.send };
 export default function sendSBReducer(state = initialState, action) {
-  console.log('initial state', state, action);
   switch (action.type) {
     case 'send/updateSendStatus':
       return {
@@ -10,7 +9,6 @@ export default function sendSBReducer(state = initialState, action) {
         send: { ...state.send, status: action.payload },
       };
     case 'send/updateAmountMode':
-      console.log('action', action);
       return {
         ...state,
         send: {
