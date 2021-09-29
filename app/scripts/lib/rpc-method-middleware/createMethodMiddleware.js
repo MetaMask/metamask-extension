@@ -1,4 +1,4 @@
-import { permittedMethods, selectHooks } from '@mm-snap/rpc-methods';
+import { permittedMethods, selectHooks } from '@metamask/rpc-methods';
 import { ethErrors } from 'eth-rpc-errors';
 import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
 import handlers from './handlers';
