@@ -387,6 +387,15 @@ const state = {
               timestamp: 1629582721178,
               value: 'confirmed',
             },
+          ],
+          [
+            {
+              note: 'txStateManager: setting status to confirmed',
+              op: 'replace',
+              path: '/status',
+              timestamp: 1629582721178,
+              value: 'confirmed',
+            },
             {
               op: 'add',
               path: '/txReceipt',
@@ -1178,6 +1187,7 @@ const state = {
       balance: '0x0',
       details: null,
     },
+    stage: 'ADD_RECIPIENT',
     amount: '3782dace9d900000',
     gas: {
       price: null,
