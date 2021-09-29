@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#11755](https://github.com/MetaMask/metamask-extension/pull/11755): Add `Refresh list` and `import tokens` link to the main page
   - Links will be hidden when the `Use Token Detection` setting is disabled
 - [#11851](https://github.com/MetaMask/metamask-extension/pull/11851): Add Token Detection Toggle to Security & Privacy (Settings)
+  - This feature is experimental and is off by default, when enabled, it will add auto-detected tokens to a user's asset list
 - [#12042](https://github.com/MetaMask/metamask-extension/pull/12042): Add Max Fee Per Gas to transaction breakdown
 - [#11999](https://github.com/MetaMask/metamask-extension/pull/11999): Add eth_feeHistory to API callable by dapps
 - [#11849](https://github.com/MetaMask/metamask-extension/pull/11849): Add subtitles for additional languages (Secret Recovery Phrase Video)
