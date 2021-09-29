@@ -181,8 +181,13 @@ export default class TransactionListItemDetails extends PureComponent {
                 containerClassName="transaction-list-item-details__header-button-tooltip-container"
                 title={
                   blockExplorerUrl
-                    ? t('viewOnCustomBlockExplorer', [blockExplorerUrl])
-                    : t('viewOnEtherscan')
+                    ? t('viewOnCustomBlockExplorer', [
+                        t('blockExplorerTransactionAction'),
+                        blockExplorerUrl,
+                      ])
+                    : t('viewOnEtherscan', [
+                        t('blockExplorerTransactionAction'),
+                      ])
                 }
               >
                 <Button

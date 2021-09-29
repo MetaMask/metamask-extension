@@ -37,7 +37,6 @@ function defineAndRunBuildTasks() {
     betaVersion,
     buildType,
     entryTask,
-    isBeta,
     isLavaMoat,
     shouldIncludeLockdown,
     shouldLintFenceFiles,
@@ -47,7 +46,7 @@ function defineAndRunBuildTasks() {
   const browserPlatforms = ['firefox', 'chrome', 'brave', 'opera'];
 
   let betaVersionsMap;
-  if (isBeta) {
+  if (buildType === BuildTypes.beta) {
     betaVersionsMap = getNextBetaVersionMap(
       version,
       betaVersion,
@@ -59,13 +58,13 @@ function defineAndRunBuildTasks() {
     livereload,
     browserPlatforms,
     shouldIncludeLockdown,
-    isBeta,
+    buildType,
   });
 
   const manifestTasks = createManifestTasks({
     browserPlatforms,
     betaVersionsMap,
-    isBeta,
+    buildType,
   });
 
   const styleTasks = createStyleTasks({ livereload });
@@ -82,7 +81,7 @@ function defineAndRunBuildTasks() {
     livereload,
     browserPlatforms,
     betaVersionsMap,
-    isBeta,
+    buildType,
   });
 
   // build for development (livereload)
@@ -201,7 +200,6 @@ function parseArgv() {
     betaVersion: String(betaVersion),
     buildType,
     entryTask,
-    isBeta: argv[NamedArgs.BuildType] === BuildTypes.beta,
     isLavaMoat: process.argv[0].includes('lavamoat'),
     shouldIncludeLockdown: argv[NamedArgs.OmitLockdown],
     shouldLintFenceFiles,

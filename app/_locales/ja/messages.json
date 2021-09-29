@@ -2386,15 +2386,6 @@
   "viewMore": {
     "message": "詳細を表示"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "$1 に表示"
-  },
-  "viewOnEtherscan": {
-    "message": "Etherscan で表示"
-  },
-  "viewinExplorer": {
-    "message": "Explorer で表示"
-  },
   "visitWebSite": {
     "message": "当社の Web サイトにアクセス"
   },

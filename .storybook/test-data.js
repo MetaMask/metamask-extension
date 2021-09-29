@@ -1163,6 +1163,10 @@ const state = {
       balance: '0x0',
       details: null,
     },
+    amount: '3782dace9d900000',
+    gas: {
+      price: null,
+    },
   },
   confirmTransaction: {
     txData: {
