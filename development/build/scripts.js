@@ -4,6 +4,7 @@ const { writeFileSync, readFileSync } = require('fs');
 const EventEmitter = require('events');
 const gulp = require('gulp');
 const watch = require('gulp-watch');
+const Vinyl = require('vinyl');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
 const log = require('fancy-log');
@@ -20,7 +21,8 @@ const endOfStream = pify(require('end-of-stream'));
 const labeledStreamSplicer = require('labeled-stream-splicer').obj;
 const wrapInStream = require('pumpify').obj;
 const Sqrl = require('squirrelly');
-const lavaPack = require('@lavamoat/lavapack');
+const lavapack = require('@lavamoat/lavapack');
+const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
 
 const bifyModuleGroups = require('bify-module-groups');
@@ -259,7 +261,22 @@ function createFactoredBuild({
     // set bundle entries
     bundlerOpts.entries = [...entryFiles];
 
+    // setup lavamoat
+    // lavamoat will add lavapack but it will be removed by bify-module-groups
+    // we will re-add it later by installing a lavapack runtime
+    const lavamoatOpts = {
+      policy: path.resolve(__dirname, '../../lavamoat/browserify/policy.json'),
+      policyOverride: path.resolve(
+        __dirname,
+        '../../lavamoat/browserify/policy-override.json',
+      ),
+      writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
+    };
+    Object.assign(bundlerOpts, lavamoatBrowserify.args);
+    bundlerOpts.plugin.push([lavamoatBrowserify, lavamoatOpts]);
+
     // setup bundle factoring with bify-module-groups plugin
+    // note: this will remove lavapack, but its ok bc we manually readd it later
     Object.assign(bundlerOpts, bifyModuleGroups.plugin.args);
     bundlerOpts.plugin = [...bundlerOpts.plugin, [bifyModuleGroups.plugin]];
 
@@ -281,18 +298,24 @@ function createFactoredBuild({
           groupingMap: sizeGroupMap,
         }),
       );
-      pipeline.get('vinyl').unshift(
-        // convert each module group into a stream with a single vinyl file
-        streamFlatMap((moduleGroup) => {
-          const filename = `${moduleGroup.label}.js`;
-          const childStream = wrapInStream(
-            moduleGroup.stream,
-            lavaPack({ raw: true, hasExports: true, includePrelude: false }),
-            source(filename),
-          );
-          return childStream;
+      // converts each module group into a single vinyl file containing its bundle
+      const moduleGroupPackerStream = streamFlatMap((moduleGroup) => {
+        const filename = `${moduleGroup.label}.js`;
+        const childStream = wrapInStream(
+          moduleGroup.stream,
+          // we manually readd lavapack here bc bify-module-groups removes it
+          lavapack({ raw: true, hasExports: true, includePrelude: false }),
+          source(filename),
+        );
+        return childStream;
+      });
+      pipeline.get('vinyl').unshift(moduleGroupPackerStream, buffer());
+      // add lavamoat policy loader file to packer output
+      moduleGroupPackerStream.push(
+        new Vinyl({
+          path: 'policy-load.js',
+          contents: lavapack.makePolicyLoaderStream(lavamoatOpts),
         }),
-        buffer(),
       );
       // setup bundle destination
       browserPlatforms.forEach((platform) => {
