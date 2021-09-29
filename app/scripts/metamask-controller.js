@@ -31,8 +31,8 @@ import {
 import {
   PluginController,
   ExternalResourceController,
-} from '@mm-snap/controllers';
-import { IframeExecutionEnvironmentService } from '@mm-snap/iframe-execution-environment-service';
+} from '@metamask/snap-controllers';
+import { IframeExecutionEnvironmentService } from '@metamask/iframe-execution-environment-service';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
