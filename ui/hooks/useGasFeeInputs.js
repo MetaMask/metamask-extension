@@ -158,7 +158,7 @@ export function useGasFeeInputs(
   const { balance: ethBalance } = useSelector(getSelectedAccount);
   const support1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
-    !isLegacyTransaction(transaction.txParams);
+    !isLegacyTransaction(transaction?.txParams);
   // We need to know whether to show fiat conversions or not, so that we can
   // default our fiat values to empty strings if showing fiat is not wanted or
   // possible.
