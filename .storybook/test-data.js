@@ -37,6 +37,21 @@ const state = {
       swapsFeatureIsLive: false,
       swapsQuoteRefreshTime: 60000,
     },
+    accountArray: [
+      {
+        name: 'This is a Really Long Account Name',
+        address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+        index: 0,
+        balance: '0x176e5b6f173ebe66',
+      },
+      {
+        name: 'Account 2',
+        address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
+        index: 1,
+        balance: '0x2d3142f5000',
+      },
+    ],
+    connectedAccounts: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
     isInitialized: true,
     isUnlocked: true,
     isAccountMenuOpen: false,
@@ -362,6 +377,15 @@ const state = {
               path: '/firstRetryBlockNumber',
               timestamp: 1629582711878,
               value: '0x9c2686',
+            },
+          ],
+          [
+            {
+              note: 'txStateManager: setting status to confirmed',
+              op: 'replace',
+              path: '/status',
+              timestamp: 1629582721178,
+              value: 'confirmed',
             },
           ],
           [
@@ -1163,6 +1187,7 @@ const state = {
       balance: '0x0',
       details: null,
     },
+    stage: 'ADD_RECIPIENT',
     amount: '3782dace9d900000',
     gas: {
       price: null,
