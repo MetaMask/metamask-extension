@@ -1,6 +1,6 @@
 // Make all "object" and "function" own properties of globalThis
 // non-configurable and non-writable, when possible.
-// We call the a property that is non-configurable and non-writable,
+// We call a property that is non-configurable and non-writable,
 // "non-modifiable".
 try {
   /**
