@@ -824,8 +824,8 @@
     "@gulp-sourcemaps/identity-map": {
       "packages": {
         "acorn": true,
-        "css": true,
         "normalize-path": true,
+        "postcss": true,
         "source-map": true,
         "through2": true
       }
@@ -962,15 +962,6 @@
         "uri-js": true
       }
     },
-    "amdefine": {
-      "builtin": {
-        "path.dirname": true
-      },
-      "globals": {
-        "__filename": true,
-        "process.nextTick": true
-      }
-    },
     "ansi-colors": {
       "packages": {
         "ansi-wrap": true
@@ -1015,16 +1006,6 @@
       },
       "packages": {
         "buffer-equal": true
-      }
-    },
-    "are-we-there-yet": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "util.inherits": true
-      },
-      "packages": {
-        "delegates": true,
-        "readable-stream": true
       }
     },
     "arr-diff": {
@@ -1386,7 +1367,6 @@
         "anymatch": true,
         "async-each": true,
         "braces": true,
-        "fsevents": true,
         "glob-parent": true,
         "inherits": true,
         "is-binary-path": true,
@@ -1492,7 +1472,7 @@
         "path.resolve": true
       },
       "globals": {
-        "Buffer": true
+        "Buffer.from": true
       },
       "packages": {
         "safe-buffer": true
@@ -1551,13 +1531,13 @@
     "css": {
       "builtin": {
         "fs.readFileSync": true,
-        "path.dirname": true
+        "path.dirname": true,
+        "path.sep": true
       },
       "packages": {
         "inherits": true,
         "source-map": true,
-        "source-map-resolve": true,
-        "urix": true
+        "source-map-resolve": true
       }
     },
     "d": {
@@ -1636,16 +1616,6 @@
       "packages": {
         "shasum": true,
         "through2": true
-      }
-    },
-    "detect-libc": {
-      "builtin": {
-        "child_process.spawnSync": true,
-        "fs.readdirSync": true,
-        "os.platform": true
-      },
-      "globals": {
-        "process.env": true
       }
     },
     "detective": {
@@ -2184,45 +2154,6 @@
         "process.version": true
       }
     },
-    "fsevents": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "fs.stat": true,
-        "path.join": true,
-        "util.inherits": true
-      },
-      "globals": {
-        "__dirname": true,
-        "process.nextTick": true,
-        "process.platform": true,
-        "setImmediate": true
-      },
-      "native": true,
-      "packages": {
-        "node-pre-gyp": true
-      }
-    },
-    "gauge": {
-      "builtin": {
-        "util.format": true
-      },
-      "globals": {
-        "clearInterval": true,
-        "process": true,
-        "setImmediate": true,
-        "setInterval": true
-      },
-      "packages": {
-        "aproba": true,
-        "console-control-strings": true,
-        "has-unicode": true,
-        "object-assign": true,
-        "signal-exit": true,
-        "string-width": true,
-        "strip-ansi": true,
-        "wide-align": true
-      }
-    },
     "get-assigned-identifiers": {
       "builtin": {
         "assert.equal": true
@@ -2496,7 +2427,8 @@
         "path.sep": true
       },
       "globals": {
-        "Buffer": true
+        "Buffer.concat": true,
+        "Buffer.from": true
       },
       "packages": {
         "@gulp-sourcemaps/identity-map": true,
@@ -2583,16 +2515,6 @@
         "process.argv": true
       }
     },
-    "has-unicode": {
-      "builtin": {
-        "os.type": true
-      },
-      "globals": {
-        "process.env.LANG": true,
-        "process.env.LC_ALL": true,
-        "process.env.LC_CTYPE": true
-      }
-    },
     "has-value": {
       "packages": {
         "get-value": true,
@@ -2665,7 +2587,7 @@
     },
     "inline-source-map": {
       "globals": {
-        "Buffer": true
+        "Buffer.from": true
       },
       "packages": {
         "source-map": true
@@ -2744,11 +2666,6 @@
     "is-extendable": {
       "packages": {
         "is-plain-object": true
-      }
-    },
-    "is-fullwidth-code-point": {
-      "packages": {
-        "number-is-nan": true
       }
     },
     "is-glob": {
@@ -3146,56 +3063,6 @@
         "setTimeout": true
       }
     },
-    "node-pre-gyp": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "fs.renameSync": true,
-        "path.dirname": true,
-        "path.existsSync": true,
-        "path.join": true,
-        "path.resolve": true,
-        "url.parse": true,
-        "url.resolve": true,
-        "util.inherits": true
-      },
-      "globals": {
-        "__dirname": true,
-        "console.log": true,
-        "process.arch": true,
-        "process.cwd": true,
-        "process.env": true,
-        "process.platform": true,
-        "process.version.substr": true,
-        "process.versions": true
-      },
-      "packages": {
-        "detect-libc": true,
-        "nopt": true,
-        "npmlog": true,
-        "rimraf": true,
-        "semver": true
-      }
-    },
-    "nopt": {
-      "builtin": {
-        "path": true,
-        "stream.Stream": true,
-        "url": true
-      },
-      "globals": {
-        "console": true,
-        "process.argv": true,
-        "process.env.DEBUG_NOPT": true,
-        "process.env.NOPT_DEBUG": true,
-        "process.platform": true
-      },
-      "packages": {
-        "abbrev": true,
-        "osenv": true
-      }
-    },
     "normalize-path": {
       "packages": {
         "remove-trailing-separator": true
@@ -3209,22 +3076,6 @@
     "now-and-later": {
       "packages": {
         "once": true
-      }
-    },
-    "npmlog": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "util": true
-      },
-      "globals": {
-        "process.nextTick": true,
-        "process.stderr": true
-      },
-      "packages": {
-        "are-we-there-yet": true,
-        "console-control-strings": true,
-        "gauge": true,
-        "set-blocking": true
       }
     },
     "object-copy": {
@@ -3291,54 +3142,6 @@
       },
       "packages": {
         "readable-stream": true
-      }
-    },
-    "os-homedir": {
-      "builtin": {
-        "os.homedir": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.getuid": true,
-        "process.platform": true
-      }
-    },
-    "os-tmpdir": {
-      "globals": {
-        "process.env.SystemRoot": true,
-        "process.env.TEMP": true,
-        "process.env.TMP": true,
-        "process.env.TMPDIR": true,
-        "process.env.windir": true,
-        "process.platform": true
-      }
-    },
-    "osenv": {
-      "builtin": {
-        "child_process.exec": true,
-        "path": true
-      },
-      "globals": {
-        "process.env.COMPUTERNAME": true,
-        "process.env.ComSpec": true,
-        "process.env.EDITOR": true,
-        "process.env.HOSTNAME": true,
-        "process.env.PATH": true,
-        "process.env.PROMPT": true,
-        "process.env.PS1": true,
-        "process.env.Path": true,
-        "process.env.SHELL": true,
-        "process.env.USER": true,
-        "process.env.USERDOMAIN": true,
-        "process.env.USERNAME": true,
-        "process.env.VISUAL": true,
-        "process.env.path": true,
-        "process.nextTick": true,
-        "process.platform": true
-      },
-      "packages": {
-        "os-homedir": true,
-        "os-tmpdir": true
       }
     },
     "parent-module": {
@@ -3923,12 +3726,6 @@
         "process": true
       }
     },
-    "set-blocking": {
-      "globals": {
-        "process.stderr": true,
-        "process.stdout": true
-      }
-    },
     "set-value": {
       "packages": {
         "extend-shallow": true,
@@ -4011,16 +3808,15 @@
         "console.time": true,
         "console.timeEnd": true,
         "fetch": true
-      },
-      "packages": {
-        "amdefine": true
       }
     },
     "source-map-resolve": {
       "builtin": {
+        "path.sep": true,
         "url.resolve": true
       },
       "globals": {
+        "TextDecoder": true,
         "setImmediate": true
       },
       "packages": {
@@ -4131,7 +3927,6 @@
     },
     "string-width": {
       "packages": {
-        "code-point-at": true,
         "emoji-regex": true,
         "is-fullwidth-code-point": true,
         "strip-ansi": true
@@ -4706,11 +4501,6 @@
       },
       "packages": {
         "isexe": true
-      }
-    },
-    "wide-align": {
-      "packages": {
-        "string-width": true
       }
     },
     "write": {
