@@ -1,5 +1,4 @@
 import React from 'react';
-import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 
 import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
@@ -7,20 +6,12 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 import AdvancedGasControls from './advanced-gas-controls.component';
 
-jest.mock('../../../../shared/modules/hexstring-utils', () => ({
-  toChecksumHexAddress: jest.fn(() => 'mockCheckSumAddress'),
-}));
-
 const renderComponent = (props) => {
   const store = configureMockStore([])({ metamask: { identities: [] } });
   return renderWithProvider(<AdvancedGasControls {...props} />, store);
 };
 
 describe('AdvancedGasControls Component', () => {
-  afterAll(() => {
-    sinon.restore();
-  });
-
   it('should render correctly', () => {
     expect(() => {
       renderComponent();

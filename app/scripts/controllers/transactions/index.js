@@ -406,9 +406,8 @@ export default class TransactionController extends EventEmitter {
    */
   async addTxGasDefaults(txMeta, getCodeResponse) {
     const eip1559Compatibility =
-      (await this.getEIP1559Compatibility()) &&
-      txMeta.txParams.type !== TRANSACTION_ENVELOPE_TYPES.LEGACY;
-
+      txMeta.txParams.type !== TRANSACTION_ENVELOPE_TYPES.LEGACY &&
+      (await this.getEIP1559Compatibility());
     const {
       gasPrice: defaultGasPrice,
       maxFeePerGas: defaultMaxFeePerGas,

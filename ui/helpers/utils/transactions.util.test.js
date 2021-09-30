@@ -2,6 +2,7 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_GROUP_STATUSES,
   TRANSACTION_STATUSES,
+  TRANSACTION_ENVELOPE_TYPES,
 } from '../../../shared/constants/transaction';
 import * as utils from './transactions.util';
 
@@ -57,6 +58,19 @@ describe('Transactions utils', () => {
       tests.forEach(({ transaction, expected }) => {
         expect(utils.getStatusKey(transaction)).toStrictEqual(expected);
       });
+    });
+  });
+
+  describe('isLegacyTransaction', () => {
+    it('should retur true if transaction is type-0', () => {
+      expect(
+        utils.isLegacyTransaction({ type: TRANSACTION_ENVELOPE_TYPES.LEGACY }),
+      ).toStrictEqual(true);
+      expect(
+        utils.isLegacyTransaction({
+          type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+        }),
+      ).toStrictEqual(false);
     });
   });
 });
