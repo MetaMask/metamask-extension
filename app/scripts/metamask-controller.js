@@ -469,6 +469,8 @@ export default class MetamaskController extends EventEmitter {
       getEIP1559GasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
         this.gasFeeController,
       ),
+      getExternalPendingTransactions: () => this.getExternalPendingTransactions.bind(this),
+      getExternalConfirmedTransactions: () => this.getExternalConfirmedTransactions.bind(this),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -2759,6 +2761,20 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
   // MISCELLANEOUS
   //=============================================================================
+
+  /**
+   */
+  getExternalPendingTransactions(address) {
+    // Code to collect external pending transactions goes here
+    return [];
+  }
+
+  /**
+   */
+  getExternalConfirmedTransactions(address) {
+    // Code to collect external confirmed transactions goes here
+    return [];
+  }
 
   /**
    * Returns the nonce that will be associated with a transaction once approved

@@ -17,6 +17,7 @@ import {
   BnMultiplyByFraction,
   addHexPrefix,
   getChainType,
+  hashObject,
 } from '../../lib/util';
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/helpers/constants/error-keys';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/pages/swaps/swaps.util';
@@ -136,6 +137,8 @@ export default class TransactionController extends EventEmitter {
       getConfirmedTransactions: this.txStateManager.getConfirmedTransactions.bind(
         this.txStateManager,
       ),
+      getExternalPendingTransactions: opts.getExternalPendingTransactions,
+      getExternalConfirmedTransactions: opts.getExternalConfirmedTransactions,
     });
 
     this.pendingTxTracker = new PendingTransactionTracker({
@@ -873,6 +876,95 @@ export default class TransactionController extends EventEmitter {
     } finally {
       this.inProcessOfSigning.delete(txId);
     }
+  }
+
+  async approveExternalTransaction(txParams) {
+    // This is hacky, need to review with other engineers and decide on best alternative.
+    const uniqueHashOfParams = hashObject(txParams);
+    if (this.inProcessOfSigning.has(uniqueHashOfParams)) {
+      return '';
+    }
+    this.inProcessOfSigning.add(uniqueHashOfParams);
+    let rawTx;
+    let nonceLock;
+    try {
+      const fromAddress = txParams.from;
+      nonceLock = await this.nonceTracker.getNonceLock(fromAddress);
+      const nonce = nonceLock.nextNonce;
+
+      txParams.nonce = addHexPrefix(nonce.toString(16));
+
+      rawTx = await this.signExternalTransactionTransaction(txParams);
+      nonceLock.releaseLock();
+    } catch (err) {
+      log.error(err);
+      // must set transaction to submitted/failed before releasing lock
+      if (nonceLock) {
+        nonceLock.releaseLock();
+      }
+      // continue with error chain
+      throw err;
+    } finally {
+      this.inProcessOfSigning.delete(uniqueHashOfParams);
+    }
+    return rawTx;
+  }
+
+  async approveTransactionsWithSameNonce(listOfTxParams) {
+    // This is hacky, need to review with other engineers and decide on best alternative.
+    const uniqueHashOfParams = hashObject(listOfTxParams);
+    if (this.inProcessOfSigning.has(uniqueHashOfParams)) {
+      return '';
+    }
+    let rawTxes;
+    this.inProcessOfSigning.add(uniqueHashOfParams);
+    let nonceLock;
+    try {
+      // TODO: we should add a check to verify that all transactions have the same from address
+      const fromAddress = listOfTxParams[0].from;
+      nonceLock = await this.nonceTracker.getNonceLock(fromAddress);
+      const nonce = nonceLock.nextNonce;
+
+      rawTxes = await Promise.all(
+        listOfTxParams.map((txParams) => {
+          txParams.nonce = addHexPrefix(nonce.toString(16));
+          return this.signExternalTransactionTransaction(txParams);
+        }),
+      );
+      nonceLock.releaseLock();
+    } catch (err) {
+      log.error(err);
+      // must set transaction to submitted/failed before releasing lock
+      if (nonceLock) {
+        nonceLock.releaseLock();
+      }
+      // continue with error chain
+      throw err;
+    } finally {
+      this.inProcessOfSigning.delete(uniqueHashOfParams);
+    }
+    return rawTxes;
+  }
+
+  async signExternalTransaction(_txParams) {
+    // add network/chain id
+    const chainId = this.getChainId();
+    const type = isEIP1559Transaction({ txParams: _txParams })
+      ? TRANSACTION_ENVELOPE_TYPES.FEE_MARKET
+      : TRANSACTION_ENVELOPE_TYPES.LEGACY;
+    const txParams = {
+      ..._txParams,
+      type,
+      chainId,
+    };
+    // sign tx
+    const fromAddress = txParams.from;
+    const common = await this.getCommonConfiguration(fromAddress);
+    const unsignedEthTx = TransactionFactory.fromTxData(txParams, { common });
+    const signedEthTx = await this.signEthTx(unsignedEthTx, fromAddress);
+
+    const rawTx = bufferToHex(signedEthTx.serialize());
+    return rawTx;
   }
 
   /**
