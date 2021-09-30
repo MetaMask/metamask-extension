@@ -32,6 +32,7 @@ describe('Deploy contract and call contract methods', function () {
         await driver.openNewPage('http://127.0.0.1:8080/');
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.waitUntilXWindowHandles(3);
+        await driver.delay(5000);
         windowHandles = await driver.getAllWindowHandles();
         extension = windowHandles[0];
         dapp = await driver.switchToWindowWithTitle(
@@ -86,6 +87,7 @@ describe('Deploy contract and call contract methods', function () {
         await driver.switchToWindow(dapp);
         await driver.clickElement('#depositButton');
         await driver.waitUntilXWindowHandles(3);
+        await driver.delay(5000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -111,6 +113,7 @@ describe('Deploy contract and call contract methods', function () {
         await driver.switchToWindow(dapp);
         await driver.clickElement('#withdrawButton');
         await driver.waitUntilXWindowHandles(3);
+        await driver.delay(5000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
