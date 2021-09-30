@@ -22,7 +22,7 @@ import {
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../../helpers/utils/confirm-tx.util';
-import { isLegacyTransaction as isLegacyTr } from '../../../helpers/utils/transactions.util';
+import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 
 import InfoTooltip from '../../ui/info-tooltip';
 import ErrorMessage from '../../ui/error-message';
@@ -74,9 +74,9 @@ export default function EditGasDisplay({
   const scrollRef = useRef(null);
 
   const isMainnet = useSelector(getIsMainnet);
-  const isLegacyTransaction = isLegacyTr(transaction.txParams);
   const support1559 =
-    useSelector(checkNetworkAndAccountSupports1559) && !isLegacyTransaction;
+    useSelector(checkNetworkAndAccountSupports1559) &&
+    !isLegacyTransaction(transaction.txParams);
   const showAdvancedInlineGasIfPossible = useSelector(
     getAdvancedInlineGasShown,
   );
@@ -188,7 +188,7 @@ export default function EditGasDisplay({
           }
           timing={
             hasGasErrors === false &&
-            !isLegacyTransaction && (
+            support1559 && (
               <GasTiming
                 maxFeePerGas={maxFeePerGas}
                 maxPriorityFeePerGas={maxPriorityFeePerGas}

@@ -19,6 +19,7 @@ import { ETH, PRIMARY } from '../helpers/constants/common';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 import { useGasFeeInputs } from './useGasFeeInputs';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
+import { TRANSACTION_ENVELOPE_TYPES } from '../../shared/constants/transaction';
 
 jest.mock('./useUserPreferencedCurrency', () => ({
   useUserPreferencedCurrency: jest.fn(),
@@ -220,6 +221,21 @@ describe('useGasFeeInputs', () => {
       );
       expect(result.current.estimatedMaximumFiat).toBe(`$${totalFiat}`);
       expect(result.current.estimatedMinimumFiat).toBe(`$${totalFiat}`);
+    });
+  });
+
+  describe('when transaction is type-0', () => {
+    it('returns gasPrice appropriately, and "0" for EIP1559 fields', () => {
+      const { result } = renderHook(() =>
+        useGasFeeInputs('medium', {
+          txParams: { type: TRANSACTION_ENVELOPE_TYPES.LEGACY },
+        }),
+      );
+      expect(result.current.gasPrice).toBe(
+        LEGACY_GAS_ESTIMATE_RETURN_VALUE.gasFeeEstimates.medium,
+      );
+      expect(result.current.maxFeePerGas).toBe('0');
+      expect(result.current.maxPriorityFeePerGas).toBe('0');
     });
   });
 
