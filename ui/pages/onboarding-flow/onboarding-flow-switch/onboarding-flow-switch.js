@@ -3,23 +3,23 @@ import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import {
   DEFAULT_ROUTE,
-  LOCK_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_GET_STARTED_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
+  LOCK_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
   getIsInitialized,
   getIsUnlocked,
   getSeedPhraseBackedUp,
-} from '../../../selectors';
+} from '../../../ducks/metamask/metamask';
 
 export default function OnboardingFlowSwitch() {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isInitialized = useSelector(getIsInitialized);
-  const isUnlocked = useSelector(getIsUnlocked);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
+  const isUnlocked = useSelector(getIsUnlocked);
 
   if (completedOnboarding) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;

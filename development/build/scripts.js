@@ -613,8 +613,7 @@ function getEnvironmentVariables({ buildType, devMode, testing }) {
         ? process.env.SEGMENT_PROD_LEGACY_WRITE_KEY
         : metamaskrc.SEGMENT_LEGACY_WRITE_KEY,
     SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
-    ONBOARDING_V2:
-      process.env.ONBOARDING_V2 === '1' || metamaskrc.ONBOARDING_V2 === '1',
+    ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
   };
 }
 

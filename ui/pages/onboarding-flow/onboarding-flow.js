@@ -11,15 +11,15 @@ import {
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
-  getFirstTimeFlowTypeRoute,
   getIsInitialized,
   getIsUnlocked,
   getSeedPhraseBackedUp,
-} from '../../selectors';
+} from '../../ducks/metamask/metamask';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
 } from '../../store/actions';
+import { getFirstTimeFlowTypeRoute } from '../../selectors';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import NewAccount from './new-account/new-account';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -36,6 +36,8 @@ export default function OnboardingFlow() {
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
 
   useEffect(() => {
+    // For ONBOARDING_V2 dev purposes,
+    // Remove when ONBOARDING_V2 dev complete
     if (process.env.ONBOARDING_V2) {
       history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
       return;
@@ -58,26 +60,18 @@ export default function OnboardingFlow() {
   ]);
 
   const handleCreateNewAccount = async (password) => {
-    try {
-      const newSeedPhrase = await dispatch(
-        createNewVaultAndGetSeedPhrase(password),
-      );
-      setSeedPhrase(newSeedPhrase);
-    } catch (error) {
-      throw new Error(error.message);
-    }
+    const newSeedPhrase = await dispatch(
+      createNewVaultAndGetSeedPhrase(password),
+    );
+    setSeedPhrase(newSeedPhrase);
   };
 
   const handleUnlock = async (password) => {
-    try {
-      const retreivedSeedPhrase = await dispatch(
-        unlockAndGetSeedPhrase(password),
-      );
-      setSeedPhrase(retreivedSeedPhrase);
-      history.push(nextRoute);
-    } catch (error) {
-      throw new Error(error.message);
-    }
+    const retreivedSeedPhrase = await dispatch(
+      unlockAndGetSeedPhrase(password),
+    );
+    setSeedPhrase(retreivedSeedPhrase);
+    history.push(nextRoute);
   };
 
   return (

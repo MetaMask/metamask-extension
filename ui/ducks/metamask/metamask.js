@@ -315,3 +315,18 @@ export function getIsGasEstimatesLoading(state) {
 
   return isGasEstimatesLoading;
 }
+
+export function getCompletedOnboarding(state) {
+  return state.metamask.completedOnboarding;
+}
+export function getIsInitialized(state) {
+  return state.metamask.isInitialized;
+}
+
+export function getIsUnlocked(state) {
+  return state.metamask.isUnlocked;
+}
+
+export function getSeedPhraseBackedUp(state) {
+  return state.metamask.seedPhraseBackedUp;
+}
