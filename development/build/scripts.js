@@ -27,6 +27,7 @@ const bifyModuleGroups = require('bify-module-groups');
 
 const metamaskrc = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
+  ONBOARDING_V2: process.env.ONBOARDING_V2,
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
   SEGMENT_LEGACY_WRITE_KEY: process.env.SEGMENT_LEGACY_WRITE_KEY,
@@ -612,6 +613,7 @@ function getEnvironmentVariables({ buildType, devMode, testing }) {
         ? process.env.SEGMENT_PROD_LEGACY_WRITE_KEY
         : metamaskrc.SEGMENT_LEGACY_WRITE_KEY,
     SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
+    ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
   };
 }
 
