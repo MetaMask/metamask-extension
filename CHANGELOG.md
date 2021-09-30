@@ -38,6 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#11805](https://github.com/MetaMask/metamask-extension/pull/11805): Update tooltip text for gas fees to avoid referring to custom networks as "Ethereum".
 - [#11845](https://github.com/MetaMask/metamask-extension/pull/11845): Wrapping and unwrapping native currencies (e.g. ETH -> WETH) through Swaps now uses the wrapping contracts directly
 - [#12056](https://github.com/MetaMask/metamask-extension/pull/12056): Improve the text for the "Cancel Edit" button, and allow rejecting the transaction from the Edit screen.
+- [#12098](https://github.com/MetaMask/metamask-extension/pull/12098): Scroll down to show all fields when "Advanced options" is toggled in the advanced gas options
+- [#11944](https://github.com/MetaMask/metamask-extension/pull/11944): Improve the "Import account" page layout
 
 ### Fixed
 - [#12140](https://github.com/MetaMask/metamask-extension/pull/12140): Prevent the user from entering more than 15 significant digits in numeric fields, such as Max Priority Fee
@@ -45,15 +47,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#12169](https://github.com/MetaMask/metamask-extension/pull/12169): Fix handling of erroneous ERC-20 Token amount on the confirmation screen
   - Previously, if you entered a token amount with too many decimal places, it would corrupt the token amount in the transaction. Now we truncate any decimals beyond what the token allows instead.
 - [#12074](https://github.com/MetaMask/metamask-extension/pull/12074): Prevent the addition of a duplicate, zero-balance account after importing a wallet with seed phrase
-- [#11944](https://github.com/MetaMask/metamask-extension/pull/11944): Improve the "Import account" page layout
 - [#11967](https://github.com/MetaMask/metamask-extension/pull/11967): Fix the display of long contact names on the contact settings pages.
 - [#12122](https://github.com/MetaMask/metamask-extension/pull/12122): Ensure failed speedups don't prevent further speedup attempts, and hide the Base Fee and Priority Fee fields when we don't have that information
-- [#12098](https://github.com/MetaMask/metamask-extension/pull/12098): Scroll down to show all fields when "Advanced options" is toggled in the advanced gas options
 - [#11963](https://github.com/MetaMask/metamask-extension/pull/11963): Show scrollbar in the accounts menu
   - This makes the accounts list scrollable for users with no mouse scroll wheel. 
 - [#12058](https://github.com/MetaMask/metamask-extension/pull/12058): Fix clipping issue with long network names in the network dropdown
 - [#12039](https://github.com/MetaMask/metamask-extension/pull/12039): Add missing padding at the bottom of the custom network form in the popup view
 - [#11890](https://github.com/MetaMask/metamask-extension/pull/11890): Fix alignment of horizontal line shown under gas recommendations
+- [#12244](https://github.com/MetaMask/metamask-extension/pull/12244): Fix form prefilling with values on the Build Quote page [Swaps]
 
 ## [10.1.1]
 ### Added
