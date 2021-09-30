@@ -329,36 +329,58 @@ function createFactoredBuild({
       const commonSet = sizeGroupMap.get('common');
       // create entry points for each file
       for (const [groupLabel, groupSet] of sizeGroupMap.entries()) {
-        // skip "common" group, they are added tp all other groups
+        // skip "common" group, they are added to all other groups
         if (groupSet === commonSet) continue;
 
         switch (groupLabel) {
           case 'ui': {
-            renderHtmlFile('popup', groupSet, commonSet, browserPlatforms);
-            renderHtmlFile(
-              'notification',
+            renderHtmlFile({
+              htmlName: 'popup',
               groupSet,
               commonSet,
               browserPlatforms,
-            );
-            renderHtmlFile('home', groupSet, commonSet, browserPlatforms);
+              useLavamoat: false,
+            });
+            renderHtmlFile({
+              htmlName: 'notification',
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              useLavamoat: false,
+            });
+            renderHtmlFile({
+              htmlName: 'home',
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              useLavamoat: false,
+            });
             break;
           }
           case 'background': {
-            renderHtmlFile('background', groupSet, commonSet, browserPlatforms);
-            break;
-          }
-          case 'content-script': {
-            renderHtmlFile(
-              'trezor-usb-permissions',
+            renderHtmlFile({
+              htmlName: 'background',
               groupSet,
               commonSet,
               browserPlatforms,
-            );
+              useLavamoat: false,
+            });
+            break;
+          }
+          case 'content-script': {
+            renderHtmlFile({
+              htmlName: 'trezor-usb-permissions',
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              useLavamoat: false,
+            });
             break;
           }
           default: {
-            throw new Error(`buildsys - unknown groupLabel "${groupLabel}"`);
+            throw new Error(
+              `build/scripts - unknown groupLabel "${groupLabel}"`,
+            );
           }
         }
       }
@@ -658,13 +680,24 @@ function getEnvironment({ devMode, testing }) {
   return 'other';
 }
 
-function renderHtmlFile(htmlName, groupSet, commonSet, browserPlatforms) {
+function renderHtmlFile({
+  htmlName,
+  groupSet,
+  commonSet,
+  browserPlatforms,
+  useLavamoat,
+}) {
+  if (useLavamoat === undefined) {
+    throw new Error(
+      'build/scripts/renderHtmlFile - must specify "useLavamoat" option',
+    );
+  }
   const htmlFilePath = `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
   const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
     (label) => `./${label}.js`,
   );
-  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles });
+  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles, useLavamoat });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm
