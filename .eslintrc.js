@@ -183,6 +183,7 @@ module.exports = {
         'nyc.config.js',
         'stylelint.config.js',
         'app/scripts/lockdown-run.js',
+        'app/scripts/lockdown-more.js',
         'development/**/*.js',
         'test/e2e/**/*.js',
         'test/lib/wait-until-called.js',
@@ -197,6 +198,7 @@ module.exports = {
     {
       files: [
         'app/scripts/lockdown-run.js',
+        'app/scripts/lockdown-more.js',
         'test/unit-global/protect-intrinsics.test.js',
       ],
       globals: {
