@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+import { Button } from '@material-ui/core';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
 import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
@@ -12,7 +13,6 @@ import ColorIndicator from '../../ui/color-indicator';
 import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 import { getShouldShowTestNetworks } from '../../../selectors';
 import { Dropdown, DropdownMenuItem } from './dropdown';
-import { Button } from '@material-ui/core';
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [
@@ -48,12 +48,6 @@ function mapDispatchToProps(dispatch) {
       dispatch(actions.setRpcTarget(target, chainId, ticker, nickname));
     },
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
-    setNetworksTabAddMode: (isInAddMode) => {
-      dispatch(actions.setNetworksTabAddMode(isInAddMode));
-    },
-    setSelectedSettingsRpcUrl: (url) => {
-      dispatch(actions.setSelectedSettingsRpcUrl(url));
-    },
     displayInvalidCustomNetworkAlert: (networkName) => {
       dispatch(displayInvalidCustomNetworkAlert(networkName));
     },
@@ -85,12 +79,9 @@ class NetworkDropdown extends Component {
     setProviderType: PropTypes.func.isRequired,
     setRpcTarget: PropTypes.func.isRequired,
     hideNetworkDropdown: PropTypes.func.isRequired,
-    setNetworksTabAddMode: PropTypes.func.isRequired,
-    setSelectedSettingsRpcUrl: PropTypes.func.isRequired,
     frequentRpcListDetail: PropTypes.array.isRequired,
     shouldShowTestNetworks: PropTypes.bool,
     networkDropdownOpen: PropTypes.bool.isRequired,
-    history: PropTypes.object.isRequired,
     displayInvalidCustomNetworkAlert: PropTypes.func.isRequired,
     showConfirmDeleteNetworkModal: PropTypes.func.isRequired,
   };
@@ -117,14 +108,13 @@ class NetworkDropdown extends Component {
   }
 
   renderAddCustomButton() {
-    const { openFullscreenEvent } = this.props;
     const style = {
-      width: "75%",
-      left: "40px",
-      color: 'white',
-      background: "rgba(0, 0, 0, 0.75)",
-      "border-radius": "20px",
-      "text-transform": "none",
+      'width': '75%',
+      'left': '40px',
+      'color': 'white',
+      'background': 'rgba(0, 0, 0, 0.75)',
+      'border-radius': '20px',
+      'text-transform': 'none',
     };
 
     return (
@@ -134,11 +124,9 @@ class NetworkDropdown extends Component {
         fullWidth
         variant="contained"
         size="large"
-        onClick={
-          () => {
-            global.platform.openExtensionInBrowser("settings/networks");
-          }
-        }
+        onClick={() => {
+          global.platform.openExtensionInBrowser('settings/networks');
+        }}
         disableRipple
       >
         {this.context.t('addNetwork')}
@@ -267,12 +255,7 @@ class NetworkDropdown extends Component {
   }
 
   render() {
-    const {
-      provider: { rpcUrl: activeNetwork },
-      setNetworksTabAddMode,
-      setSelectedSettingsRpcUrl,
-      shouldShowTestNetworks,
-    } = this.props;
+    const { shouldShowTestNetworks } = this.props;
     const rpcListDetail = this.props.frequentRpcListDetail;
     const isOpen = this.props.networkDropdownOpen;
 
@@ -313,6 +296,9 @@ class NetworkDropdown extends Component {
           </div>
         </div>
         {this.renderNetworkEntry('mainnet')}
+
+        {this.renderCustomRpcList(rpcListDetail, this.props.provider)}
+
         {shouldShowTestNetworks && (
           <>
             {this.renderNetworkEntry('ropsten')}
@@ -323,7 +309,6 @@ class NetworkDropdown extends Component {
           </>
         )}
 
-        {this.renderCustomRpcList(rpcListDetail, this.props.provider)}
         {this.renderAddCustomButton()}
       </Dropdown>
     );
