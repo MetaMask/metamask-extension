@@ -237,13 +237,15 @@ export const transactionFeeSelector = function (state, txData) {
   const nativeCurrency = getNativeCurrency(state);
   const gasFeeEstimates = getGasFeeEstimates(state) || {};
   const gasEstimateType = getGasEstimateType(state);
-  const support1559 = checkNetworkAndAccountSupports1559(state);
+  const networkAndAccountSupportsEIP1559 = checkNetworkAndAccountSupports1559(
+    state,
+  );
 
   const gasEstimationObject = {
     gasLimit: txData.txParams?.gas ?? '0x0',
   };
 
-  if (support1559) {
+  if (networkAndAccountSupportsEIP1559) {
     const { gasPrice = '0' } = gasFeeEstimates;
     const selectedGasEstimates = gasFeeEstimates[txData.userFeeLevel] || {};
     if (txData.txParams?.type === TRANSACTION_ENVELOPE_TYPES.LEGACY) {

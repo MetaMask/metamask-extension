@@ -27,10 +27,7 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
-import {
-  getTransactionTypeTitle,
-  isLegacyTransaction,
-} from '../../helpers/utils/transactions.util';
+import { getTransactionTypeTitle } from '../../helpers/utils/transactions.util';
 import { toBuffer } from '../../../shared/modules/buffer-utils';
 
 import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
@@ -131,6 +128,7 @@ export default class ConfirmTransactionBase extends Component {
     showLedgerSteps: PropTypes.bool.isRequired,
     isFirefox: PropTypes.bool.isRequired,
     nativeCurrency: PropTypes.string,
+    supportsEIP1599: PropTypes.bool,
   };
 
   state = {
@@ -312,6 +310,7 @@ export default class ConfirmTransactionBase extends Component {
       isMainnet,
       showLedgerSteps,
       isFirefox,
+      supportsEIP1599,
     } = this.props;
     const { t } = this.context;
 
@@ -544,7 +543,7 @@ export default class ConfirmTransactionBase extends Component {
                   ) : (
                     ''
                   )}
-                  {!isLegacyTransaction(txData.txParams) && (
+                  {supportsEIP1599 && (
                     <GasTiming
                       maxPriorityFeePerGas={hexWEIToDecGWEI(
                         maxPriorityFeePerGas ||
