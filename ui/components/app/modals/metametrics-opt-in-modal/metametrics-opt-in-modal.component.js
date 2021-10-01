@@ -37,7 +37,7 @@ export default class MetaMetricsOptInModal extends Component {
                 {t('metametricsCommitmentsIntro')}
               </div>
 
-              <div className="metametrics-opt-in__committments">
+              <div className="metametrics-opt-in__commitments">
                 <div className="metametrics-opt-in__row">
                   <i className="fa fa-check" />
                   <div className="metametrics-opt-in__row-description">

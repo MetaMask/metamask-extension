@@ -46,9 +46,10 @@
     margin-top: 12px;
   }
 
-  &__committments {
+  &__commitments {
     display: flex;
     flex-direction: column;
+    margin-bottom: 40px;
   }
 
   &__content {
@@ -82,10 +83,6 @@
     display: flex;
     max-width: 730px;
     flex-direction: column;
-
-    p {
-      text-align: center;
-    }
   }
 
   &__body-text {

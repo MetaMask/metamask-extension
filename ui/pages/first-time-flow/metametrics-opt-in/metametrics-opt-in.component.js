@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import MetaFoxLogo from '../../../components/ui/metafox-logo';
+import Typography from '../../../components/ui/typography/typography';
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer';
-import { isBeta } from '../../../helpers/utils/build-types';
+import {
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+  TEXT_ALIGN,
+} from '../../../helpers/constants/design-system';
 
 export default class MetaMetricsOptIn extends Component {
   static propTypes = {
@@ -31,18 +35,16 @@ export default class MetaMetricsOptIn extends Component {
     return (
       <div className="metametrics-opt-in">
         <div className="metametrics-opt-in__main">
-          <MetaFoxLogo useDark={isBeta()} />
-          <div className="metametrics-opt-in__title">
+          <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
             {t('metametricsTitle')}
-          </div>
+          </Typography>
           <div className="metametrics-opt-in__body">
-            <p>
-              <span>{t('metametricsOptInDescription2')}</span>
-              <br />
+            <Typography align={TEXT_ALIGN.CENTER}>
+              {t('metametricsOptInDescription2')}{' '}
               <span>{t('metametricsOptInDescription3')}</span>
-            </p>
+            </Typography>
 
-            <ul className="metametrics-opt-in__committments">
+            <ul className="metametrics-opt-in__commitments">
               <li className="metametrics-opt-in__row">
                 <i className="fa fa-check" />
                 <div className="metametrics-opt-in__row-description">
@@ -81,7 +83,7 @@ export default class MetaMetricsOptIn extends Component {
               </li>
             </ul>
           </div>
-          <p className="metametrics-opt-in__bottom-text">
+          <Typography>
             {t('gdprMessage', [
               <a
                 key="metametrics-bottom-text-wrapper"
@@ -92,7 +94,7 @@ export default class MetaMetricsOptIn extends Component {
                 {t('gdprMessagePrivacyPolicy')}
               </a>,
             ])}
-          </p>
+          </Typography>
           <div className="metametrics-opt-in__footer">
             <PageContainerFooter
               onCancel={async () => {
