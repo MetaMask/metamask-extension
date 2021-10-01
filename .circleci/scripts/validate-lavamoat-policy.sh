@@ -6,7 +6,7 @@ set -o pipefail
 
 yarn lavamoat:auto
 
-if git diff --exit-code lavamoat/
+if git diff --exit-code
 then
   echo "LavaMoat policy is up-to-date"
 else
