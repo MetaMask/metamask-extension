@@ -82,7 +82,10 @@ async function withFixtures(options, testSuite) {
       });
       await segmentServer.start(9090);
     }
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
+    if (
+      process.env.SELENIUM_BROWSER === 'chrome' &&
+      process.env.CI === 'true'
+    ) {
       await ensureXServerIsRunning();
     }
     const { driver } = await buildWebDriver(driverOptions);

@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Pridėti tinklą"
   },
-  "addRecipient": {
-    "message": "Pridėti gavėją"
-  },
   "addSuggestedTokens": {
     "message": "Pridėti siūlomų žetonų"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "Pridėti žetoną"
-  },
-  "addTokens": {
-    "message": "Pridėti žetonų"
   },
   "advanced": {
     "message": "Išplėstiniai"
@@ -543,7 +537,7 @@
   "letsGoSetUp": {
     "message": "Taip, pradėkime!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Ar norėtumėte pridėti šiuos žetonus?"
   },
   "links": {
@@ -894,9 +888,6 @@
   },
   "sendTokens": {
     "message": "Siųsti žetonus"
-  },
-  "sentEther": {
-    "message": "siųsti eterių"
   },
   "separateEachWord": {
     "message": "Kiekvieną žodį atskirkite viengubu tarpu"

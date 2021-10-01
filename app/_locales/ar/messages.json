@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "أضف شبكة"
   },
-  "addRecipient": {
-    "message": "إضافة مستلم"
-  },
   "addSuggestedTokens": {
     "message": "أضف العملات الرمزية المقترحة"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "إضافة عملة رمزية"
-  },
-  "addTokens": {
-    "message": "إضافة عملات رمزية"
   },
   "advanced": {
     "message": "إعدادات متقدمة"
@@ -539,7 +533,7 @@
   "letsGoSetUp": {
     "message": "نعم، دعنا نبدأ التثبيت!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "هل ترغب في إضافة هذه الرموز؟"
   },
   "links": {
@@ -887,9 +881,6 @@
   },
   "sendTokens": {
     "message": "إرسال عملات رمزية"
-  },
-  "sentEther": {
-    "message": "أرسل عملة إيثير"
   },
   "separateEachWord": {
     "message": "افصل كل كلمة بمسافة واحدة"

@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
@@ -42,6 +42,7 @@ import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.util
 import PulseLoader from '../../../components/ui/pulse-loader';
 
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { stopPollingForQuotes } from '../../../store/actions';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
@@ -248,6 +249,13 @@ export default function AwaitingSwap({
       </Box>
     );
   };
+
+  useEffect(() => {
+    if (errorKey) {
+      // If there was an error, stop polling for quotes.
+      dispatch(stopPollingForQuotes());
+    }
+  }, [dispatch, errorKey]);
 
   return (
     <div className="awaiting-swap">

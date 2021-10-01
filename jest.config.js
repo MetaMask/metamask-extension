@@ -1,23 +1,25 @@
 module.exports = {
-  restoreMocks: true,
-  coverageDirectory: 'jest-coverage/',
-  collectCoverageFrom: [
-    '<rootDir>/ui/**/swaps/**',
-    '<rootDir>/ui/ducks/send/**',
-  ],
+  collectCoverageFrom: ['<rootDir>/ui/**/*.js', '<rootDir>/shared/**/*.js'],
+  coverageDirectory: './jest-coverage/main',
   coveragePathIgnorePatterns: ['.stories.js', '.snap'],
+  coverageReporters: ['json', 'lcov', 'text', 'clover'],
   coverageThreshold: {
     global: {
-      branches: 45.24,
-      functions: 51.94,
-      lines: 58.36,
-      statements: 58.6,
+      branches: 35,
+      functions: 37,
+      lines: 43,
+      statements: 43,
     },
   },
-  setupFiles: ['./test/setup.js', './test/env.js'],
-  setupFilesAfterEnv: ['./test/jest/setup.js'],
+  // TODO: enable resetMocks
+  // resetMocks: true,
+  restoreMocks: true,
+  setupFiles: ['<rootDir>/test/setup.js', '<rootDir>/test/env.js'],
+  setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
-    '<rootDir>/ui/**/?(*.)+(test).js',
-    '<rootDir>/shared/**/?(*.)+(test).js',
+    '<rootDir>/ui/**/*.test.js',
+    '<rootDir>/shared/**/*.test.js',
+    '<rootDir>/app/scripts/migrations/*.test.js',
   ],
+  testTimeout: 2500,
 };

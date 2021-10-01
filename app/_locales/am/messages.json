@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "አውታረ መረብ አክል"
   },
-  "addRecipient": {
-    "message": "ተቀባይ አክል"
-  },
   "addSuggestedTokens": {
     "message": "የተጠቆሙ ተለዋጭ ስሞችን አክል"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "ተለዋጭ ስም አክል"
-  },
-  "addTokens": {
-    "message": "ተለዋጭ ስሞችን አክል"
   },
   "advanced": {
     "message": "የላቀ"
@@ -276,7 +270,7 @@
     "message": "አስርዮሽ ቢያንስ 0 ቢበዛ ደግሞ 36 መሆን አለባቸው።"
   },
   "defaultNetwork": {
-    "message": "የ Ether ግብይቶች ንቡር አውታረ መረብ Main Net ነው።"
+    "message": "የ Ether ግብይቶች ንቡር አውታረ መረብ Mainnet ነው።"
   },
   "delete": {
     "message": "ሰርዝ"
@@ -543,7 +537,7 @@
   "letsGoSetUp": {
     "message": "አዎ፣ እናደራጅ!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "እነዚህን ተለዋጭ ስሞች ለማከል ይፈልጋሉ?"
   },
   "links": {
@@ -891,9 +885,6 @@
   },
   "sendTokens": {
     "message": "ተለዋጭ ስሞችን ላክ"
-  },
-  "sentEther": {
-    "message": "የተላከ ether"
   },
   "separateEachWord": {
     "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"

@@ -16,7 +16,7 @@
         "gasPrice": "0x2540be400"
       },
       "origin": "metamask",
-      "type": "sentEther",
+      "type": "simpleSend",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 12,
@@ -138,7 +138,7 @@
         "gasPrice": "0x2540be400"
       },
       "origin": "metamask",
-      "type": "sentEther",
+      "type": "simpleSend",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 12,
@@ -203,7 +203,7 @@
         "gasPrice": "0x2540be400"
       },
       "origin": "metamask",
-      "type": "sentEther",
+      "type": "simpleSend",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 0,
@@ -325,7 +325,7 @@
         "gasPrice": "0x2540be400"
       },
       "origin": "metamask",
-      "type": "sentEther",
+      "type": "simpleSend",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 0,
@@ -390,7 +390,7 @@
         "gasPrice": "0x306dc4200"
       },
       "origin": "metamask",
-      "type": "sentEther",
+      "type": "simpleSend",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 0,
@@ -514,7 +514,7 @@
         "gasPrice": "0x306dc4200"
       },
       "origin": "metamask",
-      "type": "sentEther",
+      "type": "simpleSend",
       "nonceDetails": {
         "params": {
           "highestLocallyConfirmed": 0,

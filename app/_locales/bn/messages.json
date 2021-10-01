@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "নেটওয়ার্ক যোগ করুন"
   },
-  "addRecipient": {
-    "message": "প্রাপক যোগ করুন"
-  },
   "addSuggestedTokens": {
     "message": "প্রস্তাবিত টোকেনগুলি যোগ করুন"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "টোকেন যোগ করুন"
-  },
-  "addTokens": {
-    "message": "টোকেনগুলি যোগ করুন"
   },
   "advanced": {
     "message": "উন্নত"
@@ -543,7 +537,7 @@
   "letsGoSetUp": {
     "message": "হ্যাঁ, তাহলে সেট আপ করে নেওয়া যাক!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "আপনি কি এই টোকেনগুলি যোগ করতে চান?"
   },
   "links": {
@@ -894,9 +888,6 @@
   },
   "sendTokens": {
     "message": "টোকেনগুলি পাঠান"
-  },
-  "sentEther": {
-    "message": "পাঠানো ইথার "
   },
   "separateEachWord": {
     "message": "প্রতিটি শব্দকে একটি স্পেস দিয়ে আলাদা করুন"

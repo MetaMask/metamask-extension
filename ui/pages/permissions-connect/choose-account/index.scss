@@ -18,7 +18,7 @@
     color: $Grey-300;
   }
 
-  @media screen and (min-width: 576px) {
+  @media screen and (min-width: $break-large) {
     width: 426px;
   }
 
@@ -155,7 +155,7 @@
     flex-direction: column;
     justify-content: flex-end;
 
-    @media screen and (min-width: 576px) {
+    @media screen and (min-width: $break-large) {
       flex-direction: column-reverse;
       justify-content: space-between;
       padding-bottom: 20px;
@@ -171,7 +171,7 @@
     margin-top: 8px;
     border-top: 1px solid #d6d9dc;
 
-    @media screen and (min-width: 576px) {
+    @media screen and (min-width: $break-large) {
       border-top: none;
     }
 

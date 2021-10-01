@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import ContactList from '../../../components/app/contact-list';
 import {
   CONTACT_ADD_ROUTE,
@@ -68,12 +69,16 @@ export default class ContactListTab extends Component {
   }
 
   renderAddButton() {
-    const { history } = this.props;
+    const { history, viewingContact, editingContact } = this.props;
 
     return (
       <div className="address-book-add-button">
         <Button
-          className="address-book-add-button__button"
+          className={classnames({
+            'address-book-add-button__button': true,
+            'address-book-add-button__button--hidden':
+              viewingContact || editingContact,
+          })}
           type="secondary"
           rounded
           onClick={() => {

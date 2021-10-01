@@ -16,7 +16,7 @@ import {
 
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
-import TransactionListItem from './transaction-list-item.component';
+import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
   gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
@@ -50,7 +50,7 @@ jest.mock('react-redux', () => {
   return {
     ...actual,
     useSelector: jest.fn(),
-    useDispatch: jest.fn(),
+    useDispatch: () => jest.fn(),
   };
 });
 
@@ -61,6 +61,14 @@ jest.mock('../../../hooks/useGasFeeEstimates', () => ({
 setBackgroundConnection({
   getGasFeeTimeEstimate: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest.fn(),
+});
+
+jest.mock('react', () => {
+  const originReact = jest.requireActual('react');
+  return {
+    ...originReact,
+    useLayoutEffect: jest.fn(),
+  };
 });
 
 const generateUseSelectorRouter = (opts) => (selector) => {
@@ -85,18 +93,18 @@ const generateUseSelectorRouter = (opts) => (selector) => {
 };
 
 describe('TransactionListItem', () => {
-  describe('when account has insufficient balance to cover gas', function () {
-    beforeAll(function () {
+  describe('when account has insufficient balance to cover gas', () => {
+    beforeAll(() => {
       useGasFeeEstimates.mockImplementation(
         () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
       );
     });
 
-    afterAll(function () {
+    afterAll(() => {
       useGasFeeEstimates.restore();
     });
 
-    it(`should indicate account has insufficient funds to cover gas price for cancellation of pending transaction`, function () {
+    it(`should indicate account has insufficient funds to cover gas price for cancellation of pending transaction`, () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '0x3',
@@ -108,7 +116,7 @@ describe('TransactionListItem', () => {
       expect(queryByTestId('not-enough-gas__tooltip')).toBeInTheDocument();
     });
 
-    it('should not disable "cancel" button when user has sufficient funds', function () {
+    it('should not disable "cancel" button when user has sufficient funds', () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '2AA1EFB94E0000',
@@ -120,7 +128,7 @@ describe('TransactionListItem', () => {
       expect(queryByTestId('not-enough-gas__tooltip')).not.toBeInTheDocument();
     });
 
-    it(`should open the edit gas popover when cancel is clicked`, function () {
+    it(`should open the edit gas popover when cancel is clicked`, () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '2AA1EFB94E0000',

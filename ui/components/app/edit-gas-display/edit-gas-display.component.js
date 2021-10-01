@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -70,6 +70,8 @@ export default function EditGasDisplay({
   txParamsHaveBeenCustomized,
 }) {
   const t = useContext(I18nContext);
+  const scrollRef = useRef(null);
+
   const isMainnet = useSelector(getIsMainnet);
   const networkAndAccountSupport1559 = useSelector(
     checkNetworkAndAccountSupports1559,
@@ -86,6 +88,12 @@ export default function EditGasDisplay({
   const [hideRadioButtons, setHideRadioButtons] = useState(
     showAdvancedInlineGasIfPossible,
   );
+
+  useLayoutEffect(() => {
+    if (showAdvancedForm && scrollRef.current) {
+      scrollRef.current.scrollIntoView();
+    }
+  }, [showAdvancedForm]);
 
   const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
     transaction,
@@ -161,19 +169,23 @@ export default function EditGasDisplay({
           }
           detail={
             networkAndAccountSupport1559 &&
-            estimatedMaximumFiat !== undefined &&
-            t('editGasTotalBannerSubtitle', [
-              <Typography
-                fontWeight={FONT_WEIGHT.BOLD}
-                tag="span"
-                key="secondary"
-              >
-                {estimatedMaximumFiat}
-              </Typography>,
-              <Typography tag="span" key="primary">
-                {estimatedMaximumNative}
-              </Typography>,
-            ])
+            estimatedMaximumFiat !== undefined && (
+              <>
+                <Typography
+                  tag="span"
+                  key="label"
+                  fontWeight={FONT_WEIGHT.BOLD}
+                >
+                  {t('editGasSubTextFeeLabel')}
+                </Typography>
+                <Typography tag="span" key="secondary">
+                  {estimatedMaximumFiat}
+                </Typography>
+                <Typography tag="span" key="primary">
+                  {`(${estimatedMaximumNative})`}
+                </Typography>
+              </>
+            )
           }
           timing={
             hasGasErrors === false && (
@@ -281,6 +293,7 @@ export default function EditGasDisplay({
             </button>
           </div>
         )}
+      <div ref={scrollRef} className="edit-gas-display__scroll-bottom" />
     </div>
   );
 }
@@ -315,7 +328,7 @@ EditGasDisplay.propTypes = {
   gasErrors: PropTypes.object,
   gasWarnings: PropTypes.object,
   onManualChange: PropTypes.func,
-  minimumGasLimit: PropTypes.number,
+  minimumGasLimit: PropTypes.string,
   balanceError: PropTypes.bool,
   estimatesUnavailableWarning: PropTypes.bool,
   hasGasErrors: PropTypes.bool,

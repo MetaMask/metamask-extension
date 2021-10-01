@@ -22,7 +22,6 @@ import {
   createCancelTransaction,
   createSpeedUpTransaction,
   hideModal,
-  hideSidebar,
   updateTransaction,
   updateCustomSwapsEIP1559GasParams,
   updateSwapsUserFeeLevel,
@@ -43,7 +42,6 @@ export default function EditGasPopover({
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
   const networkAndAccountSupport1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
@@ -117,19 +115,17 @@ export default function EditGasPopover({
 
   /**
    * Temporary placeholder, this should be managed by the parent component but
-   * we will be extracting this component from the hard to maintain modal/
-   * sidebar component. For now this is just to be able to appropriately close
+   * we will be extracting this component from the hard to maintain modal
+   * component. For now this is just to be able to appropriately close
    * the modal in testing
    */
   const closePopover = useCallback(() => {
     if (onClose) {
       onClose();
-    } else if (showSidebar) {
-      dispatch(hideSidebar());
     } else {
       dispatch(hideModal());
     }
-  }, [showSidebar, onClose, dispatch]);
+  }, [onClose, dispatch]);
 
   const onSubmit = useCallback(() => {
     if (!updatedTransaction || !mode) {

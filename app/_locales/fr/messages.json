@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Ajouter un réseau"
   },
-  "addRecipient": {
-    "message": "Ajouter destinataire"
-  },
   "addSuggestedTokens": {
     "message": "Ajouter les jetons suggérés"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "Ajouter un jeton"
-  },
-  "addTokens": {
-    "message": "Ajouter des jetons"
   },
   "advanced": {
     "message": "Paramètres avancés"
@@ -537,7 +531,7 @@
   "letsGoSetUp": {
     "message": "Oui, passons à la configuration !"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Souhaitez-vous ajouter ces jetons ?"
   },
   "links": {
@@ -657,7 +651,7 @@
     "message": "de"
   },
   "off": {
-    "message": "Déconnecté"
+    "message": "Désactivé"
   },
   "on": {
     "message": "Activé"
@@ -876,9 +870,6 @@
   },
   "sendTokens": {
     "message": "Envoyer des jetons"
-  },
-  "sentEther": {
-    "message": "Ether envoyé"
   },
   "separateEachWord": {
     "message": "Separez chaque mot avec un espace simple"
@@ -1113,7 +1104,7 @@
     "message": "Voir contact"
   },
   "viewOnCustomBlockExplorer": {
-    "message": "Afficher à $1"
+    "message": "Afficher sur $1"
   },
   "viewOnEtherscan": {
     "message": "Voir sur Etherscan"

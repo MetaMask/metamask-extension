@@ -9,6 +9,7 @@ import DefinitionList from './definition-list';
 
 export default {
   title: 'Definition List',
+  id: __filename,
 };
 
 const basic = {

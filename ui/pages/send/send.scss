@@ -22,6 +22,7 @@
       right: 1rem;
       width: min-content;
       font-size: 0.75rem;
+      white-space: nowrap;
     }
   }
 
@@ -136,6 +137,10 @@
       &__title {
         @include H6;
 
+        max-width: 20em;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
         color: $black;
       }
 
