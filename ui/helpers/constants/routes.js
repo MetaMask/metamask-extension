@@ -52,6 +52,21 @@ const INITIALIZE_END_OF_FLOW_ROUTE = '/initialize/end-of-flow';
 const INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE = '/initialize/seed-phrase/confirm';
 const INITIALIZE_METAMETRICS_OPT_IN_ROUTE = '/initialize/metametrics-opt-in';
 
+const ONBOARDING_ROUTE = '/onboarding';
+const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-srp';
+const ONBOARDING_CONFIRM_SRP_ROUTE = '/onboarding/confirm-srp';
+const ONBOARDING_CREATE_PASSWORD_ROUTE = '/onboarding/create-password';
+const ONBOARDING_COMPLETION_ROUTE = '/onboarding/completion';
+const ONBOARDING_UNLOCK_ROUTE = '/onboarding/unlock';
+const ONBOARDING_GET_STARTED_ROUTE = '/onboarding/get-started';
+const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
+const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
+  '/onboarding/create-password/import-with-sre';
+const ONBOARDING_IMPORT_MOBILE_ROUTE = '/onboarding/create-password';
+const ONBOARDING_SECURE_YOUR_WALLET_ROUTE = '/onboarding/secure-your-wallet';
+const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
+const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
+
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
 const CONFIRM_SEND_ETHER_PATH = '/send-ether';
 const CONFIRM_SEND_TOKEN_PATH = '/send-token';
@@ -199,4 +214,17 @@ export {
   AWAITING_SIGNATURES_ROUTE,
   SWAPS_ERROR_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
+  ONBOARDING_ROUTE,
+  ONBOARDING_GET_STARTED_ROUTE,
+  ONBOARDING_HELP_US_IMPROVE_ROUTE,
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
+  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ONBOARDING_IMPORT_MOBILE_ROUTE,
+  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
+  ONBOARDING_CONFIRM_SRP_ROUTE,
+  ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_UNLOCK_ROUTE,
+  ONBOARDING_PIN_EXTENSION_ROUTE,
 };

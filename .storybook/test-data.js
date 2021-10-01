@@ -1,5 +1,3 @@
-import { TRANSACTION_STATUSES } from '../shared/constants/transaction';
-
 const state = {
   invalidCustomNetwork: {
     state: 'CLOSED',
@@ -21,6 +19,39 @@ const state = {
         1559: true,
       },
     },
+    gasFeeEstimates: '0x5208',
+    swapsState: {
+      quotes: {},
+      fetchParams: null,
+      tokens: null,
+      tradeTxId: null,
+      approveTxId: null,
+      quotesLastFetched: null,
+      customMaxGas: '',
+      customGasPrice: null,
+      selectedAggId: null,
+      customApproveTxData: '',
+      errorKey: '',
+      topAggId: null,
+      routeState: '',
+      swapsFeatureIsLive: false,
+      swapsQuoteRefreshTime: 60000,
+    },
+    accountArray: [
+      {
+        name: 'This is a Really Long Account Name',
+        address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+        index: 0,
+        balance: '0x176e5b6f173ebe66',
+      },
+      {
+        name: 'Account 2',
+        address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
+        index: 1,
+        balance: '0x2d3142f5000',
+      },
+    ],
+    connectedAccounts: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
     isInitialized: true,
     isUnlocked: true,
     isAccountMenuOpen: false,
@@ -103,24 +134,6 @@ const state = {
         },
       },
     },
-    recipient: {
-      address: '0x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
-      nickname: 'John Doe',
-      error: '',
-      warning: '',
-    },
-    addresses: [
-      {
-        address: '0x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
-        name: 'DAI',
-        isEns: false,
-      },
-      {
-        address: '1x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
-        name: 'ETH',
-        isEns: true,
-      },
-    ],
     contractExchangeRates: {
       '0xaD6D458402F60fD3Bd25163575031ACDce07538D': 0,
     },
@@ -364,6 +377,15 @@ const state = {
               path: '/firstRetryBlockNumber',
               timestamp: 1629582711878,
               value: '0x9c2686',
+            },
+          ],
+          [
+            {
+              note: 'txStateManager: setting status to confirmed',
+              op: 'replace',
+              path: '/status',
+              timestamp: 1629582721178,
+              value: 'confirmed',
             },
           ],
           [
@@ -794,7 +816,7 @@ const state = {
       '0xaD6D458402F60fD3Bd25163575031ACDce07538D': './sai.svg',
     },
     hiddenTokens: [],
-    suggestedTokens: {},
+    suggestedAssets: {},
     useNonceField: false,
     usePhishDetect: true,
     lostIdentities: {},
@@ -1164,6 +1186,11 @@ const state = {
       type: 'NATIVE',
       balance: '0x0',
       details: null,
+    },
+    stage: 'ADD_RECIPIENT',
+    amount: '3782dace9d900000',
+    gas: {
+      price: null,
     },
   },
   confirmTransaction: {

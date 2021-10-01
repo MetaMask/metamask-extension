@@ -18,7 +18,7 @@ describe('ViewOnEtherScanLink', () => {
     const { container, getByText } = renderWithProvider(
       <ViewOnEtherScanLink {...createProps()} />,
     );
-    expect(getByText('View on Etherscan')).toBeInTheDocument();
+    expect(getByText('View Swap on Etherscan')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -31,7 +31,9 @@ describe('ViewOnEtherScanLink', () => {
         })}
       />,
     );
-    expect(getByText('View at custom-blockchain.explorer')).toBeInTheDocument();
+    expect(
+      getByText('View Swap at custom-blockchain.explorer'),
+    ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });

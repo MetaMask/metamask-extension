@@ -1102,15 +1102,6 @@
   "viewContact": {
     "message": "Se kontrakt"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Vis ved $1 "
-  },
-  "viewOnEtherscan": {
-    "message": "Vis på Etherscan "
-  },
-  "viewinExplorer": {
-    "message": "Se i Explorer"
-  },
   "visitWebSite": {
     "message": "Besøk nettsiden vår "
   },
