@@ -464,8 +464,6 @@ export function useGasFeeInputs(
     ...gasErrors,
   };
 
-  console.log('errorsAndWarnings = ', errorsAndWarnings);
-
   const minimumTxCostInHexWei = addHexes(
     minimumCostInHexWei,
     transaction?.txParams?.value || '0x0',

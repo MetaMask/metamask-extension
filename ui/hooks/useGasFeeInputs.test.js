@@ -225,17 +225,27 @@ describe('useGasFeeInputs', () => {
   });
 
   describe('when transaction is type-0', () => {
+    beforeEach(() => {
+      useGasFeeEstimates.mockImplementation(
+        () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
+      );
+      useSelector.mockImplementation(generateUseSelectorRouter());
+    });
     it('returns gasPrice appropriately, and "0" for EIP1559 fields', () => {
       const { result } = renderHook(() =>
         useGasFeeInputs('medium', {
-          txParams: { type: TRANSACTION_ENVELOPE_TYPES.LEGACY },
+          txParams: {
+            value: '3782DACE9D90000',
+            gasLimit: '0x5028',
+            gasPrice: '0x5028',
+            type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+          },
         }),
       );
-      expect(result.current.gasPrice).toBe(
-        LEGACY_GAS_ESTIMATE_RETURN_VALUE.gasFeeEstimates.medium,
-      );
+      expect(result.current.gasPrice).toBe(0.00002052);
       expect(result.current.maxFeePerGas).toBe('0');
       expect(result.current.maxPriorityFeePerGas).toBe('0');
+      expect(result.current.hasBlockingGasErrors).toBeUndefined();
     });
   });
 
