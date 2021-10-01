@@ -78,6 +78,65 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#checkNetworkOrAccountNotSupports1559', () => {
+    it('returns false if network and account supports EIP-1559', () => {
+      const not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          keyrings: [
+            {
+              type: 'Ledger Hardware',
+              accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+            },
+          ],
+        },
+      });
+      expect(not1559Network).toStrictEqual(false);
+    });
+
+    it('returns true if network does not support EIP-1559', () => {
+      let not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          networkDetails: {
+            EIPS: { 1559: undefined },
+          },
+        },
+      });
+      expect(not1559Network).toStrictEqual(true);
+      not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          networkDetails: {
+            EIPS: { 1559: false },
+          },
+        },
+      });
+      expect(not1559Network).toStrictEqual(true);
+    });
+
+    it('returns true if account does not support EIP-1559', () => {
+      const networkOrAccountNotSupports1559 = selectors.checkNetworkOrAccountNotSupports1559(
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            keyrings: [
+              {
+                type: 'Trezor Hardware',
+                accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+              },
+            ],
+          },
+        },
+      );
+      expect(networkOrAccountNotSupports1559).toStrictEqual(true);
+    });
+  });
+
   describe('#getAddressBook', () => {
     it('should return the address book', () => {
       expect(selectors.getAddressBook(mockState)).toStrictEqual([

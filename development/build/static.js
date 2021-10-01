@@ -149,6 +149,12 @@ function getCopyTargets(shouldIncludeLockdown) {
       dest: `lockdown-run.js`,
     },
     {
+      src: shouldIncludeLockdown
+        ? `./app/scripts/lockdown-more.js`
+        : EMPTY_JS_FILE,
+      dest: `lockdown-more.js`,
+    },
+    {
       // eslint-disable-next-line node/no-extraneous-require
       src: require.resolve('@lavamoat/lavapack/src/runtime-cjs.js'),
       dest: `runtime-cjs.js`,

@@ -2,6 +2,8 @@ import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
   DEFAULT_ROUTE,
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
+  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
 } from '../helpers/constants/routes';
 
 export function getFirstTimeFlowTypeRoute(state) {
@@ -9,9 +11,13 @@ export function getFirstTimeFlowTypeRoute(state) {
 
   let nextRoute;
   if (firstTimeFlowType === 'create') {
-    nextRoute = INITIALIZE_CREATE_PASSWORD_ROUTE;
+    nextRoute = process.env.ONBOARDING_V2
+      ? ONBOARDING_CREATE_PASSWORD_ROUTE
+      : INITIALIZE_CREATE_PASSWORD_ROUTE;
   } else if (firstTimeFlowType === 'import') {
-    nextRoute = INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE;
+    nextRoute = process.env.ONBOARDING_V2
+      ? ONBOARDING_IMPORT_WITH_SRP_ROUTE
+      : INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE;
   } else {
     nextRoute = DEFAULT_ROUTE;
   }
