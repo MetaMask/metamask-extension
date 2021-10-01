@@ -2,6 +2,7 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
+import { TRANSACTION_ENVELOPE_TYPES } from '../../shared/constants/transaction';
 import {
   getConversionRate,
   getNativeCurrency,
@@ -19,7 +20,6 @@ import { ETH, PRIMARY } from '../helpers/constants/common';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 import { useGasFeeInputs } from './useGasFeeInputs';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
-import { TRANSACTION_ENVELOPE_TYPES } from '../../shared/constants/transaction';
 
 jest.mock('./useUserPreferencedCurrency', () => ({
   useUserPreferencedCurrency: jest.fn(),
