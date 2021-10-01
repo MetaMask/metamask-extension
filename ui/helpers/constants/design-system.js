@@ -45,7 +45,7 @@ export const TYPOGRAPHY = {
   H7: 'h7',
   H8: 'h8',
   H9: 'h9',
-  Paragraph: 'paragraph',
+  Paragraph: 'p',
 };
 
 const NONE = 'none';

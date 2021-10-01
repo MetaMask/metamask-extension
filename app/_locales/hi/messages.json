@@ -2386,15 +2386,6 @@
   "viewMore": {
     "message": "और देखें"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "$1 पर देखें"
-  },
-  "viewOnEtherscan": {
-    "message": "Etherscan पर देखें"
-  },
-  "viewinExplorer": {
-    "message": "एक्सप्लोरर में देखें"
-  },
   "visitWebSite": {
     "message": "हमारी वेबसाइट पर जाएँ"
   },

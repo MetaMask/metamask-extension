@@ -2386,15 +2386,6 @@
   "viewMore": {
     "message": "Lihat Selengkapnya"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Lihat di $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Lihat di Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Lihat di Explorer"
-  },
   "visitWebSite": {
     "message": "Kunjungi situs web kami"
   },

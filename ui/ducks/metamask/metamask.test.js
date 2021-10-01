@@ -7,6 +7,7 @@ import reduceMetamask, {
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
   getUnapprovedTxs,
+  isNotEIP1559Network,
 } from './metamask';
 
 describe('MetaMask Reducers', () => {
@@ -98,6 +99,9 @@ describe('MetaMask Reducers', () => {
             maxCost: 'de234b52e4a0800',
             gasPrice: '4a817c800',
           },
+        },
+        networkDetails: {
+          EIPS: { 1559: true },
         },
       },
       {},
@@ -376,6 +380,38 @@ describe('MetaMask Reducers', () => {
           gasPrice: '4a817c800',
         },
       });
+    });
+  });
+
+  describe('isNotEIP1559Network()', () => {
+    it('should return true if network does not supports EIP-1559', () => {
+      expect(
+        isNotEIP1559Network({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            networkDetails: {
+              EIPS: { 1559: false },
+            },
+          },
+        }),
+      ).toStrictEqual(true);
+    });
+
+    it('should return false if networkDetails.EIPS.1559 is not false', () => {
+      expect(isNotEIP1559Network(mockState)).toStrictEqual(false);
+
+      expect(
+        isNotEIP1559Network({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            networkDetails: {
+              EIPS: { 1559: undefined },
+            },
+          },
+        }),
+      ).toStrictEqual(false);
     });
   });
 });
