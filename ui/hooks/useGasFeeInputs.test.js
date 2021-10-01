@@ -236,6 +236,7 @@ describe('useGasFeeInputs', () => {
       );
       expect(result.current.maxFeePerGas).toBe('0');
       expect(result.current.maxPriorityFeePerGas).toBe('0');
+      expect(result.current.hasGasErrors).toBe(false);
     });
   });
 

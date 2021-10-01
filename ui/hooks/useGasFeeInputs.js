@@ -404,67 +404,53 @@ export function useGasFeeInputs(
     }
   }
 
-  switch (gasEstimateType) {
-    case GAS_ESTIMATE_TYPES.FEE_MARKET:
-      if (bnLessThanEqualTo(maxPriorityFeePerGasToUse, 0)) {
-        gasErrors.maxPriorityFee =
-          GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
-      } else if (
-        !isGasEstimatesLoading &&
-        bnLessThan(
-          maxPriorityFeePerGasToUse,
-          gasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas,
-        )
-      ) {
-        gasWarnings.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW;
-      } else if (bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)) {
-        gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
-      } else if (
-        gasFeeEstimates?.high &&
-        bnGreaterThan(
-          maxPriorityFeePerGasToUse,
-          gasFeeEstimates.high.suggestedMaxPriorityFeePerGas *
-            HIGH_FEE_WARNING_MULTIPLIER,
-        )
-      ) {
-        gasWarnings.maxPriorityFee =
-          GAS_FORM_ERRORS.MAX_PRIORITY_FEE_HIGH_WARNING;
-      }
+  if (support1559 && gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+    if (bnLessThanEqualTo(maxPriorityFeePerGasToUse, 0)) {
+      gasErrors.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
+    } else if (
+      !isGasEstimatesLoading &&
+      bnLessThan(
+        maxPriorityFeePerGasToUse,
+        gasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas,
+      )
+    ) {
+      gasWarnings.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW;
+    } else if (bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)) {
+      gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
+    } else if (
+      gasFeeEstimates?.high &&
+      bnGreaterThan(
+        maxPriorityFeePerGasToUse,
+        gasFeeEstimates.high.suggestedMaxPriorityFeePerGas *
+          HIGH_FEE_WARNING_MULTIPLIER,
+      )
+    ) {
+      gasWarnings.maxPriorityFee =
+        GAS_FORM_ERRORS.MAX_PRIORITY_FEE_HIGH_WARNING;
+    }
 
-      if (
-        !isGasEstimatesLoading &&
-        bnLessThan(
-          maxFeePerGasToUse,
-          gasFeeEstimates?.low?.suggestedMaxFeePerGas,
-        )
-      ) {
-        gasWarnings.maxFee = GAS_FORM_ERRORS.MAX_FEE_TOO_LOW;
-      } else if (
-        gasFeeEstimates?.high &&
-        bnGreaterThan(
-          maxFeePerGasToUse,
-          gasFeeEstimates.high.suggestedMaxFeePerGas *
-            HIGH_FEE_WARNING_MULTIPLIER,
-        )
-      ) {
-        gasWarnings.maxFee = GAS_FORM_ERRORS.MAX_FEE_HIGH_WARNING;
-      }
-      break;
-    case GAS_ESTIMATE_TYPES.LEGACY:
-    case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
-    case GAS_ESTIMATE_TYPES.NONE:
-      if (support1559) {
-        estimatesUnavailableWarning = true;
-      }
-      if (
-        (!support1559 || transaction?.txParams?.gasPrice) &&
-        bnLessThanEqualTo(gasPriceToUse, 0)
-      ) {
-        gasErrors.gasPrice = GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW;
-      }
-      break;
-    default:
-      break;
+    if (
+      !isGasEstimatesLoading &&
+      bnLessThan(maxFeePerGasToUse, gasFeeEstimates?.low?.suggestedMaxFeePerGas)
+    ) {
+      gasWarnings.maxFee = GAS_FORM_ERRORS.MAX_FEE_TOO_LOW;
+    } else if (
+      gasFeeEstimates?.high &&
+      bnGreaterThan(
+        maxFeePerGasToUse,
+        gasFeeEstimates.high.suggestedMaxFeePerGas *
+          HIGH_FEE_WARNING_MULTIPLIER,
+      )
+    ) {
+      gasWarnings.maxFee = GAS_FORM_ERRORS.MAX_FEE_HIGH_WARNING;
+    }
+  } else if (support1559) {
+    estimatesUnavailableWarning = true;
+  } else if (
+    (!support1559 || transaction?.txParams?.gasPrice) &&
+    bnLessThanEqualTo(gasPriceToUse, 0)
+  ) {
+    gasErrors.gasPrice = GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW;
   }
 
   // Determine if we have any errors which should block submission
@@ -477,6 +463,8 @@ export function useGasFeeInputs(
     ...gasWarnings,
     ...gasErrors,
   };
+
+  console.log('errorsAndWarnings = ', errorsAndWarnings);
 
   const minimumTxCostInHexWei = addHexes(
     minimumCostInHexWei,
