@@ -49,7 +49,7 @@ export default function OnboardingFlow() {
     // For ONBOARDING_V2 dev purposes,
     // Remove when ONBOARDING_V2 dev complete
     if (process.env.ONBOARDING_V2) {
-      history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE);
+      history.push(ONBOARDING_COMPLETION_ROUTE);
       return;
     }
 
@@ -126,18 +126,18 @@ export default function OnboardingFlow() {
           />
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
-        {currentLocation?.pathname === ONBOARDING_COMPLETION_ROUTE && (
-          <Button
-            className="onboarding-flow__twitter-button"
-            type="link"
-            href="https://twitter.com/MetaMask"
-            target="_blank"
-          >
-            <span>{t('followUsOnTwitter')}</span>
-            <img src="images/twitter-icon.png" />
-          </Button>
-        )}
       </div>
+      {currentLocation?.pathname === ONBOARDING_COMPLETION_ROUTE && (
+        <Button
+          className="onboarding-flow__twitter-button"
+          type="link"
+          href="https://twitter.com/MetaMask"
+          target="_blank"
+        >
+          <span>{t('followUsOnTwitter')}</span>
+          <img src="images/twitter-icon.png" />
+        </Button>
+      )}
     </div>
   );
 }

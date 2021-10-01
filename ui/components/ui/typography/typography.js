@@ -8,7 +8,7 @@ import {
   TEXT_ALIGN,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
-import Box from '../box';
+import Box, { MultipleSizes } from '../box';
 
 const { H6, H7, H8, H9 } = TYPOGRAPHY;
 
@@ -64,7 +64,7 @@ Typography.propTypes = {
   boxProps: PropTypes.shape({
     ...Box.propTypes,
   }),
-  margin: PropTypes.oneOf([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  margin: MultipleSizes,
   fontWeight: PropTypes.oneOf(Object.values(FONT_WEIGHT)),
   fontStyle: PropTypes.oneOf(Object.values(FONT_STYLE)),
   tag: PropTypes.oneOf([
