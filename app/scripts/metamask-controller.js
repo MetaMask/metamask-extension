@@ -469,8 +469,10 @@ export default class MetamaskController extends EventEmitter {
       getEIP1559GasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
         this.gasFeeController,
       ),
-      getExternalPendingTransactions: () => this.getExternalPendingTransactions.bind(this),
-      getExternalConfirmedTransactions: () => this.getExternalConfirmedTransactions.bind(this),
+      getExternalPendingTransactions: () =>
+        this.getExternalPendingTransactions.bind(this),
+      getExternalConfirmedTransactions: () =>
+        this.getExternalConfirmedTransactions.bind(this),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -554,6 +556,7 @@ export default class MetamaskController extends EventEmitter {
       onNetworkStateChange: this.networkController.store.subscribe.bind(
         this.networkController.store,
       ),
+      nonceTracker: this.txController.nonceTracker,
     });
 
     // ensure accountTracker updates balances after network change
@@ -973,6 +976,10 @@ export default class MetamaskController extends EventEmitter {
       // txController
       cancelTransaction: nodeify(txController.cancelTransaction, txController),
       updateTransaction: nodeify(txController.updateTransaction, txController),
+      approveExternalTransaction: nodeify(
+        txController.approveExternalTransaction,
+        txController,
+      ),
       updateAndApproveTransaction: nodeify(
         txController.updateAndApproveTransaction,
         txController,

@@ -174,15 +174,17 @@ export default function ViewQuote() {
 
   useEffect(() => {
     if (smartTransactionsEnabled && smartTransactionsOptInStatus) {
-      dispatch(
-        fetchUnsignedTransactionsAndEstimates({
-          data: unsignedTransaction.data,
-          from: unsignedTransaction.from,
-          value: unsignedTransaction.value,
-          gas: unsignedTransaction.gas,
-          to: unsignedTransaction.to,
-        }),
-      );
+      const unsignedTx = {
+        from: unsignedTransaction.from,
+        to: unsignedTransaction.to,
+        value: unsignedTransaction.value,
+        data: unsignedTransaction.data,
+        gas: unsignedTransaction.gas,
+        nonce: 18,
+        type: 2,
+        chainId,
+      };
+      dispatch(fetchUnsignedTransactionsAndEstimates(unsignedTx));
     }
   }, [
     dispatch,
@@ -193,6 +195,7 @@ export default function ViewQuote() {
     unsignedTransaction.value,
     unsignedTransaction.gas,
     unsignedTransaction.to,
+    chainId,
   ]);
 
   let gasFeeInputs;
@@ -349,7 +352,7 @@ export default function ViewQuote() {
       currentCurrency,
       conversionRate,
       nativeCurrencySymbol,
-      estimatedFeeInWeiDec: unsignedTransactionsAndEstimates.feeEstimate,
+      estimatedFeeInWeiDec: unsignedTransactionsAndEstimates.fee_estimate,
     }));
   }
 

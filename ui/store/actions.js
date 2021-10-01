@@ -2923,14 +2923,14 @@ export function signAndSendSmartTransaction({
   );
   const signedCanceledTransactions = createSignedTransactions(
     unsignedTransaction,
-    unsignedTransactionsAndEstimates.cancelFees,
+    unsignedTransactionsAndEstimates.cancel_fees,
   );
   return async (dispatch) => {
     try {
-      const response = await promisifiedBackground.submitSignedTransactions(
+      const response = await promisifiedBackground.submitSignedTransactions({
         signedTransactions,
         signedCanceledTransactions,
-      ); // Returns e.g.: { uuid: 'dP23W7c2kt4FK9TmXOkz1UM2F20' }
+      }); // Returns e.g.: { uuid: 'dP23W7c2kt4FK9TmXOkz1UM2F20' }
       dispatch({
         type: actionConstants.SET_LATEST_SMART_TRANSACTION_UUID,
         payload: response,

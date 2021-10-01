@@ -894,7 +894,7 @@ export default class TransactionController extends EventEmitter {
 
       txParams.nonce = addHexPrefix(nonce.toString(16));
 
-      rawTx = await this.signExternalTransactionTransaction(txParams);
+      rawTx = await this.signExternalTransaction(txParams);
       nonceLock.releaseLock();
     } catch (err) {
       log.error(err);
@@ -928,7 +928,7 @@ export default class TransactionController extends EventEmitter {
       rawTxes = await Promise.all(
         listOfTxParams.map((txParams) => {
           txParams.nonce = addHexPrefix(nonce.toString(16));
-          return this.signExternalTransactionTransaction(txParams);
+          return this.signExternalTransaction(txParams);
         }),
       );
       nonceLock.releaseLock();
