@@ -2386,15 +2386,6 @@
   "viewMore": {
     "message": "Ver más"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Ver en $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Ver en Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Ver en el explorador"
-  },
   "visitWebSite": {
     "message": "Visite nuestro sitio web"
   },

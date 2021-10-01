@@ -1117,15 +1117,6 @@
   "viewContact": {
     "message": "Kuva kontakt"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Vaata $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Kuva Etherscanil"
-  },
-  "viewinExplorer": {
-    "message": "Kuva Exploreris"
-  },
   "visitWebSite": {
     "message": "Külastage meie veebilehte"
   },

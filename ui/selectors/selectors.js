@@ -32,6 +32,7 @@ import { DAY } from '../../shared/constants/time';
 import {
   getNativeCurrency,
   getConversionRate,
+  isNotEIP1559Network,
   isEIP1559Network,
 } from '../ducks/metamask/metamask';
 
@@ -92,11 +93,26 @@ export function isEIP1559Account(state) {
   return currentKeyring && currentKeyring.type !== KEYRING_TYPES.TREZOR;
 }
 
+/**
+ * The function returns true if network and account details are fetched and
+ * both of them support EIP-1559.
+ */
 export function checkNetworkAndAccountSupports1559(state) {
   const networkSupports1559 = isEIP1559Network(state);
   const accountSupports1559 = isEIP1559Account(state);
 
   return networkSupports1559 && accountSupports1559;
+}
+
+/**
+ * The function returns true if network and account details are fetched and
+ * either of them do not support EIP-1559.
+ */
+export function checkNetworkOrAccountNotSupports1559(state) {
+  const networkNotSupports1559 = isNotEIP1559Network(state);
+  const accountSupports1559 = isEIP1559Account(state);
+
+  return networkNotSupports1559 || accountSupports1559 === false;
 }
 
 /**

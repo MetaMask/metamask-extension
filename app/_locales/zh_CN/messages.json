@@ -1924,15 +1924,6 @@
   "viewContact": {
     "message": "查看联系人"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "在 $1 查看"
-  },
-  "viewOnEtherscan": {
-    "message": "在 Etherscan（以太坊浏览器）上查看"
-  },
-  "viewinExplorer": {
-    "message": "在浏览器中查看"
-  },
   "visitWebSite": {
     "message": "访问我们的网站"
   },
