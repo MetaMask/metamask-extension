@@ -28,7 +28,9 @@ export const SendAmountComponent = () => {
       symbol: tokens[0].symbol,
     },
   };
- <div style={{ maxWidth: '500px' }}>
+
+  return (
+    <div style={{ maxWidth: '500px' }}>
       <SendAmountRow
         amount={text('Amount', '100000000000000')}
         inError={boolean('In Error', false)}
