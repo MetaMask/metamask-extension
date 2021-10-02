@@ -247,7 +247,7 @@
     "browserify": "^16.5.1",
     "chalk": "^3.0.0",
     "chromedriver": "^93.0.1",
-    "concurrently": "^5.2.0",
+    "concurrently": "^6.2.2",
     "copy-webpack-plugin": "^6.0.3",
     "cross-spawn": "^7.0.3",
     "css-loader": "^2.1.1",

@@ -1,4 +1,3 @@
-const randomColor = require('randomcolor');
 const chalk = require('chalk');
 
 module.exports = { setupTaskDisplay, displayChart };
@@ -23,8 +22,8 @@ function setupTaskDisplay(taskEvents) {
   taskEvents.on('start', ([name]) => {
     console.log(`Starting '${name}'...`);
   });
-  taskEvents.on('end', ([name, start, end]) => {
-    taskData.push([name, start, end]);
+  taskEvents.on('end', ([name, start, end, color]) => {
+    taskData.push([name, start, end, color]);
     console.log(`Finished '${name}'`);
   });
   taskEvents.on('complete', () => {
@@ -40,20 +39,16 @@ function displayChart(data) {
   const first = Math.min(...data.map((entry) => entry[1]));
   const last = Math.max(...data.map((entry) => entry[2]));
 
-  // get colors
-  const colors = randomColor({ count: data.length });
-
   // some heading before the bars
   console.log(`\nBuild completed. Task timeline:`);
 
   // build bars for bounds
-  data.forEach((entry, index) => {
-    const [label, start, end] = entry;
+  data.forEach((entry) => {
+    const [label, start, end, color] = entry;
     const [start2, end2] = [start, end].map((value) =>
       adjust(value, first, last, 40),
     );
     const barString = barBuilder(start2, end2);
-    const color = colors[index];
     const coloredBarString = colorize(color, barString);
     const duration = ((end - start) / 1e3).toFixed(1);
     console.log(coloredBarString, `${label} ${duration}s`);
