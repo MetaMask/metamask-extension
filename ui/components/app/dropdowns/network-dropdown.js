@@ -109,12 +109,12 @@ class NetworkDropdown extends Component {
 
   renderAddCustomButton() {
     const style = {
-      'width': '75%',
-      'left': '40px',
-      'color': 'white',
-      'background': 'rgba(0, 0, 0, 0.75)',
-      'border-radius': '20px',
-      'text-transform': 'none',
+      width: '75%',
+      left: '40px',
+      color: 'white',
+      background: 'rgba(0, 0, 0, 0.75)',
+      borderRadius: '20px',
+      textTransform: 'none',
     };
 
     return (
