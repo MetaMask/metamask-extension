@@ -33,6 +33,7 @@ export const COLORS = {
   RINKEBY: 'rinkeby',
   GOERLI: 'goerli',
   TRANSPARENT: 'transparent',
+  LOCALHOST: 'localhost',
 };
 
 export const TYPOGRAPHY = {
