@@ -3,42 +3,23 @@ import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import TextField from '../../../components/ui/text-field';
 import AdvancedTab from './advanced-tab.component';
+import ToggleButton from '../../../components/ui/toggle-button';
 
 describe('AdvancedTab Component', () => {
-  it('should render correctly when threeBoxFeatureFlag', () => {
-    const root = shallow(
-      <AdvancedTab
-        ipfsGateway=""
-        setAutoLockTimeLimit={() => undefined}
-        setIpfsGateway={() => undefined}
-        setShowFiatConversionOnTestnetsPreference={() => undefined}
-        setThreeBoxSyncingPermission={() => undefined}
-        threeBoxDisabled
-        threeBoxSyncingAllowed={false}
-        useLedgerLive={false}
-        setLedgerLivePreference={() => undefined}
-        setDismissSeedBackUpReminder={() => undefined}
-        dismissSeedBackUpReminder={false}
-      />,
-      {
-        context: {
-          t: (s) => `_${s}`,
-        },
-      },
-    );
+  let root;
+  const setAutoLockTimeLimitSpy = sinon.spy();
+  const toggleTestnet = sinon.spy();
 
-    expect(root.find('.settings-page__content-row')).toHaveLength(12);
-  });
-
-  it('should update autoLockTimeLimit', () => {
-    const setAutoLockTimeLimitSpy = sinon.spy();
-    const root = shallow(
+  beforeAll(() => {    
+    root = shallow(
       <AdvancedTab
         ipfsGateway=""
         setAutoLockTimeLimit={setAutoLockTimeLimitSpy}
         setIpfsGateway={() => undefined}
         setShowFiatConversionOnTestnetsPreference={() => undefined}
         setThreeBoxSyncingPermission={() => undefined}
+        setShowTestNetworks={toggleTestnet}
+        showTestNetworks={false}
         threeBoxDisabled
         threeBoxSyncingAllowed={false}
         useLedgerLive={false}
@@ -52,8 +33,22 @@ describe('AdvancedTab Component', () => {
         },
       },
     );
+  });
 
-    const autoTimeout = root.find('.settings-page__content-row').at(7);
+  it('should render correctly when threeBoxFeatureFlag', () => {
+    expect(root.find('.settings-page__content-row')).toHaveLength(13);
+  });
+
+  it('should toggle show test networks', () => {
+    const testNetworks = root.find('.settings-page__content-row').at(6);
+    const toggleButton = testNetworks.find(ToggleButton);
+    toggleButton.first().simulate('toggle');    
+    expect(toggleTestnet.calledOnce).toStrictEqual(true);
+  });
+
+  it('should update autoLockTimeLimit', () => {    
+
+    const autoTimeout = root.find('.settings-page__content-row').at(8);
     const textField = autoTimeout.find(TextField);
 
     textField.props().onChange({ target: { value: 1440 } });
