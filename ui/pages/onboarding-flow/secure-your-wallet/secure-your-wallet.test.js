@@ -1,17 +1,19 @@
 import React from 'react';
-import SecureYourWallet from './secure-your-wallet';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { fireEvent } from '@testing-library/dom';
+import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import reactRouterDom from 'react-router-dom';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
-
+import SecureYourWallet from './secure-your-wallet';
 
 describe('Secure Your Wallet Onboarding View', () => {
   const useHistoryOriginal = reactRouterDom.useHistory;
   const pushMock = jest.fn();
   beforeAll(() => {
-    reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: pushMock });
+    jest
+      .spyOn(reactRouterDom, 'useHistory')
+      .mockImplementation()
+      .mockReturnValue({ push: pushMock });
   });
 
   afterAll(() => {
@@ -27,7 +29,7 @@ describe('Secure Your Wallet Onboarding View', () => {
   };
 
   const store = configureMockStore()(mockStore);
-  it('Should show a popover asking the user if they want to skip account security if they click "Remind me later"', () => {
+  it('should show a popover asking the user if they want to skip account security if they click "Remind me later"', () => {
     const { queryAllByText, getByText } = renderWithProvider(
       <SecureYourWallet />,
       store,
@@ -38,7 +40,7 @@ describe('Secure Your Wallet Onboarding View', () => {
     expect(queryAllByText('Skip Account Security?')).toHaveLength(1);
   });
 
-  it('Should not be able to click "skip" until "Skip Account Security" terms are agreed to', () => {
+  it('should not be able to click "skip" until "Skip Account Security" terms are agreed to', () => {
     const { getByText, getByTestId } = renderWithProvider(
       <SecureYourWallet />,
       store,
@@ -52,6 +54,6 @@ describe('Secure Your Wallet Onboarding View', () => {
     fireEvent.click(checkbox);
     fireEvent.click(skipButton);
     expect(pushMock).toHaveBeenCalledTimes(1);
-    expect(pushMock).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE)
+    expect(pushMock).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
   });
 });
