@@ -64,7 +64,10 @@ export default function PrivacySettings() {
             {t('setAdvancedPrivacySettingsDetails')}
           </Typography>
         </div>
-        <div className="privacy-settings__settings">
+        <div
+          className="privacy-settings__settings"
+          data-testid="privacy-settings-settings"
+        >
           {renderSetting({
             value: showIncomingTransactions,
             setValue: setShowIncomingTransactions,
