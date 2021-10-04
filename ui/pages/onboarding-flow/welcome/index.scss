@@ -1,0 +1,17 @@
+
+.onboarding-welcome {
+  &__mascot {
+    width: 125px;
+    height: 125px;
+    margin: 20px auto;
+  }
+
+  ul {
+    max-width: 50%;
+    margin: 0 auto;
+
+    li {
+      margin-bottom: 24px;
+    }
+  }
+}
