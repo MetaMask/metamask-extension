@@ -16,7 +16,7 @@ exports[`GasCustomizationModalComponent renders the component with initial props
     Increasing fee may decrease processing times, but it is not guaranteed.
   </div>
   <a
-    class="button btn--rounded btn-link page-container__header-close-text"
+    class="button btn-link page-container__header-close-text"
     role="button"
     tabindex="0"
   >
