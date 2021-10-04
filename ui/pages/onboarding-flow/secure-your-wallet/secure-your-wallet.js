@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
@@ -12,11 +13,13 @@ import {
 import ProgressBar from '../../../components/app/step-progress-bar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
+import { getCurrentLocale } from '../../../ducks/metamask/metamask';
 import SkipSRPBackup from './skip-srp-backup-popover';
 
 export default function SecureYourWallet() {
   const history = useHistory();
   const t = useI18nContext();
+  const currentLocale = useSelector(getCurrentLocale);
   const [showSkipSRPBackupPopover, setShowSkipSRPBackupPopover] = useState(
     false,
   );
@@ -42,6 +45,7 @@ export default function SecureYourWallet() {
     vi: 'Vietnamese',
   };
 
+  const defaultLang = subtitles[currentLocale] ? currentLocale : 'en';
   return (
     <div className="secure-your-wallet">
       {showSkipSRPBackupPopover && (
@@ -78,7 +82,7 @@ export default function SecureYourWallet() {
           {Object.keys(subtitles).map((key) => {
             return (
               <track
-                default={Boolean(key === 'en')}
+                default={Boolean(key === defaultLang)}
                 srcLang={key}
                 label={subtitles[key]}
                 key={`${key}-subtitles`}
