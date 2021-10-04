@@ -60,6 +60,7 @@ export default function SkipSRPBackup({ handleClose }) {
               setChecked(!checked);
             }}
             checked={checked}
+            dataTestId="skip-srp-backup-popover-checkbox"
           />
           <Typography
             className="skip-srp-backup-popover__details"

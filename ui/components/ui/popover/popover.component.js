@@ -81,7 +81,7 @@ const Popover = ({
 };
 
 Popover.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   subtitle: PropTypes.string,
   children: PropTypes.node,
   footer: PropTypes.node,
