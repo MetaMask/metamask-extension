@@ -277,7 +277,9 @@ export function useGasFeeInputs(
   );
   const gasPriceToUse =
     gasPrice !== null &&
-    (gasPriceHasBeenManuallySet || gasPriceEstimatesHaveNotChanged)
+    (gasPriceHasBeenManuallySet ||
+      gasPriceEstimatesHaveNotChanged ||
+      isLegacyTransaction(transaction?.txParams))
       ? gasPrice
       : getGasPriceEstimate(
           gasFeeEstimates,
