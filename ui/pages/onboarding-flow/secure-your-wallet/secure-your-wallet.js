@@ -78,7 +78,7 @@ export default function SecureYourWallet() {
           {Object.keys(subtitles).map((key) => {
             return (
               <track
-                default
+                default={Boolean(key === 'en')}
                 srcLang={key}
                 label={subtitles[key]}
                 key={`${key}-subtitles`}
