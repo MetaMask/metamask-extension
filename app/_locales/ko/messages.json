@@ -474,9 +474,6 @@
   "customGasSubTitle": {
     "message": "수수료를 올리면 처리 시간이 단축되기도 하지만 항상 그렇지는 않습니다."
   },
-  "customRPC": {
-    "message": "맞춤형 RPC"
-  },
   "customSpendLimit": {
     "message": "맞춤형 지출 한도"
   },

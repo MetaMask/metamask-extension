@@ -474,9 +474,6 @@
   "customGasSubTitle": {
     "message": "Kapag dinagdagan ang bayarin, mababawasan ang mga oras ng pagproseso, pero hindi ito garantisado."
   },
-  "customRPC": {
-    "message": "Custom na RPC"
-  },
   "customSpendLimit": {
     "message": "Custom na Limitasyon sa Paggastos"
   },

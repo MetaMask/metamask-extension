@@ -474,9 +474,6 @@
   "customGasSubTitle": {
     "message": "手数料を増やすと処理時間は減少する可能性がありますが、減少しない場合もあります。"
   },
-  "customRPC": {
-    "message": "カスタム RPC"
-  },
   "customSpendLimit": {
     "message": "カスタム使用限度額"
   },

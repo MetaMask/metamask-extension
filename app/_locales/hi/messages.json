@@ -474,9 +474,6 @@
   "customGasSubTitle": {
     "message": "शुल्क बढ़ाने से प्रसंस्करण समय में कमी हो सकती है, लेकिन इसकी गारंटी नहीं होती है।"
   },
-  "customRPC": {
-    "message": "कस्टम RPC"
-  },
   "customSpendLimit": {
     "message": "कस्टम खर्च सीमा"
   },
