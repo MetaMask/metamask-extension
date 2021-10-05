@@ -32,8 +32,7 @@ function getBrowserVersionMap(platforms) {
     if (prerelease.length !== 2) {
       throw new Error(`Invalid prerelease version: '${prerelease.join('.')}'`);
     }
-    buildType = prerelease[0];
-    buildVersion = prerelease[1];
+    [buildType, buildVersion] = prerelease;
     if (!String(buildVersion).match(/^\d+$/u)) {
       throw new Error(`Invalid prerelease build version: '${buildVersion}'`);
     } else if (buildType !== BuildTypes.beta) {
