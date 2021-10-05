@@ -64,7 +64,7 @@ describe('Signature Request', () => {
   });
 
   it('cancel', () => {
-    const cancelButton = wrapper.find('button.btn-default');
+    const cancelButton = wrapper.find('button.btn-secondary');
     cancelButton.simulate('click');
 
     expect(props.cancel.calledOnce).toStrictEqual(true);

@@ -3,6 +3,7 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { mountWithRouter } from '../../../../test/lib/render-helpers';
+import Button from '../../ui/button';
 import AccountMenu from '.';
 
 describe('Account Menu', () => {
@@ -103,7 +104,7 @@ describe('Account Menu', () => {
     let logout;
 
     it('logout', () => {
-      logout = wrapper.find('.account-menu__lock-button');
+      logout = wrapper.find(Button);
       expect(logout).toHaveLength(1);
     });
 

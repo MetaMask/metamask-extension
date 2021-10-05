@@ -141,7 +141,6 @@ export default class PermissionPageContainer extends Component {
             cancelText={this.context.t('cancel')}
             onSubmit={() => this.onSubmit()}
             submitText={this.context.t('connect')}
-            submitButtonType="confirm"
             buttonSizeLarge={false}
           />
         </div>

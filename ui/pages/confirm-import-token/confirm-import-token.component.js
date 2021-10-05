@@ -94,7 +94,7 @@ export default class ConfirmImportToken extends Component {
         <div className="page-container__footer">
           <footer>
             <Button
-              type="default"
+              type="secondary"
               large
               className="page-container__footer-button"
               onClick={() => history.push(IMPORT_TOKEN_ROUTE)}
@@ -102,7 +102,7 @@ export default class ConfirmImportToken extends Component {
               {this.context.t('back')}
             </Button>
             <Button
-              type="secondary"
+              type="primary"
               large
               className="page-container__footer-button"
               onClick={() => {

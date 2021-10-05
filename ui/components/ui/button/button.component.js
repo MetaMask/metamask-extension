@@ -31,7 +31,6 @@ const Button = ({
   large,
   children,
   icon,
-  rounded,
   className,
   ...buttonProps
 }) => {
@@ -40,8 +39,10 @@ const Button = ({
   // we know to be erroneous attributes for a link. We will likely want to extract Link
   // to its own component in the future.
   let Tag = 'button';
+  let rounded = true;
   if (type === 'link') {
     Tag = 'a';
+    rounded = false;
   } else if (submit) {
     buttonProps.type = 'submit';
   }
@@ -58,9 +59,9 @@ const Button = ({
     <Tag
       className={classnames(
         'button',
+        rounded && CLASSNAME_ROUNDED,
         typeHash[type] || CLASSNAME_DEFAULT,
         large && CLASSNAME_LARGE,
-        rounded && CLASSNAME_ROUNDED,
         className,
       )}
       {...buttonProps}
@@ -75,7 +76,6 @@ Button.propTypes = {
   type: PropTypes.string,
   submit: PropTypes.bool,
   large: PropTypes.bool,
-  rounded: PropTypes.bool,
   className: PropTypes.string,
   children: PropTypes.node,
   icon: PropTypes.node,

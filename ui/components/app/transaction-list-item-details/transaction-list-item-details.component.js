@@ -147,9 +147,9 @@ export default class TransactionListItemDetails extends PureComponent {
             <div className="transaction-list-item-details__header-buttons">
               {showSpeedUp && (
                 <Button
-                  type="raised"
+                  type="primary"
                   onClick={this.handleRetry}
-                  className="transaction-list-item-details__header-button"
+                  className="transaction-list-item-details__header-button-rounded-button"
                 >
                   {t('speedUp')}
                 </Button>
