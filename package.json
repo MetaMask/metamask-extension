@@ -64,8 +64,10 @@
     "storybook:deploy": "storybook-to-ghpages --existing-output-dir storybook-build --remote storybook --branch master",
     "update-changelog": "auto-changelog update",
     "generate:migration": "./development/generate-migration.sh",
-    "lavamoat:auto": "lavamoat ./development/build/index.js --writeAutoPolicy",
-    "lavamoat:debug:build": "lavamoat ./development/build/index.js --writeAutoPolicyDebug"
+    "lavamoat:build:auto": "lavamoat ./development/build/index.js --writeAutoPolicy",
+    "lavamoat:debug:build": "lavamoat ./development/build/index.js --writeAutoPolicyDebug",
+    "lavamoat:background:auto": "WRITE_AUTO_POLICY=1 yarn build prod",
+    "lavamoat:auto": "yarn lavamoat:build:auto && yarn lavamoat:background:auto"
   },
   "resolutions": {
     "**/regenerator-runtime": "^0.13.7",
@@ -217,7 +219,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.5.5",
     "@lavamoat/allow-scripts": "^1.0.6",
-    "@lavamoat/lavapack": "^1.0.4",
+    "@lavamoat/lavapack": "^2.0.3",
     "@metamask/auto-changelog": "^2.1.0",
     "@metamask/eslint-config": "^6.0.0",
     "@metamask/eslint-config-jest": "^6.0.0",
@@ -288,6 +290,7 @@
     "jsdom": "^11.2.0",
     "koa": "^2.7.0",
     "lavamoat": "^5.3.4",
+    "lavamoat-browserify": "^14.0.3",
     "lavamoat-viz": "^6.0.9",
     "lockfile-lint": "^4.0.0",
     "loose-envify": "^1.4.0",
@@ -323,6 +326,7 @@
     "terser": "^5.7.0",
     "through2": "^4.0.2",
     "ttest": "^2.1.1",
+    "vinyl": "^2.2.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
     "vinyl-sourcemaps-apply": "^0.2.1",
