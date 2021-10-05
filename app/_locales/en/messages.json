@@ -2862,7 +2862,7 @@
     "message": "our hardware wallet connection guide"
   },
   "walletCreationSuccessDetail": {
-    "message": "You’ve successfully protected your wallet. Keep your Secret Recovery Phrase safe and secret, it’s your responsiblity!"
+    "message": "You’ve successfully protected your wallet. Keep your Secret Recovery Phrase safe and secret -- it’s your responsibility!"
   },
   "walletCreationSuccessReminder1": {
     "message": "MetaMask can’t recover your Secret Recovery Phrase."
