@@ -61,6 +61,7 @@ export default function CreationSuccessful() {
             href="https://community.metamask.io/t/what-is-a-secret-recovery-phrase-and-how-to-keep-your-crypto-wallet-secure/3440"
             target="_blank"
             type="link"
+            rel="noopener noreferrer"
           >
             {t('learnMore')}
           </Button>
