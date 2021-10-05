@@ -5,13 +5,14 @@ import TextField from '../../../components/ui/text-field';
 import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
 import AdvancedTab from './advanced-tab.component';
 import ToggleButton from '../../../components/ui/toggle-button';
+import AdvancedTab from './advanced-tab.component';
 
 describe('AdvancedTab Component', () => {
   let root;
   const setAutoLockTimeLimitSpy = sinon.spy();
   const toggleTestnet = sinon.spy();
 
-  beforeAll(() => {    
+  beforeAll(() => {
     root = shallow(
       <AdvancedTab
         ipfsGateway=""
