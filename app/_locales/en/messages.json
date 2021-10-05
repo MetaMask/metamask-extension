@@ -1378,7 +1378,7 @@
     "message": "Don't see your token?"
   },
   "mobileSyncWarning": {
-    "message": "⚠️ Proceeding will display a secret QR code that allows access to your accounts. Do not share it with anyone. Support staff will never ask you for it."
+    "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
