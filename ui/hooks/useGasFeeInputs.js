@@ -2,16 +2,8 @@ import { addHexPrefix } from 'ethereumjs-util';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
-import {
-  GAS_ESTIMATE_TYPES,
-  EDIT_GAS_MODES,
-  GAS_LIMITS,
-} from '../../shared/constants/gas';
-import {
-  multiplyCurrencies,
-  conversionLessThan,
-  conversionGreaterThan,
-} from '../../shared/modules/conversion.utils';
+import { GAS_ESTIMATE_TYPES, EDIT_GAS_MODES } from '../../shared/constants/gas';
+import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
@@ -20,29 +12,21 @@ import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import {
   checkNetworkAndAccountSupports1559,
   getShouldShowFiat,
-  getSelectedAccount,
   getAdvancedInlineGasShown,
 } from '../selectors';
+import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
 
 import {
   hexWEIToDecGWEI,
   decGWEIToHexWEI,
   decimalToHex,
   hexToDecimal,
-  addHexes,
 } from '../helpers/utils/conversions.util';
-import {
-  bnGreaterThan,
-  bnLessThan,
-  bnLessThanEqualTo,
-} from '../helpers/utils/util';
-import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
 
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
-
-const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
+import { useGasFeeInputsErrors } from './useGasFeeInputsErrors';
 
 /**
  * Opaque string type representing a decimal (base 10) number in GWEI
@@ -154,7 +138,6 @@ export function useGasFeeInputs(
   minimumGasLimit = '0x5208',
   editGasMode,
 ) {
-  const { balance: ethBalance } = useSelector(getSelectedAccount);
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
@@ -377,115 +360,20 @@ export function useGasFeeInputs(
     },
   );
 
-  let estimatesUnavailableWarning = null;
-
-  // Separating errors from warnings so we can know which value problems
-  // are blocking or simply useful information for the users
-  const gasErrors = {};
-  const gasWarnings = {};
-
-  const gasLimitTooLow = conversionLessThan(
-    { value: gasLimit, fromNumericBase: 'dec' },
-    { value: minimumGasLimit || GAS_LIMITS.SIMPLE, fromNumericBase: 'hex' },
-  );
-
-  if (gasLimitTooLow) {
-    gasErrors.gasLimit = GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS;
-  }
-
-  // This ensures these are applied when the api fails to return a fee market type
-  // It is okay if these errors get overwritten below, as those overwrites can only
-  // happen when the estimate api is live.
-  if (networkAndAccountSupports1559) {
-    if (bnLessThanEqualTo(maxPriorityFeePerGasToUse, 0)) {
-      gasErrors.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
-    } else if (bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)) {
-      gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
-    }
-  }
-
-  switch (gasEstimateType) {
-    case GAS_ESTIMATE_TYPES.FEE_MARKET:
-      if (bnLessThanEqualTo(maxPriorityFeePerGasToUse, 0)) {
-        gasErrors.maxPriorityFee =
-          GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
-      } else if (
-        !isGasEstimatesLoading &&
-        bnLessThan(
-          maxPriorityFeePerGasToUse,
-          gasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas,
-        )
-      ) {
-        gasWarnings.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW;
-      } else if (bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)) {
-        gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
-      } else if (
-        gasFeeEstimates?.high &&
-        bnGreaterThan(
-          maxPriorityFeePerGasToUse,
-          gasFeeEstimates.high.suggestedMaxPriorityFeePerGas *
-            HIGH_FEE_WARNING_MULTIPLIER,
-        )
-      ) {
-        gasWarnings.maxPriorityFee =
-          GAS_FORM_ERRORS.MAX_PRIORITY_FEE_HIGH_WARNING;
-      }
-
-      if (
-        !isGasEstimatesLoading &&
-        bnLessThan(
-          maxFeePerGasToUse,
-          gasFeeEstimates?.low?.suggestedMaxFeePerGas,
-        )
-      ) {
-        gasWarnings.maxFee = GAS_FORM_ERRORS.MAX_FEE_TOO_LOW;
-      } else if (
-        gasFeeEstimates?.high &&
-        bnGreaterThan(
-          maxFeePerGasToUse,
-          gasFeeEstimates.high.suggestedMaxFeePerGas *
-            HIGH_FEE_WARNING_MULTIPLIER,
-        )
-      ) {
-        gasWarnings.maxFee = GAS_FORM_ERRORS.MAX_FEE_HIGH_WARNING;
-      }
-      break;
-    case GAS_ESTIMATE_TYPES.LEGACY:
-    case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
-    case GAS_ESTIMATE_TYPES.NONE:
-      if (networkAndAccountSupports1559) {
-        estimatesUnavailableWarning = true;
-      }
-      if (
-        (!networkAndAccountSupports1559 || transaction?.txParams?.gasPrice) &&
-        bnLessThanEqualTo(gasPriceToUse, 0)
-      ) {
-        gasErrors.gasPrice = GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW;
-      }
-      break;
-    default:
-      break;
-  }
-
-  // Determine if we have any errors which should block submission
-  const hasBlockingGasErrors = Boolean(Object.keys(gasErrors).length);
-
-  // Now that we've determined errors that block submission, we can pool the warnings
-  // and errors into one object for easier use within the UI.  This object should have
-  // no effect on whether or not the user can submit the form
-  const errorsAndWarnings = {
-    ...gasWarnings,
-    ...gasErrors,
-  };
-
-  const minimumTxCostInHexWei = addHexes(
+  const {
+    gasErrors,
+    hasGasErrors,
+    gasWarnings,
+    balanceError,
+    estimatesUnavailableWarning,
+  } = useGasFeeInputsErrors(
+    transaction,
+    gasLimit,
+    gasPriceToUse,
+    maxPriorityFeePerGasToUse,
+    maxFeePerGasToUse,
     minimumCostInHexWei,
-    transaction?.txParams?.value || '0x0',
-  );
-
-  const balanceError = conversionGreaterThan(
-    { value: minimumTxCostInHexWei, fromNumericBase: 'hex' },
-    { value: ethBalance, fromNumericBase: 'hex' },
+    minimumGasLimit,
   );
 
   const handleGasLimitOutOfBoundError = useCallback(() => {
@@ -498,7 +386,8 @@ export function useGasFeeInputs(
           : minimumGasLimitDec,
       );
     }
-  }, [minimumGasLimit, gasErrors.gasLimit, transaction]);
+  }, [minimumGasLimit, gasErrors.gasLimit, transaction, setGasLimit]);
+
   // When a user selects an estimate level, it will wipe out what they have
   // previously put in the inputs. This returns the inputs to the estimated
   // values at the level specified.
@@ -532,8 +421,8 @@ export function useGasFeeInputs(
     gasFeeEstimates,
     gasEstimateType,
     estimatedGasFeeTimeBounds,
-    gasErrors: errorsAndWarnings,
-    hasGasErrors: hasBlockingGasErrors,
+    gasErrors,
+    hasGasErrors,
     gasWarnings,
     onManualChange: () => {
       setInternalEstimateToUse('custom');
