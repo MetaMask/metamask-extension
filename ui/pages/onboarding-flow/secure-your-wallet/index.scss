@@ -11,7 +11,7 @@
   }
 
   &__actions {
-    & button {
+    button {
       margin: 16px;
     }
   }
@@ -19,7 +19,7 @@
   &__list {
     list-style: disc inside;
 
-    & li {
+    li {
       font-size: 18px;
     }
   }
@@ -39,7 +39,7 @@
   }
 
   &__footer {
-    & button {
+    button {
       width: 140px;
       margin: 0 10px;
     }
