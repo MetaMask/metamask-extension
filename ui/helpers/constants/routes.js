@@ -60,9 +60,8 @@ const ONBOARDING_COMPLETION_ROUTE = '/onboarding/completion';
 const ONBOARDING_UNLOCK_ROUTE = '/onboarding/unlock';
 const ONBOARDING_GET_STARTED_ROUTE = '/onboarding/get-started';
 const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
-const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
-  '/onboarding/create-password/import-with-sre';
-const ONBOARDING_IMPORT_MOBILE_ROUTE = '/onboarding/create-password';
+const ONBOARDING_IMPORT_WITH_SRP_ROUTE = '/onboarding/import-with-sre';
+const ONBOARDING_IMPORT_MOBILE_ROUTE = '/onboarding/import-mobile';
 const ONBOARDING_SECURE_YOUR_WALLET_ROUTE = '/onboarding/secure-your-wallet';
 const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
 const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';

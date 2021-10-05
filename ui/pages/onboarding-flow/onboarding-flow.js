@@ -12,6 +12,7 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -22,6 +23,7 @@ import {
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
+  createNewVaultAndRestore,
 } from '../../store/actions';
 import { getFirstTimeFlowTypeRoute } from '../../selectors';
 import Button from '../../components/ui/button';
@@ -34,9 +36,10 @@ import ConfirmRecoveryPhrase from './recovery-phrase/confirm-recovery-phrase';
 import PrivacySettings from './privacy-settings/privacy-settings';
 import CreationSuccessful from './creation-successful/creation-successful';
 import OnboardingWelcome from './welcome/welcome';
+import ImportSRP from './import-srp/import-srp';
 
 export default function OnboardingFlow() {
-  const [seedPhrase, setSeedPhrase] = useState('');
+  const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const dispatch = useDispatch();
   const currentLocation = useLocation();
   const history = useHistory();
@@ -86,6 +89,10 @@ export default function OnboardingFlow() {
     history.push(nextRoute);
   };
 
+  const handleImportWithSeedPhrase = async (password, seedPhrase) => {
+    return await createNewVaultAndRestore(password, seedPhrase);
+  };
+
   return (
     <div className="onboarding-flow">
       <div className="onboarding-flow__wrapper">
@@ -96,6 +103,8 @@ export default function OnboardingFlow() {
               <CreatePassword
                 {...routeProps}
                 createNewAccount={handleCreateNewAccount}
+                importWithSeedPhrase={handleImportWithSeedPhrase}
+                secretRecoveryPhrase={secretRecoveryPhrase}
               />
             )}
           />
@@ -111,6 +120,16 @@ export default function OnboardingFlow() {
           <Route
             path={ONBOARDING_CONFIRM_SRP_ROUTE}
             render={() => <ConfirmRecoveryPhrase seedPhrase={seedPhrase} />}
+          />
+          <Route
+            path={ONBOARDING_IMPORT_WITH_SRP_ROUTE}
+            render={(routeProps) => (
+              <ImportSRP
+                {...routeProps}
+                // onSubmit={handleImportWithSeedPhrase}
+                setSecretRecoveryPhrase={setSecretRecoveryPhrase}
+              />
+            )}
           />
           <Route
             path={ONBOARDING_UNLOCK_ROUTE}

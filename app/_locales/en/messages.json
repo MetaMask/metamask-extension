@@ -947,6 +947,9 @@
   "from": {
     "message": "From"
   },
+  "importMyWallet": {
+    "message": "Import My Wallet"
+  },
   "fromAddress": {
     "message": "From: $1",
     "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
@@ -1118,6 +1121,13 @@
   "importAccountText": {
     "message": "or $1",
     "description": "$1 represents the text from `importAccountLinkText` as a link"
+  },
+  "importExistingWalletDescription": {
+    "message": "Enter your Secret Recovery Phrase (aka Seed Phrase) that you were given when you created your wallet. $1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
+  "importExistingWalletTitle": {
+    "message": "Import existing wallet with Secret Recovery Phrase"
   },
   "importTokenQuestion": {
     "message": "Import token?"
@@ -1854,9 +1864,6 @@
   "revealSeedWordsDescription": {
     "message": "If you ever change browsers or move computers, you will need this Secret Recovery Phrase to access your accounts. Save them somewhere safe and secret."
   },
-  "revealSeedWordsTitle": {
-    "message": "Secret Recovery Phrase"
-  },
   "revealSeedWordsWarning": {
     "message": "These words can be used to steal all your accounts."
   },
@@ -1899,9 +1906,6 @@
   "searchTokens": {
     "message": "Search Tokens"
   },
-  "secretBackupPhrase": {
-    "message": "Secret Recovery Phrase"
-  },
   "secretBackupPhraseDescription": {
     "message": "Your Secret Recovery Phrase makes it easy to back up and restore your account."
   },
@@ -1910,6 +1914,9 @@
   },
   "secretPhrase": {
     "message": "Only the first account on this wallet will auto load. After completing this process, to add additional accounts, click the drop down menu, then select Create Account."
+  },
+  "secretRecoveryPhrase": {
+    "message": "Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "Secure Wallet"

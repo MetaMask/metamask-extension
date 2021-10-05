@@ -12,7 +12,10 @@ import {
   FONT_WEIGHT,
   ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
-import { INITIALIZE_SEED_PHRASE_INTRO_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+} from '../../../helpers/constants/routes';
 import FormField from '../../../components/ui/form-field';
 import Box from '../../../components/ui/box';
 import CheckBox from '../../../components/ui/check-box';
@@ -20,7 +23,11 @@ import StepProgressBar, {
   stages,
 } from '../../../components/app/step-progress-bar';
 
-export default function CreatePassword({ onSubmit }) {
+export default function CreatePassword({
+  createNewAccount,
+  importWithSeedPhrase,
+  secretRecoveryPhrase,
+}) {
   const t = useI18nContext();
   const [confirmPassword, setConfirmPassword] = useState('');
   const [password, setPassword] = useState('');
@@ -79,14 +86,21 @@ export default function CreatePassword({ onSubmit }) {
     if (!isValid) {
       return;
     }
-    try {
-      if (onSubmit) {
-        await onSubmit(password);
+    // If secretRecoveryPhrase is defined we are in import wallet flow
+    if (secretRecoveryPhrase) {
+      await importWithSeedPhrase(password, secretRecoveryPhrase);
+      history.push(ONBOARDING_COMPLETION_ROUTE);
+    } else {
+      // Otherwise we are in create new wallet flow
+      try {
+        if (createNewAccount) {
+          await createNewAccount(password);
+        }
+        submitPasswordEvent();
+        history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+      } catch (error) {
+        setPasswordError(error.message);
       }
-      submitPasswordEvent();
-      history.push(INITIALIZE_SEED_PHRASE_INTRO_ROUTE);
-    } catch (error) {
-      setPasswordError(error.message);
     }
   };
 
@@ -174,7 +188,7 @@ export default function CreatePassword({ onSubmit }) {
             disabled={!isValid || !termsChecked}
             onClick={handleCreate}
           >
-            {t('createNewWallet')}
+            {secretRecoveryPhrase ? t('importMyWallet') : t('createNewWallet')}
           </Button>
         </form>
       </Box>
