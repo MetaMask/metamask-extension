@@ -11,7 +11,7 @@ export default function OnboardingAppHeader() {
   const currentLocale = useSelector(getCurrentLocale);
   const localeOptions = locales.map((locale) => {
     return {
-      name: `${locale.name}`,
+      name: locale.name,
       value: locale.code,
     };
   });
