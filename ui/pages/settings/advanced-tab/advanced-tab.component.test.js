@@ -2,15 +2,15 @@ import React from 'react';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import TextField from '../../../components/ui/text-field';
-import AdvancedTab from './advanced-tab.component';
 import ToggleButton from '../../../components/ui/toggle-button';
+import AdvancedTab from './advanced-tab.component';
 
 describe('AdvancedTab Component', () => {
   let root;
   const setAutoLockTimeLimitSpy = sinon.spy();
   const toggleTestnet = sinon.spy();
 
-  beforeAll(() => {    
+  beforeAll(() => {
     root = shallow(
       <AdvancedTab
         ipfsGateway=""
@@ -42,12 +42,11 @@ describe('AdvancedTab Component', () => {
   it('should toggle show test networks', () => {
     const testNetworks = root.find('.settings-page__content-row').at(6);
     const toggleButton = testNetworks.find(ToggleButton);
-    toggleButton.first().simulate('toggle');    
+    toggleButton.first().simulate('toggle');
     expect(toggleTestnet.calledOnce).toStrictEqual(true);
   });
 
-  it('should update autoLockTimeLimit', () => {    
-
+  it('should update autoLockTimeLimit', () => {
     const autoTimeout = root.find('.settings-page__content-row').at(8);
     const textField = autoTimeout.find(TextField);
 
