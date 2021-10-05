@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Zwiększenie opłaty może skrócić czas przetwarzania transakcji, ale nie jest to gwarantowane."
   },
-  "customRPC": {
-    "message": "Własne RPC"
-  },
   "customToken": {
     "message": "Własny token"
   },

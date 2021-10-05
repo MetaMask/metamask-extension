@@ -474,9 +474,6 @@
   "customGasSubTitle": {
     "message": "Việc tăng phí có thể giúp giảm thời gian xử lý, nhưng điều này không được đảm bảo."
   },
-  "customRPC": {
-    "message": "RPC tùy chỉnh"
-  },
   "customSpendLimit": {
     "message": "Giới hạn chi tiêu tùy chỉnh"
   },

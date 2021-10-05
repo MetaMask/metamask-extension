@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Nodevas palielināšana var saīsināt apstrādes laiku, bet ne garantēti."
   },
-  "customRPC": {
-    "message": "Pielāgots RPC izsaukums"
-  },
   "customToken": {
     "message": "Pielāgots marķieris"
   },

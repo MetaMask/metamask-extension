@@ -545,9 +545,6 @@
   "customGasSubTitle": {
     "message": "Increasing fee may decrease processing times, but it is not guaranteed."
   },
-  "customRPC": {
-    "message": "Custom RPC"
-  },
   "customSpendLimit": {
     "message": "Custom Spend Limit"
   },

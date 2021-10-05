@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Povečanje lahko skrajša čas obdelave, vendar ni zagotovljeno."
   },
-  "customRPC": {
-    "message": "RPC po meri"
-  },
   "customToken": {
     "message": "Žeton po meri"
   },

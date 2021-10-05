@@ -254,9 +254,6 @@
   "customGasSubTitle": {
     "message": "Økt gebyr kan redusere behandlingstiden, men det er ikke garantert."
   },
-  "customRPC": {
-    "message": "Tilpasset RPC"
-  },
   "customToken": {
     "message": "Egendefinert token "
   },

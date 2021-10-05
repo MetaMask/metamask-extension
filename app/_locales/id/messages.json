@@ -474,9 +474,6 @@
   "customGasSubTitle": {
     "message": "Menaikkan biaya dapat mengurangi waktu pemrosesan, namun tidak dijamin."
   },
-  "customRPC": {
-    "message": "RPC Kustom"
-  },
   "customSpendLimit": {
     "message": "Batas Penggunaan Kustom"
   },

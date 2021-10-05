@@ -248,9 +248,6 @@
   "customGasSubTitle": {
     "message": "Augmenter le tarif peut faire baisser le temps de traitement, mais cela n'est pas garanti."
   },
-  "customRPC": {
-    "message": "RPC personnalisé"
-  },
   "customToken": {
     "message": "Jeton personnalisé"
   },

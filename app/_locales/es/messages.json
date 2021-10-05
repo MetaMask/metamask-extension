@@ -474,9 +474,6 @@
   "customGasSubTitle": {
     "message": "Aumentar la cuota puede disminuir los tiempos de procesamiento, pero no está garantizado."
   },
-  "customRPC": {
-    "message": "RPC personalizada"
-  },
   "customSpendLimit": {
     "message": "Límite de gastos personalizado"
   },

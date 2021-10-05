@@ -405,9 +405,6 @@
   "customGasSubTitle": {
     "message": "提升费用可能会缩短处理时间，但不保证绝对有效。"
   },
-  "customRPC": {
-    "message": "自定义 RPC"
-  },
   "customSpendLimit": {
     "message": "自定义消费限额"
   },

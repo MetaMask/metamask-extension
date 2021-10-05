@@ -251,9 +251,6 @@
   "customGasSubTitle": {
     "message": "Zvýšenie poplatku môže skrátiť dobu spracovania, nie je to však zaručené."
   },
-  "customRPC": {
-    "message": "Vlastní RPC"
-  },
   "customToken": {
     "message": "Vlastní token"
   },

@@ -474,9 +474,6 @@
   "customGasSubTitle": {
     "message": "Aumentar a taxa pode diminuir o tempo de processamento, mas não é garantia."
   },
-  "customRPC": {
-    "message": "RPC personalizada"
-  },
   "customSpendLimit": {
     "message": "Limite de gastos personalizado"
   },

@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "A díj növelése csökkentheti a feldolgozási időt, de ez nem garantált."
   },
-  "customRPC": {
-    "message": "Egyedi RPC"
-  },
   "customToken": {
     "message": "Egyéni token"
   },

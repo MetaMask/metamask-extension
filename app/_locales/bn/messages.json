@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "ফী বৃদ্ধি করা প্রক্রিয়াকরণের সময় কমাতে পারে, কিন্তু সেটির নিশ্চয়তা দেওয়া হয় না।"
   },
-  "customRPC": {
-    "message": "কাস্টম RPC"
-  },
   "customToken": {
     "message": "কাস্টম টোকেন"
   },

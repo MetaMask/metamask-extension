@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "قد تؤدي زيادة الرسوم إلى تقليل أزمنة المعالجة، ولكن ذلك غير مضمون."
   },
-  "customRPC": {
-    "message": "آر بي سي مخصص"
-  },
   "customToken": {
     "message": "عملة رمزية مخصصة"
   },

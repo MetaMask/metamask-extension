@@ -254,9 +254,6 @@
   "customGasSubTitle": {
     "message": "Augmentar la tarifa pot disminuir els temps de processament, però això no està garantit."
   },
-  "customRPC": {
-    "message": "RPC a mida"
-  },
   "customToken": {
     "message": "Fitxa a Mida"
   },

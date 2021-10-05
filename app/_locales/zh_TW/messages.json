@@ -266,9 +266,6 @@
   "customGasSubTitle": {
     "message": "提升費用可能會加快處理時間，但不保證"
   },
-  "customRPC": {
-    "message": "自訂 RPC"
-  },
   "customToken": {
     "message": "自訂代幣"
   },

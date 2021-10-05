@@ -254,9 +254,6 @@
   "customGasSubTitle": {
     "message": "Povećanje naknade može smanjiti vreme obrade, ali to nije zagarantovano."
   },
-  "customRPC": {
-    "message": "Korisnički definisan RPC"
-  },
   "customToken": {
     "message": "Prilagođeni token"
   },
