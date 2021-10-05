@@ -23,7 +23,7 @@ export default function RecoveryPhrase({ seedPhrase }) {
   const [copied, handleCopy] = useCopyToClipboard();
   const [seedPhraseRevealed, setSeedPhraseRevealed] = useState(false);
   return (
-    <div>
+    <div className="recovery-phrase">
       <ProgressBar stage="SEED_PHRASE_REVIEW" />
       <Box
         justifyContent={JUSTIFY_CONTENT.CENTER}
