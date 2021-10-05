@@ -39,7 +39,7 @@ export default function OnboardingFlow() {
     // For ONBOARDING_V2 dev purposes,
     // Remove when ONBOARDING_V2 dev complete
     if (process.env.ONBOARDING_V2) {
-      history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+      history.push(ONBOARDING_REVIEW_SRP_ROUTE);
       return;
     }
 
