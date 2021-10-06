@@ -115,7 +115,7 @@ describe('Stores custom RPC history', function () {
         await driver.findElement('.settings-page__sub-header-text');
 
         await driver.clickElement({ text: 'Add Network', tag: 'button' });
-        
+
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[1];
         const chainIdInput = customRpcInputs[2];
