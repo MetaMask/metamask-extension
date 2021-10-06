@@ -28,12 +28,6 @@ const validateGasLimit = (gasLimit, minimumGasLimit) => {
     { value: minimumGasLimit || GAS_LIMITS.SIMPLE, fromNumericBase: 'hex' },
   );
 
-  console.log(
-    'into validateGasLimit',
-    gasLimit,
-    minimumGasLimit,
-    gasLimitTooLow,
-  );
   if (gasLimitTooLow) return GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS;
   return undefined;
 };
@@ -211,7 +205,6 @@ export function useGasFeeErrors({
   // are blocking or simply useful information for the users
 
   const gasErrors = useMemo(() => {
-    console.log('useMemo 1', gasLimitError);
     const errors = {};
     if (gasLimitError) errors.gasLimit = gasLimitError;
     if (maxPriorityFeeError) errors.maxPriorityFee = maxPriorityFeeError;
@@ -221,7 +214,6 @@ export function useGasFeeErrors({
   }, [gasLimitError, maxPriorityFeeError, maxFeeError, gasPriceError]);
 
   const gasWarnings = useMemo(() => {
-    console.log('useMemo 2');
     const warnings = {};
     if (maxPriorityFeeWarning) warnings.maxPriorityFee = maxPriorityFeeWarning;
     if (maxFeeWarning) warnings.maxFee = maxFeeWarning;
