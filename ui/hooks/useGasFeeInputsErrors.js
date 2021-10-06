@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../shared/constants/gas';
 import {
@@ -195,29 +196,37 @@ export function useGasFeeInputsErrors(
 
   // Separating errors from warnings so we can know which value problems
   // are blocking or simply useful information for the users
-  const gasErrors = {
-    gasLimit: gasLimitError,
-    maxPriorityFee: maxPriorityFeeError,
-    maxFee: maxFeeError,
-    gasPrice: gasPriceError,
-  };
-  const gasWarnings = {
-    maxPriorityFee: maxPriorityFeeWarning,
-    maxFee: maxFeeWarning,
-  };
+  const gasErrors = useMemo(
+    () => ({
+      gasLimit: gasLimitError,
+      maxPriorityFee: maxPriorityFeeError,
+      maxFee: maxFeeError,
+      gasPrice: gasPriceError,
+    }),
+    [gasLimitError, maxPriorityFeeError, maxFeeError, gasPriceError],
+  );
+  const gasWarnings = useMemo(
+    () => ({
+      maxPriorityFee: maxPriorityFeeWarning,
+      maxFee: maxFeeWarning,
+    }),
+    [maxPriorityFeeWarning, maxFeeWarning],
+  );
   const estimatesUnavailableWarning =
-    networkAndAccountSupports1559 &&
-    gasEstimateType !== GAS_ESTIMATE_TYPES.FEE_MARKET;
+    networkAndAccountSupports1559 && !isFeeMarketGasEstimate;
 
   // Determine if we have any errors which should block submission
   const hasGasErrors = Boolean(Object.keys(gasErrors).length);
 
   // Combine the warnings and errors into one object for easier use within the UI.
   // This object should have no effect on whether or not the user can submit the form
-  const errorsAndWarnings = {
-    ...gasWarnings,
-    ...gasErrors,
-  };
+  const errorsAndWarnings = useMemo(
+    () => ({
+      ...gasWarnings,
+      ...gasErrors,
+    }),
+    [gasErrors, gasWarnings],
+  );
 
   const { balance: ethBalance } = useSelector(getSelectedAccount);
   const balanceError = getBalanceError(
