@@ -10,7 +10,15 @@ const CHECKBOX_STATE = {
 
 export const { CHECKED, INDETERMINATE, UNCHECKED } = CHECKBOX_STATE;
 
-const CheckBox = ({ className, disabled, id, onClick, checked, title }) => {
+const CheckBox = ({
+  className,
+  disabled,
+  id,
+  onClick,
+  checked,
+  title,
+  dataTestId,
+}) => {
   if (typeof checked === 'boolean') {
     // eslint-disable-next-line no-param-reassign
     checked = checked ? CHECKBOX_STATE.CHECKED : CHECKBOX_STATE.UNCHECKED;
@@ -43,6 +51,7 @@ const CheckBox = ({ className, disabled, id, onClick, checked, title }) => {
       readOnly
       ref={ref}
       title={title}
+      data-testid={dataTestId}
       type="checkbox"
     />
   );
@@ -56,6 +65,7 @@ CheckBox.propTypes = {
   checked: PropTypes.oneOf([...Object.keys(CHECKBOX_STATE), true, false])
     .isRequired,
   title: PropTypes.string,
+  dataTestId: PropTypes.string,
 };
 
 CheckBox.defaultProps = {

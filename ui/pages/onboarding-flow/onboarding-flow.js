@@ -8,6 +8,7 @@ import {
   ONBOARDING_CONFIRM_SRP_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   DEFAULT_ROUTE,
+  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -23,6 +24,7 @@ import { getFirstTimeFlowTypeRoute } from '../../selectors';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import NewAccount from './new-account/new-account';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
+import SecureYourWallet from './secure-your-wallet/secure-your-wallet';
 import ConfirmRecoveryPhrase from './recovery-phrase/confirm-recovery-phrase';
 
 export default function OnboardingFlow() {
@@ -39,7 +41,7 @@ export default function OnboardingFlow() {
     // For ONBOARDING_V2 dev purposes,
     // Remove when ONBOARDING_V2 dev complete
     if (process.env.ONBOARDING_V2) {
-      history.push(ONBOARDING_REVIEW_SRP_ROUTE);
+      history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       return;
     }
 
@@ -86,6 +88,11 @@ export default function OnboardingFlow() {
                 createNewAccount={handleCreateNewAccount}
               />
             )}
+          />
+          <Route
+            exact
+            path={ONBOARDING_SECURE_YOUR_WALLET_ROUTE}
+            component={SecureYourWallet}
           />
           <Route
             path={ONBOARDING_REVIEW_SRP_ROUTE}
