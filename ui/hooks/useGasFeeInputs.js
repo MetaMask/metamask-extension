@@ -27,7 +27,7 @@ import { isLegacyTransaction } from '../helpers/utils/transactions.util';
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
-import { useGasFeeInputsErrors } from './useGasFeeInputsErrors';
+import { useGasFeeErrors } from './useGasFeeErrors';
 
 /**
  * Opaque string type representing a decimal (base 10) number in GWEI
@@ -363,7 +363,7 @@ export function useGasFeeInputs(
     },
   );
 
-  const errorAndWarnings = useGasFeeInputsErrors(
+  const errorAndWarnings = useGasFeeErrors({
     transaction,
     gasLimit,
     gasPriceToUse,
@@ -371,7 +371,7 @@ export function useGasFeeInputs(
     maxFeePerGasToUse,
     minimumCostInHexWei,
     minimumGasLimit,
-  );
+  });
 
   const handleGasLimitOutOfBoundError = useCallback(() => {
     if (

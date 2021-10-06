@@ -28,6 +28,12 @@ const validateGasLimit = (gasLimit, minimumGasLimit) => {
     { value: minimumGasLimit || GAS_LIMITS.SIMPLE, fromNumericBase: 'hex' },
   );
 
+  console.log(
+    'into validateGasLimit',
+    gasLimit,
+    minimumGasLimit,
+    gasLimitTooLow,
+  );
   if (gasLimitTooLow) return GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS;
   return undefined;
 };
@@ -139,7 +145,7 @@ const getBalanceError = (minimumCostInHexWei, transaction, ethBalance) => {
   );
 };
 
-export function useGasFeeInputsErrors(
+export function useGasFeeErrors({
   transaction,
   gasLimit,
   gasPriceToUse,
@@ -147,7 +153,7 @@ export function useGasFeeInputsErrors(
   maxFeePerGasToUse,
   minimumCostInHexWei,
   minimumGasLimit,
-) {
+}) {
   const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
@@ -205,6 +211,7 @@ export function useGasFeeInputsErrors(
   // are blocking or simply useful information for the users
 
   const gasErrors = useMemo(() => {
+    console.log('useMemo 1', gasLimitError);
     const errors = {};
     if (gasLimitError) errors.gasLimit = gasLimitError;
     if (maxPriorityFeeError) errors.maxPriorityFee = maxPriorityFeeError;
@@ -214,6 +221,7 @@ export function useGasFeeInputsErrors(
   }, [gasLimitError, maxPriorityFeeError, maxFeeError, gasPriceError]);
 
   const gasWarnings = useMemo(() => {
+    console.log('useMemo 2');
     const warnings = {};
     if (maxPriorityFeeWarning) warnings.maxPriorityFee = maxPriorityFeeWarning;
     if (maxFeeWarning) warnings.maxFee = maxFeeWarning;
