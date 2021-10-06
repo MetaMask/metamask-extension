@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
 import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/jest/rendering';
 
 import AdvancedGasControls from './advanced-gas-controls.component';
 
@@ -18,18 +18,18 @@ describe('AdvancedGasControls Component', () => {
     }).not.toThrow();
   });
 
-  it('should not render maxFee and maxPriorityFee inputs if support1559 is false', () => {
-    const { queryByText } = renderComponent({ support1559: false });
+  it('should not render maxFee and maxPriorityFee inputs if supportsEIP1559 is false', () => {
+    const { queryByText } = renderComponent({ supportsEIP1559: false });
     expect(queryByText('Gas Limit')).toBeInTheDocument();
     expect(queryByText('Gas price')).toBeInTheDocument();
     expect(queryByText('Max fee')).not.toBeInTheDocument();
     expect(queryByText('Max priority fee')).not.toBeInTheDocument();
   });
 
-  it('should render maxFee and maxPriorityFee inputs if support1559 is true', () => {
+  it('should render maxFee and maxPriorityFee inputs if supportsEIP1559 is true', () => {
     const { queryByText } = renderComponent({
       gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
-      support1559: true,
+      supportsEIP1559: true,
     });
     expect(queryByText('Gas price')).not.toBeInTheDocument();
     expect(queryByText('Gas Limit')).toBeInTheDocument();

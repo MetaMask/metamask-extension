@@ -156,7 +156,7 @@ export function useGasFeeInputs(
   editGasMode,
 ) {
   const { balance: ethBalance } = useSelector(getSelectedAccount);
-  const support1559 =
+  const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
   // We need to know whether to show fiat conversions or not, so that we can
@@ -189,12 +189,13 @@ export function useGasFeeInputs(
   } = useGasFeeEstimates();
 
   const [initialMaxFeePerGas] = useState(
-    support1559 && !transaction?.txParams?.maxFeePerGas
+    supportsEIP1559 && !transaction?.txParams?.maxFeePerGas
       ? Number(hexWEIToDecGWEI(transaction?.txParams?.gasPrice))
       : Number(hexWEIToDecGWEI(transaction?.txParams?.maxFeePerGas)),
   );
+
   const [initialMaxPriorityFeePerGas] = useState(
-    support1559 && !transaction?.txParams?.maxPriorityFeePerGas
+    supportsEIP1559 && !transaction?.txParams?.maxPriorityFeePerGas
       ? initialMaxFeePerGas
       : Number(hexWEIToDecGWEI(transaction?.txParams?.maxPriorityFeePerGas)),
   );
@@ -296,7 +297,7 @@ export function useGasFeeInputs(
   const gasSettings = {
     gasLimit: decimalToHex(gasLimit),
   };
-  if (support1559) {
+  if (supportsEIP1559) {
     gasSettings.maxFeePerGas = maxFeePerGasToUse
       ? decGWEIToHexWEI(maxFeePerGasToUse)
       : decGWEIToHexWEI(gasPriceToUse || '0');
@@ -398,7 +399,7 @@ export function useGasFeeInputs(
   // This ensures these are applied when the api fails to return a fee market type
   // It is okay if these errors get overwritten below, as those overwrites can only
   // happen when the estimate api is live.
-  if (support1559) {
+  if (supportsEIP1559) {
     if (bnLessThanEqualTo(maxPriorityFeePerGasToUse, 0)) {
       gasErrors.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
     } else if (bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)) {
@@ -406,7 +407,7 @@ export function useGasFeeInputs(
     }
   }
 
-  if (support1559 && gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+  if (supportsEIP1559 && gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
     if (bnLessThanEqualTo(maxPriorityFeePerGasToUse, 0)) {
       gasErrors.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
     } else if (
@@ -446,10 +447,10 @@ export function useGasFeeInputs(
     ) {
       gasWarnings.maxFee = GAS_FORM_ERRORS.MAX_FEE_HIGH_WARNING;
     }
-  } else if (support1559) {
+  } else if (supportsEIP1559) {
     estimatesUnavailableWarning = true;
   } else if (
-    (!support1559 || transaction?.txParams?.gasPrice) &&
+    (!supportsEIP1559 || transaction?.txParams?.gasPrice) &&
     bnLessThanEqualTo(gasPriceToUse, 0)
   ) {
     gasErrors.gasPrice = GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW;

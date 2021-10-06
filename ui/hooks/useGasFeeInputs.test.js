@@ -286,7 +286,9 @@ describe('useGasFeeInputs', () => {
           checkNetworkAndAccountSupports1559Response: true,
         }),
       );
-      const { result } = renderHook(() => useGasFeeInputs());
+      const { result } = renderHook(() =>
+        useGasFeeInputs(null, { txParams: {}, userFeeLevel: 'medium' }),
+      );
       expect(result.current.maxFeePerGas).toBe(
         FEE_MARKET_ESTIMATE_RETURN_VALUE.gasFeeEstimates.medium
           .suggestedMaxFeePerGas,

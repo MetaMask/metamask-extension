@@ -74,7 +74,7 @@ export default function EditGasDisplay({
   const scrollRef = useRef(null);
 
   const isMainnet = useSelector(getIsMainnet);
-  const support1559 =
+  const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction.txParams);
   const showAdvancedInlineGasIfPossible = useSelector(
@@ -82,7 +82,7 @@ export default function EditGasDisplay({
   );
 
   const [showAdvancedForm, setShowAdvancedForm] = useState(
-    !estimateToUse || estimateToUse === 'custom' || !support1559,
+    !estimateToUse || estimateToUse === 'custom' || !supportsEIP1559,
   );
   const [hideRadioButtons, setHideRadioButtons] = useState(
     showAdvancedInlineGasIfPossible,
@@ -108,7 +108,7 @@ export default function EditGasDisplay({
     (balanceError || estimatesUnavailableWarning) &&
     (!isGasEstimatesLoading || txParamsHaveBeenCustomized);
   const radioButtonsEnabled =
-    support1559 &&
+    supportsEIP1559 &&
     gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET &&
     !requireDappAcknowledgement;
 
@@ -162,12 +162,12 @@ export default function EditGasDisplay({
         )}
         <TransactionTotalBanner
           total={
-            (support1559 || isMainnet) && estimatedMinimumFiat
+            (supportsEIP1559 || isMainnet) && estimatedMinimumFiat
               ? `~ ${estimatedMinimumFiat}`
               : estimatedMinimumNative
           }
           detail={
-            support1559 &&
+            supportsEIP1559 &&
             estimatedMaximumFiat !== undefined && (
               <>
                 <Typography
@@ -188,7 +188,7 @@ export default function EditGasDisplay({
           }
           timing={
             hasGasErrors === false &&
-            support1559 && (
+            supportsEIP1559 && (
               <GasTiming
                 maxFeePerGas={maxFeePerGas}
                 maxPriorityFeePerGas={maxPriorityFeePerGas}
@@ -281,11 +281,11 @@ export default function EditGasDisplay({
               gasErrors={gasErrors}
               onManualChange={onManualChange}
               minimumGasLimit={minimumGasLimit}
-              support1559={support1559}
+              supportsEIP1559={supportsEIP1559}
             />
           )}
       </div>
-      {support1559 && !requireDappAcknowledgement && showEducationButton && (
+      {supportsEIP1559 && !requireDappAcknowledgement && showEducationButton && (
         <div className="edit-gas-display__education">
           <button onClick={onEducationClick}>
             {t('editGasEducationButtonText')}

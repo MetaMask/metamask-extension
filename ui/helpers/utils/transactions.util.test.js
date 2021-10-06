@@ -62,10 +62,12 @@ describe('Transactions utils', () => {
   });
 
   describe('isLegacyTransaction', () => {
-    it('should retur true if transaction is type-0', () => {
+    it('should return true if transaction is type-0', () => {
       expect(
         utils.isLegacyTransaction({ type: TRANSACTION_ENVELOPE_TYPES.LEGACY }),
       ).toStrictEqual(true);
+    });
+    it('should return false if transaction is not type-0', () => {
       expect(
         utils.isLegacyTransaction({
           type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,

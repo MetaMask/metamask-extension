@@ -122,7 +122,7 @@ const mapStateToProps = (state, ownProps) => {
   const toEns = ensResolutionsByAddress[checksummedAddress] || '';
   const toNickname = addressBookObject ? addressBookObject.name : '';
   const transactionStatus = transaction ? transaction.status : '';
-  const supportsEIP1599 =
+  const supportsEIP1559 =
     checkNetworkAndAccountSupports1559(state) && !isLegacyTransaction(txParams);
 
   const {
@@ -165,7 +165,7 @@ const mapStateToProps = (state, ownProps) => {
   }
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);
-  const noGasPrice = !supportsEIP1599 && getNoGasPriceFetched(state);
+  const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
   const gasFeeIsCustom =
     fullTxData.userFeeLevel === 'custom' ||
@@ -212,7 +212,7 @@ const mapStateToProps = (state, ownProps) => {
     isMainnet,
     isEthGasPrice,
     noGasPrice,
-    supportsEIP1599,
+    supportsEIP1559,
     gasIsLoading: isGasEstimatesLoading || gasLoadingAnimationIsShowing,
     useNativeCurrencyAsPrimaryCurrency,
     maxFeePerGas: gasEstimationObject.maxFeePerGas,

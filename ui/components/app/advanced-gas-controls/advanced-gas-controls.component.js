@@ -23,13 +23,13 @@ export default function AdvancedGasControls({
   maxFeeFiat,
   gasErrors,
   minimumGasLimit,
-  support1559,
+  supportsEIP1559,
 }) {
   const t = useContext(I18nContext);
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
 
   const showFeeMarketFields =
-    support1559 &&
+    supportsEIP1559 &&
     (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
       gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE ||
       isGasEstimatesLoading);
@@ -128,5 +128,5 @@ AdvancedGasControls.propTypes = {
   maxFeeFiat: PropTypes.string,
   gasErrors: PropTypes.object,
   minimumGasLimit: PropTypes.string,
-  support1559: PropTypes.bool,
+  supportsEIP1559: PropTypes.bool,
 };
