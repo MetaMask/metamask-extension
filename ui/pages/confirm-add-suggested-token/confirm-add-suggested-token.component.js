@@ -125,7 +125,7 @@ export default class ConfirmAddSuggestedToken extends Component {
         <div className="page-container__footer">
           <footer>
             <Button
-              type="default"
+              type="secondary"
               large
               className="page-container__footer-button"
               onClick={async () => {
@@ -138,7 +138,7 @@ export default class ConfirmAddSuggestedToken extends Component {
               {this.context.t('cancel')}
             </Button>
             <Button
-              type="secondary"
+              type="primary"
               large
               className="page-container__footer-button"
               disabled={suggestedAssets.length === 0}

@@ -55,7 +55,6 @@ export default class CancelTransaction extends PureComponent {
         onCancel={this.handleCancel}
         submitText={t('yesLetsTry')}
         cancelText={t('nevermind')}
-        submitType="secondary"
         submitDisabled={busy}
       >
         <div>

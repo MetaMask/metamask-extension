@@ -169,7 +169,6 @@ export default function NewAccount({ onSubmit }) {
             className="new-account__form--submit-button"
             disabled={!isValid || !termsChecked}
             onClick={handleCreate}
-            rounded
           >
             {t('createNewWallet')}
           </Button>

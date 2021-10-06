@@ -31,6 +31,7 @@ import AppHeader from '../../components/app/app-header';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
+import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 
 import {
   IMPORT_TOKEN_ROUTE,
@@ -265,6 +266,17 @@ export default class Routes extends Component {
     return isHandlingPermissionsRequest || isHandlingAddEthereumChainRequest;
   }
 
+  showOnboardingHeader() {
+    const { location } = this.props;
+
+    return Boolean(
+      matchPath(location.pathname, {
+        path: ONBOARDING_ROUTE,
+        exact: false,
+      }),
+    );
+  }
+
   render() {
     const {
       isLoading,
@@ -318,6 +330,9 @@ export default class Routes extends Component {
               (this.onSwapsPage() && !this.onSwapsBuildQuotePage())
             }
           />
+        )}
+        {process.env.ONBOARDING_V2 && this.showOnboardingHeader() && (
+          <OnboardingAppHeader />
         )}
         <NetworkDropdown
           provider={provider}

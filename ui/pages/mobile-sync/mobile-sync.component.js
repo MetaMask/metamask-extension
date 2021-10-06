@@ -408,10 +408,10 @@ export default class MobileSyncPage extends Component {
     return (
       <div
         className="new-account-import-form__buttons"
-        style={{ padding: 30, marginTop: 0 }}
+        style={{ padding: '30px 15px 30px 15px', marginTop: 0 }}
       >
         <Button
-          type="default"
+          type="secondary"
           large
           className="new-account-create-form__button"
           onClick={() => this.goBack()}
@@ -419,7 +419,7 @@ export default class MobileSyncPage extends Component {
           {t('cancel')}
         </Button>
         <Button
-          type="secondary"
+          type="primary"
           large
           className="new-account-create-form__button"
           onClick={(event) => this.handleSubmit(event)}
@@ -437,7 +437,7 @@ export default class MobileSyncPage extends Component {
     return (
       <div className="page-container__footer" style={{ padding: 30 }}>
         <Button
-          type="default"
+          type="secondary"
           large
           className="page-container__footer-button"
           onClick={() => this.goBack()}
