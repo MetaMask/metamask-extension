@@ -37,6 +37,7 @@ import {
   bnLessThanEqualTo,
 } from '../helpers/utils/util';
 import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
+import { isLegacyTransaction } from '../helpers/utils/transactions.util';
 
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
@@ -155,9 +156,9 @@ export function useGasFeeInputs(
   editGasMode,
 ) {
   const { balance: ethBalance } = useSelector(getSelectedAccount);
-  const networkAndAccountSupports1559 = useSelector(
-    checkNetworkAndAccountSupports1559,
-  );
+  const supportsEIP1559 =
+    useSelector(checkNetworkAndAccountSupports1559) &&
+    !isLegacyTransaction(transaction?.txParams);
   // We need to know whether to show fiat conversions or not, so that we can
   // default our fiat values to empty strings if showing fiat is not wanted or
   // possible.
@@ -188,13 +189,13 @@ export function useGasFeeInputs(
   } = useGasFeeEstimates();
 
   const [initialMaxFeePerGas] = useState(
-    networkAndAccountSupports1559 && !transaction?.txParams?.maxFeePerGas
+    supportsEIP1559 && !transaction?.txParams?.maxFeePerGas
       ? Number(hexWEIToDecGWEI(transaction?.txParams?.gasPrice))
       : Number(hexWEIToDecGWEI(transaction?.txParams?.maxFeePerGas)),
   );
+
   const [initialMaxPriorityFeePerGas] = useState(
-    networkAndAccountSupports1559 &&
-      !transaction?.txParams?.maxPriorityFeePerGas
+    supportsEIP1559 && !transaction?.txParams?.maxPriorityFeePerGas
       ? initialMaxFeePerGas
       : Number(hexWEIToDecGWEI(transaction?.txParams?.maxPriorityFeePerGas)),
   );
@@ -277,7 +278,9 @@ export function useGasFeeInputs(
   );
   const gasPriceToUse =
     gasPrice !== null &&
-    (gasPriceHasBeenManuallySet || gasPriceEstimatesHaveNotChanged)
+    (gasPriceHasBeenManuallySet ||
+      gasPriceEstimatesHaveNotChanged ||
+      isLegacyTransaction(transaction?.txParams))
       ? gasPrice
       : getGasPriceEstimate(
           gasFeeEstimates,
@@ -294,7 +297,7 @@ export function useGasFeeInputs(
   const gasSettings = {
     gasLimit: decimalToHex(gasLimit),
   };
-  if (networkAndAccountSupports1559) {
+  if (supportsEIP1559) {
     gasSettings.maxFeePerGas = maxFeePerGasToUse
       ? decGWEIToHexWEI(maxFeePerGasToUse)
       : decGWEIToHexWEI(gasPriceToUse || '0');
@@ -396,7 +399,7 @@ export function useGasFeeInputs(
   // This ensures these are applied when the api fails to return a fee market type
   // It is okay if these errors get overwritten below, as those overwrites can only
   // happen when the estimate api is live.
-  if (networkAndAccountSupports1559) {
+  if (supportsEIP1559) {
     if (bnLessThanEqualTo(maxPriorityFeePerGasToUse, 0)) {
       gasErrors.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
     } else if (bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)) {
@@ -404,67 +407,53 @@ export function useGasFeeInputs(
     }
   }
 
-  switch (gasEstimateType) {
-    case GAS_ESTIMATE_TYPES.FEE_MARKET:
-      if (bnLessThanEqualTo(maxPriorityFeePerGasToUse, 0)) {
-        gasErrors.maxPriorityFee =
-          GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
-      } else if (
-        !isGasEstimatesLoading &&
-        bnLessThan(
-          maxPriorityFeePerGasToUse,
-          gasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas,
-        )
-      ) {
-        gasWarnings.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW;
-      } else if (bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)) {
-        gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
-      } else if (
-        gasFeeEstimates?.high &&
-        bnGreaterThan(
-          maxPriorityFeePerGasToUse,
-          gasFeeEstimates.high.suggestedMaxPriorityFeePerGas *
-            HIGH_FEE_WARNING_MULTIPLIER,
-        )
-      ) {
-        gasWarnings.maxPriorityFee =
-          GAS_FORM_ERRORS.MAX_PRIORITY_FEE_HIGH_WARNING;
-      }
+  if (supportsEIP1559 && gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+    if (bnLessThanEqualTo(maxPriorityFeePerGasToUse, 0)) {
+      gasErrors.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
+    } else if (
+      !isGasEstimatesLoading &&
+      bnLessThan(
+        maxPriorityFeePerGasToUse,
+        gasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas,
+      )
+    ) {
+      gasWarnings.maxPriorityFee = GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW;
+    } else if (bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)) {
+      gasErrors.maxFee = GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
+    } else if (
+      gasFeeEstimates?.high &&
+      bnGreaterThan(
+        maxPriorityFeePerGasToUse,
+        gasFeeEstimates.high.suggestedMaxPriorityFeePerGas *
+          HIGH_FEE_WARNING_MULTIPLIER,
+      )
+    ) {
+      gasWarnings.maxPriorityFee =
+        GAS_FORM_ERRORS.MAX_PRIORITY_FEE_HIGH_WARNING;
+    }
 
-      if (
-        !isGasEstimatesLoading &&
-        bnLessThan(
-          maxFeePerGasToUse,
-          gasFeeEstimates?.low?.suggestedMaxFeePerGas,
-        )
-      ) {
-        gasWarnings.maxFee = GAS_FORM_ERRORS.MAX_FEE_TOO_LOW;
-      } else if (
-        gasFeeEstimates?.high &&
-        bnGreaterThan(
-          maxFeePerGasToUse,
-          gasFeeEstimates.high.suggestedMaxFeePerGas *
-            HIGH_FEE_WARNING_MULTIPLIER,
-        )
-      ) {
-        gasWarnings.maxFee = GAS_FORM_ERRORS.MAX_FEE_HIGH_WARNING;
-      }
-      break;
-    case GAS_ESTIMATE_TYPES.LEGACY:
-    case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
-    case GAS_ESTIMATE_TYPES.NONE:
-      if (networkAndAccountSupports1559) {
-        estimatesUnavailableWarning = true;
-      }
-      if (
-        (!networkAndAccountSupports1559 || transaction?.txParams?.gasPrice) &&
-        bnLessThanEqualTo(gasPriceToUse, 0)
-      ) {
-        gasErrors.gasPrice = GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW;
-      }
-      break;
-    default:
-      break;
+    if (
+      !isGasEstimatesLoading &&
+      bnLessThan(maxFeePerGasToUse, gasFeeEstimates?.low?.suggestedMaxFeePerGas)
+    ) {
+      gasWarnings.maxFee = GAS_FORM_ERRORS.MAX_FEE_TOO_LOW;
+    } else if (
+      gasFeeEstimates?.high &&
+      bnGreaterThan(
+        maxFeePerGasToUse,
+        gasFeeEstimates.high.suggestedMaxFeePerGas *
+          HIGH_FEE_WARNING_MULTIPLIER,
+      )
+    ) {
+      gasWarnings.maxFee = GAS_FORM_ERRORS.MAX_FEE_HIGH_WARNING;
+    }
+  } else if (supportsEIP1559) {
+    estimatesUnavailableWarning = true;
+  } else if (
+    (!supportsEIP1559 || transaction?.txParams?.gasPrice) &&
+    bnLessThanEqualTo(gasPriceToUse, 0)
+  ) {
+    gasErrors.gasPrice = GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW;
   }
 
   // Determine if we have any errors which should block submission
