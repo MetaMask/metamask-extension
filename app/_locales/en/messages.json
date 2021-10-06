@@ -1638,6 +1638,15 @@
   "onboardingImportWallet": {
     "message": "Import an existing wallet"
   },
+  "onboardingPinExtensionContinueText": {
+    "messge": "Setup Metamask Wallet"
+  },
+  "onboardingPinExtensionDescription": {
+    "message": "Pin MetaMask on your Chrome browser so it's accessible and easy to view transaction confirmations."
+  },
+  "onboardingPinExtensionTitle": {
+    "message": "Your MetaMask install is complete!"
+  },
   "onboardingReturnNotice": {
     "message": "\"$1\" will close this tab and direct back to $2",
     "description": "Return the user to the site that initiated onboarding"
