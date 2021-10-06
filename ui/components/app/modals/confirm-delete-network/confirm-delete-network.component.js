@@ -30,7 +30,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
         onCancel={() => this.props.hideModal()}
         submitText={t('delete')}
         cancelText={t('cancel')}
-        submitType="danger"
+        submitType="danger-primary"
       >
         <ModalContent
           title={t('deleteNetwork')}

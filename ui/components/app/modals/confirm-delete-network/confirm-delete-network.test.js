@@ -34,7 +34,7 @@ describe('Confirm Delete Network', () => {
 
   it('clicks cancel to hide modal', () => {
     const cancelButton = wrapper.find(
-      '.button.btn-default.modal-container__footer-button',
+      '.button.btn-secondary.modal-container__footer-button',
     );
     cancelButton.simulate('click');
 
@@ -43,7 +43,7 @@ describe('Confirm Delete Network', () => {
 
   it('clicks delete to delete the target and hides modal', async () => {
     const deleteButton = wrapper.find(
-      '.button.btn-danger.modal-container__footer-button',
+      '.button.btn-danger-primary.modal-container__footer-button',
     );
 
     deleteButton.simulate('click');

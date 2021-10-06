@@ -75,7 +75,7 @@ export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
         </Box>
         <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
           <Box width={BLOCK_SIZES.TWO_FIFTHS}>
-            <Button rounded type="primary" onClick={onConfirm}>
+            <Button type="primary" onClick={onConfirm}>
               {t('recoveryPhraseReminderConfirm')}
             </Button>
           </Box>

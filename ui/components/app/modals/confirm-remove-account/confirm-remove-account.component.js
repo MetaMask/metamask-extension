@@ -95,7 +95,6 @@ export default class ConfirmRemoveAccount extends Component {
         onCancel={this.handleCancel}
         submitText={t('remove')}
         cancelText={t('nevermind')}
-        submitType="secondary"
       >
         <div>
           {this.renderSelectedAccount()}

@@ -51,7 +51,6 @@ export default function AdvancedGasControls({
         value={gasLimit}
         allowDecimals={false}
         numeric
-        autoFocus
       />
       {showFeeMarketFields ? (
         <>

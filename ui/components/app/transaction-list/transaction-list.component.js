@@ -157,7 +157,6 @@ export default function TransactionList({
             <Button
               className="transaction-list__view-more"
               type="secondary"
-              rounded
               onClick={viewMore}
             >
               {t('viewMore')}

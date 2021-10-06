@@ -226,7 +226,6 @@ export default class EditApprovalPermission extends PureComponent {
           hideModal();
         }}
         submitText={t('save')}
-        submitType="primary"
         contentClass="edit-approval-permission-modal-content"
         containerClass="edit-approval-permission-modal-container"
         submitDisabled={disabled}
