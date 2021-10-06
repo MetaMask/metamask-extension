@@ -75,22 +75,22 @@ export default function OnboardingFlow() {
   ]);
 
   const handleCreateNewAccount = async (password) => {
-    const newSeedPhrase = await dispatch(
+    const newSecretRecoveryPhrase = await dispatch(
       createNewVaultAndGetSeedPhrase(password),
     );
-    setSeedPhrase(newSeedPhrase);
+    setSecretRecoveryPhrase(newSecretRecoveryPhrase);
   };
 
   const handleUnlock = async (password) => {
-    const retreivedSeedPhrase = await dispatch(
+    const retrievedSecretRecoveryPhrase = await dispatch(
       unlockAndGetSeedPhrase(password),
     );
-    setSeedPhrase(retreivedSeedPhrase);
+    setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
     history.push(nextRoute);
   };
 
-  const handleImportWithSeedPhrase = async (password, seedPhrase) => {
-    return await createNewVaultAndRestore(password, seedPhrase);
+  const handleImportWithSeedPhrase = async (password, secretRecoveryPhrase) => {
+    return await createNewVaultAndRestore(password, secretRecoveryPhrase);
   };
 
   return (
@@ -104,7 +104,6 @@ export default function OnboardingFlow() {
                 {...routeProps}
                 createNewAccount={handleCreateNewAccount}
                 importWithSeedPhrase={handleImportWithSeedPhrase}
-                secretRecoveryPhrase={secretRecoveryPhrase}
               />
             )}
           />
@@ -115,19 +114,18 @@ export default function OnboardingFlow() {
           />
           <Route
             path={ONBOARDING_REVIEW_SRP_ROUTE}
-            render={() => <ReviewRecoveryPhrase seedPhrase={seedPhrase} />}
+            render={() => <ReviewRecoveryPhrase secretRecoveryPhrase={secretRecoveryPhrase} />}
           />
           <Route
             path={ONBOARDING_CONFIRM_SRP_ROUTE}
-            render={() => <ConfirmRecoveryPhrase seedPhrase={seedPhrase} />}
+            render={() => <ConfirmRecoveryPhrase secretRecoveryPhrase={secretRecoveryPhrase} />}
           />
           <Route
             path={ONBOARDING_IMPORT_WITH_SRP_ROUTE}
             render={(routeProps) => (
               <ImportSRP
                 {...routeProps}
-                // onSubmit={handleImportWithSeedPhrase}
-                setSecretRecoveryPhrase={setSecretRecoveryPhrase}
+                submitSecretRecoveryPhrase={setSecretRecoveryPhrase}
               />
             )}
           />

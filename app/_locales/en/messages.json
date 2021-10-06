@@ -947,9 +947,6 @@
   "from": {
     "message": "From"
   },
-  "importMyWallet": {
-    "message": "Import My Wallet"
-  },
   "fromAddress": {
     "message": "From: $1",
     "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
@@ -1128,6 +1125,9 @@
   },
   "importExistingWalletTitle": {
     "message": "Import existing wallet with Secret Recovery Phrase"
+  },
+  "importMyWallet": {
+    "message": "Import My Wallet"
   },
   "importTokenQuestion": {
     "message": "Import token?"
@@ -1890,6 +1890,9 @@
   },
   "scanQrCode": {
     "message": "Scan QR Code"
+  },
+  "scanSRPQRCode": {
+    "message": "Or scan Secret Recovery Phrase QR code"
   },
   "scrollDown": {
     "message": "Scroll down"

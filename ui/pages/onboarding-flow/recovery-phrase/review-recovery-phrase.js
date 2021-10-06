@@ -17,11 +17,11 @@ import {
 import ProgressBar from '../../../components/app/step-progress-bar';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
-export default function RecoveryPhrase({ seedPhrase }) {
+export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const history = useHistory();
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
-  const [seedPhraseRevealed, setSeedPhraseRevealed] = useState(false);
+  const [phraseRevealed, setPhraseRevealed] = useState(false);
   return (
     <div className="recovery-phrase">
       <ProgressBar stage="SEED_PHRASE_REVIEW" />
@@ -77,10 +77,10 @@ export default function RecoveryPhrase({ seedPhrase }) {
       </Box>
       <RecoveryPhraseChips
         seedPhrase={seedPhrase.split(' ')}
-        seedPhraseRevealed={seedPhraseRevealed}
+        phraseRevealed={phraseRevealed}
       />
       <div className="recovery-phrase__footer">
-        {seedPhraseRevealed ? (
+        {phraseRevealed ? (
           <div className="recovery-phrase__footer--copy">
             <Button
               onClick={() => {
@@ -106,7 +106,7 @@ export default function RecoveryPhrase({ seedPhrase }) {
             type="primary"
             className="recovery-phrase__footer--button"
             onClick={() => {
-              setSeedPhraseRevealed(true);
+              setPhraseRevealed(true);
             }}
           >
             {t('revealSeedWords')}
