@@ -10,6 +10,7 @@ import {
   getSelectedAccount,
 } from '../selectors';
 import { addHexes } from '../helpers/utils/conversions.util';
+import { isLegacyTransaction } from '../helpers/utils/transactions.util';
 import {
   bnGreaterThan,
   bnLessThan,
@@ -34,10 +35,10 @@ const validateGasLimit = (gasLimit, minimumGasLimit) => {
 const validateMaxPriorityFee = (
   isFeeMarketGasEstimate,
   maxPriorityFeePerGasToUse,
-  networkAndAccountSupports1559,
+  supportsEIP1559,
 ) => {
   if (
-    (networkAndAccountSupports1559 || isFeeMarketGasEstimate) &&
+    (supportsEIP1559 || isFeeMarketGasEstimate) &&
     bnLessThanEqualTo(maxPriorityFeePerGasToUse, 0)
   )
     return GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
@@ -48,10 +49,10 @@ const validateMaxFee = (
   isFeeMarketGasEstimate,
   maxFeePerGasToUse,
   maxPriorityFeePerGasToUse,
-  networkAndAccountSupports1559,
+  supportsEIP1559,
 ) => {
   if (
-    (networkAndAccountSupports1559 || isFeeMarketGasEstimate) &&
+    (supportsEIP1559 || isFeeMarketGasEstimate) &&
     bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)
   )
     return GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
@@ -61,11 +62,11 @@ const validateMaxFee = (
 const validateGasPrice = (
   isFeeMarketGasEstimate,
   gasPriceToUse,
-  networkAndAccountSupports1559,
+  supportsEIP1559,
   transaction,
 ) => {
   if (
-    (!networkAndAccountSupports1559 || transaction?.txParams?.gasPrice) &&
+    (!supportsEIP1559 || transaction?.txParams?.gasPrice) &&
     !isFeeMarketGasEstimate &&
     bnLessThanEqualTo(gasPriceToUse, 0)
   )
@@ -147,9 +148,9 @@ export function useGasFeeInputsErrors(
   minimumCostInHexWei,
   minimumGasLimit,
 ) {
-  const networkAndAccountSupports1559 = useSelector(
-    checkNetworkAndAccountSupports1559,
-  );
+  const supportsEIP1559 =
+    useSelector(checkNetworkAndAccountSupports1559) &&
+    !isLegacyTransaction(transaction?.txParams);
 
   const {
     gasEstimateType,
@@ -166,20 +167,20 @@ export function useGasFeeInputsErrors(
   const maxPriorityFeeError = validateMaxPriorityFee(
     isFeeMarketGasEstimate,
     maxPriorityFeePerGasToUse,
-    networkAndAccountSupports1559,
+    supportsEIP1559,
   );
 
   const maxFeeError = validateMaxFee(
     isFeeMarketGasEstimate,
     maxFeePerGasToUse,
     maxPriorityFeePerGasToUse,
-    networkAndAccountSupports1559,
+    supportsEIP1559,
   );
 
   const gasPriceError = validateGasPrice(
     isFeeMarketGasEstimate,
     gasPriceToUse,
-    networkAndAccountSupports1559,
+    supportsEIP1559,
     transaction,
   );
 
@@ -220,7 +221,7 @@ export function useGasFeeInputsErrors(
   }, [maxPriorityFeeWarning, maxFeeWarning]);
 
   const estimatesUnavailableWarning =
-    networkAndAccountSupports1559 && !isFeeMarketGasEstimate;
+    supportsEIP1559 && !isFeeMarketGasEstimate;
 
   // Determine if we have any errors which should block submission
   const hasGasErrors = Boolean(Object.keys(gasErrors).length);
