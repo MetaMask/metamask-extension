@@ -927,7 +927,7 @@ export default class TransactionController extends EventEmitter {
 
       rawTxes = await Promise.all(
         listOfTxParams.map((txParams) => {
-          txParams.nonce = addHexPrefix(nonce.toString(16));
+          txParams.nonce = nonce;
           return this.signExternalTransaction(txParams);
         }),
       );
@@ -954,7 +954,7 @@ export default class TransactionController extends EventEmitter {
       : TRANSACTION_ENVELOPE_TYPES.LEGACY;
     const txParams = {
       ..._txParams,
-      type,
+      type: 2, // TODO: Check if we can use different types for this. Only enable ST for EIP-1559.
       chainId,
     };
     // sign tx

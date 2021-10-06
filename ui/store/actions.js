@@ -18,6 +18,7 @@ import {
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
+import { hexToDecimal } from '../helpers/utils/conversions.util';
 import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
@@ -2901,15 +2902,30 @@ export function fetchUnsignedTransactionsAndEstimates(unsignedTransaction) {
   };
 }
 
-const createSignedTransactions = (unsignedTransaction, fees) => {
+const createSignedTransactions = async (
+  unsignedTransaction,
+  fees,
+  areCancelTransactions,
+) => {
   const unsignedTransactionsWithFees = fees.map((fee) => {
-    return {
+    const unsignedTransactionWithFees = {
       ...unsignedTransaction,
-      ...fee,
+      maxFeePerGas: fee.maxFeePerGas,
+      maxPriorityFeePerGas: fee.maxPriorityFeePerGas,
+      gasLimit: areCancelTransactions
+        ? 21000 // It has to be 21000 for cancel transactions, otherwise the API would reject it.
+        : Number(hexToDecimal(unsignedTransaction.gas)),
+      value: Number(hexToDecimal(unsignedTransaction.value)),
     };
+    if (areCancelTransactions) {
+      unsignedTransactionWithFees.to = unsignedTransactionWithFees.from;
+    }
+    delete unsignedTransactionWithFees.gas;
+    return unsignedTransactionWithFees;
   });
-  // TODO: Call a fn to sign every transaction with fees.
-  const signedTransactions = unsignedTransactionsWithFees;
+  const signedTransactions = await promisifiedBackground.approveTransactionsWithSameNonce(
+    unsignedTransactionsWithFees,
+  );
   return signedTransactions;
 };
 
@@ -2917,15 +2933,16 @@ export function signAndSendSmartTransaction({
   unsignedTransaction,
   unsignedTransactionsAndEstimates,
 }) {
-  const signedTransactions = createSignedTransactions(
-    unsignedTransaction,
-    unsignedTransactionsAndEstimates.fees,
-  );
-  const signedCanceledTransactions = createSignedTransactions(
-    unsignedTransaction,
-    unsignedTransactionsAndEstimates.cancel_fees,
-  );
   return async (dispatch) => {
+    const signedTransactions = await createSignedTransactions(
+      unsignedTransaction,
+      unsignedTransactionsAndEstimates.fees,
+    );
+    const signedCanceledTransactions = await createSignedTransactions(
+      unsignedTransaction,
+      unsignedTransactionsAndEstimates.cancelFees,
+      true,
+    );
     try {
       const response = await promisifiedBackground.submitSignedTransactions({
         signedTransactions,

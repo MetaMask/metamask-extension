@@ -180,8 +180,6 @@ export default function ViewQuote() {
         value: unsignedTransaction.value,
         data: unsignedTransaction.data,
         gas: unsignedTransaction.gas,
-        nonce: 18,
-        type: 2,
         chainId,
       };
       dispatch(fetchUnsignedTransactionsAndEstimates(unsignedTx));
@@ -352,7 +350,7 @@ export default function ViewQuote() {
       currentCurrency,
       conversionRate,
       nativeCurrencySymbol,
-      estimatedFeeInWeiDec: unsignedTransactionsAndEstimates.fee_estimate,
+      estimatedFeeInWeiDec: unsignedTransactionsAndEstimates.feeEstimate,
     }));
   }
 

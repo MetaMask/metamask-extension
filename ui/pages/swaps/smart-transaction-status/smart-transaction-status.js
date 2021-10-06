@@ -45,7 +45,9 @@ export default function SmartTransactionStatus() {
   const needsTwoConfirmations = true;
   const smartTransactionsStatus = useSelector(getSmartTransactionsStatus);
   const latestSmartTransactionUuid = useSelector(getLatestSmartTransactionUuid);
-  const smartTransactionStatus = smartTransactionsStatus?.[0]?.status || {};
+  // const smartTransactionStatus = smartTransactionsStatus?.[0].status || {};
+  // TODO: Remove the next line and uncomment the previous one once backend returns expected structure.
+  const smartTransactionStatus = smartTransactionsStatus?.[0] || {};
 
   const stStatusPageLoadedEvent = useNewMetricEvent({
     event: 'ST Status Page Loaded',
@@ -71,18 +73,15 @@ export default function SmartTransactionStatus() {
   useEffect(() => {
     stStatusPageLoadedEvent();
     const intervalId = setInterval(() => {
-      if (isSmartTransactionPending) {
+      if (isSmartTransactionPending && latestSmartTransactionUuid) {
         dispatch(fetchSmartTransactionsStatus([latestSmartTransactionUuid]));
       } else {
         clearInterval(intervalId);
       }
     }, SMART_TRANSACTIONS_STATUS_INTERVAL);
-    // if (isSmartTransactionPending) {
-    //   dispatch(fetchSmartTransactionsStatus([uuid]));
-    // }
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, isSmartTransactionPending]);
+  }, [dispatch, isSmartTransactionPending, latestSmartTransactionUuid]);
 
   let headerText = t('stPending');
   let description = t('stPendingDescription');

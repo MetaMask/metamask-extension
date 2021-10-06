@@ -980,6 +980,14 @@ export default class MetamaskController extends EventEmitter {
         txController.approveExternalTransaction,
         txController,
       ),
+      approveTransactionsWithSameNonce: nodeify(
+        txController.approveTransactionsWithSameNonce,
+        txController,
+      ),
+      signExternalTransaction: nodeify(
+        txController.signExternalTransaction,
+        txController,
+      ),
       updateAndApproveTransaction: nodeify(
         txController.updateAndApproveTransaction,
         txController,
