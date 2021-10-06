@@ -14,7 +14,6 @@ import {
   getShouldShowFiat,
   getAdvancedInlineGasShown,
 } from '../selectors';
-import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
 
 import {
   hexWEIToDecGWEI,
@@ -22,6 +21,7 @@ import {
   decimalToHex,
   hexToDecimal,
 } from '../helpers/utils/conversions.util';
+import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
 
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
@@ -386,7 +386,7 @@ export function useGasFeeInputs(
           : minimumGasLimitDec,
       );
     }
-  }, [minimumGasLimit, gasErrors.gasLimit, transaction, setGasLimit]);
+  }, [minimumGasLimit, gasErrors.gasLimit, transaction]);
 
   // When a user selects an estimate level, it will wipe out what they have
   // previously put in the inputs. This returns the inputs to the estimated
