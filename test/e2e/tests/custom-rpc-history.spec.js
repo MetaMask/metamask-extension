@@ -32,6 +32,9 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement({ text: 'Add Network', tag: 'span' });
 
+        // wait for the full screen to be visible
+        await driver.findVisibleElement('settings-page__content');
+
         await driver.findElement('.settings-page__sub-header-text');
 
         await driver.clickElement({ text: 'Add Network', tag: 'button' });
@@ -75,6 +78,9 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement({ text: 'Add Network', tag: 'span' });
 
+        // wait for the full screen to be visible
+        await driver.findVisibleElement('settings-page__content');
+
         await driver.findElement('.settings-page__sub-header-text');
 
         await driver.clickElement({ text: 'Add Network', tag: 'button' });
@@ -111,6 +117,9 @@ describe('Stores custom RPC history', function () {
         await driver.clickElement('.network-display');
 
         await driver.clickElement({ text: 'Add Network', tag: 'span' });
+
+        // wait for the full screen to be visible
+        await driver.findVisibleElement('settings-page__content');
 
         await driver.findElement('.settings-page__sub-header-text');
 
@@ -197,8 +206,8 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement({ text: 'Add Network', tag: 'span' });
 
-        // cancel new custom rpc
-        await driver.clickElement('.network-form__footer button.btn-secondary');
+        // wait for the full screen to be visible
+        await driver.findVisibleElement('settings-page__content');
 
         const networkListItems = await driver.findClickableElements(
           '.networks-tab__networks-list-name',
