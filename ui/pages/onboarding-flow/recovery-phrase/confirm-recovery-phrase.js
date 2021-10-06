@@ -12,7 +12,10 @@ import {
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 import { INITIALIZE_END_OF_FLOW_ROUTE } from '../../../helpers/constants/routes';
-import ProgressBar from '../../../components/app/step-progress-bar';
+import {
+  ThreeStepProgressBar,
+  threeStepStages,
+} from '../../../components/app/step-progress-bar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
@@ -52,7 +55,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
 
   return (
     <div>
-      <ProgressBar stage="SEED_PHRASE_CONFIRM" />
+      <ThreeStepProgressBar stage={threeStepStages.RECOVERY_PHRASE_CONFIRM} />
       <Box
         justifyContent={JUSTIFY_CONTENT.CENTER}
         textAlign={TEXT_ALIGN.CENTER}

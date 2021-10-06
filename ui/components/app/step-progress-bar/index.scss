@@ -64,3 +64,14 @@
   background-color: $primary-blue;
   color: $ui-white;
 }
+
+.progressbar li.two-steps::after {
+  width: 145%;
+  height: 2px;
+  content: '';
+  position: absolute;
+  background-color: #d6d9dc;
+  top: 15px;
+  right: 61%;
+  z-index: -1;
+}

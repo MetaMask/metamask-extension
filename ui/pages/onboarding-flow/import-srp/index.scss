@@ -1,12 +1,12 @@
 .import-srp {
-  max-width: 625px;
+  width: 625px;
 
   &__header {
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    margin: 20px 0;
+    margin: 20px auto;
     max-width: 500px;
 
     a {
@@ -27,8 +27,10 @@
     text-align: left;
     max-width: 400px;
     margin: auto;
+
     &--link {
       @include H6;
+
       margin-bottom: 12px;
     }
   }
@@ -38,7 +40,7 @@
   position: relative;
   height: 100px;
   width: 325px;
-  margin: 12px 0 26px 0;
+  margin: 12px 0 42px 0;
 
   &__textarea {
     @include Paragraph;
@@ -62,6 +64,7 @@
 
     &__error-message {
       @include H7;
+
       color: $error-1;
     }
   }
@@ -69,7 +72,7 @@
   button {
     background-color: transparent;
     position: absolute;
-    right: 0px;
+    right: 0;
     top: 5px;
   }
 }

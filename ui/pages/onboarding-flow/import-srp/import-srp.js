@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { ethers } from 'ethers';
 import classnames from 'classnames';
-import StepProgressBar from '../../../components/app/step-progress-bar';
+import PropTypes from 'prop-types';
+import {
+  TwoStepProgressBar,
+  twoStepStages,
+} from '../../../components/app/step-progress-bar';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
@@ -25,31 +29,32 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
   const parseSeedPhrase = (seedPhrase) =>
     (seedPhrase || '').trim().toLowerCase().match(/\w+/gu)?.join(' ') || '';
 
-  const handleSecretRecoveryPhraseChange = (secretRecoveryPhrase) => {
+  const handleSecretRecoveryPhraseChange = (recoveryPhrase) => {
     setError('');
-
-    if (secretRecoveryPhrase) {
-      const parsedSecretRecoveryPhrase = parseSeedPhrase(secretRecoveryPhrase);
+    if (recoveryPhrase) {
+      const parsedSecretRecoveryPhrase = parseSeedPhrase(recoveryPhrase);
       const wordCount = parsedSecretRecoveryPhrase.split(/\s/u).length;
       if (wordCount % 3 !== 0 || wordCount > 24 || wordCount < 12) {
         setError(t('seedPhraseReq'));
       } else if (!isValidMnemonic(parsedSecretRecoveryPhrase)) {
         setError(t('invalidSeedPhrase'));
       }
-      setSecretRecoveryPhrase(secretRecoveryPhrase);
     }
+    setSecretRecoveryPhrase(recoveryPhrase);
   };
 
   return (
     <div className="import-srp">
-      <StepProgressBar stage={1} />
+      <TwoStepProgressBar stage={twoStepStages.RECOVERY_PHRASE_CONFIRM} />
       <div className="import-srp__header">
         <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
           {t('importExistingWalletTitle')}
         </Typography>
         <Typography variant={TYPOGRAPHY.H4}>
           {t('importExistingWalletDescription', [
-            <a type="link">{t('learnMore')}</a>,
+            <a key="learnMore" type="link">
+              {t('learnMore')}
+            </a>,
           ])}
         </Typography>
       </div>
@@ -85,13 +90,6 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             )}
           </div>
           <Button
-            type="link"
-            className="import-srp__actions--link"
-            onClick={() => {}}
-          >
-            {t('scanSRPQRCode')}
-          </Button>
-          <Button
             type="primary"
             large
             onClick={() => {
@@ -100,10 +98,14 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             }}
             disabled={error || secretRecoveryPhrase.length === 0}
           >
-            {t('confirmSeedPhrase')}
+            {t('confirmRecoveryPhrase')}
           </Button>
         </Box>
       </div>
     </div>
   );
 }
+
+ImportSRP.propTypes = {
+  submitSecretRecoveryPhrase: PropTypes.func,
+};

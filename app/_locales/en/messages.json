@@ -357,11 +357,11 @@
   "confirmPassword": {
     "message": "Confirm password"
   },
+  "confirmRecoveryPhrase": {
+    "message": "Confirm Secret Recovery Phrase"
+  },
   "confirmSecretBackupPhrase": {
     "message": "Confirm your Secret Recovery Phrase"
-  },
-  "confirmSeedPhrase": {
-    "message": "Confirm Secret Recovery Phrase"
   },
   "confirmed": {
     "message": "Confirmed"

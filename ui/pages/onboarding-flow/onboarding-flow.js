@@ -89,8 +89,8 @@ export default function OnboardingFlow() {
     history.push(nextRoute);
   };
 
-  const handleImportWithSeedPhrase = async (password, secretRecoveryPhrase) => {
-    return await createNewVaultAndRestore(password, secretRecoveryPhrase);
+  const handleImportWithRecoveryPhrase = async (password, srp) => {
+    return await dispatch(createNewVaultAndRestore(password, srp));
   };
 
   return (
@@ -103,7 +103,8 @@ export default function OnboardingFlow() {
               <CreatePassword
                 {...routeProps}
                 createNewAccount={handleCreateNewAccount}
-                importWithSeedPhrase={handleImportWithSeedPhrase}
+                importWithRecoveryPhrase={handleImportWithRecoveryPhrase}
+                secretRecoveryPhrase={secretRecoveryPhrase}
               />
             )}
           />
@@ -114,11 +115,19 @@ export default function OnboardingFlow() {
           />
           <Route
             path={ONBOARDING_REVIEW_SRP_ROUTE}
-            render={() => <ReviewRecoveryPhrase secretRecoveryPhrase={secretRecoveryPhrase} />}
+            render={() => (
+              <ReviewRecoveryPhrase
+                secretRecoveryPhrase={secretRecoveryPhrase}
+              />
+            )}
           />
           <Route
             path={ONBOARDING_CONFIRM_SRP_ROUTE}
-            render={() => <ConfirmRecoveryPhrase secretRecoveryPhrase={secretRecoveryPhrase} />}
+            render={() => (
+              <ConfirmRecoveryPhrase
+                secretRecoveryPhrase={secretRecoveryPhrase}
+              />
+            )}
           />
           <Route
             path={ONBOARDING_IMPORT_WITH_SRP_ROUTE}
