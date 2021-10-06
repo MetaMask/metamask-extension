@@ -285,7 +285,9 @@ export default class SignatureRequestOriginal extends Component {
       history,
       mostRecentOverviewPage,
       sign,
+      txData: { type },
     } = this.props;
+    const { metricsEvent, t } = this.context;
 
     return (
       <div className="request-signature__footer">
@@ -296,18 +298,21 @@ export default class SignatureRequestOriginal extends Component {
           onClick={async (event) => {
             this._removeBeforeUnload();
             await cancel(event);
-            this.context.metricsEvent({
+            metricsEvent({
               eventOpts: {
                 category: 'Transactions',
                 action: 'Sign Request',
                 name: 'Cancel',
+              },
+              customVariables: {
+                type,
               },
             });
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }}
         >
-          {this.context.t('cancel')}
+          {t('cancel')}
         </Button>
         <Button
           data-testid="request-signature__sign"
@@ -317,18 +322,21 @@ export default class SignatureRequestOriginal extends Component {
           onClick={async (event) => {
             this._removeBeforeUnload();
             await sign(event);
-            this.context.metricsEvent({
+            metricsEvent({
               eventOpts: {
                 category: 'Transactions',
                 action: 'Sign Request',
                 name: 'Confirm',
+              },
+              customVariables: {
+                type,
               },
             });
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }}
         >
-          {this.context.t('sign')}
+          {t('sign')}
         </Button>
       </div>
     );
