@@ -5,6 +5,6 @@ set -e
 set -u
 set -o pipefail
 
-concurrently \
+concurrently -n production,development \
   "jest --config=./jest.config.js $*" \
   "jest --config=./development/jest.config.js $*"
