@@ -48,7 +48,7 @@ describe('Stores custom RPC history', function () {
         await chainIdInput.clear();
         await chainIdInput.sendKeys(chainId.toString());
 
-        await driver.clickElement('.network-form__footer .btn-secondary');
+        await driver.clickElement('.network-form__footer .btn-primary');
         await driver.findElement({ text: networkName, tag: 'span' });
       },
     );
@@ -192,7 +192,7 @@ describe('Stores custom RPC history', function () {
         await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
 
         // cancel new custom rpc
-        await driver.clickElement('.network-form__footer button.btn-default');
+        await driver.clickElement('.network-form__footer button.btn-secondary');
 
         const networkListItems = await driver.findClickableElements(
           '.networks-tab__networks-list-name',
@@ -209,7 +209,7 @@ describe('Stores custom RPC history', function () {
         );
 
         await driver.clickElement(
-          '.button.btn-danger.modal-container__footer-button',
+          '.button.btn-danger-primary.modal-container__footer-button',
         );
 
         // wait for confirm delete modal to be removed from DOM.

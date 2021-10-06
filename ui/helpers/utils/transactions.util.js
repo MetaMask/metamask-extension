@@ -8,6 +8,7 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_GROUP_STATUSES,
   TRANSACTION_STATUSES,
+  TRANSACTION_ENVELOPE_TYPES,
 } from '../../../shared/constants/transaction';
 import { addCurrencies } from '../../../shared/modules/conversion.utils';
 import fetchWithCache from './fetch-with-cache';
@@ -159,6 +160,10 @@ export function sumHexes(...args) {
   });
 
   return addHexPrefix(total);
+}
+
+export function isLegacyTransaction(txParams) {
+  return txParams.type === TRANSACTION_ENVELOPE_TYPES.LEGACY;
 }
 
 /**

@@ -28,7 +28,9 @@ describe('MetaMetrics Opt In', () => {
   });
 
   it('passes false to setParticipateInMetaMetrics and hides modal', async () => {
-    const noThanks = wrapper.find('.btn-default.page-container__footer-button');
+    const noThanks = wrapper.find(
+      '.btn-secondary.page-container__footer-button',
+    );
     noThanks.simulate('click');
 
     expect(await props.setParticipateInMetaMetrics.calledOnce).toStrictEqual(

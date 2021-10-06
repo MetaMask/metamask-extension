@@ -88,6 +88,13 @@ export const JUSTIFY_CONTENT = {
   SPACE_EVENLY: 'space-evenly',
 };
 
+export const FLEX_DIRECTION = {
+  ROW: 'row',
+  ROW_REVERSE: 'row-reverse',
+  COLUMN: 'column',
+  COLUMN_REVERSE: 'column-reverse',
+};
+
 export const DISPLAY = {
   BLOCK: 'block',
   FLEX: 'flex',

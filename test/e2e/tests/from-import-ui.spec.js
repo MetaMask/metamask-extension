@@ -38,7 +38,7 @@ describe('Metamask Import UI', function () {
         await driver.clickElement({ text: 'Import wallet', tag: 'button' });
 
         // clicks the "No thanks" option on the metametrics opt-in screen
-        await driver.clickElement('.btn-default');
+        await driver.clickElement('.btn-secondary');
 
         // Import Secret Recovery Phrase
         await driver.fill(

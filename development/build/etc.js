@@ -5,18 +5,12 @@ const del = require('del');
 const pify = require('pify');
 const pump = pify(require('pump'));
 const { version } = require('../../package.json');
-
 const { createTask, composeParallel } = require('./task');
 const { BuildTypes } = require('./utils');
 
 module.exports = createEtcTasks;
 
-function createEtcTasks({
-  betaVersionsMap,
-  browserPlatforms,
-  buildType,
-  livereload,
-}) {
+function createEtcTasks({ browserPlatforms, buildType, livereload }) {
   const clean = createTask('clean', async function clean() {
     await del(['./dist/*']);
     await Promise.all(
@@ -34,23 +28,19 @@ function createEtcTasks({
   const zip = createTask(
     'zip',
     composeParallel(
-      ...browserPlatforms.map((platform) =>
-        createZipTask(
-          platform,
-          buildType === BuildTypes.beta ? betaVersionsMap[platform] : undefined,
-        ),
-      ),
+      ...browserPlatforms.map((platform) => createZipTask(platform, buildType)),
     ),
   );
 
   return { clean, reload, zip };
 }
 
-function createZipTask(platform, betaVersion) {
+function createZipTask(platform, buildType) {
   return async () => {
-    const path = betaVersion
-      ? `metamask-BETA-${platform}-${betaVersion}`
-      : `metamask-${platform}-${version}`;
+    const path =
+      buildType === BuildTypes.main
+        ? `metamask-${platform}-${version}`
+        : `metamask-${buildType}-${platform}-${version}`;
     await pump(
       gulp.src(`dist/${platform}/**`),
       gulpZip(`${path}.zip`),

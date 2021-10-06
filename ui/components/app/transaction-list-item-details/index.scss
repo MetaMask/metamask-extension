@@ -17,7 +17,12 @@
   }
 
   & &__header-button {
-    @include H8;
+    &-rounded-button {
+      @include H8;
+
+      padding: 0 16px;
+      margin-right: 8px;
+    }
 
     &-tooltip-container {
       display: flex !important;

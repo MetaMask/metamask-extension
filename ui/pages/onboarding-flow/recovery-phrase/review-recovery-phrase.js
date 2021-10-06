@@ -23,7 +23,7 @@ export default function RecoveryPhrase({ seedPhrase }) {
   const [copied, handleCopy] = useCopyToClipboard();
   const [seedPhraseRevealed, setSeedPhraseRevealed] = useState(false);
   return (
-    <div>
+    <div className="recovery-phrase">
       <ProgressBar stage="SEED_PHRASE_REVIEW" />
       <Box
         justifyContent={JUSTIFY_CONTENT.CENTER}
@@ -92,7 +92,6 @@ export default function RecoveryPhrase({ seedPhrase }) {
               {copied ? t('copiedExclamation') : t('copyToClipboard')}
             </Button>
             <Button
-              rounded
               type="primary"
               className="recovery-phrase__footer--button"
               onClick={() => {
@@ -104,7 +103,6 @@ export default function RecoveryPhrase({ seedPhrase }) {
           </div>
         ) : (
           <Button
-            rounded
             type="primary"
             className="recovery-phrase__footer--button"
             onClick={() => {

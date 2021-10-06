@@ -49,7 +49,6 @@ export default function TruncatedDefinitionList({
               <Button
                 type="primary"
                 style={{ width: '50%' }}
-                rounded
                 onClick={() => setIsPopoverOpen(false)}
               >
                 Close

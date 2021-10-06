@@ -22,6 +22,7 @@ import {
   hexToDecimal,
 } from '../helpers/utils/conversions.util';
 import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
+import { isLegacyTransaction } from '../helpers/utils/transactions.util';
 
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
@@ -138,9 +139,9 @@ export function useGasFeeInputs(
   minimumGasLimit = '0x5208',
   editGasMode,
 ) {
-  const networkAndAccountSupports1559 = useSelector(
-    checkNetworkAndAccountSupports1559,
-  );
+  const supportsEIP1559 =
+    useSelector(checkNetworkAndAccountSupports1559) &&
+    !isLegacyTransaction(transaction?.txParams);
   // We need to know whether to show fiat conversions or not, so that we can
   // default our fiat values to empty strings if showing fiat is not wanted or
   // possible.
@@ -171,13 +172,13 @@ export function useGasFeeInputs(
   } = useGasFeeEstimates();
 
   const [initialMaxFeePerGas] = useState(
-    networkAndAccountSupports1559 && !transaction?.txParams?.maxFeePerGas
+    supportsEIP1559 && !transaction?.txParams?.maxFeePerGas
       ? Number(hexWEIToDecGWEI(transaction?.txParams?.gasPrice))
       : Number(hexWEIToDecGWEI(transaction?.txParams?.maxFeePerGas)),
   );
+
   const [initialMaxPriorityFeePerGas] = useState(
-    networkAndAccountSupports1559 &&
-      !transaction?.txParams?.maxPriorityFeePerGas
+    supportsEIP1559 && !transaction?.txParams?.maxPriorityFeePerGas
       ? initialMaxFeePerGas
       : Number(hexWEIToDecGWEI(transaction?.txParams?.maxPriorityFeePerGas)),
   );
@@ -260,7 +261,9 @@ export function useGasFeeInputs(
   );
   const gasPriceToUse =
     gasPrice !== null &&
-    (gasPriceHasBeenManuallySet || gasPriceEstimatesHaveNotChanged)
+    (gasPriceHasBeenManuallySet ||
+      gasPriceEstimatesHaveNotChanged ||
+      isLegacyTransaction(transaction?.txParams))
       ? gasPrice
       : getGasPriceEstimate(
           gasFeeEstimates,
@@ -277,7 +280,7 @@ export function useGasFeeInputs(
   const gasSettings = {
     gasLimit: decimalToHex(gasLimit),
   };
-  if (networkAndAccountSupports1559) {
+  if (supportsEIP1559) {
     gasSettings.maxFeePerGas = maxFeePerGasToUse
       ? decGWEIToHexWEI(maxFeePerGasToUse)
       : decGWEIToHexWEI(gasPriceToUse || '0');
