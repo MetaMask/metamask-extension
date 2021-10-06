@@ -5,7 +5,6 @@
 //
 const livereload = require('gulp-livereload');
 const minimist = require('minimist');
-const { version } = require('../../package.json');
 const {
   createTask,
   composeSeries,
@@ -17,7 +16,7 @@ const createScriptTasks = require('./scripts');
 const createStyleTasks = require('./styles');
 const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
-const { BuildTypes, getNextBetaVersionMap } = require('./utils');
+const { BuildTypes, getBrowserVersionMap } = require('./utils');
 
 // packages required dynamically via browserify configuration in dependencies
 require('loose-envify');
@@ -34,7 +33,6 @@ defineAndRunBuildTasks();
 
 function defineAndRunBuildTasks() {
   const {
-    betaVersion,
     buildType,
     entryTask,
     isLavaMoat,
@@ -45,14 +43,7 @@ function defineAndRunBuildTasks() {
 
   const browserPlatforms = ['firefox', 'chrome', 'brave', 'opera'];
 
-  let betaVersionsMap;
-  if (buildType === BuildTypes.beta) {
-    betaVersionsMap = getNextBetaVersionMap(
-      version,
-      betaVersion,
-      browserPlatforms,
-    );
-  }
+  const browserVersionMap = getBrowserVersionMap(browserPlatforms);
 
   const staticTasks = createStaticAssetTasks({
     livereload,
@@ -63,7 +54,7 @@ function defineAndRunBuildTasks() {
 
   const manifestTasks = createManifestTasks({
     browserPlatforms,
-    betaVersionsMap,
+    browserVersionMap,
     buildType,
   });
 
@@ -80,7 +71,6 @@ function defineAndRunBuildTasks() {
   const { clean, reload, zip } = createEtcTasks({
     livereload,
     browserPlatforms,
-    betaVersionsMap,
     buildType,
   });
 
@@ -145,7 +135,6 @@ function defineAndRunBuildTasks() {
 
 function parseArgv() {
   const NamedArgs = {
-    BetaVersion: 'beta-version',
     BuildType: 'build-type',
     LintFenceFiles: 'lint-fence-files',
     OmitLockdown: 'omit-lockdown',
@@ -160,7 +149,6 @@ function parseArgv() {
     ],
     string: [NamedArgs.BuildType],
     default: {
-      [NamedArgs.BetaVersion]: 0,
       [NamedArgs.BuildType]: BuildTypes.main,
       [NamedArgs.LintFenceFiles]: true,
       [NamedArgs.OmitLockdown]: false,
@@ -179,11 +167,6 @@ function parseArgv() {
     throw new Error('MetaMask build: No entry task specified.');
   }
 
-  const betaVersion = argv[NamedArgs.BetaVersion];
-  if (!Number.isInteger(betaVersion) || betaVersion < 0) {
-    throw new Error(`MetaMask build: Invalid beta version: "${betaVersion}"`);
-  }
-
   const buildType = argv[NamedArgs.BuildType];
   if (!(buildType in BuildTypes)) {
     throw new Error(`MetaMask build: Invalid build type: "${buildType}"`);
@@ -197,7 +180,6 @@ function parseArgv() {
     : !/dev/iu.test(entryTask);
 
   return {
-    betaVersion: String(betaVersion),
     buildType,
     entryTask,
     isLavaMoat: process.argv[0].includes('lavamoat'),

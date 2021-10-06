@@ -3,7 +3,6 @@ const path = require('path');
 const { merge, cloneDeep } = require('lodash');
 
 const baseManifest = require('../../app/manifest/_base.json');
-const { version } = require('../../package.json');
 const betaManifestModifications = require('../../app/manifest/_beta_modifications.json');
 
 const { createTask, composeSeries } = require('./task');
@@ -11,7 +10,11 @@ const { BuildTypes } = require('./utils');
 
 module.exports = createManifestTasks;
 
-function createManifestTasks({ betaVersionsMap, browserPlatforms, buildType }) {
+function createManifestTasks({
+  browserPlatforms,
+  browserVersionMap,
+  buildType,
+}) {
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {
     return Promise.all(
@@ -29,9 +32,8 @@ function createManifestTasks({ betaVersionsMap, browserPlatforms, buildType }) {
         const result = merge(
           cloneDeep(baseManifest),
           platformModifications,
-          buildType === BuildTypes.beta
-            ? getBetaModifications(platform, betaVersionsMap)
-            : { version },
+          browserVersionMap[platform],
+          getBuildModifications(buildType),
         );
         const dir = path.join('.', 'dist', platform);
         await fs.mkdir(dir, { recursive: true });
@@ -110,16 +112,10 @@ async function writeJson(obj, file) {
   return fs.writeFile(file, JSON.stringify(obj, null, 2));
 }
 
-function getBetaModifications(platform, betaVersionsMap) {
-  if (!betaVersionsMap || typeof betaVersionsMap !== 'object') {
-    throw new Error('MetaMask build: Expected object beta versions map.');
+function getBuildModifications(buildType) {
+  const buildModifications = {};
+  if (buildType === BuildTypes.beta) {
+    Object.assign(buildModifications, betaManifestModifications);
   }
-
-  const betaVersion = betaVersionsMap[platform];
-
-  return {
-    ...betaManifestModifications,
-    version: betaVersion,
-    ...(platform === 'firefox' ? {} : { version_name: 'beta' }),
-  };
+  return buildModifications;
 }
