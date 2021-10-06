@@ -150,27 +150,32 @@ export function useGasFeeInputsErrors(
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
+
   const {
     gasEstimateType,
     gasFeeEstimates,
     isGasEstimatesLoading,
   } = useGasFeeEstimates();
+
   const isFeeMarketGasEstimate =
     gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET;
 
   // Get all errors
   const gasLimitError = validateGasLimit(gasLimit, minimumGasLimit);
+
   const maxPriorityFeeError = validateMaxPriorityFee(
     isFeeMarketGasEstimate,
     maxPriorityFeePerGasToUse,
     networkAndAccountSupports1559,
   );
+
   const maxFeeError = validateMaxFee(
     isFeeMarketGasEstimate,
     maxFeePerGasToUse,
     maxPriorityFeePerGasToUse,
     networkAndAccountSupports1559,
   );
+
   const gasPriceError = validateGasPrice(
     isFeeMarketGasEstimate,
     gasPriceToUse,
@@ -186,6 +191,7 @@ export function useGasFeeInputsErrors(
     maxPriorityFeeError,
     maxPriorityFeePerGasToUse,
   );
+
   const maxFeeWarning = getMaxFeeWarning(
     gasFeeEstimates,
     isGasEstimatesLoading,
@@ -196,22 +202,23 @@ export function useGasFeeInputsErrors(
 
   // Separating errors from warnings so we can know which value problems
   // are blocking or simply useful information for the users
-  const gasErrors = useMemo(
-    () => ({
-      gasLimit: gasLimitError,
-      maxPriorityFee: maxPriorityFeeError,
-      maxFee: maxFeeError,
-      gasPrice: gasPriceError,
-    }),
-    [gasLimitError, maxPriorityFeeError, maxFeeError, gasPriceError],
-  );
-  const gasWarnings = useMemo(
-    () => ({
-      maxPriorityFee: maxPriorityFeeWarning,
-      maxFee: maxFeeWarning,
-    }),
-    [maxPriorityFeeWarning, maxFeeWarning],
-  );
+
+  const gasErrors = useMemo(() => {
+    const errors = {};
+    if (gasLimitError) errors.gasLimit = gasLimitError;
+    if (maxPriorityFeeError) errors.maxPriorityFee = maxPriorityFeeError;
+    if (maxFeeError) errors.maxFee = maxFeeError;
+    if (gasPriceError) errors.gasPrice = gasPriceError;
+    return errors;
+  }, [gasLimitError, maxPriorityFeeError, maxFeeError, gasPriceError]);
+
+  const gasWarnings = useMemo(() => {
+    const warnings = {};
+    if (maxPriorityFeeWarning) warnings.maxPriorityFee = maxPriorityFeeWarning;
+    if (maxFeeWarning) warnings.maxFee = maxFeeWarning;
+    return warnings;
+  }, [maxPriorityFeeWarning, maxFeeWarning]);
+
   const estimatesUnavailableWarning =
     networkAndAccountSupports1559 && !isFeeMarketGasEstimate;
 
