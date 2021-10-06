@@ -954,7 +954,7 @@ export default class TransactionController extends EventEmitter {
       : TRANSACTION_ENVELOPE_TYPES.LEGACY;
     const txParams = {
       ..._txParams,
-      type: 2, // TODO: Check if we can use different types for this. Only enable ST for EIP-1559.
+      type,
       chainId,
     };
     // sign tx
