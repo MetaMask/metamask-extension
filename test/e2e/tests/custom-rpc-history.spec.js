@@ -30,9 +30,11 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
 
-        await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
+        await driver.clickElement({ text: 'Add Network', tag: 'span' });
 
         await driver.findElement('.settings-page__sub-header-text');
+
+        await driver.clickElement({ text: 'Add Network', tag: 'button' });
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const networkNameInput = customRpcInputs[0];
@@ -71,9 +73,11 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
 
-        await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
+        await driver.clickElement({ text: 'Add Network', tag: 'span' });
 
         await driver.findElement('.settings-page__sub-header-text');
+
+        await driver.clickElement({ text: 'Add Network', tag: 'button' });
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[1];
@@ -106,10 +110,12 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
 
-        await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
+        await driver.clickElement({ text: 'Add Network', tag: 'span' });
 
         await driver.findElement('.settings-page__sub-header-text');
 
+        await driver.clickElement({ text: 'Add Network', tag: 'button' });
+        
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[1];
         const chainIdInput = customRpcInputs[2];
@@ -189,7 +195,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
 
-        await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
+        await driver.clickElement({ text: 'Add Network', tag: 'span' });
 
         // cancel new custom rpc
         await driver.clickElement('.network-form__footer button.btn-secondary');
