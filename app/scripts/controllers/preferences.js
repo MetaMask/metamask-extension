@@ -729,6 +729,24 @@ export default class PreferencesController {
   }
 
   /**
+   * A setter for the `useWebHid` property
+   * @param {bool} useWebHid - Whether the user wants to use WebHid to connect their ledger
+   * @returns {Promise<string>} A promise of the update to useWebHid
+   */
+  async setLedgerWebHidPreference(useWebHidForLedger) {
+    this.store.updateState({ useWebHidForLedger });
+    return useWebHidForLedger;
+  }
+
+  /**
+   * A getter for the `useWebHidForLedger` property
+   * @returns {boolean} User preference of using WebHid to connect Ledger
+   */
+  getLedgerWebHidPreference() {
+    return this.store.getState().useWebHidForLedger;
+  }
+
+  /**
    * A setter for the user preference to dismiss the seed phrase backup reminder
    * @param {bool} dismissBackupReminder- User preference for dismissing the back up reminder
    * @returns {void}
