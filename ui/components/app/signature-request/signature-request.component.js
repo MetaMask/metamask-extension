@@ -33,13 +33,20 @@ export default class SignatureRequest extends PureComponent {
   }
 
   _beforeUnload = (event) => {
-    const { clearConfirmTransaction, cancel } = this.props;
+    const {
+      clearConfirmTransaction,
+      cancel,
+      txData: { type },
+    } = this.props;
     const { metricsEvent } = this.context;
     metricsEvent({
       eventOpts: {
         category: 'Transactions',
         action: 'Sign Request',
         name: 'Cancel Sig Request Via Notification Close',
+      },
+      customVariables: {
+        type,
       },
     });
     clearConfirmTransaction();
@@ -58,21 +65,43 @@ export default class SignatureRequest extends PureComponent {
       fromAccount,
       txData: {
         msgParams: { data, origin },
+        type,
       },
       cancel,
       sign,
     } = this.props;
     const { address: fromAddress } = fromAccount;
     const { message, domain = {} } = JSON.parse(data);
+    const { metricsEvent } = this.context;
 
     const onSign = (event) => {
       window.removeEventListener('beforeunload', this._beforeUnload);
       sign(event);
+      metricsEvent({
+        eventOpts: {
+          category: 'Transactions',
+          action: 'Sign Request',
+          name: 'Confirm',
+        },
+        customVariables: {
+          type,
+        },
+      });
     };
 
     const onCancel = (event) => {
       window.removeEventListener('beforeunload', this._beforeUnload);
       cancel(event);
+      metricsEvent({
+        eventOpts: {
+          category: 'Transactions',
+          action: 'Sign Request',
+          name: 'Cancel',
+        },
+        customVariables: {
+          type,
+        },
+      });
     };
 
     return (
