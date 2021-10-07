@@ -48,9 +48,11 @@ const validateMaxPriorityFee = (
 const validateMaxFee = (
   isFeeMarketGasEstimate,
   maxFeePerGasToUse,
+  maxPriorityFeeError,
   maxPriorityFeePerGasToUse,
   supportsEIP1559,
 ) => {
+  if (maxPriorityFeeError) return undefined;
   if (
     (supportsEIP1559 || isFeeMarketGasEstimate) &&
     bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)
@@ -78,11 +80,10 @@ const getMaxPriorityFeeWarning = (
   gasFeeEstimates,
   isFeeMarketGasEstimate,
   isGasEstimatesLoading,
-  maxPriorityFeeError,
   maxPriorityFeePerGasToUse,
 ) => {
-  if (maxPriorityFeeError || !isFeeMarketGasEstimate) return undefined;
   if (
+    isFeeMarketGasEstimate &&
     !isGasEstimatesLoading &&
     bnLessThan(
       maxPriorityFeePerGasToUse,
@@ -107,9 +108,11 @@ const getMaxFeeWarning = (
   isGasEstimatesLoading,
   isFeeMarketGasEstimate,
   maxFeeError,
+  maxPriorityFeeError,
   maxFeePerGasToUse,
 ) => {
-  if (maxFeeError || !isFeeMarketGasEstimate) return undefined;
+  if (maxPriorityFeeError || maxFeeError || !isFeeMarketGasEstimate)
+    return undefined;
   if (
     !isGasEstimatesLoading &&
     bnLessThan(maxFeePerGasToUse, gasFeeEstimates?.low?.suggestedMaxFeePerGas)
@@ -173,6 +176,7 @@ export function useGasFeeErrors({
   const maxFeeError = validateMaxFee(
     isFeeMarketGasEstimate,
     maxFeePerGasToUse,
+    maxPriorityFeeError,
     maxPriorityFeePerGasToUse,
     supportsEIP1559,
   );
@@ -189,7 +193,6 @@ export function useGasFeeErrors({
     gasFeeEstimates,
     isFeeMarketGasEstimate,
     isGasEstimatesLoading,
-    maxPriorityFeeError,
     maxPriorityFeePerGasToUse,
   );
 
@@ -198,6 +201,7 @@ export function useGasFeeErrors({
     isGasEstimatesLoading,
     isFeeMarketGasEstimate,
     maxFeeError,
+    maxPriorityFeeError,
     maxFeePerGasToUse,
   );
 
