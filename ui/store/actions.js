@@ -408,9 +408,15 @@ export function connectHardware(deviceName, page, hdPath) {
       const { useLedgerLive } = getState().metamask;
 
       if (browserSupportsHid && deviceName === 'ledger' && !useLedgerLive) {
-        await window.navigator.hid.requestDevice({
-          filters: [{ vendorId: '0x2c97' }],
-        });
+        try {
+          await window.navigator.hid.requestDevice({
+            filters: [{ vendorId: '0x2c97' }],
+          });
+          await setLedgerWebHidPreference(true);
+        } catch (e) {
+          await setLedgerWebHidPreference(true);
+          throw e;
+        }
       }
 
       accounts = await promisifiedBackground.connectHardware(
@@ -2755,6 +2761,14 @@ export function setLedgerLivePreference(value) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
     await promisifiedBackground.setLedgerLivePreference(value);
+    dispatch(hideLoadingIndication());
+  };
+}
+
+export function setLedgerWebHidPreference(value) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    await promisifiedBackground.setLedgerWebHidPreference(value);
     dispatch(hideLoadingIndication());
   };
 }
