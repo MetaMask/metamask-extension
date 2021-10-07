@@ -181,6 +181,7 @@ describe('useGasFeeErrors', () => {
         expect(result.current.gasErrors.maxFee).toBe(
           GAS_FORM_ERRORS.MAX_FEE_IMBALANCE,
         );
+        expect(result.current.hasGasErrors).toBe(true);
       });
       it('does not return MAX_FEE_IMBALANCE error if maxPriorityFeePerGasToUse is 0', () => {
         const { result } = renderUseGasFeeErrorsHook({
@@ -225,8 +226,8 @@ describe('useGasFeeErrors', () => {
         expect(result.current.gasErrors.gasPrice).toBe(
           GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW,
         );
+        expect(result.current.hasGasErrors).toBe(true);
       });
-
       it('does not return gasPriceError if gasPrice is > 0', () => {
         const { result } = renderUseGasFeeErrorsHook();
         expect(result.current.gasErrors.gasPrice).toBeUndefined();
@@ -243,7 +244,6 @@ describe('useGasFeeErrors', () => {
       it('does not return maxPriorityFeeWarning if maxPriorityFee is > suggestedMaxPriorityFeePerGas', () => {
         const { result } = renderUseGasFeeErrorsHook();
         expect(result.current.gasWarnings.maxPriorityFee).toBeUndefined();
-        expect(result.current.hasGasErrors).toBe(false);
       });
       it('return maxPriorityFeeWarning if maxPriorityFee is < suggestedMaxPriorityFeePerGas', () => {
         const { result } = renderUseGasFeeErrorsHook({
@@ -284,7 +284,6 @@ describe('useGasFeeErrors', () => {
       it('does not return maxFeeWarning if maxFee is > suggestedMaxFeePerGas', () => {
         const { result } = renderUseGasFeeErrorsHook();
         expect(result.current.gasWarnings.maxFee).toBeUndefined();
-        expect(result.current.hasGasErrors).toBe(false);
       });
       it('return maxFeeWarning if maxFee is < suggestedMaxFeePerGas', () => {
         const { result } = renderUseGasFeeErrorsHook({
@@ -312,7 +311,6 @@ describe('useGasFeeErrors', () => {
           maxFeePerGasToUse: '1',
         });
         expect(result.current.gasWarnings.maxFee).toBeUndefined();
-        expect(result.current.hasGasErrors).toBe(false);
       });
     });
   });
