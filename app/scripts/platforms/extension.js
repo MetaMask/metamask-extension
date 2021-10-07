@@ -98,7 +98,7 @@ export default class ExtensionPlatform {
     } else if (versionParts.length === 4) {
       // On Firefox, the build type and build version are in the fourth part of the version.
       const [major, minor, patch, prerelease] = versionParts;
-      const matches = prerelease.match(/^(\w)+(\d)+$/u);
+      const matches = prerelease.match(/^(\w+)(\d)+$/u);
       if (matches === null) {
         throw new Error(`Version contains invalid prerelease: ${version}`);
       }
