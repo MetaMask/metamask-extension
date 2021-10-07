@@ -43,6 +43,9 @@
   "activityLog": {
     "message": "activity log"
   },
+  "addANetwork": {
+    "message": "Add a Network"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },

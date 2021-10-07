@@ -8,6 +8,7 @@ import {
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
   DEFAULT_ROUTE,
+  ADD_NETWORK_ROUTE,
 } from '../../../helpers/constants/routes';
 import ColorIndicator from '../../../components/ui/color-indicator';
 import { COLORS, SIZES } from '../../../helpers/constants/design-system';
@@ -47,7 +48,7 @@ export default class NetworksTab extends PureComponent {
   }
 
   renderSubHeader() {
-    const { setSelectedSettingsRpcUrl, setNetworksTabAddMode } = this.props;
+    const { history } = this.props;
 
     return (
       <div className="settings-page__sub-header">
@@ -59,8 +60,7 @@ export default class NetworksTab extends PureComponent {
             type="primary"
             onClick={(event) => {
               event.preventDefault();
-              setSelectedSettingsRpcUrl('');
-              setNetworksTabAddMode(true);
+              history.push(ADD_NETWORK_ROUTE);
             }}
           >
             {this.context.t('addNetwork')}
@@ -234,13 +234,7 @@ export default class NetworksTab extends PureComponent {
   }
 
   render() {
-    const {
-      setNetworksTabAddMode,
-      setSelectedSettingsRpcUrl,
-      history,
-      isFullScreen,
-      shouldRenderNetworkForm,
-    } = this.props;
+    const { isFullScreen, shouldRenderNetworkForm } = this.props;
 
     return (
       <div className="networks-tab__body">
@@ -253,9 +247,7 @@ export default class NetworksTab extends PureComponent {
                 type="primary"
                 onClick={(event) => {
                   event.preventDefault();
-                  setSelectedSettingsRpcUrl('');
-                  setNetworksTabAddMode(true);
-                  history.push(NETWORKS_FORM_ROUTE);
+                  global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
                 }}
               >
                 {this.context.t('addNetwork')}

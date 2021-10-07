@@ -24,6 +24,7 @@ import {
   SECURITY_ROUTE,
   SETTINGS_ROUTE,
   EXPERIMENTAL_ROUTE,
+  ADD_NETWORK_ROUTE,
 } from '../../helpers/constants/routes';
 import Settings from './settings.component';
 
@@ -38,6 +39,7 @@ const ROUTES_TO_I18N_KEYS = {
   [CONTACT_VIEW_ROUTE]: 'viewContact',
   [NETWORKS_ROUTE]: 'networks',
   [NETWORKS_FORM_ROUTE]: 'networks',
+  [ADD_NETWORK_ROUTE]: 'networks',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
   [EXPERIMENTAL_ROUTE]: 'experimental',
 };
