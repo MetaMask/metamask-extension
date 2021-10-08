@@ -20,6 +20,7 @@ const Popover = ({
   centerTitle,
 }) => {
   const t = useI18nContext();
+  const showHeader = title || onBack || subtitle || onClose;
   return (
     <div className="popover-container">
       {CustomBackground ? (
@@ -32,36 +33,38 @@ const Popover = ({
         ref={popoverRef}
       >
         {showArrow ? <div className="popover-arrow" /> : null}
-        <header className="popover-header">
-          <div
-            className={classnames(
-              'popover-header__title',
-              centerTitle ? 'center' : '',
-            )}
-          >
-            <h2 title={title}>
-              {onBack ? (
+        {showHeader && (
+          <header className="popover-header">
+            <div
+              className={classnames(
+                'popover-header__title',
+                centerTitle ? 'center' : '',
+              )}
+            >
+              <h2 title={title}>
+                {onBack ? (
+                  <button
+                    className="fas fa-chevron-left popover-header__button"
+                    title={t('back')}
+                    onClick={onBack}
+                  />
+                ) : null}
+                {title}
+              </h2>
+              {onClose ? (
                 <button
-                  className="fas fa-chevron-left popover-header__button"
-                  title={t('back')}
-                  onClick={onBack}
+                  className="fas fa-times popover-header__button"
+                  title={t('close')}
+                  data-testid="popover-close"
+                  onClick={onClose}
                 />
               ) : null}
-              {title}
-            </h2>
-            {onClose ? (
-              <button
-                className="fas fa-times popover-header__button"
-                title={t('close')}
-                data-testid="popover-close"
-                onClick={onClose}
-              />
+            </div>
+            {subtitle ? (
+              <p className="popover-header__subtitle">{subtitle}</p>
             ) : null}
-          </div>
-          {subtitle ? (
-            <p className="popover-header__subtitle">{subtitle}</p>
-          ) : null}
-        </header>
+          </header>
+        )}
         {children ? (
           <div className={classnames('popover-content', contentClassName)}>
             {children}
@@ -78,7 +81,7 @@ const Popover = ({
 };
 
 Popover.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   subtitle: PropTypes.string,
   children: PropTypes.node,
   footer: PropTypes.node,
