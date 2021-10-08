@@ -2903,6 +2903,18 @@
   "welcomeBack": {
     "message": "Welcome Back!"
   },
+  "welcomeExploreDescription": {
+    "message": "Store, send and spend crypto currencies and assets."
+  },
+  "welcomeExploreTitle": {
+    "message": "Explore decentralized apps"
+  },
+  "welcomeLoginDescription": {
+    "message": "Use your MetaMask to login to decentralized apps - no signup needed."
+  },
+  "welcomeLoginTitle": {
+    "message": "Say hello to your wallet"
+  },
   "welcomeToMetaMask": {
     "message": "Let's get started"
   },

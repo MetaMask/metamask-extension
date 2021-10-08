@@ -2,6 +2,7 @@ import EventEmitter from 'events';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { Carousel } from 'react-responsive-carousel';
 import Mascot from '../../../components/ui/mascot';
 import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography/typography';
@@ -13,6 +14,8 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setFirstTimeFlowType } from '../../../store/actions';
 import { INITIALIZE_METAMETRICS_OPT_IN_ROUTE } from '../../../helpers/constants/routes';
+
+// import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 
 export default function OnboardingWelcome() {
   const t = useI18nContext();
@@ -31,24 +34,68 @@ export default function OnboardingWelcome() {
 
   return (
     <div className="onboarding-welcome">
-      <Typography
-        variant={TYPOGRAPHY.H2}
-        align={TEXT_ALIGN.CENTER}
-        fontWeight={FONT_WEIGHT.BOLD}
-      >
-        {t('welcomeToMetaMask')}
-      </Typography>
-      <Typography align={TEXT_ALIGN.CENTER}>
-        {t('welcomeToMetaMaskIntro')}
-      </Typography>
-      <div className="onboarding-welcome__mascot">
-        <Mascot
-          animationEventEmitter={new EventEmitter()}
-          width="125"
-          height="125"
-        />
-      </div>
-      <ul>
+      <Carousel showThumbs={false} showStatus={false} showArrows>
+        <div>
+          <Typography
+            variant={TYPOGRAPHY.H2}
+            align={TEXT_ALIGN.CENTER}
+            fontWeight={FONT_WEIGHT.BOLD}
+          >
+            {t('welcomeToMetaMask')}
+          </Typography>
+          <Typography align={TEXT_ALIGN.CENTER}>
+            {t('welcomeToMetaMaskIntro')}
+          </Typography>
+          <div className="onboarding-welcome__mascot">
+            <Mascot
+              animationEventEmitter={new EventEmitter()}
+              width="250"
+              height="250"
+            />
+          </div>
+        </div>
+        <div>
+          <Typography
+            variant={TYPOGRAPHY.H2}
+            align={TEXT_ALIGN.CENTER}
+            fontWeight={FONT_WEIGHT.BOLD}
+          >
+            {t('welcomeExploreTitle')}
+          </Typography>
+          <Typography align={TEXT_ALIGN.CENTER}>
+            {t('welcomeExploreDescription')}
+          </Typography>
+          <div className="onboarding-welcome__image">
+            <img
+              src="/images/onboarding-welcome-say-hello.svg"
+              width="169"
+              height="237"
+              alt=""
+            />
+          </div>
+        </div>
+        <div>
+          <Typography
+            variant={TYPOGRAPHY.H2}
+            align={TEXT_ALIGN.CENTER}
+            fontWeight={FONT_WEIGHT.BOLD}
+          >
+            {t('welcomeLoginTitle')}
+          </Typography>
+          <Typography align={TEXT_ALIGN.CENTER}>
+            {t('welcomeLoginDescription')}
+          </Typography>
+          <div className="onboarding-welcome__image">
+            <img
+              src="/images/onboarding-welcome-decentralised-apps.svg"
+              width="327"
+              height="256"
+              alt=""
+            />
+          </div>
+        </div>
+      </Carousel>
+      <ul className="onboarding-welcome__buttons">
         <li>
           <Button type="primary" onClick={onCreateClick}>
             {t('onboardingCreateWallet')}
