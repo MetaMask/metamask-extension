@@ -1395,12 +1395,15 @@ export default class MetamaskController extends EventEmitter {
     // keyring's iframe and have the setting initialized properly
     // Optimistically called to not block Metamask login due to
     // Ledger Keyring GitHub downtime
-    this.setLedgerLivePreference(
-      this.preferencesController.getLedgerLivePreference(),
-    );
-    this.setLedgerWebHidPreference(
-      this.preferencesController.getLedgerWebHidPreference(),
-    );
+    const transportPreference = this.preferencesController.getLedgerTransportPreference();
+    if (transportPreference === 'ledgerLive') {
+      this.setLedgerLivePreference(true)
+    } else if (transportPreference === ' webhid') {
+      this.setLedgerWebHidPreference(true)
+    } else {
+      this.setLedgerLivePreference(false)
+      this.setLedgerWebHidPreference(false)
+    }
 
     return this.keyringController.fullUpdate();
   }
@@ -2904,14 +2907,14 @@ export default class MetamaskController extends EventEmitter {
    */
   async setLedgerLivePreference(bool) {
     const currentValue = this.preferencesController.getLedgerTransportPreference();
-    this.preferencesController.setLedgerLivePreference('ledgerLive');
+    this.preferencesController.setLedgerTransportPreference('ledgerLive');
 
     const keyring = await this.getKeyringForDevice('ledger');
     if (keyring?.updateTransportMethod) {
       return keyring.updateTransportMethod('ledgerLive').catch((e) => {
         // If there was an error updating the transport, we should
         // fall back to the original value
-        this.preferencesController.setLedgerLivePreference(currentValue);
+        this.preferencesController.setLedgerTransportPreference(currentValue);
         throw e;
       });
     }
@@ -2932,7 +2935,7 @@ export default class MetamaskController extends EventEmitter {
       return keyring.updateTransportMethod('webhid').catch((e) => {
         // If there was an error updating the transport, we should
         // fall back to the original value
-        this.preferencesController.setLedgerWebHidPreference(currentValue);
+        this.preferencesController.setLedgerTransportPreference(currentValue);
         throw e;
       });
     }

@@ -411,9 +411,9 @@ export function connectHardware(deviceName, page, hdPath) {
           await window.navigator.hid.requestDevice({
             filters: [{ vendorId: '0x2c97' }],
           });
-          await setLedgerWebHidPreference(true);
+          await promisifiedBackground.setLedgerWebHidPreference(true);
         } catch (e) {
-          await setLedgerWebHidPreference(true);
+          await promisifiedBackground.setLedgerWebHidPreference(false);
           throw e;
         }
       }
@@ -2760,14 +2760,6 @@ export function setLedgerLivePreference(value) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
     await promisifiedBackground.setLedgerLivePreference(value);
-    dispatch(hideLoadingIndication());
-  };
-}
-
-export function setLedgerWebHidPreference(value) {
-  return async (dispatch) => {
-    dispatch(showLoadingIndication());
-    await promisifiedBackground.setLedgerWebHidPreference(value);
     dispatch(hideLoadingIndication());
   };
 }
