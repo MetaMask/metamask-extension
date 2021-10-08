@@ -1,0 +1,50 @@
+.privacy-settings {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__header {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    max-width: 500px;
+    margin: 24px;
+  }
+
+  &__settings {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    max-width: 620px;
+    margin-bottom: 20px;
+
+    a {
+      color: $Blue-500;
+
+      &:hover {
+        cursor: pointer;
+        color: $Blue-300;
+      }
+    }
+  }
+
+  &__setting {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: left;
+    max-width: 430px;
+
+    &__toggle {
+      margin-left: 42px;
+    }
+  }
+
+  & button {
+    max-width: 50%;
+    padding: 15px;
+  }
+}
