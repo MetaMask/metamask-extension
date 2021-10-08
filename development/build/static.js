@@ -16,9 +16,12 @@ module.exports = function createStaticAssetTasks({
   shouldIncludeLockdown = true,
   buildType,
 }) {
-  const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
-    shouldIncludeLockdown,
-  );
+  const [
+    copyTargetsProd,
+    copyTargetsDev,
+    copyTargetsTest,
+    copyTargetsTestDev,
+  ] = getCopyTargets(shouldIncludeLockdown);
 
   const additionalBuildTargets = {
     [BuildTypes.beta]: [
@@ -32,6 +35,7 @@ module.exports = function createStaticAssetTasks({
   if (Object.keys(additionalBuildTargets).includes(buildType)) {
     copyTargetsProd.push(...additionalBuildTargets[buildType]);
     copyTargetsDev.push(...additionalBuildTargets[buildType]);
+    copyTargetsTest.push(...additionalBuildTargets[buildType]);
   }
 
   const prod = createTask(
@@ -40,6 +44,26 @@ module.exports = function createStaticAssetTasks({
       ...copyTargetsProd.map((target) => {
         return async function copyStaticAssets() {
           await performCopy(target);
+        };
+      }),
+    ),
+  );
+  const test = createTask(
+    'static:test',
+    composeSeries(
+      ...copyTargetsTest.map((target) => {
+        return async function copyStaticAssets() {
+          await performCopy(target);
+        };
+      }),
+    ),
+  );
+  const testDev = createTask(
+    'static:testDev',
+    composeSeries(
+      ...copyTargetsTestDev.map((target) => {
+        return async function copyStaticAssets() {
+          await setupLiveCopy(target);
         };
       }),
     ),
@@ -55,7 +79,7 @@ module.exports = function createStaticAssetTasks({
     ),
   );
 
-  return { dev, prod };
+  return { dev, prod, test, testDev };
 
   async function setupLiveCopy(target) {
     const pattern = target.pattern || '/**/*';
@@ -116,8 +140,8 @@ function getCopyTargets(shouldIncludeLockdown) {
       dest: `fonts`,
     },
     {
-      src: `./app/vendor/`,
-      dest: `vendor`,
+      src: `./app/vendor/trezor`,
+      dest: `vendor/trezor`,
     },
     {
       src: `./node_modules/@fortawesome/fontawesome-free/webfonts/`,
@@ -139,6 +163,10 @@ function getCopyTargets(shouldIncludeLockdown) {
     {
       src: `./node_modules/globalthis/dist/browser.js`,
       dest: `globalthis.js`,
+    },
+    {
+      src: `./app/mockServiceWorker.js`,
+      dest: `mockServiceWorker.js`,
     },
     {
       src: shouldIncludeLockdown
@@ -215,5 +243,42 @@ function getCopyTargets(shouldIncludeLockdown) {
     },
   ];
 
-  return [copyTargetsProd, copyTargetsDev];
+  const copyTargetsTest = [
+    ...allCopyTargets,
+    // empty files to suppress missing file errors
+    {
+      src: EMPTY_JS_FILE,
+      dest: `chromereload.js`,
+    },
+    // Must be at the root to ensure serivce worker is registered at root path
+    {
+      src: `./app/vendor/msw/mock-service-worker.js`,
+      dest: `mock-service-worker.js`,
+    },
+  ];
+
+  const copyTargetsTestDev = [
+    ...allCopyTargets,
+    {
+      src: './development',
+      pattern: '/chromereload.js',
+      dest: ``,
+    },
+    // empty files to suppress missing file errors
+    {
+      src: EMPTY_JS_FILE,
+      dest: `bg-libs.js`,
+    },
+    {
+      src: EMPTY_JS_FILE,
+      dest: `ui-libs.js`,
+    },
+    // Must be at the root to ensure serivce worker is registered at root path
+    {
+      src: `./app/vendor/msw/mock-service-worker.js`,
+      dest: 'mock-service-worker.js',
+    },
+  ];
+
+  return [copyTargetsProd, copyTargetsDev, copyTargetsTest, copyTargetsTestDev];
 }

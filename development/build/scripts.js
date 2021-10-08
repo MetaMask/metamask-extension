@@ -132,7 +132,11 @@ function createScriptTasks({
   return { dev, test, testDev, prod };
 
   function createTasksForBuildJsExtension({ taskPrefix, devMode, testing }) {
-    const standardEntryPoints = ['background', 'ui', 'content-script'];
+    const standardEntryPoints = [
+      testing ? 'setup-e2e-fetch-mocks' : 'background',
+      'ui',
+      'content-script',
+    ];
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
@@ -404,6 +408,16 @@ function createFactoredBuild({
             break;
           }
           case 'background': {
+            renderHtmlFile({
+              htmlName: 'background',
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              useLavamoat: false,
+            });
+            break;
+          }
+          case 'setup-e2e-fetch-mocks': {
             renderHtmlFile({
               htmlName: 'background',
               groupSet,
@@ -738,7 +752,10 @@ function renderHtmlFile({
   const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
     (label) => `./${label}.js`,
   );
-  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles, useLavamoat });
+  const htmlOutput = Sqrl.render(htmlTemplate, {
+    jsBundles,
+    useLavamoat,
+  });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

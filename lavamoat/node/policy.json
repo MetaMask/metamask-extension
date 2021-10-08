@@ -929,12 +929,8 @@
     },
     "acorn": {
       "globals": {
+        "console": true,
         "define": true
-      }
-    },
-    "acorn-dynamic-import": {
-      "packages": {
-        "acorn": true
       }
     },
     "acorn-jsx": {
@@ -945,7 +941,6 @@
     "acorn-node": {
       "packages": {
         "acorn": true,
-        "acorn-dynamic-import": true,
         "acorn-walk": true,
         "xtend": true
       }
