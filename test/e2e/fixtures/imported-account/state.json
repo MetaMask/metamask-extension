@@ -95,7 +95,7 @@
           "symbol": "LRC",
           "decimals": 18,
           "name": "Loopring",
-          "iconUrl": "https://airswap-token-images.s3.amazonaws.com/LRC.png",
+          "iconUrl": "",
           "aggregators": [
             "airswapLight",
             "bancor",
@@ -117,7 +117,7 @@
           "symbol": "UMA",
           "decimals": 18,
           "name": "UMA",
-          "iconUrl": "https://assets.coingecko.com/coins/images/10951/thumb/UMA.png?1586307916",
+          "iconUrl": "",
           "aggregators": [
             "bancor",
             "cmc",
@@ -138,7 +138,7 @@
           "symbol": "SUSHI",
           "decimals": 18,
           "name": "SushiSwap",
-          "iconUrl": "https://assets.coingecko.com/coins/images/12271/thumb/512x512_Logo_no_chop.png?1606986688",
+          "iconUrl": "",
           "aggregators": [
             "bancor",
             "cmc",
@@ -159,7 +159,7 @@
           "symbol": "CRV",
           "decimals": 18,
           "name": "Curve DAO Token",
-          "iconUrl": "https://assets.coingecko.com/coins/images/12124/thumb/Curve.png?1597369484",
+          "iconUrl": "",
           "aggregators": [
             "bancor",
             "cmc",
@@ -180,7 +180,7 @@
           "symbol": "COMP",
           "decimals": 18,
           "name": "Compound",
-          "iconUrl": "https://assets.coingecko.com/coins/images/10775/thumb/COMP.png?1592625425",
+          "iconUrl": "",
           "aggregators": [
             "bancor",
             "cmc",
@@ -201,7 +201,7 @@
           "symbol": "BAL",
           "decimals": 18,
           "name": "Balancer",
-          "iconUrl": "https://assets.coingecko.com/coins/images/11683/thumb/Balancer.png?1592792958",
+          "iconUrl": "",
           "aggregators": [
             "bancor",
             "cmc",
@@ -222,7 +222,7 @@
           "symbol": "MATIC",
           "decimals": 18,
           "name": "Polygon",
-          "iconUrl": "https://raw.githubusercontent.com/MetaMask/eth-contract-metadata/master/images/matic-network-logo.svg",
+          "iconUrl": "",
           "aggregators": [
             "airswapLight",
             "bancor",
@@ -243,7 +243,7 @@
           "symbol": "BAT",
           "decimals": 18,
           "name": "Basic Attention Tok",
-          "iconUrl": "https://s3.amazonaws.com/airswap-token-images/BAT.png",
+          "iconUrl": "",
           "aggregators": [
             "airswapLight",
             "bancor",
@@ -269,7 +269,7 @@
               "symbol": "LRC",
               "decimals": 18,
               "name": "Loopring",
-              "iconUrl": "https://airswap-token-images.s3.amazonaws.com/LRC.png",
+              "iconUrl": "",
               "aggregators": [
                 "airswapLight",
                 "bancor",
@@ -291,7 +291,7 @@
               "symbol": "UMA",
               "decimals": 18,
               "name": "UMA",
-              "iconUrl": "https://assets.coingecko.com/coins/images/10951/thumb/UMA.png?1586307916",
+              "iconUrl": "",
               "aggregators": [
                 "bancor",
                 "cmc",
@@ -312,7 +312,7 @@
               "symbol": "SUSHI",
               "decimals": 18,
               "name": "SushiSwap",
-              "iconUrl": "https://assets.coingecko.com/coins/images/12271/thumb/512x512_Logo_no_chop.png?1606986688",
+              "iconUrl": "",
               "aggregators": [
                 "bancor",
                 "cmc",
@@ -333,7 +333,7 @@
               "symbol": "CRV",
               "decimals": 18,
               "name": "Curve DAO Token",
-              "iconUrl": "https://assets.coingecko.com/coins/images/12124/thumb/Curve.png?1597369484",
+              "iconUrl": "",
               "aggregators": [
                 "bancor",
                 "cmc",
@@ -354,7 +354,7 @@
               "symbol": "COMP",
               "decimals": 18,
               "name": "Compound",
-              "iconUrl": "https://assets.coingecko.com/coins/images/10775/thumb/COMP.png?1592625425",
+              "iconUrl": "",
               "aggregators": [
                 "bancor",
                 "cmc",
@@ -375,7 +375,7 @@
               "symbol": "BAL",
               "decimals": 18,
               "name": "Balancer",
-              "iconUrl": "https://assets.coingecko.com/coins/images/11683/thumb/Balancer.png?1592792958",
+              "iconUrl": "",
               "aggregators": [
                 "bancor",
                 "cmc",
@@ -396,7 +396,7 @@
               "symbol": "MATIC",
               "decimals": 18,
               "name": "Polygon",
-              "iconUrl": "https://raw.githubusercontent.com/MetaMask/eth-contract-metadata/master/images/matic-network-logo.svg",
+              "iconUrl": "",
               "aggregators": [
                 "airswapLight",
                 "bancor",
@@ -417,7 +417,7 @@
               "symbol": "BAT",
               "decimals": 18,
               "name": "Basic Attention Tok",
-              "iconUrl": "https://s3.amazonaws.com/airswap-token-images/BAT.png",
+              "iconUrl": "",
               "aggregators": [
                 "airswapLight",
                 "bancor",
