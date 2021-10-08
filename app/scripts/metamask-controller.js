@@ -2903,12 +2903,12 @@ export default class MetamaskController extends EventEmitter {
    * @param {bool} bool - the value representing if the users wants to use Ledger Live
    */
   async setLedgerLivePreference(bool) {
-    const currentValue = this.preferencesController.getLedgerLivePreference();
-    this.preferencesController.setLedgerLivePreference(bool);
+    const currentValue = this.preferencesController.getLedgerTransportPreference();
+    this.preferencesController.setLedgerLivePreference('ledgerLive');
 
     const keyring = await this.getKeyringForDevice('ledger');
     if (keyring?.updateTransportMethod) {
-      return keyring.updateTransportMethod(bool).catch((e) => {
+      return keyring.updateTransportMethod('ledgerLive').catch((e) => {
         // If there was an error updating the transport, we should
         // fall back to the original value
         this.preferencesController.setLedgerLivePreference(currentValue);
@@ -2924,12 +2924,12 @@ export default class MetamaskController extends EventEmitter {
    * @param {bool} bool - the value representing if the users wants to use WebHid to connect to Ledger
    */
   async setLedgerWebHidPreference(bool) {
-    const currentValue = this.preferencesController.getLedgerWebHidPreference();
-    this.preferencesController.setLedgerWebHidPreference(bool);
+    const currentValue = this.preferencesController.getLedgerTransportPreference();
+    this.preferencesController.setLedgerTransportPreference('webhid');
 
     const keyring = await this.getKeyringForDevice('ledger');
     if (keyring?.updateTransportMethod) {
-      return keyring.updateTransportMethod(undefined, bool).catch((e) => {
+      return keyring.updateTransportMethod('webhid').catch((e) => {
         // If there was an error updating the transport, we should
         // fall back to the original value
         this.preferencesController.setLedgerWebHidPreference(currentValue);

@@ -28,7 +28,7 @@ export const mapStateToProps = (state) => {
     threeBoxDisabled,
     useNonceField,
     ipfsGateway,
-    useLedgerLive,
+    ledgerTransportType,
     dismissSeedBackUpReminder,
   } = metamask;
   const { showFiatInTestnets, autoLockTimeLimit } = getPreferences(state);
@@ -43,7 +43,7 @@ export const mapStateToProps = (state) => {
     threeBoxDisabled,
     useNonceField,
     ipfsGateway,
-    useLedgerLive,
+    ledgerTransportType,
     dismissSeedBackUpReminder,
   };
 };

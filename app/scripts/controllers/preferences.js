@@ -76,7 +76,7 @@ export default class PreferencesController {
       // ENS decentralized website resolution
       ipfsGateway: 'dweb.link',
       infuraBlocked: null,
-      useLedgerLive: false,
+      ledgerTransportType: '',
       ...opts.initState,
     };
 
@@ -711,39 +711,21 @@ export default class PreferencesController {
   }
 
   /**
-   * A setter for the `useLedgerLive` property
-   * @param {bool} useLedgerLive - Value for ledger live support
-   * @returns {Promise<string>} A promise of the update to useLedgerLive
-   */
-  async setLedgerLivePreference(useLedgerLive) {
-    this.store.updateState({ useLedgerLive });
-    return useLedgerLive;
-  }
-
-  /**
-   * A getter for the `useLedgerLive` property
-   * @returns {boolean} User preference of using Ledger Live
-   */
-  getLedgerLivePreference() {
-    return this.store.getState().useLedgerLive;
-  }
-
-  /**
    * A setter for the `useWebHid` property
-   * @param {bool} useWebHid - Whether the user wants to use WebHid to connect their ledger
+   * @param {string} ledgerTransportType - Either 'ledgerLive' or 'webhid'
    * @returns {Promise<string>} A promise of the update to useWebHid
    */
-  async setLedgerWebHidPreference(useWebHidForLedger) {
-    this.store.updateState({ useWebHidForLedger });
-    return useWebHidForLedger;
+  async setLedgerTransportPreference(ledgerTransportType) {
+    this.store.updateState({ ledgerTransportType });
+    return ledgerTransportType;
   }
 
   /**
-   * A getter for the `useWebHidForLedger` property
+   * A getter for the `ledgerTransportType` property
    * @returns {boolean} User preference of using WebHid to connect Ledger
    */
-  getLedgerWebHidPreference() {
-    return this.store.getState().useWebHidForLedger;
+  getLedgerTransportPreference() {
+    return this.store.getState().ledgerTransportType;
   }
 
   /**
