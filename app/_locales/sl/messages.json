@@ -823,9 +823,6 @@
   "searchTokens": {
     "message": "Iskanje žetonov"
   },
-  "secretBackupPhrase": {
-    "message": "Skrivno geslo za varnostno kopiranje"
-  },
   "secretBackupPhraseDescription": {
     "message": "Vaše skrivno geslo za varnostno kopiranje olajša varnostno kopiranje in obnovitev računa."
   },

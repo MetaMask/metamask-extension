@@ -799,9 +799,6 @@
   "revealSeedWordsDescription": {
     "message": "При зміні браузера або комп'ютера, вам знадобиться seed-фраза для отримання доступу до ваших облікових записів. Збережіть її у надійному місці."
   },
-  "revealSeedWordsTitle": {
-    "message": "Мнемонічна фраза"
-  },
   "revealSeedWordsWarning": {
     "message": "Ці слова можуть бути використані, щоб вкрасти всі ваші облікові записи."
   },
@@ -837,9 +834,6 @@
   },
   "searchTokens": {
     "message": "Шукати токени"
-  },
-  "secretBackupPhrase": {
-    "message": "Секретна резервна фраза"
   },
   "secretBackupPhraseDescription": {
     "message": "Ваша секретна резервна фраза дозволяє легко створити резервну копію та відновити обліковий запис."
@@ -1129,9 +1123,6 @@
   },
   "visitWebSite": {
     "message": "Відвідайте наш веб-сайт"
-  },
-  "walletSeed": {
-    "message": "Seed гаманця"
   },
   "welcome": {
     "message": "Ласкаво просимо до MetaMask"

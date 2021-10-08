@@ -1527,9 +1527,6 @@
   "revealSeedWordsDescription": {
     "message": "Si alguna vez cambia de explorador o de equipo, necesitará esta frase secreta de recuperación para acceder a sus cuentas. Guárdela en un lugar seguro y secreto."
   },
-  "revealSeedWordsTitle": {
-    "message": "Frase secreta de recuperación"
-  },
   "revealSeedWordsWarning": {
     "message": "Estas palabras pueden usarse para robar todas sus cuentas."
   },
@@ -1571,9 +1568,6 @@
   },
   "searchTokens": {
     "message": "Buscar tokens"
-  },
-  "secretBackupPhrase": {
-    "message": "Frase secreta de respaldo"
   },
   "secretBackupPhraseDescription": {
     "message": "La frase secreta de respaldo facilita la creación de una copia de seguridad y la restauración de su cuenta."
@@ -2391,9 +2385,6 @@
   },
   "walletConnectionGuide": {
     "message": "nuestra guía de conexión de la cartera de hardware"
-  },
-  "walletSeed": {
-    "message": "Frase secreta de recuperación"
   },
   "walletSeedRestore": {
     "message": "Frase secreta de recuperación de la cartera"

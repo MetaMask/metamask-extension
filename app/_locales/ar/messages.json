@@ -792,9 +792,6 @@
   "revealSeedWordsDescription": {
     "message": "إذا كنت تنوي تغيير المتصفحات أو نقل أجهزة الكمبيوتر في أي وقت، فسوف تحتاج إلى عبارة الأمان هذه للوصول إلى حساباتك. احفظها في مكان آمن وسري."
   },
-  "revealSeedWordsTitle": {
-    "message": "عبارة الأمان"
-  },
   "revealSeedWordsWarning": {
     "message": "يمكن استخدام هذه الكلمات لسرقة جميع حساباتك."
   },
@@ -830,9 +827,6 @@
   },
   "searchTokens": {
     "message": "البحث عن العملات الرمزية"
-  },
-  "secretBackupPhrase": {
-    "message": "الجملة الاحتياطية السرية"
   },
   "secretBackupPhraseDescription": {
     "message": "تجعل عبارة النسخ الاحتياطي السرية الخاصة بك من السهل إجراء نسخ احتياطي واستعادة حسابك."
@@ -1122,9 +1116,6 @@
   },
   "visitWebSite": {
     "message": "قم بزيارة موقعنا على الإنترنت"
-  },
-  "walletSeed": {
-    "message": "بذرة المحفظة"
   },
   "welcome": {
     "message": "مرحباً بك في MetaMask"

@@ -1891,9 +1891,6 @@
   "scanQrCode": {
     "message": "Scan QR Code"
   },
-  "scanSRPQRCode": {
-    "message": "Or scan Secret Recovery Phrase QR code"
-  },
   "scrollDown": {
     "message": "Scroll down"
   },

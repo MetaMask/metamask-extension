@@ -790,9 +790,6 @@
   "revealSeedWordsDescription": {
     "message": "Ukoliko ikad promenite pregledač ili kompjuter, trebaće vam ova šifra za oporavak naloga (seed phrase) kako biste pristupili svojim nalozima. Čuvajte je na bezbednom i tajnom mestu."
   },
-  "revealSeedWordsTitle": {
-    "message": "Seed fraza"
-  },
   "revealSeedWordsWarning": {
     "message": "Ove reči se mogu iskoristiti za krađu svih vaših naloga."
   },
@@ -828,9 +825,6 @@
   },
   "searchTokens": {
     "message": "Pretražite tokene"
-  },
-  "secretBackupPhrase": {
-    "message": "Tajna rezervna kopija fraze"
   },
   "secretBackupPhraseDescription": {
     "message": "Vaša tajna fraza za rezervnu kopiju olakšava pravljenje rezervne kopije i vraćanje naloga u prethodno stanje."
@@ -1114,9 +1108,6 @@
   },
   "visitWebSite": {
     "message": "Posetite našu veb lokaciju"
-  },
-  "walletSeed": {
-    "message": "Šifra za oporavak novčanika"
   },
   "welcome": {
     "message": "Dobro došli na MetaMask"

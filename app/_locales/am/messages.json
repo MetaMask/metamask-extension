@@ -796,9 +796,6 @@
   "revealSeedWordsDescription": {
     "message": "ማሰሺያዎችን ከቀየሩ ወይም ኮምፒዩተሮቸን ከአንድ ቦታ ወደ ሌላ ቦታ ካንቀሳቀሱ፣ ወደ መለያዎችዎ ለመድረስ ይህ የዘር ሐረግ ያስፈልግዎታል። ደህንነቱና ሚስጥራዊነቱ በተጠበቀ ቦታ ያስቀምጧቸው።"
   },
-  "revealSeedWordsTitle": {
-    "message": "የዘር ሐረግ"
-  },
   "revealSeedWordsWarning": {
     "message": "እነዚህ ቃላት ሁሉንም መለያዎችዎን ለመስረቅ ሊውሉ ይችላሉ።"
   },
@@ -834,9 +831,6 @@
   },
   "searchTokens": {
     "message": "ተለዋጭ ስሞችን ፈልግ"
-  },
-  "secretBackupPhrase": {
-    "message": "ሚስጥራዊ የመጠባበቂያ ምዕራፍ"
   },
   "secretBackupPhraseDescription": {
     "message": "ሚስጥራዊ የመጠባበቂያ ሐረግዎ መለያዎን መጠባበቂያ ለመያዝና ወደነበረበት ለመመለስ ቀላል ያደርገዋል።"
@@ -1126,9 +1120,6 @@
   },
   "visitWebSite": {
     "message": "ድረ ገጻችንን ይጎብኙ"
-  },
-  "walletSeed": {
-    "message": "የቋት ዘር"
   },
   "welcome": {
     "message": "ወደ MetaMask እንኳን ደህና መጡ"

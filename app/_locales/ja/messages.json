@@ -1527,9 +1527,6 @@
   "revealSeedWordsDescription": {
     "message": "ブラウザーを変更した場合や、コンピューターを移動した場合は、自分のアカウントにアクセスするためにこのシークレット リカバリー フレーズが必要になります。安全で秘密の場所に保管してください。"
   },
-  "revealSeedWordsTitle": {
-    "message": "シークレット リカバリー フレーズ"
-  },
   "revealSeedWordsWarning": {
     "message": "これらの単語を使用すると、すべてのアカウントを窃取することができます。"
   },
@@ -1571,9 +1568,6 @@
   },
   "searchTokens": {
     "message": "トークンの検索"
-  },
-  "secretBackupPhrase": {
-    "message": "秘密のバックアップ フレーズ"
   },
   "secretBackupPhraseDescription": {
     "message": "秘密のバックアップ フレーズを使用すると、アカウントのバックアップと復元が容易になります。"
@@ -2391,9 +2385,6 @@
   },
   "walletConnectionGuide": {
     "message": "当社のハードウェア ウォレット接続ガイド"
-  },
-  "walletSeed": {
-    "message": "シークレット リカバリー フレーズ"
   },
   "walletSeedRestore": {
     "message": "ウォレット シークレット リカバリー フレーズ"

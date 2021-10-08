@@ -780,9 +780,6 @@
   "revealSeedWordsDescription": {
     "message": "Hvis du nogensinde skifter browsere eller flytter computere, har du brug for denne backupsætning for at få adgang til dine konti. Gem den et sted sikkert og hemmeligt."
   },
-  "revealSeedWordsTitle": {
-    "message": "Backupsætning"
-  },
   "revealSeedWordsWarning": {
     "message": "Disse ord kan bruges til at stjæle alle dine konti."
   },
@@ -818,9 +815,6 @@
   },
   "searchTokens": {
     "message": "Søg efter tokens"
-  },
-  "secretBackupPhrase": {
-    "message": "Hemmelig backup-sætning"
   },
   "secretBackupPhraseDescription": {
     "message": "Din hemmelige backup-sætning gør det nemt at lave backup og gendanne din konto."
@@ -1098,9 +1092,6 @@
   },
   "visitWebSite": {
     "message": "Besøg vores webside"
-  },
-  "walletSeed": {
-    "message": "Tegnebogs-seed"
   },
   "welcome": {
     "message": "Velkommen til MetaMask"
