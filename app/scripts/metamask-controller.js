@@ -841,8 +841,7 @@ export default class MetamaskController extends EventEmitter {
         this.unlockHardwareWalletAccount,
         this,
       ),
-      setLedgerLivePreference: nodeify(this.setLedgerLivePreference, this),
-      setLedgerWebHidPreference: nodeify(this.setLedgerWebHidPreference, this),
+      setLedgerTransportPreference: nodeify(this.setLedgerTransportPreference, this),
 
       // mobile
       fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
@@ -1481,12 +1480,15 @@ export default class MetamaskController extends EventEmitter {
     // keyring's iframe and have the setting initialized properly
     // Optimistically called to not block Metamask login due to
     // Ledger Keyring GitHub downtime
-    this.setLedgerLivePreference(
-      this.preferencesController.getLedgerLivePreference(),
-    );
-    this.setLedgerWebHidPreference(
-      this.preferencesController.getLedgerWebHidPreference(),
-    );
+    const transportPreference = this.preferencesController.getLedgerTransportPreference();
+    if (transportPreference === 'ledgerLive') {
+      this.setLedgerLivePreference(true)
+    } else if (transportPreference === ' webhid') {
+      this.setLedgerWebHidPreference(true)
+    } else {
+      this.setLedgerLivePreference(false)
+      // this.setLedgerWebHidPreference(false)
+    }
 
     return this.keyringController.fullUpdate();
   }
@@ -2988,37 +2990,17 @@ export default class MetamaskController extends EventEmitter {
    * Sets the Ledger Live preference to use for Ledger hardware wallet support
    * @param {bool} bool - the value representing if the users wants to use Ledger Live
    */
-  async setLedgerLivePreference(bool) {
+  async setLedgerTransportPreference(transportType) {
     const currentValue = this.preferencesController.getLedgerTransportPreference();
-    this.preferencesController.setLedgerLivePreference('ledgerLive');
+    const newValue = 
+    this.preferencesController.setLedgerTransportPreference(transportType);
 
     const keyring = await this.getKeyringForDevice('ledger');
     if (keyring?.updateTransportMethod) {
-      return keyring.updateTransportMethod('ledgerLive').catch((e) => {
+      return keyring.updateTransportMethod(transportType).catch((e) => {
         // If there was an error updating the transport, we should
         // fall back to the original value
-        this.preferencesController.setLedgerLivePreference(currentValue);
-        throw e;
-      });
-    }
-
-    return undefined;
-  }
-
-  /**
-   * Sets the WebHid preference to use for Ledger hardware wallet support
-   * @param {bool} bool - the value representing if the users wants to use WebHid to connect to Ledger
-   */
-  async setLedgerWebHidPreference(bool) {
-    const currentValue = this.preferencesController.getLedgerTransportPreference();
-    this.preferencesController.setLedgerTransportPreference('webhid');
-
-    const keyring = await this.getKeyringForDevice('ledger');
-    if (keyring?.updateTransportMethod) {
-      return keyring.updateTransportMethod('webhid').catch((e) => {
-        // If there was an error updating the transport, we should
-        // fall back to the original value
-        this.preferencesController.setLedgerWebHidPreference(currentValue);
+        this.preferencesController.setLedgerTransportPreference(currentValue);
         throw e;
       });
     }

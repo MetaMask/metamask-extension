@@ -412,9 +412,9 @@ export function connectHardware(deviceName, page, hdPath) {
           await window.navigator.hid.requestDevice({
             filters: [{ vendorId: '0x2c97' }],
           });
-          await setLedgerWebHidPreference(true);
+          await promisifiedBackground.setLedgerTransportPreference('webhid');
         } catch (e) {
-          await setLedgerWebHidPreference(true);
+          await promisifiedBackground.setLedgerTransportPreference('u2f');
           throw e;
         }
       }
@@ -2760,15 +2760,7 @@ export function getCurrentWindowTab() {
 export function setLedgerLivePreference(value) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
-    await promisifiedBackground.setLedgerLivePreference(value);
-    dispatch(hideLoadingIndication());
-  };
-}
-
-export function setLedgerWebHidPreference(value) {
-  return async (dispatch) => {
-    dispatch(showLoadingIndication());
-    await promisifiedBackground.setLedgerWebHidPreference(value);
+    await promisifiedBackground.setLedgerTransportPreference(value ? 'ledgerLive' : 'u2f');
     dispatch(hideLoadingIndication());
   };
 }
