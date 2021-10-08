@@ -105,7 +105,14 @@ export default class EditContact extends PureComponent {
               error={this.state.error}
               onChange={(e) => this.setState({ newAddress: e.target.value })}
               fullWidth
+              multiline
+              rows={3}
               margin="dense"
+              classes={{
+                inputMultiline:
+                  'address-book__view-contact__address__text-area',
+                inputRoot: 'address-book__view-contact__address',
+              }}
             />
           </div>
 

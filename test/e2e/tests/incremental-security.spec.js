@@ -80,8 +80,8 @@ describe('Incremental Security', function () {
         );
 
         // gets the current accounts address
-        const addressInput = await driver.findElement('.readonly-input__input');
-        const publicAddress = await addressInput.getAttribute('value');
+        const address = await driver.findElement('.qr-code__address');
+        const publicAddress = await address.getText();
 
         // wait for account modal to be visible
         const accountModal = await driver.findVisibleElement('span .modal');

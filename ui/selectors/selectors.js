@@ -321,7 +321,9 @@ export function getAccountsWithLabels(state) {
   return getMetaMaskAccountsOrdered(state).map(
     ({ address, name, balance }) => ({
       address,
-      addressLabel: `${name} (...${address.slice(address.length - 4)})`,
+      addressLabel: `${
+        name.length < 11 ? name : `${name.slice(0, 10)}...`
+      } (${address.slice(0, 5)}...${address.slice(address.length - 4)})`,
       label: name,
       balance,
     }),
