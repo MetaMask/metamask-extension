@@ -29,6 +29,7 @@ ignores:
   - "source-map-explorer"
   # development tool
   - "yarn-deduplicate"
+  - "improved-yarn-audit"
   # storybook
   - "@storybook/core"
   - "@storybook/addon-backgrounds"
