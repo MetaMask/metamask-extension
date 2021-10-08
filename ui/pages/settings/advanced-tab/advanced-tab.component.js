@@ -36,7 +36,7 @@ export default class AdvancedTab extends PureComponent {
     threeBoxDisabled: PropTypes.bool.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
-    useLedgerLive: PropTypes.bool.isRequired,
+    ledgerTransportType: PropTypes.bool.isRequired,
     setLedgerLivePreference: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
@@ -393,7 +393,7 @@ export default class AdvancedTab extends PureComponent {
 
   renderLedgerLiveControl() {
     const { t } = this.context;
-    const { useLedgerLive, setLedgerLivePreference } = this.props;
+    const { ledgerTransportType, setLedgerLivePreference } = this.props;
 
     return (
       <div className="settings-page__content-row">
@@ -406,8 +406,8 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
-              value={useLedgerLive}
-              onToggle={(value) => setLedgerLivePreference(!value)}
+              value={ledgerTransportType === 'ledgerLive'}
+              onToggle={(value) => setLedgerLivePreference(value ? 'ledgerLive' : '')}
               offLabel={t('off')}
               onLabel={t('on')}
               disabled={getPlatform() === PLATFORM_FIREFOX}

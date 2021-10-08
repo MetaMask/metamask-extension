@@ -11,7 +11,7 @@ export default class SelectHardware extends Component {
   static propTypes = {
     connectToHardwareWallet: PropTypes.func.isRequired,
     browserSupported: PropTypes.bool.isRequired,
-    useLedgerLive: PropTypes.bool.isRequired,
+    ledgerTransportType: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -136,7 +136,7 @@ export default class SelectHardware extends Component {
 
   renderLedgerTutorialSteps() {
     const steps = [];
-    if (this.props.useLedgerLive) {
+    if (this.props.ledgerTransportType !== 'ledgerLive') {
       steps.push({
         title: this.context.t('step1LedgerWallet'),
         message: this.context.t('step1LedgerWalletMsg', [
