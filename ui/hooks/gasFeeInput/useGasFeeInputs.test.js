@@ -1,31 +1,31 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
-import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
-import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
-import { TRANSACTION_ENVELOPE_TYPES } from '../../shared/constants/transaction';
+import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { multiplyCurrencies } from '../../../shared/modules/conversion.utils';
+import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
 import {
   getConversionRate,
   getNativeCurrency,
-} from '../ducks/metamask/metamask';
+} from '../../ducks/metamask/metamask';
 import {
   checkNetworkAndAccountSupports1559,
   getCurrentCurrency,
   getShouldShowFiat,
   txDataSelector,
   getSelectedAccount,
-} from '../selectors';
+} from '../../selectors';
 
-import { ETH, PRIMARY } from '../helpers/constants/common';
+import { ETH, PRIMARY } from '../../helpers/constants/common';
 
-import { useGasFeeEstimates } from './useGasFeeEstimates';
+import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
+import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import { useGasFeeInputs } from './useGasFeeInputs';
-import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
 
-jest.mock('./useUserPreferencedCurrency', () => ({
+jest.mock('../useUserPreferencedCurrency', () => ({
   useUserPreferencedCurrency: jest.fn(),
 }));
 
-jest.mock('./useGasFeeEstimates', () => ({
+jest.mock('../useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
 }));
 

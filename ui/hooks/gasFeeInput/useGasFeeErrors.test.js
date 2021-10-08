@@ -2,17 +2,17 @@ import { LEGACY_GAS_PRICES_API_URL } from '@metamask/controllers';
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 
-import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
-import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
+import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 import {
   checkNetworkAndAccountSupports1559,
   getSelectedAccount,
-} from '../selectors';
+} from '../../selectors';
 
+import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import { useGasFeeErrors } from './useGasFeeErrors';
-import { useGasFeeEstimates } from './useGasFeeEstimates';
 
-jest.mock('./useGasFeeEstimates', () => ({
+jest.mock('../useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
 }));
 
