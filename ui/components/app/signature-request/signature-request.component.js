@@ -64,7 +64,7 @@ export default class SignatureRequest extends PureComponent {
     const {
       fromAccount,
       txData: {
-        msgParams: { data, origin },
+        msgParams: { data, origin, version },
         type,
       },
       cancel,
@@ -85,6 +85,7 @@ export default class SignatureRequest extends PureComponent {
         },
         customVariables: {
           type,
+          version,
         },
       });
     };
@@ -100,6 +101,7 @@ export default class SignatureRequest extends PureComponent {
         },
         customVariables: {
           type,
+          version,
         },
       });
     };
