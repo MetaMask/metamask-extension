@@ -7,11 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.2.1]
-### Uncategorized
-- use improved-yarn-audit and exclude 1002401 and 1002581 ([#12310](https://github.com/MetaMask/metamask-extension/pull/12310))
-- Update `immer` from v8 to v9 ([#12303](https://github.com/MetaMask/metamask-extension/pull/12303))
-- Do case-insensitive comparisons of token addresses in view-quote and build-quote ([#12315](https://github.com/MetaMask/metamask-extension/pull/12315))
-- Restoring mobile sync warning text ([#12284](https://github.com/MetaMask/metamask-extension/pull/12284))
+### Fixed
+- [#12315](https://github.com/MetaMask/metamask-extension/pull/12315): Fix ERC-20 token swaps
+- [#12284](https://github.com/MetaMask/metamask-extension/pull/12284): Restoring notice regarding mobile sync status to sync page
 
 ## [10.2.0]
 ### Added
