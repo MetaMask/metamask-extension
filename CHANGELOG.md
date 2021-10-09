@@ -7,14 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.2.2]
-### Uncategorized
-- Update warning message when Ledger app has contract data/blind signing setting disabled ([#12256](https://github.com/MetaMask/metamask-extension/pull/12256))
-- removing the icronUrl in tokens fron the state.json for fixtures ([#12309](https://github.com/MetaMask/metamask-extension/pull/12309))
-- Version v10.2.1 RC ([#12317](https://github.com/MetaMask/metamask-extension/pull/12317))
-- [skip e2e] Updating v10.2.1 changelog ([#12318](https://github.com/MetaMask/metamask-extension/pull/12318))
-- Version v10.2.1
-- use improved-yarn-audit and exclude 1002401 and 1002581 ([#12310](https://github.com/MetaMask/metamask-extension/pull/12310))
-- Update `immer` from v8 to v9 ([#12303](https://github.com/MetaMask/metamask-extension/pull/12303))
+### Changed
+- [#12256](https://github.com/MetaMask/metamask-extension/pull/12256): Updating instruction step when Ledger app has contract data or blind signing setting disabled
 
 ## [10.2.1]
 ### Fixed
