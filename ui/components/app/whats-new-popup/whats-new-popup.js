@@ -103,7 +103,6 @@ const renderFirstNotification = (notification, idRefMap, history, isLast) => {
         <Button
           type="secondary"
           className="whats-new-popup__button"
-          rounded
           onClick={actionFunction}
         >
           {actionText}

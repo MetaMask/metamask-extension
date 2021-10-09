@@ -1112,15 +1112,6 @@
   "viewContact": {
     "message": "Pogledaj kontakt"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Pogledaj na $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Pogledaj na Etherscan-u"
-  },
-  "viewinExplorer": {
-    "message": "Pogledati u Explorer-u"
-  },
   "visitWebSite": {
     "message": "Posetite našu veb lokaciju"
   },

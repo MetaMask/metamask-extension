@@ -80,7 +80,6 @@ export default function ConfirmRecoveryPhrase({ seedPhrase = '' }) {
       />
       <div className="recovery-phrase__footer">
         <Button
-          rounded
           type="primary"
           className="recovery-phrase__footer--button"
           onClick={() => {

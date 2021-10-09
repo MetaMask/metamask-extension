@@ -139,7 +139,7 @@ export default function ItemList({
                   )}
               </div>
               {result.notImported && (
-                <Button type="confirm" onClick={onClick} rounded>
+                <Button type="confirm" onClick={onClick}>
                   {t('import')}
                 </Button>
               )}

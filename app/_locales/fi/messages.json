@@ -1124,15 +1124,6 @@
   "viewContact": {
     "message": "Näytä yhteyshenkilö"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Tarkastele kohdassa $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Näytä Etherscanissa"
-  },
-  "viewinExplorer": {
-    "message": "Tarkastele Explorerissa"
-  },
   "visitWebSite": {
     "message": "Vieraile verkkosivustollamme"
   },

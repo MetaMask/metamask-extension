@@ -128,6 +128,7 @@ export default class ConfirmTransactionBase extends Component {
     showLedgerSteps: PropTypes.bool.isRequired,
     isFirefox: PropTypes.bool.isRequired,
     nativeCurrency: PropTypes.string,
+    supportsEIP1559: PropTypes.bool,
   };
 
   state = {
@@ -309,6 +310,7 @@ export default class ConfirmTransactionBase extends Component {
       isMainnet,
       showLedgerSteps,
       isFirefox,
+      supportsEIP1559,
     } = this.props;
     const { t } = this.context;
 
@@ -541,15 +543,17 @@ export default class ConfirmTransactionBase extends Component {
                   ) : (
                     ''
                   )}
-                  <GasTiming
-                    maxPriorityFeePerGas={hexWEIToDecGWEI(
-                      maxPriorityFeePerGas ||
-                        txData.txParams.maxPriorityFeePerGas,
-                    )}
-                    maxFeePerGas={hexWEIToDecGWEI(
-                      maxFeePerGas || txData.txParams.maxFeePerGas,
-                    )}
-                  />
+                  {supportsEIP1559 && (
+                    <GasTiming
+                      maxPriorityFeePerGas={hexWEIToDecGWEI(
+                        maxPriorityFeePerGas ||
+                          txData.txParams.maxPriorityFeePerGas,
+                      )}
+                      maxFeePerGas={hexWEIToDecGWEI(
+                        maxFeePerGas || txData.txParams.maxFeePerGas,
+                      )}
+                    />
+                  )}
                 </>
               }
             />,

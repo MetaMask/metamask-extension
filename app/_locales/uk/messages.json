@@ -1127,15 +1127,6 @@
   "viewContact": {
     "message": "Переглянути контакт"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Дивитись на $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Дивитись на Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Дивитись в Explorer"
-  },
   "visitWebSite": {
     "message": "Відвідайте наш веб-сайт"
   },

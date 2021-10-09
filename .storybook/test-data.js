@@ -1,5 +1,3 @@
-import { TRANSACTION_STATUSES } from '../shared/constants/transaction';
-
 const state = {
   invalidCustomNetwork: {
     state: 'CLOSED',
@@ -16,11 +14,109 @@ const state = {
     url: 'https://metamask.github.io/test-dapp/',
   },
   metamask: {
+    tokenList: {
+      '0x6b175474e89094c44da98b954eedeac495271d0f': {
+        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+        symbol: 'META',
+        decimals: 18,
+        image: 'metamark.svg',
+        unlisted: false
+      },
+      '0xB8c77482e45F1F44dE1745F52C74426C631bDD52': {
+        address: '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
+        symbol: '0X',
+        decimals: 18,
+        image: '0x.svg',
+        unlisted: false
+      },
+      '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
+        address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+        symbol: 'AST',
+        decimals: 18,
+        image: 'ast.png',
+        unlisted: false
+      },
+      '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2': {
+        address: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
+        symbol: 'BAT',
+        decimals: 18,
+        image: 'BAT_icon.svg',
+        unlisted: false
+      },
+      '0xe83cccfabd4ed148903bf36d4283ee7c8b3494d1': {
+        address: '0xe83cccfabd4ed148903bf36d4283ee7c8b3494d1',
+        symbol: 'CVL',
+        decimals: 18,
+        image: 'CVL_token.svg',
+        unlisted: false
+      },
+      '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': {
+        address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
+        symbol: 'GLA',
+        decimals: 18,
+        image: 'gladius.svg',
+        unlisted: false
+      },
+      '0x467Bccd9d29f223BcE8043b84E8C8B282827790F': {
+        address: '0x467Bccd9d29f223BcE8043b84E8C8B282827790F',
+        symbol: 'GNO',
+        decimals: 18,
+        image: 'gnosis.svg',
+        unlisted: false
+      },
+      '0xff20817765cb7f73d4bde2e66e067e58d11095c2': {
+        address: '0xff20817765cb7f73d4bde2e66e067e58d11095c2',
+        symbol: 'OMG',
+        decimals: 18,
+        image: 'omg.jpg',
+        unlisted: false
+      },
+      '0x8e870d67f660d95d5be530380d0ec0bd388289e1': {
+        address: '0x8e870d67f660d95d5be530380d0ec0bd388289e1',
+        symbol: 'WED',
+        decimals: 18,
+        image: 'wed.png',
+        unlisted: false
+      },
+    },
     networkDetails: {
       EIPS: {
         1559: true,
       },
     },
+    gasFeeEstimates: '0x5208',
+    swapsState: {
+      quotes: {},
+      fetchParams: null,
+      tokens: null,
+      tradeTxId: null,
+      approveTxId: null,
+      quotesLastFetched: null,
+      customMaxGas: '',
+      customGasPrice: null,
+      selectedAggId: null,
+      customApproveTxData: '',
+      errorKey: '',
+      topAggId: null,
+      routeState: '',
+      swapsFeatureIsLive: false,
+      swapsQuoteRefreshTime: 60000,
+    },
+    accountArray: [
+      {
+        name: 'This is a Really Long Account Name',
+        address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+        index: 0,
+        balance: '0x176e5b6f173ebe66',
+      },
+      {
+        name: 'Account 2',
+        address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
+        index: 1,
+        balance: '0x2d3142f5000',
+      },
+    ],
+    connectedAccounts: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
     isInitialized: true,
     isUnlocked: true,
     isAccountMenuOpen: false,
@@ -102,12 +198,6 @@ const state = {
           isEns: false,
         },
       },
-    },
-    recipient: {
-      address: '0x39a4e4Af7cCB654dB9500F258c64781c8FbD39F0',
-      nickname: 'John Doe',
-      error: '',
-      warning: '',
     },
     addresses: [
       {
@@ -364,6 +454,15 @@ const state = {
               path: '/firstRetryBlockNumber',
               timestamp: 1629582711878,
               value: '0x9c2686',
+            },
+          ],
+          [
+            {
+              note: 'txStateManager: setting status to confirmed',
+              op: 'replace',
+              path: '/status',
+              timestamp: 1629582721178,
+              value: 'confirmed',
             },
           ],
           [
@@ -794,7 +893,7 @@ const state = {
       '0xaD6D458402F60fD3Bd25163575031ACDce07538D': './sai.svg',
     },
     hiddenTokens: [],
-    suggestedTokens: {},
+    suggestedAssets: {},
     useNonceField: false,
     usePhishDetect: true,
     lostIdentities: {},
@@ -1164,6 +1263,11 @@ const state = {
       type: 'NATIVE',
       balance: '0x0',
       details: null,
+    },
+    stage: 'ADD_RECIPIENT',
+    amount: '3782dace9d900000',
+    gas: {
+      price: null,
     },
   },
   confirmTransaction: {

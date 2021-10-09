@@ -40,8 +40,6 @@ Commands:
                         e2e tests.
 
 Options:
-  --beta-version      If the build type is "beta", the beta version number.
-                                                           [number] [default: 0]
   --build-type        The "type" of build to create. One of: "beta", "main"
                                                       [string] [default: "main"]
   --lint-fence-files  Whether files with code fences should be linted after

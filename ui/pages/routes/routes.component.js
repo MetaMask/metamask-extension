@@ -31,6 +31,7 @@ import AppHeader from '../../components/app/app-header';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
+import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 
 import {
   IMPORT_TOKEN_ROUTE,
@@ -39,7 +40,6 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONNECT_ROUTE,
   DEFAULT_ROUTE,
-  INITIALIZE_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
   LOCK_ROUTE,
   MOBILE_SYNC_ROUTE,
@@ -53,6 +53,8 @@ import {
   BUILD_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
+  INITIALIZE_ROUTE,
+  ONBOARDING_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -62,6 +64,7 @@ import {
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { isBeta } from '../../helpers/utils/build-types';
 import ConfirmationPage from '../confirmation';
+import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -114,9 +117,11 @@ export default class Routes extends Component {
 
   renderRoutes() {
     const { autoLockTimeLimit, setLastActiveTime } = this.props;
-
     const routes = (
       <Switch>
+        {process.env.ONBOARDING_V2 && (
+          <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
+        )}
         <Route path={LOCK_ROUTE} component={Lock} exact />
         <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
@@ -225,7 +230,7 @@ export default class Routes extends Component {
 
     const isInitializing = Boolean(
       matchPath(location.pathname, {
-        path: INITIALIZE_ROUTE,
+        path: process.env.ONBOARDING_V2 ? ONBOARDING_ROUTE : INITIALIZE_ROUTE,
         exact: false,
       }),
     );
@@ -259,6 +264,17 @@ export default class Routes extends Component {
     );
 
     return isHandlingPermissionsRequest || isHandlingAddEthereumChainRequest;
+  }
+
+  showOnboardingHeader() {
+    const { location } = this.props;
+
+    return Boolean(
+      matchPath(location.pathname, {
+        path: ONBOARDING_ROUTE,
+        exact: false,
+      }),
+    );
   }
 
   render() {
@@ -314,6 +330,9 @@ export default class Routes extends Component {
               (this.onSwapsPage() && !this.onSwapsBuildQuotePage())
             }
           />
+        )}
+        {process.env.ONBOARDING_V2 && this.showOnboardingHeader() && (
+          <OnboardingAppHeader />
         )}
         <NetworkDropdown
           provider={provider}

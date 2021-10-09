@@ -1,0 +1,21 @@
+@import 'recovery-phrase/index';
+@import 'new-account/index';
+@import 'onboarding-app-header/index';
+@import 'secure-your-wallet/index';
+@import 'privacy-settings/index';
+
+.onboarding-flow {
+  width: 100%;
+  background-color: $white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__wrapper {
+    margin-top: 40px;
+    padding: 32px;
+    border: 1px solid $Grey-100;
+    border-radius: 20px;
+  }
+}

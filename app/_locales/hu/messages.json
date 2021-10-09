@@ -1117,15 +1117,6 @@
   "viewContact": {
     "message": "Névjegy megtekintése"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Megtekintés $1-kor"
-  },
-  "viewOnEtherscan": {
-    "message": "Nézze meg Etherscanen"
-  },
-  "viewinExplorer": {
-    "message": "Megtekintés Explorerben"
-  },
   "visitWebSite": {
     "message": "Látogass el weboldalunkra"
   },

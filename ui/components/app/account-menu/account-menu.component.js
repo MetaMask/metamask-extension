@@ -19,6 +19,7 @@ import {
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
 import SearchIcon from '../../ui/search-icon';
+import Button from '../../ui/button';
 
 import { isBeta } from '../../../helpers/utils/build-types';
 
@@ -324,7 +325,7 @@ export default class AccountMenu extends Component {
         <div className="account-menu__close-area" onClick={toggleAccountMenu} />
         <AccountMenuItem className="account-menu__header">
           {t('myAccounts')}
-          <button
+          <Button
             className="account-menu__lock-button"
             onClick={() => {
               lockMetamask();
@@ -332,7 +333,7 @@ export default class AccountMenu extends Component {
             }}
           >
             {t('lock')}
-          </button>
+          </Button>
         </AccountMenuItem>
         <div className="account-menu__divider" />
         <div className="account-menu__accounts-container">

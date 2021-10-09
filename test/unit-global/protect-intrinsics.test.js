@@ -1,5 +1,6 @@
 import 'ses/lockdown';
 import '../../app/scripts/lockdown-run';
+import '../../app/scripts/lockdown-more';
 import { strict as assert } from 'assert';
 
 // These are Agoric inventions, and we don't care about them.

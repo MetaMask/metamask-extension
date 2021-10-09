@@ -32,6 +32,7 @@ import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
+  SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
@@ -201,6 +202,7 @@ export default class MetamaskController extends EventEmitter {
     this.gasFeeController = new GasFeeController({
       interval: 10000,
       messenger: gasFeeMessenger,
+      clientId: SWAPS_CLIENT_ID,
       getProvider: () =>
         this.networkController.getProviderAndBlockTracker().provider,
       onNetworkStateChange: this.networkController.on.bind(

@@ -45,7 +45,7 @@ export const TYPOGRAPHY = {
   H7: 'h7',
   H8: 'h8',
   H9: 'h9',
-  Paragraph: 'paragraph',
+  Paragraph: 'p',
 };
 
 const NONE = 'none';
@@ -86,6 +86,13 @@ export const JUSTIFY_CONTENT = {
   SPACE_AROUND: 'space-around',
   SPACE_BETWEEN: 'space-between',
   SPACE_EVENLY: 'space-evenly',
+};
+
+export const FLEX_DIRECTION = {
+  ROW: 'row',
+  ROW_REVERSE: 'row-reverse',
+  COLUMN: 'column',
+  COLUMN_REVERSE: 'column-reverse',
 };
 
 export const DISPLAY = {

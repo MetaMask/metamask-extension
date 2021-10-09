@@ -2386,15 +2386,6 @@
   "viewMore": {
     "message": "더 보기"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "$1에서 보기"
-  },
-  "viewOnEtherscan": {
-    "message": "Etherscan에서 보기"
-  },
-  "viewinExplorer": {
-    "message": "탐색기에서 보기"
-  },
   "visitWebSite": {
     "message": "당사 웹사이트 방문하기"
   },
