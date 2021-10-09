@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Carousel } from 'react-responsive-carousel';
@@ -21,6 +21,7 @@ export default function OnboardingWelcome() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
+  const [eventEmitter] = useState(new EventEmitter());
 
   const onCreateClick = () => {
     dispatch(setFirstTimeFlowType('create'));
@@ -48,7 +49,7 @@ export default function OnboardingWelcome() {
           </Typography>
           <div className="onboarding-welcome__mascot">
             <Mascot
-              animationEventEmitter={new EventEmitter()}
+              animationEventEmitter={eventEmitter}
               width="250"
               height="250"
             />
