@@ -1251,7 +1251,7 @@
     "message": "Prior to clicking confirm:"
   },
   "ledgerLiveDialogStepFour": {
-    "message": "Enable smart contract data on your Ledger device"
+    "message": "Enable \"smart contract data\" or \"blind signing\" on your Ledger device"
   },
   "ledgerLiveDialogStepOne": {
     "message": "Enable Use Ledger Live under Settings > Advanced"
