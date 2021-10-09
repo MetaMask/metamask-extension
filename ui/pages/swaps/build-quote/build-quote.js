@@ -51,7 +51,10 @@ import {
   hexToDecimal,
 } from '../../../helpers/utils/conversions.util';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
-import { getURLHostName } from '../../../helpers/utils/util';
+import {
+  getURLHostName,
+  isEqualCaseInsensitive,
+} from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
@@ -169,8 +172,9 @@ export default function BuildQuote({
     shuffledTokensList,
   });
   const selectedToToken =
-    tokensToSearch.find(({ address }) => address === toToken?.address) ||
-    toToken;
+    tokensToSearch.find(({ address }) =>
+      isEqualCaseInsensitive(address, toToken?.address),
+    ) || toToken;
   const toTokenIsNotDefault =
     selectedToToken?.address &&
     !isSwapsDefaultTokenAddress(selectedToToken?.address, chainId);
@@ -226,8 +230,8 @@ export default function BuildQuote({
     }
     if (
       token?.address &&
-      !memoizedUsersTokens.find(
-        (usersToken) => usersToken.address === token.address,
+      !memoizedUsersTokens.find((usersToken) =>
+        isEqualCaseInsensitive(usersToken.address, token.address),
       )
     ) {
       fetchTokenBalance(token.address, selectedAccountAddress).then(
@@ -298,12 +302,12 @@ export default function BuildQuote({
   );
 
   const hideDropdownItemIf = useCallback(
-    (item) => item.address === fromTokenAddress,
+    (item) => isEqualCaseInsensitive(item.address, fromTokenAddress),
     [fromTokenAddress],
   );
 
-  const tokensWithBalancesFromToken = tokensWithBalances.find(
-    (token) => token.address === fromToken?.address,
+  const tokensWithBalancesFromToken = tokensWithBalances.find((token) =>
+    isEqualCaseInsensitive(token.address, fromToken?.address),
   );
   const previousTokensWithBalancesFromToken = usePrevious(
     tokensWithBalancesFromToken,
@@ -314,9 +318,10 @@ export default function BuildQuote({
       tokensWithBalancesFromToken?.address,
       chainId,
     );
-    const addressesAreTheSame =
-      tokensWithBalancesFromToken?.address ===
-      previousTokensWithBalancesFromToken?.address;
+    const addressesAreTheSame = isEqualCaseInsensitive(
+      tokensWithBalancesFromToken?.address,
+      previousTokensWithBalancesFromToken?.address,
+    );
     const balanceHasChanged =
       tokensWithBalancesFromToken?.balance !==
       previousTokensWithBalancesFromToken?.balance;
@@ -490,7 +495,9 @@ export default function BuildQuote({
               !Object.keys(topAssets).length)
           }
           selectPlaceHolderText={t('swapSelect')}
-          hideItemIf={(item) => item.address === selectedToToken?.address}
+          hideItemIf={(item) =>
+            isEqualCaseInsensitive(item.address, selectedToToken?.address)
+          }
           listContainerClassName="build-quote__open-dropdown"
           autoFocus
         />

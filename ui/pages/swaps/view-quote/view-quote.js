@@ -50,7 +50,10 @@ import {
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 
-import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util';
+import {
+  toPrecisionWithoutTrailingZeros,
+  isEqualCaseInsensitive,
+} from '../../../helpers/utils/util';
 
 import {
   safeRefetchQuotes,
@@ -214,8 +217,8 @@ export default function ViewQuote() {
   const balanceToken =
     fetchParamsSourceToken === defaultSwapsToken.address
       ? defaultSwapsToken
-      : tokensWithBalances.find(
-          ({ address }) => address === fetchParamsSourceToken,
+      : tokensWithBalances.find(({ address }) =>
+          isEqualCaseInsensitive(address, fetchParamsSourceToken),
         );
 
   const selectedFromToken = balanceToken || usedQuote.sourceTokenInfo;
