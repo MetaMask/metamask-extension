@@ -17,9 +17,9 @@ function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {
 
 export function useGasPriceInputs({
   defaultEstimateToUse,
-  estimateToUse,
   gasEstimateType,
   gasFeeEstimates,
+  estimateToUse,
   transaction,
 }) {
   const [gasPriceHasBeenManuallySet, setGasPriceHasBeenManuallySet] = useState(

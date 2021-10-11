@@ -1,16 +1,17 @@
-import { LEGACY_GAS_PRICES_API_URL } from '@metamask/controllers';
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 
-import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
-import {
-  checkNetworkAndAccountSupports1559,
-  getSelectedAccount,
-} from '../../selectors';
 
-import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import { useGasFeeErrors } from './useGasFeeErrors';
+
+import {
+  FEE_MARKET_ESTIMATE_RETURN_VALUE,
+  LEGACY_GAS_ESTIMATE_RETURN_VALUE,
+  configureEIP1559,
+  configureLegacy,
+  generateUseSelectorRouter,
+} from './test-utils';
 
 jest.mock('../useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
@@ -25,74 +26,6 @@ jest.mock('react-redux', () => {
   };
 });
 
-const LEGACY_GAS_ESTIMATE_RETURN_VALUE = {
-  gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
-  gasFeeEstimates: {
-    low: '10',
-    medium: '20',
-    high: '30',
-  },
-  estimatedGasFeeTimeBounds: {},
-};
-
-const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
-  gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
-  gasFeeEstimates: {
-    low: {
-      minWaitTimeEstimate: 180000,
-      maxWaitTimeEstimate: 300000,
-      suggestedMaxPriorityFeePerGas: '3',
-      suggestedMaxFeePerGas: '53',
-    },
-    medium: {
-      minWaitTimeEstimate: 15000,
-      maxWaitTimeEstimate: 60000,
-      suggestedMaxPriorityFeePerGas: '7',
-      suggestedMaxFeePerGas: '70',
-    },
-    high: {
-      minWaitTimeEstimate: 0,
-      maxWaitTimeEstimate: 15000,
-      suggestedMaxPriorityFeePerGas: '10',
-      suggestedMaxFeePerGas: '100',
-    },
-    estimatedBaseFee: '50',
-  },
-  estimatedGasFeeTimeBounds: {},
-};
-
-const generateUseSelectorRouter = ({
-  checkNetworkAndAccountSupports1559Response,
-} = {}) => (selector) => {
-  if (selector === getSelectedAccount) {
-    return {
-      balance: '0x440aa47cc2556',
-    };
-  }
-  if (selector === checkNetworkAndAccountSupports1559) {
-    return checkNetworkAndAccountSupports1559Response;
-  }
-  return undefined;
-};
-
-const configureEIP1559 = () => {
-  useGasFeeEstimates.mockImplementation(() => FEE_MARKET_ESTIMATE_RETURN_VALUE);
-  useSelector.mockImplementation(
-    generateUseSelectorRouter({
-      checkNetworkAndAccountSupports1559Response: true,
-    }),
-  );
-};
-
-const configureLegacy = () => {
-  useGasFeeEstimates.mockImplementation(() => LEGACY_GAS_ESTIMATE_RETURN_VALUE);
-  useSelector.mockImplementation(
-    generateUseSelectorRouter({
-      checkNetworkAndAccountSupports1559Response: false,
-    }),
-  );
-};
-
 const renderUseGasFeeErrorsHook = (props) => {
   return renderHook(() =>
     useGasFeeErrors({
@@ -103,6 +36,7 @@ const renderUseGasFeeErrorsHook = (props) => {
       maxFeePerGas: '100',
       minimumCostInHexWei: '0x5208',
       minimumGasLimit: '0x5208',
+      ...FEE_MARKET_ESTIMATE_RETURN_VALUE,
       ...props,
     }),
   );
@@ -118,7 +52,9 @@ describe('useGasFeeErrors', () => {
       configureLegacy();
     });
     it('does not returns gasLimitError if gasLimit is not below minimum', () => {
-      const { result } = renderUseGasFeeErrorsHook();
+      const { result } = renderUseGasFeeErrorsHook(
+        LEGACY_GAS_ESTIMATE_RETURN_VALUE,
+      );
       expect(result.current.gasErrors.gasLimit).toBeUndefined();
       expect(result.current.hasGasErrors).toBe(false);
     });
@@ -156,7 +92,9 @@ describe('useGasFeeErrors', () => {
         configureLegacy();
       });
       it('does not return maxPriorityFeeError if maxPriorityFee is 0', () => {
-        const { result } = renderUseGasFeeErrorsHook();
+        const { result } = renderUseGasFeeErrorsHook(
+          LEGACY_GAS_ESTIMATE_RETURN_VALUE,
+        );
         expect(result.current.gasErrors.maxPriorityFee).toBeUndefined();
         expect(result.current.hasGasErrors).toBe(false);
       });
@@ -199,6 +137,7 @@ describe('useGasFeeErrors', () => {
         const { result } = renderUseGasFeeErrorsHook({
           maxFeePerGas: '1',
           maxPriorityFeePerGas: '10',
+          ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,
         });
         expect(result.current.gasErrors.maxFee).toBeUndefined();
         expect(result.current.hasGasErrors).toBe(false);
@@ -222,14 +161,19 @@ describe('useGasFeeErrors', () => {
         configureLegacy();
       });
       it('returns gasPriceError if gasPrice is 0', () => {
-        const { result } = renderUseGasFeeErrorsHook({ gasPrice: '0' });
+        const { result } = renderUseGasFeeErrorsHook({
+          gasPrice: '0',
+          ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,
+        });
         expect(result.current.gasErrors.gasPrice).toBe(
           GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW,
         );
         expect(result.current.hasGasErrors).toBe(true);
       });
       it('does not return gasPriceError if gasPrice is > 0', () => {
-        const { result } = renderUseGasFeeErrorsHook();
+        const { result } = renderUseGasFeeErrorsHook(
+          LEGACY_GAS_ESTIMATE_RETURN_VALUE,
+        );
         expect(result.current.gasErrors.gasPrice).toBeUndefined();
         expect(result.current.hasGasErrors).toBe(false);
       });
@@ -253,7 +197,7 @@ describe('useGasFeeErrors', () => {
           GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW,
         );
       });
-      it('return maxPriorityFeeWarning if gasFeeEstimates are high and maxPriorityFee is > suggestedMaxPriorityFeePerGas', () => {
+      it('return maxPriorityFeeWarning if maxPriorityFee is > gasFeeEstimates.high.suggestedMaxPriorityFeePerGas', () => {
         const { result } = renderUseGasFeeErrorsHook({
           maxPriorityFeePerGas: '100',
         });
@@ -266,9 +210,10 @@ describe('useGasFeeErrors', () => {
       beforeEach(() => {
         configureLegacy();
       });
-      it('does not return maxPriorityFeeWarning if maxPriorityFee is < suggestedMaxPriorityFeePerGas', () => {
+      it('does not return maxPriorityFeeWarning if maxPriorityFee is < gasFeeEstimates.low.suggestedMaxPriorityFeePerGas', () => {
         const { result } = renderUseGasFeeErrorsHook({
           maxPriorityFeePerGas: '1',
+          ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,
         });
         expect(result.current.gasWarnings.maxPriorityFee).toBeUndefined();
         expect(result.current.hasGasErrors).toBe(false);
@@ -309,6 +254,7 @@ describe('useGasFeeErrors', () => {
       it('does not return maxFeeWarning if maxFee is < suggestedMaxFeePerGas', () => {
         const { result } = renderUseGasFeeErrorsHook({
           maxFeePerGas: '1',
+          ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,
         });
         expect(result.current.gasWarnings.maxFee).toBeUndefined();
       });
@@ -325,28 +271,27 @@ describe('useGasFeeErrors', () => {
       configureLegacy();
       const { result } = renderUseGasFeeErrorsHook({
         transaction: { txParams: { type: '0x2', value: '0x440aa47cc2556' } },
+        ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,
       });
       expect(result.current.balanceError).toBe(true);
     });
   });
 
   describe('estimatesUnavailableWarning', () => {
-    beforeEach(() => {
-      configureLegacy();
-    });
     it('is false if supportsEIP1559 and gasEstimateType is fee-market', () => {
       configureEIP1559();
       const { result } = renderUseGasFeeErrorsHook();
       expect(result.current.estimatesUnavailableWarning).toBe(false);
     });
     it('is true if supportsEIP1559 and gasEstimateType is not fee-market', () => {
-      useGasFeeEstimates.mockImplementation(() => LEGACY_GAS_PRICES_API_URL);
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           checkNetworkAndAccountSupports1559Response: true,
         }),
       );
-      const { result } = renderUseGasFeeErrorsHook();
+      const { result } = renderUseGasFeeErrorsHook(
+        LEGACY_GAS_ESTIMATE_RETURN_VALUE,
+      );
       expect(result.current.estimatesUnavailableWarning).toBe(true);
     });
   });

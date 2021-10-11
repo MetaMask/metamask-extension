@@ -18,8 +18,6 @@ import {
 } from '../../helpers/utils/util';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 
-import { useGasFeeEstimates } from '../useGasFeeEstimates';
-
 const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
 
 const validateGasLimit = (gasLimit, minimumGasLimit) => {
@@ -150,6 +148,9 @@ const getBalanceError = (minimumCostInHexWei, transaction, ethBalance) => {
 };
 
 export function useGasFeeErrors({
+  gasEstimateType,
+  gasFeeEstimates,
+  isGasEstimatesLoading,
   gasLimit,
   gasPrice,
   maxPriorityFeePerGas,
@@ -161,12 +162,6 @@ export function useGasFeeErrors({
   const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
-
-  const {
-    gasEstimateType,
-    gasFeeEstimates,
-    isGasEstimatesLoading,
-  } = useGasFeeEstimates();
 
   const isFeeMarketGasEstimate =
     gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET;

@@ -159,6 +159,9 @@ export function useGasFeeInputs(
   });
 
   const errorAndWarnings = useGasFeeErrors({
+    gasEstimateType,
+    gasFeeEstimates,
+    isGasEstimatesLoading,
     gasLimit,
     gasPrice,
     maxPriorityFeePerGas,
