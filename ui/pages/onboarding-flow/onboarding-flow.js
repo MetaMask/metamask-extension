@@ -124,7 +124,7 @@ export default function OnboardingFlow() {
           />
           <Route
             path={ONBOARDING_WELCOME}
-            render={() => <OnboardingWelcome />}
+            component={OnboardingWelcome}
           />
           <Route
             path={ONBOARDING_COMPLETION_ROUTE}
