@@ -150,13 +150,13 @@ const getBalanceError = (minimumCostInHexWei, transaction, ethBalance) => {
 };
 
 export function useGasFeeErrors({
-  transaction,
   gasLimit,
   gasPrice,
   maxPriorityFeePerGas,
   maxFeePerGas,
   minimumCostInHexWei,
   minimumGasLimit,
+  transaction,
 }) {
   const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&

@@ -98,9 +98,9 @@ const renderUseGasFeeErrorsHook = (props) => {
     useGasFeeErrors({
       transaction: { txParams: { type: '0x2', value: '100' } },
       gasLimit: '21000',
-      gasPriceToUse: '10',
-      maxPriorityFeePerGasToUse: '10',
-      maxFeePerGasToUse: '100',
+      gasPrice: '10',
+      maxPriorityFeePerGas: '10',
+      maxFeePerGas: '100',
       minimumCostInHexWei: '0x5208',
       minimumGasLimit: '0x5208',
       ...props,
@@ -143,7 +143,7 @@ describe('useGasFeeErrors', () => {
       });
       it('return maxPriorityFeeError if maxPriorityFee is 0', () => {
         const { result } = renderUseGasFeeErrorsHook({
-          maxPriorityFeePerGasToUse: '0',
+          maxPriorityFeePerGas: '0',
         });
         expect(result.current.gasErrors.maxPriorityFee).toBe(
           GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM,
@@ -175,18 +175,18 @@ describe('useGasFeeErrors', () => {
       });
       it('return maxFeeError if maxFee is less than maxPriorityFee', () => {
         const { result } = renderUseGasFeeErrorsHook({
-          maxFeePerGasToUse: '1',
-          maxPriorityFeePerGasToUse: '10',
+          maxFeePerGas: '1',
+          maxPriorityFeePerGas: '10',
         });
         expect(result.current.gasErrors.maxFee).toBe(
           GAS_FORM_ERRORS.MAX_FEE_IMBALANCE,
         );
         expect(result.current.hasGasErrors).toBe(true);
       });
-      it('does not return MAX_FEE_IMBALANCE error if maxPriorityFeePerGasToUse is 0', () => {
+      it('does not return MAX_FEE_IMBALANCE error if maxPriorityFeePerGas is 0', () => {
         const { result } = renderUseGasFeeErrorsHook({
-          maxFeePerGasToUse: '1',
-          maxPriorityFeePerGasToUse: '0',
+          maxFeePerGas: '1',
+          maxPriorityFeePerGas: '0',
         });
         expect(result.current.gasErrors.maxFee).toBeUndefined();
       });
@@ -197,8 +197,8 @@ describe('useGasFeeErrors', () => {
       });
       it('does not return maxFeeError if maxFee is less than maxPriorityFee', () => {
         const { result } = renderUseGasFeeErrorsHook({
-          maxFeePerGasToUse: '1',
-          maxPriorityFeePerGasToUse: '10',
+          maxFeePerGas: '1',
+          maxPriorityFeePerGas: '10',
         });
         expect(result.current.gasErrors.maxFee).toBeUndefined();
         expect(result.current.hasGasErrors).toBe(false);
@@ -212,7 +212,7 @@ describe('useGasFeeErrors', () => {
         configureEIP1559();
       });
       it('does not return gasPriceError if gasPrice is 0', () => {
-        const { result } = renderUseGasFeeErrorsHook({ gasPriceToUse: '0' });
+        const { result } = renderUseGasFeeErrorsHook({ gasPrice: '0' });
         expect(result.current.gasErrors.gasPrice).toBeUndefined();
         expect(result.current.hasGasErrors).toBe(false);
       });
@@ -222,7 +222,7 @@ describe('useGasFeeErrors', () => {
         configureLegacy();
       });
       it('returns gasPriceError if gasPrice is 0', () => {
-        const { result } = renderUseGasFeeErrorsHook({ gasPriceToUse: '0' });
+        const { result } = renderUseGasFeeErrorsHook({ gasPrice: '0' });
         expect(result.current.gasErrors.gasPrice).toBe(
           GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW,
         );
@@ -247,7 +247,7 @@ describe('useGasFeeErrors', () => {
       });
       it('return maxPriorityFeeWarning if maxPriorityFee is < suggestedMaxPriorityFeePerGas', () => {
         const { result } = renderUseGasFeeErrorsHook({
-          maxPriorityFeePerGasToUse: '1',
+          maxPriorityFeePerGas: '1',
         });
         expect(result.current.gasWarnings.maxPriorityFee).toBe(
           GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW,
@@ -255,7 +255,7 @@ describe('useGasFeeErrors', () => {
       });
       it('return maxPriorityFeeWarning if gasFeeEstimates are high and maxPriorityFee is > suggestedMaxPriorityFeePerGas', () => {
         const { result } = renderUseGasFeeErrorsHook({
-          maxPriorityFeePerGasToUse: '100',
+          maxPriorityFeePerGas: '100',
         });
         expect(result.current.gasWarnings.maxPriorityFee).toBe(
           GAS_FORM_ERRORS.MAX_PRIORITY_FEE_HIGH_WARNING,
@@ -268,7 +268,7 @@ describe('useGasFeeErrors', () => {
       });
       it('does not return maxPriorityFeeWarning if maxPriorityFee is < suggestedMaxPriorityFeePerGas', () => {
         const { result } = renderUseGasFeeErrorsHook({
-          maxPriorityFeePerGasToUse: '1',
+          maxPriorityFeePerGas: '1',
         });
         expect(result.current.gasWarnings.maxPriorityFee).toBeUndefined();
         expect(result.current.hasGasErrors).toBe(false);
@@ -287,7 +287,7 @@ describe('useGasFeeErrors', () => {
       });
       it('return maxFeeWarning if maxFee is < suggestedMaxFeePerGas', () => {
         const { result } = renderUseGasFeeErrorsHook({
-          maxFeePerGasToUse: '20',
+          maxFeePerGas: '20',
         });
         expect(result.current.gasWarnings.maxFee).toBe(
           GAS_FORM_ERRORS.MAX_FEE_TOO_LOW,
@@ -295,7 +295,7 @@ describe('useGasFeeErrors', () => {
       });
       it('return maxFeeWarning if gasFeeEstimates are high and maxFee is > suggestedMaxFeePerGas', () => {
         const { result } = renderUseGasFeeErrorsHook({
-          maxFeePerGasToUse: '1000',
+          maxFeePerGas: '1000',
         });
         expect(result.current.gasWarnings.maxFee).toBe(
           GAS_FORM_ERRORS.MAX_FEE_HIGH_WARNING,
@@ -308,7 +308,7 @@ describe('useGasFeeErrors', () => {
       });
       it('does not return maxFeeWarning if maxFee is < suggestedMaxFeePerGas', () => {
         const { result } = renderUseGasFeeErrorsHook({
-          maxFeePerGasToUse: '1',
+          maxFeePerGas: '1',
         });
         expect(result.current.gasWarnings.maxFee).toBeUndefined();
       });
