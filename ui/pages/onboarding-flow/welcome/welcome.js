@@ -15,8 +15,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setFirstTimeFlowType } from '../../../store/actions';
 import { INITIALIZE_METAMETRICS_OPT_IN_ROUTE } from '../../../helpers/constants/routes';
 
-// import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-
 export default function OnboardingWelcome() {
   const t = useI18nContext();
   const dispatch = useDispatch();

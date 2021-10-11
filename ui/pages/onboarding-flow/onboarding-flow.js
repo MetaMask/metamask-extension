@@ -123,13 +123,10 @@ export default function OnboardingFlow() {
             component={PrivacySettings}
           />
           <Route
-            path={ONBOARDING_WELCOME}
-            component={OnboardingWelcome}
-          />
-          <Route
             path={ONBOARDING_COMPLETION_ROUTE}
             component={CreationSuccessful}
           />
+          <Route path={ONBOARDING_WELCOME} component={OnboardingWelcome} />
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
       </div>
