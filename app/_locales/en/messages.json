@@ -935,6 +935,9 @@
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
   },
+  "followUsOnTwitter": {
+    "message": "Follow us on Twitter"
+  },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
   },
@@ -1792,6 +1795,9 @@
   },
   "rejected": {
     "message": "Rejected"
+  },
+  "remember": {
+    "message": "Remember:"
   },
   "remindMeLater": {
     "message": "Remind me later"
@@ -2854,6 +2860,26 @@
   },
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
+  },
+  "walletCreationSuccessDetail": {
+    "message": "You’ve successfully protected your wallet. Keep your Secret Recovery Phrase safe and secret -- it’s your responsibility!"
+  },
+  "walletCreationSuccessReminder1": {
+    "message": "MetaMask can’t recover your Secret Recovery Phrase."
+  },
+  "walletCreationSuccessReminder2": {
+    "message": "MetaMask will never ask you for your Secret Recovery Phrase."
+  },
+  "walletCreationSuccessReminder3": {
+    "message": "$1 with anyone or risk your funds being stolen",
+    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
+  },
+  "walletCreationSuccessReminder3BoldSection": {
+    "message": "Never share your Secret Recovery Phrase",
+    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
+  },
+  "walletCreationSuccessTitle": {
+    "message": "Wallet creation successful"
   },
   "walletSeed": {
     "message": "Secret Recovery Phrase"
