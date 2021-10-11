@@ -108,7 +108,7 @@ export default function CreatePassword({
   };
 
   return (
-    <div className="new-account__wrapper">
+    <div className="create-password__wrapper">
       {secretRecoveryPhrase ? (
         <TwoStepProgressBar stage={twoStepStages.PASSWORD_CREATE} />
       ) : (

@@ -2894,9 +2894,6 @@
   "walletCreationSuccessTitle": {
     "message": "Wallet creation successful"
   },
-  "walletSeed": {
-    "message": "Secret Recovery Phrase"
-  },
   "walletSeedRestore": {
     "message": "Wallet Secret Recovery Phrase"
   },
