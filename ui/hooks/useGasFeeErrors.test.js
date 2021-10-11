@@ -195,7 +195,7 @@ describe('useGasFeeErrors', () => {
       beforeEach(() => {
         configureLegacy();
       });
-      it('return maxFeeError if maxFee is less than maxPriorityFee', () => {
+      it('does not return maxFeeError if maxFee is less than maxPriorityFee', () => {
         const { result } = renderUseGasFeeErrorsHook({
           maxFeePerGasToUse: '1',
           maxPriorityFeePerGasToUse: '10',
@@ -316,7 +316,7 @@ describe('useGasFeeErrors', () => {
   });
 
   describe('Balance Error', () => {
-    it('is false if balance is greater than traansaction value', () => {
+    it('is false if balance is greater than transaction value', () => {
       configureEIP1559();
       const { result } = renderUseGasFeeErrorsHook();
       expect(result.current.balanceError).toBe(false);
