@@ -331,6 +331,9 @@ describe('useGasFeeErrors', () => {
   });
 
   describe('estimatesUnavailableWarning', () => {
+    beforeEach(() => {
+      configureLegacy();
+    });
     it('is false if supportsEIP1559 and gasEstimateType is fee-market', () => {
       configureEIP1559();
       const { result } = renderUseGasFeeErrorsHook();
