@@ -41,6 +41,7 @@ export default function SendHeader() {
       headerCloseText={
         stage === SEND_STAGES.EDIT ? t('cancelEdit') : t('cancel')
       }
+      hideClose={stage === SEND_STAGES.DRAFT}
     />
   );
 }
