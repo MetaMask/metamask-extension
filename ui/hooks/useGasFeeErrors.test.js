@@ -195,7 +195,7 @@ describe('useGasFeeErrors', () => {
       beforeEach(() => {
         configureLegacy();
       });
-      it('return maxFeeError if maxFee is less than maxPriorityFee', () => {
+      it('does not return maxFeeError if maxFee is less than maxPriorityFee', () => {
         const { result } = renderUseGasFeeErrorsHook({
           maxFeePerGasToUse: '1',
           maxPriorityFeePerGasToUse: '10',
