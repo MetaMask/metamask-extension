@@ -36,12 +36,10 @@ export default class NetworkForm extends PureComponent {
     networkName: PropTypes.string,
     onClear: PropTypes.func.isRequired,
     setRpcTarget: PropTypes.func.isRequired,
-    networksTabIsInAddMode: PropTypes.bool,
     isCurrentRpcTarget: PropTypes.bool,
     blockExplorerUrl: PropTypes.string,
     rpcPrefs: PropTypes.object,
     networksToRender: PropTypes.array,
-    onAddNetwork: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -63,25 +61,10 @@ export default class NetworkForm extends PureComponent {
   };
 
   componentDidUpdate(prevProps) {
-    const { networksTabIsInAddMode: prevAddMode } = prevProps;
-    const { networksTabIsInAddMode } = this.props;
-
-    if (!prevAddMode && networksTabIsInAddMode) {
-      this.setState({
-        rpcUrl: '',
-        chainId: '',
-        ticker: '',
-        networkName: '',
-        blockExplorerUrl: '',
-        errors: {},
-        isSubmitting: false,
-      });
-    } else {
-      for (const key of FORM_STATE_KEYS) {
-        if (prevProps[key] !== this.props[key]) {
-          this.resetForm();
-          break;
-        }
+    for (const key of FORM_STATE_KEYS) {
+      if (prevProps[key] !== this.props[key]) {
+        this.resetForm();
+        break;
       }
     }
   }
@@ -165,8 +148,6 @@ export default class NetworkForm extends PureComponent {
         rpcUrl: propsRpcUrl,
         editRpc,
         rpcPrefs = {},
-        onAddNetwork,
-        networksTabIsInAddMode,
       } = this.props;
       const {
         networkName,
@@ -199,9 +180,6 @@ export default class NetworkForm extends PureComponent {
         });
       }
 
-      if (networksTabIsInAddMode) {
-        onAddNetwork();
-      }
     } catch (error) {
       this.setState({
         isSubmitting: false,
@@ -211,13 +189,7 @@ export default class NetworkForm extends PureComponent {
   };
 
   onCancel = () => {
-    const { networksTabIsInAddMode, onClear } = this.props;
-
-    if (networksTabIsInAddMode) {
-      onClear();
-    } else {
-      this.resetForm();
-    }
+    this.resetForm();
   };
 
   onDelete = () => {
@@ -276,7 +248,6 @@ export default class NetworkForm extends PureComponent {
     value,
     optionalTextFieldKey,
     tooltipText,
-    autoFocus = false,
   }) {
     const { errors } = this.state;
     const { viewOnly } = this.props;
@@ -307,7 +278,6 @@ export default class NetworkForm extends PureComponent {
           value={value}
           disabled={viewOnly}
           error={errorMessage}
-          autoFocus={autoFocus}
         />
       </div>
     );
@@ -548,18 +518,9 @@ export default class NetworkForm extends PureComponent {
     }
   };
 
-  renderWarning() {
-    const { t } = this.context;
-    return (
-      <div className="networks-tab__network-form-row--warning">
-        {t('onlyAddTrustedNetworks')}
-      </div>
-    );
-  }
-
   render() {
     const { t } = this.context;
-    const { viewOnly, isCurrentRpcTarget, networksTabIsInAddMode } = this.props;
+    const { viewOnly, isCurrentRpcTarget } = this.props;
     const {
       networkName,
       rpcUrl,
@@ -568,8 +529,7 @@ export default class NetworkForm extends PureComponent {
       blockExplorerUrl,
     } = this.state;
 
-    const deletable =
-      !networksTabIsInAddMode && !isCurrentRpcTarget && !viewOnly;
+    const deletable = !isCurrentRpcTarget && !viewOnly;
     const isSubmitDisabled =
       this.hasErrors() ||
       this.isSubmitting() ||
@@ -579,13 +539,11 @@ export default class NetworkForm extends PureComponent {
 
     return (
       <div className="networks-tab__network-form">
-        {viewOnly ? null : this.renderWarning()}
         {this.renderFormTextField({
           fieldKey: 'networkName',
           textFieldId: 'network-name',
           onChange: this.setStateWithValue('networkName'),
           value: networkName,
-          autoFocus: networksTabIsInAddMode,
         })}
         {this.renderFormTextField({
           fieldKey: 'rpcUrl',
