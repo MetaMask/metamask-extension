@@ -163,7 +163,7 @@ export function sumHexes(...args) {
 }
 
 export function isLegacyTransaction(txParams) {
-  return txParams.type === TRANSACTION_ENVELOPE_TYPES.LEGACY;
+  return txParams?.type === TRANSACTION_ENVELOPE_TYPES.LEGACY;
 }
 
 /**
