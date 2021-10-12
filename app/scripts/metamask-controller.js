@@ -1484,14 +1484,8 @@ export default class MetamaskController extends EventEmitter {
     // Optimistically called to not block Metamask login due to
     // Ledger Keyring GitHub downtime
     const transportPreference = this.preferencesController.getLedgerTransportPreference();
-    if (transportPreference === 'ledgerLive') {
-      this.setLedgerLivePreference(true);
-    } else if (transportPreference === ' webhid') {
-      this.setLedgerWebHidPreference(true);
-    } else {
-      this.setLedgerLivePreference(false);
-      // this.setLedgerWebHidPreference(false)
-    }
+
+    this.setLedgerTransportPreference(transportPreference);
 
     return this.keyringController.fullUpdate();
   }
