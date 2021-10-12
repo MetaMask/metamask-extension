@@ -45,27 +45,29 @@ export default function TransactionDetailItem({
           {detailTotal}
         </Typography>
       </div>
-      <div className="transaction-detail-item__row">
-        {React.isValidElement(subTitle) ? (
-          <div className="transaction-detail-item__subtitle">{subTitle}</div>
-        ) : (
+      {subTitle && subText ? (
+        <div className="transaction-detail-item__row">
+          {React.isValidElement(subTitle) ? (
+            <div className="transaction-detail-item__subtitle">{subTitle}</div>
+          ) : (
+            <Typography
+              variant={TYPOGRAPHY.H7}
+              className="transaction-detail-item__subtitle"
+              color={COLORS.UI4}
+            >
+              {subTitle}
+            </Typography>
+          )}
+
           <Typography
             variant={TYPOGRAPHY.H7}
-            className="transaction-detail-item__subtitle"
             color={COLORS.UI4}
+            className="transaction-detail-item__subtext"
           >
-            {subTitle}
+            {subText}
           </Typography>
-        )}
-
-        <Typography
-          variant={TYPOGRAPHY.H7}
-          color={COLORS.UI4}
-          className="transaction-detail-item__subtext"
-        >
-          {subText}
-        </Typography>
-      </div>
+        </div>
+      ) : null}
     </div>
   );
 }

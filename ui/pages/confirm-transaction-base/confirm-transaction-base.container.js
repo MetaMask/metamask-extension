@@ -13,6 +13,10 @@ import {
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
+import {
+  fetchEstimatedOptimismL1Fee,
+  getIsOptimism,
+} from '../../ducks/optimism';
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
 import {
@@ -129,6 +133,7 @@ const mapStateToProps = (state, ownProps) => {
   const {
     hexTransactionAmount,
     hexMinimumTransactionFee,
+    hexEstimatedL1Fee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
     gasEstimationObject,
@@ -227,6 +232,8 @@ const mapStateToProps = (state, ownProps) => {
     showLedgerSteps: fromAddressIsLedger,
     nativeCurrency,
     hardwareWalletRequiresConnection,
+    isOptimism: getIsOptimism(state),
+    hexEstimatedL1Fee,
   };
 };
 
@@ -260,6 +267,9 @@ export const mapDispatchToProps = (dispatch) => {
       dispatch(setDefaultHomeActiveTabName(tabName)),
     updateTransactionGasFees: (gasFees) => {
       dispatch(updateTransactionGasFees({ ...gasFees, expectHexWei: true }));
+    },
+    fetchOptimismL1Fee: (txMeta) => {
+      dispatch(fetchEstimatedOptimismL1Fee(txMeta));
     },
   };
 };

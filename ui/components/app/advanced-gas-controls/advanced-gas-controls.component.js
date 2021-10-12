@@ -7,6 +7,7 @@ import FormField from '../../ui/form-field';
 import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
 import { getGasFormErrorText } from '../../../helpers/constants/gas';
 import { getIsGasEstimatesLoading } from '../../../ducks/metamask/metamask';
+import { getNetworkSupportsSettingGasPrice } from '../../../selectors/selectors';
 
 export default function AdvancedGasControls({
   gasEstimateType,
@@ -33,6 +34,10 @@ export default function AdvancedGasControls({
     (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
       gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE ||
       isGasEstimatesLoading);
+
+  const networkSupportsSettingGasPrice = useSelector(
+    getNetworkSupportsSettingGasPrice,
+  );
 
   return (
     <div className="advanced-gas-controls">
@@ -89,26 +94,25 @@ export default function AdvancedGasControls({
             }
           />
         </>
-      ) : (
-        <>
-          <FormField
-            titleText={t('advancedGasPriceTitle')}
-            titleUnit="(GWEI)"
-            onChange={(value) => {
-              onManualChange?.();
-              setGasPrice(value);
-            }}
-            tooltipText={t('editGasPriceTooltip')}
-            value={gasPrice}
-            numeric
-            error={
-              gasErrors?.gasPrice
-                ? getGasFormErrorText(gasErrors.gasPrice, t)
-                : null
-            }
-          />
-        </>
-      )}
+      ) : null}
+      {networkSupportsSettingGasPrice ? (
+        <FormField
+          titleText={t('advancedGasPriceTitle')}
+          titleUnit="(GWEI)"
+          onChange={(value) => {
+            onManualChange?.();
+            setGasPrice(value);
+          }}
+          tooltipText={t('editGasPriceTooltip')}
+          value={gasPrice}
+          numeric
+          error={
+            gasErrors?.gasPrice
+              ? getGasFormErrorText(gasErrors.gasPrice, t)
+              : null
+          }
+        />
+      ) : null}
     </div>
   );
 }

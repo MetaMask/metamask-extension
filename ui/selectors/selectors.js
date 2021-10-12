@@ -12,6 +12,7 @@ import {
   LEDGER_TRANSPORT_TYPES,
   TRANSPORT_STATES,
 } from '../../shared/constants/hardware-wallets';
+import { getIsOptimism } from '../ducks/optimism';
 
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
@@ -450,6 +451,10 @@ export function getShouldHideZeroBalanceTokens(state) {
 
 export function getAdvancedInlineGasShown(state) {
   return Boolean(state.metamask.featureFlags.advancedInlineGas);
+}
+
+export function getNetworkSupportsSettingGasPrice(state) {
+  return !getIsOptimism(state);
 }
 
 export function getUseNonceField(state) {

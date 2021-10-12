@@ -2825,6 +2825,12 @@
   "transactionDetailGasTotalSubtitle": {
     "message": "Amount + gas fee"
   },
+  "transactionDetailL1GasHeading": {
+    "message": "Estimated L1 gas fee"
+  },
+  "transactionDetailL2GasHeading": {
+    "message": "Estimated L2 gas fee"
+  },
   "transactionDropped": {
     "message": "Transaction dropped at $2."
   },

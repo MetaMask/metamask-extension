@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { addHexPrefix } from 'ethereumjs-util';
 import txHelper from '../helpers/utils/tx-helper';
 import { calcTokenAmount } from '../helpers/utils/token-util';
 import {
@@ -8,6 +9,7 @@ import {
   addFiat,
   addEth,
 } from '../helpers/utils/confirm-tx.util';
+import { conversionUtil } from '../../shared/modules/conversion.utils';
 import { sumHexes } from '../helpers/utils/transactions.util';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import {
@@ -26,6 +28,7 @@ import {
   getMinimumGasTotalInHexWei,
 } from '../../shared/modules/gas.utils';
 import { isEqualCaseInsensitive } from '../helpers/utils/util';
+import { getEstimatedOptimismL1Fee } from '../ducks/optimism';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
 import { checkNetworkAndAccountSupports1559 } from '.';
@@ -244,6 +247,28 @@ export const transactionFeeSelector = function (state, txData) {
     state,
   );
 
+  const estimatedL1Fee = getEstimatedOptimismL1Fee(state);
+  const ethEstimatedL1Fee = conversionUtil(estimatedL1Fee, {
+    fromNumericBase: 'BN',
+    toNumericBase: 'dec',
+    fromDenomination: 'GWEI',
+    toDenomination: 'WEI',
+  });
+  const hexEstimatedL1Fee = addHexPrefix(
+    conversionUtil(ethEstimatedL1Fee, {
+      fromNumericBase: 'dec',
+      toNumericBase: 'hex',
+    }),
+  );
+  const fiatEstimatedL1Fee = conversionUtil(ethEstimatedL1Fee, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'dec',
+    fromCurrency: nativeCurrency,
+    toCurrency: currentCurrency,
+    numberOfDecimals: 2,
+    conversionRate,
+  });
+
   const gasEstimationObject = {
     gasLimit: txData.txParams?.gas ?? '0x0',
   };
@@ -347,10 +372,19 @@ export const transactionFeeSelector = function (state, txData) {
 
   const fiatTransactionTotal = addFiat(
     fiatMinimumTransactionFee,
+    fiatEstimatedL1Fee,
     fiatTransactionAmount,
   );
-  const ethTransactionTotal = addEth(ethTransactionFee, ethTransactionAmount);
-  const hexTransactionTotal = sumHexes(value, hexMinimumTransactionFee);
+  const ethTransactionTotal = addEth(
+    ethTransactionFee,
+    ethTransactionAmount,
+    ethEstimatedL1Fee,
+  );
+  const hexTransactionTotal = sumHexes(
+    value,
+    hexMinimumTransactionFee,
+    hexEstimatedL1Fee,
+  );
 
   return {
     hexTransactionAmount: value,
@@ -358,6 +392,7 @@ export const transactionFeeSelector = function (state, txData) {
     ethTransactionAmount,
     hexMinimumTransactionFee,
     fiatMinimumTransactionFee,
+    hexEstimatedL1Fee,
     hexMaximumTransactionFee,
     fiatMaximumTransactionFee,
     ethTransactionFee,

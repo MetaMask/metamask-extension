@@ -2,7 +2,15 @@ import React from 'react';
 import sinon from 'sinon';
 import { renderWithProvider, fireEvent } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
+import { getNetworkSupportsSettingGasPrice } from '../../../../selectors/selectors';
 import AdvancedGasInputs from '.';
+
+jest.mock('../../../../selectors/selectors', () => {
+  return {
+    ...jest.requireActual('../../../../selectors/selectors'),
+    getNetworkSupportsSettingGasPrice: jest.fn(),
+  };
+});
 
 describe('AdvancedGasInputs', () => {
   let clock;
@@ -115,5 +123,15 @@ describe('AdvancedGasInputs', () => {
     );
 
     expect(queryByText('Gas Price Is Excessive')).toBeInTheDocument();
+  });
+
+  it('does not render the gas price input if the network does not support setting the gas price', () => {
+    getNetworkSupportsSettingGasPrice.mockReturnValue(false);
+    const { queryByTestId } = renderWithProvider(
+      <AdvancedGasInputs {...props} networkSupportsSettingGasPrice={false} />,
+      store,
+    );
+
+    expect(queryByTestId('gas-price')).not.toBeInTheDocument();
   });
 });
