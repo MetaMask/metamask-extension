@@ -56,7 +56,7 @@ export function TwoStepProgressBar({ stage }) {
   const t = useI18nContext();
   return (
     <Box margin={4} width={BLOCK_SIZES.FULL}>
-      <ul className="progressbar">
+      <ul className="progressbar two-steps">
         <li
           className={classnames({
             active: stage >= 1,

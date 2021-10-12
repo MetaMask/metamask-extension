@@ -2,6 +2,11 @@
   counter-reset: step;
   display: flex;
   justify-content: space-evenly;
+  width: 500px;
+}
+
+ul.two-steps {
+  margin: 0 auto;
 }
 
 .progressbar li {
@@ -32,22 +37,22 @@
 }
 
 .progressbar li::after {
-  width: 105%;
+  width: 100%;
   height: 2px;
   content: '';
   position: absolute;
   background-color: #d6d9dc;
   top: 15px;
-  right: 61%;
+  right: 77px;
   z-index: -1;
 
   [dir='rtl'] & {
-    width: 105%;
+    width: 100%;
     height: 2px;
     content: '';
     position: absolute;
     background-color: #d6d9dc;
-    right: 61%;
+    right: 77px;
     z-index: -1;
   }
 }
@@ -99,22 +104,22 @@
 }
 
 .progressbar li.two-steps::after {
-  width: 145%;
+  width: 180px;
   height: 2px;
   content: '';
   position: absolute;
   background-color: #d6d9dc;
   top: 15px;
-  right: 61%;
+  right: 75px;
   z-index: -1;
 
   [dir='rtl'] & {
-    width: 145%;
+    width: 180px;
     height: 2px;
     content: '';
     position: absolute;
     background-color: #d6d9dc;
-    right: 61%;
+    right: 75px;
     z-index: -1;
   }
 }
