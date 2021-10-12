@@ -16,6 +16,12 @@ import {
 } from '../../shared/constants/swaps';
 
 import {
+  TRUNCATED_NAME_CHAR_LIMIT,
+  TRUNCATED_ADDRESS_START_CHARS,
+  TRUNCATED_ADDRESS_END_CHARS,
+} from '../../shared/constants/labels';
+
+import {
   shortenAddress,
   getAccountByAddress,
   isEqualCaseInsensitive,
@@ -322,8 +328,12 @@ export function getAccountsWithLabels(state) {
     ({ address, name, balance }) => ({
       address,
       addressLabel: `${
-        name.length < 11 ? name : `${name.slice(0, 10)}...`
-      } (${address.slice(0, 5)}...${address.slice(address.length - 4)})`,
+        name.length < TRUNCATED_NAME_CHAR_LIMIT
+          ? name
+          : `${name.slice(0, TRUNCATED_NAME_CHAR_LIMIT - 1)}...`
+      } (${address.slice(0, TRUNCATED_ADDRESS_START_CHARS)}...${address.slice(
+        address.length - TRUNCATED_ADDRESS_END_CHARS,
+      )})`,
       label: name,
       balance,
     }),
