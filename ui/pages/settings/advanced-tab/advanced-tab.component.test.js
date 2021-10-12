@@ -15,7 +15,7 @@ describe('AdvancedTab Component', () => {
         setThreeBoxSyncingPermission={() => undefined}
         threeBoxDisabled
         threeBoxSyncingAllowed={false}
-        ledgerTransportType={''}
+        ledgerTransportType=""
         setLedgerLivePreference={() => undefined}
         setDismissSeedBackUpReminder={() => undefined}
         dismissSeedBackUpReminder={false}
@@ -41,7 +41,7 @@ describe('AdvancedTab Component', () => {
         setThreeBoxSyncingPermission={() => undefined}
         threeBoxDisabled
         threeBoxSyncingAllowed={false}
-        ledgerTransportType={''}
+        ledgerTransportType=""
         setLedgerLivePreference={() => undefined}
         setDismissSeedBackUpReminder={() => undefined}
         dismissSeedBackUpReminder={false}

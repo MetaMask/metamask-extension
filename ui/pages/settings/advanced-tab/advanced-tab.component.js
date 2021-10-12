@@ -407,7 +407,9 @@ export default class AdvancedTab extends PureComponent {
           <div className="settings-page__content-item-col">
             <ToggleButton
               value={ledgerTransportType === 'ledgerLive'}
-              onToggle={(value) => setLedgerLivePreference(value ? 'ledgerLive' : '')}
+              onToggle={(value) =>
+                setLedgerLivePreference(value ? 'ledgerLive' : '')
+              }
               offLabel={t('off')}
               onLabel={t('on')}
               disabled={getPlatform() === PLATFORM_FIREFOX}

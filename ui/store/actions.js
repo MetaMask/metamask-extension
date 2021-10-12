@@ -2760,7 +2760,9 @@ export function getCurrentWindowTab() {
 export function setLedgerLivePreference(value) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
-    await promisifiedBackground.setLedgerTransportPreference(value ? 'ledgerLive' : 'u2f');
+    await promisifiedBackground.setLedgerTransportPreference(
+      value ? 'ledgerLive' : 'u2f',
+    );
     dispatch(hideLoadingIndication());
   };
 }

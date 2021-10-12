@@ -841,7 +841,10 @@ export default class MetamaskController extends EventEmitter {
         this.unlockHardwareWalletAccount,
         this,
       ),
-      setLedgerTransportPreference: nodeify(this.setLedgerTransportPreference, this),
+      setLedgerTransportPreference: nodeify(
+        this.setLedgerTransportPreference,
+        this,
+      ),
 
       // mobile
       fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
@@ -1482,11 +1485,11 @@ export default class MetamaskController extends EventEmitter {
     // Ledger Keyring GitHub downtime
     const transportPreference = this.preferencesController.getLedgerTransportPreference();
     if (transportPreference === 'ledgerLive') {
-      this.setLedgerLivePreference(true)
+      this.setLedgerLivePreference(true);
     } else if (transportPreference === ' webhid') {
-      this.setLedgerWebHidPreference(true)
+      this.setLedgerWebHidPreference(true);
     } else {
-      this.setLedgerLivePreference(false)
+      this.setLedgerLivePreference(false);
       // this.setLedgerWebHidPreference(false)
     }
 
@@ -2992,12 +2995,13 @@ export default class MetamaskController extends EventEmitter {
    */
   async setLedgerTransportPreference(transportType) {
     const currentValue = this.preferencesController.getLedgerTransportPreference();
-    const newValue = 
-    this.preferencesController.setLedgerTransportPreference(transportType);
+    const newValue = this.preferencesController.setLedgerTransportPreference(
+      transportType,
+    );
 
     const keyring = await this.getKeyringForDevice('ledger');
     if (keyring?.updateTransportMethod) {
-      return keyring.updateTransportMethod(transportType).catch((e) => {
+      return keyring.updateTransportMethod(newValue).catch((e) => {
         // If there was an error updating the transport, we should
         // fall back to the original value
         this.preferencesController.setLedgerTransportPreference(currentValue);
