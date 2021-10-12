@@ -18,9 +18,7 @@ export const twoStepStages = {
   PASSWORD_CREATE: 2,
 };
 
-export function ThreeStepProgressBar({
-  stage = threeStepStages.PASSWORD_CREATE,
-}) {
+export function ThreeStepProgressBar({ stage }) {
   const t = useI18nContext();
   return (
     <Box>
@@ -54,9 +52,7 @@ export function ThreeStepProgressBar({
   );
 }
 
-export function TwoStepProgressBar({
-  stage = twoStepStages.RECOVERY_PHRASE_CONFIRM,
-}) {
+export function TwoStepProgressBar({ stage }) {
   const t = useI18nContext();
   return (
     <Box margin={4} width={BLOCK_SIZES.FULL}>
@@ -83,9 +79,9 @@ export function TwoStepProgressBar({
 }
 
 ThreeStepProgressBar.propTypes = {
-  stage: PropTypes.string,
+  stage: PropTypes.number,
 };
 
 TwoStepProgressBar.propTypes = {
-  stage: PropTypes.string,
+  stage: PropTypes.number,
 };
