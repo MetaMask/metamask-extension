@@ -253,7 +253,7 @@ describe('useGasFeeErrors', () => {
           GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW,
         );
       });
-      it('return maxPriorityFeeWarning if gasFeeEstimates are high and maxPriorityFee is > suggestedMaxPriorityFeePerGas', () => {
+      it('return maxPriorityFeeWarning if maxPriorityFee is > gasFeeEstimates.high.suggestedMaxPriorityFeePerGas', () => {
         const { result } = renderUseGasFeeErrorsHook({
           maxPriorityFeePerGasToUse: '100',
         });
@@ -266,7 +266,7 @@ describe('useGasFeeErrors', () => {
       beforeEach(() => {
         configureLegacy();
       });
-      it('does not return maxPriorityFeeWarning if maxPriorityFee is < suggestedMaxPriorityFeePerGas', () => {
+      it('does not return maxPriorityFeeWarning if maxPriorityFee is < gasFeeEstimates.low.suggestedMaxPriorityFeePerGas', () => {
         const { result } = renderUseGasFeeErrorsHook({
           maxPriorityFeePerGasToUse: '1',
         });
@@ -331,9 +331,6 @@ describe('useGasFeeErrors', () => {
   });
 
   describe('estimatesUnavailableWarning', () => {
-    beforeEach(() => {
-      configureLegacy();
-    });
     it('is false if supportsEIP1559 and gasEstimateType is fee-market', () => {
       configureEIP1559();
       const { result } = renderUseGasFeeErrorsHook();
