@@ -52,7 +52,13 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
         </Typography>
         <Typography variant={TYPOGRAPHY.H4}>
           {t('importExistingWalletDescription', [
-            <a key="learnMore" type="link">
+            <a
+              key="learnMore"
+              type="link"
+              href="https://metamask.zendesk.com/hc/en-us/articles/360036464651"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               {t('learnMore')}
             </a>,
           ])}
