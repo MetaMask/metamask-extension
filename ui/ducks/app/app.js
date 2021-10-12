@@ -285,6 +285,12 @@ export default function reduceApp(state = {}, action) {
         networksTabIsInAddMode: action.value,
       };
 
+    case actionConstants.SET_NEW_NETWORK_ADDED:
+      return {
+        ...appState,
+        newNetworkAdded: action.value,
+      };
+
     case actionConstants.LOADING_METHOD_DATA_STARTED:
       return {
         ...appState,

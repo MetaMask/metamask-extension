@@ -1,7 +1,10 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { updateAndSetCustomRpc } from '../../../../store/actions';
+import {
+  updateAndSetCustomRpc,
+  setNewNetworkAdded,
+} from '../../../../store/actions';
 import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network';
 import { defaultNetworksData } from '../networks-tab.constants';
 import AddNetworkForm from './add-network-form.component';
@@ -37,6 +40,9 @@ const mapDispatchToProps = (dispatch) => {
       return dispatch(
         updateAndSetCustomRpc(newRpc, chainId, ticker, nickname, rpcPrefs),
       );
+    },
+    setNewNetworkAdded: (newNetwork) => {
+      dispatch(setNewNetworkAdded(newNetwork));
     },
   };
 };

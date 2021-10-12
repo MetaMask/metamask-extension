@@ -24,6 +24,7 @@ export default class AddNetworkForm extends PureComponent {
     rpcPrefs: PropTypes.object,
     networksToRender: PropTypes.array,
     onAddNetwork: PropTypes.func.isRequired,
+    setNewNetworkAdded: PropTypes.func.isRequired,
   };
 
   state = {
@@ -90,7 +91,12 @@ export default class AddNetworkForm extends PureComponent {
     });
 
     try {
-      const { setRpcTarget, rpcPrefs = {}, onAddNetwork } = this.props;
+      const {
+        setRpcTarget,
+        rpcPrefs = {},
+        onAddNetwork,
+        setNewNetworkAdded,
+      } = this.props;
       const {
         networkName,
         rpcUrl,
@@ -113,6 +119,7 @@ export default class AddNetworkForm extends PureComponent {
         ...rpcPrefs,
         blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
       });
+      setNewNetworkAdded(networkName);
       onAddNetwork();
     } catch (error) {
       this.setState({
@@ -503,7 +510,6 @@ export default class AddNetworkForm extends PureComponent {
             <Button
               type="secondary"
               onClick={this.onCancel}
-              rounded
               className="add-network-form__footer-cancel-button"
             >
               {t('cancel')}
@@ -512,7 +518,6 @@ export default class AddNetworkForm extends PureComponent {
               type="primary"
               disabled={isSubmitDisabled}
               onClick={this.onSubmit}
-              rounded
               className="add-network-form__footer-submit-button"
             >
               {t('save')}

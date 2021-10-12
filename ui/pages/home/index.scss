@@ -133,4 +133,23 @@
       color: $primary-1;
     }
   }
+
+  &__new-network-notification {
+    margin-bottom: 50px;
+  }
+
+  &__new-network-notification-message {
+    display: flex;
+    flex-direction: row;
+
+    &--image {
+      margin-right: 10px;
+    }
+  }
+
+  &__close {
+    color: $ui-black;
+    background: none;
+    margin-left: 20px;
+  }
 }
