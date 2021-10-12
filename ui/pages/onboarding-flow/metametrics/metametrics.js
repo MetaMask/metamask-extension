@@ -16,7 +16,6 @@ import {
   getFirstTimeFlowType,
   getParticipateInMetaMetrics,
 } from '../../../selectors';
-import { useMetricEvent } from '../../../hooks/useMetricEvent';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
@@ -39,47 +38,33 @@ export default function OnboardingMetametrics() {
   const firstTimeSelectionMetaMetricsName =
     firstTimeFlowTypeNameMap[firstTimeFlowType];
 
-  const nonParticipationOptOut = useMetricEvent({
-    eventOpts: {
-      category: 'Onboarding',
-      action: 'Metrics Option',
-      name: 'Metrics Opt Out',
-    },
-    isOptIn: true,
-    flushImmediately: true,
-  });
-
-  const nonParticipationOptIn = useMetricEvent({
-    eventOpts: {
-      category: 'Onboarding',
-      action: 'Metrics Option',
-      name: 'Metrics Opt In',
-    },
-    isOptIn: true,
-    flushImmediately: true,
-  });
-
   const metricsEvent = useContext(MetaMetricsContext);
 
   const onConfirm = async () => {
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
 
-    const participationOptIn = metricsEvent({
-      eventOpts: {
-        category: 'Onboarding',
-        action: 'Import or Create',
-        name: firstTimeSelectionMetaMetricsName,
-      },
-      isOptIn: true,
-      metaMetricsId,
-      flushImmediately: true,
-    });
-
     try {
       if (!participateInMetaMetrics) {
-        nonParticipationOptIn();
+        metricsEvent({
+          eventOpts: {
+            category: 'Onboarding',
+            action: 'Metrics Option',
+            name: 'Metrics Opt In',
+          },
+          isOptIn: true,
+          flushImmediately: true,
+        });
       }
-      participationOptIn();
+      metricsEvent({
+        eventOpts: {
+          category: 'Onboarding',
+          action: 'Import or Create',
+          name: firstTimeSelectionMetaMetricsName,
+        },
+        isOptIn: true,
+        metaMetricsId,
+        flushImmediately: true,
+      });
     } finally {
       history.push(nextRoute);
     }
@@ -90,7 +75,15 @@ export default function OnboardingMetametrics() {
 
     try {
       if (!participateInMetaMetrics) {
-        nonParticipationOptOut();
+        metricsEvent({
+          eventOpts: {
+            category: 'Onboarding',
+            action: 'Metrics Option',
+            name: 'Metrics Opt Out',
+          },
+          isOptIn: true,
+          flushImmediately: true,
+        });
       }
     } finally {
       history.push(nextRoute);
