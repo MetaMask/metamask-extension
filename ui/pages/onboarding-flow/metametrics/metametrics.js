@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Typography from '../../../components/ui/typography/typography';
@@ -17,6 +17,8 @@ import {
   getParticipateInMetaMetrics,
 } from '../../../selectors';
 import { useMetricEvent } from '../../../hooks/useMetricEvent';
+
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const firstTimeFlowTypeNameMap = {
   create: 'Selected Create New Wallet',
@@ -57,10 +59,12 @@ export default function OnboardingMetametrics() {
     flushImmediately: true,
   });
 
+  const metricsEvent = useContext(MetaMetricsContext);
+
   const onConfirm = async () => {
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
 
-    const participationOptIn = useMetricEvent({
+    const participationOptIn = metricsEvent({
       eventOpts: {
         category: 'Onboarding',
         action: 'Import or Create',
