@@ -23,7 +23,11 @@ import Button from '../../../components/ui/button';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
-import { TYPOGRAPHY, DISPLAY } from '../../../helpers/constants/design-system';
+import {
+  TYPOGRAPHY,
+  DISPLAY,
+  FLEX_DIRECTION,
+} from '../../../helpers/constants/design-system';
 import {
   VIEW_QUOTE_ROUTE,
   LOADING_QUOTES_ROUTE,
@@ -501,28 +505,36 @@ export default function BuildQuote({
             title={t('smartTransactionsAreHere')}
             onClose={onCloseSmartTransactionsOptInPopover}
             footer={
-              <Box
-                display={DISPLAY.FLEX}
-                className="smart-transactions-popover__footer"
-              >
+              <>
                 <Button type="primary" onClick={onEnableSmartTransactionsClick}>
                   {t('enableSmartTransactions')}
                 </Button>
-                <a href="#" onClick={onCloseSmartTransactionsOptInPopover}>
-                  {t('noThanks')}
-                </a>
-              </Box>
+                <Box marginTop={5}>
+                  <a href="#" onClick={onCloseSmartTransactionsOptInPopover}>
+                    {t('noThanksVariant2')}
+                  </a>
+                </Box>
+              </>
             }
+            footerClassName="smart-transactions-popover__footer"
           >
             <Box
               padding={6}
+              paddingTop={3}
               display={DISPLAY.FLEX}
               className="smart-transactions-popover"
             >
-              <img
-                src="./images/logo/metamask-logo-horizontal.svg"
-                alt={t('swapSwapSwitch')}
-              />
+              <Box
+                marginTop={0}
+                marginBottom={5}
+                display={DISPLAY.FLEX}
+                flexDirection={FLEX_DIRECTION.COLUMN}
+              >
+                <img
+                  src="./images/logo/metamask-logo-horizontal.svg"
+                  alt={t('swapSwapSwitch')}
+                />
+              </Box>
               <Typography variant={TYPOGRAPHY.H6}>
                 {t('smartTransactionsDescription')}
               </Typography>
