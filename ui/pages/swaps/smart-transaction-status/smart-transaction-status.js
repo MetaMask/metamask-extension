@@ -27,7 +27,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import SwapSuccessIcon from '../awaiting-swap/swap-success-icon';
 import SwapFailureIcon from '../awaiting-swap/swap-failure-icon';
-import { fetchSmartTransactionsStatus } from '../../../store/actions';
+import {
+  fetchSmartTransactionsStatus,
+  stopPollingForQuotes,
+} from '../../../store/actions';
 import { SECOND } from '../../../../shared/constants/time';
 
 import SwapsFooter from '../swaps-footer';
@@ -82,6 +85,11 @@ export default function SmartTransactionStatus() {
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, isSmartTransactionPending, latestSmartTransactionUuid]);
+
+  useEffect(() => {
+    // We don't need to poll on quotes on the status page anymore.
+    dispatch(stopPollingForQuotes());
+  }, [dispatch]);
 
   let headerText = t('stPending');
   let description = t('stPendingDescription');
