@@ -1,4 +1,3 @@
-import { LEGACY_GAS_PRICES_API_URL } from '@metamask/controllers';
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 
@@ -10,7 +9,6 @@ import {
 } from '../selectors';
 
 import { useGasFeeErrors } from './useGasFeeErrors';
-import { useGasFeeEstimates } from './useGasFeeEstimates';
 
 jest.mock('./useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
