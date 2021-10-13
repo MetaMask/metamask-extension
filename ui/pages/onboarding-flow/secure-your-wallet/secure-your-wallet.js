@@ -10,7 +10,10 @@ import {
   JUSTIFY_CONTENT,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
-import ProgressBar from '../../../components/app/step-progress-bar';
+import {
+  ThreeStepProgressBar,
+  threeStepStages,
+} from '../../../components/app/step-progress-bar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
 import { getCurrentLocale } from '../../../ducks/metamask/metamask';
@@ -51,7 +54,7 @@ export default function SecureYourWallet() {
       {showSkipSRPBackupPopover && (
         <SkipSRPBackup handleClose={() => setShowSkipSRPBackupPopover(false)} />
       )}
-      <ProgressBar stage="SEED_PHRASE_VIDEO" />
+      <ThreeStepProgressBar stage={threeStepStages.RECOVERY_PHRASE_VIDEO} />
       <Box
         justifyContent={JUSTIFY_CONTENT.CENTER}
         textAlign={TEXT_ALIGN.CENTER}

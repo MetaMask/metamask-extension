@@ -795,9 +795,6 @@
   "revealSeedWordsDescription": {
     "message": "Ако някога смените браузъра или компютъра си, тази ключова фраза ще Ви трябва за достъп до Вашите акаунти. Запазете я някъде на сигурно и тайно място."
   },
-  "revealSeedWordsTitle": {
-    "message": "Фраза зародиш"
-  },
   "revealSeedWordsWarning": {
     "message": "Тези думи могат да бъдат използвани за кражба на всички ваши акаунти."
   },
@@ -833,9 +830,6 @@
   },
   "searchTokens": {
     "message": "Търсене на маркери"
-  },
-  "secretBackupPhrase": {
-    "message": "Тайна резервна фраза"
   },
   "secretBackupPhraseDescription": {
     "message": "Вашата тайна резервна фраза улеснява архивирането и възстановяването на акаунта ви."
@@ -1125,9 +1119,6 @@
   },
   "visitWebSite": {
     "message": "Посетете нашият уеб сайт"
-  },
-  "walletSeed": {
-    "message": "Начална фраза за портфейл "
   },
   "welcome": {
     "message": "Добре дошли в MetaMask"

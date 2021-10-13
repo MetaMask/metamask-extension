@@ -783,9 +783,6 @@
   "revealSeedWordsDescription": {
     "message": "Om du någonsin byter webbläsare eller dator kommer du behöva denna"
   },
-  "revealSeedWordsTitle": {
-    "message": "Seed phrase"
-  },
   "revealSeedWordsWarning": {
     "message": "De här orden kan användas för att stjäla alla dina konton."
   },
@@ -821,9 +818,6 @@
   },
   "searchTokens": {
     "message": "Sök tokens"
-  },
-  "secretBackupPhrase": {
-    "message": "Hemlig återställningsfras"
   },
   "secretBackupPhraseDescription": {
     "message": "Din hemliga backup-fras gör det enkelt att säkerhetskopiera och återställa ditt konto."
@@ -1104,9 +1098,6 @@
   },
   "visitWebSite": {
     "message": "Besök vår hemsida"
-  },
-  "walletSeed": {
-    "message": "Plånboksseed"
   },
   "welcome": {
     "message": "Välkommen till MetaMask"

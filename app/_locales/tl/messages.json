@@ -1244,9 +1244,6 @@
   "revealSeedWordsDescription": {
     "message": "Kung magpapalit ka man ng browser o computer, kakailanganin mo ang Secret Recovery Phrase na ito para ma-access ang iyong mga account. I-save ang mga iyon sa isang ligtas at sikretong lugar."
   },
-  "revealSeedWordsTitle": {
-    "message": "Secret Recovery Phrase"
-  },
   "revealSeedWordsWarning": {
     "message": "Magagamit ang mga salitang ito para manakaw ang lahat ng iyong account."
   },
@@ -1288,9 +1285,6 @@
   },
   "searchTokens": {
     "message": "Maghanap ng Mga Token"
-  },
-  "secretBackupPhrase": {
-    "message": "Lihim na Phrase sa Pag-back up"
   },
   "secretBackupPhraseDescription": {
     "message": "Pinapadali ng iyong lihim na phrase sa pag-back up na i-back up at i-restore ang iyong account."
@@ -1905,9 +1899,6 @@
   },
   "walletConnectionGuide": {
     "message": "ang aming gabay sa pagkonekta ng hardware wallet"
-  },
-  "walletSeed": {
-    "message": "Secret Recovery Phrase"
   },
   "walletSeedRestore": {
     "message": "Recovery Phrase ng Wallet Secret"

@@ -1527,9 +1527,6 @@
   "revealSeedWordsDescription": {
     "message": "Jika Anda pernah mengubah browser atau mengganti komputer, Anda akan memerlukan Frasa Pemulihan Rahasia ini untuk mengakses akun Anda. Simpan di tempat yang aman dan rahasia."
   },
-  "revealSeedWordsTitle": {
-    "message": "Frasa Pemulihan Rahasia"
-  },
   "revealSeedWordsWarning": {
     "message": "Kata-kata ini dapat digunakan untuk mencuri semua akun Anda."
   },
@@ -1571,9 +1568,6 @@
   },
   "searchTokens": {
     "message": "Cari Token"
-  },
-  "secretBackupPhrase": {
-    "message": "Frasa Cadangan Rahasia"
   },
   "secretBackupPhraseDescription": {
     "message": "Frasa cadangan rahasia Anda memudahkan untuk mencadangkan dan memulihkan akun Anda."
@@ -2391,9 +2385,6 @@
   },
   "walletConnectionGuide": {
     "message": "panduan koneksi dompet perangkat keras kami"
-  },
-  "walletSeed": {
-    "message": "Frasa Pemulihan Rahasia"
   },
   "walletSeedRestore": {
     "message": "Frasa Pemulihan Rahasia Dompet"

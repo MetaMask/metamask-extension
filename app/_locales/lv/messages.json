@@ -795,9 +795,6 @@
   "revealSeedWordsDescription": {
     "message": "Ja mainīsiet pārlūku vai datoru, jūsu kontu piekļuvei būs nepieciešama šī atkopšanas frāze. Saglabājiet to drošā un slepenā vietā!"
   },
-  "revealSeedWordsTitle": {
-    "message": "Atkopšanas frāze"
-  },
   "revealSeedWordsWarning": {
     "message": "Šos vārdus var izmantot visu jūsu kontu nolaupīšanai."
   },
@@ -833,9 +830,6 @@
   },
   "searchTokens": {
     "message": "Meklēt marķierus"
-  },
-  "secretBackupPhrase": {
-    "message": "Slepenā rezerves frāze"
   },
   "secretBackupPhraseDescription": {
     "message": "Ar slepeno atgūšanas frāzi ir vieglāk dublēt un atjaunot kontu."
@@ -1125,9 +1119,6 @@
   },
   "visitWebSite": {
     "message": "Apmeklējiet mūsu tīmekļa vietni"
-  },
-  "walletSeed": {
-    "message": "Maka atkopšanas frāze"
   },
   "welcome": {
     "message": "Laipni lūgti MetaMask"
