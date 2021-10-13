@@ -39,6 +39,7 @@ import {
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
 } from '../../../../shared/constants/network';
 import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
+import { addressIsContract } from '../../../../shared/modules/contract-utils';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -1235,19 +1236,18 @@ export default class TransactionController extends EventEmitter {
     }
 
     let code;
+
     if (!result) {
-      try {
-        code = await this.query.getCode(to);
-      } catch (e) {
-        code = null;
-        log.warn(e);
-      }
+      const { code: resultCode, isContractAddress } = addressIsContract(
+        this.query,
+        to,
+      );
 
-      const codeIsEmpty = !code || code === '0x' || code === '0x0';
+      code = resultCode;
 
-      result = codeIsEmpty
-        ? TRANSACTION_TYPES.SIMPLE_SEND
-        : TRANSACTION_TYPES.CONTRACT_INTERACTION;
+      result = isContractAddress
+        ? TRANSACTION_TYPES.CONTRACT_INTERACTION
+        : TRANSACTION_TYPES.SIMPLE_SEND;
     }
 
     return { type: result, getCodeResponse: code };
