@@ -623,9 +623,6 @@
   "newContract": {
     "message": "Новий контракт"
   },
-  "newNetwork": {
-    "message": "Нова мережа"
-  },
   "newPassword": {
     "message": "Новий пароль (мінімум 8 символів)"
   },

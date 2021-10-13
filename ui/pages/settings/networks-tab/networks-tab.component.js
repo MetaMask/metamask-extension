@@ -63,7 +63,7 @@ export default class NetworksTab extends PureComponent {
               history.push(ADD_NETWORK_ROUTE);
             }}
           >
-            {this.context.t('addNetwork')}
+            {this.context.t('addANetwork')}
           </Button>
         </div>
       </div>

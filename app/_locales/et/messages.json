@@ -613,9 +613,6 @@
   "newContract": {
     "message": "Uus kontakt"
   },
-  "newNetwork": {
-    "message": "Uus võrk"
-  },
   "newPassword": {
     "message": "Uus parool (vähemalt 8 tähemärki)"
   },

@@ -623,9 +623,6 @@
   "newContract": {
     "message": "Nauja sutartis"
   },
-  "newNetwork": {
-    "message": "Naujas tinklas"
-  },
   "newPassword": {
     "message": "Naujas slaptažodis (bent 8 ženklai)"
   },
