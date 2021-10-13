@@ -18,8 +18,6 @@ import {
 } from '../helpers/utils/util';
 import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
 
-import { useGasFeeEstimates } from './useGasFeeEstimates';
-
 const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
 
 const validateGasLimit = (gasLimit, minimumGasLimit) => {
@@ -32,22 +30,14 @@ const validateGasLimit = (gasLimit, minimumGasLimit) => {
   return undefined;
 };
 
-const validateMaxPriorityFee = (
-  isFeeMarketGasEstimate,
-  maxPriorityFeePerGasToUse,
-  supportsEIP1559,
-) => {
-  if (
-    (supportsEIP1559 || isFeeMarketGasEstimate) &&
-    bnLessThanEqualTo(maxPriorityFeePerGasToUse, 0)
-  ) {
+const validateMaxPriorityFee = (maxPriorityFeePerGasToUse, supportsEIP1559) => {
+  if (supportsEIP1559 && bnLessThanEqualTo(maxPriorityFeePerGasToUse, 0)) {
     return GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
   }
   return undefined;
 };
 
 const validateMaxFee = (
-  isFeeMarketGasEstimate,
   maxFeePerGasToUse,
   maxPriorityFeeError,
   maxPriorityFeePerGasToUse,
@@ -55,7 +45,7 @@ const validateMaxFee = (
 ) => {
   if (maxPriorityFeeError) return undefined;
   if (
-    (supportsEIP1559 || isFeeMarketGasEstimate) &&
+    supportsEIP1559 &&
     bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)
   ) {
     return GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
@@ -84,10 +74,11 @@ const getMaxPriorityFeeWarning = (
   isFeeMarketGasEstimate,
   isGasEstimatesLoading,
   maxPriorityFeePerGasToUse,
+  supportsEIP1559,
 ) => {
+  if (!supportsEIP1559 || !isFeeMarketGasEstimate || isGasEstimatesLoading)
+    return undefined;
   if (
-    isFeeMarketGasEstimate &&
-    !isGasEstimatesLoading &&
     bnLessThan(
       maxPriorityFeePerGasToUse,
       gasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas,
@@ -115,8 +106,14 @@ const getMaxFeeWarning = (
   maxFeeError,
   maxPriorityFeeError,
   maxFeePerGasToUse,
+  supportsEIP1559,
 ) => {
-  if (maxPriorityFeeError || maxFeeError || !isFeeMarketGasEstimate) {
+  if (
+    maxPriorityFeeError ||
+    maxFeeError ||
+    !isFeeMarketGasEstimate ||
+    !supportsEIP1559
+  ) {
     return undefined;
   }
   if (
@@ -151,8 +148,11 @@ const getBalanceError = (minimumCostInHexWei, transaction, ethBalance) => {
 
 export function useGasFeeErrors({
   transaction,
+  gasEstimateType,
+  gasFeeEstimates,
   gasLimit,
   gasPriceToUse,
+  isGasEstimatesLoading,
   maxPriorityFeePerGasToUse,
   maxFeePerGasToUse,
   minimumCostInHexWei,
@@ -162,12 +162,6 @@ export function useGasFeeErrors({
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
 
-  const {
-    gasEstimateType,
-    gasFeeEstimates,
-    isGasEstimatesLoading,
-  } = useGasFeeEstimates();
-
   const isFeeMarketGasEstimate =
     gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET;
 
@@ -175,13 +169,11 @@ export function useGasFeeErrors({
   const gasLimitError = validateGasLimit(gasLimit, minimumGasLimit);
 
   const maxPriorityFeeError = validateMaxPriorityFee(
-    isFeeMarketGasEstimate,
     maxPriorityFeePerGasToUse,
     supportsEIP1559,
   );
 
   const maxFeeError = validateMaxFee(
-    isFeeMarketGasEstimate,
     maxFeePerGasToUse,
     maxPriorityFeeError,
     maxPriorityFeePerGasToUse,
@@ -201,6 +193,7 @@ export function useGasFeeErrors({
     isFeeMarketGasEstimate,
     isGasEstimatesLoading,
     maxPriorityFeePerGasToUse,
+    supportsEIP1559,
   );
 
   const maxFeeWarning = getMaxFeeWarning(
@@ -210,6 +203,7 @@ export function useGasFeeErrors({
     maxFeeError,
     maxPriorityFeeError,
     maxFeePerGasToUse,
+    supportsEIP1559,
   );
 
   // Separating errors from warnings so we can know which value problems

@@ -365,8 +365,11 @@ export function useGasFeeInputs(
 
   const errorAndWarnings = useGasFeeErrors({
     transaction,
+    gasEstimateType,
+    gasFeeEstimates,
     gasLimit,
     gasPriceToUse,
+    isGasEstimatesLoading,
     maxPriorityFeePerGasToUse,
     maxFeePerGasToUse,
     minimumCostInHexWei,
