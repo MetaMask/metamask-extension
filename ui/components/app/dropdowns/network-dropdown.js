@@ -12,6 +12,9 @@ import { isPrefixedFormattedHexString } from '../../../../shared/modules/network
 import ColorIndicator from '../../ui/color-indicator';
 import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 import { getShouldShowTestNetworks } from '../../../selectors';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
@@ -88,6 +91,7 @@ class NetworkDropdown extends Component {
     networkDropdownOpen: PropTypes.bool.isRequired,
     displayInvalidCustomNetworkAlert: PropTypes.func.isRequired,
     showConfirmDeleteNetworkModal: PropTypes.func.isRequired,
+    history: PropTypes.object,
   };
 
   handleClick(newProviderType) {
@@ -129,7 +133,12 @@ class NetworkDropdown extends Component {
         variant="contained"
         size="large"
         onClick={() => {
-          global.platform.openExtensionInBrowser('settings/networks');
+          if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+            global.platform.openExtensionInBrowser(NETWORKS_ROUTE);
+          } else {
+            this.props.history.push(NETWORKS_ROUTE);
+          }
+          this.props.hideNetworkDropdown();
         }}
         disableRipple
       >
