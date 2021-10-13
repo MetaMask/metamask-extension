@@ -15,7 +15,10 @@ import {
 
 const ValidSize = PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
 const ArrayOfValidSizes = PropTypes.arrayOf(ValidSize);
-const MultipleSizes = PropTypes.oneOfType([ValidSize, ArrayOfValidSizes]);
+export const MultipleSizes = PropTypes.oneOfType([
+  ValidSize,
+  ArrayOfValidSizes,
+]);
 
 function generateSizeClasses(baseClass, type, main, top, right, bottom, left) {
   const arr = Array.isArray(main) ? main : [];

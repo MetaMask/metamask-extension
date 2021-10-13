@@ -1,8 +1,9 @@
 @import 'recovery-phrase/index';
-@import 'new-account/index';
 @import 'onboarding-app-header/index';
 @import 'secure-your-wallet/index';
 @import 'privacy-settings/index';
+@import 'create-password/index';
+@import 'creation-successful/index';
 
 .onboarding-flow {
   width: 100%;
@@ -17,5 +18,14 @@
     padding: 32px;
     border: 1px solid $Grey-100;
     border-radius: 20px;
+  }
+
+  &__twitter-button {
+    margin-bottom: 40px;
+    vertical-align: middle;
+
+    img {
+      margin-left: 5px;
+    }
   }
 }

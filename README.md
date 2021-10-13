@@ -46,9 +46,7 @@ To start the [React DevTools](https://github.com/facebook/react-devtools) and [R
 
 ### Running Unit Tests and Linting
 
-Run unit tests and the linter with `yarn test`.
-
-To run just unit tests, run `yarn test:unit`. To run unit tests continuously with a file watcher, run `yarn watch`.
+Run unit tests and the linter with `yarn test`. To run just unit tests, run `yarn test:unit`.
 
 You can run the linter by itself with `yarn lint`, and you can automatically fix some lint problems with `yarn lint:fix`. You can also run these two commands just on your local changes to save time with `yarn lint:changed` and `yarn lint:changed:fix` respectively.
 
