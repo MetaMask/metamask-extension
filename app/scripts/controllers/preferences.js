@@ -520,7 +520,7 @@ export default class PreferencesController {
    * @param {string} ledgerTransportType - Either 'ledgerLive' or 'webhid'
    * @returns {Promise<string>} A promise of the update to useWebHid
    */
-  async setLedgerTransportPreference(ledgerTransportType) {
+  setLedgerTransportPreference(ledgerTransportType) {
     this.store.updateState({ ledgerTransportType });
     return ledgerTransportType;
   }
