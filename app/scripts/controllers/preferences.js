@@ -56,7 +56,6 @@ export default class PreferencesController {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
       },
-      completedOnboarding: false,
       // ENS decentralized website resolution
       ipfsGateway: 'dweb.link',
       infuraBlocked: null,
@@ -507,15 +506,6 @@ export default class PreferencesController {
    */
   getPreferences() {
     return this.store.getState().preferences;
-  }
-
-  /**
-   * Sets the completedOnboarding state to true, indicating that the user has completed the
-   * onboarding process.
-   */
-  completeOnboarding() {
-    this.store.updateState({ completedOnboarding: true });
-    return Promise.resolve(true);
   }
 
   /**

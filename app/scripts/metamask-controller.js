@@ -364,7 +364,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.onboardingController = new OnboardingController({
       initState: initState.OnboardingController,
-      preferencesController: this.preferencesController,
     });
 
     this.tokensController.hub.on('pendingSuggestedAsset', async () => {
@@ -629,7 +628,7 @@ export default class MetamaskController extends EventEmitter {
     if (
       password &&
       !this.isUnlocked() &&
-      this.onboardingController.completedOnboarding
+      this.onboardingController.store.getState().completedOnboarding
     ) {
       this.submitPassword(password);
     }
@@ -899,10 +898,7 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setPreference,
         preferencesController,
       ),
-      completeOnboarding: nodeify(
-        preferencesController.completeOnboarding,
-        preferencesController,
-      ),
+
       addKnownMethodData: nodeify(
         preferencesController.addKnownMethodData,
         preferencesController,
@@ -1002,6 +998,10 @@ export default class MetamaskController extends EventEmitter {
       setSeedPhraseBackedUp: nodeify(
         onboardingController.setSeedPhraseBackedUp,
         onboardingController,
+      ),
+      completeOnboarding: nodeify(
+        onboardingController.completeOnboarding,
+        preferencesController,
       ),
 
       // alert controller
