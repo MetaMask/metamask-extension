@@ -408,7 +408,7 @@ export default class AdvancedTab extends PureComponent {
             <ToggleButton
               value={ledgerTransportType === 'ledgerLive'}
               onToggle={(value) =>
-                setLedgerLivePreference(value ? 'ledgerLive' : '')
+                setLedgerLivePreference(value ? '' : 'ledgerLive')
               }
               offLabel={t('off')}
               onLabel={t('on')}
