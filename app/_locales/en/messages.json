@@ -1622,6 +1622,12 @@
   "on": {
     "message": "On"
   },
+  "onboardingCreateWallet": {
+    "message": "Create a new wallet"
+  },
+  "onboardingImportWallet": {
+    "message": "Import an existing wallet"
+  },
   "onboardingReturnNotice": {
     "message": "\"$1\" will close this tab and direct back to $2",
     "description": "Return the user to the site that initiated onboarding"
@@ -2896,6 +2902,24 @@
   },
   "welcomeBack": {
     "message": "Welcome Back!"
+  },
+  "welcomeExploreDescription": {
+    "message": "Store, send and spend crypto currencies and assets."
+  },
+  "welcomeExploreTitle": {
+    "message": "Explore decentralized apps"
+  },
+  "welcomeLoginDescription": {
+    "message": "Use your MetaMask to login to decentralized apps - no signup needed."
+  },
+  "welcomeLoginTitle": {
+    "message": "Say hello to your wallet"
+  },
+  "welcomeToMetaMask": {
+    "message": "Let's get started"
+  },
+  "welcomeToMetaMaskIntro": {
+    "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
   "whatsNew": {
     "message": "What's new",

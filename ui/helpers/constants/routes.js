@@ -66,6 +66,7 @@ const ONBOARDING_IMPORT_MOBILE_ROUTE = '/onboarding/create-password';
 const ONBOARDING_SECURE_YOUR_WALLET_ROUTE = '/onboarding/secure-your-wallet';
 const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
 const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
+const ONBOARDING_WELCOME = '/onboarding/welcome';
 
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
 const CONFIRM_SEND_ETHER_PATH = '/send-ether';
@@ -227,4 +228,5 @@ export {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
+  ONBOARDING_WELCOME,
 };
