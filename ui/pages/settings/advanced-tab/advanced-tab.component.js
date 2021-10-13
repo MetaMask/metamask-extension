@@ -9,6 +9,7 @@ import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
 
 import { getPlatform } from '../../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -406,9 +407,11 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
-              value={ledgerTransportType === 'ledgerLive'}
+              value={ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE}
               onToggle={(value) =>
-                setLedgerLivePreference(value ? '' : 'ledgerLive')
+                setLedgerLivePreference(
+                  value ? '' : LEDGER_TRANSPORT_TYPES.LIVE,
+                )
               }
               offLabel={t('off')}
               onLabel={t('on')}

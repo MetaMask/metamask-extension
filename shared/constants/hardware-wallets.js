@@ -7,3 +7,11 @@ export const KEYRING_TYPES = {
   LEDGER: 'Ledger Hardware',
   TREZOR: 'Trezor Hardware',
 };
+
+/**
+ * Used for setting the users preference for ledger transport type
+ */
+export const LEDGER_TRANSPORT_TYPES = {
+  LIVE: 'ledgerLive',
+  WEBHID: 'webhid',
+};
