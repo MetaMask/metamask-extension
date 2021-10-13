@@ -2627,9 +2627,10 @@ export default class MetamaskController extends EventEmitter {
         : () => payload;
 
     Object.values(this.connections).forEach((origin) => {
-      Object.values(origin).forEach((conn) => {
+      Object.values(origin).forEach(async (conn) => {
         if (conn.engine) {
-          conn.engine.emit('notification', getPayload(origin));
+          const payload = await getPayload();
+          conn.engine.emit('notification', payload);
         }
       });
     });
@@ -2664,12 +2665,12 @@ export default class MetamaskController extends EventEmitter {
    * Notifies all connections that the extension is unlocked.
    */
   _onUnlock() {
-    this.notifyAllConnections((origin) => {
+    this.notifyAllConnections(async (origin) => {
       return {
         method: NOTIFICATION_NAMES.unlockStateChanged,
         params: {
           isUnlocked: true,
-          accounts: this.permissionsController.getAccounts(origin),
+          accounts: await this.permissionsController.getAccounts(origin),
         },
       };
     });
