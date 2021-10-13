@@ -74,7 +74,6 @@ export function useGasFeeInputs(
   // We need the gas estimates from the GasFeeController in the background.
   // Calling this hooks initiates polling for new gas estimates and returns the
   // current estimate.
-  // todo: avoid calling in each hook
   const {
     gasEstimateType,
     gasFeeEstimates,
@@ -191,25 +190,50 @@ export function useGasFeeInputs(
   // When a user selects an estimate level, it will wipe out what they have
   // previously put in the inputs. This returns the inputs to the estimated
   // values at the level specified.
-  const setEstimateToUse = (estimateLevel) => {
-    setInternalEstimateToUse(estimateLevel);
-    handleGasLimitOutOfBoundError();
-    setMaxFeePerGas(null);
-    setMaxPriorityFeePerGas(null);
-    setGasPrice(null);
-    setGasPriceHasBeenManuallySet(false);
-  };
+  const setEstimateToUse = useCallback(
+    () => (estimateLevel) => {
+      setInternalEstimateToUse(estimateLevel);
+      handleGasLimitOutOfBoundError();
+      setMaxFeePerGas(null);
+      setMaxPriorityFeePerGas(null);
+      setGasPrice(null);
+      setGasPriceHasBeenManuallySet(false);
+    },
+    [
+      setInternalEstimateToUse,
+      handleGasLimitOutOfBoundError,
+      setMaxFeePerGas,
+      setMaxPriorityFeePerGas,
+      setGasPrice,
+      setGasPriceHasBeenManuallySet,
+    ],
+  );
 
-  const onManualChange = () => {
-    setInternalEstimateToUse('custom');
-    handleGasLimitOutOfBoundError();
-    // Restore existing values
-    setGasPrice(gasPrice);
-    setGasLimit(gasLimit);
-    setMaxFeePerGas(maxFeePerGas);
-    setMaxPriorityFeePerGas(maxPriorityFeePerGas);
-    setGasPriceHasBeenManuallySet(true);
-  };
+  const onManualChange = useCallback(
+    () => () => {
+      setInternalEstimateToUse('custom');
+      handleGasLimitOutOfBoundError();
+      // Restore existing values
+      setGasPrice(gasPrice);
+      setGasLimit(gasLimit);
+      setMaxFeePerGas(maxFeePerGas);
+      setMaxPriorityFeePerGas(maxPriorityFeePerGas);
+      setGasPriceHasBeenManuallySet(true);
+    },
+    [
+      setInternalEstimateToUse,
+      handleGasLimitOutOfBoundError,
+      setGasPrice,
+      gasPrice,
+      setGasLimit,
+      gasLimit,
+      setMaxFeePerGas,
+      maxFeePerGas,
+      setMaxPriorityFeePerGas,
+      maxPriorityFeePerGas,
+      setGasPriceHasBeenManuallySet,
+    ],
+  );
 
   return {
     maxFeePerGas,
