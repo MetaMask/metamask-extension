@@ -1638,8 +1638,20 @@
   "onboardingImportWallet": {
     "message": "Import an existing wallet"
   },
+  "onboardingPinExtensionBillboardAccess": {
+    "message": "Full Access"
+  },
+  "onboardingPinExtensionBillboardDescription": {
+    "message": "These extensions can see and change information"
+  },
+  "onboardingPinExtensionBillboardDescription2": {
+    "message": "on this site."
+  },
+  "onboardingPinExtensionBillboardTitle": {
+    "message": "Extensions"
+  },
   "onboardingPinExtensionContinueText": {
-    "messge": "Setup Metamask Wallet"
+    "message": "Setup Metamask Wallet"
   },
   "onboardingPinExtensionDescription": {
     "message": "Pin MetaMask on your Chrome browser so it's accessible and easy to view transaction confirmations."
