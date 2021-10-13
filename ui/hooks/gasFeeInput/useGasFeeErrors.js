@@ -30,32 +30,21 @@ const validateGasLimit = (gasLimit, minimumGasLimit) => {
   return undefined;
 };
 
-const validateMaxPriorityFee = (
-  isFeeMarketGasEstimate,
-  maxPriorityFeePerGas,
-  supportsEIP1559,
-) => {
-  if (
-    (supportsEIP1559 || isFeeMarketGasEstimate) &&
-    bnLessThanEqualTo(maxPriorityFeePerGas, 0)
-  ) {
+const validateMaxPriorityFee = (maxPriorityFeePerGas, supportsEIP1559) => {
+  if (supportsEIP1559 && bnLessThanEqualTo(maxPriorityFeePerGas, 0)) {
     return GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
   }
   return undefined;
 };
 
 const validateMaxFee = (
-  isFeeMarketGasEstimate,
   maxFeePerGas,
   maxPriorityFeeError,
   maxPriorityFeePerGas,
   supportsEIP1559,
 ) => {
   if (maxPriorityFeeError) return undefined;
-  if (
-    (supportsEIP1559 || isFeeMarketGasEstimate) &&
-    bnGreaterThan(maxPriorityFeePerGas, maxFeePerGas)
-  ) {
+  if (supportsEIP1559 && bnGreaterThan(maxPriorityFeePerGas, maxFeePerGas)) {
     return GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
   }
   return undefined;
@@ -82,10 +71,11 @@ const getMaxPriorityFeeWarning = (
   isFeeMarketGasEstimate,
   isGasEstimatesLoading,
   maxPriorityFeePerGas,
+  supportsEIP1559,
 ) => {
+  if (!supportsEIP1559 || !isFeeMarketGasEstimate || isGasEstimatesLoading)
+    return undefined;
   if (
-    isFeeMarketGasEstimate &&
-    !isGasEstimatesLoading &&
     bnLessThan(
       maxPriorityFeePerGas,
       gasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas,
@@ -113,8 +103,14 @@ const getMaxFeeWarning = (
   maxFeeError,
   maxPriorityFeeError,
   maxFeePerGas,
+  supportsEIP1559,
 ) => {
-  if (maxPriorityFeeError || maxFeeError || !isFeeMarketGasEstimate) {
+  if (
+    maxPriorityFeeError ||
+    maxFeeError ||
+    !isFeeMarketGasEstimate ||
+    !supportsEIP1559
+  ) {
     return undefined;
   }
   if (
@@ -147,6 +143,15 @@ const getBalanceError = (minimumCostInHexWei, transaction, ethBalance) => {
   );
 };
 
+/**
+ * @typedef {Object} GasFeeErrorsReturnType
+ * @property {Object} [gasErrors] - combined map of errors and warnings.
+ * @property {boolean} [hasGasErrors] - true if there are errors that can block submission.
+ * @property {Object} gasWarnings - map of gas warnings for EIP-1559 fields.
+ * @property {boolean} [balanceError] - true if user balance is less than transaction value.
+ * @property {boolean} [estimatesUnavailableWarning] - true if supportsEIP1559 is true and
+ * estimate is not of type fee-market.
+ */
 export function useGasFeeErrors({
   gasEstimateType,
   gasFeeEstimates,
@@ -170,13 +175,11 @@ export function useGasFeeErrors({
   const gasLimitError = validateGasLimit(gasLimit, minimumGasLimit);
 
   const maxPriorityFeeError = validateMaxPriorityFee(
-    isFeeMarketGasEstimate,
     maxPriorityFeePerGas,
     supportsEIP1559,
   );
 
   const maxFeeError = validateMaxFee(
-    isFeeMarketGasEstimate,
     maxFeePerGas,
     maxPriorityFeeError,
     maxPriorityFeePerGas,
@@ -196,6 +199,7 @@ export function useGasFeeErrors({
     isFeeMarketGasEstimate,
     isGasEstimatesLoading,
     maxPriorityFeePerGas,
+    supportsEIP1559,
   );
 
   const maxFeeWarning = getMaxFeeWarning(
@@ -205,6 +209,7 @@ export function useGasFeeErrors({
     maxFeeError,
     maxPriorityFeeError,
     maxFeePerGas,
+    supportsEIP1559,
   );
 
   // Separating errors from warnings so we can know which value problems

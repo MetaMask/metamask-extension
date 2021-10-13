@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.2.2]
+### Changed
+- [#12256](https://github.com/MetaMask/metamask-extension/pull/12256): Updating instruction step when Ledger app has contract data or blind signing setting disabled
+
+## [10.2.1]
+### Fixed
+- [#12315](https://github.com/MetaMask/metamask-extension/pull/12315): Fix ERC-20 token swaps
+- [#12284](https://github.com/MetaMask/metamask-extension/pull/12284): Restoring notice regarding mobile sync status to sync page
+
 ## [10.2.0]
 ### Added
 - [#12066](https://github.com/MetaMask/metamask-extension/pull/12066): Enable token conversion rates for primary currencies on some non-Mainnet networks
@@ -2489,7 +2498,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.2.2...HEAD
+[10.2.2]: https://github.com/MetaMask/metamask-extension/compare/v10.2.1...v10.2.2
+[10.2.1]: https://github.com/MetaMask/metamask-extension/compare/v10.2.0...v10.2.1
 [10.2.0]: https://github.com/MetaMask/metamask-extension/compare/v10.1.1...v10.2.0
 [10.1.1]: https://github.com/MetaMask/metamask-extension/compare/v10.1.0...v10.1.1
 [10.1.0]: https://github.com/MetaMask/metamask-extension/compare/v10.0.3...v10.1.0

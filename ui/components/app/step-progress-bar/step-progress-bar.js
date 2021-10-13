@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../../ui/box';
 
-const stages = {
+export const stages = {
   PASSWORD_CREATE: 1,
   SEED_PHRASE_VIDEO: 2,
   SEED_PHRASE_REVIEW: 3,

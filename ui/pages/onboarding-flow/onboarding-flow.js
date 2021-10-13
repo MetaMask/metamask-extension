@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Switch, Route, useHistory } from 'react-router-dom';
+import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Unlock from '../unlock-page';
 import {
@@ -10,6 +10,7 @@ import {
   DEFAULT_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -22,17 +23,22 @@ import {
   unlockAndGetSeedPhrase,
 } from '../../store/actions';
 import { getFirstTimeFlowTypeRoute } from '../../selectors';
+import Button from '../../components/ui/button';
+import { useI18nContext } from '../../hooks/useI18nContext';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
-import NewAccount from './new-account/new-account';
+import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
 import SecureYourWallet from './secure-your-wallet/secure-your-wallet';
 import ConfirmRecoveryPhrase from './recovery-phrase/confirm-recovery-phrase';
 import PrivacySettings from './privacy-settings/privacy-settings';
+import CreationSuccessful from './creation-successful/creation-successful';
 
 export default function OnboardingFlow() {
   const [seedPhrase, setSeedPhrase] = useState('');
   const dispatch = useDispatch();
+  const currentLocation = useLocation();
   const history = useHistory();
+  const t = useI18nContext();
   const isInitialized = useSelector(getIsInitialized);
   const isUnlocked = useSelector(getIsUnlocked);
   const completedOnboarding = useSelector(getCompletedOnboarding);
@@ -43,7 +49,7 @@ export default function OnboardingFlow() {
     // For ONBOARDING_V2 dev purposes,
     // Remove when ONBOARDING_V2 dev complete
     if (process.env.ONBOARDING_V2) {
-      history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE);
+      history.push(ONBOARDING_COMPLETION_ROUTE);
       return;
     }
 
@@ -85,7 +91,7 @@ export default function OnboardingFlow() {
           <Route
             path={ONBOARDING_CREATE_PASSWORD_ROUTE}
             render={(routeProps) => (
-              <NewAccount
+              <CreatePassword
                 {...routeProps}
                 createNewAccount={handleCreateNewAccount}
               />
@@ -114,9 +120,24 @@ export default function OnboardingFlow() {
             path={ONBOARDING_PRIVACY_SETTINGS_ROUTE}
             component={PrivacySettings}
           />
+          <Route
+            path={ONBOARDING_COMPLETION_ROUTE}
+            component={CreationSuccessful}
+          />
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
       </div>
+      {currentLocation?.pathname === ONBOARDING_COMPLETION_ROUTE && (
+        <Button
+          className="onboarding-flow__twitter-button"
+          type="link"
+          href="https://twitter.com/MetaMask"
+          target="_blank"
+        >
+          <span>{t('followUsOnTwitter')}</span>
+          <img src="images/twitter-icon.png" />
+        </Button>
+      )}
     </div>
   );
 }

@@ -158,7 +158,13 @@ export function useGasFeeInputs(
     supportsEIP1559,
   });
 
-  const errorAndWarnings = useGasFeeErrors({
+  const {
+    balanceError,
+    estimatesUnavailableWarning,
+    gasErrors,
+    gasWarnings,
+    hasGasErrors,
+  } = useGasFeeErrors({
     gasEstimateType,
     gasFeeEstimates,
     isGasEstimatesLoading,
@@ -172,10 +178,7 @@ export function useGasFeeInputs(
   });
 
   const handleGasLimitOutOfBoundError = useCallback(() => {
-    if (
-      errorAndWarnings.gasErrors.gasLimit ===
-      GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS
-    ) {
+    if (gasErrors.gasLimit === GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS) {
       const transactionGasLimitDec = hexToDecimal(transaction?.txParams?.gas);
       const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
       setGasLimit(
@@ -184,7 +187,7 @@ export function useGasFeeInputs(
           : minimumGasLimitDec,
       );
     }
-  }, [minimumGasLimit, errorAndWarnings.gasErrors.gasLimit, transaction]);
+  }, [minimumGasLimit, gasErrors.gasLimit, transaction]);
 
   // When a user selects an estimate level, it will wipe out what they have
   // previously put in the inputs. This returns the inputs to the estimated
@@ -232,6 +235,11 @@ export function useGasFeeInputs(
     estimatedGasFeeTimeBounds,
     onManualChange,
     estimatedBaseFee,
-    ...errorAndWarnings,
+    // error and warnings
+    balanceError,
+    estimatesUnavailableWarning,
+    gasErrors,
+    gasWarnings,
+    hasGasErrors,
   };
 }

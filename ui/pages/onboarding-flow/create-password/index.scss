@@ -1,9 +1,11 @@
-.new-account {
+.create-password {
   &__wrapper {
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
+    max-width: 600px;
+    max-height: 750px;
   }
 
   &__link-text {

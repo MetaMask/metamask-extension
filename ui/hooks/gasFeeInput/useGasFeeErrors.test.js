@@ -59,7 +59,10 @@ describe('useGasFeeErrors', () => {
       expect(result.current.hasGasErrors).toBe(false);
     });
     it('returns gasLimitError if gasLimit is below minimum', () => {
-      const { result } = renderUseGasFeeErrorsHook({ gasLimit: '100' });
+      const { result } = renderUseGasFeeErrorsHook({
+        gasLimit: '100',
+        ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,
+      });
       expect(result.current.gasErrors.gasLimit).toBe(
         GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS,
       );

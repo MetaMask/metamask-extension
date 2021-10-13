@@ -74,7 +74,12 @@ async function main() {
   }
 
   await retry({ retries }, async () => {
-    await runInShell('yarn', ['mocha', '--no-timeouts', e2eTestPath]);
+    await runInShell('yarn', [
+      'mocha',
+      '--no-config',
+      '--no-timeouts',
+      e2eTestPath,
+    ]);
   });
 }
 
