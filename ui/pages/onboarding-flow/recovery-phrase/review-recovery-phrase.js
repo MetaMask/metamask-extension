@@ -7,7 +7,7 @@ import Typography from '../../../components/ui/typography';
 import Copy from '../../../components/ui/icon/copy-icon.component';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
 import {
   TEXT_ALIGN,
   TYPOGRAPHY,
@@ -91,6 +91,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               }}
               icon={copied ? null : <Copy size={20} color="#3098DC" />}
               className="recovery-phrase__footer--copy--button"
+              type="link"
             >
               {copied ? t('copiedExclamation') : t('copyToClipboard')}
             </Button>
@@ -98,7 +99,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               type="primary"
               className="recovery-phrase__footer--button"
               onClick={() => {
-                history.push(INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE);
+                history.push(ONBOARDING_CONFIRM_SRP_ROUTE);
               }}
             >
               {t('next')}
