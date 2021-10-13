@@ -157,6 +157,7 @@ describe('useGasEstimates', () => {
         gasLimit: decimalToHex(gasLimit),
         gasPrice: decGWEIToHexWEI(gasPrice),
       });
+      // maxFeePerGasFiat defaults to gasPrice for non EIP-1559 transactions
       expect(result.current.estimatedMaximumFiat).toBe(maxFeePerGasFiat);
       expect(result.current.estimatedMaximumNative).toBe(
         convertFromHexToETH(maximumHexValue),

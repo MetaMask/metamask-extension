@@ -27,6 +27,7 @@ export function useMaxFeePerGasInput({
     numberOfDecimals: fiatNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY);
 
+  // todo check value for non-eip1559 scenatio
   const [initialMaxFeePerGas] = useState(
     supportsEIP1559 && !transaction?.txParams?.maxFeePerGas
       ? Number(hexWEIToDecGWEI(transaction?.txParams?.gasPrice))

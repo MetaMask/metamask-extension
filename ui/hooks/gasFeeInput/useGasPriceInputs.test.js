@@ -4,6 +4,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { LEGACY_GAS_ESTIMATE_RETURN_VALUE, configure } from './test-utils';
 import { useGasPriceInputs } from './useGasPriceInputs';
 
+// todo: check use of act
 const { act } = TestRenderer;
 
 jest.mock('../useGasFeeEstimates', () => ({
