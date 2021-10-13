@@ -226,7 +226,7 @@ export default function ViewQuote() {
   const nonCustomMaxGasLimit = usedQuote?.gasEstimate
     ? usedGasLimitWithMultiplier
     : `0x${decimalToHex(usedQuote?.maxGas || 0)}`;
-  const maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
+  let maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
 
   let maxFeePerGas;
   let maxPriorityFeePerGas;
@@ -260,6 +260,7 @@ export default function ViewQuote() {
         unsignedTransactionsAndEstimates.fees.length - 1
       ]?.maxFeePerGas;
     maxFeePerGas = decWEIToHexWEI(maxFeePerGasDecWEI);
+    maxGasLimit = unsignedTransactionsAndEstimates.gasLimit;
   }
 
   const gasTotalInWeiHex = calcGasTotal(maxGasLimit, maxFeePerGas || gasPrice);
