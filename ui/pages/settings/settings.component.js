@@ -17,7 +17,6 @@ import {
   CONTACT_VIEW_ROUTE,
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
-  DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
@@ -27,7 +26,6 @@ import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
 import ExperimentalTab from './experimental-tab';
-import AddNetworkForm from './networks-tab/add-network-form';
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -42,6 +40,7 @@ class SettingsPage extends PureComponent {
     breadCrumbTextKey: PropTypes.string,
     initialBreadCrumbKey: PropTypes.string,
     mostRecentOverviewPage: PropTypes.string.isRequired,
+    addNewNetwork: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -54,6 +53,7 @@ class SettingsPage extends PureComponent {
       backRoute,
       currentPath,
       mostRecentOverviewPage,
+      addNewNetwork,
     } = this.props;
 
     return (
@@ -72,7 +72,13 @@ class SettingsPage extends PureComponent {
           {this.renderTitle()}
           <div
             className="settings-page__close-button"
-            onClick={() => history.push(mostRecentOverviewPage)}
+            onClick={() => {
+              if (addNewNetwork) {
+                history.push(NETWORKS_ROUTE);
+              } else {
+                history.push(mostRecentOverviewPage);
+              }
+            }}
           />
         </div>
         <div className="settings-page__content">
@@ -219,30 +225,13 @@ class SettingsPage extends PureComponent {
   }
 
   renderContent() {
-    const { history } = this.props;
     return (
       <Switch>
         <Route exact path={GENERAL_ROUTE} component={SettingsTab} />
         <Route exact path={ABOUT_US_ROUTE} component={InfoTab} />
         <Route exact path={ADVANCED_ROUTE} component={AdvancedTab} />
         <Route exact path={ALERTS_ROUTE} component={AlertsTab} />
-        <Route
-          exact
-          path={ADD_NETWORK_ROUTE}
-          render={(routeProps) => (
-            <AddNetworkForm
-              {...routeProps}
-              onClear={(shouldUpdateHistory = true) => {
-                if (shouldUpdateHistory) {
-                  history.push(NETWORKS_ROUTE);
-                }
-              }}
-              onAddNetwork={() => {
-                history.push(DEFAULT_ROUTE);
-              }}
-            />
-          )}
-        />
+        <Route exact path={ADD_NETWORK_ROUTE} component={NetworksTab} />
         <Route path={NETWORKS_ROUTE} component={NetworksTab} />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
         <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />

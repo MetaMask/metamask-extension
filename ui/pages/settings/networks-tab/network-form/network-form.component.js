@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import validUrl from 'valid-url';
 import log from 'loglevel';
+import classnames from 'classnames';
 import TextField from '../../../../components/ui/text-field';
 import Button from '../../../../components/ui/button';
 import Tooltip from '../../../../components/ui/tooltip';
@@ -27,19 +28,22 @@ export default class NetworkForm extends PureComponent {
   };
 
   static propTypes = {
-    editRpc: PropTypes.func.isRequired,
-    showConfirmDeleteNetworkModal: PropTypes.func.isRequired,
+    editRpc: PropTypes.func,
+    showConfirmDeleteNetworkModal: PropTypes.func,
     rpcUrl: PropTypes.string,
     chainId: PropTypes.string,
     ticker: PropTypes.string,
     viewOnly: PropTypes.bool,
     networkName: PropTypes.string,
-    onClear: PropTypes.func.isRequired,
+    onClear: PropTypes.func,
     setRpcTarget: PropTypes.func.isRequired,
     isCurrentRpcTarget: PropTypes.bool,
     blockExplorerUrl: PropTypes.string,
     rpcPrefs: PropTypes.object,
     networksToRender: PropTypes.array,
+    onAddNetwork: PropTypes.func,
+    setNewNetworkAdded: PropTypes.func,
+    addNewNetwork: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -61,10 +65,25 @@ export default class NetworkForm extends PureComponent {
   };
 
   componentDidUpdate(prevProps) {
-    for (const key of FORM_STATE_KEYS) {
-      if (prevProps[key] !== this.props[key]) {
-        this.resetForm();
-        break;
+    const { addNewNetwork: prevAddMode } = prevProps;
+    const { addNewNetwork } = this.props;
+
+    if (!prevAddMode && addNewNetwork) {
+      this.setState({
+        rpcUrl: '',
+        chainId: '',
+        ticker: '',
+        networkName: '',
+        blockExplorerUrl: '',
+        errors: {},
+        isSubmitting: false,
+      });
+    } else {
+      for (const key of FORM_STATE_KEYS) {
+        if (prevProps[key] !== this.props[key]) {
+          this.resetForm();
+          break;
+        }
       }
     }
   }
@@ -78,7 +97,7 @@ export default class NetworkForm extends PureComponent {
       blockExplorerUrl: '',
       errors: {},
     });
-
+    console.log('component will unmount');
     // onClear will push the network settings route unless was pass false.
     // Since we call onClear to cause this component to be unmounted, the
     // route will already have been updated, and we avoid setting it twice.
@@ -148,6 +167,9 @@ export default class NetworkForm extends PureComponent {
         rpcUrl: propsRpcUrl,
         editRpc,
         rpcPrefs = {},
+        onAddNetwork,
+        setNewNetworkAdded,
+        addNewNetwork,
       } = this.props;
       const {
         networkName,
@@ -180,6 +202,10 @@ export default class NetworkForm extends PureComponent {
         });
       }
 
+      if (addNewNetwork) {
+        setNewNetworkAdded(networkName);
+        onAddNetwork();
+      }
     } catch (error) {
       this.setState({
         isSubmitting: false,
@@ -189,7 +215,13 @@ export default class NetworkForm extends PureComponent {
   };
 
   onCancel = () => {
-    this.resetForm();
+    const { addNewNetwork, onClear } = this.props;
+
+    if (addNewNetwork) {
+      onClear();
+    } else {
+      this.resetForm();
+    }
   };
 
   onDelete = () => {
@@ -248,22 +280,41 @@ export default class NetworkForm extends PureComponent {
     value,
     optionalTextFieldKey,
     tooltipText,
+    autoFocus = false,
   }) {
     const { errors } = this.state;
-    const { viewOnly } = this.props;
+    const { viewOnly, addNewNetwork } = this.props;
     const errorMessage = errors[fieldKey]?.msg || '';
 
     return (
-      <div className="networks-tab__network-form-row">
-        <div className="networks-tab__network-form-label">
-          <div className="networks-tab__network-form-label-text">
+      <div
+        className={classnames({
+          'networks-tab__network-form-row': !addNewNetwork,
+          'add-network-form__network-form-row': addNewNetwork,
+        })}
+      >
+        <div
+          className={classnames({
+            'networks-tab__network-form-label': !addNewNetwork,
+            'add-network-form__network-form-label': addNewNetwork,
+          })}
+        >
+          <div
+            className={classnames({
+              'networks-tab__network-form-label-text': !addNewNetwork,
+              'add-network-form__network-form-label-text': addNewNetwork,
+            })}
+          >
             {this.context.t(optionalTextFieldKey || fieldKey)}
           </div>
           {!viewOnly && tooltipText ? (
             <Tooltip
               position="top"
               title={tooltipText}
-              wrapperClassName="networks-tab__network-form-label-tooltip"
+              wrapperClassName={classnames({
+                'networks-tab__network-form-label-tooltip': !addNewNetwork,
+                'add-network-form__network-form-label-tooltip': addNewNetwork,
+              })}
             >
               <i className="fa fa-info-circle" />
             </Tooltip>
@@ -278,6 +329,7 @@ export default class NetworkForm extends PureComponent {
           value={value}
           disabled={viewOnly}
           error={errorMessage}
+          autoFocus={autoFocus}
         />
       </div>
     );
@@ -518,7 +570,120 @@ export default class NetworkForm extends PureComponent {
     }
   };
 
-  render() {
+  renderWarning() {
+    const { t } = this.context;
+    return (
+      <div className="networks-tab__network-form-row--warning">
+        {t('onlyAddTrustedNetworks')}
+      </div>
+    );
+  }
+
+  renderSubHeaderForAddNetwork() {
+    const { t } = this.context;
+    return (
+      <div className="add-network-form__subheader">
+        <span className="add-network-form__sub-header-text">
+          {t('networks')}
+        </span>
+        <span>{'  >  '}</span>
+        <div className="add-network-form__subheader--break">
+          {t('addANetwork')}
+        </div>
+      </div>
+    );
+  }
+
+  renderAddNetworkForm() {
+    const { t } = this.context;
+    const {
+      networkName,
+      rpcUrl,
+      chainId = '',
+      ticker,
+      blockExplorerUrl,
+    } = this.state;
+
+    const isSubmitDisabled =
+      this.hasErrors() || this.isSubmitting() || !rpcUrl || !chainId;
+
+    return (
+      <div className="add-network-form__body">
+        {this.renderSubHeaderForAddNetwork()}
+        <div className="add-network-form__content">
+          {this.renderWarning()}
+          <div className="add-network-form__form-row">
+            <div className="add-network-form__form-column add-network-form__form-column__left">
+              {this.renderFormTextField({
+                fieldKey: 'networkName',
+                textFieldId: 'network-name',
+                onChange: this.setStateWithValue('networkName'),
+                value: networkName,
+                autoFocus: true,
+              })}
+              {this.renderFormTextField({
+                fieldKey: 'chainId',
+                textFieldId: 'chainId',
+                onChange: this.setStateWithValue(
+                  'chainId',
+                  this.validateChainIdOnChange.bind(this, rpcUrl),
+                ),
+                value: chainId,
+                tooltipText: t('networkSettingsChainIdDescription'),
+              })}
+              {this.renderFormTextField({
+                fieldKey: 'blockExplorerUrl',
+                textFieldId: 'block-explorer-url',
+                onChange: this.setStateWithValue(
+                  'blockExplorerUrl',
+                  this.validateBlockExplorerURL,
+                ),
+                value: blockExplorerUrl,
+                optionalTextFieldKey: 'optionalBlockExplorerUrl',
+              })}
+            </div>
+            <div className="add-network-form__form-column add-network-form__form-column__right">
+              {this.renderFormTextField({
+                fieldKey: 'rpcUrl',
+                textFieldId: 'rpc-url',
+                onChange: this.setStateWithValue(
+                  'rpcUrl',
+                  this.validateUrlRpcUrl,
+                ),
+                value: rpcUrl,
+              })}
+              {this.renderFormTextField({
+                fieldKey: 'symbol',
+                textFieldId: 'network-ticker',
+                onChange: this.setStateWithValue('ticker'),
+                value: ticker,
+                optionalTextFieldKey: 'optionalCurrencySymbol',
+              })}
+            </div>
+          </div>
+          <div className="add-network-form__footer">
+            <Button
+              type="secondary"
+              onClick={this.onCancel}
+              className="add-network-form__footer-cancel-button"
+            >
+              {t('cancel')}
+            </Button>
+            <Button
+              type="primary"
+              disabled={isSubmitDisabled}
+              onClick={this.onSubmit}
+              className="add-network-form__footer-submit-button"
+            >
+              {t('save')}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderNetworkForm() {
     const { t } = this.context;
     const { viewOnly, isCurrentRpcTarget } = this.props;
     const {
@@ -530,6 +695,7 @@ export default class NetworkForm extends PureComponent {
     } = this.state;
 
     const deletable = !isCurrentRpcTarget && !viewOnly;
+
     const isSubmitDisabled =
       this.hasErrors() ||
       this.isSubmitting() ||
@@ -605,5 +771,12 @@ export default class NetworkForm extends PureComponent {
         </div>
       </div>
     );
+  }
+
+  render() {
+    const { addNewNetwork } = this.props;
+    return addNewNetwork
+      ? this.renderAddNetworkForm()
+      : this.renderNetworkForm();
   }
 }
