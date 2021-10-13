@@ -50,6 +50,16 @@ describe('useMaxFeePerGasInput', () => {
     expect(result.current.maxFeePerGas).toBe(0.00002052);
   });
 
+  it('returns gasPrice values from transaction if transaction.userFeeLevel is custom and maxFeePerGas is not provided', () => {
+    const { result } = renderUseMaxFeePerGasInputHook({
+      transaction: {
+        userFeeLevel: 'custom',
+        txParams: { gasPrice: '0x5028' },
+      },
+    });
+    expect(result.current.maxFeePerGas).toBe(0.00002052);
+  });
+
   it('does not returns maxFeePerGas values from transaction if transaction.userFeeLevel is not custom', () => {
     const { result } = renderUseMaxFeePerGasInputHook({
       estimateToUse: 'high',

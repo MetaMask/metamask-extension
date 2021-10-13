@@ -12,6 +12,15 @@ import { useCurrencyDisplay } from '../useCurrencyDisplay';
 import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
 import { feeParamsAreCustom, getGasFeeEstimate } from './utils';
 
+/**
+ * @typedef {Object} MaxPriorityFeePerGasInputReturnType
+ * @property {DecGweiString} [maxPriorityFeePerGas] - the maxPriorityFeePerGas
+ *  input value.
+ * @property {string} [maxPriorityFeePerGasFiat] - the maxPriorityFeePerGas
+ *  converted to the user's preferred currency.
+ * @property {(DecGweiString) => void} setMaxPriorityFeePerGas - state setter
+ *  method to update the maxPriorityFeePerGas.
+ */
 export function useMaxPriorityFeePerGasInput({
   estimateToUse,
   gasEstimateType,

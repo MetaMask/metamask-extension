@@ -47,6 +47,16 @@ describe('useMaxPriorityFeePerGasInput', () => {
     expect(result.current.maxPriorityFeePerGas).toBe(0.00002052);
   });
 
+  it('returns maxFeePerGas values from transaction if transaction.userFeeLevel is custom and maxPriorityFeePerGas is not provided', () => {
+    const { result } = renderUseMaxPriorityFeePerGasInputHook({
+      transaction: {
+        userFeeLevel: 'custom',
+        txParams: { maxFeePerGas: '0x5028' },
+      },
+    });
+    expect(result.current.maxPriorityFeePerGas).toBe(0.00002052);
+  });
+
   it('does not returns maxPriorityFeePerGas values from transaction if transaction.userFeeLevel is not custom', () => {
     const { result } = renderUseMaxPriorityFeePerGasInputHook({
       estimateToUse: 'high',
