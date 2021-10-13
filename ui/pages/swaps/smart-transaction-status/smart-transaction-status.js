@@ -87,7 +87,7 @@ export default function SmartTransactionStatus() {
   }, [dispatch, isSmartTransactionPending, latestSmartTransactionUuid]);
 
   useEffect(() => {
-    // We don't need to poll on quotes on the status page anymore.
+    // We don't need to poll for quotes on the status page.
     dispatch(stopPollingForQuotes());
   }, [dispatch]);
 
