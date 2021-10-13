@@ -27,12 +27,11 @@ export function useMaxFeePerGasInput({
     numberOfDecimals: fiatNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY);
 
-  // todo check value for non-eip1559 scenatio
-  const [initialMaxFeePerGas] = useState(
-    supportsEIP1559 && !transaction?.txParams?.maxFeePerGas
-      ? Number(hexWEIToDecGWEI(transaction?.txParams?.gasPrice))
-      : Number(hexWEIToDecGWEI(transaction?.txParams?.maxFeePerGas)),
-  );
+  const [initialMaxFeePerGas] = useState(() => {
+    if (!supportsEIP1559) return 0;
+    const { maxFeePerGas, gasPrice: txGasPrice } = transaction?.txParams || {};
+    return Number(hexWEIToDecGWEI(maxFeePerGas || txGasPrice));
+  });
 
   // This hook keeps track of a few pieces of transitional state. It is
   // transitional because it is only used to modify a transaction in the
@@ -75,7 +74,6 @@ export function useMaxFeePerGasInput({
       currency: fiatCurrency,
     },
   );
-
   // We specify whether to use the estimate value by checking if the state
   // value has been set. The state value is only set by user input and is wiped
   // when the user selects an estimate. Default here is '0' to avoid bignumber

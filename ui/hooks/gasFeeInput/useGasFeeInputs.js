@@ -11,7 +11,7 @@ import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 
 import { useGasFeeErrors } from './useGasFeeErrors';
-import { useGasPriceInputs } from './useGasPriceInputs';
+import { useGasPriceInput } from './useGasPriceInput';
 import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';
 import { useMaxPriorityFeePerGasInput } from './useMaxPriorityFeePerGasInput';
 import { useGasEstimates } from './useGasEstimates';
@@ -102,8 +102,7 @@ export function useGasFeeInputs(
     gasPrice,
     setGasPrice,
     setGasPriceHasBeenManuallySet,
-  } = useGasPriceInputs({
-    defaultEstimateToUse,
+  } = useGasPriceInput({
     estimateToUse,
     gasEstimateType,
     gasFeeEstimates,

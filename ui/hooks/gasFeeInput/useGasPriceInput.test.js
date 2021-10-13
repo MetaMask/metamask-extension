@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
 import { LEGACY_GAS_ESTIMATE_RETURN_VALUE, configure } from './test-utils';
-import { useGasPriceInputs } from './useGasPriceInputs';
+import { useGasPriceInput } from './useGasPriceInput';
 
 jest.mock('../useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
@@ -16,15 +16,15 @@ jest.mock('react-redux', () => {
   };
 });
 
-describe('useGasPriceInputs', () => {
+describe('useGasPriceInput', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    configure();
   });
 
   it('returns gasPrice values from transaction if transaction.userFeeLevel is custom', () => {
-    configure();
     const { result } = renderHook(() =>
-      useGasPriceInputs({
+      useGasPriceInput({
         transaction: {
           userFeeLevel: 'custom',
           txParams: { gasPrice: '0x5028' },
@@ -37,7 +37,7 @@ describe('useGasPriceInputs', () => {
   it('does not returns gasPrice values from transaction if transaction.userFeeLevel is not custom', () => {
     configure();
     const { result } = renderHook(() =>
-      useGasPriceInputs({
+      useGasPriceInput({
         estimateToUse: 'high',
         transaction: {
           userFeeLevel: 'high',
@@ -50,10 +50,9 @@ describe('useGasPriceInputs', () => {
   });
 
   it('if no gasPrice is provided returns default estimate for legacy transaction', () => {
-    configure();
     const { result } = renderHook(() =>
-      useGasPriceInputs({
-        defaultEstimateToUse: 'medium',
+      useGasPriceInput({
+        estimateToUse: 'medium',
         ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,
       }),
     );
@@ -61,9 +60,8 @@ describe('useGasPriceInputs', () => {
   });
 
   it('for legacy transaction if estimateToUse is high and no gasPrice is provided returns high estimate value', () => {
-    configure();
     const { result } = renderHook(() =>
-      useGasPriceInputs({
+      useGasPriceInput({
         estimateToUse: 'high',
         ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,
       }),
@@ -72,17 +70,15 @@ describe('useGasPriceInputs', () => {
   });
 
   it('returns 0 for EIP-1559 transactions', () => {
-    configure();
     const { result } = renderHook(() =>
-      useGasPriceInputs({ defaultEstimateToUse: 'medium' }),
+      useGasPriceInput({ estimateToUse: 'medium' }),
     );
     expect(result.current.gasPrice).toBe('0');
   });
 
   it('returns gasPrice set by user if gasPriceHasBeenManuallySet is true', () => {
-    configure();
     const { result } = renderHook(() =>
-      useGasPriceInputs({ defaultEstimateToUse: 'medium' }),
+      useGasPriceInput({ estimateToUse: 'medium' }),
     );
     act(() => {
       result.current.setGasPriceHasBeenManuallySet(true);

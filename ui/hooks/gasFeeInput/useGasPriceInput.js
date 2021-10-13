@@ -22,11 +22,10 @@ function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {
  * @property {(boolean) => true} setGasPriceHasBeenManuallySet - state setter method to update gasPriceHasBeenManuallySet
  * field gasPriceHasBeenManuallySet is used in gasPrice calculations.
  */
-export function useGasPriceInputs({
-  defaultEstimateToUse,
+export function useGasPriceInput({
+  estimateToUse,
   gasEstimateType,
   gasFeeEstimates,
-  estimateToUse,
   transaction,
 }) {
   const [gasPriceHasBeenManuallySet, setGasPriceHasBeenManuallySet] = useState(
@@ -51,11 +50,7 @@ export function useGasPriceInputs({
       gasPriceEstimatesHaveNotChanged ||
       isLegacyTransaction(transaction?.txParams))
       ? gasPrice
-      : getGasPriceEstimate(
-          gasFeeEstimates,
-          gasEstimateType,
-          estimateToUse || defaultEstimateToUse,
-        );
+      : getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse);
 
   return {
     gasPrice: gasPriceToUse,
