@@ -19,6 +19,22 @@ import { getShouldShowFiat } from '../../selectors';
 import { useCurrencyDisplay } from '../useCurrencyDisplay';
 import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
 
+/**
+ * @typedef {Object} GasEstimatesReturnType
+ * @property {string} [estimatedMinimumFiat] - The amount estimated to be paid
+ *  based on current network conditions. Expressed in user's preferred currency.
+ * @property {string} [estimatedMaximumFiat] - the maximum amount estimated to be paid if current
+ *  network transaction volume increases. Expressed in user's preferred currency.
+ * @property {string} [estimatedMaximumNative] - the maximum amount estimated to be paid if the
+ *  current network transaction volume increases. Expressed in the network's native currency.
+ * @property {string} [estimatedMinimumNative] - the maximum amount estimated to be paid if the
+ *  current network transaction volume increases. Expressed in the network's native currency.
+ * @property {string} [estimatedMinimumNative] - the maximum amount estimated to be paid if the
+ *  current network transaction volume increases. Expressed in the network's native currency.
+ * @property {HexWeiString} [estimatedBaseFee] - estimatedBaseFee from fee-market gasFeeEstimates
+ *  in HexWei.
+ * @property {HexWeiString} [minimumCostInHexWei] - the minimum amount this transaction will cost.
+ */
 export function useGasEstimates({
   editGasMode,
   gasEstimateType,
@@ -26,7 +42,6 @@ export function useGasEstimates({
   gasLimit,
   gasPrice,
   maxFeePerGas,
-  maxFeePerGasFiat,
   maxPriorityFeePerGas,
   minimumGasLimit,
   supportsEIP1559,
@@ -89,6 +104,14 @@ export function useGasEstimates({
     currency: primaryCurrency,
   });
 
+  const [, { value: estimatedMaximumFiat }] = useCurrencyDisplay(
+    maximumCostInHexWei,
+    {
+      numberOfDecimals: fiatNumberOfDecimals,
+      currency: fiatCurrency,
+    },
+  );
+
   const [estimatedMinimumNative] = useCurrencyDisplay(minimumCostInHexWei, {
     numberOfDecimals: primaryNumberOfDecimals,
     currency: primaryCurrency,
@@ -105,8 +128,8 @@ export function useGasEstimates({
   );
 
   return {
+    estimatedMaximumFiat: showFiat ? estimatedMaximumFiat : '',
     estimatedMinimumFiat: showFiat ? estimatedMinimumFiat : '',
-    estimatedMaximumFiat: showFiat ? maxFeePerGasFiat : '',
     estimatedMaximumNative,
     estimatedMinimumNative,
     estimatedBaseFee: supportsEIP1559

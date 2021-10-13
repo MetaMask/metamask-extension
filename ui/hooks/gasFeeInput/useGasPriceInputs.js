@@ -15,6 +15,13 @@ function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {
   return '0';
 }
 
+/**
+ * @typedef {Object} GasPriceInputsReturnType
+ * @property {DecGweiString} [gasPrice] - the gasPrice input value.
+ * @property {(DecGweiString) => void} setGasPrice - state setter method to update the gasPrice.
+ * @property {(boolean) => true} setGasPriceHasBeenManuallySet - state setter method to update gasPriceHasBeenManuallySet
+ * field gasPriceHasBeenManuallySet is used in gasPrice calculations.
+ */
 export function useGasPriceInputs({
   defaultEstimateToUse,
   gasEstimateType,

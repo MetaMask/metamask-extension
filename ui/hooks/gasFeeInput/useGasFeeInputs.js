@@ -152,7 +152,6 @@ export function useGasFeeInputs(
     gasLimit,
     gasPrice,
     maxFeePerGas,
-    maxFeePerGasFiat,
     maxPriorityFeePerGas,
     minimumGasLimit,
     supportsEIP1559,

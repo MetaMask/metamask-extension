@@ -1,11 +1,7 @@
-import TestRenderer from 'react-test-renderer';
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 
 import { LEGACY_GAS_ESTIMATE_RETURN_VALUE, configure } from './test-utils';
 import { useGasPriceInputs } from './useGasPriceInputs';
-
-// todo: check use of act
-const { act } = TestRenderer;
 
 jest.mock('../useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
@@ -90,8 +86,8 @@ describe('useGasPriceInputs', () => {
     );
     act(() => {
       result.current.setGasPriceHasBeenManuallySet(true);
-      result.current.setGasPrice(0.001);
+      result.current.setGasPrice(100);
     });
-    expect(result.current.gasPrice).toBe(0.001);
+    expect(result.current.gasPrice).toBe(100);
   });
 });

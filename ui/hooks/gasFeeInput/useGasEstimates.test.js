@@ -39,7 +39,6 @@ const useGasEstimatesHook = (props) =>
     maxPriorityFeePerGas: '10',
     maxFeePerGas: '100',
     minimumCostInHexWei: '0x5208',
-    maxFeePerGasFiat: '$200.00',
     minimumGasLimit: '0x5208',
     supportsEIP1559: true,
     ...FEE_MARKET_ESTIMATE_RETURN_VALUE,
@@ -83,17 +82,18 @@ describe('useGasEstimates', () => {
     });
 
     it('uses new EIP-1559 gas fields to calculate maximum values', () => {
-      const maxFeePerGasFiat = '$200.00';
       const gasLimit = '21000';
       const maxFeePerGas = '100';
       const { result } = renderHook(() =>
-        useGasEstimatesHook({ gasLimit, maxFeePerGas, maxFeePerGasFiat }),
+        useGasEstimatesHook({ gasLimit, maxFeePerGas }),
       );
       const maximumHexValue = getMaximumGasTotalInHexWei({
         gasLimit: decimalToHex(gasLimit),
         maxFeePerGas: decGWEIToHexWEI(maxFeePerGas),
       });
-      expect(result.current.estimatedMaximumFiat).toBe(maxFeePerGasFiat);
+      expect(result.current.estimatedMaximumFiat).toBe(
+        convertFromHexToFiat(maximumHexValue),
+      );
       expect(result.current.estimatedMaximumNative).toBe(
         convertFromHexToETH(maximumHexValue),
       );
@@ -141,12 +141,10 @@ describe('useGasEstimates', () => {
     });
 
     it('uses legacy gas fields to calculate maximum values', () => {
-      const maxFeePerGasFiat = '$200.00';
       const gasLimit = '21000';
       const gasPrice = '10';
       const { result } = renderHook(() =>
         useGasEstimatesHook({
-          maxFeePerGasFiat,
           gasLimit,
           gasPrice,
           supportsEIP1559: false,
@@ -157,8 +155,9 @@ describe('useGasEstimates', () => {
         gasLimit: decimalToHex(gasLimit),
         gasPrice: decGWEIToHexWEI(gasPrice),
       });
-      // maxFeePerGasFiat defaults to gasPrice for non EIP-1559 transactions
-      expect(result.current.estimatedMaximumFiat).toBe(maxFeePerGasFiat);
+      expect(result.current.estimatedMaximumFiat).toBe(
+        convertFromHexToFiat(maximumHexValue),
+      );
       expect(result.current.estimatedMaximumNative).toBe(
         convertFromHexToETH(maximumHexValue),
       );
