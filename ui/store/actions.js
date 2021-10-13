@@ -409,9 +409,13 @@ export function connectHardware(deviceName, page, hdPath) {
     let accounts;
     try {
       const browserSupportsHid = 'hid' in window.navigator;
-      const { useLedgerLive } = getState().metamask;
+      const { ledgerTransportType } = getState().metamask;
 
-      if (browserSupportsHid && deviceName === 'ledger' && !useLedgerLive) {
+      if (
+        browserSupportsHid &&
+        deviceName === 'ledger' &&
+        ledgerTransportType !== LEDGER_TRANSPORT_TYPES.LIVE
+      ) {
         try {
           await window.navigator.hid.requestDevice({
             filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
