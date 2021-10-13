@@ -2626,8 +2626,8 @@ export default class MetamaskController extends EventEmitter {
         ? (origin) => payload(origin)
         : () => payload;
 
-    Object.values(this.connections).forEach((origin) => {
-      Object.values(origin).forEach(async (conn) => {
+    Object.keys(this.connections).forEach((origin) => {
+      Object.values(this.connections[origin]).forEach(async (conn) => {
         if (conn.engine) {
           conn.engine.emit('notification', await getPayload(origin));
         }
