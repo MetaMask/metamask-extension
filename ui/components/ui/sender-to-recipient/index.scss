@@ -178,6 +178,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        margin-inline-start: 8px;
 
         [dir='rtl'] & {
           /*rtl:ignore*/

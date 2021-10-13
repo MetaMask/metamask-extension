@@ -76,8 +76,9 @@ describe('Metamask Import UI', function () {
         // shows a QR code for the account
         const detailsModal = await driver.findVisibleElement('span .modal');
         // shows the correct account address
-        const [address] = await driver.findElements('.readonly-input__input');
-        assert.equal(await address.getAttribute('value'), testAddress);
+        const address = await driver.findElement('.qr-code__address');
+
+        assert.equal(await address.getText(), testAddress);
 
         await driver.clickElement('.account-modal__close');
         await detailsModal.waitForElementState('hidden');

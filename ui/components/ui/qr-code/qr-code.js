@@ -3,7 +3,6 @@ import React from 'react';
 import qrCode from 'qrcode-generator';
 import { connect } from 'react-redux';
 import { isHexPrefixed } from 'ethereumjs-util';
-import ReadOnlyInput from '../readonly-input/readonly-input';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 export default connect(mapStateToProps)(QrCodeView);
@@ -47,11 +46,7 @@ function QrCodeView(props) {
           __html: qrImage.createTableTag(4),
         }}
       />
-      <ReadOnlyInput
-        wrapperClass="ellip-address-wrapper"
-        autoFocus
-        value={toChecksumHexAddress(data)}
-      />
+      <div className="qr-code__address">{toChecksumHexAddress(data)}</div>
     </div>
   );
 }

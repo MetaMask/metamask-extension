@@ -55,14 +55,12 @@ function SenderAddress({
         }
       }}
     >
-      {!addressOnly && (
-        <div className="sender-to-recipient__sender-icon">
-          <Identicon
-            address={toChecksumHexAddress(senderAddress)}
-            diameter={24}
-          />
-        </div>
-      )}
+      <div className="sender-to-recipient__sender-icon">
+        <Identicon
+          address={toChecksumHexAddress(senderAddress)}
+          diameter={24}
+        />
+      </div>
       <Tooltip
         position="bottom"
         html={tooltipHtml}
@@ -73,7 +71,9 @@ function SenderAddress({
         <div className="sender-to-recipient__name">
           {addressOnly ? (
             <span>
-              {`${t('from')}: ${senderName || checksummedSenderAddress}`}
+              {`${t('from')}: ${
+                senderName || shortenAddress(checksummedSenderAddress)
+              }`}
             </span>
           ) : (
             senderName
@@ -132,11 +132,9 @@ function RecipientWithAddress({
         }
       }}
     >
-      {!addressOnly && (
-        <div className="sender-to-recipient__sender-icon">
-          <Identicon address={checksummedRecipientAddress} diameter={24} />
-        </div>
-      )}
+      <div className="sender-to-recipient__sender-icon">
+        <Identicon address={checksummedRecipientAddress} diameter={24} />
+      </div>
       <Tooltip
         position="bottom"
         html={tooltipHtml}
@@ -148,7 +146,9 @@ function RecipientWithAddress({
         <div className="sender-to-recipient__name">
           <span>{addressOnly ? `${t('to')}: ` : ''}</span>
           {addressOnly
-            ? recipientNickname || recipientEns || checksummedRecipientAddress
+            ? recipientNickname ||
+              recipientEns ||
+              shortenAddress(checksummedRecipientAddress)
             : recipientNickname ||
               recipientEns ||
               recipientName ||
@@ -225,7 +225,7 @@ export default function SenderToRecipient({
         />
       ) : (
         <div className="sender-to-recipient__party sender-to-recipient__party--recipient">
-          {!addressOnly && <i className="fa fa-file-text-o" />}
+          <i className="fa fa-file-text-o" />
           <div className="sender-to-recipient__name">{t('newContract')}</div>
         </div>
       )}
