@@ -72,11 +72,10 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
 
           <div className="srp-text-area">
             <button onClick={() => setRevealSRP(!revealSRP)}>
-              {revealSRP ? (
-                <i className="far fa-eye-slash" color="grey" />
-              ) : (
-                <i className="far fa-eye" color="grey" />
-              )}
+              <i
+                className={`far fa-eye${revealSRP ? '-slash' : ''}`}
+                color="grey"
+              />
             </button>
             <textarea
               className={classnames('srp-text-area__textarea', {
