@@ -28,7 +28,10 @@ import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { LEDGER_TRANSPORT_TYPES } from '../../shared/constants/hardware-wallets';
+import {
+  LEDGER_TRANSPORT_TYPES,
+  LEDGER_USB_VENDOR_ID,
+} from '../../shared/constants/hardware-wallets';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -411,7 +414,7 @@ export function connectHardware(deviceName, page, hdPath) {
       if (browserSupportsHid && deviceName === 'ledger' && !useLedgerLive) {
         try {
           await window.navigator.hid.requestDevice({
-            filters: [{ vendorId: '0x2c97' }],
+            filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
           });
           await promisifiedBackground.setLedgerTransportPreference(
             LEDGER_TRANSPORT_TYPES.WEBHID,
