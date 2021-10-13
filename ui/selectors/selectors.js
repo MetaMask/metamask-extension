@@ -15,11 +15,7 @@ import {
   ALLOWED_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import {
-  TRUNCATED_NAME_CHAR_LIMIT,
-  TRUNCATED_ADDRESS_START_CHARS,
-  TRUNCATED_ADDRESS_END_CHARS,
-} from '../../shared/constants/labels';
+import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
 import {
   shortenAddress,
@@ -331,9 +327,7 @@ export function getAccountsWithLabels(state) {
         name.length < TRUNCATED_NAME_CHAR_LIMIT
           ? name
           : `${name.slice(0, TRUNCATED_NAME_CHAR_LIMIT - 1)}...`
-      } (${address.slice(0, TRUNCATED_ADDRESS_START_CHARS)}...${address.slice(
-        address.length - TRUNCATED_ADDRESS_END_CHARS,
-      )})`,
+      } (${shortenAddress(address)})`,
       label: name,
       balance,
     }),
