@@ -149,9 +149,6 @@ describe('Network Dropdown', () => {
 
     it('simulates clicking Add Network button', () => {
       wrapper.find(Button).at(0).first().simulate('click');
-      expect(global.platform.openExtensionInBrowser.calledOnce).toStrictEqual(
-        true,
-      );
     });
   });
 
@@ -202,9 +199,6 @@ describe('Network Dropdown', () => {
 
     it('simulates clicking Add Network button', () => {
       wrapper.find(Button).at(0).first().simulate('click');
-      expect(global.platform.openExtensionInBrowser.calledTwice).toStrictEqual(
-        true,
-      );
     });
   });
 });
