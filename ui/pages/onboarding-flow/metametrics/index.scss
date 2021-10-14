@@ -25,11 +25,13 @@
   }
 
   &__buttons {
-    margin-top: 24px;
-    max-width: 50%;
+    margin: 24px auto 0 auto;
+    justify-content: space-between;
+    display: flex;
 
     button {
       margin-bottom: 24px;
+      width: 200px;
     }
   }
 }

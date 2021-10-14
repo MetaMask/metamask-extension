@@ -124,7 +124,10 @@ export default function OnboardingMetametrics() {
           {t('metametricsCommitmentsNeverSell')}
         </li>
       </ul>
-      <Typography color={COLORS.UI4}>
+      <Typography
+        color={COLORS.UI4}
+        align={TEXT_ALIGN.CENTER}
+        variant={TYPOGRAPHY.H6}>
         {t('gdprMessage', [
           <a
             key="metametrics-bottom-text-wrapper"
@@ -137,11 +140,11 @@ export default function OnboardingMetametrics() {
         ])}
       </Typography>
       <div className="onboarding-metametrics__buttons">
-        <Button type="primary" onClick={onConfirm}>
-          {t('affirmAgree')}
-        </Button>
         <Button type="secondary" onClick={onCancel}>
           {t('noThanks')}
+        </Button>
+        <Button type="primary" onClick={onConfirm}>
+          {t('affirmAgree')}
         </Button>
       </div>
     </div>
