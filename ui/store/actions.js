@@ -2981,10 +2981,10 @@ export async function cancelSmartTransaction(uuid) {
 export function fetchSmartTransactionsLiveness() {
   return async (dispatch) => {
     try {
-      const smartTransactionsStatus = await promisifiedBackground.fetchSmartTransactionsStatus();
+      const smartTransactionsLiveness = await promisifiedBackground.fetchSmartTransactionsLiveness();
       dispatch({
         type: actionConstants.SET_SMART_TRANSACTIONS_LIVENESS,
-        payload: smartTransactionsStatus,
+        payload: Boolean(smartTransactionsLiveness.lastBlock),
       });
     } catch (e) {
       console.log(e);
