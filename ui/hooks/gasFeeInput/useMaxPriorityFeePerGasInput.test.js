@@ -4,7 +4,8 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import {
   FEE_MARKET_ESTIMATE_RETURN_VALUE,
   LEGACY_GAS_ESTIMATE_RETURN_VALUE,
-  configure,
+  configureEIP1559,
+  configureLegacy,
   convertFromHexToFiat,
   generateUseSelectorRouter,
 } from './test-utils';
@@ -28,7 +29,6 @@ const renderUseMaxPriorityFeePerGasInputHook = (props) => {
     useMaxPriorityFeePerGasInput({
       gasLimit: '21000',
       estimateToUse: 'medium',
-      supportsEIP1559: true,
       transaction: {
         userFeeLevel: 'custom',
         txParams: { maxPriorityFeePerGas: '0x5028' },
@@ -42,7 +42,7 @@ const renderUseMaxPriorityFeePerGasInputHook = (props) => {
 describe('useMaxPriorityFeePerGasInput', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    configure();
+    configureEIP1559();
   });
 
   it('returns maxPriorityFeePerGas values from transaction if transaction.userFeeLevel is custom', () => {
@@ -100,9 +100,9 @@ describe('useMaxPriorityFeePerGasInput', () => {
     expect(result.current.maxPriorityFeePerGasFiat).toBe('');
   });
 
-  it('returns 0 if supportsEIP1559 is false and gas estimates are legacy', () => {
+  it('returns 0 if EIP1559 is not supported and gas estimates are legacy', () => {
+    configureLegacy();
     const { result } = renderUseMaxPriorityFeePerGasInputHook({
-      supportsEIP1559: false,
       ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,
     });
     expect(result.current.maxPriorityFeePerGas).toBe('0');

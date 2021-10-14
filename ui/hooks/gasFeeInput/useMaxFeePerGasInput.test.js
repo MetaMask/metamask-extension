@@ -7,7 +7,8 @@ import { decimalToHex } from '../../helpers/utils/conversions.util';
 import {
   FEE_MARKET_ESTIMATE_RETURN_VALUE,
   LEGACY_GAS_ESTIMATE_RETURN_VALUE,
-  configure,
+  configureEIP1559,
+  configureLegacy,
   convertFromHexToFiat,
   generateUseSelectorRouter,
 } from './test-utils';
@@ -30,7 +31,6 @@ const renderUseMaxFeePerGasInputHook = (props) =>
   renderHook(() =>
     useMaxFeePerGasInput({
       gasLimit: '21000',
-      supportsEIP1559: true,
       estimateToUse: 'medium',
       transaction: {
         userFeeLevel: 'custom',
@@ -44,7 +44,7 @@ const renderUseMaxFeePerGasInputHook = (props) =>
 describe('useMaxFeePerGasInput', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    configure();
+    configureEIP1559();
   });
 
   it('returns maxFeePerGas values from transaction if transaction.userFeeLevel is custom', () => {
@@ -90,7 +90,6 @@ describe('useMaxFeePerGasInput', () => {
   });
 
   it('maxFeePerGasFiat is maximum amount that the transaction can cost', () => {
-    configure();
     const { result } = renderUseMaxFeePerGasInputHook();
     const maximumHexValue = getMaximumGasTotalInHexWei({
       gasLimit: decimalToHex('21000'),
@@ -112,9 +111,9 @@ describe('useMaxFeePerGasInput', () => {
     expect(result.current.maxFeePerGasFiat).toBe('');
   });
 
-  it('returns 0 if supportsEIP1559 is false and legacy gas estimates have been provided', () => {
+  it('returns 0 if EIP1559 is not supported and legacy gas estimates have been provided', () => {
+    configureLegacy();
     const { result } = renderUseMaxFeePerGasInputHook({
-      supportsEIP1559: false,
       ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,
     });
     expect(result.current.maxFeePerGas).toBe('0');

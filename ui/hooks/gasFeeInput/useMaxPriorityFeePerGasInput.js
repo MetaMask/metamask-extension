@@ -5,8 +5,12 @@ import { addHexPrefix } from 'ethereumjs-util';
 
 import { SECONDARY } from '../../helpers/constants/common';
 import { hexWEIToDecGWEI } from '../../helpers/utils/conversions.util';
-import { getShouldShowFiat } from '../../selectors';
+import {
+  checkNetworkAndAccountSupports1559,
+  getShouldShowFiat,
+} from '../../selectors';
 import { multiplyCurrencies } from '../../../shared/modules/conversion.utils';
+import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 
 import { useCurrencyDisplay } from '../useCurrencyDisplay';
 import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
@@ -26,9 +30,12 @@ export function useMaxPriorityFeePerGasInput({
   gasEstimateType,
   gasFeeEstimates,
   gasLimit,
-  supportsEIP1559,
   transaction,
 }) {
+  const supportsEIP1559 =
+    useSelector(checkNetworkAndAccountSupports1559) &&
+    !isLegacyTransaction(transaction?.txParams);
+
   const {
     currency: fiatCurrency,
     numberOfDecimals: fiatNumberOfDecimals,

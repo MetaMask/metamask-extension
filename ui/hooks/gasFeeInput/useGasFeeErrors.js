@@ -31,7 +31,8 @@ const validateGasLimit = (gasLimit, minimumGasLimit) => {
 };
 
 const validateMaxPriorityFee = (maxPriorityFeePerGas, supportsEIP1559) => {
-  if (supportsEIP1559 && bnLessThanEqualTo(maxPriorityFeePerGas, 0)) {
+  if (!supportsEIP1559) return undefined;
+  if (bnLessThanEqualTo(maxPriorityFeePerGas, 0)) {
     return GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
   }
   return undefined;
@@ -43,8 +44,8 @@ const validateMaxFee = (
   maxPriorityFeePerGas,
   supportsEIP1559,
 ) => {
-  if (maxPriorityFeeError) return undefined;
-  if (supportsEIP1559 && bnGreaterThan(maxPriorityFeePerGas, maxFeePerGas)) {
+  if (maxPriorityFeeError || !supportsEIP1559) return undefined;
+  if (bnGreaterThan(maxPriorityFeePerGas, maxFeePerGas)) {
     return GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
   }
   return undefined;
@@ -56,9 +57,9 @@ const validateGasPrice = (
   supportsEIP1559,
   transaction,
 ) => {
+  if (supportsEIP1559 && isFeeMarketGasEstimate) return undefined;
   if (
     (!supportsEIP1559 || transaction?.txParams?.gasPrice) &&
-    !isFeeMarketGasEstimate &&
     bnLessThanEqualTo(gasPrice, 0)
   ) {
     return GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW;
@@ -109,14 +110,12 @@ const getMaxFeeWarning = (
     maxPriorityFeeError ||
     maxFeeError ||
     !isFeeMarketGasEstimate ||
-    !supportsEIP1559
+    !supportsEIP1559 ||
+    isGasEstimatesLoading
   ) {
     return undefined;
   }
-  if (
-    !isGasEstimatesLoading &&
-    bnLessThan(maxFeePerGas, gasFeeEstimates?.low?.suggestedMaxFeePerGas)
-  ) {
+  if (bnLessThan(maxFeePerGas, gasFeeEstimates?.low?.suggestedMaxFeePerGas)) {
     return GAS_FORM_ERRORS.MAX_FEE_TOO_LOW;
   }
   if (

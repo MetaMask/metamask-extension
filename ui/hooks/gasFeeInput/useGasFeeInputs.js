@@ -1,13 +1,9 @@
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  checkNetworkAndAccountSupports1559,
-  getAdvancedInlineGasShown,
-} from '../../selectors';
+import { getAdvancedInlineGasShown } from '../../selectors';
 import { hexToDecimal } from '../../helpers/utils/conversions.util';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
-import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 
 import { useGasFeeErrors } from './useGasFeeErrors';
@@ -67,10 +63,6 @@ export function useGasFeeInputs(
   minimumGasLimit = '0x5208',
   editGasMode,
 ) {
-  const supportsEIP1559 =
-    useSelector(checkNetworkAndAccountSupports1559) &&
-    !isLegacyTransaction(transaction?.txParams);
-
   // We need the gas estimates from the GasFeeController in the background.
   // Calling this hooks initiates polling for new gas estimates and returns the
   // current estimate.
@@ -119,7 +111,6 @@ export function useGasFeeInputs(
     gasFeeEstimates,
     gasLimit,
     gasPrice,
-    supportsEIP1559,
     transaction,
   });
 
@@ -132,7 +123,6 @@ export function useGasFeeInputs(
     gasEstimateType,
     gasFeeEstimates,
     gasLimit,
-    supportsEIP1559,
     transaction,
   });
 
@@ -152,7 +142,7 @@ export function useGasFeeInputs(
     maxFeePerGas,
     maxPriorityFeePerGas,
     minimumGasLimit,
-    supportsEIP1559,
+    transaction,
   });
 
   const {
