@@ -1,4 +1,6 @@
 .onboarding-metametrics {
+  width: 600px;
+
   ul {
     margin: 24px 0 0 0;
 
@@ -24,6 +26,7 @@
 
   &__buttons {
     margin-top: 24px;
+    max-width: 50%;
 
     button {
       margin-bottom: 24px;
