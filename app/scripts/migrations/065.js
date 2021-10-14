@@ -23,6 +23,8 @@ function transformState(state) {
       completedOnboarding,
       firstTimeFlowType,
     } = state.PreferencesController;
+    state.OnboardingController = state.OnboardingController ?? {};
+
     if (completedOnboarding !== undefined) {
       state.OnboardingController.completedOnboarding = completedOnboarding;
       delete state.PreferencesController.completedOnboarding;
@@ -32,5 +34,6 @@ function transformState(state) {
       delete state.PreferencesController.firstTimeFlowType;
     }
   }
+
   return state;
 }
