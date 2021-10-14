@@ -94,7 +94,7 @@ export function useGasEstimates({
     gasSettings = { ...gasSettings, gasLimit: decimalToHex(minimumGasLimit) };
   }
 
-  // The minimum amount this transaction will cost's
+  // The minimum amount this transaction will cost
   const minimumCostInHexWei = getMinimumGasTotalInHexWei(gasSettings);
 
   // We need to display the total amount of native currency will be expended
