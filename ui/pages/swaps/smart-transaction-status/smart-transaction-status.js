@@ -48,9 +48,8 @@ export default function SmartTransactionStatus() {
   const needsTwoConfirmations = true;
   const smartTransactionsStatus = useSelector(getSmartTransactionsStatus);
   const latestSmartTransactionUuid = useSelector(getLatestSmartTransactionUuid);
-  // const smartTransactionStatus = smartTransactionsStatus?.[0].status || {};
-  // TODO: Remove the next line and uncomment the previous one once backend returns expected structure.
-  const smartTransactionStatus = smartTransactionsStatus?.[0] || {};
+  const smartTransactionStatus =
+    smartTransactionsStatus?.[latestSmartTransactionUuid] || {}; // TODO: Use a list of STX from the STX controller.
 
   const stStatusPageLoadedEvent = useNewMetricEvent({
     event: 'ST Status Page Loaded',
