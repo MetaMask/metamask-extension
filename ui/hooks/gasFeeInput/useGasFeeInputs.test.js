@@ -13,6 +13,8 @@ import {
   LEGACY_GAS_ESTIMATE_RETURN_VALUE,
   FEE_MARKET_ESTIMATE_RETURN_VALUE,
   HIGH_FEE_MARKET_ESTIMATE_RETURN_VALUE,
+  configureEIP1559,
+  configureLegacy,
   generateUseSelectorRouter,
   getTotalCostInETH,
 } from './test-utils';
@@ -47,10 +49,7 @@ describe('useGasFeeInputs', () => {
 
   describe('when using gasPrice API for estimation', () => {
     beforeEach(() => {
-      useGasFeeEstimates.mockImplementation(
-        () => LEGACY_GAS_ESTIMATE_RETURN_VALUE,
-      );
-      useSelector.mockImplementation(generateUseSelectorRouter());
+      configureLegacy();
     });
     it('passes through the raw estimate values from useGasFeeEstimates', () => {
       const { result } = renderHook(() => useGasFeeInputs());
@@ -112,11 +111,9 @@ describe('useGasFeeInputs', () => {
 
   describe('when transaction is type-0', () => {
     beforeEach(() => {
-      useGasFeeEstimates.mockImplementation(
-        () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
-      );
-      useSelector.mockImplementation(generateUseSelectorRouter());
+      configureEIP1559();
     });
+
     it('returns gasPrice appropriately, and "0" for EIP1559 fields', () => {
       const { result } = renderHook(() =>
         useGasFeeInputs('medium', {
@@ -137,10 +134,7 @@ describe('useGasFeeInputs', () => {
 
   describe('when using EIP 1559 API for estimation', () => {
     beforeEach(() => {
-      useGasFeeEstimates.mockImplementation(
-        () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
-      );
-      useSelector.mockImplementation(generateUseSelectorRouter());
+      configureEIP1559();
     });
     it('passes through the raw estimate values from useGasFeeEstimates', () => {
       const { result } = renderHook(() => useGasFeeInputs());
@@ -212,10 +206,7 @@ describe('useGasFeeInputs', () => {
 
   describe('when balance is sufficient for minimum transaction cost', () => {
     beforeEach(() => {
-      useGasFeeEstimates.mockImplementation(
-        () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
-      );
-      useSelector.mockImplementation(generateUseSelectorRouter());
+      configureEIP1559();
     });
 
     it('should return false', () => {
@@ -226,13 +217,9 @@ describe('useGasFeeInputs', () => {
 
   describe('when balance is insufficient for minimum transaction cost', () => {
     beforeEach(() => {
+      configureEIP1559();
       useGasFeeEstimates.mockImplementation(
         () => HIGH_FEE_MARKET_ESTIMATE_RETURN_VALUE,
-      );
-      useSelector.mockImplementation(
-        generateUseSelectorRouter({
-          checkNetworkAndAccountSupports1559Response: true,
-        }),
       );
     });
 
@@ -244,6 +231,56 @@ describe('useGasFeeInputs', () => {
         }),
       );
       expect(result.current.balanceError).toBe(true);
+    });
+  });
+
+  describe('callback setEstimateToUse', () => {
+    beforeEach(() => {
+      configureEIP1559();
+    });
+
+    it('should change estimateToUse value', () => {
+      const { result } = renderHook(() =>
+        useGasFeeInputs(null, {
+          userFeeLevel: 'medium',
+          txParams: { gas: '0x5208' },
+        }),
+      );
+      act(() => {
+        result.current.setEstimateToUse('high');
+      });
+      expect(result.current.estimateToUse).toBe('high');
+      expect(result.current.maxFeePerGas).toBe(
+        FEE_MARKET_ESTIMATE_RETURN_VALUE.gasFeeEstimates.high
+          .suggestedMaxFeePerGas,
+      );
+      expect(result.current.maxPriorityFeePerGas).toBe(
+        FEE_MARKET_ESTIMATE_RETURN_VALUE.gasFeeEstimates.high
+          .suggestedMaxPriorityFeePerGas,
+      );
+    });
+  });
+
+  describe('callback onManualChange', () => {
+    beforeEach(() => {
+      configureEIP1559();
+    });
+
+    it('should change estimateToUse value to custom', () => {
+      const { result } = renderHook(() =>
+        useGasFeeInputs(null, {
+          userFeeLevel: 'medium',
+          txParams: { gas: '0x5208' },
+        }),
+      );
+      act(() => {
+        result.current.onManualChange();
+        result.current.setMaxFeePerGas('100');
+        result.current.setMaxPriorityFeePerGas('10');
+      });
+      expect(result.current.estimateToUse).toBe('custom');
+      expect(result.current.maxFeePerGas).toBe('100');
+      expect(result.current.maxPriorityFeePerGas).toBe('10');
     });
   });
 });
