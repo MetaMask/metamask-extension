@@ -14,17 +14,20 @@ import {
   JUSTIFY_CONTENT,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
-import ProgressBar from '../../../components/app/step-progress-bar';
+import {
+  ThreeStepProgressBar,
+  threeStepStages,
+} from '../../../components/app/step-progress-bar';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
-export default function RecoveryPhrase({ seedPhrase }) {
+export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const history = useHistory();
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
-  const [seedPhraseRevealed, setSeedPhraseRevealed] = useState(false);
+  const [phraseRevealed, setPhraseRevealed] = useState(false);
   return (
     <div className="recovery-phrase">
-      <ProgressBar stage="SEED_PHRASE_REVIEW" />
+      <ThreeStepProgressBar stage={threeStepStages.RECOVERY_PHRASE_REVIEW} />
       <Box
         justifyContent={JUSTIFY_CONTENT.CENTER}
         textAlign={TEXT_ALIGN.CENTER}
@@ -76,15 +79,15 @@ export default function RecoveryPhrase({ seedPhrase }) {
         </ul>
       </Box>
       <RecoveryPhraseChips
-        seedPhrase={seedPhrase.split(' ')}
-        seedPhraseRevealed={seedPhraseRevealed}
+        secretRecoveryPhrase={secretRecoveryPhrase.split(' ')}
+        phraseRevealed={phraseRevealed}
       />
       <div className="recovery-phrase__footer">
-        {seedPhraseRevealed ? (
+        {phraseRevealed ? (
           <div className="recovery-phrase__footer--copy">
             <Button
               onClick={() => {
-                handleCopy(seedPhrase);
+                handleCopy(secretRecoveryPhrase);
               }}
               icon={copied ? null : <Copy size={20} color="#3098DC" />}
               className="recovery-phrase__footer--copy--button"
@@ -106,7 +109,7 @@ export default function RecoveryPhrase({ seedPhrase }) {
             type="primary"
             className="recovery-phrase__footer--button"
             onClick={() => {
-              setSeedPhraseRevealed(true);
+              setPhraseRevealed(true);
             }}
           >
             {t('revealSeedWords')}
@@ -118,5 +121,5 @@ export default function RecoveryPhrase({ seedPhrase }) {
 }
 
 RecoveryPhrase.propTypes = {
-  seedPhrase: PropTypes.string,
+  secretRecoveryPhrase: PropTypes.string,
 };

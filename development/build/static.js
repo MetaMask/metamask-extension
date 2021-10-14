@@ -124,6 +124,10 @@ function getCopyTargets(shouldIncludeLockdown) {
       dest: `fonts/fontawesome`,
     },
     {
+      src: `./node_modules/react-responsive-carousel/lib/styles`,
+      dest: 'react-gallery/',
+    },
+    {
       src: `./ui/css/output/`,
       pattern: `*.css`,
       dest: ``,

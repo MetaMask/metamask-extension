@@ -768,9 +768,6 @@
   "revealSeedWordsDescription": {
     "message": "Ak niekedy zmeníte prehliadač alebo presuniete počítače, budete potrebovať túto seed frázu na prístup k svojim účtom. Uložte ich niekde v bezpečí a v tajnosti."
   },
-  "revealSeedWordsTitle": {
-    "message": "Seed fráza"
-  },
   "revealSeedWordsWarning": {
     "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů."
   },
@@ -800,9 +797,6 @@
   },
   "searchTokens": {
     "message": "Hledat tokeny"
-  },
-  "secretBackupPhrase": {
-    "message": "Tajná backup fráza"
   },
   "secretBackupPhraseDescription": {
     "message": "Vaša tajná backup fráza uľahčuje zálohovanie a obnovenie vášho účtu."
@@ -1086,9 +1080,6 @@
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"
-  },
-  "walletSeed": {
-    "message": "Klíčová fráze peněženky"
   },
   "welcome": {
     "message": "Vitajte v MetaMask"

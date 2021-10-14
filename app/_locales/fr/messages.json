@@ -781,9 +781,6 @@
   "revealSeedWordsDescription": {
     "message": "Si jamais vous changez de navigateur ou d'ordinateur, vos aurez besoin de cette phrase seed pour accéder à vos comptes. Sauvegardez la quelque part de sûr et secret."
   },
-  "revealSeedWordsTitle": {
-    "message": "Phrase Seed"
-  },
   "revealSeedWordsWarning": {
     "message": "Ces mots peuvent être utilisés pour voler tous vos comptes."
   },
@@ -819,9 +816,6 @@
   },
   "searchTokens": {
     "message": "Rechercher des jetons"
-  },
-  "secretBackupPhrase": {
-    "message": "Phrase de sauvegarde secrète"
   },
   "secretBackupPhraseDescription": {
     "message": "Votre phrase de sauvegarde secrète facilite la sauvegarde et la restauration de votre compte."
@@ -1105,9 +1099,6 @@
   },
   "visitWebSite": {
     "message": "Visitez notre site web"
-  },
-  "walletSeed": {
-    "message": "Seed du portefeuille"
   },
   "welcome": {
     "message": "Bienvenue dans la Beta de MetaMask"

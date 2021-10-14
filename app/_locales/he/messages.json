@@ -796,9 +796,6 @@
   "revealSeedWordsDescription": {
     "message": "אם בעתיד תחליף/י דפדפנים או תעביר/י מחשבים, תצטרך/י seed phrase זה כדי לקבל גישה לחשבונות שלך. יש לשמור אותם במקום בטוח וסודי."
   },
-  "revealSeedWordsTitle": {
-    "message": "צירוף גרעין (Seed Phrase)"
-  },
   "revealSeedWordsWarning": {
     "message": "במילים אלה עלול להיעשות שימוש כדי לגנוב את כל חשבונותיך."
   },
@@ -831,9 +828,6 @@
   },
   "searchTokens": {
     "message": "חיפוש טוקנים"
-  },
-  "secretBackupPhrase": {
-    "message": "צירוף מילים סודי לגיבוי"
   },
   "secretBackupPhraseDescription": {
     "message": "עם צירוף מילים סודי לגיבוי קל יותר לגבות ולשחזר את החשבון שלך."
@@ -1123,9 +1117,6 @@
   },
   "visitWebSite": {
     "message": "בקר/י באתר שלנו"
-  },
-  "walletSeed": {
-    "message": "גרעין (Seed) ארנק"
   },
   "welcome": {
     "message": "ברוכים הבאים ל- MetaMask"

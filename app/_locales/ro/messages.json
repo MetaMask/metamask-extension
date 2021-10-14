@@ -786,9 +786,6 @@
   "revealSeedWordsDescription": {
     "message": "Dacă schimbați vreodată browserele sau vă mutați la alt computer, veți avea nevoie de această expresie sursă pentru a vă accesa conturile. Salvați-o într-un loc sigur și secret."
   },
-  "revealSeedWordsTitle": {
-    "message": "Expresie sursă"
-  },
   "revealSeedWordsWarning": {
     "message": "Aceste cuvinte pot fi folosite pentru a vă fura toate conturile."
   },
@@ -824,9 +821,6 @@
   },
   "searchTokens": {
     "message": "Căutați token-uri"
-  },
-  "secretBackupPhrase": {
-    "message": "Expresia secretă de rezervă"
   },
   "secretBackupPhraseDescription": {
     "message": "Expresia dvs. secretă de rezervă înlesnește crearea unei copii de rezervă a contului dvs. și restabilirea acestuia."
@@ -1110,9 +1104,6 @@
   },
   "visitWebSite": {
     "message": "Accesați site-ul nostru"
-  },
-  "walletSeed": {
-    "message": "Sursă portofel"
   },
   "welcome": {
     "message": "Bun venit la MetaMask"

@@ -432,9 +432,6 @@
   "visitWebSite": {
     "message": "Navštivte naši stránku"
   },
-  "walletSeed": {
-    "message": "Klíčová fráze peněženky"
-  },
   "welcome": {
     "message": "Vítejte v MetaMask"
   },

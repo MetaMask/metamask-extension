@@ -799,9 +799,6 @@
   "revealSeedWordsDescription": {
     "message": "Jei imsite naudotis kita naršykle arba kitu kompiuteriu, šios atkūrimo frazės jums reikės paskyroms pasiekti. Saugokite ją saugioje ir slaptoje vietoje."
   },
-  "revealSeedWordsTitle": {
-    "message": "Atkūrimo frazė"
-  },
   "revealSeedWordsWarning": {
     "message": "Šiuos žodžius galima panaudoti visoms jūsų paskyroms pavogti."
   },
@@ -837,9 +834,6 @@
   },
   "searchTokens": {
     "message": "Ieškoti žetonų"
-  },
-  "secretBackupPhrase": {
-    "message": "Slapta atsarginė frazė"
   },
   "secretBackupPhraseDescription": {
     "message": "Jūsų slapta atsarginė frazė leidžia paprastai padaryti paskyros atsarginę kopiją ir ją atkurti,"
@@ -1129,9 +1123,6 @@
   },
   "visitWebSite": {
     "message": "Apsilankykite mūsų svetainėje"
-  },
-  "walletSeed": {
-    "message": "Slaptažodinės atkūrimo frazė"
   },
   "welcome": {
     "message": "Sveiki, tai „MetaMask“"

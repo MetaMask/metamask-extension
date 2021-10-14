@@ -12,14 +12,17 @@ import {
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 import { INITIALIZE_END_OF_FLOW_ROUTE } from '../../../helpers/constants/routes';
-import ProgressBar from '../../../components/app/step-progress-bar';
+import {
+  ThreeStepProgressBar,
+  threeStepStages,
+} from '../../../components/app/step-progress-bar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
-export default function ConfirmRecoveryPhrase({ seedPhrase = '' }) {
+export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const history = useHistory();
   const t = useI18nContext();
-  const splitSeedPhrase = seedPhrase.split(' ');
+  const splitSecretRecoveryPhrase = secretRecoveryPhrase.split(' ');
   const indicesToCheck = [2, 3, 7];
   const [matching, setMatching] = useState(false);
 
@@ -27,7 +30,7 @@ export default function ConfirmRecoveryPhrase({ seedPhrase = '' }) {
   // indicesToCheck so that user has to complete the phrase and confirm
   // they have saved it.
   const initializePhraseElements = () => {
-    const phraseElements = { ...splitSeedPhrase };
+    const phraseElements = { ...splitSecretRecoveryPhrase };
     indicesToCheck.forEach((i) => {
       phraseElements[i] = '';
     });
@@ -40,9 +43,9 @@ export default function ConfirmRecoveryPhrase({ seedPhrase = '' }) {
   const validate = useMemo(
     () =>
       debounce((elements) => {
-        setMatching(Object.values(elements).join(' ') === seedPhrase);
+        setMatching(Object.values(elements).join(' ') === secretRecoveryPhrase);
       }, 500),
-    [setMatching, seedPhrase],
+    [setMatching, secretRecoveryPhrase],
   );
 
   const handleSetPhraseElements = (values) => {
@@ -52,7 +55,7 @@ export default function ConfirmRecoveryPhrase({ seedPhrase = '' }) {
 
   return (
     <div>
-      <ProgressBar stage="SEED_PHRASE_CONFIRM" />
+      <ThreeStepProgressBar stage={threeStepStages.RECOVERY_PHRASE_CONFIRM} />
       <Box
         justifyContent={JUSTIFY_CONTENT.CENTER}
         textAlign={TEXT_ALIGN.CENTER}
@@ -72,7 +75,7 @@ export default function ConfirmRecoveryPhrase({ seedPhrase = '' }) {
         </Typography>
       </Box>
       <RecoveryPhraseChips
-        seedPhrase={splitSeedPhrase}
+        secretRecoveryPhrase={splitSecretRecoveryPhrase}
         confirmPhase
         setInputValue={handleSetPhraseElements}
         inputValue={phraseElements}
@@ -95,5 +98,5 @@ export default function ConfirmRecoveryPhrase({ seedPhrase = '' }) {
 }
 
 ConfirmRecoveryPhrase.propTypes = {
-  seedPhrase: PropTypes.string,
+  secretRecoveryPhrase: PropTypes.string,
 };
