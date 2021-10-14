@@ -67,7 +67,59 @@ describe('migration #65', () => {
     });
   });
 
-  it('should not modify PreferencesController when completedOnboarding is undefined', async () => {
+  it('should move firstTimeFlowType from PreferencesController to OnboardingController when firstTimeFlowType is truthy', async () => {
+    const oldStorage = {
+      meta: {},
+      data: {
+        PreferencesController: {
+          firstTimeFlowType: 'create',
+          bar: 'baz',
+        },
+        OnboardingController: {
+          foo: 'bar',
+        },
+      },
+    };
+
+    const newStorage = await migration65.migrate(oldStorage);
+    expect(newStorage.data).toStrictEqual({
+      PreferencesController: {
+        bar: 'baz',
+      },
+      OnboardingController: {
+        firstTimeFlowType: 'create',
+        foo: 'bar',
+      },
+    });
+  });
+
+  it('should move firstTimeFlowType from PreferencesController to OnboardingController when firstTimeFlowType is falsy', async () => {
+    const oldStorage = {
+      meta: {},
+      data: {
+        PreferencesController: {
+          firstTimeFlowType: null,
+          bar: 'baz',
+        },
+        OnboardingController: {
+          foo: 'bar',
+        },
+      },
+    };
+
+    const newStorage = await migration65.migrate(oldStorage);
+    expect(newStorage.data).toStrictEqual({
+      PreferencesController: {
+        bar: 'baz',
+      },
+      OnboardingController: {
+        firstTimeFlowType: null,
+        foo: 'bar',
+      },
+    });
+  });
+
+  it('should not modify PreferencesController or OnboardingController when completedOnboarding and firstTimeFlowType are undefined', async () => {
     const oldStorage = {
       meta: {},
       data: {

@@ -45,7 +45,6 @@ export default class PreferencesController {
         showIncomingTransactions: true,
       },
       knownMethodData: {},
-      firstTimeFlowType: null,
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
@@ -124,16 +123,6 @@ export default class PreferencesController {
    */
   setUseTokenDetection(val) {
     this.store.updateState({ useTokenDetection: val });
-  }
-
-  /**
-   * Setter for the `firstTimeFlowType` property
-   *
-   * @param {string} type - Indicates the type of first time flow - create or import - the user wishes to follow
-   *
-   */
-  setFirstTimeFlowType(type) {
-    this.store.updateState({ firstTimeFlowType: type });
   }
 
   /**

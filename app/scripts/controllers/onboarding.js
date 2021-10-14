@@ -28,6 +28,7 @@ export default class OnboardingController {
     };
     const initState = {
       seedPhraseBackedUp: null,
+      firstTimeFlowType: null,
       completedOnboarding: false,
       ...opts.initState,
       ...initialTransientState,
@@ -50,6 +51,16 @@ export default class OnboardingController {
       completedOnboarding: true,
     });
     return Promise.resolve(true);
+  }
+
+  /**
+   * Setter for the `firstTimeFlowType` property
+   *
+   * @param {string} type - Indicates the type of first time flow - create or import - the user wishes to follow
+   *
+   */
+  setFirstTimeFlowType(type) {
+    this.store.updateState({ firstTimeFlowType: type });
   }
 
   /**

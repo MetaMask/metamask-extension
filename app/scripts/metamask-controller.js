@@ -819,7 +819,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       setIpfsGateway: this.setIpfsGateway.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
-      setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
@@ -1001,7 +1000,11 @@ export default class MetamaskController extends EventEmitter {
       ),
       completeOnboarding: nodeify(
         onboardingController.completeOnboarding,
-        preferencesController,
+        onboardingController,
+      ),
+      setFirstTimeFlowType: nodeify(
+        onboardingController.setFirstTimeFlowType,
+        onboardingController,
       ),
 
       // alert controller
@@ -3009,23 +3012,6 @@ export default class MetamaskController extends EventEmitter {
         bool,
       );
       cb(null, metaMetricsId);
-      return;
-    } catch (err) {
-      cb(err);
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
-  }
-
-  /**
-   * Sets the type of first time flow the user wishes to follow: create or import
-   * @param {string} type - Indicates the type of first time flow the user wishes to follow
-   * @param {Function} cb - A callback function called when complete.
-   */
-  setFirstTimeFlowType(type, cb) {
-    try {
-      this.preferencesController.setFirstTimeFlowType(type);
-      cb(null);
       return;
     } catch (err) {
       cb(err);

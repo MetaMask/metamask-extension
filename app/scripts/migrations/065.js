@@ -19,10 +19,17 @@ export default {
 
 function transformState(state) {
   if (state.PreferencesController) {
-    const { completedOnboarding } = state.PreferencesController;
+    const {
+      completedOnboarding,
+      firstTimeFlowType,
+    } = state.PreferencesController;
     if (completedOnboarding !== undefined) {
       state.OnboardingController.completedOnboarding = completedOnboarding;
       delete state.PreferencesController.completedOnboarding;
+    }
+    if (firstTimeFlowType !== undefined) {
+      state.OnboardingController.firstTimeFlowType = firstTimeFlowType;
+      delete state.PreferencesController.firstTimeFlowType;
     }
   }
   return state;
