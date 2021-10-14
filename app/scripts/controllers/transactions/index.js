@@ -1238,7 +1238,7 @@ export default class TransactionController extends EventEmitter {
     let code;
 
     if (!result) {
-      const { code: resultCode, isContractAddress } = addressIsContract(
+      const { code: resultCode, isContractAddress } = await addressIsContract(
         this.query,
         to,
       );
