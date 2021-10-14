@@ -37,6 +37,7 @@ import PrivacySettings from './privacy-settings/privacy-settings';
 import CreationSuccessful from './creation-successful/creation-successful';
 import OnboardingWelcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
+import OnboardingPinExtension from './pin-extension/pin-extension';
 
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
@@ -156,6 +157,9 @@ export default function OnboardingFlow() {
             path={ONBOARDING_WELCOME_ROUTE}
             component={OnboardingWelcome}
           />
+          <Route
+            path={ONBOARDING_PIN_EXTENSION_ROUTE}
+            component={OnboardingPinExtension} />
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
       </div>
