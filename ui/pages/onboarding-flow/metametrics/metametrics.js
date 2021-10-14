@@ -127,7 +127,8 @@ export default function OnboardingMetametrics() {
       <Typography
         color={COLORS.UI4}
         align={TEXT_ALIGN.CENTER}
-        variant={TYPOGRAPHY.H6}>
+        variant={TYPOGRAPHY.H6}
+      >
         {t('gdprMessage', [
           <a
             key="metametrics-bottom-text-wrapper"
