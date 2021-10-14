@@ -4,6 +4,7 @@ import { isEqual } from 'lodash';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
 import { hexWEIToDecGWEI } from '../../helpers/utils/conversions.util';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
+
 import { feeParamsAreCustom } from './utils';
 
 function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {
@@ -33,8 +34,9 @@ export function useGasPriceInput({
   );
 
   const [gasPrice, setGasPrice] = useState(() => {
-    return transaction?.txParams?.gasPrice && feeParamsAreCustom(transaction)
-      ? Number(hexWEIToDecGWEI(transaction?.txParams?.gasPrice))
+    const { gasPrice: txGasPrice } = transaction?.txParams || {};
+    return txGasPrice && feeParamsAreCustom(transaction)
+      ? Number(hexWEIToDecGWEI(txGasPrice))
       : null;
   });
 

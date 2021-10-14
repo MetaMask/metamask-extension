@@ -283,4 +283,29 @@ describe('useGasFeeInputs', () => {
       expect(result.current.maxPriorityFeePerGas).toBe('10');
     });
   });
+
+  describe('when showFiat is false', () => {
+    beforeEach(() => {
+      configureEIP1559();
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          checkNetworkAndAccountSupports1559Response: true,
+          shouldShowFiat: false,
+        }),
+      );
+    });
+
+    it('does not return fiat values', () => {
+      const { result } = renderHook(() =>
+        useGasFeeInputs(null, {
+          userFeeLevel: 'medium',
+          txParams: { gas: '0x5208' },
+        }),
+      );
+      expect(result.current.maxFeePerGasFiat).toBe('');
+      expect(result.current.maxPriorityFeePerGasFiat).toBe('');
+      expect(result.current.estimatedMaximumFiat).toBe('');
+      expect(result.current.estimatedMinimumFiat).toBe('');
+    });
+  });
 });

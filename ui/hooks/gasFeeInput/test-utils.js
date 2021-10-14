@@ -91,6 +91,7 @@ export const HIGH_FEE_MARKET_ESTIMATE_RETURN_VALUE = {
 
 export const generateUseSelectorRouter = ({
   checkNetworkAndAccountSupports1559Response,
+  shouldShowFiat = true,
 } = {}) => (selector) => {
   if (selector === getConversionRate) {
     return MOCK_ETH_USD_CONVERSION_RATE;
@@ -107,7 +108,7 @@ export const generateUseSelectorRouter = ({
     return 'USD';
   }
   if (selector === getShouldShowFiat) {
-    return true;
+    return shouldShowFiat;
   }
   if (selector === txDataSelector) {
     return {

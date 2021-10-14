@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import { act, renderHook } from '@testing-library/react-hooks';
 
 import { getMaximumGasTotalInHexWei } from '../../../shared/modules/gas.utils';
@@ -8,6 +9,7 @@ import {
   LEGACY_GAS_ESTIMATE_RETURN_VALUE,
   configure,
   convertFromHexToFiat,
+  generateUseSelectorRouter,
 } from './test-utils';
 import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';
 
@@ -99,7 +101,18 @@ describe('useMaxFeePerGasInput', () => {
     );
   });
 
-  it('returns 0 if supportsEIP1559 is false', () => {
+  it('does not  return fiat values if showFiat is false', () => {
+    useSelector.mockImplementation(
+      generateUseSelectorRouter({
+        checkNetworkAndAccountSupports1559Response: true,
+        shouldShowFiat: false,
+      }),
+    );
+    const { result } = renderUseMaxFeePerGasInputHook();
+    expect(result.current.maxFeePerGasFiat).toBe('');
+  });
+
+  it('returns 0 if supportsEIP1559 is false and legacy gas estimates have been provided', () => {
     const { result } = renderUseMaxFeePerGasInputHook({
       supportsEIP1559: false,
       ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,

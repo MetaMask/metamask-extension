@@ -1,6 +1,10 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
-import { LEGACY_GAS_ESTIMATE_RETURN_VALUE, configure } from './test-utils';
+import {
+  FEE_MARKET_ESTIMATE_RETURN_VALUE,
+  LEGACY_GAS_ESTIMATE_RETURN_VALUE,
+  configure,
+} from './test-utils';
 import { useGasPriceInput } from './useGasPriceInput';
 
 jest.mock('../useGasFeeEstimates', () => ({
@@ -69,9 +73,12 @@ describe('useGasPriceInput', () => {
     expect(result.current.gasPrice).toBe('30');
   });
 
-  it('returns 0 for EIP-1559 transactions', () => {
+  it('returns 0 if gasPrice is not present in transaction and estimates are also not legacy', () => {
     const { result } = renderHook(() =>
-      useGasPriceInput({ estimateToUse: 'medium' }),
+      useGasPriceInput({
+        estimateToUse: 'medium',
+        ...FEE_MARKET_ESTIMATE_RETURN_VALUE,
+      }),
     );
     expect(result.current.gasPrice).toBe('0');
   });

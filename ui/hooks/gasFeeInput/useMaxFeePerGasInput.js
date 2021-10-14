@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
 import { SECONDARY } from '../../helpers/constants/common';
@@ -8,6 +9,7 @@ import {
   decimalToHex,
   hexWEIToDecGWEI,
 } from '../../helpers/utils/conversions.util';
+import { getShouldShowFiat } from '../../selectors';
 
 import { useCurrencyDisplay } from '../useCurrencyDisplay';
 import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
@@ -35,6 +37,8 @@ export function useMaxFeePerGasInput({
     currency: fiatCurrency,
     numberOfDecimals: fiatNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY);
+
+  const showFiat = useSelector(getShouldShowFiat);
 
   const [initialMaxFeePerGas] = useState(() => {
     if (!supportsEIP1559) return 0;
@@ -83,6 +87,7 @@ export function useMaxFeePerGasInput({
       currency: fiatCurrency,
     },
   );
+
   // We specify whether to use the estimate value by checking if the state
   // value has been set. The state value is only set by user input and is wiped
   // when the user selects an estimate. Default here is '0' to avoid bignumber
@@ -99,7 +104,7 @@ export function useMaxFeePerGasInput({
 
   return {
     maxFeePerGas: maxFeePerGasToUse,
-    maxFeePerGasFiat,
+    maxFeePerGasFiat: showFiat ? maxFeePerGasFiat : '',
     setMaxFeePerGas,
   };
 }

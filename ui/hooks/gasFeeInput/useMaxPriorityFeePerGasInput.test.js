@@ -1,9 +1,12 @@
+import { useSelector } from 'react-redux';
 import { act, renderHook } from '@testing-library/react-hooks';
 
 import {
   FEE_MARKET_ESTIMATE_RETURN_VALUE,
   LEGACY_GAS_ESTIMATE_RETURN_VALUE,
   configure,
+  convertFromHexToFiat,
+  generateUseSelectorRouter,
 } from './test-utils';
 import { useMaxPriorityFeePerGasInput } from './useMaxPriorityFeePerGasInput';
 
@@ -45,6 +48,9 @@ describe('useMaxPriorityFeePerGasInput', () => {
   it('returns maxPriorityFeePerGas values from transaction if transaction.userFeeLevel is custom', () => {
     const { result } = renderUseMaxPriorityFeePerGasInputHook();
     expect(result.current.maxPriorityFeePerGas).toBe(0.00002052);
+    expect(result.current.maxPriorityFeePerGasFiat).toBe(
+      convertFromHexToFiat('0x5028'),
+    );
   });
 
   it('returns maxFeePerGas values from transaction if transaction.userFeeLevel is custom and maxPriorityFeePerGas is not provided', () => {
@@ -74,7 +80,6 @@ describe('useMaxPriorityFeePerGasInput', () => {
   it('if no maxPriorityFeePerGas is provided by user or in transaction it returns value from fee market estimate', () => {
     const { result } = renderUseMaxPriorityFeePerGasInputHook({
       transaction: {
-        userFeeLevel: 'medium',
         txParams: {},
       },
     });
@@ -84,7 +89,18 @@ describe('useMaxPriorityFeePerGasInput', () => {
     );
   });
 
-  it('returns 0 if supportsEIP1559 is false', () => {
+  it('does not  return fiat values if showFiat is false', () => {
+    useSelector.mockImplementation(
+      generateUseSelectorRouter({
+        checkNetworkAndAccountSupports1559Response: true,
+        shouldShowFiat: false,
+      }),
+    );
+    const { result } = renderUseMaxPriorityFeePerGasInputHook();
+    expect(result.current.maxPriorityFeePerGasFiat).toBe('');
+  });
+
+  it('returns 0 if supportsEIP1559 is false and gas estimates are legacy', () => {
     const { result } = renderUseMaxPriorityFeePerGasInputHook({
       supportsEIP1559: false,
       ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,

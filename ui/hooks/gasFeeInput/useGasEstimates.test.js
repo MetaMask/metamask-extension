@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import {
   getMaximumGasTotalInHexWei,
@@ -15,6 +16,7 @@ import {
   configureLegacy,
   convertFromHexToETH,
   convertFromHexToFiat,
+  generateUseSelectorRouter,
 } from './test-utils';
 import { useGasEstimates } from './useGasEstimates';
 
@@ -97,6 +99,23 @@ describe('useGasEstimates', () => {
       expect(result.current.estimatedMaximumNative).toBe(
         convertFromHexToETH(maximumHexValue),
       );
+    });
+
+    it('does not  return fiat values if showFiat is false', () => {
+      const gasLimit = '21000';
+      const maxFeePerGas = '100';
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          checkNetworkAndAccountSupports1559Response: true,
+          shouldShowFiat: false,
+        }),
+      );
+      const { result } = renderHook(() =>
+        useGasEstimatesHook({ gasLimit, maxFeePerGas }),
+      );
+
+      expect(result.current.estimatedMaximumFiat).toBe('');
+      expect(result.current.estimatedMinimumFiat).toBe('');
     });
 
     it('uses gasFeeEstimates.estimatedBaseFee prop to calculate estimatedBaseFee', () => {
