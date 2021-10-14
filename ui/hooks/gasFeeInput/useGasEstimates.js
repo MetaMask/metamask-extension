@@ -97,7 +97,7 @@ export function useGasEstimates({
   // The minimum amount this transaction will cost
   const minimumCostInHexWei = getMinimumGasTotalInHexWei(gasSettings);
 
-  // We need to display the total amount of native currency will be expended
+  // The estimated total amount of native currency that will be expended
   // given the selected gas fees.
   const [estimatedMaximumNative] = useCurrencyDisplay(maximumCostInHexWei, {
     numberOfDecimals: primaryNumberOfDecimals,
