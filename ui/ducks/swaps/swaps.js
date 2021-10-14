@@ -25,6 +25,7 @@ import {
   setSelectedQuoteAggId,
   setSwapsTxGasLimit,
   cancelTx,
+  fetchSmartTransactionsLiveness,
 } from '../../store/actions';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -247,10 +248,13 @@ export const getSmartTransactionsEnabled = (state) => {
   const smartTransactionsFeatureFlagEnabled =
     state.metamask.swapsState?.swapsFeatureFlags?.smart_transactions
       ?.extension_active;
+  // TODO Matt: see if smart transactions API is live
+  const smartTransactionsLive = state.appState.smartTransactionsLiveness;
   return Boolean(
     EIP1559NetworkUsed &&
       !hardwareWalletUsed &&
-      smartTransactionsFeatureFlagEnabled,
+      smartTransactionsFeatureFlagEnabled &&
+      smartTransactionsLive,
   );
 };
 
@@ -426,6 +430,7 @@ export const fetchAndSetSwapsGasPriceInfo = () => {
   };
 };
 
+// TODO Matt: Fetch for smart transactions liveness when we call for swap liveness
 export const fetchSwapsLivenessAndFeatureFlags = () => {
   return async (dispatch, getState) => {
     let swapsLivenessForNetwork = {
@@ -435,6 +440,7 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       await dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
+      await dispatch(fetchSmartTransactionsLiveness());
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
         swapsFeatureFlags,
         getCurrentChainId(getState()),
