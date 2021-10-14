@@ -107,7 +107,7 @@ import SwapsFooter from '../swaps-footer';
 import { SECOND } from '../../../../shared/constants/time';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
-const FETCH_SMART_TRANSACTIONS_INTERVAL = SECOND * 40; // TODO: Load this value from backend.
+const FETCH_SMART_TRANSACTIONS_INTERVAL = SECOND * 10; // TODO: Load this value from backend.
 
 export default function ViewQuote() {
   const history = useHistory();
@@ -181,17 +181,18 @@ export default function ViewQuote() {
   useEffect(() => {
     let intervalId;
     if (smartTransactionsEnabled && smartTransactionsOptInStatus) {
+      const unsignedTx = {
+        from: unsignedTransaction.from,
+        to: unsignedTransaction.to,
+        value: unsignedTransaction.value,
+        data: unsignedTransaction.data,
+        gas: unsignedTransaction.gas,
+        chainId,
+      };
       intervalId = setInterval(() => {
-        const unsignedTx = {
-          from: unsignedTransaction.from,
-          to: unsignedTransaction.to,
-          value: unsignedTransaction.value,
-          data: unsignedTransaction.data,
-          gas: unsignedTransaction.gas,
-          chainId,
-        };
         dispatch(fetchUnsignedTransactionsAndEstimates(unsignedTx));
       }, FETCH_SMART_TRANSACTIONS_INTERVAL);
+      dispatch(fetchUnsignedTransactionsAndEstimates(unsignedTx));
     }
     return () => clearInterval(intervalId);
   }, [
