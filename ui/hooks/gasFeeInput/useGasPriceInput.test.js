@@ -34,7 +34,7 @@ describe('useGasPriceInput', () => {
     expect(result.current.gasPrice).toBe(0.00002052);
   });
 
-  it('does not returns gasPrice values from transaction if transaction.userFeeLevel is not custom', () => {
+  it('does not return gasPrice values from transaction if transaction.userFeeLevel is not custom', () => {
     configure();
     const { result } = renderHook(() =>
       useGasPriceInput({
