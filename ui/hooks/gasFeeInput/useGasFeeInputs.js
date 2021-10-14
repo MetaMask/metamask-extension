@@ -190,7 +190,7 @@ export function useGasFeeInputs(
   // previously put in the inputs. This returns the inputs to the estimated
   // values at the level specified.
   const setEstimateToUse = useCallback(
-    () => (estimateLevel) => {
+    (estimateLevel) => {
       setInternalEstimateToUse(estimateLevel);
       handleGasLimitOutOfBoundError();
       setMaxFeePerGas(null);
@@ -208,31 +208,28 @@ export function useGasFeeInputs(
     ],
   );
 
-  const onManualChange = useCallback(
-    () => () => {
-      setInternalEstimateToUse('custom');
-      handleGasLimitOutOfBoundError();
-      // Restore existing values
-      setGasPrice(gasPrice);
-      setGasLimit(gasLimit);
-      setMaxFeePerGas(maxFeePerGas);
-      setMaxPriorityFeePerGas(maxPriorityFeePerGas);
-      setGasPriceHasBeenManuallySet(true);
-    },
-    [
-      setInternalEstimateToUse,
-      handleGasLimitOutOfBoundError,
-      setGasPrice,
-      gasPrice,
-      setGasLimit,
-      gasLimit,
-      setMaxFeePerGas,
-      maxFeePerGas,
-      setMaxPriorityFeePerGas,
-      maxPriorityFeePerGas,
-      setGasPriceHasBeenManuallySet,
-    ],
-  );
+  const onManualChange = useCallback(() => {
+    setInternalEstimateToUse('custom');
+    handleGasLimitOutOfBoundError();
+    // Restore existing values
+    setGasPrice(gasPrice);
+    setGasLimit(gasLimit);
+    setMaxFeePerGas(maxFeePerGas);
+    setMaxPriorityFeePerGas(maxPriorityFeePerGas);
+    setGasPriceHasBeenManuallySet(true);
+  }, [
+    setInternalEstimateToUse,
+    handleGasLimitOutOfBoundError,
+    setGasPrice,
+    gasPrice,
+    setGasLimit,
+    gasLimit,
+    setMaxFeePerGas,
+    maxFeePerGas,
+    setMaxPriorityFeePerGas,
+    maxPriorityFeePerGas,
+    setGasPriceHasBeenManuallySet,
+  ]);
 
   return {
     maxFeePerGas,
