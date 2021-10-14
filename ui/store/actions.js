@@ -2984,7 +2984,7 @@ export function fetchSmartTransactionsLiveness() {
       const smartTransactionsLiveness = await promisifiedBackground.fetchSmartTransactionsLiveness();
       dispatch({
         type: actionConstants.SET_SMART_TRANSACTIONS_LIVENESS,
-        payload: Boolean(smartTransactionsLiveness.lastBlock),
+        payload: smartTransactionsLiveness,
       });
     } catch (e) {
       console.log(e);
