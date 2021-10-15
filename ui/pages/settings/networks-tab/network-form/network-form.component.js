@@ -569,30 +569,6 @@ export default class NetworkForm extends PureComponent {
     }
   };
 
-  renderWarning() {
-    const { t } = this.context;
-    return (
-      <div className="networks-tab__network-form-row--warning">
-        {t('onlyAddTrustedNetworks')}
-      </div>
-    );
-  }
-
-  renderSubHeaderForAddNetwork() {
-    const { t } = this.context;
-    return (
-      <div className="add-network-form__subheader">
-        <span className="add-network-form__sub-header-text">
-          {t('networks')}
-        </span>
-        <span>{'  >  '}</span>
-        <div className="add-network-form__subheader--break">
-          {t('addANetwork')}
-        </div>
-      </div>
-    );
-  }
-
   renderAddNetworkForm() {
     const { t } = this.context;
     const {
@@ -608,11 +584,21 @@ export default class NetworkForm extends PureComponent {
 
     return (
       <div className="add-network-form__body">
-        {this.renderSubHeaderForAddNetwork()}
+        <div className="add-network-form__subheader">
+          <span className="add-network-form__sub-header-text">
+            {t('networks')}
+          </span>
+          <span>{'  >  '}</span>
+          <div className="add-network-form__subheader--break">
+            {t('addANetwork')}
+          </div>
+        </div>
         <div className="add-network-form__content">
-          {this.renderWarning()}
-          <div className="add-network-form__form-row">
-            <div className="add-network-form__form-column add-network-form__form-column__left">
+          <div className="networks-tab__network-form-row--warning">
+            {t('onlyAddTrustedNetworks')}
+          </div>
+          <div className="add-network-form__form-column">
+            <div className="add-network-form__form-row">
               {this.renderFormTextField({
                 fieldKey: 'networkName',
                 textFieldId: 'network-name',
@@ -620,6 +606,17 @@ export default class NetworkForm extends PureComponent {
                 value: networkName,
                 autoFocus: true,
               })}
+              {this.renderFormTextField({
+                fieldKey: 'rpcUrl',
+                textFieldId: 'rpc-url',
+                onChange: this.setStateWithValue(
+                  'rpcUrl',
+                  this.validateUrlRpcUrl,
+                ),
+                value: rpcUrl,
+              })}
+            </div>
+            <div className="add-network-form__form-row">
               {this.renderFormTextField({
                 fieldKey: 'chainId',
                 textFieldId: 'chainId',
@@ -631,6 +628,15 @@ export default class NetworkForm extends PureComponent {
                 tooltipText: t('networkSettingsChainIdDescription'),
               })}
               {this.renderFormTextField({
+                fieldKey: 'symbol',
+                textFieldId: 'network-ticker',
+                onChange: this.setStateWithValue('ticker'),
+                value: ticker,
+                optionalTextFieldKey: 'optionalCurrencySymbol',
+              })}
+            </div>
+            <div className="add-network-form__form-row">
+              {this.renderFormTextField({
                 fieldKey: 'blockExplorerUrl',
                 textFieldId: 'block-explorer-url',
                 onChange: this.setStateWithValue(
@@ -639,24 +645,6 @@ export default class NetworkForm extends PureComponent {
                 ),
                 value: blockExplorerUrl,
                 optionalTextFieldKey: 'optionalBlockExplorerUrl',
-              })}
-            </div>
-            <div className="add-network-form__form-column add-network-form__form-column__right">
-              {this.renderFormTextField({
-                fieldKey: 'rpcUrl',
-                textFieldId: 'rpc-url',
-                onChange: this.setStateWithValue(
-                  'rpcUrl',
-                  this.validateUrlRpcUrl,
-                ),
-                value: rpcUrl,
-              })}
-              {this.renderFormTextField({
-                fieldKey: 'symbol',
-                textFieldId: 'network-ticker',
-                onChange: this.setStateWithValue('ticker'),
-                value: ticker,
-                optionalTextFieldKey: 'optionalCurrencySymbol',
               })}
             </div>
           </div>

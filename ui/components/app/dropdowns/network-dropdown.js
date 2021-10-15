@@ -233,6 +233,7 @@ class NetworkDropdown extends Component {
     const {
       provider: { rpcUrl: activeNetwork },
       setSelectedSettingsRpcUrl,
+      history,
     } = this.props;
     const rpcListDetail = this.props.frequentRpcListDetail;
     const isOpen = this.props.networkDropdownOpen;
@@ -284,7 +285,7 @@ class NetworkDropdown extends Component {
           closeMenu={() => this.props.hideNetworkDropdown()}
           onClick={() => {
             if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
-              this.props.history.push(ADD_NETWORK_ROUTE);
+              history.push(ADD_NETWORK_ROUTE);
             } else {
               global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
             }

@@ -31,28 +31,21 @@
     flex-direction: column;
   }
 
-  &__form-row {
+  &__form-column {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     margin-top: 12px;
   }
 
-  &__form-column {
-    flex: 1 0 auto;
-    flex-direction: column;
-    max-height: 465px;
-
-    &__left {
-      padding-right: 21px;
-    }
-
-    &__right {
-      padding-left: 21px;
-    }
+  &__form-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
   }
 
   &__network-form-row {
     padding-bottom: 30px;
+    width: 48%;
 
     &--warning {
       @include H7;
