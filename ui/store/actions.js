@@ -18,7 +18,7 @@ import {
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
-import { hexToDecimal } from '../helpers/utils/conversions.util';
+import { decimalToHex } from '../helpers/utils/conversions.util';
 import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
@@ -2910,17 +2910,16 @@ const createSignedTransactions = async (
   const unsignedTransactionsWithFees = fees.map((fee) => {
     const unsignedTransactionWithFees = {
       ...unsignedTransaction,
-      maxFeePerGas: fee.maxFeePerGas,
-      maxPriorityFeePerGas: fee.maxPriorityFeePerGas,
-      gasLimit: areCancelTransactions
-        ? 21000 // It has to be 21000 for cancel transactions, otherwise the API would reject it.
-        : Number(hexToDecimal(unsignedTransaction.gas)),
-      value: Number(hexToDecimal(unsignedTransaction.value)),
+      maxFeePerGas: decimalToHex(fee.maxFeePerGas),
+      maxPriorityFeePerGas: decimalToHex(fee.maxPriorityFeePerGas),
+      gas: areCancelTransactions
+        ? decimalToHex(21000) // It has to be 21000 for cancel transactions, otherwise the API would reject it.
+        : unsignedTransaction.gas,
+      value: unsignedTransaction.value,
     };
     if (areCancelTransactions) {
       unsignedTransactionWithFees.to = unsignedTransactionWithFees.from;
     }
-    delete unsignedTransactionWithFees.gas;
     return unsignedTransactionWithFees;
   });
   const signedTransactions = await promisifiedBackground.approveTransactionsWithSameNonce(

@@ -21,7 +21,10 @@ import {
 } from '../../lib/util';
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/helpers/constants/error-keys';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/pages/swaps/swaps.util';
-import { hexWEIToDecGWEI } from '../../../../ui/helpers/utils/conversions.util';
+import {
+  hexWEIToDecGWEI,
+  decimalToHex,
+} from '../../../../ui/helpers/utils/conversions.util';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
@@ -928,7 +931,7 @@ export default class TransactionController extends EventEmitter {
 
       rawTxes = await Promise.all(
         listOfTxParams.map((txParams) => {
-          txParams.nonce = nonce;
+          txParams.nonce = addHexPrefix(nonce.toString(16));
           return this.signExternalTransaction(txParams);
         }),
       );
@@ -948,15 +951,17 @@ export default class TransactionController extends EventEmitter {
   }
 
   async signExternalTransaction(_txParams) {
+    const normalizedTxParams = txUtils.normalizeTxParams(_txParams);
     // add network/chain id
     const chainId = this.getChainId();
-    const type = isEIP1559Transaction({ txParams: _txParams })
+    const type = isEIP1559Transaction({ txParams: normalizedTxParams })
       ? TRANSACTION_ENVELOPE_TYPES.FEE_MARKET
       : TRANSACTION_ENVELOPE_TYPES.LEGACY;
     const txParams = {
-      ..._txParams,
+      ...normalizedTxParams,
       type,
-      chainId,
+      gasLimit: normalizedTxParams.gas,
+      chainId: addHexPrefix(decimalToHex(chainId)),
     };
     // sign tx
     const fromAddress = txParams.from;
