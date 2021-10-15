@@ -216,8 +216,13 @@ const state = {
     },
     tokens: [
       {
-        address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-        symbol: 'DAI',
+        address: '0xaD6D458402F60fD3Bd25163575031ACDce07538A',
+        symbol: 'DAA',
+        decimals: 18,
+      },
+      {
+        address: '0xaD6D458402F60fD3Bd25163575031ACDce07538U',
+        symbol: 'DAU',
         decimals: 18,
       },
     ],
@@ -445,6 +450,15 @@ const state = {
               path: '/status',
               timestamp: 1629582711338,
               value: 'submitted',
+            },
+          ],
+          [
+            {
+              note: 'transactions/pending-tx-tracker#event: tx:block-update',
+              op: 'add',
+              path: '/firstRetryBlockNumber',
+              timestamp: 1629582711878,
+              value: '0x9c2686',
             },
           ],
           [
@@ -1264,10 +1278,9 @@ const state = {
       balance: '0x0',
       details: null,
     },
-    stage: 'ADD_RECIPIENT',
-    amount: '3782dace9d900000',
-    gas: {
-      price: null,
+    gas: { error: 'gas' },
+    amount: {
+      error: 'amount',
     },
   },
   confirmTransaction: {
