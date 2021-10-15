@@ -1,7 +1,22 @@
 .onboarding-pin-extension {
 
+  .control-dots .dot {
+    background: $ui-2;
+    box-shadow: none;
+
+    &.selected {
+      background: $ui-4;
+    }
+  }
+
   &__diagram {
+    margin: 24px auto;
     width: 799px;
-    height: 276px;
+    height: 320px;
+  }
+
+  &__buttons {
+    max-width: 50%;
+    margin: 40px auto 0 auto;
   }
 }

@@ -1650,11 +1650,29 @@
   "onboardingPinExtensionBillboardTitle": {
     "message": "Extensions"
   },
+  "onboardingPinExtensionChrome": {
+    "message": "Click Chrome extension icon"
+  },
   "onboardingPinExtensionContinueText": {
     "message": "Setup Metamask Wallet"
   },
   "onboardingPinExtensionDescription": {
     "message": "Pin MetaMask on your Chrome browser so it's accessible and easy to view transaction confirmations."
+  },
+  "onboardingPinExtensionDescription2": {
+    "message": "You can open MetaMask by clicking on the extension and access your wallet with 1 click."
+  },
+  "onboardingPinExtensionDescription3": {
+    "message": "Click Chrome extension icon to access it instantly"
+  },
+  "onboardingPinExtensionLabel": {
+    "message": "Pin MetaMask"
+  },
+  "onboardingPinExtensionStep1": {
+    "message": "1"
+  },
+  "onboardingPinExtensionStep2": {
+    "message": "2"
   },
   "onboardingPinExtensionTitle": {
     "message": "Your MetaMask install is complete!"

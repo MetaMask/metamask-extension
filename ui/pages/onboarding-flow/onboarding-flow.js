@@ -56,7 +56,7 @@ export default function OnboardingFlow() {
     // For ONBOARDING_V2 dev purposes,
     // Remove when ONBOARDING_V2 dev complete
     if (process.env.ONBOARDING_V2) {
-      history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
+      history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
       return;
     }
 
