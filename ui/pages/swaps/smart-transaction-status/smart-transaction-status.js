@@ -139,8 +139,6 @@ export default function SmartTransactionStatus() {
       <SwapsFooter
         onSubmit={async () => {
           await dispatch(prepareToLeaveSwaps());
-          // Go to the default route and then to the build quote route in order to clean up
-          // the `inputValue` local state in `pages/swaps/index.js`
           history.push(DEFAULT_ROUTE);
         }}
         submitText={isSmartTransactionPending ? t('cancel') : t('close')}

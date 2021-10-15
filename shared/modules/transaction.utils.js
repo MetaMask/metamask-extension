@@ -9,7 +9,7 @@ export function transactionMatchesNetwork(transaction, chainId, networkId) {
 
 /**
  * Determines if the maxFeePerGas and maxPriorityFeePerGas fields are supplied
- * and valid inputs.
+ * and valid inputs. This will return false for non hex string inputs.
  * @param {import("../constants/transaction").TransactionMeta} transaction -
  *  the transaction to check
  * @returns {boolean} true if transaction uses valid EIP1559 fields

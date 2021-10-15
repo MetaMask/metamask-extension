@@ -83,10 +83,7 @@ const initialState = {
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsFeatureFlags: {},
-    smartTransactionsStatus: {
-      active: false,
-      optInPopoverDisplayed: false,
-    },
+    smartTransactionsStatus: {},
   },
 };
 

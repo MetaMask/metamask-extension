@@ -2144,7 +2144,7 @@
     "message": "Smart transactions use MetaMask smart contracts to simulate transactions before submitting in order to..."
   },
   "smartTransactionsDescription2": {
-    "message": "Enabiling allows MetaMask to simulate transactions, proacitivley cancel bad transactions and sign MetaMask Swaps transactions for you. You can opt-out in advanced settings any time. Learn more."
+    "message": "Enabling allows MetaMask to simulate transactions, proactively cancel bad transactions and sign MetaMask Swaps transactions for you. You can opt-out in advanced settings any time. Learn more."
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
