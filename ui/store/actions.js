@@ -2978,6 +2978,24 @@ export async function cancelSmartTransaction(uuid) {
   await promisifiedBackground.cancelSmartTransaction(uuid);
 }
 
+export function fetchSmartTransactionsLiveness() {
+  return async (dispatch) => {
+    try {
+      const smartTransactionsLiveness = await promisifiedBackground.fetchSmartTransactionsLiveness();
+      dispatch({
+        type: actionConstants.SET_SMART_TRANSACTIONS_LIVENESS,
+        payload: smartTransactionsLiveness,
+      });
+    } catch (e) {
+      console.log(e);
+      dispatch({
+        type: actionConstants.SET_SMART_TRANSACTIONS_LIVENESS,
+        payload: false,
+      });
+    }
+  };
+}
+
 // DetectTokenController
 export async function detectNewTokens() {
   return promisifiedBackground.detectNewTokens();
