@@ -19,6 +19,11 @@ import { useCurrencyDisplay } from '../useCurrencyDisplay';
 import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
 import { feeParamsAreCustom, getGasFeeEstimate } from './utils';
 
+const getMaxFeePerGasFromTransaction = (transaction) => {
+  const { maxFeePerGas, gasPrice } = transaction?.txParams || {};
+  return Number(hexWEIToDecGWEI(maxFeePerGas || gasPrice));
+};
+
 /**
  * @typedef {Object} MaxFeePerGasInputReturnType
  * @property {(DecGweiString) => void} setMaxFeePerGas - state setter method to
@@ -47,18 +52,17 @@ export function useMaxFeePerGasInput({
 
   const showFiat = useSelector(getShouldShowFiat);
 
-  const [initialMaxFeePerGas] = useState(() => {
-    if (!supportsEIP1559) return 0;
-    const { maxFeePerGas, gasPrice: txGasPrice } = transaction?.txParams || {};
-    return Number(hexWEIToDecGWEI(maxFeePerGas || txGasPrice));
-  });
+  const maxFeePerGasFromTransaction = supportsEIP1559
+    ? getMaxFeePerGasFromTransaction(transaction)
+    : 0;
 
   // This hook keeps track of a few pieces of transitional state. It is
   // transitional because it is only used to modify a transaction in the
   // metamask (background) state tree.
   const [maxFeePerGas, setMaxFeePerGas] = useState(() => {
-    if (!initialMaxFeePerGas || !feeParamsAreCustom(transaction)) return null;
-    return initialMaxFeePerGas;
+    if (maxFeePerGasFromTransaction && feeParamsAreCustom(transaction))
+      return maxFeePerGasFromTransaction;
+    return null;
   });
 
   let gasSettings = {
@@ -106,7 +110,7 @@ export function useMaxFeePerGasInput({
       gasFeeEstimates,
       gasEstimateType,
       estimateToUse,
-      initialMaxFeePerGas,
+      maxFeePerGasFromTransaction,
     );
 
   return {

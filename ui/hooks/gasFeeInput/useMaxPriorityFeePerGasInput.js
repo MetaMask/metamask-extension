@@ -16,6 +16,14 @@ import { useCurrencyDisplay } from '../useCurrencyDisplay';
 import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
 import { feeParamsAreCustom, getGasFeeEstimate } from './utils';
 
+const getMaxPriorityFeePerGasFromTransaction = (transaction) => {
+  const { maxPriorityFeePerGas, maxFeePerGas, gasPrice } =
+    transaction?.txParams || {};
+  return Number(
+    hexWEIToDecGWEI(maxPriorityFeePerGas || maxFeePerGas || gasPrice),
+  );
+};
+
 /**
  * @typedef {Object} MaxPriorityFeePerGasInputReturnType
  * @property {DecGweiString} [maxPriorityFeePerGas] - the maxPriorityFeePerGas
@@ -43,19 +51,14 @@ export function useMaxPriorityFeePerGasInput({
 
   const showFiat = useSelector(getShouldShowFiat);
 
-  const [initialMaxPriorityFeePerGas] = useState(() => {
-    if (!supportsEIP1559) return 0;
-    const { maxPriorityFeePerGas, maxFeePerGas, gasPrice } =
-      transaction?.txParams || {};
-    return Number(
-      hexWEIToDecGWEI(maxPriorityFeePerGas || maxFeePerGas || gasPrice),
-    );
-  });
+  const maxPriorityFeePerGasFromTransaction = supportsEIP1559
+    ? getMaxPriorityFeePerGasFromTransaction(transaction)
+    : 0;
 
   const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(() => {
-    if (!initialMaxPriorityFeePerGas || !feeParamsAreCustom(transaction))
-      return null;
-    return initialMaxPriorityFeePerGas;
+    if (maxPriorityFeePerGasFromTransaction && feeParamsAreCustom(transaction))
+      return maxPriorityFeePerGasFromTransaction;
+    return null;
   });
 
   const maxPriorityFeePerGasToUse =
@@ -65,7 +68,7 @@ export function useMaxPriorityFeePerGasInput({
       gasFeeEstimates,
       gasEstimateType,
       estimateToUse,
-      initialMaxPriorityFeePerGas,
+      maxPriorityFeePerGasFromTransaction,
     );
 
   // We need to display the estimated fiat currency impact of the
