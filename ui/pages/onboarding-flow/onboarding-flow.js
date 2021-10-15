@@ -13,6 +13,7 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ONBOARDING_PIN_EXTENSION_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
