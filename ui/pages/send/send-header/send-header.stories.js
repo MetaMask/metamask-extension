@@ -25,6 +25,7 @@ export const SendHeaderComponent = () => {
   );
   const state = store.getState();
   const { send } = state;
+
   const asset =
     select('Asset', [ASSET_TYPES.NATIVE, ASSET_TYPES.TOKEN]) || send.asset;
 
@@ -38,11 +39,11 @@ export const SendHeaderComponent = () => {
 
   useEffect(() => {
     store.dispatch(updateSendAsset(asset));
-  }, [store, asset]);
+  }, [asset, store]);
 
   useEffect(() => {
     store.dispatch(updateSendStage(stage));
-  }, [store, stage]);
+  }, [stage, store]);
 
   return (
     <Provider store={store}>
