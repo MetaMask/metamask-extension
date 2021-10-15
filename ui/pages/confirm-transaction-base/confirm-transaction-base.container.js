@@ -81,6 +81,7 @@ const mapStateToProps = (state, ownProps) => {
     unapprovedTxs,
     nextNonce,
     provider: { chainId },
+    ledgerTransportType,
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
@@ -222,6 +223,7 @@ const mapStateToProps = (state, ownProps) => {
     showLedgerSteps,
     isFirefox,
     nativeCurrency,
+    ledgerTransportType,
   };
 };
 

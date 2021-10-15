@@ -36,6 +36,7 @@ import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 import Dialog from '../../components/ui/dialog';
+import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
 
 import {
   COLORS,
@@ -129,6 +130,7 @@ export default class ConfirmTransactionBase extends Component {
     isFirefox: PropTypes.bool.isRequired,
     nativeCurrency: PropTypes.string,
     supportsEIP1559: PropTypes.bool,
+    ledgerTransportType: PropTypes.string,
   };
 
   state = {
@@ -311,8 +313,11 @@ export default class ConfirmTransactionBase extends Component {
       showLedgerSteps,
       isFirefox,
       supportsEIP1559,
+      ledgerTransportType,
     } = this.props;
     const { t } = this.context;
+
+    const usingLedgerLive = ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE;
 
     const renderTotalMaxAmount = () => {
       if (
@@ -427,11 +432,11 @@ export default class ConfirmTransactionBase extends Component {
               {renderLedgerLiveStep(t('ledgerLiveDialogHeader'))}
               {renderLedgerLiveStep(
                 `- ${t('ledgerLiveDialogStepOne')}`,
-                !isFirefox,
+                !isFirefox && usingLedgerLive,
               )}
               {renderLedgerLiveStep(
                 `- ${t('ledgerLiveDialogStepTwo')}`,
-                !isFirefox,
+                !isFirefox && usingLedgerLive,
               )}
               {renderLedgerLiveStep(`- ${t('ledgerLiveDialogStepThree')}`)}
               {renderLedgerLiveStep(
