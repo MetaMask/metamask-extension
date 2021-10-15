@@ -9,15 +9,17 @@ export function transactionMatchesNetwork(transaction, chainId, networkId) {
 
 /**
  * Determines if the maxFeePerGas and maxPriorityFeePerGas fields are supplied
- * and valid inputs. This will return false for non hex string inputs.
+ * and valid inputs.
  * @param {import("../constants/transaction").TransactionMeta} transaction -
  *  the transaction to check
  * @returns {boolean} true if transaction uses valid EIP1559 fields
  */
 export function isEIP1559Transaction(transaction) {
   return (
-    isHexString(transaction?.txParams?.maxFeePerGas) &&
-    isHexString(transaction?.txParams?.maxPriorityFeePerGas)
+    (isHexString(transaction?.txParams?.maxFeePerGas) &&
+      isHexString(transaction?.txParams?.maxPriorityFeePerGas)) ||
+    (typeof transaction?.txParams?.maxFeePerGas === 'number' &&
+      typeof transaction?.txParams?.maxPriorityFeePerGas === 'number')
   );
 }
 
