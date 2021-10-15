@@ -380,7 +380,7 @@ export default class MetamaskController extends EventEmitter {
     this.keyringController.memStore.subscribe((state) =>
       this._onKeyringControllerUpdate(state),
     );
-    this.keyringController.on('unlock', () => this.emit('unlock'));
+    this.keyringController.on('unlock', () => this._onUnlock());
     this.keyringController.on('lock', () => this._onLock());
 
     this.permissionsController = new PermissionsController(
@@ -2626,10 +2626,10 @@ export default class MetamaskController extends EventEmitter {
         ? (origin) => payload(origin)
         : () => payload;
 
-    Object.values(this.connections).forEach((origin) => {
-      Object.values(origin).forEach((conn) => {
+    Object.keys(this.connections).forEach((origin) => {
+      Object.values(this.connections[origin]).forEach(async (conn) => {
         if (conn.engine) {
-          conn.engine.emit('notification', getPayload(origin));
+          conn.engine.emit('notification', await getPayload(origin));
         }
       });
     });
@@ -2664,12 +2664,12 @@ export default class MetamaskController extends EventEmitter {
    * Notifies all connections that the extension is unlocked.
    */
   _onUnlock() {
-    this.notifyAllConnections((origin) => {
+    this.notifyAllConnections(async (origin) => {
       return {
         method: NOTIFICATION_NAMES.unlockStateChanged,
         params: {
           isUnlocked: true,
-          accounts: this.permissionsController.getAccounts(origin),
+          accounts: await this.permissionsController.getAccounts(origin),
         },
       };
     });
