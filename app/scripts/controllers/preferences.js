@@ -45,7 +45,6 @@ export default class PreferencesController {
         showIncomingTransactions: true,
       },
       knownMethodData: {},
-      firstTimeFlowType: null,
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
@@ -56,7 +55,6 @@ export default class PreferencesController {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
       },
-      completedOnboarding: false,
       // ENS decentralized website resolution
       ipfsGateway: 'dweb.link',
       infuraBlocked: null,
@@ -125,16 +123,6 @@ export default class PreferencesController {
    */
   setUseTokenDetection(val) {
     this.store.updateState({ useTokenDetection: val });
-  }
-
-  /**
-   * Setter for the `firstTimeFlowType` property
-   *
-   * @param {string} type - Indicates the type of first time flow - create or import - the user wishes to follow
-   *
-   */
-  setFirstTimeFlowType(type) {
-    this.store.updateState({ firstTimeFlowType: type });
   }
 
   /**
@@ -507,15 +495,6 @@ export default class PreferencesController {
    */
   getPreferences() {
     return this.store.getState().preferences;
-  }
-
-  /**
-   * Sets the completedOnboarding state to true, indicating that the user has completed the
-   * onboarding process.
-   */
-  completeOnboarding() {
-    this.store.updateState({ completedOnboarding: true });
-    return Promise.resolve(true);
   }
 
   /**

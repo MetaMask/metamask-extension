@@ -25,6 +25,10 @@ export function getFirstTimeFlowTypeRoute(state) {
   return nextRoute;
 }
 
+export const getFirstTimeFlowType = (state) => {
+  return state.metamask.firstTimeFlowType;
+};
+
 export const getOnboardingInitiator = (state) => {
   const { onboardingTabs } = state.metamask;
 
