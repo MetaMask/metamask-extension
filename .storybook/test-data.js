@@ -1278,10 +1278,9 @@ const state = {
       balance: '0x0',
       details: null,
     },
-    stage: 'ADD_RECIPIENT',
-    amount: '3782dace9d900000',
-    gas: {
-      price: null,
+    gas: { error: 'gas' },
+    amount: {
+      error: 'amount',
     },
   },
   confirmTransaction: {
