@@ -264,10 +264,7 @@ export default class ConfirmApproveContent extends Component {
         <Box className="confirm-approve-content__icon-display-content">
           <Box display={DISPLAY.FLEX}>
             <MetaFoxLogo useDark={isBeta()} />
-            <Box
-              display={DISPLAY.FLEX}
-              className="confirm-approve-content__identicon-wrapper"
-            >
+            <Box display={DISPLAY.FLEX}>
               <UrlIcon
                 className="confirm-approve-content__identicon"
                 fallbackClassName="confirm-approve-content__identicon"
