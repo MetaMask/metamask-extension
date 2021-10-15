@@ -7,7 +7,7 @@ import {
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_CONFIRM_SRP_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
-  ONBOARDING_WELCOME,
+  ONBOARDING_WELCOME_ROUTE,
   DEFAULT_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
@@ -152,7 +152,10 @@ export default function OnboardingFlow() {
             path={ONBOARDING_COMPLETION_ROUTE}
             component={CreationSuccessful}
           />
-          <Route path={ONBOARDING_WELCOME} component={OnboardingWelcome} />
+          <Route
+            path={ONBOARDING_WELCOME_ROUTE}
+            component={OnboardingWelcome}
+          />
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
       </div>
