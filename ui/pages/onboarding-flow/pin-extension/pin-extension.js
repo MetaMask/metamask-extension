@@ -24,7 +24,12 @@ export default function OnboardingPinExtension() {
       >
         {t('onboardingPinExtensionTitle')}
       </Typography>
-      <Carousel selectedItem={selectedIndex} showThumbs={false} showStatus={false} showArrows>
+      <Carousel
+        selectedItem={selectedIndex}
+        showThumbs={false}
+        showStatus={false}
+        showArrows={false}
+      >
         <div>
           <Typography align={TEXT_ALIGN.CENTER}>
             {t('onboardingPinExtensionDescription')}
@@ -40,7 +45,12 @@ export default function OnboardingPinExtension() {
           <Typography align={TEXT_ALIGN.CENTER}>
             {t('onboardingPinExtensionDescription3')}
           </Typography>
-          <img src="/images/onboarding-pin-browser.svg" width="799" height="320" alt="" />
+          <img
+            src="/images/onboarding-pin-browser.svg"
+            width="799"
+            height="320"
+            alt=""
+          />
         </div>
       </Carousel>
       <div className="onboarding-pin-extension__buttons">
