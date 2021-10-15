@@ -76,14 +76,20 @@
       align-items: center;
 
       &--button {
+        @include H6;
+
         background-color: transparent;
         border: none;
         display: flex;
         justify-content: space-evenly;
-        width: 40%;
+        width: 32%;
         color: $primary-blue;
         cursor: pointer;
         margin-bottom: 24px;
+
+        svg {
+          width: 15px;
+        }
 
         &:active {
           color: $ui-black;

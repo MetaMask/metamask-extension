@@ -11,11 +11,11 @@ import {
   JUSTIFY_CONTENT,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
-import { INITIALIZE_END_OF_FLOW_ROUTE } from '../../../helpers/constants/routes';
 import {
   ThreeStepProgressBar,
   threeStepStages,
 } from '../../../components/app/step-progress-bar';
+import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
@@ -86,7 +86,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
           type="primary"
           className="recovery-phrase__footer--button"
           onClick={() => {
-            history.push(INITIALIZE_END_OF_FLOW_ROUTE);
+            history.push(ONBOARDING_COMPLETION_ROUTE);
           }}
           disabled={!matching}
         >

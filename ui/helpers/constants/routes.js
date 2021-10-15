@@ -59,7 +59,6 @@ const ONBOARDING_CONFIRM_SRP_ROUTE = '/onboarding/confirm-recovery-phrase';
 const ONBOARDING_CREATE_PASSWORD_ROUTE = '/onboarding/create-password';
 const ONBOARDING_COMPLETION_ROUTE = '/onboarding/completion';
 const ONBOARDING_UNLOCK_ROUTE = '/onboarding/unlock';
-const ONBOARDING_GET_STARTED_ROUTE = '/onboarding/get-started';
 const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
 const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
   '/onboarding/import-with-recovery-phrase';
@@ -218,7 +217,6 @@ export {
   SWAPS_MAINTENANCE_ROUTE,
   SMART_TRANSACTION_STATUS_ROUTE,
   ONBOARDING_ROUTE,
-  ONBOARDING_GET_STARTED_ROUTE,
   ONBOARDING_HELP_US_IMPROVE_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
