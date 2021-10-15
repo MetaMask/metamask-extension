@@ -24,6 +24,10 @@
     color: #d0021b;
   }
 
+  &__terms a {
+    color: $Blue-500;
+  }
+
   &__buttons {
     margin: 24px auto 0 auto;
     justify-content: space-between;
