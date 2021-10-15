@@ -105,6 +105,12 @@ export default function reduceApp(state = {}, action) {
         smartTransactionsStatus: action.payload,
       };
 
+    case actionConstants.SET_SMART_TRANSACTIONS_LIVENESS:
+      return {
+        ...appState,
+        smartTransactionsLiveness: action.payload,
+      };
+
     // modal methods:
     case actionConstants.MODAL_OPEN: {
       const { name, ...modalProps } = action.payload;

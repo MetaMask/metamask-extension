@@ -1201,6 +1201,10 @@ export default class MetamaskController extends EventEmitter {
         smartTransactionsController.cancelSmartTransaction,
         smartTransactionsController,
       ),
+      fetchSmartTransactionsLiveness: nodeify(
+        smartTransactionsController.fetchLiveness,
+        smartTransactionsController,
+      ),
 
       // MetaMetrics
       trackMetaMetricsEvent: nodeify(
