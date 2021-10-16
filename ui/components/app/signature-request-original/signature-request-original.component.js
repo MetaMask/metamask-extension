@@ -78,8 +78,11 @@ export default class SignatureRequestOriginal extends Component {
     const {
       conversionRate,
       nativeCurrency,
-      fromAccount: { balance },
     } = this.props;
+
+    const {
+      fromAccount: { balance },
+    } = this.state;
 
     const nativeCurrencyBalance = conversionUtil(balance, {
       fromNumericBase: 'hex',
