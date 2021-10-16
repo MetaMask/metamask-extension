@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import validUrl from 'valid-url';
 import log from 'loglevel';
-import classnames from 'classnames';
 import TextField from '../../../../components/ui/text-field';
 import Button from '../../../../components/ui/button';
 import Tooltip from '../../../../components/ui/tooltip';
@@ -273,6 +272,7 @@ export default class NetworkForm extends PureComponent {
   }
 
   renderFormTextField({
+    className,
     fieldKey,
     textFieldId,
     onChange,
@@ -282,38 +282,20 @@ export default class NetworkForm extends PureComponent {
     autoFocus = false,
   }) {
     const { errors } = this.state;
-    const { viewOnly, addNewNetwork } = this.props;
+    const { viewOnly } = this.props;
     const errorMessage = errors[fieldKey]?.msg || '';
 
     return (
-      <div
-        className={classnames({
-          'networks-tab__network-form-row': !addNewNetwork,
-          'add-network-form__network-form-row': addNewNetwork,
-        })}
-      >
-        <div
-          className={classnames({
-            'networks-tab__network-form-label': !addNewNetwork,
-            'add-network-form__network-form-label': addNewNetwork,
-          })}
-        >
-          <div
-            className={classnames({
-              'networks-tab__network-form-label-text': !addNewNetwork,
-              'add-network-form__network-form-label-text': addNewNetwork,
-            })}
-          >
+      <div className={className}>
+        <div className="networks-tab__network-form-label">
+          <div className="networks-tab__network-form-label-text">
             {this.context.t(optionalTextFieldKey || fieldKey)}
           </div>
           {!viewOnly && tooltipText ? (
             <Tooltip
               position="top"
               title={tooltipText}
-              wrapperClassName={classnames({
-                'networks-tab__network-form-label-tooltip': !addNewNetwork,
-                'add-network-form__network-form-label-tooltip': addNewNetwork,
-              })}
+              wrapperClassName="networks-tab__network-form-label-tooltip"
             >
               <i className="fa fa-info-circle" />
             </Tooltip>
@@ -594,12 +576,13 @@ export default class NetworkForm extends PureComponent {
           </div>
         </div>
         <div className="add-network-form__content">
-          <div className="networks-tab__network-form-row--warning">
+          <div className="add-network-form__content--warning">
             {t('onlyAddTrustedNetworks')}
           </div>
           <div className="add-network-form__form-column">
             <div className="add-network-form__form-row">
               {this.renderFormTextField({
+                className: 'add-network-form__network-form-row',
                 fieldKey: 'networkName',
                 textFieldId: 'network-name',
                 onChange: this.setStateWithValue('networkName'),
@@ -607,6 +590,7 @@ export default class NetworkForm extends PureComponent {
                 autoFocus: true,
               })}
               {this.renderFormTextField({
+                className: 'add-network-form__network-form-row',
                 fieldKey: 'rpcUrl',
                 textFieldId: 'rpc-url',
                 onChange: this.setStateWithValue(
@@ -618,6 +602,7 @@ export default class NetworkForm extends PureComponent {
             </div>
             <div className="add-network-form__form-row">
               {this.renderFormTextField({
+                className: 'add-network-form__network-form-row',
                 fieldKey: 'chainId',
                 textFieldId: 'chainId',
                 onChange: this.setStateWithValue(
@@ -628,6 +613,7 @@ export default class NetworkForm extends PureComponent {
                 tooltipText: t('networkSettingsChainIdDescription'),
               })}
               {this.renderFormTextField({
+                className: 'add-network-form__network-form-row',
                 fieldKey: 'symbol',
                 textFieldId: 'network-ticker',
                 onChange: this.setStateWithValue('ticker'),
@@ -637,6 +623,7 @@ export default class NetworkForm extends PureComponent {
             </div>
             <div className="add-network-form__form-row">
               {this.renderFormTextField({
+                className: 'add-network-form__network-form-row',
                 fieldKey: 'blockExplorerUrl',
                 textFieldId: 'block-explorer-url',
                 onChange: this.setStateWithValue(
@@ -693,18 +680,21 @@ export default class NetworkForm extends PureComponent {
     return (
       <div className="networks-tab__network-form">
         {this.renderFormTextField({
+          className: 'networks-tab__network-form-row',
           fieldKey: 'networkName',
           textFieldId: 'network-name',
           onChange: this.setStateWithValue('networkName'),
           value: networkName,
         })}
         {this.renderFormTextField({
+          className: 'networks-tab__network-form-row',
           fieldKey: 'rpcUrl',
           textFieldId: 'rpc-url',
           onChange: this.setStateWithValue('rpcUrl', this.validateUrlRpcUrl),
           value: rpcUrl,
         })}
         {this.renderFormTextField({
+          className: 'networks-tab__network-form-row',
           fieldKey: 'chainId',
           textFieldId: 'chainId',
           onChange: this.setStateWithValue(
@@ -715,6 +705,7 @@ export default class NetworkForm extends PureComponent {
           tooltipText: viewOnly ? null : t('networkSettingsChainIdDescription'),
         })}
         {this.renderFormTextField({
+          className: 'networks-tab__network-form-row',
           fieldKey: 'symbol',
           textFieldId: 'network-ticker',
           onChange: this.setStateWithValue('ticker'),
@@ -722,6 +713,7 @@ export default class NetworkForm extends PureComponent {
           optionalTextFieldKey: 'optionalCurrencySymbol',
         })}
         {this.renderFormTextField({
+          className: 'networks-tab__network-form-row',
           fieldKey: 'blockExplorerUrl',
           textFieldId: 'block-explorer-url',
           onChange: this.setStateWithValue(

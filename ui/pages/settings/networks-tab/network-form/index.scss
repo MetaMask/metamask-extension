@@ -29,6 +29,17 @@
     justify-content: space-between;
     display: flex;
     flex-direction: column;
+
+    &--warning {
+      @include H7;
+
+      background-color: #fefae8;
+      border: 1px solid #ffd33d;
+      border-radius: 5px;
+      box-sizing: border-box;
+      padding: 12px;
+      margin: 12px 0;
+    }
   }
 
   &__form-column {
@@ -46,34 +57,6 @@
   &__network-form-row {
     padding-bottom: 30px;
     width: 48%;
-
-    &--warning {
-      @include H7;
-
-      background-color: #fefae8;
-      border: 1px solid #ffd33d;
-      border-radius: 5px;
-      box-sizing: border-box;
-      padding: 12px;
-      margin: 12px 0;
-    }
-  }
-
-  &__network-form-label {
-    display: flex;
-    align-items: center;
-  }
-
-  &__network-form-label-text {
-    @include H6;
-
-    color: #000;
-  }
-
-  &__network-form-label-tooltip {
-    @include H7;
-
-    margin-left: 5px;
   }
 
   &__footer {
