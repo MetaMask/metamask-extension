@@ -20,6 +20,7 @@ module.exports = {
     '<rootDir>/ui/**/*.test.js',
     '<rootDir>/shared/**/*.test.js',
     '<rootDir>/app/scripts/migrations/*.test.js',
+    '<rootDir>/app/scripts/platforms/*.test.js',
   ],
   testTimeout: 2500,
 };
