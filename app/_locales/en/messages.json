@@ -1653,9 +1653,6 @@
   "onboardingPinExtensionChrome": {
     "message": "Click the browser extension icon"
   },
-  "onboardingPinExtensionContinueText": {
-    "message": "Setup Metamask Wallet"
-  },
   "onboardingPinExtensionDescription": {
     "message": "Pin MetaMask on your browser so it's accessible and easy to view transaction confirmations."
   },
