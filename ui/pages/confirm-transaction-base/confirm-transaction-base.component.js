@@ -51,6 +51,7 @@ import {
 } from '../../store/actions';
 
 import Typography from '../../components/ui/typography/typography';
+import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
@@ -232,7 +233,7 @@ export default class ConfirmTransactionBase extends Component {
       };
     }
 
-    if (hexToDecimal(customGas.gasLimit) < 21000) {
+    if (hexToDecimal(customGas.gasLimit) < Number(MIN_GAS_LIMIT_DEC)) {
       return {
         valid: false,
         errorKey: GAS_LIMIT_TOO_LOW_ERROR_KEY,
