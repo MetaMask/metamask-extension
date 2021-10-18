@@ -365,7 +365,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.onboardingController = new OnboardingController({
       initState: initState.OnboardingController,
-      preferencesController: this.preferencesController,
     });
 
     this.tokensController.hub.on('pendingSuggestedAsset', async () => {
@@ -642,7 +641,7 @@ export default class MetamaskController extends EventEmitter {
     if (
       password &&
       !this.isUnlocked() &&
-      this.onboardingController.completedOnboarding
+      this.onboardingController.store.getState().completedOnboarding
     ) {
       this.submitPassword(password);
     }
@@ -834,7 +833,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       setIpfsGateway: this.setIpfsGateway.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
-      setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
@@ -913,10 +911,7 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setPreference,
         preferencesController,
       ),
-      completeOnboarding: nodeify(
-        preferencesController.completeOnboarding,
-        preferencesController,
-      ),
+
       addKnownMethodData: nodeify(
         preferencesController.addKnownMethodData,
         preferencesController,
@@ -1027,6 +1022,14 @@ export default class MetamaskController extends EventEmitter {
       // onboarding controller
       setSeedPhraseBackedUp: nodeify(
         onboardingController.setSeedPhraseBackedUp,
+        onboardingController,
+      ),
+      completeOnboarding: nodeify(
+        onboardingController.completeOnboarding,
+        onboardingController,
+      ),
+      setFirstTimeFlowType: nodeify(
+        onboardingController.setFirstTimeFlowType,
         onboardingController,
       ),
 
@@ -3079,23 +3082,6 @@ export default class MetamaskController extends EventEmitter {
         bool,
       );
       cb(null, metaMetricsId);
-      return;
-    } catch (err) {
-      cb(err);
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
-  }
-
-  /**
-   * Sets the type of first time flow the user wishes to follow: create or import
-   * @param {string} type - Indicates the type of first time flow the user wishes to follow
-   * @param {Function} cb - A callback function called when complete.
-   */
-  setFirstTimeFlowType(type, cb) {
-    try {
-      this.preferencesController.setFirstTimeFlowType(type);
-      cb(null);
       return;
     } catch (err) {
       cb(err);
