@@ -262,7 +262,7 @@ class ConnectHardwareForm extends Component {
         <SelectHardware
           connectToHardwareWallet={this.connectToHardwareWallet}
           browserSupported={this.state.browserSupported}
-          useLedgerLive={this.props.useLedgerLive}
+          ledgerTransportType={this.props.ledgerTransportType}
         />
       );
     }
@@ -313,7 +313,7 @@ ConnectHardwareForm.propTypes = {
   connectedAccounts: PropTypes.array.isRequired,
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
-  useLedgerLive: PropTypes.bool.isRequired,
+  ledgerTransportType: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -323,7 +323,7 @@ const mapStateToProps = (state) => ({
   connectedAccounts: getMetaMaskAccountsConnected(state),
   defaultHdPaths: state.appState.defaultHdPaths,
   mostRecentOverviewPage: getMostRecentOverviewPage(state),
-  useLedgerLive: state.metamask.useLedgerLive,
+  ledgerTransportType: state.metamask.ledgerTransportType,
 });
 
 const mapDispatchToProps = (dispatch) => {

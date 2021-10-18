@@ -14,7 +14,7 @@ export const SelectHardwareComponent = () => {
       connectToHardwareWallet={(selectedDevice) =>
         action(`Continue connect to ${selectedDevice}`)()
       }
-      useLedgerLive
+      ledgerTransportType="ledgerLive"
     />
   );
 };
@@ -23,7 +23,7 @@ export const BrowserNotSupported = () => {
     <SelectHardware
       browserSupported={false}
       connectToHardwareWallet={() => undefined}
-      useLedgerLive
+      ledgerTransportType="ledgerLive"
     />
   );
 };
