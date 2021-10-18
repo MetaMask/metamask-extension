@@ -90,7 +90,7 @@ export function getCurrentKeyring(state) {
 }
 
 export function getParticipateInMetaMetrics(state) {
-  return state.metamask.participateInMetaMetrics;
+  return Boolean(state.metamask.participateInMetaMetrics);
 }
 
 export function isEIP1559Account(state) {

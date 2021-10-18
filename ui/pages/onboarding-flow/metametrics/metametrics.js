@@ -32,9 +32,7 @@ export default function OnboardingMetametrics() {
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
-  const participateInMetaMetrics = Boolean(
-    useSelector(getParticipateInMetaMetrics),
-  );
+  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const firstTimeSelectionMetaMetricsName =
     firstTimeFlowTypeNameMap[firstTimeFlowType];
 
