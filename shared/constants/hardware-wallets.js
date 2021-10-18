@@ -14,6 +14,7 @@ export const KEYRING_TYPES = {
 export const LEDGER_TRANSPORT_TYPES = {
   LIVE: 'ledgerLive',
   WEBHID: 'webhid',
+  U2F: 'u2f',
 };
 
 export const LEDGER_USB_VENDOR_ID = '0x2c97';

@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash';
+import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
 
 const version = 66;
 
@@ -18,12 +19,17 @@ export default {
 };
 
 function transformState(state) {
+  const defaultTransportType = window.navigator.hid
+    ? LEDGER_TRANSPORT_TYPES.WEBHID
+    : LEDGER_TRANSPORT_TYPES.U2F;
   const useLedgerLive = state?.PreferencesController?.useLedgerLive;
   const newState = {
     ...state,
     PreferencesController: {
       ...state?.PreferencesController,
-      ledgerTransportType: useLedgerLive ? 'ledgerLive' : '',
+      ledgerTransportType: useLedgerLive
+        ? LEDGER_TRANSPORT_TYPES.LIVE
+        : defaultTransportType,
     },
   };
   delete newState.PreferencesController.useLedgerLive;

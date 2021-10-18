@@ -1,3 +1,4 @@
+import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
 import migration66 from './066';
 
 describe('migration #66', () => {
@@ -15,7 +16,7 @@ describe('migration #66', () => {
     });
   });
 
-  it('should set ledgerTransportType to an empty string if no preferences controller exists', async () => {
+  it('should set ledgerTransportType to `u2f` if no preferences controller exists and webhid is not available', async () => {
     const oldStorage = {
       meta: {},
       data: {},
@@ -24,10 +25,10 @@ describe('migration #66', () => {
     const newStorage = await migration66.migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController.ledgerTransportType,
-    ).toStrictEqual('');
+    ).toStrictEqual(LEDGER_TRANSPORT_TYPES.U2F);
   });
 
-  it('should set ledgerTransportType to an empty string if no useLedgerLive property exists', async () => {
+  it('should set ledgerTransportType to `u2f` if no useLedgerLive property exists and webhid is not available', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -38,10 +39,10 @@ describe('migration #66', () => {
     const newStorage = await migration66.migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController.ledgerTransportType,
-    ).toStrictEqual('');
+    ).toStrictEqual(LEDGER_TRANSPORT_TYPES.U2F);
   });
 
-  it('should set ledgerTransportType to an empty string if useLedgerLive is false', async () => {
+  it('should set ledgerTransportType to `u2f` if useLedgerLive is false and webhid is not available', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -54,7 +55,25 @@ describe('migration #66', () => {
     const newStorage = await migration66.migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController.ledgerTransportType,
-    ).toStrictEqual('');
+    ).toStrictEqual(LEDGER_TRANSPORT_TYPES.U2F);
+  });
+
+  it('should set ledgerTransportType to `webhid` if useLedgerLive is false and webhid is available', async () => {
+    const oldStorage = {
+      meta: {},
+      data: {
+        PreferencesController: {
+          useLedgerLive: false,
+        },
+      },
+    };
+    const tempNavigatorHid = window.navigator.hid;
+    window.navigator.hid = true;
+    const newStorage = await migration66.migrate(oldStorage);
+    window.navigator.hid = tempNavigatorHid;
+    expect(
+      newStorage.data.PreferencesController.ledgerTransportType,
+    ).toStrictEqual(LEDGER_TRANSPORT_TYPES.WEBHID);
   });
 
   it('should set ledgerTransportType to `ledgerLive` if useLedgerLive is true', async () => {

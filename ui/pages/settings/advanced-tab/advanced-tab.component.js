@@ -11,6 +11,10 @@ import { getPlatform } from '../../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
 
+const defaultTransportType = window.navigator.hid
+  ? LEDGER_TRANSPORT_TYPES.WEBHID
+  : LEDGER_TRANSPORT_TYPES.U2F;
+
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -410,7 +414,7 @@ export default class AdvancedTab extends PureComponent {
               value={ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE}
               onToggle={(value) =>
                 setLedgerLivePreference(
-                  value ? '' : LEDGER_TRANSPORT_TYPES.LIVE,
+                  value ? defaultTransportType : LEDGER_TRANSPORT_TYPES.LIVE,
                 )
               }
               offLabel={t('off')}

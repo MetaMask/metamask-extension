@@ -416,17 +416,12 @@ export function connectHardware(deviceName, page, hdPath) {
         deviceName === 'ledger' &&
         ledgerTransportType !== LEDGER_TRANSPORT_TYPES.LIVE
       ) {
-        try {
-          await window.navigator.hid.requestDevice({
-            filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
-          });
-          await promisifiedBackground.setLedgerTransportPreference(
-            LEDGER_TRANSPORT_TYPES.WEBHID,
-          );
-        } catch (e) {
-          await promisifiedBackground.setLedgerTransportPreference('');
-          throw e;
-        }
+        await window.navigator.hid.requestDevice({
+          filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
+        });
+        await promisifiedBackground.setLedgerTransportPreference(
+          LEDGER_TRANSPORT_TYPES.WEBHID,
+        );
       }
 
       accounts = await promisifiedBackground.connectHardware(

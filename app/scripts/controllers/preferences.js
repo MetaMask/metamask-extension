@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import log from 'loglevel';
 import { NETWORK_TYPE_TO_ID_MAP } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
+import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
 import { NETWORK_EVENTS } from './network';
 
 export default class PreferencesController {
@@ -58,7 +59,9 @@ export default class PreferencesController {
       // ENS decentralized website resolution
       ipfsGateway: 'dweb.link',
       infuraBlocked: null,
-      ledgerTransportType: '',
+      ledgerTransportType: window.navigator.hid
+        ? LEDGER_TRANSPORT_TYPES.WEBHID
+        : LEDGER_TRANSPORT_TYPES.U2F,
       ...opts.initState,
     };
 
@@ -517,7 +520,7 @@ export default class PreferencesController {
 
   /**
    * A setter for the `useWebHid` property
-   * @param {string} ledgerTransportType - Either 'ledgerLive' or 'webhid'
+   * @param {string} ledgerTransportType - Either 'ledgerLive', 'webhid' or 'u2f'
    * @returns {Promise<string>} A promise of the update to useWebHid
    */
   setLedgerTransportPreference(ledgerTransportType) {
