@@ -184,6 +184,7 @@
     "react-inspector": "^2.3.0",
     "react-popper": "^2.2.3",
     "react-redux": "^7.2.0",
+    "react-responsive-carousel": "^3.2.21",
     "react-router-dom": "^5.1.2",
     "react-simple-file-input": "^2.0.0",
     "react-tippy": "^1.2.2",

@@ -12,15 +12,25 @@ import {
   FONT_WEIGHT,
   ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
-import { INITIALIZE_SEED_PHRASE_INTRO_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+} from '../../../helpers/constants/routes';
 import FormField from '../../../components/ui/form-field';
 import Box from '../../../components/ui/box';
 import CheckBox from '../../../components/ui/check-box';
-import StepProgressBar, {
-  stages,
+import {
+  ThreeStepProgressBar,
+  threeStepStages,
+  TwoStepProgressBar,
+  twoStepStages,
 } from '../../../components/app/step-progress-bar';
 
-export default function CreatePassword({ onSubmit }) {
+export default function CreatePassword({
+  createNewAccount,
+  importWithRecoveryPhrase,
+  secretRecoveryPhrase,
+}) {
   const t = useI18nContext();
   const [confirmPassword, setConfirmPassword] = useState('');
   const [password, setPassword] = useState('');
@@ -79,20 +89,31 @@ export default function CreatePassword({ onSubmit }) {
     if (!isValid) {
       return;
     }
-    try {
-      if (onSubmit) {
-        await onSubmit(password);
+    // If secretRecoveryPhrase is defined we are in import wallet flow
+    if (secretRecoveryPhrase) {
+      await importWithRecoveryPhrase(password, secretRecoveryPhrase);
+      history.push(ONBOARDING_COMPLETION_ROUTE);
+    } else {
+      // Otherwise we are in create new wallet flow
+      try {
+        if (createNewAccount) {
+          await createNewAccount(password);
+        }
+        submitPasswordEvent();
+        history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+      } catch (error) {
+        setPasswordError(error.message);
       }
-      submitPasswordEvent();
-      history.push(INITIALIZE_SEED_PHRASE_INTRO_ROUTE);
-    } catch (error) {
-      setPasswordError(error.message);
     }
   };
 
   return (
     <div className="create-password__wrapper">
-      <StepProgressBar stage={stages.PASSWORD_CREATE} />
+      {secretRecoveryPhrase ? (
+        <TwoStepProgressBar stage={twoStepStages.PASSWORD_CREATE} />
+      ) : (
+        <ThreeStepProgressBar stage={threeStepStages.PASSWORD_CREATE} />
+      )}
       <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
         {t('createPassword')}
       </Typography>
@@ -174,7 +195,7 @@ export default function CreatePassword({ onSubmit }) {
             disabled={!isValid || !termsChecked}
             onClick={handleCreate}
           >
-            {t('createNewWallet')}
+            {secretRecoveryPhrase ? t('importMyWallet') : t('createNewWallet')}
           </Button>
         </form>
       </Box>
@@ -183,5 +204,7 @@ export default function CreatePassword({ onSubmit }) {
 }
 
 CreatePassword.propTypes = {
-  onSubmit: PropTypes.func,
+  createNewAccount: PropTypes.func,
+  importWithRecoveryPhrase: PropTypes.func,
+  secretRecoveryPhrase: PropTypes.string,
 };

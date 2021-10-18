@@ -143,7 +143,7 @@ export default class RevealSeedPhrase extends PureComponent {
               </a>
             </Box>
             <div className="first-time-flow__header">
-              {t('secretBackupPhrase')}
+              {t('secretRecoveryPhrase')}
             </div>
             <div className="first-time-flow__text-block">
               {t('secretBackupPhraseDescription')}

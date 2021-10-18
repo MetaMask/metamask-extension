@@ -1,0 +1,51 @@
+@import "./react-gallery/carousel.min.css";
+
+.onboarding-welcome {
+  width: 600px;
+
+  .control-dots .dot {
+    background: $ui-2;
+    box-shadow: none;
+
+    &.selected {
+      background: $ui-4;
+    }
+  }
+
+  /* next and previous arrow colors */
+  .carousel.carousel-slider .control-arrow {
+    opacity: 1;
+  }
+
+  .carousel .control-next.control-arrow::before {
+    border-left-color: $ui-3;
+  }
+
+  .carousel .control-prev.control-arrow::before {
+    border-right-color: $ui-3;
+  }
+
+  .carousel.carousel-slider .control-arrow:hover {
+    background: none;
+  }
+
+  &__mascot {
+    width: 250px;
+    height: 250px;
+    margin: 20px auto;
+  }
+
+  &__image {
+    text-align: center;
+    margin: 20px auto;
+  }
+
+  &__buttons {
+    max-width: 50%;
+    margin: 40px auto 0 auto;
+
+    li {
+      margin-bottom: 24px;
+    }
+  }
+}

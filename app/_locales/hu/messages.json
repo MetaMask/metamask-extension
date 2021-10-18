@@ -792,9 +792,6 @@
   "revealSeedWordsDescription": {
     "message": "Ha valamikor böngészőt váltasz, vagy számítógépet cserélsz, a fiókjaid használatához szükséged lesz erre a kulcsszóláncra. Őrizd őket egy biztonságos és titkos helyen."
   },
-  "revealSeedWordsTitle": {
-    "message": "Kulcsszólánc"
-  },
   "revealSeedWordsWarning": {
     "message": "Ezekkel a szavakkal ellophatóak a fiókjai."
   },
@@ -830,9 +827,6 @@
   },
   "searchTokens": {
     "message": "Keresés a tokenek között"
-  },
-  "secretBackupPhrase": {
-    "message": "Titkos biztonsági kifejezés "
   },
   "secretBackupPhraseDescription": {
     "message": "Titkos biztonsági szókapcsolatoddal könnyedén készíthetsz biztonsági mentést és helyreállíthatod fiókodat."
@@ -1119,9 +1113,6 @@
   },
   "visitWebSite": {
     "message": "Látogass el weboldalunkra"
-  },
-  "walletSeed": {
-    "message": "Pénztárca kulcsszólánca"
   },
   "welcome": {
     "message": "Üdvözöljük a MetaMaskban"

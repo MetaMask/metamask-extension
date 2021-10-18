@@ -1,1 +1,6 @@
-export { default, stages } from './step-progress-bar';
+export {
+  ThreeStepProgressBar,
+  TwoStepProgressBar,
+  threeStepStages,
+  twoStepStages,
+} from './step-progress-bar';

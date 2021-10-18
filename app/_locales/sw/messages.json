@@ -777,9 +777,6 @@
   "revealSeedWordsDescription": {
     "message": "Ikiwa utabadilisha kisakuzi au kuhamisha kompyuta, utahitaji kirai hiki kianzio ili kufikia akaunti zako. Vihifadhi mahali fulani ambapo ni salamana pa siri."
   },
-  "revealSeedWordsTitle": {
-    "message": "Kiari Kianzio"
-  },
   "revealSeedWordsWarning": {
     "message": "Maneno haya yanaweza kutumika kuiba akanti zako zote."
   },
@@ -815,9 +812,6 @@
   },
   "searchTokens": {
     "message": "Tafuta Vianzio"
-  },
-  "secretBackupPhrase": {
-    "message": "Kirai cha Siri cha Hifadhi Mbadala"
   },
   "secretBackupPhraseDescription": {
     "message": "Kirai chako cha siri cha hifadhi mbadala kinafanya iwe rahisi kuhifadhi kwa njia mbadala na kurejesha akaunti yako."
@@ -1107,9 +1101,6 @@
   },
   "visitWebSite": {
     "message": "Tembelea Tovuti yetu"
-  },
-  "walletSeed": {
-    "message": "Kianzio cha Waleti"
   },
   "welcome": {
     "message": "Karibu kwenye MetaMask"

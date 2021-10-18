@@ -776,9 +776,6 @@
   "revealSeedWordsDescription": {
     "message": "Jika anda pernah menukar pelayar atau berpindah komputer, anda memerlukan ungkapan benih ini untuk mengakses akaun anda. Simpan ungkapan di tempat yang selamat dan rahsia."
   },
-  "revealSeedWordsTitle": {
-    "message": "Frasa Benih"
-  },
   "revealSeedWordsWarning": {
     "message": "Perkataan ini boleh digunakan untuk mencuri kesemua akaun anda."
   },
@@ -814,9 +811,6 @@
   },
   "searchTokens": {
     "message": "Cari Token"
-  },
-  "secretBackupPhrase": {
-    "message": "Ungkapan Sandaran Rahsia"
   },
   "secretBackupPhraseDescription": {
     "message": "Ungkapan rahsia sandaran anda memudahkan membuat sandaran dan memulihkan akaun anda."
@@ -1103,9 +1097,6 @@
   },
   "visitWebSite": {
     "message": "Kunjungi laman web kami"
-  },
-  "walletSeed": {
-    "message": "Benih Dompet"
   },
   "welcome": {
     "message": "Selamat datang ke MetaMask"

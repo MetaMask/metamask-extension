@@ -1,4 +1,5 @@
 import mockState from '../../test/data/mock-state.json';
+import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
 import * as selectors from './selectors';
 
 describe('Selectors', () => {
@@ -22,12 +23,12 @@ describe('Selectors', () => {
     });
 
     it('returns true if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = 'Ledger Hardware';
+      mockState.metamask.keyrings[0].type = KEYRING_TYPES.LEDGER;
       expect(selectors.isHardwareWallet(mockState)).toBe(true);
     });
 
     it('returns true if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = 'Trezor Hardware';
+      mockState.metamask.keyrings[0].type = KEYRING_TYPES.TREZOR;
       expect(selectors.isHardwareWallet(mockState)).toBe(true);
     });
   });
@@ -39,16 +40,16 @@ describe('Selectors', () => {
     });
 
     it('returns "Ledger Hardware" if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = 'Ledger Hardware';
+      mockState.metamask.keyrings[0].type = KEYRING_TYPES.LEDGER;
       expect(selectors.getHardwareWalletType(mockState)).toBe(
-        'Ledger Hardware',
+        KEYRING_TYPES.LEDGER,
       );
     });
 
     it('returns "Trezor Hardware" if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = 'Trezor Hardware';
+      mockState.metamask.keyrings[0].type = KEYRING_TYPES.TREZOR;
       expect(selectors.getHardwareWalletType(mockState)).toBe(
-        'Trezor Hardware',
+        KEYRING_TYPES.TREZOR,
       );
     });
   });
@@ -86,7 +87,7 @@ describe('Selectors', () => {
           ...mockState.metamask,
           keyrings: [
             {
-              type: 'Ledger Hardware',
+              type: KEYRING_TYPES.LEDGER,
               accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
             },
           ],
@@ -126,7 +127,7 @@ describe('Selectors', () => {
             ...mockState.metamask,
             keyrings: [
               {
-                type: 'Trezor Hardware',
+                type: KEYRING_TYPES.TREZOR,
                 accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
               },
             ],

@@ -178,6 +178,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#11210](https://github.com/MetaMask/metamask-extension/pull/11210): Disable sending ERC-721 assets (NFTs)
 - [#11418](https://github.com/MetaMask/metamask-extension/pull/11418): Use network gas estimate for gas limits of simple sends on custom networks
 
+### Fixed
+- [#11361](https://github.com/MetaMask/metamask-extension/pull/11361): Ensures custom network balance displays correctly when no ticker symbol is provided, and ensure ticker symbol displays correctly after all network switches.
+- [#10965](https://github.com/MetaMask/metamask-extension/pull/10965): Fixed bug that resulted in sends to some contracts being disabled on custom networks.
+
 ## [9.7.1]
 ### Fixed
 - [#11426](https://github.com/MetaMask/metamask-extension/pull/11426): Fixed bug that broke transaction speed up and cancel, when attempting those actions immediately after opening MetaMask

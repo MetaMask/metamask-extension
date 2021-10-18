@@ -112,6 +112,14 @@
       line-height: initial !important;
     }
 
+    &__address {
+      height: 60px !important;
+
+      textarea {
+        padding-top: 10px !important;
+      }
+    }
+
     &__group {
       display: flex;
       flex-flow: column nowrap;
