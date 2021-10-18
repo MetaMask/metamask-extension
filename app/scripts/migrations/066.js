@@ -22,7 +22,7 @@ function transformState(state) {
   const defaultTransportType = window.navigator.hid
     ? LEDGER_TRANSPORT_TYPES.WEBHID
     : LEDGER_TRANSPORT_TYPES.U2F;
-  const useLedgerLive = state?.PreferencesController?.useLedgerLive;
+  const useLedgerLive = Boolean(state?.PreferencesController?.useLedgerLive);
   const newState = {
     ...state,
     PreferencesController: {
