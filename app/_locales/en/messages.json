@@ -327,6 +327,9 @@
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
   },
+  "cancelSwap": {
+    "message": "Cancel swap"
+  },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
   },
@@ -2186,25 +2189,6 @@
   "spendLimitTooLarge": {
     "message": "Spend limit too large"
   },
-  "stFailure": {
-    "message": "Transaction failed"
-  },
-  "stFailureDescription": {
-    "message": "Transaction failures happen and we are here to help. If this issue persists, you can reach our customer support at $1 for further assistance.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "stPending": {
-    "message": "Transaction is pending"
-  },
-  "stPendingDescription": {
-    "message": "Your transaction is being processed."
-  },
-  "stSuccess": {
-    "message": "Success"
-  },
-  "stSuccessDescription": {
-    "message": "Transaction was completed successfully."
-  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -2246,6 +2230,31 @@
   },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
+  },
+  "stxFailure": {
+    "message": "Transaction failed"
+  },
+  "stxFailureDescription": {
+    "message": "Transaction failures happen and we are here to help. If this issue persists, you can reach our customer support at $1 for further assistance.",
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxPending": {
+    "message": "Transaction is pending"
+  },
+  "stxPendingDescription": {
+    "message": "Your transaction is being processed."
+  },
+  "stxSuccess": {
+    "message": "Success"
+  },
+  "stxSuccessDescription": {
+    "message": "Transaction was completed successfully."
+  },
+  "stxUserCancelled": {
+    "message": "Swap canceled"
+  },
+  "stxUserCancelledDescription": {
+    "message": "Your transaction has been canceled and you did not pay any unnecessary gas fees."
   },
   "submit": {
     "message": "Submit"

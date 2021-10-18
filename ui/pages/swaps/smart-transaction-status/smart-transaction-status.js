@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -30,6 +30,7 @@ import SwapFailureIcon from '../awaiting-swap/swap-failure-icon';
 import {
   fetchSmartTransactionsStatus,
   stopPollingForQuotes,
+  cancelSmartTransaction,
 } from '../../../store/actions';
 import { SECOND } from '../../../../shared/constants/time';
 
@@ -38,6 +39,7 @@ import SwapsFooter from '../swaps-footer';
 const SMART_TRANSACTIONS_STATUS_INTERVAL = SECOND * 10; // Poll every 10 seconds.
 
 export default function SmartTransactionStatus() {
+  const [showCancelSwapLink, setShowCancelSwapLink] = useState(true);
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -51,19 +53,28 @@ export default function SmartTransactionStatus() {
   const smartTransactionStatus =
     smartTransactionsStatus?.[latestSmartTransactionUuid] || {}; // TODO: Use a list of STX from the STX controller.
 
-  const stStatusPageLoadedEvent = useNewMetricEvent({
-    event: 'ST Status Page Loaded',
-    sensitiveProperties: {
-      needs_two_confirmations: needsTwoConfirmations,
-      token_from: sourceTokenInfo?.symbol,
-      token_from_amount: fetchParams?.value,
-      token_to: destinationTokenInfo?.symbol,
-      request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
-      slippage: fetchParams?.slippage,
-      custom_slippage: fetchParams?.slippage === 2,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
-    },
+  const sensitiveProperties = {
+    needs_two_confirmations: needsTwoConfirmations,
+    token_from: sourceTokenInfo?.symbol,
+    token_from_amount: fetchParams?.value,
+    token_to: destinationTokenInfo?.symbol,
+    request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
+    slippage: fetchParams?.slippage,
+    custom_slippage: fetchParams?.slippage === 2,
+    is_hardware_wallet: hardwareWalletUsed,
+    hardware_wallet_type: hardwareWalletType,
+    stx_uuid: latestSmartTransactionUuid,
+  };
+
+  const stxStatusPageLoadedEvent = useNewMetricEvent({
+    event: 'STX Status Page Loaded',
+    sensitiveProperties,
+    category: 'swaps',
+  });
+
+  const cancelSmartTransactionEvent = useNewMetricEvent({
+    event: 'Cancel STX',
+    sensitiveProperties,
     category: 'swaps',
   });
 
@@ -73,7 +84,7 @@ export default function SmartTransactionStatus() {
       smartTransactionStatus.cancellationReason === 'not_cancelled');
 
   useEffect(() => {
-    stStatusPageLoadedEvent();
+    stxStatusPageLoadedEvent();
     const intervalId = setInterval(() => {
       if (isSmartTransactionPending && latestSmartTransactionUuid) {
         dispatch(fetchSmartTransactionsStatus([latestSmartTransactionUuid]));
@@ -90,19 +101,26 @@ export default function SmartTransactionStatus() {
     dispatch(stopPollingForQuotes());
   }, [dispatch]);
 
-  let headerText = t('stPending');
-  let description = t('stPendingDescription');
+  let headerText = t('stxPending');
+  let description = t('stxPendingDescription');
   let icon = <PulseLoader />;
   if (smartTransactionStatus.minedTx === 'success') {
-    headerText = t('stSuccess');
-    description = t('stSuccessDescription');
+    headerText = t('stxSuccess');
+    description = t('stxSuccessDescription');
     icon = <SwapSuccessIcon />;
+  } else if (
+    smartTransactionStatus.cancellationReason &&
+    smartTransactionStatus.cancellationReason === 'user_cancelled'
+  ) {
+    headerText = t('stxUserCancelled');
+    description = t('stxUserCancelledDescription');
+    icon = <SwapFailureIcon />;
   } else if (
     smartTransactionStatus.cancellationReason &&
     smartTransactionStatus.cancellationReason !== 'not_cancelled'
   ) {
-    headerText = t('stFailure');
-    description = t('stFailureDescription', [
+    headerText = t('stxFailure');
+    description = t('stxFailureDescription', [
       <a
         className="smart-transaction-status__support-link"
         key="smart-transaction-status-support-link"
@@ -115,6 +133,24 @@ export default function SmartTransactionStatus() {
     ]);
     icon = <SwapFailureIcon />;
   }
+
+  const CancelSwap = () => {
+    return (
+      <Box marginBottom={3}>
+        <a
+          href="#"
+          onClick={(e) => {
+            e?.preventDefault();
+            setShowCancelSwapLink(false); // We want to hide it after a user clicks on it.
+            cancelSmartTransactionEvent();
+            dispatch(cancelSmartTransaction(latestSmartTransactionUuid));
+          }}
+        >
+          {t('cancelSwap')}
+        </a>
+      </Box>
+    );
+  };
 
   return (
     <div className="smart-transaction-status">
@@ -136,6 +172,9 @@ export default function SmartTransactionStatus() {
           {description}
         </Typography>
       </Box>
+      {showCancelSwapLink &&
+        latestSmartTransactionUuid &&
+        isSmartTransactionPending && <CancelSwap />}
       <SwapsFooter
         onSubmit={async () => {
           await dispatch(prepareToLeaveSwaps());
