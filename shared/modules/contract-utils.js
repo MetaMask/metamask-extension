@@ -1,11 +1,15 @@
-export const addressIsContract = async (ethQuery, address) => {
-  let code;
+export const readAddressAsContract = async (ethQuery, address) => {
+  let contractCode;
   try {
-    code = await ethQuery.getCode(address);
+    contractCode = await ethQuery.getCode(address);
   } catch (e) {
-    code = null;
+    contractCode = null;
   }
 
-  const isContractAddress = !(!code || code === '0x' || code === '0x0');
-  return { code, isContractAddress };
+  const isContractAddress = !(
+    !contractCode ||
+    contractCode === '0x' ||
+    contractCode === '0x0'
+  );
+  return { contractCode, isContractAddress };
 };
