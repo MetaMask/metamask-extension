@@ -248,12 +248,13 @@ export const getSmartTransactionsEnabled = (state) => {
   const smartTransactionsFeatureFlagEnabled =
     state.metamask.swapsState?.swapsFeatureFlags?.smart_transactions
       ?.extension_active;
-  const smartTransactionsLive = state.appState.smartTransactionsLiveness;
+  const { smartTransactionsLiveness, smartTransactionsError } = state.appState;
   return Boolean(
     EIP1559NetworkUsed &&
       !hardwareWalletUsed &&
       smartTransactionsFeatureFlagEnabled &&
-      smartTransactionsLive,
+      smartTransactionsLiveness &&
+      !smartTransactionsError,
   );
 };
 

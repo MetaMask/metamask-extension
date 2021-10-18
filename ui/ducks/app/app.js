@@ -48,6 +48,7 @@ export default function reduceApp(state = {}, action) {
       testKey: null,
     },
     gasLoadingAnimationIsShowing: false,
+    smartTransactionsError: null,
     ...state,
   };
 
@@ -111,6 +112,12 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         smartTransactionsLiveness: action.payload,
+      };
+
+    case actionConstants.SET_SMART_TRANSACTIONS_ERROR:
+      return {
+        ...appState,
+        smartTransactionsError: action.payload,
       };
 
     // modal methods:
