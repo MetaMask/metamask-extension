@@ -1,7 +1,7 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
-import SelectHardware from './select-hardware';
 import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
+import SelectHardware from './select-hardware';
 
 export default {
   title: 'Connect Hardware Wallet',
@@ -15,7 +15,7 @@ export const SelectHardwareComponent = () => {
       connectToHardwareWallet={(selectedDevice) =>
         action(`Continue connect to ${selectedDevice}`)()
       }
-      ledgerTransportType={ LEDGER_TRANSPORT_TYPES.LIVE }
+      ledgerTransportType={LEDGER_TRANSPORT_TYPES.LIVE}
     />
   );
 };
@@ -24,7 +24,7 @@ export const BrowserNotSupported = () => {
     <SelectHardware
       browserSupported={false}
       connectToHardwareWallet={() => undefined}
-      ledgerTransportType={ LEDGER_TRANSPORT_TYPES.LIVE }
+      ledgerTransportType={LEDGER_TRANSPORT_TYPES.LIVE}
     />
   );
 };
