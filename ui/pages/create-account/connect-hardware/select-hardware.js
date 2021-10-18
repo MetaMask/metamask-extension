@@ -137,7 +137,7 @@ export default class SelectHardware extends Component {
 
   renderLedgerTutorialSteps() {
     const steps = [];
-    if (this.props.ledgerTransportType !== LEDGER_TRANSPORT_TYPES.LIVE) {
+    if (this.props.ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE) {
       steps.push({
         title: this.context.t('step1LedgerWallet'),
         message: this.context.t('step1LedgerWalletMsg', [
