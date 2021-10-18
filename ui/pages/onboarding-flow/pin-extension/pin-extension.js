@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router';
 
 import { Carousel } from 'react-responsive-carousel';
 import Typography from '../../../components/ui/typography/typography';
@@ -10,10 +11,15 @@ import {
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import OnboardingPinBillboard from './pin-billboard';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useDispatch } from 'react-redux';
+import { setCompletedOnboarding } from '../../../store/actions';
 
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const history = useHistory();
+  const dispatch = useDispatch();
 
   return (
     <div className="onboarding-pin-extension">
@@ -60,7 +66,8 @@ export default function OnboardingPinExtension() {
             if (selectedIndex === 0) {
               setSelectedIndex(1);
             } else {
-              // ToDo: Close onboarding?
+              dispatch(setCompletedOnboarding());
+              history.push(DEFAULT_ROUTE);
             }
           }}
         >
