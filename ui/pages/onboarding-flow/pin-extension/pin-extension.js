@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 
 import { Carousel } from 'react-responsive-carousel';
 import Typography from '../../../components/ui/typography/typography';
@@ -10,8 +10,8 @@ import {
   FONT_WEIGHT,
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
-import OnboardingPinBillboard from './pin-billboard';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import OnboardingPinBillboard from './pin-billboard';
 
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
