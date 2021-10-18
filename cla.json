@@ -831,6 +831,14 @@
       "comment_id": 944630171,
       "created_at": "2021-10-15T20:09:13Z",
       "repoId": 42009758
+    },
+    {
+      "id": 92527393,
+      "name": "VSaric",
+      "pullRequestNo": 12380,
+      "comment_id": 945469419,
+      "created_at": "2021-10-18T08:02:50Z",
+      "repoId": 42009758
     }
   ]
 }
