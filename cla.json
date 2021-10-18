@@ -839,6 +839,14 @@
       "comment_id": 945469419,
       "created_at": "2021-10-18T08:02:50Z",
       "repoId": 42009758
+    },
+    {
+      "id": 92310504,
+      "name": "filipsekulic",
+      "pullRequestNo": 12359,
+      "comment_id": 945557273,
+      "created_at": "2021-10-18T09:02:17Z",
+      "repoId": 42009758
     }
   ]
 }
