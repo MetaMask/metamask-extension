@@ -6,6 +6,94 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.3.0]
+### Uncategorized
+- Prevent warning for rounded buttons ([#12357](https://github.com/MetaMask/metamask-extension/pull/12357))
+- Update bug-report.md ([#12368](https://github.com/MetaMask/metamask-extension/pull/12368))
+- Preventing swaps data re-fetch when navigating back to home screeen ([#12370](https://github.com/MetaMask/metamask-extension/pull/12370))
+- Removing unused TokenRatesController ([#12376](https://github.com/MetaMask/metamask-extension/pull/12376))
+- Fixing invalid prop type for ActionableMessage (ImportToken) ([#12377](https://github.com/MetaMask/metamask-extension/pull/12377))
+- Use consistent naming for welcome route of onboarding ([#12366](https://github.com/MetaMask/metamask-extension/pull/12366))
+- Fix width and padding of the hide token modal in popup view ([#12381](https://github.com/MetaMask/metamask-extension/pull/12381))
+- changed the order of items ([#12384](https://github.com/MetaMask/metamask-extension/pull/12384))
+- Extracting out error and warning code from useGasFeeInputs hook ([#12283](https://github.com/MetaMask/metamask-extension/pull/12283))
+- Migrate completedOnboarding and firstTimeFlowType state into onboardingController ([#12356](https://github.com/MetaMask/metamask-extension/pull/12356))
+- Add missing changelog entries for v9.8.0 ([#11509](https://github.com/MetaMask/metamask-extension/pull/11509))
+- Fix for #11503: when you send a transaction with value  as 0x, you get a Bignumber error ([#11996](https://github.com/MetaMask/metamask-extension/pull/11996))
+- Add send-hex-data-row to Storybook ([#12085](https://github.com/MetaMask/metamask-extension/pull/12085))
+- Add send-asset-row to Storybook ([#12081](https://github.com/MetaMask/metamask-extension/pull/12081))
+- Normalize extension verison to SemVer ([#12254](https://github.com/MetaMask/metamask-extension/pull/12254))
+- Fix inpage provider behavior on unlock ([#12339](https://github.com/MetaMask/metamask-extension/pull/12339))
+- Small clean ups of onboarding flow v2 changes ([#12349](https://github.com/MetaMask/metamask-extension/pull/12349))
+- Fixing address truncation papercuts ([#12330](https://github.com/MetaMask/metamask-extension/pull/12330))
+- Add Import Secret Recovery Phrase View ([#12289](https://github.com/MetaMask/metamask-extension/pull/12289))
+- Adding story for ToggleButton ([#12311](https://github.com/MetaMask/metamask-extension/pull/12311))
+- Use hardware constants everywhere ([#12329](https://github.com/MetaMask/metamask-extension/pull/12329))
+- Fix 12265 - Update onboarding welcome screen ([#12275](https://github.com/MetaMask/metamask-extension/pull/12275))
+- Adds sign typed data type to metrics payload for sign typed data events ([#12291](https://github.com/MetaMask/metamask-extension/pull/12291))
+- Fix toggle button 'off' color setting ([#12331](https://github.com/MetaMask/metamask-extension/pull/12331))
+- Simplify Mocha npm scripts ([#12313](https://github.com/MetaMask/metamask-extension/pull/12313))
+- Update `yazl` to fix Buffer warning ([#12328](https://github.com/MetaMask/metamask-extension/pull/12328))
+- Removing top cancel button when in send draft flow ([#12304](https://github.com/MetaMask/metamask-extension/pull/12304))
+- Sync `master` with `develop` ([#12319](https://github.com/MetaMask/metamask-extension/pull/12319))
+- Onboarding V2 Creation Successful view ([#12248](https://github.com/MetaMask/metamask-extension/pull/12248))
+- add optional chaining in isLegacyTransaction method to prevent blow up of useGasFeeInputs use on view quote page ([#12316](https://github.com/MetaMask/metamask-extension/pull/12316))
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- Update `caniuse-lite` ([#12312](https://github.com/MetaMask/metamask-extension/pull/12312))
+- Remove unused `test/e2e/run-all.sh` script ([#12314](https://github.com/MetaMask/metamask-extension/pull/12314))
+- Onboarding V2 Privacy settings view ([#12253](https://github.com/MetaMask/metamask-extension/pull/12253))
+- Adding UrlIcon component to Storybook ([#12285](https://github.com/MetaMask/metamask-extension/pull/12285))
+- use improved-yarn-audit and exclude 1002401 and 1002581 ([#12310](https://github.com/MetaMask/metamask-extension/pull/12310))
+- removing the icronUrl in tokens fron the state.json for fixtures ([#12309](https://github.com/MetaMask/metamask-extension/pull/12309))
+- Update `immer` from v8 to v9 ([#12303](https://github.com/MetaMask/metamask-extension/pull/12303))
+- Onboarding V2 Secure Your Wallet view ([#12208](https://github.com/MetaMask/metamask-extension/pull/12208))
+- Support for type 0 transaction ([#12252](https://github.com/MetaMask/metamask-extension/pull/12252))
+- Migrate beta version to the main version field ([#12246](https://github.com/MetaMask/metamask-extension/pull/12246))
+- Fix unit test package scripts ([#12278](https://github.com/MetaMask/metamask-extension/pull/12278))
+- Lavamoat build system integration for WebApp ([#12242](https://github.com/MetaMask/metamask-extension/pull/12242))
+- Onboarding V2 App Header ([#12264](https://github.com/MetaMask/metamask-extension/pull/12264))
+- UX Papercuts Epic: Create a consistent representation of the Buttons ([#12096](https://github.com/MetaMask/metamask-extension/pull/12096))
+- Remove autofocus from gas limit input on advance gas popup ([#12279](https://github.com/MetaMask/metamask-extension/pull/12279))
+- Fix contact-list Storybook ([#12262](https://github.com/MetaMask/metamask-extension/pull/12262))
+- Sync `master` with `develop` ([#12267](https://github.com/MetaMask/metamask-extension/pull/12267))
+- Fixing confirmation screen storybook views ([#12271](https://github.com/MetaMask/metamask-extension/pull/12271))
+- Suppress prop types warning in RadioGroupComponent ([#12249](https://github.com/MetaMask/metamask-extension/pull/12249))
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- ci - improve lavamoat validation debug info ([#12259](https://github.com/MetaMask/metamask-extension/pull/12259))
+- lockdown - breakout making globalThis properties non-writable ([#12258](https://github.com/MetaMask/metamask-extension/pull/12258))
+- Fixing confirm-add-suggested-token storybook entry ([#12261](https://github.com/MetaMask/metamask-extension/pull/12261))
+- Establish onboarding-flow wrapper/router base and feature flag env variable ([#12247](https://github.com/MetaMask/metamask-extension/pull/12247))
+- Using URL util to parse hostname for block explorer link ([#12241](https://github.com/MetaMask/metamask-extension/pull/12241))
+- Locale en message fix- "not connected this site" ([#12186](https://github.com/MetaMask/metamask-extension/pull/12186))
+- Fix gas control flicker on send screen when switching between EIP-1559 networks ([#12230](https://github.com/MetaMask/metamask-extension/pull/12230))
+- Turning OFF token detection for test nets ([#12232](https://github.com/MetaMask/metamask-extension/pull/12232))
+- Add send-header to Storybook ([#12084](https://github.com/MetaMask/metamask-extension/pull/12084))
+- Add account-list component to Storybook ([#12228](https://github.com/MetaMask/metamask-extension/pull/12228))
+- Add select-hardware component to Storybook ([#12227](https://github.com/MetaMask/metamask-extension/pull/12227))
+- Add client id to GasFeeController ([#12221](https://github.com/MetaMask/metamask-extension/pull/12221))
+- LavaMoat Node update and various small enhancements ([#12239](https://github.com/MetaMask/metamask-extension/pull/12239))
+- test/e2e/driver/switchToWindowWithTitle - refresh window handles on each retry loop ([#12237](https://github.com/MetaMask/metamask-extension/pull/12237))
+- Fix assets for beta dev build ([#12233](https://github.com/MetaMask/metamask-extension/pull/12233))
+- Update helpers.js ([#12236](https://github.com/MetaMask/metamask-extension/pull/12236))
+- Using parsed seed phrase for restore vault input validation ([#12229](https://github.com/MetaMask/metamask-extension/pull/12229))
+- Replace `isBeta` with `buildType` ([#12231](https://github.com/MetaMask/metamask-extension/pull/12231))
+- Bump @metamask/contract-metadata from 1.29.0 to 1.30.0 ([#12207](https://github.com/MetaMask/metamask-extension/pull/12207))
+- Adding slider component ([#12219](https://github.com/MetaMask/metamask-extension/pull/12219))
+- Prevent fox mesh JSON warning ([#12200](https://github.com/MetaMask/metamask-extension/pull/12200))
+- Ci test config improvement ([#12223](https://github.com/MetaMask/metamask-extension/pull/12223))
+- Fix Buffer warnings during build ([#10495](https://github.com/MetaMask/metamask-extension/pull/10495))
+- Hiding refresh list on non-Mainnet networks ([#12210](https://github.com/MetaMask/metamask-extension/pull/12210))
+- fix issue where conversionRates aren't shown for tokens stored in non-checksum format ([#12206](https://github.com/MetaMask/metamask-extension/pull/12206))
+- adding checksum conversion ([#12209](https://github.com/MetaMask/metamask-extension/pull/12209))
+- fix cancel button styling bug ([#12204](https://github.com/MetaMask/metamask-extension/pull/12204))
+- Add target object word to "View on Etherscan" links ([#12100](https://github.com/MetaMask/metamask-extension/pull/12100))
+- Fixing alignment of settings close button ([#12202](https://github.com/MetaMask/metamask-extension/pull/12202))
+- Fixing accounts scrollbar for chrome ([#12205](https://github.com/MetaMask/metamask-extension/pull/12205))
+- fee-card ([#12166](https://github.com/MetaMask/metamask-extension/pull/12166))
+- Update `caniuse-lite` ([#12203](https://github.com/MetaMask/metamask-extension/pull/12203))
+- edit-gas-display ([#12165](https://github.com/MetaMask/metamask-extension/pull/12165))
+- send-content ([#12167](https://github.com/MetaMask/metamask-extension/pull/12167))
+
 ## [10.2.2]
 ### Changed
 - [#12256](https://github.com/MetaMask/metamask-extension/pull/12256): Updating instruction step when Ledger app has contract data or blind signing setting disabled
@@ -2502,7 +2590,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.2.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.3.0...HEAD
+[10.3.0]: https://github.com/MetaMask/metamask-extension/compare/v10.2.2...v10.3.0
 [10.2.2]: https://github.com/MetaMask/metamask-extension/compare/v10.2.1...v10.2.2
 [10.2.1]: https://github.com/MetaMask/metamask-extension/compare/v10.2.0...v10.2.1
 [10.2.0]: https://github.com/MetaMask/metamask-extension/compare/v10.1.1...v10.2.0
