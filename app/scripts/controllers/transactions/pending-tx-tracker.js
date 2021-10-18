@@ -6,7 +6,7 @@ import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 /**
 
   Event emitter utility class for tracking the transactions as they<br>
-  go from a pending state to a confirmed (mined in a block) state<br>
+  go from a pending state to a accepted (mined in a block) state<br>
 <br>
   As well as continues broadcast while in the pending state
 <br>
@@ -158,7 +158,7 @@ export default class PendingTransactionTracker extends EventEmitter {
    * Query the network to see if the given {@code txMeta} has been included in a block
    * @param {Object} txMeta - the transaction metadata
    * @returns {Promise<void>}
-   * @emits tx:confirmed
+   * @emits tx:accepted
    * @emits tx:dropped
    * @emits tx:failed
    * @emits tx:warning
@@ -197,7 +197,7 @@ export default class PendingTransactionTracker extends EventEmitter {
           transactionReceipt?.blockHash,
           false,
         );
-        this.emit('tx:confirmed', txId, transactionReceipt, baseFeePerGas);
+        this.emit('tx:accepted', txId, transactionReceipt, baseFeePerGas);
         return;
       }
     } catch (err) {

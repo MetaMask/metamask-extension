@@ -122,6 +122,7 @@ export const TRANSACTION_STATUSES = {
   SUBMITTED: 'submitted',
   FAILED: 'failed',
   DROPPED: 'dropped',
+  ACCEPTED: 'accepted',
   CONFIRMED: 'confirmed',
 };
 

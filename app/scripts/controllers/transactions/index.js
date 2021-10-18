@@ -51,6 +51,7 @@ const MAX_MEMSTORE_TX_LIST_SIZE = 100; // Number of transactions (by unique nonc
 export const TRANSACTION_EVENTS = {
   ADDED: 'Transaction Added',
   APPROVED: 'Transaction Approved',
+  ACCEPTED: 'Transaction Accepted',
   FINALIZED: 'Transaction Finalized',
   REJECTED: 'Transaction Rejected',
   SUBMITTED: 'Transaction Submitted',
@@ -74,7 +75,7 @@ export const TRANSACTION_EVENTS = {
       storing the transaction
     <br>- pendingTxTracker
       watching blocks for transactions to be include
-      and emitting confirmed events
+      and emitting accepted events
     <br>- txGasUtil
       gas calculations and safety buffering
     <br>- nonceTracker
@@ -953,13 +954,13 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-   * Sets the status of the transaction to confirmed and sets the status of nonce duplicates as
+   * Sets the status of the transaction to accepted and sets the status of nonce duplicates as
    * dropped if the txParams have data it will fetch the txReceipt
    * @param {number} txId - The tx's ID
    * @returns {Promise<void>}
    */
-  async confirmTransaction(txId, txReceipt, baseFeePerGas) {
-    // get the txReceipt before marking the transaction confirmed
+  async acceptTransaction(txId, txReceipt, baseFeePerGas) {
+    // get the txReceipt before marking the transaction accepted
     // to ensure the receipt is gotten before the ui revives the tx
     const txMeta = this.txStateManager.getTransaction(txId);
 
@@ -984,14 +985,14 @@ export default class TransactionController extends EventEmitter {
         txMeta.baseFeePerGas = baseFeePerGas;
       }
 
-      this.txStateManager.setTxStatusConfirmed(txId);
+      this.txStateManager.setTxStatusAccepted(txId);
       this._markNonceDuplicatesDropped(txId);
 
       const { submittedTime } = txMeta;
       const metricsParams = { gas_used: gasUsed };
 
       if (submittedTime) {
-        metricsParams.completion_time = this._getTransactionCompletionTime(
+        metricsParams.acceptance_time = this._getTimeFromTransactionSubmission(
           submittedTime,
         );
       }
@@ -1003,15 +1004,16 @@ export default class TransactionController extends EventEmitter {
 
       this._trackTransactionMetricsEvent(
         txMeta,
-        TRANSACTION_EVENTS.FINALIZED,
+        TRANSACTION_EVENTS.ACCEPTED,
         metricsParams,
       );
 
       this.txStateManager.updateTransaction(
         txMeta,
-        'transactions#confirmTransaction - add txReceipt',
+        'transactions#acceptTransaction - add txReceipt',
       );
 
+      // QQ: how do we handle below logic for swaps if transaction is rolledback to pending
       if (txMeta.type === TRANSACTION_TYPES.SWAP) {
         const postTxBalance = await this.query.getBalance(txMeta.txParams.from);
         const latestTxMeta = this.txStateManager.getTransaction(txId);
@@ -1024,15 +1026,122 @@ export default class TransactionController extends EventEmitter {
 
         this.txStateManager.updateTransaction(
           latestTxMeta,
-          'transactions#confirmTransaction - add postTxBalance',
+          'transactions#acceptTransaction - add postTxBalance',
         );
 
         this._trackSwapsMetrics(latestTxMeta, approvalTxMeta);
       }
+      this.pollLatestBlocks(txId, txMeta);
     } catch (err) {
       log.error(err);
     }
   }
+
+  /**
+   * Sets the status of the transaction to confirmed
+   * @param {number} txId - The tx's ID
+   * @returns {Promise<void>}
+   */
+  async confirmTransaction(txId) {
+    // get the txReceipt before marking the transaction accepted
+    // to ensure the receipt is gotten before the ui revives the tx
+    const txMeta = this.txStateManager.getTransaction(txId);
+
+    if (!txMeta) {
+      return;
+    }
+
+    try {
+      this.txStateManager.setTxStatusConfirmed(txId);
+
+      const metricsParams = {};
+      const { submittedTime } = txMeta;
+      if (submittedTime) {
+        metricsParams.completion_time = this._getTimeFromTransactionSubmission(
+          submittedTime,
+        );
+      }
+
+      this._trackTransactionMetricsEvent(
+        txMeta,
+        TRANSACTION_EVENTS.FINALIZED,
+        metricsParams,
+      );
+
+      this.txStateManager.updateTransaction(
+        txMeta,
+        'transactions#confirmedTransaction',
+      );
+    } catch (err) {
+      log.error(err);
+    }
+  }
+
+  /**
+   * Resets the status of the transaction to submitted
+   * @param {number} txId - The tx's ID
+   * @returns {Promise<void>}
+   */
+  async resetTransactionToSubmitted(txId) {
+    // remove txReceipt from txMeta
+    const txMeta = this.txStateManager.getTransaction(txId);
+
+    if (!txMeta) {
+      return;
+    }
+
+    try {
+      this.txStateManager.setTxStatusReSubmitted(txId);
+
+      const metricsParams = {
+        resubmit_time: Date.now(),
+        status: 'resubmitted',
+      };
+      delete txMeta.txReceipt;
+
+      this._trackTransactionMetricsEvent(
+        txMeta,
+        TRANSACTION_EVENTS.SUBMITTED,
+        metricsParams,
+      );
+
+      this.txStateManager.updateTransaction(
+        txMeta,
+        'transactions#resubmitTransaction - delete txReceipt',
+      );
+    } catch (err) {
+      log.error(err);
+    }
+  }
+
+  pollLatestBlocks(txId, txMeta) {
+    const { confirmTransaction, query, resetTransactionToSubmitted } = this;
+    const cnfTransaction = confirmTransaction.bind(this);
+    const resetTransaction = resetTransactionToSubmitted.bind(this);
+    const intervalId = setInterval(async function () {
+      const block = await query.getBlockByNumber('latest', false);
+      const blockNumber = new BigNumber(block.number).toNumber();
+      const txBlockNumber = new BigNumber(
+        txMeta?.txReceipt?.blockNumber,
+      ).toNumber();
+      const blockDepth = blockNumber - txBlockNumber;
+      if (blockDepth >= 12) {
+        cnfTransaction(txId);
+        clearInterval(intervalId);
+      } else {
+        let currentBlock = block;
+        for (let i = 0; i <= blockDepth; i++) {
+          if (currentBlock.uncles?.includes(txMeta?.txReceipt?.blockHash)) {
+            resetTransaction(txId);
+            clearInterval(intervalId);
+            break;
+          }
+          currentBlock = await query.getBlockByHash(block.parentHash, false);
+        }
+      }
+    }, 1500);
+  }
+  // values 12 and 1500 used above are best guess, they may need to be calibrated to different networks.
 
   /**
     Convenience method for the ui thats sets the transaction to rejected
@@ -1093,6 +1202,7 @@ export default class TransactionController extends EventEmitter {
     await this.blockTracker.getLatestBlock();
     // get status update for all pending transactions (for the current network)
     await this.pendingTxTracker.updatePendingTxs();
+    // todo: add method here to poll blocks for accepted transactions
   }
 
   /**
@@ -1163,9 +1273,9 @@ export default class TransactionController extends EventEmitter {
       this._failTransaction(txId, error);
     });
     this.pendingTxTracker.on(
-      'tx:confirmed',
+      'tx:accepted',
       (txId, transactionReceipt, baseFeePerGas) =>
-        this.confirmTransaction(txId, transactionReceipt, baseFeePerGas),
+        this.acceptTransaction(txId, transactionReceipt, baseFeePerGas),
     );
     this.pendingTxTracker.on('tx:dropped', (txId) => {
       this._dropTransaction(txId);
@@ -1260,7 +1370,7 @@ export default class TransactionController extends EventEmitter {
     @param {number} txId - the txId of the transaction that has been confirmed in a block
   */
   _markNonceDuplicatesDropped(txId) {
-    // get the confirmed transactions nonce and from address
+    // get the accepted transactions nonce and from address
     const txMeta = this.txStateManager.getTransaction(txId);
     const { nonce, from } = txMeta.txParams;
     const sameNonceTxs = this.txStateManager.getTransactions({
@@ -1277,7 +1387,7 @@ export default class TransactionController extends EventEmitter {
       otherTxMeta.replacedBy = txMeta.hash;
       this.txStateManager.updateTransaction(
         txMeta,
-        'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce',
+        'transactions/pending-tx-tracker#event: tx:accepted reference to accepted txHash with same nonce',
       );
       this._dropTransaction(otherTxMeta.id);
     });
@@ -1433,7 +1543,7 @@ export default class TransactionController extends EventEmitter {
     });
   }
 
-  _getTransactionCompletionTime(submittedTime) {
+  _getTimeFromTransactionSubmission(submittedTime) {
     return Math.round((Date.now() - submittedTime) / 1000).toString();
   }
 

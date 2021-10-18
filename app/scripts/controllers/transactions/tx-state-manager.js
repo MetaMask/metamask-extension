@@ -372,6 +372,8 @@ export default class TransactionStateManager extends EventEmitter {
       ? keyBy(initialList, 'id')
       : this.store.getState().transactions;
 
+    // console.log('transactionsToFilter = ', transactionsToFilter);
+
     // Combine sortBy and pickBy to transform our state object into an array of
     // matching transactions that are sorted by time.
     const filteredTransactions = sortBy(
@@ -489,6 +491,24 @@ export default class TransactionStateManager extends EventEmitter {
     txMeta.submittedTime = new Date().getTime();
     this.updateTransaction(txMeta, 'txStateManager - add submitted time stamp');
     this._setTransactionStatus(txId, TRANSACTION_STATUSES.SUBMITTED);
+  }
+
+  /**
+   * Update status of the TransactionMeta with provided id to 'submitted'
+   *
+   * @param {number} txId - the target TransactionMeta's Id
+   */
+  setTxStatusReSubmitted(txId) {
+    this._setTransactionStatus(txId, TRANSACTION_STATUSES.SUBMITTED);
+  }
+
+  /**
+   * Update status of the TransactionMeta with provided id to 'accepted'
+   *
+   * @param {number} txId - the target TransactionMeta's Id
+   */
+  setTxStatusAccepted(txId) {
+    this._setTransactionStatus(txId, TRANSACTION_STATUSES.ACCEPTED);
   }
 
   /**

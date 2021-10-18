@@ -218,6 +218,7 @@ export default class ExtensionPlatform {
     });
   }
 
+  // QQ: is this alert needed on transaction acceptance also ?
   _showConfirmedTransaction(txMeta, rpcPrefs) {
     this._subscribeToNotificationClicked();
 
