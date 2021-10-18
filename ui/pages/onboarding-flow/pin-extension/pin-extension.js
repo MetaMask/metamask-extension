@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 
+import { Carousel } from 'react-responsive-carousel';
 import Typography from '../../../components/ui/typography/typography';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
-import OnboardingPinBillboard from './pin-billboard';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
-import { Carousel } from 'react-responsive-carousel';
+import OnboardingPinBillboard from './pin-billboard';
 
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
@@ -54,14 +54,16 @@ export default function OnboardingPinExtension() {
         </div>
       </Carousel>
       <div className="onboarding-pin-extension__buttons">
-        <Button type="primary" onClick={() => {
-          if(selectedIndex === 0) {
-            setSelectedIndex(1)
-          }
-          else {
-            // ToDo: Close onboarding?
-          }
-        }}>
+        <Button
+          type="primary"
+          onClick={() => {
+            if (selectedIndex === 0) {
+              setSelectedIndex(1);
+            } else {
+              // ToDo: Close onboarding?
+            }
+          }}
+        >
           {selectedIndex === 0 ? t('next') : t('done')}
         </Button>
       </div>

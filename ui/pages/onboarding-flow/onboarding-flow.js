@@ -160,7 +160,8 @@ export default function OnboardingFlow() {
           />
           <Route
             path={ONBOARDING_PIN_EXTENSION_ROUTE}
-            component={OnboardingPinExtension} />
+            component={OnboardingPinExtension}
+          />
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
       </div>
