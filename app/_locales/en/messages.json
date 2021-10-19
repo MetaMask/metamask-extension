@@ -1262,20 +1262,11 @@
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "'The ledger device was not connected. If you wish to connect your Ledger, please click 'Continue' again and approve HID connection"
   },
-  "webHIDNotConnectedConfirmWarning": {
-    "message": "Your ledger device is not connected. Please connect via webhid before proceeding."
-  },
-  "webHIDWasNotConnected": {
-    "message": "Your ledger device was not connected. Your transaction will not succeed. You can reload the page to try again."
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID."
   },
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID"
-  },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Use Ledger Live"
   },
   "webhid": {
     "message": "WebHID"
@@ -1285,9 +1276,6 @@
   },
   "u2f": {
     "message": "U2F"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "The new Ledger Live bridge allows you to more easily use your Ledger.  Only available in Chrome."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
