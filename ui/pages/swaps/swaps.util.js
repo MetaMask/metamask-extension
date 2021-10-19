@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import abi from 'human-standard-token-abi';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  // METASWAP_CHAINID_API_HOST_MAP,
+  METASWAP_CHAINID_API_HOST_MAP,
   ALLOWED_CONTRACT_ADDRESSES,
   SWAPS_WRAPPED_TOKENS_ADDRESSES,
   ETHEREUM,
@@ -82,15 +82,11 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
 export const getBaseApi = function (
   type,
   chainId = MAINNET_CHAIN_ID,
-  // useNewSwapsApi = false,
+  useNewSwapsApi = false,
 ) {
-  // const baseUrl = useNewSwapsApi
-  //   ? getBaseUrlForNewSwapsApi(type, chainId)
-  //   : METASWAP_CHAINID_API_HOST_MAP[chainId];
-  const baseUrl = getBaseUrlForNewSwapsApi(
-    type,
-    chainId === '0x539' ? '1' : chainId,
-  );
+  const baseUrl = useNewSwapsApi
+    ? getBaseUrlForNewSwapsApi(type, chainId)
+    : METASWAP_CHAINID_API_HOST_MAP[chainId];
   const chainIdDecimal = chainId && parseInt(chainId, 16);
   if (!baseUrl) {
     throw new Error(`Swaps API calls are disabled for chainId: ${chainId}`);
