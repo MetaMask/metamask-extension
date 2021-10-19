@@ -6,10 +6,6 @@ export const readAddressAsContract = async (ethQuery, address) => {
     contractCode = null;
   }
 
-  const isContractAddress = !(
-    !contractCode ||
-    contractCode === '0x' ||
-    contractCode === '0x0'
-  );
+  const isContractAddress = contractCode && contractCode !== '0x' && contractCode !== '0x0';
   return { contractCode, isContractAddress };
 };
