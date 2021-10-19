@@ -421,10 +421,10 @@ export function getPreferences({ metamask }) {
 }
 
 export function getShouldShowFiat(state) {
-  const isMainNet = getIsMainnet(state);
+  const isTestNet = getIsTestnet(state);
   const conversionRate = getConversionRate(state);
   const { showFiatInTestnets } = getPreferences(state);
-  return Boolean((isMainNet || showFiatInTestnets) && conversionRate);
+  return Boolean((!isTestNet || showFiatInTestnets) && conversionRate);
 }
 
 export function getShouldHideZeroBalanceTokens(state) {
