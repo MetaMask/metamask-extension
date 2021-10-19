@@ -133,20 +133,21 @@ export default function EditGasPopover({
       closePopover();
     }
 
-    const newGasSettings = supportsEIP1559
-      ? {
-          gas: decimalToHex(gasLimit),
-          gasLimit: decimalToHex(gasLimit),
-          maxFeePerGas: decGWEIToHexWEI(maxFeePerGas ?? gasPrice),
-          maxPriorityFeePerGas: decGWEIToHexWEI(
-            maxPriorityFeePerGas ?? maxFeePerGas ?? gasPrice,
-          ),
-        }
-      : {
-          gas: decimalToHex(gasLimit),
-          gasLimit: decimalToHex(gasLimit),
-          gasPrice: decGWEIToHexWEI(gasPrice),
-        };
+    const newGasSettings = {
+      gas: decimalToHex(gasLimit),
+      gasLimit: decimalToHex(gasLimit),
+      estimateSuggested: defaultEstimateToUse,
+      estimateUsed: estimateToUse,
+    };
+
+    if (supportsEIP1559) {
+      newGasSettings.maxFeePerGas = decGWEIToHexWEI(maxFeePerGas ?? gasPrice);
+      newGasSettings.maxPriorityFeePerGas = decGWEIToHexWEI(
+        maxPriorityFeePerGas ?? maxFeePerGas ?? gasPrice,
+      );
+    } else {
+      newGasSettings.gasPrice = decGWEIToHexWEI(gasPrice);
+    }
 
     const cleanTransactionParams = { ...updatedTransaction.txParams };
 
@@ -205,6 +206,7 @@ export default function EditGasPopover({
     supportsEIP1559,
     estimateToUse,
     estimatedBaseFee,
+    defaultEstimateToUse,
   ]);
 
   let title = t('editGasTitle');
