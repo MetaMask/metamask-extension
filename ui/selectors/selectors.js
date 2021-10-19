@@ -89,6 +89,10 @@ export function getCurrentKeyring(state) {
   return keyring;
 }
 
+export function getParticipateInMetaMetrics(state) {
+  return Boolean(state.metamask.participateInMetaMetrics);
+}
+
 export function isEIP1559Account(state) {
   // Trezor does not support 1559 at this time
   const currentKeyring = getCurrentKeyring(state);
