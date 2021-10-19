@@ -7,7 +7,6 @@
   flex: 0 0 auto;
 
   &--default {
-    border-bottom: 1px solid $geyser;
     height: 42px;
 
     .sender-to-recipient {
@@ -28,6 +27,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        border: 1px solid #d8d8d8;
 
         &--sender {
           padding-right: 30px;
@@ -109,6 +109,7 @@
         cursor: pointer;
         min-width: 0;
         color: $dusty-gray;
+        border: 1px solid #d8d8d8;
       }
 
       &__tooltip-wrapper {
@@ -164,6 +165,7 @@
         cursor: pointer;
         min-width: 0;
         color: $dusty-gray;
+        border: 1px solid #d8d8d8;
       }
 
       &__tooltip-wrapper {
