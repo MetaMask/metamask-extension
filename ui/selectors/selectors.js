@@ -642,3 +642,7 @@ export function getUseTokenDetection(state) {
 export function getTokenList(state) {
   return state.metamask.tokenList;
 }
+
+export function getLedgerTransportType(state) {
+  return state.metamask.ledgerTransportType;
+}

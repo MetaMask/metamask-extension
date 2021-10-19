@@ -1,12 +1,21 @@
 import { connect } from 'react-redux';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
-import { accountsWithSendEtherInfoSelector } from '../../../selectors';
+import {
+  accountsWithSendEtherInfoSelector,
+  getHardwareWalletType,
+} from '../../../selectors';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { KEYRING_TYPES } from '../../../../shared/constants/hardware-wallets';
 import SignatureRequest from './signature-request.component';
 
 function mapStateToProps(state) {
+  const hardwareWalletType = getHardwareWalletType(state);
+
+  const isLedgerWallet = hardwareWalletType === KEYRING_TYPES.LEDGER;
+
   return {
+    isLedgerWallet,
     // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
   };
@@ -19,7 +28,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
-  const { allAccounts } = stateProps;
+  const { allAccounts, isLedgerWallet } = stateProps;
   const {
     signPersonalMessage,
     signTypedMessage,
@@ -58,6 +67,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     txData,
     cancel,
     sign,
+    isLedgerWallet,
   };
 }
 

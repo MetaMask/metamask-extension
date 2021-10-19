@@ -399,7 +399,7 @@ export function forgetDevice(deviceName) {
   };
 }
 
-export function connectHardware(deviceName, page, hdPath) {
+export function connectHardware(deviceName, page, hdPath, t) {
   log.debug(`background.connectHardware`, deviceName, page, hdPath);
   return async (dispatch, getState) => {
     dispatch(
@@ -416,16 +416,21 @@ export function connectHardware(deviceName, page, hdPath) {
         deviceName === 'ledger' &&
         ledgerTransportType !== LEDGER_TRANSPORT_TYPES.LIVE
       ) {
-        try {
-          await window.navigator.hid.requestDevice({
-            filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
-          });
-          await promisifiedBackground.setLedgerTransportPreference(
-            LEDGER_TRANSPORT_TYPES.WEBHID,
-          );
-        } catch (e) {
-          log.error(e);
+        const connectedDevices = await window.navigator.hid.requestDevice({
+          filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
+        });
+
+        const userApprovedWebHidConnection = connectedDevices.some(
+          (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+        );
+
+        if (!userApprovedWebHidConnection) {
+          throw new Error(t('ledgerWebHIDNotConnectedErrorMessage'));
         }
+
+        await promisifiedBackground.setLedgerTransportPreference(
+          LEDGER_TRANSPORT_TYPES.WEBHID,
+        );
       }
 
       accounts = await promisifiedBackground.connectHardware(

@@ -6,14 +6,35 @@ import ToggleButton from '../../../components/ui/toggle-button';
 import TextField from '../../../components/ui/text-field';
 import Button from '../../../components/ui/button';
 import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
+import Dropdown from '../../../components/ui/dropdown';
 
-import { getPlatform } from '../../../../app/scripts/lib/util';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
+import {
+  LEDGER_TRANSPORT_TYPES,
+  LEDGER_USB_VENDOR_ID,
+  LEDGER_TRANSPORT_LOCALE_KEYS,
+} from '../../../../shared/constants/hardware-wallets';
 
-const defaultTransportType = window.navigator.hid
-  ? LEDGER_TRANSPORT_TYPES.WEBHID
-  : LEDGER_TRANSPORT_TYPES.U2F;
+const transportTypeOptions = [
+  {
+    localeKey: LEDGER_TRANSPORT_LOCALE_KEYS.LIVE,
+    value: LEDGER_TRANSPORT_TYPES.LIVE,
+  },
+  {
+    localeKey: LEDGER_TRANSPORT_LOCALE_KEYS.U2F,
+    value: LEDGER_TRANSPORT_TYPES.U2F,
+  },
+];
+
+if (window.navigator.hid) {
+  transportTypeOptions.push({
+    localeKey: LEDGER_TRANSPORT_LOCALE_KEYS.WEBHID,
+    value: LEDGER_TRANSPORT_TYPES.WEBHID,
+  });
+}
+
+const recommendedLedgerOption = window.navigator.hid
+  ? LEDGER_TRANSPORT_LOCALE_KEYS.WEBHID
+  : LEDGER_TRANSPORT_LOCALE_KEYS.U2F;
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -398,28 +419,52 @@ export default class AdvancedTab extends PureComponent {
 
   renderLedgerLiveControl() {
     const { t } = this.context;
-    const { ledgerTransportType, setLedgerLivePreference } = this.props;
+    const {
+      ledgerTransportType,
+      setLedgerLivePreference,
+      displayWarning,
+    } = this.props;
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{t('ledgerLiveAdvancedSetting')}</span>
+          <span>{t('preferredLedgerConnectionType')}</span>
           <div className="settings-page__content-description">
-            {t('ledgerLiveAdvancedSettingDescription')}
+            {t('ledgerConnectionPreferenceDescription', [
+              recommendedLedgerOption,
+              <Button
+                key="ledger-connection-settings-learn-more"
+                type="link"
+                href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="info-tab__link-text"
+              >
+                {t('learnMore')}
+              </Button>,
+            ])}
           </div>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE}
-              onToggle={(value) =>
-                setLedgerLivePreference(
-                  value ? defaultTransportType : LEDGER_TRANSPORT_TYPES.LIVE,
-                )
-              }
-              offLabel={t('off')}
-              onLabel={t('on')}
-              disabled={getPlatform() === PLATFORM_FIREFOX}
+            <Dropdown
+              id="select-ledger-transport-type"
+              options={transportTypeOptions}
+              selectedOption={ledgerTransportType}
+              onChange={async (transportType) => {
+                if (transportType === LEDGER_TRANSPORT_TYPES.WEBHID) {
+                  try {
+                    await window.navigator.hid.requestDevice({
+                      filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
+                    });
+                    setLedgerLivePreference(transportType);
+                  } catch (e) {
+                    displayWarning(e.message);
+                  }
+                  return;
+                }
+                setLedgerLivePreference(transportType);
+              }}
             />
           </div>
         </div>

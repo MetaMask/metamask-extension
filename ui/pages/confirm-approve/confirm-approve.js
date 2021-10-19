@@ -24,7 +24,10 @@ import {
   getUseNonceField,
   getCustomNonceValue,
   getNextSuggestedNonce,
+  getLedgerTransportType,
+  getHardwareWalletType,
 } from '../../selectors';
+import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
 
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
 
@@ -51,6 +54,10 @@ export default function ConfirmApprove() {
   const useNonceField = useSelector(getUseNonceField);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
+  const ledgerTransportType = useSelector(getLedgerTransportType);
+  const hardwareWalletType = useSelector(getHardwareWalletType);
+
+  const isLedgerWallet = hardwareWalletType === KEYRING_TYPES.LEDGER;
 
   const transaction =
     currentNetworkTxList.find(
@@ -207,6 +214,9 @@ export default function ConfirmApprove() {
               )
             }
             warning={submitWarning}
+            txData={transaction}
+            ledgerTransportType={ledgerTransportType}
+            isLedgerWallet={isLedgerWallet}
           />
           {showCustomizeGasPopover && (
             <EditGasPopover

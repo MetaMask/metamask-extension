@@ -17,4 +17,19 @@ export const LEDGER_TRANSPORT_TYPES = {
   U2F: 'u2f',
 };
 
+/**
+ * Maps ledger transport options to message keys in our locale file
+ */
+export const LEDGER_TRANSPORT_LOCALE_KEYS = {
+  LIVE: 'ledgerLive',
+  WEBHID: 'webhid',
+  U2F: 'u2f',
+};
+
 export const LEDGER_USB_VENDOR_ID = '0x2c97';
+
+export const WEBHID_CONNECTED_STATUSES = {
+  CONNECTED: 'connected',
+  NOT_CONNECTED: 'notConnected',
+  UNKNOWN: 'unknown',
+};

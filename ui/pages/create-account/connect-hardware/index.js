@@ -26,6 +26,10 @@ const HD_PATHS = [
 ];
 
 class ConnectHardwareForm extends Component {
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   state = {
     error: null,
     selectedAccounts: [],
@@ -106,7 +110,7 @@ class ConnectHardwareForm extends Component {
 
   getPage = (device, page, hdPath) => {
     this.props
-      .connectHardware(device, page, hdPath)
+      .connectHardware(device, page, hdPath, this.context.t)
       .then((accounts) => {
         if (accounts.length) {
           // If we just loaded the accounts for the first time
@@ -331,8 +335,8 @@ const mapDispatchToProps = (dispatch) => {
     setHardwareWalletDefaultHdPath: ({ device, path }) => {
       return dispatch(actions.setHardwareWalletDefaultHdPath({ device, path }));
     },
-    connectHardware: (deviceName, page, hdPath) => {
-      return dispatch(actions.connectHardware(deviceName, page, hdPath));
+    connectHardware: (deviceName, page, hdPath, t) => {
+      return dispatch(actions.connectHardware(deviceName, page, hdPath, t));
     },
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(actions.checkHardwareStatus(deviceName, hdPath));
