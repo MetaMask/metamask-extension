@@ -39,6 +39,7 @@ import {
   getSmartTransactionsOptInStatus,
   getUnsignedTransactionsAndEstimates,
   getSmartTransactionsEnabled,
+  getSwapsRefreshStates,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -104,10 +105,7 @@ import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
-import { SECOND } from '../../../../shared/constants/time';
 import ViewQuotePriceDifference from './view-quote-price-difference';
-
-const FETCH_SMART_TRANSACTIONS_INTERVAL = SECOND * 10; // TODO: Load this value from backend.
 
 export default function ViewQuote() {
   const history = useHistory();
@@ -176,6 +174,7 @@ export default function ViewQuote() {
   const unsignedTransactionsAndEstimates = useSelector(
     getUnsignedTransactionsAndEstimates,
   );
+  const swapsRefreshRates = useSelector(getSwapsRefreshStates);
   const unsignedTransaction = usedQuote.trade;
 
   useEffect(() => {
@@ -191,7 +190,7 @@ export default function ViewQuote() {
       };
       intervalId = setInterval(() => {
         dispatch(fetchUnsignedTransactionsAndEstimates(unsignedTx));
-      }, FETCH_SMART_TRANSACTIONS_INTERVAL);
+      }, swapsRefreshRates.stxGetTransactions);
       dispatch(fetchUnsignedTransactionsAndEstimates(unsignedTx));
     }
     return () => clearInterval(intervalId);
@@ -205,6 +204,7 @@ export default function ViewQuote() {
     unsignedTransaction.gas,
     unsignedTransaction.to,
     chainId,
+    swapsRefreshRates.stxGetTransactions,
   ]);
 
   let gasFeeInputs;

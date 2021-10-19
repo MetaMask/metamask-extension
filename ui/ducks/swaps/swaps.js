@@ -349,6 +349,21 @@ export const getLatestSmartTransactionUuid = (state) => {
   return state.appState.latestSmartTransactionUuid;
 };
 
+export const getSwapsRefreshStates = (state) => {
+  const {
+    swapsQuoteRefreshTime,
+    swapsQuotePrefetchingRefreshTime,
+    swapsStxGetTransactions,
+    swapsStxBatchStatus,
+  } = state.metamask.swapsState;
+  return {
+    quoteRefreshTime: swapsQuoteRefreshTime,
+    quotePrefetchingRefreshTime: swapsQuotePrefetchingRefreshTime,
+    stxGetTransactions: swapsStxGetTransactions,
+    stxBatchStatus: swapsStxBatchStatus,
+  };
+};
+
 // Actions / action-creators
 
 const {

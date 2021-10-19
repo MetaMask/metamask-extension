@@ -82,6 +82,8 @@ const initialState = {
     isFetchingQuotes: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
+    swapsStxBatchStatus: SECOND * 10,
+    swapsStxGetTransactions: SECOND * 10,
     swapsFeatureFlags: {},
     smartTransactionsStatus: {},
   },
@@ -144,6 +146,8 @@ export default class SwapsController {
     return {
       quotes: refreshRates.quotes * 1000,
       quotesPrefetching: refreshRates.quotesPrefetching * 1000,
+      stxGetTransactions: refreshRates.stxGetTransactions * 1000,
+      stxBatchStatus: refreshRates.stxBatchStatus * 1000,
     };
   }
 
@@ -168,6 +172,10 @@ export default class SwapsController {
           swapsRefreshRates?.quotes || FALLBACK_QUOTE_REFRESH_TIME,
         swapsQuotePrefetchingRefreshTime:
           swapsRefreshRates?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME,
+        swapsStxGetTransactions:
+          swapsRefreshRates?.stxGetTransactions || FALLBACK_QUOTE_REFRESH_TIME,
+        swapsStxBatchStatus:
+          swapsRefreshRates?.stxBatchStatus || FALLBACK_QUOTE_REFRESH_TIME,
       },
     });
   }

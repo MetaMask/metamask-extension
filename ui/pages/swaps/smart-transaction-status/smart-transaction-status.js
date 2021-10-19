@@ -9,6 +9,7 @@ import {
   prepareToLeaveSwaps,
   getSmartTransactionsStatus,
   getLatestSmartTransactionUuid,
+  getSwapsRefreshStates,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
@@ -32,11 +33,8 @@ import {
   stopPollingForQuotes,
   cancelSmartTransaction,
 } from '../../../store/actions';
-import { SECOND } from '../../../../shared/constants/time';
 
 import SwapsFooter from '../swaps-footer';
-
-const SMART_TRANSACTIONS_STATUS_INTERVAL = SECOND * 10; // Poll every 10 seconds.
 
 export default function SmartTransactionStatus() {
   const [showCancelSwapLink, setShowCancelSwapLink] = useState(true);
@@ -50,6 +48,7 @@ export default function SmartTransactionStatus() {
   const needsTwoConfirmations = true;
   const smartTransactionsStatus = useSelector(getSmartTransactionsStatus);
   const latestSmartTransactionUuid = useSelector(getLatestSmartTransactionUuid);
+  const swapsRefreshRates = useSelector(getSwapsRefreshStates);
   const smartTransactionStatus =
     smartTransactionsStatus?.[latestSmartTransactionUuid] || {}; // TODO: Use a list of STX from the STX controller.
 
@@ -91,10 +90,15 @@ export default function SmartTransactionStatus() {
       } else {
         clearInterval(intervalId);
       }
-    }, SMART_TRANSACTIONS_STATUS_INTERVAL);
+    }, swapsRefreshRates.stxBatchStatus);
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, isSmartTransactionPending, latestSmartTransactionUuid]);
+  }, [
+    dispatch,
+    isSmartTransactionPending,
+    latestSmartTransactionUuid,
+    swapsRefreshRates.stxBatchStatus,
+  ]);
 
   useEffect(() => {
     // We don't need to poll for quotes on the status page.
