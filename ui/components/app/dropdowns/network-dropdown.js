@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-import { Button } from '@material-ui/core';
+import Button from '../../ui/button';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
 import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
@@ -11,7 +11,7 @@ import { isPrefixedFormattedHexString } from '../../../../shared/modules/network
 
 import ColorIndicator from '../../ui/color-indicator';
 import { COLORS, SIZES } from '../../../helpers/constants/design-system';
-import { getShouldShowTestNetworks } from '../../../selectors';
+import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
@@ -36,7 +36,7 @@ const DROP_DOWN_MENU_ITEM_STYLE = {
 function mapStateToProps(state) {
   return {
     provider: state.metamask.provider,
-    shouldShowTestNetworks: getShouldShowTestNetworks(state),
+    shouldShowTestNetworks: getShowTestNetworks(state),
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
   };
@@ -117,7 +117,7 @@ class NetworkDropdown extends Component {
 
   renderAddCustomButton() {
     const style = {
-      width: '75%',
+      width: '100%',
       left: '40px',
       color: 'white',
       background: 'rgba(0, 0, 0, 0.75)',
@@ -129,7 +129,6 @@ class NetworkDropdown extends Component {
       <Button
         type="submit"
         style={style}
-        fullWidth
         variant="contained"
         size="large"
         onClick={() => {
@@ -140,7 +139,6 @@ class NetworkDropdown extends Component {
           }
           this.props.hideNetworkDropdown();
         }}
-        disableRipple
       >
         {this.context.t('addNetwork')}
       </Button>

@@ -1,8 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { Button } from '@material-ui/core';
-import Sinon from 'sinon';
+import Button from '../../ui/button';
 import { mountWithRouter } from '../../../../test/lib/render-helpers';
 import ColorIndicator from '../../ui/color-indicator';
 import NetworkDropdown from './network-dropdown';
@@ -64,7 +63,7 @@ describe('Network Dropdown', () => {
     };
 
     global.platform = {
-      openExtensionInBrowser: Sinon.spy(),
+      openExtensionInBrowser: jest.fn(),
     };
 
     const store = createMockStore(mockState);
@@ -173,7 +172,7 @@ describe('Network Dropdown', () => {
     };
 
     global.platform = {
-      openExtensionInBrowser: Sinon.spy(),
+      openExtensionInBrowser: jest.fn(),
     };
 
     const store = createMockStore(mockState);
