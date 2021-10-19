@@ -34,7 +34,7 @@ describe('Editing Confirm Transaction', function () {
         const transactionAmount = transactionAmounts[0];
         assert.equal(await transactionAmount.getText(), '1');
 
-        const transactionFee = transactionAmounts[1];
+        const transactionFee = transactionAmounts[3];
         assert.equal(await transactionFee.getText(), '0.00025');
 
         await driver.clickElement(
@@ -62,12 +62,12 @@ describe('Editing Confirm Transaction', function () {
 
         // has correct updated value on the confirm screen the transaction
         const editedTransactionAmounts = await driver.findElements(
-          '.transaction-detail-item__row .transaction-detail-item__detail-text .currency-display-component__text',
+          '.currency-display-component__text',
         );
-        const editedTransactionAmount = editedTransactionAmounts[0];
+        const editedTransactionAmount = editedTransactionAmounts[3];
         assert.equal(await editedTransactionAmount.getText(), '0.0008');
 
-        const editedTransactionFee = editedTransactionAmounts[1];
+        const editedTransactionFee = editedTransactionAmounts[6];
         assert.equal(await editedTransactionFee.getText(), '2.2008');
 
         // confirms the transaction

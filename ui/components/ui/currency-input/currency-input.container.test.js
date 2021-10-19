@@ -52,6 +52,7 @@ describe('CurrencyInput container', () => {
             },
             provider: {
               type: 'rinkeby',
+              chainId: '0x4',
             },
           },
         },
@@ -76,6 +77,7 @@ describe('CurrencyInput container', () => {
             },
             provider: {
               type: 'rinkeby',
+              chainId: '0x4',
             },
           },
         },
@@ -96,10 +98,11 @@ describe('CurrencyInput container', () => {
             currentCurrency: 'usd',
             nativeCurrency: 'ETH',
             preferences: {
-              showFiatInTestnets: true,
+              showFiatInTestnets: false,
             },
             provider: {
               type: 'mainnet',
+              chainId: '0x1',
             },
           },
         },
@@ -108,6 +111,54 @@ describe('CurrencyInput container', () => {
           currentCurrency: 'usd',
           nativeCurrency: 'ETH',
           hideFiat: false,
+        },
+      },
+      {
+        comment:
+          'should return correct props when on custom network (not mainnet or known testnet) and showFiatInTestnets is false',
+        mockState: {
+          metamask: {
+            conversionRate: 280.45,
+            currentCurrency: 'usd',
+            nativeCurrency: 'BSC',
+            preferences: {
+              showFiatInTestnets: false,
+            },
+            provider: {
+              type: 'custom',
+              chainId: '0x38',
+            },
+          },
+        },
+        expected: {
+          conversionRate: 280.45,
+          currentCurrency: 'usd',
+          nativeCurrency: 'BSC',
+          hideFiat: false,
+        },
+      },
+      {
+        comment:
+          'should return correct props when on custom network (not mainnet or known testnet) and showFiatInTestnets is false and conversionRate is null',
+        mockState: {
+          metamask: {
+            conversionRate: null,
+            currentCurrency: 'usd',
+            nativeCurrency: 'BSC',
+            preferences: {
+              showFiatInTestnets: false,
+            },
+            provider: {
+              type: 'custom',
+              chainId: '0x38',
+            },
+          },
+        },
+        expected: {
+          conversionRate: null,
+          currentCurrency: 'usd',
+          nativeCurrency: 'BSC',
+          hideFiat: true,
         },
       },
     ];
