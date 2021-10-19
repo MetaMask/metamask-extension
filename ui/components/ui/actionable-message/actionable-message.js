@@ -11,6 +11,7 @@ const CLASSNAME_WITH_RIGHT_BUTTON = 'actionable-message--with-right-button';
 const typeHash = {
   warning: CLASSNAME_WARNING,
   danger: CLASSNAME_DANGER,
+  default: '',
 };
 
 export default function ActionableMessage({
@@ -20,7 +21,7 @@ export default function ActionableMessage({
   className = '',
   infoTooltipText = '',
   withRightButton = false,
-  type = false,
+  type = 'default',
   useIcon = false,
   iconFillColor = '',
 }) {
