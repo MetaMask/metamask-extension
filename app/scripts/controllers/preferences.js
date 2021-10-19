@@ -68,7 +68,7 @@ export default class PreferencesController {
     this.store.setMaxListeners(12);
     this.openPopup = opts.openPopup;
     this.migrateAddressBookState = opts.migrateAddressBookState;
-
+    this.setCurrentLocale(opts.initLangCode);
     this._subscribeToInfuraAvailability();
 
     global.setPreference = (key, value) => {
