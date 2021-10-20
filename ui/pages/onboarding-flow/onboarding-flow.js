@@ -55,13 +55,6 @@ export default function OnboardingFlow() {
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
 
   useEffect(() => {
-    // For ONBOARDING_V2 dev purposes,
-    // Remove when ONBOARDING_V2 dev complete
-    if (process.env.ONBOARDING_V2) {
-      history.push(ONBOARDING_METAMETRICS);
-      return;
-    }
-
     if (completedOnboarding && seedPhraseBackedUp) {
       history.push(DEFAULT_ROUTE);
       return;
