@@ -1,4 +1,3 @@
-import { stripHexPrefix } from 'ethereumjs-util';
 import { createSelector } from 'reselect';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
@@ -42,6 +41,7 @@ import {
   isEIP1559Network,
   getLedgerTransportType,
   isAddresLedger,
+  findKeyringForAddress,
 } from '../ducks/metamask/metamask';
 import { getLedgerWebHidConnectedStatus } from '../ducks/app/app';
 
@@ -75,16 +75,6 @@ export function getMetricsNetworkIdentifier(state) {
 export function getCurrentChainId(state) {
   const { chainId } = state.metamask.provider;
   return chainId;
-}
-
-export function findKeyringForAddress(state, address) {
-  const simpleAddress = stripHexPrefix(address).toLowerCase();
-
-  const keyring = state.metamask.keyrings.find((kr) => {
-    return kr.accounts.includes(simpleAddress) || kr.accounts.includes(address);
-  });
-
-  return keyring;
 }
 
 export function getCurrentKeyring(state) {

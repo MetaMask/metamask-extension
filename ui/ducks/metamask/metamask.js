@@ -1,4 +1,4 @@
-import { addHexPrefix, isHexString } from 'ethereumjs-util';
+import { addHexPrefix, isHexString, stripHexPrefix } from 'ethereumjs-util';
 import * as actionConstants from '../../store/actionConstants';
 import { ALERT_TYPES } from '../../../shared/constants/alerts';
 import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
@@ -6,7 +6,6 @@ import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
-  findKeyringForAddress,
 } from '../../selectors';
 import { updateTransaction } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
@@ -341,6 +340,16 @@ export function getIsUnlocked(state) {
 
 export function getSeedPhraseBackedUp(state) {
   return state.metamask.seedPhraseBackedUp;
+}
+
+export function findKeyringForAddress(state, address) {
+  const simpleAddress = stripHexPrefix(address).toLowerCase();
+
+  const keyring = state.metamask.keyrings.find((kr) => {
+    return kr.accounts.includes(simpleAddress) || kr.accounts.includes(address);
+  });
+
+  return keyring;
 }
 
 export function getLedgerTransportType(state) {
