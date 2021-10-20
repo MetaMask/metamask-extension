@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import log from 'loglevel';
@@ -57,29 +57,27 @@ export default function LedgerInstructionField({ showDataInstruction }) {
   const environmentTypeIsFullScreen =
     environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
 
-  const checkWebHidStatusRef = useRef();
-  checkWebHidStatusRef.current = async () => {
-    if (
-      ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
-      webHidConnectedStatus !== WEBHID_CONNECTED_STATUSES.CONNECTED
-    ) {
-      const devices = await window.navigator.hid.getDevices();
-      const webHidIsConnected = devices.some(
-        (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-      );
-      dispatch(
-        setLedgerWebHidConnectedStatus(
-          webHidIsConnected
-            ? WEBHID_CONNECTED_STATUSES.CONNECTED
-            : WEBHID_CONNECTED_STATUSES.NOT_CONNECTED,
-        ),
-      );
-    }
-  };
-
   useEffect(() => {
-    checkWebHidStatusRef.current();
-  }, []);
+    const initialConnectedDeviceCheck = async () => {
+      if (
+        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
+        webHidConnectedStatus !== WEBHID_CONNECTED_STATUSES.CONNECTED
+      ) {
+        const devices = await window.navigator.hid.getDevices();
+        const webHidIsConnected = devices.some(
+          (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+        );
+        dispatch(
+          setLedgerWebHidConnectedStatus(
+            webHidIsConnected
+              ? WEBHID_CONNECTED_STATUSES.CONNECTED
+              : WEBHID_CONNECTED_STATUSES.NOT_CONNECTED,
+          ),
+        );
+      }
+    };
+    initialConnectedDeviceCheck();
+  }, [dispatch, ledgerTransportType, webHidConnectedStatus]);
 
   const usingLedgerLive = ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE;
   const usingWebHID = ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID;
