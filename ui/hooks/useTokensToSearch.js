@@ -16,6 +16,7 @@ import { getConversionRate } from '../ducks/metamask/metamask';
 
 import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { useEqualityCheck } from './useEqualityCheck';
 
 const shuffledContractMap = shuffle(
@@ -45,7 +46,7 @@ export function getRenderableTokenData(
     getTokenFiatAmount(
       isSwapsDefaultTokenSymbol(symbol, chainId)
         ? 1
-        : contractExchangeRates[address],
+        : contractExchangeRates[toChecksumHexAddress(address)],
       conversionRate,
       currentCurrency,
       string,
@@ -56,7 +57,7 @@ export function getRenderableTokenData(
     getTokenFiatAmount(
       isSwapsDefaultTokenSymbol(symbol, chainId)
         ? 1
-        : contractExchangeRates[address],
+        : contractExchangeRates[toChecksumHexAddress(address)],
       conversionRate,
       currentCurrency,
       string,
@@ -145,7 +146,7 @@ export function useTokensToSearch({
 
     memoizedSwapsAndUserTokensWithoutDuplicities.forEach((token) => {
       const renderableDataToken = getRenderableTokenData(
-        { ...usersTokensAddressMap[token.address.toLowerCase()], ...token },
+        { ...token, ...usersTokensAddressMap[token.address.toLowerCase()] },
         tokenConversionRates,
         conversionRate,
         currentCurrency,
