@@ -1,4 +1,4 @@
-@import './send-content/send-gas-row/send-gas-row';
+@import "./send-content/send-gas-row/send-gas-row";
 
 .send {
   &__header {
@@ -186,7 +186,6 @@
       margin: 0.25rem 0.5rem 0.25rem 0.25rem;
 
       &--error {
-
       }
 
       &--valid {
@@ -253,6 +252,9 @@
       @include H6;
 
       @extend %ellipsify;
+
+      word-wrap: break-word;
+      white-space: inherit !important;
     }
 
     &__subtitle {

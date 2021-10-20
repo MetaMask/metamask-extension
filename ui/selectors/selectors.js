@@ -306,8 +306,9 @@ export function getAddressBookEntry(state, address) {
 
 export function getAddressBookEntryName(state, address) {
   const entry =
-    getAddressBookEntry(state, address) || state.metamask.identities[address];
-  return entry && entry.name !== '' ? entry.name : shortenAddress(address);
+    getAddressBookEntry(state, address) ||
+    state.metamask.identities[address.toLowerCase()];
+  return entry && entry.name !== '' ? entry.name : address;
 }
 
 export function accountsWithSendEtherInfoSelector(state) {
