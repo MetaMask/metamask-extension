@@ -13,7 +13,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setFirstTimeFlowType } from '../../../store/actions';
-import { INITIALIZE_METAMETRICS_OPT_IN_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_METAMETRICS } from '../../../helpers/constants/routes';
 
 export default function OnboardingWelcome() {
   const t = useI18nContext();
@@ -23,12 +23,12 @@ export default function OnboardingWelcome() {
 
   const onCreateClick = () => {
     dispatch(setFirstTimeFlowType('create'));
-    history.push(INITIALIZE_METAMETRICS_OPT_IN_ROUTE);
+    history.push(ONBOARDING_METAMETRICS);
   };
 
   const onImportClick = () => {
     dispatch(setFirstTimeFlowType('import'));
-    history.push(INITIALIZE_METAMETRICS_OPT_IN_ROUTE);
+    history.push(ONBOARDING_METAMETRICS);
   };
 
   return (
