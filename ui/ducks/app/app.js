@@ -49,6 +49,7 @@ export default function reduceApp(state = {}, action) {
     },
     gasLoadingAnimationIsShowing: false,
     ledgerWebHidConnectedStatus: WEBHID_CONNECTED_STATUSES.UNKNOWN,
+    newNetworkAdded: '',
     ...state,
   };
 
