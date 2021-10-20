@@ -58,23 +58,22 @@ export default function LedgerInstructionField({ showDataInstruction }) {
     environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
 
   const checkWebHidStatusRef = useRef();
-  checkWebHidStatusRef.current = () => {
+  checkWebHidStatusRef.current = async () => {
     if (
       ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
       webHidConnectedStatus !== WEBHID_CONNECTED_STATUSES.CONNECTED
     ) {
-      window.navigator.hid.getDevices().then((devices) => {
-        const webHidIsConnected = devices.some(
-          (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-        );
-        dispatch(
-          setLedgerWebHidConnectedStatus(
-            webHidIsConnected
-              ? WEBHID_CONNECTED_STATUSES.CONNECTED
-              : WEBHID_CONNECTED_STATUSES.NOT_CONNECTED,
-          ),
-        );
-      });
+      const devices = await window.navigator.hid.getDevices();
+      const webHidIsConnected = devices.some(
+        (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+      );
+      dispatch(
+        setLedgerWebHidConnectedStatus(
+          webHidIsConnected
+            ? WEBHID_CONNECTED_STATUSES.CONNECTED
+            : WEBHID_CONNECTED_STATUSES.NOT_CONNECTED,
+        ),
+      );
     }
   };
 
