@@ -1,1 +1,1 @@
-export { default } from './ledger-instruction-field.component';
+export { default } from './ledger-instruction-field';
