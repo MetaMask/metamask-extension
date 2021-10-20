@@ -4,7 +4,7 @@ import {
   getAddressBookEntry,
   getIsEthGasPriceFetched,
   getNoGasPriceFetched,
-  checkNetworkAndAccountSupports1559,
+  checkNetworkOrAccountNotSupports1559,
 } from '../../../selectors';
 import { getIsAssetSendable, getSendTo } from '../../../ducks/send';
 
@@ -25,7 +25,9 @@ function mapStateToProps(state) {
     isEthGasPrice: getIsEthGasPriceFetched(state),
     noGasPrice: getNoGasPriceFetched(state),
     to,
-    networkAndAccountSupports1559: checkNetworkAndAccountSupports1559(state),
+    networkOrAccountNotSupports1559: checkNetworkOrAccountNotSupports1559(
+      state,
+    ),
   };
 }
 

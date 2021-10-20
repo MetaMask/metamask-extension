@@ -525,6 +525,58 @@ describe('Transaction Controller', function () {
       stub2.restore();
     });
 
+    it('should not add maxFeePerGas and maxPriorityFeePerGas to type-0 transactions', async function () {
+      const TEST_GASPRICE = '0x12a05f200';
+
+      const stub1 = sinon
+        .stub(txController, 'getEIP1559Compatibility')
+        .returns(true);
+
+      const stub2 = sinon
+        .stub(txController, '_getDefaultGasFees')
+        .callsFake(() => ({ gasPrice: TEST_GASPRICE }));
+
+      txController.txStateManager._addTransactionsToState([
+        {
+          id: 1,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          metamaskNetworkId: currentNetworkId,
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS_TWO,
+            type: '0x0',
+          },
+          history: [{}],
+        },
+      ]);
+      const txMeta = {
+        id: 1,
+        txParams: {
+          from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+          to: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+          type: '0x0',
+        },
+        history: [{}],
+      };
+      providerResultStub.eth_getBlockByNumber = { gasLimit: '47b784' };
+      providerResultStub.eth_estimateGas = '5209';
+
+      const txMetaWithDefaults = await txController.addTxGasDefaults(txMeta);
+
+      assert.equal(
+        txMetaWithDefaults.txParams.maxFeePerGas,
+        undefined,
+        'should not have maxFeePerGas',
+      );
+      assert.equal(
+        txMetaWithDefaults.txParams.maxPriorityFeePerGas,
+        undefined,
+        'should not have max priority fee per gas',
+      );
+      stub1.restore();
+      stub2.restore();
+    });
+
     it('should not add gasPrice if the fee data is available from the dapp', async function () {
       const TEST_GASPRICE = '0x12a05f200';
       const TEST_MAX_FEE_PER_GAS = '0x12a05f200';
@@ -716,7 +768,7 @@ describe('Transaction Controller', function () {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: 'sentEther',
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         transaction_envelope_type: 'legacy',
         origin: 'metamask',
         chainId: currentChainId,
@@ -1239,7 +1291,7 @@ describe('Transaction Controller', function () {
         data: '',
       });
       assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.SENT_ETHER,
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         getCodeResponse: null,
       });
     });
@@ -1285,7 +1337,7 @@ describe('Transaction Controller', function () {
         data: '0xabd',
       });
       assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.SENT_ETHER,
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         getCodeResponse: '0x',
       });
     });
@@ -1296,7 +1348,7 @@ describe('Transaction Controller', function () {
         data: '0xabd',
       });
       assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.SENT_ETHER,
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         getCodeResponse: null,
       });
     });
@@ -1499,7 +1551,7 @@ describe('Transaction Controller', function () {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: 'sentEther',
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         origin: 'metamask',
         chainId: currentChainId,
         time: 1624408066355,
@@ -1513,7 +1565,7 @@ describe('Transaction Controller', function () {
           network: '42',
           referrer: 'metamask',
           source: 'user',
-          type: 'sentEther',
+          type: TRANSACTION_TYPES.SIMPLE_SEND,
         },
         sensitiveProperties: {
           gas_price: '2',
@@ -1546,7 +1598,7 @@ describe('Transaction Controller', function () {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: 'sentEther',
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         origin: 'other',
         chainId: currentChainId,
         time: 1624408066355,
@@ -1560,7 +1612,7 @@ describe('Transaction Controller', function () {
           network: '42',
           referrer: 'other',
           source: 'dapp',
-          type: 'sentEther',
+          type: TRANSACTION_TYPES.SIMPLE_SEND,
         },
         sensitiveProperties: {
           gas_price: '2',
@@ -1593,7 +1645,7 @@ describe('Transaction Controller', function () {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: 'sentEther',
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         origin: 'other',
         chainId: currentChainId,
         time: 1624408066355,
@@ -1606,7 +1658,7 @@ describe('Transaction Controller', function () {
           network: '42',
           referrer: 'other',
           source: 'dapp',
-          type: 'sentEther',
+          type: TRANSACTION_TYPES.SIMPLE_SEND,
           chain_id: '0x2a',
         },
         sensitiveProperties: {
@@ -1647,7 +1699,7 @@ describe('Transaction Controller', function () {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: 'sentEther',
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         origin: 'other',
         chainId: currentChainId,
         time: 1624408066355,
@@ -1661,7 +1713,7 @@ describe('Transaction Controller', function () {
           network: '42',
           referrer: 'other',
           source: 'dapp',
-          type: 'sentEther',
+          type: TRANSACTION_TYPES.SIMPLE_SEND,
         },
         sensitiveProperties: {
           baz: 3.0,

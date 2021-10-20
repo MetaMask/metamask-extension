@@ -27,15 +27,13 @@ export default function ImportToken({
         type="secondary"
         className="page-container__footer-button"
         onClick={onImportTokenCloseClick}
-        rounded
       >
         {t('cancel')}
       </Button>
       <Button
-        type="confirm"
+        type="primary"
         className="page-container__footer-button"
         onClick={onImportTokenClick}
-        rounded
       >
         {t('import')}
       </Button>

@@ -114,7 +114,7 @@ class RevealSeedPage extends Component {
       <div className="page-container__footer">
         <footer>
           <Button
-            type="default"
+            type="secondary"
             large
             className="page-container__footer-button"
             onClick={() =>
@@ -124,7 +124,7 @@ class RevealSeedPage extends Component {
             {this.context.t('cancel')}
           </Button>
           <Button
-            type="secondary"
+            type="primary"
             large
             className="page-container__footer-button"
             onClick={(event) => this.handleSubmit(event)}
@@ -141,9 +141,9 @@ class RevealSeedPage extends Component {
     return (
       <div className="page-container__footer">
         <Button
-          type="default"
+          type="secondary"
           large
-          className="page-container__footer-button"
+          className="page-container__footer-single-button"
           onClick={() =>
             this.props.history.push(this.props.mostRecentOverviewPage)
           }
@@ -159,7 +159,7 @@ class RevealSeedPage extends Component {
       <div className="page-container">
         <div className="page-container__header">
           <div className="page-container__title">
-            {this.context.t('revealSeedWordsTitle')}
+            {this.context.t('secretRecoveryPhrase')}
           </div>
           <div className="page-container__subtitle">
             {this.context.t('revealSeedWordsDescription')}

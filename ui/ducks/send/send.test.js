@@ -51,6 +51,7 @@ import sendReducer, {
   getSendAmount,
   getIsBalanceInsufficient,
   getSendMaxModeState,
+  getDraftTransactionID,
   sendAmountIsInError,
   getSendHexData,
   getSendTo,
@@ -628,6 +629,8 @@ describe('Send Slice', () => {
           payload: {
             chainId: '',
             tokens: [],
+            useTokenDetection: true,
+            tokenAddressList: [],
           },
         };
 
@@ -649,6 +652,8 @@ describe('Send Slice', () => {
           payload: {
             chainId: '0x55',
             tokens: [],
+            useTokenDetection: true,
+            tokenAddressList: [],
           },
         };
 
@@ -671,6 +676,8 @@ describe('Send Slice', () => {
           payload: {
             chainId: '',
             tokens: [],
+            useTokenDetection: true,
+            tokenAddressList: [],
           },
         };
 
@@ -698,6 +705,8 @@ describe('Send Slice', () => {
           payload: {
             chainId: '0x4',
             tokens: [],
+            useTokenDetection: true,
+            tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
           },
         };
 
@@ -1111,6 +1120,32 @@ describe('Send Slice', () => {
             provider: {
               chainId: '0x4',
             },
+            useTokenDetection: true,
+            tokenList: {
+              0x514910771af9ca656af840dff83e8264ecf986ca: {
+                address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                symbol: 'LINK',
+                decimals: 18,
+                name: 'Chainlink',
+                iconUrl:
+                  'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+                aggregators: [
+                  'airswapLight',
+                  'bancor',
+                  'cmc',
+                  'coinGecko',
+                  'kleros',
+                  'oneInch',
+                  'paraswap',
+                  'pmm',
+                  'totle',
+                  'zapper',
+                  'zerion',
+                  'zeroEx',
+                ],
+                occurrences: 12,
+              },
+            },
           },
           send: initialState,
           gas: {
@@ -1484,6 +1519,31 @@ describe('Send Slice', () => {
             chainId: '',
           },
           tokens: [],
+          useTokenDetection: true,
+          tokenList: {
+            '0x514910771af9ca656af840dff83e8264ecf986ca': {
+              address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+              symbol: 'LINK',
+              decimals: 18,
+              name: 'Chainlink',
+              iconUrl: 'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+              aggregators: [
+                'airswapLight',
+                'bancor',
+                'cmc',
+                'coinGecko',
+                'kleros',
+                'oneInch',
+                'paraswap',
+                'pmm',
+                'totle',
+                'zapper',
+                'zerion',
+                'zeroEx',
+              ],
+              occurrences: 12,
+            },
+          },
         },
       };
 
@@ -1512,6 +1572,8 @@ describe('Send Slice', () => {
         expect(store.getActions()[1].payload).toStrictEqual({
           chainId: '',
           tokens: [],
+          useTokenDetection: true,
+          tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
         });
       });
     });
@@ -1736,6 +1798,32 @@ describe('Send Slice', () => {
               chainId: '',
             },
             tokens: [],
+            useTokenDetection: true,
+            tokenList: {
+              0x514910771af9ca656af840dff83e8264ecf986ca: {
+                address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                symbol: 'LINK',
+                decimals: 18,
+                name: 'Chainlink',
+                iconUrl:
+                  'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+                aggregators: [
+                  'airswapLight',
+                  'bancor',
+                  'cmc',
+                  'coinGecko',
+                  'kleros',
+                  'oneInch',
+                  'paraswap',
+                  'pmm',
+                  'totle',
+                  'zapper',
+                  'zerion',
+                  'zeroEx',
+                ],
+                occurrences: 12,
+              },
+            },
           },
           send: {
             asset: {
@@ -2370,6 +2458,21 @@ describe('Send Slice', () => {
             },
           }),
         ).toBe(true);
+      });
+
+      it('has a selector to get the draft transaction ID', () => {
+        expect(getDraftTransactionID({ send: initialState })).toBeNull();
+        expect(
+          getDraftTransactionID({
+            send: {
+              ...initialState,
+              draftTransaction: {
+                ...initialState.draftTransaction,
+                id: 'ID',
+              },
+            },
+          }),
+        ).toBe('ID');
       });
 
       it('has a selector to get the user entered hex data', () => {

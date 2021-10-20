@@ -50,9 +50,6 @@
   "addToken": {
     "message": "إضافة عملة رمزية"
   },
-  "addTokens": {
-    "message": "إضافة عملات رمزية"
-  },
   "advanced": {
     "message": "إعدادات متقدمة"
   },
@@ -536,7 +533,7 @@
   "letsGoSetUp": {
     "message": "نعم، دعنا نبدأ التثبيت!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "هل ترغب في إضافة هذه الرموز؟"
   },
   "links": {
@@ -795,9 +792,6 @@
   "revealSeedWordsDescription": {
     "message": "إذا كنت تنوي تغيير المتصفحات أو نقل أجهزة الكمبيوتر في أي وقت، فسوف تحتاج إلى عبارة الأمان هذه للوصول إلى حساباتك. احفظها في مكان آمن وسري."
   },
-  "revealSeedWordsTitle": {
-    "message": "عبارة الأمان"
-  },
   "revealSeedWordsWarning": {
     "message": "يمكن استخدام هذه الكلمات لسرقة جميع حساباتك."
   },
@@ -833,9 +827,6 @@
   },
   "searchTokens": {
     "message": "البحث عن العملات الرمزية"
-  },
-  "secretBackupPhrase": {
-    "message": "الجملة الاحتياطية السرية"
   },
   "secretBackupPhraseDescription": {
     "message": "تجعل عبارة النسخ الاحتياطي السرية الخاصة بك من السهل إجراء نسخ احتياطي واستعادة حسابك."
@@ -884,9 +875,6 @@
   },
   "sendTokens": {
     "message": "إرسال عملات رمزية"
-  },
-  "sentEther": {
-    "message": "أرسل عملة إيثير"
   },
   "separateEachWord": {
     "message": "افصل كل كلمة بمسافة واحدة"
@@ -1126,20 +1114,8 @@
   "viewContact": {
     "message": "عرض جهة الاتصال"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "عرض في $1"
-  },
-  "viewOnEtherscan": {
-    "message": "عرضه على Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "عرض في متصفح Explorer"
-  },
   "visitWebSite": {
     "message": "قم بزيارة موقعنا على الإنترنت"
-  },
-  "walletSeed": {
-    "message": "بذرة المحفظة"
   },
   "welcome": {
     "message": "مرحباً بك في MetaMask"

@@ -4,6 +4,7 @@ const { writeFileSync, readFileSync } = require('fs');
 const EventEmitter = require('events');
 const gulp = require('gulp');
 const watch = require('gulp-watch');
+const Vinyl = require('vinyl');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
 const log = require('fancy-log');
@@ -20,13 +21,15 @@ const endOfStream = pify(require('end-of-stream'));
 const labeledStreamSplicer = require('labeled-stream-splicer').obj;
 const wrapInStream = require('pumpify').obj;
 const Sqrl = require('squirrelly');
-const lavaPack = require('@lavamoat/lavapack');
+const lavapack = require('@lavamoat/lavapack');
+const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
 
 const bifyModuleGroups = require('bify-module-groups');
 
 const metamaskrc = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
+  ONBOARDING_V2: process.env.ONBOARDING_V2,
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
   SEGMENT_LEGACY_WRITE_KEY: process.env.SEGMENT_LEGACY_WRITE_KEY,
@@ -37,16 +40,26 @@ const metamaskrc = require('rc')('metamask', {
 
 const { streamFlatMap } = require('../stream-flat-map.js');
 const { version } = require('../../package.json');
+
 const {
   createTask,
   composeParallel,
   composeSeries,
   runInChildProcess,
 } = require('./task');
+const {
+  createRemoveFencedCodeTransform,
+} = require('./transforms/remove-fenced-code');
 
 module.exports = createScriptTasks;
 
-function createScriptTasks({ browserPlatforms, livereload }) {
+function createScriptTasks({
+  browserPlatforms,
+  buildType,
+  isLavaMoat,
+  livereload,
+  shouldLintFenceFiles,
+}) {
   // internal tasks
   const core = {
     // dev tasks (live reload)
@@ -74,24 +87,21 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   return { dev, test, testDev, prod };
 
   function createTasksForBuildJsExtension({ taskPrefix, devMode, testing }) {
-    const standardEntryPoints = [
-      'background',
-      'ui',
-      'phishing-detect',
-      'content-script',
-    ];
+    const standardEntryPoints = ['background', 'ui', 'content-script'];
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
+        browserPlatforms,
+        buildType,
+        devMode,
         entryFiles: standardEntryPoints.map((label) => {
           if (label === 'content-script') {
             return './app/vendor/trezor/content-script.js';
           }
           return `./app/scripts/${label}.js`;
         }),
-        devMode,
         testing,
-        browserPlatforms,
+        shouldLintFenceFiles,
       }),
     );
 
@@ -112,6 +122,11 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     const installSentrySubtask = createTask(
       `${taskPrefix}:sentry`,
       createTaskForBundleSentry({ devMode }),
+    );
+
+    const phishingDetectSubtask = createTask(
+      `${taskPrefix}:phishing-detect`,
+      createTaskForBundlePhishingDetect({ devMode }),
     );
 
     // task for initiating browser livereload
@@ -136,7 +151,14 @@ function createScriptTasks({ browserPlatforms, livereload }) {
       contentscriptSubtask,
       disableConsoleSubtask,
       installSentrySubtask,
-    ].map((subtask) => runInChildProcess(subtask));
+      phishingDetectSubtask,
+    ].map((subtask) =>
+      runInChildProcess(subtask, {
+        buildType,
+        isLavaMoat,
+        shouldLintFenceFiles,
+      }),
+    );
     // make a parent task that runs each task in a child thread
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
@@ -144,22 +166,39 @@ function createScriptTasks({ browserPlatforms, livereload }) {
   function createTaskForBundleDisableConsole({ devMode }) {
     const label = 'disable-console';
     return createNormalBundle({
-      label,
-      entryFilepath: `./app/scripts/${label}.js`,
+      browserPlatforms,
+      buildType,
       destFilepath: `${label}.js`,
       devMode,
-      browserPlatforms,
+      entryFilepath: `./app/scripts/${label}.js`,
+      label,
+      shouldLintFenceFiles,
     });
   }
 
   function createTaskForBundleSentry({ devMode }) {
     const label = 'sentry-install';
     return createNormalBundle({
-      label,
-      entryFilepath: `./app/scripts/${label}.js`,
+      browserPlatforms,
+      buildType,
       destFilepath: `${label}.js`,
       devMode,
+      entryFilepath: `./app/scripts/${label}.js`,
+      label,
+      shouldLintFenceFiles,
+    });
+  }
+
+  function createTaskForBundlePhishingDetect({ devMode }) {
+    const label = 'phishing-detect';
+    return createNormalBundle({
+      buildType,
       browserPlatforms,
+      destFilepath: `${label}.js`,
+      devMode,
+      entryFilepath: `./app/scripts/${label}.js`,
+      label,
+      shouldLintFenceFiles,
     });
   }
 
@@ -169,30 +208,36 @@ function createScriptTasks({ browserPlatforms, livereload }) {
     const contentscript = 'contentscript';
     return composeSeries(
       createNormalBundle({
-        label: inpage,
-        entryFilepath: `./app/scripts/${inpage}.js`,
+        buildType,
+        browserPlatforms,
         destFilepath: `${inpage}.js`,
         devMode,
+        entryFilepath: `./app/scripts/${inpage}.js`,
+        label: inpage,
         testing,
-        browserPlatforms,
+        shouldLintFenceFiles,
       }),
       createNormalBundle({
-        label: contentscript,
-        entryFilepath: `./app/scripts/${contentscript}.js`,
+        buildType,
+        browserPlatforms,
         destFilepath: `${contentscript}.js`,
         devMode,
+        entryFilepath: `./app/scripts/${contentscript}.js`,
+        label: contentscript,
         testing,
-        browserPlatforms,
+        shouldLintFenceFiles,
       }),
     );
   }
 }
 
 function createFactoredBuild({
-  entryFiles,
-  devMode,
-  testing,
   browserPlatforms,
+  buildType,
+  devMode,
+  entryFiles,
+  testing,
+  shouldLintFenceFiles,
 }) {
   return async function () {
     // create bundler setup and apply defaults
@@ -204,18 +249,35 @@ function createFactoredBuild({
     const reloadOnChange = Boolean(devMode);
     const minify = Boolean(devMode) === false;
 
-    const envVars = getEnvironmentVariables({ devMode, testing });
+    const envVars = getEnvironmentVariables({ buildType, devMode, testing });
     setupBundlerDefaults(buildConfiguration, {
+      buildType,
       devMode,
       envVars,
-      reloadOnChange,
       minify,
+      reloadOnChange,
+      shouldLintFenceFiles,
     });
 
     // set bundle entries
     bundlerOpts.entries = [...entryFiles];
 
+    // setup lavamoat
+    // lavamoat will add lavapack but it will be removed by bify-module-groups
+    // we will re-add it later by installing a lavapack runtime
+    const lavamoatOpts = {
+      policy: path.resolve(__dirname, '../../lavamoat/browserify/policy.json'),
+      policyOverride: path.resolve(
+        __dirname,
+        '../../lavamoat/browserify/policy-override.json',
+      ),
+      writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
+    };
+    Object.assign(bundlerOpts, lavamoatBrowserify.args);
+    bundlerOpts.plugin.push([lavamoatBrowserify, lavamoatOpts]);
+
     // setup bundle factoring with bify-module-groups plugin
+    // note: this will remove lavapack, but its ok bc we manually readd it later
     Object.assign(bundlerOpts, bifyModuleGroups.plugin.args);
     bundlerOpts.plugin = [...bundlerOpts.plugin, [bifyModuleGroups.plugin]];
 
@@ -237,18 +299,24 @@ function createFactoredBuild({
           groupingMap: sizeGroupMap,
         }),
       );
-      pipeline.get('vinyl').unshift(
-        // convert each module group into a stream with a single vinyl file
-        streamFlatMap((moduleGroup) => {
-          const filename = `${moduleGroup.label}.js`;
-          const childStream = wrapInStream(
-            moduleGroup.stream,
-            lavaPack({ raw: true, hasExports: true, includePrelude: false }),
-            source(filename),
-          );
-          return childStream;
+      // converts each module group into a single vinyl file containing its bundle
+      const moduleGroupPackerStream = streamFlatMap((moduleGroup) => {
+        const filename = `${moduleGroup.label}.js`;
+        const childStream = wrapInStream(
+          moduleGroup.stream,
+          // we manually readd lavapack here bc bify-module-groups removes it
+          lavapack({ raw: true, hasExports: true, includePrelude: false }),
+          source(filename),
+        );
+        return childStream;
+      });
+      pipeline.get('vinyl').unshift(moduleGroupPackerStream, buffer());
+      // add lavamoat policy loader file to packer output
+      moduleGroupPackerStream.push(
+        new Vinyl({
+          path: 'policy-load.js',
+          contents: lavapack.makePolicyLoaderStream(lavamoatOpts),
         }),
-        buffer(),
       );
       // setup bundle destination
       browserPlatforms.forEach((platform) => {
@@ -262,40 +330,58 @@ function createFactoredBuild({
       const commonSet = sizeGroupMap.get('common');
       // create entry points for each file
       for (const [groupLabel, groupSet] of sizeGroupMap.entries()) {
-        // skip "common" group, they are added tp all other groups
+        // skip "common" group, they are added to all other groups
         if (groupSet === commonSet) continue;
 
         switch (groupLabel) {
           case 'ui': {
-            renderHtmlFile('popup', groupSet, commonSet, browserPlatforms);
-            renderHtmlFile(
-              'notification',
+            renderHtmlFile({
+              htmlName: 'popup',
               groupSet,
               commonSet,
               browserPlatforms,
-            );
-            renderHtmlFile('home', groupSet, commonSet, browserPlatforms);
-            break;
-          }
-          case 'phishing-detect': {
-            renderHtmlFile('phishing', groupSet, commonSet, browserPlatforms);
+              useLavamoat: false,
+            });
+            renderHtmlFile({
+              htmlName: 'notification',
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              useLavamoat: false,
+            });
+            renderHtmlFile({
+              htmlName: 'home',
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              useLavamoat: false,
+            });
             break;
           }
           case 'background': {
-            renderHtmlFile('background', groupSet, commonSet, browserPlatforms);
-            break;
-          }
-          case 'content-script': {
-            renderHtmlFile(
-              'trezor-usb-permissions',
+            renderHtmlFile({
+              htmlName: 'background',
               groupSet,
               commonSet,
               browserPlatforms,
-            );
+              useLavamoat: false,
+            });
+            break;
+          }
+          case 'content-script': {
+            renderHtmlFile({
+              htmlName: 'trezor-usb-permissions',
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              useLavamoat: false,
+            });
             break;
           }
           default: {
-            throw new Error(`buildsys - unknown groupLabel "${groupLabel}"`);
+            throw new Error(
+              `build/scripts - unknown groupLabel "${groupLabel}"`,
+            );
           }
         }
       }
@@ -306,14 +392,16 @@ function createFactoredBuild({
 }
 
 function createNormalBundle({
-  label,
+  browserPlatforms,
+  buildType,
   destFilepath,
+  devMode,
   entryFilepath,
   extraEntries = [],
+  label,
   modulesToExpose,
-  devMode,
+  shouldLintFenceFiles,
   testing,
-  browserPlatforms,
 }) {
   return async function () {
     // create bundler setup and apply defaults
@@ -325,12 +413,14 @@ function createNormalBundle({
     const reloadOnChange = Boolean(devMode);
     const minify = Boolean(devMode) === false;
 
-    const envVars = getEnvironmentVariables({ devMode, testing });
+    const envVars = getEnvironmentVariables({ buildType, devMode, testing });
     setupBundlerDefaults(buildConfiguration, {
+      buildType,
       devMode,
       envVars,
-      reloadOnChange,
       minify,
+      reloadOnChange,
+      shouldLintFenceFiles,
     });
 
     // set bundle entries
@@ -377,35 +467,37 @@ function createBuildConfiguration() {
 
 function setupBundlerDefaults(
   buildConfiguration,
-  { devMode, envVars, reloadOnChange, minify },
+  { buildType, devMode, envVars, minify, reloadOnChange, shouldLintFenceFiles },
 ) {
   const { bundlerOpts } = buildConfiguration;
 
   Object.assign(bundlerOpts, {
-    // source transforms
+    // Source transforms
     transform: [
-      // transpile top-level code
+      // Remove code that should be excluded from builds of the current type
+      createRemoveFencedCodeTransform(buildType, shouldLintFenceFiles),
+      // Transpile top-level code
       babelify,
-      // inline `fs.readFileSync` files
+      // Inline `fs.readFileSync` files
       brfs,
     ],
-    // use entryFilepath for moduleIds, easier to determine origin file
+    // Use entryFilepath for moduleIds, easier to determine origin file
     fullPaths: devMode,
-    // for sourcemaps
+    // For sourcemaps
     debug: true,
   });
 
-  // ensure react-devtools are not included in non-dev builds
+  // Ensure react-devtools are not included in non-dev builds
   if (!devMode) {
     bundlerOpts.manualIgnore.push('react-devtools');
   }
 
-  // inject environment variables via node-style `process.env`
+  // Inject environment variables via node-style `process.env`
   if (envVars) {
     bundlerOpts.transform.push([envify(envVars), { global: true }]);
   }
 
-  // setup reload on change
+  // Setup reload on change
   if (reloadOnChange) {
     setupReloadOnChange(buildConfiguration);
   }
@@ -414,21 +506,21 @@ function setupBundlerDefaults(
     setupMinification(buildConfiguration);
   }
 
-  // setup source maps
+  // Setup source maps
   setupSourcemaps(buildConfiguration, { devMode });
 }
 
 function setupReloadOnChange({ bundlerOpts, events }) {
-  // add plugin to options
+  // Add plugin to options
   Object.assign(bundlerOpts, {
     plugin: [...bundlerOpts.plugin, watchify],
-    // required by watchify
+    // Required by watchify
     cache: {},
     packageCache: {},
   });
-  // instrument pipeline
+  // Instrument pipeline
   events.on('configurePipeline', ({ bundleStream }) => {
-    // handle build error to avoid breaking build process
+    // Handle build error to avoid breaking build process
     // (eg on syntax error)
     bundleStream.on('error', (err) => {
       gracefulError(err);
@@ -495,9 +587,9 @@ async function bundleIt(buildConfiguration) {
   // forward update event (used by watchify)
   bundler.on('update', () => performBundle());
 
-  console.log(`bundle start: "${label}"`);
+  console.log(`Bundle start: "${label}"`);
   await performBundle();
-  console.log(`bundle end: "${label}"`);
+  console.log(`Bundle end: "${label}"`);
 
   async function performBundle() {
     // this pipeline is created for every bundle
@@ -531,7 +623,7 @@ async function bundleIt(buildConfiguration) {
   }
 }
 
-function getEnvironmentVariables({ devMode, testing }) {
+function getEnvironmentVariables({ buildType, devMode, testing }) {
   const environment = getEnvironment({ devMode, testing });
   if (environment === 'production' && !process.env.SENTRY_DSN) {
     throw new Error('Missing SENTRY_DSN environment variable');
@@ -540,6 +632,7 @@ function getEnvironmentVariables({ devMode, testing }) {
     METAMASK_DEBUG: devMode,
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,
+    METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? 'development' : 'production',
     IN_TEST: testing ? 'true' : false,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
@@ -564,6 +657,8 @@ function getEnvironmentVariables({ devMode, testing }) {
       environment === 'production'
         ? process.env.SEGMENT_PROD_LEGACY_WRITE_KEY
         : metamaskrc.SEGMENT_LEGACY_WRITE_KEY,
+    SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
+    ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
   };
 }
 
@@ -587,13 +682,24 @@ function getEnvironment({ devMode, testing }) {
   return 'other';
 }
 
-function renderHtmlFile(htmlName, groupSet, commonSet, browserPlatforms) {
+function renderHtmlFile({
+  htmlName,
+  groupSet,
+  commonSet,
+  browserPlatforms,
+  useLavamoat,
+}) {
+  if (useLavamoat === undefined) {
+    throw new Error(
+      'build/scripts/renderHtmlFile - must specify "useLavamoat" option',
+    );
+  }
   const htmlFilePath = `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
   const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
     (label) => `./${label}.js`,
   );
-  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles });
+  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles, useLavamoat });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

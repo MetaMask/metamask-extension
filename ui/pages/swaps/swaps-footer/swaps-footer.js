@@ -30,7 +30,6 @@ export default function SwapsFooter({
           cancelText={t('back')}
           onSubmit={onSubmit}
           submitText={submitText}
-          submitButtonType="confirm"
           footerClassName={classnames(
             'swaps-footer__custom-page-container-footer-class',
             className,

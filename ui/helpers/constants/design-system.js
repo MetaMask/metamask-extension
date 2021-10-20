@@ -10,6 +10,7 @@ export const COLORS = {
   UI3: 'ui-3',
   UI4: 'ui-4',
   BLACK: 'black',
+  GRAY: 'gray',
   WHITE: 'white',
   PRIMARY1: 'primary-1',
   PRIMARY2: 'primary-2',
@@ -44,7 +45,7 @@ export const TYPOGRAPHY = {
   H7: 'h7',
   H8: 'h8',
   H9: 'h9',
-  Paragraph: 'paragraph',
+  Paragraph: 'p',
 };
 
 const NONE = 'none';
@@ -85,6 +86,13 @@ export const JUSTIFY_CONTENT = {
   SPACE_AROUND: 'space-around',
   SPACE_BETWEEN: 'space-between',
   SPACE_EVENLY: 'space-evenly',
+};
+
+export const FLEX_DIRECTION = {
+  ROW: 'row',
+  ROW_REVERSE: 'row-reverse',
+  COLUMN: 'column',
+  COLUMN_REVERSE: 'column-reverse',
 };
 
 export const DISPLAY = {
@@ -154,6 +162,12 @@ export const FONT_WEIGHT = {
   700: 700,
   800: 800,
   900: 900,
+};
+
+export const FONT_STYLE = {
+  ITALIC: 'italic',
+  NORMAL: 'normal',
+  OBLIQUE: 'oblique',
 };
 
 export const SEVERITIES = {

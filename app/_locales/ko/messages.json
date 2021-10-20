@@ -91,9 +91,6 @@
   "addToken": {
     "message": "토큰 추가"
   },
-  "addTokens": {
-    "message": "토큰 추가"
-  },
   "advanced": {
     "message": "고급"
   },
@@ -1025,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "설정을 시작하죠!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "이 토큰을 추가하시겠어요?"
   },
   "links": {
@@ -1340,9 +1337,6 @@
   "onlyAddTrustedNetworks": {
     "message": "악성 네트워크 공급업체는 블록체인 상태를 거짓으로 보고하고 네트워크 활동을 기록할 수 있습니다. 신뢰하는 맞춤형 네트워크만 추가하세요."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "메인넷에서만 사용 가능"
-  },
   "onlyConnectTrust": {
     "message": "신뢰하는 사이트만 연결하세요."
   },
@@ -1533,9 +1527,6 @@
   "revealSeedWordsDescription": {
     "message": "브라우저를 변경하거나 컴퓨터를 옮긴 경우, 계정에 액세스하려면 이 비밀 복구 구문이 필요합니다. 기밀이 보장된 안전한 곳에 보관하세요."
   },
-  "revealSeedWordsTitle": {
-    "message": "비밀 복구 구문"
-  },
   "revealSeedWordsWarning": {
     "message": "이 구문은 계정 전체를 도용하는 데 사용될 수 있습니다."
   },
@@ -1577,9 +1568,6 @@
   },
   "searchTokens": {
     "message": "토큰 검색"
-  },
-  "secretBackupPhrase": {
-    "message": "비밀 백업 구문"
   },
   "secretBackupPhraseDescription": {
     "message": "비밀 백업 구문을 이용하면 계정을 쉽게 백업하고 복구할 수 있습니다."
@@ -1690,9 +1678,6 @@
   },
   "sendTokens": {
     "message": "토큰 보내기"
-  },
-  "sentEther": {
-    "message": "Ether 보냄"
   },
   "separateEachWord": {
     "message": "공백 한 칸으로 각 단어를 구분하세요."
@@ -1873,10 +1858,6 @@
     "message": "$1와(과) 일치하는 토큰이 없습니다.",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "$1 확인 중",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "하드웨어 지갑으로 확인합니다."
   },
@@ -1927,9 +1908,6 @@
   },
   "swapFetchingTokens": {
     "message": "토큰 가져오는 중..."
-  },
-  "swapFinalizing": {
-    "message": "마무리 중..."
   },
   "swapFromTo": {
     "message": "$1을(를) $2(으)로 스왑",
@@ -2402,23 +2380,11 @@
   "viewMore": {
     "message": "더 보기"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "$1에서 보기"
-  },
-  "viewOnEtherscan": {
-    "message": "Etherscan에서 보기"
-  },
-  "viewinExplorer": {
-    "message": "탐색기에서 보기"
-  },
   "visitWebSite": {
     "message": "당사 웹사이트 방문하기"
   },
   "walletConnectionGuide": {
     "message": "당사의 하드웨어 지갑 연결 가이드"
-  },
-  "walletSeed": {
-    "message": "비밀 복구 구문"
   },
   "walletSeedRestore": {
     "message": "지갑 비밀 복구 구문"

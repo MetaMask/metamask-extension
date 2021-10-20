@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import Typography from '../typography/typography';
 import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
+const DECIMAL_REGEX = /\.(\d*)/u;
+
 export default function NumericInput({
   detailText = '',
   value = 0,
@@ -26,7 +28,10 @@ export default function NumericInput({
           }
         }}
         onChange={(e) => {
-          onChange?.(parseFloat(e.target.value || 0, 10));
+          const newValue = e.target.value;
+          const match = DECIMAL_REGEX.exec(newValue);
+          if (match?.[1]?.length >= 15) return;
+          onChange?.(parseFloat(newValue || 0, 10));
         }}
         min="0"
         autoFocus={autoFocus}

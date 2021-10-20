@@ -2,6 +2,11 @@
   counter-reset: step;
   display: flex;
   justify-content: space-evenly;
+  width: 500px;
+}
+
+ul.two-steps {
+  margin: 0 auto;
 }
 
 .progressbar li {
@@ -38,29 +43,83 @@
   position: absolute;
   background-color: #d6d9dc;
   top: 15px;
-  right: 62%;
+  right: 77px;
   z-index: -1;
+
+  [dir='rtl'] & {
+    width: 100%;
+    height: 2px;
+    content: '';
+    position: absolute;
+    background-color: #d6d9dc;
+    right: 77px;
+    z-index: -1;
+  }
 }
 
 .progressbar li:first-child::after {
   content: none;
+
+  [dir='rtl'] & {
+    content: none;
+  }
 }
 
 .progressbar li.active {
   color: $primary-blue;
+
+  [dir='rtl'] & {
+    color: $primary-blue;
+  }
 }
 
 .progressbar li.active::before {
   border-color: $primary-blue;
   z-index: 1;
+
+  [dir='rtl'] & {
+    border-color: $primary-blue;
+    z-index: 1;
+  }
 }
 
 .progressbar li.active + li::after {
   background-color: $primary-blue;
   z-index: -1;
+
+  [dir='rtl'] & {
+    background-color: $primary-blue;
+    z-index: -1;
+  }
 }
 
 .progressbar li.complete::before {
   background-color: $primary-blue;
   color: $ui-white;
+
+  [dir='rtl'] & {
+    background-color: $primary-blue;
+    color: $ui-white;
+  }
+}
+
+.progressbar li.two-steps::after {
+  width: 180px;
+  height: 2px;
+  content: '';
+  position: absolute;
+  background-color: #d6d9dc;
+  top: 15px;
+  right: 75px;
+  z-index: -1;
+
+  [dir='rtl'] & {
+    width: 180px;
+    height: 2px;
+    content: '';
+    position: absolute;
+    background-color: #d6d9dc;
+    right: 75px;
+    z-index: -1;
+  }
 }

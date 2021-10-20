@@ -76,12 +76,12 @@
 }
 
 .popover-wrap.whats-new-popup__popover {
-  @media screen and (min-width: 576px) {
+  @media screen and (min-width: $break-large) {
     max-height: 600px;
     width: 500px;
   }
 
-  @media screen and (max-width: 575px) {
+  @media screen and (max-width: $break-small) {
     max-height: 568px;
   }
 }

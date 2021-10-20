@@ -15,15 +15,15 @@ import {
 } from '../../../helpers/constants/design-system';
 
 export default function RecoveryPhraseChips({
-  seedPhrase,
-  seedPhraseRevealed,
+  secretRecoveryPhrase,
+  phraseRevealed,
   confirmPhase,
   setInputValue,
   inputValue,
   indicesToCheck,
 }) {
   const t = useI18nContext();
-  const hideSeedPhrase = seedPhraseRevealed === false;
+  const hideSeedPhrase = phraseRevealed === false;
   return (
     <Box
       borderColor={COLORS.UI2}
@@ -40,7 +40,7 @@ export default function RecoveryPhraseChips({
           'recovery-phrase__chips--hidden': hideSeedPhrase,
         })}
       >
-        {seedPhrase.map((word, index) => {
+        {secretRecoveryPhrase.map((word, index) => {
           if (
             confirmPhase &&
             indicesToCheck &&
@@ -92,8 +92,8 @@ export default function RecoveryPhraseChips({
 }
 
 RecoveryPhraseChips.propTypes = {
-  seedPhrase: PropTypes.array,
-  seedPhraseRevealed: PropTypes.bool,
+  secretRecoveryPhrase: PropTypes.array,
+  phraseRevealed: PropTypes.bool,
   confirmPhase: PropTypes.bool,
   setInputValue: PropTypes.func,
   inputValue: PropTypes.string,

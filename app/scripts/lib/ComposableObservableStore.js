@@ -1,4 +1,5 @@
 import { ObservableStore } from '@metamask/obs-store';
+import { getPersistentState } from '@metamask/controllers';
 
 /**
  * @typedef {import('@metamask/controllers').ControllerMessenger} ControllerMessenger
@@ -27,9 +28,11 @@ export default class ComposableObservableStore extends ObservableStore {
    *   messenger, used for subscribing to events from BaseControllerV2-based
    *   controllers.
    * @param {Object} [options.state] - The initial store state
+   * @param {boolean} [options.persist] - Wether or not to apply the persistence for v2 controllers
    */
-  constructor({ config, controllerMessenger, state }) {
+  constructor({ config, controllerMessenger, state, persist }) {
     super(state);
+    this.persist = persist;
     this.controllerMessenger = controllerMessenger;
     if (config) {
       this.updateStructure(config);
@@ -60,7 +63,11 @@ export default class ComposableObservableStore extends ObservableStore {
         this.controllerMessenger.subscribe(
           `${store.name}:stateChange`,
           (state) => {
-            this.updateState({ [key]: state });
+            let updatedState = state;
+            if (this.persist) {
+              updatedState = getPersistentState(state, config[key].metadata);
+            }
+            this.updateState({ [key]: updatedState });
           },
         );
       }

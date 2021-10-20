@@ -296,7 +296,7 @@ export default class ConfirmDecryptMessage extends Component {
     return (
       <div className="request-decrypt-message__footer">
         <Button
-          type="default"
+          type="secondary"
           large
           className="request-decrypt-message__footer__cancel-button"
           onClick={async (event) => {
@@ -316,7 +316,7 @@ export default class ConfirmDecryptMessage extends Component {
           {t('cancel')}
         </Button>
         <Button
-          type="secondary"
+          type="primary"
           large
           className="request-decrypt-message__footer__sign-button"
           onClick={async (event) => {

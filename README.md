@@ -28,23 +28,25 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 
 Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
 
+See the [build system readme](./development/build/README.md) for build system usage information.
+
 ## Contributing
 
 ### Development builds
 
 To start a development build (e.g. with logging and file watching) run `yarn start`.
 
-To start the [React DevTools](https://github.com/facebook/react-devtools) and [Redux DevTools Extension](http://extension.remotedev.io)
+To start the [React DevTools](https://github.com/facebook/react-devtools) and [Redux DevTools Extension](https://github.com/reduxjs/redux-devtools/tree/main/extension)
   alongside the app, use `yarn start:dev`.
   - React DevTools will open in a separate window; no browser extension is required
   - Redux DevTools will need to be installed as a browser extension. Open the Redux Remote Devtools to access Redux state logs. This can be done by either right clicking within the web browser to bring up the context menu, expanding the Redux DevTools panel and clicking Open Remote DevTools OR clicking the Redux DevTools extension icon and clicking Open Remote DevTools.
     - You will also need to check the "Use custom (local) server" checkbox in the Remote DevTools Settings, using the default server configuration (host `localhost`, port `8000`, secure connection checkbox unchecked)
 
+[Test site](https://metamask.github.io/test-dapp/) can be used to execute different user flows.
+
 ### Running Unit Tests and Linting
 
-Run unit tests and the linter with `yarn test`.
-
-To run just unit tests, run `yarn test:unit`. To run unit tests continuously with a file watcher, run `yarn watch`.
+Run unit tests and the linter with `yarn test`. To run just unit tests, run `yarn test:unit`.
 
 You can run the linter by itself with `yarn lint`, and you can automatically fix some lint problems with `yarn lint:fix`. You can also run these two commands just on your local changes to save time with `yarn lint:changed` and `yarn lint:changed:fix` respectively.
 

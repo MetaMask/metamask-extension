@@ -249,7 +249,7 @@ export class PermissionsController {
           approved.permissions,
           accounts,
         );
-        this.approvals.resolve(id, approved.permissions);
+        this.approvals.accept(id, approved.permissions);
       }
     } catch (err) {
       // if finalization fails, reject the request

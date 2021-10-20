@@ -22,7 +22,6 @@ export default function reduceMetamask(state = {}, action) {
     frequentRpcList: [],
     addressBook: [],
     contractExchangeRates: {},
-    tokens: [],
     pendingTokens: {},
     customNonceValue: '',
     useBlockie: false,
@@ -88,12 +87,6 @@ export default function reduceMetamask(state = {}, action) {
       const identities = { ...metamaskState.identities, ...id };
       return Object.assign(metamaskState, { identities });
     }
-
-    case actionConstants.UPDATE_TOKENS:
-      return {
-        ...metamaskState,
-        tokens: action.newTokens,
-      };
 
     case actionConstants.UPDATE_CUSTOM_NONCE:
       return {
@@ -286,6 +279,16 @@ export function getUnapprovedTxs(state) {
   return state.metamask.unapprovedTxs;
 }
 
+/**
+ * Function returns true if network details are fetched and it is found to not support EIP-1559
+ */
+export function isNotEIP1559Network(state) {
+  return state.metamask.networkDetails?.EIPS[1559] === false;
+}
+
+/**
+ * Function returns true if network details are fetched and it is found to support EIP-1559
+ */
 export function isEIP1559Network(state) {
   return state.metamask.networkDetails?.EIPS[1559] === true;
 }
@@ -321,4 +324,19 @@ export function getIsGasEstimatesLoading(state) {
       gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET);
 
   return isGasEstimatesLoading;
+}
+
+export function getCompletedOnboarding(state) {
+  return state.metamask.completedOnboarding;
+}
+export function getIsInitialized(state) {
+  return state.metamask.isInitialized;
+}
+
+export function getIsUnlocked(state) {
+  return state.metamask.isUnlocked;
+}
+
+export function getSeedPhraseBackedUp(state) {
+  return state.metamask.seedPhraseBackedUp;
 }

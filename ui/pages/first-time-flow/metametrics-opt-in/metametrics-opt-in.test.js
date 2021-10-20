@@ -21,7 +21,7 @@ describe('MetaMetricsOptIn', () => {
       store,
     );
     const noThanksButton = wrapper.find(
-      '.btn-default.page-container__footer-button',
+      '.btn-secondary.page-container__footer-button',
     );
     noThanksButton.simulate('click');
 

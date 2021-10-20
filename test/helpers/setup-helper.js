@@ -4,6 +4,8 @@ import Adapter from 'enzyme-adapter-react-16';
 import log from 'loglevel';
 import { JSDOM } from 'jsdom';
 
+process.env.IN_TEST = true;
+
 nock.disableNetConnect();
 nock.enableNetConnect('localhost');
 
@@ -56,16 +58,11 @@ const popoverContent = window.document.createElement('div');
 popoverContent.setAttribute('id', 'popover-content');
 window.document.body.appendChild(popoverContent);
 
-// delete AbortController added by jsdom so it can be polyfilled correctly below
-delete window.AbortController;
-
 // fetch
 const fetch = require('node-fetch');
 
 const { Headers, Request, Response } = fetch;
 Object.assign(window, { fetch, Headers, Request, Response });
-
-require('abortcontroller-polyfill/dist/polyfill-patch-fetch');
 
 // localStorage
 window.localStorage = {

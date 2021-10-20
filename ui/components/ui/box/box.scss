@@ -84,6 +84,12 @@ $attributes: padding, margin;
     }
   }
 
+  @each $direction in design-system.$flex-direction {
+    &--flex-direction-#{$direction} {
+      flex-direction: $direction;
+    }
+  }
+
   // Width and Height
   &--width-full {
     width: 100%;

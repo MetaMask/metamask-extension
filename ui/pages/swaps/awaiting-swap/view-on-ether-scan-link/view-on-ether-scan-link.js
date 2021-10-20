@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { I18nContext } from '../../../../contexts/i18n';
 import { useNewMetricEvent } from '../../../../hooks/useMetricEvent';
+import { getURLHostName } from '../../../../helpers/utils/util';
 
 export default function ViewOnEtherScanLink({
   txHash,
@@ -17,9 +18,7 @@ export default function ViewOnEtherScanLink({
     properties: {
       link_type: 'Transaction Block Explorer',
       action: 'Swap Transaction',
-      block_explorer_domain: blockExplorerUrl
-        ? new URL(blockExplorerUrl)?.hostname
-        : '',
+      block_explorer_domain: getURLHostName(blockExplorerUrl),
     },
   });
 
@@ -35,8 +34,11 @@ export default function ViewOnEtherScanLink({
       }}
     >
       {isCustomBlockExplorerUrl
-        ? t('viewOnCustomBlockExplorer', [new URL(blockExplorerUrl).hostname])
-        : t('viewOnEtherscan')}
+        ? t('viewOnCustomBlockExplorer', [
+            t('blockExplorerSwapAction'),
+            getURLHostName(blockExplorerUrl),
+          ])
+        : t('viewOnEtherscan', [t('blockExplorerSwapAction')])}
     </div>
   );
 }

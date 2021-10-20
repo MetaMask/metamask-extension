@@ -22,6 +22,7 @@
       right: 1rem;
       width: min-content;
       font-size: 0.75rem;
+      white-space: nowrap;
     }
   }
 
@@ -137,6 +138,10 @@
         @include H6;
 
         color: $secondary-dark;
+        max-width: 20em;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
       }
 
       &__subtitle {

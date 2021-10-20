@@ -91,9 +91,6 @@
   "addToken": {
     "message": "Tambahkan Token"
   },
-  "addTokens": {
-    "message": "Tambahkan Token"
-  },
   "advanced": {
     "message": "Tingkat Lanjut"
   },
@@ -1025,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "Ya, mari siap-siap!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Apakah Anda ingin menambahkan token ini?"
   },
   "links": {
@@ -1340,9 +1337,6 @@
   "onlyAddTrustedNetworks": {
     "message": "Penyedia jaringan jahat dapat berbohong tentang status blockchain dan merekam aktivitas jaringan Anda. Hanya tambahkan jaringan kustom yang Anda percayai."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Hanya tersedia di mainnet"
-  },
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai."
   },
@@ -1533,9 +1527,6 @@
   "revealSeedWordsDescription": {
     "message": "Jika Anda pernah mengubah browser atau mengganti komputer, Anda akan memerlukan Frasa Pemulihan Rahasia ini untuk mengakses akun Anda. Simpan di tempat yang aman dan rahasia."
   },
-  "revealSeedWordsTitle": {
-    "message": "Frasa Pemulihan Rahasia"
-  },
   "revealSeedWordsWarning": {
     "message": "Kata-kata ini dapat digunakan untuk mencuri semua akun Anda."
   },
@@ -1577,9 +1568,6 @@
   },
   "searchTokens": {
     "message": "Cari Token"
-  },
-  "secretBackupPhrase": {
-    "message": "Frasa Cadangan Rahasia"
   },
   "secretBackupPhraseDescription": {
     "message": "Frasa cadangan rahasia Anda memudahkan untuk mencadangkan dan memulihkan akun Anda."
@@ -1690,9 +1678,6 @@
   },
   "sendTokens": {
     "message": "Kirim Token"
-  },
-  "sentEther": {
-    "message": "ether terkirim"
   },
   "separateEachWord": {
     "message": "Pisahkan setiap kata dengan satu spasi"
@@ -1873,10 +1858,6 @@
     "message": "Tidak ada token yang cocok yang tersedia $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "Memeriksa $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "Konfirmasikan dengan dompet perangkat keras Anda"
   },
@@ -1927,9 +1908,6 @@
   },
   "swapFetchingTokens": {
     "message": "Mengambil token..."
-  },
-  "swapFinalizing": {
-    "message": "Menyelesaikan..."
   },
   "swapFromTo": {
     "message": "Penukaran dari $1 ke $2",
@@ -2402,23 +2380,11 @@
   "viewMore": {
     "message": "Lihat Selengkapnya"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Lihat di $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Lihat di Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Lihat di Explorer"
-  },
   "visitWebSite": {
     "message": "Kunjungi situs web kami"
   },
   "walletConnectionGuide": {
     "message": "panduan koneksi dompet perangkat keras kami"
-  },
-  "walletSeed": {
-    "message": "Frasa Pemulihan Rahasia"
   },
   "walletSeedRestore": {
     "message": "Frasa Pemulihan Rahasia Dompet"

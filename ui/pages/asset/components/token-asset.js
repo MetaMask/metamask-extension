@@ -11,6 +11,7 @@ import {
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors/selectors';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { getURLHostName } from '../../../helpers/utils/util';
 import { showModal } from '../../../store/actions';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 
@@ -39,9 +40,7 @@ export default function TokenAsset({ token }) {
     properties: {
       link_type: 'Token Tracker',
       action: 'Token Options',
-      block_explorer_domain: tokenTrackerLink
-        ? new URL(tokenTrackerLink)?.hostname
-        : '',
+      block_explorer_domain: getURLHostName(tokenTrackerLink),
     },
   });
 

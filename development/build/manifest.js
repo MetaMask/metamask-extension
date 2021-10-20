@@ -3,13 +3,18 @@ const path = require('path');
 const { merge, cloneDeep } = require('lodash');
 
 const baseManifest = require('../../app/manifest/_base.json');
-const { version } = require('../../package.json');
+const betaManifestModifications = require('../../app/manifest/_beta_modifications.json');
 
 const { createTask, composeSeries } = require('./task');
+const { BuildTypes } = require('./utils');
 
 module.exports = createManifestTasks;
 
-function createManifestTasks({ browserPlatforms }) {
+function createManifestTasks({
+  browserPlatforms,
+  browserVersionMap,
+  buildType,
+}) {
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {
     return Promise.all(
@@ -26,8 +31,9 @@ function createManifestTasks({ browserPlatforms }) {
         );
         const result = merge(
           cloneDeep(baseManifest),
-          { version },
           platformModifications,
+          browserVersionMap[platform],
+          getBuildModifications(buildType),
         );
         const dir = path.join('.', 'dist', platform);
         await fs.mkdir(dir, { recursive: true });
@@ -104,4 +110,12 @@ async function readJson(file) {
 // helper for serializing and writing json to fs
 async function writeJson(obj, file) {
   return fs.writeFile(file, JSON.stringify(obj, null, 2));
+}
+
+function getBuildModifications(buildType) {
+  const buildModifications = {};
+  if (buildType === BuildTypes.beta) {
+    Object.assign(buildModifications, betaManifestModifications);
+  }
+  return buildModifications;
 }

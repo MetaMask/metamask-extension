@@ -201,9 +201,9 @@ export default class MobileSyncPage extends Component {
           sendByPost: false, // true to send via post
           storeInHistory: false,
         },
-        (status, response) => {
+        (status, _response) => {
           if (status.error) {
-            reject(response);
+            reject(status.errorData);
           } else {
             resolve();
           }
@@ -224,13 +224,16 @@ export default class MobileSyncPage extends Component {
       network,
       preferences,
       transactions,
+      tokens,
     } = await this.props.fetchInfoToSync();
+    const { t } = this.context;
 
     const allDataStr = JSON.stringify({
       accounts,
       network,
       preferences,
       transactions,
+      tokens,
       udata: {
         pwd: this.state.password,
         seed: this.state.seedWords,
@@ -245,7 +248,7 @@ export default class MobileSyncPage extends Component {
         await this.sendMessage(chunks[i], i + 1, totalChunks);
       }
     } catch (e) {
-      this.props.displayWarning('Sync failed :(');
+      this.props.displayWarning(`${t('syncFailed')} :(`);
       this.setState({ syncing: false });
       this.syncing = false;
       this.notifyError(e.toString());
@@ -266,9 +269,9 @@ export default class MobileSyncPage extends Component {
           sendByPost: false, // true to send via post
           storeInHistory: false,
         },
-        (status, response) => {
+        (status, _response) => {
           if (status.error) {
-            reject(response);
+            reject(status.errorData);
           } else {
             resolve();
           }
@@ -320,12 +323,7 @@ export default class MobileSyncPage extends Component {
     }
 
     return screen === PASSWORD_PROMPT_SCREEN ? (
-      <div>
-        {this.renderWarning(this.context.t('mobileSyncWarning'))}
-        <div className="reveal-seed__content">
-          {this.renderPasswordPromptContent()}
-        </div>
-      </div>
+      <div>{this.renderWarning(this.context.t('mobileSyncWarning'))}</div>
     ) : (
       <div>
         {this.renderWarning(this.context.t('syncWithMobileBeCareful'))}
@@ -410,10 +408,10 @@ export default class MobileSyncPage extends Component {
     return (
       <div
         className="new-account-import-form__buttons"
-        style={{ padding: 30, marginTop: 0 }}
+        style={{ padding: '30px 15px 30px 15px', marginTop: 0 }}
       >
         <Button
-          type="default"
+          type="secondary"
           large
           className="new-account-create-form__button"
           onClick={() => this.goBack()}
@@ -421,7 +419,7 @@ export default class MobileSyncPage extends Component {
           {t('cancel')}
         </Button>
         <Button
-          type="secondary"
+          type="primary"
           large
           className="new-account-create-form__button"
           onClick={(event) => this.handleSubmit(event)}
@@ -439,7 +437,7 @@ export default class MobileSyncPage extends Component {
     return (
       <div className="page-container__footer" style={{ padding: 30 }}>
         <Button
-          type="default"
+          type="secondary"
           large
           className="page-container__footer-button"
           onClick={() => this.goBack()}

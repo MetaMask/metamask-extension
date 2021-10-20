@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Legg til token "
   },
-  "addTokens": {
-    "message": "Legg til sjetonger"
-  },
   "advanced": {
     "message": "Avansert"
   },
@@ -270,7 +267,7 @@
     "message": "Desimaler må være minst 0, og ikke flere enn 36."
   },
   "defaultNetwork": {
-    "message": "Standardnettverket for Ether-transaksjoner er Main Net."
+    "message": "Standardnettverket for Ether-transaksjoner er Mainnet."
   },
   "delete": {
     "message": "Slett"
@@ -527,7 +524,7 @@
   "letsGoSetUp": {
     "message": "Ja, la oss komme i gang!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Ønsker du å legge til disse tokenene"
   },
   "links": {
@@ -789,9 +786,6 @@
   "revealSeedWordsDescription": {
     "message": "Hvis du noen gang bytter nettlesere eller flytter datamaskiner, trenger du denne mnemoniske gjenopprettingsfrasen for å få tilgang til kontoene dine. Lagre dem på et trygt og hemmelig sted."
   },
-  "revealSeedWordsTitle": {
-    "message": "Mnemonisk gjenopprettingsfrase"
-  },
   "revealSeedWordsWarning": {
     "message": "Disse ordene kan brukes for å stjele alle kontoene dine. "
   },
@@ -824,9 +818,6 @@
   },
   "searchTokens": {
     "message": "Søk i sjetonger"
-  },
-  "secretBackupPhrase": {
-    "message": "Hemmelig sikkerhetskopifrase "
   },
   "secretBackupPhraseDescription": {
     "message": "Den hemmelige gjenopprettingsfrasen din gjør det enkelt å sikkerhetskopiere og gjenopprette kontoen din."
@@ -872,9 +863,6 @@
   },
   "sendTokens": {
     "message": "Send tokener"
-  },
-  "sentEther": {
-    "message": "sendt ether"
   },
   "separateEachWord": {
     "message": "Del hvert ord med et enkelt mellomrom "
@@ -1108,20 +1096,8 @@
   "viewContact": {
     "message": "Se kontrakt"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Vis ved $1 "
-  },
-  "viewOnEtherscan": {
-    "message": "Vis på Etherscan "
-  },
-  "viewinExplorer": {
-    "message": "Se i Explorer"
-  },
   "visitWebSite": {
     "message": "Besøk nettsiden vår "
-  },
-  "walletSeed": {
-    "message": "Lommebok med mnemonisk gjenopprettingsfrase"
   },
   "welcome": {
     "message": "Velkommen til MetaMask"
