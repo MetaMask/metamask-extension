@@ -11,30 +11,7 @@ import Dropdown from '../../../components/ui/dropdown';
 import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
-  LEDGER_TRANSPORT_LOCALE_KEYS,
 } from '../../../../shared/constants/hardware-wallets';
-
-const transportTypeOptions = [
-  {
-    localeKey: LEDGER_TRANSPORT_LOCALE_KEYS.LIVE,
-    value: LEDGER_TRANSPORT_TYPES.LIVE,
-  },
-  {
-    localeKey: LEDGER_TRANSPORT_LOCALE_KEYS.U2F,
-    value: LEDGER_TRANSPORT_TYPES.U2F,
-  },
-];
-
-if (window.navigator.hid) {
-  transportTypeOptions.push({
-    localeKey: LEDGER_TRANSPORT_LOCALE_KEYS.WEBHID,
-    value: LEDGER_TRANSPORT_TYPES.WEBHID,
-  });
-}
-
-const recommendedLedgerOption = window.navigator.hid
-  ? LEDGER_TRANSPORT_LOCALE_KEYS.WEBHID
-  : LEDGER_TRANSPORT_LOCALE_KEYS.U2F;
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -424,6 +401,34 @@ export default class AdvancedTab extends PureComponent {
       setLedgerLivePreference,
       displayWarning,
     } = this.props;
+
+    const LEDGER_TRANSPORT_NAMES = {
+      LIVE: t('ledgerLive'),
+      WEBHID: t('webhid'),
+      U2F: t('u2f'),
+    };
+
+    const transportTypeOptions = [
+      {
+        name: LEDGER_TRANSPORT_NAMES.LIVE,
+        value: LEDGER_TRANSPORT_TYPES.LIVE,
+      },
+      {
+        name: LEDGER_TRANSPORT_NAMES.U2F,
+        value: LEDGER_TRANSPORT_TYPES.U2F,
+      },
+    ];
+
+    if (window.navigator.hid) {
+      transportTypeOptions.push({
+        name: LEDGER_TRANSPORT_NAMES.WEBHID,
+        value: LEDGER_TRANSPORT_TYPES.WEBHID,
+      });
+    }
+
+    const recommendedLedgerOption = window.navigator.hid
+      ? LEDGER_TRANSPORT_NAMES.WEBHID
+      : LEDGER_TRANSPORT_NAMES.U2F;
 
     return (
       <div className="settings-page__content-row">
