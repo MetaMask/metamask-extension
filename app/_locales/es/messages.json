@@ -91,9 +91,6 @@
   "addToken": {
     "message": "Agregar token"
   },
-  "addTokens": {
-    "message": "Agregar tokens"
-  },
   "advanced": {
     "message": "Avanzado"
   },
@@ -1025,7 +1022,7 @@
   "letsGoSetUp": {
     "message": "Sí, vamos a establecer la configuración."
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "¿Le gustaría agregar estos tokens?"
   },
   "links": {
@@ -1340,9 +1337,6 @@
   "onlyAddTrustedNetworks": {
     "message": "Un proveedor de red malintencionado puede mentir sobre el estado de la cadena de bloques y registrar su actividad de red. Agregue solo redes personalizadas de confianza."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Solo disponible en la red principal"
-  },
   "onlyConnectTrust": {
     "message": "Conéctese solo con sitios de confianza."
   },
@@ -1533,9 +1527,6 @@
   "revealSeedWordsDescription": {
     "message": "Si alguna vez cambia de explorador o de equipo, necesitará esta frase secreta de recuperación para acceder a sus cuentas. Guárdela en un lugar seguro y secreto."
   },
-  "revealSeedWordsTitle": {
-    "message": "Frase secreta de recuperación"
-  },
   "revealSeedWordsWarning": {
     "message": "Estas palabras pueden usarse para robar todas sus cuentas."
   },
@@ -1577,9 +1568,6 @@
   },
   "searchTokens": {
     "message": "Buscar tokens"
-  },
-  "secretBackupPhrase": {
-    "message": "Frase secreta de respaldo"
   },
   "secretBackupPhraseDescription": {
     "message": "La frase secreta de respaldo facilita la creación de una copia de seguridad y la restauración de su cuenta."
@@ -1690,9 +1678,6 @@
   },
   "sendTokens": {
     "message": "Enviar tokens"
-  },
-  "sentEther": {
-    "message": "enviar ether"
   },
   "separateEachWord": {
     "message": "Separar cada palabra con un solo espacio"
@@ -1873,10 +1858,6 @@
     "message": "No hay tokens disponibles que coincidan con $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "Comprobando $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "Confirmar con la cartera de hardware"
   },
@@ -1927,9 +1908,6 @@
   },
   "swapFetchingTokens": {
     "message": "Capturando tokens…"
-  },
-  "swapFinalizing": {
-    "message": "Finalizando…"
   },
   "swapFromTo": {
     "message": "El canje de $1 por $2",
@@ -2402,23 +2380,11 @@
   "viewMore": {
     "message": "Ver más"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Ver en $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Ver en Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Ver en el explorador"
-  },
   "visitWebSite": {
     "message": "Visite nuestro sitio web"
   },
   "walletConnectionGuide": {
     "message": "nuestra guía de conexión de la cartera de hardware"
-  },
-  "walletSeed": {
-    "message": "Frase secreta de recuperación"
   },
   "walletSeedRestore": {
     "message": "Frase secreta de recuperación de la cartera"

@@ -199,7 +199,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
     return (
       <div className="request-encryption-public-key__footer">
         <Button
-          type="default"
+          type="secondary"
           large
           className="request-encryption-public-key__footer__cancel-button"
           onClick={async (event) => {
@@ -219,7 +219,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
           {this.context.t('cancel')}
         </Button>
         <Button
-          type="secondary"
+          type="primary"
           large
           className="request-encryption-public-key__footer__sign-button"
           onClick={async (event) => {

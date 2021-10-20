@@ -45,6 +45,10 @@ const styles = {
   alignItems: 'center',
 };
 
+export const getNewState = (state, props) => {
+  return Object.assign(state, props);
+}
+
 export const store = configureStore(testData);
 const history = createBrowserHistory();
 const proxiedBackground = new Proxy({}, {

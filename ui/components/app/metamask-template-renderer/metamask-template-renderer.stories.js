@@ -5,6 +5,7 @@ import MetaMaskTemplateRenderer from '.';
 
 export default {
   title: 'MetaMask Template Renderer',
+  id: __filename,
 };
 
 const SECTIONS = {
@@ -60,7 +61,6 @@ const SECTIONS = {
           children: 'Cancel',
           key: 'cancel-button',
           props: {
-            rounded: true,
             type: 'outlined',
             style: {
               width: '45%',
@@ -72,7 +72,6 @@ const SECTIONS = {
           children: 'OK',
           key: 'ok-button',
           props: {
-            rounded: true,
             type: 'primary',
             style: {
               width: '45%',

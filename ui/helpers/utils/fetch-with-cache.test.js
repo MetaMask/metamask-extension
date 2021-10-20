@@ -79,7 +79,10 @@ describe('Fetch with cache', () => {
         {},
         { timeout: 20 },
       ),
-    ).rejects.toThrow({ name: 'AbortError', message: 'Aborted' });
+    ).rejects.toThrow({
+      name: 'AbortError',
+      message: 'The user aborted a request.',
+    });
   });
 
   it('throws when the response is unsuccessful', async () => {

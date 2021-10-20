@@ -7,12 +7,11 @@ const {
 const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
 const { buildWebDriver } = require('./webdriver');
+const { ensureXServerIsRunning } = require('./x-server');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
 const largeDelayMs = regularDelayMs * 2;
-const xLargeDelayMs = largeDelayMs * 2;
-const xxLargeDelayMs = xLargeDelayMs * 2;
 
 const dappPort = 8080;
 
@@ -83,6 +82,12 @@ async function withFixtures(options, testSuite) {
       });
       await segmentServer.start(9090);
     }
+    if (
+      process.env.SELENIUM_BROWSER === 'chrome' &&
+      process.env.CI === 'true'
+    ) {
+      await ensureXServerIsRunning();
+    }
     const { driver } = await buildWebDriver(driverOptions);
     webDriver = driver;
 
@@ -125,7 +130,7 @@ async function withFixtures(options, testSuite) {
       if (webDriver) {
         await webDriver.quit();
       }
-      if (dappServer) {
+      if (dappServer && dappServer.listening) {
         await new Promise((resolve, reject) => {
           dappServer.close((error) => {
             if (error) {
@@ -146,7 +151,5 @@ module.exports = {
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
-  xLargeDelayMs,
-  xxLargeDelayMs,
   withFixtures,
 };

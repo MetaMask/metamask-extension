@@ -93,7 +93,7 @@ export default class ExportPrivateKeyModal extends Component {
       <div className="export-private-key-modal__buttons">
         {!privateKey && (
           <Button
-            type="default"
+            type="secondary"
             large
             className="export-private-key-modal__button export-private-key-modal__button--cancel"
             onClick={() => hideModal()}
@@ -104,7 +104,7 @@ export default class ExportPrivateKeyModal extends Component {
         {privateKey ? (
           <Button
             onClick={() => hideModal()}
-            type="secondary"
+            type="primary"
             large
             className="export-private-key-modal__button"
           >
@@ -115,7 +115,7 @@ export default class ExportPrivateKeyModal extends Component {
             onClick={() =>
               this.exportAccountAndGetPrivateKey(this.state.password, address)
             }
-            type="secondary"
+            type="primary"
             large
             className="export-private-key-modal__button"
             disabled={!this.state.password}

@@ -50,9 +50,6 @@
   "addToken": {
     "message": "ተለዋጭ ስም አክል"
   },
-  "addTokens": {
-    "message": "ተለዋጭ ስሞችን አክል"
-  },
   "advanced": {
     "message": "የላቀ"
   },
@@ -273,7 +270,7 @@
     "message": "አስርዮሽ ቢያንስ 0 ቢበዛ ደግሞ 36 መሆን አለባቸው።"
   },
   "defaultNetwork": {
-    "message": "የ Ether ግብይቶች ንቡር አውታረ መረብ Main Net ነው።"
+    "message": "የ Ether ግብይቶች ንቡር አውታረ መረብ Mainnet ነው።"
   },
   "delete": {
     "message": "ሰርዝ"
@@ -540,7 +537,7 @@
   "letsGoSetUp": {
     "message": "አዎ፣ እናደራጅ!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "እነዚህን ተለዋጭ ስሞች ለማከል ይፈልጋሉ?"
   },
   "links": {
@@ -799,9 +796,6 @@
   "revealSeedWordsDescription": {
     "message": "ማሰሺያዎችን ከቀየሩ ወይም ኮምፒዩተሮቸን ከአንድ ቦታ ወደ ሌላ ቦታ ካንቀሳቀሱ፣ ወደ መለያዎችዎ ለመድረስ ይህ የዘር ሐረግ ያስፈልግዎታል። ደህንነቱና ሚስጥራዊነቱ በተጠበቀ ቦታ ያስቀምጧቸው።"
   },
-  "revealSeedWordsTitle": {
-    "message": "የዘር ሐረግ"
-  },
   "revealSeedWordsWarning": {
     "message": "እነዚህ ቃላት ሁሉንም መለያዎችዎን ለመስረቅ ሊውሉ ይችላሉ።"
   },
@@ -837,9 +831,6 @@
   },
   "searchTokens": {
     "message": "ተለዋጭ ስሞችን ፈልግ"
-  },
-  "secretBackupPhrase": {
-    "message": "ሚስጥራዊ የመጠባበቂያ ምዕራፍ"
   },
   "secretBackupPhraseDescription": {
     "message": "ሚስጥራዊ የመጠባበቂያ ሐረግዎ መለያዎን መጠባበቂያ ለመያዝና ወደነበረበት ለመመለስ ቀላል ያደርገዋል።"
@@ -888,9 +879,6 @@
   },
   "sendTokens": {
     "message": "ተለዋጭ ስሞችን ላክ"
-  },
-  "sentEther": {
-    "message": "የተላከ ether"
   },
   "separateEachWord": {
     "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"
@@ -1130,20 +1118,8 @@
   "viewContact": {
     "message": "ዕውቂያን ይመልከቱ"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "በ $1ይመልከቱ"
-  },
-  "viewOnEtherscan": {
-    "message": "በ Etherscan ላይ ይመልከቱ"
-  },
-  "viewinExplorer": {
-    "message": "በኤክስፕሎረር ተመልከት"
-  },
   "visitWebSite": {
     "message": "ድረ ገጻችንን ይጎብኙ"
-  },
-  "walletSeed": {
-    "message": "የቋት ዘር"
   },
   "welcome": {
     "message": "ወደ MetaMask እንኳን ደህና መጡ"

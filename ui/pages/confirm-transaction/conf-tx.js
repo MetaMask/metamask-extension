@@ -135,7 +135,7 @@ class ConfirmTxScreen extends Component {
   }
 
   stopPropagation(event) {
-    if (event.stopPropagation) {
+    if (event?.stopPropagation) {
       event.stopPropagation();
     }
   }

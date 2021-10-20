@@ -13,6 +13,11 @@ import {
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import {
+  TRUNCATED_ADDRESS_START_CHARS,
+  TRUNCATED_NAME_CHAR_LIMIT,
+  TRUNCATED_ADDRESS_END_CHARS,
+} from '../../../shared/constants/labels';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -54,6 +59,12 @@ export function isDefaultMetaMaskChain(chainId) {
   }
 
   return false;
+}
+
+// Both inputs should be strings. This method is currently used to compare tokenAddress hex strings.
+export function isEqualCaseInsensitive(value1, value2) {
+  if (typeof value1 !== 'string' || typeof value2 !== 'string') return false;
+  return value1.toLowerCase() === value2.toLowerCase();
 }
 
 export function valuesFor(obj) {
@@ -214,11 +225,13 @@ export function exportAsFile(filename, data, type = 'text/csv') {
  * than 10 characters.
  */
 export function shortenAddress(address = '') {
-  if (address.length < 11) {
+  if (address.length < TRUNCATED_NAME_CHAR_LIMIT) {
     return address;
   }
 
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  return `${address.slice(0, TRUNCATED_ADDRESS_START_CHARS)}...${address.slice(
+    -TRUNCATED_ADDRESS_END_CHARS,
+  )}`;
 }
 
 export function getAccountByAddress(accounts = [], targetAddress) {
@@ -378,4 +391,20 @@ export function bnLessThanEqualTo(a, b) {
     return null;
   }
   return new BigNumber(a, 10).lte(b, 10);
+}
+
+export function getURL(url) {
+  try {
+    return new URL(url);
+  } catch (err) {
+    return '';
+  }
+}
+
+export function getURLHost(url) {
+  return getURL(url)?.host || '';
+}
+
+export function getURLHostName(url) {
+  return getURL(url)?.hostname || '';
 }

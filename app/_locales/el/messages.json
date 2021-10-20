@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Προσθήκη Token"
   },
-  "addTokens": {
-    "message": "Προσθήκη Token"
-  },
   "advanced": {
     "message": "Σύνθετες"
   },
@@ -270,7 +267,7 @@
     "message": "Τα δεκαδικά πρέπει να είναι τουλάχιστον 0 και όχι πάνω από 36."
   },
   "defaultNetwork": {
-    "message": "Το προεπιλεγμένο δίκτυο για συναλλαγές Ether είναι το Main Net."
+    "message": "Το προεπιλεγμένο δίκτυο για συναλλαγές Ether είναι το Mainnet."
   },
   "delete": {
     "message": "Διαγραφή"
@@ -537,7 +534,7 @@
   "letsGoSetUp": {
     "message": "Ναι, ας το εγκαταστήσουμε!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Θέλετε να προσθέσετε αυτά τα token;"
   },
   "links": {
@@ -799,9 +796,6 @@
   "revealSeedWordsDescription": {
     "message": "Εάν αλλάξετε ποτέ προγράμματα περιήγησης ή μετακινήσετε υπολογιστές, θα χρειαστείτε αυτήν τη φράση φύτρου για να αποκτήσετε πρόσβαση στους λογαριασμούς σας. Αποθηκεύστε την κάπου με ασφάλεια και μυστικότητα."
   },
-  "revealSeedWordsTitle": {
-    "message": "Φράση Επαναφοράς "
-  },
   "revealSeedWordsWarning": {
     "message": "Αυτές οι λέξεις μπορούν να χρησιμοποιηθούν για να κλαπούν όλοι οι λογαριασμοί σας."
   },
@@ -837,9 +831,6 @@
   },
   "searchTokens": {
     "message": "Αναζήτηση Tokens"
-  },
-  "secretBackupPhrase": {
-    "message": "Μυστική Φράση Αντιγράφου Ασφαλείας"
   },
   "secretBackupPhraseDescription": {
     "message": "Η μυστική φράση δημιουργίας αντιγράφων ασφαλείας σας διευκολύνει να δημιουργήσετε αντίγραφα ασφαλείας και να επαναφέρετε τον λογαριασμού σας."
@@ -888,9 +879,6 @@
   },
   "sendTokens": {
     "message": "Στείλτε Tokens"
-  },
-  "sentEther": {
-    "message": "απεσταλμένα ether"
   },
   "separateEachWord": {
     "message": "Διαχωρίστε κάθε λέξη με ένα μόνο κενό"
@@ -1127,20 +1115,8 @@
   "viewContact": {
     "message": "Εμφάνιση Επαφής"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Προβολή σε $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Προβολή στο Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Προβολή στον Εξερευνητή"
-  },
   "visitWebSite": {
     "message": "Επισκεφθείτε τον ιστότοπό μας"
-  },
-  "walletSeed": {
-    "message": "Σπόρος Πορτοφολιού"
   },
   "welcome": {
     "message": "Καλώς ήλθατε στο MetaMask"

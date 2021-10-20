@@ -55,14 +55,12 @@ function SenderAddress({
         }
       }}
     >
-      {!addressOnly && (
-        <div className="sender-to-recipient__sender-icon">
-          <Identicon
-            address={toChecksumHexAddress(senderAddress)}
-            diameter={24}
-          />
-        </div>
-      )}
+      <div className="sender-to-recipient__sender-icon">
+        <Identicon
+          address={toChecksumHexAddress(senderAddress)}
+          diameter={24}
+        />
+      </div>
       <Tooltip
         position="bottom"
         html={tooltipHtml}
@@ -73,7 +71,9 @@ function SenderAddress({
         <div className="sender-to-recipient__name">
           {addressOnly ? (
             <span>
-              {`${t('from')}: ${senderName || checksummedSenderAddress}`}
+              {`${t('from')}: ${
+                senderName || shortenAddress(checksummedSenderAddress)
+              }`}
             </span>
           ) : (
             senderName
@@ -98,7 +98,6 @@ SenderAddress.propTypes = {
 
 function RecipientWithAddress({
   checksummedRecipientAddress,
-  assetImage,
   onRecipientClick,
   addressOnly,
   recipientNickname,
@@ -133,15 +132,9 @@ function RecipientWithAddress({
         }
       }}
     >
-      {!addressOnly && (
-        <div className="sender-to-recipient__sender-icon">
-          <Identicon
-            address={checksummedRecipientAddress}
-            diameter={24}
-            image={assetImage}
-          />
-        </div>
-      )}
+      <div className="sender-to-recipient__sender-icon">
+        <Identicon address={checksummedRecipientAddress} diameter={24} />
+      </div>
       <Tooltip
         position="bottom"
         html={tooltipHtml}
@@ -153,7 +146,9 @@ function RecipientWithAddress({
         <div className="sender-to-recipient__name">
           <span>{addressOnly ? `${t('to')}: ` : ''}</span>
           {addressOnly
-            ? recipientNickname || recipientEns || checksummedRecipientAddress
+            ? recipientNickname ||
+              recipientEns ||
+              shortenAddress(checksummedRecipientAddress)
             : recipientNickname ||
               recipientEns ||
               recipientName ||
@@ -170,7 +165,6 @@ RecipientWithAddress.propTypes = {
   recipientEns: PropTypes.string,
   recipientNickname: PropTypes.string,
   addressOnly: PropTypes.bool,
-  assetImage: PropTypes.string,
   onRecipientClick: PropTypes.func,
 };
 
@@ -195,7 +189,6 @@ Arrow.propTypes = {
 export default function SenderToRecipient({
   senderAddress,
   addressOnly,
-  assetImage,
   senderName,
   recipientNickname,
   recipientName,
@@ -223,7 +216,6 @@ export default function SenderToRecipient({
       <Arrow variant={variant} />
       {recipientAddress ? (
         <RecipientWithAddress
-          assetImage={assetImage}
           checksummedRecipientAddress={checksummedRecipientAddress}
           onRecipientClick={onRecipientClick}
           addressOnly={addressOnly}
@@ -233,7 +225,7 @@ export default function SenderToRecipient({
         />
       ) : (
         <div className="sender-to-recipient__party sender-to-recipient__party--recipient">
-          {!addressOnly && <i className="fa fa-file-text-o" />}
+          <i className="fa fa-file-text-o" />
           <div className="sender-to-recipient__name">{t('newContract')}</div>
         </div>
       )}
@@ -255,7 +247,6 @@ SenderToRecipient.propTypes = {
   recipientNickname: PropTypes.string,
   variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT]),
   addressOnly: PropTypes.bool,
-  assetImage: PropTypes.string,
   onRecipientClick: PropTypes.func,
   onSenderClick: PropTypes.func,
   warnUserOnAccountMismatch: PropTypes.bool,

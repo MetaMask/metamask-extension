@@ -19,7 +19,10 @@ export default function RecipientGroup({
   }
 
   return (
-    <div className="send__select-recipient-wrapper__group">
+    <div
+      className="send__select-recipient-wrapper__group"
+      data-testid="recipient-group"
+    >
       {label && (
         <div className="send__select-recipient-wrapper__group-label">
           {label}
@@ -41,7 +44,10 @@ export default function RecipientGroup({
           })}
         >
           <Identicon address={address} diameter={28} />
-          <div className="send__select-recipient-wrapper__group-item__content">
+          <div
+            className="send__select-recipient-wrapper__group-item__content"
+            data-testid="recipient"
+          >
             <div className="send__select-recipient-wrapper__group-item__title">
               {name || ellipsify(address)}
             </div>

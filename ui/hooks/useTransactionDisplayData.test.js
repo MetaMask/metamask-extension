@@ -28,7 +28,7 @@ const expectedResults = [
   {
     title: 'Send',
     category: TRANSACTION_GROUP_CATEGORIES.SEND,
-    subtitle: 'To: 0xffe5...1a97',
+    subtitle: 'To: 0xffe...1a97',
     subtitleContainsOrigin: false,
     date: 'May 12, 2020',
     primaryCurrency: '-1 ETH',
@@ -42,7 +42,7 @@ const expectedResults = [
   {
     title: 'Send',
     category: TRANSACTION_GROUP_CATEGORIES.SEND,
-    subtitle: 'To: 0x0ccc...8848',
+    subtitle: 'To: 0x0cc...8848',
     subtitleContainsOrigin: false,
     date: 'May 12, 2020',
     primaryCurrency: '-2 ETH',
@@ -55,7 +55,7 @@ const expectedResults = [
   {
     title: 'Send',
     category: TRANSACTION_GROUP_CATEGORIES.SEND,
-    subtitle: 'To: 0xffe5...1a97',
+    subtitle: 'To: 0xffe...1a97',
     subtitleContainsOrigin: false,
     date: 'May 12, 2020',
     primaryCurrency: '-2 ETH',
@@ -68,7 +68,7 @@ const expectedResults = [
   {
     title: 'Receive',
     category: TRANSACTION_GROUP_CATEGORIES.RECEIVE,
-    subtitle: 'From: 0x31b9...4523',
+    subtitle: 'From: 0x31b...4523',
     subtitleContainsOrigin: false,
     date: 'May 12, 2020',
     primaryCurrency: '18.75 ETH',
@@ -81,7 +81,7 @@ const expectedResults = [
   {
     title: 'Receive',
     category: TRANSACTION_GROUP_CATEGORIES.RECEIVE,
-    subtitle: 'From: 0x9eca...a149',
+    subtitle: 'From: 0x9ec...a149',
     subtitleContainsOrigin: false,
     date: 'May 8, 2020',
     primaryCurrency: '0 ETH',
@@ -94,7 +94,7 @@ const expectedResults = [
   {
     title: 'Receive',
     category: TRANSACTION_GROUP_CATEGORIES.RECEIVE,
-    subtitle: 'From: 0xee01...febb',
+    subtitle: 'From: 0xee0...febb',
     subtitleContainsOrigin: false,
     date: 'May 24, 2020',
     primaryCurrency: '1 ETH',

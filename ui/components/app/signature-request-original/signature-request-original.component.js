@@ -285,50 +285,58 @@ export default class SignatureRequestOriginal extends Component {
       history,
       mostRecentOverviewPage,
       sign,
+      txData: { type },
     } = this.props;
+    const { metricsEvent, t } = this.context;
 
     return (
       <div className="request-signature__footer">
         <Button
-          type="default"
+          type="secondary"
           large
           className="request-signature__footer__cancel-button"
           onClick={async (event) => {
             this._removeBeforeUnload();
             await cancel(event);
-            this.context.metricsEvent({
+            metricsEvent({
               eventOpts: {
                 category: 'Transactions',
                 action: 'Sign Request',
                 name: 'Cancel',
               },
-            });
-            clearConfirmTransaction();
-            history.push(mostRecentOverviewPage);
-          }}
-        >
-          {this.context.t('cancel')}
-        </Button>
-        <Button
-          data-testid="request-signature__sign"
-          type="secondary"
-          large
-          className="request-signature__footer__sign-button"
-          onClick={async (event) => {
-            this._removeBeforeUnload();
-            await sign(event);
-            this.context.metricsEvent({
-              eventOpts: {
-                category: 'Transactions',
-                action: 'Sign Request',
-                name: 'Confirm',
+              customVariables: {
+                type,
               },
             });
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }}
         >
-          {this.context.t('sign')}
+          {t('cancel')}
+        </Button>
+        <Button
+          data-testid="request-signature__sign"
+          type="primary"
+          large
+          className="request-signature__footer__sign-button"
+          onClick={async (event) => {
+            this._removeBeforeUnload();
+            await sign(event);
+            metricsEvent({
+              eventOpts: {
+                category: 'Transactions',
+                action: 'Sign Request',
+                name: 'Confirm',
+              },
+              customVariables: {
+                type,
+              },
+            });
+            clearConfirmTransaction();
+            history.push(mostRecentOverviewPage);
+          }}
+        >
+          {t('sign')}
         </Button>
       </div>
     );

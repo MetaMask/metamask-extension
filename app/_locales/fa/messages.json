@@ -50,9 +50,6 @@
   "addToken": {
     "message": "یک رمز یاب اضافه کنید"
   },
-  "addTokens": {
-    "message": "اضافه رمزیاب ها"
-  },
   "advanced": {
     "message": "پیشرفته"
   },
@@ -273,7 +270,7 @@
     "message": "اعشاریه ها باید حد اقل 0، و بیشتر از 36 نباشند."
   },
   "defaultNetwork": {
-    "message": "شبکه خودکار برای معاملات Ether عبارت است از Main Net."
+    "message": "شبکه خودکار برای معاملات Ether عبارت است از Mainnet."
   },
   "delete": {
     "message": "حذف"
@@ -540,7 +537,7 @@
   "letsGoSetUp": {
     "message": "بلی، درست شد!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "آیا میخواهید این رمزیاب ها را اضافه نمایید؟"
   },
   "links": {
@@ -802,9 +799,6 @@
   "revealSeedWordsDescription": {
     "message": "در صورتیکه شما معمولًا براوزر ها را تغییر داده یا کمپیوتر ها را انتقال میدهید، شما این عبارت آغازین را نیاز خواهید داشت تا به حساب های تان دسترسی داشته باشید. آنها را در یکجای مصؤن و مخفی نگهدارید."
   },
-  "revealSeedWordsTitle": {
-    "message": "عبارت بازیاب"
-  },
   "revealSeedWordsWarning": {
     "message": "این کلمات را میتوان جهت سرقت همه حساب های تان استفاده نمود."
   },
@@ -840,9 +834,6 @@
   },
   "searchTokens": {
     "message": "رمزیاب های جستجو"
-  },
-  "secretBackupPhrase": {
-    "message": "عبارت مخفی پشتیبان"
   },
   "secretBackupPhraseDescription": {
     "message": "عبارت مخفی پشتیبان تان نسخه پشتیبان و دوباره سازی حساب را تسهیل میسازد."
@@ -891,9 +882,6 @@
   },
   "sendTokens": {
     "message": "رمزیاب ها را ارسال کنید"
-  },
-  "sentEther": {
-    "message": "ایتر ارسال شد"
   },
   "separateEachWord": {
     "message": "هر کلمه را با یک فاصله واحد جدا سازید"
@@ -1133,20 +1121,8 @@
   "viewContact": {
     "message": "مشاهده تماس"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "مشاهده در 1$1"
-  },
-  "viewOnEtherscan": {
-    "message": "مشاهده در ایترسکن"
-  },
-  "viewinExplorer": {
-    "message": "مشاهده در براوزر"
-  },
   "visitWebSite": {
     "message": "از وب سایت ما دیدن نمایید"
-  },
-  "walletSeed": {
-    "message": "بازیاب کیف"
   },
   "welcome": {
     "message": "به MetaMask خوش آمدید"
