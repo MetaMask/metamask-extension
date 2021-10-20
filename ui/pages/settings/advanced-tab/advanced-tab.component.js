@@ -400,7 +400,6 @@ export default class AdvancedTab extends PureComponent {
     const {
       ledgerTransportType,
       setLedgerLivePreference,
-      displayWarning,
       userHasALedgerAccount,
     } = this.props;
 
@@ -460,7 +459,10 @@ export default class AdvancedTab extends PureComponent {
               selectedOption={ledgerTransportType}
               onChange={async (transportType) => {
                 setLedgerLivePreference(transportType);
-                if (transportType === LEDGER_TRANSPORT_TYPES.WEBHID && userHasALedgerAccount) {
+                if (
+                  transportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
+                  userHasALedgerAccount
+                ) {
                   await window.navigator.hid.requestDevice({
                     filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
                   });

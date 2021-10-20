@@ -9,11 +9,11 @@ import {
   conversionRateSelector,
   getDomainMetadata,
   doesAddressRequireLedgerHidConnection,
-  isAddresLedger,
 } from '../../../selectors';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { isAddresLedger } from '../../../ducks/metamask/metamask';
 import SignatureRequestOriginal from './signature-request-original.component';
 
 function mapStateToProps(state, ownProps) {
