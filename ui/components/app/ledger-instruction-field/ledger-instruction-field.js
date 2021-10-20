@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import log from 'loglevel';
 import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
@@ -110,33 +109,25 @@ export default function LedgerInstructionField({ showDataInstruction }) {
                 <Button
                   type="link"
                   onClick={async () => {
-                    try {
-                      if (environmentTypeIsFullScreen) {
-                        const connectedDevices = await window.navigator.hid.requestDevice(
-                          {
-                            filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
-                          },
-                        );
-                        const webHidIsConnected = connectedDevices.some(
-                          (device) =>
-                            device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-                        );
-                        dispatch(
-                          setLedgerWebHidConnectedStatus({
-                            webHidConnectedStatus: webHidIsConnected
-                              ? WEBHID_CONNECTED_STATUSES.CONNECTED
-                              : WEBHID_CONNECTED_STATUSES.NOT_CONNECTED,
-                          }),
-                        );
-                      } else {
-                        global.platform.openExtensionInBrowser(
-                          null,
-                          null,
-                          true,
-                        );
-                      }
-                    } catch (e) {
-                      log.error(e);
+                    if (environmentTypeIsFullScreen) {
+                      const connectedDevices = await window.navigator.hid.requestDevice(
+                        {
+                          filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
+                        },
+                      );
+                      const webHidIsConnected = connectedDevices.some(
+                        (device) =>
+                          device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+                      );
+                      dispatch(
+                        setLedgerWebHidConnectedStatus({
+                          webHidConnectedStatus: webHidIsConnected
+                            ? WEBHID_CONNECTED_STATUSES.CONNECTED
+                            : WEBHID_CONNECTED_STATUSES.NOT_CONNECTED,
+                        }),
+                      );
+                    } else {
+                      global.platform.openExtensionInBrowser(null, null, true);
                     }
                   }}
                 >
