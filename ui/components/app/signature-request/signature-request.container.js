@@ -7,7 +7,6 @@ import {
 import { isAddresLedger } from '../../../ducks/metamask/metamask';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { KEYRING_TYPES } from '../../../../shared/constants/hardware-wallets';
 import SignatureRequest from './signature-request.component';
 
 function mapStateToProps(state, ownProps) {
