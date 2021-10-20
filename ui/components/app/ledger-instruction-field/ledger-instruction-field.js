@@ -31,6 +31,21 @@ import {
 } from '../../../../app/scripts/lib/util';
 import { getLedgerTransportType } from '../../../selectors/selectors';
 
+const renderLedgerLiveStep = (text, show = true, color = COLORS.PRIMARY3) => {
+  return (
+    show && (
+      <Typography
+        boxProps={{ margin: 0 }}
+        color={color}
+        fontWeight={FONT_WEIGHT.BOLD}
+        variant={TYPOGRAPHY.H7}
+      >
+        {text}
+      </Typography>
+    )
+  );
+};
+
 export default function LedgerInstructionField({ showDataInstruction }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -70,21 +85,6 @@ export default function LedgerInstructionField({ showDataInstruction }) {
   const usingWebHID = ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID;
 
   const isFirefox = getPlatform() === PLATFORM_FIREFOX;
-
-  const renderLedgerLiveStep = (text, show = true, color = COLORS.PRIMARY3) => {
-    return (
-      show && (
-        <Typography
-          boxProps={{ margin: 0 }}
-          color={color}
-          fontWeight={FONT_WEIGHT.BOLD}
-          variant={TYPOGRAPHY.H7}
-        >
-          {text}
-        </Typography>
-      )
-    );
-  };
 
   return (
     <div>
