@@ -75,19 +75,6 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 
 [![Architecture Diagram](./docs/architecture.png)][1]
 
-## Development
-
-```bash
-yarn
-yarn start
-```
-
-## Build for Publishing
-
-```bash
-yarn dist
-```
-
 ## Other Docs
 
 - [How to add custom build to Chrome](./docs/add-to-chrome.md)
