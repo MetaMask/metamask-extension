@@ -5,9 +5,25 @@
   width: 100%;
   font-style: normal;
 
-  &__identicon {
+  &__siteimage {
     width: 28px;
     height: 28px;
+  }
+
+  &__identicon {
+    margin: 4px 8px 0 4px;
+  }
+
+  &__copy-address,
+  &__etherscan-link {
+    padding: 0 0 0 8px;
+  }
+
+  &__etherscan-link {
+    img {
+      width: 9px;
+      height: 9px;
+    }
   }
 
   .app-header__logo-container {
@@ -15,7 +31,7 @@
   }
 
   .app-header__metafox-logo--icon {
-    height: 30px;
+    height: 33px;
     width: 33px;
   }
 
@@ -341,6 +357,18 @@
     padding: 12px 12px 14px 12px;
     border: 1px solid $ui-1;
     box-sizing: border-box;
+    border-radius: 100px;
+    align-items: center;
+  }
+
+  &__address-display-content {
+    display: flex;
+    height: 27px;
+    // margin-top: 16px;
+    padding: 12px 12px 14px 12px;
+    background-color: $ui-1;
+    // border: 1px solid $ui-1;
+    // box-sizing: border-box;
     border-radius: 100px;
     align-items: center;
   }
