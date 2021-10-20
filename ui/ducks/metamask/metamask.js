@@ -356,7 +356,7 @@ export function getLedgerTransportType(state) {
   return state.metamask.ledgerTransportType;
 }
 
-export function isAddresLedger(state, address) {
+export function isAddressLedger(state, address) {
   const keyring = findKeyringForAddress(state, address);
 
   return keyring?.type === KEYRING_TYPES.LEDGER;

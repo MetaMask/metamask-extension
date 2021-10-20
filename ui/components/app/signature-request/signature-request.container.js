@@ -4,7 +4,7 @@ import {
   accountsWithSendEtherInfoSelector,
   doesAddressRequireLedgerHidConnection,
 } from '../../../selectors';
-import { isAddresLedger } from '../../../ducks/metamask/metamask';
+import { isAddressLedger } from '../../../ducks/metamask/metamask';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import SignatureRequest from './signature-request.component';
@@ -18,7 +18,7 @@ function mapStateToProps(state, ownProps) {
     state,
     from,
   );
-  const isLedgerWallet = isAddresLedger(state, from);
+  const isLedgerWallet = isAddressLedger(state, from);
 
   return {
     isLedgerWallet,

@@ -40,7 +40,7 @@ import {
   isNotEIP1559Network,
   isEIP1559Network,
   getLedgerTransportType,
-  isAddresLedger,
+  isAddressLedger,
   findKeyringForAddress,
 } from '../ducks/metamask/metamask';
 import { getLedgerWebHidConnectedStatus } from '../ducks/app/app';
@@ -644,7 +644,7 @@ export function getTokenList(state) {
 }
 
 export function doesAddressRequireLedgerHidConnection(state, address) {
-  const addressIsLedger = isAddresLedger(state, address);
+  const addressIsLedger = isAddressLedger(state, address);
   const transportTypePreferenceIsWebHID =
     getLedgerTransportType(state) === LEDGER_TRANSPORT_TYPES.WEBHID;
   const webHidIsNotConnected =
