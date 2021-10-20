@@ -1013,7 +1013,6 @@ export default class TransactionController extends EventEmitter {
         'transactions#acceptTransaction - add txReceipt',
       );
 
-      // QQ: how do we handle below logic for swaps if transaction is rolledback to pending
       if (txMeta.type === TRANSACTION_TYPES.SWAP) {
         const postTxBalance = await this.query.getBalance(txMeta.txParams.from);
         const latestTxMeta = this.txStateManager.getTransaction(txId);
@@ -1097,18 +1096,30 @@ export default class TransactionController extends EventEmitter {
         resubmit_time: Date.now(),
         status: 'resubmitted',
       };
-      delete txMeta.txReceipt;
+
+      // eslint-disable-next-line no-unused-vars
+      const { txReceipt, ...newTxMeta } = txMeta;
 
       this._trackTransactionMetricsEvent(
-        txMeta,
+        newTxMeta,
         TRANSACTION_EVENTS.SUBMITTED,
         metricsParams,
       );
 
       this.txStateManager.updateTransaction(
-        txMeta,
+        newTxMeta,
         'transactions#resubmitTransaction - delete txReceipt',
       );
+
+      if (newTxMeta.type === TRANSACTION_TYPES.SWAP) {
+        // eslint-disable-next-line no-unused-vars
+        const { postTxBalance, ...latestTxMeta } = newTxMeta;
+
+        this.txStateManager.updateTransaction(
+          latestTxMeta,
+          'transactions#resubmitTransaction - delete postTxBalance',
+        );
+      }
     } catch (err) {
       log.error(err);
     }
