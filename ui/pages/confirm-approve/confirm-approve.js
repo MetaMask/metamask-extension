@@ -15,11 +15,7 @@ import {
   getTokenValueParam,
 } from '../../helpers/utils/token-util';
 import { useTokenTracker } from '../../hooks/useTokenTracker';
-import {
-  getTokens,
-  getNativeCurrency,
-  getLedgerTransportType,
-} from '../../ducks/metamask/metamask';
+import { getTokens, getNativeCurrency } from '../../ducks/metamask/metamask';
 import {
   transactionFeeSelector,
   txDataSelector,
@@ -28,9 +24,8 @@ import {
   getUseNonceField,
   getCustomNonceValue,
   getNextSuggestedNonce,
-  getHardwareWalletType,
+  doesAddressRequireLedgerHidConnection,
 } from '../../selectors';
-import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
 
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
 
@@ -41,12 +36,18 @@ import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
+const doesAddressRequireLedgerHidConnectionByFromAddress = (address) => (
+  state,
+) => {
+  return doesAddressRequireLedgerHidConnection(state, address);
+};
+
 export default function ConfirmApprove() {
   const dispatch = useDispatch();
   const { id: paramsTransactionId } = useParams();
   const {
     id: transactionId,
-    txParams: { to: tokenAddress, data } = {},
+    txParams: { to: tokenAddress, data, from } = {},
   } = useSelector(txDataSelector);
 
   const currentCurrency = useSelector(getCurrentCurrency);
@@ -57,10 +58,10 @@ export default function ConfirmApprove() {
   const useNonceField = useSelector(getUseNonceField);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
-  const ledgerTransportType = useSelector(getLedgerTransportType);
-  const hardwareWalletType = useSelector(getHardwareWalletType);
 
-  const isLedgerWallet = hardwareWalletType === KEYRING_TYPES.LEDGER;
+  const ledgerWalletRequiredHidConnection = useSelector(
+    doesAddressRequireLedgerHidConnectionByFromAddress(from),
+  );
 
   const transaction =
     currentNetworkTxList.find(
@@ -218,8 +219,9 @@ export default function ConfirmApprove() {
             }
             warning={submitWarning}
             txData={transaction}
-            ledgerTransportType={ledgerTransportType}
-            isLedgerWallet={isLedgerWallet}
+            ledgerWalletRequiredHidConnection={
+              ledgerWalletRequiredHidConnection
+            }
           />
           {showCustomizeGasPopover && (
             <EditGasPopover
