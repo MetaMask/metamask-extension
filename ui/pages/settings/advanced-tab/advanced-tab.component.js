@@ -444,7 +444,7 @@ export default class AdvancedTab extends PureComponent {
                 href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="info-tab__link-text"
+                className="settings-page__inline-link"
               >
                 {t('learnMore')}
               </Button>,
