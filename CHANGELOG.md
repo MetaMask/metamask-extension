@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#12381](https://github.com/MetaMask/metamask-extension/pull/12381): Fix width and padding of the hide token modal while in the popup view
 - [#12339](https://github.com/MetaMask/metamask-extension/pull/11996): Fix 'BigNumber' app error when '0x' is supplied as the transaction value
 - [#12339](https://github.com/MetaMask/metamask-extension/pull/12339): Correctly notify the inpage provider of current selected account on "unlock" events
+- [#12405](https://github.com/MetaMask/metamask-extension/pull/12405): Fix allowance issue with WETH -> ETH Swaps
 
 ## [10.2.2]
 ### Changed
