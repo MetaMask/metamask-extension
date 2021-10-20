@@ -31,7 +31,7 @@ import {
 } from '../../../../app/scripts/lib/util';
 import { getLedgerTransportType } from '../../../selectors/selectors';
 
-const renderLedgerLiveStep = (text, show = true, color = COLORS.PRIMARY3) => {
+const renderInstructionStep = (text, show = true, color = COLORS.PRIMARY3) => {
   return (
     show && (
       <Typography
@@ -91,21 +91,23 @@ export default function LedgerInstructionField({ showDataInstruction }) {
       <div className="confirm-detail-row">
         <Dialog type="message">
           <div className="ledger-live-dialog">
-            {renderLedgerLiveStep(t('ledgerLiveDialogHeader'))}
-            {renderLedgerLiveStep(
-              `- ${t('ledgerLiveDialogStepOne')}`,
+            {renderInstructionStep(t('ledgerConnectionInstructionHeader'))}
+            {renderInstructionStep(
+              `- ${t('ledgerConnectionInstructionStepOne')}`,
               !isFirefox && usingLedgerLive,
             )}
-            {renderLedgerLiveStep(
-              `- ${t('ledgerLiveDialogStepTwo')}`,
+            {renderInstructionStep(
+              `- ${t('ledgerConnectionInstructionStepTwo')}`,
               !isFirefox && usingLedgerLive,
             )}
-            {renderLedgerLiveStep(`- ${t('ledgerLiveDialogStepThree')}`)}
-            {renderLedgerLiveStep(
-              `- ${t('ledgerLiveDialogStepFour')}`,
+            {renderInstructionStep(
+              `- ${t('ledgerConnectionInstructionStepThree')}`,
+            )}
+            {renderInstructionStep(
+              `- ${t('ledgerConnectionInstructionStepFour')}`,
               showDataInstruction,
             )}
-            {renderLedgerLiveStep(
+            {renderInstructionStep(
               <span>
                 <Button
                   type="link"
