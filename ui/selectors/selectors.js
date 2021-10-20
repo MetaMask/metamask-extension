@@ -673,3 +673,9 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
     addressIsLedger && transportTypePreferenceIsWebHID && webHidIsNotConnected
   );
 }
+
+export function doesUserHaveALedgerAccount(state) {
+  return state.metamask.keyrings.some((kr) => {
+    return kr.type === KEYRING_TYPES.LEDGER;
+  });
+}

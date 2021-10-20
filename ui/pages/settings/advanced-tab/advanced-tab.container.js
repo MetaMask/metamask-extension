@@ -14,7 +14,7 @@ import {
   setLedgerLivePreference,
   setDismissSeedBackUpReminder,
 } from '../../../store/actions';
-import { getPreferences } from '../../../selectors';
+import { getPreferences, doesUserHaveALedgerAccount } from '../../../selectors';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
@@ -33,6 +33,8 @@ export const mapStateToProps = (state) => {
   } = metamask;
   const { showFiatInTestnets, autoLockTimeLimit } = getPreferences(state);
 
+  const userHasALedgerAccount = doesUserHaveALedgerAccount(state);
+
   return {
     warning,
     sendHexData,
@@ -45,6 +47,7 @@ export const mapStateToProps = (state) => {
     ipfsGateway,
     ledgerTransportType,
     dismissSeedBackUpReminder,
+    userHasALedgerAccount,
   };
 };
 

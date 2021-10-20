@@ -43,6 +43,7 @@ export default class AdvancedTab extends PureComponent {
     setLedgerLivePreference: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
+    userHasALedgerAccount: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -400,6 +401,7 @@ export default class AdvancedTab extends PureComponent {
       ledgerTransportType,
       setLedgerLivePreference,
       displayWarning,
+      userHasALedgerAccount,
     } = this.props;
 
     const LEDGER_TRANSPORT_NAMES = {
@@ -457,18 +459,12 @@ export default class AdvancedTab extends PureComponent {
               options={transportTypeOptions}
               selectedOption={ledgerTransportType}
               onChange={async (transportType) => {
-                if (transportType === LEDGER_TRANSPORT_TYPES.WEBHID) {
-                  try {
-                    await window.navigator.hid.requestDevice({
-                      filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
-                    });
-                    setLedgerLivePreference(transportType);
-                  } catch (e) {
-                    displayWarning(e.message);
-                  }
-                  return;
-                }
                 setLedgerLivePreference(transportType);
+                if (transportType === LEDGER_TRANSPORT_TYPES.WEBHID && userHasALedgerAccount) {
+                  await window.navigator.hid.requestDevice({
+                    filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
+                  });
+                }
               }}
             />
           </div>
