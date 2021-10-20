@@ -10,6 +10,7 @@ import {
 import { updateTransaction } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
+import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
 import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
 
@@ -343,10 +344,13 @@ export function getSeedPhraseBackedUp(state) {
 }
 
 export function findKeyringForAddress(state, address) {
-  const simpleAddress = stripHexPrefix(address).toLowerCase();
-
   const keyring = state.metamask.keyrings.find((kr) => {
-    return kr.accounts.includes(simpleAddress) || kr.accounts.includes(address);
+    return kr.accounts.some((account) => {
+      return (
+        isEqualCaseInsensitive(account, address) ||
+        isEqualCaseInsensitive(account, stripHexPrefix(address))
+      );
+    });
   });
 
   return keyring;
