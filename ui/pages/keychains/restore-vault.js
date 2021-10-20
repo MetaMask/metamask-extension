@@ -164,7 +164,7 @@ class RestoreVaultPage extends Component {
               {this.context.t('secretPhrase')}
             </div>
             <div className="import-account__selector-typography">
-              {this.context.t('secretPhraseDescription')}
+              {this.context.t('secretPhraseWarning')}
             </div>
             <div className="import-account__input-wrapper">
               <label className="import-account__input-label">
