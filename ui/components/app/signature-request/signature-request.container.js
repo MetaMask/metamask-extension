@@ -2,8 +2,8 @@ import { connect } from 'react-redux';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import {
   accountsWithSendEtherInfoSelector,
-  getHardwareWalletType,
   doesAddressRequireLedgerHidConnection,
+  isAddresLedger,
 } from '../../../selectors';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
@@ -19,9 +19,7 @@ function mapStateToProps(state, ownProps) {
     state,
     from,
   );
-  const hardwareWalletType = getHardwareWalletType(state);
-
-  const isLedgerWallet = hardwareWalletType === KEYRING_TYPES.LEDGER;
+  const isLedgerWallet = isAddresLedger(state, from);
 
   return {
     isLedgerWallet,
