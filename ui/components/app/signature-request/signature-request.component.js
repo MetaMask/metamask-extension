@@ -22,6 +22,7 @@ export default class SignatureRequest extends PureComponent {
     clearConfirmTransaction: PropTypes.func.isRequired,
     cancel: PropTypes.func.isRequired,
     sign: PropTypes.func.isRequired,
+    hardwareWalletRequiresConnection: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -73,6 +74,7 @@ export default class SignatureRequest extends PureComponent {
       cancel,
       sign,
       isLedgerWallet,
+      hardwareWalletRequiresConnection,
     } = this.props;
     const { address: fromAddress } = fromAccount;
     const { message, domain = {} } = JSON.parse(data);
@@ -141,7 +143,11 @@ export default class SignatureRequest extends PureComponent {
           </div>
         ) : null}
         <Message data={message} />
-        <Footer cancelAction={onCancel} signAction={onSign} />
+        <Footer
+          cancelAction={onCancel}
+          signAction={onSign}
+          disabled={hardwareWalletRequiresConnection}
+        />
       </div>
     );
   }

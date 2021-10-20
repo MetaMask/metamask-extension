@@ -8,7 +8,11 @@ import {
   NETWORK_TYPE_RPC,
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
 } from '../../shared/constants/network';
-import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
+import {
+  KEYRING_TYPES,
+  WEBHID_CONNECTED_STATUSES,
+  LEDGER_TRANSPORT_TYPES,
+} from '../../shared/constants/hardware-wallets';
 
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
@@ -37,6 +41,7 @@ import {
   isNotEIP1559Network,
   isEIP1559Network,
 } from '../ducks/metamask/metamask';
+import { getLedgerWebHidConnectedStatus } from '../ducks/app/app';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -70,6 +75,16 @@ export function getCurrentChainId(state) {
   return chainId;
 }
 
+function findKeyringForAddress(state, address) {
+  const simpleAddress = stripHexPrefix(address).toLowerCase();
+
+  const keyring = state.metamask.keyrings.find((kr) => {
+    return kr.accounts.includes(simpleAddress) || kr.accounts.includes(address);
+  });
+
+  return keyring;
+}
+
 export function getCurrentKeyring(state) {
   const identity = getSelectedIdentity(state);
 
@@ -77,14 +92,7 @@ export function getCurrentKeyring(state) {
     return null;
   }
 
-  const simpleAddress = stripHexPrefix(identity.address).toLowerCase();
-
-  const keyring = state.metamask.keyrings.find((kr) => {
-    return (
-      kr.accounts.includes(simpleAddress) ||
-      kr.accounts.includes(identity.address)
-    );
-  });
+  const keyring = findKeyringForAddress(state, identity.address);
 
   return keyring;
 }
@@ -645,4 +653,23 @@ export function getTokenList(state) {
 
 export function getLedgerTransportType(state) {
   return state.metamask.ledgerTransportType;
+}
+
+export function isAddresLedger(state, address) {
+  const keyring = findKeyringForAddress(state, address);
+
+  return keyring?.type === KEYRING_TYPES.LEDGER;
+}
+
+export function doesAddressRequireLedgerHidConnection(state, address) {
+  const addressIsLedger = isAddresLedger(state, address);
+  const transportTypePreferenceIsWebHID =
+    getLedgerTransportType(state) === LEDGER_TRANSPORT_TYPES.WEBHID;
+  const webHidIsNotConnected =
+    getLedgerWebHidConnectedStatus(state) !==
+    WEBHID_CONNECTED_STATUSES.CONNECTED;
+
+  return (
+    addressIsLedger && transportTypePreferenceIsWebHID && webHidIsNotConnected
+  );
 }

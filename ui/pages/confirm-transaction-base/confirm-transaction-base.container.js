@@ -28,7 +28,8 @@ import {
   getShouldShowFiat,
   checkNetworkAndAccountSupports1559,
   getPreferences,
-  getHardwareWalletType,
+  isAddresLedger,
+  doesAddressRequireLedgerHidConnection,
   getUseTokenDetection,
   getTokenList,
 } from '../../selectors';
@@ -37,7 +38,6 @@ import {
   transactionMatchesNetwork,
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
-import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
   updateTransactionGasFees,
@@ -79,7 +79,6 @@ const mapStateToProps = (state, ownProps) => {
     unapprovedTxs,
     nextNonce,
     provider: { chainId },
-    ledgerTransportType,
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
@@ -169,8 +168,13 @@ const mapStateToProps = (state, ownProps) => {
   const gasFeeIsCustom =
     fullTxData.userFeeLevel === 'custom' ||
     txParamsAreDappSuggested(fullTxData);
-  const showLedgerSteps = getHardwareWalletType(state) === KEYRING_TYPES.LEDGER;
+  const fromAddressIsLedger = isAddresLedger(state, fromAddress);
   const nativeCurrency = getNativeCurrency(state);
+
+  const hardwareWalletRequiresConnection = doesAddressRequireLedgerHidConnection(
+    state,
+    fromAddress,
+  );
 
   return {
     balance,
@@ -217,9 +221,9 @@ const mapStateToProps = (state, ownProps) => {
     maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
     gasFeeIsCustom,
-    showLedgerSteps,
+    showLedgerSteps: fromAddressIsLedger,
     nativeCurrency,
-    ledgerTransportType,
+    hardwareWalletRequiresConnection,
   };
 };
 

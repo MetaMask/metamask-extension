@@ -127,6 +127,7 @@ export default class ConfirmTransactionBase extends Component {
     showLedgerSteps: PropTypes.bool.isRequired,
     nativeCurrency: PropTypes.string,
     supportsEIP1559: PropTypes.bool,
+    hardwareWalletRequiresConnection: PropTypes.bool,
   };
 
   state = {
@@ -876,6 +877,7 @@ export default class ConfirmTransactionBase extends Component {
       gasIsLoading,
       gasFeeIsCustom,
       nativeCurrency,
+      hardwareWalletRequiresConnection,
     } = this.props;
     const {
       submitting,
@@ -941,7 +943,12 @@ export default class ConfirmTransactionBase extends Component {
         lastTx={lastTx}
         ofText={ofText}
         requestsWaitingText={requestsWaitingText}
-        disabled={!valid || submitting || (gasIsLoading && !gasFeeIsCustom)}
+        disabled={
+          !valid ||
+          submitting ||
+          hardwareWalletRequiresConnection ||
+          (gasIsLoading && !gasFeeIsCustom)
+        }
         onEdit={() => this.handleEdit()}
         onCancelAll={() => this.handleCancelAll()}
         onCancel={() => this.handleCancel()}
