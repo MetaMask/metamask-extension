@@ -14,7 +14,8 @@ import {
   setLedgerLivePreference,
   setDismissSeedBackUpReminder,
 } from '../../../store/actions';
-import { getPreferences, doesUserHaveALedgerAccount } from '../../../selectors';
+import { getPreferences } from '../../../selectors';
+import { doesUserHaveALedgerAccount } from '../../../ducks/metamask/metamask';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {

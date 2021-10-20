@@ -28,22 +28,24 @@ import {
   getShouldShowFiat,
   checkNetworkAndAccountSupports1559,
   getPreferences,
-  isAddresLedger,
   doesAddressRequireLedgerHidConnection,
   getUseTokenDetection,
   getTokenList,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
-  transactionMatchesNetwork,
-  txParamsAreDappSuggested,
-} from '../../../shared/modules/transaction.utils';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import {
+  isAddresLedger,
   updateTransactionGasFees,
   getIsGasEstimatesLoading,
   getNativeCurrency,
 } from '../../ducks/metamask/metamask';
+
+import {
+  transactionMatchesNetwork,
+  txParamsAreDappSuggested,
+} from '../../../shared/modules/transaction.utils';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import ConfirmTransactionBase from './confirm-transaction-base.component';

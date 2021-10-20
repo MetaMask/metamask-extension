@@ -6,11 +6,13 @@ import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
+  findKeyringForAddress,
 } from '../../selectors';
 import { updateTransaction } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -339,4 +341,20 @@ export function getIsUnlocked(state) {
 
 export function getSeedPhraseBackedUp(state) {
   return state.metamask.seedPhraseBackedUp;
+}
+
+export function getLedgerTransportType(state) {
+  return state.metamask.ledgerTransportType;
+}
+
+export function isAddresLedger(state, address) {
+  const keyring = findKeyringForAddress(state, address);
+
+  return keyring?.type === KEYRING_TYPES.LEDGER;
+}
+
+export function doesUserHaveALedgerAccount(state) {
+  return state.metamask.keyrings.some((kr) => {
+    return kr.type === KEYRING_TYPES.LEDGER;
+  });
 }

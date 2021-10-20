@@ -15,7 +15,11 @@ import {
   getTokenValueParam,
 } from '../../helpers/utils/token-util';
 import { useTokenTracker } from '../../hooks/useTokenTracker';
-import { getTokens, getNativeCurrency } from '../../ducks/metamask/metamask';
+import {
+  getTokens,
+  getNativeCurrency,
+  getLedgerTransportType,
+} from '../../ducks/metamask/metamask';
 import {
   transactionFeeSelector,
   txDataSelector,
@@ -24,7 +28,6 @@ import {
   getUseNonceField,
   getCustomNonceValue,
   getNextSuggestedNonce,
-  getLedgerTransportType,
   getHardwareWalletType,
 } from '../../selectors';
 import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';

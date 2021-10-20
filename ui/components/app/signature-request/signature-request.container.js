@@ -3,8 +3,8 @@ import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/conf
 import {
   accountsWithSendEtherInfoSelector,
   doesAddressRequireLedgerHidConnection,
-  isAddresLedger,
 } from '../../../selectors';
+import { isAddresLedger } from '../../../ducks/metamask/metamask';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { KEYRING_TYPES } from '../../../../shared/constants/hardware-wallets';

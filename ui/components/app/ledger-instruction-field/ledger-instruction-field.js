@@ -30,7 +30,7 @@ import {
   getPlatform,
   getEnvironmentType,
 } from '../../../../app/scripts/lib/util';
-import { getLedgerTransportType } from '../../../selectors/selectors';
+import { getLedgerTransportType } from '../../../ducks/metamask/metamask';
 
 const renderInstructionStep = (text, show = true, color = COLORS.PRIMARY3) => {
   return (
