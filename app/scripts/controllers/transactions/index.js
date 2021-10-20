@@ -882,38 +882,6 @@ export default class TransactionController extends EventEmitter {
     }
   }
 
-  async approveExternalTransaction(txParams) {
-    // This is hacky, need to review with other engineers and decide on best alternative.
-    const uniqueHashOfParams = hashObject(txParams);
-    if (this.inProcessOfSigning.has(uniqueHashOfParams)) {
-      return '';
-    }
-    this.inProcessOfSigning.add(uniqueHashOfParams);
-    let rawTx;
-    let nonceLock;
-    try {
-      const fromAddress = txParams.from;
-      nonceLock = await this.nonceTracker.getNonceLock(fromAddress);
-      const nonce = nonceLock.nextNonce;
-
-      txParams.nonce = addHexPrefix(nonce.toString(16));
-
-      rawTx = await this.signExternalTransaction(txParams);
-      nonceLock.releaseLock();
-    } catch (err) {
-      log.error(err);
-      // must set transaction to submitted/failed before releasing lock
-      if (nonceLock) {
-        nonceLock.releaseLock();
-      }
-      // continue with error chain
-      throw err;
-    } finally {
-      this.inProcessOfSigning.delete(uniqueHashOfParams);
-    }
-    return rawTx;
-  }
-
   async approveTransactionsWithSameNonce(listOfTxParams) {
     // This is hacky, need to review with other engineers and decide on best alternative.
     const uniqueHashOfParams = hashObject(listOfTxParams);

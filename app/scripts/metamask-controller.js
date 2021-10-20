@@ -971,16 +971,8 @@ export default class MetamaskController extends EventEmitter {
       // txController
       cancelTransaction: nodeify(txController.cancelTransaction, txController),
       updateTransaction: nodeify(txController.updateTransaction, txController),
-      approveExternalTransaction: nodeify(
-        txController.approveExternalTransaction,
-        txController,
-      ),
       approveTransactionsWithSameNonce: nodeify(
         txController.approveTransactionsWithSameNonce,
-        txController,
-      ),
-      signExternalTransaction: nodeify(
-        txController.signExternalTransaction,
         txController,
       ),
       updateAndApproveTransaction: nodeify(
@@ -2784,19 +2776,19 @@ export default class MetamaskController extends EventEmitter {
   // MISCELLANEOUS
   //=============================================================================
 
-  // /**
-  //  */
-  // getExternalPendingTransactions(address) {
-  //   // Code to collect external pending transactions goes here
-  //   return [];
-  // }
+  /**
+   */
+  getExternalPendingTransactions(address) {
+    // Code to collect external pending transactions goes here
+    return [];
+  }
 
-  // /**
-  //  */
-  // getExternalConfirmedTransactions(address) {
-  //   // Code to collect external confirmed transactions goes here
-  //   return [];
-  // }
+  /**
+   */
+  getExternalConfirmedTransactions(address) {
+    // Code to collect external confirmed transactions goes here
+    return [];
+  }
 
   /**
    * Returns the nonce that will be associated with a transaction once approved
