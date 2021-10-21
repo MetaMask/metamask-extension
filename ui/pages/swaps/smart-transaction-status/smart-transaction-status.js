@@ -48,10 +48,13 @@ export default function SmartTransactionStatus() {
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = true;
-  const smartTransactionsStatus = useSelector(getSmartTransactionsStatus);
   const latestSmartTransactionUuid = useSelector(getLatestSmartTransactionUuid);
+  const smartTransactionsStatus = useSelector(getSmartTransactionsStatus);
   const smartTransactionStatus =
-    smartTransactionsStatus?.[latestSmartTransactionUuid] || {}; // TODO: Use a list of STX from the STX controller.
+    smartTransactionsStatus.find(
+      (stx) => stx.uuid === latestSmartTransactionUuid,
+    )?.status || {};
+  console.log(`smartTransactionStatus`, smartTransactionStatus);
 
   const sensitiveProperties = {
     needs_two_confirmations: needsTwoConfirmations,
@@ -82,6 +85,8 @@ export default function SmartTransactionStatus() {
     !smartTransactionStatus.minedTx ||
     (smartTransactionStatus.minedTx === 'not_mined' &&
       smartTransactionStatus.cancellationReason === 'not_cancelled');
+
+  console.log('is smart transaction pending', isSmartTransactionPending);
 
   useEffect(() => {
     stxStatusPageLoadedEvent();

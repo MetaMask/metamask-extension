@@ -2951,22 +2951,22 @@ export function signAndSendSmartTransaction({
         type: actionConstants.SET_LATEST_SMART_TRANSACTION_UUID,
         payload: response,
       });
+      return response.uuid;
     } catch (e) {
       console.log(e);
     }
+    return null;
   };
 }
 
 export function fetchSmartTransactionsStatus(uuids) {
-  return async (dispatch) => {
+  return async () => {
     try {
-      const smartTransactionsStatus = await promisifiedBackground.fetchSmartTransactionsStatus(
-        uuids,
-      );
-      dispatch({
-        type: actionConstants.SET_SMART_TRANSACTIONS_STATUS,
-        payload: smartTransactionsStatus,
-      });
+      await promisifiedBackground.fetchSmartTransactionsStatus(uuids);
+      // dispatch({
+      //   type: actionConstants.SET_SMART_TRANSACTIONS_STATUS,
+      //   payload: smartTransactionsStatus,
+      // });
     } catch (e) {
       console.log(e);
     }

@@ -247,7 +247,7 @@ export const getSmartTransactionsEnabled = (state) => {
   const EIP1559NetworkUsed = isEIP1559Network(state);
   const smartTransactionsFeatureFlagEnabled =
     state.metamask.swapsState?.swapsFeatureFlags?.smart_transactions
-      ?.extension_active;
+      ?.extension_active || true;
   const smartTransactionsLive = state.appState.smartTransactionsLiveness;
   return Boolean(
     EIP1559NetworkUsed &&
@@ -343,8 +343,10 @@ export const getUnsignedTransactionsAndEstimates = (state) => {
   return state.appState.unsignedTransactionsAndEstimates;
 };
 export const getSmartTransactionsStatus = (state) => {
-  return state.appState.smartTransactionsStatus;
+  const chainId = getCurrentChainId(state);
+  return state.metamask.smartTransactions?.[chainId];
 };
+
 export const getLatestSmartTransactionUuid = (state) => {
   return state.appState.latestSmartTransactionUuid;
 };

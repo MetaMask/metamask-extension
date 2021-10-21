@@ -157,6 +157,7 @@ export default function ViewQuote() {
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
+  console.log('networkAndAccountSupports1559', networkAndAccountSupports1559);
   const balanceError = useSelector(getBalanceError);
   const fetchParams = useSelector(getFetchParams);
   const approveTxParams = useSelector(getApproveTxParams);
@@ -173,6 +174,7 @@ export default function ViewQuote() {
     getSmartTransactionsOptInStatus,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  console.log('stx enabled', smartTransactionsEnabled);
   const unsignedTransactionsAndEstimates = useSelector(
     getUnsignedTransactionsAndEstimates,
   );
