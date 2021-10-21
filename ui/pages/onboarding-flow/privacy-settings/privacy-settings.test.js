@@ -2,8 +2,10 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import * as actions from '../../../store/actions';
-import { renderWithProvider } from '../../../../test/jest';
+import {
+  renderWithProvider,
+  setBackgroundConnection,
+} from '../../../../test/jest';
 import PrivacySettings from './privacy-settings';
 
 describe('Privacy Settings Onboarding View', () => {
@@ -19,11 +21,15 @@ describe('Privacy Settings Onboarding View', () => {
   const setFeatureFlagStub = jest.fn();
   const setUsePhishDetectStub = jest.fn();
   const setUseTokenDetectionStub = jest.fn();
+  const completeOnboardingStub = jest
+    .fn()
+    .mockImplementation(() => Promise.resolve());
 
-  actions._setBackgroundConnection({
+  setBackgroundConnection({
     setFeatureFlag: setFeatureFlagStub,
     setUsePhishDetect: setUsePhishDetectStub,
     setUseTokenDetection: setUseTokenDetectionStub,
+    completeOnboarding: completeOnboardingStub,
   });
 
   it('should update preferences', () => {
