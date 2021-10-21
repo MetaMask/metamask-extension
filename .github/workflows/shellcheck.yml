@@ -12,4 +12,5 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: "Shellcheck Lint .scripts in package.json"
         run: |
+          shellcheck --version
           shellcheck -s bash -x - < <(jq -r '.scripts[]' package.json)
