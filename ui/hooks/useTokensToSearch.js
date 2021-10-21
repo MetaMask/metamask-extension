@@ -122,9 +122,7 @@ export function useTokensToSearch({
     : [
         memoizedDefaultToken,
         ...shuffledTokenList.filter(
-          (token) =>
-            token.symbol !== memoizedDefaultToken.symbol &&
-            token.address !== memoizedDefaultToken.address,
+          (token) => token.symbol !== memoizedDefaultToken.symbol,
         ),
       ];
 
