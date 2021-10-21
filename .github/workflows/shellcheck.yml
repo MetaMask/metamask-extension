@@ -4,8 +4,12 @@ jobs:
   shellcheck:
     name: "Shellcheck Lint"
     runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - name: "Run shellcheck.sh"
-        run: |
-          ./development/shellcheck.sh
+  steps:
+    - uses: actions/checkout@master
+    - name: ShellCheck Action
+      uses: fearphage/shellcheck-action@0.0.4
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    - name: "Shellcheck Lint .scripts in package.json"
+      run: |
+        shellcheck -s bash -x - < <(jq -r '.scripts[]' package.json)
