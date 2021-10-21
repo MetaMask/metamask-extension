@@ -275,25 +275,31 @@ export default class ConfirmApproveContent extends Component {
             <ConfirmPageContainerWarning warning={warning} />
           </div>
         )}
-        <Box className="confirm-approve-content__icon-display-content">
-          <Box display={DISPLAY.FLEX}>
+        <Box
+          display={DISPLAY.FLEX}
+          className="confirm-approve-content__icon-display-content"
+        >
+          <Box className="confirm-approve-content__metafoxlogo">
             <MetaFoxLogo useDark={isBeta()} />
-            <Box display={DISPLAY.FLEX} paddingTop={1}>
-              <UrlIcon
-                className="confirm-approve-content__siteimage"
-                fallbackClassName="confirm-approve-content__siteimage"
-                name={getURLHostName(origin)}
-                url={siteImage}
-              />
-              <Typography
-                variant={TYPOGRAPHY.H6}
-                fontWeight={FONT_WEIGHT.NORMAL}
-                color={COLORS.UI4}
-                boxProps={{ marginLeft: 2 }}
-              >
-                {getURLHostName(origin)}
-              </Typography>
-            </Box>
+          </Box>
+          <Box
+            display={DISPLAY.FLEX}
+            className="confirm-approve-content__siteinfo"
+          >
+            <UrlIcon
+              className="confirm-approve-content__siteimage-identicon"
+              fallbackClassName="confirm-approve-content__siteimage-identicon"
+              name={getURLHostName(origin)}
+              url={siteImage}
+            />
+            <Typography
+              variant={TYPOGRAPHY.H6}
+              fontWeight={FONT_WEIGHT.NORMAL}
+              color={COLORS.UI4}
+              boxProps={{ marginLeft: 1, marginTop: 2 }}
+            >
+              {getURLHostName(origin)}
+            </Typography>
           </Box>
         </Box>
         <div className="confirm-approve-content__title">
@@ -305,7 +311,7 @@ export default class ConfirmApproveContent extends Component {
         <Box className="confirm-approve-content__address-display-content">
           <Box display={DISPLAY.FLEX}>
             <Identicon
-              className="confirm-approve-content__identicon"
+              className="confirm-approve-content__address-identicon"
               diameter={20}
               address={toAddress}
               image={tokenImage}

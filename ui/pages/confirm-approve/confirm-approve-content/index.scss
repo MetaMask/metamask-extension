@@ -5,12 +5,45 @@
   width: 100%;
   font-style: normal;
 
-  &__siteimage {
-    width: 28px;
-    height: 28px;
+  &__icon-display-content {
+    display: flex;
+    height: 51px;
+    width: 65%;
+    margin-top: 16px;
+    padding: 12px 12px 14px 12px;
+    border: 1px solid $ui-1;
+    box-sizing: border-box;
+    border-radius: 100px;
+    align-items: center;
+    position: relative;
   }
 
-  &__identicon {
+  &__metafoxlogo,
+  &__siteinfo {
+    position: absolute;
+  }
+
+  &__siteinfo {
+    left: 39px;
+  }
+
+  &__address-display-content {
+    display: flex;
+    height: 27px;
+    width: 50%;
+    padding: 12px 12px 14px 12px;
+    background-color: $ui-1;
+    border-radius: 100px;
+    align-items: center;
+  }
+
+  &__siteimage-identicon {
+    width: 33px;
+    height: 33px;
+    border: solid #fff;
+  }
+
+  &__address-identicon {
     margin: 4px 8px 0 4px;
   }
 
@@ -54,6 +87,7 @@
     display: flex;
     justify-content: center;
     text-align: center;
+    // margin-top: 75px;
     margin-top: 22px;
     padding-left: 24px;
     padding-right: 24px;
@@ -348,29 +382,6 @@
     @include H7;
 
     width: auto;
-  }
-
-  &__icon-display-content {
-    display: flex;
-    height: 51px;
-    margin-top: 16px;
-    padding: 12px 12px 14px 12px;
-    border: 1px solid $ui-1;
-    box-sizing: border-box;
-    border-radius: 100px;
-    align-items: center;
-  }
-
-  &__address-display-content {
-    display: flex;
-    height: 27px;
-    // margin-top: 16px;
-    padding: 12px 12px 14px 12px;
-    background-color: $ui-1;
-    // border: 1px solid $ui-1;
-    // box-sizing: border-box;
-    border-radius: 100px;
-    align-items: center;
   }
 }
 
