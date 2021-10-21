@@ -7,7 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: ShellCheck Action
-        uses: fearphage/shellcheck-action@0.0.4
+        uses: fearphage/shellcheck-action@95d2a3d34d381a7314c286ea1725ca8cce3b51fd
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: "Shellcheck Lint .scripts in package.json"
