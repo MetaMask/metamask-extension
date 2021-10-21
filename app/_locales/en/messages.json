@@ -2098,13 +2098,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "This account has already been connected to MetaMask"
   },
-  "selectAnAccountHelp": {
-    "message": "Select an account to view in MetaMask."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "Don't see your account? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "Please select each phrase in order to make sure it is correct."
   },
@@ -2647,12 +2640,6 @@
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "Allow this site to switch the network?"
-  },
-  "switchLedgerPaths": {
-    "message": "Switch Ledger paths"
-  },
-  "switchLedgerPathsText": {
-    "message": "Select the Ledger path to view other accounts"
   },
   "switchNetwork": {
     "message": "Switch network"

@@ -528,9 +528,6 @@
   "selectAnAccount": {
     "message": "Chwazi yon kont"
   },
-  "selectAnAccountHelp": {
-    "message": "Chwazi kont pou wè nan MetaMask"
-  },
   "selectHdPath": {
     "message": "Chwazi chemen HD"
   },
