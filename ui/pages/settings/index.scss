@@ -234,6 +234,8 @@
   }
 
   &__inline-link {
+    @include H6;
+
     display: initial;
     padding: 0;
   }
