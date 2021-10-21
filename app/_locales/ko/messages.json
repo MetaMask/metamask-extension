@@ -1004,12 +1004,6 @@
   "ledgerAccountRestriction": {
     "message": "새 계정을 추가하려면 먼저 마지막 계정을 사용해야 합니다."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Ledger Live 사용하기"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "새로운 Ledger Live 브리지를 통해 Ledger를 더 쉽게 사용할 수 있습니다.  Chrome에서만 사용 가능합니다."
-  },
   "ledgerLiveApp": {
     "message": "Ledger Live 앱"
   },

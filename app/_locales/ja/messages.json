@@ -1004,12 +1004,6 @@
   "ledgerAccountRestriction": {
     "message": "新しいアカウントを追加するには、その前に最後のアカウントを使用する必要があります。"
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "レジャー ライブを使用"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "新しいレジャー ライブのブリッジを使用すると、レジャーをより簡単に使用できます。Chrome でのみ利用可能。"
-  },
   "ledgerLiveApp": {
     "message": "レジャー ライブのアプリ"
   },

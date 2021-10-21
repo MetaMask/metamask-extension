@@ -26,6 +26,10 @@ function QrCodeView(props) {
   qrImage.addData(address);
   qrImage.make();
 
+  const header = message ? (
+    <div className="qr-code__header">{message}</div>
+  ) : null;
+
   return (
     <div className="qr-code">
       {Array.isArray(message) ? (
@@ -37,9 +41,9 @@ function QrCodeView(props) {
           ))}
         </div>
       ) : (
-        message && <div className="qr-code__header">{message}</div>
+        header
       )}
-      {warning && <span className="qr_code__error">{warning}</span>}
+      {warning ? <span className="qr_code__error">{warning}</span> : null}
       <div
         className="qr-code__wrapper"
         dangerouslySetInnerHTML={{
