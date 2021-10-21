@@ -84,7 +84,7 @@ export default class AccountDetailsModal extends Component {
             ? this.context.t('blockExplorerView', [
                 getURLHostName(rpcPrefs.blockExplorerUrl),
               ])
-            : this.context.t('etherscanView')}
+            : this.context.t('viewOnEtherscan', [''])}
         </Button>
 
         {exportPrivateKeyFeatureEnabled ? (

@@ -36,6 +36,10 @@
     &:hover {
       cursor: pointer;
     }
+
+    &:hover .qr-code__copy-icon .qr-code__copy-icon__svg {
+      fill: $primary-1;
+    }
   }
 
   &__address {
@@ -53,5 +57,9 @@
     padding: 17px 0;
     position: absolute;
     right: 24px;
+
+    &__svg {
+      fill: $ui-5;
+    }
   }
 }

@@ -28,7 +28,6 @@ function QrCodeView(props) {
     isHexPrefixed(data) ? 'ethereum:' : ''
   }${toChecksumHexAddress(data)}`;
   const [copied, setCopied] = useState(false);
-  const [iconColor, setIconColor] = useState('#C4C4C4');
   const t = useI18nContext();
   const qrImage = qrCode(4, 'M');
   qrImage.addData(address);
@@ -65,12 +64,6 @@ function QrCodeView(props) {
       >
         <div
           className="qr-code__address-container"
-          onMouseOver={() => {
-            setIconColor('#037DD6');
-          }}
-          onMouseLeave={() => {
-            setIconColor('#C4C4C4');
-          }}
           onClick={() => {
             setCopied(true);
             setTimeout(() => setCopied(false), SECOND * 3);
@@ -79,7 +72,7 @@ function QrCodeView(props) {
         >
           <div className="qr-code__address">{toChecksumHexAddress(data)}</div>
           <div className="qr-code__copy-icon">
-            <CopyIcon size={11} color={iconColor} />
+            <CopyIcon size={11} className="qr-code__copy-icon__svg" color="" />
           </div>
         </div>
       </Tooltip>
