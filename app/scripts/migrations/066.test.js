@@ -75,7 +75,6 @@ describe('migration #66', () => {
       .spyOn(window, 'navigator', 'get')
       .mockImplementation(() => ({ hid: true }));
     const newStorage = await migration66.migrate(oldStorage);
-    navigatorSpy.mockRestore();
     expect(
       newStorage.data.PreferencesController.ledgerTransportType,
     ).toStrictEqual(LEDGER_TRANSPORT_TYPES.WEBHID);
