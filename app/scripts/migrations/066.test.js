@@ -2,6 +2,10 @@ import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-walle
 import migration66 from './066';
 
 describe('migration #66', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('should update the version metadata', async () => {
     const oldStorage = {
       meta: {
@@ -67,10 +71,11 @@ describe('migration #66', () => {
         },
       },
     };
-    const tempNavigatorHid = window.navigator.hid;
-    window.navigator.hid = true;
+    const navigatorSpy = jest
+      .spyOn(window, 'navigator', 'get')
+      .mockImplementation(() => ({ hid: true }));
     const newStorage = await migration66.migrate(oldStorage);
-    window.navigator.hid = tempNavigatorHid;
+    navigatorSpy.mockRestore();
     expect(
       newStorage.data.PreferencesController.ledgerTransportType,
     ).toStrictEqual(LEDGER_TRANSPORT_TYPES.WEBHID);
