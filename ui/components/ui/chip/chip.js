@@ -35,7 +35,7 @@ export default function Chip({
       role={isInteractive ? 'button' : undefined}
       tabIndex={isInteractive ? 0 : undefined}
     >
-      {leftIcon && <div className="chip__left-icon">{leftIcon}</div>}
+      {leftIcon ? <div className="chip__left-icon">{leftIcon}</div> : null}
       {children ?? (
         <Typography
           className="chip__label"
@@ -47,7 +47,7 @@ export default function Chip({
           {label}
         </Typography>
       )}
-      {rightIcon && <div className="chip__right-icon">{rightIcon}</div>}
+      {rightIcon ? <div className="chip__right-icon">{rightIcon}</div> : null}
     </div>
   );
 }

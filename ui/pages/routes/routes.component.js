@@ -340,8 +340,8 @@ export default class Routes extends Component {
         />
         <AccountMenu />
         <div className="main-container-wrapper">
-          {isLoading && <Loading loadingMessage={loadMessage} />}
-          {!isLoading && isNetworkLoading && <LoadingNetwork />}
+          {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
+          {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
           {this.renderRoutes()}
         </div>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
