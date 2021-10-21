@@ -20,30 +20,30 @@ const defaultNetworks = defaultNetworksData.map((network) => ({
 }));
 
 const propNewNetwork = {
-  onClear: sinon.spy(),
-  setRpcTarget: sinon.spy(),
+  onClear: () => undefined,
+  setRpcTarget: () => undefined,
   networksToRender: defaultNetworks,
-  onAddNetwork: sinon.spy(),
-  setNewNetworkAdded: sinon.spy(),
+  onAddNetwork: () => undefined,
+  setNewNetworkAdded: () => undefined,
   addNewNetwork: true,
 };
 
 const propNetworkDisplay = {
   editRpc: sinon.spy(),
-  showConfirmDeleteNetworkModal: sinon.spy(),
+  showConfirmDeleteNetworkModal: () => undefined,
   rpcUrl: 'http://localhost:8545',
   chainId: '1337',
   ticker: 'ETH',
   viewOnly: false,
   networkName: 'LocalHost',
-  onClear: sinon.spy(),
-  setRpcTarget: sinon.spy(),
+  onClear: () => undefined,
+  setRpcTarget: () => undefined,
   isCurrentRpcTarget: false,
   blockExplorerUrl: '',
   rpcPrefs: {},
   networksToRender: defaultNetworks,
-  onAddNetwork: sinon.spy(),
-  setNewNetworkAdded: sinon.spy(),
+  onAddNetwork: () => undefined,
+  setNewNetworkAdded: () => undefined,
   addNewNetwork: false,
 };
 
