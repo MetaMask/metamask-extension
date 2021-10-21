@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 import SelectHardware from './select-hardware';
 
 export default {
-  title: 'Connect Hardware Wallet',
+  title: 'Pages/Confirmation Screens/Connect Hardware Wallet',
   id: __filename,
 };
 

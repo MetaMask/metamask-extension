@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 import { Menu, MenuItem } from '.';
 
 export default {
-  title: 'Menu',
+  title: 'UI/General/Menu',
   id: __filename,
 };
 

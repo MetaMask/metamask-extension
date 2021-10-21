@@ -9,9 +9,10 @@ import Receive from './receive-icon.component';
 import Send from './send-icon.component';
 import InfoIcon from './info-icon.component';
 import InfoIconInverted from './info-icon-inverted.component';
+import PaperAirplane from './paper-airplane-icon';
 
 export default {
-  title: 'Icon',
+  title: 'UI/Icon/General Icon',
   id: __filename,
 };
 
@@ -37,7 +38,7 @@ export const approveSpendLimit = () => (
 
 export const preloader = () => <Preloader size={number('size', 40)} />;
 
-export const PaperAirplane = () => (
+export const PaperAirplaneIcon = () => (
   <PaperAirplane color={color('color', '#2F80ED')} size={number('size', 40)} />
 );
 

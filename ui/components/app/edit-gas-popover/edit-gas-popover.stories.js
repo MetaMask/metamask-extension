@@ -11,12 +11,12 @@ import EditGasPopover from '.';
 const store = configureStore(testData);
 
 export default {
-  title: 'Edit Gas Display Popover',
+  title: 'App/Gas/Edit Gas Popover',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   id: __filename,
 };
 
-export const Basic = () => {
+export const Base = () => {
   return (
     <div style={{ width: '600px' }}>
       <EditGasPopover
@@ -39,7 +39,7 @@ export const Basic = () => {
   );
 };
 
-export const BasicWithDifferentButtonText = () => {
+export const WithDifferentButtonText = () => {
   return (
     <div style={{ width: '600px' }}>
       <EditGasPopover
@@ -62,7 +62,7 @@ export const BasicWithDifferentButtonText = () => {
   );
 };
 
-export const EducationalContentFlow = () => {
+export const WithEducationalContentFlow = () => {
   return (
     <div style={{ width: '600px' }}>
       <EditGasPopover

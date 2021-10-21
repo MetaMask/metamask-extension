@@ -2,11 +2,11 @@ import React from 'react';
 import CircleIcon from './circle-icon.component';
 
 export default {
-  title: 'CircleIcon',
+  title: 'UI/Icon/Circle Icon',
   id: __filename,
 };
 
-export const basicCircleIcon = () => (
+export const Base = () => (
   <CircleIcon
     border="1px solid"
     borderColor="black"

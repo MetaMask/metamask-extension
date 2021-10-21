@@ -9,7 +9,7 @@ import { ChipWithInput } from './chip-with-input';
 import Chip from '.';
 
 export default {
-  title: 'Chip',
+  title: 'UI/Button/Chip',
   id: __filename,
 };
 

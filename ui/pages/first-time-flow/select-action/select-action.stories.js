@@ -2,7 +2,7 @@ import React from 'react';
 import SelectAction from './select-action.component';
 
 export default {
-  title: 'First Time Flow',
+  title: 'Pages/First Time Flow',
   id: __filename,
 };
 

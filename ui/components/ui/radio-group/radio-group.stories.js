@@ -2,11 +2,11 @@ import React from 'react';
 import RadioGroup from '.';
 
 export default {
-  title: 'RadioGroup',
+  title: 'UI/Radio Button/Radio Group',
   id: __filename,
 };
 
-export const radioGroup = () => {
+export const Base = () => {
   return (
     <div className="radio-group" style={{ minWidth: '600px' }}>
       <RadioGroup

@@ -3,7 +3,7 @@ import { text } from '@storybook/addon-knobs';
 import UrlIcon from './url-icon';
 
 export default {
-  title: 'UrlIcon',
+  title: 'UI/Icon/URL',
   id: __filename,
 };
 

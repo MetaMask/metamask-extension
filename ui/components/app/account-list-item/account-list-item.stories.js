@@ -2,10 +2,10 @@ import React from 'react';
 import AccountListItem from './account-list-item';
 
 export default {
-  title: 'AccountListItem',
+  title: 'App/Account/Account List Item',
   id: __filename,
 };
 
-export const AccountListItemComponent = () => {
+export const Base = () => {
   return <AccountListItem />;
 };

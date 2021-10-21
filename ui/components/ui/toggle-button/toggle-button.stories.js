@@ -5,12 +5,12 @@ import { boolean, text } from '@storybook/addon-knobs';
 import ToggleButton from './toggle-button.component';
 
 export default {
-  title: 'ToggleButton',
+  title: 'UI/Toggle/Button',
   component: ToggleButton,
   id: __filename,
 };
 
-export const DefaultStory = () => {
+export const Base = () => {
   const [checked, setChecked] = useState(false);
   const handleOnToggle = (e) => {
     action('onToggle')(e);
@@ -25,8 +25,4 @@ export const DefaultStory = () => {
       onToggle={handleOnToggle}
     />
   );
-};
-
-DefaultStory.story = {
-  name: 'Default',
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import TokenSearch from './token-search.component';
 
 export default {
-  title: 'TokenSearch',
+  title: 'Pages/Text Input/Token Search',
   id: __filename,
 };
 
