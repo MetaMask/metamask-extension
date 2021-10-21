@@ -9,8 +9,4 @@ jobs:
       - name: ShellCheck Action
         uses: fearphage/shellcheck-action@95d2a3d34d381a7314c286ea1725ca8cce3b51fd
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - name: "Shellcheck Lint .scripts in package.json"
-        run: |
-          shellcheck --version
-          shellcheck -s bash -x - < <(jq -r '.scripts[]' package.json)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
