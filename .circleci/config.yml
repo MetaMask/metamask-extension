@@ -10,9 +10,6 @@ executors:
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
-  shellcheck:
-    docker:
-      - image: koalaman/shellcheck-alpine@sha256:35882cba254810c7de458528011e935ba2c4f3ebcb224275dfa7ebfa930ef294
 
 workflows:
   test_and_release:
@@ -57,7 +54,6 @@ workflows:
       - test-lint:
           requires:
             - prep-deps
-      - test-lint-shellcheck
       - test-lint-lockfile:
           requires:
             - prep-deps
@@ -107,7 +103,6 @@ workflows:
           requires:
             - validate-lavamoat-config
             - test-lint
-            - test-lint-shellcheck
             - test-lint-lockfile
             - test-lint-changelog
             - test-unit
@@ -343,15 +338,6 @@ jobs:
       - run:
           name: Verify locales
           command: yarn verify-locales --quiet
-
-  test-lint-shellcheck:
-    executor: shellcheck
-    steps:
-      - checkout
-      - run: apk add --no-cache bash jq yarn
-      - run:
-          name: ShellCheck Lint
-          command: ./development/shellcheck.sh
 
   test-lint-lockfile:
     executor: node-browsers
