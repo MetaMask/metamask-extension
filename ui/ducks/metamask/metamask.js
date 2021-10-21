@@ -354,7 +354,7 @@ export function findKeyringForAddress(state, address) {
   const keyring = state.metamask.keyrings.find((kr) => {
     return kr.accounts.some((account) => {
       return (
-        isEqualCaseInsensitive(account, address) ||
+        isEqualCaseInsensitive(account, addHexPrefix(address)) ||
         isEqualCaseInsensitive(account, stripHexPrefix(address))
       );
     });
