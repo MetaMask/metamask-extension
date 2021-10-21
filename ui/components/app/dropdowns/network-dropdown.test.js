@@ -145,10 +145,6 @@ describe('Network Dropdown', () => {
         'addNetwork',
       );
     });
-
-    it('simulates clicking Add Network button', () => {
-      wrapper.find(Button).at(0).first().simulate('click');
-    });
   });
 
   describe('NetworkDropdown in appState is true and show test networks is false', () => {
@@ -194,10 +190,6 @@ describe('Network Dropdown', () => {
       expect(wrapper.find(Button).at(0).children().text()).toStrictEqual(
         'addNetwork',
       );
-    });
-
-    it('simulates clicking Add Network button', () => {
-      wrapper.find(Button).at(0).first().simulate('click');
     });
   });
 });
