@@ -71,7 +71,7 @@ describe('migration #66', () => {
         },
       },
     };
-    const navigatorSpy = jest
+    jest
       .spyOn(window, 'navigator', 'get')
       .mockImplementation(() => ({ hid: true }));
     const newStorage = await migration66.migrate(oldStorage);
@@ -105,11 +105,10 @@ describe('migration #66', () => {
         },
       },
     };
-    const navigatorSpy = jest
+    jest
       .spyOn(window, 'navigator', 'get')
       .mockImplementation(() => ({ hid: true }));
     const newStorage = await migration66.migrate(oldStorage);
-    navigatorSpy.mockRestore();
     expect(
       newStorage.data.PreferencesController.ledgerTransportType,
     ).toStrictEqual(LEDGER_TRANSPORT_TYPES.LIVE);
