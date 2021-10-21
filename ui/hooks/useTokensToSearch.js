@@ -122,7 +122,9 @@ export function useTokensToSearch({
     : [
         memoizedDefaultToken,
         ...shuffledTokenList.filter(
-          (token) => token.symbol !== memoizedDefaultToken.symbol,
+          (token) =>
+            token.symbol !== memoizedDefaultToken.symbol &&
+            token.address !== memoizedDefaultToken.address,
         ),
       ];
 
@@ -140,13 +142,13 @@ export function useTokensToSearch({
     };
 
     const memoizedSwapsAndUserTokensWithoutDuplicities = uniqBy(
-      [...memoizedTokensToSearch, ...memoizedUsersToken],
+      [memoizedDefaultToken, ...memoizedTokensToSearch, ...memoizedUsersToken],
       (token) => token.address.toLowerCase(),
     );
 
     memoizedSwapsAndUserTokensWithoutDuplicities.forEach((token) => {
       const renderableDataToken = getRenderableTokenData(
-        { ...token, ...usersTokensAddressMap[token.address.toLowerCase()] },
+        { ...usersTokensAddressMap[token.address.toLowerCase()], ...token },
         tokenConversionRates,
         conversionRate,
         currentCurrency,
@@ -186,6 +188,7 @@ export function useTokensToSearch({
     conversionRate,
     currentCurrency,
     memoizedTopTokens,
+    memoizedDefaultToken,
     chainId,
     tokenList,
     useTokenDetection,
