@@ -408,29 +408,20 @@ export function connectHardware(deviceName, page, hdPath, t) {
 
     let accounts;
     try {
-      const browserSupportsHid = 'hid' in window.navigator;
       const { ledgerTransportType } = getState().metamask;
-
       if (
-        browserSupportsHid &&
         deviceName === 'ledger' &&
-        ledgerTransportType !== LEDGER_TRANSPORT_TYPES.LIVE
+        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID
       ) {
         const connectedDevices = await window.navigator.hid.requestDevice({
           filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
         });
-
         const userApprovedWebHidConnection = connectedDevices.some(
           (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
         );
-
         if (!userApprovedWebHidConnection) {
           throw new Error(t('ledgerWebHIDNotConnectedErrorMessage'));
         }
-
-        await promisifiedBackground.setLedgerTransportPreference(
-          LEDGER_TRANSPORT_TYPES.WEBHID,
-        );
       }
 
       accounts = await promisifiedBackground.connectHardware(
