@@ -8,7 +8,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: install
         run: |
-          apt install shellcheck jq -y;
+          sudo apt install shellcheck jq -y;
       - name: run
         run: |
           ./development/shellcheck.sh
