@@ -42,7 +42,7 @@ describe('AdvancedTab Component', () => {
         setThreeBoxSyncingPermission={() => undefined}
         threeBoxDisabled
         threeBoxSyncingAllowed={false}
-        ledgerTransportType=""
+        ledgerTransportType={LEDGER_TRANSPORT_TYPES.U2F}
         setLedgerLivePreference={() => undefined}
         setDismissSeedBackUpReminder={() => undefined}
         dismissSeedBackUpReminder={false}
