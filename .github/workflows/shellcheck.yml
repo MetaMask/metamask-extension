@@ -1,0 +1,15 @@
+name: CI
+on: [push]
+jobs:
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: checkout
+      - name: install
+        run: |
+          apt install shellcheck jq -y;
+      - name: run
+        run: |
+          ./development/shellcheck.sh
