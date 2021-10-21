@@ -1969,6 +1969,9 @@
   "secretPhrase": {
     "message": "Only the first account on this wallet will auto load. After completing this process, to add additional accounts, click the drop down menu, then select Create Account."
   },
+  "secretPhraseWarning": {
+    "message": "If you restore using another Secret Recovery Phrase, your current wallet, accounts and assets will be removed from this app permanently. This action cannot be undone."
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
