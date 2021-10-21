@@ -32,7 +32,6 @@ const metamaskrc = require('rc')('metamask', {
   ONBOARDING_V2: process.env.ONBOARDING_V2,
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
-  SEGMENT_LEGACY_WRITE_KEY: process.env.SEGMENT_LEGACY_WRITE_KEY,
   SENTRY_DSN_DEV:
     process.env.SENTRY_DSN_DEV ||
     'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496',
@@ -653,10 +652,6 @@ function getEnvironmentVariables({ buildType, devMode, testing }) {
       environment === 'production'
         ? process.env.SEGMENT_PROD_WRITE_KEY
         : metamaskrc.SEGMENT_WRITE_KEY,
-    SEGMENT_LEGACY_WRITE_KEY:
-      environment === 'production'
-        ? process.env.SEGMENT_PROD_LEGACY_WRITE_KEY
-        : metamaskrc.SEGMENT_LEGACY_WRITE_KEY,
     SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
     ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
   };
