@@ -111,7 +111,11 @@ export default class ExtensionPlatform {
     return version;
   }
 
-  openExtensionInBrowser(route = null, queryString = null) {
+  openExtensionInBrowser(
+    route = null,
+    queryString = null,
+    keepWindowOpen = false,
+  ) {
     let extensionURL = extension.runtime.getURL('home.html');
 
     if (queryString) {
@@ -122,7 +126,10 @@ export default class ExtensionPlatform {
       extensionURL += `#${route}`;
     }
     this.openTab({ url: extensionURL });
-    if (getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND) {
+    if (
+      getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND &&
+      !keepWindowOpen
+    ) {
       window.close();
     }
   }

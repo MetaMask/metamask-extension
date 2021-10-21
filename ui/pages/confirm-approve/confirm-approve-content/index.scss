@@ -161,6 +161,11 @@
     }
   }
 
+  &__ledger-instruction-wrapper {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
   &__transaction-details-content {
     display: flex;
     flex-flow: row;

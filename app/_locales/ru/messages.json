@@ -1004,12 +1004,6 @@
   "ledgerAccountRestriction": {
     "message": "Вам необходимо использовать свой последний счет, прежде чем вы сможете добавить новый."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Использовать Ledger Live"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "Новое решение Ledger Live Bridge упрощает использование Ledger.  Доступно только в Chrome."
-  },
   "ledgerLiveApp": {
     "message": "Приложение Ledger Live"
   },

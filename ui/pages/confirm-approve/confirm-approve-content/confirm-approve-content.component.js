@@ -14,6 +14,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
+import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -44,6 +45,8 @@ export default class ConfirmApproveContent extends Component {
     nextNonce: PropTypes.number,
     showCustomizeNonceModal: PropTypes.func,
     warning: PropTypes.string,
+    txData: PropTypes.object,
+    ledgerWalletRequiredHidConnection: PropTypes.bool,
   };
 
   state = {
@@ -238,6 +241,8 @@ export default class ConfirmApproveContent extends Component {
       tokenBalance,
       useNonceField,
       warning,
+      txData,
+      ledgerWalletRequiredHidConnection,
     } = this.props;
     const { showFullTxDetails } = this.state;
 
@@ -345,6 +350,14 @@ export default class ConfirmApproveContent extends Component {
               ),
             })}
         </div>
+
+        {ledgerWalletRequiredHidConnection ? (
+          <div className="confirm-approve-content__ledger-instruction-wrapper">
+            <LedgerInstructionField
+              showDataInstruction={Boolean(txData.txParams?.data)}
+            />
+          </div>
+        ) : null}
 
         {showFullTxDetails ? (
           <div className="confirm-approve-content__full-tx-content">
