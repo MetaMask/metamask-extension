@@ -259,6 +259,22 @@
   "betaWelcome": {
     "message": "Welcome to MetaMask Beta"
   },
+  "blockExplorerAccountAction": {
+    "message": "Account",
+    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
+  },
+  "blockExplorerAssetAction": {
+    "message": "Asset",
+    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Asset in Explorer"
+  },
+  "blockExplorerSwapAction": {
+    "message": "Swap",
+    "description": "This is used with viewOnEtherscan e.g View Swap on Etherscan"
+  },
+  "blockExplorerTransactionAction": {
+    "message": "Transaction",
+    "description": "This is used with viewOnCustomBlockExplorer and viewOnEtherscan e.g View Transaction on Etherscan"
+  },
   "blockExplorerUrl": {
     "message": "Block Explorer URL"
   },
@@ -341,11 +357,11 @@
   "confirmPassword": {
     "message": "Confirm password"
   },
+  "confirmRecoveryPhrase": {
+    "message": "Confirm Secret Recovery Phrase"
+  },
   "confirmSecretBackupPhrase": {
     "message": "Confirm your Secret Recovery Phrase"
-  },
-  "confirmSeedPhrase": {
-    "message": "Confirm Secret Recovery Phrase"
   },
   "confirmed": {
     "message": "Confirmed"
@@ -405,7 +421,7 @@
     "message": "You have 1 account connected to this site."
   },
   "connectedAccountsEmptyDescription": {
-    "message": "MetaMask is not connected this site. To connect to a web3 site, find the connect button on their site."
+    "message": "MetaMask is not connected to this site. To connect to a web3 site, find and click the connect button."
   },
   "connectedSites": {
     "message": "Connected sites"
@@ -919,6 +935,9 @@
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
   },
+  "followUsOnTwitter": {
+    "message": "Follow us on Twitter"
+  },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
   },
@@ -1026,6 +1045,9 @@
   "getStarted": {
     "message": "Get Started"
   },
+  "goBack": {
+    "message": "Go Back"
+  },
   "goerli": {
     "message": "Goerli Test Network"
   },
@@ -1096,6 +1118,16 @@
   "importAccountText": {
     "message": "or $1",
     "description": "$1 represents the text from `importAccountLinkText` as a link"
+  },
+  "importExistingWalletDescription": {
+    "message": "Enter your Secret Recovery Phrase (aka Seed Phrase) that you were given when you created your wallet. $1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
+  "importExistingWalletTitle": {
+    "message": "Import existing wallet with Secret Recovery Phrase"
+  },
+  "importMyWallet": {
+    "message": "Import My Wallet"
   },
   "importTokenQuestion": {
     "message": "Import token?"
@@ -1190,6 +1222,9 @@
   },
   "ipfsGatewayDescription": {
     "message": "Enter the URL of the IPFS CID gateway to use for ENS content resolution."
+  },
+  "jsDeliver": {
+    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "JSON File",
@@ -1597,9 +1632,23 @@
   "on": {
     "message": "On"
   },
+  "onboardingCreateWallet": {
+    "message": "Create a new wallet"
+  },
+  "onboardingImportWallet": {
+    "message": "Import an existing wallet"
+  },
   "onboardingReturnNotice": {
     "message": "\"$1\" will close this tab and direct back to $2",
     "description": "Return the user to the site that initiated onboarding"
+  },
+  "onboardingShowIncomingTransactionsDescription": {
+    "message": "Showing incoming transactions in your wallet relies on communication with $1. Etherscan will have access to your Ethereum address and your IP address. View $2.",
+    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
+  },
+  "onboardingUsePhishingDetectionDescription": {
+    "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
+    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "onlyAddTrustedNetworks": {
     "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
@@ -1763,6 +1812,9 @@
   "rejected": {
     "message": "Rejected"
   },
+  "remember": {
+    "message": "Remember:"
+  },
   "remindMeLater": {
     "message": "Remind me later"
   },
@@ -1812,9 +1864,6 @@
   "revealSeedWordsDescription": {
     "message": "If you ever change browsers or move computers, you will need this Secret Recovery Phrase to access your accounts. Save them somewhere safe and secret."
   },
-  "revealSeedWordsTitle": {
-    "message": "Secret Recovery Phrase"
-  },
   "revealSeedWordsWarning": {
     "message": "These words can be used to steal all your accounts."
   },
@@ -1857,9 +1906,6 @@
   "searchTokens": {
     "message": "Search Tokens"
   },
-  "secretBackupPhrase": {
-    "message": "Secret Recovery Phrase"
-  },
   "secretBackupPhraseDescription": {
     "message": "Your Secret Recovery Phrase makes it easy to back up and restore your account."
   },
@@ -1868,6 +1914,9 @@
   },
   "secretPhrase": {
     "message": "Only the first account on this wallet will auto load. After completing this process, to add additional accounts, click the drop down menu, then select Create Account."
+  },
+  "secretRecoveryPhrase": {
+    "message": "Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "Secure Wallet"
@@ -1884,6 +1933,12 @@
   "seedPhraseEnterMissingWords": {
     "message": "Confirm Secret Recovery Phrase"
   },
+  "seedPhraseIntroNotRecommendedButtonCopy": {
+    "message": "Remind me later (not recommended)"
+  },
+  "seedPhraseIntroRecommendedButtonCopy": {
+    "message": "Secure my wallet (recommended)"
+  },
   "seedPhraseIntroSidebarBulletFour": {
     "message": "Write down and store in multiple secret places."
   },
@@ -1897,13 +1952,13 @@
     "message": "Store in a bank vault."
   },
   "seedPhraseIntroSidebarCopyOne": {
-    "message": "Your Secret Recovery Phrase is the “master key” to your wallet and funds."
+    "message": "Your Secret Recovery Phrase is a 12-word phrase that is the “master key” to your wallet and your funds"
   },
   "seedPhraseIntroSidebarCopyThree": {
-    "message": "If someone asks for your Secret Recovery Phrase, they are most likely trying to scam you."
+    "message": "If someone asks for your recovery phrase they are likely trying to scam you and steal your wallet funds"
   },
   "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Never, ever share your Secret Recovery Phrase, even with MetaMask!"
+    "message": "Never, ever share your Secret Recovery Phrase, not even with MetaMask!"
   },
   "seedPhraseIntroSidebarTitleOne": {
     "message": "What is a Secret Recovery Phrase?"
@@ -1995,6 +2050,12 @@
   "separateEachWord": {
     "message": "Separate each word with a single space"
   },
+  "setAdvancedPrivacySettings": {
+    "message": "Set advanced privacy settings"
+  },
+  "setAdvancedPrivacySettingsDetails": {
+    "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
+  },
   "settings": {
     "message": "Settings"
   },
@@ -2054,6 +2115,15 @@
   },
   "signed": {
     "message": "Signed"
+  },
+  "skip": {
+    "message": "Skip"
+  },
+  "skipAccountSecurity": {
+    "message": "Skip Account Security?"
+  },
+  "skipAccountSecurityDetails": {
+    "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
   },
   "slow": {
     "message": "Slow"
@@ -2684,6 +2754,9 @@
   "tryAgain": {
     "message": "Try again"
   },
+  "turnOnTokenDetection": {
+    "message": "Turn on Token Detection"
+  },
   "typePassword": {
     "message": "Type your MetaMask password"
   },
@@ -2784,13 +2857,16 @@
     "message": "View More"
   },
   "viewOnCustomBlockExplorer": {
-    "message": "View at $1"
+    "message": "View $1 at $2",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
   },
   "viewOnEtherscan": {
-    "message": "View on Etherscan"
+    "message": "View $1 on Etherscan",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "viewinExplorer": {
-    "message": "View in Explorer"
+    "message": "View $1 in Explorer",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "visitWebSite": {
     "message": "Visit our web site"
@@ -2798,8 +2874,25 @@
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
   },
-  "walletSeed": {
-    "message": "Secret Recovery Phrase"
+  "walletCreationSuccessDetail": {
+    "message": "You’ve successfully protected your wallet. Keep your Secret Recovery Phrase safe and secret -- it’s your responsibility!"
+  },
+  "walletCreationSuccessReminder1": {
+    "message": "MetaMask can’t recover your Secret Recovery Phrase."
+  },
+  "walletCreationSuccessReminder2": {
+    "message": "MetaMask will never ask you for your Secret Recovery Phrase."
+  },
+  "walletCreationSuccessReminder3": {
+    "message": "$1 with anyone or risk your funds being stolen",
+    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
+  },
+  "walletCreationSuccessReminder3BoldSection": {
+    "message": "Never share your Secret Recovery Phrase",
+    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
+  },
+  "walletCreationSuccessTitle": {
+    "message": "Wallet creation successful"
   },
   "walletSeedRestore": {
     "message": "Wallet Secret Recovery Phrase"
@@ -2813,6 +2906,24 @@
   },
   "welcomeBack": {
     "message": "Welcome Back!"
+  },
+  "welcomeExploreDescription": {
+    "message": "Store, send and spend crypto currencies and assets."
+  },
+  "welcomeExploreTitle": {
+    "message": "Explore decentralized apps"
+  },
+  "welcomeLoginDescription": {
+    "message": "Use your MetaMask to login to decentralized apps - no signup needed."
+  },
+  "welcomeLoginTitle": {
+    "message": "Say hello to your wallet"
+  },
+  "welcomeToMetaMask": {
+    "message": "Let's get started"
+  },
+  "welcomeToMetaMaskIntro": {
+    "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
   "whatsNew": {
     "message": "What's new",

@@ -823,9 +823,6 @@
   "searchTokens": {
     "message": "Iskanje žetonov"
   },
-  "secretBackupPhrase": {
-    "message": "Skrivno geslo za varnostno kopiranje"
-  },
   "secretBackupPhraseDescription": {
     "message": "Vaše skrivno geslo za varnostno kopiranje olajša varnostno kopiranje in obnovitev računa."
   },
@@ -1111,15 +1108,6 @@
   },
   "viewContact": {
     "message": "Ogled stika"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Ogled na $1 "
-  },
-  "viewOnEtherscan": {
-    "message": "Poglej na Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Ogled v Explorerju"
   },
   "visitWebSite": {
     "message": "Obiščite našo spletno stran"

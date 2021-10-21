@@ -32,6 +32,7 @@ import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
+  SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
@@ -201,6 +202,7 @@ export default class MetamaskController extends EventEmitter {
     this.gasFeeController = new GasFeeController({
       interval: 10000,
       messenger: gasFeeMessenger,
+      clientId: SWAPS_CLIENT_ID,
       getProvider: () =>
         this.networkController.getProviderAndBlockTracker().provider,
       onNetworkStateChange: this.networkController.on.bind(
@@ -362,7 +364,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.onboardingController = new OnboardingController({
       initState: initState.OnboardingController,
-      preferencesController: this.preferencesController,
     });
 
     this.tokensController.hub.on('pendingSuggestedAsset', async () => {
@@ -378,7 +379,7 @@ export default class MetamaskController extends EventEmitter {
     this.keyringController.memStore.subscribe((state) =>
       this._onKeyringControllerUpdate(state),
     );
-    this.keyringController.on('unlock', () => this.emit('unlock'));
+    this.keyringController.on('unlock', () => this._onUnlock());
     this.keyringController.on('lock', () => this._onLock());
 
     this.permissionsController = new PermissionsController(
@@ -627,7 +628,7 @@ export default class MetamaskController extends EventEmitter {
     if (
       password &&
       !this.isUnlocked() &&
-      this.onboardingController.completedOnboarding
+      this.onboardingController.store.getState().completedOnboarding
     ) {
       this.submitPassword(password);
     }
@@ -818,7 +819,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       setIpfsGateway: this.setIpfsGateway.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
-      setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
@@ -897,10 +897,7 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setPreference,
         preferencesController,
       ),
-      completeOnboarding: nodeify(
-        preferencesController.completeOnboarding,
-        preferencesController,
-      ),
+
       addKnownMethodData: nodeify(
         preferencesController.addKnownMethodData,
         preferencesController,
@@ -999,6 +996,14 @@ export default class MetamaskController extends EventEmitter {
       // onboarding controller
       setSeedPhraseBackedUp: nodeify(
         onboardingController.setSeedPhraseBackedUp,
+        onboardingController,
+      ),
+      completeOnboarding: nodeify(
+        onboardingController.completeOnboarding,
+        onboardingController,
+      ),
+      setFirstTimeFlowType: nodeify(
+        onboardingController.setFirstTimeFlowType,
         onboardingController,
       ),
 
@@ -2624,10 +2629,10 @@ export default class MetamaskController extends EventEmitter {
         ? (origin) => payload(origin)
         : () => payload;
 
-    Object.values(this.connections).forEach((origin) => {
-      Object.values(origin).forEach((conn) => {
+    Object.keys(this.connections).forEach((origin) => {
+      Object.values(this.connections[origin]).forEach(async (conn) => {
         if (conn.engine) {
-          conn.engine.emit('notification', getPayload(origin));
+          conn.engine.emit('notification', await getPayload(origin));
         }
       });
     });
@@ -2662,12 +2667,12 @@ export default class MetamaskController extends EventEmitter {
    * Notifies all connections that the extension is unlocked.
    */
   _onUnlock() {
-    this.notifyAllConnections((origin) => {
+    this.notifyAllConnections(async (origin) => {
       return {
         method: NOTIFICATION_NAMES.unlockStateChanged,
         params: {
           isUnlocked: true,
-          accounts: this.permissionsController.getAccounts(origin),
+          accounts: await this.permissionsController.getAccounts(origin),
         },
       };
     });
@@ -3007,23 +3012,6 @@ export default class MetamaskController extends EventEmitter {
         bool,
       );
       cb(null, metaMetricsId);
-      return;
-    } catch (err) {
-      cb(err);
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
-  }
-
-  /**
-   * Sets the type of first time flow the user wishes to follow: create or import
-   * @param {string} type - Indicates the type of first time flow the user wishes to follow
-   * @param {Function} cb - A callback function called when complete.
-   */
-  setFirstTimeFlowType(type, cb) {
-    try {
-      this.preferencesController.setFirstTimeFlowType(type);
-      cb(null);
       return;
     } catch (err) {
       cb(err);

@@ -56,7 +56,7 @@ export default class NetworksTab extends PureComponent {
         </span>
         <div className="networks-tab__add-network-header-button-wrapper">
           <Button
-            type="secondary"
+            type="primary"
             onClick={(event) => {
               event.preventDefault();
               setSelectedSettingsRpcUrl('');

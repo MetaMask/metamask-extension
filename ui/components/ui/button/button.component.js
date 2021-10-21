@@ -27,14 +27,15 @@ const typeHash = {
 
 const Button = ({
   type,
-  submit,
+  submit = false,
   large,
   children,
   icon,
-  rounded,
   className,
+  rounded = true,
   ...buttonProps
 }) => {
+  const doRounding = rounded && type !== 'link';
   // To support using the Button component to render styled links that are semantic html
   // we swap the html tag we use to render this component and delete any buttonProps that
   // we know to be erroneous attributes for a link. We will likely want to extract Link
@@ -58,9 +59,9 @@ const Button = ({
     <Tag
       className={classnames(
         'button',
+        doRounding && CLASSNAME_ROUNDED,
         typeHash[type] || CLASSNAME_DEFAULT,
         large && CLASSNAME_LARGE,
-        rounded && CLASSNAME_ROUNDED,
         className,
       )}
       {...buttonProps}
@@ -75,14 +76,10 @@ Button.propTypes = {
   type: PropTypes.string,
   submit: PropTypes.bool,
   large: PropTypes.bool,
-  rounded: PropTypes.bool,
   className: PropTypes.string,
   children: PropTypes.node,
   icon: PropTypes.node,
-};
-
-Button.defaultProps = {
-  submit: false,
+  rounded: PropTypes.bool,
 };
 
 export default Button;

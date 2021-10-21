@@ -24,4 +24,11 @@
     color: #f7861c;
     margin-bottom: 9px;
   }
+
+  &__address {
+    @include H7;
+
+    background-color: $ui-1;
+    padding: 12px;
+  }
 }

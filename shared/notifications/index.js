@@ -67,7 +67,7 @@ export const getTranslatedUINoficiations = (t, locale) => {
     },
     5: {
       ...UI_NOTIFICATIONS[5],
-      title: t('walletSeed'),
+      title: t('secretRecoveryPhrase'),
       description: t('notifications5Description'),
       actionText: t('notifications3ActionText'),
       date: new Intl.DateTimeFormat(formattedLocale).format(

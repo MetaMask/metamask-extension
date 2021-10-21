@@ -824,8 +824,8 @@
     "@gulp-sourcemaps/identity-map": {
       "packages": {
         "acorn": true,
-        "css": true,
         "normalize-path": true,
+        "postcss": true,
         "source-map": true,
         "through2": true
       }
@@ -840,18 +840,22 @@
       "builtin": {
         "assert": true,
         "buffer.Buffer.from": true,
+        "fs.readFileSync": true,
         "path.join": true,
         "path.relative": true
       },
       "globals": {
         "__dirname": true,
-        "process.cwd": true
+        "process.cwd": true,
+        "setTimeout": true
       },
       "packages": {
         "JSONStream": true,
         "combine-source-map": true,
         "convert-source-map": true,
         "json-stable-stringify": true,
+        "lavamoat-core": true,
+        "readable-stream": true,
         "through2": true,
         "umd": true
       }
@@ -960,15 +964,6 @@
         "fast-json-stable-stringify": true,
         "json-schema-traverse": true,
         "uri-js": true
-      }
-    },
-    "amdefine": {
-      "builtin": {
-        "path.dirname": true
-      },
-      "globals": {
-        "__filename": true,
-        "process.nextTick": true
       }
     },
     "ansi-colors": {
@@ -1407,6 +1402,15 @@
         "buffer.Buffer": true
       }
     },
+    "clone-deep": {
+      "packages": {
+        "for-own": true,
+        "is-plain-object": true,
+        "kind-of": true,
+        "lazy-cache": true,
+        "shallow-clone": true
+      }
+    },
     "clone-regexp": {
       "packages": {
         "is-regexp": true
@@ -1465,6 +1469,7 @@
     "concat-stream": {
       "globals": {
         "Buffer.concat": true,
+        "Buffer.from": true,
         "Buffer.isBuffer": true
       },
       "packages": {
@@ -1481,7 +1486,7 @@
         "path.resolve": true
       },
       "globals": {
-        "Buffer": true
+        "Buffer.from": true
       },
       "packages": {
         "safe-buffer": true
@@ -1540,13 +1545,13 @@
     "css": {
       "builtin": {
         "fs.readFileSync": true,
-        "path.dirname": true
+        "path.dirname": true,
+        "path.sep": true
       },
       "packages": {
         "inherits": true,
         "source-map": true,
-        "source-map-resolve": true,
-        "urix": true
+        "source-map-resolve": true
       }
     },
     "d": {
@@ -2436,7 +2441,8 @@
         "path.sep": true
       },
       "globals": {
-        "Buffer": true
+        "Buffer.concat": true,
+        "Buffer.from": true
       },
       "packages": {
         "@gulp-sourcemaps/identity-map": true,
@@ -2595,7 +2601,7 @@
     },
     "inline-source-map": {
       "globals": {
-        "Buffer": true
+        "Buffer.from": true
       },
       "packages": {
         "source-map": true
@@ -2820,6 +2826,70 @@
         "es6-weak-map": true
       }
     },
+    "lavamoat-browserify": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.mkdirSync": true,
+        "fs.readFileSync": true,
+        "fs.writeFileSync": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.resolve": true,
+        "util.callbackify": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.cwd": true
+      },
+      "packages": {
+        "@lavamoat/lavapack": true,
+        "concat-stream": true,
+        "duplexify": true,
+        "json-stable-stringify": true,
+        "lavamoat-core": true,
+        "readable-stream": true,
+        "through2": true
+      }
+    },
+    "lavamoat-core": {
+      "builtin": {
+        "events": true,
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "module.createRequire": true,
+        "module.createRequireFromPath": true,
+        "path.extname": true,
+        "path.join": true,
+        "path.sep": true
+      },
+      "globals": {
+        "__dirname": true,
+        "console.warn": true,
+        "define": true
+      },
+      "packages": {
+        "fromentries": true,
+        "json-stable-stringify": true,
+        "lavamoat-tofu": true,
+        "merge-deep": true,
+        "resolve": true
+      }
+    },
+    "lavamoat-tofu": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "@babel/parser": true,
+        "@babel/traverse": true
+      }
+    },
+    "lazy-cache": {
+      "globals": {
+        "process.env.TRAVIS": true,
+        "process.env.UNLAZY": true
+      }
+    },
     "lazystream": {
       "builtin": {
         "util.inherits": true
@@ -2868,6 +2938,11 @@
       },
       "packages": {
         "js-tokens": true
+      }
+    },
+    "lru-cache": {
+      "packages": {
+        "yallist": true
       }
     },
     "lru-queue": {
@@ -2936,6 +3011,13 @@
         "timers-ext": true
       }
     },
+    "merge-deep": {
+      "packages": {
+        "arr-union": true,
+        "clone-deep": true,
+        "kind-of": true
+      }
+    },
     "merge-source-map": {
       "packages": {
         "source-map": true
@@ -2995,6 +3077,12 @@
       }
     },
     "mixin-deep": {
+      "packages": {
+        "for-in": true,
+        "is-extendable": true
+      }
+    },
+    "mixin-object": {
       "packages": {
         "for-in": true,
         "is-extendable": true
@@ -3732,6 +3820,9 @@
       "globals": {
         "console": true,
         "process": true
+      },
+      "packages": {
+        "lru-cache": true
       }
     },
     "set-value": {
@@ -3740,6 +3831,14 @@
         "is-extendable": true,
         "is-plain-object": true,
         "split-string": true
+      }
+    },
+    "shallow-clone": {
+      "packages": {
+        "is-extendable": true,
+        "kind-of": true,
+        "lazy-cache": true,
+        "mixin-object": true
       }
     },
     "shasum": {
@@ -3816,16 +3915,15 @@
         "console.time": true,
         "console.timeEnd": true,
         "fetch": true
-      },
-      "packages": {
-        "amdefine": true
       }
     },
     "source-map-resolve": {
       "builtin": {
+        "path.sep": true,
         "url.resolve": true
       },
       "globals": {
+        "TextDecoder": true,
         "setImmediate": true
       },
       "packages": {

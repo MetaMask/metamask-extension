@@ -1527,9 +1527,6 @@
   "revealSeedWordsDescription": {
     "message": "Если вы меняете браузер или переходите на другой компьютер, вам понадобится эта секретная фраза восстановления для доступа к своим счетам. Сохраните ее в безопасном секретном месте."
   },
-  "revealSeedWordsTitle": {
-    "message": "Секретная фраза восстановления"
-  },
   "revealSeedWordsWarning": {
     "message": "Эти слова можно использовать для кражи всех ваших счетов."
   },
@@ -1571,9 +1568,6 @@
   },
   "searchTokens": {
     "message": "Поиск токенов"
-  },
-  "secretBackupPhrase": {
-    "message": "Секретная резервная фраза"
   },
   "secretBackupPhraseDescription": {
     "message": "Ваша секретная резервная фраза упрощает резервное копирование и восстановление вашего счета."
@@ -2386,23 +2380,11 @@
   "viewMore": {
     "message": "Посмотреть больше"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Посмотреть на $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Посмотреть на Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Проводник в проводнике"
-  },
   "visitWebSite": {
     "message": "Посетите наш веб-сайт"
   },
   "walletConnectionGuide": {
     "message": "наше руководство по подключению аппаратного кошелька"
-  },
-  "walletSeed": {
-    "message": "Секретная фраза восстановления"
   },
   "walletSeedRestore": {
     "message": "Секретная фраза восстановления кошелька"

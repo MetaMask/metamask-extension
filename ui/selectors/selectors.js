@@ -15,6 +15,8 @@ import {
   ALLOWED_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
+import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
+
 import {
   shortenAddress,
   getAccountByAddress,
@@ -32,6 +34,7 @@ import { DAY } from '../../shared/constants/time';
 import {
   getNativeCurrency,
   getConversionRate,
+  isNotEIP1559Network,
   isEIP1559Network,
 } from '../ducks/metamask/metamask';
 
@@ -92,11 +95,26 @@ export function isEIP1559Account(state) {
   return currentKeyring && currentKeyring.type !== KEYRING_TYPES.TREZOR;
 }
 
+/**
+ * The function returns true if network and account details are fetched and
+ * both of them support EIP-1559.
+ */
 export function checkNetworkAndAccountSupports1559(state) {
   const networkSupports1559 = isEIP1559Network(state);
   const accountSupports1559 = isEIP1559Account(state);
 
   return networkSupports1559 && accountSupports1559;
+}
+
+/**
+ * The function returns true if network and account details are fetched and
+ * either of them do not support EIP-1559.
+ */
+export function checkNetworkOrAccountNotSupports1559(state) {
+  const networkNotSupports1559 = isNotEIP1559Network(state);
+  const accountSupports1559 = isEIP1559Account(state);
+
+  return networkNotSupports1559 || accountSupports1559 === false;
 }
 
 /**
@@ -124,8 +142,8 @@ export function getAccountType(state) {
   const type = currentKeyring && currentKeyring.type;
 
   switch (type) {
-    case 'Trezor Hardware':
-    case 'Ledger Hardware':
+    case KEYRING_TYPES.TREZOR:
+    case KEYRING_TYPES.LEDGER:
       return 'hardware';
     case 'Simple Key Pair':
       return 'imported';
@@ -305,7 +323,11 @@ export function getAccountsWithLabels(state) {
   return getMetaMaskAccountsOrdered(state).map(
     ({ address, name, balance }) => ({
       address,
-      addressLabel: `${name} (...${address.slice(address.length - 4)})`,
+      addressLabel: `${
+        name.length < TRUNCATED_NAME_CHAR_LIMIT
+          ? name
+          : `${name.slice(0, TRUNCATED_NAME_CHAR_LIMIT - 1)}...`
+      } (${shortenAddress(address)})`,
       label: name,
       balance,
     }),

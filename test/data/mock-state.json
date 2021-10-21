@@ -31,6 +31,11 @@
         "name": "Test Account 2"
       }
     },
+    "networkDetails": {
+      "EIPS": {
+        "1559": true
+      }
+    },
     "cachedBalances": {},
     "incomingTransactions": {},
     "unapprovedTxs": {

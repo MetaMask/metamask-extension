@@ -24,8 +24,8 @@ function Connector({ isFirst, isLast }) {
 }
 
 Connector.propTypes = {
-  isFirst: PropTypes.boolean,
-  isLast: PropTypes.boolean,
+  isFirst: PropTypes.bool,
+  isLast: PropTypes.bool,
 };
 
 export default function RadioGroup({ options, name, selectedValue, onChange }) {

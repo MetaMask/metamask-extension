@@ -29,6 +29,7 @@ import {
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { useIncrementedGasFees } from '../../../hooks/useIncrementedGasFees';
+import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 
 export default function EditGasPopover({
   popoverTitle = '',
@@ -42,9 +43,9 @@ export default function EditGasPopover({
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const networkAndAccountSupport1559 = useSelector(
-    checkNetworkAndAccountSupports1559,
-  );
+  const supportsEIP1559 =
+    useSelector(checkNetworkAndAccountSupports1559) &&
+    !isLegacyTransaction(transaction?.txParams);
   const gasLoadingAnimationIsShowing = useSelector(
     getGasLoadingAnimationIsShowing,
   );
@@ -52,7 +53,7 @@ export default function EditGasPopover({
   const showEducationButton =
     (mode === EDIT_GAS_MODES.MODIFY_IN_PLACE ||
       mode === EDIT_GAS_MODES.SWAPS) &&
-    networkAndAccountSupport1559;
+    supportsEIP1559;
   const [showEducationContent, setShowEducationContent] = useState(false);
 
   const [warning] = useState(null);
@@ -132,7 +133,7 @@ export default function EditGasPopover({
       closePopover();
     }
 
-    const newGasSettings = networkAndAccountSupport1559
+    const newGasSettings = supportsEIP1559
       ? {
           gas: decimalToHex(gasLimit),
           gasLimit: decimalToHex(gasLimit),
@@ -149,7 +150,7 @@ export default function EditGasPopover({
 
     const cleanTransactionParams = { ...updatedTransaction.txParams };
 
-    if (networkAndAccountSupport1559) {
+    if (supportsEIP1559) {
       delete cleanTransactionParams.gasPrice;
     }
 
@@ -182,7 +183,7 @@ export default function EditGasPopover({
         break;
       case EDIT_GAS_MODES.SWAPS:
         // This popover component should only be used for the "FEE_MARKET" type in Swaps.
-        if (networkAndAccountSupport1559) {
+        if (supportsEIP1559) {
           dispatch(updateSwapsUserFeeLevel(estimateToUse || 'custom'));
           dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
         }
@@ -201,7 +202,7 @@ export default function EditGasPopover({
     gasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    networkAndAccountSupport1559,
+    supportsEIP1559,
     estimateToUse,
     estimatedBaseFee,
   ]);

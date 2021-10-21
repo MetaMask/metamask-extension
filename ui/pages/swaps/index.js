@@ -118,6 +118,7 @@ export default function Swap() {
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const useNewSwapsApi = useSelector(getUseNewSwapsApi);
+  const prevUseNewSwapsApi = useRef(useNewSwapsApi);
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
@@ -193,7 +194,7 @@ export default function Swap() {
 
   // eslint-disable-next-line
   useEffect(() => {
-    if (isFeatureFlagLoaded) {
+    if (isFeatureFlagLoaded && prevUseNewSwapsApi.current === useNewSwapsApi) {
       fetchTokens(chainId, useNewSwapsApi)
         .then((tokens) => {
           dispatch(setSwapsTokens(tokens));
@@ -214,6 +215,7 @@ export default function Swap() {
         dispatch(prepareToLeaveSwaps());
       };
     }
+    prevUseNewSwapsApi.current = useNewSwapsApi;
   }, [
     dispatch,
     chainId,

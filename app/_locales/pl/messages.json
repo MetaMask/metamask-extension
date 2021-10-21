@@ -793,9 +793,6 @@
   "revealSeedWordsDescription": {
     "message": "Jeśli kiedyś zmienisz przeglądarkę lub komputer, będziesz potrzebować tej frazy seed, żeby dostać się do swoich kont. Zapisz ją w bezpiecznym miejscu."
   },
-  "revealSeedWordsTitle": {
-    "message": "Fraza seed"
-  },
   "revealSeedWordsWarning": {
     "message": "Te słowa mogą być użyte żeby ukraść Twoje konta."
   },
@@ -831,9 +828,6 @@
   },
   "searchTokens": {
     "message": "Szukaj tokenów"
-  },
-  "secretBackupPhrase": {
-    "message": "Tajna fraza zapasowa"
   },
   "secretBackupPhraseDescription": {
     "message": "Twoja tajna fraza zapasowa ułatwia tworzenie kopii zapasowych i przywracanie konta."
@@ -1115,20 +1109,8 @@
   "viewContact": {
     "message": "Wyświetl kontakt"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Wyświetl w $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Zobacz na Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Wyświetl w przeglądarce"
-  },
   "visitWebSite": {
     "message": "Odwiedź naszą stronę"
-  },
-  "walletSeed": {
-    "message": "Seed portfela"
   },
   "welcome": {
     "message": "Witaj w MetaMask"

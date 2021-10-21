@@ -147,9 +147,9 @@ export default class TransactionListItemDetails extends PureComponent {
             <div className="transaction-list-item-details__header-buttons">
               {showSpeedUp && (
                 <Button
-                  type="raised"
+                  type="primary"
                   onClick={this.handleRetry}
-                  className="transaction-list-item-details__header-button"
+                  className="transaction-list-item-details__header-button-rounded-button"
                 >
                   {t('speedUp')}
                 </Button>
@@ -181,8 +181,13 @@ export default class TransactionListItemDetails extends PureComponent {
                 containerClassName="transaction-list-item-details__header-button-tooltip-container"
                 title={
                   blockExplorerUrl
-                    ? t('viewOnCustomBlockExplorer', [blockExplorerUrl])
-                    : t('viewOnEtherscan')
+                    ? t('viewOnCustomBlockExplorer', [
+                        t('blockExplorerTransactionAction'),
+                        blockExplorerUrl,
+                      ])
+                    : t('viewOnEtherscan', [
+                        t('blockExplorerTransactionAction'),
+                      ])
                 }
               >
                 <Button
