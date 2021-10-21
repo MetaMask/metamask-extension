@@ -5,8 +5,8 @@ jobs:
     name: Shellcheck
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
       - name: checkout
+      - uses: actions/checkout@v2
       - name: install
         run: |
           apt install shellcheck jq -y;
