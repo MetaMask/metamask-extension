@@ -197,6 +197,12 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
             `Invalid transaction value of "${value}": number must be in wei.`,
           );
         }
+
+        if (!value.match(/^0x[a-fA-F0-9]+$/u)) {
+          throw ethErrors.rpc.invalidParams(
+            `Invalid transaction value of "${value}": not a valid hex string.`,
+          );
+        }
         break;
       case 'chainId':
         if (typeof value !== 'number' && typeof value !== 'string') {
