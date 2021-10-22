@@ -450,7 +450,7 @@ export default class ConfirmApproveContent extends Component {
                   </div>
                 </div>
               ),
-            })}   
+            })}
         </div>
 
         {ledgerWalletRequiredHidConnection ? (
