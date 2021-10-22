@@ -29,6 +29,8 @@ import {
   TokenListController,
   TokensController,
   TokenRatesController,
+  CollectiblesController,
+  AssetsContractController,
 } from '@metamask/controllers';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import {
@@ -173,6 +175,26 @@ export default class MetamaskController extends EventEmitter {
       ),
       config: { provider: this.provider },
       state: initState.TokensController,
+    });
+
+    this.assetsContractController = new AssetsContractController();
+
+    this.collectiblesController = new CollectiblesController({
+      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+        this.preferencesController.store,
+      ),
+      onNetworkStateChange: this.networkController.store.subscribe.bind(
+        this.networkController.store,
+      ),
+      getAssetName: this.assetsContractController.getAssetName.bind(
+        this.assetsContractController,
+      ),
+      getAssetSymbol: this.assetsContractController.getAssetSymbol.bind(
+        this.assetsContractController,
+      ),
+      getCollectibleTokenURI: this.assetsContractController.getCollectibleTokenURI.bind(
+        this.assetsContractController,
+      ),
     });
 
     this.metaMetricsController = new MetaMetricsController({
@@ -611,6 +633,7 @@ export default class MetamaskController extends EventEmitter {
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
+      CollectiblesController: this.collectiblesController,
     });
 
     this.memStore = new ComposableObservableStore({
@@ -645,6 +668,7 @@ export default class MetamaskController extends EventEmitter {
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
+        CollectiblesController: this.collectiblesController,
       },
       controllerMessenger: this.controllerMessenger,
     });
@@ -826,6 +850,7 @@ export default class MetamaskController extends EventEmitter {
       threeBoxController,
       txController,
       tokensController,
+      collectiblesController,
     } = this;
 
     return {
@@ -946,6 +971,22 @@ export default class MetamaskController extends EventEmitter {
       setAdvancedGasFee: nodeify(
         preferencesController.setAdvancedGasFee,
         preferencesController,
+      ),
+
+      // CollectiblesController
+      addCollectible: nodeify(
+        collectiblesController.addCollectible,
+        collectiblesController,
+      ),
+
+      removeAndIgnoreCollectible: nodeify(
+        collectiblesController.removeAndIgnoreCollectible,
+        collectiblesController,
+      ),
+
+      removeCollectible: nodeify(
+        collectiblesController.removeCollectible,
+        collectiblesController,
       ),
 
       // AddressController
