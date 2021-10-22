@@ -1,5 +1,5 @@
 const deepFreeze = require('deep-freeze-strict');
-const { BuildTypes } = require('../utils');
+const { BuildType } = require('../utils');
 const {
   createRemoveFencedCodeTransform,
   removeFencedCode,
@@ -191,7 +191,7 @@ describe('build/transforms/remove-fenced-code', () => {
     const mockFileName = 'file.js';
 
     // Valid inputs
-    Object.keys(BuildTypes).forEach((buildType) => {
+    Object.keys(BuildType).forEach((buildType) => {
       it(`transforms file with fences for build type "${buildType}"`, () => {
         expect(
           removeFencedCode(
@@ -224,7 +224,7 @@ describe('build/transforms/remove-fenced-code', () => {
       expect(
         removeFencedCode(
           mockFileName,
-          BuildTypes.flask,
+          BuildType.flask,
           getMinimalFencedCode('main'),
         ),
       ).toStrictEqual(['', true]);
@@ -243,7 +243,7 @@ describe('build/transforms/remove-fenced-code', () => {
         expect(
           removeFencedCode(
             mockFileName,
-            BuildTypes.flask,
+            BuildType.flask,
             getMinimalFencedCode('main').concat(ignoredLine),
           ),
         ).toStrictEqual([ignoredLine, true]);
@@ -256,7 +256,7 @@ describe('build/transforms/remove-fenced-code', () => {
         expect(
           removeFencedCode(
             mockFileName,
-            BuildTypes.flask,
+            BuildType.flask,
             modifiedInputWithoutFences,
           ),
         ).toStrictEqual([modifiedInputWithoutFences, false]);
@@ -286,7 +286,7 @@ describe('build/transforms/remove-fenced-code', () => {
 
       inputs.forEach((input) => {
         expect(() =>
-          removeFencedCode(mockFileName, BuildTypes.flask, input),
+          removeFencedCode(mockFileName, BuildType.flask, input),
         ).toThrow(
           `Empty fence found in file "${mockFileName}":\n${emptyFence}`,
         );
@@ -313,7 +313,7 @@ describe('build/transforms/remove-fenced-code', () => {
         expect(() =>
           removeFencedCode(
             mockFileName,
-            BuildTypes.flask,
+            BuildType.flask,
             getMinimalFencedCode().replace(
               fenceSentinelAndTerminusRegex,
               replacement,
@@ -373,7 +373,7 @@ describe('build/transforms/remove-fenced-code', () => {
         expect(() =>
           removeFencedCode(
             mockFileName,
-            BuildTypes.flask,
+            BuildType.flask,
             getMinimalFencedCode().replace(directiveString, replacement),
           ),
         ).toThrow(
@@ -419,7 +419,7 @@ describe('build/transforms/remove-fenced-code', () => {
         expect(() =>
           removeFencedCode(
             mockFileName,
-            BuildTypes.flask,
+            BuildType.flask,
             getMinimalFencedCode().replace(directiveString, replacement),
           ),
         ).toThrow(
@@ -440,7 +440,7 @@ describe('build/transforms/remove-fenced-code', () => {
         expect(() =>
           removeFencedCode(
             mockFileName,
-            BuildTypes.flask,
+            BuildType.flask,
             getMinimalFencedCode().concat(addition),
           ),
         ).toThrow(
@@ -460,7 +460,7 @@ describe('build/transforms/remove-fenced-code', () => {
           expect(() =>
             removeFencedCode(
               mockFileName,
-              BuildTypes.flask,
+              BuildType.flask,
               getMinimalFencedCode().replace(validTerminus, replacement),
             ),
           ).toThrow(
@@ -484,7 +484,7 @@ describe('build/transforms/remove-fenced-code', () => {
           expect(() =>
             removeFencedCode(
               mockFileName,
-              BuildTypes.flask,
+              BuildType.flask,
               getMinimalFencedCode().replace(validCommand, replacement),
             ),
           ).toThrow(
@@ -513,7 +513,7 @@ describe('build/transforms/remove-fenced-code', () => {
           expect(() =>
             removeFencedCode(
               mockFileName,
-              BuildTypes.flask,
+              BuildType.flask,
               getMinimalFencedCode(replacement),
             ),
           ).toThrow(
@@ -526,7 +526,7 @@ describe('build/transforms/remove-fenced-code', () => {
       expect(() =>
         removeFencedCode(
           mockFileName,
-          BuildTypes.flask,
+          BuildType.flask,
           getMinimalFencedCode('').replace('()', ''),
         ),
       ).toThrow(/No params specified.$/u);
@@ -562,7 +562,7 @@ describe('build/transforms/remove-fenced-code', () => {
         expect(() =>
           removeFencedCode(
             mockFileName,
-            BuildTypes.flask,
+            BuildType.flask,
             input.replace(target, replacement),
           ),
         ).toThrow(expectedError);
