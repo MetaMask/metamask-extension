@@ -7,8 +7,8 @@ import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {
   getFetchParams,
   prepareToLeaveSwaps,
-  getSmartTransactionsStatus,
   getLatestSmartTransactionUuid,
+  getSmartTransactions,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
@@ -28,15 +28,15 @@ import {
 import SwapSuccessIcon from '../awaiting-swap/swap-success-icon';
 import SwapFailureIcon from '../awaiting-swap/swap-failure-icon';
 import {
-  fetchSmartTransactionsStatus,
+  // fetchSmartTransactionsStatus,
   stopPollingForQuotes,
   cancelSmartTransaction,
 } from '../../../store/actions';
-import { SECOND } from '../../../../shared/constants/time';
+// import { SECOND } from '../../../../shared/constants/time';
 
 import SwapsFooter from '../swaps-footer';
 
-const SMART_TRANSACTIONS_STATUS_INTERVAL = SECOND * 10; // Poll every 10 seconds.
+// const SMART_TRANSACTIONS_STATUS_INTERVAL = SECOND * 10; // Poll every 10 seconds.
 
 export default function SmartTransactionStatus() {
   const [showCancelSwapLink, setShowCancelSwapLink] = useState(true);
@@ -49,11 +49,10 @@ export default function SmartTransactionStatus() {
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = true;
   const latestSmartTransactionUuid = useSelector(getLatestSmartTransactionUuid);
-  const smartTransactionsStatus = useSelector(getSmartTransactionsStatus);
+  const smartTransactions = useSelector(getSmartTransactions);
   const smartTransactionStatus =
-    smartTransactionsStatus.find(
-      (stx) => stx.uuid === latestSmartTransactionUuid,
-    )?.status || {};
+    smartTransactions.find((stx) => stx.uuid === latestSmartTransactionUuid)
+      ?.status || {};
   console.log(`smartTransactionStatus`, smartTransactionStatus);
 
   const sensitiveProperties = {
@@ -90,14 +89,14 @@ export default function SmartTransactionStatus() {
 
   useEffect(() => {
     stxStatusPageLoadedEvent();
-    const intervalId = setInterval(() => {
-      if (isSmartTransactionPending && latestSmartTransactionUuid) {
-        dispatch(fetchSmartTransactionsStatus([latestSmartTransactionUuid]));
-      } else {
-        clearInterval(intervalId);
-      }
-    }, SMART_TRANSACTIONS_STATUS_INTERVAL);
-    return () => clearInterval(intervalId);
+    // const intervalId = setInterval(() => {
+    //   if (isSmartTransactionPending && latestSmartTransactionUuid) {
+    //     dispatch(fetchSmartTransactionsStatus([latestSmartTransactionUuid]));
+    //   } else {
+    //     clearInterval(intervalId);
+    //   }
+    // }, SMART_TRANSACTIONS_STATUS_INTERVAL);
+    // return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, isSmartTransactionPending, latestSmartTransactionUuid]);
 

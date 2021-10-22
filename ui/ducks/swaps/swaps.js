@@ -342,7 +342,7 @@ export const getSmartTransactionsOptInStatus = (state) => {
 export const getUnsignedTransactionsAndEstimates = (state) => {
   return state.appState.unsignedTransactionsAndEstimates;
 };
-export const getSmartTransactionsStatus = (state) => {
+export const getSmartTransactions = (state) => {
   const chainId = getCurrentChainId(state);
   return state.metamask.smartTransactions?.[chainId];
 };

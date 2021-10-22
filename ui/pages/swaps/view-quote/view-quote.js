@@ -868,10 +868,17 @@ export default function ViewQuote() {
           setSubmitClicked(true);
           if (!balanceError) {
             if (smartTransactionsEnabled && smartTransactionsOptInStatus) {
+              console.log(
+                'token symbols',
+                sourceTokenSymbol,
+                destinationTokenSymbol,
+              );
               dispatch(
                 signAndSendSmartTransaction({
                   unsignedTransaction,
                   unsignedTransactionsAndEstimates,
+                  sourceTokenSymbol,
+                  destinationTokenSymbol,
                 }),
               );
               history.push(SMART_TRANSACTION_STATUS_ROUTE);
