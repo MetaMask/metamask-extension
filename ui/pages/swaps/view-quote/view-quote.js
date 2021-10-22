@@ -10,7 +10,7 @@ import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
+import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import FeeCard from '../fee-card';
 import EditGasPopover from '../../../components/app/edit-gas-popover/edit-gas-popover.component';
