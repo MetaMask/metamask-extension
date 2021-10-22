@@ -35,6 +35,7 @@ export default class ConfirmPageContainerContent extends Component {
     disabled: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
+    hideTitle: PropTypes.boolean,
   };
 
   renderContent() {
@@ -89,6 +90,7 @@ export default class ConfirmPageContainerContent extends Component {
       rejectNText,
       origin,
       ethGasPriceWarning,
+      hideTitle,
     } = this.props;
 
     return (
@@ -110,6 +112,7 @@ export default class ConfirmPageContainerContent extends Component {
           identiconAddress={identiconAddress}
           nonce={nonce}
           origin={origin}
+          hideTitle={hideTitle}
         />
         {this.renderContent()}
         {(errorKey || errorMessage) && (
