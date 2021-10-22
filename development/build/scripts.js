@@ -83,7 +83,7 @@ function getConfigValue(key) {
  * Get the appropriate Infura project ID.
  *
  * @param {object} options - The Infura project ID options.
- * @param {keyof ENVIRONMENT} options.environment - The build environment.
+ * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The build environment.
  * @param {boolean} options.testing - Whether the current build is a test build or not.
  * @returns {string} The Infura project ID.
  */
