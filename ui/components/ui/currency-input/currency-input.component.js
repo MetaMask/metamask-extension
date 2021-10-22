@@ -69,7 +69,7 @@ export default class CurrencyInput extends PureComponent {
       : getValueFromWeiHex({
           value: hexValue,
           toCurrency: ETH,
-          numberOfDecimals: 6,
+          numberOfDecimals: 8,
         });
 
     return Number(decimalValueString) || 0;
@@ -134,7 +134,7 @@ export default class CurrencyInput extends PureComponent {
     if (this.shouldUseFiat()) {
       // Display ETH
       currency = nativeCurrency || ETH;
-      numberOfDecimals = 6;
+      numberOfDecimals = 8;
     } else {
       // Display Fiat
       currency = currentCurrency;
