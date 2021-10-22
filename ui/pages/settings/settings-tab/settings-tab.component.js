@@ -45,16 +45,40 @@ export default class SettingsTab extends PureComponent {
     setHideZeroBalanceTokens: PropTypes.func,
   };
 
+  state = {
+    lastFetchedConversionDate: Date.now() / 1000,
+  };
+
   renderCurrentConversion() {
     const { t } = this.context;
-    const { currentCurrency, conversionDate, setCurrentCurrency } = this.props;
+    const {
+      currentCurrency,
+      conversionDate,
+      setCurrentCurrency,
+      warning,
+    } = this.props;
+    const { lastFetchedConversionDate } = this.state;
+
+    if (
+      warning !== null &&
+      !warning.toLocaleLowerCase().includes('failed to fetch')
+    ) {
+      this.setState({ lastFetchedConversionDate: conversionDate });
+    }
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('currencyConversion')}</span>
           <span className="settings-page__content-description">
-            {t('updatedWithDate', [new Date(conversionDate * 1000).toString()])}
+            {t('updatedWithDate', [
+              `${
+                warning !== null &&
+                warning.toLocaleLowerCase().includes('failed to fetch')
+                  ? new Date(lastFetchedConversionDate * 1000).toString()
+                  : new Date(conversionDate * 1000).toString()
+              }`,
+            ])}
           </span>
         </div>
         <div className="settings-page__content-item">
