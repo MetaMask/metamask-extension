@@ -159,7 +159,9 @@ describe('CurrencyInput Component', () => {
         .find(CurrencyInput)
         .at(0)
         .instance();
-      expect(currencyInputInstance.state.decimalValue).toStrictEqual(0.00432788);
+      expect(currencyInputInstance.state.decimalValue).toStrictEqual(
+        0.00432788,
+      );
       expect(currencyInputInstance.state.hexValue).toStrictEqual(
         'f602f2234d0ea',
       );
