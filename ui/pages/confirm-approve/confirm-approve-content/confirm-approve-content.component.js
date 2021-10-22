@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import copyToClipboard from 'copy-to-clipboard';
-import { getTokenTrackerLink } from '@metamask/etherscan-link';
+import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import UrlIcon from '../../../components/ui/url-icon';
 import { addressSummary, getURLHostName } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
@@ -351,13 +351,16 @@ export default class ConfirmApproveContent extends Component {
               type="link"
               className="confirm-approve-content__etherscan-link"
               onClick={() => {
-                const blockExplorerTokenLink = getTokenTrackerLink(
-                  toAddress,
-                  chainId,
-                  null,
-                  null,
-                  { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },
-                );
+                const blockExplorerTokenLink = isContract
+                  ? getTokenTrackerLink(toAddress, chainId, null, null, {
+                      blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+                    })
+                  : getAccountLink(
+                      toAddress,
+                      chainId,
+                      { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },
+                      null,
+                    );
                 global.platform.openTab({
                   url: blockExplorerTokenLink,
                 });
