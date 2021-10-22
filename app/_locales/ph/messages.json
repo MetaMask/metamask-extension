@@ -1004,12 +1004,6 @@
   "ledgerAccountRestriction": {
     "message": "Kailangan mong gamitin ang huli mong account bago ka magdagdag ng panibago."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Gamitin ang Ledger Live"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "Binibigyang-daan ka ng bagong Ledger Live bridge na mas madaling magamit ang iyong Ledger.  Available lang sa Chrome."
-  },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
   },

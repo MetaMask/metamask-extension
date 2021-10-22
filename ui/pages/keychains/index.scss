@@ -113,10 +113,18 @@
     color: #1b344d;
   }
 
+  &__selector-typography {
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+    color: #000;
+    margin-top: 18px;
+  }
+
   &__input-wrapper {
     display: flex;
     flex-flow: column nowrap;
-    margin-top: 30px;
+    margin-top: 18px;
   }
 
   &__input {

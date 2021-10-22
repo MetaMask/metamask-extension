@@ -258,7 +258,9 @@ export default class ImportWithSeedPhrase extends PureComponent {
               autoComplete="off"
             />
           )}
-          {seedPhraseError && <span className="error">{seedPhraseError}</span>}
+          {seedPhraseError ? (
+            <span className="error">{seedPhraseError}</span>
+          ) : null}
           <div
             className="first-time-flow__checkbox-container"
             onClick={this.toggleShowSeedPhrase}

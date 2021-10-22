@@ -1004,12 +1004,6 @@
   "ledgerAccountRestriction": {
     "message": "Bạn cần sử dụng tài khoản gần đây nhất thì mới có thể thêm một tài khoản mới."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Dùng Ledger Live"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "Cầu Ledger Live mới cho phép bạn dùng Ledger dễ dàng hơn.  Chỉ có trong Chrome."
-  },
   "ledgerLiveApp": {
     "message": "Ứng dụng Ledger Live"
   },
