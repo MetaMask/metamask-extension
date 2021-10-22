@@ -2877,6 +2877,12 @@
   "useTokenDetectionDescription": {
     "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services."
   },
+  "useWhitelistMode": {
+    "message": "Use Whitelist Mode"
+  },
+  "useWhitelistModeDescription": {
+    "message": "Force MetaMask to only allow interactions from domains that are in this whitelist."
+  },
   "usedByClients": {
     "message": "Used by a variety of different clients"
   },
@@ -2985,6 +2991,15 @@
   },
   "whatsThis": {
     "message": "What's this?"
+  },
+  "whitelistDanger": {
+    "message": "This domain is NOT in your approved whitelist!"
+  },
+  "whitelistValue": {
+    "message": "Domain Whitelist"
+  },
+  "whitelistValueDescription": {
+    "message": "Comma-seperated-value listing of domains you authorize MetaMask to trust and not auto-block transactions from."
   },
   "writePhrase": {
     "message": "Write this phrase on a piece of paper and store in a secure location. If you want even more security, write it down on multiple pieces of paper and store each in 2 - 3 different locations."

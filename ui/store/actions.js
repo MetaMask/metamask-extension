@@ -2034,6 +2034,33 @@ export function setUsePhishDetect(val) {
   };
 }
 
+export function setUseWhitelistMode(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseWhitelistMode`);
+    background.setUseWhitelistMode(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
+export function setWhitelistValues(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setWhitelistValues`);
+    background.setWhitelistValues(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        console.error(err);
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
 export function setUseTokenDetection(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());

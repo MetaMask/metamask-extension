@@ -301,4 +301,36 @@ describe('util', () => {
       });
     });
   });
+
+  describe('domainOutsideWhitelist()', () => {
+    it('should return false if whitelist is not enabled in settings', () => {
+      expect(
+        util.domainOutsideWhitelist('metamask.io', false, ['metamask.io']),
+      ).toStrictEqual(false);
+    });
+
+    it('should return true if whitelist is enabled and there are no whitelisted hosts', () => {
+      expect(
+        util.domainOutsideWhitelist('metamask.io', true, []),
+      ).toStrictEqual(true);
+    });
+
+    it('should return true if whitelist is enabled and host is not in whitelist', () => {
+      expect(
+        util.domainOutsideWhitelist('metamask.io', true, ['consensys.net']),
+      ).toStrictEqual(true);
+    });
+
+    it('should return false if whitelist is enabled and host is in whitelist', () => {
+      expect(
+        util.domainOutsideWhitelist('metamask.io', true, ['metamask.io']),
+      ).toStrictEqual(false);
+    });
+
+    it('should return false if A record host is in whitelist and it is supplied a subdomain', () => {
+      expect(
+        util.domainOutsideWhitelist('docs.metamask.io', true, ['metamask.io']),
+      ).toStrictEqual(false);
+    });
+  });
 });

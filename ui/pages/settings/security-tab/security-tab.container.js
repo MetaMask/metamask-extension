@@ -5,6 +5,8 @@ import {
   setFeatureFlag,
   setParticipateInMetaMetrics,
   setUsePhishDetect,
+  setUseWhitelistMode,
+  setWhitelistValues,
 } from '../../../store/actions';
 import SecurityTab from './security-tab.component';
 
@@ -16,7 +18,9 @@ const mapStateToProps = (state) => {
   const {
     featureFlags: { showIncomingTransactions } = {},
     participateInMetaMetrics,
+    whitelistValues,
     usePhishDetect,
+    useWhitelistMode,
   } = metamask;
 
   return {
@@ -24,6 +28,8 @@ const mapStateToProps = (state) => {
     showIncomingTransactions,
     participateInMetaMetrics,
     usePhishDetect,
+    useWhitelistMode,
+    whitelistValues,
   };
 };
 
@@ -34,6 +40,8 @@ const mapDispatchToProps = (dispatch) => {
     setShowIncomingTransactionsFeatureFlag: (shouldShow) =>
       dispatch(setFeatureFlag('showIncomingTransactions', shouldShow)),
     setUsePhishDetect: (val) => dispatch(setUsePhishDetect(val)),
+    setUseWhitelistMode: (val) => dispatch(setUseWhitelistMode(val)),
+    setWhitelistValues: (val) => dispatch(setWhitelistValues(val)),
   };
 };
 

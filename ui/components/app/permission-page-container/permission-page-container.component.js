@@ -20,6 +20,7 @@ export default class PermissionPageContainer extends Component {
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
     }),
+    isNonWhitelistedDomain: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -121,6 +122,7 @@ export default class PermissionPageContainer extends Component {
       targetDomainMetadata,
       selectedIdentities,
       allIdentitiesSelected,
+      isNonWhitelistedDomain,
     } = this.props;
 
     return (
@@ -134,7 +136,9 @@ export default class PermissionPageContainer extends Component {
           allIdentitiesSelected={allIdentitiesSelected}
         />
         <div className="permission-approval-container__footers">
-          <PermissionsConnectFooter />
+          <PermissionsConnectFooter
+            isNonWhitelistedDomain={isNonWhitelistedDomain}
+          />
           <PageContainerFooter
             cancelButtonType="default"
             onCancel={() => this.onCancel()}

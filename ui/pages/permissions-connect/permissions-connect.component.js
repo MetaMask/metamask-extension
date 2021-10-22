@@ -38,6 +38,7 @@ export default class PermissionConnect extends Component {
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
     }),
+    isNonWhitelistedDomain: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -197,6 +198,7 @@ export default class PermissionConnect extends Component {
       permissionsRequestId,
       connectPath,
       confirmPermissionPath,
+      isNonWhitelistedDomain,
     } = this.props;
     const {
       selectedAccountAddresses,
@@ -234,6 +236,7 @@ export default class PermissionConnect extends Component {
                   permissionsRequestId={permissionsRequestId}
                   selectedAccountAddresses={selectedAccountAddresses}
                   targetDomainMetadata={targetDomainMetadata}
+                  isNonWhitelistedDomain={isNonWhitelistedDomain}
                 />
               )}
             />

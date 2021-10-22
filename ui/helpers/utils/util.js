@@ -408,3 +408,27 @@ export function getURLHost(url) {
 export function getURLHostName(url) {
   return getURL(url)?.hostname || '';
 }
+
+/**
+ * Return a boolean value that will let us know if a specific host is
+ * outside of the users whitelist - if that is enabled.
+ *
+ * @param {string} host - host of the url we want to test access against
+ * @param {boolean} whitelistEnabled - User setting for if whitelist setting is enabled
+ * @param {string} [whitelistValues] - Array of strings that are set in user settings. All host names without protocol
+ * @returns {boolean} - Is domain inside/outside whitelist. If setting disabled returns false. If enabled and list is empty defaults true.
+ */
+export function domainOutsideWhitelist(
+  host,
+  whitelistEnabled,
+  whitelistValues,
+) {
+  if (!whitelistEnabled || !host) {
+    return false;
+  }
+  if (whitelistValues.length === 0) {
+    return true;
+  }
+
+  return !new RegExp(whitelistValues.join('|'), 'u').test(host);
+}

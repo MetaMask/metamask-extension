@@ -11,10 +11,20 @@
     display: flex;
     margin-top: 10px;
 
+    &--danger {
+      color: $error-3;
+      margin-left: 4px;
+    }
+
     &--link {
       color: $primary-blue;
       margin-left: 4px;
       cursor: pointer;
     }
   }
+}
+
+.permissions-connect-whitlist-warning {
+  margin-top: 10px;
+  font-size: 14px;
 }

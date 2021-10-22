@@ -910,6 +910,8 @@ const state = {
     suggestedAssets: {},
     useNonceField: false,
     usePhishDetect: true,
+    useWhitelistMode: false,
+    whitelistValues: [],
     lostIdentities: {},
     forgottenPassword: false,
     ipfsGateway: 'dweb.link',

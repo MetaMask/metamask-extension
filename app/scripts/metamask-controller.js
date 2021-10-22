@@ -813,6 +813,8 @@ export default class MetamaskController extends EventEmitter {
       setUseBlockie: this.setUseBlockie.bind(this),
       setUseNonceField: this.setUseNonceField.bind(this),
       setUsePhishDetect: this.setUsePhishDetect.bind(this),
+      setUseWhitelistMode: this.setUseWhitelistMode.bind(this),
+      setWhitelistValues: this.setWhitelistValues.bind(this),
       setUseTokenDetection: nodeify(
         this.preferencesController.setUseTokenDetection,
         this.preferencesController,
@@ -2954,6 +2956,40 @@ export default class MetamaskController extends EventEmitter {
   setUsePhishDetect(val, cb) {
     try {
       this.preferencesController.setUsePhishDetect(val);
+      cb(null);
+      return;
+    } catch (err) {
+      cb(err);
+      // eslint-disable-next-line no-useless-return
+      return;
+    }
+  }
+
+  /**
+   * Sets whether or not to use whitelist mode enabled.
+   * @param {boolean} val
+   * @param {Function} cb
+   */
+  setUseWhitelistMode(val, cb) {
+    try {
+      this.preferencesController.setUseWhitelistMode(val);
+      cb(null);
+      return;
+    } catch (err) {
+      cb(err);
+      // eslint-disable-next-line no-useless-return
+      return;
+    }
+  }
+
+  /**
+   * Array of enabled domain hosts
+   * @param {array[string]} val
+   * @param {Function} cb
+   */
+  setWhitelistValues(val, cb) {
+    try {
+      this.preferencesController.setWhitelistValues(val);
       cb(null);
       return;
     } catch (err) {

@@ -27,6 +27,7 @@ export default class ConfirmPageContainer extends Component {
     titleComponent: PropTypes.node,
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
+    isNonWhitelistedDomain: PropTypes.bool,
     // Sender to Recipient
     fromAddress: PropTypes.string,
     fromName: PropTypes.string,
@@ -119,6 +120,7 @@ export default class ConfirmPageContainer extends Component {
       showAddToAddressBookModal,
       contact = {},
       isOwnedAccount,
+      isNonWhitelistedDomain,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -163,6 +165,13 @@ export default class ConfirmPageContainer extends Component {
               onClick={() => showAddToAddressBookModal()}
             >
               {this.context.t('newAccountDetectedDialogMessage')}
+            </Dialog>
+          )}
+        </div>
+        <div>
+          {isNonWhitelistedDomain && (
+            <Dialog type="error" className="send__dialog">
+              {this.context.t('whitelistDanger')}
             </Dialog>
           )}
         </div>
