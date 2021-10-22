@@ -35,10 +35,10 @@
 
     &:hover {
       cursor: pointer;
-    }
 
-    &:hover .qr-code__copy-icon .qr-code__copy-icon__svg {
-      fill: $primary-1;
+      .qr-code__copy-icon__svg {
+        fill: $primary-1;
+      }
     }
   }
 
