@@ -1255,6 +1255,9 @@
   "learnMore": {
     "message": "Learn more"
   },
+  "learnMoreWithDot": {
+    "message": "Learn more."
+  },
   "learnScamRisk": {
     "message": "scams and security risks."
   },
@@ -2218,11 +2221,26 @@
   "smartTransactionsAreHere": {
     "message": "Smart transactions are here!"
   },
+  "smartTransactionsBenefit1": {
+    "message": "Decrease transaction costs"
+  },
+  "smartTransactionsBenefit2": {
+    "message": "Reduce failures & minimize costs"
+  },
+  "smartTransactionsBenefit3": {
+    "message": "Protect from front-running"
+  },
+  "smartTransactionsBenefit4": {
+    "message": "Eliminate stuck transactions"
+  },
   "smartTransactionsDescription": {
     "message": "Smart transactions use MetaMask smart contracts to simulate transactions before submitting in order to..."
   },
-  "smartTransactionsDescription2": {
-    "message": "Enabling allows MetaMask to simulate transactions, proactively cancel bad transactions and sign MetaMask Swaps transactions for you. You can opt-out in advanced settings any time. Learn more."
+  "smartTransactionsSubDescription": {
+    "message": "Enabling allows MetaMask to simulate transactions, proactively cancel bad transactions and sign MetaMask Swaps transactions for you."
+  },
+  "smartTransactionsYouCanOptOut": {
+    "message": "You can opt-out in advanced settings any time."
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
