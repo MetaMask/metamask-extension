@@ -14,6 +14,7 @@ import {
   getTokenAddressParam,
   getTokenValueParam,
 } from '../../helpers/utils/token-util';
+import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import { useTokenTracker } from '../../hooks/useTokenTracker';
 import { getTokens, getNativeCurrency } from '../../ducks/metamask/metamask';
 import {
@@ -87,7 +88,7 @@ export default function ConfirmApprove() {
 
   const tokenSymbol = currentToken?.symbol;
   const decimals = Number(currentToken?.decimals);
-  const tokenImage = Number(currentToken?.image);
+  const tokenImage = currentToken?.image;
   const tokenData = getTokenData(data);
   const tokenValue = getTokenValueParam(tokenData);
   const toAddress = getTokenAddressParam(tokenData);
@@ -130,6 +131,19 @@ export default function ConfirmApprove() {
     prevCustomNonce.current = customNonceValue;
     prevNonce.current = nextNonce;
   }, [customNonceValue, nextNonce]);
+
+  const [isContract, setIsContract] = useState(false);
+  useEffect(() => {
+    async function checkIfContract() {
+      const { isContractAddress } = await readAddressAsContract(
+        global.eth,
+        toAddress,
+      );
+      setIsContract(isContractAddress);
+    }
+    checkIfContract();
+  }, [toAddress]);
+
   const { origin } = transaction;
   const formattedOrigin = origin
     ? origin[0].toUpperCase() + origin.slice(1)
@@ -230,6 +244,7 @@ export default function ConfirmApprove() {
             }
             chainId={chainId}
             rpcPrefs={rpcPrefs}
+            isContract={isContract}
           />
           {showCustomizeGasPopover && (
             <EditGasPopover

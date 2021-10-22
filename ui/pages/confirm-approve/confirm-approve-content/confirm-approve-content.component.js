@@ -60,6 +60,7 @@ export default class ConfirmApproveContent extends Component {
     tokenImage: PropTypes.string,
     chainId: PropTypes.string,
     rpcPrefs: PropTypes.object,
+    isContract: PropTypes.bool,
   };
 
   state = {
@@ -261,6 +262,7 @@ export default class ConfirmApproveContent extends Component {
       toAddress,
       chainId,
       rpcPrefs,
+      isContract,
     } = this.props;
     const { showFullTxDetails } = this.state;
 
@@ -306,7 +308,9 @@ export default class ConfirmApproveContent extends Component {
           {t('allowOriginSpendToken', [origin, tokenSymbol])}
         </div>
         <div className="confirm-approve-content__description">
-          {t('trustSiteApprovePermission', ['contract'])}
+          {t('trustSiteApprovePermission', [
+            isContract ? 'contract' : 'account',
+          ])}
         </div>
         <Box className="confirm-approve-content__address-display-content">
           <Box display={DISPLAY.FLEX}>
