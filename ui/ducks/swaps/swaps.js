@@ -66,6 +66,7 @@ import {
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../shared/constants/swaps';
+import { ZERO_VALUE } from '../../../shared/constants/hex-values';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
 import { getGasFeeEstimates } from '../metamask/metamask';
 
@@ -746,7 +747,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       usedQuote?.gasEstimateWithRefund ||
       `0x${decimalToHex(usedQuote?.averageGas || 0)}`;
     const totalGasLimitEstimate = new BigNumber(usedGasLimitEstimate, 16)
-      .plus(usedQuote.approvalNeeded?.gas || '0x0', 16)
+      .plus(usedQuote.approvalNeeded?.gas || ZERO_VALUE, 16)
       .toString(16);
     const gasEstimateTotalInUSD = getValueFromWeiHex({
       value: calcGasTotal(
@@ -826,7 +827,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       }
       const approveTxMeta = await dispatch(
         addUnapprovedTransaction(
-          { ...approveTxParams, amount: '0x0' },
+          { ...approveTxParams, amount: ZERO_VALUE },
           'metamask',
         ),
       );

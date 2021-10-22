@@ -2,6 +2,7 @@ import { strict as assert } from 'assert';
 import { TransactionFactory } from '@ethereumjs/tx';
 import Common from '@ethereumjs/common';
 import { hexToBn, bnToHex } from '../../lib/util';
+import { ZERO_VALUE } from '../../../../shared/constants/hex-values';
 import TxUtils from './tx-gas-utils';
 
 describe('txUtils', function () {
@@ -25,7 +26,7 @@ describe('txUtils', function () {
       const txParams = {
         to: '0x70ad465e0bab6504002ad58c744ed89c7da38524',
         from: '0x69ad465e0bab6504002ad58c744ed89c7da38525',
-        value: '0x0',
+        value: ZERO_VALUE,
         gas: '0x7b0c',
         gasPrice: '0x199c82cc00',
         data: '0x',

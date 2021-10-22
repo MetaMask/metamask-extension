@@ -40,6 +40,7 @@ import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
 import { POLLING_TOKEN_ENVIRONMENT_TYPES } from '../../shared/constants/app';
+import { ZERO_VALUE } from '../../shared/constants/hex-values';
 
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import ComposableObservableStore from './lib/ComposableObservableStore';
@@ -1302,7 +1303,7 @@ export default class MetamaskController extends EventEmitter {
       }
 
       // seek out the first zero balance
-      while (lastBalance !== '0x0') {
+      while (lastBalance !== ZERO_VALUE) {
         await keyringController.addNewAccount(primaryKeyring);
         accounts = await keyringController.getAccounts();
         lastBalance = await this.getBalance(
@@ -1312,7 +1313,7 @@ export default class MetamaskController extends EventEmitter {
       }
 
       // remove extra zero balance account potentially created from seeking ahead
-      if (accounts.length > 1 && lastBalance === '0x0') {
+      if (accounts.length > 1 && lastBalance === ZERO_VALUE) {
         await this.removeAccount(accounts[accounts.length - 1]);
         accounts = await keyringController.getAccounts();
       }
@@ -1343,7 +1344,7 @@ export default class MetamaskController extends EventEmitter {
             reject(error);
             log.error(error);
           } else {
-            resolve(balance || '0x0');
+            resolve(balance || ZERO_VALUE);
           }
         });
       }

@@ -49,6 +49,8 @@ import fetchWithCache from '../../helpers/utils/fetch-with-cache';
 import { calcGasTotal } from '../send/send.utils';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 
+import { ZERO_VALUE } from '../../../shared/constants/hex-values';
+
 const TOKEN_TRANSFER_LOG_TOPIC_HASH =
   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
 
@@ -508,8 +510,8 @@ export function getRenderableNetworkFeesForQuote({
   chainId,
   nativeCurrencySymbol,
 }) {
-  const totalGasLimitForCalculation = new BigNumber(tradeGas || '0x0', 16)
-    .plus(approveGas || '0x0', 16)
+  const totalGasLimitForCalculation = new BigNumber(tradeGas || ZERO_VALUE, 16)
+    .plus(approveGas || ZERO_VALUE, 16)
     .toString(16);
   const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, gasPrice);
 
@@ -684,7 +686,7 @@ export function getSwapsTokensReceivedFromTxMeta(
       return null;
     }
 
-    let approvalTxGasCost = '0x0';
+    let approvalTxGasCost = ZERO_VALUE;
     if (approvalTxMeta && approvalTxMeta.txReceipt) {
       approvalTxGasCost = calcGasTotal(
         approvalTxMeta.txReceipt.gasUsed,

@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { mountWithRouter } from '../../../../test/lib/render-helpers';
 import Button from '../../ui/button';
+import { ZERO_VALUE } from '../../../../shared/constants/hex-values';
 import AccountMenu from '.';
 
 describe('Account Menu', () => {
@@ -29,12 +30,12 @@ describe('Account Menu', () => {
       {
         address: '0x00',
         name: 'Account 1',
-        balance: '0x0',
+        balance: ZERO_VALUE,
       },
       {
         address: '0x1',
         name: 'Imported Account 1',
-        balance: '0x0',
+        balance: ZERO_VALUE,
       },
     ],
     keyrings: [

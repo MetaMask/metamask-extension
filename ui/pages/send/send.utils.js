@@ -11,6 +11,7 @@ import {
 import { calcTokenAmount } from '../../helpers/utils/token-util';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 
+import { ZERO_VALUE } from '../../../shared/constants/hex-values';
 import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from './send.constants';
 
 export {
@@ -31,10 +32,10 @@ function calcGasTotal(gasLimit = '0', gasPrice = '0') {
 }
 
 function isBalanceSufficient({
-  amount = '0x0',
-  balance = '0x0',
+  amount = ZERO_VALUE,
+  balance = ZERO_VALUE,
   conversionRate = 1,
-  gasTotal = '0x0',
+  gasTotal = ZERO_VALUE,
   primaryCurrency,
 }) {
   const totalAmount = addCurrencies(amount, gasTotal, {
@@ -125,7 +126,7 @@ function addGasBuffer(
 
 function generateTokenTransferData({
   toAddress = '0x0',
-  amount = '0x0',
+  amount = ZERO_VALUE,
   sendToken,
 }) {
   if (!sendToken) {

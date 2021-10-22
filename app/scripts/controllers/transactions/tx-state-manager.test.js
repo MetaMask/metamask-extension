@@ -11,6 +11,7 @@ import {
   KOVAN_NETWORK_ID,
 } from '../../../../shared/constants/network';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
+import { ZERO_VALUE } from '../../../../shared/constants/hex-values';
 import TxStateManager from './tx-state-manager';
 import { snapshotFromTxMeta } from './lib/tx-state-history-helpers';
 
@@ -518,7 +519,7 @@ describe('TransactionStateManager', function () {
         nonce: '0x3',
         gas: '0x77359400',
         gasPrice: '0x77359400',
-        value: '0x0',
+        value: ZERO_VALUE,
         data: '0x0',
       };
       const invalidValues = [1, true, {}, Symbol('1')];
@@ -782,7 +783,7 @@ describe('TransactionStateManager', function () {
         nonce: '0x3',
         gas: '0x77359400',
         gasPrice: '0x77359400',
-        value: '0x0',
+        value: ZERO_VALUE,
         data: '0x0',
       };
       const invalidValues = [1, true, {}, Symbol('1')];
@@ -1091,8 +1092,8 @@ describe('TransactionStateManager', function () {
         gas: GAS_LIMITS.SIMPLE,
         from: '0x0000',
         to: '0x000',
-        value: '0x0',
-        gasPrice: '0x0',
+        value: ZERO_VALUE,
+        gasPrice: ZERO_VALUE,
       };
       const generatedTransaction = txStateManager.generateTxMeta({
         txParams,
@@ -1106,9 +1107,9 @@ describe('TransactionStateManager', function () {
         gas: GAS_LIMITS.SIMPLE,
         from: '0x0000',
         to: '0x000',
-        value: '0x0',
-        maxFeePerGas: '0x0',
-        maxPriorityFeePerGas: '0x0',
+        value: ZERO_VALUE,
+        maxFeePerGas: ZERO_VALUE,
+        maxPriorityFeePerGas: ZERO_VALUE,
       };
       const generatedTransaction = txStateManager.generateTxMeta({
         txParams,
@@ -1119,27 +1120,27 @@ describe('TransactionStateManager', function () {
 
     it('records dappSuggestedGasFees when origin is provided and is not "metamask"', function () {
       const eip1559GasFeeFields = {
-        maxFeePerGas: '0x0',
-        maxPriorityFeePerGas: '0x0',
+        maxFeePerGas: ZERO_VALUE,
+        maxPriorityFeePerGas: ZERO_VALUE,
         gas: GAS_LIMITS.SIMPLE,
       };
 
       const legacyGasFeeFields = {
-        gasPrice: '0x0',
+        gasPrice: ZERO_VALUE,
         gas: GAS_LIMITS.SIMPLE,
       };
 
       const eip1559TxParams = {
         from: '0x0000',
         to: '0x000',
-        value: '0x0',
+        value: ZERO_VALUE,
         ...eip1559GasFeeFields,
       };
 
       const legacyTxParams = {
         from: '0x0000',
         to: '0x000',
-        value: '0x0',
+        value: ZERO_VALUE,
         ...legacyGasFeeFields,
       };
       const eip1559GeneratedTransaction = txStateManager.generateTxMeta({
@@ -1176,9 +1177,9 @@ describe('TransactionStateManager', function () {
         gas: GAS_LIMITS.SIMPLE,
         from: '0x0000',
         to: '0x000',
-        value: '0x0',
-        maxFeePerGas: '0x0',
-        maxPriorityFeePerGas: '0x0',
+        value: ZERO_VALUE,
+        maxFeePerGas: ZERO_VALUE,
+        maxPriorityFeePerGas: ZERO_VALUE,
       };
       const generatedTransaction = txStateManager.generateTxMeta({
         txParams,
@@ -1193,9 +1194,9 @@ describe('TransactionStateManager', function () {
         gas: GAS_LIMITS.SIMPLE,
         from: '0x0000',
         to: '0x000',
-        value: '0x0',
-        maxFeePerGas: '0x0',
-        maxPriorityFeePerGas: '0x0',
+        value: ZERO_VALUE,
+        maxFeePerGas: ZERO_VALUE,
+        maxPriorityFeePerGas: ZERO_VALUE,
       };
       const generatedTransaction = txStateManager.generateTxMeta({
         txParams,

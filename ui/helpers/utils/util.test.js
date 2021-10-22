@@ -1,4 +1,5 @@
 import { BN } from 'ethereumjs-util';
+import { ZERO_VALUE } from '../../../shared/constants/hex-values';
 import * as util from './util';
 
 describe('util', () => {
@@ -27,7 +28,7 @@ describe('util', () => {
     });
 
     it('should render 0 eth correctly', () => {
-      const input = '0x0';
+      const input = ZERO_VALUE;
       const output = util.parseBalance(input);
       expect(output).toStrictEqual(['0', '0']);
     });

@@ -14,6 +14,8 @@ import {
   updateGasPrice,
 } from '../../../../ducks/send';
 
+import { ZERO_VALUE } from '../../../../../shared/constants/hex-values';
+
 let mapDispatchToProps;
 let mergeProps;
 
@@ -31,9 +33,9 @@ jest.mock('../../../../selectors', () => ({
   getRenderableBasicEstimateData: (s) =>
     `mockRenderableBasicEstimateData:${Object.keys(s).length}`,
   getDefaultActiveButtonIndex: (a, b) => a + b,
-  getCurrentEthBalance: (state) => state.metamask.balance || '0x0',
-  getCustomGasPrice: (state) => state.gas.customData.price || '0x0',
-  getCustomGasLimit: (state) => state.gas.customData.limit || '0x0',
+  getCurrentEthBalance: (state) => state.metamask.balance || ZERO_VALUE,
+  getCustomGasPrice: (state) => state.gas.customData.price || ZERO_VALUE,
+  getCustomGasLimit: (state) => state.gas.customData.limit || ZERO_VALUE,
   getCurrentCurrency: jest.fn().mockReturnValue('usd'),
   conversionRateSelector: jest.fn().mockReturnValue(50),
   getSendMaxModeState: jest.fn().mockReturnValue(false),
@@ -199,7 +201,7 @@ describe('gas-modal-page-container container', () => {
 
       expect(dispatchProps.updateCustomGasPrice.callCount).toStrictEqual(0);
       result.gasPriceButtonGroupProps.handleGasPriceSelection({
-        gasPrice: '0x0',
+        gasPrice: ZERO_VALUE,
       });
       expect(dispatchProps.updateCustomGasPrice.callCount).toStrictEqual(1);
 
@@ -243,7 +245,7 @@ describe('gas-modal-page-container container', () => {
 
       expect(dispatchProps.updateCustomGasPrice.callCount).toStrictEqual(0);
       result.gasPriceButtonGroupProps.handleGasPriceSelection({
-        gasPrice: '0x0',
+        gasPrice: ZERO_VALUE,
       });
       expect(dispatchProps.updateCustomGasPrice.callCount).toStrictEqual(1);
 

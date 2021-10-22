@@ -13,6 +13,7 @@ import {
   GAS_ESTIMATE_TYPES as GAS_FEE_CONTROLLER_ESTIMATE_TYPES,
   GAS_LIMITS,
 } from '../../shared/constants/gas';
+import { ZERO_VALUE } from '../../shared/constants/hex-values';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
@@ -43,7 +44,7 @@ export function getAveragePriceEstimateInHexWEI(state) {
 
 export function getFastPriceEstimateInHexWEI(state) {
   const fastPriceEstimate = getFastPriceEstimate(state);
-  return getGasPriceInHexWei(fastPriceEstimate || '0x0');
+  return getGasPriceInHexWei(fastPriceEstimate || ZERO_VALUE);
 }
 
 export function getDefaultActiveButtonIndex(

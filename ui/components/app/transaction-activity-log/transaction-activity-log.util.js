@@ -1,4 +1,5 @@
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import { ZERO_VALUE } from '../../../../shared/constants/hex-values';
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
 import { sumHexes } from '../../../helpers/utils/transactions.util';
 
@@ -69,8 +70,8 @@ export function getActivities(transaction, isFirstTransaction = false) {
     paramsEstimatedBaseFee &&
     paramsMaxPriorityFeePerGas &&
     sumHexes(paramsEstimatedBaseFee, paramsMaxPriorityFeePerGas);
-  let cachedGasLimit = '0x0';
-  let cachedGasPrice = '0x0';
+  let cachedGasLimit = ZERO_VALUE;
+  let cachedGasPrice = ZERO_VALUE;
 
   const historyActivities = history.reduce((acc, base, index) => {
     // First history item should be transaction creation
@@ -78,7 +79,12 @@ export function getActivities(transaction, isFirstTransaction = false) {
       const {
         time: timestamp,
         estimatedBaseFee,
-        txParams: { value, gas = '0x0', gasPrice, maxPriorityFeePerGas } = {},
+        txParams: {
+          value,
+          gas = ZERO_VALUE,
+          gasPrice,
+          maxPriorityFeePerGas,
+        } = {},
       } = base;
 
       const eip1559Price =
@@ -89,7 +95,7 @@ export function getActivities(transaction, isFirstTransaction = false) {
       // need to cache these values because the status update history events don't provide us with
       // the latest gas limit and gas price.
       cachedGasLimit = gas;
-      cachedGasPrice = eip1559Price || gasPrice || '0x0';
+      cachedGasPrice = eip1559Price || gasPrice || ZERO_VALUE;
 
       if (isFirstTransaction) {
         return acc.concat({
@@ -118,7 +124,7 @@ export function getActivities(transaction, isFirstTransaction = false) {
           switch (path) {
             case STATUS_PATH: {
               const gasFee =
-                cachedGasLimit === '0x0' && cachedGasPrice === '0x0'
+                cachedGasLimit === ZERO_VALUE && cachedGasPrice === ZERO_VALUE
                   ? getHexGasTotal({
                       gasLimit: paramsGasLimit,
                       gasPrice: paramsEip1559Price || paramsGasPrice,

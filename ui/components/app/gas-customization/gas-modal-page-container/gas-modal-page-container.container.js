@@ -56,6 +56,7 @@ import {
 import { MIN_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants';
 import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction';
 import { GAS_LIMITS } from '../../../../../shared/constants/gas';
+import { ZERO_VALUE } from '../../../../../shared/constants/hex-values';
 import { updateTransactionGasFees } from '../../../../ducks/metamask/metamask';
 import GasModalPageContainer from './gas-modal-page-container.component';
 
@@ -79,7 +80,7 @@ const mapStateToProps = (state, ownProps) => {
     : {
         gas: gasLimit || GAS_LIMITS.SIMPLE,
         gasPrice: gasPrice || getAveragePriceEstimateInHexWEI(state, true),
-        value: asset.type === ASSET_TYPES.TOKEN ? '0x0' : amount,
+        value: asset.type === ASSET_TYPES.TOKEN ? ZERO_VALUE : amount,
       };
 
   const { gasPrice: currentGasPrice, gas: currentGasLimit } = txParams;
@@ -119,13 +120,13 @@ const mapStateToProps = (state, ownProps) => {
 
   const newTotalEth =
     maxModeOn && asset.type === ASSET_TYPES.NATIVE
-      ? sumHexWEIsToRenderableEth([balance, '0x0'])
+      ? sumHexWEIsToRenderableEth([balance, ZERO_VALUE])
       : sumHexWEIsToRenderableEth([value, customGasTotal]);
 
   const sendAmount =
     maxModeOn && asset.type === ASSET_TYPES.NATIVE
       ? subtractHexWEIsFromRenderableEth(balance, customGasTotal)
-      : sumHexWEIsToRenderableEth([value, '0x0']);
+      : sumHexWEIsToRenderableEth([value, ZERO_VALUE]);
 
   const insufficientBalance = maxModeOn
     ? false
@@ -179,7 +180,7 @@ const mapStateToProps = (state, ownProps) => {
       originalTotalEth: sumHexWEIsToRenderableEth([value, customGasTotal]),
       newTotalFiat: showFiat ? newTotalFiat : '',
       newTotalEth,
-      transactionFee: sumHexWEIsToRenderableEth(['0x0', customGasTotal]),
+      transactionFee: sumHexWEIsToRenderableEth([ZERO_VALUE, customGasTotal]),
       sendAmount,
     },
     transaction: txData || transaction,

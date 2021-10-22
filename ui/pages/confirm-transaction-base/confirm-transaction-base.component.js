@@ -27,6 +27,7 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
+import { ZERO_VALUE } from '../../../shared/constants/hex-values';
 import { getTransactionTypeTitle } from '../../helpers/utils/transactions.util';
 import { toBuffer } from '../../../shared/modules/buffer-utils';
 
@@ -220,7 +221,7 @@ export default class ConfirmTransactionBase extends Component {
       balance &&
       !isBalanceSufficient({
         amount,
-        gasTotal: hexMaximumTransactionFee || '0x0',
+        gasTotal: hexMaximumTransactionFee || ZERO_VALUE,
         balance,
         conversionRate,
       });

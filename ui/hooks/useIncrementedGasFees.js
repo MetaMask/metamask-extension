@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
 import { isEIP1559Transaction } from '../../shared/modules/transaction.utils';
 import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
+import { ZERO_VALUE } from '../../shared/constants/hex-values';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 
 /**
@@ -83,7 +84,7 @@ export function useIncrementedGasFees(transaction) {
       temporaryGasSettings.maxFeePerGas =
         transactionMaxFeePerGas === undefined ||
         transactionMaxFeePerGas.startsWith('-')
-          ? '0x0'
+          ? ZERO_VALUE
           : getHighestIncrementedFee(
               transactionMaxFeePerGas,
               suggestedMaxFeePerGas,
@@ -91,7 +92,7 @@ export function useIncrementedGasFees(transaction) {
       temporaryGasSettings.maxPriorityFeePerGas =
         transactionMaxPriorityFeePerGas === undefined ||
         transactionMaxPriorityFeePerGas.startsWith('-')
-          ? '0x0'
+          ? ZERO_VALUE
           : getHighestIncrementedFee(
               transactionMaxPriorityFeePerGas,
               suggestedMaxPriorityFeePerGas,
@@ -100,7 +101,7 @@ export function useIncrementedGasFees(transaction) {
       const transactionGasPrice = transaction.txParams?.gasPrice;
       temporaryGasSettings.gasPrice =
         transactionGasPrice === undefined || transactionGasPrice.startsWith('-')
-          ? '0x0'
+          ? ZERO_VALUE
           : getHighestIncrementedFee(
               transactionGasPrice,
               suggestedMaxFeePerGas,

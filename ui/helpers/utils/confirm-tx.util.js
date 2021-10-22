@@ -10,10 +10,11 @@ import {
   multiplyCurrencies,
   conversionGreaterThan,
 } from '../../../shared/modules/conversion.utils';
+import { ZERO_VALUE } from '../../../shared/constants/hex-values';
 
 export function increaseLastGasPrice(lastGasPrice) {
   return addHexPrefix(
-    multiplyCurrencies(lastGasPrice || '0x0', 1.1, {
+    multiplyCurrencies(lastGasPrice || ZERO_VALUE, 1.1, {
       multiplicandBase: 16,
       multiplierBase: 10,
       toNumericBase: 'hex',
@@ -30,7 +31,7 @@ export function hexGreaterThan(a, b) {
 
 export function getHexGasTotal({ gasLimit, gasPrice }) {
   return addHexPrefix(
-    multiplyCurrencies(gasLimit || '0x0', gasPrice || '0x0', {
+    multiplyCurrencies(gasLimit || ZERO_VALUE, gasPrice || ZERO_VALUE, {
       toNumericBase: 'hex',
       multiplicandBase: 16,
       multiplierBase: 16,

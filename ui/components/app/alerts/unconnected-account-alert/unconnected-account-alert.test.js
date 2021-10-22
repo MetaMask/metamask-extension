@@ -11,6 +11,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 
 import * as actions from '../../../../store/actions';
 import { KOVAN_CHAIN_ID } from '../../../../../shared/constants/network';
+import { ZERO_VALUE } from '../../../../../shared/constants/hex-values';
 import UnconnectedAccountAlert from '.';
 
 describe('Unconnected Account Alert', () => {
@@ -30,11 +31,11 @@ describe('Unconnected Account Alert', () => {
   const accounts = {
     '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      balance: '0x0',
+      balance: ZERO_VALUE,
     },
     '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
       address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-      balance: '0x0',
+      balance: ZERO_VALUE,
     },
   };
 

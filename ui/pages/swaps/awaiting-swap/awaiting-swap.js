@@ -38,6 +38,7 @@ import {
   OFFLINE_FOR_MAINTENANCE,
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
 } from '../../../../shared/constants/swaps';
+import { ZERO_VALUE } from '../../../../shared/constants/hex-values';
 import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 
@@ -86,7 +87,7 @@ export default function AwaitingSwap({
   if (usedQuote && swapsGasPrice) {
     const renderableNetworkFees = getRenderableNetworkFeesForQuote({
       tradeGas: usedQuote.gasEstimateWithRefund || usedQuote.averageGas,
-      approveGas: approveTxParams?.gas || '0x0',
+      approveGas: approveTxParams?.gas || ZERO_VALUE,
       gasPrice: swapsGasPrice,
       currentCurrency,
       conversionRate: usdConversionRate,

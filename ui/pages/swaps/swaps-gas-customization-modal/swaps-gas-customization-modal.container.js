@@ -30,6 +30,7 @@ import {
 } from '../../../helpers/utils/conversions.util';
 import { formatETHFee } from '../../../helpers/utils/formatters';
 import { calcGasTotal, isBalanceSufficient } from '../../send/send.utils';
+import { ZERO_VALUE } from '../../../../shared/constants/hex-values';
 import SwapsGasCustomizationModalComponent from './swaps-gas-customization-modal.component';
 
 const mapStateToProps = (state) => {
@@ -90,7 +91,7 @@ const mapStateToProps = (state) => {
   );
 
   const sendAmount = sumHexWEIsToRenderableEth(
-    [value, '0x0'],
+    [value, ZERO_VALUE],
     usedCurrencySymbol,
   );
 
@@ -131,7 +132,7 @@ const mapStateToProps = (state) => {
       newTotalFiat,
       newTotalEth,
       transactionFee: sumHexWEIsToRenderableEth(
-        ['0x0', customGasTotal],
+        [ZERO_VALUE, customGasTotal],
         usedCurrencySymbol,
       ),
       sendAmount,

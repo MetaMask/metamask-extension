@@ -3,6 +3,7 @@ import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../shared/constants/transaction';
+import { ZERO_VALUE } from '../../shared/constants/hex-values';
 
 export const txMetaStub = {
   firstRetryBlockNumber: '0x51a402',
@@ -20,7 +21,7 @@ export const txMetaStub = {
         gas: GAS_LIMITS.SIMPLE,
         gasPrice: '0x1e8480',
         to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
-        value: '0x0',
+        value: ZERO_VALUE,
       },
     },
     [
@@ -202,7 +203,7 @@ export const txMetaStub = {
     gasPrice: '0x1e8480',
     nonce: '0x4',
     to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
-    value: '0x0',
+    value: ZERO_VALUE,
   },
   v: '0x2c',
 };

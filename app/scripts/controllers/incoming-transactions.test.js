@@ -20,6 +20,7 @@ import {
   TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
 import { MILLISECOND } from '../../../shared/constants/time';
+import { ZERO_VALUE } from '../../../shared/constants/hex-values';
 
 const IncomingTransactionsController = proxyquire('./incoming-transactions', {
   '../../../shared/modules/random-id': { default: () => 54321 },
@@ -311,11 +312,11 @@ describe('IncomingTransactionsController', function () {
               type: TRANSACTION_TYPES.INCOMING,
               txParams: {
                 from: '0xfake',
-                gas: '0x0',
-                gasPrice: '0x0',
+                gas: ZERO_VALUE,
+                gasPrice: ZERO_VALUE,
                 nonce: '0x64',
                 to: '0x0101',
-                value: '0x0',
+                value: ZERO_VALUE,
               },
             },
             '0xfakeeip1559': {
@@ -328,12 +329,12 @@ describe('IncomingTransactionsController', function () {
               type: TRANSACTION_TYPES.INCOMING,
               txParams: {
                 from: '0xfake',
-                gas: '0x0',
+                gas: ZERO_VALUE,
                 maxFeePerGas: '0xa',
                 maxPriorityFeePerGas: '0x1',
                 nonce: '0x64',
                 to: '0x0101',
-                value: '0x0',
+                value: ZERO_VALUE,
               },
             },
           },
@@ -606,11 +607,11 @@ describe('IncomingTransactionsController', function () {
               type: TRANSACTION_TYPES.INCOMING,
               txParams: {
                 from: '0xfake',
-                gas: '0x0',
-                gasPrice: '0x0',
+                gas: ZERO_VALUE,
+                gasPrice: ZERO_VALUE,
                 nonce: '0x64',
                 to: '0x01019',
-                value: '0x0',
+                value: ZERO_VALUE,
               },
             },
           },
@@ -744,11 +745,11 @@ describe('IncomingTransactionsController', function () {
               type: TRANSACTION_TYPES.INCOMING,
               txParams: {
                 from: '0xfake',
-                gas: '0x0',
-                gasPrice: '0x0',
+                gas: ZERO_VALUE,
+                gasPrice: ZERO_VALUE,
                 nonce: '0x64',
                 to: '0x0101',
-                value: '0x0',
+                value: ZERO_VALUE,
               },
             },
           },

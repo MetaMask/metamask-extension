@@ -26,6 +26,7 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_ENVELOPE_TYPES,
 } from '../../../../shared/constants/transaction';
+import { ZERO_VALUE } from '../../../../shared/constants/hex-values';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import {
   GAS_LIMITS,
@@ -372,7 +373,7 @@ export default class TransactionController extends EventEmitter {
     // ensure value
     txMeta.txParams.value = txMeta.txParams.value
       ? addHexPrefix(txMeta.txParams.value)
-      : '0x0';
+      : ZERO_VALUE;
 
     this.addTransaction(txMeta);
     this.emit('newUnapprovedTx', txMeta);
@@ -728,7 +729,7 @@ export default class TransactionController extends EventEmitter {
         from,
         to: from,
         nonce,
-        value: '0x0',
+        value: ZERO_VALUE,
         ...newGasParams,
       },
       previousGasParams,

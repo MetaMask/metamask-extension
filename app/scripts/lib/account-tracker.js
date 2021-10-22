@@ -20,6 +20,7 @@ import {
   ROPSTEN_CHAIN_ID,
   KOVAN_CHAIN_ID,
 } from '../../../shared/constants/network';
+import { ZERO_VALUE } from '../../../shared/constants/hex-values';
 
 import {
   SINGLE_CALL_BALANCES_ADDRESS,
@@ -274,7 +275,7 @@ export default class AccountTracker {
     const ethContract = this.web3.eth
       .contract(SINGLE_CALL_BALANCES_ABI)
       .at(deployedContractAddress);
-    const ethBalance = ['0x0'];
+    const ethBalance = [ZERO_VALUE];
 
     ethContract.balances(addresses, ethBalance, (error, result) => {
       if (error) {
@@ -286,7 +287,7 @@ export default class AccountTracker {
         return;
       }
       addresses.forEach((address, index) => {
-        const balance = result[index] ? bnToHex(result[index]) : '0x0';
+        const balance = result[index] ? bnToHex(result[index]) : ZERO_VALUE;
         accounts[address] = { address, balance };
       });
       this.store.updateState({ accounts });

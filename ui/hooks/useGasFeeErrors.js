@@ -17,6 +17,7 @@ import {
   bnLessThanEqualTo,
 } from '../helpers/utils/util';
 import { GAS_FORM_ERRORS } from '../helpers/constants/gas';
+import { ZERO_VALUE } from '../../shared/constants/hex-values';
 
 const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
 
@@ -137,7 +138,7 @@ const getMaxFeeWarning = (
 const getBalanceError = (minimumCostInHexWei, transaction, ethBalance) => {
   const minimumTxCostInHexWei = addHexes(
     minimumCostInHexWei,
-    transaction?.txParams?.value || '0x0',
+    transaction?.txParams?.value || ZERO_VALUE,
   );
 
   return conversionGreaterThan(

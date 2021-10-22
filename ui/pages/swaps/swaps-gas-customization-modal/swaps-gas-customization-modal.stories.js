@@ -13,6 +13,7 @@ import {
 import { ETH } from '../../../helpers/constants/common';
 import { calcGasTotal, isBalanceSufficient } from '../../send/send.utils';
 import { conversionLessThan } from '../../../../shared/modules/conversion.utils';
+import { ZERO_VALUE } from '../../../../shared/constants/hex-values';
 import GasModalPageContainer from './swaps-gas-customization-modal.component';
 
 // Using Test Data For Redux
@@ -53,7 +54,7 @@ export const GasModalPageContainerComponent = () => {
     fromDenomination: ETH,
   });
 
-  const sendAmount = sumHexWEIsToRenderableEth([hexWei, '0x0']);
+  const sendAmount = sumHexWEIsToRenderableEth([hexWei, ZERO_VALUE]);
   const [gasLimit, setGasLimit] = useState('5208');
   const [gasPrice, setGasPrice] = useState('ee6b2800');
   const [transactionFee, setTransactionFee] = useState('');
@@ -69,7 +70,7 @@ export const GasModalPageContainerComponent = () => {
   useEffect(() => {
     // Transfer Fee
     const customGasTotal = calcGasTotal(gasLimit, gasPrice);
-    setTransactionFee(sumHexWEIsToRenderableEth(['0x0', customGasTotal]));
+    setTransactionFee(sumHexWEIsToRenderableEth([ZERO_VALUE, customGasTotal]));
 
     // New Total ETH
     setTotalETH(sumHexWEIsToRenderableEth([hexWei, customGasTotal, '']));
