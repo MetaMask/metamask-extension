@@ -69,6 +69,7 @@ export default class ConfirmPageContainer extends Component {
     showAddToAddressBookModal: PropTypes.func,
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
+    type: PropTypes.string,
   };
 
   render() {
@@ -119,6 +120,7 @@ export default class ConfirmPageContainer extends Component {
       showAddToAddressBookModal,
       contact = {},
       isOwnedAccount,
+      type,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -190,6 +192,7 @@ export default class ConfirmPageContainer extends Component {
             rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
             origin={origin}
             ethGasPriceWarning={ethGasPriceWarning}
+            type={type}
           />
         )}
         {contentComponent && (

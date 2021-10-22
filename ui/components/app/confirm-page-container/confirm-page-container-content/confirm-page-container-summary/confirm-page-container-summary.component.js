@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Identicon from '../../../../ui/identicon';
+import { TRANSACTION_TYPES } from '../../../../../../shared/constants/transaction';
 
 const ConfirmPageContainerSummary = (props) => {
   const {
@@ -14,6 +15,7 @@ const ConfirmPageContainerSummary = (props) => {
     identiconAddress,
     nonce,
     origin,
+    type,
   } = props;
 
   return (
@@ -37,9 +39,14 @@ const ConfirmPageContainerSummary = (props) => {
             address={identiconAddress}
           />
         )}
-        <div className="confirm-page-container-summary__title-text">
-          {titleComponent || title}
-        </div>
+        {(type !== TRANSACTION_TYPES.CONTRACT_INTERACTION ||
+          type !== TRANSACTION_TYPES.DEPLOY_CONTRACT) &&
+          titleComponent &&
+          titleComponent.props.value !== '0x0' && (
+            <div className="confirm-page-container-summary__title-text">
+              {titleComponent || title}
+            </div>
+          )}
       </div>
       {hideSubtitle || (
         <div className="confirm-page-container-summary__subtitle">
@@ -60,6 +67,7 @@ ConfirmPageContainerSummary.propTypes = {
   identiconAddress: PropTypes.string,
   nonce: PropTypes.string,
   origin: PropTypes.string.isRequired,
+  type: PropTypes.string,
 };
 
 export default ConfirmPageContainerSummary;

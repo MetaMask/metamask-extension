@@ -960,6 +960,7 @@ export default class ConfirmTransactionBase extends Component {
         editingGas={editingGas}
         handleCloseEditGas={() => this.handleCloseEditGas()}
         currentTransaction={txData}
+        type={type}
       />
     );
   }
