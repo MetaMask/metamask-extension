@@ -69,22 +69,24 @@ import sendReducer, {
 
 const mockStore = createMockStore([thunk]);
 
+const mockEstimateGas = jest.fn(() => Promise.resolve(ZERO_VALUE));
 jest.mock('../../store/actions', () => {
   const actual = jest.requireActual('../../store/actions');
   return {
     ...actual,
-    estimateGas: jest.fn(() => Promise.resolve(ZERO_VALUE)),
+    estimateGas: mockEstimateGas,
     getGasFeeEstimatesAndStartPolling: jest.fn(() => Promise.resolve()),
     updateTokenType: jest.fn(() => Promise.resolve({ isERC721: false })),
   };
 });
 
+const mockGetERC20Balance = jest.fn(() => ZERO_VALUE);
 jest.mock('./send', () => {
   const actual = jest.requireActual('./send');
   return {
     __esModule: true,
     ...actual,
-    getERC20Balance: jest.fn(() => ZERO_VALUE),
+    getERC20Balance: mockGetERC20Balance,
   };
 });
 

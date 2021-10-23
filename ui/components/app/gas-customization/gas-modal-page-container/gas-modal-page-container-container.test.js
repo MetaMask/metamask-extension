@@ -27,15 +27,19 @@ jest.mock('react-redux', () => ({
   },
 }));
 
+const mockGetCurrentEthBalance = (state) => state.metamask.balance || ZERO_VALUE;
+const mockGetCustomGasPrice = (state) => state.gas.customData.price || ZERO_VALUE;
+const mockGetCustomGasLimit = (state) => state.gas.customData.limit || ZERO_VALUE;
+
 jest.mock('../../../../selectors', () => ({
   getBasicGasEstimateLoadingStatus: (s) =>
     `mockBasicGasEstimateLoadingStatus:${Object.keys(s).length}`,
   getRenderableBasicEstimateData: (s) =>
     `mockRenderableBasicEstimateData:${Object.keys(s).length}`,
   getDefaultActiveButtonIndex: (a, b) => a + b,
-  getCurrentEthBalance: (state) => state.metamask.balance || ZERO_VALUE,
-  getCustomGasPrice: (state) => state.gas.customData.price || ZERO_VALUE,
-  getCustomGasLimit: (state) => state.gas.customData.limit || ZERO_VALUE,
+  getCurrentEthBalance: mockGetCurrentEthBalance,
+  getCustomGasPrice: mockGetCustomGasPrice,
+  getCustomGasLimit: mockGetCustomGasLimit,
   getCurrentCurrency: jest.fn().mockReturnValue('usd'),
   conversionRateSelector: jest.fn().mockReturnValue(50),
   getSendMaxModeState: jest.fn().mockReturnValue(false),
