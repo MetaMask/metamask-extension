@@ -10,7 +10,7 @@ import SendAssetRow from './send-asset-row.component';
 const store = configureStore(testData);
 
 export default {
-  title: 'SendAssetRow',
+  title: 'Pages/Dropdown/Send Asset Row',
   id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
