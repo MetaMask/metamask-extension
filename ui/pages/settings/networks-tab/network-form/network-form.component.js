@@ -23,7 +23,7 @@ const FORM_STATE_KEYS = [
 export default class NetworkForm extends PureComponent {
   static contextTypes = {
     t: PropTypes.func.isRequired,
-    metricsEvent: PropTypes.func.isRequired,
+    metricsEvent: PropTypes.func,
   };
 
   static propTypes = {

@@ -1,18 +1,14 @@
 import React from 'react';
-import sinon from 'sinon';
-import { shallow } from 'enzyme';
+import configureMockStore from 'redux-mock-store';
+import { fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
 import NetworkForm from '.';
 
-function shallowRender(props = {}, context = {}) {
-  return shallow(<NetworkForm {...props} />, {
-    context: {
-      t: (str) => `${str}_t`,
-      metricsEvent: () => undefined,
-      ...context,
-    },
-  });
-}
+const renderComponent = (props) => {
+  const store = configureMockStore([])({ metamask: {} });
+  return renderWithProvider(<NetworkForm {...props} />, store);
+};
 
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
@@ -29,7 +25,7 @@ const propNewNetwork = {
 };
 
 const propNetworkDisplay = {
-  editRpc: sinon.spy(),
+  editRpc: () => undefined,
   showConfirmDeleteNetworkModal: () => undefined,
   rpcUrl: 'http://localhost:8545',
   chainId: '1337',
@@ -49,36 +45,54 @@ const propNetworkDisplay = {
 
 describe('NetworkForm Component', () => {
   it('should render Add new network form correctly', () => {
-    const root = shallowRender({ ...propNewNetwork });
-    expect(root.find('.add-network-form__network-form-row')).toHaveLength(5);
-    expect(
-      root
-        .find(
-          '.add-network-form__footer .add-network-form__footer-submit-button',
-        )
-        .props().disabled,
-    ).toStrictEqual(true);
+    const { queryByText } = renderComponent(propNewNetwork);
+    expect(queryByText('Network Name')).toBeInTheDocument();
+    expect(queryByText('New RPC URL')).toBeInTheDocument();
+    expect(queryByText('Chain ID')).toBeInTheDocument();
+    expect(queryByText('Currency Symbol (optional)')).toBeInTheDocument();
+    expect(queryByText('Block Explorer URL (optional)')).toBeInTheDocument();
+    expect(queryByText('Cancel')).toBeInTheDocument();
+    expect(queryByText('Save')).toBeInTheDocument();
   });
+
   it('should render network form correctly', () => {
-    const root = shallowRender({ ...propNetworkDisplay });
-    expect(root.find('.networks-tab__network-form-row')).toHaveLength(5);
-    const networkName = root.find('.networks-tab__network-form-row').get(0)
-      .props;
-    const rpcUrl = root.find('.networks-tab__network-form-row').get(1).props;
-    const chainId = root.find('.networks-tab__network-form-row').get(2).props;
-    const ticker = root.find('.networks-tab__network-form-row').get(3).props;
-    expect(networkName.children[1].props.value).toStrictEqual(
-      propNetworkDisplay.networkName,
+    const { queryByText, getByDisplayValue } = renderComponent(
+      propNetworkDisplay,
     );
-    expect(rpcUrl.children[1].props.value).toStrictEqual(
-      propNetworkDisplay.rpcUrl,
-    );
-    expect(chainId.children[1].props.value).toStrictEqual(
-      propNetworkDisplay.chainId,
-    );
-    expect(ticker.children[1].props.value).toStrictEqual(
-      propNetworkDisplay.ticker,
-    );
-    expect(root.find('Button')).toHaveLength(3);
+    expect(queryByText('Network Name')).toBeInTheDocument();
+    expect(queryByText('New RPC URL')).toBeInTheDocument();
+    expect(queryByText('Chain ID')).toBeInTheDocument();
+    expect(queryByText('Currency Symbol (optional)')).toBeInTheDocument();
+    expect(queryByText('Block Explorer URL (optional)')).toBeInTheDocument();
+    expect(queryByText('Delete')).toBeInTheDocument();
+    expect(queryByText('Cancel')).toBeInTheDocument();
+    expect(queryByText('Save')).toBeInTheDocument();
+
+    expect(
+      getByDisplayValue(propNetworkDisplay.networkName),
+    ).toBeInTheDocument();
+    expect(getByDisplayValue(propNetworkDisplay.rpcUrl)).toBeInTheDocument();
+    expect(getByDisplayValue(propNetworkDisplay.chainId)).toBeInTheDocument();
+    expect(getByDisplayValue(propNetworkDisplay.ticker)).toBeInTheDocument();
+    expect(
+      getByDisplayValue(propNetworkDisplay.blockExplorerUrl),
+    ).toBeInTheDocument();
+    fireEvent.change(getByDisplayValue(propNetworkDisplay.networkName), {
+      target: { value: 'LocalHost 8545' },
+    });
+    expect(getByDisplayValue('LocalHost 8545')).toBeInTheDocument();
+    fireEvent.change(getByDisplayValue(propNetworkDisplay.chainId), {
+      target: { value: '1' },
+    });
+    expect(
+      queryByText('This Chain ID is currently used by the mainnet network.'),
+    ).toBeInTheDocument();
+
+    fireEvent.change(getByDisplayValue(propNetworkDisplay.rpcUrl), {
+      target: { value: 'test' },
+    });
+    expect(
+      queryByText('URLs require the appropriate HTTP/HTTPS prefix.'),
+    ).toBeInTheDocument();
   });
 });
