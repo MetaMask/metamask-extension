@@ -6,7 +6,7 @@ import ConfirmPageContainer from './confirm-page-container.component';
 
 function mapStateToProps(state, ownProps) {
   const to = ownProps.toAddress;
-  const requestMetadata = ownProps?.origin ? new URL(ownProps?.origin) : null;
+  const requestMetadata = ownProps?.origin && ownProps?.origin.includes('.') ? new URL(ownProps?.origin) : null;
   const { useWhitelistMode, whitelistValues } = state.metamask;
   const isNonWhitelistedDomain = domainOutsideWhitelist(
     requestMetadata?.host,
