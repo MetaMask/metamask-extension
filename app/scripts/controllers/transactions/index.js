@@ -1447,8 +1447,8 @@ export default class TransactionController extends EventEmitter {
       sensitiveProperties: {
         status,
         transaction_envelope_type: isEIP1559Transaction(txMeta)
-          ? 'fee-market'
-          : 'legacy',
+          ? GAS_ESTIMATE_TYPES.FEE_MARKET
+          : GAS_ESTIMATE_TYPES.LEGACY,
         first_seen: time,
         gas_limit: gasLimit,
         ...gasParamsInGwei,
