@@ -3,6 +3,7 @@ import { shallow } from 'enzyme';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
+import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 describe('View Price Quote Difference', () => {
@@ -48,7 +49,7 @@ describe('View Price Quote Difference', () => {
       priceSlippage: {
         ratio: 1.007876641534847,
         calculationError: '',
-        bucket: 'low',
+        bucket: GAS_RECOMMENDATIONS.LOW,
         sourceAmountInETH: 1,
         destinationAmountInETH: 0.9921849150875727,
       },
@@ -113,7 +114,7 @@ describe('View Price Quote Difference', () => {
 
   it('does not render when the item is in the low bucket', () => {
     const props = { ...DEFAULT_PROPS };
-    props.usedQuote.priceSlippage.bucket = 'low';
+    props.usedQuote.priceSlippage.bucket = GAS_RECOMMENDATIONS.LOW;
 
     renderComponent(props);
     const wrappingDiv = component.find(
@@ -124,18 +125,18 @@ describe('View Price Quote Difference', () => {
 
   it('displays an error when in medium bucket', () => {
     const props = { ...DEFAULT_PROPS };
-    props.usedQuote.priceSlippage.bucket = 'medium';
+    props.usedQuote.priceSlippage.bucket = GAS_RECOMMENDATIONS.MEDIUM;
 
     renderComponent(props);
-    expect(component.html()).toContain('medium');
+    expect(component.html()).toContain(GAS_RECOMMENDATIONS.MEDIUM);
   });
 
   it('displays an error when in high bucket', () => {
     const props = { ...DEFAULT_PROPS };
-    props.usedQuote.priceSlippage.bucket = 'high';
+    props.usedQuote.priceSlippage.bucket = GAS_RECOMMENDATIONS.HIGH;
 
     renderComponent(props);
-    expect(component.html()).toContain('high');
+    expect(component.html()).toContain(GAS_RECOMMENDATIONS.HIGH);
   });
 
   it('displays a fiat error when calculationError is present', () => {
@@ -144,6 +145,6 @@ describe('View Price Quote Difference', () => {
       'Could not determine price.';
 
     renderComponent(props);
-    expect(component.html()).toContain('high');
+    expect(component.html()).toContain(GAS_RECOMMENDATIONS.HIGH);
   });
 });

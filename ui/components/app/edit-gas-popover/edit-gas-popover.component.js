@@ -4,7 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
 import { getGasLoadingAnimationIsShowing } from '../../../ducks/app/app';
 import { txParamsAreDappSuggested } from '../../../../shared/modules/transaction.utils';
-import { EDIT_GAS_MODES, GAS_LIMITS } from '../../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  GAS_LIMITS,
+  GAS_RECOMMENDATIONS,
+} from '../../../../shared/constants/gas';
 
 import {
   decGWEIToHexWEI,
@@ -35,7 +39,7 @@ export default function EditGasPopover({
   popoverTitle = '',
   confirmButtonText = '',
   editGasDisplayProps = {},
-  defaultEstimateToUse = 'medium',
+  defaultEstimateToUse = GAS_RECOMMENDATIONS.MEDIUM,
   transaction,
   mode,
   onClose,

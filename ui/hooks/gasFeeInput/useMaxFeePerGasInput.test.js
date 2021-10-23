@@ -3,6 +3,7 @@ import { act, renderHook } from '@testing-library/react-hooks';
 
 import { getMaximumGasTotalInHexWei } from '../../../shared/modules/gas.utils';
 import { decimalToHex } from '../../helpers/utils/conversions.util';
+import { GAS_RECOMMENDATIONS } from '../../../shared/constants/gas';
 
 import {
   FEE_MARKET_ESTIMATE_RETURN_VALUE,
@@ -31,7 +32,7 @@ const renderUseMaxFeePerGasInputHook = (props) =>
   renderHook(() =>
     useMaxFeePerGasInput({
       gasLimit: '21000',
-      estimateToUse: 'medium',
+      estimateToUse: GAS_RECOMMENDATIONS.MEDIUM,
       transaction: {
         userFeeLevel: 'custom',
         txParams: { maxFeePerGas: '0x5028' },
@@ -64,9 +65,9 @@ describe('useMaxFeePerGasInput', () => {
 
   it('does not returns maxFeePerGas values from transaction if transaction.userFeeLevel is not custom', () => {
     const { result } = renderUseMaxFeePerGasInputHook({
-      estimateToUse: 'high',
+      estimateToUse: GAS_RECOMMENDATIONS.HIGH,
       transaction: {
-        userFeeLevel: 'high',
+        userFeeLevel: GAS_RECOMMENDATIONS.HIGH,
         txParams: { maxFeePerGas: '0x5028' },
       },
     });
@@ -79,7 +80,7 @@ describe('useMaxFeePerGasInput', () => {
   it('if no maxFeePerGas is provided by user or in transaction it returns value from fee market estimate', () => {
     const { result } = renderUseMaxFeePerGasInputHook({
       transaction: {
-        userFeeLevel: 'high',
+        userFeeLevel: GAS_RECOMMENDATIONS.HIGH,
         txParams: {},
       },
     });

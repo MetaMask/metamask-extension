@@ -30,6 +30,7 @@ import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import {
   GAS_LIMITS,
   GAS_ESTIMATE_TYPES,
+  GAS_RECOMMENDATIONS,
 } from '../../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
 import {
@@ -444,7 +445,7 @@ export default class TransactionController extends EventEmitter {
             !txMeta.txParams.maxPriorityFeePerGas) ||
           txMeta.origin === 'metamask'
         ) {
-          txMeta.userFeeLevel = 'medium';
+          txMeta.userFeeLevel = GAS_RECOMMENDATIONS.MEDIUM;
         } else {
           txMeta.userFeeLevel = 'custom';
         }

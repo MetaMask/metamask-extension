@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { getAdvancedInlineGasShown } from '../../selectors';
 import { hexToDecimal } from '../../helpers/utils/conversions.util';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
+import { GAS_RECOMMENDATIONS } from '../../../shared/constants/gas';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 
 import { useGasFeeErrors } from './useGasFeeErrors';
@@ -58,7 +59,7 @@ import { useGasEstimates } from './useGasEstimates';
  * ).GasEstimates} - gas fee input state and the GasFeeEstimates object
  */
 export function useGasFeeInputs(
-  defaultEstimateToUse = 'medium',
+  defaultEstimateToUse = GAS_RECOMMENDATIONS.MEDIUM,
   transaction,
   minimumGasLimit = '0x5208',
   editGasMode,
