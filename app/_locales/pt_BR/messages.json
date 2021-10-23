@@ -130,7 +130,7 @@
   "allowExternalExtensionTo": {
     "message": "Permitir que esta extensão externa:"
   },
-  "allowOriginSpendToken": {
+  "allowSpendToken": {
     "message": "Permitir que $1 gaste seus(suas) $2?",
     "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
   },

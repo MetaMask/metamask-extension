@@ -130,7 +130,7 @@
   "allowExternalExtensionTo": {
     "message": "Cho phép tiện ích bên ngoài này:"
   },
-  "allowOriginSpendToken": {
+  "allowSpendToken": {
     "message": "Cho phép $1 chi tiêu $2 của bạn?",
     "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
   },

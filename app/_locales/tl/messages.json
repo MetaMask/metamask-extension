@@ -97,7 +97,7 @@
   "allowExternalExtensionTo": {
     "message": "Payagan ang external extension na ito na:"
   },
-  "allowOriginSpendToken": {
+  "allowSpendToken": {
     "message": "Payagan ang $1 na gastusin ang iyong $2?",
     "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
   },

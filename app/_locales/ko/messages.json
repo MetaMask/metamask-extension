@@ -130,7 +130,7 @@
   "allowExternalExtensionTo": {
     "message": "이 외부 확장을 통해 다음을 하도록 허용:"
   },
-  "allowOriginSpendToken": {
+  "allowSpendToken": {
     "message": "$1에서 $2을(를) 지출하도록 허용하시겠어요?",
     "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
   },
