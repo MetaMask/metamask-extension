@@ -305,11 +305,13 @@ export default class ConfirmApproveContent extends Component {
           </Box>
         </Box>
         <div className="confirm-approve-content__title">
-          {t('allowOriginSpendToken', [origin, tokenSymbol])}
+          {t('allowSpendToken', [tokenSymbol])}
         </div>
         <div className="confirm-approve-content__description">
           {t('trustSiteApprovePermission', [
-            isContract ? 'contract' : 'account',
+            isContract
+              ? t('contract').toLowerCase()
+              : t('account').toLowerCase(),
           ])}
         </div>
         <Box className="confirm-approve-content__address-display-content">

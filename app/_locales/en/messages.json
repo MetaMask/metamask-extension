@@ -142,9 +142,9 @@
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"
   },
-  "allowOriginSpendToken": {
-    "message": "Allow $1 to spend your $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
+  "allowSpendToken": {
+    "message": "Give permission to access your $1?",
+    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowThisSiteTo": {
     "message": "Allow this site to:"
