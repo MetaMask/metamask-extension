@@ -13,7 +13,8 @@ import { AMOUNT_MODES, SEND_STATUSES } from '../../../../../ducks/send';
 import AmountMaxButton from './amount-max-button';
 
 export default {
-  title: 'AmountMaxButton',
+  title: 'Pages/Button/Amount Max Button',
+  id: __filename
 };
 
 export const AmountMaxButtonComponent = () => {
