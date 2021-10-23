@@ -1,6 +1,6 @@
 import mockState from '../../test/data/mock-state.json';
 import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
-import { ZERO_VALUE } from '../../shared/constants/hex-values';
+import { HEX_ZERO_VALUE } from '../../shared/constants/hex-values';
 import * as selectors from './selectors';
 
 describe('Selectors', () => {
@@ -64,7 +64,7 @@ describe('Selectors', () => {
 
   it('returns selected account', () => {
     const account = selectors.getSelectedAccount(mockState);
-    expect(account.balance).toStrictEqual(ZERO_VALUE);
+    expect(account.balance).toStrictEqual(HEX_ZERO_VALUE);
     expect(account.address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     );
@@ -158,7 +158,7 @@ describe('Selectors', () => {
       mockState,
     );
     expect(accountsWithSendEther).toHaveLength(2);
-    expect(accountsWithSendEther[0].balance).toStrictEqual(ZERO_VALUE);
+    expect(accountsWithSendEther[0].balance).toStrictEqual(HEX_ZERO_VALUE);
     expect(accountsWithSendEther[0].address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     );
@@ -169,7 +169,7 @@ describe('Selectors', () => {
     const currentAccountwithSendEther = selectors.getCurrentAccountWithSendEtherInfo(
       mockState,
     );
-    expect(currentAccountwithSendEther.balance).toStrictEqual(ZERO_VALUE);
+    expect(currentAccountwithSendEther.balance).toStrictEqual(HEX_ZERO_VALUE);
     expect(currentAccountwithSendEther.address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     );

@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import { GAS_ESTIMATE_TYPES, EDIT_GAS_MODES } from '../../shared/constants/gas';
-import { ZERO_VALUE } from '../../shared/constants/hex-values';
+import { HEX_ZERO_VALUE } from '../../shared/constants/hex-values';
 import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
 import {
   getMaximumGasTotalInHexWei,
@@ -214,7 +214,7 @@ export function useGasFeeInputs(
     initialGasPrice && initialFeeParamsAreCustom ? initialGasPrice : null,
   );
   const [gasLimit, setGasLimit] = useState(
-    Number(hexToDecimal(transaction?.txParams?.gas ?? ZERO_VALUE)),
+    Number(hexToDecimal(transaction?.txParams?.gas ?? HEX_ZERO_VALUE)),
   );
 
   const userPrefersAdvancedGas = useSelector(getAdvancedInlineGasShown);
@@ -292,7 +292,7 @@ export function useGasFeeInputs(
       gasFeeEstimates.estimatedBaseFee ?? '0',
     );
   } else if (gasEstimateType === GAS_ESTIMATE_TYPES.NONE) {
-    gasSettings.gasPrice = ZERO_VALUE;
+    gasSettings.gasPrice = HEX_ZERO_VALUE;
   } else {
     gasSettings.gasPrice = decGWEIToHexWEI(gasPriceToUse);
   }

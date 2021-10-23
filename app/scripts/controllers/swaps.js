@@ -19,7 +19,7 @@ import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../shared/constants/swaps';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
-import { ZERO_VALUE } from '../../../shared/constants/hex-values';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex-values';
 
 import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils';
 
@@ -624,7 +624,7 @@ export default class SwapsController {
       gasEstimateType,
     } = await this._getEIP1559GasFeeEstimates();
 
-    let usedGasPrice = ZERO_VALUE;
+    let usedGasPrice = HEX_ZERO_VALUE;
 
     if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
       const {
@@ -673,7 +673,7 @@ export default class SwapsController {
         : new BigNumber(averageGas || MAX_GAS_LIMIT, 10);
 
       const totalGasLimitForCalculation = tradeGasLimitForCalculation
-        .plus(approvalNeeded?.gas || ZERO_VALUE, 16)
+        .plus(approvalNeeded?.gas || HEX_ZERO_VALUE, 16)
         .toString(16);
 
       const gasTotalInWeiHex = calcGasTotal(

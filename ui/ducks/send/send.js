@@ -20,7 +20,7 @@ import {
   MIN_GAS_LIMIT_HEX,
   NEGATIVE_ETH_ERROR,
 } from '../../pages/send/send.constants';
-import { ZERO_VALUE } from '../../../shared/constants/hex-values';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex-values';
 
 import {
   addGasBuffer,
@@ -217,7 +217,7 @@ async function estimateGasLimitForSend({
       // represented in the gas shared constants.
       return GAS_LIMITS.BASE_TOKEN_ESTIMATE;
     }
-    paramsForGasEstimate.value = ZERO_VALUE;
+    paramsForGasEstimate.value = HEX_ZERO_VALUE;
     // We have to generate the erc20 contract call to transfer tokens in
     // order to get a proper estimate for gasLimit.
     paramsForGasEstimate.data = generateTokenTransferData({
@@ -321,7 +321,7 @@ export async function getERC20Balance(token, accountAddress) {
   const contract = global.eth.contract(abi).at(token.address);
   const usersToken = (await contract.balanceOf(accountAddress)) ?? null;
   if (!usersToken) {
-    return ZERO_VALUE;
+    return HEX_ZERO_VALUE;
   }
   const amount = calcTokenAmount(
     usersToken.balance.toString(),
@@ -462,7 +462,7 @@ export const initializeSendState = createAsyncThunk(
     } else {
       gasPrice = gasFeeEstimates.gasPrice
         ? getRoundedGasPrice(gasFeeEstimates.gasPrice)
-        : ZERO_VALUE;
+        : HEX_ZERO_VALUE;
     }
 
     // Set a basic gasLimit in the event that other estimation fails
@@ -540,7 +540,7 @@ export const initialState = {
     // the original transaction was sent from in the case of the EDIT stage
     address: null,
     // balance of the from account
-    balance: ZERO_VALUE,
+    balance: HEX_ZERO_VALUE,
   },
   gas: {
     // indicate whether the gas estimate is loading
@@ -550,18 +550,18 @@ export const initialState = {
     // has the user set custom gas in the custom gas modal
     isCustomGasSet: false,
     // maximum gas needed for tx
-    gasLimit: ZERO_VALUE,
+    gasLimit: HEX_ZERO_VALUE,
     // price in wei to pay per gas
-    gasPrice: ZERO_VALUE,
+    gasPrice: HEX_ZERO_VALUE,
     // maximum price in wei to pay per gas
-    maxFeePerGas: ZERO_VALUE,
+    maxFeePerGas: HEX_ZERO_VALUE,
     // maximum priority fee in wei to pay per gas
-    maxPriorityFeePerGas: ZERO_VALUE,
+    maxPriorityFeePerGas: HEX_ZERO_VALUE,
     // expected price in wei necessary to pay per gas used for a transaction
     // to be included in a reasonable timeframe. Comes from GasFeeController.
-    gasPriceEstimate: ZERO_VALUE,
+    gasPriceEstimate: HEX_ZERO_VALUE,
     // maximum total price in wei to pay
-    gasTotal: ZERO_VALUE,
+    gasTotal: HEX_ZERO_VALUE,
     // minimum supported gasLimit
     minimumGasLimit: GAS_LIMITS.SIMPLE,
     // error to display for gas fields
@@ -573,7 +573,7 @@ export const initialState = {
     // asset balance
     mode: AMOUNT_MODES.INPUT,
     // Current value of the transaction, how much of the asset are we sending
-    value: ZERO_VALUE,
+    value: HEX_ZERO_VALUE,
     // error to display for amount field
     error: null,
   },
@@ -581,7 +581,7 @@ export const initialState = {
     // type can be either NATIVE such as ETH or TOKEN for ERC20 tokens
     type: ASSET_TYPES.NATIVE,
     // the balance the user holds at the from address for this asset
-    balance: ZERO_VALUE,
+    balance: HEX_ZERO_VALUE,
     // In the case of tokens, the address, decimals and symbol of the token
     // will be included in details
     details: null,
@@ -600,9 +600,9 @@ export const initialState = {
       to: '',
       from: '',
       data: undefined,
-      value: ZERO_VALUE,
-      gas: ZERO_VALUE,
-      gasPrice: ZERO_VALUE,
+      value: HEX_ZERO_VALUE,
+      gas: HEX_ZERO_VALUE,
+      gasPrice: HEX_ZERO_VALUE,
       type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
     },
   },
@@ -651,7 +651,7 @@ const slice = createSlice({
      * revalidate the field and form and recomputes the draftTransaction
      */
     updateAmountToMax: (state) => {
-      let amount = ZERO_VALUE;
+      let amount = HEX_ZERO_VALUE;
       if (state.asset.type === ASSET_TYPES.TOKEN) {
         const decimals = state.asset.details?.decimals ?? 0;
         const multiplier = Math.pow(10, Number(decimals));
@@ -771,7 +771,7 @@ const slice = createSlice({
         // the field.
         if (
           action.payload.isAutomaticUpdate !== true ||
-          state.gas.gasPriceEstimate === ZERO_VALUE ||
+          state.gas.gasPriceEstimate === HEX_ZERO_VALUE ||
           state.gas.gasPrice === state.gas.gasPriceEstimate
         ) {
           state.gas.gasPrice = addHexPrefix(action.payload.gasPrice);
@@ -785,7 +785,7 @@ const slice = createSlice({
      */
     updateGasFeeEstimates: (state, action) => {
       const { gasFeeEstimates, gasEstimateType } = action.payload;
-      let gasPriceEstimate = ZERO_VALUE;
+      let gasPriceEstimate = HEX_ZERO_VALUE;
       switch (gasEstimateType) {
         case GAS_ESTIMATE_TYPES.FEE_MARKET:
           slice.caseReducers.updateGasFees(state, {
@@ -861,7 +861,7 @@ const slice = createSlice({
       if (state.amount.mode === AMOUNT_MODES.MAX) {
         slice.caseReducers.updateAmountToMax(state);
       } else {
-        slice.caseReducers.updateSendAmount(state, { payload: ZERO_VALUE });
+        slice.caseReducers.updateSendAmount(state, { payload: HEX_ZERO_VALUE });
       }
       // validate send state
       slice.caseReducers.validateSendState(state);
@@ -910,7 +910,7 @@ const slice = createSlice({
             // is generated from the recipient address, token being sent and
             // amount.
             state.draftTransaction.txParams.to = state.asset.details.address;
-            state.draftTransaction.txParams.value = ZERO_VALUE;
+            state.draftTransaction.txParams.value = HEX_ZERO_VALUE;
             state.draftTransaction.txParams.data = generateTokenTransferData({
               toAddress: state.recipient.address,
               amount: state.amount.value,
@@ -942,14 +942,14 @@ const slice = createSlice({
 
           if (
             !state.draftTransaction.txParams.maxFeePerGas ||
-            state.draftTransaction.txParams.maxFeePerGas === ZERO_VALUE
+            state.draftTransaction.txParams.maxFeePerGas === HEX_ZERO_VALUE
           ) {
             state.draftTransaction.txParams.maxFeePerGas = state.gas.gasPrice;
           }
 
           if (
             !state.draftTransaction.txParams.maxPriorityFeePerGas ||
-            state.draftTransaction.txParams.maxPriorityFeePerGas === ZERO_VALUE
+            state.draftTransaction.txParams.maxPriorityFeePerGas === HEX_ZERO_VALUE
           ) {
             state.draftTransaction.txParams.maxPriorityFeePerGas =
               state.draftTransaction.txParams.maxFeePerGas;
@@ -1037,7 +1037,7 @@ const slice = createSlice({
           !isBalanceSufficient({
             amount: state.amount.value,
             balance: state.asset.balance,
-            gasTotal: state.gas.gasTotal ?? ZERO_VALUE,
+            gasTotal: state.gas.gasTotal ?? HEX_ZERO_VALUE,
           }):
           state.amount.error = INSUFFICIENT_FUNDS_ERROR;
           break;
@@ -1045,7 +1045,7 @@ const slice = createSlice({
         // than the amount of token the user is attempting to send.
         case state.asset.type === ASSET_TYPES.TOKEN &&
           !isTokenBalanceSufficient({
-            tokenBalance: state.asset.balance ?? ZERO_VALUE,
+            tokenBalance: state.asset.balance ?? HEX_ZERO_VALUE,
             amount: state.amount.value,
             decimals: state.asset.details.decimals,
           }):
@@ -1073,9 +1073,9 @@ const slice = createSlice({
         amount:
           state.asset.type === ASSET_TYPES.NATIVE
             ? state.amount.value
-            : ZERO_VALUE,
+            : HEX_ZERO_VALUE,
         balance: state.account.balance,
-        gasTotal: state.gas.gasTotal ?? ZERO_VALUE,
+        gasTotal: state.gas.gasTotal ?? HEX_ZERO_VALUE,
       });
 
       state.gas.error = insufficientFunds ? INSUFFICIENT_FUNDS_ERROR : null;
@@ -1504,7 +1504,7 @@ export function toggleSendMaxMode() {
     const state = getState();
     if (state.send.amount.mode === AMOUNT_MODES.MAX) {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
-      await dispatch(actions.updateSendAmount(ZERO_VALUE));
+      await dispatch(actions.updateSendAmount(HEX_ZERO_VALUE));
     } else {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.MAX));
       await dispatch(actions.updateAmountToMax());

@@ -9,7 +9,7 @@ import { ensInitialState } from '../../ducks/ens';
 import { renderWithProvider } from '../../../test/jest';
 import { RINKEBY_CHAIN_ID } from '../../../shared/constants/network';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
-import { ZERO_VALUE } from '../../../shared/constants/hex-values';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex-values';
 import Send from './send';
 
 const middleware = [thunk];
@@ -78,7 +78,7 @@ const baseStore = {
       [RINKEBY_CHAIN_ID]: {},
     },
     accounts: {
-      '0x0': { balance: ZERO_VALUE, address: '0x0' },
+      '0x0': { balance: HEX_ZERO_VALUE, address: '0x0' },
     },
     identities: { '0x0': { address: '0x0' } },
   },

@@ -1,1 +1,1 @@
-export const ZERO_VALUE = '0x0';
+export const HEX_ZERO_VALUE = '0x0';

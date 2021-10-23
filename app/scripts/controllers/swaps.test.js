@@ -13,7 +13,7 @@ import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { SECOND } from '../../../shared/constants/time';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
-import { ZERO_VALUE } from '../../../shared/constants/hex-values';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex-values';
 import SwapsController, { utils } from './swaps';
 import { NETWORK_EVENTS } from './network';
 
@@ -1134,7 +1134,7 @@ function getMockQuotes() {
     [TEST_AGG_ID_1]: {
       trade: {
         from: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
-        value: ZERO_VALUE,
+        value: HEX_ZERO_VALUE,
         gas: '0x61a80', // 4e5
         to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
       },
@@ -1168,7 +1168,7 @@ function getMockQuotes() {
     [TEST_AGG_ID_BEST]: {
       trade: {
         from: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
-        value: ZERO_VALUE,
+        value: HEX_ZERO_VALUE,
         gas: '0x61a80',
         to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
       },
@@ -1202,7 +1202,7 @@ function getMockQuotes() {
     [TEST_AGG_ID_2]: {
       trade: {
         from: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
-        value: ZERO_VALUE,
+        value: HEX_ZERO_VALUE,
         gas: '0x61a80',
         to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
       },
@@ -1255,7 +1255,7 @@ function getTopQuoteAndSavingsMockQuotes() {
       sourceAmount: '10000000000000000000',
       sourceToken: '0xsomeERC20TokenAddress',
       trade: {
-        value: ZERO_VALUE,
+        value: HEX_ZERO_VALUE,
       },
       fee: 1,
     },
@@ -1269,7 +1269,7 @@ function getTopQuoteAndSavingsMockQuotes() {
       sourceAmount: '10000000000000000000',
       sourceToken: '0xsomeERC20TokenAddress',
       trade: {
-        value: ZERO_VALUE,
+        value: HEX_ZERO_VALUE,
       },
       fee: 1,
     },
@@ -1283,7 +1283,7 @@ function getTopQuoteAndSavingsMockQuotes() {
       sourceAmount: '10000000000000000000',
       sourceToken: '0xsomeERC20TokenAddress',
       trade: {
-        value: ZERO_VALUE,
+        value: HEX_ZERO_VALUE,
       },
       fee: 1,
     },
@@ -1297,7 +1297,7 @@ function getTopQuoteAndSavingsMockQuotes() {
       sourceAmount: '10000000000000000000',
       sourceToken: '0xsomeERC20TokenAddress',
       trade: {
-        value: ZERO_VALUE,
+        value: HEX_ZERO_VALUE,
       },
       fee: 1,
     },
@@ -1311,7 +1311,7 @@ function getTopQuoteAndSavingsMockQuotes() {
       sourceAmount: '10000000000000000000',
       sourceToken: '0xsomeERC20TokenAddress',
       trade: {
-        value: ZERO_VALUE,
+        value: HEX_ZERO_VALUE,
       },
       fee: 1,
     },
@@ -1325,7 +1325,7 @@ function getTopQuoteAndSavingsMockQuotes() {
       sourceAmount: '10000000000000000000',
       sourceToken: '0xsomeERC20TokenAddress',
       trade: {
-        value: ZERO_VALUE,
+        value: HEX_ZERO_VALUE,
       },
       fee: 1,
     },

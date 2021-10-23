@@ -10,7 +10,7 @@ import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPE_RPC } from '../../shared/constants/network';
 import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
-import { ZERO_VALUE } from '../../shared/constants/hex-values';
+import { HEX_ZERO_VALUE } from '../../shared/constants/hex-values';
 import { addHexPrefix } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
@@ -287,7 +287,7 @@ describe('MetaMaskController', function () {
       const password = 'what-what-what';
       sandbox.stub(metamaskController, 'getBalance');
       metamaskController.getBalance.callsFake(() => {
-        return Promise.resolve(ZERO_VALUE);
+        return Promise.resolve(HEX_ZERO_VALUE);
       });
 
       await metamaskController
@@ -304,7 +304,7 @@ describe('MetaMaskController', function () {
     it('should clear previous identities after vault restoration', async function () {
       sandbox.stub(metamaskController, 'getBalance');
       metamaskController.getBalance.callsFake(() => {
-        return Promise.resolve(ZERO_VALUE);
+        return Promise.resolve(HEX_ZERO_VALUE);
       });
 
       let startTime = Date.now();
@@ -367,7 +367,7 @@ describe('MetaMaskController', function () {
         return Promise.resolve('0x14ced5122ce0a000');
       });
       metamaskController.getBalance.withArgs(TEST_ADDRESS_2).callsFake(() => {
-        return Promise.resolve(ZERO_VALUE);
+        return Promise.resolve(HEX_ZERO_VALUE);
       });
       metamaskController.getBalance.withArgs(TEST_ADDRESS_3).callsFake(() => {
         return Promise.resolve('0x14ced5122ce0a000');
@@ -841,7 +841,7 @@ describe('MetaMaskController', function () {
     beforeEach(async function () {
       sandbox.stub(metamaskController, 'getBalance');
       metamaskController.getBalance.callsFake(() => {
-        return Promise.resolve(ZERO_VALUE);
+        return Promise.resolve(HEX_ZERO_VALUE);
       });
 
       await metamaskController.createNewVaultAndRestore(
@@ -907,7 +907,7 @@ describe('MetaMaskController', function () {
     beforeEach(async function () {
       sandbox.stub(metamaskController, 'getBalance');
       metamaskController.getBalance.callsFake(() => {
-        return Promise.resolve(ZERO_VALUE);
+        return Promise.resolve(HEX_ZERO_VALUE);
       });
 
       await metamaskController.createNewVaultAndRestore(

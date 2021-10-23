@@ -18,7 +18,7 @@ import {
 import { TRANSACTION_ENVELOPE_TYPES } from '../../shared/constants/transaction';
 import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
 import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
-import { ZERO_VALUE } from '../../shared/constants/hex-values';
+import { HEX_ZERO_VALUE } from '../../shared/constants/hex-values';
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
@@ -243,7 +243,7 @@ export const transactionFeeSelector = function (state, txData) {
   );
 
   const gasEstimationObject = {
-    gasLimit: txData.txParams?.gas ?? ZERO_VALUE,
+    gasLimit: txData.txParams?.gas ?? HEX_ZERO_VALUE,
   };
 
   if (networkAndAccountSupportsEIP1559) {
@@ -276,7 +276,7 @@ export const transactionFeeSelector = function (state, txData) {
   } else {
     switch (gasEstimateType) {
       case GAS_ESTIMATE_TYPES.NONE:
-        gasEstimationObject.gasPrice = txData.txParams?.gasPrice ?? ZERO_VALUE;
+        gasEstimationObject.gasPrice = txData.txParams?.gasPrice ?? HEX_ZERO_VALUE;
         break;
       case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
         gasEstimationObject.gasPrice =
@@ -294,7 +294,7 @@ export const transactionFeeSelector = function (state, txData) {
     }
   }
 
-  const { txParams: { value = ZERO_VALUE } = {} } = txData;
+  const { txParams: { value = HEX_ZERO_VALUE } = {} } = txData;
 
   const fiatTransactionAmount = getValueFromWeiHex({
     value,

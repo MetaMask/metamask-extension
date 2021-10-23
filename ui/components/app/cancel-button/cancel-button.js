@@ -10,7 +10,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useIncrementedGasFees } from '../../../hooks/useIncrementedGasFees';
 import { isBalanceSufficient } from '../../../pages/send/send.utils';
 import { getSelectedAccount } from '../../../selectors';
-import { ZERO_VALUE } from '../../../../shared/constants/hex-values';
+import { HEX_ZERO_VALUE } from '../../../../shared/constants/hex-values';
 
 export default function CancelButton({
   cancelTransaction,
@@ -25,7 +25,7 @@ export default function CancelButton({
   const conversionRate = useSelector(getConversionRate);
 
   const hasEnoughCancelGas = isBalanceSufficient({
-    amount: ZERO_VALUE,
+    amount: HEX_ZERO_VALUE,
     gasTotal: getMaximumGasTotalInHexWei(customCancelGasSettings),
     balance: selectedAccount.balance,
     conversionRate,

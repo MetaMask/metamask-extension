@@ -1,5 +1,5 @@
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
-import { ZERO_VALUE } from '../../../shared/constants/hex-values';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex-values';
 import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
   getBlockGasLimit,
@@ -66,7 +66,7 @@ describe('MetaMask Reducers', () => {
           },
           '0xd85a4b6a394794842887b8284293d69163007bbb': {
             code: '0x',
-            balance: ZERO_VALUE,
+            balance: HEX_ZERO_VALUE,
             nonce: '0x0',
             address: '0xd85a4b6a394794842887b8284293d69163007bbb',
           },
@@ -345,7 +345,7 @@ describe('MetaMask Reducers', () => {
           },
           {
             code: '0x',
-            balance: ZERO_VALUE,
+            balance: HEX_ZERO_VALUE,
             nonce: '0x0',
             address: '0xd85a4b6a394794842887b8284293d69163007bbb',
             name: 'Send Account 4',

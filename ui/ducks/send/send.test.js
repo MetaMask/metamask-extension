@@ -19,7 +19,7 @@ import {
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction';
-import { ZERO_VALUE } from '../../../shared/constants/hex-values';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex-values';
 
 import sendReducer, {
   initialState,
@@ -69,7 +69,7 @@ import sendReducer, {
 
 const mockStore = createMockStore([thunk]);
 
-const mockEstimateGas = jest.fn(() => Promise.resolve(ZERO_VALUE));
+const mockEstimateGas = jest.fn(() => Promise.resolve(HEX_ZERO_VALUE));
 jest.mock('../../store/actions', () => {
   const actual = jest.requireActual('../../store/actions');
   return {
@@ -80,7 +80,7 @@ jest.mock('../../store/actions', () => {
   };
 });
 
-const mockGetERC20Balance = jest.fn(() => ZERO_VALUE);
+const mockGetERC20Balance = jest.fn(() => HEX_ZERO_VALUE);
 jest.mock('./send', () => {
   const actual = jest.requireActual('./send');
   return {
@@ -204,7 +204,7 @@ describe('Send Slice', () => {
         const gasState = {
           ...initialState,
           gas: {
-            gasLimit: ZERO_VALUE,
+            gasLimit: HEX_ZERO_VALUE,
             gasPrice: '0x3b9aca00', // 1000000000
           },
         };
@@ -444,7 +444,7 @@ describe('Send Slice', () => {
             detailsForDraftTransactionState.asset.details.address,
           );
           expect(result.draftTransaction.txParams.value).toStrictEqual(
-            ZERO_VALUE,
+            HEX_ZERO_VALUE,
           );
           expect(result.draftTransaction.txParams.gas).toStrictEqual(
             detailsForDraftTransactionState.gas.gasLimit,
@@ -545,7 +545,7 @@ describe('Send Slice', () => {
             detailsForDraftTransactionState.asset.details.address,
           );
           expect(result.draftTransaction.txParams.value).toStrictEqual(
-            ZERO_VALUE,
+            HEX_ZERO_VALUE,
           );
           expect(result.draftTransaction.txParams.gas).toStrictEqual(
             detailsForDraftTransactionState.gas.gasLimit,
@@ -841,7 +841,7 @@ describe('Send Slice', () => {
         const gasFieldState = {
           ...initialState,
           account: {
-            balance: ZERO_VALUE,
+            balance: HEX_ZERO_VALUE,
           },
           gas: {
             gasTotal: '0x1319718a5000', // 21000000000000
@@ -1004,7 +1004,7 @@ describe('Send Slice', () => {
         const olderState = {
           ...initialState,
           account: {
-            balance: ZERO_VALUE,
+            balance: HEX_ZERO_VALUE,
             address: '0xAddress',
           },
         };
@@ -1037,7 +1037,7 @@ describe('Send Slice', () => {
           stage: SEND_STAGES.EDIT,
           account: {
             address: '0xAddress',
-            balance: ZERO_VALUE,
+            balance: HEX_ZERO_VALUE,
           },
         };
 
@@ -1064,7 +1064,7 @@ describe('Send Slice', () => {
           stage: SEND_STAGES.EDIT,
           account: {
             address: '0xAddress',
-            balance: ZERO_VALUE,
+            balance: HEX_ZERO_VALUE,
           },
         };
 
@@ -1117,7 +1117,7 @@ describe('Send Slice', () => {
             accounts: {
               '0xAddress': {
                 address: '0xAddress',
-                balance: ZERO_VALUE,
+                balance: HEX_ZERO_VALUE,
               },
             },
             cachedBalances: {
@@ -1185,10 +1185,10 @@ describe('Send Slice', () => {
         const gasState = {
           ...initialState,
           gas: {
-            gasPrice: ZERO_VALUE,
-            gasPriceEstimate: ZERO_VALUE,
+            gasPrice: HEX_ZERO_VALUE,
+            gasPriceEstimate: HEX_ZERO_VALUE,
             gasLimit: '0x5208',
-            gasTotal: ZERO_VALUE,
+            gasTotal: HEX_ZERO_VALUE,
             minimumGasLimit: '0x5208',
           },
         };
@@ -1223,7 +1223,7 @@ describe('Send Slice', () => {
           },
         });
 
-        const newGasPrice = ZERO_VALUE;
+        const newGasPrice = HEX_ZERO_VALUE;
 
         await store.dispatch(updateGasPrice(newGasPrice));
 
@@ -1233,7 +1233,7 @@ describe('Send Slice', () => {
           {
             type: 'send/updateGasFees',
             payload: {
-              gasPrice: ZERO_VALUE,
+              gasPrice: HEX_ZERO_VALUE,
               transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
             },
           },
@@ -1505,7 +1505,7 @@ describe('Send Slice', () => {
         expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
         expect(actionResult[2].payload).toStrictEqual({
           ...newSendAsset,
-          balance: ZERO_VALUE,
+          balance: HEX_ZERO_VALUE,
         });
 
         expect(actionResult[3].type).toStrictEqual(
@@ -2163,7 +2163,7 @@ describe('Send Slice', () => {
                   to: '0xTokenAddress',
                   gas: GAS_LIMITS.SIMPLE,
                   gasPrice: '0x3b9aca00', // 1000000000
-                  value: ZERO_VALUE,
+                  value: HEX_ZERO_VALUE,
                 },
               },
             },
@@ -2171,7 +2171,7 @@ describe('Send Slice', () => {
           send: {
             account: {
               address: '0xAddress',
-              balance: ZERO_VALUE,
+              balance: HEX_ZERO_VALUE,
             },
             asset: {
               type: '',
@@ -2224,7 +2224,7 @@ describe('Send Slice', () => {
         expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
         expect(actionResult[2].type).toStrictEqual('send/updateAsset');
         expect(actionResult[2].payload).toStrictEqual({
-          balance: ZERO_VALUE,
+          balance: HEX_ZERO_VALUE,
           type: ASSET_TYPES.TOKEN,
           details: {
             address: '0xTokenAddress',
@@ -2281,15 +2281,15 @@ describe('Send Slice', () => {
   describe('selectors', () => {
     describe('gas selectors', () => {
       it('has a selector that gets gasLimit', () => {
-        expect(getGasLimit({ send: initialState })).toBe(ZERO_VALUE);
+        expect(getGasLimit({ send: initialState })).toBe(HEX_ZERO_VALUE);
       });
 
       it('has a selector that gets gasPrice', () => {
-        expect(getGasPrice({ send: initialState })).toBe(ZERO_VALUE);
+        expect(getGasPrice({ send: initialState })).toBe(HEX_ZERO_VALUE);
       });
 
       it('has a selector that gets gasTotal', () => {
-        expect(getGasTotal({ send: initialState })).toBe(ZERO_VALUE);
+        expect(getGasTotal({ send: initialState })).toBe(HEX_ZERO_VALUE);
       });
 
       it('has a selector to determine if gas fee is in error', () => {
@@ -2413,7 +2413,7 @@ describe('Send Slice', () => {
             send: {
               ...initialState,
               asset: {
-                balance: ZERO_VALUE,
+                balance: HEX_ZERO_VALUE,
                 details: { address: '0x0' },
                 type: ASSET_TYPES.TOKEN,
               },
@@ -2441,7 +2441,7 @@ describe('Send Slice', () => {
 
     describe('amount selectors', () => {
       it('has a selector to get send amount', () => {
-        expect(getSendAmount({ send: initialState })).toBe(ZERO_VALUE);
+        expect(getSendAmount({ send: initialState })).toBe(HEX_ZERO_VALUE);
       });
 
       it('has a selector to get if there is an insufficient funds error', () => {

@@ -94,7 +94,7 @@ import {
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
-import { ZERO_VALUE } from '../../../../shared/constants/hex-values';
+import { HEX_ZERO_VALUE } from '../../../../shared/constants/hex-values';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import ViewQuotePriceDifference from './view-quote-price-difference';
@@ -153,7 +153,7 @@ export default function ViewQuote() {
   const selectedQuote = useSelector(getSelectedQuote);
   const topQuote = useSelector(getTopQuote);
   const usedQuote = selectedQuote || topQuote;
-  const tradeValue = usedQuote?.trade?.value ?? ZERO_VALUE;
+  const tradeValue = usedQuote?.trade?.value ?? HEX_ZERO_VALUE;
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
@@ -226,7 +226,7 @@ export default function ViewQuote() {
   const tokenBalance =
     tokensWithBalances?.length &&
     calcTokenAmount(
-      selectedFromToken.balance || ZERO_VALUE,
+      selectedFromToken.balance || HEX_ZERO_VALUE,
       selectedFromToken.decimals,
     ).toFixed(9);
   const tokenBalanceUnavailable =
@@ -317,9 +317,9 @@ export default function ViewQuote() {
 
   const insufficientTokens =
     (tokensWithBalances?.length || balanceError) &&
-    tokenCost.gt(new BigNumber(selectedFromToken.balance || ZERO_VALUE));
+    tokenCost.gt(new BigNumber(selectedFromToken.balance || HEX_ZERO_VALUE));
 
-  const insufficientEth = ethCost.gt(new BigNumber(ethBalance || ZERO_VALUE));
+  const insufficientEth = ethCost.gt(new BigNumber(ethBalance || HEX_ZERO_VALUE));
 
   const tokenBalanceNeeded = insufficientTokens
     ? toPrecisionWithoutTrailingZeros(
@@ -523,7 +523,7 @@ export default function ViewQuote() {
 
   const nonGasFeeIsPositive = new BigNumber(nonGasFee, 16).gt(0);
   const approveGasTotal = calcGasTotal(
-    approveGas || ZERO_VALUE,
+    approveGas || HEX_ZERO_VALUE,
     networkAndAccountSupports1559 ? baseAndPriorityFeePerGas : gasPrice,
   );
   const extraNetworkFeeTotalInHexWEI = new BigNumber(nonGasFee, 16)

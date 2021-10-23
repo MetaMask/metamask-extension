@@ -20,7 +20,7 @@ import {
   TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
 import { MILLISECOND } from '../../../shared/constants/time';
-import { ZERO_VALUE } from '../../../shared/constants/hex-values';
+import { HEX_ZERO_VALUE } from '../../../shared/constants/hex-values';
 
 const IncomingTransactionsController = proxyquire('./incoming-transactions', {
   '../../../shared/modules/random-id': { default: () => 54321 },
@@ -312,11 +312,11 @@ describe('IncomingTransactionsController', function () {
               type: TRANSACTION_TYPES.INCOMING,
               txParams: {
                 from: '0xfake',
-                gas: ZERO_VALUE,
-                gasPrice: ZERO_VALUE,
+                gas: HEX_ZERO_VALUE,
+                gasPrice: HEX_ZERO_VALUE,
                 nonce: '0x64',
                 to: '0x0101',
-                value: ZERO_VALUE,
+                value: HEX_ZERO_VALUE,
               },
             },
             '0xfakeeip1559': {
@@ -329,12 +329,12 @@ describe('IncomingTransactionsController', function () {
               type: TRANSACTION_TYPES.INCOMING,
               txParams: {
                 from: '0xfake',
-                gas: ZERO_VALUE,
+                gas: HEX_ZERO_VALUE,
                 maxFeePerGas: '0xa',
                 maxPriorityFeePerGas: '0x1',
                 nonce: '0x64',
                 to: '0x0101',
-                value: ZERO_VALUE,
+                value: HEX_ZERO_VALUE,
               },
             },
           },
@@ -607,11 +607,11 @@ describe('IncomingTransactionsController', function () {
               type: TRANSACTION_TYPES.INCOMING,
               txParams: {
                 from: '0xfake',
-                gas: ZERO_VALUE,
-                gasPrice: ZERO_VALUE,
+                gas: HEX_ZERO_VALUE,
+                gasPrice: HEX_ZERO_VALUE,
                 nonce: '0x64',
                 to: '0x01019',
-                value: ZERO_VALUE,
+                value: HEX_ZERO_VALUE,
               },
             },
           },
@@ -745,11 +745,11 @@ describe('IncomingTransactionsController', function () {
               type: TRANSACTION_TYPES.INCOMING,
               txParams: {
                 from: '0xfake',
-                gas: ZERO_VALUE,
-                gasPrice: ZERO_VALUE,
+                gas: HEX_ZERO_VALUE,
+                gasPrice: HEX_ZERO_VALUE,
                 nonce: '0x64',
                 to: '0x0101',
-                value: ZERO_VALUE,
+                value: HEX_ZERO_VALUE,
               },
             },
           },

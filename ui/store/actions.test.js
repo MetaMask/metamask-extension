@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
-import { ZERO_VALUE } from '../../shared/constants/hex-values';
+import { HEX_ZERO_VALUE } from '../../shared/constants/hex-values';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import * as actions from './actions';
 
@@ -16,7 +16,7 @@ const defaultState = {
     provider: { chainId: '0x1' },
     accounts: {
       '0xFirstAddress': {
-        balance: ZERO_VALUE,
+        balance: HEX_ZERO_VALUE,
       },
     },
     cachedBalances: {
@@ -260,7 +260,7 @@ describe('Actions', () => {
           },
           accounts: {
             '0xAnotherAddress': {
-              balance: ZERO_VALUE,
+              balance: HEX_ZERO_VALUE,
             },
           },
           cachedBalances: {
@@ -840,7 +840,7 @@ describe('Actions', () => {
       gas: GAS_LIMITS.SIMPLE,
       gasPrice: '0x3b9aca00',
       to: '0x2',
-      value: ZERO_VALUE,
+      value: HEX_ZERO_VALUE,
     };
 
     const txData = {
@@ -904,7 +904,7 @@ describe('Actions', () => {
             gas: GAS_LIMITS.SIMPLE,
             gasPrice: '0x3b9aca00',
             to: '0x2',
-            value: ZERO_VALUE,
+            value: HEX_ZERO_VALUE,
           },
         },
         { type: 'HIDE_LOADING_INDICATION' },
@@ -1699,7 +1699,7 @@ describe('Actions', () => {
             },
             accounts: {
               '0xFirstAddress': {
-                balance: ZERO_VALUE,
+                balance: HEX_ZERO_VALUE,
               },
             },
             cachedBalances: {

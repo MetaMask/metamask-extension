@@ -14,7 +14,7 @@ import {
   updateGasPrice,
 } from '../../../../ducks/send';
 
-import { ZERO_VALUE } from '../../../../../shared/constants/hex-values';
+import { HEX_ZERO_VALUE } from '../../../../../shared/constants/hex-values';
 
 let mapDispatchToProps;
 let mergeProps;
@@ -27,9 +27,9 @@ jest.mock('react-redux', () => ({
   },
 }));
 
-const mockGetCurrentEthBalance = (state) => state.metamask.balance || ZERO_VALUE;
-const mockGetCustomGasPrice = (state) => state.gas.customData.price || ZERO_VALUE;
-const mockGetCustomGasLimit = (state) => state.gas.customData.limit || ZERO_VALUE;
+const mockGetCurrentEthBalance = (state) => state.metamask.balance || HEX_ZERO_VALUE;
+const mockGetCustomGasPrice = (state) => state.gas.customData.price || HEX_ZERO_VALUE;
+const mockGetCustomGasLimit = (state) => state.gas.customData.limit || HEX_ZERO_VALUE;
 
 jest.mock('../../../../selectors', () => ({
   getBasicGasEstimateLoadingStatus: (s) =>
@@ -205,7 +205,7 @@ describe('gas-modal-page-container container', () => {
 
       expect(dispatchProps.updateCustomGasPrice.callCount).toStrictEqual(0);
       result.gasPriceButtonGroupProps.handleGasPriceSelection({
-        gasPrice: ZERO_VALUE,
+        gasPrice: HEX_ZERO_VALUE,
       });
       expect(dispatchProps.updateCustomGasPrice.callCount).toStrictEqual(1);
 
@@ -249,7 +249,7 @@ describe('gas-modal-page-container container', () => {
 
       expect(dispatchProps.updateCustomGasPrice.callCount).toStrictEqual(0);
       result.gasPriceButtonGroupProps.handleGasPriceSelection({
-        gasPrice: ZERO_VALUE,
+        gasPrice: HEX_ZERO_VALUE,
       });
       expect(dispatchProps.updateCustomGasPrice.callCount).toStrictEqual(1);
 
