@@ -6,11 +6,13 @@ import InfoTooltipIcon from '../info-tooltip/info-tooltip-icon';
 
 const CLASSNAME_WARNING = 'actionable-message--warning';
 const CLASSNAME_DANGER = 'actionable-message--danger';
+const CLASSNAME_INFO = 'actionable-message--info';
 const CLASSNAME_WITH_RIGHT_BUTTON = 'actionable-message--with-right-button';
 
 const typeHash = {
   warning: CLASSNAME_WARNING,
   danger: CLASSNAME_DANGER,
+  info: CLASSNAME_INFO,
   default: '',
 };
 

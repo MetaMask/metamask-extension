@@ -602,9 +602,6 @@
   "newContract": {
     "message": "Neuer Smart Contract"
   },
-  "newNetwork": {
-    "message": "Neues Netzwerk"
-  },
   "newPassword": {
     "message": "Neues Passwort (min. 8 Zeichen)"
   },

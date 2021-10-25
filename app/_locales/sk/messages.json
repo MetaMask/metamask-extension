@@ -595,9 +595,6 @@
   "newContract": {
     "message": "Nový kontrakt"
   },
-  "newNetwork": {
-    "message": "Nová sieť"
-  },
   "newPassword": {
     "message": "Nové heslo (min 8 znaků)"
   },
