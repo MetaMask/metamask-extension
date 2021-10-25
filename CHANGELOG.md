@@ -6,6 +6,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.4.0]
+### Uncategorized
+- Add build type to Sentry environment ([#12441](https://github.com/MetaMask/metamask-extension/pull/12441))
+- Update NumericInput to remove PropTypes warning ([#12446](https://github.com/MetaMask/metamask-extension/pull/12446))
+- Use separate Infura project ID for production ([#12438](https://github.com/MetaMask/metamask-extension/pull/12438))
+- Add fixture server substitutions ([#12476](https://github.com/MetaMask/metamask-extension/pull/12476))
+- fix missing conversion rates in swaps token drop down ([#12420](https://github.com/MetaMask/metamask-extension/pull/12420))
+- Use rejected constant within transaction state manager ([#12458](https://github.com/MetaMask/metamask-extension/pull/12458))
+- Adding estimate fields to updateTransaction, createCancelTransaction and createSpeedUpTransaction ([#12398](https://github.com/MetaMask/metamask-extension/pull/12398))
+- Refactoring useGasFeeInputs hook ([#12327](https://github.com/MetaMask/metamask-extension/pull/12327))
+- Remove unused `SEGMENT_LEGACY_WRITE_KEY` ([#12429](https://github.com/MetaMask/metamask-extension/pull/12429))
+- Sync `master` with `develop` ([#12430](https://github.com/MetaMask/metamask-extension/pull/12430))
+- Revert "Run yarn lavamoat:auto"
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- Connect Ledger via WebHID ([#12411](https://github.com/MetaMask/metamask-extension/pull/12411))
+- Removing unused prop/code paths from EditContact ([#12419](https://github.com/MetaMask/metamask-extension/pull/12419))
+- Use ternary conditionals instead of && ([#12406](https://github.com/MetaMask/metamask-extension/pull/12406))
+- Adding copy to SRP import screen to warn users  ([#12400](https://github.com/MetaMask/metamask-extension/pull/12400))
+- Onboarding V2 Cleanups ([#12417](https://github.com/MetaMask/metamask-extension/pull/12417))
+- Refactor checking if address is contract into a new module. ([#12354](https://github.com/MetaMask/metamask-extension/pull/12354))
+- Removing unneeded build sections from README.md ([#12414](https://github.com/MetaMask/metamask-extension/pull/12414))
+- Avoid storybook-build directory when linting ([#12408](https://github.com/MetaMask/metamask-extension/pull/12408))
+- fix issue where regional locales are not matched against our locales  list ([#12403](https://github.com/MetaMask/metamask-extension/pull/12403))
+- centralize min gas const ([#12387](https://github.com/MetaMask/metamask-extension/pull/12387))
+- Fix 12192 - Implement new metametrics onboarding screen ([#12282](https://github.com/MetaMask/metamask-extension/pull/12282))
+- Fix #12190 - Implement new pin extension view for onboarding ([#12290](https://github.com/MetaMask/metamask-extension/pull/12290))
+
 ## [10.3.0]
 ### Added
 - [#12252](https://github.com/MetaMask/metamask-extension/pull/12252): Support type "0" transactions on EIP-1559 networks
@@ -2524,7 +2551,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.4.0...HEAD
+[10.4.0]: https://github.com/MetaMask/metamask-extension/compare/v10.3.0...v10.4.0
 [10.3.0]: https://github.com/MetaMask/metamask-extension/compare/v10.2.2...v10.3.0
 [10.2.2]: https://github.com/MetaMask/metamask-extension/compare/v10.2.1...v10.2.2
 [10.2.1]: https://github.com/MetaMask/metamask-extension/compare/v10.2.0...v10.2.1
