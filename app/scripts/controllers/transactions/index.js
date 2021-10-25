@@ -655,6 +655,14 @@ export default class TransactionController extends EventEmitter {
       newGasParams.gas = customGasSettings?.gas ?? GAS_LIMITS.SIMPLE;
     }
 
+    if (customGasSettings.estimateSuggested) {
+      newGasParams.estimateSuggested = customGasSettings.estimateSuggested;
+    }
+
+    if (customGasSettings.estimateUsed) {
+      newGasParams.estimateUsed = customGasSettings.estimateUsed;
+    }
+
     if (isEIP1559Transaction(originalTxMeta)) {
       previousGasParams.maxFeePerGas = txParams.maxFeePerGas;
       previousGasParams.maxPriorityFeePerGas = txParams.maxPriorityFeePerGas;
@@ -1458,7 +1466,14 @@ export default class TransactionController extends EventEmitter {
       status,
       chainId,
       origin: referrer,
-      txParams: { gasPrice, gas: gasLimit, maxFeePerGas, maxPriorityFeePerGas },
+      txParams: {
+        gasPrice,
+        gas: gasLimit,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        estimateSuggested,
+        estimateUsed,
+      },
       metamaskNetworkId: network,
     } = txMeta;
     const source = referrer === 'metamask' ? 'user' : 'dapp';
@@ -1470,6 +1485,14 @@ export default class TransactionController extends EventEmitter {
       gasParams.max_priority_fee_per_gas = maxPriorityFeePerGas;
     } else {
       gasParams.gas_price = gasPrice;
+    }
+
+    if (estimateSuggested) {
+      gasParams.estimate_suggested = estimateSuggested;
+    }
+
+    if (estimateUsed) {
+      gasParams.estimate_used = estimateUsed;
     }
 
     const gasParamsInGwei = this._getGasValuesInGWEI(gasParams);
@@ -1506,6 +1529,8 @@ export default class TransactionController extends EventEmitter {
     for (const param in gasParams) {
       if (isHexString(gasParams[param])) {
         gasValuesInGwei[param] = hexWEIToDecGWEI(gasParams[param]);
+      } else {
+        gasValuesInGwei[param] = gasParams[param];
       }
     }
     return gasValuesInGwei;
